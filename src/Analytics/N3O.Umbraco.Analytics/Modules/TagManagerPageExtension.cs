@@ -9,27 +9,27 @@ using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
-namespace N3O.Umbraco.Analytics.Modules;
+namespace N3O.Umbraco.Analytics.Modules {
+    public class TagManagerPageExtension : IPageExtension {
+        private readonly IContentCache _contentCache;
 
-public class TagManagerPageExtension : IPageExtension {
-    private readonly IContentCache _contentCache;
+        public TagManagerPageExtension(IContentCache contentCache) {
+            _contentCache = contentCache;
+        }
 
-    public TagManagerPageExtension(IContentCache contentCache) {
-        _contentCache = contentCache;
-    }
+        public Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
+            var body = GetCode(x => x.Body);
+            var head = GetCode(x => x.Head);
 
-    public Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
-        var body = GetCode(x => x.Body);
-        var head = GetCode(x => x.Head);
+            return Task.FromResult<object>(new TagManagerCode(body, head));
+        }
 
-        return Task.FromResult<object>(new TagManagerCode(body, head));
-    }
+        public string Key => AnalyticsConstants.Keys.TagManager;
 
-    public string Key => AnalyticsConstants.Keys.TagManager;
+        private HtmlString GetCode(Func<TagMangerSettings, string> getCode) {
+            var tagManagerSettings = _contentCache.Single<TagMangerSettings>();
 
-    private HtmlString GetCode(Func<TagMangerSettings, string> getCode) {
-        var tagManagerSettings = _contentCache.Single<TagMangerSettings>();
-
-        return tagManagerSettings.IfNotNull(x => getCode(x)?.ToHtmlString());
+            return tagManagerSettings.IfNotNull(x => getCode(x)?.ToHtmlString());
+        }
     }
 }

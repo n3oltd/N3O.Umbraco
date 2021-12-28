@@ -5,32 +5,32 @@ using N3O.Umbraco.Json;
 using Refit;
 using Umbraco.Cms.Core.DependencyInjection;
 
-namespace N3O.Umbraco.Forex.Currencylayer;
+namespace N3O.Umbraco.Forex.Currencylayer {
+    public class CurrencylayerComposer : Composer {
+        public override void Compose(IUmbracoBuilder builder) {
+            builder.Services.AddTransient<IExchangeRateProvider, CurrencylayerExchangeRateProvider>();
 
-public class CurrencylayerComposer : Composer {
-    public override void Compose(IUmbracoBuilder builder) {
-        builder.Services.AddTransient<IExchangeRateProvider, CurrencylayerExchangeRateProvider>();
-
-        builder.Services.AddTransient<ICurrencylayerApiClient>(serviceProvider => {
-            var jsonProvider = serviceProvider.GetRequiredService<IJsonProvider>();
-            var contentCache = serviceProvider.GetRequiredService<IContentCache>();
+            builder.Services.AddTransient<ICurrencylayerApiClient>(serviceProvider => {
+                var jsonProvider = serviceProvider.GetRequiredService<IJsonProvider>();
+                var contentCache = serviceProvider.GetRequiredService<IContentCache>();
             
-            var client = RestService.For<ICurrencylayerApiClient>("https://api.currencylayer.com",
-                                                                  GetRefitSettings(jsonProvider, contentCache));
+                var client = RestService.For<ICurrencylayerApiClient>("https://api.currencylayer.com",
+                                                                      GetRefitSettings(jsonProvider, contentCache));
 
-            return client;
-        });
-    }
+                return client;
+            });
+        }
     
-    private RefitSettings GetRefitSettings(IJsonProvider jsonProvider, IContentCache contentCache) {
-        var refitSettings = new RefitSettings();
+        private RefitSettings GetRefitSettings(IJsonProvider jsonProvider, IContentCache contentCache) {
+            var refitSettings = new RefitSettings();
 
-        var jsonSettings = jsonProvider.GetSettings();
-        jsonSettings.ContractResolver = new SnakeCasePropertyNamesContractResolver();
+            var jsonSettings = jsonProvider.GetSettings();
+            jsonSettings.ContractResolver = new SnakeCasePropertyNamesContractResolver();
 
-        refitSettings.ContentSerializer = new NewtonsoftJsonContentSerializer(jsonSettings);
-        refitSettings.HttpMessageHandlerFactory = () => new AppendApiKeyHandler(contentCache);
+            refitSettings.ContentSerializer = new NewtonsoftJsonContentSerializer(jsonSettings);
+            refitSettings.HttpMessageHandlerFactory = () => new AppendApiKeyHandler(contentCache);
 
-        return refitSettings;
+            return refitSettings;
+        }
     }
 }

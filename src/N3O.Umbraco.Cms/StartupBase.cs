@@ -9,54 +9,54 @@ using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
 using Umbraco.Extensions;
 
-namespace N3O.Umbraco;
+namespace N3O.Umbraco {
+    public abstract class StartupBase {
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IConfiguration _configuration;
 
-public abstract class StartupBase {
-    private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly IConfiguration _configuration;
-
-    protected StartupBase(IWebHostEnvironment webHostEnvironment, IConfiguration configuration) {
-        _webHostEnvironment = webHostEnvironment;
-        _configuration = configuration;
-    }
-
-    public void ConfigureServices(IServiceCollection services) {
-        Composer.WebHostEnvironment = _webHostEnvironment;
-        
-        services.AddOpenApiDocument()
-                .AddUmbraco(_webHostEnvironment, _configuration)
-                .AddBackOffice()
-                .AddWebsite()
-                .AddComposers()
-                .Build();
-    }
-
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-        if (env.IsDevelopment()) {
-            app.UseDeveloperExceptionPage();
+        protected StartupBase(IWebHostEnvironment webHostEnvironment, IConfiguration configuration) {
+            _webHostEnvironment = webHostEnvironment;
+            _configuration = configuration;
         }
 
-        app.UseOpenApi();
-        app.UseSwaggerUi3();
+        public void ConfigureServices(IServiceCollection services) {
+            Composer.WebHostEnvironment = _webHostEnvironment;
+        
+            services.AddOpenApiDocument()
+                    .AddUmbraco(_webHostEnvironment, _configuration)
+                    .AddBackOffice()
+                    .AddWebsite()
+                    .AddComposers()
+                    .Build();
+        }
 
-        app.UseUmbraco()
-           .WithMiddleware(u => {
-               u.UseBackOffice();
-               u.UseWebsite();
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+            if (env.IsDevelopment()) {
+                app.UseDeveloperExceptionPage();
+            }
 
-               ConfigureMiddleware(u);
-           })
-           .WithEndpoints(u => {
-               u.UseInstallerEndpoints();
-               u.UseBackOfficeEndpoints();
-               u.UseWebsiteEndpoints();
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
 
-               u.RunExtensions();
+            app.UseUmbraco()
+               .WithMiddleware(u => {
+                   u.UseBackOffice();
+                   u.UseWebsite();
+
+                   ConfigureMiddleware(u);
+               })
+               .WithEndpoints(u => {
+                   u.UseInstallerEndpoints();
+                   u.UseBackOfficeEndpoints();
+                   u.UseWebsiteEndpoints();
+
+                   u.RunExtensions();
                
-               ConfigureEndpoints(u);
-           });
-    }
+                   ConfigureEndpoints(u);
+               });
+        }
 
-    protected virtual void ConfigureEndpoints(IUmbracoEndpointBuilderContext umbraco) { }
-    protected virtual void ConfigureMiddleware(IUmbracoApplicationBuilderContext umbraco) { }
+        protected virtual void ConfigureEndpoints(IUmbracoEndpointBuilderContext umbraco) { }
+        protected virtual void ConfigureMiddleware(IUmbracoApplicationBuilderContext umbraco) { }
+    }
 }

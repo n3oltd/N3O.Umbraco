@@ -1,5 +1,5 @@
-﻿namespace N3O.Umbraco.Giving.Pricing.Models;
-
-public interface IHoldPrice {
-    decimal Price { get; } 
+﻿namespace N3O.Umbraco.Giving.Pricing.Models {
+    public interface IHoldPrice {
+        decimal Price { get; } 
+    }
 }

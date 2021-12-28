@@ -5,30 +5,30 @@ using N3O.Umbraco.Templates.Handlebars.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace N3O.Umbraco.Templates.Handlebars;
+namespace N3O.Umbraco.Templates.Handlebars {
+    public class HandlebarsFactory : IHandlebarsFactory {
+        private readonly IReadOnlyList<IHelper> _helpers;
+        private readonly IReadOnlyList<IBlockHelper> _blockHelpers;
+        private readonly IEnumerable<IMergeFormatter> _mergeFormatters;
 
-public class HandlebarsFactory : IHandlebarsFactory {
-    private readonly IReadOnlyList<IHelper> _helpers;
-    private readonly IReadOnlyList<IBlockHelper> _blockHelpers;
-    private readonly IEnumerable<IMergeFormatter> _mergeFormatters;
-
-    public HandlebarsFactory(IEnumerable<IHelper> helpers,
-                             IEnumerable<IBlockHelper> blockHelpers,
-                             IEnumerable<IMergeFormatter> mergeFormatters) {
-        _helpers = helpers.ToList();
-        _blockHelpers = blockHelpers.ToList();
-        _mergeFormatters = mergeFormatters;
-    }
+        public HandlebarsFactory(IEnumerable<IHelper> helpers,
+                                 IEnumerable<IBlockHelper> blockHelpers,
+                                 IEnumerable<IMergeFormatter> mergeFormatters) {
+            _helpers = helpers.ToList();
+            _blockHelpers = blockHelpers.ToList();
+            _mergeFormatters = mergeFormatters;
+        }
     
-    public IHandlebars Create() {
-        var handlebars = HandlebarsDotNet.Handlebars.Create();
+        public IHandlebars Create() {
+            var handlebars = HandlebarsDotNet.Handlebars.Create();
         
-        _helpers.Do(h => handlebars.RegisterHelper(h.Name, h.Execute));
+            _helpers.Do(h => handlebars.RegisterHelper(h.Name, h.Execute));
         
-        _blockHelpers.Do(b => handlebars.RegisterHelper(b.Name, b.Execute));
+            _blockHelpers.Do(b => handlebars.RegisterHelper(b.Name, b.Execute));
         
-        _mergeFormatters.Do(f => handlebars.Configuration.FormatterProviders.Add(new HandlebarsFormatter(f)));
+            _mergeFormatters.Do(f => handlebars.Configuration.FormatterProviders.Add(new HandlebarsFormatter(f)));
 
-        return handlebars;
+            return handlebars;
+        }
     }
 }

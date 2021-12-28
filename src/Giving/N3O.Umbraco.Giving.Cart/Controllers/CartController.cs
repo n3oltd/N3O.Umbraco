@@ -11,44 +11,44 @@ using N3O.Umbraco.Mediator.Extensions;
 using System;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Giving.Cart.Controllers;
+namespace N3O.Umbraco.Giving.Cart.Controllers {
+    [ResponseCache(CacheProfileName = CacheProfiles.NoCache)]
+    public class CartController : ApiController {
+        private readonly IMediator _mediator;
 
-[ResponseCache(CacheProfileName = CacheProfiles.NoCache)]
-public class CartController : ApiController {
-    private readonly IMediator _mediator;
-
-    public CartController(ILogger logger, IMediator mediator) : base(logger) {
-        _mediator = mediator;
-    }
-
-    [HttpPost("add")]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-    public async Task<ActionResult> Add(AddToCartReq req) {
-        try {
-            await _mediator.SendAsync<AddToCartCommand, AddToCartReq>(req);
-
-            return Ok();
-        } catch (Exception ex) {
-            return RequestFailed(l => l.LogError(ex, "Failed to add to cart for request {Req}", req));
+        public CartController(ILogger logger, IMediator mediator) : base(logger) {
+            _mediator = mediator;
         }
-    }
 
-    [HttpPost("remove/{allocationNumber:int}")]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-    public async Task<ActionResult> Remove() {
-        try {
-            await _mediator.SendAsync<RemoveFromCartCommand>();
+        [HttpPost("add")]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        public async Task<ActionResult> Add(AddToCartReq req) {
+            try {
+                await _mediator.SendAsync<AddToCartCommand, AddToCartReq>(req);
 
-            return Ok();
-        } catch (Exception ex) {
-            return RequestFailed(l => l.LogError(ex, "Failed to remove item from cart"));
+                return Ok();
+            } catch (Exception ex) {
+                return RequestFailed(l => l.LogError(ex, "Failed to add to cart for request {Req}", req));
+            }
         }
-    }
 
-    [HttpGet("count")]
-    public async Task<ActionResult<int>> ItemCount() {
-        var res = await _mediator.SendAsync<CountCartItemsQuery, None, int>(None.Empty);
+        [HttpPost("remove/{allocationNumber:int}")]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        public async Task<ActionResult> Remove() {
+            try {
+                await _mediator.SendAsync<RemoveFromCartCommand>();
 
-        return Ok(res);
+                return Ok();
+            } catch (Exception ex) {
+                return RequestFailed(l => l.LogError(ex, "Failed to remove item from cart"));
+            }
+        }
+
+        [HttpGet("count")]
+        public async Task<ActionResult<int>> ItemCount() {
+            var res = await _mediator.SendAsync<CountCartItemsQuery, None, int>(None.Empty);
+
+            return Ok(res);
+        }
     }
 }

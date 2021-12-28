@@ -1,5 +1,5 @@
 using N3O.Umbraco.Content;
 
-namespace N3O.Umbraco.Localization;
-
-public class TextSettings : UmbracoContent { }
+namespace N3O.Umbraco.Localization {
+    public class TextSettings : UmbracoContent { }
+}

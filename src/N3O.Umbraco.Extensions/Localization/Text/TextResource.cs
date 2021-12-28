@@ -1,10 +1,10 @@
 using N3O.Umbraco.Extensions;
 
-namespace N3O.Umbraco.Localization;
+namespace N3O.Umbraco.Localization {
+    public class TextResource {
+        public string Source { get; set; }
+        public string Custom { get; set; }
 
-public class TextResource {
-    public string Source { get; set; }
-    public string Custom { get; set; }
-
-    public string Value => Custom.Or(Source);
+        public string Value => Custom.Or(Source);
+    }
 }

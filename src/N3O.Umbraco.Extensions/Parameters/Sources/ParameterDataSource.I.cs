@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 
-namespace N3O.Umbraco.Parameters;
+namespace N3O.Umbraco.Parameters {
+    public interface IParameterDataSource {
+        long Order { get; }
 
-public interface IParameterDataSource {
-    long Order { get; }
-
-    IReadOnlyDictionary<string, string> GetData();
+        IReadOnlyDictionary<string, string> GetData();
+    }
 }

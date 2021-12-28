@@ -4,75 +4,75 @@ using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Extensions;
 
-namespace N3O.Umbraco.Financial;
- 
-public partial class Money {
-    public static bool operator ==(Money lhs, Money rhs) {
-        if (ReferenceEquals(lhs, rhs)) {
-            return true;
+namespace N3O.Umbraco.Financial {
+    public partial class Money {
+        public static bool operator ==(Money lhs, Money rhs) {
+            if (ReferenceEquals(lhs, rhs)) {
+                return true;
+            }
+
+            if (ReferenceEquals(lhs, null)) {
+                return false;
+            }
+
+            if (ReferenceEquals(rhs, null)) {
+                return false;
+            }
+
+            return lhs.Equals(rhs);
         }
 
-        if (ReferenceEquals(lhs, null)) {
-            return false;
+        public static bool operator !=(Money lhs, Money rhs) {
+            return !(lhs == rhs);
         }
 
-        if (ReferenceEquals(rhs, null)) {
-            return false;
+        public Money Add(Money rhs) {
+            return Add(rhs.Yield());
         }
 
-        return lhs.Equals(rhs);
-    }
-
-    public static bool operator !=(Money lhs, Money rhs) {
-        return !(lhs == rhs);
-    }
-
-    public Money Add(Money rhs) {
-        return Add(rhs.Yield());
-    }
-
-    public Money Add(IEnumerable<Money> monies) {
-        return Add(monies.ToArray());
-    }
-
-    public Money Add(params Money[] monies) {
-        var list = monies.OrEmpty().ToList();
-
-        if (list.None()) {
-            throw new Exception($"{nameof(monies)} must contain at least one element");
+        public Money Add(IEnumerable<Money> monies) {
+            return Add(monies.ToArray());
         }
 
-        if (list.Any(x => x.Currency != Currency)) {
-            throw new Exception($"{nameof(monies)} must all have the same currency");
+        public Money Add(params Money[] monies) {
+            var list = monies.OrEmpty().ToList();
+
+            if (list.None()) {
+                throw new Exception($"{nameof(monies)} must contain at least one element");
+            }
+
+            if (list.Any(x => x.Currency != Currency)) {
+                throw new Exception($"{nameof(monies)} must all have the same currency");
+            }
+
+            var total = Amount + list.Sum(x => x.Amount);
+            var money = new Money(total, Currency);
+
+            return money;
         }
 
-        var total = Amount + list.Sum(x => x.Amount);
-        var money = new Money(total, Currency);
+        public static Money operator +(Money lhs, Money rhs) {
+            if (lhs == null || rhs == null) {
+                return null;
+            }
 
-        return money;
-    }
-
-    public static Money operator +(Money lhs, Money rhs) {
-        if (lhs == null || rhs == null) {
-            return null;
+            return lhs.Add(rhs);
         }
 
-        return lhs.Add(rhs);
-    }
-
-    public static Money operator -(Money lhs, Money rhs) {
-        if (lhs.Currency != rhs.Currency) {
-            throw new Exception($"{nameof(lhs)} and {nameof(rhs)} do not have the same currency");
-        }
+        public static Money operator -(Money lhs, Money rhs) {
+            if (lhs.Currency != rhs.Currency) {
+                throw new Exception($"{nameof(lhs)} and {nameof(rhs)} do not have the same currency");
+            }
         
-        var currency = lhs.Currency;
-        var amount = lhs.Amount - rhs.Amount;
-        var money = new Money(amount, currency);
+            var currency = lhs.Currency;
+            var amount = lhs.Amount - rhs.Amount;
+            var money = new Money(amount, currency);
 
-        return money;
-    }
+            return money;
+        }
 
-    public override int GetHashCode() {
-        return HashCode.Combine(Currency.GetHashCode(), Amount.GetHashCode());
+        public override int GetHashCode() {
+            return HashCode.Combine(Currency.GetHashCode(), Amount.GetHashCode());
+        }
     }
 }

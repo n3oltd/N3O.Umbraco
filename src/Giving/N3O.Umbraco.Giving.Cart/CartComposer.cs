@@ -12,45 +12,45 @@ using Umbraco.Cms.Infrastructure.Migrations;
 using Umbraco.Cms.Infrastructure.Migrations.Upgrade;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
 
-namespace N3O.Umbraco.Giving.Cart;
+namespace N3O.Umbraco.Giving.Cart {
+    public class CartComposer : Composer {
+        public override void Compose(IUmbracoBuilder builder) {
+            builder.Services.AddTransient<ICartIdAccessor, CartIdAccessor>();
+            builder.Services.AddTransient<ICartRepository, CartRepository>();
+            builder.Services.AddTransient<ICartValidator, CartValidator>(); 
 
-public class CartComposer : Composer {
-    public override void Compose(IUmbracoBuilder builder) {
-        builder.Services.AddTransient<ICartIdAccessor, CartIdAccessor>();
-        builder.Services.AddTransient<ICartRepository, CartRepository>();
-        builder.Services.AddTransient<ICartValidator, CartValidator>(); 
-
-        builder.Services.Configure<UmbracoPipelineOptions>(options => {
-            var filter = new UmbracoPipelineFilter("Cart");
-            filter.PostPipeline = app => app.UseMiddleware<CartCookieMiddleware>();
+            builder.Services.Configure<UmbracoPipelineOptions>(options => {
+                var filter = new UmbracoPipelineFilter("Cart");
+                filter.PostPipeline = app => app.UseMiddleware<CartCookieMiddleware>();
             
-            options.AddFilter(filter);
-        });
+                options.AddFilter(filter);
+            });
 
-        builder.Components().Append<DatabaseMigrationsComponent>();
-    }
+            builder.Components().Append<DatabaseMigrationsComponent>();
+        }
     
-    public class DatabaseMigrationsComponent : IComponent {
-        private readonly IScopeProvider _scopeProvider;
-        private readonly IMigrationPlanExecutor _migrationPlanExecutor;
-        private readonly IKeyValueService _keyValueService;
+        public class DatabaseMigrationsComponent : IComponent {
+            private readonly IScopeProvider _scopeProvider;
+            private readonly IMigrationPlanExecutor _migrationPlanExecutor;
+            private readonly IKeyValueService _keyValueService;
 
-        public DatabaseMigrationsComponent(IScopeProvider scopeProvider,
-                                           IMigrationPlanExecutor migrationPlanExecutor,
-                                           IKeyValueService keyValueService) {
-            _scopeProvider = scopeProvider;
-            _migrationPlanExecutor = migrationPlanExecutor;
-            _keyValueService = keyValueService;
+            public DatabaseMigrationsComponent(IScopeProvider scopeProvider,
+                                               IMigrationPlanExecutor migrationPlanExecutor,
+                                               IKeyValueService keyValueService) {
+                _scopeProvider = scopeProvider;
+                _migrationPlanExecutor = migrationPlanExecutor;
+                _keyValueService = keyValueService;
+            }
+
+            public void Initialize() {
+                var migrationPlan = new MigrationPlan(CartConstants.Tables.Carts);
+                migrationPlan.From(string.Empty).To<CartsV1Migration>("v1");
+
+                var upgrader = new Upgrader(migrationPlan);
+                upgrader.Execute(_migrationPlanExecutor, _scopeProvider, _keyValueService);
+            }
+
+            public void Terminate() { }
         }
-
-        public void Initialize() {
-            var migrationPlan = new MigrationPlan(CartConstants.Tables.Carts);
-            migrationPlan.From(string.Empty).To<CartsV1Migration>("v1");
-
-            var upgrader = new Upgrader(migrationPlan);
-            upgrader.Execute(_migrationPlanExecutor, _scopeProvider, _keyValueService);
-        }
-
-        public void Terminate() { }
     }
 }

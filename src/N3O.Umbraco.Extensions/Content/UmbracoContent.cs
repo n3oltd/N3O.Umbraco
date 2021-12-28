@@ -8,29 +8,29 @@ using System.Linq.Expressions;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 
-namespace N3O.Umbraco.Content;
+namespace N3O.Umbraco.Content {
+    public abstract class UmbracoContent : Value, IUmbracoContent {
+        [ValueIgnore]
+        public PublishedContentModel Content { get; set; }
 
-public abstract class UmbracoContent : Value, IUmbracoContent {
-    [ValueIgnore]
-    public PublishedContentModel Content { get; set; }
+        protected TProperty GetAs<TContent, TProperty>(Expression<Func<TContent, TProperty>> memberExpression) {
+            var alias = AliasHelper.ForProperty(memberExpression);
+            var value = (PublishedContentModel) Content.Value(alias);
 
-    protected TProperty GetAs<TContent, TProperty>(Expression<Func<TContent, TProperty>> memberExpression) {
-        var alias = AliasHelper.ForProperty(memberExpression);
-        var value = (PublishedContentModel) Content.Value(alias);
-
-        return value.As<TProperty>();
-    }
+            return value.As<TProperty>();
+        }
     
-    protected IEnumerable<TProperty> GetCollectionAs<TContent, TProperty>(Expression<Func<TContent, IEnumerable<TProperty>>> memberExpression) {
-        var alias = AliasHelper.ForProperty(memberExpression);
-        var values = (IEnumerable) Content.Value(alias);
+        protected IEnumerable<TProperty> GetCollectionAs<TContent, TProperty>(Expression<Func<TContent, IEnumerable<TProperty>>> memberExpression) {
+            var alias = AliasHelper.ForProperty(memberExpression);
+            var values = (IEnumerable) Content.Value(alias);
 
-        return values.Cast<PublishedContentModel>().Select(x => x.As<TProperty>());
-    }
+            return values.Cast<PublishedContentModel>().Select(x => x.As<TProperty>());
+        }
     
-    protected TProperty GetValue<TContent, TProperty>(Expression<Func<TContent, TProperty>> memberExpression) {
-        var alias = AliasHelper.ForProperty(memberExpression);
+        protected TProperty GetValue<TContent, TProperty>(Expression<Func<TContent, TProperty>> memberExpression) {
+            var alias = AliasHelper.ForProperty(memberExpression);
 
-        return Content.Value<TProperty>(alias);
+            return Content.Value<TProperty>(alias);
+        }
     }
 }

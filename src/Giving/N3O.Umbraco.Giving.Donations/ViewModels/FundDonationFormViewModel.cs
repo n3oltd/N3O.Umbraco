@@ -13,85 +13,85 @@ using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 
-namespace N3O.Umbraco.Giving.Donations.ViewModels;
+namespace N3O.Umbraco.Giving.Donations.ViewModels {
+    public class FundDonationFormViewModel {
+        private readonly IForexConverter _forexConverter;
+        private readonly IUmbracoMapper _mapper;
+        private readonly IFormatter _formatter;
 
-public class FundDonationFormViewModel {
-    private readonly IForexConverter _forexConverter;
-    private readonly IUmbracoMapper _mapper;
-    private readonly IFormatter _formatter;
+        public FundDonationFormViewModel(IForexConverter forexConverter,
+                                         IPricing pricing,
+                                         IUmbracoMapper mapper,
+                                         ICurrencyAccessor currencyAccessor,
+                                         IFormatter formatter,
+                                         FundDonationOption fundOption,
+                                         DonationType donationType) {
+            _forexConverter = forexConverter;
+            _mapper = mapper;
+            _formatter = formatter;
 
-    public FundDonationFormViewModel(IForexConverter forexConverter,
-                                     IPricing pricing,
-                                     IUmbracoMapper mapper,
-                                     ICurrencyAccessor currencyAccessor,
-                                     IFormatter formatter,
-                                     FundDonationOption fundOption,
-                                     DonationType donationType) {
-        _forexConverter = forexConverter;
-        _mapper = mapper;
-        _formatter = formatter;
-
-        DonationItem = fundOption.DonationItem;
-        Type = donationType;
-        Currency = currencyAccessor.GetCurrency();
-        FundDimension1 = GetFundDimension(DonationItem.Dimension1Options, DonationItem.DefaultFundDimension1());
-        FundDimension2 = GetFundDimension(DonationItem.Dimension2Options, DonationItem.DefaultFundDimension2());
-        FundDimension3 = GetFundDimension(DonationItem.Dimension3Options, DonationItem.DefaultFundDimension3());
-        FundDimension4 = GetFundDimension(DonationItem.Dimension4Options, DonationItem.DefaultFundDimension4());
-        Price = DonationItem.HasPrice() ? _mapper.Map<Money, MoneyRes>(pricing.InCurrency(DonationItem, Currency)) : null;
-        PriceHandles = GetPriceHandles(fundOption, donationType).ToList();
-        QuantityOptions = GetQuantityOptions(fundOption);
-    }
-
-    public DonationItem DonationItem { get; }
-    public DonationType Type { get; }
-    public Currency Currency { get; }
-    public FixedOrDefaultFundDimensionOption FundDimension1 { get; }
-    public FixedOrDefaultFundDimensionOption FundDimension2 { get; }
-    public FixedOrDefaultFundDimensionOption FundDimension3 { get; }
-    public FixedOrDefaultFundDimensionOption FundDimension4 { get; }
-    public MoneyRes Price { get; }
-    public IReadOnlyList<PriceHandleViewModel> PriceHandles { get; }
-    public IReadOnlyDictionary<int, string> QuantityOptions { get; }
-
-    private IEnumerable<PriceHandleViewModel> GetPriceHandles(FundDonationOption fundOption, DonationType donationType) {
-        var priceHandles = fundOption.GetPriceHandles(donationType);
-        
-        foreach (var priceHandle in priceHandles.SelectWithIndex()) {
-            var currencyPrice = _forexConverter.BaseToQuote()
-                                               .ToCurrency(Currency)
-                                               .ConvertAsync(priceHandle.Value.Amount)
-                                               .GetAwaiter()
-                                               .GetResult();
-
-            var viewModel = new PriceHandleViewModel(priceHandle.Index,
-                                                     _mapper.Map<Money, MoneyRes>(currencyPrice.Quote),
-                                                     priceHandle.Value.Description);
-
-            yield return viewModel;
+            DonationItem = fundOption.DonationItem;
+            Type = donationType;
+            Currency = currencyAccessor.GetCurrency();
+            FundDimension1 = GetFundDimension(DonationItem.Dimension1Options, DonationItem.DefaultFundDimension1());
+            FundDimension2 = GetFundDimension(DonationItem.Dimension2Options, DonationItem.DefaultFundDimension2());
+            FundDimension3 = GetFundDimension(DonationItem.Dimension3Options, DonationItem.DefaultFundDimension3());
+            FundDimension4 = GetFundDimension(DonationItem.Dimension4Options, DonationItem.DefaultFundDimension4());
+            Price = DonationItem.HasPrice() ? _mapper.Map<Money, MoneyRes>(pricing.InCurrency(DonationItem, Currency)) : null;
+            PriceHandles = GetPriceHandles(fundOption, donationType).ToList();
+            QuantityOptions = GetQuantityOptions(fundOption);
         }
-    }
-    
-    private FixedOrDefaultFundDimensionOption GetFundDimension(IEnumerable<FundDimensionOption> allowedValues,
-                                                              FundDimensionOption defaultValue) {
-        return new FixedOrDefaultFundDimensionOption(allowedValues.IsSingle() ? allowedValues.Single() : null,
-                                                     defaultValue);
-    }
 
-    private IReadOnlyDictionary<int, string> GetQuantityOptions(FundDonationOption fundOption) {
-        var dict = new Dictionary<int, string>();
+        public DonationItem DonationItem { get; }
+        public DonationType Type { get; }
+        public Currency Currency { get; }
+        public FixedOrDefaultFundDimensionOption FundDimension1 { get; }
+        public FixedOrDefaultFundDimensionOption FundDimension2 { get; }
+        public FixedOrDefaultFundDimensionOption FundDimension3 { get; }
+        public FixedOrDefaultFundDimensionOption FundDimension4 { get; }
+        public MoneyRes Price { get; }
+        public IReadOnlyList<PriceHandleViewModel> PriceHandles { get; }
+        public IReadOnlyDictionary<int, string> QuantityOptions { get; }
+
+        private IEnumerable<PriceHandleViewModel> GetPriceHandles(FundDonationOption fundOption, DonationType donationType) {
+            var priceHandles = fundOption.GetPriceHandles(donationType);
         
-        if (fundOption.ShowQuantity && Price != null) {
-            var unitPriceText = _formatter.Number.FormatMoney(Price);
-            
-            for (var qty = 1; qty <= 10; qty++) {
-                var total = Price.Amount * qty;
-                var totalText = _formatter.Number.FormatMoney(total, Currency);
-    
-                dict[qty] = $"{qty} @ {unitPriceText} = {totalText}";
+            foreach (var priceHandle in priceHandles.SelectWithIndex()) {
+                var currencyPrice = _forexConverter.BaseToQuote()
+                                                   .ToCurrency(Currency)
+                                                   .ConvertAsync(priceHandle.Value.Amount)
+                                                   .GetAwaiter()
+                                                   .GetResult();
+
+                var viewModel = new PriceHandleViewModel(priceHandle.Index,
+                                                         _mapper.Map<Money, MoneyRes>(currencyPrice.Quote),
+                                                         priceHandle.Value.Description);
+
+                yield return viewModel;
             }
         }
+    
+        private FixedOrDefaultFundDimensionOption GetFundDimension(IEnumerable<FundDimensionOption> allowedValues,
+                                                                   FundDimensionOption defaultValue) {
+            return new FixedOrDefaultFundDimensionOption(allowedValues.IsSingle() ? allowedValues.Single() : null,
+                                                         defaultValue);
+        }
 
-        return dict;
+        private IReadOnlyDictionary<int, string> GetQuantityOptions(FundDonationOption fundOption) {
+            var dict = new Dictionary<int, string>();
+        
+            if (fundOption.ShowQuantity && Price != null) {
+                var unitPriceText = _formatter.Number.FormatMoney(Price);
+            
+                for (var qty = 1; qty <= 10; qty++) {
+                    var total = Price.Amount * qty;
+                    var totalText = _formatter.Number.FormatMoney(total, Currency);
+    
+                    dict[qty] = $"{qty} @ {unitPriceText} = {totalText}";
+                }
+            }
+
+            return dict;
+        }
     }
 }

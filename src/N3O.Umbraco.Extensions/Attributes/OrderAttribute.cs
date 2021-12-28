@@ -1,12 +1,12 @@
 using System;
 
-namespace N3O.Umbraco.Attributes;
+namespace N3O.Umbraco.Attributes {
+    [AttributeUsage(AttributeTargets.All)]
+    public class OrderAttribute : Attribute {
+        public OrderAttribute(int order) {
+            Order = order;
+        }
 
-[AttributeUsage(AttributeTargets.All)]
-public class OrderAttribute : Attribute {
-    public OrderAttribute(int order) {
-        Order = order;
+        public int Order { get; }
     }
-
-    public int Order { get; }
 }

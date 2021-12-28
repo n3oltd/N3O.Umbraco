@@ -1,7 +1,7 @@
-namespace N3O.Umbraco.Giving.Cart.Models;
-
-public class CartAllocation {
+namespace N3O.Umbraco.Giving.Cart.Models {
+    public class CartAllocation {
 
 
     
+    }
 }

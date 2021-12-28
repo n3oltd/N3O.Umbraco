@@ -5,17 +5,17 @@ using N3O.Umbraco.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
 
-namespace N3O.Umbraco.Monitoring.Sentry; 
+namespace N3O.Umbraco.Monitoring.Sentry {
+    public class SentryMonitoringComposer : Composer {
+        public override void Compose(IUmbracoBuilder builder) {
+            if (WebHostEnvironment.IsProduction()) {
+                builder.Services.Configure<UmbracoPipelineOptions>(options => {
+                    var filter = new UmbracoPipelineFilter("SentryMonitoring");
+                    filter.Endpoints = app => app.UseSentryTracing();
 
-public class SentryMonitoringComposer : Composer {
-    public override void Compose(IUmbracoBuilder builder) {
-        if (WebHostEnvironment.IsProduction()) {
-            builder.Services.Configure<UmbracoPipelineOptions>(options => {
-                var filter = new UmbracoPipelineFilter("SentryMonitoring");
-                filter.Endpoints = app => app.UseSentryTracing();
-
-                options.AddFilter(filter);
-            });
+                    options.AddFilter(filter);
+                });
+            }
         }
     }
 }

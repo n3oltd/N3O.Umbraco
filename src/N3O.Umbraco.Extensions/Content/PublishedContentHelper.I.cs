@@ -1,5 +1,5 @@
-namespace N3O.Umbraco.Content;
-
-public interface IPublishedContentHelper {
+namespace N3O.Umbraco.Content {
+    public interface IPublishedContentHelper {
     
+    }
 }

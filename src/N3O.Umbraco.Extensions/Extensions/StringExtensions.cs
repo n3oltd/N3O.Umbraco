@@ -6,221 +6,221 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace N3O.Umbraco.Extensions;
-
-public static class StringExtensions {
-    public static int CompareInvariant(this string a, string b) {
-        return string.Compare(a, b, StringComparison.InvariantCultureIgnoreCase);
-    }
-
-    public static string DigitsOnly(this string s, char? decimalSeparator = null) {
-        if (s == null) {
-            return null;
+namespace N3O.Umbraco.Extensions {
+    public static class StringExtensions {
+        public static int CompareInvariant(this string a, string b) {
+            return string.Compare(a, b, StringComparison.InvariantCultureIgnoreCase);
         }
 
-        return Regex.Replace(s, $"[^0-9{decimalSeparator}]", "");
-    }
-    
-    public static bool EqualsInvariant(this string a, string b) {
-        return CompareInvariant(a, b) == 0;
-    }
-    
-    public static string FormatWith(this string s, params object[] args) {
-        return string.Format(s, args);
-    }
-    
-    // https://andrewlock.net/why-is-string-gethashcode-different-each-time-i-run-my-program-in-net-core/
-    public static int GetDeterministicHashCode(this string str, bool caseAndCultureInsensitive) {
-        if (caseAndCultureInsensitive) {
-            str = str.ToLowerInvariant();
+        public static string DigitsOnly(this string s, char? decimalSeparator = null) {
+            if (s == null) {
+                return null;
+            }
+
+            return Regex.Replace(s, $"[^0-9{decimalSeparator}]", "");
         }
+    
+        public static bool EqualsInvariant(this string a, string b) {
+            return CompareInvariant(a, b) == 0;
+        }
+    
+        public static string FormatWith(this string s, params object[] args) {
+            return string.Format(s, args);
+        }
+    
+        // https://andrewlock.net/why-is-string-gethashcode-different-each-time-i-run-my-program-in-net-core/
+        public static int GetDeterministicHashCode(this string str, bool caseAndCultureInsensitive) {
+            if (caseAndCultureInsensitive) {
+                str = str.ToLowerInvariant();
+            }
 
-        unchecked {
-            var hash1 = (5381 << 16) + 5381;
-            var hash2 = hash1;
+            unchecked {
+                var hash1 = (5381 << 16) + 5381;
+                var hash2 = hash1;
 
-            for (var i = 0; i < str.Length; i += 2) {
-                hash1 = ((hash1 << 5) + hash1) ^ str[i];
+                for (var i = 0; i < str.Length; i += 2) {
+                    hash1 = ((hash1 << 5) + hash1) ^ str[i];
 
-                if (i == str.Length - 1) {
-                    break;
+                    if (i == str.Length - 1) {
+                        break;
+                    }
+
+                    hash2 = ((hash2 << 5) + hash2) ^ str[i + 1];
                 }
 
-                hash2 = ((hash2 << 5) + hash2) ^ str[i + 1];
+                return hash1 + (hash2 * 1566083941);
+            }
+        }
+    
+        public static string GetFileExtension(this string pathOrUrl) {
+            var str = pathOrUrl;
+
+            if (str.Contains("?")) {
+                str = str.Substring(0, str.IndexOf('?'));
             }
 
-            return hash1 + (hash2 * 1566083941);
+            var index = str.LastIndexOf('.');
+
+            if (index == -1) {
+                return null;
+            }
+
+            return str.Substring(index).ToLowerInvariant();
         }
-    }
     
-    public static string GetFileExtension(this string pathOrUrl) {
-        var str = pathOrUrl;
-
-        if (str.Contains("?")) {
-            str = str.Substring(0, str.IndexOf('?'));
-        }
-
-        var index = str.LastIndexOf('.');
-
-        if (index == -1) {
-            return null;
+        public static bool HasValue(this string s) {
+            return !IsNullOrWhiteSpace(s);
         }
 
-        return str.Substring(index).ToLowerInvariant();
-    }
-    
-    public static bool HasValue(this string s) {
-        return !IsNullOrWhiteSpace(s);
-    }
-
-    public static bool IsNullOrEmpty(this string s) {
-        return string.IsNullOrEmpty(s);
-    }
-
-    public static bool IsNullOrWhiteSpace(this string s) {
-        return string.IsNullOrWhiteSpace(s);
-    }
-    
-    public static string Last(this string s, int tailLength) {
-        if (tailLength >= s.Length) {
-            return s;
+        public static bool IsNullOrEmpty(this string s) {
+            return string.IsNullOrEmpty(s);
         }
 
-        return s.Substring(s.Length - tailLength);
-    }
+        public static bool IsNullOrWhiteSpace(this string s) {
+            return string.IsNullOrWhiteSpace(s);
+        }
     
-    public static string Or(this string a, string b) {
-        return a.HasValue() ? a : b;
-    }
+        public static string Last(this string s, int tailLength) {
+            if (tailLength >= s.Length) {
+                return s;
+            }
+
+            return s.Substring(s.Length - tailLength);
+        }
     
-    public static string Quote(this string s) {
-        if (!s.HasValue()) {
-            return null;
+        public static string Or(this string a, string b) {
+            return a.HasValue() ? a : b;
+        }
+    
+        public static string Quote(this string s) {
+            if (!s.HasValue()) {
+                return null;
+            }
+
+            return $"'{s}'";
         }
 
-        return $"'{s}'";
-    }
+        public static string RemoveDiacritics(this string s) {
+            var normalized = s.Normalize(NormalizationForm.FormD);
+            var stringBuilder = new StringBuilder();
 
-    public static string RemoveDiacritics(this string s) {
-        var normalized = s.Normalize(NormalizationForm.FormD);
-        var stringBuilder = new StringBuilder();
-
-        foreach (var c in normalized) {
-            var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+            foreach (var c in normalized) {
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
             
-            if (unicodeCategory != UnicodeCategory.NonSpacingMark) {
-                stringBuilder.Append(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark) {
+                    stringBuilder.Append(c);
+                }
             }
+
+            return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
         }
+    
+        public static string RemoveLeading(this string s, string toRemove) {
+            while (s?.StartsWith(toRemove) == true) {
+                s = s.Substring(toRemove.Length);
+            }
 
-        return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
-    }
-    
-    public static string RemoveLeading(this string s, string toRemove) {
-        while (s?.StartsWith(toRemove) == true) {
-            s = s.Substring(toRemove.Length);
-        }
-
-        return s;
-    }
-    
-    public static string RemoveLeadingSlashes(this string s) {
-        return RemoveLeading(s, "/");
-    }
-    
-    public static string RemoveLeadingZeros(this string s) {
-        return RemoveLeading(s, "0");
-    }
-    
-    public static string RemoveNonAscii(this string s) {
-        if (s == null) {
-            return null;
-        }
-
-        s = s.RemoveDiacritics();
-
-        return Regex.Replace(s, @"[^\u0000-\u007F]+", string.Empty);
-    }
-    
-    public static string RemoveWhitespace(this string s) {
-        if (s == null) {
-            return null;
-        }
-
-        return Regex.Replace(s, @"\s", "");
-    }
-    
-    public static string Repeat(this string s, int count) {
-        if (s.IsNullOrEmpty()) {
             return s;
         }
-        
-        if (count == 0) {
-            return "";
+    
+        public static string RemoveLeadingSlashes(this string s) {
+            return RemoveLeading(s, "/");
         }
-
-        return string.Concat(Enumerable.Repeat(s, count));
-    }
-
-    public static string Sha1(this string s) {
-        using (var sha1 = new SHA1CryptoServiceProvider()) {
-            var sb = new StringBuilder();
-
-            foreach (var b in sha1.ComputeHash(Encoding.UTF8.GetBytes(s.ToLower()))) {
-                sb.Append(b.ToString("x2").ToLower());
+    
+        public static string RemoveLeadingZeros(this string s) {
+            return RemoveLeading(s, "0");
+        }
+    
+        public static string RemoveNonAscii(this string s) {
+            if (s == null) {
+                return null;
             }
 
-            return sb.ToString();
+            s = s.RemoveDiacritics();
+
+            return Regex.Replace(s, @"[^\u0000-\u007F]+", string.Empty);
         }
-    }
-
-    public static HtmlString ToHtmlString(this string s) {
-        if (s == null) {
-            return null;
-        }
-        
-        return new HtmlString(s);
-    }
-
-    public static string TrimOrNull(this string s) {
-        s = s?.Trim();
-
-        return s.HasValue() ? s : null;
-    }
-
-    public static T? TryParseAs<T>(this string s) where T : struct {
-        if (!s.HasValue()) {
-            return default;
-        }
-
-        object value = null;
-
-        try {
-            if (typeof(T) == typeof(int)) {
-                value = int.Parse(s, CultureInfo.InvariantCulture.NumberFormat);
-            } else if (typeof(T) == typeof(double)) {
-                value = double.Parse(s, CultureInfo.InvariantCulture.NumberFormat);
-            } else if (typeof(T) == typeof(decimal)) {
-                value = decimal.Parse(s, CultureInfo.InvariantCulture.NumberFormat);
-            } else if (typeof(T) == typeof(bool)) {
-                value = bool.Parse(s);
-            } else if (typeof(T) == typeof(DateTime)) {
-                value = DateTime.Parse(s);
-            } else if (typeof(T) == typeof(TimeSpan)) {
-                value = TimeSpan.Parse(s);
-            } else if (typeof(T) == typeof(Guid)) {
-                value = Guid.Parse(s);
-            } else if (typeof(T).IsEnum) {
-                value = Enum.Parse(typeof(T), s, true);
-            } else {
-                value = (T) Convert.ChangeType(s, typeof(T));
+    
+        public static string RemoveWhitespace(this string s) {
+            if (s == null) {
+                return null;
             }
-        } catch { }
 
-        return (T?) value;
-    }
+            return Regex.Replace(s, @"\s", "");
+        }
+    
+        public static string Repeat(this string s, int count) {
+            if (s.IsNullOrEmpty()) {
+                return s;
+            }
+        
+            if (count == 0) {
+                return "";
+            }
 
-    public static string When(this string s, bool condition) {
-        return condition ? s : null;
+            return string.Concat(Enumerable.Repeat(s, count));
+        }
+
+        public static string Sha1(this string s) {
+            using (var sha1 = new SHA1CryptoServiceProvider()) {
+                var sb = new StringBuilder();
+
+                foreach (var b in sha1.ComputeHash(Encoding.UTF8.GetBytes(s.ToLower()))) {
+                    sb.Append(b.ToString("x2").ToLower());
+                }
+
+                return sb.ToString();
+            }
+        }
+
+        public static HtmlString ToHtmlString(this string s) {
+            if (s == null) {
+                return null;
+            }
+        
+            return new HtmlString(s);
+        }
+
+        public static string TrimOrNull(this string s) {
+            s = s?.Trim();
+
+            return s.HasValue() ? s : null;
+        }
+
+        public static T? TryParseAs<T>(this string s) where T : struct {
+            if (!s.HasValue()) {
+                return default;
+            }
+
+            object value = null;
+
+            try {
+                if (typeof(T) == typeof(int)) {
+                    value = int.Parse(s, CultureInfo.InvariantCulture.NumberFormat);
+                } else if (typeof(T) == typeof(double)) {
+                    value = double.Parse(s, CultureInfo.InvariantCulture.NumberFormat);
+                } else if (typeof(T) == typeof(decimal)) {
+                    value = decimal.Parse(s, CultureInfo.InvariantCulture.NumberFormat);
+                } else if (typeof(T) == typeof(bool)) {
+                    value = bool.Parse(s);
+                } else if (typeof(T) == typeof(DateTime)) {
+                    value = DateTime.Parse(s);
+                } else if (typeof(T) == typeof(TimeSpan)) {
+                    value = TimeSpan.Parse(s);
+                } else if (typeof(T) == typeof(Guid)) {
+                    value = Guid.Parse(s);
+                } else if (typeof(T).IsEnum) {
+                    value = Enum.Parse(typeof(T), s, true);
+                } else {
+                    value = (T) Convert.ChangeType(s, typeof(T));
+                }
+            } catch { }
+
+            return (T?) value;
+        }
+
+        public static string When(this string s, bool condition) {
+            return condition ? s : null;
+        }
     }
 }

@@ -7,31 +7,31 @@ using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
-namespace N3O.Umbraco.Analytics.Modules;
+namespace N3O.Umbraco.Analytics.Modules {
+    public class DataLayerPageExtension : IPageExtension {
+        private readonly IDataLayerBuilder _dataLayerBuilder;
+        private readonly IReadOnlyList<IDataLayerProvider> _allProviders;
 
-public class DataLayerPageExtension : IPageExtension {
-    private readonly IDataLayerBuilder _dataLayerBuilder;
-    private readonly IReadOnlyList<IDataLayerProvider> _allProviders;
-
-    public DataLayerPageExtension(IDataLayerBuilder dataLayerBuilder, IEnumerable<IDataLayerProvider> allProviders) {
-        _dataLayerBuilder = dataLayerBuilder;
-        _allProviders = allProviders.OrEmpty().ToList();
-    }
+        public DataLayerPageExtension(IDataLayerBuilder dataLayerBuilder, IEnumerable<IDataLayerProvider> allProviders) {
+            _dataLayerBuilder = dataLayerBuilder;
+            _allProviders = allProviders.OrEmpty().ToList();
+        }
     
-    public async Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
-        var providers = _allProviders.Where(x => x.IsProviderFor(page));
+        public async Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
+            var providers = _allProviders.Where(x => x.IsProviderFor(page));
 
-        var toPush = new List<object>();
+            var toPush = new List<object>();
         
         
-        foreach (var provider in providers) {
-            toPush.AddRange(await provider.GetAsync(page, cancellationToken));
+            foreach (var provider in providers) {
+                toPush.AddRange(await provider.GetAsync(page, cancellationToken));
+            }
+
+            var javaScript = _dataLayerBuilder.BuildJavaScript(toPush);
+
+            return new DataLayerCode(javaScript);
         }
 
-        var javaScript = _dataLayerBuilder.BuildJavaScript(toPush);
-
-        return new DataLayerCode(javaScript);
+        public string Key => AnalyticsConstants.Keys.DataLayer;
     }
-
-    public string Key => AnalyticsConstants.Keys.DataLayer;
 }

@@ -2,76 +2,76 @@
 using System;
 using System.Globalization;
 
-namespace N3O.Umbraco.Localization;
+namespace N3O.Umbraco.Localization {
+    public partial class DateTimeFormatter {
+        public string FormatDate(DateTime? dateTime, DateFormat dateFormat = null) {
+            if (dateTime == null) {
+                return null;
+            }
 
-public partial class DateTimeFormatter {
-    public string FormatDate(DateTime? dateTime, DateFormat dateFormat = null) {
-        if (dateTime == null) {
-            return null;
+            var localFormat = GetDateFormatInfo(null);
+
+            return dateTime.Value.ToString("d", localFormat);
         }
 
-        var localFormat = GetDateFormatInfo(null);
-
-        return dateTime.Value.ToString("d", localFormat);
-    }
-
-    public string FormatDate(DateTime? dateTime, string specifier) {
-        var localFormat = GetDateFormatInfo(null);
+        public string FormatDate(DateTime? dateTime, string specifier) {
+            var localFormat = GetDateFormatInfo(null);
         
-        return dateTime?.ToString(specifier, localFormat);
-    }
-
-    public string FormatTime(DateTime? dateTime, TimeFormat timeFormat = null) {
-        if (dateTime == null) {
-            return null;
+            return dateTime?.ToString(specifier, localFormat);
         }
 
-        var localFormat = GetDateFormatInfo(null);
+        public string FormatTime(DateTime? dateTime, TimeFormat timeFormat = null) {
+            if (dateTime == null) {
+                return null;
+            }
 
-        return dateTime.Value.ToString("t", localFormat);
-    }
+            var localFormat = GetDateFormatInfo(null);
 
-    public string FormatTime(DateTime? dateTime, string specifier) {
-        var localFormat = GetDateFormatInfo(null);
-
-        return dateTime?.ToString(specifier, localFormat);
-    }
-
-    public string FormatDateWithTime(DateTime? dateTime) {
-        if (dateTime == null) {
-            return null;
+            return dateTime.Value.ToString("t", localFormat);
         }
 
-        return $"{FormatDate(dateTime)} {FormatTime(dateTime)}";
-    }
+        public string FormatTime(DateTime? dateTime, string specifier) {
+            var localFormat = GetDateFormatInfo(null);
 
-    private DateTimeZone GetDateTimezone() {
-        var timezone = _settingsAccessor.GetSettings().Timezone;
-
-        return timezone.Zone;
-    }
-
-    private DateTimeFormatInfo GetDateFormatInfo(DateFormat dateFormat) {
-        if (dateFormat == null) {
-            dateFormat = _settingsAccessor.GetSettings().DateFormat;
+            return dateTime?.ToString(specifier, localFormat);
         }
 
-        var dateTimeFormatInfo = GetDateTimeFormatInfo(dateFormat.CultureCode);
+        public string FormatDateWithTime(DateTime? dateTime) {
+            if (dateTime == null) {
+                return null;
+            }
 
-        dateTimeFormatInfo.DateSeparator = dateFormat.Separator;
-
-        return dateTimeFormatInfo;
-    }
-
-    private DateTimeFormatInfo GetTimeFormatInfo(TimeFormat timeFormat) {
-        if (timeFormat == null) {
-            timeFormat = _settingsAccessor.GetSettings().TimeFormat;
+            return $"{FormatDate(dateTime)} {FormatTime(dateTime)}";
         }
 
-        return GetDateTimeFormatInfo(timeFormat.CultureCode);
-    }
+        private DateTimeZone GetDateTimezone() {
+            var timezone = _settingsAccessor.GetSettings().Timezone;
 
-    private DateTimeFormatInfo GetDateTimeFormatInfo(string cultureCode) {
-        return ((CultureInfo) CultureInfo.GetCultureInfo(cultureCode).Clone()).DateTimeFormat;
+            return timezone.Zone;
+        }
+
+        private DateTimeFormatInfo GetDateFormatInfo(DateFormat dateFormat) {
+            if (dateFormat == null) {
+                dateFormat = _settingsAccessor.GetSettings().DateFormat;
+            }
+
+            var dateTimeFormatInfo = GetDateTimeFormatInfo(dateFormat.CultureCode);
+
+            dateTimeFormatInfo.DateSeparator = dateFormat.Separator;
+
+            return dateTimeFormatInfo;
+        }
+
+        private DateTimeFormatInfo GetTimeFormatInfo(TimeFormat timeFormat) {
+            if (timeFormat == null) {
+                timeFormat = _settingsAccessor.GetSettings().TimeFormat;
+            }
+
+            return GetDateTimeFormatInfo(timeFormat.CultureCode);
+        }
+
+        private DateTimeFormatInfo GetDateTimeFormatInfo(string cultureCode) {
+            return ((CultureInfo) CultureInfo.GetCultureInfo(cultureCode).Clone()).DateTimeFormat;
+        }
     }
 }

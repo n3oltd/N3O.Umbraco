@@ -1,5 +1,5 @@
-namespace N3O.Umbraco.Content;
-
-public class PublishedElementHelper : IPublishedElementHelper {
+namespace N3O.Umbraco.Content {
+    public class PublishedElementHelper : IPublishedElementHelper {
     
+    }
 }

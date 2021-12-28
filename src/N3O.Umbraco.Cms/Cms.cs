@@ -4,23 +4,23 @@ using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 
-namespace N3O.Umbraco;
+namespace N3O.Umbraco {
+    public static class Cms {
+        public static void Run<TStartup>(string[] args, string ourAssembliesPrefix)
+            where TStartup : StartupBase {
+            OurAssemblies.Configure(ourAssembliesPrefix);
 
-public static class Cms {
-    public static void Run<TStartup>(string[] args, string ourAssembliesPrefix)
-        where TStartup : StartupBase {
-        OurAssemblies.Configure(ourAssembliesPrefix);
-
-        var hostBuilder = Host.CreateDefaultBuilder(args)
-                              .ConfigureLogging(x => x.ClearProviders())
-                              .ConfigureWebHostDefaults(webBuilder => {
-                                  webBuilder.RunExtensions();
+            var hostBuilder = Host.CreateDefaultBuilder(args)
+                                  .ConfigureLogging(x => x.ClearProviders())
+                                  .ConfigureWebHostDefaults(webBuilder => {
+                                      webBuilder.RunExtensions();
                                   
-                                  webBuilder.UseStartup<TStartup>();
-                              });
+                                      webBuilder.UseStartup<TStartup>();
+                                  });
 
-        hostBuilder.RunExtensions();
+            hostBuilder.RunExtensions();
 
-        hostBuilder.Build().Run();
+            hostBuilder.Build().Run();
+        }
     }
 }

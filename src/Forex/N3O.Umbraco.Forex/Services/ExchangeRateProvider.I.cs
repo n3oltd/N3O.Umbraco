@@ -3,15 +3,15 @@ using NodaTime;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Forex;
+namespace N3O.Umbraco.Forex {
+    public interface IExchangeRateProvider {
+        Task<decimal> GetHistoricalRateAsync(LocalDate date,
+                                             Currency baseCurrency,
+                                             Currency quoteCurrency,
+                                             CancellationToken cancellationToken = default);
 
-public interface IExchangeRateProvider {
-    Task<decimal> GetHistoricalRateAsync(LocalDate date,
-                                         Currency baseCurrency,
-                                         Currency quoteCurrency,
-                                         CancellationToken cancellationToken = default);
-
-    Task<decimal> GetLiveRateAsync(Currency baseCurrency,
-                                   Currency quoteCurrency,
-                                   CancellationToken cancellationToken = default);
+        Task<decimal> GetLiveRateAsync(Currency baseCurrency,
+                                       Currency quoteCurrency,
+                                       CancellationToken cancellationToken = default);
+    }
 }

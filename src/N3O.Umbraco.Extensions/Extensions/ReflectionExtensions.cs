@@ -10,24 +10,23 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Extensions;
+namespace N3O.Umbraco.Extensions {
+	public static class ReflectionExtensions {
+		public static IReadOnlyList<Type> ApplyAttributeOrdering(this IEnumerable<Type> source) {
+			var orderedList = source.OrderBy(x => x.HasAttribute<OrderAttribute>() ? 0 : 1)
+			                        .ThenBy(x => x.GetCustomAttribute<OrderAttribute>()?.Order)
+			                        .ToList();
 
-public static class ReflectionExtensions {
-	    public static IReadOnlyList<Type> ApplyAttributeOrdering(this IEnumerable<Type> source) {
-		    var orderedList = source.OrderBy(x => x.HasAttribute<OrderAttribute>() ? 0 : 1)
-		                            .ThenBy(x => x.GetCustomAttribute<OrderAttribute>()?.Order)
-		                            .ToList();
-
-		    return orderedList;
-	    }
+			return orderedList;
+		}
 	    
-	    public static IReadOnlyList<T> ApplyAttributeOrdering<T>(this IEnumerable<T> source) {
-		    var orderedList = source.OrderBy(x => x.GetType().HasAttribute<OrderAttribute>() ? 0 : 1)
-		                            .ThenBy(x => x.GetType().GetCustomAttribute<OrderAttribute>()?.Order)
-		                            .ToList();
+		public static IReadOnlyList<T> ApplyAttributeOrdering<T>(this IEnumerable<T> source) {
+			var orderedList = source.OrderBy(x => x.GetType().HasAttribute<OrderAttribute>() ? 0 : 1)
+			                        .ThenBy(x => x.GetType().GetCustomAttribute<OrderAttribute>()?.Order)
+			                        .ToList();
 
-		    return orderedList;
-	    }
+			return orderedList;
+		}
 	    
 		public static MethodCallBuilder CallMethod(this object target, string name) {
 			return new MethodCallBuilder(target.GetType(), target, name);
@@ -37,7 +36,7 @@ public static class ReflectionExtensions {
 			return new MethodCallBuilder(staticType, null, name);
 		}
 		
-				public static TType CreateInstance<TType, TParameter1>(this Type type,
+		public static TType CreateInstance<TType, TParameter1>(this Type type,
 		                                                       TParameter1 parameter1) {
 			return CreateInstance<TType>(type, parameter1);
 		}
@@ -115,9 +114,9 @@ public static class ReflectionExtensions {
 				var allMatchingTypes = new List<Type>();
 
 				var nonGenericMatchingTypes = assembly.GetTypes()
-													  .Where(t => t.ImplementsInterface(interfaceType) &&
-																  t.IsConcreteClass())
-													  .ToList();
+				                                      .Where(t => t.ImplementsInterface(interfaceType) &&
+				                                                  t.IsConcreteClass())
+				                                      .ToList();
 
 				allMatchingTypes.AddRange(nonGenericMatchingTypes);
 
@@ -125,23 +124,23 @@ public static class ReflectionExtensions {
 					var genericInterfaceType = interfaceType.GetGenericTypeDefinition();
 
 					var genericTypes = assembly.GetTypes()
-											   .Where(t => t.IsConcreteClass() &&
-														   t.IsGenericType &&
-														   t.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == genericInterfaceType))
-											   .ToList();
+					                           .Where(t => t.IsConcreteClass() &&
+					                                       t.IsGenericType &&
+					                                       t.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == genericInterfaceType))
+					                           .ToList();
 
 					if (genericTypes.Any()) {
 						var typeArguments = interfaceType.GetGenericArguments();
 						var genericTypesWithParameters = genericTypes.Select(x => {
 							                                             try {
 								                                             return x.MakeGenericType(typeArguments);
-								                                         // Thrown when type constraints not met
+								                                             // Thrown when type constraints not met
 							                                             } catch (ArgumentException) {
 								                                             return null;
 							                                             }
 						                                             })
 						                                             .ExceptNull()
-																	 .ToList();
+						                                             .ToList();
 						allMatchingTypes.AddRange(genericTypesWithParameters);
 					}
 				}
@@ -152,8 +151,8 @@ public static class ReflectionExtensions {
 
 		public static IEnumerable<Type> GetAllConcreteTypesInAssemblyImplementingInterface(this Assembly assembly, Type interfaceType, Func<Type, bool> filter) {
 			return assembly.GetAllConcreteTypesInAssemblyImplementingInterface(interfaceType)
-						   .Where(filter)
-						   .AsEnumerable();
+			               .Where(filter)
+			               .AsEnumerable();
 		}
 
 		public static PropertyInfo[] GetAllProperties(this Type type) {
@@ -305,7 +304,7 @@ public static class ReflectionExtensions {
 		}
 
 		public static string GetPropertyPath<TModel, TValue>(this Expression<Func<TModel, TValue>> propertySelector,
-															 bool camelCase = false) {
+		                                                     bool camelCase = false) {
 			var asString = propertySelector.ToString();
 
 			var parameterName = propertySelector.Parameters.First().Name;
@@ -679,4 +678,5 @@ public static class ReflectionExtensions {
 			}
 		}
 	}
+}
 
