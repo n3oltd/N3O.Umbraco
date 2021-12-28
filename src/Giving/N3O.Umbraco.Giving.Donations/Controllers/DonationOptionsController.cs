@@ -8,7 +8,6 @@ using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Donations.Content;
 using N3O.Umbraco.Giving.Donations.ViewModels;
 using N3O.Umbraco.Giving.Pricing;
-using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Localization;
 using System;
 using Umbraco.Cms.Core.Mapping;
