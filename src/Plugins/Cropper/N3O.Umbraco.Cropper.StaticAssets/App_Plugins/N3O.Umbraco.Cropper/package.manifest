@@ -1,0 +1,5 @@
+{
+  javascript: [
+    '~/App_Plugins/N3O.Umbraco.Cropper/N3O.Umbraco.Cropper.controller.js'
+	]
+}

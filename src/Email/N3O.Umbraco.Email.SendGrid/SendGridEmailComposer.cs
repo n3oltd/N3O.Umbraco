@@ -1,0 +1,20 @@
+using FluentEmail.Core.Interfaces;
+using FluentEmail.SendGrid;
+using Microsoft.Extensions.DependencyInjection;
+using N3O.Umbraco.Composing;
+using N3O.Umbraco.Content;
+using N3O.Umbraco.Email.SendGrid.Content;
+using Umbraco.Cms.Core.DependencyInjection;
+
+namespace N3O.Umbraco.Email.SendGrid;
+
+public class SendGridEmailComposer : Composer {
+    public override void Compose(IUmbracoBuilder builder) {
+        builder.Services.AddSingleton<ISender>(serviceProvider => {
+            var contentCache = serviceProvider.GetRequiredService<IContentCache>();
+            var settings = contentCache.Single<SendGridSettings>();
+
+            return new SendGridSender(settings.ApiKey, settings.SandboxMode);
+        });
+    }
+}

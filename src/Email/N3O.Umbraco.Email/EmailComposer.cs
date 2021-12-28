@@ -1,0 +1,12 @@
+using FluentEmail.Core.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using N3O.Umbraco.Composing;
+using Umbraco.Cms.Core.DependencyInjection;
+
+namespace N3O.Umbraco.Email;
+
+public class EmailComposer : Composer {
+    public override void Compose(IUmbracoBuilder builder) {
+        builder.Services.AddScoped<ITemplateRenderer, TemplateRenderer>();
+    }
+}

@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <RootNamespace>N3O.Umbraco.Email.SendGrid</RootNamespace>
+        <TargetFramework>net5.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Copyright>Copyright © 2022 N3O Ltd</Copyright>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <PackageId>N3O.Umbraco.Email.SendGrid</PackageId>
+        <IsPackable>true</IsPackable>
+        <Authors>N3O Ltd</Authors>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Description>TODO</Description>
+        <PackageProjectUrl>https://n3o.ltd</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/n3oltd/N3O.Umbraco</RepositoryUrl>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DebugType>full</DebugType>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DebugType>pdbonly</DebugType>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\N3O.Umbraco.Email\N3O.Umbraco.Email.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FluentEmail.SendGrid" Version="3.0.0" />
+    </ItemGroup>
+</Project>

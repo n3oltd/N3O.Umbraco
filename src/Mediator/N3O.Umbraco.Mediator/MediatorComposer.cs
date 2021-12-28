@@ -1,0 +1,21 @@
+﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using N3O.Umbraco.Composing;
+using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Utilities;
+using System.Linq;
+using Umbraco.Cms.Core.DependencyInjection;
+
+namespace N3O.Umbraco.Mediator;
+
+public class MediatorComposer : Composer {
+    public override void Compose(IUmbracoBuilder builder) {
+        builder.Services.AddMediatR(OurAssemblies.GetAllAssemblies().ToArray());
+
+        builder.Services.AddScoped<IMediator, Mediator>();
+        builder.Services.AddSingleton<None>();
+
+        RegisterAll(t => t.IsSubclassOrSubInterfaceOfGenericType(typeof(Request<,>)),
+                    t => builder.Services.AddTransient(t, t));
+    }
+}

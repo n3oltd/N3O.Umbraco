@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <RootNamespace>N3O.Umbraco</RootNamespace>
+        <TargetFramework>net5.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Copyright>Copyright © 2022 N3O Ltd</Copyright>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <PackageId>N3O.Umbraco.Extensions</PackageId>
+        <IsPackable>true</IsPackable>
+        <Authors>N3O Ltd</Authors>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Description>TODO</Description>
+        <PackageProjectUrl>https://n3o.ltd</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/n3oltd/N3O.Umbraco</RepositoryUrl>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DebugType>full</DebugType>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DebugType>pdbonly</DebugType>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Flurl" Version="3.0.2" />
+        <PackageReference Include="Humanizer.Core" Version="2.13.14" />
+        <PackageReference Include="NodaTime" Version="3.0.9" />
+        <PackageReference Include="NodaTime.Serialization.JsonNet" Version="3.0.0" />
+        <PackageReference Include="NSwag.AspNetCore" Version="13.15.5" />
+        <PackageReference Include="Perplex.ContentBlocks.Core" Version="2.1.1" />
+        <PackageReference Include="Refit" Version="6.1.15" />
+        <PackageReference Include="Refit.Newtonsoft.Json" Version="6.1.15" />
+        <PackageReference Include="Umbraco.Cms.Core" Version="9.1.2" />
+        <PackageReference Include="Umbraco.Cms.Web.Common" Version="9.1.2" />
+        <PackageReference Include="Umbraco.Cms.Web.Website" Version="9.1.2" />
+        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="9.1.2" />
+    </ItemGroup>
+</Project>

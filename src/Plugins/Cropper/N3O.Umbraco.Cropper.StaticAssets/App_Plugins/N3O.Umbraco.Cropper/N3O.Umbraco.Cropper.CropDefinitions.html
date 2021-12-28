@@ -1,0 +1,42 @@
+<div ng-controller="N3O.Umbraco.Cropper.CropDefinitions">
+    <div ng-repeat="cropDefinition in model.value">
+        <table>
+            <tr>
+                <td>Label</td>
+                <td><input type="text" ng-model="cropDefinition.label" ng-required="true" /></td>
+            </tr>
+            <tr>
+                <td>Alias</td>
+                <td><input type="text" ng-model="cropDefinition.alias" ng-required="true" /></td>
+            </tr>
+            <tr>
+                <td>Width</td>
+                <td><input type="number" ng-model="cropDefinition.width" ng-required="true" /></td>
+            </tr>
+            <tr>
+                <td>Height&nbsp;&nbsp;&nbsp;</td>
+                <td><input type="number" ng-model="cropDefinition.height" ng-required="true" /></td>
+            </tr>
+            <tr>
+                <td valign="top">Filters</td>
+                <td><textarea ng-model="cropDefinition.filters" cols="20" rows="6" /></td>
+            </tr>
+            <tr>
+                <td colspan="2">&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <p>
+                        <a ng-click="deleteCropDefinition(crop)" class="cursor" style="color: #ff0000;">Delete</a>
+                    </p>
+                </td>
+            </tr>
+        </table>
+
+        <hr style="color: #666;" />
+    </div>
+    <p>
+        <br />
+        <a ng-click="addCropDefinition()" class="cursor" style="font-weight: bold;">Add</a>
+    </p>
+</div>
