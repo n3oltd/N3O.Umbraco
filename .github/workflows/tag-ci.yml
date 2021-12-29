@@ -1,4 +1,4 @@
-name: 'Build, Pack, Push'
+name: Tag CI
 
 on:
   push:
