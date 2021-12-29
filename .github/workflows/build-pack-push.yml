@@ -1,37 +1,20 @@
 name: 'Build, Pack, Push'
+
 on:
   push:
     tags:
-        - 'v[0-9]+.[0-9]+.[0-9]+*'
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
 
 jobs:
   build-pack-push:
-    runs-on: ubuntu-latest
+    - name: get release version
+      id: get_release_version
+      shell: bash
+      run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -d v -f 2)
 
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '5.0.x'
-
-      - name: get release version
-        id: get_release_version
-        shell: bash
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -d v -f 2)
-              
-      - name: dotnet restore
-        working-directory: src
-        run: dotnet restore
-
-      - name: dotnet build
-        working-directory: src
-        run: dotnet build --configuration Release --no-restore /property:Version=${{steps.get_release_version.outputs.VERSION}}
-
-      - name: dotnet pack
-        working-directory: src
-        run: dotnet pack --configuration Release /property:Version=${{steps.get_release_version.outputs.VERSION}}
-
-      - name: dotnet nuget push
-        working-directory: src
-        run: dotnet nuget push "**/*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key "${{secrets.NUGET_API_KEY}}" --skip-duplicate
+    - name: Build, Pack, Push
+      uses: n3oltd/workflows/.github/workflows/dotnet-build-pack-push.yml@main
+      with:
+        run-tests: false
+        run-pack: true
+        release-version: ${{steps.get_release_version.outputs.VERSION}}
