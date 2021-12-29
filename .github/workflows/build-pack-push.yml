@@ -7,14 +7,15 @@ on:
 
 jobs:
   build-pack-push:
-    - name: get release version
-      id: get_release_version
-      shell: bash
-      run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -d v -f 2)
+    steps:
+      - name: get release version
+        id: get_release_version
+        shell: bash
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -d v -f 2)
 
-    - name: Build, Pack, Push
-      uses: n3oltd/workflows/.github/workflows/dotnet-build-pack-push.yml@main
-      with:
-        run-tests: false
-        run-pack: true
-        release-version: ${{steps.get_release_version.outputs.VERSION}}
+      - name: Build, Pack, Push
+        uses: n3oltd/workflows/.github/workflows/dotnet-build-pack-push.yml@main
+        with:
+          run-tests: false
+          run-pack: true
+          release-version: ${{steps.get_release_version.outputs.VERSION}}
