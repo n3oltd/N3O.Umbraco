@@ -1,5 +1,5 @@
 # N3O Umbraco Extensions
-[![NuGet](https://img.shields.io/nuget/v/N3O.Umbraco.Extensions)](https://www.nuget.org/packages/N3O.Umbraco.Extensions/) [![Build](https://img.shields.io/github/workflow/status/n3oltd/N3O.Umbraco/main-ci)](../../actions/workflows/main-ci.yml) [![License](https://img.shields.io/github/license/n3oltd/N3O.Umbraco)](LICENSE.md)
+[![NuGet](https://img.shields.io/nuget/v/N3O.Umbraco.Extensions)](https://www.nuget.org/packages/N3O.Umbraco.Extensions/) [![Build](https://img.shields.io/github/workflow/status/n3oltd/N3O.Umbraco/Main%20Branch%20CI)](../../actions/workflows/main-ci.yml) [![License](https://img.shields.io/github/license/n3oltd/N3O.Umbraco)](LICENSE.md)
 
 This repo contains the N3O Umbraco extensions. These are a series of NuGet packages that extend the functionality of the [Umbraco CMS](https://umbraco.com). As well as providing generic functionality such as payment processing and site search, they provide ready made integration with the [Enagage CRM](https://n3o.ltd/).
 
