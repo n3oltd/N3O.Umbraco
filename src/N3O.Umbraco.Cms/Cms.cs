@@ -7,7 +7,7 @@ using N3O.Umbraco.Utilities;
 namespace N3O.Umbraco {
     public static class Cms {
         public static void Run<TStartup>(string[] args, string ourAssembliesPrefix)
-            where TStartup : StartupBase {
+            where TStartup : CmsStartup {
             OurAssemblies.Configure(ourAssembliesPrefix);
 
             var hostBuilder = Host.CreateDefaultBuilder(args)

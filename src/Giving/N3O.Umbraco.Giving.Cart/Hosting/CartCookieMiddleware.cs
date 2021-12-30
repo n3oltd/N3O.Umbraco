@@ -23,7 +23,7 @@ namespace N3O.Umbraco.Giving.Cart.Hosting {
             cookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(90);
             cookieOptions.IsEssential = true;
             cookieOptions.HttpOnly = false;
-            cookieOptions.Secure = _webHostEnvironment.IsProduction();
+            cookieOptions.Secure = !_webHostEnvironment.IsDevelopment();
 
             cookies.Append(CartConstants.Cookie, cartId.ToString(), cookieOptions);
         

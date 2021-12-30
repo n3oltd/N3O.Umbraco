@@ -10,11 +10,11 @@ using Umbraco.Cms.Web.Common.ApplicationBuilder;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco {
-    public abstract class StartupBase {
+    public abstract class CmsStartup {
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IConfiguration _configuration;
 
-        protected StartupBase(IWebHostEnvironment webHostEnvironment, IConfiguration configuration) {
+        protected CmsStartup(IWebHostEnvironment webHostEnvironment, IConfiguration configuration) {
             _webHostEnvironment = webHostEnvironment;
             _configuration = configuration;
         }
