@@ -8,7 +8,7 @@ on:
 jobs:
   build-pack-push:
     name: Build, Pack, Push
-    uses: n3oltd/workflows/.github/workflows/dotnet-build-pack-push.yml@main
+    uses: n3oltd/actions/.github/workflows/dotnet-build-pack-push.yml@main
     with:
       run-tests: false
       run-pack: true

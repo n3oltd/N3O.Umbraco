@@ -9,4 +9,4 @@ on:
 jobs:
   build:
     name: Build
-    uses: n3oltd/workflows/.github/workflows/dotnet-build-pack-push.yml@main
+    uses: n3oltd/actions/.github/workflows/dotnet-build-pack-push.yml@main
