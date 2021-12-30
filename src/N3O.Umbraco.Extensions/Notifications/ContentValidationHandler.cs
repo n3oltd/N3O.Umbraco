@@ -18,7 +18,7 @@ namespace N3O.Umbraco.Notifications {
         private readonly IReadOnlyList<IContentValidator> _contentValidators;
         private readonly IReadOnlyList<INestedContentItemValidator> _nestedContentItemValidators;
 
-        public ContentValidationHandler(ILogger logger,
+        public ContentValidationHandler(ILogger<ContentValidationHandler> logger,
                                         IContentHelper contentHelper,
                                         IEnumerable<IContentValidator> contentValidators,
                                         IEnumerable<INestedContentItemValidator> nestedContentItemValidators) {

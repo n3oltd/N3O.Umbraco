@@ -9,7 +9,7 @@ namespace N3O.Umbraco.Newsletters.Controllers {
     public class NewslettersController : ApiController {
         private readonly INewslettersClient _client;
 
-        public NewslettersController(ILogger logger, INewslettersClient client) : base(logger) {
+        public NewslettersController(ILogger<NewslettersController> logger, INewslettersClient client) : base(logger) {
             _client = client;
         }
 

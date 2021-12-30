@@ -3,12 +3,12 @@ using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 
 namespace N3O.Umbraco.Sponsorships.Database {
     [TableName(SponsorshipsConstants.Tables.Beneficiaries)]
-    [PrimaryKey(nameof(Id), AutoIncrement = true)]
+    [PrimaryKey(nameof(Key), AutoIncrement = true)]
     [ExplicitColumns]
     public class BeneficiarySchema {
-        [Column(nameof(Id))]
+        [Column(nameof(Key))]
         [PrimaryKeyColumn(AutoIncrement = true)]
-        public int Id { get; set; }
+        public int Key { get; set; }
 
         [Column(nameof(Reference))]
         [Index(IndexTypes.NonClustered, Name = "IX_" + SponsorshipsConstants.Tables.Beneficiaries + "_" + nameof(Reference), ForColumns = nameof(Reference))]

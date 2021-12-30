@@ -18,7 +18,7 @@ namespace N3O.Umbraco.Newsletters.Mailchimp {
         private readonly IMailChimpManager _manager;
         private readonly string _audienceId;
 
-        public MailchimpClient(ILogger logger, ITextFormatter textFormatter, IMailChimpManager manager, string audienceId) {
+        public MailchimpClient(ILogger<MailchimpClient> logger, ITextFormatter textFormatter, IMailChimpManager manager, string audienceId) {
             _logger = logger;
             _textFormatter = textFormatter;
             _manager = manager;

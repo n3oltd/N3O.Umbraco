@@ -1,5 +1,7 @@
 ﻿using N3O.Umbraco.Composing;
 using N3O.Umbraco.Sponsorships.Database;
+using System;
+using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Migrations;
@@ -15,24 +17,29 @@ namespace N3O.Umbraco.Sponsorships {
         }
     
         public class DatabaseMigrationsComponent : IComponent {
-            private readonly IScopeProvider _scopeProvider;
-            private readonly IMigrationPlanExecutor _migrationPlanExecutor;
-            private readonly IKeyValueService _keyValueService;
+            private readonly IRuntimeState _runtimeState;
+            private readonly Lazy<IScopeProvider> _scopeProvider;
+            private readonly Lazy<IMigrationPlanExecutor> _migrationPlanExecutor;
+            private readonly Lazy<IKeyValueService> _keyValueService;
 
-            public DatabaseMigrationsComponent(IScopeProvider scopeProvider,
-                                               IMigrationPlanExecutor migrationPlanExecutor,
-                                               IKeyValueService keyValueService) {
+            public DatabaseMigrationsComponent(IRuntimeState runtimeState,
+                                               Lazy<IScopeProvider> scopeProvider,
+                                               Lazy<IMigrationPlanExecutor> migrationPlanExecutor,
+                                               Lazy<IKeyValueService> keyValueService) {
+                _runtimeState = runtimeState;
                 _scopeProvider = scopeProvider;
                 _migrationPlanExecutor = migrationPlanExecutor;
                 _keyValueService = keyValueService;
             }
 
             public void Initialize() {
-                var migrationPlan = new MigrationPlan(SponsorshipsConstants.Tables.Beneficiaries);
-                migrationPlan.From(string.Empty).To<BeneficiariesV1Migration>("v1");
+                if (_runtimeState.Level == RuntimeLevel.Run) {
+                    var migrationPlan = new MigrationPlan(SponsorshipsConstants.Tables.Beneficiaries);
+                    migrationPlan.From(string.Empty).To<BeneficiariesV1Migration>("v1");
 
-                var upgrader = new Upgrader(migrationPlan);
-                upgrader.Execute(_migrationPlanExecutor, _scopeProvider, _keyValueService);
+                    var upgrader = new Upgrader(migrationPlan);
+                    upgrader.Execute(_migrationPlanExecutor.Value, _scopeProvider.Value, _keyValueService.Value);
+                }
             }
 
             public void Terminate() { }

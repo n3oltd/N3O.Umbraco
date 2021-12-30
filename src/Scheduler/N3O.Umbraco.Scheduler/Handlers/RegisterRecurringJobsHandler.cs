@@ -15,16 +15,14 @@ using System.Threading.Tasks;
 namespace Karakoram.Scheduler.Domain.Handlers {
     public class RegisterRecurringJobsHandler :
         IRequestHandler<RegisterRecurringJobsCommand, RegisterRecurringJobsReq, None> {
-        private readonly JobStorage _jobStorage;
         private readonly IJsonProvider _jsonProvider;
 
-        public RegisterRecurringJobsHandler(JobStorage jobStorage, IJsonProvider jsonProvider) {
-            _jobStorage = jobStorage;
+        public RegisterRecurringJobsHandler(IJsonProvider jsonProvider) {
             _jsonProvider = jsonProvider;
         }
 
         public Task<None> Handle(RegisterRecurringJobsCommand req, CancellationToken cancellationToken) {
-            var existingJobs = _jobStorage.GetConnection().GetRecurringJobs().ToList();
+            var existingJobs = JobStorage.Current.GetConnection().GetRecurringJobs().ToList();
         
             foreach (var hangfireJob in existingJobs) {
                 RecurringJob.RemoveIfExists(hangfireJob.Id);

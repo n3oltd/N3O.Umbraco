@@ -5,7 +5,7 @@ using Umbraco.Cms.Core.DependencyInjection;
 namespace N3O.Umbraco.Search {
     public class SearchComposer : Composer {
         public override void Compose(IUmbracoBuilder builder) {
-            builder.Services.AddSingleton<ISitemap, Sitemap>();
+            builder.Services.AddScoped<ISitemap, Sitemap>();
         }
     }
 }

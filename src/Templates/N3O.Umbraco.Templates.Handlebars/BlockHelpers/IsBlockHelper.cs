@@ -4,7 +4,7 @@ using N3O.Umbraco.Json;
 
 namespace N3O.Umbraco.Templates.Handlebars.BlockHelpers {
     public class IsBlockHelper : BlockHelper {
-        public IsBlockHelper(ILogger logger, IJsonProvider jsonProvider) : base(logger, jsonProvider, 2) { }
+        public IsBlockHelper(ILogger<IsBlockHelper> logger, IJsonProvider jsonProvider) : base(logger, jsonProvider, 2) { }
     
         public override string Name => "is";
 

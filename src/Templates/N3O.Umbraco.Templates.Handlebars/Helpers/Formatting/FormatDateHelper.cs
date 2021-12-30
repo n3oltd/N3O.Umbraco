@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Templates.Handlebars.Helpers {
     public class FormatDateHelper : Helper {
-        public FormatDateHelper(ILogger logger, IJsonProvider jsonProvider, IFormatter formatter)
+        public FormatDateHelper(ILogger<FormatDateHelper> logger, IJsonProvider jsonProvider, IFormatter formatter)
             : base(logger, jsonProvider, 2) {
             _formatter = formatter;
         }

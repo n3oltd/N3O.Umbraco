@@ -16,7 +16,7 @@ namespace N3O.Umbraco.Giving.Cart.Controllers {
     public class CartController : ApiController {
         private readonly IMediator _mediator;
 
-        public CartController(ILogger logger, IMediator mediator) : base(logger) {
+        public CartController(ILogger<CartController> logger, IMediator mediator) : base(logger) {
             _mediator = mediator;
         }
 

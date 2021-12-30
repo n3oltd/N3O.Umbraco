@@ -5,7 +5,7 @@ using N3O.Umbraco.Localization;
 
 namespace N3O.Umbraco.Templates.Handlebars.Helpers {
     public class FormatBoolHelper : FormattingHelper<bool?> {
-        public FormatBoolHelper(ILogger logger, IJsonProvider jsonProvider, IFormatter formatter)
+        public FormatBoolHelper(ILogger<FormatBoolHelper> logger, IJsonProvider jsonProvider, IFormatter formatter)
             : base(logger, jsonProvider, formatter, "format_bool") { }
 
         protected override string Format(bool? value, string specifier) {

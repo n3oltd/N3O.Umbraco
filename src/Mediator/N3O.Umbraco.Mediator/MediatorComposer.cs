@@ -11,7 +11,8 @@ namespace N3O.Umbraco.Mediator {
         public override void Compose(IUmbracoBuilder builder) {
             builder.Services.AddMediatR(OurAssemblies.GetAllAssemblies().ToArray());
 
-            builder.Services.AddScoped<IMediator, Mediator>();
+            builder.Services.AddTransient<IMediator, Mediator>();
+            builder.Services.AddTransient<IRequestFactory, RequestFactory>();
             builder.Services.AddSingleton<None>();
 
             RegisterAll(t => t.IsSubclassOrSubInterfaceOfGenericType(typeof(Request<,>)),

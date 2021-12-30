@@ -6,7 +6,7 @@ namespace N3O.Umbraco.Templates.Handlebars {
         private readonly ILogger _logger;
         private readonly IHandlebarsCompiler _handlebarsCompiler;
 
-        public HandlebarsEngine(ILogger logger, IHandlebarsCompiler handlebarsCompiler) {
+        public HandlebarsEngine(ILogger<HandlebarsEngine> logger, IHandlebarsCompiler handlebarsCompiler) {
             _logger = logger;
             _handlebarsCompiler = handlebarsCompiler;
         }

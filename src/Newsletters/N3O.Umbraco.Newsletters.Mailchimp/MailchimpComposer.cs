@@ -11,7 +11,7 @@ namespace N3O.Umbraco.Newsletters.Mailchimp {
     public class MailchimpComposer : Composer {
         public override void Compose(IUmbracoBuilder builder) {
             builder.Services.AddTransient<INewslettersClient>(serviceProvider => {
-                var logger = serviceProvider.GetRequiredService<ILogger>();
+                var logger = serviceProvider.GetRequiredService<ILogger<MailchimpClient>>();
                 var textFormatter = serviceProvider.GetRequiredService<ITextFormatter>();
                 var contentCache = serviceProvider.GetRequiredService<IContentCache>();
                 var settings = contentCache.Single<MailchimpSettings>();

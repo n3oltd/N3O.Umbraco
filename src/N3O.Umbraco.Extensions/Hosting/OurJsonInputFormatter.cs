@@ -8,7 +8,7 @@ using System.Buffers;
 
 namespace N3O.Umbraco.Hosting {
     public class OurJsonInputFormatter : NewtonsoftJsonInputFormatter {
-        public OurJsonInputFormatter(ILogger logger,
+        public OurJsonInputFormatter(ILogger<OurJsonInputFormatter> logger,
                                      JsonSerializerSettings serializerSettings,
                                      ArrayPool<char> charPool,
                                      ObjectPoolProvider objectPoolProvider,
