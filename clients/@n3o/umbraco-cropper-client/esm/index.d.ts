@@ -1,4 +1,16 @@
-export declare class {
+export declare class UmbracoCropperClient {
+    private http;
+    private baseUrl;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined;
+    constructor(baseUrl?: string, http?: {
+        fetch(url: RequestInfo, init?: RequestInit): Promise<Response>;
+    });
+    add(req: AddToCartReq): Promise<void>;
+    protected processAdd(response: Response): Promise<void>;
+    getSummary(): Promise<CartSummaryRes>;
+    protected processGetSummary(response: Response): Promise<CartSummaryRes>;
+    remove(allocationNumber: string): Promise<void>;
+    protected processRemove(response: Response): Promise<void>;
 }
 export interface ProblemDetails {
     type?: string | undefined;

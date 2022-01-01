@@ -1,5 +1,5 @@
 {
-  "name": "@n3o/umbraco-cropper",
+  "name": "@n3o/umbraco-cropper-client",
   "author": "N3O Ltd",
   "description": "TypeScript client for the N3O Umbraco Cropper",
   "version": "1.0.0",

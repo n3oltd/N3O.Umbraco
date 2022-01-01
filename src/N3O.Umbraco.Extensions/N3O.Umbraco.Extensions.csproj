@@ -10,8 +10,6 @@
         <PackageId>N3O.Umbraco.Extensions</PackageId>
         <IsPackable>true</IsPackable>
         <ContentTargetFolders>.</ContentTargetFolders>
-        <PackageOutputPath>./nupkg</PackageOutputPath>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
         <Authors>N3O Ltd</Authors>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <Description>TODO</Description>

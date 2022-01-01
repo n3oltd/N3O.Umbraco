@@ -10,8 +10,6 @@
         <PackageId>N3O.Umbraco.Email.SendGrid</PackageId>
         <IsPackable>true</IsPackable>
         <ContentTargetFolders>.</ContentTargetFolders>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageOutputPath>./nupkg</PackageOutputPath>
         <Authors>N3O Ltd</Authors>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <Description>TODO</Description>
