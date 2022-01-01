@@ -19,7 +19,7 @@ jobs:
     name: 'npm Publish @n3o/umbraco-cropper-client'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
-      working-directory: 'clients/n3o.umbraco.cropper'
+      working-directory: 'clients/@n3o/umbraco-cropper-client'
       version: ${GITHUB_REF#refs/tags/}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
