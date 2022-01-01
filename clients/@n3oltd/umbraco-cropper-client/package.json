@@ -1,8 +1,8 @@
 {
-  "name": "@n3o/umbraco-cropper-client",
+  "name": "@n3oltd/umbraco-cropper-client",
   "author": "N3O Ltd",
   "description": "TypeScript client for the N3O Umbraco Cropper",
-  "version": "1.0.0",
+  "version": "9.0.0-beta.12",
   "dependencies": {},
   "license": "UNLICENSED",
   "main": "./dist/index.js",
