@@ -2,7 +2,7 @@
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Validation</RootNamespace>
         <TargetFramework>net5.0</TargetFramework>
-        <LangVersion>latest</LangVersion>
+        <LangVersion>9.0</LangVersion>
         <Copyright>Copyright © 2022 N3O Ltd</Copyright>
     </PropertyGroup>
 
@@ -13,6 +13,7 @@
         <Authors>N3O Ltd</Authors>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <Description>TODO</Description>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageProjectUrl>https://n3o.ltd</PackageProjectUrl>
         <RepositoryUrl>https://github.com/n3oltd/N3O.Umbraco</RepositoryUrl>
     </PropertyGroup>
@@ -33,5 +34,11 @@
         <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.6" />
         <PackageReference Include="ISO3166" Version="1.0.3" />
         <PackageReference Include="libphonenumber-csharp" Version="8.12.38" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="README.md">
+            <Pack>True</Pack>
+        </None>
     </ItemGroup>
 </Project>

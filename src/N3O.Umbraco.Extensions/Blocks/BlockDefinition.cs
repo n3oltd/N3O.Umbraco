@@ -1,4 +1,5 @@
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Utilities;
 using Perplex.ContentBlocks.Definitions;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ namespace N3O.Umbraco.Blocks {
                                string alias,
                                string name,
                                string description,
+                               string icon,
+                               string folder,
                                string previewImage,
                                IEnumerable<BlockCategory> categories,
                                IEnumerable<LayoutDefinition> layouts,
@@ -21,8 +24,10 @@ namespace N3O.Umbraco.Blocks {
             Alias = alias;
             Name = name;
             Description = description;
+            Icon = icon;
+            Folder = folder;
             PreviewImage = previewImage;
-            DataTypeKey = Id.Increment();
+            DataTypeKey = UmbracoId.Generate(IdScope.BlockDataType, alias);
             Categories = categories.OrEmpty().ToList();
             Layouts = layouts.OrEmpty().ToList();
             LimitToDocumentTypes = limitToContentTypes;
@@ -35,6 +40,8 @@ namespace N3O.Umbraco.Blocks {
         public string Alias { get; }
         public string Name { get; }
         public string Description { get; }
+        public string Icon { get; }
+        public string Folder { get; }
         public string PreviewImage { get; }
         public Guid? DataTypeKey { get; }
         public IReadOnlyList<BlockCategory> Categories { get; }

@@ -6,26 +6,22 @@
 
     <Target Name="CopyN3OUmbracoCropperAssets" BeforeTargets="Build">
         <ItemGroup>
-            <N3OUmbracoCropperContentFiles Include="$(N3OUmbracoCropperContentFilesPath)" />
+            <N3OUmbracoCropperContentFiles Include="$(N3OUmbracoCropperContentFilesPath)"/>
         </ItemGroup>
-        
-        <Message Text="Copying N3O.Umbraco.Cropper files: $(N3OUmbracoCropperContentFilesPath) - #@(N3OUmbracoCropperContentFiles->Count()) files"  Importance="high" />
-        
+        <Message Text="Copying N3O Cropper files: $(N3OUmbracoCropperContentFilesPath) - #@(N3OUmbracoCropperContentFiles->Count()) files" Importance="high"/>
         <Copy
-            SourceFiles="@(N3OUmbracoCropperContentFiles)"
-            DestinationFiles="@(N3OUmbracoCropperContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Cropper\%(RecursiveDir)%(Filename)%(Extension)')"
-            SkipUnchangedFiles="true">
-        </Copy>
+                SourceFiles="@(N3OUmbracoCropperContentFiles)"
+                DestinationFiles="@(N3OUmbracoCropperContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Cropper\%(RecursiveDir)%(Filename)%(Extension)')"
+                SkipUnchangedFiles="true"/>
+
     </Target>
 
     <Target Name="ClearN3OUmbracoCropperAssets" BeforeTargets="Clean">
         <ItemGroup>
-            <N3OUmbracoCropperDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Cropper\" />
+            <N3OUmbracoCropperDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Cropper\"/>
         </ItemGroup>
-        
-        <Message Text="Clear old N3O.Umbraco.Cropper data"  Importance="high" />
-        
-        <RemoveDir Directories="@(N3OUmbracoCropperDir)" />
+        <Message Text="Clear old N3O Cropper data" Importance="high"/>
+        <RemoveDir Directories="@(N3OUmbracoCropperDir)"/>
     </Target>
 
 </Project>

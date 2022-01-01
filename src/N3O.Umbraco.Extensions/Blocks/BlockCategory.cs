@@ -1,14 +1,13 @@
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
+using N3O.Umbraco.Utilities;
 using Perplex.ContentBlocks.Categories;
 using System;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Blocks {
     public class BlockCategory : Lookup, IContentBlockCategory {
         public BlockCategory(string id, string name, string icon)
             : base(id) {
-            Id = id.GetDeterministicHashCode(true).ToGuid();
+            Id = UmbracoId.Generate(IdScope.BlockCategory, id);
             Name = name;
             Icon = icon;
             IsHidden = false;

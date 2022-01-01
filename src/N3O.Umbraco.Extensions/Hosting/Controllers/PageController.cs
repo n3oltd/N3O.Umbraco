@@ -41,7 +41,7 @@ namespace N3O.Umbraco.Hosting {
         public virtual async Task<IActionResult> Index(CancellationToken cancellationToken) {
             var viewModel = await GetViewModelAsync(cancellationToken);
 
-            return CurrentTemplate(viewModel);
+            return View("Page", viewModel);
         }
 
         protected IActionResult Redirect<T>() where T : IPublishedContent {

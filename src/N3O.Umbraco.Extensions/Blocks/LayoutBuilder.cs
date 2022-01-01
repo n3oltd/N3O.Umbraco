@@ -1,6 +1,5 @@
-using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Utilities;
 using System;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Blocks {
     public class LayoutBuilder : ILayoutBuilder {
@@ -18,7 +17,7 @@ namespace N3O.Umbraco.Blocks {
         public LayoutDefinition Build(string blockAlias) {
             Validate();
         
-            var id = (blockAlias + _name).GetDeterministicHashCode(true).ToGuid();
+            var id = UmbracoId.Generate(IdScope.BlockLayout, blockAlias, _name);
 
             var definition = new LayoutDefinition(id,
                                                   _name,

@@ -1,9 +1,9 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Blocks {
     public abstract class BlockBuilder : IBlockBuilder {
@@ -13,6 +13,8 @@ namespace N3O.Umbraco.Blocks {
         private string _alias;
         private string _description;
         private string _name;
+        private string _icon;
+        private string _folder;
 
         protected ILayoutBuilder AddLayout() {
             var layoutBuilder = new LayoutBuilder();
@@ -41,6 +43,10 @@ namespace N3O.Umbraco.Blocks {
             _categories.Add(category);
         }
 
+        protected void InFolder(string folder) {
+            _folder = folder;
+        }
+
         protected void LimitTo(string contentTypeAlias) {
             if (!_limitToContentTypes.Contains(contentTypeAlias, true)) {
                 _limitToContentTypes.Add(contentTypeAlias);
@@ -61,10 +67,13 @@ namespace N3O.Umbraco.Blocks {
         
             _alias = $"{alias}Block";
         }
-    
-    
+
         protected void WithDescription(string description) {
             _description = description;
+        }
+        
+        protected void WithIcon(string icon) {
+            _icon = icon;
         }
     
         protected void WithName(string name) {
@@ -74,13 +83,15 @@ namespace N3O.Umbraco.Blocks {
         public BlockDefinition Build() {
             Validate();
         
-            var id = _alias.GetDeterministicHashCode(true).ToGuid();
+            var id = UmbracoId.Generate(IdScope.Block, _alias);
             var layouts = _layoutBuilders.Select(x => x.Build(_alias)).ToList();
 
             var definition = new BlockDefinition(id,
                                                  _alias,
                                                  _name,
                                                  _description,
+                                                 _icon,
+                                                 _folder,
                                                  $"/Views/Blocks/{_alias}/preview.png",
                                                  _categories,
                                                  layouts,
@@ -93,6 +104,7 @@ namespace N3O.Umbraco.Blocks {
         private void Validate() {
             EnsureHasValue(_alias, "alias");
             EnsureHasValue(_name, "name");
+            EnsureHasValue(_icon, "icon");
             EnsureHasValue(_description, "description");
 
             EnsureAny(_categories, "category");
