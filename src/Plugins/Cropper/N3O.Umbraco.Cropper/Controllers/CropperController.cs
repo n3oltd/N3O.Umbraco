@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cropper.Models;
 using N3O.Umbraco.Plugins.Controllers;
 using N3O.Umbraco.Plugins.Models;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.IO;
 
 namespace N3O.Umbraco.Cropper.Controllers {
+    [ApiDocument(CropperConstants.ApiName)]
     public class CropperController : PluginController {
         private readonly IClock _clock;
         private readonly MediaFileManager _mediaFileManager;

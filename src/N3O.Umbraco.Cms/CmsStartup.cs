@@ -22,8 +22,7 @@ namespace N3O.Umbraco {
         public void ConfigureServices(IServiceCollection services) {
             Composer.WebHostEnvironment = _webHostEnvironment;
         
-            services.AddOpenApiDocument()
-                    .AddUmbraco(_webHostEnvironment, _configuration)
+            services.AddUmbraco(_webHostEnvironment, _configuration)
                     .AddBackOffice()
                     .AddWebsite()
                     .AddComposers()
@@ -31,12 +30,10 @@ namespace N3O.Umbraco {
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-            if (env.IsDevelopment()) {
+            if (!env.IsProduction()) {
                 app.UseDeveloperExceptionPage();
+                app.UseOpenApiWithUI();
             }
-
-            app.UseOpenApi();
-            app.UseSwaggerUi3();
 
             app.UseUmbraco()
                .WithMiddleware(u => {

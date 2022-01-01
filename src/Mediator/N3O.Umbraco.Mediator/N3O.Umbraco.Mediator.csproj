@@ -9,6 +9,8 @@
     <PropertyGroup>
         <PackageId>N3O.Umbraco.Mediator</PackageId>
         <IsPackable>true</IsPackable>
+        <ContentTargetFolders>.</ContentTargetFolders>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <Authors>N3O Ltd</Authors>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <Description>TODO</Description>

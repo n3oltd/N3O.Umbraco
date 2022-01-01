@@ -9,6 +9,8 @@
     <PropertyGroup>
         <PackageId>N3O.Umbraco.Giving.Cart</PackageId>
         <IsPackable>true</IsPackable>
+        <ContentTargetFolders>.</ContentTargetFolders>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <Authors>N3O Ltd</Authors>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <Description>TODO</Description>
@@ -27,5 +29,13 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Mediator\N3O.Umbraco.Mediator\N3O.Umbraco.Mediator.csproj" />
       <ProjectReference Include="..\N3O.Umbraco.Giving.Allocations\N3O.Umbraco.Giving.Allocations.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Cart\swagger.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Cart" />
     </ItemGroup>
 </Project>

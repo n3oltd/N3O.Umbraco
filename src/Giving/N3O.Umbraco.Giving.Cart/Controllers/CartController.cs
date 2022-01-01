@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Constants;
 using N3O.Umbraco.Giving.Cart.Commands;
 using N3O.Umbraco.Giving.Cart.Models;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Giving.Cart.Controllers {
     [ResponseCache(CacheProfileName = CacheProfiles.NoCache)]
+    [ApiDocument(CartConstants.ApiName)]
     public class CartController : ApiController {
         private readonly IMediator _mediator;
 
@@ -31,6 +33,13 @@ namespace N3O.Umbraco.Giving.Cart.Controllers {
                 return RequestFailed(l => l.LogError(ex, "Failed to add to cart for request {Req}", req));
             }
         }
+        
+        [HttpGet("summary")]
+        public async Task<ActionResult<CartSummaryRes>> GetSummary() {
+            var res = await _mediator.SendAsync<GetCartSummaryQuery, None, CartSummaryRes>(None.Empty);
+
+            return Ok(res);
+        }
 
         [HttpPost("remove/{allocationNumber:int}")]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
@@ -42,13 +51,6 @@ namespace N3O.Umbraco.Giving.Cart.Controllers {
             } catch (Exception ex) {
                 return RequestFailed(l => l.LogError(ex, "Failed to remove item from cart"));
             }
-        }
-
-        [HttpGet("count")]
-        public async Task<ActionResult<int>> ItemCount() {
-            var res = await _mediator.SendAsync<CountCartItemsQuery, None, int>(None.Empty);
-
-            return Ok(res);
         }
     }
 }

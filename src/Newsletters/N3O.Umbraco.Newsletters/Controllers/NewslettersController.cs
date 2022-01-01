@@ -1,11 +1,15 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Newsletters.Models;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Newsletters.Controllers {
+    [ResponseCache(CacheProfileName = CacheProfiles.NoCache)]
+    [ApiDocument(NewslettersConstants.ApiName)]
     public class NewslettersController : ApiController {
         private readonly INewslettersClient _client;
 
@@ -13,7 +17,7 @@ namespace N3O.Umbraco.Newsletters.Controllers {
             _client = client;
         }
 
-        [HttpPost]
+        [HttpPost("subscribe")]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         public async Task<ActionResult<SubscribeResult>> Subscribe(ContactReq req) {
             var result = await _client.SubscribeAsync(req);

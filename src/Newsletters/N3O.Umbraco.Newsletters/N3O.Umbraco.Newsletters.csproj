@@ -9,6 +9,8 @@
     <PropertyGroup>
         <PackageId>N3O.Umbraco.Newsletters</PackageId>
         <IsPackable>true</IsPackable>
+        <ContentTargetFolders>.</ContentTargetFolders>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <Authors>N3O Ltd</Authors>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <Description>TODO</Description>
@@ -27,5 +29,9 @@
     <ItemGroup>
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
         <ProjectReference Include="..\..\Validation\N3O.Umbraco.Validation\N3O.Umbraco.Validation.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Clients" />
     </ItemGroup>
 </Project>
