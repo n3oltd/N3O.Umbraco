@@ -16,10 +16,10 @@ jobs:
       nuget-api-key: ${{ secrets.NUGET_API_KEY }}
 
   job2:
-    name: 'npm Publish @n3o/umbraco-cropper-client'
+    name: 'npm Publish @n3oltd/umbraco-cropper-client'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
-      working-directory: 'clients/@n3o/umbraco-cropper-client'
+      working-directory: 'clients/@n3oltd/umbraco-cropper-client'
       version: ${GITHUB_REF#refs/tags/}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
