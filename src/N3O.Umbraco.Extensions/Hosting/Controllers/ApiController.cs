@@ -10,7 +10,7 @@ namespace N3O.Umbraco.Hosting {
     [Route("/umbraco/api/[controller]")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public class ApiController : UmbracoApiController {
         public ApiController(ILogger logger) {

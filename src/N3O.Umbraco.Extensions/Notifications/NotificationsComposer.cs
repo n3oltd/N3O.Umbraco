@@ -23,7 +23,8 @@ namespace N3O.Umbraco.Notifications {
                     .CallStaticMethod(nameof(global::Umbraco.Cms.Core.DependencyInjection.UmbracoBuilderExtensions.AddNotificationAsyncHandler))
                     .OfGenericType(notificationType)
                     .OfGenericType(handlerType)
-                    .WithParameter(typeof(IUmbracoBuilder), builder);
+                    .WithParameter(typeof(IUmbracoBuilder), builder)
+                    .Run();
             }
         }
     }

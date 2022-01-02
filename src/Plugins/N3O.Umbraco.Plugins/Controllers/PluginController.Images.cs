@@ -16,14 +16,14 @@ namespace N3O.Umbraco.Plugins.Controllers {
     
         protected async Task<UploadedImage> GetUploadedImageAsync(ImageUploadReq req) {
             try {
-                using (var imgStream = req.Image.OpenReadStream()) {
+                using (var imgStream = req.File.OpenReadStream()) {
                     var fileStream = new MemoryStream();
 
                     await imgStream.CopyToAsync(fileStream);
 
                     fileStream.Seek(0, SeekOrigin.Begin);
 
-                    var uploadedFile = new UploadedFile(fileStream, req.Image.ContentDisposition, req.Image.FileName);
+                    var uploadedFile = new UploadedFile(fileStream, req.File.ContentDisposition, req.File.FileName);
                     var metadata = GetImageMetadata(fileStream);
 
                     var uploadedImage = new UploadedImage(uploadedFile, metadata);

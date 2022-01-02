@@ -9,7 +9,7 @@ namespace N3O.Umbraco.Plugins.Models {
         [Name("Min Width")]
         public int? MinWidth { get; set; }
     
-        [Name("Image")]
-        public IFormFile Image { get; set; }
+        [Name("File")]
+        public IFormFile File { get; set; }
     }
 }

@@ -19,13 +19,14 @@
             </tr>
             <tr>
                 <td valign="top">Filters</td>
-                <td><textarea ng-model="cropDefinition.filters" cols="20" rows="6" /></td>
+                <td><textarea ng-model="cropDefinition.filters" cols="20" rows="6"></textarea></td>
             </tr>
             <tr>
                 <td colspan="2">&nbsp;</td>
             </tr>
             <tr>
-                <td colspan="2">
+                <td></td>
+                <td>
                     <p>
                         <a ng-click="deleteCropDefinition(crop)" class="cursor" style="color: #ff0000;">Delete</a>
                     </p>
@@ -35,6 +36,7 @@
 
         <hr style="color: #666;" />
     </div>
+    
     <p>
         <br />
         <a ng-click="addCropDefinition()" class="cursor" style="font-weight: bold;">Add</a>

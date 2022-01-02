@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cropper.Models;
 using N3O.Umbraco.Plugins.Controllers;
@@ -17,7 +18,8 @@ namespace N3O.Umbraco.Cropper.Controllers {
         private readonly IClock _clock;
         private readonly MediaFileManager _mediaFileManager;
 
-        public CropperController(IClock clock, MediaFileManager mediaFileManager) {
+        public CropperController(ILogger<CropperController> logger, IClock clock, MediaFileManager mediaFileManager)
+            : base(logger) {
             _clock = clock;
             _mediaFileManager = mediaFileManager;
         }
@@ -39,13 +41,12 @@ namespace N3O.Umbraco.Cropper.Controllers {
         }
 
         [HttpPost("upload")]
-        public async Task<ActionResult<ImageMedia>> UploadAsync([FromForm] ImageUploadReq req) {
+        public async Task<ActionResult<ImageMedia>> Upload([FromForm] ImageUploadReq req) {
             var now = _clock.GetCurrentInstant();
         
             using (var uploadedImage = await GetUploadedImageAsync(req)) {
                 if (uploadedImage == null) {
-                    return StatusCode(StatusCodes.Status412PreconditionFailed,
-                                      "The specified file is either not a valid image, exceeds the maximum allowed image size, or does not meet dimension constraints");
+                    return BadRequest();
                 }
 
                 var storagePath = Path.Combine(now.ToString("yyMMddHHmmss", CultureInfo.InvariantCulture),
