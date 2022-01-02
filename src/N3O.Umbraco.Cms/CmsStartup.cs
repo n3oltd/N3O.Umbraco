@@ -30,7 +30,9 @@ namespace N3O.Umbraco {
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-            if (!env.IsProduction()) {
+            if (env.IsProduction()) {
+                app.UseHsts();
+            } else {
                 app.UseDeveloperExceptionPage();
                 app.UseOpenApiWithUI();
             }
@@ -48,7 +50,7 @@ namespace N3O.Umbraco {
                    u.UseWebsiteEndpoints();
 
                    u.RunExtensions();
-               
+
                    ConfigureEndpoints(u);
                });
         }
