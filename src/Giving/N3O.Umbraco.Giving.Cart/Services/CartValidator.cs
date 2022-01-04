@@ -17,7 +17,7 @@ namespace N3O.Umbraco.Giving.Cart {
             _pricing = pricing;
         }
     
-        public bool IsValid(Currency currentCurrency, DonationCart cart) {
+        public bool IsValid(Currency currentCurrency, Entities.Cart cart) {
             try {
                 var isValid = currentCurrency == cart.Currency &&
                               ContentsAreValid(currentCurrency, cart.Single) &&

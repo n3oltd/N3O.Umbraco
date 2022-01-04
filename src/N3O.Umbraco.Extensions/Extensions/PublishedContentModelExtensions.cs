@@ -1,5 +1,7 @@
 ﻿using N3O.Umbraco.Content;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Extensions {
@@ -15,7 +17,11 @@ namespace N3O.Umbraco.Extensions {
         
             return ConvertTo<T>(publishedContent);
         }
-    
+
+        public static IReadOnlyList<T> As<T>(this IEnumerable<PublishedContentModel> publishedContents) {
+            return publishedContents.Select(x => x.As<T>()).ToList();
+        }
+
         public static T To<T>(this PublishedContentModel publishedContent) where T : IUmbracoContent, new() {
             return ConvertTo<T>(publishedContent);
         }

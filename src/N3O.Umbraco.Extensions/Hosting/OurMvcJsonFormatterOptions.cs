@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using System.Buffers;
 
 namespace N3O.Umbraco.Hosting {
-    internal class OurMvcJsonFormatterOptions : IConfigureOptions<MvcOptions> {
+    public class OurMvcJsonFormatterOptions : IConfigureOptions<MvcOptions> {
         private readonly ILoggerFactory _loggerFactory;
         private readonly MvcNewtonsoftJsonOptions _jsonOptions;
         private readonly ArrayPool<char> _charPool;

@@ -6,14 +6,15 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Forex.Currencylayer {
-    internal class AppendApiKeyHandler : DelegatingHandler {
+    public class AppendApiKeyHandler : DelegatingHandler {
         private readonly IContentCache _contentCache;
 
         public AppendApiKeyHandler(IContentCache contentCache) {
             _contentCache = contentCache;
         }
 
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) {
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+                                                                     CancellationToken cancellationToken) {
             var settings = _contentCache.Single<CurrencylayerSettings>();
         
             var url = new Url(request.RequestUri);

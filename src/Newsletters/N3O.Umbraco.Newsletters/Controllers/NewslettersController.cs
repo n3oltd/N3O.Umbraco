@@ -11,9 +11,11 @@ namespace N3O.Umbraco.Newsletters.Controllers {
     [ResponseCache(CacheProfileName = CacheProfiles.NoCache)]
     [ApiDocument(NewslettersConstants.ApiName)]
     public class NewslettersController : ApiController {
+        private readonly ILogger<NewslettersController> _logger;
         private readonly INewslettersClient _client;
 
-        public NewslettersController(ILogger<NewslettersController> logger, INewslettersClient client) : base(logger) {
+        public NewslettersController(ILogger<NewslettersController> logger, INewslettersClient client) {
+            _logger = logger;
             _client = client;
         }
 
@@ -25,8 +27,9 @@ namespace N3O.Umbraco.Newsletters.Controllers {
             if (result.Subscribed) {
                 return Ok(result);
             } else {
-                return RequestFailed(result,
-                                     l => l.LogError("Failed to subscribe {Req} due to error {Error}", req, result.ErrorDetails));
+                _logger.LogError("Failed to subscribe {Req} due to error {Error}", req, result.ErrorDetails);
+                
+                return UnprocessableEntity(result);
             }
         }
     }

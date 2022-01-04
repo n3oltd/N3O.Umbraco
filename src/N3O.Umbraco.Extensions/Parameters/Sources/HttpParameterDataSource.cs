@@ -15,7 +15,11 @@ namespace N3O.Umbraco.Parameters {
             var dict = new Dictionary<string, string>();
 
             if (_contextAccessor.HttpContext != null) {
-                var routeData = _contextAccessor.HttpContext?.GetRouteData().Values;
+                foreach (var (key, value) in _contextAccessor.HttpContext.Request.OrEmpty(x => x.Query)) {
+                    dict[key] = value;
+                }
+                
+                var routeData = _contextAccessor.HttpContext.GetRouteData().Values;
 
                 foreach (var (key, value) in routeData.OrEmpty()) {
                     dict[key] = value?.ToString();

@@ -30,7 +30,7 @@ namespace N3O.Umbraco.Giving.Cart.ViewModels {
 
         public bool IsEmpty() => Single.IsEmpty() && Regular.IsEmpty();
     
-        private string GetTotalText(DonationCart cart) {
+        private string GetTotalText(Entities.Cart cart) {
             var totals = new List<string>();
 
             if (!cart.Single.Total.IsZero()) {

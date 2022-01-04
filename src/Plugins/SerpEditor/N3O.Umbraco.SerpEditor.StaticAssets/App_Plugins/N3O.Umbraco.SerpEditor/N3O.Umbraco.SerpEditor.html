@@ -1,0 +1,17 @@
+<div ng-controller="N3O.Umbraco.SerpEditor">
+    <div class="sv-form">
+        <input type="text" ng-model="title" placeholder="Enter a short but descriptive title" />
+        <p ng-show="title.length > maxCharsTitle" class="sv-error">A title should not be more than {{maxCharsTitle}} characters.</p>
+        <br /><br />
+        <textarea ng-model="description" placeholder="Enter a meta description"></textarea>
+        <p ng-show="description.length > maxCharsDescription" class="sv-error">A meta description should not be more than {{maxCharsDescription}} chars.</p>
+    </div>
+    
+    <div class="sv-demo">
+        <h6 ng-show="title.length > 0">{{title}}{{titleSuffix}}</h6>
+        <p class="sv-url" ng-show="title.length > 0 || description > 0">{{GetUrl()}}</p>
+        <p>{{description}}</p>
+    </div>
+    
+    <div style="clear:both"></div>
+</div>

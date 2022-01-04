@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace N3O.Umbraco.Parameters {
-    internal class NamedParameterBinder : INamedParameterBinder {
+    public class NamedParameterBinder : INamedParameterBinder {
         private readonly IEnumerable<IParameterDataSource> _parameterDataSources;
 
         public NamedParameterBinder(IEnumerable<IParameterDataSource> parameterDataSources) {

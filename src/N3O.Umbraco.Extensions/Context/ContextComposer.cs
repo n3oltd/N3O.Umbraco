@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using N3O.Umbraco.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 
@@ -11,6 +12,7 @@ namespace N3O.Umbraco.Context {
             builder.Services.AddScoped<ICurrencyCodeAccessor, CurrencyCodeAccessor>();
             builder.Services.AddScoped<ICurrentPageAccessor, CurrentPageAccessor>();
             builder.Services.AddScoped<IQueryStringAccessor, QueryStringAccessor>();
+            builder.Services.TryAddScoped<IRemoteIpAddressAccessor, RemoteIpAddressAccessor>();
         }
     }
 }

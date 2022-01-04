@@ -1,0 +1,27 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <PropertyGroup>
+        <N3OUmbracoSerpEditorContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.SerpEditor\**\*.*</N3OUmbracoSerpEditorContentFilesPath>
+    </PropertyGroup>
+
+    <Target Name="CopyN3OUmbracoSerpEditorAssets" BeforeTargets="Build">
+        <ItemGroup>
+            <N3OUmbracoSerpEditorContentFiles Include="$(N3OUmbracoSerpEditorContentFilesPath)"/>
+        </ItemGroup>
+        <Message Text="Copying N3O Serp Editor files: $(N3OUmbracoSerpEditorContentFilesPath) - #@(N3OUmbracoSerpEditorContentFiles->Count()) files" Importance="high"/>
+        <Copy
+                SourceFiles="@(N3OUmbracoSerpEditorContentFiles)"
+                DestinationFiles="@(N3OUmbracoSerpEditorContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.SerpEditor\%(RecursiveDir)%(Filename)%(Extension)')"
+                SkipUnchangedFiles="true"/>
+
+    </Target>
+
+    <Target Name="ClearN3OUmbracoSerpEditorAssets" BeforeTargets="Clean">
+        <ItemGroup>
+            <N3OUmbracoSerpEditorDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.SerpEditor\"/>
+        </ItemGroup>
+        <Message Text="Clear old N3O Serp Editor files" Importance="high"/>
+        <RemoveDir Directories="@(N3OUmbracoSerpEditorDir)"/>
+    </Target>
+
+</Project>

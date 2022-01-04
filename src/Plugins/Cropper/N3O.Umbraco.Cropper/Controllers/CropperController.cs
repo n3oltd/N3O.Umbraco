@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cropper.Models;
 using N3O.Umbraco.Plugins.Controllers;
@@ -18,8 +17,7 @@ namespace N3O.Umbraco.Cropper.Controllers {
         private readonly IClock _clock;
         private readonly MediaFileManager _mediaFileManager;
 
-        public CropperController(ILogger<CropperController> logger, IClock clock, MediaFileManager mediaFileManager)
-            : base(logger) {
+        public CropperController(IClock clock, MediaFileManager mediaFileManager) {
             _clock = clock;
             _mediaFileManager = mediaFileManager;
         }
@@ -30,7 +28,7 @@ namespace N3O.Umbraco.Cropper.Controllers {
             var file = _mediaFileManager.FileSystem.GetFiles(mediaId).SingleOrDefault();
 
             if (file == null) {
-                return NotFound("Specified media ID is invalid");
+                return NotFound();
             }
 
             using (var stream = _mediaFileManager.FileSystem.OpenFile(file)) {

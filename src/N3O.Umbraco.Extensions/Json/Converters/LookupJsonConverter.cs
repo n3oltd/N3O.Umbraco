@@ -23,7 +23,7 @@ namespace N3O.Umbraco.Json {
                 return null;
             }
 
-            if (reader.TokenType != JsonToken.Integer) {
+            if (reader.TokenType != JsonToken.String) {
                 throw new JsonSerializationException();
             }
 

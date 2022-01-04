@@ -1,0 +1,5 @@
+{
+  javascript: [
+    '/App_Plugins/N3O.Umbraco.TextResourceEditor/N3O.Umbraco.TextResourceEditor.Controller.js'
+  ]
+}

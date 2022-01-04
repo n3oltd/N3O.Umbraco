@@ -20,7 +20,7 @@
         <ItemGroup>
             <N3OUmbracoCropperDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Cropper\"/>
         </ItemGroup>
-        <Message Text="Clear old N3O Cropper data" Importance="high"/>
+        <Message Text="Clear old N3O Cropper files" Importance="high"/>
         <RemoveDir Directories="@(N3OUmbracoCropperDir)"/>
     </Target>
 

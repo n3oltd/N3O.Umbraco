@@ -1,0 +1,45 @@
+.n3o-uploader {
+    max-width: 500px;
+}
+
+    .n3o-uploader .hidden {
+        display: none;
+    }
+
+    .n3o-uploader .upload {
+        padding: 10px;
+        border: 1px dashed #666;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .n3o-uploader .error {
+        background: red;
+        color: white;
+        padding: 10px;
+    }
+
+    .n3o-uploader .textBox {
+        margin-top: 5px;
+        margin-bottom: 5px;
+        height: 30px;
+        width: 100%;
+        font-size: 15px;
+        font-family: Verdana;
+        line-height: 30px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .n3o-uploader .cursor {
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .n3o-uploader .reset {
+        color: red;
+        font-size: 120%;
+        font-weight: bold;
+        text-decoration: none;
+        text-align: right;
+    }

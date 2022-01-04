@@ -6,7 +6,7 @@ namespace N3O.Umbraco.Sponsorships.Lookups {
     }
 
     public class Genders : StaticLookupsCollection<Gender> {
-        public static readonly Gender Female = new Gender("female", "Female");
-        public static readonly Gender Male = new Gender("male", "Male");
+        public static readonly Gender Female = new("female", "Female");
+        public static readonly Gender Male = new("male", "Male");
     }
 }

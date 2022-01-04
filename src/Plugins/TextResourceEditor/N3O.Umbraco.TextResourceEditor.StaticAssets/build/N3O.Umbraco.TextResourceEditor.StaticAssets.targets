@@ -1,0 +1,27 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <PropertyGroup>
+        <N3OUmbracoTextResourceEditorContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.TextResourceEditor\**\*.*</N3OUmbracoTextResourceEditorContentFilesPath>
+    </PropertyGroup>
+
+    <Target Name="CopyN3OUmbracoTextResourceEditorAssets" BeforeTargets="Build">
+        <ItemGroup>
+            <N3OUmbracoTextResourceEditorContentFiles Include="$(N3OUmbracoTextResourceEditorContentFilesPath)"/>
+        </ItemGroup>
+        <Message Text="Copying N3O Text Resource Editor files: $(N3OUmbracoTextResourceEditorContentFilesPath) - #@(N3OUmbracoTextResourceEditorContentFiles->Count()) files" Importance="high"/>
+        <Copy
+                SourceFiles="@(N3OUmbracoTextResourceEditorContentFiles)"
+                DestinationFiles="@(N3OUmbracoTextResourceEditorContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.TextResourceEditor\%(RecursiveDir)%(Filename)%(Extension)')"
+                SkipUnchangedFiles="true"/>
+
+    </Target>
+
+    <Target Name="ClearN3OUmbracoTextResourceEditorAssets" BeforeTargets="Clean">
+        <ItemGroup>
+            <N3OUmbracoTextResourceEditorDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.TextResourceEditor\"/>
+        </ItemGroup>
+        <Message Text="Clear old N3O Text Resource Editor files" Importance="high"/>
+        <RemoveDir Directories="@(N3OUmbracoTextResourceEditorDir)"/>
+    </Target>
+
+</Project>

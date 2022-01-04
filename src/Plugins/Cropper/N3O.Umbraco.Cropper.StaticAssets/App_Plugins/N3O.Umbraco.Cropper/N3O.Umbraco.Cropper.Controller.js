@@ -92,16 +92,10 @@ angular.module("umbraco").controller("N3O.Umbraco.Cropper",
             }
 
             $.ajax({
-                type: "POST",
-                url: "/Umbraco/backoffice/Api/Cropper/GetMediaById",
-                data: {mediaId: $scope.mediaId},
-                error: function () { $scope.processResponse(false); },
-                success: function (json) { $scope.processResponse(true, json); },
-                converters: {
-                    "text json": function (result) {
-                        return result;
-                    }
-                },
+                type: "GET",
+                url: "/umbraco/backoffice/cropper/media/" + $scope.mediaId,
+                success: function (json) { $scope.processResponse(null, json); },
+                error: function () { $scope.processResponse("No media found with the specified ID"); }
             });
         };
 
@@ -116,8 +110,8 @@ angular.module("umbraco").controller("N3O.Umbraco.Cropper",
             return text;
         };
 
-        $scope.processResponse = function (success, json) {
-            if (success) {
+        $scope.processResponse = function (errorMessage, json) {
+            if (errorMessage === null) {
                 var response = JSON.parse(json);
                 
                 $scope.model.value = {
@@ -137,7 +131,7 @@ angular.module("umbraco").controller("N3O.Umbraco.Cropper",
 
                 $scope.createCropTool($scope.model.value.crops.length - 1, false, false);
             } else {
-                $scope.errorMessage = "The specified file is either not a valid image, exceeds the maximum allowed image size, or does not meet dimension constraints";
+                $scope.errorMessage = errorMessage;
             }
 
             $scope.uploadInProgress = false;
@@ -212,7 +206,7 @@ angular.module("umbraco").controller("N3O.Umbraco.Cropper",
                         }
 
                         $("#" + $scope.uniqueId + " .upload").upload({
-                            action: "/Umbraco/backoffice/cropper/upload",
+                            action: "/umbraco/backoffice/cropper/upload",
                             label: "Drop an image, or click to select. Min. size " + $scope.minimumImageWidth + " x " + $scope.minimumImageHeight + ".",
                             maxSize: 104857600,
                             maxQueue: 1,
@@ -227,9 +221,9 @@ angular.module("umbraco").controller("N3O.Umbraco.Cropper",
                         }).on("fileprogress.upload", function (e, file, percent) {
                             $("#" + $scope.uniqueId + " .radial-progress").attr("data-progress", percent);
                         }).on("filecomplete.upload", function (e, file, response) {
-                            $scope.processResponse(true, response);
+                            $scope.processResponse(null, response);
                         }).on("fileerror.upload", function (e, file, response) {
-                            $scope.processResponse(false);
+                            $scope.processResponse("The specified file is either not a valid image, exceeds the maximum allowed image size, or does not meet dimension constraints");
                         });
                     }, 1000);
                 })

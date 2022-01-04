@@ -7,9 +7,5 @@ namespace N3O.Umbraco.Giving.Cart {
         public static class QueryString {
             public const string CheckoutView = "r";
         }
-
-        public static class Tables {
-            public const string Carts = "N3O_Carts";
-        }
     }
 }

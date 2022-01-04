@@ -8,7 +8,6 @@ using N3O.Umbraco.Giving.Cart.Models;
 using N3O.Umbraco.Giving.Cart.Queries;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Mediator;
-using N3O.Umbraco.Mediator.Extensions;
 using System;
 using System.Threading.Tasks;
 
@@ -16,9 +15,11 @@ namespace N3O.Umbraco.Giving.Cart.Controllers {
     [ResponseCache(CacheProfileName = CacheProfiles.NoCache)]
     [ApiDocument(CartConstants.ApiName)]
     public class CartController : ApiController {
+        private readonly ILogger<CartController> _logger;
         private readonly IMediator _mediator;
 
-        public CartController(ILogger<CartController> logger, IMediator mediator) : base(logger) {
+        public CartController(ILogger<CartController> logger, IMediator mediator) {
+            _logger = logger;
             _mediator = mediator;
         }
 
@@ -30,7 +31,9 @@ namespace N3O.Umbraco.Giving.Cart.Controllers {
 
                 return Ok();
             } catch (Exception ex) {
-                return RequestFailed(l => l.LogError(ex, "Failed to add to cart for request {Req}", req));
+                _logger.LogError(ex, "Failed to add to cart for request {Req}", req);
+                
+                return UnprocessableEntity();
             }
         }
         
@@ -41,15 +44,17 @@ namespace N3O.Umbraco.Giving.Cart.Controllers {
             return Ok(res);
         }
 
-        [HttpPost("remove/{allocationNumber:int}")]
+        [HttpDelete("remove")]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-        public async Task<ActionResult> Remove() {
+        public async Task<ActionResult> Remove(RemoveFromCartReq req) {
             try {
-                await _mediator.SendAsync<RemoveFromCartCommand>();
+                await _mediator.SendAsync<RemoveFromCartCommand, RemoveFromCartReq>(req);
 
                 return Ok();
             } catch (Exception ex) {
-                return RequestFailed(l => l.LogError(ex, "Failed to remove item from cart"));
+                _logger.LogError(ex, "Failed to remove item from cart");
+
+                return UnprocessableEntity();
             }
         }
     }
