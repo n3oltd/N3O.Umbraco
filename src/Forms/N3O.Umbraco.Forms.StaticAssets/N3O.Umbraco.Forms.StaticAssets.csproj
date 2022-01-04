@@ -38,6 +38,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Umbraco.Forms.Web" Version="9.2.0" />
+      <PackageReference Include="Umbraco.Forms" Version="9.2.0" />
     </ItemGroup>
 </Project>

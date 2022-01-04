@@ -7,10 +7,10 @@ using Umbraco.Cms.Core.DependencyInjection;
 namespace N3O.Umbraco.Json {
     public class JsonComposer : Composer {
         public override void Compose(IUmbracoBuilder builder) {
-            builder.Services.AddScoped<IJsonProvider, JsonProvider>();
+            builder.Services.AddSingleton<IJsonProvider, JsonProvider>();
         
             RegisterAll(t => t.IsSubclassOfType(typeof(JsonConverter)),
-                        t => builder.Services.AddScoped(typeof(JsonConverter), t));
+                        t => builder.Services.AddSingleton(typeof(JsonConverter), t));
         }
     }
 }
