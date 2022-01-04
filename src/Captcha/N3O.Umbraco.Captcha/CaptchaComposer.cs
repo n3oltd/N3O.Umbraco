@@ -5,7 +5,7 @@ using Umbraco.Cms.Core.DependencyInjection;
 namespace N3O.Umbraco.Captcha {
     public class CaptchaComposer : Composer {
         public override void Compose(IUmbracoBuilder builder) {
-            builder.Services.AddSingleton<ICaptchaValidator, CaptchaValidator>();
+            builder.Services.AddScoped<ICaptchaValidator, CaptchaValidator>();
         }
     }
 }

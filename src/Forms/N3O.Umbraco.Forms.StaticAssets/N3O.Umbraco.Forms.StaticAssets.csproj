@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <RootNamespace>N3O.Umbraco.Forms</RootNamespace>
+        <RootNamespace>N3O.Umbraco.Forms.StaticAssets</RootNamespace>
         <TargetFramework>net5.0</TargetFramework>
         <LangVersion>9.0</LangVersion>
         <Copyright>Copyright © 2022 N3O Ltd</Copyright>
     </PropertyGroup>
 
     <PropertyGroup>
-        <PackageId>N3O.Umbraco.Forms</PackageId>
+        <PackageId>N3O.Umbraco.Forms.StaticAssets</PackageId>
         <IsPackable>true</IsPackable>
         <ContentTargetFolders>.</ContentTargetFolders>
         <Authors>N3O Ltd</Authors>
@@ -28,6 +28,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
+        <ProjectReference Include="..\N3O.Umbraco.Forms\N3O.Umbraco.Forms.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -37,6 +38,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Umbraco.Forms.Core.Providers" Version="9.2.0" />
+      <PackageReference Include="Umbraco.Forms.Web" Version="9.2.0" />
     </ItemGroup>
 </Project>

@@ -39,7 +39,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\N3O.Umbraco.Plugins\N3O.Umbraco.Plugins.csproj"/>
+        <ProjectReference Include="..\N3O.Umbraco.TextResourceEditor\N3O.Umbraco.TextResourceEditor.csproj" />
     </ItemGroup>
 
     <ItemGroup>
