@@ -31,17 +31,15 @@
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
         </Content>
+        
         <None Include="build\**\*.*">
             <Pack>True</Pack>
             <PackagePath>buildTransitive</PackagePath>
         </None>
-        <None Update="README.md">
-            <Pack>True</Pack>
-        </None>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\N3O.Umbraco.Plugins\N3O.Umbraco.Plugins.csproj" />
+        <ProjectReference Include="..\..\N3O.Umbraco.Plugins\N3O.Umbraco.Plugins.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

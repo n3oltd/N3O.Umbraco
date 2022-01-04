@@ -31,6 +31,7 @@
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
         </Content>
+        
         <None Include="build\**\*.*">
             <Pack>True</Pack>
             <PackagePath>buildTransitive</PackagePath>
