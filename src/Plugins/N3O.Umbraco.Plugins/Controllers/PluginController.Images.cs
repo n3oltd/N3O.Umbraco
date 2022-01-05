@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Plugins.Controllers {
     public partial class PluginController {
         private static readonly int MaxSizeMb = 100 * 1024 * 1024;
-        private static readonly Size MaxDimensions = new(4000, 4000);
+        private static readonly Size MaxDimensions = new(10000, 10000);
     
         protected async Task<UploadedImage> GetUploadedImageAsync(ImageUploadReq req) {
             try {
@@ -43,6 +43,8 @@ namespace N3O.Umbraco.Plugins.Controllers {
             using (var image = Image.Load(stream, out var format)) {
                 var metadata = new ImageMetadata(GetImageFormat(format), image.Height, image.Width);
 
+                stream.Seek(0, SeekOrigin.Begin);
+                
                 return metadata;
             }
         }
