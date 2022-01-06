@@ -19,7 +19,7 @@ namespace N3O.Umbraco.Scheduler {
             _jsonProvider = jsonProvider;
         }
     
-        [DisplayName("{0} / {1}")]
+        [DisplayName("{0}")]
         public async Task TriggerAsync(string jobName,
                                        string triggerKey,
                                        string modelJson,

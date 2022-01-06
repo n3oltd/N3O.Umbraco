@@ -27,6 +27,8 @@ namespace N3O.Umbraco.Scheduler {
         private const string HangfireDashboard = nameof(HangfireDashboard);
     
         public void Compose(IUmbracoBuilder builder) {
+            builder.Services.AddTransient<IBackgroundJob, BackgroundJob>();
+            
             var connectionString = builder.Config.GetConnectionString(UmbracoConstants.System.UmbracoConnectionName);
 
             if (connectionString.HasValue()) {

@@ -1,0 +1,11 @@
+{
+  "dashboards": [
+    {
+      "alias": "N3O.Umbraco.Scheduler",
+      "view": "/App_Plugins/N3O.Umbraco.Scheduler/Dashboard.html",
+      "sections": [
+        "settings"
+      ]
+    }
+  ]
+}
