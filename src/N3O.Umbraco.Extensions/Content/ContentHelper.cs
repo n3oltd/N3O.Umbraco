@@ -17,7 +17,6 @@ namespace N3O.Umbraco.Content {
         private readonly IServiceProvider _serviceProvider;
         private readonly IContentService _contentService;
         private readonly IContentLocator _contentLocator;
-        private readonly IContentTypeService _contentTypeService;
         private readonly IPublishedModelFactory _publishedModelFactory;
         private readonly IPublishedContentTypeFactory _publishedContentTypeFactory;
         private readonly IUmbracoContextAccessor _umbracoContextAccessor;
@@ -26,7 +25,6 @@ namespace N3O.Umbraco.Content {
         public ContentHelper(IServiceProvider serviceProvider,
                              IContentService contentService,
                              IContentLocator contentLocator,
-                             IContentTypeService contentTypeService,
                              IPublishedModelFactory publishedModelFactory,
                              IPublishedContentTypeFactory publishedContentTypeFactory,
                              IUmbracoContextAccessor umbracoContextAccessor,
@@ -34,7 +32,6 @@ namespace N3O.Umbraco.Content {
             _serviceProvider = serviceProvider;
             _contentService = contentService;
             _contentLocator = contentLocator;
-            _contentTypeService = contentTypeService;
             _publishedModelFactory = publishedModelFactory;
             _publishedContentTypeFactory = publishedContentTypeFactory;
             _umbracoContextAccessor = umbracoContextAccessor;
@@ -146,12 +143,6 @@ namespace N3O.Umbraco.Content {
         public TProperty GetSingleNestedContentValue<TContent, TProperty>(IContent content,
                                                                           Expression<Func<TContent, TProperty>> memberLambda) {
             return GetCustomConverterValue<NestedContentSingleValueConverter, TContent, TProperty>(content, memberLambda);
-        }
-
-        public bool HasComposition(IContent content, string contentTypeAlias) {
-            var contentType = _contentTypeService.Get(content.ContentType.Alias);
-            
-            return contentType.ContentTypeComposition.Any(x => x.Alias.EqualsInvariant(contentTypeAlias));
         }
     }
 }

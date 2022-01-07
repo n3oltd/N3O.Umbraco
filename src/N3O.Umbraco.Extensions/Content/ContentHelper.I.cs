@@ -39,7 +39,5 @@ namespace N3O.Umbraco.Content {
 
         TProperty GetSingleNestedContentValue<TContent, TProperty>(IContent content,
                                                                    Expression<Func<TContent, TProperty>> memberLambda);
-
-        bool HasComposition(IContent content, string contentTypeAlias);
     }
 }
