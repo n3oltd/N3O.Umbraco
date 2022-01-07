@@ -69,7 +69,10 @@ namespace N3O.Umbraco.Scheduler {
             builder.Services.Configure<UmbracoPipelineOptions>(options => {
                 var filter = new UmbracoPipelineFilter(HangfireDashboard);
                 filter.Endpoints = app => app.UseEndpoints(endpoints => {
-                                                 endpoints.MapHangfireDashboard("/umbraco/backoffice/hangfire", new DashboardOptions())
+                                                 endpoints.MapHangfireDashboard("/umbraco/backoffice/hangfire",
+                                                                                new DashboardOptions {
+                                                                                    AppPath = null
+                                                                                })
                                                           .RequireAuthorization(HangfireDashboard);
                                              })
                                              .UseHangfireDashboard();
