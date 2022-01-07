@@ -18,8 +18,5 @@ namespace N3O.Umbraco.Json {
         JsonSerializerSettings GetSettings();
         string SerializeObject(object value, Formatting formatting = Formatting.Indented);
         void SerializeObject(JsonWriter writer, object value, Formatting formatting = Formatting.Indented);
-
-
-
     }
 }

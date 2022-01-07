@@ -1,4 +1,3 @@
-using Newtonsoft.Json.Linq;
 using System;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
@@ -10,7 +9,5 @@ namespace N3O.Umbraco.Content {
             where T : class, IPublishedContent;
 
         void SortChildrenByName(IPublishedContent content);
-
-        JObject ToJObject(IPublishedContent content);
     }
 }

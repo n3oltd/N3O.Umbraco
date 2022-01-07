@@ -1,4 +1,3 @@
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -8,11 +7,15 @@ using Umbraco.Cms.Core.PropertyEditors;
 
 namespace N3O.Umbraco.Content {
     public interface IContentHelper {
-        IReadOnlyList<IContent> Children<T>(IContent content) where T : IPublishedContent;
+        IReadOnlyList<T> Ancestor<T>(IContent content) where T : PublishedContentModel;
+        
+        IReadOnlyList<IContent> Ancestors(IContent content);
+        
+        IReadOnlyList<T> Children<T>(IContent content) where T : PublishedContentModel;
     
         IReadOnlyList<IContent> Children(IContent content);
 
-        IReadOnlyList<IContent> Descendants<T>(IContent content) where T : IPublishedContent;
+        IReadOnlyList<T> Descendants<T>(IContent content) where T : PublishedContentModel;
     
         IReadOnlyList<IContent> Descendants(IContent content);
     
@@ -37,6 +40,6 @@ namespace N3O.Umbraco.Content {
         TProperty GetSingleNestedContentValue<TContent, TProperty>(IContent content,
                                                                    Expression<Func<TContent, TProperty>> memberLambda);
 
-        JObject ToJObject(IContent content);
+        bool HasComposition(IContent content, string contentTypeAlias);
     }
 }

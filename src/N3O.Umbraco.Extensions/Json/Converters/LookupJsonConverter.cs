@@ -6,9 +6,9 @@ using System;
 
 namespace N3O.Umbraco.Json {
     public class LookupJsonConverter : JsonConverter {
-        private readonly ILookups _lookups;
+        private readonly Lazy<ILookups> _lookups;
     
-        public LookupJsonConverter(ILookups lookups) {
+        public LookupJsonConverter(Lazy<ILookups> lookups) {
             _lookups = lookups;
         }
 
@@ -29,7 +29,7 @@ namespace N3O.Umbraco.Json {
 
             var lookupId = (string) reader.Value;
 
-            return _lookups.FindById(objectType, lookupId);
+            return _lookups.Value.FindById(objectType, lookupId);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {

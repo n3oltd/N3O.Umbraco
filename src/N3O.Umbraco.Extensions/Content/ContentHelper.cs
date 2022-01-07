@@ -1,7 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,30 +16,49 @@ namespace N3O.Umbraco.Content {
     public class ContentHelper : IContentHelper {
         private readonly IServiceProvider _serviceProvider;
         private readonly IContentService _contentService;
+        private readonly IContentLocator _contentLocator;
+        private readonly IContentTypeService _contentTypeService;
         private readonly IPublishedModelFactory _publishedModelFactory;
         private readonly IPublishedContentTypeFactory _publishedContentTypeFactory;
         private readonly IUmbracoContextAccessor _umbracoContextAccessor;
         private readonly NestedContentManyValueConverter _nestedContentManyValueConverter;
-        private readonly IJsonProvider _jsonProvider;
 
         public ContentHelper(IServiceProvider serviceProvider,
                              IContentService contentService,
+                             IContentLocator contentLocator,
+                             IContentTypeService contentTypeService,
                              IPublishedModelFactory publishedModelFactory,
                              IPublishedContentTypeFactory publishedContentTypeFactory,
                              IUmbracoContextAccessor umbracoContextAccessor,
-                             NestedContentManyValueConverter nestedContentManyValueConverter,
-                             IJsonProvider jsonProvider) {
+                             NestedContentManyValueConverter nestedContentManyValueConverter) {
             _serviceProvider = serviceProvider;
             _contentService = contentService;
+            _contentLocator = contentLocator;
+            _contentTypeService = contentTypeService;
             _publishedModelFactory = publishedModelFactory;
             _publishedContentTypeFactory = publishedContentTypeFactory;
             _umbracoContextAccessor = umbracoContextAccessor;
             _nestedContentManyValueConverter = nestedContentManyValueConverter;
-            _jsonProvider = jsonProvider;
         }
-    
-        public IReadOnlyList<IContent> Children<T>(IContent content) where T : IPublishedContent {
-            return Children(content).Where(x => x.ContentType.Alias == AliasHelper.ForContentType<T>()).ToList();
+
+        public IReadOnlyList<T> Ancestor<T>(IContent content) where T : PublishedContentModel {
+            return Ancestors(content).Select(x => _contentLocator.ById<T>(x.Key)).ToList();
+        }
+
+        public IReadOnlyList<IContent> Ancestors(IContent content) {
+            var list = new List<IContent>();
+            
+            while (content.ParentId != -1) {
+                content = _contentService.GetById(content.ParentId);
+                
+                list.Add(content);
+            }
+
+            return list;
+        }
+
+        public IReadOnlyList<T> Children<T>(IContent content) where T : PublishedContentModel {
+            return Children(content).Select(x => _contentLocator.ById<T>(x.Key)).ToList();
         }
 
         public IReadOnlyList<IContent> Children(IContent content) {
@@ -50,8 +67,8 @@ namespace N3O.Umbraco.Content {
             return children;
         }
 
-        public IReadOnlyList<IContent> Descendants<T>(IContent content) where T : IPublishedContent {
-            return Descendants(content).Where(x => x.ContentType.Alias == AliasHelper.ForContentType<T>()).ToList();
+        public IReadOnlyList<T> Descendants<T>(IContent content) where T : PublishedContentModel {
+            return Descendants(content).Select(x => _contentLocator.ById<T>(x.Key)).ToList();
         }
 
         public IReadOnlyList<IContent> Descendants(IContent content) {
@@ -130,24 +147,11 @@ namespace N3O.Umbraco.Content {
                                                                           Expression<Func<TContent, TProperty>> memberLambda) {
             return GetCustomConverterValue<NestedContentSingleValueConverter, TContent, TProperty>(content, memberLambda);
         }
-        
-        public JObject ToJObject(IContent content) {
-            var jObject = new JObject();
+
+        public bool HasComposition(IContent content, string contentTypeAlias) {
+            var contentType = _contentTypeService.Get(content.ContentType.Alias);
             
-            jObject.Add(nameof(IContent.Id), new JValue(content.Id));
-            jObject.Add(nameof(IContent.Key), new JValue(content.Key));
-            jObject.Add(nameof(IContent.ContentType), new JValue(content.ContentType.Alias));
-            jObject.Add(nameof(IContent.Name), new JValue(content.Name));
-            jObject.Add(nameof(IContent.CreateDate), new JValue(content.CreateDate));
-            jObject.Add(nameof(IContent.UpdateDate), new JValue(content.UpdateDate));
-
-            foreach (var property in content.Properties) {
-                var jToken = property.GetValue().ToJToken(_jsonProvider);
-                
-                jObject.Add(property.Alias, jToken);
-            }
-
-            return jObject;
+            return contentType.ContentTypeComposition.Any(x => x.Alias.EqualsInvariant(contentTypeAlias));
         }
     }
 }
