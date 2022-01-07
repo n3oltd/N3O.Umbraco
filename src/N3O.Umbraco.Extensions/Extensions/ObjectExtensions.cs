@@ -1,3 +1,5 @@
+using N3O.Umbraco.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -123,6 +125,40 @@ namespace N3O.Umbraco.Extensions {
             var collection = selector?.Invoke(obj) ?? Enumerable.Empty<T2>();
         
             return collection;
+        }
+
+        public static JToken ToJToken(this object obj, IJsonProvider jsonProvider) {
+            if (obj == null) {
+                return JValue.CreateNull();
+            }
+
+            if (obj.GetType().IsNullableType()) {
+                obj = obj.GetPropertyValue(nameof(Nullable<int>.Value));
+            }
+            
+            if (obj is string @string) {
+                return new JValue(@string);
+            } else if (obj is bool @bool) {
+                return new JValue(@bool);
+            } else if (obj is DateTime dateTime) {
+                return new JValue(dateTime);
+            } else if (obj is DateTimeOffset dateTimeOffset) {
+                return new JValue(dateTimeOffset);
+            } else if (obj is Guid guid) {
+                return new JValue(guid);
+            } else if (obj is int @int) {
+                return new JValue(@int);
+            } else if (obj is long @long) {
+                return new JValue(@long);
+            } else if (obj is double @double) {
+                return new JValue(@double);
+            } else if (obj is decimal @decimal) {
+                return new JValue(@decimal);
+            } else if (obj is float @float) {
+                return new JValue(@float);
+            } else {
+                return jsonProvider.SerializeObject(obj);
+            }
         }
     }
 }

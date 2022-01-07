@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -35,5 +36,7 @@ namespace N3O.Umbraco.Content {
 
         TProperty GetSingleNestedContentValue<TContent, TProperty>(IContent content,
                                                                    Expression<Func<TContent, TProperty>> memberLambda);
+
+        JObject ToJObject(IContent content);
     }
 }

@@ -1,5 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,19 +22,22 @@ namespace N3O.Umbraco.Content {
         private readonly IPublishedContentTypeFactory _publishedContentTypeFactory;
         private readonly IUmbracoContextAccessor _umbracoContextAccessor;
         private readonly NestedContentManyValueConverter _nestedContentManyValueConverter;
+        private readonly IJsonProvider _jsonProvider;
 
         public ContentHelper(IServiceProvider serviceProvider,
                              IContentService contentService,
                              IPublishedModelFactory publishedModelFactory,
                              IPublishedContentTypeFactory publishedContentTypeFactory,
                              IUmbracoContextAccessor umbracoContextAccessor,
-                             NestedContentManyValueConverter nestedContentManyValueConverter) {
+                             NestedContentManyValueConverter nestedContentManyValueConverter,
+                             IJsonProvider jsonProvider) {
             _serviceProvider = serviceProvider;
             _contentService = contentService;
             _publishedModelFactory = publishedModelFactory;
             _publishedContentTypeFactory = publishedContentTypeFactory;
             _umbracoContextAccessor = umbracoContextAccessor;
             _nestedContentManyValueConverter = nestedContentManyValueConverter;
+            _jsonProvider = jsonProvider;
         }
     
         public IReadOnlyList<IContent> Children<T>(IContent content) where T : IPublishedContent {
@@ -124,6 +129,25 @@ namespace N3O.Umbraco.Content {
         public TProperty GetSingleNestedContentValue<TContent, TProperty>(IContent content,
                                                                           Expression<Func<TContent, TProperty>> memberLambda) {
             return GetCustomConverterValue<NestedContentSingleValueConverter, TContent, TProperty>(content, memberLambda);
+        }
+        
+        public JObject ToJObject(IContent content) {
+            var jObject = new JObject();
+            
+            jObject.Add(nameof(IContent.Id), new JValue(content.Id));
+            jObject.Add(nameof(IContent.Key), new JValue(content.Key));
+            jObject.Add(nameof(IContent.ContentType), new JValue(content.ContentType.Alias));
+            jObject.Add(nameof(IContent.Name), new JValue(content.Name));
+            jObject.Add(nameof(IContent.CreateDate), new JValue(content.CreateDate));
+            jObject.Add(nameof(IContent.UpdateDate), new JValue(content.UpdateDate));
+
+            foreach (var property in content.Properties) {
+                var jToken = property.GetValue().ToJToken(_jsonProvider);
+                
+                jObject.Add(property.Alias, jToken);
+            }
+
+            return jObject;
         }
     }
 }

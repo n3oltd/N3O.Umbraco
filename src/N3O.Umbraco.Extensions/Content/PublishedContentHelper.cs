@@ -1,4 +1,6 @@
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -9,10 +11,14 @@ namespace N3O.Umbraco.Content {
     public class PublishedContentHelper : IPublishedContentHelper {
         private readonly IContentService _contentService;
         private readonly UmbracoHelper _umbracoHelper;
+        private readonly IJsonProvider _jsonProvider;
 
-        public PublishedContentHelper(IContentService contentService, UmbracoHelper umbracoHelper) {
+        public PublishedContentHelper(IContentService contentService,
+                                      UmbracoHelper umbracoHelper,
+                                      IJsonProvider jsonProvider) {
             _contentService = contentService;
             _umbracoHelper = umbracoHelper;
+            _jsonProvider = jsonProvider;
         }
     
         public T GetOrCreateFolder<T>(IPublishedContent content, string name)
@@ -30,10 +36,6 @@ namespace N3O.Umbraco.Content {
             return publishedFolder;
         }
 
-        public void SortChildrenByName(IPublishedContent content) {
-            SortChildren<IPublishedContent>(content, x => x.Name);
-        }
-
         public void SortChildren<T>(IPublishedContent content, Func<T, object> keySelector, int userId = 0)
             where T : class, IPublishedContent {
             var sortOrder = 0;
@@ -49,6 +51,29 @@ namespace N3O.Umbraco.Content {
 
                 _contentService.SaveAndPublish(child);
             }
+        }
+        
+        public void SortChildrenByName(IPublishedContent content) {
+            SortChildren<IPublishedContent>(content, x => x.Name);
+        }
+
+        public JObject ToJObject(IPublishedContent content) {
+            var jObject = new JObject();
+            
+            jObject.Add(nameof(IPublishedContent.Id), new JValue(content.Id));
+            jObject.Add(nameof(IPublishedContent.Key), new JValue(content.Key));
+            jObject.Add(nameof(IPublishedContent.ContentType), new JValue(content.ContentType.Alias));
+            jObject.Add(nameof(IPublishedContent.Name), new JValue(content.Name));
+            jObject.Add(nameof(IPublishedContent.CreateDate), new JValue(content.CreateDate));
+            jObject.Add(nameof(IPublishedContent.UpdateDate), new JValue(content.UpdateDate));
+
+            foreach (var property in content.Properties) {
+                var jToken = property.GetValue().ToJToken(_jsonProvider);
+                
+                jObject.Add(property.Alias, jToken);
+            }
+
+            return jObject;
         }
     }
 }
