@@ -32,6 +32,7 @@
         <PackageReference Include="NodaTime" Version="3.0.9" />
         <PackageReference Include="NodaTime.Serialization.JsonNet" Version="3.0.0" />
         <PackageReference Include="NSwag.AspNetCore" Version="13.15.5" />
+        <PackageReference Include="Our.Umbraco.Community.Contentment.Core" Version="3.0.1" />
         <PackageReference Include="Perplex.ContentBlocks.Core" Version="2.1.1" />
         <PackageReference Include="Refit" Version="6.1.15" />
         <PackageReference Include="Refit.Newtonsoft.Json" Version="6.1.15" />
