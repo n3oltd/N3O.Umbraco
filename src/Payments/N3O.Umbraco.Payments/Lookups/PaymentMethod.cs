@@ -34,19 +34,5 @@ namespace N3O.Umbraco.Payments.Lookups {
         }
     }
 
-    public class PaymentMethods : LookupsCollection<PaymentMethod> {
-        private static readonly IReadOnlyList<PaymentMethod> All;
-
-        static PaymentMethods() {
-            All = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
-                                              t.IsSubclassOfType(typeof(PaymentMethod)) &&
-                                              t.HasParameterlessConstructor())
-                               .Select(t => (PaymentMethod) Activator.CreateInstance(t))
-                               .ToList();
-        }
-
-        public override Task<IReadOnlyList<PaymentMethod>> GetAllAsync() {
-            return Task.FromResult(All);
-        }
-    }
+    public class PaymentMethods : TypesLookupsCollection<PaymentMethod> { }
 }
