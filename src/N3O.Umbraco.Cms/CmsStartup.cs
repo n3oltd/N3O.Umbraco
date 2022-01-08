@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,6 +27,10 @@ namespace N3O.Umbraco {
                     .AddBackOffice()
                     .AddWebsite()
                     .AddComposers()
+                    .AddContentment(opt => {
+                        opt.DisableTelemetry = true;
+                        opt.DisableTree = true;
+                    })
                     .Build();
         }
 
@@ -36,6 +41,8 @@ namespace N3O.Umbraco {
                 app.UseDeveloperExceptionPage();
                 app.UseOpenApiWithUI();
             }
+
+            ConfigureStaticFiles(app);
 
             app.UseUmbraco()
                .WithMiddleware(u => {
@@ -55,7 +62,20 @@ namespace N3O.Umbraco {
                });
         }
 
+        private void ConfigureStaticFiles(IApplicationBuilder app) {
+            var provider = new FileExtensionContentTypeProvider();
+            provider.Mappings[".pdf"] = "application/pdf";
+
+            ConfigureFileExtensions(provider);
+
+            var options = new StaticFileOptions();
+            options.ContentTypeProvider = provider;
+            
+            app.UseStaticFiles(options);
+        }
+
         protected virtual void ConfigureEndpoints(IUmbracoEndpointBuilderContext umbraco) { }
+        protected virtual void ConfigureFileExtensions(FileExtensionContentTypeProvider provider) { }
         protected virtual void ConfigureMiddleware(IUmbracoApplicationBuilderContext umbraco) { }
     }
 }
