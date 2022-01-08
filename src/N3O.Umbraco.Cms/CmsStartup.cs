@@ -29,7 +29,6 @@ namespace N3O.Umbraco {
                     .AddComposers()
                     .AddContentment(opt => {
                         opt.DisableTelemetry = true;
-                        opt.DisableTree = true;
                     })
                     .Build();
         }
@@ -42,7 +41,7 @@ namespace N3O.Umbraco {
                 app.UseOpenApiWithUI();
             }
 
-            ConfigureStaticFiles(app);
+            //ConfigureStaticFiles(app);
 
             app.UseUmbraco()
                .WithMiddleware(u => {
