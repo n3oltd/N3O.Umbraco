@@ -8,26 +8,26 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Scheduler {
     public class BackgroundJob : IBackgroundJob {
-        private readonly IFluentParameters _fluentParameters;
+        private readonly IFluentParametersBuilder _fluentParametersBuilder;
         private readonly IJsonProvider _jsonProvider;
         private readonly IClock _clock;
 
-        public BackgroundJob(IFluentParameters fluentParameters,
+        public BackgroundJob(IFluentParametersBuilder fluentParametersBuilder,
                              IJsonProvider jsonProvider,
                              IClock clock) {
-            _fluentParameters = fluentParameters;
+            _fluentParametersBuilder = fluentParametersBuilder;
             _jsonProvider = jsonProvider;
             _clock = clock;
         }
 
         public string Enqueue<TRequest, TModel>(string jobName,
                                                 TModel model,
-                                                Action<IFluentParameters> addParameters = null)
+                                                Action<IFluentParametersBuilder> addParameters = null)
             where TRequest : Request<TModel, None> where TModel : class {
             return Schedule<TRequest, TModel>(jobName, Duration.Zero, model, addParameters);
         }
 
-        public string Enqueue<TRequest>(string jobName, Action<IFluentParameters> addParameters = null)
+        public string Enqueue<TRequest>(string jobName, Action<IFluentParametersBuilder> addParameters = null)
             where TRequest : Request<None, None> {
             return Schedule<TRequest>(jobName, Duration.Zero, addParameters);
         }
@@ -35,14 +35,14 @@ namespace N3O.Umbraco.Scheduler {
         public string Schedule<TRequest, TModel>(string jobName,
                                                  Instant at,
                                                  TModel model,
-                                                 Action<IFluentParameters> addParameters = null)
+                                                 Action<IFluentParametersBuilder> addParameters = null)
             where TRequest : Request<TModel, None>
             where TModel : class {
             var triggerKey = TriggerKey.Generate<TRequest, TModel>();
 
-            addParameters?.Invoke(_fluentParameters);
+            addParameters?.Invoke(_fluentParametersBuilder);
 
-            var parameterData = _fluentParameters.GetData();
+            var parameterData = _fluentParametersBuilder.Build();
             var modelJson = _jsonProvider.SerializeObject(model);
 
             Expression<Func<JobTrigger, Task>> triggerAction = jobTrigger =>
@@ -57,7 +57,7 @@ namespace N3O.Umbraco.Scheduler {
         public string Schedule<TRequest, TModel>(string jobName,
                                                  Duration fromNow,
                                                  TModel model,
-                                                 Action<IFluentParameters> addParameters = null)
+                                                 Action<IFluentParametersBuilder> addParameters = null)
             where TRequest : Request<TModel, None>
             where TModel : class {
             if (fromNow.TotalSeconds < 0) {
@@ -71,14 +71,14 @@ namespace N3O.Umbraco.Scheduler {
 
         public string Schedule<TRequest>(string jobName,
                                          Instant at,
-                                         Action<IFluentParameters> addParameters = null)
+                                         Action<IFluentParametersBuilder> addParameters = null)
             where TRequest : Request<None, None> {
             return Schedule<TRequest, None>(jobName, at, None.Empty, addParameters);
         }
 
         public string Schedule<TRequest>(string jobName,
                                          Duration fromNow,
-                                         Action<IFluentParameters> addParameters = null)
+                                         Action<IFluentParametersBuilder> addParameters = null)
             where TRequest : Request<None, None> {
             return Schedule<TRequest, None>(jobName, fromNow, None.Empty, addParameters);
         }

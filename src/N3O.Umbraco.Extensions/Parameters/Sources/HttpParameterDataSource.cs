@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using N3O.Umbraco.Extensions;
+using System;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Parameters {
@@ -12,7 +13,7 @@ namespace N3O.Umbraco.Parameters {
         }
 
         public IReadOnlyDictionary<string, string> GetData() {
-            var dict = new Dictionary<string, string>();
+            var dict = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
             if (_contextAccessor.HttpContext != null) {
                 foreach (var (key, value) in _contextAccessor.HttpContext.Request.OrEmpty(x => x.Query)) {

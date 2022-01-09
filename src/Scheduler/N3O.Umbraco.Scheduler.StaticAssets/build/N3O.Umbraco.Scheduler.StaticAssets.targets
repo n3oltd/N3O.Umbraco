@@ -1,27 +1,27 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
     <PropertyGroup>
-        <N3OUmbracoCropperContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.Cropper\**\*.*</N3OUmbracoCropperContentFilesPath>
+        <N3OUmbracoSchedulerContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.Scheduler\**\*.*</N3OUmbracoSchedulerContentFilesPath>
     </PropertyGroup>
 
-    <Target Name="CopyN3OUmbracoCropperAssets" BeforeTargets="Build">
+    <Target Name="CopyN3OUmbracoSchedulerAssets" BeforeTargets="Build">
         <ItemGroup>
-            <N3OUmbracoCropperContentFiles Include="$(N3OUmbracoCropperContentFilesPath)"/>
+            <N3OUmbracoSchedulerContentFiles Include="$(N3OUmbracoSchedulerContentFilesPath)"/>
         </ItemGroup>
-        <Message Text="Copying N3O Cropper files: $(N3OUmbracoCropperContentFilesPath) - #@(N3OUmbracoCropperContentFiles->Count()) files" Importance="high"/>
+        <Message Text="Copying N3O scheduler files: $(N3OUmbracoSchedulerContentFilesPath) - #@(N3OUmbracoSchedulerContentFiles->Count()) files" Importance="high"/>
         <Copy
-                SourceFiles="@(N3OUmbracoCropperContentFiles)"
-                DestinationFiles="@(N3OUmbracoCropperContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Cropper\%(RecursiveDir)%(Filename)%(Extension)')"
+                SourceFiles="@(N3OUmbracoSchedulerContentFiles)"
+                DestinationFiles="@(N3OUmbracoSchedulerContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Scheduler\%(RecursiveDir)%(Filename)%(Extension)')"
                 SkipUnchangedFiles="true"/>
 
     </Target>
 
-    <Target Name="ClearN3OUmbracoCropperAssets" BeforeTargets="Clean">
+    <Target Name="ClearN3OUmbracoSchedulerAssets" BeforeTargets="Clean">
         <ItemGroup>
-            <N3OUmbracoCropperDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Cropper\"/>
+            <N3OUmbracoSchedulerDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Scheduler\"/>
         </ItemGroup>
-        <Message Text="Clear old N3O Cropper files" Importance="high"/>
-        <RemoveDir Directories="@(N3OUmbracoCropperDir)"/>
+        <Message Text="Clear old N3O scheduler files" Importance="high"/>
+        <RemoveDir Directories="@(N3OUmbracoSchedulerDir)"/>
     </Target>
 
 </Project>

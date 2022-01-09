@@ -1,5 +1,6 @@
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Locks;
+using System;
 using System.Threading.Tasks;
 using Umbraco.Extensions;
 
@@ -15,10 +16,11 @@ namespace N3O.Umbraco.Counters {
         
         public async Task<long> NextAsync(string key, long startFrom = 1) {
             var lockKey = $"{nameof(Counters)}_{key}";
-            var id = key.ToGuid();
 
             var result = await _lock.LockAsync(lockKey, async () => {
-                var counter = await _repository.GetAsync(id) ?? await InitializeCounterAsync(key, startFrom);
+                var id = key.ToGuid();
+                
+                var counter = await _repository.GetAsync(id) ?? await InitializeCounterAsync(id, startFrom);
 
                 var next = counter.Next;
                 
@@ -32,8 +34,8 @@ namespace N3O.Umbraco.Counters {
             return result;
         }
 
-        private async Task<Counter> InitializeCounterAsync(string key, long startFrom) {
-            var counter = new Counter();
+        private async Task<Counter> InitializeCounterAsync(Guid id, long startFrom) {
+            var counter = Entity.Create<Counter>(id);
             counter.Initialize(startFrom);
 
             await _repository.InsertAsync(counter);

@@ -14,39 +14,39 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Content {
     public class ContentHelper : IContentHelper {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly IContentService _contentService;
-        private readonly IContentLocator _contentLocator;
-        private readonly IPublishedModelFactory _publishedModelFactory;
-        private readonly IPublishedContentTypeFactory _publishedContentTypeFactory;
-        private readonly IUmbracoContextAccessor _umbracoContextAccessor;
-        private readonly NestedContentManyValueConverter _nestedContentManyValueConverter;
+        private readonly Lazy<IServiceProvider> _serviceProvider;
+        private readonly Lazy<IContentService> _contentService;
+        private readonly Lazy<IContentLocator> _contentLocator;
+        private readonly Lazy<IPublishedModelFactory> _publishedModelFactory;
+        private readonly Lazy<IPublishedContentTypeFactory> _publishedContentTypeFactory;
+        private readonly Lazy<IUmbracoContextFactory> _umbracoContextFactory;
+        private readonly Lazy<NestedContentManyValueConverter> _nestedContentManyValueConverter;
 
-        public ContentHelper(IServiceProvider serviceProvider,
-                             IContentService contentService,
-                             IContentLocator contentLocator,
-                             IPublishedModelFactory publishedModelFactory,
-                             IPublishedContentTypeFactory publishedContentTypeFactory,
-                             IUmbracoContextAccessor umbracoContextAccessor,
-                             NestedContentManyValueConverter nestedContentManyValueConverter) {
+        public ContentHelper(Lazy<IServiceProvider> serviceProvider,
+                             Lazy<IContentService> contentService,
+                             Lazy<IContentLocator> contentLocator,
+                             Lazy<IPublishedModelFactory> publishedModelFactory,
+                             Lazy<IPublishedContentTypeFactory> publishedContentTypeFactory,
+                             Lazy<IUmbracoContextFactory> umbracoContextFactory,
+                             Lazy<NestedContentManyValueConverter> nestedContentManyValueConverter) {
             _serviceProvider = serviceProvider;
             _contentService = contentService;
             _contentLocator = contentLocator;
             _publishedModelFactory = publishedModelFactory;
             _publishedContentTypeFactory = publishedContentTypeFactory;
-            _umbracoContextAccessor = umbracoContextAccessor;
+            _umbracoContextFactory = umbracoContextFactory;
             _nestedContentManyValueConverter = nestedContentManyValueConverter;
         }
 
         public IReadOnlyList<T> Ancestor<T>(IContent content) where T : PublishedContentModel {
-            return Ancestors(content).Select(x => _contentLocator.ById<T>(x.Key)).ToList();
+            return Ancestors(content).Select(x => _contentLocator.Value.ById<T>(x.Key)).ToList();
         }
 
         public IReadOnlyList<IContent> Ancestors(IContent content) {
             var list = new List<IContent>();
             
             while (content.ParentId != -1) {
-                content = _contentService.GetById(content.ParentId);
+                content = _contentService.Value.GetById(content.ParentId);
                 
                 list.Add(content);
             }
@@ -55,21 +55,21 @@ namespace N3O.Umbraco.Content {
         }
 
         public IReadOnlyList<T> Children<T>(IContent content) where T : PublishedContentModel {
-            return Children(content).Select(x => _contentLocator.ById<T>(x.Key)).ToList();
+            return Children(content).Select(x => _contentLocator.Value.ById<T>(x.Key)).ToList();
         }
 
         public IReadOnlyList<IContent> Children(IContent content) {
-            var children = _contentService.GetPagedChildren(content.Id, 0, 1000, out _).ToList();
+            var children = _contentService.Value.GetPagedChildren(content.Id, 0, 1000, out _).ToList();
 
             return children;
         }
 
         public IReadOnlyList<T> Descendants<T>(IContent content) where T : PublishedContentModel {
-            return Descendants(content).Select(x => _contentLocator.ById<T>(x.Key)).ToList();
+            return Descendants(content).Select(x => _contentLocator.Value.ById<T>(x.Key)).ToList();
         }
 
         public IReadOnlyList<IContent> Descendants(IContent content) {
-            var descendants = _contentService.GetPagedDescendants(content.Id, 0, 1000, out _).ToList();
+            var descendants = _contentService.Value.GetPagedDescendants(content.Id, 0, 1000, out _).ToList();
 
             return descendants;
         }
@@ -77,8 +77,7 @@ namespace N3O.Umbraco.Content {
         public TProperty GetCustomConverterValue<TConverter, TContent, TProperty>(IContent content,
                                                                                   Expression<Func<TContent, TProperty>> memberLambda)
             where TConverter : class, IPropertyValueConverter {
-            _umbracoContextAccessor.TryGetUmbracoContext(out var umbracoContext);
-        
+            var umbracoContext = _umbracoContextFactory.Value.EnsureUmbracoContext().UmbracoContext;
             var propertyAlias = AliasHelper.ForProperty(memberLambda);
             var publishedContentType = umbracoContext.PublishedSnapshot.Content.GetContentType(content.ContentType.Alias);
             var publishedPropertyType = publishedContentType.GetPropertyType(propertyAlias);
@@ -90,7 +89,7 @@ namespace N3O.Umbraco.Content {
                                                                         IPublishedPropertyType publishedPropertyType,
                                                                         string propertyAlias)
             where TConverter : class, IPropertyValueConverter {
-            var converter = _serviceProvider.GetRequiredService<TConverter>();
+            var converter = _serviceProvider.Value.GetRequiredService<TConverter>();
             var source = content.GetValue<object>(propertyAlias);
 
             if (source == null) {
@@ -114,14 +113,13 @@ namespace N3O.Umbraco.Content {
         }
 
         public IReadOnlyList<IPublishedElement> GetNestedContent(IContent content, IProperty property) {
-            _umbracoContextAccessor.TryGetUmbracoContext(out var umbracoContext);
-        
+            var umbracoContext = _umbracoContextFactory.Value.EnsureUmbracoContext().UmbracoContext;
             var publishedContentType =  umbracoContext.PublishedSnapshot.Content.GetContentType(content.ContentType.Alias);
             var publishedPropertyType = new PublishedPropertyType(publishedContentType,
                                                                   content.Properties[property.Alias].PropertyType,
-                                                                  new PropertyValueConverterCollection(() => _nestedContentManyValueConverter.Yield()),
-                                                                  _publishedModelFactory,
-                                                                  _publishedContentTypeFactory);
+                                                                  new PropertyValueConverterCollection(() => _nestedContentManyValueConverter.Value.Yield()),
+                                                                  _publishedModelFactory.Value,
+                                                                  _publishedContentTypeFactory.Value);
 
             var nestedContent = GetCustomConverterValue<NestedContentManyValueConverter, IEnumerable<IPublishedElement>>(content,
                                                                                                                          publishedPropertyType,

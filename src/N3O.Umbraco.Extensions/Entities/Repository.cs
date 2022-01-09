@@ -43,15 +43,15 @@ namespace N3O.Umbraco.Entities {
             }
         }
 
-        public Task InsertAsync(T entity, CancellationToken cancellationToken = default) {
-            return SaveAsync(entity, (s, r) => s.Database.InsertAsync(r));
+        public async Task InsertAsync(T entity, CancellationToken cancellationToken = default) {
+            await SaveAsync(entity, (s, r) => s.Database.Insert(r));
         }
         
         public async Task UpdateAsync(T entity, CancellationToken cancellationToken = default) {
-            await SaveAsync(entity, (s, r) => s.Database.UpdateAsync(r));
+            await SaveAsync(entity, (s, r) => s.Database.Update(r));
         }
 
-        private async Task SaveAsync(T entity, Func<IScope, EntityRow, Task> saveAsync) {
+        private Task SaveAsync(T entity, Action<IScope, EntityRow> save) {
             using (var scope = _scopeProvider.CreateScope()) {
                 entity.OnSaving(_clock.GetCurrentInstant());
 
@@ -62,9 +62,11 @@ namespace N3O.Umbraco.Entities {
                 row.Type = entity.GetType().FullName;
                 row.Json = _jsonProvider.SerializeObject(entity);
 
-                await saveAsync(scope, row);
+                save(scope, row);
             
                 scope.Complete();
+
+                return Task.CompletedTask;
             }
         }
     }

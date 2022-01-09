@@ -5,6 +5,7 @@ namespace N3O.Umbraco.Entities {
     public abstract class Entity : IEntity {
         protected Entity() {
             Id = Guid.NewGuid();
+            Revision = 0;
         }
         
         public Guid Id { get; private set; }

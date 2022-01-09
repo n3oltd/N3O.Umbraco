@@ -12,7 +12,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Notifications;
 
 namespace N3O.Umbraco.Notifications {
-    public class ContentValidationHandler : INotificationAsyncHandler<ContentPublishingNotification> {
+    public class ContentValidationHandler : INotificationAsyncHandler<ContentSavingNotification> {
         private readonly ILogger _logger;
         private readonly IContentHelper _contentHelper;
         private readonly IReadOnlyList<IContentValidator> _contentValidators;
@@ -28,8 +28,8 @@ namespace N3O.Umbraco.Notifications {
             _nestedContentItemValidators = nestedContentItemValidators.OrEmpty().ToList();
         }
 
-        public Task HandleAsync(ContentPublishingNotification notification, CancellationToken cancellationToken) {
-            foreach (var content in notification.PublishedEntities) {
+        public Task HandleAsync(ContentSavingNotification notification, CancellationToken cancellationToken) {
+            foreach (var content in notification.SavedEntities) {
                 try {
                     ValidateContent(content);
 

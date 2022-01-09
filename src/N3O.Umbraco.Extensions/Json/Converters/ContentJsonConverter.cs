@@ -2,7 +2,6 @@
 using N3O.Umbraco.Extensions;
 using Newtonsoft.Json;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -13,16 +12,16 @@ using Umbraco.Cms.Core.Web;
 namespace N3O.Umbraco.Json {
     public class ContentJsonConverter : JsonConverter {
         private readonly Lazy<PropertyValueConverterCollection> _propertyValueConverters;
-        private readonly Lazy<IUmbracoContextAccessor> _umbracoContextAccessor;
+        private readonly Lazy<IUmbracoContextFactory> _umbracoContextFactory;
         private readonly Lazy<IPublishedModelFactory> _publishedModelFactory;
         private readonly Lazy<IPublishedContentTypeFactory> _publishedContentTypeFactory;
 
         public ContentJsonConverter(Lazy<PropertyValueConverterCollection> propertyValueConverters,
-                                    Lazy<IUmbracoContextAccessor> umbracoContextAccessor,
+                                    Lazy<IUmbracoContextFactory> umbracoContextFactory,
                                     Lazy<IPublishedModelFactory> publishedModelFactory,
                                     Lazy<IPublishedContentTypeFactory> publishedContentTypeFactory) {
             _propertyValueConverters = propertyValueConverters;
-            _umbracoContextAccessor = umbracoContextAccessor;
+            _umbracoContextFactory = umbracoContextFactory;
             _publishedModelFactory = publishedModelFactory;
             _publishedContentTypeFactory = publishedContentTypeFactory;
         }
@@ -74,7 +73,7 @@ namespace N3O.Umbraco.Json {
         }
 
         private object GetPublishedValue(string contentTypeAlias, IProperty property) {
-            _umbracoContextAccessor.Value.TryGetUmbracoContext(out var umbracoContext);
+            var umbracoContext = _umbracoContextFactory.Value.EnsureUmbracoContext().UmbracoContext;
         
             var publishedContentType =  umbracoContext.PublishedSnapshot.Content.GetContentType(contentTypeAlias);
             var publishedPropertyType = new PublishedPropertyType(publishedContentType,

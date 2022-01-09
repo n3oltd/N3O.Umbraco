@@ -1,5 +1,4 @@
-﻿using N3O.Umbraco.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,11 +15,10 @@ namespace N3O.Umbraco.Parameters {
 
             foreach (var parameterDataSource in _parameterDataSources) {
                 var parameterData = parameterDataSource.GetData();
-                var parameterEntry = parameterData.FirstOrDefault(x => x.Key.EqualsInvariant(namedParameter.Name));
 
-                if (parameterEntry.HasValue()) {
-                    ((INamedParameterFromString) namedParameter).FromString(parameterEntry.Value);
-
+                if (parameterData.ContainsKey(namedParameter.Name)) {
+                    ((INamedParameterFromString) namedParameter).FromString(parameterData[namedParameter.Name]);
+                    
                     break;
                 }
             }

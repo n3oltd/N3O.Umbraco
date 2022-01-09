@@ -2,31 +2,29 @@
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Parameters {
-    public class FluentParameters : IFluentParameters {
+    public class FluentParametersBuilder : IFluentParametersBuilder {
         private readonly Dictionary<string, string> _parameters = new(StringComparer.InvariantCultureIgnoreCase);
 
-        public IFluentParameters Add<TNamedParameter>(TNamedParameter namedParameter)
+        public IFluentParametersBuilder Add<TNamedParameter>(TNamedParameter namedParameter)
             where TNamedParameter : INamedParameter {
             return Add(namedParameter.Name, namedParameter.ToString());
         }
 
-        public IFluentParameters Add<TNamedParameter>(string value)
+        public IFluentParametersBuilder Add<TNamedParameter>(string value)
             where TNamedParameter : INamedParameter, new() {
             var namedParameter = NamedParameter.Create(typeof(TNamedParameter));
 
             return Add(namedParameter.Name, value);
         }
 
-        public IFluentParameters Add(string name, string value) {
+        public IFluentParametersBuilder Add(string name, string value) {
             _parameters[name] = value;
 
             return this;
         }
 
-        public IReadOnlyDictionary<string, string> GetData() {
+        public IReadOnlyDictionary<string, string> Build() {
             return _parameters;
         }
-
-        public long Order => 1;
     }
 }
