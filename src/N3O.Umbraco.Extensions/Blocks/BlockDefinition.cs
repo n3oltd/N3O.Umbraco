@@ -1,4 +1,3 @@
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using Perplex.ContentBlocks.Definitions;
 using System;
@@ -16,8 +15,8 @@ namespace N3O.Umbraco.Blocks {
                                string icon,
                                string folder,
                                string previewImage,
-                               IEnumerable<BlockCategory> categories,
-                               IEnumerable<LayoutDefinition> layouts,
+                               IEnumerable<BlockCategory> blockCategories,
+                               IEnumerable<LayoutDefinition> layoutDefinitions,
                                IEnumerable<string> limitToContentTypes,
                                IEnumerable<string> limitToCultures) {
             Id = id;
@@ -28,12 +27,12 @@ namespace N3O.Umbraco.Blocks {
             Folder = folder;
             PreviewImage = previewImage;
             DataTypeKey = UmbracoId.Generate(IdScope.BlockDataType, alias);
-            Categories = categories.OrEmpty().ToList();
-            Layouts = layouts.OrEmpty().ToList();
+            BlockCategories = blockCategories.ToList();
+            LayoutDefinitions = layoutDefinitions.ToList();
             LimitToDocumentTypes = limitToContentTypes;
             LimitToCultures = limitToCultures;
         
-            _categoryIds = Categories.Select(x => x.Id).ToList();
+            _categoryIds = blockCategories.Select(x => x.Id).ToList();
         }
 
         public Guid Id { get; }
@@ -44,13 +43,12 @@ namespace N3O.Umbraco.Blocks {
         public string Folder { get; }
         public string PreviewImage { get; }
         public Guid? DataTypeKey { get; }
-        public IReadOnlyList<BlockCategory> Categories { get; }
-        public IReadOnlyList<LayoutDefinition> Layouts { get; }
+        public int? DataTypeId => null;
+        public IReadOnlyList<BlockCategory> BlockCategories { get; }
+        public IEnumerable<Guid> CategoryIds => _categoryIds;
+        public IReadOnlyList<LayoutDefinition> LayoutDefinitions { get; }
+        public IEnumerable<IContentBlockLayout> Layouts => LayoutDefinitions;
         public IEnumerable<string> LimitToDocumentTypes { get; }
         public IEnumerable<string> LimitToCultures { get; }
-    
-        int? IContentBlockDefinition.DataTypeId => null;
-        IEnumerable<Guid> IContentBlockDefinition.CategoryIds => _categoryIds;
-        IEnumerable<IContentBlockLayout> IContentBlockDefinition.Layouts => Layouts;
     }
 }

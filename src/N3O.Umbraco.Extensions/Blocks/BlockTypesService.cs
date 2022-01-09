@@ -45,8 +45,8 @@ namespace N3O.Umbraco.Blocks {
 
             var container = rootContainer;
 
-            if (definition.Categories.IsSingle()) {
-                var category = definition.Categories.Single();
+            if (definition.BlockCategories.IsSingle()) {
+                var category = definition.BlockCategories.Single();
                 var containerId = UmbracoId.Generate(IdScope.ContentTypeContainer, container.Key, category.Id);
                 
                 container = GetOrCreateContentTypeContainer(containerId, container.Id, category.Name);
@@ -114,8 +114,8 @@ namespace N3O.Umbraco.Blocks {
                                                          -1,
                                                          "Blocks");
 
-            if (definition.Categories.IsSingle()) {
-                var category = definition.Categories.Single();
+            if (definition.BlockCategories.IsSingle()) {
+                var category = definition.BlockCategories.Single();
                 var containerId = UmbracoId.Generate(IdScope.DataTypeContainer, container.Key, category.Id);
                 
                 container = GetOrCreateDataTypeContainer(containerId, container.Id, category.Name);
