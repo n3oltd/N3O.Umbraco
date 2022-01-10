@@ -19,7 +19,7 @@ namespace N3O.Umbraco.Blocks {
             Validate();
         
             var id = UmbracoId.Generate(IdScope.BlockLayout, blockAlias, _name);
-            var path = $"/Views/Blocks/{blockAlias.Camelize()}/{_name.Camelize()}";
+            var path = $"/Views/Blocks/{blockAlias.Pascalize()}/{_name.Pascalize()}";
 
             var definition = new LayoutDefinition(id,
                                                   _name,
