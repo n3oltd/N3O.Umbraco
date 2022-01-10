@@ -1,5 +1,5 @@
 {
   javascript: [
-    '/App_Plugins/N3O.Umbraco.Uploader/N3O.Umbraco.Uploader.Controller.js'
+    '/App_Plugins/N3O.Umbraco.SerpEditor/N3O.Umbraco.SerpEditor.Controller.js'
   ]
 }
