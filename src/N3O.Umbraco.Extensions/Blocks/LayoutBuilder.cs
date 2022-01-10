@@ -1,3 +1,4 @@
+using Humanizer;
 using N3O.Umbraco.Utilities;
 using System;
 
@@ -18,12 +19,13 @@ namespace N3O.Umbraco.Blocks {
             Validate();
         
             var id = UmbracoId.Generate(IdScope.BlockLayout, blockAlias, _name);
+            var path = $"/Views/Blocks/{blockAlias.Camelize()}/{_name.Camelize()}";
 
             var definition = new LayoutDefinition(id,
                                                   _name,
                                                   _description,
-                                                  $"/Views/Blocks/{blockAlias}/preview.png",
-                                                  $"/Views/Blocks/{blockAlias}/preview.png");
+                                                  $"{path}.png",
+                                                  $"{path}.cshtml");
 
             return definition;
         }

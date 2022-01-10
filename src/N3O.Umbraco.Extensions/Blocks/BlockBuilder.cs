@@ -60,6 +60,7 @@ namespace N3O.Umbraco.Blocks {
         protected void SingleLayout() {
             AddLayout("Default", "The default layout");
         }
+        
         protected void WithAlias(string alias) {
             if (alias.EndsWith("Block")) {
                 throw new Exception($"Alias must not end with {"Block".Quote()} as this will be appended automatically");
@@ -92,7 +93,7 @@ namespace N3O.Umbraco.Blocks {
                                                  _description,
                                                  _icon,
                                                  _folder,
-                                                 $"/Views/Blocks/{_alias}/preview.png",
+                                                 layouts.First().PreviewImage,
                                                  _categories,
                                                  layouts,
                                                  _limitToContentTypes,
