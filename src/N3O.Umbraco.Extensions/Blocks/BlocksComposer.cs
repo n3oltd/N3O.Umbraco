@@ -70,7 +70,7 @@ namespace N3O.Umbraco.Blocks {
     
         public void Initialize() {
             if (_runtimeState.Level == RuntimeLevel.Run) {
-                var blockCategories = _lookups.Value.GetAll<BlockCategory>();
+                var blockCategories = _lookups.Value.GetAll<BlockCategory>().OrderBy(x => x.Order).ToList();
 
                 _blockCategoriesRepository.Value.Remove(Perplex.ContentBlocks.Constants.Categories.Content);
                 _blockCategoriesRepository.Value.Remove(Perplex.ContentBlocks.Constants.Categories.Headers);

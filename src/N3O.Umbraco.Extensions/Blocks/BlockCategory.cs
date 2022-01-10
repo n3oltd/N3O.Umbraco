@@ -5,11 +5,12 @@ using System;
 
 namespace N3O.Umbraco.Blocks {
     public class BlockCategory : Lookup, IContentBlockCategory {
-        public BlockCategory(string id, string name, string icon)
+        public BlockCategory(string id, string name, string icon, int order)
             : base(id) {
             Id = UmbracoId.Generate(IdScope.BlockCategory, id);
             Name = name;
             Icon = icon;
+            Order = order;
             IsHidden = false;
             IsEnabledForHeaders = false;
             IsDisabledForBlocks = false;
@@ -18,6 +19,7 @@ namespace N3O.Umbraco.Blocks {
         public new Guid Id { get; }
         public string Name { get; }
         public string Icon { get; }
+        public int Order { get; }
         public bool IsHidden { get; }
         public bool IsEnabledForHeaders { get; }
         public bool IsDisabledForBlocks { get; }
