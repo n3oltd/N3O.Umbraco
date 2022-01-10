@@ -1,0 +1,27 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <PropertyGroup>
+        <N3OUmbracoCmsContentFilesPath>$(MSBuildThisFileDirectory)..\App_Static\**\*.*</N3OUmbracoCmsContentFilesPath>
+    </PropertyGroup>
+
+    <Target Name="CopyN3OUmbracoCmsAssets" BeforeTargets="Build">
+        <ItemGroup>
+            <N3OUmbracoCmsContentFiles Include="$(N3OUmbracoCmsContentFilesPath)"/>
+        </ItemGroup>
+        <Message Text="Copying N3O CMS files: $(N3OUmbracoCmsContentFilesPath) - #@(N3OUmbracoCmsContentFiles->Count()) files" Importance="high"/>
+        <Copy
+                SourceFiles="@(N3OUmbracoCmsContentFiles)"
+                DestinationFiles="@(N3OUmbracoCmsContentFiles->'$(MSBuildProjectDirectory)\%(RecursiveDir)%(Filename)%(Extension)')"
+                SkipUnchangedFiles="true"/>
+
+    </Target>
+
+    <Target Name="ClearN3OUmbracoCmsAssets" BeforeTargets="Clean">
+        <ItemGroup>
+            <N3OUmbracoCmsDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Cms\"/>
+        </ItemGroup>
+        <Message Text="Clear old N3O CMS files" Importance="high"/>
+        <Delete Files="@(N3OUmbracoCmsContentFiles)"/>
+    </Target>
+
+</Project>
