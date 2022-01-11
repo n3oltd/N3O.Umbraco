@@ -19,13 +19,12 @@ namespace N3O.Umbraco.Blocks {
             Validate();
         
             var id = UmbracoId.Generate(IdScope.BlockLayout, blockAlias, _name);
-            var path = $"/Views/Blocks/{blockAlias.Pascalize()}/{_name.Pascalize()}";
 
             var definition = new LayoutDefinition(id,
                                                   _name,
                                                   _description,
-                                                  $"{path}.png",
-                                                  $"{path}.cshtml");
+                                                  $"/assets/blocks/{blockAlias.Camelize()}/{_name.Camelize()}.png",
+                                                  $"/Views/Blocks/{blockAlias.Pascalize()}/{_name.Pascalize()}.cshtml");
 
             return definition;
         }
