@@ -51,10 +51,10 @@ namespace N3O.Umbraco.Hosting {
         }
     
         protected async Task<object> GetViewModelAsync(CancellationToken cancellationToken = default) {
-            var extensionData = await _pagePipeline.RunAsync(CurrentPage, cancellationToken);
+            var pageModuleData = await _pagePipeline.RunAsync(CurrentPage, cancellationToken);
             var factoryType = typeof(IPageViewModelFactory<>).MakeGenericType(CurrentPage.GetType());
             var factory = (IPageViewModelFactory) _serviceProvider.GetService(factoryType);
-            var viewModel = factory.Create(CurrentPage, extensionData);
+            var viewModel = factory.Create(CurrentPage, pageModuleData);
 
             return viewModel;
         }

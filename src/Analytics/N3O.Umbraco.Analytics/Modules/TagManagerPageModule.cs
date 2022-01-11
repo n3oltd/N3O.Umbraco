@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Analytics.Modules {
-    public class TagManagerPageExtension : IPageExtension {
+    public class TagManagerPageModule : IPageModule {
         private readonly IContentCache _contentCache;
 
-        public TagManagerPageExtension(IContentCache contentCache) {
+        public TagManagerPageModule(IContentCache contentCache) {
             _contentCache = contentCache;
         }
 

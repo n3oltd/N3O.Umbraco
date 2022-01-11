@@ -1,4 +1,7 @@
+using Humanizer;
+using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Localization;
 using Perplex.ContentBlocks.Rendering;
 using System;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -17,8 +20,16 @@ namespace N3O.Umbraco.Blocks {
         }
 
         public override IContentBlockViewModel<TBlock> Create(TBlock content, Guid id, Guid definitionId, Guid layoutId) {
-            var blockParameters = new BlockParameters<TBlock>(content, id, definitionId, layoutId);
-        
+            var stringLocalizer = _serviceProvider.GetRequiredService<IStringLocalizer>();
+            
+            var blockParameters = new BlockParameters<TBlock>(s => stringLocalizer.Get(Constants.TextFolders.Blocks,
+                                                                                       content.ContentType.Alias.Pascalize(),
+                                                                                       s),
+                                                              content,
+                                                              id,
+                                                              definitionId,
+                                                              layoutId);
+            
             return _constructViewModel(_serviceProvider, blockParameters);
         }
     }

@@ -9,11 +9,15 @@ namespace N3O.Umbraco.Blocks {
         where TBlock : IPublishedElement { }
 
     public class BlockViewModel<TBlock> : IBlockViewModel<TBlock> where TBlock : IPublishedElement {
+        private readonly Func<string, string> _getText;
+
         public BlockViewModel(BlockParameters<TBlock> parameters) {
             Id = parameters.Id;
             DefinitionId = parameters.DefinitionId;
             LayoutId = parameters.LayoutId;
             Content = parameters.Content;
+
+            _getText = parameters.GetText;
         }
     
         public Guid Id { get; }
@@ -21,6 +25,8 @@ namespace N3O.Umbraco.Blocks {
         public Guid LayoutId  { get; }
         public TBlock Content { get; }
 
+        public string GetText(string s) => _getText(s);
+        
         IPublishedElement IContentBlockViewModel.Content => Content;
     }
 }

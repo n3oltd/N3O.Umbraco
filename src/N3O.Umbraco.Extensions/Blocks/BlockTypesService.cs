@@ -91,7 +91,7 @@ namespace N3O.Umbraco.Blocks {
                 contentType.IsElement = true;
                 contentType.Name = "Block";
                 contentType.Icon = "icon-brick";
-                contentType.AddPropertyType(propertyType, "content", "Content");
+                contentType.AddPropertyType(propertyType, "general", "General");
                 
                 _contentTypeService.Save(contentType);
             }
@@ -147,7 +147,7 @@ namespace N3O.Umbraco.Blocks {
             configuration.ContentTypes = new[] {
                 new NestedContentConfiguration.ContentType {
                     Alias = definition.Alias,
-                    TabAlias = "Content",
+                    TabAlias = "General",
                     Template = definition.Name,
                 }
             };

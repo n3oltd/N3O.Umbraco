@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Analytics.Modules {
-    public class DataLayerPageExtension : IPageExtension {
+    public class DataLayerPageModule : IPageModule {
         private readonly IDataLayerBuilder _dataLayerBuilder;
         private readonly IReadOnlyList<IDataLayerProvider> _allProviders;
 
-        public DataLayerPageExtension(IDataLayerBuilder dataLayerBuilder, IEnumerable<IDataLayerProvider> allProviders) {
+        public DataLayerPageModule(IDataLayerBuilder dataLayerBuilder, IEnumerable<IDataLayerProvider> allProviders) {
             _dataLayerBuilder = dataLayerBuilder;
             _allProviders = allProviders.OrEmpty().ToList();
         }

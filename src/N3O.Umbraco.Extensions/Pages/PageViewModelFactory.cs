@@ -1,5 +1,9 @@
+using Humanizer;
+using Microsoft.Extensions.DependencyInjection;
+using N3O.Umbraco.Constants;
 using System;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Localization;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Pages {
@@ -15,14 +19,20 @@ namespace N3O.Umbraco.Pages {
             _constructViewModel = constructViewModel;
         }
 
-        public IPageViewModel<TPage> Create(TPage content, PageExtensionData extensionData) {
-            var blockParameters = new PageParameters<TPage>(content, extensionData);
+        public IPageViewModel<TPage> Create(TPage content, PageModuleData moduleData) {
+            var stringLocalizer = _serviceProvider.GetRequiredService<IStringLocalizer>();
+            
+            var blockParameters = new PageParameters<TPage>(s => stringLocalizer.Get(TextFolders.Pages,
+                                                                                     content.ContentType.Alias.Pascalize(),
+                                                                                     s),
+                                                            content,
+                                                            moduleData);
         
             return _constructViewModel(_serviceProvider, blockParameters);
         }
 
-        public IPageViewModel Create(IPublishedContent content, PageExtensionData extensionData) {
-            return Create((TPage) content, extensionData);
+        public IPageViewModel Create(IPublishedContent content, PageModuleData moduleData) {
+            return Create((TPage) content, moduleData);
         }
     }
 
