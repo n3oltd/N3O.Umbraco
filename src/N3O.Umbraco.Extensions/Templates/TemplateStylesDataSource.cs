@@ -18,7 +18,7 @@ namespace N3O.Umbraco.Templates {
         public string Icon => "icon-brush";
         public Dictionary<string, object> DefaultValues => default;
         public IEnumerable<ConfigurationField> Fields => default;
-        public string Group => "test";
+        public string Group => "N3O";
         public OverlaySize OverlaySize => OverlaySize.Small;
         
         public IEnumerable<DataListItem> GetItems(Dictionary<string, object> config) {

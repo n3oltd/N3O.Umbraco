@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,8 +17,24 @@ namespace N3O.Umbraco.Templates {
             return default;
         }
 
+        public IEnumerable<TemplateStyle> GetAll() {
+            var seenTypes = new List<Type>();
+            var list = new List<TemplateStyle>();
+
+            foreach (var style in Stack) {
+                if (seenTypes.Contains(style.GetType())) {
+                    continue;
+                }
+                
+                list.Add(style);
+                seenTypes.Add(style.GetType());
+            }
+
+            return list;
+        }
+
         public bool Has(TemplateStyle style) {
-            return Stack.Any(x => x == style);
+            return GetAll().Contains(style);
         }
 
         public void Pop(int count = 1) {

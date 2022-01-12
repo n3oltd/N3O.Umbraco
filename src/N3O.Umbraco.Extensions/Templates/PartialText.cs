@@ -3,7 +3,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using System;
 
-namespace N3O.Umbraco.Partials {
+namespace N3O.Umbraco.Templates {
     public class PartialText : IPartialText {
         private readonly IStringLocalizer _stringLocalizer;
         private string _templateName;
