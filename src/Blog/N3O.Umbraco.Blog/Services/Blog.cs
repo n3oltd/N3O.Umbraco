@@ -17,8 +17,8 @@ namespace N3O.Umbraco.Blog {
             _postQueryFilter = postQueryFilter;
         }
 
-        public IReadOnlyList<T> FindPosts<T>(PostCriteria criteria) where T : PublishedContentModel {
-            var all = _contentCache.All<T>().As<Post>();
+        public IReadOnlyList<T> FindPosts<T>(PostCriteria criteria) where T : IPublishedContent {
+            var all = _contentCache.All<T>().Select(x => x.As<Post>()).ToList();
 
             var results = _postQueryFilter.Apply(criteria, all);
 

@@ -23,8 +23,8 @@ namespace N3O.Umbraco.ContentFinders {
         public abstract bool TryFindContentImpl(IPublishedRequestBuilder request);
 
         protected bool TryFindRelocatedContent<TContentCollection, TPage, TContent>(IPublishedRequestBuilder request)
-            where TContentCollection : PublishedContentModel
-            where TPage : PublishedContentModel
+            where TContentCollection : IPublishedContent
+            where TPage : IPublishedContent
             where TContent : class, IPublishedContent {
             var page = ContentCache.Single<TPage>();
             var contentCollection = ContentCache.Single<TContentCollection>();

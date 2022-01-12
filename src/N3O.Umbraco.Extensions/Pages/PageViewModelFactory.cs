@@ -8,7 +8,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Pages {
     public class PageViewModelFactory<TPage, TViewModel> : IPageViewModelFactory<TPage>
-        where TPage : class, IPublishedContent
+        where TPage : IPublishedContent
         where TViewModel : IPageViewModel<TPage> {
         private readonly IServiceProvider _serviceProvider;
         private readonly Func<IServiceProvider, PageParameters<TPage>, TViewModel> _constructViewModel;
@@ -45,7 +45,7 @@ namespace N3O.Umbraco.Pages {
         }
     
         public static PageViewModelFactory<TPage, PageViewModel<TPage>> Default<TPage>(IServiceProvider serviceProvider)
-            where TPage : class, IPublishedContent {
+            where TPage : IPublishedContent {
             return new PageViewModelFactory<TPage, PageViewModel<TPage>>(serviceProvider,
                                                                          (_, p) => new PageViewModel<TPage>(p));
         }

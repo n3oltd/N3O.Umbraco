@@ -20,8 +20,8 @@ namespace N3O.Umbraco.Context {
             }
         }
 
-        public T GetCurrentPage<T>() where T : class, IPublishedContent {
-            return GetCurrentPage() as T;
+        public T GetCurrentPage<T>() where T : IPublishedContent {
+            return (T) GetCurrentPage();
         }
     }
 }

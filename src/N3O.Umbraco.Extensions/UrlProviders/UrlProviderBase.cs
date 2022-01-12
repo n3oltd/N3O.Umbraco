@@ -25,8 +25,8 @@ namespace N3O.Umbraco.UrlProviders {
                                                               UrlMode mode,
                                                               string culture,
                                                               Uri current)
-            where TPage : PublishedContentModel
-            where TContent : PublishedContentModel {
+            where TPage : IPublishedContent
+            where TContent : IPublishedContent {
             if (content != null && content.ContentType.Alias == AliasHelper.ForContentType<TContent>()) {
                 var page = _contentCache.Single<TPage>();
 
@@ -49,9 +49,9 @@ namespace N3O.Umbraco.UrlProviders {
                                                                                   UrlMode mode,
                                                                                   string culture,
                                                                                   Uri current)
-            where TContentCollection : PublishedContentModel
-            where TPage : PublishedContentModel
-            where TContent : PublishedContentModel {
+            where TContentCollection : IPublishedContent
+            where TPage : IPublishedContent
+            where TContent : IPublishedContent {
             if (content != null && content.ContentType.Alias == AliasHelper.ForContentType<TContent>()) {
                 var collection = _contentCache.Single<TContentCollection>();
                 var page = _contentCache.Single<TPage>();

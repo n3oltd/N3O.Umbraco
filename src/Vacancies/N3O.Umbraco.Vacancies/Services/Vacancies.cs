@@ -16,7 +16,7 @@ namespace N3O.Umbraco.Vacancies {
             _contentCache = contentCache;
         }
     
-        public IReadOnlyList<T> GetOpen<T>() where T : PublishedContentModel {
+        public IReadOnlyList<T> GetOpen<T>() where T : IPublishedContent {
             var today = _localClock.GetLocalToday().ToDateTimeUnspecified();
 
             var all = _contentCache.All<T>();
