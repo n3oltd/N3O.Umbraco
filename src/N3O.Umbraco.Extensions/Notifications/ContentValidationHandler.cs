@@ -7,8 +7,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
-using Umbraco.Cms.Core.Models;
-using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Notifications;
 
 namespace N3O.Umbraco.Notifications {
@@ -16,55 +14,40 @@ namespace N3O.Umbraco.Notifications {
         private readonly ILogger _logger;
         private readonly IContentHelper _contentHelper;
         private readonly IReadOnlyList<IContentValidator> _contentValidators;
-        private readonly IReadOnlyList<INestedContentItemValidator> _nestedContentItemValidators;
 
         public ContentValidationHandler(ILogger<ContentValidationHandler> logger,
                                         IContentHelper contentHelper,
-                                        IEnumerable<IContentValidator> contentValidators,
-                                        IEnumerable<INestedContentItemValidator> nestedContentItemValidators) {
+                                        IEnumerable<IContentValidator> contentValidators) {
             _logger = logger;
             _contentHelper = contentHelper;
             _contentValidators = contentValidators.OrEmpty().ToList();
-            _nestedContentItemValidators = nestedContentItemValidators.OrEmpty().ToList();
         }
 
         public Task HandleAsync(ContentSavingNotification notification, CancellationToken cancellationToken) {
             foreach (var content in notification.SavedEntities) {
-                try {
-                    ValidateContent(content);
+                var contentNodes = _contentHelper.GetContentNode(content).Flatten();
 
-                    foreach (var nestedContent in _contentHelper.GetNestedContent(content)) {
-                        ValidateNestedContent(content, nestedContent);
+                foreach (var contentNode in contentNodes) {
+                    try {
+                        foreach (var contentValidator in _contentValidators) {
+                            if (contentValidator.IsValidator(contentNode)) {
+                                contentValidator.Validate(contentNode);
+                            }
+                        }
+                    } catch (ContentValidationErrorException error) {
+                        notification.CancelOperation(error.PopupMessage);
+                    } catch (ContentValidationWarningException warning) {
+                        notification.Messages.Add(warning.PopupMessage);
+                    } catch (Exception ex) {
+                        _logger.LogError(ex,
+                                         "Error whilst validating content of type {Type} with ID {ID}",
+                                         content.ContentType.Alias,
+                                         content.Id);
                     }
-                } catch (ContentValidationErrorException error) {
-                    notification.CancelOperation(error.PopupMessage);
-                } catch (ContentValidationWarningException warning) {
-                    notification.Messages.Add(warning.PopupMessage);
-                } catch (Exception ex) {
-                    _logger.LogError(ex,
-                                     "Error whilst validating content of type {Type} with ID {ID}",
-                                     content.ContentType.Alias,
-                                     content.Id);
                 }
             }
-        
+
             return Task.CompletedTask;
-        }
-
-        private void ValidateContent(IContent content) {
-            foreach (var contentValidator in _contentValidators) {
-                if (contentValidator.IsValidator(content)) {
-                    contentValidator.Validate(content);
-                }
-            }
-        }
-
-        private void ValidateNestedContent(IContent content, IPublishedElement item) {
-            foreach (var validator in _nestedContentItemValidators) {
-                if (validator.IsValidator(item)) {
-                    validator.Validate(item, content);
-                }
-            }
         }
     }
 }
