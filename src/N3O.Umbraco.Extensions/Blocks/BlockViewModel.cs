@@ -3,7 +3,9 @@ using System;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Blocks {
-    public interface IBlockViewModel : IContentBlockViewModel { }
+    public interface IBlockViewModel : IContentBlockViewModel {
+        string GetText(string s);
+    }
 
     public interface IBlockViewModel<TBlock> : IBlockViewModel, IContentBlockViewModel<TBlock>
         where TBlock : IPublishedElement { }
