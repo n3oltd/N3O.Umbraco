@@ -18,11 +18,10 @@ namespace N3O.Umbraco.Analytics.Modules {
         }
     
         public async Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
-            var providers = _allProviders.Where(x => x.IsProviderFor(page));
+            var providers = _allProviders.Where(x => x.IsProviderFor(page)).ToList();
 
             var toPush = new List<object>();
-        
-        
+
             foreach (var provider in providers) {
                 toPush.AddRange(await provider.GetAsync(page, cancellationToken));
             }

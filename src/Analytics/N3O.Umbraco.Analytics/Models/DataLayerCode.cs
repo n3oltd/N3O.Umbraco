@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Html;
+using N3O.Umbraco.Extensions;
 
 namespace N3O.Umbraco.Analytics.Models {
     public class DataLayerCode : Value {
@@ -7,5 +8,9 @@ namespace N3O.Umbraco.Analytics.Models {
         }
 
         public HtmlString JavaScript { get; }
+
+        public bool HasValue() {
+            return JavaScript.HasValue();
+        }
     }
 }
