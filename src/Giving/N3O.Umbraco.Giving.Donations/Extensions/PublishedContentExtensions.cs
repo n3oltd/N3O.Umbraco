@@ -5,8 +5,8 @@ using N3O.Umbraco.Giving.Donations.Content;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Giving.Donations.Extensions {
-    public static class PublishedContentModelExtensions {
-        public static DonationOption ToDonationOption(this PublishedContentModel content) {
+    public static class PublishedContentExtensions {
+        public static DonationOption ToDonationOption(this IPublishedContent content) {
             var donationOption = content.As<DonationOption>();
         
             if (donationOption.Type == AllocationTypes.Fund) {

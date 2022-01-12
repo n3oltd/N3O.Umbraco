@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Element;
+﻿using N3O.Umbraco.Content;
 
 namespace N3O.Umbraco.Giving.Donations.Models {
     public class PriceHandle : UmbracoElement {

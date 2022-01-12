@@ -1,7 +1,6 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Giving.Donations.Extensions;
 using System.Collections.Generic;
-using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Giving.Donations.Content {
     public class DonationForm : UmbracoContent {
@@ -14,7 +13,7 @@ namespace N3O.Umbraco.Giving.Donations.Content {
                 var list = new List<DonationOption>();
             
                 foreach (var child in Content.Children) {
-                    list.Add(((PublishedContentModel) child).ToDonationOption());
+                    list.Add(child.ToDonationOption());
                 }
 
                 _options = list;

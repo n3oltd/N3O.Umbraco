@@ -1,4 +1,3 @@
-using N3O.Umbraco.Constants;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using System;
@@ -106,7 +105,8 @@ namespace N3O.Umbraco.Blocks {
                 return;
             }
 
-            if (!_propertyEditors.TryGet(PropertyEditors.Aliases.NestedContent, out var editor)) {
+            if (!_propertyEditors.TryGet(global::Umbraco.Cms.Core.Constants.PropertyEditors.Aliases.NestedContent,
+                                         out var editor)) {
                 throw new InvalidOperationException("Nested Content property editor not found");
             }
 

@@ -56,16 +56,16 @@ namespace N3O.Umbraco.Giving.Donations.ViewModels {
         private IEnumerable<PriceHandleViewModel> GetPriceHandles(FundDonationOption fundOption, DonationType donationType) {
             var priceHandles = fundOption.GetPriceHandles(donationType);
         
-            foreach (var priceHandle in priceHandles.SelectWithIndex()) {
+            foreach (var (priceHandle, index) in priceHandles.SelectWithIndex()) {
                 var currencyPrice = _forexConverter.BaseToQuote()
                                                    .ToCurrency(Currency)
-                                                   .ConvertAsync(priceHandle.Value.Amount)
+                                                   .ConvertAsync(priceHandle.Amount)
                                                    .GetAwaiter()
                                                    .GetResult();
 
-                var viewModel = new PriceHandleViewModel(priceHandle.Index,
+                var viewModel = new PriceHandleViewModel(index,
                                                          _mapper.Map<Money, MoneyRes>(currencyPrice.Quote),
-                                                         priceHandle.Value.Description);
+                                                         priceHandle.Description);
 
                 yield return viewModel;
             }

@@ -7,7 +7,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Giving.Donations.ViewModels {
     public class DonationFormViewModel {
-        public DonationFormViewModel(PublishedContentModel content) {
+        public DonationFormViewModel(IPublishedContent content) {
             var form = content.As<DonationForm>();
         
             Title = form.Title;

@@ -1,4 +1,3 @@
-using N3O.Umbraco.Localization;
 using System;
 
 namespace N3O.Umbraco.Blocks {
