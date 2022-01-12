@@ -1,6 +1,7 @@
 using Humanizer;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -116,9 +117,10 @@ namespace N3O.Umbraco.Localization {
 
                     resources.Sort((x, y) => x.Source.CompareInvariant(y.Source));
 
+                    var json = JsonConvert.SerializeObject(resources);
                     var content = _contentService.GetById(container.Content.Id);
 
-                    content.SetValue<TextContainer, IEnumerable<TextResource>>(p => p.Resources, resources);
+                    content.SetValue<TextContainer, IEnumerable<TextResource>>(p => p.Resources, json);
 
                     _contentService.SaveAndPublish(content);
                 }
