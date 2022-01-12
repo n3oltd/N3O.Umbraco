@@ -1,5 +1,5 @@
-using N3O.Umbraco.Constants;
 using Umbraco.Cms.Core.Models;
+using static Umbraco.Cms.Core.Constants.PropertyEditors;
 
 namespace N3O.Umbraco.Extensions {
     public static class PropertyTypeExtensions {
@@ -7,12 +7,16 @@ namespace N3O.Umbraco.Extensions {
             return propertyType.PropertyEditorAlias.EqualsInvariant(alias);
         }
         
-        public static bool IsBlockContent(this IPropertyType propertyType) {
+        public static bool IsContentBlocks(this IPropertyType propertyType) {
             return propertyType.HasEditorAlias(Perplex.ContentBlocks.Constants.PropertyEditor.Alias);
         }
     
         public static bool IsNestedContent(this IPropertyType propertyType) {
-            return propertyType.HasEditorAlias(PropertyEditors.Aliases.NestedContent);
+            return propertyType.HasEditorAlias(Aliases.NestedContent);
+        }
+        
+        public static bool IsPicker(this IPropertyType propertyType) {
+            return propertyType.HasEditorAlias(Aliases.MultiNodeTreePicker);
         }
     }
 }
