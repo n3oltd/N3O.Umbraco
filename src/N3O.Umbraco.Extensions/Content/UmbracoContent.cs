@@ -11,11 +11,11 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Content {
     public abstract class UmbracoContent : Value, IUmbracoContent {
         [ValueIgnore]
-        public PublishedContentModel Content { get; set; }
+        public IPublishedContent Content { get; set; }
 
         protected TProperty GetAs<TContent, TProperty>(Expression<Func<TContent, TProperty>> memberExpression) {
             var alias = AliasHelper.ForProperty(memberExpression);
-            var value = (PublishedContentModel) Content.Value(alias);
+            var value = (IPublishedContent) Content.Value(alias);
 
             return value.As<TProperty>();
         }
@@ -24,7 +24,7 @@ namespace N3O.Umbraco.Content {
             var alias = AliasHelper.ForProperty(memberExpression);
             var values = (IEnumerable) Content.Value(alias);
 
-            return values.Cast<PublishedContentModel>().Select(x => x.As<TProperty>());
+            return values.Cast<IPublishedContent>().Select(x => x.As<TProperty>());
         }
     
         protected TProperty GetValue<TContent, TProperty>(Expression<Func<TContent, TProperty>> memberExpression) {

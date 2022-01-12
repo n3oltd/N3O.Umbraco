@@ -15,13 +15,8 @@ namespace N3O.Umbraco.Content {
             builder.Services.AddScoped<IContentVisibility, ContentVisibility>();
             builder.Services.AddScoped<IPublishedContentHelper, PublishedContentHelper>();
         
-            RegisterContentValidators<IContentValidator>(builder);
-            RegisterContentValidators<INestedContentItemValidator>(builder);
-        }
-
-        private void RegisterContentValidators<T>(IUmbracoBuilder builder) {
-            RegisterAll(t => t.ImplementsInterface<T>(),
-                        t => builder.Services.AddTransient(typeof(T), t));
+            RegisterAll(t => t.ImplementsInterface<IContentValidator>(),
+                        t => builder.Services.AddTransient(typeof(IContentValidator), t));
         }
     }
 }

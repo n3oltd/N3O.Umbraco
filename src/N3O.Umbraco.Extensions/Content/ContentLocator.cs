@@ -14,12 +14,12 @@ namespace N3O.Umbraco.Content {
             _umbracoContextFactory = umbracoContextFactory;
         }
 
-        public IReadOnlyList<PublishedContentModel> All(Func<PublishedContentModel, bool> predicate = null) {
+        public IReadOnlyList<IPublishedContent> All(Func<IPublishedContent, bool> predicate = null) {
             return All(null, predicate);
         }
 
-        public IReadOnlyList<PublishedContentModel> All(string contentTypeAlias,
-                                                        Func<PublishedContentModel, bool> predicate = null) {
+        public IReadOnlyList<IPublishedContent> All(string contentTypeAlias,
+                                                        Func<IPublishedContent, bool> predicate = null) {
             var allContent = GetAllContent(contentTypeAlias);
             var filteredContent = allContent.Where(x => predicate?.Invoke(x) ?? true).ToList();
 
@@ -34,23 +34,23 @@ namespace N3O.Umbraco.Content {
             }
         }
 
-        public PublishedContentModel ById(int id) {
-            return Run(c => (PublishedContentModel) c.Content.GetById(id));
+        public IPublishedContent ById(int id) {
+            return Run(c => (IPublishedContent) c.Content.GetById(id));
         }
 
         public T ById<T>(int id) {
             return ById(id).As<T>();
         }
 
-        public PublishedContentModel ById(Guid id) {
-            return Run(c => (PublishedContentModel) c.Content.GetById(id));
+        public IPublishedContent ById(Guid id) {
+            return Run(c => (IPublishedContent) c.Content.GetById(id));
         }
 
         public T ById<T>(Guid id) {
             return ById(id).As<T>();
         }
 
-        public PublishedContentModel Single(string contentTypeAlias, Func<PublishedContentModel, bool> predicate = null) {
+        public IPublishedContent Single(string contentTypeAlias, Func<IPublishedContent, bool> predicate = null) {
             return All(contentTypeAlias, predicate).SingleOrDefault();
         }
 
@@ -62,19 +62,19 @@ namespace N3O.Umbraco.Content {
             }
         }
     
-        private IReadOnlyList<PublishedContentModel> GetAllContent(string contentTypeAlias) {
+        private IReadOnlyList<IPublishedContent> GetAllContent(string contentTypeAlias) {
             return Run(c => {
-                var allContent = new List<PublishedContentModel>();
+                var allContent = new List<IPublishedContent>();
 
                 foreach (var rootContent in c.Content.GetAtRoot()) {
                     if (contentTypeAlias == null) {
-                        allContent.AddRange(rootContent.Descendants().Cast<PublishedContentModel>());
+                        allContent.AddRange(rootContent.Descendants().Cast<IPublishedContent>());
                     } else {
                         if (rootContent.ContentType.Alias.EqualsInvariant(contentTypeAlias)) {
-                            allContent.Add((PublishedContentModel) rootContent);
+                            allContent.Add((IPublishedContent) rootContent);
                         }
                     
-                        allContent.AddRange(rootContent.DescendantsOfType(contentTypeAlias).Cast<PublishedContentModel>());
+                        allContent.AddRange(rootContent.DescendantsOfType(contentTypeAlias).Cast<IPublishedContent>());
                     }
                 }
 

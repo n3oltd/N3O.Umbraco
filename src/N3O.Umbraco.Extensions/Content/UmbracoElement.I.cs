@@ -1,7 +1,7 @@
 using Umbraco.Cms.Core.Models.PublishedContent;
 
-namespace N3O.Umbraco.Element {
+namespace N3O.Umbraco.Content {
     public interface IUmbracoElement {
-        PublishedElementModel Content { get; set; }
+        IPublishedElement Content { get; set; }
     }
 }

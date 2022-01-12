@@ -1,43 +1,40 @@
-using System;
+using Perplex.ContentBlocks.Rendering;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
 
 namespace N3O.Umbraco.Content {
     public interface IContentHelper {
-        IReadOnlyList<T> Ancestor<T>(IContent content) where T : PublishedContentModel;
+        IReadOnlyList<IContent> GetAncestors(IContent content);
         
-        IReadOnlyList<IContent> Ancestors(IContent content);
+        IReadOnlyList<IContent> GetChildren(IContent content);
         
-        IReadOnlyList<T> Children<T>(IContent content) where T : PublishedContentModel;
-    
-        IReadOnlyList<IContent> Children(IContent content);
-
-        IReadOnlyList<T> Descendants<T>(IContent content) where T : PublishedContentModel;
-    
-        IReadOnlyList<IContent> Descendants(IContent content);
-    
-        TProperty GetCustomConverterValue<TConverter, TContent, TProperty>(IContent content,
-                                                                           Expression<Func<TContent, TProperty>> memberLambda)
+        ContentBlocks GetContentBlocks(string contentTypeAlias, string propertyTypeAlias, object propertyValue);
+        
+        ContentNode GetContentNode(IContent content);
+        
+        TProperty GetConvertedValue<TConverter, TProperty>(string contentTypeAlias,
+                                                           string propertyTypeAlias,
+                                                           object propertyValue)
             where TConverter : class, IPropertyValueConverter;
-
-        TProperty GetCustomConverterValue<TConverter, TProperty>(IContent content,
-                                                                 IPublishedPropertyType publishedPropertyType,
-                                                                 string propertyAlias)
-            where TConverter : class, IPropertyValueConverter;
-
-        IEnumerable<IPublishedElement> GetNestedContent(IContent content);
-    
-        IReadOnlyList<IPublishedElement> GetNestedContent(IContent content, IProperty property);
-
-        IEnumerable<TProperty> GetMultiNestedContentValue<TContent, TProperty>(IContent content,
-                                                                               Expression<Func<TContent, IEnumerable<TProperty>>> memberLambda);
-
-        TProperty GetPickerValue<TContent, TProperty>(IContent content, Expression<Func<TContent, TProperty>> memberLambda);
-
-        TProperty GetSingleNestedContentValue<TContent, TProperty>(IContent content,
-                                                                   Expression<Func<TContent, TProperty>> memberLambda);
+        
+        IReadOnlyList<IContent> GetDescendants(IContent content);
+        
+        IPublishedElement GetNestedContent(string contentTypeAlias, string propertyTypeAlias, object propertyValue);
+        
+        IReadOnlyList<IPublishedElement> GetNestedContents(string contentTypeAlias,
+                                                           string propertyTypeAlias,
+                                                           object propertyValue);
+        
+        T GetPickerValue<T>(string contentTypeAlias, string propertyTypeAlias, object propertyValue);
+        
+        IReadOnlyList<T> GetPickerValues<T>(string contentTypeAlias, string propertyTypeAlias, object propertyValue);
+        
+        IReadOnlyList<T> GetPublishedAncestors<T>(IContent content) where T : IPublishedContent;
+        
+        IReadOnlyList<T> GetPublishedChildren<T>(IContent content) where T : IPublishedContent;
+        
+        IReadOnlyList<T> GetPublishedDescendants<T>(IContent content) where T : IPublishedContent;
     }
 }

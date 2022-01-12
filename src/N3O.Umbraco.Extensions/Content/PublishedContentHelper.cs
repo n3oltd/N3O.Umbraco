@@ -16,7 +16,7 @@ namespace N3O.Umbraco.Content {
         }
     
         public T GetOrCreateFolder<T>(IPublishedContent content, string name)
-            where T : PublishedContentModel {
+            where T : IPublishedContent {
             var publishedFolder = content.Child<T>(x => x.Name.EqualsInvariant(name));
 
             if (publishedFolder == null) {
@@ -24,14 +24,14 @@ namespace N3O.Umbraco.Content {
 
                 _contentService.SaveAndPublish(contentFolder);
 
-                publishedFolder = _umbracoHelper.Content(contentFolder.Id) as T;
+                publishedFolder = (T) _umbracoHelper.Content(contentFolder.Id);
             }
 
             return publishedFolder;
         }
 
-        public void SortChildren<T>(IPublishedContent content, Func<T, object> keySelector, int userId = 0)
-            where T : class, IPublishedContent {
+        public void SortChildren<T>(IPublishedContent content, Func<T, object> keySelector)
+            where T : IPublishedContent {
             var sortOrder = 0;
 
             var children = content.Children<T>()
