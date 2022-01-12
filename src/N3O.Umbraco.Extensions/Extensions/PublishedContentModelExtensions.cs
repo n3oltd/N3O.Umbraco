@@ -11,7 +11,7 @@ namespace N3O.Umbraco.Extensions {
                 return typedContent;
             }
 
-            if (typeof(T).ImplementsInterface<IUmbracoContent>()) {
+            if (!typeof(T).ImplementsInterface<IUmbracoContent>()) {
                 throw new Exception($"{typeof(T).GetFriendlyName()} does not implement {nameof(IUmbracoContent)}");
             }
         

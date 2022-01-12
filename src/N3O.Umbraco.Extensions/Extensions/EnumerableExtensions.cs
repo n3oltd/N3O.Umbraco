@@ -491,7 +491,7 @@ namespace N3O.Umbraco.Extensions {
             }
         }
 
-        public static IEnumerable<(T Value, int Index)> SelectWithIndex<T>(this IEnumerable<T> source) {
+        public static IEnumerable<(T, int)> SelectWithIndex<T>(this IEnumerable<T> source) {
             return source.Select((x, i) => (x, i));
         }
     

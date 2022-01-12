@@ -29,13 +29,13 @@ namespace N3O.Umbraco.Extensions {
     
         public static void SetValue<TContent, TProperty>(this IContent content,
                                                          Expression<Func<TContent, TProperty>> memberLambda,
-                                                         TProperty value) {
+                                                         object value) {
             content.SetValue(AliasHelper.ForProperty(memberLambda), value);
         }
 
         public static bool SetValueIfChanged<TContent, TProperty>(this IContent content,
                                                                   Expression<Func<TContent, TProperty>> memberLambda,
-                                                                  TProperty value) {
+                                                                  object value) {
             var changed = false;
 
             var currentValue = content.GetValue(memberLambda);
