@@ -4,18 +4,6 @@ namespace N3O.Umbraco.StructuredData {
     public class JsonLd : Dictionary<string, object> {
         private JsonLd() { }
 
-        public JsonLd Root() {
-            var structuredData = New();
-        
-            structuredData.Custom("@context", "https://schema.org");
-
-            return structuredData;
-        }
-    
-        public JsonLd New() {
-            return new JsonLd();
-        }
-
         public JsonLd OfType(string type) {
             Custom("@type", type);
 
@@ -34,6 +22,18 @@ namespace N3O.Umbraco.StructuredData {
             this[key] = jsonLd;
 
             return jsonLd;
+        }
+        
+        public static JsonLd Root() {
+            var structuredData = New();
+        
+            structuredData.Custom("@context", "https://schema.org");
+
+            return structuredData;
+        }
+    
+        public static JsonLd New() {
+            return new JsonLd();
         }
     }
 }
