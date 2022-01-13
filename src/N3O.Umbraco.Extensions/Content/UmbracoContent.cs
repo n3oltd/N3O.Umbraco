@@ -11,7 +11,7 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Content {
     public abstract class UmbracoContent<T> : Value, IUmbracoContent {
         [ValueIgnore]
-        public IPublishedContent Content { get; set; }
+        public virtual IPublishedContent Content { get; set; }
 
         protected TProperty GetAs<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
             var alias = AliasHelper<T>.PropertyAlias(memberExpression);
