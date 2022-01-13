@@ -1,6 +1,6 @@
 <div ng-controller="N3O.Umbraco.SerpEditor">
     <div class="sv-form">
-        <input type="text" ng-model="title" placeholder="Enter a short but descriptive title" />
+        <input type="text" ng-required ng-model="title" placeholder="Enter a short but descriptive title" />
         <p ng-show="title.length > maxCharsTitle" class="sv-error">A title should not be more than {{maxCharsTitle}} characters.</p>
         <br /><br />
         <textarea ng-model="description" placeholder="Enter a meta description"></textarea>
