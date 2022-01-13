@@ -15,7 +15,5 @@ namespace N3O.Umbraco.Lookups {
 
         Task<IReadOnlyList<ILookup>> GetAllAsync(Type lookupType);
         IReadOnlyList<ILookup> GetAll(Type lookupType);
-        
-        bool IsStaticCollection(Type type);
     }
 }
