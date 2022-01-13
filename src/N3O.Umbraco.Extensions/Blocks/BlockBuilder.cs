@@ -54,7 +54,7 @@ namespace N3O.Umbraco.Blocks {
         }
     
         protected void LimitTo<T>() {
-            LimitTo(AliasHelper.ForContentType<T>());
+            LimitTo(AliasHelper<T>.ContentTypeAlias());
         }
 
         protected void SingleLayout() {

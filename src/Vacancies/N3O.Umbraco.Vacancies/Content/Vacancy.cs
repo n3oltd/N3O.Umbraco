@@ -2,7 +2,7 @@
 using System;
 
 namespace N3O.Umbraco.Vacancies.Content {
-    public class Vacancy : UmbracoContent {
-        public DateTime ClosingDate => GetValue<Vacancy, DateTime>(x => x.ClosingDate);
+    public class Vacancy : UmbracoContent<Vacancy> {
+        public DateTime ClosingDate => GetValue(x => x.ClosingDate);
     }
 }

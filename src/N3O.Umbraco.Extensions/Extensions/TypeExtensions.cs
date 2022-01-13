@@ -3,12 +3,14 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Internal;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Lookups;
+using N3O.Umbraco.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core;
 
 namespace N3O.Umbraco.Extensions {
 	public static class ReflectionExtensions {
@@ -100,8 +102,8 @@ namespace N3O.Umbraco.Extensions {
 			return (TType)Activator.CreateInstance(type.MakeGenericType(genericType), args);
 		}
 		
-		public static void EnsurePathIsNotNull<T, TProperty>(this T obj, Expression<Func<T, TProperty>> expression) {
-			var memberExpression = (MemberExpression)expression.Body;
+		public static void EnsurePathIsNotNull<T>(this T obj, Expression<Func<T, object>> expression) {
+			var memberExpression = ExpressionUtility.ToMemberExpression(expression);
 			
 			EnsureExists(memberExpression, obj, 1);
 		}
@@ -272,26 +274,9 @@ namespace N3O.Umbraco.Extensions {
 			return property;
 		}
 		
-		public static PropertyInfo GetPropertyInfo<T1, T2>(this Expression<Func<T1, T2>> propertySelector) {
-			MemberExpression memberExpression;
-
-			// This line is necessary, because sometimes the expression comes in as Convert(originalexpression)
-			if (propertySelector.Body is UnaryExpression) {
-				var UnExp = (UnaryExpression) propertySelector.Body;
-
-				if (UnExp.Operand is MemberExpression) {
-					memberExpression = (MemberExpression) UnExp.Operand;
-				} else {
-					throw new ArgumentException("Property selector is not a valid member expression", nameof(propertySelector));
-				}
-			} else if (propertySelector.Body is MemberExpression) {
-				memberExpression = (MemberExpression) propertySelector.Body;
-			} else {
-				throw new ArgumentException("Property selector is not a valid member expression", nameof(propertySelector));
-			}
-
+		public static PropertyInfo GetPropertyInfo<T1>(this Expression<Func<T1, object>> expr) {
+			var memberExpression = ExpressionUtility.ToMemberExpression(expr);
 			var propertyInfo = (PropertyInfo) memberExpression.Member;
-
 			var subExpression = memberExpression.Expression;
 
 			while (subExpression is MemberExpression) {
@@ -303,11 +288,10 @@ namespace N3O.Umbraco.Extensions {
 			return propertyInfo;
 		}
 
-		public static string GetPropertyPath<TModel, TValue>(this Expression<Func<TModel, TValue>> propertySelector,
+		public static string GetPropertyPath<TModel>(this Expression<Func<TModel, object>> expr,
 		                                                     bool camelCase = false) {
-			var asString = propertySelector.ToString();
-
-			var parameterName = propertySelector.Parameters.First().Name;
+			var asString = expr.ToString();
+			var parameterName = expr.Parameters.First().Name;
 
 			if (asString.Replace(" ", "").EqualsInvariant($"{parameterName}=>{parameterName}")) {
 				return null;
@@ -341,35 +325,11 @@ namespace N3O.Umbraco.Extensions {
 			return value;
 		}
 
-		public static Action<T, TProperty> GetSetter<T, TProperty>(this Expression<Func<T, TProperty>> expression) {
-			var memberExpression = (MemberExpression)expression.Body;
-			var property = (PropertyInfo)memberExpression.Member;
-			var setMethod = property.GetSetMethod(true);
+		public static Action<T, TProperty> GetSetter<T, TProperty>(this Expression<Func<T, TProperty>> expr) {
+			var memberExpression = ExpressionUtility.ToMemberExpression(expr);
+			var property = (PropertyInfo) memberExpression.Member;
 
-			var parameterT = Expression.Parameter(typeof(T), "x");
-			var parameterTProperty = Expression.Parameter(typeof(TProperty), "y");
-
-			if (memberExpression.Expression is MemberExpression innerExpression) {
-				return (obj, value) => {
-					var parameter = expression.Parameters.Single();
-					
-					var member = Expression.Lambda(Expression.MakeMemberAccess(innerExpression.Expression,
-					                                                           innerExpression.Member),
-					                               parameter)
-					                       .Compile()
-					                       .DynamicInvoke(obj);
-
-					member.GetProperty(property.Name).GetSetMethod(true).Invoke(member, new object[] { value });
-				};
-			} else {
-				var newExpression = Expression.Lambda<Action<T, TProperty>>(Expression.Call(parameterT,
-				                                                                            setMethod,
-				                                                                            parameterTProperty),
-				                                                            parameterT,
-				                                                            parameterTProperty);
-				
-				return newExpression.Compile();
-			}
+			return ReflectionUtilities.EmitPropertySetter<T, TProperty>(property);
 		}
 
 		public static Type GetValueTypeForNullableType(this Type type) {

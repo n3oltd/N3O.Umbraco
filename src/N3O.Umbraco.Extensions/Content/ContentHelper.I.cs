@@ -1,4 +1,5 @@
 using Perplex.ContentBlocks.Rendering;
+using System;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -12,7 +13,11 @@ namespace N3O.Umbraco.Content {
         
         ContentBlocks GetContentBlocks(string contentTypeAlias, string propertyTypeAlias, object propertyValue);
         
-        ContentNode GetContentNode(IContent content);
+        ContentProperties GetContentProperties(IContent content);
+
+        ContentProperties GetContentProperties(Guid contentId,
+                                   string contentTypeAlias,
+                                   IEnumerable<(IPropertyType Type, object Value)> properties);
         
         TProperty GetConvertedValue<TConverter, TProperty>(string contentTypeAlias,
                                                            string propertyTypeAlias,

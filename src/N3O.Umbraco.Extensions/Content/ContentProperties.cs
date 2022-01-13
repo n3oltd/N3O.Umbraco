@@ -4,20 +4,20 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace N3O.Umbraco.Content {
-    public class ContentNode {
-        public ContentNode(Guid id,
+    public class ContentProperties {
+        public ContentProperties(Guid id,
                            string contentTypeAlias,
                            IEnumerable<ContentProperty> properties,
-                           IEnumerable<ContentNode> children) {
+                           IEnumerable<NestedContentProperty> nestedContentProperties) {
             Id = id;
             ContentTypeAlias = contentTypeAlias;
             Properties = properties.OrEmpty().ToList();
-            Children = children.OrEmpty().ToList();
+            NestedContentProperties = nestedContentProperties.OrEmpty().ToList();
         }
 
         public Guid Id { get; }
         public string ContentTypeAlias { get; }
         public IReadOnlyList<ContentProperty> Properties { get; }
-        public IReadOnlyList<ContentNode> Children { get; }
+        public IReadOnlyList<NestedContentProperty> NestedContentProperties { get; }
     }
 }

@@ -36,7 +36,7 @@ namespace N3O.Umbraco.Content {
         }
 
         private string GetCacheKey<T>() {
-            var alias = AliasHelper.ForContentType<T>();
+            var alias = AliasHelper<T>.ContentTypeAlias();
             var cacheKey = $"{alias}_{typeof(T).FullName}";
 
             return cacheKey;

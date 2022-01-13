@@ -30,7 +30,7 @@ namespace N3O.Umbraco.Blocks {
         private void RegisterDefaultViewModel(IUmbracoBuilder builder, string contentTypeAlias) {
             var blockType = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
                                                         t.IsSubclassOfType(typeof(PublishedElementModel)))
-                                         .SingleOrDefault(t => AliasHelper.ForContentType(t).EqualsInvariant(contentTypeAlias));
+                                         .SingleOrDefault(t => AliasHelper.ContentTypeAlias(t).EqualsInvariant(contentTypeAlias));
 
             if (blockType != null) {
                 builder.AddDefaultBlockViewModel(blockType);

@@ -1,6 +1,6 @@
 ﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Donations.Content;
-using N3O.Umbraco.Giving.Donations.Extensions;
 using System;
 using System.Collections.Generic;
 
@@ -21,7 +21,7 @@ namespace N3O.Umbraco.Giving.Donations {
         public DonationOption GetOption(Guid id) {
             var content = _contentLocator.ById(id);
 
-            return content.ToDonationOption();
+            return content.As<DonationOption>();
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using N3O.Umbraco.Lookups;
 
 namespace N3O.Umbraco.Financial {
-    public class Currency : LookupContent {
-        public string Symbol => GetValue<Currency, string>(x => x.Symbol);
-        public double DecimalDigits => GetValue<Currency, double>(x => x.DecimalDigits);
-        public bool IsBaseCurrency => GetValue<Currency, bool>(x => x.IsBaseCurrency);
+    public class Currency : LookupContent<Currency> {
+        public string Symbol => GetValue(x => x.Symbol);
+        public double DecimalDigits => GetValue(x => x.DecimalDigits);
+        public bool IsBaseCurrency => GetValue(x => x.IsBaseCurrency);
     }
 }

@@ -9,28 +9,28 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Giving.Donations.Content {
     public class FundDonationOptionValidator : ContentValidator {
-        private static readonly string DonationItemAlias = AliasHelper.ForProperty<FundDonationOption, DonationItem>(x => x.DonationItem);
-        private static readonly string Dimension1OptionsAlias = AliasHelper.ForProperty<FundDonationOption, FundDimension1Option>(x => x.Dimension1);
-        private static readonly string Dimension2OptionsAlias = AliasHelper.ForProperty<FundDonationOption, FundDimension2Option>(x => x.Dimension2);
-        private static readonly string Dimension3OptionsAlias = AliasHelper.ForProperty<FundDonationOption, FundDimension3Option>(x => x.Dimension3);
-        private static readonly string Dimension4OptionsAlias = AliasHelper.ForProperty<FundDonationOption, FundDimension4Option>(x => x.Dimension4);
-        private static readonly string HideRegularAlias = AliasHelper.ForProperty<FundDonationOption, bool>(x => x.HideRegular);
-        private static readonly string HideSingleAlias = AliasHelper.ForProperty<FundDonationOption, bool>(x => x.HideSingle);
-        private static readonly string RegularPriceHandlesAlias = AliasHelper.ForProperty<FundDonationOption, IEnumerable<PriceHandle>>(x => x.RegularPriceHandles);
-        private static readonly string ShowQuantityAlias = AliasHelper.ForProperty<FundDonationOption, bool>(x => x.ShowQuantity);
-        private static readonly string SinglePriceHandlesAlias = AliasHelper.ForProperty<FundDonationOption, IEnumerable<PriceHandle>>(x => x.SinglePriceHandles);
+        private static readonly string DonationItemAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.DonationItem);
+        private static readonly string Dimension1OptionsAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.Dimension1);
+        private static readonly string Dimension2OptionsAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.Dimension2);
+        private static readonly string Dimension3OptionsAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.Dimension3);
+        private static readonly string Dimension4OptionsAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.Dimension4);
+        private static readonly string HideRegularAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.HideRegular);
+        private static readonly string HideSingleAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.HideSingle);
+        private static readonly string RegularPriceHandlesAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.RegularPriceHandles);
+        private static readonly string ShowQuantityAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.ShowQuantity);
+        private static readonly string SinglePriceHandlesAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.SinglePriceHandles);
         
         private static readonly IEnumerable<string> Aliases = new[] {
-            AliasHelper.ForContentType<FundDonationOption>(),
+            AliasHelper<DonationFormFund>.ContentTypeAlias(),
         };
     
         public FundDonationOptionValidator(IContentHelper contentHelper) : base(contentHelper) { }
     
-        public override bool IsValidator(ContentNode content) {
-            return Aliases.Contains(content.ContentTypeAlias);
+        public override bool IsValidator(ContentProperties content) {
+            return Aliases.Contains(content.ContentTypeAlias, true);
         }
     
-        public override void Validate(ContentNode content) {
+        public override void Validate(ContentProperties content) {
             var donationItem = content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(DonationItemAlias))
                                       .IfNotNull(x => ContentHelper.GetPickerValue<IPublishedContent>(x)
                                                                    .As<DonationItem>());
@@ -49,10 +49,12 @@ namespace N3O.Umbraco.Giving.Donations.Content {
             EnsureShowQuantityIsAllowed(content, donationItem);
         }
 
-        private void SinglePriceHandlesValid(ContentNode content, DonationItem donationItem) {
-            var property = content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(SinglePriceHandlesAlias));
-            var priceHandles = (property?.IfNotNull(x => ContentHelper.GetNestedContents(x))).OrEmpty().As<PriceHandle>()
-                                                                                             .ToList();
+        private void SinglePriceHandlesValid(ContentProperties content, DonationItem donationItem) {
+            var property = content.NestedContentProperties.SingleOrDefault(x => x.Alias.EqualsInvariant(SinglePriceHandlesAlias));
+            var priceHandles = property.IfNotNull(x => ContentHelper.GetNestedContents(x))
+                                       .OrEmpty()
+                                       .As<PriceHandle>()
+                                       .ToList();
 
             if (priceHandles.HasAny()) {
                 if (donationItem.HasPrice()) {
@@ -65,10 +67,12 @@ namespace N3O.Umbraco.Giving.Donations.Content {
             }
         }
 
-        private void RegularPriceHandlesValid(ContentNode content, DonationItem donationItem) {
-            var property = content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(RegularPriceHandlesAlias));
-            var priceHandles = (property?.IfNotNull(x => ContentHelper.GetNestedContents(x))).OrEmpty().As<PriceHandle>()
-                                                                                             .ToList();
+        private void RegularPriceHandlesValid(ContentProperties content, DonationItem donationItem) {
+            var property = content.NestedContentProperties.SingleOrDefault(x => x.Alias.EqualsInvariant(RegularPriceHandlesAlias));
+            var priceHandles = property.IfNotNull(x => ContentHelper.GetNestedContents(x))
+                                       .OrEmpty()
+                                       .As<PriceHandle>()
+                                       .ToList();
 
             if (priceHandles.HasAny()) {
                 if (donationItem.HasPrice()) {
@@ -81,7 +85,7 @@ namespace N3O.Umbraco.Giving.Donations.Content {
             }
         }
 
-        private void FundDimensionAllowed(ContentNode content,
+        private void FundDimensionAllowed(ContentProperties content,
                                           DonationItem donationItem,
                                           IEnumerable<FundDimensionOption> allowedOptions,
                                           string propertyAlias) {
@@ -93,7 +97,7 @@ namespace N3O.Umbraco.Giving.Donations.Content {
             }
         }
 
-        private void EnsureSingleAndRegularNotBothHidden(ContentNode content) {
+        private void EnsureSingleAndRegularNotBothHidden(ContentProperties content) {
             var hideSingle = (bool?) content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(HideSingleAlias))?.Value;
             var hideRegular = (bool?) content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(HideRegularAlias))?.Value;
             
@@ -102,7 +106,7 @@ namespace N3O.Umbraco.Giving.Donations.Content {
             }
         }
 
-        private void EnsureShowQuantityIsAllowed(ContentNode content, DonationItem donationItem) {
+        private void EnsureShowQuantityIsAllowed(ContentProperties content, DonationItem donationItem) {
             var property = content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(ShowQuantityAlias));
             var showQuantity = (bool?) property?.Value;
     

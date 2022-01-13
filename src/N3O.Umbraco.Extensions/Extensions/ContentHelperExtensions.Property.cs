@@ -2,7 +2,6 @@
 using Perplex.ContentBlocks.Rendering;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
@@ -31,7 +30,11 @@ namespace N3O.Umbraco.Extensions {
         public static IPublishedElement GetNestedContent(this IContentHelper contentHelper,
                                                          string contentTypeAlias,
                                                          IProperty property) {
-            return GetNestedContents(contentHelper, contentTypeAlias, property).Single();
+            if (!property.PropertyType.IsNestedContent()) {
+                throw new Exception("Property is not nested content");
+            }
+            
+            return contentHelper.GetNestedContent(contentTypeAlias, property.PropertyType.Alias, property.GetValue());
         }
 
         public static IReadOnlyList<IPublishedElement> GetNestedContents(this IContentHelper contentHelper,
@@ -47,7 +50,11 @@ namespace N3O.Umbraco.Extensions {
         public static T GetPickerValue<T>(this IContentHelper contentHelper,
                                           string contentTypeAlias,
                                           IProperty property) {
-            return GetPickerValues<T>(contentHelper, contentTypeAlias, property).Single();
+            if (!property.PropertyType.IsPicker()) {
+                throw new Exception("Property is not picker");
+            }
+            
+            return contentHelper.GetPickerValue<T>(contentTypeAlias, property.PropertyType.Alias, property.GetValue());
         }
 
         public static IReadOnlyList<T> GetPickerValues<T>(this IContentHelper contentHelper,

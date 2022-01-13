@@ -27,7 +27,7 @@ namespace N3O.Umbraco.UrlProviders {
                                                               Uri current)
             where TPage : IPublishedContent
             where TContent : IPublishedContent {
-            if (content != null && content.ContentType.Alias == AliasHelper.ForContentType<TContent>()) {
+            if (content != null && content.ContentType.Alias == AliasHelper<TContent>.ContentTypeAlias()) {
                 var page = _contentCache.Single<TPage>();
 
                 if (page == null) {
@@ -52,7 +52,7 @@ namespace N3O.Umbraco.UrlProviders {
             where TContentCollection : IPublishedContent
             where TPage : IPublishedContent
             where TContent : IPublishedContent {
-            if (content != null && content.ContentType.Alias == AliasHelper.ForContentType<TContent>()) {
+            if (content != null && content.ContentType.Alias == AliasHelper<TContent>.ContentTypeAlias()) {
                 var collection = _contentCache.Single<TContentCollection>();
                 var page = _contentCache.Single<TPage>();
 

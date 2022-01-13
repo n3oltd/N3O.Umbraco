@@ -3,12 +3,14 @@ using N3O.Umbraco.Cropper.DataTypes;
 using N3O.Umbraco.Extensions;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cropper.Notifications {
     public class CropperNotificationHandlers : INotificationAsyncHandler<ContentPublishingNotification> {
@@ -26,13 +28,13 @@ namespace N3O.Umbraco.Cropper.Notifications {
     
         public async Task HandleAsync(ContentPublishingNotification notification, CancellationToken cancellationToken) {
             foreach (var content in notification.PublishedEntities) {
-                var contentNodes = _contentHelper.GetContentNode(content).Flatten();
-                var allProperties = contentNodes.SelectMany(x => x.Properties).ToList();
+                var contentProperties = _contentHelper.GetContentProperties(content);
+                var properties = GetProperties(contentProperties);
 
-                var properties = allProperties.Where(x => x.Type.HasEditorAlias(CropperConstants.PropertyEditorAlias))
-                                              .ToList();
+                var cropperProperties = properties.Where(x => x.Type.HasEditorAlias(CropperConstants.PropertyEditorAlias))
+                                                  .ToList();
 
-                foreach (var property in properties) {
+                foreach (var property in cropperProperties) {
                     try {
                         await GenerateCropsAsync(property, cancellationToken);
                     } catch (Exception ex) {
@@ -47,11 +49,28 @@ namespace N3O.Umbraco.Cropper.Notifications {
             }
         }
 
+        private IReadOnlyList<ContentProperty> GetProperties(ContentProperties content) {
+            var list = new List<ContentProperty>();
+
+            list.AddRange(content.Properties.OrEmpty());
+            
+            var nestedContents = content.NestedContentProperties.OrEmpty()
+                                        .SelectMany(x => x.Value)
+                                        .ToList();
+                
+            foreach (var nestedContent in nestedContents) {
+                list.AddRange(GetProperties(nestedContent));
+            }
+
+            return list;
+        }
+
         private async Task GenerateCropsAsync(ContentProperty property, CancellationToken cancellationToken) {
             var dataType = _dataTypeService.GetDataType(property.Type.DataTypeId);
-            var cropperConfiguration = (CropperConfiguration) dataType.Configuration;
+            var cropperConfiguration = dataType.ConfigurationAs<CropperConfiguration>();
+            var json = property.Value.ToString();
         
-            if (property.Value is string json && json.HasValue()) {
+            if (json.HasValue()) {
                 var cropperSource = JsonConvert.DeserializeObject<CropperSource>(json);
 
                 await _imageCropper.CropAllAsync(cropperConfiguration, cropperSource, cancellationToken);

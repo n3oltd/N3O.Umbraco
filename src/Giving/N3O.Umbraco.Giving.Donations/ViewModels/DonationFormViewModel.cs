@@ -1,5 +1,6 @@
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Donations.Content;
 using System;
 using System.Collections.Generic;
@@ -18,12 +19,12 @@ namespace N3O.Umbraco.Giving.Donations.ViewModels {
             var list = new List<Option>();
         
             foreach (var (option, index) in form.GetOptions().SelectWithIndex()) {
-                if (option is FundDonationOption fundOption) {
-                    list.Add(GetOption(fundOption, index));
-                } else if (option is SponsorshipDonationOption sponsorshipOption) {
-                    list.Add(GetOption(sponsorshipOption, index));
+                if (option.Type == AllocationTypes.Fund) {
+                    list.Add(GetOption(option.Fund, index));
+                } else if (option == AllocationTypes.Sponsorship) {
+                    list.Add(GetOption(option.Sponsorship, index));
                 } else {
-                    UnrecognisedValueException.For(option);
+                    UnrecognisedValueException.For(option.Type);
                 }
             }
 

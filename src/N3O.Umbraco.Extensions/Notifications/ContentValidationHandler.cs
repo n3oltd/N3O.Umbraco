@@ -25,29 +25,40 @@ namespace N3O.Umbraco.Notifications {
 
         public Task HandleAsync(ContentSavingNotification notification, CancellationToken cancellationToken) {
             foreach (var content in notification.SavedEntities) {
-                var contentNodes = _contentHelper.GetContentNode(content).Flatten();
+                var contentProperties = _contentHelper.GetContentProperties(content);
 
-                foreach (var contentNode in contentNodes) {
-                    try {
-                        foreach (var contentValidator in _contentValidators) {
-                            if (contentValidator.IsValidator(contentNode)) {
-                                contentValidator.Validate(contentNode);
-                            }
-                        }
-                    } catch (ContentValidationErrorException error) {
-                        notification.CancelOperation(error.PopupMessage);
-                    } catch (ContentValidationWarningException warning) {
-                        notification.Messages.Add(warning.PopupMessage);
-                    } catch (Exception ex) {
-                        _logger.LogError(ex,
-                                         "Error whilst validating content of type {Type} with ID {ID}",
-                                         content.ContentType.Alias,
-                                         content.Id);
-                    }
-                }
+                Validate(contentProperties, notification);
             }
 
             return Task.CompletedTask;
+        }
+
+        private void Validate(ContentProperties content, ContentSavingNotification notification) {
+            try {
+                foreach (var contentValidator in _contentValidators) {
+                    if (contentValidator.IsValidator(content)) {
+                        contentValidator.Validate(content);
+                    }
+                }
+
+                var nestedContents = content.NestedContentProperties
+                                            .OrEmpty()
+                                            .SelectMany(x => x.Value)
+                                            .ToList();
+                
+                foreach (var nestedContent in nestedContents) {
+                    Validate(nestedContent, notification);
+                }
+            } catch (ContentValidationErrorException error) {
+                notification.CancelOperation(error.PopupMessage);
+            } catch (ContentValidationWarningException warning) {
+                notification.Messages.Add(warning.PopupMessage);
+            } catch (Exception ex) {
+                _logger.LogError(ex,
+                                 "Error whilst validating content of type {Type} with ID {ID}",
+                                 content.ContentTypeAlias,
+                                 content.Id);
+            }
         }
     }
 }

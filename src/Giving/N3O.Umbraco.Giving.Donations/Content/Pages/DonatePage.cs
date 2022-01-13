@@ -1,5 +1,5 @@
 ﻿using N3O.Umbraco.Content;
 
 namespace N3O.Umbraco.Giving.Donations.Content {
-    public class DonatePage : UmbracoContent { }
+    public class DonatePage : UmbracoContent<DonatePage> { }
 }

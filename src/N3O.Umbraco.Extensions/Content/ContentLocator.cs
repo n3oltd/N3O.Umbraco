@@ -28,9 +28,9 @@ namespace N3O.Umbraco.Content {
 
         public IReadOnlyList<T> All<T>(Func<T, bool> predicate = null) {
             if (predicate == null) {
-                return All(AliasHelper.ForContentType<T>()).Select(x => x.As<T>()).ToList();    
+                return All(AliasHelper<T>.ContentTypeAlias()).Select(x => x.As<T>()).ToList();    
             } else {
-                return All(AliasHelper.ForContentType<T>(), x => predicate(x.As<T>())).Select(x => x.As<T>()).ToList();
+                return All(AliasHelper<T>.ContentTypeAlias(), x => predicate(x.As<T>())).Select(x => x.As<T>()).ToList();
             }
         }
 
@@ -56,9 +56,9 @@ namespace N3O.Umbraco.Content {
 
         public T Single<T>(Func<T, bool> predicate = null) {
             if (predicate == null) {
-                return Single(AliasHelper.ForContentType<T>()).As<T>();    
+                return Single(AliasHelper<T>.ContentTypeAlias()).As<T>();    
             } else {
-                return Single(AliasHelper.ForContentType<T>(), x => predicate(x.As<T>())).As<T>();
+                return Single(AliasHelper<T>.ContentTypeAlias(), x => predicate(x.As<T>())).As<T>();
             }
         }
     

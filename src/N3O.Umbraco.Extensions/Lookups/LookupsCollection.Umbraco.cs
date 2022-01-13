@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Lookups {
-    public class UmbracoLookupsCollection<T> : LookupsCollection<T> where T : LookupContent {
+    public class UmbracoLookupsCollection<T> : LookupsCollection<T> where T : LookupContent<T> {
         private readonly IContentCache _contentCache;
 
         public UmbracoLookupsCollection(IContentCache contentCache) {

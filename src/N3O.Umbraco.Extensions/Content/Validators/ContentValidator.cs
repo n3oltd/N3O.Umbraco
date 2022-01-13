@@ -6,7 +6,7 @@ namespace N3O.Umbraco.Content {
             ContentHelper = contentHelper;
         }
 
-        protected void ErrorResult(ContentProperty contentProperty, string message) {
+        protected void ErrorResult(IContentProperty contentProperty, string message) {
             ErrorResult($"Property {contentProperty.Name.Quote()} {message}");
         }
 
@@ -14,7 +14,7 @@ namespace N3O.Umbraco.Content {
             throw new ContentValidationErrorException(message);
         }
 
-        protected void WarningResult(ContentProperty contentProperty, string message) {
+        protected void WarningResult(IContentProperty contentProperty, string message) {
             WarningResult($"Property {contentProperty.Name.Quote()} {message}");
         }
 
@@ -22,8 +22,8 @@ namespace N3O.Umbraco.Content {
             throw new ContentValidationWarningException(message);
         }
 
-        public abstract bool IsValidator(ContentNode content);
-        public abstract void Validate(ContentNode content);
+        public abstract bool IsValidator(ContentProperties content);
+        public abstract void Validate(ContentProperties content);
     
         protected IContentHelper ContentHelper { get; }
     }

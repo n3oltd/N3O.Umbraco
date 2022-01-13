@@ -22,7 +22,6 @@ namespace N3O.Umbraco.Utilities {
 
             while (memberExpression != null) {
                 var propertyName = memberExpression.Member.Name;
-                var propertyType = memberExpression.Type;
 
                 nameComponents.Insert(0, propertyName.Substring(0, 1).ToLowerInvariant() + propertyName.Substring(1));
 

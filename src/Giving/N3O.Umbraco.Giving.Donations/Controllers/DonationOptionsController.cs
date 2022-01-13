@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Constants;
 using N3O.Umbraco.Context;
+using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Forex;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Donations.Content;
@@ -50,12 +51,12 @@ namespace N3O.Umbraco.Giving.Donations.Controllers {
         private ActionResult Get(Guid id, DonationType donationType) {
             var donationOption = _donationForms.GetOption(id);
 
-            if (donationOption is FundDonationOption fundDonationOption) {
-                return Fund(fundDonationOption, donationType);
-            } else if (donationOption is SponsorshipDonationOption sponsorshipDonationOption) {
-                return Sponsorship(sponsorshipDonationOption, donationType);   
+            if (donationOption.Type == AllocationTypes.Fund) {
+                return Fund(donationOption.Fund, donationType);
+            } else if (donationOption.Type == AllocationTypes.Sponsorship) {
+                return Sponsorship(donationOption.Sponsorship, donationType);   
             } else {
-                return NotFound($"No donation option found with ID {id}");
+                throw UnrecognisedValueException.For(donationOption.Type);
             }
         }
 

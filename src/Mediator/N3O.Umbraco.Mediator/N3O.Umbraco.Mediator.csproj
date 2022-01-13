@@ -31,8 +31,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="MediatR" Version="10.0.0" />
-      <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.0" />
+      <PackageReference Include="MediatR" Version="10.0.1" />
+      <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     </ItemGroup>
 
     <ItemGroup>

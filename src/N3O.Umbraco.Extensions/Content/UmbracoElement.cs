@@ -8,25 +8,25 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Content {
-    public abstract class UmbracoElement : Value, IUmbracoElement {
+    public abstract class UmbracoElement<T> : Value, IUmbracoElement {
         public IPublishedElement Content { get; set; }
     
-        protected TProperty GetAs<TContent, TProperty>(Expression<Func<TContent, TProperty>> memberExpression) {
-            var alias = AliasHelper.ForProperty(memberExpression);
+        protected TProperty GetAs<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
+            var alias = AliasHelper<T>.PropertyAlias(memberExpression);
             var value = (IPublishedContent) Content.Value(alias);
 
             return value.As<TProperty>();
         }
     
-        protected IEnumerable<TProperty> GetCollectionAs<TContent, TProperty>(Expression<Func<TContent, IEnumerable<TProperty>>> memberExpression) {
-            var alias = AliasHelper.ForProperty(memberExpression);
+        protected IEnumerable<TProperty> GetCollectionAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
+            var alias = AliasHelper<T>.PropertyAlias(memberExpression);
             var values = (IEnumerable) Content.Value(alias);
 
             return values.Cast<IPublishedContent>().Select(x => x.As<TProperty>());
         }
     
-        protected TProperty GetValue<TContent, TProperty>(Expression<Func<TContent, TProperty>> memberExpression) {
-            var alias = AliasHelper.ForProperty(memberExpression);
+        protected TProperty GetValue<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
+            var alias = AliasHelper<T>.PropertyAlias(memberExpression);
 
             return Content.Value<TProperty>(alias);
         }

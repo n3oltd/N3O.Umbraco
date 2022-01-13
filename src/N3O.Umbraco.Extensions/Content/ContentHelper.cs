@@ -59,30 +59,46 @@ namespace N3O.Umbraco.Content {
             return contentBlocks;
         }
 
-        public ContentNode GetContentNode(IContent content) {
-            var properties = new List<ContentProperty>();
-            var descendants = new List<ContentNode>();
-            var contentType = _contentTypeService.Value.Get(content.ContentType.Alias);
+        public ContentProperties GetContentProperties(IContent content) {
+            var properties = content.Properties.Select(x => (x.PropertyType, x.GetValue()));
+            
+            return GetContentProperties(content.Key, content.ContentType.Alias, properties);
+        }
+        
+        public ContentProperties GetContentProperties(Guid contentId,
+                                                      string contentTypeAlias,
+                                                      IEnumerable<(IPropertyType Type, object Value)> properties) {
+            var contentProperties = new List<ContentProperty>();
+            var nestedContentProperties = new List<NestedContentProperty>();
+            var contentType = _contentTypeService.Value.Get(contentTypeAlias);
 
-            foreach (var property in content.Properties) {
-                if (property.PropertyType.IsNestedContent()) {
-                    var json = (string) property.GetValue();
+            foreach (var property in properties) {
+                if (property.Type.IsNestedContent()) {
+                    var json = (string) property.Value;
                     var nestedContent = JsonConvert.DeserializeObject(json);
+                    var elements = GetContentPropertiessForNestedContent(nestedContent);
+                    var nestedContentProperty = new NestedContentProperty(contentType,
+                                                                          property.Type,
+                                                                          elements,
+                                                                          json);
                     
-                    descendants.AddRange(GetContentNodesForNestedContent(nestedContent));
-                } else if (property.PropertyType.IsContentBlocks()) {
-                    var json = (string) property.GetValue();
+                    nestedContentProperties.Add(nestedContentProperty);
+                } else if (property.Type.IsContentBlocks()) {
+                    var json = (string) property.Value;
                     var blockContent = JsonConvert.DeserializeObject(json);
-
-                    descendants.AddRange(GetContentNodesForBlockContent(blockContent));
+                    var elements = GetContentPropertiessForBlockContent(blockContent);
+                    var nestedContentProperty = new NestedContentProperty(contentType,
+                                                                          property.Type,
+                                                                          elements,
+                                                                          json);
+                    
+                    nestedContentProperties.Add(nestedContentProperty);
                 } else {
-                    properties.Add(new ContentProperty(contentType, property.PropertyType, property.GetValue()));
+                    contentProperties.Add(new ContentProperty(contentType, property.Type, property.Value));
                 }
             }
 
-            var contentNode = new ContentNode(content.Key, content.ContentType.Alias, properties, descendants);
-
-            return contentNode;
+            return new ContentProperties(contentId, contentTypeAlias, contentProperties, nestedContentProperties);
         }
 
         public TProperty GetConvertedValue<TConverter, TProperty>(string contentTypeAlias,
@@ -117,7 +133,11 @@ namespace N3O.Umbraco.Content {
         public IPublishedElement GetNestedContent(string contentTypeAlias,
                                                   string propertyTypeAlias,
                                                   object propertyValue) {
-            return GetNestedContents(contentTypeAlias, propertyTypeAlias, propertyValue).Single();
+            var publishedElement = GetConvertedValue<NestedContentSingleValueConverter, IPublishedElement>(contentTypeAlias,
+                                                                                                           propertyTypeAlias,
+                                                                                                           propertyValue);
+
+            return publishedElement;
         }
         
         public IReadOnlyList<IPublishedElement> GetNestedContents(string contentTypeAlias,
@@ -133,7 +153,11 @@ namespace N3O.Umbraco.Content {
         public T GetPickerValue<T>(string contentTypeAlias,
                                    string propertyTypeAlias,
                                    object propertyValue) {
-            return GetPickerValues<T>(contentTypeAlias, propertyTypeAlias, propertyValue).Single();
+            var item = GetConvertedValue<StronglyTypedMultiNodeTreePickerValueConverter, T>(contentTypeAlias,
+                                                                                            propertyTypeAlias,
+                                                                                            propertyValue);
+
+            return item;
         }
 
         public IReadOnlyList<T> GetPickerValues<T>(string contentTypeAlias,
@@ -177,39 +201,46 @@ namespace N3O.Umbraco.Content {
             return descendants;
         }
 
-        private IReadOnlyList<ContentNode> GetContentNodesForBlockContent(dynamic blockContent) {
-            return GetContentNodesForNestedContent(blockContent.blocks.content);
+        private IReadOnlyList<ContentProperties> GetContentPropertiessForBlockContent(dynamic blockContent) {
+            var contentPropertiess = new List<ContentProperties>();
+            
+            if (blockContent == null) {
+                return contentPropertiess;
+            }
+            
+            foreach (var block in blockContent.blocks) {
+                contentPropertiess.AddRange(GetContentPropertiessForNestedContent(block.content));
+            }
+
+            return contentPropertiess;
         }
 
-        private IReadOnlyList<ContentNode> GetContentNodesForNestedContent(dynamic nestedContent) {
-            var contentNodes = new List<ContentNode>();
+        private IReadOnlyList<ContentProperties> GetContentPropertiessForNestedContent(dynamic nestedContent) {
+            var contentPropertiess = new List<ContentProperties>();
+
+            if (nestedContent == null) {
+                return contentPropertiess;
+            }
 
             foreach (var content in nestedContent) {
                 var id = Guid.Parse((string) content.key);
                 var contentTypeAlias = (string) content.ncContentTypeAlias;
                 var contentType = _contentTypeService.Value.Get(contentTypeAlias);
 
-                var properties = new List<ContentProperty>();
-                var descendants = new List<ContentNode>();
-
+                var properties = new List<(IPropertyType, object)>();
+                
                 foreach (var propertyGroup in contentType.PropertyGroups) {
                     foreach (var propertyType in propertyGroup.PropertyTypes) {
                         var propertyValue = content[propertyType.Alias];
 
-                        if (propertyType.IsNestedContent()) {
-                            descendants.AddRange(GetContentNodesForNestedContent(propertyValue));
-                        } else if (propertyType.IsContentBlocks()) {
-                            descendants.AddRange(GetContentNodesForBlockContent(propertyValue));
-                        } else {
-                            properties.Add(new ContentProperty(contentType, propertyType, propertyValue));
-                        }
+                        properties.Add((propertyType, propertyValue));
                     }
                 }
-
-                contentNodes.Add(new ContentNode(id, contentTypeAlias, properties, descendants));
+                
+                contentPropertiess.Add(GetContentProperties(id, contentTypeAlias, properties));
             }
 
-            return contentNodes;
+            return contentPropertiess;
         }
 
         private delegate IEnumerable<IContent> GetPagedContent(int id,

@@ -12,7 +12,7 @@ namespace N3O.Umbraco.Extensions {
 
         public static TValue GetValue<TContent, TProperty, TValue>(this IContent content,
                                                                    Expression<Func<TContent, TProperty>> memberLambda) {
-            var propertyAlias = AliasHelper.ForProperty(memberLambda);
+            var propertyAlias = AliasHelper<TContent>.PropertyAlias(memberLambda);
 
             return content.GetValue<TValue>(propertyAlias);
         }
@@ -30,7 +30,7 @@ namespace N3O.Umbraco.Extensions {
         public static void SetValue<TContent, TProperty>(this IContent content,
                                                          Expression<Func<TContent, TProperty>> memberLambda,
                                                          object value) {
-            content.SetValue(AliasHelper.ForProperty(memberLambda), value);
+            content.SetValue(AliasHelper<TContent>.PropertyAlias(memberLambda), value);
         }
 
         public static bool SetValueIfChanged<TContent, TProperty>(this IContent content,
