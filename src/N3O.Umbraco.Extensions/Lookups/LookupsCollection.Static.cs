@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Lookups {
+    [StaticLookups]
     public abstract class StaticLookupsCollection<T> : LookupsCollection<T> where T : ILookup {
         private readonly IReadOnlyList<T> _all;
 

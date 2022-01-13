@@ -1,3 +1,5 @@
+using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,6 +56,14 @@ namespace N3O.Umbraco.Lookups {
 
             return all.Cast<T>().ToList();
         }
+
+        public bool IsStaticCollection(Type lookupType) {
+            var lookupCollectionTypes = GetLookupCollectionTypes(lookupType);
+            
+            var isStatic = lookupCollectionTypes.All(x => x.HasAttribute<StaticLookupsAttribute>());
+            
+            return isStatic;
+        }
     
         private async Task<TResult> ExecuteAsync<TResult>(Type lookupType,
                                                           Func<ILookupsCollection, Task<TResult>> getResultAsync,
@@ -68,6 +78,16 @@ namespace N3O.Umbraco.Lookups {
             }
 
             return result;
+        }
+        
+        private IEnumerable<Type> GetLookupCollectionTypes(Type lookupType) {
+            var interfaceType = typeof(ILookupsCollection<>).MakeGenericType(lookupType);
+            
+            var lookupCollectionTypes = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
+                                                                    t.ImplementsInterface(interfaceType))
+                                                     .ToList();
+
+            return lookupCollectionTypes;
         }
     }
 }
