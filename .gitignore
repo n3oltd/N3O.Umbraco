@@ -356,6 +356,8 @@ wwwroot/media
 wwwroot/umbraco
 
 src/N3O.Umbraco.Cms/App_Plugins
+src/Forms/N3O.Umbraco.Forms/App_Plugins
+src/Forms/N3O.Umbraco.Forms/Views
 src/Forms/N3O.Umbraco.Forms.StaticAssets/App_Plugins
 src/Forms/N3O.Umbraco.Forms.StaticAssets/Views
 src/Sync/N3O.Umbraco.Sync/App_Plugins
