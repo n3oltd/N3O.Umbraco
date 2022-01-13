@@ -24,7 +24,7 @@ namespace N3O.Umbraco.Utilities {
             }
             
             var memberName = ((MemberExpression) result).Member.Name;
-            var parameter = Expression.Parameter(typeof(TValue));
+            var parameter = Expression.Parameter(typeof(TModel));
             var property = Expression.Property(parameter, memberName);
             return Expression.Lambda<Func<TModel, TValue>>(property, parameter);
         }
