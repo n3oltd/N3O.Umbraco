@@ -10,7 +10,6 @@ namespace N3O.Umbraco.Context {
             builder.Services.AddScoped<ICookieAccessor, CookieAccessor>();
             builder.Services.AddScoped<ICurrencyAccessor, CurrencyAccessor>();
             builder.Services.AddScoped<ICurrencyCodeAccessor, CurrencyCodeAccessor>();
-            builder.Services.AddScoped<ICurrentPageAccessor, CurrentPageAccessor>();
             builder.Services.AddScoped<IQueryStringAccessor, QueryStringAccessor>();
             builder.Services.TryAddScoped<IRemoteIpAddressAccessor, RemoteIpAddressAccessor>();
         }

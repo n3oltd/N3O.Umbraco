@@ -6,10 +6,11 @@ using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.TagHelpers {
-    public class N3OStyleContextTagHelper : TagHelper {
+    [HtmlTargetElement("n3o-style-context")]
+    public class StyleContextTagHelper : TagHelper {
         private readonly IStyleContext _styleContext;
 
-        public N3OStyleContextTagHelper(IStyleContext styleContext) {
+        public StyleContextTagHelper(IStyleContext styleContext) {
             _styleContext = styleContext;
         }
         

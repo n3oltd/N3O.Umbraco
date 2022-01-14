@@ -5,10 +5,10 @@ using System.Text;
 
 namespace N3O.Umbraco.TagHelpers {
     [HtmlTargetElement(Attributes = nameof(ApplyStyles))]
-    public class N3OApplyStylesTagHelper : TagHelper {
+    public class ApplyStylesTagHelper : TagHelper {
         private readonly IStyleContext _styleContext;
 
-        public N3OApplyStylesTagHelper(IStyleContext styleContext) {
+        public ApplyStylesTagHelper(IStyleContext styleContext) {
             _styleContext = styleContext;
         }
         

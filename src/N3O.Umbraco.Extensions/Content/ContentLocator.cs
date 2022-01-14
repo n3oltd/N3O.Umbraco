@@ -35,7 +35,7 @@ namespace N3O.Umbraco.Content {
         }
 
         public IPublishedContent ById(int id) {
-            return Run(c => (IPublishedContent) c.Content.GetById(id));
+            return Run(c => c.Content.GetById(id));
         }
 
         public T ById<T>(int id) {
@@ -43,7 +43,7 @@ namespace N3O.Umbraco.Content {
         }
 
         public IPublishedContent ById(Guid id) {
-            return Run(c => (IPublishedContent) c.Content.GetById(id));
+            return Run(c => c.Content.GetById(id));
         }
 
         public T ById<T>(Guid id) {
@@ -68,13 +68,13 @@ namespace N3O.Umbraco.Content {
 
                 foreach (var rootContent in c.Content.GetAtRoot()) {
                     if (contentTypeAlias == null) {
-                        allContent.AddRange(rootContent.Descendants().Cast<IPublishedContent>());
+                        allContent.AddRange(rootContent.Descendants());
                     } else {
                         if (rootContent.ContentType.Alias.EqualsInvariant(contentTypeAlias)) {
-                            allContent.Add((IPublishedContent) rootContent);
+                            allContent.Add(rootContent);
                         }
                     
-                        allContent.AddRange(rootContent.DescendantsOfType(contentTypeAlias).Cast<IPublishedContent>());
+                        allContent.AddRange(rootContent.DescendantsOfType(contentTypeAlias));
                     }
                 }
 
