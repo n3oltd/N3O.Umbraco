@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Lookups {
     public abstract class LookupContent<T> : UmbracoContent<T>, INamedLookup {
-        public virtual string Id => Content.Name.Pascalize();
+        public virtual string Id => Content.Name.Camelize();
         public virtual string Name => Content.Name;
 
         protected override IEnumerable<object> GetAtomicValues() {

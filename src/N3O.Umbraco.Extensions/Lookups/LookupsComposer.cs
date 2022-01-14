@@ -15,6 +15,9 @@ namespace N3O.Umbraco.Lookups {
             RegisterAll(t => t.ImplementsGenericInterface(typeof(ILookupsCollection<>)),
                         t => RegisterLookupsCollection(builder, t));
 
+            RegisterAll(t => t.IsSubclassOrSubInterfaceOfGenericType(typeof(LookupContent<>)),
+                        t => RegisterUmbracoLookupsCollection(builder, t));
+            
             RegisterAll(t => t.Implements<IPublishedContent>() && t.Implements<ILookup>(),
                         t => RegisterUmbracoLookupsCollection(builder, t));
         }
@@ -23,7 +26,7 @@ namespace N3O.Umbraco.Lookups {
             var interfaceTypes = collectionType.GetInterfaces().ToList();
 
             foreach (var interfaceType in interfaceTypes) {
-                // TODO This and below should pull lifetime from an interface similar to MH
+                // TODO This and below should pull lifetime from an interface
                 builder.Services.AddSingleton(interfaceType, collectionType);
             }
         }

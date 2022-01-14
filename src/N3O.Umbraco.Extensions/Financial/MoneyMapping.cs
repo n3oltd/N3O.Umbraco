@@ -9,12 +9,16 @@ namespace N3O.Umbraco.Financial {
             _formatter = formatter;
         }
     
+        
         public void DefineMaps(IUmbracoMapper mapper) {
-            mapper.Define<Money, MoneyRes>((src, dest, _) => {
-                dest.Amount = src.Amount;
-                dest.Currency = src.Currency;
-                dest.Text = _formatter.Number.FormatMoney(src);
-            });
+            mapper.Define<Money, MoneyRes>((_, _) => new MoneyRes(), Map);
+        }
+
+        // Umbraco.Code.MapAll
+        private void Map(Money src, MoneyRes dest, MapperContext ctx) {
+            dest.Amount = src.Amount;
+            dest.Currency = src.Currency;
+            dest.Text = _formatter.Number.FormatMoney(src);
         }
     }
 }
