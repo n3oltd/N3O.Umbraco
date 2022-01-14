@@ -26,11 +26,6 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		string Notes { get; }
-
-		/// <summary>Template Styles</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		global::System.Collections.Generic.List<global::N3O.Umbraco.Templates.TemplateStyle> TemplateStyles { get; }
 	}
 
 	/// <summary>Block</summary>
@@ -76,18 +71,5 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		public static string GetNotes(IBlock that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "notes");
-
-		///<summary>
-		/// Template Styles
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("templateStyles")]
-		public virtual global::System.Collections.Generic.List<global::N3O.Umbraco.Templates.TemplateStyle> TemplateStyles => GetTemplateStyles(this, _publishedValueFallback);
-
-		/// <summary>Static getter for Template Styles</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static global::System.Collections.Generic.List<global::N3O.Umbraco.Templates.TemplateStyle> GetTemplateStyles(IBlock that, IPublishedValueFallback publishedValueFallback) => that.Value<global::System.Collections.Generic.List<global::N3O.Umbraco.Templates.TemplateStyle>>(publishedValueFallback, "templateStyles");
 	}
 }
