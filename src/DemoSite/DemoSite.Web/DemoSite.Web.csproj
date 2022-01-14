@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <RootNamespace>DemoSite.Web</RootNamespace>
+        <TargetFramework>net5.0</TargetFramework>
+        <LangVersion>9.0</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Remove="Smidge\**" />
+        <None Remove="wwwroot\umbraco\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Forms\N3O.Umbraco.Forms.StaticAssets\N3O.Umbraco.Forms.StaticAssets.csproj" />
+        <ProjectReference Include="..\..\N3O.Umbraco.Cms\N3O.Umbraco.Cms.csproj" />
+        <ProjectReference Include="..\..\Plugins\Cropper\N3O.Umbraco.Cropper.StaticAssets\N3O.Umbraco.Cropper.StaticAssets.csproj" />
+        <ProjectReference Include="..\..\Plugins\SerpEditor\N3O.Umbraco.SerpEditor.StaticAssets\N3O.Umbraco.SerpEditor.StaticAssets.csproj" />
+        <ProjectReference Include="..\..\Plugins\TextResourceEditor\N3O.Umbraco.TextResourceEditor.StaticAssets\N3O.Umbraco.TextResourceEditor.StaticAssets.csproj" />
+        <ProjectReference Include="..\..\Plugins\Uploader\N3O.Umbraco.Uploader.StaticAssets\N3O.Umbraco.Uploader.StaticAssets.csproj" />
+        <ProjectReference Include="..\..\Scheduler\N3O.Umbraco.Scheduler.StaticAssets\N3O.Umbraco.Scheduler.StaticAssets.csproj" />
+        <ProjectReference Include="..\DemoSite.Core\DemoSite.Core.csproj" />
+    </ItemGroup>
+
+    <Import Project="..\..\Plugins\Cropper\N3O.Umbraco.Cropper.StaticAssets\build\N3O.Umbraco.Cropper.StaticAssets.targets" />
+    <Import Project="..\..\Plugins\SerpEditor\N3O.Umbraco.SerpEditor.StaticAssets\build\N3O.Umbraco.SerpEditor.StaticAssets.targets" />
+    <Import Project="..\..\Plugins\TextResourceEditor\N3O.Umbraco.TextResourceEditor.StaticAssets\build\N3O.Umbraco.TextResourceEditor.StaticAssets.targets" />
+    <Import Project="..\..\Plugins\Uploader\N3O.Umbraco.Uploader.StaticAssets\build\N3O.Umbraco.Uploader.StaticAssets.targets" />
+    <Import Project="..\..\Scheduler\N3O.Umbraco.Scheduler.StaticAssets\build\N3O.Umbraco.Scheduler.StaticAssets.targets" />
+
+    <PropertyGroup>
+        <CopyRazorGenerateFilesToPublishDirectory>true</CopyRazorGenerateFilesToPublishDirectory>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <RazorCompileOnBuild>false</RazorCompileOnBuild>
+        <RazorCompileOnPublish>false</RazorCompileOnPublish>
+    </PropertyGroup>
+
+</Project>

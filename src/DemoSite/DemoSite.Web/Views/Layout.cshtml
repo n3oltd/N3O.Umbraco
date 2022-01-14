@@ -1,0 +1,57 @@
+﻿@inherits UmbracoViewPage<IPageViewModel>
+
+@inject IContentCache ContentCache;
+@inject ITemplateText TemplateText;
+@inject IWebHostEnvironment WebHostEnvironment;
+
+@{
+    Layout = null;
+
+    TemplateText.SetTemplateName("Layout");
+}
+
+@if (Model.Content is IPage content) {
+    <!doctype html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <title>@content.TitleMeta.Title</title>
+        
+        @if (content.TitleMeta.Description.HasValue()) {
+            <meta name="description" content="@content.TitleMeta.Description">
+        }
+
+        @if (content.HidePage) {
+            <meta name="robots" content="noindex">
+        }
+
+        <link rel="canonical" href="@content.AbsoluteUrl()">
+        
+        <environment include="Production">
+            <n3o-tag-manager model="Model" render="head" />    
+        </environment>
+
+        <n3o-structured-data model="Model" />
+    </head>
+
+    <body>
+        <n3o-data-layer model="Model" />
+
+        <main>
+            <h1>@TemplateText.Get("Hello World")</h1>
+            
+            @RenderBody()
+        </main>
+
+        <environment include="Production">
+            <n3o-tag-manager model="Model" render="body" />
+        </environment>
+
+        <n3o-page-info model="Model" />
+    </body>
+    </html>
+}
