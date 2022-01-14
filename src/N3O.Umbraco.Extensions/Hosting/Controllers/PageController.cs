@@ -51,9 +51,15 @@ namespace N3O.Umbraco.Hosting {
         }
     
         protected async Task<object> GetViewModelAsync(CancellationToken cancellationToken = default) {
+            var pageType = CurrentPage.GetType();
             var pageModuleData = await _pagePipeline.RunAsync(CurrentPage, cancellationToken);
-            var factoryType = typeof(IPageViewModelFactory<>).MakeGenericType(CurrentPage.GetType());
+            var factoryType = typeof(IPageViewModelFactory<>).MakeGenericType(pageType);
             var factory = (IPageViewModelFactory) _serviceProvider.GetService(factoryType);
+
+            if (factory == null) {
+                factory = PageViewModelFactory.Default(_serviceProvider, pageType);
+            }
+            
             var viewModel = factory.Create(CurrentPage, pageModuleData);
 
             return viewModel;

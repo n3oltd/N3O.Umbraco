@@ -61,13 +61,6 @@ namespace N3O.Umbraco.Extensions {
 
             return builder;
         }
-
-        public static IUmbracoBuilder AddDefaultPageViewModel(this IUmbracoBuilder builder, Type pageType) {
-            builder.Services.AddTransient(typeof(IPageViewModelFactory<>).MakeGenericType(pageType),
-                                          s => PageViewModelFactory.Default(s, pageType));
-
-            return builder;
-        }
     
         private static void AddPageViewModel<TPage, TViewModel>(IUmbracoBuilder builder,
                                                                 Func<IServiceProvider, PageParameters<TPage>, TViewModel> constructor)
