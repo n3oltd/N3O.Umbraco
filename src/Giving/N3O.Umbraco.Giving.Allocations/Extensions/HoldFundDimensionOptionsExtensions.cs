@@ -22,7 +22,7 @@ namespace N3O.Umbraco.Giving.Allocations.Extensions {
             return DefaultFundDimension(holdFundDimensionOptions.Dimension4Options);
         }
         
-        private static T DefaultFundDimension<T>(IEnumerable<T> fundDimensionValues) where T : FundDimensionOption {
+        private static T DefaultFundDimension<T>(IEnumerable<T> fundDimensionValues) where T : FundDimensionOption<T> {
             return fundDimensionValues.OrEmpty().FirstOrDefault(x => x.IsUnrestricted);
         }
     }

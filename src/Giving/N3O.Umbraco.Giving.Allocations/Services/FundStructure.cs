@@ -28,7 +28,7 @@ namespace N3O.Umbraco.Giving.Allocations {
             }
         }
 
-        public IReadOnlyList<T> GetOptions<T>() where T : FundDimensionOption {
+        public IReadOnlyList<T> GetOptions<T>() where T : FundDimensionOption<T> {
             return _lookups.GetAll<T>();
         }
     }

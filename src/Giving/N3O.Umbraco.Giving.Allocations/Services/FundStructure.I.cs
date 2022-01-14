@@ -11,6 +11,6 @@ namespace N3O.Umbraco.Giving.Allocations {
     
         IEnumerable<FundDimension> Dimensions { get; }
 
-        IReadOnlyList<T> GetOptions<T>() where T : FundDimensionOption;
+        IReadOnlyList<T> GetOptions<T>() where T : FundDimensionOption<T>;
     }
 }
