@@ -11,6 +11,7 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Localization {
     public class StringLocalizer : IStringLocalizer {
+        private static readonly string TextContainerAlias = AliasHelper<TextContainer>.ContentTypeAlias();
         private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(30);
         private static readonly object Lock = new();
 
@@ -22,6 +23,12 @@ namespace N3O.Umbraco.Localization {
             _appCache = appAppCache;
             _contentService = contentService;
             _contentCache = contentCache;
+        }
+
+        public void Flush(IEnumerable<string> aliases) {
+            if (aliases.Contains(TextContainerAlias, true)) {
+                _appCache.ClearByKey(nameof(StringLocalizer));   
+            }
         }
 
         public string Get(string folder, string name, string text) {
