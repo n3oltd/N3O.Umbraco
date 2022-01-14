@@ -360,6 +360,8 @@ wwwroot/umbraco
 src/N3O.Umbraco.Cms/App_Plugins
 src/DemoSite/**/App_Plugins/*
 src/DemoSite/**/umbraco/*
+src/DemoSite/**/Views/MacroPartials/*
+src/DemoSite/**/Views/Partials/*
 src/Forms/N3O.Umbraco.Forms/App_Plugins
 src/Forms/N3O.Umbraco.Forms/Views
 src/Forms/N3O.Umbraco.Forms.StaticAssets/App_Plugins
