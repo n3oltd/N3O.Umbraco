@@ -10,20 +10,20 @@ using Umbraco.Cms.Core.Notifications;
 
 namespace N3O.Umbraco.Notifications {
     public class FlushContentCacheHandlers :
-        INotificationAsyncHandler<ContentPublishedNotification>,
-        INotificationAsyncHandler<ContentDeletedNotification> {
+        INotificationAsyncHandler<ContentDeletedNotification>,
+        INotificationAsyncHandler<ContentPublishedNotification> {
         private readonly IContentCache _contentCache;
 
         public FlushContentCacheHandlers(IContentCache contentCache) {
             _contentCache = contentCache;
         }
     
-        public async Task HandleAsync(ContentPublishedNotification notification, CancellationToken cancellationToken) {
-            await ProcessAsync(notification.PublishedEntities);
-        }
-
         public async Task HandleAsync(ContentDeletedNotification notification, CancellationToken cancellationToken) {
             await ProcessAsync(notification.DeletedEntities);
+        }
+        
+        public async Task HandleAsync(ContentPublishedNotification notification, CancellationToken cancellationToken) {
+            await ProcessAsync(notification.PublishedEntities);
         }
 
         private Task ProcessAsync(IEnumerable<IContent> entities) {
