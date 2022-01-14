@@ -74,6 +74,10 @@ namespace N3O.Umbraco.Extensions {
         }
         
         private static T ConvertTo<T>(this IPublishedContent publishedContent) {
+            if (publishedContent == null) {
+                return default;
+            }
+            
             var model = Activator.CreateInstance<T>();
             ((IUmbracoContent) model).Content = publishedContent;
 
