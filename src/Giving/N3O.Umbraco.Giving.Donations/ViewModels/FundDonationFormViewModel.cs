@@ -45,10 +45,10 @@ namespace N3O.Umbraco.Giving.Donations.ViewModels {
         public DonationItem DonationItem { get; }
         public DonationType Type { get; }
         public Currency Currency { get; }
-        public FixedOrDefaultFundDimensionOption FundDimension1 { get; }
-        public FixedOrDefaultFundDimensionOption FundDimension2 { get; }
-        public FixedOrDefaultFundDimensionOption FundDimension3 { get; }
-        public FixedOrDefaultFundDimensionOption FundDimension4 { get; }
+        public FixedOrDefaultFundDimensionOption<FundDimension1Option> FundDimension1 { get; }
+        public FixedOrDefaultFundDimensionOption<FundDimension2Option> FundDimension2 { get; }
+        public FixedOrDefaultFundDimensionOption<FundDimension3Option> FundDimension3 { get; }
+        public FixedOrDefaultFundDimensionOption<FundDimension4Option> FundDimension4 { get; }
         public MoneyRes Price { get; }
         public IReadOnlyList<PriceHandleViewModel> PriceHandles { get; }
         public IReadOnlyDictionary<int, string> QuantityOptions { get; }
@@ -71,10 +71,11 @@ namespace N3O.Umbraco.Giving.Donations.ViewModels {
             }
         }
     
-        private FixedOrDefaultFundDimensionOption GetFundDimension(IEnumerable<FundDimensionOption> allowedValues,
-                                                                   FundDimensionOption defaultValue) {
-            return new FixedOrDefaultFundDimensionOption(allowedValues.IsSingle() ? allowedValues.Single() : null,
-                                                         defaultValue);
+        private FixedOrDefaultFundDimensionOption<T> GetFundDimension<T>(IEnumerable<FundDimensionOption<T>> allowedValues,
+                                                                         FundDimensionOption<T> defaultValue)
+            where T : FundDimensionOption<T> {
+            return new FixedOrDefaultFundDimensionOption<T>(allowedValues.IsSingle() ? allowedValues.Single() : null,
+                                                            defaultValue);
         }
 
         private IReadOnlyDictionary<int, string> GetQuantityOptions(FundDonationOption fundOption) {

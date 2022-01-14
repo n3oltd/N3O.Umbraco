@@ -10,10 +10,10 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Giving.Donations.Content {
     public class FundDonationOptionValidator : ContentValidator {
         private static readonly string DonationItemAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.DonationItem);
-        private static readonly string Dimension1OptionsAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.Dimension1);
-        private static readonly string Dimension2OptionsAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.Dimension2);
-        private static readonly string Dimension3OptionsAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.Dimension3);
-        private static readonly string Dimension4OptionsAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.Dimension4);
+        private static readonly string Dimension1Alias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.Dimension1);
+        private static readonly string Dimension2Alias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.Dimension2);
+        private static readonly string Dimension3Alias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.Dimension3);
+        private static readonly string Dimension4Alias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.Dimension4);
         private static readonly string HideRegularAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.HideRegular);
         private static readonly string HideSingleAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.HideSingle);
         private static readonly string RegularPriceHandlesAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.RegularPriceHandles);
@@ -38,15 +38,15 @@ namespace N3O.Umbraco.Giving.Donations.Content {
             if (donationItem != null) {
                 SinglePriceHandlesValid(content, donationItem);
                 RegularPriceHandlesValid(content, donationItem);
-                FundDimensionAllowed(content, donationItem, donationItem.Dimension1Options, Dimension1OptionsAlias);
-                FundDimensionAllowed(content, donationItem, donationItem.Dimension2Options, Dimension2OptionsAlias);
-                FundDimensionAllowed(content, donationItem, donationItem.Dimension3Options, Dimension3OptionsAlias);
-                FundDimensionAllowed(content, donationItem, donationItem.Dimension4Options, Dimension4OptionsAlias);
+                FundDimensionAllowed(content, donationItem, donationItem.Dimension1Options, Dimension1Alias);
+                FundDimensionAllowed(content, donationItem, donationItem.Dimension2Options, Dimension2Alias);
+                FundDimensionAllowed(content, donationItem, donationItem.Dimension3Options, Dimension3Alias);
+                FundDimensionAllowed(content, donationItem, donationItem.Dimension4Options, Dimension4Alias);
+                
+                EnsureShowQuantityIsAllowed(content, donationItem);
             }
 
             EnsureSingleAndRegularNotBothHidden(content);
-
-            EnsureShowQuantityIsAllowed(content, donationItem);
         }
 
         private void SinglePriceHandlesValid(ContentProperties content, DonationItem donationItem) {
@@ -85,37 +85,38 @@ namespace N3O.Umbraco.Giving.Donations.Content {
             }
         }
 
-        private void FundDimensionAllowed(ContentProperties content,
-                                          DonationItem donationItem,
-                                          IEnumerable<FundDimensionOption> allowedOptions,
-                                          string propertyAlias) {
+        private void FundDimensionAllowed<T>(ContentProperties content,
+                                             DonationItem donationItem,
+                                             IEnumerable<FundDimensionOption<T>> allowedOptions,
+                                             string propertyAlias)
+            where T : FundDimensionOption<T> {
             var property = content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(propertyAlias));
-            var value = property.IfNotNull(x => ContentHelper.GetPickerValue<IPublishedContent>(x).As<FundDimensionOption>());
+            var value = property.IfNotNull(x => ContentHelper.GetPickerValue<IPublishedContent>(x).As<FundDimensionOption<T>>());
 
-            if (value != null && !allowedOptions.Contains(value)) {
+            if (value != null && allowedOptions != null && !allowedOptions.Contains(value)) {
                 ErrorResult(property, $"{value.Name} is not permitted for item {donationItem.Name}");
             }
         }
 
         private void EnsureSingleAndRegularNotBothHidden(ContentProperties content) {
-            var hideSingle = (bool?) content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(HideSingleAlias))?.Value;
-            var hideRegular = (bool?) content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(HideRegularAlias))?.Value;
+            var hideSingle = (int?) content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(HideSingleAlias))?.Value == 1;
+            var hideRegular = (int?) content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(HideRegularAlias))?.Value == 1;
             
-            if (hideSingle == true && hideRegular == true) {
+            if (hideSingle && hideRegular) {
                 ErrorResult("Cannot hide both single and regular options");
             }
         }
 
         private void EnsureShowQuantityIsAllowed(ContentProperties content, DonationItem donationItem) {
             var property = content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(ShowQuantityAlias));
-            var showQuantity = (bool?) property?.Value;
+            var showQuantity = (int?) property?.Value == 1;
     
-            if (showQuantity == true && !donationItem.HasPrice()) {
+            if (showQuantity && !donationItem.HasPrice()) {
                 ErrorResult(property, "Show quantity can only be enabled for donation items that have a price");
             }
 
-            if (showQuantity == true &&
-                (donationItem.AllowRegularDonations == false || donationItem.AllowSingleDonations == false)) {
+            if ((donationItem.AllowRegularDonations == false || donationItem.AllowSingleDonations == false) &&
+                showQuantity) {
                 ErrorResult(property, "Show quantity can only be enabled for donation items that allow single or regular donations but not both");
             }
         }

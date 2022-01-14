@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.ValueConverters;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Perplex.ContentBlocks.PropertyEditor;
 using Perplex.ContentBlocks.Rendering;
 using System;
@@ -52,6 +53,10 @@ namespace N3O.Umbraco.Content {
         }
 
         public ContentBlocks GetContentBlocks(string contentTypeAlias, string propertyTypeAlias, object propertyValue) {
+            if (propertyValue == null) {
+                return null;
+            }
+
             var contentBlocks = GetConvertedValue<ContentBlocksValueConverter, ContentBlocks>(contentTypeAlias,
                                                                                               propertyTypeAlias,
                                                                                               propertyValue);
@@ -74,9 +79,9 @@ namespace N3O.Umbraco.Content {
 
             foreach (var property in properties) {
                 if (property.Type.IsNestedContent()) {
-                    var json = (string) property.Value;
-                    var nestedContent = JsonConvert.DeserializeObject(json);
-                    var elements = GetContentPropertiessForNestedContent(nestedContent);
+                    var (nestedContents, json) = GetJsonPropertyValue(property.Value);
+                        
+                    var elements = GetContentPropertiesForNestedContent(nestedContents);
                     var nestedContentProperty = new NestedContentProperty(contentType,
                                                                           property.Type,
                                                                           elements,
@@ -84,9 +89,9 @@ namespace N3O.Umbraco.Content {
                     
                     nestedContentProperties.Add(nestedContentProperty);
                 } else if (property.Type.IsContentBlocks()) {
-                    var json = (string) property.Value;
-                    var blockContent = JsonConvert.DeserializeObject(json);
-                    var elements = GetContentPropertiessForBlockContent(blockContent);
+                    var (blockContent, json) = GetJsonPropertyValue(property.Value);
+
+                    var elements = GetContentPropertiesForBlockContent(blockContent);
                     var nestedContentProperty = new NestedContentProperty(contentType,
                                                                           property.Type,
                                                                           elements,
@@ -143,6 +148,10 @@ namespace N3O.Umbraco.Content {
         public IReadOnlyList<IPublishedElement> GetNestedContents(string contentTypeAlias,
                                                                   string propertyTypeAlias,
                                                                   object propertyValue) {
+            if (propertyValue == null) {
+                return new List<IPublishedElement>();
+            }
+            
             var publishedElements = GetConvertedValue<NestedContentManyValueConverter, IEnumerable<IPublishedElement>>(contentTypeAlias,
                                                                                                                        propertyTypeAlias,
                                                                                                                        propertyValue);
@@ -201,46 +210,73 @@ namespace N3O.Umbraco.Content {
             return descendants;
         }
 
-        private IReadOnlyList<ContentProperties> GetContentPropertiessForBlockContent(dynamic blockContent) {
-            var contentPropertiess = new List<ContentProperties>();
+        private IReadOnlyList<ContentProperties> GetContentPropertiesForBlockContent(JToken blockContent) {
+            var contentProperties = new List<ContentProperties>();
             
             if (blockContent == null) {
-                return contentPropertiess;
+                return contentProperties;
             }
             
-            foreach (var block in blockContent.blocks) {
-                contentPropertiess.AddRange(GetContentPropertiessForNestedContent(block.content));
+            foreach (var block in blockContent["blocks"]) {
+                contentProperties.AddRange(GetContentPropertiesForNestedContent(block["content"]));
             }
 
-            return contentPropertiess;
+            return contentProperties;
         }
 
-        private IReadOnlyList<ContentProperties> GetContentPropertiessForNestedContent(dynamic nestedContent) {
-            var contentPropertiess = new List<ContentProperties>();
+        private IReadOnlyList<ContentProperties> GetContentPropertiesForNestedContent(JToken nestedContent) {
+            var contentProperties = new List<ContentProperties>();
 
             if (nestedContent == null) {
-                return contentPropertiess;
-            }
-
-            foreach (var content in nestedContent) {
-                var id = Guid.Parse((string) content.key);
-                var contentTypeAlias = (string) content.ncContentTypeAlias;
-                var contentType = _contentTypeService.Value.Get(contentTypeAlias);
-
-                var properties = new List<(IPropertyType, object)>();
-                
-                foreach (var propertyGroup in contentType.PropertyGroups) {
-                    foreach (var propertyType in propertyGroup.PropertyTypes) {
-                        var propertyValue = content[propertyType.Alias];
-
-                        properties.Add((propertyType, propertyValue));
-                    }
+                return contentProperties;
+            } else if (nestedContent is JValue jValue) {
+                return GetContentPropertiesForNestedContent((JToken) JsonConvert.DeserializeObject((string) jValue));
+            } else if (nestedContent is JArray) {
+                foreach (var element in nestedContent) {
+                    contentProperties.Add(GetContentPropertiesForNestedContentElement((JObject) element));
                 }
-                
-                contentPropertiess.Add(GetContentProperties(id, contentTypeAlias, properties));
+            } else {
+                contentProperties.Add(GetContentPropertiesForNestedContentElement((JObject) nestedContent));
             }
 
-            return contentPropertiess;
+            return contentProperties;
+        }
+
+        private ContentProperties GetContentPropertiesForNestedContentElement(JObject element) {
+            var id = Guid.Parse((string) element["key"]);
+            var contentTypeAlias = (string) element["ncContentTypeAlias"];
+            var contentType = _contentTypeService.Value.Get(contentTypeAlias);
+
+            var properties = new List<(IPropertyType, object)>();
+                
+            foreach (var propertyGroup in contentType.PropertyGroups) {
+                foreach (var propertyType in propertyGroup.PropertyTypes) {
+                    var propertyValue = element[propertyType.Alias];
+
+                    properties.Add((propertyType, propertyValue));
+                }
+            }
+                
+            return GetContentProperties(id, contentTypeAlias, properties);
+        }
+        
+        private (JToken, string) GetJsonPropertyValue(object propertyValue) {
+            if (propertyValue == null) {
+                return (null, null);
+            }
+            
+            JToken obj;
+
+            if (propertyValue is string json) {
+                obj = (JToken) JsonConvert.DeserializeObject(json);
+            } else if (propertyValue is JToken jToken) {
+                obj = jToken;
+                json = JsonConvert.SerializeObject(obj);
+            } else {
+                throw new Exception("Property value is not JObject or JSON");
+            }
+
+            return (obj, json);
         }
 
         private delegate IEnumerable<IContent> GetPagedContent(int id,
