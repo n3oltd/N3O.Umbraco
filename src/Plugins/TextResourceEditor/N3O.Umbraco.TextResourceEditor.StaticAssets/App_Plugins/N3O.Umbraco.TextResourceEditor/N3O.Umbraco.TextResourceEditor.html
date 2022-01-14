@@ -1,11 +1,12 @@
 <div ng-controller="N3O.Umbraco.TextResourceEditor">
     <div class="n3o-text-resource-editor">
-      <div ng-repeat="resource in model.value track by $index" class="row-wrapper">
-        <div class="row-1">[<a ng-click="deleteEntry($index)" style="cursor: pointer;">x</a>] <span class="text">{{model.value[$index].source}}</span></div>
-        
-          <div class="row-2">
-         <input type="text" ng-model="model.value[$index].custom" class="custom" />
+        <div ng-repeat="resource in model.value track by $index" class="row-wrapper">
+            <div class="row-1">[<a ng-click="deleteEntry($index)" style="cursor: pointer;">x</a>] <span class="text">{{model.value[$index].source}}</span>
+            </div>
+
+            <div class="row-2">
+                <input type="text" ng-model="model.value[$index].custom" class="custom"/>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>
