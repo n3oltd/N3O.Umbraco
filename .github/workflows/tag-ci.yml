@@ -6,7 +6,7 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+*'
 
 jobs:
-  job1:
+  build-pack-push:
     name: Build, Pack, Push
     uses: n3oltd/actions/.github/workflows/dotnet-build-pack-push.yml@main
     with:
@@ -15,11 +15,65 @@ jobs:
     secrets:
       nuget-api-key: ${{ secrets.NUGET_API_KEY }}
 
-  job2:
+  umbraco-allocations-client:
+    name: 'npm Publish @n3oltd/umbraco-allocations-client'
+    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
+    with:
+      working-directory: 'clients/@n3oltd/umbraco-allocations-client'
+      version: ${GITHUB_REF#refs/tags/}
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}
+
+  umbraco-cart-client:
+    name: 'npm Publish @n3oltd/umbraco-cart-client'
+    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
+    with:
+      working-directory: 'clients/@n3oltd/umbraco-cart-client'
+      version: ${GITHUB_REF#refs/tags/}
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}
+
+  umbraco-checkout-client:
+    name: 'npm Publish @n3oltd/umbraco-checkout-client'
+    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
+    with:
+      working-directory: 'clients/@n3oltd/umbraco-checkout-client'
+      version: ${GITHUB_REF#refs/tags/}
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}
+
+  umbraco-cropper-client:
     name: 'npm Publish @n3oltd/umbraco-cropper-client'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-cropper-client'
+      version: ${GITHUB_REF#refs/tags/}
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}
+
+  umbraco-donations-client:
+    name: 'npm Publish @n3oltd/umbraco-donations-client'
+    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
+    with:
+      working-directory: 'clients/@n3oltd/umbraco-donations-client'
+      version: ${GITHUB_REF#refs/tags/}
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}
+
+  umbraco-newsletters-client:
+    name: 'npm Publish @n3oltd/umbraco-newsletters-client'
+    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
+    with:
+      working-directory: 'clients/@n3oltd/umbraco-newsletters-client'
+      version: ${GITHUB_REF#refs/tags/}
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}
+
+  umbraco-uploader-client:
+    name: 'npm Publish @n3oltd/umbraco-uploader-client'
+    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
+    with:
+      working-directory: 'clients/@n3oltd/umbraco-uploader-client'
       version: ${GITHUB_REF#refs/tags/}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}

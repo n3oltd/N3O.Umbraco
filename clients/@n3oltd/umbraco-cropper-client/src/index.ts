@@ -7,7 +7,7 @@
 //----------------------
 // ReSharper disable InconsistentNaming
 
-export class UmbracoCropperClient {
+export class CropperClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -17,58 +17,11 @@ export class UmbracoCropperClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
     }
 
-    add(req: AddToCartReq): Promise<void> {
-        let url_ = this.baseUrl + "/umbraco/api/Cart/add";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(req);
-
-        let options_ = <RequestInit>{
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processAdd(_response);
-        });
-    }
-
-    protected processAdd(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 412) {
-            return response.text().then((_responseText) => {
-            let result412: any = null;
-            result412 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result412);
-            });
-        } else if (status === 500) {
-            return response.text().then((_responseText) => {
-            return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        } else if (status === 422) {
-            return response.text().then((_responseText) => {
-            let result422: any = null;
-            result422 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result422);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(<any>null);
-    }
-
-    getSummary(): Promise<CartSummaryRes> {
-        let url_ = this.baseUrl + "/umbraco/api/Cart/summary";
+    getMediaById(mediaId: string | null): Promise<ImageMedia> {
+        let url_ = this.baseUrl + "/umbraco/backoffice/Cropper/media/{mediaId}";
+        if (mediaId === undefined || mediaId === null)
+            throw new Error("The parameter 'mediaId' must be defined.");
+        url_ = url_.replace("{mediaId}", encodeURIComponent("" + mediaId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <RequestInit>{
@@ -79,85 +32,102 @@ export class UmbracoCropperClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetSummary(_response);
+            return this.processGetMediaById(_response);
         });
     }
 
-    protected processGetSummary(response: Response): Promise<CartSummaryRes> {
+    protected processGetMediaById(response: Response): Promise<ImageMedia> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : <CartSummaryRes>JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = _responseText === "" ? null : <ImageMedia>JSON.parse(_responseText, this.jsonParseReviver);
             return result200;
             });
-        } else if (status === 412) {
+        } else if (status === 400) {
             return response.text().then((_responseText) => {
-            let result412: any = null;
-            result412 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result412);
+            let result400: any = null;
+            result400 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
             });
         } else if (status === 500) {
             return response.text().then((_responseText) => {
             return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            let result404: any = null;
+            result404 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CartSummaryRes>(<any>null);
+        return Promise.resolve<ImageMedia>(<any>null);
     }
 
-    remove(allocationNumber: string): Promise<void> {
-        let url_ = this.baseUrl + "/umbraco/api/Cart/remove/{allocationNumber}";
-        if (allocationNumber === undefined || allocationNumber === null)
-            throw new Error("The parameter 'allocationNumber' must be defined.");
-        url_ = url_.replace("{allocationNumber}", encodeURIComponent("" + allocationNumber));
+    upload(minHeight: number | null | undefined, minWidth: number | null | undefined, file: FileParameter | null | undefined): Promise<ImageMedia> {
+        let url_ = this.baseUrl + "/umbraco/backoffice/Cropper/upload";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = new FormData();
+        if (minHeight !== null && minHeight !== undefined)
+            content_.append("MinHeight", minHeight.toString());
+        if (minWidth !== null && minWidth !== undefined)
+            content_.append("MinWidth", minWidth.toString());
+        if (file !== null && file !== undefined)
+            content_.append("File", file.data, file.fileName ? file.fileName : "File");
+
         let options_ = <RequestInit>{
+            body: content_,
             method: "POST",
             headers: {
+                "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processRemove(_response);
+            return this.processUpload(_response);
         });
     }
 
-    protected processRemove(response: Response): Promise<void> {
+    protected processUpload(response: Response): Promise<ImageMedia> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <ImageMedia>JSON.parse(_responseText, this.jsonParseReviver);
+            return result200;
             });
-        } else if (status === 412) {
+        } else if (status === 400) {
             return response.text().then((_responseText) => {
-            let result412: any = null;
-            result412 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result412);
+            let result400: any = null;
+            result400 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
             });
         } else if (status === 500) {
             return response.text().then((_responseText) => {
             return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        } else if (status === 422) {
-            return response.text().then((_responseText) => {
-            let result422: any = null;
-            result422 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result422);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(<any>null);
+        return Promise.resolve<ImageMedia>(<any>null);
     }
+}
+
+export interface ImageMedia {
+    urlPath?: string | undefined;
+    mediaId?: string | undefined;
+    filename?: string | undefined;
+    height?: number;
+    width?: number;
 }
 
 export interface ProblemDetails {
@@ -168,215 +138,9 @@ export interface ProblemDetails {
     instance?: string | undefined;
 }
 
-export interface AddToCartReq {
-    donationType?: DonationType | undefined;
-    allocation?: AllocationReq | undefined;
-    quantity?: number | undefined;
-}
-
-export interface Value {
-}
-
-export interface Lookup extends Value {
-    id?: string | undefined;
-}
-
-export interface NamedLookup extends Lookup {
-    name?: string | undefined;
-}
-
-export interface DonationType extends NamedLookup {
-}
-
-export interface AllocationReq {
-    type?: AllocationType | undefined;
-    value?: MoneyReq | undefined;
-    dimension1?: FundDimension1Option | undefined;
-    dimension2?: FundDimension2Option | undefined;
-    dimension3?: FundDimension3Option | undefined;
-    dimension4?: FundDimension4Option | undefined;
-    fund?: FundAllocationReq | undefined;
-    sponsorship?: SponsorshipAllocationReq | undefined;
-}
-
-export interface AllocationType extends NamedLookup {
-}
-
-export interface MoneyReq {
-    amount?: number | undefined;
-    currency?: Currency | undefined;
-}
-
-export interface UmbracoContent extends Value {
-    content?: PublishedContentModel | undefined;
-}
-
-export interface LookupContent extends UmbracoContent {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Currency extends LookupContent {
-    symbol?: string | undefined;
-    decimalDigits?: number;
-    isBaseCurrency?: boolean;
-}
-
-export interface PublishedContentWrapped {
-    contentType?: IPublishedContentType | undefined;
-    key?: string;
-    id?: number;
-    name?: string | undefined;
-    urlSegment?: string | undefined;
-    sortOrder?: number;
-    level?: number;
-    path?: string | undefined;
-    templateId?: number | undefined;
-    creatorId?: number;
-    createDate?: Date;
-    writerId?: number;
-    updateDate?: Date;
-    cultures?: { [key: string]: PublishedCultureInfo; } | undefined;
-    itemType?: PublishedItemType;
-    parent?: IPublishedContent | undefined;
-    children?: IPublishedContent[] | undefined;
-    childrenForAllCultures?: IPublishedContent[] | undefined;
-    properties?: IPublishedProperty[] | undefined;
-}
-
-export interface PublishedContentModel extends PublishedContentWrapped {
-}
-
-export interface IPublishedContentType {
-    key?: string;
-    id?: number;
-    alias?: string | undefined;
-    itemType?: PublishedItemType;
-    compositionAliases?: string[] | undefined;
-    variations?: ContentVariation;
-    isElement?: boolean;
-    propertyTypes?: IPublishedPropertyType[] | undefined;
-}
-
-export enum PublishedItemType {
-    Unknown = 0,
-    Element = 1,
-    Content = 2,
-    Media = 3,
-    Member = 4,
-}
-
-export enum ContentVariation {
-    Nothing = 0,
-    Culture = 1,
-    Segment = 2,
-    CultureAndSegment = 3,
-}
-
-export interface IPublishedPropertyType {
-    contentType?: IPublishedContentType | undefined;
-    dataType?: PublishedDataType | undefined;
-    alias?: string | undefined;
-    editorAlias?: string | undefined;
-    isUserProperty?: boolean;
-    variations?: ContentVariation;
-    cacheLevel?: PropertyCacheLevel;
-    modelClrType?: string | undefined;
-    clrType?: string | undefined;
-}
-
-export interface PublishedDataType {
-    id?: number;
-    editorAlias?: string | undefined;
-    configuration?: any | undefined;
-}
-
-export enum PropertyCacheLevel {
-    Unknown = 0,
-    Element = 1,
-    Elements = 2,
-    Snapshot = 3,
-    None = 4,
-}
-
-export interface PublishedCultureInfo {
-    culture?: string | undefined;
-    name?: string | undefined;
-    urlSegment?: string | undefined;
-    date?: Date;
-}
-
-export interface IPublishedContent {
-    id?: number;
-    name?: string | undefined;
-    urlSegment?: string | undefined;
-    sortOrder?: number;
-    level?: number;
-    path?: string | undefined;
-    templateId?: number | undefined;
-    creatorId?: number;
-    createDate?: Date;
-    writerId?: number;
-    updateDate?: Date;
-    cultures?: { [key: string]: PublishedCultureInfo; } | undefined;
-    itemType?: PublishedItemType;
-    parent?: IPublishedContent | undefined;
-    children?: IPublishedContent[] | undefined;
-    childrenForAllCultures?: IPublishedContent[] | undefined;
-}
-
-export interface IPublishedProperty {
-    propertyType?: IPublishedPropertyType | undefined;
-    alias?: string | undefined;
-}
-
-export interface FundDimensionOption extends LookupContent {
-    isUnrestricted?: boolean;
-}
-
-export interface FundDimension1Option extends FundDimensionOption {
-}
-
-export interface FundDimension2Option extends FundDimensionOption {
-}
-
-export interface FundDimension3Option extends FundDimensionOption {
-}
-
-export interface FundDimension4Option extends FundDimensionOption {
-}
-
-export interface FundAllocationReq {
-    donationItem?: DonationItem | undefined;
-}
-
-export interface DonationItem extends LookupContent {
-    allowSingleDonations?: boolean;
-    allowRegularDonations?: boolean;
-    free?: boolean;
-    price?: number;
-    dimension1Options?: FundDimension1Option[] | undefined;
-    dimension2Options?: FundDimension2Option[] | undefined;
-    dimension3Options?: FundDimension3Option[] | undefined;
-    dimension4Options?: FundDimension4Option[] | undefined;
-}
-
-export interface SponsorshipAllocationReq {
-    scheme?: SponsorshipScheme | undefined;
-}
-
-export interface SponsorshipScheme extends LookupContent {
-    allowSingleDonations?: boolean;
-    allowRegularDonations?: boolean;
-    price?: number;
-    dimension1Options?: FundDimension1Option[] | undefined;
-    dimension2Options?: FundDimension2Option[] | undefined;
-    dimension3Options?: FundDimension3Option[] | undefined;
-    dimension4Options?: FundDimension4Option[] | undefined;
-}
-
-export interface CartSummaryRes {
-    itemCount?: number;
+export interface FileParameter {
+    data: any;
+    fileName: string;
 }
 
 export class ApiException extends Error {
