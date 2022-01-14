@@ -7,6 +7,9 @@ Extensions work with both cloud and on-premises versions of Umbraco 9 or later.
 
 Aside from the back office plugins, extensions do not provide any HTML, CSS or other UI. They are designed to integrate seamlessly with any standard Umbraco template and allow your site to retain a distinctive look and feel.
 
+## Demo Site
+The solution includes a demo site that both illustrates much of the functionality and also provides a useful starting point for building new sites. The easiest way to get started is to run the `DemoSite.Web` project in the solution, follow the Umbraco install wizard and then navigate to `Settings / uSync`. From here import Settings first, followed by Content. This will create all of the demo data types, content types and demo content.
+
 ## Functionality
 #### Email
 Provides a pluggable architecture for email delivery such as via SMTP or SendGrid.
