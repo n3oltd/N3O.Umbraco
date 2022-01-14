@@ -26,8 +26,8 @@ namespace N3O.Umbraco.Analytics.Modules {
 
         public string Key => AnalyticsConstants.Keys.TagManager;
 
-        private HtmlString GetCode(Func<TagMangerSettings, string> getCode) {
-            var tagManagerSettings = _contentCache.Single<TagMangerSettings>();
+        private HtmlString GetCode(Func<TagManagerSettings, string> getCode) {
+            var tagManagerSettings = _contentCache.Single<TagManagerSettings>();
 
             return tagManagerSettings.IfNotNull(x => getCode(x)?.ToHtmlString());
         }
