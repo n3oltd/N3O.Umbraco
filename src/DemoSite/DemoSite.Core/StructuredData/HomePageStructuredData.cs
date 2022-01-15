@@ -1,6 +1,6 @@
 ﻿using N3O.Umbraco.Extensions;
 using N3O.Umbraco.StructuredData;
-using DemoSite.Content;
+using DemoSite.Core.Content;
 using Umbraco.Extensions;
 
 namespace DemoSite.Core.StructuredData {

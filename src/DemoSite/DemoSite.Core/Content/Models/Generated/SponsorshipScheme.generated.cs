@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Content
+namespace DemoSite.Core.Content
 {
 	/// <summary>Sponsorship Scheme</summary>
 	[PublishedModel("sponsorshipScheme")]
@@ -69,7 +69,7 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("dimension1")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FundDimension1Option> Dimension1 => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FundDimension1Option>>(_publishedValueFallback, "dimension1");
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension1Option> Dimension1 => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension1Option>>(_publishedValueFallback, "dimension1");
 
 		///<summary>
 		/// Stipulations
@@ -77,7 +77,7 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("dimension3")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FundDimension3Option> Dimension3 => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FundDimension3Option>>(_publishedValueFallback, "dimension3");
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension3Option> Dimension3 => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension3Option>>(_publishedValueFallback, "dimension3");
 
 		///<summary>
 		/// Monthly Cost

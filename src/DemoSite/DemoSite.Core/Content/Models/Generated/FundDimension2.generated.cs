@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Content
+namespace DemoSite.Core.Content
 {
 	/// <summary>Fund Dimension 2</summary>
 	[PublishedModel("fundDimension2")]
@@ -54,6 +54,6 @@ namespace DemoSite.Content
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[ImplementPropertyType("isActive")]
-		public virtual bool IsActive => global::DemoSite.Content.FundDimension.GetIsActive(this, _publishedValueFallback);
+		public virtual bool IsActive => global::DemoSite.Core.Content.FundDimension.GetIsActive(this, _publishedValueFallback);
 	}
 }

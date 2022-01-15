@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Content
+namespace DemoSite.Core.Content
 {
 	/// <summary>Event</summary>
 	[PublishedModel("event")]
@@ -50,14 +50,6 @@ namespace DemoSite.Content
 		// properties
 
 		///<summary>
-		/// Buttons
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("buttons")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.Button> Buttons => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.Button>>(_publishedValueFallback, "buttons");
-
-		///<summary>
 		/// Date
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
@@ -65,43 +57,19 @@ namespace DemoSite.Content
 		public virtual global::System.DateTime EventDate => this.Value<global::System.DateTime>(_publishedValueFallback, "eventDate");
 
 		///<summary>
-		/// Event Time
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("eventTime")]
-		public virtual string EventTime => this.Value<string>(_publishedValueFallback, "eventTime");
-
-		///<summary>
-		/// Image
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("image")]
-		public virtual global::N3O.Umbraco.Cropper.Models.CroppedImage Image => this.Value<global::N3O.Umbraco.Cropper.Models.CroppedImage>(_publishedValueFallback, "image");
-
-		///<summary>
-		/// Location
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("location")]
-		public virtual string Location => this.Value<string>(_publishedValueFallback, "location");
-
-		///<summary>
 		/// Blocks
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("blocks")]
-		public virtual global::Perplex.ContentBlocks.Rendering.IContentBlocks Blocks => global::DemoSite.Content.Page.GetBlocks(this, _publishedValueFallback);
+		public virtual global::Perplex.ContentBlocks.Rendering.IContentBlocks Blocks => global::DemoSite.Core.Content.Page.GetBlocks(this, _publishedValueFallback);
 
 		///<summary>
 		/// Hide From Search Engines
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[ImplementPropertyType("hidePage")]
-		public virtual bool HidePage => global::DemoSite.Content.Page.GetHidePage(this, _publishedValueFallback);
+		public virtual bool HidePage => global::DemoSite.Core.Content.Page.GetHidePage(this, _publishedValueFallback);
 
 		///<summary>
 		/// Title & Meta
@@ -109,6 +77,6 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("titleMeta")]
-		public virtual global::N3O.Umbraco.SerpEditor.Models.SerpEntry TitleMeta => global::DemoSite.Content.Page.GetTitleMeta(this, _publishedValueFallback);
+		public virtual global::N3O.Umbraco.SerpEditor.Models.SerpEntry TitleMeta => global::DemoSite.Core.Content.Page.GetTitleMeta(this, _publishedValueFallback);
 	}
 }

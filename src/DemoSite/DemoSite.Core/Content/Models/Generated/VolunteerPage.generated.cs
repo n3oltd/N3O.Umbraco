@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Content
+namespace DemoSite.Core.Content
 {
 	/// <summary>Volunteer</summary>
 	[PublishedModel("volunteerPage")]
@@ -55,14 +55,14 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("blocks")]
-		public virtual global::Perplex.ContentBlocks.Rendering.IContentBlocks Blocks => global::DemoSite.Content.Page.GetBlocks(this, _publishedValueFallback);
+		public virtual global::Perplex.ContentBlocks.Rendering.IContentBlocks Blocks => global::DemoSite.Core.Content.Page.GetBlocks(this, _publishedValueFallback);
 
 		///<summary>
 		/// Hide From Search Engines
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[ImplementPropertyType("hidePage")]
-		public virtual bool HidePage => global::DemoSite.Content.Page.GetHidePage(this, _publishedValueFallback);
+		public virtual bool HidePage => global::DemoSite.Core.Content.Page.GetHidePage(this, _publishedValueFallback);
 
 		///<summary>
 		/// Title & Meta
@@ -70,6 +70,6 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("titleMeta")]
-		public virtual global::N3O.Umbraco.SerpEditor.Models.SerpEntry TitleMeta => global::DemoSite.Content.Page.GetTitleMeta(this, _publishedValueFallback);
+		public virtual global::N3O.Umbraco.SerpEditor.Models.SerpEntry TitleMeta => global::DemoSite.Core.Content.Page.GetTitleMeta(this, _publishedValueFallback);
 	}
 }

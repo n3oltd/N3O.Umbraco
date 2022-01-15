@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Content
+namespace DemoSite.Core.Content
 {
 	/// <summary>Fund Dimension 1 Option</summary>
 	[PublishedModel("fundDimension1Option")]
@@ -54,6 +54,6 @@ namespace DemoSite.Content
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[ImplementPropertyType("isUnrestricted")]
-		public virtual bool IsUnrestricted => global::DemoSite.Content.FundDimensionOption.GetIsUnrestricted(this, _publishedValueFallback);
+		public virtual bool IsUnrestricted => global::DemoSite.Core.Content.FundDimensionOption.GetIsUnrestricted(this, _publishedValueFallback);
 	}
 }

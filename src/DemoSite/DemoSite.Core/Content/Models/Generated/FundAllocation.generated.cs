@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Content
+namespace DemoSite.Core.Content
 {
 	/// <summary>Fund Allocation</summary>
 	[PublishedModel("fundAllocation")]
@@ -55,7 +55,7 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("donationItem")]
-		public virtual global::DemoSite.Content.DonationItem DonationItem => this.Value<global::DemoSite.Content.DonationItem>(_publishedValueFallback, "donationItem");
+		public virtual global::DemoSite.Core.Content.DonationItem DonationItem => this.Value<global::DemoSite.Core.Content.DonationItem>(_publishedValueFallback, "donationItem");
 
 		///<summary>
 		/// Location
@@ -63,7 +63,7 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("fundDimension1")]
-		public virtual global::DemoSite.Content.FundDimension1Option FundDimension1 => this.Value<global::DemoSite.Content.FundDimension1Option>(_publishedValueFallback, "fundDimension1");
+		public virtual global::DemoSite.Core.Content.FundDimension1Option FundDimension1 => this.Value<global::DemoSite.Core.Content.FundDimension1Option>(_publishedValueFallback, "fundDimension1");
 
 		///<summary>
 		/// Stipulation
@@ -71,6 +71,6 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("fundDimension3")]
-		public virtual global::DemoSite.Content.FundDimension3Option FundDimension3 => this.Value<global::DemoSite.Content.FundDimension3Option>(_publishedValueFallback, "fundDimension3");
+		public virtual global::DemoSite.Core.Content.FundDimension3Option FundDimension3 => this.Value<global::DemoSite.Core.Content.FundDimension3Option>(_publishedValueFallback, "fundDimension3");
 	}
 }

@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Content
+namespace DemoSite.Core.Content
 {
 	/// <summary>Checkout Template Email</summary>
 	[PublishedModel("checkoutTemplateEmail")]
@@ -55,7 +55,7 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("body")]
-		public virtual string Body => global::DemoSite.Content.TemplateEmail.GetBody(this, _publishedValueFallback);
+		public virtual string Body => global::DemoSite.Core.Content.TemplateEmail.GetBody(this, _publishedValueFallback);
 
 		///<summary>
 		/// From Email
@@ -63,7 +63,7 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("fromEmail")]
-		public virtual string FromEmail => global::DemoSite.Content.TemplateEmail.GetFromEmail(this, _publishedValueFallback);
+		public virtual string FromEmail => global::DemoSite.Core.Content.TemplateEmail.GetFromEmail(this, _publishedValueFallback);
 
 		///<summary>
 		/// From Name
@@ -71,7 +71,7 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("fromName")]
-		public virtual string FromName => global::DemoSite.Content.TemplateEmail.GetFromName(this, _publishedValueFallback);
+		public virtual string FromName => global::DemoSite.Core.Content.TemplateEmail.GetFromName(this, _publishedValueFallback);
 
 		///<summary>
 		/// Subject
@@ -79,6 +79,6 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("subject")]
-		public virtual string Subject => global::DemoSite.Content.TemplateEmail.GetSubject(this, _publishedValueFallback);
+		public virtual string Subject => global::DemoSite.Core.Content.TemplateEmail.GetSubject(this, _publishedValueFallback);
 	}
 }

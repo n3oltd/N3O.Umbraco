@@ -1,5 +1,4 @@
 using N3O.Umbraco.Content;
-using DemoSite.Content;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace DemoSite.Core.Content {
