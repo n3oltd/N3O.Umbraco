@@ -7,8 +7,8 @@ using Umbraco.Cms.Core.Routing;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.ContentFinders {
-    public abstract class ContentFinder : IContentFinder {
-        protected ContentFinder(IContentCache contentCache) {
+    public abstract class ContentFinderBase : IContentFinder {
+        protected ContentFinderBase(IContentCache contentCache) {
             ContentCache = contentCache;
         }
 
