@@ -22,12 +22,12 @@ namespace N3O.Umbraco.ContentFinders {
 
         public abstract bool TryFindContentImpl(IPublishedRequestBuilder request);
 
-        protected bool TryFindRelocatedContent<TContentCollection, TPage, TContent>(IPublishedRequestBuilder request)
-            where TContentCollection : IPublishedContent
-            where TPage : IPublishedContent
-            where TContent : class, IPublishedContent {
-            var page = ContentCache.Single<TPage>();
-            var contentCollection = ContentCache.Single<TContentCollection>();
+        protected bool TryFindRelocatedContent(string pageTypeAlias,
+                                               string contentTypeAlias,
+                                               string contentCollectionTypeAlias,
+                                               IPublishedRequestBuilder request) {
+            var page = ContentCache.Single(pageTypeAlias);
+            var contentCollection = ContentCache.Single(contentCollectionTypeAlias);
 
             if (page == null || contentCollection == null) {
                 return false;
@@ -41,7 +41,8 @@ namespace N3O.Umbraco.ContentFinders {
                 return false;
             }
 
-            var match = contentCollection.Descendants<TContent>()
+            var match = contentCollection.Descendants()
+                                         .Where(x => x.ContentType.Alias.EqualsInvariant(contentTypeAlias))
                                          .FirstOrDefault(x => StrippedPath(x, pagePath).EqualsInvariant(path));
 
             if (match != null) {

@@ -1,5 +1,6 @@
 ﻿using Flurl;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,14 +22,14 @@ namespace N3O.Umbraco.UrlProviders {
 
         public virtual IEnumerable<UrlInfo> GetOtherUrls(int id, Uri current) => Enumerable.Empty<UrlInfo>();
 
-        protected UrlInfo TryGetRelocatedUrl<TPage, TContent>(IPublishedContent content,
-                                                              UrlMode mode,
-                                                              string culture,
-                                                              Uri current)
-            where TPage : IPublishedContent
-            where TContent : IPublishedContent {
-            if (content != null && content.ContentType.Alias == AliasHelper<TContent>.ContentTypeAlias()) {
-                var page = _contentCache.Single<TPage>();
+        protected UrlInfo TryGetRelocatedUrl(string pageTypeAlias,
+                                             string contentTypeAlias,
+                                             IPublishedContent content,
+                                             UrlMode mode,
+                                             string culture,
+                                             Uri current) {
+            if (content != null && content.ContentType.Alias.EqualsInvariant(contentTypeAlias)) {
+                var page = _contentCache.Single(pageTypeAlias);
 
                 if (page == null) {
                     return null;
@@ -45,16 +46,16 @@ namespace N3O.Umbraco.UrlProviders {
             return null;
         }
 
-        protected UrlInfo TryGetRelocatedUrl<TContentCollection, TPage, TContent>(IPublishedContent content,
-                                                                                  UrlMode mode,
-                                                                                  string culture,
-                                                                                  Uri current)
-            where TContentCollection : IPublishedContent
-            where TPage : IPublishedContent
-            where TContent : IPublishedContent {
-            if (content != null && content.ContentType.Alias == AliasHelper<TContent>.ContentTypeAlias()) {
-                var collection = _contentCache.Single<TContentCollection>();
-                var page = _contentCache.Single<TPage>();
+        protected UrlInfo TryGetRelocatedUrl(string pageTypeAlias,
+                                             string contentTypeAlias,
+                                             string contentCollectionTypeAlias,
+                                             IPublishedContent content,
+                                             UrlMode mode,
+                                             string culture,
+                                             Uri current) {
+            if (content != null && content.ContentType.Alias.EqualsInvariant(contentTypeAlias)) {
+                var collection = _contentCache.Single(contentCollectionTypeAlias);
+                var page = _contentCache.Single(pageTypeAlias);
 
                 if (collection == null || page == null) {
                     return null;
