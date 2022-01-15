@@ -3,6 +3,7 @@ using N3O.Umbraco.Plugins.Lookups;
 using N3O.Umbraco.Plugins.Models;
 using SixLabors.ImageSharp;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Plugins.Controllers {
@@ -19,7 +20,9 @@ namespace N3O.Umbraco.Plugins.Controllers {
 
                     fileStream.Rewind();
 
-                    var uploadedFile = new UploadedFile(fileStream, req.File.ContentDisposition, req.File.FileName);
+                    var uploadedFile = new UploadedFile(fileStream,
+                                                        req.File.ContentDisposition,
+                                                        CleanFilename(req.File.FileName));
                     var metadata = GetImageMetadata(fileStream);
 
                     var uploadedImage = new UploadedImage(uploadedFile, metadata);
@@ -43,6 +46,10 @@ namespace N3O.Umbraco.Plugins.Controllers {
                 
                 return metadata;
             }
+        }
+        
+        private string CleanFilename(string fileName) {
+            return Regex.Replace(fileName.Trim().Replace(" ", "-").ToLowerInvariant(), "[^0-9a-z.-]", "");
         }
 
         private bool SizeAndDimensionsAreValid(UploadedImage uploadedImage,
