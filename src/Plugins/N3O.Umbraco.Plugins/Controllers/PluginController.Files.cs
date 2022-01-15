@@ -1,3 +1,4 @@
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Plugins.Models;
 using System.IO;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace N3O.Umbraco.Plugins.Controllers {
 
                     await reqStream.CopyToAsync(fileStream);
 
-                    fileStream.Seek(0, SeekOrigin.Begin);
+                    fileStream.Rewind();
 
                     var uploadedFile = new UploadedFile(fileStream, req.File.ContentDisposition, req.File.FileName);
 

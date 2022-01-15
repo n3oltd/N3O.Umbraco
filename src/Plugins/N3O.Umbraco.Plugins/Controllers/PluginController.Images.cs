@@ -1,4 +1,5 @@
 using N3O.Umbraco.Exceptions;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Plugins.Lookups;
 using N3O.Umbraco.Plugins.Models;
 using SixLabors.ImageSharp;
@@ -21,7 +22,7 @@ namespace N3O.Umbraco.Plugins.Controllers {
 
                     await reqStream.CopyToAsync(fileStream);
 
-                    fileStream.Seek(0, SeekOrigin.Begin);
+                    fileStream.Rewind();
 
                     var uploadedFile = new UploadedFile(fileStream, req.File.ContentDisposition, req.File.FileName);
                     var metadata = GetImageMetadata(fileStream);
@@ -41,26 +42,14 @@ namespace N3O.Umbraco.Plugins.Controllers {
 
         protected ImageMetadata GetImageMetadata(Stream stream) {
             using (var image = Image.Load(stream, out var format)) {
-                var metadata = new ImageMetadata(GetImageFormat(format), image.Height, image.Width);
+                var metadata = new ImageMetadata(ImageFormat.From(format), image.Height, image.Width);
 
-                stream.Seek(0, SeekOrigin.Begin);
+                stream.Rewind();
                 
                 return metadata;
             }
         }
 
-        private ImageFormat GetImageFormat(IImageFormat format) {
-            if (format == JpegFormat.Instance) {
-                return ImageFormats.Jpg;
-            } else if (format == PngFormat.Instance) {
-                return ImageFormats.Png;
-            } else if (format == GifFormat.Instance) {
-                return ImageFormats.Gif;
-            } else {
-                throw UnrecognisedValueException.For(format);
-            }
-        }
-    
         private bool SizeAndDimensionsAreValid(UploadedImage uploadedImage,
                                                int? minHeight,
                                                int? minWidth,
