@@ -9,7 +9,7 @@ using System.Reflection.Emit;
 
 namespace N3O.Umbraco.Content {
     public class ModelsHelper {
-        private static readonly ConcurrentDictionary<string, Type> TypeCache = new();
+        private static readonly ConcurrentDictionary<string, Type> TypeCache = new(StringComparer.InvariantCultureIgnoreCase);
     
         public static Type GetOrCreateModelsBuilderType(string modelsNamespace, string contentType) {
             var typeName = $"{modelsNamespace}.{contentType.Pascalize()}";

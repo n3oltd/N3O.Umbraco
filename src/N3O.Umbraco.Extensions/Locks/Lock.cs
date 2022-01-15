@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Locks {
     public class Lock : ILock {
-        private static readonly ConcurrentDictionary<string, SemaphoreSlim> LocksDictionary = new();
+        private static readonly ConcurrentDictionary<string, SemaphoreSlim> LocksDictionary = new(StringComparer.InvariantCultureIgnoreCase);
 
         public async Task LockAsync(string name, Func<Task> action) {
             var semaphoreSlim = GetSemaphoreSlim(name);
