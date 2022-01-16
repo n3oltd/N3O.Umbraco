@@ -9,19 +9,19 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Giving.Donations.Content {
     public class FundDonationOptionValidator : ContentValidator {
-        private static readonly string DonationItemAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.DonationItem);
-        private static readonly string Dimension1Alias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.Dimension1);
-        private static readonly string Dimension2Alias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.Dimension2);
-        private static readonly string Dimension3Alias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.Dimension3);
-        private static readonly string Dimension4Alias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.Dimension4);
-        private static readonly string HideRegularAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.HideRegular);
-        private static readonly string HideSingleAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.HideSingle);
-        private static readonly string RegularPriceHandlesAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.RegularPriceHandles);
-        private static readonly string ShowQuantityAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.ShowQuantity);
-        private static readonly string SinglePriceHandlesAlias = AliasHelper<FundDonationOption>.PropertyAlias(x => x.SinglePriceHandles);
+        private static readonly string DonationItemAlias = AliasHelper<FundDonationOptionContent>.PropertyAlias(x => x.DonationItem);
+        private static readonly string Dimension1Alias = AliasHelper<FundDonationOptionContent>.PropertyAlias(x => x.Dimension1);
+        private static readonly string Dimension2Alias = AliasHelper<FundDonationOptionContent>.PropertyAlias(x => x.Dimension2);
+        private static readonly string Dimension3Alias = AliasHelper<FundDonationOptionContent>.PropertyAlias(x => x.Dimension3);
+        private static readonly string Dimension4Alias = AliasHelper<FundDonationOptionContent>.PropertyAlias(x => x.Dimension4);
+        private static readonly string HideRegularAlias = AliasHelper<FundDonationOptionContent>.PropertyAlias(x => x.HideRegular);
+        private static readonly string HideSingleAlias = AliasHelper<FundDonationOptionContent>.PropertyAlias(x => x.HideSingle);
+        private static readonly string RegularPriceHandlesAlias = AliasHelper<FundDonationOptionContent>.PropertyAlias(x => x.RegularPriceHandles);
+        private static readonly string ShowQuantityAlias = AliasHelper<FundDonationOptionContent>.PropertyAlias(x => x.ShowQuantity);
+        private static readonly string SinglePriceHandlesAlias = AliasHelper<FundDonationOptionContent>.PropertyAlias(x => x.SinglePriceHandles);
         
         private static readonly IEnumerable<string> Aliases = new[] {
-            AliasHelper<DonationFormFund>.ContentTypeAlias(),
+            AliasHelper<DonationFormFundContent>.ContentTypeAlias(),
         };
     
         public FundDonationOptionValidator(IContentHelper contentHelper) : base(contentHelper) { }
@@ -53,7 +53,7 @@ namespace N3O.Umbraco.Giving.Donations.Content {
             var property = content.NestedContentProperties.SingleOrDefault(x => x.Alias.EqualsInvariant(SinglePriceHandlesAlias));
             var priceHandles = property.IfNotNull(x => ContentHelper.GetNestedContents(x))
                                        .OrEmpty()
-                                       .As<PriceHandle>()
+                                       .As<PriceHandleElement>()
                                        .ToList();
 
             if (priceHandles.HasAny()) {
@@ -71,7 +71,7 @@ namespace N3O.Umbraco.Giving.Donations.Content {
             var property = content.NestedContentProperties.SingleOrDefault(x => x.Alias.EqualsInvariant(RegularPriceHandlesAlias));
             var priceHandles = property.IfNotNull(x => ContentHelper.GetNestedContents(x))
                                        .OrEmpty()
-                                       .As<PriceHandle>()
+                                       .As<PriceHandleElement>()
                                        .ToList();
 
             if (priceHandles.HasAny()) {

@@ -15,7 +15,7 @@ namespace N3O.Umbraco.Forex.Currencylayer {
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
                                                                      CancellationToken cancellationToken) {
-            var settings = _contentCache.Single<CurrencylayerSettings>();
+            var settings = _contentCache.Single<CurrencylayerSettingsContent>();
         
             var url = new Url(request.RequestUri);
             url.SetQueryParam("access_key", settings.ApiKey);

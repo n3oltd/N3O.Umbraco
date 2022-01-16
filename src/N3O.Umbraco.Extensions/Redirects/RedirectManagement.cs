@@ -7,6 +7,9 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Redirects {
     public class RedirectManagement : IRedirectManagement {
+        private static readonly string HitCountAlias = AliasHelper<RedirectContent>.PropertyAlias(x => x.HitCount);
+        private static readonly string LastHitDateAlias = AliasHelper<RedirectContent>.PropertyAlias(x => x.LastHitDate);
+        
         private readonly IContentService _contentService;
         private readonly IClock _clock;
         private readonly IContentCache _contentCache;
@@ -31,18 +34,24 @@ namespace N3O.Umbraco.Redirects {
                 "/" + requestPath + "/"
             };
 
-            var redirects = _contentCache.All<Redirect>();
+            var redirects = _contentCache.All<RedirectContent>();
             var redirect = redirects.FirstOrDefault(x => searchPaths.Contains(x.Content.Name, true));
 
-            return redirect;
+            return redirect.IfNotNull(x => new Redirect(x.Content.Key,
+                                                        x.HitCount,
+                                                        x.LastHitDate,
+                                                        x.Temporary,
+                                                        x.Content.AbsoluteUrl()));
         }
 
-        public void LogHit(Redirect redirect) {
-            var content = _contentService.GetById(redirect.Content.Id);
+        public void LogHit(Guid redirectId) {
+            var content = _contentService.GetById(redirectId);
             var now = _clock.GetCurrentInstant().ToDateTimeUtc();
 
-            content.SetValue<Redirect, int>(c => c.HitCount, redirect.HitCount + 1);
-            content.SetValue<Redirect, DateTime>(c => c.LastHitDate, now);
+            var currentHitCount = content.GetValue<int>(HitCountAlias);
+
+            content.SetValue(HitCountAlias, currentHitCount + 1);
+            content.SetValue(LastHitDateAlias, now);
 
             _contentService.SaveAndPublish(content);
         }

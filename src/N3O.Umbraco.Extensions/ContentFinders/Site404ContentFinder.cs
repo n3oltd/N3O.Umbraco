@@ -1,5 +1,4 @@
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Pages;
 using N3O.Umbraco.Redirects;
 using System.Net;
@@ -24,7 +23,7 @@ namespace N3O.Umbraco.ContentFinders {
             if (request != null && request.ResponseStatusCode == 404) {
                 var notFound = (int) HttpStatusCode.NotFound;
                 request.SetResponseStatus(notFound);
-                request.SetPublishedContent(_contentCache.Single<UrlNotFoundPage>()?.Content);
+                request.SetPublishedContent(_contentCache.Single<UrlNotFoundPageContent>()?.Content);
 
                 return true;
             }
@@ -38,9 +37,9 @@ namespace N3O.Umbraco.ContentFinders {
             var redirect = _redirectManagement.FindRedirect(requestedPath);
 
             if (redirect != null) {
-                var redirectUrl = redirect.Content.AbsoluteUrl();
+                var redirectUrl = redirect.Url;
 
-                _redirectManagement.LogHit(redirect);
+                _redirectManagement.LogHit(redirect.Id);
 
                 var httpCode = redirect.Temporary ? HttpStatusCode.TemporaryRedirect : HttpStatusCode.Redirect;
                 request.SetRedirect(redirectUrl, (int) httpCode);

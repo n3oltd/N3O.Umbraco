@@ -14,12 +14,12 @@ namespace N3O.Umbraco.Giving.Allocations {
             _lookups = lookups;
         }
     
-        public FundDimension1 Dimension1 => _contentCache.Single<FundDimension1>();
-        public FundDimension2 Dimension2 => _contentCache.Single<FundDimension2>();
-        public FundDimension3 Dimension3 => _contentCache.Single<FundDimension3>();
-        public FundDimension4 Dimension4 => _contentCache.Single<FundDimension4>();
+        public FundDimension1Content Dimension1 => _contentCache.Single<FundDimension1Content>();
+        public FundDimension2Content Dimension2 => _contentCache.Single<FundDimension2Content>();
+        public FundDimension3Content Dimension3 => _contentCache.Single<FundDimension3Content>();
+        public FundDimension4Content Dimension4 => _contentCache.Single<FundDimension4Content>();
 
-        public IEnumerable<FundDimension> Dimensions {
+        public IEnumerable<FundDimensionContent> Dimensions {
             get {
                 yield return Dimension1;
                 yield return Dimension2;

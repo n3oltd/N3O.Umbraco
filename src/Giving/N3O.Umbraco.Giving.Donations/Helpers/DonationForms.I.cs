@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Giving.Donations {
     public interface IDonationForms {
-        IReadOnlyList<DonationForm> All();
-        DonationOption GetOption(Guid id);
+        IReadOnlyList<DonationFormContent> All();
+        DonationOptionContent GetOption(Guid id);
     }
 }

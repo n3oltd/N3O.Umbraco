@@ -3,33 +3,34 @@ using N3O.Umbraco.Blog.Criteria;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.QueryFilters;
 using System.Collections.Generic;
-using System.Linq;
+using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Blog.QueryFilters {
-    public class BlogPostQueryFilter : IQueryFilter<BlogPost, BlogPostCriteria> {
-        public IEnumerable<BlogPost> Apply(BlogPostCriteria criteria, IEnumerable<BlogPost> q) {
-            q = FilterCategory(criteria, q);
-            q = FilterDate(criteria, q);
+    public class BlogPostQueryFilter : QueryFilter<BlogPostCriteria> {
+        public override IEnumerable<T> Apply<T>(IEnumerable<T> q, BlogPostCriteria criteria) {
+            q = FilterCategory(q, criteria);
+            q = FilterDate(q, criteria);
 
             return q;
         }
 
-        private IEnumerable<BlogPost> FilterCategory(BlogPostCriteria criteria, IEnumerable<BlogPost> q) {
+        private IEnumerable<T> FilterCategory<T>(IEnumerable<T> q, BlogPostCriteria criteria)
+            where T : IPublishedContent {
             if (criteria.Category.HasAny()) {
-                q = q.Where(x => x.Categories.ContainsAny(criteria.Category));
+                q = Where<T, BlogPostContent>(q, x => x.Categories.ContainsAny(criteria.Category));
             }
 
             return q;
         }
 
-        private IEnumerable<BlogPost> FilterDate(BlogPostCriteria criteria, IEnumerable<BlogPost> q) {
+        private IEnumerable<T> FilterDate<T>(IEnumerable<T> q, BlogPostCriteria criteria) where T : IPublishedContent {
             if (criteria.Date.HasValue()) {
                 if (criteria.Date.HasFromValue()) {
-                    q = q.Where(x => x.Date >= criteria.Date.From.GetValueOrThrow());
+                    q = Where<T, BlogPostContent>(q, x => x.Date >= criteria.Date.From.GetValueOrThrow());
                 }
                 
                 if (criteria.Date.HasToValue()) {
-                    q = q.Where(x => x.Date <= criteria.Date.To.GetValueOrThrow());
+                    q = Where<T, BlogPostContent>(q, x => x.Date <= criteria.Date.To.GetValueOrThrow());
                 }
             }
 

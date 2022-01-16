@@ -14,14 +14,14 @@ namespace N3O.Umbraco.Giving.Donations {
             _contentLocator = contentLocator;
         }
     
-        public IReadOnlyList<DonationForm> All() {
-            return _contentCache.All<DonationForm>();
+        public IReadOnlyList<DonationFormContent> All() {
+            return _contentCache.All<DonationFormContent>();
         }
 
-        public DonationOption GetOption(Guid id) {
+        public DonationOptionContent GetOption(Guid id) {
             var content = _contentLocator.ById(id);
 
-            return content.As<DonationOption>();
+            return content.As<DonationOptionContent>();
         }
     }
 }

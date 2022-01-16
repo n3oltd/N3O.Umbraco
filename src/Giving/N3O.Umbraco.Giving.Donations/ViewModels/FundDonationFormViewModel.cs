@@ -24,7 +24,7 @@ namespace N3O.Umbraco.Giving.Donations.ViewModels {
                                          IUmbracoMapper mapper,
                                          ICurrencyAccessor currencyAccessor,
                                          IFormatter formatter,
-                                         FundDonationOption fundOption,
+                                         FundDonationOptionContent fundOption,
                                          DonationType donationType) {
             _forexConverter = forexConverter;
             _mapper = mapper;
@@ -53,7 +53,7 @@ namespace N3O.Umbraco.Giving.Donations.ViewModels {
         public IReadOnlyList<PriceHandleViewModel> PriceHandles { get; }
         public IReadOnlyDictionary<int, string> QuantityOptions { get; }
 
-        private IEnumerable<PriceHandleViewModel> GetPriceHandles(FundDonationOption fundOption, DonationType donationType) {
+        private IEnumerable<PriceHandleViewModel> GetPriceHandles(FundDonationOptionContent fundOption, DonationType donationType) {
             var priceHandles = fundOption.GetPriceHandles(donationType);
         
             foreach (var (priceHandle, index) in priceHandles.SelectWithIndex()) {
@@ -78,7 +78,7 @@ namespace N3O.Umbraco.Giving.Donations.ViewModels {
                                                             defaultValue);
         }
 
-        private IReadOnlyDictionary<int, string> GetQuantityOptions(FundDonationOption fundOption) {
+        private IReadOnlyDictionary<int, string> GetQuantityOptions(FundDonationOptionContent fundOption) {
             var dict = new Dictionary<int, string>();
         
             if (fundOption.ShowQuantity && Price != null) {

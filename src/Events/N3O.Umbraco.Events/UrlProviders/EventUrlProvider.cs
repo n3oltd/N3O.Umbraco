@@ -7,16 +7,14 @@ using Umbraco.Cms.Core.Routing;
 
 namespace N3O.Umbraco.Events.UrlProviders {
     public class EventUrlProvider : UrlProviderBase {
+        private static readonly string EventsPageAlias = AliasHelper<EventsPageContent>.ContentTypeAlias();
+        private static readonly string EventAlias = AliasHelper<EventContent>.ContentTypeAlias();
+        
         public EventUrlProvider(DefaultUrlProvider defaultUrlProvider, IContentCache contentCache)
             : base(defaultUrlProvider, contentCache) { }
         
         public override UrlInfo GetUrl(IPublishedContent content, UrlMode mode, string culture, Uri current) {
-            return TryGetRelocatedUrl(AliasHelper<EventsPage>.ContentTypeAlias(),
-                                      AliasHelper<Event>.ContentTypeAlias(),
-                                      content,
-                                      mode,
-                                      culture,
-                                      current);
+            return TryGetRelocatedUrl(EventsPageAlias, EventAlias, content, mode, culture, current);
         }
     }
 }

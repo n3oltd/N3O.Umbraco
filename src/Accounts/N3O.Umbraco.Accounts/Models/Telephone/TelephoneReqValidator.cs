@@ -11,7 +11,7 @@ namespace N3O.Umbraco.Accounts.Models {
                                      IContentCache contentCache,
                                      IPhoneNumberValidator phoneNumberValidator)
             : base(formatter) {
-            var settings = contentCache.Single<PhoneValidationSettings>();
+            var settings = contentCache.Single<PhoneValidationSettingsContent>();
 
             RuleFor(x => x.Country)
                 .NotEmpty()

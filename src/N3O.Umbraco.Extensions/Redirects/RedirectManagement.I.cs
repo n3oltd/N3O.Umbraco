@@ -1,6 +1,8 @@
-﻿namespace N3O.Umbraco.Redirects {
+﻿using System;
+
+namespace N3O.Umbraco.Redirects {
     public interface IRedirectManagement {
         Redirect FindRedirect(string requestPath);
-        void LogHit(Redirect redirect);
+        void LogHit(Guid redirectId);
     }
 }

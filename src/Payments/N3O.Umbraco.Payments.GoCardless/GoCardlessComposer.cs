@@ -13,7 +13,7 @@ namespace N3O.Umbraco.Payments.GoCardless {
             builder.Services.AddTransient<GoCardlessClient>(serviceProvider => {
                 var contentCache = serviceProvider.GetRequiredService<IContentCache>();
                 var webHostEnvironment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
-                var settings = contentCache.Single<GoCardlessSettings>();
+                var settings = contentCache.Single<GoCardlessSettingsContent>();
 
                 GoCardlessClient goCardlessClient;
 

@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Giving.Allocations {
     public interface IFundStructure {
-        FundDimension1 Dimension1 { get; }
-        FundDimension2 Dimension2 { get; }
-        FundDimension3 Dimension3 { get; }
-        FundDimension4 Dimension4 { get; }
+        FundDimension1Content Dimension1 { get; }
+        FundDimension2Content Dimension2 { get; }
+        FundDimension3Content Dimension3 { get; }
+        FundDimension4Content Dimension4 { get; }
     
-        IEnumerable<FundDimension> Dimensions { get; }
+        IEnumerable<FundDimensionContent> Dimensions { get; }
 
         IReadOnlyList<T> GetOptions<T>() where T : FundDimensionOption<T>;
     }

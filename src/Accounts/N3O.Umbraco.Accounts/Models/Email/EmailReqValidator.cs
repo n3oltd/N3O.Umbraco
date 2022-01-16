@@ -8,7 +8,7 @@ using N3O.Umbraco.Validation.Content;
 namespace N3O.Umbraco.Accounts.Models {
     public class EmailReqValidator : ModelValidator<EmailReq> {
         public EmailReqValidator(IFormatter formatter, IContentCache contentCache) : base(formatter) {
-            var settings = contentCache.Single<EmailValidationSettings>();
+            var settings = contentCache.Single<EmailValidationSettingsContent>();
         
             RuleFor(x => x.Address)
                 .NotEmpty()

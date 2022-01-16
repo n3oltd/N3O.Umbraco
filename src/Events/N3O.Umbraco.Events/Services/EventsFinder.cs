@@ -1,5 +1,4 @@
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Events.Content;
 using N3O.Umbraco.Events.Criteria;
 using N3O.Umbraco.Events.QueryFilters;
 using N3O.Umbraco.Extensions;
@@ -23,11 +22,10 @@ namespace N3O.Umbraco.Events {
         }
 
         public IReadOnlyList<T> FindEvents<T>(EventCriteria criteria) where T : IPublishedContent {
-            var all = _contentCache.All<T>().Select(x => x.As<Event>()).ToList();
+            var all = _contentCache.All<T>();
+            var results = _queryFilter.Apply(all, criteria).ToList();
 
-            var results = _queryFilter.Apply(criteria, all);
-
-            return results.Select(x => x.Content).Cast<T>().ToList();
+            return results;
         }
         
         public IReadOnlyList<T> FindOpenEvents<T>(EventCriteria criteria = null) where T : IPublishedContent {

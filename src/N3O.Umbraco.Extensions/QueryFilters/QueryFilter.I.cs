@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.QueryFilters {
-    public interface IQueryFilter<T, in TCriteria> {
-        IEnumerable<T> Apply(TCriteria criteria, IEnumerable<T> q);
+    public interface IQueryFilter<in TCriteria> {
+        IEnumerable<T> Apply<T>(IEnumerable<T> q, TCriteria criteria) where T : IPublishedContent;
     }
 }

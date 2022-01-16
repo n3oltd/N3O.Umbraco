@@ -9,13 +9,13 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Giving.Donations.ViewModels {
     public class DonationFormViewModel {
         public DonationFormViewModel(IPublishedContent content) {
-            var form = content.As<DonationForm>();
+            var form = content.As<DonationFormContent>();
         
             Title = form.Title;
             Options = GetOptions(form);
         }
 
-        private IReadOnlyList<Option> GetOptions(DonationForm form) {
+        private IReadOnlyList<Option> GetOptions(DonationFormContent form) {
             var list = new List<Option>();
         
             foreach (var (option, index) in form.GetOptions().SelectWithIndex()) {
@@ -31,7 +31,7 @@ namespace N3O.Umbraco.Giving.Donations.ViewModels {
             return list;
         }
 
-        private Option GetOption(FundDonationOption fundOption, int index) {
+        private Option GetOption(FundDonationOptionContent fundOption, int index) {
             var option = new Option(fundOption.Content.Key,
                                     index,
                                     fundOption.Content.Name,
@@ -41,7 +41,7 @@ namespace N3O.Umbraco.Giving.Donations.ViewModels {
             return option;
         }
     
-        private Option GetOption(SponsorshipDonationOption sponsorshipOption, int index) {
+        private Option GetOption(SponsorshipDonationOptionContent sponsorshipOption, int index) {
             var option = new Option(sponsorshipOption.Content.Key,
                                     index,
                                     sponsorshipOption.Content.Name,

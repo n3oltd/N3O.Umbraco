@@ -18,7 +18,7 @@ namespace N3O.Umbraco.Captcha {
         public async Task<bool> IsValidAsync(string token,
                                              string action,
                                              CancellationToken cancellationToken = default) {
-            var settings = _contentCache.Single<CaptchaSettings>();
+            var settings = _contentCache.Single<CaptchaSettingsContent>();
             var remoteIp = _remoteIpAddressAccessor.GetRemoteIpAddress();
 
             var captchaApi = new ReCaptchaService();

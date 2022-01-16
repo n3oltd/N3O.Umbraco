@@ -22,8 +22,6 @@ namespace N3O.Umbraco.Utilities {
 
         public static IReadOnlyList<Assembly> GetAllAssemblies() => _assemblies;
 
-        public static IReadOnlyList<Type> GetAllExportedTypes() => _exportedTypes;
-
         public static IReadOnlyList<Type> GetTypes(Func<Type, bool> predicate = null) {
             var types = _exportedTypes.Where(t => predicate?.Invoke(t) ?? true).ToList();
 
@@ -56,9 +54,7 @@ namespace N3O.Umbraco.Utilities {
 
         private static IReadOnlyList<Assembly> LoadAllOurReferencedAssemblies(Assembly assembly,
                                                                               List<Assembly> processedReferencedAssemblies = null) {
-            if (processedReferencedAssemblies == null) {
-                processedReferencedAssemblies = new List<Assembly>();
-            }
+            processedReferencedAssemblies ??= new List<Assembly>();
 
             var referencedAssemblies = new List<Assembly>();
 

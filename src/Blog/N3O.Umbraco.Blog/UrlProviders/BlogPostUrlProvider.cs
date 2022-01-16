@@ -7,16 +7,14 @@ using Umbraco.Cms.Core.Routing;
 
 namespace N3O.Umbraco.Blog.UrlProviders {
     public class BlogPostUrlProvider : UrlProviderBase {
+        private static readonly string BlogPageAlias = AliasHelper<BlogPageContent>.ContentTypeAlias();
+        private static readonly string BlogPostAlias = AliasHelper<BlogPostContent>.ContentTypeAlias();
+
         public BlogPostUrlProvider(DefaultUrlProvider defaultUrlProvider, IContentCache contentCache)
             : base(defaultUrlProvider, contentCache) { }
         
         public override UrlInfo GetUrl(IPublishedContent content, UrlMode mode, string culture, Uri current) {
-            return TryGetRelocatedUrl(AliasHelper<BlogPage>.ContentTypeAlias(),
-                                      AliasHelper<BlogPost>.ContentTypeAlias(),
-                                      content,
-                                      mode,
-                                      culture,
-                                      current);
+            return TryGetRelocatedUrl(BlogPageAlias, BlogPostAlias, content, mode, culture, current);
         }
     }
 }

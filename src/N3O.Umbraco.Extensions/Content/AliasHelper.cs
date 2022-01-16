@@ -13,14 +13,25 @@ namespace N3O.Umbraco.Content {
     public static class AliasHelper {
         private static readonly ConcurrentDictionary<Type, string> ContentTypeAliasCache = new();
 
-        public static string ContentTypeAlias(Type contentType) {
-            return ContentTypeAliasCache.GetOrAdd(contentType, () => {
-                var alias = contentType.GetCustomAttribute<PublishedModelAttribute>()?.ContentTypeAlias ??
-                            contentType.GetCustomAttribute<UmbracoContentAttribute>()?.ContentTypeAlias ??
-                            contentType.Name.Camelize();
+        public static string ContentTypeAlias(Type type) {
+            return ContentTypeAliasCache.GetOrAdd(type, () => {
+                var alias = type.GetCustomAttribute<PublishedModelAttribute>()?.ContentTypeAlias ??
+                            type.GetCustomAttribute<UmbracoContentAttribute>()?.ContentTypeAlias ??
+                            GetContentTypeAlias(type);
 
                 return alias;
             });
+        }
+
+        private static string GetContentTypeAlias(Type type) {
+            var contentTypeAlias = type.Name.Camelize();
+
+            if (type.IsSubclassOrSubInterfaceOfGenericType(typeof(UmbracoContent<>)) &&
+                contentTypeAlias.EndsWith("Content")) {
+                contentTypeAlias = contentTypeAlias.Substring(0, contentTypeAlias.Length - "Content".Length);
+            }
+
+            return contentTypeAlias;
         }
     }
     

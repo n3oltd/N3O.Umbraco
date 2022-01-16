@@ -13,7 +13,7 @@ namespace N3O.Umbraco.Payments.PayPal {
             builder.Services.AddTransient<PayPalKeys>(serviceProvider => {
                 var contentCache = serviceProvider.GetRequiredService<IContentCache>();
                 var webHostEnvironment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
-                var settings = contentCache.Single<PayPalSettings>();
+                var settings = contentCache.Single<PayPalSettingsContent>();
 
                 PayPalKeys payPalKeys;
 

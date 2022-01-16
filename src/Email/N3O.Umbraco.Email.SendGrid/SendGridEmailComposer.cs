@@ -11,7 +11,7 @@ namespace N3O.Umbraco.Email.SendGrid {
         public override void Compose(IUmbracoBuilder builder) {
             builder.Services.AddSingleton<ISender>(serviceProvider => {
                 var contentCache = serviceProvider.GetRequiredService<IContentCache>();
-                var settings = contentCache.Single<SendGridSettings>();
+                var settings = contentCache.Single<SendGridSettingsContent>();
 
                 return new SendGridSender(settings.ApiKey, settings.SandboxMode);
             });

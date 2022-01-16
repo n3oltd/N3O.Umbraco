@@ -19,7 +19,7 @@ namespace N3O.Umbraco.Giving.Donations.ViewModels {
                                                 IFormatter formatter,
                                                 IPricing pricing,
                                                 IUmbracoMapper mapper,
-                                                SponsorshipDonationOption sponsorshipOption,
+                                                SponsorshipDonationOptionContent sponsorshipOption,
                                                 DonationType type) {
             _formatter = formatter;
         

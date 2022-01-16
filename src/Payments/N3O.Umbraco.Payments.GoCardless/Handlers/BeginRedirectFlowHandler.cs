@@ -41,7 +41,7 @@ namespace N3O.Umbraco.Payments.GoCardless.Handlers {
 
         private RedirectFlowCreateRequest GetRedirectFlowCreateRequest(IBillingInfoAccessor billingInfoAccessor,
                                                                        Guid flowId) {
-            var settings = _contentCache.Single<GoCardlessSettings>();
+            var settings = _contentCache.Single<GoCardlessSettingsContent>();
 
             var createRequest = new RedirectFlowCreateRequest();
             createRequest.Description = settings.TransactionDescription;

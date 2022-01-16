@@ -1,9 +1,8 @@
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Vacancies.Content;
-using N3O.Umbraco.Vacancies.Criteria;
-using N3O.Umbraco.Vacancies.QueryFilters;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
+using N3O.Umbraco.Vacancies.Criteria;
+using N3O.Umbraco.Vacancies.QueryFilters;
 using NodaTime;
 using System;
 using System.Collections.Generic;
@@ -23,11 +22,10 @@ namespace N3O.Umbraco.Vacancies {
         }
 
         public IReadOnlyList<T> FindVacancies<T>(VacancyCriteria criteria) where T : IPublishedContent {
-            var all = _contentCache.All<T>().Select(x => x.As<Vacancy>()).ToList();
+            var all = _contentCache.All<T>();
+            var results = _queryFilter.Apply(all, criteria).ToList();
 
-            var results = _queryFilter.Apply(criteria, all);
-
-            return results.Select(x => x.Content).Cast<T>().ToList();
+            return results;
         }
         
         public IReadOnlyList<T> FindOpenVacancies<T>(VacancyCriteria criteria = null) where T : IPublishedContent {

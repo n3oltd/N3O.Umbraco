@@ -10,7 +10,7 @@ namespace N3O.Umbraco.Accounts.Models {
     public class AccountReqValidator : ModelValidator<AccountReq> {
         public AccountReqValidator(IFormatter formatter, IContentCache contentCache, ITaxReliefScheme taxReliefScheme)
             : base(formatter) {
-            var phoneValidationSettings = contentCache.Single<PhoneValidationSettings>();
+            var phoneValidationSettings = contentCache.Single<PhoneValidationSettingsContent>();
         
             RuleFor(x => x.Name)
                 .NotNull()

@@ -5,13 +5,14 @@ using Umbraco.Cms.Core.Routing;
 
 namespace N3O.Umbraco.Blog.ContentFinders {
     public class BlogPostContentFinder : ContentFinderBase {
+        private static readonly string BlogPageAlias = AliasHelper<BlogPageContent>.ContentTypeAlias();
+        private static readonly string BlogPostAlias = AliasHelper<BlogPostContent>.ContentTypeAlias();
+        private static readonly string BlogPostsAlias = AliasHelper<BlogPostsContent>.ContentTypeAlias();
+        
         public BlogPostContentFinder(IContentCache contentCache) : base(contentCache) { }
         
         public override bool TryFindContentImpl(IPublishedRequestBuilder request) {
-            return TryFindRelocatedContent(AliasHelper<BlogPage>.ContentTypeAlias(),
-                                           AliasHelper<BlogPost>.ContentTypeAlias(),
-                                           AliasHelper<BlogPosts>.ContentTypeAlias(),
-                                           request);
+            return TryFindRelocatedContent(BlogPageAlias, BlogPostAlias, BlogPostsAlias, request);
         }
     }
 }

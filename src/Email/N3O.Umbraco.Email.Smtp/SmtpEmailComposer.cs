@@ -13,7 +13,7 @@ namespace N3O.Umbraco.Email.Smtp {
         public override void Compose(IUmbracoBuilder builder) {
             builder.Services.AddSingleton<ISender>(serviceProvider => {
                 var contentCache = serviceProvider.GetRequiredService<IContentCache>();
-                var settings = contentCache.Single<SmtpSettings>();
+                var settings = contentCache.Single<SmtpSettingsContent>();
 
                 var smtpClient = new SmtpClient(settings.Host, settings.Port);
                 smtpClient.EnableSsl = true;

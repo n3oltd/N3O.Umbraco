@@ -11,7 +11,8 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Localization {
     public class StringLocalizer : IStringLocalizer {
-        private static readonly string TextContainerAlias = AliasHelper<TextContainer>.ContentTypeAlias();
+        private static readonly string ResourcesAlias = AliasHelper<TextContainerContent>.PropertyAlias(x => x.Resources);
+        private static readonly string TextContainerAlias = AliasHelper<TextContainerContent>.ContentTypeAlias();
         private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(30);
         private static readonly object Lock = new();
 
@@ -49,7 +50,7 @@ namespace N3O.Umbraco.Localization {
             var cacheKey = nameof(StringLocalizer) + nameof(GetOrCreateFolderId) + folder;
 
             return _appCache.GetCacheItem(cacheKey, () => {
-                var textFolderId = _contentCache.Single<TextFolder>(x => x.Content.Name.EqualsInvariant(folder))
+                var textFolderId = _contentCache.Single<TextFolderContent>(x => x.Content.Name.EqualsInvariant(folder))
                                                 ?.Content
                                                 .Key;
 
@@ -62,13 +63,13 @@ namespace N3O.Umbraco.Localization {
         }
 
         private Guid CreateFolder(string name) {
-            var textSettings = _contentCache.Single<TextSettings>();
+            var textSettings = _contentCache.Single<TextSettingsContent>();
 
             if (textSettings == null) {
-                throw new Exception($"Could not find {nameof(TextSettings)} content");
+                throw new Exception($"Could not find {nameof(TextSettingsContent)} content");
             }
 
-            var content = _contentService.Create<TextFolder>(name, textSettings.Content.Id);
+            var content = _contentService.Create<TextFolderContent>(name, textSettings.Content.Id);
 
             _contentService.SaveAndPublish(content);
 
@@ -85,8 +86,8 @@ namespace N3O.Umbraco.Localization {
 
                 name = name.Pascalize();
 
-                var containerId = _contentCache.Single<TextContainer>(t => t.Content.Name.EqualsInvariant(name) &&
-                                                                           t.Content.Parent.Key == folderId)
+                var containerId = _contentCache.Single<TextContainerContent>(t => t.Content.Name.EqualsInvariant(name) &&
+                                                                                  t.Content.Parent.Key == folderId)
                                                ?.Content
                                                .Key;
 
@@ -99,7 +100,7 @@ namespace N3O.Umbraco.Localization {
         }
 
         private Guid CreateContainer(string name, Guid folderId) {
-            var content = _contentService.Create<TextContainer>(name, folderId);
+            var content = _contentService.Create<TextContainerContent>(name, folderId);
 
             _contentService.SaveAndPublish(content);
 
@@ -110,7 +111,7 @@ namespace N3O.Umbraco.Localization {
             var cacheKey = nameof(StringLocalizer) + nameof(CreateOrUpdateResource) + containerId + text;
 
             return _appCache.GetCacheItem(cacheKey, () => {
-                var container = _contentCache.Single<TextContainer>(x => x.Content.Key == containerId);
+                var container = _contentCache.Single<TextContainerContent>(x => x.Content.Key == containerId);
 
                 var resources = container.Resources.OrEmpty().ToList();
 
@@ -127,7 +128,7 @@ namespace N3O.Umbraco.Localization {
                     var json = JsonConvert.SerializeObject(resources);
                     var content = _contentService.GetById(container.Content.Id);
 
-                    content.SetValue<TextContainer, IEnumerable<TextResource>>(p => p.Resources, json);
+                    content.SetValue(ResourcesAlias,json);
 
                     _contentService.SaveAndPublish(content);
                 }

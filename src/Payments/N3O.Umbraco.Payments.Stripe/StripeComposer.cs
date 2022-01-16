@@ -14,7 +14,7 @@ namespace N3O.Umbraco.Payments.Stripe {
             builder.Services.AddTransient<StripeKeys>(serviceProvider => {
                 var contentCache = serviceProvider.GetRequiredService<IContentCache>();
                 var webHostEnvironment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
-                var settings = contentCache.Single<StripeSettings>();
+                var settings = contentCache.Single<StripeSettingsContent>();
 
                 StripeKeys stripeKeys;
 

@@ -3,24 +3,25 @@ using N3O.Umbraco.QueryFilters;
 using N3O.Umbraco.Vacancies.Content;
 using N3O.Umbraco.Vacancies.Criteria;
 using System.Collections.Generic;
-using System.Linq;
+using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Vacancies.QueryFilters {
-    public class VacancyQueryFilter : IQueryFilter<Vacancy, VacancyCriteria> {
-        public IEnumerable<Vacancy> Apply(VacancyCriteria criteria, IEnumerable<Vacancy> q) {
-            q = FilterClosingDate(criteria, q);
+    public class VacancyQueryFilter : QueryFilter<VacancyCriteria> {
+        public override IEnumerable<T> Apply<T>(IEnumerable<T> q, VacancyCriteria criteria) {
+            q = FilterClosingDate(q, criteria);
 
             return q;
         }
 
-        private IEnumerable<Vacancy> FilterClosingDate(VacancyCriteria criteria, IEnumerable<Vacancy> q) {
+        private IEnumerable<T> FilterClosingDate<T>(IEnumerable<T> q, VacancyCriteria criteria)
+            where T : IPublishedContent {
             if (criteria.ClosingDate.HasValue()) {
                 if (criteria.ClosingDate.HasFromValue()) {
-                    q = q.Where(x => x.ClosingDate >= criteria.ClosingDate.From.GetValueOrThrow());
+                    q = Where<T, VacancyContent>(q, x => x.ClosingDate >= criteria.ClosingDate.From.GetValueOrThrow());
                 }
                 
                 if (criteria.ClosingDate.HasToValue()) {
-                    q = q.Where(x => x.ClosingDate <= criteria.ClosingDate.To.GetValueOrThrow());
+                    q = Where<T, VacancyContent>(q, x => x.ClosingDate <= criteria.ClosingDate.To.GetValueOrThrow());
                 }
             }
 

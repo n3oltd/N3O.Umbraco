@@ -8,7 +8,7 @@
         object Value { get; }
     }
 
-    internal interface INamedParameterFromString {
+    public interface INamedParameterFromString {
         void FromString(string value);
     }
 }

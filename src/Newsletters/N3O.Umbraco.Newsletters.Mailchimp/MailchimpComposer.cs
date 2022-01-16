@@ -14,7 +14,7 @@ namespace N3O.Umbraco.Newsletters.Mailchimp {
                 var logger = serviceProvider.GetRequiredService<ILogger<MailchimpClient>>();
                 var textFormatter = serviceProvider.GetRequiredService<ITextFormatter>();
                 var contentCache = serviceProvider.GetRequiredService<IContentCache>();
-                var settings = contentCache.Single<MailchimpSettings>();
+                var settings = contentCache.Single<MailchimpSettingsContent>();
         
                 var manager = new MailChimpManager(settings.ApiKey);
                 var client = new MailchimpClient(logger, textFormatter, manager, settings.AudienceId);

@@ -42,7 +42,7 @@ namespace N3O.Umbraco.Search.Google {
 
         private (long TotalResults, IEnumerable<SearchResult> Results) ExecuteQuery(string query, int start, int number) {
             try {
-                var searchSettings = _contentCache.Single<GoogleSearchSettings>();
+                var searchSettings = _contentCache.Single<GoogleSearchSettingsContent>();
 
                 var searcher = new CustomSearchAPIService(new BaseClientService.Initializer {
                     ApiKey = searchSettings.ApiKey
