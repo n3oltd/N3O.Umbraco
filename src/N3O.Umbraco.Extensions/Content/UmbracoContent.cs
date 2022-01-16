@@ -1,5 +1,6 @@
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Extensions;
+using NodaTime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,10 +28,21 @@ namespace N3O.Umbraco.Content {
             return values.Cast<IPublishedContent>().Select(x => x.As<TProperty>());
         }
     
+        protected LocalDate GetLocalDate(Expression<Func<T, LocalDate>> memberExpression) {
+            return GetConvertedValue<DateTime, LocalDate>(memberExpression, dt => dt.ToLocalDate());
+        }
+        
         protected TProperty GetValue<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
             var alias = AliasHelper<T>.PropertyAlias(memberExpression);
 
             return Content.Value<TProperty>(alias);
+        }
+        
+        protected TConverted GetConvertedValue<TProperty, TConverted>(Expression<Func<T, TConverted>> memberExpression,
+                                                                      Func<TProperty, TConverted> convert) {
+            var alias = AliasHelper<T>.PropertyAlias(memberExpression);
+
+            return convert(Content.Value<TProperty>(alias));
         }
     }
 }
