@@ -25,7 +25,10 @@ namespace N3O.Umbraco.Cropper.Controllers {
         [HttpGet("media/{mediaId}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<ImageMedia> GetMediaById(string mediaId) {
-            var file = _mediaFileManager.FileSystem.GetFiles(mediaId).SingleOrDefault();
+            var file = _mediaFileManager.FileSystem
+                                        .GetFiles(mediaId)
+                                        .OrderBy(x => _mediaFileManager.FileSystem.GetLastModified(x))
+                                        .FirstOrDefault();
 
             if (file == null) {
                 return NotFound();
