@@ -1,6 +1,7 @@
 using N3O.Umbraco.Analytics.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Pages;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -9,16 +10,19 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Analytics.Modules {
     public class DataLayerPageModule : IPageModule {
-        private readonly IDataLayerBuilder _dataLayerBuilder;
-        private readonly IReadOnlyList<IDataLayerProvider> _allProviders;
+        private readonly Lazy<IDataLayerBuilder> _dataLayerBuilder;
+        private readonly Lazy<IEnumerable<IDataLayerProvider>> _allProviders;
 
-        public DataLayerPageModule(IDataLayerBuilder dataLayerBuilder, IEnumerable<IDataLayerProvider> allProviders) {
+        public DataLayerPageModule(Lazy<IDataLayerBuilder> dataLayerBuilder,
+                                   Lazy<IEnumerable<IDataLayerProvider>> allProviders) {
             _dataLayerBuilder = dataLayerBuilder;
-            _allProviders = allProviders.OrEmpty().ToList();
+            _allProviders = allProviders;
         }
-    
-        public async Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
-            var providers = _allProviders.Where(x => x.IsProviderFor(page)).ToList();
+
+        public bool ShouldExecute(IPublishedContent page) => true;
+
+            public async Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
+            var providers = _allProviders.Value.OrEmpty().Where(x => x.IsProviderFor(page)).ToList();
 
             var toPush = new List<object>();
 
@@ -26,11 +30,11 @@ namespace N3O.Umbraco.Analytics.Modules {
                 toPush.AddRange(await provider.GetAsync(page, cancellationToken));
             }
 
-            var javaScript = _dataLayerBuilder.BuildJavaScript(toPush);
+            var javaScript = _dataLayerBuilder.Value.BuildJavaScript(toPush);
 
             return new DataLayerCode(javaScript);
         }
 
-        public string Key => AnalyticsConstants.Keys.DataLayer;
+        public string Key => AnalyticsConstants.PageModuleKeys.DataLayer;
     }
 }

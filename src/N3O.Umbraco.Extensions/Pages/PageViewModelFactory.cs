@@ -19,20 +19,20 @@ namespace N3O.Umbraco.Pages {
             _constructViewModel = constructViewModel;
         }
 
-        public IPageViewModel<TPage> Create(TPage content, PageModuleData moduleData) {
+        public IPageViewModel<TPage> Create(TPage content, PageModulesData modulesData) {
             var stringLocalizer = _serviceProvider.GetRequiredService<IStringLocalizer>();
             
             var blockParameters = new PageParameters<TPage>(s => stringLocalizer.Get(TextFolders.Pages,
                                                                                      content.ContentType.Alias.Pascalize(),
                                                                                      s),
                                                             content,
-                                                            moduleData);
+                                                            modulesData);
         
             return _constructViewModel(_serviceProvider, blockParameters);
         }
 
-        public IPageViewModel Create(IPublishedContent content, PageModuleData moduleData) {
-            return Create((TPage) content, moduleData);
+        public IPageViewModel Create(IPublishedContent content, PageModulesData modulesData) {
+            return Create((TPage) content, modulesData);
         }
     }
 

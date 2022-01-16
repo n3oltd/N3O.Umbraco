@@ -4,6 +4,6 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Pages {
     public interface IPagePipeline {
-        Task<PageModuleData> RunAsync(IPublishedContent page, CancellationToken cancellationToken = default);
+        Task<PageModulesData> RunAsync(IPublishedContent page, CancellationToken cancellationToken = default);
     }
 }

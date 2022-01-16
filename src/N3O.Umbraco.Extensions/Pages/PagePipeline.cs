@@ -6,25 +6,25 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Pages {
     public class PagePipeline : IPagePipeline {
-        private readonly IReadOnlyList<IPageModule> _pageModules;
+        private readonly IReadOnlyList<IPageModule> _modules;
 
-        public PagePipeline(IEnumerable<IPageModule> pageModules) {
-            _pageModules = pageModules.ToList();
+        public PagePipeline(IEnumerable<IPageModule> modules) {
+            _modules = modules.ToList();
         }
     
-        public async Task<PageModuleData> RunAsync(IPublishedContent page,
-                                                   CancellationToken cancellationToken = default) {
-            var pageModuleData = new PageModuleData();
+        public async Task<PageModulesData> RunAsync(IPublishedContent page,
+                                                    CancellationToken cancellationToken = default) {
+            var modulesData = new PageModulesData();
         
-            foreach (var pageModule in _pageModules) {
-                var data = await pageModule.ExecuteAsync(page, cancellationToken);
+            foreach (var module in _modules.Where(x => x.ShouldExecute(page))) {
+                var data = await module.ExecuteAsync(page, cancellationToken);
 
                 if (data != null) {
-                    pageModuleData.Add(pageModule.Key, data);
+                    modulesData.Add(module.Key, data);
                 }
             }
 
-            return pageModuleData;
+            return modulesData;
         }
     }
 }

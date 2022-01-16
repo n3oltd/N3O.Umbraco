@@ -5,7 +5,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Pages {
     public interface IPageViewModel : IContentModel {
-        PageModuleData ModuleData { get; }
+        PageModulesData ModulesData { get; }
         IContentBlocks Blocks { get; }
     }
 
@@ -17,13 +17,13 @@ namespace N3O.Umbraco.Pages {
         private readonly Func<string, string> _getText;
 
         public PageViewModel(PageParameters<TPage> parameters) : base(parameters.Content) {
-            ModuleData = parameters.ModuleData;
+            ModulesData = parameters.ModulesData;
 
             _getText = parameters.GetText;
         }
 
         public IContentBlocks Blocks => Content.GetProperty("blocks")?.GetValue() as IContentBlocks;
-        public PageModuleData ModuleData { get; }
+        public PageModulesData ModulesData { get; }
 
         public string GetText(string s) => _getText(s);
     }

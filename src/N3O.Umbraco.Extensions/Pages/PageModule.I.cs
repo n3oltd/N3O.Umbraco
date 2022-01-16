@@ -6,6 +6,7 @@ namespace N3O.Umbraco.Pages {
     public interface IPageModule {
         string Key { get; }
     
+        bool ShouldExecute(IPublishedContent page);
         Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken);
     }
 }
