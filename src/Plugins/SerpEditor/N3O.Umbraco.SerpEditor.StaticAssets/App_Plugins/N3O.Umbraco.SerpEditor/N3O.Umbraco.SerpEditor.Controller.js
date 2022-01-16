@@ -13,15 +13,19 @@ angular.module("umbraco")
             $scope.maxCharsDescription = 160;
             $scope.titleSuffix = '';
 
+            $.ajax({
+                type: "GET",
+                url: "/umbraco/backoffice/serpEditor/templateOptions",
+                success: function (data) { $scope.titleSuffix = data.titleSuffix; }
+            });
+
             if ($scope.model.config) {
                 if ($scope.model.config.maxCharsTitle !== '' && parseInt($scope.model.config.maxCharsTitle) > 0) {
                     $scope.maxCharsTitle = parseInt($scope.model.config.maxCharsTitle);
                 }
+                
                 if ($scope.model.config.maxCharsDescription !== '' && parseInt($scope.model.config.maxCharsDescription) > 0) {
                     $scope.maxCharsDescription = parseInt($scope.model.config.maxCharsDescription);
-                }
-                if ($scope.model.config.titleSuffix !== '') {
-                    $scope.titleSuffix = $scope.model.config.titleSuffix;
                 }
             }
 
