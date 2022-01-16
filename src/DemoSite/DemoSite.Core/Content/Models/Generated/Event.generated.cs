@@ -50,6 +50,14 @@ namespace DemoSite.Core.Content
 		// properties
 
 		///<summary>
+		/// Categories
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("categories")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.EventCategory> Categories => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.EventCategory>>(_publishedValueFallback, "categories");
+
+		///<summary>
 		/// Date
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
