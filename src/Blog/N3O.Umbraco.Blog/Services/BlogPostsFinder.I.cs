@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Blog {
-    public interface IBlog {
-        IReadOnlyList<T> FindPosts<T>(PostCriteria criteria) where T : IPublishedContent;
+    public interface IBlogPostsFinder {
+        IReadOnlyList<T> FindPosts<T>(BlogPostCriteria criteria) where T : IPublishedContent;
     }
 }
