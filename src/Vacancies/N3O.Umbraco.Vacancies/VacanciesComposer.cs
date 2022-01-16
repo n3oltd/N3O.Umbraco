@@ -5,7 +5,7 @@ using Umbraco.Cms.Core.DependencyInjection;
 namespace N3O.Umbraco.Vacancies {
     public class VacanciesComposer : Composer {
         public override void Compose(IUmbracoBuilder builder) {
-            builder.Services.AddSingleton<IVacancies, Vacancies>();
+            builder.Services.AddSingleton<IVacanciesFinder, VacanciesFinder>();
         }
     }
 }
