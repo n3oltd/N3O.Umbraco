@@ -22,6 +22,11 @@ namespace DemoSite.Core.Content
 	/// <summary>Page</summary>
 	public partial interface IPage : IPublishedContent
 	{
+		/// <summary>Assets</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.PageAsset> Assets { get; }
+
 		/// <summary>Blocks</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
@@ -67,6 +72,19 @@ namespace DemoSite.Core.Content
 		}
 
 		// properties
+
+		///<summary>
+		/// Assets
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("assets")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.PageAsset> Assets => GetAssets(this, _publishedValueFallback);
+
+		/// <summary>Static getter for Assets</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
+		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		public static global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.PageAsset> GetAssets(IPage that, IPublishedValueFallback publishedValueFallback) => that.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.PageAsset>>(publishedValueFallback, "assets");
 
 		///<summary>
 		/// Blocks

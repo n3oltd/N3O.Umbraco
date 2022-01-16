@@ -65,6 +65,14 @@ namespace DemoSite.Core.Content
 		public virtual global::System.DateTime Date => this.Value<global::System.DateTime>(_publishedValueFallback, "date");
 
 		///<summary>
+		/// Assets
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("assets")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.PageAsset> Assets => global::DemoSite.Core.Content.Page.GetAssets(this, _publishedValueFallback);
+
+		///<summary>
 		/// Blocks
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]

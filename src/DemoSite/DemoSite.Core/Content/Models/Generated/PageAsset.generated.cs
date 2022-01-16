@@ -18,14 +18,14 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Core.Content
 {
-	/// <summary>Vacancies</summary>
-	[PublishedModel("vacanciesPage")]
-	public partial class VacanciesPage : PublishedContentModel, IPage
+	/// <summary>Page Asset</summary>
+	[PublishedModel("pageAsset")]
+	public partial class PageAsset : PublishedElementModel
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		public new const string ModelTypeAlias = "vacanciesPage";
+		public new const string ModelTypeAlias = "pageAsset";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
@@ -34,14 +34,14 @@ namespace DemoSite.Core.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<VacanciesPage, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<PageAsset, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public VacanciesPage(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
+		public PageAsset(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
@@ -50,34 +50,11 @@ namespace DemoSite.Core.Content
 		// properties
 
 		///<summary>
-		/// Assets
+		/// File
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("assets")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.PageAsset> Assets => global::DemoSite.Core.Content.Page.GetAssets(this, _publishedValueFallback);
-
-		///<summary>
-		/// Blocks
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("blocks")]
-		public virtual global::Perplex.ContentBlocks.Rendering.IContentBlocks Blocks => global::DemoSite.Core.Content.Page.GetBlocks(this, _publishedValueFallback);
-
-		///<summary>
-		/// Hide From Search Engines
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[ImplementPropertyType("hidePage")]
-		public virtual bool HidePage => global::DemoSite.Core.Content.Page.GetHidePage(this, _publishedValueFallback);
-
-		///<summary>
-		/// Title & Meta
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("titleMeta")]
-		public virtual global::N3O.Umbraco.SerpEditor.Models.SerpEntry TitleMeta => global::DemoSite.Core.Content.Page.GetTitleMeta(this, _publishedValueFallback);
+		[ImplementPropertyType("file")]
+		public virtual global::N3O.Umbraco.Uploader.Models.FileUpload File => this.Value<global::N3O.Umbraco.Uploader.Models.FileUpload>(_publishedValueFallback, "file");
 	}
 }
