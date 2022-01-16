@@ -23,10 +23,10 @@ namespace N3O.Umbraco.Search.Google {
             _appCache = appCache;
         }
 
-        public DynamicPager<SearchResult> Search(string query, Uri currentUrl) {
+        public DynamicPager<SearchResult> Search(string query, string currentUrl) {
             var totalResults = (int) GetCachedResults(query, 1, PageSize).TotalResults;
 
-            var pager = new DynamicPager<SearchResult>(currentUrl,
+            var pager = new DynamicPager<SearchResult>(new Uri(currentUrl),
                                                        (start, num) => GetCachedResults(query, start, num).Results,
                                                        totalResults,
                                                        PageSize);
