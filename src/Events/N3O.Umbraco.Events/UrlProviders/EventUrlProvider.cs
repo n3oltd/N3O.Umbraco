@@ -6,8 +6,8 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Routing;
 
 namespace N3O.Umbraco.Events.UrlProviders {
-    public class EventsUrlProvider : UrlProviderBase {
-        public EventsUrlProvider(DefaultUrlProvider defaultUrlProvider, IContentCache contentCache)
+    public class EventUrlProvider : UrlProviderBase {
+        public EventUrlProvider(DefaultUrlProvider defaultUrlProvider, IContentCache contentCache)
             : base(defaultUrlProvider, contentCache) { }
         
         public override UrlInfo GetUrl(IPublishedContent content, UrlMode mode, string culture, Uri current) {
