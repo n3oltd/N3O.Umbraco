@@ -19,13 +19,19 @@ namespace N3O.Umbraco.Blocks {
             _constructViewModel = constructViewModel;
         }
 
-        public override IContentBlockViewModel<TBlock> Create(TBlock content, Guid id, Guid definitionId, Guid layoutId) {
+        public override IContentBlockViewModel<TBlock> Create(TBlock content,
+                                                              Guid id,
+                                                              Guid definitionId,
+                                                              Guid layoutId) {
             var stringLocalizer = _serviceProvider.GetRequiredService<IStringLocalizer>();
+            var blockPipeline = _serviceProvider.GetRequiredService<IBlockPipeline>();
+             var modulesData = blockPipeline.RunAsync(content).GetAwaiter().GetResult();
             
             var blockParameters = new BlockParameters<TBlock>(s => stringLocalizer.Get(Constants.TextFolders.Blocks,
                                                                                        content.ContentType.Alias.Pascalize(),
                                                                                        s),
                                                               content,
+                                                              modulesData,
                                                               id,
                                                               definitionId,
                                                               layoutId);

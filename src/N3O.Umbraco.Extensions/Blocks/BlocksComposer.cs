@@ -23,6 +23,11 @@ namespace N3O.Umbraco.Blocks {
             foreach (var blockDefinition in BlocksComponent.BlockDefinitions) {
                 RegisterDefaultViewModel(builder, blockDefinition.Alias);
             }
+            
+            RegisterAll(t => t.ImplementsInterface<IBlockModule>(),
+                        t => builder.Services.AddTransient(typeof(IBlockModule), t));
+
+            builder.Services.AddTransient<IBlockPipeline, BlockPipeline>();
         
             builder.Components().Append<BlocksComponent>();
         }

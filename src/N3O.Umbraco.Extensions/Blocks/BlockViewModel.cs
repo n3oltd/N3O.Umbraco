@@ -4,6 +4,8 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Blocks {
     public interface IBlockViewModel : IContentBlockViewModel {
+        BlockModulesData ModulesData { get; }
+        
         string GetText(string s);
     }
 
@@ -18,6 +20,7 @@ namespace N3O.Umbraco.Blocks {
             DefinitionId = parameters.DefinitionId;
             LayoutId = parameters.LayoutId;
             Content = parameters.Content;
+            ModulesData = parameters.ModulesData;
 
             _getText = parameters.GetText;
         }
@@ -26,6 +29,7 @@ namespace N3O.Umbraco.Blocks {
         public Guid DefinitionId { get; }
         public Guid LayoutId  { get; }
         public TBlock Content { get; }
+        public BlockModulesData ModulesData { get; }
 
         public string GetText(string s) => _getText(s);
         
