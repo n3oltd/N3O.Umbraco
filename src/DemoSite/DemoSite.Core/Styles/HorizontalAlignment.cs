@@ -5,6 +5,8 @@ namespace DemoSite.Styles {
         public HorizontalAlignment(string id, string name, string cssClass) : base(id, name, null, cssClass) { }
         
         public override string Icon => "icon-tab-key";
+        
+        protected override string NamePrefix => "Horizontal Alignment";
     }
     
     public class HorizontalAlignments : ITemplateStylesCollection {

@@ -5,6 +5,8 @@ namespace DemoSite.Colours {
         public BackgroundColour(string id, string name) : base(id, name, null, null) { }
 
         public override string Icon => "icon-colorpicker";
+        
+        protected override string NamePrefix => "Background Colour";
     }
     
     public class BackgroundColours : ITemplateStylesCollection {

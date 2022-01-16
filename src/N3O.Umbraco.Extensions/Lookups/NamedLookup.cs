@@ -4,7 +4,7 @@
             Name = name;
         }
 
-        public string Name { get; }
+        public virtual string Name { get; }
     
         public override string ToString() {
             return Name;
