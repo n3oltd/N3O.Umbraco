@@ -35,7 +35,7 @@ namespace N3O.Umbraco.Search.Google {
         }
 
         private (long TotalResults, IEnumerable<SearchResult> Results) GetCachedResults(string query, int start, int number) {
-            var cacheKey = nameof(GoogleCustomSearch) + nameof(Search) + query + start + number;
+            var cacheKey = CacheKey.Generate<GoogleCustomSearch>(nameof(Search), query, start, number);
 
             return _appCache.GetCacheItem(cacheKey, () => ExecuteQuery(query, start, number), TimeSpan.FromHours(1));
         }

@@ -26,7 +26,7 @@ namespace N3O.Umbraco.TagHelpers {
             
                 scriptTag.InnerHtml.AppendHtml(Model.StructuredData().JavaScriptObject);
             
-                output.Content.SetHtmlContent(scriptTag.ToHtmlString());   
+                output.Content.SetHtmlContent(scriptTag.ToHtmlString());
             }
         }
     }

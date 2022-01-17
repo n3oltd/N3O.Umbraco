@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Utilities;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -57,7 +58,7 @@ namespace N3O.Umbraco.Content {
 
         private string GetCacheKey<T>() {
             var contentTypeAlias = AliasHelper<T>.ContentTypeAlias();
-            var cacheKey = $"{contentTypeAlias}_{typeof(T).FullName}";
+            var cacheKey = CacheKey.Generate<ContentCache>(contentTypeAlias, typeof(T).FullName);
             
             return cacheKey;
         }

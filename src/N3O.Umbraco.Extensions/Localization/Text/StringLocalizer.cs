@@ -1,55 +1,62 @@
 using Humanizer;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Locks;
+using N3O.Umbraco.Utilities;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Umbraco.Cms.Core.Cache;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Services;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Localization {
     public class StringLocalizer : IStringLocalizer {
+        private static readonly ConcurrentDictionary<string, Guid> GuidCache = new ();
+        private static readonly ConcurrentDictionary<string, string> StringCache = new ();
         private static readonly string ResourcesAlias = AliasHelper<TextContainerContent>.PropertyAlias(x => x.Resources);
         private static readonly string TextContainerAlias = AliasHelper<TextContainerContent>.ContentTypeAlias();
-        private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(30);
-        private static readonly object Lock = new();
 
-        private readonly IAppPolicyCache _appCache;
         private readonly IContentService _contentService;
         private readonly IContentCache _contentCache;
+        private readonly ILock _lock;
 
-        public StringLocalizer(IAppPolicyCache appAppCache, IContentService contentService, IContentCache contentCache) {
-            _appCache = appAppCache;
+        public StringLocalizer(IContentService contentService, IContentCache contentCache, ILock @lock) {
             _contentService = contentService;
             _contentCache = contentCache;
+            _lock = @lock;
         }
 
         public void Flush(IEnumerable<string> aliases) {
-            if (aliases.Contains(TextContainerAlias, true)) {
-                _appCache.ClearByKey(nameof(StringLocalizer));   
+            if (aliases.ContainsAny(new[] { ResourcesAlias, TextContainerAlias }, true)) {
+                Lock<None>(() => {
+                    GuidCache.Clear();
+                    StringCache.Clear();
+                    
+                    return None.Empty;
+                });
             }
         }
 
         public string Get(string folder, string name, string text) {
-            var cacheKey = nameof(StringLocalizer) + nameof(Get) + folder + name + text;
+            return Lock(() => {
+                var cacheKey = CacheKey.Generate<StringLocalizer>(nameof(Get), folder, name, text);
 
-            return _appCache.GetCacheItem(cacheKey, () => {
-                lock (Lock) {
+                return StringCache.GetOrAdd(cacheKey, _ => {
                     var folderId = GetOrCreateFolderId(folder);
                     var dictionaryId = GetOrCreateTextContainerId(folderId, name);
                     var textResource = CreateOrUpdateResource(dictionaryId, text);
 
                     return textResource.Value;
-                }
-            }, CacheDuration, true);
+                });
+            });
         }
 
         private Guid GetOrCreateFolderId(string folder) {
-            var cacheKey = nameof(StringLocalizer) + nameof(GetOrCreateFolderId) + folder;
+            var cacheKey = CacheKey.Generate<StringLocalizer>(nameof(GetOrCreateFolderId), folder);
 
-            return _appCache.GetCacheItem(cacheKey, () => {
+            return GuidCache.GetOrAdd(cacheKey, _ => {
                 var textFolderId = _contentCache.Single<TextFolderContent>(x => x.Content.Name.EqualsInvariant(folder))
                                                 ?.Content
                                                 .Key;
@@ -59,7 +66,7 @@ namespace N3O.Umbraco.Localization {
                 }
 
                 return textFolderId.Value;
-            }, CacheDuration, true);
+            });
         }
 
         private Guid CreateFolder(string name) {
@@ -77,9 +84,9 @@ namespace N3O.Umbraco.Localization {
         }
 
         private Guid GetOrCreateTextContainerId(Guid folderId, string name) {
-            var cacheKey = nameof(StringLocalizer) + nameof(GetOrCreateTextContainerId) + folderId + name;
+            var cacheKey = CacheKey.Generate<StringLocalizer>(nameof(GetOrCreateTextContainerId), folderId, name);
 
-            return _appCache.GetCacheItem(cacheKey, () => {
+            return GuidCache.GetOrAdd(cacheKey, _ => {
                 if (name.Contains("\\")) {
                     name = name.Split('\\').Last();
                 }
@@ -96,7 +103,7 @@ namespace N3O.Umbraco.Localization {
                 }
 
                 return containerId.Value;
-            }, CacheDuration, true);
+            });
         }
 
         private Guid CreateContainer(string name, Guid folderId) {
@@ -108,33 +115,37 @@ namespace N3O.Umbraco.Localization {
         }
 
         private TextResource CreateOrUpdateResource(Guid containerId, string text) {
-            var cacheKey = nameof(StringLocalizer) + nameof(CreateOrUpdateResource) + containerId + text;
+            var container = _contentCache.Single<TextContainerContent>(x => x.Content.Key == containerId);
 
-            return _appCache.GetCacheItem(cacheKey, () => {
-                var container = _contentCache.Single<TextContainerContent>(x => x.Content.Key == containerId);
+            var resources = container.Resources.OrEmpty().ToList();
 
-                var resources = container.Resources.OrEmpty().ToList();
+            var resource = resources.SingleOrDefault(x => x.Source.EqualsInvariant(text));
 
-                var resource = resources.SingleOrDefault(x => x.Source.EqualsInvariant(text));
+            if (resource == null) {
+                resource = new TextResource();
+                resource.Source = text;
 
-                if (resource == null) {
-                    resource = new TextResource();
-                    resource.Source = text;
+                resources.Add(resource);
 
-                    resources.Add(resource);
+                resources.Sort((x, y) => x.Source.CompareInvariant(y.Source));
 
-                    resources.Sort((x, y) => x.Source.CompareInvariant(y.Source));
+                var json = JsonConvert.SerializeObject(resources);
+                var content = _contentService.GetById(container.Content.Id);
 
-                    var json = JsonConvert.SerializeObject(resources);
-                    var content = _contentService.GetById(container.Content.Id);
+                content.SetValue(ResourcesAlias,json);
 
-                    content.SetValue(ResourcesAlias,json);
+                _contentService.SaveAndPublish(content);
+            }
 
-                    _contentService.SaveAndPublish(content);
-                }
+            return resource;
+        }
 
-                return resource;
-            }, CacheDuration, true);
+        private T Lock<T>(Func<T> action) {
+            return _lock.LockAsync(nameof(StringLocalizer), () => {
+                var result = action();
+
+                return Task.FromResult(result);
+            }).GetAwaiter().GetResult();
         }
     }
 }

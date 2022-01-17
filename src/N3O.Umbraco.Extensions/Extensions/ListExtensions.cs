@@ -15,7 +15,7 @@ namespace N3O.Umbraco.Extensions {
                 var itemsToRemove = source.Where(selector);
 
                 foreach (var itemToRemove in itemsToRemove) {
-                    source.Remove(itemToRemove);   
+                    source.Remove(itemToRemove);
                 }
             }
         }

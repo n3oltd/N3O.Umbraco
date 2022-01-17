@@ -26,7 +26,7 @@ namespace N3O.Umbraco.StructuredData {
             var root = JsonLd.Root();
 
             foreach (var provider in providers) {
-                provider.AddStructuredData(root, page);   
+                provider.AddStructuredData(root, page);
             }
 
             var javaScript = JsonConvert.SerializeObject(root, Formatting.Indented);
