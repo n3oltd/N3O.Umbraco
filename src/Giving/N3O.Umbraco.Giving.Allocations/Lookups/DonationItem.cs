@@ -9,9 +9,9 @@ namespace N3O.Umbraco.Giving.Allocations.Lookups {
         public bool AllowRegularDonations => GetValue(x => x.AllowRegularDonations);
         public bool Free => GetValue(x => x.Free);
         public decimal Price => GetValue(x => x.Price);
-        public IEnumerable<FundDimension1Option> Dimension1Options => GetValue(x => x.Dimension1Options);
-        public IEnumerable<FundDimension2Option> Dimension2Options => GetValue(x => x.Dimension2Options);
-        public IEnumerable<FundDimension3Option> Dimension3Options => GetValue(x => x.Dimension3Options);
-        public IEnumerable<FundDimension4Option> Dimension4Options => GetValue(x => x.Dimension4Options);
+        public IEnumerable<FundDimension1Option> Dimension1Options => GetPickedAs(x => x.Dimension1Options);
+        public IEnumerable<FundDimension2Option> Dimension2Options => GetPickedAs(x => x.Dimension2Options);
+        public IEnumerable<FundDimension3Option> Dimension3Options => GetPickedAs(x => x.Dimension3Options);
+        public IEnumerable<FundDimension4Option> Dimension4Options => GetPickedAs(x => x.Dimension4Options);
     }
 }

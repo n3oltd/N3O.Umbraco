@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Localization {
     public class StringLocalizer : IStringLocalizer {
@@ -17,25 +18,25 @@ namespace N3O.Umbraco.Localization {
         private static readonly ConcurrentDictionary<string, string> StringCache = new ();
         private static readonly string ResourcesAlias = AliasHelper<TextContainerContent>.PropertyAlias(x => x.Resources);
         private static readonly string TextContainerAlias = AliasHelper<TextContainerContent>.ContentTypeAlias();
+        private static readonly string TextFolderAliasAlias = AliasHelper<TextFolderContent>.ContentTypeAlias();
+        private static readonly string TextSettingsContentAlias = AliasHelper<TextSettingsContent>.ContentTypeAlias();
 
         private readonly IContentService _contentService;
-        private readonly IContentCache _contentCache;
+        private readonly IUmbracoContextFactory _umbracoContextFactory;
         private readonly ILock _lock;
 
-        public StringLocalizer(IContentService contentService, IContentCache contentCache, ILock @lock) {
+        public StringLocalizer(IContentService contentService,
+                               IUmbracoContextFactory umbracoContextFactory,
+                               ILock @lock) {
             _contentService = contentService;
-            _contentCache = contentCache;
+            _umbracoContextFactory = umbracoContextFactory;
             _lock = @lock;
         }
 
         public void Flush(IEnumerable<string> aliases) {
-            if (aliases.ContainsAny(new[] { ResourcesAlias, TextContainerAlias }, true)) {
-                Lock<None>(() => {
-                    GuidCache.Clear();
-                    StringCache.Clear();
-                    
-                    return None.Empty;
-                });
+            if (aliases.ContainsAny(new[] { TextContainerAlias, TextFolderAliasAlias, TextSettingsContentAlias }, true)) {
+                GuidCache.Clear();
+                StringCache.Clear();
             }
         }
 
@@ -57,9 +58,10 @@ namespace N3O.Umbraco.Localization {
             var cacheKey = CacheKey.Generate<StringLocalizer>(nameof(GetOrCreateFolderId), folder);
 
             return GuidCache.GetOrAdd(cacheKey, _ => {
-                var textFolderId = _contentCache.Single<TextFolderContent>(x => x.Content.Name.EqualsInvariant(folder))
-                                                ?.Content
-                                                .Key;
+                var textFolderId = Run(u => u.Content
+                                             .GetByContentType(u.Content.GetContentType(TextFolderAliasAlias))
+                                             .SingleOrDefault(x => x.Name.EqualsInvariant(folder))
+                                             ?.Key);
 
                 if (textFolderId == null) {
                     textFolderId = CreateFolder(folder);
@@ -70,13 +72,15 @@ namespace N3O.Umbraco.Localization {
         }
 
         private Guid CreateFolder(string name) {
-            var textSettings = _contentCache.Single<TextSettingsContent>();
+            var textSettings = Run(u => u.Content
+                                         .GetByContentType(u.Content.GetContentType(TextSettingsContentAlias))
+                                         .SingleOrDefault());
 
             if (textSettings == null) {
                 throw new Exception($"Could not find {nameof(TextSettingsContent)} content");
             }
 
-            var content = _contentService.Create<TextFolderContent>(name, textSettings.Content.Id);
+            var content = _contentService.Create<TextFolderContent>(name, textSettings.Id);
 
             _contentService.SaveAndPublish(content);
 
@@ -92,11 +96,12 @@ namespace N3O.Umbraco.Localization {
                 }
 
                 name = name.Pascalize();
-
-                var containerId = _contentCache.Single<TextContainerContent>(t => t.Content.Name.EqualsInvariant(name) &&
-                                                                                  t.Content.Parent.Key == folderId)
-                                               ?.Content
-                                               .Key;
+                
+                var containerId = Run(u => u.Content
+                                            .GetByContentType(u.Content.GetContentType(TextContainerAlias))
+                                            .SingleOrDefault(x => x.Name.EqualsInvariant(name) &&
+                                                                  x.Parent.Key == folderId)
+                                            ?.Key);
 
                 if (containerId == null) {
                     containerId = CreateContainer(name, folderId);
@@ -115,7 +120,7 @@ namespace N3O.Umbraco.Localization {
         }
 
         private TextResource CreateOrUpdateResource(Guid containerId, string text) {
-            var container = _contentCache.Single<TextContainerContent>(x => x.Content.Key == containerId);
+            var container = Run(u => u.Content.GetById(containerId).As<TextContainerContent>());
 
             var resources = container.Resources.OrEmpty().ToList();
 
@@ -142,10 +147,20 @@ namespace N3O.Umbraco.Localization {
 
         private T Lock<T>(Func<T> action) {
             return _lock.LockAsync(nameof(StringLocalizer), () => {
-                var result = action();
+                try {
+                    var result = action();
 
-                return Task.FromResult(result);
+                    return Task.FromResult(result);
+                } catch {
+                    return Task.FromResult<T>(default);
+                }
             }).GetAwaiter().GetResult();
+        }
+
+        private T Run<T>(Func<IUmbracoContext, T> func) {
+            using (var contextReference = _umbracoContextFactory.EnsureUmbracoContext()) {
+                return func(contextReference.UmbracoContext);
+            }
         }
     }
 }

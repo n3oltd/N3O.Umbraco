@@ -12,7 +12,7 @@ namespace N3O.Umbraco.Content {
             builder.Services.AddSingleton<IContentCache, ContentCache>();
             builder.Services.AddSingleton<IContentHelper, ContentHelper>();
             builder.Services.AddSingleton<IContentLocator, ContentLocator>();
-            builder.Services.AddScoped<IContentVisibility, ContentVisibility>();
+            builder.Services.AddTransient<IContentVisibility, ContentVisibility>();
             builder.Services.AddScoped<IPublishedContentHelper, PublishedContentHelper>();
         
             RegisterAll(t => t.ImplementsInterface<IContentValidator>(),

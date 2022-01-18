@@ -1,21 +1,24 @@
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Financial;
 using NodaTime;
-using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Forex {
     public class BaseToQuoteForexConverter {
         private readonly IExchangeRateProvider _exchangeRateProvider;
         private readonly IBaseCurrencyAccessor _baseCurrencyAccessor;
+        private readonly ICurrencyAccessor _quoteCurrencyAccessor;
         private Currency _baseCurrency;
         private Currency _quoteCurrency;
         private LocalDate? _date;
 
         public BaseToQuoteForexConverter(IExchangeRateProvider exchangeRateProvider,
-                                         IBaseCurrencyAccessor baseCurrencyAccessor) {
+                                         IBaseCurrencyAccessor baseCurrencyAccessor,
+                                         ICurrencyAccessor quoteCurrencyAccessor) {
             _exchangeRateProvider = exchangeRateProvider;
             _baseCurrencyAccessor = baseCurrencyAccessor;
+            _quoteCurrencyAccessor = quoteCurrencyAccessor;
         }
 
         public BaseToQuoteForexConverter ToCurrency(Currency quoteCurrency) {
@@ -30,21 +33,25 @@ namespace N3O.Umbraco.Forex {
             return this;
         }
 
-        public async Task<ForexMoney> ConvertAsync(decimal baseAmount) {
-            if (_quoteCurrency == null) {
-                throw new Exception("Quote currency must be specified");
-            }
+        public ForexMoney Convert(decimal baseAmount) {
+            return ConvertAsync(baseAmount).GetAwaiter().GetResult();
+        }
 
+        public async Task<ForexMoney> ConvertAsync(decimal baseAmount, CancellationToken cancellationToken = default) {
+            _quoteCurrency ??= _quoteCurrencyAccessor.GetCurrency();
             _baseCurrency ??= _baseCurrencyAccessor.GetBaseCurrency();
 
             decimal exchangeRate;
 
             if (_date == null) {
-                exchangeRate = await _exchangeRateProvider.GetLiveRateAsync(_baseCurrency, _quoteCurrency);
+                exchangeRate = await _exchangeRateProvider.GetLiveRateAsync(_baseCurrency,
+                                                                            _quoteCurrency,
+                                                                            cancellationToken);
             } else {
                 exchangeRate = await _exchangeRateProvider.GetHistoricalRateAsync(_date.Value,
                                                                                   _baseCurrency,
-                                                                                  _quoteCurrency);
+                                                                                  _quoteCurrency,
+                                                                                  cancellationToken);
             }
 
             var quoteAmount = baseAmount * exchangeRate;

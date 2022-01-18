@@ -14,10 +14,10 @@ namespace N3O.Umbraco.Giving.Donations.Content {
         public bool ShowQuantity => GetValue(x => x.ShowQuantity);
 
         public bool HideSingle => GetValue(x => x.HideSingle);
-        public IEnumerable<PriceHandleElement> SinglePriceHandles => GetCollectionAs(x => x.SinglePriceHandles);
+        public IEnumerable<PriceHandleElement> SinglePriceHandles => GetNestedAs(x => x.SinglePriceHandles);
 
         public bool HideRegular => GetValue(x => x.HideRegular);
-        public IEnumerable<PriceHandleElement> RegularPriceHandles => GetCollectionAs(x => x.RegularPriceHandles);
+        public IEnumerable<PriceHandleElement> RegularPriceHandles => GetNestedAs(x => x.RegularPriceHandles);
 
         public IEnumerable<PriceHandleElement> GetPriceHandles(DonationType donationType) {
             if (donationType == DonationTypes.Single) {

@@ -21,7 +21,7 @@ namespace N3O.Umbraco.Analytics.Modules {
 
         public bool ShouldExecute(IPublishedContent page) => true;
 
-            public async Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
+        public async Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
             var providers = _allProviders.Value.OrEmpty().Where(x => x.IsProviderFor(page)).ToList();
 
             var toPush = new List<object>();

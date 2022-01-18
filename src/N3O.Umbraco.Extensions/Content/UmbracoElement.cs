@@ -28,7 +28,17 @@ namespace N3O.Umbraco.Content {
         protected TProperty GetValue<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
             var alias = AliasHelper<T>.PropertyAlias(memberExpression);
 
-            return Content.Value<TProperty>(alias);
+            var propertyValue = Content.GetProperty(alias).GetValue();
+
+            if (propertyValue is TProperty typedProperty) {
+                return typedProperty;
+            } else if (propertyValue is IPublishedContent publishedContent) {
+                return publishedContent.As<TProperty>();
+            } else if (propertyValue is IPublishedElement publishedElement) {
+                return publishedElement.As<TProperty>();
+            } else {
+                return default;
+            }
         }
     }
 }

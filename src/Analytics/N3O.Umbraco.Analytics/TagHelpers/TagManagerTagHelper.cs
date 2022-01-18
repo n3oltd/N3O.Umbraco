@@ -7,7 +7,10 @@ using System;
 namespace N3O.Umbraco.Analytics.TagHelpers {
     [HtmlTargetElement("n3o-tag-manager")]
     public class TagManagerTagHelper : TagHelper {
+        [HtmlAttributeName("model")]
         public IPageViewModel Model { get; set; }
+        
+        [HtmlAttributeName("render")]
         public string Render { get; set; }
         
         public override void Process(TagHelperContext context, TagHelperOutput output) {

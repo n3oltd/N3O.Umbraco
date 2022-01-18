@@ -30,6 +30,12 @@ namespace N3O.Umbraco.Content {
                 contentTypeAlias.EndsWith("Content")) {
                 contentTypeAlias = contentTypeAlias.Substring(0, contentTypeAlias.Length - "Content".Length);
             }
+            
+            if (type.IsSubclassOrSubInterfaceOfGenericType(typeof(UmbracoElement<>)) &&
+                contentTypeAlias.EndsWith("Element")) {
+                contentTypeAlias = contentTypeAlias.Substring(0, contentTypeAlias.Length - "Element".Length);
+            }
+
 
             return contentTypeAlias;
         }

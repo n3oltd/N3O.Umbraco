@@ -19,7 +19,7 @@ namespace N3O.Umbraco.Analytics.Modules {
 
         public bool ShouldExecute(IPublishedContent page) => true;
 
-            public Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
+        public Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
             var body = GetCode(x => x.Body);
             var head = GetCode(x => x.Head);
 

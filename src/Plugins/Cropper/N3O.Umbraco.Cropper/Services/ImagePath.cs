@@ -1,5 +1,4 @@
 ﻿using N3O.Umbraco.Cropper.DataTypes;
-using System.IO;
 
 namespace N3O.Umbraco.Cropper {
     public static class ImagePath {
@@ -9,7 +8,7 @@ namespace N3O.Umbraco.Cropper {
                                  CropperSource.Crop crop) {
             var cropFilename = CropFilename.Generate(mediaId, sourceFilename, definition, crop);
 
-            return Path.Combine("media", mediaId, cropFilename);
+            return $"/media/{mediaId}/{cropFilename}";
         }
     }
 }

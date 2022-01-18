@@ -20,7 +20,7 @@ namespace N3O.Umbraco.StructuredData {
 
         public bool ShouldExecute(IPublishedContent page) => true;
 
-            public Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
+        public Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
             var providers = _allProviders.Value.OrEmpty().Where(x => x.IsProviderFor(page)).ToList();
 
             var root = JsonLd.Root();

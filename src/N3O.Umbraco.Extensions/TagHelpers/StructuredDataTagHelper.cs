@@ -8,6 +8,7 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.TagHelpers {
     [HtmlTargetElement("n3o-structured-data")]
     public class StructuredDataTagHelper : TagHelper {
+        [HtmlAttributeName("model")]
         public IPageViewModel Model { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output) {

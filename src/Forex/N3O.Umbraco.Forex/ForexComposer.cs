@@ -5,7 +5,7 @@ using Umbraco.Cms.Core.DependencyInjection;
 namespace N3O.Umbraco.Forex {
     public class ForexComposer : Composer {
         public override void Compose(IUmbracoBuilder builder) {
-            builder.Services.AddScoped<IForexConverter, ForexConverter>();
+            builder.Services.AddSingleton<IForexConverter, ForexConverter>();
         }
     }
 }

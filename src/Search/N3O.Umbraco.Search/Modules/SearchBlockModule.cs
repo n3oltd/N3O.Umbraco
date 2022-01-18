@@ -31,11 +31,16 @@ namespace N3O.Umbraco.Search.Modules {
 
         public Task<object> ExecuteAsync(IPublishedElement block, CancellationToken cancellationToken) {
             var query = _queryStringAccessor.Value.GetValue(SearchConstants.QueryString);
-            var currentUrl = _currentUrlAccessor.Value.GetEncodedUrl();
-            var pager = _searcher.Value.Search(query, currentUrl);
-            var searchResults = new SearchResults(query, pager);
 
-            return Task.FromResult<object>(searchResults);
+            if (query.HasValue()) {
+                var currentUrl = _currentUrlAccessor.Value.GetEncodedUrl();
+                var pager = _searcher.Value.Search(query, currentUrl);
+                var searchResults = new SearchResults(query, pager);
+
+                return Task.FromResult<object>(searchResults);
+            } else {
+                return Task.FromResult<object>(null);
+            }
         }
 
         public string Key => SearchConstants.BlockModuleKeys.Search;

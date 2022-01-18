@@ -1,17 +1,38 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Constants;
+using N3O.Umbraco.Content;
+using N3O.Umbraco.Giving.Donations.Content;
 using N3O.Umbraco.Giving.Donations.Models;
 using N3O.Umbraco.Hosting;
 using System;
+using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Giving.Donations.Controllers {
     [ResponseCache(CacheProfileName = CacheProfiles.NoCache)]
     [ApiDocument(DonationConstants.ApiName)]
     public class DonationsController : ApiController {
+        private readonly IContentLocator _contentLocator;
+        private readonly IUmbracoMapper _umbracoMapper;
+
+        public DonationsController(IContentLocator contentLocator, IUmbracoMapper umbracoMapper) {
+            _contentLocator = contentLocator;
+            _umbracoMapper = umbracoMapper;
+        }
+        
         [HttpGet("forms/{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<DonationFormRes> GetForm(Guid id) {
-            throw new NotImplementedException();
+            var form = _contentLocator.ById<DonationFormContent>(id);
+
+            if (form == null) {
+                return NotFound();
+            }
+
+            var res = _umbracoMapper.Map<DonationFormContent, DonationFormRes>(form);
+
+            return Ok(res);
         }
     }
 }

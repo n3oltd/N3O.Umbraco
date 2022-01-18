@@ -1,7 +1,6 @@
 ﻿using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Pricing;
-using N3O.Umbraco.Giving.Pricing.Extensions;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Giving.Allocations.Extensions {

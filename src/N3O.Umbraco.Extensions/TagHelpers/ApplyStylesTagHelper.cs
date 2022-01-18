@@ -4,15 +4,17 @@ using N3O.Umbraco.Templates;
 using System.Text;
 
 namespace N3O.Umbraco.TagHelpers {
-    [HtmlTargetElement(Attributes = nameof(ApplyStyles))]
+    [HtmlTargetElement(Attributes = ApplyStylesAttributeName)]
     public class ApplyStylesTagHelper : TagHelper {
+        private const string ApplyStylesAttributeName = "n3o-styles";
+        
         private readonly IStyleContext _styleContext;
 
         public ApplyStylesTagHelper(IStyleContext styleContext) {
             _styleContext = styleContext;
         }
         
-        [HtmlAttributeName("n3o-styles")]
+        [HtmlAttributeName(ApplyStylesAttributeName)]
         public bool ApplyStyles { get; set; }
         
         public override void Process(TagHelperContext context, TagHelperOutput output) {
@@ -27,8 +29,7 @@ namespace N3O.Umbraco.TagHelpers {
                     }
                 }
 
-                output.Attributes.RemoveWhere(x => x.Name == "class");
-                output.Attributes.Add("class", sb.ToString().Trim());
+                output.Attributes.SetAttribute("class", sb.ToString().Trim());
             }
         }
     }

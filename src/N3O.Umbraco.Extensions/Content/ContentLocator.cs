@@ -82,7 +82,7 @@ namespace N3O.Umbraco.Content {
             });
         }
 
-        private T Run<T>(Func<IUmbracoContext, T> func) where T : class {
+        private T Run<T>(Func<IUmbracoContext, T> func) {
             using (var contextReference = _umbracoContextFactory.EnsureUmbracoContext()) {
                 return func(contextReference.UmbracoContext);
             }

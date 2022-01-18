@@ -21,7 +21,7 @@ namespace N3O.Umbraco.Giving.Donations.Content {
         private static readonly string SinglePriceHandlesAlias = AliasHelper<FundDonationOptionContent>.PropertyAlias(x => x.SinglePriceHandles);
         
         private static readonly IEnumerable<string> Aliases = new[] {
-            AliasHelper<DonationFormFundContent>.ContentTypeAlias(),
+            AliasHelper<FundDonationOptionContent>.ContentTypeAlias(),
         };
     
         public FundDonationOptionValidator(IContentHelper contentHelper) : base(contentHelper) { }

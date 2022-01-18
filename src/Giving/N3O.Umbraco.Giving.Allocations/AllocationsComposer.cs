@@ -6,7 +6,7 @@ using Umbraco.Cms.Core.DependencyInjection;
 namespace N3O.Umbraco.Giving.Allocations {
     public class AllocationsComposer : Composer {
         public override void Compose(IUmbracoBuilder builder) {
-            builder.Services.AddScoped<IFundStructure, FundStructure>();
+            builder.Services.AddSingleton<IFundStructureAccessor, FundStructureAccessor>();
             
             builder.Services.AddOpenApiDocument(AllocationConstants.ApiName);
         }

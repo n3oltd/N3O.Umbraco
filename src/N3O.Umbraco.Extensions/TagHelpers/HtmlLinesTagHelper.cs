@@ -1,16 +1,23 @@
-﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using AngleSharp.Text;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.TagHelpers {
     [HtmlTargetElement("n3o-html-lines")]
     public class HtmlLinesTagHelper : TagHelper {
-        public IEnumerable<string> Text { get; set; }
+        [HtmlAttributeName("single")]
+        public string Single { get; set; }
+        
+        [HtmlAttributeName("multiple")]
+        public IEnumerable<string> Multiple { get; set; }
         
         public override void Process(TagHelperContext context, TagHelperOutput output) {
             output.TagName = null;
 
-            var html = Text.OrEmpty().Join("<br>");
+            var html = Single.HasValue()
+                           ? Single.Replace("\r", "").Replace("\n", "<br>")
+                           : Multiple.OrEmpty().Join("<br>");
             
             output.Content.SetHtmlContent(html);
         }

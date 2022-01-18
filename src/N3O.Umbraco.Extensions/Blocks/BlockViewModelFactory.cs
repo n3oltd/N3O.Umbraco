@@ -23,20 +23,22 @@ namespace N3O.Umbraco.Blocks {
                                                               Guid id,
                                                               Guid definitionId,
                                                               Guid layoutId) {
-            var stringLocalizer = _serviceProvider.GetRequiredService<IStringLocalizer>();
-            var blockPipeline = _serviceProvider.GetRequiredService<IBlockPipeline>();
-             var modulesData = blockPipeline.RunAsync(content).GetAwaiter().GetResult();
-            
-            var blockParameters = new BlockParameters<TBlock>(s => stringLocalizer.Get(Constants.TextFolders.Blocks,
-                                                                                       content.ContentType.Alias.Pascalize(),
-                                                                                       s),
-                                                              content,
-                                                              modulesData,
-                                                              id,
-                                                              definitionId,
-                                                              layoutId);
-            
-            return _constructViewModel(_serviceProvider, blockParameters);
+            using (var scope = _serviceProvider.CreateScope()) {
+                var stringLocalizer = _serviceProvider.GetRequiredService<IStringLocalizer>();
+                var blockPipeline = scope.ServiceProvider.GetRequiredService<IBlockPipeline>();
+                 var modulesData = blockPipeline.RunAsync(content).GetAwaiter().GetResult();
+                
+                var blockParameters = new BlockParameters<TBlock>(s => stringLocalizer.Get(Constants.TextFolders.Blocks,
+                                                                                           content.ContentType.Alias.Pascalize(),
+                                                                                           s),
+                                                                  content,
+                                                                  modulesData,
+                                                                  id,
+                                                                  definitionId,
+                                                                  layoutId);
+                
+                return _constructViewModel(scope.ServiceProvider, blockParameters);
+            }
         }
     }
 

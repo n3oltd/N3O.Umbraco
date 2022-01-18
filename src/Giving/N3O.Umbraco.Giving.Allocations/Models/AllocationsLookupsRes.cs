@@ -8,22 +8,22 @@ namespace N3O.Umbraco.Giving.Allocations.Models {
         public IEnumerable<NamedLookupRes> AllocationTypes { get; set; }
         
         [FromLookupType(AllocationsLookupTypes.DonationItems)]
-        public IEnumerable<NamedLookupRes> DonationItems { get; set; }
+        public IEnumerable<DonationItemRes> DonationItems { get; set; }
         
         [FromLookupType(AllocationsLookupTypes.DonationTypes)]
         public IEnumerable<NamedLookupRes> DonationTypes { get; set; }
         
         [FromLookupType(AllocationsLookupTypes.FundDimension1Options)]
-        public IEnumerable<NamedLookupRes> FundDimension1Options { get; set; }
+        public IEnumerable<FundDimensionOptionRes> FundDimension1Options { get; set; }
         
         [FromLookupType(AllocationsLookupTypes.FundDimension2Options)]
-        public IEnumerable<NamedLookupRes> FundDimension2Options { get; set; }
+        public IEnumerable<FundDimensionOptionRes> FundDimension2Options { get; set; }
         
         [FromLookupType(AllocationsLookupTypes.FundDimension3Options)]
-        public IEnumerable<NamedLookupRes> FundDimension3Options { get; set; }
+        public IEnumerable<FundDimensionOptionRes> FundDimension3Options { get; set; }
         
         [FromLookupType(AllocationsLookupTypes.FundDimension4Options)]
-        public IEnumerable<NamedLookupRes> FundDimension4Options { get; set; }
+        public IEnumerable<FundDimensionOptionRes> FundDimension4Options { get; set; }
         
         [FromLookupType(AllocationsLookupTypes.SponsorshipSchemes)]
         public IEnumerable<NamedLookupRes> SponsorshipSchemes { get; set; }

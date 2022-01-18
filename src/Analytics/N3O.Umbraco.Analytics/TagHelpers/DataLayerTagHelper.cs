@@ -8,6 +8,7 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Analytics.TagHelpers {
     [HtmlTargetElement("n3o-data-layer")]
     public class DataLayerTagHelper : TagHelper {
+        [HtmlAttributeName("model")]
         public IPageViewModel Model { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output) {

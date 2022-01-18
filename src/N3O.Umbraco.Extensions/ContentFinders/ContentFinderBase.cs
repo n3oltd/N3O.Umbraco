@@ -58,10 +58,12 @@ namespace N3O.Umbraco.ContentFinders {
             return content.RelativeUrl().Substring(strip.Length).RemoveLeadingSlashes();
         }
 
-        protected string GetRequestedPath(Uri url, string strip) {
+        protected string GetRequestedPath(Uri url, string strip = null) {
             var path = url.GetAbsolutePathDecoded().ToLowerInvariant();
+            
+            strip ??= "";
 
-            if (!path.StartsWith(strip.ToLowerInvariant())) {
+            if (strip.HasValue() && !path.StartsWith(strip.ToLowerInvariant())) {
                 return null;
             }
         

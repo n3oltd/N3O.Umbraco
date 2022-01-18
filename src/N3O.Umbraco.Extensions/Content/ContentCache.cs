@@ -42,7 +42,7 @@ namespace N3O.Umbraco.Content {
         }
 
         public void Flush(IEnumerable<string> contentTypeAliases) {
-            var prefixes = contentTypeAliases.Select(x => x + "_").ToList();
+            var prefixes = contentTypeAliases.Select(x => CacheKey.Generate<ContentCache>(x)).ToList();
         
             _typedStore.RemoveWhereKey(x => prefixes.Any(p => x.StartsWith(p, StringComparison.InvariantCultureIgnoreCase)));
             _untypedStore.RemoveWhereKey(x => prefixes.Any(p => x.StartsWith(p, StringComparison.InvariantCultureIgnoreCase)));

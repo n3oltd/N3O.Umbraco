@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using N3O.Umbraco.Blocks;
 using Perplex.ContentBlocks.Rendering;
 using System;
@@ -64,8 +65,8 @@ namespace N3O.Umbraco.Extensions {
         }
 
         public static IUmbracoBuilder AddDefaultBlockViewModel(this IUmbracoBuilder builder, Type blockType) {
-            builder.Services.AddTransient(typeof(IContentBlockViewModelFactory<>).MakeGenericType(blockType),
-                                          s => BlockViewModelFactory.Default(s, blockType));
+            builder.Services.TryAddTransient(typeof(IContentBlockViewModelFactory<>).MakeGenericType(blockType),
+                                             s => BlockViewModelFactory.Default(s, blockType));
 
             return builder;
         }

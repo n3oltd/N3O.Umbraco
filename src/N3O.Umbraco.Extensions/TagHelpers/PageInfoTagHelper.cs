@@ -17,6 +17,7 @@ namespace N3O.Umbraco.TagHelpers {
             _webHostEnvironment = webHostEnvironment;
         }
         
+        [HtmlAttributeName("model")]
         public IPageViewModel Model { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output) {

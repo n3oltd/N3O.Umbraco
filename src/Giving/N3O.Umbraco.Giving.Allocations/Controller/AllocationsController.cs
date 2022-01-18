@@ -2,8 +2,10 @@
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
+using N3O.Umbraco.Giving.Allocations.Queries;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Lookups;
+using N3O.Umbraco.Mediator;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
@@ -11,60 +13,72 @@ using Umbraco.Cms.Core.Mapping;
 namespace N3O.Umbraco.Giving.Allocations.Controller {
     [ApiDocument(AllocationConstants.ApiName)]
     public class AllocationsController : LookupsController<AllocationsLookupsRes> {
-        public AllocationsController(ILookups lookups, IUmbracoMapper mapper) : base(lookups, mapper) { }
+        private readonly IMediator _mediator;
 
+        public AllocationsController(ILookups lookups, IUmbracoMapper mapper, IMediator mediator)
+            : base(lookups, mapper) {
+            _mediator = mediator;
+        }
+
+        [HttpGet("fundStructure")]
+        public async Task<ActionResult<FundStructure>> GetFundStructure() {
+            var res = await _mediator.SendAsync<GetFundStructureQuery, None, FundStructureRes>(None.Empty);
+
+            return Ok(res);
+        }
+        
         [HttpGet("lookups/" + AllocationsLookupTypes.AllocationTypes)]
         public async Task<ActionResult<IEnumerable<NamedLookupRes>>> GetLookupAllocationTypes() {
-            var res = await GetLookupsAsync<AllocationType, NamedLookupRes>();
+            var res = await GetLookupsAsync<AllocationType>();
 
             return Ok(res);
         }
         
         [HttpGet("lookups/" + AllocationsLookupTypes.DonationItems)]
-        public async Task<ActionResult<IEnumerable<NamedLookupRes>>> GetLookupDonationItems() {
-            var res = await GetLookupsAsync<DonationItem, NamedLookupRes>();
+        public async Task<ActionResult<IEnumerable<DonationItemRes>>> GetLookupDonationItems() {
+            var res = await GetLookupsAsync<DonationItem, DonationItemRes>();
 
             return Ok(res);
         }
         
         [HttpGet("lookups/" + AllocationsLookupTypes.DonationTypes)]
         public async Task<ActionResult<IEnumerable<NamedLookupRes>>> GetLookupDonationTypes() {
-            var res = await GetLookupsAsync<DonationType, NamedLookupRes>();
+            var res = await GetLookupsAsync<DonationType>();
 
             return Ok(res);
         }
         
         [HttpGet("lookups/" + AllocationsLookupTypes.FundDimension1Options)]
-        public async Task<ActionResult<IEnumerable<NamedLookupRes>>> GetLookupFundDimension1Options() {
-            var res = await GetLookupsAsync<FundDimension1Option, NamedLookupRes>();
+        public async Task<ActionResult<IEnumerable<FundDimensionOptionRes>>> GetLookupFundDimension1Options() {
+            var res = await GetLookupsAsync<FundDimension1Option, FundDimensionOptionRes>();
 
             return Ok(res);
         }
         
         [HttpGet("lookups/" + AllocationsLookupTypes.FundDimension2Options)]
-        public async Task<ActionResult<IEnumerable<NamedLookupRes>>> GetLookupFundDimension2Options() {
-            var res = await GetLookupsAsync<FundDimension2Option, NamedLookupRes>();
+        public async Task<ActionResult<IEnumerable<FundDimensionOptionRes>>> GetLookupFundDimension2Options() {
+            var res = await GetLookupsAsync<FundDimension2Option, FundDimensionOptionRes>();
 
             return Ok(res);
         }
         
         [HttpGet("lookups/" + AllocationsLookupTypes.FundDimension3Options)]
-        public async Task<ActionResult<IEnumerable<NamedLookupRes>>> GetLookupFundDimension3Options() {
-            var res = await GetLookupsAsync<FundDimension3Option, NamedLookupRes>();
+        public async Task<ActionResult<IEnumerable<FundDimensionOptionRes>>> GetLookupFundDimension3Options() {
+            var res = await GetLookupsAsync<FundDimension3Option, FundDimensionOptionRes>();
 
             return Ok(res);
         }
         
         [HttpGet("lookups/" + AllocationsLookupTypes.FundDimension4Options)]
-        public async Task<ActionResult<IEnumerable<NamedLookupRes>>> GetLookupFundDimension4Options() {
-            var res = await GetLookupsAsync<FundDimension4Option, NamedLookupRes>();
+        public async Task<ActionResult<IEnumerable<FundDimensionOptionRes>>> GetLookupFundDimension4Options() {
+            var res = await GetLookupsAsync<FundDimension4Option, FundDimensionOptionRes>();
 
             return Ok(res);
         }
         
         [HttpGet("lookups/" + AllocationsLookupTypes.SponsorshipSchemes)]
         public async Task<ActionResult<IEnumerable<NamedLookupRes>>> GetLookupSponsorshipSchemes() {
-            var res = await GetLookupsAsync<SponsorshipScheme, NamedLookupRes>();
+            var res = await GetLookupsAsync<SponsorshipScheme>();
 
             return Ok(res);
         }

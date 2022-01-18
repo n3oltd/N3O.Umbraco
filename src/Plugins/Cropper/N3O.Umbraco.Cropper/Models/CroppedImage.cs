@@ -47,12 +47,8 @@ namespace N3O.Umbraco.Cropper.Models {
             return _crops.Values.GetEnumerator();
         }
 
-        public ImageCrop this[string alias] {
-            get => _crops[alias];
+        public ImageCrop this[string alias] => _crops[alias];
 
-            set => _crops[alias] = value;
-        }
-    
         private void AddImageCrop(CropDefinition definition, string mediaId, string sourceFile, CropperSource.Crop crop) {
             var imageCrop = new ImageCrop(definition.Alias,
                                           ImagePath.Get(mediaId, sourceFile, definition, crop),
