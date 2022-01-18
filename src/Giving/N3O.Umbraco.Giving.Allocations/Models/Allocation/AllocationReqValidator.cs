@@ -6,11 +6,19 @@ using N3O.Umbraco.Giving.Pricing;
 using N3O.Umbraco.Giving.Pricing.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace N3O.Umbraco.Giving.Allocations.Model {
     public class AllocationReqValidator : ModelValidator<AllocationReq> {
-        public AllocationReqValidator(IFormatter formatter, IPricing pricing) : base(formatter) {
+        public AllocationReqValidator(IFormatter formatter,
+                                      IPricing pricing,
+                                      IFundStructureAccessor fundStructureAccessor)
+            : base(formatter) {
+            var fundStructure = fundStructureAccessor.GetFundStructure();
+            
             RuleFor(x => x.Type)
                 .NotNull()
                 .WithMessage(Get<Strings>(s => s.SpecifyType));
@@ -25,47 +33,6 @@ namespace N3O.Umbraco.Giving.Allocations.Model {
                 .When(x => x.Type == AllocationTypes.Sponsorship)
                 .WithMessage(Get<Strings>(s => s.SpecifySponsorshipScheme));
 
-            RuleFor(x => x.Dimension1)
-                .Must((req, x) => req.Fund.DonationItem.Dimension1Options.Contains(x))
-                .When(x => x.Fund.HasAny(x => x.DonationItem?.Dimension1Options))
-                .WithMessage(x => Get<Strings>(s => s.InvalidDimensionValue_2, x.Dimension1, 1));
-
-            RuleFor(x => x.Dimension2)
-                .Must((req, x) => req.Fund.DonationItem.Dimension2Options.Contains(x))
-                .When(x => x.Fund.HasAny(x => x.DonationItem?.Dimension2Options))
-                .WithMessage(x => Get<Strings>(s => s.InvalidDimensionValue_2, x.Dimension2, 2));
-
-            RuleFor(x => x.Dimension3)
-                .Must((req, x) => req.Fund.DonationItem.Dimension3Options.Contains(x))
-                .When(x => x.Fund.HasAny(x => x.DonationItem?.Dimension3Options))
-                .WithMessage(x => Get<Strings>(s => s.InvalidDimensionValue_2, x.Dimension3, 3));
-
-            RuleFor(x => x.Dimension4)
-                .Must((req, x) => req.Fund.DonationItem.Dimension4Options.Contains(x))
-                .When(x => x.Fund.HasAny(x => x.DonationItem?.Dimension4Options))
-                .WithMessage(x => Get<Strings>(s => s.InvalidDimensionValue_2, x.Dimension4, 4));
-
-            RuleFor(x => x.Dimension1)
-                .Must((req, x) => req.Sponsorship.Scheme.Dimension1Options.Contains(x))
-                .When(x => x.Sponsorship.HasAny(x => x.Scheme?.Dimension1Options))
-                .WithMessage(x => Get<Strings>(s => s.InvalidDimensionValue_2, x.Dimension1, 1));
-
-            RuleFor(x => x.Dimension2)
-                .Must((req, x) => req.Sponsorship.Scheme.Dimension2Options.Contains(x))
-                .When(x => x.Sponsorship.HasAny(x => x.Scheme?.Dimension2Options))
-                .WithMessage(x => Get<Strings>(s => s.InvalidDimensionValue_2, x.Dimension2, 2));
-
-            RuleFor(x => x.Dimension3)
-                .Must((req, x) => req.Sponsorship.Scheme.Dimension3Options.Contains(x))
-                .When(x => x.Sponsorship.HasAny(x => x.Scheme?.Dimension3Options))
-                .WithMessage(x => Get<Strings>(s => s.InvalidDimensionValue_2, x.Dimension3, 3));
-
-            RuleFor(x => x.Dimension4)
-                .Must((req, x) => req.Sponsorship.Scheme.Dimension4Options.Contains(x))
-                .When(x => x.Sponsorship.HasAny(x => x.Scheme?.Dimension4Options))
-                .WithMessage(x => Get<Strings>(s => s.InvalidDimensionValue_2, x.Dimension4, 4));
-        
-        
             RuleFor(x => x.Value.Amount)
                 .Must((req, x) => pricing.InCurrentCurrency(req.Fund.DonationItem).Amount == x)
                 .When(x => x.HasValue(y => y.Value.Amount) && x.Fund?.DonationItem?.HasPrice() == true)
@@ -75,11 +42,90 @@ namespace N3O.Umbraco.Giving.Allocations.Model {
                 .Must((req, x) => pricing.InCurrentCurrency(req.Sponsorship.Scheme).Amount == x)
                 .When(x => x.HasValue(y => y.Value.Amount) && x.Sponsorship?.Scheme?.HasPrice() == true)
                 .WithMessage(Get<Strings>(s => s.InvalidAmount));
+            
+            ValidateDimensions(fundStructure);
+        }
+
+        private void ValidateDimensions(FundStructure fundStructure) {
+            ValidateFundDimensions(fundStructure);
+            ValidateSponsorshipDimensions(fundStructure);
+        }
+        
+        private void ValidateFundDimensions(FundStructure fundStructure) {
+            ValidateDimension(x => x.Dimension1,
+                              x => x.Fund?.DonationItem,
+                              x => x.Dimension1Options,
+                              fundStructure.Dimension1);
+
+            ValidateDimension(x => x.Dimension2,
+                              x => x.Fund?.DonationItem,
+                              x => x.Dimension2Options,
+                              fundStructure.Dimension2);
+
+            
+            ValidateDimension(x => x.Dimension3,
+                              x => x.Fund?.DonationItem,
+                              x => x.Dimension3Options,
+                              fundStructure.Dimension3);
+
+            
+            ValidateDimension(x => x.Dimension4,
+                              x => x.Fund?.DonationItem,
+                              x => x.Dimension4Options,
+                              fundStructure.Dimension4);
+        }
+        
+        private void ValidateSponsorshipDimensions(FundStructure fundStructure) {
+            ValidateDimension(x => x.Dimension1,
+                              x => x.Sponsorship?.Scheme,
+                              x => x.Dimension1Options,
+                              fundStructure.Dimension1);
+
+            ValidateDimension(x => x.Dimension2,
+                              x => x.Sponsorship?.Scheme,
+                              x => x.Dimension2Options,
+                              fundStructure.Dimension2);
+
+            
+            ValidateDimension(x => x.Dimension3,
+                              x => x.Sponsorship?.Scheme,
+                              x => x.Dimension3Options,
+                              fundStructure.Dimension3);
+
+            
+            ValidateDimension(x => x.Dimension4,
+                              x => x.Sponsorship?.Scheme,
+                              x => x.Dimension4Options,
+                              fundStructure.Dimension4);
+        }
+
+        private void ValidateDimension<T, TOption>(Expression<Func<AllocationReq, TOption>> expression,
+                                                   Func<AllocationReq, IHoldFundDimensionOptions> getHoldFundDimensionOptions,
+                                                   Func<IHoldFundDimensionOptions, IEnumerable<TOption>> getOptions,
+                                                   FundDimension<T, TOption> fundDimension)
+            where T : FundDimension<T, TOption>
+            where TOption : FundDimensionOption<TOption> {
+            RuleFor(expression)
+                .NotNull()
+                .When(_ => fundDimension.IsActive)
+                .WithMessage(_ => Get<Strings>(s => s.SpecifyDimensionValue_1,
+                                               fundDimension.Name));
+            
+            RuleFor(expression)
+                .Must((req, x) => getOptions( getHoldFundDimensionOptions(req)).Contains(x))
+                .When(x => fundDimension.IsActive &&
+                           expression.Compile().Invoke(x).HasValue() &&
+                           getHoldFundDimensionOptions(x).HasValue() &&
+                           getOptions(getHoldFundDimensionOptions(x)).HasAny())
+                .WithMessage(x => Get<Strings>(s => s.InvalidDimensionValue_2,
+                                               expression.Compile().Invoke(x).Name,
+                                               fundDimension.Name));
         }
 
         public class Strings : ValidationStrings {
             public string InvalidAmount => "Invalid amount specified";
-            public string InvalidDimensionValue_2 => $"{"{0}".Quote()} is not an allowed value for {1}";
+            public string InvalidDimensionValue_2 => $"{"{0}".Quote()} is not an allowed value for {"{1}".Quote()}";
+            public string SpecifyDimensionValue_1 => $"Please specify a value for {"{0}".Quote()}";
             public string SpecifyDonationItem => "Please specify the donation item";
             public string SpecifySponsorshipScheme => "Please specify the sponsorship scheme";
             public string SpecifyType => "Please specify the allocation type";
