@@ -367,3 +367,4 @@ src/Forms/N3O.Umbraco.Forms/Views
 src/Forms/N3O.Umbraco.Forms.StaticAssets/App_Plugins
 src/Forms/N3O.Umbraco.Forms.StaticAssets/Views
 src/Sync/N3O.Umbraco.Sync/App_Plugins
+src/Sync/N3O.Umbraco.Sync.Forms/App_Plugins
