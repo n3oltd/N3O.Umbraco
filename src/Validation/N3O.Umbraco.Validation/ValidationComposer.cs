@@ -24,13 +24,14 @@ namespace N3O.Umbraco.Validation {
 
             RegisterAll(t => t.ImplementsGenericInterface(typeof(IValidator<>)),
                         t => RegisterValidator(builder, t));
-        
 
             ValidatorOptions.Global.DisplayNameResolver = (_, member, _) => {
                 var propertyInfo = member as PropertyInfo;
 
                 return propertyInfo?.GetCustomAttribute<NameAttribute>()?.Name;
             };
+            
+            ValidatorOptions.Global.PropertyNameResolver = CamelCasePropertyNameResolver.ResolvePropertyName;
         }
 
         private void RegisterValidator(IUmbracoBuilder builder, Type validatorType) {
