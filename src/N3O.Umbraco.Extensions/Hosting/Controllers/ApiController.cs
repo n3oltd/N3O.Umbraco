@@ -5,6 +5,7 @@ using Umbraco.Cms.Web.Common.Controllers;
 
 namespace N3O.Umbraco.Hosting {
     [ApiController]
+    [OurJsonFilter]
     [Route("/umbraco/api/[controller]")]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]

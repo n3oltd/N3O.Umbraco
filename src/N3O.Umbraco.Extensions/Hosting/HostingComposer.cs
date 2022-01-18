@@ -15,7 +15,7 @@ namespace N3O.Umbraco.Hosting {
                 c.DefaultControllerType = typeof(PageController);
             });
         
-            builder.Services.AddTransient<IConfigureOptions<MvcOptions>, OurMvcJsonFormatterOptions>();
+            builder.Services.AddTransient<IConfigureOptions<MvcOptions>, OurMvcBinderOptions>();
             builder.Services.AddTransient<IConfigureOptions<MvcOptions>, OurCacheProfileOptions>();
             builder.Services.AddScoped<IActionLinkGenerator, ActionLinkGenerator>();
             builder.Services.AddScoped<StagingMiddleware>();
