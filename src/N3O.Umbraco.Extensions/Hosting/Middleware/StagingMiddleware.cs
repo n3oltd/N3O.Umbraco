@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
@@ -10,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Web;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Hosting {
     public class StagingMiddleware : IMiddleware {
@@ -21,17 +24,22 @@ namespace N3O.Umbraco.Hosting {
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly Lazy<IUmbracoContextFactory> _umbracoContextFactory;
         private readonly Lazy<IRemoteIpAddressAccessor> _remoteIpAddressAccessor;
+        private readonly Lazy<IOptionsSnapshot<CookieAuthenticationOptions>> _cookieAuthenticationOptions;
 
         public StagingMiddleware(IWebHostEnvironment webHostEnvironment,
                                  Lazy<IUmbracoContextFactory> umbracoContextFactory,
-                                 Lazy<IRemoteIpAddressAccessor> remoteIpAddressAccessor) {
+                                 Lazy<IRemoteIpAddressAccessor> remoteIpAddressAccessor,
+                                 Lazy<IOptionsSnapshot<CookieAuthenticationOptions>> cookieAuthenticationOptions) {
             _webHostEnvironment = webHostEnvironment;
             _umbracoContextFactory = umbracoContextFactory;
             _remoteIpAddressAccessor = remoteIpAddressAccessor;
+            _cookieAuthenticationOptions = cookieAuthenticationOptions;
         }
         
         public async Task InvokeAsync(HttpContext context, RequestDelegate next) {
-            if (_webHostEnvironment.IsStaging()) {
+            if (_webHostEnvironment.IsStaging() &&
+                !context.Request.Path.StartsWithSegments("/umbraco", StringComparison.InvariantCultureIgnoreCase) &&
+                !context.Request.Path.StartsWithSegments("/App_Plugins", StringComparison.InvariantCultureIgnoreCase)) {
                 var umbracoContext = _umbracoContextFactory.Value.EnsureUmbracoContext().UmbracoContext;
 
                 var contentType = umbracoContext.Content.GetContentType(StagingSettingsAlias);
@@ -87,6 +95,8 @@ namespace N3O.Umbraco.Hosting {
 
             if (stagingSettings.IpWhitelist.OrEmpty().Contains(remoteIp, true)) {
                 isAuthorized = true;
+            } else if (IsSignedIntoBackOffice(context)) {
+                isAuthorized = true;
             } else {
                 string header = context.Request.Headers["Authorization"];
             
@@ -103,6 +113,24 @@ namespace N3O.Umbraco.Hosting {
             }
 
             return isAuthorized;
+        }
+
+        private bool IsSignedIntoBackOffice(HttpContext context) {
+            var authType = global::Umbraco.Cms.Core.Constants.Security.BackOfficeAuthenticationType;
+            var cookieOptions = _cookieAuthenticationOptions.Value.Get(authType);
+
+            var backOfficeCookie = context.Request.Cookies[cookieOptions.Cookie.Name];
+
+            if (backOfficeCookie != null) {
+                var unprotected = cookieOptions.TicketDataFormat.Unprotect(backOfficeCookie);
+                var backOfficeIdentity = unprotected?.Principal.GetUmbracoIdentity();
+
+                if (backOfficeIdentity != null) {
+                    return true;
+                }
+            }
+            
+            return false;
         }
     }
 }
