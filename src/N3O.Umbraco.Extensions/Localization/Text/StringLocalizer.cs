@@ -43,7 +43,7 @@ namespace N3O.Umbraco.Localization {
 
         public string Get(string folder, string name, string text) {
             // TODO Fix
-            if (folder == TextFolders.Code) {
+            if (folder == TextFolders.Validation) {
                 return text;
             }
 
