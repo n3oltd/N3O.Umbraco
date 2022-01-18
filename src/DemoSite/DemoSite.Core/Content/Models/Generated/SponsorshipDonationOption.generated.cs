@@ -18,14 +18,14 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Core.Content
 {
-	/// <summary>Fund Allocation</summary>
-	[PublishedModel("fundAllocation")]
-	public partial class FundAllocation : PublishedElementModel
+	/// <summary>Sponsorship</summary>
+	[PublishedModel("sponsorshipDonationOption")]
+	public partial class SponsorshipDonationOption : PublishedContentModel
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		public new const string ModelTypeAlias = "fundAllocation";
+		public new const string ModelTypeAlias = "sponsorshipDonationOption";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
@@ -34,14 +34,14 @@ namespace DemoSite.Core.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<FundAllocation, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<SponsorshipDonationOption, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public FundAllocation(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
+		public SponsorshipDonationOption(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
@@ -50,27 +50,11 @@ namespace DemoSite.Core.Content
 		// properties
 
 		///<summary>
-		/// Donation Item
+		/// Scheme
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("donationItem")]
-		public virtual global::DemoSite.Core.Content.DonationItem DonationItem => this.Value<global::DemoSite.Core.Content.DonationItem>(_publishedValueFallback, "donationItem");
-
-		///<summary>
-		/// Location
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("fundDimension1")]
-		public virtual global::DemoSite.Core.Content.FundDimension1Option FundDimension1 => this.Value<global::DemoSite.Core.Content.FundDimension1Option>(_publishedValueFallback, "fundDimension1");
-
-		///<summary>
-		/// Stipulation
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("fundDimension3")]
-		public virtual global::DemoSite.Core.Content.FundDimension3Option FundDimension3 => this.Value<global::DemoSite.Core.Content.FundDimension3Option>(_publishedValueFallback, "fundDimension3");
+		[ImplementPropertyType("scheme")]
+		public virtual global::DemoSite.Core.Content.SponsorshipScheme Scheme => this.Value<global::DemoSite.Core.Content.SponsorshipScheme>(_publishedValueFallback, "scheme");
 	}
 }

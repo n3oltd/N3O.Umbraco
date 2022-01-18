@@ -32,14 +32,14 @@
         <link rel="canonical" href="@content.AbsoluteUrl()">
         
         <environment include="Production">
-            <n3o-tag-manager model="Model" render="head" />    
+            <n3o-tag-manager model="@Model" render="head" />    
         </environment>
 
-        <n3o-structured-data model="Model" />
+        <n3o-structured-data model="@Model" />
     </head>
 
     <body>
-        <n3o-data-layer model="Model" />
+        <n3o-data-layer model="@Model" />
 
         <main>
             <h1>@TemplateText.Get("Hello World")</h1>
@@ -48,10 +48,10 @@
         </main>
 
         <environment include="Production">
-            <n3o-tag-manager model="Model" render="body" />
+            <n3o-tag-manager model="@Model" render="body" />
         </environment>
 
-        <n3o-page-info model="Model" />
+        <n3o-page-info model="@Model" />
     </body>
     </html>
 }

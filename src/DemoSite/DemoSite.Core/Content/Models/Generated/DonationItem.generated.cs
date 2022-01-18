@@ -72,6 +72,14 @@ namespace DemoSite.Core.Content
 		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension1Option> Dimension1Options => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension1Option>>(_publishedValueFallback, "dimension1Options");
 
 		///<summary>
+		/// Themes
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("dimension2Options")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension2Option> Dimension2Options => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension2Option>>(_publishedValueFallback, "dimension2Options");
+
+		///<summary>
 		/// Stipulations
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
