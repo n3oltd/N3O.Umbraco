@@ -11,13 +11,14 @@ namespace N3O.Umbraco.Search {
             builder.Services.AddTransient<ISitemap, Sitemap>();
             
             builder.Services.Configure<UmbracoPipelineOptions>(options => {
-                options.AddFilter(new UmbracoPipelineFilter(nameof(SitemapController)) {
-                    Endpoints = app => app.UseEndpoints(endpoints => {
-                        endpoints.MapControllerRoute("Sitemap Controller",
-                                                     $"/{SearchConstants.SitemapXml}",
-                                                     new { Controller = "Sitemap", Action = "Index" });
-                    })
+                var filter = new UmbracoPipelineFilter(nameof(SitemapController));
+                filter.Endpoints = app => app.UseEndpoints(endpoints => {
+                    endpoints.MapControllerRoute("Sitemap Controller",
+                                                 $"/{SearchConstants.SitemapXml}",
+                                                 new { Controller = "Sitemap", Action = "Index" });
                 });
+                
+                options.AddFilter(filter);
             });
         }
     }

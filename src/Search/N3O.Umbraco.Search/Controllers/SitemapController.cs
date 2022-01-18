@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Search.Content;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,10 +36,8 @@ namespace N3O.Umbraco.Search.Controllers {
         
         public IPublishedContent FindContent(ActionExecutingContext actionExecutingContext) {
             var umbracoContext = _umbracoContextFactory.EnsureUmbracoContext().UmbracoContext;
-            
-            var content = umbracoContext.Content
-                                        .GetByContentType(umbracoContext.Content.GetContentType(SitemapAlias))
-                                        .SingleOrDefault();
+            var contentType = umbracoContext.Content.GetContentType(SitemapAlias);
+            var content = contentType.IfNotNull(x => umbracoContext.Content.GetByContentType(x))?.SingleOrDefault();
 
             return content;
         }

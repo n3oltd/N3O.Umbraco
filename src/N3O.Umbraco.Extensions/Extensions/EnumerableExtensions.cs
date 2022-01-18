@@ -183,6 +183,10 @@ namespace N3O.Umbraco.Extensions {
         public static bool DoesNotContain<T>(this IEnumerable<T> source, T item) {
             return !source.Contains(item);
         }
+        
+        public static bool DoesNotContain(this IEnumerable<string> source, string item, bool caseAndCultureInsensitive) {
+            return !source.Contains(item, caseAndCultureInsensitive);
+        }
     
         public static IEnumerable<T> Except<T>(this IEnumerable<T> source, T element) {
             return source.Except(element.Yield());

@@ -10,7 +10,7 @@ namespace N3O.Umbraco.Giving.Cart {
     public class CartComposer : Composer {
         public override void Compose(IUmbracoBuilder builder) {
             builder.Services.AddTransient<ICartAccessor, CartAccessor>();
-            builder.Services.AddScoped<CartCookieMiddleware, CartCookieMiddleware>();
+            builder.Services.AddScoped<CartCookieMiddleware>();
             builder.Services.AddTransient<ICartIdAccessor, CartIdAccessor>();
             builder.Services.AddTransient<ICartValidator, CartValidator>();
 

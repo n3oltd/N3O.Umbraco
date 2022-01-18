@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Extensions;
 using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -34,10 +35,8 @@ namespace N3O.Umbraco.Robots {
         
         public IPublishedContent FindContent(ActionExecutingContext actionExecutingContext) {
             var umbracoContext = _umbracoContextFactory.EnsureUmbracoContext().UmbracoContext;
-            
-            var content = umbracoContext.Content
-                                        .GetByContentType(umbracoContext.Content.GetContentType(RobotsAlias))
-                                        .SingleOrDefault();
+            var contentType = umbracoContext.Content.GetContentType(RobotsAlias);
+            var content = contentType.IfNotNull(x => umbracoContext.Content.GetByContentType(x))?.SingleOrDefault();
 
             return content;
         }

@@ -10,13 +10,14 @@ namespace N3O.Umbraco.Robots {
             builder.Services.AddTransient<IRobotsTxt, RobotsTxt>();
             
             builder.Services.Configure<UmbracoPipelineOptions>(options => {
-                options.AddFilter(new UmbracoPipelineFilter(nameof(RobotsController)) {
-                    Endpoints = app => app.UseEndpoints(endpoints => {
-                        endpoints.MapControllerRoute("Robots Controller",
-                                                     $"/{RobotsTxt.File}",
-                                                     new { Controller = "Robots", Action = "Index" });
-                    })
+                var filter = new UmbracoPipelineFilter(nameof(RobotsController));
+                filter.Endpoints = app => app.UseEndpoints(endpoints => {
+                    endpoints.MapControllerRoute("Robots Controller",
+                                                 $"/{RobotsTxt.File}",
+                                                 new { Controller = "Robots", Action = "Index" });
                 });
+                
+                options.AddFilter(filter);
             });
         }
     }
