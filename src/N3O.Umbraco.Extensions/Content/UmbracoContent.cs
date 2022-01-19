@@ -34,7 +34,11 @@ namespace N3O.Umbraco.Content {
 
             return values.Cast<IPublishedContent>().Select(x => x.As<TProperty>());
         }
-    
+
+        protected LocalDate? GetLocalDate(Expression<Func<T, LocalDate?>> memberExpression) {
+            return GetConvertedValue<DateTime?, LocalDate?>(memberExpression, dt => dt?.ToLocalDate());
+        }
+        
         protected LocalDate GetLocalDate(Expression<Func<T, LocalDate>> memberExpression) {
             return GetConvertedValue<DateTime, LocalDate>(memberExpression, dt => dt.ToLocalDate());
         }

@@ -4,6 +4,6 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Blog {
     public interface IBlogPostsFinder {
-        IReadOnlyList<T> FindPosts<T>(BlogPostCriteria criteria) where T : IPublishedContent;
+        IReadOnlyList<T> FindPosts<T>(BlogPostCriteria criteria = null) where T : IPublishedContent;
     }
 }

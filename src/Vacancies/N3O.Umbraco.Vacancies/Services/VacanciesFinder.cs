@@ -21,9 +21,9 @@ namespace N3O.Umbraco.Vacancies {
             _queryFilter = queryFilter;
         }
 
-        public IReadOnlyList<T> FindVacancies<T>(VacancyCriteria criteria) where T : IPublishedContent {
+        public IReadOnlyList<T> FindVacancies<T>(VacancyCriteria criteria = null) where T : IPublishedContent {
             var all = _contentCache.All<T>();
-            var results = _queryFilter.Apply(all, criteria).ToList();
+            var results = criteria == null ? all : _queryFilter.Apply(all, criteria).ToList();
 
             return results;
         }
