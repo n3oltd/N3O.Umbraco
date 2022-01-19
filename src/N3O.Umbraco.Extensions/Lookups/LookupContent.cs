@@ -1,6 +1,7 @@
 using Humanizer;
 using N3O.Umbraco.Content;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace N3O.Umbraco.Lookups {
     public abstract class  LookupContent<T> : UmbracoContent<T>, INamedLookup {
@@ -18,6 +19,8 @@ namespace N3O.Umbraco.Lookups {
             if (name == name.ToUpperInvariant()) {
                 name = name.ToLowerInvariant();
             }
+
+            name = Regex.Replace(name, "[^0-9a-z-_]", "");
             
             return name.Camelize();
         }

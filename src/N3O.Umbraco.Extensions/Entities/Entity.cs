@@ -11,6 +11,7 @@ namespace N3O.Umbraco.Entities {
         public Guid Id { get; private set; }
         public Instant Timestamp { get; private set; }
         public int Revision { get; private set; }
+        public bool IsNew => Revision == 0;
         
         public void OnSaving(Instant timestamp) {
             Timestamp = timestamp;
