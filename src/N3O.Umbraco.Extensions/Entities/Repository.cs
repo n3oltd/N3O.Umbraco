@@ -59,7 +59,7 @@ namespace N3O.Umbraco.Entities {
                 row.Id = entity.Id;
                 row.Revision = entity.Revision;
                 row.Timestamp = entity.Timestamp.ToDateTimeUtc();
-                row.Type = entity.GetType().FullName;
+                row.Type = entity.GetType().AssemblyQualifiedName;
                 row.Json = _jsonProvider.SerializeObject(entity);
 
                 save(scope, row);
