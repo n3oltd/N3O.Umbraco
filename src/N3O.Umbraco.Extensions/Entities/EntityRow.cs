@@ -20,7 +20,7 @@ namespace N3O.Umbraco.Entities {
         
         [Column(nameof(Type))]
         [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Entities + "_" + nameof(Type), ForColumns = nameof(Type))]
-        [Length(200)]
+        [Length(400)]
         public string Type { get; set; }
 
         [Column(nameof(Json))]
