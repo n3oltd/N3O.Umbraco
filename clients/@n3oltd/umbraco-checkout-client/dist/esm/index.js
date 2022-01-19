@@ -25,6 +25,102 @@ var CheckoutClient = /** @class */ (function () {
         this.http = http ? http : window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
     }
+    CheckoutClient.prototype.getCurrentCheckout = function () {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Checkout/current";
+        url_ = url_.replace(/[?&]$/, "");
+        var options_ = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processGetCurrentCheckout(_response);
+        });
+    };
+    CheckoutClient.prototype.processGetCurrentCheckout = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
+    CheckoutClient.prototype.getLookupCheckoutStages = function () {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Checkout/lookups/checkoutStages";
+        url_ = url_.replace(/[?&]$/, "");
+        var options_ = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processGetLookupCheckoutStages(_response);
+        });
+    };
+    CheckoutClient.prototype.processGetLookupCheckoutStages = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
     CheckoutClient.prototype.getLookupCountries = function () {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Checkout/lookups/countries";
@@ -40,6 +136,54 @@ var CheckoutClient = /** @class */ (function () {
         });
     };
     CheckoutClient.prototype.processGetLookupCountries = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
+    CheckoutClient.prototype.getLookupTaxStatuses = function () {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Checkout/lookups/taxStatuses";
+        url_ = url_.replace(/[?&]$/, "");
+        var options_ = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processGetLookupTaxStatuses(_response);
+        });
+    };
+    CheckoutClient.prototype.processGetLookupTaxStatuses = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -127,6 +271,21 @@ var CheckoutClient = /** @class */ (function () {
     return CheckoutClient;
 }());
 export { CheckoutClient };
+export var PublishedItemType;
+(function (PublishedItemType) {
+    PublishedItemType[PublishedItemType["Unknown"] = 0] = "Unknown";
+    PublishedItemType[PublishedItemType["Element"] = 1] = "Element";
+    PublishedItemType[PublishedItemType["Content"] = 2] = "Content";
+    PublishedItemType[PublishedItemType["Media"] = 3] = "Media";
+    PublishedItemType[PublishedItemType["Member"] = 4] = "Member";
+})(PublishedItemType || (PublishedItemType = {}));
+/** One of 'payer', 'nonPayer', 'notSpecified' */
+export var TaxStatus;
+(function (TaxStatus) {
+    TaxStatus["Payer"] = "payer";
+    TaxStatus["NonPayer"] = "nonPayer";
+    TaxStatus["NotSpecified"] = "notSpecified";
+})(TaxStatus || (TaxStatus = {}));
 var ApiException = /** @class */ (function (_super) {
     __extends(ApiException, _super);
     function ApiException(message, status, response, headers, result) {

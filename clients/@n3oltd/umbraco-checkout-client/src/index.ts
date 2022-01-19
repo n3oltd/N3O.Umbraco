@@ -17,6 +17,92 @@ export class CheckoutClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
     }
 
+    getCurrentCheckout(): Promise<CheckoutRes> {
+        let url_ = this.baseUrl + "/umbraco/api/Checkout/current";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetCurrentCheckout(_response);
+        });
+    }
+
+    protected processGetCurrentCheckout(response: Response): Promise<CheckoutRes> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <CheckoutRes>JSON.parse(_responseText, this.jsonParseReviver);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CheckoutRes>(<any>null);
+    }
+
+    getLookupCheckoutStages(): Promise<NamedLookupRes[]> {
+        let url_ = this.baseUrl + "/umbraco/api/Checkout/lookups/checkoutStages";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetLookupCheckoutStages(_response);
+        });
+    }
+
+    protected processGetLookupCheckoutStages(response: Response): Promise<NamedLookupRes[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <NamedLookupRes[]>JSON.parse(_responseText, this.jsonParseReviver);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NamedLookupRes[]>(<any>null);
+    }
+
     getLookupCountries(): Promise<CountryRes[]> {
         let url_ = this.baseUrl + "/umbraco/api/Checkout/lookups/countries";
         url_ = url_.replace(/[?&]$/, "");
@@ -58,6 +144,49 @@ export class CheckoutClient {
             });
         }
         return Promise.resolve<CountryRes[]>(<any>null);
+    }
+
+    getLookupTaxStatuses(): Promise<NamedLookupRes[]> {
+        let url_ = this.baseUrl + "/umbraco/api/Checkout/lookups/taxStatuses";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetLookupTaxStatuses(_response);
+        });
+    }
+
+    protected processGetLookupTaxStatuses(response: Response): Promise<NamedLookupRes[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <NamedLookupRes[]>JSON.parse(_responseText, this.jsonParseReviver);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NamedLookupRes[]>(<any>null);
     }
 
     getAllLookups(criteria: LookupsCriteria): Promise<CheckoutLookupsRes> {
@@ -108,6 +237,103 @@ export class CheckoutClient {
     }
 }
 
+export interface CheckoutRes {
+    account?: AccountRes | undefined;
+}
+
+export interface AccountRes {
+    name?: NameRes | undefined;
+    address?: AddressRes | undefined;
+    email?: EmailRes | undefined;
+    telephone?: TelephoneRes | undefined;
+    taxStatus?: TaxStatus | undefined;
+}
+
+export interface NameRes {
+    title?: Title | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+}
+
+export interface Value {
+}
+
+export interface UmbracoContentOfTitle extends Value {
+    content?: IPublishedContent | undefined;
+}
+
+export interface IPublishedContent {
+    id?: number;
+    name?: string | undefined;
+    urlSegment?: string | undefined;
+    sortOrder?: number;
+    level?: number;
+    path?: string | undefined;
+    templateId?: number | undefined;
+    creatorId?: number;
+    createDate?: Date;
+    writerId?: number;
+    updateDate?: Date;
+    cultures?: { [key: string]: PublishedCultureInfo; } | undefined;
+    itemType?: PublishedItemType;
+    parent?: IPublishedContent | undefined;
+    children?: IPublishedContent[] | undefined;
+    childrenForAllCultures?: IPublishedContent[] | undefined;
+}
+
+export interface PublishedCultureInfo {
+    culture?: string | undefined;
+    name?: string | undefined;
+    urlSegment?: string | undefined;
+    date?: Date;
+}
+
+export enum PublishedItemType {
+    Unknown = 0,
+    Element = 1,
+    Content = 2,
+    Media = 3,
+    Member = 4,
+}
+
+export interface AddressRes {
+    line1?: string | undefined;
+    line2?: string | undefined;
+    line3?: string | undefined;
+    locality?: string | undefined;
+    administrativeArea?: string | undefined;
+    postalCode?: string | undefined;
+    country?: Country | undefined;
+}
+
+export interface UmbracoContentOfCountry extends Value {
+    content?: IPublishedContent | undefined;
+}
+
+export interface EmailRes {
+    address?: string | undefined;
+}
+
+export interface TelephoneRes {
+    country?: Country | undefined;
+    number?: string | undefined;
+}
+
+/** One of 'payer', 'nonPayer', 'notSpecified' */
+export enum TaxStatus {
+    Payer = "payer",
+    NonPayer = "nonPayer",
+    NotSpecified = "notSpecified",
+}
+
+export interface ProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
+}
+
 export interface LookupRes {
     id?: string | undefined;
 }
@@ -123,33 +349,44 @@ export interface CountryRes extends NamedLookupRes {
     postalCodeOptional?: boolean;
 }
 
-export interface ProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
-}
-
 export interface LookupsRes {
 }
 
 export interface CheckoutLookupsRes extends LookupsRes {
+    checkoutStages?: NamedLookupRes[] | undefined;
     countries?: CountryRes[] | undefined;
+    taxStatuses?: NamedLookupRes[] | undefined;
 }
 
 export interface LookupsCriteria {
     types?: Types[] | undefined;
 }
 
-export interface Value {
+export interface Anonymous extends UmbracoContentOfTitle {
+    id?: string | undefined;
+    name?: string | undefined;
 }
 
-export interface Anonymous extends Value {
+export interface Title extends Anonymous {
+}
+
+export interface Anonymous2 extends UmbracoContentOfCountry {
+    id?: string | undefined;
+    name?: string | undefined;
+}
+
+export interface Country extends Anonymous2 {
+    iso2Code?: string | undefined;
+    iso3Code?: string | undefined;
+    localityOptional?: boolean;
+    postalCodeOptional?: boolean;
+}
+
+export interface Anonymous3 extends Value {
     id?: string | undefined;
 }
 
-export interface Types extends Anonymous {
+export interface Types extends Anonymous3 {
     lookupType?: string | undefined;
 }
 
