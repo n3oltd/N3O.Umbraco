@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Blog.QueryFilters {
-    public class BlogPostQueryFilter : QueryFilter<BlogPostCriteria> {
+    public class BlogPostQueryFilter : ContentQueryFilter<BlogPostCriteria> {
         public override IEnumerable<T> Apply<T>(IEnumerable<T> q, BlogPostCriteria criteria) {
             q = FilterCategory(q, criteria);
             q = FilterDate(q, criteria);

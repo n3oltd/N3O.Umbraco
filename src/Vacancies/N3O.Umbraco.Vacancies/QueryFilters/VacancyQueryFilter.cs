@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Vacancies.QueryFilters {
-    public class VacancyQueryFilter : QueryFilter<VacancyCriteria> {
+    public class VacancyQueryFilter : ContentQueryFilter<VacancyCriteria> {
         public override IEnumerable<T> Apply<T>(IEnumerable<T> q, VacancyCriteria criteria) {
             q = FilterClosingDate(q, criteria);
 

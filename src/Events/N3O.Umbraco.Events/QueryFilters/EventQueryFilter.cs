@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Events.QueryFilters {
-    public class EventQueryFilter : QueryFilter<EventCriteria> {
+    public class EventQueryFilter : ContentQueryFilter<EventCriteria> {
         public override IEnumerable<T> Apply<T>(IEnumerable<T> q, EventCriteria criteria) {
             q = FilterCategory(q, criteria);
             q = FilterDate(q, criteria);
