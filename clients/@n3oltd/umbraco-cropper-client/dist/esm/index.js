@@ -19,18 +19,18 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var DonationsClient = /** @class */ (function () {
-    function DonationsClient(baseUrl, http) {
+var CropperClient = /** @class */ (function () {
+    function CropperClient(baseUrl, http) {
         this.jsonParseReviver = undefined;
         this.http = http ? http : window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
     }
-    DonationsClient.prototype.getForm = function (id) {
+    CropperClient.prototype.getMediaById = function (mediaId) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Donations/forms/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        var url_ = this.baseUrl + "/umbraco/backoffice/Cropper/media/{mediaId}";
+        if (mediaId === undefined || mediaId === null)
+            throw new Error("The parameter 'mediaId' must be defined.");
+        url_ = url_.replace("{mediaId}", encodeURIComponent("" + mediaId));
         url_ = url_.replace(/[?&]$/, "");
         var options_ = {
             method: "GET",
@@ -39,10 +39,10 @@ var DonationsClient = /** @class */ (function () {
             }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processGetForm(_response);
+            return _this.processGetMediaById(_response);
         });
     };
-    DonationsClient.prototype.processGetForm = function (response) {
+    CropperClient.prototype.processGetMediaById = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -83,23 +83,65 @@ var DonationsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    return DonationsClient;
+    CropperClient.prototype.upload = function (minHeight, minWidth, file) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/backoffice/Cropper/upload";
+        url_ = url_.replace(/[?&]$/, "");
+        var content_ = new FormData();
+        if (minHeight !== null && minHeight !== undefined)
+            content_.append("MinHeight", minHeight.toString());
+        if (minWidth !== null && minWidth !== undefined)
+            content_.append("MinWidth", minWidth.toString());
+        if (file !== null && file !== undefined)
+            content_.append("File", file.data, file.fileName ? file.fileName : "File");
+        var options_ = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processUpload(_response);
+        });
+    };
+    CropperClient.prototype.processUpload = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
+    return CropperClient;
 }());
-export { DonationsClient };
-/** One of 'fund', 'sponsorship' */
-export var AllocationType;
-(function (AllocationType) {
-    AllocationType["Fund"] = "fund";
-    AllocationType["Sponsorship"] = "sponsorship";
-})(AllocationType || (AllocationType = {}));
-export var PublishedItemType;
-(function (PublishedItemType) {
-    PublishedItemType[PublishedItemType["Unknown"] = 0] = "Unknown";
-    PublishedItemType[PublishedItemType["Element"] = 1] = "Element";
-    PublishedItemType[PublishedItemType["Content"] = 2] = "Content";
-    PublishedItemType[PublishedItemType["Media"] = 3] = "Media";
-    PublishedItemType[PublishedItemType["Member"] = 4] = "Member";
-})(PublishedItemType || (PublishedItemType = {}));
+export { CropperClient };
 var ApiException = /** @class */ (function (_super) {
     __extends(ApiException, _super);
     function ApiException(message, status, response, headers, result) {

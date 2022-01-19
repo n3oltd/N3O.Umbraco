@@ -19,18 +19,15 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var DonationsClient = /** @class */ (function () {
-    function DonationsClient(baseUrl, http) {
+var CheckoutClient = /** @class */ (function () {
+    function CheckoutClient(baseUrl, http) {
         this.jsonParseReviver = undefined;
         this.http = http ? http : window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
     }
-    DonationsClient.prototype.getForm = function (id) {
+    CheckoutClient.prototype.getLookupCountries = function () {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Donations/forms/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        var url_ = this.baseUrl + "/umbraco/api/Checkout/lookups/countries";
         url_ = url_.replace(/[?&]$/, "");
         var options_ = {
             method: "GET",
@@ -39,10 +36,10 @@ var DonationsClient = /** @class */ (function () {
             }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processGetForm(_response);
+            return _this.processGetLookupCountries(_response);
         });
     };
-    DonationsClient.prototype.processGetForm = function (response) {
+    CheckoutClient.prototype.processGetLookupCountries = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -69,11 +66,55 @@ var DonationsClient = /** @class */ (function () {
                 return throwException("A server side error occurred.", status, _responseText, _headers);
             });
         }
-        else if (status === 404) {
+        else if (status !== 200 && status !== 204) {
             return response.text().then(function (_responseText) {
-                var result404 = null;
-                result404 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
+    CheckoutClient.prototype.getAllLookups = function (criteria) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Checkout/lookups/all";
+        url_ = url_.replace(/[?&]$/, "");
+        var content_ = JSON.stringify(criteria);
+        var options_ = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processGetAllLookups(_response);
+        });
+    };
+    CheckoutClient.prototype.processGetAllLookups = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
             });
         }
         else if (status !== 200 && status !== 204) {
@@ -83,23 +124,9 @@ var DonationsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    return DonationsClient;
+    return CheckoutClient;
 }());
-export { DonationsClient };
-/** One of 'fund', 'sponsorship' */
-export var AllocationType;
-(function (AllocationType) {
-    AllocationType["Fund"] = "fund";
-    AllocationType["Sponsorship"] = "sponsorship";
-})(AllocationType || (AllocationType = {}));
-export var PublishedItemType;
-(function (PublishedItemType) {
-    PublishedItemType[PublishedItemType["Unknown"] = 0] = "Unknown";
-    PublishedItemType[PublishedItemType["Element"] = 1] = "Element";
-    PublishedItemType[PublishedItemType["Content"] = 2] = "Content";
-    PublishedItemType[PublishedItemType["Media"] = 3] = "Media";
-    PublishedItemType[PublishedItemType["Member"] = 4] = "Member";
-})(PublishedItemType || (PublishedItemType = {}));
+export { CheckoutClient };
 var ApiException = /** @class */ (function (_super) {
     __extends(ApiException, _super);
     function ApiException(message, status, response, headers, result) {

@@ -55,6 +55,12 @@ export class DonationsClient {
             return response.text().then((_responseText) => {
             return throwException("A server side error occurred.", status, _responseText, _headers);
             });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            let result404: any = null;
+            result404 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -65,12 +71,36 @@ export class DonationsClient {
 }
 
 export interface DonationFormRes {
-    item?: Item | undefined;
-    regular?: DonationOptionsRes | undefined;
-    single?: DonationOptionsRes | undefined;
+    title?: string | undefined;
+    options?: DonationOptionRes[] | undefined;
+}
+
+export interface DonationOptionRes {
+    type?: AllocationType | undefined;
+    fund?: FundDonationOptionRes | undefined;
+    sponsorship?: SponsorshipDonationOptionRes | undefined;
+}
+
+/** One of 'fund', 'sponsorship' */
+export enum AllocationType {
+    Fund = "fund",
+    Sponsorship = "sponsorship",
 }
 
 export interface Value {
+}
+
+export interface FundDonationOptionRes {
+    donationItem?: DonationItem | undefined;
+    dimension1?: FixedOrDefaultFundDimensionOptionRes | undefined;
+    dimension2?: FixedOrDefaultFundDimensionOptionRes | undefined;
+    dimension3?: FixedOrDefaultFundDimensionOptionRes | undefined;
+    dimension4?: FixedOrDefaultFundDimensionOptionRes | undefined;
+    showQuantity?: boolean;
+    hideSingle?: boolean;
+    singlePriceHandles?: PriceHandleRes[] | undefined;
+    hideRegular?: boolean;
+    regularPriceHandles?: PriceHandleRes[] | undefined;
 }
 
 export interface UmbracoContentOfFundDimension1Option extends Value {
@@ -127,8 +157,44 @@ export interface UmbracoContentOfDonationItem extends Value {
     content?: IPublishedContent | undefined;
 }
 
-export interface DonationOptionsRes {
-    showQuantity?: boolean;
+export interface FixedOrDefaultFundDimensionOptionRes {
+    fixed?: FundDimensionOptionRes | undefined;
+    default?: FundDimensionOptionRes | undefined;
+}
+
+export interface LookupRes {
+    id?: string | undefined;
+}
+
+export interface NamedLookupRes extends LookupRes {
+    name?: string | undefined;
+}
+
+export interface FundDimensionOptionRes extends NamedLookupRes {
+    isUnrestricted?: boolean;
+}
+
+export interface PriceHandleRes {
+    amount?: MoneyRes | undefined;
+    description?: string | undefined;
+}
+
+export interface MoneyRes {
+    amount?: number;
+    currency?: Currency | undefined;
+    text?: string | undefined;
+}
+
+export interface UmbracoContentOfCurrency extends Value {
+    content?: IPublishedContent | undefined;
+}
+
+export interface SponsorshipDonationOptionRes {
+    scheme?: Scheme | undefined;
+}
+
+export interface UmbracoContentOfSponsorshipScheme extends Value {
+    content?: IPublishedContent | undefined;
 }
 
 export interface ProblemDetails {
@@ -144,7 +210,7 @@ export interface Anonymous extends UmbracoContentOfDonationItem {
     name?: string | undefined;
 }
 
-export interface Item extends Anonymous {
+export interface DonationItem extends Anonymous {
     allowSingleDonations?: boolean;
     allowRegularDonations?: boolean;
     free?: boolean;
@@ -155,31 +221,33 @@ export interface Item extends Anonymous {
     dimension4Options?: Dimension4Options[] | undefined;
 }
 
-export interface Anonymous6 extends UmbracoContentOfFundDimension1Option {
+export interface Anonymous2 extends UmbracoContentOfCurrency {
     id?: string | undefined;
     name?: string | undefined;
 }
 
-export interface Anonymous2 extends Anonymous6 {
-    isUnrestricted?: boolean;
+export interface Currency extends Anonymous2 {
+    symbol?: string | undefined;
+    isBaseCurrency?: boolean;
+    decimalDigits?: number;
 }
 
-export interface Dimension1Options extends Anonymous2 {
-}
-
-export interface Anonymous7 extends UmbracoContentOfFundDimension2Option {
+export interface Anonymous3 extends UmbracoContentOfSponsorshipScheme {
     id?: string | undefined;
     name?: string | undefined;
 }
 
-export interface Anonymous3 extends Anonymous7 {
-    isUnrestricted?: boolean;
+export interface Scheme extends Anonymous3 {
+    allowSingleDonations?: boolean;
+    allowRegularDonations?: boolean;
+    price?: number;
+    dimension1Options?: Dimension1Options[] | undefined;
+    dimension2Options?: Dimension2Options[] | undefined;
+    dimension3Options?: Dimension3Options[] | undefined;
+    dimension4Options?: Dimension4Options[] | undefined;
 }
 
-export interface Dimension2Options extends Anonymous3 {
-}
-
-export interface Anonymous8 extends UmbracoContentOfFundDimension3Option {
+export interface Anonymous8 extends UmbracoContentOfFundDimension1Option {
     id?: string | undefined;
     name?: string | undefined;
 }
@@ -188,10 +256,10 @@ export interface Anonymous4 extends Anonymous8 {
     isUnrestricted?: boolean;
 }
 
-export interface Dimension3Options extends Anonymous4 {
+export interface Dimension1Options extends Anonymous4 {
 }
 
-export interface Anonymous9 extends UmbracoContentOfFundDimension4Option {
+export interface Anonymous9 extends UmbracoContentOfFundDimension2Option {
     id?: string | undefined;
     name?: string | undefined;
 }
@@ -200,7 +268,31 @@ export interface Anonymous5 extends Anonymous9 {
     isUnrestricted?: boolean;
 }
 
-export interface Dimension4Options extends Anonymous5 {
+export interface Dimension2Options extends Anonymous5 {
+}
+
+export interface Anonymous10 extends UmbracoContentOfFundDimension3Option {
+    id?: string | undefined;
+    name?: string | undefined;
+}
+
+export interface Anonymous6 extends Anonymous10 {
+    isUnrestricted?: boolean;
+}
+
+export interface Dimension3Options extends Anonymous6 {
+}
+
+export interface Anonymous11 extends UmbracoContentOfFundDimension4Option {
+    id?: string | undefined;
+    name?: string | undefined;
+}
+
+export interface Anonymous7 extends Anonymous11 {
+    isUnrestricted?: boolean;
+}
+
+export interface Dimension4Options extends Anonymous7 {
 }
 
 export class ApiException extends Error {

@@ -10,4 +10,6 @@ n3o-tool clients --url "https://localhost:5001/swagger/Donations/swagger.json" -
 
 n3o-tool clients --url "https://localhost:5001/swagger/Newsletters/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-newsletters-client" --name "NewslettersClient" --package-name "@n3oltd/umbraco-newsletters-client" --package-description "TypeScript client for the N3O Umbraco Newsletters"
 
+n3o-tool clients --url "https://localhost:5001/swagger/Payments/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-payments-client" --name "PaymentsClient" --package-name "@n3oltd/umbraco-payments-client" --package-description "TypeScript client for the N3O Umbraco Payments"
+
 n3o-tool clients --url "https://localhost:5001/swagger/Uploader/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-uploader-client" --name "UploaderClient" --package-name "@n3oltd/umbraco-uploader-client" --package-description "TypeScript client for the N3O Umbraco Uploader"

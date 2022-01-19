@@ -7,7 +7,7 @@
 //----------------------
 // ReSharper disable InconsistentNaming
 
-export class CartClient {
+export class PaymentsClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -17,8 +17,8 @@ export class CartClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
     }
 
-    add(req: AddToCartReq): Promise<void> {
-        let url_ = this.baseUrl + "/umbraco/api/Cart/add";
+    findPaymentMethods(req: PaymentMethodCriteria): Promise<PaymentMethodRes[]> {
+        let url_ = this.baseUrl + "/umbraco/api/Payments/paymentMethods/find";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(req);
@@ -28,68 +28,22 @@ export class CartClient {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processAdd(_response);
-        });
-    }
-
-    protected processAdd(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            let result400: any = null;
-            result400 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        } else if (status === 500) {
-            return response.text().then((_responseText) => {
-            return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        } else if (status === 422) {
-            return response.text().then((_responseText) => {
-            let result422: any = null;
-            result422 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result422);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(<any>null);
-    }
-
-    getSummary(): Promise<CartSummaryRes> {
-        let url_ = this.baseUrl + "/umbraco/api/Cart/summary";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ = <RequestInit>{
-            method: "GET",
-            headers: {
                 "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetSummary(_response);
+            return this.processFindPaymentMethods(_response);
         });
     }
 
-    protected processGetSummary(response: Response): Promise<CartSummaryRes> {
+    protected processFindPaymentMethods(response: Response): Promise<PaymentMethodRes[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : <CartSummaryRes>JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = _responseText === "" ? null : <PaymentMethodRes[]>JSON.parse(_responseText, this.jsonParseReviver);
             return result200;
             });
         } else if (status === 400) {
@@ -107,34 +61,33 @@ export class CartClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CartSummaryRes>(<any>null);
+        return Promise.resolve<PaymentMethodRes[]>(<any>null);
     }
 
-    remove(req: RemoveFromCartReq): Promise<void> {
-        let url_ = this.baseUrl + "/umbraco/api/Cart/remove";
+    getLookupPaymentMethods(): Promise<PaymentMethodRes[]> {
+        let url_ = this.baseUrl + "/umbraco/api/Payments/lookups/paymentMethods";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(req);
-
         let options_ = <RequestInit>{
-            body: content_,
-            method: "DELETE",
+            method: "GET",
             headers: {
-                "Content-Type": "application/json",
+                "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processRemove(_response);
+            return this.processGetLookupPaymentMethods(_response);
         });
     }
 
-    protected processRemove(response: Response): Promise<void> {
+    protected processGetLookupPaymentMethods(response: Response): Promise<PaymentMethodRes[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <PaymentMethodRes[]>JSON.parse(_responseText, this.jsonParseReviver);
+            return result200;
             });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
@@ -146,19 +99,71 @@ export class CartClient {
             return response.text().then((_responseText) => {
             return throwException("A server side error occurred.", status, _responseText, _headers);
             });
-        } else if (status === 422) {
+        } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            let result422: any = null;
-            result422 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result422);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PaymentMethodRes[]>(<any>null);
+    }
+
+    getAllLookups(criteria: LookupsCriteria): Promise<PaymentsLookupsRes> {
+        let url_ = this.baseUrl + "/umbraco/api/Payments/lookups/all";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(criteria);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetAllLookups(_response);
+        });
+    }
+
+    protected processGetAllLookups(response: Response): Promise<PaymentsLookupsRes> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <PaymentsLookupsRes>JSON.parse(_responseText, this.jsonParseReviver);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(<any>null);
+        return Promise.resolve<PaymentsLookupsRes>(<any>null);
     }
+}
+
+export interface LookupRes {
+    id?: string | undefined;
+}
+
+export interface NamedLookupRes extends LookupRes {
+    name?: string | undefined;
+}
+
+export interface PaymentMethodRes extends NamedLookupRes {
 }
 
 export interface ProblemDetails {
@@ -169,44 +174,15 @@ export interface ProblemDetails {
     instance?: string | undefined;
 }
 
-export interface AddToCartReq {
-    donationType?: DonationType | undefined;
-    allocation?: AllocationReq | undefined;
-    quantity?: number | undefined;
-}
-
-/** One of 'regular', 'single' */
-export enum DonationType {
-    Regular = "regular",
-    Single = "single",
+export interface PaymentMethodCriteria {
+    country?: Country | undefined;
+    currency?: Currency | undefined;
 }
 
 export interface Value {
 }
 
-export interface AllocationReq {
-    type?: AllocationType | undefined;
-    value?: MoneyReq | undefined;
-    dimension1?: Dimension1 | undefined;
-    dimension2?: Dimension2 | undefined;
-    dimension3?: Dimension3 | undefined;
-    dimension4?: Dimension4 | undefined;
-    fund?: FundAllocationReq | undefined;
-    sponsorship?: SponsorshipAllocationReq | undefined;
-}
-
-/** One of 'fund', 'sponsorship' */
-export enum AllocationType {
-    Fund = "fund",
-    Sponsorship = "sponsorship",
-}
-
-export interface MoneyReq {
-    amount?: number | undefined;
-    currency?: Currency | undefined;
-}
-
-export interface UmbracoContentOfCurrency extends Value {
+export interface UmbracoContentOfCountry extends Value {
     content?: IPublishedContent | undefined;
 }
 
@@ -244,135 +220,50 @@ export enum PublishedItemType {
     Member = 4,
 }
 
-export interface UmbracoContentOfFundDimension1Option extends Value {
+export interface UmbracoContentOfCurrency extends Value {
     content?: IPublishedContent | undefined;
 }
 
-export interface UmbracoContentOfFundDimension2Option extends Value {
-    content?: IPublishedContent | undefined;
+export interface LookupsRes {
 }
 
-export interface UmbracoContentOfFundDimension3Option extends Value {
-    content?: IPublishedContent | undefined;
+export interface PaymentsLookupsRes extends LookupsRes {
+    paymentMethods?: PaymentMethodRes[] | undefined;
 }
 
-export interface UmbracoContentOfFundDimension4Option extends Value {
-    content?: IPublishedContent | undefined;
+export interface LookupsCriteria {
+    types?: Types[] | undefined;
 }
 
-export interface FundAllocationReq {
-    donationItem?: DonationItem | undefined;
-}
-
-export interface UmbracoContentOfDonationItem extends Value {
-    content?: IPublishedContent | undefined;
-}
-
-export interface SponsorshipAllocationReq {
-    scheme?: Scheme | undefined;
-}
-
-export interface UmbracoContentOfSponsorshipScheme extends Value {
-    content?: IPublishedContent | undefined;
-}
-
-export interface CartSummaryRes {
-    itemCount?: number;
-}
-
-export interface RemoveFromCartReq {
-    donationType?: DonationType | undefined;
-    index?: number | undefined;
-}
-
-export interface Anonymous8 extends UmbracoContentOfFundDimension1Option {
+export interface Anonymous extends UmbracoContentOfCountry {
     id?: string | undefined;
     name?: string | undefined;
 }
 
-export interface Anonymous extends Anonymous8 {
-    isUnrestricted?: boolean;
+export interface Country extends Anonymous {
+    iso2Code?: string | undefined;
+    iso3Code?: string | undefined;
+    localityOptional?: boolean;
+    postalCodeOptional?: boolean;
 }
 
-export interface Dimension1 extends Anonymous {
-}
-
-export interface Anonymous9 extends UmbracoContentOfFundDimension2Option {
+export interface Anonymous2 extends UmbracoContentOfCurrency {
     id?: string | undefined;
     name?: string | undefined;
 }
 
-export interface Anonymous2 extends Anonymous9 {
-    isUnrestricted?: boolean;
-}
-
-export interface Dimension2 extends Anonymous2 {
-}
-
-export interface Anonymous10 extends UmbracoContentOfFundDimension3Option {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Anonymous3 extends Anonymous10 {
-    isUnrestricted?: boolean;
-}
-
-export interface Dimension3 extends Anonymous3 {
-}
-
-export interface Anonymous11 extends UmbracoContentOfFundDimension4Option {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Anonymous4 extends Anonymous11 {
-    isUnrestricted?: boolean;
-}
-
-export interface Dimension4 extends Anonymous4 {
-}
-
-export interface Anonymous5 extends UmbracoContentOfCurrency {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Currency extends Anonymous5 {
+export interface Currency extends Anonymous2 {
     symbol?: string | undefined;
     isBaseCurrency?: boolean;
     decimalDigits?: number;
 }
 
-export interface Anonymous6 extends UmbracoContentOfDonationItem {
+export interface Anonymous3 extends Value {
     id?: string | undefined;
-    name?: string | undefined;
 }
 
-export interface DonationItem extends Anonymous6 {
-    allowSingleDonations?: boolean;
-    allowRegularDonations?: boolean;
-    free?: boolean;
-    price?: number;
-    dimension1Options?: Dimension1[] | undefined;
-    dimension2Options?: Dimension2[] | undefined;
-    dimension3Options?: Dimension3[] | undefined;
-    dimension4Options?: Dimension4[] | undefined;
-}
-
-export interface Anonymous7 extends UmbracoContentOfSponsorshipScheme {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Scheme extends Anonymous7 {
-    allowSingleDonations?: boolean;
-    allowRegularDonations?: boolean;
-    price?: number;
-    dimension1Options?: Dimension1[] | undefined;
-    dimension2Options?: Dimension2[] | undefined;
-    dimension3Options?: Dimension3[] | undefined;
-    dimension4Options?: Dimension4[] | undefined;
+export interface Types extends Anonymous3 {
+    lookupType?: string | undefined;
 }
 
 export class ApiException extends Error {

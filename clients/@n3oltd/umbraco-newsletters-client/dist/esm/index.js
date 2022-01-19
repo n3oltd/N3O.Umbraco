@@ -19,30 +19,30 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var DonationsClient = /** @class */ (function () {
-    function DonationsClient(baseUrl, http) {
+var NewslettersClient = /** @class */ (function () {
+    function NewslettersClient(baseUrl, http) {
         this.jsonParseReviver = undefined;
         this.http = http ? http : window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
     }
-    DonationsClient.prototype.getForm = function (id) {
+    NewslettersClient.prototype.subscribe = function (req) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Donations/forms/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        var url_ = this.baseUrl + "/umbraco/api/Newsletters/subscribe";
         url_ = url_.replace(/[?&]$/, "");
+        var content_ = JSON.stringify(req);
         var options_ = {
-            method: "GET",
+            body: content_,
+            method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processGetForm(_response);
+            return _this.processSubscribe(_response);
         });
     };
-    DonationsClient.prototype.processGetForm = function (response) {
+    NewslettersClient.prototype.processSubscribe = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -69,11 +69,11 @@ var DonationsClient = /** @class */ (function () {
                 return throwException("A server side error occurred.", status, _responseText, _headers);
             });
         }
-        else if (status === 404) {
+        else if (status === 422) {
             return response.text().then(function (_responseText) {
-                var result404 = null;
-                result404 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+                var result422 = null;
+                result422 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result422);
             });
         }
         else if (status !== 200 && status !== 204) {
@@ -83,23 +83,9 @@ var DonationsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    return DonationsClient;
+    return NewslettersClient;
 }());
-export { DonationsClient };
-/** One of 'fund', 'sponsorship' */
-export var AllocationType;
-(function (AllocationType) {
-    AllocationType["Fund"] = "fund";
-    AllocationType["Sponsorship"] = "sponsorship";
-})(AllocationType || (AllocationType = {}));
-export var PublishedItemType;
-(function (PublishedItemType) {
-    PublishedItemType[PublishedItemType["Unknown"] = 0] = "Unknown";
-    PublishedItemType[PublishedItemType["Element"] = 1] = "Element";
-    PublishedItemType[PublishedItemType["Content"] = 2] = "Content";
-    PublishedItemType[PublishedItemType["Media"] = 3] = "Media";
-    PublishedItemType[PublishedItemType["Member"] = 4] = "Member";
-})(PublishedItemType || (PublishedItemType = {}));
+export { NewslettersClient };
 var ApiException = /** @class */ (function (_super) {
     __extends(ApiException, _super);
     function ApiException(message, status, response, headers, result) {
