@@ -18,7 +18,7 @@ namespace N3O.Umbraco.Entities {
             Revision++;
         }
 
-        public static TEntity Create<TEntity>(Guid? id = null) where TEntity : Entity, new() {
+        protected static TEntity Create<TEntity>(Guid? id = null) where TEntity : Entity, new() {
             var entity = new TEntity();
 
             if (id.HasValue) {

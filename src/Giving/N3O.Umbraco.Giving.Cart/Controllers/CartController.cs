@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Attributes;
-using N3O.Umbraco.Constants;
 using N3O.Umbraco.Giving.Cart.Commands;
 using N3O.Umbraco.Giving.Cart.Models;
 using N3O.Umbraco.Giving.Cart.Queries;
@@ -12,7 +11,6 @@ using System;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Giving.Cart.Controllers {
-    [ResponseCache(CacheProfileName = CacheProfiles.NoCache)]
     [ApiDocument(CartConstants.ApiName)]
     public class CartController : ApiController {
         private readonly ILogger<CartController> _logger;

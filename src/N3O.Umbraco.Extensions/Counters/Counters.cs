@@ -1,6 +1,7 @@
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Locks;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Extensions;
 
@@ -14,19 +15,22 @@ namespace N3O.Umbraco.Counters {
             _repository = repository;
         }
         
-        public async Task<long> NextAsync(string key, long startFrom = 1) {
+        public async Task<long> NextAsync(string key,
+                                          long startFrom = 1,
+                                          CancellationToken cancellationToken = default) {
             var lockKey = $"{nameof(Counters)}_{key}";
 
             var result = await _lock.LockAsync(lockKey, async () => {
                 var id = key.ToGuid();
                 
-                var counter = await _repository.GetAsync(id) ?? await InitializeCounterAsync(id, startFrom);
+                var counter = await _repository.GetAsync(id, cancellationToken) ??
+                              await CreateCounterAsync(id, startFrom, cancellationToken);
 
                 var next = counter.Next;
                 
                 counter.Increment();
 
-                await _repository.UpdateAsync(counter);
+                await _repository.UpdateAsync(counter, cancellationToken);
 
                 return next;
             });
@@ -34,11 +38,25 @@ namespace N3O.Umbraco.Counters {
             return result;
         }
 
-        private async Task<Counter> InitializeCounterAsync(Guid id, long startFrom) {
-            var counter = Entity.Create<Counter>(id);
-            counter.Initialize(startFrom);
+        public async Task<Reference> NextAsync(ReferenceType referenceType,
+                                               CancellationToken cancellationToken = default) {
+            var number = await NextAsync(referenceType.Id, referenceType.StartFrom, cancellationToken);
 
-            await _repository.InsertAsync(counter);
+            return new Reference(referenceType, number);
+        }
+
+        public async Task<Reference> NextAsync<TReferenceType>(CancellationToken cancellationToken = default)
+            where TReferenceType : ReferenceType, new() {
+            var referenceType = new TReferenceType();
+            var reference = await NextAsync(referenceType, cancellationToken);
+
+            return reference;
+        }
+
+        private async Task<Counter> CreateCounterAsync(Guid id, long startFrom, CancellationToken cancellationToken) {
+            var counter = Counter.Create(id, startFrom);
+
+            await _repository.InsertAsync(counter, cancellationToken);
 
             return counter;
         }

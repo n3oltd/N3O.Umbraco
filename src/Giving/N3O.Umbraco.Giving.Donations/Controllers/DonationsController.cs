@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
-using N3O.Umbraco.Constants;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Giving.Donations.Content;
 using N3O.Umbraco.Giving.Donations.Models;
@@ -10,7 +9,6 @@ using System;
 using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Giving.Donations.Controllers {
-    [ResponseCache(CacheProfileName = CacheProfiles.NoCache)]
     [ApiDocument(DonationConstants.ApiName)]
     public class DonationsController : ApiController {
         private readonly IContentLocator _contentLocator;

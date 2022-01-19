@@ -1,4 +1,5 @@
 using N3O.Umbraco.Entities;
+using System;
 
 namespace N3O.Umbraco.Counters {
     public class Counter : Entity {
@@ -8,8 +9,12 @@ namespace N3O.Umbraco.Counters {
             Next++;
         }
 
-        public void Initialize(long startFrom) {
-            Next = startFrom;
+        public static Counter Create(Guid id, long startFrom) {
+            var counter = Entity.Create<Counter>(id);
+            
+            counter.Next = startFrom;
+
+            return counter;
         }
     }
 }

@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Mediator.Extensions;
-using N3O.Umbraco.Payments.Controller;
 using N3O.Umbraco.Payments.GoCardless.Commands;
 using System;
 using System.Threading.Tasks;

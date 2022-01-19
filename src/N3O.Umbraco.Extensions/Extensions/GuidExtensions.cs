@@ -17,13 +17,5 @@ namespace N3O.Umbraco.Extensions {
 
             return new Guid(bytes);
         }
-
-        public static string ToMultipickerData(Guid? guid) {
-            return (guid == null ? null : ToMultipickerData(guid.Value));
-        }
-
-        public static string ToMultipickerData(Guid guid) {
-            return $"umb://document/{guid:N}";
-        }
     }
 }
