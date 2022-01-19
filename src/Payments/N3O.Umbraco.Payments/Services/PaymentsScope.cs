@@ -1,8 +1,8 @@
 using N3O.Umbraco.Entities;
+using N3O.Umbraco.Payments.Entities;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.NamedParameters;
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,30 +16,20 @@ namespace N3O.Umbraco.Payments {
             _flowId = flowId;
         }
 
-        public async Task DoAsync<TPaymentObject>(Func<IPaymentsFlow, TPaymentObject, Task> actionAsync,
-                                                  CancellationToken cancellationToken = default)
-            where TPaymentObject : PaymentObject, new() {
+        public async Task DoAsync<T>(Func<IPaymentsFlow, T, Task> actionAsync,
+                                     CancellationToken cancellationToken = default)
+            where T : PaymentObject, new() {
             var flow = await _repository.GetAsync(_flowId.Value, cancellationToken);
 
-            // TODO Need to check if for example payment has already been taken or credential set-up that
-            // we don't end up repeating that process
-
-            var paymentObject = flow.PaymentObjects.OfType<TPaymentObject>()
-                                    .SingleOrDefault();
-
-            if (paymentObject == null) {
-                paymentObject = new TPaymentObject();
-
-                flow.AddOrReplacePaymentObject(paymentObject);
-            }
+            var paymentObject = flow.GetOrCreatePaymentObject<T>();
 
             try {
                 await actionAsync(flow, paymentObject);
-
-                await _repository.UpdateAsync(flow, cancellationToken);
             } catch (Exception ex) {
-                await flow.OnErrorAsync(paymentObject, ex, cancellationToken);
+                paymentObject.UnhandledError(ex);
             }
+
+            await _repository.UpdateAsync(flow, cancellationToken);
         }
 
         public async Task<T> GetAsync<T>(Func<IPaymentsFlow, T> get, CancellationToken cancellationToken = default) {

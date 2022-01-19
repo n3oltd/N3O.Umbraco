@@ -2,6 +2,7 @@
 using GoCardless.Services;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Hosting;
+using N3O.Umbraco.Payments.Entities;
 using N3O.Umbraco.Payments.GoCardless.Commands;
 using N3O.Umbraco.Payments.GoCardless.Content;
 using N3O.Umbraco.Payments.GoCardless.Controllers;
@@ -29,8 +30,8 @@ namespace N3O.Umbraco.Payments.GoCardless.Handlers {
         }
 
         protected override async Task HandleAsync(BeginRedirectFlowCommand req,
-                                                  IBillingInfoAccessor billingInfoAccessor,
                                                   GoCardlessCredential credential,
+                                                  IBillingInfoAccessor billingInfoAccessor,
                                                   CancellationToken cancellationToken) {
             var request = GetRedirectFlowCreateRequest(billingInfoAccessor, req.FlowId.Value);
             var redirectFlowResponse = await _goCardlessClient.RedirectFlows.CreateAsync(request);

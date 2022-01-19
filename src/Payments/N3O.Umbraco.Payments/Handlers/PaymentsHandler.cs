@@ -1,5 +1,6 @@
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Payments.Commands;
+using N3O.Umbraco.Payments.Entities;
 using N3O.Umbraco.Payments.Models;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,15 +17,15 @@ namespace N3O.Umbraco.Payments.Handlers {
         
         public async Task<None> Handle(TCommand req, CancellationToken cancellationToken) {
             await _paymentsScope.DoAsync<TObject>(async (flow, paymentObject) => {
-                await HandleAsync(req, flow, paymentObject, cancellationToken);
+                await HandleAsync(req, paymentObject, flow, cancellationToken);
             }, cancellationToken);
 
             return None.Empty;
         }
 
         protected abstract Task HandleAsync(TCommand req,
-                                            IBillingInfoAccessor billingInfoAccessor,
                                             TObject paymentObject,
+                                            IBillingInfoAccessor billingInfoAccessor,
                                             CancellationToken cancellationToken);
     }
 }

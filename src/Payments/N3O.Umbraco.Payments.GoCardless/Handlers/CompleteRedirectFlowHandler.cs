@@ -1,5 +1,6 @@
 ﻿using GoCardless;
 using GoCardless.Services;
+using N3O.Umbraco.Payments.Entities;
 using N3O.Umbraco.Payments.GoCardless.Commands;
 using N3O.Umbraco.Payments.GoCardless.Models;
 using N3O.Umbraco.Payments.Handlers;
@@ -18,8 +19,8 @@ namespace N3O.Umbraco.Payments.GoCardless.Handlers {
         }
 
         protected override async Task HandleAsync(CompleteRedirectFlowCommand req,
-                                                  IBillingInfoAccessor billingInfoAccessor,
                                                   GoCardlessCredential credential,
+                                                  IBillingInfoAccessor billingInfoAccessor,
                                                   CancellationToken cancellationToken) {
             if (credential.Status == PaymentObjectStatuses.InProgress) {
                 var completeRequest = new RedirectFlowCompleteRequest();
