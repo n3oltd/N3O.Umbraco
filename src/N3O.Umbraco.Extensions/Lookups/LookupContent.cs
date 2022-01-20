@@ -20,7 +20,7 @@ namespace N3O.Umbraco.Lookups {
                 name = name.ToLowerInvariant();
             }
 
-            name = Regex.Replace(name, "[^0-9a-z-_]", "");
+            name = Regex.Replace(name, "[^0-9a-z-_]", "", RegexOptions.CultureInvariant|RegexOptions.IgnoreCase);
             
             return name.Camelize();
         }

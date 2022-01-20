@@ -49,7 +49,10 @@ namespace N3O.Umbraco.Plugins.Controllers {
         }
         
         private string CleanFilename(string fileName) {
-            return Regex.Replace(fileName.Trim().Replace(" ", "-").ToLowerInvariant(), "[^0-9a-z.-_]", "");
+            return Regex.Replace(fileName.Trim().Replace(" ", "-").ToLowerInvariant(),
+                                 "[^0-9a-z.-_]",
+                                 "",
+                                 RegexOptions.CultureInvariant);
         }
 
         private bool SizeAndDimensionsAreValid(UploadedImage uploadedImage,
