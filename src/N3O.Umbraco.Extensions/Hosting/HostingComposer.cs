@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
+using System;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Services;
@@ -26,10 +29,11 @@ namespace N3O.Umbraco.Hosting {
             
             builder.Services.Configure<UmbracoPipelineOptions>(opt => {
                 AddStagingMiddleware(opt);
+                ConfigureCors(opt);
             });
         }
 
-        private void AddStagingMiddleware(UmbracoPipelineOptions options) {
+        private void AddStagingMiddleware(UmbracoPipelineOptions opt) {
             var filter = new UmbracoPipelineFilter("Staging");
             filter.PostPipeline = app => {
                 var runtimeState = app.ApplicationServices.GetRequiredService<IRuntimeState>();
@@ -39,7 +43,23 @@ namespace N3O.Umbraco.Hosting {
                 }
             };
 
-            options.AddFilter(filter);
+            opt.AddFilter(filter);
+        }
+        
+        private void ConfigureCors(UmbracoPipelineOptions opt) {
+            var filter = new UmbracoPipelineFilter("CORS");
+            filter.PostPipeline = app => {
+                var webHostEnvironment = app.ApplicationServices.GetRequiredService<IWebHostEnvironment>();
+
+                if (!webHostEnvironment.IsProduction()) {
+                    app.UseCors(policy => policy.AllowAnyHeader()
+                                                .AllowAnyOrigin()
+                                                .AllowAnyMethod()
+                                                .SetPreflightMaxAge(TimeSpan.FromMinutes(60)));
+                }
+            };
+
+            opt.AddFilter(filter);
         }
     }
 }
