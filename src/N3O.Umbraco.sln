@@ -182,6 +182,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Marketing", "Marketing", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Marketing", "Marketing\N3O.Umbraco.Marketing\N3O.Umbraco.Marketing.csproj", "{6DF474F1-88D8-49EC-B939-75645EBF2CB4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Newsletters.Studio", "Newsletters\N3O.Umbraco.Newsletters.Studio\N3O.Umbraco.Newsletters.Studio.csproj", "{1C0C0F3D-B449-4010-92F7-B4F9F71A2C4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Newsletters.Studio.StaticAssets", "Newsletters\N3O.Umbraco.Newsletters.Studio.StaticAssets\N3O.Umbraco.Newsletters.Studio.StaticAssets.csproj", "{100E9384-CE62-446A-9ACC-27F533EB4D76}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -428,6 +432,14 @@ Global
 		{6DF474F1-88D8-49EC-B939-75645EBF2CB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6DF474F1-88D8-49EC-B939-75645EBF2CB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6DF474F1-88D8-49EC-B939-75645EBF2CB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C0C0F3D-B449-4010-92F7-B4F9F71A2C4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C0C0F3D-B449-4010-92F7-B4F9F71A2C4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C0C0F3D-B449-4010-92F7-B4F9F71A2C4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C0C0F3D-B449-4010-92F7-B4F9F71A2C4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{100E9384-CE62-446A-9ACC-27F533EB4D76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{100E9384-CE62-446A-9ACC-27F533EB4D76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{100E9384-CE62-446A-9ACC-27F533EB4D76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{100E9384-CE62-446A-9ACC-27F533EB4D76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CC9F6143-E1BB-490F-8936-A16A238E2138} = {E203E59D-7950-4F8F-8E28-79DEB112EA37}
@@ -492,5 +504,7 @@ Global
 		{38FDB487-CBFB-4C74-8E80-86F4B942D1B5} = {85716BFA-8FEC-4E71-8C85-32728610351C}
 		{77FFE53F-940A-4165-B285-E8F627E8E15A} = {0EBFA047-2232-4CEC-B528-0051179D5FDB}
 		{6DF474F1-88D8-49EC-B939-75645EBF2CB4} = {399658D1-572C-4753-A912-7202790A256B}
+		{1C0C0F3D-B449-4010-92F7-B4F9F71A2C4B} = {065FC1F3-732C-45DD-957F-252D39040124}
+		{100E9384-CE62-446A-9ACC-27F533EB4D76} = {065FC1F3-732C-45DD-957F-252D39040124}
 	EndGlobalSection
 EndGlobal
