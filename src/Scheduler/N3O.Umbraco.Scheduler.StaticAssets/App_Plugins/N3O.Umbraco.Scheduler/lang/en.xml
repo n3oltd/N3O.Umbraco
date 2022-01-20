@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<language alias="en" intName="English (UK)" localName="English (UK)" lcid="" culture="en-GB">
+    <creator>
+        <name>N3O Ltd</name>
+        <link>https://n3o.ltd</link>
+    </creator>
+    <area alias="dashboardTabs">
+        <key alias="Hangfire">Contentment</key>
+    </area>
+</language>
