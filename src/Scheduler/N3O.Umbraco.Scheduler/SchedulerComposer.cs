@@ -59,14 +59,14 @@ namespace N3O.Umbraco.Scheduler {
         }
 
         private void AddAuthorizedUmbracoDashboard(IUmbracoBuilder builder) {
-            builder.Services.AddAuthorization(options => {
-                options.AddPolicy(HangfireDashboard, policy => {
+            builder.Services.AddAuthorization(opt => {
+                opt.AddPolicy(HangfireDashboard, policy => {
                     policy.AuthenticationSchemes.Add(UmbracoConstants.Security.BackOfficeAuthenticationType);
                     policy.Requirements.Add(new SectionRequirement(UmbracoConstants.Applications.Settings));
                 });
             });
 
-            builder.Services.Configure<UmbracoPipelineOptions>(options => {
+            builder.Services.Configure<UmbracoPipelineOptions>(opt => {
                 var filter = new UmbracoPipelineFilter(HangfireDashboard);
                 filter.Endpoints = app => app.UseEndpoints(endpoints => {
                                                  endpoints.MapHangfireDashboard("/umbraco/backoffice/hangfire",
@@ -77,7 +77,7 @@ namespace N3O.Umbraco.Scheduler {
                                              })
                                              .UseHangfireDashboard();
             
-                options.AddFilter(filter);
+                opt.AddFilter(filter);
             });
         }
 

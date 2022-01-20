@@ -24,18 +24,22 @@ namespace N3O.Umbraco.Hosting {
 
             builder.Services.AddOpenApiDocument("DevTools");
             
-            builder.Services.Configure<UmbracoPipelineOptions>(options => {
-                var filter = new UmbracoPipelineFilter("Staging");
-                filter.PrePipeline = app => {
-                    var runtimeState = app.ApplicationServices.GetRequiredService<IRuntimeState>();
-
-                    if (runtimeState.Level == RuntimeLevel.Run) {
-                        app.UseMiddleware<StagingMiddleware>();
-                    }
-                };
-
-                options.AddFilter(filter);
+            builder.Services.Configure<UmbracoPipelineOptions>(opt => {
+                AddStagingMiddleware(opt);
             });
+        }
+
+        private void AddStagingMiddleware(UmbracoPipelineOptions options) {
+            var filter = new UmbracoPipelineFilter("Staging");
+            filter.PostPipeline = app => {
+                var runtimeState = app.ApplicationServices.GetRequiredService<IRuntimeState>();
+
+                if (runtimeState.Level == RuntimeLevel.Run) {
+                    app.UseMiddleware<StagingMiddleware>();
+                }
+            };
+
+            options.AddFilter(filter);
         }
     }
 }

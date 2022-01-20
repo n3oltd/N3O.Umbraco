@@ -10,7 +10,7 @@ namespace N3O.Umbraco.Search {
         public override void Compose(IUmbracoBuilder builder) {
             builder.Services.AddTransient<ISitemap, Sitemap>();
             
-            builder.Services.Configure<UmbracoPipelineOptions>(options => {
+            builder.Services.Configure<UmbracoPipelineOptions>(opt => {
                 var filter = new UmbracoPipelineFilter(nameof(SitemapController));
                 filter.Endpoints = app => app.UseEndpoints(endpoints => {
                     endpoints.MapControllerRoute("Sitemap Controller",
@@ -18,7 +18,7 @@ namespace N3O.Umbraco.Search {
                                                  new { Controller = "Sitemap", Action = "Index" });
                 });
                 
-                options.AddFilter(filter);
+                opt.AddFilter(filter);
             });
         }
     }

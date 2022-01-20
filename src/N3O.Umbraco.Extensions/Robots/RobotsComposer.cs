@@ -9,7 +9,7 @@ namespace N3O.Umbraco.Robots {
         public override void Compose(IUmbracoBuilder builder) {
             builder.Services.AddTransient<IRobotsTxt, RobotsTxt>();
             
-            builder.Services.Configure<UmbracoPipelineOptions>(options => {
+            builder.Services.Configure<UmbracoPipelineOptions>(opt => {
                 var filter = new UmbracoPipelineFilter(nameof(RobotsController));
                 filter.Endpoints = app => app.UseEndpoints(endpoints => {
                     endpoints.MapControllerRoute("Robots Controller",
@@ -17,7 +17,7 @@ namespace N3O.Umbraco.Robots {
                                                  new { Controller = "Robots", Action = "Index" });
                 });
                 
-                options.AddFilter(filter);
+                opt.AddFilter(filter);
             });
         }
     }

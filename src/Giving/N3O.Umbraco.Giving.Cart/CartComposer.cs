@@ -16,11 +16,11 @@ namespace N3O.Umbraco.Giving.Cart {
 
             builder.Services.AddOpenApiDocument(CartConstants.ApiName);
 
-            builder.Services.Configure<UmbracoPipelineOptions>(options => {
+            builder.Services.Configure<UmbracoPipelineOptions>(opt => {
                 var filter = new UmbracoPipelineFilter("Cart");
                 filter.PostPipeline = app => app.UseMiddleware<CartCookieMiddleware>();
             
-                options.AddFilter(filter);
+                opt.AddFilter(filter);
             });
         }
     }

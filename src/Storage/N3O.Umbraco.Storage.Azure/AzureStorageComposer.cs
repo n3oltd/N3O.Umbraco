@@ -19,11 +19,11 @@ namespace N3O.Umbraco.Storage.Azure {
             if (storageConfigured) {
                 builder.AddAzureBlobMediaFileSystem();
 
-                builder.Services.Configure<UmbracoPipelineOptions>(options => {
+                builder.Services.Configure<UmbracoPipelineOptions>(opt => {
                     var filter = new UmbracoPipelineFilter("AzureStorage");
                     filter.Endpoints = app => app.UseMiddleware<AzureBlobFileSystemMiddleware>();
             
-                    options.AddFilter(filter);
+                    opt.AddFilter(filter);
                 });
             }
         }

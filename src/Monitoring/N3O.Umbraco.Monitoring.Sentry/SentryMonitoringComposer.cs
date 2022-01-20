@@ -9,11 +9,11 @@ namespace N3O.Umbraco.Monitoring.Sentry {
     public class SentryMonitoringComposer : Composer {
         public override void Compose(IUmbracoBuilder builder) {
             if (WebHostEnvironment.IsProduction()) {
-                builder.Services.Configure<UmbracoPipelineOptions>(options => {
+                builder.Services.Configure<UmbracoPipelineOptions>(opt => {
                     var filter = new UmbracoPipelineFilter("SentryMonitoring");
                     filter.Endpoints = app => app.UseSentryTracing();
 
-                    options.AddFilter(filter);
+                    opt.AddFilter(filter);
                 });
             }
         }
