@@ -23,8 +23,8 @@ namespace N3O.Umbraco.Payments.Testing {
             }
         }
 
-        public async Task<T> GetAsync<T>(Func<IPaymentsFlow, T> get, CancellationToken cancellationToken = default) {
-            return get(_testPaymentsFlow);
+        public Task<T> GetAsync<T>(Func<IPaymentsFlow, T> get, CancellationToken cancellationToken = default) {
+            return Task.FromResult(get(_testPaymentsFlow));
         }
     }
 }
