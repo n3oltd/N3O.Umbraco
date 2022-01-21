@@ -34,8 +34,8 @@ namespace N3O.Umbraco.Hosting {
             _bodyModelBinder = new BodyModelBinder(formatters, readerFactory, loggerFactory, mvcOptions.Value);
         }
 
-        public Task BindModelAsync(ModelBindingContext bindingContext) {
-            return _bodyModelBinder.BindModelAsync(bindingContext);
+        public async Task BindModelAsync(ModelBindingContext bindingContext) {
+            await _bodyModelBinder.BindModelAsync(bindingContext);
         }
     }
 
@@ -44,8 +44,9 @@ namespace N3O.Umbraco.Hosting {
             if (context == null) {
                 throw new ArgumentNullException(nameof(context));
             }
-
-            if (OurAssemblies.IsOurAssembly(context.Metadata.ModelType.Assembly)) {
+            
+            if (context.Metadata.BindingSource == BindingSource.Body &&
+                OurAssemblies.IsOurAssembly(context.Metadata.ModelType.Assembly)) {
                 return new BinderTypeModelBinder(typeof(OurBodyModelBinder));
             }
 
