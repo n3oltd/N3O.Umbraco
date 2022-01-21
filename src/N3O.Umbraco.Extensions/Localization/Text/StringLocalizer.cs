@@ -1,5 +1,4 @@
 using Humanizer;
-using N3O.Umbraco.Constants;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Locks;
@@ -19,7 +18,7 @@ namespace N3O.Umbraco.Localization {
         private static readonly ConcurrentDictionary<string, string> StringCache = new ();
         private static readonly string ResourcesAlias = AliasHelper<TextContainerContent>.PropertyAlias(x => x.Resources);
         private static readonly string TextContainerAlias = AliasHelper<TextContainerContent>.ContentTypeAlias();
-        private static readonly string TextFolderAliasAlias = AliasHelper<TextFolderContent>.ContentTypeAlias();
+        private static readonly string TextContainerFolderAlias = AliasHelper<TextContainerFolderContent>.ContentTypeAlias();
         private static readonly string TextSettingsContentAlias = AliasHelper<TextSettingsContent>.ContentTypeAlias();
 
         private readonly IContentService _contentService;
@@ -35,7 +34,7 @@ namespace N3O.Umbraco.Localization {
         }
 
         public void Flush(IEnumerable<string> aliases) {
-            if (aliases.ContainsAny(new[] { TextContainerAlias, TextFolderAliasAlias, TextSettingsContentAlias }, true)) {
+            if (aliases.ContainsAny(new[] { TextContainerAlias, TextContainerFolderAlias, TextSettingsContentAlias }, true)) {
                 GuidCache.Clear();
                 StringCache.Clear();
             }
@@ -62,16 +61,16 @@ namespace N3O.Umbraco.Localization {
             var cacheKey = CacheKey.Generate<StringLocalizer>(nameof(GetOrCreateFolderId), folder);
 
             return GuidCache.GetOrAdd(cacheKey, _ => {
-                var textFolderId = Run(u => u.Content
-                                             .GetByContentType(u.Content.GetContentType(TextFolderAliasAlias))
-                                             .SingleOrDefault(x => x.Name.EqualsInvariant(folder))
-                                             ?.Key);
+                var folderId = Run(u => u.Content
+                                         .GetByContentType(u.Content.GetContentType(TextContainerFolderAlias))
+                                         .SingleOrDefault(x => x.Name.EqualsInvariant(folder))
+                                         ?.Key);
 
-                if (textFolderId == null) {
-                    textFolderId = CreateFolder(folder);
+                if (folderId == null) {
+                    folderId = CreateFolder(folder);
                 }
 
-                return textFolderId.Value;
+                return folderId.Value;
             });
         }
 
@@ -84,7 +83,7 @@ namespace N3O.Umbraco.Localization {
                 throw new Exception($"Could not find {nameof(TextSettingsContent)} content");
             }
 
-            var content = _contentService.Create<TextFolderContent>(name, textSettings.Id);
+            var content = _contentService.Create<TextContainerFolderContent>(name, textSettings.Id);
 
             _contentService.SaveAndPublish(content);
 

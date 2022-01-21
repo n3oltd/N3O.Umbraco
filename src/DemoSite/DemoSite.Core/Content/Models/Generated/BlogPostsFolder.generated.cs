@@ -18,7 +18,7 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Core.Content
 {
-	/// <summary>Blog Posts Folder</summary>
+	/// <summary>Blog Post Folder</summary>
 	[PublishedModel("blogPostsFolder")]
 	public partial class BlogPostsFolder : PublishedContentModel
 	{
