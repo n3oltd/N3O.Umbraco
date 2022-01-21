@@ -108,7 +108,5 @@ namespace N3O.Umbraco.ValueConverters {
 
             return commonInterfaces.Single().FullName.Substring(_modelBuilderSettings.ModelsNamespace.Length + 1);
         }
-
-        
     }
 }
