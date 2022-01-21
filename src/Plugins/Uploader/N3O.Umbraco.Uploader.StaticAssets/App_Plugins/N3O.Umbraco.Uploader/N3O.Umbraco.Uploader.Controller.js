@@ -73,7 +73,7 @@ angular.module("umbraco").controller("N3O.Umbraco.Uploader",
             .then(function () {
                 window.setTimeout(function () {
                     $("#" + $scope.uniqueId + " .upload").upload({
-                        action: "/umbraco/backoffice/cropper/upload",
+                        action: "/umbraco/backoffice/uploader/upload",
                         label: 'Drop and drop a file, or click to select',
                         maxSize: 104857600,
                         maxQueue: 1,
