@@ -1,7 +1,5 @@
 ﻿using FluentEmail.Core.Interfaces;
-using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Giving.Checkout.Content;
 using System;
 using System.Threading.Tasks;
 

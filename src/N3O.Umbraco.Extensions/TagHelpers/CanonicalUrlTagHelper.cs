@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Pages;
-using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.TagHelpers {
     [HtmlTargetElement("n3o-canonical-url")]

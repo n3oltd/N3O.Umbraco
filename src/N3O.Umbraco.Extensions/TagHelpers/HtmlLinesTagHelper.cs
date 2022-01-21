@@ -1,5 +1,4 @@
-﻿using AngleSharp.Text;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
 
