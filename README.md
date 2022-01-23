@@ -54,7 +54,7 @@ A big [#h5yr](https://community.umbraco.com/learn-about-the-community/h5yr/) to:
 * Dan Diplo for [Umbraco.GodMode](https://github.com/DanDiplo/Umbraco.GodMode)
 * Lee Kehler for [Contentment](https://github.com/leekelleher/umbraco-contentment)
 * Kevin Jump for [uSync](https://jumoo.co.uk/usync/)
-* Perplex Digital for [ContentBlocks](https://github.com/PerplexDigital/Perplex.ContentBlocks)
+* Perplex Digital for [Perplex.ContentBlocks](https://github.com/PerplexDigital/Perplex.ContentBlocks)
 
 ## Questions & Support
 For questions and support please visit the [N3O Support Centre](https://support.n3o.ltd/).
