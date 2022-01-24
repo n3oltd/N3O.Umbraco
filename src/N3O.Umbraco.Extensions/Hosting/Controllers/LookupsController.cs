@@ -24,20 +24,20 @@ namespace N3O.Umbraco.Hosting {
             return Ok(res);
         }
         
-        protected async Task<ActionResult<IEnumerable<NamedLookupRes>>> GetLookupsAsync<T>() where T : INamedLookup {
+        protected async Task<IEnumerable<NamedLookupRes>> GetLookupsAsync<T>() where T : INamedLookup {
             var listLookups = new ListLookups<T>(_lookups, _mapper);
             var res = await listLookups.RunAsync();
 
-            return Ok(res);
+            return res;
         }
         
-        protected async Task<ActionResult<IEnumerable<TRes>>> GetLookupsAsync<TLookup, TRes>()
+        protected async Task<IEnumerable<TRes>> GetLookupsAsync<TLookup, TRes>()
             where TLookup : INamedLookup
             where TRes : LookupRes {
             var listCustomLookups = new ListCustomLookups<TLookup, TRes>(_lookups, _mapper);
             var res = await listCustomLookups.RunAsync();
 
-            return Ok(res);
+            return res;
         }
     }
 }
