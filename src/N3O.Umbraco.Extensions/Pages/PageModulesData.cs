@@ -10,7 +10,7 @@ namespace N3O.Umbraco.Pages {
         }
 
         public T Get<T>(string key) {
-            return (T) _dict[key];
+            return _dict.ContainsKey(key) ? (T) _dict[key] : default;
         }
 
         public IEnumerator<KeyValuePair<string, object>> GetEnumerator() =>_dict.GetEnumerator();
