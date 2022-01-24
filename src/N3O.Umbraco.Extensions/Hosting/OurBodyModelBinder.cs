@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using System;
 using System.Buffers;
@@ -45,7 +46,7 @@ namespace N3O.Umbraco.Hosting {
                 throw new ArgumentNullException(nameof(context));
             }
             
-            if (context.Metadata.BindingSource == BindingSource.Body &&
+            if (context.Metadata.BindingSource.IsAnyOf(BindingSource.Body, null)  &&
                 OurAssemblies.IsOurAssembly(context.Metadata.ModelType.Assembly)) {
                 return new BinderTypeModelBinder(typeof(OurBodyModelBinder));
             }
