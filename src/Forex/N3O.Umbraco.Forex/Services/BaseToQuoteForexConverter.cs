@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Forex {
     public class BaseToQuoteForexConverter {
-        private readonly IExchangeRateProvider _exchangeRateProvider;
+        private readonly IExchangeRateCache _exchangeRateCache;
         private readonly IBaseCurrencyAccessor _baseCurrencyAccessor;
         private readonly ICurrencyAccessor _quoteCurrencyAccessor;
         private Currency _baseCurrency;
         private Currency _quoteCurrency;
         private LocalDate? _date;
 
-        public BaseToQuoteForexConverter(IExchangeRateProvider exchangeRateProvider,
+        public BaseToQuoteForexConverter(IExchangeRateCache exchangeRateCache,
                                          IBaseCurrencyAccessor baseCurrencyAccessor,
                                          ICurrencyAccessor quoteCurrencyAccessor) {
-            _exchangeRateProvider = exchangeRateProvider;
+            _exchangeRateCache = exchangeRateCache;
             _baseCurrencyAccessor = baseCurrencyAccessor;
             _quoteCurrencyAccessor = quoteCurrencyAccessor;
         }
@@ -44,14 +44,14 @@ namespace N3O.Umbraco.Forex {
             decimal exchangeRate;
 
             if (_date == null) {
-                exchangeRate = await _exchangeRateProvider.GetLiveRateAsync(_baseCurrency,
-                                                                            _quoteCurrency,
-                                                                            cancellationToken);
+                exchangeRate = await _exchangeRateCache.GetLiveRateAsync(_baseCurrency,
+                                                                         _quoteCurrency,
+                                                                         cancellationToken);
             } else {
-                exchangeRate = await _exchangeRateProvider.GetHistoricalRateAsync(_date.Value,
-                                                                                  _baseCurrency,
-                                                                                  _quoteCurrency,
-                                                                                  cancellationToken);
+                exchangeRate = await _exchangeRateCache.GetHistoricalRateAsync(_date.Value,
+                                                                               _baseCurrency,
+                                                                               _quoteCurrency,
+                                                                               cancellationToken);
             }
 
             var quoteAmount = baseAmount * exchangeRate;
