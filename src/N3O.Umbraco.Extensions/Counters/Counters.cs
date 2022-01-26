@@ -1,5 +1,6 @@
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Locks;
+using N3O.Umbraco.Utilities;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace N3O.Umbraco.Counters {
         public async Task<long> NextAsync(string key,
                                           long startFrom = 1,
                                           CancellationToken cancellationToken = default) {
-            var lockKey = $"{nameof(Counters)}_{key}";
+            var lockKey = LockKey.Generate<Counters>(key);
 
             var result = await _lock.LockAsync(lockKey, async () => {
                 var id = key.ToGuid();

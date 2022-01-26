@@ -149,7 +149,7 @@ namespace N3O.Umbraco.Localization {
         }
 
         private T Lock<T>(Func<T> action) {
-            return _lock.LockAsync(nameof(StringLocalizer), () => {
+            return _lock.LockAsync(LockKey.Generate<StringLocalizer>(), () => {
                 try {
                     var result = action();
 
