@@ -4,24 +4,24 @@ namespace N3O.Umbraco.Forex {
     public class ForexConverter : IForexConverter {
         private readonly IBaseCurrencyAccessor _baseCurrencyAccessor;
         private readonly ICurrencyAccessor _quoteCurrencyAccessor;
-        private readonly IExchangeRateProvider _exchangeRateProvider;
+        private readonly IExchangeRateCache _exchangeRateCache;
 
         public ForexConverter(IBaseCurrencyAccessor baseCurrencyAccessor,
                               ICurrencyAccessor quoteCurrencyAccessor,
-                              IExchangeRateProvider exchangeRateProvider) {
+                              IExchangeRateCache exchangeRateCache) {
             _baseCurrencyAccessor = baseCurrencyAccessor;
             _quoteCurrencyAccessor = quoteCurrencyAccessor;
-            _exchangeRateProvider = exchangeRateProvider;
+            _exchangeRateCache = exchangeRateCache;
         }
 
         public BaseToQuoteForexConverter BaseToQuote() {
-            return new BaseToQuoteForexConverter(_exchangeRateProvider,
+            return new BaseToQuoteForexConverter(_exchangeRateCache,
                                                  _baseCurrencyAccessor,
                                                  _quoteCurrencyAccessor);
         }
 
         public QuoteToBaseForexConverter QuoteToBase() {
-            return new QuoteToBaseForexConverter(_exchangeRateProvider, _baseCurrencyAccessor, _quoteCurrencyAccessor);
+            return new QuoteToBaseForexConverter(_exchangeRateCache, _baseCurrencyAccessor, _quoteCurrencyAccessor);
         }
     }
 }
