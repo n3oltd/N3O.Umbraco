@@ -1,6 +1,10 @@
 using N3O.Umbraco.Mediator;
+using N3O.Umbraco.Payments.Commands;
+using N3O.Umbraco.Payments.NamedParameters;
 using N3O.Umbraco.Payments.Opayo.Models;
 
 namespace N3O.Umbraco.Payments.Opayo.Commands {
-    public class ThreeDSecureChallengeCommand : Request<ThreeDSecureChallengeReq, None> { }
+    public class ThreeDSecureChallengeCommand : PaymentsCommand<ThreeDSecureChallengeReq, OpayoPayment> {
+        public ThreeDSecureChallengeCommand(FlowId flowId) : base(flowId) { }
+    }
 }

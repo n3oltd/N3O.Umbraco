@@ -6,8 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.Handlers {
-    public abstract class PaymentsHandler<TCommand, TReq, TObject> : IRequestHandler<TCommand, TReq, None>
-        where TCommand : PaymentsCommand<TReq>
+    public abstract class PaymentsHandler<TCommand, TReq, TObject> : IRequestHandler<TCommand, TReq, PaymentFlowRes<TObject>>
+        where TCommand : PaymentsCommand<TReq, TObject>
         where TObject : PaymentObject, new() {
         private readonly IPaymentsScope _paymentsScope;
 
@@ -15,12 +15,15 @@ namespace N3O.Umbraco.Payments.Handlers {
             _paymentsScope = paymentsScope;
         }
         
-        public async Task<None> Handle(TCommand req, CancellationToken cancellationToken) {
+        public async Task<PaymentFlowRes<TObject>> Handle(TCommand req, CancellationToken cancellationToken) {
+            PaymentFlowRes<TObject> res = null;
             await _paymentsScope.DoAsync<TObject>(async (flow, paymentObject) => {
                 await HandleAsync(req, paymentObject, flow, cancellationToken);
+                res = new PaymentFlowRes<TObject>(flow, paymentObject);
             }, cancellationToken);
-
-            return None.Empty;
+            
+            
+            return res;
         }
 
         protected abstract Task HandleAsync(TCommand req,

@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Accounts.Lookups;
 using N3O.Umbraco.Accounts.Models;
+using N3O.Umbraco.Counters;
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
@@ -13,10 +14,12 @@ namespace N3O.Umbraco.Payments.Testing {
 
         public TestPaymentsFlow(ILookups lookups) {
             _lookups = lookups;
+            Reference = new Reference(new ReferenceType("PM", 10000), 10012);
         }
         
         public Credential Credential { get; private set; }
         public Payment Payment { get; private set; }
+        public Reference Reference { get; private set; }
 
         public BillingInfo GetBillingInfo() {
             var unitedKingdom = _lookups.FindById<Country>("unitedKingdom");
@@ -47,6 +50,10 @@ namespace N3O.Umbraco.Payments.Testing {
             } else {
                 throw new NotImplementedException();
             }
+        }
+
+        public TransactionInfo GetTransctionInfo() {
+            return new TransactionInfo(Reference, $"Donation {Reference.Text}");
         }
     }
 }
