@@ -12,13 +12,10 @@ namespace N3O.Umbraco.Payments.Opayo.Handlers {
     public class ThreeDSecureChallengeHandler :
         PaymentsHandler<ThreeDSecureChallengeCommand, ThreeDSecureChallengeReq, OpayoPayment> {
         private readonly IOpayoClient _opayoClient;
-        private readonly IPaymentsFlow _paymentsFlow;
 
         public ThreeDSecureChallengeHandler(IPaymentsScope paymentsScope,
-                                            IOpayoClient opayoClient,
-                                            IPaymentsFlow paymentsFlow) : base(paymentsScope) {
+                                            IOpayoClient opayoClient) : base(paymentsScope) {
             _opayoClient = opayoClient;
-            _paymentsFlow = paymentsFlow;
         }
 
         protected override async Task HandleAsync(ThreeDSecureChallengeCommand req,

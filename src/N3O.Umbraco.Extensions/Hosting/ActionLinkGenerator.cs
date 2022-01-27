@@ -24,8 +24,15 @@ namespace N3O.Umbraco.Hosting {
 
             var httpContext = _httpContextAccessor.HttpContext;
 
-            var url = _linkGenerator.GetUriByAction(httpContext, method.Name, typeof(TController).Name, routeValues);
+            var controllerName = typeof(TController).Name;
+            if (controllerName.EndsWith("Controller", StringComparison.InvariantCultureIgnoreCase)) {
+                controllerName = controllerName.Substring(0, controllerName.Length - "Controller".Length);
+            }
+            
+            var url = _linkGenerator.GetUriByAction(httpContext, method.Name, controllerName, routeValues);
 
+            url = url.Replace("localhost", "127.0.0.1");
+            
             return url;
         }
     }

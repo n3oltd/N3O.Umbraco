@@ -1,11 +1,13 @@
 using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Payments.Commands;
 using N3O.Umbraco.Payments.Entities;
 using N3O.Umbraco.Payments.Handlers;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.Opayo.Client;
+using N3O.Umbraco.Payments.Opayo.Controllers;
 using N3O.Umbraco.Payments.Opayo.Extensions;
 using N3O.Umbraco.Payments.Opayo.Models;
 using Newtonsoft.Json;
@@ -14,18 +16,22 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.Opayo.Handlers {
-    public abstract class PaymentHandler<TCommand, TReq> : PaymentsHandler<TCommand, TReq, OpayoPayment> 
-        where TCommand : PaymentsCommand<TReq, OpayoPayment> {
+    public abstract class PaymentHandler<TCommand, TReq, TPaymentObject> : PaymentsHandler<TCommand, TReq, TPaymentObject> 
+        where TCommand : PaymentsCommand<TReq, TPaymentObject> 
+        where TPaymentObject : PaymentObject, new() {
+        private readonly IActionLinkGenerator _actionLinkGenerator;
         private readonly IPaymentsFlow _paymentsFlow;
         private readonly IOpayoClient _opayoClient;
         private readonly IRemoteIpAddressAccessor _remoteIpAddressAccessor;
         private readonly IBrowserInfoAccessor _userAgentAccessor;
 
-        protected PaymentHandler(IPaymentsFlow paymentsFlow,
+        protected PaymentHandler(IActionLinkGenerator actionLinkGenerator,
+                                 IPaymentsFlow paymentsFlow,
                                  IPaymentsScope paymentsScope,
                                  IOpayoClient opayoClient,
                                  IRemoteIpAddressAccessor remoteIpAddressAccessor,
                                  IBrowserInfoAccessor userAgentAccessor) : base(paymentsScope) {
+            _actionLinkGenerator = actionLinkGenerator;
             _paymentsFlow = paymentsFlow;
             _opayoClient = opayoClient;
             _remoteIpAddressAccessor = remoteIpAddressAccessor;
@@ -94,9 +100,9 @@ namespace N3O.Umbraco.Payments.Opayo.Handlers {
                apiCredentialTypeReq.CofUsage = "First";
                apiReq.CredentialType = apiCredentialTypeReq;
             }
-
+            var url = _actionLinkGenerator.GetUrl<OpayoController>(x => x.Authorize(null), new { flowId = _paymentsFlow.Id });
             apiReq.StrongCustomerAuthentication = new ApiStrongCustomerAuthentication();
-            apiReq.StrongCustomerAuthentication.NotificationUrl = $"https://127.0.0.1:5001/umbraco/api/Opayo/{_paymentsFlow.Id}/authorize";
+            apiReq.StrongCustomerAuthentication.NotificationUrl =  url;
             apiReq.StrongCustomerAuthentication.BrowserIp = _remoteIpAddressAccessor.GetRemoteIpAddress().ToString();
             apiReq.StrongCustomerAuthentication.BrowserAcceptHeader = _userAgentAccessor.GetAccept();
             apiReq.StrongCustomerAuthentication.BrowserJavascriptEnabled = req.BrowserParameters.JavaScriptEnabled.GetValueOrThrow();
