@@ -1,4 +1,3 @@
-using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Payments.Commands;
 using N3O.Umbraco.Payments.NamedParameters;
 using N3O.Umbraco.Payments.Opayo.Models;

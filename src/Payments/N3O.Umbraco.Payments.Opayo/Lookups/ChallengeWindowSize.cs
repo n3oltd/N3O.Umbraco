@@ -1,5 +1,4 @@
 using N3O.Umbraco.Lookups;
-using N3O.Umbraco.Payments.Lookups;
 
 namespace N3O.Umbraco.Payments.Opayo.Lookups {
     public class ChallengeWindowSize : NamedLookup {

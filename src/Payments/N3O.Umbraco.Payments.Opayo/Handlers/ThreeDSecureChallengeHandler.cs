@@ -1,16 +1,12 @@
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Payments.Entities;
 using N3O.Umbraco.Payments.Handlers;
-using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.Opayo.Client;
 using N3O.Umbraco.Payments.Opayo.Commands;
 using N3O.Umbraco.Payments.Opayo.Extensions;
 using N3O.Umbraco.Payments.Opayo.Models;
-using N3O.Umbraco.Payments.Testing;
 using System.Threading;
 using System.Threading.Tasks;
-using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Payments.Opayo.Handlers {
     public class ThreeDSecureChallengeHandler :

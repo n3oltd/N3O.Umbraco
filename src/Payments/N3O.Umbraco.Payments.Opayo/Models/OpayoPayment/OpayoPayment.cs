@@ -1,4 +1,3 @@
-using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Payments.Lookups;
 using N3O.Umbraco.Payments.Models;
 

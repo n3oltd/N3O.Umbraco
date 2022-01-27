@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Mediator;
-using N3O.Umbraco.Payments.Commands;
 using N3O.Umbraco.Payments.Controller;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.Opayo.Commands;
