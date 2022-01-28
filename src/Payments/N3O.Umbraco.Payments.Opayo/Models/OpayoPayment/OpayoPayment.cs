@@ -12,12 +12,11 @@ namespace N3O.Umbraco.Payments.Opayo.Models {
         public string ThreeDSecureUrl { get; private set; }
         public string AcsTransId { get; private set; }
         public string CReq { get; private set; }
-        public string DeclineReason { get; private set; }
-        public bool IsDeclined { get; private set; }
-        public bool IsPaid { get; private set; }
-        public bool IsFailed { get; private set; }
-        public bool RequireThreeDSecure { get; private set; }
-        
+        public string CallbackUrl { get; set; }
+
+        // TAdd it on propeties not needed on front end. [ExcludeFromSchema]
+        public bool ThreeDSecureCompleted { get; private set; }
+
         public override PaymentMethod Method => OpayoConstants.PaymentMethod;
     }
 }

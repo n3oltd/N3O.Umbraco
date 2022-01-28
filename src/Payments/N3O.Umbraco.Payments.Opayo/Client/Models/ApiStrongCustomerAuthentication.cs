@@ -29,7 +29,7 @@ namespace N3O.Umbraco.Payments.Opayo.Client {
         [JsonProperty("transType")]
         public string TransactionType { get; set; }
 
-        [JsonProperty("BrowserTZ")]
+        [JsonProperty("browserTZ")]
         public string BrowserTimezone { get; set; }
 
         [JsonProperty("browserUserAgent")]

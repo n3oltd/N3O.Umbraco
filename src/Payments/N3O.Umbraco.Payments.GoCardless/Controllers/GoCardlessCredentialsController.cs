@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Mediator;
-using N3O.Umbraco.Mediator.Extensions;
 using N3O.Umbraco.Payments.GoCardless.Commands;
+using N3O.Umbraco.Payments.GoCardless.Models;
+using N3O.Umbraco.Payments.Models;
 using System;
 using System.Threading.Tasks;
 
@@ -16,7 +17,7 @@ namespace N3O.Umbraco.Payments.GoCardless.Controllers {
 
         [HttpPost("credentials/{flowId:guid}/begin")]
         public async Task<ActionResult> Begin() {
-            await _mediator.SendAsync<BeginRedirectFlowCommand>();
+            await _mediator.SendAsync<BeginRedirectFlowCommand, None, PaymentFlowRes<GoCardlessCredential>>(None.Empty);
 
             return Ok();
         }
@@ -24,7 +25,7 @@ namespace N3O.Umbraco.Payments.GoCardless.Controllers {
         // TODO Has api in route at the moment
         [HttpGet("credentials/{flowId:guid}/complete")]
         public async Task<ActionResult> Complete() {
-            await _mediator.SendAsync<CompleteRedirectFlowCommand>();
+            await _mediator.SendAsync<CompleteRedirectFlowCommand, None, PaymentFlowRes<GoCardlessCredential>>(None.Empty);
 
             throw new NotImplementedException();
         }

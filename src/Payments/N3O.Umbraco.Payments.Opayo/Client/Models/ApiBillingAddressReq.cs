@@ -7,6 +7,9 @@ namespace N3O.Umbraco.Payments.Opayo.Client {
 
         [JsonProperty("address2")]
         public string Address2 { get; set; }
+        
+        [JsonProperty("address3")]
+        public string Address3 { get; set; }
 
         [JsonProperty("city")]
         public string City { get; set; }

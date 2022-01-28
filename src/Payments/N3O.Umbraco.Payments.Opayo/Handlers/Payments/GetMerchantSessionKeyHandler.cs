@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Payments.Opayo.Handlers {
-    public class GetMerchantSessionKeyHandler :
-        IRequestHandler<GetMerchantSessionKeyCommand, None, MerchantSessionKeyRes> {
+    public class GetMerchantSessionKeyHandler : IRequestHandler<GetMerchantSessionKeyCommand, None, MerchantSessionKeyRes> {
         private readonly IOpayoClient _opayoClient;
         private readonly OpayoApiSettings _apiSettings;
         private readonly IUmbracoMapper _mapper;

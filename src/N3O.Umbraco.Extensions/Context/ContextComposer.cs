@@ -13,6 +13,7 @@ namespace N3O.Umbraco.Context {
             builder.Services.AddSingleton<ICurrentUrlAccessor, CurrentUrlAccessor>();
             builder.Services.AddSingleton<IQueryStringAccessor, QueryStringAccessor>();
             builder.Services.TryAddSingleton<IRemoteIpAddressAccessor, RemoteIpAddressAccessor>();
+            builder.Services.TryAddSingleton<IBrowserInfoAccessor, BrowserInfoAccessor>();
         }
     }
 }
