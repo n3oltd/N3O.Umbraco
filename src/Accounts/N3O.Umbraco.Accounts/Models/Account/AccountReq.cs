@@ -15,6 +15,9 @@ namespace N3O.Umbraco.Accounts.Models {
     
         [Name("Telephone")]
         public TelephoneReq Telephone { get; set; }
+        
+        [Name("Consent")]
+        public ConsentReq Consent { get; set; }
     
         [Name("Tax Status")]
         public TaxStatus TaxStatus { get; set; }
@@ -30,5 +33,8 @@ namespace N3O.Umbraco.Accounts.Models {
     
         [JsonIgnore]
         ITelephone IAccount.Telephone => Telephone;
+        
+        [JsonIgnore]
+        IConsent IAccount.Consent => Consent;
     }
 }

@@ -4,8 +4,9 @@ namespace N3O.Umbraco.Accounts.Models {
     public interface IAccount {
         IName Name { get; }
         IAddress Address { get; }
-        ITelephone Telephone { get; }
         IEmail Email { get; }
+        ITelephone Telephone { get; }
+        IConsent Consent { get; }
         TaxStatus TaxStatus { get; }
     }
 }

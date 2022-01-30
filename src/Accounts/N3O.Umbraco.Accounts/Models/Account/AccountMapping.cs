@@ -12,6 +12,7 @@ namespace N3O.Umbraco.Accounts.Models {
             dest.Address = ctx.Map<Address, AddressRes>(src.Address);
             dest.Email = ctx.Map<Email, EmailRes>(src.Email);
             dest.Telephone = ctx.Map<Telephone, TelephoneRes>(src.Telephone);
+            dest.Consent = ctx.Map<Consent, ConsentRes>(src.Consent);
             dest.TaxStatus = src.TaxStatus;
         }
     }
