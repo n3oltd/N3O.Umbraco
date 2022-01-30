@@ -3,18 +3,19 @@ using GoCardless.Services;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Payments.Entities;
+using N3O.Umbraco.Payments.Extensions;
 using N3O.Umbraco.Payments.GoCardless.Commands;
 using N3O.Umbraco.Payments.GoCardless.Content;
 using N3O.Umbraco.Payments.GoCardless.Controllers;
 using N3O.Umbraco.Payments.GoCardless.Models;
 using N3O.Umbraco.Payments.Handlers;
+using N3O.Umbraco.Payments.Models;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.GoCardless.Handlers {
-    public class BeginRedirectFlowHandler :
-        PaymentsHandler<BeginRedirectFlowCommand, None, GoCardlessCredential> {
+    public class BeginRedirectFlowHandler : PaymentsHandler<BeginRedirectFlowCommand, None, GoCardlessCredential> {
         private readonly IContentCache _contentCache;
         private readonly GoCardlessClient _goCardlessClient;
         private readonly IActionLinkGenerator _actionLinkGenerator;
@@ -31,25 +32,24 @@ namespace N3O.Umbraco.Payments.GoCardless.Handlers {
 
         protected override async Task HandleAsync(BeginRedirectFlowCommand req,
                                                   GoCardlessCredential credential,
-                                                  IBillingInfoAccessor billingInfoAccessor,
+                                                  PaymentsParameters parameters,
                                                   CancellationToken cancellationToken) {
-            var request = GetRedirectFlowCreateRequest(billingInfoAccessor, req.FlowId.Value);
+            var request = GetRedirectFlowCreateRequest(parameters, req.FlowId.Value);
             var redirectFlowResponse = await _goCardlessClient.RedirectFlows.CreateAsync(request);
             var redirectFlow = redirectFlowResponse.RedirectFlow;
             
             credential.BeginRedirectFlow(redirectFlow.Id, redirectFlow.SessionToken);
         }
 
-        private RedirectFlowCreateRequest GetRedirectFlowCreateRequest(IBillingInfoAccessor billingInfoAccessor,
-                                                                       Guid flowId) {
+        private RedirectFlowCreateRequest GetRedirectFlowCreateRequest(PaymentsParameters parameters, Guid flowId) {
             var settings = _contentCache.Single<GoCardlessSettingsContent>();
 
             var createRequest = new RedirectFlowCreateRequest();
-            createRequest.Description = settings.TransactionDescription;
+            createRequest.Description = settings.GetTransactionDescription(parameters.Reference);
             createRequest.SessionToken = Guid.NewGuid().ToString();
             createRequest.SuccessRedirectUrl = _actionLinkGenerator.GetUrl<GoCardlessCredentialsController>(x => x.Complete(),
                                                                                                             new { flowId });
-            createRequest.PrefilledCustomer = GetPrefilledCustomer(billingInfoAccessor);
+            createRequest.PrefilledCustomer = GetPrefilledCustomer(parameters.BillingInfoAccessor);
 
             return createRequest;
         }

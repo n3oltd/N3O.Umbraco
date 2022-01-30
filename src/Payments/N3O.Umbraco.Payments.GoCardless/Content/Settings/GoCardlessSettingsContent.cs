@@ -1,9 +1,8 @@
-﻿using N3O.Umbraco.Content;
+﻿using N3O.Umbraco.Payments.Content;
 
 namespace N3O.Umbraco.Payments.GoCardless.Content {
-    public class GoCardlessSettingsContent : UmbracoContent<GoCardlessSettingsContent> {
+    public class GoCardlessSettingsContent : PaymentMethodSettingsContent<GoCardlessSettingsContent> {
         public string ProductionAccessToken => GetValue(x => x.ProductionAccessToken);
         public string SandboxAccessToken => GetValue(x => x.SandboxAccessToken);
-        public string TransactionDescription => GetValue(x => x.TransactionDescription);
     }
 }

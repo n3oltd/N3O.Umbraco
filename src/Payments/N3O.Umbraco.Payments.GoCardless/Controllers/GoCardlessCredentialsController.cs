@@ -15,7 +15,7 @@ namespace N3O.Umbraco.Payments.GoCardless.Controllers {
             _mediator = mediator;
         }
 
-        [HttpPost("credentials/{flowId:guid}/begin")]
+        [HttpPost("credentials/{flowId:entityId}/begin")]
         public async Task<ActionResult> Begin() {
             await _mediator.SendAsync<BeginRedirectFlowCommand, None, PaymentFlowRes<GoCardlessCredential>>(None.Empty);
 
@@ -23,7 +23,7 @@ namespace N3O.Umbraco.Payments.GoCardless.Controllers {
         }
 
         // TODO Has api in route at the moment
-        [HttpGet("credentials/{flowId:guid}/complete")]
+        [HttpGet("credentials/{flowId:entityId}/complete")]
         public async Task<ActionResult> Complete() {
             await _mediator.SendAsync<CompleteRedirectFlowCommand, None, PaymentFlowRes<GoCardlessCredential>>(None.Empty);
 
