@@ -1,7 +1,6 @@
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Financial;
 using NodaTime;
-using System;
 
 namespace N3O.Umbraco.Forex {
     public class CachedExchangeRate : Entity {
@@ -10,7 +9,7 @@ namespace N3O.Umbraco.Forex {
         public Currency QuoteCurrency { get; private set; }
         public decimal Rate { get; private set; }
 
-        public static CachedExchangeRate Create(Guid id,
+        public static CachedExchangeRate Create(EntityId id,
                                                 LocalDate date,
                                                 Currency baseCurrency,
                                                 Currency quoteCurrency,

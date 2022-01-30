@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -38,8 +39,8 @@ namespace N3O.Umbraco.Hosting {
         
         public async Task InvokeAsync(HttpContext context, RequestDelegate next) {
             if (_webHostEnvironment.IsStaging() &&
-                !context.Request.Path.StartsWithSegments("/umbraco", StringComparison.InvariantCultureIgnoreCase) &&
-                !context.Request.Path.StartsWithSegments("/App_Plugins", StringComparison.InvariantCultureIgnoreCase)) {
+                !context.Request.GetDisplayUrl().Contains("/umbraco", StringComparison.InvariantCultureIgnoreCase) &&
+                !context.Request.GetDisplayUrl().Contains("/App_Plugins", StringComparison.InvariantCultureIgnoreCase)) {
                 var umbracoContext = _umbracoContextFactory.Value.EnsureUmbracoContext().UmbracoContext;
 
                 var contentType = umbracoContext.Content.GetContentType(StagingSettingsAlias);
@@ -93,7 +94,7 @@ namespace N3O.Umbraco.Hosting {
         private bool IsAuthorized(HttpContext context, StagingSettingsContent stagingSettings, string remoteIp) {
             var isAuthorized = false;
 
-            if (stagingSettings.IpWhitelist.OrEmpty().Contains(remoteIp, true)) {
+            if (stagingSettings.Rules.OrEmpty().Any(x => remoteIp.EqualsInvariant(x.RuleIpAddress))) {
                 isAuthorized = true;
             } else if (IsSignedIntoBackOffice(context)) {
                 isAuthorized = true;

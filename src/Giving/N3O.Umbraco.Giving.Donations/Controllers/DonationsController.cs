@@ -19,7 +19,7 @@ namespace N3O.Umbraco.Giving.Donations.Controllers {
             _umbracoMapper = umbracoMapper;
         }
         
-        [HttpGet("forms/{id}")]
+        [HttpGet("forms/{id:guid}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<DonationFormRes> GetForm(Guid id) {
             var form = _contentLocator.ById<DonationFormContent>(id);

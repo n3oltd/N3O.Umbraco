@@ -1,7 +1,7 @@
 ﻿using N3O.Umbraco.Lookups;
 using System.Text.RegularExpressions;
 
-namespace N3O.Umbraco.Counters {
+namespace N3O.Umbraco.References {
     public class ReferenceType : Lookup {
         public ReferenceType(string prefix, long startFrom) : base(prefix) {
             Prefix = prefix;

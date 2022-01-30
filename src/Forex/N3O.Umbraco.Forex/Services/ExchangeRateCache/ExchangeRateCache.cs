@@ -87,7 +87,7 @@ namespace N3O.Umbraco.Forex {
         }
 
 
-        private async Task<CachedExchangeRate> CreateCachedExchangeRateAsync(Guid id,
+        private async Task<CachedExchangeRate> CreateCachedExchangeRateAsync(EntityId id,
                                                                              LocalDate date,
                                                                              Currency baseCurrency,
                                                                              Currency quoteCurrency,

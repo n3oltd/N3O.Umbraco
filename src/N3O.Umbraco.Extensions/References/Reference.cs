@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace N3O.Umbraco.Counters {
+namespace N3O.Umbraco.References {
     public class Reference : Value, IReference {
         public Reference(ReferenceType type, long number) {
             Type = type;

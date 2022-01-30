@@ -22,16 +22,17 @@ namespace N3O.Umbraco.Hosting {
                 throw new MissingMethodException($"Could not find the method {methodSelector} on type {typeof(TController)}");
             }
 
-            var httpContext = _httpContextAccessor.HttpContext;
-
             var controllerName = typeof(TController).Name;
             if (controllerName.EndsWith("Controller", StringComparison.InvariantCultureIgnoreCase)) {
                 controllerName = controllerName.Substring(0, controllerName.Length - "Controller".Length);
             }
             
-            var url = _linkGenerator.GetUriByAction(httpContext, method.Name, controllerName, routeValues);
+            var url = _linkGenerator.GetUriByAction(_httpContextAccessor.HttpContext,
+                                                    method.Name,
+                                                    controllerName,
+                                                    routeValues);
 
-            url = url.Replace("localhost", "127.0.0.1");
+            url = url.Replace("localhost", "127.0.0.1", StringComparison.InvariantCultureIgnoreCase);
             
             return url;
         }

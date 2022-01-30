@@ -224,6 +224,25 @@ namespace N3O.Umbraco.Extensions {
                                          string value) {
             return collection.FirstOrDefault(x => stringPropertyPicker(x)?.EqualsInvariant(value) ?? false);
         }
+        
+        public static T GetClosetItem<T>(this IEnumerable<T> items,
+                                         Func<T, int> getDistance,
+                                         Func<int, bool> distancePredicate = null,
+                                         T defaultValue = default ) {
+            var selected = defaultValue;
+            var minDistance = int.MaxValue;
+            
+            foreach (var i in items) {
+                var distance = getDistance(i);
+                
+                if (distance < minDistance && distancePredicate?.Invoke(distance) != false) {
+                    selected = i;
+                    minDistance = distance;
+                }
+            }
+
+            return selected;
+        }
     
         public static IEnumerable<string> GetValues(this NameValueCollection collection) {
             return collection.AllKeys.Select(k => collection[k]);

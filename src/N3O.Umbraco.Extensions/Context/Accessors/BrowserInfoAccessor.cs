@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Context {
     public class BrowserInfoAccessor : IBrowserInfoAccessor {
@@ -9,29 +8,28 @@ namespace N3O.Umbraco.Context {
             _httpContextAccessor = httpContextAccessor;
         }
         
-        public string GetUserAgent() {
-            var httpContext = _httpContextAccessor.HttpContext;
-
-            var header = httpContext.IfNotNull(x => x.Request.Headers["user-agent"]);
-
-            return header;
-        }
-
-        public string GetLanguage() {
-            var httpContext = _httpContextAccessor.HttpContext;
-
-            var header = httpContext.IfNotNull(x => x.Request.Headers["accept-language"]);
-
-            return header;
+        public string GetAccept() {
+            return GetHeader("Accept");
         }
         
-        public string GetAccept() {
+        public string GetHeader(string headerName) {
             var httpContext = _httpContextAccessor.HttpContext;
 
-            var header = (string) httpContext.IfNotNull(x => x.Request.Headers["accept"]);
+            if (httpContext != null) {
+                if (httpContext.Request.Headers.TryGetValue(headerName, out var value)) {
+                    return value;
+                }
+            }
 
-            return header ?? "*";
+            return null;
         }
-
+        
+        public string GetLanguage() {
+            return GetHeader("Accept-Language");
+        }
+        
+        public string GetUserAgent() {
+            return GetHeader("User-Agent");
+        }
     }
 }

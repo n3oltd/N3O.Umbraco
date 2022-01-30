@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Constants;
+using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 using NodaTime;
@@ -19,7 +20,7 @@ namespace N3O.Umbraco.Entities {
             _clock = clock;
         }
 
-        public Task DeleteAsync(Guid id, CancellationToken cancellationToken = default) {
+        public Task DeleteAsync(EntityId id, CancellationToken cancellationToken = default) {
             using (var scope = _scopeProvider.CreateScope()) {
                 scope.Database.Delete<EntityRow>($@"DELETE FROM {Tables.Entities} WHERE Id = @0", id);
             
@@ -29,7 +30,7 @@ namespace N3O.Umbraco.Entities {
             }
         }
         
-        public async Task<T> GetAsync(Guid id, CancellationToken cancellationToken = default) {
+        public async Task<T> GetAsync(EntityId id, CancellationToken cancellationToken = default) {
             using (var scope = _scopeProvider.CreateScope()) {
                 var row = await scope.Database.SingleOrDefaultAsync<EntityRow>($@"SELECT * FROM {Tables.Entities} WHERE Id = @0", id);
 
@@ -41,6 +42,16 @@ namespace N3O.Umbraco.Entities {
 
                 return entity;
             }
+        }
+
+        public async Task<T> GetAsync(RevisionId revisionId, CancellationToken cancellationToken = default) {
+            var entity = await GetAsync(revisionId.Id, cancellationToken);
+            
+            if (entity != null && !revisionId.RevisionMatches(entity.Revision)) {
+                throw new RevisionMismatchException(revisionId);
+            }
+
+            return entity;
         }
 
         public async Task InsertAsync(T entity, CancellationToken cancellationToken = default) {

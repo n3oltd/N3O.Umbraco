@@ -1,14 +1,14 @@
+using N3O.Umbraco.Extensions;
 using NodaTime;
-using System;
 
 namespace N3O.Umbraco.Entities {
     public abstract class Entity : IEntity {
         protected Entity() {
-            Id = Guid.NewGuid();
+            Id = EntityId.New();
             Revision = 0;
         }
         
-        public Guid Id { get; private set; }
+        public EntityId Id { get; private set; }
         public Instant Timestamp { get; private set; }
         public int Revision { get; private set; }
         public bool IsNew => Revision == 0;
@@ -18,11 +18,11 @@ namespace N3O.Umbraco.Entities {
             Revision++;
         }
 
-        protected static TEntity Create<TEntity>(Guid? id = null) where TEntity : Entity, new() {
+        protected static TEntity Create<TEntity>(EntityId id = null) where TEntity : Entity, new() {
             var entity = new TEntity();
 
-            if (id.HasValue) {
-                entity.Id = id.Value;
+            if (id.HasValue()) {
+                entity.Id = id;
             }
 
             return entity;

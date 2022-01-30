@@ -13,9 +13,7 @@ namespace N3O.Umbraco.Json {
         }
 
         public override bool CanConvert(Type objectType) {
-            var canConvert = objectType.ImplementsInterface<ILookup>();
-
-            return canConvert;
+            return objectType.ImplementsInterface<ILookup>();
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {

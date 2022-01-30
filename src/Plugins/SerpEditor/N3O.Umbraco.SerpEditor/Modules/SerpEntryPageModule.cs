@@ -36,7 +36,7 @@ namespace N3O.Umbraco.SerpEditor.Modules {
 
                 if (template.HasValue(x => x.TitleSuffix)) {
                     serpEntry.Title += $" {template.TitleSuffix}";
-                }    
+                }
             }
 
             return Task.FromResult<object>(serpEntry);
