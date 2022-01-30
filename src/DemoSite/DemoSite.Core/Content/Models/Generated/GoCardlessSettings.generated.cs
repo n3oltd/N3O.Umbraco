@@ -20,7 +20,7 @@ namespace DemoSite.Core.Content
 {
 	/// <summary>GoCardless Settings</summary>
 	[PublishedModel("goCardlessSettings")]
-	public partial class GoCardlessSettings : PublishedContentModel
+	public partial class GoCardlessSettings : PublishedContentModel, IPaymentMethodSettings
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
@@ -71,6 +71,14 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("transactionDescription")]
-		public virtual string TransactionDescription => this.Value<string>(_publishedValueFallback, "transactionDescription");
+		public virtual string TransactionDescription => global::DemoSite.Core.Content.PaymentMethodSettings.GetTransactionDescription(this, _publishedValueFallback);
+
+		///<summary>
+		/// Transaction ID
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("transactionId")]
+		public virtual string TransactionId => global::DemoSite.Core.Content.PaymentMethodSettings.GetTransactionId(this, _publishedValueFallback);
 	}
 }

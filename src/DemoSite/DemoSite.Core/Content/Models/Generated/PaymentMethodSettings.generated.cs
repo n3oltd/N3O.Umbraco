@@ -18,14 +18,29 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Core.Content
 {
-	/// <summary>Stripe Settings</summary>
-	[PublishedModel("stripeSettings")]
-	public partial class StripeSettings : PublishedContentModel, IPaymentMethodSettings
+	// Mixin Content Type with alias "paymentMethodSettings"
+	/// <summary>Payment Method Settings</summary>
+	public partial interface IPaymentMethodSettings : IPublishedContent
+	{
+		/// <summary>Transaction Description</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		string TransactionDescription { get; }
+
+		/// <summary>Transaction ID</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		string TransactionId { get; }
+	}
+
+	/// <summary>Payment Method Settings</summary>
+	[PublishedModel("paymentMethodSettings")]
+	public partial class PaymentMethodSettings : PublishedContentModel, IPaymentMethodSettings
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		public new const string ModelTypeAlias = "stripeSettings";
+		public new const string ModelTypeAlias = "paymentMethodSettings";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
@@ -34,14 +49,14 @@ namespace DemoSite.Core.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<StripeSettings, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<PaymentMethodSettings, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public StripeSettings(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
+		public PaymentMethodSettings(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
@@ -50,44 +65,17 @@ namespace DemoSite.Core.Content
 		// properties
 
 		///<summary>
-		/// Client Key
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("productionClientKey")]
-		public virtual string ProductionClientKey => this.Value<string>(_publishedValueFallback, "productionClientKey");
-
-		///<summary>
-		/// Secret Key
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("productionSecretKey")]
-		public virtual string ProductionSecretKey => this.Value<string>(_publishedValueFallback, "productionSecretKey");
-
-		///<summary>
-		/// Client Key
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("sandboxClientKey")]
-		public virtual string SandboxClientKey => this.Value<string>(_publishedValueFallback, "sandboxClientKey");
-
-		///<summary>
-		/// Secret Key
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("sandboxSecretKey")]
-		public virtual string SandboxSecretKey => this.Value<string>(_publishedValueFallback, "sandboxSecretKey");
-
-		///<summary>
 		/// Transaction Description
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("transactionDescription")]
-		public virtual string TransactionDescription => global::DemoSite.Core.Content.PaymentMethodSettings.GetTransactionDescription(this, _publishedValueFallback);
+		public virtual string TransactionDescription => GetTransactionDescription(this, _publishedValueFallback);
+
+		/// <summary>Static getter for Transaction Description</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
+		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		public static string GetTransactionDescription(IPaymentMethodSettings that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "transactionDescription");
 
 		///<summary>
 		/// Transaction ID
@@ -95,6 +83,11 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("transactionId")]
-		public virtual string TransactionId => global::DemoSite.Core.Content.PaymentMethodSettings.GetTransactionId(this, _publishedValueFallback);
+		public virtual string TransactionId => GetTransactionId(this, _publishedValueFallback);
+
+		/// <summary>Static getter for Transaction ID</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
+		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		public static string GetTransactionId(IPaymentMethodSettings that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "transactionId");
 	}
 }
