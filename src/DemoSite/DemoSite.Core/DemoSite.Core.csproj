@@ -22,6 +22,7 @@
       <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Donations\N3O.Umbraco.Giving.Donations.csproj" />
       <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Sponsorships\N3O.Umbraco.Giving.Sponsorships.csproj" />
       <ProjectReference Include="..\..\Newsletters\N3O.Umbraco.Newsletters.Mailchimp\N3O.Umbraco.Newsletters.Mailchimp.csproj" />
+      <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.AuthorizeNet\N3O.Umbraco.Payments.AuthorizeNet.csproj" />
       <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.GoCardless\N3O.Umbraco.Payments.GoCardless.csproj" />
       <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.Opayo\N3O.Umbraco.Payments.Opayo.csproj" />
       <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.PayPal\N3O.Umbraco.Payments.PayPal.csproj" />
