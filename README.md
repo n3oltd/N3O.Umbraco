@@ -15,6 +15,9 @@ Aside from the back office plugins, extensions do not provide any HTML, CSS or o
 The solution includes a demo site that both illustrates much of the functionality and also provides a useful starting point for building new sites. The easiest way to get started is to run the `DemoSite.Web` project in the solution, follow the Umbraco install wizard and then navigate to *Settings / uSync*. From here import *Settings* first, followed by *Content*. This will create all of the demo data types, content types and demo content.
 
 ## Functionality
+#### Donations
+Provides a pluggable architecture for a shopping cart, checkout and receipts.
+
 #### Email
 Provides a pluggable architecture for email delivery such as via SMTP or SendGrid.
 
@@ -27,7 +30,9 @@ Provides functionality for integrating with newsletter platforms such as Mailchi
 #### Payments
 Provides support for taking one-off and recurring payments using various gateways. Currently supported gateways include:
 
+* Authorize.net
 * GoCardless
+* Opayo
 * PayPal
 * Stripe
 
@@ -37,8 +42,9 @@ Provides a number of back office extensions such as:
 * File Uploader
 * Image Cropper
 * SERP Entry Editor
+* Text Resource Editor
 
-These either provide richer functionality than Umbraco includes or works around limitations (e.g. the built in Umbraco cropper doesn't work with nested content or blocks).
+These either provide richer functionality than Umbraco includes or works around limitations (e.g. the built in Umbraco cropper doesn't work with Nested Content or Blocks).
 
 #### Search
 Provides functionality for providing a site search function using Google Custom Search.
