@@ -40,7 +40,8 @@ namespace N3O.Umbraco.Hosting {
         public async Task InvokeAsync(HttpContext context, RequestDelegate next) {
             if (_webHostEnvironment.IsStaging() &&
                 !context.Request.GetDisplayUrl().Contains("/umbraco", StringComparison.InvariantCultureIgnoreCase) &&
-                !context.Request.GetDisplayUrl().Contains("/App_Plugins", StringComparison.InvariantCultureIgnoreCase)) {
+                !context.Request.GetDisplayUrl().Contains("/App_Plugins", StringComparison.InvariantCultureIgnoreCase) &&
+                !context.Request.GetDisplayUrl().Contains("/sb", StringComparison.InvariantCultureIgnoreCase)) {
                 var umbracoContext = _umbracoContextFactory.Value.EnsureUmbracoContext().UmbracoContext;
 
                 var contentType = umbracoContext.Content.GetContentType(StagingSettingsAlias);
