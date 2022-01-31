@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "dependencies": {},
   "license": "UNLICENSED",
-  "main": "./dist/index.js",
+  "main": "./build/index.js",
   "module": "./esm/index.js",
   "types": "./esm/index.d.ts",
   "devDependencies": {
@@ -18,10 +18,10 @@
     "url": ""
   },
   "files": [
-    "dist/**/*.js",
-    "dist/**/*.js.map",
-    "dist/**/*.d.ts",
-    "dist/**/*.d.ts.map",
+    "build/**/*.js",
+    "build/**/*.js.map",
+    "build/**/*.d.ts",
+    "build/**/*.d.ts.map",
     "esm/**/*.js",
     "esm/**/*.js.map",
     "esm/**/*.d.ts",
@@ -32,8 +32,8 @@
   ],
   "scripts": {
     "tsc": "tsc",
-    "build": "tsc && shx cp -r esm dist && npm run minify",
-    "minify": "uglifyjs -c -m --comments --source-map \"content='./dist/index.js.map'\" -o ./dist/index.min.js ./dist/index.js",
+    "build": "tsc && shx cp -r esm build && npm run minify",
+    "minify": "uglifyjs -c -m --comments --source-map \"content='./build/index.js.map'\" -o ./build/index.min.js ./build/index.js",
     "prepack": "npm install && npm run build"
   },
   "sideEffects": false
