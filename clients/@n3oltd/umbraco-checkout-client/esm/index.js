@@ -121,9 +121,9 @@ var CheckoutClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    CheckoutClient.prototype.getLookupCountries = function () {
+    CheckoutClient.prototype.getRegularGivingFrequencies = function () {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Checkout/lookups/countries";
+        var url_ = this.baseUrl + "/umbraco/api/Checkout/lookups/regularGivingFrequencies";
         url_ = url_.replace(/[?&]$/, "");
         var options_ = {
             method: "GET",
@@ -132,10 +132,10 @@ var CheckoutClient = /** @class */ (function () {
             }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processGetLookupCountries(_response);
+            return _this.processGetRegularGivingFrequencies(_response);
         });
     };
-    CheckoutClient.prototype.processGetLookupCountries = function (response) {
+    CheckoutClient.prototype.processGetRegularGivingFrequencies = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -169,21 +169,27 @@ var CheckoutClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    CheckoutClient.prototype.getLookupTaxStatuses = function () {
+    CheckoutClient.prototype.updateAccount = function (checkoutRevisionId, req) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Checkout/lookups/taxStatuses";
+        var url_ = this.baseUrl + "/umbraco/api/Checkout/{checkoutRevisionId}/account";
+        if (checkoutRevisionId === undefined || checkoutRevisionId === null)
+            throw new Error("The parameter 'checkoutRevisionId' must be defined.");
+        url_ = url_.replace("{checkoutRevisionId}", encodeURIComponent("" + checkoutRevisionId));
         url_ = url_.replace(/[?&]$/, "");
+        var content_ = JSON.stringify(req);
         var options_ = {
-            method: "GET",
+            body: content_,
+            method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processGetLookupTaxStatuses(_response);
+            return _this.processUpdateAccount(_response);
         });
     };
-    CheckoutClient.prototype.processGetLookupTaxStatuses = function (response) {
+    CheckoutClient.prototype.processUpdateAccount = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -279,6 +285,21 @@ export var PublishedItemType;
     PublishedItemType[PublishedItemType["Media"] = 3] = "Media";
     PublishedItemType[PublishedItemType["Member"] = 4] = "Member";
 })(PublishedItemType || (PublishedItemType = {}));
+/** One of 'email', 'sms', 'post', 'telephone' */
+export var ConsentChannel;
+(function (ConsentChannel) {
+    ConsentChannel["Email"] = "email";
+    ConsentChannel["Sms"] = "sms";
+    ConsentChannel["Post"] = "post";
+    ConsentChannel["Telephone"] = "telephone";
+})(ConsentChannel || (ConsentChannel = {}));
+/** One of 'noResponse', 'optIn', 'optOut' */
+export var ConsentResponse;
+(function (ConsentResponse) {
+    ConsentResponse["NoResponse"] = "noResponse";
+    ConsentResponse["OptIn"] = "optIn";
+    ConsentResponse["OptOut"] = "optOut";
+})(ConsentResponse || (ConsentResponse = {}));
 /** One of 'payer', 'nonPayer', 'notSpecified' */
 export var TaxStatus;
 (function (TaxStatus) {

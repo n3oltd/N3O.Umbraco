@@ -1,4 +1,6 @@
-﻿using N3O.Umbraco.Lookups;
+﻿using N3O.Umbraco.FundDimensions;
+using N3O.Umbraco.Giving.Lookups;
+using N3O.Umbraco.Lookups;
 
 namespace N3O.Umbraco.Giving.Allocations.Lookups {
     public class AllocationsLookupTypes : ILookupTypesSet {
@@ -7,10 +9,7 @@ namespace N3O.Umbraco.Giving.Allocations.Lookups {
         
         [LookupInfo(typeof(DonationItem))]
         public const string DonationItems = "donationItems";
-        
-        [LookupInfo(typeof(DonationType))]
-        public const string DonationTypes = "donationTypes";
-        
+
         [LookupInfo(typeof(FundDimension1Option))]
         public const string FundDimension1Options = "fundDimension1Options";
         
@@ -23,7 +22,7 @@ namespace N3O.Umbraco.Giving.Allocations.Lookups {
         [LookupInfo(typeof(FundDimension4Option))]
         public const string FundDimension4Options = "fundDimension4Options";
         
-        [LookupInfo(typeof(SponsorshipScheme))]
-        public const string SponsorshipSchemes = "sponsorshipSchemes";
+        [LookupInfo(typeof(GivingType))]
+        public const string GivingTypes = "givingTypes";
     }
 }

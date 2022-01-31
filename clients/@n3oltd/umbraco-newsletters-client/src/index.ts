@@ -71,13 +71,9 @@ export class NewslettersClient {
     }
 }
 
-export interface Value {
-}
-
-export interface SubscribeResult extends Value {
+export interface SubscribeResult {
     subscribed?: boolean;
     errorMessage?: string | undefined;
-    errorDetails?: string | undefined;
 }
 
 export interface ProblemDetails {

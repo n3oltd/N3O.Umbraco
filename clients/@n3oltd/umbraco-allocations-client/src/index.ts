@@ -146,49 +146,6 @@ export class AllocationsClient {
         return Promise.resolve<DonationItemRes[]>(<any>null);
     }
 
-    getLookupDonationTypes(): Promise<NamedLookupRes[]> {
-        let url_ = this.baseUrl + "/umbraco/api/Allocations/lookups/donationTypes";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ = <RequestInit>{
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetLookupDonationTypes(_response);
-        });
-    }
-
-    protected processGetLookupDonationTypes(response: Response): Promise<NamedLookupRes[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : <NamedLookupRes[]>JSON.parse(_responseText, this.jsonParseReviver);
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            let result400: any = null;
-            result400 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        } else if (status === 500) {
-            return response.text().then((_responseText) => {
-            return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<NamedLookupRes[]>(<any>null);
-    }
-
     getLookupFundDimension1Options(): Promise<FundDimensionOptionRes[]> {
         let url_ = this.baseUrl + "/umbraco/api/Allocations/lookups/fundDimension1Options";
         url_ = url_.replace(/[?&]$/, "");
@@ -361,8 +318,8 @@ export class AllocationsClient {
         return Promise.resolve<FundDimensionOptionRes[]>(<any>null);
     }
 
-    getLookupSponsorshipSchemes(): Promise<NamedLookupRes[]> {
-        let url_ = this.baseUrl + "/umbraco/api/Allocations/lookups/sponsorshipSchemes";
+    getLookupGivingTypes(): Promise<NamedLookupRes[]> {
+        let url_ = this.baseUrl + "/umbraco/api/Allocations/lookups/givingTypes";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <RequestInit>{
@@ -373,11 +330,11 @@ export class AllocationsClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetLookupSponsorshipSchemes(_response);
+            return this.processGetLookupGivingTypes(_response);
         });
     }
 
-    protected processGetLookupSponsorshipSchemes(response: Response): Promise<NamedLookupRes[]> {
+    protected processGetLookupGivingTypes(response: Response): Promise<NamedLookupRes[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -404,7 +361,7 @@ export class AllocationsClient {
         return Promise.resolve<NamedLookupRes[]>(<any>null);
     }
 
-    getAllLookups(criteria: LookupsCriteria): Promise<AllocationsLookupsRes> {
+    getAllLookups(criteria: LookupsCriteria): Promise<AllocationsLookupRes> {
         let url_ = this.baseUrl + "/umbraco/api/Allocations/lookups/all";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -424,13 +381,13 @@ export class AllocationsClient {
         });
     }
 
-    protected processGetAllLookups(response: Response): Promise<AllocationsLookupsRes> {
+    protected processGetAllLookups(response: Response): Promise<AllocationsLookupRes> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : <AllocationsLookupsRes>JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = _responseText === "" ? null : <AllocationsLookupRes>JSON.parse(_responseText, this.jsonParseReviver);
             return result200;
             });
         } else if (status === 400) {
@@ -448,22 +405,15 @@ export class AllocationsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<AllocationsLookupsRes>(<any>null);
+        return Promise.resolve<AllocationsLookupRes>(<any>null);
     }
 }
 
-export interface Value {
-}
-
-export interface FundStructure extends Value {
-    dimension1?: Dimension1 | undefined;
-    dimension2?: Dimension2 | undefined;
-    dimension3?: Dimension3 | undefined;
-    dimension4?: Dimension4 | undefined;
-}
-
-export interface UmbracoContentOfFundDimension1Option extends Value {
-    content?: IPublishedContent | undefined;
+export interface FundStructure {
+    dimension1?: string | undefined;
+    dimension2?: string | undefined;
+    dimension3?: string | undefined;
+    dimension4?: string | undefined;
 }
 
 export interface IPublishedContent {
@@ -500,34 +450,6 @@ export enum PublishedItemType {
     Member = 4,
 }
 
-export interface UmbracoContentOfFundDimension1 extends Value {
-    content?: IPublishedContent | undefined;
-}
-
-export interface UmbracoContentOfFundDimension2Option extends Value {
-    content?: IPublishedContent | undefined;
-}
-
-export interface UmbracoContentOfFundDimension2 extends Value {
-    content?: IPublishedContent | undefined;
-}
-
-export interface UmbracoContentOfFundDimension3Option extends Value {
-    content?: IPublishedContent | undefined;
-}
-
-export interface UmbracoContentOfFundDimension3 extends Value {
-    content?: IPublishedContent | undefined;
-}
-
-export interface UmbracoContentOfFundDimension4Option extends Value {
-    content?: IPublishedContent | undefined;
-}
-
-export interface UmbracoContentOfFundDimension4 extends Value {
-    content?: IPublishedContent | undefined;
-}
-
 export interface ProblemDetails {
     type?: string | undefined;
     title?: string | undefined;
@@ -536,174 +458,67 @@ export interface ProblemDetails {
     instance?: string | undefined;
 }
 
-export interface LookupRes {
+export interface NamedLookupRes {
     id?: string | undefined;
-}
-
-export interface NamedLookupRes extends LookupRes {
     name?: string | undefined;
 }
 
-export interface DonationItemRes extends NamedLookupRes {
-    allowSingleDonations?: boolean;
-    allowRegularDonations?: boolean;
-    free?: boolean;
-    price?: MoneyRes | undefined;
+export interface DonationItemRes {
+    name?: string | undefined;
+    id?: string | undefined;
+    allowedGivingTypes?: GivingType[] | undefined;
     dimension1Options?: FundDimensionOptionRes[] | undefined;
     dimension2Options?: FundDimensionOptionRes[] | undefined;
     dimension3Options?: FundDimensionOptionRes[] | undefined;
     dimension4Options?: FundDimensionOptionRes[] | undefined;
+    pricing?: PricingRes | undefined;
+}
+
+/** One of 'donation', 'regularGiving' */
+export enum GivingType {
+    Donation = "donation",
+    RegularGiving = "regularGiving",
+}
+
+export interface FundDimensionOptionRes {
+    name?: string | undefined;
+    id?: string | undefined;
+    isUnrestricted?: boolean;
+}
+
+export interface PricingRes {
+    value?: MoneyRes | undefined;
+    locked?: boolean;
+    priceRules?: PricingRuleRes[] | undefined;
 }
 
 export interface MoneyRes {
     amount?: number;
-    currency?: Currency | undefined;
+    currency?: string | undefined;
     text?: string | undefined;
 }
 
-export interface UmbracoContentOfCurrency extends Value {
-    content?: IPublishedContent | undefined;
+export interface PricingRuleRes {
+    value?: MoneyRes | undefined;
+    locked?: boolean;
+    dimension1Options?: string[] | undefined;
+    dimension2Options?: string[] | undefined;
+    dimension3Options?: string[] | undefined;
+    dimension4Options?: string[] | undefined;
 }
 
-export interface FundDimensionOptionRes extends NamedLookupRes {
-    isUnrestricted?: boolean;
-}
-
-export interface LookupsRes {
-}
-
-export interface AllocationsLookupsRes extends LookupsRes {
+export interface AllocationsLookupRes {
     allocationTypes?: NamedLookupRes[] | undefined;
     donationItems?: DonationItemRes[] | undefined;
-    donationTypes?: NamedLookupRes[] | undefined;
+    givingTypes?: NamedLookupRes[] | undefined;
     fundDimension1Options?: FundDimensionOptionRes[] | undefined;
     fundDimension2Options?: FundDimensionOptionRes[] | undefined;
     fundDimension3Options?: FundDimensionOptionRes[] | undefined;
     fundDimension4Options?: FundDimensionOptionRes[] | undefined;
-    sponsorshipSchemes?: NamedLookupRes[] | undefined;
 }
 
 export interface LookupsCriteria {
-    types?: Types[] | undefined;
-}
-
-export interface Anonymous7 extends UmbracoContentOfFundDimension1 {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Anonymous extends Anonymous7 {
-    isActive?: boolean;
-    options?: Options[] | undefined;
-}
-
-export interface Dimension1 extends Anonymous {
-}
-
-export interface Anonymous8 extends UmbracoContentOfFundDimension2 {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Anonymous2 extends Anonymous8 {
-    isActive?: boolean;
-    options?: Options2[] | undefined;
-}
-
-export interface Dimension2 extends Anonymous2 {
-}
-
-export interface Anonymous9 extends UmbracoContentOfFundDimension3 {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Anonymous3 extends Anonymous9 {
-    isActive?: boolean;
-    options?: Options3[] | undefined;
-}
-
-export interface Dimension3 extends Anonymous3 {
-}
-
-export interface Anonymous10 extends UmbracoContentOfFundDimension4 {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Anonymous4 extends Anonymous10 {
-    isActive?: boolean;
-    options?: Options4[] | undefined;
-}
-
-export interface Dimension4 extends Anonymous4 {
-}
-
-export interface Anonymous5 extends UmbracoContentOfCurrency {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Currency extends Anonymous5 {
-    symbol?: string | undefined;
-    isBaseCurrency?: boolean;
-    decimalDigits?: number;
-}
-
-export interface Anonymous6 extends Value {
-    id?: string | undefined;
-}
-
-export interface Types extends Anonymous6 {
-    lookupType?: string | undefined;
-}
-
-export interface Anonymous15 extends UmbracoContentOfFundDimension1Option {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Anonymous11 extends Anonymous15 {
-    isUnrestricted?: boolean;
-}
-
-export interface Options extends Anonymous11 {
-}
-
-export interface Anonymous16 extends UmbracoContentOfFundDimension2Option {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Anonymous12 extends Anonymous16 {
-    isUnrestricted?: boolean;
-}
-
-export interface Options2 extends Anonymous12 {
-}
-
-export interface Anonymous17 extends UmbracoContentOfFundDimension3Option {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Anonymous13 extends Anonymous17 {
-    isUnrestricted?: boolean;
-}
-
-export interface Options3 extends Anonymous13 {
-}
-
-export interface Anonymous18 extends UmbracoContentOfFundDimension4Option {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Anonymous14 extends Anonymous18 {
-    isUnrestricted?: boolean;
-}
-
-export interface Options4 extends Anonymous14 {
+    types?: string[] | undefined;
 }
 
 export class ApiException extends Error {

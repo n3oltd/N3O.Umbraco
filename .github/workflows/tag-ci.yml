@@ -15,6 +15,15 @@ jobs:
     secrets:
       nuget-api-key: ${{ secrets.NUGET_API_KEY }}
 
+  umbraco-accounts-client:
+    name: 'npm Publish @n3oltd/umbraco-accounts-client'
+    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
+    with:
+      working-directory: 'clients/@n3oltd/umbraco-accounts-client'
+      version: ${GITHUB_REF#refs/tags/}
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}
+
   umbraco-allocations-client:
     name: 'npm Publish @n3oltd/umbraco-allocations-client'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
@@ -74,6 +83,24 @@ jobs:
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-payments-client'
+      version: ${GITHUB_REF#refs/tags/}
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}
+
+  umbraco-payments-gocardless-client:
+    name: 'npm Publish @n3oltd/umbraco-payments-gocardless-client'
+    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
+    with:
+      working-directory: 'clients/@n3oltd/umbraco-payments-gocardless-client'
+      version: ${GITHUB_REF#refs/tags/}
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}
+
+  umbraco-payments-opayo-client:
+    name: 'npm Publish @n3oltd/umbraco-payments-opayo-client'
+    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
+    with:
+      working-directory: 'clients/@n3oltd/umbraco-payments-opayo-client'
       version: ${GITHUB_REF#refs/tags/}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}

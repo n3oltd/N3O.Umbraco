@@ -13,6 +13,7 @@ namespace N3O.Umbraco.Extensions {
             services.AddOpenApiDocument(opt => {
                 opt.Title = name;
                 opt.DocumentName = name;
+                opt.FlattenInheritanceHierarchy = true;
 
                 AddSchemaProcessors(opt);
                 AddOperationFilters(opt, name);

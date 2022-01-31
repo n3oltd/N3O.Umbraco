@@ -1,13 +1,13 @@
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving.Allocations.Lookups;
+using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Cart.Models;
 using System;
 using System.Linq;
 
 namespace N3O.Umbraco.Giving.Cart.Entities {
     public partial class Cart {
-        public void Remove(DonationType donationType, int allocationIndex) {
-            ReplaceContents(donationType, c => RemoveContents(c, allocationIndex));
+        public void Remove(GivingType givingType, int allocationIndex) {
+            ReplaceContents(givingType, c => RemoveContents(c, allocationIndex));
         }
         
         private CartContents RemoveContents(CartContents contents, int allocationIndex) {

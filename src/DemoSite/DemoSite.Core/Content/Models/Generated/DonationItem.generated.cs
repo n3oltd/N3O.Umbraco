@@ -20,7 +20,7 @@ namespace DemoSite.Core.Content
 {
 	/// <summary>Donation Item</summary>
 	[PublishedModel("donationItem")]
-	public partial class DonationItem : PublishedContentModel
+	public partial class DonationItem : PublishedContentModel, IFundDimensionOptionsMandatory, IPrice, IPricingRules
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
@@ -50,18 +50,12 @@ namespace DemoSite.Core.Content
 		// properties
 
 		///<summary>
-		/// Allow Regular Donations
+		/// Allowed Giving Types
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[ImplementPropertyType("allowRegularDonations")]
-		public virtual bool AllowRegularDonations => this.Value<bool>(_publishedValueFallback, "allowRegularDonations");
-
-		///<summary>
-		/// Allow Single Donations
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[ImplementPropertyType("allowSingleDonations")]
-		public virtual bool AllowSingleDonations => this.Value<bool>(_publishedValueFallback, "allowSingleDonations");
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("allowedGivingTypes")]
+		public virtual global::System.Collections.Generic.List<global::N3O.Umbraco.Giving.Lookups.GivingType> AllowedGivingTypes => this.Value<global::System.Collections.Generic.List<global::N3O.Umbraco.Giving.Lookups.GivingType>>(_publishedValueFallback, "allowedGivingTypes");
 
 		///<summary>
 		/// Locations
@@ -69,7 +63,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("dimension1Options")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension1Option> Dimension1Options => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension1Option>>(_publishedValueFallback, "dimension1Options");
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension1Option> Dimension1Options => global::DemoSite.Core.Content.FundDimensionOptionsMandatory.GetDimension1Options(this, _publishedValueFallback);
 
 		///<summary>
 		/// Themes
@@ -77,7 +71,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("dimension2Options")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension2Option> Dimension2Options => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension2Option>>(_publishedValueFallback, "dimension2Options");
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension2Option> Dimension2Options => global::DemoSite.Core.Content.FundDimensionOptionsMandatory.GetDimension2Options(this, _publishedValueFallback);
 
 		///<summary>
 		/// Stipulations
@@ -85,20 +79,28 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("dimension3Options")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension3Option> Dimension3Options => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension3Option>>(_publishedValueFallback, "dimension3Options");
-
-		///<summary>
-		/// Free
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[ImplementPropertyType("free")]
-		public virtual bool Free => this.Value<bool>(_publishedValueFallback, "free");
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension3Option> Dimension3Options => global::DemoSite.Core.Content.FundDimensionOptionsMandatory.GetDimension3Options(this, _publishedValueFallback);
 
 		///<summary>
 		/// Price
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[ImplementPropertyType("price")]
-		public virtual decimal Price => this.Value<decimal>(_publishedValueFallback, "price");
+		[ImplementPropertyType("priceAmount")]
+		public virtual decimal PriceAmount => global::DemoSite.Core.Content.Price.GetPriceAmount(this, _publishedValueFallback);
+
+		///<summary>
+		/// Price Locked
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
+		[ImplementPropertyType("priceLocked")]
+		public virtual bool PriceLocked => global::DemoSite.Core.Content.Price.GetPriceLocked(this, _publishedValueFallback);
+
+		///<summary>
+		/// Price Rules
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("priceRules")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.PricingRule> PriceRules => global::DemoSite.Core.Content.PricingRules.GetPriceRules(this, _publishedValueFallback);
 	}
 }

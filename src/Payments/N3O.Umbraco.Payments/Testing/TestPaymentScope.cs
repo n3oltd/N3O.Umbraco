@@ -11,8 +11,9 @@ namespace N3O.Umbraco.Payments.Testing {
         public TestPaymentScope(IPaymentsFlow paymentsFlow) {
             _paymentsFlow = paymentsFlow;
         }
-        public async Task DoAsync<T>(Func<IPaymentsFlow, T, Task> actionAsync,
-                                     CancellationToken cancellationToken = default)
+        
+        public async Task<PaymentFlowRes<T>> DoAsync<T>(Func<IPaymentsFlow, T, Task> actionAsync,
+                                                        CancellationToken cancellationToken = default)
             where T : PaymentObject, new() {
             var paymentObject = _paymentsFlow.GetOrCreatePaymentObject<T>();
 
@@ -21,6 +22,8 @@ namespace N3O.Umbraco.Payments.Testing {
             } catch (Exception ex) {
                 paymentObject.UnhandledError(ex);
             }
+
+            return new PaymentFlowRes<T>(_paymentsFlow, paymentObject);
         }
 
         public Task<T> GetAsync<T>(Func<IPaymentsFlow, T> get, CancellationToken cancellationToken = default) {

@@ -20,8 +20,11 @@
       <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Cart\N3O.Umbraco.Giving.Cart.csproj" />
       <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Checkout\N3O.Umbraco.Giving.Checkout.csproj" />
       <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Donations\N3O.Umbraco.Giving.Donations.csproj" />
-      <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Pricing\N3O.Umbraco.Giving.Pricing.csproj" />
+      <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Sponsorships\N3O.Umbraco.Giving.Sponsorships.csproj" />
       <ProjectReference Include="..\..\Newsletters\N3O.Umbraco.Newsletters.Mailchimp\N3O.Umbraco.Newsletters.Mailchimp.csproj" />
+      <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.GoCardless\N3O.Umbraco.Payments.GoCardless.csproj" />
+      <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.Opayo\N3O.Umbraco.Payments.Opayo.csproj" />
+      <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.PayPal\N3O.Umbraco.Payments.PayPal.csproj" />
       <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.Stripe\N3O.Umbraco.Payments.Stripe.csproj" />
       <ProjectReference Include="..\..\Plugins\Cropper\N3O.Umbraco.Cropper\N3O.Umbraco.Cropper.csproj" />
       <ProjectReference Include="..\..\Plugins\SerpEditor\N3O.Umbraco.SerpEditor\N3O.Umbraco.SerpEditor.csproj" />

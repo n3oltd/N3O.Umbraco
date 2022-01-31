@@ -27,14 +27,14 @@ namespace N3O.Umbraco.Payments.Opayo.Controllers {
         }
 
         
-        [HttpPost("{flowId:guid}/payment/process")]
+        [HttpPost("{flowId:entityId}/payment/process")]
         public async Task<ActionResult<PaymentFlowRes<OpayoPayment>>> Process(OpayoPaymentReq req) {
             var res = await _mediator.SendAsync<ProcessPaymentCommand, OpayoPaymentReq, PaymentFlowRes<OpayoPayment>>(req);
 
             return Ok(res);
         }
 
-        [HttpPost("{flowId:guid}/authorize")]
+        [HttpPost("{flowId:entityId}/authorize")]
         public async Task<ActionResult<ThreeDSecureStatus>> Authorize([FromForm]ThreeDSecureChallengeReq req) {
             var res = await _mediator.SendAsync<ThreeDSecureChallengeCommand, ThreeDSecureChallengeReq, PaymentFlowRes<OpayoPayment>>(req);
 

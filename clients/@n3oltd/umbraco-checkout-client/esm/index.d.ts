@@ -9,10 +9,10 @@ export declare class CheckoutClient {
     protected processGetCurrentCheckout(response: Response): Promise<CheckoutRes>;
     getLookupCheckoutStages(): Promise<NamedLookupRes[]>;
     protected processGetLookupCheckoutStages(response: Response): Promise<NamedLookupRes[]>;
-    getLookupCountries(): Promise<CountryRes[]>;
-    protected processGetLookupCountries(response: Response): Promise<CountryRes[]>;
-    getLookupTaxStatuses(): Promise<NamedLookupRes[]>;
-    protected processGetLookupTaxStatuses(response: Response): Promise<NamedLookupRes[]>;
+    getRegularGivingFrequencies(): Promise<NamedLookupRes[]>;
+    protected processGetRegularGivingFrequencies(response: Response): Promise<NamedLookupRes[]>;
+    updateAccount(checkoutRevisionId: string, req: AccountReq): Promise<CheckoutRes>;
+    protected processUpdateAccount(response: Response): Promise<CheckoutRes>;
     getAllLookups(criteria: LookupsCriteria): Promise<CheckoutLookupsRes>;
     protected processGetAllLookups(response: Response): Promise<CheckoutLookupsRes>;
 }
@@ -24,17 +24,13 @@ export interface AccountRes {
     address?: AddressRes | undefined;
     email?: EmailRes | undefined;
     telephone?: TelephoneRes | undefined;
+    consent?: ConsentRes | undefined;
     taxStatus?: TaxStatus | undefined;
 }
 export interface NameRes {
-    title?: Title | undefined;
+    title?: string | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
-}
-export interface Value {
-}
-export interface UmbracoContentOfTitle extends Value {
-    content?: IPublishedContent | undefined;
 }
 export interface IPublishedContent {
     id?: number;
@@ -76,17 +72,35 @@ export interface AddressRes {
     locality?: string | undefined;
     administrativeArea?: string | undefined;
     postalCode?: string | undefined;
-    country?: Country | undefined;
-}
-export interface UmbracoContentOfCountry extends Value {
-    content?: IPublishedContent | undefined;
+    country?: string | undefined;
 }
 export interface EmailRes {
     address?: string | undefined;
 }
 export interface TelephoneRes {
-    country?: Country | undefined;
+    country?: string | undefined;
     number?: string | undefined;
+}
+export interface ConsentRes {
+    choices?: ConsentChoiceRes[] | undefined;
+}
+export interface ConsentChoiceRes {
+    channel?: ConsentChannel | undefined;
+    category?: string | undefined;
+    response?: ConsentResponse | undefined;
+}
+/** One of 'email', 'sms', 'post', 'telephone' */
+export declare enum ConsentChannel {
+    Email = "email",
+    Sms = "sms",
+    Post = "post",
+    Telephone = "telephone"
+}
+/** One of 'noResponse', 'optIn', 'optOut' */
+export declare enum ConsentResponse {
+    NoResponse = "noResponse",
+    OptIn = "optIn",
+    OptOut = "optOut"
 }
 /** One of 'payer', 'nonPayer', 'notSpecified' */
 export declare enum TaxStatus {
@@ -101,49 +115,53 @@ export interface ProblemDetails {
     detail?: string | undefined;
     instance?: string | undefined;
 }
-export interface LookupRes {
+export interface NamedLookupRes {
     id?: string | undefined;
-}
-export interface NamedLookupRes extends LookupRes {
     name?: string | undefined;
 }
-export interface CountryRes extends NamedLookupRes {
-    iso2Code?: string | undefined;
-    iso3Code?: string | undefined;
-    localityOptional?: boolean;
-    postalCodeOptional?: boolean;
+export interface AccountReq {
+    name?: NameReq | undefined;
+    address?: AddressReq | undefined;
+    email?: EmailReq | undefined;
+    telephone?: TelephoneReq | undefined;
+    consent?: ConsentReq | undefined;
+    taxStatus?: TaxStatus | undefined;
 }
-export interface LookupsRes {
+export interface NameReq {
+    title?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
 }
-export interface CheckoutLookupsRes extends LookupsRes {
+export interface AddressReq {
+    line1?: string | undefined;
+    line2?: string | undefined;
+    line3?: string | undefined;
+    locality?: string | undefined;
+    administrativeArea?: string | undefined;
+    postalCode?: string | undefined;
+    country?: string | undefined;
+}
+export interface EmailReq {
+    address?: string | undefined;
+}
+export interface TelephoneReq {
+    country?: string | undefined;
+    number?: string | undefined;
+}
+export interface ConsentReq {
+    choices?: ConsentChoiceReq[] | undefined;
+}
+export interface ConsentChoiceReq {
+    channel?: ConsentChannel | undefined;
+    category?: string | undefined;
+    response?: ConsentResponse | undefined;
+}
+export interface CheckoutLookupsRes {
     checkoutStages?: NamedLookupRes[] | undefined;
-    countries?: CountryRes[] | undefined;
-    taxStatuses?: NamedLookupRes[] | undefined;
+    regularGivingFrequencies?: NamedLookupRes[] | undefined;
 }
 export interface LookupsCriteria {
-    types?: Types[] | undefined;
-}
-export interface Anonymous extends UmbracoContentOfTitle {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-export interface Title extends Anonymous {
-}
-export interface Anonymous2 extends UmbracoContentOfCountry {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-export interface Country extends Anonymous2 {
-    iso2Code?: string | undefined;
-    iso3Code?: string | undefined;
-    localityOptional?: boolean;
-    postalCodeOptional?: boolean;
-}
-export interface Anonymous3 extends Value {
-    id?: string | undefined;
-}
-export interface Types extends Anonymous3 {
-    lookupType?: string | undefined;
+    types?: string[] | undefined;
 }
 export declare class ApiException extends Error {
     message: string;

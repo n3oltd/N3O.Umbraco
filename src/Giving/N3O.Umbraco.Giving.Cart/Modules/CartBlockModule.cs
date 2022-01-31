@@ -44,8 +44,8 @@ namespace N3O.Umbraco.Giving.Cart.Modules {
             var viewModel = new CartModel(_formatter.Value,
                                           _contentCache.Value,
                                           currency,
-                                          cart.Single,
-                                          cart.Regular,
+                                          cart.Donation,
+                                          cart.RegularGiving,
                                           checkoutView.HasValue());
 
 

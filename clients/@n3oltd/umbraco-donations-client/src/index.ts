@@ -77,6 +77,13 @@ export interface DonationFormRes {
 
 export interface DonationOptionRes {
     type?: AllocationType | undefined;
+    dimension1?: FixedOrDefaultFundDimensionOptionRes | undefined;
+    dimension2?: FixedOrDefaultFundDimensionOptionRes | undefined;
+    dimension3?: FixedOrDefaultFundDimensionOptionRes | undefined;
+    dimension4?: FixedOrDefaultFundDimensionOptionRes | undefined;
+    hideQuantity?: boolean;
+    hideDonation?: boolean;
+    hideRegularGiving?: boolean;
     fund?: FundDonationOptionRes | undefined;
     sponsorship?: SponsorshipDonationOptionRes | undefined;
 }
@@ -87,24 +94,21 @@ export enum AllocationType {
     Sponsorship = "sponsorship",
 }
 
-export interface Value {
+export interface FixedOrDefaultFundDimensionOptionRes {
+    fixed?: FundDimensionOptionRes | undefined;
+    default?: FundDimensionOptionRes | undefined;
+}
+
+export interface FundDimensionOptionRes {
+    name?: string | undefined;
+    id?: string | undefined;
+    isUnrestricted?: boolean;
 }
 
 export interface FundDonationOptionRes {
-    donationItem?: DonationItem | undefined;
-    dimension1?: FixedOrDefaultFundDimensionOptionRes | undefined;
-    dimension2?: FixedOrDefaultFundDimensionOptionRes | undefined;
-    dimension3?: FixedOrDefaultFundDimensionOptionRes | undefined;
-    dimension4?: FixedOrDefaultFundDimensionOptionRes | undefined;
-    showQuantity?: boolean;
-    hideSingle?: boolean;
-    singlePriceHandles?: PriceHandleRes[] | undefined;
-    hideRegular?: boolean;
-    regularPriceHandles?: PriceHandleRes[] | undefined;
-}
-
-export interface UmbracoContentOfFundDimension1Option extends Value {
-    content?: IPublishedContent | undefined;
+    donationItem?: string | undefined;
+    donationPriceHandles?: PriceHandleRes[] | undefined;
+    regularGivingPriceHandles?: PriceHandleRes[] | undefined;
 }
 
 export interface IPublishedContent {
@@ -141,37 +145,25 @@ export enum PublishedItemType {
     Member = 4,
 }
 
-export interface UmbracoContentOfFundDimension2Option extends Value {
+/** One of 'donation', 'regularGiving' */
+export enum GivingType {
+    Donation = "donation",
+    RegularGiving = "regularGiving",
+}
+
+export interface PriceContent {
     content?: IPublishedContent | undefined;
+    amount?: number;
+    locked?: boolean;
 }
 
-export interface UmbracoContentOfFundDimension3Option extends Value {
+export interface PricingRuleContent {
     content?: IPublishedContent | undefined;
-}
-
-export interface UmbracoContentOfFundDimension4Option extends Value {
-    content?: IPublishedContent | undefined;
-}
-
-export interface UmbracoContentOfDonationItem extends Value {
-    content?: IPublishedContent | undefined;
-}
-
-export interface FixedOrDefaultFundDimensionOptionRes {
-    fixed?: FundDimensionOptionRes | undefined;
-    default?: FundDimensionOptionRes | undefined;
-}
-
-export interface LookupRes {
-    id?: string | undefined;
-}
-
-export interface NamedLookupRes extends LookupRes {
-    name?: string | undefined;
-}
-
-export interface FundDimensionOptionRes extends NamedLookupRes {
-    isUnrestricted?: boolean;
+    price?: PriceContent | undefined;
+    dimension1Options?: string[] | undefined;
+    dimension2Options?: string[] | undefined;
+    dimension3Options?: string[] | undefined;
+    dimension4Options?: string[] | undefined;
 }
 
 export interface PriceHandleRes {
@@ -181,20 +173,12 @@ export interface PriceHandleRes {
 
 export interface MoneyRes {
     amount?: number;
-    currency?: Currency | undefined;
+    currency?: string | undefined;
     text?: string | undefined;
 }
 
-export interface UmbracoContentOfCurrency extends Value {
-    content?: IPublishedContent | undefined;
-}
-
 export interface SponsorshipDonationOptionRes {
-    scheme?: Scheme | undefined;
-}
-
-export interface UmbracoContentOfSponsorshipScheme extends Value {
-    content?: IPublishedContent | undefined;
+    scheme?: string | undefined;
 }
 
 export interface ProblemDetails {
@@ -203,96 +187,6 @@ export interface ProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
-}
-
-export interface Anonymous extends UmbracoContentOfDonationItem {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface DonationItem extends Anonymous {
-    allowSingleDonations?: boolean;
-    allowRegularDonations?: boolean;
-    free?: boolean;
-    price?: number;
-    dimension1Options?: Dimension1Options[] | undefined;
-    dimension2Options?: Dimension2Options[] | undefined;
-    dimension3Options?: Dimension3Options[] | undefined;
-    dimension4Options?: Dimension4Options[] | undefined;
-}
-
-export interface Anonymous2 extends UmbracoContentOfCurrency {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Currency extends Anonymous2 {
-    symbol?: string | undefined;
-    isBaseCurrency?: boolean;
-    decimalDigits?: number;
-}
-
-export interface Anonymous3 extends UmbracoContentOfSponsorshipScheme {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Scheme extends Anonymous3 {
-    allowSingleDonations?: boolean;
-    allowRegularDonations?: boolean;
-    price?: number;
-    dimension1Options?: Dimension1Options[] | undefined;
-    dimension2Options?: Dimension2Options[] | undefined;
-    dimension3Options?: Dimension3Options[] | undefined;
-    dimension4Options?: Dimension4Options[] | undefined;
-}
-
-export interface Anonymous8 extends UmbracoContentOfFundDimension1Option {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Anonymous4 extends Anonymous8 {
-    isUnrestricted?: boolean;
-}
-
-export interface Dimension1Options extends Anonymous4 {
-}
-
-export interface Anonymous9 extends UmbracoContentOfFundDimension2Option {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Anonymous5 extends Anonymous9 {
-    isUnrestricted?: boolean;
-}
-
-export interface Dimension2Options extends Anonymous5 {
-}
-
-export interface Anonymous10 extends UmbracoContentOfFundDimension3Option {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Anonymous6 extends Anonymous10 {
-    isUnrestricted?: boolean;
-}
-
-export interface Dimension3Options extends Anonymous6 {
-}
-
-export interface Anonymous11 extends UmbracoContentOfFundDimension4Option {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Anonymous7 extends Anonymous11 {
-    isUnrestricted?: boolean;
-}
-
-export interface Dimension4Options extends Anonymous7 {
 }
 
 export class ApiException extends Error {

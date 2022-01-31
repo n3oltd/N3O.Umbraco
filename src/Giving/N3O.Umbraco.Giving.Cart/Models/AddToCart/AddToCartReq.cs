@@ -1,11 +1,11 @@
 using N3O.Umbraco.Attributes;
-using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
+using N3O.Umbraco.Giving.Lookups;
 
 namespace N3O.Umbraco.Giving.Cart.Models {
     public class AddToCartReq {
-        [Name("Donation Type")]
-        public DonationType DonationType { get; set; }
+        [Name("Giving Type")]
+        public GivingType GivingType { get; set; }
 
         [Name("Allocation")]
         public AllocationReq Allocation { get; set; }

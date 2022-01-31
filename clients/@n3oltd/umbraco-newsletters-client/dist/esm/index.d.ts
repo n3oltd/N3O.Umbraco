@@ -8,12 +8,9 @@ export declare class NewslettersClient {
     subscribe(req: ContactReq): Promise<SubscribeResult>;
     protected processSubscribe(response: Response): Promise<SubscribeResult>;
 }
-export interface Value {
-}
-export interface SubscribeResult extends Value {
+export interface SubscribeResult {
     subscribed?: boolean;
     errorMessage?: string | undefined;
-    errorDetails?: string | undefined;
 }
 export interface ProblemDetails {
     type?: string | undefined;

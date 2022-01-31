@@ -1,14 +1,14 @@
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Giving.Cart.Models;
+using N3O.Umbraco.Giving.Lookups;
 using System.Linq;
 
 namespace N3O.Umbraco.Giving.Cart.Entities {
     public partial class Cart {
-        public void Add(DonationType donationType, IAllocation allocation, int quantity = 1) {
+        public void Add(GivingType givingType, IAllocation allocation, int quantity = 1) {
             while (quantity > 0) {
-                ReplaceContents(donationType, c => AddToContents(c, allocation));
+                ReplaceContents(givingType, c => AddToContents(c, allocation));
 
                 quantity--;
             }

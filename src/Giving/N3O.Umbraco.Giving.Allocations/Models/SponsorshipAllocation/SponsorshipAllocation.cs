@@ -1,4 +1,4 @@
-using N3O.Umbraco.Giving.Allocations.Lookups;
+using N3O.Umbraco.Giving.Sponsorships.Lookups;
 using Newtonsoft.Json;
 
 namespace N3O.Umbraco.Giving.Allocations.Models {

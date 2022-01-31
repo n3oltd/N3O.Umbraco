@@ -1,11 +1,11 @@
 ﻿using N3O.Umbraco.Accounts.Lookups;
 using N3O.Umbraco.Accounts.Models;
-using N3O.Umbraco.Counters;
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Payments.Entities;
 using N3O.Umbraco.Payments.Models;
+using N3O.Umbraco.References;
 using System;
 
 namespace N3O.Umbraco.Payments.Testing {
@@ -19,7 +19,7 @@ namespace N3O.Umbraco.Payments.Testing {
         
         public Credential Credential { get; private set; }
         public Payment Payment { get; private set; }
-        public Reference Reference { get; private set; }
+        public Reference Reference { get; }
 
         public BillingInfo GetBillingInfo() {
             var unitedKingdom = _lookups.FindById<Country>("unitedKingdom");
@@ -38,6 +38,7 @@ namespace N3O.Umbraco.Payments.Testing {
                     return typedPayment;
                 } else {
                     Payment = new T() as Payment;
+                    
                     return Payment as T;
                 }
             } else if (typeof(T).IsSubclassOfType(typeof(Credential))) {
@@ -45,15 +46,12 @@ namespace N3O.Umbraco.Payments.Testing {
                     return typedPayment;
                 } else {
                     Credential = new T() as Credential;
+                    
                     return Credential as T;
                 }
             } else {
                 throw new NotImplementedException();
             }
-        }
-
-        public TransactionInfo GetTransctionInfo() {
-            return new TransactionInfo(Reference, $"Donation {Reference.Text}");
         }
     }
 }

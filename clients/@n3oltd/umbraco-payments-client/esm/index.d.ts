@@ -12,13 +12,9 @@ export declare class PaymentsClient {
     getAllLookups(criteria: LookupsCriteria): Promise<PaymentsLookupsRes>;
     protected processGetAllLookups(response: Response): Promise<PaymentsLookupsRes>;
 }
-export interface LookupRes {
-    id?: string | undefined;
-}
-export interface NamedLookupRes extends LookupRes {
+export interface PaymentMethodRes {
     name?: string | undefined;
-}
-export interface PaymentMethodRes extends NamedLookupRes {
+    id?: string | undefined;
 }
 export interface ProblemDetails {
     type?: string | undefined;
@@ -28,13 +24,8 @@ export interface ProblemDetails {
     instance?: string | undefined;
 }
 export interface PaymentMethodCriteria {
-    country?: Country | undefined;
-    currency?: Currency | undefined;
-}
-export interface Value {
-}
-export interface UmbracoContentOfCountry extends Value {
-    content?: IPublishedContent | undefined;
+    country?: string | undefined;
+    currency?: string | undefined;
 }
 export interface IPublishedContent {
     id?: number;
@@ -69,41 +60,11 @@ export declare enum PublishedItemType {
     Media = 3,
     Member = 4
 }
-export interface UmbracoContentOfCurrency extends Value {
-    content?: IPublishedContent | undefined;
-}
-export interface LookupsRes {
-}
-export interface PaymentsLookupsRes extends LookupsRes {
+export interface PaymentsLookupsRes {
     paymentMethods?: PaymentMethodRes[] | undefined;
 }
 export interface LookupsCriteria {
-    types?: Types[] | undefined;
-}
-export interface Anonymous extends UmbracoContentOfCountry {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-export interface Country extends Anonymous {
-    iso2Code?: string | undefined;
-    iso3Code?: string | undefined;
-    localityOptional?: boolean;
-    postalCodeOptional?: boolean;
-}
-export interface Anonymous2 extends UmbracoContentOfCurrency {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-export interface Currency extends Anonymous2 {
-    symbol?: string | undefined;
-    isBaseCurrency?: boolean;
-    decimalDigits?: number;
-}
-export interface Anonymous3 extends Value {
-    id?: string | undefined;
-}
-export interface Types extends Anonymous3 {
-    lookupType?: string | undefined;
+    types?: string[] | undefined;
 }
 export declare class ApiException extends Error {
     message: string;

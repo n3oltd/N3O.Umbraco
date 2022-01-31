@@ -7,7 +7,7 @@ namespace N3O.Umbraco.Giving.Donations.Models {
             mapper.Define<SponsorshipDonationOptionContent, SponsorshipDonationOptionRes>((_, _) => new SponsorshipDonationOptionRes(), Map);
         }
 
-        // Umbraco.Code.MapAll -Id -Name
+        // Umbraco.Code.MapAll
         private void Map(SponsorshipDonationOptionContent src, SponsorshipDonationOptionRes dest, MapperContext ctx) {
             dest.Scheme = src.Scheme;
         }

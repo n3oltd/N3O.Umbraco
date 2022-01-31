@@ -31,7 +31,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Forex\N3O.Umbraco.Forex\N3O.Umbraco.Forex.csproj" />
-        <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
+        <ProjectReference Include="..\N3O.Umbraco.Giving\N3O.Umbraco.Giving.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.FundDimensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Giving.Pricing;
@@ -11,10 +12,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace N3O.Umbraco.Giving.Allocations.Model {
+namespace N3O.Umbraco.Giving.Model {
     public class AllocationReqValidator : ModelValidator<AllocationReq> {
         public AllocationReqValidator(IFormatter formatter,
-                                      IPricing pricing,
+                                      IPriceCalculator priceCalculator,
                                       IFundStructureAccessor fundStructureAccessor)
             : base(formatter) {
             var fundStructure = fundStructureAccessor.GetFundStructure();
@@ -34,14 +35,15 @@ namespace N3O.Umbraco.Giving.Allocations.Model {
                 .WithMessage(Get<Strings>(s => s.SpecifySponsorshipScheme));
 
             RuleFor(x => x.Value.Amount)
-                .Must((req, x) => pricing.InCurrentCurrency(req.Fund.DonationItem).Amount == x)
-                .When(x => x.HasValue(y => y.Value.Amount) && x.Fund?.DonationItem?.HasPrice() == true)
+                .Must((req, x) => priceCalculator.InCurrentCurrency(req.Fund.DonationItem).Amount == x)
+                .When(x => x.HasValue(y => y.Value.Amount) && x.Fund?.DonationItem?.HasPricing() == true)
                 .WithMessage(Get<Strings>(s => s.InvalidAmount));
         
-            RuleFor(x => x.Value.Amount)
-                .Must((req, x) => pricing.InCurrentCurrency(req.Sponsorship.Scheme).Amount == x)
-                .When(x => x.HasValue(y => y.Value.Amount) && x.Sponsorship?.Scheme?.HasPrice() == true)
-                .WithMessage(Get<Strings>(s => s.InvalidAmount));
+            // TODO
+            // RuleFor(x => x.Value.Amount)
+            //     .Must((req, x) => priceCalculator.InCurrentCurrency(req.Sponsorship.Scheme).Amount == x)
+            //     .When(x => x.HasValue(y => y.Value.Amount) && x.Sponsorship?.Scheme?.HasPrice() == true)
+            //     .WithMessage(Get<Strings>(s => s.InvalidAmount));
             
             ValidateDimensions(fundStructure);
         }

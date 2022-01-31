@@ -22,7 +22,7 @@ namespace N3O.Umbraco.Entities {
 
         public Task DeleteAsync(EntityId id, CancellationToken cancellationToken = default) {
             using (var scope = _scopeProvider.CreateScope()) {
-                scope.Database.Delete<EntityRow>($@"DELETE FROM {Tables.Entities} WHERE Id = @0", id);
+                scope.Database.Delete<EntityRow>($@"DELETE FROM {Tables.Entities} WHERE Id = @0", id.Value);
             
                 scope.Complete();
 
@@ -32,7 +32,7 @@ namespace N3O.Umbraco.Entities {
         
         public async Task<T> GetAsync(EntityId id, CancellationToken cancellationToken = default) {
             using (var scope = _scopeProvider.CreateScope()) {
-                var row = await scope.Database.SingleOrDefaultAsync<EntityRow>($@"SELECT * FROM {Tables.Entities} WHERE Id = @0", id);
+                var row = await scope.Database.SingleOrDefaultAsync<EntityRow>($@"SELECT * FROM {Tables.Entities} WHERE Id = @0", id.Value);
 
                 var entity = row.IfNotNull(x => {
                     var type = Type.GetType(x.Type);
@@ -59,10 +59,11 @@ namespace N3O.Umbraco.Entities {
         }
         
         public async Task UpdateAsync(T entity, CancellationToken cancellationToken = default) {
+            // TODO The update SQL should check the revision number hasn't changed and fail if it has
             await SaveAsync(entity, (s, r) => s.Database.Update(r));
         }
 
-        private Task SaveAsync(T entity, Action<IScope, EntityRow> save) {
+        private Task<TResult> SaveAsync<TResult>(T entity, Func<IScope, EntityRow, TResult> save) {
             using (var scope = _scopeProvider.CreateScope()) {
                 entity.OnSaving(_clock.GetCurrentInstant());
 
@@ -73,11 +74,11 @@ namespace N3O.Umbraco.Entities {
                 row.Type = entity.GetType().AssemblyQualifiedName;
                 row.Json = _jsonProvider.SerializeObject(entity);
 
-                save(scope, row);
+                var result = save(scope, row);
             
                 scope.Complete();
 
-                return Task.CompletedTask;
+                return Task.FromResult(result);
             }
         }
     }

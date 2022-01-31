@@ -103,8 +103,8 @@ export class CheckoutClient {
         return Promise.resolve<NamedLookupRes[]>(<any>null);
     }
 
-    getLookupCountries(): Promise<CountryRes[]> {
-        let url_ = this.baseUrl + "/umbraco/api/Checkout/lookups/countries";
+    getRegularGivingFrequencies(): Promise<NamedLookupRes[]> {
+        let url_ = this.baseUrl + "/umbraco/api/Checkout/lookups/regularGivingFrequencies";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <RequestInit>{
@@ -115,54 +115,11 @@ export class CheckoutClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetLookupCountries(_response);
+            return this.processGetRegularGivingFrequencies(_response);
         });
     }
 
-    protected processGetLookupCountries(response: Response): Promise<CountryRes[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : <CountryRes[]>JSON.parse(_responseText, this.jsonParseReviver);
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            let result400: any = null;
-            result400 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        } else if (status === 500) {
-            return response.text().then((_responseText) => {
-            return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<CountryRes[]>(<any>null);
-    }
-
-    getLookupTaxStatuses(): Promise<NamedLookupRes[]> {
-        let url_ = this.baseUrl + "/umbraco/api/Checkout/lookups/taxStatuses";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ = <RequestInit>{
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetLookupTaxStatuses(_response);
-        });
-    }
-
-    protected processGetLookupTaxStatuses(response: Response): Promise<NamedLookupRes[]> {
+    protected processGetRegularGivingFrequencies(response: Response): Promise<NamedLookupRes[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -187,6 +144,56 @@ export class CheckoutClient {
             });
         }
         return Promise.resolve<NamedLookupRes[]>(<any>null);
+    }
+
+    updateAccount(checkoutRevisionId: string, req: AccountReq): Promise<CheckoutRes> {
+        let url_ = this.baseUrl + "/umbraco/api/Checkout/{checkoutRevisionId}/account";
+        if (checkoutRevisionId === undefined || checkoutRevisionId === null)
+            throw new Error("The parameter 'checkoutRevisionId' must be defined.");
+        url_ = url_.replace("{checkoutRevisionId}", encodeURIComponent("" + checkoutRevisionId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(req);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateAccount(_response);
+        });
+    }
+
+    protected processUpdateAccount(response: Response): Promise<CheckoutRes> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <CheckoutRes>JSON.parse(_responseText, this.jsonParseReviver);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CheckoutRes>(<any>null);
     }
 
     getAllLookups(criteria: LookupsCriteria): Promise<CheckoutLookupsRes> {
@@ -246,20 +253,14 @@ export interface AccountRes {
     address?: AddressRes | undefined;
     email?: EmailRes | undefined;
     telephone?: TelephoneRes | undefined;
+    consent?: ConsentRes | undefined;
     taxStatus?: TaxStatus | undefined;
 }
 
 export interface NameRes {
-    title?: Title | undefined;
+    title?: string | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
-}
-
-export interface Value {
-}
-
-export interface UmbracoContentOfTitle extends Value {
-    content?: IPublishedContent | undefined;
 }
 
 export interface IPublishedContent {
@@ -303,11 +304,7 @@ export interface AddressRes {
     locality?: string | undefined;
     administrativeArea?: string | undefined;
     postalCode?: string | undefined;
-    country?: Country | undefined;
-}
-
-export interface UmbracoContentOfCountry extends Value {
-    content?: IPublishedContent | undefined;
+    country?: string | undefined;
 }
 
 export interface EmailRes {
@@ -315,8 +312,33 @@ export interface EmailRes {
 }
 
 export interface TelephoneRes {
-    country?: Country | undefined;
+    country?: string | undefined;
     number?: string | undefined;
+}
+
+export interface ConsentRes {
+    choices?: ConsentChoiceRes[] | undefined;
+}
+
+export interface ConsentChoiceRes {
+    channel?: ConsentChannel | undefined;
+    category?: string | undefined;
+    response?: ConsentResponse | undefined;
+}
+
+/** One of 'email', 'sms', 'post', 'telephone' */
+export enum ConsentChannel {
+    Email = "email",
+    Sms = "sms",
+    Post = "post",
+    Telephone = "telephone",
+}
+
+/** One of 'noResponse', 'optIn', 'optOut' */
+export enum ConsentResponse {
+    NoResponse = "noResponse",
+    OptIn = "optIn",
+    OptOut = "optOut",
 }
 
 /** One of 'payer', 'nonPayer', 'notSpecified' */
@@ -334,60 +356,62 @@ export interface ProblemDetails {
     instance?: string | undefined;
 }
 
-export interface LookupRes {
+export interface NamedLookupRes {
     id?: string | undefined;
-}
-
-export interface NamedLookupRes extends LookupRes {
     name?: string | undefined;
 }
 
-export interface CountryRes extends NamedLookupRes {
-    iso2Code?: string | undefined;
-    iso3Code?: string | undefined;
-    localityOptional?: boolean;
-    postalCodeOptional?: boolean;
+export interface AccountReq {
+    name?: NameReq | undefined;
+    address?: AddressReq | undefined;
+    email?: EmailReq | undefined;
+    telephone?: TelephoneReq | undefined;
+    consent?: ConsentReq | undefined;
+    taxStatus?: TaxStatus | undefined;
 }
 
-export interface LookupsRes {
+export interface NameReq {
+    title?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
 }
 
-export interface CheckoutLookupsRes extends LookupsRes {
+export interface AddressReq {
+    line1?: string | undefined;
+    line2?: string | undefined;
+    line3?: string | undefined;
+    locality?: string | undefined;
+    administrativeArea?: string | undefined;
+    postalCode?: string | undefined;
+    country?: string | undefined;
+}
+
+export interface EmailReq {
+    address?: string | undefined;
+}
+
+export interface TelephoneReq {
+    country?: string | undefined;
+    number?: string | undefined;
+}
+
+export interface ConsentReq {
+    choices?: ConsentChoiceReq[] | undefined;
+}
+
+export interface ConsentChoiceReq {
+    channel?: ConsentChannel | undefined;
+    category?: string | undefined;
+    response?: ConsentResponse | undefined;
+}
+
+export interface CheckoutLookupsRes {
     checkoutStages?: NamedLookupRes[] | undefined;
-    countries?: CountryRes[] | undefined;
-    taxStatuses?: NamedLookupRes[] | undefined;
+    regularGivingFrequencies?: NamedLookupRes[] | undefined;
 }
 
 export interface LookupsCriteria {
-    types?: Types[] | undefined;
-}
-
-export interface Anonymous extends UmbracoContentOfTitle {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Title extends Anonymous {
-}
-
-export interface Anonymous2 extends UmbracoContentOfCountry {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
-export interface Country extends Anonymous2 {
-    iso2Code?: string | undefined;
-    iso3Code?: string | undefined;
-    localityOptional?: boolean;
-    postalCodeOptional?: boolean;
-}
-
-export interface Anonymous3 extends Value {
-    id?: string | undefined;
-}
-
-export interface Types extends Anonymous3 {
-    lookupType?: string | undefined;
+    types?: string[] | undefined;
 }
 
 export class ApiException extends Error {

@@ -100,6 +100,12 @@ export var PublishedItemType;
     PublishedItemType[PublishedItemType["Media"] = 3] = "Media";
     PublishedItemType[PublishedItemType["Member"] = 4] = "Member";
 })(PublishedItemType || (PublishedItemType = {}));
+/** One of 'donation', 'regularGiving' */
+export var GivingType;
+(function (GivingType) {
+    GivingType["Donation"] = "donation";
+    GivingType["RegularGiving"] = "regularGiving";
+})(GivingType || (GivingType = {}));
 var ApiException = /** @class */ (function (_super) {
     __extends(ApiException, _super);
     function ApiException(message, status, response, headers, result) {

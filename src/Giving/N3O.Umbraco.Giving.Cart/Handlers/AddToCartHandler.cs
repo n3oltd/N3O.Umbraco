@@ -19,7 +19,7 @@ namespace N3O.Umbraco.Giving.Cart.Handlers {
         public async Task<None> Handle(AddToCartCommand req, CancellationToken cancellationToken) {
             var cart = await _cartAccessor.GetAsync(cancellationToken);
             
-            cart.Add(req.Model.DonationType, req.Model.Allocation, req.Model.Quantity.GetValueOrThrow());
+            cart.Add(req.Model.GivingType, req.Model.Allocation, req.Model.Quantity.GetValueOrThrow());
 
             await _repository.UpdateAsync(cart, cancellationToken);
         

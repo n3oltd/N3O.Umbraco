@@ -169,54 +169,6 @@ var AllocationsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    AllocationsClient.prototype.getLookupDonationTypes = function () {
-        var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Allocations/lookups/donationTypes";
-        url_ = url_.replace(/[?&]$/, "");
-        var options_ = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-        return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processGetLookupDonationTypes(_response);
-        });
-    };
-    AllocationsClient.prototype.processGetLookupDonationTypes = function (response) {
-        var _this = this;
-        var status = response.status;
-        var _headers = {};
-        if (response.headers && response.headers.forEach) {
-            response.headers.forEach(function (v, k) { return _headers[k] = v; });
-        }
-        ;
-        if (status === 200) {
-            return response.text().then(function (_responseText) {
-                var result200 = null;
-                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return result200;
-            });
-        }
-        else if (status === 400) {
-            return response.text().then(function (_responseText) {
-                var result400 = null;
-                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        }
-        else if (status === 500) {
-            return response.text().then(function (_responseText) {
-                return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        }
-        else if (status !== 200 && status !== 204) {
-            return response.text().then(function (_responseText) {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve(null);
-    };
     AllocationsClient.prototype.getLookupFundDimension1Options = function () {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Allocations/lookups/fundDimension1Options";
@@ -409,9 +361,9 @@ var AllocationsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    AllocationsClient.prototype.getLookupSponsorshipSchemes = function () {
+    AllocationsClient.prototype.getLookupGivingTypes = function () {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Allocations/lookups/sponsorshipSchemes";
+        var url_ = this.baseUrl + "/umbraco/api/Allocations/lookups/givingTypes";
         url_ = url_.replace(/[?&]$/, "");
         var options_ = {
             method: "GET",
@@ -420,10 +372,10 @@ var AllocationsClient = /** @class */ (function () {
             }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processGetLookupSponsorshipSchemes(_response);
+            return _this.processGetLookupGivingTypes(_response);
         });
     };
-    AllocationsClient.prototype.processGetLookupSponsorshipSchemes = function (response) {
+    AllocationsClient.prototype.processGetLookupGivingTypes = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -519,6 +471,12 @@ export var PublishedItemType;
     PublishedItemType[PublishedItemType["Media"] = 3] = "Media";
     PublishedItemType[PublishedItemType["Member"] = 4] = "Member";
 })(PublishedItemType || (PublishedItemType = {}));
+/** One of 'donation', 'regularGiving' */
+export var GivingType;
+(function (GivingType) {
+    GivingType["Donation"] = "donation";
+    GivingType["RegularGiving"] = "regularGiving";
+})(GivingType || (GivingType = {}));
 var ApiException = /** @class */ (function (_super) {
     __extends(ApiException, _super);
     function ApiException(message, status, response, headers, result) {

@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Counters;
+﻿using N3O.Umbraco.References;
 
 namespace N3O.Umbraco.Giving.Checkout.Lookups {
     public class CheckoutReferenceType : ReferenceType {

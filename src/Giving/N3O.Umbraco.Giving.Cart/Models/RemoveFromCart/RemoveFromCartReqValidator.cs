@@ -5,9 +5,9 @@ using N3O.Umbraco.Validation;
 namespace N3O.Umbraco.Giving.Cart.Models {
     public class RemoveFromCartReqValidator : ModelValidator<RemoveFromCartReq> {
         public RemoveFromCartReqValidator(IFormatter formatter) : base(formatter) {
-            RuleFor(x => x.DonationType)
+            RuleFor(x => x.GivingType)
                 .NotNull()
-                .WithMessage(Get<Strings>(s => s.SpecifyDonationType));
+                .WithMessage(Get<Strings>(s => s.SpecifyGivingType));
         
             RuleFor(x => x.Index)
                 .NotNull()
@@ -15,7 +15,7 @@ namespace N3O.Umbraco.Giving.Cart.Models {
         }
 
         public class Strings : ValidationStrings {
-            public string SpecifyDonationType => "Please specify the donation type";
+            public string SpecifyGivingType => "Please specify the giving type";
             public string SpecifyIndex => "Please specify the index";
         }
     }

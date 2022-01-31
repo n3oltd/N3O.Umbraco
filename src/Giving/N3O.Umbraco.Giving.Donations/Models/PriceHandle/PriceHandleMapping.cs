@@ -14,7 +14,7 @@ namespace N3O.Umbraco.Giving.Donations.Models {
             mapper.Define<PriceHandleElement, PriceHandleRes>((_, _) => new PriceHandleRes(), Map);
         }
 
-        // Umbraco.Code.MapAll -Id -Name
+        // Umbraco.Code.MapAll
         private void Map(PriceHandleElement src, PriceHandleRes dest, MapperContext ctx) {
             dest.Amount = ctx.Map<Money, MoneyRes>(_forexConverter.BaseToQuote().Convert(src.Amount).Quote);
             dest.Description = src.Description;

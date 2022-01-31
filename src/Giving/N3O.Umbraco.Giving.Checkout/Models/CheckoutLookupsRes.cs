@@ -6,11 +6,8 @@ namespace N3O.Umbraco.Giving.Checkout.Models {
     public class CheckoutLookupsRes : LookupsRes {
         [FromLookupType(CheckoutLookupTypes.CheckoutStages)]
         public IEnumerable<NamedLookupRes> CheckoutStages { get; set; }
-    
-        [FromLookupType(CheckoutLookupTypes.Countries)]
-        public IEnumerable<CountryRes> Countries { get; set; }
-        
-        [FromLookupType(CheckoutLookupTypes.TaxStatuses)]
-        public IEnumerable<NamedLookupRes> TaxStatuses { get; set; }
+
+        [FromLookupType(CheckoutLookupTypes.RegularGivingFrequencies)]
+        public IEnumerable<NamedLookupRes> RegularGivingFrequencies { get; set; }
     }
 }

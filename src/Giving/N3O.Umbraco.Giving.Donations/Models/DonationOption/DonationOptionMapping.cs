@@ -1,8 +1,9 @@
 ﻿using N3O.Umbraco.Exceptions;
+using N3O.Umbraco.FundDimensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Donations.Content;
 using Umbraco.Cms.Core.Mapping;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Giving.Donations.Models {
     public class DonationOptionMapping : IMapDefinition {
@@ -10,9 +11,16 @@ namespace N3O.Umbraco.Giving.Donations.Models {
             mapper.Define<DonationOptionContent, DonationOptionRes>((_, _) => new DonationOptionRes(), Map);
         }
 
-        // Umbraco.Code.MapAll -Id -Name
+        // Umbraco.Code.MapAll
         private void Map(DonationOptionContent src, DonationOptionRes dest, MapperContext ctx) {
             dest.Type = src.Type;
+            dest.Dimension1 = GetFixedOrDefault(ctx, src.Dimension1, src.GetFundDimensionOptions().DefaultFundDimension1());
+            dest.Dimension2 = GetFixedOrDefault(ctx, src.Dimension2, src.GetFundDimensionOptions().DefaultFundDimension2());
+            dest.Dimension3 = GetFixedOrDefault(ctx, src.Dimension3, src.GetFundDimensionOptions().DefaultFundDimension3());
+            dest.Dimension4 = GetFixedOrDefault(ctx, src.Dimension4, src.GetFundDimensionOptions().DefaultFundDimension4());
+            dest.HideDonation = src.HideDonation;
+            dest.HideRegularGiving = src.HideRegularGiving;
+            dest.HideQuantity = src.HideQuantity;
 
             if (src.Type == AllocationTypes.Fund) {
                 dest.Fund = src.Fund.IfNotNull(ctx.Map<FundDonationOptionContent, FundDonationOptionRes>);
@@ -21,6 +29,20 @@ namespace N3O.Umbraco.Giving.Donations.Models {
             } else {
                 throw UnrecognisedValueException.For(src.Type);
             }
+        }
+        
+        private FixedOrDefaultFundDimensionOptionRes GetFixedOrDefault<TOption>(MapperContext ctx,
+                                                                                TOption @fixed,
+                                                                                TOption @default)
+            where TOption : FundDimensionOption<TOption> {
+            var res = new FixedOrDefaultFundDimensionOptionRes();
+            res.Fixed = @fixed.IfNotNull(ctx.Map<FundDimensionOption<TOption>, FundDimensionOptionRes>);
+
+            if (res.Fixed == null) {
+                res.Default = @default.IfNotNull(ctx.Map<FundDimensionOption<TOption>, FundDimensionOptionRes>);
+            }
+            
+            return res;
         }
     }
 }

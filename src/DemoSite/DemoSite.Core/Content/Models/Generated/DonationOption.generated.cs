@@ -41,13 +41,13 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		bool HideDonation { get; }
 
+		/// <summary>Hide Quantity</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
+		bool HideQuantity { get; }
+
 		/// <summary>Hide</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		bool HideRegularGiving { get; }
-
-		/// <summary>Show Quantity</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		bool ShowQuantity { get; }
 	}
 
 	/// <summary>Donation Option</summary>
@@ -132,6 +132,17 @@ namespace DemoSite.Core.Content
 		public static bool GetHideDonation(IDonationOption that, IPublishedValueFallback publishedValueFallback) => that.Value<bool>(publishedValueFallback, "hideDonation");
 
 		///<summary>
+		/// Hide Quantity
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
+		[ImplementPropertyType("hideQuantity")]
+		public virtual bool HideQuantity => GetHideQuantity(this, _publishedValueFallback);
+
+		/// <summary>Static getter for Hide Quantity</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
+		public static bool GetHideQuantity(IDonationOption that, IPublishedValueFallback publishedValueFallback) => that.Value<bool>(publishedValueFallback, "hideQuantity");
+
+		///<summary>
 		/// Hide
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
@@ -141,16 +152,5 @@ namespace DemoSite.Core.Content
 		/// <summary>Static getter for Hide</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
 		public static bool GetHideRegularGiving(IDonationOption that, IPublishedValueFallback publishedValueFallback) => that.Value<bool>(publishedValueFallback, "hideRegularGiving");
-
-		///<summary>
-		/// Show Quantity
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		[ImplementPropertyType("showQuantity")]
-		public virtual bool ShowQuantity => GetShowQuantity(this, _publishedValueFallback);
-
-		/// <summary>Static getter for Show Quantity</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.2.0+763cb70e677ac0c85557b19b5df09eccfa1b9dfb")]
-		public static bool GetShowQuantity(IDonationOption that, IPublishedValueFallback publishedValueFallback) => that.Value<bool>(publishedValueFallback, "showQuantity");
 	}
 }

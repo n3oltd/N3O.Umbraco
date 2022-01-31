@@ -8,49 +8,49 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Giving.Cart.Models {
     public class CartModel {
-        private static readonly string CheckoutPageAlias = "CheckoutPage";
-        private static readonly string DonatePageAlias = "DonatePage";
+        private static readonly string CheckoutPageAlias = "checkoutPage";
+        private static readonly string DonatePageAlias = "donatePage";
         
         private readonly IFormatter _formatter;
 
         public CartModel(IFormatter formatter,
                          IContentCache contentCache,
                          Currency currency,
-                         CartContents single,
-                         CartContents regular,
+                         CartContents donation,
+                         CartContents regularGiving,
                          bool checkoutView) {
             _formatter = formatter;
             Currency = currency;
-            Single = single;
-            Regular = regular;
+            Donation = donation;
+            RegularGiving = regularGiving;
             CheckoutView = checkoutView;
-            TotalText = GetTotalText(single, regular);
-            TotalItems = single.Allocations.Count() + regular.Allocations.Count();
+            TotalText = GetTotalText(donation, regularGiving);
+            TotalItems = donation.Allocations.Count() + regularGiving.Allocations.Count();
             CheckoutUrl = contentCache.Single(CheckoutPageAlias)?.Url();
             DonateUrl = contentCache.Single(DonatePageAlias)?.Url();
         }
 
         public Currency Currency { get; }
-        public CartContents Single { get; }
-        public CartContents Regular { get; }
+        public CartContents Donation { get; }
+        public CartContents RegularGiving { get; }
         public bool CheckoutView { get; }
         public string TotalText { get; }
         public int TotalItems { get; }
         public string CheckoutUrl { get; }
         public string DonateUrl { get; }
 
-        public bool IsEmpty() => Single.IsEmpty() && Regular.IsEmpty();
+        public bool IsEmpty() => Donation.IsEmpty() && RegularGiving.IsEmpty();
     
         private string GetTotalText(CartContents single, CartContents regular) {
             var totals = new List<string>();
 
             if (!single.Total.IsZero()) {
-                totals.Add(_formatter.Text.Format<Strings>(s => s.SingleTotal,
+                totals.Add(_formatter.Text.Format<Strings>(s => s.DonationTotal,
                                                            _formatter.Number.FormatMoney(single.Total)));
             }
         
             if (!regular.Total.IsZero()) {
-                totals.Add(_formatter.Text.Format<Strings>(s => s.RegularTotal,
+                totals.Add(_formatter.Text.Format<Strings>(s => s.RegularGivingTotal,
                                                            _formatter.Number.FormatMoney(regular.Total)));
             }
 
@@ -58,8 +58,8 @@ namespace N3O.Umbraco.Giving.Cart.Models {
         }
 
         public class Strings : CodeStrings {
-            public string SingleTotal => "{0}";
-            public string RegularTotal => "{0} / month";
+            public string DonationTotal => "{0}";
+            public string RegularGivingTotal => "{0} / month";
         }
     }
 }

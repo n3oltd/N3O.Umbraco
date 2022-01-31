@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -31,6 +32,8 @@ namespace N3O.Umbraco.Hosting {
                 AddStagingMiddleware(opt);
                 ConfigureCors(opt);
             });
+
+            RegisterRouteConstraints(builder);
         }
 
         private void AddStagingMiddleware(UmbracoPipelineOptions opt) {
@@ -60,6 +63,13 @@ namespace N3O.Umbraco.Hosting {
             };
 
             opt.AddFilter(filter);
+        }
+        
+        private void RegisterRouteConstraints(IUmbracoBuilder builder) {
+            builder.Services.Configure<RouteOptions>(routeOptions => {
+                routeOptions.ConstraintMap.Add("entityId", typeof(EntityIdRouteConstraint));
+                routeOptions.ConstraintMap.Add("revisionId", typeof(RevisionIdRouteConstraint));
+            });
         }
     }
 }

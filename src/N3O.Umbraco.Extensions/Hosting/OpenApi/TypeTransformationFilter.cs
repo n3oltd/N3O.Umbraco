@@ -62,6 +62,7 @@ namespace N3O.Umbraco.Hosting {
                 _context.Schema.Example = example;
             } 
             
+            _context.Schema.AllOf.Clear();
             _context.Schema.Items.Clear();
             _context.Schema.Properties.Clear();
         }

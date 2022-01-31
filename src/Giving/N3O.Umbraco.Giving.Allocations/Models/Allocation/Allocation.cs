@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
+using N3O.Umbraco.FundDimensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using Newtonsoft.Json;
 

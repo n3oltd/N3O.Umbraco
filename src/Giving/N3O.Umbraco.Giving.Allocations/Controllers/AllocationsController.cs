@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
+using N3O.Umbraco.FundDimensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Giving.Allocations.Queries;
+using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Mediator;
@@ -11,8 +13,8 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Giving.Allocations.Controller {
-    [ApiDocument(AllocationConstants.ApiName)]
-    public class AllocationsController : LookupsController<AllocationsLookupsRes> {
+    [ApiDocument(AllocationsConstants.ApiName)]
+    public class AllocationsController : LookupsController<AllocationsLookupRes> {
         private readonly IMediator _mediator;
 
         public AllocationsController(ILookups lookups, IUmbracoMapper mapper, IMediator mediator)
@@ -40,14 +42,7 @@ namespace N3O.Umbraco.Giving.Allocations.Controller {
 
             return Ok(res);
         }
-        
-        [HttpGet("lookups/" + AllocationsLookupTypes.DonationTypes)]
-        public async Task<ActionResult<IEnumerable<NamedLookupRes>>> GetLookupDonationTypes() {
-            var res = await GetLookupsAsync<DonationType>();
 
-            return Ok(res);
-        }
-        
         [HttpGet("lookups/" + AllocationsLookupTypes.FundDimension1Options)]
         public async Task<ActionResult<IEnumerable<FundDimensionOptionRes>>> GetLookupFundDimension1Options() {
             var res = await GetLookupsAsync<FundDimension1Option, FundDimensionOptionRes>();
@@ -76,9 +71,9 @@ namespace N3O.Umbraco.Giving.Allocations.Controller {
             return Ok(res);
         }
         
-        [HttpGet("lookups/" + AllocationsLookupTypes.SponsorshipSchemes)]
-        public async Task<ActionResult<IEnumerable<NamedLookupRes>>> GetLookupSponsorshipSchemes() {
-            var res = await GetLookupsAsync<SponsorshipScheme>();
+        [HttpGet("lookups/" + AllocationsLookupTypes.GivingTypes)]
+        public async Task<ActionResult<IEnumerable<NamedLookupRes>>> GetLookupGivingTypes() {
+            var res = await GetLookupsAsync<GivingType>();
 
             return Ok(res);
         }

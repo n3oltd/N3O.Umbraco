@@ -1,17 +1,17 @@
 using N3O.Umbraco.Exceptions;
-using N3O.Umbraco.Giving.Allocations.Lookups;
+using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Cart.Models;
 using System;
 
 namespace N3O.Umbraco.Giving.Cart.Entities {
     public partial class Cart {
-        private void ReplaceContents(DonationType donationType, Func<CartContents, CartContents> replace) {
-            if (donationType == DonationTypes.Single) {
-                Single = replace(Single);
-            } else if (donationType == DonationTypes.Regular) {
-                Regular = replace(Regular);
+        private void ReplaceContents(GivingType givingType, Func<CartContents, CartContents> replace) {
+            if (givingType == GivingTypes.Donation) {
+                Donation = replace(Donation);
+            } else if (givingType == GivingTypes.RegularGiving) {
+                RegularGiving = replace(RegularGiving);
             } else {
-                throw UnrecognisedValueException.For(donationType);
+                throw UnrecognisedValueException.For(givingType);
             }
         }
     }

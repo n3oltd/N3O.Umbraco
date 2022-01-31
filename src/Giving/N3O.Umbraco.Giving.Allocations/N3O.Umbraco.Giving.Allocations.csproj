@@ -30,10 +30,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Mediator\N3O.Umbraco.Mediator\N3O.Umbraco.Mediator.csproj" />
-      <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
-      <ProjectReference Include="..\..\Validation\N3O.Umbraco.Validation\N3O.Umbraco.Validation.csproj" />
-      <ProjectReference Include="..\N3O.Umbraco.Giving.Pricing\N3O.Umbraco.Giving.Pricing.csproj" />
+        <ProjectReference Include="..\N3O.Umbraco.Giving\N3O.Umbraco.Giving.csproj" />
+        <ProjectReference Include="..\N3O.Umbraco.Giving.Sponsorships\N3O.Umbraco.Giving.Sponsorships.csproj" />
+        <ProjectReference Include="..\..\Forex\N3O.Umbraco.Forex\N3O.Umbraco.Forex.csproj" />
+        <ProjectReference Include="..\..\Mediator\N3O.Umbraco.Mediator\N3O.Umbraco.Mediator.csproj" />
+        <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
+        <ProjectReference Include="..\..\Validation\N3O.Umbraco.Validation\N3O.Umbraco.Validation.csproj" />
     </ItemGroup>
 
     <ItemGroup>

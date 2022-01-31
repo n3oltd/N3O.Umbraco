@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Giving.Allocations.Models;
+﻿using N3O.Umbraco.FundDimensions;
 using N3O.Umbraco.Mediator;
 
 namespace N3O.Umbraco.Giving.Allocations.Queries {

@@ -17,7 +17,7 @@ namespace N3O.Umbraco.Giving.Cart.Handlers {
             var cart = await _cartAccessor.GetAsync(cancellationToken);
 
             var summary = new CartSummaryRes();
-            summary.ItemCount = cart.Single.Allocations.Count() + cart.Regular.Allocations.Count();
+            summary.ItemCount = cart.Donation.Allocations.Count() + cart.RegularGiving.Allocations.Count();
 
             return summary;
         }

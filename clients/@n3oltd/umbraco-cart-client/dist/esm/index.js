@@ -186,12 +186,12 @@ var CartClient = /** @class */ (function () {
     return CartClient;
 }());
 export { CartClient };
-/** One of 'regular', 'single' */
-export var DonationType;
-(function (DonationType) {
-    DonationType["Regular"] = "regular";
-    DonationType["Single"] = "single";
-})(DonationType || (DonationType = {}));
+/** One of 'donation', 'regularGiving' */
+export var GivingType;
+(function (GivingType) {
+    GivingType["Donation"] = "donation";
+    GivingType["RegularGiving"] = "regularGiving";
+})(GivingType || (GivingType = {}));
 /** One of 'fund', 'sponsorship' */
 export var AllocationType;
 (function (AllocationType) {

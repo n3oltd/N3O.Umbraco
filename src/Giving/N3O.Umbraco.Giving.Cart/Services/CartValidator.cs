@@ -11,17 +11,17 @@ using System.Linq;
 
 namespace N3O.Umbraco.Giving.Cart {
     public class CartValidator : ICartValidator {
-        private readonly IPricing _pricing;
+        private readonly IPriceCalculator _priceCalculator;
 
-        public CartValidator(IPricing pricing) {
-            _pricing = pricing;
+        public CartValidator(IPriceCalculator priceCalculator) {
+            _priceCalculator = priceCalculator;
         }
     
         public bool IsValid(Currency currentCurrency, Entities.Cart cart) {
             try {
                 var isValid = currentCurrency == cart.Currency &&
-                              ContentsAreValid(currentCurrency, cart.Single) &&
-                              ContentsAreValid(currentCurrency, cart.Regular);
+                              ContentsAreValid(currentCurrency, cart.Donation) &&
+                              ContentsAreValid(currentCurrency, cart.RegularGiving);
 
                 return isValid;
             } catch {
@@ -54,12 +54,12 @@ namespace N3O.Umbraco.Giving.Cart {
                     return false;
                 }
 
-                if (allocation.Value.IsZero() && !fund.DonationItem.Free) {
+                if (allocation.Value.IsZero() && fund.DonationItem.HasPricing()) {
                     return false;
                 }
 
-                if (allocation.Fund.DonationItem.HasPrice()) {
-                    var currencyPrice = _pricing.InCurrency(fund.DonationItem, currency);
+                if (allocation.Fund.DonationItem.HasPricing()) {
+                    var currencyPrice = _priceCalculator.InCurrency(fund.DonationItem, currency);
 
                     if (currencyPrice != allocation.Value) {
                         return false;

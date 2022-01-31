@@ -4,10 +4,10 @@ using N3O.Umbraco.Payments.NamedParameters;
 
 namespace N3O.Umbraco.Payments.Commands {
     public abstract class PaymentsCommand<TReq, TRes> : Request<TReq, PaymentFlowRes<TRes>> {
-        public FlowId FlowId { get; }
-
         protected PaymentsCommand(FlowId flowId) {
             FlowId = flowId;
         }
+        
+        public FlowId FlowId { get; }
     }
 }
