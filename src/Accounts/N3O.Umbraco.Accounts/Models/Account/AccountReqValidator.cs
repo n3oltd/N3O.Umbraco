@@ -10,6 +10,7 @@ namespace N3O.Umbraco.Accounts.Models {
     public class AccountReqValidator : ModelValidator<AccountReq> {
         public AccountReqValidator(IFormatter formatter, IContentCache contentCache, ITaxReliefScheme taxReliefScheme)
             : base(formatter) {
+            var emailDataEntrySettings = contentCache.Single<EmailDataEntrySettingsContent>();
             var phoneDataEntrySettings = contentCache.Single<PhoneDataEntrySettingsContent>();
         
             RuleFor(x => x.Name)
@@ -22,6 +23,7 @@ namespace N3O.Umbraco.Accounts.Models {
 
             RuleFor(x => x.Email)
                 .NotNull()
+                .When(_ => emailDataEntrySettings.Required)
                 .WithMessage(Get<Strings>(s => s.SpecifyEmail));
 
             RuleFor(x => x.Telephone)

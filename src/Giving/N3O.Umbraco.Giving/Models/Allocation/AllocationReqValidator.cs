@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using N3O.Umbraco.Extensions;
 using N3O.Giving.Models;
+using N3O.Umbraco.Context;
+using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Extensions;
 using N3O.Umbraco.Localization;
@@ -10,8 +12,12 @@ using System.Linq;
 
 namespace N3O.Umbraco.Giving.Models {
     public class AllocationReqValidator : ModelValidator<AllocationReq> {
-        public AllocationReqValidator(IFormatter formatter, IPricedAmountValidator pricedAmountValidator)
+        public AllocationReqValidator(IFormatter formatter,
+                                      ICurrencyAccessor currencyAccessor,
+                                      IPricedAmountValidator pricedAmountValidator)
             : base(formatter) {
+            var currentCurrency = currencyAccessor.GetCurrency();
+            
             RuleFor(x => x.Type)
                 .NotNull()
                 .WithMessage(Get<Strings>(s => s.SpecifyType));
@@ -54,6 +60,20 @@ namespace N3O.Umbraco.Giving.Models {
             RuleFor(x => x.FundDimensions)
                 .Must((req, x) => FundDimensionsAreValid(x, req.GetFundDimensionsOptions()))
                 .WithMessage(Get<Strings>(s => s.InvalidFundDimensions));
+
+            ValidateCurrencies(currentCurrency);
+        }
+
+        private void ValidateCurrencies(Currency currency) {
+            RuleFor(x => x.Value.Currency)
+                .Must(x => x == currency)
+                .When(x => x.HasValue(y => y.Value?.Currency))
+                .WithMessage(Get<Strings>(s => s.CurrencyMismatch));
+            
+            RuleForEach(x => x.Sponsorship.Components)
+                .Must(x => x.Value == currency)
+                .When(x => x.Sponsorship.OrEmpty(y => y.Components).All(c => c.Value.HasValue(v => v.Currency)))
+                .WithMessage(Get<Strings>(s => s.CurrencyMismatch));
         }
 
         private bool FundDimensionsAreValid(FundDimensionValuesReq req, IFundDimensionsOptions options) {
@@ -72,6 +92,7 @@ namespace N3O.Umbraco.Giving.Models {
         }
 
         public class Strings : ValidationStrings {
+            public string CurrencyMismatch => "All currencies must be the same and must match the currently active currency";
             public string FundAllocationNotAllowed => "Fund cannot be specified for this type of allocation";
             public string InvalidFundDimensions => "One or more fund dimension values are invalid";
             public string InvalidValue => "Invalid value specified";

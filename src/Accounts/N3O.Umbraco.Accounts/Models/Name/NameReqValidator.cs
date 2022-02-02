@@ -1,4 +1,5 @@
 using FluentValidation;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
@@ -9,13 +10,17 @@ namespace N3O.Umbraco.Accounts.Models {
         private const int LastNameMinLength = 2;
         private const int NameMaxLength = 50;
     
-        public NameReqValidator(IFormatter formatter) : base(formatter) {
+        public NameReqValidator(IFormatter formatter, IContentCache contentCache) : base(formatter) {
+            var settings = contentCache.Single<NameDataEntrySettings>();
+            
             RuleFor(x => x.Title)
                 .NotNull()
+                .When(_ => settings.Title.Required)
                 .WithMessage(Get<Strings>(x => x.SpecifyTitle));
 
             RuleFor(x => x.FirstName)
                 .NotEmpty()
+                .When(_ => settings.FirstName.Required)
                 .WithMessage(Get<Strings>(x => x.SpecifyFirstName));
 
             RuleFor(x => x.FirstName)
@@ -25,6 +30,7 @@ namespace N3O.Umbraco.Accounts.Models {
 
             RuleFor(x => x.LastName)
                 .NotEmpty()
+                .When(_ => settings.LastName.Required)
                 .WithMessage(Get<Strings>(x => x.SpecifyLastName));
 
             RuleFor(x => x.LastName)
