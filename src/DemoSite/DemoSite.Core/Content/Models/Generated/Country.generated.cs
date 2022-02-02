@@ -50,6 +50,14 @@ namespace DemoSite.Core.Content
 		// properties
 
 		///<summary>
+		/// Dialling Code
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("diallingCode")]
+		public virtual string DiallingCode => this.Value<string>(_publishedValueFallback, "diallingCode");
+
+		///<summary>
 		/// ISO-2 Code
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
