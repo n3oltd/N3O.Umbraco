@@ -1,4 +1,5 @@
 using Hangfire;
+using Hangfire.Dashboard;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -69,13 +70,14 @@ namespace N3O.Umbraco.Scheduler {
             builder.Services.Configure<UmbracoPipelineOptions>(opt => {
                 var filter = new UmbracoPipelineFilter(HangfireDashboard);
                 filter.Endpoints = app => app.UseEndpoints(endpoints => {
-                                                 endpoints.MapHangfireDashboard("/umbraco/backoffice/hangfire",
-                                                                                new DashboardOptions {
-                                                                                    AppPath = null
-                                                                                })
-                                                          .RequireAuthorization(HangfireDashboard);
-                                             })
-                                             .UseHangfireDashboard();
+                    endpoints.MapHangfireDashboard("/umbraco/backoffice/hangfire",
+                                                   new DashboardOptions {
+                                                       AppPath = null,
+                                                       Authorization = new[] { new UmbracoAuthorizationFilter() }
+                                                   })
+                             .RequireAuthorization(HangfireDashboard);
+                })
+                .UseHangfireDashboard();
             
                 opt.AddFilter(filter);
             });
@@ -131,6 +133,11 @@ namespace N3O.Umbraco.Scheduler {
             }
             
             public void Terminate() { }
+        }
+        
+        // https://github.com/nul800sebastiaan/Cultiv.Hangfire/issues/5
+        public class UmbracoAuthorizationFilter : IDashboardAuthorizationFilter {
+            public bool Authorize(DashboardContext context) => true;
         }
     }
 }
