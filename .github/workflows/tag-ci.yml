@@ -24,33 +24,6 @@ jobs:
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
-  umbraco-allocations-client:
-    name: 'npm Publish @n3oltd/umbraco-allocations-client'
-    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
-    with:
-      working-directory: 'clients/@n3oltd/umbraco-allocations-client'
-      version: ${GITHUB_REF#refs/tags/}
-    secrets:
-      npm-token: ${{ secrets.NPM_TOKEN }}
-
-  umbraco-cart-client:
-    name: 'npm Publish @n3oltd/umbraco-cart-client'
-    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
-    with:
-      working-directory: 'clients/@n3oltd/umbraco-cart-client'
-      version: ${GITHUB_REF#refs/tags/}
-    secrets:
-      npm-token: ${{ secrets.NPM_TOKEN }}
-
-  umbraco-checkout-client:
-    name: 'npm Publish @n3oltd/umbraco-checkout-client'
-    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
-    with:
-      working-directory: 'clients/@n3oltd/umbraco-checkout-client'
-      version: ${GITHUB_REF#refs/tags/}
-    secrets:
-      npm-token: ${{ secrets.NPM_TOKEN }}
-
   umbraco-cropper-client:
     name: 'npm Publish @n3oltd/umbraco-cropper-client'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
@@ -60,11 +33,29 @@ jobs:
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
-  umbraco-donations-client:
-    name: 'npm Publish @n3oltd/umbraco-donations-client'
+  umbraco-giving-client:
+    name: 'npm Publish @n3oltd/umbraco-giving-client'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
-      working-directory: 'clients/@n3oltd/umbraco-donations-client'
+      working-directory: 'clients/@n3oltd/umbraco-giving-client'
+      version: ${GITHUB_REF#refs/tags/}
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}
+
+  umbraco-giving-cart-client:
+    name: 'npm Publish @n3oltd/umbraco-giving-cart-client'
+    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
+    with:
+      working-directory: 'clients/@n3oltd/umbraco-giving-cart-client'
+      version: ${GITHUB_REF#refs/tags/}
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}
+
+  umbraco-giving-checkout-client:
+    name: 'npm Publish @n3oltd/umbraco-giving-checkout-client'
+    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
+    with:
+      working-directory: 'clients/@n3oltd/umbraco-giving-checkout-client'
       version: ${GITHUB_REF#refs/tags/}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
