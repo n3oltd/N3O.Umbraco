@@ -12,6 +12,7 @@ namespace N3O.Umbraco.Lookups {
             
             dest.Iso2Code = src.Iso2Code;
             dest.Iso3Code = src.Iso3Code;
+            dest.DiallingCode = src.DiallingCode;
             dest.LocalityOptional = src.LocalityOptional;
             dest.PostalCodeOptional = src.PostalCodeOptional;
         }
