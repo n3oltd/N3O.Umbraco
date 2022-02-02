@@ -16,11 +16,9 @@
       <ProjectReference Include="..\..\Events\N3O.Umbraco.Events\N3O.Umbraco.Events.csproj" />
       <ProjectReference Include="..\..\Forex\N3O.Umbraco.Forex.Currencylayer\N3O.Umbraco.Forex.Currencylayer.csproj" />
       <ProjectReference Include="..\..\Forms\N3O.Umbraco.Forms\N3O.Umbraco.Forms.csproj" />
-      <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Allocations\N3O.Umbraco.Giving.Allocations.csproj" />
+      <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving\N3O.Umbraco.Giving.csproj" />
       <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Cart\N3O.Umbraco.Giving.Cart.csproj" />
       <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Checkout\N3O.Umbraco.Giving.Checkout.csproj" />
-      <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Donations\N3O.Umbraco.Giving.Donations.csproj" />
-      <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Sponsorships\N3O.Umbraco.Giving.Sponsorships.csproj" />
       <ProjectReference Include="..\..\Newsletters\N3O.Umbraco.Newsletters.Mailchimp\N3O.Umbraco.Newsletters.Mailchimp.csproj" />
       <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.AuthorizeNet\N3O.Umbraco.Payments.AuthorizeNet.csproj" />
       <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.GoCardless\N3O.Umbraco.Payments.GoCardless.csproj" />

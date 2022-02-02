@@ -22,6 +22,7 @@
         <ProjectReference Include="..\DemoSite.Core\DemoSite.Core.csproj" />
     </ItemGroup>
 
+    <Import Project="..\..\N3O.Umbraco.Cms\build\N3O.Umbraco.Cms.targets" />
     <Import Project="..\..\Plugins\Cropper\N3O.Umbraco.Cropper.StaticAssets\build\N3O.Umbraco.Cropper.StaticAssets.targets" />
     <Import Project="..\..\Plugins\SerpEditor\N3O.Umbraco.SerpEditor.StaticAssets\build\N3O.Umbraco.SerpEditor.StaticAssets.targets" />
     <Import Project="..\..\Plugins\TextResourceEditor\N3O.Umbraco.TextResourceEditor.StaticAssets\build\N3O.Umbraco.TextResourceEditor.StaticAssets.targets" />
