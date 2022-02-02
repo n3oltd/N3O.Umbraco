@@ -14,11 +14,11 @@ export class AccountsClient {
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         this.http = http ? http : <any>window;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
 
-    getConsentOptions(): Promise<ConsentOption[]> {
-        let url_ = this.baseUrl + "/umbraco/api/Accounts/consentOptions";
+    getDataEntrySettings(): Promise<DataEntrySettings> {
+        let url_ = this.baseUrl + "/umbraco/api/Accounts/dataEntrySettings";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <RequestInit>{
@@ -29,17 +29,17 @@ export class AccountsClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetConsentOptions(_response);
+            return this.processGetDataEntrySettings(_response);
         });
     }
 
-    protected processGetConsentOptions(response: Response): Promise<ConsentOption[]> {
+    protected processGetDataEntrySettings(response: Response): Promise<DataEntrySettings> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : <ConsentOption[]>JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = _responseText === "" ? null : <DataEntrySettings>JSON.parse(_responseText, this.jsonParseReviver);
             return result200;
             });
         } else if (status === 400) {
@@ -57,7 +57,7 @@ export class AccountsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ConsentOption[]>(<any>null);
+        return Promise.resolve<DataEntrySettings>(<any>null);
     }
 
     getLookupConsentCategories(): Promise<NamedLookupRes[]> {
@@ -323,18 +323,59 @@ export class AccountsClient {
     }
 }
 
-export interface ConsentOption {
-    channel?: ConsentChannel | undefined;
-    categories?: string[] | undefined;
-    statement?: string | undefined;
+export interface DataEntrySettings {
+    name?: NameDataEntrySettings | undefined;
+    address?: AddressDataEntrySettings | undefined;
+    email?: EmailDataEntrySettings | undefined;
+    phone?: PhoneDataEntrySettings | undefined;
+    consent?: ConsentDataEntrySettings | undefined;
 }
 
-/** One of 'email', 'sms', 'post', 'telephone' */
-export enum ConsentChannel {
-    Email = "email",
-    Sms = "sms",
-    Post = "post",
-    Telephone = "telephone",
+export interface NameDataEntrySettings {
+    title?: TitleDataEntrySettings | undefined;
+    firstName?: FirstNameDataEntrySettings | undefined;
+    lastName?: LastNameDataEntrySettings | undefined;
+}
+
+export interface TitleDataEntrySettings {
+    required?: boolean;
+    label?: string | undefined;
+    helpText?: string | undefined;
+    order?: number;
+    options?: string[] | undefined;
+}
+
+export interface FirstNameDataEntrySettings {
+    required?: boolean;
+    label?: string | undefined;
+    helpText?: string | undefined;
+    order?: number;
+    capitalisation?: Capitalisation | undefined;
+}
+
+/** One of 'lower', 'title', 'upper' */
+export enum Capitalisation {
+    Lower = "lower",
+    Title = "title",
+    Upper = "upper",
+}
+
+export interface LastNameDataEntrySettings {
+    required?: boolean;
+    label?: string | undefined;
+    helpText?: string | undefined;
+    order?: number;
+    capitalisation?: Capitalisation | undefined;
+}
+
+export interface AddressDataEntrySettings {
+    defaultCountry?: string | undefined;
+    line1?: AddressFieldDataEntrySettings | undefined;
+    line2?: AddressFieldDataEntrySettings | undefined;
+    line3?: AddressFieldDataEntrySettings | undefined;
+    locality?: AddressFieldDataEntrySettings | undefined;
+    administrativeArea?: AddressFieldDataEntrySettings | undefined;
+    postalCode?: AddressFieldDataEntrySettings | undefined;
 }
 
 export interface IPublishedContent {
@@ -369,6 +410,47 @@ export enum PublishedItemType {
     Content = 2,
     Media = 3,
     Member = 4,
+}
+
+export interface AddressFieldDataEntrySettings {
+    visible?: boolean;
+    required?: boolean;
+    label?: string | undefined;
+    helpText?: string | undefined;
+    order?: number;
+}
+
+export interface EmailDataEntrySettings {
+    required?: boolean;
+    label?: string | undefined;
+    helpText?: string | undefined;
+    validate?: boolean;
+}
+
+export interface PhoneDataEntrySettings {
+    required?: boolean;
+    label?: string | undefined;
+    helpText?: string | undefined;
+    defaultCountry?: string | undefined;
+    validate?: boolean;
+}
+
+export interface ConsentDataEntrySettings {
+    consentOptions?: ConsentOption[] | undefined;
+}
+
+export interface ConsentOption {
+    channel?: ConsentChannel | undefined;
+    categories?: string[] | undefined;
+    statement?: string | undefined;
+}
+
+/** One of 'email', 'sms', 'post', 'telephone' */
+export enum ConsentChannel {
+    Email = "email",
+    Sms = "sms",
+    Post = "post",
+    Telephone = "telephone",
 }
 
 export interface ProblemDetails {
