@@ -1,1 +1,0 @@
-TypeScript client for the N3O Umbraco Cart

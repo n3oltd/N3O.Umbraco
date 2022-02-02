@@ -32,10 +32,7 @@ export declare enum GivingType {
 export interface AllocationReq {
     type?: AllocationType | undefined;
     value?: MoneyReq | undefined;
-    dimension1?: string | undefined;
-    dimension2?: string | undefined;
-    dimension3?: string | undefined;
-    dimension4?: string | undefined;
+    fundDimensions?: FundDimensionValuesReq | undefined;
     fund?: FundAllocationReq | undefined;
     sponsorship?: SponsorshipAllocationReq | undefined;
 }
@@ -81,6 +78,12 @@ export declare enum PublishedItemType {
     Media = 3,
     Member = 4
 }
+export interface FundDimensionValuesReq {
+    dimension1?: string | undefined;
+    dimension2?: string | undefined;
+    dimension3?: string | undefined;
+    dimension4?: string | undefined;
+}
 export interface FundAllocationReq {
     donationItem?: string | undefined;
 }
@@ -89,16 +92,79 @@ export interface PriceContent {
     amount?: number;
     locked?: boolean;
 }
-export interface PricingRuleContent {
-    content?: IPublishedContent | undefined;
-    price?: PriceContent | undefined;
-    dimension1Options?: string[] | undefined;
-    dimension2Options?: string[] | undefined;
-    dimension3Options?: string[] | undefined;
-    dimension4Options?: string[] | undefined;
+export interface PricingRuleElement {
+    content?: IPublishedElement | undefined;
+    amount?: number;
+    locked?: boolean;
+    dimension1?: string | undefined;
+    dimension2?: string | undefined;
+    dimension3?: string | undefined;
+    dimension4?: string | undefined;
+}
+export interface IPublishedElement {
+    contentType?: IPublishedContentType | undefined;
+    key?: string;
+    properties?: IPublishedProperty[] | undefined;
+}
+export interface IPublishedContentType {
+    key?: string;
+    id?: number;
+    alias?: string | undefined;
+    itemType?: PublishedItemType;
+    compositionAliases?: string[] | undefined;
+    variations?: ContentVariation;
+    isElement?: boolean;
+    propertyTypes?: IPublishedPropertyType[] | undefined;
+}
+export declare enum ContentVariation {
+    Nothing = 0,
+    Culture = 1,
+    Segment = 2,
+    CultureAndSegment = 3
+}
+export interface IPublishedPropertyType {
+    contentType?: IPublishedContentType | undefined;
+    dataType?: PublishedDataType | undefined;
+    alias?: string | undefined;
+    editorAlias?: string | undefined;
+    isUserProperty?: boolean;
+    variations?: ContentVariation;
+    cacheLevel?: PropertyCacheLevel;
+    modelClrType?: string | undefined;
+    clrType?: string | undefined;
+}
+export interface PublishedDataType {
+    id?: number;
+    editorAlias?: string | undefined;
+    configuration?: any | undefined;
+}
+export declare enum PropertyCacheLevel {
+    Unknown = 0,
+    Element = 1,
+    Elements = 2,
+    Snapshot = 3,
+    None = 4
+}
+export interface IPublishedProperty {
+    propertyType?: IPublishedPropertyType | undefined;
+    alias?: string | undefined;
 }
 export interface SponsorshipAllocationReq {
+    beneficiary?: string | undefined;
     scheme?: string | undefined;
+    duration?: SponsorshipDuration | undefined;
+    components?: SponsorshipComponentAllocationReq[] | undefined;
+}
+/** One of '_6', '_12', '_18', '_24' */
+export declare enum SponsorshipDuration {
+    _6 = "_6",
+    _12 = "_12",
+    _18 = "_18",
+    _24 = "_24"
+}
+export interface SponsorshipComponentAllocationReq {
+    component?: string | undefined;
+    value?: MoneyReq | undefined;
 }
 export interface CartSummaryRes {
     itemCount?: number;

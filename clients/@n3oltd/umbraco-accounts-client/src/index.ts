@@ -471,6 +471,7 @@ export interface CountryRes {
     id?: string | undefined;
     iso2Code?: string | undefined;
     iso3Code?: string | undefined;
+    diallingCode?: string | undefined;
     localityOptional?: boolean;
     postalCodeOptional?: boolean;
 }

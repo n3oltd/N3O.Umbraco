@@ -32,6 +32,15 @@ export interface NameRes {
     firstName?: string | undefined;
     lastName?: string | undefined;
 }
+export interface AddressRes {
+    line1?: string | undefined;
+    line2?: string | undefined;
+    line3?: string | undefined;
+    locality?: string | undefined;
+    administrativeArea?: string | undefined;
+    postalCode?: string | undefined;
+    country?: string | undefined;
+}
 export interface IPublishedContent {
     id?: number;
     name?: string | undefined;
@@ -64,15 +73,6 @@ export declare enum PublishedItemType {
     Content = 2,
     Media = 3,
     Member = 4
-}
-export interface AddressRes {
-    line1?: string | undefined;
-    line2?: string | undefined;
-    line3?: string | undefined;
-    locality?: string | undefined;
-    administrativeArea?: string | undefined;
-    postalCode?: string | undefined;
-    country?: string | undefined;
 }
 export interface EmailRes {
     address?: string | undefined;

@@ -23,7 +23,7 @@ var CartClient = /** @class */ (function () {
     function CartClient(baseUrl, http) {
         this.jsonParseReviver = undefined;
         this.http = http ? http : window;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
     CartClient.prototype.add = function (req) {
         var _this = this;
@@ -206,6 +206,29 @@ export var PublishedItemType;
     PublishedItemType[PublishedItemType["Media"] = 3] = "Media";
     PublishedItemType[PublishedItemType["Member"] = 4] = "Member";
 })(PublishedItemType || (PublishedItemType = {}));
+export var ContentVariation;
+(function (ContentVariation) {
+    ContentVariation[ContentVariation["Nothing"] = 0] = "Nothing";
+    ContentVariation[ContentVariation["Culture"] = 1] = "Culture";
+    ContentVariation[ContentVariation["Segment"] = 2] = "Segment";
+    ContentVariation[ContentVariation["CultureAndSegment"] = 3] = "CultureAndSegment";
+})(ContentVariation || (ContentVariation = {}));
+export var PropertyCacheLevel;
+(function (PropertyCacheLevel) {
+    PropertyCacheLevel[PropertyCacheLevel["Unknown"] = 0] = "Unknown";
+    PropertyCacheLevel[PropertyCacheLevel["Element"] = 1] = "Element";
+    PropertyCacheLevel[PropertyCacheLevel["Elements"] = 2] = "Elements";
+    PropertyCacheLevel[PropertyCacheLevel["Snapshot"] = 3] = "Snapshot";
+    PropertyCacheLevel[PropertyCacheLevel["None"] = 4] = "None";
+})(PropertyCacheLevel || (PropertyCacheLevel = {}));
+/** One of '_6', '_12', '_18', '_24' */
+export var SponsorshipDuration;
+(function (SponsorshipDuration) {
+    SponsorshipDuration["_6"] = "_6";
+    SponsorshipDuration["_12"] = "_12";
+    SponsorshipDuration["_18"] = "_18";
+    SponsorshipDuration["_24"] = "_24";
+})(SponsorshipDuration || (SponsorshipDuration = {}));
 var ApiException = /** @class */ (function (_super) {
     __extends(ApiException, _super);
     function ApiException(message, status, response, headers, result) {

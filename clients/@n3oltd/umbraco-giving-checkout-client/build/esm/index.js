@@ -19,70 +19,15 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var CartClient = /** @class */ (function () {
-    function CartClient(baseUrl, http) {
+var CheckoutClient = /** @class */ (function () {
+    function CheckoutClient(baseUrl, http) {
         this.jsonParseReviver = undefined;
         this.http = http ? http : window;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
-    CartClient.prototype.add = function (req) {
+    CheckoutClient.prototype.getCurrentCheckout = function () {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Cart/add";
-        url_ = url_.replace(/[?&]$/, "");
-        var content_ = JSON.stringify(req);
-        var options_ = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-        return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processAdd(_response);
-        });
-    };
-    CartClient.prototype.processAdd = function (response) {
-        var _this = this;
-        var status = response.status;
-        var _headers = {};
-        if (response.headers && response.headers.forEach) {
-            response.headers.forEach(function (v, k) { return _headers[k] = v; });
-        }
-        ;
-        if (status === 200) {
-            return response.text().then(function (_responseText) {
-                return;
-            });
-        }
-        else if (status === 400) {
-            return response.text().then(function (_responseText) {
-                var result400 = null;
-                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        }
-        else if (status === 500) {
-            return response.text().then(function (_responseText) {
-                return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        }
-        else if (status === 422) {
-            return response.text().then(function (_responseText) {
-                var result422 = null;
-                result422 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return throwException("A server side error occurred.", status, _responseText, _headers, result422);
-            });
-        }
-        else if (status !== 200 && status !== 204) {
-            return response.text().then(function (_responseText) {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve(null);
-    };
-    CartClient.prototype.getSummary = function () {
-        var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Cart/summary";
+        var url_ = this.baseUrl + "/umbraco/api/Checkout/current";
         url_ = url_.replace(/[?&]$/, "");
         var options_ = {
             method: "GET",
@@ -91,10 +36,10 @@ var CartClient = /** @class */ (function () {
             }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processGetSummary(_response);
+            return _this.processGetCurrentCheckout(_response);
         });
     };
-    CartClient.prototype.processGetSummary = function (response) {
+    CheckoutClient.prototype.processGetCurrentCheckout = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -128,23 +73,21 @@ var CartClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    CartClient.prototype.remove = function (req) {
+    CheckoutClient.prototype.getLookupCheckoutStages = function () {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Cart/remove";
+        var url_ = this.baseUrl + "/umbraco/api/Checkout/lookups/checkoutStages";
         url_ = url_.replace(/[?&]$/, "");
-        var content_ = JSON.stringify(req);
         var options_ = {
-            body: content_,
-            method: "DELETE",
+            method: "GET",
             headers: {
-                "Content-Type": "application/json",
+                "Accept": "application/json"
             }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processRemove(_response);
+            return _this.processGetLookupCheckoutStages(_response);
         });
     };
-    CartClient.prototype.processRemove = function (response) {
+    CheckoutClient.prototype.processGetLookupCheckoutStages = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -154,7 +97,9 @@ var CartClient = /** @class */ (function () {
         ;
         if (status === 200) {
             return response.text().then(function (_responseText) {
-                return;
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
             });
         }
         else if (status === 400) {
@@ -169,11 +114,52 @@ var CartClient = /** @class */ (function () {
                 return throwException("A server side error occurred.", status, _responseText, _headers);
             });
         }
-        else if (status === 422) {
+        else if (status !== 200 && status !== 204) {
             return response.text().then(function (_responseText) {
-                var result422 = null;
-                result422 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return throwException("A server side error occurred.", status, _responseText, _headers, result422);
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
+    CheckoutClient.prototype.getRegularGivingFrequencies = function () {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Checkout/lookups/regularGivingFrequencies";
+        url_ = url_.replace(/[?&]$/, "");
+        var options_ = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processGetRegularGivingFrequencies(_response);
+        });
+    };
+    CheckoutClient.prototype.processGetRegularGivingFrequencies = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
             });
         }
         else if (status !== 200 && status !== 204) {
@@ -183,21 +169,114 @@ var CartClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    return CartClient;
+    CheckoutClient.prototype.updateAccount = function (checkoutRevisionId, req) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Checkout/{checkoutRevisionId}/account";
+        if (checkoutRevisionId === undefined || checkoutRevisionId === null)
+            throw new Error("The parameter 'checkoutRevisionId' must be defined.");
+        url_ = url_.replace("{checkoutRevisionId}", encodeURIComponent("" + checkoutRevisionId));
+        url_ = url_.replace(/[?&]$/, "");
+        var content_ = JSON.stringify(req);
+        var options_ = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processUpdateAccount(_response);
+        });
+    };
+    CheckoutClient.prototype.processUpdateAccount = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
+    CheckoutClient.prototype.getAllLookups = function (criteria) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Checkout/lookups/all";
+        url_ = url_.replace(/[?&]$/, "");
+        var content_ = JSON.stringify(criteria);
+        var options_ = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processGetAllLookups(_response);
+        });
+    };
+    CheckoutClient.prototype.processGetAllLookups = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
+    return CheckoutClient;
 }());
-export { CartClient };
-/** One of 'donation', 'regularGiving' */
-export var GivingType;
-(function (GivingType) {
-    GivingType["Donation"] = "donation";
-    GivingType["RegularGiving"] = "regularGiving";
-})(GivingType || (GivingType = {}));
-/** One of 'fund', 'sponsorship' */
-export var AllocationType;
-(function (AllocationType) {
-    AllocationType["Fund"] = "fund";
-    AllocationType["Sponsorship"] = "sponsorship";
-})(AllocationType || (AllocationType = {}));
+export { CheckoutClient };
 export var PublishedItemType;
 (function (PublishedItemType) {
     PublishedItemType[PublishedItemType["Unknown"] = 0] = "Unknown";
@@ -206,6 +285,28 @@ export var PublishedItemType;
     PublishedItemType[PublishedItemType["Media"] = 3] = "Media";
     PublishedItemType[PublishedItemType["Member"] = 4] = "Member";
 })(PublishedItemType || (PublishedItemType = {}));
+/** One of 'email', 'sms', 'post', 'telephone' */
+export var ConsentChannel;
+(function (ConsentChannel) {
+    ConsentChannel["Email"] = "email";
+    ConsentChannel["Sms"] = "sms";
+    ConsentChannel["Post"] = "post";
+    ConsentChannel["Telephone"] = "telephone";
+})(ConsentChannel || (ConsentChannel = {}));
+/** One of 'noResponse', 'optIn', 'optOut' */
+export var ConsentResponse;
+(function (ConsentResponse) {
+    ConsentResponse["NoResponse"] = "noResponse";
+    ConsentResponse["OptIn"] = "optIn";
+    ConsentResponse["OptOut"] = "optOut";
+})(ConsentResponse || (ConsentResponse = {}));
+/** One of 'payer', 'nonPayer', 'notSpecified' */
+export var TaxStatus;
+(function (TaxStatus) {
+    TaxStatus["Payer"] = "payer";
+    TaxStatus["NonPayer"] = "nonPayer";
+    TaxStatus["NotSpecified"] = "notSpecified";
+})(TaxStatus || (TaxStatus = {}));
 var ApiException = /** @class */ (function (_super) {
     __extends(ApiException, _super);
     function ApiException(message, status, response, headers, result) {
