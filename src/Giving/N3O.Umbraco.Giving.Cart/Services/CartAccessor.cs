@@ -9,16 +9,19 @@ namespace N3O.Umbraco.Giving.Cart {
     public class CartAccessor : ICartAccessor {
         private readonly ICartIdAccessor _cartIdAccessor;
         private readonly IRepository<Entities.Cart> _repository;
-        private readonly Lazy<ICurrencyAccessor> _currencyAccessor;
+        private readonly ICurrencyAccessor _currencyAccessor;
+        private readonly Lazy<ICartValidator> _cartValidator;
         private readonly ILock _lock;
 
         public CartAccessor(ICartIdAccessor cartIdAccessor,
                             IRepository<Entities.Cart> repository,
-                            Lazy<ICurrencyAccessor> currencyAccessor,
+                            ICurrencyAccessor currencyAccessor,
+                            Lazy<ICartValidator> cartValidator,
                             ILock @lock) {
             _cartIdAccessor = cartIdAccessor;
             _repository = repository;
             _currencyAccessor = currencyAccessor;
+            _cartValidator = cartValidator;
             _lock = @lock;
         }
     
@@ -26,14 +29,17 @@ namespace N3O.Umbraco.Giving.Cart {
             var cartId = _cartIdAccessor.GetCartId();
             
             var result = await _lock.LockAsync(cartId.ToString(), async () => {
+                var currency = _currencyAccessor.GetCurrency();
                 var cart = await _repository.GetAsync(cartId, cancellationToken);
 
                 if (cart == null) {
-                    var currency = _currencyAccessor.Value.GetCurrency();
-                    
                     cart = Entities.Cart.Create(cartId, currency);
 
                     await _repository.InsertAsync(cart, cancellationToken);
+                } else {
+                    if (_cartValidator.Value.IsValid(currency, cart)) {
+                        cart.Reset(currency);
+                    }
                 }
 
                 return cart;

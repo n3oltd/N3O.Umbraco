@@ -1,14 +1,14 @@
 using FluentValidation;
+using N3O.Umbraco.Accounts.Content;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
-using N3O.Umbraco.Validation.Content;
 
 namespace N3O.Umbraco.Accounts.Models {
     public class EmailReqValidator : ModelValidator<EmailReq> {
         public EmailReqValidator(IFormatter formatter, IContentCache contentCache) : base(formatter) {
-            var settings = contentCache.Single<EmailValidationSettingsContent>();
+            var settings = contentCache.Single<EmailDataEntrySettingsContent>();
         
             RuleFor(x => x.Address)
                 .NotEmpty()
@@ -16,7 +16,7 @@ namespace N3O.Umbraco.Accounts.Models {
 
             RuleFor(x => x.Address)
                 .EmailAddress()
-                .When(x => settings.ValidateEmails && x.Address.HasValue())
+                .When(x => settings.Validate && x.Address.HasValue())
                 .WithMessage(Get<Strings>(x => x.InvalidAddress));
         }
 

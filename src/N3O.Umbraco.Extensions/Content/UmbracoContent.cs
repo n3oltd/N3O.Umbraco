@@ -14,6 +14,14 @@ namespace N3O.Umbraco.Content {
         [ValueIgnore]
         public virtual IPublishedContent Content { get; set; }
 
+        protected TProperty Child<TProperty>(Expression<Func<T, TProperty>> memberExpression)
+            where TProperty : UmbracoContent<TProperty> {
+            var alias = AliasHelper<TProperty>.ContentTypeAlias();
+            var child = Content.Children.SingleOrDefault(x => x.ContentType.Alias.EqualsInvariant(alias));
+
+            return child.As<TProperty>();
+        }
+
         protected TProperty GetAs<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
             var alias = AliasHelper<T>.PropertyAlias(memberExpression);
             var value = (IPublishedContent) Content.Value(alias);

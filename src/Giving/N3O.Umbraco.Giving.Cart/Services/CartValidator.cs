@@ -1,20 +1,19 @@
 ﻿using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
-using N3O.Umbraco.Giving.Allocations.Lookups;
-using N3O.Umbraco.Giving.Allocations.Models;
+using N3O.Umbraco.Giving.Lookups;
+using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Giving.Cart.Models;
-using N3O.Umbraco.Giving.Pricing;
-using N3O.Umbraco.Giving.Pricing.Extensions;
+using N3O.Umbraco.Giving.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace N3O.Umbraco.Giving.Cart {
     public class CartValidator : ICartValidator {
-        private readonly IPriceCalculator _priceCalculator;
-
-        public CartValidator(IPriceCalculator priceCalculator) {
-            _priceCalculator = priceCalculator;
+        private readonly IPricedAmountValidator _pricedAmountValidator;
+        
+        public CartValidator(IPricedAmountValidator pricedAmountValidator) {
+            _pricedAmountValidator = pricedAmountValidator;
         }
     
         public bool IsValid(Currency currentCurrency, Entities.Cart cart) {
@@ -40,17 +39,14 @@ namespace N3O.Umbraco.Giving.Cart {
         }
 
         private bool AllocationIsValid(Currency currency, Allocation allocation) {
+            if (!FundDimensionsAreValid(allocation)) {
+                return false;
+            }
+            
             if (allocation.Type == AllocationTypes.Fund) {
                 var fund = allocation.Fund;
 
                 if (!fund.HasValue(x => x.DonationItem)) {
-                    return false;
-                }
-
-                if (!FundDimensionIsValid(fund.DonationItem.Dimension1Options, allocation.Dimension1) ||
-                    !FundDimensionIsValid(fund.DonationItem.Dimension2Options, allocation.Dimension2) ||
-                    !FundDimensionIsValid(fund.DonationItem.Dimension3Options, allocation.Dimension3) ||
-                    !FundDimensionIsValid(fund.DonationItem.Dimension4Options, allocation.Dimension4)) {
                     return false;
                 }
 
@@ -59,9 +55,9 @@ namespace N3O.Umbraco.Giving.Cart {
                 }
 
                 if (allocation.Fund.DonationItem.HasPricing()) {
-                    var currencyPrice = _priceCalculator.InCurrency(fund.DonationItem, currency);
-
-                    if (currencyPrice != allocation.Value) {
+                    if (!_pricedAmountValidator.IsValid(allocation.Value,
+                                                        allocation.Fund.DonationItem,
+                                                        allocation.FundDimensions)) {
                         return false;
                     }
                 }
@@ -71,11 +67,27 @@ namespace N3O.Umbraco.Giving.Cart {
                 if (!sponsorship.HasValue(x => x.Scheme)) {
                     return false;
                 }
-            
-                if (!FundDimensionIsValid(sponsorship.Scheme.Dimension1Options, allocation.Dimension1) ||
-                    !FundDimensionIsValid(sponsorship.Scheme.Dimension2Options, allocation.Dimension2) ||
-                    !FundDimensionIsValid(sponsorship.Scheme.Dimension3Options, allocation.Dimension3) ||
-                    !FundDimensionIsValid(sponsorship.Scheme.Dimension4Options, allocation.Dimension4)) {
+
+                foreach (var componentAllocation in sponsorship.Components.OrEmpty()) {
+                    if (!componentAllocation.HasValue(x => x.Component)) {
+                        return false;
+                    }
+                    
+                    if (componentAllocation.Component.Scheme != allocation.Sponsorship.Scheme) {
+                        return false;
+                    }
+                    
+                    if (componentAllocation.Component.HasPricing()) {
+                        if (!_pricedAmountValidator.IsValid(componentAllocation.Value,
+                                                            componentAllocation.Component,
+                                                            allocation.FundDimensions)) {
+                            return false;
+                        }
+                    }
+                }
+
+                if (sponsorship.Scheme.Components.Any(c => c.Mandatory &&
+                                                           sponsorship.Components.None(x => x.Component == c))) {
                     return false;
                 }
             } else {
@@ -83,6 +95,20 @@ namespace N3O.Umbraco.Giving.Cart {
             }
 
             return true;
+        }
+
+        private bool FundDimensionsAreValid(Allocation allocation) {
+            var fundDimensions = allocation.FundDimensions;
+            var fundDimensionOptions = allocation.GetFundDimensionsOptions();
+            
+            if (FundDimensionIsValid(fundDimensionOptions.Dimension1Options, fundDimensions.Dimension1) &&
+                FundDimensionIsValid(fundDimensionOptions.Dimension2Options, fundDimensions.Dimension2) &&
+                FundDimensionIsValid(fundDimensionOptions.Dimension3Options, fundDimensions.Dimension3) &&
+                FundDimensionIsValid(fundDimensionOptions.Dimension4Options, fundDimensions.Dimension4)) {
+                return true;
+            }
+
+            return false;
         }
 
         private bool FundDimensionIsValid<T>(IEnumerable<T> allowed, T value) {

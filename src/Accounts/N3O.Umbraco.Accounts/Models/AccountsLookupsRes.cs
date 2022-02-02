@@ -1,8 +1,8 @@
-﻿using N3O.Umbraco.Giving.Accounts.Lookups;
+﻿using N3O.Umbraco.Accounts.Lookups;
 using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
 
-namespace N3O.Umbraco.Giving.Accounts.Models {
+namespace N3O.Umbraco.Accounts.Models {
     public class AccountsLookupsRes : LookupsRes {
         [FromLookupType(AccountsLookupTypes.ConsentCategories)]
         public IEnumerable<NamedLookupRes> ConsentCategories { get; set; }

@@ -1,3 +1,4 @@
+using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,7 +7,7 @@ namespace N3O.Umbraco.Lookups {
     public abstract class LookupsCollection<T> : ILookupsCollection<T> where T : ILookup {
         public virtual async Task<T> FindByIdAsync(string id) {
             var all = await GetAllAsync();
-            var lookup = all.FirstOrDefault(x => x.Id == id);
+            var lookup = all.FirstOrDefault(x => x.Id.EqualsInvariant(id));
 
             return lookup;
         }

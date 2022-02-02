@@ -1,6 +1,6 @@
 using N3O.Umbraco.Attributes;
-using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Giving.Lookups;
+using N3O.Umbraco.Giving.Models;
 
 namespace N3O.Umbraco.Giving.Cart.Models {
     public class AddToCartReq {

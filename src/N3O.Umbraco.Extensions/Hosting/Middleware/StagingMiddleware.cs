@@ -22,24 +22,20 @@ namespace N3O.Umbraco.Hosting {
         private static readonly TimeSpan LockOutPeriod = TimeSpan.FromMinutes(5);
         private static readonly MemoryCache FailedLogins = new(new MemoryCacheOptions());
 
-        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly Lazy<IUmbracoContextFactory> _umbracoContextFactory;
         private readonly Lazy<IRemoteIpAddressAccessor> _remoteIpAddressAccessor;
         private readonly Lazy<IOptionsSnapshot<CookieAuthenticationOptions>> _cookieAuthenticationOptions;
 
-        public StagingMiddleware(IWebHostEnvironment webHostEnvironment,
-                                 Lazy<IUmbracoContextFactory> umbracoContextFactory,
+        public StagingMiddleware(Lazy<IUmbracoContextFactory> umbracoContextFactory,
                                  Lazy<IRemoteIpAddressAccessor> remoteIpAddressAccessor,
                                  Lazy<IOptionsSnapshot<CookieAuthenticationOptions>> cookieAuthenticationOptions) {
-            _webHostEnvironment = webHostEnvironment;
             _umbracoContextFactory = umbracoContextFactory;
             _remoteIpAddressAccessor = remoteIpAddressAccessor;
             _cookieAuthenticationOptions = cookieAuthenticationOptions;
         }
         
         public async Task InvokeAsync(HttpContext context, RequestDelegate next) {
-            if (_webHostEnvironment.IsStaging() &&
-                !context.Request.GetDisplayUrl().Contains("/umbraco", StringComparison.InvariantCultureIgnoreCase) &&
+            if (!context.Request.GetDisplayUrl().Contains("/umbraco", StringComparison.InvariantCultureIgnoreCase) &&
                 !context.Request.GetDisplayUrl().Contains("/App_Plugins", StringComparison.InvariantCultureIgnoreCase) &&
                 !context.Request.GetDisplayUrl().Contains("/sb", StringComparison.InvariantCultureIgnoreCase)) {
                 var umbracoContext = _umbracoContextFactory.Value.EnsureUmbracoContext().UmbracoContext;

@@ -1,6 +1,6 @@
 ﻿using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
-using N3O.Umbraco.Giving.Allocations.Models;
+using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Payments.Models;
 using NodaTime;

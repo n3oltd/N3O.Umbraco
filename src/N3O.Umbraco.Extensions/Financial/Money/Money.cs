@@ -1,5 +1,5 @@
 namespace N3O.Umbraco.Financial {
-    public partial class Money {
+    public partial class Money : Value {
         public Money(decimal amount, Currency currency) {
             Amount = amount;
             Currency = currency;

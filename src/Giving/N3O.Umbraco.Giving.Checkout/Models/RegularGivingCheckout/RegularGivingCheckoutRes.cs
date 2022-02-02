@@ -1,5 +1,5 @@
 ﻿using N3O.Umbraco.Financial;
-using N3O.Umbraco.Giving.Allocations.Models;
+using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Lookups;
 using NodaTime;
 using System.Collections.Generic;

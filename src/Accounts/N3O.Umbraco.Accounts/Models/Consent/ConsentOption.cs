@@ -1,7 +1,7 @@
 ﻿using N3O.Umbraco.Accounts.Lookups;
 using System.Collections.Generic;
 
-namespace N3O.Umbraco.Giving.Accounts.Models {
+namespace N3O.Umbraco.Accounts.Models {
     public class ConsentOption : Value {
         public ConsentOption(ConsentChannel channel, IEnumerable<ConsentCategory> categories, string statement) {
             Channel = channel;

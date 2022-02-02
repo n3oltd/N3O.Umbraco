@@ -1,6 +1,7 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
+using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Localization;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Giving.Cart.Models {
     public class CartModel {
         private static readonly string CheckoutPageAlias = "checkoutPage";
-        private static readonly string DonatePageAlias = "donatePage";
+        private static readonly string DonatePageAlias = AliasHelper<DonatePageContent>.ContentTypeAlias();
         
         private readonly IFormatter _formatter;
 

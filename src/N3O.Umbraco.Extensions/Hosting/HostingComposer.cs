@@ -24,25 +24,31 @@ namespace N3O.Umbraco.Hosting {
             builder.Services.AddTransient<IConfigureOptions<MvcOptions>, OurMvcBinderOptions>();
             builder.Services.AddTransient<IConfigureOptions<MvcOptions>, OurCacheProfileOptions>();
             builder.Services.AddScoped<IActionLinkGenerator, ActionLinkGenerator>();
+            
+            builder.Services.AddScoped<CookiesMiddleware>();
             builder.Services.AddScoped<StagingMiddleware>();
 
             builder.Services.AddOpenApiDocument("DevTools");
             
             builder.Services.Configure<UmbracoPipelineOptions>(opt => {
-                AddStagingMiddleware(opt);
+                if (WebHostEnvironment.IsStaging()) {
+                    AddMiddleware<StagingMiddleware>(opt);
+                }
+
+                AddMiddleware<CookiesMiddleware>(opt);
                 ConfigureCors(opt);
             });
 
             RegisterRouteConstraints(builder);
         }
-
-        private void AddStagingMiddleware(UmbracoPipelineOptions opt) {
-            var filter = new UmbracoPipelineFilter("Staging");
+        
+        private void AddMiddleware<T>(UmbracoPipelineOptions opt) where T : class {
+            var filter = new UmbracoPipelineFilter(typeof(T).Name);
             filter.PostPipeline = app => {
                 var runtimeState = app.ApplicationServices.GetRequiredService<IRuntimeState>();
 
                 if (runtimeState.Level == RuntimeLevel.Run) {
-                    app.UseMiddleware<StagingMiddleware>();
+                    app.UseMiddleware<T>();
                 }
             };
 

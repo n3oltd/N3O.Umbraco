@@ -1,5 +1,4 @@
-﻿using N3O.Umbraco.Accounts.Lookups;
-using N3O.Umbraco.Accounts.Models;
+﻿using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
@@ -23,13 +22,13 @@ namespace N3O.Umbraco.Payments.Testing {
 
         public BillingInfo GetBillingInfo() {
             var unitedKingdom = _lookups.FindById<Country>("unitedKingdom");
-            var title = _lookups.FindById<Title>("mr");
+            var title = "Mr";
             var address = new Address("10 Downing Street", null, null, "London", null, "SW1A 2AB", unitedKingdom);
             var name = new Name(title, "Joe", "Bloggs");
             var email = new Email("joe.bloggs@n3o.ltd");
-            var telphone = new Telephone(unitedKingdom, "0333 016 5130");
+            var telephone = new Telephone(unitedKingdom, "0333 016 5130");
             
-            return new BillingInfo(address, email,name, telphone);
+            return new BillingInfo(address, email,name, telephone);
         }
 
         public T GetOrCreatePaymentObject<T>() where T : PaymentObject, new() {

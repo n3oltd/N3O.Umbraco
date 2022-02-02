@@ -1,16 +1,16 @@
 using FluentValidation;
+using N3O.Umbraco.Accounts.Content;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.TaxRelief;
 using N3O.Umbraco.Validation;
-using N3O.Umbraco.Validation.Content;
 
 namespace N3O.Umbraco.Accounts.Models {
     public class AccountReqValidator : ModelValidator<AccountReq> {
         public AccountReqValidator(IFormatter formatter, IContentCache contentCache, ITaxReliefScheme taxReliefScheme)
             : base(formatter) {
-            var phoneValidationSettings = contentCache.Single<PhoneValidationSettingsContent>();
+            var phoneDataEntrySettings = contentCache.Single<PhoneDataEntrySettingsContent>();
         
             RuleFor(x => x.Name)
                 .NotNull()
@@ -26,7 +26,7 @@ namespace N3O.Umbraco.Accounts.Models {
 
             RuleFor(x => x.Telephone)
                 .NotNull()
-                .When(_ => phoneValidationSettings.RequireNumbers)
+                .When(_ => phoneDataEntrySettings.Required)
                 .WithMessage(Get<Strings>(s => s.SpecifyTelephone));
 
             RuleFor(x => x.TaxStatus)

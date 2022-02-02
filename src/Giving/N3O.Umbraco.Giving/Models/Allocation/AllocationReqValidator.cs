@@ -1,0 +1,84 @@
+﻿using FluentValidation;
+using N3O.Umbraco.Extensions;
+using N3O.Giving.Models;
+using N3O.Umbraco.Giving.Lookups;
+using N3O.Umbraco.Giving.Extensions;
+using N3O.Umbraco.Localization;
+using N3O.Umbraco.Validation;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace N3O.Umbraco.Giving.Models {
+    public class AllocationReqValidator : ModelValidator<AllocationReq> {
+        public AllocationReqValidator(IFormatter formatter, IPricedAmountValidator pricedAmountValidator)
+            : base(formatter) {
+            RuleFor(x => x.Type)
+                .NotNull()
+                .WithMessage(Get<Strings>(s => s.SpecifyType));
+        
+            RuleFor(x => x.Fund)
+                .NotNull()
+                .When(x => x.Type == AllocationTypes.Fund)
+                .WithMessage(Get<Strings>(s => s.SpecifyFundAllocation));
+            
+            RuleFor(x => x.Fund)
+                .Null()
+                .When(x => x.Type != AllocationTypes.Fund)
+                .WithMessage(Get<Strings>(s => s.FundAllocationNotAllowed));
+
+            RuleFor(x => x.Sponsorship)
+                .NotNull()
+                .When(x => x.Type == AllocationTypes.Sponsorship)
+                .WithMessage(Get<Strings>(s => s.SpecifySponsorshipAllocation));
+            
+            RuleFor(x => x.Sponsorship)
+                .Null()
+                .When(x => x.Type != AllocationTypes.Sponsorship)
+                .WithMessage(Get<Strings>(s => s.SponsorshipAllocationNotAllowed));
+
+            RuleFor(x => x.Value)
+                .Must((req, x) => pricedAmountValidator.IsValid(x, req.Fund.DonationItem, req.FundDimensions))
+                .When(x => x.Value.HasValue() && x.Fund?.DonationItem?.HasPricing() == true)
+                .WithMessage(Get<Strings>(s => s.InvalidValue));
+            
+            RuleForEach(x => x.Sponsorship.Components)
+                .Must((req, x) => pricedAmountValidator.IsValid(x.Value, x.Component, req.FundDimensions))
+                .When(x => x.Sponsorship.OrEmpty(s => s.Scheme.Components).Any(c => c.HasPricing()))
+                .WithMessage(Get<Strings>(s => s.InvalidValue));
+            
+            RuleFor(x => x.Value)
+                .Must((req, x) => x.Amount.GetValueOrThrow() == req.Sponsorship.Components.Sum(x => x.Value.Amount.GetValueOrThrow()))
+                .When(x => x.Value.HasValue(v => v.Amount) && x.Sponsorship.HasValue() && x.Sponsorship.Components.All(c => c.Value.HasValue(v => v.Amount)))
+                .WithMessage(Get<Strings>(s => s.InvalidValue));
+
+            RuleFor(x => x.FundDimensions)
+                .Must((req, x) => FundDimensionsAreValid(x, req.GetFundDimensionsOptions()))
+                .WithMessage(Get<Strings>(s => s.InvalidFundDimensions));
+        }
+
+        private bool FundDimensionsAreValid(FundDimensionValuesReq req, IFundDimensionsOptions options) {
+            if (FundDimensionIsValid(req.Dimension1, options.Dimension1Options) &&
+                FundDimensionIsValid(req.Dimension2, options.Dimension2Options) &&
+                FundDimensionIsValid(req.Dimension3, options.Dimension3Options) &&
+                FundDimensionIsValid(req.Dimension4, options.Dimension4Options)) {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool FundDimensionIsValid<T>(T value, IEnumerable<T> options) where T : FundDimensionValue<T> {
+            return value == null || options.Contains(value);
+        }
+
+        public class Strings : ValidationStrings {
+            public string FundAllocationNotAllowed => "Fund cannot be specified for this type of allocation";
+            public string InvalidFundDimensions => "One or more fund dimension values are invalid";
+            public string InvalidValue => "Invalid value specified";
+            public string SpecifyFundAllocation => "Please specify the fund allocation";
+            public string SpecifySponsorshipAllocation => "Please specify the sponsorship allocation";
+            public string SponsorshipAllocationNotAllowed => "Sponsorship cannot be specified for this type of allocation";
+            public string SpecifyType => "Please specify the allocation type";
+        }
+    }
+}

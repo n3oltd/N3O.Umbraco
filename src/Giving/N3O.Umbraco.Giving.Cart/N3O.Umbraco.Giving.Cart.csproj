@@ -30,8 +30,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Mediator\N3O.Umbraco.Mediator\N3O.Umbraco.Mediator.csproj" />
-      <ProjectReference Include="..\N3O.Umbraco.Giving.Allocations\N3O.Umbraco.Giving.Allocations.csproj" />
+      <ProjectReference Include="..\N3O.Umbraco.Giving\N3O.Umbraco.Giving.csproj" />
     </ItemGroup>
 
     <ItemGroup>

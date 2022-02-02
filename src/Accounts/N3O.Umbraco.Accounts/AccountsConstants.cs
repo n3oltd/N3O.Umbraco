@@ -1,4 +1,4 @@
-namespace N3O.Umbraco.Giving.Accounts {
+namespace N3O.Umbraco.Accounts {
     public static class AccountsConstants {
         public const string ApiName = "Accounts";
     }
