@@ -76,8 +76,6 @@ namespace N3O.Umbraco.Forex {
                                                                              quoteCurrency,
                                                                              rate,
                                                                              cancellationToken);
-                    
-                    await _repository.InsertAsync(cachedExchangeRate, cancellationToken);   
                 }
 
                 return cachedExchangeRate.Rate;

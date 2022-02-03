@@ -3,5 +3,6 @@
 namespace N3O.Umbraco.Forex.Currencylayer.Content {
     public class CurrencylayerSettingsContent : UmbracoContent<CurrencylayerSettingsContent> {
         public string ApiKey => GetValue(x => x.ApiKey);
+        public decimal MarketRateAdjustment => GetValue(x => x.MarketRateAdjustment);
     }
 }

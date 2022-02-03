@@ -173,10 +173,15 @@ export interface IPublishedProperty {
 }
 export interface PriceHandleRes {
     amount?: number;
-    currencyValues?: CurrencyValuesRes | undefined;
+    currencyValues?: {
+        [key: string]: MoneyRes;
+    } | undefined;
     description?: string | undefined;
 }
-export interface CurrencyValuesRes {
+export interface MoneyRes {
+    amount?: number;
+    currency?: string | undefined;
+    text?: string | undefined;
 }
 export interface SponsorshipDonationOptionRes {
     scheme?: string | undefined;
@@ -230,13 +235,17 @@ export interface DonationItemRes {
 }
 export interface PricingRes {
     amount?: number;
-    currencyValues?: CurrencyValuesRes | undefined;
+    currencyValues?: {
+        [key: string]: MoneyRes;
+    } | undefined;
     locked?: boolean;
     priceRules?: PricingRuleRes[] | undefined;
 }
 export interface PricingRuleRes {
     amount?: number;
-    currencyValues?: CurrencyValuesRes | undefined;
+    currencyValues?: {
+        [key: string]: MoneyRes;
+    } | undefined;
     locked?: boolean;
     fundDimensions?: FundDimensionValuesRes | undefined;
 }
@@ -270,7 +279,9 @@ export interface SponsorshipComponentRes {
 }
 export interface PriceRes {
     amount?: number;
-    currencyValues?: CurrencyValuesRes | undefined;
+    currencyValues?: {
+        [key: string]: MoneyRes;
+    } | undefined;
     locked?: boolean;
 }
 export interface PriceCriteria {
