@@ -6,33 +6,29 @@ using NodaTime;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Umbraco.Cms.Core.Scoping;
+using Umbraco.Cms.Infrastructure.Persistence;
 
 namespace N3O.Umbraco.Entities {
     public class Repository<T> : IRepository<T> where T : class, IEntity {
-        private readonly IScopeProvider _scopeProvider;
+        private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
         private readonly IJsonProvider _jsonProvider;
         private readonly IClock _clock;
 
-        public Repository(IScopeProvider scopeProvider, IJsonProvider jsonProvider, IClock clock) {
-            _scopeProvider = scopeProvider;
+        public Repository(IUmbracoDatabaseFactory umbracoDatabaseFactory, IJsonProvider jsonProvider, IClock clock) {
+            _umbracoDatabaseFactory = umbracoDatabaseFactory;
             _jsonProvider = jsonProvider;
             _clock = clock;
         }
 
-        public Task DeleteAsync(EntityId id, CancellationToken cancellationToken = default) {
-            using (var scope = _scopeProvider.CreateScope()) {
-                scope.Database.Delete<EntityRow>($@"DELETE FROM {Tables.Entities} WHERE Id = @0", id.Value);
-            
-                scope.Complete();
-
-                return Task.CompletedTask;
+        public async Task DeleteAsync(EntityId id, CancellationToken cancellationToken = default) {
+            using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
+                await db.ExecuteAsync($@"DELETE FROM {Tables.Entities.Name} WHERE Id = '{id.Value}'");
             }
         }
         
         public async Task<T> GetAsync(EntityId id, CancellationToken cancellationToken = default) {
-            using (var scope = _scopeProvider.CreateScope()) {
-                var row = await scope.Database.SingleOrDefaultAsync<EntityRow>($@"SELECT * FROM {Tables.Entities} WHERE Id = @0", id.Value);
+            using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
+                var row = await db.SingleOrDefaultAsync<EntityRow>($@"SELECT * FROM {Tables.Entities.Name} WHERE Id = '{id.Value}'");
 
                 var entity = row.IfNotNull(x => {
                     var type = Type.GetType(x.Type);
@@ -55,16 +51,20 @@ namespace N3O.Umbraco.Entities {
         }
 
         public async Task InsertAsync(T entity, CancellationToken cancellationToken = default) {
-            await SaveAsync(entity, (s, r) => s.Database.Insert(r));
+            await SaveAsync(entity, (db, r) => {
+                db.Insert(Tables.Entities.Name, Tables.Entities.PrimaryKey, false, r);
+                
+                return Task.CompletedTask;
+            });
         }
         
         public async Task UpdateAsync(T entity, CancellationToken cancellationToken = default) {
             // TODO The update SQL should check the revision number hasn't changed and fail if it has
-            await SaveAsync(entity, (s, r) => s.Database.Update(r));
+            await SaveAsync(entity, (db, r) => db.UpdateAsync(r));
         }
 
-        private Task<TResult> SaveAsync<TResult>(T entity, Func<IScope, EntityRow, TResult> save) {
-            using (var scope = _scopeProvider.CreateScope()) {
+        private async Task SaveAsync(T entity, Func<IUmbracoDatabase, EntityRow, Task> saveAsync) {
+            using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
                 entity.OnSaving(_clock.GetCurrentInstant());
 
                 var row = new EntityRow();
@@ -74,11 +74,7 @@ namespace N3O.Umbraco.Entities {
                 row.Type = entity.GetType().AssemblyQualifiedName;
                 row.Json = _jsonProvider.SerializeObject(entity);
 
-                var result = save(scope, row);
-            
-                scope.Complete();
-
-                return Task.FromResult(result);
+                await saveAsync(db, row);
             }
         }
     }

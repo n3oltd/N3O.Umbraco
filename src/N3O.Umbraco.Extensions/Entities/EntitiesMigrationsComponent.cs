@@ -27,7 +27,7 @@ namespace N3O.Umbraco.Entities {
 
         public void Initialize() {
             if (_runtimeState.Level == RuntimeLevel.Run) {
-                var migrationPlan = new MigrationPlan(Tables.Entities);
+                var migrationPlan = new MigrationPlan(Tables.Entities.Name);
                 migrationPlan.From(string.Empty).To<EntitiesMigration>("v1");
 
                 var upgrader = new Upgrader(migrationPlan);

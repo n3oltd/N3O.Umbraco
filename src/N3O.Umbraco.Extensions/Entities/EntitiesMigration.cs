@@ -6,7 +6,7 @@ namespace N3O.Umbraco.Entities {
         public EntitiesMigration(IMigrationContext context) : base(context) { }
 
         protected override void Migrate() {
-            if (!TableExists(Tables.Entities)) {
+            if (!TableExists(Tables.Entities.Name)) {
                 Create.Table<EntityRow>().Do();
             }
         }
