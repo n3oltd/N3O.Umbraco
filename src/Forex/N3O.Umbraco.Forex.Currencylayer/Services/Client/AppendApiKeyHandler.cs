@@ -9,7 +9,7 @@ namespace N3O.Umbraco.Forex.Currencylayer {
     public class AppendApiKeyHandler : DelegatingHandler {
         private readonly IContentCache _contentCache;
 
-        public AppendApiKeyHandler(IContentCache contentCache) {
+        public AppendApiKeyHandler(HttpMessageHandler innerHandler, IContentCache contentCache) : base(innerHandler) {
             _contentCache = contentCache;
         }
 

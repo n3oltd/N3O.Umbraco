@@ -1,6 +1,7 @@
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Financial;
 using NodaTime;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,17 +9,14 @@ namespace N3O.Umbraco.Forex {
     public class BaseToQuoteForexConverter {
         private readonly IExchangeRateCache _exchangeRateCache;
         private readonly IBaseCurrencyAccessor _baseCurrencyAccessor;
-        private readonly ICurrencyAccessor _quoteCurrencyAccessor;
         private Currency _baseCurrency;
         private Currency _quoteCurrency;
         private LocalDate? _date;
 
         public BaseToQuoteForexConverter(IExchangeRateCache exchangeRateCache,
-                                         IBaseCurrencyAccessor baseCurrencyAccessor,
-                                         ICurrencyAccessor quoteCurrencyAccessor) {
+                                         IBaseCurrencyAccessor baseCurrencyAccessor) {
             _exchangeRateCache = exchangeRateCache;
             _baseCurrencyAccessor = baseCurrencyAccessor;
-            _quoteCurrencyAccessor = quoteCurrencyAccessor;
         }
 
         public BaseToQuoteForexConverter ToCurrency(Currency quoteCurrency) {
@@ -38,7 +36,10 @@ namespace N3O.Umbraco.Forex {
         }
 
         public async Task<ForexMoney> ConvertAsync(decimal baseAmount, CancellationToken cancellationToken = default) {
-            _quoteCurrency ??= _quoteCurrencyAccessor.GetCurrency();
+            if (_quoteCurrency == null) {
+                throw new Exception("Quote currency must be specified");
+            }
+            
             _baseCurrency ??= _baseCurrencyAccessor.GetBaseCurrency();
 
             decimal exchangeRate;
