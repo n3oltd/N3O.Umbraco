@@ -19,13 +19,13 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var AllocationsClient = /** @class */ (function () {
-    function AllocationsClient(baseUrl, http) {
+var GivingClient = /** @class */ (function () {
+    function GivingClient(baseUrl, http) {
         this.jsonParseReviver = undefined;
         this.http = http ? http : window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
-    AllocationsClient.prototype.getDonationForm = function (donationFormId) {
+    GivingClient.prototype.getDonationForm = function (donationFormId) {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Giving/donationForms/{donationFormId}";
         if (donationFormId === undefined || donationFormId === null)
@@ -42,7 +42,7 @@ var AllocationsClient = /** @class */ (function () {
             return _this.processGetDonationForm(_response);
         });
     };
-    AllocationsClient.prototype.processGetDonationForm = function (response) {
+    GivingClient.prototype.processGetDonationForm = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -83,7 +83,7 @@ var AllocationsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    AllocationsClient.prototype.getFundStructure = function () {
+    GivingClient.prototype.getFundStructure = function () {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Giving/fundStructure";
         url_ = url_.replace(/[?&]$/, "");
@@ -97,7 +97,7 @@ var AllocationsClient = /** @class */ (function () {
             return _this.processGetFundStructure(_response);
         });
     };
-    AllocationsClient.prototype.processGetFundStructure = function (response) {
+    GivingClient.prototype.processGetFundStructure = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -131,7 +131,7 @@ var AllocationsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    AllocationsClient.prototype.getLookupAllocationTypes = function () {
+    GivingClient.prototype.getLookupAllocationTypes = function () {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Giving/lookups/allocationTypes";
         url_ = url_.replace(/[?&]$/, "");
@@ -145,7 +145,7 @@ var AllocationsClient = /** @class */ (function () {
             return _this.processGetLookupAllocationTypes(_response);
         });
     };
-    AllocationsClient.prototype.processGetLookupAllocationTypes = function (response) {
+    GivingClient.prototype.processGetLookupAllocationTypes = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -179,7 +179,7 @@ var AllocationsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    AllocationsClient.prototype.getLookupCurrencies = function () {
+    GivingClient.prototype.getLookupCurrencies = function () {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Giving/lookups/currencies";
         url_ = url_.replace(/[?&]$/, "");
@@ -193,7 +193,7 @@ var AllocationsClient = /** @class */ (function () {
             return _this.processGetLookupCurrencies(_response);
         });
     };
-    AllocationsClient.prototype.processGetLookupCurrencies = function (response) {
+    GivingClient.prototype.processGetLookupCurrencies = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -227,7 +227,7 @@ var AllocationsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    AllocationsClient.prototype.getLookupDonationItems = function () {
+    GivingClient.prototype.getLookupDonationItems = function () {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Giving/lookups/donationItems";
         url_ = url_.replace(/[?&]$/, "");
@@ -241,7 +241,7 @@ var AllocationsClient = /** @class */ (function () {
             return _this.processGetLookupDonationItems(_response);
         });
     };
-    AllocationsClient.prototype.processGetLookupDonationItems = function (response) {
+    GivingClient.prototype.processGetLookupDonationItems = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -275,7 +275,7 @@ var AllocationsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    AllocationsClient.prototype.getLookupFundDimension1Values = function () {
+    GivingClient.prototype.getLookupFundDimension1Values = function () {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Giving/lookups/fundDimension1Values";
         url_ = url_.replace(/[?&]$/, "");
@@ -289,7 +289,7 @@ var AllocationsClient = /** @class */ (function () {
             return _this.processGetLookupFundDimension1Values(_response);
         });
     };
-    AllocationsClient.prototype.processGetLookupFundDimension1Values = function (response) {
+    GivingClient.prototype.processGetLookupFundDimension1Values = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -323,7 +323,7 @@ var AllocationsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    AllocationsClient.prototype.getLookupFundDimension2Values = function () {
+    GivingClient.prototype.getLookupFundDimension2Values = function () {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Giving/lookups/fundDimension2Values";
         url_ = url_.replace(/[?&]$/, "");
@@ -337,7 +337,7 @@ var AllocationsClient = /** @class */ (function () {
             return _this.processGetLookupFundDimension2Values(_response);
         });
     };
-    AllocationsClient.prototype.processGetLookupFundDimension2Values = function (response) {
+    GivingClient.prototype.processGetLookupFundDimension2Values = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -371,7 +371,7 @@ var AllocationsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    AllocationsClient.prototype.getLookupFundDimension3Values = function () {
+    GivingClient.prototype.getLookupFundDimension3Values = function () {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Giving/lookups/fundDimension3Values";
         url_ = url_.replace(/[?&]$/, "");
@@ -385,7 +385,7 @@ var AllocationsClient = /** @class */ (function () {
             return _this.processGetLookupFundDimension3Values(_response);
         });
     };
-    AllocationsClient.prototype.processGetLookupFundDimension3Values = function (response) {
+    GivingClient.prototype.processGetLookupFundDimension3Values = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -419,7 +419,7 @@ var AllocationsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    AllocationsClient.prototype.getLookupFundDimension4Values = function () {
+    GivingClient.prototype.getLookupFundDimension4Values = function () {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Giving/lookups/fundDimension4Values";
         url_ = url_.replace(/[?&]$/, "");
@@ -433,7 +433,7 @@ var AllocationsClient = /** @class */ (function () {
             return _this.processGetLookupFundDimension4Values(_response);
         });
     };
-    AllocationsClient.prototype.processGetLookupFundDimension4Values = function (response) {
+    GivingClient.prototype.processGetLookupFundDimension4Values = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -467,7 +467,7 @@ var AllocationsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    AllocationsClient.prototype.getLookupGivingTypes = function () {
+    GivingClient.prototype.getLookupGivingTypes = function () {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Giving/lookups/givingTypes";
         url_ = url_.replace(/[?&]$/, "");
@@ -481,7 +481,7 @@ var AllocationsClient = /** @class */ (function () {
             return _this.processGetLookupGivingTypes(_response);
         });
     };
-    AllocationsClient.prototype.processGetLookupGivingTypes = function (response) {
+    GivingClient.prototype.processGetLookupGivingTypes = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -515,7 +515,7 @@ var AllocationsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    AllocationsClient.prototype.getLookupSponsorshipDurations = function () {
+    GivingClient.prototype.getLookupSponsorshipDurations = function () {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Giving/lookups/sponsorshipDurations";
         url_ = url_.replace(/[?&]$/, "");
@@ -529,7 +529,7 @@ var AllocationsClient = /** @class */ (function () {
             return _this.processGetLookupSponsorshipDurations(_response);
         });
     };
-    AllocationsClient.prototype.processGetLookupSponsorshipDurations = function (response) {
+    GivingClient.prototype.processGetLookupSponsorshipDurations = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -563,7 +563,7 @@ var AllocationsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    AllocationsClient.prototype.getLookupSponsorshipSchemes = function () {
+    GivingClient.prototype.getLookupSponsorshipSchemes = function () {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Giving/lookups/sponsorshipSchemes";
         url_ = url_.replace(/[?&]$/, "");
@@ -577,7 +577,7 @@ var AllocationsClient = /** @class */ (function () {
             return _this.processGetLookupSponsorshipSchemes(_response);
         });
     };
-    AllocationsClient.prototype.processGetLookupSponsorshipSchemes = function (response) {
+    GivingClient.prototype.processGetLookupSponsorshipSchemes = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -611,7 +611,7 @@ var AllocationsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    AllocationsClient.prototype.getPrice = function (criteria) {
+    GivingClient.prototype.getPrice = function (criteria) {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Giving/pricing";
         url_ = url_.replace(/[?&]$/, "");
@@ -628,7 +628,7 @@ var AllocationsClient = /** @class */ (function () {
             return _this.processGetPrice(_response);
         });
     };
-    AllocationsClient.prototype.processGetPrice = function (response) {
+    GivingClient.prototype.processGetPrice = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -662,7 +662,7 @@ var AllocationsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    AllocationsClient.prototype.setCurrency = function (currencyCode) {
+    GivingClient.prototype.setCurrency = function (currencyCode) {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Giving/currency/{currencyCode}";
         if (currencyCode === undefined || currencyCode === null)
@@ -679,7 +679,7 @@ var AllocationsClient = /** @class */ (function () {
             return _this.processSetCurrency(_response);
         });
     };
-    AllocationsClient.prototype.processSetCurrency = function (response) {
+    GivingClient.prototype.processSetCurrency = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -720,7 +720,7 @@ var AllocationsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    AllocationsClient.prototype.getAllLookups = function (criteria) {
+    GivingClient.prototype.getAllLookups = function (criteria) {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Giving/lookups/all";
         url_ = url_.replace(/[?&]$/, "");
@@ -737,7 +737,7 @@ var AllocationsClient = /** @class */ (function () {
             return _this.processGetAllLookups(_response);
         });
     };
-    AllocationsClient.prototype.processGetAllLookups = function (response) {
+    GivingClient.prototype.processGetAllLookups = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -771,9 +771,9 @@ var AllocationsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    return AllocationsClient;
+    return GivingClient;
 }());
-export { AllocationsClient };
+export { GivingClient };
 /** One of 'fund', 'sponsorship' */
 export var AllocationType;
 (function (AllocationType) {

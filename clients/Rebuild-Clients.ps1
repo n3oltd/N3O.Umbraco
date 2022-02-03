@@ -2,7 +2,7 @@ n3o-tool clients --url "https://localhost:6001/swagger/Accounts/swagger.json" --
 
 n3o-tool clients --url "https://localhost:6001/swagger/Cropper/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-cropper-client" --name "CropperClient" --package-name "@n3oltd/umbraco-cropper-client" --package-description "TypeScript client for the N3O Umbraco Cropper"
 
-n3o-tool clients --url "https://localhost:6001/swagger/Giving/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-giving-client" --name "AllocationsClient" --package-name "@n3oltd/umbraco-giving-client" --package-description "TypeScript client for the N3O Umbraco Giving"
+n3o-tool clients --url "https://localhost:6001/swagger/Giving/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-giving-client" --name "GivingClient" --package-name "@n3oltd/umbraco-giving-client" --package-description "TypeScript client for the N3O Umbraco Giving"
 
 n3o-tool clients --url "https://localhost:6001/swagger/Cart/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-giving-cart-client" --name "CartClient" --package-name "@n3oltd/umbraco-giving-cart-client" --package-description "TypeScript client for the N3O Umbraco Giving Giving Cart"
 

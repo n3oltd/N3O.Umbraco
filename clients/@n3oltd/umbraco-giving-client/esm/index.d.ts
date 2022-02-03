@@ -1,4 +1,4 @@
-export declare class AllocationsClient {
+export declare class GivingClient {
     private http;
     private baseUrl;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined;
