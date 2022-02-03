@@ -1,6 +1,6 @@
 # N3O Umbraco Extensions
 [![NuGet](https://img.shields.io/nuget/v/N3O.Umbraco.Extensions)](https://www.nuget.org/packages/N3O.Umbraco.Extensions/)
-[![npm](https://img.shields.io/npm/v/@n3oltd/umbraco-allocations-client)](https://www.npmjs.com/package/@n3oltd/umbraco-allocations-client)
+[![npm](https://img.shields.io/npm/v/@n3oltd/umbraco-giving-client)](https://www.npmjs.com/package/@n3oltd/umbraco-giving-client)
 [![Main Branch CI](https://github.com/n3oltd/N3O.Umbraco/actions/workflows/main-ci.yml/badge.svg)](https://github.com/n3oltd/N3O.Umbraco/actions/workflows/main-ci.yml)
 [![Tag CI](https://github.com/n3oltd/N3O.Umbraco/actions/workflows/tag-ci.yml/badge.svg)](https://github.com/n3oltd/N3O.Umbraco/actions/workflows/tag-ci.yml)
 [![License](https://img.shields.io/github/license/n3oltd/N3O.Umbraco)](LICENSE.md)
