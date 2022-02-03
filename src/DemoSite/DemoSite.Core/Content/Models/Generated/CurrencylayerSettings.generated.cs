@@ -56,5 +56,12 @@ namespace DemoSite.Core.Content
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("apiKey")]
 		public virtual string ApiKey => this.Value<string>(_publishedValueFallback, "apiKey");
+
+		///<summary>
+		/// Market Rate Adjustment: Between 0 and 100
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
+		[ImplementPropertyType("marketRateAdjustment")]
+		public virtual int MarketRateAdjustment => this.Value<int>(_publishedValueFallback, "marketRateAdjustment");
 	}
 }
