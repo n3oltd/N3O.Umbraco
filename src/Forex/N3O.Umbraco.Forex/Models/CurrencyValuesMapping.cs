@@ -32,7 +32,7 @@ namespace N3O.Umbraco.Forex.Models {
                                                 .ToCurrency(currency)
                                                 .Convert(src);
                 
-                dest[baseCurrency.Code] = ctx.Map<Money, MoneyRes>(forexMoney.Quote.RoundUpToWholeNumber());
+                dest[currency.Code] = ctx.Map<Money, MoneyRes>(forexMoney.Quote.RoundUpToWholeNumber());
             }
         }
     }
