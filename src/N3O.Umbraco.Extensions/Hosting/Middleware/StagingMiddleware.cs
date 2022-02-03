@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;

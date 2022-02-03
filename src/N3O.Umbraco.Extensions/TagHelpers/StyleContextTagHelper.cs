@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Templates;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
