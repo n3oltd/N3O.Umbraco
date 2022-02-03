@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Giving.Models {
             mapper.Define<IPricing, PricingRes>((_, _) => new PricingRes(), Map);
         }
 
-        // Umbraco.Code.MapAll -Locked -Amount
+        // Umbraco.Code.MapAll -Locked -Amount -CurrencyValues
         private void Map(IPricing src, PricingRes dest, MapperContext ctx) {
              ctx.Map<IPrice, PriceRes>(src, dest);
              dest.PriceRules = src.Rules.OrEmpty().Select(ctx.Map<IPricingRule, PricingRuleRes>).ToList();

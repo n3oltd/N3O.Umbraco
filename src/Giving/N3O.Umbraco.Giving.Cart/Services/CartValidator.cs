@@ -10,12 +10,6 @@ using System.Linq;
 
 namespace N3O.Umbraco.Giving.Cart {
     public class CartValidator : ICartValidator {
-        private readonly IPricedAmountValidator _pricedAmountValidator;
-        
-        public CartValidator(IPricedAmountValidator pricedAmountValidator) {
-            _pricedAmountValidator = pricedAmountValidator;
-        }
-    
         public bool IsValid(Currency currentCurrency, Entities.Cart cart) {
             try {
                 var isValid = currentCurrency == cart.Currency &&
@@ -53,14 +47,6 @@ namespace N3O.Umbraco.Giving.Cart {
                 if (allocation.Value.IsZero() && fund.DonationItem.HasPricing()) {
                     return false;
                 }
-
-                if (allocation.Fund.DonationItem.HasPricing()) {
-                    if (!_pricedAmountValidator.IsValid(allocation.Value,
-                                                        allocation.Fund.DonationItem,
-                                                        allocation.FundDimensions)) {
-                        return false;
-                    }
-                }
             } else if (allocation.Type == AllocationTypes.Sponsorship) {
                 var sponsorship = allocation.Sponsorship;
             
@@ -75,14 +61,6 @@ namespace N3O.Umbraco.Giving.Cart {
                     
                     if (componentAllocation.Component.Scheme != allocation.Sponsorship.Scheme) {
                         return false;
-                    }
-                    
-                    if (componentAllocation.Component.HasPricing()) {
-                        if (!_pricedAmountValidator.IsValid(componentAllocation.Value,
-                                                            componentAllocation.Component,
-                                                            allocation.FundDimensions)) {
-                            return false;
-                        }
                     }
                 }
 

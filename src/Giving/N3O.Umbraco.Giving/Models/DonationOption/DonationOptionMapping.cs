@@ -32,15 +32,15 @@ namespace N3O.Umbraco.Giving.Models {
             }
         }
         
-        private FixedOrDefaultFundDimensionValueRes GetFixedOrDefault<TOption>(MapperContext ctx,
-                                                                               TOption @fixed,
-                                                                               TOption @default)
-            where TOption : FundDimensionValue<TOption> {
+        private FixedOrDefaultFundDimensionValueRes GetFixedOrDefault<TValue>(MapperContext ctx,
+                                                                              TValue @fixed,
+                                                                              TValue @default)
+            where TValue : FundDimensionValue<TValue> {
             var res = new FixedOrDefaultFundDimensionValueRes();
-            res.Fixed = @fixed.IfNotNull(ctx.Map<FundDimensionValue<TOption>, FundDimensionValueRes>);
+            res.Fixed = @fixed.IfNotNull(ctx.Map<TValue, FundDimensionValueRes>);
 
             if (res.Fixed == null) {
-                res.Default = @default.IfNotNull(ctx.Map<FundDimensionValue<TOption>, FundDimensionValueRes>);
+                res.Default = @default.IfNotNull(ctx.Map<TValue, FundDimensionValueRes>);
             }
             
             return res;
