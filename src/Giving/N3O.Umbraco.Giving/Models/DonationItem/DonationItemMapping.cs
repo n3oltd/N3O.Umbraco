@@ -18,19 +18,19 @@ namespace N3O.Umbraco.Giving.Models {
             dest.AllowedGivingTypes = src.AllowedGivingTypes;
             dest.Dimension1Options = src.Dimension1Options
                                         .OrEmpty()
-                                        .Select(ctx.Map<FundDimensionValue<FundDimension1Value>, FundDimensionValueRes>)
+                                        .Select(ctx.Map<FundDimension1Value, FundDimensionValueRes>)
                                         .ToList();
             dest.Dimension2Options = src.Dimension2Options
                                         .OrEmpty()
-                                        .Select(ctx.Map<FundDimensionValue<FundDimension2Value>, FundDimensionValueRes>)
+                                        .Select(ctx.Map<FundDimension2Value, FundDimensionValueRes>)
                                         .ToList();
             dest.Dimension3Options = src.Dimension3Options
                                         .OrEmpty()
-                                        .Select(ctx.Map<FundDimensionValue<FundDimension3Value>, FundDimensionValueRes>)
+                                        .Select(ctx.Map<FundDimension3Value, FundDimensionValueRes>)
                                         .ToList();
             dest.Dimension4Options = src.Dimension4Options
                                         .OrEmpty()
-                                        .Select(ctx.Map<FundDimensionValue<FundDimension4Value>, FundDimensionValueRes>)
+                                        .Select(ctx.Map<FundDimension4Value, FundDimensionValueRes>)
                                         .ToList();
             dest.Pricing = ctx.Map<IPricing, PricingRes>(src);
         }

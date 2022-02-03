@@ -22,7 +22,7 @@ namespace N3O.Umbraco.Giving.Content {
                 if (Type == AllocationTypes.Fund) {
                     Fund = new FundDonationOptionContent();
                     Fund.Content = Content;
-                } else if (Type == AllocationTypes.Fund) {
+                } else if (Type == AllocationTypes.Sponsorship) {
                     Sponsorship = new SponsorshipDonationOptionContent();
                     Sponsorship.Content = Content;
                 } else {
