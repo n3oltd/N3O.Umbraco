@@ -170,7 +170,7 @@ namespace N3O.Umbraco.Extensions {
 				return type.GetGenericArguments()[0];
 			}
 
-			var genericParameters = type.GetGenericParameterTypesForImplementedGenericInterface(typeof(IEnumerable<>));
+			var genericParameters = type.GetParameterTypesForGenericInterface(typeof(IEnumerable<>));
 
 			return genericParameters.SingleOrDefault() ?? type;
 		}
@@ -195,9 +195,9 @@ namespace N3O.Umbraco.Extensions {
 			}
 		}
 
-		public static IEnumerable<Type> GetGenericParameterTypesForImplementedGenericInterface(this Type type,
-		                                                                                       Type genericInterfaceType) {
-			var cacheKey = nameof(GetGenericParameterTypesForImplementedGenericInterface) + type.AssemblyQualifiedName + genericInterfaceType.AssemblyQualifiedName;
+		public static IEnumerable<Type> GetParameterTypesForGenericInterface(this Type type,
+		                                                                     Type genericInterfaceType) {
+			var cacheKey = nameof(GetParameterTypesForGenericInterface) + type.AssemblyQualifiedName + genericInterfaceType.AssemblyQualifiedName;
 
 			return GetOrAdd(cacheKey, () => {
 				while (type != null && type != typeof(object)) {
@@ -224,8 +224,8 @@ namespace N3O.Umbraco.Extensions {
 			});
 		}
 
-		public static IEnumerable<Type> GetGenericParameterTypesForInheritedGenericClass(this Type type, Type genericClassType) {
-			var cacheKey = nameof(GetGenericParameterTypesForInheritedGenericClass) + type.AssemblyQualifiedName + genericClassType.AssemblyQualifiedName;
+		public static IEnumerable<Type> GetParameterTypesForGenericClass(this Type type, Type genericClassType) {
+			var cacheKey = nameof(GetParameterTypesForGenericClass) + type.AssemblyQualifiedName + genericClassType.AssemblyQualifiedName;
 
 			return GetOrAdd(cacheKey, () => {
 				while (type != null && type != typeof(object)) {
@@ -335,9 +335,7 @@ namespace N3O.Umbraco.Extensions {
 		public static Type GetValueTypeForNullableType(this Type type) {
 			var cacheKey = nameof(GetValueTypeForNullableType) + type.AssemblyQualifiedName;
 
-			return GetOrAdd(cacheKey, () => { 
-				return type.GetGenericParameterTypesForInheritedGenericClass(typeof(Nullable<>)).Single();
-			});
+			return GetOrAdd(cacheKey, () => type.GetParameterTypesForGenericClass(typeof(Nullable<>)).Single());
 		}
 		
 		public static bool HasAttribute<TAttribute>(this Type type) where TAttribute : Attribute {

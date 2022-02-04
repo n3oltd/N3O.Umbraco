@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Extensions {
         }
 
         public static TValue GetOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> source, TKey key) {
-            return GetOrOther(source, key, default(TValue));
+            return GetOrOther(source, key, default);
         }
 
         public static TValue GetOrOther<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> source,

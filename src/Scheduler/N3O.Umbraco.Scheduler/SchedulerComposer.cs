@@ -107,7 +107,7 @@ namespace N3O.Umbraco.Scheduler {
                             }
 
                             var attribute = jobType.GetCustomAttribute<RecurringJobAttribute>();
-                            var requestType = jobType.GetGenericParameterTypesForImplementedGenericInterface(typeof(IRequestHandler<,,>))
+                            var requestType = jobType.GetParameterTypesForGenericInterface(typeof(IRequestHandler<,,>))
                                                      .First();
 
                             var triggerKey = TriggerKey.Generate(requestType, typeof(None));

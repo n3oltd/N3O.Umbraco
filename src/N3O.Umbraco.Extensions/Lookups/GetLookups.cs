@@ -44,7 +44,7 @@ namespace N3O.Umbraco.Lookups {
                         throw new Exception($"Results list type {resultsListType.GetFriendlyName()} must inherit from {nameof(IEnumerable<LookupRes>)}");
                     }
                     
-                    var resType = resultsListType.GetGenericParameterTypesForInheritedGenericClass(typeof(IEnumerable<>)).Single();
+                    var resType = resultsListType.GetParameterTypesForGenericInterface(typeof(IEnumerable<>)).Single();
                     
                     var lookups = await _lookups.GetAllAsync(lookupInfo.LookupType, cancellationToken);
                     var list = (IList) Activator.CreateInstance(typeof(List<>).MakeGenericType(resType));

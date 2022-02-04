@@ -15,7 +15,7 @@ namespace N3O.Umbraco.Notifications {
         private void RegisterNotificationHandler(IUmbracoBuilder builder, Type handlerType) {
             var notificationTypes = handlerType.GetInterfaces()
                                                .Where(x => x.IsSubclassOrSubInterfaceOfGenericType(typeof(INotificationAsyncHandler<>)))
-                                               .Select(x => x.GetGenericParameterTypesForImplementedGenericInterface(typeof(INotificationAsyncHandler<>)).Single())
+                                               .Select(x => x.GetParameterTypesForGenericInterface(typeof(INotificationAsyncHandler<>)).Single())
                                                .ToList();
 
             foreach (var notificationType in notificationTypes) {
