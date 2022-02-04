@@ -8,9 +8,9 @@ namespace N3O.Umbraco.Context {
     public class ContextComposer : Composer {
         public override void Compose(IUmbracoBuilder builder) {
             builder.Services.AddSingleton<IBaseCurrencyAccessor, BaseCurrencyAccessor>();
-            builder.Services.TryAddSingleton<IBrowserInfoAccessor, BrowserInfoAccessor>();
-            builder.Services.AddSingleton<ICurrencyAccessor, CurrencyAccessor>();
-            builder.Services.AddSingleton<ICurrencyCodeAccessor, CurrencyCodeAccessor>();
+            builder.Services.AddSingleton<IBrowserInfoAccessor, BrowserInfoAccessor>();
+            builder.Services.AddScoped<ICurrencyAccessor, CurrencyAccessor>();
+            builder.Services.AddScoped<ICurrencyCodeAccessor, CurrencyCodeAccessor>();
             builder.Services.AddSingleton<ICurrentUrlAccessor, CurrentUrlAccessor>();
             builder.Services.AddSingleton<IQueryStringAccessor, QueryStringAccessor>();
             builder.Services.TryAddSingleton<IRemoteIpAddressAccessor, RemoteIpAddressAccessor>();

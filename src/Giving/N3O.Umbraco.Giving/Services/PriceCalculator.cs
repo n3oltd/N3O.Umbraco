@@ -13,14 +13,10 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Giving {
     public class PriceCalculator : IPriceCalculator {
         private readonly IBaseCurrencyAccessor _baseCurrencyAccessor;
-        private readonly ICurrencyAccessor _currencyAccessor;
         private readonly IForexConverter _forexConverter;
 
-        public PriceCalculator(IBaseCurrencyAccessor baseCurrencyAccessor,
-                               ICurrencyAccessor currencyAccessor,
-                               IForexConverter forexConverter) {
+        public PriceCalculator(IBaseCurrencyAccessor baseCurrencyAccessor, IForexConverter forexConverter) {
             _baseCurrencyAccessor = baseCurrencyAccessor;
-            _currencyAccessor = currencyAccessor;
             _forexConverter = forexConverter;
         }
     
@@ -28,18 +24,6 @@ namespace N3O.Umbraco.Giving {
             var baseCurrency = _baseCurrencyAccessor.GetBaseCurrency();
 
             return InCurrencyAsync(pricing, fundDimensions, baseCurrency).GetAwaiter().GetResult();
-        }
-
-        public Price InCurrentCurrency(IPricing pricing, IFundDimensionValues fundDimensions) {
-            return InCurrentCurrencyAsync(pricing, fundDimensions).GetAwaiter().GetResult();
-        }
-
-        public Task<Price> InCurrentCurrencyAsync(IPricing pricing,
-                                                  IFundDimensionValues fundDimensions,
-                                                  CancellationToken cancellationToken = default) {
-            var currentCurrency = _currencyAccessor.GetCurrency();
-
-            return InCurrencyAsync(pricing, fundDimensions, currentCurrency, cancellationToken);
         }
 
         public Price InCurrency(IPricing pricing, IFundDimensionValues fundDimensions, Currency currency) {
