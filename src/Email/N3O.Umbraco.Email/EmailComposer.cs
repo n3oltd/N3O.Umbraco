@@ -6,6 +6,7 @@ using Umbraco.Cms.Core.DependencyInjection;
 namespace N3O.Umbraco.Email {
     public class EmailComposer : Composer {
         public override void Compose(IUmbracoBuilder builder) {
+            builder.Services.AddTransient<IEmailBuilder, EmailBuilder>();
             builder.Services.AddTransient<ITemplateRenderer, TemplateRenderer>();
         }
     }
