@@ -1,7 +1,8 @@
 namespace N3O.Umbraco.Payments.Models {
     public partial class Payment {
-        public void Declined(string declineReason) {
-            DeclineReason = declineReason;
+        protected void Declined(string reason) {
+            DeclinedAt = Clock.GetCurrentInstant();
+            DeclinedReason = reason;
             IsDeclined = true;
         }
     }
