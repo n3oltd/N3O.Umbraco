@@ -20,7 +20,7 @@ namespace N3O.Umbraco.Payments.PayPal {
                 if (webHostEnvironment.IsProduction()) {
                     payPalKeys = new PayPalKeys(settings.ProductionClientId);
                 } else {
-                    payPalKeys = new PayPalKeys(settings.SandboxClientId);
+                    payPalKeys = new PayPalKeys(settings.StagingClientId);
                 }
 
                 return payPalKeys;

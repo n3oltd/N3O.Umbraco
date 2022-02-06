@@ -24,7 +24,7 @@ namespace N3O.Umbraco.Payments.GoCardless {
                     goCardlessClient = GoCardlessClient.Create(settings.ProductionAccessToken,
                                                                GoCardlessClient.Environment.LIVE);
                 } else {
-                    goCardlessClient = GoCardlessClient.Create(settings.SandboxAccessToken,
+                    goCardlessClient = GoCardlessClient.Create(settings.StagingAccessToken,
                                                                GoCardlessClient.Environment.SANDBOX);
                 }
 

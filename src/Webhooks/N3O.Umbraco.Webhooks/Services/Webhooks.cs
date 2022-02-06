@@ -44,7 +44,7 @@ namespace N3O.Umbraco.Webhooks {
 
             var list = _webHostEnvironment.IsProduction() ?
                            settings.OrEmpty(x => x.Production).ToList() :
-                           settings.OrEmpty(x => x.Sandbox).ToList();
+                           settings.OrEmpty(x => x.Staging).ToList();
 
             list.RemoveWhere(x => x.Event != webhookEvent);
 

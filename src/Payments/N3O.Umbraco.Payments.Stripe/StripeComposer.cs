@@ -21,7 +21,7 @@ namespace N3O.Umbraco.Payments.Stripe {
                 if (webHostEnvironment.IsProduction()) {
                     stripeKeys = new StripeKeys(settings.ProductionClientKey, settings.ProductionSecretKey);
                 } else {
-                    stripeKeys = new StripeKeys(settings.SandboxClientKey, settings.SandboxSecretKey);
+                    stripeKeys = new StripeKeys(settings.StagingClientKey, settings.StagingSecretKey);
                 }
 
                 return stripeKeys;

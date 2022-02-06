@@ -27,9 +27,9 @@ namespace N3O.Umbraco.Payments.Opayo {
                                                 settings.ProductionVendorName);
                 } else {
                     return new OpayoApiSettings("https://pi-test.sagepay.com",
-                                                settings.SandboxIntegrationKey,
-                                                settings.SandboxIntegrationPassword,
-                                                settings.SandboxVendorName);
+                                                settings.StagingIntegrationKey,
+                                                settings.StagingIntegrationPassword,
+                                                settings.StagingVendorName);
                 }
             });
 

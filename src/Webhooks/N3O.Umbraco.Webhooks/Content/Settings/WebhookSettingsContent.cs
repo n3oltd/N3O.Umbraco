@@ -7,7 +7,7 @@ namespace N3O.Umbraco.Webhooks.Content {
         [UmbracoProperty("productionWebhooks")]
         public IEnumerable<WebhookElement> Production => GetNestedAs(x => x.Production);
         
-        [UmbracoProperty("sandboxWebhooks")]
-        public IEnumerable<WebhookElement> Sandbox => GetNestedAs(x => x.Sandbox);
+        [UmbracoProperty("stagingWebhooks")]
+        public IEnumerable<WebhookElement> Staging => GetNestedAs(x => x.Staging);
     }
 }
