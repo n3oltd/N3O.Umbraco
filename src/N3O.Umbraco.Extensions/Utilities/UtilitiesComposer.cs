@@ -7,6 +7,7 @@ namespace N3O.Umbraco.Utilities {
     public class UtilitiesComposer : Composer {
         public override void Compose(IUmbracoBuilder builder) {
             builder.Services.AddTransient(typeof(Lazy<>), typeof(Lazier<>));
+            builder.Services.AddSingleton<IUrlBuilder, UrlBuilder>();
         }
     }
 }
