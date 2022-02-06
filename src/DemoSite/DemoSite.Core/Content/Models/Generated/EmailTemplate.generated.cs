@@ -18,10 +18,15 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Core.Content
 {
-	// Mixin Content Type with alias "templateEmail"
-	/// <summary>Template Email</summary>
-	public partial interface ITemplateEmail : IPublishedContent
+	// Mixin Content Type with alias "emailTemplate"
+	/// <summary>Email Template</summary>
+	public partial interface IEmailTemplate : IPublishedContent
 	{
+		/// <summary>Assets</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.TemplateAssetItem> Assets { get; }
+
 		/// <summary>Body</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
@@ -43,14 +48,14 @@ namespace DemoSite.Core.Content
 		string Subject { get; }
 	}
 
-	/// <summary>Template Email</summary>
-	[PublishedModel("templateEmail")]
-	public partial class TemplateEmail : PublishedContentModel, ITemplateEmail
+	/// <summary>Email Template</summary>
+	[PublishedModel("emailTemplate")]
+	public partial class EmailTemplate : PublishedContentModel, IEmailTemplate
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
-		public new const string ModelTypeAlias = "templateEmail";
+		public new const string ModelTypeAlias = "emailTemplate";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
@@ -59,20 +64,33 @@ namespace DemoSite.Core.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<TemplateEmail, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<EmailTemplate, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public TemplateEmail(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
+		public EmailTemplate(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
 		}
 
 		// properties
+
+		///<summary>
+		/// Assets
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("assets")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.TemplateAssetItem> Assets => GetAssets(this, _publishedValueFallback);
+
+		/// <summary>Static getter for Assets</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
+		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		public static global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.TemplateAssetItem> GetAssets(IEmailTemplate that, IPublishedValueFallback publishedValueFallback) => that.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.TemplateAssetItem>>(publishedValueFallback, "assets");
 
 		///<summary>
 		/// Body
@@ -85,7 +103,7 @@ namespace DemoSite.Core.Content
 		/// <summary>Static getter for Body</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static string GetBody(ITemplateEmail that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "body");
+		public static string GetBody(IEmailTemplate that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "body");
 
 		///<summary>
 		/// From Email
@@ -98,7 +116,7 @@ namespace DemoSite.Core.Content
 		/// <summary>Static getter for From Email</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static string GetFromEmail(ITemplateEmail that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "fromEmail");
+		public static string GetFromEmail(IEmailTemplate that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "fromEmail");
 
 		///<summary>
 		/// From Name
@@ -111,7 +129,7 @@ namespace DemoSite.Core.Content
 		/// <summary>Static getter for From Name</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static string GetFromName(ITemplateEmail that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "fromName");
+		public static string GetFromName(IEmailTemplate that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "fromName");
 
 		///<summary>
 		/// Subject
@@ -124,6 +142,6 @@ namespace DemoSite.Core.Content
 		/// <summary>Static getter for Subject</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static string GetSubject(ITemplateEmail that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "subject");
+		public static string GetSubject(IEmailTemplate that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "subject");
 	}
 }

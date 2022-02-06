@@ -18,14 +18,14 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Core.Content
 {
-	/// <summary>Engage Settings</summary>
-	[PublishedModel("engageSettings")]
-	public partial class EngageSettings : PublishedContentModel
+	/// <summary>Url Settings</summary>
+	[PublishedModel("urlSettings")]
+	public partial class UrlSettings : PublishedContentModel
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
-		public new const string ModelTypeAlias = "engageSettings";
+		public new const string ModelTypeAlias = "urlSettings";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
@@ -34,14 +34,14 @@ namespace DemoSite.Core.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<EngageSettings, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<UrlSettings, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public EngageSettings(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
+		public UrlSettings(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
@@ -50,19 +50,27 @@ namespace DemoSite.Core.Content
 		// properties
 
 		///<summary>
-		/// Webhook
+		/// Base URL
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("productionWebhook")]
-		public virtual string ProductionWebhook => this.Value<string>(_publishedValueFallback, "productionWebhook");
+		[ImplementPropertyType("developmentBaseUrl")]
+		public virtual string DevelopmentBaseUrl => this.Value<string>(_publishedValueFallback, "developmentBaseUrl");
 
 		///<summary>
-		/// Webhook
+		/// Base URL
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("sandboxWebhook")]
-		public virtual string SandboxWebhook => this.Value<string>(_publishedValueFallback, "sandboxWebhook");
+		[ImplementPropertyType("productionBaseUrl")]
+		public virtual string ProductionBaseUrl => this.Value<string>(_publishedValueFallback, "productionBaseUrl");
+
+		///<summary>
+		/// Base URL
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("stagingBaseUrl")]
+		public virtual string StagingBaseUrl => this.Value<string>(_publishedValueFallback, "stagingBaseUrl");
 	}
 }

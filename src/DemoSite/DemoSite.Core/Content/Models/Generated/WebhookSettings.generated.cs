@@ -18,14 +18,14 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Core.Content
 {
-	/// <summary>Checkout Template Email</summary>
-	[PublishedModel("checkoutTemplateEmail")]
-	public partial class CheckoutTemplateEmail : PublishedContentModel, ITemplateEmail
+	/// <summary>Webhook Settings</summary>
+	[PublishedModel("webhookSettings")]
+	public partial class WebhookSettings : PublishedContentModel
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
-		public new const string ModelTypeAlias = "checkoutTemplateEmail";
+		public new const string ModelTypeAlias = "webhookSettings";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
@@ -34,14 +34,14 @@ namespace DemoSite.Core.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<CheckoutTemplateEmail, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<WebhookSettings, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public CheckoutTemplateEmail(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
+		public WebhookSettings(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
@@ -50,35 +50,19 @@ namespace DemoSite.Core.Content
 		// properties
 
 		///<summary>
-		/// Body
+		/// Webhooks
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("body")]
-		public virtual string Body => global::DemoSite.Core.Content.TemplateEmail.GetBody(this, _publishedValueFallback);
+		[ImplementPropertyType("productionWebhooks")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.Webhook> ProductionWebhooks => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.Webhook>>(_publishedValueFallback, "productionWebhooks");
 
 		///<summary>
-		/// From Email
+		/// Webhooks
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("fromEmail")]
-		public virtual string FromEmail => global::DemoSite.Core.Content.TemplateEmail.GetFromEmail(this, _publishedValueFallback);
-
-		///<summary>
-		/// From Name
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("fromName")]
-		public virtual string FromName => global::DemoSite.Core.Content.TemplateEmail.GetFromName(this, _publishedValueFallback);
-
-		///<summary>
-		/// Subject
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("subject")]
-		public virtual string Subject => global::DemoSite.Core.Content.TemplateEmail.GetSubject(this, _publishedValueFallback);
+		[ImplementPropertyType("stagingWebhooks")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.Webhook> StagingWebhooks => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.Webhook>>(_publishedValueFallback, "stagingWebhooks");
 	}
 }

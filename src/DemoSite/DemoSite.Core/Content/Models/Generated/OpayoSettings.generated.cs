@@ -78,24 +78,24 @@ namespace DemoSite.Core.Content
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("sandboxIntegrationKey")]
-		public virtual string SandboxIntegrationKey => this.Value<string>(_publishedValueFallback, "sandboxIntegrationKey");
+		[ImplementPropertyType("stagingIntegrationKey")]
+		public virtual string StagingIntegrationKey => this.Value<string>(_publishedValueFallback, "stagingIntegrationKey");
 
 		///<summary>
 		/// Integration Password
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("sandboxIntegrationPassword")]
-		public virtual string SandboxIntegrationPassword => this.Value<string>(_publishedValueFallback, "sandboxIntegrationPassword");
+		[ImplementPropertyType("stagingIntegrationPassword")]
+		public virtual string StagingIntegrationPassword => this.Value<string>(_publishedValueFallback, "stagingIntegrationPassword");
 
 		///<summary>
 		/// Vendor Name
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("sandboxVendorName")]
-		public virtual string SandboxVendorName => this.Value<string>(_publishedValueFallback, "sandboxVendorName");
+		[ImplementPropertyType("stagingVendorName")]
+		public virtual string StagingVendorName => this.Value<string>(_publishedValueFallback, "stagingVendorName");
 
 		///<summary>
 		/// Transaction Description

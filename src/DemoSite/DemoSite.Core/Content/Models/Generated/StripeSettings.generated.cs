@@ -70,16 +70,16 @@ namespace DemoSite.Core.Content
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("sandboxClientKey")]
-		public virtual string SandboxClientKey => this.Value<string>(_publishedValueFallback, "sandboxClientKey");
+		[ImplementPropertyType("stagingClientKey")]
+		public virtual string StagingClientKey => this.Value<string>(_publishedValueFallback, "stagingClientKey");
 
 		///<summary>
 		/// Secret Key
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("sandboxSecretKey")]
-		public virtual string SandboxSecretKey => this.Value<string>(_publishedValueFallback, "sandboxSecretKey");
+		[ImplementPropertyType("stagingSecretKey")]
+		public virtual string StagingSecretKey => this.Value<string>(_publishedValueFallback, "stagingSecretKey");
 
 		///<summary>
 		/// Transaction Description

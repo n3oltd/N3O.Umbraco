@@ -62,8 +62,8 @@ namespace DemoSite.Core.Content
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("sandboxClientId")]
-		public virtual string SandboxClientId => this.Value<string>(_publishedValueFallback, "sandboxClientId");
+		[ImplementPropertyType("stagingClientId")]
+		public virtual string StagingClientId => this.Value<string>(_publishedValueFallback, "stagingClientId");
 
 		///<summary>
 		/// Transaction Description

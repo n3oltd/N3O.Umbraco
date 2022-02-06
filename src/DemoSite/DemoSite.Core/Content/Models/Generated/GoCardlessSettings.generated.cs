@@ -62,8 +62,8 @@ namespace DemoSite.Core.Content
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("sandboxAccessToken")]
-		public virtual string SandboxAccessToken => this.Value<string>(_publishedValueFallback, "sandboxAccessToken");
+		[ImplementPropertyType("stagingAccessToken")]
+		public virtual string StagingAccessToken => this.Value<string>(_publishedValueFallback, "stagingAccessToken");
 
 		///<summary>
 		/// Transaction Description
