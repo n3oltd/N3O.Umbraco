@@ -1,30 +1,41 @@
 ﻿using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Models;
-using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Payments.Models;
-using NodaTime;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace N3O.Umbraco.Giving.Checkout.Models {
     public class RegularGivingCheckout : Value {
         public RegularGivingCheckout(IEnumerable<Allocation> allocations,
-                                     DayOfMonth collectionDay,
                                      Credential credential,
-                                     LocalDate? firstCollectionDate,
+                                     RegularGivingOptions options,
                                      Money total) {
             Allocations = allocations.OrEmpty().ToList();
-            CollectionDay = collectionDay;
             Credential = credential;
-            FirstCollectionDate = firstCollectionDate;
+            Options = options;
             Total = total;
         }
+        
+        public RegularGivingCheckout(IEnumerable<Allocation> allocations)
+            : this(allocations.OrEmpty(), null, null, allocations.OrEmpty().Select(x => x.Value).Sum()) { }
 
         public IEnumerable<Allocation> Allocations { get; }
-        public DayOfMonth CollectionDay { get; }
         public Credential Credential { get; }
-        public LocalDate? FirstCollectionDate { get; }
+        public RegularGivingOptions Options { get; }
         public Money Total { get; }
+        
+        public bool IsComplete => IsRequired &&
+                                  Options.HasValue() &&
+                                  Credential?.IsSetUp == true;
+        public bool IsRequired => Allocations.HasAny();
+
+        public RegularGivingCheckout UpdateOptions(IRegularGivingOptions options) {
+            return new RegularGivingCheckout(Allocations, Credential, new RegularGivingOptions(options), Total);
+        }
+        
+        public RegularGivingCheckout UpdateCredential(Credential credential) {
+            return new RegularGivingCheckout(Allocations, credential, Options, Total);
+        }
     }
 }

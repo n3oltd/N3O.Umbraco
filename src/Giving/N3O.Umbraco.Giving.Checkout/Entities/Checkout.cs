@@ -4,6 +4,7 @@ using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Checkout.Models;
 using N3O.Umbraco.Payments.Entities;
 using N3O.Umbraco.References;
+using System.Linq;
 using System.Net;
 
 namespace N3O.Umbraco.Giving.Checkout.Entities {
@@ -16,5 +17,7 @@ namespace N3O.Umbraco.Giving.Checkout.Entities {
         public DonationCheckout Donation { get; private set; }
         public RegularGivingCheckout RegularGiving { get; private set; }
         public IPAddress RemoteIp { get; private set; }
+
+        public bool IsComplete => Progress.RequiredStages.All(x => x.IsComplete(this));
     }
 }

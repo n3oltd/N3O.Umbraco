@@ -38,17 +38,17 @@ namespace N3O.Umbraco.Giving.Checkout.ChangeFeeds {
         protected override Task ProcessAsync(EntityChange<Entities.Checkout> entityChange,
                                              CancellationToken cancellationToken) {
             if (entityChange.Operation == EntityOperations.Update) {
-                Process(entityChange, x => x.Donation.IsComplete(), c => {
+                Process(entityChange, x => x.Donation.IsComplete, c => {
                     SendEmail<DonationReceiptTemplateContent>(c);
-                    QueueWebhook(CheckoutWebhookEvents.DonationCompleteEvent, c);
+                    SendWebhook(CheckoutWebhookEvents.DonationCompleteEvent, c);
                 });
 
-                Process(entityChange, x => x.RegularGiving.IsComplete(), c => {
+                Process(entityChange, x => x.RegularGiving.IsComplete, c => {
                     SendEmail<RegularGivingReceiptTemplateContent>(c);
-                    QueueWebhook(CheckoutWebhookEvents.RegularGivingCompleteEvent, c);
+                    SendWebhook(CheckoutWebhookEvents.RegularGivingCompleteEvent, c);
                 });
 
-                Process(entityChange, x => x.IsComplete(), c => {
+                Process(entityChange, x => x.IsComplete, c => {
                     ScheduleJob<DeleteCheckoutCommand>(c, Duration.FromDays(90));
                 });
             }
@@ -76,7 +76,7 @@ namespace N3O.Umbraco.Giving.Checkout.ChangeFeeds {
                                                                        checkout);
         }
 
-        private void QueueWebhook(WebhookEvent webhookEvent, Entities.Checkout checkout) {
+        private void SendWebhook(WebhookEvent webhookEvent, Entities.Checkout checkout) {
             _webhooks.Value.Queue(webhookEvent, checkout);
         }
         
@@ -84,7 +84,7 @@ namespace N3O.Umbraco.Giving.Checkout.ChangeFeeds {
             var template = _contentCache.Value.Single<T>();
 
             if (template.HasValue() && checkout.HasValue(x => x.Account?.Email?.Address)) {
-                _emailBuilder.Value.SendTemplate(template, checkout.Account.Email.Address, checkout);
+                _emailBuilder.Value.QueueTemplate(template, checkout.Account.Email.Address, checkout);
             }
         }
     }

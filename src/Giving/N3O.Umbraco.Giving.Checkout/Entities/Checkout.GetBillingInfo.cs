@@ -3,10 +3,14 @@
 namespace N3O.Umbraco.Giving.Checkout.Entities {
     public partial class Checkout {
         public BillingInfo GetBillingInfo() {
-            return new BillingInfo(Account.Address,
-                                   Account.Email,
-                                   Account.Name,
-                                   Account.Telephone);
+            if (Account == null) {
+                return null;
+            } else {
+                return new BillingInfo(Account.Address,
+                                       Account.Email,
+                                       Account.Name,
+                                       Account.Telephone);
+            }
         }
     }
 }

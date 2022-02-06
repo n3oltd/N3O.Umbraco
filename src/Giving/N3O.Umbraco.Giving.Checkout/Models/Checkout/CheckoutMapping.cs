@@ -9,7 +9,13 @@ namespace N3O.Umbraco.Giving.Checkout.Models {
 
         // Umbraco.Code.MapAll
         private void Map(Entities.Checkout src, CheckoutRes dest, MapperContext ctx) {
+            dest.Reference = src.Reference;
+            dest.Currency = src.Currency;
+            dest.Progress = ctx.Map<CheckoutProgress, CheckoutProgressRes>(src.Progress);
             dest.Account = ctx.Map<Account, AccountRes>(src.Account);
+            dest.Donation = ctx.Map<DonationCheckout, DonationCheckoutRes>(src.Donation);
+            dest.RegularGiving = ctx.Map<RegularGivingCheckout, RegularGivingCheckoutRes>(src.RegularGiving);
+            dest.IsComplete = src.IsComplete;
         }
     }
 }

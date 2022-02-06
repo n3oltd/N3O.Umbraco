@@ -16,14 +16,19 @@ namespace N3O.Umbraco.Giving.Checkout.Models {
         }
 
         public DonationCheckout(IEnumerable<Allocation> allocations)
-            : this(allocations, null, allocations.Select(x => x.Value).Sum()) { }
+            : this(allocations.OrEmpty(),
+                   null,
+                   allocations.OrEmpty().Select(x => x.Value).Sum()) { }
 
         public IEnumerable<Allocation> Allocations { get; }
         public Payment Payment { get; }
         public Money Total { get; }
 
-        // TODO Need to check this DonationCheckout object is initialised even if the checkout doesn't
-        // involve donations, also needs other criteria such as the allocation being non-empty
-        public bool IsComplete => Payment?.IsPaid == true;
+        public bool IsComplete => IsRequired && Payment?.IsPaid == true;
+        public bool IsRequired => Allocations.HasAny();
+
+        public DonationCheckout UpdatePayment(Payment payment) {
+            return new DonationCheckout(Allocations, payment, Total);
+        }
     }
 }

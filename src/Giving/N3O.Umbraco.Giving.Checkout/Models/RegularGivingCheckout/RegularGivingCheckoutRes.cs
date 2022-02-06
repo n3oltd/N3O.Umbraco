@@ -1,14 +1,16 @@
 ﻿using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Models;
-using N3O.Umbraco.Lookups;
-using NodaTime;
+using N3O.Umbraco.Payments.Models;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Giving.Checkout.Models {
     public class RegularGivingCheckoutRes {
-        public IEnumerable<Allocation> Allocations { get; set; }
+        public IEnumerable<AllocationRes> Allocations { get; set; }
+        public Credential Credential { get; set; }
+        public RegularGivingOptionsRes Options { get; set; }
         public MoneyRes Total { get; set; }
-        public DayOfMonth CollectionDay { get; set; }
-        public LocalDate? FirstCollectionDate { get; set; }
+        
+        public bool IsComplete { get; set; }
+        public bool IsRequired { get; set; }
     }
 }

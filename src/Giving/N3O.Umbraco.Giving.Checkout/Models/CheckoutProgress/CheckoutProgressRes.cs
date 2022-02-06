@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Giving.Checkout.Models {
     public class CheckoutProgressRes {
-        public CheckoutStage Current { get; set; }
-        public IEnumerable<CheckoutStage> Required { get; set; }
-        public IEnumerable<CheckoutStage> Remaining { get; set; }
+        public CheckoutStage CurrentStage { get; set; }
+        public IEnumerable<CheckoutStage> RequiredStages { get; set; }
+        public IEnumerable<CheckoutStage> RemainingStages { get; set; }
     }
 }

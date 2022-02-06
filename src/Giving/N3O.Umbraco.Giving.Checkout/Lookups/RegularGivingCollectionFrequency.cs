@@ -15,8 +15,8 @@ namespace N3O.Umbraco.Giving.Checkout.Lookups {
     }
     
     public class RegularGivingFrequencies : StaticLookupsCollection<RegularGivingFrequency> {
-        public static RegularGivingFrequency Annually = new RegularGivingFrequency("annually", "Annually", 12);
-        public static RegularGivingFrequency Monthly = new RegularGivingFrequency("monthly", "Monthly", 1);
-        public static RegularGivingFrequency Quarterly = new RegularGivingFrequency("quarterly", "Quarterly", 3);
+        public static RegularGivingFrequency Annually = new("annually", "Annually", 12);
+        public static RegularGivingFrequency Monthly = new("monthly", "Monthly", 1);
+        public static RegularGivingFrequency Quarterly = new("quarterly", "Quarterly", 3);
     }
 }

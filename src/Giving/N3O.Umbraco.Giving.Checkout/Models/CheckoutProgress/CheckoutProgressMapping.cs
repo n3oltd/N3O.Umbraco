@@ -8,9 +8,9 @@ namespace N3O.Umbraco.Giving.Checkout.Models {
 
         // Umbraco.Code.MapAll
         private void Map(CheckoutProgress src, CheckoutProgressRes dest, MapperContext ctx) {
-            dest.Current = src.Current;
-            dest.Remaining = src.Remaining;
-            dest.Required = src.Required;
+            dest.CurrentStage = src.CurrentStage;
+            dest.RemainingStages = src.RemainingStages;
+            dest.RequiredStages = src.RequiredStages;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace N3O.Umbraco.Giving.Models {
         public SponsorshipAllocation(SponsorshipBeneficiary beneficiary,
                                      SponsorshipScheme scheme,
                                      SponsorshipDuration duration,
-                                     IEnumerable<ISponsorshipComponentAllocation> components) {
+                                     IEnumerable<SponsorshipComponentAllocation> components) {
             Beneficiary = beneficiary;
             Scheme = scheme;
             Duration = duration;
@@ -26,8 +26,11 @@ namespace N3O.Umbraco.Giving.Models {
         public SponsorshipBeneficiary Beneficiary { get; }
         public SponsorshipScheme Scheme { get; }
         public SponsorshipDuration Duration { get; }
-        public IEnumerable<ISponsorshipComponentAllocation> Components { get; }
+        public IEnumerable<SponsorshipComponentAllocation> Components { get; }
 
         public string Summary => Scheme?.Name;
+
+        [JsonIgnore]
+        IEnumerable<ISponsorshipComponentAllocation> ISponsorshipAllocation.Components => Components;
     }
 }

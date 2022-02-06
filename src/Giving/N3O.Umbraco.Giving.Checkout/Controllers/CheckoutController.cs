@@ -47,5 +47,12 @@ namespace N3O.Umbraco.Giving.Checkout.Controllers {
              
             return Ok(res);
         }
+        
+        [HttpPost("{checkoutRevisionId:revisionId}/regularGiving/options")]
+        public async Task<ActionResult<CheckoutRes>> UpdateRegularGivingOptions(RegularGivingOptionsReq req) {
+            var res = await _mediator.SendAsync<UpdateRegularGivingOptionsCommand, RegularGivingOptionsReq, CheckoutRes>(req);
+             
+            return Ok(res);
+        }
     }
 }
