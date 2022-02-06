@@ -49,6 +49,6 @@ namespace N3O.Umbraco.Templates.Handlebars.Helpers {
             return null;
         }
 
-        public override string Name => "format_date";
+        public override string Name => "formatDate";
     }
 }
