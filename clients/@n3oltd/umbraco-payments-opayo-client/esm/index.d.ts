@@ -9,8 +9,8 @@ export declare class OpayoClient {
     protected processGetMerchantSessionKey(response: Response): Promise<void>;
     process(flowId: string, req: OpayoPaymentReq): Promise<PaymentFlowResOfOpayoPayment>;
     protected processProcess(response: Response): Promise<PaymentFlowResOfOpayoPayment>;
-    authorize(flowId: string, cRes: string | null | undefined, threeDsSessionData: string | null | undefined): Promise<ThreeDSecureStatus>;
-    protected processAuthorize(response: Response): Promise<ThreeDSecureStatus>;
+    completeThreeDSecureChallenge(flowId: string, cRes: string | null | undefined, threeDsSessionData: string | null | undefined): Promise<void>;
+    protected processCompleteThreeDSecureChallenge(response: Response): Promise<void>;
 }
 export interface ProblemDetails {
     type?: string | undefined;
@@ -24,45 +24,54 @@ export interface PaymentFlowResOfOpayoPayment {
     result?: OpayoPayment | undefined;
 }
 export interface OpayoPayment {
-    declineReason?: string | undefined;
+    card?: CardPayment | undefined;
+    paidAt?: Date | undefined;
+    declinedAt?: Date | undefined;
+    declinedReason?: string | undefined;
     isDeclined?: boolean;
     isPaid?: boolean;
-    isFailed?: boolean;
-    requireThreeDSecure?: boolean;
-    /** A well formed guid */
-    id?: string | undefined;
+    completeAt?: Date | undefined;
+    errorAt?: Date | undefined;
+    errorMessage?: string | undefined;
+    exceptionId?: string;
+    exceptionDetails?: string | undefined;
     status?: PaymentObjectStatus | undefined;
-    transactionId?: string | undefined;
+    opayoTransactionId?: string | undefined;
+    opayoStatusCode?: number | undefined;
+    opayoStatusDetail?: string | undefined;
     opayoErrorCode?: number | undefined;
     opayoErrorMessage?: string | undefined;
-    opayoStatusDetail?: string | undefined;
+    opayoBankAuthorisationCode?: string | undefined;
     opayoRetrievalReference?: number | undefined;
-    bankAuthorisationCode?: string | undefined;
-    threeDSecureUrl?: string | undefined;
-    acsTransId?: string | undefined;
-    cReq?: string | undefined;
-    callbackUrl?: string | undefined;
-    threeDSecureCompleted?: boolean;
+    returnUrl?: string | undefined;
     method?: string | undefined;
+}
+export interface CardPayment {
+    threeDSecureRequired?: boolean;
+    threeDSecureCompleted?: boolean;
+    threeDSecureChallengeUrl?: string | undefined;
+    threeDSecureAcsTransId?: string | undefined;
+    threeDSecureCReq?: string | undefined;
+    threeDSecureCRes?: string | undefined;
 }
 /** One of 'credential', 'payment' */
 export declare enum PaymentObjectType {
     Credential = "credential",
     Payment = "payment"
 }
-/** One of 'complete', 'failed', 'inProgress' */
+/** One of 'complete', 'error', 'inProgress' */
 export declare enum PaymentObjectStatus {
     Complete = "complete",
-    Failed = "failed",
+    Error = "error",
     InProgress = "inProgress"
 }
 export interface OpayoPaymentReq {
-    cardIdentifier?: string | undefined;
     merchantSessionKey?: string | undefined;
+    cardIdentifier?: string | undefined;
     value?: MoneyReq | undefined;
-    callbackUrl?: string | undefined;
     browserParameters?: BrowserParametersReq | undefined;
     challengeWindowSize?: ChallengeWindowSize | undefined;
+    returnUrl?: string | undefined;
 }
 export interface MoneyReq {
     amount?: number | undefined;
@@ -116,10 +125,6 @@ export declare enum ChallengeWindowSize {
     Large = "large",
     ExtraLarge = "extraLarge",
     FullScreen = "fullScreen"
-}
-export interface ThreeDSecureStatus {
-    completed?: boolean;
-    success?: boolean;
 }
 export declare class ApiException extends Error {
     message: string;

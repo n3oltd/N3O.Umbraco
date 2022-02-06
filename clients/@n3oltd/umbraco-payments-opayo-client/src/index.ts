@@ -107,8 +107,8 @@ export class OpayoClient {
         return Promise.resolve<PaymentFlowResOfOpayoPayment>(<any>null);
     }
 
-    authorize(flowId: string, cRes: string | null | undefined, threeDsSessionData: string | null | undefined): Promise<ThreeDSecureStatus> {
-        let url_ = this.baseUrl + "/umbraco/api/Opayo/{flowId}/authorize";
+    completeThreeDSecureChallenge(flowId: string, cRes: string | null | undefined, threeDsSessionData: string | null | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/umbraco/api/Opayo/{flowId}/completeThreeDSecureChallenge";
         if (flowId === undefined || flowId === null)
             throw new Error("The parameter 'flowId' must be defined.");
         url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
@@ -124,23 +124,20 @@ export class OpayoClient {
             body: content_,
             method: "POST",
             headers: {
-                "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processAuthorize(_response);
+            return this.processCompleteThreeDSecureChallenge(_response);
         });
     }
 
-    protected processAuthorize(response: Response): Promise<ThreeDSecureStatus> {
+    protected processCompleteThreeDSecureChallenge(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : <ThreeDSecureStatus>JSON.parse(_responseText, this.jsonParseReviver);
-            return result200;
+            return;
             });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
@@ -157,7 +154,7 @@ export class OpayoClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ThreeDSecureStatus>(<any>null);
+        return Promise.resolve<void>(<any>null);
     }
 }
 
@@ -175,26 +172,36 @@ export interface PaymentFlowResOfOpayoPayment {
 }
 
 export interface OpayoPayment {
-    declineReason?: string | undefined;
+    card?: CardPayment | undefined;
+    paidAt?: Date | undefined;
+    declinedAt?: Date | undefined;
+    declinedReason?: string | undefined;
     isDeclined?: boolean;
     isPaid?: boolean;
-    isFailed?: boolean;
-    requireThreeDSecure?: boolean;
-    /** A well formed guid */
-    id?: string | undefined;
+    completeAt?: Date | undefined;
+    errorAt?: Date | undefined;
+    errorMessage?: string | undefined;
+    exceptionId?: string;
+    exceptionDetails?: string | undefined;
     status?: PaymentObjectStatus | undefined;
-    transactionId?: string | undefined;
+    opayoTransactionId?: string | undefined;
+    opayoStatusCode?: number | undefined;
+    opayoStatusDetail?: string | undefined;
     opayoErrorCode?: number | undefined;
     opayoErrorMessage?: string | undefined;
-    opayoStatusDetail?: string | undefined;
+    opayoBankAuthorisationCode?: string | undefined;
     opayoRetrievalReference?: number | undefined;
-    bankAuthorisationCode?: string | undefined;
-    threeDSecureUrl?: string | undefined;
-    acsTransId?: string | undefined;
-    cReq?: string | undefined;
-    callbackUrl?: string | undefined;
-    threeDSecureCompleted?: boolean;
+    returnUrl?: string | undefined;
     method?: string | undefined;
+}
+
+export interface CardPayment {
+    threeDSecureRequired?: boolean;
+    threeDSecureCompleted?: boolean;
+    threeDSecureChallengeUrl?: string | undefined;
+    threeDSecureAcsTransId?: string | undefined;
+    threeDSecureCReq?: string | undefined;
+    threeDSecureCRes?: string | undefined;
 }
 
 /** One of 'credential', 'payment' */
@@ -203,20 +210,20 @@ export enum PaymentObjectType {
     Payment = "payment",
 }
 
-/** One of 'complete', 'failed', 'inProgress' */
+/** One of 'complete', 'error', 'inProgress' */
 export enum PaymentObjectStatus {
     Complete = "complete",
-    Failed = "failed",
+    Error = "error",
     InProgress = "inProgress",
 }
 
 export interface OpayoPaymentReq {
-    cardIdentifier?: string | undefined;
     merchantSessionKey?: string | undefined;
+    cardIdentifier?: string | undefined;
     value?: MoneyReq | undefined;
-    callbackUrl?: string | undefined;
     browserParameters?: BrowserParametersReq | undefined;
     challengeWindowSize?: ChallengeWindowSize | undefined;
+    returnUrl?: string | undefined;
 }
 
 export interface MoneyReq {
@@ -274,11 +281,6 @@ export enum ChallengeWindowSize {
     Large = "large",
     ExtraLarge = "extraLarge",
     FullScreen = "fullScreen",
-}
-
-export interface ThreeDSecureStatus {
-    completed?: boolean;
-    success?: boolean;
 }
 
 export class ApiException extends Error {

@@ -403,19 +403,19 @@ export var SponsorshipDuration;
     SponsorshipDuration["_18"] = "_18";
     SponsorshipDuration["_24"] = "_24";
 })(SponsorshipDuration || (SponsorshipDuration = {}));
-/** One of 'complete', 'failed', 'inProgress' */
-export var PaymentObjectStatus;
-(function (PaymentObjectStatus) {
-    PaymentObjectStatus["Complete"] = "complete";
-    PaymentObjectStatus["Failed"] = "failed";
-    PaymentObjectStatus["InProgress"] = "inProgress";
-})(PaymentObjectStatus || (PaymentObjectStatus = {}));
 /** One of 'credential', 'payment' */
 export var PaymentObjectType;
 (function (PaymentObjectType) {
     PaymentObjectType["Credential"] = "credential";
     PaymentObjectType["Payment"] = "payment";
 })(PaymentObjectType || (PaymentObjectType = {}));
+/** One of 'complete', 'error', 'inProgress' */
+export var PaymentObjectStatus;
+(function (PaymentObjectStatus) {
+    PaymentObjectStatus["Complete"] = "complete";
+    PaymentObjectStatus["Error"] = "error";
+    PaymentObjectStatus["InProgress"] = "inProgress";
+})(PaymentObjectStatus || (PaymentObjectStatus = {}));
 /** One of 'annually', 'monthly', 'quarterly' */
 export var RegularGivingFrequency;
 (function (RegularGivingFrequency) {

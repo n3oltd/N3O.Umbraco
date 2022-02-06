@@ -123,9 +123,9 @@ var OpayoClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    OpayoClient.prototype.authorize = function (flowId, cRes, threeDsSessionData) {
+    OpayoClient.prototype.completeThreeDSecureChallenge = function (flowId, cRes, threeDsSessionData) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Opayo/{flowId}/authorize";
+        var url_ = this.baseUrl + "/umbraco/api/Opayo/{flowId}/completeThreeDSecureChallenge";
         if (flowId === undefined || flowId === null)
             throw new Error("The parameter 'flowId' must be defined.");
         url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
@@ -138,15 +138,13 @@ var OpayoClient = /** @class */ (function () {
         var options_ = {
             body: content_,
             method: "POST",
-            headers: {
-                "Accept": "application/json"
-            }
+            headers: {}
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processAuthorize(_response);
+            return _this.processCompleteThreeDSecureChallenge(_response);
         });
     };
-    OpayoClient.prototype.processAuthorize = function (response) {
+    OpayoClient.prototype.processCompleteThreeDSecureChallenge = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -156,9 +154,7 @@ var OpayoClient = /** @class */ (function () {
         ;
         if (status === 200) {
             return response.text().then(function (_responseText) {
-                var result200 = null;
-                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return result200;
+                return;
             });
         }
         else if (status === 400) {
@@ -189,11 +185,11 @@ export var PaymentObjectType;
     PaymentObjectType["Credential"] = "credential";
     PaymentObjectType["Payment"] = "payment";
 })(PaymentObjectType || (PaymentObjectType = {}));
-/** One of 'complete', 'failed', 'inProgress' */
+/** One of 'complete', 'error', 'inProgress' */
 export var PaymentObjectStatus;
 (function (PaymentObjectStatus) {
     PaymentObjectStatus["Complete"] = "complete";
-    PaymentObjectStatus["Failed"] = "failed";
+    PaymentObjectStatus["Error"] = "error";
     PaymentObjectStatus["InProgress"] = "inProgress";
 })(PaymentObjectStatus || (PaymentObjectStatus = {}));
 export var PublishedItemType;

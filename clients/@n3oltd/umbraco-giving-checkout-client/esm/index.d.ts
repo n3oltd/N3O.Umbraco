@@ -134,7 +134,7 @@ export declare enum TaxStatus {
 }
 export interface DonationCheckoutRes {
     allocations?: AllocationRes[] | undefined;
-    payment?: Payment | undefined;
+    payment?: PaymentRes | undefined;
     total?: MoneyRes | undefined;
     isComplete?: boolean;
     isRequired?: boolean;
@@ -249,41 +249,54 @@ export interface SponsorshipComponentAllocationRes {
     component?: string | undefined;
     value?: MoneyRes | undefined;
 }
-export interface Payment {
-    /** A well formed guid */
-    id?: string | undefined;
+export interface PaymentRes {
+    type?: PaymentObjectType | undefined;
+    method?: string | undefined;
     status?: PaymentObjectStatus | undefined;
-    declineReason?: string | undefined;
+    hasError?: boolean;
+    isComplete?: boolean;
+    isInProgress?: boolean;
+    card?: CardPaymentRes | undefined;
+    declinedReason?: string | undefined;
     isDeclined?: boolean;
     isPaid?: boolean;
-    isFailed?: boolean;
-    requireThreeDSecure?: boolean;
-}
-/** One of 'complete', 'failed', 'inProgress' */
-export declare enum PaymentObjectStatus {
-    Complete = "complete",
-    Failed = "failed",
-    InProgress = "inProgress"
 }
 /** One of 'credential', 'payment' */
 export declare enum PaymentObjectType {
     Credential = "credential",
     Payment = "payment"
 }
+/** One of 'complete', 'error', 'inProgress' */
+export declare enum PaymentObjectStatus {
+    Complete = "complete",
+    Error = "error",
+    InProgress = "inProgress"
+}
+export interface CardPaymentRes {
+    threeDSecureRequired?: boolean;
+    threeDSecureCompleted?: boolean;
+    threeDSecureChallengeUrl?: string | undefined;
+    threeDSecureAcsTransId?: string | undefined;
+    threeDSecureCReq?: string | undefined;
+    threeDSecureCRes?: string | undefined;
+}
 export interface RegularGivingCheckoutRes {
     allocations?: AllocationRes[] | undefined;
-    credential?: Credential | undefined;
+    credential?: CredentialRes | undefined;
     options?: RegularGivingOptionsRes | undefined;
     total?: MoneyRes | undefined;
     isComplete?: boolean;
     isRequired?: boolean;
 }
-export interface Credential {
-    /** A well formed guid */
-    id?: string | undefined;
+export interface CredentialRes {
+    type?: PaymentObjectType | undefined;
+    method?: string | undefined;
     status?: PaymentObjectStatus | undefined;
+    hasError?: boolean;
+    isComplete?: boolean;
+    isInProgress?: boolean;
+    advancePayment?: PaymentRes | undefined;
     isSetUp?: boolean;
-    isFailed?: boolean;
 }
 export interface RegularGivingOptionsRes {
     collectionDay?: string | undefined;
