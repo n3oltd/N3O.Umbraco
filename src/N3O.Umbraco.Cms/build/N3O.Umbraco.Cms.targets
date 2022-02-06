@@ -13,15 +13,6 @@
                 SourceFiles="@(N3OUmbracoCmsContentFiles)"
                 DestinationFiles="@(N3OUmbracoCmsContentFiles->'$(MSBuildProjectDirectory)\wwwroot\umbraco\%(RecursiveDir)%(Filename)%(Extension)')"
                 SkipUnchangedFiles="true"/>
-
-    </Target>
-
-    <Target Name="ClearN3OUmbracoCmsAssets" BeforeTargets="Clean">
-        <ItemGroup>
-            <N3OUmbracoCmsContentFiles Include="$(N3OUmbracoCmsContentFilesPath)"/>
-        </ItemGroup>
-        <Message Text="Clear old N3O CMS files" Importance="high"/>
-        <Delete Files="@(N3OUmbracoCmsContentFiles)"/>
     </Target>
 
 </Project>

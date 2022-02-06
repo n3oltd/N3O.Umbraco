@@ -6,25 +6,28 @@ using N3O.Umbraco.Email.Extensions;
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Checkout.Commands;
+using N3O.Umbraco.Giving.Checkout.Content;
+using N3O.Umbraco.Giving.Checkout.Lookups;
 using N3O.Umbraco.Scheduler;
 using N3O.Umbraco.Webhooks;
+using N3O.Umbraco.Webhooks.Lookups;
 using NodaTime;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Giving.Checkout.ChangeFeeds {
-    public partial class CheckoutJobsFeed : ChangeFeed<Entities.Checkout> {
+    public class CheckoutFeed : ChangeFeed<Entities.Checkout> {
         private readonly Lazy<IWebhooks> _webhooks;
         private readonly Lazy<IEmailBuilder> _emailBuilder;
         private readonly Lazy<IContentCache> _contentCache;
         private readonly Lazy<IBackgroundJob> _backgroundJob;
 
-        public CheckoutJobsFeed(ILogger<CheckoutJobsFeed> logger,
-                                Lazy<IWebhooks> webhooks,
-                                Lazy<IEmailBuilder> emailBuilder,
-                                Lazy<IContentCache> contentCache,
-                                Lazy<IBackgroundJob> backgroundJob)
+        public CheckoutFeed(ILogger<CheckoutFeed> logger,
+                            Lazy<IWebhooks> webhooks,
+                            Lazy<IEmailBuilder> emailBuilder,
+                            Lazy<IContentCache> contentCache,
+                            Lazy<IBackgroundJob> backgroundJob)
             : base(logger) {
             _webhooks = webhooks;
             _emailBuilder = emailBuilder;
@@ -34,10 +37,36 @@ namespace N3O.Umbraco.Giving.Checkout.ChangeFeeds {
         
         protected override Task ProcessAsync(EntityChange<Entities.Checkout> entityChange,
                                              CancellationToken cancellationToken) {
-            ProcessDonationJobs(entityChange);
-            //ProcessCompleteJobs(entityChange);
-            
+            if (entityChange.Operation == EntityOperations.Update) {
+                Process(entityChange, x => x.Donation.IsComplete(), c => {
+                    SendEmail<DonationReceiptTemplateContent>(c);
+                    QueueWebhook(CheckoutWebhookEvents.DonationCompleteEvent, c);
+                });
+
+                Process(entityChange, x => x.RegularGiving.IsComplete(), c => {
+                    SendEmail<RegularGivingReceiptTemplateContent>(c);
+                    QueueWebhook(CheckoutWebhookEvents.RegularGivingCompleteEvent, c);
+                });
+
+                Process(entityChange, x => x.IsComplete(), c => {
+                    ScheduleJob<DeleteCheckoutCommand>(c, Duration.FromDays(90));
+                });
+            }
+
             return Task.CompletedTask;
+        }
+        
+        private void Process(EntityChange<Entities.Checkout> entityChange,
+                             Func<Entities.Checkout, bool> getComplete,
+                             Action<Entities.Checkout> action) {
+            var isComplete = getComplete(entityChange.SessionEntity);
+            var wasComplete = getComplete(entityChange.DatabaseEntity);
+
+            if (isComplete && !wasComplete) {
+                var checkout = entityChange.SessionEntity;
+                
+                action(checkout);
+            }
         }
 
         private void ScheduleJob<TCommand>(Entities.Checkout checkout, Duration fromNow)
@@ -45,6 +74,10 @@ namespace N3O.Umbraco.Giving.Checkout.ChangeFeeds {
             _backgroundJob.Value.Schedule<TCommand, Entities.Checkout>($"{typeof(TCommand).GetFriendlyName()}({checkout.Reference})",
                                                                        fromNow,
                                                                        checkout);
+        }
+
+        private void QueueWebhook(WebhookEvent webhookEvent, Entities.Checkout checkout) {
+            _webhooks.Value.Queue(webhookEvent, checkout);
         }
         
         private void SendEmail<T>(Entities.Checkout checkout) where T : EmailTemplateContent<T> {
