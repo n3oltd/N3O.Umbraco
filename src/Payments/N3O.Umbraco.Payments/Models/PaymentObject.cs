@@ -3,7 +3,7 @@ using N3O.Umbraco.Payments.Lookups;
 using System;
 
 namespace N3O.Umbraco.Payments.Models {
-    public abstract class PaymentObject : IPaymentObject {
+    public abstract class PaymentObject : Value {
         protected PaymentObject() {
             Id = EntityId.New();
         }

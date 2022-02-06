@@ -44,7 +44,7 @@ namespace N3O.Umbraco.Payments.Json {
             var paymentObjectTypeId = paymentObjectTypeProperty.Value<string>();
             var paymentObjectType = _lookups.FindById<PaymentObjectType>(paymentObjectTypeId);
             
-            var paymentObject = jObject.ToObject(paymentMethod.GetType(paymentObjectType));
+            var paymentObject = jObject.ToObject(paymentMethod.GetObjectType(paymentObjectType));
 
             return paymentObject;
         }

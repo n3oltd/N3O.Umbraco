@@ -19,7 +19,7 @@ namespace N3O.Umbraco.Entities {
         [JsonIgnore]
         public bool IsNew => Revision == 0;
         
-        public void OnSaving(Instant timestamp) {
+        public virtual void OnSaving(Instant timestamp) {
             Timestamp = timestamp;
             Revision++;
         }

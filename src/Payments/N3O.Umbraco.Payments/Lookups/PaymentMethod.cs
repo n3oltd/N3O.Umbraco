@@ -14,7 +14,7 @@ namespace N3O.Umbraco.Payments.Lookups {
             _credentialObjectType = credentialObjectType;
         }
 
-        public Type GetType(PaymentObjectType objectType) {
+        public Type GetObjectType(PaymentObjectType objectType) {
             if (objectType == PaymentObjectTypes.Credential) {
                 return _credentialObjectType;
             } else if (objectType == PaymentObjectTypes.Payment) {

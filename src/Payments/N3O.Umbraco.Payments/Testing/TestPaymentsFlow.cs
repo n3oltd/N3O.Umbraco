@@ -1,11 +1,11 @@
 ﻿using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Entities;
-using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Payments.Entities;
+using N3O.Umbraco.Payments.Lookups;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.References;
-using System;
 
 namespace N3O.Umbraco.Payments.Testing {
     public class TestPaymentsFlow : Entity, IPaymentsFlow {
@@ -31,25 +31,23 @@ namespace N3O.Umbraco.Payments.Testing {
             return new BillingInfo(address, email,name, telephone);
         }
 
-        public T GetOrCreatePaymentObject<T>() where T : PaymentObject, new() {
-            if (typeof(T).IsSubclassOfType(typeof(Payment))) {
-                if (Payment is T typedPayment) {
-                    return typedPayment;
-                } else {
-                    Payment = new T() as Payment;
-                    
-                    return Payment as T;
-                }
-            } else if (typeof(T).IsSubclassOfType(typeof(Credential))) {
-                if (Credential is T typedPayment) {
-                    return typedPayment;
-                } else {
-                    Credential = new T() as Credential;
-                    
-                    return Credential as T;
-                }
+        public PaymentObject GetPaymentObject(PaymentObjectType type) {
+            if (type == PaymentObjectTypes.Payment) {
+                return Payment;
+            } else if (type == PaymentObjectTypes.Credential) {
+                return Credential;
             } else {
-                throw new NotImplementedException();
+                throw UnrecognisedValueException.For(type);
+            }
+        }
+
+        public void SetPaymentObject(PaymentObjectType type, PaymentObject paymentObject) {
+            if (type == PaymentObjectTypes.Payment) {
+                Payment = paymentObject as Payment;
+            } else if (type == PaymentObjectTypes.Credential) {
+                Credential = paymentObject as Credential;
+            } else {
+                throw UnrecognisedValueException.For(type);
             }
         }
     }

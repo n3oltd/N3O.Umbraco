@@ -9,7 +9,5 @@ namespace N3O.Umbraco.Payments {
         Task<PaymentFlowRes<T>> DoAsync<T>(Func<IPaymentsFlow, T, Task> actionAsync,
                                            CancellationToken cancellationToken = default)
             where T : PaymentObject, new();
-
-        Task<T> GetAsync<T>(Func<IPaymentsFlow, T> get, CancellationToken cancellationToken = default);
     }
 }
