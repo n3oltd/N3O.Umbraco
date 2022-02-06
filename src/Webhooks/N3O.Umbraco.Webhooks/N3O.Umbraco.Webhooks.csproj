@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <RootNamespace>N3O.Umbraco.Webhooks</RootNamespace>
+        <TargetFramework>net5.0</TargetFramework>
+        <LangVersion>9.0</LangVersion>
+        <Copyright>Copyright © 2022 N3O Ltd</Copyright>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <PackageId>N3O.Umbraco.Webhooks</PackageId>
+        <IsPackable>true</IsPackable>
+        <ContentTargetFolders>.</ContentTargetFolders>
+        <Authors>N3O Ltd</Authors>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Description>TODO</Description>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageProjectUrl>https://n3o.ltd</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/n3oltd/N3O.Umbraco</RepositoryUrl>
+        <Version>9.0.0</Version>
+        <AssemblyVersion>9.0.0</AssemblyVersion>
+        <FileVersion>9.0.0</FileVersion>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DebugType>full</DebugType>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DebugType>pdbonly</DebugType>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Mediator\N3O.Umbraco.Mediator\N3O.Umbraco.Mediator.csproj" />
+        <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
+        <ProjectReference Include="..\..\Scheduler\N3O.Umbraco.Scheduler\N3O.Umbraco.Scheduler.csproj" />
+        <ProjectReference Include="..\..\Validation\N3O.Umbraco.Validation\N3O.Umbraco.Validation.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="README.md">
+            <Pack>True</Pack>
+        </None>
+    </ItemGroup>
+</Project>
