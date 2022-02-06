@@ -16,4 +16,6 @@ n3o-tool clients --url "https://localhost:6001/swagger/GoCardless/swagger.json" 
 
 n3o-tool clients --url "https://localhost:6001/swagger/Opayo/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-payments-opayo-client" --name "OpayoClient" --package-name "@n3oltd/umbraco-payments-opayo-client" --package-description "TypeScript client for the N3O Umbraco Payments Opayo"
 
+n3o-tool clients --url "https://localhost:6001/swagger/Stripe/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-payments-stripe-client" --name "StripeClient" --package-name "@n3oltd/umbraco-payments-stripe-client" --package-description "TypeScript client for the N3O Umbraco Payments Stripe"
+
 n3o-tool clients --url "https://localhost:6001/swagger/Uploader/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-uploader-client" --name "UploaderClient" --package-name "@n3oltd/umbraco-uploader-client" --package-description "TypeScript client for the N3O Umbraco Uploader"

@@ -1,21 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
-using N3O.Umbraco.Lookups;
+using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Mediator;
-using N3O.Umbraco.Payments.Controller;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.Opayo.Commands;
 using N3O.Umbraco.Payments.Opayo.Models;
 using System.Threading.Tasks;
-using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Payments.Opayo.Controllers {
     [ApiDocument(OpayoConstants.ApiName)]
-    public class OpayoController : PaymentsController {
+    public class OpayoController : ApiController {
         private readonly IMediator _mediator;
 
-        public OpayoController(IMediator mediator, ILookups lookups, IUmbracoMapper mapper)
-            : base(lookups, mapper, mediator) {
+        public OpayoController(IMediator mediator) {
             _mediator = mediator;
         }
 

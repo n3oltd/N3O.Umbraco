@@ -159,143 +159,6 @@ export class OpayoClient {
         }
         return Promise.resolve<ThreeDSecureStatus>(<any>null);
     }
-
-    findPaymentMethods(req: PaymentMethodCriteria): Promise<PaymentMethodRes[]> {
-        let url_ = this.baseUrl + "/umbraco/api/Opayo/paymentMethods/find";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(req);
-
-        let options_ = <RequestInit>{
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processFindPaymentMethods(_response);
-        });
-    }
-
-    protected processFindPaymentMethods(response: Response): Promise<PaymentMethodRes[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : <PaymentMethodRes[]>JSON.parse(_responseText, this.jsonParseReviver);
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            let result400: any = null;
-            result400 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        } else if (status === 500) {
-            return response.text().then((_responseText) => {
-            return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<PaymentMethodRes[]>(<any>null);
-    }
-
-    getLookupPaymentMethods(): Promise<PaymentMethodRes[]> {
-        let url_ = this.baseUrl + "/umbraco/api/Opayo/lookups/paymentMethods";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ = <RequestInit>{
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetLookupPaymentMethods(_response);
-        });
-    }
-
-    protected processGetLookupPaymentMethods(response: Response): Promise<PaymentMethodRes[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : <PaymentMethodRes[]>JSON.parse(_responseText, this.jsonParseReviver);
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            let result400: any = null;
-            result400 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        } else if (status === 500) {
-            return response.text().then((_responseText) => {
-            return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<PaymentMethodRes[]>(<any>null);
-    }
-
-    getAllLookups(criteria: LookupsCriteria): Promise<PaymentsLookupsRes> {
-        let url_ = this.baseUrl + "/umbraco/api/Opayo/lookups/all";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(criteria);
-
-        let options_ = <RequestInit>{
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetAllLookups(_response);
-        });
-    }
-
-    protected processGetAllLookups(response: Response): Promise<PaymentsLookupsRes> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : <PaymentsLookupsRes>JSON.parse(_responseText, this.jsonParseReviver);
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            let result400: any = null;
-            result400 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        } else if (status === 500) {
-            return response.text().then((_responseText) => {
-            return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<PaymentsLookupsRes>(<any>null);
-    }
 }
 
 export interface ProblemDetails {
@@ -312,7 +175,6 @@ export interface PaymentFlowResOfOpayoPayment {
 }
 
 export interface OpayoPayment {
-    type?: PaymentObjectType | undefined;
     declineReason?: string | undefined;
     isDeclined?: boolean;
     isPaid?: boolean;
@@ -417,24 +279,6 @@ export enum ChallengeWindowSize {
 export interface ThreeDSecureStatus {
     completed?: boolean;
     success?: boolean;
-}
-
-export interface PaymentMethodRes {
-    name?: string | undefined;
-    id?: string | undefined;
-}
-
-export interface PaymentMethodCriteria {
-    country?: string | undefined;
-    currency?: string | undefined;
-}
-
-export interface PaymentsLookupsRes {
-    paymentMethods?: PaymentMethodRes[] | undefined;
-}
-
-export interface LookupsCriteria {
-    types?: string[] | undefined;
 }
 
 export class ApiException extends Error {

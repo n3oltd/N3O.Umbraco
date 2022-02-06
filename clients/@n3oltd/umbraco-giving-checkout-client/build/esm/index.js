@@ -223,6 +223,60 @@ var CheckoutClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
+    CheckoutClient.prototype.updateRegularGivingOptions = function (checkoutRevisionId, req) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Checkout/{checkoutRevisionId}/regularGiving/options";
+        if (checkoutRevisionId === undefined || checkoutRevisionId === null)
+            throw new Error("The parameter 'checkoutRevisionId' must be defined.");
+        url_ = url_.replace("{checkoutRevisionId}", encodeURIComponent("" + checkoutRevisionId));
+        url_ = url_.replace(/[?&]$/, "");
+        var content_ = JSON.stringify(req);
+        var options_ = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processUpdateRegularGivingOptions(_response);
+        });
+    };
+    CheckoutClient.prototype.processUpdateRegularGivingOptions = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
     CheckoutClient.prototype.getAllLookups = function (criteria) {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Checkout/lookups/all";
@@ -285,6 +339,13 @@ export var PublishedItemType;
     PublishedItemType[PublishedItemType["Media"] = 3] = "Media";
     PublishedItemType[PublishedItemType["Member"] = 4] = "Member";
 })(PublishedItemType || (PublishedItemType = {}));
+/** One of 'account', 'donation', 'regularGiving' */
+export var CheckoutStage;
+(function (CheckoutStage) {
+    CheckoutStage["Account"] = "account";
+    CheckoutStage["Donation"] = "donation";
+    CheckoutStage["RegularGiving"] = "regularGiving";
+})(CheckoutStage || (CheckoutStage = {}));
 /** One of 'email', 'sms', 'post', 'telephone' */
 export var ConsentChannel;
 (function (ConsentChannel) {
@@ -307,6 +368,61 @@ export var TaxStatus;
     TaxStatus["NonPayer"] = "nonPayer";
     TaxStatus["NotSpecified"] = "notSpecified";
 })(TaxStatus || (TaxStatus = {}));
+/** One of 'fund', 'sponsorship' */
+export var AllocationType;
+(function (AllocationType) {
+    AllocationType["Fund"] = "fund";
+    AllocationType["Sponsorship"] = "sponsorship";
+})(AllocationType || (AllocationType = {}));
+/** One of 'donation', 'regularGiving' */
+export var GivingType;
+(function (GivingType) {
+    GivingType["Donation"] = "donation";
+    GivingType["RegularGiving"] = "regularGiving";
+})(GivingType || (GivingType = {}));
+export var ContentVariation;
+(function (ContentVariation) {
+    ContentVariation[ContentVariation["Nothing"] = 0] = "Nothing";
+    ContentVariation[ContentVariation["Culture"] = 1] = "Culture";
+    ContentVariation[ContentVariation["Segment"] = 2] = "Segment";
+    ContentVariation[ContentVariation["CultureAndSegment"] = 3] = "CultureAndSegment";
+})(ContentVariation || (ContentVariation = {}));
+export var PropertyCacheLevel;
+(function (PropertyCacheLevel) {
+    PropertyCacheLevel[PropertyCacheLevel["Unknown"] = 0] = "Unknown";
+    PropertyCacheLevel[PropertyCacheLevel["Element"] = 1] = "Element";
+    PropertyCacheLevel[PropertyCacheLevel["Elements"] = 2] = "Elements";
+    PropertyCacheLevel[PropertyCacheLevel["Snapshot"] = 3] = "Snapshot";
+    PropertyCacheLevel[PropertyCacheLevel["None"] = 4] = "None";
+})(PropertyCacheLevel || (PropertyCacheLevel = {}));
+/** One of '_6', '_12', '_18', '_24' */
+export var SponsorshipDuration;
+(function (SponsorshipDuration) {
+    SponsorshipDuration["_6"] = "_6";
+    SponsorshipDuration["_12"] = "_12";
+    SponsorshipDuration["_18"] = "_18";
+    SponsorshipDuration["_24"] = "_24";
+})(SponsorshipDuration || (SponsorshipDuration = {}));
+/** One of 'complete', 'failed', 'inProgress' */
+export var PaymentObjectStatus;
+(function (PaymentObjectStatus) {
+    PaymentObjectStatus["Complete"] = "complete";
+    PaymentObjectStatus["Failed"] = "failed";
+    PaymentObjectStatus["InProgress"] = "inProgress";
+})(PaymentObjectStatus || (PaymentObjectStatus = {}));
+/** One of 'credential', 'payment' */
+export var PaymentObjectType;
+(function (PaymentObjectType) {
+    PaymentObjectType["Credential"] = "credential";
+    PaymentObjectType["Payment"] = "payment";
+})(PaymentObjectType || (PaymentObjectType = {}));
+/** One of 'annually', 'monthly', 'quarterly' */
+export var RegularGivingFrequency;
+(function (RegularGivingFrequency) {
+    RegularGivingFrequency["Annually"] = "annually";
+    RegularGivingFrequency["Monthly"] = "monthly";
+    RegularGivingFrequency["Quarterly"] = "quarterly";
+})(RegularGivingFrequency || (RegularGivingFrequency = {}));
 var ApiException = /** @class */ (function (_super) {
     __extends(ApiException, _super);
     function ApiException(message, status, response, headers, result) {

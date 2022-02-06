@@ -11,12 +11,6 @@ export declare class OpayoClient {
     protected processProcess(response: Response): Promise<PaymentFlowResOfOpayoPayment>;
     authorize(flowId: string, cRes: string | null | undefined, threeDsSessionData: string | null | undefined): Promise<ThreeDSecureStatus>;
     protected processAuthorize(response: Response): Promise<ThreeDSecureStatus>;
-    findPaymentMethods(req: PaymentMethodCriteria): Promise<PaymentMethodRes[]>;
-    protected processFindPaymentMethods(response: Response): Promise<PaymentMethodRes[]>;
-    getLookupPaymentMethods(): Promise<PaymentMethodRes[]>;
-    protected processGetLookupPaymentMethods(response: Response): Promise<PaymentMethodRes[]>;
-    getAllLookups(criteria: LookupsCriteria): Promise<PaymentsLookupsRes>;
-    protected processGetAllLookups(response: Response): Promise<PaymentsLookupsRes>;
 }
 export interface ProblemDetails {
     type?: string | undefined;
@@ -30,7 +24,6 @@ export interface PaymentFlowResOfOpayoPayment {
     result?: OpayoPayment | undefined;
 }
 export interface OpayoPayment {
-    type?: PaymentObjectType | undefined;
     declineReason?: string | undefined;
     isDeclined?: boolean;
     isPaid?: boolean;
@@ -127,20 +120,6 @@ export declare enum ChallengeWindowSize {
 export interface ThreeDSecureStatus {
     completed?: boolean;
     success?: boolean;
-}
-export interface PaymentMethodRes {
-    name?: string | undefined;
-    id?: string | undefined;
-}
-export interface PaymentMethodCriteria {
-    country?: string | undefined;
-    currency?: string | undefined;
-}
-export interface PaymentsLookupsRes {
-    paymentMethods?: PaymentMethodRes[] | undefined;
-}
-export interface LookupsCriteria {
-    types?: string[] | undefined;
 }
 export declare class ApiException extends Error {
     message: string;
