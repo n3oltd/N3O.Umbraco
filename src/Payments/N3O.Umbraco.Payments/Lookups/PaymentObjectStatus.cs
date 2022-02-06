@@ -7,7 +7,7 @@ namespace N3O.Umbraco.Payments.Lookups {
 
     public class PaymentObjectStatuses : StaticLookupsCollection<PaymentObjectStatus> {
         public static readonly PaymentObjectStatus Complete = new("complete", "Complete");
-        public static readonly PaymentObjectStatus Failed = new("failed", "Failed");
+        public static readonly PaymentObjectStatus Error = new("error", "Error");
         public static readonly PaymentObjectStatus InProgress = new("inProgress", "InProgress");
     }
 }

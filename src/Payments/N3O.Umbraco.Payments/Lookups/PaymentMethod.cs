@@ -8,11 +8,19 @@ namespace N3O.Umbraco.Payments.Lookups {
         private readonly Type _paymentObjectType;
         private readonly Type _credentialObjectType;
 
-        protected PaymentMethod(string id, string name, Type paymentObjectType, Type credentialObjectType)
+        protected PaymentMethod(string id,
+                                string name,
+                                bool isCardPayment,
+                                Type paymentObjectType,
+                                Type credentialObjectType)
             : base(id, name) {
+            IsCardPayment = isCardPayment;
+            
             _paymentObjectType = paymentObjectType;
             _credentialObjectType = credentialObjectType;
         }
+        
+        public bool IsCardPayment { get; }
 
         public Type GetObjectType(PaymentObjectType objectType) {
             if (objectType == PaymentObjectTypes.Credential) {

@@ -25,7 +25,13 @@ namespace N3O.Umbraco.Context {
         }
         
         public string GetLanguage() {
-            return GetHeader("Accept-Language");
+            var language = GetHeader("Accept-Language");
+
+            if (language.Contains(",")) {
+                language = language.Split(",")[0];
+            }
+
+            return language;
         }
         
         public string GetUserAgent() {

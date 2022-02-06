@@ -6,7 +6,8 @@ using N3O.Umbraco.Payments.Lookups;
 
 namespace N3O.Umbraco.Payments.GoCardless {
     public class GoCardlessPaymentMethod : PaymentMethod {
-        public GoCardlessPaymentMethod() : base("goCardless", "GoCardless", null, typeof(GoCardlessCredential)) { }
+        public GoCardlessPaymentMethod()
+            : base("goCardless", "GoCardless", false, null, typeof(GoCardlessCredential)) { }
         
         public override bool IsAvailable(Country country, Currency currency) {
             if (!country.Iso3Code.EqualsInvariant(GoCardlessConstants.Codes.Countries.UnitedKingdom)) {

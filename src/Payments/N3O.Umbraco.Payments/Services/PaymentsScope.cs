@@ -1,6 +1,8 @@
 using N3O.Umbraco.Entities;
+using N3O.Umbraco.Localization;
 using N3O.Umbraco.Payments.Entities;
 using N3O.Umbraco.Payments.NamedParameters;
+using NodaTime;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,7 +11,8 @@ namespace N3O.Umbraco.Payments {
         private readonly IRepository<IPaymentsFlow> _repository;
         private readonly FlowId _flowId;
 
-        public PaymentsScope(IRepository<IPaymentsFlow> repository, FlowId flowId) {
+        public PaymentsScope(IClock clock, IFormatter formatter, IRepository<IPaymentsFlow> repository, FlowId flowId)
+            : base(clock, formatter) {
             _repository = repository;
             _flowId = flowId;
         }

@@ -1,13 +1,23 @@
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Localization;
 using N3O.Umbraco.Payments.Entities;
 using N3O.Umbraco.Payments.Lookups;
 using N3O.Umbraco.Payments.Models;
+using NodaTime;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments {
     public abstract class PaymentsScopeBase : IPaymentsScope {
+        private readonly IClock _clock;
+        private readonly IFormatter _formatter;
+
+        protected PaymentsScopeBase(IClock clock, IFormatter formatter) {
+            _clock = clock;
+            _formatter = formatter;
+        }
+        
         public async Task<PaymentFlowRes<T>> DoAsync<T>(Func<IPaymentsFlow, T, Task> actionAsync,
                                                         CancellationToken cancellationToken = default)
             where T : PaymentObject, new() {
@@ -24,9 +34,11 @@ namespace N3O.Umbraco.Payments {
             }
 
             try {
-                await actionAsync(flow, paymentObject);
+                using (paymentObject.BeginUpdate(_clock)) {
+                    await actionAsync(flow, paymentObject);
+                }
             } catch (Exception ex) {
-                paymentObject.UnhandledError(ex);
+                paymentObject.UnhandledError(_formatter, ex);
             }
 
             await UpdateAsync(flow, cancellationToken);

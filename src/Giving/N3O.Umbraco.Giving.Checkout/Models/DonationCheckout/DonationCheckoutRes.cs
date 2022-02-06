@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace N3O.Umbraco.Giving.Checkout.Models {
     public class DonationCheckoutRes {
         public IEnumerable<AllocationRes> Allocations { get; set; }
-        public Payment Payment { get; set; }
+        public PaymentRes Payment { get; set; }
         public MoneyRes Total { get; set; }
 
         public bool IsComplete { get; set; }
