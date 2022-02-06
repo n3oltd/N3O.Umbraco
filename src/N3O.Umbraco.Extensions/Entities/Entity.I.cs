@@ -6,6 +6,7 @@ namespace N3O.Umbraco.Entities {
         Instant Timestamp { get; }
         int Revision { get; }
         bool IsNew { get; }
+        RevisionId RevisionId { get; }
 
         void OnSaving(Instant timestamp);
     }

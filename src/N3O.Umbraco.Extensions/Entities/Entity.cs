@@ -1,4 +1,5 @@
 using N3O.Umbraco.Extensions;
+using Newtonsoft.Json;
 using NodaTime;
 
 namespace N3O.Umbraco.Entities {
@@ -11,6 +12,11 @@ namespace N3O.Umbraco.Entities {
         public EntityId Id { get; private set; }
         public Instant Timestamp { get; private set; }
         public int Revision { get; private set; }
+
+        [JsonIgnore]
+        public RevisionId RevisionId => new(Id, Revision);
+        
+        [JsonIgnore]
         public bool IsNew => Revision == 0;
         
         public void OnSaving(Instant timestamp) {

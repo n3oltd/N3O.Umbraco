@@ -4,34 +4,48 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 using NodaTime;
 using System;
+using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Infrastructure.Persistence;
 
 namespace N3O.Umbraco.Entities {
     public class Repository<T> : IRepository<T> where T : class, IEntity {
+        private readonly ConcurrentDictionary<EntityId, T> _entityStore = new();
         private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
+        private readonly IChangeFeedFactory<T> _changeFeedFactory;
         private readonly IJsonProvider _jsonProvider;
         private readonly IClock _clock;
 
-        public Repository(IUmbracoDatabaseFactory umbracoDatabaseFactory, IJsonProvider jsonProvider, IClock clock) {
+        public Repository(IUmbracoDatabaseFactory umbracoDatabaseFactory,
+                          IChangeFeedFactory<T> changeFeedFactory,
+                          IJsonProvider jsonProvider,
+                          IClock clock) {
             _umbracoDatabaseFactory = umbracoDatabaseFactory;
+            _changeFeedFactory = changeFeedFactory;
             _jsonProvider = jsonProvider;
             _clock = clock;
         }
 
-        public async Task DeleteAsync(EntityId id, CancellationToken cancellationToken = default) {
+        public async Task DeleteAsync(T entity, CancellationToken cancellationToken = default) {
             using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-                await db.ExecuteAsync($@"DELETE FROM {Tables.Entities.Name} WHERE Id = '{id.Value}'");
+                await db.ExecuteAsync($"DELETE FROM {Tables.Entities.Name} WHERE Id = '{entity.Id.Value}'");
+
+                await RunChangeFeedsAsync(EntityOperations.Delete,
+                                          null,
+                                          _entityStore.GetOrDefault(entity.Id),
+                                          cancellationToken);
             }
         }
         
         public async Task<T> GetAsync(EntityId id, CancellationToken cancellationToken = default) {
             using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-                var row = await db.SingleOrDefaultAsync<EntityRow>($@"SELECT * FROM {Tables.Entities.Name} WHERE Id = '{id.Value}'");
+                var row = await db.SingleOrDefaultAsync<EntityRow>($"SELECT * FROM {Tables.Entities.Name} WHERE Id = '{id.Value}'");
 
                 var entity = row.IfNotNull(x => {
                     var type = Type.GetType(x.Type);
+                    
+                    _entityStore[id] = (T) _jsonProvider.DeserializeObject(x.Json, type);
                     
                     return (T) _jsonProvider.DeserializeObject(x.Json, type);
                 });
@@ -56,11 +70,21 @@ namespace N3O.Umbraco.Entities {
                 
                 return Task.CompletedTask;
             });
+            
+            await RunChangeFeedsAsync(EntityOperations.Insert,
+                                      entity,
+                                      null,
+                                      cancellationToken);
         }
         
         public async Task UpdateAsync(T entity, CancellationToken cancellationToken = default) {
             // TODO The update SQL should check the revision number hasn't changed and fail if it has
             await SaveAsync(entity, (db, r) => db.UpdateAsync(r));
+            
+            await RunChangeFeedsAsync(EntityOperations.Update,
+                                      entity,
+                                      _entityStore.GetOrDefault(entity.Id),
+                                      cancellationToken);
         }
 
         private async Task SaveAsync(T entity, Func<IUmbracoDatabase, EntityRow, Task> saveAsync) {
@@ -75,6 +99,19 @@ namespace N3O.Umbraco.Entities {
                 row.Json = _jsonProvider.SerializeObject(entity);
 
                 await saveAsync(db, row);
+            }
+        }
+            
+        private async Task RunChangeFeedsAsync(EntityOperation operation,
+                                               T sessionEntity,
+                                               T dbEntity,
+                                               CancellationToken cancellationToken) {
+            var changeFeeds = _changeFeedFactory.GetChangeFeeds();
+
+            foreach (var changeFeed in changeFeeds) {
+                var entityChange = new EntityChange<T>(sessionEntity, dbEntity, operation);
+
+                await changeFeed.ProcessChangeAsync(entityChange, cancellationToken);
             }
         }
     }
