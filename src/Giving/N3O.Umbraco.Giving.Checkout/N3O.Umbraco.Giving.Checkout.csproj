@@ -34,6 +34,8 @@
         <ProjectReference Include="..\..\Email\N3O.Umbraco.Email\N3O.Umbraco.Email.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
         <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments\N3O.Umbraco.Payments.csproj" />
+        <ProjectReference Include="..\..\Scheduler\N3O.Umbraco.Scheduler\N3O.Umbraco.Scheduler.csproj" />
+        <ProjectReference Include="..\..\Webhooks\N3O.Umbraco.Webhooks\N3O.Umbraco.Webhooks.csproj" />
         <ProjectReference Include="..\N3O.Umbraco.Giving.Cart\N3O.Umbraco.Giving.Cart.csproj" />
     </ItemGroup>
 

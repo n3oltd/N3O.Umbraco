@@ -21,5 +21,9 @@ namespace N3O.Umbraco.Giving.Checkout.Models {
         public IEnumerable<Allocation> Allocations { get; }
         public Payment Payment { get; }
         public Money Total { get; }
+
+        // TODO Need to check this DonationCheckout object is initialised even if the checkout doesn't
+        // involve donations, also needs other criteria such as the allocation being non-empty
+        public bool IsComplete => Payment?.IsPaid == true;
     }
 }
