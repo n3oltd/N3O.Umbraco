@@ -16,7 +16,8 @@ namespace N3O.Umbraco.Payments.Opayo.Client {
             InnerHandler = new HttpClientHandler();
         }
 
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) {
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+                                                                     CancellationToken cancellationToken) {
             request.Headers.Authorization = new AuthenticationHeaderValue("Basic", _base64Credentials);
 
             return await base.SendAsync(request, cancellationToken);

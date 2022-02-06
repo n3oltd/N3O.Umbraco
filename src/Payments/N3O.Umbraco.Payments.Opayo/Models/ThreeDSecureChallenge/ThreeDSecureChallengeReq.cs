@@ -2,10 +2,10 @@ using N3O.Umbraco.Attributes;
 
 namespace N3O.Umbraco.Payments.Opayo.Models {
     public class ThreeDSecureChallengeReq {
-        [Name("cres")]
+        [Name("CRes")]
         public string CRes { get; set; }
 
-        [Name("threeDSSessionData")]
+        [Name("ThreeDsSessionData")]
         public string ThreeDsSessionData { get; set; }
     }
 }

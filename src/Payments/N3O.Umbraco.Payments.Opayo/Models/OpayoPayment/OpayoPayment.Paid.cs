@@ -1,10 +1,17 @@
 namespace N3O.Umbraco.Payments.Opayo.Models {
     public partial class OpayoPayment {
-        public void Paid(string transactionId, string bankAuthorisationCode, long retrievalReference) {
-            TransactionId = transactionId;
-            BankAuthorisationCode = bankAuthorisationCode;
+        public void Paid(string transactionId,
+                         int statusCode,
+                         string statusDetail,
+                         string bankAuthorisationCode,
+                         long retrievalReference) {
+            OpayoTransactionId = transactionId;
+            OpayoStatusCode = statusCode;
+            OpayoStatusDetail = statusDetail;
+            OpayoBankAuthorisationCode = bankAuthorisationCode;
             OpayoRetrievalReference = retrievalReference;
-            IsPaid = true;
+            
+            Paid();
         }
     }
 }

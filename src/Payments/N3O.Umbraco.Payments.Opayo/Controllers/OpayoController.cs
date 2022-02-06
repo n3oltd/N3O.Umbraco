@@ -22,7 +22,6 @@ namespace N3O.Umbraco.Payments.Opayo.Controllers {
 
             return Ok(res);
         }
-
         
         [HttpPost("{flowId:entityId}/payment/process")]
         public async Task<ActionResult<PaymentFlowRes<OpayoPayment>>> Process(OpayoPaymentReq req) {
@@ -31,11 +30,11 @@ namespace N3O.Umbraco.Payments.Opayo.Controllers {
             return Ok(res);
         }
 
-        [HttpPost("{flowId:entityId}/authorize")]
-        public async Task<ActionResult<ThreeDSecureStatus>> Authorize([FromForm]ThreeDSecureChallengeReq req) {
-            var res = await _mediator.SendAsync<ThreeDSecureChallengeCommand, ThreeDSecureChallengeReq, PaymentFlowRes<OpayoPayment>>(req);
+        [HttpPost("{flowId:entityId}/completeThreeDSecureChallenge")]
+        public async Task<ActionResult> CompleteThreeDSecureChallenge([FromForm] ThreeDSecureChallengeReq req) {
+            var res = await _mediator.SendAsync<CompleteThreeDSecureChallengeCommand, ThreeDSecureChallengeReq, PaymentFlowRes<OpayoPayment>>(req);
 
-            return Redirect(res.Result.CallbackUrl);
+            return Redirect(res.Result.ReturnUrl);
         }
     }
 }
