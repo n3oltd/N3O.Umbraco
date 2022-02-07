@@ -1,6 +1,9 @@
-﻿namespace N3O.Umbraco.Cropper.Models {
+﻿using N3O.Umbraco.Attributes;
+
+namespace N3O.Umbraco.Cropper.Models {
+    [SerializeToUrl(nameof(Src))]
     public class ImageCrop : Value {
-        public ImageCrop(string @alias, string src, int height, int width) {
+        public ImageCrop(string alias, string src, int height, int width) {
             Alias = alias;
             Src = src;
             Height = height;
