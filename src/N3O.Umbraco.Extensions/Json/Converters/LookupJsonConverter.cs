@@ -16,7 +16,10 @@ namespace N3O.Umbraco.Json {
             return objectType.ImplementsInterface<ILookup>();
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
+        public override object ReadJson(JsonReader reader,
+                                        Type objectType,
+                                        object existingValue,
+                                        JsonSerializer serializer) {
             if (reader.TokenType == JsonToken.Null || reader.Value == null) {
                 return null;
             }
