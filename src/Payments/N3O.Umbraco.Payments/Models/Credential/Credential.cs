@@ -3,7 +3,11 @@ using Newtonsoft.Json;
 
 namespace N3O.Umbraco.Payments.Models {
     public abstract class Credential : PaymentObject {
-        public virtual Payment AdvancePayment { get; private set; }
+        protected Credential(Payment advancePayment) {
+            AdvancePayment = advancePayment;
+        }
+        
+        public Payment AdvancePayment { get; }
         
         public bool IsSetUp { get; private set; }
 

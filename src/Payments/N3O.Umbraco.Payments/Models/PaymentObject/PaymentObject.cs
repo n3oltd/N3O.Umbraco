@@ -12,7 +12,6 @@ namespace N3O.Umbraco.Payments.Models {
         public Instant? CompleteAt { get; private set; }
         public Instant? ErrorAt { get; private set; }
         public string ErrorMessage { get; private set; }
-        public Guid ExceptionId { get; private set; }
         public string ExceptionDetails { get; private set; }
         public PaymentObjectStatus Status { get; private set; }
 

@@ -38,7 +38,9 @@ namespace N3O.Umbraco.Payments {
                     await actionAsync(flow, paymentObject);
                 }
             } catch (Exception ex) {
-                paymentObject.UnhandledError(_formatter, ex);
+                var message = _formatter.Text.Format<UnhandledErrorStrings>(s => s.Message_1, flow.Id);
+                
+                paymentObject.UnhandledError(ex, message);
             }
 
             await UpdateAsync(flow, cancellationToken);
