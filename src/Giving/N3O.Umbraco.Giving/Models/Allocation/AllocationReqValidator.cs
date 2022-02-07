@@ -21,6 +21,10 @@ namespace N3O.Umbraco.Giving.Models {
             RuleFor(x => x.Type)
                 .NotNull()
                 .WithMessage(Get<Strings>(s => s.SpecifyType));
+            
+            RuleFor(x => x.FundDimensions)
+                .NotNull()
+                .WithMessage(Get<Strings>(s => s.SpecifyFundDimensions));
         
             RuleFor(x => x.Fund)
                 .NotNull()
@@ -59,6 +63,7 @@ namespace N3O.Umbraco.Giving.Models {
 
             RuleFor(x => x.FundDimensions)
                 .Must((req, x) => FundDimensionsAreValid(x, req.GetFundDimensionsOptions()))
+                .When(x => x.FundDimensions.HasValue())
                 .WithMessage(Get<Strings>(s => s.InvalidFundDimensions));
 
             ValidateCurrencies(currentCurrency);
@@ -72,7 +77,7 @@ namespace N3O.Umbraco.Giving.Models {
             
             RuleForEach(x => x.Sponsorship.Components)
                 .Must(x => x.Value == currency)
-                .When(x => x.Sponsorship.OrEmpty(y => y.Components).All(c => c.Value.HasValue(v => v.Currency)))
+                .When(x => x.Sponsorship.OrEmpty(y => y.Components).HasAny(c => c.Value.HasValue(v => v.Currency)))
                 .WithMessage(Get<Strings>(s => s.CurrencyMismatch));
         }
 
@@ -97,6 +102,7 @@ namespace N3O.Umbraco.Giving.Models {
             public string InvalidFundDimensions => "One or more fund dimension values are invalid";
             public string InvalidValue => "Invalid value specified";
             public string SpecifyFundAllocation => "Please specify the fund allocation";
+            public string SpecifyFundDimensions => "Please specify the fund dimensions";
             public string SpecifySponsorshipAllocation => "Please specify the sponsorship allocation";
             public string SponsorshipAllocationNotAllowed => "Sponsorship cannot be specified for this type of allocation";
             public string SpecifyType => "Please specify the allocation type";
