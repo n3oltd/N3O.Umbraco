@@ -230,9 +230,11 @@ namespace N3O.Umbraco.Content {
             if (nestedContent == null) {
                 return contentProperties;
             } else if (nestedContent is JValue jValue) {
-                return GetContentPropertiesForNestedContent((JToken) JsonConvert.DeserializeObject((string) jValue));
-            } else if (nestedContent is JArray) {
-                foreach (var element in nestedContent) {
+                if (jValue.Value is string json && json.HasValue()) {
+                    return GetContentPropertiesForNestedContent((JToken) JsonConvert.DeserializeObject(json));
+                }
+            } else if (nestedContent is JArray jArray) {
+                foreach (var element in jArray.OrEmpty()) {
                     contentProperties.Add(GetContentPropertiesForNestedContentElement((JObject) element));
                 }
             } else {
