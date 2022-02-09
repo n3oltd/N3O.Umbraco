@@ -5,12 +5,14 @@ export declare class OpayoClient {
     constructor(baseUrl?: string, http?: {
         fetch(url: RequestInfo, init?: RequestInit): Promise<Response>;
     });
-    getMerchantSessionKey(): Promise<void>;
-    protected processGetMerchantSessionKey(response: Response): Promise<void>;
-    process(flowId: string, req: OpayoPaymentReq): Promise<PaymentFlowResOfOpayoPayment>;
-    protected processProcess(response: Response): Promise<PaymentFlowResOfOpayoPayment>;
     completeThreeDSecureChallenge(flowId: string, cRes: string | null | undefined, threeDsSessionData: string | null | undefined): Promise<void>;
     protected processCompleteThreeDSecureChallenge(response: Response): Promise<void>;
+    getMerchantSessionKey(): Promise<void>;
+    protected processGetMerchantSessionKey(response: Response): Promise<void>;
+    chargeCard(flowId: string, req: ChargeCardReq): Promise<PaymentFlowResOfOpayoPayment>;
+    protected processChargeCard(response: Response): Promise<PaymentFlowResOfOpayoPayment>;
+    storeCard(flowId: string, req: StoreCardReq): Promise<PaymentFlowResOfOpayoCredential>;
+    protected processStoreCard(response: Response): Promise<PaymentFlowResOfOpayoCredential>;
 }
 export interface ProblemDetails {
     type?: string | undefined;
@@ -64,7 +66,7 @@ export declare enum PaymentObjectStatus {
     Error = "error",
     InProgress = "inProgress"
 }
-export interface OpayoPaymentReq {
+export interface ChargeCardReq {
     merchantSessionKey?: string | undefined;
     cardIdentifier?: string | undefined;
     value?: MoneyReq | undefined;
@@ -124,6 +126,36 @@ export declare enum ChallengeWindowSize {
     Large = "large",
     ExtraLarge = "extraLarge",
     FullScreen = "fullScreen"
+}
+export interface PaymentFlowResOfOpayoCredential {
+    flowRevision?: number;
+    result?: OpayoCredential | undefined;
+}
+export interface OpayoCredential {
+    setupAt?: Date | undefined;
+    isSetUp?: boolean;
+    completeAt?: Date | undefined;
+    errorAt?: Date | undefined;
+    errorMessage?: string | undefined;
+    exceptionDetails?: string | undefined;
+    status?: PaymentObjectStatus | undefined;
+    method?: string | undefined;
+}
+export interface Payment {
+    completeAt?: Date | undefined;
+    errorAt?: Date | undefined;
+    errorMessage?: string | undefined;
+    exceptionDetails?: string | undefined;
+    status?: PaymentObjectStatus | undefined;
+    card?: CardPayment | undefined;
+    paidAt?: Date | undefined;
+    declinedAt?: Date | undefined;
+    declinedReason?: string | undefined;
+    isDeclined?: boolean;
+    isPaid?: boolean;
+}
+export interface StoreCardReq {
+    advancePayment?: ChargeCardReq | undefined;
 }
 export declare class ApiException extends Error {
     message: string;

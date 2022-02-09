@@ -296,6 +296,7 @@ export interface CredentialRes {
     isComplete?: boolean;
     isInProgress?: boolean;
     advancePayment?: PaymentRes | undefined;
+    setupAt?: Date | undefined;
     isSetUp?: boolean;
 }
 export interface RegularGivingOptionsRes {

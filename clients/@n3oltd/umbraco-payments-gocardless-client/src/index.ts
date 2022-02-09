@@ -17,25 +17,29 @@ export class GoCardlessClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
 
-    begin(flowId: string): Promise<void> {
-        let url_ = this.baseUrl + "/umbraco/api/GoCardless/credentials/{flowId}/begin";
+    beginRedirectFlow(flowId: string, req: RedirectFlowReq): Promise<void> {
+        let url_ = this.baseUrl + "/umbraco/api/GoCardless/credentials/{flowId}/redirectFlow/begin";
         if (flowId === undefined || flowId === null)
             throw new Error("The parameter 'flowId' must be defined.");
         url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(req);
+
         let options_ = <RequestInit>{
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processBegin(_response);
+            return this.processBeginRedirectFlow(_response);
         });
     }
 
-    protected processBegin(response: Response): Promise<void> {
+    protected processBeginRedirectFlow(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -60,8 +64,8 @@ export class GoCardlessClient {
         return Promise.resolve<void>(<any>null);
     }
 
-    complete(flowId: string): Promise<void> {
-        let url_ = this.baseUrl + "/umbraco/api/GoCardless/credentials/{flowId}/complete";
+    completeRedirectFlow(flowId: string): Promise<void> {
+        let url_ = this.baseUrl + "/umbraco/api/GoCardless/credentials/{flowId}/redirectFlow/complete";
         if (flowId === undefined || flowId === null)
             throw new Error("The parameter 'flowId' must be defined.");
         url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
@@ -74,11 +78,11 @@ export class GoCardlessClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processComplete(_response);
+            return this.processCompleteRedirectFlow(_response);
         });
     }
 
-    protected processComplete(response: Response): Promise<void> {
+    protected processCompleteRedirectFlow(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -110,6 +114,10 @@ export interface ProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
+}
+
+export interface RedirectFlowReq {
+    returnUrl?: string | undefined;
 }
 
 export class ApiException extends Error {

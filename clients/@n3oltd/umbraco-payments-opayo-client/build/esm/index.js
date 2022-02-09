@@ -25,6 +25,59 @@ var OpayoClient = /** @class */ (function () {
         this.http = http ? http : window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
+    OpayoClient.prototype.completeThreeDSecureChallenge = function (flowId, cRes, threeDsSessionData) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Opayo/payments/{flowId}/completeThreeDSecureChallenge";
+        if (flowId === undefined || flowId === null)
+            throw new Error("The parameter 'flowId' must be defined.");
+        url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
+        url_ = url_.replace(/[?&]$/, "");
+        var content_ = new FormData();
+        if (cRes !== null && cRes !== undefined)
+            content_.append("CRes", cRes.toString());
+        if (threeDsSessionData !== null && threeDsSessionData !== undefined)
+            content_.append("ThreeDsSessionData", threeDsSessionData.toString());
+        var options_ = {
+            body: content_,
+            method: "POST",
+            headers: {}
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processCompleteThreeDSecureChallenge(_response);
+        });
+    };
+    OpayoClient.prototype.processCompleteThreeDSecureChallenge = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                return;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
     OpayoClient.prototype.getMerchantSessionKey = function () {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Opayo/merchantSessionKey";
@@ -69,9 +122,9 @@ var OpayoClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    OpayoClient.prototype.process = function (flowId, req) {
+    OpayoClient.prototype.chargeCard = function (flowId, req) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Opayo/{flowId}/payment/process";
+        var url_ = this.baseUrl + "/umbraco/api/Opayo/payments/{flowId}/charge";
         if (flowId === undefined || flowId === null)
             throw new Error("The parameter 'flowId' must be defined.");
         url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
@@ -86,10 +139,10 @@ var OpayoClient = /** @class */ (function () {
             }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processProcess(_response);
+            return _this.processChargeCard(_response);
         });
     };
-    OpayoClient.prototype.processProcess = function (response) {
+    OpayoClient.prototype.processChargeCard = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -123,28 +176,27 @@ var OpayoClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    OpayoClient.prototype.completeThreeDSecureChallenge = function (flowId, cRes, threeDsSessionData) {
+    OpayoClient.prototype.storeCard = function (flowId, req) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Opayo/{flowId}/completeThreeDSecureChallenge";
+        var url_ = this.baseUrl + "/umbraco/api/Opayo/credentials/{flowId}/store";
         if (flowId === undefined || flowId === null)
             throw new Error("The parameter 'flowId' must be defined.");
         url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
         url_ = url_.replace(/[?&]$/, "");
-        var content_ = new FormData();
-        if (cRes !== null && cRes !== undefined)
-            content_.append("CRes", cRes.toString());
-        if (threeDsSessionData !== null && threeDsSessionData !== undefined)
-            content_.append("ThreeDsSessionData", threeDsSessionData.toString());
+        var content_ = JSON.stringify(req);
         var options_ = {
             body: content_,
             method: "POST",
-            headers: {}
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processCompleteThreeDSecureChallenge(_response);
+            return _this.processStoreCard(_response);
         });
     };
-    OpayoClient.prototype.processCompleteThreeDSecureChallenge = function (response) {
+    OpayoClient.prototype.processStoreCard = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -154,7 +206,9 @@ var OpayoClient = /** @class */ (function () {
         ;
         if (status === 200) {
             return response.text().then(function (_responseText) {
-                return;
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
             });
         }
         else if (status === 400) {

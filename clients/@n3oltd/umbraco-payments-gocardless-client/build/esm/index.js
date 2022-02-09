@@ -25,22 +25,26 @@ var GoCardlessClient = /** @class */ (function () {
         this.http = http ? http : window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
-    GoCardlessClient.prototype.begin = function (flowId) {
+    GoCardlessClient.prototype.beginRedirectFlow = function (flowId, req) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/GoCardless/credentials/{flowId}/begin";
+        var url_ = this.baseUrl + "/umbraco/api/GoCardless/credentials/{flowId}/redirectFlow/begin";
         if (flowId === undefined || flowId === null)
             throw new Error("The parameter 'flowId' must be defined.");
         url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
         url_ = url_.replace(/[?&]$/, "");
+        var content_ = JSON.stringify(req);
         var options_ = {
+            body: content_,
             method: "POST",
-            headers: {}
+            headers: {
+                "Content-Type": "application/json",
+            }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processBegin(_response);
+            return _this.processBeginRedirectFlow(_response);
         });
     };
-    GoCardlessClient.prototype.processBegin = function (response) {
+    GoCardlessClient.prototype.processBeginRedirectFlow = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -72,9 +76,9 @@ var GoCardlessClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    GoCardlessClient.prototype.complete = function (flowId) {
+    GoCardlessClient.prototype.completeRedirectFlow = function (flowId) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/GoCardless/credentials/{flowId}/complete";
+        var url_ = this.baseUrl + "/umbraco/api/GoCardless/credentials/{flowId}/redirectFlow/complete";
         if (flowId === undefined || flowId === null)
             throw new Error("The parameter 'flowId' must be defined.");
         url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
@@ -84,10 +88,10 @@ var GoCardlessClient = /** @class */ (function () {
             headers: {}
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processComplete(_response);
+            return _this.processCompleteRedirectFlow(_response);
         });
     };
-    GoCardlessClient.prototype.processComplete = function (response) {
+    GoCardlessClient.prototype.processCompleteRedirectFlow = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
