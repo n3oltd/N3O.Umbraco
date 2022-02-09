@@ -48,7 +48,7 @@ namespace N3O.Umbraco.Payments.Opayo {
                 return client;
             });
 
-            builder.Services.AddTransient<ITransactionsService, TransactionsService>();
+            builder.Services.AddTransient<IChargeService, ChargeService>();
         }
     }
 }
