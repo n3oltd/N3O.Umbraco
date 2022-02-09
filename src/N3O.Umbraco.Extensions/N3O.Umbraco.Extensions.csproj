@@ -57,9 +57,4 @@
             <Pack>True</Pack>
         </None>
     </ItemGroup>
-
-    <ItemGroup>
-      <Compile Remove="Json\ResolveUrlAttribute.cs" />
-      <Compile Remove="Json\Converters\ResolveUrlJsonConverter.cs" />
-    </ItemGroup>
 </Project>
