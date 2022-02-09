@@ -9,6 +9,7 @@ namespace N3O.Umbraco.Payments.GoCardless.Models {
 
         public string SessionToken { get; private set; }
         public string RedirectFlowId { get; private set; }
+        public string ReturnUrl { get; private set; }
         public string CustomerId { get; private set; }
         public string MandateId { get; private set; }
     }

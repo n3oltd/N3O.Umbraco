@@ -20,7 +20,7 @@ namespace N3O.Umbraco.Payments.Opayo.Models {
         [Name("Challenge Window Size")]
         public ChallengeWindowSize ChallengeWindowSize { get; set; }
         
-        [Name("Return Url")]
+        [Name("Return URL")]
         public string ReturnUrl { get; set; }
     }
 }

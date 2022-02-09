@@ -15,7 +15,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.GoCardless.Handlers {
-    public class BeginRedirectFlowHandler : PaymentsHandler<BeginRedirectFlowCommand, None, GoCardlessCredential> {
+    public class BeginRedirectFlowHandler :
+        PaymentsHandler<BeginRedirectFlowCommand, RedirectFlowReq, GoCardlessCredential> {
         private readonly IContentCache _contentCache;
         private readonly GoCardlessClient _goCardlessClient;
         private readonly IActionLinkGenerator _actionLinkGenerator;
@@ -38,7 +39,7 @@ namespace N3O.Umbraco.Payments.GoCardless.Handlers {
             var redirectFlowResponse = await _goCardlessClient.RedirectFlows.CreateAsync(request);
             var redirectFlow = redirectFlowResponse.RedirectFlow;
             
-            credential.BeginRedirectFlow(redirectFlow.Id, redirectFlow.SessionToken);
+            credential.BeginRedirectFlow(redirectFlow.Id, redirectFlow.SessionToken, req.Model.ReturnUrl);
         }
 
         private RedirectFlowCreateRequest GetRedirectFlowCreateRequest(PaymentsParameters parameters, Guid flowId) {
@@ -47,7 +48,7 @@ namespace N3O.Umbraco.Payments.GoCardless.Handlers {
             var createRequest = new RedirectFlowCreateRequest();
             createRequest.Description = settings.GetTransactionDescription(parameters.Reference);
             createRequest.SessionToken = Guid.NewGuid().ToString();
-            createRequest.SuccessRedirectUrl = _actionLinkGenerator.GetUrl<GoCardlessController>(x => x.Complete(),
+            createRequest.SuccessRedirectUrl = _actionLinkGenerator.GetUrl<GoCardlessController>(x => x.CompleteRedirectFlow(),
                                                                                                  new { flowId });
             createRequest.PrefilledCustomer = GetPrefilledCustomer(parameters.BillingInfoAccessor);
 
