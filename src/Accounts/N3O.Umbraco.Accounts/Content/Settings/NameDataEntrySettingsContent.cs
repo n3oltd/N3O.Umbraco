@@ -24,17 +24,26 @@ namespace N3O.Umbraco.Accounts.Content {
         public Capitalisation LastNameCapitalisation => GetValue(x => x.LastNameCapitalisation);
 
         public NameDataEntrySettings ToDataEntrySettings() {
-            var title = new TitleDataEntrySettings(TitleRequired, TitleLabel, TitleHelpText, TitleOrder, TitleOptions);
-            var firstName = new FirstNameDataEntrySettings(FirstNameRequired,
-                                                           FirstNameLabel,
-                                                           FirstNameHelpText,
-                                                           FirstNameOrder,
-                                                           FirstNameCapitalisation);
-            var lastName = new LastNameDataEntrySettings(LastNameRequired,
-                                                         LastNameLabel,
-                                                         LastNameHelpText,
-                                                         LastNameOrder,
-                                                         LastNameCapitalisation);
+            var title = new SelectFieldSettings(true,
+                                                TitleRequired,
+                                                TitleLabel,
+                                                TitleHelpText,
+                                                TitleOptions,
+                                                TitleOrder);
+            var firstName = new TextFieldSettings(true,
+                                                  FirstNameRequired,
+                                                  FirstNameLabel,
+                                                  FirstNameHelpText,
+                                                  FirstNameOrder,
+                                                  false,
+                                                  FirstNameCapitalisation);
+            var lastName = new TextFieldSettings(true,
+                                                 LastNameRequired,
+                                                 LastNameLabel,
+                                                 LastNameHelpText,
+                                                 LastNameOrder,
+                                                 false,
+                                                 LastNameCapitalisation);
 
             return new NameDataEntrySettings(title, firstName, lastName);
         }

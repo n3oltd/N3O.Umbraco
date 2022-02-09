@@ -1,14 +1,15 @@
 ﻿using N3O.Umbraco.Lookups;
+using System.Collections.Generic;
 
 namespace N3O.Umbraco.Accounts.Models {
-    public class AddressDataEntrySettings {
+    public class AddressDataEntrySettings : Value, IFieldSettingsCollection {
         public AddressDataEntrySettings(Country defaultCountry,
-                                        AddressFieldDataEntrySettings line1,
-                                        AddressFieldDataEntrySettings line2,
-                                        AddressFieldDataEntrySettings line3,
-                                        AddressFieldDataEntrySettings locality,
-                                        AddressFieldDataEntrySettings administrativeArea,
-                                        AddressFieldDataEntrySettings postalCode) {
+                                        TextFieldSettings line1,
+                                        TextFieldSettings line2,
+                                        TextFieldSettings line3,
+                                        TextFieldSettings locality,
+                                        TextFieldSettings administrativeArea,
+                                        TextFieldSettings postalCode) {
             DefaultCountry = defaultCountry;
             Line1 = line1;
             Line2 = line2;
@@ -19,12 +20,20 @@ namespace N3O.Umbraco.Accounts.Models {
         }
 
         public Country DefaultCountry { get; }
-        public AddressFieldDataEntrySettings Line1 { get; }
-        public AddressFieldDataEntrySettings Line2 { get; }
-        public AddressFieldDataEntrySettings Line3 { get; }
-        public AddressFieldDataEntrySettings Locality { get; }
-        public AddressFieldDataEntrySettings AdministrativeArea { get; }
-        public AddressFieldDataEntrySettings PostalCode { get; }
+        public TextFieldSettings Line1 { get; }
+        public TextFieldSettings Line2 { get; }
+        public TextFieldSettings Line3 { get; }
+        public TextFieldSettings Locality { get; }
+        public TextFieldSettings AdministrativeArea { get; }
+        public TextFieldSettings PostalCode { get; }
         
+        public IEnumerable<FieldSettings> GetFieldSettings() {
+            yield return Line1;
+            yield return Line2;
+            yield return Line3;
+            yield return Locality;
+            yield return AdministrativeArea;
+            yield return PostalCode;
+        }
     }
 }

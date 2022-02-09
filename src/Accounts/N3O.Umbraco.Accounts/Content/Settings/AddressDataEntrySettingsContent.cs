@@ -21,6 +21,5 @@ namespace N3O.Umbraco.Accounts.Content {
                                                 AdministrativeArea.ToDataEntrySettings(),
                                                 PostalCode.ToDataEntrySettings());
         }
-        
     }
 }

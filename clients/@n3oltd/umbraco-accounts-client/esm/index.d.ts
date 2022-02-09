@@ -28,23 +28,29 @@ export interface DataEntrySettings {
     consent?: ConsentDataEntrySettings | undefined;
 }
 export interface NameDataEntrySettings {
-    title?: TitleDataEntrySettings | undefined;
-    firstName?: FirstNameDataEntrySettings | undefined;
-    lastName?: LastNameDataEntrySettings | undefined;
+    title?: SelectFieldSettings | undefined;
+    firstName?: TextFieldSettings | undefined;
+    lastName?: TextFieldSettings | undefined;
 }
-export interface TitleDataEntrySettings {
+export interface SelectFieldSettings {
     required?: boolean;
     label?: string | undefined;
     helpText?: string | undefined;
     order?: number;
+    visible?: boolean;
+    validate?: boolean;
     options?: string[] | undefined;
+    type?: string | undefined;
 }
-export interface FirstNameDataEntrySettings {
+export interface TextFieldSettings {
     required?: boolean;
     label?: string | undefined;
     helpText?: string | undefined;
     order?: number;
+    visible?: boolean;
+    validate?: boolean;
     capitalisation?: Capitalisation | undefined;
+    type?: string | undefined;
 }
 /** One of 'lower', 'title', 'upper' */
 export declare enum Capitalisation {
@@ -52,21 +58,14 @@ export declare enum Capitalisation {
     Title = "title",
     Upper = "upper"
 }
-export interface LastNameDataEntrySettings {
-    required?: boolean;
-    label?: string | undefined;
-    helpText?: string | undefined;
-    order?: number;
-    capitalisation?: Capitalisation | undefined;
-}
 export interface AddressDataEntrySettings {
     defaultCountry?: string | undefined;
-    line1?: AddressFieldDataEntrySettings | undefined;
-    line2?: AddressFieldDataEntrySettings | undefined;
-    line3?: AddressFieldDataEntrySettings | undefined;
-    locality?: AddressFieldDataEntrySettings | undefined;
-    administrativeArea?: AddressFieldDataEntrySettings | undefined;
-    postalCode?: AddressFieldDataEntrySettings | undefined;
+    line1?: TextFieldSettings | undefined;
+    line2?: TextFieldSettings | undefined;
+    line3?: TextFieldSettings | undefined;
+    locality?: TextFieldSettings | undefined;
+    administrativeArea?: TextFieldSettings | undefined;
+    postalCode?: TextFieldSettings | undefined;
 }
 export interface IPublishedContent {
     id?: number;
@@ -101,25 +100,24 @@ export declare enum PublishedItemType {
     Media = 3,
     Member = 4
 }
-export interface AddressFieldDataEntrySettings {
-    visible?: boolean;
-    required?: boolean;
-    label?: string | undefined;
-    helpText?: string | undefined;
-    order?: number;
-}
 export interface EmailDataEntrySettings {
     required?: boolean;
     label?: string | undefined;
     helpText?: string | undefined;
+    order?: number;
+    visible?: boolean;
     validate?: boolean;
+    type?: string | undefined;
 }
 export interface PhoneDataEntrySettings {
     required?: boolean;
     label?: string | undefined;
     helpText?: string | undefined;
-    defaultCountry?: string | undefined;
+    order?: number;
+    visible?: boolean;
     validate?: boolean;
+    defaultCountry?: string | undefined;
+    type?: string | undefined;
 }
 export interface ConsentDataEntrySettings {
     consentOptions?: ConsentOption[] | undefined;

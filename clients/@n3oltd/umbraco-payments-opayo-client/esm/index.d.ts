@@ -33,7 +33,6 @@ export interface OpayoPayment {
     completeAt?: Date | undefined;
     errorAt?: Date | undefined;
     errorMessage?: string | undefined;
-    exceptionId?: string;
     exceptionDetails?: string | undefined;
     status?: PaymentObjectStatus | undefined;
     opayoTransactionId?: string | undefined;

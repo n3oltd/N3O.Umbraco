@@ -11,7 +11,7 @@ namespace N3O.Umbraco.Accounts.Content {
         public bool Validate => GetValue(x => x.Validate);
 
         public PhoneDataEntrySettings ToDataEntrySettings() {
-            return new PhoneDataEntrySettings(Required, Label, HelpText, DefaultCountry, Validate);
+            return new PhoneDataEntrySettings(true, Required, Label, HelpText, 1, Validate, DefaultCountry);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace N3O.Umbraco.Accounts.Content {
         public bool Validate => GetValue(x => x.Validate);
 
         public EmailDataEntrySettings ToDataEntrySettings() {
-            return new EmailDataEntrySettings(Required, Label, HelpText, Validate);
+            return new EmailDataEntrySettings(true, Required, Label, HelpText, 1, Validate);
         }
     }
 }
