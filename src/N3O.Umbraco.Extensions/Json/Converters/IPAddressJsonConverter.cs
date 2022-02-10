@@ -5,7 +5,7 @@ using System.Net;
 namespace N3O.Umbraco.Json {
     public class IPAddressJsonConverter : JsonConverter {
         public override bool CanConvert(Type objectType) {
-            return objectType == typeof(IPAddress);
+            return objectType.IsAssignableTo(typeof(IPAddress));
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {

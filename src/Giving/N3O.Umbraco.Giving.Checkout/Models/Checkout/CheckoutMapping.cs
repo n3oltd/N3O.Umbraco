@@ -9,6 +9,7 @@ namespace N3O.Umbraco.Giving.Checkout.Models {
 
         // Umbraco.Code.MapAll
         private void Map(Entities.Checkout src, CheckoutRes dest, MapperContext ctx) {
+            dest.RevisionId = src.RevisionId;
             dest.Reference = src.Reference;
             dest.Currency = src.Currency;
             dest.Progress = ctx.Map<CheckoutProgress, CheckoutProgressRes>(src.Progress);
