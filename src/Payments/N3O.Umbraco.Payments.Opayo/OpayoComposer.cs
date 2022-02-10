@@ -19,22 +19,23 @@ namespace N3O.Umbraco.Payments.Opayo {
                 var contentCache = serviceProvider.GetRequiredService<IContentCache>();
                 var webHostEnvironment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
                 var settings = contentCache.Single<OpayoSettingsContent>();
-                OpayoApiSettings opayoApiSettings = null;
+                OpayoApiSettings apiSettings = null;
+                
                 if (settings != null) {
                     if (webHostEnvironment.IsProduction()) {
-                        opayoApiSettings =  new OpayoApiSettings("https://pi-live.sagepay.com",
-                                                                 settings.ProductionIntegrationKey,
-                                                                 settings.ProductionIntegrationPassword,
-                                                                 settings.ProductionVendorName);
+                        apiSettings =  new OpayoApiSettings("https://pi-live.sagepay.com",
+                                                            settings.ProductionIntegrationKey,
+                                                            settings.ProductionIntegrationPassword,
+                                                            settings.ProductionVendorName);
                     } else {
-                        opayoApiSettings = new OpayoApiSettings("https://pi-test.sagepay.com",
-                                                                settings.StagingIntegrationKey,
-                                                                settings.StagingIntegrationPassword,
-                                                                settings.StagingVendorName);
+                        apiSettings = new OpayoApiSettings("https://pi-test.sagepay.com",
+                                                           settings.StagingIntegrationKey,
+                                                           settings.StagingIntegrationPassword,
+                                                           settings.StagingVendorName);
                     }
                 }
 
-                return opayoApiSettings;
+                return apiSettings;
             });
 
             builder.Services.AddTransient<IOpayoClient>(serviceProvider => {
@@ -51,6 +52,7 @@ namespace N3O.Umbraco.Payments.Opayo {
 
                     client = RestService.For<IOpayoClient>(apiSettings.BaseUrl, refitSettings);
                 }
+                
                 return client;
             });
 

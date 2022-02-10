@@ -1,5 +1,4 @@
 ﻿using N3O.Umbraco.Entities;
-using N3O.Umbraco.Giving.Checkout;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,8 +7,7 @@ namespace N3O.Umbraco.Giving.Checkout {
         private readonly ICheckoutIdAccessor _checkoutIdAccessor;
         private readonly IRepository<Entities.Checkout> _repository;
 
-        public CheckoutAccessor(ICheckoutIdAccessor checkoutIdAccessor,
-                                IRepository<Entities.Checkout> repository) {
+        public CheckoutAccessor(ICheckoutIdAccessor checkoutIdAccessor, IRepository<Entities.Checkout> repository) {
             _checkoutIdAccessor = checkoutIdAccessor;
             _repository = repository;
         }
