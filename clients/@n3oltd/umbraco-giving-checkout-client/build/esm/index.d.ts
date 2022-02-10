@@ -19,6 +19,8 @@ export declare class CheckoutClient {
     protected processGetAllLookups(response: Response): Promise<CheckoutLookupsRes>;
 }
 export interface CheckoutRes {
+    /** A well formed revision ID string */
+    revisionId?: string | undefined;
     reference?: Reference | undefined;
     currency?: string | undefined;
     progress?: CheckoutProgressRes | undefined;

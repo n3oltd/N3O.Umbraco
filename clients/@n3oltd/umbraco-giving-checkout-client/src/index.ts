@@ -295,6 +295,8 @@ export class CheckoutClient {
 }
 
 export interface CheckoutRes {
+    /** A well formed revision ID string */
+    revisionId?: string | undefined;
     reference?: Reference | undefined;
     currency?: string | undefined;
     progress?: CheckoutProgressRes | undefined;

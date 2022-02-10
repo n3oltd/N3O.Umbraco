@@ -101,13 +101,14 @@ export declare enum PublishedItemType {
     Member = 4
 }
 export interface EmailDataEntrySettings {
+    capitalisation?: Capitalisation | undefined;
+    type?: string | undefined;
     required?: boolean;
     label?: string | undefined;
     helpText?: string | undefined;
     order?: number;
     visible?: boolean;
     validate?: boolean;
-    type?: string | undefined;
 }
 export interface PhoneDataEntrySettings {
     required?: boolean;
