@@ -1,8 +1,11 @@
 namespace N3O.Umbraco.Payments.Models {
     public partial class Payment {
         protected void Paid() {
-            IsPaid = true;
+            DeclinedAt = null;
+            DeclinedReason = null;
+            IsDeclined = false;
             PaidAt = Clock.GetCurrentInstant();
+            IsPaid = true;
 
             Complete();
         }

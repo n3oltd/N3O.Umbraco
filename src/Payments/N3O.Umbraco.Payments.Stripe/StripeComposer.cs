@@ -5,6 +5,7 @@ using N3O.Umbraco.Composing;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Payments.Stripe.Models;
+using Stripe;
 using Umbraco.Cms.Core.DependencyInjection;
 
 namespace N3O.Umbraco.Payments.Stripe {
@@ -27,6 +28,12 @@ namespace N3O.Umbraco.Payments.Stripe {
                 }
 
                 return stripeKeys;
+            });
+            
+            builder.Services.AddTransient<StripeClient>(serviceProvider => {
+                var apiKey = serviceProvider.GetRequiredService<StripeKeys>().Secret;
+
+                return new StripeClient(apiKey);
             });
         }
     }

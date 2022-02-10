@@ -1,1 +1,1 @@
-TypeScript client for the N3O Umbraco Giving Giving Cart
+TODO

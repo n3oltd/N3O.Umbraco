@@ -1,5 +1,5 @@
 ﻿namespace N3O.Umbraco.Accounts.Models {
-    public class EmailDataEntrySettings : FieldSettings {
+    public class EmailDataEntrySettings : TextFieldSettings {
         public EmailDataEntrySettings(bool visible,
                                       bool required,
                                       string label,
@@ -9,6 +9,6 @@
             : base(visible, required, label, helpText, order, validate) {
         }
 
-        public override string Type => "Phone";
+        public override string Type => "Email";
     }
 }

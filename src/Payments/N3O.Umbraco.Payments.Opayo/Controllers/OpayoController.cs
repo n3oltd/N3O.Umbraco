@@ -15,6 +15,13 @@ namespace N3O.Umbraco.Payments.Opayo.Controllers {
         public OpayoController(IMediator mediator) {
             _mediator = mediator;
         }
+        
+        [HttpPost("payments/{flowId:entityId}/completeThreeDSecureChallenge")]
+        public async Task<ActionResult> CompleteThreeDSecureChallenge([FromForm] ThreeDSecureChallengeReq req) {
+            var res = await _mediator.SendAsync<CompleteThreeDSecureChallengeCommand, ThreeDSecureChallengeReq, PaymentFlowRes<OpayoPayment>>(req);
+
+            return Redirect(res.Result.ReturnUrl);
+        }
 
         [HttpGet("merchantSessionKey")]
         public async Task<ActionResult> GetMerchantSessionKey() {
@@ -23,18 +30,18 @@ namespace N3O.Umbraco.Payments.Opayo.Controllers {
             return Ok(res);
         }
         
-        [HttpPost("{flowId:entityId}/payment/process")]
-        public async Task<ActionResult<PaymentFlowRes<OpayoPayment>>> Process(OpayoPaymentReq req) {
-            var res = await _mediator.SendAsync<ProcessPaymentCommand, OpayoPaymentReq, PaymentFlowRes<OpayoPayment>>(req);
+        [HttpPost("payments/{flowId:entityId}/charge")]
+        public async Task<ActionResult<PaymentFlowRes<OpayoPayment>>> ChargeCard(ChargeCardReq req) {
+            var res = await _mediator.SendAsync<ChargeCardCommand, ChargeCardReq, PaymentFlowRes<OpayoPayment>>(req);
 
             return Ok(res);
         }
+        
+        [HttpPost("credentials/{flowId:entityId}/store")]
+        public async Task<ActionResult<PaymentFlowRes<OpayoCredential>>> StoreCard(StoreCardReq req) {
+            var res = await _mediator.SendAsync<StoreCardCommand, StoreCardReq, PaymentFlowRes<OpayoCredential>>(req);
 
-        [HttpPost("{flowId:entityId}/completeThreeDSecureChallenge")]
-        public async Task<ActionResult> CompleteThreeDSecureChallenge([FromForm] ThreeDSecureChallengeReq req) {
-            var res = await _mediator.SendAsync<CompleteThreeDSecureChallengeCommand, ThreeDSecureChallengeReq, PaymentFlowRes<OpayoPayment>>(req);
-
-            return Redirect(res.Result.ReturnUrl);
+            return Ok(res);
         }
     }
 }

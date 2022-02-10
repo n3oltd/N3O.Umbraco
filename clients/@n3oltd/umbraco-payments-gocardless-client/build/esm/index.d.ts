@@ -5,10 +5,10 @@ export declare class GoCardlessClient {
     constructor(baseUrl?: string, http?: {
         fetch(url: RequestInfo, init?: RequestInit): Promise<Response>;
     });
-    begin(flowId: string): Promise<void>;
-    protected processBegin(response: Response): Promise<void>;
-    complete(flowId: string): Promise<void>;
-    protected processComplete(response: Response): Promise<void>;
+    beginRedirectFlow(flowId: string, req: RedirectFlowReq): Promise<void>;
+    protected processBeginRedirectFlow(response: Response): Promise<void>;
+    completeRedirectFlow(flowId: string): Promise<void>;
+    protected processCompleteRedirectFlow(response: Response): Promise<void>;
 }
 export interface ProblemDetails {
     type?: string | undefined;
@@ -16,6 +16,9 @@ export interface ProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
+}
+export interface RedirectFlowReq {
+    returnUrl?: string | undefined;
 }
 export declare class ApiException extends Error {
     message: string;

@@ -17,27 +17,37 @@ export class StripeClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
 
-    none(): Promise<void> {
-        let url_ = this.baseUrl + "/umbraco/api/Stripe";
+    createPaymentIntent(flowId: string, req: PaymentIntentReq): Promise<PaymentFlowResOfStripePayment> {
+        let url_ = this.baseUrl + "/umbraco/api/Stripe/payments/{flowId}/paymentIntent";
+        if (flowId === undefined || flowId === null)
+            throw new Error("The parameter 'flowId' must be defined.");
+        url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(req);
+
         let options_ = <RequestInit>{
-            method: "GET",
+            body: content_,
+            method: "POST",
             headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processNone(_response);
+            return this.processCreatePaymentIntent(_response);
         });
     }
 
-    protected processNone(response: Response): Promise<void> {
+    protected processCreatePaymentIntent(response: Response): Promise<PaymentFlowResOfStripePayment> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <PaymentFlowResOfStripePayment>JSON.parse(_responseText, this.jsonParseReviver);
+            return result200;
             });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
@@ -54,8 +64,201 @@ export class StripeClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(<any>null);
+        return Promise.resolve<PaymentFlowResOfStripePayment>(<any>null);
     }
+
+    createSetupIntent(flowId: string, req: SetupIntentReq): Promise<PaymentFlowResOfStripeCredential> {
+        let url_ = this.baseUrl + "/umbraco/api/Stripe/credentials/{flowId}/setupIntent";
+        if (flowId === undefined || flowId === null)
+            throw new Error("The parameter 'flowId' must be defined.");
+        url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(req);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateSetupIntent(_response);
+        });
+    }
+
+    protected processCreateSetupIntent(response: Response): Promise<PaymentFlowResOfStripeCredential> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <PaymentFlowResOfStripeCredential>JSON.parse(_responseText, this.jsonParseReviver);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PaymentFlowResOfStripeCredential>(<any>null);
+    }
+
+    confirmPaymentIntent(flowId: string): Promise<PaymentFlowResOfStripePayment> {
+        let url_ = this.baseUrl + "/umbraco/api/Stripe/payments/{flowId}/paymentIntent/confirm";
+        if (flowId === undefined || flowId === null)
+            throw new Error("The parameter 'flowId' must be defined.");
+        url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processConfirmPaymentIntent(_response);
+        });
+    }
+
+    protected processConfirmPaymentIntent(response: Response): Promise<PaymentFlowResOfStripePayment> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <PaymentFlowResOfStripePayment>JSON.parse(_responseText, this.jsonParseReviver);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PaymentFlowResOfStripePayment>(<any>null);
+    }
+
+    confirmSetupIntent(flowId: string): Promise<PaymentFlowResOfStripeCredential> {
+        let url_ = this.baseUrl + "/umbraco/api/Stripe/credentials/{flowId}/setupIntent/confirm";
+        if (flowId === undefined || flowId === null)
+            throw new Error("The parameter 'flowId' must be defined.");
+        url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processConfirmSetupIntent(_response);
+        });
+    }
+
+    protected processConfirmSetupIntent(response: Response): Promise<PaymentFlowResOfStripeCredential> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <PaymentFlowResOfStripeCredential>JSON.parse(_responseText, this.jsonParseReviver);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PaymentFlowResOfStripeCredential>(<any>null);
+    }
+}
+
+export interface PaymentFlowResOfStripePayment {
+    flowRevision?: number;
+    result?: StripePayment | undefined;
+}
+
+export interface StripePayment {
+    card?: CardPayment | undefined;
+    paidAt?: Date | undefined;
+    declinedAt?: Date | undefined;
+    declinedReason?: string | undefined;
+    isDeclined?: boolean;
+    isPaid?: boolean;
+    completeAt?: Date | undefined;
+    errorAt?: Date | undefined;
+    errorMessage?: string | undefined;
+    exceptionDetails?: string | undefined;
+    status?: PaymentObjectStatus | undefined;
+    stripeChargeId?: string | undefined;
+    stripeCustomerId?: string | undefined;
+    stripeDeclineCode?: string | undefined;
+    stripeErrorCode?: string | undefined;
+    stripeErrorMessage?: string | undefined;
+    stripePaymentIntentId?: string | undefined;
+    stripePaymentIntentClientSecret?: string | undefined;
+    stripePaymentMethodId?: string | undefined;
+    actionRequired?: boolean;
+    method?: string | undefined;
+}
+
+export interface CardPayment {
+    threeDSecureRequired?: boolean;
+    threeDSecureCompleted?: boolean;
+    threeDSecureChallengeUrl?: string | undefined;
+    threeDSecureAcsTransId?: string | undefined;
+    threeDSecureCReq?: string | undefined;
+    threeDSecureCRes?: string | undefined;
+}
+
+/** One of 'credential', 'payment' */
+export enum PaymentObjectType {
+    Credential = "credential",
+    Payment = "payment",
+}
+
+/** One of 'complete', 'error', 'inProgress' */
+export enum PaymentObjectStatus {
+    Complete = "complete",
+    Error = "error",
+    InProgress = "inProgress",
 }
 
 export interface ProblemDetails {
@@ -64,6 +267,96 @@ export interface ProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
+}
+
+export interface PaymentIntentReq {
+    paymentMethodId?: string | undefined;
+    customerId?: string | undefined;
+    value?: MoneyReq | undefined;
+}
+
+export interface MoneyReq {
+    amount?: number | undefined;
+    currency?: string | undefined;
+}
+
+export interface IPublishedContent {
+    id?: number;
+    name?: string | undefined;
+    urlSegment?: string | undefined;
+    sortOrder?: number;
+    level?: number;
+    path?: string | undefined;
+    templateId?: number | undefined;
+    creatorId?: number;
+    createDate?: Date;
+    writerId?: number;
+    updateDate?: Date;
+    cultures?: { [key: string]: PublishedCultureInfo; } | undefined;
+    itemType?: PublishedItemType;
+    parent?: IPublishedContent | undefined;
+    children?: IPublishedContent[] | undefined;
+    childrenForAllCultures?: IPublishedContent[] | undefined;
+}
+
+export interface PublishedCultureInfo {
+    culture?: string | undefined;
+    name?: string | undefined;
+    urlSegment?: string | undefined;
+    date?: Date;
+}
+
+export enum PublishedItemType {
+    Unknown = 0,
+    Element = 1,
+    Content = 2,
+    Media = 3,
+    Member = 4,
+}
+
+export interface PaymentFlowResOfStripeCredential {
+    flowRevision?: number;
+    result?: StripeCredential | undefined;
+}
+
+export interface StripeCredential {
+    advancePayment?: Payment | undefined;
+    setupAt?: Date | undefined;
+    isSetUp?: boolean;
+    completeAt?: Date | undefined;
+    errorAt?: Date | undefined;
+    errorMessage?: string | undefined;
+    exceptionDetails?: string | undefined;
+    status?: PaymentObjectStatus | undefined;
+    stripeMandateId?: string | undefined;
+    stripeCustomerId?: string | undefined;
+    stripeDeclineCode?: string | undefined;
+    stripeErrorCode?: string | undefined;
+    stripeErrorMessage?: string | undefined;
+    stripeSetupIntentId?: string | undefined;
+    stripeSetupIntentClientSecret?: string | undefined;
+    stripePaymentMethodId?: string | undefined;
+    actionRequired?: boolean;
+    method?: string | undefined;
+}
+
+export interface Payment {
+    completeAt?: Date | undefined;
+    errorAt?: Date | undefined;
+    errorMessage?: string | undefined;
+    exceptionDetails?: string | undefined;
+    status?: PaymentObjectStatus | undefined;
+    card?: CardPayment | undefined;
+    paidAt?: Date | undefined;
+    declinedAt?: Date | undefined;
+    declinedReason?: string | undefined;
+    isDeclined?: boolean;
+    isPaid?: boolean;
+}
+
+export interface SetupIntentReq {
+    paymentMethodId?: string | undefined;
+    customerId?: string | undefined;
 }
 
 export class ApiException extends Error {

@@ -41,9 +41,6 @@ namespace N3O.Umbraco.Localization {
         }
 
         public string Get(string folder, string name, string text) {
-            // TODO Fix
-            return text;
-
             return Lock(() => {
                 var cacheKey = CacheKey.Generate<StringLocalizer>(nameof(Get), folder, name, text);
 

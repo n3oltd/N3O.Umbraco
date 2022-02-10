@@ -25,19 +25,27 @@ var StripeClient = /** @class */ (function () {
         this.http = http ? http : window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
-    StripeClient.prototype.none = function () {
+    StripeClient.prototype.createPaymentIntent = function (flowId, req) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Stripe";
+        var url_ = this.baseUrl + "/umbraco/api/Stripe/payments/{flowId}/paymentIntent";
+        if (flowId === undefined || flowId === null)
+            throw new Error("The parameter 'flowId' must be defined.");
+        url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
         url_ = url_.replace(/[?&]$/, "");
+        var content_ = JSON.stringify(req);
         var options_ = {
-            method: "GET",
-            headers: {}
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processNone(_response);
+            return _this.processCreatePaymentIntent(_response);
         });
     };
-    StripeClient.prototype.processNone = function (response) {
+    StripeClient.prototype.processCreatePaymentIntent = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -47,7 +55,165 @@ var StripeClient = /** @class */ (function () {
         ;
         if (status === 200) {
             return response.text().then(function (_responseText) {
-                return;
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
+    StripeClient.prototype.createSetupIntent = function (flowId, req) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Stripe/credentials/{flowId}/setupIntent";
+        if (flowId === undefined || flowId === null)
+            throw new Error("The parameter 'flowId' must be defined.");
+        url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
+        url_ = url_.replace(/[?&]$/, "");
+        var content_ = JSON.stringify(req);
+        var options_ = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processCreateSetupIntent(_response);
+        });
+    };
+    StripeClient.prototype.processCreateSetupIntent = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
+    StripeClient.prototype.confirmPaymentIntent = function (flowId) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Stripe/payments/{flowId}/paymentIntent/confirm";
+        if (flowId === undefined || flowId === null)
+            throw new Error("The parameter 'flowId' must be defined.");
+        url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
+        url_ = url_.replace(/[?&]$/, "");
+        var options_ = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processConfirmPaymentIntent(_response);
+        });
+    };
+    StripeClient.prototype.processConfirmPaymentIntent = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
+    StripeClient.prototype.confirmSetupIntent = function (flowId) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Stripe/credentials/{flowId}/setupIntent/confirm";
+        if (flowId === undefined || flowId === null)
+            throw new Error("The parameter 'flowId' must be defined.");
+        url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
+        url_ = url_.replace(/[?&]$/, "");
+        var options_ = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processConfirmSetupIntent(_response);
+        });
+    };
+    StripeClient.prototype.processConfirmSetupIntent = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
             });
         }
         else if (status === 400) {
@@ -72,6 +238,27 @@ var StripeClient = /** @class */ (function () {
     return StripeClient;
 }());
 export { StripeClient };
+/** One of 'credential', 'payment' */
+export var PaymentObjectType;
+(function (PaymentObjectType) {
+    PaymentObjectType["Credential"] = "credential";
+    PaymentObjectType["Payment"] = "payment";
+})(PaymentObjectType || (PaymentObjectType = {}));
+/** One of 'complete', 'error', 'inProgress' */
+export var PaymentObjectStatus;
+(function (PaymentObjectStatus) {
+    PaymentObjectStatus["Complete"] = "complete";
+    PaymentObjectStatus["Error"] = "error";
+    PaymentObjectStatus["InProgress"] = "inProgress";
+})(PaymentObjectStatus || (PaymentObjectStatus = {}));
+export var PublishedItemType;
+(function (PublishedItemType) {
+    PublishedItemType[PublishedItemType["Unknown"] = 0] = "Unknown";
+    PublishedItemType[PublishedItemType["Element"] = 1] = "Element";
+    PublishedItemType[PublishedItemType["Content"] = 2] = "Content";
+    PublishedItemType[PublishedItemType["Media"] = 3] = "Media";
+    PublishedItemType[PublishedItemType["Member"] = 4] = "Member";
+})(PublishedItemType || (PublishedItemType = {}));
 var ApiException = /** @class */ (function (_super) {
     __extends(ApiException, _super);
     function ApiException(message, status, response, headers, result) {

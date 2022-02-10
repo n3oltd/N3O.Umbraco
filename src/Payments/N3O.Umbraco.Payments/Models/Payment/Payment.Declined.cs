@@ -4,6 +4,8 @@ namespace N3O.Umbraco.Payments.Models {
             DeclinedAt = Clock.GetCurrentInstant();
             DeclinedReason = reason;
             IsDeclined = true;
+            PaidAt = null;
+            IsPaid = false;
         }
     }
 }

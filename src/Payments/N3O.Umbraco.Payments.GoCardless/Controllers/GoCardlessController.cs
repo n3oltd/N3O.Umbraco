@@ -5,7 +5,6 @@ using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Payments.GoCardless.Commands;
 using N3O.Umbraco.Payments.GoCardless.Models;
 using N3O.Umbraco.Payments.Models;
-using System;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.GoCardless.Controllers {
@@ -17,19 +16,18 @@ namespace N3O.Umbraco.Payments.GoCardless.Controllers {
             _mediator = mediator;
         }
 
-        [HttpPost("credentials/{flowId:entityId}/begin")]
-        public async Task<ActionResult> Begin() {
-            await _mediator.SendAsync<BeginRedirectFlowCommand, None, PaymentFlowRes<GoCardlessCredential>>(None.Empty);
+        [HttpPost("credentials/{flowId:entityId}/redirectFlow/begin")]
+        public async Task<ActionResult> BeginRedirectFlow(RedirectFlowReq req) {
+            await _mediator.SendAsync<BeginRedirectFlowCommand, RedirectFlowReq, PaymentFlowRes<GoCardlessCredential>>(req);
 
             return Ok();
         }
 
-        // TODO Has api in route at the moment
-        [HttpGet("credentials/{flowId:entityId}/complete")]
-        public async Task<ActionResult> Complete() {
-            await _mediator.SendAsync<CompleteRedirectFlowCommand, None, PaymentFlowRes<GoCardlessCredential>>(None.Empty);
+        [HttpGet("credentials/{flowId:entityId}/redirectFlow/complete")]
+        public async Task<ActionResult> CompleteRedirectFlow() {
+            var res = await _mediator.SendAsync<CompleteRedirectFlowCommand, None, PaymentFlowRes<GoCardlessCredential>>(None.Empty);
 
-            throw new NotImplementedException();
+            return Redirect(res.Result.ReturnUrl);
         }
     }
 }

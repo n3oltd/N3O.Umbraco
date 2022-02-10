@@ -96,6 +96,15 @@ jobs:
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
+  umbraco-payments-paypal-client:
+    name: 'npm Publish @n3oltd/umbraco-payments-paypal-client'
+    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
+    with:
+      working-directory: 'clients/@n3oltd/umbraco-payments-paypal-client'
+      version: ${GITHUB_REF#refs/tags/}
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}
+
   umbraco-payments-stripe-client:
     name: 'npm Publish @n3oltd/umbraco-payments-stripe-client'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main

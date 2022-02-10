@@ -24,9 +24,9 @@ namespace N3O.Umbraco.Payments.GoCardless.Handlers {
                                                   CancellationToken cancellationToken) {
             if (credential.Status == PaymentObjectStatuses.InProgress) {
                 var completeRequest = new RedirectFlowCompleteRequest();
-                completeRequest.SessionToken = credential.SessionToken;
+                completeRequest.SessionToken = credential.GoCardlessSessionToken;
 
-                var response = await _goCardlessClient.RedirectFlows.CompleteAsync(credential.RedirectFlowId,
+                var response = await _goCardlessClient.RedirectFlows.CompleteAsync(credential.GoCardlessRedirectFlowId,
                                                                                    completeRequest);
 
                 credential.CompleteRedirectFlow(response.RedirectFlow.Links.Customer,
