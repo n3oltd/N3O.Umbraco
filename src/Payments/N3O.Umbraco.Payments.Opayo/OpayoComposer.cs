@@ -19,32 +19,38 @@ namespace N3O.Umbraco.Payments.Opayo {
                 var contentCache = serviceProvider.GetRequiredService<IContentCache>();
                 var webHostEnvironment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
                 var settings = contentCache.Single<OpayoSettingsContent>();
-
-                if (webHostEnvironment.IsProduction()) {
-                    return new OpayoApiSettings("https://pi-live.sagepay.com",
-                                                settings.ProductionIntegrationKey,
-                                                settings.ProductionIntegrationPassword,
-                                                settings.ProductionVendorName);
-                } else {
-                    return new OpayoApiSettings("https://pi-test.sagepay.com",
-                                                settings.StagingIntegrationKey,
-                                                settings.StagingIntegrationPassword,
-                                                settings.StagingVendorName);
+                OpayoApiSettings opayoApiSettings = null;
+                if (settings != null) {
+                    if (webHostEnvironment.IsProduction()) {
+                        opayoApiSettings =  new OpayoApiSettings("https://pi-live.sagepay.com",
+                                                                 settings.ProductionIntegrationKey,
+                                                                 settings.ProductionIntegrationPassword,
+                                                                 settings.ProductionVendorName);
+                    } else {
+                        opayoApiSettings = new OpayoApiSettings("https://pi-test.sagepay.com",
+                                                                settings.StagingIntegrationKey,
+                                                                settings.StagingIntegrationPassword,
+                                                                settings.StagingVendorName);
+                    }
                 }
+
+                return opayoApiSettings;
             });
 
             builder.Services.AddTransient<IOpayoClient>(serviceProvider => {
                 var apiSettings = serviceProvider.GetRequiredService<OpayoApiSettings>();
-                
-                var refitSettings = new RefitSettings();
-                refitSettings.ContentSerializer = new NewtonsoftJsonContentSerializer();
+                IOpayoClient client = null;
 
-                refitSettings.HttpMessageHandlerFactory =
-                    () => new CredentialsAuthorizationHandler(apiSettings.IntegrationKey,
-                                                              apiSettings.IntegrationPassword);
+                if (apiSettings != null) {
+                    var refitSettings = new RefitSettings();
+                    refitSettings.ContentSerializer = new NewtonsoftJsonContentSerializer();
 
-                var client = RestService.For<IOpayoClient>(apiSettings.BaseUrl, refitSettings);
+                    refitSettings.HttpMessageHandlerFactory =
+                        () => new CredentialsAuthorizationHandler(apiSettings.IntegrationKey,
+                                                                  apiSettings.IntegrationPassword);
 
+                    client = RestService.For<IOpayoClient>(apiSettings.BaseUrl, refitSettings);
+                }
                 return client;
             });
 

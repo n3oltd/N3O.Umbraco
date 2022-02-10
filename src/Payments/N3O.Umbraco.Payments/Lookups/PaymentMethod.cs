@@ -1,3 +1,4 @@
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Lookups;
@@ -32,7 +33,7 @@ namespace N3O.Umbraco.Payments.Lookups {
             }
         }
 
-        public virtual bool IsAvailable(Country country, Currency currency) {
+        public virtual bool IsAvailable(IContentCache contentCache, Country country, Currency currency) {
             return true;
         }
     }

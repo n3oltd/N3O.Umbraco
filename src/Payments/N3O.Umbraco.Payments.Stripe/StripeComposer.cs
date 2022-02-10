@@ -18,12 +18,13 @@ namespace N3O.Umbraco.Payments.Stripe {
                 var webHostEnvironment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
                 var settings = contentCache.Single<StripeSettingsContent>();
 
-                StripeKeys stripeKeys;
-
-                if (webHostEnvironment.IsProduction()) {
-                    stripeKeys = new StripeKeys(settings.ProductionClientKey, settings.ProductionSecretKey);
-                } else {
-                    stripeKeys = new StripeKeys(settings.StagingClientKey, settings.StagingSecretKey);
+                StripeKeys stripeKeys = null;
+                if (settings != null) {
+                    if (webHostEnvironment.IsProduction()) {
+                        stripeKeys = new StripeKeys(settings.ProductionClientKey, settings.ProductionSecretKey);
+                    } else {
+                        stripeKeys = new StripeKeys(settings.StagingClientKey, settings.StagingSecretKey);
+                    }  
                 }
 
                 return stripeKeys;

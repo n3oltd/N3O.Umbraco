@@ -15,10 +15,10 @@ namespace N3O.Umbraco.Giving.Checkout.Models {
             Total = total;
         }
 
-        public DonationCheckout(IEnumerable<Allocation> allocations)
+        public DonationCheckout(IEnumerable<Allocation> allocations, Currency currency)
             : this(allocations.OrEmpty(),
                    null,
-                   allocations.OrEmpty().Select(x => x.Value).Sum()) { }
+                   allocations.HasAny() ? allocations.Select(x => x.Value).Sum() : currency.Zero()) { }
 
         public IEnumerable<Allocation> Allocations { get; }
         public Payment Payment { get; }

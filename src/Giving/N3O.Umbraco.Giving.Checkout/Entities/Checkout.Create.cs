@@ -16,8 +16,8 @@ namespace N3O.Umbraco.Giving.Checkout.Entities {
             checkout.CartId = cart.Id;
             checkout.Reference = await counters.NextAsync<CheckoutReferenceType>();
             checkout.Currency = cart.Currency;
-            checkout.Donation = new DonationCheckout(cart.Donation.Allocations);
-            checkout.RegularGiving = new RegularGivingCheckout(cart.RegularGiving.Allocations);
+            checkout.Donation = new DonationCheckout(cart.Donation.Allocations, cart.Currency);
+            checkout.RegularGiving = new RegularGivingCheckout(cart.RegularGiving.Allocations, cart.Currency);
             checkout.Progress = new CheckoutProgress(checkout);
             checkout.RemoteIp = remoteIpAddressAccessor.GetRemoteIpAddress();
 

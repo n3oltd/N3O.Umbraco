@@ -18,14 +18,16 @@ namespace N3O.Umbraco.Payments.GoCardless {
                 var webHostEnvironment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
                 var settings = contentCache.Single<GoCardlessSettingsContent>();
 
-                GoCardlessClient goCardlessClient;
+                GoCardlessClient goCardlessClient = null;
 
-                if (webHostEnvironment.IsProduction()) {
-                    goCardlessClient = GoCardlessClient.Create(settings.ProductionAccessToken,
-                                                               GoCardlessClient.Environment.LIVE);
-                } else {
-                    goCardlessClient = GoCardlessClient.Create(settings.StagingAccessToken,
-                                                               GoCardlessClient.Environment.SANDBOX);
+                if (settings != null) {
+                    if (webHostEnvironment.IsProduction()) {
+                        goCardlessClient = GoCardlessClient.Create(settings.ProductionAccessToken,
+                                                                   GoCardlessClient.Environment.LIVE);
+                    } else {
+                        goCardlessClient = GoCardlessClient.Create(settings.StagingAccessToken,
+                                                                   GoCardlessClient.Environment.SANDBOX);
+                    }
                 }
 
                 return goCardlessClient;

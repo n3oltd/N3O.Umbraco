@@ -18,14 +18,14 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Core.Content
 {
-	/// <summary>Demo</summary>
-	[PublishedModel("demoBlock")]
-	public partial class DemoBlock : PublishedElementModel, IBlock
+	/// <summary>Tax Relief Settings</summary>
+	[PublishedModel("taxReliefSettings")]
+	public partial class TaxReliefSettings : PublishedContentModel
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
-		public new const string ModelTypeAlias = "demoBlock";
+		public new const string ModelTypeAlias = "taxReliefSettings";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
@@ -34,14 +34,14 @@ namespace DemoSite.Core.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<DemoBlock, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<TaxReliefSettings, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public DemoBlock(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
+		public TaxReliefSettings(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
@@ -50,11 +50,11 @@ namespace DemoSite.Core.Content
 		// properties
 
 		///<summary>
-		/// Notes: Only visible to other editors, not displayed on website
+		/// Scheme
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.0-rc+7971f36b78e333aa61cb94e9fc3003b70459c6ff")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("notes")]
-		public virtual string Notes => global::DemoSite.Core.Content.Block.GetNotes(this, _publishedValueFallback);
+		[ImplementPropertyType("scheme")]
+		public virtual global::N3O.Umbraco.TaxRelief.Lookups.TaxReliefScheme Scheme => this.Value<global::N3O.Umbraco.TaxRelief.Lookups.TaxReliefScheme>(_publishedValueFallback, "scheme");
 	}
 }

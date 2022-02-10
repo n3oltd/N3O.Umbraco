@@ -8,10 +8,11 @@ using N3O.Umbraco.Validation;
 
 namespace N3O.Umbraco.Accounts.Models {
     public class AccountReqValidator : ModelValidator<AccountReq> {
-        public AccountReqValidator(IFormatter formatter, IContentCache contentCache, ITaxReliefScheme taxReliefScheme)
+        public AccountReqValidator(IFormatter formatter, IContentCache contentCache, ITaxReliefSchemeAccessor taxReliefSchemeAccessor)
             : base(formatter) {
             var emailDataEntrySettings = contentCache.Single<EmailDataEntrySettingsContent>();
             var phoneDataEntrySettings = contentCache.Single<PhoneDataEntrySettingsContent>();
+            var taxReliefScheme = taxReliefSchemeAccessor.GetScheme();
         
             RuleFor(x => x.Name)
                 .NotNull()
@@ -34,7 +35,7 @@ namespace N3O.Umbraco.Accounts.Models {
             RuleFor(x => x.TaxStatus)
                 .NotNull()
                 .When(req => req.Address.HasValue(x => x.Country) &&
-                             taxReliefScheme.IsEligible(req.Address.Country, false))
+                             taxReliefScheme?.IsEligible(req.Address.Country, false) == true)
                 .WithMessage(Get<Strings>(s => s.SpecifyTaxStatus));
         }
     
