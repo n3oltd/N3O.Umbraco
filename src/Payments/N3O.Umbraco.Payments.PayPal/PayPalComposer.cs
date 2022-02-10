@@ -15,12 +15,14 @@ namespace N3O.Umbraco.Payments.PayPal {
                 var webHostEnvironment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
                 var settings = contentCache.Single<PayPalSettingsContent>();
 
-                PayPalKeys payPalKeys;
+                PayPalKeys payPalKeys = null;
 
-                if (webHostEnvironment.IsProduction()) {
-                    payPalKeys = new PayPalKeys(settings.ProductionClientId);
-                } else {
-                    payPalKeys = new PayPalKeys(settings.StagingClientId);
+                if (settings != null) {
+                    if (webHostEnvironment.IsProduction()) {
+                        payPalKeys = new PayPalKeys(settings.ProductionClientId);
+                    } else {
+                        payPalKeys = new PayPalKeys(settings.StagingClientId);
+                    }
                 }
 
                 return payPalKeys;
