@@ -11,7 +11,7 @@ namespace N3O.Umbraco.Accounts.Content {
         public int Order => GetValue(x => x.Order);
 
         public TextFieldSettings ToDataEntrySettings(string path) {
-            return new TextFieldSettings(Visible, Required, Label, HelpText, path , Order);
+            return new TextFieldSettings(Visible, Required, Label, HelpText, path, Order);
         }
     }
 }
