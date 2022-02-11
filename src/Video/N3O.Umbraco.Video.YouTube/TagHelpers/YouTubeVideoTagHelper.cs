@@ -19,7 +19,7 @@ namespace N3O.Umbraco.Video.YouTube.TagHelpers {
                 output.Attributes.Add("style", "position: relative; width: 100%; height: 0; padding-bottom: 56.25%;");
 
                 var iframeTag = new TagBuilder("iframe");
-                iframeTag.Attributes.Add("src", $"https://www.youtube.com/embed/{videoId}");
+                iframeTag.Attributes.Add("src", $"https://www.youtube.com/embed/{videoId}?enablejsapi=1");
                 iframeTag.Attributes.Add("frameborder", "0");
                 iframeTag.Attributes.Add("allowfullscreen", "true");
                 iframeTag.Attributes.Add("style", "position: absolute; top: 0; left: 0; width: 100%; height: 100%;");
