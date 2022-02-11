@@ -12,7 +12,11 @@ namespace N3O.Umbraco.Giving.Checkout {
             _repository = repository;
         }
 
-        public async Task<Entities.Checkout> GetCheckoutAsync(CancellationToken cancellationToken) {
+        public Entities.Checkout Get() {
+            return GetAsync().GetAwaiter().GetResult();
+        }
+
+        public async Task<Entities.Checkout> GetAsync(CancellationToken cancellationToken = default) {
             var checkoutId = _checkoutIdAccessor.GetCheckoutId();
 
             var checkout = await _repository.GetAsync(checkoutId, cancellationToken);

@@ -24,7 +24,11 @@ namespace N3O.Umbraco.Giving.Cart {
             _cartValidator = cartValidator;
             _lock = @lock;
         }
-    
+
+        public Entities.Cart Get() {
+            return GetAsync().GetAwaiter().GetResult();
+        }
+
         public async Task<Entities.Cart> GetAsync(CancellationToken cancellationToken = default) {
             var cartId = _cartIdAccessor.GetCartId();
             
