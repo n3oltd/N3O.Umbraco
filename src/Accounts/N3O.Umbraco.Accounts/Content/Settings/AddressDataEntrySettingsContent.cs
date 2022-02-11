@@ -1,6 +1,7 @@
 ﻿using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Lookups;
+using N3O.Umbraco.Utilities;
 
 namespace N3O.Umbraco.Accounts.Content {
     public class AddressDataEntrySettingsContent : UmbracoContent<AddressDataEntrySettingsContent> {
@@ -14,12 +15,12 @@ namespace N3O.Umbraco.Accounts.Content {
 
         public AddressDataEntrySettings ToDataEntrySettings() {
             return new AddressDataEntrySettings(DefaultCountry,
-                                                Line1.ToDataEntrySettings(),
-                                                Line2.ToDataEntrySettings(),
-                                                Line3.ToDataEntrySettings(),
-                                                Locality.ToDataEntrySettings(),
-                                                AdministrativeArea.ToDataEntrySettings(),
-                                                PostalCode.ToDataEntrySettings());
+                                                Line1.ToDataEntrySettings(HtmlField.Name<AccountReq>(x => x.Address.Line1)),
+                                                Line2.ToDataEntrySettings(HtmlField.Name<AccountReq>(x => x.Address.Line2)),
+                                                Line3.ToDataEntrySettings(HtmlField.Name<AccountReq>(x => x.Address.Line3)),
+                                                Locality.ToDataEntrySettings(HtmlField.Name<AccountReq>(x => x.Address.Locality)),
+                                                AdministrativeArea.ToDataEntrySettings(HtmlField.Name<AccountReq>(x => x.Address.AdministrativeArea)),
+                                                PostalCode.ToDataEntrySettings(HtmlField.Name<AccountReq>(x => x.Address.PostalCode)));
         }
     }
 }

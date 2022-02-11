@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Utilities;
 
 namespace N3O.Umbraco.Accounts.Content {
     public class AddressFieldElement : UmbracoElement<AddressFieldElement> {
@@ -9,8 +10,8 @@ namespace N3O.Umbraco.Accounts.Content {
         public string HelpText => GetValue(x => x.HelpText);
         public int Order => GetValue(x => x.Order);
 
-        public TextFieldSettings ToDataEntrySettings() {
-            return new TextFieldSettings(Visible, Required, Label, HelpText, Order);
+        public TextFieldSettings ToDataEntrySettings(string path) {
+            return new TextFieldSettings(Visible, Required, Label, HelpText, path , Order);
         }
     }
 }

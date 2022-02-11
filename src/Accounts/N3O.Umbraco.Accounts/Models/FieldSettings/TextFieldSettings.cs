@@ -6,10 +6,11 @@ namespace N3O.Umbraco.Accounts.Models {
                                  bool required,
                                  string label,
                                  string helpText,
+                                 string path,
                                  int order = -1,
                                  bool validate = false,
                                  Capitalisation capitalisation = null) : 
-            base(visible, required, label, helpText, order, validate) {
+            base(visible, required, label, helpText, path, order, validate) {
             Capitalisation = capitalisation;
         }
 
