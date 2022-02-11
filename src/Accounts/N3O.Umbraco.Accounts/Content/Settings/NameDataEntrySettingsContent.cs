@@ -1,6 +1,7 @@
 ﻿using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Lookups;
+using N3O.Umbraco.Utilities;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Accounts.Content {
@@ -26,6 +27,7 @@ namespace N3O.Umbraco.Accounts.Content {
         public NameDataEntrySettings ToDataEntrySettings() {
             var title = new SelectFieldSettings(true,
                                                 TitleRequired,
+                                                HtmlField.Name<AccountReq>(x => x.Name.Title),
                                                 TitleLabel,
                                                 TitleHelpText,
                                                 TitleOptions,
@@ -34,6 +36,7 @@ namespace N3O.Umbraco.Accounts.Content {
                                                   FirstNameRequired,
                                                   FirstNameLabel,
                                                   FirstNameHelpText,
+                                                  HtmlField.Name<AccountReq>(x => x.Name.FirstName),
                                                   FirstNameOrder,
                                                   false,
                                                   FirstNameCapitalisation);
@@ -41,6 +44,7 @@ namespace N3O.Umbraco.Accounts.Content {
                                                  LastNameRequired,
                                                  LastNameLabel,
                                                  LastNameHelpText,
+                                                 HtmlField.Name<AccountReq>(x => x.Name.LastName),
                                                  LastNameOrder,
                                                  false,
                                                  LastNameCapitalisation);

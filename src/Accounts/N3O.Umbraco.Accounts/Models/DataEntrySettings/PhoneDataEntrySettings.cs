@@ -5,11 +5,12 @@ namespace N3O.Umbraco.Accounts.Models {
         public PhoneDataEntrySettings(bool visible,
                                       bool required,
                                       string label,
-                                      string helpText,
+                                      string helpText, 
+                                      string path,
                                       int order,
                                       bool validate,
                                       Country defaultCountry)
-            : base(visible, required, label, helpText, order, validate) {
+            : base(visible, required, label, helpText, path, order, validate) {
             DefaultCountry = defaultCountry;
         }
 

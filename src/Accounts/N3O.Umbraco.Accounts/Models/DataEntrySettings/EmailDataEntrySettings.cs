@@ -4,9 +4,10 @@
                                       bool required,
                                       string label,
                                       string helpText,
+                                      string path,
                                       int order,
                                       bool validate)
-            : base(visible, required, label, helpText, order, validate) {
+            : base(visible, required, label, helpText, path, order, validate) {
         }
 
         public override string Type => "Email";
