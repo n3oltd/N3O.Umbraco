@@ -26,10 +26,10 @@ namespace N3O.Umbraco.Accounts.Content {
 
         public NameDataEntrySettings ToDataEntrySettings() {
             var title = new SelectFieldSettings(true,
-                                                TitleRequired,
-                                                HtmlField.Name<AccountReq>(x => x.Name.Title),
+                                                TitleRequired,                                                
                                                 TitleLabel,
                                                 TitleHelpText,
+                                                HtmlField.Name<AccountReq>(x => x.Name.Title),
                                                 TitleOptions,
                                                 TitleOrder);
             var firstName = new TextFieldSettings(true,
