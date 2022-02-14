@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Accounts.Models {
     public class AddressDataEntrySettings : Value, IFieldSettingsCollection {
-        public AddressDataEntrySettings(Country defaultCountry,
+        public AddressDataEntrySettings(SelectFieldSettings country,
+                                        Country defaultCountry,
                                         TextFieldSettings line1,
                                         TextFieldSettings line2,
                                         TextFieldSettings line3,
@@ -17,8 +18,10 @@ namespace N3O.Umbraco.Accounts.Models {
             Locality = locality;
             AdministrativeArea = administrativeArea;
             PostalCode = postalCode;
+            Country = country;
         }
 
+        public SelectFieldSettings Country { get; }
         public Country DefaultCountry { get; }
         public TextFieldSettings Line1 { get; }
         public TextFieldSettings Line2 { get; }
@@ -28,6 +31,7 @@ namespace N3O.Umbraco.Accounts.Models {
         public TextFieldSettings PostalCode { get; }
         
         public IEnumerable<FieldSettings> GetFieldSettings() {
+            yield return Country;
             yield return Line1;
             yield return Line2;
             yield return Line3;

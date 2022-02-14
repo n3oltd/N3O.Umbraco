@@ -1,20 +1,18 @@
-﻿using N3O.Umbraco.Lookups;
+﻿using System.Collections.Generic;
 
 namespace N3O.Umbraco.Accounts.Models {
-    public class PhoneDataEntrySettings : FieldSettings {
-        public PhoneDataEntrySettings(bool visible,
-                                      bool required,
-                                      string label,
-                                      string helpText, 
-                                      string path,
-                                      int order,
-                                      bool validate,
-                                      Country defaultCountry)
-            : base(visible, required, label, helpText, path, order, validate) {
-            DefaultCountry = defaultCountry;
+    public class PhoneDataEntrySettings : Value, IFieldSettingsCollection {
+        public PhoneDataEntrySettings(SelectFieldSettings country, PhoneFieldSettings number) {
+            Country = country;
+            Number = number;
         }
 
-        public Country DefaultCountry { get; }
-        public override string Type => "Phone";
+        public SelectFieldSettings Country { get; }
+        public PhoneFieldSettings Number { get; }
+
+        public IEnumerable<FieldSettings> GetFieldSettings() {
+            yield return Country;
+            yield return Number;
+        }
     }
 }
