@@ -1,6 +1,4 @@
-﻿using N3O.Umbraco.Lookups;
-
-namespace N3O.Umbraco.Accounts.Models {
+﻿namespace N3O.Umbraco.Accounts.Models {
     public class PhoneFieldSettings : FieldSettings {
         public PhoneFieldSettings(bool visible,
                                   bool required,
@@ -8,13 +6,8 @@ namespace N3O.Umbraco.Accounts.Models {
                                   string helpText,
                                   string path,
                                   int order = -1,
-                                  bool validate = false,
-                                  Capitalisation capitalisation = null) :
-            base(visible, required, label, helpText, path, order, validate) {
-            Capitalisation = capitalisation;
-        }
-
-        public Capitalisation Capitalisation { get; }
+                                  bool validate = false) :
+            base(visible, required, label, helpText, path, order, validate) { }
 
         public override string Type => "Phone";
     }

@@ -1,9 +1,9 @@
-using N3O.Umbraco.Accounts.Extensions;
 using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Utilities;
 using System.Linq;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Accounts.Content {
     public class PhoneDataEntrySettingsContent : UmbracoContent<PhoneDataEntrySettingsContent> {
@@ -14,7 +14,9 @@ namespace N3O.Umbraco.Accounts.Content {
         public bool Validate => GetValue(x => x.Validate);
 
         public PhoneDataEntrySettings ToDataEntrySettings(ILookups lookups) {
-            var countryOptions = lookups.GetAll<Country>().Select(x => new SelectOption(x.Id, $"{x.Iso2Code} {x.DiallingCode}")).ToList();
+            SelectOption ToSelectOption(Country country) => new(country.Id, $"{country.Name} ({country.DiallingCode})");
+            
+            var countryOptions = lookups.GetAll<Country>().Select(ToSelectOption).ToList();
 
             var countrySettings = new SelectFieldSettings(true,
                                                           Required,
@@ -24,7 +26,7 @@ namespace N3O.Umbraco.Accounts.Content {
                                                           countryOptions,
                                                           1,
                                                           Validate,
-                                                          DefaultCountry.Id);
+                                                          DefaultCountry.IfNotNull(ToSelectOption));
             
             var numberSettings = new PhoneFieldSettings(true,
                                                         Required,

@@ -10,14 +10,14 @@ namespace N3O.Umbraco.Accounts.Models {
                                    IEnumerable<SelectOption> options,
                                    int order = -1,
                                    bool validate = false,
-                                   string defaultValue = null) :
+                                   SelectOption defaultOption = null) :
             base(visible, required, label, helpText, path, order, validate) {
-            DefaultValue = defaultValue;
+            DefaultOption = defaultOption;
             Options = options;
         }
 
         public IEnumerable<SelectOption> Options { get; }
-        public string DefaultValue { get; }
+        public SelectOption DefaultOption { get; }
 
         public override string Type => "Select";
     }
