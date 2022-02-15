@@ -3,6 +3,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Utilities;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace N3O.Umbraco.Accounts.Content {
     public class NameDataEntrySettingsContent : UmbracoContent<NameDataEntrySettingsContent> {
@@ -30,7 +31,7 @@ namespace N3O.Umbraco.Accounts.Content {
                                                 TitleLabel,
                                                 TitleHelpText,
                                                 HtmlField.Name<AccountReq>(x => x.Name.Title),
-                                                TitleOptions,
+                                                TitleOptions.Select(x => new SelectOption(x, x)).ToList(),
                                                 TitleOrder);
             var firstName = new TextFieldSettings(true,
                                                   FirstNameRequired,

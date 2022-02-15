@@ -1,6 +1,7 @@
 ﻿using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,14 +16,14 @@ namespace N3O.Umbraco.Accounts.Content {
         public EmailDataEntrySettingsContent Email => Child(x => x.Email);
         public PhoneDataEntrySettingsContent Phone => Child(x => x.Phone);
 
-        public DataEntrySettings ToDataEntrySettings(IEnumerable<ConsentOptionContent> consentOptions) {
+        public DataEntrySettings ToDataEntrySettings(ILookups lookups, IEnumerable<ConsentOptionContent> consentOptions) {
             var consentSettings = new ConsentDataEntrySettings(consentOptions.OrEmpty()
                                                                              .Select(x => x.ToConsentOption()));
             
             return new DataEntrySettings(Name.ToDataEntrySettings(),
-                                         Address.ToDataEntrySettings(),
+                                         Address.ToDataEntrySettings(lookups),
                                          Email.ToDataEntrySettings(),
-                                         Phone.ToDataEntrySettings(),
+                                         Phone.ToDataEntrySettings(lookups),
                                          consentSettings);
         }
     }
