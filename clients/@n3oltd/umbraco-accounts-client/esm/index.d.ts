@@ -37,6 +37,7 @@ export interface SelectFieldSettings {
     label?: string | undefined;
     helpText?: string | undefined;
     order?: number;
+    path?: string | undefined;
     visible?: boolean;
     validate?: boolean;
     options?: string[] | undefined;
@@ -47,6 +48,7 @@ export interface TextFieldSettings {
     label?: string | undefined;
     helpText?: string | undefined;
     order?: number;
+    path?: string | undefined;
     visible?: boolean;
     validate?: boolean;
     capitalisation?: Capitalisation | undefined;
@@ -107,6 +109,7 @@ export interface EmailDataEntrySettings {
     label?: string | undefined;
     helpText?: string | undefined;
     order?: number;
+    path?: string | undefined;
     visible?: boolean;
     validate?: boolean;
 }
@@ -115,6 +118,7 @@ export interface PhoneDataEntrySettings {
     label?: string | undefined;
     helpText?: string | undefined;
     order?: number;
+    path?: string | undefined;
     visible?: boolean;
     validate?: boolean;
     defaultCountry?: string | undefined;

@@ -3,7 +3,6 @@
   "author": "N3O Ltd",
   "description": "TODO",
   "version": "1.0.0",
-  "dependencies": {},
   "license": "UNLICENSED",
   "main": "./build/index.js",
   "module": "./esm/index.js",
