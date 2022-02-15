@@ -1,0 +1,39 @@
+{
+  "name": "@n3oltd/umbraco-payments-paypal-client",
+  "author": "N3O Ltd",
+  "description": "TODO",
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "main": "./build/index.js",
+  "module": "./esm/index.js",
+  "types": "./esm/index.d.ts",
+  "devDependencies": {
+    "shx": "^0.3.4",
+    "typescript": "^3.5.3",
+    "uglify-js": "^3.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "files": [
+    "build/**/*.js",
+    "build/**/*.js.map",
+    "build/**/*.d.ts",
+    "build/**/*.d.ts.map",
+    "esm/**/*.js",
+    "esm/**/*.js.map",
+    "esm/**/*.d.ts",
+    "esm/**/*.d.ts.map",
+    "src/**/*.ts",
+    "README.md",
+    "tsconfig.json"
+  ],
+  "scripts": {
+    "tsc": "tsc",
+    "build": "tsc && shx cp -r esm build && npm run minify",
+    "minify": "uglifyjs -c -m --comments --source-map \"content='./build/index.js.map'\" -o ./build/index.min.js ./build/index.js",
+    "prepack": "npm install && npm run build"
+  },
+  "sideEffects": false
+}
