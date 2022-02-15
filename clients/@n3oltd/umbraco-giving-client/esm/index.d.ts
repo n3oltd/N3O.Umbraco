@@ -209,6 +209,7 @@ export interface FundStructureRes {
 export interface FundDimensionRes {
     name?: string | undefined;
     id?: string | undefined;
+    index?: number;
     isActive?: boolean;
     options?: FundDimensionValueRes[] | undefined;
 }
