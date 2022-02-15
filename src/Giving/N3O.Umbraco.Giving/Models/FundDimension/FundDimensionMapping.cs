@@ -13,6 +13,7 @@ namespace N3O.Giving.Models {
         private void Map(FundDimension<T, TValue> src, FundDimensionRes dest, MapperContext ctx) {
             ctx.Map<INamedLookup, NamedLookupRes>(src, dest);
 
+            dest.Index = src.Index;
             dest.IsActive = src.IsActive;
             dest.Options = src.Options
                               .OrEmpty()
