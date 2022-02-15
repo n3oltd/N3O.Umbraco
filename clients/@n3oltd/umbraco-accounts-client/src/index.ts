@@ -345,8 +345,14 @@ export interface SelectFieldSettings {
     path?: string | undefined;
     visible?: boolean;
     validate?: boolean;
-    options?: string[] | undefined;
+    options?: SelectOption[] | undefined;
+    defaultOption?: SelectOption | undefined;
     type?: string | undefined;
+}
+
+export interface SelectOption {
+    value?: string | undefined;
+    text?: string | undefined;
 }
 
 export interface TextFieldSettings {
@@ -369,13 +375,14 @@ export enum Capitalisation {
 }
 
 export interface AddressDataEntrySettings {
-    defaultCountry?: string | undefined;
+    country?: SelectFieldSettings | undefined;
     line1?: TextFieldSettings | undefined;
     line2?: TextFieldSettings | undefined;
     line3?: TextFieldSettings | undefined;
     locality?: TextFieldSettings | undefined;
     administrativeArea?: TextFieldSettings | undefined;
     postalCode?: TextFieldSettings | undefined;
+    defaultCountry?: string | undefined;
 }
 
 export interface IPublishedContent {
@@ -425,6 +432,11 @@ export interface EmailDataEntrySettings {
 }
 
 export interface PhoneDataEntrySettings {
+    country?: SelectFieldSettings | undefined;
+    number?: PhoneFieldSettings | undefined;
+}
+
+export interface PhoneFieldSettings {
     required?: boolean;
     label?: string | undefined;
     helpText?: string | undefined;
@@ -432,7 +444,6 @@ export interface PhoneDataEntrySettings {
     path?: string | undefined;
     visible?: boolean;
     validate?: boolean;
-    defaultCountry?: string | undefined;
     type?: string | undefined;
 }
 
