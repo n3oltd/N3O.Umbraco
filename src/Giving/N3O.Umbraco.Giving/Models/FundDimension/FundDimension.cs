@@ -4,13 +4,13 @@ using System.Collections.Generic;
 
 namespace N3O.Giving.Models {
     public abstract class FundDimension<T, TValue> : LookupContent<T> where T : FundDimension<T, TValue> {
-        public bool IsActive => GetValue(x => x.IsActive);
-        public IReadOnlyList<TValue> Options => Content.Children.As<TValue>();
-        public int Index {get; }
-
         protected FundDimension(int index) {
             Index = index;
         }
+        
+        public bool IsActive => GetValue(x => x.IsActive);
+        public IReadOnlyList<TValue> Options => Content.Children.As<TValue>();
+        public int Index { get; }
     }
 
     public class FundDimension1 : FundDimension<FundDimension1, FundDimension1Value> {
