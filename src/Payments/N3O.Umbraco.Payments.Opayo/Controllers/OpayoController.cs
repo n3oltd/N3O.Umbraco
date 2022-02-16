@@ -24,7 +24,7 @@ namespace N3O.Umbraco.Payments.Opayo.Controllers {
         }
 
         [HttpGet("merchantSessionKey")]
-        public async Task<ActionResult> GetMerchantSessionKey() {
+        public async Task<ActionResult<MerchantSessionKeyRes>> GetMerchantSessionKey() {
             var res = await _mediator.SendAsync<GetMerchantSessionKeyCommand, None, MerchantSessionKeyRes>(None.Empty);
 
             return Ok(res);
