@@ -17,10 +17,10 @@ namespace N3O.Umbraco.Payments.GoCardless.Controllers {
         }
 
         [HttpPost("credentials/{flowId:entityId}/redirectFlow/begin")]
-        public async Task<ActionResult> BeginRedirectFlow(RedirectFlowReq req) {
-            await _mediator.SendAsync<BeginRedirectFlowCommand, RedirectFlowReq, PaymentFlowRes<GoCardlessCredential>>(req);
+        public async Task<ActionResult<PaymentFlowRes<GoCardlessCredential>>> BeginRedirectFlow(RedirectFlowReq req) {
+            var res = await _mediator.SendAsync<BeginRedirectFlowCommand, RedirectFlowReq, PaymentFlowRes<GoCardlessCredential>>(req);
 
-            return Ok();
+            return Ok(res);
         }
 
         [HttpGet("credentials/{flowId:entityId}/redirectFlow/complete")]
