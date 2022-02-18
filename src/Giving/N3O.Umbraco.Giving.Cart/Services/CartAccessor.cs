@@ -41,7 +41,7 @@ namespace N3O.Umbraco.Giving.Cart {
 
                     await _repository.InsertAsync(cart, cancellationToken);
                 } else {
-                    if (_cartValidator.Value.IsValid(currency, cart)) {
+                    if (!_cartValidator.Value.IsValid(currency, cart)) {
                         cart.Reset(currency);
                     }
                 }
