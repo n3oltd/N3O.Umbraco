@@ -41,7 +41,7 @@ namespace N3O.Umbraco.Giving.Checkout.Models {
 
         public CheckoutProgress NextStage() {
             var remaining = RemainingStages.Except(CurrentStage).ToList();
-            var current = RemainingStages.FirstOrDefault();
+            var current = remaining.FirstOrDefault();
             
             return new CheckoutProgress(current, RequiredStages, remaining);
         }
