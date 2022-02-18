@@ -41,6 +41,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Umbraco.Forms" Version="9.2.1" />
+      <PackageReference Include="Umbraco.Forms" Version="9.2.2" />
     </ItemGroup>
 </Project>
