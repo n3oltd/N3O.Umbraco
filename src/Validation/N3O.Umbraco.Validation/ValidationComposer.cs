@@ -30,8 +30,6 @@ namespace N3O.Umbraco.Validation {
 
                 return propertyInfo?.GetCustomAttribute<NameAttribute>()?.Name;
             };
-            
-            ValidatorOptions.Global.PropertyNameResolver = CamelCasePropertyNameResolver.ResolvePropertyName;
         }
 
         private void RegisterValidator(IUmbracoBuilder builder, Type validatorType) {
