@@ -38,6 +38,7 @@ var GoCardlessClient = /** @class */ (function () {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "application/json"
             }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
@@ -54,7 +55,9 @@ var GoCardlessClient = /** @class */ (function () {
         ;
         if (status === 200) {
             return response.text().then(function (_responseText) {
-                return;
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
             });
         }
         else if (status === 400) {
@@ -126,6 +129,19 @@ var GoCardlessClient = /** @class */ (function () {
     return GoCardlessClient;
 }());
 export { GoCardlessClient };
+/** One of 'complete', 'error', 'inProgress' */
+export var PaymentObjectStatus;
+(function (PaymentObjectStatus) {
+    PaymentObjectStatus["Complete"] = "complete";
+    PaymentObjectStatus["Error"] = "error";
+    PaymentObjectStatus["InProgress"] = "inProgress";
+})(PaymentObjectStatus || (PaymentObjectStatus = {}));
+/** One of 'credential', 'payment' */
+export var PaymentObjectType;
+(function (PaymentObjectType) {
+    PaymentObjectType["Credential"] = "credential";
+    PaymentObjectType["Payment"] = "payment";
+})(PaymentObjectType || (PaymentObjectType = {}));
 var ApiException = /** @class */ (function (_super) {
     __extends(ApiException, _super);
     function ApiException(message, status, response, headers, result) {

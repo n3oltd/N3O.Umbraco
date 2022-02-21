@@ -67,13 +67,14 @@ export class OpayoClient {
         return Promise.resolve<void>(<any>null);
     }
 
-    getMerchantSessionKey(): Promise<void> {
+    getMerchantSessionKey(): Promise<MerchantSessionKeyRes> {
         let url_ = this.baseUrl + "/umbraco/api/Opayo/merchantSessionKey";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <RequestInit>{
             method: "GET",
             headers: {
+                "Accept": "application/json"
             }
         };
 
@@ -82,12 +83,14 @@ export class OpayoClient {
         });
     }
 
-    protected processGetMerchantSessionKey(response: Response): Promise<void> {
+    protected processGetMerchantSessionKey(response: Response): Promise<MerchantSessionKeyRes> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <MerchantSessionKeyRes>JSON.parse(_responseText, this.jsonParseReviver);
+            return result200;
             });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
@@ -104,7 +107,7 @@ export class OpayoClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(<any>null);
+        return Promise.resolve<MerchantSessionKeyRes>(<any>null);
     }
 
     chargeCard(flowId: string, req: ChargeCardReq): Promise<PaymentFlowResOfOpayoPayment> {
@@ -214,6 +217,11 @@ export interface ProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
+}
+
+export interface MerchantSessionKeyRes {
+    key?: string | undefined;
+    expiresAt?: Date;
 }
 
 export interface PaymentFlowResOfOpayoPayment {

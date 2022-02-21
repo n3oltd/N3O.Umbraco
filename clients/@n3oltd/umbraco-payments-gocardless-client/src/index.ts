@@ -17,7 +17,7 @@ export class GoCardlessClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
 
-    beginRedirectFlow(flowId: string, req: RedirectFlowReq): Promise<void> {
+    beginRedirectFlow(flowId: string, req: RedirectFlowReq): Promise<PaymentFlowResOfGoCardlessCredential> {
         let url_ = this.baseUrl + "/umbraco/api/GoCardless/credentials/{flowId}/redirectFlow/begin";
         if (flowId === undefined || flowId === null)
             throw new Error("The parameter 'flowId' must be defined.");
@@ -31,6 +31,7 @@ export class GoCardlessClient {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "application/json"
             }
         };
 
@@ -39,12 +40,14 @@ export class GoCardlessClient {
         });
     }
 
-    protected processBeginRedirectFlow(response: Response): Promise<void> {
+    protected processBeginRedirectFlow(response: Response): Promise<PaymentFlowResOfGoCardlessCredential> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <PaymentFlowResOfGoCardlessCredential>JSON.parse(_responseText, this.jsonParseReviver);
+            return result200;
             });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
@@ -61,7 +64,7 @@ export class GoCardlessClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(<any>null);
+        return Promise.resolve<PaymentFlowResOfGoCardlessCredential>(<any>null);
     }
 
     completeRedirectFlow(flowId: string): Promise<void> {
@@ -106,6 +109,64 @@ export class GoCardlessClient {
         }
         return Promise.resolve<void>(<any>null);
     }
+}
+
+export interface PaymentFlowResOfGoCardlessCredential {
+    flowRevision?: number;
+    result?: GoCardlessCredential | undefined;
+}
+
+export interface GoCardlessCredential {
+    advancePayment?: Payment | undefined;
+    setupAt?: Date | undefined;
+    isSetUp?: boolean;
+    completeAt?: Date | undefined;
+    errorAt?: Date | undefined;
+    errorMessage?: string | undefined;
+    exceptionDetails?: string | undefined;
+    status?: PaymentObjectStatus | undefined;
+    method?: string | undefined;
+    goCardlessSessionToken?: string | undefined;
+    goCardlessRedirectFlowId?: string | undefined;
+    goCardlessCustomerId?: string | undefined;
+    goCardlessMandateId?: string | undefined;
+    returnUrl?: string | undefined;
+}
+
+export interface Payment {
+    completeAt?: Date | undefined;
+    errorAt?: Date | undefined;
+    errorMessage?: string | undefined;
+    exceptionDetails?: string | undefined;
+    status?: PaymentObjectStatus | undefined;
+    card?: CardPayment | undefined;
+    paidAt?: Date | undefined;
+    declinedAt?: Date | undefined;
+    declinedReason?: string | undefined;
+    isDeclined?: boolean;
+    isPaid?: boolean;
+}
+
+/** One of 'complete', 'error', 'inProgress' */
+export enum PaymentObjectStatus {
+    Complete = "complete",
+    Error = "error",
+    InProgress = "inProgress",
+}
+
+export interface CardPayment {
+    threeDSecureRequired?: boolean;
+    threeDSecureCompleted?: boolean;
+    threeDSecureChallengeUrl?: string | undefined;
+    threeDSecureAcsTransId?: string | undefined;
+    threeDSecureCReq?: string | undefined;
+    threeDSecureCRes?: string | undefined;
+}
+
+/** One of 'credential', 'payment' */
+export enum PaymentObjectType {
+    Credential = "credential",
+    Payment = "payment",
 }
 
 export interface ProblemDetails {
