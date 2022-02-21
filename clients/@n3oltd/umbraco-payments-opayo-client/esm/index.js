@@ -84,7 +84,9 @@ var OpayoClient = /** @class */ (function () {
         url_ = url_.replace(/[?&]$/, "");
         var options_ = {
             method: "GET",
-            headers: {}
+            headers: {
+                "Accept": "application/json"
+            }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
             return _this.processGetMerchantSessionKey(_response);
@@ -100,7 +102,9 @@ var OpayoClient = /** @class */ (function () {
         ;
         if (status === 200) {
             return response.text().then(function (_responseText) {
-                return;
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
             });
         }
         else if (status === 400) {

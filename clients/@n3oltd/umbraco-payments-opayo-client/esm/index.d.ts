@@ -7,8 +7,8 @@ export declare class OpayoClient {
     });
     completeThreeDSecureChallenge(flowId: string, cRes: string | null | undefined, threeDsSessionData: string | null | undefined): Promise<void>;
     protected processCompleteThreeDSecureChallenge(response: Response): Promise<void>;
-    getMerchantSessionKey(): Promise<void>;
-    protected processGetMerchantSessionKey(response: Response): Promise<void>;
+    getMerchantSessionKey(): Promise<MerchantSessionKeyRes>;
+    protected processGetMerchantSessionKey(response: Response): Promise<MerchantSessionKeyRes>;
     chargeCard(flowId: string, req: ChargeCardReq): Promise<PaymentFlowResOfOpayoPayment>;
     protected processChargeCard(response: Response): Promise<PaymentFlowResOfOpayoPayment>;
     storeCard(flowId: string, req: StoreCardReq): Promise<PaymentFlowResOfOpayoCredential>;
@@ -20,6 +20,10 @@ export interface ProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
+}
+export interface MerchantSessionKeyRes {
+    key?: string | undefined;
+    expiresAt?: Date;
 }
 export interface PaymentFlowResOfOpayoPayment {
     flowRevision?: number;
