@@ -129,7 +129,7 @@ namespace N3O.Umbraco.Payments.Opayo {
 
         private string GetNotificationUrl(EntityId flowId) {
             return _actionLinkGenerator.GetUrl<OpayoController>(x => x.CompleteThreeDSecureChallenge(null),
-                                                                new { flowId });
+                                                                new { flowId = flowId.ToString() });
         }
 
         private ApiBillingAddressReq GetBillingAddress(IAddress address) {
