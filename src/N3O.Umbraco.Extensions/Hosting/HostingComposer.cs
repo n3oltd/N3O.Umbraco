@@ -16,12 +16,7 @@ using Umbraco.Cms.Web.Website.Controllers;
 
 namespace N3O.Umbraco.Hosting {
     public class HostingComposer : Composer {
-        public override void Compose(IUmbracoBuilder builder) {
-            builder.Services.Configure<ApiBehaviorOptions>(c => c.SuppressModelStateInvalidFilter = true);
-            builder.Services.Configure<UmbracoRenderingDefaultsOptions>(c => {
-                c.DefaultControllerType = typeof(PageController);
-            });
-        
+        public override void Compose(IUmbracoBuilder builder) {        
             builder.Services.AddTransient<IConfigureOptions<MvcOptions>, OurMvcBinderOptions>();
             builder.Services.AddTransient<IConfigureOptions<MvcOptions>, OurCacheProfileOptions>();
             builder.Services.AddScoped<IActionLinkGenerator, ActionLinkGenerator>();
@@ -31,6 +26,8 @@ namespace N3O.Umbraco.Hosting {
 
             builder.Services.AddOpenApiDocument("DevTools");
             
+            builder.Services.Configure<ApiBehaviorOptions>(c => c.SuppressModelStateInvalidFilter = true);
+            builder.Services.Configure<UmbracoRenderingDefaultsOptions>(c => c.DefaultControllerType = typeof(PageController));
             builder.Services.Configure<UmbracoPipelineOptions>(opt => {
                 if (WebHostEnvironment.IsStaging()) {
                     AddMiddleware<StagingMiddleware>(opt);
