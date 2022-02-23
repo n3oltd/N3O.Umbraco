@@ -40,6 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="uSync.Forms" Version="9.0.0" />
+      <PackageReference Include="uSync.Forms" Version="9.0.1" />
     </ItemGroup>
 </Project>
