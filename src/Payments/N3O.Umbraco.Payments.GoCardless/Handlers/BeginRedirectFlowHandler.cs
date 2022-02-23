@@ -49,7 +49,7 @@ namespace N3O.Umbraco.Payments.GoCardless.Handlers {
             createRequest.Description = settings.GetTransactionDescription(parameters.Reference);
             createRequest.SessionToken = Guid.NewGuid().ToString();
             createRequest.SuccessRedirectUrl = _actionLinkGenerator.GetUrl<GoCardlessController>(x => x.CompleteRedirectFlow(),
-                                                                                                 new { flowId });
+                                                                                                 new { flowId = flowId.ToString() });
             createRequest.PrefilledCustomer = GetPrefilledCustomer(parameters.BillingInfoAccessor);
 
             return createRequest;
