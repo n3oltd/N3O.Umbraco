@@ -30,6 +30,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Forms\N3O.Umbraco.Forms\N3O.Umbraco.Forms.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
     </ItemGroup>
 
@@ -41,5 +42,7 @@
 
     <ItemGroup>
       <PackageReference Include="uMarketingSuite" Version="1.16.1" />
+      <PackageReference Include="uMarketingSuite.ContentBlocks" Version="1.1.0" />
+      <PackageReference Include="uMarketingSuite.UmbracoForms" Version="1.1.0" />
     </ItemGroup>
 </Project>
