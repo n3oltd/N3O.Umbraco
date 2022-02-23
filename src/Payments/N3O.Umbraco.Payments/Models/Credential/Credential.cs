@@ -4,16 +4,12 @@ using NodaTime;
 
 namespace N3O.Umbraco.Payments.Models {
     public abstract partial class Credential : PaymentObject {
-        protected Credential(Payment advancePayment) {
-            AdvancePayment = advancePayment;
-        }
-        
-        public Payment AdvancePayment { get; }
+        public Payment AdvancePayment { get; private set; }
+
         public Instant? SetupAt { get; private set; }
-        
+
         public bool IsSetUp { get; private set; }
 
-        [JsonIgnore]
         public override PaymentObjectType Type => PaymentObjectTypes.Credential;
     }
 }

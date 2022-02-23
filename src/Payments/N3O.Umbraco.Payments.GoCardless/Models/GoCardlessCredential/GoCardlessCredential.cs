@@ -3,8 +3,6 @@ using N3O.Umbraco.Payments.Models;
 
 namespace N3O.Umbraco.Payments.GoCardless.Models {
     public partial class GoCardlessCredential : Credential {
-        public GoCardlessCredential() : base(null) { }
-        
         public override PaymentMethod Method => GoCardlessConstants.PaymentMethod;
 
         public string GoCardlessSessionToken { get; private set; }

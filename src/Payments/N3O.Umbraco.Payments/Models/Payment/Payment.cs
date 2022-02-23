@@ -4,12 +4,6 @@ using NodaTime;
 
 namespace N3O.Umbraco.Payments.Models {
     public abstract partial class Payment : PaymentObject {
-        protected Payment() {
-            if (Method.IsCardPayment) {
-                Card = new CardPayment();
-            }
-        }
-        
         public CardPayment Card { get; private set; }
         public Instant? PaidAt { get; private set; }
         public Instant? DeclinedAt { get; private set; }
@@ -18,7 +12,6 @@ namespace N3O.Umbraco.Payments.Models {
         
         public bool IsPaid { get; private set; }
         
-        [JsonIgnore]
         public override PaymentObjectType Type => PaymentObjectTypes.Payment;
     }
 }

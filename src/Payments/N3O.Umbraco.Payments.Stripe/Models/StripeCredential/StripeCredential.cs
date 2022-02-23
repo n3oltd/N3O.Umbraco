@@ -3,8 +3,6 @@ using N3O.Umbraco.Payments.Models;
 
 namespace N3O.Umbraco.Payments.Stripe.Models {
     public partial class StripeCredential : Credential {
-        public StripeCredential() : base(null) { }
-        
         public string StripeMandateId { get; private set; }
         public string StripeCustomerId { get; private set; }
         public string StripeDeclineCode { get; private set; }
