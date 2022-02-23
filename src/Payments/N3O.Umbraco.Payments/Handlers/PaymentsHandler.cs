@@ -1,6 +1,7 @@
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Payments.Commands;
 using N3O.Umbraco.Payments.Models;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,6 +22,13 @@ namespace N3O.Umbraco.Payments.Handlers {
             }, cancellationToken);
 
             return res;
+        }
+
+        protected async Task DoAsync<TOtherObject>(Func<TOtherObject, Task> actionAsync,
+                                                   CancellationToken cancellationToken)
+            where TOtherObject : PaymentObject, new() {
+            await _paymentsScope.DoAsync<TOtherObject>((_, paymentObject) => actionAsync(paymentObject),
+                                                       cancellationToken);
         }
 
         protected abstract Task HandleAsync(TCommand req,

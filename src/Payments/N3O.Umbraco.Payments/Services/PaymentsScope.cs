@@ -10,6 +10,7 @@ namespace N3O.Umbraco.Payments {
     public class PaymentsScope : PaymentsScopeBase {
         private readonly IRepository<IPaymentsFlow> _repository;
         private readonly FlowId _flowId;
+        private IPaymentsFlow _flow;
 
         public PaymentsScope(IClock clock, IFormatter formatter, IRepository<IPaymentsFlow> repository, FlowId flowId)
             : base(clock, formatter) {
@@ -18,9 +19,9 @@ namespace N3O.Umbraco.Payments {
         }
 
         protected override async Task<IPaymentsFlow> LoadAsync(CancellationToken cancellationToken) {
-            var flow = await _flowId.RunAsync(_repository.GetAsync, true, cancellationToken);
+            _flow ??= await _flowId.RunAsync(_repository.GetAsync, true, cancellationToken);
 
-            return flow;
+            return _flow;
         }
 
         protected override async Task UpdateAsync(IPaymentsFlow flow, CancellationToken cancellationToken) {

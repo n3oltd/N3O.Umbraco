@@ -9,8 +9,7 @@ namespace N3O.Umbraco.Payments.Opayo.Handlers {
     public class ChargeCardHandler : PaymentsHandler<ChargeCardCommand, ChargeCardReq, OpayoPayment> {
         private readonly IChargeService _chargeService;
 
-        public ChargeCardHandler(IPaymentsScope paymentsScope, IChargeService chargeService)
-            : base(paymentsScope) {
+        public ChargeCardHandler(IPaymentsScope paymentsScope, IChargeService chargeService) : base(paymentsScope) {
             _chargeService = chargeService;
         }
 

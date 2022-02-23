@@ -9,8 +9,7 @@ namespace N3O.Umbraco.Payments.Opayo.Handlers {
     public class StoreCardHandler : PaymentsHandler<StoreCardCommand, StoreCardReq, OpayoCredential> {
         private readonly IChargeService _chargeService;
 
-        public StoreCardHandler(IPaymentsScope paymentsScope, IChargeService chargeService)
-            : base(paymentsScope) {
+        public StoreCardHandler(IPaymentsScope paymentsScope, IChargeService chargeService) : base(paymentsScope) {
             _chargeService = chargeService;
         }
 
@@ -18,10 +17,12 @@ namespace N3O.Umbraco.Payments.Opayo.Handlers {
                                                   OpayoCredential credential,
                                                   PaymentsParameters parameters,
                                                   CancellationToken cancellationToken) {
-            await _chargeService.ChargeAsync((OpayoPayment)credential.AdvancePayment,
-                                             req.Model.AdvancePayment,
-                                             parameters,
-                                             true);
+            await DoAsync<OpayoPayment>(async payment => {
+                await _chargeService.ChargeAsync(payment,
+                                                 req.Model.AdvancePayment,
+                                                 parameters,
+                                                 true);
+            }, cancellationToken);
         }
     }
 }
