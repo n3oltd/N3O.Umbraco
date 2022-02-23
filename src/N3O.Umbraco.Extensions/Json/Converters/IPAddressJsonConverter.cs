@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Net;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Json {
     public class IPAddressJsonConverter : JsonConverter {
@@ -16,11 +17,9 @@ namespace N3O.Umbraco.Json {
                                         Type objectType,
                                         object existingValue,
                                         JsonSerializer serializer) {
-            if (reader.Value == null) {
-                return null;
-            } else {
-                return IPAddress.Parse((string) reader.Value);
-            }
+            var str = (string) reader.Value;
+
+            return str.IfNotNull(IPAddress.Parse);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Umbraco.Cms.Core.Mapping;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Payments.Models {
     public class PaymentMapping : IMapDefinition {
@@ -10,7 +11,7 @@ namespace N3O.Umbraco.Payments.Models {
         private void Map(Payment src, PaymentRes dest, MapperContext ctx) {
             ctx.Map<PaymentObject, PaymentObjectRes>(src, dest);
             
-            dest.Card = ctx.Map<CardPayment, CardPaymentRes>(src.Card);
+            dest.Card = src.Card.IfNotNull(ctx.Map<CardPayment, CardPaymentRes>);
             dest.DeclinedReason = src.DeclinedReason;
             dest.IsDeclined = src.IsDeclined;
             dest.IsPaid = src.IsPaid;

@@ -20,7 +20,7 @@ namespace N3O.Umbraco.Json {
                                         Type objectType,
                                         object existingValue,
                                         JsonSerializer serializer) {
-            if (reader.TokenType == JsonToken.Null || reader.Value == null) {
+            if (reader.TokenType == JsonToken.Null) {
                 return null;
             }
 

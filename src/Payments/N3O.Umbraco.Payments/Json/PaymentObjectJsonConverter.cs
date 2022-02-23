@@ -10,9 +10,9 @@ using System.Linq;
 
 namespace N3O.Umbraco.Payments.Json {
     public class PaymentObjectJsonConverter : JsonConverter {
-        private readonly ILookups _lookups;
+        private readonly Lazy<ILookups> _lookups;
 
-        public PaymentObjectJsonConverter(ILookups lookups) {
+        public PaymentObjectJsonConverter(Lazy<ILookups> lookups) {
             _lookups = lookups;
         }
 
@@ -57,10 +57,10 @@ namespace N3O.Umbraco.Payments.Json {
             }
 
             var lookupId = (string) property.Value;
-            var lookup = _lookups.FindById<T>(lookupId);
+            var lookup = _lookups.Value.FindById<T>(lookupId);
 
             if (lookup == null) {
-                throw new Exception($"Property {propertyName} contains invalid value {lookupId}");
+                throw new Exception($"Property {propertyName} contains invalid value {lookupId} for lookup {typeof(T).GetFriendlyName()}");
             }
             
             return lookup;

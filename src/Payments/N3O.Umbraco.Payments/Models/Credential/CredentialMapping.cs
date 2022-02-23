@@ -1,4 +1,5 @@
 ﻿using Umbraco.Cms.Core.Mapping;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Payments.Models {
     public class CredentialMapping : IMapDefinition {
@@ -10,7 +11,7 @@ namespace N3O.Umbraco.Payments.Models {
         private void Map(Credential src, CredentialRes dest, MapperContext ctx) {
             ctx.Map<PaymentObject, PaymentObjectRes>(src, dest);
 
-            dest.AdvancePayment = ctx.Map<Payment, PaymentRes>(src.AdvancePayment);
+            dest.AdvancePayment = src.AdvancePayment.IfNotNull(ctx.Map<Payment, PaymentRes>);
             dest.SetupAt = src.SetupAt;
             dest.IsSetUp = src.IsSetUp;
         }

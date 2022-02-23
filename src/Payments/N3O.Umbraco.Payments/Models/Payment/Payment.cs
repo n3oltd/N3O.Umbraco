@@ -1,5 +1,4 @@
 using N3O.Umbraco.Payments.Lookups;
-using Newtonsoft.Json;
 using NodaTime;
 
 namespace N3O.Umbraco.Payments.Models {

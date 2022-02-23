@@ -27,15 +27,7 @@ namespace N3O.Umbraco.Payments.Models {
         public string ThreeDSecureCReq { get; }
         public string ThreeDSecureCRes { get; }
 
-        public CardPayment RequireThreeDSecure(string challengeUrl, string acsTransId, string cReq) {
-            if (ThreeDSecureCompleted) {
-                throw new InvalidOperationException();
-            }
-            
-            return new CardPayment(true, false, challengeUrl, acsTransId, cReq, null);
-        }
-
-        public CardPayment ThreeDSecureComplete(string CRes) {
+        public CardPayment ThreeDSecureComplete(string cRes) {
             if (!ThreeDSecureRequired || ThreeDSecureCompleted) {
                 throw new InvalidOperationException();
             }
@@ -45,7 +37,7 @@ namespace N3O.Umbraco.Payments.Models {
                                    ThreeDSecureChallengeUrl,
                                    ThreeDSecureAcsTransId,
                                    ThreeDSecureCReq,
-                                   CRes);
+                                   cRes);
         }
     }
 }

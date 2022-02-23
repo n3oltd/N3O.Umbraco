@@ -7,11 +7,16 @@ using System;
 
 namespace N3O.Umbraco.Giving.Checkout.Lookups {
     public class CheckoutStage : NamedLookup {
-        private readonly Func<Entities.Checkout, PaymentObject> _getPayment;
-        private readonly Func<Entities.Checkout, PaymentObject> _getCredential;
+        private readonly Func<Entities.Checkout, Payment> _getPayment;
+        private readonly Func<Entities.Checkout, Credential> _getCredential;
         private readonly Func<Entities.Checkout, bool> _isComplete;
 
-        public CheckoutStage(string id, string name, int order, Func<Entities.Checkout, PaymentObject> getPayment, Func<Entities.Checkout, PaymentObject> getCredential,  Func<Entities.Checkout, bool> isComplete)
+        public CheckoutStage(string id,
+                             string name,
+                             Func<Entities.Checkout, Payment> getPayment,
+                             Func<Entities.Checkout, Credential> getCredential,
+                             Func<Entities.Checkout, bool> isComplete,
+                             int order)
             : base(id, name) {
             _getPayment = getPayment;
             _getCredential = getCredential;
@@ -22,12 +27,20 @@ namespace N3O.Umbraco.Giving.Checkout.Lookups {
         public int Order { get; }
 
         public PaymentObject GetPaymentObject(Entities.Checkout checkout, PaymentObjectType type) {
-            if (type == PaymentObjectTypes.Payment) {
-                return _getPayment(checkout);
-            } else if (type == PaymentObjectTypes.Credential) {
-                return _getCredential(checkout);
-            } else {
-                throw UnrecognisedValueException.For(type);
+            try {
+                PaymentObject paymentObject;
+                
+                if (type == PaymentObjectTypes.Payment) {
+                    paymentObject = _getPayment(checkout);
+                } else if (type == PaymentObjectTypes.Credential) {
+                    paymentObject = _getCredential(checkout);
+                } else {
+                    throw UnrecognisedValueException.For(type);
+                }
+
+                return paymentObject;
+            } catch {
+                throw new Exception($"Payment object of type {type} is not available at the {Name} stage");
             }
         }
         
@@ -37,23 +50,23 @@ namespace N3O.Umbraco.Giving.Checkout.Lookups {
     public class CheckoutStages : StaticLookupsCollection<CheckoutStage> {
         public static readonly CheckoutStage Account = new("account",
                                                            "Account",
-                                                           0,
-                                                           c => null,
-                                                           c => null,
-                                                           c => c.Account.HasValue());
+                                                           _ => throw new InvalidOperationException(),
+                                                           _ => throw new InvalidOperationException(),
+                                                           c => c.Account.HasValue(),
+                                                           0);
 
         public static readonly CheckoutStage Donation = new("donation",
                                                             "Donation",
-                                                            2,
                                                             c => c.Donation.Payment,
-                                                            c => null,
-                                                            c => c.Donation.IsComplete);
+                                                            _ => throw new InvalidOperationException(),
+                                                            c => c.Donation.IsComplete,
+                                                            2);
         
         public static readonly CheckoutStage RegularGiving = new("regularGiving",
                                                                  "Regular Giving",
-                                                                 1,
                                                                  c => c.RegularGiving.Credential?.AdvancePayment,
                                                                  c => c.RegularGiving.Credential,
-                                                                 c => c.RegularGiving?.IsComplete ?? false);
+                                                                 c => c.RegularGiving.IsComplete,
+                                                                 1);
     }
 }
