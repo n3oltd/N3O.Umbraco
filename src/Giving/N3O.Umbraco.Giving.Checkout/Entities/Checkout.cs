@@ -14,6 +14,7 @@ namespace N3O.Umbraco.Giving.Checkout.Entities {
         public Currency Currency { get; private set; }
         public CheckoutProgress Progress { get; private set; }
         public Account Account { get; private set; }
+
         public DonationCheckout Donation { get; private set; }
         public RegularGivingCheckout RegularGiving { get; private set; }
         public IPAddress RemoteIp { get; private set; }

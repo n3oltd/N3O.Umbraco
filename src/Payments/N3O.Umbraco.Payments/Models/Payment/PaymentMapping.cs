@@ -8,6 +8,8 @@ namespace N3O.Umbraco.Payments.Models {
 
         // Umbraco.Code.MapAll -Type -Method -Status -HasError -IsComplete -IsInProgress
         private void Map(Payment src, PaymentRes dest, MapperContext ctx) {
+            ctx.Map<PaymentObject, PaymentObjectRes>(src, dest);
+            
             dest.Card = ctx.Map<CardPayment, CardPaymentRes>(src.Card);
             dest.DeclinedReason = src.DeclinedReason;
             dest.IsDeclined = src.IsDeclined;

@@ -30,10 +30,12 @@ namespace N3O.Umbraco.Giving.Checkout.Models {
         public RegularGivingOptions Options { get; }
         public Money Total { get; }
 
+        [JsonIgnore]
         public bool IsComplete => IsRequired &&
                                   Options.HasValue() &&
                                   Credential?.IsSetUp == true;
 
+        [JsonIgnore]
         public bool IsRequired => Allocations.HasAny();
 
         public RegularGivingCheckout UpdateOptions(IRegularGivingOptions options) {

@@ -5,6 +5,7 @@ using N3O.Umbraco.Payments.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace N3O.Umbraco.Payments.Json {
@@ -16,7 +17,7 @@ namespace N3O.Umbraco.Payments.Json {
         }
 
         public override bool CanConvert(Type objectType) {
-            return objectType.IsAssignableTo(typeof(PaymentObject));
+            return objectType.IsAbstract && objectType.IsAssignableTo(typeof(PaymentObject));
         }
 
         public override bool CanWrite => false;
@@ -25,7 +26,7 @@ namespace N3O.Umbraco.Payments.Json {
                                         Type objectType,
                                         object existingValue,
                                         JsonSerializer serializer) {
-            if (reader.TokenType == JsonToken.Null || reader.Value == null) {
+            if (reader.TokenType == JsonToken.Null) {
                 return null;
             }
 
@@ -36,21 +37,33 @@ namespace N3O.Umbraco.Payments.Json {
             var jObject = JObject.Load(reader);
             var properties = jObject.Properties().ToList();
 
-            var paymentMethodProperty = properties.Single(p => p.Name.EqualsInvariant(nameof(PaymentObject.Method)));
-            var paymentMethodId = paymentMethodProperty.Value<string>();
-            var paymentMethod = _lookups.FindById<PaymentMethod>(paymentMethodId);
+            var paymentMethod = GetPropertyValue<PaymentMethod>(properties, nameof(PaymentObject.Method));
+            var paymentObjectType = GetPropertyValue<PaymentObjectType>(properties, nameof(PaymentObject.Type));
             
-            var paymentObjectTypeProperty = properties.Single(p => p.Name.EqualsInvariant(nameof(PaymentObject.Type)));
-            var paymentObjectTypeId = paymentObjectTypeProperty.Value<string>();
-            var paymentObjectType = _lookups.FindById<PaymentObjectType>(paymentObjectTypeId);
-            
-            var paymentObject = jObject.ToObject(paymentMethod.GetObjectType(paymentObjectType));
+            var paymentObject = jObject.ToObject(paymentMethod.GetObjectType(paymentObjectType), serializer);
 
             return paymentObject;
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
             throw new NotImplementedException();
+        }
+
+        private T GetPropertyValue<T>(IReadOnlyList<JProperty> properties, string propertyName) where T : ILookup {
+            var property = properties.SingleOrDefault(x => x.Name.EqualsInvariant(propertyName));
+           
+            if (property == null) {
+                throw new Exception($"No property found with name {propertyName}");
+            }
+
+            var lookupId = (string) property.Value;
+            var lookup = _lookups.FindById<T>(lookupId);
+
+            if (lookup == null) {
+                throw new Exception($"Property {propertyName} contains invalid value {lookupId}");
+            }
+            
+            return lookup;
         }
     }
 }

@@ -18,10 +18,10 @@ namespace N3O.Umbraco.Payments.Opayo.Handlers {
                                                   OpayoCredential credential,
                                                   PaymentsParameters parameters,
                                                   CancellationToken cancellationToken) {
-            await _chargeService.ChargeAsync(credential.AdvancePayment,
-                                                    req.Model.AdvancePayment,
-                                                    parameters,
-                                                    true);
+            await _chargeService.ChargeAsync((OpayoPayment)credential.AdvancePayment,
+                                             req.Model.AdvancePayment,
+                                             parameters,
+                                             true);
         }
     }
 }
