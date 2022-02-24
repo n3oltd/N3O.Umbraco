@@ -40,6 +40,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Umbraco.Forms" Version="9.2.2" />
       <PackageReference Include="uSync.Forms" Version="9.0.1" />
     </ItemGroup>
 </Project>
