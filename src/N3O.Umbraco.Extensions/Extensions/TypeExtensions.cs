@@ -310,21 +310,6 @@ namespace N3O.Umbraco.Extensions {
 			return result;
 		}
 
-		public static T GetPropertyValue<T>(this object obj,
-		                                    string name,
-		                                    StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase) {
-			return (T)GetPropertyValue(obj, name, stringComparison);
-		}
-
-		public static object GetPropertyValue(this object obj,
-		                                      string name,
-		                                      StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase) {
-			var property = GetProperty(obj, name, stringComparison);
-			var value = property?.GetValue(obj);
-
-			return value;
-		}
-
 		public static Action<T, TProperty> GetSetter<T, TProperty>(this Expression<Func<T, TProperty>> expr) {
 			var memberExpression = ExpressionUtility.ToMemberExpression(expr);
 			var property = (PropertyInfo) memberExpression.Member;
