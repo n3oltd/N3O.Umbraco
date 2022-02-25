@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Financial;
@@ -22,6 +23,8 @@ namespace N3O.Umbraco.Payments.Lookups {
         }
         
         public bool IsCardPayment { get; }
+        public bool SupportsCredentials => _credentialObjectType != null;
+        public bool SupportsPayments => _paymentObjectType != null;
 
         public Type GetObjectType(PaymentObjectType objectType) {
             if (objectType == PaymentObjectTypes.Credential) {
@@ -36,6 +39,8 @@ namespace N3O.Umbraco.Payments.Lookups {
         public virtual bool IsAvailable(IContentCache contentCache, Country country, Currency currency) {
             return true;
         }
+
+        public abstract object GetConfiguration(IContentCache contentCache, IHostEnvironment environment);
     }
 
     public class PaymentMethods : TypesLookupsCollection<PaymentMethod> { }

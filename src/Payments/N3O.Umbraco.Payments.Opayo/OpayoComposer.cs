@@ -6,6 +6,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Payments.Opayo.Client;
 using N3O.Umbraco.Payments.Opayo.Content;
+using N3O.Umbraco.Payments.Opayo.Extensions;
 using N3O.Umbraco.Payments.Opayo.Models;
 using Refit;
 using Umbraco.Cms.Core.DependencyInjection;
@@ -23,15 +24,9 @@ namespace N3O.Umbraco.Payments.Opayo {
                 
                 if (settings != null) {
                     if (webHostEnvironment.IsProduction()) {
-                        apiSettings =  new OpayoApiSettings("https://pi-live.sagepay.com",
-                                                            settings.ProductionIntegrationKey,
-                                                            settings.ProductionIntegrationPassword,
-                                                            settings.ProductionVendorName);
+                        apiSettings =  settings.GetProductionSettings();
                     } else {
-                        apiSettings = new OpayoApiSettings("https://pi-test.sagepay.com",
-                                                           settings.StagingIntegrationKey,
-                                                           settings.StagingIntegrationPassword,
-                                                           settings.StagingVendorName);
+                        apiSettings = settings.GetSandboxSettings();
                     }
                 }
 

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
@@ -10,14 +11,14 @@ namespace N3O.Umbraco.Payments.GoCardless {
     public class GoCardlessPaymentMethod : PaymentMethod {
         public GoCardlessPaymentMethod()
             : base("goCardless", "GoCardless", false, null, typeof(GoCardlessCredential)) { }
-        
+
         public override bool IsAvailable(IContentCache contentCache, Country country, Currency currency) {
             var settings = contentCache.Single<GoCardlessSettingsContent>();
-            
+
             if (settings == null) {
                 return false;
             }
-            
+
             if (!country.Iso3Code.EqualsInvariant(GoCardlessConstants.Codes.Countries.UnitedKingdom)) {
                 return false;
             }
@@ -27,6 +28,17 @@ namespace N3O.Umbraco.Payments.GoCardless {
             }
 
             return true;
+        }
+
+        public override object GetConfiguration(IContentCache contentCache, IHostEnvironment environment) {
+            string baseUrl = null;
+            if (environment.IsProduction()) {
+                baseUrl = "https://api.gocardless.com";
+            } else {
+                baseUrl = "https://api-sandbox.gocardless.com";
+            }
+
+            return new {BaseUrl = baseUrl, RedirectFlowUrl = $"{baseUrl}/flow/"};
         }
     }
 }
