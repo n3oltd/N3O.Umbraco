@@ -9,9 +9,5 @@ namespace N3O.Umbraco.Payments.Models {
         public bool IsSetUp { get; private set; }
 
         public override PaymentObjectType Type => PaymentObjectTypes.Credential;
-
-        public void UpdateAdvancePayment(Payment payment) {
-            AdvancePayment = payment;
-        }
     }
 }
