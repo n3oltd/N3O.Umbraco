@@ -43,5 +43,10 @@ namespace N3O.Umbraco.Giving.Checkout.Models {
         public RegularGivingCheckout UpdateCredential(Credential credential) {
             return new RegularGivingCheckout(Allocations, credential, Options, Total);
         }
+        
+        public RegularGivingCheckout UpdateAdvancePayment(Payment payment) {
+            Credential.UpdateAdvancePayment(payment);
+            return new RegularGivingCheckout(Allocations, Credential, Options, Total);
+        }
     }
 }
