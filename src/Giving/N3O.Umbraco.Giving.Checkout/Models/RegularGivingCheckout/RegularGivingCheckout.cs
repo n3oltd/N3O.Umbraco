@@ -36,17 +36,18 @@ namespace N3O.Umbraco.Giving.Checkout.Models {
 
         public bool IsRequired => Allocations.HasAny();
 
-        public RegularGivingCheckout UpdateOptions(IRegularGivingOptions options) {
-            return new RegularGivingCheckout(Allocations, Credential, new RegularGivingOptions(options), Total);
+        public RegularGivingCheckout UpdateAdvancePayment(Payment payment) {
+            Credential.UpdateAdvancePayment(payment);
+            
+            return new RegularGivingCheckout(Allocations, Credential, Options, Total);
         }
-
+        
         public RegularGivingCheckout UpdateCredential(Credential credential) {
             return new RegularGivingCheckout(Allocations, credential, Options, Total);
         }
-        
-        public RegularGivingCheckout UpdateAdvancePayment(Payment payment) {
-            Credential.UpdateAdvancePayment(payment);
-            return new RegularGivingCheckout(Allocations, Credential, Options, Total);
-        }
+
+        public RegularGivingCheckout UpdateOptions(IRegularGivingOptions options) {
+            return new RegularGivingCheckout(Allocations, Credential, new RegularGivingOptions(options), Total);
+        }       
     }
 }

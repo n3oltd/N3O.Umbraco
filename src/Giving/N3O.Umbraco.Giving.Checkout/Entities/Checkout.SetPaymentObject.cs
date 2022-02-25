@@ -2,46 +2,21 @@
 using N3O.Umbraco.Giving.Checkout.Lookups;
 using N3O.Umbraco.Payments.Lookups;
 using N3O.Umbraco.Payments.Models;
-using System;
 
 namespace N3O.Umbraco.Giving.Checkout.Entities {
     public partial class Checkout {
         public void SetPaymentObject(PaymentObjectType type, PaymentObject paymentObject) {
             if (type == PaymentObjectTypes.Payment) {
                 if (Progress.CurrentStage == CheckoutStages.Donation) {
-                    SetPaymentObject<Payment>(type,
-                                              paymentObject,
-                                              CheckoutStages.Donation,
-                                              payment => Donation = Donation.UpdatePayment(payment));
+                    Donation = Donation.UpdatePayment((Payment) paymentObject);
                 } else if (Progress.CurrentStage == CheckoutStages.RegularGiving) {
-                    SetPaymentObject<Payment>(type,
-                                              paymentObject,
-                                              CheckoutStages.RegularGiving,
-                                              payment => RegularGiving = RegularGiving.UpdateAdvancePayment(payment));
-                } else {
-                    throw UnrecognisedValueException.For(type);
+                    RegularGiving = RegularGiving.UpdateAdvancePayment((Payment) paymentObject);
                 }
-               
             } else if (type == PaymentObjectTypes.Credential) {
-                SetPaymentObject<Credential>(type,
-                                             paymentObject,
-                                             CheckoutStages.RegularGiving,
-                                             credential => RegularGiving = RegularGiving.UpdateCredential(credential));
-            } else {
-                throw UnrecognisedValueException.For(type);
+                RegularGiving = RegularGiving.UpdateCredential((Credential) paymentObject);
             }
-        }
-
-        private void SetPaymentObject<T>(PaymentObjectType paymentObjectType,
-                                         PaymentObject paymentObject,
-                                         CheckoutStage stage,
-                                         Action<T> set)
-            where T : class {
-            if (Progress.CurrentStage != stage) {
-                throw new Exception($"Payment object of type {paymentObjectType} is not available at the {Progress.CurrentStage} stage");
-            } else {
-                set(paymentObject as T);
-            }
+            
+            throw UnrecognisedValueException.For(type);
         }
     }
 }
