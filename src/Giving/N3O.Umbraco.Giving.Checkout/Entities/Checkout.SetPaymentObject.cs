@@ -8,10 +8,20 @@ namespace N3O.Umbraco.Giving.Checkout.Entities {
     public partial class Checkout {
         public void SetPaymentObject(PaymentObjectType type, PaymentObject paymentObject) {
             if (type == PaymentObjectTypes.Payment) {
-                SetPaymentObject<Payment>(type,
-                                          paymentObject,
-                                          CheckoutStages.Donation,
-                                          payment => Donation = Donation.UpdatePayment(payment));
+                if (Progress.CurrentStage == CheckoutStages.Donation) {
+                    SetPaymentObject<Payment>(type,
+                                              paymentObject,
+                                              CheckoutStages.Donation,
+                                              payment => Donation = Donation.UpdatePayment(payment));
+                } else if (Progress.CurrentStage == CheckoutStages.RegularGiving) {
+                    SetPaymentObject<Payment>(type,
+                                              paymentObject,
+                                              CheckoutStages.RegularGiving,
+                                              payment => RegularGiving = RegularGiving.UpdateAdvancePayment(payment));
+                } else {
+                    throw UnrecognisedValueException.For(type);
+                }
+               
             } else if (type == PaymentObjectTypes.Credential) {
                 SetPaymentObject<Credential>(type,
                                              paymentObject,
