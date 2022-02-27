@@ -10,23 +10,16 @@ namespace N3O.Umbraco.Giving.Checkout.Handlers {
         private readonly ICheckoutAccessor _checkoutAccessor;
         private readonly IUmbracoMapper _mapper;
 
-        public GetOrBeginCheckoutHandler(ICheckoutAccessor checkoutAccessor,
-                                         IUmbracoMapper mapper) {
+        public GetOrBeginCheckoutHandler(ICheckoutAccessor checkoutAccessor, IUmbracoMapper mapper) {
             _checkoutAccessor = checkoutAccessor;
             _mapper = mapper;
         }
         
         public async Task<CheckoutRes> Handle(GetOrBeginCheckoutCommand req, CancellationToken cancellationToken) {
-            var checkout = await GetOrCreateAsync(cancellationToken);
+            var checkout = await _checkoutAccessor.GetOrCreateAsync(cancellationToken);
             var res = _mapper.Map<Entities.Checkout, CheckoutRes>(checkout);
 
             return res;
-        }
-    
-        private async Task<Entities.Checkout> GetOrCreateAsync(CancellationToken cancellationToken) {
-            var checkout = await _checkoutAccessor.GetOrCreateAsync(cancellationToken);
-
-            return checkout;
         }
     }
 }

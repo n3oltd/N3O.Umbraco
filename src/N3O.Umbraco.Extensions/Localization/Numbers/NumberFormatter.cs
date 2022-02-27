@@ -71,11 +71,7 @@ namespace N3O.Umbraco.Localization {
 
             var formatProvider = abbreviated ? AbbreviatedNumberFormatter.Provider(localFormat) : localFormat;
 
-            if (money.Amount % 1 == 0) {
-                return string.Format(formatProvider, "{0:C0}", money.Amount);
-            } else {
-                return string.Format(formatProvider, "{0:C}", money.Amount);
-            }
+            return string.Format(formatProvider, money.Amount % 1m == 0m ? "{0:C0}" : "{0:C}", money.Amount);
         }
 
         private NumberFormatInfo GetNumberFormatInfo(NumberFormat numberFormat) {

@@ -7,19 +7,24 @@ using System;
 namespace N3O.Umbraco.Giving.Checkout.Lookups {
     public class CheckoutStage : NamedLookup {
         private readonly Func<Entities.Checkout, bool> _isComplete;
-        private readonly Func<IContentCache, string> _getUrl;
+        private readonly Func<IContentCache, IUmbracoContent> _getPage;
 
-        public CheckoutStage(string id, string name, Func<Entities.Checkout, bool> isComplete, int order, Func<IContentCache, string> getUrl)
+        public CheckoutStage(string id,
+                             string name,
+                             Func<Entities.Checkout, bool> isComplete,
+                             int order,
+                             Func<IContentCache, IUmbracoContent> getPage)
             : base(id, name) {
             _isComplete = isComplete;
-            _getUrl = getUrl;
+            _getPage = getPage;
             Order = order;
         }
         
         public int Order { get; }
         
         public bool IsComplete(Entities.Checkout checkout) => _isComplete(checkout);
-        public string GetUrl(IContentCache contentCache) => _getUrl(contentCache);
+        
+        public string GetUrl(IContentCache contentCache) => _getPage(contentCache).Content.AbsoluteUrl();
     }
 
     public class CheckoutStages : StaticLookupsCollection<CheckoutStage> {
@@ -27,18 +32,18 @@ namespace N3O.Umbraco.Giving.Checkout.Lookups {
                                                            "Account",
                                                            c => c.Account.HasValue(),
                                                            0,
-                                                           c => c.Single<CheckoutAccountPageContent>().Content.AbsoluteUrl());
+                                                           c => c.Single<CheckoutAccountPageContent>());
 
         public static readonly CheckoutStage Donation = new("donation",
                                                             "Donation",
                                                             c => c.Donation.IsComplete,
                                                             2,
-                                                            c => c.Single<CheckoutDonationPageContent>().Content.AbsoluteUrl());
+                                                            c => c.Single<CheckoutDonationPageContent>());
         
         public static readonly CheckoutStage RegularGiving = new("regularGiving",
                                                                  "Regular Giving",
                                                                  c => c.RegularGiving.IsComplete,
                                                                  1,
-                                                                 c => c.Single<CheckoutRegularGivingPageContent>().Content.AbsoluteUrl());
+                                                                 c => c.Single<CheckoutRegularGivingPageContent>());
     }
 }
