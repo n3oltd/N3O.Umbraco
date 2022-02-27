@@ -22,6 +22,8 @@ namespace N3O.Umbraco.Payments.Lookups {
         }
         
         public bool IsCardPayment { get; }
+        public bool SupportsCredentials => _credentialObjectType != null;
+        public bool SupportsPayments => _paymentObjectType != null;
 
         public Type GetObjectType(PaymentObjectType objectType) {
             if (objectType == PaymentObjectTypes.Credential) {
