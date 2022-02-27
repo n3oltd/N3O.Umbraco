@@ -10,14 +10,16 @@ using System.Reflection;
 namespace N3O.Umbraco.Extensions {
     public static class ServiceCollectionExtensions {
         public static IServiceCollection AddOpenApiDocument(this IServiceCollection services, string name) {
-            services.AddOpenApiDocument(opt => {
-                opt.Title = name;
-                opt.DocumentName = name;
-                opt.FlattenInheritanceHierarchy = true;
+            if (OpenApi.IsEnabled()) {
+                services.AddOpenApiDocument(opt => {
+                    opt.Title = name;
+                    opt.DocumentName = name;
+                    opt.FlattenInheritanceHierarchy = true;
 
-                AddSchemaProcessors(opt);
-                AddOperationFilters(opt, name);
-            });
+                    AddSchemaProcessors(opt);
+                    AddOperationFilters(opt, name);
+                });
+            }
 
             return services;
         }
