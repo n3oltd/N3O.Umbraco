@@ -37,7 +37,7 @@ namespace N3O.Umbraco.Payments.Opayo.Handlers {
                              transaction.StatusDetail,
                              transaction.BankAuthorisationCode,
                              transaction.RetrievalReference.GetValueOrThrow());
-            } else if (transaction.IsDeclined()) {
+            } else if (transaction.IsDeclined() || transaction.IsRejected()) {
                 payment.Declined(transaction.TransactionId, transaction.StatusCode, transaction.StatusDetail);
             } else {
                 throw UnrecognisedValueException.For(transaction.Status);
