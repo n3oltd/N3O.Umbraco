@@ -1,9 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Utilities;
+using System;
+using System.Linq;
 using Umbraco.Cms.Core.DependencyInjection;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Payments {
     public class PaymentsComposer : Composer {
@@ -11,11 +11,15 @@ namespace N3O.Umbraco.Payments {
             builder.Services.AddTransient<IPaymentsScope, PaymentsScope>();
             builder.Services.AddOpenApiDocument(PaymentsConstants.ApiName);
             
-            var types = OurAssemblies.GetTypes(t => t.InheritsGenericClass(typeof(PaymentMethodDataEntryConfiguration<,>)) &&
-                                                    !t.IsAbstract);
-            foreach (var type in types) {
-                builder.Services.AddTransient(type);
-            }
+            RegisterAll(t => t.ImplementsGenericInterface(typeof(IPaymentMethodViewModel<>)),
+                        t => builder.Services.AddTransient(GetServiceType(t), t));
+        }
+
+        private Type GetServiceType(Type type) {
+            var paymentMethodType = type.GetParameterTypesForGenericInterface(typeof(IPaymentMethodViewModel<>))
+                                        .Single();
+
+            return typeof(IPaymentMethodViewModel<>).MakeGenericType(paymentMethodType);
         }
     }
 }

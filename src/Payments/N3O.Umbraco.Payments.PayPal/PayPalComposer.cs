@@ -13,23 +13,27 @@ namespace N3O.Umbraco.Payments.PayPal {
         public override void Compose(IUmbracoBuilder builder) {
             builder.Services.AddOpenApiDocument(PayPalConstants.ApiName);
             
-            builder.Services.AddTransient<PayPalKeys>(serviceProvider => {
+            builder.Services.AddSingleton<PayPalApiSettings>(serviceProvider => {
                 var contentCache = serviceProvider.GetRequiredService<IContentCache>();
                 var webHostEnvironment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
-                var settings = contentCache.Single<PayPalSettingsContent>();
-
-                PayPalKeys payPalKeys = null;
-
-                if (settings != null) {
-                    if (webHostEnvironment.IsProduction()) {
-                        payPalKeys = new PayPalKeys(settings.ProductionClientId);
-                    } else {
-                        payPalKeys = new PayPalKeys(settings.StagingClientId);
-                    }
-                }
-
-                return payPalKeys;
+                var apiSettings = GetApiSettings(contentCache, webHostEnvironment);
+                
+                return apiSettings;
             });
+        }
+        
+        private PayPalApiSettings GetApiSettings(IContentCache contentCache, IHostEnvironment environment) {
+            var settings = contentCache.Single<PayPalSettingsContent>();
+            
+            if (settings != null) {
+                if (environment.IsProduction()) {
+                    return new PayPalApiSettings(settings.ProductionClientId);
+                } else {
+                    return new PayPalApiSettings(settings.StagingClientId);
+                }
+            }
+
+            return null;
         }
     }
 }
