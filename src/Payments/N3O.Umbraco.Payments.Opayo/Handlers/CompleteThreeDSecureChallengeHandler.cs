@@ -28,7 +28,7 @@ namespace N3O.Umbraco.Payments.Opayo.Handlers {
             apiReq.TransactionId = payment.OpayoTransactionId;
 
             var transaction = await _opayoClient.CompleteThreeDSecureChallengeResponseAsync(apiReq);
-            
+
             payment.ThreeDSecureComplete(req.Model.CRes);
 
             if (transaction.IsAuthorised()) {
@@ -39,6 +39,8 @@ namespace N3O.Umbraco.Payments.Opayo.Handlers {
                              transaction.RetrievalReference.GetValueOrThrow());
             } else if (transaction.IsDeclined() || transaction.IsRejected()) {
                 payment.Declined(transaction.TransactionId, transaction.StatusCode, transaction.StatusDetail);
+            } else if (transaction.IsRejected()) {
+                payment.Error(transaction.TransactionId, transaction.StatusCode, transaction.StatusDetail);
             } else {
                 throw UnrecognisedValueException.For(transaction.Status);
             }
