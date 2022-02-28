@@ -13,8 +13,6 @@ namespace N3O.Umbraco.Payments.Stripe {
         public override void Compose(IUmbracoBuilder builder) {
             builder.Services.AddOpenApiDocument(StripeConstants.ApiName);
             
-            builder.Services.AddTransient<IPaymentMethodDataEntryConfiguration<StripePaymentMethod>, StripeDataEntryConfiguation>();
-
             builder.Services.AddTransient<StripeKeys>(serviceProvider => {
                 var contentCache = serviceProvider.GetRequiredService<IContentCache>();
                 var webHostEnvironment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
