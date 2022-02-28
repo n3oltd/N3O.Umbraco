@@ -12,6 +12,8 @@ namespace N3O.Umbraco.Payments.GoCardless {
     public class GoCardlessComposer : Composer {
         public override void Compose(IUmbracoBuilder builder) {
             builder.Services.AddOpenApiDocument(GoCardlessConstants.ApiName);
+
+            builder.Services.AddTransient<IPaymentMethodDataEntryConfiguration<GoCardlessPaymentMethod>, GoCardlessDataEntryConfiguation>();
             
             builder.Services.AddTransient<GoCardlessClient>(serviceProvider => {
                 var contentCache = serviceProvider.GetRequiredService<IContentCache>();

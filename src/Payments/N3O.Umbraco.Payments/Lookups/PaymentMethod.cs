@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Financial;
@@ -39,8 +38,6 @@ namespace N3O.Umbraco.Payments.Lookups {
         public virtual bool IsAvailable(IContentCache contentCache, Country country, Currency currency) {
             return true;
         }
-
-        public abstract object GetConfiguration(IContentCache contentCache, IHostEnvironment environment);
     }
 
     public class PaymentMethods : TypesLookupsCollection<PaymentMethod> { }

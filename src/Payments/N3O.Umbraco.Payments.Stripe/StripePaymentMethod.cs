@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Lookups;
@@ -17,10 +16,6 @@ namespace N3O.Umbraco.Payments.Stripe {
             }
 
             return true;
-        }
-
-        public override object GetConfiguration(IContentCache contentCache, IHostEnvironment environment) {
-            throw new System.NotImplementedException();
         }
     }
 }
