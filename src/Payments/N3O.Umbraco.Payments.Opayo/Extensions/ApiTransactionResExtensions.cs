@@ -11,6 +11,10 @@ namespace N3O.Umbraco.Payments.Opayo.Extensions {
             return HasStatus(transaction, "NotAuthed");
         }
         
+        public static bool IsRejected(this ApiTransactionRes transaction) {
+            return HasStatus(transaction, "Rejected");
+        }
+        
         public static bool RequiresThreeDSecure(this ApiTransactionRes transaction) {
             return HasStatus(transaction, "3DAuth");
         }

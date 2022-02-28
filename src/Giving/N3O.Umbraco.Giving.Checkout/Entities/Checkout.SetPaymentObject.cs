@@ -11,12 +11,14 @@ namespace N3O.Umbraco.Giving.Checkout.Entities {
                     Donation = Donation.UpdatePayment((Payment) paymentObject);
                 } else if (Progress.CurrentStage == CheckoutStages.RegularGiving) {
                     RegularGiving = RegularGiving.UpdateAdvancePayment((Payment) paymentObject);
+                } else {
+                    throw UnrecognisedValueException.For(Progress.CurrentStage);
                 }
             } else if (type == PaymentObjectTypes.Credential) {
                 RegularGiving = RegularGiving.UpdateCredential((Credential) paymentObject);
+            } else {
+                throw UnrecognisedValueException.For(type);
             }
-            
-            throw UnrecognisedValueException.For(type);
         }
     }
 }
