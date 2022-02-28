@@ -12,7 +12,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Giving.Cart.Modules {
     public class CartBlockModule : IBlockModule {
-        private static readonly string CartBlockAlias = AliasHelper<CartBlockContent>.ContentTypeAlias();
+        private static readonly string BlockAlias = AliasHelper<CartBlockContent>.ContentTypeAlias();
 
         private readonly Lazy<ICartAccessor> _cartAccessor;
         private readonly Lazy<IFormatter> _formatter;
@@ -33,7 +33,7 @@ namespace N3O.Umbraco.Giving.Cart.Modules {
         }
         
         public bool ShouldExecute(IPublishedElement block) {
-            return block.ContentType.Alias.EqualsInvariant(CartBlockAlias);
+            return block.ContentType.Alias.EqualsInvariant(BlockAlias);
         }
 
         public async Task<object> ExecuteAsync(IPublishedElement block, CancellationToken cancellationToken) {
@@ -41,7 +41,7 @@ namespace N3O.Umbraco.Giving.Cart.Modules {
             var currency = _currencyAccessor.Value.GetCurrency();
             var cart = await _cartAccessor.Value.GetAsync(cancellationToken);
             
-            var viewModel = new CartModel(_formatter.Value,
+            var cartModel = new CartModel(_formatter.Value,
                                           _contentCache.Value,
                                           currency,
                                           cart.Donation,
@@ -49,7 +49,7 @@ namespace N3O.Umbraco.Giving.Cart.Modules {
                                           checkoutView.HasValue());
 
 
-            return viewModel;
+            return cartModel;
         }
 
         public string Key => CartConstants.BlockModuleKeys.Cart;

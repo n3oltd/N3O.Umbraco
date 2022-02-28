@@ -11,7 +11,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Search.Modules {
     public class SearchBlockModule : IBlockModule {
-        private static readonly string SearchBlockAlias = AliasHelper<SearchBlockContent>.ContentTypeAlias();
+        private static readonly string BlockAlias = AliasHelper<SearchBlockContent>.ContentTypeAlias();
 
         private readonly Lazy<ISearcher> _searcher;
         private readonly Lazy<IQueryStringAccessor> _queryStringAccessor;
@@ -26,7 +26,7 @@ namespace N3O.Umbraco.Search.Modules {
         }
         
         public bool ShouldExecute(IPublishedElement block) {
-            return block.ContentType.Alias.EqualsInvariant(SearchBlockAlias);
+            return block.ContentType.Alias.EqualsInvariant(BlockAlias);
         }
 
         public Task<object> ExecuteAsync(IPublishedElement block, CancellationToken cancellationToken) {
