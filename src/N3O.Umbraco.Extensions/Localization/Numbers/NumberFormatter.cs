@@ -69,9 +69,9 @@ namespace N3O.Umbraco.Localization {
 
             localFormat.CurrencySymbol = money.Currency.Symbol;
 
-            var formatProvider = abbreviated ? AbbreviatedNumberFormatter.Provider(localFormat) : localFormat; 
+            var formatProvider = abbreviated ? AbbreviatedNumberFormatter.Provider(localFormat) : localFormat;
 
-            return string.Format(formatProvider, "{0:C}", money.Amount);
+            return string.Format(formatProvider, money.Amount % 1m == 0m ? "{0:C0}" : "{0:C}", money.Amount);
         }
 
         private NumberFormatInfo GetNumberFormatInfo(NumberFormat numberFormat) {

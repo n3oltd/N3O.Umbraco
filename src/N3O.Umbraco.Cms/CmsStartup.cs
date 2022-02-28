@@ -35,8 +35,9 @@ namespace N3O.Umbraco {
                 app.UseHsts();
             } else {
                 app.UseDeveloperExceptionPage();
-                app.UseOpenApiWithUI();
             }
+
+            app.UseOpenApiWithUI();
 
             app.UseUmbraco()
                .WithMiddleware(u => {

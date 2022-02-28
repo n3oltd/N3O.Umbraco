@@ -10,12 +10,12 @@ namespace N3O.Umbraco.Giving.Checkout.Models {
         public RegularGivingOptionsReqValidator(IFormatter formatter, ILocalClock localClock) : base(formatter) {
             RuleFor(x => x.FirstCollectionDate)
                 .Must(x => x.GetValueOrThrow() >= localClock.GetLocalToday())
-                .When(x => x.HasValue())
+                .When(x => x.HasValue(y => y.FirstCollectionDate))
                 .WithMessage(Get<Strings>(s => s.FirstCollectionInPast));
             
             RuleFor(x => x.FirstCollectionDate)
                 .Must(x => (x.GetValueOrThrow() - localClock.GetLocalToday()).Days < FirstCollectionMaxDaysInFuture)
-                .When(x => x.HasValue())
+                .When(x => x.HasValue(y => y.FirstCollectionDate))
                 .WithMessage(Get<Strings>(s => s.FirstCollectionTooFarInFuture_1, FirstCollectionMaxDaysInFuture));
         }
 

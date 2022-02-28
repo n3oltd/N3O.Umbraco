@@ -1,70 +1,25 @@
-﻿using N3O.Umbraco.Context;
-using N3O.Umbraco.Entities;
-using N3O.Umbraco.Giving.Cart;
-using N3O.Umbraco.Giving.Checkout.Commands;
+﻿using N3O.Umbraco.Giving.Checkout.Commands;
 using N3O.Umbraco.Giving.Checkout.Models;
-using N3O.Umbraco.Locks;
 using N3O.Umbraco.Mediator;
-using N3O.Umbraco.References;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Giving.Checkout.Handlers {
     public class GetOrBeginCheckoutHandler : IRequestHandler<GetOrBeginCheckoutCommand, None, CheckoutRes> {
-        private readonly ICheckoutIdAccessor _checkoutIdAccessor;
-        private readonly IRepository<Entities.Checkout> _repository;
-        private readonly Lazy<ICartAccessor> _cartAccessor;
-        private readonly Lazy<ICounters> _counters;
-        private readonly Lazy<IRemoteIpAddressAccessor> _remoteIpAddressAccessor;
-        private readonly ILock _lock;
+        private readonly ICheckoutAccessor _checkoutAccessor;
         private readonly IUmbracoMapper _mapper;
 
-        public GetOrBeginCheckoutHandler(ICheckoutIdAccessor checkoutIdAccessor,
-                                         IRepository<Entities.Checkout> repository,
-                                         Lazy<ICartAccessor> cartAccessor,
-                                         Lazy<ICounters> counters,
-                                         Lazy<IRemoteIpAddressAccessor> remoteIpAddressAccessor,
-                                         ILock @lock,
-                                         IUmbracoMapper mapper) {
-            _checkoutIdAccessor = checkoutIdAccessor;
-            _repository = repository;
-            _cartAccessor = cartAccessor;
-            _counters = counters;
-            _remoteIpAddressAccessor = remoteIpAddressAccessor;
-            _lock = @lock;
+        public GetOrBeginCheckoutHandler(ICheckoutAccessor checkoutAccessor, IUmbracoMapper mapper) {
+            _checkoutAccessor = checkoutAccessor;
             _mapper = mapper;
         }
         
         public async Task<CheckoutRes> Handle(GetOrBeginCheckoutCommand req, CancellationToken cancellationToken) {
-            var checkout = await GetOrCreateAsync(cancellationToken);
+            var checkout = await _checkoutAccessor.GetOrCreateAsync(cancellationToken);
             var res = _mapper.Map<Entities.Checkout, CheckoutRes>(checkout);
 
             return res;
-        }
-    
-        private async Task<Entities.Checkout> GetOrCreateAsync(CancellationToken cancellationToken) {
-            var checkoutId = _checkoutIdAccessor.GetCheckoutId();
-            
-            var result = await _lock.LockAsync(checkoutId.ToString(), async () => {
-                var checkout = await _repository.GetAsync(checkoutId, cancellationToken);
-
-                if (checkout == null) {
-                    var cart = await _cartAccessor.Value.GetAsync(cancellationToken);
-                    
-                    checkout = await Entities.Checkout.CreateAsync(_counters.Value,
-                                                                   _remoteIpAddressAccessor.Value,
-                                                                   checkoutId,
-                                                                   cart);
-
-                    await _repository.InsertAsync(checkout, cancellationToken);
-                }
-
-                return checkout;
-            });
-
-            return result;
         }
     }
 }
