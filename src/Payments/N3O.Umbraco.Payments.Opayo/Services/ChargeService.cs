@@ -56,8 +56,8 @@ namespace N3O.Umbraco.Payments.Opayo {
                 } else if (transaction.IsDeclined()) {
                     payment.Declined(transaction.TransactionId, transaction.StatusCode, transaction.StatusDetail);
                 } else if (transaction.RequiresThreeDSecure()) {
-                    payment.RequireThreeDSecure(req.ReturnUrl,
-                                                transaction.TransactionId,
+                    payment.RequireThreeDSecure(transaction.TransactionId,
+                                                req.ReturnUrl,
                                                 transaction.AcsUrl,
                                                 transaction.AcsTransId,
                                                 transaction.CReq);

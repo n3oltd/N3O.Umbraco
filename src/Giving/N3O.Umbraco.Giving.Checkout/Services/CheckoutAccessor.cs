@@ -50,13 +50,15 @@ namespace N3O.Umbraco.Giving.Checkout {
 
                 if (checkout == null) {
                     var cart = await _cartAccessor.Value.GetAsync(cancellationToken);
-                    
-                    checkout = await Entities.Checkout.CreateAsync(_counters.Value,
-                                                                   _remoteIpAddressAccessor.Value,
-                                                                   checkoutId,
-                                                                   cart);
 
-                    await _repository.InsertAsync(checkout, cancellationToken);
+                    if (!cart.IsEmpty()) {
+                        checkout = await Entities.Checkout.CreateAsync(_counters.Value,
+                                                                       _remoteIpAddressAccessor.Value,
+                                                                       checkoutId,
+                                                                       cart);
+
+                        await _repository.InsertAsync(checkout, cancellationToken);    
+                    }
                 }
 
                 return checkout;

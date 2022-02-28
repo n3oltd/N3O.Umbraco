@@ -5,6 +5,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Checkout.Content;
+using N3O.Umbraco.Giving.Content;
 using System.Threading;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Web;
@@ -35,7 +36,9 @@ namespace N3O.Umbraco.Giving.Checkout.Controllers {
                 var checkout = _checkoutAccessor.GetOrCreateAsync(CancellationToken.None).GetAwaiter().GetResult();
                 string url;
 
-                if (checkout.IsComplete) {
+                if (checkout == null) {
+                    url = _contentCache.Single<DonatePageContent>().Content.AbsoluteUrl();
+                } else if (checkout.IsComplete) {
                     url = _contentCache.Single<CheckoutCompletePageContent>().Content.AbsoluteUrl();
                 } else {
                     url = checkout.Progress.CurrentStage.GetUrl(_contentCache);

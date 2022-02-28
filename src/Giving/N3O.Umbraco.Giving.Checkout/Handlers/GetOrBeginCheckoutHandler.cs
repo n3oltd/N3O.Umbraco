@@ -1,6 +1,7 @@
 ﻿using N3O.Umbraco.Giving.Checkout.Commands;
 using N3O.Umbraco.Giving.Checkout.Models;
 using N3O.Umbraco.Mediator;
+using NUglify.Helpers;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
@@ -17,7 +18,8 @@ namespace N3O.Umbraco.Giving.Checkout.Handlers {
         
         public async Task<CheckoutRes> Handle(GetOrBeginCheckoutCommand req, CancellationToken cancellationToken) {
             var checkout = await _checkoutAccessor.GetOrCreateAsync(cancellationToken);
-            var res = _mapper.Map<Entities.Checkout, CheckoutRes>(checkout);
+            
+            var res = checkout.IfNotNull(_mapper.Map<Entities.Checkout, CheckoutRes>);
 
             return res;
         }
