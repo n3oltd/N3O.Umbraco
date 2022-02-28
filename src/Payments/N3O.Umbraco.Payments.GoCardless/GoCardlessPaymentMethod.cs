@@ -10,14 +10,14 @@ namespace N3O.Umbraco.Payments.GoCardless {
     public class GoCardlessPaymentMethod : PaymentMethod {
         public GoCardlessPaymentMethod()
             : base("goCardless", "GoCardless", false, null, typeof(GoCardlessCredential)) { }
-        
+
         public override bool IsAvailable(IContentCache contentCache, Country country, Currency currency) {
             var settings = contentCache.Single<GoCardlessSettingsContent>();
-            
+
             if (settings == null) {
                 return false;
             }
-            
+
             if (!country.Iso3Code.EqualsInvariant(GoCardlessConstants.Codes.Countries.UnitedKingdom)) {
                 return false;
             }
