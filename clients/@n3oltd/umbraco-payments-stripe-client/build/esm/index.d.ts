@@ -25,6 +25,7 @@ export interface StripePayment {
     declinedReason?: string | undefined;
     isDeclined?: boolean;
     isPaid?: boolean;
+    type?: PaymentObjectType | undefined;
     completeAt?: Date | undefined;
     errorAt?: Date | undefined;
     errorMessage?: string | undefined;
@@ -117,6 +118,7 @@ export interface StripeCredential {
     advancePayment?: Payment | undefined;
     setupAt?: Date | undefined;
     isSetUp?: boolean;
+    type?: PaymentObjectType | undefined;
     completeAt?: Date | undefined;
     errorAt?: Date | undefined;
     errorMessage?: string | undefined;
@@ -145,6 +147,7 @@ export interface Payment {
     declinedReason?: string | undefined;
     isDeclined?: boolean;
     isPaid?: boolean;
+    type?: PaymentObjectType | undefined;
 }
 export interface SetupIntentReq {
     paymentMethodId?: string | undefined;

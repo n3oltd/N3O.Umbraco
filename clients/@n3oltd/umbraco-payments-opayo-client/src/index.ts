@@ -236,6 +236,7 @@ export interface OpayoPayment {
     declinedReason?: string | undefined;
     isDeclined?: boolean;
     isPaid?: boolean;
+    type?: PaymentObjectType | undefined;
     completeAt?: Date | undefined;
     errorAt?: Date | undefined;
     errorMessage?: string | undefined;
@@ -346,8 +347,10 @@ export interface PaymentFlowResOfOpayoCredential {
 }
 
 export interface OpayoCredential {
+    advancePayment?: Payment | undefined;
     setupAt?: Date | undefined;
     isSetUp?: boolean;
+    type?: PaymentObjectType | undefined;
     completeAt?: Date | undefined;
     errorAt?: Date | undefined;
     errorMessage?: string | undefined;
@@ -368,6 +371,7 @@ export interface Payment {
     declinedReason?: string | undefined;
     isDeclined?: boolean;
     isPaid?: boolean;
+    type?: PaymentObjectType | undefined;
 }
 
 export interface StoreCardReq {

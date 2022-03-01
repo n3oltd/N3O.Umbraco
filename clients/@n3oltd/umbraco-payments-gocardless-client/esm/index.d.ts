@@ -18,16 +18,18 @@ export interface GoCardlessCredential {
     advancePayment?: Payment | undefined;
     setupAt?: Date | undefined;
     isSetUp?: boolean;
+    type?: PaymentObjectType | undefined;
     completeAt?: Date | undefined;
     errorAt?: Date | undefined;
     errorMessage?: string | undefined;
     exceptionDetails?: string | undefined;
     status?: PaymentObjectStatus | undefined;
     method?: string | undefined;
-    goCardlessSessionToken?: string | undefined;
-    goCardlessRedirectFlowId?: string | undefined;
     goCardlessCustomerId?: string | undefined;
+    goCardlessRedirectFlowId?: string | undefined;
     goCardlessMandateId?: string | undefined;
+    goCardlessSessionToken?: string | undefined;
+    goCardlessRedirectUrl?: string | undefined;
     returnUrl?: string | undefined;
 }
 export interface Payment {
@@ -42,6 +44,7 @@ export interface Payment {
     declinedReason?: string | undefined;
     isDeclined?: boolean;
     isPaid?: boolean;
+    type?: PaymentObjectType | undefined;
 }
 /** One of 'complete', 'error', 'inProgress' */
 export declare enum PaymentObjectStatus {

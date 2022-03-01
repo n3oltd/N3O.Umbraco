@@ -80,6 +80,7 @@ export interface PayPalPayment {
     declinedReason?: string | undefined;
     isDeclined?: boolean;
     isPaid?: boolean;
+    type?: PaymentObjectType | undefined;
     completeAt?: Date | undefined;
     errorAt?: Date | undefined;
     errorMessage?: string | undefined;
