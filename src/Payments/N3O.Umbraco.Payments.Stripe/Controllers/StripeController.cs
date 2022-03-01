@@ -18,30 +18,30 @@ namespace N3O.Umbraco.Payments.Stripe.Controllers {
 
         [HttpPost("payments/{flowId:entityId}/paymentIntent")]
         public async Task<ActionResult<PaymentFlowRes<StripePayment>>> CreatePaymentIntent(PaymentIntentReq req) {
-            await _mediator.SendAsync<CreatePaymentIntentCommand, PaymentIntentReq, PaymentFlowRes<StripePayment>>(req);
+            var res = await _mediator.SendAsync<CreatePaymentIntentCommand, PaymentIntentReq, PaymentFlowRes<StripePayment>>(req);
 
-            return Ok();
+            return Ok(res);
         }
         
         [HttpPost("credentials/{flowId:entityId}/setupIntent")]
         public async Task<ActionResult<PaymentFlowRes<StripeCredential>>> CreateSetupIntent(SetupIntentReq req) {
-            await _mediator.SendAsync<CreateSetupIntentCommand, SetupIntentReq, PaymentFlowRes<StripeCredential>>(req);
+            var res = await _mediator.SendAsync<CreateSetupIntentCommand, SetupIntentReq, PaymentFlowRes<StripeCredential>>(req);
 
-            return Ok();
+            return Ok(res);
         }
         
         [HttpPost("payments/{flowId:entityId}/paymentIntent/confirm")]
         public async Task<ActionResult<PaymentFlowRes<StripePayment>>> ConfirmPaymentIntent() {
-            await _mediator.SendAsync<ConfirmPaymentIntentCommand, None, PaymentFlowRes<StripePayment>>(None.Empty);
+            var res = await _mediator.SendAsync<ConfirmPaymentIntentCommand, None, PaymentFlowRes<StripePayment>>(None.Empty);
 
-            return Ok();
+            return Ok(res);
         }
         
         [HttpPost("credentials/{flowId:entityId}/setupIntent/confirm")]
         public async Task<ActionResult<PaymentFlowRes<StripeCredential>>> ConfirmSetupIntent() {
-            await _mediator.SendAsync<ConfirmSetupIntentCommand, None, PaymentFlowRes<StripeCredential>>(None.Empty);
+            var res = await _mediator.SendAsync<ConfirmSetupIntentCommand, None, PaymentFlowRes<StripeCredential>>(None.Empty);
 
-            return Ok();
+            return Ok(res);
         }
     }
 }
