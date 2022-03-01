@@ -53,7 +53,7 @@ namespace N3O.Umbraco.Giving.Models {
             
             RuleForEach(x => x.Sponsorship.Components)
                 .Must((req, x) => pricedAmountValidator.IsValid(x.Value, x.Component, req.FundDimensions))
-                .When(x => x.Sponsorship.OrEmpty(s => s.Scheme.Components).Any(c => c.HasPricing()))
+                .When(x => x.Sponsorship.OrEmpty(s => s.Scheme?.Components).Any(c => c.HasPricing()))
                 .WithMessage(Get<Strings>(s => s.InvalidValue));
             
             RuleFor(x => x.Value)
@@ -82,10 +82,10 @@ namespace N3O.Umbraco.Giving.Models {
         }
 
         private bool FundDimensionsAreValid(FundDimensionValuesReq req, IFundDimensionsOptions options) {
-            if (FundDimensionIsValid(req.Dimension1, options.Dimension1Options) &&
-                FundDimensionIsValid(req.Dimension2, options.Dimension2Options) &&
-                FundDimensionIsValid(req.Dimension3, options.Dimension3Options) &&
-                FundDimensionIsValid(req.Dimension4, options.Dimension4Options)) {
+            if (FundDimensionIsValid(req.Dimension1, options?.Dimension1Options) &&
+                FundDimensionIsValid(req.Dimension2, options?.Dimension2Options) &&
+                FundDimensionIsValid(req.Dimension3, options?.Dimension3Options) &&
+                FundDimensionIsValid(req.Dimension4, options?.Dimension4Options)) {
                 return true;
             }
 
@@ -93,7 +93,7 @@ namespace N3O.Umbraco.Giving.Models {
         }
 
         private bool FundDimensionIsValid<T>(T value, IEnumerable<T> options) where T : FundDimensionValue<T> {
-            return value == null || options.Contains(value);
+            return value == null || options?.Contains(value) != false;
         }
 
         public class Strings : ValidationStrings {
