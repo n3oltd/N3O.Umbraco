@@ -36,7 +36,7 @@ namespace N3O.Umbraco.Payments.Stripe {
                 if (environment.IsProduction()) {
                     apiSettings = new StripeApiSettings(settings.ProductionClientKey, settings.ProductionSecretKey);
                 } else {
-                    apiSettings = new StripeApiSettings(settings.SandboxClientKey, settings.SandboxSecretKey);
+                    apiSettings = new StripeApiSettings(settings.StagingClientKey, settings.StagingSecretKey);
                 }  
             }
 
