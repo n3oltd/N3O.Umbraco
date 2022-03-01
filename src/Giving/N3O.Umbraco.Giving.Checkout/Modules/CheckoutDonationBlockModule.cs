@@ -4,7 +4,9 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Checkout.Content;
 using N3O.Umbraco.Giving.Checkout.Models;
 using N3O.Umbraco.Lookups;
+using N3O.Umbraco.Payments;
 using N3O.Umbraco.Payments.Lookups;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,13 +19,16 @@ namespace N3O.Umbraco.Giving.Checkout.Modules {
         private readonly ICheckoutAccessor _checkoutAccessor;
         private readonly IContentCache _contentCache;
         private readonly ILookups _lookups;
+        private readonly IServiceProvider _serviceProvider;
 
         public CheckoutDonationBlockModule(ICheckoutAccessor checkoutAccessor,
                                            IContentCache contentCache,
-                                           ILookups lookups) {
+                                           ILookups lookups,
+                                           IServiceProvider serviceProvider) {
             _checkoutAccessor = checkoutAccessor;
             _contentCache = contentCache;
             _lookups = lookups;
+            _serviceProvider = serviceProvider;
         }
         
         public bool ShouldExecute(IPublishedElement block) {
@@ -38,11 +43,17 @@ namespace N3O.Umbraco.Giving.Checkout.Modules {
                                                                    checkout.Account.Address.Country,
                                                                    checkout.Currency) &&
                                                      x.SupportsPayments)
-                                         .ToList();
+                                         .ToDictionary(x => x, GetViewModel);
 
             return Task.FromResult<object>(new CheckoutDonationModel(checkout, paymentMethods));
         }
-        
+
+        private object GetViewModel(PaymentMethod paymentMethod) {
+            var viewModelType = typeof(IPaymentMethodViewModel<>).MakeGenericType(paymentMethod.GetType());
+
+            return _serviceProvider.GetService(viewModelType);
+        }
+
         public string Key => CheckoutConstants.BlockModuleKeys.CheckoutDonation;
     }
 }
