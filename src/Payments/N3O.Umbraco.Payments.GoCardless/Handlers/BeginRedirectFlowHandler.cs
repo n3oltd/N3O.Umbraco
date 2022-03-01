@@ -39,7 +39,10 @@ namespace N3O.Umbraco.Payments.GoCardless.Handlers {
             var redirectFlowResponse = await _goCardlessClient.RedirectFlows.CreateAsync(request);
             var redirectFlow = redirectFlowResponse.RedirectFlow;
             
-            credential.BeginRedirectFlow(redirectFlow.Id, redirectFlow.SessionToken, req.Model.ReturnUrl);
+            credential.BeginRedirectFlow(redirectFlow.Id,
+                                         redirectFlow.SessionToken,
+                                         redirectFlow.RedirectUrl,
+                                         req.Model.ReturnUrl);
         }
 
         private RedirectFlowCreateRequest GetRedirectFlowCreateRequest(PaymentsParameters parameters, Guid flowId) {
