@@ -1,0 +1,78 @@
+@using N3O.Umbraco.Search.Extensions
+
+@inherits UmbracoViewPage<IBlockViewModel<SearchBlock>>
+
+@inject IContentCache ContentCache
+
+<n3o-style-context for-block="@Model.Content">
+    <div>
+        <form action="@(ContentCache.Single<SearchPage>()?.Url())" method="get">
+            <h2>
+                @Model.GetText("Search")
+            </h2>
+
+            <div>
+                <input type="text" name="q" placeholder="@Model.GetText("Search...")" value="@(Model.Search()?.Query)"/>
+            </div>
+
+            @if (Model.Search()
+                      .HasValue(x => x.Pager)) {
+                if (Model.Search()
+                         .Pager.TotalResults > 0) {
+                    <div>
+                        <p>@Model.Search().Pager.TotalResults Results for <strong>@Model.Search().Query</strong></p>
+                    </div>
+
+                    <div>
+                        @foreach (var result in Model.Search()
+                                                     .Pager.CurrentPage.Results) {
+                            <div>
+                                <div>@result.Title</div>
+
+                                <div>@result.Snippet</div>
+
+                                <div>
+                                    <a href="@result.Url">@result.Url</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    if (Model.Search()
+                             .Pager.TotalPages > 1) {
+                        <ul>
+                            <li n3o-append-class="disabled" n3o-append-if="@(!Model.Search().Pager.HasPreviousPage)">
+                                <a href="@Model.Search().Pager.NavigatePreviousPageUrl()">
+                                    &laquo;
+
+                                    <span>@Model.GetText("Previous")</span>
+                                </a>
+                            </li>
+
+                            @for (int i = Model.Search().Pager.StartPage; i <= Model.Search().Pager.EndPage; i++) {
+                                <li n3o-append-class="active" n3o-append-if="@(i == Model.Search().Pager.CurrentPageNumber)">
+                                    <a href="@Model.Search().Pager.NavigatePageUrl(i)">
+                                        @i @Model.GetText("(current)")
+                                    </a>
+                                </li>
+                            }
+
+
+                            <li n3o-append-class="disabled" n3o-append-if="@(!Model.Search().Pager.HasNextPage)">
+                                <a href="@Model.Search().Pager.NavigateNextPageUrl()">
+                                    &raquo;
+                                    
+                                    @Model.GetText("Next")
+                                </a>
+                            </li>
+                        </ul>
+                    }
+                } else {
+                    <p>
+                        <strong>@Model.GetText("Sorry, no results found.")</strong>
+                    </p>
+                }
+            }
+        </form>
+    </div>
+</n3o-style-context>
