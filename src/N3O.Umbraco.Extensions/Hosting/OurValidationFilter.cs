@@ -9,13 +9,19 @@ namespace N3O.Umbraco.Hosting {
     public class OurValidationFilter : ActionFilterAttribute {
         public override void OnActionExecuting(ActionExecutingContext context) {
             if (!context.ModelState.IsValid) {
-                var errors = context.ModelState.ToDictionary(x => x.Key.Camelize(),
+                var errors = context.ModelState.ToDictionary(x => ToCamelCase(x.Key),
                                                              x => x.Value.Errors.Select(e => e.ErrorMessage).ToArray());
 
                 var problemDetails = new ValidationProblemDetails(errors);
                 
                 context.Result = new BadRequestObjectResult(problemDetails);
             }
+        }
+
+        private string ToCamelCase(string key) {
+            var bits = key.Split('.').Select(x => x.Camelize()).ToList();
+
+            return string.Join('.', bits);
         }
     }
 }
