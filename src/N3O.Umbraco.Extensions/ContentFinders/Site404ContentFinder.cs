@@ -23,7 +23,7 @@ namespace N3O.Umbraco.ContentFinders {
             if (request != null && request.ResponseStatusCode == 404) {
                 var notFound = (int) HttpStatusCode.NotFound;
                 request.SetResponseStatus(notFound);
-                request.SetPublishedContent(_contentCache.Single<UrlNotFoundPageContent>()?.Content);
+                request.SetPublishedContent(_contentCache.Single<UrlNotFoundPageContent>()?.Content());
 
                 return true;
             }

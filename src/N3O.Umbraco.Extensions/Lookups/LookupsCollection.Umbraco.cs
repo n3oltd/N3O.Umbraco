@@ -12,7 +12,7 @@ namespace N3O.Umbraco.Lookups {
         }
 
         public override Task<IReadOnlyList<T>> GetAllAsync() {
-            var items = _contentCache.All<T>().OrderBy(x => x.Content.SortOrder).ToList();
+            var items = _contentCache.All<T>().OrderBy(x => x.Content().SortOrder).ToList();
 
             return Task.FromResult<IReadOnlyList<T>>(items);
         }

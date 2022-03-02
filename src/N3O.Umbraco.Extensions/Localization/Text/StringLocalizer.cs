@@ -135,7 +135,7 @@ namespace N3O.Umbraco.Localization {
                 resources.Sort((x, y) => x.Source.CompareInvariant(y.Source));
 
                 var json = JsonConvert.SerializeObject(resources);
-                var content = _contentService.GetById(container.Content.Id);
+                var content = _contentService.GetById(container.Content().Id);
 
                 content.SetValue(ResourcesAlias,json);
 

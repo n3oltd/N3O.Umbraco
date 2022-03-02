@@ -9,7 +9,7 @@ namespace N3O.Giving.Models {
         }
         
         public bool IsActive => GetValue(x => x.IsActive);
-        public IReadOnlyList<TValue> Options => Content.Children.As<TValue>();
+        public IReadOnlyList<TValue> Options => Content().Children.As<TValue>();
         public int Index { get; }
     }
 

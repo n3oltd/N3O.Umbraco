@@ -35,13 +35,13 @@ namespace N3O.Umbraco.Redirects {
             };
 
             var redirects = _contentCache.All<RedirectContent>();
-            var redirect = redirects.FirstOrDefault(x => searchPaths.Contains(x.Content.Name, true));
+            var redirect = redirects.FirstOrDefault(x => searchPaths.Contains(x.Content().Name, true));
 
-            return redirect.IfNotNull(x => new Redirect(x.Content.Key,
+            return redirect.IfNotNull(x => new Redirect(x.Content().Key,
                                                         x.HitCount,
                                                         x.LastHitDate,
                                                         x.Temporary,
-                                                        x.Content.AbsoluteUrl()));
+                                                        x.Content().AbsoluteUrl()));
         }
 
         public void LogHit(Guid redirectId) {

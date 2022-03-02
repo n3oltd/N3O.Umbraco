@@ -12,7 +12,7 @@ namespace N3O.Umbraco.Giving.Content {
             if (_options == null) {
                 var list = new List<DonationOptionContent>();
             
-                foreach (var child in Content.Children) {
+                foreach (var child in Content().Children) {
                     list.Add(child.As<DonationOptionContent>());
                 }
 

@@ -79,7 +79,7 @@ namespace N3O.Umbraco.Extensions {
             }
             
             var model = Activator.CreateInstance<T>();
-            ((IUmbracoContent) model).Content = publishedContent;
+            ((IUmbracoContent) model).Content( publishedContent);
 
             return model;
         }

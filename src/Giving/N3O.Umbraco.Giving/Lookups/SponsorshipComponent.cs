@@ -7,9 +7,9 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Giving.Lookups {
     public class SponsorshipComponent : LookupContent<SponsorshipComponent>, IPricing {
-        public SponsorshipScheme Scheme => Content.Parent.As<SponsorshipScheme>();
+        public SponsorshipScheme Scheme => Content().Parent.As<SponsorshipScheme>();
         public bool Mandatory => GetValue(x => x.Mandatory);
-        public PriceContent Price => Content.As<PriceContent>();
+        public PriceContent Price => Content().As<PriceContent>();
         public IEnumerable<PricingRuleElement> PriceRules => GetNestedAs(x => x.PriceRules);
 
         [JsonIgnore]

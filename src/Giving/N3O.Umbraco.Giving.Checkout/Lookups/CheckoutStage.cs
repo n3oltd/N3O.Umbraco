@@ -24,7 +24,7 @@ namespace N3O.Umbraco.Giving.Checkout.Lookups {
         
         public bool IsComplete(Entities.Checkout checkout) => _isComplete(checkout);
         
-        public string GetUrl(IContentCache contentCache) => _getPage(contentCache).Content.AbsoluteUrl();
+        public string GetUrl(IContentCache contentCache) => _getPage(contentCache).Content().AbsoluteUrl();
     }
 
     public class CheckoutStages : StaticLookupsCollection<CheckoutStage> {

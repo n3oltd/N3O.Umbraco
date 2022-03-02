@@ -1,4 +1,3 @@
-using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Extensions;
 using NodaTime;
 using System;
@@ -11,34 +10,37 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Content {
     public abstract class UmbracoContent<T> : Value, IUmbracoContent {
-        [ValueIgnore]
-        public virtual IPublishedContent Content { get; set; }
+        private IPublishedContent _content;
+
+        // Do not use get/set property as causes issues with model validation
+        public virtual IPublishedContent Content() => _content;
+        public virtual void Content(IPublishedContent value) => _content = value;
 
         protected TProperty Child<TProperty>(Expression<Func<T, TProperty>> memberExpression)
             where TProperty : UmbracoContent<TProperty> {
             var alias = AliasHelper<TProperty>.ContentTypeAlias();
-            var child = Content.Children.SingleOrDefault(x => x.ContentType.Alias.EqualsInvariant(alias));
+            var child = Content().Children.SingleOrDefault(x => x.ContentType.Alias.EqualsInvariant(alias));
 
             return child.As<TProperty>();
         }
 
         protected TProperty GetAs<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
             var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-            var value = (IPublishedContent) Content.Value(alias);
+            var value = (IPublishedContent) Content().Value(alias);
 
             return value.As<TProperty>();
         }
     
         protected IEnumerable<TProperty> GetNestedAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
             var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-            var values = (IEnumerable) Content.Value(alias) ?? Enumerable.Empty<IPublishedElement>();
+            var values = (IEnumerable) Content().Value(alias) ?? Enumerable.Empty<IPublishedElement>();
 
             return values.Cast<IPublishedElement>().Select(x => x.As<TProperty>());
         }
         
         protected IEnumerable<TProperty> GetPickedAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
             var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-            var values = (IEnumerable) Content.Value(alias) ?? Enumerable.Empty<IPublishedContent>();
+            var values = (IEnumerable) Content().Value(alias) ?? Enumerable.Empty<IPublishedContent>();
 
             return values.Cast<IPublishedContent>().Select(x => x.As<TProperty>());
         }
@@ -54,7 +56,7 @@ namespace N3O.Umbraco.Content {
         protected TProperty GetValue<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
             var alias = AliasHelper<T>.PropertyAlias(memberExpression);
 
-            var property = Content.GetProperty(alias);
+            var property = Content().GetProperty(alias);
 
             if (property == null) {
                 return default;
@@ -77,7 +79,7 @@ namespace N3O.Umbraco.Content {
                                                                       Func<TProperty, TConverted> convert) {
             var alias = AliasHelper<T>.PropertyAlias(memberExpression);
 
-            return convert(Content.Value<TProperty>(alias));
+            return convert(Content().Value<TProperty>(alias));
         }
     }
 }

@@ -21,7 +21,7 @@ namespace N3O.Umbraco.Blog {
             var all = _contentCache.All<T>()
                                    .Select(x => x.As<BlogPostContent>())
                                    .OrderByDescending(x => x.Date)
-                                   .Select(x => (T) x.Content)
+                                   .Select(x => (T) x.Content())
                                    .ToList();
             
             var results = criteria == null ? all : _queryFilter.Apply(all, criteria).ToList();

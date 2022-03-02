@@ -37,9 +37,9 @@ namespace N3O.Umbraco.Giving.Checkout.Controllers {
                 string url;
 
                 if (checkout == null) {
-                    url = _contentCache.Single<DonatePageContent>().Content.AbsoluteUrl();
+                    url = _contentCache.Single<DonatePageContent>().Content().AbsoluteUrl();
                 } else if (checkout.IsComplete) {
-                    url = _contentCache.Single<CheckoutCompletePageContent>().Content.AbsoluteUrl();
+                    url = _contentCache.Single<CheckoutCompletePageContent>().Content().AbsoluteUrl();
                 } else {
                     url = checkout.Progress.CurrentStage.GetUrl(_contentCache);
                 }
