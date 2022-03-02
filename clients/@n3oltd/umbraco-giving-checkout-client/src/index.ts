@@ -295,6 +295,8 @@ export class CheckoutClient {
 }
 
 export interface CheckoutRes {
+    /** A well formed guid */
+    id?: string | undefined;
     /** A well formed revision ID string */
     revisionId?: string | undefined;
     reference?: Reference | undefined;
