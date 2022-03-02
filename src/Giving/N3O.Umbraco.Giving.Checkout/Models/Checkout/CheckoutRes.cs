@@ -5,6 +5,7 @@ using N3O.Umbraco.References;
 
 namespace N3O.Umbraco.Giving.Checkout.Models {
     public class CheckoutRes {
+        public EntityId Id { get; set; }
         public RevisionId RevisionId { get; set; }
         public Reference Reference { get; set; }
         public Currency Currency { get; set; }
