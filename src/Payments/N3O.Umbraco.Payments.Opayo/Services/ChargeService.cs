@@ -15,6 +15,7 @@ using N3O.Umbraco.Payments.Opayo.Extensions;
 using N3O.Umbraco.Payments.Opayo.Models;
 using Newtonsoft.Json;
 using Refit;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -37,14 +38,14 @@ namespace N3O.Umbraco.Payments.Opayo {
             _remoteIpAddressAccessor = remoteIpAddressAccessor;
             _browserInfoAccessor = browserInfoAccessor;
         }
-        
+
         public async Task ChargeAsync(OpayoPayment payment,
                                       ChargeCardReq req,
                                       PaymentsParameters parameters,
                                       bool saveCard) {
             try {
                 var apiRequest = GetApiPaymentTransactionReq(req, parameters, saveCard);
-                
+
                 var transaction = await _opayoClient.TransactionAsync(apiRequest);
 
                 if (transaction.IsAuthorised()) {
@@ -91,7 +92,7 @@ namespace N3O.Umbraco.Payments.Opayo {
             apiReq.VendorTxCode = settings.GetTransactionId(parameters.Reference);
 
             var billingInfo = parameters.BillingInfoAccessor.GetBillingInfo();
-            
+
             apiReq.BillingAddress = GetBillingAddress(billingInfo.Address);
             apiReq.ApplyThreeDSecure = "Force"; // TODO use UseMSPSetting
             apiReq.CustomerFirstName = billingInfo.Name.FirstName;
@@ -102,13 +103,13 @@ namespace N3O.Umbraco.Payments.Opayo {
 
             apiReq.EntryMethod = "Ecommerce";
             apiReq.TransactionType = "Payment";
-            
+
             if (saveCard) {
-               var apiCredentialTypeReq =  new ApiCredentialTypeReq();
-               apiCredentialTypeReq.MitType = "Unscheduled";
-               apiCredentialTypeReq.InitiatedType = "CIT";
-               apiCredentialTypeReq.CofUsage = "First";
-               apiReq.CredentialType = apiCredentialTypeReq;
+                var apiCredentialTypeReq = new ApiCredentialTypeReq();
+                apiCredentialTypeReq.MitType = "Unscheduled";
+                apiCredentialTypeReq.InitiatedType = "CIT";
+                apiCredentialTypeReq.CofUsage = "First";
+                apiReq.CredentialType = apiCredentialTypeReq;
             }
 
             apiReq.StrongCustomerAuthentication = new ApiStrongCustomerAuthentication();
@@ -131,7 +132,7 @@ namespace N3O.Umbraco.Payments.Opayo {
 
         private string GetNotificationUrl(EntityId flowId) {
             return _actionLinkGenerator.GetUrl<OpayoController>(x => x.CompleteThreeDSecureChallenge(null),
-                                                                new { flowId = flowId.ToString() });
+                                                                new {flowId = flowId.ToString()});
         }
 
         private ApiBillingAddressReq GetBillingAddress(IAddress address) {
@@ -140,6 +141,11 @@ namespace N3O.Umbraco.Payments.Opayo {
             billingAddress.Address2 = address.Line2;
             billingAddress.Address3 = address.Line3;
             billingAddress.City = address.Locality;
+            if (address.Country.Iso2Code.EqualsInvariant("us")) {
+                billingAddress.State = GetUsaStateCode(address.AdministrativeArea);
+            } else {
+                billingAddress.State = address.AdministrativeArea;
+            }
             billingAddress.PostalCode = address.PostalCode;
             billingAddress.Country = address.Country.Iso2Code;
 
@@ -157,6 +163,79 @@ namespace N3O.Umbraco.Payments.Opayo {
             apiPaymentMethodReq.Card = apiCard;
 
             return apiPaymentMethodReq;
+        }
+
+        private static string GetUsaStateCode(string stateName) {
+            if (string.IsNullOrEmpty(stateName)) {
+                stateName = "ny";
+            }
+
+            var states = new Dictionary<string, IEnumerable<string>>();
+
+            states.Add("al", new[] {"alabama"});
+            states.Add("ak", new[] {"alaska"});
+            states.Add("az", new[] {"arizona"});
+            states.Add("ar", new[] {"arkansas"});
+            states.Add("ca", new[] {"california"});
+            states.Add("co", new[] {"colorado"});
+            states.Add("ct", new[] {"connecticut"});
+            states.Add("de", new[] {"delaware"});
+            states.Add("dc", new[] {"district of columbia", "dc"});
+            states.Add("fl", new[] {"florida"});
+            states.Add("ga", new[] {"georgia"});
+            states.Add("hi", new[] {"hawaii"});
+            states.Add("id", new[] {"idaho"});
+            states.Add("il", new[] {"illinois"});
+            states.Add("in", new[] {"indiana"});
+            states.Add("ia", new[] {"iowa"});
+            states.Add("ks", new[] {"kansas"});
+            states.Add("ky", new[] {"kentucky"});
+            states.Add("la", new[] {"louisiana"});
+            states.Add("me", new[] {"maine"});
+            states.Add("md", new[] {"maryland"});
+            states.Add("ma", new[] {"massachusetts"});
+            states.Add("mi", new[] {"michigan"});
+            states.Add("mn", new[] {"minnesota"});
+            states.Add("ms", new[] {"mississippi"});
+            states.Add("mo", new[] {"missouri"});
+            states.Add("mt", new[] {"montana"});
+            states.Add("ne", new[] {"nebraska"});
+            states.Add("nv", new[] {"nevada"});
+            states.Add("nh", new[] {"new hampshire"});
+            states.Add("nj", new[] {"new jersey"});
+            states.Add("nm", new[] {"new mexico"});
+            states.Add("ny", new[] {"new york"});
+            states.Add("nc", new[] {"north carolina"});
+            states.Add("nd", new[] {"north dakota"});
+            states.Add("oh", new[] {"ohio"});
+            states.Add("ok", new[] {"oklahoma"});
+            states.Add("or", new[] {"oregon"});
+            states.Add("pa", new[] {"pennsylvania"});
+            states.Add("ri", new[] {"rhode island"});
+            states.Add("sc", new[] {"south carolina"});
+            states.Add("sd", new[] {"south dakota"});
+            states.Add("tn", new[] {"tennessee"});
+            states.Add("tx", new[] {"texas"});
+            states.Add("ut", new[] {"utah"});
+            states.Add("vt", new[] {"vermont"});
+            states.Add("va", new[] {"virginia"});
+            states.Add("wa", new[] {"washington"});
+            states.Add("wv", new[] {"west virginia"});
+            states.Add("wi", new[] {"wisconsin"});
+            states.Add("wy", new[] {"wyoming"});
+
+            if (states.ContainsKey(stateName.ToLower())) {
+                return stateName.ToUpper();
+            }
+
+            foreach (var state in states) {
+                if (state.Value.Any(x => x == stateName.ToLower())) {
+                    return state.Key.ToUpper();
+                }
+            }
+
+            // Safe default for SagePay
+            return "NY";
         }
     }
 }
