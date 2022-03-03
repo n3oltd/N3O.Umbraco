@@ -37,6 +37,8 @@ namespace N3O.Umbraco.Accounts.Models {
                 .When(req => req.Address.HasValue(x => x.Country) &&
                              taxReliefScheme?.IsEligible(req.Address.Country, false) == true)
                 .WithMessage(Get<Strings>(s => s.SpecifyTaxStatus));
+            
+            // TODO if tax status is payer check that tax relief scheme eligible should be true. 
         }
     
         public class Strings : ValidationStrings {
