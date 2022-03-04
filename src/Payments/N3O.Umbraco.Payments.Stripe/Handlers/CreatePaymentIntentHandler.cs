@@ -52,7 +52,7 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
             options.Amount = ((Money) req.Value).GetAmountInLowestDenomination();
             options.Confirm = true;
             options.Currency = req.Value.Currency.Code;
-            options.Description = settings.GetTransactionDescription(parameters.Reference);
+            options.Description = parameters.GetTransactionDescription(settings);
             options.ErrorOnRequiresAction = false;
             options.PaymentMethod = req.PaymentMethodId;
             options.Customer = req.CustomerId;

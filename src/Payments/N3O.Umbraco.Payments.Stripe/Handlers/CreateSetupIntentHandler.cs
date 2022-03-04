@@ -50,7 +50,7 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
             options.Customer = req.CustomerId;
             options.Usage = "off_session";
             options.Confirm = true;
-            options.Description = settings.GetTransactionDescription(parameters.Reference);
+            options.Description = parameters.GetTransactionDescription(settings);
             options.PaymentMethod = req.PaymentMethodId;
             
             options.PaymentMethodOptions = new SetupIntentPaymentMethodOptionsOptions();

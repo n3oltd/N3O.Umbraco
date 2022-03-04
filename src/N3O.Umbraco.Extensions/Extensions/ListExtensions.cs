@@ -12,7 +12,7 @@ namespace N3O.Umbraco.Extensions {
     
         public static void RemoveWhere<T>(this IList<T> source, Func<T, bool> selector) {
             lock (source) {
-                var itemsToRemove = source.Where(selector);
+                var itemsToRemove = source.Where(selector).ToList();
 
                 foreach (var itemToRemove in itemsToRemove) {
                     source.Remove(itemToRemove);

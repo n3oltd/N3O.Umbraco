@@ -9,7 +9,7 @@ namespace N3O.Umbraco.Entities {
     public class EntitiesComposer : Composer {
         public override void Compose(IUmbracoBuilder builder) {
             builder.Services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
-            builder.Services.AddTransient(typeof(IChangeFeedFactory<>), typeof(ChangeFeedFactory<>));
+            builder.Services.AddTransient<IChangeFeedFactory, ChangeFeedFactory>();
 
             RegisterAll(t => t.ImplementsGenericInterface(typeof(IChangeFeed<>)),
                         t => builder.Services.AddTransient(GetChangeFeedType(t), t));

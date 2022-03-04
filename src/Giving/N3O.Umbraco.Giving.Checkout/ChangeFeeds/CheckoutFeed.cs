@@ -35,8 +35,8 @@ namespace N3O.Umbraco.Giving.Checkout.ChangeFeeds {
             _backgroundJob = backgroundJob;
         }
         
-        protected override Task ProcessAsync(EntityChange<Entities.Checkout> entityChange,
-                                             CancellationToken cancellationToken) {
+        protected override Task ProcessChangeAsync(EntityChange<Entities.Checkout> entityChange,
+                                                   CancellationToken cancellationToken) {
             if (entityChange.Operation == EntityOperations.Update) {
                 Process(entityChange, x => x.Donation.IsComplete, c => {
                     SendEmail<DonationReceiptTemplateContent>(c);

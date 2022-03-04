@@ -4,7 +4,7 @@ using NodaTime;
 using System;
 
 namespace N3O.Umbraco.Payments.Models {
-    public abstract partial class PaymentObject : Value, IDisposable {
+    public abstract partial class PaymentObject : Value {
         protected PaymentObject() {
             Status = PaymentObjectStatuses.InProgress;
         }
