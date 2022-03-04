@@ -6,6 +6,7 @@ using N3O.Umbraco.Parameters;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Scheduler {
     // Lack of interface is by design, want Hangfire to only have concrete type
@@ -22,19 +23,23 @@ namespace N3O.Umbraco.Scheduler {
                                        string modelJson,
                                        IReadOnlyDictionary<string, string> parameterData) {
             using (var scope = _serviceScopeFactory.CreateScope()) {
-                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-                var fluentParameters = scope.ServiceProvider.GetRequiredService<IFluentParameters>();
-                var jsonProvider = scope.ServiceProvider.GetRequiredService<IJsonProvider>();
+                var umbracoContextFactory = scope.ServiceProvider.GetRequiredService<IUmbracoContextFactory>();
 
-                var requestType = TriggerKey.ParseRequestType(triggerKey);
-                var modelType = TriggerKey.ParseModelType(triggerKey);
-                var model = jsonProvider.DeserializeObject(modelJson, modelType);
+                using (umbracoContextFactory.EnsureUmbracoContext()) {
+                    var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                    var fluentParameters = scope.ServiceProvider.GetRequiredService<IFluentParameters>();
+                    var jsonProvider = scope.ServiceProvider.GetRequiredService<IJsonProvider>();
 
-                foreach (var (name, value) in parameterData.OrEmpty()) {
-                    fluentParameters.Add(name, value);
+                    var requestType = TriggerKey.ParseRequestType(triggerKey);
+                    var modelType = TriggerKey.ParseModelType(triggerKey);
+                    var model = jsonProvider.DeserializeObject(modelJson, modelType);
+
+                    foreach (var (name, value) in parameterData.OrEmpty()) {
+                        fluentParameters.Add(name, value);
+                    }
+
+                    await mediator.SendAsync(requestType, typeof(None), model);
                 }
-
-                await mediator.SendAsync(requestType, typeof(None), model);
             }
         }
     }
