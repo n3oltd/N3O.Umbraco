@@ -1,7 +1,6 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
-using N3O.Umbraco.Payments.Extensions;
 using N3O.Umbraco.Payments.Handlers;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.Stripe.Commands;

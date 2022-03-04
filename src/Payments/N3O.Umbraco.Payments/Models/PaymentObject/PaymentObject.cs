@@ -1,7 +1,6 @@
 using N3O.Umbraco.Payments.Lookups;
 using Newtonsoft.Json;
 using NodaTime;
-using System;
 
 namespace N3O.Umbraco.Payments.Models {
     public abstract partial class PaymentObject : Value {

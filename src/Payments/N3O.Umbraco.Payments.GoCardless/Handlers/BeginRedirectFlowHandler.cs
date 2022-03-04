@@ -3,7 +3,6 @@ using GoCardless.Services;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Payments.Entities;
-using N3O.Umbraco.Payments.Extensions;
 using N3O.Umbraco.Payments.GoCardless.Commands;
 using N3O.Umbraco.Payments.GoCardless.Content;
 using N3O.Umbraco.Payments.GoCardless.Controllers;

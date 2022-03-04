@@ -16,6 +16,8 @@ using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Giving.Checkout.Controllers {
     public abstract class CheckoutStagePageController : PageController {
+        private static readonly string CompletePageAlias = AliasHelper<CheckoutCompletePageContent>.ContentTypeAlias();
+        
         private readonly ICheckoutAccessor _checkoutAccessor;
         private readonly IContentCache _contentCache;
 
@@ -45,7 +47,7 @@ namespace N3O.Umbraco.Giving.Checkout.Controllers {
 
             if (checkout == null) {
                 redirectUrl = _contentCache.Single<DonatePageContent>().Content().AbsoluteUrl();
-            } else if (checkout.IsComplete && !CurrentPage.ContentType.Alias.EqualsInvariant(AliasHelper<CheckoutCompletePageContent>.ContentTypeAlias())) {
+            } else if (checkout.IsComplete && !CurrentPage.ContentType.Alias.EqualsInvariant(CompletePageAlias)) {
                 redirectUrl = _contentCache.Single<CheckoutCompletePageContent>().Content().AbsoluteUrl();
             } else if (checkout.Progress.CurrentStage != Stage) {
                 redirectUrl = checkout.Progress.CurrentStage.GetUrl(_contentCache);
