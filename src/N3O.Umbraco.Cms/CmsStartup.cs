@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Hosting;
+using System;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
 using Umbraco.Extensions;
@@ -26,7 +29,7 @@ namespace N3O.Umbraco {
                     .AddBackOffice()
                     .AddWebsite()
                     .AddComposers()
-                    .AddContentment(opt => { opt.DisableTelemetry = true; })
+                    .AddContentment(opt => opt.DisableTelemetry = true)
                     .Build();
         }
 
@@ -37,6 +40,7 @@ namespace N3O.Umbraco {
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseRewriter(GetRewriteOptions());
             app.UseOpenApiWithUI();
 
             app.UseUmbraco()
@@ -59,5 +63,16 @@ namespace N3O.Umbraco {
 
         protected virtual void ConfigureEndpoints(IUmbracoEndpointBuilderContext umbraco) { }
         protected virtual void ConfigureMiddleware(IUmbracoApplicationBuilderContext umbraco) { }
+        
+        private RewriteOptions GetRewriteOptions() {
+            var canonicalDomain = Environment.GetEnvironmentVariable("N3O_Canonical_Domain");
+            var options = new RewriteOptions();
+            
+            if (canonicalDomain.HasValue()) {
+                options.Rules.Add(new CanonicalDomainRedirectRule(canonicalDomain));
+            }
+
+            return options;
+        }
     }
 }
