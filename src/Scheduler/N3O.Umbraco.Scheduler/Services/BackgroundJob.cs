@@ -3,8 +3,6 @@ using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Parameters;
 using NodaTime;
 using System;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Scheduler {
     public class BackgroundJob : IBackgroundJob {
@@ -45,11 +43,12 @@ namespace N3O.Umbraco.Scheduler {
             var parameterData = _fluentParametersBuilder.Build();
             var modelJson = _jsonProvider.SerializeObject(model);
 
-            Expression<Func<JobTrigger, Task>> triggerAction = jobTrigger =>
-                jobTrigger.TriggerAsync(jobName, triggerKey, modelJson, parameterData);
-
             var enqueueAt = at.ToDateTimeOffset();
-            var jobId = Hangfire.BackgroundJob.Schedule(triggerAction, enqueueAt);
+            var jobId = Hangfire.BackgroundJob.Schedule<JobTrigger>(j => j.TriggerAsync(jobName,
+                                                                                        triggerKey,
+                                                                                        modelJson,
+                                                                                        parameterData),
+                                                                    enqueueAt);
 
             return jobId;
         }

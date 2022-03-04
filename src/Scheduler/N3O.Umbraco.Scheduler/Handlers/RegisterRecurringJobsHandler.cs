@@ -8,7 +8,6 @@ using N3O.Umbraco.Scheduler.Commands;
 using N3O.Umbraco.Scheduler.Models;
 using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,13 +30,9 @@ namespace Karakoram.Scheduler.Domain.Handlers {
             var modelJson = _jsonProvider.SerializeObject(None.Empty);
 
             foreach (var job in req.Model.Jobs) {
-                Expression<Func<JobTrigger, Task>> triggerActionAsync = jobTrigger =>
-                    jobTrigger.TriggerAsync(job.JobName,
-                                            job.TriggerKey,
-                                            modelJson,
-                                            null);
-
-                RecurringJob.AddOrUpdate(triggerActionAsync, job.CronExpression, TimeZoneInfo.Utc);
+                RecurringJob.AddOrUpdate<JobTrigger>(j => j.TriggerAsync(job.JobName, job.TriggerKey, modelJson, null),
+                                                     job.CronExpression,
+                                                     TimeZoneInfo.Utc);
             }
 
             return Task.FromResult(None.Empty);
