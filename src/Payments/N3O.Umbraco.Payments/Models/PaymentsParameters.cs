@@ -1,17 +1,20 @@
 ﻿using N3O.Umbraco.Entities;
+using N3O.Umbraco.Payments.Content;
 using N3O.Umbraco.Payments.Entities;
 using N3O.Umbraco.References;
 
 namespace N3O.Umbraco.Payments.Models {
     public class PaymentsParameters {
+        private readonly IPaymentsFlow _flow;
+
         public PaymentsParameters(IPaymentsFlow flow) {
-            BillingInfoAccessor = flow;
-            FlowId = flow.Id;
-            Reference = flow.Reference;
+            _flow = flow;
         }
 
-        public IBillingInfoAccessor BillingInfoAccessor { get; }
-        public EntityId FlowId { get; }
-        public Reference Reference { get; }
+        public IBillingInfoAccessor BillingInfoAccessor => _flow;
+        public EntityId FlowId => _flow.Id;
+
+        public string GetTransactionDescription(IPaymentMethodSettings paymentMethodSettings) => _flow.GetTransactionDescription(paymentMethodSettings);
+        public string GetTransactionId(IPaymentMethodSettings paymentMethodSettings) => _flow.GetTransactionId(paymentMethodSettings);
     }
 }
