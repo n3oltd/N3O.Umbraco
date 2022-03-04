@@ -83,6 +83,9 @@ namespace N3O.Umbraco.Content {
         }
 
         private T Run<T>(Func<IUmbracoContext, T> func) {
+            // TODO If the Umbraco context is actually created then this wil dispose it once
+            // the content is fetched and will fail in later code, e.g. when resolving property values
+            // as won't be able to get published content snapshot.
             using (var contextReference = _umbracoContextFactory.EnsureUmbracoContext()) {
                 return func(contextReference.UmbracoContext);
             }
