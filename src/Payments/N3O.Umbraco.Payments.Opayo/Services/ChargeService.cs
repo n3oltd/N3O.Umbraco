@@ -15,6 +15,7 @@ using N3O.Umbraco.Payments.Opayo.Extensions;
 using N3O.Umbraco.Payments.Opayo.Models;
 using Newtonsoft.Json;
 using Refit;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -94,9 +95,9 @@ namespace N3O.Umbraco.Payments.Opayo {
             var billingInfo = parameters.BillingInfoAccessor.GetBillingInfo();
 
             apiReq.BillingAddress = GetBillingAddress(billingInfo.Address);
-            apiReq.ApplyThreeDSecure = "Force"; // TODO use UseMSPSetting
-            apiReq.CustomerFirstName = billingInfo.Name.FirstName;
-            apiReq.CustomerLastName = billingInfo.Name.LastName;
+            apiReq.ApplyThreeDSecure = "UseMSPSetting";
+            apiReq.CustomerFirstName = GetText(billingInfo.Name.FirstName, 20, true);
+            apiReq.CustomerLastName = GetText(billingInfo.Name.LastName, 20, true);
 
             apiReq.PaymentMethod = new ApiPaymentMethodReq();
             apiReq.PaymentMethod = GetApiPaymentMethodReq(req, saveCard);
@@ -114,9 +115,16 @@ namespace N3O.Umbraco.Payments.Opayo {
 
             apiReq.StrongCustomerAuthentication = new ApiStrongCustomerAuthentication();
             apiReq.StrongCustomerAuthentication.BrowserIp = _remoteIpAddressAccessor.GetRemoteIpAddress().ToString();
+
             apiReq.StrongCustomerAuthentication.BrowserAcceptHeader = _browserInfoAccessor.GetAccept();
-            apiReq.StrongCustomerAuthentication.BrowserJavascriptEnabled = req.BrowserParameters.JavaScriptEnabled.GetValueOrThrow();
-            apiReq.StrongCustomerAuthentication.BrowserJavaEnabled = req.BrowserParameters.JavaEnabled.GetValueOrThrow();
+            apiReq.StrongCustomerAuthentication.BrowserJavascriptEnabled = req.BrowserParameters
+                                                                              .JavaScriptEnabled
+                                                                              .GetValueOrThrow();
+
+            apiReq.StrongCustomerAuthentication.BrowserJavaEnabled = req.BrowserParameters
+                                                                        .JavaEnabled
+                                                                        .GetValueOrThrow();
+
             apiReq.StrongCustomerAuthentication.BrowserLanguage = _browserInfoAccessor.GetLanguage();
             apiReq.StrongCustomerAuthentication.BrowserScreenHeight = req.BrowserParameters.ScreenHeight.ToString();
             apiReq.StrongCustomerAuthentication.BrowserScreenWidth = req.BrowserParameters.ScreenWidth.ToString();
@@ -132,21 +140,29 @@ namespace N3O.Umbraco.Payments.Opayo {
 
         private string GetNotificationUrl(EntityId flowId) {
             return _actionLinkGenerator.GetUrl<OpayoController>(x => x.CompleteThreeDSecureChallenge(null),
-                                                                new {flowId = flowId.ToString()});
+                                                                new { flowId = flowId.ToString() });
+        }
+
+        private string GetText(string value, int maxLength, bool required, string defaultValue = ".") {
+            if (!value.HasValue() && required) {
+                value = defaultValue;
+            }
+
+            if (value == null) {
+                return null;
+            }
+
+            return value.RemoveNonAscii().Trim().Right(maxLength);
         }
 
         private ApiBillingAddressReq GetBillingAddress(IAddress address) {
             var billingAddress = new ApiBillingAddressReq();
-            billingAddress.Address1 = address.Line1;
-            billingAddress.Address2 = address.Line2;
-            billingAddress.Address3 = address.Line3;
-            billingAddress.City = address.Locality;
-            if (address.Country.Iso2Code.EqualsInvariant("us")) {
-                billingAddress.State = GetUsaStateCode(address.AdministrativeArea);
-            } else {
-                billingAddress.State = address.AdministrativeArea;
-            }
-            billingAddress.PostalCode = address.PostalCode;
+            billingAddress.Address1 = GetText(address.Line1, 50, true);
+            billingAddress.Address2 = GetText(address.Line2, 50, false);
+            billingAddress.Address3 = GetText(address.Line3, 50, false);
+            billingAddress.City = GetText(address.Locality, 40, true);
+            billingAddress.State = GetState(address);
+            billingAddress.PostalCode = GetText(address.PostalCode, 10, true, "0000");
             billingAddress.Country = address.Country.Iso2Code;
 
             return billingAddress;
@@ -164,78 +180,90 @@ namespace N3O.Umbraco.Payments.Opayo {
 
             return apiPaymentMethodReq;
         }
-
-        private static string GetUsaStateCode(string stateName) {
-            if (string.IsNullOrEmpty(stateName)) {
-                stateName = "ny";
+        
+        private string GetState(IAddress address) {
+            var administrativeArea = GetText(address.AdministrativeArea, 40, true);
+            
+            if (address.Country.Iso3Code.EqualsInvariant(OpayoConstants.Iso3CountryCodes.UnitedStates)) {
+                administrativeArea = GetUsStateCode(administrativeArea);
             }
 
-            var states = new Dictionary<string, IEnumerable<string>>();
+            return administrativeArea;
+        }
 
-            states.Add("al", new[] {"alabama"});
-            states.Add("ak", new[] {"alaska"});
-            states.Add("az", new[] {"arizona"});
-            states.Add("ar", new[] {"arkansas"});
-            states.Add("ca", new[] {"california"});
-            states.Add("co", new[] {"colorado"});
-            states.Add("ct", new[] {"connecticut"});
-            states.Add("de", new[] {"delaware"});
-            states.Add("dc", new[] {"district of columbia", "dc"});
-            states.Add("fl", new[] {"florida"});
-            states.Add("ga", new[] {"georgia"});
-            states.Add("hi", new[] {"hawaii"});
-            states.Add("id", new[] {"idaho"});
-            states.Add("il", new[] {"illinois"});
-            states.Add("in", new[] {"indiana"});
-            states.Add("ia", new[] {"iowa"});
-            states.Add("ks", new[] {"kansas"});
-            states.Add("ky", new[] {"kentucky"});
-            states.Add("la", new[] {"louisiana"});
-            states.Add("me", new[] {"maine"});
-            states.Add("md", new[] {"maryland"});
-            states.Add("ma", new[] {"massachusetts"});
-            states.Add("mi", new[] {"michigan"});
-            states.Add("mn", new[] {"minnesota"});
-            states.Add("ms", new[] {"mississippi"});
-            states.Add("mo", new[] {"missouri"});
-            states.Add("mt", new[] {"montana"});
-            states.Add("ne", new[] {"nebraska"});
-            states.Add("nv", new[] {"nevada"});
-            states.Add("nh", new[] {"new hampshire"});
-            states.Add("nj", new[] {"new jersey"});
-            states.Add("nm", new[] {"new mexico"});
-            states.Add("ny", new[] {"new york"});
-            states.Add("nc", new[] {"north carolina"});
-            states.Add("nd", new[] {"north dakota"});
-            states.Add("oh", new[] {"ohio"});
-            states.Add("ok", new[] {"oklahoma"});
-            states.Add("or", new[] {"oregon"});
-            states.Add("pa", new[] {"pennsylvania"});
-            states.Add("ri", new[] {"rhode island"});
-            states.Add("sc", new[] {"south carolina"});
-            states.Add("sd", new[] {"south dakota"});
-            states.Add("tn", new[] {"tennessee"});
-            states.Add("tx", new[] {"texas"});
-            states.Add("ut", new[] {"utah"});
-            states.Add("vt", new[] {"vermont"});
-            states.Add("va", new[] {"virginia"});
-            states.Add("wa", new[] {"washington"});
-            states.Add("wv", new[] {"west virginia"});
-            states.Add("wi", new[] {"wisconsin"});
-            states.Add("wy", new[] {"wyoming"});
-
-            if (states.ContainsKey(stateName.ToLower())) {
-                return stateName.ToUpper();
+        private static string GetUsStateCode(string administrativeArea) {
+            if (UsStates.ContainsKey(administrativeArea)) {
+                return administrativeArea.ToUpper();
             }
 
-            foreach (var state in states) {
-                if (state.Value.Any(x => x == stateName.ToLower())) {
-                    return state.Key.ToUpper();
+            foreach (var (code, name) in UsStates) {
+                if (name.EqualsInvariant(administrativeArea)) {
+                    return code;
                 }
             }
 
             // Safe default for SagePay
             return "NY";
         }
+        
+        private static readonly Dictionary<string, string> UsStates = new(StringComparer.InvariantCultureIgnoreCase) {
+                { "AA", "Armed Forces America" },
+                { "AE", "Armed Forces" },
+                { "AK", "Alaska" },
+                { "AL", "Alabama" },
+                { "AP", "Armed Forces Pacific" },
+                { "AR", "Arkansas" },
+                { "AZ", "Arizona" },
+                { "CA", "California" },
+                { "CO", "Colorado" },
+                { "CT", "Connecticut" },
+                { "DC", "Washington DC" },
+                { "DE", "Delaware" },
+                { "FL", "Florida" },
+                { "GA", "Georgia" },
+                { "GU", "Guam" },
+                { "HI", "Hawaii" },
+                { "IA", "Iowa" },
+                { "ID", "Idaho" },
+                { "IL", "Illinois" },
+                { "IN", "Indiana" },
+                { "KS", "Kansas" },
+                { "KY", "Kentucky" },
+                { "LA", "Louisiana" },
+                { "MA", "Massachusetts" },
+                { "MD", "Maryland" },
+                { "ME", "Maine" },
+                { "MI", "Michigan" },
+                { "MN", "Minnesota" },
+                { "MO", "Missouri" },
+                { "MS", "Mississippi" },
+                { "MT", "Montana" },
+                { "NC", "North Carolina" },
+                { "ND", "North Dakota" },
+                { "NE", "Nebraska" },
+                { "NH", "New Hampshire" },
+                { "NJ", "New Jersey" },
+                { "NM", "New Mexico" },
+                { "NV", "Nevada" },
+                { "NY", "New York" },
+                { "OH", "Ohio" },
+                { "OK", "Oklahoma" },
+                { "OR", "Oregon" },
+                { "PA", "Pennsylvania" },
+                { "PR", "Puerto Rico" },
+                { "RI", "Rhode Island" },
+                { "SC", "South Carolina" },
+                { "SD", "South Dakota" },
+                { "TN", "Tennessee" },
+                { "TX", "Texas" },
+                { "UT", "Utah" },
+                { "VA", "Virginia" },
+                { "VI", "Virgin Islands" },
+                { "VT", "Vermont" },
+                { "WA", "Washington" },
+                { "WI", "Wisconsin" },
+                { "WV", "West Virginia" },
+                { "WY", "Wyoming" }
+            };
     }
 }

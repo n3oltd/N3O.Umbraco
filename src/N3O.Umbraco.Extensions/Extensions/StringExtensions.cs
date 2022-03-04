@@ -79,15 +79,11 @@ namespace N3O.Umbraco.Extensions {
         public static bool IsNullOrWhiteSpace(this string s) {
             return string.IsNullOrWhiteSpace(s);
         }
-    
-        public static string Last(this string s, int tailLength) {
-            if (tailLength >= s.Length) {
-                return s;
-            }
-
-            return s.Substring(s.Length - tailLength);
+        
+        public static string Left(this string input, int count) {
+            return input.Substring(0, Math.Min(input.Length, count));
         }
-    
+
         public static string Or(this string a, string b) {
             return a.HasValue() ? a : b;
         }
@@ -159,6 +155,14 @@ namespace N3O.Umbraco.Extensions {
             }
 
             return string.Concat(Enumerable.Repeat(s, count));
+        }
+        
+        public static string Right(this string s, int tailLength) {
+            if (tailLength >= s.Length) {
+                return s;
+            }
+
+            return s.Substring(s.Length - tailLength);
         }
 
         public static string Sha1(this string s) {

@@ -6,10 +6,11 @@ using N3O.Umbraco.Pages;
 using System;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Web;
+using Umbraco.Cms.Web.Common.Controllers;
 
 namespace N3O.Umbraco.Giving.Checkout.Controllers {
-    public class CheckoutDonationPageController : CheckoutStagePageController {
-        public CheckoutDonationPageController(ILogger<CheckoutDonationPageController> logger,
+    public class CheckoutCompletePageController : CheckoutStagePageController {
+        public CheckoutCompletePageController(ILogger<CheckoutCompletePageController> logger,
                                               ICompositeViewEngine compositeViewEngine,
                                               IUmbracoContextAccessor umbracoContextAccessor,
                                               IPublishedUrlProvider publishedUrlProvider,
@@ -26,6 +27,6 @@ namespace N3O.Umbraco.Giving.Checkout.Controllers {
                    serviceProvider,
                    checkoutAccessor) { }
 
-        protected override CheckoutStage Stage => CheckoutStages.Donation;
+        protected override CheckoutStage Stage => null;
     }
 }

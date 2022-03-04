@@ -4,6 +4,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.TaxRelief;
+using N3O.Umbraco.TaxRelief.Lookups;
 using N3O.Umbraco.Validation;
 
 namespace N3O.Umbraco.Accounts.Models {
@@ -38,10 +39,15 @@ namespace N3O.Umbraco.Accounts.Models {
                              taxReliefScheme?.IsEligible(req.Address.Country, false) == true)
                 .WithMessage(Get<Strings>(s => s.SpecifyTaxStatus));
             
-            // TODO if tax status is payer check that tax relief scheme eligible should be true. 
+            RuleFor(x => x.TaxStatus)
+                .Must(x => x != TaxStatuses.Payer)
+                .When(req => req.Address.HasValue(x => x.Country) &&
+                             taxReliefScheme?.IsEligible(req.Address.Country, false) == false)
+                .WithMessage(Get<Strings>(s => s.InvalidTaxStatus)); 
         }
     
         public class Strings : ValidationStrings {
+            public string InvalidTaxStatus => "Invalid tax status selected";
             public string SpecifyAddress => "Please specify your address";
             public string SpecifyEmail => "Please specify your email";
             public string SpecifyName => "Please specify your name";

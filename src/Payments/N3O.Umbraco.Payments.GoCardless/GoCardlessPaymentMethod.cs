@@ -18,7 +18,7 @@ namespace N3O.Umbraco.Payments.GoCardless {
                 return false;
             }
 
-            if (!country.Iso3Code.EqualsInvariant(GoCardlessConstants.Codes.Countries.UnitedKingdom)) {
+            if (!country.Iso3Code.EqualsInvariant(GoCardlessConstants.Codes.Iso3CountryCodes.UnitedKingdom)) {
                 return false;
             }
 

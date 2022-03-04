@@ -6,13 +6,17 @@ using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Checkout.Content;
 using N3O.Umbraco.Giving.Content;
+using N3O.Umbraco.Hosting;
+using N3O.Umbraco.Pages;
+using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Web;
-using Umbraco.Cms.Web.Common.Controllers;
 
 namespace N3O.Umbraco.Giving.Checkout.Controllers {
-    public class CheckoutPageController : RenderController {
+    public class CheckoutPageController : PageController {
         private readonly ICheckoutAccessor _checkoutAccessor;
         private readonly IQueryStringAccessor _queryStringAccessor;
         private readonly IContentCache _contentCache;
@@ -20,20 +24,30 @@ namespace N3O.Umbraco.Giving.Checkout.Controllers {
         public CheckoutPageController(ILogger<CheckoutPageController> logger,
                                       ICompositeViewEngine compositeViewEngine,
                                       IUmbracoContextAccessor umbracoContextAccessor,
+                                      IPublishedUrlProvider publishedUrlProvider,
+                                      IPagePipeline pagePipeline,
+                                      IContentCache contentCache,
+                                      IServiceProvider serviceProvider,
                                       ICheckoutAccessor checkoutAccessor,
-                                      IQueryStringAccessor queryStringAccessor,
-                                      IContentCache contentCache)
-            : base(logger, compositeViewEngine, umbracoContextAccessor) {
+                                      IQueryStringAccessor queryStringAccessor)
+            : base(logger,
+                   compositeViewEngine,
+                   umbracoContextAccessor,
+                   publishedUrlProvider,
+                   pagePipeline,
+                   contentCache,
+                   serviceProvider) {
+            _contentCache = contentCache;
             _checkoutAccessor = checkoutAccessor;
             _queryStringAccessor = queryStringAccessor;
-            _contentCache = contentCache;
         }
 
-        public override IActionResult Index() {
+        public override async Task<IActionResult> Index(CancellationToken cancellationToken) {
             if (_queryStringAccessor.Has("framed")) {
                 return CurrentTemplate(new ContentModel(CurrentPage));
             } else {
-                var checkout = _checkoutAccessor.GetOrCreateAsync(CancellationToken.None).GetAwaiter().GetResult();
+                var checkout = await _checkoutAccessor.GetOrCreateAsync(cancellationToken);
+
                 string url;
 
                 if (checkout == null) {
@@ -44,7 +58,7 @@ namespace N3O.Umbraco.Giving.Checkout.Controllers {
                     url = checkout.Progress.CurrentStage.GetUrl(_contentCache);
                 }
 
-                return Redirect(url) ;
+                return Redirect(url);
             }
         }
     }

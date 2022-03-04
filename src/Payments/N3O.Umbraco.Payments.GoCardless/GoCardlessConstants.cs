@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Payments.GoCardless {
                 public const string GBP = "GBP";
             }
 
-            public static class Countries {
+            public static class Iso3CountryCodes {
                 public const string UnitedKingdom = "GBR";
             }
         }
