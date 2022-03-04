@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace N3O.Umbraco.Entities {
-    public interface IChangeFeedFactory<T> where T : IEntity {
-        IReadOnlyList<IChangeFeed<T>> GetChangeFeeds();
+    public interface IChangeFeedFactory {
+        IReadOnlyList<IChangeFeed> GetChangeFeeds(Type entityType);
     }
 }

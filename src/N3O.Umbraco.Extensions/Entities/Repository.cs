@@ -13,12 +13,12 @@ namespace N3O.Umbraco.Entities {
     public class Repository<T> : IRepository<T> where T : class, IEntity {
         private readonly ConcurrentDictionary<EntityId, T> _entityStore = new();
         private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
-        private readonly IChangeFeedFactory<T> _changeFeedFactory;
+        private readonly IChangeFeedFactory _changeFeedFactory;
         private readonly IJsonProvider _jsonProvider;
         private readonly IClock _clock;
 
         public Repository(IUmbracoDatabaseFactory umbracoDatabaseFactory,
-                          IChangeFeedFactory<T> changeFeedFactory,
+                          IChangeFeedFactory changeFeedFactory,
                           IJsonProvider jsonProvider,
                           IClock clock) {
             _umbracoDatabaseFactory = umbracoDatabaseFactory;
@@ -106,10 +106,12 @@ namespace N3O.Umbraco.Entities {
                                                T sessionEntity,
                                                T dbEntity,
                                                CancellationToken cancellationToken) {
-            var changeFeeds = _changeFeedFactory.GetChangeFeeds();
+            var entityType = (sessionEntity ?? dbEntity).GetType();
+            
+            var changeFeeds = _changeFeedFactory.GetChangeFeeds(entityType);
 
             foreach (var changeFeed in changeFeeds) {
-                var entityChange = new EntityChange<T>(sessionEntity, dbEntity, operation);
+                var entityChange = new EntityChange(sessionEntity, dbEntity, operation);
 
                 await changeFeed.ProcessChangeAsync(entityChange, cancellationToken);
             }

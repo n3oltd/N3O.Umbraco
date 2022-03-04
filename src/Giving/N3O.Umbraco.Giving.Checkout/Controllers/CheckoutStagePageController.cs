@@ -45,7 +45,7 @@ namespace N3O.Umbraco.Giving.Checkout.Controllers {
 
             if (checkout == null) {
                 redirectUrl = _contentCache.Single<DonatePageContent>().Content().AbsoluteUrl();
-            } else if (checkout.IsComplete) {
+            } else if (checkout.IsComplete && !CurrentPage.ContentType.Alias.EqualsInvariant(AliasHelper<CheckoutCompletePageContent>.ContentTypeAlias())) {
                 redirectUrl = _contentCache.Single<CheckoutCompletePageContent>().Content().AbsoluteUrl();
             } else if (checkout.Progress.CurrentStage != Stage) {
                 redirectUrl = checkout.Progress.CurrentStage.GetUrl(_contentCache);

@@ -1,17 +1,27 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace N3O.Umbraco.Entities {
-    public class ChangeFeedFactory<T> : IChangeFeedFactory<T> where T : IEntity {
-        private readonly Lazy<IEnumerable<IChangeFeed<T>>> _changeFeeds;
+    public class ChangeFeedFactory : IChangeFeedFactory {
+        private readonly IServiceProvider _serviceProvider;
 
-        public ChangeFeedFactory(Lazy<IEnumerable<IChangeFeed<T>>> changeFeeds) {
-            _changeFeeds = changeFeeds;
+        public ChangeFeedFactory(IServiceProvider serviceProvider) {
+            _serviceProvider = serviceProvider;
         }
-        
-        public IReadOnlyList<IChangeFeed<T>> GetChangeFeeds() {
-            return _changeFeeds.Value.ToList();
+
+        public IReadOnlyList<IChangeFeed> GetChangeFeeds(Type entityType) {
+            var changeFeedType = typeof(IChangeFeed<>).MakeGenericType(entityType);
+            var enumerableType = typeof(IEnumerable<>).MakeGenericType(changeFeedType);
+            var changeFeeds = (IEnumerable) _serviceProvider.GetService(enumerableType) ?? Enumerable.Empty<IChangeFeed>();
+            var list = new List<IChangeFeed>();
+
+            foreach (var changeFeed in changeFeeds) {
+                list.Add((IChangeFeed) changeFeed);
+            }
+
+            return list;
         }
     }
 }

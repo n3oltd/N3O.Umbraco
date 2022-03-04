@@ -24,7 +24,6 @@ namespace N3O.Umbraco.Payments {
             var flow = await LoadAsync(cancellationToken);
             
             T paymentObject;
-
             if (typeof(T).IsSubclassOfType(typeof(Payment))) {
                 paymentObject = GetOrCreate<T>(flow, PaymentObjectTypes.Payment);
             } else if (typeof(T).IsSubclassOfType(typeof(Credential))) {
@@ -34,9 +33,11 @@ namespace N3O.Umbraco.Payments {
             }
 
             try {
-                using (paymentObject.BeginUpdate(_clock)) {
-                    await actionAsync(flow, paymentObject);
-                }
+                flow.BeginPaymentFlow(_clock);
+
+                await actionAsync(flow, paymentObject);
+                
+                flow.EndPaymentFlow();                
             } catch (Exception ex) {
                 var message = _formatter.Text.Format<UnhandledErrorStrings>(s => s.Message_1, flow.Id);
                 

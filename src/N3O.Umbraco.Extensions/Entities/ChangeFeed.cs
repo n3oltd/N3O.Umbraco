@@ -12,9 +12,11 @@ namespace N3O.Umbraco.Entities {
             _logger = logger;
         }
 
-        public async Task ProcessChangeAsync(EntityChange<T> entityChange, CancellationToken cancellationToken) {
+        public async Task ProcessChangeAsync(EntityChange entityChange, CancellationToken cancellationToken) {
             try {
-                await ProcessAsync(entityChange, cancellationToken);
+                var typedEntityChange = new EntityChange<T>((T) entityChange.SessionEntity, (T) entityChange.DatabaseEntity, entityChange.Operation);
+
+                await ProcessChangeAsync(typedEntityChange, cancellationToken);
             } catch (Exception ex) {
                 _logger.LogError(ex,
                                  "Error processing change feed {ChangeFeedType} for {EntityType} with operation {Operation} and revision ID {RevisionId}",
@@ -25,6 +27,6 @@ namespace N3O.Umbraco.Entities {
             }
         }
 
-        protected abstract Task ProcessAsync(EntityChange<T> entityChange, CancellationToken cancellationToken);
+        protected abstract Task ProcessChangeAsync(EntityChange<T> entityChange, CancellationToken cancellationToken);
     }
 }

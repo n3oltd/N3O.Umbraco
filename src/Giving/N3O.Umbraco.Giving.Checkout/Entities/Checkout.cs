@@ -2,6 +2,7 @@
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Checkout.Models;
+using N3O.Umbraco.Payments.Content;
 using N3O.Umbraco.Payments.Entities;
 using N3O.Umbraco.References;
 using System.Linq;
