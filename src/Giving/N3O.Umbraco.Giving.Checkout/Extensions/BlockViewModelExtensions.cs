@@ -16,6 +16,10 @@ namespace N3O.Umbraco.Giving.Checkout.Extensions {
             return blockViewModel.ModulesData.Get<CheckoutDonationModel>(BlockModuleKeys.CheckoutDonation);
         }
         
+        public static CheckoutErrorModel CheckoutError(this IBlockViewModel blockViewModel) {
+            return blockViewModel.ModulesData.Get<CheckoutErrorModel>(BlockModuleKeys.CheckoutError);
+        }
+        
         public static CheckoutRegularGivingModel CheckoutRegularGiving(this IBlockViewModel blockViewModel) {
             return blockViewModel.ModulesData.Get<CheckoutRegularGivingModel>(BlockModuleKeys.CheckoutRegularGiving);
         }
