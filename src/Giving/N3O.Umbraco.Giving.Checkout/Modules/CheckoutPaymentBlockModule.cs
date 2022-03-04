@@ -40,12 +40,16 @@ namespace N3O.Umbraco.Giving.Checkout.Modules {
         public Task<object> ExecuteAsync(IPublishedElement block, CancellationToken cancellationToken) {
             var checkout = _checkoutAccessor.Get();
             var givingSettings = _contentCache.Single<GivingSettingsContent>();
-            var allowedMethodSettings = GetAllowedMethodSettings(givingSettings);
+            var allowedMethodSettings = GetAllowedMethodSettings(givingSettings).OrEmpty().ToList();
 
             bool IsAllowed(PaymentMethod paymentMethod) {
-                var settingsContentTypeAlias = paymentMethod.GetSettingsContentTypeAlias();
+                return GetOrder(paymentMethod) != -1;
+            }
 
-                return allowedMethodSettings.Any(x => x.ContentType.Alias.EqualsInvariant(settingsContentTypeAlias));
+            int GetOrder(PaymentMethod paymentMethod) {
+                var settingsContentTypeAlias = paymentMethod.GetSettingsContentTypeAlias();
+                
+                return allowedMethodSettings.IndexOf(x => x.ContentType.Alias.EqualsInvariant(settingsContentTypeAlias));
             }
 
             var paymentMethods = _lookups.GetAll<PaymentMethod>()
@@ -53,6 +57,7 @@ namespace N3O.Umbraco.Giving.Checkout.Modules {
                                                                    checkout.Currency) &&
                                                      x.Supports(PaymentObjectType) &&
                                                      IsAllowed(x))
+                                         .OrderBy(GetOrder)
                                          .ToDictionary(x => x, GetViewModel);
 
             return Task.FromResult<object>(new CheckoutDonationModel(checkout, paymentMethods));
