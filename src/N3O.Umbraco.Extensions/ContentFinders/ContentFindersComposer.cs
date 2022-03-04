@@ -7,7 +7,7 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.ContentFinders {
     public class ContentFindersComposer : Composer {
         public override void Compose(IUmbracoBuilder builder) {
-            builder.SetContentLastChanceFinder<Site404ContentFinder>();
+            builder.SetContentLastChanceFinder<LastChanceFinder>();
 
             RegisterAll(t => t.ImplementsInterface<IContentFinder>() &&
                              !t.ImplementsInterface<IContentLastChanceFinder>(),

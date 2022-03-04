@@ -6,11 +6,11 @@ using Umbraco.Cms.Core.Routing;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.ContentFinders {
-    public class Site404ContentFinder : IContentLastChanceFinder {
+    public class LastChanceFinder : IContentLastChanceFinder {
         private readonly IContentCache _contentCache;
         private readonly IRedirectManagement _redirectManagement;
 
-        public Site404ContentFinder(IContentCache contentCache, IRedirectManagement redirectManagement) {
+        public LastChanceFinder(IContentCache contentCache, IRedirectManagement redirectManagement) {
             _contentCache = contentCache;
             _redirectManagement = redirectManagement;
         }
@@ -23,7 +23,7 @@ namespace N3O.Umbraco.ContentFinders {
             if (request != null && request.ResponseStatusCode == 404) {
                 var notFound = (int) HttpStatusCode.NotFound;
                 request.SetResponseStatus(notFound);
-                request.SetPublishedContent(_contentCache.Single<UrlNotFoundPageContent>()?.Content());
+                request.SetPublishedContent(_contentCache.Single<NotFoundPageContent>()?.Content());
 
                 return true;
             }
