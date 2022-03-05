@@ -1,26 +1,27 @@
 ﻿using HandlebarsDotNet;
 using Microsoft.Extensions.Logging;
+using N3O.Umbraco.Financial;
 using N3O.Umbraco.Json;
-using N3O.Umbraco.Utilities;
+using N3O.Umbraco.Localization;
 
 namespace N3O.Umbraco.Templates.Handlebars.Helpers {
-    public class AbsoluteUrlHelper : Helper {
-        private readonly IUrlBuilder _urlBuilder;
+    public class FormatMoney : Helper {
+        private readonly IFormatter _formatter;
 
-        public AbsoluteUrlHelper(ILogger<AbsoluteUrlHelper> logger, IJsonProvider jsonProvider, IUrlBuilder urlBuilder)
+        public FormatMoney(ILogger<FormatMoney> logger, IJsonProvider jsonProvider, IFormatter formatter)
             : base(logger, jsonProvider, 1) {
-            _urlBuilder = urlBuilder;
+            _formatter = formatter;
         }
 
         protected override void Execute(EncodedTextWriter writer,
                                         HandlebarsDotNet.Context context,
                                         HandlebarsArguments args) {
-            var path = args.Get<string>(0);
-            var output = _urlBuilder.Root().AppendPathSegment(path).ToString();
+            var value = args.Get<Money>(0);
+            var output = _formatter.Number.FormatMoney(value);
             
             writer.Write(output);
         }
         
-        public override string Name => "absoluteUrl";
+        public override string Name => "formatMoney";
     }
 }

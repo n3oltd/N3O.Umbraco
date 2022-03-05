@@ -18,6 +18,8 @@ namespace N3O.Umbraco.Templates.Handlebars.BlockHelpers {
 
             if (val1 == val2) {
                 options.Template(output, context);
+            } else {
+                options.Inverse(output, context);
             }
         }
     }
