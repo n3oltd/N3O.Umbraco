@@ -3,11 +3,11 @@ using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Json;
 
 namespace N3O.Umbraco.Templates.Handlebars.BlockHelpers {
-    public class IsBlockHelper : BlockHelper {
-        public IsBlockHelper(ILogger<IsBlockHelper> logger, IJsonProvider jsonProvider)
+    public class IsNotBlockHelper : BlockHelper {
+        public IsNotBlockHelper(ILogger<IsNotBlockHelper> logger, IJsonProvider jsonProvider)
             : base(logger, jsonProvider, 2) { }
     
-        public override string Name => "is";
+        public override string Name => "isNot";
 
         protected override void Execute(EncodedTextWriter output,
                                         BlockHelperOptions options,
@@ -16,7 +16,7 @@ namespace N3O.Umbraco.Templates.Handlebars.BlockHelpers {
             var val1 = args.Get<string>(0)?.ToLowerInvariant();
             var val2 = args.Get<string>(1).ToLowerInvariant();
 
-            if (val1 == val2) {
+            if (val1 != val2) {
                 options.Template(output, context);
             }
         }
