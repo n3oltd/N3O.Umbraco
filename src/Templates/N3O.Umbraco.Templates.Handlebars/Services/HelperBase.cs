@@ -33,7 +33,9 @@ namespace N3O.Umbraco.Templates.Handlebars {
             } catch (Exception ex) {
                 var serializedArgs = _jsonProvider.SerializeObject(args);
 
-                Logger.LogError(ex, $"Error whilst processing {GetType().GetFriendlyName()} with arguments {serializedArgs}");
+                Logger.LogError(ex, "Error whilst processing {Helper} with arguments {Args}",
+                                GetType().GetFriendlyName(),
+                                serializedArgs);
             }
         }
     
