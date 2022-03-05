@@ -26,7 +26,7 @@ namespace N3O.Umbraco.Uploader.Controllers {
         [HttpGet("media/{mediaId}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<FileMedia> GetMediaById(string mediaId) {
-            var file = _mediaFileManager.FileSystem.GetFiles(mediaId).SingleOrDefault();
+            var file = _mediaFileManager.FileSystem.GetFiles(mediaId, "*.*").SingleOrDefault();
 
             if (file == null) {
                 return NotFound();

@@ -36,7 +36,11 @@ angular.module("umbraco").controller("N3O.Umbraco.Uploader",
 
         $scope.processResponse = function (errorMessage, json) {
             if (errorMessage === null) {
-                var response = JSON.parse(json);
+                var response = json;
+                
+                if (typeof response === 'string' || response instanceof String) {
+                    response = JSON.parse(response);   
+                }
                 
                 $scope.model.value = {
                     urlPath: response.urlPath,
