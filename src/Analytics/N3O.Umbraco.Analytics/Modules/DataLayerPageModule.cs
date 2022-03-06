@@ -11,10 +11,10 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Analytics.Modules {
     public class DataLayerPageModule : IPageModule {
         private readonly Lazy<IDataLayerBuilder> _dataLayerBuilder;
-        private readonly Lazy<IEnumerable<IDataLayerProvider>> _allProviders;
+        private readonly IEnumerable<IDataLayerProvider> _allProviders;
 
         public DataLayerPageModule(Lazy<IDataLayerBuilder> dataLayerBuilder,
-                                   Lazy<IEnumerable<IDataLayerProvider>> allProviders) {
+                                   IEnumerable<IDataLayerProvider> allProviders) {
             _dataLayerBuilder = dataLayerBuilder;
             _allProviders = allProviders;
         }
@@ -22,7 +22,7 @@ namespace N3O.Umbraco.Analytics.Modules {
         public bool ShouldExecute(IPublishedContent page) => true;
 
         public async Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
-            var providers = _allProviders.Value.OrEmpty().Where(x => x.IsProviderFor(page)).ToList();
+            var providers = _allProviders.OrEmpty().Where(x => x.IsProviderFor(page)).ToList();
 
             var toPush = new List<object>();
 
