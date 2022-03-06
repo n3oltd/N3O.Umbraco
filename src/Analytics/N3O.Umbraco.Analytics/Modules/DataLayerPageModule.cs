@@ -10,10 +10,10 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Analytics.Modules {
     public class DataLayerPageModule : IPageModule {
-        private readonly Lazy<IDataLayerBuilder> _dataLayerBuilder;
+        private readonly IDataLayerBuilder _dataLayerBuilder;
         private readonly IEnumerable<IDataLayerProvider> _allProviders;
 
-        public DataLayerPageModule(Lazy<IDataLayerBuilder> dataLayerBuilder,
+        public DataLayerPageModule(IDataLayerBuilder dataLayerBuilder,
                                    IEnumerable<IDataLayerProvider> allProviders) {
             _dataLayerBuilder = dataLayerBuilder;
             _allProviders = allProviders;
@@ -30,7 +30,7 @@ namespace N3O.Umbraco.Analytics.Modules {
                 toPush.AddRange(await provider.GetAsync(page, cancellationToken));
             }
 
-            var javaScript = _dataLayerBuilder.Value.BuildJavaScript(toPush);
+            var javaScript = _dataLayerBuilder.BuildJavaScript(toPush);
 
             return new DataLayerCode(javaScript);
         }
