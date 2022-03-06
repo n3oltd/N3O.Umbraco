@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using N3O.Umbraco.Analytics.Extensions;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Pages;
 using System;
 using Umbraco.Extensions;
@@ -16,7 +17,7 @@ namespace N3O.Umbraco.Analytics.TagHelpers {
                 throw new ArgumentException(nameof(Model));
             }
 
-            if (Model.DataLayer() == null) {
+            if (!Model.DataLayer().HasValue(x => x.JavaScript)) {
                 output.SuppressOutput();
             } else {
                 output.TagName = null;
@@ -24,7 +25,6 @@ namespace N3O.Umbraco.Analytics.TagHelpers {
                 var scriptTag = new TagBuilder("script");
 
                 scriptTag.InnerHtml.AppendHtml("window.dataLayer = window.dataLayer || [];");
-                scriptTag.InnerHtml.AppendHtml("window.dataLayer.push({ 'event': 'gtm.js' });");
                 scriptTag.InnerHtml.AppendHtml(Model.DataLayer().JavaScript);
 
                 output.Content.SetHtmlContent(scriptTag.ToHtmlString());
