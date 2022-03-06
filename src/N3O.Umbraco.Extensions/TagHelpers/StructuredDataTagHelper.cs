@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Pages;
@@ -24,7 +25,6 @@ namespace N3O.Umbraco.TagHelpers {
                 var scriptTag = new TagBuilder("script");
             
                 scriptTag.Attributes.Add("type", "application/ld+json");
-            
                 scriptTag.InnerHtml.AppendHtml(Model.StructuredData().JavaScriptObject);
             
                 output.Content.SetHtmlContent(scriptTag.ToHtmlString());

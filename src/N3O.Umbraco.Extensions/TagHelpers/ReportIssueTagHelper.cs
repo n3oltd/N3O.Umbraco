@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Hosting;
@@ -20,14 +21,14 @@ namespace N3O.Umbraco.TagHelpers {
                 output.TagName = null;
 
                 var scriptTag = new TagBuilder("script");
-                scriptTag.InnerHtml.AppendHtml("(function () {");
-                scriptTag.InnerHtml.AppendHtml("  var s = document.createElement('script');");
-                scriptTag.InnerHtml.AppendHtml("  s.type = 'text/javascript';");
-                scriptTag.InnerHtml.AppendHtml("  s.async = true;");
-                scriptTag.InnerHtml.AppendHtml("  s.src = '//api.usersnap.com/load/87997022-e6ff-4832-834d-c17f947fa639.js';");
-                scriptTag.InnerHtml.AppendHtml("  var x = document.getElementsByTagName('script')[0];");
-                scriptTag.InnerHtml.AppendHtml("  x.parentNode.insertBefore(s, x);");
-                scriptTag.InnerHtml.AppendHtml("})();");
+                scriptTag.InnerHtml.AppendHtmlLine("(function () {");
+                scriptTag.InnerHtml.AppendHtmlLine("  var s = document.createElement('script');");
+                scriptTag.InnerHtml.AppendHtmlLine("  s.type = 'text/javascript';");
+                scriptTag.InnerHtml.AppendHtmlLine("  s.async = true;");
+                scriptTag.InnerHtml.AppendHtmlLine("  s.src = '//api.usersnap.com/load/87997022-e6ff-4832-834d-c17f947fa639.js';");
+                scriptTag.InnerHtml.AppendHtmlLine("  var x = document.getElementsByTagName('script')[0];");
+                scriptTag.InnerHtml.AppendHtmlLine("  x.parentNode.insertBefore(s, x);");
+                scriptTag.InnerHtml.AppendHtmlLine("})();");
 
                 output.Content.SetHtmlContent(scriptTag.ToHtmlString());
             }

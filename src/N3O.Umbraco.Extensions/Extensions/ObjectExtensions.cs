@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Html;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -47,6 +48,8 @@ namespace N3O.Umbraco.Extensions {
                 hasValue = false;
             } else if (obj is string str) {
                 hasValue = str.HasValue();
+            } else if (obj is HtmlString htmlString) {
+                hasValue = htmlString.HasValue();
             } else if (obj is ICollection collection) {
                 foreach (var element in collection) {
                     if (HasValue(element)) {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using N3O.Umbraco.Analytics.Extensions;
 using N3O.Umbraco.Extensions;
@@ -24,7 +25,7 @@ namespace N3O.Umbraco.Analytics.TagHelpers {
 
                 var scriptTag = new TagBuilder("script");
 
-                scriptTag.InnerHtml.AppendHtml("window.dataLayer = window.dataLayer || [];");
+                scriptTag.InnerHtml.AppendHtmlLine("window.dataLayer = window.dataLayer || [];");
                 scriptTag.InnerHtml.AppendHtml(Model.DataLayer().JavaScript);
 
                 output.Content.SetHtmlContent(scriptTag.ToHtmlString());

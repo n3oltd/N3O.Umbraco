@@ -6,10 +6,6 @@ namespace N3O.Umbraco.Analytics.Extensions {
         public static Code DataLayer(this IPageViewModel pageViewModel) {
             return pageViewModel.ModulesData.Get<Code>(AnalyticsConstants.PageModuleKeys.DataLayer);
         }
-        
-        public static Code GAEvents(this IPageViewModel pageViewModel) {
-            return pageViewModel.ModulesData.Get<Code>(AnalyticsConstants.PageModuleKeys.GAEvents);
-        }
     
         public static TagManagerCode TagManager(this IPageViewModel pageViewModel) {
             return pageViewModel.ModulesData.Get<TagManagerCode>(AnalyticsConstants.PageModuleKeys.TagManager);
