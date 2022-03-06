@@ -3,8 +3,12 @@ using N3O.Umbraco.Pages;
 
 namespace N3O.Umbraco.Analytics.Extensions {
     public static class PageViewModelExtensions {
-        public static DataLayerCode DataLayer(this IPageViewModel pageViewModel) {
-            return pageViewModel.ModulesData.Get<DataLayerCode>(AnalyticsConstants.PageModuleKeys.DataLayer);
+        public static Code DataLayer(this IPageViewModel pageViewModel) {
+            return pageViewModel.ModulesData.Get<Code>(AnalyticsConstants.PageModuleKeys.DataLayer);
+        }
+        
+        public static Code GAEvents(this IPageViewModel pageViewModel) {
+            return pageViewModel.ModulesData.Get<Code>(AnalyticsConstants.PageModuleKeys.GAEvents);
         }
     
         public static TagManagerCode TagManager(this IPageViewModel pageViewModel) {

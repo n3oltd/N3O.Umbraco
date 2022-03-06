@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Analytics.Modules {
-    public class DataLayerPageModule : IPageModule {
-        private readonly IDataLayerBuilder _dataLayerBuilder;
-        private readonly IEnumerable<IDataLayerProvider> _allProviders;
+    public class GAEventsPageModule : IPageModule {
+        private readonly IGAEventsBuilder _gaEventsBuilder;
+        private readonly IEnumerable<IGAEventsProvider> _allProviders;
 
-        public DataLayerPageModule(IDataLayerBuilder dataLayerBuilder,
-                                   IEnumerable<IDataLayerProvider> allProviders) {
-            _dataLayerBuilder = dataLayerBuilder;
+        public GAEventsPageModule(IGAEventsBuilder gaEventsBuilder,
+                                  IEnumerable<IGAEventsProvider> allProviders) {
+            _gaEventsBuilder = gaEventsBuilder;
             _allProviders = allProviders;
         }
 
@@ -23,17 +23,17 @@ namespace N3O.Umbraco.Analytics.Modules {
         public async Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
             var providers = _allProviders.OrEmpty().Where(x => x.IsProviderFor(page)).ToList();
 
-            var toPush = new List<object>();
+            var gTag = new GTag();
 
             foreach (var provider in providers) {
-                toPush.AddRange(await provider.GetAsync(page, cancellationToken));
+                await provider.RunAsync(page, gTag, cancellationToken);
             }
 
-            var javaScript = _dataLayerBuilder.BuildJavaScript(toPush);
+            var javaScript = _gaEventsBuilder.BuildJavaScript(gTag);
 
             return new Code(javaScript);
         }
 
-        public string Key => AnalyticsConstants.PageModuleKeys.DataLayer;
+        public string Key => AnalyticsConstants.PageModuleKeys.GAEvents;
     }
 }

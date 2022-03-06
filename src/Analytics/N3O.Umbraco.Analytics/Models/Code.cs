@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Html;
 using N3O.Umbraco.Extensions;
 
 namespace N3O.Umbraco.Analytics.Models {
-    public class DataLayerCode : Value {
-        public DataLayerCode(HtmlString javaScript) {
+    public class Code : Value {
+        public Code(HtmlString javaScript) {
             JavaScript = javaScript;
         }
 
