@@ -6,7 +6,7 @@ namespace N3O.Umbraco.Entities {
     [TypeConverter(typeof(RevisionIdTypeConverter))]
     public class RevisionId : IComparable<RevisionId>, IEquatable<RevisionId> {
         public EntityId Id { get; }
-        public long Revision { get; }
+        public int Revision { get; }
 
         public RevisionId(string value) {
             var bits = value.Split(':');
@@ -16,10 +16,10 @@ namespace N3O.Umbraco.Entities {
             }
 
             Id = new EntityId(bits[0]);
-            Revision = long.Parse(bits[1]);
+            Revision = int.Parse(bits[1]);
         }
 
-        public RevisionId(EntityId id, long revision) {
+        public RevisionId(EntityId id, int revision) {
             Id = id;
             Revision = revision;
         }
@@ -64,7 +64,7 @@ namespace N3O.Umbraco.Entities {
             return TryParse(value) != null;
         }
         
-        public bool RevisionMatches(long? revision) {
+        public bool RevisionMatches(int? revision) {
             return revision == Revision;
         }
 
