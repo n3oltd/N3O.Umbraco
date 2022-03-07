@@ -5,8 +5,10 @@ using N3O.Umbraco.Composing;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Payments.Stripe.Models;
+using N3O.Umbraco.Payments.Stripe.Services;
 using Stripe;
 using Umbraco.Cms.Core.DependencyInjection;
+using CustomerService = N3O.Umbraco.Payments.Stripe.Services.CustomerService;
 
 namespace N3O.Umbraco.Payments.Stripe {
     public class StripeComposer : Composer {
@@ -26,6 +28,8 @@ namespace N3O.Umbraco.Payments.Stripe {
 
                 return new StripeClient(apiSettings.SecretKey);
             });
+            
+            builder.Services.AddTransient<ICustomerService, CustomerService>();
         }
         
         private static StripeApiSettings GetApiSettings(IContentCache contentCache, IHostEnvironment environment) {

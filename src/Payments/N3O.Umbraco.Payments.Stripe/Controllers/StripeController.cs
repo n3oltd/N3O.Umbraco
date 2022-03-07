@@ -24,8 +24,8 @@ namespace N3O.Umbraco.Payments.Stripe.Controllers {
         }
         
         [HttpPost("credentials/{flowId:entityId}/setupIntent")]
-        public async Task<ActionResult<PaymentFlowRes<StripeCredential>>> CreateSetupIntent(SetupIntentReq req) {
-            var res = await _mediator.SendAsync<CreateSetupIntentCommand, SetupIntentReq, PaymentFlowRes<StripeCredential>>(req);
+        public async Task<ActionResult<PaymentFlowRes<StripeCredential>>> CreateSetupIntent() {
+            var res = await _mediator.SendAsync<CreateSetupIntentCommand, None, PaymentFlowRes<StripeCredential>>(None.Empty);
 
             return Ok(res);
         }
