@@ -27,8 +27,10 @@ namespace N3O.Umbraco.Giving.Checkout {
             }
             
             foreach (var choice in choices) {
-                jObject["account"]["consent"][choice.Channel.Id][choice.Category.Id] = choice.Response.Id;
+                jObject["account"]["consent"][choice.Channel.Id][choice.Category.Id] = choice.Response.Value;
             }
+
+            jObject["account"]["Address"]["country"] = checkout.Account.Address.Country.Iso2Code;
             
             return jObject;
         }
