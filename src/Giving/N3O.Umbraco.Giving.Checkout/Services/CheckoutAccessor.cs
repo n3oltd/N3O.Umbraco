@@ -35,7 +35,7 @@ namespace N3O.Umbraco.Giving.Checkout {
         }
 
         public async Task<Entities.Checkout> GetAsync(CancellationToken cancellationToken = default) {
-            var checkoutId = _checkoutIdAccessor.GetCheckoutId();
+            var checkoutId = _checkoutIdAccessor.GetId();
 
             var checkout = await _repository.GetAsync(checkoutId, cancellationToken);
 
@@ -43,7 +43,7 @@ namespace N3O.Umbraco.Giving.Checkout {
         }
         
         public async Task<Entities.Checkout> GetOrCreateAsync(CancellationToken cancellationToken) {
-            var checkoutId = _checkoutIdAccessor.GetCheckoutId();
+            var checkoutId = _checkoutIdAccessor.GetId();
             
             var result = await _lock.LockAsync(checkoutId.ToString(), async () => {
                 var checkout = await _repository.GetAsync(checkoutId, cancellationToken);

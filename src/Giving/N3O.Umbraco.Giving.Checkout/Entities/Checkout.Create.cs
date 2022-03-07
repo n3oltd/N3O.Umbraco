@@ -13,7 +13,7 @@ namespace N3O.Umbraco.Giving.Checkout.Entities {
                                                        Cart.Entities.Cart cart) {
             var checkout = Create<Checkout>(id);
 
-            checkout.CartId = cart.Id;
+            checkout.CartRevisionId = cart.RevisionId;
             checkout.Reference = await counters.NextAsync<CheckoutReferenceType>();
             checkout.Currency = cart.Currency;
             checkout.Donation = new DonationCheckout(cart.Donation.Allocations, cart.Currency);

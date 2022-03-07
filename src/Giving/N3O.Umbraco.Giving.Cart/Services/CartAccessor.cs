@@ -30,7 +30,7 @@ namespace N3O.Umbraco.Giving.Cart {
         }
 
         public async Task<Entities.Cart> GetAsync(CancellationToken cancellationToken = default) {
-            var cartId = _cartIdAccessor.GetCartId();
+            var cartId = _cartIdAccessor.GetId();
             
             var result = await _lock.LockAsync(cartId.ToString(), async () => {
                 var currency = _currencyAccessor.GetCurrency();

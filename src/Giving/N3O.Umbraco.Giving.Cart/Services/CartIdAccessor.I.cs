@@ -1,7 +1,8 @@
-﻿using System;
+﻿using N3O.Umbraco.Entities;
 
 namespace N3O.Umbraco.Giving.Cart {
     public interface ICartIdAccessor {
-        Guid GetCartId();
+        EntityId GetId();
+        RevisionId GetRevisionId();
     }
 }

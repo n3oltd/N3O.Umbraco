@@ -9,7 +9,7 @@ using System.Net;
 
 namespace N3O.Umbraco.Giving.Checkout.Entities {
     public partial class Checkout : Entity, IPaymentsFlow {
-        public EntityId CartId { get; private set; }
+        public RevisionId CartRevisionId { get; private set; }
         public Reference Reference { get; private set; }
         public Currency Currency { get; private set; }
         public CheckoutProgress Progress { get; private set; }
