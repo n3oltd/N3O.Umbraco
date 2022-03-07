@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Giving.Checkout.Content;
+using N3O.Umbraco.Giving.Checkout.Models;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Payments.Lookups;
 using System;
@@ -20,6 +21,8 @@ namespace N3O.Umbraco.Giving.Checkout.Modules {
             return givingSettings.DonationPaymentMethods;
         }
 
+        protected override object GetModel(Entities.Checkout checkout, IReadOnlyDictionary<PaymentMethod, object> paymentMethods) => new CheckoutDonationModel(checkout, paymentMethods);
+        
         public override string Key => CheckoutConstants.BlockModuleKeys.CheckoutDonation;
         protected override PaymentObjectType PaymentObjectType => PaymentObjectTypes.Payment;
     }
