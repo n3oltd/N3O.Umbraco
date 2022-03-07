@@ -251,14 +251,6 @@ export var PaymentObjectStatus;
     PaymentObjectStatus["Error"] = "error";
     PaymentObjectStatus["InProgress"] = "inProgress";
 })(PaymentObjectStatus || (PaymentObjectStatus = {}));
-export var PublishedItemType;
-(function (PublishedItemType) {
-    PublishedItemType[PublishedItemType["Unknown"] = 0] = "Unknown";
-    PublishedItemType[PublishedItemType["Element"] = 1] = "Element";
-    PublishedItemType[PublishedItemType["Content"] = 2] = "Content";
-    PublishedItemType[PublishedItemType["Media"] = 3] = "Media";
-    PublishedItemType[PublishedItemType["Member"] = 4] = "Member";
-})(PublishedItemType || (PublishedItemType = {}));
 var ApiException = /** @class */ (function (_super) {
     __extends(ApiException, _super);
     function ApiException(message, status, response, headers, result) {

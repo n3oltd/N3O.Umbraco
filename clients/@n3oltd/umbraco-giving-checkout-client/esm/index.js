@@ -331,14 +331,6 @@ var CheckoutClient = /** @class */ (function () {
     return CheckoutClient;
 }());
 export { CheckoutClient };
-export var PublishedItemType;
-(function (PublishedItemType) {
-    PublishedItemType[PublishedItemType["Unknown"] = 0] = "Unknown";
-    PublishedItemType[PublishedItemType["Element"] = 1] = "Element";
-    PublishedItemType[PublishedItemType["Content"] = 2] = "Content";
-    PublishedItemType[PublishedItemType["Media"] = 3] = "Media";
-    PublishedItemType[PublishedItemType["Member"] = 4] = "Member";
-})(PublishedItemType || (PublishedItemType = {}));
 /** One of 'account', 'donation', 'regularGiving' */
 export var CheckoutStage;
 (function (CheckoutStage) {
@@ -380,6 +372,14 @@ export var GivingType;
     GivingType["Donation"] = "donation";
     GivingType["RegularGiving"] = "regularGiving";
 })(GivingType || (GivingType = {}));
+export var PublishedItemType;
+(function (PublishedItemType) {
+    PublishedItemType[PublishedItemType["Unknown"] = 0] = "Unknown";
+    PublishedItemType[PublishedItemType["Element"] = 1] = "Element";
+    PublishedItemType[PublishedItemType["Content"] = 2] = "Content";
+    PublishedItemType[PublishedItemType["Media"] = 3] = "Media";
+    PublishedItemType[PublishedItemType["Member"] = 4] = "Member";
+})(PublishedItemType || (PublishedItemType = {}));
 export var ContentVariation;
 (function (ContentVariation) {
     ContentVariation[ContentVariation["Nothing"] = 0] = "Nothing";

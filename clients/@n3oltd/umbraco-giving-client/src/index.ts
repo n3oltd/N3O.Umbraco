@@ -730,40 +730,6 @@ export interface FundDonationOptionRes {
     regularGivingPriceHandles?: PriceHandleRes[] | undefined;
 }
 
-export interface IPublishedContent {
-    id?: number;
-    name?: string | undefined;
-    urlSegment?: string | undefined;
-    sortOrder?: number;
-    level?: number;
-    path?: string | undefined;
-    templateId?: number | undefined;
-    creatorId?: number;
-    createDate?: Date;
-    writerId?: number;
-    updateDate?: Date;
-    cultures?: { [key: string]: PublishedCultureInfo; } | undefined;
-    itemType?: PublishedItemType;
-    parent?: IPublishedContent | undefined;
-    children?: IPublishedContent[] | undefined;
-    childrenForAllCultures?: IPublishedContent[] | undefined;
-}
-
-export interface PublishedCultureInfo {
-    culture?: string | undefined;
-    name?: string | undefined;
-    urlSegment?: string | undefined;
-    date?: Date;
-}
-
-export enum PublishedItemType {
-    Unknown = 0,
-    Element = 1,
-    Content = 2,
-    Media = 3,
-    Member = 4,
-}
-
 /** One of 'donation', 'regularGiving' */
 export enum GivingType {
     Donation = "donation",
@@ -771,7 +737,6 @@ export enum GivingType {
 }
 
 export interface PriceContent {
-    content?: IPublishedContent | undefined;
     amount?: number;
     locked?: boolean;
 }
@@ -801,6 +766,14 @@ export interface IPublishedContentType {
     variations?: ContentVariation;
     isElement?: boolean;
     propertyTypes?: IPublishedPropertyType[] | undefined;
+}
+
+export enum PublishedItemType {
+    Unknown = 0,
+    Element = 1,
+    Content = 2,
+    Media = 3,
+    Member = 4,
 }
 
 export enum ContentVariation {
