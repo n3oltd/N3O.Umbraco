@@ -67,6 +67,7 @@ namespace N3O.Umbraco.Giving.Checkout.Modules {
 
         protected abstract object GetModel(Entities.Checkout checkout,
                                            IReadOnlyDictionary<PaymentMethod, object> paymentMethods);
+                                           
         private object GetViewModel(PaymentMethod paymentMethod) {
             var viewModelType = typeof(IPaymentMethodViewModel<>).MakeGenericType(paymentMethod.GetType());
 
