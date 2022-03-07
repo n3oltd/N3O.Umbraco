@@ -2,7 +2,6 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Checkout.Content;
-using N3O.Umbraco.Giving.Checkout.Models;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Payments;
 using N3O.Umbraco.Payments.Lookups;
