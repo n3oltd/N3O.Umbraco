@@ -24,7 +24,7 @@ namespace N3O.Umbraco.Templates.Handlebars {
             
                 return rendered;
             } catch (HandlebarsRuntimeException ex) {
-                _logger.LogError(ex, "Failed to render markup {Markup} with model {Model}", markup, model);
+                _logger.LogError(ex, "Failed to render markup {Markup} with model {@Model}", markup, model);
 
                 throw;
             }
