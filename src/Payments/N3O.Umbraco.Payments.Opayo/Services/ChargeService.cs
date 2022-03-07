@@ -47,7 +47,9 @@ namespace N3O.Umbraco.Payments.Opayo {
                 var apiRequest = GetApiPaymentTransactionReq(req, parameters, saveCard);
 
                 var transaction = await _opayoClient.TransactionAsync(apiRequest);
-
+                
+                payment.UpdateMerchantSessionKey(req.MerchantSessionKey);
+                
                 if (transaction.IsAuthorised()) {
                     payment.Paid(transaction.TransactionId,
                                  transaction.StatusCode,
