@@ -21,7 +21,10 @@ namespace N3O.Umbraco.Giving.Checkout.Modules {
             return givingSettings.DonationPaymentMethods;
         }
 
-        protected override object GetModel(Entities.Checkout checkout, IReadOnlyDictionary<PaymentMethod, object> paymentMethods) => new CheckoutDonationModel(checkout, paymentMethods);
+        protected override object GetModel(Entities.Checkout checkout,
+                                           IReadOnlyDictionary<PaymentMethod, object> paymentMethods) {
+            return new CheckoutDonationModel(checkout, paymentMethods);
+        }
         
         public override string Key => CheckoutConstants.BlockModuleKeys.CheckoutDonation;
         protected override PaymentObjectType PaymentObjectType => PaymentObjectTypes.Payment;
