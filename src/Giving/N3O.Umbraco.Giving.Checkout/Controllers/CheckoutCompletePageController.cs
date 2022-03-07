@@ -1,14 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewEngines;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Giving.Cart.Context;
 using N3O.Umbraco.Giving.Checkout.Lookups;
 using N3O.Umbraco.Pages;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Giving.Checkout.Controllers {
     public class CheckoutCompletePageController : CheckoutStagePageController {
+        private readonly Lazy<CartCookie> _cartCookie;
+
         public CheckoutCompletePageController(ILogger<CheckoutCompletePageController> logger,
                                               ICompositeViewEngine compositeViewEngine,
                                               IUmbracoContextAccessor umbracoContextAccessor,
@@ -16,7 +22,8 @@ namespace N3O.Umbraco.Giving.Checkout.Controllers {
                                               IPagePipeline pagePipeline,
                                               IContentCache contentCache,
                                               IServiceProvider serviceProvider,
-                                              ICheckoutAccessor checkoutAccessor)
+                                              ICheckoutAccessor checkoutAccessor,
+                                              Lazy<CartCookie> cartCookie)
             : base(logger,
                    compositeViewEngine,
                    umbracoContextAccessor,
@@ -24,8 +31,16 @@ namespace N3O.Umbraco.Giving.Checkout.Controllers {
                    pagePipeline,
                    contentCache,
                    serviceProvider,
-                   checkoutAccessor) { }
+                   checkoutAccessor) {
+            _cartCookie = cartCookie;
+        }
 
         protected override CheckoutStage Stage => null;
+
+        public override Task<IActionResult> Index(CancellationToken cancellationToken) {
+            _cartCookie.Value.SetValue(Guid.NewGuid().ToString());
+            
+            return base.Index(cancellationToken);
+        }
     }
 }
