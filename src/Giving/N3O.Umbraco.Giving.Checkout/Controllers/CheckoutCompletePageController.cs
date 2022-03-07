@@ -13,7 +13,7 @@ using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Giving.Checkout.Controllers {
     public class CheckoutCompletePageController : CheckoutStagePageController {
-        private readonly Lazy<CartCookie> _cartCookie;
+        private readonly CartCookie _cartCookie;
 
         public CheckoutCompletePageController(ILogger<CheckoutCompletePageController> logger,
                                               ICompositeViewEngine compositeViewEngine,
@@ -23,7 +23,7 @@ namespace N3O.Umbraco.Giving.Checkout.Controllers {
                                               IContentCache contentCache,
                                               IServiceProvider serviceProvider,
                                               ICheckoutAccessor checkoutAccessor,
-                                              Lazy<CartCookie> cartCookie)
+                                              CartCookie cartCookie)
             : base(logger,
                    compositeViewEngine,
                    umbracoContextAccessor,
@@ -38,7 +38,7 @@ namespace N3O.Umbraco.Giving.Checkout.Controllers {
         protected override CheckoutStage Stage => null;
 
         public override Task<IActionResult> Index(CancellationToken cancellationToken) {
-            _cartCookie.Value.SetValue(Guid.NewGuid().ToString());
+            _cartCookie.Reset();
             
             return base.Index(cancellationToken);
         }

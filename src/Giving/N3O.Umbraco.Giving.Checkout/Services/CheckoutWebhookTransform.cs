@@ -1,22 +1,35 @@
+using N3O.Umbraco.Giving.Webhooks;
 using N3O.Umbraco.Json;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 
 namespace N3O.Umbraco.Giving.Checkout {
-    public class CheckoutWebhookTransform : IWebhookTransform<Entities.Checkout> {
-        public object Transform(IJsonProvider jsonProvider, Entities.Checkout entity) {
-            var choices = entity.Account.Consent.Choices.ToList();
+    public class CheckoutWebhookTransform : IWebhookTransform {
+        private readonly IJsonProvider _jsonProvider;
 
-            var responses = new JObject();
-            foreach (var choice in choices) {
-                responses[choice.Channel.Id] = new JObject();
-                responses[choice.Channel.Id][choice.Category.Id] = choice.Response.Id;
+        public CheckoutWebhookTransform(IJsonProvider jsonProvider) {
+            _jsonProvider = jsonProvider;
+        }
+
+        public bool IsTransform(object body) => body is Entities.Checkout; 
+        
+        public object Apply(object body) {
+            var checkout = (Entities.Checkout) body;
+            
+            var jObject = JObject.FromObject(checkout, JsonSerializer.Create(_jsonProvider.GetSettings()));
+
+            var choices = checkout.Account.Consent.Choices.ToList();
+            var channels = choices.Select(x => x.Channel).Distinct().ToList();
+
+            foreach (var channel in channels) {
+                jObject["account"]["consent"][channel.Id] = new JObject();
             }
-
-            var json = jsonProvider.SerializeObject(entity);
-            var jObject = JObject.Parse(json);
-
-            jObject["account"]["consent"] = responses;
+            
+            foreach (var choice in choices) {
+                jObject["account"]["consent"][choice.Channel.Id][choice.Category.Id] = choice.Response.Id;
+            }
+            
             return jObject;
         }
     }

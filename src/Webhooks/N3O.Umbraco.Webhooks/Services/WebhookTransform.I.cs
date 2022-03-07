@@ -1,9 +1,6 @@
-﻿using N3O.Umbraco.Entities;
-using N3O.Umbraco.Json;
-
-namespace N3O.Umbraco.Giving.Checkout {
-    public interface IWebhookTransform<T>
-        where T : Entity {
-        object Transform(IJsonProvider jsonProvider, T entity);
+﻿namespace N3O.Umbraco.Giving.Webhooks {
+    public interface IWebhookTransform {
+        object Apply(object body);
+        bool IsTransform(object body);
     }
 }

@@ -7,13 +7,21 @@ namespace N3O.Umbraco.Giving.Cart.Context {
         public CartCookie(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor) { }
 
         protected override string GetDefaultValue() {
-            return Guid.NewGuid().ToString();
+            return NewId();
         }
 
         protected override void SetOptions(CookieOptions cookieOptions) {
             base.SetOptions(cookieOptions);
             
             cookieOptions.HttpOnly = false;
+        }
+        
+        public void Reset() {
+            SetValue(NewId());
+        }
+        
+        private string NewId() {
+            return Guid.NewGuid().ToString();
         }
 
         protected override string Name => "CartId";

@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Entities;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving.Checkout;
-using N3O.Umbraco.Json;
+using N3O.Umbraco.Giving.Webhooks;
 using N3O.Umbraco.Scheduler;
-using N3O.Umbraco.Utilities;
 using N3O.Umbraco.Webhooks.Commands;
 using N3O.Umbraco.Webhooks.Content;
 using N3O.Umbraco.Webhooks.Lookups;
@@ -20,28 +17,22 @@ namespace N3O.Umbraco.Webhooks {
         private readonly IContentCache _contentCache;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly Lazy<IBackgroundJob> _backgroundJob;
-        private readonly IJsonProvider _jsonProvider;
+        private readonly IReadOnlyList<IWebhookTransform> _transforms;
 
         public Webhooks(IContentCache contentCache,
                         IWebHostEnvironment webHostEnvironment,
                         Lazy<IBackgroundJob> backgroundJob,
-                        IJsonProvider jsonProvider) {
+                        IEnumerable<IWebhookTransform> transforms) {
             _contentCache = contentCache;
             _webHostEnvironment = webHostEnvironment;
             _backgroundJob = backgroundJob;
-            _jsonProvider = jsonProvider;
+            _transforms = transforms.OrEmpty().ApplyAttributeOrdering();
         }
 
         public void Queue(WebhookEvent webhookEvent, object body) {
             var webhooks = GetWebhooks(webhookEvent);
 
-            var transform = GetWebhookTransform(body.GetType());
-            if (transform.HasValue()) {
-                body = transform.CallMethod(nameof(IWebhookTransform<Entity>.Transform))
-                                .WithParameter(typeof(IJsonProvider), _jsonProvider)
-                                .WithParameter(body.GetType(), body)
-                                .Run();
-            }
+            body = ApplyTransforms(body);
 
             foreach (var webhook in webhooks) {
                 var jobName = $"WH {webhookEvent.Name} to {webhook.Url}";
@@ -57,24 +48,23 @@ namespace N3O.Umbraco.Webhooks {
         private IReadOnlyList<WebhookElement> GetWebhooks(WebhookEvent webhookEvent) {
             var settings = _contentCache.Single<WebhookSettingsContent>();
 
-            var list = _webHostEnvironment.IsProduction() ? settings.OrEmpty(x => x.Production).ToList() : settings.OrEmpty(x => x.Staging).ToList();
+            var list = _webHostEnvironment.IsProduction()
+                           ? settings.OrEmpty(x => x.Production).ToList()
+                           : settings.OrEmpty(x => x.Staging).ToList();
 
             list.RemoveWhere(x => x.Event != webhookEvent);
 
             return list;
         }
 
-        private object GetWebhookTransform(Type entityType) {
-            var implementedType = OurAssemblies.GetTypes(t => t.ImplementsInterface(typeof(IWebhookTransform<>).MakeGenericType(entityType)) &&
-                                                              !t.IsAbstract).SingleOrDefault();
+        private object ApplyTransforms(object body) {
+            var transforms = _transforms.Where(x => x.IsTransform(body)).ToList();
 
-            if (implementedType.HasValue()) {
-                var transform = Activator.CreateInstance(implementedType);
-
-                return transform;
+            foreach (var transform in transforms) {
+                body = transform.Apply(body);
             }
 
-            return null;
+            return body;
         }
     }
 }
