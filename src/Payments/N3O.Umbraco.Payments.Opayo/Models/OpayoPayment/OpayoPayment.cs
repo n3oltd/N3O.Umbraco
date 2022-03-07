@@ -6,6 +6,7 @@ namespace N3O.Umbraco.Payments.Opayo.Models {
         public string OpayoTransactionId { get; private set; }
         public int? OpayoStatusCode { get; private set; }
         public string OpayoStatusDetail { get; private set; }
+        public string OpayoMerchantSessionKey { get; private set; }
         public int? OpayoErrorCode { get; private set; }
         public string OpayoErrorMessage { get; private set; }
         public string OpayoBankAuthorisationCode { get; private set; }
