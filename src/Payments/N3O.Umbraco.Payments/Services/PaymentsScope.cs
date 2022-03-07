@@ -19,13 +19,13 @@ namespace N3O.Umbraco.Payments {
         }
 
         protected override async Task<IPaymentsFlow> LoadAsync(CancellationToken cancellationToken) {
-            _flow ??= await _flowId.RunAsync(_repository.GetAsync, true, cancellationToken);
+            _flow ??= await _flowId.RunAsync(_repository.GetAsync, true);
 
             return _flow;
         }
 
         protected override async Task UpdateAsync(IPaymentsFlow flow, CancellationToken cancellationToken) {
-            await _repository.UpdateAsync(flow, cancellationToken);
+            await _repository.UpdateAsync(flow);
         }
     }
 }

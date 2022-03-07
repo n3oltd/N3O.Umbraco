@@ -5,7 +5,6 @@ using N3O.Umbraco.Json;
 using NodaTime;
 using System;
 using System.Collections.Concurrent;
-using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Infrastructure.Persistence;
 
@@ -27,18 +26,17 @@ namespace N3O.Umbraco.Entities {
             _clock = clock;
         }
 
-        public async Task DeleteAsync(T entity, CancellationToken cancellationToken = default) {
+        public async Task DeleteAsync(T entity) {
             using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
                 await db.ExecuteAsync($"DELETE FROM {Tables.Entities.Name} WHERE Id = '{entity.Id.Value}'");
 
                 await RunChangeFeedsAsync(EntityOperations.Delete,
                                           null,
-                                          _entityStore.GetOrDefault(entity.Id),
-                                          cancellationToken);
+                                          _entityStore.GetOrDefault(entity.Id));
             }
         }
         
-        public async Task<T> GetAsync(EntityId id, CancellationToken cancellationToken = default) {
+        public async Task<T> GetAsync(EntityId id) {
             using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
                 var row = await db.SingleOrDefaultAsync<EntityRow>($"SELECT * FROM {Tables.Entities.Name} WHERE Id = '{id.Value}'");
 
@@ -54,8 +52,8 @@ namespace N3O.Umbraco.Entities {
             }
         }
 
-        public async Task<T> GetAsync(RevisionId revisionId, CancellationToken cancellationToken = default) {
-            var entity = await GetAsync(revisionId.Id, cancellationToken);
+        public async Task<T> GetAsync(RevisionId revisionId) {
+            var entity = await GetAsync(revisionId.Id);
             
             if (entity != null && !revisionId.RevisionMatches(entity.Revision)) {
                 throw new RevisionMismatchException(revisionId);
@@ -64,32 +62,28 @@ namespace N3O.Umbraco.Entities {
             return entity;
         }
 
-        public async Task InsertAsync(T entity, CancellationToken cancellationToken = default) {
+        public async Task InsertAsync(T entity) {
             await SaveAsync(entity, (db, r) => {
                 db.Insert(Tables.Entities.Name, Tables.Entities.PrimaryKey, false, r);
                 
                 return Task.CompletedTask;
             });
             
-            await RunChangeFeedsAsync(EntityOperations.Insert,
-                                      entity,
-                                      null,
-                                      cancellationToken);
+            await RunChangeFeedsAsync(EntityOperations.Insert, entity, null);
         }
         
-        public async Task UpdateAsync(T entity, CancellationToken cancellationToken = default) {
+        public async Task UpdateAsync(T entity, RevisionBehaviour revisionBehaviour = RevisionBehaviour.Increment) {
             // TODO The update SQL should check the revision number hasn't changed and fail if it has
             await SaveAsync(entity, (db, r) => db.UpdateAsync(r));
             
-            await RunChangeFeedsAsync(EntityOperations.Update,
-                                      entity,
-                                      _entityStore.GetOrDefault(entity.Id),
-                                      cancellationToken);
+            await RunChangeFeedsAsync(EntityOperations.Update, entity, _entityStore.GetOrDefault(entity.Id));
         }
 
-        private async Task SaveAsync(T entity, Func<IUmbracoDatabase, EntityRow, Task> saveAsync) {
+        private async Task SaveAsync(T entity,
+                                     Func<IUmbracoDatabase, EntityRow, Task> saveAsync,
+                                     RevisionBehaviour revisionBehaviour = RevisionBehaviour.Increment) {
             using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-                entity.OnSaving(_clock.GetCurrentInstant());
+                entity.OnSaving(_clock.GetCurrentInstant(), revisionBehaviour);
 
                 var row = new EntityRow();
                 row.Id = entity.Id;
@@ -104,8 +98,7 @@ namespace N3O.Umbraco.Entities {
             
         private async Task RunChangeFeedsAsync(EntityOperation operation,
                                                T sessionEntity,
-                                               T dbEntity,
-                                               CancellationToken cancellationToken) {
+                                               T dbEntity) {
             var entityType = (sessionEntity ?? dbEntity).GetType();
             
             var changeFeeds = _changeFeedFactory.GetChangeFeeds(entityType);
@@ -113,7 +106,7 @@ namespace N3O.Umbraco.Entities {
             foreach (var changeFeed in changeFeeds) {
                 var entityChange = new EntityChange(sessionEntity, dbEntity, operation);
 
-                await changeFeed.ProcessChangeAsync(entityChange, cancellationToken);
+                await changeFeed.ProcessChangeAsync(entityChange);
             }
         }
     }

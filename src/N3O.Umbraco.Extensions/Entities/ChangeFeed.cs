@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Extensions;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Entities {
@@ -12,11 +11,11 @@ namespace N3O.Umbraco.Entities {
             _logger = logger;
         }
 
-        public async Task ProcessChangeAsync(EntityChange entityChange, CancellationToken cancellationToken) {
+        public async Task ProcessChangeAsync(EntityChange entityChange) {
             try {
                 var typedEntityChange = new EntityChange<T>((T) entityChange.SessionEntity, (T) entityChange.DatabaseEntity, entityChange.Operation);
 
-                await ProcessChangeAsync(typedEntityChange, cancellationToken);
+                await ProcessChangeAsync(typedEntityChange);
             } catch (Exception ex) {
                 _logger.LogError(ex,
                                  "Error processing change feed {ChangeFeedType} for {EntityType} with operation {Operation} and revision ID {RevisionId}",
@@ -27,6 +26,6 @@ namespace N3O.Umbraco.Entities {
             }
         }
 
-        protected abstract Task ProcessChangeAsync(EntityChange<T> entityChange, CancellationToken cancellationToken);
+        protected abstract Task ProcessChangeAsync(EntityChange<T> entityChange);
     }
 }

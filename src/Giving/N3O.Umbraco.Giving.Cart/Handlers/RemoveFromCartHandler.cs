@@ -21,7 +21,7 @@ namespace N3O.Umbraco.Giving.Cart.Handlers {
 
             cart.Remove(req.Model.GivingType, req.Model.Index.GetValueOrThrow());
 
-            await _repository.UpdateAsync(cart, cancellationToken);
+            await _repository.UpdateAsync(cart);
 
             return cart.RevisionId;
         }

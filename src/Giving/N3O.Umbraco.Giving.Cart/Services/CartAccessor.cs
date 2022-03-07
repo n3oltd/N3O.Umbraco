@@ -34,12 +34,12 @@ namespace N3O.Umbraco.Giving.Cart {
             
             var result = await _lock.LockAsync(cartId.ToString(), async () => {
                 var currency = _currencyAccessor.GetCurrency();
-                var cart = await _repository.GetAsync(cartId, cancellationToken);
+                var cart = await _repository.GetAsync(cartId);
 
                 if (cart == null) {
                     cart = Entities.Cart.Create(cartId, currency);
 
-                    await _repository.InsertAsync(cart, cancellationToken);
+                    await _repository.InsertAsync(cart);
                 } else {
                     if (!_cartValidator.Value.IsValid(currency, cart)) {
                         cart.Reset(currency);

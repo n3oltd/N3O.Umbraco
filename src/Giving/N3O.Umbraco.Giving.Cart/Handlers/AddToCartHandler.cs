@@ -21,7 +21,7 @@ namespace N3O.Umbraco.Giving.Cart.Handlers {
             
             cart.Add(req.Model.GivingType, req.Model.Allocation, req.Model.Quantity.GetValueOrThrow());
 
-            await _repository.UpdateAsync(cart, cancellationToken);
+            await _repository.UpdateAsync(cart);
 
             return cart.RevisionId;
         }

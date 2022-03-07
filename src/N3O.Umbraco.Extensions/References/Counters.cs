@@ -23,14 +23,13 @@ namespace N3O.Umbraco.References {
             var result = await _lock.LockAsync(lockKey, async () => {
                 var id = key.ToGuid();
                 
-                var counter = await _repository.GetAsync(id, cancellationToken) ??
-                              await CreateCounterAsync(id, startFrom, cancellationToken);
+                var counter = await _repository.GetAsync(id) ?? await CreateCounterAsync(id, startFrom);
 
                 var next = counter.Next;
                 
                 counter.Increment();
 
-                await _repository.UpdateAsync(counter, cancellationToken);
+                await _repository.UpdateAsync(counter);
 
                 return next;
             });
@@ -53,10 +52,10 @@ namespace N3O.Umbraco.References {
             return reference;
         }
 
-        private async Task<Counter> CreateCounterAsync(EntityId id, long startFrom, CancellationToken cancellationToken) {
+        private async Task<Counter> CreateCounterAsync(EntityId id, long startFrom) {
             var counter = Counter.Create(id, startFrom);
 
-            await _repository.InsertAsync(counter, cancellationToken);
+            await _repository.InsertAsync(counter);
 
             return counter;
         }
