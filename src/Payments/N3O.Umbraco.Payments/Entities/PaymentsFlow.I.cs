@@ -11,7 +11,7 @@ namespace N3O.Umbraco.Payments.Entities {
         void EndPaymentFlow();
         PaymentObject GetPaymentObject(PaymentObjectType type);
         public string GetTransactionDescription(IPaymentMethodSettings paymentMethodSettings);
-        string GetTransactionId(IPaymentMethodSettings paymentMethodSettings);
+        string GetTransactionId(IPaymentMethodSettings paymentMethodSettings, string idempotencyKey);
         void SetPaymentObject(PaymentObjectType type, PaymentObject paymentObject);
     }
 }
