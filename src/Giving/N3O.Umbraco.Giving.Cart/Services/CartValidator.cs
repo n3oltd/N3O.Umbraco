@@ -59,7 +59,7 @@ namespace N3O.Umbraco.Giving.Cart {
                         return false;
                     }
                     
-                    if (componentAllocation.Component.Scheme != allocation.Sponsorship.Scheme) {
+                    if (componentAllocation.Component.GetScheme() != allocation.Sponsorship.Scheme) {
                         return false;
                     }
                 }

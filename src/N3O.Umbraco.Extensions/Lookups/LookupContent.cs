@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace N3O.Umbraco.Lookups {
     public abstract class  LookupContent<T> : UmbracoContent<T>, INamedLookup {
-        public virtual string Id => GetId();
+        public string Id => GetId();
 
         public virtual string Name => Content().Name;
 
@@ -13,7 +13,7 @@ namespace N3O.Umbraco.Lookups {
             yield return Id;
         }
         
-        private string GetId() {
+        protected virtual string GetId() {
             var name = Content().Name;
 
             if (name == name.ToUpperInvariant()) {

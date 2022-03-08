@@ -7,7 +7,6 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Giving.Lookups {
     public class SponsorshipComponent : LookupContent<SponsorshipComponent>, IPricing {
-        public SponsorshipScheme Scheme => Content().Parent.As<SponsorshipScheme>();
         public bool Mandatory => GetValue(x => x.Mandatory);
         public PriceContent Price => Content().As<PriceContent>();
         public IEnumerable<PricingRuleElement> PriceRules => GetNestedAs(x => x.PriceRules);
@@ -20,5 +19,14 @@ namespace N3O.Umbraco.Giving.Lookups {
         
         [JsonIgnore]
         IEnumerable<IPricingRule> IPricing.Rules => PriceRules;
+        
+        public SponsorshipScheme GetScheme() => Content().Parent.As<SponsorshipScheme>();
+
+        protected override string GetId() {
+            var scheme = GetScheme();
+            var baseId = base.GetId();
+
+            return $"{scheme.Id}_{baseId}";
+        }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
-using N3O.Umbraco.Extensions;
 using N3O.Giving.Models;
 using N3O.Umbraco.Context;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
-using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Extensions;
+using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
 using System.Collections.Generic;
@@ -52,8 +52,8 @@ namespace N3O.Umbraco.Giving.Models {
                 .WithMessage(Get<Strings>(s => s.InvalidValue));
             
             RuleForEach(x => x.Sponsorship.Components)
-                .Must((req, x) => pricedAmountValidator.IsValid(x.Value, x.Component, req.FundDimensions))
-                .When(x => x.Sponsorship.OrEmpty(s => s.Scheme?.Components).Any(c => c.HasPricing()))
+                .Must((req, x) => (x.Component?.HasPricing() != true ||
+                                   pricedAmountValidator.IsValid(x.Value, x.Component, req.FundDimensions)))
                 .WithMessage(Get<Strings>(s => s.InvalidValue));
             
             RuleFor(x => x.Value)
@@ -76,7 +76,7 @@ namespace N3O.Umbraco.Giving.Models {
                 .WithMessage(Get<Strings>(s => s.CurrencyMismatch));
             
             RuleForEach(x => x.Sponsorship.Components)
-                .Must(x => x.Value == currency)
+                .Must(x => x.Value.Currency == currency)
                 .When(x => x.Sponsorship.OrEmpty(y => y.Components).HasAny(c => c.Value.HasValue(v => v.Currency)))
                 .WithMessage(Get<Strings>(s => s.CurrencyMismatch));
         }
