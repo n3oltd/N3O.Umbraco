@@ -24,6 +24,10 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
             
                 var paymentIntentOptions = GetPaymentIntentOptions(payment);
                 
+                //TODO add the stripePaymentMethod as idempotency key to this request \|/
+                // var options = new RequestOptions();
+                // options.IdempotencyKey = parameters.GetTransactionDescription();
+                
                 var paymentIntent = await service.ConfirmAsync(payment.StripePaymentIntentId,
                                                                paymentIntentOptions,
                                                                cancellationToken: cancellationToken);
