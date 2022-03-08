@@ -11,6 +11,7 @@ namespace N3O.Umbraco.Payments.Models {
             dest.Type = src.Type;
             dest.Method = src.Method;
             dest.Status = src.Status;
+            dest.ErrorMessage = src.ErrorMessage;
             dest.HasError = src.HasError;
             dest.IsComplete = src.IsComplete;
             dest.IsInProgress = src.IsInProgress;

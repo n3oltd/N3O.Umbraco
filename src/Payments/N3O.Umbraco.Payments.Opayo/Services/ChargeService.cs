@@ -162,7 +162,11 @@ namespace N3O.Umbraco.Payments.Opayo {
             billingAddress.Address2 = GetText(address.Line2, 50, false);
             billingAddress.Address3 = GetText(address.Line3, 50, false);
             billingAddress.City = GetText(address.Locality, 40, true);
-            billingAddress.State = GetState(address);
+            
+            if (address.Country.Iso3Code.EqualsInvariant(OpayoConstants.Iso3CountryCodes.UnitedStates)) {
+                billingAddress.State = GetUsStateCode(address.AdministrativeArea);
+            }
+
             billingAddress.PostalCode = GetText(address.PostalCode, 10, true, "0000");
             billingAddress.Country = address.Country.Iso2Code;
 
@@ -180,16 +184,6 @@ namespace N3O.Umbraco.Payments.Opayo {
             apiPaymentMethodReq.Card = apiCard;
 
             return apiPaymentMethodReq;
-        }
-        
-        private string GetState(IAddress address) {
-            var administrativeArea = GetText(address.AdministrativeArea, 40, true);
-            
-            if (address.Country.Iso3Code.EqualsInvariant(OpayoConstants.Iso3CountryCodes.UnitedStates)) {
-                administrativeArea = GetUsStateCode(administrativeArea);
-            }
-
-            return administrativeArea;
         }
 
         private static string GetUsStateCode(string administrativeArea) {

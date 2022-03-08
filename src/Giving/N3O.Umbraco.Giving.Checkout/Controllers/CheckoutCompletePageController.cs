@@ -37,10 +37,10 @@ namespace N3O.Umbraco.Giving.Checkout.Controllers {
 
         protected override CheckoutStage Stage => null;
 
-        public override Task<IActionResult> Index(CancellationToken cancellationToken) {
-            _cartCookie.Reset();
+        public override async Task<IActionResult> Index(CancellationToken cancellationToken) {
+            _cartCookie.DeferredReset();
             
-            return base.Index(cancellationToken);
+            return await base.Index(cancellationToken);
         }
     }
 }

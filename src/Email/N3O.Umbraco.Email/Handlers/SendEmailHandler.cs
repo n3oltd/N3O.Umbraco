@@ -3,8 +3,8 @@ using FluentEmail.Core.Interfaces;
 using N3O.Umbraco.Email.Commands;
 using N3O.Umbraco.Email.Models;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Json;
 using N3O.Umbraco.Mediator;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -13,16 +13,18 @@ using NewEmail = FluentEmail.Core.Email;
 
 namespace N3O.Umbraco.Email.Handlers {
     public class SendEmailHandler : IRequestHandler<SendEmailCommand, SendEmailReq, None> {
+        private readonly IJsonProvider _jsonProvider;
         private readonly ITemplateRenderer _renderer;
         private readonly ISender _sender;
 
-        public SendEmailHandler(ITemplateRenderer renderer, ISender sender) {
+        public SendEmailHandler(IJsonProvider jsonProvider, ITemplateRenderer renderer, ISender sender) {
+            _jsonProvider = jsonProvider;
             _renderer = renderer;
             _sender = sender;
         }
         
         public async Task<None> Handle(SendEmailCommand req, CancellationToken cancellationToken) {
-            var templateModel = GetTemplateModel(req.Model.Model);
+            var templateModel = _jsonProvider.DeserializeObject(req.Model.ModelJson, Type.GetType(req.Model.ModelType));
             var email = NewEmail.From(req.Model.From.Email, req.Model.From.Name);
 
             email.Renderer = _renderer;
@@ -40,20 +42,6 @@ namespace N3O.Umbraco.Email.Handlers {
             return None.Empty;
         }
 
-        private object GetTemplateModel(object model) {
-            if (model is JObject jObject) {
-                var dict = new Dictionary<string, object>();
-                
-                foreach (var (key, value) in jObject) {
-                    dict[key] = value.ConvertToObject();
-                }
-
-                model = dict;
-            }
-
-            return model;
-        }
-        
         private void AddRecipients(IEnumerable<IEmailIdentity> recipients, Func<string, string, IFluentEmail> add) {
             foreach (var recipient in recipients.OrEmpty()) {
                 add(recipient.Email, recipient.Name);

@@ -1,17 +1,14 @@
-﻿using N3O.Umbraco.Email.Models;
+﻿namespace N3O.Umbraco.Email {
+    public interface IFluentEmailBuilder<T> {
+        IFluentEmailBuilder<T> From(string email, string name = null);
+        IFluentEmailBuilder<T> To(string email, string name = null);
+        IFluentEmailBuilder<T> Cc(string email, string name = null);
+        IFluentEmailBuilder<T> Bcc(string email, string name = null);
 
-namespace N3O.Umbraco.Email {
-    public interface IFluentEmailBuilder {
-        IFluentEmailBuilder From(string email, string name = null);
-        IFluentEmailBuilder To(string email, string name = null);
-        IFluentEmailBuilder Cc(string email, string name = null);
-        IFluentEmailBuilder Bcc(string email, string name = null);
-
-        IFluentEmailBuilder Subject(string text);
-        IFluentEmailBuilder Body(string content);
-        IFluentEmailBuilder Model(object model);
-
-        SendEmailReq Build();
+        IFluentEmailBuilder<T> Subject(string text);
+        IFluentEmailBuilder<T> Body(string content);
+        IFluentEmailBuilder<T> Model(T model);
+        
         void Queue();
     }
 }
