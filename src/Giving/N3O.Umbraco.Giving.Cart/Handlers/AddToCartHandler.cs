@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Giving.Cart.Handlers {
-    public class AddToCartHandler : IRequestHandler<AddToCartCommand, AddToCartReq, None> {
+    public class AddToCartHandler : IRequestHandler<AddToCartCommand, AddToCartReq, RevisionId> {
         private readonly ICartAccessor _cartAccessor;
         private readonly IRepository<Entities.Cart> _repository;
 
@@ -16,14 +16,14 @@ namespace N3O.Umbraco.Giving.Cart.Handlers {
             _repository = repository;
         }
     
-        public async Task<None> Handle(AddToCartCommand req, CancellationToken cancellationToken) {
+        public async Task<RevisionId> Handle(AddToCartCommand req, CancellationToken cancellationToken) {
             var cart = await _cartAccessor.GetAsync(cancellationToken);
             
             cart.Add(req.Model.GivingType, req.Model.Allocation, req.Model.Quantity.GetValueOrThrow());
 
-            await _repository.UpdateAsync(cart, cancellationToken);
-        
-            return None.Empty;
+            await _repository.UpdateAsync(cart);
+
+            return cart.RevisionId;
         }
     }
 }

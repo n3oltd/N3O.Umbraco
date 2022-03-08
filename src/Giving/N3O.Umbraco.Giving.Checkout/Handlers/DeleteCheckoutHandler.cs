@@ -13,7 +13,7 @@ namespace N3O.Umbraco.Giving.Checkout.Handlers {
         }
         
         public async Task<None> Handle(DeleteCheckoutCommand req, CancellationToken cancellationToken) {
-            await _repository.DeleteAsync(req.Model, cancellationToken);
+            await _repository.DeleteAsync(req.Model);
 
             return None.Empty;
         }

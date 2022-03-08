@@ -780,6 +780,12 @@ export var AllocationType;
     AllocationType["Fund"] = "fund";
     AllocationType["Sponsorship"] = "sponsorship";
 })(AllocationType || (AllocationType = {}));
+/** One of 'donation', 'regularGiving' */
+export var GivingType;
+(function (GivingType) {
+    GivingType["Donation"] = "donation";
+    GivingType["RegularGiving"] = "regularGiving";
+})(GivingType || (GivingType = {}));
 export var PublishedItemType;
 (function (PublishedItemType) {
     PublishedItemType[PublishedItemType["Unknown"] = 0] = "Unknown";
@@ -788,12 +794,6 @@ export var PublishedItemType;
     PublishedItemType[PublishedItemType["Media"] = 3] = "Media";
     PublishedItemType[PublishedItemType["Member"] = 4] = "Member";
 })(PublishedItemType || (PublishedItemType = {}));
-/** One of 'donation', 'regularGiving' */
-export var GivingType;
-(function (GivingType) {
-    GivingType["Donation"] = "donation";
-    GivingType["RegularGiving"] = "regularGiving";
-})(GivingType || (GivingType = {}));
 export var ContentVariation;
 (function (ContentVariation) {
     ContentVariation[ContentVariation["Nothing"] = 0] = "Nothing";

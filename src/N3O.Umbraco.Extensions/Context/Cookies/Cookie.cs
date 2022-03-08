@@ -31,6 +31,10 @@ namespace N3O.Umbraco.Context {
             _value = value;
         }
 
+        public void Reset() {
+            _value = GetDefaultValue();
+        }
+
         public void Write(IResponseCookies responseCookies) {
             var value = GetValue();
             

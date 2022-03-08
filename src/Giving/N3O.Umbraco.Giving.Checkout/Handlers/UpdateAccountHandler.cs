@@ -18,11 +18,11 @@ namespace N3O.Umbraco.Giving.Checkout.Handlers {
         }
         
         public async Task<CheckoutRes> Handle(UpdateAccountCommand req, CancellationToken cancellationToken) {
-            var checkout = await req.CheckoutRevisionId.RunAsync(_repository.GetAsync, true, cancellationToken);
+            var checkout = await req.CheckoutRevisionId.RunAsync(_repository.GetAsync, true);
 
             checkout.UpdateAccount(req.Model);
             
-            await _repository.UpdateAsync(checkout, cancellationToken);
+            await _repository.UpdateAsync(checkout);
             
             var res = _mapper.Map<Entities.Checkout, CheckoutRes>(checkout);
 

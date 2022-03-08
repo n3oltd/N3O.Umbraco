@@ -34,8 +34,7 @@ namespace N3O.Umbraco.Forex {
                                               x => x.GetHistoricalRateAsync(date,
                                                                             baseCurrency,
                                                                             quoteCurrency,
-                                                                            cancellationToken),
-                                              cancellationToken);
+                                                                            cancellationToken));
 
             return rate;
         }
@@ -48,8 +47,7 @@ namespace N3O.Umbraco.Forex {
             var rate = await GetOrCreateAsync(date,
                                               baseCurrency,
                                               quoteCurrency,
-                                              x => x.GetLiveRateAsync(baseCurrency, quoteCurrency, cancellationToken),
-                                              cancellationToken);
+                                              x => x.GetLiveRateAsync(baseCurrency, quoteCurrency, cancellationToken));
 
             return rate;
         }
@@ -57,15 +55,14 @@ namespace N3O.Umbraco.Forex {
         private async Task<decimal> GetOrCreateAsync(LocalDate date,
                                                      Currency baseCurrency,
                                                      Currency quoteCurrency,
-                                                     Func<IExchangeRateProvider, Task<decimal>> getRateAsync,
-                                                     CancellationToken cancellationToken = default) {
+                                                     Func<IExchangeRateProvider, Task<decimal>> getRateAsync) {
             var key = $"{date.ToYearMonthDayString()}_{baseCurrency.Id}_{quoteCurrency.Id}";
             var cacheKey = CacheKey.Generate<ExchangeRateCache>(key);
 
             var result = await _cache.GetOrAddAtomicAsync(cacheKey, async () => {
                 var id = key.ToGuid();
 
-                var cachedExchangeRate = await _repository.GetAsync(id, cancellationToken);
+                var cachedExchangeRate = await _repository.GetAsync(id);
 
                 if (cachedExchangeRate == null) {
                     var rate = await getRateAsync(_exchangeRateProvider);
@@ -74,8 +71,7 @@ namespace N3O.Umbraco.Forex {
                                                                              date,
                                                                              baseCurrency,
                                                                              quoteCurrency,
-                                                                             rate,
-                                                                             cancellationToken);
+                                                                             rate);
                 }
 
                 return cachedExchangeRate.Rate;
@@ -89,11 +85,10 @@ namespace N3O.Umbraco.Forex {
                                                                              LocalDate date,
                                                                              Currency baseCurrency,
                                                                              Currency quoteCurrency,
-                                                                             decimal rate,
-                                                                             CancellationToken cancellationToken) {
+                                                                             decimal rate) {
             var cachedExchangeRate = CachedExchangeRate.Create(id, date, baseCurrency, quoteCurrency, rate);
 
-            await _repository.InsertAsync(cachedExchangeRate, cancellationToken);
+            await _repository.InsertAsync(cachedExchangeRate);
 
             return cachedExchangeRate;
         }

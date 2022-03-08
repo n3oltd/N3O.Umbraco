@@ -75,39 +75,6 @@ export interface AddressDataEntrySettings {
     postalCode?: TextFieldSettings | undefined;
     defaultCountry?: string | undefined;
 }
-export interface IPublishedContent {
-    id?: number;
-    name?: string | undefined;
-    urlSegment?: string | undefined;
-    sortOrder?: number;
-    level?: number;
-    path?: string | undefined;
-    templateId?: number | undefined;
-    creatorId?: number;
-    createDate?: Date;
-    writerId?: number;
-    updateDate?: Date;
-    cultures?: {
-        [key: string]: PublishedCultureInfo;
-    } | undefined;
-    itemType?: PublishedItemType;
-    parent?: IPublishedContent | undefined;
-    children?: IPublishedContent[] | undefined;
-    childrenForAllCultures?: IPublishedContent[] | undefined;
-}
-export interface PublishedCultureInfo {
-    culture?: string | undefined;
-    name?: string | undefined;
-    urlSegment?: string | undefined;
-    date?: Date;
-}
-export declare enum PublishedItemType {
-    Unknown = 0,
-    Element = 1,
-    Content = 2,
-    Media = 3,
-    Member = 4
-}
 export interface EmailDataEntrySettings {
     capitalisation?: Capitalisation | undefined;
     type?: string | undefined;

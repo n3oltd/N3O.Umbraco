@@ -19,9 +19,12 @@ namespace N3O.Umbraco.Entities {
         [JsonIgnore]
         public bool IsNew => Revision == 0;
         
-        public virtual void OnSaving(Instant timestamp) {
+        public virtual void OnSaving(Instant timestamp, RevisionBehaviour revisionBehaviour) {
             Timestamp = timestamp;
-            Revision++;
+
+            if (revisionBehaviour == RevisionBehaviour.Increment) {
+                Revision++;
+            }
         }
 
         protected static TEntity Create<TEntity>(EntityId id = null) where TEntity : Entity, new() {

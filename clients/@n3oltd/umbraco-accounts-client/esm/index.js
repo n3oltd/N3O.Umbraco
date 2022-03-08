@@ -374,14 +374,6 @@ export var Capitalisation;
     Capitalisation["Title"] = "title";
     Capitalisation["Upper"] = "upper";
 })(Capitalisation || (Capitalisation = {}));
-export var PublishedItemType;
-(function (PublishedItemType) {
-    PublishedItemType[PublishedItemType["Unknown"] = 0] = "Unknown";
-    PublishedItemType[PublishedItemType["Element"] = 1] = "Element";
-    PublishedItemType[PublishedItemType["Content"] = 2] = "Content";
-    PublishedItemType[PublishedItemType["Media"] = 3] = "Media";
-    PublishedItemType[PublishedItemType["Member"] = 4] = "Member";
-})(PublishedItemType || (PublishedItemType = {}));
 /** One of 'email', 'sms', 'post', 'telephone' */
 export var ConsentChannel;
 (function (ConsentChannel) {

@@ -5,15 +5,18 @@ using N3O.Umbraco.Email.Content;
 using N3O.Umbraco.Email.Extensions;
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Cart.Commands;
+using N3O.Umbraco.Giving.Cart.Models;
+using N3O.Umbraco.Giving.Cart.NamedParameters;
 using N3O.Umbraco.Giving.Checkout.Commands;
 using N3O.Umbraco.Giving.Checkout.Content;
 using N3O.Umbraco.Giving.Checkout.Lookups;
+using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Scheduler;
 using N3O.Umbraco.Webhooks;
 using N3O.Umbraco.Webhooks.Lookups;
 using NodaTime;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Giving.Checkout.ChangeFeeds {
@@ -35,17 +38,18 @@ namespace N3O.Umbraco.Giving.Checkout.ChangeFeeds {
             _backgroundJob = backgroundJob;
         }
         
-        protected override Task ProcessChangeAsync(EntityChange<Entities.Checkout> entityChange,
-                                                   CancellationToken cancellationToken) {
+        protected override Task ProcessChangeAsync(EntityChange<Entities.Checkout> entityChange) {
             if (entityChange.Operation == EntityOperations.Update) {
                 Process(entityChange, x => x.Donation.IsComplete, c => {
                     SendEmail<DonationReceiptTemplateContent>(c);
                     SendWebhook(CheckoutWebhookEvents.DonationCompleteEvent, c);
+                    ClearCart(GivingTypes.Donation, c.CartRevisionId.Id);
                 });
 
                 Process(entityChange, x => x.RegularGiving.IsComplete, c => {
                     SendEmail<RegularGivingReceiptTemplateContent>(c);
                     SendWebhook(CheckoutWebhookEvents.RegularGivingCompleteEvent, c);
+                    ClearCart(GivingTypes.RegularGiving, c.CartRevisionId.Id);
                 });
 
                 Process(entityChange, x => x.IsComplete, c => {
@@ -55,7 +59,7 @@ namespace N3O.Umbraco.Giving.Checkout.ChangeFeeds {
 
             return Task.CompletedTask;
         }
-        
+
         private void Process(EntityChange<Entities.Checkout> entityChange,
                              Func<Entities.Checkout, bool> getComplete,
                              Action<Entities.Checkout> action) {
@@ -76,16 +80,27 @@ namespace N3O.Umbraco.Giving.Checkout.ChangeFeeds {
                                                                        checkout);
         }
 
-        private void SendWebhook(WebhookEvent webhookEvent, Entities.Checkout checkout) {
-            _webhooks.Value.Queue(webhookEvent, checkout);
-        }
-        
         private void SendEmail<T>(Entities.Checkout checkout) where T : EmailTemplateContent<T> {
             var template = _contentCache.Value.Single<T>();
 
             if (template.HasValue() && checkout.HasValue(x => x.Account?.Email?.Address)) {
                 _emailBuilder.Value.QueueTemplate(template, checkout.Account.Email.Address, checkout);
             }
+        }
+        
+        private void SendWebhook(WebhookEvent webhookEvent, Entities.Checkout checkout) {
+            _webhooks.Value.Queue(webhookEvent, checkout);
+        }
+        
+        private void ClearCart(GivingType givingType, EntityId cartId) {
+            var jobName = $"{nameof(ClearCartCommand)}({givingType.Id}, {cartId})";
+            
+            var req = new ClearCartReq();
+            req.GivingType = givingType;
+
+            _backgroundJob.Value.Enqueue<ClearCartCommand, ClearCartReq>(jobName,
+                                                                         req,
+                                                                         p => p.Add<CartId>(cartId));
         }
     }
 }

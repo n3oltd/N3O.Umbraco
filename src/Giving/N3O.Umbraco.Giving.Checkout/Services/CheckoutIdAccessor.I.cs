@@ -1,7 +1,7 @@
-﻿using System;
+﻿using N3O.Umbraco.Entities;
 
 namespace N3O.Umbraco.Giving.Checkout {
     public interface ICheckoutIdAccessor {
-        Guid GetCheckoutId();
+        EntityId GetId();
     }
 }
