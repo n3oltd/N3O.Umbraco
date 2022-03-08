@@ -12,8 +12,8 @@ namespace N3O.Umbraco.Giving.Models {
                 .WithMessage(Get<Strings>(s => s.SpecifyScheme));
             
             RuleFor(x => x.Components)
-                .Must((req, x) => x.OrEmpty().All(c => c.Component.Scheme == req.Scheme))
-                .When(x => x.Components.All(y => y.Component.HasValue(c => c.Scheme)))
+                .Must((req, x) => x.OrEmpty().All(c => c.Component.GetScheme() == req.Scheme))
+                .When(x => x.Components.All(y => y.Component.HasValue(c => c.GetScheme())))
                 .WithMessage(Get<Strings>(s => s.InvalidComponents));
             
             RuleFor(x => x.Components)

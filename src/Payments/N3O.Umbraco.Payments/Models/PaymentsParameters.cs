@@ -17,8 +17,8 @@ namespace N3O.Umbraco.Payments.Models {
             return _flow.GetTransactionDescription(paymentMethodSettings);
         }
 
-        public string GetTransactionId(IPaymentMethodSettings paymentMethodSettings) {
-            return _flow.GetTransactionId(paymentMethodSettings);
+        public string GetTransactionId(IPaymentMethodSettings paymentMethodSettings, string idempotencyKey) {
+            return _flow.GetTransactionId(paymentMethodSettings, idempotencyKey);
         }
     }
 }
