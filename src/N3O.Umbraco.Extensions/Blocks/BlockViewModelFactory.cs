@@ -1,4 +1,5 @@
 using Humanizer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
@@ -10,12 +11,12 @@ namespace N3O.Umbraco.Blocks {
     public class BlockViewModelFactory<TBlock, TViewModel> : ContentBlockViewModelFactory<TBlock>
         where TBlock : class, IPublishedElement
         where TViewModel : IBlockViewModel<TBlock> {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly Func<IServiceProvider, BlockParameters<TBlock>, TViewModel> _constructViewModel;
 
-        public BlockViewModelFactory(IServiceProvider serviceProvider,
+        public BlockViewModelFactory(IHttpContextAccessor httpContextAccessor,
                                      Func<IServiceProvider, BlockParameters<TBlock>, TViewModel> constructViewModel) {
-            _serviceProvider = serviceProvider;
+            _httpContextAccessor = httpContextAccessor;
             _constructViewModel = constructViewModel;
         }
 
@@ -23,36 +24,36 @@ namespace N3O.Umbraco.Blocks {
                                                               Guid id,
                                                               Guid definitionId,
                                                               Guid layoutId) {
-            using (var scope = _serviceProvider.CreateScope()) {
-                var stringLocalizer = _serviceProvider.GetRequiredService<IStringLocalizer>();
-                var blockPipeline = scope.ServiceProvider.GetRequiredService<IBlockPipeline>();
-                 var modulesData = blockPipeline.RunAsync(content).GetAwaiter().GetResult();
-                
-                var blockParameters = new BlockParameters<TBlock>(s => stringLocalizer.Get(Constants.TextFolders.Blocks,
-                                                                                           content.ContentType.Alias.Pascalize(),
-                                                                                           s),
-                                                                  content,
-                                                                  modulesData,
-                                                                  id,
-                                                                  definitionId,
-                                                                  layoutId);
-                
-                return _constructViewModel(scope.ServiceProvider, blockParameters);
-            }
+            var serviceProvider = _httpContextAccessor.HttpContext.RequestServices;
+            
+            var stringLocalizer = serviceProvider.GetRequiredService<IStringLocalizer>();
+            var blockPipeline = serviceProvider.GetRequiredService<IBlockPipeline>();
+            var modulesData = blockPipeline.RunAsync(content).GetAwaiter().GetResult();
+            
+            var blockParameters = new BlockParameters<TBlock>(s => stringLocalizer.Get(Constants.TextFolders.Blocks,
+                                                                                       content.ContentType.Alias.Pascalize(),
+                                                                                       s),
+                                                              content,
+                                                              modulesData,
+                                                              id,
+                                                              definitionId,
+                                                              layoutId);
+            
+            return _constructViewModel(serviceProvider, blockParameters);
         }
     }
 
     public static class BlockViewModelFactory {
-        public static IContentBlockViewModelFactory Default(IServiceProvider serviceProvider, Type blockType) {
+        public static IContentBlockViewModelFactory Default(IHttpContextAccessor httpContextAccessor, Type blockType) {
             return (IContentBlockViewModelFactory) typeof(BlockViewModelFactory).CallStaticMethod(nameof(Default))
                                                                                 .OfGenericType(blockType)
-                                                                                .WithParameter(typeof(IServiceProvider), serviceProvider)
+                                                                                .WithParameter(typeof(IHttpContextAccessor), httpContextAccessor)
                                                                                 .Run();
         }
     
-        public static BlockViewModelFactory<TBlock, BlockViewModel<TBlock>> Default<TBlock>(IServiceProvider serviceProvider)
+        public static BlockViewModelFactory<TBlock, BlockViewModel<TBlock>> Default<TBlock>(IHttpContextAccessor httpContextAccessor)
             where TBlock : class, IPublishedElement {
-            return new BlockViewModelFactory<TBlock, BlockViewModel<TBlock>>(serviceProvider,
+            return new BlockViewModelFactory<TBlock, BlockViewModel<TBlock>>(httpContextAccessor,
                                                                              (_, p) => new BlockViewModel<TBlock>(p));
         }
     }

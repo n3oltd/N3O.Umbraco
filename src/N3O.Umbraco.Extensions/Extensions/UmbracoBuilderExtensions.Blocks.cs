@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using N3O.Umbraco.Blocks;
 using Perplex.ContentBlocks.Rendering;
@@ -66,7 +67,11 @@ namespace N3O.Umbraco.Extensions {
 
         public static IUmbracoBuilder AddDefaultBlockViewModel(this IUmbracoBuilder builder, Type blockType) {
             builder.Services.TryAddTransient(typeof(IContentBlockViewModelFactory<>).MakeGenericType(blockType),
-                                             s => BlockViewModelFactory.Default(s, blockType));
+                                             s => {
+                var httpContextAccessor = s.GetRequiredService<IHttpContextAccessor>();
+                                                 
+                return BlockViewModelFactory.Default(httpContextAccessor, blockType);
+            });
 
             return builder;
         }
@@ -75,7 +80,11 @@ namespace N3O.Umbraco.Extensions {
                                                                   Func<IServiceProvider, BlockParameters<TBlock>, TViewModel> constructor)
             where TViewModel : IBlockViewModel<TBlock>
             where TBlock : class, IPublishedElement {
-            builder.Services.AddTransient<IContentBlockViewModelFactory<TBlock>>(s => new BlockViewModelFactory<TBlock, TViewModel>(s, constructor));
+            builder.Services.AddTransient<IContentBlockViewModelFactory<TBlock>>(s => {
+                var httpContextAccessor = s.GetRequiredService<IHttpContextAccessor>();
+                
+                return new BlockViewModelFactory<TBlock, TViewModel>(httpContextAccessor, constructor);
+            });
         }
     }
 }
