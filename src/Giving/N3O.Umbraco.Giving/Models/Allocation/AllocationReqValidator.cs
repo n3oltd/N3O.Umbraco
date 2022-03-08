@@ -54,6 +54,7 @@ namespace N3O.Umbraco.Giving.Models {
             RuleForEach(x => x.Sponsorship.Components)
                 .Must((req, x) => (x.Component?.HasPricing() != true ||
                                    pricedAmountValidator.IsValid(x.Value, x.Component, req.FundDimensions)))
+                .When(x => x.Sponsorship.HasValue())
                 .WithMessage(Get<Strings>(s => s.InvalidValue));
             
             RuleFor(x => x.Value)
