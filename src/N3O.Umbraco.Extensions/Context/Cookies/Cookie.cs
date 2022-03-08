@@ -7,11 +7,16 @@ namespace N3O.Umbraco.Context {
     public abstract class Cookie : ICookie {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private string _value;
+        private bool _deferredReset;
 
         protected Cookie(IHttpContextAccessor httpContextAccessor) {
             _httpContextAccessor = httpContextAccessor;
         }
     
+        public void DeferredReset() {
+            _deferredReset = true;
+        }
+        
         public string GetValue() {
             if (_value == null) {
                 var cookies = _httpContextAccessor.HttpContext?.Request.Cookies;
@@ -27,16 +32,16 @@ namespace N3O.Umbraco.Context {
             return _value;
         }
         
-        public void SetValue(string value) {
-            _value = value;
-        }
-
         public void Reset() {
             _value = GetDefaultValue();
         }
 
+        public void SetValue(string value) {
+            _value = value;
+        }
+        
         public void Write(IResponseCookies responseCookies) {
-            var value = GetValue();
+            var value = _deferredReset ? GetDefaultValue() : GetValue();
             
             if (value.HasValue()) {
                 var cookieOptions = new CookieOptions();

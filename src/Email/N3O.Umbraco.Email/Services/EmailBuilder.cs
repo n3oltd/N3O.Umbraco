@@ -1,16 +1,19 @@
-﻿using N3O.Umbraco.Scheduler;
+﻿using N3O.Umbraco.Json;
+using N3O.Umbraco.Scheduler;
 using System;
 
 namespace N3O.Umbraco.Email {
 	public class EmailBuilder : IEmailBuilder {
-		private readonly Lazy<IBackgroundJob> _backgroundJob;
+		private readonly IBackgroundJob _backgroundJob;
+		private readonly IJsonProvider _jsonProvider;
 
-		public EmailBuilder(Lazy<IBackgroundJob> backgroundJob) {
+		public EmailBuilder(IBackgroundJob backgroundJob, IJsonProvider jsonProvider) {
 			_backgroundJob = backgroundJob;
+			_jsonProvider = jsonProvider;
 		}
 		
-		public IFluentEmailBuilder Create() {
-			return new FluentEmailBuilder(_backgroundJob);
+		public IFluentEmailBuilder<T> Create<T>() {
+			return new FluentEmailBuilder<T>(_backgroundJob, _jsonProvider);
 		}
 	}
 }

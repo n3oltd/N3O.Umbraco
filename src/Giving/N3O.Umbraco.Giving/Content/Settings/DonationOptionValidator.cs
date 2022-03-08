@@ -40,11 +40,11 @@ namespace N3O.Umbraco.Giving.Content {
         protected abstract IFundDimensionsOptions GetFundDimensionOptions(ContentProperties content);
 
         private void DimensionAllowed<T>(ContentProperties content,
-                                         IEnumerable<FundDimensionValue<T>> allowedValues,
+                                         IEnumerable<T> allowedValues,
                                          string propertyAlias)
             where T : FundDimensionValue<T> {
             var property = content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(propertyAlias));
-            var value = property.IfNotNull(x => ContentHelper.GetPickerValue<IPublishedContent>(x).As<FundDimensionValue<T>>());
+            var value = property.IfNotNull(x => ContentHelper.GetPickerValue<IPublishedContent>(x).As<T>());
 
             if (value != null && allowedValues != null && !allowedValues.Contains(value)) {
                 ErrorResult(property, $"{value.Name} is not a permitted fund dimension value");

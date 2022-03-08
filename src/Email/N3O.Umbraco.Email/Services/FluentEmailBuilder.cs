@@ -1,13 +1,14 @@
 ﻿using N3O.Umbraco.Email.Commands;
 using N3O.Umbraco.Email.Models;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Json;
 using N3O.Umbraco.Scheduler;
-using System;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Email {
-    public class FluentEmailBuilder : IFluentEmailBuilder {
-        private readonly Lazy<IBackgroundJob> _backgroundJob;
+    public class FluentEmailBuilder<T> : IFluentEmailBuilder<T> {
+        private readonly IBackgroundJob _backgroundJob;
+        private readonly IJsonProvider _jsonProvider;
         private readonly List<string> _recipientEmails = new();
         
         private EmailIdentityReq _from;
@@ -16,13 +17,14 @@ namespace N3O.Umbraco.Email {
         private readonly List<EmailIdentityReq> _bcc = new();
         private string _subject;
         private string _body;
-        private object _model;
+        private T _model;
 
-        public FluentEmailBuilder(Lazy<IBackgroundJob> backgroundJob) {
+        public FluentEmailBuilder(IBackgroundJob backgroundJob, IJsonProvider jsonProvider) {
             _backgroundJob = backgroundJob;
+            _jsonProvider = jsonProvider;
         }
 
-        public IFluentEmailBuilder From(string email, string name = null) {
+        public IFluentEmailBuilder<T> From(string email, string name = null) {
             _from = new EmailIdentityReq();
 
             _from.Email = email;
@@ -31,37 +33,44 @@ namespace N3O.Umbraco.Email {
             return this;
         }
 
-        public IFluentEmailBuilder To(string email, string name = null) {
+        public IFluentEmailBuilder<T> To(string email, string name = null) {
             return AddRecipient(_to, email, name);
         }
 
-        public IFluentEmailBuilder Cc(string email, string name = null) {
+        public IFluentEmailBuilder<T> Cc(string email, string name = null) {
             return AddRecipient(_cc, email, name);
         }
 
-        public IFluentEmailBuilder Bcc(string email, string name = null) {
+        public IFluentEmailBuilder<T> Bcc(string email, string name = null) {
             return AddRecipient(_bcc, email, name);
         }
 
-        public IFluentEmailBuilder Subject(string text) {
+        public IFluentEmailBuilder<T> Subject(string text) {
             _subject = text;
 
             return this;
         }
 
-        public IFluentEmailBuilder Body(string content) {
+        public IFluentEmailBuilder<T> Body(string content) {
             _body = content;
 
             return this;
         }
 
-        public IFluentEmailBuilder Model(object model) {
+        public IFluentEmailBuilder<T> Model(T model) {
             _model = model;
 
             return this;
         }
 
-        public SendEmailReq Build() {
+        public void Queue() {
+            var req = Build();
+            var jobName = $"Send {req.Subject} to {_recipientEmails.Join("; ")}";
+            
+            _backgroundJob.Enqueue<SendEmailCommand, SendEmailReq>(jobName, req);
+        }
+        
+        private SendEmailReq Build() {
             var req = new SendEmailReq();
             req.From = _from;
             req.To = _to;
@@ -69,19 +78,16 @@ namespace N3O.Umbraco.Email {
             req.Bcc = _bcc;
             req.Subject = _subject;
             req.Body = _body;
-            req.Model = _model;
+
+            if (_model.HasValue()) {
+                req.ModelType = typeof(T).AssemblyQualifiedName;
+                req.ModelJson = _jsonProvider.SerializeObject(_model);
+            }
 
             return req;
         }
 
-        public void Queue() {
-            var req = Build();
-            var jobName = $"Send {req.Subject} to {_recipientEmails.Join("; ")}";
-            
-            _backgroundJob.Value.Enqueue<SendEmailCommand, SendEmailReq>(jobName, req);
-        }
-
-        private IFluentEmailBuilder AddRecipient(List<EmailIdentityReq> list, string email, string name) {
+        private IFluentEmailBuilder<T> AddRecipient(List<EmailIdentityReq> list, string email, string name) {
             if (list.None(x => x.Email.EqualsInvariant(email))) {
                 var identity = new EmailIdentityReq();
                 identity.Name = name;

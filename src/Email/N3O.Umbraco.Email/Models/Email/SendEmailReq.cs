@@ -21,7 +21,10 @@ namespace N3O.Umbraco.Email.Models {
         [Name("Body")]
         public string Body { get; set; }
         
-        [Name("Model")]
-        public object Model { get; set; }
+        [Name("Model Type")]
+        public string ModelType { get; set; }
+        
+        [Name("Model JSON")]
+        public string ModelJson { get; set; }
     }
 }

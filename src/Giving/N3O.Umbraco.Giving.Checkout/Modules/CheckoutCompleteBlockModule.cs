@@ -24,7 +24,7 @@ namespace N3O.Umbraco.Giving.Checkout.Modules {
         public async Task<object> ExecuteAsync(IPublishedElement block, CancellationToken cancellationToken) {
             var checkout = await _checkoutAccessor.GetAsync(cancellationToken);
 
-            return Task.FromResult<object>(new CheckoutCompleteModel(checkout));
+            return new CheckoutCompleteModel(checkout);
         }
         
         public string Key => CheckoutConstants.BlockModuleKeys.CheckoutComplete;
