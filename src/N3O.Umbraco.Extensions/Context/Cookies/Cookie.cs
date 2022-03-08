@@ -41,14 +41,14 @@ namespace N3O.Umbraco.Context {
         }
         
         public void Write(IResponseCookies responseCookies) {
-            var value = _deferredReset ? GetDefaultValue() : GetValue();
+            var value = _deferredReset ? GetDefaultValue() : _value;
             
             if (value.HasValue()) {
                 var cookieOptions = new CookieOptions();
 
                 SetOptions(cookieOptions);
 
-                responseCookies.Append(Name, _value, cookieOptions);
+                responseCookies.Append(Name, value, cookieOptions);
             }
         }
         

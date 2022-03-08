@@ -11,7 +11,7 @@ namespace N3O.Umbraco.Giving.Checkout.Extensions {
             var url = new Url(contentCache.Single<CartPageContent>().Content().AbsoluteUrl());
 
             if (pageViewModel.Content.IsCheckoutPage()) {
-                url.SetQueryParam(CartConstants.QueryString.CheckoutView);
+                url.SetQueryParam(CartConstants.QueryString.CheckoutView, 1);
             }
 
             return url;
