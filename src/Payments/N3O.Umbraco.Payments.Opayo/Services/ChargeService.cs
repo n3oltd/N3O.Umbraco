@@ -91,7 +91,7 @@ namespace N3O.Umbraco.Payments.Opayo {
             apiReq.Amount = ((Money) req.Value).GetAmountInLowestDenomination();
             apiReq.Currency = req.Value.Currency.Id;
             apiReq.Description =  parameters.GetTransactionDescription(settings);
-            apiReq.VendorTxCode = parameters.GetTransactionId(settings, req.CardIdentifier);
+            apiReq.VendorTxCode = parameters.GetTransactionId(settings, req.CardIdentifier).Left(40);
 
             var billingInfo = parameters.BillingInfoAccessor.GetBillingInfo();
 
