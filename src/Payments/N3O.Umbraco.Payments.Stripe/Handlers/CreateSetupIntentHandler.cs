@@ -12,7 +12,7 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Payments.Stripe.Handlers {
     public class CreateSetupIntentHandler :
-        PaymentsHandler<CreateSetupIntentCommand, None, StripeCredential> {
+        PaymentsHandler<CreateSetupIntentCommand, SetupIntentReq, StripeCredential> {
         private readonly IContentCache _contentCache;
         private readonly StripeClient _stripeClient;
         private readonly ICustomerService _customerService;
@@ -32,16 +32,20 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
                                                   PaymentsParameters parameters,
                                                   CancellationToken cancellationToken) {
             try {
+                var settings = _contentCache.Single<StripeSettingsContent>();
                 
                 var billingInfo = parameters.BillingInfoAccessor.GetBillingInfo();
                 
-                var customer = await _customerService.GetOrCreateCustomerAsync(billingInfo);
+                var customer = await _customerService.CreateCustomerAsync(billingInfo);
                 
                 var service = new SetupIntentService(_stripeClient);
             
-                var setupIntentOptions = GetSetupIntentOptions(parameters, customer);
+                var setupIntentOptions = GetSetupIntentOptions(parameters,req.Model, customer);
                 
-                var setupIntent = await service.CreateAsync(setupIntentOptions, cancellationToken: cancellationToken);
+                var options = new RequestOptions();
+                options.IdempotencyKey = parameters.GetTransactionDescription(settings);
+                
+                var setupIntent = await service.CreateAsync(setupIntentOptions, options, cancellationToken);
                 
                 credential.IntentCreated(setupIntent);
             } catch (StripeException ex) {
@@ -49,16 +53,18 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
             }
         }
         
-        private SetupIntentCreateOptions GetSetupIntentOptions(PaymentsParameters parameters, Customer customer) {
+        private SetupIntentCreateOptions GetSetupIntentOptions(PaymentsParameters parameters, SetupIntentReq req, Customer customer) {
             var settings = _contentCache.Single<StripeSettingsContent>();
             
             var options = new SetupIntentCreateOptions();
-
+            options.Confirm = true;
             options.PaymentMethodTypes = "card".Yield().ToList();
             options.Customer = customer.Id;
             options.Usage = "off_session";
             options.Description = parameters.GetTransactionDescription(settings);
-
+            options.PaymentMethod = req.PaymentMethodId;
+            options.Confirm = true;
+            
             options.PaymentMethodOptions = new SetupIntentPaymentMethodOptionsOptions();
             options.PaymentMethodOptions.Card = new SetupIntentPaymentMethodOptionsCardOptions();
             options.PaymentMethodOptions.Card.Moto = false;

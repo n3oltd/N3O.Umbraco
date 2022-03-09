@@ -9,10 +9,15 @@ namespace N3O.Umbraco.Payments.Stripe.Models {
             RuleFor(x => x.Value)
                 .NotNull()
                 .WithMessage(Get<Strings>(s => s.SpecifyValue));
+            
+            RuleFor(x => x.PaymentMethodId)
+               .NotNull()
+               .WithMessage(Get<Strings>(s => s.PaymentMethodId));
         }
 
         public class Strings : ValidationStrings {
             public string SpecifyValue => "Please specify the payment value";
+            public string PaymentMethodId => "Please specify the payment method ID";
         }
     }
 }

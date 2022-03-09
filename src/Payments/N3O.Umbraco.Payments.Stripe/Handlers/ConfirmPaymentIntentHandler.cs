@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Payments.Handlers;
+﻿using FluentValidation;
+using N3O.Umbraco.Payments.Handlers;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.Stripe.Commands;
 using N3O.Umbraco.Payments.Stripe.Models;
@@ -22,30 +23,21 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
             try {
                 var service = new PaymentIntentService(_stripeClient);
             
-                var paymentIntentOptions = GetPaymentIntentOptions(payment);
-                
                 //TODO add the stripePaymentMethod as idempotency key to this request \|/
                 // var options = new RequestOptions();
                 // options.IdempotencyKey = parameters.GetTransactionDescription();
                 
-                var paymentIntent = await service.ConfirmAsync(payment.StripePaymentIntentId,
-                                                               paymentIntentOptions,
-                                                               cancellationToken: cancellationToken);
+                var paymentIntent = await service.GetAsync(payment.StripePaymentIntentId,
+                                                           cancellationToken: cancellationToken);
                 
-                payment.IntentConfirmed(paymentIntent);
+                if (paymentIntent.Status == "requires_payment_method") {
+                    throw new ValidationException("Payment method cannot be attached to payment intent in the current state.");
+                }
+                
+                payment.Confirm(paymentIntent);
             } catch (StripeException ex) {
                 payment.Error(ex);
             }
-        }
-        
-        private PaymentIntentConfirmOptions GetPaymentIntentOptions(StripePayment payment) {
-            var options = new PaymentIntentConfirmOptions();
-
-            options.ClientSecret = payment.StripePaymentIntentClientSecret;
-            options.ErrorOnRequiresAction = false;
-            options.PaymentMethod = payment.StripePaymentMethodId;
-
-            return options;
         }
     }
 }

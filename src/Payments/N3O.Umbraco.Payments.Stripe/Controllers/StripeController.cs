@@ -24,8 +24,8 @@ namespace N3O.Umbraco.Payments.Stripe.Controllers {
         }
         
         [HttpPost("credentials/{flowId:entityId}/setupIntent")]
-        public async Task<ActionResult<PaymentFlowRes<StripeCredential>>> CreateSetupIntent() {
-            var res = await _mediator.SendAsync<CreateSetupIntentCommand, None, PaymentFlowRes<StripeCredential>>(None.Empty);
+        public async Task<ActionResult<PaymentFlowRes<StripeCredential>>> CreateSetupIntent(SetupIntentReq req) {
+            var res = await _mediator.SendAsync<CreateSetupIntentCommand, SetupIntentReq, PaymentFlowRes<StripeCredential>>(req);
 
             return Ok(res);
         }
@@ -38,7 +38,7 @@ namespace N3O.Umbraco.Payments.Stripe.Controllers {
         }
         
         [HttpPost("credentials/{flowId:entityId}/setupIntent/confirm")]
-        public async Task<ActionResult<PaymentFlowRes<StripeCredential>>> ConfirmSetupIntent() {
+        public async Task<ActionResult<PaymentFlowRes<StripeCredential>>> Confirm() {
             var res = await _mediator.SendAsync<ConfirmSetupIntentCommand, None, PaymentFlowRes<StripeCredential>>(None.Empty);
 
             return Ok(res);

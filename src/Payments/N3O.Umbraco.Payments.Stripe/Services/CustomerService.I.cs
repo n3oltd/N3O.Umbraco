@@ -4,6 +4,6 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.Stripe.Services {
     public interface ICustomerService {
-        Task<Customer> GetOrCreateCustomerAsync(IBillingInfo billingInfo);
+        Task<Customer> CreateCustomerAsync(IBillingInfo billingInfo);
     }
 }

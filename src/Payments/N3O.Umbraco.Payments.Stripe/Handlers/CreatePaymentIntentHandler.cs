@@ -36,16 +36,21 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
                                                   PaymentsParameters parameters,
                                                   CancellationToken cancellationToken) {
             try {
+                var settings = _contentCache.Single<StripeSettingsContent>();
+
                 var billingInfo = parameters.BillingInfoAccessor.GetBillingInfo();
                 
-                var customer = await _customerService.GetOrCreateCustomerAsync(billingInfo);
+                var customer = await _customerService.CreateCustomerAsync(billingInfo);
 
                 var service = new PaymentIntentService(_stripeClient);
             
                 var paymentIntentOptions = CreatePaymentIntentOptions(parameters, req.Model, customer);
-                
+                var options = new RequestOptions();
+                options.IdempotencyKey = parameters.GetTransactionDescription(settings);
+
                 var paymentIntent = await service.CreateAsync(paymentIntentOptions,
-                                                              cancellationToken: cancellationToken);
+                                                              options,
+                                                              cancellationToken);
                 
                 payment.IntentCreated(paymentIntent);
             } catch (StripeException ex) {
@@ -55,7 +60,6 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
         
         private PaymentIntentCreateOptions CreatePaymentIntentOptions(PaymentsParameters parameters, PaymentIntentReq req, Customer customer) {
             var settings = _contentCache.Single<StripeSettingsContent>();
-            
             var options = new PaymentIntentCreateOptions();
 
             options.Amount = ((Money) req.Value).GetAmountInLowestDenomination();
@@ -63,24 +67,13 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
             options.Description = parameters.GetTransactionDescription(settings);
             options.ErrorOnRequiresAction = false;
             options.Customer = customer.Id;
-
+            options.PaymentMethod = req.PaymentMethodId;
+            options.Confirm = true;
+            
             options.PaymentMethodTypes = "card".Yield().ToList();
             options.PaymentMethodOptions = new PaymentIntentPaymentMethodOptionsOptions();
             options.PaymentMethodOptions.Card = new PaymentIntentPaymentMethodOptionsCardOptions();
             options.PaymentMethodOptions.Card.Moto = false;
-
-            return options;
-        }
-        
-        private CustomerCreateOptions CreateCustomerOptions(PaymentsParameters parameters) {
-            var billingInfo = parameters.BillingInfoAccessor.GetBillingInfo();
-            
-            var options = new CustomerCreateOptions();
-
-            options.Name = $"{billingInfo.Name.FirstName} {billingInfo.Name.LastName}";
-            options.Email = billingInfo.Email.Address;
-            options.Phone = billingInfo.Telephone.Number;
-            options.Address = billingInfo.Address.ToAddressOptions();
 
             return options;
         }

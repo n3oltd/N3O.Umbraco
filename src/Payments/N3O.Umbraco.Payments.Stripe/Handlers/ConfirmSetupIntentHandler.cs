@@ -22,24 +22,13 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
             try {
                 var service = new SetupIntentService(_stripeClient);
             
-                var setupIntentOptions = GetSetupIntentOptions(credential);
+                var setupIntent = await service.GetAsync(credential.StripeSetupIntentId,
+                                                         cancellationToken: cancellationToken);
                 
-                var setupIntent = await service.ConfirmAsync(credential.StripeSetupIntentId,
-                                                             setupIntentOptions,
-                                                             cancellationToken: cancellationToken);
-                
-                credential.IntentConfirmed(setupIntent);
+                credential.Confirm(setupIntent);
             } catch (StripeException ex) {
                 credential.Error(ex);
             }
-        }
-        
-        private SetupIntentConfirmOptions GetSetupIntentOptions(StripeCredential credential) {
-            var options = new SetupIntentConfirmOptions();
-            options.ClientSecret = credential.StripeSetupIntentClientSecret;
-            options.PaymentMethod = credential.StripePaymentMethodId;
-
-            return options;
         }
     }
 }
