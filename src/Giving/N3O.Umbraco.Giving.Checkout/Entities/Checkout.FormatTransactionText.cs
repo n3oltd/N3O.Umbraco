@@ -7,7 +7,7 @@ namespace N3O.Umbraco.Giving.Checkout.Entities {
             return format.Replace("{Reference}", Reference.Text, StringComparison.InvariantCultureIgnoreCase)
                          .Replace("{Prefix}", Progress.CurrentStage.TransctionIdPrefix, StringComparison.InvariantCultureIgnoreCase)
                          .Replace("{IdempotencyKey}",
-                                  idempotencyKey.GetDeterministicHashCode(true).ToString(),
+                                  idempotencyKey?.GetDeterministicHashCode(true).ToString(),
                                   StringComparison.CurrentCultureIgnoreCase);
         }
     }
