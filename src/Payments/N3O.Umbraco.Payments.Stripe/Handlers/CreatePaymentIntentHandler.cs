@@ -46,7 +46,7 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
             
                 var paymentIntentOptions = CreatePaymentIntentOptions(parameters, req.Model, customer);
                 var options = new RequestOptions();
-                options.IdempotencyKey = parameters.GetTransactionDescription(settings);
+                options.IdempotencyKey = parameters.GetTransactionId(settings, req.Model.PaymentMethodId);
 
                 var paymentIntent = await service.CreateAsync(paymentIntentOptions,
                                                               options,

@@ -43,7 +43,7 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
                 var setupIntentOptions = GetSetupIntentOptions(parameters,req.Model, customer);
                 
                 var options = new RequestOptions();
-                options.IdempotencyKey = parameters.GetTransactionDescription(settings);
+                options.IdempotencyKey = parameters.GetTransactionId(settings, req.Model.PaymentMethodId);
                 
                 var setupIntent = await service.CreateAsync(setupIntentOptions, options, cancellationToken);
                 
