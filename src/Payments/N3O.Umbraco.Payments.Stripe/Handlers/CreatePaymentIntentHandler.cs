@@ -18,17 +18,17 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
         private readonly IPaymentsScope _paymentsScope;
         private readonly IContentCache _contentCache;
         private readonly StripeClient _stripeClient;
-        private readonly ICustomerService _customerService;
+        private readonly ICustomers _customers;
 
         public CreatePaymentIntentHandler(IPaymentsScope paymentsScope,
                                           IContentCache contentCache,
                                           StripeClient stripeClient,
-                                          ICustomerService customerService)
+                                          ICustomers customers)
             : base(paymentsScope) {
             _paymentsScope = paymentsScope;
             _contentCache = contentCache;
             _stripeClient = stripeClient;
-            _customerService = customerService;
+            _customers = customers;
         }
 
         protected override async Task HandleAsync(CreatePaymentIntentCommand req,
@@ -37,20 +37,15 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
                                                   CancellationToken cancellationToken) {
             try {
                 var settings = _contentCache.Single<StripeSettingsContent>();
-
                 var billingInfo = parameters.BillingInfoAccessor.GetBillingInfo();
-                
-                var customer = await _customerService.CreateCustomerAsync(billingInfo);
-
+                var customer = await _customers.CreateCustomerAsync(billingInfo);
                 var service = new PaymentIntentService(_stripeClient);
-            
                 var paymentIntentOptions = GetPaymentIntentOptions(parameters, req.Model, customer);
+                
                 var options = new RequestOptions();
                 options.IdempotencyKey = parameters.GetTransactionId(settings, req.Model.PaymentMethodId);
 
-                var paymentIntent = await service.CreateAsync(paymentIntentOptions,
-                                                              options,
-                                                              cancellationToken);
+                var paymentIntent = await service.CreateAsync(paymentIntentOptions, options, cancellationToken);
 
                 payment.IntentCreated(paymentIntent);
             } catch (StripeException ex) {

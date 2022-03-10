@@ -2,7 +2,7 @@ using N3O.Umbraco.Accounts.Models;
 using Stripe;
 
 namespace N3O.Umbraco.Payments.Stripe {
-    public static class CommonAddressExtensions {
+    public static class AddressExtensions {
         public static AddressOptions ToAddressOptions(this IAddress address) {
             var addressOptions = new AddressOptions();
 

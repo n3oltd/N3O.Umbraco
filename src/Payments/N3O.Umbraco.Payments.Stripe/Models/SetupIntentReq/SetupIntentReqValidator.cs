@@ -6,12 +6,12 @@ namespace N3O.Umbraco.Payments.Stripe.Models {
     public class SetupIntentReqValidator : ModelValidator<SetupIntentReq> {
         public SetupIntentReqValidator(IFormatter formatter) : base(formatter) {
             RuleFor(x => x.PaymentMethodId)
-               .NotNull()
-               .WithMessage(Get<Strings>(s => s.PaymentMethodId));
+               .NotEmpty()
+               .WithMessage(Get<Strings>(s => s.SpecifyPaymentMethodId));
         }
 
         public class Strings : ValidationStrings {
-            public string PaymentMethodId => "Please specify the payment method ID";
+            public string SpecifyPaymentMethodId => "Please specify the payment method ID";
         }
     }
 }

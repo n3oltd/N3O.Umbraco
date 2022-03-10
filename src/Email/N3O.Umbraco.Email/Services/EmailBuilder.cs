@@ -1,6 +1,5 @@
 ﻿using N3O.Umbraco.Json;
 using N3O.Umbraco.Scheduler;
-using System;
 
 namespace N3O.Umbraco.Email {
 	public class EmailBuilder : IEmailBuilder {

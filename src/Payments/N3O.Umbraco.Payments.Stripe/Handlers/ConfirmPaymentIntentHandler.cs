@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Payments.Handlers;
+﻿using N3O.Umbraco.Payments.Handlers;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.Stripe.Commands;
 using N3O.Umbraco.Payments.Stripe.Models;

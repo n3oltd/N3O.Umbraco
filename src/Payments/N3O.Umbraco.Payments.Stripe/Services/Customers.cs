@@ -1,19 +1,17 @@
-using N3O.Umbraco.Locks;
 using N3O.Umbraco.Payments.Models;
 using Stripe;
 using System.Threading.Tasks;
-using StripeCustomerService = Stripe.CustomerService;
 
 namespace N3O.Umbraco.Payments.Stripe.Services {
-    public class CustomerService : ICustomerService {
+    public class Customers : ICustomers {
         private readonly StripeClient _stripeClient;
 
-        public CustomerService(StripeClient stripeClient) {
+        public Customers(StripeClient stripeClient) {
             _stripeClient = stripeClient;
         }
 
         public async Task<Customer> CreateCustomerAsync(IBillingInfo billingInfo) {
-            var customerService = new StripeCustomerService(_stripeClient);
+            var customerService = new CustomerService(_stripeClient);
 
             var customerCreateOptions = CreateCustomerOptions(billingInfo);
 

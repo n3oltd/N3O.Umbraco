@@ -7,17 +7,17 @@ namespace N3O.Umbraco.Payments.Stripe.Models {
         public PaymentIntentReqValidator(IFormatter formatter) : base(formatter) {
             // TODO Add validation for (configurable) minimum payment value
             RuleFor(x => x.Value)
-                .NotNull()
+                .NotEmpty()
                 .WithMessage(Get<Strings>(s => s.SpecifyValue));
             
             RuleFor(x => x.PaymentMethodId)
                .NotNull()
-               .WithMessage(Get<Strings>(s => s.PaymentMethodId));
+               .WithMessage(Get<Strings>(s => s.SpecifyPaymentMethodId));
         }
 
         public class Strings : ValidationStrings {
             public string SpecifyValue => "Please specify the payment value";
-            public string PaymentMethodId => "Please specify the payment method ID";
+            public string SpecifyPaymentMethodId => "Please specify the payment method ID";
         }
     }
 }

@@ -15,16 +15,16 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
         PaymentsHandler<CreateSetupIntentCommand, SetupIntentReq, StripeCredential> {
         private readonly IContentCache _contentCache;
         private readonly StripeClient _stripeClient;
-        private readonly ICustomerService _customerService;
+        private readonly ICustomers _customers;
 
         public CreateSetupIntentHandler(IPaymentsScope paymentsScope,
                                         IContentCache contentCache,
                                         StripeClient stripeClient,
-                                        ICustomerService customerService)
+                                        ICustomers customers)
             : base(paymentsScope) {
             _contentCache = contentCache;
             _stripeClient = stripeClient;
-            _customerService = customerService;
+            _customers = customers;
         }
 
         protected override async Task HandleAsync(CreateSetupIntentCommand req,
@@ -33,13 +33,9 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
                                                   CancellationToken cancellationToken) {
             try {
                 var settings = _contentCache.Single<StripeSettingsContent>();
-                
                 var billingInfo = parameters.BillingInfoAccessor.GetBillingInfo();
-                
-                var customer = await _customerService.CreateCustomerAsync(billingInfo);
-                
+                var customer = await _customers.CreateCustomerAsync(billingInfo);
                 var service = new SetupIntentService(_stripeClient);
-            
                 var setupIntentOptions = GetSetupIntentOptions(parameters,req.Model, customer);
                 
                 var options = new RequestOptions();
@@ -64,7 +60,6 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
             options.Description = parameters.GetTransactionDescription(settings);
             options.PaymentMethod = req.PaymentMethodId;
             options.Confirm = true;
-            
             
             options.PaymentMethodOptions = new SetupIntentPaymentMethodOptionsOptions();
             options.PaymentMethodOptions.Card = new SetupIntentPaymentMethodOptionsCardOptions();
