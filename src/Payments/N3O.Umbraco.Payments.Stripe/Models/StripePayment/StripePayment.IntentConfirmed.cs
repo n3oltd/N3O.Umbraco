@@ -2,7 +2,7 @@ using Stripe;
 
 namespace N3O.Umbraco.Payments.Stripe.Models {
     public partial class StripePayment {
-        public void Confirm(PaymentIntent paymentIntent) {
+        public void IntentConfirmed(PaymentIntent paymentIntent) {
             StripePaymentMethodId = paymentIntent.PaymentMethodId;
             
             IntentUpdated(paymentIntent);

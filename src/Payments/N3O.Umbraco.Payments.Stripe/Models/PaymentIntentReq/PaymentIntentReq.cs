@@ -6,7 +6,7 @@ namespace N3O.Umbraco.Payments.Stripe.Models {
         [Name("Value")]
         public MoneyReq Value { get; set; }
         
-        [Name("Payment Method Id")]
+        [Name("Payment Method ID")]
         public string PaymentMethodId { get; set; }
     }
 }

@@ -10,8 +10,6 @@ namespace N3O.Umbraco.Payments.Stripe.Models {
                 SetUp(setupIntent.MandateId);
             } else if (setupIntent.Status == "requires_action") {
                 ActionRequired = true;
-            } else if (setupIntent.Status == "requires_payment_method") {
-                
             } else {
                 throw UnrecognisedValueException.For(setupIntent.Status);
             }

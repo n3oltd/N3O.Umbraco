@@ -38,7 +38,7 @@ namespace N3O.Umbraco.Payments.Stripe.Controllers {
         }
         
         [HttpPost("credentials/{flowId:entityId}/setupIntent/confirm")]
-        public async Task<ActionResult<PaymentFlowRes<StripeCredential>>> Confirm() {
+        public async Task<ActionResult<PaymentFlowRes<StripeCredential>>> ConfirmSetupIntent() {
             var res = await _mediator.SendAsync<ConfirmSetupIntentCommand, None, PaymentFlowRes<StripeCredential>>(None.Empty);
 
             return Ok(res);

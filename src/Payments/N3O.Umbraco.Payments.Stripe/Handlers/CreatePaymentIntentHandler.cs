@@ -44,7 +44,7 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
 
                 var service = new PaymentIntentService(_stripeClient);
             
-                var paymentIntentOptions = CreatePaymentIntentOptions(parameters, req.Model, customer);
+                var paymentIntentOptions = GetPaymentIntentOptions(parameters, req.Model, customer);
                 var options = new RequestOptions();
                 options.IdempotencyKey = parameters.GetTransactionId(settings, req.Model.PaymentMethodId);
 
@@ -58,7 +58,7 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
             }
         }
         
-        private PaymentIntentCreateOptions CreatePaymentIntentOptions(PaymentsParameters parameters, PaymentIntentReq req, Customer customer) {
+        private PaymentIntentCreateOptions GetPaymentIntentOptions(PaymentsParameters parameters, PaymentIntentReq req, Customer customer) {
             var settings = _contentCache.Single<StripeSettingsContent>();
             var options = new PaymentIntentCreateOptions();
 

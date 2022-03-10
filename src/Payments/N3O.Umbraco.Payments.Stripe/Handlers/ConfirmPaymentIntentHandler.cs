@@ -34,7 +34,7 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
                     throw new ValidationException("Payment method cannot be attached to payment intent in the current state.");
                 }
                 
-                payment.Confirm(paymentIntent);
+                payment.IntentConfirmed(paymentIntent);
             } catch (StripeException ex) {
                 payment.Error(ex);
             }
