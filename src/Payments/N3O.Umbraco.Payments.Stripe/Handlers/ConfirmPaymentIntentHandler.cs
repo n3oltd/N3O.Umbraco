@@ -1,4 +1,6 @@
-﻿using N3O.Umbraco.Payments.Handlers;
+﻿using FluentValidation;
+using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Payments.Handlers;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.Stripe.Commands;
 using N3O.Umbraco.Payments.Stripe.Models;
@@ -22,26 +24,13 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
             try {
                 var service = new PaymentIntentService(_stripeClient);
             
-                var paymentIntentOptions = GetPaymentIntentOptions(payment);
-                
                 var paymentIntent = await service.ConfirmAsync(payment.StripePaymentIntentId,
-                                                               paymentIntentOptions,
                                                                cancellationToken: cancellationToken);
                 
                 payment.IntentConfirmed(paymentIntent);
             } catch (StripeException ex) {
                 payment.Error(ex);
             }
-        }
-        
-        private PaymentIntentConfirmOptions GetPaymentIntentOptions(StripePayment payment) {
-            var options = new PaymentIntentConfirmOptions();
-
-            options.ClientSecret = payment.StripePaymentIntentClientSecret;
-            options.ErrorOnRequiresAction = false;
-            options.PaymentMethod = payment.StripePaymentMethodId;
-
-            return options;
         }
     }
 }

@@ -3,6 +3,7 @@ using N3O.Umbraco.Payments.Handlers;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.Stripe.Commands;
 using N3O.Umbraco.Payments.Stripe.Models;
+using N3O.Umbraco.Payments.Stripe.Services;
 using Stripe;
 using System.Linq;
 using System.Threading;
@@ -14,13 +15,16 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
         PaymentsHandler<CreateSetupIntentCommand, SetupIntentReq, StripeCredential> {
         private readonly IContentCache _contentCache;
         private readonly StripeClient _stripeClient;
-        
+        private readonly ICustomerService _customerService;
+
         public CreateSetupIntentHandler(IPaymentsScope paymentsScope,
                                         IContentCache contentCache,
-                                        StripeClient stripeClient)
+                                        StripeClient stripeClient,
+                                        ICustomerService customerService)
             : base(paymentsScope) {
             _contentCache = contentCache;
             _stripeClient = stripeClient;
+            _customerService = customerService;
         }
 
         protected override async Task HandleAsync(CreateSetupIntentCommand req,
@@ -28,11 +32,20 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
                                                   PaymentsParameters parameters,
                                                   CancellationToken cancellationToken) {
             try {
+                var settings = _contentCache.Single<StripeSettingsContent>();
+                
+                var billingInfo = parameters.BillingInfoAccessor.GetBillingInfo();
+                
+                var customer = await _customerService.CreateCustomerAsync(billingInfo);
+                
                 var service = new SetupIntentService(_stripeClient);
             
-                var setupIntentOptions = GetSetupIntentOptions(parameters, req.Model);
+                var setupIntentOptions = GetSetupIntentOptions(parameters,req.Model, customer);
                 
-                var setupIntent = await service.CreateAsync(setupIntentOptions, cancellationToken: cancellationToken);
+                var options = new RequestOptions();
+                options.IdempotencyKey = parameters.GetTransactionId(settings, req.Model.PaymentMethodId);
+                
+                var setupIntent = await service.CreateAsync(setupIntentOptions, options, cancellationToken);
                 
                 credential.IntentCreated(setupIntent);
             } catch (StripeException ex) {
@@ -40,17 +53,18 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
             }
         }
         
-        private SetupIntentCreateOptions GetSetupIntentOptions(PaymentsParameters parameters, SetupIntentReq req) {
+        private SetupIntentCreateOptions GetSetupIntentOptions(PaymentsParameters parameters, SetupIntentReq req, Customer customer) {
             var settings = _contentCache.Single<StripeSettingsContent>();
             
             var options = new SetupIntentCreateOptions();
-
-            options.PaymentMethodTypes = "card".Yield().ToList();
-            options.Customer = req.CustomerId;
-            options.Usage = "off_session";
             options.Confirm = true;
+            options.PaymentMethodTypes = "card".Yield().ToList();
+            options.Customer = customer.Id;
+            options.Usage = "off_session";
             options.Description = parameters.GetTransactionDescription(settings);
             options.PaymentMethod = req.PaymentMethodId;
+            options.Confirm = true;
+            
             
             options.PaymentMethodOptions = new SetupIntentPaymentMethodOptionsOptions();
             options.PaymentMethodOptions.Card = new SetupIntentPaymentMethodOptionsCardOptions();

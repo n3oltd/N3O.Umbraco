@@ -9,6 +9,8 @@ namespace N3O.Umbraco.Payments.Stripe.Models {
             StripeCustomerId = paymentIntent.CustomerId;
             
             IntentUpdated(paymentIntent);
+            
+            ClearErrors();
         }
     }
 }
