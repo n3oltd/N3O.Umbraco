@@ -24,8 +24,8 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
             try {
                 var service = new SetupIntentService(_stripeClient);
             
-                var setupIntent = await service.ConfirmAsync(credential.StripeSetupIntentId,
-                                                             cancellationToken: cancellationToken);
+                var setupIntent = await service.GetAsync(credential.StripeSetupIntentId,
+                                                         cancellationToken: cancellationToken);
                 
                 credential.IntentConfirmed(setupIntent);
             } catch (StripeException ex) {

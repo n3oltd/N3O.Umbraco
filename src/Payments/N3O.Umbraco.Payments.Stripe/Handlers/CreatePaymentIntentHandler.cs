@@ -51,9 +51,7 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
                 var paymentIntent = await service.CreateAsync(paymentIntentOptions,
                                                               options,
                                                               cancellationToken);
-                
-                paymentIntent = await service.ConfirmAsync(paymentIntent.Id, cancellationToken: cancellationToken);
-                
+
                 payment.IntentCreated(paymentIntent);
             } catch (StripeException ex) {
                 payment.Error(ex);
