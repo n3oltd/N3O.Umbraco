@@ -65,6 +65,7 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
             options.PaymentMethod = req.PaymentMethodId;
             options.Confirm = true;
             
+            
             options.PaymentMethodOptions = new SetupIntentPaymentMethodOptionsOptions();
             options.PaymentMethodOptions.Card = new SetupIntentPaymentMethodOptionsCardOptions();
             options.PaymentMethodOptions.Card.Moto = false;

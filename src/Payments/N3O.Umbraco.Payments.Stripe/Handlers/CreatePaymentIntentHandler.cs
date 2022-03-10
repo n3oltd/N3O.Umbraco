@@ -52,6 +52,8 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
                                                               options,
                                                               cancellationToken);
                 
+                paymentIntent = await service.ConfirmAsync(paymentIntent.Id, cancellationToken: cancellationToken);
+                
                 payment.IntentCreated(paymentIntent);
             } catch (StripeException ex) {
                 payment.Error(ex);
@@ -69,6 +71,7 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
             options.Customer = customer.Id;
             options.PaymentMethod = req.PaymentMethodId;
             options.Confirm = true;
+            options.ConfirmationMethod = "manual";
             
             options.PaymentMethodTypes = "card".Yield().ToList();
             options.PaymentMethodOptions = new PaymentIntentPaymentMethodOptionsOptions();

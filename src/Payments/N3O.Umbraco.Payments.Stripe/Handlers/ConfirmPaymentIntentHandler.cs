@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Payments.Handlers;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.Stripe.Commands;
@@ -23,16 +24,8 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
             try {
                 var service = new PaymentIntentService(_stripeClient);
             
-                //TODO add the stripePaymentMethod as idempotency key to this request \|/
-                // var options = new RequestOptions();
-                // options.IdempotencyKey = parameters.GetTransactionDescription();
-                
-                var paymentIntent = await service.GetAsync(payment.StripePaymentIntentId,
-                                                           cancellationToken: cancellationToken);
-                
-                if (paymentIntent.Status == "requires_payment_method") {
-                    throw new ValidationException("Payment method cannot be attached to payment intent in the current state.");
-                }
+                var paymentIntent = await service.ConfirmAsync(payment.StripePaymentIntentId,
+                                                               cancellationToken: cancellationToken);
                 
                 payment.IntentConfirmed(paymentIntent);
             } catch (StripeException ex) {
