@@ -21,13 +21,11 @@ namespace N3O.Umbraco.TagHelpers {
                 output.SuppressOutput();
             } else {
                 output.TagName = null;
-            
-                var scriptTag = new TagBuilder("script");
-            
-                scriptTag.Attributes.Add("type", "application/ld+json");
-                scriptTag.InnerHtml.AppendHtml(Model.StructuredData().JavaScriptObject);
-            
-                output.Content.SetHtmlContent(scriptTag.ToHtmlString());
+
+                // Don't use tag builder as that HTML encodes the type attribute value
+                output.Content.AppendHtmlLine(@"<script type=""application/ld+json"">");
+                output.Content.AppendHtml(Model.StructuredData().JavaScriptObject);
+                output.Content.AppendHtmlLine("</script>");
             }
         }
     }
