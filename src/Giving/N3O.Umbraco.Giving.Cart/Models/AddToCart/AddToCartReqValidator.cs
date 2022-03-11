@@ -1,4 +1,5 @@
 using FluentValidation;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
@@ -23,9 +24,11 @@ namespace N3O.Umbraco.Giving.Cart.Models {
                 .When(x => x.GivingType == GivingTypes.Donation && x.Allocation.Type == AllocationTypes.Sponsorship)
                 .WithMessage(Get<Strings>(s => s.SpecifySponsorshipDuration));
             
-            RuleFor(x => x.Allocation.Sponsorship)
+            RuleFor(x => x.Allocation.Sponsorship.Duration)
                 .Null()
-                .When(x => x.GivingType != GivingTypes.Donation)
+                .When(x => x.GivingType != GivingTypes.Donation &&
+                           x.Allocation.HasValue(allocation => allocation.Sponsorship) && 
+                           x.Allocation.Type == AllocationTypes.Sponsorship)
                 .WithMessage(Get<Strings>(s => s.CannotSpecifySponsorshipDuration));
         }
 
