@@ -230,6 +230,7 @@ export interface PaymentRes {
     type?: PaymentObjectType | undefined;
     method?: string | undefined;
     status?: PaymentObjectStatus | undefined;
+    errorMessage?: string | undefined;
     hasError?: boolean;
     isComplete?: boolean;
     isInProgress?: boolean;
@@ -269,6 +270,7 @@ export interface CredentialRes {
     type?: PaymentObjectType | undefined;
     method?: string | undefined;
     status?: PaymentObjectStatus | undefined;
+    errorMessage?: string | undefined;
     hasError?: boolean;
     isComplete?: boolean;
     isInProgress?: boolean;

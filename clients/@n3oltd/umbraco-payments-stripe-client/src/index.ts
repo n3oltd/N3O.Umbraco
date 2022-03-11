@@ -271,9 +271,8 @@ export interface ProblemDetails {
 }
 
 export interface PaymentIntentReq {
-    paymentMethodId?: string | undefined;
-    customerId?: string | undefined;
     value?: MoneyReq | undefined;
+    paymentMethodId?: string | undefined;
 }
 
 export interface MoneyReq {
@@ -325,7 +324,6 @@ export interface Payment {
 
 export interface SetupIntentReq {
     paymentMethodId?: string | undefined;
-    customerId?: string | undefined;
 }
 
 export class ApiException extends Error {
