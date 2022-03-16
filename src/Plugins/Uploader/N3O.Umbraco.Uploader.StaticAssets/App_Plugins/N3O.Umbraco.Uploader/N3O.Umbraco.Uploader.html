@@ -25,7 +25,7 @@
                 <p>
                     <br />
 					Allowed file types : {{ model.config.allowedExtensions }} <br />
-                    Maximum file size : {{ model.config.maximumFileSizeMb }}MB
+                    Maximum file size : {{ model.config.maxFileSizeMb }}MB
                 </p>
 				
                 <input class="textBox media-id" type="text" placeholder="Load media by ID" ng-model="mediaId" ng-change="loadMediaById()" ng-paste="loadMediaById()" />
