@@ -1,11 +1,18 @@
+using Humanizer;
 using N3O.Umbraco.Extensions;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace N3O.Umbraco.Utilities {
     public static class HtmlField {
-        public static string Name<TModel>(Expression<Func<TModel, object>> expr) {
+        public static string Name<TModel>(Expression<Func<TModel, object>> expr, int index = -1) {
+            return Name<TModel>(expr, null, index);
+        }
+
+        public static string Name<TModel>(Expression<Func<TModel, object>> expr, string subExpression, int index = -1) {
             var nameComponents = new List<string>();
             MemberExpression memberExpression;
 
@@ -21,14 +28,24 @@ namespace N3O.Umbraco.Utilities {
             }
 
             while (memberExpression != null) {
-                var propertyName = memberExpression.Member.Name;
+                var property = (PropertyInfo) memberExpression.Member;
+                var name = property.Name.Camelize();
+                var isCollection = property.PropertyType.ImplementsInterface<IEnumerable>();
 
-                nameComponents.Insert(0, propertyName.Substring(0, 1).ToLowerInvariant() + propertyName.Substring(1));
+                nameComponents.Insert(0, name);
+                
+                if (isCollection) {
+                    if (index == -1) {
+                        throw new Exception("Expression contains an enumerable property but no index has been specified");
+                    }
+
+                    nameComponents.Insert(0, index.ToString());
+                }
 
                 memberExpression = memberExpression.Expression as MemberExpression;
             }
 
-            return nameComponents.Join(".");
+            return $"{nameComponents.Join(".")}{subExpression}";
         }
     }
 }
