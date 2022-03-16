@@ -30,7 +30,7 @@ namespace N3O.Umbraco.Utilities {
             while (memberExpression != null) {
                 var property = (PropertyInfo) memberExpression.Member;
                 var name = property.Name.Camelize();
-                var isCollection = property.PropertyType.ImplementsInterface<IEnumerable>();
+                var isCollection = property.PropertyType.IsCollectionType();
 
                 nameComponents.Insert(0, name);
                 
