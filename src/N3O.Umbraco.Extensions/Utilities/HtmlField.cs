@@ -45,7 +45,13 @@ namespace N3O.Umbraco.Utilities {
                 memberExpression = memberExpression.Expression as MemberExpression;
             }
 
-            return $"{nameComponents.Join(".")}{subExpression}";
+            var res = nameComponents.Join(".");
+            
+            if (subExpression.HasValue()) {
+                res += $".{subExpression}";
+            }
+
+            return res;
         }
     }
 }
