@@ -1,6 +1,7 @@
 using Hangfire;
 using Hangfire.Dashboard;
 using Hangfire.SqlServer;
+using Humanizer.Bytes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,7 +46,9 @@ namespace N3O.Umbraco.Scheduler {
                        .UseSimpleAssemblyNameTypeSerializer()
                        .UseRecommendedSerializerSettings()
                        .UseSqlServerStorage(connectionString, sqlStorageOptions)
-                       .UseFilter(new JobLoggerFilter());
+                       .UseFilter(new JobLoggerFilter())
+                       .UseMaxArgumentSizeToRender((int) ByteSize.FromKilobytes(256).Bytes)
+                       .UseMaxLinesInExceptionDetails(200);
                 });
 
                 builder.Services.AddHangfireServer();
