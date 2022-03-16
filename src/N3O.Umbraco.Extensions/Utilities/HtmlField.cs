@@ -31,8 +31,6 @@ namespace N3O.Umbraco.Utilities {
                 var property = (PropertyInfo) memberExpression.Member;
                 var name = property.Name.Camelize();
                 var isCollection = property.PropertyType.IsCollectionType();
-
-                nameComponents.Insert(0, name);
                 
                 if (isCollection) {
                     if (index == -1) {
@@ -41,6 +39,8 @@ namespace N3O.Umbraco.Utilities {
 
                     nameComponents.Insert(0, index.ToString());
                 }
+
+                nameComponents.Insert(0, name);
 
                 memberExpression = memberExpression.Expression as MemberExpression;
             }
