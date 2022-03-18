@@ -7,7 +7,6 @@ using N3O.Umbraco.Payments.PayPal.Commands;
 using N3O.Umbraco.Payments.PayPal.Content;
 using N3O.Umbraco.Payments.PayPal.Extensions;
 using N3O.Umbraco.Payments.PayPal.Models;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,7 +27,7 @@ namespace N3O.Umbraco.Payments.PayPal.Handlers {
             var settings = _contentCache.Single<PayPalSettingsContent>();
 
             var request = GetAuthorizePaymentReq(req.Model, parameters, settings);
-            
+
             var res = await _payPalClient.AuthorizePaymentAsync(request);
 
             if (res.IsAuthorised()) {
@@ -50,7 +49,5 @@ namespace N3O.Umbraco.Payments.PayPal.Handlers {
 
             return request;
         }
-        
-        
     }
 }

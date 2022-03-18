@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Payments.PayPal.Client.Models {
 
         [JsonProperty("status")]
         public string Status { get; set; }
-        
+
         [JsonProperty("links")]
         public IEnumerable<Link> Links { get; set; }
 
