@@ -17,6 +17,7 @@ using Refit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.Opayo {
@@ -115,7 +116,7 @@ namespace N3O.Umbraco.Payments.Opayo {
             }
 
             apiReq.StrongCustomerAuthentication = new ApiStrongCustomerAuthentication();
-            apiReq.StrongCustomerAuthentication.BrowserIp = _remoteIpAddressAccessor.GetRemoteIpAddress().ToString();
+            apiReq.StrongCustomerAuthentication.BrowserIp = GetBrowserIpAddress();
 
             apiReq.StrongCustomerAuthentication.BrowserAcceptHeader = _browserInfoAccessor.GetAccept();
             apiReq.StrongCustomerAuthentication.BrowserJavascriptEnabled = req.BrowserParameters
@@ -137,6 +138,18 @@ namespace N3O.Umbraco.Payments.Opayo {
             apiReq.StrongCustomerAuthentication.TransactionType = "GoodsAndServicePurchase";
 
             return apiReq;
+        }
+
+        private string GetBrowserIpAddress() {
+            var ipAddress = _remoteIpAddressAccessor.GetRemoteIpAddress();
+
+            if (ipAddress.AddressFamily == AddressFamily.InterNetwork) {
+                return ipAddress.ToString();
+            } else {
+                // Opayo do not yet support IPv6 Addresses so use our IP address in these cases until Opayo
+                // confirm support has been added
+                return "45.77.226.187";
+            }
         }
 
         private string GetNotificationUrl(EntityId flowId) {
