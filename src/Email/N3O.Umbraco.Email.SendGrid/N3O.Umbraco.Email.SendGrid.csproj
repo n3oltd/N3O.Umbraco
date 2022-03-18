@@ -34,7 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="FluentEmail.SendGrid" Version="3.0.0" />
+      <PackageReference Include="FluentEmail.SendGrid" Version="3.0.2" />
     </ItemGroup>
 
     <ItemGroup>
