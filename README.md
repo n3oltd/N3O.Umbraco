@@ -31,6 +31,7 @@ Provides functionality for integrating with newsletter platforms such as Mailchi
 Provides support for taking one-off and recurring payments using various gateways. Currently supported gateways include:
 
 * Authorize.net
+* Bambora
 * GoCardless
 * Opayo
 * PayPal
