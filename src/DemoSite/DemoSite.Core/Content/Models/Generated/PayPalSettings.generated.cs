@@ -50,12 +50,28 @@ namespace DemoSite.Core.Content
 		// properties
 
 		///<summary>
+		/// Access Token
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.1+3a269ed3293c8e22bd9a546f424402c0a491964f")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("productionAccessToken")]
+		public virtual string ProductionAccessToken => this.Value<string>(_publishedValueFallback, "productionAccessToken");
+
+		///<summary>
 		/// Client ID
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.1+3a269ed3293c8e22bd9a546f424402c0a491964f")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("productionClientId")]
 		public virtual string ProductionClientId => this.Value<string>(_publishedValueFallback, "productionClientId");
+
+		///<summary>
+		/// Access Token
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.3.1+3a269ed3293c8e22bd9a546f424402c0a491964f")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("stagingAccessToken")]
+		public virtual string StagingAccessToken => this.Value<string>(_publishedValueFallback, "stagingAccessToken");
 
 		///<summary>
 		/// Client ID
