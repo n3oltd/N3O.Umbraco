@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace N3O.Umbraco.Payments.PayPal.Client.Models {
-    public class AuthorizePaymentRes {
+namespace N3O.Umbraco.Payments.PayPal.Client {
+    public class ApiAuthorizePaymentRes {
         [JsonProperty("id")]
         public string Id { get; set; }
 
@@ -10,9 +10,9 @@ namespace N3O.Umbraco.Payments.PayPal.Client.Models {
         public string Status { get; set; }
 
         [JsonProperty("links")]
-        public IEnumerable<Link> Links { get; set; }
+        public IEnumerable<ApiLink> Links { get; set; }
 
         [JsonProperty("status_details")]
-        public StatusDetails StatusDetails { get; set; }
+        public ApiStatusDetails StatusDetails { get; set; }
     }
 }

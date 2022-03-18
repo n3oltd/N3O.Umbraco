@@ -1,9 +1,9 @@
 using Newtonsoft.Json;
 
-namespace N3O.Umbraco.Payments.PayPal.Client.Models {
-    public class AuthorizePaymentReq {
+namespace N3O.Umbraco.Payments.PayPal.Client {
+    public class ApiAuthorizePaymentReq {
         [JsonProperty("amount")]
-        public AmountReq Amount { get; set; }
+        public ApiAmountReq Amount { get; set; }
 
         [JsonProperty("invoice_id")]
         public string InvoiceId { get; set; }

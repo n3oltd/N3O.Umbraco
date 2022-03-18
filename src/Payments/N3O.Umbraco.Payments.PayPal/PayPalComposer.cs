@@ -30,9 +30,8 @@ namespace N3O.Umbraco.Payments.PayPal {
                 if (apiSettings != null) {
                     var refitSettings = new RefitSettings();
                     refitSettings.ContentSerializer = new NewtonsoftJsonContentSerializer();
-
-                    refitSettings.HttpMessageHandlerFactory =
-                        () => new CredentialsAuthorizationHandler(apiSettings.ClientId, apiSettings.AccessToken);
+                    refitSettings.HttpMessageHandlerFactory = () => new AuthorizationHandler(apiSettings.ClientId,
+                                                                                             apiSettings.AccessToken);
 
                     client = RestService.For<IPayPalClient>(apiSettings.BaseUrl, refitSettings);
                 }
@@ -46,9 +45,13 @@ namespace N3O.Umbraco.Payments.PayPal {
             
             if (settings != null) {
                 if (environment.IsProduction()) {
-                    return new PayPalApiSettings(settings.ProductionAccessToken, settings.ProductionClientId, "https://api-m.paypal.com");
+                    return new PayPalApiSettings("https://api-m.paypal.com",
+                                                 settings.ProductionAccessToken,
+                                                 settings.ProductionClientId);
                 } else {
-                    return new PayPalApiSettings(settings.StagingAccessToken, settings.StagingClientId, "https://api-m.sandbox.paypal.com");
+                    return new PayPalApiSettings("https://api-m.sandbox.paypal.com",
+                                                 settings.StagingAccessToken,
+                                                 settings.StagingClientId);
                 }
             }
 

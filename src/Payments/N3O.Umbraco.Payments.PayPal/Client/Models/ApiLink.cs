@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 
-namespace N3O.Umbraco.Payments.PayPal.Client.Models {
-    public class Link {
+namespace N3O.Umbraco.Payments.PayPal.Client {
+    public class ApiLink {
         [JsonProperty("rel")]
         public string Rel { get; set; }
 

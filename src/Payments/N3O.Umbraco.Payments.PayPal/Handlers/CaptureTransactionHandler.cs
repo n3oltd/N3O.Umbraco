@@ -2,7 +2,6 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Payments.Handlers;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.PayPal.Client;
-using N3O.Umbraco.Payments.PayPal.Client.Models;
 using N3O.Umbraco.Payments.PayPal.Commands;
 using N3O.Umbraco.Payments.PayPal.Content;
 using N3O.Umbraco.Payments.PayPal.Extensions;
@@ -11,22 +10,26 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.PayPal.Handlers {
-    public class TransactionCompleteHandler : PaymentsHandler<TransactionCompleteCommand, PayPalTransactionReq, PayPalPayment> {
+    public class CaptureTransactionHandler :
+        PaymentsHandler<CaptureTransactionCommand, PayPalTransactionReq, PayPalPayment> {
         private readonly IContentCache _contentCache;
         private readonly IPayPalClient _payPalClient;
 
-        public TransactionCompleteHandler(IContentCache contentCache, IPaymentsScope paymentsScope, IPayPalClient payPalClient) : base(paymentsScope) {
+        public CaptureTransactionHandler(IContentCache contentCache,
+                                         IPaymentsScope paymentsScope,
+                                         IPayPalClient payPalClient)
+            : base(paymentsScope) {
             _contentCache = contentCache;
             _payPalClient = payPalClient;
         }
 
-        protected override async Task HandleAsync(TransactionCompleteCommand req,
+        protected override async Task HandleAsync(CaptureTransactionCommand req,
                                                   PayPalPayment payment,
                                                   PaymentsParameters parameters,
                                                   CancellationToken cancellationToken) {
             var settings = _contentCache.Single<PayPalSettingsContent>();
 
-            var request = GetAuthorizePaymentReq(req.Model, parameters, settings);
+            var request = GetApiAuthorizePaymentReq(req.Model, parameters, settings);
 
             var res = await _payPalClient.AuthorizePaymentAsync(request);
 
@@ -39,8 +42,10 @@ namespace N3O.Umbraco.Payments.PayPal.Handlers {
             }
         }
 
-        private AuthorizePaymentReq GetAuthorizePaymentReq(PayPalTransactionReq req, PaymentsParameters parameters, PayPalSettingsContent settings) {
-            var request = new AuthorizePaymentReq();
+        private ApiAuthorizePaymentReq GetApiAuthorizePaymentReq(PayPalTransactionReq req,
+                                                                 PaymentsParameters parameters,
+                                                                 PayPalSettingsContent settings) {
+            var request = new ApiAuthorizePaymentReq();
             request.FinalCapture = true;
             request.InvoiceId = parameters.FlowId;
             request.NoteToPayer = parameters.GetTransactionDescription(settings);

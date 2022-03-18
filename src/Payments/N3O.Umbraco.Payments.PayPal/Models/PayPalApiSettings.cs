@@ -1,13 +1,13 @@
 ﻿namespace N3O.Umbraco.Payments.PayPal.Models {
     public class PayPalApiSettings {
-        public PayPalApiSettings(string accessToken, string clientId, string baseUrl) {
-            ClientId = clientId;
+        public PayPalApiSettings(string baseUrl, string accessToken, string clientId) {
             BaseUrl = baseUrl;
+            ClientId = clientId;
             AccessToken = accessToken;
         }
 
+        public string BaseUrl { get; }
         public string AccessToken { get; }
         public string ClientId { get; }
-        public string BaseUrl { get; }
     }
 }

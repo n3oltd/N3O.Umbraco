@@ -20,8 +20,8 @@ namespace N3O.Umbraco.Payments.PayPal.Models {
 
         public class Strings : ValidationStrings {
             public string InvalidEmail => "The specified email address is invalid";
-            public string SpecifyEmail => "Please specify email";
             public string SpecifyAuthorizationId => "Please specify authorization ID";
+            public string SpecifyEmail => "Please specify email";
         }
     }
 }
