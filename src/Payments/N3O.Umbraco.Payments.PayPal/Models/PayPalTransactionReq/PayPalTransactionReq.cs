@@ -5,7 +5,7 @@ namespace N3O.Umbraco.Payments.PayPal.Models {
         [Name("Email")]
         public string Email { get; set; }
         
-        [Name("Transaction ID")]
-        public string TransactionId { get; set; }
+        [Name("Authorization ID")]
+        public string AuthorizationId { get; set; }
     }
 }

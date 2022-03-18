@@ -4,8 +4,10 @@ using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Payments.PayPal.Client;
 using N3O.Umbraco.Payments.PayPal.Content;
 using N3O.Umbraco.Payments.PayPal.Models;
+using Refit;
 using Umbraco.Cms.Core.DependencyInjection;
 
 namespace N3O.Umbraco.Payments.PayPal {
@@ -20,6 +22,23 @@ namespace N3O.Umbraco.Payments.PayPal {
                 
                 return apiSettings;
             });
+            
+            builder.Services.AddTransient<IPayPalClient>(serviceProvider => {
+                var apiSettings = serviceProvider.GetRequiredService<PayPalApiSettings>();
+                IPayPalClient client = null;
+
+                if (apiSettings != null) {
+                    var refitSettings = new RefitSettings();
+                    refitSettings.ContentSerializer = new NewtonsoftJsonContentSerializer();
+
+                    refitSettings.HttpMessageHandlerFactory =
+                        () => new CredentialsAuthorizationHandler(apiSettings.ClientId, apiSettings.AccessToken);
+
+                    client = RestService.For<IPayPalClient>(apiSettings.BaseUrl, refitSettings);
+                }
+                
+                return client;
+            });
         }
         
         private PayPalApiSettings GetApiSettings(IContentCache contentCache, IHostEnvironment environment) {
@@ -27,9 +46,9 @@ namespace N3O.Umbraco.Payments.PayPal {
             
             if (settings != null) {
                 if (environment.IsProduction()) {
-                    return new PayPalApiSettings(settings.ProductionClientId);
+                    return new PayPalApiSettings(settings.ProductionAccessToken, settings.ProductionClientId, "https://api-m.paypal.com");
                 } else {
-                    return new PayPalApiSettings(settings.StagingClientId);
+                    return new PayPalApiSettings(settings.StagingAccessToken, settings.StagingClientId, "https://api-m.sandbox.paypal.com");
                 }
             }
 

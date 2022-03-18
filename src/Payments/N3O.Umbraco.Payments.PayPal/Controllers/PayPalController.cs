@@ -17,7 +17,7 @@ namespace N3O.Umbraco.Payments.PayPal.Controllers {
         }
         
         [HttpPost("payments/{flowId:entityId}/complete")]
-        public async Task<ActionResult<PaymentFlowRes<PayPalPayment>>> ChargeCard(PayPalTransactionReq req) {
+        public async Task<ActionResult<PaymentFlowRes<PayPalPayment>>> Complete(PayPalTransactionReq req) {
             var res = await _mediator.SendAsync<TransactionCompleteCommand, PayPalTransactionReq, PaymentFlowRes<PayPalPayment>>(req);
 
             return Ok(res);
