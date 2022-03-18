@@ -13,15 +13,15 @@ namespace N3O.Umbraco.Payments.PayPal.Models {
                 .EmailAddress()
                 .WithMessage(Get<Strings>(s => s.InvalidEmail));
             
-            RuleFor(x => x.TransactionId)
+            RuleFor(x => x.AuthorizationId)
                 .NotNull()
-                .WithMessage(Get<Strings>(s => s.SpecifyTransactionId));
+                .WithMessage(Get<Strings>(s => s.SpecifyAuthorizationId));
         }
 
         public class Strings : ValidationStrings {
             public string InvalidEmail => "The specified email address is invalid";
             public string SpecifyEmail => "Please specify email";
-            public string SpecifyTransactionId => "Please specify transaction ID";
+            public string SpecifyAuthorizationId => "Please specify authorization ID";
         }
     }
 }
