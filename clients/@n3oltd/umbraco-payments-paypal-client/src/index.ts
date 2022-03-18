@@ -17,8 +17,8 @@ export class PayPalClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
 
-    chargeCard(flowId: string, req: PayPalTransactionReq): Promise<PaymentFlowResOfPayPalPayment> {
-        let url_ = this.baseUrl + "/umbraco/api/PayPal/payments/{flowId}/complete";
+    capture(flowId: string, req: PayPalTransactionReq): Promise<PaymentFlowResOfPayPalPayment> {
+        let url_ = this.baseUrl + "/umbraco/api/PayPal/payments/{flowId}/capture";
         if (flowId === undefined || flowId === null)
             throw new Error("The parameter 'flowId' must be defined.");
         url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
@@ -36,11 +36,11 @@ export class PayPalClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processChargeCard(_response);
+            return this.processCapture(_response);
         });
     }
 
-    protected processChargeCard(response: Response): Promise<PaymentFlowResOfPayPalPayment> {
+    protected processCapture(response: Response): Promise<PaymentFlowResOfPayPalPayment> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -123,7 +123,7 @@ export interface ProblemDetails {
 
 export interface PayPalTransactionReq {
     email?: string | undefined;
-    transactionId?: string | undefined;
+    authorizationId?: string | undefined;
 }
 
 export class ApiException extends Error {

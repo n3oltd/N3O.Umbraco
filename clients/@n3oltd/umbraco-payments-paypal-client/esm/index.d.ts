@@ -5,8 +5,8 @@ export declare class PayPalClient {
     constructor(baseUrl?: string, http?: {
         fetch(url: RequestInfo, init?: RequestInit): Promise<Response>;
     });
-    chargeCard(flowId: string, req: PayPalTransactionReq): Promise<PaymentFlowResOfPayPalPayment>;
-    protected processChargeCard(response: Response): Promise<PaymentFlowResOfPayPalPayment>;
+    capture(flowId: string, req: PayPalTransactionReq): Promise<PaymentFlowResOfPayPalPayment>;
+    protected processCapture(response: Response): Promise<PaymentFlowResOfPayPalPayment>;
 }
 export interface PaymentFlowResOfPayPalPayment {
     flowRevision?: number;
@@ -57,7 +57,7 @@ export interface ProblemDetails {
 }
 export interface PayPalTransactionReq {
     email?: string | undefined;
-    transactionId?: string | undefined;
+    authorizationId?: string | undefined;
 }
 export declare class ApiException extends Error {
     message: string;

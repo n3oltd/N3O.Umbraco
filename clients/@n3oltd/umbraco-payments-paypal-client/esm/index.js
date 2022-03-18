@@ -25,9 +25,9 @@ var PayPalClient = /** @class */ (function () {
         this.http = http ? http : window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
-    PayPalClient.prototype.chargeCard = function (flowId, req) {
+    PayPalClient.prototype.capture = function (flowId, req) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/PayPal/payments/{flowId}/complete";
+        var url_ = this.baseUrl + "/umbraco/api/PayPal/payments/{flowId}/capture";
         if (flowId === undefined || flowId === null)
             throw new Error("The parameter 'flowId' must be defined.");
         url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
@@ -42,10 +42,10 @@ var PayPalClient = /** @class */ (function () {
             }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processChargeCard(_response);
+            return _this.processCapture(_response);
         });
     };
-    PayPalClient.prototype.processChargeCard = function (response) {
+    PayPalClient.prototype.processCapture = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
