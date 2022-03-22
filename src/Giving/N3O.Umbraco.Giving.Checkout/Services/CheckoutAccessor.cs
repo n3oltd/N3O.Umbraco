@@ -10,20 +10,20 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Giving.Checkout {
     public class CheckoutAccessor : ICheckoutAccessor {
         private readonly ICheckoutIdAccessor _checkoutIdAccessor;
-        private readonly ILock _lock;
+        private readonly ILocker _locker;
         private readonly IRepository<Entities.Checkout> _repository;
         private readonly Lazy<ICartAccessor> _cartAccessor;
         private readonly Lazy<ICounters> _counters;
         private readonly Lazy<IRemoteIpAddressAccessor> _remoteIpAddressAccessor;
 
         public CheckoutAccessor(ICheckoutIdAccessor checkoutIdAccessor,
-                                ILock @lock,
+                                ILocker locker,
                                 IRepository<Entities.Checkout> repository,
                                 Lazy<ICartAccessor> cartAccessor,
                                 Lazy<ICounters> counters,
                                 Lazy<IRemoteIpAddressAccessor> remoteIpAddressAccessor) {
             _checkoutIdAccessor = checkoutIdAccessor;
-            _lock = @lock;
+            _locker = locker;
             _repository = repository;
             _cartAccessor = cartAccessor;
             _counters = counters;
@@ -45,7 +45,7 @@ namespace N3O.Umbraco.Giving.Checkout {
         public async Task<Entities.Checkout> GetOrCreateAsync(CancellationToken cancellationToken) {
             var checkoutId = _checkoutIdAccessor.GetId();
             
-            var result = await _lock.LockAsync(checkoutId.ToString(), async () => {
+            using (await _locker.LockAsync(checkoutId.ToString())) {
                 var checkout = await _repository.GetAsync(checkoutId);
 
                 if (checkout == null) {
@@ -62,9 +62,7 @@ namespace N3O.Umbraco.Giving.Checkout {
                 }
 
                 return checkout;
-            });
-
-            return result;
+            }
         }
     }
 }
