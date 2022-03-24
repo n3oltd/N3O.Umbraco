@@ -10,6 +10,7 @@ namespace N3O.Umbraco.Giving.Models {
         public bool HideQuantity { get; set; }
         public bool HideDonation { get; set; }
         public bool HideRegularGiving { get; set; }
+        public bool RegularGivingIsDefault { get; set; }
         public FundDonationOptionRes Fund { get; set; }
         public SponsorshipDonationOptionRes Sponsorship { get; set; }
     }

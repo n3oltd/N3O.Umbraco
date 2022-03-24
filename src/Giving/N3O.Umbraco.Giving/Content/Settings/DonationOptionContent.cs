@@ -32,6 +32,7 @@ namespace N3O.Umbraco.Giving.Content {
         public bool HideQuantity => GetValue(x => x.HideQuantity);
         public bool HideDonation => GetValue(x => x.HideDonation);
         public bool HideRegularGiving => GetValue(x => x.HideRegularGiving);
+        public bool RegularGivingIsDefault => GetValue(x => x.RegularGivingIsDefault);
 
         public FundDonationOptionContent Fund { get; private set; }
         public SponsorshipDonationOptionContent Sponsorship { get; private set; }
