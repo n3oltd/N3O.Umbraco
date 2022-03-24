@@ -39,6 +39,16 @@ namespace N3O.Umbraco.Giving.Content {
         public IFundDimensionsOptions GetFundDimensionOptions() {
             return (IFundDimensionsOptions) Fund?.DonationItem ?? Sponsorship?.Scheme;
         }
+
+        public bool IsValid() {
+            if (Type == AllocationTypes.Fund) {
+                return Fund.IsValid();
+            } else if (Type == AllocationTypes.Sponsorship) {
+                return Sponsorship.IsValid();
+            } else {
+                throw UnrecognisedValueException.For(Type);
+            }
+        }
         
         [JsonIgnore]
         public AllocationType Type {

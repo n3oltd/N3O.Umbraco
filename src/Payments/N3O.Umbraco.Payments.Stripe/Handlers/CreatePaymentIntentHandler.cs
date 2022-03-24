@@ -67,9 +67,6 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
             options.ConfirmationMethod = "manual";
             
             options.PaymentMethodTypes = "card".Yield().ToList();
-            options.PaymentMethodOptions = new PaymentIntentPaymentMethodOptionsOptions();
-            options.PaymentMethodOptions.Card = new PaymentIntentPaymentMethodOptionsCardOptions();
-            options.PaymentMethodOptions.Card.Moto = false;
 
             return options;
         }
