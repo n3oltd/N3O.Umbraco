@@ -9,7 +9,9 @@ using N3O.Umbraco.Validation;
 
 namespace N3O.Umbraco.Accounts.Models {
     public class AccountReqValidator : ModelValidator<AccountReq> {
-        public AccountReqValidator(IFormatter formatter, IContentCache contentCache, ITaxReliefSchemeAccessor taxReliefSchemeAccessor)
+        public AccountReqValidator(IFormatter formatter,
+                                   IContentCache contentCache,
+                                   ITaxReliefSchemeAccessor taxReliefSchemeAccessor)
             : base(formatter) {
             var emailDataEntrySettings = contentCache.Single<EmailDataEntrySettingsContent>();
             var phoneDataEntrySettings = contentCache.Single<PhoneDataEntrySettingsContent>();
