@@ -33,7 +33,7 @@ namespace N3O.Umbraco.Payments.Bambora {
 
                     refitSettings.HttpMessageHandlerFactory =
                         () => new AuthorizationHandler(apiSettings.MerchantId,
-                                                                  apiSettings.Passcode);
+                                                       apiSettings.Passcode);
 
                     client = RestService.For<IBamboraClient>("https://api.na.bambora.com/v1", refitSettings);
                 }

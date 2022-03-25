@@ -3,39 +3,50 @@ using System;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Payments.Bambora.Client {
-    public class ApiPaymentRes {
-        [JsonProperty(PropertyName = "id")]
-        public string TransactionId { get; set; }
+    public class ApiPaymentRes : IApiPaymentRes {
+        [JsonProperty("id")]
+        public string Id { get; set; }
 
-        [JsonProperty(PropertyName = "approved")]
-        public string Approved { get; set; }
+        [JsonProperty("approved")]
+        public int? Approved { get; set; }
 
-        [JsonProperty(PropertyName = "message_id")]
-        public string MessageId { get; set; }
+        [JsonProperty("authorizing_merchant_id")]
+        public int? AuthorizingMerchantId { get; set; }
 
-        [JsonProperty(PropertyName = "message")]
+        [JsonProperty("message_id")]
+        public int? MessageId { get; set; }
+
+        [JsonProperty("amount")]
+        public decimal? Amount { get; set; }
+
+        [JsonProperty("risk_score")]
+        public decimal? RiskScore { get; set; }
+
+        [JsonProperty("message")]
         public string Message { get; set; }
 
-        [JsonProperty(PropertyName = "auth_code")]
+        [JsonProperty("auth_code")]
         public string AuthCode { get; set; }
 
-        [JsonProperty(PropertyName = "created")]
-        public DateTime Created { get; set; }
+        [JsonProperty("created")]
+        public DateTime? Created { get; set; }
 
-        [JsonProperty(PropertyName = "order_number")]
-        public string OrderNumber { get; set; }
-
-        [JsonProperty(PropertyName = "type")]
+        [JsonProperty("type")]
         public string TransType { get; set; }
 
-        [JsonProperty(PropertyName = "payment_method")]
+        [JsonProperty("payment_method")]
         public string PaymentMethod { get; set; }
 
-        [JsonProperty(PropertyName = "card", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [JsonProperty("card")]
         public CardResponse Card { get; set; }
 
+        [JsonProperty("3d_session_data")]
+        public string ThreeDSessionData { get; set; }
 
-        [JsonProperty(PropertyName = "links", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public IList<Link> Links { get; set; }
+        [JsonProperty("contents")]
+        public string ThreeDContents { get; set; }
+
+        [JsonProperty("links")]
+        public IEnumerable<Link> Links { get; set; }
     }
 }

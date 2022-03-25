@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.Bambora.Client {
     public interface IBamboraClient {
-        [Post("/Payment")]
-        Task<PaymentRes> CreatePaymentAsync(ApiPaymentReq req);
+        [Post("/payments")]
+        Task<ApiPaymentRes> CreatePaymentAsync(ApiPaymentReq req);
     }
 }

@@ -2,31 +2,31 @@
 
 namespace N3O.Umbraco.Payments.Bambora.Client {
     public class ApiBillingAddressReq {
-        [JsonProperty(PropertyName = "name")]
+        [JsonProperty("name")]
         public string Name { get; set; }
 
-        [JsonProperty(PropertyName = "address_line1")]
+        [JsonProperty("address_line1")]
         public string AddressLine1 { get; set; }
 
-        [JsonProperty(PropertyName = "address_line2")]
+        [JsonProperty("address_line2")]
         public string AddressLine2 { get; set; }
 
-        [JsonProperty(PropertyName = "city")]
+        [JsonProperty("city")]
         public string City { get; set; }
 
-        [JsonProperty(PropertyName = "province")]
+        [JsonProperty("province")]
         public string Province { get; set; }
 
-        [JsonProperty(PropertyName = "country")]
+        [JsonProperty("country")]
         public string Country { get; set; }
 
-        [JsonProperty(PropertyName = "postal_code")]
+        [JsonProperty("postal_code")]
         public string PostalCode { get; set; }
 
-        [JsonProperty(PropertyName = "phone_number")]
+        [JsonProperty("phone_number")]
         public string PhoneNumber { get; set; }
 
-        [JsonProperty(PropertyName = "email_address")]
+        [JsonProperty("email_address")]
         public string EmailAddress { get; set; }
     }
 }

@@ -2,13 +2,13 @@
 
 namespace N3O.Umbraco.Payments.Bambora.Client {
     public class Link {
-        [JsonProperty(PropertyName = "rel")]
+        [JsonProperty("rel")]
         public string Rel { get; set; }
 
-        [JsonProperty(PropertyName = "href")]
+        [JsonProperty("href")]
         public string Href { get; set; }
 
-        [JsonProperty(PropertyName = "method")]
+        [JsonProperty("method")]
         public string Method { get; set; }
     }
 }
