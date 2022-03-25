@@ -29,10 +29,10 @@ namespace N3O.Umbraco.Mediator {
             return _mediatr.Send(request, cancellationToken);
         }
 
-        public Task SendAsync(Type requestType,
-                              Type responseType,
-                              object model,
-                              CancellationToken cancellationToken = default) {
+        public async Task<object> SendAsync(Type requestType,
+                                            Type responseType,
+                                            object model,
+                                            CancellationToken cancellationToken = default) {
             var request = _requestFactory.Create(requestType);
 
             request.Model = model;
@@ -45,7 +45,9 @@ namespace N3O.Umbraco.Mediator {
                                .WithParameter(typeof(CancellationToken), cancellationToken)
                                .RunAsync();
 
-            return task;
+            await task;
+            
+            return task.GetResult();
         }
     }
 }
