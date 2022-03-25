@@ -45,7 +45,7 @@ Provides a number of back office extensions such as:
 * SERP Entry Editor
 * Text Resource Editor
 
-These either provide richer functionality than Umbraco includes or works around limitations (e.g. the built in Umbraco cropper doesn't work with Nested Content or Blocks).
+These either provide richer functionality than Umbraco includes or work around limitations (e.g. the built in Umbraco cropper doesn't work with Nested Content or Blocks).
 
 #### Search
 Provides functionality for providing a site search function using Google Custom Search.
