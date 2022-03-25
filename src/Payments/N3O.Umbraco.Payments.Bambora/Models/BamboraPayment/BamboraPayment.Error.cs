@@ -1,7 +1,7 @@
 ﻿namespace N3O.Umbraco.Payments.Bambora.Models {
     public partial class BamboraPayment {
-        public void Error(string transactionId, int? errorCode, string errorMessage) {
-            BamboraPaymentId = transactionId;
+        public void Error(string paymentId, int errorCode, string errorMessage) {
+            BamboraPaymentId = paymentId;
             BamboraErrorCode = errorCode;
             BamboraErrorMessage = errorMessage;
             

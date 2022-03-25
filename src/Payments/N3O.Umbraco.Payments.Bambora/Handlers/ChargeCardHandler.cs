@@ -1,4 +1,3 @@
-using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Payments.Bambora.Client;
@@ -27,7 +26,6 @@ namespace N3O.Umbraco.Payments.Bambora.Handlers {
                                                   BamboraPayment payment,
                                                   PaymentsParameters parameters,
                                                   CancellationToken cancellationToken) {
-            var apiPaymentReq = GetRequest(req.Model, parameters);
             try {
                 var apiRequest = GetRequest(req.Model, parameters);
 
@@ -87,15 +85,15 @@ namespace N3O.Umbraco.Payments.Bambora.Handlers {
             billingAddress.EmailAddress = billingInfo.Email.Address;
             billingAddress.PostalCode = GetText(address.PostalCode, 10, true, "0000");
             billingAddress.Country = address.Country.Iso2Code;
+            
             if (address.Country.Iso3Code.EqualsInvariant(BamboraConstants.Iso3CountryCodes.UnitedStates)) {
-                billingAddress.Province = GetUsProvinceCode(address.AdministrativeArea);
+                billingAddress.Province = GetUsStateCode(address.AdministrativeArea);
             } else if (address.Country.Iso3Code.EqualsInvariant(BamboraConstants.Iso3CountryCodes.Canada)) {
-                // TODO Get Canada Provinces
+                billingAddress.Province = GetCanadaProvinceCode(address.AdministrativeArea);
             } else {
-                // Mentioned in their documentation to set it to -- for countries other than US and Canada
+                // As per Bambora documentation
                 billingAddress.Province = "--";
             }
-
 
             return billingAddress;
         }
@@ -109,83 +107,113 @@ namespace N3O.Umbraco.Payments.Bambora.Handlers {
                 return null;
             }
 
-            return value.RemoveNonAscii()
-                        .Trim()
-                        .Right(maxLength);
+            return value.RemoveNonAscii().Trim().Right(maxLength);
         }
 
-        private static string GetUsProvinceCode(string administrativeArea) {
+        private static string GetCanadaProvinceCode(string administrativeArea) {
+            if (CanadaProvinces.ContainsKey(administrativeArea)) {
+                return administrativeArea.ToUpper();
+            }
+
+            foreach (var (code, name) in CanadaProvinces) {
+                if (administrativeArea.Contains(name, StringComparison.InvariantCultureIgnoreCase)) {
+                    return code;
+                }
+            }
+
+            // Safe default
+            return "ON";
+        }
+
+        private static string GetUsStateCode(string administrativeArea) {
             if (UsStates.ContainsKey(administrativeArea)) {
                 return administrativeArea.ToUpper();
             }
 
             foreach (var (code, name) in UsStates) {
-                if (name.EqualsInvariant(administrativeArea)) {
+                if (administrativeArea.Contains(name, StringComparison.InvariantCultureIgnoreCase)) {
                     return code;
                 }
             }
 
+            // Safe default
             return "NY";
         }
+        
+        private static readonly Dictionary<string, string> CanadaProvinces = new(StringComparer.InvariantCultureIgnoreCase) {
+            { "AB", "Alberta" },
+            { "BC", "Columbia" },
+            { "MB", "Manitoba" },
+            { "NB", "Brunswick" },
+            { "NL", "Newfoundland" },
+            { "NS", "Nova Scotia" },
+            { "NT", "Northwest" },
+            { "NU", "Nunavut" },
+            { "ON", "Ontario" },
+            { "PE", "Edward" },
+            { "QC", "Quebec" },
+            { "SK", "Saskatchewan" },
+            { "YT", "Yukon" }
+        };
 
         private static readonly Dictionary<string, string> UsStates = new(StringComparer.InvariantCultureIgnoreCase) {
-                 {"AA", "Armed Forces America"},
-                 {"AE", "Armed Forces"},
-                 {"AK", "Alaska"},
-                 {"AL", "Alabama"},
-                 {"AP", "Armed Forces Pacific"},
-                 {"AR", "Arkansas"},
-                 {"AZ", "Arizona"},
-                 {"CA", "California"},
-                 {"CO", "Colorado"},
-                 {"CT", "Connecticut"},
-                 {"DC", "Washington DC"},
-                 {"DE", "Delaware"},
-                 {"FL", "Florida"},
-                 {"GA", "Georgia"},
-                 {"GU", "Guam"},
-                 {"HI", "Hawaii"},
-                 {"IA", "Iowa"},
-                 {"ID", "Idaho"},
-                 {"IL", "Illinois"},
-                 {"IN", "Indiana"},
-                 {"KS", "Kansas"},
-                 {"KY", "Kentucky"},
-                 {"LA", "Louisiana"},
-                 {"MA", "Massachusetts"},
-                 {"MD", "Maryland"},
-                 {"ME", "Maine"},
-                 {"MI", "Michigan"},
-                 {"MN", "Minnesota"},
-                 {"MO", "Missouri"},
-                 {"MS", "Mississippi"},
-                 {"MT", "Montana"},
-                 {"NC", "North Carolina"},
-                 {"ND", "North Dakota"},
-                 {"NE", "Nebraska"},
-                 {"NH", "New Hampshire"},
-                 {"NJ", "New Jersey"},
-                 {"NM", "New Mexico"},
-                 {"NV", "Nevada"},
-                 {"NY", "New York"},
-                 {"OH", "Ohio"},
-                 {"OK", "Oklahoma"},
-                 {"OR", "Oregon"},
-                 {"PA", "Pennsylvania"},
-                 {"PR", "Puerto Rico"},
-                 {"RI", "Rhode Island"},
-                 {"SC", "South Carolina"},
-                 {"SD", "South Dakota"},
-                 {"TN", "Tennessee"},
-                 {"TX", "Texas"},
-                 {"UT", "Utah"},
-                 {"VA", "Virginia"},
-                 {"VI", "Virgin Islands"},
-                 {"VT", "Vermont"},
-                 {"WA", "Washington"},
-                 {"WI", "Wisconsin"},
-                 {"WV", "West Virginia"},
-                 {"WY", "Wyoming"}
-                                                                                                                     };
+            { "AA", "Armed Forces America" },
+            { "AE", "Armed Forces" },
+            { "AK", "Alaska" },
+            { "AL", "Alabama" },
+            { "AP", "Armed Forces Pacific" },
+            { "AR", "Arkansas" },
+            { "AZ", "Arizona" },
+            { "CA", "California" },
+            { "CO", "Colorado" },
+            { "CT", "Connecticut" },
+            { "DC", "Washington DC" },
+            { "DE", "Delaware" },
+            { "FL", "Florida" },
+            { "GA", "Georgia" },
+            { "GU", "Guam" },
+            { "HI", "Hawaii" },
+            { "IA", "Iowa" },
+            { "ID", "Idaho" },
+            { "IL", "Illinois" },
+            { "IN", "Indiana" },
+            { "KS", "Kansas" },
+            { "KY", "Kentucky" },
+            { "LA", "Louisiana" },
+            { "MA", "Massachusetts" },
+            { "MD", "Maryland" },
+            { "ME", "Maine" },
+            { "MI", "Michigan" },
+            { "MN", "Minnesota" },
+            { "MO", "Missouri" },
+            { "MS", "Mississippi" },
+            { "MT", "Montana" },
+            { "NC", "North Carolina" },
+            { "ND", "North Dakota" },
+            { "NE", "Nebraska" },
+            { "NH", "New Hampshire" },
+            { "NJ", "New Jersey" },
+            { "NM", "New Mexico" },
+            { "NV", "Nevada" },
+            { "NY", "New York" },
+            { "OH", "Ohio" },
+            { "OK", "Oklahoma" },
+            { "OR", "Oregon" },
+            { "PA", "Pennsylvania" },
+            { "PR", "Puerto Rico" },
+            { "RI", "Rhode Island" },
+            { "SC", "South Carolina" },
+            { "SD", "South Dakota" },
+            { "TN", "Tennessee" },
+            { "TX", "Texas" },
+            { "UT", "Utah" },
+            { "VA", "Virginia" },
+            { "VI", "Virgin Islands" },
+            { "VT", "Vermont" },
+            { "WA", "Washington" },
+            { "WI", "Wisconsin" },
+            { "WV", "West Virginia" },
+            { "WY", "Wyoming" }
+        };
     }
 }

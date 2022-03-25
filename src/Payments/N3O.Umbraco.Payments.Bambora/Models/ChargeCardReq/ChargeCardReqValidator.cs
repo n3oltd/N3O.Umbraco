@@ -19,8 +19,8 @@ namespace N3O.Umbraco.Payments.Bambora.Models {
         }
 
         public class Strings : ValidationStrings {
-            public string SpecifyToken => "Please specify the token";
             public string SpecifyReturnUrl => "Please specify the return URL";
+            public string SpecifyToken => "Please specify the token";
             public string SpecifyValue => "Please specify the value";
         }
     }

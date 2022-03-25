@@ -32,8 +32,7 @@ namespace N3O.Umbraco.Payments.Bambora {
                     refitSettings.ContentSerializer = new NewtonsoftJsonContentSerializer();
 
                     refitSettings.HttpMessageHandlerFactory =
-                        () => new AuthorizationHandler(apiSettings.MerchantId,
-                                                       apiSettings.Passcode);
+                        () => new AuthorizationHandler(apiSettings.MerchantId, apiSettings.Passcode);
 
                     client = RestService.For<IBamboraClient>("https://api.na.bambora.com/v1", refitSettings);
                 }
@@ -47,11 +46,9 @@ namespace N3O.Umbraco.Payments.Bambora {
 
             if (settings != null) {
                 if (environment.IsProduction()) {
-                    return new BamboraApiSettings(settings.ProductionMerchantId,
-                                                  settings.ProductionPasscode);
+                    return new BamboraApiSettings(settings.ProductionMerchantId, settings.ProductionPasscode);
                 } else {
-                    return new BamboraApiSettings(settings.StagingMerchantId,
-                                                  settings.StagingPasscode);
+                    return new BamboraApiSettings(settings.StagingMerchantId, settings.StagingPasscode);
                 }
             }
 
