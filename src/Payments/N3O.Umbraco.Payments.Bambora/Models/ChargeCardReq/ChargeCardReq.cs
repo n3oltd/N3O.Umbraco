@@ -10,12 +10,6 @@ namespace N3O.Umbraco.Payments.Bambora.Models {
         [Name("Value")]
         public MoneyReq Value { get; set; }
 
-        [Name("Browser Parameters")]
-        public BrowserParametersReq BrowserParameters { get; set; }
-
-        // [Name("Challenge Window Size")]
-        // public ChallengeWindowSize ChallengeWindowSize { get; set; }
-
         [Name("Return URL")]
         public string ReturnUrl { get; set; }
     }
