@@ -2,7 +2,6 @@
 using N3O.Umbraco.Extensions;
 using N3O.Giving.Models;
 using N3O.Umbraco.Giving.Lookups;
-using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Giving.Extensions;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
