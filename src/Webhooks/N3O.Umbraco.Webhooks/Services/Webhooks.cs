@@ -2,12 +2,12 @@
 using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving.Webhooks;
 using N3O.Umbraco.Scheduler;
 using N3O.Umbraco.Webhooks.Commands;
 using N3O.Umbraco.Webhooks.Content;
 using N3O.Umbraco.Webhooks.Lookups;
 using N3O.Umbraco.Webhooks.Models;
+using N3O.Umbraco.Webhooks.Transforms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace N3O.Umbraco.Webhooks {
             body = ApplyTransforms(body);
 
             foreach (var webhook in webhooks) {
-                var jobName = $"WH {webhookEvent.Name} to {webhook.Url}";
+                var jobName = $"DWH {webhookEvent.Name} to {webhook.Url}";
 
                 var dispatchReq = new DispatchWebhookReq();
                 dispatchReq.Url = webhook.Url;
