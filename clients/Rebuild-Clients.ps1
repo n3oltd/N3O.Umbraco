@@ -12,6 +12,8 @@ n3o-tool clients --url "https://localhost:6001/swagger/Newsletters/swagger.json"
 
 n3o-tool clients --url "https://localhost:6001/swagger/Payments/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-payments-client" --name "PaymentsClient" --package-name "@n3oltd/umbraco-payments-client" --package-description "TODO"
 
+n3o-tool clients --url "https://localhost:6001/swagger/Bambora/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-payments-bambora-client" --name "BamboraClient" --package-name "@n3oltd/umbraco-payments-bambora-client" --package-description "TODO"
+
 n3o-tool clients --url "https://localhost:6001/swagger/GoCardless/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-payments-gocardless-client" --name "GoCardlessClient" --package-name "@n3oltd/umbraco-payments-gocardless-client" --package-description "TODO"
 
 n3o-tool clients --url "https://localhost:6001/swagger/Opayo/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-payments-opayo-client" --name "OpayoClient" --package-name "@n3oltd/umbraco-payments-opayo-client" --package-description "TODO"
