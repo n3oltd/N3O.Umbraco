@@ -23,14 +23,14 @@ namespace N3O.Umbraco.Localization {
 
         private readonly IContentService _contentService;
         private readonly IUmbracoContextFactory _umbracoContextFactory;
-        private readonly ILock _lock;
+        private readonly ILocker _locker;
 
         public StringLocalizer(IContentService contentService,
                                IUmbracoContextFactory umbracoContextFactory,
-                               ILock @lock) {
+                               ILocker locker) {
             _contentService = contentService;
             _umbracoContextFactory = umbracoContextFactory;
-            _lock = @lock;
+            _locker = locker;
         }
 
         public void Flush(IEnumerable<string> aliases) {
@@ -146,15 +146,15 @@ namespace N3O.Umbraco.Localization {
         }
 
         private T Lock<T>(Func<T> action) {
-            return _lock.LockAsync(LockKey.Generate<StringLocalizer>(), () => {
+            using (_locker.Lock(LockKey.Generate<StringLocalizer>())) {
                 try {
                     var result = action();
 
-                    return Task.FromResult(result);
+                    return result;
                 } catch {
-                    return Task.FromResult<T>(default);
+                    return default;
                 }
-            }).GetAwaiter().GetResult();
+            }
         }
 
         private T Run<T>(Func<IUmbracoContext, T> func) {

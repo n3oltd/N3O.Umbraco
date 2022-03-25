@@ -7,11 +7,11 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.References {
     public class Counters : ICounters {
-        private readonly ILock _lock;
+        private readonly ILocker _locker;
         private readonly IRepository<Counter> _repository;
 
-        public Counters(ILock @lock, IRepository<Counter> repository) {
-            _lock = @lock;
+        public Counters(ILocker locker, IRepository<Counter> repository) {
+            _locker = locker;
             _repository = repository;
         }
         
@@ -20,7 +20,7 @@ namespace N3O.Umbraco.References {
                                           CancellationToken cancellationToken = default) {
             var lockKey = LockKey.Generate<Counters>(key);
 
-            var result = await _lock.LockAsync(lockKey, async () => {
+            using (await _locker.LockAsync(lockKey)) {
                 var id = key.ToGuid();
                 
                 var counter = await _repository.GetAsync(id) ?? await CreateCounterAsync(id, startFrom);
@@ -32,9 +32,7 @@ namespace N3O.Umbraco.References {
                 await _repository.UpdateAsync(counter);
 
                 return next;
-            });
-
-            return result;
+            }
         }
 
         public async Task<Reference> NextAsync(ReferenceType referenceType,

@@ -11,18 +11,18 @@ namespace N3O.Umbraco.Giving.Cart {
         private readonly IRepository<Entities.Cart> _repository;
         private readonly ICurrencyAccessor _currencyAccessor;
         private readonly Lazy<ICartValidator> _cartValidator;
-        private readonly ILock _lock;
+        private readonly ILocker _locker;
 
         public CartAccessor(ICartIdAccessor cartIdAccessor,
                             IRepository<Entities.Cart> repository,
                             ICurrencyAccessor currencyAccessor,
                             Lazy<ICartValidator> cartValidator,
-                            ILock @lock) {
+                            ILocker locker) {
             _cartIdAccessor = cartIdAccessor;
             _repository = repository;
             _currencyAccessor = currencyAccessor;
             _cartValidator = cartValidator;
-            _lock = @lock;
+            _locker = locker;
         }
 
         public Entities.Cart Get() {
@@ -32,7 +32,7 @@ namespace N3O.Umbraco.Giving.Cart {
         public async Task<Entities.Cart> GetAsync(CancellationToken cancellationToken = default) {
             var cartId = _cartIdAccessor.GetId();
             
-            var result = await _lock.LockAsync(cartId.ToString(), async () => {
+            using (await _locker.LockAsync(cartId.ToString())) {
                 var currency = _currencyAccessor.GetCurrency();
                 var cart = await _repository.GetAsync(cartId);
 
@@ -47,9 +47,7 @@ namespace N3O.Umbraco.Giving.Cart {
                 }
 
                 return cart;
-            });
-
-            return result;
+            }
         }
     }
 }

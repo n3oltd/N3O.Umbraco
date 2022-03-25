@@ -5,7 +5,7 @@ using Umbraco.Cms.Core.DependencyInjection;
 namespace N3O.Umbraco.Locks {
     public class LockComposer : Composer {
         public override void Compose(IUmbracoBuilder builder) {
-            builder.Services.AddSingleton<ILock, Lock>();
+            builder.Services.AddSingleton<ILocker, Locker>();
         }
     }
 }
