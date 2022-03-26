@@ -20,6 +20,10 @@ namespace N3O.Umbraco.Content {
 
             return property != null;
         }
+        
+        public void Rename(string name) {
+            _content.Name = name;
+        }
 
         public PublishResult SaveAndPublish() {
             var newPropertyValues = Content.Build();
