@@ -9,6 +9,7 @@ namespace N3O.Umbraco.Content {
             RegisterAll(t => t.ImplementsInterface<IContentVisibilityFilter>(),
                         t => builder.Services.AddScoped(typeof(IContentVisibilityFilter), t));
         
+            builder.Services.AddTransient<IContentEditor, ContentEditor>();
             builder.Services.AddSingleton<IContentCache, ContentCache>();
             builder.Services.AddSingleton<IContentHelper, ContentHelper>();
             builder.Services.AddSingleton<IContentLocator, ContentLocator>();
@@ -16,6 +17,9 @@ namespace N3O.Umbraco.Content {
         
             RegisterAll(t => t.ImplementsInterface<IContentValidator>(),
                         t => builder.Services.AddTransient(typeof(IContentValidator), t));
+            
+            RegisterAll(t => t.ImplementsInterface<IPropertyBuilder>(),
+                        t => builder.Services.AddTransient(t));
         }
     }
 }
