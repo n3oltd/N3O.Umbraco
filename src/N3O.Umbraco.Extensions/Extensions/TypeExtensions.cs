@@ -266,9 +266,9 @@ namespace N3O.Umbraco.Extensions {
 			}
 		}
 
-		public static PropertyInfo GetProperty(this object obj,
-		                                       string name,
-		                                       StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase) {
+		public static PropertyInfo GetPropertyInfo(this object obj,
+		                                           string name,
+		                                           StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase) {
 			var property = obj.GetType().GetAllProperties().FirstOrDefault(x => string.Equals(x.Name, name, stringComparison));
 
 			return property;
@@ -289,7 +289,7 @@ namespace N3O.Umbraco.Extensions {
 		}
 
 		public static string GetPropertyPath<TModel>(this Expression<Func<TModel, object>> expr,
-		                                                     bool camelCase = false) {
+		                                             bool camelCase = false) {
 			var asString = expr.ToString();
 			var parameterName = expr.Parameters.First().Name;
 
@@ -484,7 +484,7 @@ namespace N3O.Umbraco.Extensions {
 		}
 		
 		public static void SetPropertyValue(this object obj, string name, object value, StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase) {
-			obj.GetProperty(name, stringComparison).SetValue(obj, value);
+			obj.GetPropertyInfo(name, stringComparison).SetValue(obj, value);
 		}
 		
 		private static object EnsureExists(MemberExpression node, object target, int depth) {
