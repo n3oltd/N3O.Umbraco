@@ -86,14 +86,14 @@ export interface BamboraPayment {
     errorMessage?: string | undefined;
     exceptionDetails?: string | undefined;
     status?: PaymentObjectStatus | undefined;
-    method?: string | undefined;
-    bamboraToken?: string | undefined;
+    bamboraErrorCode?: number | undefined;
+    bamboraErrorMessage?: string | undefined;
     bamboraPaymentId?: string | undefined;
-    bamboraStatusCode?: number;
+    bamboraStatusCode?: number | undefined;
     bamboraStatusDetail?: string | undefined;
+    bamboraToken?: string | undefined;
     returnUrl?: string | undefined;
-    bamboraErrorCode?: any | undefined;
-    bamboraErrorMessage?: any | undefined;
+    method?: string | undefined;
 }
 
 export interface CardPayment {

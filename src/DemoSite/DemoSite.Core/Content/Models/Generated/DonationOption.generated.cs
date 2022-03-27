@@ -22,6 +22,11 @@ namespace DemoSite.Core.Content
 	/// <summary>Donation Option</summary>
 	public partial interface IDonationOption : IPublishedContent
 	{
+		/// <summary>Default Giving Type</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.4.1+037580b305d0b0771dbe7f5e0f40dfdceeae62ec")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		global::N3O.Umbraco.Giving.Lookups.GivingType DefaultGivingType { get; }
+
 		/// <summary>Location</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.4.1+037580b305d0b0771dbe7f5e0f40dfdceeae62ec")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
@@ -80,6 +85,19 @@ namespace DemoSite.Core.Content
 		}
 
 		// properties
+
+		///<summary>
+		/// Default Giving Type
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.4.1+037580b305d0b0771dbe7f5e0f40dfdceeae62ec")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("defaultGivingType")]
+		public virtual global::N3O.Umbraco.Giving.Lookups.GivingType DefaultGivingType => GetDefaultGivingType(this, _publishedValueFallback);
+
+		/// <summary>Static getter for Default Giving Type</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.4.1+037580b305d0b0771dbe7f5e0f40dfdceeae62ec")]
+		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		public static global::N3O.Umbraco.Giving.Lookups.GivingType GetDefaultGivingType(IDonationOption that, IPublishedValueFallback publishedValueFallback) => that.Value<global::N3O.Umbraco.Giving.Lookups.GivingType>(publishedValueFallback, "defaultGivingType");
 
 		///<summary>
 		/// Location

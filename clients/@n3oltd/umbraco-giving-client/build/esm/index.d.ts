@@ -42,6 +42,7 @@ export interface DonationFormRes {
 }
 export interface DonationOptionRes {
     type?: AllocationType | undefined;
+    defaultGivingType?: GivingType | undefined;
     dimension1?: FixedOrDefaultFundDimensionValueRes | undefined;
     dimension2?: FixedOrDefaultFundDimensionValueRes | undefined;
     dimension3?: FixedOrDefaultFundDimensionValueRes | undefined;
@@ -57,6 +58,11 @@ export declare enum AllocationType {
     Fund = "fund",
     Sponsorship = "sponsorship"
 }
+/** One of 'donation', 'regularGiving' */
+export declare enum GivingType {
+    Donation = "donation",
+    RegularGiving = "regularGiving"
+}
 export interface FixedOrDefaultFundDimensionValueRes {
     fixed?: FundDimensionValueRes | undefined;
     default?: FundDimensionValueRes | undefined;
@@ -70,11 +76,6 @@ export interface FundDonationOptionRes {
     donationItem?: string | undefined;
     donationPriceHandles?: PriceHandleRes[] | undefined;
     regularGivingPriceHandles?: PriceHandleRes[] | undefined;
-}
-/** One of 'donation', 'regularGiving' */
-export declare enum GivingType {
-    Donation = "donation",
-    RegularGiving = "regularGiving"
 }
 export interface PriceContent {
     amount?: number;

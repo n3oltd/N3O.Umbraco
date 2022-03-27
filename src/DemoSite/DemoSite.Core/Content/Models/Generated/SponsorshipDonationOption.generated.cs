@@ -58,6 +58,14 @@ namespace DemoSite.Core.Content
 		public virtual global::DemoSite.Core.Content.SponsorshipScheme Scheme => this.Value<global::DemoSite.Core.Content.SponsorshipScheme>(_publishedValueFallback, "scheme");
 
 		///<summary>
+		/// Default Giving Type
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.4.1+037580b305d0b0771dbe7f5e0f40dfdceeae62ec")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("defaultGivingType")]
+		public virtual global::N3O.Umbraco.Giving.Lookups.GivingType DefaultGivingType => global::DemoSite.Core.Content.DonationOption.GetDefaultGivingType(this, _publishedValueFallback);
+
+		///<summary>
 		/// Location
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.4.1+037580b305d0b0771dbe7f5e0f40dfdceeae62ec")]

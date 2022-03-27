@@ -24,7 +24,8 @@ namespace N3O.Umbraco.Giving.Content {
                 throw UnrecognisedValueException.For(Type);
             }
         }
-        
+
+        public GivingType DefaultGivingType => GetValue(x => x.DefaultGivingType);
         public FundDimension1Value Dimension1 => GetAs(x => x.Dimension1);
         public FundDimension2Value Dimension2 => GetAs(x => x.Dimension2);
         public FundDimension3Value Dimension3 => GetAs(x => x.Dimension3);
