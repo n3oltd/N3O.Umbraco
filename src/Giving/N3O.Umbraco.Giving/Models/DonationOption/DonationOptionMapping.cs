@@ -22,7 +22,6 @@ namespace N3O.Umbraco.Giving.Models {
             dest.Dimension4 = GetFixedOrDefault(ctx, src.Dimension4, src.GetFundDimensionOptions().DefaultFundDimension4());
             dest.HideDonation = src.HideDonation;
             dest.HideRegularGiving = src.HideRegularGiving;
-            dest.RegularGivingIsDefault = src.RegularGivingIsDefault;
             dest.HideQuantity = src.HideQuantity;
 
             if (src.Type == AllocationTypes.Fund) {
