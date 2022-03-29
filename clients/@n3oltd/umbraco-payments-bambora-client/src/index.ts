@@ -17,6 +17,53 @@ export class BamboraClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
 
+    completePaymentThreeDSecureChallenge(flowId: string, req: ThreeDSecureChallengeReq): Promise<void> {
+        let url_ = this.baseUrl + "/umbraco/api/Bambora/payments/{flowId}/completeThreeDSecureChallenge";
+        if (flowId === undefined || flowId === null)
+            throw new Error("The parameter 'flowId' must be defined.");
+        url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(req);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCompletePaymentThreeDSecureChallenge(_response);
+        });
+    }
+
+    protected processCompletePaymentThreeDSecureChallenge(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(<any>null);
+    }
+
     chargeCard(flowId: string, req: ChargeCardReq): Promise<PaymentFlowResOfBamboraPayment> {
         let url_ = this.baseUrl + "/umbraco/api/Bambora/payments/{flowId}/charge";
         if (flowId === undefined || flowId === null)
@@ -66,6 +113,69 @@ export class BamboraClient {
         }
         return Promise.resolve<PaymentFlowResOfBamboraPayment>(<any>null);
     }
+
+    storeCard(flowId: string, req: StoreCardReq): Promise<PaymentFlowResOfBamboraPayment> {
+        let url_ = this.baseUrl + "/umbraco/api/Bambora/credentials/{flowId}/store";
+        if (flowId === undefined || flowId === null)
+            throw new Error("The parameter 'flowId' must be defined.");
+        url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(req);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processStoreCard(_response);
+        });
+    }
+
+    protected processStoreCard(response: Response): Promise<PaymentFlowResOfBamboraPayment> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <PaymentFlowResOfBamboraPayment>JSON.parse(_responseText, this.jsonParseReviver);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PaymentFlowResOfBamboraPayment>(<any>null);
+    }
+}
+
+export interface ProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
+}
+
+export interface ThreeDSecureChallengeReq {
+    cRes?: string | undefined;
+    threeDSessionData?: string | undefined;
 }
 
 export interface PaymentFlowResOfBamboraPayment {
@@ -118,23 +228,31 @@ export enum PaymentObjectStatus {
     InProgress = "inProgress",
 }
 
-export interface ProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
-}
-
 export interface ChargeCardReq {
     token?: string | undefined;
     value?: MoneyReq | undefined;
     returnUrl?: string | undefined;
+    browserParameters?: BrowserParametersReq | undefined;
 }
 
 export interface MoneyReq {
     amount?: number | undefined;
     currency?: string | undefined;
+}
+
+export interface BrowserParametersReq {
+    colourDepth?: number | undefined;
+    javaEnabled?: boolean | undefined;
+    javaScriptEnabled?: boolean | undefined;
+    screenHeight?: number | undefined;
+    screenWidth?: number | undefined;
+    utcOffsetMinutes?: number | undefined;
+}
+
+export interface StoreCardReq {
+    token?: string | undefined;
+    returnUrl?: string | undefined;
+    browserParameters?: BrowserParametersReq | undefined;
 }
 
 export class ApiException extends Error {

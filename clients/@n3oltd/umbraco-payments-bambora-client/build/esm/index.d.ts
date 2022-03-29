@@ -5,8 +5,23 @@ export declare class BamboraClient {
     constructor(baseUrl?: string, http?: {
         fetch(url: RequestInfo, init?: RequestInit): Promise<Response>;
     });
+    completePaymentThreeDSecureChallenge(flowId: string, req: ThreeDSecureChallengeReq): Promise<void>;
+    protected processCompletePaymentThreeDSecureChallenge(response: Response): Promise<void>;
     chargeCard(flowId: string, req: ChargeCardReq): Promise<PaymentFlowResOfBamboraPayment>;
     protected processChargeCard(response: Response): Promise<PaymentFlowResOfBamboraPayment>;
+    storeCard(flowId: string, req: StoreCardReq): Promise<PaymentFlowResOfBamboraPayment>;
+    protected processStoreCard(response: Response): Promise<PaymentFlowResOfBamboraPayment>;
+}
+export interface ProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
+}
+export interface ThreeDSecureChallengeReq {
+    cRes?: string | undefined;
+    threeDSessionData?: string | undefined;
 }
 export interface PaymentFlowResOfBamboraPayment {
     flowRevision?: number;
@@ -53,21 +68,28 @@ export declare enum PaymentObjectStatus {
     Error = "error",
     InProgress = "inProgress"
 }
-export interface ProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
-}
 export interface ChargeCardReq {
     token?: string | undefined;
     value?: MoneyReq | undefined;
     returnUrl?: string | undefined;
+    browserParameters?: BrowserParametersReq | undefined;
 }
 export interface MoneyReq {
     amount?: number | undefined;
     currency?: string | undefined;
+}
+export interface BrowserParametersReq {
+    colourDepth?: number | undefined;
+    javaEnabled?: boolean | undefined;
+    javaScriptEnabled?: boolean | undefined;
+    screenHeight?: number | undefined;
+    screenWidth?: number | undefined;
+    utcOffsetMinutes?: number | undefined;
+}
+export interface StoreCardReq {
+    token?: string | undefined;
+    returnUrl?: string | undefined;
+    browserParameters?: BrowserParametersReq | undefined;
 }
 export declare class ApiException extends Error {
     message: string;
