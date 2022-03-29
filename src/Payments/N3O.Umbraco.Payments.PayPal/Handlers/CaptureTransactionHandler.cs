@@ -1,7 +1,7 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Payments.Handlers;
 using N3O.Umbraco.Payments.Models;
-using N3O.Umbraco.Payments.PayPal.Client;
+using N3O.Umbraco.Payments.PayPal.Clients;
 using N3O.Umbraco.Payments.PayPal.Commands;
 using N3O.Umbraco.Payments.PayPal.Content;
 using N3O.Umbraco.Payments.PayPal.Extensions;

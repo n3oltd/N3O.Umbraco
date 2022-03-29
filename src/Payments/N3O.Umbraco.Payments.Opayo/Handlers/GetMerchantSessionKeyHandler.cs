@@ -1,5 +1,5 @@
 using N3O.Umbraco.Mediator;
-using N3O.Umbraco.Payments.Opayo.Client;
+using N3O.Umbraco.Payments.Opayo.Clients;
 using N3O.Umbraco.Payments.Opayo.Commands;
 using N3O.Umbraco.Payments.Opayo.Models;
 using System.Threading;

@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Payments.PayPal.Client {
+namespace N3O.Umbraco.Payments.PayPal.Clients {
     public class AuthorizationHandler : DelegatingHandler {
         private readonly string _base64Credentials;
 

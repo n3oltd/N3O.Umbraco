@@ -7,7 +7,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Payments.Models;
-using N3O.Umbraco.Payments.Opayo.Client;
+using N3O.Umbraco.Payments.Opayo.Clients;
 using N3O.Umbraco.Payments.Opayo.Content;
 using N3O.Umbraco.Payments.Opayo.Controllers;
 using N3O.Umbraco.Payments.Opayo.Extensions;

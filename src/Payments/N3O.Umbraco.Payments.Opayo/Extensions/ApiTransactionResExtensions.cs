@@ -1,5 +1,5 @@
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Payments.Opayo.Client;
+using N3O.Umbraco.Payments.Opayo.Clients;
 
 namespace N3O.Umbraco.Payments.Opayo.Extensions {
     public static class ApiTransactionResExtensions {

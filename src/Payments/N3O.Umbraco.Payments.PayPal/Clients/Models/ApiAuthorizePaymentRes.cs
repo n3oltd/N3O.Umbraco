@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace N3O.Umbraco.Payments.PayPal.Client {
+namespace N3O.Umbraco.Payments.PayPal.Clients {
     public class ApiAuthorizePaymentRes {
         [JsonProperty("id")]
         public string Id { get; set; }

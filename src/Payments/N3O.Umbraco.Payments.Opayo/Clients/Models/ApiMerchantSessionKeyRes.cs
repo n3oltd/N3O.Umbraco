@@ -4,7 +4,7 @@ using NodaTime;
 using NodaTime.Extensions;
 using System;
 
-namespace N3O.Umbraco.Payments.Opayo.Client {
+namespace N3O.Umbraco.Payments.Opayo.Clients {
     public class ApiMerchantSessionKeyRes : IMerchantSessionKey {
         [JsonProperty("merchantSessionKey")]
         public string Key { get; set; }

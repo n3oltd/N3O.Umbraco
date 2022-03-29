@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Payments.Opayo.Client;
+using N3O.Umbraco.Payments.Opayo.Clients;
 using N3O.Umbraco.Payments.Opayo.Content;
 using N3O.Umbraco.Payments.Opayo.Models;
 using Refit;

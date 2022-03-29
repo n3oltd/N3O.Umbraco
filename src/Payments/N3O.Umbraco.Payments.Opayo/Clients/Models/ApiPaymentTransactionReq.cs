@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace N3O.Umbraco.Payments.Opayo.Client {
+namespace N3O.Umbraco.Payments.Opayo.Clients {
     public class ApiPaymentTransactionReq : ApiTransactionReq {
         [JsonProperty("apply3DSecure")]
         public string ApplyThreeDSecure { get; set; }

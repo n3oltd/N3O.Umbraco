@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace N3O.Umbraco.Payments.Opayo.Client {
+namespace N3O.Umbraco.Payments.Opayo.Clients {
     public class ApiStrongCustomerAuthentication {
         [JsonProperty("browserAcceptHeader")]
         public string BrowserAcceptHeader { get; set; }

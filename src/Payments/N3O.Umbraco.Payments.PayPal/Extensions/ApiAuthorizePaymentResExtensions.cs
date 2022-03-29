@@ -1,5 +1,5 @@
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Payments.PayPal.Client;
+using N3O.Umbraco.Payments.PayPal.Clients;
 
 namespace N3O.Umbraco.Payments.PayPal.Extensions {
     public static class ApiAuthorizePaymentResExtensions {
