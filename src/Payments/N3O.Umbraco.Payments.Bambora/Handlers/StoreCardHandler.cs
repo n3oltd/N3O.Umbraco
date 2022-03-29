@@ -43,7 +43,7 @@ namespace N3O.Umbraco.Payments.Bambora.Handlers {
                 credential.UpdateToken(req.Model.Token);
 
                 if (apiProfile.IsSuccessful()) {
-                    credential.SetUp(apiProfile.CustomerCode);
+                    credential.SetUp(apiProfile.CustomerCode, apiProfile.Message, apiProfile.Code);
                 } else {
                     throw UnrecognisedValueException.For(apiProfile.Code);
                 }
