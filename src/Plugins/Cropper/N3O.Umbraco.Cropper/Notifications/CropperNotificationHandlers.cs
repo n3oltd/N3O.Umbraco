@@ -68,7 +68,7 @@ namespace N3O.Umbraco.Cropper.Notifications {
         private async Task GenerateCropsAsync(ContentProperty property, CancellationToken cancellationToken) {
             var dataType = _dataTypeService.GetDataType(property.Type.DataTypeId);
             var cropperConfiguration = dataType.ConfigurationAs<CropperConfiguration>();
-            var json = property.Value.ToString();
+            var json = property.Value?.ToString();
         
             if (json.HasValue()) {
                 var cropperSource = JsonConvert.DeserializeObject<CropperSource>(json);
