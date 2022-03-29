@@ -2,7 +2,7 @@
 using N3O.Umbraco.Payments.Bambora.Client;
 
 namespace N3O.Umbraco.Payments.Bambora.Extensions {
-    public static class ApiTransactionResExtensions {
+    public static class ApiPaymentResExtensions {
         public static bool IsAuthorised(this IApiPaymentRes payment) {
             return HasMessage(payment, "APPROVED");
         }

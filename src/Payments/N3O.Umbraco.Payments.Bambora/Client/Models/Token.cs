@@ -11,7 +11,7 @@ namespace N3O.Umbraco.Payments.Bambora.Client {
         [JsonProperty("code")]
         public string Code { get; set; }
 
-        [JsonProperty("function")]
-        public string Function { get; set; }
+        [JsonProperty("3d_secure")]
+        public ThreeDSecure ThreeDSecure { get; set; }
     }
 }
