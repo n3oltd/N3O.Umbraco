@@ -50,7 +50,7 @@ namespace DemoSite.Core.Content
 		// properties
 
 		///<summary>
-		/// Production Merchant ID
+		/// Merchant ID
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.4.1+037580b305d0b0771dbe7f5e0f40dfdceeae62ec")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
@@ -58,15 +58,23 @@ namespace DemoSite.Core.Content
 		public virtual string ProductionMerchantId => this.Value<string>(_publishedValueFallback, "productionMerchantId");
 
 		///<summary>
-		/// Production Passcode
+		/// Payments Passcode
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.4.1+037580b305d0b0771dbe7f5e0f40dfdceeae62ec")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("productionPasscode")]
-		public virtual string ProductionPasscode => this.Value<string>(_publishedValueFallback, "productionPasscode");
+		[ImplementPropertyType("productionPaymentsPasscode")]
+		public virtual string ProductionPaymentsPasscode => this.Value<string>(_publishedValueFallback, "productionPaymentsPasscode");
 
 		///<summary>
-		/// Staging Merchant ID
+		/// Profiles Passcode
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.4.1+037580b305d0b0771dbe7f5e0f40dfdceeae62ec")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("productionProfilesPasscode")]
+		public virtual string ProductionProfilesPasscode => this.Value<string>(_publishedValueFallback, "productionProfilesPasscode");
+
+		///<summary>
+		/// Merchant ID
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.4.1+037580b305d0b0771dbe7f5e0f40dfdceeae62ec")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
@@ -74,12 +82,20 @@ namespace DemoSite.Core.Content
 		public virtual string StagingMerchantId => this.Value<string>(_publishedValueFallback, "stagingMerchantId");
 
 		///<summary>
-		/// Staging Passcode
+		/// Payments Passcode
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.4.1+037580b305d0b0771dbe7f5e0f40dfdceeae62ec")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("stagingPasscode")]
-		public virtual string StagingPasscode => this.Value<string>(_publishedValueFallback, "stagingPasscode");
+		[ImplementPropertyType("stagingPaymentsPasscode")]
+		public virtual string StagingPaymentsPasscode => this.Value<string>(_publishedValueFallback, "stagingPaymentsPasscode");
+
+		///<summary>
+		/// Profiles Passcode
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.4.1+037580b305d0b0771dbe7f5e0f40dfdceeae62ec")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("stagingProfilesPasscode")]
+		public virtual string StagingProfilesPasscode => this.Value<string>(_publishedValueFallback, "stagingProfilesPasscode");
 
 		///<summary>
 		/// Transaction Description

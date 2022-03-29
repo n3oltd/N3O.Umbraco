@@ -15,8 +15,8 @@ namespace N3O.Umbraco.Payments.Bambora.Extensions {
             return payment.ThreeDSessionData.HasValue();
         }
         
-        private static bool HasMessage(IApiPaymentRes payment, string status) {
-            return payment.Message.EqualsInvariant(status);
+        private static bool HasMessage(IApiPaymentRes payment, string message) {
+            return payment.Message.EqualsInvariant(message);
         }
     }
 }

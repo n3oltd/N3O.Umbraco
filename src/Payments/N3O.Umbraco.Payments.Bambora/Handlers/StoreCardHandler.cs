@@ -18,17 +18,18 @@ namespace N3O.Umbraco.Payments.Bambora.Handlers {
         private readonly IRemoteIpAddressAccessor _remoteIpAddressAccessor;
         private readonly IActionLinkGenerator _actionLinkGenerator;
         private readonly IBrowserInfoAccessor _browserInfoAccessor;
-        private readonly IBamboraProfileClient _bamboraClient;
+        private readonly IBamboraProfilesClient _profilesClient;
 
         public StoreCardHandler(IPaymentsScope paymentsScope,
                                 IRemoteIpAddressAccessor remoteIpAddressAccessor,
                                 IActionLinkGenerator actionLinkGenerator,
                                 IBrowserInfoAccessor browserInfoAccessor,
-                                IBamboraProfileClient bamboraClient) : base(paymentsScope) {
+                                IBamboraProfilesClient profilesClient)
+            : base(paymentsScope) {
             _remoteIpAddressAccessor = remoteIpAddressAccessor;
             _actionLinkGenerator = actionLinkGenerator;
             _browserInfoAccessor = browserInfoAccessor;
-            _bamboraClient = bamboraClient;
+            _profilesClient = profilesClient;
         }
 
         protected override async Task HandleAsync(StoreCardCommand req,
@@ -38,12 +39,12 @@ namespace N3O.Umbraco.Payments.Bambora.Handlers {
             try {
                 var apiRequest = GetRequest(req.Model, parameters);
 
-                var apiProfile = await _bamboraClient.CreateProfileAsync(apiRequest);
+                var apiProfile = await _profilesClient.CreateProfileAsync(apiRequest);
 
                 credential.UpdateToken(req.Model.Token);
 
                 if (apiProfile.IsSuccessful()) {
-                    credential.SetUp(apiProfile.CustomerCode);
+                    credential.SetUp(apiProfile.CustomerCode, apiProfile.Message, apiProfile.Code);
                 } else {
                     throw UnrecognisedValueException.For(apiProfile.Code);
                 }
@@ -70,6 +71,7 @@ namespace N3O.Umbraco.Payments.Bambora.Handlers {
             apiReq.Token.ThreeDSecure.AuthRequired = false;
             apiReq.Token.ThreeDSecure.Browser = _browserInfoAccessor.GetBrowserReq(req.BrowserParameters);
             apiReq.ReturnUrl = _actionLinkGenerator.GetPaymentThreeDSecureUrl(parameters.FlowId);
+            
             return apiReq;
         }
     }

@@ -16,17 +16,17 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.Bambora.Handlers {
     public class ChargeCardHandler : PaymentsHandler<ChargeCardCommand, ChargeCardReq, BamboraPayment> {
-        private readonly IBamboraPaymentClient _bamboraClient;
+        private readonly IBamboraPaymentsClient _paymentsClient;
         private readonly IBrowserInfoAccessor _browserInfoAccessor;
         private readonly IRemoteIpAddressAccessor _remoteIpAddressAccessor;
         private readonly IActionLinkGenerator _actionLinkGenerator;
 
         public ChargeCardHandler(IPaymentsScope paymentsScope,
-                                 IBamboraPaymentClient bamboraClient,
+                                 IBamboraPaymentsClient paymentsClient,
                                  IBrowserInfoAccessor browserInfoAccessor,
                                  IRemoteIpAddressAccessor remoteIpAddressAccessor,
                                  IActionLinkGenerator actionLinkGenerator) : base(paymentsScope) {
-            _bamboraClient = bamboraClient;
+            _paymentsClient = paymentsClient;
             _browserInfoAccessor = browserInfoAccessor;
             _remoteIpAddressAccessor = remoteIpAddressAccessor;
             _actionLinkGenerator = actionLinkGenerator;
@@ -39,7 +39,7 @@ namespace N3O.Umbraco.Payments.Bambora.Handlers {
             try {
                 var apiRequest = GetRequest(req.Model, parameters);
 
-                var apiPayment = await _bamboraClient.CreatePaymentAsync(apiRequest);
+                var apiPayment = await _paymentsClient.CreatePaymentAsync(apiRequest);
 
                 payment.UpdateToken(req.Model.Token);
 

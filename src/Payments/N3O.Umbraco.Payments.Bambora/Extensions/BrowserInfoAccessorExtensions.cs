@@ -5,7 +5,8 @@ using N3O.Umbraco.Payments.Models;
 
 namespace N3O.Umbraco.Payments.Bambora.Extensions {
     public static class BrowserInfoAccessorExtensions {
-        public static BrowserReq GetBrowserReq(this IBrowserInfoAccessor browserInfoAccessor, BrowserParametersReq parameters) {
+        public static BrowserReq GetBrowserReq(this IBrowserInfoAccessor browserInfoAccessor,
+                                               BrowserParametersReq parameters) {
             var req = new BrowserReq();
             req.AcceptHeader = browserInfoAccessor.GetAccept();
             req.JavascriptEnabled = parameters.JavaScriptEnabled.GetValueOrThrow();

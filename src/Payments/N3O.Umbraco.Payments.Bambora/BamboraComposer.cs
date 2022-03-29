@@ -23,9 +23,9 @@ namespace N3O.Umbraco.Payments.Bambora {
                 return apiSettings;
             });
             
-            builder.Services.AddTransient<IBamboraPaymentClient>(serviceProvider => {
+            builder.Services.AddTransient<IBamboraPaymentsClient>(serviceProvider => {
                 var apiSettings = serviceProvider.GetRequiredService<BamboraApiSettings>();
-                IBamboraPaymentClient client = null;
+                IBamboraPaymentsClient client = null;
 
                 if (apiSettings != null) {
                     var refitSettings = new RefitSettings();
@@ -34,15 +34,15 @@ namespace N3O.Umbraco.Payments.Bambora {
                     refitSettings.HttpMessageHandlerFactory =
                         () => new AuthorizationHandler(apiSettings.MerchantId, apiSettings.PaymentPasscode);
 
-                    client = RestService.For<IBamboraPaymentClient>("https://api.na.bambora.com/v1", refitSettings);
+                    client = RestService.For<IBamboraPaymentsClient>("https://api.na.bambora.com/v1", refitSettings);
                 }
                 
                 return client;
             });
             
-            builder.Services.AddTransient<IBamboraProfileClient>(serviceProvider => {
+            builder.Services.AddTransient<IBamboraProfilesClient>(serviceProvider => {
                 var apiSettings = serviceProvider.GetRequiredService<BamboraApiSettings>();
-                IBamboraProfileClient client = null;
+                IBamboraProfilesClient client = null;
 
                 if (apiSettings != null) {
                     var refitSettings = new RefitSettings();
@@ -51,7 +51,7 @@ namespace N3O.Umbraco.Payments.Bambora {
                     refitSettings.HttpMessageHandlerFactory =
                         () => new AuthorizationHandler(apiSettings.MerchantId, apiSettings.ProfilePasscode);
 
-                    client = RestService.For<IBamboraProfileClient>("https://api.na.bambora.com/v1", refitSettings);
+                    client = RestService.For<IBamboraProfilesClient>("https://api.na.bambora.com/v1", refitSettings);
                 }
                 
                 return client;
@@ -63,9 +63,13 @@ namespace N3O.Umbraco.Payments.Bambora {
 
             if (settings != null) {
                 if (environment.IsProduction()) {
-                    return new BamboraApiSettings(settings.ProductionMerchantId, settings.ProductionPaymentPasscode, settings.ProductionProfilePasscode);
+                    return new BamboraApiSettings(settings.ProductionMerchantId,
+                                                  settings.ProductionPaymentsPasscode,
+                                                  settings.ProductionProfilesPasscode);
                 } else {
-                    return new BamboraApiSettings(settings.StagingMerchantId, settings.StagingPaymentPasscode, settings.StagingProfilePasscode);
+                    return new BamboraApiSettings(settings.StagingMerchantId,
+                                                  settings.StagingPaymentsPasscode,
+                                                  settings.StagingProfilesPasscode);
                 }
             }
 

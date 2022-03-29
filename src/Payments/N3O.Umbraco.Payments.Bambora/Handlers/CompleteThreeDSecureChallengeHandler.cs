@@ -13,11 +13,11 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Payments.Bambora.Handlers {
     public class CompleteThreeDSecureChallengeHandler :
         PaymentsHandler<CompleteThreeDSecureChallengeCommand, ThreeDSecureChallengeReq, BamboraPayment> {
-        private readonly IBamboraPaymentClient _bamboraPaymentClient;
+        private readonly IBamboraPaymentsClient _paymentsClient;
 
-        public CompleteThreeDSecureChallengeHandler(IPaymentsScope paymentsScope, IBamboraPaymentClient bamboraPaymentClient)
+        public CompleteThreeDSecureChallengeHandler(IPaymentsScope paymentsScope, IBamboraPaymentsClient paymentsClient)
             : base(paymentsScope) {
-            _bamboraPaymentClient = bamboraPaymentClient;
+            _paymentsClient = paymentsClient;
         }
 
         protected override async Task HandleAsync(CompleteThreeDSecureChallengeCommand req,
@@ -30,7 +30,7 @@ namespace N3O.Umbraco.Payments.Bambora.Handlers {
             apiReq.ThreeDSessionData = req.Model.ThreeDSessionData;
             apiReq.CardResponse.Cres = req.Model.CRes;
 
-            var apiPayment = await _bamboraPaymentClient.CompleteThreeDSecureAsync(apiReq);
+            var apiPayment = await _paymentsClient.CompleteThreeDSecureAsync(apiReq);
 
             payment.ThreeDSecureComplete(req.Model.CRes);
 

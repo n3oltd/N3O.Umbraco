@@ -146,6 +146,5 @@ namespace N3O.Umbraco.Payments.Bambora.Extensions {
             { "WV", "West Virginia" },
             { "WY", "Wyoming" }
         };
-    
     }
 }
