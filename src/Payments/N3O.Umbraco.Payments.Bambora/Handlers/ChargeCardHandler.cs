@@ -49,23 +49,25 @@ namespace N3O.Umbraco.Payments.Bambora.Handlers {
                                  apiPayment.Message);
                 } else if (apiPayment.IsDeclined()) {
                     payment.Declined(apiPayment.Id, apiPayment.MessageId.GetValueOrThrow(), apiPayment.Message);
-                } else if (apiPayment.RequiresThreeDSecure()) {
-                    payment.RequireThreeDSecure(apiPayment.Id,
-                                                req.Model.ReturnUrl,
-                                                apiPayment.Links.Single(x => x.Rel.EqualsInvariant("continue"))
-                                                          .Href,
-                                                apiPayment.ThreeDSessionData,
-                                                apiPayment.ThreeDContents);
                 } else {
                     throw UnrecognisedValueException.For(apiPayment.Message);
                 }
             } catch (ApiException apiException) {
-                var apiPaymentError = apiException.Content.IfNotNull(JsonConvert.DeserializeObject<ApiPaymentError>);
-
-                if (apiPaymentError.IsDeclined()) {
-                    payment.Declined(apiPaymentError.TransactionId, apiPaymentError.Code, apiPaymentError.Message);
+                if (apiException.RequiresThreeDSecure()) {
+                    var threeDSecure = apiException.Content.IfNotNull(JsonConvert.DeserializeObject<ThreeDRes>);
+                    
+                    payment.RequireThreeDSecure(req.Model.ReturnUrl,
+                                                threeDSecure?.ChallengeUrl,
+                                                threeDSecure?.ThreeDSessionData,
+                                                threeDSecure?.DecodedContents);
                 } else {
-                    payment.Error(apiPaymentError.TransactionId, apiPaymentError.Code, apiPaymentError.Message);
+                    var apiPaymentError = apiException.Content.IfNotNull(JsonConvert.DeserializeObject<ApiPaymentError>);
+
+                    if (apiPaymentError.IsDeclined()) {
+                        payment.Declined(apiPaymentError.TransactionId, apiPaymentError.Code, apiPaymentError.Message);
+                    } else {
+                        payment.Error(apiPaymentError.TransactionId, apiPaymentError.Code, apiPaymentError.Message);
+                    }
                 }
             }
         }
@@ -77,7 +79,7 @@ namespace N3O.Umbraco.Payments.Bambora.Handlers {
             apiReq.Amount = req.Value.Amount.GetValueOrThrow();
             apiReq.BillingAddress = billingInfo.GetApiBillingAddress();
             apiReq.PaymentMethod = "token";
-            apiReq.CustomerIp =  _remoteIpAddressAccessor.GetRemoteIpAddress().ToString();
+            apiReq.CustomerIp = _remoteIpAddressAccessor.GetRemoteIpAddress().ToString();
             apiReq.Token = new Token();
             apiReq.Token.Code = req.Token;
             apiReq.Token.Complete = true;

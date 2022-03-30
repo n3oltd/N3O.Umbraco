@@ -1,16 +1,13 @@
 ﻿namespace N3O.Umbraco.Payments.Bambora.Models {
     public partial class BamboraPayment {
-        public void RequireThreeDSecure(string paymentId,
-                                        string returnUrl,
+        public void RequireThreeDSecure(string returnUrl,
                                         string challengeUrl,
-                                        string threeDSessionData,
-                                        string threeDContent) {
+                                        string sessionData,
+                                        string contents) {
             ClearErrors();
-            
-            BamboraPaymentId = paymentId;
             ReturnUrl = returnUrl;
-            
-            RequireThreeDSecure(challengeUrl, threeDSessionData, threeDContent);
+
+            RequireThreeDSecure(challengeUrl, sessionData, contents);
         }
     }
 }
