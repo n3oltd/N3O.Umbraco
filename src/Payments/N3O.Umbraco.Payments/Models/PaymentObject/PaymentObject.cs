@@ -12,7 +12,7 @@ namespace N3O.Umbraco.Payments.Models {
         public Instant? ErrorAt { get; private set; }
         public string ErrorMessage { get; private set; }
         public string ExceptionDetails { get; private set; }
-        public PaymentObjectStatus Status { get; protected set; }
+        public PaymentObjectStatus Status { get; private set; }
 
         [JsonIgnore]
         public bool HasError => Status == PaymentObjectStatuses.Error;

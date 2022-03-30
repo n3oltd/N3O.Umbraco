@@ -1,6 +1,8 @@
 ﻿namespace N3O.Umbraco.Payments.Opayo.Models {
     public partial class OpayoPayment {
-        private void ClearErrors() {
+        protected override void ClearErrors() {
+            base.ClearErrors();
+            
             OpayoErrorCode = null;
             OpayoErrorMessage = null;
         }

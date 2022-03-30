@@ -1,6 +1,8 @@
 ﻿namespace N3O.Umbraco.Payments.Stripe.Models {
     public partial class StripeCredential {
-        private void ClearErrors() {
+        protected override void ClearErrors() {
+            base.ClearErrors();
+            
             StripeErrorCode = null;
             StripeDeclineCode = null;
             StripeErrorMessage = null;

@@ -9,7 +9,6 @@ using N3O.Umbraco.Payments.Bambora.Models;
 using N3O.Umbraco.Payments.Bambora.Models.ThreeDSecureChallenge;
 using Newtonsoft.Json;
 using Refit;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,9 +38,7 @@ namespace N3O.Umbraco.Payments.Bambora.Handlers {
                 payment.ThreeDSecureComplete(req.Model.CRes);
 
                 if (apiPayment.IsAuthorised()) {
-                    payment.Paid(apiPayment.Id,
-                                 apiPayment.MessageId.GetValueOrThrow(),
-                                 apiPayment.Message);
+                    payment.Paid(apiPayment.Id, apiPayment.MessageId.GetValueOrThrow(), apiPayment.Message);
                 } else if (apiPayment.IsDeclined()) {
                     payment.Declined(apiPayment.Id, apiPayment.MessageId.GetValueOrThrow(), apiPayment.Message);
                 } else {

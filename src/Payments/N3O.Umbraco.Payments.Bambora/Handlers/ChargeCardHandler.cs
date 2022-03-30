@@ -10,7 +10,6 @@ using N3O.Umbraco.Payments.Handlers;
 using N3O.Umbraco.Payments.Models;
 using Newtonsoft.Json;
 using Refit;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,9 +43,7 @@ namespace N3O.Umbraco.Payments.Bambora.Handlers {
                 payment.UpdateToken(req.Model.Token);
 
                 if (apiPayment.IsAuthorised()) {
-                    payment.Paid(apiPayment.Id,
-                                 apiPayment.MessageId.GetValueOrThrow(),
-                                 apiPayment.Message);
+                    payment.Paid(apiPayment.Id, apiPayment.MessageId.GetValueOrThrow(), apiPayment.Message);
                 } else if (apiPayment.IsDeclined()) {
                     payment.Declined(apiPayment.Id, apiPayment.MessageId.GetValueOrThrow(), apiPayment.Message);
                 } else {
@@ -80,17 +77,24 @@ namespace N3O.Umbraco.Payments.Bambora.Handlers {
             apiReq.BillingAddress = billingInfo.GetApiBillingAddress();
             apiReq.PaymentMethod = "token";
             apiReq.CustomerIp = _remoteIpAddressAccessor.GetRemoteIpAddress().ToString();
-            apiReq.Token = new Token();
-            apiReq.Token.Code = req.Token;
-            apiReq.Token.Complete = true;
-            apiReq.Token.Name = billingInfo.Name.FirstName;
-            apiReq.Token.ThreeDSecure = new ThreeDSecure();
-            apiReq.Token.ThreeDSecure.Enabled = true;
-            apiReq.Token.ThreeDSecure.Version = 2;
-            apiReq.Token.ThreeDSecure.AuthRequired = false;
-            apiReq.Token.ThreeDSecure.Browser = _browserInfoAccessor.GetBrowserReq(req.BrowserParameters);
+            apiReq.Token = GetRequestToken(req, billingInfo);
             apiReq.ReturnUrl = _actionLinkGenerator.GetPaymentThreeDSecureUrl(parameters.FlowId);
+            
             return apiReq;
+        }
+
+        private Token GetRequestToken(ChargeCardReq req, BillingInfo billingInfo) {
+            var token = new Token();
+            token.Code = req.Token;
+            token.Complete = true;
+            token.Name = billingInfo.Name.FirstName;
+            token.ThreeDSecure = new ThreeDSecure();
+            token.ThreeDSecure.Enabled = true;
+            token.ThreeDSecure.Version = 2;
+            token.ThreeDSecure.AuthRequired = false;
+            token.ThreeDSecure.Browser = _browserInfoAccessor.GetBrowserReq(req.BrowserParameters);
+
+            return token;
         }
     }
 }
