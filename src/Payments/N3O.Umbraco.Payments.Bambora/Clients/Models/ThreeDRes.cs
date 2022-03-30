@@ -1,5 +1,8 @@
+using N3O.Umbraco.Extensions;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 
 namespace N3O.Umbraco.Payments.Bambora.Client {
     public class ThreeDRes {
@@ -11,5 +14,11 @@ namespace N3O.Umbraco.Payments.Bambora.Client {
 
         [JsonProperty("links")]
         public IEnumerable<Link> Links { get; set; }
+
+        [JsonIgnore]
+        public string ChallengeUrl => Links.Single(x => x.Rel.EqualsInvariant("continue")).Href;
+
+        [JsonIgnore]
+        public string DecodedContents => HttpUtility.UrlDecode(Contents);
     }
 }

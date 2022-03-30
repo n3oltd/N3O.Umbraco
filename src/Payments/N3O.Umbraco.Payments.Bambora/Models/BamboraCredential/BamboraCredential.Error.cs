@@ -4,7 +4,15 @@
             BamboraErrorCode = errorCode;
             BamboraErrorMessage = errorMessage;
             
-            Error(errorMessage);
+            Error(GetDisplayMessage(errorCode, errorMessage));
+        }
+
+        private string GetDisplayMessage(int errorCode, string errorMessage) {
+            if (errorCode == 17) {
+                return "This card is already in use";
+            } else {
+                return errorMessage;
+            }
         }
     }
 }
