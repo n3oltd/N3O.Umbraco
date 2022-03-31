@@ -6,7 +6,7 @@ namespace N3O.Umbraco.Content {
         public bool IsFilterFor(IPublishedContent content) => true;
 
         public bool IsVisible(IPublishedContent content) {
-            return content.GetType().ImplementsInterface<IHideFromSearchEngines>();
+            return !content.GetType().ImplementsInterface<IHideFromSearchEngines>();
         }
     }
 }

@@ -20,9 +20,7 @@ namespace N3O.Umbraco.Email.Handlers {
         private readonly ITemplateRenderer _renderer;
         private readonly ISender _sender;
 
-        public SendEmailHandler(IJsonProvider jsonProvider,
-                                ITemplateRenderer renderer,
-                                ISender sender) {
+        public SendEmailHandler(IJsonProvider jsonProvider, ITemplateRenderer renderer, ISender sender) {
             _jsonProvider = jsonProvider;
             _renderer = renderer;
             _sender = sender;
@@ -47,9 +45,11 @@ namespace N3O.Umbraco.Email.Handlers {
 
             if (!response.Successful) {
                 var message = $"Error occured while sending email to {email.Data.ToAddresses.First().Name}";
+                
                 foreach (var errorMessage in response.ErrorMessages) {
-                    message = $"{message} \n {errorMessage}";
+                    message += $"\n{errorMessage}";
                 }
+                
                 throw new Exception(message);
             }
 
