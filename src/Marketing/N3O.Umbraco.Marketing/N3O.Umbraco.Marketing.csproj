@@ -41,7 +41,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="uMarketingSuite" Version="1.17.0" />
+      <PackageReference Include="uMarketingSuite" Version="1.17.1" />
       <PackageReference Include="uMarketingSuite.ContentBlocks" Version="1.1.0" />
       <PackageReference Include="uMarketingSuite.UmbracoForms" Version="1.1.0" />
     </ItemGroup>
