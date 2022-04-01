@@ -39,7 +39,7 @@ namespace N3O.Umbraco.Email.Handlers {
 
             email.Subject(await _renderer.ParseAsync(req.Model.Subject, templateModel, false));
             email.UsingTemplate(req.Model.Body, templateModel);
-            email.Tag("Website");
+            email.Tag("website");
 
             var response = await email.SendAsync(cancellationToken);
 
