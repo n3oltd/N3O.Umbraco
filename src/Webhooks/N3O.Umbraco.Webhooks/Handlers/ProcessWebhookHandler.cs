@@ -4,7 +4,7 @@ using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Utilities;
 using N3O.Umbraco.Webhooks.Attributes;
 using N3O.Umbraco.Webhooks.Commands;
-using N3O.Umbraco.Webhooks.Endpoints;
+using N3O.Umbraco.Webhooks.Receivers;
 using N3O.Umbraco.Webhooks.Models;
 using System;
 using System.Collections.Generic;
@@ -13,18 +13,18 @@ using System.Threading.Tasks;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Webhooks.Handlers {
-    public class ProcessWebhookHandler : IRequestHandler<ProcessWebhookCommand, ReceivedWebhook, None> {
-        private static readonly Dictionary<string, Type> Endpoints = new(StringComparer.InvariantCultureIgnoreCase);
+    public class ProcessWebhookHandler : IRequestHandler<ProcessWebhookCommand, Payload, None> {
+        private static readonly Dictionary<string, Type> Receivers = new(StringComparer.InvariantCultureIgnoreCase);
         
         private readonly IServiceProvider _serviceProvider;
         
         static ProcessWebhookHandler() {
-            var endpointTypes = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
-                                                            t.ImplementsInterface<IWebhookEndpoint>() &&
-                                                            t.HasAttribute<WebhookEndpointAttribute>());
+            var receiverTypes = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
+                                                            t.ImplementsInterface<IWebhookReceiver>() &&
+                                                            t.HasAttribute<WebhookReceiverAttribute>());
 
-            foreach (var endpointType in endpointTypes) {
-                Endpoints[endpointType.GetCustomAttribute<WebhookEndpointAttribute>(true).EndpointId] = endpointType;
+            foreach (var receiverType in receiverTypes) {
+                Receivers[receiverType.GetCustomAttribute<WebhookReceiverAttribute>(true).EventId] = receiverType;
             }
         }
 
@@ -33,15 +33,15 @@ namespace N3O.Umbraco.Webhooks.Handlers {
         }
         
         public async Task<None> Handle(ProcessWebhookCommand req, CancellationToken cancellationToken) {
-            var endpointType = Endpoints.GetOrDefault(req.Model.EndpointId);
+            var receiverType = Receivers.GetOrDefault(req.Model.EventId);
 
-            if (endpointType == null) {
-                throw new Exception($"No webhook endpoint found for ID {req.Model.EndpointId.Quote()}");
+            if (receiverType == null) {
+                throw new Exception($"No webhook receiver found for ID {req.Model.EventId.Quote()}");
             }
 
-            var endpoint = (IWebhookEndpoint) _serviceProvider.GetRequiredService(endpointType);
+            var receiver = (IWebhookReceiver) _serviceProvider.GetRequiredService(receiverType);
 
-            await endpoint.HandleAsync(req.Model, cancellationToken);
+            await receiver.HandleAsync(req.Model, cancellationToken);
             
             return None.Empty;
         }

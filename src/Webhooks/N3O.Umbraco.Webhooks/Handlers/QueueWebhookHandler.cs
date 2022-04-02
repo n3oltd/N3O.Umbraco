@@ -31,20 +31,20 @@ namespace N3O.Umbraco.Webhooks.Handlers {
         }
 
         public Task<None> Handle(QueueWebhookCommand req, CancellationToken cancellationToken) {
-            var receivedWebhook = CreateReceivedWebhook(req.EndpointId.Value, req.EndpointRoute);
-            var jobName = $"PWH {receivedWebhook.EndpointId} from {receivedWebhook.RemoteIp}";
+            var payload = CreatePayload(req.WebhookEventId.Value, req.WebhookRoute.Value);
+            var jobName = $"PWH {payload.EventId} from {payload.RemoteIp}";
             
-            _backgroundJob.Enqueue<ProcessWebhookCommand, ReceivedWebhook>(jobName, receivedWebhook);
+            _backgroundJob.Enqueue<ProcessWebhookCommand, Payload>(jobName, payload);
 
             return Task.FromResult(None.Empty);
         }
 
-        private ReceivedWebhook CreateReceivedWebhook(string endpointId, string endpointRoute) {
+        private Payload CreatePayload(string eventId, string route) {
             var httpRequest = _httpContextAccessor.HttpContext.Request;
 
             var timestamp = _clock.GetCurrentInstant();
             var remoteIp = _remoteIpAddressAccessor.GetRemoteIpAddress();
-            var routeSegments = HttpUtility.UrlDecode(endpointRoute ?? "")
+            var routeSegments = HttpUtility.UrlDecode(route ?? "")
                                            .Split("/", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
             var headerData = new Dictionary<string, string>();
@@ -69,14 +69,7 @@ namespace N3O.Umbraco.Webhooks.Handlers {
                 body = reader.ReadToEnd();
             }
 
-            return new ReceivedWebhook(endpointId,
-                                       timestamp,
-                                       remoteIp,
-                                       headerData,
-                                       postData,
-                                       queryData,
-                                       routeSegments,
-                                       body);
+            return new Payload(eventId, timestamp, remoteIp, headerData, postData, queryData, routeSegments, body);
         }
     }
 }

@@ -6,7 +6,7 @@ using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Webhooks.Attributes;
-using N3O.Umbraco.Webhooks.Endpoints;
+using N3O.Umbraco.Webhooks.Receivers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -14,13 +14,13 @@ using System.Threading.Tasks;
 using Aliases = N3O.Umbraco.Giving.GivingConstants.Aliases;
 
 namespace N3O.Umbraco.Giving.Webhooks {
-    [WebhookEndpoint(GivingConstants.Webhooks.Endpoints.DonationItems)]
-    public class DonationItemsEndpoint : WebhookEndpoint<DonationItemsEndpoint.DonationItem> {
+    [WebhookReceiver(GivingConstants.Webhooks.Events.DonationItems)]
+    public class DonationItemsReceiver : WebhookReceiver<DonationItemsReceiver.DonationItem> {
         private readonly IContentCache _contentCache;
         private readonly IContentEditor _contentEditor;
         private readonly ILookups _lookups;
 
-        public DonationItemsEndpoint(IJsonProvider jsonProvider,
+        public DonationItemsReceiver(IJsonProvider jsonProvider,
                                      IContentCache contentCache,
                                      IContentEditor contentEditor,
                                      ILookups lookups)

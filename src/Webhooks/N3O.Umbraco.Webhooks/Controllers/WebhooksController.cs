@@ -15,10 +15,10 @@ namespace N3O.Umbraco.Webhooks.Controllers {
             _mediator = mediator;
         }
 
-        [HttpGet("{endpointId}")]
-        [HttpGet("{endpointId}/{*endpointRoute}")]
-        [HttpPost("{endpointId}")]
-        [HttpPost("{endpointId}/{*endpointRoute}")]
+        [HttpGet("{webhookEventId}")]
+        [HttpGet("{webhookEventId}/{*webhookRoute}")]
+        [HttpPost("{webhookEventId}")]
+        [HttpPost("{webhookEventId}/{*webhookRoute}")]
         public async Task<ActionResult> Execute() {
             await _mediator.SendAsync<QueueWebhookCommand>();
 

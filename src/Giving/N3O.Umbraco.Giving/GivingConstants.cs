@@ -39,7 +39,7 @@ namespace N3O.Umbraco.Giving {
         }
 
         public static class Webhooks {
-            public static class Endpoints {
+            public static class Events {
                 public const string DonationItems = nameof(DonationItems);
             }
         }

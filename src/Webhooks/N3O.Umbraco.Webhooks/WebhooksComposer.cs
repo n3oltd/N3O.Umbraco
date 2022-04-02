@@ -2,7 +2,7 @@
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Webhooks.Attributes;
-using N3O.Umbraco.Webhooks.Endpoints;
+using N3O.Umbraco.Webhooks.Receivers;
 using N3O.Umbraco.Webhooks.Transforms;
 using Umbraco.Cms.Core.DependencyInjection;
 
@@ -13,7 +13,7 @@ namespace N3O.Umbraco.Webhooks {
             
             builder.Services.AddSingleton<IWebhooks, Webhooks>();
 
-            RegisterAll(t => t.ImplementsInterface<IWebhookEndpoint>() && t.HasAttribute<WebhookEndpointAttribute>(),
+            RegisterAll(t => t.ImplementsInterface<IWebhookReceiver>() && t.HasAttribute<WebhookReceiverAttribute>(),
                         t => builder.Services.AddTransient(t));
             
             RegisterAll(t => t.ImplementsInterface<IWebhookTransform>(),

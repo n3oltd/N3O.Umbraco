@@ -6,16 +6,16 @@ using System.Linq;
 using System.Net;
 
 namespace N3O.Umbraco.Webhooks.Models {
-    public class ReceivedWebhook : Value {
-        public ReceivedWebhook(string endpointId,
-                               Instant timestamp,
-                               IPAddress remoteIp,
-                               IReadOnlyDictionary<string, string> headerData,
-                               IReadOnlyDictionary<string, string> postData,
-                               IReadOnlyDictionary<string, string> queryData,
-                               IEnumerable<string> routeSegments,
-                               string body) {
-            EndpointId = endpointId;
+    public class Payload : Value {
+        public Payload(string eventId,
+                       Instant timestamp,
+                       IPAddress remoteIp,
+                       IReadOnlyDictionary<string, string> headerData,
+                       IReadOnlyDictionary<string, string> postData,
+                       IReadOnlyDictionary<string, string> queryData,
+                       IEnumerable<string> routeSegments,
+                       string body) {
+            EventId = eventId;
             Timestamp = timestamp;
             RemoteIp = remoteIp;
             HeaderData = headerData;
@@ -25,7 +25,7 @@ namespace N3O.Umbraco.Webhooks.Models {
             Body = body;
         }
 
-        public string EndpointId { get; }
+        public string EventId { get; }
         public Instant Timestamp { get; }
         public IPAddress RemoteIp { get; }
         public IReadOnlyDictionary<string, string> HeaderData { get; }
