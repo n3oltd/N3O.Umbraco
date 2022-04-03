@@ -14,7 +14,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Services;
 using static N3O.Umbraco.Giving.GivingConstants.Webhooks;
 using Aliases = N3O.Umbraco.Giving.GivingConstants.Aliases;
 
@@ -24,15 +25,21 @@ namespace N3O.Umbraco.Giving.Webhooks {
         private readonly IJsonProvider _jsonProvider;
         private readonly IContentCache _contentCache;
         private readonly IContentEditor _contentEditor;
+        private readonly IContentService _contentService;
+        private readonly IContentHelper _contentHelper;
         private readonly ILookups _lookups;
 
         public DonationItemReceiver(IJsonProvider jsonProvider,
                                     IContentCache contentCache,
                                     IContentEditor contentEditor,
+                                    IContentService contentService,
+                                    IContentHelper contentHelper,
                                     ILookups lookups) {
             _jsonProvider = jsonProvider;
             _contentCache = contentCache;
             _contentEditor = contentEditor;
+            _contentService = contentService;
+            _contentHelper = contentHelper;
             _lookups = lookups;
         }
 
@@ -100,14 +107,15 @@ namespace N3O.Umbraco.Giving.Webhooks {
             }
         }
 
-        private IPublishedContent GetExistingContent(string name, string previousName) {
-            var collection = _contentCache.Single<DonationItemsContent>();
-            var matches = collection.GetDonationItems()
-                                    .Where(x => x.Name.EqualsInvariant(name) || x.Name.EqualsInvariant(previousName))
-                                    .ToList();
+        private IContent GetExistingContent(string name, string previousName) {
+            var collectionPublished = _contentCache.Single<DonationItemsContent>();
+            var collection = _contentService.GetById(collectionPublished.Content().Key);
+            var donationItems = _contentHelper.GetChildren(collection);
+            var matches = donationItems.Where(x => x.Name.EqualsInvariant(name) || x.Name.EqualsInvariant(previousName))
+                                       .ToList();
 
             if (matches.IsSingle()) {
-                return matches.Single().Content();
+                return matches.Single();
             } else if (matches.None()) {
                 return null;
             } else {
