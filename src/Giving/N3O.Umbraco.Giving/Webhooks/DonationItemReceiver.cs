@@ -6,39 +6,70 @@ using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Webhooks.Attributes;
+using N3O.Umbraco.Webhooks.Extensions;
+using N3O.Umbraco.Webhooks.Models;
 using N3O.Umbraco.Webhooks.Receivers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core.Models.PublishedContent;
+using static N3O.Umbraco.Giving.GivingConstants.Webhooks;
 using Aliases = N3O.Umbraco.Giving.GivingConstants.Aliases;
 
 namespace N3O.Umbraco.Giving.Webhooks {
-    [WebhookReceiver(GivingConstants.Webhooks.Events.DonationItems)]
-    public class DonationItemsReceiver : WebhookReceiver<DonationItemsReceiver.DonationItem> {
+    [WebhookReceiver(HookIds.DonationItem)]
+    public class DonationItemReceiver : WebhookReceiver {
+        private readonly IJsonProvider _jsonProvider;
         private readonly IContentCache _contentCache;
         private readonly IContentEditor _contentEditor;
         private readonly ILookups _lookups;
 
-        public DonationItemsReceiver(IJsonProvider jsonProvider,
-                                     IContentCache contentCache,
-                                     IContentEditor contentEditor,
-                                     ILookups lookups)
-            : base(jsonProvider) {
+        public DonationItemReceiver(IJsonProvider jsonProvider,
+                                    IContentCache contentCache,
+                                    IContentEditor contentEditor,
+                                    ILookups lookups) {
+            _jsonProvider = jsonProvider;
             _contentCache = contentCache;
             _contentEditor = contentEditor;
             _lookups = lookups;
         }
 
-        protected override Task HandleAsync(DonationItem donationItem, CancellationToken cancellationToken) {
+        protected override Task ProcessAsync(WebhookPayload payload, CancellationToken cancellationToken) {
+            var eventType = payload.GetEventType();
+
+            switch (eventType) {
+                case EventTypes.Published:
+                    CreateOrUpdate(payload);
+                    break;
+
+                case EventTypes.Unpublished:
+                    Unpublish(payload);
+                    break;
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private void CreateOrUpdate(WebhookPayload payload) {
+            var donationItem = payload.GetBody<DonationItem>(_jsonProvider);
+            var collection = _contentCache.Single<DonationItemsContent>();
+            var existingContent = GetExistingContent(donationItem.Name, payload.GetHeader(Headers.PreviousName));
+
+            var contentPublisher = existingContent != null
+                                   ? _contentEditor.ForExisting(existingContent.Key)
+                                   : _contentEditor.New(donationItem.Name,
+                                                        collection.Content().Key,
+                                                        Aliases.DonationItem.ContentType);
+            
             var allowedGivingTypes = GetLookups<GivingType>(donationItem.AllowedGivingTypes);
             var dimension1Options = GetLookups<FundDimension1Value>(donationItem.Dimension1Options);
             var dimension2Options = GetLookups<FundDimension2Value>(donationItem.Dimension2Options);
             var dimension3Options = GetLookups<FundDimension3Value>(donationItem.Dimension3Options);
             var dimension4Options = GetLookups<FundDimension4Value>(donationItem.Dimension4Options);
-            
-            var contentPublisher = GetContentPublisher(donationItem.Name);
 
+            contentPublisher.SetName(donationItem.Name);
             contentPublisher.Content.DataList(Aliases.DonationItem.Properties.AllowedGivingTypes).SetLookups(allowedGivingTypes);
             contentPublisher.Content.ContentPicker(Aliases.DonationItem.Properties.Dimension1Options).SetContent(dimension1Options);
             contentPublisher.Content.ContentPicker(Aliases.DonationItem.Properties.Dimension2Options).SetContent(dimension2Options);
@@ -58,24 +89,32 @@ namespace N3O.Umbraco.Giving.Webhooks {
             }
 
             contentPublisher.SaveAndPublish();
-            
-            return Task.CompletedTask;
         }
 
-        private IContentPublisher GetContentPublisher(string name) {
-            var collection = _contentCache.Single<DonationItemsContent>();
-            var match = collection.GetDonationItems().SingleOrDefault(x => x.Name.EqualsInvariant(name));
+        private void Unpublish(WebhookPayload payload) {
+            var donationItem = payload.GetBody<DonationItem>(_jsonProvider);
+            var existingContent = GetExistingContent(donationItem.Name, payload.GetHeader(Headers.PreviousName));
 
-            if (match != null) {
-                var contentPublisher = _contentEditor.ForExisting(match.Content().Key);
-                contentPublisher.Rename(name);
-
-                return contentPublisher;
-            } else {
-                return _contentEditor.New(name, collection.Content().Key, Aliases.DonationItem.ContentType);
+            if (existingContent != null) {
+                _contentEditor.ForExisting(existingContent.Key).Unpublish();
             }
         }
-        
+
+        private IPublishedContent GetExistingContent(string name, string previousName) {
+            var collection = _contentCache.Single<DonationItemsContent>();
+            var matches = collection.GetDonationItems()
+                                    .Where(x => x.Name.EqualsInvariant(name) || x.Name.EqualsInvariant(previousName))
+                                    .ToList();
+
+            if (matches.IsSingle()) {
+                return matches.Single().Content();
+            } else if (matches.None()) {
+                return null;
+            } else {
+                throw new Exception($"More than one donation item found: {matches.Select(x => x.Name).ToCsv(true)}");
+            }
+        }
+
         private IReadOnlyList<T> GetLookups<T>(IEnumerable<string> ids) where T : ILookup {
             return ids.OrEmpty().Select(x => _lookups.FindById<T>(x)).ExceptNull().ToList();
         }
@@ -98,6 +137,7 @@ namespace N3O.Umbraco.Giving.Webhooks {
             public IEnumerable<string> Dimension4Options { get; set; }
             public Price Price { get; set; }
             public IEnumerable<PricingRule> PriceRules { get; set; }
+            public string Status { get; set; }
         }
 
         public class Price {

@@ -1,7 +1,5 @@
 ﻿using FluentEmail.Core;
 using FluentEmail.Core.Interfaces;
-using FluentValidation;
-using FluentValidation.Results;
 using N3O.Umbraco.Email.Commands;
 using N3O.Umbraco.Email.Models;
 using N3O.Umbraco.Extensions;

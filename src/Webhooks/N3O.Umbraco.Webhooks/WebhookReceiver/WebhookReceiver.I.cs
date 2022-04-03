@@ -4,6 +4,6 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Webhooks.Receivers {
     public interface IWebhookReceiver {
-        Task HandleAsync(Payload payload, CancellationToken cancellationToken);
+        Task HandleAsync(WebhookPayload payload, CancellationToken cancellationToken);
     }
 }

@@ -3,12 +3,12 @@ using N3O.Umbraco.Webhooks.NamedParameters;
 
 namespace N3O.Umbraco.Webhooks.Commands {
     public class QueueWebhookCommand : Request<None, None> {
-        public WebhookEventId WebhookEventId { get; }
-        public WebhookRoute WebhookRoute { get; }
+        public HookId HookId { get; }
+        public HookRoute HookRoute { get; }
 
-        public QueueWebhookCommand(WebhookEventId webhookEventId, WebhookRoute webhookRoute) {
-            WebhookEventId = webhookEventId;
-            WebhookRoute = webhookRoute;
+        public QueueWebhookCommand(HookId hookId, HookRoute hookRoute) {
+            HookId = hookId;
+            HookRoute = hookRoute;
         }
     }
 }

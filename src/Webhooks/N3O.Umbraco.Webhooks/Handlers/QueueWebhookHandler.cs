@@ -31,15 +31,15 @@ namespace N3O.Umbraco.Webhooks.Handlers {
         }
 
         public Task<None> Handle(QueueWebhookCommand req, CancellationToken cancellationToken) {
-            var payload = CreatePayload(req.WebhookEventId.Value, req.WebhookRoute.Value);
-            var jobName = $"PWH {payload.EventId} from {payload.RemoteIp}";
+            var payload = CreatePayload(req.HookId.Value, req.HookRoute.Value);
+            var jobName = $"PWH {payload.HookId} from {payload.RemoteIp}";
             
-            _backgroundJob.Enqueue<ProcessWebhookCommand, Payload>(jobName, payload);
+            _backgroundJob.Enqueue<ProcessWebhookCommand, WebhookPayload>(jobName, payload);
 
             return Task.FromResult(None.Empty);
         }
 
-        private Payload CreatePayload(string eventId, string route) {
+        private WebhookPayload CreatePayload(string eventId, string route) {
             var httpRequest = _httpContextAccessor.HttpContext.Request;
 
             var timestamp = _clock.GetCurrentInstant();
@@ -69,7 +69,7 @@ namespace N3O.Umbraco.Webhooks.Handlers {
                 body = reader.ReadToEnd();
             }
 
-            return new Payload(eventId, timestamp, remoteIp, headerData, postData, queryData, routeSegments, body);
+            return new WebhookPayload(eventId, timestamp, remoteIp, headerData, postData, queryData, routeSegments, body);
         }
     }
 }

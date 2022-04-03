@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Webhooks.Handlers {
-    public class ProcessWebhookHandler : IRequestHandler<ProcessWebhookCommand, Payload, None> {
+    public class ProcessWebhookHandler : IRequestHandler<ProcessWebhookCommand, WebhookPayload, None> {
         private static readonly Dictionary<string, Type> Receivers = new(StringComparer.InvariantCultureIgnoreCase);
         
         private readonly IServiceProvider _serviceProvider;
@@ -24,7 +24,11 @@ namespace N3O.Umbraco.Webhooks.Handlers {
                                                             t.HasAttribute<WebhookReceiverAttribute>());
 
             foreach (var receiverType in receiverTypes) {
-                Receivers[receiverType.GetCustomAttribute<WebhookReceiverAttribute>(true).EventId] = receiverType;
+                var attributes = receiverType.GetCustomAttributes<WebhookReceiverAttribute>(false);
+
+                foreach (var attribute in attributes) {
+                    Receivers[attribute.HookId] = receiverType;
+                }
             }
         }
 
@@ -33,10 +37,10 @@ namespace N3O.Umbraco.Webhooks.Handlers {
         }
         
         public async Task<None> Handle(ProcessWebhookCommand req, CancellationToken cancellationToken) {
-            var receiverType = Receivers.GetOrDefault(req.Model.EventId);
+            var receiverType = Receivers.GetOrDefault(req.Model.HookId);
 
             if (receiverType == null) {
-                throw new Exception($"No webhook receiver found for ID {req.Model.EventId.Quote()}");
+                throw new Exception($"No receiver found for hook ID {req.Model.HookId.Quote()}");
             }
 
             var receiver = (IWebhookReceiver) _serviceProvider.GetRequiredService(receiverType);

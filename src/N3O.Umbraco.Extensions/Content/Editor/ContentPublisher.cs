@@ -20,10 +20,6 @@ namespace N3O.Umbraco.Content {
 
             return property != null;
         }
-        
-        public void Rename(string name) {
-            _content.Name = name;
-        }
 
         public PublishResult SaveAndPublish() {
             var newPropertyValues = Content.Build();
@@ -35,6 +31,14 @@ namespace N3O.Umbraco.Content {
             }
 
             return _contentService.SaveAndPublish(_content);
+        }
+        
+        public void SetName(string name) {
+            _content.Name = name;
+        }
+
+        public void Unpublish() {
+            _contentService.Unpublish(_content);
         }
 
         public IContentBuilder Content { get; }

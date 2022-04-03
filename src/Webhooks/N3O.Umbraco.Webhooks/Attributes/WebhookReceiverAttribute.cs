@@ -1,11 +1,12 @@
 ﻿using System;
 
 namespace N3O.Umbraco.Webhooks.Attributes {
+    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
     public class WebhookReceiverAttribute : Attribute {
-        public WebhookReceiverAttribute(string eventId) {
-            EventId = eventId;
+        public WebhookReceiverAttribute(string hookId) {
+            HookId = hookId;
         }
 
-        public string EventId { get; }
+        public string HookId { get; }
     }
 }
