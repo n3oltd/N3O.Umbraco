@@ -1,7 +1,6 @@
 ﻿using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Webhooks.Models;
-using System.Collections.Generic;
 
 namespace N3O.Umbraco.Webhooks.Extensions {
     public static class WebhookPayloadExtensions {
@@ -18,11 +17,11 @@ namespace N3O.Umbraco.Webhooks.Extensions {
         }
         
         public static string GetEventType(this WebhookPayload payload) {
-            return GetGetHeader(payload, WebhooksConstants.HttpHeaders.EventId);
+            return GetGetHeader(payload, WebhooksConstants.HttpHeaders.EventType);
         }
         
         public static string GetGetHeader(WebhookPayload payload, string headerName) {
-            return payload.HeaderData?.GetValueOrDefault(headerName);
+            return payload.GetHeader(headerName);
         }
     }
 }
