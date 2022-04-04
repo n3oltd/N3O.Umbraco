@@ -13,15 +13,11 @@ namespace N3O.Umbraco.Webhooks.Extensions {
         }
         
         public static string GetEventId(this WebhookPayload payload) {
-            return GetGetHeader(payload, WebhooksConstants.HttpHeaders.EventId);
+            return payload.GetHeader(WebhooksConstants.HttpHeaders.EventId);
         }
         
         public static string GetEventType(this WebhookPayload payload) {
-            return GetGetHeader(payload, WebhooksConstants.HttpHeaders.EventType);
-        }
-        
-        public static string GetGetHeader(WebhookPayload payload, string headerName) {
-            return payload.GetHeader(headerName);
+            return payload.GetHeader(WebhooksConstants.HttpHeaders.EventType);
         }
     }
 }
