@@ -28,7 +28,7 @@ namespace N3O.Umbraco.Analytics.TagHelpers {
                 scriptTag.InnerHtml.AppendHtmlLine("  if (typeof gtag === 'function') {");
                 scriptTag.InnerHtml.AppendHtmlLine($"    gtag('event', '{EventName}', {parametersJson})");
                 scriptTag.InnerHtml.AppendHtmlLine("  }");
-                scriptTag.InnerHtml.AppendHtmlLine("}");
+                scriptTag.InnerHtml.AppendHtmlLine("});");
 
                 output.Content.SetHtmlContent(scriptTag.ToHtmlString());
             }
