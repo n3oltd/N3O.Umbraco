@@ -200,7 +200,7 @@ namespace N3O.Umbraco.Content {
             while (true) {
                 descendants.AddRange(getPagedContent(content.Id, startIndex, pageSize, out var totalRecords));
 
-                if ((startIndex + pageSize) <= totalRecords) {
+                if ((startIndex + pageSize) >= totalRecords) {
                     break;
                 }
 
