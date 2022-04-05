@@ -6,15 +6,15 @@ using N3O.Umbraco.Payments.Bambora.Client;
 using N3O.Umbraco.Payments.Bambora.Commands;
 using N3O.Umbraco.Payments.Bambora.Extensions;
 using N3O.Umbraco.Payments.Bambora.Models;
-using N3O.Umbraco.Payments.Bambora.Models.ThreeDSecureChallenge;
+using N3O.Umbraco.Payments.Bambora.Models;
 using Newtonsoft.Json;
 using Refit;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.Bambora.Handlers {
-    public class CompleteThreeDSecureChallengeHandler :
-        PaymentsHandler<CompleteThreeDSecureChallengeCommand, ThreeDSecureChallengeReq, BamboraPayment> {
+    public class CompleteThreeDSecureHandler :
+        PaymentsHandler<CompleteThreeDSecureCommand, CompleteThreeDSecureReq, BamboraPayment> {
         private readonly IBamboraPaymentsClient _paymentsClient;
 
         public CompleteThreeDSecureChallengeHandler(IPaymentsScope paymentsScope, IBamboraPaymentsClient paymentsClient)
@@ -22,7 +22,7 @@ namespace N3O.Umbraco.Payments.Bambora.Handlers {
             _paymentsClient = paymentsClient;
         }
 
-        protected override async Task HandleAsync(CompleteThreeDSecureChallengeCommand req,
+        protected override async Task HandleAsync(CompleteThreeDSecureCommand req,
                                                   BamboraPayment payment,
                                                   PaymentsParameters parameters,
                                                   CancellationToken cancellationToken) {

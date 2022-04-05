@@ -1,7 +1,7 @@
 ﻿using N3O.Umbraco.Giving.Checkout.Commands;
 using N3O.Umbraco.Giving.Checkout.Models;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Mediator;
-using NUglify.Helpers;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;

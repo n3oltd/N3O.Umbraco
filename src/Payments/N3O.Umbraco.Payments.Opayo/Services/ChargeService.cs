@@ -6,6 +6,7 @@ using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Hosting;
+using N3O.Umbraco.Payments.Content;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.Opayo.Clients;
 using N3O.Umbraco.Payments.Opayo.Content;
@@ -44,30 +45,41 @@ namespace N3O.Umbraco.Payments.Opayo {
                                       ChargeCardReq req,
                                       PaymentsParameters parameters,
                                       bool saveCard) {
+            var settings = _contentCache.Single<OpayoSettingsContent>();
+            var vendorTxCode = parameters.GetTransactionId(settings, req.CardIdentifier).Left(40);
+            
             try {
-                var apiRequest = GetApiPaymentTransactionReq(req, parameters, saveCard);
+                var apiRequest = GetApiPaymentTransactionReq(settings, vendorTxCode, req, parameters, saveCard);
 
                 var transaction = await _opayoClient.TransactionAsync(apiRequest);
                 
                 payment.UpdateMerchantSessionKey(req.MerchantSessionKey);
                 
                 if (transaction.IsAuthorised()) {
-                    payment.Paid(transaction.TransactionId,
+                    payment.Paid(vendorTxCode,
+                                 transaction.TransactionId,
                                  transaction.StatusCode,
                                  transaction.StatusDetail,
                                  transaction.BankAuthorisationCode,
                                  transaction.RetrievalReference.GetValueOrThrow());
                 } else if (transaction.IsDeclined()) {
-                    payment.Declined(transaction.TransactionId, transaction.StatusCode, transaction.StatusDetail);
+                    payment.Declined(vendorTxCode,
+                                     transaction.TransactionId,
+                                     transaction.StatusCode,
+                                     transaction.StatusDetail);
                 } else if (transaction.IsRejected()) {
-                    payment.Error(transaction.TransactionId, transaction.StatusCode, transaction.StatusDetail);
+                    payment.Error(vendorTxCode,
+                                  transaction.TransactionId,
+                                  transaction.StatusCode,
+                                  transaction.StatusDetail);
                 } else if (transaction.RequiresThreeDSecure()) {
-                    payment.RequireThreeDSecure(transaction.TransactionId,
-                                                req.ReturnUrl,
-                                                transaction.AcsUrl,
+                    payment.RequireThreeDSecure(vendorTxCode,
+                                                transaction.TransactionId,
                                                 GetTermUrl(parameters.FlowId),
+                                                transaction.AcsUrl,
                                                 transaction.AcsTransId,
                                                 transaction.CReq,
+                                                req.ReturnUrl,
                                                 transaction.PaReq);
                 } else {
                     throw UnrecognisedValueException.For(transaction.Status);
@@ -81,20 +93,21 @@ namespace N3O.Umbraco.Payments.Opayo {
                 var errorCode = opayoError?.Code ?? opayoError?.StatusCode;
                 var transactionId = opayoError?.TransactionId;
 
-                payment.Error(transactionId, errorCode, errorMessage);
+                payment.Error(vendorTxCode, transactionId, errorCode, errorMessage);
             }
         }
 
-        private ApiPaymentTransactionReq GetApiPaymentTransactionReq(ChargeCardReq req,
+        private ApiPaymentTransactionReq GetApiPaymentTransactionReq(IPaymentMethodSettings settings,
+                                                                     string vendorTxCode,
+                                                                     ChargeCardReq req,
                                                                      PaymentsParameters parameters,
                                                                      bool saveCard) {
-            var settings = _contentCache.Single<OpayoSettingsContent>();
             var apiReq = new ApiPaymentTransactionReq();
 
             apiReq.Amount = ((Money) req.Value).GetAmountInLowestDenomination();
             apiReq.Currency = req.Value.Currency.Id;
             apiReq.Description =  parameters.GetTransactionDescription(settings);
-            apiReq.VendorTxCode = parameters.GetTransactionId(settings, req.CardIdentifier).Left(40);
+            apiReq.VendorTxCode = vendorTxCode;
 
             var billingInfo = parameters.BillingInfoAccessor.GetBillingInfo();
 
@@ -163,6 +176,7 @@ namespace N3O.Umbraco.Payments.Opayo {
             return _actionLinkGenerator.GetUrl<OpayoController>(x => x.CompleteThreeDSecureFallback(null),
                                                                 new { flowId = flowId.ToString() });
         }
+        
         private string GetText(string value, int maxLength, bool required, string defaultValue = ".") {
             if (!value.HasValue() && required) {
                 value = defaultValue;

@@ -21,16 +21,9 @@ namespace N3O.Umbraco.Payments.Opayo.Controllers {
             _mediator = mediator;
         }
 
-        [HttpPost("payments/{flowId:entityId}/completeThreeDSecureChallenge")]
-        public async Task<ActionResult> CompleteThreeDSecureChallenge([FromForm] ThreeDSecureChallengeReq req) {
-            var res = await _mediator.SendAsync<CompleteThreeDSecureChallengeCommand, ThreeDSecureChallengeReq, PaymentFlowRes<OpayoPayment>>(req);
-
-            return Redirect(res.Result.ReturnUrl);
-        }
-        
-        [HttpPost("payments/{flowId:entityId}/completeThreeDSecureFallback")]
-        public async Task<ActionResult> CompleteThreeDSecureFallback([FromForm] ThreeDSecureFallbackReq req) {
-            var res = await _mediator.SendAsync<CompleteThreeDSecureFallbackCommand, ThreeDSecureFallbackReq, PaymentFlowRes<OpayoPayment>>(req);
+        [HttpPost("payments/{flowId:entityId}/completeThreeDSecure")]
+        public async Task<ActionResult> CompleteThreeDSecureChallenge([FromForm] CompleteThreeDSecureReq req) {
+            var res = await _mediator.SendAsync<CompleteThreeDSecureCommand, CompleteThreeDSecureReq, PaymentFlowRes<OpayoPayment>>(req);
 
             return Redirect(res.Result.ReturnUrl);
         }

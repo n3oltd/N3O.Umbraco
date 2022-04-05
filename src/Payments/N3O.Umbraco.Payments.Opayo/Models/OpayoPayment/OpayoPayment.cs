@@ -12,6 +12,7 @@ namespace N3O.Umbraco.Payments.Opayo.Models {
         public string OpayoBankAuthorisationCode { get; private set; }
         public long? OpayoRetrievalReference { get; private set; }
         public string ReturnUrl { get; private set; }
+        public string VendorTxCode { get; private set; }
 
         public override PaymentMethod Method => OpayoConstants.PaymentMethod;
     }

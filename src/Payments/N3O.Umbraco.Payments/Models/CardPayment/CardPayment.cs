@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using NUglify.Helpers;
+using N3O.Umbraco.Extensions;
 using System;
 
 namespace N3O.Umbraco.Payments.Models {
@@ -7,38 +7,30 @@ namespace N3O.Umbraco.Payments.Models {
         [JsonConstructor]
         public CardPayment(bool threeDSecureRequired,
                            bool threeDSecureComplete,
-                           string threeDSecureUrl,
-                           ChallengeThreeDSecure challenge,
-                           FallbackThreeDSecure fallback) {
+                           ThreeDSecureV1 threeDSecureV1,
+                           ThreeDSecureV2 threeDSecureV2) {
             ThreeDSecureRequired = threeDSecureRequired;
             ThreeDSecureCompleted = threeDSecureComplete;
-            ThreeDSecureUrl = threeDSecureUrl;
-
-            Challenge = challenge;
-            Fallback = fallback;
+            ThreeDSecureV1 = threeDSecureV1;
+            ThreeDSecureV2 = threeDSecureV2;
         }
 
-        public CardPayment() : this(false, false, null, null, null) { }
+        public CardPayment() : this(false, false, null, null) { }
 
         public bool ThreeDSecureRequired { get; }
         public bool ThreeDSecureCompleted { get; }
-        public string ThreeDSecureUrl { get; }
-        public ChallengeThreeDSecure Challenge { get; }
-        public FallbackThreeDSecure Fallback { get; }
+        public ThreeDSecureV1 ThreeDSecureV1 { get; }
+        public ThreeDSecureV2 ThreeDSecureV2 { get; }
 
         public CardPayment ThreeDSecureComplete(string res) {
             if (!ThreeDSecureRequired || ThreeDSecureCompleted) {
                 throw new InvalidOperationException();
             }
 
-            var fallback = Fallback.IfNotNull(x => new FallbackThreeDSecure(x.TermUrl, x.PaReq, res));
-            var challenge = Challenge.IfNotNull(x => new ChallengeThreeDSecure(x.AcsTransId, x.CReq, res));
+            var threeDSecureV1 = ThreeDSecureV1?.Complete(res);
+            var threeDSecureV2 = ThreeDSecureV2?.Complete(res);
             
-            return new CardPayment(true,
-                                   true,
-                                   ThreeDSecureUrl,
-                                   challenge,
-                                   fallback);
+            return new CardPayment(true, true, threeDSecureV1, threeDSecureV2);
         }
     }
 }
