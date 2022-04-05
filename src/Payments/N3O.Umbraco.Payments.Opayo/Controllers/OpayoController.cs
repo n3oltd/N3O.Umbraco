@@ -27,6 +27,13 @@ namespace N3O.Umbraco.Payments.Opayo.Controllers {
 
             return Redirect(res.Result.ReturnUrl);
         }
+        
+        [HttpPost("payments/{flowId:entityId}/completeThreeDSecureFallback")]
+        public async Task<ActionResult> CompleteThreeDSecureFallback([FromForm] ThreeDSecureFallbackReq req) {
+            var res = await _mediator.SendAsync<CompleteThreeDSecureFallbackCommand, ThreeDSecureFallbackReq, PaymentFlowRes<OpayoPayment>>(req);
+
+            return Redirect(res.Result.ReturnUrl);
+        }
 
         [HttpGet("merchantSessionKey")]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]

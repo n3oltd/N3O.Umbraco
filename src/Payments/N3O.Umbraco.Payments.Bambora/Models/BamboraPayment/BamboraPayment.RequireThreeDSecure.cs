@@ -4,8 +4,8 @@
             ClearErrors();
             
             ReturnUrl = returnUrl;
-
-            RequireThreeDSecure(challengeUrl, sessionData, contents);
+            
+            base.RequireThreeDSecure(challengeUrl, null, sessionData, contents, null);
         }
     }
 }

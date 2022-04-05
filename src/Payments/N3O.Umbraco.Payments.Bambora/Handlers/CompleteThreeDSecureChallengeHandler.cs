@@ -30,7 +30,7 @@ namespace N3O.Umbraco.Payments.Bambora.Handlers {
                 var apiReq = new ThreeDSecureChallenge();
                 apiReq.CardResponse = new ThreeDSecureCardResponse();
                 apiReq.PaymentMethod = "token";
-                apiReq.ThreeDSessionData = payment.Card.ThreeDSecureAcsTransId;
+                apiReq.ThreeDSessionData = payment.Card.Challenge.AcsTransId;
                 apiReq.CardResponse.Cres = req.Model.CRes;
 
                 var apiPayment = await _paymentsClient.CompleteThreeDSecureAsync(apiReq);

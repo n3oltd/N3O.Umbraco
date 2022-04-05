@@ -68,6 +68,58 @@ export class OpayoClient {
         return Promise.resolve<void>(null as any);
     }
 
+    completeThreeDSecureFallback(flowId: string, paRes: string | null | undefined, md: string | null | undefined, mdx: string | null | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/umbraco/api/Opayo/payments/{flowId}/completeThreeDSecureFallback";
+        if (flowId === undefined || flowId === null)
+            throw new Error("The parameter 'flowId' must be defined.");
+        url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (paRes !== null && paRes !== undefined)
+            content_.append("PaRes", paRes.toString());
+        if (md !== null && md !== undefined)
+            content_.append("Md", md.toString());
+        if (mdx !== null && mdx !== undefined)
+            content_.append("Mdx", mdx.toString());
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCompleteThreeDSecureFallback(_response);
+        });
+    }
+
+    protected processCompleteThreeDSecureFallback(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
     getMerchantSessionKey(): Promise<MerchantSessionKeyRes> {
         let url_ = this.baseUrl + "/umbraco/api/Opayo/merchantSessionKey";
         url_ = url_.replace(/[?&]$/, "");
@@ -264,10 +316,21 @@ export interface OpayoPayment {
 export interface CardPayment {
     threeDSecureRequired?: boolean;
     threeDSecureCompleted?: boolean;
-    threeDSecureChallengeUrl?: string | undefined;
-    threeDSecureAcsTransId?: string | undefined;
-    threeDSecureCReq?: string | undefined;
-    threeDSecureCRes?: string | undefined;
+    threeDSecureUrl?: string | undefined;
+    challenge?: ChallengeThreeDSecure | undefined;
+    fallback?: FallbackThreeDSecure | undefined;
+}
+
+export interface ChallengeThreeDSecure {
+    acsTransId?: string | undefined;
+    cReq?: string | undefined;
+    cRes?: string | undefined;
+}
+
+export interface FallbackThreeDSecure {
+    termUrl?: string | undefined;
+    paReq?: string | undefined;
+    paRes?: string | undefined;
 }
 
 /** One of 'credential', 'payment' */

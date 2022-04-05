@@ -253,10 +253,19 @@ export declare enum PaymentObjectStatus {
 export interface CardPaymentRes {
     threeDSecureRequired?: boolean;
     threeDSecureCompleted?: boolean;
-    threeDSecureChallengeUrl?: string | undefined;
-    threeDSecureAcsTransId?: string | undefined;
-    threeDSecureCReq?: string | undefined;
-    threeDSecureCRes?: string | undefined;
+    threeDSecureUrl?: string | undefined;
+    challenge?: ChallengeThreeDSecure | undefined;
+    fallback?: FallbackThreeDSecure | undefined;
+}
+export interface ChallengeThreeDSecure {
+    acsTransId?: string | undefined;
+    cReq?: string | undefined;
+    cRes?: string | undefined;
+}
+export interface FallbackThreeDSecure {
+    termUrl?: string | undefined;
+    paReq?: string | undefined;
+    paRes?: string | undefined;
 }
 export interface RegularGivingCheckoutRes {
     allocations?: AllocationRes[] | undefined;

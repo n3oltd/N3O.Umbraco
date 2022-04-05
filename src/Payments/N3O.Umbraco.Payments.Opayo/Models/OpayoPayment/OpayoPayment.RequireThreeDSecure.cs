@@ -3,14 +3,16 @@ namespace N3O.Umbraco.Payments.Opayo.Models {
         public void RequireThreeDSecure(string transactionId,
                                         string returnUrl,
                                         string challengeUrl,
+                                        string termUrl,
                                         string acsTransId,
-                                        string cReq) {
+                                        string cReq,
+                                        string paReq) {
             ClearErrors();
             
             OpayoTransactionId = transactionId;
             ReturnUrl = returnUrl;
             
-            RequireThreeDSecure(challengeUrl, acsTransId, cReq);
+            RequireThreeDSecure(challengeUrl, termUrl, acsTransId, cReq, paReq);
         }
     }
 }

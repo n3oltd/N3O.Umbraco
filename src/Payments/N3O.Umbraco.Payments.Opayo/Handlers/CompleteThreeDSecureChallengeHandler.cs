@@ -1,17 +1,12 @@
-using N3O.Umbraco.Exceptions;
-using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Payments.Handlers;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.Opayo.Clients;
 using N3O.Umbraco.Payments.Opayo.Commands;
-using N3O.Umbraco.Payments.Opayo.Extensions;
 using N3O.Umbraco.Payments.Opayo.Models;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.Opayo.Handlers {
     public class CompleteThreeDSecureChallengeHandler :
-        PaymentsHandler<CompleteThreeDSecureChallengeCommand, ThreeDSecureChallengeReq, OpayoPayment> {
+        CompleteThreeDSecureHandlerBase<CompleteThreeDSecureChallengeCommand, ThreeDSecureChallengeReq> {
         private readonly IOpayoClient _opayoClient;
 
         public CompleteThreeDSecureChallengeHandler(IPaymentsScope paymentsScope, IOpayoClient opayoClient)
@@ -19,31 +14,16 @@ namespace N3O.Umbraco.Payments.Opayo.Handlers {
             _opayoClient = opayoClient;
         }
 
-        protected override async Task HandleAsync(CompleteThreeDSecureChallengeCommand req,
-                                                  OpayoPayment payment,
-                                                  PaymentsParameters parameters,
-                                                  CancellationToken cancellationToken) {
+        protected override async Task<ApiTransactionRes> ProcessThreeDSecureAsync(ThreeDSecureChallengeReq req, OpayoPayment payment, PaymentsParameters parameters) {
             var apiReq = new ApiThreeDSecureChallengeResponse();
-            apiReq.CRes = req.Model.CRes;
+            apiReq.CRes = req.CRes;
             apiReq.TransactionId = payment.OpayoTransactionId;
 
             var transaction = await _opayoClient.CompleteThreeDSecureChallengeResponseAsync(apiReq);
 
-            payment.ThreeDSecureComplete(req.Model.CRes);
+            payment.ThreeDSecureComplete(req.CRes);
 
-            if (transaction.IsAuthorised()) {
-                payment.Paid(transaction.TransactionId,
-                             transaction.StatusCode,
-                             transaction.StatusDetail,
-                             transaction.BankAuthorisationCode,
-                             transaction.RetrievalReference.GetValueOrThrow());
-            } else if (transaction.IsDeclined() || transaction.IsRejected()) {
-                payment.Declined(transaction.TransactionId, transaction.StatusCode, transaction.StatusDetail);
-            } else if (transaction.IsRejected()) {
-                payment.Error(transaction.TransactionId, transaction.StatusCode, transaction.StatusDetail);
-            } else {
-                throw UnrecognisedValueException.For(transaction.Status);
-            }
+            return transaction;
         }
     }
 }

@@ -49,6 +49,9 @@ namespace N3O.Umbraco.Payments.Opayo.Clients {
 
         [JsonProperty("cReq")]
         public string CReq { get; set; }
+        
+        [JsonProperty("paReq")]
+        public string PaReq { get; set; }
 
         [JsonProperty("status")]
         public string Status { get; set; }
