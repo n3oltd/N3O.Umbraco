@@ -6,6 +6,9 @@ namespace N3O.Umbraco.Payments.Opayo.Clients {
         [Post("/api/v1/transactions/{req.TransactionId}/3d-secure-challenge/")]
         Task<ApiTransactionRes> CompleteThreeDSecureChallengeResponseAsync(ApiThreeDSecureChallengeResponse req);
         
+        [Post("/api/v1/transactions/{req.TransactionId}/3d-secure/")]
+        Task<ApiThreeDSecure> CompleteThreeDSecureFallbackResponseAsync(ApiThreeDSecureFallbackResponse req);
+        
         [Post("/api/v1/merchant-session-keys")]
         Task<ApiMerchantSessionKeyRes> GetMerchantSessionKeyAsync(ApiMerchantSessionKeyReq req);
         
