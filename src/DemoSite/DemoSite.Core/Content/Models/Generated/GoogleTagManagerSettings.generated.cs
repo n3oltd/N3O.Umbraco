@@ -18,14 +18,14 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Core.Content
 {
-	/// <summary>Currency Settings</summary>
-	[PublishedModel("currencySettings")]
-	public partial class CurrencySettings : PublishedContentModel
+	/// <summary>Google Tag Manager Settings</summary>
+	[PublishedModel("googleTagManagerSettings")]
+	public partial class GoogleTagManagerSettings : PublishedContentModel
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.4.2+93badabcb1e63f93fda0aa7793140b6689efc148")]
-		public new const string ModelTypeAlias = "currencySettings";
+		public new const string ModelTypeAlias = "googleTagManagerSettings";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.4.2+93badabcb1e63f93fda0aa7793140b6689efc148")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.4.2+93badabcb1e63f93fda0aa7793140b6689efc148")]
@@ -34,19 +34,27 @@ namespace DemoSite.Core.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.4.2+93badabcb1e63f93fda0aa7793140b6689efc148")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<CurrencySettings, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<GoogleTagManagerSettings, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public CurrencySettings(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
+		public GoogleTagManagerSettings(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
 		}
 
 		// properties
+
+		///<summary>
+		/// Container ID
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.4.2+93badabcb1e63f93fda0aa7793140b6689efc148")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("containerId")]
+		public virtual string ContainerId => this.Value<string>(_publishedValueFallback, "containerId");
 	}
 }
