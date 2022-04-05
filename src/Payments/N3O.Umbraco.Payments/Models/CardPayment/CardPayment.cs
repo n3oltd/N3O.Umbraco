@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using NUglify.Helpers;
-using StackExchange.Profiling.Internal;
 using System;
 
 namespace N3O.Umbraco.Payments.Models {
