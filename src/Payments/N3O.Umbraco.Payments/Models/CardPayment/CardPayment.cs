@@ -32,8 +32,8 @@ namespace N3O.Umbraco.Payments.Models {
                 throw new InvalidOperationException();
             }
 
-            var fallback = Fallback.IfNotNull(x => new FallbackThreeDSecure(x.ThreeDSecureTermUrl, x.ThreeDSecurePaReq, res));
-            var challenge = Challenge.IfNotNull(x => new ChallengeThreeDSecure(x.ThreeDSecureAcsTransId, x.ThreeDSecureCReq, res));
+            var fallback = Fallback.IfNotNull(x => new FallbackThreeDSecure(x.TermUrl, x.PaReq, res));
+            var challenge = Challenge.IfNotNull(x => new ChallengeThreeDSecure(x.AcsTransId, x.CReq, res));
             
             return new CardPayment(true,
                                    true,
