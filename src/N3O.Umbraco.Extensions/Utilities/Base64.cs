@@ -23,5 +23,5 @@ namespace N3O.Umbraco.Utilities {
                 return null;
             }
         }
-    }    
+    }
 }

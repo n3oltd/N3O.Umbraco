@@ -18,56 +18,6 @@ export class BamboraClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
 
-    completePaymentThreeDSecureChallenge(flowId: string, cRes: string | null | undefined, threeDSessionData: string | null | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/umbraco/api/Bambora/payments/{flowId}/completeThreeDSecureChallenge";
-        if (flowId === undefined || flowId === null)
-            throw new Error("The parameter 'flowId' must be defined.");
-        url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = new FormData();
-        if (cRes !== null && cRes !== undefined)
-            content_.append("CRes", cRes.toString());
-        if (threeDSessionData !== null && threeDSessionData !== undefined)
-            content_.append("ThreeDSessionData", threeDSessionData.toString());
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCompletePaymentThreeDSecureChallenge(_response);
-        });
-    }
-
-    protected processCompletePaymentThreeDSecureChallenge(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            let result400: any = null;
-            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        } else if (status === 500) {
-            return response.text().then((_responseText) => {
-            return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
     chargeCard(flowId: string, req: ChargeCardReq): Promise<PaymentFlowResOfBamboraPayment> {
         let url_ = this.baseUrl + "/umbraco/api/Bambora/payments/{flowId}/charge";
         if (flowId === undefined || flowId === null)
@@ -116,6 +66,56 @@ export class BamboraClient {
             });
         }
         return Promise.resolve<PaymentFlowResOfBamboraPayment>(null as any);
+    }
+
+    completePaymentThreeDSecure(flowId: string, cRes: string | null | undefined, paRes: string | null | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/umbraco/api/Bambora/payments/{flowId}/completeThreeDSecure";
+        if (flowId === undefined || flowId === null)
+            throw new Error("The parameter 'flowId' must be defined.");
+        url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (cRes !== null && cRes !== undefined)
+            content_.append("CRes", cRes.toString());
+        if (paRes !== null && paRes !== undefined)
+            content_.append("PaRes", paRes.toString());
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCompletePaymentThreeDSecure(_response);
+        });
+    }
+
+    protected processCompletePaymentThreeDSecure(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
     }
 
     storeCard(flowId: string, req: StoreCardReq): Promise<PaymentFlowResOfBamboraPayment> {
@@ -169,14 +169,6 @@ export class BamboraClient {
     }
 }
 
-export interface ProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
-}
-
 export interface PaymentFlowResOfBamboraPayment {
     flowRevision?: number;
     result?: BamboraPayment | undefined;
@@ -208,21 +200,24 @@ export interface BamboraPayment {
 export interface CardPayment {
     threeDSecureRequired?: boolean;
     threeDSecureCompleted?: boolean;
-    threeDSecureUrl?: string | undefined;
-    challenge?: ChallengeThreeDSecure | undefined;
-    fallback?: FallbackThreeDSecure | undefined;
+    threeDSecureV1?: ThreeDSecureV1 | undefined;
+    threeDSecureV2?: ThreeDSecureV2 | undefined;
 }
 
-export interface ChallengeThreeDSecure {
-    acsTransId?: string | undefined;
-    cReq?: string | undefined;
-    cRes?: string | undefined;
-}
-
-export interface FallbackThreeDSecure {
-    termUrl?: string | undefined;
+export interface ThreeDSecureV1 {
+    acsUrl?: string | undefined;
+    md?: string | undefined;
     paReq?: string | undefined;
     paRes?: string | undefined;
+}
+
+export interface ThreeDSecureV2 {
+    acsUrl?: string | undefined;
+    acsTransId?: string | undefined;
+    sessionData?: string | undefined;
+    cReq?: string | undefined;
+    cRes?: string | undefined;
+    html?: string | undefined;
 }
 
 /** One of 'credential', 'payment' */
@@ -236,6 +231,14 @@ export enum PaymentObjectStatus {
     Complete = "complete",
     Error = "error",
     InProgress = "inProgress",
+}
+
+export interface ProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
 }
 
 export interface ChargeCardReq {

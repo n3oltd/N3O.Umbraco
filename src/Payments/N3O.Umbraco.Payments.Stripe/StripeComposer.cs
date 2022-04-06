@@ -40,7 +40,7 @@ namespace N3O.Umbraco.Payments.Stripe {
                     apiSettings = new StripeApiSettings(settings.ProductionClientKey, settings.ProductionSecretKey);
                 } else {
                     apiSettings = new StripeApiSettings(settings.StagingClientKey, settings.StagingSecretKey);
-                }  
+                }
             }
 
             return apiSettings;

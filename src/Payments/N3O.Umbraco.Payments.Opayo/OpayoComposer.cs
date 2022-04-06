@@ -41,7 +41,7 @@ namespace N3O.Umbraco.Payments.Opayo {
                 return client;
             });
 
-            builder.Services.AddTransient<IChargeService, ChargeService>();
+            builder.Services.AddTransient<IOpayoHelper, OpayoHelper>();
         }
         
         private OpayoApiSettings GetApiSettings(IContentCache contentCache, IHostEnvironment environment) {

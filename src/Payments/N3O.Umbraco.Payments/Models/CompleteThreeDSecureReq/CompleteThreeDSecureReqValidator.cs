@@ -11,24 +11,12 @@ namespace N3O.Umbraco.Payments.Models {
                 .WithMessage(Get<Strings>(s => s.SpecifyExactlyOneOfCResOrPaRes));
             
             RuleFor(x => x)
-                .Must(x => !(x.CRes.HasValue() && x.PaRes.HasValue()))
+                .Must(x => !x.CRes.HasValue() || !x.PaRes.HasValue())
                 .WithMessage(Get<Strings>(s => s.SpecifyExactlyOneOfCResOrPaRes));
-            
-            RuleFor(x => x.ThreeDsSessionData)
-                .NotEmpty()
-                .When(x => x.CRes.HasValue())
-                .WithMessage(Get<Strings>(s => s.SpecifyThreeDsSessionData));
-            
-            RuleFor(x => x.MD)
-                .NotEmpty()
-                .When(x => x.PaRes.HasValue())
-                .WithMessage(Get<Strings>(s => s.SpecifyMD));
         }
     }
 
     public class Strings : ValidationStrings {
         public string SpecifyExactlyOneOfCResOrPaRes => "Please specify exactly one of CRes or PaRes";
-        public string SpecifyMD => "Please specify the MD value";
-        public string SpecifyThreeDsSessionData => "Please specify the threeDSSessionData value";
     }
 }

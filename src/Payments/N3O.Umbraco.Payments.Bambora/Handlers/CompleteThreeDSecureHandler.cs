@@ -44,7 +44,7 @@ namespace N3O.Umbraco.Payments.Bambora.Handlers {
                     throw UnrecognisedValueException.For(apiPayment.Message);
                 }
             } catch (ApiException apiException) {
-                var apiPaymentError = apiException.Content.IfNotNull(JsonConvert.DeserializeObject<ApiPaymentError>);
+                var apiPaymentError = JsonConvert.DeserializeObject<ApiPaymentError>(apiException.Content);
 
                 if (apiPaymentError.IsDeclined()) {
                     payment.Declined(apiPaymentError.TransactionId, apiPaymentError.Code, apiPaymentError.Message);

@@ -22,18 +22,18 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.Opayo {
-    public class ChargeService : IChargeService {
+    public class OpayoHelper : IOpayoHelper {
         private readonly IOpayoClient _opayoClient;
         private readonly IContentCache _contentCache;
         private readonly IActionLinkGenerator _actionLinkGenerator;
         private readonly IRemoteIpAddressAccessor _remoteIpAddressAccessor;
         private readonly IBrowserInfoAccessor _browserInfoAccessor;
 
-        public ChargeService(IOpayoClient opayoClient,
-                             IContentCache contentCache,
-                             IActionLinkGenerator actionLinkGenerator,
-                             IRemoteIpAddressAccessor remoteIpAddressAccessor,
-                             IBrowserInfoAccessor browserInfoAccessor) {
+        public OpayoHelper(IOpayoClient opayoClient,
+                           IContentCache contentCache,
+                           IActionLinkGenerator actionLinkGenerator,
+                           IRemoteIpAddressAccessor remoteIpAddressAccessor,
+                           IBrowserInfoAccessor browserInfoAccessor) {
             _opayoClient = opayoClient;
             _contentCache = contentCache;
             _actionLinkGenerator = actionLinkGenerator;
@@ -41,58 +41,64 @@ namespace N3O.Umbraco.Payments.Opayo {
             _browserInfoAccessor = browserInfoAccessor;
         }
 
+        public void ApplyAuthorisation(OpayoPayment payment, ApiTransactionRes transaction) {
+            if (transaction.IsAuthorised()) {
+                payment.Paid(transaction.TransactionId,
+                             transaction.StatusCode,
+                             transaction.StatusDetail,
+                             transaction.BankAuthorisationCode,
+                             transaction.RetrievalReference.GetValueOrThrow());
+            } else if (transaction.IsDeclined()) {
+                payment.Declined(transaction.TransactionId,
+                                 transaction.StatusCode,
+                                 transaction.StatusDetail);
+            } else if (transaction.IsRejected()) {
+                payment.Error(transaction.TransactionId,
+                              transaction.StatusCode,
+                              transaction.StatusDetail);
+            } else {
+                throw UnrecognisedValueException.For(transaction.Status);
+            }
+        }
+
+        public void ApplyException(OpayoPayment payment, ApiException apiException) {
+            var opayoErrors = apiException.Content.IfNotNull(JsonConvert.DeserializeObject<OpayoErrors>);
+            var opayoError = opayoErrors?.Errors.OrEmpty().FirstOrDefault() ??
+                             apiException.Content.IfNotNull(JsonConvert.DeserializeObject<OpayoError>);
+
+            var errorMessage = opayoError?.ClientMessage ?? opayoError?.Description ?? opayoError?.StatusDetail;
+            var errorCode = opayoError?.Code ?? opayoError?.StatusCode;
+            var transactionId = opayoError?.TransactionId;
+
+            payment.Error(transactionId, errorCode, errorMessage);
+        }
+
         public async Task ChargeAsync(OpayoPayment payment,
                                       ChargeCardReq req,
                                       PaymentsParameters parameters,
                                       bool saveCard) {
-            var settings = _contentCache.Single<OpayoSettingsContent>();
-            var vendorTxCode = parameters.GetTransactionId(settings, req.CardIdentifier).Left(40);
-            
             try {
+                var settings = _contentCache.Single<OpayoSettingsContent>();
+                var vendorTxCode = parameters.GetTransactionId(settings, req.CardIdentifier).Left(40);
+                
                 var apiRequest = GetApiPaymentTransactionReq(settings, vendorTxCode, req, parameters, saveCard);
 
+                payment.UpdateKeyAndVendorTxCode(req.MerchantSessionKey, vendorTxCode);
+                
                 var transaction = await _opayoClient.TransactionAsync(apiRequest);
-                
-                payment.UpdateMerchantSessionKey(req.MerchantSessionKey);
-                
-                if (transaction.IsAuthorised()) {
-                    payment.Paid(vendorTxCode,
-                                 transaction.TransactionId,
-                                 transaction.StatusCode,
-                                 transaction.StatusDetail,
-                                 transaction.BankAuthorisationCode,
-                                 transaction.RetrievalReference.GetValueOrThrow());
-                } else if (transaction.IsDeclined()) {
-                    payment.Declined(vendorTxCode,
-                                     transaction.TransactionId,
-                                     transaction.StatusCode,
-                                     transaction.StatusDetail);
-                } else if (transaction.IsRejected()) {
-                    payment.Error(vendorTxCode,
-                                  transaction.TransactionId,
-                                  transaction.StatusCode,
-                                  transaction.StatusDetail);
-                } else if (transaction.RequiresThreeDSecure()) {
-                    payment.RequireThreeDSecure(vendorTxCode,
-                                                transaction.TransactionId,
+
+                if (transaction.RequiresThreeDSecure()) {
+                    payment.RequireThreeDSecure(transaction.TransactionId,
                                                 req.ReturnUrl,
                                                 transaction.AcsUrl,
                                                 transaction.AcsTransId,
                                                 transaction.CReq,
                                                 transaction.PaReq);
                 } else {
-                    throw UnrecognisedValueException.For(transaction.Status);
+                    ApplyAuthorisation(payment, transaction);   
                 }
             } catch (ApiException apiException) {
-                var opayoErrors = apiException.Content.IfNotNull(JsonConvert.DeserializeObject<OpayoErrors>);
-                var opayoError = opayoErrors?.Errors.OrEmpty().FirstOrDefault() ??
-                                 apiException.Content.IfNotNull(JsonConvert.DeserializeObject<OpayoError>);
-
-                var errorMessage = opayoError?.ClientMessage ?? opayoError?.Description ?? opayoError?.StatusDetail;
-                var errorCode = opayoError?.Code ?? opayoError?.StatusCode;
-                var transactionId = opayoError?.TransactionId;
-
-                payment.Error(vendorTxCode, transactionId, errorCode, errorMessage);
+                ApplyException(payment, apiException);
             }
         }
 

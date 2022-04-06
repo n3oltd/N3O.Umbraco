@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.Opayo.Handlers {
     public class ChargeCardHandler : PaymentsHandler<ChargeCardCommand, ChargeCardReq, OpayoPayment> {
-        private readonly IChargeService _chargeService;
+        private readonly IOpayoHelper _opayoHelper;
 
-        public ChargeCardHandler(IPaymentsScope paymentsScope, IChargeService chargeService) : base(paymentsScope) {
-            _chargeService = chargeService;
+        public ChargeCardHandler(IPaymentsScope paymentsScope, IOpayoHelper opayoHelper) : base(paymentsScope) {
+            _opayoHelper = opayoHelper;
         }
 
         protected override async Task HandleAsync(ChargeCardCommand req,
                                                   OpayoPayment payment,
                                                   PaymentsParameters parameters,
                                                   CancellationToken cancellationToken) {
-            await _chargeService.ChargeAsync(payment, req.Model, parameters, false);
+            await _opayoHelper.ChargeAsync(payment, req.Model, parameters, false);
         }
     }
 }

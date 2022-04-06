@@ -15,5 +15,9 @@ namespace N3O.Umbraco.Payments.Models {
         public ThreeDSecureV1 Complete(string paRes) {
             return new ThreeDSecureV1(AcsUrl, MD, PaReq, paRes);
         }
+
+        public static ThreeDSecureV1 FromParameters(string acsUrl, string md, string paReq) {
+            return new ThreeDSecureV1(acsUrl, md, paReq, null);
+        }
     }
 }
