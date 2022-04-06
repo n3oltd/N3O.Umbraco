@@ -31,10 +31,9 @@
 
         <link rel="canonical" href="@content.AbsoluteUrl()">
         
-        <environment include="Production">
-            <n3o-tag-manager model="@Model" render="head" />    
-        </environment>
-
+        <n3o-google-analytics-4 model="@Model"></n3o-google-analytics-4>
+        <n3o-google-tag-manager model="@Model" render="head"></n3o-google-tag-manager>
+        
         <n3o-structured-data model="@Model" />
     </head>
 
@@ -47,9 +46,7 @@
             @RenderBody()
         </main>
 
-        <environment include="Production">
-            <n3o-tag-manager model="@Model" render="body" />
-        </environment>
+        <n3o-google-tag-manager model="@Model" render="body"></n3o-google-tag-manager>
 
         <n3o-page-info model="@Model" />
     </body>
