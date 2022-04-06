@@ -27,7 +27,7 @@ namespace N3O.Umbraco.Analytics.Modules {
 
             var code = new HtmlString(@"
 <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src=""https://www.googletagmanager.com/gtag/js?id=" + analyticsSettings.MeasurementId + @"></script>
+<script async src=""https://www.googletagmanager.com/gtag/js?id=" + analyticsSettings.MeasurementId + @"""></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag() { dataLayer.push(arguments); }
