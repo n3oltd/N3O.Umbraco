@@ -6,7 +6,7 @@ namespace N3O.Umbraco.Payments.Opayo.Models {
                          string bankAuthorisationCode,
                          long retrievalReference) {
             ClearErrors();
-            
+
             OpayoTransactionId = transactionId;
             OpayoStatusCode = statusCode;
             OpayoStatusDetail = statusDetail;

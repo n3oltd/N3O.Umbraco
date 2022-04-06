@@ -48,6 +48,6 @@ namespace N3O.Umbraco.Giving.Checkout.Models {
 
         public RegularGivingCheckout UpdateOptions(IRegularGivingOptions options) {
             return new RegularGivingCheckout(Allocations, Credential, new RegularGivingOptions(options), Total);
-        }       
+        }
     }
 }

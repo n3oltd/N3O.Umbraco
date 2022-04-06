@@ -244,21 +244,24 @@ export interface StripePayment {
 export interface CardPayment {
     threeDSecureRequired?: boolean;
     threeDSecureCompleted?: boolean;
-    threeDSecureUrl?: string | undefined;
-    challenge?: ChallengeThreeDSecure | undefined;
-    fallback?: FallbackThreeDSecure | undefined;
+    threeDSecureV1?: ThreeDSecureV1 | undefined;
+    threeDSecureV2?: ThreeDSecureV2 | undefined;
 }
 
-export interface ChallengeThreeDSecure {
-    acsTransId?: string | undefined;
-    cReq?: string | undefined;
-    cRes?: string | undefined;
-}
-
-export interface FallbackThreeDSecure {
-    termUrl?: string | undefined;
+export interface ThreeDSecureV1 {
+    acsUrl?: string | undefined;
+    md?: string | undefined;
     paReq?: string | undefined;
     paRes?: string | undefined;
+}
+
+export interface ThreeDSecureV2 {
+    acsUrl?: string | undefined;
+    acsTransId?: string | undefined;
+    sessionData?: string | undefined;
+    cReq?: string | undefined;
+    cRes?: string | undefined;
+    html?: string | undefined;
 }
 
 /** One of 'credential', 'payment' */

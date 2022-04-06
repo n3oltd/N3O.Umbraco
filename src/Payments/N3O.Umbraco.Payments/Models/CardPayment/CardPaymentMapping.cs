@@ -10,9 +10,8 @@ namespace N3O.Umbraco.Payments.Models {
         private void Map(CardPayment src, CardPaymentRes dest, MapperContext ctx) {
             dest.ThreeDSecureRequired = src.ThreeDSecureRequired;
             dest.ThreeDSecureCompleted = src.ThreeDSecureCompleted;
-            dest.ThreeDSecureUrl = src.ThreeDSecureUrl;
-            dest.Fallback = src.Fallback;
-            dest.Challenge = src.Challenge;
+            dest.ThreeDSecureV1 = src.ThreeDSecureV1;
+            dest.ThreeDSecureV2 = src.ThreeDSecureV2;
         }
     }
 }
