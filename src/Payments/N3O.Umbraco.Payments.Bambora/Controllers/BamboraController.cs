@@ -4,7 +4,6 @@ using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Payments.Bambora.Commands;
 using N3O.Umbraco.Payments.Bambora.Models;
-using N3O.Umbraco.Payments.Bambora.Models.ThreeDSecureChallenge;
 using N3O.Umbraco.Payments.Models;
 using System.Threading.Tasks;
 
@@ -18,8 +17,8 @@ namespace N3O.Umbraco.Payments.Bambora.Controllers {
         }
         
         [HttpPost("payments/{flowId:entityId}/completeThreeDSecureChallenge")]
-        public async Task<ActionResult> CompletePaymentThreeDSecureChallenge([FromForm] ThreeDSecureChallengeReq req) {
-            var res = await _mediator.SendAsync<CompleteThreeDSecureChallengeCommand, ThreeDSecureChallengeReq, PaymentFlowRes<BamboraPayment>>(req);
+        public async Task<ActionResult> CompletePaymentThreeDSecureChallenge([FromForm] CompleteThreeDSecureReq req) {
+            var res = await _mediator.SendAsync<CompleteThreeDSecureCommand, CompleteThreeDSecureReq, PaymentFlowRes<BamboraPayment>>(req);
 
             return Redirect(res.Result.ReturnUrl);
         }

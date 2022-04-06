@@ -3,7 +3,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
 
-namespace N3O.Umbraco.Payments.Opayo.Models {
+namespace N3O.Umbraco.Payments.Models {
     public class CompleteThreeDSecureReqValidator : ModelValidator<CompleteThreeDSecureReq> {
         public CompleteThreeDSecureReqValidator(IFormatter formatter) : base(formatter) {
             RuleFor(x => x)

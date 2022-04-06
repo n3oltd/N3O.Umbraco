@@ -75,11 +75,10 @@ namespace N3O.Umbraco.Payments.Opayo {
                 } else if (transaction.RequiresThreeDSecure()) {
                     payment.RequireThreeDSecure(vendorTxCode,
                                                 transaction.TransactionId,
-                                                GetTermUrl(parameters.FlowId),
+                                                req.ReturnUrl,
                                                 transaction.AcsUrl,
                                                 transaction.AcsTransId,
                                                 transaction.CReq,
-                                                req.ReturnUrl,
                                                 transaction.PaReq);
                 } else {
                     throw UnrecognisedValueException.For(transaction.Status);
@@ -169,11 +168,6 @@ namespace N3O.Umbraco.Payments.Opayo {
 
         private string GetNotificationUrl(EntityId flowId) {
             return _actionLinkGenerator.GetUrl<OpayoController>(x => x.CompleteThreeDSecureChallenge(null),
-                                                                new { flowId = flowId.ToString() });
-        }
-
-        private string GetTermUrl(EntityId flowId) {
-            return _actionLinkGenerator.GetUrl<OpayoController>(x => x.CompleteThreeDSecureFallback(null),
                                                                 new { flowId = flowId.ToString() });
         }
         

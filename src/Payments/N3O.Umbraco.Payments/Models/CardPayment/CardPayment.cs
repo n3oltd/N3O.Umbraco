@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using N3O.Umbraco.Extensions;
 using System;
 
 namespace N3O.Umbraco.Payments.Models {

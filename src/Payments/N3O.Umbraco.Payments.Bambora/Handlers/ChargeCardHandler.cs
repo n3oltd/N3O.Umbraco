@@ -53,10 +53,10 @@ namespace N3O.Umbraco.Payments.Bambora.Handlers {
                 if (apiException.RequiresThreeDSecure()) {
                     var threeDSecure = apiException.Content.IfNotNull(JsonConvert.DeserializeObject<ThreeDRes>);
                     
-                    payment.RequireThreeDSecure(req.Model.ReturnUrl,
-                                                threeDSecure?.ChallengeUrl,
-                                                threeDSecure?.ThreeDSessionData,
-                                                threeDSecure?.DecodedContents);
+                    payment.RequireThreeDSecureV2(req.Model.ReturnUrl,
+                                                  threeDSecure?.ChallengeUrl,
+                                                  threeDSecure?.ThreeDSessionData,
+                                                  threeDSecure?.DecodedContents);
                 } else {
                     var apiPaymentError = apiException.Content.IfNotNull(JsonConvert.DeserializeObject<ApiPaymentError>);
 

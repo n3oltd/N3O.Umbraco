@@ -1,6 +1,6 @@
 using N3O.Umbraco.Attributes;
 
-namespace N3O.Umbraco.Payments.Opayo.Models {
+namespace N3O.Umbraco.Payments.Models {
     public class CompleteThreeDSecureReq {
         [Name("CRes")]
         public string CRes { get; set; }

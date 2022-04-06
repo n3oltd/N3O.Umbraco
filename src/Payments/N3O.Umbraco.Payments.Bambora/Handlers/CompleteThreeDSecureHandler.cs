@@ -6,7 +6,6 @@ using N3O.Umbraco.Payments.Bambora.Client;
 using N3O.Umbraco.Payments.Bambora.Commands;
 using N3O.Umbraco.Payments.Bambora.Extensions;
 using N3O.Umbraco.Payments.Bambora.Models;
-using N3O.Umbraco.Payments.Bambora.Models;
 using Newtonsoft.Json;
 using Refit;
 using System.Threading;
@@ -17,7 +16,7 @@ namespace N3O.Umbraco.Payments.Bambora.Handlers {
         PaymentsHandler<CompleteThreeDSecureCommand, CompleteThreeDSecureReq, BamboraPayment> {
         private readonly IBamboraPaymentsClient _paymentsClient;
 
-        public CompleteThreeDSecureChallengeHandler(IPaymentsScope paymentsScope, IBamboraPaymentsClient paymentsClient)
+        public CompleteThreeDSecureHandler(IPaymentsScope paymentsScope, IBamboraPaymentsClient paymentsClient)
             : base(paymentsScope) {
             _paymentsClient = paymentsClient;
         }
@@ -30,7 +29,7 @@ namespace N3O.Umbraco.Payments.Bambora.Handlers {
                 var apiReq = new ThreeDSecureChallenge();
                 apiReq.CardResponse = new ThreeDSecureCardResponse();
                 apiReq.PaymentMethod = "token";
-                apiReq.ThreeDSessionData = payment.Card.Challenge.AcsTransId;
+                apiReq.ThreeDSessionData = payment.Card.ThreeDSecureV2.SessionData;
                 apiReq.CardResponse.Cres = req.Model.CRes;
 
                 var apiPayment = await _paymentsClient.CompleteThreeDSecureAsync(apiReq);
