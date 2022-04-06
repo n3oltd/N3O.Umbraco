@@ -19,7 +19,7 @@ namespace N3O.Umbraco.Giving.Analytics.Extensions {
             purchase.Value = checkout.GetValue().Amount;
             purchase.Tax = 0;
             purchase.Shipping = 0;
-            purchase.Currency = checkout.Currency;
+            purchase.Currency = checkout.Currency.Code.ToUpper();
             purchase.Coupon = null;
             purchase.Items = items;
 

@@ -20,7 +20,7 @@ namespace N3O.Umbraco.Giving.Analytics.Models {
         public decimal Shipping { get; set; }
         
         [JsonProperty("currency")]
-        public Currency Currency { get; set; }
+        public string Currency { get; set; }
         
         [JsonProperty("coupon")]
         public string Coupon { get; set; }
