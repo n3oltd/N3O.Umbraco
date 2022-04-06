@@ -2,24 +2,28 @@ using Microsoft.AspNetCore.Html;
 using N3O.Umbraco.Analytics.Content;
 using N3O.Umbraco.Analytics.Models;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Pages;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Analytics.Modules {
     public class GoogleAnalytics4PageModule : IPageModule {
-        private readonly Lazy<IContentCache> _contentCache;
+        private readonly IContentCache _contentCache;
 
-        public GoogleAnalytics4PageModule(Lazy<IContentCache> contentCache) {
+        public GoogleAnalytics4PageModule(IContentCache contentCache) {
             _contentCache = contentCache;
         }
 
-        public bool ShouldExecute(IPublishedContent page) => true;
+        public bool ShouldExecute(IPublishedContent page) {
+            var analyticsSettings = _contentCache.Single<GoogleAnalytics4SettingsContent>();
+
+            return analyticsSettings.HasValue(x => x.MeasurementId);
+        }
 
         public Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
-            var analyticsSettings = _contentCache.Value.Single<GoogleAnalytics4SettingsContent>();
+            var analyticsSettings = _contentCache.Single<GoogleAnalytics4SettingsContent>();
 
             var code = new HtmlString(@"
 <!-- Global site tag (gtag.js) - Google Analytics -->
