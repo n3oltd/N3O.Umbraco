@@ -2,24 +2,28 @@ using Microsoft.AspNetCore.Html;
 using N3O.Umbraco.Analytics.Content;
 using N3O.Umbraco.Analytics.Models;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Pages;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Analytics.Modules {
     public class GoogleTagManagerPageModule : IPageModule {
-        private readonly Lazy<IContentCache> _contentCache;
+        private readonly IContentCache _contentCache;
 
-        public GoogleTagManagerPageModule(Lazy<IContentCache> contentCache) {
+        public GoogleTagManagerPageModule(IContentCache contentCache) {
             _contentCache = contentCache;
         }
 
-        public bool ShouldExecute(IPublishedContent page) => true;
+        public bool ShouldExecute(IPublishedContent page) {
+            var tagManagerSettings = _contentCache.Single<GoogleTagManagerSettingsContent>();
+
+            return tagManagerSettings.HasValue(x => x.ContainerId);
+        }
 
         public Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
-            var tagManagerSettings = _contentCache.Value.Single<GoogleTagManagerSettingsContent>();
+            var tagManagerSettings = _contentCache.Single<GoogleTagManagerSettingsContent>();
 
             var bodyCode = new HtmlString(@"
 <!-- Google Tag Manager (noscript) -->
