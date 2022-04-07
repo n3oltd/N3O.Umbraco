@@ -7,7 +7,7 @@ namespace N3O.Umbraco.Giving.Analytics.Extensions {
     public static class AllocationExtensions {
         public static Item ToItem(this Allocation allocation, GivingType givingType, int index) {
             var item = new Item();
-            item.Id = allocation.Summary.Pascalize();
+            item.Id = allocation.Summary.Camelize();
             item.Name = allocation.Summary;
             item.Affiliation = "Website";
             item.Coupon = null;
