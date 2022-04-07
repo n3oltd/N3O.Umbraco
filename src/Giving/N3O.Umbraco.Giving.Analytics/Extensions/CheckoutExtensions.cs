@@ -29,7 +29,7 @@ namespace N3O.Umbraco.Giving.Analytics.Extensions {
         private static void AddAllocations(List<Item> items,
                                            IEnumerable<Allocation> allocations,
                                            GivingType givingType) {
-            var startIndex = items.Count + 1;
+            var startIndex = items.Count;
             
             items.AddRange(allocations.OrEmpty().Select((x, i) => x.ToItem(givingType, startIndex + i)));
         }
