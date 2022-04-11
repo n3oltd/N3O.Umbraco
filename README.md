@@ -59,8 +59,9 @@ A big [#h5yr](https://community.umbraco.com/learn-about-the-community/h5yr/) to:
 
 * Arnold Visser for [Our.Umbraco.GMaps](https://github.com/ArnoldV/Our.Umbraco.GMaps)
 * Dan Diplo for [Umbraco.GodMode](https://github.com/DanDiplo/Umbraco.GodMode)
-* Lee Kelleher for [Contentment](https://github.com/leekelleher/umbraco-contentment)
 * Kevin Jump for [uSync](https://jumoo.co.uk/usync/)
+* Lee Kelleher for [Contentment](https://github.com/leekelleher/umbraco-contentment)
+* Outfield Digital for [Konstrukt](https://getkonstrukt.net/)
 * Perplex Digital for [Perplex.ContentBlocks](https://github.com/PerplexDigital/Perplex.ContentBlocks)
 
 ## Questions & Support

@@ -366,6 +366,7 @@ src/Forms/N3O.Umbraco.Forms/App_Plugins
 src/Forms/N3O.Umbraco.Forms/Views
 src/Forms/N3O.Umbraco.Forms.StaticAssets/App_Plugins
 src/Forms/N3O.Umbraco.Forms.StaticAssets/Views
+src/Konstrukt/N3O.Umbraco.Konstrukt.StaticAssets/App_Plugins
 src/Marketing/N3O.Umbraco.Marketing/App_Plugins
 src/Marketing/N3O.Umbraco.Marketing/Assets
 src/Marketing/N3O.Umbraco.Marketing/config
