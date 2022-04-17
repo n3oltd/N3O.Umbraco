@@ -48,7 +48,7 @@ Provides a number of back office extensions such as:
 These either provide richer functionality than Umbraco includes or work around limitations (e.g. the built in Umbraco cropper doesn't work with Nested Content or Blocks).
 
 #### Search
-Provides functionality for providing a site search function using Google Custom Search.
+Provides pluggable implementations for providing site indexing and search functionality using either Google Programmable Search Engine or Algolia.
 
 #### Tax Relief
 Provides pluggable implementations for managing charitable tax relief, such as the UK Gift Aid scheme.
