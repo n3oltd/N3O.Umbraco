@@ -95,7 +95,7 @@ namespace N3O.Umbraco.Payments.Opayo {
                                                 transaction.CReq,
                                                 transaction.PaReq);
                 } else {
-                    ApplyAuthorisation(payment, transaction);   
+                    ApplyAuthorisation(payment, transaction);
                 }
             } catch (ApiException apiException) {
                 ApplyException(payment, apiException);

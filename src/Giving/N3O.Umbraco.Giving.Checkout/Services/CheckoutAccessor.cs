@@ -57,7 +57,7 @@ namespace N3O.Umbraco.Giving.Checkout {
                                                                        checkoutId,
                                                                        cart);
 
-                        await _repository.InsertAsync(checkout);    
+                        await _repository.InsertAsync(checkout);
                     }
                 }
 
