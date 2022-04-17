@@ -9,15 +9,15 @@ namespace N3O.Umbraco.Markup.Markdown {
             _pipeline = pipeline;
         }
 
-        public HtmlString RenderHtml(string markup) {
-            var html = Markdig.Markdown.ToHtml(markup, _pipeline);
+        public HtmlString RenderHtml(string content) {
+            var html = Markdig.Markdown.ToHtml(content, _pipeline);
 
             return new HtmlString(html);
         }
 
-        public bool Validate(string markup) {
+        public bool Validate(string content) {
             try {
-                RenderHtml(markup);
+                RenderHtml(content);
 
                 return true;
             } catch {

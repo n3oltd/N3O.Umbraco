@@ -2,7 +2,7 @@
 
 namespace N3O.Umbraco.Markup {
     public interface IMarkupEngine {
-        HtmlString RenderHtml(string markup);
-        bool Validate(string markup);
+        HtmlString RenderHtml(string content);
+        bool Validate(string content);
     }
 }
