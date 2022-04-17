@@ -14,7 +14,7 @@ namespace N3O.Umbraco.Search.Algolia {
                 var contentCache = serviceProvider.GetRequiredService<IContentCache>();
                 var settings = contentCache.Single<AlgoliaSettingsContent>();
 
-                return new SearchClient(settings.ApplicationId, settings.ApiKey);
+                return new SearchClient(settings.ApplicationId, settings.AdminApiKey);
             });
         }
     }

@@ -2,7 +2,8 @@
 
 namespace N3O.Umbraco.Search.Algolia.Content {
     public class AlgoliaSettingsContent : UmbracoContent<AlgoliaSettingsContent> {
-        public string ApiKey => GetValue(x => x.ApiKey);
+        public string AdminApiKey => GetValue(x => x.AdminApiKey);
         public string ApplicationId => GetValue(x => x.ApplicationId);
+        public string SearchOnlyApiKey => GetValue(x => x.SearchOnlyApiKey);
     }
 }
