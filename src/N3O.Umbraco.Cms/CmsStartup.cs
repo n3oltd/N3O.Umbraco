@@ -41,6 +41,7 @@ namespace N3O.Umbraco {
             }
 
             app.UseRewriter(GetRewriteOptions());
+            app.UseStaticFiles();
             app.UseOpenApiWithUI();
 
             app.UseUmbraco()
