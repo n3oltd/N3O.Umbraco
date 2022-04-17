@@ -5,7 +5,6 @@ using N3O.Umbraco.Payments.Handlers;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.Stripe.Commands;
 using N3O.Umbraco.Payments.Stripe.Models;
-using N3O.Umbraco.Payments.Stripe.Services;
 using Stripe;
 using System.Linq;
 using System.Threading;

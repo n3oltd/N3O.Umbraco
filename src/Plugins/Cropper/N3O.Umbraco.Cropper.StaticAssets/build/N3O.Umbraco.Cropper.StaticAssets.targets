@@ -9,11 +9,9 @@
             <N3OUmbracoCropperContentFiles Include="$(N3OUmbracoCropperContentFilesPath)"/>
         </ItemGroup>
         <Message Text="Copying N3O Cropper files: $(N3OUmbracoCropperContentFilesPath) - #@(N3OUmbracoCropperContentFiles->Count()) files" Importance="high"/>
-        <Copy
-                SourceFiles="@(N3OUmbracoCropperContentFiles)"
-                DestinationFiles="@(N3OUmbracoCropperContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Cropper\%(RecursiveDir)%(Filename)%(Extension)')"
-                SkipUnchangedFiles="true"/>
-
+        <Copy SourceFiles="@(N3OUmbracoCropperContentFiles)"
+              DestinationFiles="@(N3OUmbracoCropperContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Cropper\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"/>
     </Target>
 
     <Target Name="ClearN3OUmbracoCropperAssets" BeforeTargets="Clean">

@@ -9,11 +9,9 @@
             <N3OUmbracoSerpEditorContentFiles Include="$(N3OUmbracoSerpEditorContentFilesPath)"/>
         </ItemGroup>
         <Message Text="Copying N3O Serp Editor files: $(N3OUmbracoSerpEditorContentFilesPath) - #@(N3OUmbracoSerpEditorContentFiles->Count()) files" Importance="high"/>
-        <Copy
-                SourceFiles="@(N3OUmbracoSerpEditorContentFiles)"
-                DestinationFiles="@(N3OUmbracoSerpEditorContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.SerpEditor\%(RecursiveDir)%(Filename)%(Extension)')"
-                SkipUnchangedFiles="true"/>
-
+        <Copy SourceFiles="@(N3OUmbracoSerpEditorContentFiles)"
+              DestinationFiles="@(N3OUmbracoSerpEditorContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.SerpEditor\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"/>
     </Target>
 
     <Target Name="ClearN3OUmbracoSerpEditorAssets" BeforeTargets="Clean">

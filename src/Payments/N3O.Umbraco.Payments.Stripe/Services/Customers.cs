@@ -2,7 +2,7 @@ using N3O.Umbraco.Payments.Models;
 using Stripe;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Payments.Stripe.Services {
+namespace N3O.Umbraco.Payments.Stripe {
     public class Customers : ICustomers {
         private readonly StripeClient _stripeClient;
 

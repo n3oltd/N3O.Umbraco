@@ -1,4 +1,3 @@
-using N3O.Umbraco.Financial;
 using Newtonsoft.Json;
 
 namespace N3O.Umbraco.Giving.Analytics.Models {

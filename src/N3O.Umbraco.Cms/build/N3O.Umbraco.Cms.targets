@@ -9,10 +9,9 @@
             <N3OUmbracoCmsContentFiles Include="$(N3OUmbracoCmsContentFilesPath)"/>
         </ItemGroup>
         <Message Text="Copying N3O CMS files: $(N3OUmbracoCmsContentFilesPath) - #@(N3OUmbracoCmsContentFiles->Count()) files" Importance="high"/>
-        <Copy
-                SourceFiles="@(N3OUmbracoCmsContentFiles)"
-                DestinationFiles="@(N3OUmbracoCmsContentFiles->'$(MSBuildProjectDirectory)\wwwroot\umbraco\%(RecursiveDir)%(Filename)%(Extension)')"
-                SkipUnchangedFiles="true"/>
+        <Copy SourceFiles="@(N3OUmbracoCmsContentFiles)"
+              DestinationFiles="@(N3OUmbracoCmsContentFiles->'$(MSBuildProjectDirectory)\wwwroot\umbraco\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"/>
     </Target>
 
 </Project>

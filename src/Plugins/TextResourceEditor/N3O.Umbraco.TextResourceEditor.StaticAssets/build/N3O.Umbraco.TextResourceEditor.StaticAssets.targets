@@ -9,11 +9,9 @@
             <N3OUmbracoTextResourceEditorContentFiles Include="$(N3OUmbracoTextResourceEditorContentFilesPath)"/>
         </ItemGroup>
         <Message Text="Copying N3O Text Resource Editor files: $(N3OUmbracoTextResourceEditorContentFilesPath) - #@(N3OUmbracoTextResourceEditorContentFiles->Count()) files" Importance="high"/>
-        <Copy
-                SourceFiles="@(N3OUmbracoTextResourceEditorContentFiles)"
-                DestinationFiles="@(N3OUmbracoTextResourceEditorContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.TextResourceEditor\%(RecursiveDir)%(Filename)%(Extension)')"
-                SkipUnchangedFiles="true"/>
-
+        <Copy SourceFiles="@(N3OUmbracoTextResourceEditorContentFiles)"
+              DestinationFiles="@(N3OUmbracoTextResourceEditorContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.TextResourceEditor\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"/>
     </Target>
 
     <Target Name="ClearN3OUmbracoTextResourceEditorAssets" BeforeTargets="Clean">

@@ -9,11 +9,9 @@
             <N3OUmbracoSchedulerContentFiles Include="$(N3OUmbracoSchedulerContentFilesPath)"/>
         </ItemGroup>
         <Message Text="Copying N3O scheduler files: $(N3OUmbracoSchedulerContentFilesPath) - #@(N3OUmbracoSchedulerContentFiles->Count()) files" Importance="high"/>
-        <Copy
-                SourceFiles="@(N3OUmbracoSchedulerContentFiles)"
-                DestinationFiles="@(N3OUmbracoSchedulerContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Scheduler\%(RecursiveDir)%(Filename)%(Extension)')"
-                SkipUnchangedFiles="true"/>
-
+        <Copy SourceFiles="@(N3OUmbracoSchedulerContentFiles)"
+              DestinationFiles="@(N3OUmbracoSchedulerContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Scheduler\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"/>
     </Target>
 
     <Target Name="ClearN3OUmbracoSchedulerAssets" BeforeTargets="Clean">

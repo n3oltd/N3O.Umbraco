@@ -1,14 +1,9 @@
-using N3O.Umbraco.Exceptions;
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Payments.Handlers;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.Opayo.Clients;
 using N3O.Umbraco.Payments.Opayo.Commands;
-using N3O.Umbraco.Payments.Opayo.Extensions;
 using N3O.Umbraco.Payments.Opayo.Models;
-using Newtonsoft.Json;
 using Refit;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 

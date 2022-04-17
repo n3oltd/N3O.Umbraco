@@ -9,11 +9,9 @@
             <N3OUmbracoUploaderContentFiles Include="$(N3OUmbracoUploaderContentFilesPath)"/>
         </ItemGroup>
         <Message Text="Copying N3O Uploader files: $(N3OUmbracoUploaderContentFilesPath) - #@(N3OUmbracoUploaderContentFiles->Count()) files" Importance="high"/>
-        <Copy
-                SourceFiles="@(N3OUmbracoUploaderContentFiles)"
-                DestinationFiles="@(N3OUmbracoUploaderContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Uploader\%(RecursiveDir)%(Filename)%(Extension)')"
-                SkipUnchangedFiles="true"/>
-
+        <Copy SourceFiles="@(N3OUmbracoUploaderContentFiles)"
+              DestinationFiles="@(N3OUmbracoUploaderContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Uploader\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"/>
     </Target>
 
     <Target Name="ClearN3OUmbracoUploaderAssets" BeforeTargets="Clean">
