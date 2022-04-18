@@ -1,3 +1,4 @@
+using Humanizer;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
@@ -20,6 +21,14 @@ namespace N3O.Umbraco.Giving.Checkout.Webhooks {
             var serializer = GetJsonSerializer();
             var jObject = JObject.FromObject(checkout, serializer);
 
+            TransformConsent(checkout, jObject);
+            TransformSponsorships(serializer, GivingTypes.Donation, checkout.Donation?.Allocations, jObject);
+            TransformSponsorships(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject);
+
+            return jObject;
+        }
+
+        private void TransformConsent(Entities.Checkout checkout, JObject jObject) {
             var choices = checkout.Account.Consent.Choices.ToList();
             var channels = choices.Select(x => x.Channel).Distinct().ToList();
 
@@ -32,42 +41,21 @@ namespace N3O.Umbraco.Giving.Checkout.Webhooks {
             foreach (var choice in choices) {
                 consent[choice.Channel.Id][choice.Category.Id] = choice.Response.Value;
             }
-
-            if (checkout.Donation.IsComplete) {
-                var sponsorships = GetSponsorships(checkout.Donation.Allocations, serializer).ToList();
-
-                foreach (var (scheme, allocations) in sponsorships) {
-                    jObject["donation"][$"{scheme.Id}Sponorships"] = allocations;
-                }
-            }
-
-            if (checkout.RegularGiving.IsComplete) {
-                var sponsorships = GetSponsorships(checkout.RegularGiving.Allocations, serializer).ToList();
-
-                foreach (var (scheme, allocations) in sponsorships) {
-                    jObject["regularGiving"][$"{scheme.Id}Sponorships"] = allocations;
-                }
-            }
-
-            return jObject;
         }
+        
+        private void TransformSponsorships(JsonSerializer serializer,
+                                           GivingType givingType,
+                                           IEnumerable<Allocation> allocations,
+                                           JObject jObject) {
+            foreach (var allocation in allocations.OrEmpty().Where(x => x.Type == AllocationTypes.Sponsorship)) {
+                var key = $"{givingType.Id}{allocation.Sponsorship.Scheme.Id.Pascalize()}Sponsorships";
 
-        private IEnumerable<(SponsorshipScheme Scheme, JArray Allocations)> GetSponsorships(IEnumerable<IAllocation> allocations, JsonSerializer serializer) {
-            var groupdedByScheme = allocations.Where(x => x.Type == AllocationTypes.Sponsorship)
-                                              .GroupBy(x => x.Sponsorship.Scheme)
-                                              .ToList();
-
-            var res = new List<(SponsorshipScheme, JArray)>();
-
-            foreach (var schemeSponsorships in groupdedByScheme) {
-                var sponosrshipAllocations = schemeSponsorships.ToList();
-                var sponosrshipAllocationsJArray = JArray.FromObject(sponosrshipAllocations, serializer);
-                var result = (schemeSponsorships.Key, sponosrshipAllocationsJArray);
-
-                res.Add(result);
+                if (!jObject.ContainsKey(key)) {
+                    jObject[key] = new JArray();
+                }
+                
+                ((JArray) jObject[key]).Add(JObject.FromObject(allocation, serializer));
             }
-
-            return res;
         }
 
         protected override void AddCustomConverters() {
