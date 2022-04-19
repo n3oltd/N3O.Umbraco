@@ -14,8 +14,8 @@ namespace N3O.Umbraco.Giving.Checkout.Webhooks {
     public class CheckoutWebhookTransform : WebhookTransform {
         public CheckoutWebhookTransform(IJsonProvider jsonProvider) : base(jsonProvider) { }
 
-        public override bool IsTransform(object body) => body is Entities.Checkout; 
-        
+        public override bool IsTransform(object body) => body is Entities.Checkout;
+
         public override object Apply(object body) {
             var checkout = (Entities.Checkout) body;
             var serializer = GetJsonSerializer();
@@ -33,16 +33,16 @@ namespace N3O.Umbraco.Giving.Checkout.Webhooks {
             var channels = choices.Select(x => x.Channel).Distinct().ToList();
 
             var consent = (JObject) jObject["account"]["consent"];
-            
+
             foreach (var channel in channels) {
                 consent[channel.Id] = new JObject();
             }
-            
+
             foreach (var choice in choices) {
                 consent[choice.Channel.Id][choice.Category.Id] = choice.Response.Value;
             }
         }
-        
+
         private void TransformSponsorships(JsonSerializer serializer,
                                            GivingType givingType,
                                            IEnumerable<Allocation> allocations,
@@ -53,8 +53,22 @@ namespace N3O.Umbraco.Giving.Checkout.Webhooks {
                 if (!jObject.ContainsKey(key)) {
                     jObject[key] = new JArray();
                 }
-                
-                ((JArray) jObject[key]).Add(JObject.FromObject(allocation, serializer));
+
+                var allocationJObject = JObject.FromObject(allocation, serializer);
+
+                if (allocation.Sponsorship.Duration != null) {
+                    allocationJObject["value"]["amount"] = allocation.Value.Amount / allocation.Sponsorship.Duration.Months;
+                    
+                    var components = (JArray) allocationJObject["sponsorship"]["components"];
+                    
+                    foreach (var component in components) {
+                        var amount = component["value"]["amount"].ToObject<decimal>();
+                        
+                        component["value"]["amount"] = amount / allocation.Sponsorship.Duration.Months;
+                    }
+                }
+
+                ((JArray) jObject[key]).Add(allocationJObject);
             }
         }
 
