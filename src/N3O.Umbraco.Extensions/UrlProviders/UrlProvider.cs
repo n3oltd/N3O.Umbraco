@@ -1,4 +1,5 @@
 ﻿using Flurl;
+using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using System;
@@ -9,19 +10,43 @@ using Umbraco.Cms.Core.Routing;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.UrlProviders {
-    public abstract class UrlProviderBase : IUrlProvider {
+    public abstract class UrlProvider : IUrlProvider {
+        private readonly ILogger<UrlProvider> _logger;
         private readonly DefaultUrlProvider _defaultUrlProvider;
         private readonly IContentCache _contentCache;
 
-        protected UrlProviderBase(DefaultUrlProvider defaultUrlProvider, IContentCache contentCache) {
+        protected UrlProvider(ILogger<UrlProvider> logger,
+                              DefaultUrlProvider defaultUrlProvider,
+                              IContentCache contentCache) {
+            _logger = logger;
             _defaultUrlProvider = defaultUrlProvider;
             _contentCache = contentCache;
         }
 
-        public abstract UrlInfo GetUrl(IPublishedContent content, UrlMode mode, string culture, Uri current);
+        public UrlInfo GetUrl(IPublishedContent content, UrlMode mode, string culture, Uri current) {
+            try {
+                return ResolveUrl(content, mode, culture, current);
+            } catch (Exception ex) {
+                _logger.LogError(ex, "Error executing GetUrl for URL provider");
+                
+                return null;
+            }
+        }
 
-        public virtual IEnumerable<UrlInfo> GetOtherUrls(int id, Uri current) => Enumerable.Empty<UrlInfo>();
+        public IEnumerable<UrlInfo> GetOtherUrls(int id, Uri current) {
+            try {
+                return ResolveOtherUrls(id, current);
+            } catch (Exception ex) {
+                _logger.LogError(ex, "Error executing GetOtherUrls for URL provider");
+                
+                return Enumerable.Empty<UrlInfo>();
+            }
+        }
 
+        protected virtual IEnumerable<UrlInfo> ResolveOtherUrls(int id, Uri current) => Enumerable.Empty<UrlInfo>();
+        
+        protected abstract UrlInfo ResolveUrl(IPublishedContent content, UrlMode mode, string culture, Uri current);
+        
         protected UrlInfo TryGetRelocatedUrl(string pageTypeAlias,
                                              string contentTypeAlias,
                                              IPublishedContent content,

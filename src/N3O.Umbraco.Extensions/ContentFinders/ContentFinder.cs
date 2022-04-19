@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using System;
@@ -7,20 +8,25 @@ using Umbraco.Cms.Core.Routing;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.ContentFinders {
-    public abstract class ContentFinderBase : IContentFinder {
-        protected ContentFinderBase(IContentCache contentCache) {
+    public abstract class ContentFinder : IContentFinder {
+        private readonly ILogger<ContentFinder> _logger;
+
+        protected ContentFinder(ILogger<ContentFinder> logger, IContentCache contentCache) {
+            _logger = logger;
             ContentCache = contentCache;
         }
 
         public bool TryFindContent(IPublishedRequestBuilder request) {
             try {
-                return TryFindContentImpl(request);
-            } catch {
+                return FindContent(request);
+            } catch (Exception ex) {
+                _logger.LogError(ex, "Error executing content finder");
+                
                 return false;
             }
         }
 
-        public abstract bool TryFindContentImpl(IPublishedRequestBuilder request);
+        protected abstract bool FindContent(IPublishedRequestBuilder request);
 
         protected bool TryFindRelocatedContent(string pageTypeAlias,
                                                string contentTypeAlias,
