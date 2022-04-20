@@ -63,7 +63,7 @@ angular.module("umbraco").controller("N3O.Umbraco.Uploader",
 
             $.ajax({
                 type: "GET",
-                url: "/umbraco/backoffice/uploader/media/" + $scope.mediaId,
+                url: "/umbraco/backoffice/api/uploader/media/" + $scope.mediaId,
                 success: function (json) { $scope.processResponse(null, json); },
                 error: function () { $scope.processResponse("No media found with the specified ID"); }
             });
@@ -77,7 +77,7 @@ angular.module("umbraco").controller("N3O.Umbraco.Uploader",
             .then(function () {
                 window.setTimeout(function () {
                     $("#" + $scope.uniqueId + " .upload").upload({
-                        action: "/umbraco/backoffice/uploader/upload",
+                        action: "/umbraco/backoffice/api/uploader/upload",
                         label: 'Drop and drop a file, or click to select',
                         maxSize: 104857600,
                         maxQueue: 1,
