@@ -15,7 +15,7 @@ angular.module("umbraco")
 
             $.ajax({
                 type: "GET",
-                url: "/umbraco/backoffice/serpEditor/templateOptions",
+                url: "/umbraco/backoffice/api/serpEditor/templateOptions",
                 success: function (data) { $scope.titleSuffix = data.titleSuffix; }
             });
 

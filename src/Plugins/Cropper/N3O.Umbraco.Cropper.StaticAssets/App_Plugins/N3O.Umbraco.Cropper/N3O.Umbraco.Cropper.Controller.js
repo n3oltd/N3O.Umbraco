@@ -93,7 +93,7 @@ angular.module("umbraco").controller("N3O.Umbraco.Cropper",
 
             $.ajax({
                 type: "GET",
-                url: "/umbraco/backoffice/cropper/media/" + $scope.mediaId,
+                url: "/umbraco/backoffice/api/cropper/media/" + $scope.mediaId,
                 success: function (json) { $scope.processResponse(null, json); },
                 error: function () { $scope.processResponse("No media found with the specified ID"); }
             });
@@ -210,7 +210,7 @@ angular.module("umbraco").controller("N3O.Umbraco.Cropper",
                         }
 
                         $("#" + $scope.uniqueId + " .upload").upload({
-                            action: "/umbraco/backoffice/cropper/upload",
+                            action: "/umbraco/backoffice/api/cropper/upload",
                             label: "Drop an image, or click to select. Min. size " + $scope.minimumImageWidth + " x " + $scope.minimumImageHeight + ".",
                             maxSize: 104857600,
                             maxQueue: 1,
