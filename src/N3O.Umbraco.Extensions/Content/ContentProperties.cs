@@ -6,9 +6,9 @@ using System.Linq;
 namespace N3O.Umbraco.Content {
     public class ContentProperties {
         public ContentProperties(Guid id,
-                           string contentTypeAlias,
-                           IEnumerable<ContentProperty> properties,
-                           IEnumerable<NestedContentProperty> nestedContentProperties) {
+                                 string contentTypeAlias,
+                                 IEnumerable<ContentProperty> properties,
+                                 IEnumerable<NestedContentProperty> nestedContentProperties) {
             Id = id;
             ContentTypeAlias = contentTypeAlias;
             Properties = properties.OrEmpty().ToList();
