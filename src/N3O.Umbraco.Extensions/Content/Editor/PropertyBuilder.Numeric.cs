@@ -7,5 +7,9 @@
         public void SetInteger(int? value) {
             Value = value;
         }
+        
+        public void SetInteger(long? value) {
+            SetInteger((int?) value);
+        }
     }
 }

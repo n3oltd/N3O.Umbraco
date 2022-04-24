@@ -10,6 +10,10 @@ namespace N3O.Umbraco.Extensions {
         public static DataListPropertyBuilder DataList(this IContentBuilder builder, string propertyTypeAlias) {
             return builder.Property<DataListPropertyBuilder>(propertyTypeAlias);
         }
+        
+        public static DateTimePropertyBuilder DateTime(this IContentBuilder builder, string propertyTypeAlias) {
+            return builder.Property<DateTimePropertyBuilder>(propertyTypeAlias);
+        }
 
         public static NestedPropertyBuilder Nested(this IContentBuilder builder, string propertyTypeAlias) {
             return builder.Property<NestedPropertyBuilder>(propertyTypeAlias);
