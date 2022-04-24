@@ -11,6 +11,10 @@ namespace N3O.Umbraco.Lookups {
         }
 
         public string Id { get; }
+        
+        public virtual IEnumerable<string> GetTextValues() {
+            yield return Id;
+        }
 
         protected override IEnumerable<object> GetAtomicValues() {
             yield return Id;
