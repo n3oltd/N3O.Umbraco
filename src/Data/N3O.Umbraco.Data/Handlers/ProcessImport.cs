@@ -4,7 +4,6 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Data.Converters;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Mediator;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;

@@ -7,7 +7,10 @@ namespace N3O.Umbraco.Data.Models {
         [Name("Date Pattern")]
         public DatePattern DatePattern { get; set; }
         
-        [Name("File")]
-        public IFormFile File { get; set; }
+        [Name("CSV File")]
+        public IFormFile CsvFile { get; set; }
+        
+        [Name("Zip File")]
+        public IFormFile ZipFile { get; set; }
     }
 }

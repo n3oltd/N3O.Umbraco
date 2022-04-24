@@ -10,11 +10,11 @@ namespace N3O.Umbraco.Data.Models {
                 .NotNull()
                 .WithMessage(Get<Strings>(s => s.SpecifyDatePattern));
             
-            RuleFor(x => x.File)
+            RuleFor(x => x.CsvFile)
                 .NotNull()
                 .WithMessage(Get<Strings>(s => s.SpecifyFile));
 
-            RuleFor(x => x.File)
+            RuleFor(x => x.CsvFile)
                 .Must(x => x.ContentType.EqualsInvariant(DataConstants.ContentTypes.Csv))
                 .WithMessage(Get<Strings>(s => s.InvalidFile));
         }
