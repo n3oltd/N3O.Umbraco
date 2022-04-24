@@ -1,0 +1,44 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <PropertyGroup>
+        <N3OUmbracoDataExportContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.Data.Export\**\*.*</N3OUmbracoDataExportContentFilesPath>
+        <N3OUmbracoDataImportContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.Data.Import\**\*.*</N3OUmbracoDataImportContentFilesPath>
+    </PropertyGroup>
+
+    <Target Name="CopyN3OUmbracoDataExportAssets" BeforeTargets="Build">
+        <ItemGroup>
+            <N3OUmbracoDataExportContentFiles Include="$(N3OUmbracoDataExportContentFilesPath)"/>
+        </ItemGroup>
+        <Message Text="Copying N3O data export files: $(N3OUmbracoDataExportContentFilesPath) - #@(N3OUmbracoDataExportContentFiles->Count()) files" Importance="high"/>
+        <Copy SourceFiles="@(N3OUmbracoDataExportContentFiles)"
+              DestinationFiles="@(N3OUmbracoDataExportContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Data.Export\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"/>
+    </Target>
+
+    <Target Name="CopyN3OUmbracoDataImportAssets" BeforeTargets="Build">
+        <ItemGroup>
+            <N3OUmbracoDataImportContentFiles Include="$(N3OUmbracoDataImportContentFilesPath)"/>
+        </ItemGroup>
+        <Message Text="Copying N3O data Import files: $(N3OUmbracoDataImportContentFilesPath) - #@(N3OUmbracoDataImportContentFiles->Count()) files" Importance="high"/>
+        <Copy SourceFiles="@(N3OUmbracoDataImportContentFiles)"
+              DestinationFiles="@(N3OUmbracoDataImportContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Data.Import\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"/>
+    </Target>
+
+    <Target Name="ClearN3OUmbracoDataExportAssets" BeforeTargets="Clean">
+        <ItemGroup>
+            <N3OUmbracoExportDataDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Data.Export\"/>
+        </ItemGroup>
+        <Message Text="Clear old N3O data export files" Importance="high"/>
+        <RemoveDir Directories="@(N3OUmbracoExportDataDir)"/>
+    </Target>
+
+    <Target Name="ClearN3OUmbracoDataImportAssets" BeforeTargets="Clean">
+        <ItemGroup>
+            <N3OUmbracoImportDataDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Data.Import\"/>
+        </ItemGroup>
+        <Message Text="Clear old N3O data Import files" Importance="high"/>
+        <RemoveDir Directories="@(N3OUmbracoImportDataDir)"/>
+    </Target>
+
+</Project>

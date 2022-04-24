@@ -1,0 +1,188 @@
+using N3O.Umbraco.Data.Extensions;
+using N3O.Umbraco.Data.Lookups;
+using N3O.Umbraco.Data.Models;
+using N3O.Umbraco.Extensions;
+using OfficeOpenXml;
+using OfficeOpenXml.Table;
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using ExcelColumn = N3O.Umbraco.Data.Models.ExcelColumn;
+using WorkTable = OfficeOpenXml.Table.ExcelTable;
+
+namespace N3O.Umbraco.Data.Services {
+    public class ExcelWorksheetWriter {
+        private const int FirstColumn = 1;
+        private const int FirstRow = 1;
+        private const int TableNameMaxLength = 255;
+        private const int WorksheetNameMaxLength = 31;
+        
+        private readonly IExcelTable _table;
+        private readonly IColumnVisibility _columnVisibility;
+        private readonly Dictionary<ExcelColumn, ExcelFormatting> _footerFormatting = new();
+        private readonly List<ExcelColumn> _visibleColumns = new();
+        private int _rowCursor = FirstRow;
+        private int _columnCursor = FirstColumn;
+
+        public ExcelWorksheetWriter(IExcelTable table, IColumnVisibility columnVisibility) {
+            _table = table;
+            _columnVisibility = columnVisibility;
+        }
+
+        public void Write(ExcelWorksheets worksheets, bool formatAsTable) {
+            CalculateVisibleColumns();
+
+            var worksheet = worksheets.Add(GetExcelSafeName(_table.Name, WorksheetNameMaxLength));
+
+            WriteTable(worksheet, formatAsTable);
+        }
+
+        private void CalculateVisibleColumns() {
+            foreach (var column in _table.Columns) {
+                var isVisible = _columnVisibility.IsVisible(column);
+
+                if (isVisible) {
+                    _visibleColumns.Add(column);
+                }
+            }
+        }
+
+        private void WriteTable(ExcelWorksheet worksheet, bool formatAsTable) {
+            if (formatAsTable) {
+                WriteHeaders(worksheet);
+            }
+
+            WriteBody(worksheet);
+
+            if (formatAsTable) {
+                var lastRow = _rowCursor - 1;
+                var lastColumn = _visibleColumns.Count;
+
+                var tableRange = new ExcelAddressBase(FirstRow, FirstColumn, lastRow, lastColumn);
+                var tableName = GetExcelSafeName(_table.Name, TableNameMaxLength);
+
+                var table = worksheet.Tables.Add(tableRange, tableName);
+                WriteFooters(worksheet, table);
+            }
+
+            worksheet.Cells.AutoFitColumns();
+        }
+
+        private void WriteHeaders(ExcelWorksheet worksheet) {
+            foreach (var column in _visibleColumns) {
+                var titleCell = ExcelCell.FromCell(DataTypes.String.Cell(column.Title, null),
+                                                   column.Title,
+                                                   column.Comment,
+                                                   null,
+                                                   ExcelFormatting.None);
+
+                WriteCell(worksheet, titleCell);
+            }
+
+            NextRow();
+        }
+
+        private void WriteBody(ExcelWorksheet worksheet) {
+            for (var row = 0; row < _table.RowCount; row++) {
+                foreach (var column in _visibleColumns) {
+                    var cell = _table[column, row];
+
+                    WriteCell(worksheet, cell);
+
+                    UpdateFooterFormatting(column, cell.Formatting);
+                }
+
+                NextRow();
+            }
+        }
+
+        // If all cells have identical formatting, use that formatting for the footer also, otherwise we
+        // don't have a single style we can apply to the footer.
+        private void UpdateFooterFormatting(ExcelColumn column, ExcelFormatting formatting) {
+            var currentFormatting = _footerFormatting.GetOrAdd(column, () => formatting);
+
+            if (currentFormatting != ExcelFormatting.None) {
+                if (formatting != currentFormatting) {
+                    _footerFormatting[column] = ExcelFormatting.None;
+                }
+            }
+        }
+
+        private void WriteFooters(ExcelWorksheet worksheet, WorkTable workTable) {
+            if (_table.HasFooters) {
+                for (var i = 0; i < _table.ColumnCount; i++) {
+                    var column = _table.Columns[i];
+
+                    if (!_visibleColumns.Contains(column)) {
+                        NextColumn();
+                        continue;
+                    }
+
+                    workTable.ShowTotal = true;
+
+                    if (column.FooterFunction != null) {
+                        workTable.Columns[i].TotalsRowFunction = Enum.Parse<RowFunctions>(column.FooterFunction.Id, true);
+
+                        FormatFooter(worksheet, column);
+                    }
+
+                    NextColumn();
+                }
+
+                NextRow();
+            }
+        }
+
+        private void FormatFooter(ExcelWorksheet worksheet, ExcelColumn column) {
+            var workCell = GetCurrentCell(worksheet);
+            var formatting = _footerFormatting[column];
+
+            workCell.ApplyFormatting(formatting);
+        }
+
+        private void WriteCell(ExcelWorksheet worksheet, ExcelCell cell) {
+            var workCell = GetCurrentCell(worksheet);
+
+            workCell.Value = cell.ExcelValue;
+
+            if (cell.Comment.HasValue()) {
+                var comment = workCell.AddComment(cell.Comment);
+                comment.Author = "N3O Ltd";
+                comment.AutoFit = true;
+            }
+            
+            if (cell.HyperLink.HasValue()) {
+                workCell.SetHyperlink(cell.HyperLink);
+            }
+
+            workCell.ApplyFormatting(cell.Formatting);
+
+            NextColumn();
+        }
+
+        private ExcelRange GetCurrentCell(ExcelWorksheet worksheet) {
+            var workCell = worksheet.Cells[_rowCursor, _columnCursor];
+
+            return workCell;
+        }
+
+        private void NextRow() {
+            _rowCursor++;
+            _columnCursor = FirstColumn;
+        }
+
+        private void NextColumn() {
+            _columnCursor++;
+        }
+
+        private string GetExcelSafeName(string name, int maxLength) {
+            var safeName = Regex.Replace(name, "[^a-z0-9]", "_", RegexOptions.IgnoreCase);
+
+            if (safeName.Length > maxLength) {
+                safeName = safeName.Substring(0, maxLength);
+            }
+
+            return safeName;
+        }
+    }
+}
