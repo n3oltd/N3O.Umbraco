@@ -15,7 +15,6 @@ using N3O.Umbraco.References;
 using N3O.Umbraco.Storage.Services;
 using System;
 using System.Collections.Generic;
-using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;

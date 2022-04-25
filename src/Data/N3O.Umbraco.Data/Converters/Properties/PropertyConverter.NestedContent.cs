@@ -22,14 +22,14 @@ namespace N3O.Umbraco.Data.Converters {
         public override void Import(IContentBuilder contentBuilder,
                                     IParser parser,
                                     UmbracoPropertyInfo propertyInfo,
-                                    IEnumerable<string> values) {
+                                    IEnumerable<string> source) {
             throw new NotImplementedException();
         }
         
         protected override int GetMaxValues(UmbracoPropertyInfo propertyInfo) {
-            var configuration = (MultiNodePickerConfiguration) propertyInfo.DataType.Configuration;
+            var configuration = (NestedContentConfiguration) propertyInfo.DataType.Configuration;
 
-            return configuration.MaxNumber;
+            return configuration.MaxItems ?? 0;
         }
     }
 }

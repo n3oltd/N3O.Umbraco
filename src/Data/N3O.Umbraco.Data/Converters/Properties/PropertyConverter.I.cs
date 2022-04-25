@@ -10,7 +10,7 @@ namespace N3O.Umbraco.Data.Converters {
         void Import(IContentBuilder contentBuilder,
                     IParser parser,
                     UmbracoPropertyInfo propertyInfo,
-                    IEnumerable<string> values);
+                    IEnumerable<string> source);
         bool IsConverter(UmbracoPropertyInfo propertyInfo);
     }
 }

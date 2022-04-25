@@ -358,6 +358,7 @@ wwwroot/media
 wwwroot/umbraco
 
 src/N3O.Umbraco.Cms/App_Plugins
+src/Data/N3O.Umbraco.Data.StaticAssets/App_Plugins/Konstrukt
 src/DemoSite/**/App_Plugins/*
 src/DemoSite/**/umbraco/*
 src/DemoSite/**/Views/MacroPartials/*

@@ -11,6 +11,7 @@ namespace N3O.Umbraco.Data.Parsing {
         private readonly IReadOnlyList<IDataTypeParser> _allParsers;
 
         public Parser(IBoolParser boolParser,
+                      IContentParser contentParser,
                       IDateParser dateParser,
                       IDateTimeParser dateTimeParser,
                       IDecimalParser decimalParser,
@@ -18,11 +19,13 @@ namespace N3O.Umbraco.Data.Parsing {
                       IIntegerParser integerParser,
                       ILookupParser lookupParser,
                       IMoneyParser moneyParser,
+                      IPublishedContentParser publishedContentParser,
                       IReferenceParser referenceParser,
                       IStringParser textParser,
                       ITimeParser timeParser,
                       IYearMonthParser yearMonth) {
             Bool = boolParser;
+            Content = contentParser;
             Date = dateParser;
             DateTime = dateTimeParser;
             Decimal = decimalParser;
@@ -30,17 +33,30 @@ namespace N3O.Umbraco.Data.Parsing {
             Integer = integerParser;
             Lookup = lookupParser;
             Money = moneyParser;
+            PublishedContent = publishedContentParser;
             Reference = referenceParser;
             String = textParser;
             Time = timeParser;
             YearMonth = yearMonth;
 
             _allParsers = new IDataTypeParser[] {
-                Bool, YearMonth, Date, DateTime, Decimal,  Guid,  Integer, Lookup, Money, Reference, String, Time
+                Bool,
+                Content,
+                Date,
+                DateTime,
+                Decimal,
+                Guid,
+                Integer,
+                Lookup,
+                Money,
+                PublishedContent,
+                Reference,
+                String, Time
             };
         }
 
         public IBoolParser Bool { get; }
+        public IContentParser Content { get; }
         public IDateParser Date { get; }
         public IDateTimeParser DateTime { get; }
         public IDecimalParser Decimal { get; }
@@ -48,6 +64,7 @@ namespace N3O.Umbraco.Data.Parsing {
         public IIntegerParser Integer { get; }
         public ILookupParser Lookup { get; }
         public IMoneyParser Money { get; }
+        public IPublishedContentParser PublishedContent { get; }
         public IReferenceParser Reference { get; }
         public IStringParser String { get; }
         public ITimeParser Time { get; }

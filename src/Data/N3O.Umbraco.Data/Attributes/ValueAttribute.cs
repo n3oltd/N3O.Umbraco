@@ -12,6 +12,11 @@ namespace N3O.Umbraco.Data.Attributes {
     }
 
     [AttributeUsage(AttributeTargets.Property)]
+    public class ContentAttribute : ValueAttribute {
+        public ContentAttribute(int order) : base(order, DataTypes.Content) { }
+    }
+    
+    [AttributeUsage(AttributeTargets.Property)]
     public class DateAttribute : ValueAttribute {
         public DateAttribute(int order) : base(order, DataTypes.Date) { }
     }
@@ -44,6 +49,11 @@ namespace N3O.Umbraco.Data.Attributes {
     [AttributeUsage(AttributeTargets.Property)]
     public class MoneyAttribute : ValueAttribute {
         public MoneyAttribute(int order) : base(order, DataTypes.Money) { }
+    }
+    
+    [AttributeUsage(AttributeTargets.Property)]
+    public class PublishedContentAttribute : ValueAttribute {
+        public PublishedContentAttribute(int order) : base(order, DataTypes.PublishedContent) { }
     }
 
     [AttributeUsage(AttributeTargets.Property)]

@@ -24,6 +24,12 @@ namespace N3O.Umbraco.Data.Attributes {
         public BoolCollectionAttribute(int order, string layoutId, int maxValues = -1, string sort = null)
             : base(order, DataTypes.Bool, layoutId, maxValues, sort) { }
     }
+    
+    [AttributeUsage(AttributeTargets.Property)]
+    public class ContentCollectionAttribute : CollectionAttribute {
+        public ContentCollectionAttribute(int order, string layoutId, int maxValues = -1, string sort = null)
+            : base(order, DataTypes.Content, layoutId, maxValues, sort) { }
+    }
 
     [AttributeUsage(AttributeTargets.Property)]
     public class DateCollectionAttribute : CollectionAttribute {
@@ -65,6 +71,12 @@ namespace N3O.Umbraco.Data.Attributes {
     public class MoneyCollectionAttribute : CollectionAttribute {
         public MoneyCollectionAttribute(int order, string layoutId, int maxValues = -1, string sort = null)
             : base(order, DataTypes.Money, layoutId, maxValues, sort) { }
+    }
+    
+    [AttributeUsage(AttributeTargets.Property)]
+    public class PublishedContentCollectionAttribute : CollectionAttribute {
+        public PublishedContentCollectionAttribute(int order, string layoutId, int maxValues = -1, string sort = null)
+            : base(order, DataTypes.PublishedContent, layoutId, maxValues, sort) { }
     }
 
     [AttributeUsage(AttributeTargets.Property)]

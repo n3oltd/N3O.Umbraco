@@ -3,7 +3,6 @@ using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Parsing;
 using N3O.Umbraco.Extensions;
-using NodaTime;
 using NodaTime.Extensions;
 using System;
 using System.Collections.Generic;
@@ -24,10 +23,10 @@ namespace N3O.Umbraco.Data.Converters {
         public override void Import(IContentBuilder contentBuilder,
                                     IParser parser,
                                     UmbracoPropertyInfo propertyInfo,
-                                    IEnumerable<string> values) {
+                                    IEnumerable<string> source) {
             Import(propertyInfo,
-                   values,
-                   s => parser.DateTime.Parse(s, typeof(LocalDateTime?)),
+                   source,
+                   s => parser.DateTime.Parse(s, DataTypes.DateTime.GetClrType()),
                    (alias, value) => contentBuilder.DateTime(alias).SetDateTime(value));
         }
     }

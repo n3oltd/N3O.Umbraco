@@ -21,10 +21,10 @@ namespace N3O.Umbraco.Data.Converters {
         public override void Import(IContentBuilder contentBuilder,
                                     IParser parser,
                                     UmbracoPropertyInfo propertyInfo,
-                                    IEnumerable<string> values) {
+                                    IEnumerable<string> source) {
             Import(propertyInfo,
-                   values,
-                   s => parser.Integer.Parse(s, typeof(long?)),
+                   source,
+                   s => parser.Integer.Parse(s, DataTypes.Integer.GetClrType()),
                    (alias, value) => contentBuilder.Numeric(alias).SetInteger(value));
         }
     }

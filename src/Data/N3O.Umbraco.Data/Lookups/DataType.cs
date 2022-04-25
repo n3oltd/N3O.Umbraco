@@ -9,6 +9,8 @@ using NodaTime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Data.Lookups {
     public abstract class DataType : NamedLookup {
@@ -96,6 +98,9 @@ namespace N3O.Umbraco.Data.Lookups {
         public static readonly DataType<bool?, BoolCellConverter, BoolTextConverter> Bool
             = new("bool", "Boolean", false, (a, b) => a == b);
 
+        public static readonly DataType<IContent, ContentCellConverter, ContentTextConverter> Content
+            = new("content", "Content", true, (a, b) => a?.Id == b?.Id);
+        
         public static readonly DataType<LocalDate?, DateCellConverter, DateTextConverter> Date
             = new("date", "Date", false, (a, b) => a == b);
 
@@ -117,6 +122,9 @@ namespace N3O.Umbraco.Data.Lookups {
         public static readonly DataType<Money, MoneyCellConverter, MoneyTextConverter> Money
             = new("money", "Money", false, (a, b) => a == b);
 
+        public static readonly DataType<IPublishedContent, PublishedContentCellConverter, PublishedContentTextConverter> PublishedContent
+            = new("publishedContent", "Published Content", true, (a, b) => a?.Id == b?.Id);
+        
         public static readonly DataType<Reference, ReferenceCellConverter, ReferenceTextConverter> Reference
             = new("reference", "Reference", false, (a, b) => a == b);
 

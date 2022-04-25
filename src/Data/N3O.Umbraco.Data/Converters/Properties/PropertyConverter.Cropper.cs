@@ -19,7 +19,7 @@ namespace N3O.Umbraco.Data.Converters {
         public override void Import(IContentBuilder contentBuilder,
                                     IParser parser,
                                     UmbracoPropertyInfo propertyInfo,
-                                    IEnumerable<string> values) {
+                                    IEnumerable<string> source) {
             throw new NotImplementedException();
         }
     }
