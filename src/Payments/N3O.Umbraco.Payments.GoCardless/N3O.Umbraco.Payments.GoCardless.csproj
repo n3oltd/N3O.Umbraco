@@ -40,6 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="GoCardless" Version="5.2.0" />
+      <PackageReference Include="GoCardless" Version="5.3.0" />
     </ItemGroup>
 </Project>
