@@ -1,8 +1,11 @@
 ﻿using Azure.Storage.Blobs;
+using HeyRed.Mime;
+using Humanizer.Bytes;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Storage.Services;
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Storage.Azure.Services {
@@ -30,20 +33,38 @@ namespace N3O.Umbraco.Storage.Azure.Services {
         }
 
         public async Task DeleteFileAsync(string name) {
-            var blob = await GetBlobAsync(name);
+            var blobClient = await GetBlobClientAsync(name);
 
-            await blob.DeleteAsync();
+            await blobClient.DeleteAsync();
         }
-        
-        private async Task<BlobClient> GetBlobAsync(string name) {
-            var blob = _container.GetBlobClient(name);
-            var exists = await blob.ExistsAsync();
+
+        public async Task<Blob> GetFileAsync(string name, CancellationToken cancellationToken = default) {
+            var blobClient = await GetBlobClientAsync(name);
+            var properties = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);
+
+            return new Blob(blobClient.Name,
+                            ByteSize.FromBytes(properties.Value.ContentLength),
+                            GetContentType(name),
+                            await blobClient.OpenReadAsync(cancellationToken: cancellationToken));
+        }
+
+        private async Task<BlobClient> GetBlobClientAsync(string name) {
+            var blobClient = _container.GetBlobClient(name);
+            var exists = await blobClient.ExistsAsync();
 
             if (!exists) {
                 throw new FileNotFoundException($"File {name.Quote()} does not exist in folder {_container.Name.Quote()}");
             }
 
-            return blob;
+            return blobClient;
+        }
+        
+        private string GetContentType(string filename) {
+            try {
+                return MimeTypesMap.GetMimeType(filename);
+            } catch {
+                return "application/octet-stream";
+            }
         }
     }
 }

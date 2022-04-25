@@ -1,6 +1,7 @@
 using N3O.Umbraco.Data.Builders;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Parsing;
+using System.Collections.Generic;
 using System.IO;
 
 namespace N3O.Umbraco.Data.Services {
@@ -34,18 +35,18 @@ namespace N3O.Umbraco.Data.Services {
 
         public ICsvReader GetCsvReader(DatePattern datePattern,
                                        DecimalSeparator decimalSeparator,
+                                       IEnumerable<IBlobResolver> blobResolvers,
                                        TextEncoding textEncoding,
                                        Stream stream,
                                        bool hasColumnHeadings) {
-            var parser = _parserFactory.GetParser(datePattern, decimalSeparator);
-            var csvReader = new CsvReader(parser,
-                                          TableBuilder,
-                                          _columnRangeBuilder,
-                                          textEncoding,
-                                          stream,
-                                          hasColumnHeadings);
-
-            return csvReader;
+            var parser = _parserFactory.GetParser(datePattern, decimalSeparator, blobResolvers);
+            
+            return new CsvReader(parser,
+                                 TableBuilder,
+                                 _columnRangeBuilder,
+                                 textEncoding,
+                                 stream,
+                                 hasColumnHeadings);
         }
 
         public IColumnRangeBuilder ColumnRangeBuilder { get; }

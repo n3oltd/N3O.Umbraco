@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Storage.Services {
@@ -7,5 +8,6 @@ namespace N3O.Umbraco.Storage.Services {
         Task AddFileAsync(string name, byte[] contents);
         Task DeleteAllFilesAsync();
         Task DeleteFileAsync(string name);
+        Task<Blob> GetFileAsync(string name, CancellationToken cancellationToken = default);
     }
 }

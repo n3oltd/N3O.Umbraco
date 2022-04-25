@@ -6,6 +6,7 @@ using N3O.Umbraco.Data.Filters;
 using N3O.Umbraco.Data.Konstrukt;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
+using N3O.Umbraco.Data.Parsing;
 using N3O.Umbraco.Data.Services;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
@@ -88,6 +89,7 @@ namespace N3O.Umbraco.Data.Handlers {
 
                 var csvReader = _workspace.GetCsvReader(req.Model.DatePattern,
                                                         DecimalSeparators.Point,
+                                                        BlobResolvers.Url(),
                                                         TextEncodings.Utf8,
                                                         stream,
                                                         true);

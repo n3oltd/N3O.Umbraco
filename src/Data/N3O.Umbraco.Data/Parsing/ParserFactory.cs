@@ -1,5 +1,6 @@
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Localization;
+using System.Collections.Generic;
 
 namespace N3O.Umbraco.Data.Parsing {
     public class ParserFactory : IParserFactory {
@@ -42,17 +43,22 @@ namespace N3O.Umbraco.Data.Parsing {
             _timeParser = timeParser;
         }
 
-        public IParser GetParser(DatePattern datePattern, DecimalSeparator decimalSeparator, Timezone timezone = null) {
+        public IParser GetParser(DatePattern datePattern,
+                                 DecimalSeparator decimalSeparator,
+                                 IEnumerable<IBlobResolver> blobResolvers,
+                                 Timezone timezone = null) {
             timezone ??= Timezones.Utc;
 
-            var yearMonthParser = _yearMonthParserFactory.Create(datePattern);
+            var blobParser = new BlobParser(blobResolvers);
             var dateParser = _dateParserFactory.Create(datePattern, timezone);
             var dateTimeParser = new DateTimeParser(dateParser, _timeParser, timezone);
             var decimalParser = _decimalParserFactory.Create(decimalSeparator);
             var integerParser = _integerParserFactory.Create(decimalSeparator);
             var moneyParser = new MoneyParser(decimalParser);
+            var yearMonthParser = _yearMonthParserFactory.Create(datePattern);
 
-            var parser = new Parser(_boolParser,
+            var parser = new Parser(blobParser,
+                                    _boolParser,
                                     _contentParser,
                                     dateParser,
                                     dateTimeParser,

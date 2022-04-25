@@ -10,7 +10,8 @@ namespace N3O.Umbraco.Data.Parsing {
     public class Parser : IParser {
         private readonly IReadOnlyList<IDataTypeParser> _allParsers;
 
-        public Parser(IBoolParser boolParser,
+        public Parser(IBlobParser blobParser,
+                      IBoolParser boolParser,
                       IContentParser contentParser,
                       IDateParser dateParser,
                       IDateTimeParser dateTimeParser,
@@ -24,6 +25,7 @@ namespace N3O.Umbraco.Data.Parsing {
                       IStringParser textParser,
                       ITimeParser timeParser,
                       IYearMonthParser yearMonth) {
+            Blob = blobParser;
             Bool = boolParser;
             Content = contentParser;
             Date = dateParser;
@@ -40,6 +42,7 @@ namespace N3O.Umbraco.Data.Parsing {
             YearMonth = yearMonth;
 
             _allParsers = new IDataTypeParser[] {
+                Blob,
                 Bool,
                 Content,
                 Date,
@@ -55,6 +58,7 @@ namespace N3O.Umbraco.Data.Parsing {
             };
         }
 
+        public IBlobParser Blob { get; }
         public IBoolParser Bool { get; }
         public IContentParser Content { get; }
         public IDateParser Date { get; }

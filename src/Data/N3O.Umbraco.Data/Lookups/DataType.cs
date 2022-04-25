@@ -95,11 +95,14 @@ namespace N3O.Umbraco.Data.Lookups {
 
     [StaticLookups]
     public class DataTypes : StaticLookupsCollection<DataType> {
+        public static readonly DataType<Blob, BlobCellConverter, BlobTextConverter> Blob =
+            new("blob", "Blob", false, (a, b) => a == b);
+        
         public static readonly DataType<bool?, BoolCellConverter, BoolTextConverter> Bool
             = new("bool", "Boolean", false, (a, b) => a == b);
 
         public static readonly DataType<IContent, ContentCellConverter, ContentTextConverter> Content
-            = new("content", "Content", true, (a, b) => a?.Id == b?.Id);
+            = new("content", "Content", false, (a, b) => a?.Id == b?.Id);
         
         public static readonly DataType<LocalDate?, DateCellConverter, DateTextConverter> Date
             = new("date", "Date", false, (a, b) => a == b);
@@ -123,7 +126,7 @@ namespace N3O.Umbraco.Data.Lookups {
             = new("money", "Money", false, (a, b) => a == b);
 
         public static readonly DataType<IPublishedContent, PublishedContentCellConverter, PublishedContentTextConverter> PublishedContent
-            = new("publishedContent", "Published Content", true, (a, b) => a?.Id == b?.Id);
+            = new("publishedContent", "Published Content", false, (a, b) => a?.Id == b?.Id);
         
         public static readonly DataType<Reference, ReferenceCellConverter, ReferenceTextConverter> Reference
             = new("reference", "Reference", false, (a, b) => a == b);

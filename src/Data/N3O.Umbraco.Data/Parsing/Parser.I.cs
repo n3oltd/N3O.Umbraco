@@ -5,6 +5,7 @@ using System;
 
 namespace N3O.Umbraco.Data.Parsing {
     public interface IParser {
+        IBlobParser Blob { get; }
         IBoolParser Bool { get; }
         IContentParser Content { get; }
         IDateParser Date { get; }

@@ -80,6 +80,15 @@ namespace N3O.Umbraco.Extensions {
             return string.IsNullOrWhiteSpace(s);
         }
         
+        public static bool IsValidUrl(this string url, params string[] uriSchemes) {
+            var allowedSchemes = uriSchemes.Or(new[] { Uri.UriSchemeHttp, Uri.UriSchemeHttps });
+
+            var isValid = Uri.TryCreate(url, UriKind.Absolute, out var uriResult) &&
+                          allowedSchemes.Contains(uriResult.Scheme);
+
+            return isValid;
+        }
+        
         public static string Left(this string input, int count) {
             return input.Substring(0, Math.Min(input.Length, count));
         }
