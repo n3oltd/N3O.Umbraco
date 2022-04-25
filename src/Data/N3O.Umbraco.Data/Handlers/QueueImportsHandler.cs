@@ -12,9 +12,11 @@ using N3O.Umbraco.Json;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.References;
+using N3O.Umbraco.Storage.Extensions;
 using N3O.Umbraco.Storage.Services;
 using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -94,12 +96,13 @@ namespace N3O.Umbraco.Data.Handlers {
 
                 var currentUser = _backOfficeSecurityAccessor.BackOfficeSecurity.CurrentUser;
                 var imports = new List<Import>();
-                var batchReference = (int) await _counters.NextAsync(contentType.Alias, 100_001, cancellationToken);
+                var batchReference = (int) await _counters.NextAsync("Import", 100_001, cancellationToken);
                 var batchFilename = req.Model.CsvFile.Name;
                 var queuedAt = _clock.GetLocalNow().ToDateTimeUnspecified();
+                var storageFolderName = req.Model.ZipFile.HasValue() ? $"Import{batchReference}" : null;
                 
                 if (req.Model.ZipFile != null) {
-                    await ExtractToStorageFolderAsync(req.Model.ZipFile, batchReference);
+                    await ExtractToStorageFolderAsync(req.Model.ZipFile, storageFolderName);
                 }
 
                 var rowNumber = 1;
@@ -118,6 +121,7 @@ namespace N3O.Umbraco.Data.Handlers {
                     import.BatchReference = batchReference.ToString();
                     import.BatchFilename = batchFilename;
                     import.FileRowNumber = rowNumber;
+                    import.StorageFolderName = storageFolderName;
                     import.ContentTypeAlias = contentType.Alias;
                     import.ParentId = containerContent.Key;
                     import.ContentTypeName = contentType.Name;
@@ -143,17 +147,13 @@ namespace N3O.Umbraco.Data.Handlers {
             }
         }
 
-        private async Task ExtractToStorageFolderAsync(IFormFile modelZipFile, int batchReference) {
-            // TODO Extract the zip file to a storage folder so we can refer to files in case insensitive way
-            // in a column (e.g. for file upload or image cropper) and can resolve that file by name from the
-            // storage folder whose name is based on the batch reference.
-            
-            // var storageFolder = await _volume.Value.GetStorageFolderAsync(batchReference);
-            //
-            // var zipFile = ZipFile.OpenRead();
-            // foreach (var entry in zipFile.Entries) {
-            //     storageFolder.AddFileAsync(entry.Open());
-            // }
+        private async Task ExtractToStorageFolderAsync(IFormFile zipFile, string storageFolderName) {
+            using (var stream = zipFile.OpenReadStream()) {
+                var storageFolder = await _volume.Value.GetStorageFolderAsync(storageFolderName);
+
+                var zipArchive = new ZipArchive(stream, ZipArchiveMode.Read);
+                await zipArchive.ExtractToStorageFolderAsync(storageFolder);
+            }
         }
 
         private Guid? FindExistingId(string replacesReference) {

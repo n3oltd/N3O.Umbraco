@@ -24,12 +24,16 @@ namespace N3O.Umbraco.Data.Konstrukt {
 
         [Column(nameof(Action))]
         public string Action { get; set; }
-        
+
         [Column(nameof(BatchReference))]
         public string BatchReference { get; set; }
 
         [Column(nameof(BatchFilename))]
         public string BatchFilename { get; set; }
+        
+        [Column(nameof(StorageFolderName))]
+        [NullSetting(NullSetting = NullSettings.Null)]
+        public string StorageFolderName { get; set; }
         
         [Column(nameof(FileRowNumber))]
         public int FileRowNumber { get; set; }
@@ -58,7 +62,7 @@ namespace N3O.Umbraco.Data.Konstrukt {
         public string Status { get; set; }
         
         [Column(nameof(ImportedAt))]
-        public DateTime ImportedAt { get; set; }
+        public DateTime? ImportedAt { get; set; }
         
         [Column(nameof(ImportedContentId))]
         [NullSetting(NullSetting = NullSettings.Null)]

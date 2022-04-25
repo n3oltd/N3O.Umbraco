@@ -12,8 +12,6 @@ namespace N3O.Umbraco.Storage.Azure.Services {
     public class AzureVolume : IVolume {
         private readonly BlobServiceClient _serviceClient;
         private readonly ConcurrentDictionary<string, BlobContainerClient> _containers = new();
-        
-        private readonly AzureBlobFileSystemOptions _options;
 
         public AzureVolume(IOptions<AzureBlobFileSystemOptions> options) {
             _serviceClient = new BlobServiceClient(options.Value.ConnectionString);
