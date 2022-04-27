@@ -513,6 +513,21 @@ namespace N3O.Umbraco.Extensions {
                 }
             }
         }
+        
+        public static async Task<IReadOnlyList<TResult>> SelectListAsync<TSource, TResult>(this IEnumerable<TSource> source,
+                                                                                           Func<TSource, Task<TResult>> projection) {
+            if (source == null) {
+                return null;
+            }
+
+            var list = new List<TResult>();
+
+            foreach (var item in source) {
+                list.Add(await projection(item));
+            }
+
+            return list;
+        }
 
         public static IEnumerable<(T, int)> SelectWithIndex<T>(this IEnumerable<T> source) {
             return source.Select((x, i) => (x, i));
@@ -595,8 +610,21 @@ namespace N3O.Umbraco.Extensions {
             return collection.AllKeys.Where(k => k != null).ToDictionary(k => k, k => collection[k]);
         }
     
-        public static Dictionary<T, K> ToDictionary<T, K>(this IEnumerable<KeyValuePair<T, K>> items) {
+        public static Dictionary<TKey, TElement> ToDictionary<TKey, TElement>(this IEnumerable<KeyValuePair<TKey, TElement>> items) {
             return items.ToDictionary(x => x.Key, x => x.Value);
+        }
+
+        public static async Task<Dictionary<TKey, TElement>> ToDictionaryAsync<TSource, TKey, TElement>(this IEnumerable<TSource> source,
+                                                                                                        Func<TSource, Task<TKey>> keySelectorAsync,
+                                                                                                        Func<TSource, Task<TElement>> elementSelectorAsync) {
+            if (source == null) {
+                return null;
+            }
+            
+            var keyValuePairs = await source.SelectListAsync(async x => new KeyValuePair<TKey, TElement>(await keySelectorAsync(x),
+                                                                                                         await elementSelectorAsync(x)));
+
+            return keyValuePairs.ToDictionary();
         }
 
         public static string ToString<T>(this IEnumerable<T> source, string separator) {
