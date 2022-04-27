@@ -1,6 +1,9 @@
 ﻿using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
+using N3O.Umbraco.Video.YouTube.Criteria;
 using N3O.Umbraco.Video.YouTube.Models;
+using N3O.Umbraco.Video.YouTube.QueryFilters;
+using NodaTime;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,14 +20,25 @@ namespace N3O.Umbraco.Video.YouTube {
     public class YouTube : IYouTube {
         private readonly IAppPolicyCache _appCache;
         private readonly ILocalClock _localClock;
+        private readonly YouTubeVideoQueryFilter _videosQueryFilter;
         private readonly YoutubeClient _client = new();
 
-        public YouTube(IAppPolicyCache appCache, ILocalClock localClock) {
+        public YouTube(IAppPolicyCache appCache, ILocalClock localClock, YouTubeVideoQueryFilter videosQueryFilter) {
             _appCache = appCache;
             _localClock = localClock;
+            _videosQueryFilter = videosQueryFilter;
         }
 
-        public async Task<YouTubeChannel> GetChannelByIdAsync(string id, CancellationToken cancellationToken = default) {
+        public virtual async Task<IReadOnlyList<YouTubeVideo>> FindVideosAsync(string channelId,
+                                                                               YouTubeVideoCriteria criteria,
+                                                                               CancellationToken cancellationToken = default) {
+            var channel = await GetChannelByIdAsync(channelId, cancellationToken);
+
+            return _videosQueryFilter.Apply(channel.Videos, criteria).ToList();
+        }
+
+        public virtual async Task<YouTubeChannel> GetChannelByIdAsync(string id,
+                                                                      CancellationToken cancellationToken = default) {
             var cacheKey = $"{nameof(YouTube)}{nameof(GetChannelByIdAsync)}";
             
             return await _appCache.GetCacheItem(cacheKey, async () => {
@@ -50,7 +64,7 @@ namespace N3O.Umbraco.Video.YouTube {
                                     video.Keywords,
                                     video.Url,
                                     video.UploadDate.ToLocalDateTime(_localClock),
-                                    video.Duration,
+                                    video.Duration == null ? null : Duration.FromTimeSpan(video.Duration.Value),
                                     GetThumbnail(video.Thumbnails));
         }
 

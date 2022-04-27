@@ -5,7 +5,7 @@ using Umbraco.Cms.Core.DependencyInjection;
 namespace N3O.Umbraco.Video.YouTube {
     public class YouTubeVideoComposer : Composer {
         public override void Compose(IUmbracoBuilder builder) {
-            builder.Services.AddTransient<IYouTube, YouTube>();
+            builder.Services.AddSingleton<IYouTube, YouTube>();
         }
     }
 }

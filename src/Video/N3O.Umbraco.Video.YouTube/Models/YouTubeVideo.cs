@@ -1,6 +1,5 @@
 ﻿using N3O.Umbraco.Extensions;
 using NodaTime;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,7 +11,7 @@ namespace N3O.Umbraco.Video.YouTube.Models {
                             IEnumerable<string> keywords,
                             string url,
                             LocalDateTime uploadedAt,
-                            TimeSpan? duration,
+                            Duration? duration,
                             YouTubeThumbnail thumbnail) {
             Id = id;
             Title = title;
@@ -30,7 +29,7 @@ namespace N3O.Umbraco.Video.YouTube.Models {
         public IReadOnlyList<string> Keywords { get; }
         public string Url { get; }
         public LocalDateTime UploadedAt { get; }
-        public TimeSpan? Duration { get; }
+        public Duration? Duration { get; }
         public YouTubeThumbnail Thumbnail { get; }
     }
 }
