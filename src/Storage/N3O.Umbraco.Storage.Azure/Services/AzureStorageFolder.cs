@@ -18,12 +18,18 @@ namespace N3O.Umbraco.Storage.Azure.Services {
             _onContainerDeleted = onContainerDeleted;
         }
         
-        public Task AddFileAsync(string name, Stream stream) {
-            throw new System.NotImplementedException();
+        public async Task<Blob> AddFileAsync(string name, Stream stream) {
+            await _container.UploadBlobAsync(name, stream);
+
+            stream.Rewind();
+
+            return new Blob(name, GetContentType(name), ByteSize.FromBytes(stream.Length), stream);
         }
 
-        public Task AddFileAsync(string name, byte[] contents) {
-            throw new System.NotImplementedException();
+        public async Task<Blob> AddFileAsync(string name, byte[] contents) {
+            using (var stream = new MemoryStream(contents)) {
+                return await AddFileAsync(name, stream);
+            }
         }
 
         public async Task DeleteAllFilesAsync() {
@@ -43,8 +49,8 @@ namespace N3O.Umbraco.Storage.Azure.Services {
             var properties = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);
 
             return new Blob(blobClient.Name,
-                            ByteSize.FromBytes(properties.Value.ContentLength),
                             GetContentType(name),
+                            ByteSize.FromBytes(properties.Value.ContentLength),
                             await blobClient.OpenReadAsync(cancellationToken: cancellationToken));
         }
 

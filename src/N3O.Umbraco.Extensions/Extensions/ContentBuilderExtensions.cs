@@ -27,7 +27,8 @@ namespace N3O.Umbraco.Extensions {
             return builder.Property<NumericPropertyBuilder>(propertyTypeAlias);
         }
         
-        public static RadioButtonListPropertyBuilder RadioButtonList(this IContentBuilder builder, string propertyTypeAlias) {
+        public static RadioButtonListPropertyBuilder RadioButtonList(this IContentBuilder builder,
+                                                                     string propertyTypeAlias) {
             return builder.Property<RadioButtonListPropertyBuilder>(propertyTypeAlias);
         }
         

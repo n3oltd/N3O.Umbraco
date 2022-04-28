@@ -117,7 +117,7 @@ namespace N3O.Umbraco.Data.Handlers {
                     throw UnrecognisedValueException.For(req.Model.Format);
                 }
 
-                stream.Seek(0, SeekOrigin.Begin);
+                stream.Rewind();
                 contents = stream.ToArray();
             }
 

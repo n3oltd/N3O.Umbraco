@@ -11,7 +11,7 @@ namespace N3O.Umbraco.Data.Services {
         void Encoding(TextEncoding encoding);
         void Headers(bool enabled);
         Task SaveAsync(Stream stream, CancellationToken cancellation = default);
-        Task WriteTemplateAsync(IEnumerable<TemplateColumn> templateColumns,
+        Task WriteTemplateAsync(IEnumerable<Column> columns,
                                 Stream stream,
                                 CancellationToken cancellationToken = default);
     }

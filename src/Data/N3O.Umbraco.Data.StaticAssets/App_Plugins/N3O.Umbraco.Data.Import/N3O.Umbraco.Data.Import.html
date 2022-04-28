@@ -2,13 +2,15 @@
     <button type="button" ng-click="getTemplate()">Get Template</button>
 
     <form>
-        <div class="form-group">
-            <label for="importFile">Select CSV file:</label>
-            <input type="file" ng-model-instant id="importFile"/>
+        <div>
+            <label for="csvFile">CSV file:</label>
+            <input type="file" id="csvFile" required />
+
+            <label for="zipFile">Zip file (optional):</label>
+            <input type="file" id="zipFile"/>
             
-            <label for="importFile">Select Date Format:</label>
-            <select required id="datePattern">
-            </select>
+            <label for="datePattern">Select date format:</label>
+            <select id="datePattern" required ng-model="dateFormat" ng-options="x.name for x in dateFormats" />
         </div>
 
         <button ng-click="importFile()">Upload</button>

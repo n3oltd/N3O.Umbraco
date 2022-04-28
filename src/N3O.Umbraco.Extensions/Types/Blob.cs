@@ -4,22 +4,22 @@ using System.IO;
 
 namespace N3O.Umbraco {
     public class Blob : Value {
-        public Blob(string filename, ByteSize size, string contentType, Stream stream) {
+        public Blob(string filename, string contentType, ByteSize size, Stream stream) {
             Filename = filename;
-            Size = size;
             ContentType = contentType;
+            Size = size;
             Stream = stream;
         }
 
         public string Filename { get; }
-        public ByteSize Size { get; }
         public string ContentType { get; }
+        public ByteSize Size { get; }
         public Stream Stream { get; }
 
         protected override IEnumerable<object> GetAtomicValues() {
             yield return Filename;
-            yield return Size;
             yield return ContentType;
+            yield return Size;
         }
     }
 }

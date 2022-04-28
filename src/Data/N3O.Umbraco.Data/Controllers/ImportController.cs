@@ -17,44 +17,46 @@ namespace N3O.Umbraco.Data.Controllers {
     [ApiDocument(DataConstants.ApiNames.Import)]
     public class ImportController : PluginController {
         private readonly ILogger<ImportController> _logger;
-        private readonly ILookups _lookups;
-        private readonly IUmbracoMapper _mapper;
-        private readonly IMediator _mediator;
+        private readonly Lazy<ILookups> _lookups;
+        private readonly Lazy<IUmbracoMapper> _mapper;
+        private readonly Lazy<IMediator> _mediator;
 
-        public ImportController(ILogger<ImportController> logger, ILookups lookups, IUmbracoMapper mapper, IMediator mediator) {
+        public ImportController(ILogger<ImportController> logger,
+                                Lazy<ILookups> lookups,
+                                Lazy<IUmbracoMapper> mapper,
+                                Lazy<IMediator> mediator) {
             _logger = logger;
             _lookups = lookups;
             _mapper = mapper;
             _mediator = mediator;
         }
+        
+        [HttpGet("lookups/datePatterns")]
+        public async Task<ActionResult<IEnumerable<NamedLookupRes>>> GetLookupDatePatterns() {
+            var listLookups = new ListLookups<DatePattern>(_lookups.Value, _mapper.Value);
+            var res = await listLookups.RunAsync();
+
+            return Ok(res);
+        }
 
         [HttpGet("template/{contentId:guid}")]
         public async Task<ActionResult> GetTemplate() {
-            var res = await _mediator.SendAsync<GetImportTemplateQuery, None, ImportTemplate>(None.Empty);
+            var res = await _mediator.Value.SendAsync<GetImportTemplateQuery, None, ImportTemplate>(None.Empty);
 
             return File(res.Contents, DataConstants.ContentTypes.Csv, res.Filename);
         }
-
-        // TODO add upload endpoint which receives file and return a storage token. 
+        
         [HttpPost("queue/{contentId:guid}")]
-        public async Task<ActionResult> Queue([FromForm] QueueImportsReq req) {
+        public async Task<ActionResult<QueueImportsRes>> Queue([FromForm] QueueImportsReq req) {
             try {
-                await _mediator.SendAsync<QueueImportsCommand, QueueImportsReq>(req);
+                var res = await _mediator.Value.SendAsync<QueueImportsCommand, QueueImportsReq, QueueImportsRes>(req);
 
-                return Ok();
+                return Ok(res);
             } catch (Exception ex) {
                 _logger.LogError(ex, "Import failed");
                 
                 return UnprocessableEntity();
             }
-        }
-        
-        [HttpGet("lookups/datePattern")]
-        public async Task<ActionResult<IEnumerable<NamedLookupRes>>> GetLookupAllocationTypes() {
-            var listLookups = new ListLookups<DatePattern>(_lookups, _mapper);
-            var res = await listLookups.RunAsync();
-
-            return Ok(res);
         }
     }
 }

@@ -8,6 +8,8 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Content {
     public class ContentPickerPropertyBuilder : PropertyBuilder {
+        private const string Document = global::Umbraco.Cms.Core.Constants.UdiEntityType.Document;
+        
         public void SetContent(IEnumerable<IContent> values) {
             SetContent(values.OrEmpty().ToArray());
         }
@@ -37,7 +39,7 @@ namespace N3O.Umbraco.Content {
         }
         
         public void SetContent(params Guid[] values) {
-            var documentUdis = values.ExceptNull().Select(x => Udi.Create("document", x).ToString()).ToList();
+            var documentUdis = values.ExceptNull().Select(x => Udi.Create(Document, x).ToString()).ToList();
 
             if (documentUdis.IsSingle()) {
                 Value = documentUdis.Single();

@@ -23,10 +23,7 @@ namespace N3O.Umbraco.Data.Converters {
                                     IParser parser,
                                     UmbracoPropertyInfo propertyInfo,
                                     IEnumerable<string> source) {
-            Import(propertyInfo,
-                   source,
-                   s => parser.String.Parse(s, typeof(string)),
-                   (alias, value) => contentBuilder.RadioButtonList(alias).Set(value));
+            throw new NotImplementedException();
         }
         
         protected override int GetMaxValues(UmbracoPropertyInfo propertyInfo) {

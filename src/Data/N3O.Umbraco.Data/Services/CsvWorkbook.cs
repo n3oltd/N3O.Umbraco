@@ -1,7 +1,5 @@
 using CsvHelper;
 using CsvHelper.Configuration;
-using N3O.Umbraco.Data.Builders;
-using N3O.Umbraco.Data.Extensions;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Extensions;
@@ -13,14 +11,12 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Data.Services {
     public class CsvWorkbook : ICsvWorkbook {
-        private readonly IColumnRangeBuilder _columnRangeBuilder;
         private readonly IColumnVisibility _columnVisibility;
         private ITable _table;
         private bool _headers = true;
         private TextEncoding _encoding = TextEncodings.Utf8;
 
-        public CsvWorkbook(IColumnRangeBuilder columnRangeBuilder, IColumnVisibility columnVisibility) {
-            _columnRangeBuilder = columnRangeBuilder;
+        public CsvWorkbook(IColumnVisibility columnVisibility) {
             _columnVisibility = columnVisibility;
         }
 
@@ -69,7 +65,7 @@ namespace N3O.Umbraco.Data.Services {
             }
         }
 
-        public async Task WriteTemplateAsync(IEnumerable<TemplateColumn> templateColumns,
+        public async Task WriteTemplateAsync(IEnumerable<Column> columns,
                                              Stream stream,
                                              CancellationToken cancellationToken = default) {
             var textEncoding = System.Text.Encoding.GetEncoding(_encoding.CodePage);
@@ -79,15 +75,7 @@ namespace N3O.Umbraco.Data.Services {
                     var configuration = GetCsvConfiguration();
 
                     await using (var csv = new CsvWriter(writer, configuration)) {
-                        var columns = new List<Column>();
-
-                        foreach (var templateColumn in templateColumns.OrEmpty()) {
-                            columns.AddRange(_columnRangeBuilder.GetColumns(templateColumn));
-                        }
-
-                        if (_headers) {
-                            await WriteHeadersAsync(csv, columns);
-                        }
+                        await WriteHeadersAsync(csv, columns);
                     }
                 }
 
@@ -106,7 +94,7 @@ namespace N3O.Umbraco.Data.Services {
             return configuration;
         }
 
-        private async Task WriteHeadersAsync(CsvWriter csv, IReadOnlyList<Column> columns) {
+        private async Task WriteHeadersAsync(CsvWriter csv, IEnumerable<Column> columns) {
             foreach (var column in columns) {
                 csv.WriteField(column.Title);
             }
@@ -114,7 +102,7 @@ namespace N3O.Umbraco.Data.Services {
             await csv.NextRecordAsync();
         }
 
-        private async Task WriteBodyAsync(CsvWriter csv, IReadOnlyList<Column> columns) {
+        private async Task WriteBodyAsync(CsvWriter csv, IEnumerable<Column> columns) {
             for (var row = 0; row < _table.RowCount; row++) {
                 foreach (var column in columns) {
                     var cell = _table[column, row];

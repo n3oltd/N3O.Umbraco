@@ -1,13 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <RootNamespace>N3O.Umbraco.Data</RootNamespace>
+        <RootNamespace>N3O.Umbraco.Cropper.Data</RootNamespace>
         <TargetFramework>net5.0</TargetFramework>
         <LangVersion>9.0</LangVersion>
         <Copyright>Copyright © 2022 N3O Ltd</Copyright>
     </PropertyGroup>
 
     <PropertyGroup>
-        <PackageId>N3O.Umbraco.Data</PackageId>
+        <PackageId>N3O.Umbraco.Cropper.Data</PackageId>
         <IsPackable>true</IsPackable>
         <ContentTargetFolders>.</ContentTargetFolders>
         <Authors>N3O Ltd</Authors>
@@ -30,24 +30,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Konstrukt\N3O.Umbraco.Konstrukt\N3O.Umbraco.Konstrukt.csproj" />
-        <ProjectReference Include="..\..\Mediator\N3O.Umbraco.Mediator\N3O.Umbraco.Mediator.csproj" />
-        <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
-        <ProjectReference Include="..\..\Plugins\N3O.Umbraco.Plugins\N3O.Umbraco.Plugins.csproj" />
-        <ProjectReference Include="..\..\Scheduler\N3O.Umbraco.Scheduler\N3O.Umbraco.Scheduler.csproj" />
-        <ProjectReference Include="..\..\Storage\N3O.Umbraco.Storage\N3O.Umbraco.Storage.csproj" />
-        <ProjectReference Include="..\..\Validation\N3O.Umbraco.Validation\N3O.Umbraco.Validation.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
         <None Update="README.md">
             <Pack>True</Pack>
         </None>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="CsvHelper" Version="27.2.1" />
-      <PackageReference Include="EPPlus" Version="6.0.3" />
-      <PackageReference Include="Umbraco.Cms.Core" Version="9.4.3" />
+      <ProjectReference Include="..\..\..\Data\N3O.Umbraco.Data\N3O.Umbraco.Data.csproj" />
+      <ProjectReference Include="..\N3O.Umbraco.Cropper\N3O.Umbraco.Cropper.csproj" />
     </ItemGroup>
 </Project>

@@ -22,31 +22,51 @@ angular.module("umbraco")
 
         $scope.importFile = async function() {
             const content = await contentResource.getById(editorState.current.id);
-            const input = document.querySelector('#importFile')
-            const data = new FormData()
-            data.append('CsvFile', input.files[0])
-            const select = document.querySelector("#datePattern");
-            // TODO upload file first then use storage token to populate request model for api call below.
+            const csvStorageToken = getStorageToken('#csvFile');
+            const zipStorageToken = getStorageToken('#zipFile');
+            
+            var req = {
+                dateFormat: $scope.dataFormat,
+                csvFile: csvStorageToken,
+                zipFile: zipStorageToken
+            };
             
             await fetch(`/umbraco/backoffice/api/Import/queue/${content.key}`, {
                 method: 'POST',
                 headers: {
                     'accept': '*/*'
                 },
-                body: data
+                body: JSON.stringify(req)
             });
         };
 
-        fetch('https://localhost:5001/umbraco/backoffice/api/Import/lookups/datePattern', {
+        fetch('/umbraco/backoffice/api/Import/lookups/datePatterns', {
             headers: {
                 'accept': 'application/json'
             }
-        }).then(res => res.json())
-          .then(res => {
-              console.log(res);
-              let select = document.querySelector("#datePattern");
-              for (let option of res){
-                  select.innerHTML+= `<option value="${option.id}">${option.name}</option>`;
-              }
-          });
+        })
+        .then(res => res.json())
+        .then(res => {
+            $scope.dateFormats = res;
+        });
+        
+        async function getStorageToken(selector) {
+            const input = document.querySelector(selector);
+            
+            if (input.length === 0) {
+                return null;
+            }
+            
+            const data = new FormData();
+            data.append('file', input.files[0]);
+            
+            var res = await fetch('/umbraco/backoffice/api/Import/upload', {
+                headers: {
+                    'accept': 'application/json'
+                },
+                body: data
+            });
+            
+            return await res.text();
+        }
     });

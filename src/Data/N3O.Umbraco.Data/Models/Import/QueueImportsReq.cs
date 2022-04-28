@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using N3O.Umbraco.Attributes;
+﻿using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Data.Lookups;
 
 namespace N3O.Umbraco.Data.Models {
@@ -8,9 +7,9 @@ namespace N3O.Umbraco.Data.Models {
         public DatePattern DatePattern { get; set; }
         
         [Name("CSV File")]
-        public IFormFile CsvFile { get; set; }
+        public StorageToken CsvFile { get; set; }
         
         [Name("Zip File")]
-        public IFormFile ZipFile { get; set; }
+        public StorageToken ZipFile { get; set; }
     }
 }

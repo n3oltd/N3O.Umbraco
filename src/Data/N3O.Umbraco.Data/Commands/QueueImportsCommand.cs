@@ -3,7 +3,7 @@ using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Mediator;
 
 namespace N3O.Umbraco.Data.Commands {
-    public class QueueImportsCommand : Request<QueueImportsReq, None> {
+    public class QueueImportsCommand : Request<QueueImportsReq, QueueImportsRes> {
         public QueueImportsCommand(ContentId contentId) {
             ContentId = contentId;
         }

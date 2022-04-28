@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Plugins.Controllers;
+using N3O.Umbraco.Plugins.Extensions;
 using N3O.Umbraco.Plugins.Models;
 using N3O.Umbraco.Uploader.Models;
 using NodaTime;
 using System;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -45,9 +45,8 @@ namespace N3O.Umbraco.Uploader.Controllers {
                 if (uploadedFile == null) {
                     return BadRequest();
                 }
-
-                var storagePath = Path.Combine(now.ToString("yyMMddHHmmss", CultureInfo.InvariantCulture),
-                                               uploadedFile.Filename);
+                
+                var storagePath = uploadedFile.Filename.GetStoragePath(now);
 
                 _mediaFileManager.FileSystem.AddFile(storagePath, uploadedFile.Stream, false);
 

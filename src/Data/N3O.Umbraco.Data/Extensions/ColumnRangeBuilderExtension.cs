@@ -5,7 +5,8 @@ using System.Linq;
 
 namespace N3O.Umbraco.Data.Extensions {
     public static class ColumnRangeBuilderExtension {
-        public static IEnumerable<Column> GetColumns(this IColumnRangeBuilder columnRangeBuilder, TemplateColumn templateColumn) {
+        public static IEnumerable<Column> GetColumns(this IColumnRangeBuilder columnRangeBuilder,
+                                                     TemplateColumn templateColumn) {
             var columnRange = columnRangeBuilder.String<string>()
                                                 .Title(templateColumn.Heading)
                                                 .Build();
@@ -18,7 +19,8 @@ namespace N3O.Umbraco.Data.Extensions {
             return columnRange.GetColumns().ToList();
         }
 
-        public static IEnumerable<string> GetColumnHeadings(this IColumnRangeBuilder columnRangeBuilder, TemplateColumn templateColumn) {
+        public static IEnumerable<string> GetColumnHeadings(this IColumnRangeBuilder columnRangeBuilder,
+                                                            TemplateColumn templateColumn) {
             var headings = GetColumns(columnRangeBuilder, templateColumn)
                           .Select(x => x.Title)
                           .ToList();

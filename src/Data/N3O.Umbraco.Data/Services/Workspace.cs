@@ -22,7 +22,7 @@ namespace N3O.Umbraco.Data.Services {
         }
 
         public ICsvWorkbook CreateCsvWorkbook() {
-            var workbook = new CsvWorkbook(_columnRangeBuilder, _columnVisibility);
+            var workbook = new CsvWorkbook(_columnVisibility);
 
             return workbook;
         }

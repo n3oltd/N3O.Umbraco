@@ -1,8 +1,11 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Cropper.DataTypes;
+using N3O.Umbraco.Cropper.Extensions;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Plugins.Extensions;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,12 +15,12 @@ namespace N3O.Umbraco.Cropper.Content {
     public class CropperPropertyBuilder : PropertyBuilder {
         private readonly MediaFileManager _mediaFileManager;
         private readonly ILocalClock _clock;
-        public List<ICropBuilder> _cropBuilders = new();
+        private readonly List<ICropBuilder> _cropBuilders = new();
         private string _src;
         private string _mediaId;
         private string _filename;
-        private int _width;
-        private int _height;
+        private int? _width;
+        private int? _height;
         private string _altText;
 
         public CropperPropertyBuilder(MediaFileManager mediaFileManager, ILocalClock clock) {
@@ -26,7 +29,11 @@ namespace N3O.Umbraco.Cropper.Content {
         }
 
         public ICropBuilder AddCrop() {
-            var cropBuilder = new CropBuilder();
+            if (_width == null || _height == null) {
+                throw new Exception("Must set image before adding crops");
+            }
+            
+            var cropBuilder = new CropBuilder(_width.Value, _height.Value);
 
             _cropBuilders.Add(cropBuilder);
 
@@ -35,23 +42,18 @@ namespace N3O.Umbraco.Cropper.Content {
 
         public CropperPropertyBuilder AutoCrop(CropperConfiguration configuration) {
             foreach (var cropDefinition in configuration.CropDefinitions) {
-                AddAutoCrop(cropDefinition);
+                AddCrop().AutoCrop(cropDefinition);
             }
 
             return this;
         }
 
-        private void AddAutoCrop(CropDefinition cropDefinition) {
-            var x = (_height - cropDefinition.Height) / 2;
-            var y = ((_width) - cropDefinition.Width) / 2;
-            AddCrop().CropTo(x, y, cropDefinition.Width, cropDefinition.Height);
-        }
-
         public CropperPropertyBuilder SetImage(string mediaId) {
-            _src = _mediaFileManager.FileSystem
-                                    .GetFiles(mediaId, "*.*")
-                                    .OrderBy(x => _mediaFileManager.FileSystem.GetLastModified(x))
-                                    .FirstOrDefault();
+            _src = _mediaFileManager.GetSourceImage(mediaId);
+
+            if (_src == null) {
+                throw new Exception($"No media found with ID {mediaId}");
+            }
 
             _mediaId = mediaId;
 
@@ -67,29 +69,31 @@ namespace N3O.Umbraco.Cropper.Content {
 
         public CropperPropertyBuilder SetImage(Blob blob) {
             return SetImage(blob.Stream, blob.Filename);
+        }
+        
+        public CropperPropertyBuilder SetImage(byte[] bytes, string filename) {
+            using (var stream = new MemoryStream(bytes)) {
+                SetImage(stream, filename);
 
+                return this;
+            }
         }
 
         public CropperPropertyBuilder SetImage(Stream stream, string filename) {
             var instant = _clock.GetCurrentInstant();
             _src = filename.GetStoragePath(instant);
 
-            stream.Seek(0, SeekOrigin.Begin);
+            stream.Rewind();
+            
             _mediaFileManager.FileSystem.AddFile(_src, stream, false);
 
-            stream.Seek(0, SeekOrigin.Begin);
+            stream.Rewind();
 
             var metadata = stream.GetImageMetadata();
             _height = metadata.Height;
             _width = metadata.Width;
             _filename = filename;
             _mediaId = Path.GetDirectoryName(_src);
-
-            return this;
-        }
-
-        public CropperPropertyBuilder SetImage(byte[] bytes, string filename) {
-            SetImage(new MemoryStream(bytes), filename);
 
             return this;
         }
@@ -101,10 +105,12 @@ namespace N3O.Umbraco.Cropper.Content {
         }
 
         public override object Build() {
+            Validate();
+            
             var cropperSource = new CropperSource();
             cropperSource.Filename = _filename;
-            cropperSource.Height = _height;
-            cropperSource.Width = _width;
+            cropperSource.Height = _height.GetValueOrThrow();
+            cropperSource.Width = _width.GetValueOrThrow();
             cropperSource.Src = _src;
             cropperSource.AltText = _altText;
             cropperSource.MediaId = _mediaId;
@@ -113,6 +119,16 @@ namespace N3O.Umbraco.Cropper.Content {
             Value = JsonConvert.SerializeObject(cropperSource);
 
             return Value;
+        }
+
+        private void Validate() {
+            if (!_src.HasValue()) {
+                throw new Exception("Image must be specified");
+            }
+            
+            if (_cropBuilders.None()) {
+                throw new Exception("At least one crop must be defined");
+            }
         }
     }
 }

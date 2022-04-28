@@ -1,14 +1,13 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Cropper.Extensions;
 using N3O.Umbraco.Cropper.Models;
 using N3O.Umbraco.Plugins.Controllers;
 using N3O.Umbraco.Plugins.Extensions;
 using N3O.Umbraco.Plugins.Models;
 using NodaTime;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.IO;
 
@@ -26,10 +25,7 @@ namespace N3O.Umbraco.Cropper.Controllers {
         [HttpGet("media/{mediaId}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<ImageMedia> GetMediaById(string mediaId) {
-            var file = _mediaFileManager.FileSystem
-                                        .GetFiles(mediaId, "*.*")
-                                        .OrderBy(x => _mediaFileManager.FileSystem.GetLastModified(x))
-                                        .FirstOrDefault();
+            var file = _mediaFileManager.GetSourceImage(mediaId);
 
             if (file == null) {
                 return NotFound();
@@ -51,9 +47,7 @@ namespace N3O.Umbraco.Cropper.Controllers {
                     return BadRequest();
                 }
 
-                // TODO move this to extension method and later use in here and cropperBuilder.
-                var storagePath = Path.Combine(now.ToString("yyMMddHHmmss", CultureInfo.InvariantCulture),
-                                               uploadedImage.Filename);
+                var storagePath = uploadedImage.Filename.GetStoragePath(now);
 
                 _mediaFileManager.FileSystem.AddFile(storagePath, uploadedImage.Stream, false);
 
