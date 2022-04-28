@@ -1,6 +1,5 @@
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Plugins.Extensions;
-using N3O.Umbraco.Plugins.Lookups;
 using N3O.Umbraco.Plugins.Models;
 using SixLabors.ImageSharp;
 using System.IO;

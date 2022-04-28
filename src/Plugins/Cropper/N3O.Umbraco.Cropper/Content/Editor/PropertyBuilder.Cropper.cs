@@ -3,7 +3,6 @@ using N3O.Umbraco.Cropper.DataTypes;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Plugins.Extensions;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

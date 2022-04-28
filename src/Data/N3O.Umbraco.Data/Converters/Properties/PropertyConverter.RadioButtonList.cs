@@ -3,7 +3,6 @@ using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Data.Parsing;
 using N3O.Umbraco.Extensions;
-using System;
 using System.Collections.Generic;
 using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 

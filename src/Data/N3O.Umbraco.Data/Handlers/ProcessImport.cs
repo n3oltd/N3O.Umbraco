@@ -12,14 +12,12 @@ using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Mediator;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Persistence;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Data.Handlers {
     public class ProcessImport : IRequestHandler<ProcessImportCommand, None, None> {

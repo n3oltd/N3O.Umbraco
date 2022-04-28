@@ -1,5 +1,4 @@
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Localization;
 using N3O.Umbraco.Plugins.Lookups;
 using N3O.Umbraco.Plugins.Models;
 using NodaTime;

@@ -8,7 +8,6 @@ using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 

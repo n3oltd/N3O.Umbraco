@@ -1,6 +1,5 @@
 angular.module("umbraco")
     .controller("N3O.Umbraco.Data.Import", function ($scope, editorState, contentResource) {
-        console.log(contentResource);
         $scope.getTemplate = async function() {
             const content = await contentResource.getById(editorState.current.id);
             const csvTemplate = await fetch(`/umbraco/backoffice/api/Import/template/${content.key}`);
@@ -26,7 +25,7 @@ angular.module("umbraco")
             const input = document.querySelector('#importFile')
             const data = new FormData()
             data.append('CsvFile', input.files[0])
-            let select = document.querySelector("#datePattern");
+            const select = document.querySelector("#datePattern");
             // TODO upload file first then use storage token to populate request model for api call below.
             
             await fetch(`/umbraco/backoffice/api/Import/queue/${content.key}`, {

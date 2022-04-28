@@ -1,7 +1,6 @@
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Cropper;
-using N3O.Umbraco.Cropper.Extensions;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Parsing;
 using N3O.Umbraco.Extensions;
