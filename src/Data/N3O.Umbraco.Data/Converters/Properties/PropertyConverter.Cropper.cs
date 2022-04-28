@@ -1,6 +1,8 @@
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Cropper;
+using N3O.Umbraco.Cropper.Extensions;
+using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Parsing;
 using N3O.Umbraco.Extensions;
 using System;
@@ -20,7 +22,10 @@ namespace N3O.Umbraco.Data.Converters {
                                     IParser parser,
                                     UmbracoPropertyInfo propertyInfo,
                                     IEnumerable<string> source) {
-            throw new NotImplementedException();
+            Import(propertyInfo,
+                   source,
+                   s => parser.Blob.Parse(s, DataTypes.Blob.GetClrType()),
+                   (alias, value) => contentBuilder.Cropper(alias).SetImage(value));
         }
     }
 }

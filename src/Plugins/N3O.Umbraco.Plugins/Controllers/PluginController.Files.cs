@@ -1,4 +1,5 @@
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Plugins.Extensions;
 using N3O.Umbraco.Plugins.Models;
 using System.IO;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace N3O.Umbraco.Plugins.Controllers {
                     var uploadedFile = new UploadedFile(fileStream, req.File.ContentDisposition, req.File.FileName);
 
                     if (req.ImagesOnly == true) {
-                        var metadata = GetImageMetadata(fileStream);
+                        var metadata = fileStream.GetImageMetadata();
 
                         var uploadedImage = new UploadedImage(uploadedFile, metadata);
 

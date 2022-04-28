@@ -8,21 +8,15 @@ namespace N3O.Umbraco.Data.Models {
         public QueueImportsReqValidator(IFormatter formatter) : base(formatter) {
             RuleFor(x => x.DatePattern)
                 .NotNull()
-                .WithMessage(Get<Strings>(s => s.SpecifyDatePattern));
+                .WithMessage("Date pattern must be specified");
             
             RuleFor(x => x.CsvFile)
                 .NotNull()
-                .WithMessage(Get<Strings>(s => s.SpecifyFile));
-
+                .WithMessage("File must be specified");
+            
             RuleFor(x => x.CsvFile)
                 .Must(x => x.ContentType.EqualsInvariant(DataConstants.ContentTypes.Csv))
-                .WithMessage(Get<Strings>(s => s.InvalidFile));
-        }
-
-        public class Strings : ValidationStrings {
-            public string InvalidFile => "File must be in CSV format";
-            public string SpecifyDatePattern => "Date pattern must be specified";
-            public string SpecifyFile => "File must be specified";
+                .WithMessage("File must be in CSV format");
         }
     }
 }

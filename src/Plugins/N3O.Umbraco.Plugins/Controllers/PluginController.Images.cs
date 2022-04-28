@@ -1,4 +1,5 @@
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Plugins.Extensions;
 using N3O.Umbraco.Plugins.Lookups;
 using N3O.Umbraco.Plugins.Models;
 using SixLabors.ImageSharp;
@@ -23,7 +24,7 @@ namespace N3O.Umbraco.Plugins.Controllers {
                     var uploadedFile = new UploadedFile(fileStream,
                                                         req.File.ContentDisposition,
                                                         CleanFilename(req.File.FileName));
-                    var metadata = GetImageMetadata(fileStream);
+                    var metadata = fileStream.GetImageMetadata();
 
                     var uploadedImage = new UploadedImage(uploadedFile, metadata);
 
@@ -35,16 +36,6 @@ namespace N3O.Umbraco.Plugins.Controllers {
                 }
             } catch {
                 return null;
-            }
-        }
-
-        protected ImageMetadata GetImageMetadata(Stream stream) {
-            using (var image = Image.Load(stream, out var format)) {
-                var metadata = new ImageMetadata(ImageFormat.From(format), image.Height, image.Width);
-
-                stream.Rewind();
-                
-                return metadata;
             }
         }
         

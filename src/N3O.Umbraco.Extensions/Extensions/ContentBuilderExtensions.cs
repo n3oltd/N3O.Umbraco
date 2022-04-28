@@ -26,7 +26,15 @@ namespace N3O.Umbraco.Extensions {
         public static NumericPropertyBuilder Numeric(this IContentBuilder builder, string propertyTypeAlias) {
             return builder.Property<NumericPropertyBuilder>(propertyTypeAlias);
         }
-
+        
+        public static RadioButtonListPropertyBuilder RadioButtonList(this IContentBuilder builder, string propertyTypeAlias) {
+            return builder.Property<RadioButtonListPropertyBuilder>(propertyTypeAlias);
+        }
+        
+        public static TextBoxPropertyBuilder TextBox(this IContentBuilder builder, string propertyTypeAlias) {
+            return builder.Property<TextBoxPropertyBuilder>(propertyTypeAlias);
+        }
+        
         public static TogglePropertyBuilder Toggle(this IContentBuilder builder, string propertyTypeAlias) {
             return builder.Property<TogglePropertyBuilder>(propertyTypeAlias);
         }

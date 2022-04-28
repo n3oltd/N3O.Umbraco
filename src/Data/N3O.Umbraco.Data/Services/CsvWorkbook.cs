@@ -1,6 +1,7 @@
 using CsvHelper;
 using CsvHelper.Configuration;
 using N3O.Umbraco.Data.Builders;
+using N3O.Umbraco.Data.Extensions;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Extensions;
@@ -38,7 +39,7 @@ namespace N3O.Umbraco.Data.Services {
 
         public async Task SaveAsync(Stream stream, CancellationToken cancellationToken = default) {
             var textEncoding = System.Text.Encoding.GetEncoding(_encoding.CodePage);
-            
+
             await using (var memoryStream = new MemoryStream()) {
                 await using (var writer = new StreamWriter(memoryStream, textEncoding)) {
                     var configuration = GetCsvConfiguration();
@@ -73,7 +74,7 @@ namespace N3O.Umbraco.Data.Services {
                                              Stream stream,
                                              CancellationToken cancellationToken = default) {
             var textEncoding = System.Text.Encoding.GetEncoding(_encoding.CodePage);
-            
+
             await using (var memoryStream = new MemoryStream()) {
                 await using (var writer = new StreamWriter(memoryStream, textEncoding)) {
                     var configuration = GetCsvConfiguration();
@@ -82,16 +83,7 @@ namespace N3O.Umbraco.Data.Services {
                         var columns = new List<Column>();
 
                         foreach (var templateColumn in templateColumns.OrEmpty()) {
-                            var columnRange = _columnRangeBuilder.String<string>()
-                                                                 .Title(templateColumn.Heading)
-                                                                 .Build();
-
-                            columnRange.AddCells(0,
-                                                 templateColumn.MaxValues == 1
-                                                     ? ""
-                                                     : Enumerable.Repeat("", templateColumn.MaxValues));
-                            
-                            columns.AddRange(columnRange.GetColumns());
+                            columns.AddRange(_columnRangeBuilder.GetColumns(templateColumn));
                         }
 
                         if (_headers) {

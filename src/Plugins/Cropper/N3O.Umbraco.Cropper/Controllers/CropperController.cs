@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cropper.Models;
 using N3O.Umbraco.Plugins.Controllers;
+using N3O.Umbraco.Plugins.Extensions;
 using N3O.Umbraco.Plugins.Models;
 using NodaTime;
 using System.Globalization;
@@ -35,7 +36,7 @@ namespace N3O.Umbraco.Cropper.Controllers {
             }
 
             using (var stream = _mediaFileManager.FileSystem.OpenFile(file)) {
-                var metadata = GetImageMetadata(stream);
+                var metadata = stream.GetImageMetadata();
 
                 return Ok(GetResponse(file, metadata.Height, metadata.Width));
             }
@@ -50,6 +51,7 @@ namespace N3O.Umbraco.Cropper.Controllers {
                     return BadRequest();
                 }
 
+                // TODO move this to extension method and later use in here and cropperBuilder.
                 var storagePath = Path.Combine(now.ToString("yyMMddHHmmss", CultureInfo.InvariantCulture),
                                                uploadedImage.Filename);
 
