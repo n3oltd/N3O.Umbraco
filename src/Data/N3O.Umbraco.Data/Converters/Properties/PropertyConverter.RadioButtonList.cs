@@ -23,11 +23,10 @@ namespace N3O.Umbraco.Data.Converters {
                                     IParser parser,
                                     UmbracoPropertyInfo propertyInfo,
                                     IEnumerable<string> source) {
-            throw new NotImplementedException();
-            // Import(propertyInfo,
-            //        values,
-            //        s => parser.String.Parse(s, typeof(string)),
-            //        (alias, value) => contentBuilder.RadioButtonList(alias).Set(value));
+            Import(propertyInfo,
+                   source,
+                   s => parser.String.Parse(s, typeof(string)),
+                   (alias, value) => contentBuilder.RadioButtonList(alias).Set(value));
         }
     }
 }
