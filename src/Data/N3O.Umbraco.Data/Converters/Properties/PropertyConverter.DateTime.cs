@@ -22,9 +22,11 @@ namespace N3O.Umbraco.Data.Converters {
 
         public override void Import(IContentBuilder contentBuilder,
                                     IParser parser,
+                                    ErrorLog errorLog,
                                     UmbracoPropertyInfo propertyInfo,
                                     IEnumerable<string> source) {
-            Import(propertyInfo,
+            Import(errorLog,
+                   propertyInfo,
                    source,
                    s => parser.DateTime.Parse(s, DataTypes.DateTime.GetClrType()),
                    (alias, value) => contentBuilder.DateTime(alias).SetDateTime(value));

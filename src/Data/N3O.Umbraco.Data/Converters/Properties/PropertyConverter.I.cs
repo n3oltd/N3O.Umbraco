@@ -9,6 +9,7 @@ namespace N3O.Umbraco.Data.Converters {
         TemplateColumn GetTemplateColumn(UmbracoPropertyInfo propertyInfo);
         void Import(IContentBuilder contentBuilder,
                     IParser parser,
+                    ErrorLog errorLog,
                     UmbracoPropertyInfo propertyInfo,
                     IEnumerable<string> source);
         bool IsConverter(UmbracoPropertyInfo propertyInfo);

@@ -47,7 +47,7 @@ namespace N3O.Umbraco.Data.Controllers {
         }
         
         [HttpPost("queue/{contentId:guid}")]
-        public async Task<ActionResult<QueueImportsRes>> Queue([FromForm] QueueImportsReq req) {
+        public async Task<ActionResult<QueueImportsRes>> Queue(QueueImportsReq req) {
             try {
                 var res = await _mediator.Value.SendAsync<QueueImportsCommand, QueueImportsReq, QueueImportsRes>(req);
 

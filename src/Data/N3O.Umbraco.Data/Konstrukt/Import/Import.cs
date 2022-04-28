@@ -6,7 +6,7 @@ using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 namespace N3O.Umbraco.Data.Konstrukt {
     [TableName(DataConstants.Tables.Imports.Name)]
     [PrimaryKey("Id")]
-    public class Import {
+    public partial class Import {
         [PrimaryKeyColumn(Name = DataConstants.Tables.Imports.PrimaryKey)]
         public int Id { get; set; }
         
@@ -31,9 +31,9 @@ namespace N3O.Umbraco.Data.Konstrukt {
         [Column(nameof(BatchFilename))]
         public string BatchFilename { get; set; }
         
-        [Column(nameof(StorageFolderName))]
+        [Column(nameof(ParserSettings))]
         [NullSetting(NullSetting = NullSettings.Null)]
-        public string StorageFolderName { get; set; }
+        public string ParserSettings { get; set; }
         
         [Column(nameof(FileRowNumber))]
         public int FileRowNumber { get; set; }

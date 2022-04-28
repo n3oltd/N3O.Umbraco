@@ -35,7 +35,7 @@ namespace N3O.Umbraco.Storage.Controllers {
         public async Task<ActionResult<StorageToken>> UploadAsync([FromForm] UploadReq req) {
             try {
                 using (var reqStream = req.File.OpenReadStream()) {
-                    var blob = await _tempStorage.AddFileAsync(req.File.Name, reqStream);
+                    var blob = await _tempStorage.AddFileAsync(req.File.FileName, reqStream);
                     
                     return Ok(StorageToken.FromBlob(blob));
                 }

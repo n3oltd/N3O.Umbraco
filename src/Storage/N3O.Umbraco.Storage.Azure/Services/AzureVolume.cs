@@ -1,6 +1,6 @@
 ﻿using Azure.Storage.Blobs;
 using Humanizer;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Storage.Services;
 using System.Collections.Concurrent;
@@ -13,8 +13,11 @@ namespace N3O.Umbraco.Storage.Azure.Services {
         private readonly BlobServiceClient _serviceClient;
         private readonly ConcurrentDictionary<string, BlobContainerClient> _containers = new();
 
-        public AzureVolume(IOptions<AzureBlobFileSystemOptions> options) {
-            _serviceClient = new BlobServiceClient(options.Value.ConnectionString);
+        public AzureVolume(IConfiguration configuration) {
+            var options = new AzureBlobFileSystemOptions();
+            
+            configuration.GetSection("Umbraco:Storage:AzureBlob:Media").Bind(options);
+            _serviceClient = new BlobServiceClient(options.ConnectionString);
         }
         
         public async Task<IStorageFolder> GetStorageFolderAsync(string name) {
@@ -25,7 +28,7 @@ namespace N3O.Umbraco.Storage.Azure.Services {
         
         private async Task<BlobContainerClient> GetContainerAsync(string folderName) {
             var result = await _containers.GetOrAddAtomicAsync(folderName, async () => {
-                var blobContainer = _serviceClient.GetBlobContainerClient($"storage_${folderName.Camelize()}");
+                var blobContainer = _serviceClient.GetBlobContainerClient($"storage{folderName.Camelize()}");
 
                 await blobContainer.CreateIfNotExistsAsync();
 

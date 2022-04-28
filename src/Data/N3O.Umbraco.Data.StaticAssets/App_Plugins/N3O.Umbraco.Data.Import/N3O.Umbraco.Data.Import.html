@@ -1,18 +1,16 @@
 <div ng-controller="N3O.Umbraco.Data.Import">
     <button type="button" ng-click="getTemplate()">Get Template</button>
 
-    <form>
-        <div>
-            <label for="csvFile">CSV file:</label>
-            <input type="file" id="csvFile" required />
+    <div>
+        <label for="csvFile">CSV file:</label>
+        <input type="file" id="csvFile" required />
 
-            <label for="zipFile">Zip file (optional):</label>
-            <input type="file" id="zipFile"/>
-            
-            <label for="datePattern">Select date format:</label>
-            <select id="datePattern" required ng-model="dateFormat" ng-options="x.name for x in dateFormats" />
-        </div>
+        <label for="zipFile">Zip file (optional):</label>
+        <input type="file" id="zipFile"/>
+        
+        <label for="datePattern">Select date format:</label>
+        <select id="datePattern" required ng-model="dateFormat" ng-options="x.name for x in dateFormats"></select>
+    </div>
 
-        <button ng-click="importFile()">Upload</button>
-    </form>
+    <button ng-click="importFile()">Upload</button>
 </div>

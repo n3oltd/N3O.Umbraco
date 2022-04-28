@@ -20,9 +20,11 @@ namespace N3O.Umbraco.Data.Converters {
 
         public override void Import(IContentBuilder contentBuilder,
                                     IParser parser,
+                                    ErrorLog errorLog,
                                     UmbracoPropertyInfo propertyInfo,
                                     IEnumerable<string> source) {
-            Import(propertyInfo,
+            Import(errorLog,
+                   propertyInfo,
                    source,
                    s => parser.String.Parse(s, typeof(string)),
                    (alias, value) => contentBuilder.RadioButtonList(alias).Set(value));

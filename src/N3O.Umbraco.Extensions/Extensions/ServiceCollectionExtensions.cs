@@ -3,6 +3,7 @@ using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Utilities;
 using NJsonSchema.Generation;
 using NSwag.Generation.AspNetCore;
+using NSwag.Generation.Processors;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -17,6 +18,7 @@ namespace N3O.Umbraco.Extensions {
                     opt.FlattenInheritanceHierarchy = true;
 
                     AddSchemaProcessors(opt);
+                    AddOperationProcessors(opt);
                     AddOperationFilters(opt, name);
                 });
             }
@@ -33,6 +35,16 @@ namespace N3O.Umbraco.Extensions {
             
             schemaProcessors.Do(opt.SchemaProcessors.Add);
         }
+        
+        private static void AddOperationProcessors(AspNetCoreOpenApiDocumentGeneratorSettings opt) {
+            var operationProcessors = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
+                                                               t.ImplementsInterface<IOperationProcessor>() &&
+                                                               t.HasParameterlessConstructor())
+                                                .Select(t => (IOperationProcessor) Activator.CreateInstance(t))
+                                                .ToList();
+            
+            operationProcessors.Do(opt.OperationProcessors.Add);
+        }
 
         private static void AddOperationFilters(AspNetCoreOpenApiDocumentGeneratorSettings opt, string name) {
             opt.AddOperationFilter(ctx => {
@@ -43,5 +55,7 @@ namespace N3O.Umbraco.Extensions {
                 }
             });
         }
+        
+        
     }
 }

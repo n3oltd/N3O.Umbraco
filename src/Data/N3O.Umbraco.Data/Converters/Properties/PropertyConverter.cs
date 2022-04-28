@@ -3,6 +3,7 @@ using N3O.Umbraco.Data.Extensions;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Parsing;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Localization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace N3O.Umbraco.Data.Converters {
                                                    Func<T, Cell> toCell) {
             var contentProperty = contentProperties.Properties
                                                    .Single(x => x.Alias.EqualsInvariant(propertyInfo.Type.Alias));
-            var value = contentProperty?.Value;
+            var value = contentProperty.Value;
 
             if (value == null) {
                 return null;
@@ -32,6 +33,7 @@ namespace N3O.Umbraco.Data.Converters {
 
         public abstract void Import(IContentBuilder contentBuilder,
                                     IParser parser,
+                                    ErrorLog errorLog,
                                     UmbracoPropertyInfo propertyInfo,
                                     IEnumerable<string> source);
 
@@ -39,7 +41,8 @@ namespace N3O.Umbraco.Data.Converters {
         
         protected virtual int GetMaxValues(UmbracoPropertyInfo propertyInfo) => 1;
         
-        protected void Import<T>(UmbracoPropertyInfo propertyInfo,
+        protected void Import<T>(ErrorLog errorLog,
+                                 UmbracoPropertyInfo propertyInfo,
                                  IEnumerable<string> strValues,
                                  Func<string, ParseResult<T>> parse,
                                  Action<string, T> setContent) {
@@ -47,10 +50,11 @@ namespace N3O.Umbraco.Data.Converters {
                 throw new Exception($"Multiple values passed to {nameof(Import)}");
             }
             
-            ImportAll(propertyInfo, strValues, parse, (alias, values) => setContent(alias, values.Single()));
+            ImportAll(errorLog, propertyInfo, strValues, parse, (alias, values) => setContent(alias, values.Single()));
         }
         
-        protected void ImportAll<T>(UmbracoPropertyInfo propertyInfo,
+        protected void ImportAll<T>(ErrorLog errorLog,
+                                    UmbracoPropertyInfo propertyInfo,
                                     IEnumerable<string> strValues,
                                     Func<string, ParseResult<T>> parse,
                                     Action<string, IEnumerable<T>> setContent) {
@@ -59,15 +63,19 @@ namespace N3O.Umbraco.Data.Converters {
             foreach (var strValue in strValues) {
                 var parseResult = parse(strValue);
 
-                if (!parseResult.Success) {
-                    // TODO Replace with appropriate exception that indicates value that failed (strValue)
-                    throw new Exception();
+                if (parseResult.Success) {
+                    values.Add(parseResult.Value);    
+                } else {
+                    errorLog.AddError<Strings>(s => s.ParsingFailed_1, strValue);
                 }
-                
-                values.Add(parseResult.Value);
             }
             
             setContent(propertyInfo.ContentType.Alias, values);
+        }
+
+        public class Strings : CodeStrings {
+            // TODO If pass fields to Import/ImportAll rather than string can get column name here
+            public string ParsingFailed_1 => $"The value {"{0}".Quote()} is invalid for this column";
         }
     }
 }

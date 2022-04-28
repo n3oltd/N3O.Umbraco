@@ -19,9 +19,11 @@ namespace N3O.Umbraco.Cropper.Data.Converters {
 
         public override void Import(IContentBuilder contentBuilder,
                                     IParser parser,
+                                    ErrorLog errorLog,
                                     UmbracoPropertyInfo propertyInfo,
                                     IEnumerable<string> source) {
-            Import(propertyInfo,
+            Import(errorLog,
+                   propertyInfo,
                    source,
                    s => parser.Blob.Parse(s, Umbraco.Data.Lookups.DataTypes.Blob.GetClrType()),
                    (alias, value) => contentBuilder.Cropper(alias).SetImage(value));

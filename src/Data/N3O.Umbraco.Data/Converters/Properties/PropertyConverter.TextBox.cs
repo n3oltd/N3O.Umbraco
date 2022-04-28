@@ -3,7 +3,6 @@ using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Data.Parsing;
 using N3O.Umbraco.Extensions;
-using System;
 using System.Collections.Generic;
 using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 
@@ -19,13 +18,14 @@ namespace N3O.Umbraco.Data.Converters {
 
         public override void Import(IContentBuilder contentBuilder,
                                     IParser parser,
+                                    ErrorLog errorLog,
                                     UmbracoPropertyInfo propertyInfo,
                                     IEnumerable<string> source) {
-            throw new NotImplementedException();
-            // Import(propertyInfo,
-            //        values,
-            //        s => parser.String.Parse(s, typeof(string)),
-            //        (alias, value) => contentBuilder.TextBox(alias).Set(value));
+            Import(errorLog,
+                   propertyInfo,
+                   source,
+                   s => parser.String.Parse(s, DataTypes.String.GetClrType()),
+                   (alias, value) => contentBuilder.TextBox(alias).Set(value));
         }
     }
 }

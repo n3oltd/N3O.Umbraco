@@ -128,8 +128,10 @@ namespace N3O.Umbraco.Data.Handlers {
                     var batchReference = (int) await _counters.NextAsync(CountersKey, 100_001, cancellationToken);
                     var batchFilename = csvBlob.Filename;
                     var queuedAt = _clock.GetLocalNow().ToDateTimeUnspecified();
-
                     var storageFolderName = req.Model.ZipFile.HasValue() ? $"Import{batchReference}" : null;
+                    var parserSettings =  _jsonProvider.SerializeObject(new ParserSettings(req.Model.DatePattern,
+                                                                                           DecimalSeparators.Point,
+                                                                                           storageFolderName));
 
                     if (req.Model.ZipFile != null) {
                         await ExtractToStorageFolderAsync(req.Model.ZipFile, storageFolderName);
@@ -137,7 +139,7 @@ namespace N3O.Umbraco.Data.Handlers {
 
                     var rowNumber = 1;
                     while (csvReader.ReadRow()) {
-                        var replacesReference = csvReader.Row.GetRawField("Replaces Reference");
+                        var replacesReference = (string) null;// csvReader.Row.GetRawField("Replaces Reference");
 
                         var import = new Import();
                         import.Reference = $"{batchReference}-{rowNumber}";
@@ -147,7 +149,7 @@ namespace N3O.Umbraco.Data.Handlers {
                         import.BatchReference = batchReference.ToString();
                         import.BatchFilename = batchFilename;
                         import.FileRowNumber = rowNumber;
-                        import.StorageFolderName = storageFolderName;
+                        import.ParserSettings = parserSettings;
                         import.ContentTypeAlias = contentType.Alias;
                         import.ParentId = containerContent.Key;
                         import.ContentTypeName = contentType.Name;
@@ -244,7 +246,9 @@ namespace N3O.Umbraco.Data.Handlers {
                     var field = new Field();
                     field.Property = property.Type.Alias;
                     field.Name = column.Title;
-                    field.Value = csvReader.Row.GetRawField(column.Title);
+                    field.SourceValue = csvReader.Row.GetRawField(column.Title);
+                    field.Value = field.SourceValue;
+                    field.Ignore = false;
 
                     yield return field;
                 }

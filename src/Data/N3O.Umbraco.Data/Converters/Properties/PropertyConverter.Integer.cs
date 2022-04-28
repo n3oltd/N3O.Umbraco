@@ -20,9 +20,11 @@ namespace N3O.Umbraco.Data.Converters {
 
         public override void Import(IContentBuilder contentBuilder,
                                     IParser parser,
+                                    ErrorLog errorLog,
                                     UmbracoPropertyInfo propertyInfo,
                                     IEnumerable<string> source) {
-            Import(propertyInfo,
+            Import(errorLog,
+                   propertyInfo,
                    source,
                    s => parser.Integer.Parse(s, DataTypes.Integer.GetClrType()),
                    (alias, value) => contentBuilder.Numeric(alias).SetInteger(value));

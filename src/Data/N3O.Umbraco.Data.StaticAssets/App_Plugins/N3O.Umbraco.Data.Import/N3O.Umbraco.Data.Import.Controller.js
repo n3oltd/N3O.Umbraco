@@ -26,7 +26,7 @@ angular.module("umbraco")
             const zipStorageToken = getStorageToken('#zipFile');
             
             var req = {
-                dateFormat: $scope.dataFormat,
+                dateFormat: $scope.dataFormat.id,
                 csvFile: csvStorageToken,
                 zipFile: zipStorageToken
             };
@@ -48,6 +48,7 @@ angular.module("umbraco")
         .then(res => res.json())
         .then(res => {
             $scope.dateFormats = res;
+            $scope.dateFormat = res[0];
         });
         
         async function getStorageToken(selector) {

@@ -1,17 +1,18 @@
-﻿using N3O.Umbraco.Data.Commands;
-using N3O.Umbraco.Data.Konstrukt;
-using N3O.Umbraco.Content;
-using N3O.Umbraco.Data.Builders;
+﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Data.Commands;
 using N3O.Umbraco.Data.Converters;
 using N3O.Umbraco.Data.Extensions;
 using N3O.Umbraco.Data.Filters;
-using N3O.Umbraco.Data.Lookups;
+using N3O.Umbraco.Data.Konstrukt;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Parsing;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
+using N3O.Umbraco.Localization;
 using N3O.Umbraco.Mediator;
+using N3O.Umbraco.Storage.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -24,32 +25,32 @@ namespace N3O.Umbraco.Data.Handlers {
         private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
         private readonly IContentEditor _contentEditor;
         private readonly IContentTypeService _contentTypeService;
-        private readonly IContentService _contentService;
         private readonly IReadOnlyList<IPropertyConverter> _converters;
         private readonly IJsonProvider _jsonProvider;
         private readonly IReadOnlyList<IImportPropertyFilter> _importPropertyFilters;
         private readonly IDataTypeService _dataTypeService;
         private readonly IParserFactory _parserFactory;
-        private readonly IColumnRangeBuilder _columnRangeBuilder;
+        private readonly IVolume _volume;
+        private readonly IFormatter _formatter;
 
         public ProcessImport(IUmbracoDatabaseFactory umbracoDatabaseFactory,
                              IContentEditor contentEditor,
                              IEnumerable<PropertyConverter> converters,
                              IContentTypeService contentTypeService,
-                             IContentService contentService,
                              IJsonProvider jsonProvider,
                              IDataTypeService dataTypeService,
                              IEnumerable<IImportPropertyFilter> importPropertyFilters,
                              IParserFactory parserFactory,
-                             IColumnRangeBuilder columnRangeBuilder) {
+                             IVolume volume,
+                             IFormatter formatter) {
             _umbracoDatabaseFactory = umbracoDatabaseFactory;
             _contentEditor = contentEditor;
             _contentTypeService = contentTypeService;
-            _contentService = contentService;
             _jsonProvider = jsonProvider;
             _dataTypeService = dataTypeService;
             _parserFactory = parserFactory;
-            _columnRangeBuilder = columnRangeBuilder;
+            _volume = volume;
+            _formatter = formatter;
             _importPropertyFilters = importPropertyFilters.ToList();
             _converters = converters.ToList();
         }
@@ -62,41 +63,35 @@ namespace N3O.Umbraco.Data.Handlers {
 
                 if (import.CanProcess) {
                     try {
+                        var propertyInfos = GetPropertyInfos(import.ContentTypeAlias);
                         var contentPublisher = GetContentPublisher(import);
+                        var parser = await GetParserAsync(import);
+                        var propertyInfoFields = _jsonProvider.DeserializeObject<IEnumerable<Field>>(import.Fields)
+                                                              .GroupBy(x => x.Property)
+                                                              .ToDictionary(x => propertyInfos[x.Key],
+                                                                            x => x.ToList());
 
-                        // Add method import called GetFields() where pass a JSON converter and let it deserialize
-                        // the fields. Each field should have the propertyAlias, propertyType, and also the values,
-                        // (an array of strings) + label etc. The field should be able to construct and UmbracoPropertyInfo
-                        //var converter = _converters.Single(x => x.IsConverter(umbracoPropertyInfo));
-                        //converter.Import(contentPublisher, umbracoPropertyInfo, values);
-                        var fields = GetFields(import.ContentTypeAlias, import.Fields);
-
-                        // TODO store the date pattern in last request and use it here
-                        var parser = _parserFactory.GetParser(DatePatterns.YearMonthDay,
-                                                              DecimalSeparators.Point,
-                                                              BlobResolvers.Url());
-
-                        foreach (var (property, values) in fields) {
-                            var converter = _converters.Single(x => x.IsConverter(property));
-
-                            converter.Import(contentPublisher.Content,
-                                             parser,
-                                             property,
-                                             values);
+                        var errorLog = new ErrorLog();
+                        
+                        foreach (var (propertyInfo, fields) in propertyInfoFields) {
+                            ImportProperty(contentPublisher, parser, errorLog, propertyInfo, fields);
                         }
 
-                        var publishResult = contentPublisher.SaveAndPublish();
-
-                        // Add these methods to import to set its status and also to include the ID + reference was set to
-                        if (publishResult.Success) {
-                            //import.Published(id, reference);
+                        if (errorLog.HasErrors) {
+                            import.Error(errorLog.GetErrors(_formatter));
                         } else {
-                            //import.Saved(id, reference);
+                            var publishResult = contentPublisher.SaveAndPublish();
+
+                            var reference = (string) null;
+
+                            if (publishResult.Success) {
+                                import.Published(publishResult.Content.Key, reference);
+                            } else {
+                                import.PublishingFailed(publishResult.Content.Key, reference);
+                            }
                         }
-                    } catch {
-                        // Catch specific exceptions that correspond to parsing errors, e.g. date is malformed
-                        // This can be a generic message of the form, "Cannot convert value '[whatever text was' to
-                        // type [dataType]'. This is enough for people to figure out what they need to do.
+                    } catch (Exception ex) {
+                        import.Error(ex);
                     }
 
                     await db.UpdateAsync(import);
@@ -106,38 +101,36 @@ namespace N3O.Umbraco.Data.Handlers {
             return None.Empty;
         }
 
-        private IReadOnlyList<(UmbracoPropertyInfo, IEnumerable<string>)> GetFields(string contentTypeAlias, string json) {
-            var contentType = _contentTypeService.Get(contentTypeAlias);
+        private IReadOnlyDictionary<string, UmbracoPropertyInfo> GetPropertyInfos(string importContentTypeAlias) {
+            var contentType = _contentTypeService.Get(importContentTypeAlias);
+            
+            return contentType.GetUmbracoProperties(_dataTypeService)
+                              .Where(x => x.CanInclude(_importPropertyFilters))
+                              .ToDictionary(x => x.Type.Alias, x => x);
+        }
 
-            var properties = contentType.GetUmbracoProperties(_dataTypeService)
-                                        .Where(x => x.CanInclude(_importPropertyFilters))
-                                        .Select(x => x.GetTemplateColumn(_converters))
-                                        .Select(x => (Property: x.PropertyInfo, Headings: _columnRangeBuilder.GetColumnHeadings(x)))
-                                        .ToList();
+        private async Task<IParser> GetParserAsync(Import import) {
+            var parserSettings = _jsonProvider.DeserializeObject<ParserSettings>(import.ParserSettings);
 
-            var values = _jsonProvider.DeserializeObject<Dictionary<string, string>>(json);
+            var resolvers = new List<IBlobResolver>();
+            resolvers.Add(new UrlBlobResolver());
 
-            var result = new List<(UmbracoPropertyInfo, IEnumerable<string>)>();
+            if (parserSettings.StorageFolderName.HasValue()) {
+                var storageFolder = await _volume.GetStorageFolderAsync(parserSettings.StorageFolderName);
 
-            foreach (var (property, headings) in properties) {
-                var propertyValues = new List<string>();
-                foreach (var heading in headings) {
-                    var key = values.Keys.Single(x => x.EqualsInvariant(heading));
-                    var value = values[key];
-                    propertyValues.Add(value);
-                }
-
-                result.Add((property, propertyValues));
+                resolvers.Add(new StorageFolderBlobResolver(storageFolder));
             }
 
-            return result;
+            var parser = _parserFactory.GetParser(parserSettings.DatePattern,
+                                                  parserSettings.DecimalSeparator,
+                                                  resolvers);
+
+            return parser;
         }
 
         private IContentPublisher GetContentPublisher(Import import) {
             if (import.Action == ImportActions.Create) {
                 var contentType = _contentTypeService.Get(import.ContentTypeAlias);
-
-                var container = _contentTypeService.GetContainer(contentType.ParentId);
 
                 return _contentEditor.New("New", import.ParentId, contentType.Alias);
             } else if (import.Action == ImportActions.Update) {
@@ -145,6 +138,20 @@ namespace N3O.Umbraco.Data.Handlers {
             } else {
                 throw UnrecognisedValueException.For(import.Action);
             }
+        }
+
+        private void ImportProperty(IContentPublisher contentPublisher,
+                                    IParser parser,
+                                    ErrorLog errorLog,
+                                    UmbracoPropertyInfo propertyInfo,
+                                    IReadOnlyList<Field> fields) {
+            var converter = _converters.Single(x => x.IsConverter(propertyInfo));
+
+            converter.Import(contentPublisher.Content,
+                             parser,
+                             errorLog,
+                             propertyInfo,
+                             fields.Where(x => !x.Ignore).Select(x => x.Value));
         }
     }
 }

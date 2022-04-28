@@ -23,9 +23,11 @@ namespace N3O.Umbraco.Data.Converters {
 
         public override void Import(IContentBuilder contentBuilder,
                                     IParser parser,
+                                    ErrorLog errorLog,
                                     UmbracoPropertyInfo propertyInfo,
                                     IEnumerable<string> source) {
-            ImportAll(propertyInfo,
+            ImportAll(errorLog,
+                      propertyInfo,
                       source,
                       s => Parse(parser, propertyInfo, s),
                       (alias, values) => contentBuilder.ContentPicker(alias).SetContent(values));
