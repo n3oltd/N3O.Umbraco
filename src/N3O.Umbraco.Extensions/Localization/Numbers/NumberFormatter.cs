@@ -87,7 +87,8 @@ namespace N3O.Umbraco.Localization {
         private NumberFormatInfo GetNumberFormatInfo(string cultureCode) {
             return ((CultureInfo)CultureInfo.GetCultureInfo(cultureCode).Clone()).NumberFormat;
         }
-    
-        public static INumberFormatter Invariant = new NumberFormatter(DefaultLocalizationSettingsAccessor.Instance);
+
+        public static readonly INumberFormatter Invariant =
+            new NumberFormatter(DefaultLocalizationSettingsAccessor.Instance);
     }
 }

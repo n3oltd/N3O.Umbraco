@@ -1,6 +1,5 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Data.Extensions;
-using N3O.Umbraco.Data.Konstrukt;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Parsing;
 using N3O.Umbraco.Extensions;
@@ -36,7 +35,7 @@ namespace N3O.Umbraco.Data.Converters {
                                     IParser parser,
                                     ErrorLog errorLog,
                                     UmbracoPropertyInfo propertyInfo,
-                                    IEnumerable<Field> source);
+                                    IEnumerable<ImportField> fields);
 
         public abstract bool IsConverter(UmbracoPropertyInfo propertyInfo);
         
@@ -44,7 +43,7 @@ namespace N3O.Umbraco.Data.Converters {
         
         protected void Import<T>(ErrorLog errorLog,
                                  UmbracoPropertyInfo propertyInfo,
-                                 IEnumerable<Field> fields,
+                                 IEnumerable<ImportField> fields,
                                  Func<string, ParseResult<T>> parse,
                                  Action<string, T> setContent) {
             if (fields.OrEmpty().Count() > 1) {
@@ -56,7 +55,7 @@ namespace N3O.Umbraco.Data.Converters {
         
         protected void ImportAll<T>(ErrorLog errorLog,
                                     UmbracoPropertyInfo propertyInfo,
-                                    IEnumerable<Field> fields,
+                                    IEnumerable<ImportField> fields,
                                     Func<string, ParseResult<T>> parse,
                                     Action<string, IEnumerable<T>> setContent) {
             var values = new List<T>();

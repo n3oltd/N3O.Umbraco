@@ -1,9 +1,7 @@
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Plugins.Lookups;
 using N3O.Umbraco.Plugins.Models;
-using NodaTime;
 using SixLabors.ImageSharp;
-using System.Globalization;
 using System.IO;
 
 namespace N3O.Umbraco.Plugins.Extensions {

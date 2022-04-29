@@ -6,6 +6,7 @@
             _settingsAccessor = settingsAccessor;
         }
 
-        public static IDateTimeFormatter Invariant = new DateTimeFormatter(DefaultLocalizationSettingsAccessor.Instance);
+        public static readonly IDateTimeFormatter Invariant =
+            new DateTimeFormatter(DefaultLocalizationSettingsAccessor.Instance);
     }
 }

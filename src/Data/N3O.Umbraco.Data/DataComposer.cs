@@ -5,6 +5,7 @@ using N3O.Umbraco.Data.ContentApps;
 using N3O.Umbraco.Data.Converters;
 using N3O.Umbraco.Data.Filters;
 using N3O.Umbraco.Data.Konstrukt;
+using N3O.Umbraco.Data.Providers;
 using N3O.Umbraco.Data.Services;
 using N3O.Umbraco.Extensions;
 using OfficeOpenXml;
@@ -19,10 +20,11 @@ namespace N3O.Umbraco.Data {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             RegisterApis(builder);
-            RegisterContentSummaryGenerators(builder);
+            RegisterContentSummarisers(builder);
             RegisterConverters(builder);
             RegisterExports(builder);
             RegisterImports(builder);
+            RegisterMatchers(builder);
             RegisterTables(builder);
         }
 
@@ -32,9 +34,9 @@ namespace N3O.Umbraco.Data {
             builder.Services.AddOpenApiDocument(DataConstants.ApiNames.Import);
         }
         
-        private void RegisterContentSummaryGenerators(IUmbracoBuilder builder) {
-            RegisterAll(t => t.ImplementsInterface<IContentSummaryGenerator>(),
-                        t => builder.Services.AddTransient(typeof(IContentSummaryGenerator), t));
+        private void RegisterContentSummarisers(IUmbracoBuilder builder) {
+            RegisterAll(t => t.ImplementsInterface<IContentSummariser>(),
+                        t => builder.Services.AddTransient(typeof(IContentSummariser), t));
         }
 
         private void RegisterConverters(IUmbracoBuilder builder) {
@@ -64,6 +66,11 @@ namespace N3O.Umbraco.Data {
                         t => builder.Services.AddTransient(typeof(IImportPropertyFilter), t));
 
             builder.ContentApps().Append<ImportApp>();
+        }
+        
+        private void RegisterMatchers(IUmbracoBuilder builder) {
+            RegisterAll(t => t.ImplementsInterface<IContentMatcher>(),
+                        t => builder.Services.AddTransient(typeof(IContentMatcher), t));
         }
 
         private void RegisterTables(IUmbracoBuilder builder) {

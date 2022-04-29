@@ -1,7 +1,6 @@
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Data.Konstrukt;
 using N3O.Umbraco.Data.Parsing;
 using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
@@ -21,10 +20,10 @@ namespace N3O.Umbraco.Data.Converters {
                                     IParser parser,
                                     ErrorLog errorLog,
                                     UmbracoPropertyInfo propertyInfo,
-                                    IEnumerable<Field> source) {
+                                    IEnumerable<ImportField> fields) {
             Import(errorLog,
                    propertyInfo,
-                   source,
+                   fields,
                    s => parser.String.Parse(s, DataTypes.String.GetClrType()),
                    (alias, value) => contentBuilder.TextBox(alias).Set(value));
         }

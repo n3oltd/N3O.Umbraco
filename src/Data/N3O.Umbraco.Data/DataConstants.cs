@@ -5,6 +5,10 @@
             public const string Export = "Export";
             public const string Import = "Import";
         }
+
+        public static class Columns {
+            public const string Replaces = "Replaces";
+        }
         
         public static class ContentTypes {
             public const string Csv = "text/csv";
@@ -20,6 +24,11 @@
         public static class DecimalSeparators {
             public const string Comma = ",";
             public const string Point = ".";
+        }
+
+        public static class PropertyEditorAliases {
+            public const string ImportErrorsViewer = "N3O.Umbraco.Data.ImportErrorsViewer";
+            public const string ImportFieldEditor = "N3O.Umbraco.Data.ImportFieldEditor";
         }
         
         public static class Tables {

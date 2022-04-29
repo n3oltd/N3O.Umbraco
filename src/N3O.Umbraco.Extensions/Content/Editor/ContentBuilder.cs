@@ -26,7 +26,16 @@ namespace N3O.Umbraco.Content {
                 propertyValues[name] = builder.Build();
             }
 
+            RaiseBuilt();
+
             return propertyValues;
         }
+        
+        private void RaiseBuilt() {
+            var handler = OnBuilt;
+            handler?.Invoke(this, EventArgs.Empty);
+        }
+        
+        public event EventHandler<EventArgs> OnBuilt;
     }
 }

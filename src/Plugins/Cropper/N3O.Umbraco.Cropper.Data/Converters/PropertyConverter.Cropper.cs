@@ -2,7 +2,6 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Cropper.DataTypes;
 using N3O.Umbraco.Cropper.Extensions;
 using N3O.Umbraco.Data.Converters;
-using N3O.Umbraco.Data.Konstrukt;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Parsing;
 using N3O.Umbraco.Extensions;
@@ -23,12 +22,12 @@ namespace N3O.Umbraco.Cropper.Data.Converters {
                                     IParser parser,
                                     ErrorLog errorLog,
                                     UmbracoPropertyInfo propertyInfo,
-                                    IEnumerable<Field> source) {
+                                    IEnumerable<ImportField> fields) {
             var cropperConfiguration = (CropperConfiguration) propertyInfo.DataType.Configuration;
             
             Import(errorLog,
                    propertyInfo,
-                   source,
+                   fields,
                    s => parser.Blob.Parse(s, Umbraco.Data.Lookups.DataTypes.Blob.GetClrType()),
                    (alias, value) => contentBuilder.Cropper(alias).SetImage(value).AutoCrop(cropperConfiguration));
         }

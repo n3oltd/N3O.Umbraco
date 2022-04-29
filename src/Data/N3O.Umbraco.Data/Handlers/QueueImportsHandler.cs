@@ -1,12 +1,14 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Data.Commands;
 using N3O.Umbraco.Data.Converters;
+using N3O.Umbraco.Data.Exceptions;
 using N3O.Umbraco.Data.Extensions;
 using N3O.Umbraco.Data.Filters;
 using N3O.Umbraco.Data.Konstrukt;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Parsing;
+using N3O.Umbraco.Data.Providers;
 using N3O.Umbraco.Data.Services;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
@@ -32,44 +34,42 @@ namespace N3O.Umbraco.Data.Handlers {
         private const string CountersKey = "Import";
         private const int MaxRowsCount = 5_000;
 
-        private readonly ErrorLog _errorLog = new();
+        private readonly IBackOfficeSecurityAccessor _backOfficeSecurityAccessor;
+        private readonly IWorkspace _workspace;
+        private readonly ILocalClock _clock;
         private readonly ICounters _counters;
         private readonly IJsonProvider _jsonProvider;
         private readonly IContentHelper _contentHelper;
         private readonly IContentService _contentService;
-        private readonly IReadOnlyList<IImportPropertyFilter> _propertyFilters;
-        private readonly IReadOnlyList<IPropertyConverter> _converters;
         private readonly IContentTypeService _contentTypeService;
         private readonly IDataTypeService _dataTypeService;
-        private readonly ILocalClock _clock;
-        private readonly IBackOfficeSecurityAccessor _backOfficeSecurityAccessor;
-        private readonly IWorkspace _workspace;
         private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
         private readonly IImportProcessingQueue _importProcessingQueue;
         private readonly Lazy<IVolume> _volume;
         private readonly ITempStorage _tempStorage;
-        private readonly IFormatter _formatter;
-        private IReadOnlyDictionary<string, Guid> _existingReferences;
-        private readonly IReadOnlyList<IContentSummaryGenerator> _contentSummaryGenerators;
-        private bool _contentSummaryGeneratorFound;
-        
+        private readonly ErrorLog _errorLog;
+        private readonly IReadOnlyList<IPropertyConverter> _converters;
+        private readonly IReadOnlyList<IImportPropertyFilter> _propertyFilters;
+        private readonly List<IContentMatcher> _contentMatchers;
+        private IReadOnlyList<IContent> _descendants;
+
         public QueueImportsHandler(IBackOfficeSecurityAccessor backOfficeSecurityAccessor,
                                    IWorkspace workspace,
                                    ILocalClock clock,
                                    ICounters counters,
                                    IJsonProvider jsonProvider,
-                                   IEnumerable<IPropertyConverter> converters,
                                    IContentHelper contentHelper,
-                                   IEnumerable<IImportPropertyFilter> propertyFilters,
                                    IContentService contentService,
                                    IContentTypeService contentTypeService,
                                    IDataTypeService dataTypeService,
-                                   IEnumerable<IContentSummaryGenerator> contentSummaryGenerators,
                                    IUmbracoDatabaseFactory umbracoDatabaseFactory,
                                    IImportProcessingQueue importProcessingQueue,
                                    Lazy<IVolume> volume,
                                    ITempStorage tempStorage,
-                                   IFormatter formatter) {
+                                   IFormatter formatter,
+                                   IEnumerable<IPropertyConverter> converters,
+                                   IEnumerable<IImportPropertyFilter> propertyFilters,
+                                   IEnumerable<IContentMatcher> contentMatchers) {
             _backOfficeSecurityAccessor = backOfficeSecurityAccessor;
             _workspace = workspace;
             _clock = clock;
@@ -77,33 +77,31 @@ namespace N3O.Umbraco.Data.Handlers {
             _jsonProvider = jsonProvider;
             _contentHelper = contentHelper;
             _contentService = contentService;
-            _converters = converters.ToList();
-            _propertyFilters = propertyFilters.ToList();
             _contentTypeService = contentTypeService;
             _dataTypeService = dataTypeService;
             _umbracoDatabaseFactory = umbracoDatabaseFactory;
             _importProcessingQueue = importProcessingQueue;
             _volume = volume;
             _tempStorage = tempStorage;
-            _formatter = formatter;
-            _contentSummaryGenerators = contentSummaryGenerators.OrEmpty().ToList();
+            _errorLog = new ErrorLog(formatter);
+            _converters = converters.OrEmpty().ToList();
+            _propertyFilters = propertyFilters.OrEmpty().ToList();
+            _contentMatchers = contentMatchers.OrEmpty().ToList();
         }
         
         public async Task<QueueImportsRes> Handle(QueueImportsCommand req, CancellationToken cancellationToken) {
             try {
                 var count = await QueueAsync(req, cancellationToken);
 
-                if (_errorLog.HasErrors) {
-                    return new QueueImportsRes {
-                       Success = false,
-                       Errors = _errorLog.GetErrors(_formatter)
-                   };
-                } else {
-                    return new QueueImportsRes {
-                        Success = true,
-                        Count = count
-                    };
-                }
+                return new QueueImportsRes {
+                    Success = true,
+                    Count = count
+                };
+            } catch (ProcessingException processingException) {
+                return new QueueImportsRes {
+                    Success = false,
+                    Errors = processingException.Errors
+                };
             } catch (Exception ex) {
                 return new QueueImportsRes {
                     Success = false,
@@ -120,11 +118,11 @@ namespace N3O.Umbraco.Data.Handlers {
                     var containerContent = req.ContentId.Run(_contentService.GetById, true);
                     var contentType = _contentTypeService.GetContentTypeForContainerContent(containerContent.ContentTypeId);
 
-                    var propertyColumns = contentType.GetUmbracoProperties(_dataTypeService)
-                                                     .Where(x => x.CanInclude(_propertyFilters))
-                                                     .ToDictionary(x => x,
-                                                                   x => _workspace.ColumnRangeBuilder
-                                                                                  .GetColumns(x.GetTemplateColumn(_converters)));
+                    var propertyInfos = contentType.GetUmbracoProperties(_dataTypeService).ToList();
+                    var propertyInfoColumns = propertyInfos.Where(x => x.CanInclude(_propertyFilters))
+                                                           .ToDictionary(x => x,
+                                                                         x => _workspace.ColumnRangeBuilder
+                                                                                        .GetColumns(x.GetTemplateColumn(_converters)));
 
                     var csvReader = _workspace.GetCsvReader(req.Model.DatePattern,
                                                             DecimalSeparators.Point,
@@ -133,18 +131,16 @@ namespace N3O.Umbraco.Data.Handlers {
                                                             csvBlob.Stream,
                                                             true);
 
-                    ValidateColumns(csvReader.GetColumnHeadings(), propertyColumns.SelectMany(x => x.Value));
+                    ValidateColumns(csvReader.GetColumnHeadings(), propertyInfoColumns.SelectMany(x => x.Value));
 
-                    if (_errorLog.HasErrors) {
-                        return -1;
-                    }
-                    
                     var currentUser = _backOfficeSecurityAccessor.BackOfficeSecurity.CurrentUser;
                     var imports = new List<Import>();
                     var batchReference = (int) await _counters.NextAsync(CountersKey, 100_001, cancellationToken);
                     var batchFilename = csvBlob.Filename;
                     var queuedAt = _clock.GetLocalNow().ToDateTimeUnspecified();
+                    var canReplace = csvReader.GetColumnHeadings().Contains(DataConstants.Columns.Replaces, true);
                     var storageFolderName = req.Model.ZipFile.HasValue() ? $"Import{batchReference}" : null;
+                    var contentMatcher = _contentMatchers.SingleOrDefault(x => x.IsMatcher(contentType.Alias));
                     var parserSettings =  _jsonProvider.SerializeObject(new ParserSettings(req.Model.DatePattern,
                                                                                            DecimalSeparators.Point,
                                                                                            storageFolderName));
@@ -155,8 +151,6 @@ namespace N3O.Umbraco.Data.Handlers {
 
                     var rowNumber = 1;
                     while (csvReader.ReadRow()) {
-                        var replacesReference = (string) null;// csvReader.Row.GetRawField("Replaces Reference");
-
                         var import = new Import();
                         import.Reference = $"{batchReference}-{rowNumber}";
                         import.QueuedAt = queuedAt;
@@ -169,15 +163,22 @@ namespace N3O.Umbraco.Data.Handlers {
                         import.ContentTypeAlias = contentType.Alias;
                         import.ParentId = containerContent.Key;
                         import.ContentTypeName = contentType.Name;
+                        
+                        var replacesCriteria = canReplace
+                                                   ? csvReader.Row.GetRawField(DataConstants.Columns.Replaces)
+                                                   : null;
 
-                        if (replacesReference.HasValue()) {
+                        if (replacesCriteria.HasValue()) {
                             import.Action = ImportActions.Update;
-                            import.ReplacesId = FindExistingId(containerContent, contentType.Alias, replacesReference);
+                            import.ReplacesId = FindExistingId(containerContent,
+                                                               contentType.Alias,
+                                                               contentMatcher,
+                                                               replacesCriteria);
                         } else {
                             import.Action = ImportActions.Create;
                         }
 
-                        import.Fields = _jsonProvider.SerializeObject(GetFields(csvReader, propertyColumns));
+                        import.Fields = _jsonProvider.SerializeObject(GetFields(csvReader, propertyInfoColumns));
                         import.Status = ImportStatuses.Queued;
 
                         imports.Add(import);
@@ -186,11 +187,7 @@ namespace N3O.Umbraco.Data.Handlers {
                     }
 
                     ValidateImports(imports);
-                    
-                    if (_errorLog.HasErrors) {
-                        return -1;
-                    }
-                    
+
                     await InsertAndQueueAsync(imports);
 
                     return imports.Count;
@@ -210,12 +207,16 @@ namespace N3O.Umbraco.Data.Handlers {
                     _errorLog.AddError<Strings>(s => s.MissingColumn_1, missingHeading);
                 }
             }
+            
+            _errorLog.ThrowIfHasErrors();
         }
         
         private void ValidateImports(IReadOnlyList<Import> imports) {
             if (imports.Count > MaxRowsCount) {
                 _errorLog.AddError<Strings>(s => s.MaxRowsExceeded_1, MaxRowsCount);
             }
+            
+            _errorLog.ThrowIfHasErrors();
         }
 
         private async Task ExtractToStorageFolderAsync(StorageToken zipStorageToken, string storageFolderName) {
@@ -224,8 +225,8 @@ namespace N3O.Umbraco.Data.Handlers {
             try {
                 using (zipBlob.Stream) {
                     var storageFolder = await _volume.Value.GetStorageFolderAsync(storageFolderName);
-
                     var zipArchive = new ZipArchive(zipBlob.Stream, ZipArchiveMode.Read);
+                    
                     await zipArchive.ExtractToStorageFolderAsync(storageFolder);
                 }
             } finally {
@@ -233,46 +234,51 @@ namespace N3O.Umbraco.Data.Handlers {
             }
         }
 
-        private Guid? FindExistingId(IContent container, string contentTypeAlias, string reference) {
-            if (_existingReferences == null) {
-                PopulateExistingReferences(container, contentTypeAlias);
+        private Guid? FindExistingId(IContent container,
+                                     string contentTypeAlias,
+                                     IContentMatcher contentMatcher,
+                                     string criteria) {
+            if (contentMatcher == null) {
+                _errorLog.AddError<Strings>(s => s.ContentMatcherNotFound_1, contentTypeAlias);
+
+                return null;
             }
 
-            if (_existingReferences.ContainsKey(reference)) {
-                return _existingReferences[reference];
-            } else if(_contentSummaryGeneratorFound) {
-                _errorLog.AddError<Strings>(s => s.ExistingRecordNotFound_1, reference);
-            } else {
-                _errorLog.AddError<Strings>(s => s.NoContentSummaryGeneratorFound_1, contentTypeAlias);
+            if (_descendants == null) {
+                PopulateDescendants(container, contentTypeAlias);
             }
-            
-            return null;
+
+            var matches = new List<IContent>();
+            foreach (var descendant in _descendants) {
+                if (contentMatcher.IsMatch(descendant, criteria)) {
+                    matches.Add(descendant);
+                }
+            }
+
+            if (matches.IsSingle()) {
+                return matches.Single().Key;
+            } else {
+                if (matches.None()) {
+                    _errorLog.AddError<Strings>(s => s.NoContentMatched_1, criteria);   
+                } else {
+                    _errorLog.AddError<Strings>(s => s.MultipleContentMatched_1, criteria);
+                }
+
+                return null;
+            }
         }
 
-        private void PopulateExistingReferences(IContent container, string contentTypeAlias) {
-            var dict = new Dictionary<string, Guid>(StringComparer.InvariantCultureIgnoreCase);
-            var summaryGenerator = _contentSummaryGenerators.SingleOrDefault(x => x.IsGenerator(contentTypeAlias));
-
-            if (summaryGenerator != null) {
-                _contentSummaryGeneratorFound = true;
-                
-                var descendants = _contentHelper.GetDescendants(container).Where(x => x.ContentType.Alias.EqualsInvariant(contentTypeAlias)).ToList();
-
-                foreach (var descendant in descendants) {
-                    dict[summaryGenerator.GenerateSummary(_contentHelper.GetContentProperties(descendant))] = descendant.Key;
-                }
-            } else {
-                _contentSummaryGeneratorFound = false;
-            }
-
-            _existingReferences = dict;
+        private void PopulateDescendants(IContent container, string contentTypeAlias) {
+            _descendants = _contentHelper.GetDescendants(container)
+                                         .Where(x => x.ContentType.Alias.EqualsInvariant(contentTypeAlias))
+                                         .ToList();
         }
         
-        private IEnumerable<Field> GetFields(ICsvReader csvReader,
-                                             IReadOnlyDictionary<UmbracoPropertyInfo, IEnumerable<Column>> propertyColumns) {
+        private IEnumerable<ImportField> GetFields(ICsvReader csvReader,
+                                                   IReadOnlyDictionary<UmbracoPropertyInfo, IEnumerable<Column>> propertyColumns) {
             foreach (var (property, columns) in propertyColumns) {
                 foreach (var column in columns) {
-                    var field = new Field();
+                    var field = new ImportField();
                     field.Property = property.Type.Alias;
                     field.Name = column.Title;
                     field.SourceValue = csvReader.Row.GetRawField(column.Title);
@@ -297,11 +303,11 @@ namespace N3O.Umbraco.Data.Handlers {
         }
         
         public class Strings : CodeStrings {
-            public string ExistingRecordNotFound_1 => $"No existing record found with ID {"{0}".Quote()}";
+            public string ContentMatcherNotFound_1 => $"No content matcher found for {"{0}".Quote()}";
             public string MaxRowsExceeded_1 => $"The CSV file contains more than the maximum allowed {0} rows";
             public string MissingColumn_1 => $"CSV file is missing column {"{0}".Quote()}";
-            public string NoContentSummaryGeneratorFound_1 => $"Could not find an {nameof(IContentSummaryGenerator)} for content type {"{0}".Quote()}";
-
+            public string MultipleContentMatched_1 => $"More than one content found for {"{0}".Quote()}";
+            public string NoContentMatched_1 => $"No content found for {"{0}".Quote()}";
         }
     }
 }

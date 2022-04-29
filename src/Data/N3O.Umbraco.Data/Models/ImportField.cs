@@ -1,5 +1,5 @@
-﻿namespace N3O.Umbraco.Data.Konstrukt {
-    public class Field {
+﻿namespace N3O.Umbraco.Data.Models {
+    public class ImportField {
         public string Property { get; set; }
         public string Name { get; set; }
         public string Value { get; set; }

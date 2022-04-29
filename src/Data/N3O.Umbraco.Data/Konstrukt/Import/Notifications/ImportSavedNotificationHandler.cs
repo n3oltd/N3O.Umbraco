@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
 
 namespace N3O.Umbraco.Data.Konstrukt.Notifications {
-    public class ImportSavedHandler : INotificationAsyncHandler<KonstruktEntitySavedNotification> {
+    public class ImportSavedNotificationHandler : INotificationAsyncHandler<KonstruktEntitySavedNotification> {
         private readonly IImportProcessingQueue _importProcessingQueue;
 
-        public ImportSavedHandler(IImportProcessingQueue importProcessingQueue) {
+        public ImportSavedNotificationHandler(IImportProcessingQueue importProcessingQueue) {
             _importProcessingQueue = importProcessingQueue;
         }
 
