@@ -8,7 +8,6 @@ using N3O.Umbraco.Uploader.Models;
 using NodaTime;
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.IO;
 
@@ -26,7 +25,7 @@ namespace N3O.Umbraco.Uploader.Controllers {
         [HttpGet("media/{mediaId}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<FileMedia> GetMediaById(string mediaId) {
-            var file = _mediaFileManager.FileSystem.GetFiles(mediaId, "*.*").SingleOrDefault();
+            var file = _mediaFileManager.GetSourceFile(mediaId);
 
             if (file == null) {
                 return NotFound();
