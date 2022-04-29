@@ -258,7 +258,9 @@ namespace N3O.Umbraco.Data.Handlers {
         private async Task InsertAndQueueAsync(IReadOnlyList<Import> imports) {
             if (imports.Any()) {
                 using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-                    await db.InsertBatchAsync(imports);
+                    foreach (var import in imports) {
+                        await db.InsertAsync(import);
+                    }
                 }
 
                 _importProcessingQueue.AddAll(imports);

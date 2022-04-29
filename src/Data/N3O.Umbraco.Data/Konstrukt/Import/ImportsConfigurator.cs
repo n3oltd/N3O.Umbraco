@@ -51,6 +51,10 @@ namespace N3O.Umbraco.Data.Konstrukt {
             var generalFieldset = generalTab.AddFieldset("General");
 
             generalFieldset.AddField(c => c.Fields).SetDataType("Textarea");
+            
+            var errorsFieldSet = generalTab.AddFieldset("Errors");
+
+            errorsFieldSet.AddField(c => c.Errors).SetDataType("Textarea").MakeReadOnly();
         }
     }
 }

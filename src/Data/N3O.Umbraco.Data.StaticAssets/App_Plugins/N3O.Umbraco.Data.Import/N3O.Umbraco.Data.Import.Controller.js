@@ -22,11 +22,11 @@ angular.module("umbraco")
 
         $scope.importFile = async function() {
             const content = await contentResource.getById(editorState.current.id);
-            const csvStorageToken = getStorageToken('#csvFile');
-            const zipStorageToken = getStorageToken('#zipFile');
+            const csvStorageToken = await getStorageToken('#csvFile');
+            const zipStorageToken = await getStorageToken('#zipFile');
             
             var req = {
-                dateFormat: $scope.dataFormat.id,
+                datePattern: $scope.dateFormat.id,
                 csvFile: csvStorageToken,
                 zipFile: zipStorageToken
             };
@@ -34,7 +34,8 @@ angular.module("umbraco")
             await fetch(`/umbraco/backoffice/api/Import/queue/${content.key}`, {
                 method: 'POST',
                 headers: {
-                    'accept': '*/*'
+                    'accept': '*/*',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(req)
             });
@@ -54,20 +55,17 @@ angular.module("umbraco")
         async function getStorageToken(selector) {
             const input = document.querySelector(selector);
             
-            if (input.length === 0) {
+            if (input.files.length === 0) {
                 return null;
             }
             
             const data = new FormData();
             data.append('file', input.files[0]);
             
-            var res = await fetch('/umbraco/backoffice/api/Import/upload', {
-                headers: {
-                    'accept': 'application/json'
-                },
+            var res = await fetch('/umbraco/api/Storage/upload', {
+                method: 'POST',
                 body: data
             });
-            
-            return await res.text();
+            return  await res.json(); 
         }
     });

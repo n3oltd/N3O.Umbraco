@@ -55,7 +55,5 @@ namespace N3O.Umbraco.Extensions {
                 }
             });
         }
-        
-        
     }
 }

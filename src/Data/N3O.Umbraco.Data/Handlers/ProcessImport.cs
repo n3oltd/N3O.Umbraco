@@ -35,7 +35,7 @@ namespace N3O.Umbraco.Data.Handlers {
 
         public ProcessImport(IUmbracoDatabaseFactory umbracoDatabaseFactory,
                              IContentEditor contentEditor,
-                             IEnumerable<PropertyConverter> converters,
+                             IEnumerable<IPropertyConverter> converters,
                              IContentTypeService contentTypeService,
                              IJsonProvider jsonProvider,
                              IDataTypeService dataTypeService,
