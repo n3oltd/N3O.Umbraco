@@ -23,13 +23,13 @@ namespace N3O.Umbraco.Cropper.Data.Converters {
                                     ErrorLog errorLog,
                                     UmbracoPropertyInfo propertyInfo,
                                     IEnumerable<string> source) {
-            var configurations = (CropperConfiguration) propertyInfo.DataType.Configuration;
+            var cropperConfiguration = (CropperConfiguration) propertyInfo.DataType.Configuration;
             
             Import(errorLog,
                    propertyInfo,
                    source,
                    s => parser.Blob.Parse(s, Umbraco.Data.Lookups.DataTypes.Blob.GetClrType()),
-                   (alias, value) => contentBuilder.Cropper(alias).SetImage(value).AutoCrop(configurations));
+                   (alias, value) => contentBuilder.Cropper(alias).SetImage(value).AutoCrop(cropperConfiguration));
         }
     }
 }
