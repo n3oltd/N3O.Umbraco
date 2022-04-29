@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
-using N3O.Umbraco.Cropper.Extensions;
 using N3O.Umbraco.Cropper.Models;
 using N3O.Umbraco.Plugins.Controllers;
 using N3O.Umbraco.Plugins.Extensions;
@@ -25,7 +24,7 @@ namespace N3O.Umbraco.Cropper.Controllers {
         [HttpGet("media/{mediaId}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<ImageMedia> GetMediaById(string mediaId) {
-            var file = _mediaFileManager.GetSourceImage(mediaId);
+            var file = _mediaFileManager.GetSourceFile(mediaId);
 
             if (file == null) {
                 return NotFound();

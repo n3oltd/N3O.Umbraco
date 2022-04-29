@@ -1,6 +1,7 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Cropper.DataTypes;
 using N3O.Umbraco.Cropper.Extensions;
+using N3O.Umbraco.Data.Builders;
 using N3O.Umbraco.Data.Converters;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Parsing;
@@ -10,11 +11,13 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Cropper.Data.Converters {
     public class CropperPropertyConverter : PropertyConverter {
+        public CropperPropertyConverter(IColumnRangeBuilder columnRangeBuilder) : base(columnRangeBuilder) { }
+        
         public override bool IsConverter(UmbracoPropertyInfo propertyInfo) {
             return propertyInfo.Type.PropertyEditorAlias.EqualsInvariant(CropperConstants.PropertyEditorAlias);
         }
 
-        public override IEnumerable<Cell> Export(ContentProperties content, UmbracoPropertyInfo propertyInfo) {
+        public override IReadOnlyList<Cell> Export(ContentProperties content, UmbracoPropertyInfo propertyInfo) {
             throw new NotImplementedException();
         }
 

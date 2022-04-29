@@ -1,6 +1,5 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Cropper.DataTypes;
-using N3O.Umbraco.Cropper.Extensions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Plugins.Extensions;
@@ -47,9 +46,15 @@ namespace N3O.Umbraco.Cropper.Content {
 
             return this;
         }
+        
+        public CropperPropertyBuilder SetAltText(string altText) {
+            _altText = altText;
+
+            return this;
+        }
 
         public CropperPropertyBuilder SetImage(string mediaId) {
-            _src = _mediaFileManager.GetSourceImage(mediaId);
+            _src = _mediaFileManager.GetSourceFile(mediaId);
 
             if (_src == null) {
                 throw new Exception($"No media found with ID {mediaId}");
@@ -81,11 +86,10 @@ namespace N3O.Umbraco.Cropper.Content {
 
         public CropperPropertyBuilder SetImage(Stream stream, string filename) {
             var instant = _clock.GetCurrentInstant();
-            _src = filename.GetMediaPath(instant);
 
             stream.Rewind();
             
-            _mediaFileManager.FileSystem.AddFile(_src, stream, false);
+            _mediaFileManager.FileSystem.AddFile(filename.GetStoragePath(instant), stream, false);
 
             stream.Rewind();
 
@@ -93,13 +97,8 @@ namespace N3O.Umbraco.Cropper.Content {
             _height = metadata.Height;
             _width = metadata.Width;
             _filename = filename;
-            _mediaId = Path.GetDirectoryName(_src);
-
-            return this;
-        }
-
-        public CropperPropertyBuilder SetAltText(string altText) {
-            _altText = altText;
+            _mediaId = instant.GetMediaId();
+            _src = filename.GetMediaUrlPath(instant);
 
             return this;
         }
