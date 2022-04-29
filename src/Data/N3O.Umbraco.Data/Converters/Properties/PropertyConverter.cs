@@ -69,8 +69,10 @@ namespace N3O.Umbraco.Data.Converters {
                     errorLog.AddError<Strings>(s => s.ParsingFailed_1, strValue);
                 }
             }
-            
-            setContent(propertyInfo.ContentType.Alias, values);
+
+            if (values.HasAny()) {
+                setContent(propertyInfo.Type.Alias, values);
+            }
         }
 
         public class Strings : CodeStrings {

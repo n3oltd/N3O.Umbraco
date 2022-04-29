@@ -45,6 +45,7 @@ namespace N3O.Umbraco.Data.Konstrukt {
         public string ContentTypeName { get; set; }
         
         [Column(nameof(ReplacesId))]
+        [NullSetting(NullSetting = NullSettings.Null)]
         public Guid? ReplacesId { get; set; }
         
         [Column(nameof(ParentId))]
@@ -56,12 +57,14 @@ namespace N3O.Umbraco.Data.Konstrukt {
 
         [Column(nameof(Errors))]
         [NullSetting(NullSetting = NullSettings.Null)]
+        [SpecialDbType(SpecialDbTypes.NTEXT)]
         public string Errors { get; set; }
         
         [Column(nameof(Status))]
         public string Status { get; set; }
         
         [Column(nameof(ImportedAt))]
+        [NullSetting(NullSetting = NullSettings.Null)]
         public DateTime? ImportedAt { get; set; }
         
         [Column(nameof(ImportedContentId))]
