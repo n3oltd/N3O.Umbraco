@@ -77,7 +77,6 @@ namespace N3O.Umbraco.Data.Converters {
         }
 
         public class Strings : CodeStrings {
-            // TODO If pass fields to Import/ImportAll rather than string can get column name here
             public string ParsingFailed_1 => $"The value {"{0}".Quote()} is invalid for {"{1}".Quote()}";
         }
     }
