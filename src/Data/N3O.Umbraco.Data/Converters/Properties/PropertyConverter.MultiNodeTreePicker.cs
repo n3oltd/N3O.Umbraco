@@ -5,12 +5,20 @@ using N3O.Umbraco.Data.Parsing;
 using N3O.Umbraco.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
+using Umbraco.Cms.Web.Common;
 using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 
 namespace N3O.Umbraco.Data.Converters {
     public class MultiNodeTreePickerPropertyConverter : PropertyConverter {
+        private readonly Lazy<IUmbracoHelperAccessor> _umbracoHelperAccessor;
+
+        public MultiNodeTreePickerPropertyConverter(Lazy<IUmbracoHelperAccessor> umbracoHelperAccessor) {
+            _umbracoHelperAccessor = umbracoHelperAccessor;
+        }
+        
         public override bool IsConverter(UmbracoPropertyInfo propertyInfo) {
             return propertyInfo.Type
                                .PropertyEditorAlias
@@ -42,6 +50,16 @@ namespace N3O.Umbraco.Data.Converters {
         private ParseResult<IPublishedContent> Parse(IParser parser, UmbracoPropertyInfo propertyInfo, string source) {
             var configuration = (MultiNodePickerConfiguration) propertyInfo.DataType.Configuration;
             var parentId = configuration.TreeSource?.StartNodeId?.ToId();
+
+            if (parentId == null && configuration.TreeSource.HasValue(x => x.StartNodeQuery)) {
+                if (_umbracoHelperAccessor.Value.TryGetUmbracoHelper(out var umbracoHelper)) {
+                    var contentAtXPath = umbracoHelper.ContentAtXPath(configuration.TreeSource.StartNodeQuery).ToList();
+
+                    if (contentAtXPath.IsSingle()) {
+                        parentId = contentAtXPath.Single().Key;
+                    }
+                }
+            }
 
             return parser.PublishedContent.Parse(source, DataTypes.PublishedContent.GetClrType(), parentId);
         }
