@@ -1,0 +1,23 @@
+using Konstrukt.Events;
+using N3O.Umbraco.Data.Services;
+using System.Threading;
+using System.Threading.Tasks;
+using Umbraco.Cms.Core.Events;
+
+namespace N3O.Umbraco.Data.Konstrukt.Notifications {
+    public class ImportSavedHandler : INotificationAsyncHandler<KonstruktEntitySavedNotification> {
+        private readonly IImportProcessingQueue _importProcessingQueue;
+
+        public ImportSavedHandler(IImportProcessingQueue importProcessingQueue) {
+            _importProcessingQueue = importProcessingQueue;
+        }
+
+        public Task HandleAsync(KonstruktEntitySavedNotification notification, CancellationToken cancellationToken) {
+            if (notification.Entity.After is Import import) {
+                _importProcessingQueue.Add(import);
+            }
+            
+            return Task.CompletedTask;
+        }
+    }
+}

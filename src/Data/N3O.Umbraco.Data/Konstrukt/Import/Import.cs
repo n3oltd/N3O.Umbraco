@@ -71,9 +71,9 @@ namespace N3O.Umbraco.Data.Konstrukt {
         [NullSetting(NullSetting = NullSettings.Null)]
         public Guid? ImportedContentId { get; set; }
 
-        [Column(nameof(ImportedContentReference))]
+        [Column(nameof(ImportedContentSummary))]
         [NullSetting(NullSetting = NullSettings.Null)]
-        public string ImportedContentReference { get; set; }
+        public string ImportedContentSummary { get; set; }
 
         [Ignore]
         public bool CanProcess => Status.IsAnyOf(ImportStatuses.Abandoned, ImportStatuses.Queued, ImportStatuses.Error);

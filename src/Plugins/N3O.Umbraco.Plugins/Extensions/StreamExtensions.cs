@@ -17,9 +17,5 @@ namespace N3O.Umbraco.Plugins.Extensions {
                 return metadata;
             }
         }
-        
-        public static string GetStoragePath(this string filename, Instant instant) {
-            return Path.Combine(instant.ToString("yyMMddHHmmss", CultureInfo.InvariantCulture), filename);
-        }
     }
 }

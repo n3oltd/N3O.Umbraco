@@ -17,8 +17,15 @@ namespace N3O.Umbraco.Data.Models {
         }
 
         public IReadOnlyList<string> GetErrors(IFormatter formatter) {
-            return _errorMessages.Select(x => x(formatter)).ToList();
+            return _errorMessages.Select(x => x(formatter))
+                                 .GroupBy(x => x)
+                                 .Select(x => x.Count() == 1 ? x.Key : $"{x.Key} ({x.Count()})")
+                                 .ToList();
         }
+
+        // public override string ToString() {
+        //     return string.Join(GetErrors(Formatter.Invariant), "\n");
+        // }
 
         public bool HasErrors => _errorMessages.Any();
     }

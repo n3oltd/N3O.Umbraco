@@ -1,5 +1,6 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Data.Extensions;
+using N3O.Umbraco.Data.Konstrukt;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Parsing;
 using N3O.Umbraco.Extensions;
@@ -35,7 +36,7 @@ namespace N3O.Umbraco.Data.Converters {
                                     IParser parser,
                                     ErrorLog errorLog,
                                     UmbracoPropertyInfo propertyInfo,
-                                    IEnumerable<string> source);
+                                    IEnumerable<Field> source);
 
         public abstract bool IsConverter(UmbracoPropertyInfo propertyInfo);
         
@@ -43,30 +44,30 @@ namespace N3O.Umbraco.Data.Converters {
         
         protected void Import<T>(ErrorLog errorLog,
                                  UmbracoPropertyInfo propertyInfo,
-                                 IEnumerable<string> strValues,
+                                 IEnumerable<Field> fields,
                                  Func<string, ParseResult<T>> parse,
                                  Action<string, T> setContent) {
-            if (strValues.OrEmpty().Count() > 1) {
+            if (fields.OrEmpty().Count() > 1) {
                 throw new Exception($"Multiple values passed to {nameof(Import)}");
             }
             
-            ImportAll(errorLog, propertyInfo, strValues, parse, (alias, values) => setContent(alias, values.Single()));
+            ImportAll(errorLog, propertyInfo, fields, parse, (alias, values) => setContent(alias, values.Single()));
         }
         
         protected void ImportAll<T>(ErrorLog errorLog,
                                     UmbracoPropertyInfo propertyInfo,
-                                    IEnumerable<string> strValues,
+                                    IEnumerable<Field> fields,
                                     Func<string, ParseResult<T>> parse,
                                     Action<string, IEnumerable<T>> setContent) {
             var values = new List<T>();
 
-            foreach (var strValue in strValues) {
-                var parseResult = parse(strValue);
+            foreach (var field in fields) {
+                var parseResult = parse(field.Value);
 
                 if (parseResult.Success) {
                     values.Add(parseResult.Value);    
                 } else {
-                    errorLog.AddError<Strings>(s => s.ParsingFailed_1, strValue);
+                    errorLog.AddError<Strings>(s => s.ParsingFailed_1, field.Value, field.Name);
                 }
             }
 
@@ -76,8 +77,7 @@ namespace N3O.Umbraco.Data.Converters {
         }
 
         public class Strings : CodeStrings {
-            // TODO If pass fields to Import/ImportAll rather than string can get column name here
-            public string ParsingFailed_1 => $"The value {"{0}".Quote()} is invalid for this column";
+            public string ParsingFailed_1 => $"The value {"{0}".Quote()} is invalid for {"{1}".Quote()}";
         }
     }
 }

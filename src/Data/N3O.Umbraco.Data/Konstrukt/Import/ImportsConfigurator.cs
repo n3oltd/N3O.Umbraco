@@ -24,7 +24,7 @@ namespace N3O.Umbraco.Data.Konstrukt {
             collection.AddSearchableProperty(c => c.QueuedByName);
             collection.AddSearchableProperty(c => c.Reference);
             collection.AddSearchableProperty(c => c.ContentTypeName);
-            collection.AddSearchableProperty(c => c.ImportedContentReference);
+            collection.AddSearchableProperty(c => c.ImportedContentSummary);
             collection.SetFilter(x => x.Status == ImportStatuses.Queued || x.Status == ImportStatuses.Error);
             collection.DisableCreate();
 
@@ -41,7 +41,7 @@ namespace N3O.Umbraco.Data.Konstrukt {
             listView.AddField(c => c.QueuedByName);
             listView.AddField(c => c.ContentTypeName);
             listView.AddField(c => c.Reference);
-            listView.AddField(c => c.ImportedContentReference);
+            listView.AddField(c => c.ImportedContentSummary);
             listView.AddField(c => c.Status);
         }
 

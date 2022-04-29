@@ -1,5 +1,6 @@
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Data.Konstrukt;
 using N3O.Umbraco.Data.Parsing;
 using N3O.Umbraco.Extensions;
 using System;
@@ -23,7 +24,7 @@ namespace N3O.Umbraco.Data.Converters {
                                     IParser parser,
                                     ErrorLog errorLog,
                                     UmbracoPropertyInfo propertyInfo,
-                                    IEnumerable<string> source) {
+                                    IEnumerable<Field> source) {
             throw new NotImplementedException();
         }
         

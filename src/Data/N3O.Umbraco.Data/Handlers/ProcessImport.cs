@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Persistence;
 
@@ -25,6 +26,7 @@ namespace N3O.Umbraco.Data.Handlers {
         private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
         private readonly IContentEditor _contentEditor;
         private readonly IContentTypeService _contentTypeService;
+        private readonly IContentHelper _contentHelper;
         private readonly IReadOnlyList<IPropertyConverter> _converters;
         private readonly IJsonProvider _jsonProvider;
         private readonly IReadOnlyList<IImportPropertyFilter> _importPropertyFilters;
@@ -32,11 +34,14 @@ namespace N3O.Umbraco.Data.Handlers {
         private readonly IParserFactory _parserFactory;
         private readonly IVolume _volume;
         private readonly IFormatter _formatter;
+        private readonly IReadOnlyList<IContentSummaryGenerator> _contentSummaryGenerators;
 
         public ProcessImport(IUmbracoDatabaseFactory umbracoDatabaseFactory,
                              IContentEditor contentEditor,
                              IEnumerable<IPropertyConverter> converters,
+                             IEnumerable<IContentSummaryGenerator> contentSummaryGenerators,
                              IContentTypeService contentTypeService,
+                             IContentHelper contentHelper,
                              IJsonProvider jsonProvider,
                              IDataTypeService dataTypeService,
                              IEnumerable<IImportPropertyFilter> importPropertyFilters,
@@ -46,6 +51,7 @@ namespace N3O.Umbraco.Data.Handlers {
             _umbracoDatabaseFactory = umbracoDatabaseFactory;
             _contentEditor = contentEditor;
             _contentTypeService = contentTypeService;
+            _contentHelper = contentHelper;
             _jsonProvider = jsonProvider;
             _dataTypeService = dataTypeService;
             _parserFactory = parserFactory;
@@ -53,6 +59,7 @@ namespace N3O.Umbraco.Data.Handlers {
             _formatter = formatter;
             _importPropertyFilters = importPropertyFilters.ToList();
             _converters = converters.ToList();
+            _contentSummaryGenerators = contentSummaryGenerators.OrEmpty().ToList();
         }
 
         public async Task<None> Handle(ProcessImportCommand req, CancellationToken cancellationToken) {
@@ -72,7 +79,7 @@ namespace N3O.Umbraco.Data.Handlers {
                                                                             x => x.ToList());
 
                         var errorLog = new ErrorLog();
-                        
+
                         foreach (var (propertyInfo, fields) in propertyInfoFields) {
                             ImportProperty(contentPublisher, parser, errorLog, propertyInfo, fields);
                         }
@@ -82,12 +89,12 @@ namespace N3O.Umbraco.Data.Handlers {
                         } else {
                             var publishResult = contentPublisher.SaveAndPublish();
 
-                            var reference = (string) null;
+                            var contentSummary = GetContentSummary(publishResult.Content);
 
                             if (publishResult.Success) {
-                                import.Published(publishResult.Content.Key, reference);
+                                import.Published(publishResult.Content.Key, contentSummary);
                             } else {
-                                import.PublishingFailed(publishResult.Content.Key, reference);
+                                import.PublishingFailed(publishResult.Content.Key, contentSummary);
                             }
                         }
                     } catch (Exception ex) {
@@ -103,7 +110,7 @@ namespace N3O.Umbraco.Data.Handlers {
 
         private IReadOnlyDictionary<string, UmbracoPropertyInfo> GetPropertyInfos(string importContentTypeAlias) {
             var contentType = _contentTypeService.Get(importContentTypeAlias);
-            
+
             return contentType.GetUmbracoProperties(_dataTypeService)
                               .Where(x => x.CanInclude(_importPropertyFilters))
                               .ToDictionary(x => x.Type.Alias, x => x);
@@ -151,7 +158,18 @@ namespace N3O.Umbraco.Data.Handlers {
                              parser,
                              errorLog,
                              propertyInfo,
-                             fields.Where(x => !x.Ignore).Select(x => x.Value));
+                             fields.Where(x => !x.Ignore).ToList());
+        }
+
+        private string GetContentSummary(IContent content) {
+            var summaryGenerator = _contentSummaryGenerators.SingleOrDefault(x => x.IsGenerator(content.ContentType.Alias));
+            string contentSummary = null;
+            
+            if (summaryGenerator != null) {
+                contentSummary = summaryGenerator.GenerateSummary(_contentHelper.GetContentProperties(content));
+            }
+
+            return contentSummary;
         }
     }
 }

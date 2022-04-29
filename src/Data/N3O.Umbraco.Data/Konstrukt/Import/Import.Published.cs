@@ -2,9 +2,9 @@
 
 namespace N3O.Umbraco.Data.Konstrukt {
     public partial class Import {
-        public void Published(Guid id, string reference) {
+        public void Published(Guid id, string contentSummary) {
             ImportedContentId = id;
-            Reference = reference;
+            ImportedContentSummary = contentSummary;
             Errors = null;
             Status = ImportStatuses.Imported;
         }
