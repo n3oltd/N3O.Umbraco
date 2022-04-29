@@ -2,6 +2,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Cropper.DataTypes;
 using N3O.Umbraco.Cropper.Extensions;
 using N3O.Umbraco.Data.Converters;
+using N3O.Umbraco.Data.Konstrukt;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Parsing;
 using N3O.Umbraco.Extensions;
@@ -22,7 +23,7 @@ namespace N3O.Umbraco.Cropper.Data.Converters {
                                     IParser parser,
                                     ErrorLog errorLog,
                                     UmbracoPropertyInfo propertyInfo,
-                                    IEnumerable<string> source) {
+                                    IEnumerable<Field> source) {
             var cropperConfiguration = (CropperConfiguration) propertyInfo.DataType.Configuration;
             
             Import(errorLog,

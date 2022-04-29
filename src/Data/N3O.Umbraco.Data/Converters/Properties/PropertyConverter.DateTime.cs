@@ -1,4 +1,5 @@
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Data.Konstrukt;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Parsing;
@@ -24,7 +25,7 @@ namespace N3O.Umbraco.Data.Converters {
                                     IParser parser,
                                     ErrorLog errorLog,
                                     UmbracoPropertyInfo propertyInfo,
-                                    IEnumerable<string> source) {
+                                    IEnumerable<Field> source) {
             Import(errorLog,
                    propertyInfo,
                    source,

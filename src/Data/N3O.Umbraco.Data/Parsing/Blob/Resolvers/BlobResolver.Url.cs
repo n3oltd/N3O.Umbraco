@@ -29,7 +29,7 @@ namespace N3O.Umbraco.Data.Parsing {
         private string GetFilename(string url, ContentDispositionHeaderValue header) {
             try {
                 if (header != null) {
-                    return header.FileName;
+                    return header.FileName.Replace("\"", "");
                 } else {
                     return Path.GetFileName(url);
                 }

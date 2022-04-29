@@ -81,7 +81,7 @@ namespace N3O.Umbraco.Cropper.Content {
 
         public CropperPropertyBuilder SetImage(Stream stream, string filename) {
             var instant = _clock.GetCurrentInstant();
-            _src = filename.GetStoragePath(instant);
+            _src = filename.GetMediaPath(instant);
 
             stream.Rewind();
             

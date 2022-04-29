@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Data.Commands;
+﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Data.Commands;
 using N3O.Umbraco.Data.Converters;
 using N3O.Umbraco.Data.Extensions;
 using N3O.Umbraco.Data.Filters;
@@ -20,6 +21,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Persistence;
@@ -30,9 +32,10 @@ namespace N3O.Umbraco.Data.Handlers {
         private const string CountersKey = "Import";
         private const int MaxRowsCount = 5_000;
 
-        private readonly List<string> _errors = new();
+        private readonly ErrorLog _errorLog = new();
         private readonly ICounters _counters;
         private readonly IJsonProvider _jsonProvider;
+        private readonly IContentHelper _contentHelper;
         private readonly IContentService _contentService;
         private readonly IReadOnlyList<IImportPropertyFilter> _propertyFilters;
         private readonly IReadOnlyList<IPropertyConverter> _converters;
@@ -47,17 +50,21 @@ namespace N3O.Umbraco.Data.Handlers {
         private readonly ITempStorage _tempStorage;
         private readonly IFormatter _formatter;
         private IReadOnlyDictionary<string, Guid> _existingReferences;
-
+        private readonly IReadOnlyList<IContentSummaryGenerator> _contentSummaryGenerators;
+        private bool _contentSummaryGeneratorFound;
+        
         public QueueImportsHandler(IBackOfficeSecurityAccessor backOfficeSecurityAccessor,
                                    IWorkspace workspace,
                                    ILocalClock clock,
                                    ICounters counters,
                                    IJsonProvider jsonProvider,
                                    IEnumerable<IPropertyConverter> converters,
+                                   IContentHelper contentHelper,
                                    IEnumerable<IImportPropertyFilter> propertyFilters,
                                    IContentService contentService,
                                    IContentTypeService contentTypeService,
                                    IDataTypeService dataTypeService,
+                                   IEnumerable<IContentSummaryGenerator> contentSummaryGenerators,
                                    IUmbracoDatabaseFactory umbracoDatabaseFactory,
                                    IImportProcessingQueue importProcessingQueue,
                                    Lazy<IVolume> volume,
@@ -68,6 +75,7 @@ namespace N3O.Umbraco.Data.Handlers {
             _clock = clock;
             _counters = counters;
             _jsonProvider = jsonProvider;
+            _contentHelper = contentHelper;
             _contentService = contentService;
             _converters = converters.ToList();
             _propertyFilters = propertyFilters.ToList();
@@ -78,20 +86,24 @@ namespace N3O.Umbraco.Data.Handlers {
             _volume = volume;
             _tempStorage = tempStorage;
             _formatter = formatter;
+            _contentSummaryGenerators = contentSummaryGenerators.OrEmpty().ToList();
         }
         
         public async Task<QueueImportsRes> Handle(QueueImportsCommand req, CancellationToken cancellationToken) {
             try {
                 var count = await QueueAsync(req, cancellationToken);
 
-                return new QueueImportsRes {
-                    Success = true, Count = count
-                };
-            } catch (HasErrorsException) {
-                return new QueueImportsRes {
-                    Success = false,
-                    Errors = _errors
-                };
+                if (_errorLog.HasErrors) {
+                    return new QueueImportsRes {
+                       Success = false,
+                       Errors = _errorLog.GetErrors(_formatter)
+                   };
+                } else {
+                    return new QueueImportsRes {
+                        Success = true,
+                        Count = count
+                    };
+                }
             } catch (Exception ex) {
                 return new QueueImportsRes {
                     Success = false,
@@ -123,6 +135,10 @@ namespace N3O.Umbraco.Data.Handlers {
 
                     ValidateColumns(csvReader.GetColumnHeadings(), propertyColumns.SelectMany(x => x.Value));
 
+                    if (_errorLog.HasErrors) {
+                        return -1;
+                    }
+                    
                     var currentUser = _backOfficeSecurityAccessor.BackOfficeSecurity.CurrentUser;
                     var imports = new List<Import>();
                     var batchReference = (int) await _counters.NextAsync(CountersKey, 100_001, cancellationToken);
@@ -156,7 +172,7 @@ namespace N3O.Umbraco.Data.Handlers {
 
                         if (replacesReference.HasValue()) {
                             import.Action = ImportActions.Update;
-                            import.ReplacesId = FindExistingId(containerContent.Key, replacesReference);
+                            import.ReplacesId = FindExistingId(containerContent, contentType.Alias, replacesReference);
                         } else {
                             import.Action = ImportActions.Create;
                         }
@@ -170,6 +186,10 @@ namespace N3O.Umbraco.Data.Handlers {
                     }
 
                     ValidateImports(imports);
+                    
+                    if (_errorLog.HasErrors) {
+                        return -1;
+                    }
                     
                     await InsertAndQueueAsync(imports);
 
@@ -187,20 +207,14 @@ namespace N3O.Umbraco.Data.Handlers {
 
             if (missingHeadings.Any()) {
                 foreach (var missingHeading in missingHeadings) {
-                    AddError(s => s.MissingColumn_1, missingHeading);
+                    _errorLog.AddError<Strings>(s => s.MissingColumn_1, missingHeading);
                 }
-
-                throw new HasErrorsException();
             }
         }
         
         private void ValidateImports(IReadOnlyList<Import> imports) {
             if (imports.Count > MaxRowsCount) {
-                AddError(s => s.MaxRowsExceeded_1, MaxRowsCount);
-            }
-            
-            if (_errors.Any()) {
-                throw new HasErrorsException();
+                _errorLog.AddError<Strings>(s => s.MaxRowsExceeded_1, MaxRowsCount);
             }
         }
 
@@ -219,22 +233,37 @@ namespace N3O.Umbraco.Data.Handlers {
             }
         }
 
-        private Guid? FindExistingId(Guid containerId, string reference) {
+        private Guid? FindExistingId(IContent container, string contentTypeAlias, string reference) {
             if (_existingReferences == null) {
-                PopulateExistingReferences(containerId);
+                PopulateExistingReferences(container, contentTypeAlias);
             }
 
             if (_existingReferences.ContainsKey(reference)) {
                 return _existingReferences[reference];
+            } else if(_contentSummaryGeneratorFound) {
+                _errorLog.AddError<Strings>(s => s.ExistingRecordNotFound_1, reference);
             } else {
-                AddError(s => s.ExistingRecordNotFound_1, reference);
-
-                return null;
+                _errorLog.AddError<Strings>(s => s.NoContentSummaryGeneratorFound_1, contentTypeAlias);
             }
+            
+            return null;
         }
 
-        private void PopulateExistingReferences(Guid containerId) {
+        private void PopulateExistingReferences(IContent container, string contentTypeAlias) {
             var dict = new Dictionary<string, Guid>(StringComparer.InvariantCultureIgnoreCase);
+            var summaryGenerator = _contentSummaryGenerators.SingleOrDefault(x => x.IsGenerator(contentTypeAlias));
+
+            if (summaryGenerator != null) {
+                _contentSummaryGeneratorFound = true;
+                
+                var descendants = _contentHelper.GetDescendants(container).Where(x => x.ContentType.Alias.EqualsInvariant(contentTypeAlias)).ToList();
+
+                foreach (var descendant in descendants) {
+                    dict[summaryGenerator.GenerateSummary(_contentHelper.GetContentProperties(descendant))] = descendant.Key;
+                }
+            } else {
+                _contentSummaryGeneratorFound = false;
+            }
 
             _existingReferences = dict;
         }
@@ -267,16 +296,12 @@ namespace N3O.Umbraco.Data.Handlers {
             }
         }
         
-        private void AddError(Func<Strings, string> propertySelector, params object[] formatArgs) {
-            _errors.Add(_formatter.Text.Format(propertySelector, formatArgs));
-        }
-
         public class Strings : CodeStrings {
             public string ExistingRecordNotFound_1 => $"No existing record found with ID {"{0}".Quote()}";
             public string MaxRowsExceeded_1 => $"The CSV file contains more than the maximum allowed {0} rows";
             public string MissingColumn_1 => $"CSV file is missing column {"{0}".Quote()}";
-        }
+            public string NoContentSummaryGeneratorFound_1 => $"Could not find an {nameof(IContentSummaryGenerator)} for content type {"{0}".Quote()}";
 
-        private class HasErrorsException : Exception { }
+        }
     }
 }

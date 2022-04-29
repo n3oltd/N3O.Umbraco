@@ -161,5 +161,7 @@ namespace N3O.Umbraco.Localization {
                 return func(contextReference.UmbracoContext);
             }
         }
+        
+        // public IStringLocalizer Invariant = new StringLocalizer()
     }
 }

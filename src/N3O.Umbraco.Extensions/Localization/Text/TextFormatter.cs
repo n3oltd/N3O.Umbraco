@@ -26,5 +26,7 @@ namespace N3O.Umbraco.Localization {
         public string FormatLookupName(INamedLookup lookup) {
             return lookup.Name;
         }
+        
+        // public static ITextFormatter Invariant = new TextFormatter(StringLocalizer)
     }
 }
