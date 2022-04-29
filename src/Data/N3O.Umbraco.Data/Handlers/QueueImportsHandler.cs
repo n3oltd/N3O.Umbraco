@@ -46,7 +46,6 @@ namespace N3O.Umbraco.Data.Handlers {
         private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
         private readonly IImportProcessingQueue _importProcessingQueue;
         private readonly Lazy<IVolume> _volume;
-        private readonly ITempStorage _tempStorage;
         private readonly ErrorLog _errorLog;
         private readonly IReadOnlyList<IPropertyConverter> _converters;
         private readonly IReadOnlyList<IImportPropertyFilter> _propertyFilters;
@@ -65,7 +64,6 @@ namespace N3O.Umbraco.Data.Handlers {
                                    IUmbracoDatabaseFactory umbracoDatabaseFactory,
                                    IImportProcessingQueue importProcessingQueue,
                                    Lazy<IVolume> volume,
-                                   ITempStorage tempStorage,
                                    IFormatter formatter,
                                    IEnumerable<IPropertyConverter> converters,
                                    IEnumerable<IImportPropertyFilter> propertyFilters,
@@ -82,7 +80,6 @@ namespace N3O.Umbraco.Data.Handlers {
             _umbracoDatabaseFactory = umbracoDatabaseFactory;
             _importProcessingQueue = importProcessingQueue;
             _volume = volume;
-            _tempStorage = tempStorage;
             _errorLog = new ErrorLog(formatter);
             _converters = converters.OrEmpty().ToList();
             _propertyFilters = propertyFilters.OrEmpty().ToList();
@@ -111,89 +108,85 @@ namespace N3O.Umbraco.Data.Handlers {
         }
         
         private async Task<int> QueueAsync(QueueImportsCommand req, CancellationToken cancellationToken) {
-            var csvBlob = await _tempStorage.GetFileAsync(req.Model.CsvFile.Filename, cancellationToken);
+            var storageFolderName = _clock.GetCurrentInstant().ToUnixTimeMilliseconds().ToString();
+            var csvBlob = await _volume.Value.MoveTempFileAsync(req.Model.CsvFile.Filename, storageFolderName);
+            
+            using (csvBlob.Stream) {
+                var containerContent = req.ContentId.Run(_contentService.GetById, true);
+                var contentType = _contentTypeService.GetContentTypeForContainerContent(containerContent.ContentTypeId);
+                var propertyInfos = contentType.GetUmbracoProperties(_dataTypeService).ToList();
+                var propertyInfoColumns = propertyInfos.Where(x => x.CanInclude(_propertyFilters))
+                                                       .ToDictionary(x => x,
+                                                                     x => _workspace.ColumnRangeBuilder
+                                                                                    .GetColumns(x.GetTemplateColumn(_converters)));
 
-            try {
-                using (csvBlob.Stream) {
-                    var containerContent = req.ContentId.Run(_contentService.GetById, true);
-                    var contentType = _contentTypeService.GetContentTypeForContainerContent(containerContent.ContentTypeId);
+                var csvReader = _workspace.GetCsvReader(req.Model.DatePattern,
+                                                        DecimalSeparators.Point,
+                                                        BlobResolvers.Url(),
+                                                        TextEncodings.Utf8,
+                                                        csvBlob.Stream,
+                                                        true);
 
-                    var propertyInfos = contentType.GetUmbracoProperties(_dataTypeService).ToList();
-                    var propertyInfoColumns = propertyInfos.Where(x => x.CanInclude(_propertyFilters))
-                                                           .ToDictionary(x => x,
-                                                                         x => _workspace.ColumnRangeBuilder
-                                                                                        .GetColumns(x.GetTemplateColumn(_converters)));
+                ValidateColumns(csvReader.GetColumnHeadings(), propertyInfoColumns.SelectMany(x => x.Value));
 
-                    var csvReader = _workspace.GetCsvReader(req.Model.DatePattern,
-                                                            DecimalSeparators.Point,
-                                                            BlobResolvers.Url(),
-                                                            TextEncodings.Utf8,
-                                                            csvBlob.Stream,
-                                                            true);
+                var currentUser = _backOfficeSecurityAccessor.BackOfficeSecurity.CurrentUser;
+                var imports = new List<Import>();
+                var batchReference = (int) await _counters.NextAsync(CountersKey, 100_001, cancellationToken);
+                var batchFilename = csvBlob.Filename;
+                var queuedAt = _clock.GetLocalNow().ToDateTimeUnspecified();
+                var canReplace = csvReader.GetColumnHeadings().Contains(DataConstants.Columns.Replaces, true);
+                
+                var contentMatcher = _contentMatchers.SingleOrDefault(x => x.IsMatcher(contentType.Alias));
+                var parserSettings =  _jsonProvider.SerializeObject(new ParserSettings(req.Model.DatePattern,
+                                                                                       DecimalSeparators.Point,
+                                                                                       storageFolderName));
 
-                    ValidateColumns(csvReader.GetColumnHeadings(), propertyInfoColumns.SelectMany(x => x.Value));
-
-                    var currentUser = _backOfficeSecurityAccessor.BackOfficeSecurity.CurrentUser;
-                    var imports = new List<Import>();
-                    var batchReference = (int) await _counters.NextAsync(CountersKey, 100_001, cancellationToken);
-                    var batchFilename = csvBlob.Filename;
-                    var queuedAt = _clock.GetLocalNow().ToDateTimeUnspecified();
-                    var canReplace = csvReader.GetColumnHeadings().Contains(DataConstants.Columns.Replaces, true);
-                    var storageFolderName = req.Model.ZipFile.HasValue() ? $"Import{batchReference}" : null;
-                    var contentMatcher = _contentMatchers.SingleOrDefault(x => x.IsMatcher(contentType.Alias));
-                    var parserSettings =  _jsonProvider.SerializeObject(new ParserSettings(req.Model.DatePattern,
-                                                                                           DecimalSeparators.Point,
-                                                                                           storageFolderName));
-
-                    if (req.Model.ZipFile != null) {
-                        await ExtractToStorageFolderAsync(req.Model.ZipFile, storageFolderName);
-                    }
-
-                    var rowNumber = 1;
-                    while (csvReader.ReadRow()) {
-                        var import = new Import();
-                        import.Reference = $"{batchReference}-{rowNumber}";
-                        import.QueuedAt = queuedAt;
-                        import.QueuedByUser = currentUser.Key;
-                        import.QueuedByName = currentUser.Name;
-                        import.BatchReference = batchReference.ToString();
-                        import.BatchFilename = batchFilename;
-                        import.FileRowNumber = rowNumber;
-                        import.ParserSettings = parserSettings;
-                        import.ContentTypeAlias = contentType.Alias;
-                        import.ParentId = containerContent.Key;
-                        import.ContentTypeName = contentType.Name;
-                        
-                        var replacesCriteria = canReplace
-                                                   ? csvReader.Row.GetRawField(DataConstants.Columns.Replaces)
-                                                   : null;
-
-                        if (replacesCriteria.HasValue()) {
-                            import.Action = ImportActions.Update;
-                            import.ReplacesId = FindExistingId(containerContent,
-                                                               contentType.Alias,
-                                                               contentMatcher,
-                                                               replacesCriteria);
-                        } else {
-                            import.Action = ImportActions.Create;
-                        }
-
-                        import.Fields = _jsonProvider.SerializeObject(GetFields(csvReader, propertyInfoColumns));
-                        import.Status = ImportStatuses.Queued;
-
-                        imports.Add(import);
-
-                        rowNumber++;
-                    }
-
-                    ValidateImports(imports);
-
-                    await InsertAndQueueAsync(imports);
-
-                    return imports.Count;
+                if (req.Model.ZipFile != null) {
+                    await ExtractToStorageFolderAsync(req.Model.ZipFile, storageFolderName);
                 }
-            } finally {
-                await _tempStorage.DeleteFileAsync(csvBlob.Filename);
+
+                var rowNumber = 1;
+                while (csvReader.ReadRow()) {
+                    var import = new Import();
+                    import.Reference = $"{batchReference}-{rowNumber}";
+                    import.QueuedAt = queuedAt;
+                    import.QueuedByUser = currentUser.Key;
+                    import.QueuedByName = currentUser.Name;
+                    import.BatchReference = batchReference.ToString();
+                    import.BatchFilename = batchFilename;
+                    import.FileRowNumber = rowNumber;
+                    import.ParserSettings = parserSettings;
+                    import.ContentTypeAlias = contentType.Alias;
+                    import.ParentId = containerContent.Key;
+                    import.ContentTypeName = contentType.Name;
+
+                    var replacesCriteria = canReplace
+                                               ? csvReader.Row.GetRawField(DataConstants.Columns.Replaces)
+                                               : null;
+
+                    if (replacesCriteria.HasValue()) {
+                        import.Action = ImportActions.Update;
+                        import.ReplacesId = FindExistingId(containerContent,
+                                                           contentType.Alias,
+                                                           contentMatcher,
+                                                           replacesCriteria);
+                    } else {
+                        import.Action = ImportActions.Create;
+                    }
+
+                    import.Fields = _jsonProvider.SerializeObject(GetFields(csvReader, propertyInfoColumns));
+                    import.Status = ImportStatuses.Queued;
+
+                    imports.Add(import);
+
+                    rowNumber++;
+                }
+
+                ValidateImports(imports);
+
+                await InsertAndQueueAsync(imports);
+
+                return imports.Count;
             }
         }
 
@@ -220,17 +213,18 @@ namespace N3O.Umbraco.Data.Handlers {
         }
 
         private async Task ExtractToStorageFolderAsync(StorageToken zipStorageToken, string storageFolderName) {
-            var zipBlob = await _tempStorage.GetFileAsync(zipStorageToken.Filename);
+            var tempStorage = await _volume.Value.GetTempFolderAsync();
+            var storageFolder = await _volume.Value.GetStorageFolderAsync(storageFolderName);
+            var zipBlob = await tempStorage.GetFileAsync(zipStorageToken.Filename);
 
             try {
                 using (zipBlob.Stream) {
-                    var storageFolder = await _volume.Value.GetStorageFolderAsync(storageFolderName);
                     var zipArchive = new ZipArchive(zipBlob.Stream, ZipArchiveMode.Read);
                     
                     await zipArchive.ExtractToStorageFolderAsync(storageFolder);
                 }
             } finally {
-                await _tempStorage.DeleteFileAsync(zipBlob.Filename);
+                await tempStorage.DeleteFileAsync(zipBlob.Filename);
             }
         }
 

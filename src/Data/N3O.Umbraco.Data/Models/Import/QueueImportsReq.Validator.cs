@@ -1,13 +1,12 @@
 ﻿using FluentValidation;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
-using N3O.Umbraco.Storage.Services;
 using N3O.Umbraco.Validation;
 using System;
 
 namespace N3O.Umbraco.Data.Models {
     public class QueueImportsReqValidator : ModelValidator<QueueImportsReq> {
-        public QueueImportsReqValidator(IFormatter formatter, ITempStorage tempStorage) : base(formatter) {
+        public QueueImportsReqValidator(IFormatter formatter) : base(formatter) {
             RuleFor(x => x.DatePattern)
                 .NotNull()
                 .WithMessage(Get<Strings>(s => s.SpecifyDatePattern));

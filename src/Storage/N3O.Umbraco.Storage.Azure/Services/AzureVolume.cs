@@ -1,45 +1,41 @@
 ﻿using Azure.Storage.Blobs;
-using Humanizer;
 using Microsoft.Extensions.Configuration;
-using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Locks;
 using N3O.Umbraco.Storage.Services;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+using N3O.Umbraco.Utilities;
 using System.Threading.Tasks;
 using Umbraco.StorageProviders.AzureBlob.IO;
 
 namespace N3O.Umbraco.Storage.Azure.Services {
     public class AzureVolume : IVolume {
+        private readonly ILocker _locker;
         private readonly BlobServiceClient _serviceClient;
-        private readonly ConcurrentDictionary<string, BlobContainerClient> _containers = new();
+        private BlobContainerClient _container;
 
-        public AzureVolume(IConfiguration configuration) {
+        public AzureVolume(IConfiguration configuration, ILocker locker) {
+            _locker = locker;
             var options = new AzureBlobFileSystemOptions();
             
             configuration.GetSection("Umbraco:Storage:AzureBlob:Media").Bind(options);
             _serviceClient = new BlobServiceClient(options.ConnectionString);
         }
         
-        public async Task<IStorageFolder> GetStorageFolderAsync(string name) {
-            var container = await GetContainerAsync(name);
+        public async Task<IStorageFolder> GetStorageFolderAsync(string folderName) {
+            var container = await GetContainerAsync();
             
-            return new AzureStorageFolder(container, () => ContainerDeleted(name));
+            return new AzureStorageFolder(container, folderName);
         }
         
-        private async Task<BlobContainerClient> GetContainerAsync(string folderName) {
-            var result = await _containers.GetOrAddAtomicAsync(folderName, async () => {
-                var blobContainer = _serviceClient.GetBlobContainerClient($"storage{folderName.Camelize()}");
+        private async Task<BlobContainerClient> GetContainerAsync() {
+            if (_container == null) {
+                using (await _locker.LockAsync(LockKey.Generate<AzureVolume>(nameof(GetContainerAsync)))) {
+                    _container = _serviceClient.GetBlobContainerClient(AzureStorageConstants.StorageContainerName);
 
-                await blobContainer.CreateIfNotExistsAsync();
+                    await _container.CreateIfNotExistsAsync();
+                }
+            }
 
-                return blobContainer;
-            });
-
-            return result;
-        }
-
-        private void ContainerDeleted(string name) {
-            _containers.Remove(name, out _);
+            return _container;
         }
     }
 }

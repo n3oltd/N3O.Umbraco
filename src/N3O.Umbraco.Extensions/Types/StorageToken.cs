@@ -7,13 +7,14 @@ using Newtonsoft.Json;
 namespace N3O.Umbraco {
     [StringSchema("A valid storage token")]
     public sealed class StorageToken {
-        public StorageToken(string filename, string contentType, ByteSize size) {
+        public StorageToken(string filename, string storageFolderName, string contentType, ByteSize size) {
             Filename = filename;
             ContentType = contentType;
             Size = size;
         }
 
         public string Filename { get; }
+        public string StorageFolderName { get; }
         public string ContentType { get; }
         public ByteSize Size { get; }
 
@@ -38,7 +39,7 @@ namespace N3O.Umbraco {
         }
 
         public static StorageToken FromBlob(Blob blob) {
-            return new StorageToken(blob.Filename, blob.ContentType, blob.Size);
+            return new StorageToken(blob.Filename, blob.StorageFolderName, blob.ContentType, blob.Size);
         }
     }
 }

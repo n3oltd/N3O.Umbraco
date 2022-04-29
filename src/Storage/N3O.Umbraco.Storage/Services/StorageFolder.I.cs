@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Storage.Services {
     public interface IStorageFolder {
-        Task<Blob> AddFileAsync(string name, Stream stream);
-        Task<Blob> AddFileAsync(string name, byte[] contents);
+        Task<Blob> AddFileAsync(string filename, Stream stream);
+        Task<Blob> AddFileAsync(string filename, byte[] contents);
         Task DeleteAllFilesAsync();
-        Task DeleteFileAsync(string name);
-        Task<Blob> GetFileAsync(string name, CancellationToken cancellationToken = default);
+        Task DeleteFileAsync(string filename);
+        Task<Blob> GetFileAsync(string filename, CancellationToken cancellationToken = default);
     }
 }

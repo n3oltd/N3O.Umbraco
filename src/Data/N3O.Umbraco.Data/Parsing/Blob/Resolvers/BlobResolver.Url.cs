@@ -23,7 +23,7 @@ namespace N3O.Umbraco.Data.Parsing {
             var contentType = GetContentType(filename, response.Content.Headers.ContentType);
             var stream = await response.Content.ReadAsStreamAsync();
 
-            return new Blob(filename, contentType, contentLength, stream);
+            return new Blob(filename, null, contentType, contentLength, stream);
         }
 
         private string GetFilename(string url, ContentDispositionHeaderValue header) {

@@ -2,28 +2,35 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Storage.Models;
 using N3O.Umbraco.Storage.Services;
+using NodaTime;
 using System;
+using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Storage.Controllers {
     [ApiDocument(StorageConstants.ApiName)]
     public class StorageController : ApiController {
         private readonly ILogger<StorageController> _logger;
-        private readonly ITempStorage _tempStorage;
+        private readonly IClock _clock;
+        private readonly IVolume _volume;
 
-        public StorageController(ILogger<StorageController> logger, ITempStorage tempStorage) {
+        public StorageController(ILogger<StorageController> logger, IClock clock, IVolume volume) {
             _logger = logger;
-            _tempStorage = tempStorage;
+            _clock = clock;
+            _volume = volume;
         }
         
-        [HttpPost("download/{filename}")]
+        [HttpPost("download/{folderName}/{filename}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> DownloadAsync(string filename) {
+        public async Task<ActionResult> Download(string folderName, string filename) {
             try {
-                var blob = await _tempStorage.GetFileAsync(filename);
+                var storageFolder = await _volume.GetStorageFolderAsync(folderName);
+                var blob = await storageFolder.GetFileAsync(filename);
 
                 return File(blob.Stream, blob.ContentType, blob.Filename);
             } catch {
@@ -31,11 +38,17 @@ namespace N3O.Umbraco.Storage.Controllers {
             }
         }
         
-        [HttpPost("upload")]
-        public async Task<ActionResult<StorageToken>> UploadAsync([FromForm] UploadReq req) {
+        [HttpPost("tempUpload")]
+        public async Task<ActionResult<StorageToken>> TempUpload([FromForm] UploadReq req) {
+            return await Upload(StorageConstants.StorageFolders.Temp, req);
+        }
+
+        [HttpPost("upload/{folderName}")]
+        public async Task<ActionResult<StorageToken>> Upload(string folderName, [FromForm] UploadReq req) {
             try {
                 using (var reqStream = req.File.OpenReadStream()) {
-                    var blob = await _tempStorage.AddFileAsync(req.File.FileName, reqStream);
+                    var storageFolder = await _volume.GetStorageFolderAsync(folderName);
+                    var blob = await storageFolder.AddFileAsync(GetFilename(folderName, req.File), reqStream);
                     
                     return Ok(StorageToken.FromBlob(blob));
                 }
@@ -44,6 +57,25 @@ namespace N3O.Umbraco.Storage.Controllers {
                 
                 return BadRequest();
             }
+        }
+
+        private string GetFilename(string storageFolderName, IFormFile formFile) {
+            var filename = Sanitise(formFile.FileName);
+            
+            if (storageFolderName.EqualsInvariant(StorageConstants.StorageFolders.Temp)) {
+                filename = Path.Combine(Path.GetFileNameWithoutExtension(filename),
+                                        $"_{_clock.GetCurrentInstant().ToUnixTimeSeconds()}",
+                                        Path.GetExtension(filename));
+            }
+
+            return filename;
+        }
+
+        private string Sanitise(string filename) {
+            return Regex.Replace(filename,
+                                 @"[^a-z0-9\-_\.]",
+                                 "",
+                                 RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
         }
     }
 }
