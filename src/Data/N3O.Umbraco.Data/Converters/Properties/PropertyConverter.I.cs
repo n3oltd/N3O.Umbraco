@@ -5,8 +5,8 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Data.Converters {
     public interface IPropertyConverter {
-        IEnumerable<Cell> Export(ContentProperties contentProperties, UmbracoPropertyInfo propertyInfo);
-        TemplateColumn GetTemplateColumn(UmbracoPropertyInfo propertyInfo);
+        IReadOnlyList<Cell> Export(ContentProperties contentProperties, UmbracoPropertyInfo propertyInfo);
+        IReadOnlyList<Column> GetColumns(UmbracoPropertyInfo propertyInfo);
         void Import(IContentBuilder contentBuilder,
                     IParser parser,
                     ErrorLog errorLog,

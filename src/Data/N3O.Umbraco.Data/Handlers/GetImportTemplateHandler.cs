@@ -1,5 +1,4 @@
-﻿using N3O.Umbraco.Data.Builders;
-using N3O.Umbraco.Data.Converters;
+﻿using N3O.Umbraco.Data.Converters;
 using N3O.Umbraco.Data.Extensions;
 using N3O.Umbraco.Data.Filters;
 using N3O.Umbraco.Data.Lookups;
@@ -23,22 +22,19 @@ namespace N3O.Umbraco.Data.Handlers {
         private readonly IReadOnlyList<IPropertyConverter> _converters;
         private readonly IContentTypeService _contentTypeService;
         private readonly IDataTypeService _dataTypeService;
-        private readonly IColumnRangeBuilder _columnRangeBuilder;
 
         public GetImportTemplateHandler(IWorkspace workspace,
                                         IEnumerable<IImportPropertyFilter> propertyFilters,
                                         IEnumerable<IPropertyConverter> converters,
                                         IContentService contentService,
                                         IContentTypeService contentTypeService,
-                                        IDataTypeService dataTypeService,
-                                        IColumnRangeBuilder columnRangeBuilder) {
+                                        IDataTypeService dataTypeService) {
             _workspace = workspace;
             _contentService = contentService;
             _propertyFilters = propertyFilters.ToList();
             _converters = converters.ToList();
             _contentTypeService = contentTypeService;
             _dataTypeService = dataTypeService;
-            _columnRangeBuilder = columnRangeBuilder;
         }
 
         public async Task<ImportTemplate> Handle(GetImportTemplateQuery req, CancellationToken cancellationToken) {
@@ -47,8 +43,7 @@ namespace N3O.Umbraco.Data.Handlers {
 
             var columns = contentType.GetUmbracoProperties(_dataTypeService)
                                              .Where(x => x.CanInclude(_propertyFilters))
-                                             .Select(x => x.GetTemplateColumn(_converters))
-                                             .SelectMany(x => _columnRangeBuilder.GetColumns(x))
+                                             .SelectMany(x => x.GetColumns(_converters))
                                              .ToList();
 
             using (var stream = new MemoryStream()) {

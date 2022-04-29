@@ -1,4 +1,5 @@
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Data.Builders;
 using N3O.Umbraco.Data.Extensions;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Parsing;
@@ -11,15 +12,23 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Data.Converters {
     public abstract class PropertyConverter : IPropertyConverter {
-        public abstract IEnumerable<Cell> Export(ContentProperties content, UmbracoPropertyInfo propertyInfo);
+        private readonly IColumnRangeBuilder _columnRangeBuilder;
+
+        protected PropertyConverter(IColumnRangeBuilder columnRangeBuilder) {
+            _columnRangeBuilder = columnRangeBuilder;
+        }
         
-        public virtual TemplateColumn GetTemplateColumn(UmbracoPropertyInfo propertyInfo) {
-            return new TemplateColumn(propertyInfo.GetName(), GetMaxValues(propertyInfo), propertyInfo);
+        public abstract IReadOnlyList<Cell> Export(ContentProperties content, UmbracoPropertyInfo propertyInfo);
+        
+        public virtual IReadOnlyList<Column> GetColumns(UmbracoPropertyInfo propertyInfo) {
+            var columnTemplate = new ColumnTemplate(propertyInfo.GetName(), GetMaxValues(propertyInfo), propertyInfo);
+
+            return _columnRangeBuilder.GetColumns(columnTemplate);
         }
 
-        protected IEnumerable<Cell> ExportValue<T>(ContentProperties contentProperties,
-                                                   UmbracoPropertyInfo propertyInfo,
-                                                   Func<T, Cell> toCell) {
+        protected IReadOnlyList<Cell> ExportValue<T>(ContentProperties contentProperties,
+                                                     UmbracoPropertyInfo propertyInfo,
+                                                     Func<T, Cell> toCell) {
             var contentProperty = contentProperties.Properties
                                                    .Single(x => x.Alias.EqualsInvariant(propertyInfo.Type.Alias));
             var value = contentProperty.Value;
@@ -28,7 +37,7 @@ namespace N3O.Umbraco.Data.Converters {
                 return null;
             }
 
-            return toCell((T) value).Yield();
+            return toCell((T) value).Yield().ToList();
         }
 
         public abstract void Import(IContentBuilder contentBuilder,

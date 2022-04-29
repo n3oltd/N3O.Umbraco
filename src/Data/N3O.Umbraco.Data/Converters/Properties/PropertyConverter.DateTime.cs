@@ -1,4 +1,5 @@
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Data.Builders;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Parsing;
@@ -11,11 +12,13 @@ using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 
 namespace N3O.Umbraco.Data.Converters {
     public class DateTimePropertyConverter : PropertyConverter {
+        public DateTimePropertyConverter(IColumnRangeBuilder columnRangeBuilder) : base(columnRangeBuilder) { }
+        
         public override bool IsConverter(UmbracoPropertyInfo propertyInfo) {
             return propertyInfo.Type.PropertyEditorAlias.EqualsInvariant(UmbracoPropertyEditors.Aliases.DateTime);
         }
 
-        public override IEnumerable<Cell> Export(ContentProperties content, UmbracoPropertyInfo propertyInfo) {
+        public override IReadOnlyList<Cell> Export(ContentProperties content, UmbracoPropertyInfo propertyInfo) {
             return ExportValue<DateTime?>(content,
                                           propertyInfo,
                                           x => x == null ? null : DataTypes.DateTime.Cell(x.Value.ToLocalDateTime()));

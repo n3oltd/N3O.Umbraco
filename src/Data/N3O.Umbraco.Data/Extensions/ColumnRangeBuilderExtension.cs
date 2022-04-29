@@ -5,23 +5,23 @@ using System.Linq;
 
 namespace N3O.Umbraco.Data.Extensions {
     public static class ColumnRangeBuilderExtension {
-        public static IEnumerable<Column> GetColumns(this IColumnRangeBuilder columnRangeBuilder,
-                                                     TemplateColumn templateColumn) {
+        public static IReadOnlyList<Column> GetColumns(this IColumnRangeBuilder columnRangeBuilder,
+                                                       ColumnTemplate columnTemplate) {
             var columnRange = columnRangeBuilder.String<string>()
-                                                .Title(templateColumn.Heading)
+                                                .Title(columnTemplate.Heading)
                                                 .Build();
 
             columnRange.AddCells(0,
-                                 templateColumn.MaxValues == 1
+                                 columnTemplate.MaxValues == 1
                                      ? ""
-                                     : Enumerable.Repeat("", templateColumn.MaxValues));
+                                     : Enumerable.Repeat("", columnTemplate.MaxValues));
 
             return columnRange.GetColumns().ToList();
         }
 
-        public static IEnumerable<string> GetColumnHeadings(this IColumnRangeBuilder columnRangeBuilder,
-                                                            TemplateColumn templateColumn) {
-            var headings = GetColumns(columnRangeBuilder, templateColumn)
+        public static IReadOnlyList<string> GetColumnHeadings(this IColumnRangeBuilder columnRangeBuilder,
+                                                              ColumnTemplate columnTemplate) {
+            var headings = GetColumns(columnRangeBuilder, columnTemplate)
                           .Select(x => x.Title)
                           .ToList();
 

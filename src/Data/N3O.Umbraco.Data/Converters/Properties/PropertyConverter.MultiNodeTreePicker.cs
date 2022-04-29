@@ -1,4 +1,5 @@
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Data.Builders;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Parsing;
@@ -15,7 +16,9 @@ namespace N3O.Umbraco.Data.Converters {
     public class MultiNodeTreePickerPropertyConverter : PropertyConverter {
         private readonly Lazy<IUmbracoHelperAccessor> _umbracoHelperAccessor;
 
-        public MultiNodeTreePickerPropertyConverter(Lazy<IUmbracoHelperAccessor> umbracoHelperAccessor) {
+        public MultiNodeTreePickerPropertyConverter(IColumnRangeBuilder columnRangeBuilder,
+                                                    Lazy<IUmbracoHelperAccessor> umbracoHelperAccessor)
+            : base(columnRangeBuilder) {
             _umbracoHelperAccessor = umbracoHelperAccessor;
         }
         
@@ -25,7 +28,7 @@ namespace N3O.Umbraco.Data.Converters {
                                .EqualsInvariant(UmbracoPropertyEditors.Aliases.MultiNodeTreePicker);
         }
 
-        public override IEnumerable<Cell> Export(ContentProperties content, UmbracoPropertyInfo propertyInfo) {
+        public override IReadOnlyList<Cell> Export(ContentProperties content, UmbracoPropertyInfo propertyInfo) {
             throw new NotImplementedException();
         }
 

@@ -34,7 +34,7 @@ namespace N3O.Umbraco.Data.Extensions {
             return true;
         }
         
-        public static TemplateColumn GetTemplateColumn(this UmbracoPropertyInfo propertyInfo,
+        public static IReadOnlyList<Column> GetColumns(this UmbracoPropertyInfo propertyInfo,
                                                        IEnumerable<IPropertyConverter> converters) {
             var converter = converters.SingleOrDefault(x => x.IsConverter(propertyInfo));
 
@@ -42,7 +42,7 @@ namespace N3O.Umbraco.Data.Extensions {
                 throw new Exception($"No property converter found for {propertyInfo.DataType.EditorAlias.Quote()}");
             }
 
-            return converter.GetTemplateColumn(propertyInfo);
+            return converter.GetColumns(propertyInfo);
         }
         
         public static string GetName(this UmbracoPropertyInfo propertyInfo) {

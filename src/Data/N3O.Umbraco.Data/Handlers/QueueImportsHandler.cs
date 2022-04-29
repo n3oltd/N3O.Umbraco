@@ -117,8 +117,7 @@ namespace N3O.Umbraco.Data.Handlers {
                 var propertyInfos = contentType.GetUmbracoProperties(_dataTypeService).ToList();
                 var propertyInfoColumns = propertyInfos.Where(x => x.CanInclude(_propertyFilters))
                                                        .ToDictionary(x => x,
-                                                                     x => _workspace.ColumnRangeBuilder
-                                                                                    .GetColumns(x.GetTemplateColumn(_converters)));
+                                                                     x => x.GetColumns(_converters));
 
                 var csvReader = _workspace.GetCsvReader(req.Model.DatePattern,
                                                         DecimalSeparators.Point,
@@ -265,7 +264,7 @@ namespace N3O.Umbraco.Data.Handlers {
         }
         
         private IEnumerable<ImportField> GetFields(ICsvReader csvReader,
-                                                   IReadOnlyDictionary<UmbracoPropertyInfo, IEnumerable<Column>> propertyColumns) {
+                                                   IReadOnlyDictionary<UmbracoPropertyInfo, IReadOnlyList<Column>> propertyColumns) {
             foreach (var (property, columns) in propertyColumns) {
                 foreach (var column in columns) {
                     var field = new ImportField();
