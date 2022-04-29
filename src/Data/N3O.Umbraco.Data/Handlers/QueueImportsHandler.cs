@@ -136,7 +136,7 @@ namespace N3O.Umbraco.Data.Handlers {
                 var queuedAt = _clock.GetLocalNow().ToDateTimeUnspecified();
                 var canReplace = csvReader.GetColumnHeadings().Contains(DataConstants.Columns.Replaces, true);
                 
-                var contentMatcher = _contentMatchers.SingleOrDefault(x => x.IsMatcher(contentType.Alias));
+                var contentMatchers = _contentMatchers.Where(x => x.IsMatcher(contentType.Alias)).ToList();
                 var parserSettings =  _jsonProvider.SerializeObject(new ParserSettings(req.Model.DatePattern,
                                                                                        DecimalSeparators.Point,
                                                                                        storageFolderName));
@@ -168,7 +168,7 @@ namespace N3O.Umbraco.Data.Handlers {
                         import.Action = ImportActions.Update;
                         import.ReplacesId = FindExistingId(containerContent,
                                                            contentType.Alias,
-                                                           contentMatcher,
+                                                           contentMatchers,
                                                            replacesCriteria);
                     } else {
                         import.Action = ImportActions.Create;
@@ -230,22 +230,18 @@ namespace N3O.Umbraco.Data.Handlers {
 
         private Guid? FindExistingId(IContent container,
                                      string contentTypeAlias,
-                                     IContentMatcher contentMatcher,
+                                     IReadOnlyList<IContentMatcher> contentMatchers,
                                      string criteria) {
-            if (contentMatcher == null) {
-                _errorLog.AddError<Strings>(s => s.ContentMatcherNotFound_1, contentTypeAlias);
-
-                return null;
-            }
-
             if (_descendants == null) {
                 PopulateDescendants(container, contentTypeAlias);
             }
 
             var matches = new List<IContent>();
             foreach (var descendant in _descendants) {
-                if (contentMatcher.IsMatch(descendant, criteria)) {
-                    matches.Add(descendant);
+                foreach (var contentMatcher in contentMatchers) {
+                    if (contentMatcher.IsMatch(descendant, criteria)) {
+                        matches.Add(descendant);
+                    }
                 }
             }
 
@@ -297,7 +293,6 @@ namespace N3O.Umbraco.Data.Handlers {
         }
         
         public class Strings : CodeStrings {
-            public string ContentMatcherNotFound_1 => $"No content matcher found for {"{0}".Quote()}";
             public string MaxRowsExceeded_1 => $"The CSV file contains more than the maximum allowed {0} rows";
             public string MissingColumn_1 => $"CSV file is missing column {"{0}".Quote()}";
             public string MultipleContentMatched_1 => $"More than one content found for {"{0}".Quote()}";
