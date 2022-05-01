@@ -50,6 +50,8 @@ namespace N3O.Umbraco.Data.Handlers {
         private readonly IReadOnlyList<IPropertyConverter> _converters;
         private readonly IReadOnlyList<IImportPropertyFilter> _propertyFilters;
         private readonly List<IContentMatcher> _contentMatchers;
+        private readonly string _nameColumnTitle;
+        private readonly string _replacesColumnTitle;
         private IReadOnlyList<IContent> _descendants;
 
         public QueueImportsHandler(IBackOfficeSecurityAccessor backOfficeSecurityAccessor,
@@ -84,6 +86,9 @@ namespace N3O.Umbraco.Data.Handlers {
             _converters = converters.OrEmpty().ToList();
             _propertyFilters = propertyFilters.OrEmpty().ToList();
             _contentMatchers = contentMatchers.OrEmpty().ToList();
+
+            _nameColumnTitle = formatter.Text.Format<DataStrings>(s => s.NameColumnTitle);
+            _replacesColumnTitle = formatter.Text.Format<DataStrings>(s => s.ReplacesColumnTitle);
         }
         
         public async Task<QueueImportsRes> Handle(QueueImportsCommand req, CancellationToken cancellationToken) {
@@ -113,8 +118,8 @@ namespace N3O.Umbraco.Data.Handlers {
             
             using (csvBlob.Stream) {
                 var containerContent = req.ContentId.Run(_contentService.GetById, true);
-                var contentType = _contentTypeService.GetContentTypeForContainerContent(containerContent.ContentTypeId);
-                var propertyInfos = contentType.GetUmbracoProperties(_dataTypeService).ToList();
+                var contentType = _contentTypeService.Get(req.ContentType);
+                var propertyInfos = contentType.GetUmbracoProperties(_dataTypeService, _contentTypeService).ToList();
                 var propertyInfoColumns = propertyInfos.Where(x => x.CanInclude(_propertyFilters))
                                                        .ToDictionary(x => x,
                                                                      x => x.GetColumns(_converters));
@@ -133,7 +138,8 @@ namespace N3O.Umbraco.Data.Handlers {
                 var batchReference = (int) await _counters.NextAsync(CountersKey, 100_001, cancellationToken);
                 var batchFilename = csvBlob.Filename;
                 var queuedAt = _clock.GetLocalNow().ToDateTimeUnspecified();
-                var canReplace = csvReader.GetColumnHeadings().Contains(DataConstants.Columns.Replaces, true);
+                var canReplace = csvReader.GetColumnHeadings().Contains(_replacesColumnTitle, true);
+                var hasNameColumn = csvReader.GetColumnHeadings().Contains(_nameColumnTitle, true);
                 
                 var contentMatchers = _contentMatchers.Where(x => x.IsMatcher(contentType.Alias)).ToList();
                 var parserSettings =  _jsonProvider.SerializeObject(new ParserSettings(req.Model.DatePattern,
@@ -148,6 +154,7 @@ namespace N3O.Umbraco.Data.Handlers {
                 while (csvReader.ReadRow()) {
                     var import = new Import();
                     import.Reference = $"{batchReference}-{rowNumber}";
+                    import.Name = GetImportName(csvReader, hasNameColumn, import.Reference);
                     import.QueuedAt = queuedAt;
                     import.QueuedByUser = currentUser.Key;
                     import.QueuedByName = currentUser.Name;
@@ -160,7 +167,7 @@ namespace N3O.Umbraco.Data.Handlers {
                     import.ContentTypeName = contentType.Name;
 
                     var replacesCriteria = canReplace
-                                               ? csvReader.Row.GetRawField(DataConstants.Columns.Replaces)
+                                               ? csvReader.Row.GetRawField(_replacesColumnTitle)
                                                : null;
 
                     if (replacesCriteria.HasValue()) {
@@ -187,6 +194,20 @@ namespace N3O.Umbraco.Data.Handlers {
 
                 return imports.Count;
             }
+        }
+
+        private string GetImportName(ICsvReader csvReader, bool hasNameColumn, string importReference) {
+            string importName = null;
+            
+            if (hasNameColumn) {
+                importName = csvReader.Row.GetRawField(_nameColumnTitle);
+            }
+
+            if (!importName.HasValue()) {
+                importName = importReference;
+            }
+
+            return importName;
         }
 
         private void ValidateColumns(IReadOnlyList<string> csvHeadings, IEnumerable<Column> expectedColumns) {

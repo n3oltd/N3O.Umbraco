@@ -1,6 +1,6 @@
-using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using NodaTime;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Extensions {
     public static partial class CsvRowExtensions {
@@ -14,7 +14,8 @@ namespace N3O.Umbraco.Data.Extensions {
 
         public static LocalDateTime? GetDateTime(this CsvRow csvRow, CsvSelect select) {
             return csvRow.ParseField(select,
-                                     (parser, field) => parser.DateTime.Parse(field, DataTypes.DateTime.GetClrType()));
+                                     (parser, field) => parser.DateTime
+                                                              .Parse(field, OurDataTypes.DateTime.GetClrType()));
         }
     }
 }

@@ -1,5 +1,4 @@
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Extensions;
 using Newtonsoft.Json.Linq;
@@ -9,7 +8,8 @@ using System.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
-using DataType = N3O.Umbraco.Data.Lookups.DataType;
+using OurDataType = N3O.Umbraco.Data.Lookups.DataType;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Parsing {
     public class ContentParser : DataTypeParser<IContent>, IContentParser {
@@ -25,8 +25,8 @@ namespace N3O.Umbraco.Data.Parsing {
             _contentHelper = contentHelper;
         }
         
-        public override bool CanParse(DataType dataType) {
-            return dataType == DataTypes.Content;
+        public override bool CanParse(OurDataType dataType) {
+            return dataType == OurDataTypes.Content;
         }
 
         public override ParseResult<IContent> Parse(string text, Type targetType) {

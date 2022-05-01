@@ -4,11 +4,12 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using Umbraco.Extensions;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Parsing {
     public class GuidParser : DataTypeParser<Guid?>, IGuidParser {
         public override bool CanParse(DataType dataType) {
-            return dataType == DataTypes.Guid;
+            return dataType == OurDataTypes.Guid;
         }
 
         protected override ParseResult<Guid?> TryParse(string text, Type targetType) {

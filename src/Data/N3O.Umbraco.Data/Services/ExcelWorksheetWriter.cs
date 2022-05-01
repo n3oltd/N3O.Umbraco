@@ -1,5 +1,4 @@
 using N3O.Umbraco.Data.Extensions;
-using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Extensions;
 using OfficeOpenXml;
@@ -8,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using ExcelColumn = N3O.Umbraco.Data.Models.ExcelColumn;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 using WorkTable = OfficeOpenXml.Table.ExcelTable;
 
 namespace N3O.Umbraco.Data.Services {
@@ -70,7 +70,7 @@ namespace N3O.Umbraco.Data.Services {
 
         private void WriteHeaders(ExcelWorksheet worksheet) {
             foreach (var column in _visibleColumns) {
-                var titleCell = ExcelCell.FromCell(DataTypes.String.Cell(column.Title, null),
+                var titleCell = ExcelCell.FromCell(OurDataTypes.String.Cell(column.Title, null),
                                                    column.Title,
                                                    column.Comment,
                                                    null,
@@ -89,7 +89,9 @@ namespace N3O.Umbraco.Data.Services {
 
                     WriteCell(worksheet, cell);
 
-                    UpdateFooterFormatting(column, cell.Formatting);
+                    if (cell.HasValue(x => x.Formatting)) {
+                        UpdateFooterFormatting(column, cell.Formatting);
+                    }
                 }
 
                 NextRow();
@@ -143,19 +145,21 @@ namespace N3O.Umbraco.Data.Services {
         private void WriteCell(ExcelWorksheet worksheet, ExcelCell cell) {
             var workCell = GetCurrentCell(worksheet);
 
-            workCell.Value = cell.ExcelValue;
+            workCell.Value = cell?.ExcelValue;
 
-            if (cell.Comment.HasValue()) {
+            if (cell.HasValue(x => x.Comment)) {
                 var comment = workCell.AddComment(cell.Comment);
                 comment.Author = "N3O Ltd";
                 comment.AutoFit = true;
             }
             
-            if (cell.HyperLink.HasValue()) {
+            if (cell.HasValue(x => x.HyperLink)) {
                 workCell.SetHyperlink(cell.HyperLink);
             }
 
-            workCell.ApplyFormatting(cell.Formatting);
+            if (cell.HasValue(x => x.Formatting)) {
+                workCell.ApplyFormatting(cell.Formatting);
+            }
 
             NextColumn();
         }

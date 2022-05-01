@@ -2,11 +2,13 @@
 
 namespace N3O.Umbraco.Data.Models {
     public class ColumnTemplate : Value {
-        private const int MaxValuesLimit = 20;
-        
         public ColumnTemplate(string heading, int maxValues, UmbracoPropertyInfo propertyInfo) {
+            if (maxValues < 1 || maxValues > DataConstants.Limits.Columns.MaxValues) {
+                throw new ArgumentOutOfRangeException(nameof(maxValues), $"Value must be between 1 and {DataConstants.Limits.Columns.MaxValues}");
+            }
+            
             Heading = heading;
-            MaxValues = Math.Min(maxValues == 0 ? MaxValuesLimit : maxValues, MaxValuesLimit);
+            MaxValues = maxValues;
             PropertyInfo = propertyInfo;
         }
 

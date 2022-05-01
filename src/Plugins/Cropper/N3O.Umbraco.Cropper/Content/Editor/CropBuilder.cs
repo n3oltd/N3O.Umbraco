@@ -17,9 +17,9 @@ namespace N3O.Umbraco.Cropper.Content {
         }
 
         public void AutoCrop(CropDefinition cropDefinition) {
-            var x = Math.Max(0, (_imageHeight - cropDefinition.Height) / 2m);
-            var y = Math.Max(0, (_imageWidth - cropDefinition.Width) / 2m);
-            
+            var x = Math.Max(0, (_imageWidth - cropDefinition.Width) / 2m);
+            var y = Math.Max(0, (_imageHeight - cropDefinition.Height) / 2m);
+
             CropTo((int) x,
                    (int) y,
                    Math.Min(cropDefinition.Width, _imageWidth),
@@ -50,7 +50,7 @@ namespace N3O.Umbraco.Cropper.Content {
                 throw new Exception("Crop dimensions must be specified");
             }
 
-            if ((_x + _width.Value > _imageWidth) || (_y + _height.Value > _imageHeight)) {
+            if ((_x + _width.Value) > _imageWidth || (_y + _height.Value) > _imageHeight) {
                 throw new Exception("Crop dimensions are invalid");
             }
         }

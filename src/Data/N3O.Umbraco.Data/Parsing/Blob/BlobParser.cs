@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Extensions;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Parsing {
     public class BlobParser : DataTypeParser<Blob>, IBlobParser {
@@ -16,14 +17,14 @@ namespace N3O.Umbraco.Data.Parsing {
         }
         
         public override bool CanParse(DataType dataType) {
-            return dataType == DataTypes.Blob;
+            return dataType == OurDataTypes.Blob;
         }
 
         protected override ParseResult<Blob> TryParse(string text, Type targetType) {
             Blob blob = null;
             
             if (text.HasValue()) {
-                var blobResolver = _blobResolvers.SingleOrDefault(x => x.CanResolve(text));
+                var blobResolver = _blobResolvers.FirstOrDefault(x => x.CanResolve(text));
 
                 if (blobResolver != null) {
                     var resolveResult = blobResolver.ResolveAsync(text).GetAwaiter().GetResult();

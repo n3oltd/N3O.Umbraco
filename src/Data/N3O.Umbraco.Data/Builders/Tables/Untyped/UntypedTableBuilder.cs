@@ -15,16 +15,28 @@ namespace N3O.Umbraco.Data.Builders {
             _name = name;
         }
 
-        public void AddCell(IColumnRange columnRange, object value) {
+        public void AddCell(IColumnRange columnRange, Cell cell) {
             _columnRanges.AddIfNotExists(columnRange);
 
-            columnRange.AddCells(_rowNumber, value);
+            columnRange.AddCells(_rowNumber, cell);
         }
 
-        public void AddCells(IColumnRange columnRange, IEnumerable values) {
+        public void AddValue(IColumnRange columnRange, object value) {
             _columnRanges.AddIfNotExists(columnRange);
 
-            columnRange.AddCells(_rowNumber, values);
+            columnRange.AddValues(_rowNumber, value);
+        }
+
+        public void AddCells(IColumnRange columnRange, IEnumerable<Cell> cells) {
+            _columnRanges.AddIfNotExists(columnRange);
+
+            columnRange.AddCells(_rowNumber, cells);
+        }
+
+        public void AddValues(IColumnRange columnRange, IEnumerable values) {
+            _columnRanges.AddIfNotExists(columnRange);
+
+            columnRange.AddValues(_rowNumber, values);
         }
 
         public void NextRow() {

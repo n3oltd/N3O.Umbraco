@@ -49,8 +49,8 @@ namespace N3O.Umbraco.Cropper.Notifications {
             }
         }
 
-        private IReadOnlyList<ContentProperty> GetProperties(ContentProperties content) {
-            var list = new List<ContentProperty>();
+        private IReadOnlyList<IContentProperty> GetProperties(ContentProperties content) {
+            var list = new List<IContentProperty>();
 
             list.AddRange(content.Properties.OrEmpty());
             
@@ -65,15 +65,15 @@ namespace N3O.Umbraco.Cropper.Notifications {
             return list;
         }
 
-        private async Task GenerateCropsAsync(ContentProperty property, CancellationToken cancellationToken) {
+        private async Task GenerateCropsAsync(IContentProperty property, CancellationToken cancellationToken) {
             var dataType = _dataTypeService.GetDataType(property.Type.DataTypeId);
-            var cropperConfiguration = dataType.ConfigurationAs<CropperConfiguration>();
+            var configuration = dataType.ConfigurationAs<CropperConfiguration>();
             var json = property.Value?.ToString();
         
             if (json.HasValue()) {
                 var cropperSource = JsonConvert.DeserializeObject<CropperSource>(json);
 
-                await _imageCropper.CropAllAsync(cropperConfiguration, cropperSource, cancellationToken);
+                await _imageCropper.CropAllAsync(configuration, cropperSource, cancellationToken);
             }
         }
     }

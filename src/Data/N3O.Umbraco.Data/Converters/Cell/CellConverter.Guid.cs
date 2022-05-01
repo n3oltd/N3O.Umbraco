@@ -1,7 +1,7 @@
-using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Localization;
 using System;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Converters {
     public class GuidCellConverter : INullableCellConverter<Guid> {
@@ -10,7 +10,7 @@ namespace N3O.Umbraco.Data.Converters {
         }
 
         public Cell Convert(IFormatter formatter, ILocalClock clock, Guid? value, Type targetType) {
-            return DataTypes.Guid.Cell(value);
+            return OurDataTypes.Guid.Cell(value);
         }
     }
 }

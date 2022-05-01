@@ -16,7 +16,9 @@ namespace N3O.Umbraco.Storage.Extensions {
 
             var fromBlob = await fromStorageFolder.GetFileAsync(filename);
             using (fromBlob.Stream) {
-                var toBlob = await toStorageFolder.AddFileAsync(filename, fromBlob.Stream);
+                await toStorageFolder.AddFileAsync(filename, fromBlob.Stream);
+
+                var toBlob = await toStorageFolder.GetFileAsync(filename);
 
                 await fromStorageFolder.DeleteFileAsync(filename);
 

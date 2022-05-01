@@ -30,7 +30,7 @@ namespace N3O.Umbraco.Giving.Content {
         }
 
         private DonationItem GetDonationItem(ContentProperties content) {
-            var donationItem = content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(DonationItemAlias))
+            var donationItem = content.GetPropertyByAlias(DonationItemAlias)
                                       .IfNotNull(x => ContentHelper.GetPickerValue<IPublishedContent>(x)
                                                                    .As<DonationItem>());
 

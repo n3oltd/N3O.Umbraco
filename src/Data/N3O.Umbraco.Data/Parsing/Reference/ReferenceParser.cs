@@ -5,6 +5,7 @@ using N3O.Umbraco.Lookups;
 using N3O.Umbraco.References;
 using System;
 using System.Linq;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Parsing {
     public class ReferenceParser : DataTypeParser<Reference>, IReferenceParser {
@@ -15,7 +16,7 @@ namespace N3O.Umbraco.Data.Parsing {
         }
 
         public override bool CanParse(DataType dataType) {
-            return dataType == DataTypes.Reference;
+            return dataType == OurDataTypes.Reference;
         }
 
         protected override ParseResult<Reference> TryParse(string text, Type targetType) {

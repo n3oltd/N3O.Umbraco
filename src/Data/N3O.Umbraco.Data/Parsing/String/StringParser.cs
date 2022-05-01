@@ -3,11 +3,12 @@ using N3O.Umbraco.Data.Models;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Parsing {
     public class StringParser : DataTypeParser<string>, IStringParser {
         public override bool CanParse(DataType dataType) {
-            return dataType == DataTypes.String;
+            return dataType == OurDataTypes.String;
         }
 
         protected override ParseResult<string> TryParse(string text, Type targetType) {

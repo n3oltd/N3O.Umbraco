@@ -88,8 +88,10 @@ namespace N3O.Umbraco.Cropper.Content {
             var instant = _clock.GetCurrentInstant();
 
             stream.Rewind();
-            
-            _mediaFileManager.FileSystem.AddFile(filename.GetStoragePath(instant), stream, false);
+
+            if (!_mediaFileManager.FileSystem.FileExists(filename.GetStoragePath(instant))) {
+                _mediaFileManager.FileSystem.AddFile(filename.GetStoragePath(instant), stream, false);
+            }
 
             stream.Rewind();
 

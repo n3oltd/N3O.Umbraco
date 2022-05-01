@@ -8,7 +8,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
 
 namespace N3O.Umbraco.TextResourceEditor.DataTypes {
-    public class TemplateTextEditorValueConverter : PropertyValueConverter {
+    public class TextResourceEditorValueConverter : PropertyValueConverter {
         public override bool IsConverter(IPublishedPropertyType propertyType) {
             return propertyType.EditorAlias.EqualsInvariant(TextResourceEditorConstants.PropertyEditorAlias);
         }

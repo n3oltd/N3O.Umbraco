@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using N3O.Umbraco.Extensions;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -11,10 +12,15 @@ namespace N3O.Umbraco.Content {
             _serviceProvider = serviceProvider;
         }
 
-        public IContentBuilder Add(string contentTypeAlias) {
+        public IContentBuilder Add(string contentTypeAlias, int? order = null) {
             var contentBuilder = new ContentBuilder(_serviceProvider);
 
-            _contentBuilders.Add((contentTypeAlias, contentBuilder));
+            if (order.HasValue()) {
+                _contentBuilders.Insert(order.GetValueOrThrow() - 1, (contentTypeAlias, contentBuilder));
+            } else {
+                _contentBuilders.Add((contentTypeAlias, contentBuilder));
+            }
+            
 
             return contentBuilder;
         }

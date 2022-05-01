@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Cropper.DataTypes;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,17 +10,23 @@ using System.Linq;
 namespace N3O.Umbraco.Cropper.Models {
     public class CroppedImage : DynamicObject, IEnumerable<ImageCrop> {
         private readonly Dictionary<string, ImageCrop> _crops = new(StringComparer.InvariantCultureIgnoreCase);
+        private readonly CropperSource _cropperSource;
 
-        public CroppedImage(CropperConfiguration configuration, CropperSource source) {
-            AltText = source.AltText;
-        
-            foreach (var (crop, index) in source.Crops.SelectWithIndex()) {
+        public CroppedImage(CropperConfiguration configuration, CropperSource cropperSource) {
+            _cropperSource = cropperSource;
+            AltText = cropperSource.AltText;
+
+            foreach (var (crop, index) in cropperSource.Crops.SelectWithIndex()) {
                 var definition = configuration.CropDefinitions.ElementAtOrDefault(index);
 
                 if (definition != null) {
-                    AddImageCrop(definition, source.MediaId, source.Filename, crop);
+                    AddImageCrop(definition, cropperSource.MediaId, cropperSource.Filename, crop);
                 }
             }
+        }
+
+        public Uri GetUncroppedUrl(IUrlBuilder urlBuilder) {
+            return urlBuilder.Root().AppendPathSegment(_cropperSource.Src).ToUri();   
         }
 
         public bool HasCrop(string alias) {

@@ -39,14 +39,14 @@ namespace N3O.Umbraco.Data.Controllers {
             return Ok(res);
         }
 
-        [HttpGet("template/{contentId:guid}")]
+        [HttpGet("template/{contentId:guid}/{contentType}")]
         public async Task<ActionResult> GetTemplate() {
             var res = await _mediator.Value.SendAsync<GetImportTemplateQuery, None, ImportTemplate>(None.Empty);
 
             return File(res.Contents, DataConstants.ContentTypes.Csv, res.Filename);
         }
         
-        [HttpPost("queue/{contentId:guid}")]
+        [HttpPost("queue/{contentId:guid}/{contentType}")]
         public async Task<ActionResult<QueueImportsRes>> Queue(QueueImportsReq req) {
             try {
                 var res = await _mediator.Value.SendAsync<QueueImportsCommand, QueueImportsReq, QueueImportsRes>(req);

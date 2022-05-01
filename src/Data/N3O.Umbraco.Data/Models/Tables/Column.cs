@@ -15,7 +15,7 @@ namespace N3O.Umbraco.Data.Models {
                       bool hidden,
                       AccessControlList accessControlList,
                       IEnumerable<Attribute> attributes,
-                      IReadOnlyDictionary<string, IReadOnlyList<object>> metadata) {
+                      Dictionary<string, IEnumerable<object>> metadata) {
             DataType = dataType;
             Title = title;
             Comment = comment;
@@ -37,6 +37,6 @@ namespace N3O.Umbraco.Data.Models {
         public IFormatter Formatter { get; }
         public ILocalClock LocalClock { get; }
         public LocalizationSettings LocalizationSettings { get; }
-        public IReadOnlyDictionary<string, IReadOnlyList<object>> Metadata { get; }
+        public Dictionary<string, IEnumerable<object>> Metadata { get; }
     }
 }

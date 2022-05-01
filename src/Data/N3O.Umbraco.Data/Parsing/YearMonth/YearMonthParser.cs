@@ -6,13 +6,14 @@ using NodaTime.Text;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Parsing {
     public abstract class YearMonthParser : DataTypeParser<YearMonth?>, IYearMonthParser {
         private readonly List<YearMonthPattern> _patterns = new();
 
         public override bool CanParse(DataType dataType) {
-            return dataType == DataTypes.YearMonth;
+            return dataType == OurDataTypes.YearMonth;
         }
 
         protected override Models.ParseResult<YearMonth?> TryParse(string text, Type targetType) {

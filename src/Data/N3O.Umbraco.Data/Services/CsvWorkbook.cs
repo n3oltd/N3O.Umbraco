@@ -6,6 +6,7 @@ using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -90,6 +91,9 @@ namespace N3O.Umbraco.Data.Services {
             var configuration = new CsvConfiguration(CultureInfo.InvariantCulture);
             configuration.NewLine = "\r\n";
             configuration.TrimOptions = TrimOptions.Trim;
+            configuration.ShouldQuote = args => Regex.IsMatch(args.Field ?? "",
+                                                              @"[\s\n]",
+                                                              RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
             return configuration;
         }
@@ -119,7 +123,7 @@ namespace N3O.Umbraco.Data.Services {
         private string GetCsvText(Column column, Cell cell) {
             var csvValue = "";
 
-            if (cell.Value.HasValue()) {
+            if (cell.HasValue(x => x.Value)) {
                 csvValue = cell.Type.ConvertToText(column.Formatter, cell.Value);
             }
 

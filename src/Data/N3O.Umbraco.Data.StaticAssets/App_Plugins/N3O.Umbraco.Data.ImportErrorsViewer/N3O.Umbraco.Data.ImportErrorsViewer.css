@@ -1,0 +1,9 @@
+.n3o-import-errors-viewer .row-wrapper {
+	margin-bottom: 40px;
+	width: 100%;
+}
+
+.n3o-import-errors-viewer .row-1 {
+   display: block;
+   width: 90%;
+}

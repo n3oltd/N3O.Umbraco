@@ -13,6 +13,9 @@ namespace N3O.Umbraco.Data.Konstrukt {
         [Column(nameof(Reference))]
         public string Reference { get; set; }
         
+        [Column(nameof(Name))]
+        public string Name { get; set; }
+        
         [Column(nameof(QueuedAt))]
         public DateTime QueuedAt { get; set; }
 

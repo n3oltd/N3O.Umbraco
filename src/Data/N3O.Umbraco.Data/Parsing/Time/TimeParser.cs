@@ -9,6 +9,7 @@ using NodaTime.Text;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Parsing {
     public class TimeParser : DataTypeParser<LocalTime?>, ITimeParser {
@@ -29,7 +30,7 @@ namespace N3O.Umbraco.Data.Parsing {
         }
         
         public override bool CanParse(DataType dataType) {
-            return dataType == DataTypes.Time;
+            return dataType == OurDataTypes.Time;
         }
 
         protected override Models.ParseResult<LocalTime?> TryParse(string text, Type targetType) {

@@ -4,6 +4,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
 using Newtonsoft.Json.Linq;
 using System;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Parsing {
     public class LookupParser : DataTypeParser<INamedLookup>, ILookupParser {
@@ -14,7 +15,7 @@ namespace N3O.Umbraco.Data.Parsing {
         }
         
         public override bool CanParse(DataType dataType) {
-            return dataType == DataTypes.Lookup;
+            return dataType == OurDataTypes.Lookup;
         }
 
         public override ParseResult<INamedLookup> Parse(string text, Type targetType) {

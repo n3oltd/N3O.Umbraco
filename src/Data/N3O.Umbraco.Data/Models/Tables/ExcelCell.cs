@@ -1,27 +1,30 @@
 using N3O.Umbraco.Data.Lookups;
 using System;
+using System.Collections.Generic;
 
 namespace N3O.Umbraco.Data.Models {
     public class ExcelCell<T> : ExcelCell {
         protected internal ExcelCell(DataType type,
                                      T value,
                                      Type targetType,
+                                     Dictionary<string, IEnumerable<object>> metadata,
                                      object excelValue,
                                      string comment,
                                      Uri hyperLink,
                                      ExcelFormatting formatting)
-            : base(type, value, targetType, excelValue, comment, hyperLink, formatting) { }
+            : base(type, value, targetType, metadata, excelValue, comment, hyperLink, formatting) { }
     }
 
     public class ExcelCell : Cell {
         public ExcelCell(DataType type,
                          object value,
                          Type targetType,
+                         Dictionary<string, IEnumerable<object>> metadata,
                          object excelValue,
                          string comment,
                          Uri hyperLink,
                          ExcelFormatting formatting)
-            : base(type, value, targetType) {
+            : base(type, value, targetType, metadata) {
             ExcelValue = excelValue;
             Comment = comment;
             HyperLink = hyperLink;
@@ -38,7 +41,14 @@ namespace N3O.Umbraco.Data.Models {
                                                string comment,
                                                Uri hyperLink,
                                                ExcelFormatting formatting) {
-            return new ExcelCell<T>(cell.Type, cell.Value, cell.TargetType, excelValue, comment, hyperLink, formatting);
+            return new ExcelCell<T>(cell.Type,
+                                    cell.Value,
+                                    cell.TargetType,
+                                    cell.Metadata,
+                                    excelValue,
+                                    comment,
+                                    hyperLink,
+                                    formatting);
         }
     }
 }

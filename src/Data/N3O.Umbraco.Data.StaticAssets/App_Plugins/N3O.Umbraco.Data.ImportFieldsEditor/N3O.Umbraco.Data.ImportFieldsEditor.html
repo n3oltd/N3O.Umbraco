@@ -1,0 +1,14 @@
+<div ng-controller="N3O.Umbraco.Data.ImportFieldsEditor">
+    <div class="n3o-import-fields-editor">
+        <div ng-repeat="resource in model.value track by $index" class="row-wrapper">
+            <div class="row-1"><span class="text">{{model.value[$index].name}}</span></div>
+
+            <div class="row-2">
+                <!-- TODO Should be more complex, e.g. if value has newlines needs to be a textarea etc -->
+                <input type="text" ng-model="model.value[$index].value" class="custom">
+            </div>
+
+            <a ng-click="toggleIgnore($index)" style="cursor: pointer;">Exclude/Include</a>]
+        </div>
+    </div>
+</div>

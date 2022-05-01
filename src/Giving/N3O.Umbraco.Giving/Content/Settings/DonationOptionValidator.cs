@@ -43,7 +43,7 @@ namespace N3O.Umbraco.Giving.Content {
                                          IEnumerable<T> allowedValues,
                                          string propertyAlias)
             where T : FundDimensionValue<T> {
-            var property = content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(propertyAlias));
+            var property = content.GetPropertyByAlias(propertyAlias);
             var value = property.IfNotNull(x => ContentHelper.GetPickerValue<IPublishedContent>(x).As<T>());
 
             if (value != null && allowedValues != null && !allowedValues.Contains(value)) {
@@ -52,8 +52,8 @@ namespace N3O.Umbraco.Giving.Content {
         }
 
         private void EnsureNotAllHidden(ContentProperties content) {
-            var hideDonation = (int?) content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(HideDonationAlias))?.Value == 1;
-            var hideRegularGiving = (int?) content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(HideRegularGivingAlias))?.Value == 1;
+            var hideDonation = content.GetPropertyValueByAlias<int?>(HideDonationAlias) == 1;
+            var hideRegularGiving = content.GetPropertyValueByAlias<int?>(HideRegularGivingAlias) == 1;
             
             if (hideDonation && hideRegularGiving) {
                 ErrorResult("Cannot hide both donation and regular giving options");

@@ -9,6 +9,7 @@ namespace N3O.Umbraco {
     public sealed class StorageToken {
         public StorageToken(string filename, string storageFolderName, string contentType, ByteSize size) {
             Filename = filename;
+            StorageFolderName = storageFolderName;
             ContentType = contentType;
             Size = size;
         }

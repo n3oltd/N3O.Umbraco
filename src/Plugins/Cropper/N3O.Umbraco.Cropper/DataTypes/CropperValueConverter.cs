@@ -18,10 +18,10 @@ namespace N3O.Umbraco.Cropper.DataTypes {
             CroppedImage croppedImage = null;
 
             if (source is string json && json.HasValue()) {
-                var cropperConfiguration = (CropperConfiguration) propertyType.DataType.Configuration;
+                var configuration = propertyType.DataType.ConfigurationAs<CropperConfiguration>();
                 var cropperSource = JsonConvert.DeserializeObject<CropperSource>(json);
             
-                croppedImage = new CroppedImage(cropperConfiguration, cropperSource);
+                croppedImage = new CroppedImage(configuration, cropperSource);
             }
 
             return croppedImage;

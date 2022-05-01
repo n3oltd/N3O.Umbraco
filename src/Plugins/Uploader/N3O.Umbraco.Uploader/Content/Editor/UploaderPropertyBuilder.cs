@@ -55,8 +55,10 @@ namespace N3O.Umbraco.Uploader.Content {
             var instant = _clock.GetCurrentInstant();
 
             stream.Rewind();
-            
-            _mediaFileManager.FileSystem.AddFile(filename.GetStoragePath(instant), stream, false);
+
+            if (!_mediaFileManager.FileSystem.FileExists(filename.GetStoragePath(instant))) {
+                _mediaFileManager.FileSystem.AddFile(filename.GetStoragePath(instant), stream, false);
+            }
 
             _urlPath = filename.GetMediaUrlPath(instant);
             _filename = filename;

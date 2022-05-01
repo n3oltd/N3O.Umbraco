@@ -6,10 +6,6 @@
             public const string Import = "Import";
         }
 
-        public static class Columns {
-            public const string Replaces = "Replaces";
-        }
-        
         public static class ContentTypes {
             public const string Csv = "text/csv";
             public const string Excel = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -26,9 +22,21 @@
             public const string Point = ".";
         }
 
+        public static class Limits {
+            public static class Columns {
+                public const int MaxValues = 3;
+            }
+        }
+
+        public static class MetadataKeys {
+            public static class Cells {
+                public const string Title = nameof(Title);
+            }
+        }
+
         public static class PropertyEditorAliases {
             public const string ImportErrorsViewer = "N3O.Umbraco.Data.ImportErrorsViewer";
-            public const string ImportFieldEditor = "N3O.Umbraco.Data.ImportFieldEditor";
+            public const string ImportFieldsEditor = "N3O.Umbraco.Data.ImportFieldsEditor";
         }
         
         public static class Tables {

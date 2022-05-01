@@ -35,21 +35,36 @@ namespace N3O.Umbraco.Data.Extensions {
         }
         
         public static IReadOnlyList<Column> GetColumns(this UmbracoPropertyInfo propertyInfo,
-                                                       IEnumerable<IPropertyConverter> converters) {
-            var converter = converters.SingleOrDefault(x => x.IsConverter(propertyInfo));
+                                                       IEnumerable<IPropertyConverter> converters,
+                                                       string columnTitlePrefix = null) {
+            var converter = GetPropertyConverter(propertyInfo, converters);
 
-            if (converter == null) {
-                throw new Exception($"No property converter found for {propertyInfo.DataType.EditorAlias.Quote()}");
-            }
-
-            return converter.GetColumns(propertyInfo);
+            return converter.GetColumns(converters, propertyInfo, columnTitlePrefix ?? "");
         }
         
-        public static string GetName(this UmbracoPropertyInfo propertyInfo) {
-            var name = propertyInfo.Group.HasValue() ? $"{propertyInfo.Group.Name}: " : null;
+        public static string GetColumnTitle(this UmbracoPropertyInfo propertyInfo, string columnTitlePrefix = null) {
+            var name = columnTitlePrefix ?? "";
+
+            if (propertyInfo.Group.HasValue() && propertyInfo.ContentType.PropertyGroups.Count > 1) {
+                name += $"{propertyInfo.Group.Name}: ";    
+            }
+            
             name += propertyInfo.Type.Name;
 
             return name;
+        }
+
+        public static IPropertyConverter GetPropertyConverter(this UmbracoPropertyInfo propertyInfo,
+                                                              IEnumerable<IPropertyConverter> converters) {
+            var matches = converters.Where(x => x.IsConverter(propertyInfo)).ToList();
+
+            if (matches.None()) {
+                throw new Exception($"No property converter found for {propertyInfo.DataType.EditorAlias.Quote()}");
+            } else if (matches.Count > 1) {
+                throw new Exception($"More than one property converter found for {propertyInfo.DataType.EditorAlias.Quote()}");
+            } else {
+                return matches.Single();
+            }
         }
     }
 }

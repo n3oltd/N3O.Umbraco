@@ -29,11 +29,11 @@ namespace N3O.Umbraco.Data.Handlers {
         
         public Task<ExportableProperties> Handle(GetExportablePropertiesQuery req, CancellationToken cancellationToken) {
             var containerContent = req.ContentId.Run(_contentService.GetById, true);
-            var contentType = _contentTypeService.GetContentTypeForContainerContent(containerContent.ContentTypeId);
+            var contentType = _contentTypeService.Get(req.ContentType);
 
-            var exportableProperties = contentType.GetUmbracoProperties(_dataTypeService)
+            var exportableProperties = contentType.GetUmbracoProperties(_dataTypeService, _contentTypeService)
                                                   .Where(x => x.CanInclude(_propertyFilters))
-                                                  .Select(x => new ExportableProperty(x.Type.Alias, x.GetName()))
+                                                  .Select(x => new ExportableProperty(x.Type.Alias, x.GetColumnTitle()))
                                                   .ToList();
 
             return Task.FromResult(new ExportableProperties(exportableProperties));

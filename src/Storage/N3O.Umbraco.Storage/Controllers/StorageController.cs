@@ -47,8 +47,11 @@ namespace N3O.Umbraco.Storage.Controllers {
         public async Task<ActionResult<StorageToken>> Upload(string folderName, [FromForm] UploadReq req) {
             try {
                 using (var reqStream = req.File.OpenReadStream()) {
+                    var filename = GetFilename(folderName, req.File);
                     var storageFolder = await _volume.GetStorageFolderAsync(folderName);
-                    var blob = await storageFolder.AddFileAsync(GetFilename(folderName, req.File), reqStream);
+                    await storageFolder.AddFileAsync(filename, reqStream);
+
+                    var blob = await storageFolder.GetFileAsync(filename);
                     
                     return Ok(StorageToken.FromBlob(blob));
                 }
@@ -63,9 +66,10 @@ namespace N3O.Umbraco.Storage.Controllers {
             var filename = Sanitise(formFile.FileName);
             
             if (storageFolderName.EqualsInvariant(StorageConstants.StorageFolders.Temp)) {
-                filename = Path.Combine(Path.GetFileNameWithoutExtension(filename),
-                                        $"_{_clock.GetCurrentInstant().ToUnixTimeSeconds()}",
-                                        Path.GetExtension(filename));
+                filename = string.Join("",
+                                       Path.GetFileNameWithoutExtension(filename),
+                                       $"_{_clock.GetCurrentInstant().ToUnixTimeSeconds()}",
+                                       Path.GetExtension(filename));
             }
 
             return filename;

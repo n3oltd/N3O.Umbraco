@@ -1,0 +1,5 @@
+{
+  javascript: [
+    '/App_Plugins/N3O.Umbraco.Data.ImportFieldsEditor/N3O.Umbraco.Data.ImportFieldsEditor.Controller.js'
+  ]
+}

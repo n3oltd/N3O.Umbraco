@@ -50,6 +50,12 @@ namespace N3O.Umbraco.Data.Konstrukt {
             var generalTab = editor.AddTab("General");
             var generalFieldset = generalTab.AddFieldset("General");
 
+            // TODO Add a component that runs at startup and ensures that there are two data types defined:
+            // Import Fields Editor
+            // Import Errors Viewer
+            //
+            // Can then wire these up respectively below.
+            
             generalFieldset.AddField(c => c.Fields).SetDataType("Textarea");
             
             var errorsFieldSet = generalTab.AddFieldset("Errors");

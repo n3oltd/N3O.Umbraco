@@ -25,7 +25,7 @@ namespace N3O.Umbraco.Data.Builders {
             }
 
             foreach (var property in _rowProperties) {
-                property.AddCells(row);
+                property.AddValues(row);
             }
 
             if (rowAddedCallback != null) {

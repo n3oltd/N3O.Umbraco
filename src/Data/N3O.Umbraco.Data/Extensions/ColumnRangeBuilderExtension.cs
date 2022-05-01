@@ -11,10 +11,10 @@ namespace N3O.Umbraco.Data.Extensions {
                                                 .Title(columnTemplate.Heading)
                                                 .Build();
 
-            columnRange.AddCells(0,
-                                 columnTemplate.MaxValues == 1
-                                     ? ""
-                                     : Enumerable.Repeat("", columnTemplate.MaxValues));
+            columnRange.AddValues(0,
+                                  columnTemplate.MaxValues == 1
+                                      ? ""
+                                      : Enumerable.Repeat("", columnTemplate.MaxValues));
 
             return columnRange.GetColumns().ToList();
         }

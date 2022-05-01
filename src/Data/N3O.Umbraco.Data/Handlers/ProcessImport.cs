@@ -108,7 +108,7 @@ namespace N3O.Umbraco.Data.Handlers {
         private IReadOnlyDictionary<string, UmbracoPropertyInfo> GetPropertyInfos(string importContentTypeAlias) {
             var contentType = _contentTypeService.Get(importContentTypeAlias);
 
-            return contentType.GetUmbracoProperties(_dataTypeService)
+            return contentType.GetUmbracoProperties(_dataTypeService, _contentTypeService)
                               .Where(x => x.CanInclude(_importPropertyFilters))
                               .ToDictionary(x => x.Type.Alias, x => x);
         }
@@ -138,7 +138,7 @@ namespace N3O.Umbraco.Data.Handlers {
             if (import.Action == ImportActions.Create) {
                 var contentType = _contentTypeService.Get(import.ContentTypeAlias);
 
-                contentPublisher = _contentEditor.New("New", import.ParentId, contentType.Alias);
+                contentPublisher = _contentEditor.New(import.Name, import.ParentId, contentType.Alias);
             } else if (import.Action == ImportActions.Update) {
                 contentPublisher = _contentEditor.ForExisting(import.ReplacesId.Value);
             } else {
@@ -154,11 +154,13 @@ namespace N3O.Umbraco.Data.Handlers {
                                     IParser parser,
                                     UmbracoPropertyInfo propertyInfo,
                                     IReadOnlyList<ImportField> fields) {
-            var converter = _converters.Single(x => x.IsConverter(propertyInfo));
+            var converter = propertyInfo.GetPropertyConverter(_converters);
 
             converter.Import(contentPublisher.Content,
+                             _converters,
                              parser,
                              _errorLog,
+                             null,
                              propertyInfo,
                              fields.Where(x => !x.Ignore).ToList());
         }

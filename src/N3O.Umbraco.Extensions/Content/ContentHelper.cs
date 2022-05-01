@@ -1,10 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.ValueConverters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Perplex.ContentBlocks.PropertyEditor;
-using Perplex.ContentBlocks.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +9,6 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Persistence.Querying;
 using Umbraco.Cms.Core.PropertyEditors;
-using Umbraco.Cms.Core.PropertyEditors.ValueConverters;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
 
@@ -50,18 +46,6 @@ namespace N3O.Umbraco.Content {
 
         public IReadOnlyList<IContent> GetChildren(IContent content) {
             return GetAllPagedContent(content, _contentService.Value.GetPagedChildren);
-        }
-
-        public ContentBlocks GetContentBlocks(string contentTypeAlias, string propertyTypeAlias, object propertyValue) {
-            if (propertyValue == null) {
-                return null;
-            }
-
-            var contentBlocks = GetConvertedValue<ContentBlocksValueConverter, ContentBlocks>(contentTypeAlias,
-                                                                                              propertyTypeAlias,
-                                                                                              propertyValue);
-
-            return contentBlocks;
         }
 
         public ContentProperties GetContentProperties(IContent content) {
@@ -133,50 +117,6 @@ namespace N3O.Umbraco.Content {
         
         public IReadOnlyList<IContent> GetDescendants(IContent content) {
             return GetAllPagedContent(content, _contentService.Value.GetPagedDescendants);
-        }
-        
-        public IPublishedElement GetNestedContent(string contentTypeAlias,
-                                                  string propertyTypeAlias,
-                                                  object propertyValue) {
-            var publishedElement = GetConvertedValue<NestedContentSingleValueConverter, IPublishedElement>(contentTypeAlias,
-                                                                                                           propertyTypeAlias,
-                                                                                                           propertyValue);
-
-            return publishedElement;
-        }
-        
-        public IReadOnlyList<IPublishedElement> GetNestedContents(string contentTypeAlias,
-                                                                  string propertyTypeAlias,
-                                                                  object propertyValue) {
-            if (propertyValue == null) {
-                return new List<IPublishedElement>();
-            }
-            
-            var publishedElements = GetConvertedValue<NestedContentManyValueConverter, IEnumerable<IPublishedElement>>(contentTypeAlias,
-                                                                                                                       propertyTypeAlias,
-                                                                                                                       propertyValue);
-
-            return publishedElements.ToList();
-        }
-
-        public T GetPickerValue<T>(string contentTypeAlias,
-                                   string propertyTypeAlias,
-                                   object propertyValue) {
-            var item = GetConvertedValue<StronglyTypedMultiNodeTreePickerValueConverter, T>(contentTypeAlias,
-                                                                                            propertyTypeAlias,
-                                                                                            propertyValue);
-
-            return item;
-        }
-
-        public IReadOnlyList<T> GetPickerValues<T>(string contentTypeAlias,
-                                                   string propertyTypeAlias,
-                                                   object propertyValue) {
-            var items = GetConvertedValue<StronglyTypedMultiNodeTreePickerValueConverter, IEnumerable<T>>(contentTypeAlias,
-                                                                                                          propertyTypeAlias,
-                                                                                                          propertyValue);
-
-            return items.ToList();
         }
 
         public IReadOnlyList<T> GetPublishedAncestors<T>(IContent content) where T : IPublishedContent {
@@ -255,7 +195,7 @@ namespace N3O.Umbraco.Content {
                 foreach (var propertyType in propertyGroup.PropertyTypes) {
                     var propertyValue = element[propertyType.Alias];
 
-                    properties.Add((propertyType, propertyValue));
+                    properties.Add((propertyType, propertyValue.ConvertToObject()));
                 }
             }
                 

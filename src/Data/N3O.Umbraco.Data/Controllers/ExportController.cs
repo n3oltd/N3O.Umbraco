@@ -20,14 +20,14 @@ namespace N3O.Umbraco.Data.Controllers {
             _mediator = mediator;
         }
 
-        [HttpGet("exportableProperties/{contentId:guid}")]
+        [HttpGet("exportableProperties/{contentId:guid}/{contentType}")]
         public async Task<ActionResult> GetExportableProperties() {
             var res = await _mediator.SendAsync<GetExportablePropertiesQuery, None, ExportableProperties>(None.Empty);
 
             return Ok(res);
         }
 
-        [HttpPost("export/{contentId:guid}")]
+        [HttpPost("export/{contentId:guid}/{contentType}")]
         public async Task<ActionResult> CreateExport(ExportReq req) {
             try {
                 var res = await _mediator.SendAsync<CreateExportCommand, ExportReq, ExportFile>(req);

@@ -11,15 +11,13 @@ namespace N3O.Umbraco.Data.Models {
         }
 
         public string GetText(IFormatter formatter, int? columnIndex, Cell cell) {
-            if (_text == null) {
-                _text = _getText(formatter.Text);
-            }
-
-            if (columnIndex == null) {
+            _text ??= _getText(formatter.Text);
+        
+            if (columnIndex > 0) {
+                return $"{_text} {columnIndex + 1}";
+            } else {
                 return _text;
             }
-
-            return $"{_text} {columnIndex.Value + 1}";
         }
     }
 }

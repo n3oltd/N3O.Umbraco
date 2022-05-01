@@ -31,6 +31,10 @@ namespace N3O.Umbraco.Extensions {
                                                                      string propertyTypeAlias) {
             return builder.Property<RadioButtonListPropertyBuilder>(propertyTypeAlias);
         }
+
+        public static TextAreaPropertyBuilder TextArea(this IContentBuilder builder, string propertyTypeAlias) {
+            return builder.Property<TextAreaPropertyBuilder>(propertyTypeAlias);
+        }
         
         public static TextBoxPropertyBuilder TextBox(this IContentBuilder builder, string propertyTypeAlias) {
             return builder.Property<TextBoxPropertyBuilder>(propertyTypeAlias);

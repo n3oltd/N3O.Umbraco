@@ -1,7 +1,7 @@
-using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Localization;
 using System;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Converters {
     public class DecimalCellConverter :
@@ -13,7 +13,7 @@ namespace N3O.Umbraco.Data.Converters {
         }
 
         public Cell Convert(IFormatter formatter, ILocalClock clock, decimal? value, Type targetType) {
-            return DataTypes.Decimal.Cell(value);
+            return OurDataTypes.Decimal.Cell(value);
         }
 
         public Cell Convert(IFormatter formatter, ILocalClock clock, float value, Type targetType) {

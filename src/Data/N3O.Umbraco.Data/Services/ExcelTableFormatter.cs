@@ -3,6 +3,7 @@ using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using System.Collections.Generic;
 using System.Linq;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Services {
     public class ExcelTableFormatter : IExcelTableFormatter {
@@ -21,7 +22,7 @@ namespace N3O.Umbraco.Data.Services {
         private IReadOnlyDictionary<DataType, IExcelCellConverter> MapDefaultConverters(IReadOnlyList<IExcelCellConverter> defaultConverters) {
             var dict = new Dictionary<DataType, IExcelCellConverter>();
 
-            foreach (var dataType in DataTypes.GetAllTypes()) {
+            foreach (var dataType in OurDataTypes.GetAllTypes()) {
                 var converterType = typeof(ExcelCellConverter<>).MakeGenericType(dataType.GetClrType());
                 var converter = defaultConverters.Single(x => converterType.IsInstanceOfType(x));
 
@@ -46,10 +47,14 @@ namespace N3O.Umbraco.Data.Services {
         private ExcelCell FormatCell(IReadOnlyDictionary<Column, IExcelCellConverter> converters,
                                       Column column,
                                       Cell cell) {
-            var defaultConverter = _defaultConverters[cell.Type];
-            var converter = converters.GetValueOrDefault(column, defaultConverter);
+            ExcelCell excelCell = null;
+            
+            if (cell != null) {
+                var defaultConverter = _defaultConverters[cell.Type];
+                var converter = converters.GetValueOrDefault(column, defaultConverter);
 
-            var excelCell = converter.GetExcelCell(column, cell);
+                excelCell = converter.GetExcelCell(column, cell);
+            }
 
             return excelCell;
         }

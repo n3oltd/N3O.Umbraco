@@ -52,16 +52,18 @@ namespace N3O.Umbraco.Data.Lookups {
 
         public override Type GetDefaultCellConverterType() => typeof(TDefaultCellConverter);
 
-        public Cell<T> Cell(T value, Type targetType) {
-            return new Cell<T>(this, value, targetType);
+        public Cell<T> Cell(T value,
+                            Type targetType,
+                            Dictionary<string, IEnumerable<object>> metadata = null) {
+            return new Cell<T>(this, value, targetType, metadata);
         }
 
-        public Cell<T> Cell(T value) {
+        public Cell<T> Cell(T value, Dictionary<string, IEnumerable<object>> metadata = null) {
             if (RequiresTargetType) {
                 throw new Exception($"DataType {Id.Quote()} requires a target type");
             }
 
-            return new Cell<T>(this, value, null);
+            return new Cell<T>(this, value, null, metadata);
         }
 
         public override Cell Cell(object value, Type targetType) {

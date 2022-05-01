@@ -3,6 +3,7 @@ using N3O.Umbraco.Composing;
 using N3O.Umbraco.Data.Builders;
 using N3O.Umbraco.Data.ContentApps;
 using N3O.Umbraco.Data.Converters;
+using N3O.Umbraco.Data.DataTypes;
 using N3O.Umbraco.Data.Filters;
 using N3O.Umbraco.Data.Konstrukt;
 using N3O.Umbraco.Data.Providers;
@@ -18,6 +19,9 @@ namespace N3O.Umbraco.Data {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            
+            builder.PropertyValueConverters().Append<ImportErrorsViewerValueConverter>();
+            builder.PropertyValueConverters().Append<ImportFieldsEditorValueConverter>();
 
             RegisterApis(builder);
             RegisterContentSummarisers(builder);

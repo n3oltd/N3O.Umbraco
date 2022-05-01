@@ -21,15 +21,15 @@ namespace N3O.Umbraco.Data.Builders {
             _tableBuilder = tableBuilder;
         }
 
-        public void AddCells(TRow row) {
+        public void AddValues(TRow row) {
             var propertyValue = _property.GetValue(row);
 
             if (_isCollection) {
                 var values = (IEnumerable<TValue>)propertyValue;
 
-                _tableBuilder.AddCells(_columnRange, values);
+                _tableBuilder.AddValues(_columnRange, values);
             } else {
-                _tableBuilder.AddCell(_columnRange, (TValue) propertyValue);
+                _tableBuilder.AddValue(_columnRange, (TValue) propertyValue);
             }
         }
 
@@ -71,7 +71,7 @@ namespace N3O.Umbraco.Data.Builders {
                     Exception("Property is marked as a collection but is a value");
                 }
 
-                builder.CollectionLayout(collectionAttribute.Layout, collectionAttribute.MaxValues);
+                builder.CollectionLayout(collectionAttribute.Layout);
                 builder.RangeColumnSort(collectionAttribute.Sort);
 
                 _isCollection = true;
@@ -112,6 +112,18 @@ namespace N3O.Umbraco.Data.Builders {
             return true;
         }
 
+        private bool SetTitleFromMetadata(IFluentColumnRangeBuilder<TValue> builder) {
+            var attribute = _property.GetCustomAttribute<TitleFromMetadataAttribute>();
+
+            if (attribute == null) {
+                return false;
+            }
+
+            builder.TitleFromMetadata();
+
+            return true;
+        }
+        
         private bool SetTitleFromValue(IFluentColumnRangeBuilder<TValue> builder) {
             var attribute = _property.GetCustomAttribute<TitleFromValueAttribute>();
 

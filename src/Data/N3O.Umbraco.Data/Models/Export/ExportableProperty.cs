@@ -1,11 +1,11 @@
 ﻿namespace N3O.Umbraco.Data.Models {
     public class ExportableProperty : Value {
-        public ExportableProperty(string alias, string name) {
+        public ExportableProperty(string alias, string columnTitle) {
             Alias = alias;
-            Name = name;
+            ColumnTitle = columnTitle;
         }
 
         public string Alias { get; }
-        public string Name { get; }
+        public string ColumnTitle { get; }
     }
 }

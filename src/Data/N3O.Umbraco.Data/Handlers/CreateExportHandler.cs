@@ -9,6 +9,7 @@ using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Services;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Localization;
 using N3O.Umbraco.Mediator;
 using System;
 using System.Collections.Generic;
@@ -28,8 +29,9 @@ namespace N3O.Umbraco.Data.Handlers {
         private readonly IContentHelper _contentHelper;
         private readonly IWorkspace _workspace;
         private readonly Lazy<IExcelTableBuilder> _excelTableBuilder;
-        private readonly IReadOnlyList<IPropertyConverter> _propertyConverters;
+        private readonly IReadOnlyList<IPropertyConverter> _converters;
         private readonly IReadOnlyList<IExportPropertyFilter> _propertyFilters;
+        private readonly string _nameColumnTitle;
 
         public CreateExportHandler(IContentService contentService,
                                    IContentTypeService contentTypeService,
@@ -37,37 +39,41 @@ namespace N3O.Umbraco.Data.Handlers {
                                    IContentHelper contentHelper,
                                    IWorkspace workspace,
                                    IEnumerable<IExportPropertyFilter> propertyFilters,
-                                   IEnumerable<IPropertyConverter> propertyConverters,
-                                   Lazy<IExcelTableBuilder> excelTableBuilder) {
+                                   IEnumerable<IPropertyConverter> converters,
+                                   Lazy<IExcelTableBuilder> excelTableBuilder,
+                                   IFormatter formatter) {
             _contentService = contentService;
             _contentTypeService = contentTypeService;
             _dataTypeService = dataTypeService;
             _contentHelper = contentHelper;
             _workspace = workspace;
             _excelTableBuilder = excelTableBuilder;
-            _propertyConverters = propertyConverters.ToList();
+            _converters = converters.ToList();
             _propertyFilters = propertyFilters.ToList();
+            
+            _nameColumnTitle = formatter.Text.Format<DataStrings>(s => s.NameColumnTitle);
         }
 
         public async Task<ExportFile> Handle(CreateExportCommand req, CancellationToken cancellationToken) {
             var containerContent = req.ContentId.Run(_contentService.GetById, true);
-            var contentType = _contentTypeService.GetContentTypeForContainerContent(containerContent.ContentTypeId);
+            var contentType = _contentTypeService.Get(req.ContentType);
 
-            bool Filter(UmbracoPropertyInfo property) {
-                return property.CanInclude(_propertyFilters) &&
-                       req.Model.Properties.Contains(property.Type.Alias, StringComparer.InvariantCultureIgnoreCase);
+            bool Filter(UmbracoPropertyInfo propertyInfo) {
+                return propertyInfo.CanInclude(_propertyFilters) &&
+                       req.Model.Properties.Contains(propertyInfo.Type.Alias,
+                                                     StringComparer.InvariantCultureIgnoreCase);
             }
             
-            var propertyInfos = contentType.GetUmbracoProperties(_dataTypeService).Where(Filter).ToList();
+            var propertyInfos = contentType.GetUmbracoProperties(_dataTypeService, _contentTypeService)
+                                           .Where(Filter)
+                                           .ToList();
             
             var tableBuilder = _workspace.TableBuilder.Untyped(contentType.Name);
 
-            var propertyColumnRanges = propertyInfos.Select(p => (p,
-                                                                  _workspace.ColumnRangeBuilder
-                                                                            .String<string>()
-                                                                            .Title(p.GetName())
-                                                                            .Build()))
-                                                    .ToList();
+            var nameColumnRange = _workspace.ColumnRangeBuilder
+                                            .String<string>()
+                                            .Title(_nameColumnTitle)
+                                            .Build();
 
             var publishedOnly = !req.Model.IncludeUnpublished.GetValueOrThrow();
 
@@ -81,13 +87,16 @@ namespace N3O.Umbraco.Data.Handlers {
                     if (publishedOnly && !content.Published) {
                         continue;
                     }
+                    
+                    tableBuilder.AddValue(nameColumnRange, content.Name);
 
                     var contentProperties = _contentHelper.GetContentProperties(content);
 
-                    foreach (var (propertyInfo, columnRange) in propertyColumnRanges) {
-                        var converter = _propertyConverters.Single(x => x.IsConverter(propertyInfo));
+                    foreach (var propertyInfo in propertyInfos) {
+                        var converter = propertyInfo.GetPropertyConverter(_converters);
+                        var contentProperty = contentProperties.GetPropertyByAlias(propertyInfo.Type.Alias);
 
-                        tableBuilder.AddCells(columnRange, converter.Export(contentProperties, propertyInfo));
+                        converter.Export(tableBuilder, _converters, null, contentProperty, propertyInfo);
                     }
                     
                     tableBuilder.NextRow();
@@ -127,7 +136,6 @@ namespace N3O.Umbraco.Data.Handlers {
         private async Task WriteCsvAsync(ITable table, Stream stream) {
             var workbook = _workspace.CreateCsvWorkbook();
             workbook.Headers(true);
-            workbook.Encoding(TextEncodings.Utf8);
             workbook.AddTable(table);
 
             await workbook.SaveAsync(stream);

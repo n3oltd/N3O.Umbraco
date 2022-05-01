@@ -170,14 +170,14 @@ namespace N3O.Umbraco.Data.Services {
                 foreach (var columnHeading in GetColumnHeadings()) {
                     var columnRange = _columnRangeBuilder.String<string>().Title(columnHeading).Build();
                     
-                    tableBuilderActions.Add(b => b.AddCell(columnRange, Row.GetRawField(columnHeading)));
+                    tableBuilderActions.Add(b => b.AddValue(columnRange, Row.GetRawField(columnHeading)));
                 }
             } else {
                 for (var i = 0; i < ColumnCount; i++) {
                     var columnNumber = i + 1;
                     var columnRange = _columnRangeBuilder.String<string>().Title(columnNumber.ToString()).Build();
                     
-                    tableBuilderActions.Add(b => b.AddCell(columnRange, Row.GetRawField(columnNumber)));
+                    tableBuilderActions.Add(b => b.AddValue(columnRange, Row.GetRawField(columnNumber)));
                 }
             }
 

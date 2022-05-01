@@ -1,5 +1,5 @@
-using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Extensions {
     public static partial class CsvRowExtensions {
@@ -13,7 +13,7 @@ namespace N3O.Umbraco.Data.Extensions {
 
         public static string GetString(this CsvRow csvRow, CsvSelect select) {
             return csvRow.ParseField(select,
-                                     (parser, field) => parser.String.Parse(field, DataTypes.String.GetClrType()));
+                                     (parser, field) => parser.String.Parse(field, OurDataTypes.String.GetClrType()));
         }
     }
 }

@@ -1,6 +1,5 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Data.Builders;
-using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Parsing;
 using N3O.Umbraco.Extensions;
@@ -9,17 +8,18 @@ using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
-using Umbraco.Cms.Web.Common;
+using Umbraco.Extensions;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 
 namespace N3O.Umbraco.Data.Converters {
-    public class MultiNodeTreePickerPropertyConverter : PropertyConverter {
-        private readonly Lazy<IUmbracoHelperAccessor> _umbracoHelperAccessor;
+    public class MultiNodeTreePickerPropertyConverter : PropertyConverter<IPublishedContent> {
+        private readonly IContentHelper _contentHelper;
 
         public MultiNodeTreePickerPropertyConverter(IColumnRangeBuilder columnRangeBuilder,
-                                                    Lazy<IUmbracoHelperAccessor> umbracoHelperAccessor)
+                                                    IContentHelper contentHelper)
             : base(columnRangeBuilder) {
-            _umbracoHelperAccessor = umbracoHelperAccessor;
+            _contentHelper = contentHelper;
         }
         
         public override bool IsConverter(UmbracoPropertyInfo propertyInfo) {
@@ -28,13 +28,24 @@ namespace N3O.Umbraco.Data.Converters {
                                .EqualsInvariant(UmbracoPropertyEditors.Aliases.MultiNodeTreePicker);
         }
 
-        public override IReadOnlyList<Cell> Export(ContentProperties content, UmbracoPropertyInfo propertyInfo) {
-            throw new NotImplementedException();
+        protected override IEnumerable<Cell<IPublishedContent>> GetCells(IContentProperty contentProperty,
+                                                                         UmbracoPropertyInfo propertyInfo) {
+            IEnumerable<IPublishedContent> values;
+
+            if (GetMaxValues(propertyInfo) == 1) {
+                values = _contentHelper.GetPickerValue<IPublishedContent>(contentProperty).Yield();
+            } else {
+                values = _contentHelper.GetPickerValues<IPublishedContent>(contentProperty);
+            }
+
+            return values.Select(x => OurDataTypes.PublishedContent.Cell(x, x.GetType()));
         }
 
         public override void Import(IContentBuilder contentBuilder,
+                                    IEnumerable<IPropertyConverter> converters,
                                     IParser parser,
                                     ErrorLog errorLog,
+                                    string columnTitlePrefix,
                                     UmbracoPropertyInfo propertyInfo,
                                     IEnumerable<ImportField> fields) {
             ImportAll(errorLog,
@@ -45,26 +56,25 @@ namespace N3O.Umbraco.Data.Converters {
         }
 
         protected override int GetMaxValues(UmbracoPropertyInfo propertyInfo) {
-            var configuration = (MultiNodePickerConfiguration) propertyInfo.DataType.Configuration;
+            var configuration = propertyInfo.DataType.ConfigurationAs<MultiNodePickerConfiguration>();
 
-            return configuration.MaxNumber;
+            if (configuration.MaxNumber == 0) {
+                return DataConstants.Limits.Columns.MaxValues;
+            } else {
+                return configuration.MaxNumber;
+            }
         }
         
         private ParseResult<IPublishedContent> Parse(IParser parser, UmbracoPropertyInfo propertyInfo, string source) {
-            var configuration = (MultiNodePickerConfiguration) propertyInfo.DataType.Configuration;
+            var configuration = propertyInfo.DataType.ConfigurationAs<MultiNodePickerConfiguration>();
             var parentId = configuration.TreeSource?.StartNodeId?.ToId();
 
             if (parentId == null && configuration.TreeSource.HasValue(x => x.StartNodeQuery)) {
-                if (_umbracoHelperAccessor.Value.TryGetUmbracoHelper(out var umbracoHelper)) {
-                    var contentAtXPath = umbracoHelper.ContentAtXPath(configuration.TreeSource.StartNodeQuery).ToList();
-
-                    if (contentAtXPath.IsSingle()) {
-                        parentId = contentAtXPath.Single().Key;
-                    }
-                }
+                // As IPublishedQuery.ContentAtXPath() does not work without variables such as $root, $site etc.
+                throw new Exception("XPath based tree pickers are not supported");
             }
 
-            return parser.PublishedContent.Parse(source, DataTypes.PublishedContent.GetClrType(), parentId);
+            return parser.PublishedContent.Parse(source, OurDataTypes.PublishedContent.GetClrType(), parentId);
         }
     }
 }

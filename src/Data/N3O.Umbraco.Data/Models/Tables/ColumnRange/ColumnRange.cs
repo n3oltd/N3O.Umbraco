@@ -6,6 +6,8 @@ using N3O.Umbraco.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Umbraco.Extensions;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Models {
     public class ColumnRange<TValue> : IColumnRange {
@@ -17,9 +19,8 @@ namespace N3O.Umbraco.Data.Models {
         private readonly Func<IFormatter, string> _getComment;
         private readonly RangeColumnSort _rangeColumnSort;
         private readonly CollectionLayout _collectionLayout;
-        private readonly int _maxValues;
         private readonly DataType _dataType;
-        private readonly IReadOnlyDictionary<string, IReadOnlyList<object>> _columnMetadata;
+        private readonly Dictionary<string, IEnumerable<object>> _columnMetadata;
         private readonly bool _hidden;
         private readonly AccessControlList _accessControlList;
         private readonly Dictionary<string, Column> _columns = new();
@@ -34,9 +35,8 @@ namespace N3O.Umbraco.Data.Models {
                            Func<IFormatter, string> getComment,
                            RangeColumnSort rangeColumnSort,
                            CollectionLayout collectionLayout,
-                           int maxValues,
                            DataType dataType,
-                           IReadOnlyDictionary<string, IReadOnlyList<object>> columnMetadata,
+                           Dictionary<string, IEnumerable<object>> columnMetadata,
                            bool hidden,
                            AccessControlList accessControlList,
                            IEnumerable<Attribute> attributes) {
@@ -45,7 +45,6 @@ namespace N3O.Umbraco.Data.Models {
             _localClock = localClock;
             _rangeColumnSort = rangeColumnSort;
             _collectionLayout = collectionLayout;
-            _maxValues = maxValues;
             _dataType = dataType;
             _cellConverter = cellConverter;
             _columnHeading = columnHeading;
@@ -56,11 +55,28 @@ namespace N3O.Umbraco.Data.Models {
             _attributes = attributes;
         }
 
-        public void AddCells(int row, object value) {
+        public void AddCells(int row, object cells) {
+            if (cells is Cell singleCell) {
+                cells = singleCell.Yield();
+            }
+            
+            foreach (var (cell, columnIndex) in ((IEnumerable<Cell>) cells).SelectWithIndex()) {
+                if (cell == null) {
+                    throw new ArgumentNullException(nameof(cell), $"Null cell passed to {nameof(AddCells)}");
+                }
+                
+                var column = GetOrCreateColumn(columnIndex, cell);
+                var cellAddress = new CellAddress(column, row);
+
+                _cells[cellAddress] = cell;
+            }
+        }
+        
+        public void AddValues(int row, object value) {
             if (value is IEnumerable<TValue> enumerable) {
-                AddCells(row, enumerable);
+                AddValues(row, enumerable);
             } else {
-                AddCell(row, (TValue)value);
+                AddValue(row, (TValue) value);
             }
         }
 
@@ -80,25 +96,25 @@ namespace N3O.Umbraco.Data.Models {
             return columns;
         }
 
-        private void AddCell(int row, TValue value) {
-            AddCell(row, null, value);
+        private void AddValue(int row, TValue value) {
+            AddValue(row, null, value);
         }
 
-        private void AddCellsAsync(int row, IEnumerable<TValue> values) {
+        private void AddValues(int row, IEnumerable<TValue> values) {
             if (_collectionLayout.MultiColumn) {
-                AddMultipleCells(row, values);
+                AddMultipleValues(row, values);
             } else {
-                AddSingleCell(row, values, _collectionLayout.ValueSeparator);
+                AddSingleValue(row, values, _collectionLayout.ValueSeparator);
             }
         }
 
-        private void AddMultipleCells(int row, IEnumerable<TValue> values) {
-            foreach (var (value, columnIndex) in values.Select((value, index) => (value, index))) {
-                AddCell(row, columnIndex, value);
+        private void AddMultipleValues(int row, IEnumerable<TValue> values) {
+            foreach (var (value, columnIndex) in values.SelectWithIndex()) {
+                AddValue(row, columnIndex, value);
             }
         }
 
-        private void AddSingleCell(int row, IEnumerable<TValue> values, string separator) {
+        private void AddSingleValue(int row, IEnumerable<TValue> values, string separator) {
             var textValues = new List<string>();
 
             foreach (var value in values) {
@@ -109,14 +125,14 @@ namespace N3O.Umbraco.Data.Models {
             }
 
             var joinedText = string.Join(separator, textValues);
-            var textCell = DataTypes.String.Cell(joinedText, null);
+            var textCell = OurDataTypes.String.Cell(joinedText, null);
             var column = GetOrCreateColumn(null, textCell);
             var cellAddress = new CellAddress(column, row);
 
             _cells[cellAddress] = textCell;
         }
 
-        private void AddCell(int row, int? columnIndex, TValue value) {
+        private void AddValue(int row, int? columnIndex, TValue value) {
             var cell = _cellConverter.Convert(_formatter, _localClock, value, typeof(TValue));
             var column = GetOrCreateColumn(columnIndex, cell);
             var cellAddress = new CellAddress(column, row);

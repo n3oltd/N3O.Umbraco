@@ -22,6 +22,7 @@ namespace N3O.Umbraco.Data.Builders {
         IFluentColumnRangeBuilder<TValue> Title(string keyPrefix, string text);
         IFluentColumnRangeBuilder<TValue> Title<T>() where T : IColumnHeading;
         IFluentColumnRangeBuilder<TValue> Title(Type columnHeadingType);
+        IFluentColumnRangeBuilder<TValue> TitleFromMetadata();
         IFluentColumnRangeBuilder<TValue> TitleFromValue();
 
         IFluentColumnRangeBuilder<TValue> Converter<TCellConverter>() where TCellConverter : ICellConverter<TValue>;
@@ -29,7 +30,7 @@ namespace N3O.Umbraco.Data.Builders {
 
         IFluentColumnRangeBuilder<TValue> CommaSeparateValues();
         IFluentColumnRangeBuilder<TValue> ValuePerColumn();
-        IFluentColumnRangeBuilder<TValue> CollectionLayout(CollectionLayout collectionLayout, int maxValues = -1);
+        IFluentColumnRangeBuilder<TValue> CollectionLayout(CollectionLayout collectionLayout);
 
         IFluentColumnRangeBuilder<TValue> PreserveColumnOrder();
         IFluentColumnRangeBuilder<TValue> SortColumns();

@@ -23,7 +23,6 @@ namespace N3O.Umbraco.Data.Builders {
         private IColumnHeading _columnHeading;
         private RangeColumnSort _rangeColumnSort = RangeColumnSorts.Preserve;
         private CollectionLayout _collectionLayout = CollectionLayouts.ValuePerColumn;
-        private int _maxValues = -1;
         private AccessControlList _accessControlList = AccessControlList.AuthenticatedUsers();
         private bool _hidden;
         private Func<IFormatter, string> _getComment;
@@ -101,6 +100,12 @@ namespace N3O.Umbraco.Data.Builders {
             return this;
         }
 
+        public IFluentColumnRangeBuilder<TValue> TitleFromMetadata() {
+            _columnHeading = new TitleMetadataColumnHeading();
+
+            return this;
+        }
+        
         public IFluentColumnRangeBuilder<TValue> TitleFromValue() {
             _columnHeading = new CellValueColumnHeading();
 
@@ -135,10 +140,8 @@ namespace N3O.Umbraco.Data.Builders {
             return CollectionLayout(CollectionLayouts.ValuePerColumn);
         }
 
-        public IFluentColumnRangeBuilder<TValue> CollectionLayout(CollectionLayout collectionLayout,
-                                                                  int maxValues = -1) {
+        public IFluentColumnRangeBuilder<TValue> CollectionLayout(CollectionLayout collectionLayout) {
             _collectionLayout = collectionLayout;
-            _maxValues = maxValues;
 
             return this;
         }
@@ -176,9 +179,6 @@ namespace N3O.Umbraco.Data.Builders {
 
             Validate();
 
-            var readonlyMetadata = _columnMetadata.ToDictionary(x => x.Key,
-                                                                x => x.Value as IReadOnlyList<object>);
-
             var columnRange = new ColumnRange<TValue>(_formatter,
                                                       _localizationSettings,
                                                       _localClock,
@@ -187,9 +187,9 @@ namespace N3O.Umbraco.Data.Builders {
                                                       _getComment,
                                                       _rangeColumnSort,
                                                       _collectionLayout,
-                                                      _maxValues,
                                                       _dataType,
-                                                      readonlyMetadata,
+                                                      _columnMetadata.ToDictionary(x => x.Key,
+                                                                                   x => x.Value as IEnumerable<object>),
                                                       _hidden,
                                                       _accessControlList,
                                                       _attributes);

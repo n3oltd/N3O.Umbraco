@@ -15,8 +15,11 @@ namespace N3O.Umbraco.Data.Attributes {
     }
 
     [AttributeUsage(AttributeTargets.Property)]
+    public class TitleFromMetadataAttribute : Attribute { }
+    
+    [AttributeUsage(AttributeTargets.Property)]
     public class TitleFromValueAttribute : Attribute { }
-
+    
     [AttributeUsage(AttributeTargets.Property)]
     public class CustomTitleAttribute : Attribute {
         public CustomTitleAttribute(Type type) {

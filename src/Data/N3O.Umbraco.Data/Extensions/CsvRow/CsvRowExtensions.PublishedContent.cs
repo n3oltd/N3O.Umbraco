@@ -1,7 +1,7 @@
-using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using System;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Extensions {
     public static partial class CsvRowExtensions {
@@ -18,7 +18,7 @@ namespace N3O.Umbraco.Data.Extensions {
                                                             Guid? parentId = null) {
             return csvRow.ParseField(select, (parser, field) => parser.PublishedContent
                                                                       .Parse(field,
-                                                                             DataTypes.PublishedContent.GetClrType(),
+                                                                             OurDataTypes.PublishedContent.GetClrType(),
                                                                              parentId));
         }
     }

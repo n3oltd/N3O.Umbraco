@@ -29,7 +29,8 @@ namespace N3O.Umbraco.Storage.Azure.Services {
         private async Task<BlobContainerClient> GetContainerAsync() {
             if (_container == null) {
                 using (await _locker.LockAsync(LockKey.Generate<AzureVolume>(nameof(GetContainerAsync)))) {
-                    _container = _serviceClient.GetBlobContainerClient(AzureStorageConstants.StorageContainerName);
+                    _container = _serviceClient.GetBlobContainerClient(AzureStorageConstants.StorageContainerName
+                                                                                            .ToLowerInvariant());
 
                     await _container.CreateIfNotExistsAsync();
                 }

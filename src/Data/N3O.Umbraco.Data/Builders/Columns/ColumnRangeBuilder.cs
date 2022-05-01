@@ -1,6 +1,7 @@
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Localization;
 using System;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Builders {
     public class ColumnRangeBuilder : IColumnRangeBuilder {
@@ -23,43 +24,43 @@ namespace N3O.Umbraco.Data.Builders {
         }
         
         public IFluentColumnRangeBuilder<TValue> Bool<TValue>() {
-            return OfType<TValue>(DataTypes.Bool);
+            return OfType<TValue>(OurDataTypes.Bool);
         }
 
         public IFluentColumnRangeBuilder<TValue> Date<TValue>() {
-            return OfType<TValue>(DataTypes.Date);
+            return OfType<TValue>(OurDataTypes.Date);
         }
 
         public IFluentColumnRangeBuilder<TValue> DateTime<TValue>() {
-            return OfType<TValue>(DataTypes.DateTime);
+            return OfType<TValue>(OurDataTypes.DateTime);
         }
 
         public IFluentColumnRangeBuilder<TValue> Decimal<TValue>() {
-            return OfType<TValue>(DataTypes.Decimal);
+            return OfType<TValue>(OurDataTypes.Decimal);
         }
 
         public IFluentColumnRangeBuilder<TValue> Integer<TValue>() {
-            return OfType<TValue>(DataTypes.Integer);
+            return OfType<TValue>(OurDataTypes.Integer);
         }
 
         public IFluentColumnRangeBuilder<TValue> Lookup<TValue>() {
-            return OfType<TValue>(DataTypes.Lookup);
+            return OfType<TValue>(OurDataTypes.Lookup);
         }
 
         public IFluentColumnRangeBuilder<TValue> Reference<TValue>() {
-            return OfType<TValue>(DataTypes.Reference);
+            return OfType<TValue>(OurDataTypes.Reference);
         }
 
         public IFluentColumnRangeBuilder<TValue> Money<TValue>() {
-            return OfType<TValue>(DataTypes.Money);
+            return OfType<TValue>(OurDataTypes.Money);
         }
 
         public IFluentColumnRangeBuilder<TValue> String<TValue>() {
-            return OfType<TValue>(DataTypes.String);
+            return OfType<TValue>(OurDataTypes.String);
         }
 
         public IFluentColumnRangeBuilder<TValue> Time<TValue>() {
-            return OfType<TValue>(DataTypes.Time);
+            return OfType<TValue>(OurDataTypes.Time);
         }
 
         public IFluentColumnRangeBuilder<TValue> OfType<TValue>(DataType dataType) {

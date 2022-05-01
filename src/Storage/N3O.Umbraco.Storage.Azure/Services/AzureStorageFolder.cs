@@ -17,17 +17,13 @@ namespace N3O.Umbraco.Storage.Azure.Services {
             _folderName = folderName;
         }
         
-        public async Task<Blob> AddFileAsync(string filename, Stream stream) {
+        public async Task AddFileAsync(string filename, Stream stream) {
             await _container.UploadBlobAsync(GetBlobName(filename), stream);
-
-            stream.Rewind();
-
-            return new Blob(filename, GetContentType(filename), _folderName, ByteSize.FromBytes(stream.Length), stream);
         }
 
-        public async Task<Blob> AddFileAsync(string name, byte[] contents) {
+        public async Task AddFileAsync(string name, byte[] contents) {
             using (var stream = new MemoryStream(contents)) {
-                return await AddFileAsync(name, stream);
+                await AddFileAsync(name, stream);
             }
         }
 
@@ -51,7 +47,7 @@ namespace N3O.Umbraco.Storage.Azure.Services {
             var blobClient = await GetBlobClientAsync(filename);
             var properties = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);
 
-            return new Blob(blobClient.Name,
+            return new Blob(filename,
                             _folderName,
                             GetContentType(filename),
                             ByteSize.FromBytes(properties.Value.ContentLength),

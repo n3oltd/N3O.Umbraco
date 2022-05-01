@@ -3,6 +3,7 @@ using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using System;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Parsing {
     public class MoneyParser : DataTypeParser<Money>, IMoneyParser {
@@ -13,7 +14,7 @@ namespace N3O.Umbraco.Data.Parsing {
         }
 
         public override bool CanParse(DataType dataType) {
-            return dataType == DataTypes.Money;
+            return dataType == OurDataTypes.Money;
         }
 
         protected override ParseResult<Money> TryParse(string text, Type targetType) {

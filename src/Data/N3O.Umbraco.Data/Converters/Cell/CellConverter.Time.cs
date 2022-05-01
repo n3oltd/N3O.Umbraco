@@ -1,8 +1,8 @@
-using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Localization;
 using NodaTime;
 using System;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Converters {
     public class TimeCellConverter :
@@ -53,7 +53,7 @@ namespace N3O.Umbraco.Data.Converters {
         }
 
         private Cell GetCell(LocalTime? value) {
-            var cell = DataTypes.Time.Cell(value);
+            var cell = OurDataTypes.Time.Cell(value);
 
             return cell;
         }

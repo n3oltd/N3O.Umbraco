@@ -1,8 +1,8 @@
-using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Localization;
 using NodaTime;
 using System;
+using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Converters {
     public class DateCellConverter :
@@ -42,7 +42,7 @@ namespace N3O.Umbraco.Data.Converters {
         }
 
         private Cell GetCell(LocalDate? value) {
-            return DataTypes.Date.Cell(value);
+            return OurDataTypes.Date.Cell(value);
         }
     }
 }
