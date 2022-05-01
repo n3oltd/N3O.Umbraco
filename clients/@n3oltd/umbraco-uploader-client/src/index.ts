@@ -19,7 +19,7 @@ export class UploaderClient {
     }
 
     getMediaById(mediaId: string | null): Promise<FileMedia> {
-        let url_ = this.baseUrl + "/umbraco/backoffice/Uploader/media/{mediaId}";
+        let url_ = this.baseUrl + "/umbraco/backoffice/api/Uploader/media/{mediaId}";
         if (mediaId === undefined || mediaId === null)
             throw new Error("The parameter 'mediaId' must be defined.");
         url_ = url_.replace("{mediaId}", encodeURIComponent("" + mediaId));
@@ -71,7 +71,7 @@ export class UploaderClient {
     }
 
     upload(allowedExtensions: string | null | undefined, imagesOnly: boolean | null | undefined, maxFileSizeMb: number | null | undefined, maxHeight: number | null | undefined, maxWidth: number | null | undefined, minHeight: number | null | undefined, minWidth: number | null | undefined, file: FileParameter | null | undefined): Promise<FileMedia> {
-        let url_ = this.baseUrl + "/umbraco/backoffice/Uploader/upload";
+        let url_ = this.baseUrl + "/umbraco/backoffice/api/Uploader/upload";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = new FormData();
@@ -133,7 +133,7 @@ export class UploaderClient {
     }
 
     getResponse(storagePath: string | null | undefined, filesizeBytes: number | undefined): Promise<FileMedia> {
-        let url_ = this.baseUrl + "/umbraco/backoffice/Uploader?";
+        let url_ = this.baseUrl + "/umbraco/backoffice/api/Uploader?";
         if (storagePath !== undefined && storagePath !== null)
             url_ += "storagePath=" + encodeURIComponent("" + storagePath) + "&";
         if (filesizeBytes === null)

@@ -733,6 +733,7 @@ export interface FundDimensionValueRes {
 }
 
 export interface FundDonationOptionRes {
+    name?: string | undefined;
     donationItem?: string | undefined;
     donationPriceHandles?: PriceHandleRes[] | undefined;
     regularGivingPriceHandles?: PriceHandleRes[] | undefined;

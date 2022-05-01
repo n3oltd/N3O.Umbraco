@@ -19,7 +19,7 @@ export class CropperClient {
     }
 
     getMediaById(mediaId: string | null): Promise<ImageMedia> {
-        let url_ = this.baseUrl + "/umbraco/backoffice/Cropper/media/{mediaId}";
+        let url_ = this.baseUrl + "/umbraco/backoffice/api/Cropper/media/{mediaId}";
         if (mediaId === undefined || mediaId === null)
             throw new Error("The parameter 'mediaId' must be defined.");
         url_ = url_.replace("{mediaId}", encodeURIComponent("" + mediaId));
@@ -71,7 +71,7 @@ export class CropperClient {
     }
 
     upload(minHeight: number | null | undefined, minWidth: number | null | undefined, file: FileParameter | null | undefined): Promise<ImageMedia> {
-        let url_ = this.baseUrl + "/umbraco/backoffice/Cropper/upload";
+        let url_ = this.baseUrl + "/umbraco/backoffice/api/Cropper/upload";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = new FormData();
