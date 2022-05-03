@@ -696,6 +696,7 @@ export interface DonationFormRes {
 }
 
 export interface DonationOptionRes {
+    name?: string | undefined;
     type?: AllocationType | undefined;
     defaultGivingType?: GivingType | undefined;
     dimension1?: FixedOrDefaultFundDimensionValueRes | undefined;
@@ -733,7 +734,6 @@ export interface FundDimensionValueRes {
 }
 
 export interface FundDonationOptionRes {
-    name?: string | undefined;
     donationItem?: string | undefined;
     donationPriceHandles?: PriceHandleRes[] | undefined;
     regularGivingPriceHandles?: PriceHandleRes[] | undefined;

@@ -2,6 +2,12 @@ n3o-tool clients --url "https://localhost:6001/swagger/Accounts/swagger.json" --
 
 n3o-tool clients --url "https://localhost:6001/swagger/Cropper/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-cropper-client" --name "CropperClient" --package-name "@n3oltd/umbraco-cropper-client" --package-description "TODO"
 
+n3o-tool clients --url "https://localhost:6001/swagger/Content/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-data-content-client" --name "ContentClient" --package-name "@n3oltd/umbraco-data-content-client" --package-description "TODO"
+
+n3o-tool clients --url "https://localhost:6001/swagger/Export/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-data-export-client" --name "ExportClient" --package-name "@n3oltd/umbraco-data-export-client" --package-description "TODO"
+
+n3o-tool clients --url "https://localhost:6001/swagger/Import/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-data-import-client" --name "ImportClient" --package-name "@n3oltd/umbraco-data-import-client" --package-description "TODO"
+
 n3o-tool clients --url "https://localhost:6001/swagger/Giving/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-giving-client" --name "GivingClient" --package-name "@n3oltd/umbraco-giving-client" --package-description "TODO"
 
 n3o-tool clients --url "https://localhost:6001/swagger/Cart/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-giving-cart-client" --name "CartClient" --package-name "@n3oltd/umbraco-giving-cart-client" --package-description "TODO"

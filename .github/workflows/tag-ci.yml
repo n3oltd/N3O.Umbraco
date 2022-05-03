@@ -33,6 +33,33 @@ jobs:
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
+  umbraco-data-content-client:
+    name: 'npm Publish @n3oltd/umbraco-data-content-client'
+    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
+    with:
+      working-directory: 'clients/@n3oltd/umbraco-data-content-client'
+      version: ${GITHUB_REF#refs/tags/}
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}
+
+  umbraco-data-export-client:
+    name: 'npm Publish @n3oltd/umbraco-data-export-client'
+    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
+    with:
+      working-directory: 'clients/@n3oltd/umbraco-data-export-client'
+      version: ${GITHUB_REF#refs/tags/}
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}
+
+  umbraco-data-import-client:
+    name: 'npm Publish @n3oltd/umbraco-data-import-client'
+    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
+    with:
+      working-directory: 'clients/@n3oltd/umbraco-data-import-client'
+      version: ${GITHUB_REF#refs/tags/}
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}
+
   umbraco-giving-client:
     name: 'npm Publish @n3oltd/umbraco-giving-client'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
