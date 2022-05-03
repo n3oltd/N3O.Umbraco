@@ -27,6 +27,8 @@ namespace N3O.Umbraco.Data.Konstrukt {
             collection.AddSearchableProperty(c => c.ImportedContentSummary);
             collection.SetFilter(x => x.Status == ImportStatuses.Queued || x.Status == ImportStatuses.Error);
             collection.DisableCreate();
+            collection.SetDataViewsBuilder<ImportActionDataViewsBuilder>();
+            collection.SetDataViewsBuilder<ImportStatusDataViewsBuilder>();
 
             ConfigureListView(collection);
 
@@ -35,8 +37,6 @@ namespace N3O.Umbraco.Data.Konstrukt {
 
         private void ConfigureListView(KonstruktDashboardCollectionConfigBuilder<Import> collection) {
             var listView = collection.ListView();
-            listView.SetDataViewsBuilder<ImportActionDataViewsBuilder>();
-            listView.SetDataViewsBuilder<ImportStatusDataViewsBuilder>();
             listView.AddField(c => c.QueuedAt);
             listView.AddField(c => c.QueuedByName);
             listView.AddField(c => c.ContentTypeName);
