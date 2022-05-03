@@ -24,7 +24,7 @@
 
         public static class Limits {
             public static class Columns {
-                public const int MaxValues = 3;
+                public const int MaxValues = 10;
             }
         }
 
