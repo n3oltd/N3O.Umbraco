@@ -25,7 +25,7 @@ namespace N3O.Umbraco.Giving.Content {
             }
         }
 
-        public string Name => GetValue(x => x.Name);
+        public string Name => Content()?.Name;
         public GivingType DefaultGivingType => GetValue(x => x.DefaultGivingType);
         public FundDimension1Value Dimension1 => GetAs(x => x.Dimension1);
         public FundDimension2Value Dimension2 => GetAs(x => x.Dimension2);
