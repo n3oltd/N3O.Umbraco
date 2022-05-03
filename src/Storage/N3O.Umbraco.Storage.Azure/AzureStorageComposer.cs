@@ -5,11 +5,13 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Storage.Azure.Services;
 using N3O.Umbraco.Storage.Services;
 using System.Linq;
+using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
 using Umbraco.StorageProviders.AzureBlob;
 
 namespace N3O.Umbraco.Storage.Azure {
+    [ComposeAfter(typeof(StorageComposer))]
     public class AzureStorageComposer : Composer {
         public override void Compose(IUmbracoBuilder builder) {
             builder.Services.AddSingleton<IVolume, AzureVolume>();

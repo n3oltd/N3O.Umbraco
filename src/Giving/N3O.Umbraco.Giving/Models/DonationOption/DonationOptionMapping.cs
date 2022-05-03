@@ -14,6 +14,7 @@ namespace N3O.Umbraco.Giving.Models {
 
         // Umbraco.Code.MapAll
         private void Map(DonationOptionContent src, DonationOptionRes dest, MapperContext ctx) {
+            dest.Name = src.Name;
             dest.Type = src.Type;
             dest.DefaultGivingType = src.DefaultGivingType;
             dest.Dimension1 = GetFixedOrDefault(ctx, src.Dimension1, src.GetFundDimensionOptions().DefaultFundDimension1());

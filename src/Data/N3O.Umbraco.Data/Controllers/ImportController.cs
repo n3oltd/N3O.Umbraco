@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Data.Commands;
@@ -40,6 +41,7 @@ namespace N3O.Umbraco.Data.Controllers {
         }
 
         [HttpGet("template/{contentId:guid}/{contentType}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> GetTemplate() {
             var res = await _mediator.Value.SendAsync<GetImportTemplateQuery, None, ImportTemplate>(None.Empty);
 
@@ -47,6 +49,7 @@ namespace N3O.Umbraco.Data.Controllers {
         }
         
         [HttpPost("queue/{contentId:guid}/{contentType}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<QueueImportsRes>> Queue(QueueImportsReq req) {
             try {
                 var res = await _mediator.Value.SendAsync<QueueImportsCommand, QueueImportsReq, QueueImportsRes>(req);

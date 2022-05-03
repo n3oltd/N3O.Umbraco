@@ -3,6 +3,8 @@
     <PropertyGroup>
         <N3OUmbracoDataExportContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.Data.Export\**\*.*</N3OUmbracoDataExportContentFilesPath>
         <N3OUmbracoDataImportContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.Data.Import\**\*.*</N3OUmbracoDataImportContentFilesPath>
+        <N3OUmbracoDataImportErrorsViewerContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.Data.ImportErrorsViewer\**\*.*</N3OUmbracoDataImportErrorsViewerContentFilesPath>
+        <N3OUmbracoDataImportFieldsEditorContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.Data.ImportFieldsEditor\**\*.*</N3OUmbracoDataImportFieldsEditorContentFilesPath>
     </PropertyGroup>
 
     <Target Name="CopyN3OUmbracoDataExportAssets" BeforeTargets="Build">

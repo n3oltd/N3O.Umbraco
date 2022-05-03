@@ -1,6 +1,7 @@
 using Humanizer.Bytes;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Utilities;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -42,7 +43,7 @@ namespace N3O.Umbraco.Data.Parsing {
             if (header != null) {
                 return header.MediaType;
             } else {
-                return base.GetContentType(filename);
+                return FileUtility.GetContentType(filename);
             }
         }
     }

@@ -109,18 +109,15 @@ namespace N3O.Umbraco.Data.Handlers {
             
             var table = tableBuilder.Build();
 
-            string fileExtension;
-            string mimeType;
+            WorkbookFormat workbookFormat;
             byte[] contents;
 
             using (var stream = new MemoryStream()) {
                 if (req.Model.Format == WorkbookFormats.Csv) {
-                    fileExtension = "csv";
-                    mimeType = DataConstants.ContentTypes.Csv;
+                    workbookFormat = WorkbookFormats.Csv;
                     await WriteCsvAsync(table, stream);
                 } else if (req.Model.Format == WorkbookFormats.Excel) {
-                    fileExtension = "xlsx";
-                    mimeType = DataConstants.ContentTypes.Excel;
+                    workbookFormat = WorkbookFormats.Excel;
                     await WriteExcelAsync(table, stream);
                 } else {
                     throw UnrecognisedValueException.For(req.Model.Format);
@@ -130,7 +127,9 @@ namespace N3O.Umbraco.Data.Handlers {
                 contents = stream.ToArray();
             }
 
-            return new ExportFile($"{contentType.Name} Export.{fileExtension}", mimeType, contents);
+            return new ExportFile(workbookFormat.AppendFileExtension($"{contentType.Name} Export"),
+                                  workbookFormat.ContentType,
+                                  contents);
         }
 
         private async Task WriteCsvAsync(ITable table, Stream stream) {

@@ -1,8 +1,8 @@
 ﻿using Azure.Storage.Blobs;
-using HeyRed.Mime;
 using Humanizer.Bytes;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Storage.Services;
+using N3O.Umbraco.Utilities;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,7 +49,7 @@ namespace N3O.Umbraco.Storage.Azure.Services {
 
             return new Blob(filename,
                             _folderName,
-                            GetContentType(filename),
+                            FileUtility.GetContentType(filename),
                             ByteSize.FromBytes(properties.Value.ContentLength),
                             await blobClient.OpenReadAsync(cancellationToken: cancellationToken));
         }
@@ -67,14 +67,6 @@ namespace N3O.Umbraco.Storage.Azure.Services {
 
         private string GetBlobName(string filename) {
             return $"{_folderName}/{filename}";
-        }
-
-        private string GetContentType(string filename) {
-            try {
-                return MimeTypesMap.GetMimeType(filename);
-            } catch {
-                return "application/octet-stream";
-            }
         }
     }
 }

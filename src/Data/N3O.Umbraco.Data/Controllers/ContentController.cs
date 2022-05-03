@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Queries;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Mediator;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Data.Controllers {
@@ -16,7 +18,7 @@ namespace N3O.Umbraco.Data.Controllers {
         public ContentController(IMediator mediator) {
             _mediator = mediator;
         }
-        
+
         [HttpGet("{contentId:guid}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> GetById() {
@@ -25,7 +27,19 @@ namespace N3O.Umbraco.Data.Controllers {
 
                 return Ok(res);
             } catch (ResourceNotFoundException ex) {
-                return NotFound($"{ex.ParameterName}:{ex.ParameterValue}");
+                return NotFound(ex);
+            }
+        }
+        
+        [HttpGet("{contentId:guid}/childContentTypes")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ContentTypeSummary>>> GetChildContentTypes() {
+            try {
+                var res = await _mediator.SendAsync<GetChildContentTypesQuery, None, IEnumerable<ContentTypeSummary>>(None.Empty);
+
+                return Ok(res);
+            } catch (ResourceNotFoundException ex) {
+                return NotFound(ex);
             }
         }
     }

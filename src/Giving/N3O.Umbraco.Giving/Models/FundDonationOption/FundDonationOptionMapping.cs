@@ -11,7 +11,6 @@ namespace N3O.Umbraco.Giving.Models {
 
         // Umbraco.Code.MapAll
         private void Map(FundDonationOptionContent src, FundDonationOptionRes dest, MapperContext ctx) {
-            dest.Name = src.Content().Name;
             dest.DonationItem = src.DonationItem;
             dest.DonationPriceHandles = src.DonationPriceHandles
                                            .OrEmpty()

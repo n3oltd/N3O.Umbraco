@@ -12,6 +12,7 @@
       <ProjectReference Include="..\..\Blog\N3O.Umbraco.Blog\N3O.Umbraco.Blog.csproj" />
       <ProjectReference Include="..\..\Captcha\N3O.Umbraco.Captcha\N3O.Umbraco.Captcha.csproj" />
       <ProjectReference Include="..\..\Cdn\N3O.Umbraco.Cdn.Cloudflare\N3O.Umbraco.Cdn.Cloudflare.csproj" />
+      <ProjectReference Include="..\..\Data\N3O.Umbraco.Data\N3O.Umbraco.Data.csproj" />
       <ProjectReference Include="..\..\Email\N3O.Umbraco.Email.SendGrid\N3O.Umbraco.Email.SendGrid.csproj" />
       <ProjectReference Include="..\..\Events\N3O.Umbraco.Events\N3O.Umbraco.Events.csproj" />
       <ProjectReference Include="..\..\Forex\N3O.Umbraco.Forex.Currencylayer\N3O.Umbraco.Forex.Currencylayer.csproj" />
@@ -26,9 +27,11 @@
       <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.Opayo\N3O.Umbraco.Payments.Opayo.csproj" />
       <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.PayPal\N3O.Umbraco.Payments.PayPal.csproj" />
       <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.Stripe\N3O.Umbraco.Payments.Stripe.csproj" />
+      <ProjectReference Include="..\..\Plugins\Cropper\N3O.Umbraco.Cropper.Data\N3O.Umbraco.Cropper.Data.csproj" />
       <ProjectReference Include="..\..\Plugins\Cropper\N3O.Umbraco.Cropper\N3O.Umbraco.Cropper.csproj" />
       <ProjectReference Include="..\..\Plugins\SerpEditor\N3O.Umbraco.SerpEditor\N3O.Umbraco.SerpEditor.csproj" />
       <ProjectReference Include="..\..\Plugins\TextResourceEditor\N3O.Umbraco.TextResourceEditor\N3O.Umbraco.TextResourceEditor.csproj" />
+      <ProjectReference Include="..\..\Plugins\Uploader\N3O.Umbraco.Uploader.Data\N3O.Umbraco.Uploader.Data.csproj" />
       <ProjectReference Include="..\..\Plugins\Uploader\N3O.Umbraco.Uploader\N3O.Umbraco.Uploader.csproj" />
       <ProjectReference Include="..\..\Scheduler\N3O.Umbraco.Scheduler\N3O.Umbraco.Scheduler.csproj" />
       <ProjectReference Include="..\..\Search\N3O.Umbraco.Search.Google\N3O.Umbraco.Search.Google.csproj" />

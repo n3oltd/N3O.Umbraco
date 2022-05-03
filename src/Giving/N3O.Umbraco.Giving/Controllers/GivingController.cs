@@ -32,8 +32,8 @@ namespace N3O.Umbraco.Giving.Controller {
                 var res = await _mediator.SendAsync<GetDonationFormByIdQuery, None, DonationFormRes>(None.Empty);
 
                 return Ok(res);
-            } catch (ResourceNotFoundException) {
-                return NotFound();
+            } catch (ResourceNotFoundException ex) {
+                return NotFound(ex);
             }
         }
 
@@ -128,8 +128,8 @@ namespace N3O.Umbraco.Giving.Controller {
                 var res = await _mediator.SendAsync<SetCurrencyCommand, None, CurrencyRes>(None.Empty);
 
                 return Ok(res);
-            } catch (ResourceNotFoundException) {
-                return NotFound();
+            } catch (ResourceNotFoundException ex) {
+                return NotFound(ex);
             }
         }
     }

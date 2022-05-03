@@ -1,4 +1,3 @@
-using HeyRed.Mime;
 using N3O.Umbraco.Data.Models;
 using System.Threading.Tasks;
 
@@ -23,14 +22,6 @@ namespace N3O.Umbraco.Data.Parsing {
                 return ParseResult.Success(blob);
             } catch {
                 return ParseResult.Fail<Blob>();
-            }
-        }
-
-        protected string GetContentType(string filename) {
-            try {
-                return MimeTypesMap.GetMimeType(filename);
-            } catch {
-                return "application/octet-stream";
             }
         }
 

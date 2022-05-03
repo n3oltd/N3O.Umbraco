@@ -34,7 +34,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="MimeTypesMap" Version="1.0.8" />
       <PackageReference Include="Umbraco.StorageProviders.AzureBlob" Version="1.1.0" />
     </ItemGroup>
 

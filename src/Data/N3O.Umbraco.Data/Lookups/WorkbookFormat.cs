@@ -1,5 +1,5 @@
-using HeyRed.Mime;
 using N3O.Umbraco.Lookups;
+using N3O.Umbraco.Utilities;
 
 namespace N3O.Umbraco.Data.Lookups {
     public class WorkbookFormat : NamedLookup {
@@ -13,8 +13,7 @@ namespace N3O.Umbraco.Data.Lookups {
         public bool SupportsPasswordProtection { get; }
 
         public string AppendFileExtension(string name) {
-            var extension = MimeTypesMap.GetExtension(ContentType);
-            var filename = $"{name}.{extension}";
+            var filename = $"{name}.{FileUtility.GetFileExtension(ContentType)}";
 
             return filename;
         }
