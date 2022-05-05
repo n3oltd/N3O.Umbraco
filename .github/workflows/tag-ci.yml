@@ -42,20 +42,38 @@ jobs:
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
-  umbraco-data-export-client:
-    name: 'npm Publish @n3oltd/umbraco-data-export-client'
+  umbraco-data-content-tyoes-client:
+    name: 'npm Publish @n3oltd/umbraco-data-content-types-client'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
-      working-directory: 'clients/@n3oltd/umbraco-data-export-client'
+      working-directory: 'clients/@n3oltd/umbraco-data-content-types-client'
       version: ${GITHUB_REF#refs/tags/}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
-  umbraco-data-import-client:
-    name: 'npm Publish @n3oltd/umbraco-data-import-client'
+  umbraco-data-content-tyoes-client:
+    name: 'npm Publish @n3oltd/umbraco-data-data-types-client'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
-      working-directory: 'clients/@n3oltd/umbraco-data-import-client'
+      working-directory: 'clients/@n3oltd/umbraco-data-data-types-client'
+      version: ${GITHUB_REF#refs/tags/}
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}
+
+  umbraco-data-export-client:
+    name: 'npm Publish @n3oltd/umbraco-data-exports-client'
+    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
+    with:
+      working-directory: 'clients/@n3oltd/umbraco-data-exports-client'
+      version: ${GITHUB_REF#refs/tags/}
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}
+
+  umbraco-data-imports-client:
+    name: 'npm Publish @n3oltd/umbraco-data-imports-client'
+    uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
+    with:
+      working-directory: 'clients/@n3oltd/umbraco-data-imports-client'
       version: ${GITHUB_REF#refs/tags/}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}

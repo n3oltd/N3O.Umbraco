@@ -19,28 +19,30 @@ var __extends = (this && this.__extends) || (function () {
 /* tslint:disable */
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
-var ContentClient = /** @class */ (function () {
-    function ContentClient(baseUrl, http) {
+var ContentTypesClient = /** @class */ (function () {
+    function ContentTypesClient(baseUrl, http) {
         this.jsonParseReviver = undefined;
         this.http = http ? http : window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
-    ContentClient.prototype.getById = function (contentId) {
+    ContentTypesClient.prototype.getAllowedContentTypes = function (contentId) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Content/{contentId}";
+        var url_ = this.baseUrl + "/umbraco/api/ContentTypes/{contentId}/allowed";
         if (contentId === undefined || contentId === null)
             throw new Error("The parameter 'contentId' must be defined.");
         url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
         url_ = url_.replace(/[?&]$/, "");
         var options_ = {
             method: "GET",
-            headers: {}
+            headers: {
+                "Accept": "application/json"
+            }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processGetById(_response);
+            return _this.processGetAllowedContentTypes(_response);
         });
     };
-    ContentClient.prototype.processGetById = function (response) {
+    ContentTypesClient.prototype.processGetAllowedContentTypes = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -50,7 +52,9 @@ var ContentClient = /** @class */ (function () {
         ;
         if (status === 200) {
             return response.text().then(function (_responseText) {
-                return;
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
             });
         }
         else if (status === 400) {
@@ -79,9 +83,9 @@ var ContentClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    return ContentClient;
+    return ContentTypesClient;
 }());
-export { ContentClient };
+export { ContentTypesClient };
 var ApiException = /** @class */ (function (_super) {
     __extends(ApiException, _super);
     function ApiException(message, status, response, headers, result) {

@@ -7,8 +7,6 @@ export declare class ContentClient {
     });
     getById(contentId: string): Promise<void>;
     protected processGetById(response: Response): Promise<void>;
-    getChildContentTypes(contentId: string): Promise<ContentTypeSummary[]>;
-    protected processGetChildContentTypes(response: Response): Promise<ContentTypeSummary[]>;
 }
 export interface ProblemDetails {
     type?: string | undefined;
@@ -16,10 +14,6 @@ export interface ProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
-}
-export interface ContentTypeSummary {
-    alias?: string | undefined;
-    name?: string | undefined;
 }
 export declare class ApiException extends Error {
     message: string;

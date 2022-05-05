@@ -4,9 +4,13 @@ n3o-tool clients --url "https://localhost:6001/swagger/Cropper/swagger.json" --l
 
 n3o-tool clients --url "https://localhost:6001/swagger/Content/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-data-content-client" --name "ContentClient" --package-name "@n3oltd/umbraco-data-content-client" --package-description "TODO"
 
-n3o-tool clients --url "https://localhost:6001/swagger/Export/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-data-export-client" --name "ExportClient" --package-name "@n3oltd/umbraco-data-export-client" --package-description "TODO"
+n3o-tool clients --url "https://localhost:6001/swagger/ContentTypes/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-data-content-types-client" --name "ContentTypesClient" --package-name "@n3oltd/umbraco-data-content-types-client" --package-description "TODO"
 
-n3o-tool clients --url "https://localhost:6001/swagger/Import/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-data-import-client" --name "ImportClient" --package-name "@n3oltd/umbraco-data-import-client" --package-description "TODO"
+n3o-tool clients --url "https://localhost:6001/swagger/DataTypes/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-data-data-types-client" --name "DataTypesClient" --package-name "@n3oltd/umbraco-data-data-types-client" --package-description "TODO"
+
+n3o-tool clients --url "https://localhost:6001/swagger/Exports/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-data-exports-client" --name "ExportsClient" --package-name "@n3oltd/umbraco-data-exports-client" --package-description "TODO"
+
+n3o-tool clients --url "https://localhost:6001/swagger/Imports/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-data-imports-client" --name "ImportsClient" --package-name "@n3oltd/umbraco-data-imports-client" --package-description "TODO"
 
 n3o-tool clients --url "https://localhost:6001/swagger/Giving/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-giving-client" --name "GivingClient" --package-name "@n3oltd/umbraco-giving-client" --package-description "TODO"
 

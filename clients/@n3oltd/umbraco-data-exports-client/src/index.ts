@@ -8,7 +8,7 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
-export class ContentClient {
+export class ExportsClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -18,11 +18,14 @@ export class ContentClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
 
-    getById(contentId: string): Promise<void> {
-        let url_ = this.baseUrl + "/umbraco/api/Content/{contentId}";
+    getExportableProperties(contentId: string, contentType: string): Promise<void> {
+        let url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/exportableProperties/{contentId}/{contentType}";
         if (contentId === undefined || contentId === null)
             throw new Error("The parameter 'contentId' must be defined.");
         url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
+        if (contentType === undefined || contentType === null)
+            throw new Error("The parameter 'contentType' must be defined.");
+        url_ = url_.replace("{contentType}", encodeURIComponent("" + contentType));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -32,11 +35,67 @@ export class ContentClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetById(_response);
+            return this.processGetExportableProperties(_response);
         });
     }
 
-    protected processGetById(response: Response): Promise<void> {
+    protected processGetExportableProperties(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            let result404: any = null;
+            result404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    createExport(contentId: string, contentType: string, req: ExportReq): Promise<void> {
+        let url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/export/{contentId}/{contentType}";
+        if (contentId === undefined || contentId === null)
+            throw new Error("The parameter 'contentId' must be defined.");
+        url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
+        if (contentType === undefined || contentType === null)
+            throw new Error("The parameter 'contentType' must be defined.");
+        url_ = url_.replace("{contentType}", encodeURIComponent("" + contentType));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(req);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateExport(_response);
+        });
+    }
+
+    protected processCreateExport(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -74,6 +133,18 @@ export interface ProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
+}
+
+export interface ExportReq {
+    properties?: string[] | undefined;
+    includeUnpublished?: boolean | undefined;
+    format?: WorkbookFormat | undefined;
+}
+
+/** One of 'csv', 'excel' */
+export enum WorkbookFormat {
+    Csv = "csv",
+    Excel = "excel",
 }
 
 export class ApiException extends Error {

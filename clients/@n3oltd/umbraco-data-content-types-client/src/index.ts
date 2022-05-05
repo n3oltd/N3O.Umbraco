@@ -8,7 +8,7 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
-export class ContentClient {
+export class ContentTypesClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -18,8 +18,8 @@ export class ContentClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
 
-    getById(contentId: string): Promise<void> {
-        let url_ = this.baseUrl + "/umbraco/api/Content/{contentId}";
+    getAllowedContentTypes(contentId: string): Promise<ContentTypeSummary[]> {
+        let url_ = this.baseUrl + "/umbraco/api/ContentTypes/{contentId}/allowed";
         if (contentId === undefined || contentId === null)
             throw new Error("The parameter 'contentId' must be defined.");
         url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
@@ -28,20 +28,23 @@ export class ContentClient {
         let options_: RequestInit = {
             method: "GET",
             headers: {
+                "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetById(_response);
+            return this.processGetAllowedContentTypes(_response);
         });
     }
 
-    protected processGetById(response: Response): Promise<void> {
+    protected processGetAllowedContentTypes(response: Response): Promise<ContentTypeSummary[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ContentTypeSummary[];
+            return result200;
             });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
@@ -64,8 +67,13 @@ export class ContentClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<ContentTypeSummary[]>(null as any);
     }
+}
+
+export interface ContentTypeSummary {
+    alias?: string | undefined;
+    name?: string | undefined;
 }
 
 export interface ProblemDetails {

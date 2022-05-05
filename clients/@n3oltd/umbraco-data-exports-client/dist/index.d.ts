@@ -1,12 +1,14 @@
-export declare class ContentClient {
+export declare class ExportsClient {
     private http;
     private baseUrl;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined;
     constructor(baseUrl?: string, http?: {
         fetch(url: RequestInfo, init?: RequestInit): Promise<Response>;
     });
-    getById(contentId: string): Promise<void>;
-    protected processGetById(response: Response): Promise<void>;
+    getExportableProperties(contentId: string, contentType: string): Promise<void>;
+    protected processGetExportableProperties(response: Response): Promise<void>;
+    createExport(contentId: string, contentType: string, req: ExportReq): Promise<void>;
+    protected processCreateExport(response: Response): Promise<void>;
 }
 export interface ProblemDetails {
     type?: string | undefined;
@@ -14,6 +16,16 @@ export interface ProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
+}
+export interface ExportReq {
+    properties?: string[] | undefined;
+    includeUnpublished?: boolean | undefined;
+    format?: WorkbookFormat | undefined;
+}
+/** One of 'csv', 'excel' */
+export declare enum WorkbookFormat {
+    Csv = "csv",
+    Excel = "excel"
 }
 export declare class ApiException extends Error {
     message: string;

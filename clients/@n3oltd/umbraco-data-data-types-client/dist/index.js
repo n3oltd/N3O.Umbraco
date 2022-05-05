@@ -19,28 +19,30 @@ var __extends = (this && this.__extends) || (function () {
 /* tslint:disable */
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
-var ContentClient = /** @class */ (function () {
-    function ContentClient(baseUrl, http) {
+var DataTypesClient = /** @class */ (function () {
+    function DataTypesClient(baseUrl, http) {
         this.jsonParseReviver = undefined;
         this.http = http ? http : window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
-    ContentClient.prototype.getById = function (contentId) {
+    DataTypesClient.prototype.findDataTypes = function (req) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Content/{contentId}";
-        if (contentId === undefined || contentId === null)
-            throw new Error("The parameter 'contentId' must be defined.");
-        url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
+        var url_ = this.baseUrl + "/umbraco/api/DataTypes/find";
         url_ = url_.replace(/[?&]$/, "");
+        var content_ = JSON.stringify(req);
         var options_ = {
+            body: content_,
             method: "GET",
-            headers: {}
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processGetById(_response);
+            return _this.processFindDataTypes(_response);
         });
     };
-    ContentClient.prototype.processGetById = function (response) {
+    DataTypesClient.prototype.processFindDataTypes = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -50,7 +52,9 @@ var ContentClient = /** @class */ (function () {
         ;
         if (status === 200) {
             return response.text().then(function (_responseText) {
-                return;
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
             });
         }
         else if (status === 400) {
@@ -65,13 +69,6 @@ var ContentClient = /** @class */ (function () {
                 return throwException("A server side error occurred.", status, _responseText, _headers);
             });
         }
-        else if (status === 404) {
-            return response.text().then(function (_responseText) {
-                var result404 = null;
-                result404 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return throwException("A server side error occurred.", status, _responseText, _headers, result404);
-            });
-        }
         else if (status !== 200 && status !== 204) {
             return response.text().then(function (_responseText) {
                 return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -79,9 +76,9 @@ var ContentClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    return ContentClient;
+    return DataTypesClient;
 }());
-export { ContentClient };
+export { DataTypesClient };
 var ApiException = /** @class */ (function (_super) {
     __extends(ApiException, _super);
     function ApiException(message, status, response, headers, result) {

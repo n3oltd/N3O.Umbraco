@@ -19,28 +19,31 @@ var __extends = (this && this.__extends) || (function () {
 /* tslint:disable */
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
-var ContentClient = /** @class */ (function () {
-    function ContentClient(baseUrl, http) {
+var ExportsClient = /** @class */ (function () {
+    function ExportsClient(baseUrl, http) {
         this.jsonParseReviver = undefined;
         this.http = http ? http : window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
-    ContentClient.prototype.getById = function (contentId) {
+    ExportsClient.prototype.getExportableProperties = function (contentId, contentType) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Content/{contentId}";
+        var url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/exportableProperties/{contentId}/{contentType}";
         if (contentId === undefined || contentId === null)
             throw new Error("The parameter 'contentId' must be defined.");
         url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
+        if (contentType === undefined || contentType === null)
+            throw new Error("The parameter 'contentType' must be defined.");
+        url_ = url_.replace("{contentType}", encodeURIComponent("" + contentType));
         url_ = url_.replace(/[?&]$/, "");
         var options_ = {
             method: "GET",
             headers: {}
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processGetById(_response);
+            return _this.processGetExportableProperties(_response);
         });
     };
-    ContentClient.prototype.processGetById = function (response) {
+    ExportsClient.prototype.processGetExportableProperties = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -79,9 +82,76 @@ var ContentClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    return ContentClient;
+    ExportsClient.prototype.createExport = function (contentId, contentType, req) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/export/{contentId}/{contentType}";
+        if (contentId === undefined || contentId === null)
+            throw new Error("The parameter 'contentId' must be defined.");
+        url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
+        if (contentType === undefined || contentType === null)
+            throw new Error("The parameter 'contentType' must be defined.");
+        url_ = url_.replace("{contentType}", encodeURIComponent("" + contentType));
+        url_ = url_.replace(/[?&]$/, "");
+        var content_ = JSON.stringify(req);
+        var options_ = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processCreateExport(_response);
+        });
+    };
+    ExportsClient.prototype.processCreateExport = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                return;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status === 404) {
+            return response.text().then(function (_responseText) {
+                var result404 = null;
+                result404 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
+    return ExportsClient;
 }());
-export { ContentClient };
+export { ExportsClient };
+/** One of 'csv', 'excel' */
+export var WorkbookFormat;
+(function (WorkbookFormat) {
+    WorkbookFormat["Csv"] = "csv";
+    WorkbookFormat["Excel"] = "excel";
+})(WorkbookFormat || (WorkbookFormat = {}));
 var ApiException = /** @class */ (function (_super) {
     __extends(ApiException, _super);
     function ApiException(message, status, response, headers, result) {

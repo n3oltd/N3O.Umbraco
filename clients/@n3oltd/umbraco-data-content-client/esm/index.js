@@ -79,64 +79,6 @@ var ContentClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    ContentClient.prototype.getChildContentTypes = function (contentId) {
-        var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Content/{contentId}/childContentTypes";
-        if (contentId === undefined || contentId === null)
-            throw new Error("The parameter 'contentId' must be defined.");
-        url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
-        url_ = url_.replace(/[?&]$/, "");
-        var options_ = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-        return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processGetChildContentTypes(_response);
-        });
-    };
-    ContentClient.prototype.processGetChildContentTypes = function (response) {
-        var _this = this;
-        var status = response.status;
-        var _headers = {};
-        if (response.headers && response.headers.forEach) {
-            response.headers.forEach(function (v, k) { return _headers[k] = v; });
-        }
-        ;
-        if (status === 200) {
-            return response.text().then(function (_responseText) {
-                var result200 = null;
-                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return result200;
-            });
-        }
-        else if (status === 400) {
-            return response.text().then(function (_responseText) {
-                var result400 = null;
-                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        }
-        else if (status === 500) {
-            return response.text().then(function (_responseText) {
-                return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        }
-        else if (status === 404) {
-            return response.text().then(function (_responseText) {
-                var result404 = null;
-                result404 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return throwException("A server side error occurred.", status, _responseText, _headers, result404);
-            });
-        }
-        else if (status !== 200 && status !== 204) {
-            return response.text().then(function (_responseText) {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve(null);
-    };
     return ContentClient;
 }());
 export { ContentClient };
