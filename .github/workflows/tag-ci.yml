@@ -42,7 +42,7 @@ jobs:
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
-  umbraco-data-content-tyoes-client:
+  umbraco-data-content-types-client:
     name: 'npm Publish @n3oltd/umbraco-data-content-types-client'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
@@ -51,7 +51,7 @@ jobs:
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
-  umbraco-data-content-tyoes-client:
+  umbraco-data-data-types-client:
     name: 'npm Publish @n3oltd/umbraco-data-data-types-client'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
@@ -60,7 +60,7 @@ jobs:
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
-  umbraco-data-export-client:
+  umbraco-data-exports-client:
     name: 'npm Publish @n3oltd/umbraco-data-exports-client'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
