@@ -66,6 +66,7 @@ angular.module("umbraco")
                 method: 'POST',
                 body: data
             });
+            
             return  await res.json(); 
         }
     });

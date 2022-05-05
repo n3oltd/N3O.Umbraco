@@ -24,8 +24,7 @@
                     </div>
 
                     <div>
-                        @foreach (var result in Model.Search()
-                                                     .Pager.CurrentPage.Results) {
+                        @foreach (var result in Model.Search().Pager.CurrentPage.Results) {
                             <div>
                                 <div>@result.Title</div>
 
@@ -43,9 +42,7 @@
                         <ul>
                             <li n3o-append-class="disabled" n3o-append-if="@(!Model.Search().Pager.HasPreviousPage)">
                                 <a href="@Model.Search().Pager.NavigatePreviousPageUrl()">
-                                    &laquo;
-
-                                    <span>@Model.GetText("Previous")</span>
+                                    &laquo; <span>@Model.GetText("Previous")</span>
                                 </a>
                             </li>
 
@@ -60,9 +57,7 @@
 
                             <li n3o-append-class="disabled" n3o-append-if="@(!Model.Search().Pager.HasNextPage)">
                                 <a href="@Model.Search().Pager.NavigateNextPageUrl()">
-                                    &raquo;
-                                    
-                                    @Model.GetText("Next")
+                                    @Model.GetText("Next") &raquo;
                                 </a>
                             </li>
                         </ul>
