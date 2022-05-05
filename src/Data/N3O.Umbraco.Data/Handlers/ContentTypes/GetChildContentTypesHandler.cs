@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Data.Handlers {
-    public class GetChildContentTypesHandler :
-        IRequestHandler<GetChildContentTypesQuery, None, IEnumerable<ContentTypeSummary>> {
+    public class GetAllowedContentTypesHandler :
+        IRequestHandler<GetAllowedContentTypesQuery, None, IEnumerable<ContentTypeSummary>> {
         private readonly IContentService _contentService;
         private readonly IContentTypeService _contentTypeService;
 
-        public GetChildContentTypesHandler(IContentService contentService, IContentTypeService contentTypeService) {
+        public GetAllowedContentTypesHandler(IContentService contentService, IContentTypeService contentTypeService) {
             _contentService = contentService;
             _contentTypeService = contentTypeService;
         }
         
-        public Task<IEnumerable<ContentTypeSummary>> Handle(GetChildContentTypesQuery req,
+        public Task<IEnumerable<ContentTypeSummary>> Handle(GetAllowedContentTypesQuery req,
                                                             CancellationToken cancellationToken) {
             var content = req.ContentId.Run(_contentService.GetById, true);
             var contentType = _contentTypeService.Get(content.ContentType.Id);

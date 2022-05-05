@@ -12,12 +12,12 @@ using System;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Data.Controllers {
-    [ApiDocument(DataConstants.ApiNames.Export)]
-    public class ExportController : PluginController {
-        private readonly ILogger<ExportController> _logger;
+    [ApiDocument(DataConstants.ApiNames.Exports)]
+    public class ExportsController : PluginController {
+        private readonly ILogger<ExportsController> _logger;
         private readonly IMediator _mediator;
 
-        public ExportController(ILogger<ExportController> logger, IMediator mediator) {
+        public ExportsController(ILogger<ExportsController> logger, IMediator mediator) {
             _logger = logger;
             _mediator = mediator;
         }

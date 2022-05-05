@@ -2,7 +2,7 @@ angular.module("umbraco")
     .controller("N3O.Umbraco.Data.Import", function ($scope, editorState, contentResource) {
         $scope.getTemplate = async function() {
             const content = await contentResource.getById(editorState.current.id);
-            const csvTemplate = await fetch(`/umbraco/backoffice/api/Import/template/${content.key}`);
+            const csvTemplate = await fetch(`/umbraco/backoffice/api/Imports/template/${content.key}`);
             const blob = await csvTemplate.blob();
             
             const header = csvTemplate.headers.get('Content-Disposition');
@@ -31,7 +31,7 @@ angular.module("umbraco")
                 zipFile: zipStorageToken
             };
             
-            await fetch(`/umbraco/backoffice/api/Import/queue/${content.key}`, {
+            await fetch(`/umbraco/backoffice/api/Imports/queue/${content.key}`, {
                 method: 'POST',
                 headers: {
                     'accept': '*/*',
@@ -41,7 +41,7 @@ angular.module("umbraco")
             });
         };
 
-        fetch('/umbraco/backoffice/api/Import/lookups/datePatterns', {
+        fetch('/umbraco/backoffice/api/Imports/lookups/datePatterns', {
             headers: {
                 'accept': 'application/json'
             }

@@ -4,8 +4,8 @@ using N3O.Umbraco.Mediator;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Data.Queries {
-    public class GetChildContentTypesQuery : Request<None, IEnumerable<ContentTypeSummary>> {
-        public GetChildContentTypesQuery(ContentId contentId) {
+    public class GetAllowedContentTypesQuery : Request<None, IEnumerable<ContentTypeSummary>> {
+        public GetAllowedContentTypesQuery(ContentId contentId) {
             ContentId = contentId;
         }
         

@@ -15,17 +15,17 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Data.Controllers {
-    [ApiDocument(DataConstants.ApiNames.Import)]
-    public class ImportController : PluginController {
-        private readonly ILogger<ImportController> _logger;
+    [ApiDocument(DataConstants.ApiNames.Imports)]
+    public class ImportsController : PluginController {
+        private readonly ILogger<ImportsController> _logger;
         private readonly Lazy<ILookups> _lookups;
         private readonly Lazy<IUmbracoMapper> _mapper;
         private readonly Lazy<IMediator> _mediator;
 
-        public ImportController(ILogger<ImportController> logger,
-                                Lazy<ILookups> lookups,
-                                Lazy<IUmbracoMapper> mapper,
-                                Lazy<IMediator> mediator) {
+        public ImportsController(ILogger<ImportsController> logger,
+                                 Lazy<ILookups> lookups,
+                                 Lazy<IUmbracoMapper> mapper,
+                                 Lazy<IMediator> mediator) {
             _logger = logger;
             _lookups = lookups;
             _mapper = mapper;

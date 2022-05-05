@@ -2,8 +2,10 @@
     public static class DataConstants {
         public static class ApiNames {
             public const string Content = "Content";
-            public const string Export = "Export";
-            public const string Import = "Import";
+            public const string ContentTypes = "ContentTypes";
+            public const string DataTypes = "DataTypes";
+            public const string Exports = "Exports";
+            public const string Imports = "Imports";
         }
 
         public static class ContentTypes {

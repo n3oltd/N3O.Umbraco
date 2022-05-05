@@ -34,8 +34,10 @@ namespace N3O.Umbraco.Data {
 
         private void RegisterApis(IUmbracoBuilder builder) {
             builder.Services.AddOpenApiDocument(DataConstants.ApiNames.Content);
-            builder.Services.AddOpenApiDocument(DataConstants.ApiNames.Export);
-            builder.Services.AddOpenApiDocument(DataConstants.ApiNames.Import);
+            builder.Services.AddOpenApiDocument(DataConstants.ApiNames.ContentTypes);
+            builder.Services.AddOpenApiDocument(DataConstants.ApiNames.DataTypes);
+            builder.Services.AddOpenApiDocument(DataConstants.ApiNames.Exports);
+            builder.Services.AddOpenApiDocument(DataConstants.ApiNames.Imports);
         }
         
         private void RegisterContentSummarisers(IUmbracoBuilder builder) {
