@@ -18,27 +18,14 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Core.Content
 {
-	// Mixin Content Type with alias "price"
-	/// <summary>Price</summary>
-	public partial interface IPrice : IPublishedElement
-	{
-		/// <summary>Price</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.5.0+1c39c27e220efde6f0f360b94b6e7b6a1f0f0e59")]
-		decimal PriceAmount { get; }
-
-		/// <summary>Price Locked</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.5.0+1c39c27e220efde6f0f360b94b6e7b6a1f0f0e59")]
-		bool PriceLocked { get; }
-	}
-
-	/// <summary>Price</summary>
-	[PublishedModel("price")]
-	public partial class Price : PublishedElementModel, IPrice
+	/// <summary>Test</summary>
+	[PublishedModel("test")]
+	public partial class Test : PublishedContentModel
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.5.0+1c39c27e220efde6f0f360b94b6e7b6a1f0f0e59")]
-		public new const string ModelTypeAlias = "price";
+		public new const string ModelTypeAlias = "test";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.5.0+1c39c27e220efde6f0f360b94b6e7b6a1f0f0e59")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.5.0+1c39c27e220efde6f0f360b94b6e7b6a1f0f0e59")]
@@ -47,14 +34,14 @@ namespace DemoSite.Core.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.5.0+1c39c27e220efde6f0f360b94b6e7b6a1f0f0e59")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<Price, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<Test, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public Price(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
+		public Test(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
@@ -63,25 +50,42 @@ namespace DemoSite.Core.Content
 		// properties
 
 		///<summary>
-		/// Price
+		/// Blog Category
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.5.0+1c39c27e220efde6f0f360b94b6e7b6a1f0f0e59")]
-		[ImplementPropertyType("priceAmount")]
-		public virtual decimal PriceAmount => GetPriceAmount(this, _publishedValueFallback);
-
-		/// <summary>Static getter for Price</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.5.0+1c39c27e220efde6f0f360b94b6e7b6a1f0f0e59")]
-		public static decimal GetPriceAmount(IPrice that, IPublishedValueFallback publishedValueFallback) => that.Value<decimal>(publishedValueFallback, "priceAmount");
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("blogCategory")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.BlogCategory> BlogCategory => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.BlogCategory>>(_publishedValueFallback, "blogCategory");
 
 		///<summary>
-		/// Price Locked
+		/// Date of Birth
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.5.0+1c39c27e220efde6f0f360b94b6e7b6a1f0f0e59")]
-		[ImplementPropertyType("priceLocked")]
-		public virtual bool PriceLocked => GetPriceLocked(this, _publishedValueFallback);
+		[ImplementPropertyType("dateOfBirth")]
+		public virtual global::System.DateTime DateOfBirth => this.Value<global::System.DateTime>(_publishedValueFallback, "dateOfBirth");
 
-		/// <summary>Static getter for Price Locked</summary>
+		///<summary>
+		/// Image
+		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.5.0+1c39c27e220efde6f0f360b94b6e7b6a1f0f0e59")]
-		public static bool GetPriceLocked(IPrice that, IPublishedValueFallback publishedValueFallback) => that.Value<bool>(publishedValueFallback, "priceLocked");
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("image")]
+		public virtual global::N3O.Umbraco.Cropper.Models.CroppedImage Image => this.Value<global::N3O.Umbraco.Cropper.Models.CroppedImage>(_publishedValueFallback, "image");
+
+		///<summary>
+		/// Nick Name
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.5.0+1c39c27e220efde6f0f360b94b6e7b6a1f0f0e59")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("nickName")]
+		public virtual string NickName => this.Value<string>(_publishedValueFallback, "nickName");
+
+		///<summary>
+		/// Report
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "9.5.0+1c39c27e220efde6f0f360b94b6e7b6a1f0f0e59")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("report")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.Nested1> Report => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.Nested1>>(_publishedValueFallback, "report");
 	}
 }
