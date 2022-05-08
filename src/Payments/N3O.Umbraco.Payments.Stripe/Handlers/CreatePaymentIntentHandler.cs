@@ -52,7 +52,9 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers {
             }
         }
         
-        private PaymentIntentCreateOptions GetPaymentIntentOptions(PaymentsParameters parameters, PaymentIntentReq req, Customer customer) {
+        private PaymentIntentCreateOptions GetPaymentIntentOptions(PaymentsParameters parameters,
+                                                                   PaymentIntentReq req,
+                                                                   Customer customer) {
             var settings = _contentCache.Single<StripeSettingsContent>();
             var options = new PaymentIntentCreateOptions();
 
