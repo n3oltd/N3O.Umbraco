@@ -291,7 +291,7 @@ export interface CredentialRes {
     isSetUp?: boolean;
 }
 export interface RegularGivingOptionsRes {
-    collectionDay?: string | undefined;
+    preferredCollectionDay?: string | undefined;
     frequency?: RegularGivingFrequency | undefined;
     firstCollectionDate?: Date | undefined;
 }
@@ -350,7 +350,7 @@ export interface ConsentChoiceReq {
     response?: ConsentResponse | undefined;
 }
 export interface RegularGivingOptionsReq {
-    collectionDay?: string | undefined;
+    preferredCollectionDay?: string | undefined;
     frequency?: RegularGivingFrequency | undefined;
     firstCollectionDate?: Date | undefined;
 }

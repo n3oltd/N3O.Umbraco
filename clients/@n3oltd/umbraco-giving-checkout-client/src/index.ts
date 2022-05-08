@@ -610,7 +610,7 @@ export interface CredentialRes {
 }
 
 export interface RegularGivingOptionsRes {
-    collectionDay?: string | undefined;
+    preferredCollectionDay?: string | undefined;
     frequency?: RegularGivingFrequency | undefined;
     firstCollectionDate?: Date | undefined;
 }
@@ -680,7 +680,7 @@ export interface ConsentChoiceReq {
 }
 
 export interface RegularGivingOptionsReq {
-    collectionDay?: string | undefined;
+    preferredCollectionDay?: string | undefined;
     frequency?: RegularGivingFrequency | undefined;
     firstCollectionDate?: Date | undefined;
 }
