@@ -1,10 +1,13 @@
 using Humanizer;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Lookups;
+using N3O.Umbraco.Payments.Content;
+using N3O.Umbraco.Payments.Lookups;
 using N3O.Umbraco.Webhooks.Transforms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -14,7 +17,14 @@ using System.Linq;
 
 namespace N3O.Umbraco.Giving.Checkout.Webhooks {
     public class CheckoutWebhookTransform : WebhookTransform {
-        public CheckoutWebhookTransform(IJsonProvider jsonProvider) : base(jsonProvider) { }
+        private static readonly string RestrictCollectionDaysToAlias =
+            AliasHelper<PaymentMethodSettingsContent<IPaymentMethodSettings>>.PropertyAlias(x => x.RestrictCollectionDaysTo);
+        
+        private readonly IContentCache _contentCache;
+
+        public CheckoutWebhookTransform(IJsonProvider jsonProvider, IContentCache contentCache) : base(jsonProvider) {
+            _contentCache = contentCache;
+        }
 
         public override bool IsTransform(object body) => body is Entities.Checkout;
 
@@ -24,12 +34,13 @@ namespace N3O.Umbraco.Giving.Checkout.Webhooks {
             var jObject = JObject.FromObject(checkout, serializer);
 
             TransformConsent(checkout, jObject);
+            TransformCollectionDay(checkout, jObject);
             TransformSponsorships(serializer, GivingTypes.Donation, checkout.Donation?.Allocations, jObject);
             TransformSponsorships(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject);
 
             return jObject;
         }
-        
+
         protected override void AddCustomConverters() {
             AddConverter<INamedLookup>(t => t.ImplementsInterface<INamedLookup>(),
                                        x => new {x.Id, x.Name});
@@ -51,6 +62,39 @@ namespace N3O.Umbraco.Giving.Checkout.Webhooks {
             foreach (var choice in choices) {
                 consent[choice.Channel.Id][choice.Category.Id] = choice.Response.Value;
             }
+        }
+        
+        private void TransformCollectionDay(Entities.Checkout checkout, JObject jObject) {
+            if (checkout.RegularGiving.HasValue(x => x.Credential) && checkout.RegularGiving.HasValue(x => x.Options)) {
+                var allowedCollectionDays = GetAllowedCollectionDays(checkout.RegularGiving.Credential.Method);
+
+                DayOfMonth collectionDay;
+
+                if (allowedCollectionDays.Contains(checkout.RegularGiving.Options.PreferredCollectionDay)) {
+                    collectionDay = checkout.RegularGiving.Options.PreferredCollectionDay;
+                } else {
+                    collectionDay = allowedCollectionDays.First();
+                }
+
+                jObject["regularGiving"]["options"]["collectionDay"] = collectionDay.Day;
+            }
+        }
+
+        private IReadOnlyList<DayOfMonth> GetAllowedCollectionDays(PaymentMethod paymentMethod) {
+            var settingsContentTypeAlias = paymentMethod.GetSettingsContentTypeAlias();
+            var allowedCollectionDays = new List<DayOfMonth>();
+            
+            var restrictedToDays = (IEnumerable<DayOfMonth>) _contentCache.Single(settingsContentTypeAlias)
+                                                                          .GetProperty(RestrictCollectionDaysToAlias)
+                                                                          .GetValue();
+
+            if (restrictedToDays.HasAny()) {
+                allowedCollectionDays.AddRange(restrictedToDays.OrEmpty());
+            } else {
+                allowedCollectionDays.AddRange(DaysOfMonth.All);
+            }
+
+            return allowedCollectionDays;
         }
 
         private void TransformSponsorships(JsonSerializer serializer,

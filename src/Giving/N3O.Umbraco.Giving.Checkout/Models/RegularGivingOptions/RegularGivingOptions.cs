@@ -6,18 +6,18 @@ using NodaTime;
 namespace N3O.Umbraco.Giving.Checkout.Models {
     public class RegularGivingOptions : Value, IRegularGivingOptions {
         [JsonConstructor]
-        public RegularGivingOptions(DayOfMonth collectionDay,
+        public RegularGivingOptions(DayOfMonth preferredCollectionDay,
                                     RegularGivingFrequency frequency,
                                     LocalDate? firstCollectionDate) {
-            CollectionDay = collectionDay;
+            PreferredCollectionDay = preferredCollectionDay;
             Frequency = frequency;
             FirstCollectionDate = firstCollectionDate;
         }
 
         public RegularGivingOptions(IRegularGivingOptions givingOptions)
-            : this(givingOptions.CollectionDay, givingOptions.Frequency, givingOptions.FirstCollectionDate) { }
+            : this(givingOptions.PreferredCollectionDay, givingOptions.Frequency, givingOptions.FirstCollectionDate) { }
 
-        public DayOfMonth CollectionDay { get; }
+        public DayOfMonth PreferredCollectionDay { get; }
         public RegularGivingFrequency Frequency { get; }
         public LocalDate? FirstCollectionDate { get; }
     }

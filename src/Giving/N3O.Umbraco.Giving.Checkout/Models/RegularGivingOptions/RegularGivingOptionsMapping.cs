@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Giving.Checkout.Models {
 
         // Umbraco.Code.MapAll
         private void Map(RegularGivingOptions src, RegularGivingOptionsRes dest, MapperContext ctx) {
-            dest.CollectionDay = src.CollectionDay;
+            dest.PreferredCollectionDay = src.PreferredCollectionDay;
             dest.Frequency = src.Frequency;
             dest.FirstCollectionDate = src.FirstCollectionDate;
         }
