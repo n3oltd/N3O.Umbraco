@@ -76,7 +76,7 @@ namespace N3O.Umbraco.Giving.Checkout.Webhooks {
                     collectionDay = allowedCollectionDays.First();
                 }
 
-                jObject["regularGiving"]["options"]["collectionDay"] = collectionDay.Day;
+                jObject["regularGiving"]["options"]["collectionDay"] = collectionDay.Day.ToString();
             }
         }
 
