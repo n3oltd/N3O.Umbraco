@@ -18,7 +18,7 @@ namespace N3O.Umbraco.Markup.Markdown {
 
                 var pipelineBuilder = new MarkdownPipelineBuilder();
 
-                extensions.Do(x => pipelineBuilder.Extensions.AddIfNotAlready(x));
+                extensions.Do(pipelineBuilder.Extensions.Add);
                 pipelineBuilder.UseAdvancedExtensions();
 
                 return pipelineBuilder.Build();

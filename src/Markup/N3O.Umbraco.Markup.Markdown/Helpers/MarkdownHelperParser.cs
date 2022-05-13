@@ -41,7 +41,12 @@ namespace N3O.Umbraco.Markup.Markdown.Helpers {
                 return false;
             }
 
-            var str = string.Concat(chars).Replace("{", "").Replace("}", "");
+            var str = string.Concat(chars)
+                            .Replace("{ ", "")
+                            .Replace("{", "")
+                            .Replace(" }", "")
+                            .Replace("}", "");
+            
             str = Regex.Replace(str, @"\s", " ");
             
             // https://stackoverflow.com/a/4780801

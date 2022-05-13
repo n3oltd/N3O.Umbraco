@@ -27,7 +27,7 @@ namespace N3O.Umbraco.Markup.Markdown.Helpers {
         }
         
         public void Setup(MarkdownPipelineBuilder pipeline) {
-            pipeline.InlineParsers.AddIfNotAlready(_parser);
+            pipeline.InlineParsers.Add(_parser);
         }
 
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer) {
