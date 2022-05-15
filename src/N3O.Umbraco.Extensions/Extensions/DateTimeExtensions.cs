@@ -1,3 +1,4 @@
+using N3O.Umbraco.Localization;
 using NodaTime;
 using NodaTime.Extensions;
 using System;
@@ -14,6 +15,12 @@ namespace N3O.Umbraco.Extensions {
             }
 
             return true;
+        }
+        
+        public static ZonedDateTime InTimezone(this DateTime dateTime, Timezone timezone) {
+            var zonedDateTime = new ZonedDateTime(Instant.FromDateTimeUtc(dateTime), timezone.Zone);
+        
+            return  zonedDateTime;
         }
         
         public static LocalDate ToLocalDate(this DateTime dateTime) {

@@ -2,6 +2,7 @@ using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Localization;
 using Newtonsoft.Json.Linq;
 using NodaTime;
 using NodaTime.Extensions;
@@ -13,20 +14,12 @@ using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Parsing {
     public class TimeParser : DataTypeParser<LocalTime?>, ITimeParser {
-        private readonly List<LocalTimePattern> _patterns = new();
+        private readonly Timezone _timezone;
+        private readonly Lazy<IDateTimeParser> _dateTimeParser;
 
-        public TimeParser() {
-            AddPattern(LocalTimePattern.ExtendedIso.PatternText);
-
-            AddPattern("HH:mm:ss");
-            AddPattern("H:m:s");
-            AddPattern("HH:mm");
-            AddPattern("H:m");
-
-            AddPattern("hh:mm:ss");
-            AddPattern("h:m:s");
-            AddPattern("hh:mm");
-            AddPattern("h:m");
+        public TimeParser(IDateParser dateParser, Timezone timezone) {
+            _timezone = timezone;
+            _dateTimeParser = new Lazy<IDateTimeParser>(() => new DateTimeParser(dateParser, timezone));
         }
         
         public override bool CanParse(DataType dataType) {
@@ -38,18 +31,10 @@ namespace N3O.Umbraco.Data.Parsing {
             
             if (text.HasValue()) {
                 text = text.Trim();
-
-                foreach (var pattern in _patterns) {
-                    var nodaResult = pattern.Parse(text);
-
-                    if (nodaResult.Success) {
-                        value = nodaResult.Value;
-                        
-                        break;
-                    }
-                }
                 
+                value = ParseTimeText(text);
                 value ??= ParseUnixTimestamp(text);
+                value ??= ParseDateTimeText(text);
 
                 if (value == null) {
                     return ParseResult.Fail<LocalTime?>();
@@ -58,36 +43,17 @@ namespace N3O.Umbraco.Data.Parsing {
 
             return ParseResult.Success(value);
         }
-        
-        protected override IEnumerable<JTokenType> TokenTypes {
-            get {
-                yield return JTokenType.Date;
-                yield return JTokenType.Integer;
-            }
-        }
 
-        protected override Models.ParseResult<LocalTime?> TryParseToken(JToken token, Type targetType) {
-            LocalTime? localTime;
+        private LocalTime? ParseTimeText(string text) {
+            foreach (var pattern in Patterns) {
+                var nodaResult = pattern.Parse(text);
 
-            if (token.Type == JTokenType.Date) {
-                var dateTime = (DateTime?) token;
-                localTime = dateTime?.ToLocalDateTime().TimeOfDay;
-            }else if (token.Type == JTokenType.Integer) {
-                var timestamp = (int?) token;
-                localTime = timestamp == null ? null : ParseUnixTimestamp(timestamp.Value);
-            } else {
-                throw UnrecognisedValueException.For(token.Type);
+                if (nodaResult.Success) {
+                    return nodaResult.Value;
+                }
             }
 
-            return ParseResult.Success(localTime);
-        }
-
-        public IReadOnlyList<LocalTimePattern> Patterns => _patterns;
-
-        private void AddPattern(string patternText) {
-            var pattern = LocalTimePattern.Create(patternText, CultureInfo.InvariantCulture);
-
-            _patterns.Add(pattern);
+            return null;
         }
         
         private LocalTime? ParseUnixTimestamp(string text) {
@@ -104,7 +70,53 @@ namespace N3O.Umbraco.Data.Parsing {
             var dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(timestamp);
             var instant = Instant.FromDateTimeOffset(dateTimeOffset);
             
-            return instant.InUtc().TimeOfDay;
+            return instant.InZone(_timezone.Zone).TimeOfDay;
         }
+
+        private LocalTime? ParseDateTimeText(string text) {
+            var parseResult = _dateTimeParser.Value.Parse(text, OurDataTypes.DateTime.GetClrType());
+
+            return parseResult.Value?.TimeOfDay;
+        }
+
+        protected override IEnumerable<JTokenType> TokenTypes {
+            get {
+                yield return JTokenType.Date;
+                yield return JTokenType.Integer;
+            }
+        }
+
+        protected override Models.ParseResult<LocalTime?> TryParseToken(JToken token, Type targetType) {
+            LocalTime? localTime;
+
+            if (token.Type == JTokenType.Date) {
+                var dateTime = (DateTime?) token;
+
+                if (dateTime?.Kind == DateTimeKind.Utc) {
+                    localTime = dateTime.Value.InTimezone(_timezone).LocalDateTime.TimeOfDay;
+                } else {
+                    localTime = dateTime?.ToLocalDateTime().TimeOfDay;
+                }
+            }else if (token.Type == JTokenType.Integer) {
+                var timestamp = (int?) token;
+                localTime = timestamp == null ? null : ParseUnixTimestamp(timestamp.Value);
+            } else {
+                throw UnrecognisedValueException.For(token.Type);
+            }
+
+            return ParseResult.Success(localTime);
+        }
+
+        public static readonly LocalTimePattern[] Patterns = {
+            LocalTimePattern.Create(LocalTimePattern.ExtendedIso.PatternText, CultureInfo.InvariantCulture),
+            LocalTimePattern.Create("HH':'mm':'ss", CultureInfo.InvariantCulture),
+            LocalTimePattern.Create("H':'m':'s", CultureInfo.InvariantCulture),
+            LocalTimePattern.Create("HH':'mm", CultureInfo.InvariantCulture),
+            LocalTimePattern.Create("H':'m", CultureInfo.InvariantCulture),
+            LocalTimePattern.Create("hh':'mm':'ss", CultureInfo.InvariantCulture),
+            LocalTimePattern.Create("h':'m':'s", CultureInfo.InvariantCulture),
+            LocalTimePattern.Create("hh':'mm", CultureInfo.InvariantCulture),
+            LocalTimePattern.Create("h':'m", CultureInfo.InvariantCulture),
+        };
     }
 }

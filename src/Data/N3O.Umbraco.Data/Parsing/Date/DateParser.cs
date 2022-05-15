@@ -13,12 +13,15 @@ using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Parsing {
     public abstract class DateParser : DataTypeParser<LocalDate?>, IDateParser {
-        private readonly Timezone _timezone;
         private readonly List<LocalDatePattern> _patterns = new();
-        private IDateTimeParser _dateTimeParser;
+        private readonly Lazy<IDateTimeParser> _dateTimeParser;
+        private readonly Timezone _timezone;
 
         protected DateParser(Timezone timezone) {
             _timezone = timezone;
+            _dateTimeParser = new Lazy<IDateTimeParser>(() => new DateTimeParser(this, timezone));
+            
+            AddPattern(LocalDatePattern.Iso.PatternText);
         }
 
         public override bool CanParse(DataType dataType) {
@@ -29,9 +32,11 @@ namespace N3O.Umbraco.Data.Parsing {
             LocalDate? value = null;
             
             if (text.HasValue()) {
+                text = text.Trim();
+                
                 value = ParseDateText(text);
                 value ??= ParseUnixTimestamp(text);
-                value ??= ParseDateTimeText(text, targetType);
+                value ??= ParseDateTimeText(text);
 
                 if (value == null) {
                     return ParseResult.Fail<LocalDate?>();
@@ -53,7 +58,12 @@ namespace N3O.Umbraco.Data.Parsing {
             
             if (token.Type == JTokenType.Date) {
                 var dateTime = (DateTime?) token;
-                localDate = dateTime?.ToLocalDate();
+
+                if (dateTime?.Kind == DateTimeKind.Utc) {
+                    localDate = dateTime.Value.InTimezone(_timezone).LocalDateTime.Date;
+                } else {
+                    localDate = dateTime?.ToLocalDate();
+                }
             } else if (token.Type == JTokenType.Integer) {
                 var timestamp = (int?) token;
                 localDate = timestamp == null ? null : ParseUnixTimestamp(timestamp.Value);
@@ -71,8 +81,6 @@ namespace N3O.Umbraco.Data.Parsing {
         }
 
         private LocalDate? ParseDateText(string text) {
-            text = text.Trim();
-
             foreach (var pattern in _patterns) {
                 var nodaResult = pattern.Parse(text);
 
@@ -85,8 +93,6 @@ namespace N3O.Umbraco.Data.Parsing {
         }
         
         private LocalDate? ParseUnixTimestamp(string text) {
-            text = text.Trim();
-
             if (int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var timestamp)) {
                 return ParseUnixTimestamp(timestamp);
             }
@@ -97,26 +103,16 @@ namespace N3O.Umbraco.Data.Parsing {
         private LocalDate? ParseUnixTimestamp(int timestamp) {
             var dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(timestamp);
             var instant = Instant.FromDateTimeOffset(dateTimeOffset);
-            
-            return instant.InUtc().Date;
+
+            return instant.InZone(_timezone.Zone).Date;
         }
         
-        private LocalDate? ParseDateTimeText(string text, Type targetType) {
-            var parseResult = DateTimeParser.Parse(text, targetType);
+        private LocalDate? ParseDateTimeText(string text) {
+            var parseResult = _dateTimeParser.Value.Parse(text, OurDataTypes.DateTime.GetClrType());
 
             return parseResult.Value?.Date;
         }
 
         public IReadOnlyList<LocalDatePattern> Patterns => _patterns;
-
-        private IDateTimeParser DateTimeParser {
-            get {
-                if (_dateTimeParser == null) {
-                    _dateTimeParser = new DateTimeParser(this, new TimeParser(), _timezone);
-                }
-
-                return _dateTimeParser;
-            }
-        }
     }
 }

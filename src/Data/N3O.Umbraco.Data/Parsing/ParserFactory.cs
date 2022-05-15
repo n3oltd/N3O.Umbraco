@@ -51,7 +51,7 @@ namespace N3O.Umbraco.Data.Parsing {
 
             var blobParser = new BlobParser(blobResolvers);
             var dateParser = _dateParserFactory.Create(datePattern, timezone);
-            var dateTimeParser = new DateTimeParser(dateParser, _timeParser, timezone);
+            var dateTimeParser = new DateTimeParser(dateParser, timezone);
             var decimalParser = _decimalParserFactory.Create(decimalSeparator);
             var integerParser = _integerParserFactory.Create(decimalSeparator);
             var moneyParser = new MoneyParser(decimalParser);

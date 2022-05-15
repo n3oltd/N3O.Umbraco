@@ -15,14 +15,21 @@ using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 namespace N3O.Umbraco.Data.Parsing {
     public class DateTimeParser : DataTypeParser<LocalDateTime?>, IDateTimeParser {
         private readonly Timezone _timezone;
-        private readonly List<LocalDateTimePattern> _patterns = new();
+        private readonly List<LocalDateTimePattern> _localPatterns = new();
+        private readonly List<OffsetDateTimePattern> _offsetPatterns = new();
 
-        public DateTimeParser(IDateParser dateParser, ITimeParser timeParser, Timezone timezone) {
+        public DateTimeParser(IDateParser dateParser, Timezone timezone) {
             _timezone = timezone;
             
+            _offsetPatterns.Add(OffsetDateTimePattern.ExtendedIso);
+            _offsetPatterns.Add(OffsetDateTimePattern.GeneralIso);
+            _localPatterns.Add(LocalDateTimePattern.ExtendedIso);
+            _localPatterns.Add(LocalDateTimePattern.GeneralIso);
+            
             foreach (var datePattern in dateParser.Patterns) {
-                foreach (var timePattern in timeParser.Patterns) {
-                    AddPattern($"ld<{datePattern.PatternText}> lt<{timePattern.PatternText}>");
+                foreach (var timePattern in TimeParser.Patterns) {
+                    AddOffsetPattern(datePattern.PatternText, timePattern.PatternText);
+                    AddLocalPattern(datePattern.PatternText, timePattern.PatternText);
                 }
             }
         }
@@ -37,14 +44,26 @@ namespace N3O.Umbraco.Data.Parsing {
             if (text.HasValue()) {
                 text = text.Trim();
 
-                foreach (var pattern in _patterns) {
+                foreach (var pattern in _offsetPatterns) {
                     var nodaResult = pattern.Parse(text);
 
                     if (nodaResult.Success) {
-                        value = nodaResult.Value;
+                        value = nodaResult.Value.InZone(_timezone.Zone).LocalDateTime;
                         
                         break;
                     }
+                }
+
+                if (value == null) {
+                    foreach (var pattern in _localPatterns) {
+                        var nodaResult = pattern.Parse(text);
+
+                        if (nodaResult.Success) {
+                            value = nodaResult.Value;
+                        
+                            break;
+                        }
+                    }   
                 }
                 
                 value ??= ParseUnixTimestamp(text);
@@ -52,12 +71,6 @@ namespace N3O.Umbraco.Data.Parsing {
                 if (value == null) {
                     return ParseResult.Fail<LocalDateTime?>();
                 }
-            }
-
-            if (_timezone != Timezones.Utc) {
-                var zonedDateTime = new ZonedDateTime(value.Value, _timezone.Zone, _timezone.UtcOffset);
-                
-                value = zonedDateTime.WithZone(Timezones.Utc.Zone).LocalDateTime;
             }
 
             return ParseResult.Success(value);
@@ -75,7 +88,12 @@ namespace N3O.Umbraco.Data.Parsing {
             
             if (token.Type == JTokenType.Date) {
                 var dateTime = (DateTime?) token;
-                localDateTime = dateTime?.ToLocalDateTime();
+                
+                if (dateTime?.Kind == DateTimeKind.Utc) {
+                    localDateTime = dateTime.Value.InTimezone(_timezone).LocalDateTime;
+                } else {
+                    localDateTime = dateTime?.ToLocalDateTime();
+                }
             } else if (token.Type == JTokenType.Integer) {
                 var timestamp = (int?) token;
                 localDateTime = timestamp == null ? null : ParseUnixTimestamp(timestamp.Value);
@@ -85,11 +103,27 @@ namespace N3O.Umbraco.Data.Parsing {
             
             return ParseResult.Success(localDateTime);
         }
+        
+        private void AddLocalPattern(string datePatternText, string timePatternText) {
+            var patterns = new[] {
+                LocalDateTimePattern.Create($"ld<{datePatternText}>'T'lt<{timePatternText}>", CultureInfo.InvariantCulture),
+                LocalDateTimePattern.Create($"ld<{datePatternText}> lt<{timePatternText}>", CultureInfo.InvariantCulture)
+            };
 
-        private void AddPattern(string patternText) {
-            var pattern = LocalDateTimePattern.Create(patternText, CultureInfo.InvariantCulture);
+            _localPatterns.AddRange(patterns);
+        }
+        
+        private void AddOffsetPattern(string datePatternText, string timePatternText) {
+            var patterns = new[] {
+                OffsetDateTimePattern.CreateWithInvariantCulture($"ld<{datePatternText}>'T'lt<{timePatternText}> '('o<g>')'"),
+                OffsetDateTimePattern.CreateWithInvariantCulture($"ld<{datePatternText}> lt<{timePatternText}> '('o<g>')'"),
+                OffsetDateTimePattern.CreateWithInvariantCulture($"ld<{datePatternText}>'T'lt<{timePatternText}> o<g>"),
+                OffsetDateTimePattern.CreateWithInvariantCulture($"ld<{datePatternText}> lt<{timePatternText}> o<g>"),
+                OffsetDateTimePattern.CreateWithInvariantCulture($"ld<{datePatternText}>'T'lt<{timePatternText}>o<g>"),
+                OffsetDateTimePattern.CreateWithInvariantCulture($"ld<{datePatternText}> lt<{timePatternText}>o<g>")
+            };
 
-            _patterns.Add(pattern);
+            _offsetPatterns.AddRange(patterns);
         }
         
         private LocalDateTime? ParseUnixTimestamp(string text) {
@@ -106,7 +140,7 @@ namespace N3O.Umbraco.Data.Parsing {
             var dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(timestamp);
             var instant = Instant.FromDateTimeOffset(dateTimeOffset);
             
-            return instant.InUtc().LocalDateTime;
+            return instant.InZone(_timezone.Zone).LocalDateTime;
         }
     }
 }
