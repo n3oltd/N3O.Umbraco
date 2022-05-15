@@ -9,6 +9,12 @@ using System.Text.RegularExpressions;
 
 namespace N3O.Umbraco.Markup.Markdown.Helpers {
     public class MarkdownHelperParser<T> : InlineParser where T : HelperArgs, new() {
+        private static readonly Dictionary<string, string> RegexReplacements = new() {
+            { @"{\s*", "" },
+            { @"\s*}", "" },
+            { @"\s+", " " }
+        };
+        
         private readonly IReadOnlyList<string> _keywords;
         private readonly Action<IReadOnlyList<string>, T> _populateHelperArgs;
 
@@ -41,14 +47,9 @@ namespace N3O.Umbraco.Markup.Markdown.Helpers {
                 return false;
             }
 
-            var str = string.Concat(chars)
-                            .Replace("{ ", "")
-                            .Replace("{", "")
-                            .Replace(" }", "")
-                            .Replace("}", "");
-            
-            str = Regex.Replace(str, @"\s", " ");
-            
+            var str = string.Concat(chars);
+            RegexReplacements.Do(x => str = Regex.Replace(str, x.Key, x.Value));
+
             // https://stackoverflow.com/a/4780801
             var args = Regex.Split(str, "(?<=^[^\"]*(?:\"[^\"]*\"[^\"]*)*) (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)").ToList();
 
