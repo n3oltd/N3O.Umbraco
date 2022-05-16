@@ -30,7 +30,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Content Include="App_Plugins\N3O.Umbraco.Data\**\*.*">
+        <Content Include="App_Plugins\N3O.Umbraco.Data.Export\**\*.*">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
+
+        <Content Include="App_Plugins\N3O.Umbraco.Data.Import\**\*.*">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
+
+        <Content Include="App_Plugins\N3O.Umbraco.Data.ImportErrorsViewer\**\*.*">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
+
+        <Content Include="App_Plugins\N3O.Umbraco.Data.ImportFieldsEditor\**\*.*">
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
         </Content>
