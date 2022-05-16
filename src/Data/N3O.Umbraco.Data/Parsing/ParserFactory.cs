@@ -14,7 +14,6 @@ namespace N3O.Umbraco.Data.Parsing {
         private readonly IPublishedContentParser _publishedContentParser;
         private readonly IReferenceParser _referenceParser;
         private readonly IStringParser _stringParser;
-        private readonly ITimeParser _timeParser;
         private readonly IYearMonthParserFactory _yearMonthParserFactory;
 
         public ParserFactory(IBoolParser boolParser,
@@ -27,7 +26,6 @@ namespace N3O.Umbraco.Data.Parsing {
                              IPublishedContentParser publishedContentParser,
                              IReferenceParser referenceParser,
                              IStringParser stringParser,
-                             ITimeParser timeParser,
                              IYearMonthParserFactory yearMonthParserFactory) {
             _boolParser = boolParser;
             _contentParser = contentParser;
@@ -40,7 +38,6 @@ namespace N3O.Umbraco.Data.Parsing {
             _publishedContentParser = publishedContentParser;
             _referenceParser = referenceParser;
             _stringParser = stringParser;
-            _timeParser = timeParser;
         }
 
         public IParser GetParser(DatePattern datePattern,
@@ -55,6 +52,7 @@ namespace N3O.Umbraco.Data.Parsing {
             var decimalParser = _decimalParserFactory.Create(decimalSeparator);
             var integerParser = _integerParserFactory.Create(decimalSeparator);
             var moneyParser = new MoneyParser(decimalParser);
+            var timeParser = new TimeParser(dateParser, timezone);
             var yearMonthParser = _yearMonthParserFactory.Create(datePattern);
 
             var parser = new Parser(blobParser,
@@ -70,7 +68,7 @@ namespace N3O.Umbraco.Data.Parsing {
                                     _publishedContentParser,
                                     _referenceParser,
                                     _stringParser,
-                                    _timeParser,
+                                    timeParser,
                                     yearMonthParser);
 
             return parser;

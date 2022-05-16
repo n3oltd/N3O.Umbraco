@@ -65,12 +65,14 @@ namespace N3O.Umbraco.Data.Handlers {
         }
 
         private Column GetColumn(string columnTitle) {
-            return _workspace.ColumnRangeBuilder
-                             .String<string>()
-                             .Title(columnTitle)
-                             .Build()
-                             .GetColumns()
-                             .Single();
+            var columnRange = _workspace.ColumnRangeBuilder
+                                        .String<string>()
+                                        .Title(columnTitle)
+                                        .Build();
+            
+            columnRange.AddValues(0, null);
+
+            return columnRange.GetColumns().Single();
         }
     }
 }

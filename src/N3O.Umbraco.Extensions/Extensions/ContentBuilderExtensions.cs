@@ -14,6 +14,10 @@ namespace N3O.Umbraco.Extensions {
         public static DateTimePropertyBuilder DateTime(this IContentBuilder builder, string propertyTypeAlias) {
             return builder.Property<DateTimePropertyBuilder>(propertyTypeAlias);
         }
+        
+        public static LabelPropertyBuilder Label(this IContentBuilder builder, string propertyTypeAlias) {
+            return builder.Property<LabelPropertyBuilder>(propertyTypeAlias);
+        }
 
         public static NestedPropertyBuilder Nested(this IContentBuilder builder, string propertyTypeAlias) {
             return builder.Property<NestedPropertyBuilder>(propertyTypeAlias);

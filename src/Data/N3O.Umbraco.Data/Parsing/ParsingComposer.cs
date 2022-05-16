@@ -16,7 +16,6 @@ namespace N3O.Umbraco.Data.Parsing {
             builder.Services.AddSingleton<IPublishedContentParser, PublishedContentParser>();
             builder.Services.AddSingleton<IReferenceParser, ReferenceParser>();
             builder.Services.AddSingleton<IStringParser, StringParser>();
-            builder.Services.AddSingleton<ITimeParser, TimeParser>();
             builder.Services.AddSingleton<IParserFactory, ParserFactory>();
             builder.Services.AddSingleton<IYearMonthParserFactory, YearMonthParserFactory>();
         }
