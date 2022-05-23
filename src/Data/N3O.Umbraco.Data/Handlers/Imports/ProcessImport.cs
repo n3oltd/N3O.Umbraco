@@ -26,6 +26,7 @@ namespace N3O.Umbraco.Data.Handlers {
     public class ProcessImport : IRequestHandler<ProcessImportCommand, None, None> {
         private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
         private readonly IContentEditor _contentEditor;
+        private readonly IContentService _contentService;
         private readonly IContentTypeService _contentTypeService;
         private readonly IJsonProvider _jsonProvider;
         private readonly IDataTypeService _dataTypeService;
@@ -38,6 +39,7 @@ namespace N3O.Umbraco.Data.Handlers {
 
         public ProcessImport(IUmbracoDatabaseFactory umbracoDatabaseFactory,
                              IContentEditor contentEditor,
+                             IContentService contentService,
                              IContentTypeService contentTypeService,
                              IContentHelper contentHelper,
                              IJsonProvider jsonProvider,
@@ -50,6 +52,7 @@ namespace N3O.Umbraco.Data.Handlers {
                              IEnumerable<IContentSummariser> contentSummarisers) {
             _umbracoDatabaseFactory = umbracoDatabaseFactory;
             _contentEditor = contentEditor;
+            _contentService = contentService;
             _contentTypeService = contentTypeService;
             _jsonProvider = jsonProvider;
             _dataTypeService = dataTypeService;
@@ -86,11 +89,16 @@ namespace N3O.Umbraco.Data.Handlers {
                         var publishResult = contentPublisher.SaveAndPublish();
 
                         var contentSummary = GetContentSummary(publishResult.Content);
+                        var wasSaved = _contentService.GetById(publishResult.Content.Id) != null;
+                        var wasPublished = publishResult.Success;
 
-                        if (publishResult.Success) {
-                            import.Published(publishResult.Content.Key, contentSummary);
+                        if (wasSaved) {
+                            if (wasPublished) {
+                            } else {
+                                import.PublishingFailed(publishResult.Content.Key, contentSummary);
+                            }
                         } else {
-                            import.PublishingFailed(publishResult.Content.Key, contentSummary);
+                            import.Error(publishResult.EventMessages.GetAll().Select(x => x.Message));
                         }
                     } catch (ProcessingException processingException) {
                         import.Error(processingException.Errors);
