@@ -38,7 +38,7 @@ namespace N3O.Umbraco.Data.Converters {
                 values = _contentHelper.GetPickerValues<IPublishedContent>(contentProperty);
             }
 
-            return values.Select(x => OurDataTypes.PublishedContent.Cell(x, x.GetType()));
+            return values.ExceptNull().Select(x => OurDataTypes.PublishedContent.Cell(x, x.GetType()));
         }
 
         public override void Import(IContentBuilder contentBuilder,

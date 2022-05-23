@@ -25,7 +25,7 @@ namespace N3O.Umbraco.Data.Konstrukt {
             collection.AddSearchableProperty(c => c.Reference);
             collection.AddSearchableProperty(c => c.ContentTypeName);
             collection.AddSearchableProperty(c => c.ImportedContentSummary);
-            collection.SetFilter(x => x.Status == ImportStatuses.Queued || x.Status == ImportStatuses.Error);
+            collection.AddSearchableProperty(c => c.BatchFilename);
             collection.DisableCreate();
             collection.SetDataViewsBuilder<ImportActionDataViewsBuilder>();
             collection.SetDataViewsBuilder<ImportStatusDataViewsBuilder>();

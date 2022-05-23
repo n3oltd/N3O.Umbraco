@@ -6,7 +6,7 @@ namespace N3O.Umbraco.Data.Konstrukt {
             ImportedContentId = id;
             ImportedContentSummary = contentSummary;
             Errors = null;
-            Status = ImportStatuses.Imported;
+            Status = ImportStatuses.SavedAndPublished;
         }
     }
 }

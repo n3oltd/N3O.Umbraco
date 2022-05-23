@@ -121,6 +121,12 @@ namespace N3O.Umbraco.Data.Converters {
                                                                        i,
                                                                        columnTitlePrefix);
 
+                    var columnPrefixedFields = fields.Where(x => x.Name.StartsWith(nestedColumnTitlePrefix, StringComparison.InvariantCultureIgnoreCase)).ToList();
+
+                    if (columnPrefixedFields.None(x => x.Value.HasValue())) {
+                        break;
+                    }
+
                     int? order = null;
                     
                     if (!nestedContentConfiguration.ContentTypes.IsSingle()) {
