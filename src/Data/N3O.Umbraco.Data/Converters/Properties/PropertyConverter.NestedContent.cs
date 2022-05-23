@@ -121,9 +121,7 @@ namespace N3O.Umbraco.Data.Converters {
                                                                        i,
                                                                        columnTitlePrefix);
 
-                    var columnPrefixedFields = fields.Where(x => x.Name.StartsWith(nestedColumnTitlePrefix, StringComparison.InvariantCultureIgnoreCase)).ToList();
-
-                    if (columnPrefixedFields.None(x => x.Value.HasValue())) {
+                    if (!HasData(nestedColumnTitlePrefix, fields)) {
                         break;
                     }
 
@@ -158,7 +156,7 @@ namespace N3O.Umbraco.Data.Converters {
                 }
             }
         }
-        
+
         private int GetMaxValues(UmbracoPropertyInfo propertyInfo) {
             var configuration = propertyInfo.DataType.ConfigurationAs<NestedContentConfiguration>();
 
@@ -198,6 +196,12 @@ namespace N3O.Umbraco.Data.Converters {
 
         private string GetOrderColumnTitle(string columnTitlePrefix) {
             return $"{columnTitlePrefix} {_orderColumnTitle}";
+        }
+        
+        private bool HasData(string nestedColumnTitlePrefix, IEnumerable<ImportField> fields) {
+            return fields.Where(x => x.Name.StartsWith(nestedColumnTitlePrefix,
+                                                       StringComparison.InvariantCultureIgnoreCase))
+                         .Any(x => x.Value.HasValue());
         }
     }
 }

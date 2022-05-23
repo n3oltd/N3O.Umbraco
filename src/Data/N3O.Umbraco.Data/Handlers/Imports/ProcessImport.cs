@@ -88,14 +88,17 @@ namespace N3O.Umbraco.Data.Handlers {
 
                         var publishResult = contentPublisher.SaveAndPublish();
 
-                        var contentSummary = GetContentSummary(publishResult.Content);
-                        var wasSaved = _contentService.GetById(publishResult.Content.Id) != null;
+                        var savedContent = _contentService.GetById(publishResult.Content.Id);
+                        var wasSaved = savedContent != null;
                         var wasPublished = publishResult.Success;
 
                         if (wasSaved) {
+                            var contentSummary = GetContentSummary(savedContent);
+                            
                             if (wasPublished) {
+                                import.Saved(savedContent.Key, contentSummary);
                             } else {
-                                import.PublishingFailed(publishResult.Content.Key, contentSummary);
+                                import.SavedAndPublished(savedContent.Key, contentSummary);
                             }
                         } else {
                             import.Error(publishResult.EventMessages.GetAll().Select(x => x.Message));

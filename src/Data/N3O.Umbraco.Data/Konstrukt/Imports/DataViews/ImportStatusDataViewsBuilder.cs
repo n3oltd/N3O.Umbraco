@@ -6,34 +6,40 @@ using Konstrukt.Models;
 
 namespace N3O.Umbraco.Data.Konstrukt {
     public class ImportStatusDataViewsBuilder : KonstruktDataViewsBuilder<Import> {
+        private const string AllAlias = "pending";
+        private const string PendingAlias = "pending";
+        private const string Group = "Status";
+
         public override IEnumerable<KonstruktDataViewSummary> GetDataViews() {
             yield return new KonstruktDataViewSummary {
-                Alias = "needsAttention",
-                Name = "Needs Attention",
-                Group = "Status"
+                Alias = PendingAlias,
+                Name = "Pending (Queued or Error)",
+                Group = Group
             };
+            
             yield return new KonstruktDataViewSummary {
-                Alias = "all",
+                Alias = AllAlias,
                 Name = "All",
-                Group = "Status"
+                Group = Group
             };
+            
             foreach (var status in ImportStatuses.All) {
                 yield return new KonstruktDataViewSummary {
                     Alias = status,
                     Name = status,
-                    Group = "Status"
+                    Group = Group
                 };
             }
         }
 
         public override Expression<Func<Import, bool>> GetDataViewWhereClause(string dataViewAlias) {
-            if (dataViewAlias == "needsAttention") {
-                return c => c.Status==ImportStatuses.Error || c.Status==ImportStatuses.Queued;
-            } else if (dataViewAlias == "all") {
-                return null;
+            if (dataViewAlias == PendingAlias) {
+                return c => c.Status == ImportStatuses.Error || c.Status == ImportStatuses.Queued;
+            } else if (dataViewAlias == AllAlias) {
+                return c => true;
+            } else {
+                return c => c.Status == dataViewAlias;
             }
-
-            return c => c.Status == dataViewAlias;
         }
     }
 }

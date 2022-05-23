@@ -72,7 +72,7 @@ namespace N3O.Umbraco.Data.Converters {
         
         protected IEnumerable<Cell<TExport>> ExportValue<TProperty>(IContentProperty contentProperty,
                                                                     Func<TProperty, Cell<TExport>> toCell) {
-            return ExportValue<TProperty>(contentProperty, x => (TProperty) x, toCell);
+            return ExportValue(contentProperty, x => (TProperty) x, toCell);
         }
 
         protected IEnumerable<Cell<TExport>> ExportValue<TProperty>(IContentProperty contentProperty,

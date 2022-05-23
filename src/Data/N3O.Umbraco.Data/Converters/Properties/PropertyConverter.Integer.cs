@@ -17,7 +17,7 @@ namespace N3O.Umbraco.Data.Converters {
 
         protected override IEnumerable<Cell<long?>> GetCells(IContentProperty contentProperty,
                                                              UmbracoPropertyInfo propertyInfo) {
-            return ExportValue<long?>(contentProperty, ConvertToNullableLong, x => OurDataTypes.Integer.Cell(x));
+            return ExportValue(contentProperty, ConvertToNullableLong, x => OurDataTypes.Integer.Cell(x));
         }
 
         public override void Import(IContentBuilder contentBuilder,
@@ -36,7 +36,7 @@ namespace N3O.Umbraco.Data.Converters {
 
         private long? ConvertToNullableLong(object value) {
             if (value is int intValue) {
-                return (long?) intValue;
+                return intValue;
             } else if (value is long longValue) {
                 return longValue;
             } else {
