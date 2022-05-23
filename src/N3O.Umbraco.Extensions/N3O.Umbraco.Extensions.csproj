@@ -34,7 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Flurl" Version="3.0.5" />
+        <PackageReference Include="Flurl" Version="3.0.6" />
         <PackageReference Include="Humanizer.Core" Version="2.14.1" />
         <PackageReference Include="MimeTypesMap" Version="1.0.8" />
         <PackageReference Include="NodaTime" Version="3.1.0" />
