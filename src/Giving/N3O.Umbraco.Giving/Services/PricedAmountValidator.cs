@@ -20,5 +20,17 @@ namespace N3O.Umbraco.Giving {
 
             return true;
         }
+        
+        public bool IsValid(Money value, IPricing pricing, IFundDimensionValues fundDimensions, int? duration) {
+            var price = _priceCalculator.InCurrency(pricing, fundDimensions, value.Currency);
+
+            var requiredValue = duration == null ? price.Amount : price.Amount * duration;
+            
+            if (price.HasValue() && price.Locked && price.Amount != requiredValue) {
+                return false;
+            }
+
+            return true;
+        }
     }
 }
