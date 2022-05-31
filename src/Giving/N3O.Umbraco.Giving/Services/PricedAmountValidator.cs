@@ -11,22 +11,12 @@ namespace N3O.Umbraco.Giving {
             _priceCalculator = priceCalculator;
         }
         
-        public bool IsValid(Money value, IPricing pricing, IFundDimensionValues fundDimensions) {
+        public bool IsValid(Money value, IPricing pricing, IFundDimensionValues fundDimensions, decimal multiplier = 1m) {
             var price = _priceCalculator.InCurrency(pricing, fundDimensions, value.Currency);
 
-            if (price.HasValue() && price.Locked && price.Amount > value.Amount) {
-                return false;
-            }
-
-            return true;
-        }
-        
-        public bool IsValid(Money value, IPricing pricing, IFundDimensionValues fundDimensions, int? duration) {
-            var price = _priceCalculator.InCurrency(pricing, fundDimensions, value.Currency);
-
-            var requiredValue = duration == null ? price.Amount : price.Amount * duration;
+            var requiredAmount = price.Amount * multiplier;
             
-            if (price.HasValue() && price.Locked && price.Amount != requiredValue) {
+            if (price.HasValue() && price.Locked && value.Amount < requiredAmount) {
                 return false;
             }
 

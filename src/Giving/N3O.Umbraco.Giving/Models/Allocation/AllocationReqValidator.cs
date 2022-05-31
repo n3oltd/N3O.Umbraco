@@ -9,7 +9,6 @@ using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Principal;
 
 namespace N3O.Umbraco.Giving.Models {
     public class AllocationReqValidator : ModelValidator<AllocationReq> {
@@ -20,67 +19,70 @@ namespace N3O.Umbraco.Giving.Models {
             var currentCurrency = currencyAccessor.GetCurrency();
 
             RuleFor(x => x.Type)
-               .NotNull()
-               .WithMessage(Get<Strings>(s => s.SpecifyType));
+                .NotNull()
+                .WithMessage(Get<Strings>(s => s.SpecifyType));
 
             RuleFor(x => x.FundDimensions)
-               .NotNull()
-               .WithMessage(Get<Strings>(s => s.SpecifyFundDimensions));
+                .NotNull()
+                .WithMessage(Get<Strings>(s => s.SpecifyFundDimensions));
 
             RuleFor(x => x.Fund)
-               .NotNull()
-               .When(x => x.Type == AllocationTypes.Fund)
-               .WithMessage(Get<Strings>(s => s.SpecifyFundAllocation));
+                .NotNull()
+                .When(x => x.Type == AllocationTypes.Fund)
+                .WithMessage(Get<Strings>(s => s.SpecifyFundAllocation));
 
             RuleFor(x => x.Fund)
-               .Null()
-               .When(x => x.Type != AllocationTypes.Fund)
-               .WithMessage(Get<Strings>(s => s.FundAllocationNotAllowed));
+                .Null()
+                .When(x => x.Type != AllocationTypes.Fund)
+                .WithMessage(Get<Strings>(s => s.FundAllocationNotAllowed));
 
             RuleFor(x => x.Sponsorship)
-               .NotNull()
-               .When(x => x.Type == AllocationTypes.Sponsorship)
-               .WithMessage(Get<Strings>(s => s.SpecifySponsorshipAllocation));
+                .NotNull()
+                .When(x => x.Type == AllocationTypes.Sponsorship)
+                .WithMessage(Get<Strings>(s => s.SpecifySponsorshipAllocation));
 
             RuleFor(x => x.Sponsorship)
-               .Null()
-               .When(x => x.Type != AllocationTypes.Sponsorship)
-               .WithMessage(Get<Strings>(s => s.SponsorshipAllocationNotAllowed));
+                .Null()
+                .When(x => x.Type != AllocationTypes.Sponsorship)
+                .WithMessage(Get<Strings>(s => s.SponsorshipAllocationNotAllowed));
 
             RuleFor(x => x.Value)
-               .Must((req, x) => pricedAmountValidator.IsValid(x, req.Fund.DonationItem, req.FundDimensions))
-               .When(x => x.Value.HasValue() && x.Fund?.DonationItem?.HasPricing() == true)
-               .WithMessage(Get<Strings>(s => s.InvalidValue));
+                .Must((req, x) => pricedAmountValidator.IsValid(x, req.Fund.DonationItem, req.FundDimensions))
+                .When(x => x.Value.HasValue() && x.Fund?.DonationItem?.HasPricing() == true)
+                .WithMessage(Get<Strings>(s => s.InvalidValue));
 
             RuleForEach(x => x.Sponsorship.Components)
-               .Must((req, x) => (x.Component?.HasPricing() != true ||
-                                  pricedAmountValidator.IsValid(x.Value, x.Component, req.FundDimensions, req.Sponsorship.Duration.Months)))
-               .When(x => x.Sponsorship.HasValue())
-               .WithMessage(Get<Strings>(s => s.InvalidValue));
+                .Must((req, x) => x.Component?.HasPricing() != true ||
+                                  pricedAmountValidator.IsValid(x.Value,
+                                                                x.Component,
+                                                                req.FundDimensions,
+                                                                req.Sponsorship.Duration.Months))
+                .When(x => x.Sponsorship.HasValue())
+                .WithMessage(Get<Strings>(s => s.InvalidValue));
 
             RuleFor(x => x.Value)
-               .Must((req, x) => x.Amount.GetValueOrThrow() == req.Sponsorship.Components.Sum(x => x.Value.Amount.GetValueOrThrow()))
-               .When(x => x.Value.HasValue(v => v.Amount) && x.Sponsorship.HasValue() && x.Sponsorship.Components.All(c => c.Value.HasValue(v => v.Amount)))
-               .WithMessage(Get<Strings>(s => s.InvalidValue));
+                .Must((req, x) => x.Amount.GetValueOrThrow() == req.Sponsorship.Components.Sum(x => x.Value.Amount.GetValueOrThrow()))
+                .When(x => x.Value.HasValue(v => v.Amount) && x.Sponsorship.HasValue() && x.Sponsorship.Components.All(c => c.Value.HasValue(v => v.Amount)))
+                .WithMessage(Get<Strings>(s => s.InvalidValue));
 
             RuleFor(x => x.FundDimensions)
-               .Must((req, x) => FundDimensionsAreValid(x, req.GetFundDimensionsOptions()))
-               .When(x => x.FundDimensions.HasValue())
-               .WithMessage(Get<Strings>(s => s.InvalidFundDimensions));
+                .Must((req, x) => FundDimensionsAreValid(x, req.GetFundDimensionsOptions()))
+                .When(x => x.FundDimensions.HasValue())
+                .WithMessage(Get<Strings>(s => s.InvalidFundDimensions));
 
             ValidateCurrencies(currentCurrency);
         }
 
         private void ValidateCurrencies(Currency currency) {
             RuleFor(x => x.Value.Currency)
-               .Must(x => x == currency)
-               .When(x => x.HasValue(y => y.Value?.Currency))
-               .WithMessage(Get<Strings>(s => s.CurrencyMismatch));
+                .Must(x => x == currency)
+                .When(x => x.HasValue(y => y.Value?.Currency))
+                .WithMessage(Get<Strings>(s => s.CurrencyMismatch));
 
             RuleForEach(x => x.Sponsorship.Components)
-               .Must(x => x.Value.Currency == currency)
-               .When(x => x.Sponsorship.OrEmpty(y => y.Components).HasAny(c => c.Value.HasValue(v => v.Currency)))
-               .WithMessage(Get<Strings>(s => s.CurrencyMismatch));
+                .Must(x => x.Value.Currency == currency)
+                .When(x => x.Sponsorship.OrEmpty(y => y.Components).HasAny(c => c.Value.HasValue(v => v.Currency)))
+                .WithMessage(Get<Strings>(s => s.CurrencyMismatch));
         }
 
         private bool FundDimensionsAreValid(FundDimensionValuesReq req, IFundDimensionsOptions options) {
