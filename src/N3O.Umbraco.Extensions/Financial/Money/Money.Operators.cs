@@ -70,6 +70,14 @@ namespace N3O.Umbraco.Financial {
 
             return money;
         }
+        
+        public static Money operator *(Money lhs, decimal rhs) {
+            if (lhs == null) {
+                return null;
+            }
+
+            return new Money(lhs.Amount * rhs, lhs.Currency);
+        }
 
         public override int GetHashCode() {
             return HashCode.Combine(Currency.GetHashCode(), Amount.GetHashCode());
