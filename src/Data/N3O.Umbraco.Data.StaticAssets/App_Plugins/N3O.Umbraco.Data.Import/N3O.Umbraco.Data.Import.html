@@ -1,16 +1,115 @@
-<div ng-controller="N3O.Umbraco.Data.Import">
-    <button type="button" ng-click="getTemplate()">Get Template</button>
+<div class="form-horizontal" ng-controller="N3O.Umbraco.Data.Import">
+	<div id="importFormDiv" ng-if="showWindow=='importForm'">
+		<h2>Import</h2>
 
-    <div>
-        <label for="csvFile">CSV file:</label>
-        <input type="file" id="csvFile" required />
+		<a href ng-click="getTemplate()" class="btn btn-secondary">Get Template</a>
+		<br><br>
+		<form>
 
-        <label for="zipFile">Zip file (optional):</label>
-        <input type="file" id="zipFile"/>
-        
-        <label for="datePattern">Select date format:</label>
-        <select id="datePattern" required ng-model="dateFormat" ng-options="x.name for x in dateFormats"></select>
-    </div>
+			<div class="umb-group-panel">
+				<div class="umb-group-panel__header">
+					<div>Files to import</div>
+				</div>
 
-    <button ng-click="importFile()">Upload</button>
+				<div class="umb-group-panel__content">
+
+					<div class="umb-property">
+						<div class="control-group umb-control-group">
+							<div class="umb-el-wrap">
+								<label class="control-label">Date Format</label>
+								<div class="controls">
+									<select class="umb-property-editor">
+										<option ng-repeat="format in dateFormats" id="format.id">{{format.name}}</options>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="umb-property">
+						<div class="control-group umb-control-group">
+							<div class="umb-el-wrap">
+								<div class="control-header">
+									<label class="control-label"> CSV File
+										<strong class="umb-control-required">*</strong>
+
+									</label>
+								</div>
+							</div>
+							<div class="controls n3o-uploader">
+								<div class="upload fs-upload-element fs-upload fs-light">
+								
+									<div class="fs-upload-target">
+										<input type="file" id="csvFile" required />
+									</div>
+								</div>
+								<em>This file is required.</em>
+							</div>
+						</div>
+					</div>
+
+					<div class="umb-property">
+						<div class="control-group umb-control-group">
+							<div class="umb-el-wrap">
+								<div class="control-header">
+									<label class="control-label"> Zip File</label>
+								</div>
+							</div>
+							<div class="controls n3o-uploader">
+								<div class="upload fs-upload-element fs-upload fs-light">
+									<div class="fs-upload-target">
+										 <input type="file" id="zipFile"/>
+									</div>
+								</div>
+								<em>Attach a zip file if you want to reference images</em>
+							</div>
+						</div>
+					</div>
+					<em class="red" ng-show="csvNotAttached">CSV File is not Selected</em>
+				</div>
+			</div>
+
+
+			
+			<a href ng-click="importFile()" class="btn btn-primary" id="importButton" ng-if="showButton=='importButton'">Upload</a>
+			
+			<button type="button" class="btn umb-button__button btn-success umb-button--" id="processingButton" ng-if="showButton=='processingButton'"><span class="umb-button__content -hidden">Import</span>
+				</span><div class="umb-button__progress -white"></div>
+			</button>
+			
+			
+			
+		</form>
+	
+	</div>
+
+	<div id="importSuccessDiv" ng-if="showWindow=='importSuccess'">
+		<h2>Import Success</h2>
+
+		<br>
+		<p>Upload received, results are processing</p>
+
+		<a href="/umbraco#/content?dashboard=imports" class="btn btn-primary">View Queue</a>
+	</div>
+
+
+	<div id="importFailedDiv" ng-if="showWindow=='importFailed'">
+		<h2>Import Failed</h2>
+
+		<br>
+		<p>Sorry, the upload failed:</p>
+		
+			<div>
+				<ul>
+					<li ng-repeat="error in errorMessage">{{error}}</li>
+				</ul>
+				
+			</div>
+
+		<br>
+		
+		<a href class="btn btn-secondary" ng-click="failedTryAgain()">Try Again</a>
+	</div>
+
 </div>
+
