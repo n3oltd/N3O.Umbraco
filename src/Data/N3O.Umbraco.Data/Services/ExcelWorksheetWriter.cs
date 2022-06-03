@@ -58,11 +58,13 @@ namespace N3O.Umbraco.Data.Services {
                 var lastRow = _rowCursor - 1;
                 var lastColumn = _visibleColumns.Count;
 
-                var tableRange = new ExcelAddressBase(FirstRow, FirstColumn, lastRow, lastColumn);
-                var tableName = GetExcelSafeName(_table.Name, TableNameMaxLength);
+                if (lastColumn > FirstColumn) {
+                    var tableRange = new ExcelAddressBase(FirstRow, FirstColumn, lastRow, lastColumn);
+                    var tableName = GetExcelSafeName(_table.Name, TableNameMaxLength);
 
-                var table = worksheet.Tables.Add(tableRange, tableName);
-                WriteFooters(worksheet, table);
+                    var table = worksheet.Tables.Add(tableRange, tableName);
+                    WriteFooters(worksheet, table);
+                }
             }
 
             worksheet.Cells.AutoFitColumns();

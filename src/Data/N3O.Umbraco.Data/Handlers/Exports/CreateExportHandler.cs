@@ -29,7 +29,7 @@ namespace N3O.Umbraco.Data.Handlers {
         private readonly IContentHelper _contentHelper;
         private readonly IWorkspace _workspace;
         private readonly Lazy<IExcelTableBuilder> _excelTableBuilder;
-        private readonly IReadOnlyList<IPropertyConverter> _converters;
+        private readonly IReadOnlyList<IPropertyConverter> _propertyConverters;
         private readonly IReadOnlyList<IExportPropertyFilter> _propertyFilters;
         private readonly string _nameColumnTitle;
 
@@ -39,7 +39,7 @@ namespace N3O.Umbraco.Data.Handlers {
                                    IContentHelper contentHelper,
                                    IWorkspace workspace,
                                    IEnumerable<IExportPropertyFilter> propertyFilters,
-                                   IEnumerable<IPropertyConverter> converters,
+                                   IEnumerable<IPropertyConverter> propertyConverters,
                                    Lazy<IExcelTableBuilder> excelTableBuilder,
                                    IFormatter formatter) {
             _contentService = contentService;
@@ -48,7 +48,7 @@ namespace N3O.Umbraco.Data.Handlers {
             _contentHelper = contentHelper;
             _workspace = workspace;
             _excelTableBuilder = excelTableBuilder;
-            _converters = converters.ToList();
+            _propertyConverters = propertyConverters.ToList();
             _propertyFilters = propertyFilters.ToList();
             
             _nameColumnTitle = formatter.Text.Format<DataStrings>(s => s.NameColumnTitle);
@@ -84,6 +84,10 @@ namespace N3O.Umbraco.Data.Handlers {
                                                             out var totalRecords);
 
                 foreach (var content in page) {
+                    if (content.ContentType.Id != contentType.Id) {
+                        continue;
+                    }
+                    
                     if (publishedOnly && !content.Published) {
                         continue;
                     }
@@ -93,10 +97,10 @@ namespace N3O.Umbraco.Data.Handlers {
                     var contentProperties = _contentHelper.GetContentProperties(content);
 
                     foreach (var propertyInfo in propertyInfos) {
-                        var converter = propertyInfo.GetPropertyConverter(_converters);
+                        var converter = propertyInfo.GetPropertyConverter(_propertyConverters);
                         var contentProperty = contentProperties.GetPropertyByAlias(propertyInfo.Type.Alias);
 
-                        converter.Export(tableBuilder, _converters, null, contentProperty, propertyInfo);
+                        converter.Export(tableBuilder, _propertyConverters, null, contentProperty, propertyInfo);
                     }
                     
                     tableBuilder.NextRow();

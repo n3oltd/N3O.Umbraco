@@ -136,7 +136,7 @@ angular.module("umbraco")
         }
 		
 		async function getContentType(contentKey){
-			var getContentType = await fetch(`/umbraco/api/ContentTypes/${contentKey}/allowed`);
+			var getContentType = await fetch(`/umbraco/api/ContentTypes/${contentKey}/descendants`);
             var bodyContentType = await getContentType.json();
 			
 			
