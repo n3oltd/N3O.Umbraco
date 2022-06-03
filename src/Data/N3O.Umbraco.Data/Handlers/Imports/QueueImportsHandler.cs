@@ -270,7 +270,7 @@ namespace N3O.Umbraco.Data.Handlers {
                 return matches.Single().Key;
             } else {
                 if (matches.None()) {
-                    _errorLog.AddError<Strings>(s => s.NoContentMatched_1, criteria);   
+                    _errorLog.AddError<Strings>(s => s.NoContentMatched_1, criteria);
                 } else {
                     _errorLog.AddError<Strings>(s => s.MultipleContentMatched_1, criteria);
                 }
