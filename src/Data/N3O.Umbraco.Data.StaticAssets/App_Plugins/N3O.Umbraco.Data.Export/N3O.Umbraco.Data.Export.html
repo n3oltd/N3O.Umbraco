@@ -1,3 +1,75 @@
-<div ng-controller="N3O.Umbraco.Data.Export">
-    Coming soon... {{today}}
+<div class="form-horizontal" ng-controller="N3O.Umbraco.Data.Export">
+	
+	<h2>Export</h2>
+	<br>
+	<form>
+
+		<div class="umb-group-panel">
+			<div class="umb-group-panel__header">
+				<div>Options</div>
+			</div>
+
+			<div class="umb-group-panel__content">
+				<div class="umb-property">
+					<div class="control-group umb-control-group">
+						<div class="umb-el-wrap">
+							<label class="control-label">Include unpublished</label>
+							<div class="controls">
+								<input ng-model="includeUnpublished" type="checkbox">
+
+								<em> &nbsp;&nbsp; This will include beneficiaries that are saved but not published.</em>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="umb-property">
+					<div class="control-group umb-control-group">
+						<div class="umb-el-wrap">
+							<label class="control-label">File Format</label>
+							<div class="controls">
+								<input type="radio" ng-model="fileFormat" value="csv">
+								<label>CSV</label>
+
+								<input type="radio" ng-model="fileFormat" value="excel">
+								<label>Excel</label>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+
+		<div class="umb-group-panel">
+			<div class="umb-group-panel__header">
+				<div>Properties</div>
+			</div>
+			<div class="umb-group-panel__content">
+				<a class="umb-outline" ng-click="selectAllProperties()">Select All</a> | <a class="umb-outline" ng-click="clearAllProperties()">Clear All</a> <br><br>
+				<div class="listTable listTable--umb">
+					<div id="checkBoxes" >
+						<div class="properties-checkboxes" ng-repeat="property in exportableProperties.properties track by $index">
+							<input id="{{property.alias}}}" ng-model="property.selected" type="checkbox">
+							<label>{{propertyTitles[$index]}}</label>
+							<hr>
+						</div>
+					</div>
+				</div>
+				<em class="red" ng-show="formatNotSelected">Select File Format for exported file</em> <br>
+				<em class="red" ng-show="propertyNotSelected">Select at least one property to be included in exported file</em>
+			</div>
+		</div>
+	</form>
+	<div>
+		<div>
+		
+			<a href class="btn btn-primary" ng-click="exportFile()" ng-if="showButton=='exportButton'">Export</a>
+			
+			<!-- Use this button while exporting -->
+			<button  href type="button" class="btn umb-button__button btn-success umb-button--" ng-if="showButton=='processingButton'"><span class="umb-button__content -hidden">Export</span>
+				<div class="umb-button__progress -white"></div>
+			</button>
+		</div>
+	</div>
 </div>
