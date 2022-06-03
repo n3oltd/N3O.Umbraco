@@ -2,6 +2,10 @@
 
 namespace N3O.Umbraco.Extensions {
     public static class ContentBuilderExtensions {
+        public static BooleanPropertyBuilder Boolean(this IContentBuilder builder, string propertyTypeAlias) {
+            return builder.Property<BooleanPropertyBuilder>(propertyTypeAlias);
+        }
+        
         public static ContentPickerPropertyBuilder ContentPicker(this IContentBuilder builder,
                                                                  string propertyTypeAlias) {
             return builder.Property<ContentPickerPropertyBuilder>(propertyTypeAlias);
