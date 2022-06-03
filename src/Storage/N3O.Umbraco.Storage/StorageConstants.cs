@@ -4,7 +4,7 @@
         public const string StorageFolderName = "Storage";
 
         public static class StorageFolders {
-            public const string Temp = "Temp";                                                                                                                                                            
+            public const string Temp = "Temp";
         }
     }
 }

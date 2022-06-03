@@ -46,7 +46,7 @@ namespace N3O.Umbraco.Data.Extensions {
             var name = columnTitlePrefix ?? "";
 
             if (propertyInfo.Group.HasValue() && propertyInfo.ContentType.PropertyGroups.Count > 1) {
-                name += $"{propertyInfo.Group.Name}: ";    
+                name += $"{propertyInfo.Group.Name}: ";
             }
             
             name += propertyInfo.Type.Name;

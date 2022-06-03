@@ -40,7 +40,7 @@ namespace N3O.Umbraco.Data.Models {
 
         public override string ToString() {
             if (HasErrors()) {
-                return string.Join("\n", GetErrors());   
+                return string.Join("\n", GetErrors());
             } else {
                 return "No errors";
             }

@@ -11,7 +11,6 @@ using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Plugins.Controllers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
 

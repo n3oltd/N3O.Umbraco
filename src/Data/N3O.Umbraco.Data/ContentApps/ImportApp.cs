@@ -35,7 +35,7 @@ namespace N3O.Umbraco.Data.ContentApps {
                     Icon = "icon-arrow-up",
                     View = "/App_Plugins/N3O.Umbraco.Data.Import/N3O.Umbraco.Data.Import.html",
                     Weight = -101
-                };   
+                };
             } else {
                 return null;
             }
