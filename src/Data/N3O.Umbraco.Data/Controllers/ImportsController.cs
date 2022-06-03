@@ -54,14 +54,12 @@ namespace N3O.Umbraco.Data.Controllers {
         public async Task<ActionResult<QueueImportsRes>> Queue(QueueImportsReq req) {
             try {
                 var res = await _mediator.Value.SendAsync<QueueImportsCommand, QueueImportsReq, QueueImportsRes>(req);
-                if (res.Errors != null) {
-                    return BadRequest(res.Errors.Select(p=>p.ToString()));
-                }
+
                 return Ok(res);
             } catch (Exception ex) {
                 _logger.LogError(ex, "Import failed");
                 
-                return UnprocessableEntity("Error Importing, Please Contact Admin");
+                return UnprocessableEntity("Error queuing records for import, please contact support");
             }
         }
     }

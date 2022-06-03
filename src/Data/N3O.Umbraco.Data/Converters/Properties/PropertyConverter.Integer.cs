@@ -2,6 +2,7 @@ using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Data.Builders;
 using N3O.Umbraco.Data.Parsing;
+using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
 using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
@@ -35,12 +36,14 @@ namespace N3O.Umbraco.Data.Converters {
         }
 
         private long? ConvertToNullableLong(object value) {
-            if (value is int intValue) {
+            if (value == null) {
+                return null;
+            } else if (value is int intValue) {
                 return intValue;
             } else if (value is long longValue) {
                 return longValue;
             } else {
-                return null;
+                throw UnrecognisedValueException.For(value);
             }
         }
     }

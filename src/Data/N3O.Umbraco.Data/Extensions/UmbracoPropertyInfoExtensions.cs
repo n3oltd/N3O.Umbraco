@@ -66,5 +66,16 @@ namespace N3O.Umbraco.Data.Extensions {
                 return matches.Single();
             }
         }
+        
+        public static bool HasPropertyConverter(this UmbracoPropertyInfo propertyInfo,
+                                                IEnumerable<IPropertyConverter> converters) {
+            try {
+                GetPropertyConverter(propertyInfo, converters);
+
+                return true;
+            } catch {
+                return false;
+            }
+        }
     }
 }

@@ -18,7 +18,7 @@ namespace N3O.Umbraco.Data.Handlers {
     public class GetImportTemplateHandler : IRequestHandler<GetImportTemplateQuery, None, ImportTemplate> {
         private readonly IWorkspace _workspace;
         private readonly IReadOnlyList<IImportPropertyFilter> _propertyFilters;
-        private readonly IReadOnlyList<IPropertyConverter> _converters;
+        private readonly IReadOnlyList<IPropertyConverter> _propertyConverters;
         private readonly IContentTypeService _contentTypeService;
         private readonly IDataTypeService _dataTypeService;
         private readonly string _nameColumnTitle;
@@ -26,13 +26,13 @@ namespace N3O.Umbraco.Data.Handlers {
 
         public GetImportTemplateHandler(IWorkspace workspace,
                                         IEnumerable<IImportPropertyFilter> propertyFilters,
-                                        IEnumerable<IPropertyConverter> converters,
+                                        IEnumerable<IPropertyConverter> propertyConverters,
                                         IContentTypeService contentTypeService,
                                         IDataTypeService dataTypeService,
                                         IFormatter formatter) {
             _workspace = workspace;
             _propertyFilters = propertyFilters.ToList();
-            _converters = converters.ToList();
+            _propertyConverters = propertyConverters.ToList();
             _contentTypeService = contentTypeService;
             _dataTypeService = dataTypeService;
             
@@ -49,8 +49,9 @@ namespace N3O.Umbraco.Data.Handlers {
             columns.Add(GetColumn(_nameColumnTitle));
 
             columns.AddRange(contentType.GetUmbracoProperties(_dataTypeService, _contentTypeService)
-                                        .Where(x => x.CanInclude(_propertyFilters))
-                                        .SelectMany(x => x.GetColumns(_converters))
+                                        .Where(x => x.HasPropertyConverter(_propertyConverters) &&
+                                                    x.CanInclude(_propertyFilters))
+                                        .SelectMany(x => x.GetColumns(_propertyConverters))
                                         .ToList());
 
             using (var stream = new MemoryStream()) {

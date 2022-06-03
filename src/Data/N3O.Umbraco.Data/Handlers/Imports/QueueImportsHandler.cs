@@ -46,8 +46,8 @@ namespace N3O.Umbraco.Data.Handlers {
         private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
         private readonly IImportProcessingQueue _importProcessingQueue;
         private readonly Lazy<IVolume> _volume;
+        private readonly IEnumerable<IPropertyConverter> _propertyConverters;
         private readonly ErrorLog _errorLog;
-        private readonly IReadOnlyList<IPropertyConverter> _converters;
         private readonly IReadOnlyList<IImportPropertyFilter> _propertyFilters;
         private readonly List<IContentMatcher> _contentMatchers;
         private readonly string _nameColumnTitle;
@@ -67,8 +67,8 @@ namespace N3O.Umbraco.Data.Handlers {
                                    IImportProcessingQueue importProcessingQueue,
                                    Lazy<IVolume> volume,
                                    IFormatter formatter,
-                                   IEnumerable<IPropertyConverter> converters,
                                    IEnumerable<IImportPropertyFilter> propertyFilters,
+                                   IEnumerable<IPropertyConverter> propertyConverters,
                                    IEnumerable<IContentMatcher> contentMatchers) {
             _backOfficeSecurityAccessor = backOfficeSecurityAccessor;
             _workspace = workspace;
@@ -83,9 +83,9 @@ namespace N3O.Umbraco.Data.Handlers {
             _importProcessingQueue = importProcessingQueue;
             _volume = volume;
             _errorLog = new ErrorLog(formatter);
-            _converters = converters.OrEmpty().ToList();
-            _propertyFilters = propertyFilters.OrEmpty().ToList();
-            _contentMatchers = contentMatchers.OrEmpty().ToList();
+            _propertyConverters = propertyConverters.ToList();
+            _propertyFilters = propertyFilters.ToList();
+            _contentMatchers = contentMatchers.ToList();
 
             _nameColumnTitle = formatter.Text.Format<DataStrings>(s => s.NameColumnTitle);
             _replacesColumnTitle = formatter.Text.Format<DataStrings>(s => s.ReplacesColumnTitle);
@@ -120,9 +120,10 @@ namespace N3O.Umbraco.Data.Handlers {
                 var containerContent = req.ContentId.Run(_contentService.GetById, true);
                 var contentType = _contentTypeService.Get(req.ContentType);
                 var propertyInfos = contentType.GetUmbracoProperties(_dataTypeService, _contentTypeService).ToList();
-                var propertyInfoColumns = propertyInfos.Where(x => x.CanInclude(_propertyFilters))
+                var propertyInfoColumns = propertyInfos.Where(x => x.HasPropertyConverter(_propertyConverters) &&
+                                                                   x.CanInclude(_propertyFilters))
                                                        .ToDictionary(x => x,
-                                                                     x => x.GetColumns(_converters));
+                                                                     x => x.GetColumns(_propertyConverters));
 
                 var csvReader = _workspace.GetCsvReader(req.Model.DatePattern,
                                                         DecimalSeparators.Point,
