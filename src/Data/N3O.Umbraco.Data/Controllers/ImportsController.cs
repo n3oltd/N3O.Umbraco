@@ -11,6 +11,7 @@ using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Plugins.Controllers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
 
@@ -53,12 +54,14 @@ namespace N3O.Umbraco.Data.Controllers {
         public async Task<ActionResult<QueueImportsRes>> Queue(QueueImportsReq req) {
             try {
                 var res = await _mediator.Value.SendAsync<QueueImportsCommand, QueueImportsReq, QueueImportsRes>(req);
-
+                if (res.Errors != null) {
+                    return BadRequest(res.Errors.Select(p=>p.ToString()));
+                }
                 return Ok(res);
             } catch (Exception ex) {
                 _logger.LogError(ex, "Import failed");
                 
-                return UnprocessableEntity();
+                return UnprocessableEntity("Error Importing, Please Contact Admin");
             }
         }
     }
