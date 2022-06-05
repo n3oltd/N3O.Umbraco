@@ -24,7 +24,7 @@ namespace N3O.Umbraco.Payments.GoCardless.Controllers {
         }
 
         [HttpGet("credentials/{flowId:entityId}/redirectFlow/complete")]
-        public async Task<ActionResult> CompleteRedirectFlow() {
+        public async Task<RedirectResult> CompleteRedirectFlow() {
             var res = await _mediator.SendAsync<CompleteRedirectFlowCommand, None, PaymentFlowRes<GoCardlessCredential>>(None.Empty);
 
             return Redirect(res.Result.ReturnUrl);

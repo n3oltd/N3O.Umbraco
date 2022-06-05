@@ -29,7 +29,7 @@ namespace N3O.Umbraco.Payments.Opayo.Controllers {
         }
         
         [HttpPost("payments/{flowId:entityId}/completeThreeDSecure")]
-        public async Task<ActionResult> CompleteThreeDSecureChallenge([FromForm] CompleteThreeDSecureReq req) {
+        public async Task<RedirectResult> CompleteThreeDSecureChallenge([FromForm] CompleteThreeDSecureReq req) {
             var res = await _mediator.SendAsync<CompleteThreeDSecureCommand, CompleteThreeDSecureReq, PaymentFlowRes<OpayoPayment>>(req);
 
             return Redirect(res.Result.ReturnUrl);
