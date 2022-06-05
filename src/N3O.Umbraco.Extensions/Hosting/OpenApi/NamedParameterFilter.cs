@@ -5,7 +5,7 @@ using NJsonSchema.Generation;
 namespace N3O.Umbraco.Hosting {
     public class NamedParameterFilter : TypeTransformationFilter {
         protected override void DoProcess(SchemaProcessorContext context) {
-            var type = context.Type;
+            var type = context.ContextualType.Type;
 
             if (type.ImplementsInterface<INamedParameter>()) {
                 ModelAsString();

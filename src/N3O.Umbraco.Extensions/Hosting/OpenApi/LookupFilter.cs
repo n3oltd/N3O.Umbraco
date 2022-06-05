@@ -12,7 +12,7 @@ namespace N3O.Umbraco.Hosting {
         private static readonly ConcurrentDictionary<Type, IReadOnlyList<string>> LookupIds = new();
 
         protected override void DoProcess(SchemaProcessorContext context) {
-            var type = context.Type;
+            var type = context.ContextualType.Type;
 
             if (type.ImplementsInterface<ILookup>()) {
                 var lookupIds = LookupIds.GetOrAdd(type, _ => GetLookupIds(type));
