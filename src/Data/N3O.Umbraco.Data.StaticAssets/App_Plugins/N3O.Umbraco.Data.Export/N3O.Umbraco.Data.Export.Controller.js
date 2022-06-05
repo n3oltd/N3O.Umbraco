@@ -52,7 +52,7 @@ angular.module("umbraco")
                 format: $scope.format
             };
             
-            var res = await fetch(`/umbraco/backoffice/api/Exports/export/${$scope.content.key}/${$scope.contentType.alias}`, {
+            let res = await fetch(`/umbraco/backoffice/api/Exports/export/${$scope.content.key}/${$scope.contentType.alias}`, {
                 headers: {
                     "Accept": "application/json",
                     "Content-Type": "application/json"
@@ -91,7 +91,7 @@ angular.module("umbraco")
         }
 
         async function getContentTypes(contentId) {
-            const getContentType = await fetch(`/umbraco/api/ContentTypes/${contentId}/descendants`, {
+            const getContentType = await fetch(`/umbraco/api/ContentTypes/${contentId}/relations?type=descendant`, {
                 headers: {
                     "Accept": "application/json"
                 }

@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Data.Queries;
 using N3O.Umbraco.Data.Models;
+using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Mediator;
 using System.Collections.Generic;
@@ -10,27 +11,39 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Data.Handlers {
-    public class GetDescendantsContentTypesHandler :
-        IRequestHandler<GetDescendantsContentTypesQuery, None, IEnumerable<ContentTypeSummary>> {
+    public class GetRelationContentTypesHandler :
+        IRequestHandler<GetRelationContentTypesQuery, string, IEnumerable<ContentTypeSummary>> {
         private readonly IContentService _contentService;
         private readonly IContentTypeService _contentTypeService;
 
-        public GetDescendantsContentTypesHandler(IContentService contentService, IContentTypeService contentTypeService) {
+        public GetRelationContentTypesHandler(IContentService contentService, IContentTypeService contentTypeService) {
             _contentService = contentService;
             _contentTypeService = contentTypeService;
         }
         
-        public Task<IEnumerable<ContentTypeSummary>> Handle(GetDescendantsContentTypesQuery req,
+        public Task<IEnumerable<ContentTypeSummary>> Handle(GetRelationContentTypesQuery req,
                                                             CancellationToken cancellationToken) {
             var content = req.ContentId.Run(_contentService.GetById, true);
             var contentType = _contentTypeService.Get(content.ContentType.Id);
-            var descendantsContentsTypes = new List<IContentType>();
+            var relationContentsTypes = new List<IContentType>();
 
-            PopulateDescendantsContentTypes(descendantsContentsTypes, contentType);
+            switch (req.Model.ToLowerInvariant()) {
+                case "child":
+                    relationContentsTypes.AddRange(contentType.AllowedContentTypes
+                                                              .Select(x => _contentTypeService.Get(x.Id.Value)));
+                    break;
+                
+                case "descendant":
+                    PopulateDescendantsContentTypes(relationContentsTypes, contentType);
+                    break;
+                
+                default:
+                    throw UnrecognisedValueException.For(req.Model);
+            }
 
             var res = new List<ContentTypeSummary>();
 
-            foreach (var allowedContentType in descendantsContentsTypes.OrderBy(x => x.Name)) {
+            foreach (var allowedContentType in relationContentsTypes.OrderBy(x => x.Name)) {
                 res.Add(new ContentTypeSummary {
                     Alias = allowedContentType.Alias,
                     Name = allowedContentType.Name

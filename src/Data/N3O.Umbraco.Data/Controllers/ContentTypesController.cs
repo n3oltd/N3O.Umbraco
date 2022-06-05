@@ -19,11 +19,11 @@ namespace N3O.Umbraco.Data.Controllers {
             _mediator = mediator;
         }
 
-        [HttpGet("{contentId:guid}/descendants")]
+        [HttpGet("{contentId:guid}/relations")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ContentTypeSummary>>> GetDescendantContentTypes() {
+        public async Task<ActionResult<IEnumerable<ContentTypeSummary>>> GetRelationContentTypes([FromQuery] string type) {
             try {
-                var res = await _mediator.SendAsync<GetDescendantsContentTypesQuery, None, IEnumerable<ContentTypeSummary>>(None.Empty);
+                var res = await _mediator.SendAsync<GetRelationContentTypesQuery, string, IEnumerable<ContentTypeSummary>>(type);
 
                 return Ok(res);
             } catch (ResourceNotFoundException ex) {
