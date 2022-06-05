@@ -15,6 +15,10 @@ namespace N3O.Umbraco.Storage.Services {
             _storageRootPath = Path.Combine(webHostEnvironment.WebRootPath,
                                             StorageConstants.StorageFolderName,
                                             folderName);
+
+            if (!Directory.Exists(_storageRootPath)) {
+                Directory.CreateDirectory(_storageRootPath);
+            }
         }
         
         public async Task AddFileAsync(string filename, Stream stream) {

@@ -2,6 +2,7 @@ angular.module("umbraco")
     .controller("N3O.Umbraco.Data.Export", function ($scope, editorState, contentResource) {
         $scope.processing = false;
         $scope.contentType = null;
+        $scope.errorMessage = null;
         $scope.includeUnpublished = false;
         $scope.format = "excel";
 
@@ -31,8 +32,7 @@ angular.module("umbraco")
             $scope.errorMessage = null;
             
             if (!$scope.contentType) {
-                $scope.errorMessage = "Please select a content type";
-                $scope.processing = false;
+                processingError("Please select a content type");
 
                 return;
             }
@@ -40,8 +40,7 @@ angular.module("umbraco")
             let selectedPropertyAliases = $scope.exportableProperties.filter(x => x.selected).map(x => x.alias);
             
             if ($scope.exportableProperties.length && !selectedPropertyAliases.length) {
-                $scope.errorMessage = "At least one property must be selected";
-                $scope.processing = false;
+                processingError("At least one property must be selected");
                 
                 return;
             }
@@ -88,6 +87,11 @@ angular.module("umbraco")
             for (let property of $scope.exportableProperties) {
                 property.selected = false;
             }
+        }
+        
+        function processingError(message) {
+            $scope.processing = false;
+            $scope.errorMessage = message;
         }
 
         async function getContentTypes(contentId) {

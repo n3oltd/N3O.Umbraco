@@ -15,15 +15,16 @@ namespace N3O.Umbraco.Storage.Extensions {
             var toStorageFolder = await volume.GetStorageFolderAsync(toFolderName);
 
             var fromBlob = await fromStorageFolder.GetFileAsync(filename);
+            Blob toBlob;
             using (fromBlob.Stream) {
                 await toStorageFolder.AddFileAsync(filename, fromBlob.Stream);
 
-                var toBlob = await toStorageFolder.GetFileAsync(filename);
-
-                await fromStorageFolder.DeleteFileAsync(filename);
-
-                return toBlob;
+                toBlob = await toStorageFolder.GetFileAsync(filename);
             }
+            
+            await fromStorageFolder.DeleteFileAsync(filename);
+            
+            return toBlob;
         }
 
         public static async Task<Blob> MoveTempFileAsync(this IVolume volume, string filename, string toFolderName) {

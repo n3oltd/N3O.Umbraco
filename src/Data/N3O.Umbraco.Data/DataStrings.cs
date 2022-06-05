@@ -4,6 +4,7 @@ namespace N3O.Umbraco.Data {
     public class DataStrings : CodeStrings {
         public string NameColumnTitle => "Name";
         public string OrderColumnTitle => "Order";
+        public string PathColumnTitle => "Path";
         public string ReplacesColumnTitle => "Replaces";
     }
 }

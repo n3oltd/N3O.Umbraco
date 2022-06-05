@@ -34,7 +34,7 @@ namespace N3O.Umbraco.Data.ContentApps {
                     Name = "Export",
                     Icon = "icon-arrow-down",
                     View = "/App_Plugins/N3O.Umbraco.Data.Export/N3O.Umbraco.Data.Export.html",
-                    Weight = -102
+                    Weight = -99
                 }; 
             } else {
                 return null;

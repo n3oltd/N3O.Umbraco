@@ -294,7 +294,6 @@ namespace N3O.Umbraco.Data.Handlers {
                     field.Name = column.Title;
                     field.SourceValue = csvReader.Row.GetRawField(column.Title);
                     field.Value = field.SourceValue;
-                    field.Ignore = false;
 
                     yield return field;
                 }

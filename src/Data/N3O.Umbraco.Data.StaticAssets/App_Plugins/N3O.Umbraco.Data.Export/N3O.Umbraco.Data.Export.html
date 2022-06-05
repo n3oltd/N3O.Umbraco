@@ -1,94 +1,98 @@
 <div class="form-horizontal" ng-controller="N3O.Umbraco.Data.Export">
-    <form>
-        <div class="umb-group-panel">
-            <div class="umb-group-panel__header">
-                <div>Options</div>
+    <div class="umb-group-panel">
+        <div class="umb-group-panel__header">
+            <div>Options</div>
+        </div>
+
+        <div class="umb-group-panel__content">
+            <div class="umb-property">
+                <div class="control-group umb-control-group">
+                    <div class="umb-el-wrap">
+                        <label class="control-label">
+                            Content Type <strong class="umb-control-required">*</strong>
+                        </label>
+
+                        <div class="controls">
+                            <select class="ng-select" ng-model="contentType" ng-disabled="processing" ng-change="refreshProperties()">
+                                <option ng-repeat="item in contentTypes" ng-value="{{item}}">{{item.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="umb-group-panel__content">
-                <div class="umb-property">
-                    <div class="control-group umb-control-group">
-                        <div class="umb-el-wrap">
-                            <label class="control-label">Content Type</label>
-
-                            <div class="controls">
-                                <select class="ng-select" ng-model="contentType" ng-disabled="processing" ng-change="refreshProperties()">
-                                    <option ng-repeat="item in contentTypes" ng-value="{{item}}">{{item.name}}</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="umb-property">
-                    <div class="control-group umb-control-group">
-                        <div class="umb-el-wrap">
-                            <label class="control-label">Format</label>
+            <div class="umb-property">
+                <div class="control-group umb-control-group">
+                    <div class="umb-el-wrap">
+                        <label class="control-label">
+                            Format <strong class="umb-control-required">*</strong>
+                        </label>
+                        
+                        <div class="controls">
+                            <label>
+                                <input type="radio" ng-model="format" ng-disabled="processing" value="excel">
+                                
+                                Excel
+                            </label>
                             
-                            <div class="controls">
-                                <label>
-                                    <input type="radio" ng-model="format" ng-disabled="processing" value="excel">
-                                    
-                                    Excel
-                                </label>
+                            <br >
+                            
+                            <label>
+                                <input type="radio" ng-model="format" ng-disabled="processing" value="csv">
                                 
-                                <br >
-                                
-                                <label>
-                                    <input type="radio" ng-model="format" ng-disabled="processing" value="csv">
-                                    
-                                    CSV
-                                </label>
-                            </div>
+                                CSV
+                            </label>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="umb-property">
-                    <div class="control-group umb-control-group">
-                        <div class="umb-el-wrap">
-                            <label class="control-label">Include unpublished</label>
+            <div class="umb-property">
+                <div class="control-group umb-control-group">
+                    <div class="umb-el-wrap">
+                        <label class="control-label">
+                            Include unpublished <strong class="umb-control-required">*</strong>
+                        </label>
 
-                            <div class="controls">
-                                <input ng-model="includeUnpublished" ng-disabled="processing" type="checkbox">
-                            </div>
+                        <div class="controls">
+                            <input ng-model="includeUnpublished" ng-disabled="processing" type="checkbox">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="umb-group-panel">
-            <div class="umb-group-panel__header">
-                <div>Columns</div>
+    <div class="umb-group-panel">
+        <div class="umb-group-panel__header">
+            <div>Columns <strong class="umb-control-required">*</strong></div>
+        </div>
+        
+        <div class="umb-group-panel__content">
+            <div class="listTable listTable--umb">
+                <a class="umb-outline" ng-click="selectAll()" ng-disabled="processing">Select All</a> |
+                <a class="umb-outline" ng-click="clearSelection()" ng-disabled="processing">Clear Selection</a>
+
+                <br><br>
+                
+                <ul class="propertyCheckBoxes">
+                    <li ng-repeat="property in exportableProperties">
+                        <label>
+                            <input type="checkbox" value="{{property.alias}}" ng-model="property.selected">
+                            
+                            &nbsp;{{property.columnTitle}}
+                        </label>
+                    </li>
+                </ul>
             </div>
             
-            <div class="umb-group-panel__content">
-                <div class="listTable listTable--umb">
-                    <a class="umb-outline" ng-click="selectAll()" ng-disabled="processing">Select All</a> |
-                    <a class="umb-outline" ng-click="clearSelection()" ng-disabled="processing">Clear Selection</a>
-
-                    <br><br>
-                    
-                    <ul class="propertyCheckBoxes">
-                        <li ng-repeat="property in exportableProperties">
-                            <label>
-                                <input type="checkbox" value="{{property.alias}}" ng-model="property.selected">
-                                
-                                &nbsp;{{property.columnTitle}}
-                            </label>
-                        </li>
-                    </ul>
-                </div>
-                
-                <em class="red" ng-show="errorMessage">{{errorMessage}}</em>
-            </div>
+            <em class="red" ng-show="errorMessage">{{errorMessage}}</em>
         </div>
+    </div>
 
+    <div>
         <div>
-            <div>
-                <a href class="btn btn-primary" ng-click="export()" ng-disabled="processing">{{processing ? "Please wait..." : "Export"}}</a>
-            </div>
+            <a class="btn btn-primary" ng-click="export()" ng-disabled="processing">{{processing ? "Please wait..." : "Export"}}</a>
         </div>
-    </form>
+    </div>
 </div>
