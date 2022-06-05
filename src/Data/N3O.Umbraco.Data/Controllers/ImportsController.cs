@@ -40,7 +40,7 @@ namespace N3O.Umbraco.Data.Controllers {
             return Ok(res);
         }
 
-        [HttpGet("template/{contentId:guid}/{contentType}")]
+        [HttpGet("template/{contentType}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> GetTemplate() {
             var res = await _mediator.Value.SendAsync<GetImportTemplateQuery, None, ImportTemplate>(None.Empty);

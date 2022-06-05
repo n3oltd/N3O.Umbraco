@@ -1,153 +1,128 @@
 angular.module("umbraco")
     .controller("N3O.Umbraco.Data.Import", function ($scope, editorState, contentResource) {
-        initialize();
-        
-        $scope.getTemplate = async function() {
-            const content = await contentResource.getById(editorState.current.id);
+        $scope.startOver = function () {
+            $scope.processing = false;
+            $scope.contentType = null;
+            $scope.errorMessage = null;
+            $scope.show = "form";
+        };
+
+        (async () => {
+            $scope.startOver();
             
-            const contentType=await getContentType(content.key);
-            const csvTemplate = await fetch(`/umbraco/backoffice/api/Imports/template/${content.key}/${contentType}`);
-            const blob = await csvTemplate.blob();
+            $scope.content = await contentResource.getById(editorState.current.id);
+            $scope.contentTypes = await getContentTypes($scope.content.key);
+
+            fetch("/umbraco/backoffice/api/Imports/lookups/datePatterns", {
+                headers: {
+                    "Accept": "application/json"
+                }
+            })
+            .then(res => res.json())
+            .then(res => {
+                $scope.dateFormats = res;
+                $scope.dateFormat = res[0];
+            });
+        })();
+
+        $scope.getTemplate = async function () {
+            const getTemplate = await fetch(`/umbraco/backoffice/api/Imports/template/${$scope.contentType.alias}`);
             
-            const header = csvTemplate.headers.get('Content-Disposition');
-            const parts = header.split(';');
-            const filename = parts[1].split('=')[1].replaceAll('"', '');
-            
+            const blob = await getTemplate.blob();
+            const header = getTemplate.headers.get("Content-Disposition");
+            const parts = header.split(";");
+            const filename = parts[1].split("=")[1].replaceAll('"', '');
+
             const newBlob = new Blob([blob]);
             const blobUrl = window.URL.createObjectURL(newBlob);
-            const link = document.createElement('a');
+            const link = document.createElement("a");
             link.href = blobUrl;
-            link.setAttribute('download', filename);
+            link.setAttribute("download", filename);
             document.body.appendChild(link);
             link.click();
             link.parentNode.removeChild(link);
             window.URL.revokeObjectURL(blobUrl);
         };
 
-        $scope.importFile = async function() {
-            const content = await contentResource.getById(editorState.current.id);
-            const contentType= await getContentType(content.key);
+        $scope.import = async function () {
+            $scope.processing = true;
             
             const csvFile = document.getElementById("csvFile");
             const zipFile = document.getElementById("zipFile");
             
-            var csvExtension = csvFile.value.split('.')[1];
-            var zipExtension = zipFile.value.split('.')[1];
-            
-            if(csvFile.files.length==0 || csvExtension!="csv"){
-                errorImporting("CSV File is Invalid.");
+            if (!$scope.dateFormat) {
+                processingError("Please specify the date format used in the CSV file");
+
                 return;
             }
             
-            if(zipExtension!=null && zipExtension!="zip"){
-                errorImporting("Only zip files can be uploaded for Image References.");
+            if (!csvFile.value || csvFile.value.split(".")[1].toLowerCase() != "csv") {
+                processingError("A valid CSV file must be specified");
+                
                 return;
             }
-            
-            $scope.showButton="processingButton";
-            $scope.$apply();
-            
+
+            if (zipFile.value && zipFile.value.split(".")[1].toLowerCase() != "zip") {
+                errorImporting("The selected file is not a valid ZIP file");
+                
+                return;
+            }
+
             const csvStorageToken = await getStorageToken(csvFile);
             const zipStorageToken = await getStorageToken(zipFile);
-            
-            var req = {
+
+            let req = {
                 datePattern: $scope.dateFormat.id,
                 csvFile: csvStorageToken,
                 zipFile: zipStorageToken
             };
-            
-            var result = await fetch(`/umbraco/backoffice/api/Imports/queue/${content.key}/${contentType}`, {
-                method: 'POST',
+
+            let result = await fetch(`/umbraco/backoffice/api/Imports/queue/${$scope.content.key}/${$scope.contentType.alias}`, {
+                method: "POST",
                 headers: {
-                    'accept': '*/*',
-                    'Content-Type': 'application/json'
+                    "Accept": "*/*",
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify(req)
             });
 
-            if(result.status!=200){
-                result= await result.json();
-                errorImporting(result);
-                return;
+            if (result.status === 200) {
+                $scope.show = "success";
+                $scope.processing = false;
+            } else {
+                processingError(await result.json());
             }
-            $scope.showWindow="importSuccess";
-            $scope.$apply();
-            
         };
 
-        fetch('/umbraco/backoffice/api/Imports/lookups/datePatterns', {
-            headers: {
-                'accept': 'application/json'
-            }
-        })
-        .then(res => res.json())
-        .then(res => {
-            $scope.dateFormats = res;
-            $scope.dateFormat = res[0];
-        });
-        
-        
-        $scope.failedTryAgain= function(){
-            $scope.csvNotAttached=false;
-            $scope.showButton="importButton";
-            $scope.showWindow="importForm";
-            $scope.$apply();
-        };
-        
-        function errorImporting(message){
-            $scope.showWindow="importFailed";
-            if(!Array.isArray(message)){
-                $scope.errorMessage=[message];
-            }
-            else{
-                $scope.errorMessage=message;
-            }
-            
-            $scope.$apply();
-                    
-        }
-        
-
-        
-        function initialize(){
-
-        $scope.showWindow="importForm";
-        $scope.showButton="importButton";
-        
-        }
-        
-        
-        
-        async function getStorageToken(selector) {
-            
-            if (selector.files.length === 0) {
+        async function getStorageToken(input) {
+            if (input.files.length === 0) {
                 return null;
             }
-            
+
             const data = new FormData();
-            data.append('file', selector.files[0]);
-            
-            var res = await fetch('/umbraco/api/Storage/tempUpload', {
-                method: 'POST',
+            data.append("file", input.files[0]);
+
+            var res = await fetch("/umbraco/api/Storage/tempUpload", {
+                method: "POST",
                 body: data
             });
-            
-            return  await res.json(); 
+
+            return await res.json();
         }
-        
-        async function getContentType(contentKey) {
-            var getContentType = await fetch(`/umbraco/api/ContentTypes/${contentKey}/descendants`);
-            var bodyContentType = await getContentType.json();
-            
-            
-            function check(response){
-                for(i=0;i<response.length;i++){
-                    var temp=response[i]['alias'];
-                    if(temp.includes('Beneficiary')){
-                        return temp;
-                    }
+
+        function processingError(message) {
+            $scope.processing = false;
+            $scope.errorMessage = message;
+            $scope.show = "error";
+        }
+
+        async function getContentTypes(contentId) {
+            const getContentType = await fetch(`/umbraco/api/ContentTypes/${contentId}/relations?type=child`, {
+                headers: {
+                    "Accept": "application/json"
                 }
-            }
-            return check(bodyContentType);
+            });
+
+            return await getContentType.json();
         }
     });

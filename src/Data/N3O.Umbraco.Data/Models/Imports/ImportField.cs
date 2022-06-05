@@ -4,6 +4,5 @@
         public string Name { get; set; }
         public string Value { get; set; }
         public string SourceValue { get; set; }
-        public bool Ignore { get; set; }
     }
 }
