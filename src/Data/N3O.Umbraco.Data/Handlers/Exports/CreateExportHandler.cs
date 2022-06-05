@@ -1,11 +1,11 @@
-﻿using N3O.Umbraco.Data.Commands;
-using N3O.Umbraco.Data.Extensions;
-using N3O.Umbraco.Data.Models;
-using N3O.Umbraco.Content;
+﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Data.Builders;
+using N3O.Umbraco.Data.Commands;
 using N3O.Umbraco.Data.Converters;
+using N3O.Umbraco.Data.Extensions;
 using N3O.Umbraco.Data.Filters;
 using N3O.Umbraco.Data.Lookups;
+using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Services;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Services;
@@ -22,7 +23,8 @@ using Umbraco.Cms.Core.Services;
 namespace N3O.Umbraco.Data.Handlers {
     public class CreateExportHandler : IRequestHandler<CreateExportCommand, ExportReq, ExportFile> {
         private const int PageSize = 100;
-        
+
+        private readonly Dictionary<int, string> _pathCache = new();
         private readonly IContentService _contentService;
         private readonly IContentTypeService _contentTypeService;
         private readonly IDataTypeService _dataTypeService;
@@ -32,6 +34,7 @@ namespace N3O.Umbraco.Data.Handlers {
         private readonly IReadOnlyList<IPropertyConverter> _propertyConverters;
         private readonly IReadOnlyList<IExportPropertyFilter> _propertyFilters;
         private readonly string _nameColumnTitle;
+        private readonly string _pathColumnTitle;
 
         public CreateExportHandler(IContentService contentService,
                                    IContentTypeService contentTypeService,
@@ -52,6 +55,7 @@ namespace N3O.Umbraco.Data.Handlers {
             _propertyFilters = propertyFilters.ToList();
             
             _nameColumnTitle = formatter.Text.Format<DataStrings>(s => s.NameColumnTitle);
+            _pathColumnTitle = formatter.Text.Format<DataStrings>(s => s.PathColumnTitle);
         }
 
         public async Task<ExportFile> Handle(CreateExportCommand req, CancellationToken cancellationToken) {
@@ -74,6 +78,11 @@ namespace N3O.Umbraco.Data.Handlers {
                                             .String<string>()
                                             .Title(_nameColumnTitle)
                                             .Build();
+            
+            var pathColumnRange = _workspace.ColumnRangeBuilder
+                                            .String<string>()
+                                            .Title(_pathColumnTitle)
+                                            .Build();
 
             var publishedOnly = !req.Model.IncludeUnpublished.GetValueOrThrow();
 
@@ -93,6 +102,7 @@ namespace N3O.Umbraco.Data.Handlers {
                     }
                     
                     tableBuilder.AddValue(nameColumnRange, content.Name);
+                    tableBuilder.AddValue(pathColumnRange, GetPath(content.ParentId));
 
                     var contentProperties = _contentHelper.GetContentProperties(content);
 
@@ -134,6 +144,26 @@ namespace N3O.Umbraco.Data.Handlers {
             return new ExportFile(workbookFormat.AppendFileExtension($"{contentType.Name} Export"),
                                   workbookFormat.ContentType,
                                   contents);
+        }
+
+        private string GetPath(int parentId) {
+            return _pathCache.GetOrAdd(parentId, () => {
+                var sb = new StringBuilder();
+
+                while (parentId != -1) {
+                    var parent = _contentService.GetById(parentId);
+
+                    if (sb.Length != 0) {
+                        sb.Append("// ");
+                    }
+
+                    sb.Append(parent.Name);
+                    
+                    parentId = parent.ParentId;
+                }
+
+                return sb.ToString();    
+            });
         }
 
         private async Task WriteCsvAsync(ITable table, Stream stream) {
