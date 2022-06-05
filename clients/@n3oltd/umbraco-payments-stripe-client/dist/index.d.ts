@@ -45,10 +45,22 @@ export interface StripePayment {
 export interface CardPayment {
     threeDSecureRequired?: boolean;
     threeDSecureCompleted?: boolean;
-    threeDSecureChallengeUrl?: string | undefined;
-    threeDSecureAcsTransId?: string | undefined;
-    threeDSecureCReq?: string | undefined;
-    threeDSecureCRes?: string | undefined;
+    threeDSecureV1?: ThreeDSecureV1 | undefined;
+    threeDSecureV2?: ThreeDSecureV2 | undefined;
+}
+export interface ThreeDSecureV1 {
+    acsUrl?: string | undefined;
+    md?: string | undefined;
+    paReq?: string | undefined;
+    paRes?: string | undefined;
+}
+export interface ThreeDSecureV2 {
+    acsUrl?: string | undefined;
+    acsTransId?: string | undefined;
+    sessionData?: string | undefined;
+    cReq?: string | undefined;
+    cRes?: string | undefined;
+    html?: string | undefined;
 }
 /** One of 'credential', 'payment' */
 export declare enum PaymentObjectType {

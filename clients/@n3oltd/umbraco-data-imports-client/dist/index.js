@@ -73,12 +73,9 @@ var ImportsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    ImportsClient.prototype.getTemplate = function (contentId, contentType) {
+    ImportsClient.prototype.getTemplate = function (contentType) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/backoffice/api/Imports/template/{contentId}/{contentType}";
-        if (contentId === undefined || contentId === null)
-            throw new Error("The parameter 'contentId' must be defined.");
-        url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
+        var url_ = this.baseUrl + "/umbraco/backoffice/api/Imports/template/{contentType}";
         if (contentType === undefined || contentType === null)
             throw new Error("The parameter 'contentType' must be defined.");
         url_ = url_.replace("{contentType}", encodeURIComponent("" + contentType));

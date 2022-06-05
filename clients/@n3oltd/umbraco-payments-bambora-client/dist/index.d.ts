@@ -5,19 +5,12 @@ export declare class BamboraClient {
     constructor(baseUrl?: string, http?: {
         fetch(url: RequestInfo, init?: RequestInit): Promise<Response>;
     });
-    completePaymentThreeDSecureChallenge(flowId: string, cRes: string | null | undefined, threeDSessionData: string | null | undefined): Promise<void>;
-    protected processCompletePaymentThreeDSecureChallenge(response: Response): Promise<void>;
     chargeCard(flowId: string, req: ChargeCardReq): Promise<PaymentFlowResOfBamboraPayment>;
     protected processChargeCard(response: Response): Promise<PaymentFlowResOfBamboraPayment>;
+    completePaymentThreeDSecure(flowId: string, cRes: string | null | undefined, paRes: string | null | undefined): Promise<void>;
+    protected processCompletePaymentThreeDSecure(response: Response): Promise<void>;
     storeCard(flowId: string, req: StoreCardReq): Promise<PaymentFlowResOfBamboraPayment>;
     protected processStoreCard(response: Response): Promise<PaymentFlowResOfBamboraPayment>;
-}
-export interface ProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
 }
 export interface PaymentFlowResOfBamboraPayment {
     flowRevision?: number;
@@ -48,10 +41,22 @@ export interface BamboraPayment {
 export interface CardPayment {
     threeDSecureRequired?: boolean;
     threeDSecureCompleted?: boolean;
-    threeDSecureChallengeUrl?: string | undefined;
-    threeDSecureAcsTransId?: string | undefined;
-    threeDSecureCReq?: string | undefined;
-    threeDSecureCRes?: string | undefined;
+    threeDSecureV1?: ThreeDSecureV1 | undefined;
+    threeDSecureV2?: ThreeDSecureV2 | undefined;
+}
+export interface ThreeDSecureV1 {
+    acsUrl?: string | undefined;
+    md?: string | undefined;
+    paReq?: string | undefined;
+    paRes?: string | undefined;
+}
+export interface ThreeDSecureV2 {
+    acsUrl?: string | undefined;
+    acsTransId?: string | undefined;
+    sessionData?: string | undefined;
+    cReq?: string | undefined;
+    cRes?: string | undefined;
+    html?: string | undefined;
 }
 /** One of 'credential', 'payment' */
 export declare enum PaymentObjectType {
@@ -63,6 +68,13 @@ export declare enum PaymentObjectStatus {
     Complete = "complete",
     Error = "error",
     InProgress = "inProgress"
+}
+export interface ProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
 }
 export interface ChargeCardReq {
     token?: string | undefined;

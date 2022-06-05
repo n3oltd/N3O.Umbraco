@@ -25,12 +25,14 @@ var ContentTypesClient = /** @class */ (function () {
         this.http = http ? http : window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
-    ContentTypesClient.prototype.getAllowedContentTypes = function (contentId) {
+    ContentTypesClient.prototype.getRelationContentTypes = function (type, contentId) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/ContentTypes/{contentId}/allowed";
+        var url_ = this.baseUrl + "/umbraco/api/ContentTypes/{contentId}/relations?";
         if (contentId === undefined || contentId === null)
             throw new Error("The parameter 'contentId' must be defined.");
         url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
+        if (type !== undefined && type !== null)
+            url_ += "type=" + encodeURIComponent("" + type) + "&";
         url_ = url_.replace(/[?&]$/, "");
         var options_ = {
             method: "GET",
@@ -39,10 +41,10 @@ var ContentTypesClient = /** @class */ (function () {
             }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processGetAllowedContentTypes(_response);
+            return _this.processGetRelationContentTypes(_response);
         });
     };
-    ContentTypesClient.prototype.processGetAllowedContentTypes = function (response) {
+    ContentTypesClient.prototype.processGetRelationContentTypes = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};

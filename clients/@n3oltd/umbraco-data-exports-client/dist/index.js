@@ -25,19 +25,18 @@ var ExportsClient = /** @class */ (function () {
         this.http = http ? http : window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
-    ExportsClient.prototype.getExportableProperties = function (contentId, contentType) {
+    ExportsClient.prototype.getExportableProperties = function (contentType) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/exportableProperties/{contentId}/{contentType}";
-        if (contentId === undefined || contentId === null)
-            throw new Error("The parameter 'contentId' must be defined.");
-        url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
+        var url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/exportableProperties/{contentType}";
         if (contentType === undefined || contentType === null)
             throw new Error("The parameter 'contentType' must be defined.");
         url_ = url_.replace("{contentType}", encodeURIComponent("" + contentType));
         url_ = url_.replace(/[?&]$/, "");
         var options_ = {
             method: "GET",
-            headers: {}
+            headers: {
+                "Accept": "application/json"
+            }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
             return _this.processGetExportableProperties(_response);
@@ -53,7 +52,9 @@ var ExportsClient = /** @class */ (function () {
         ;
         if (status === 200) {
             return response.text().then(function (_responseText) {
-                return;
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
             });
         }
         else if (status === 400) {

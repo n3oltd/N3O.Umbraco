@@ -25,59 +25,6 @@ var BamboraClient = /** @class */ (function () {
         this.http = http ? http : window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
-    BamboraClient.prototype.completePaymentThreeDSecureChallenge = function (flowId, cRes, threeDSessionData) {
-        var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Bambora/payments/{flowId}/completeThreeDSecureChallenge";
-        if (flowId === undefined || flowId === null)
-            throw new Error("The parameter 'flowId' must be defined.");
-        url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
-        url_ = url_.replace(/[?&]$/, "");
-        var content_ = new FormData();
-        if (cRes !== null && cRes !== undefined)
-            content_.append("CRes", cRes.toString());
-        if (threeDSessionData !== null && threeDSessionData !== undefined)
-            content_.append("ThreeDSessionData", threeDSessionData.toString());
-        var options_ = {
-            body: content_,
-            method: "POST",
-            headers: {}
-        };
-        return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processCompletePaymentThreeDSecureChallenge(_response);
-        });
-    };
-    BamboraClient.prototype.processCompletePaymentThreeDSecureChallenge = function (response) {
-        var _this = this;
-        var status = response.status;
-        var _headers = {};
-        if (response.headers && response.headers.forEach) {
-            response.headers.forEach(function (v, k) { return _headers[k] = v; });
-        }
-        ;
-        if (status === 200) {
-            return response.text().then(function (_responseText) {
-                return;
-            });
-        }
-        else if (status === 400) {
-            return response.text().then(function (_responseText) {
-                var result400 = null;
-                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        }
-        else if (status === 500) {
-            return response.text().then(function (_responseText) {
-                return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        }
-        else if (status !== 200 && status !== 204) {
-            return response.text().then(function (_responseText) {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve(null);
-    };
     BamboraClient.prototype.chargeCard = function (flowId, req) {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Bambora/payments/{flowId}/charge";
@@ -111,6 +58,59 @@ var BamboraClient = /** @class */ (function () {
                 var result200 = null;
                 result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
                 return result200;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
+    BamboraClient.prototype.completePaymentThreeDSecure = function (flowId, cRes, paRes) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Bambora/payments/{flowId}/completeThreeDSecure";
+        if (flowId === undefined || flowId === null)
+            throw new Error("The parameter 'flowId' must be defined.");
+        url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
+        url_ = url_.replace(/[?&]$/, "");
+        var content_ = new FormData();
+        if (cRes !== null && cRes !== undefined)
+            content_.append("CRes", cRes.toString());
+        if (paRes !== null && paRes !== undefined)
+            content_.append("PaRes", paRes.toString());
+        var options_ = {
+            body: content_,
+            method: "POST",
+            headers: {}
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processCompletePaymentThreeDSecure(_response);
+        });
+    };
+    BamboraClient.prototype.processCompletePaymentThreeDSecure = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                return;
             });
         }
         else if (status === 400) {

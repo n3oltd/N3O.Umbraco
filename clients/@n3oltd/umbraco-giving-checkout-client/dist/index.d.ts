@@ -253,10 +253,22 @@ export declare enum PaymentObjectStatus {
 export interface CardPaymentRes {
     threeDSecureRequired?: boolean;
     threeDSecureCompleted?: boolean;
-    threeDSecureChallengeUrl?: string | undefined;
-    threeDSecureAcsTransId?: string | undefined;
-    threeDSecureCReq?: string | undefined;
-    threeDSecureCRes?: string | undefined;
+    threeDSecureV1?: ThreeDSecureV1 | undefined;
+    threeDSecureV2?: ThreeDSecureV2 | undefined;
+}
+export interface ThreeDSecureV1 {
+    acsUrl?: string | undefined;
+    md?: string | undefined;
+    paReq?: string | undefined;
+    paRes?: string | undefined;
+}
+export interface ThreeDSecureV2 {
+    acsUrl?: string | undefined;
+    acsTransId?: string | undefined;
+    sessionData?: string | undefined;
+    cReq?: string | undefined;
+    cRes?: string | undefined;
+    html?: string | undefined;
 }
 export interface RegularGivingCheckoutRes {
     allocations?: AllocationRes[] | undefined;
@@ -279,7 +291,7 @@ export interface CredentialRes {
     isSetUp?: boolean;
 }
 export interface RegularGivingOptionsRes {
-    collectionDay?: string | undefined;
+    preferredCollectionDay?: string | undefined;
     frequency?: RegularGivingFrequency | undefined;
     firstCollectionDate?: Date | undefined;
 }
@@ -338,7 +350,7 @@ export interface ConsentChoiceReq {
     response?: ConsentResponse | undefined;
 }
 export interface RegularGivingOptionsReq {
-    collectionDay?: string | undefined;
+    preferredCollectionDay?: string | undefined;
     frequency?: RegularGivingFrequency | undefined;
     firstCollectionDate?: Date | undefined;
 }
