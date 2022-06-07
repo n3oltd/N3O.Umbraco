@@ -35,7 +35,6 @@ namespace N3O.Umbraco.Data.Handlers {
                                                   .Where(x => x.HasPropertyConverter(_propertyConverters) &&
                                                               x.CanInclude(_propertyFilters))
                                                   .Select(x => new ExportableProperty(x.Type.Alias, x.GetColumnTitle()))
-                                                  .OrderBy(x => x.ColumnTitle)
                                                   .ToList();
 
             return Task.FromResult(new ExportableProperties(exportableProperties));
