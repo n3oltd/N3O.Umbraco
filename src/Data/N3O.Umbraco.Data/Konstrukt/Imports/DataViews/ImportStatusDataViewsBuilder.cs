@@ -6,7 +6,7 @@ using Konstrukt.Models;
 
 namespace N3O.Umbraco.Data.Konstrukt {
     public class ImportStatusDataViewsBuilder : KonstruktDataViewsBuilder<Import> {
-        private const string AllAlias = "pending";
+        private const string AllAlias = "all";
         private const string PendingAlias = "pending";
         private const string Group = "Status";
 
@@ -36,7 +36,7 @@ namespace N3O.Umbraco.Data.Konstrukt {
             if (dataViewAlias == PendingAlias) {
                 return c => c.Status == ImportStatuses.Error || c.Status == ImportStatuses.Queued;
             } else if (dataViewAlias == AllAlias) {
-                return c => true;
+                return null;
             } else {
                 return c => c.Status == dataViewAlias;
             }
