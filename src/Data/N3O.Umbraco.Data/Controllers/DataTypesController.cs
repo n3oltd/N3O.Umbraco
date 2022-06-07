@@ -18,7 +18,7 @@ namespace N3O.Umbraco.Data.Controllers {
             _mediator = mediator;
         }
 
-        [HttpGet("find")]
+        [HttpPost("find")]
         public async Task<ActionResult<IEnumerable<DataTypeSummary>>> FindDataTypes(DataTypeCriteria req) {
             var res = await _mediator.SendAsync<FindDataTypesQuery, DataTypeCriteria, IEnumerable<DataTypeSummary>>(req);
 
