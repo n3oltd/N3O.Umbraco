@@ -54,7 +54,7 @@ namespace N3O.Umbraco.Data.Konstrukt {
         [Column(nameof(ParentId))]
         public Guid ParentId { get; set; }
         
-        [Column(nameof(Fields))]
+        [Column(nameof(Data))]
         [SpecialDbType(SpecialDbTypes.NTEXT)]
         public string Fields { get; set; }
 
@@ -79,6 +79,6 @@ namespace N3O.Umbraco.Data.Konstrukt {
         public string ImportedContentSummary { get; set; }
 
         [Ignore]
-        public bool CanProcess => Status.IsAnyOf(ImportStatuses.Abandoned, ImportStatuses.Queued, ImportStatuses.Error);
+        public bool CanProcess => Status.IsAnyOf(ImportStatuses.Abandoned, ImportStatuses.Queued, ImportStatuses.Error, ImportStatuses.Saved, ImportStatuses.SavedAndPublished);
     }
 }

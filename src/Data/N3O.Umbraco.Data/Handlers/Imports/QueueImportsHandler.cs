@@ -1,7 +1,6 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Data.Commands;
 using N3O.Umbraco.Data.Converters;
-using N3O.Umbraco.Data.Exceptions;
 using N3O.Umbraco.Data.Extensions;
 using N3O.Umbraco.Data.Filters;
 using N3O.Umbraco.Data.Konstrukt;
@@ -92,27 +91,6 @@ namespace N3O.Umbraco.Data.Handlers {
         }
         
         public async Task<QueueImportsRes> Handle(QueueImportsCommand req, CancellationToken cancellationToken) {
-            try {
-                var count = await QueueAsync(req, cancellationToken);
-
-                return new QueueImportsRes {
-                    Success = true,
-                    Count = count
-                };
-            } catch (ProcessingException processingException) {
-                return new QueueImportsRes {
-                    Success = false,
-                    Errors = processingException.Errors
-                };
-            } catch (Exception ex) {
-                return new QueueImportsRes {
-                    Success = false,
-                    Errors = ex.ToString().Yield()
-                };
-            }
-        }
-        
-        private async Task<int> QueueAsync(QueueImportsCommand req, CancellationToken cancellationToken) {
             var storageFolderName = _clock.GetCurrentInstant().ToUnixTimeMilliseconds().ToString();
             var csvBlob = await _volume.Value.MoveTempFileAsync(req.Model.CsvFile.Filename, storageFolderName);
             
@@ -180,7 +158,11 @@ namespace N3O.Umbraco.Data.Handlers {
                         import.Action = ImportActions.Create;
                     }
 
-                    import.Fields = _jsonProvider.SerializeObject(GetFields(csvReader, propertyInfoColumns));
+                    var importData = new ImportData();
+                    importData.Reference = import.Reference;
+                    importData.Fields = GetFields(csvReader, propertyInfoColumns);
+
+                    import.Fields = _jsonProvider.SerializeObject(importData);
                     import.Status = ImportStatuses.Queued;
 
                     imports.Add(import);
@@ -192,7 +174,9 @@ namespace N3O.Umbraco.Data.Handlers {
 
                 await InsertAndQueueAsync(imports);
 
-                return imports.Count;
+                return new QueueImportsRes {
+                   Count = imports.Count
+               };
             }
         }
 
@@ -293,7 +277,7 @@ namespace N3O.Umbraco.Data.Handlers {
                     field.Name = column.Title;
                     field.SourceValue = csvReader.Row.GetRawField(column.Title);
                     field.Value = field.SourceValue;
-                    field.Ignore = false;
+                    field.IsFile = property.IsFile;
 
                     yield return field;
                 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Data.Commands;
+using N3O.Umbraco.Data.Exceptions;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Queries;
@@ -53,6 +54,22 @@ namespace N3O.Umbraco.Data.Controllers {
         public async Task<ActionResult<QueueImportsRes>> Queue(QueueImportsReq req) {
             try {
                 var res = await _mediator.Value.SendAsync<QueueImportsCommand, QueueImportsReq, QueueImportsRes>(req);
+
+                return Ok(res);
+            } catch (ProcessingException ex) {
+                return UnprocessableEntity(ex.Errors);
+            } catch (Exception ex) {
+                _logger.LogError(ex, "Import failed");
+
+                return UnprocessableEntity("");
+            }
+        }
+
+        [HttpPost("imports/{referenceId}/files")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> AddFileToImport(AddFileToImportReq req) {
+            try {
+                var res = await _mediator.Value.SendAsync<AddFileToImportCommand, AddFileToImportReq, None>(req);
 
                 return Ok(res);
             } catch (Exception ex) {

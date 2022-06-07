@@ -49,7 +49,7 @@ namespace N3O.Umbraco.Data.Extensions {
                 }
             }
 
-            return new UmbracoPropertyInfo(contentType, propertyType, group, dataType, nestedContent);
+            return new UmbracoPropertyInfo(contentType, propertyType, group, dataType, nestedContent, dataType.EditorAlias.IsAnyOf("N3O.Umbraco.Cropper"));
         }
     }
 }

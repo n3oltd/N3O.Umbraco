@@ -21,3 +21,41 @@
    width: 100%;
    margin-top: 10px;
 }
+
+.sourceToolTip {
+    border-bottom: 1px dotted black;
+
+}
+
+[data-tooltip] {
+    position: relative;
+    cursor: default;
+
+}
+
+[data-tooltip]::after {
+    position: absolute;
+    width: 140px;
+    left: calc(50% - 70px);
+
+    bottom: 125%;
+    text-align: center;
+    box-sizing: border-box;
+
+    content: attr(data-tooltip);
+    color: #ffffff;
+    background: black;
+    padding: 8px;
+    border-radius: 10px;
+    font-size: 0.9em;
+    font-weight: bold;
+
+    visibility: hidden;
+
+}
+
+[data-tooltip]:hover::after {
+
+    visibility: visible;
+}
+

@@ -75,7 +75,7 @@ namespace N3O.Umbraco.Data.Handlers {
                         var propertyInfos = GetPropertyInfos(import.ContentTypeAlias);
                         var contentPublisher = GetContentPublisher(import);
                         var parser = await GetParserAsync(import);
-                        var propertyInfoFields = _jsonProvider.DeserializeObject<IEnumerable<ImportField>>(import.Fields)
+                        var propertyInfoFields = _jsonProvider.DeserializeObject<ImportData>(import.Fields).Fields
                                                               .GroupBy(x => x.Property)
                                                               .ToDictionary(x => propertyInfos[x.Key],
                                                                             x => x.ToList());
@@ -96,9 +96,9 @@ namespace N3O.Umbraco.Data.Handlers {
                             var contentSummary = GetContentSummary(savedContent);
                             
                             if (wasPublished) {
-                                import.Saved(savedContent.Key, contentSummary);
-                            } else {
                                 import.SavedAndPublished(savedContent.Key, contentSummary);
+                            } else {
+                                import.Saved(savedContent.Key, contentSummary, publishResult.InvalidProperties.Select(x => x.Alias));
                             }
                         } else {
                             import.Error(publishResult.EventMessages.GetAll().Select(x => x.Message));
@@ -146,14 +146,20 @@ namespace N3O.Umbraco.Data.Handlers {
         private IContentPublisher GetContentPublisher(Import import) {
             IContentPublisher contentPublisher;
             
-            if (import.Action == ImportActions.Create) {
+            if (import.Status == ImportStatuses.Saved || import.Status==ImportStatuses.SavedAndPublished) {
                 var contentType = _contentTypeService.Get(import.ContentTypeAlias);
 
-                contentPublisher = _contentEditor.New(import.Name, import.ParentId, contentType.Alias);
-            } else if (import.Action == ImportActions.Update) {
-                contentPublisher = _contentEditor.ForExisting(import.ReplacesId.Value);
+                contentPublisher = _contentEditor.ForExisting(import.ImportedContentId.GetValueOrThrow());
             } else {
-                throw UnrecognisedValueException.For(import.Action);
+                if (import.Action == ImportActions.Create) {
+                    var contentType = _contentTypeService.Get(import.ContentTypeAlias);
+
+                    contentPublisher = _contentEditor.New(import.Name, import.ParentId, contentType.Alias);
+                } else if (import.Action == ImportActions.Update) {
+                    contentPublisher = _contentEditor.ForExisting(import.ReplacesId.Value);
+                } else {
+                    throw UnrecognisedValueException.For(import.Action);
+                }
             }
 
             contentPublisher.Content.OnBuilt += (_, _) => _errorLog.ThrowIfHasErrors();
@@ -173,7 +179,7 @@ namespace N3O.Umbraco.Data.Handlers {
                              _errorLog,
                              null,
                              propertyInfo,
-                             fields.Where(x => !x.Ignore).ToList());
+                             fields);
         }
 
         private string GetContentSummary(IContent content) {

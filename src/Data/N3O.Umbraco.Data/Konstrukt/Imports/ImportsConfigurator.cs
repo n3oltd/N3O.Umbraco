@@ -56,11 +56,11 @@ namespace N3O.Umbraco.Data.Konstrukt {
             //
             // Can then wire these up respectively below.
             
-            generalFieldset.AddField(c => c.Fields).SetDataType("Textarea");
+            generalFieldset.AddField(c => c.Fields).SetDataType("N3O Import Fields Editor");
             
             var errorsFieldSet = generalTab.AddFieldset("Errors");
 
-            errorsFieldSet.AddField(c => c.Errors).SetDataType("Textarea").MakeReadOnly();
+            errorsFieldSet.AddField(c => c.Errors).SetDataType("Textarea").SetDescription("Following Properties are required/missing").MakeReadOnly();
         }
     }
 }
