@@ -46,7 +46,7 @@ namespace N3O.Umbraco.Data.Extensions {
             var name = columnTitlePrefix ?? "";
 
             if (propertyInfo.Group.HasValue() && propertyInfo.ContentType.PropertyGroups.Count > 1) {
-                name += $"{propertyInfo.Group.Name}: ";    
+                name += $"{propertyInfo.Group.Name}: ";
             }
             
             name += propertyInfo.Type.Name;
@@ -64,6 +64,17 @@ namespace N3O.Umbraco.Data.Extensions {
                 throw new Exception($"More than one property converter found for {propertyInfo.DataType.EditorAlias.Quote()}");
             } else {
                 return matches.Single();
+            }
+        }
+        
+        public static bool HasPropertyConverter(this UmbracoPropertyInfo propertyInfo,
+                                                IEnumerable<IPropertyConverter> converters) {
+            try {
+                GetPropertyConverter(propertyInfo, converters);
+
+                return true;
+            } catch {
+                return false;
             }
         }
     }

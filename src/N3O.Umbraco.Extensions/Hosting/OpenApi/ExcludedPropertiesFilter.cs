@@ -16,7 +16,7 @@ namespace N3O.Umbraco.Hosting {
         };
 
         public void Process(SchemaProcessorContext context) {
-            var type = context.Type;
+            var type = context.ContextualType.Type;
 
             foreach (var property in type.GetProperties()) {
                 if (property.HasAttribute<ExcludeFromSchemaAttribute>() ||

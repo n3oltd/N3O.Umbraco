@@ -5,10 +5,14 @@ export declare class ExportsClient {
     constructor(baseUrl?: string, http?: {
         fetch(url: RequestInfo, init?: RequestInit): Promise<Response>;
     });
-    getExportableProperties(contentId: string, contentType: string): Promise<void>;
-    protected processGetExportableProperties(response: Response): Promise<void>;
+    getExportableProperties(contentType: string): Promise<ExportableProperty[]>;
+    protected processGetExportableProperties(response: Response): Promise<ExportableProperty[]>;
     createExport(contentId: string, contentType: string, req: ExportReq): Promise<void>;
     protected processCreateExport(response: Response): Promise<void>;
+}
+export interface ExportableProperty {
+    alias?: string | undefined;
+    columnTitle?: string | undefined;
 }
 export interface ProblemDetails {
     type?: string | undefined;

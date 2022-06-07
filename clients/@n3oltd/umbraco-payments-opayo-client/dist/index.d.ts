@@ -5,25 +5,14 @@ export declare class OpayoClient {
     constructor(baseUrl?: string, http?: {
         fetch(url: RequestInfo, init?: RequestInit): Promise<Response>;
     });
-    completeThreeDSecureChallenge(flowId: string, cRes: string | null | undefined, threeDsSessionData: string | null | undefined): Promise<void>;
+    chargeCard(flowId: string, req: ChargeCardReq): Promise<PaymentFlowResOfOpayoPayment>;
+    protected processChargeCard(response: Response): Promise<PaymentFlowResOfOpayoPayment>;
+    completeThreeDSecureChallenge(flowId: string, cRes: string | null | undefined, paRes: string | null | undefined): Promise<void>;
     protected processCompleteThreeDSecureChallenge(response: Response): Promise<void>;
     getMerchantSessionKey(): Promise<MerchantSessionKeyRes>;
     protected processGetMerchantSessionKey(response: Response): Promise<MerchantSessionKeyRes>;
-    chargeCard(flowId: string, req: ChargeCardReq): Promise<PaymentFlowResOfOpayoPayment>;
-    protected processChargeCard(response: Response): Promise<PaymentFlowResOfOpayoPayment>;
     storeCard(flowId: string, req: StoreCardReq): Promise<PaymentFlowResOfOpayoCredential>;
     protected processStoreCard(response: Response): Promise<PaymentFlowResOfOpayoCredential>;
-}
-export interface ProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
-}
-export interface MerchantSessionKeyRes {
-    key?: string | undefined;
-    expiresAt?: Date;
 }
 export interface PaymentFlowResOfOpayoPayment {
     flowRevision?: number;
@@ -51,15 +40,28 @@ export interface OpayoPayment {
     opayoBankAuthorisationCode?: string | undefined;
     opayoRetrievalReference?: number | undefined;
     returnUrl?: string | undefined;
+    vendorTxCode?: string | undefined;
     method?: string | undefined;
 }
 export interface CardPayment {
     threeDSecureRequired?: boolean;
     threeDSecureCompleted?: boolean;
-    threeDSecureChallengeUrl?: string | undefined;
-    threeDSecureAcsTransId?: string | undefined;
-    threeDSecureCReq?: string | undefined;
-    threeDSecureCRes?: string | undefined;
+    threeDSecureV1?: ThreeDSecureV1 | undefined;
+    threeDSecureV2?: ThreeDSecureV2 | undefined;
+}
+export interface ThreeDSecureV1 {
+    acsUrl?: string | undefined;
+    md?: string | undefined;
+    paReq?: string | undefined;
+    paRes?: string | undefined;
+}
+export interface ThreeDSecureV2 {
+    acsUrl?: string | undefined;
+    acsTransId?: string | undefined;
+    sessionData?: string | undefined;
+    cReq?: string | undefined;
+    cRes?: string | undefined;
+    html?: string | undefined;
 }
 /** One of 'credential', 'payment' */
 export declare enum PaymentObjectType {
@@ -71,6 +73,13 @@ export declare enum PaymentObjectStatus {
     Complete = "complete",
     Error = "error",
     InProgress = "inProgress"
+}
+export interface ProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
 }
 export interface ChargeCardReq {
     merchantSessionKey?: string | undefined;
@@ -99,6 +108,10 @@ export declare enum ChallengeWindowSize {
     Large = "large",
     ExtraLarge = "extraLarge",
     FullScreen = "fullScreen"
+}
+export interface MerchantSessionKeyRes {
+    key?: string | undefined;
+    expiresAt?: Date;
 }
 export interface PaymentFlowResOfOpayoCredential {
     flowRevision?: number;

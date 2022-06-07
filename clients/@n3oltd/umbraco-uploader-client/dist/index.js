@@ -27,7 +27,7 @@ var UploaderClient = /** @class */ (function () {
     }
     UploaderClient.prototype.getMediaById = function (mediaId) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/backoffice/Uploader/media/{mediaId}";
+        var url_ = this.baseUrl + "/umbraco/backoffice/api/Uploader/media/{mediaId}";
         if (mediaId === undefined || mediaId === null)
             throw new Error("The parameter 'mediaId' must be defined.");
         url_ = url_.replace("{mediaId}", encodeURIComponent("" + mediaId));
@@ -85,7 +85,7 @@ var UploaderClient = /** @class */ (function () {
     };
     UploaderClient.prototype.upload = function (allowedExtensions, imagesOnly, maxFileSizeMb, maxHeight, maxWidth, minHeight, minWidth, file) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/backoffice/Uploader/upload";
+        var url_ = this.baseUrl + "/umbraco/backoffice/api/Uploader/upload";
         url_ = url_.replace(/[?&]$/, "");
         var content_ = new FormData();
         if (allowedExtensions !== null && allowedExtensions !== undefined)
@@ -151,7 +151,7 @@ var UploaderClient = /** @class */ (function () {
     };
     UploaderClient.prototype.getResponse = function (storagePath, filesizeBytes) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/backoffice/Uploader?";
+        var url_ = this.baseUrl + "/umbraco/backoffice/api/Uploader?";
         if (storagePath !== undefined && storagePath !== null)
             url_ += "storagePath=" + encodeURIComponent("" + storagePath) + "&";
         if (filesizeBytes === null)

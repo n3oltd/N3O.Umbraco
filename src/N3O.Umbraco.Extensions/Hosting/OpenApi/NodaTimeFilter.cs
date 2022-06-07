@@ -13,8 +13,7 @@ namespace N3O.Umbraco.Hosting {
             var instant = Instant.FromUtc(DateTime.UtcNow.Year, 4, 28, 12, 0);
             var zonedDateTime = instant.InZone(Timezones.Utc.Zone);
 
-            var type = context.Type;
-
+            var type = context.ContextualType.Type;
             object example = null;
 
             if (type.IsOfTypeOrNullableType<Instant>()) {

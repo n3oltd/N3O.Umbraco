@@ -14,7 +14,7 @@ namespace N3O.Umbraco.Data.Parsing {
 
         protected override ParseResult<Guid?> TryParse(string text, Type targetType) {
             if (Guid.TryParse(text?.Trim(), out var guid)) {
-                return ParseResult.Success<Guid?>(guid);    
+                return ParseResult.Success<Guid?>(guid);
             } else {
                 return ParseResult.Fail<Guid?>();
             }

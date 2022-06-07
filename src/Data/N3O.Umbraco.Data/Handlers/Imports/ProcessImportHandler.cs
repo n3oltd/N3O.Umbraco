@@ -23,7 +23,7 @@ using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Persistence;
 
 namespace N3O.Umbraco.Data.Handlers {
-    public class ProcessImport : IRequestHandler<ProcessImportCommand, None, None> {
+    public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, None> {
         private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
         private readonly IContentEditor _contentEditor;
         private readonly IContentService _contentService;
@@ -37,19 +37,18 @@ namespace N3O.Umbraco.Data.Handlers {
         private readonly IReadOnlyList<IImportPropertyFilter> _importPropertyFilters;
         private readonly IReadOnlyList<IContentSummariser> _contentSummarisers;
 
-        public ProcessImport(IUmbracoDatabaseFactory umbracoDatabaseFactory,
-                             IContentEditor contentEditor,
-                             IContentService contentService,
-                             IContentTypeService contentTypeService,
-                             IContentHelper contentHelper,
-                             IJsonProvider jsonProvider,
-                             IDataTypeService dataTypeService,
-                             IParserFactory parserFactory,
-                             IVolume volume,
-                             IFormatter formatter,
-                             IEnumerable<IPropertyConverter> converters,
-                             IEnumerable<IImportPropertyFilter> importPropertyFilters,
-                             IEnumerable<IContentSummariser> contentSummarisers) {
+        public ProcessImportHandler(IUmbracoDatabaseFactory umbracoDatabaseFactory,
+                                    IContentEditor contentEditor,
+                                    IContentService contentService,
+                                    IContentTypeService contentTypeService,
+                                    IJsonProvider jsonProvider,
+                                    IDataTypeService dataTypeService,
+                                    IParserFactory parserFactory,
+                                    IVolume volume,
+                                    IFormatter formatter,
+                                    IEnumerable<IPropertyConverter> converters,
+                                    IEnumerable<IImportPropertyFilter> importPropertyFilters,
+                                    IEnumerable<IContentSummariser> contentSummarisers) {
             _umbracoDatabaseFactory = umbracoDatabaseFactory;
             _contentEditor = contentEditor;
             _contentService = contentService;

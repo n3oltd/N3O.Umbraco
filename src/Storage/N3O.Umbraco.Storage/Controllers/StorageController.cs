@@ -52,8 +52,10 @@ namespace N3O.Umbraco.Storage.Controllers {
                     await storageFolder.AddFileAsync(filename, reqStream);
 
                     var blob = await storageFolder.GetFileAsync(filename);
-                    
-                    return Ok(StorageToken.FromBlob(blob));
+
+                    using (blob.Stream) {
+                        return Ok(StorageToken.FromBlob(blob));
+                    }
                 }
             } catch (Exception ex) {
                 _logger.LogError(ex, "File upload failed");

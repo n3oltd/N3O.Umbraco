@@ -19,7 +19,7 @@ namespace N3O.Umbraco.Data.Controllers {
 
         [HttpGet("{contentId:guid}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> GetById() {
+        public async Task<ActionResult<object>> GetById() {
             try {
                 var res = await _mediator.SendAsync<GetContentByIdQuery, None, object>(None.Empty);
 

@@ -117,7 +117,7 @@ namespace N3O.Umbraco.Data.Converters {
                 var parseResult = parse(field.Value);
 
                 if (parseResult.Success) {
-                    values.Add(parseResult.Value);    
+                    values.Add(parseResult.Value);
                 } else {
                     errorLog.AddError<Strings>(s => s.ParsingFailed_2, field.Value, field.Name);
                 }

@@ -9,6 +9,7 @@ using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Plugins.Controllers;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Data.Controllers {
@@ -22,13 +23,13 @@ namespace N3O.Umbraco.Data.Controllers {
             _mediator = mediator;
         }
 
-        [HttpGet("exportableProperties/{contentId:guid}/{contentType}")]
+        [HttpGet("exportableProperties/{contentType}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> GetExportableProperties() {
+        public async Task<ActionResult<IEnumerable<ExportableProperty>>> GetExportableProperties() {
             try {
                 var res = await _mediator.SendAsync<GetExportablePropertiesQuery, None, ExportableProperties>(None.Empty);
 
-                return Ok(res);
+                return Ok(res.Properties);
             } catch (ResourceNotFoundException ex) {
                 return NotFound(ex);
             }

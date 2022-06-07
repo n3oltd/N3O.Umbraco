@@ -7,7 +7,7 @@ export declare class ImportsClient {
     });
     getLookupDatePatterns(): Promise<NamedLookupRes[]>;
     protected processGetLookupDatePatterns(response: Response): Promise<NamedLookupRes[]>;
-    getTemplate(contentId: string, contentType: string): Promise<void>;
+    getTemplate(contentType: string): Promise<void>;
     protected processGetTemplate(response: Response): Promise<void>;
     queue(contentId: string, contentType: string, req: QueueImportsReq): Promise<QueueImportsRes>;
     protected processQueue(response: Response): Promise<QueueImportsRes>;

@@ -24,7 +24,7 @@ namespace N3O.Umbraco.Payments.Bambora.Controllers {
         }
         
         [HttpPost("payments/{flowId:entityId}/completeThreeDSecure")]
-        public async Task<ActionResult> CompletePaymentThreeDSecure([FromForm] CompleteThreeDSecureReq req) {
+        public async Task<RedirectResult> CompletePaymentThreeDSecure([FromForm] CompleteThreeDSecureReq req) {
             var res = await _mediator.SendAsync<CompleteThreeDSecureCommand, CompleteThreeDSecureReq, PaymentFlowRes<BamboraPayment>>(req);
 
             return Redirect(res.Result.ReturnUrl);

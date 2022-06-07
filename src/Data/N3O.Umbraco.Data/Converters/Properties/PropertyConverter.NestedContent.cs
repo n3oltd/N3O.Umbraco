@@ -27,9 +27,7 @@ namespace N3O.Umbraco.Data.Converters {
         }
         
         public bool IsConverter(UmbracoPropertyInfo propertyInfo) {
-            return propertyInfo.Type
-                               .PropertyEditorAlias
-                               .EqualsInvariant(UmbracoPropertyEditors.Aliases.NestedContent);
+            return propertyInfo.Type.PropertyEditorAlias.EqualsInvariant(UmbracoPropertyEditors.Aliases.NestedContent);
         }
 
         public void Export(IUntypedTableBuilder tableBuilder,

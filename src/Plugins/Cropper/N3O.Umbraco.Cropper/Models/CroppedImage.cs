@@ -26,7 +26,7 @@ namespace N3O.Umbraco.Cropper.Models {
         }
 
         public Uri GetUncroppedUrl(IUrlBuilder urlBuilder) {
-            return urlBuilder.Root().AppendPathSegment(_cropperSource.Src).ToUri();   
+            return urlBuilder.Root().AppendPathSegment(_cropperSource.Src).ToUri();
         }
 
         public bool HasCrop(string alias) {

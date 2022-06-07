@@ -1,0 +1,10 @@
+.listTable {
+    overflow: hidden;
+}
+
+ul.propertyCheckBoxes  {
+    list-style: none;
+    column-count: 4;
+    column-gap:.5em;
+    display: block;
+}

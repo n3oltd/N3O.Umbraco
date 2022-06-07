@@ -1,16 +1,137 @@
-<div ng-controller="N3O.Umbraco.Data.Import">
-    <button type="button" ng-click="getTemplate()">Get Template</button>
+<div class="form-horizontal" ng-controller="N3O.Umbraco.Data.Import">
+    <div ng-show="show === 'form'">
+        <div class="umb-group-panel">
+            <div class="umb-group-panel__header">
+                <div>Options</div>
+            </div>
 
-    <div>
-        <label for="csvFile">CSV file:</label>
-        <input type="file" id="csvFile" required />
+            <div class="umb-group-panel__content">
+                <div class="umb-property">
+                    <div class="control-group umb-control-group">
+                        <div class="umb-el-wrap">
+                            <label class="control-label">
+                                Content Type <strong class="umb-control-required">*</strong>
+                            </label>
 
-        <label for="zipFile">Zip file (optional):</label>
-        <input type="file" id="zipFile"/>
-        
-        <label for="datePattern">Select date format:</label>
-        <select id="datePattern" required ng-model="dateFormat" ng-options="x.name for x in dateFormats"></select>
+                            <div class="controls">
+                                <select class="ng-select" ng-model="contentType" ng-disabled="processing">
+                                    <option ng-repeat="item in contentTypes" ng-value="{{item}}">{{item.name}}
+                                    </option>
+                                </select>
+
+                                &nbsp;&nbsp;
+                                
+                                <a ng-click="getTemplate()" class="btn btn-secondary" ng-show="contentType">Download Template</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="umb-property">
+                    <div class="control-group umb-control-group">
+                        <div class="umb-el-wrap">
+                            <label class="control-label">
+                                Date Format <strong class="umb-control-required">*</strong>
+                            </label>
+
+                            <div class="controls">
+                                <select class="ng-select" ng-model="dateFormat" ng-disabled="processing">
+                                    <option ng-repeat="item in dateFormats" ng-value="item">{{item.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="umb-property">
+                    <div class="control-group umb-control-group">
+                        <div class="umb-el-wrap">
+                            <div class="control-header">
+                                <label class="control-label">
+                                    CSV File <strong class="umb-control-required">*</strong>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="controls">
+                            <input type="file" id="csvFile" ng-disabled="processing" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="umb-property">
+                    <div class="control-group umb-control-group">
+                        <div class="umb-el-wrap">
+                            <div class="control-header">
+                                <label class="control-label">ZIP Assets File (optional)</label>
+                            </div>
+                        </div>
+
+                        <div class="controls">
+                            <input type="file" id="zipFile" ng-disabled="processing" />
+                        </div>
+                    </div>
+                </div>
+
+                <em class="red" ng-show="errorMessage">{{errorMessage}}</em>
+            </div>
+        </div>
+
+        <div>
+            <div>
+                <a href class="btn btn-primary" ng-click="import()" ng-disabled="processing">{{processing ? "Please wait..." : "Import"}}</a>
+            </div>
+        </div>
     </div>
 
-    <button ng-click="importFile()">Upload</button>
+    <div ng-show="show === 'success'">
+        <div class="umb-group-panel">
+            <div class="umb-group-panel__header">
+                <div>Processing</div>
+            </div>
+
+            <div class="umb-group-panel__content">
+                <div class="umb-property">
+                    <div class="control-group umb-control-group">
+                        <div class="umb-el-wrap">
+                            <p>
+                                CSV file is processing and will appear in Umbraco shortly.<br><br>
+                            </p>
+
+                            <p>
+                                <a class="btn btn-primary" href="/umbraco#/content?dashboard=imports">View Import Queue</a>
+                                &nbsp;or&nbsp;
+                                <a class="btn btn-secondary" ng-click="startOver()">Import Another File</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div ng-show="show === 'error'">
+        <div class="umb-group-panel">
+            <div class="umb-group-panel__header">
+                <div>Error</div>
+            </div>
+
+            <div class="umb-group-panel__content">
+                <div class="umb-property">
+                    <div class="control-group umb-control-group">
+                        <div class="umb-el-wrap">
+                            <ul>
+                                <li ng-repeat="error in errorMessage">{{error}}</li>
+                            </ul>
+                            
+                            <p>
+                                <a href class="btn btn-secondary" ng-click="startOver()">Start Over</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+

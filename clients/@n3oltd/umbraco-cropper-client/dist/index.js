@@ -27,7 +27,7 @@ var CropperClient = /** @class */ (function () {
     }
     CropperClient.prototype.getMediaById = function (mediaId) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/backoffice/Cropper/media/{mediaId}";
+        var url_ = this.baseUrl + "/umbraco/backoffice/api/Cropper/media/{mediaId}";
         if (mediaId === undefined || mediaId === null)
             throw new Error("The parameter 'mediaId' must be defined.");
         url_ = url_.replace("{mediaId}", encodeURIComponent("" + mediaId));
@@ -85,7 +85,7 @@ var CropperClient = /** @class */ (function () {
     };
     CropperClient.prototype.upload = function (minHeight, minWidth, file) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/backoffice/Cropper/upload";
+        var url_ = this.baseUrl + "/umbraco/backoffice/api/Cropper/upload";
         url_ = url_.replace(/[?&]$/, "");
         var content_ = new FormData();
         if (minHeight !== null && minHeight !== undefined)
