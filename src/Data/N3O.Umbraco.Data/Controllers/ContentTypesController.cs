@@ -30,5 +30,16 @@ namespace N3O.Umbraco.Data.Controllers {
                 return NotFound(ex);
             }
         }
+        
+        [HttpPost("properties/{contentType}")]
+        public async Task<ActionResult<IEnumerable<ContentTypeSummary>>> GetContentType() {
+            try {
+                var res = await _mediator.SendAsync<GetContentTypeByAliasQuery, None, ContentTypeRes>(None.Empty);
+
+                return Ok(res);
+            } catch (ResourceNotFoundException ex) {
+                return NotFound(ex);
+            }
+        }
     }
 }
