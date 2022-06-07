@@ -10,6 +10,7 @@ namespace N3O.Umbraco.Utilities {
         BlockLayout,
         ContentType,
         ContentTypeContainer,
+        DataType,
         DataTypeContainer
     }
     

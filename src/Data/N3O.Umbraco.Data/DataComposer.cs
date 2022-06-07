@@ -9,9 +9,17 @@ using N3O.Umbraco.Data.Konstrukt;
 using N3O.Umbraco.Data.Providers;
 using N3O.Umbraco.Data.Services;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Utilities;
 using OfficeOpenXml;
 using System.Text;
+using Umbraco.Cms.Core;
+using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
+using Umbraco.Cms.Core.IO;
+using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.PropertyEditors;
+using Umbraco.Cms.Core.Serialization;
+using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Data {
     public class DataComposer : Composer {
@@ -30,6 +38,8 @@ namespace N3O.Umbraco.Data {
             RegisterImports(builder);
             RegisterMatchers(builder);
             RegisterTables(builder);
+            
+            builder.Components().Append<DataComponent>();
         }
 
         private void RegisterApis(IUmbracoBuilder builder) {
@@ -95,5 +105,46 @@ namespace N3O.Umbraco.Data {
             RegisterAll(t => t.ImplementsGenericInterface(typeof(ITextConverter<>)),
                         t => t.GetInterfaces().Concat(t).Do(i => builder.Services.AddTransient(i, t)));
         }
+    }
+
+    public class DataComponent : IComponent {
+        private readonly IRuntimeState _runtimeState;
+        private readonly IDataTypeService _dataTypeService;
+        private readonly IConfigurationEditorJsonSerializer _configurationEditorJsonSerializer;
+        private readonly IDataValueEditorFactory _dataValueEditorFactory;
+        private readonly IIOHelper _iioHelper;
+
+        public DataComponent(IRuntimeState runtimeState,
+                             IDataTypeService dataTypeService,
+                             IConfigurationEditorJsonSerializer configurationEditorJsonSerializer,
+                             IDataValueEditorFactory dataValueEditorFactory,
+                             IIOHelper iioHelper) {
+            _runtimeState = runtimeState;
+            _dataTypeService = dataTypeService;
+            _configurationEditorJsonSerializer = configurationEditorJsonSerializer;
+            _dataValueEditorFactory = dataValueEditorFactory;
+            _iioHelper = iioHelper;
+        }
+        
+        public void Initialize() {
+            if (_runtimeState.Level == RuntimeLevel.Run) {
+                EnsureDataTypeExists(new ImportErrorsViewerDataEditor(_dataValueEditorFactory, _iioHelper));
+                EnsureDataTypeExists(new ImportFieldsEditorDataEditor(_dataValueEditorFactory, _iioHelper));
+            }
+        }
+
+        private void EnsureDataTypeExists(DataEditor dataEditor) {
+            if (_dataTypeService.GetDataType(dataEditor.Name) != null) {
+                return;
+            }
+            
+            var dataType = new DataType(dataEditor, _configurationEditorJsonSerializer);
+            dataType.Name = dataEditor.Name;
+            dataType.Key = UmbracoId.Generate(IdScope.DataType, dataEditor.Alias);
+
+            _dataTypeService.Save(dataType);
+        }
+
+        public void Terminate() { }
     }
 }
