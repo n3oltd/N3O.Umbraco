@@ -61,7 +61,7 @@ namespace N3O.Umbraco.Data.Controllers {
             } catch (Exception ex) {
                 _logger.LogError(ex, "Import failed");
 
-                return UnprocessableEntity("");
+                return UnprocessableEntity("Error queuing records for import, please contact support");
             }
         }
 
