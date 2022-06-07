@@ -18,23 +18,23 @@ namespace N3O.Umbraco.Data.Controllers {
         public ContentTypesController(IMediator mediator) {
             _mediator = mediator;
         }
-
-        [HttpGet("{contentId:guid}/relations")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ContentTypeSummary>>> GetRelationContentTypes([FromQuery] string type) {
+        
+        [HttpPost("{contentType}")]
+        public async Task<ActionResult<IEnumerable<ContentTypeSummary>>> GetContentTypeByAlias() {
             try {
-                var res = await _mediator.SendAsync<GetRelationContentTypesQuery, string, IEnumerable<ContentTypeSummary>>(type);
+                var res = await _mediator.SendAsync<GetContentTypeByAliasQuery, None, ContentTypeRes>(None.Empty);
 
                 return Ok(res);
             } catch (ResourceNotFoundException ex) {
                 return NotFound(ex);
             }
         }
-        
-        [HttpPost("properties/{contentType}")]
-        public async Task<ActionResult<IEnumerable<ContentTypeSummary>>> GetContentType() {
+
+        [HttpGet("{contentId:guid}/relations")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ContentTypeSummary>>> GetRelationContentTypes([FromQuery] string type) {
             try {
-                var res = await _mediator.SendAsync<GetContentTypeByAliasQuery, None, ContentTypeRes>(None.Empty);
+                var res = await _mediator.SendAsync<GetRelationContentTypesQuery, string, IEnumerable<ContentTypeSummary>>(type);
 
                 return Ok(res);
             } catch (ResourceNotFoundException ex) {

@@ -18,6 +18,52 @@ export class ContentTypesClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
 
+    getContentTypeByAlias(contentType: string): Promise<ContentTypeSummary[]> {
+        let url_ = this.baseUrl + "/umbraco/api/ContentTypes/{contentType}";
+        if (contentType === undefined || contentType === null)
+            throw new Error("The parameter 'contentType' must be defined.");
+        url_ = url_.replace("{contentType}", encodeURIComponent("" + contentType));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetContentTypeByAlias(_response);
+        });
+    }
+
+    protected processGetContentTypeByAlias(response: Response): Promise<ContentTypeSummary[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ContentTypeSummary[];
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ContentTypeSummary[]>(null as any);
+    }
+
     getRelationContentTypes(type: string | null | undefined, contentId: string): Promise<ContentTypeSummary[]> {
         let url_ = this.baseUrl + "/umbraco/api/ContentTypes/{contentId}/relations?";
         if (contentId === undefined || contentId === null)

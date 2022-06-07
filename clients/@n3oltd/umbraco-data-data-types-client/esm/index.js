@@ -32,7 +32,7 @@ var DataTypesClient = /** @class */ (function () {
         var content_ = JSON.stringify(req);
         var options_ = {
             body: content_,
-            method: "GET",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
