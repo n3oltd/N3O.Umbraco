@@ -7,6 +7,7 @@ using N3O.Umbraco.Data.Exceptions;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Queries;
+using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Plugins.Controllers;
@@ -31,6 +32,22 @@ namespace N3O.Umbraco.Data.Controllers {
             _lookups = lookups;
             _mapper = mapper;
             _mediator = mediator;
+        }
+        
+        [HttpPost("queued/{referenceId}/files")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> AddFileToImport(AddFileToImportReq req) {
+            try {
+                var res = await _mediator.Value.SendAsync<AddFileToImportCommand, AddFileToImportReq, None>(req);
+
+                return Ok(res);
+            } catch (ResourceNotFoundException ex) {
+                return NotFound(ex);
+            } catch (Exception ex) {
+                _logger.LogError(ex, "Adding file to import failed");
+                
+                return UnprocessableEntity("Error uploading file, please contact support");
+            }
         }
         
         [HttpGet("lookups/datePatterns")]
@@ -61,20 +78,6 @@ namespace N3O.Umbraco.Data.Controllers {
             } catch (Exception ex) {
                 _logger.LogError(ex, "Import failed");
 
-                return UnprocessableEntity("Error queuing records for import, please contact support");
-            }
-        }
-
-        [HttpPost("imports/{referenceId}/files")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> AddFileToImport(AddFileToImportReq req) {
-            try {
-                var res = await _mediator.Value.SendAsync<AddFileToImportCommand, AddFileToImportReq, None>(req);
-
-                return Ok(res);
-            } catch (Exception ex) {
-                _logger.LogError(ex, "Import failed");
-                
                 return UnprocessableEntity("Error queuing records for import, please contact support");
             }
         }

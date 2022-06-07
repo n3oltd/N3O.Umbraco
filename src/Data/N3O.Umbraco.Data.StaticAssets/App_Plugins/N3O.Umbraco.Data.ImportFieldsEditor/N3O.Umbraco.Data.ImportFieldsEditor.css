@@ -1,36 +1,34 @@
 .n3o-import-fields-editor .row-wrapper {
-	margin-bottom: 40px;
-	width: 100%;
+    margin-bottom: 40px;
+    width: 100%;
 }
 
 .n3o-import-fields-editor .row-1 {
-   display: block;
-   width: 90%;
+    display: block;
+    width: 90%;
 }
 
 .n3o-import-fields-editor .row-2 {
-   display: block;
-   width: 90%;
+    display: block;
+    width: 90%;
 }
 
 .n3o-import-fields-editor .text {
-   font-weight: bold;
+    font-weight: bold;
 }
 
 .n3o-import-fields-editor .custom {
-   width: 100%;
-   margin-top: 10px;
+    width: 100%;
+    margin-top: 10px;
 }
 
 .sourceToolTip {
     border-bottom: 1px dotted black;
-
 }
 
 [data-tooltip] {
     position: relative;
     cursor: default;
-
 }
 
 [data-tooltip]::after {
@@ -51,11 +49,9 @@
     font-weight: bold;
 
     visibility: hidden;
-
 }
 
 [data-tooltip]:hover::after {
-
     visibility: visible;
 }
 

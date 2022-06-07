@@ -13,7 +13,7 @@ namespace N3O.Umbraco.Data.Konstrukt.Notifications {
         }
 
         public Task HandleAsync(KonstruktEntitySavedNotification notification, CancellationToken cancellationToken) {
-            if (notification.Entity.After is Import import) {
+            if (notification.Entity.After is Import import && import.CanProcess) {
                 _importProcessingQueue.Add(import);
             }
             

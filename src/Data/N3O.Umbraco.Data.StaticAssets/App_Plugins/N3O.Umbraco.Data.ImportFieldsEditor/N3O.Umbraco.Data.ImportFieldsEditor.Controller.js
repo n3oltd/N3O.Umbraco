@@ -1,21 +1,17 @@
 angular.module("umbraco").controller("N3O.Umbraco.Data.ImportFieldsEditor",
-    function($scope, assetsService) {
-        $scope.uploadResource = async function(reference) {
-
-            const zipFile = document.getElementById("zipFile");
-            if (zipFile.value && zipFile.value.split(".")[1].toLowerCase() != "zip") {
-                alert("The selected file is not a valid ZIP file");
-                document.getElementById("zipFile").value = null;
+    function ($scope, assetsService) {
+        $scope.uploadResource = async function (uploadInput, reference, index) {
+            if (!uploadInput.files.length) {
                 return;
             }
-
-            const zipStorageToken = await getStorageToken(zipFile);
+            
+            const storageToken = await getStorageToken(uploadInput);
 
             let req = {
-                zipFile: zipStorageToken
+                file: storageToken
             };
 
-            let result = await fetch(`/umbraco/backoffice/api/Imports/imports/${reference}/files`, {
+            let res = await fetch(`/umbraco/backoffice/api/Imports/queued/${reference}/files`, {
                 method: "POST",
                 headers: {
                     "Accept": "*/*",
@@ -24,20 +20,18 @@ angular.module("umbraco").controller("N3O.Umbraco.Data.ImportFieldsEditor",
                 body: JSON.stringify(req)
             });
 
-            if (result.status === 200) {
-                alert("Successfully Uploaded");
+            if (res.status === 200) {
+                let textInput = document.getElementById("input_" + index);
+                
+                textInput.value = storageToken.filename;
             } else {
-                alert("Error Uploading");
+                alert("Failed to upload specified file, please contact support for assistance");
             }
         }
 
-        async function getStorageToken(input) {
-            if (input.files.length === 0) {
-                return null;
-            }
-
+        async function getStorageToken(uploadInput) {
             const data = new FormData();
-            data.append("file", input.files[0]);
+            data.append("file", uploadInput.files[0]);
 
             var res = await fetch("/umbraco/api/Storage/tempUpload", {
                 method: "POST",
@@ -46,7 +40,6 @@ angular.module("umbraco").controller("N3O.Umbraco.Data.ImportFieldsEditor",
 
             return await res.json();
         }
-
 
         assetsService.loadCss("~/App_Plugins/N3O.Umbraco.Data.ImportFieldsEditor/N3O.Umbraco.Data.ImportFieldsEditor.css");
     });

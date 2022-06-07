@@ -1,8 +1,5 @@
 {
     "javascript": [
         "~/App_Plugins/N3O.Umbraco.Data.Export/N3O.Umbraco.Data.Export.Controller.js"
-    ],
-	"css": [
-        "~/App_Plugins/N3O.Umbraco.Data.Export/N3O.Umbraco.Data.Export.css"
     ]
 }

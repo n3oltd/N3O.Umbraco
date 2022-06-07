@@ -1,14 +1,16 @@
 <div ng-controller="N3O.Umbraco.Data.ImportFieldsEditor">
     <div class="n3o-import-fields-editor">
-
         <div ng-repeat="resource in model.value.fields track by $index" class="row-wrapper">
-            <div class="row-1"><span class="text">{{model.value.fields[$index].name}}</span>
-                <span class="sourceToolTip" data-tooltip="{{model.value.fields[$index].sourceValue}}">(Source value)</span>
+            <div class="row-1">
+                <span class="text">{{model.value.fields[$index].name}}</span>
+                
+                <span class="sourceToolTip" data-tooltip="{{model.value.fields[$index].sourceValue}}">(CSV value)</span>
             </div>
+            
             <div class="row-2">
-                <!-- TODO Should be more complex, e.g. if value has newlines needs to be a textarea etc -->
-                <input type="text" ng-model="model.value.fields[$index].value" class="custom"/>
-                <input type="file" id="zipFile" ngf-select="uploadResource(model.value.reference)" ng-if="model.value.fields[$index].isFile" ng-model="image" />
+                <input type="text" ng-attr-id="{{'input_' + $index}}" ng-model="model.value.fields[$index].value" class="custom" />
+                
+                <input type="file" ngf-select="uploadResource(this, model.value.reference, $index)" ng-if="model.value.fields[$index].isFile" />
             </div>
         </div>
     </div>

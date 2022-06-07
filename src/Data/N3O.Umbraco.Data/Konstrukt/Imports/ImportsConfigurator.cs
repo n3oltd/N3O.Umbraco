@@ -1,5 +1,6 @@
 ﻿using Konstrukt.Configuration;
 using Konstrukt.Configuration.Builders;
+using N3O.Umbraco.Data.DataTypes;
 
 namespace N3O.Umbraco.Data.Konstrukt {
     public class ImportsConfigurator : IKonstruktConfigurator {
@@ -48,19 +49,12 @@ namespace N3O.Umbraco.Data.Konstrukt {
         private void ConfigureEditor(KonstruktDashboardCollectionConfigBuilder<Import> collection) {
             var editor = collection.Editor();
             var generalTab = editor.AddTab("General");
-            var generalFieldset = generalTab.AddFieldset("General");
-
-            // TODO Add a component that runs at startup and ensures that there are two data types defined:
-            // Import Fields Editor
-            // Import Errors Viewer
-            //
-            // Can then wire these up respectively below.
             
-            generalFieldset.AddField(c => c.Fields).SetDataType("N3O Import Fields Editor");
+            var generalFieldset = generalTab.AddFieldset("General");
+            generalFieldset.AddField(c => c.Data).SetDataType(ImportFieldsEditorDataEditor.DataEditorName);
             
             var errorsFieldSet = generalTab.AddFieldset("Errors");
-
-            errorsFieldSet.AddField(c => c.Errors).SetDataType("Textarea").SetDescription("Following Properties are required/missing").MakeReadOnly();
+            errorsFieldSet.AddField(c => c.Errors).SetDataType(ImportErrorsViewerDataEditor.DataEditorName);
         }
     }
 }

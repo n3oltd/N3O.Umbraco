@@ -9,14 +9,12 @@ namespace N3O.Umbraco.Data.Models {
                                    IPropertyType type,
                                    PropertyGroup group,
                                    IDataType dataType,
-                                   IEnumerable<NestedContentInfo> nestedContent,
-                                   bool isFile) {
+                                   IEnumerable<NestedContentInfo> nestedContent) {
             ContentType = contentType;
             Type = type;
             Group = group;
             DataType = dataType;
             NestedContent = nestedContent.OrEmpty().ToList();
-            IsFile = isFile;
         }
 
         public IContentType ContentType { get; }
@@ -24,7 +22,6 @@ namespace N3O.Umbraco.Data.Models {
         public PropertyGroup Group { get; }
         public IDataType DataType { get; }
         public IReadOnlyList<NestedContentInfo> NestedContent { get; }
-        public bool IsFile { get; }
 
         public bool IsNestedContent() => Type.IsNestedContent();
     }

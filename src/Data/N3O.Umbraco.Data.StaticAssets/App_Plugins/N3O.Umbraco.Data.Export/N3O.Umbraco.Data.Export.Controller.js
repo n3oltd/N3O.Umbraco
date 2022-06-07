@@ -1,5 +1,5 @@
 angular.module("umbraco")
-    .controller("N3O.Umbraco.Data.Export", function ($scope, editorState, contentResource) {
+    .controller("N3O.Umbraco.Data.Export", function ($scope, editorState, contentResource, assetsService) {
         $scope.processing = false;
         $scope.contentType = null;
         $scope.errorMessage = null;
@@ -103,4 +103,6 @@ angular.module("umbraco")
             
             return await getContentType.json();
         }
+
+        assetsService.loadCss("~/App_Plugins/N3O.Umbraco.Data.Export/N3O.Umbraco.Data.Export.css");
     });

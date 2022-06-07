@@ -32,6 +32,7 @@ namespace N3O.Umbraco.Data.Handlers {
         private readonly IDataTypeService _dataTypeService;
         private readonly IParserFactory _parserFactory;
         private readonly IVolume _volume;
+        private readonly IFormatter _formatter;
         private readonly ErrorLog _errorLog;
         private readonly IReadOnlyList<IPropertyConverter> _converters;
         private readonly IReadOnlyList<IImportPropertyFilter> _importPropertyFilters;
@@ -57,6 +58,7 @@ namespace N3O.Umbraco.Data.Handlers {
             _dataTypeService = dataTypeService;
             _parserFactory = parserFactory;
             _volume = volume;
+            _formatter = formatter;
             _errorLog = new ErrorLog(formatter);
             _converters = converters.OrEmpty().ToList();
             _importPropertyFilters = importPropertyFilters.OrEmpty().ToList();
@@ -74,7 +76,8 @@ namespace N3O.Umbraco.Data.Handlers {
                         var propertyInfos = GetPropertyInfos(import.ContentTypeAlias);
                         var contentPublisher = GetContentPublisher(import);
                         var parser = await GetParserAsync(import);
-                        var propertyInfoFields = _jsonProvider.DeserializeObject<ImportData>(import.Fields).Fields
+                        var propertyInfoFields = _jsonProvider.DeserializeObject<ImportData>(import.Data)
+                                                              .Fields
                                                               .GroupBy(x => x.Property)
                                                               .ToDictionary(x => propertyInfos[x.Key],
                                                                             x => x.ToList());
@@ -97,7 +100,7 @@ namespace N3O.Umbraco.Data.Handlers {
                             if (wasPublished) {
                                 import.SavedAndPublished(savedContent.Key, contentSummary);
                             } else {
-                                import.Saved(savedContent.Key, contentSummary, publishResult.InvalidProperties.Select(x => x.Alias));
+                                import.Saved(savedContent.Key, contentSummary, GetSaveErrors(publishResult));
                             }
                         } else {
                             import.Error(publishResult.EventMessages.GetAll().Select(x => x.Message));
@@ -145,20 +148,14 @@ namespace N3O.Umbraco.Data.Handlers {
         private IContentPublisher GetContentPublisher(Import import) {
             IContentPublisher contentPublisher;
             
-            if (import.Status == ImportStatuses.Saved || import.Status==ImportStatuses.SavedAndPublished) {
+            if (import.Action == ImportActions.Create) {
                 var contentType = _contentTypeService.Get(import.ContentTypeAlias);
 
-                contentPublisher = _contentEditor.ForExisting(import.ImportedContentId.GetValueOrThrow());
+                contentPublisher = _contentEditor.New(import.Name, import.ParentId, contentType.Alias);
+            } else if (import.Action == ImportActions.Update) {
+                contentPublisher = _contentEditor.ForExisting(import.ReplacesId.Value);
             } else {
-                if (import.Action == ImportActions.Create) {
-                    var contentType = _contentTypeService.Get(import.ContentTypeAlias);
-
-                    contentPublisher = _contentEditor.New(import.Name, import.ParentId, contentType.Alias);
-                } else if (import.Action == ImportActions.Update) {
-                    contentPublisher = _contentEditor.ForExisting(import.ReplacesId.Value);
-                } else {
-                    throw UnrecognisedValueException.For(import.Action);
-                }
+                throw UnrecognisedValueException.For(import.Action);
             }
 
             contentPublisher.Content.OnBuilt += (_, _) => _errorLog.ThrowIfHasErrors();
@@ -185,6 +182,21 @@ namespace N3O.Umbraco.Data.Handlers {
             var summariser = _contentSummarisers.SingleOrDefault(x => x.IsSummariser(content.ContentType.Alias));
             
             return summariser?.GetSummary(content) ?? content.Name;
+        }
+        
+        private IEnumerable<string> GetSaveErrors(PublishResult publishResult) {
+            foreach (var eventMessage in publishResult.EventMessages.GetAll()) {
+                yield return eventMessage.Message;
+            }
+            
+            foreach (var invalidProperty in publishResult.InvalidProperties.OrEmpty()) {
+                yield return _formatter.Text.Format<Strings>(s => s.InvalidProperty_1,
+                                                             invalidProperty.PropertyType.Name);
+            }
+        }
+
+        public class Strings : CodeStrings {
+            public string InvalidProperty_1 => $"The {"{0}".Quote()} property is invalid";
         }
     }
 }

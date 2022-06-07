@@ -1,7 +1,9 @@
 <div ng-controller="N3O.Umbraco.Data.ImportErrorsViewer">
     <div class="n3o-import-errors-viewer">
         <div ng-repeat="resource in model.value track by $index" class="row-wrapper">
-            <div class="row-1"><span class="text">{{model.value[$index]}}</span></div>
+            <div class="row-1">
+                <span class="text">{{model.value[$index]}}</span>
+            </div>
         </div>
     </div>
 </div>

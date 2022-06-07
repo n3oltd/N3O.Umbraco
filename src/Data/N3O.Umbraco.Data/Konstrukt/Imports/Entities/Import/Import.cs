@@ -56,7 +56,7 @@ namespace N3O.Umbraco.Data.Konstrukt {
         
         [Column(nameof(Data))]
         [SpecialDbType(SpecialDbTypes.NTEXT)]
-        public string Fields { get; set; }
+        public string Data { get; set; }
 
         [Column(nameof(Errors))]
         [NullSetting(NullSetting = NullSettings.Null)]
@@ -79,6 +79,6 @@ namespace N3O.Umbraco.Data.Konstrukt {
         public string ImportedContentSummary { get; set; }
 
         [Ignore]
-        public bool CanProcess => Status.IsAnyOf(ImportStatuses.Abandoned, ImportStatuses.Queued, ImportStatuses.Error, ImportStatuses.Saved, ImportStatuses.SavedAndPublished);
+        public bool CanProcess => Status.IsAnyOf(ImportStatuses.Abandoned, ImportStatuses.Queued, ImportStatuses.Error);
     }
 }

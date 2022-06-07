@@ -2,7 +2,7 @@
 
 namespace N3O.Umbraco.Data.Models {
     public class AddFileToImportReq {
-        [Name("Zip File")]
-        public StorageToken ZipFile { get; set; }
+        [Name("File")]
+        public StorageToken File { get; set; }
     }
 }

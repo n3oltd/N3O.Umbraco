@@ -26,7 +26,6 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Persistence;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Data.Handlers {
     public class QueueImportsHandler : IRequestHandler<QueueImportsCommand, QueueImportsReq, QueueImportsRes> {
@@ -163,7 +162,7 @@ namespace N3O.Umbraco.Data.Handlers {
                     importData.Reference = import.Reference;
                     importData.Fields = GetFields(csvReader, propertyInfoColumns);
 
-                    import.Fields = _jsonProvider.SerializeObject(importData);
+                    import.Data = _jsonProvider.SerializeObject(importData);
                     import.Status = ImportStatuses.Queued;
 
                     imports.Add(import);
@@ -278,7 +277,7 @@ namespace N3O.Umbraco.Data.Handlers {
                     field.Name = column.Title;
                     field.SourceValue = csvReader.Row.GetRawField(column.Title);
                     field.Value = field.SourceValue;
-                    field.IsFile = property.IsFile;
+                    field.IsFile = UploadDataTypes.Contains(property.DataType.EditorAlias);
 
                     yield return field;
                 }

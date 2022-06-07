@@ -1,5 +1,5 @@
 angular.module("umbraco")
-    .controller("N3O.Umbraco.Data.Import", function ($scope, editorState, contentResource) {
+    .controller("N3O.Umbraco.Data.Import", function ($scope, editorState, contentResource, assetsService) {
         $scope.startOver = function () {
             $scope.processing = false;
             $scope.contentType = null;
@@ -125,4 +125,6 @@ angular.module("umbraco")
 
             return await getContentType.json();
         }
+
+        assetsService.loadCss("~/App_Plugins/N3O.Umbraco.Data.Import/N3O.Umbraco.Data.Import.css");
     });
