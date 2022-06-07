@@ -8,9 +8,8 @@
             <div class="row-2">
                 <!-- TODO Should be more complex, e.g. if value has newlines needs to be a textarea etc -->
                 <input type="text" ng-model="model.value.fields[$index].value" class="custom"/>
-                <input type="file" id="zipFile" ngf-select="uploadResource(model.value.reference)" ng-if="model.value.fields[$index].isFile" ng-model="image" required/>
+                <input type="file" id="zipFile" ngf-select="uploadResource(model.value.reference)" ng-if="model.value.fields[$index].isFile" ng-model="image" />
             </div>
-            <a ng-click="uploadResource(model.value.reference)" style="cursor: pointer;">Exclude/Include</a>
         </div>
     </div>
 </div>

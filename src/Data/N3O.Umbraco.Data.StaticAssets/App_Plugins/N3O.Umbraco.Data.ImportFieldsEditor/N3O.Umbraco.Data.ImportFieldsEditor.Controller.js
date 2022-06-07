@@ -1,11 +1,11 @@
 angular.module("umbraco").controller("N3O.Umbraco.Data.ImportFieldsEditor",
-    function ($scope, assetsService) {
-        $scope.uploadResource = async function (reference) {
+    function($scope, assetsService) {
+        $scope.uploadResource = async function(reference) {
 
             const zipFile = document.getElementById("zipFile");
             if (zipFile.value && zipFile.value.split(".")[1].toLowerCase() != "zip") {
                 alert("The selected file is not a valid ZIP file");
-
+                document.getElementById("zipFile").value = null;
                 return;
             }
 
