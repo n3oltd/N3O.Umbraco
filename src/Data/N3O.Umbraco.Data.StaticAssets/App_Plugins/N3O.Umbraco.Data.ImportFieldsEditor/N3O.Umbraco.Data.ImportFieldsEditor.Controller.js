@@ -1,10 +1,7 @@
 angular.module("umbraco").controller("N3O.Umbraco.Data.ImportFieldsEditor",
     function ($scope, assetsService) {
-        $scope.uploadResource = async function (uploadInput, reference, index) {
-            if (!uploadInput.files.length) {
-                return;
-            }
-            
+        $scope.uploadResource = async function (reference, index) {
+            var uploadInput = document.getElementById("fileInput_" + index);
             const storageToken = await getStorageToken(uploadInput);
 
             let req = {
@@ -23,7 +20,7 @@ angular.module("umbraco").controller("N3O.Umbraco.Data.ImportFieldsEditor",
             if (res.status === 200) {
                 let textInput = document.getElementById("input_" + index);
                 
-                textInput.value = storageToken.filename;
+                textInput.value = uploadInput.files[0].name;
             } else {
                 alert("Failed to upload specified file, please contact support for assistance");
             }
