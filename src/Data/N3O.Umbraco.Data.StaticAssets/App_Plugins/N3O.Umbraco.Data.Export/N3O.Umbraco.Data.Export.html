@@ -13,7 +13,7 @@
                         </label>
 
                         <div class="controls">
-                            <select class="ng-select" ng-model="contentType" ng-disabled="processing" ng-change="refreshProperties()">
+                            <select class="ng-select" ng-model="contentType" ng-disabled="processing" ng-change="refreshProperties()" no-dirty-check>
                                 <option ng-repeat="item in contentTypes" ng-value="{{item}}">{{item.name}}</option>
                             </select>
                         </div>
@@ -30,7 +30,7 @@
                         
                         <div class="controls">
                             <label>
-                                <input type="radio" ng-model="format" ng-disabled="processing" value="excel">
+                                <input type="radio" ng-model="format" ng-disabled="processing" value="excel" no-dirty-check>
                                 
                                 Excel
                             </label>
@@ -38,8 +38,8 @@
                             <br >
                             
                             <label>
-                                <input type="radio" ng-model="format" ng-disabled="processing" value="csv">
-                                
+                                <input type="radio" ng-model="format" ng-disabled="processing" value="csv" no-dirty-check>
+
                                 CSV
                             </label>
                         </div>
@@ -55,7 +55,7 @@
                         </label>
 
                         <div class="controls">
-                            <input ng-model="includeUnpublished" ng-disabled="processing" type="checkbox">
+                            <input ng-model="includeUnpublished" ng-disabled="processing" type="checkbox" no-dirty-check>
                         </div>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                 <ul class="propertyCheckBoxes">
                     <li ng-repeat="property in exportableProperties">
                         <label>
-                            <input type="checkbox" value="{{property.alias}}" ng-model="property.selected">
+                            <input type="checkbox" value="{{property.alias}}" ng-model="property.selected" no-dirty-check>
                             
                             &nbsp;{{property.columnTitle}}
                         </label>

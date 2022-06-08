@@ -14,7 +14,7 @@
                             </label>
 
                             <div class="controls">
-                                <select class="ng-select" ng-model="contentType" ng-disabled="processing">
+                                <select class="ng-select" ng-model="contentType" ng-disabled="processing" no-dirty-check>
                                     <option ng-repeat="item in contentTypes" ng-value="{{item}}">{{item.name}}
                                     </option>
                                 </select>
@@ -35,7 +35,7 @@
                             </label>
 
                             <div class="controls">
-                                <select class="ng-select" ng-model="dateFormat" ng-disabled="processing">
+                                <select class="ng-select" ng-model="dateFormat" ng-disabled="processing" no-dirty-check>
                                     <option ng-repeat="item in dateFormats" ng-value="item">{{item.name}}</option>
                                 </select>
                             </div>
