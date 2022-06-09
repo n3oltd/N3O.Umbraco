@@ -5,8 +5,8 @@ export declare class ContentTypesClient {
     constructor(baseUrl?: string, http?: {
         fetch(url: RequestInfo, init?: RequestInit): Promise<Response>;
     });
-    getContentTypeByAlias(contentType: string): Promise<ContentTypeRes[]>;
-    protected processGetContentTypeByAlias(response: Response): Promise<ContentTypeRes[]>;
+    getContentTypeByAlias(contentType: string): Promise<ContentTypeRes>;
+    protected processGetContentTypeByAlias(response: Response): Promise<ContentTypeRes>;
     getRelationContentTypes(type: string | null | undefined, contentId: string): Promise<ContentTypeSummary[]>;
     protected processGetRelationContentTypes(response: Response): Promise<ContentTypeSummary[]>;
 }

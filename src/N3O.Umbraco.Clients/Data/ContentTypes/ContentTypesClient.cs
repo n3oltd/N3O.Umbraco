@@ -21,11 +21,11 @@ namespace N3O.Umbraco.Clients.Data.ContentTypes
     public partial interface IContentTypesClient
     {
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ContentTypeRes>> GetContentTypeByAliasAsync(string contentType);
+        System.Threading.Tasks.Task<ContentTypeRes> GetContentTypeByAliasAsync(string contentType);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ContentTypeRes>> GetContentTypeByAliasAsync(string contentType, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ContentTypeRes> GetContentTypeByAliasAsync(string contentType, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ContentTypeSummary>> GetRelationContentTypesAsync(string type, string contentId);
@@ -71,14 +71,14 @@ namespace N3O.Umbraco.Clients.Data.ContentTypes
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ContentTypeRes>> GetContentTypeByAliasAsync(string contentType)
+        public virtual System.Threading.Tasks.Task<ContentTypeRes> GetContentTypeByAliasAsync(string contentType)
         {
             return GetContentTypeByAliasAsync(contentType, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ContentTypeRes>> GetContentTypeByAliasAsync(string contentType, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ContentTypeRes> GetContentTypeByAliasAsync(string contentType, System.Threading.CancellationToken cancellationToken)
         {
             if (contentType == null)
                 throw new System.ArgumentNullException("contentType");
@@ -120,7 +120,7 @@ namespace N3O.Umbraco.Clients.Data.ContentTypes
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ContentTypeRes>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ContentTypeRes>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);

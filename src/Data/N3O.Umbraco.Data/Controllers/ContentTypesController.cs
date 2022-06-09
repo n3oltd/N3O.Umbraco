@@ -18,9 +18,9 @@ namespace N3O.Umbraco.Data.Controllers {
         public ContentTypesController(IMediator mediator) {
             _mediator = mediator;
         }
-        
+
         [HttpPost("{contentType}")]
-        public async Task<ActionResult<IEnumerable<ContentTypeRes>>> GetContentTypeByAlias() {
+        public async Task<ActionResult<ContentTypeRes>> GetContentTypeByAlias() {
             try {
                 var res = await _mediator.SendAsync<GetContentTypeByAliasQuery, None, ContentTypeRes>(None.Empty);
 
