@@ -40,15 +40,18 @@ namespace N3O.Umbraco.Storage.Controllers {
         
         [HttpPost("tempUpload")]
         public async Task<ActionResult<StorageToken>> TempUpload([FromForm] UploadReq req) {
-            return await Upload(StorageConstants.StorageFolders.Temp, req);
+            var folderPath = Path.Join(StorageConstants.StorageFolders.Temp,
+                                             $"_{_clock.GetCurrentInstant().ToUnixTimeTicks()}");
+            
+            return await Upload(folderPath, req);
         }
 
-        [HttpPost("upload/{folderName}")]
-        public async Task<ActionResult<StorageToken>> Upload(string folderName, [FromForm] UploadReq req) {
+        [HttpPost("upload/{folderPath}")]
+        public async Task<ActionResult<StorageToken>> Upload(string folderPath, [FromForm] UploadReq req) {
             try {
                 using (var reqStream = req.File.OpenReadStream()) {
-                    var filename = GetFilename(folderName, req.File);
-                    var storageFolder = await _volume.GetStorageFolderAsync(folderName);
+                    var filename = Sanitise(req.File.FileName);
+                    var storageFolder = await _volume.GetStorageFolderAsync(folderPath);
                     await storageFolder.AddFileAsync(filename, reqStream);
 
                     var blob = await storageFolder.GetFileAsync(filename);
@@ -62,19 +65,6 @@ namespace N3O.Umbraco.Storage.Controllers {
                 
                 return BadRequest();
             }
-        }
-
-        private string GetFilename(string storageFolderName, IFormFile formFile) {
-            var filename = Sanitise(formFile.FileName);
-            
-            if (storageFolderName.EqualsInvariant(StorageConstants.StorageFolders.Temp)) {
-                filename = string.Join("",
-                                       Path.GetFileNameWithoutExtension(filename),
-                                       $"_{_clock.GetCurrentInstant().ToUnixTimeSeconds()}",
-                                       Path.GetExtension(filename));
-            }
-
-            return filename;
         }
 
         private string Sanitise(string filename) {

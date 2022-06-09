@@ -20,10 +20,10 @@ namespace N3O.Umbraco.Storage.Azure.Services {
             _serviceClient = new BlobServiceClient(options.ConnectionString);
         }
         
-        public async Task<IStorageFolder> GetStorageFolderAsync(string folderName) {
+        public async Task<IStorageFolder> GetStorageFolderAsync(string folderPath) {
             var container = await GetContainerAsync();
             
-            return new AzureStorageFolder(container, folderName);
+            return new AzureStorageFolder(container, folderPath);
         }
         
         private async Task<BlobContainerClient> GetContainerAsync() {

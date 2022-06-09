@@ -3,10 +3,6 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Storage.Extensions {
     public static class VolumeExtensions {
-        public static async Task<IStorageFolder> GetTempFolderAsync(this IVolume volume) {
-            return await volume.GetStorageFolderAsync(StorageConstants.StorageFolders.Temp);
-        }
-        
         public static async Task<Blob> MoveFileAsync(this IVolume volume,
                                                      string filename,
                                                      string fromFolderName,
@@ -25,10 +21,6 @@ namespace N3O.Umbraco.Storage.Extensions {
             await fromStorageFolder.DeleteFileAsync(filename);
             
             return toBlob;
-        }
-
-        public static async Task<Blob> MoveTempFileAsync(this IVolume volume, string filename, string toFolderName) {
-            return await MoveFileAsync(volume, filename, StorageConstants.StorageFolders.Temp, toFolderName);
         }
     }
 }

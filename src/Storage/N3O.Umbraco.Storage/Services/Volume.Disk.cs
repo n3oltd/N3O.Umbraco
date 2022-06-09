@@ -9,8 +9,8 @@ namespace N3O.Umbraco.Storage.Services {
             _webHostEnvironment = webHostEnvironment;
         }
         
-        public Task<IStorageFolder> GetStorageFolderAsync(string folderName) {
-            return Task.FromResult<IStorageFolder>(new DiskStorageFolder(_webHostEnvironment, folderName));
+        public Task<IStorageFolder> GetStorageFolderAsync(string foldePath) {
+            return Task.FromResult<IStorageFolder>(new DiskStorageFolder(_webHostEnvironment, foldePath));
         }
     }
 }
