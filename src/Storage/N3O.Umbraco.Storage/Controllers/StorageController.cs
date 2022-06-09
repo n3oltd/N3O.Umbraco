@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Attributes;
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Storage.Models;
 using N3O.Umbraco.Storage.Services;

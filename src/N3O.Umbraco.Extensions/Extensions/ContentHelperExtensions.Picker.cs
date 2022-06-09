@@ -1,9 +1,10 @@
 ﻿using N3O.Umbraco.Content;
-using N3O.Umbraco.ValueConverters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.PropertyEditors.ValueConverters;
 
 namespace N3O.Umbraco.Extensions {
     public static partial class ContentHelperExtensions {
@@ -29,11 +30,11 @@ namespace N3O.Umbraco.Extensions {
                                           string contentTypeAlias,
                                           string propertyTypeAlias,
                                           object propertyValue) {
-            var item = contentHelper.GetConvertedValue<StronglyTypedMultiNodeTreePickerValueConverter, T>(contentTypeAlias,
-                                                                                                          propertyTypeAlias,
-                                                                                                          propertyValue);
+            var item = contentHelper.GetConvertedValue<MultiNodeTreePickerValueConverter, IPublishedContent>(contentTypeAlias,
+                                                                                                             propertyTypeAlias,
+                                                                                                             propertyValue);
 
-            return item;
+            return (T) item;
         }
 
         public static IReadOnlyList<T> GetPickerValues<T>(this IContentHelper contentHelper, IContentProperty property) {
@@ -58,11 +59,11 @@ namespace N3O.Umbraco.Extensions {
                                                           string contentTypeAlias,
                                                           string propertyTypeAlias,
                                                           object propertyValue) {
-            var items = contentHelper.GetConvertedValue<StronglyTypedMultiNodeTreePickerValueConverter, IEnumerable<T>>(contentTypeAlias,
-                                                                                                                        propertyTypeAlias,
-                                                                                                                        propertyValue);
+            var items = contentHelper.GetConvertedValue<MultiNodeTreePickerValueConverter, IEnumerable<IPublishedContent>>(contentTypeAlias,
+                                                                                                                           propertyTypeAlias,
+                                                                                                                           propertyValue);
 
-            return items.OrEmpty().ToList();
+            return items.OrEmpty().Cast<T>().ToList();
         }
     }
 }

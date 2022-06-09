@@ -15,7 +15,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Services;
@@ -148,21 +147,19 @@ namespace N3O.Umbraco.Data.Handlers {
 
         private string GetPath(int parentId) {
             return _pathCache.GetOrAdd(parentId, () => {
-                var sb = new StringBuilder();
+                var segments = new List<string>();
 
                 while (parentId != -1) {
                     var parent = _contentService.GetById(parentId);
 
-                    if (sb.Length != 0) {
-                        sb.Append("// ");
-                    }
-
-                    sb.Append(parent.Name);
-                    
+                    segments.Add(parent.Name);
+            
                     parentId = parent.ParentId;
                 }
 
-                return sb.ToString();    
+                segments.Reverse();
+        
+                return string.Join(" // ", segments);
             });
         }
 
