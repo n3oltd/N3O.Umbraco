@@ -20,7 +20,7 @@ namespace N3O.Umbraco.Data.Controllers {
         }
         
         [HttpPost("{contentType}")]
-        public async Task<ActionResult<IEnumerable<ContentTypeSummary>>> GetContentTypeByAlias() {
+        public async Task<ActionResult<IEnumerable<ContentTypeRes>>> GetContentTypeByAlias() {
             try {
                 var res = await _mediator.SendAsync<GetContentTypeByAliasQuery, None, ContentTypeRes>(None.Empty);
 

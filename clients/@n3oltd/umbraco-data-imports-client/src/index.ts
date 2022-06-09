@@ -18,6 +18,59 @@ export class ImportsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
 
+    addFileToImport(referenceId: string, req: AddFileToImportReq): Promise<void> {
+        let url_ = this.baseUrl + "/umbraco/backoffice/api/Imports/queued/{referenceId}/files";
+        if (referenceId === undefined || referenceId === null)
+            throw new Error("The parameter 'referenceId' must be defined.");
+        url_ = url_.replace("{referenceId}", encodeURIComponent("" + referenceId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(req);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAddFileToImport(_response);
+        });
+    }
+
+    protected processAddFileToImport(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            let result404: any = null;
+            result404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
     getLookupDatePatterns(): Promise<NamedLookupRes[]> {
         let url_ = this.baseUrl + "/umbraco/backoffice/api/Imports/lookups/datePatterns";
         url_ = url_.replace(/[?&]$/, "");
@@ -170,11 +223,6 @@ export class ImportsClient {
     }
 }
 
-export interface NamedLookupRes {
-    id?: string | undefined;
-    name?: string | undefined;
-}
-
 export interface ProblemDetails {
     type?: string | undefined;
     title?: string | undefined;
@@ -183,10 +231,29 @@ export interface ProblemDetails {
     instance?: string | undefined;
 }
 
+export interface AddFileToImportReq {
+    file?: string | undefined;
+}
+
+export interface ByteSize {
+    bits?: number;
+    bytes?: number;
+    kilobytes?: number;
+    megabytes?: number;
+    gigabytes?: number;
+    terabytes?: number;
+    largestWholeNumberSymbol?: string | undefined;
+    largestWholeNumberFullWord?: string | undefined;
+    largestWholeNumberValue?: number;
+}
+
+export interface NamedLookupRes {
+    id?: string | undefined;
+    name?: string | undefined;
+}
+
 export interface QueueImportsRes {
-    errors?: string[] | undefined;
-    success?: boolean;
-    count?: number | undefined;
+    count?: number;
 }
 
 export interface QueueImportsReq {
@@ -210,18 +277,6 @@ export enum DateFormat {
     Mdy_dashes = "mdy_dashes",
     Ymd_slashes = "ymd_slashes",
     Ymd_dashes = "ymd_dashes",
-}
-
-export interface ByteSize {
-    bits?: number;
-    bytes?: number;
-    kilobytes?: number;
-    megabytes?: number;
-    gigabytes?: number;
-    terabytes?: number;
-    largestWholeNumberSymbol?: string | undefined;
-    largestWholeNumberFullWord?: string | undefined;
-    largestWholeNumberValue?: number;
 }
 
 export class ApiException extends Error {
