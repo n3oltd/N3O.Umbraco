@@ -2,6 +2,6 @@
 
 namespace N3O.Umbraco.Storage.Services {
     public interface IVolume {
-        Task<IStorageFolder> GetStorageFolderAsync(string folderName);
+        Task<IStorageFolder> GetStorageFolderAsync(string folderPath);
     }
 }

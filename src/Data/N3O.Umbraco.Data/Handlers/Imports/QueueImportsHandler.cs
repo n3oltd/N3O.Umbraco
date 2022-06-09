@@ -91,7 +91,9 @@ namespace N3O.Umbraco.Data.Handlers {
         
         public async Task<QueueImportsRes> Handle(QueueImportsCommand req, CancellationToken cancellationToken) {
             var storageFolderName = _clock.GetCurrentInstant().ToUnixTimeMilliseconds().ToString();
-            var csvBlob = await _volume.Value.MoveTempFileAsync(req.Model.CsvFile.Filename, storageFolderName);
+            var csvBlob = await _volume.Value.MoveFileAsync(req.Model.CsvFile.Filename,
+                                                            req.Model.CsvFile.StorageFolderName,
+                                                            storageFolderName);
             
             using (csvBlob.Stream) {
                 var containerContent = req.ContentId.Run(_contentService.GetById, true);
@@ -217,7 +219,7 @@ namespace N3O.Umbraco.Data.Handlers {
         }
 
         private async Task ExtractToStorageFolderAsync(StorageToken zipStorageToken, string storageFolderName) {
-            var tempStorage = await _volume.Value.GetTempFolderAsync();
+            var tempStorage = await _volume.Value.GetStorageFolderAsync(zipStorageToken.StorageFolderName);
             var storageFolder = await _volume.Value.GetStorageFolderAsync(storageFolderName);
             var zipBlob = await tempStorage.GetFileAsync(zipStorageToken.Filename);
 

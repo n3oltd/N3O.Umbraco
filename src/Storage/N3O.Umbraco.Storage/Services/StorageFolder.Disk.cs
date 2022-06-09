@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Storage.Services {
     public class DiskStorageFolder : IStorageFolder {
-        private readonly string _folderName;
+        private readonly string _folderPath;
         private readonly string _storageRootPath;
 
-        public DiskStorageFolder(IWebHostEnvironment webHostEnvironment,  string folderName) {
-            _folderName = folderName;
+        public DiskStorageFolder(IWebHostEnvironment webHostEnvironment,  string folderPath) {
+            _folderPath = folderPath;
             _storageRootPath = Path.Combine(webHostEnvironment.WebRootPath,
                                             StorageConstants.StorageFolderName,
-                                            folderName);
+                                            folderPath);
 
             if (!Directory.Exists(_storageRootPath)) {
                 Directory.CreateDirectory(_storageRootPath);
@@ -48,7 +48,7 @@ namespace N3O.Umbraco.Storage.Services {
         public Task<Blob> GetFileAsync(string filename, CancellationToken cancellationToken = default) {
             var file = File.OpenRead(GetPath(filename));
             var blob = new Blob(filename,
-                                _folderName,
+                                _folderPath,
                                 FileUtility.GetContentType(filename),
                                 ByteSize.FromBytes(file.Length),
                                 file);

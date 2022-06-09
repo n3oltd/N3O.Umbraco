@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Storage.Azure.Services {
     public class AzureStorageFolder : IStorageFolder {
         private readonly BlobContainerClient _container;
-        private readonly string _folderName;
+        private readonly string _folderPath;
 
-        public AzureStorageFolder(BlobContainerClient container, string folderName) {
+        public AzureStorageFolder(BlobContainerClient container, string folderPath) {
             _container = container;
-            _folderName = folderName;
+            _folderPath = folderPath;
         }
         
         public async Task AddFileAsync(string filename, Stream stream) {
@@ -28,7 +28,7 @@ namespace N3O.Umbraco.Storage.Azure.Services {
         }
 
         public async Task DeleteAllFilesAsync() {
-            var result = _container.GetBlobsAsync(prefix: _folderName);
+            var result = _container.GetBlobsAsync(prefix: _folderPath);
 
             await foreach (var page in result.AsPages()) {
                 foreach (var blob in page.Values) {
@@ -48,7 +48,7 @@ namespace N3O.Umbraco.Storage.Azure.Services {
             var properties = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);
 
             return new Blob(filename,
-                            _folderName,
+                            _folderPath,
                             FileUtility.GetContentType(filename),
                             ByteSize.FromBytes(properties.Value.ContentLength),
                             await blobClient.OpenReadAsync(cancellationToken: cancellationToken));
@@ -59,14 +59,14 @@ namespace N3O.Umbraco.Storage.Azure.Services {
             var exists = await blobClient.ExistsAsync();
 
             if (!exists) {
-                throw new FileNotFoundException($"File {filename.Quote()} does not exist in folder {_folderName.Quote()}");
+                throw new FileNotFoundException($"File {filename.Quote()} does not exist in folder {_folderPath.Quote()}");
             }
 
             return blobClient;
         }
 
         private string GetBlobName(string filename) {
-            return $"{_folderName}/{filename}";
+            return $"{_folderPath}/{filename}";
         }
     }
 }
