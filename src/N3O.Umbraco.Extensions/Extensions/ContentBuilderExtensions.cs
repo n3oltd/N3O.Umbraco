@@ -19,6 +19,10 @@ namespace N3O.Umbraco.Extensions {
             return builder.Property<DateTimePropertyBuilder>(propertyTypeAlias);
         }
         
+        public static DropdownPropertyBuilder Dropdown(this IContentBuilder builder, string propertyTypeAlias) {
+            return builder.Property<DropdownPropertyBuilder>(propertyTypeAlias);
+        }
+        
         public static LabelPropertyBuilder Label(this IContentBuilder builder, string propertyTypeAlias) {
             return builder.Property<LabelPropertyBuilder>(propertyTypeAlias);
         }
@@ -40,8 +44,8 @@ namespace N3O.Umbraco.Extensions {
             return builder.Property<RadioButtonListPropertyBuilder>(propertyTypeAlias);
         }
 
-        public static TextAreaPropertyBuilder TextArea(this IContentBuilder builder, string propertyTypeAlias) {
-            return builder.Property<TextAreaPropertyBuilder>(propertyTypeAlias);
+        public static TextareaPropertyBuilder Textarea(this IContentBuilder builder, string propertyTypeAlias) {
+            return builder.Property<TextareaPropertyBuilder>(propertyTypeAlias);
         }
         
         public static TextBoxPropertyBuilder TextBox(this IContentBuilder builder, string propertyTypeAlias) {
