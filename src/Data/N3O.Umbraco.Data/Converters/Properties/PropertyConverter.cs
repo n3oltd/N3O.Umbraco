@@ -26,6 +26,7 @@ namespace N3O.Umbraco.Data.Converters {
 
         public void Export(IUntypedTableBuilder tableBuilder,
                            IEnumerable<IPropertyConverter> converters,
+                           int columnOrder,
                            string columnTitlePrefix,
                            IContentProperty contentProperty,
                            UmbracoPropertyInfo propertyInfo) {
@@ -38,7 +39,7 @@ namespace N3O.Umbraco.Data.Converters {
                     title += $" {index + 1}";
                 }
                 
-                var columnRange = GetOrAddColumnRange(cell.Type, title);
+                var columnRange = GetOrAddColumnRange(cell.Type, columnOrder + index, title);
 
                 tableBuilder.AddCell(columnRange, cell);
             }
@@ -128,10 +129,11 @@ namespace N3O.Umbraco.Data.Converters {
             }
         }
         
-        private IColumnRange GetOrAddColumnRange(DataType dataType, string title) {
+        private IColumnRange GetOrAddColumnRange(DataType dataType, int columnOrder, string title) {
             return _columnRanges.GetOrAdd(title,
                                           () => _columnRangeBuilder.OfType<TExport>(dataType)
                                                                    .Title(title)
+                                                                   .SetOrder(columnOrder)
                                                                    .PreserveColumnOrder()
                                                                    .Build());
         }

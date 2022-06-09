@@ -86,10 +86,10 @@ namespace N3O.Umbraco.Data.Handlers {
             var publishedOnly = !req.Model.IncludeUnpublished.GetValueOrThrow();
 
             for (var pageIndex = 0; true; pageIndex++) {
-                var page = _contentService.GetPagedChildren(containerContent.Id,
-                                                            pageIndex,
-                                                            PageSize,
-                                                            out var totalRecords);
+                var page = _contentService.GetPagedDescendants(containerContent.Id,
+                                                               pageIndex,
+                                                               PageSize,
+                                                               out var totalRecords);
 
                 foreach (var content in page) {
                     if (content.ContentType.Id != contentType.Id) {
@@ -105,11 +105,19 @@ namespace N3O.Umbraco.Data.Handlers {
 
                     var contentProperties = _contentHelper.GetContentProperties(content);
 
+                    var columnOrder = 0;
                     foreach (var propertyInfo in propertyInfos) {
                         var converter = propertyInfo.GetPropertyConverter(_propertyConverters);
                         var contentProperty = contentProperties.GetPropertyByAlias(propertyInfo.Type.Alias);
 
-                        converter.Export(tableBuilder, _propertyConverters, null, contentProperty, propertyInfo);
+                        converter.Export(tableBuilder,
+                                         _propertyConverters,
+                                         columnOrder,
+                                         null,
+                                         contentProperty,
+                                         propertyInfo);
+
+                        columnOrder += 1000;
                     }
                     
                     tableBuilder.NextRow();

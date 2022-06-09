@@ -6,5 +6,6 @@ namespace N3O.Umbraco.Data.Models {
         void AddValues(int row, object value);
         Cell GetCell(CellAddress address);
         IEnumerable<Column> GetColumns();
+        int Order { get; }
     }
 }

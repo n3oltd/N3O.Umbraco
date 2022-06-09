@@ -8,6 +8,7 @@ namespace N3O.Umbraco.Data.Converters {
     public interface IPropertyConverter {
         void Export(IUntypedTableBuilder tableBuilder,
                     IEnumerable<IPropertyConverter> converters,
+                    int columnOrder,
                     string columnTitlePrefix,
                     IContentProperty contentProperty,
                     UmbracoPropertyInfo propertyInfo);

@@ -39,7 +39,8 @@ namespace N3O.Umbraco.Data.Models {
                            Dictionary<string, IEnumerable<object>> columnMetadata,
                            bool hidden,
                            AccessControlList accessControlList,
-                           IEnumerable<Attribute> attributes) {
+                           IEnumerable<Attribute> attributes,
+                           int order) {
             _formatter = formatter;
             _localizationSettings = localizationSettings;
             _localClock = localClock;
@@ -53,6 +54,7 @@ namespace N3O.Umbraco.Data.Models {
             _hidden = hidden;
             _accessControlList = accessControlList;
             _attributes = attributes;
+            Order = order;
         }
 
         public void AddCells(int row, object cells) {
@@ -95,6 +97,8 @@ namespace N3O.Umbraco.Data.Models {
 
             return columns;
         }
+        
+        public int Order { get; }
 
         private void AddValue(int row, TValue value) {
             AddValue(row, null, value);

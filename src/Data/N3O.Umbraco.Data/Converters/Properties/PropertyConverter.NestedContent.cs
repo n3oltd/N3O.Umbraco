@@ -32,6 +32,7 @@ namespace N3O.Umbraco.Data.Converters {
 
         public void Export(IUntypedTableBuilder tableBuilder,
                            IEnumerable<IPropertyConverter> converters,
+                           int columnOrder,
                            string columnTitlePrefix,
                            IContentProperty contentProperty,
                            UmbracoPropertyInfo propertyInfo) {
@@ -55,9 +56,12 @@ namespace N3O.Umbraco.Data.Converters {
 
                     converter.Export(tableBuilder,
                                      converters,
+                                     columnOrder,
                                      nestedColumnTitlePrefix,
                                      nestedContentProperty,
                                      nestedPropertyInfo);
+                    
+                    columnOrder += 100;
                 }
 
                 if (!nestedContentConfiguration.ContentTypes.IsSingle()) {

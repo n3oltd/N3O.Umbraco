@@ -59,7 +59,7 @@ namespace N3O.Umbraco.Data.Builders {
 
             _columnToRangeMap.Clear();
 
-            foreach (var columnRange in _columnRanges) {
+            foreach (var columnRange in _columnRanges.OrderBy(x => x.Order).ThenBy(x => _columnRanges.IndexOf(x))) {
                 var columnRangeColumns = columnRange.GetColumns().ToList();
 
                 columns.AddRange(columnRangeColumns);

@@ -26,6 +26,7 @@ namespace N3O.Umbraco.Data.Builders {
         private AccessControlList _accessControlList = AccessControlList.AuthenticatedUsers();
         private bool _hidden;
         private Func<IFormatter, string> _getComment;
+        private int _order;
 
         public FluentColumnRangeBuilder(IServiceProvider serviceProvider,
                                         IFormatter formatter,
@@ -172,6 +173,12 @@ namespace N3O.Umbraco.Data.Builders {
             return this;
         }
 
+        public IFluentColumnRangeBuilder<TValue> SetOrder(int order) {
+            _order = order;
+
+            return this;
+        }
+
         public ColumnRange<TValue> Build() {
             if (_cellConverter == null) {
                 Converter(_dataType.GetDefaultCellConverterType());
@@ -192,7 +199,8 @@ namespace N3O.Umbraco.Data.Builders {
                                                                                    x => x.Value as IEnumerable<object>),
                                                       _hidden,
                                                       _accessControlList,
-                                                      _attributes);
+                                                      _attributes,
+                                                      _order);
 
             return columnRange;
         }

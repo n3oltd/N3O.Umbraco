@@ -39,6 +39,8 @@ namespace N3O.Umbraco.Data.Builders {
         IFluentColumnRangeBuilder<TValue> Hidden();
         IFluentColumnRangeBuilder<TValue> VisibleTo(AccessControlList accessControlList);
 
+        IFluentColumnRangeBuilder<TValue> SetOrder(int order);
+        
         ColumnRange<TValue> Build();
     }
 }
