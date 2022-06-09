@@ -75,6 +75,8 @@ angular.module("umbraco")
             window.URL.revokeObjectURL(blobUrl);
 
             $scope.processing = false;
+            // $digest() is used to refresh the div contents. Use better alternative when possible. 
+            $scope.$digest();
         }
 
         $scope.selectAll = function () {

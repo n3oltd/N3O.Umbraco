@@ -92,6 +92,8 @@ angular.module("umbraco")
             } else {
                 processingError(await result.json());
             }
+            // $digest() is used to refresh the div contents. Use better alternative when possible. 
+            $scope.$digest();
         };
 
         async function getStorageToken(input) {

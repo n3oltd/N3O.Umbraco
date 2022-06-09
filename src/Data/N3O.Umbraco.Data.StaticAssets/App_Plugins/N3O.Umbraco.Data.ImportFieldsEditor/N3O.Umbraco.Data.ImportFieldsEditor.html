@@ -10,7 +10,7 @@
             <div class="row-2">
                 <input type="text" ng-attr-id="{{'input_' + $index}}" ng-model="model.value.fields[$index].value" class="custom" />
                 
-                <input type="file" ngf-select="uploadResource(this, model.value.reference, $index)" ng-if="model.value.fields[$index].isFile" />
+                <input type="file" ng-attr-id="{{'fileInput_' + $index}}" ngf-select="uploadResource(model.value.reference, $index)" ng-if="model.value.fields[$index].isFile" />
             </div>
         </div>
     </div>
