@@ -101,7 +101,7 @@ namespace N3O.Umbraco.Content {
             
             var source = propertyValue;
 
-            if (source == null) {
+            if (source == null || source?.ToString() == "null") {
                 return default;
             }
 
