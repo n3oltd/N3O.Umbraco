@@ -18,7 +18,7 @@ export class ContentTypesClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
 
-    getContentTypeByAlias(contentType: string): Promise<ContentTypeSummary[]> {
+    getContentTypeByAlias(contentType: string): Promise<ContentTypeRes[]> {
         let url_ = this.baseUrl + "/umbraco/api/ContentTypes/{contentType}";
         if (contentType === undefined || contentType === null)
             throw new Error("The parameter 'contentType' must be defined.");
@@ -37,13 +37,13 @@ export class ContentTypesClient {
         });
     }
 
-    protected processGetContentTypeByAlias(response: Response): Promise<ContentTypeSummary[]> {
+    protected processGetContentTypeByAlias(response: Response): Promise<ContentTypeRes[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ContentTypeSummary[];
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ContentTypeRes[];
             return result200;
             });
         } else if (status === 400) {
@@ -61,7 +61,7 @@ export class ContentTypesClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ContentTypeSummary[]>(null as any);
+        return Promise.resolve<ContentTypeRes[]>(null as any);
     }
 
     getRelationContentTypes(type: string | null | undefined, contentId: string): Promise<ContentTypeSummary[]> {
@@ -119,8 +119,16 @@ export class ContentTypesClient {
     }
 }
 
-export interface ContentTypeSummary {
+export interface ContentTypeRes {
     alias?: string | undefined;
+    name?: string | undefined;
+    properties?: UmbracoPropertyInfoRes[] | undefined;
+}
+
+export interface UmbracoPropertyInfoRes {
+    alias?: string | undefined;
+    group?: string | undefined;
+    dataType?: string | undefined;
     name?: string | undefined;
 }
 
@@ -130,6 +138,11 @@ export interface ProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
+}
+
+export interface ContentTypeSummary {
+    alias?: string | undefined;
+    name?: string | undefined;
 }
 
 export class ApiException extends Error {

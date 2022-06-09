@@ -25,6 +25,64 @@ var ImportsClient = /** @class */ (function () {
         this.http = http ? http : window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
+    ImportsClient.prototype.addFileToImport = function (referenceId, req) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/backoffice/api/Imports/queued/{referenceId}/files";
+        if (referenceId === undefined || referenceId === null)
+            throw new Error("The parameter 'referenceId' must be defined.");
+        url_ = url_.replace("{referenceId}", encodeURIComponent("" + referenceId));
+        url_ = url_.replace(/[?&]$/, "");
+        var content_ = JSON.stringify(req);
+        var options_ = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processAddFileToImport(_response);
+        });
+    };
+    ImportsClient.prototype.processAddFileToImport = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                return;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status === 404) {
+            return response.text().then(function (_responseText) {
+                var result404 = null;
+                result404 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
     ImportsClient.prototype.getLookupDatePatterns = function () {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/backoffice/api/Imports/lookups/datePatterns";
