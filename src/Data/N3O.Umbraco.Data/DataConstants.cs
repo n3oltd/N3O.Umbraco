@@ -37,8 +37,8 @@
         }
 
         public static class PropertyEditorAliases {
-            public const string ImportErrorsViewer = "N3O.Umbraco.Data.ImportErrorsViewer";
-            public const string ImportFieldsEditor = "N3O.Umbraco.Data.ImportFieldsEditor";
+            public const string ImportNoticesViewer = "N3O.Umbraco.Data.ImportNoticesViewer";
+            public const string ImportDataEditor = "N3O.Umbraco.Data.ImportDataEditor";
         }
         
         public static class Tables {

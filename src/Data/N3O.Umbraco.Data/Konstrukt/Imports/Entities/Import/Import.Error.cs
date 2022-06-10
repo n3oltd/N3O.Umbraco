@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using N3O.Umbraco.Data.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using Umbraco.Extensions;
@@ -10,7 +11,9 @@ namespace N3O.Umbraco.Data.Konstrukt {
         }
 
         public void Error(IEnumerable<string> errors) {
-            Errors = JsonConvert.SerializeObject(errors);
+            Notices = JsonConvert.SerializeObject(new ImportNotices {
+                Errors = errors
+            });
             Status = ImportStatuses.Error;
         }
     }

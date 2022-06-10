@@ -1,13 +1,16 @@
-﻿using Newtonsoft.Json;
+﻿using N3O.Umbraco.Data.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Data.Konstrukt {
     public partial class Import {
-        public void Saved(Guid id, string contentSummary, IEnumerable<string> saveErrors) {
+        public void Saved(Guid id, string contentSummary, IEnumerable<string> warnings) {
             ImportedContentId = id;
             ImportedContentSummary = contentSummary;
-            Errors = JsonConvert.SerializeObject(saveErrors);
+            Notices = JsonConvert.SerializeObject(new ImportNotices {
+                Warnings = warnings
+            });
             Status = ImportStatuses.Saved;
         }
     }

@@ -7,6 +7,7 @@ using Umbraco.Cms.Core.Models.ContentEditing;
 using Umbraco.Cms.Core.Models.Membership;
 using UmbracoSecurity = Umbraco.Cms.Core.Constants.Security;
 
+
 namespace N3O.Umbraco.Data.ContentApps {
     public class ImportApp : IContentAppFactory {
         private readonly IEnumerable<IImportContentFilter> _contentFilters;
@@ -22,7 +23,7 @@ namespace N3O.Umbraco.Data.ContentApps {
 
             var content = source as IContent;
 
-            if (content == null) {
+            if (content == null || content.Id == default) {
                 return null;
             }
             

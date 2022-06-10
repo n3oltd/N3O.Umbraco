@@ -73,7 +73,7 @@
                     </div>
                 </div>
 
-                <em class="red" ng-show="errorMessage">{{errorMessage}}</em>
+                <em class="text-error" ng-show="errorMessage">{{errorMessage}}</em>
             </div>
         </div>
 
@@ -120,9 +120,9 @@
                 <div class="umb-property">
                     <div class="control-group umb-control-group">
                         <div class="umb-el-wrap">
-                            <ul>
-                                <li ng-repeat="error in errorMessage">{{error}}</li>
-                            </ul>
+                            <p>
+                              <em class="text-error" ng-show="errorMessage">{{errorMessage}}</em>
+                            </p>
                             
                             <p>
                                 <a href class="btn btn-secondary" ng-click="startOver()">Start Over</a>

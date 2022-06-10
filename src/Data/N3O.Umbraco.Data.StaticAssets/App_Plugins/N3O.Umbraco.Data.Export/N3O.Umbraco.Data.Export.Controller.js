@@ -25,6 +25,22 @@ angular.module("umbraco")
         (async () => {
             $scope.content = await contentResource.getById(editorState.current.id);
             $scope.contentTypes = await getContentTypes($scope.content.key);
+
+            fetch("/umbraco/backoffice/api/Exports/lookups/contentMetadata", {
+                headers: {
+                    "Accept": "application/json"
+                }
+            })
+            .then(res => res.json())
+            .then(res => {
+                for (let metadata of res) {
+                    metadata.selected = metadata.autoSelected;
+                }
+                
+                res.sort((a, b) => a.displayOrder - b.displayOrder);
+                
+                $scope.metadatas = res;
+            });
         })();
         
         $scope.export = async function () {
@@ -37,18 +53,20 @@ angular.module("umbraco")
                 return;
             }
 
+            let selectedMetadataIds = $scope.metadatas.filter(x => x.selected).map(x => x.id);
             let selectedPropertyAliases = $scope.exportableProperties.filter(x => x.selected).map(x => x.alias);
             
-            if ($scope.exportableProperties.length && !selectedPropertyAliases.length) {
-                processingError("At least one property must be selected");
+            if (!selectedPropertyAliases.length && !selectedMetadataIds.length) {
+                processingError("At least one property or metadata field must be selected");
                 
                 return;
             }
 
             let req = {
-                properties: selectedPropertyAliases,
+                format: $scope.format,
                 includeUnpublished: $scope.includeUnpublished,
-                format: $scope.format
+                metadata: selectedMetadataIds,
+                properties: selectedPropertyAliases
             };
             
             let res = await fetch(`/umbraco/backoffice/api/Exports/export/${$scope.content.key}/${$scope.contentType.alias}`, {
@@ -59,6 +77,12 @@ angular.module("umbraco")
                 method: "POST",
                 body: JSON.stringify(req)
             });
+            
+            if (res.status !== 200) {
+                processingError(await res.json());
+
+                return;
+            }
 
             const blob = await res.blob();
             const header = res.headers.get("Content-Disposition");
@@ -75,17 +99,29 @@ angular.module("umbraco")
             window.URL.revokeObjectURL(blobUrl);
 
             $scope.processing = false;
-            // $digest() is used to refresh the div contents. Use better alternative when possible. 
+             
             $scope.$digest();
         }
 
-        $scope.selectAll = function () {
+        $scope.selectAllMetadatas = function () {
+            for (let metadata of $scope.metadatas) {
+                metadata.selected = true;
+            }
+        }
+        
+        $scope.selectAllProperties = function () {
             for (let property of $scope.exportableProperties) {
                 property.selected = true;
             }
         }
+
+        $scope.clearSelectedMetadatas = function () {
+            for (let metadata of $scope.metadatas) {
+                metadata.selected = false;
+            }
+        }
         
-        $scope.clearSelection = function () {
+        $scope.clearSelectedProperties = function () {
             for (let property of $scope.exportableProperties) {
                 property.selected = false;
             }

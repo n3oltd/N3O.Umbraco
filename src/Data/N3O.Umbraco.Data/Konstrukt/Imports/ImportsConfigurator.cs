@@ -48,13 +48,11 @@ namespace N3O.Umbraco.Data.Konstrukt {
 
         private void ConfigureEditor(KonstruktDashboardCollectionConfigBuilder<Import> collection) {
             var editor = collection.Editor();
-            var generalTab = editor.AddTab("General");
+            var recordTab = editor.AddTab("Record");
             
-            var generalFieldset = generalTab.AddFieldset("General");
-            generalFieldset.AddField(c => c.Data).SetDataType(ImportFieldsEditorDataEditor.DataEditorName);
-            
-            var errorsFieldSet = generalTab.AddFieldset("Errors");
-            errorsFieldSet.AddField(c => c.Errors).SetDataType(ImportErrorsViewerDataEditor.DataEditorName);
+            var recordFieldset = recordTab.AddFieldset("Record");
+            recordFieldset.AddField(c => c.Data).SetDataType(ImportDataEditorDataEditor.DataEditorName);
+            recordFieldset.AddField(c => c.Notices).SetDataType(ImportNoticesViewerDataEditor.DataEditorName);
         }
     }
 }

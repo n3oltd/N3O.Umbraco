@@ -100,7 +100,7 @@ namespace N3O.Umbraco.Data.Handlers {
                             if (wasPublished) {
                                 import.SavedAndPublished(savedContent.Key, contentSummary);
                             } else {
-                                import.Saved(savedContent.Key, contentSummary, GetSaveErrors(publishResult));
+                                import.Saved(savedContent.Key, contentSummary, GetSaveWarnings(publishResult));
                             }
                         } else {
                             import.Error(publishResult.EventMessages.GetAll().Select(x => x.Message));
@@ -184,7 +184,7 @@ namespace N3O.Umbraco.Data.Handlers {
             return summariser?.GetSummary(content) ?? content.Name;
         }
         
-        private IEnumerable<string> GetSaveErrors(PublishResult publishResult) {
+        private IEnumerable<string> GetSaveWarnings(PublishResult publishResult) {
             foreach (var eventMessage in publishResult.EventMessages.GetAll()) {
                 yield return eventMessage.Message;
             }

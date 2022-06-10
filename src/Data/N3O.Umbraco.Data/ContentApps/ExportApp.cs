@@ -22,7 +22,7 @@ namespace N3O.Umbraco.Data.ContentApps {
 
             var content = source as IContent;
 
-            if (content == null) {
+            if (content == null || content.Id == default) {
                 return null;
             }
             

@@ -2,7 +2,7 @@
     overflow: hidden;
 }
 
-ul.propertyCheckBoxes  {
+ul.selectionCheckBoxes  {
     list-style: none;
     column-count: 4;
     column-gap:.5em;

@@ -28,8 +28,8 @@ namespace N3O.Umbraco.Data {
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             
-            builder.PropertyValueConverters().Append<ImportErrorsViewerValueConverter>();
-            builder.PropertyValueConverters().Append<ImportFieldsEditorValueConverter>();
+            builder.PropertyValueConverters().Append<ImportNoticesViewerValueConverter>();
+            builder.PropertyValueConverters().Append<ImportDataEditorValueConverter>();
 
             RegisterApis(builder);
             RegisterContentSummarisers(builder);
@@ -56,6 +56,9 @@ namespace N3O.Umbraco.Data {
         }
 
         private void RegisterConverters(IUmbracoBuilder builder) {
+            RegisterAll(t => t.ImplementsInterface<IContentMetadataConverter>(),
+                        t => builder.Services.AddTransient(typeof(IContentMetadataConverter), t));
+            
             RegisterAll(t => t.ImplementsInterface<IPropertyConverter>(),
                         t => builder.Services.AddTransient(typeof(IPropertyConverter), t));
         }
@@ -128,8 +131,8 @@ namespace N3O.Umbraco.Data {
         
         public void Initialize() {
             if (_runtimeState.Level == RuntimeLevel.Run) {
-                EnsureDataTypeExists(new ImportErrorsViewerDataEditor(_dataValueEditorFactory, _iioHelper));
-                EnsureDataTypeExists(new ImportFieldsEditorDataEditor(_dataValueEditorFactory, _iioHelper));
+                EnsureDataTypeExists(new ImportNoticesViewerDataEditor(_dataValueEditorFactory, _iioHelper));
+                EnsureDataTypeExists(new ImportDataEditorDataEditor(_dataValueEditorFactory, _iioHelper));
             }
         }
 

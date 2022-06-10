@@ -1,4 +1,4 @@
-angular.module("umbraco").controller("N3O.Umbraco.Data.ImportFieldsEditor",
+angular.module("umbraco").controller("N3O.Umbraco.Data.ImportDataEditor",
     function ($scope, assetsService) {
         $scope.uploadResource = async function (reference, index) {
             var uploadInput = document.getElementById("fileInput_" + index);
@@ -41,5 +41,5 @@ angular.module("umbraco").controller("N3O.Umbraco.Data.ImportFieldsEditor",
             return await res.json();
         }
 
-        assetsService.loadCss("~/App_Plugins/N3O.Umbraco.Data.ImportFieldsEditor/N3O.Umbraco.Data.ImportFieldsEditor.css");
+        assetsService.loadCss("~/App_Plugins/N3O.Umbraco.Data.ImportDataEditor/N3O.Umbraco.Data.ImportDataEditor.css");
     });

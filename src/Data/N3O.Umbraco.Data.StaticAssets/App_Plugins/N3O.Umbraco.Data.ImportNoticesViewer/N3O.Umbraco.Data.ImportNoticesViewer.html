@@ -1,0 +1,29 @@
+<div ng-controller="N3O.Umbraco.Data.ImportNoticesViewer">
+    <div class="n3o-import-errors-viewer">
+        <p ng-show="errors">
+            <em class="text-error">Errors</em>
+        </p>
+        
+        <div ng-repeat="error in errors track by $index" class="row-wrapper" ng-show="errors">
+            <div class="row">
+                {{error}}
+            </div>
+        </div>
+
+        <p ng-show="warnings">
+            <em class="text-warning">Warnings</em>
+        </p>
+        
+        <div ng-repeat="warning in warnings track by $index" class="row-wrapper" ng-show="warnings">
+            <div class="row">
+                {{warning}}
+            </div>
+        </div>
+
+        <div class="row-wrapper" ng-hide="errors || warnings">
+            <div class="row">
+                No warnings or errors
+            </div>
+        </div>
+    </div>
+</div>

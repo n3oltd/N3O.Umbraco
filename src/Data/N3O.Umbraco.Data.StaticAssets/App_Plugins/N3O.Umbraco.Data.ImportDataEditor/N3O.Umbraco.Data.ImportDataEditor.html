@@ -1,14 +1,12 @@
-<div ng-controller="N3O.Umbraco.Data.ImportFieldsEditor">
+<div ng-controller="N3O.Umbraco.Data.ImportDataEditor">
     <div class="n3o-import-fields-editor">
         <div ng-repeat="resource in model.value.fields track by $index" class="row-wrapper">
             <div class="row-1">
                 <span class="text">{{model.value.fields[$index].name}}</span>
-                
-                <span class="sourceToolTip" data-tooltip="{{model.value.fields[$index].sourceValue}}">(CSV value)</span>
             </div>
             
             <div class="row-2">
-                <input type="text" ng-model="model.value.fields[$index].value" class="custom" />
+                <input type="text" ng-model="model.value.fields[$index].value" placeholder="{{model.value.fields[$index].sourceValue}}" class="custom" />
                 
                 <input type="file" ng-attr-id="{{'fileInput_' + $index}}" ngf-select="uploadResource(model.value.reference, $index)" ng-if="model.value.fields[$index].isFile" />
             </div>

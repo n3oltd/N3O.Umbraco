@@ -51,7 +51,7 @@
                 <div class="control-group umb-control-group">
                     <div class="umb-el-wrap">
                         <label class="control-label">
-                            Include unpublished <strong class="umb-control-required">*</strong>
+                            Include Unpublished <strong class="umb-control-required">*</strong>
                         </label>
 
                         <div class="controls">
@@ -65,17 +65,42 @@
 
     <div class="umb-group-panel">
         <div class="umb-group-panel__header">
-            <div>Properties <strong class="umb-control-required">*</strong></div>
+            <div>Metadata</div>
+        </div>
+
+        <div class="umb-group-panel__content">
+            <div class="listTable listTable--umb">
+                <a class="umb-outline" ng-click="selectAllMetadatas()" ng-disabled="processing">Select All</a> |
+                <a class="umb-outline" ng-click="clearSelectedMetadatas()" ng-disabled="processing">Clear Selection</a>
+
+                <br><br>
+
+                <ul class="selectionCheckBoxes">
+                    <li ng-repeat="metadata in metadatas">
+                        <label>
+                            <input type="checkbox" value="{{metadata.id}}" ng-model="metadata.selected" no-dirty-check>
+
+                            &nbsp;{{metadata.name}}
+                        </label>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="umb-group-panel">
+        <div class="umb-group-panel__header">
+            <div>Properties</div>
         </div>
         
         <div class="umb-group-panel__content">
             <div class="listTable listTable--umb">
-                <a class="umb-outline" ng-click="selectAll()" ng-disabled="processing">Select All</a> |
-                <a class="umb-outline" ng-click="clearSelection()" ng-disabled="processing">Clear Selection</a>
+                <a class="umb-outline" ng-click="selectAllProperties()" ng-disabled="processing">Select All</a> |
+                <a class="umb-outline" ng-click="clearSelectedProperties()" ng-disabled="processing">Clear Selection</a>
 
                 <br><br>
                 
-                <ul class="propertyCheckBoxes">
+                <ul class="selectionCheckBoxes">
                     <li ng-repeat="property in exportableProperties">
                         <label>
                             <input type="checkbox" value="{{property.alias}}" ng-model="property.selected" no-dirty-check>
@@ -86,7 +111,7 @@
                 </ul>
             </div>
             
-            <em class="red" ng-show="errorMessage">{{errorMessage}}</em>
+            <em class="text-error" ng-show="errorMessage">{{errorMessage}}</em>
         </div>
     </div>
 

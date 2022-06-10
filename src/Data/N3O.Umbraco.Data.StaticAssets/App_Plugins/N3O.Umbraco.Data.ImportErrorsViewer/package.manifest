@@ -1,5 +1,0 @@
-{
-  javascript: [
-    '/App_Plugins/N3O.Umbraco.Data.ImportErrorsViewer/N3O.Umbraco.Data.ImportErrorsViewer.Controller.js'
-  ]
-}

@@ -9,7 +9,6 @@ using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Services;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Localization;
 using N3O.Umbraco.Mediator;
 using System;
 using System.Collections.Generic;
@@ -23,17 +22,15 @@ namespace N3O.Umbraco.Data.Handlers {
     public class CreateExportHandler : IRequestHandler<CreateExportCommand, ExportReq, ExportFile> {
         private const int PageSize = 100;
 
-        private readonly Dictionary<int, string> _pathCache = new();
         private readonly IContentService _contentService;
         private readonly IContentTypeService _contentTypeService;
         private readonly IDataTypeService _dataTypeService;
         private readonly IContentHelper _contentHelper;
         private readonly IWorkspace _workspace;
-        private readonly Lazy<IExcelTableBuilder> _excelTableBuilder;
-        private readonly IReadOnlyList<IPropertyConverter> _propertyConverters;
         private readonly IReadOnlyList<IExportPropertyFilter> _propertyFilters;
-        private readonly string _nameColumnTitle;
-        private readonly string _pathColumnTitle;
+        private readonly IReadOnlyList<IPropertyConverter> _propertyConverters;
+        private readonly IReadOnlyList<IContentMetadataConverter> _metadataConverters;
+        private readonly Lazy<IExcelTableBuilder> _excelTableBuilder;
 
         public CreateExportHandler(IContentService contentService,
                                    IContentTypeService contentTypeService,
@@ -42,19 +39,17 @@ namespace N3O.Umbraco.Data.Handlers {
                                    IWorkspace workspace,
                                    IEnumerable<IExportPropertyFilter> propertyFilters,
                                    IEnumerable<IPropertyConverter> propertyConverters,
-                                   Lazy<IExcelTableBuilder> excelTableBuilder,
-                                   IFormatter formatter) {
+                                   IEnumerable<IContentMetadataConverter> metadataConverters,
+                                   Lazy<IExcelTableBuilder> excelTableBuilder) {
             _contentService = contentService;
             _contentTypeService = contentTypeService;
             _dataTypeService = dataTypeService;
             _contentHelper = contentHelper;
             _workspace = workspace;
-            _excelTableBuilder = excelTableBuilder;
-            _propertyConverters = propertyConverters.ToList();
             _propertyFilters = propertyFilters.ToList();
-            
-            _nameColumnTitle = formatter.Text.Format<DataStrings>(s => s.NameColumnTitle);
-            _pathColumnTitle = formatter.Text.Format<DataStrings>(s => s.PathColumnTitle);
+            _propertyConverters = propertyConverters.ToList();
+            _metadataConverters = metadataConverters.ToList();
+            _excelTableBuilder = excelTableBuilder;
         }
 
         public async Task<ExportFile> Handle(CreateExportCommand req, CancellationToken cancellationToken) {
@@ -73,15 +68,7 @@ namespace N3O.Umbraco.Data.Handlers {
             
             var tableBuilder = _workspace.TableBuilder.Untyped(contentType.Name);
 
-            var nameColumnRange = _workspace.ColumnRangeBuilder
-                                            .String<string>()
-                                            .Title(_nameColumnTitle)
-                                            .Build();
-            
-            var pathColumnRange = _workspace.ColumnRangeBuilder
-                                            .String<string>()
-                                            .Title(_pathColumnTitle)
-                                            .Build();
+            var metadataConverters = GetMetadataConverters(req.Model.Metadata);
 
             var publishedOnly = !req.Model.IncludeUnpublished.GetValueOrThrow();
 
@@ -99,13 +86,14 @@ namespace N3O.Umbraco.Data.Handlers {
                     if (publishedOnly && !content.Published) {
                         continue;
                     }
-                    
-                    tableBuilder.AddValue(nameColumnRange, content.Name);
-                    tableBuilder.AddValue(pathColumnRange, GetPath(content.ParentId));
+
+                    foreach (var (columnRange, converter) in metadataConverters) {
+                        tableBuilder.AddValue(columnRange, converter.GetValue(content));    
+                    }
 
                     var contentProperties = _contentHelper.GetContentProperties(content);
 
-                    var columnOrder = 0;
+                    var columnOrder = 1000;
                     foreach (var propertyInfo in propertyInfos) {
                         var converter = propertyInfo.GetPropertyConverter(_propertyConverters);
                         var contentProperty = contentProperties.GetPropertyByAlias(propertyInfo.Type.Alias);
@@ -153,22 +141,16 @@ namespace N3O.Umbraco.Data.Handlers {
                                   contents);
         }
 
-        private string GetPath(int parentId) {
-            return _pathCache.GetOrAdd(parentId, () => {
-                var segments = new List<string>();
+        private IReadOnlyDictionary<IColumnRange, IContentMetadataConverter> GetMetadataConverters(IEnumerable<ContentMetadata> contentMetadatas) {
+            var dict = new Dictionary<IColumnRange, IContentMetadataConverter>();
 
-                while (parentId != -1) {
-                    var parent = _contentService.GetById(parentId);
+            foreach (var (contentMetadata, index) in contentMetadatas.SelectWithIndex()) {
+                var converter = _metadataConverters.Single(x => x.IsConverter(contentMetadata));
 
-                    segments.Add(parent.Name);
+                dict[converter.GetColumnRange(index)] = converter;
+            }
             
-                    parentId = parent.ParentId;
-                }
-
-                segments.Reverse();
-        
-                return string.Join(" // ", segments);
-            });
+            return dict;
         }
 
         private async Task WriteCsvAsync(ITable table, Stream stream) {

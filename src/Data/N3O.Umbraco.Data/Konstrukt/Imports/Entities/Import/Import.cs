@@ -58,10 +58,10 @@ namespace N3O.Umbraco.Data.Konstrukt {
         [SpecialDbType(SpecialDbTypes.NTEXT)]
         public string Data { get; set; }
 
-        [Column(nameof(Errors))]
+        [Column(nameof(Notices))]
         [NullSetting(NullSetting = NullSettings.Null)]
         [SpecialDbType(SpecialDbTypes.NTEXT)]
-        public string Errors { get; set; }
+        public string Notices { get; set; }
         
         [Column(nameof(Status))]
         public string Status { get; set; }

@@ -40,12 +40,12 @@
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
         </Content>
 
-        <Content Include="App_Plugins\N3O.Umbraco.Data.ImportErrorsViewer\**\*.*">
+        <Content Include="App_Plugins\N3O.Umbraco.Data.ImportNoticesViewer\**\*.*">
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
         </Content>
 
-        <Content Include="App_Plugins\N3O.Umbraco.Data.ImportFieldsEditor\**\*.*">
+        <Content Include="App_Plugins\N3O.Umbraco.Data.ImportDataEditor\**\*.*">
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
         </Content>

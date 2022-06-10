@@ -3,8 +3,8 @@
     <PropertyGroup>
         <N3OUmbracoDataExportContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.Data.Export\**\*.*</N3OUmbracoDataExportContentFilesPath>
         <N3OUmbracoDataImportContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.Data.Import\**\*.*</N3OUmbracoDataImportContentFilesPath>
-        <N3OUmbracoDataImportErrorsViewerContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.Data.ImportErrorsViewer\**\*.*</N3OUmbracoDataImportErrorsViewerContentFilesPath>
-        <N3OUmbracoDataImportFieldsEditorContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.Data.ImportFieldsEditor\**\*.*</N3OUmbracoDataImportFieldsEditorContentFilesPath>
+        <N3OUmbracoDataImportNoticesViewerContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.Data.ImportNoticesViewer\**\*.*</N3OUmbracoDataImportNoticesViewerContentFilesPath>
+        <N3OUmbracoDataImportDataEditorContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.Data.ImportDataEditor\**\*.*</N3OUmbracoDataImportDataEditorContentFilesPath>
     </PropertyGroup>
 
     <Target Name="CopyN3OUmbracoDataExportAssets" BeforeTargets="Build">
@@ -27,23 +27,23 @@
               SkipUnchangedFiles="true"/>
     </Target>
 
-    <Target Name="CopyN3OUmbracoDataImportErrorsViewerAssets" BeforeTargets="Build">
+    <Target Name="CopyN3OUmbracoDataImportNoticesViewerAssets" BeforeTargets="Build">
         <ItemGroup>
-            <N3OUmbracoDataImportErrorsViewerContentFiles Include="$(N3OUmbracoDataImportErrorsViewerContentFilesPath)"/>
+            <N3OUmbracoDataImportNoticesViewerContentFiles Include="$(N3OUmbracoDataImportNoticesViewerContentFilesPath)"/>
         </ItemGroup>
-        <Message Text="Copying N3O data import errors viewer files: $(N3OUmbracoDataImportErrorsViewerContentFilesPath) - #@(N3OUmbracoDataImportErrorsViewerContentFiles->Count()) files" Importance="high"/>
-        <Copy SourceFiles="@(N3OUmbracoDataImportErrorsViewerContentFiles)"
-              DestinationFiles="@(N3OUmbracoDataImportErrorsViewerContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Data.ImportErrorsViewer\%(RecursiveDir)%(Filename)%(Extension)')"
+        <Message Text="Copying N3O data import errors viewer files: $(N3OUmbracoDataImportNoticesViewerContentFilesPath) - #@(N3OUmbracoDataImportNoticesViewerContentFiles->Count()) files" Importance="high"/>
+        <Copy SourceFiles="@(N3OUmbracoDataImportNoticesViewerContentFiles)"
+              DestinationFiles="@(N3OUmbracoDataImportNoticesViewerContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Data.ImportNoticesViewer\%(RecursiveDir)%(Filename)%(Extension)')"
               SkipUnchangedFiles="true"/>
     </Target>
 
-    <Target Name="CopyN3OUmbracoDataImportFieldsEditorAssets" BeforeTargets="Build">
+    <Target Name="CopyN3OUmbracoDataImportDataEditorAssets" BeforeTargets="Build">
         <ItemGroup>
-            <N3OUmbracoDataImportFieldsEditorContentFiles Include="$(N3OUmbracoDataImportFieldsEditorContentFilesPath)"/>
+            <N3OUmbracoDataImportDataEditorContentFiles Include="$(N3OUmbracoDataImportDataEditorContentFilesPath)"/>
         </ItemGroup>
-        <Message Text="Copying N3O data import fields editor files: $(N3OUmbracoDataImportFieldsEditorContentFilesPath) - #@(N3OUmbracoDataImportFieldsEditorContentFiles->Count()) files" Importance="high"/>
-        <Copy SourceFiles="@(N3OUmbracoDataImportFieldsEditorContentFiles)"
-              DestinationFiles="@(N3OUmbracoDataImportFieldsEditorContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Data.ImportFieldsEditor\%(RecursiveDir)%(Filename)%(Extension)')"
+        <Message Text="Copying N3O data import fields editor files: $(N3OUmbracoDataImportDataEditorContentFilesPath) - #@(N3OUmbracoDataImportDataEditorContentFiles->Count()) files" Importance="high"/>
+        <Copy SourceFiles="@(N3OUmbracoDataImportDataEditorContentFiles)"
+              DestinationFiles="@(N3OUmbracoDataImportDataEditorContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Data.ImportDataEditor\%(RecursiveDir)%(Filename)%(Extension)')"
               SkipUnchangedFiles="true"/>
     </Target>
 
@@ -63,20 +63,20 @@
         <RemoveDir Directories="@(N3OUmbracoImportDataDir)"/>
     </Target>
 
-    <Target Name="ClearN3OUmbracoDataImportErrorsViewerAssets" BeforeTargets="Clean">
+    <Target Name="ClearN3OUmbracoDataImportNoticesViewerAssets" BeforeTargets="Clean">
         <ItemGroup>
-            <N3OUmbracoImportErrorsViewerDataDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Data.ImportErrorsViewer\"/>
+            <N3OUmbracoImportNoticesViewerDataDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Data.ImportNoticesViewer\"/>
         </ItemGroup>
         <Message Text="Clear old N3O data import errors viewer files" Importance="high"/>
-        <RemoveDir Directories="@(N3OUmbracoImportErrorsViewerDataDir)"/>
+        <RemoveDir Directories="@(N3OUmbracoImportNoticesViewerDataDir)"/>
     </Target>
 
-    <Target Name="ClearN3OUmbracoDataImportFieldsEditorAssets" BeforeTargets="Clean">
+    <Target Name="ClearN3OUmbracoDataImportDataEditorAssets" BeforeTargets="Clean">
         <ItemGroup>
-            <N3OUmbracoImportFieldsEditorDataDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Data.ImportFieldsEditor\"/>
+            <N3OUmbracoImportDataEditorDataDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Data.ImportDataEditor\"/>
         </ItemGroup>
         <Message Text="Clear old N3O data import fields editor files" Importance="high"/>
-        <RemoveDir Directories="@(N3OUmbracoImportFieldsEditorDataDir)"/>
+        <RemoveDir Directories="@(N3OUmbracoImportDataEditorDataDir)"/>
     </Target>
 
 </Project>
