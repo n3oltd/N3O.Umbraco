@@ -699,10 +699,10 @@ export interface DonationOptionRes {
     name?: string | undefined;
     type?: AllocationType | undefined;
     defaultGivingType?: GivingType | undefined;
-    dimension1?: FixedOrDefaultFundDimensionValueRes | undefined;
-    dimension2?: FixedOrDefaultFundDimensionValueRes | undefined;
-    dimension3?: FixedOrDefaultFundDimensionValueRes | undefined;
-    dimension4?: FixedOrDefaultFundDimensionValueRes | undefined;
+    dimension1?: InitialFundDimensionValueRes | undefined;
+    dimension2?: InitialFundDimensionValueRes | undefined;
+    dimension3?: InitialFundDimensionValueRes | undefined;
+    dimension4?: InitialFundDimensionValueRes | undefined;
     hideQuantity?: boolean;
     hideDonation?: boolean;
     hideRegularGiving?: boolean;
@@ -722,9 +722,10 @@ export enum GivingType {
     RegularGiving = "regularGiving",
 }
 
-export interface FixedOrDefaultFundDimensionValueRes {
+export interface InitialFundDimensionValueRes {
     fixed?: FundDimensionValueRes | undefined;
     default?: FundDimensionValueRes | undefined;
+    suggested?: FundDimensionValueRes | undefined;
 }
 
 export interface FundDimensionValueRes {
