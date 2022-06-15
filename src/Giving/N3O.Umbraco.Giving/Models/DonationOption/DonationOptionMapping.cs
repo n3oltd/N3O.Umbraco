@@ -4,6 +4,8 @@ using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Giving.Extensions;
+using System.Collections.Generic;
+using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Giving.Models {
@@ -17,10 +19,10 @@ namespace N3O.Umbraco.Giving.Models {
             dest.Name = src.Name;
             dest.Type = src.Type;
             dest.DefaultGivingType = src.DefaultGivingType;
-            dest.Dimension1 = GetFixedOrDefault(ctx, src.Dimension1, src.GetFundDimensionOptions().DefaultFundDimension1());
-            dest.Dimension2 = GetFixedOrDefault(ctx, src.Dimension2, src.GetFundDimensionOptions().DefaultFundDimension2());
-            dest.Dimension3 = GetFixedOrDefault(ctx, src.Dimension3, src.GetFundDimensionOptions().DefaultFundDimension3());
-            dest.Dimension4 = GetFixedOrDefault(ctx, src.Dimension4, src.GetFundDimensionOptions().DefaultFundDimension4());
+            dest.Dimension1 = GetInitial(ctx, src.Dimension1, src.GetFundDimensionOptions().DefaultFundDimension1(), src.GetFundDimensionOptions().Dimension1Options);
+            dest.Dimension2 = GetInitial(ctx, src.Dimension2, src.GetFundDimensionOptions().DefaultFundDimension2(), src.GetFundDimensionOptions().Dimension2Options);
+            dest.Dimension3 = GetInitial(ctx, src.Dimension3, src.GetFundDimensionOptions().DefaultFundDimension3(), src.GetFundDimensionOptions().Dimension3Options);
+            dest.Dimension4 = GetInitial(ctx, src.Dimension4, src.GetFundDimensionOptions().DefaultFundDimension4(), src.GetFundDimensionOptions().Dimension4Options);
             dest.HideDonation = src.HideDonation;
             dest.HideRegularGiving = src.HideRegularGiving;
             dest.HideQuantity = src.HideQuantity;
@@ -33,18 +35,25 @@ namespace N3O.Umbraco.Giving.Models {
                 throw UnrecognisedValueException.For(src.Type);
             }
         }
-        
-        private FixedOrDefaultFundDimensionValueRes GetFixedOrDefault<TValue>(MapperContext ctx,
-                                                                              TValue @fixed,
-                                                                              TValue @default)
+
+        private InitialFundDimensionValueRes GetInitial<TValue>(MapperContext ctx,
+                                                                TValue @fixed,
+                                                                TValue @default,
+                                                                IEnumerable<TValue> fundDimensionValues)
             where TValue : FundDimensionValue<TValue> {
-            var res = new FixedOrDefaultFundDimensionValueRes();
+            var res = new InitialFundDimensionValueRes();
             res.Fixed = @fixed.IfNotNull(ctx.Map<TValue, FundDimensionValueRes>);
 
             if (res.Fixed == null) {
                 res.Default = @default.IfNotNull(ctx.Map<TValue, FundDimensionValueRes>);
             }
-            
+
+            if (res.Fixed == null && res.Default == null) {
+                var values = fundDimensionValues.OrEmpty().ToList();
+
+                res.Suggested = ctx.Map<TValue, FundDimensionValueRes>(values.FirstOrDefault());
+            }
+
             return res;
         }
     }

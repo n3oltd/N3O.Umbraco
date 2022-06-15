@@ -1651,16 +1651,16 @@ namespace N3O.Umbraco.Clients.Giving
         public GivingType? DefaultGivingType { get; set; }
 
         [Newtonsoft.Json.JsonProperty("dimension1", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public FixedOrDefaultFundDimensionValueRes Dimension1 { get; set; }
+        public InitialFundDimensionValueRes Dimension1 { get; set; }
 
         [Newtonsoft.Json.JsonProperty("dimension2", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public FixedOrDefaultFundDimensionValueRes Dimension2 { get; set; }
+        public InitialFundDimensionValueRes Dimension2 { get; set; }
 
         [Newtonsoft.Json.JsonProperty("dimension3", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public FixedOrDefaultFundDimensionValueRes Dimension3 { get; set; }
+        public InitialFundDimensionValueRes Dimension3 { get; set; }
 
         [Newtonsoft.Json.JsonProperty("dimension4", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public FixedOrDefaultFundDimensionValueRes Dimension4 { get; set; }
+        public InitialFundDimensionValueRes Dimension4 { get; set; }
 
         [Newtonsoft.Json.JsonProperty("hideQuantity", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool HideQuantity { get; set; }
@@ -1710,13 +1710,16 @@ namespace N3O.Umbraco.Clients.Giving
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v9.0.0.0))")]
-    public partial class FixedOrDefaultFundDimensionValueRes
+    public partial class InitialFundDimensionValueRes
     {
         [Newtonsoft.Json.JsonProperty("fixed", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public FundDimensionValueRes Fixed { get; set; }
 
         [Newtonsoft.Json.JsonProperty("default", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public FundDimensionValueRes Default { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("suggested", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FundDimensionValueRes Suggested { get; set; }
 
     }
 

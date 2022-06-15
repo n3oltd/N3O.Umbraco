@@ -5,10 +5,10 @@ namespace N3O.Umbraco.Giving.Models {
         public string Name { get; set; }
         public AllocationType Type { get; set; }
         public GivingType DefaultGivingType { get; set; }
-        public FixedOrDefaultFundDimensionValueRes Dimension1 { get; set; }
-        public FixedOrDefaultFundDimensionValueRes Dimension2 { get; set; }
-        public FixedOrDefaultFundDimensionValueRes Dimension3 { get; set; }
-        public FixedOrDefaultFundDimensionValueRes Dimension4 { get; set; }
+        public InitialFundDimensionValueRes Dimension1 { get; set; }
+        public InitialFundDimensionValueRes Dimension2 { get; set; }
+        public InitialFundDimensionValueRes Dimension3 { get; set; }
+        public InitialFundDimensionValueRes Dimension4 { get; set; }
         public bool HideQuantity { get; set; }
         public bool HideDonation { get; set; }
         public bool HideRegularGiving { get; set; }
