@@ -48,8 +48,7 @@ namespace N3O.Umbraco.Giving.Models {
                 res.Default = @default.IfNotNull(ctx.Map<TValue, FundDimensionValueRes>);
             }
 
-            if (res.Fixed == res.Default &&
-                res.Fixed == null) {
+            if (res.Fixed == null && res.Default == null) {
                 var values = fundDimensionValues.OrEmpty().ToList();
 
                 res.Suggested = ctx.Map<TValue, FundDimensionValueRes>(values.FirstOrDefault());
