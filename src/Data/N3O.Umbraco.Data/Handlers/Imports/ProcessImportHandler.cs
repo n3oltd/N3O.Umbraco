@@ -74,14 +74,15 @@ namespace N3O.Umbraco.Data.Handlers {
                 if (import.CanProcess) {
                     try {
                         var propertyInfos = GetPropertyInfos(import.ContentTypeAlias);
-                        var contentPublisher = GetContentPublisher(import);
                         var parser = await GetParserAsync(import);
                         var propertyInfoFields = _jsonProvider.DeserializeObject<ImportData>(import.Data)
                                                               .Fields
                                                               .GroupBy(x => x.Property)
                                                               .ToDictionary(x => propertyInfos[x.Key],
                                                                             x => x.ToList());
-
+                        var importData = _jsonProvider.DeserializeObject<ImportData>(import.Data);
+                        var contentPublisher = GetContentPublisher(import, importData.ContentKey);
+                        
                         foreach (var (propertyInfo, fields) in propertyInfoFields) {
                             ImportProperty(contentPublisher, parser, propertyInfo, fields);
                         }
@@ -145,13 +146,13 @@ namespace N3O.Umbraco.Data.Handlers {
             return parser;
         }
 
-        private IContentPublisher GetContentPublisher(Import import) {
+        private IContentPublisher GetContentPublisher(Import import, Guid? contentKey ) {
             IContentPublisher contentPublisher;
             
             if (import.Action == ImportActions.Create) {
                 var contentType = _contentTypeService.Get(import.ContentTypeAlias);
 
-                contentPublisher = _contentEditor.New(import.Name, import.ParentId, contentType.Alias);
+                contentPublisher = _contentEditor.New(import.Name, import.ParentId, contentType.Alias, contentKey);
             } else if (import.Action == ImportActions.Update) {
                 contentPublisher = _contentEditor.ForExisting(import.ReplacesId.Value);
             } else {

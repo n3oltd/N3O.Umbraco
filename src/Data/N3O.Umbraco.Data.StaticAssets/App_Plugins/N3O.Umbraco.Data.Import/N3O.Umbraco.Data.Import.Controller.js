@@ -4,6 +4,7 @@ angular.module("umbraco")
             $scope.processing = false;
             $scope.contentType = null;
             $scope.errorMessage = null;
+            $scope.includeContentId = false;
             $scope.show = "form";
         };
 
@@ -26,8 +27,19 @@ angular.module("umbraco")
         })();
 
         $scope.getTemplate = async function () {
-            const getTemplate = await fetch(`/umbraco/backoffice/api/Imports/template/${$scope.contentType.alias}`);
-            
+            req = {
+                importGuid : $scope.includeContentId
+            }
+
+            const getTemplate = await fetch(`/umbraco/backoffice/api/Imports/template/${$scope.contentType.alias}`, {
+                method: "POST",
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(req)
+            });
+
             const blob = await getTemplate.blob();
             const header = getTemplate.headers.get("Content-Disposition");
             const parts = header.split(";");

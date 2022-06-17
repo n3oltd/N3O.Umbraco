@@ -18,9 +18,13 @@ namespace N3O.Umbraco.Content {
             return GetContentPublisher(content);
         }
         
-        public IContentPublisher New(string name, Guid parentId, string contentTypeAlias) {
+        public IContentPublisher New(string name, Guid parentId, string contentTypeAlias, Guid? contentKey = null) {
             var content = _contentService.Create(name, parentId, contentTypeAlias);
-
+            
+            if (contentKey != null) {
+                content.Key = contentKey.Value;
+            } 
+            
             return GetContentPublisher(content);
         }
 

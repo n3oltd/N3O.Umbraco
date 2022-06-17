@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Data.Handlers {
-    public class GetImportTemplateHandler : IRequestHandler<GetImportTemplateQuery, None, ImportTemplate> {
+    public class GetImportTemplateHandler : IRequestHandler<GetImportTemplateQuery, ImportTemplateReq, ImportTemplate> {
         private readonly IWorkspace _workspace;
         private readonly IReadOnlyList<IImportPropertyFilter> _propertyFilters;
         private readonly IReadOnlyList<IPropertyConverter> _propertyConverters;
@@ -23,6 +23,7 @@ namespace N3O.Umbraco.Data.Handlers {
         private readonly IDataTypeService _dataTypeService;
         private readonly string _nameColumnTitle;
         private readonly string _replacesColumnTitle;
+        private readonly string _contentIdColumnTitle;
 
         public GetImportTemplateHandler(IWorkspace workspace,
                                         IEnumerable<IImportPropertyFilter> propertyFilters,
@@ -38,12 +39,17 @@ namespace N3O.Umbraco.Data.Handlers {
             
             _nameColumnTitle = formatter.Text.Format<DataStrings>(s => s.NameColumnTitle);
             _replacesColumnTitle = formatter.Text.Format<DataStrings>(s => s.ReplacesColumnTitle);
+            _contentIdColumnTitle = formatter.Text.Format<DataStrings>(s => s.ContentKey);
         }
 
         public async Task<ImportTemplate> Handle(GetImportTemplateQuery req, CancellationToken cancellationToken) {
             var contentType = _contentTypeService.Get(req.ContentType);
 
             var columns = new List<Column>();
+
+            if (req.Model.ImportGuid.GetValueOrThrow()) {
+                columns.Add(GetColumn(_contentIdColumnTitle));
+            }
             
             columns.Add(GetColumn(_replacesColumnTitle));
             columns.Add(GetColumn(_nameColumnTitle));
