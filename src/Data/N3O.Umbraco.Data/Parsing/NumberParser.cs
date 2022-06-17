@@ -56,7 +56,9 @@ namespace N3O.Umbraco.Data.Parsing {
 
             text = Regex.Replace(text, charactersToStripRegex, string.Empty);
             text = Regex.Replace(text, $"[{_decimalSeparator.SeparatorRegex}]", DecimalSeparatorCharacters.Point);
-            text = text.TrimStart('0');
+            if (text != "0") {
+                text = text.TrimStart('0');
+            }
 
             return text;
         }
