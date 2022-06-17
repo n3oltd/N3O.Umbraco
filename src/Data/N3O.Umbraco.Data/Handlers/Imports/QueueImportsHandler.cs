@@ -50,7 +50,7 @@ namespace N3O.Umbraco.Data.Handlers {
         private readonly List<IContentMatcher> _contentMatchers;
         private readonly string _nameColumnTitle;
         private readonly string _replacesColumnTitle;
-        private readonly string _contentIdColumnTitle;
+        private readonly string _contentKeyColumnTitle;
         private IReadOnlyList<IContent> _descendants;
 
         public QueueImportsHandler(IBackOfficeSecurityAccessor backOfficeSecurityAccessor,
@@ -88,7 +88,7 @@ namespace N3O.Umbraco.Data.Handlers {
 
             _nameColumnTitle = formatter.Text.Format<DataStrings>(s => s.NameColumnTitle);
             _replacesColumnTitle = formatter.Text.Format<DataStrings>(s => s.ReplacesColumnTitle);
-            _contentIdColumnTitle = formatter.Text.Format<DataStrings>(s => s.ContentKey);
+            _contentKeyColumnTitle = formatter.Text.Format<DataStrings>(s => s.ContentKey);
         }
         
         public async Task<QueueImportsRes> Handle(QueueImportsCommand req, CancellationToken cancellationToken) {
@@ -122,7 +122,7 @@ namespace N3O.Umbraco.Data.Handlers {
                 var queuedAt = _clock.GetLocalNow().ToDateTimeUnspecified();
                 var canReplace = csvReader.GetColumnHeadings().Contains(_replacesColumnTitle, true);
                 var hasNameColumn = csvReader.GetColumnHeadings().Contains(_nameColumnTitle, true);
-                var hasContentKey= csvReader.GetColumnHeadings().Contains(_contentIdColumnTitle, true);
+                var hasContentKey= csvReader.GetColumnHeadings().Contains(_contentKeyColumnTitle, true);
                 
                 var contentMatchers = _contentMatchers.Where(x => x.IsMatcher(contentType.Alias)).ToList();
                 var parserSettings =  _jsonProvider.SerializeObject(new ParserSettings(req.Model.DatePattern,
@@ -152,7 +152,7 @@ namespace N3O.Umbraco.Data.Handlers {
                     var replacesCriteria = canReplace
                                                ? csvReader.Row.GetRawField(_replacesColumnTitle)
                                                : null;
-                    Guid? contentKey = hasContentKey ? Guid.Parse(csvReader.Row.GetRawField(_contentIdColumnTitle)) : null;
+                    Guid? contentKey = hasContentKey ? Guid.Parse(csvReader.Row.GetRawField(_contentKeyColumnTitle)) : null;
 
                     if (replacesCriteria.HasValue()) {
                         import.Action = ImportActions.Update;

@@ -4,7 +4,7 @@ angular.module("umbraco")
             $scope.processing = false;
             $scope.contentType = null;
             $scope.errorMessage = null;
-            $scope.includeContentId = false;
+            $scope.includeContentKey = false;
             $scope.show = "form";
         };
 
@@ -28,7 +28,7 @@ angular.module("umbraco")
 
         $scope.getTemplate = async function () {
             req = {
-                importGuid : $scope.includeContentId
+                importGuid : $scope.includeContentKey
             }
 
             const getTemplate = await fetch(`/umbraco/backoffice/api/Imports/template/${$scope.contentType.alias}`, {
