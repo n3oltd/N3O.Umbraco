@@ -27,7 +27,7 @@ angular.module("umbraco")
 
         $scope.getTemplate = async function () {
             const getTemplate = await fetch(`/umbraco/backoffice/api/Imports/template/${$scope.contentType.alias}`);
-
+            
             const blob = await getTemplate.blob();
             const header = getTemplate.headers.get("Content-Disposition");
             const parts = header.split(";");

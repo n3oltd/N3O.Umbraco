@@ -44,7 +44,7 @@ namespace N3O.Umbraco.Data.Handlers {
             var contentType = _contentTypeService.Get(req.ContentType);
 
             var columns = new List<Column>();
-
+            
             columns.Add(GetColumn(_replacesColumnTitle));
             columns.Add(GetColumn(_nameColumnTitle));
 
