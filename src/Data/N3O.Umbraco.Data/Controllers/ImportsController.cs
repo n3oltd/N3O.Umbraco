@@ -58,10 +58,10 @@ namespace N3O.Umbraco.Data.Controllers {
             return Ok(res);
         }
 
-        [HttpPost("template/{contentType}")]
+        [HttpGet("template/{contentType}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<FileContentResult> GetTemplate(ImportTemplateReq req) {
-            var res = await _mediator.Value.SendAsync<GetImportTemplateQuery, ImportTemplateReq, ImportTemplate>(req);
+        public async Task<FileContentResult> GetTemplate() {
+            var res = await _mediator.Value.SendAsync<GetImportTemplateQuery, None, ImportTemplate>(None.Empty);
 
             return File(res.Contents, DataConstants.ContentTypes.Csv, res.Filename);
         }
