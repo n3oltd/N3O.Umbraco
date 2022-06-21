@@ -3,7 +3,7 @@ angular.module("umbraco").controller("N3O.Umbraco.Data.ImportDataEditor",
         $scope.uploadResource = async function (reference, index) {
             var uploadInput = document.getElementById("fileInput_" + index);
             
-            if (input.files.length === 0) {
+            if (uploadInput.files.length === 0) {
                 return;
             }
             
