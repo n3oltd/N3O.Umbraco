@@ -101,15 +101,15 @@ namespace N3O.Umbraco.Data.Handlers {
                             if (wasPublished) {
                                 import.SavedAndPublished(savedContent.Key, contentSummary);
                             } else {
-                                import.Saved(savedContent.Key, contentSummary, GetSaveWarnings(publishResult));
+                                import.Saved(savedContent.Key, contentSummary, GetSaveWarnings(publishResult), _jsonProvider);
                             }
                         } else {
-                            import.Error(publishResult.EventMessages.GetAll().Select(x => x.Message));
+                            import.Error(publishResult.EventMessages.GetAll().Select(x => x.Message), _jsonProvider);
                         }
                     } catch (ProcessingException processingException) {
-                        import.Error(processingException.Errors);
+                        import.Error(processingException.Errors,  _jsonProvider);
                     } catch (Exception ex) {
-                        import.Error(ex);
+                        import.Error(ex,  _jsonProvider);
                     }
 
                     await db.UpdateAsync(import);
