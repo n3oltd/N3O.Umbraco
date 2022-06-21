@@ -5,5 +5,6 @@ namespace N3O.Umbraco.Data {
         public string NameColumnTitle => "Name";
         public string OrderColumnTitle => "Order";
         public string ReplacesColumnTitle => "Replaces";
+        public string ContentKey => "ContentKey";
     }
 }
