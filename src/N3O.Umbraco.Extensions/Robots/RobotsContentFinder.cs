@@ -2,6 +2,7 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.ContentFinders;
 using N3O.Umbraco.Extensions;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Routing;
 
 namespace N3O.Umbraco.Robots {
@@ -11,15 +12,16 @@ namespace N3O.Umbraco.Robots {
         public RobotsContentFinder(ILogger<RobotsContentFinder> logger, IContentCache contentCache)
             : base(logger, contentCache) { }
 
-        protected override bool FindContent(IPublishedRequestBuilder request) {
+        protected override Task<bool> FindContentAsync(IPublishedRequestBuilder request) {
             var path = GetRequestedPath(request.Uri);
 
             if (path.EqualsInvariant(RobotsTxt.File)) {
                 request.SetPublishedContent(ContentCache.Single(RobotsAlias));
-                return true;
+                
+                return Task.FromResult(true);
             }
 
-            return false;
+            return Task.FromResult(false);
         }
     }
 }

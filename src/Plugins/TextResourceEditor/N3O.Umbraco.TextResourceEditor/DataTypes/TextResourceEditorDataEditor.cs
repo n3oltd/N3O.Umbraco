@@ -1,5 +1,6 @@
 ﻿using Umbraco.Cms.Core.IO;
 using Umbraco.Cms.Core.PropertyEditors;
+using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.TextResourceEditor.DataTypes {
     [DataEditor(TextResourceEditorConstants.PropertyEditorAlias,
@@ -9,14 +10,18 @@ namespace N3O.Umbraco.TextResourceEditor.DataTypes {
                 ValueType = "JSON")]
     public class TextResourceEditorDataEditor : DataEditor {
         private readonly IIOHelper _ioHelper;
-    
-        public TextResourceEditorDataEditor(IDataValueEditorFactory dataValueEditorFactory, IIOHelper ioHelper)
+        private readonly IEditorConfigurationParser _editorConfigurationParser;
+
+        public TextResourceEditorDataEditor(IDataValueEditorFactory dataValueEditorFactory,
+                                            IIOHelper ioHelper,
+                                            IEditorConfigurationParser editorConfigurationParser)
             : base(dataValueEditorFactory) {
             _ioHelper = ioHelper;
+            _editorConfigurationParser = editorConfigurationParser;
         }
 
         protected override IConfigurationEditor CreateConfigurationEditor() {
-            return new TextResourceEditorConfigurationEditor(_ioHelper);
+            return new TextResourceEditorConfigurationEditor(_ioHelper, _editorConfigurationParser);
         }
     }
 }

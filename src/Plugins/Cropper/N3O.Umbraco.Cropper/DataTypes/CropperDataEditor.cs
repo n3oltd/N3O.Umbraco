@@ -1,5 +1,6 @@
 ﻿using Umbraco.Cms.Core.IO;
 using Umbraco.Cms.Core.PropertyEditors;
+using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Cropper.DataTypes {
     [DataEditor(CropperConstants.PropertyEditorAlias,
@@ -9,14 +10,18 @@ namespace N3O.Umbraco.Cropper.DataTypes {
                 ValueType = "JSON")]
     public class CropperDataEditor : DataEditor {
         private readonly IIOHelper _ioHelper;
-    
-        public CropperDataEditor(IDataValueEditorFactory dataValueEditorFactory, IIOHelper ioHelper)
+        private readonly IEditorConfigurationParser _editorConfigurationParser;
+
+        public CropperDataEditor(IDataValueEditorFactory dataValueEditorFactory,
+                                 IIOHelper ioHelper,
+                                 IEditorConfigurationParser editorConfigurationParser)
             : base(dataValueEditorFactory) {
             _ioHelper = ioHelper;
+            _editorConfigurationParser = editorConfigurationParser;
         }
 
         protected override IConfigurationEditor CreateConfigurationEditor() {
-            return new CropperConfigurationEditor(_ioHelper);
+            return new CropperConfigurationEditor(_ioHelper, _editorConfigurationParser);
         }
     }
 }

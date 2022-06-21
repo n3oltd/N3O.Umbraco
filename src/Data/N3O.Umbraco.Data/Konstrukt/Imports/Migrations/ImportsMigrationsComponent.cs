@@ -10,12 +10,12 @@ using Umbraco.Cms.Infrastructure.Migrations.Upgrade;
 namespace N3O.Umbraco.Data.Konstrukt {
     public class ImportsMigrationsComponent : IComponent {
         private readonly IRuntimeState _runtimeState;
-        private readonly Lazy<IScopeProvider> _scopeProvider;
+        private readonly Lazy<ICoreScopeProvider> _scopeProvider;
         private readonly Lazy<IMigrationPlanExecutor> _migrationPlanExecutor;
         private readonly Lazy<IKeyValueService> _keyValueService;
 
         public ImportsMigrationsComponent(IRuntimeState runtimeState,
-                                           Lazy<IScopeProvider> scopeProvider,
+                                           Lazy<ICoreScopeProvider> scopeProvider,
                                            Lazy<IMigrationPlanExecutor> migrationPlanExecutor,
                                            Lazy<IKeyValueService> keyValueService) {
             _runtimeState = runtimeState;

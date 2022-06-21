@@ -1,5 +1,6 @@
 ﻿using Umbraco.Cms.Core.IO;
 using Umbraco.Cms.Core.PropertyEditors;
+using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Data.DataTypes {
     [DataEditor(DataConstants.PropertyEditorAliases.ImportDataEditor,
@@ -11,14 +12,18 @@ namespace N3O.Umbraco.Data.DataTypes {
         public const string DataEditorName = "N3O Import Data Editor";
         
         private readonly IIOHelper _ioHelper;
-    
-        public ImportDataEditorDataEditor(IDataValueEditorFactory dataValueEditorFactory, IIOHelper ioHelper)
+        private readonly IEditorConfigurationParser _editorConfigurationParser;
+
+        public ImportDataEditorDataEditor(IDataValueEditorFactory dataValueEditorFactory,
+                                          IIOHelper ioHelper,
+                                          IEditorConfigurationParser editorConfigurationParser)
             : base(dataValueEditorFactory) {
             _ioHelper = ioHelper;
+            _editorConfigurationParser = editorConfigurationParser;
         }
 
         protected override IConfigurationEditor CreateConfigurationEditor() {
-            return new ImportDataEditorConfigurationEditor(_ioHelper);
+            return new ImportDataEditorConfigurationEditor(_ioHelper, _editorConfigurationParser);
         }
     }
 }

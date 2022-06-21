@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Cms</RootNamespace>
-        <TargetFramework>net5.0</TargetFramework>
-        <LangVersion>9.0</LangVersion>
+        <TargetFramework>net6.0</TargetFramework>
+        <LangVersion>10.0</LangVersion>
         <Copyright>Copyright © 2022 N3O Ltd</Copyright>
     </PropertyGroup>
 
@@ -47,9 +47,9 @@
 
     <ItemGroup>
       <PackageReference Include="Diplo.GodMode" Version="9.2.3" />
-      <PackageReference Include="Our.Umbraco.Community.Contentment" Version="3.3.1" />
+      <PackageReference Include="Our.Umbraco.Community.Contentment" Version="4.0.0" />
       <PackageReference Include="Perplex.ContentBlocks" Version="2.1.4" />
-      <PackageReference Include="Umbraco.Cms" Version="9.5.2" />
+      <PackageReference Include="Umbraco.Cms" Version="10.0.0" />
     </ItemGroup>
 
     <ItemGroup>

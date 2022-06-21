@@ -2,6 +2,7 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.ContentFinders;
 using N3O.Umbraco.Blog.Content;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Routing;
 
 namespace N3O.Umbraco.Blog.ContentFinders {
@@ -13,8 +14,8 @@ namespace N3O.Umbraco.Blog.ContentFinders {
         public BlogPostContentFinder(ILogger<BlogPostContentFinder> logger, IContentCache contentCache)
             : base(logger, contentCache) { }
 
-        protected override bool FindContent(IPublishedRequestBuilder request) {
-            return TryFindRelocatedContent(BlogPageAlias, BlogPostAlias, BlogPostsAlias, request);
+        protected override Task<bool> FindContentAsync(IPublishedRequestBuilder request) {
+            return TryFindRelocatedContentAsync(BlogPageAlias, BlogPostAlias, BlogPostsAlias, request);
         }
     }
 }

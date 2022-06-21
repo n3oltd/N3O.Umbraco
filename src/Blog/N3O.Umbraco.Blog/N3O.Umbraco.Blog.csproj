@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Blog</RootNamespace>
-        <TargetFramework>net5.0</TargetFramework>
-        <LangVersion>9.0</LangVersion>
+        <TargetFramework>net6.0</TargetFramework>
+        <LangVersion>10.0</LangVersion>
         <Copyright>Copyright © 2022 N3O Ltd</Copyright>
     </PropertyGroup>
 

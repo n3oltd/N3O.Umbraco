@@ -3,6 +3,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Extensions;
@@ -16,9 +17,9 @@ namespace N3O.Umbraco.ContentFinders {
             ContentCache = contentCache;
         }
 
-        public bool TryFindContent(IPublishedRequestBuilder request) {
+        public async Task<bool> TryFindContent(IPublishedRequestBuilder request) {
             try {
-                return FindContent(request);
+                return await FindContentAsync(request);
             } catch (Exception ex) {
                 _logger.LogError(ex, "Error executing content finder");
                 
@@ -26,17 +27,17 @@ namespace N3O.Umbraco.ContentFinders {
             }
         }
 
-        protected abstract bool FindContent(IPublishedRequestBuilder request);
+        protected abstract Task<bool> FindContentAsync(IPublishedRequestBuilder request);
 
-        protected bool TryFindRelocatedContent(string pageTypeAlias,
-                                               string contentTypeAlias,
-                                               string contentCollectionTypeAlias,
-                                               IPublishedRequestBuilder request) {
+        protected Task<bool> TryFindRelocatedContentAsync(string pageTypeAlias,
+                                                          string contentTypeAlias,
+                                                          string contentCollectionTypeAlias,
+                                                          IPublishedRequestBuilder request) {
             var page = ContentCache.Single(pageTypeAlias);
             var contentCollection = ContentCache.Single(contentCollectionTypeAlias);
 
             if (page == null || contentCollection == null) {
-                return false;
+                return Task.FromResult(false);
             }
         
             var pagePath = page.RelativeUrl();
@@ -44,7 +45,7 @@ namespace N3O.Umbraco.ContentFinders {
             var path = GetRequestedPath(request.Uri, pagePath);
 
             if (path == null) {
-                return false;
+                return Task.FromResult(false);
             }
 
             var match = contentCollection.Descendants()
@@ -54,10 +55,10 @@ namespace N3O.Umbraco.ContentFinders {
             if (match != null) {
                 request.SetPublishedContent(match);
 
-                return true;
+                return Task.FromResult(true);
             }
 
-            return false;
+            return Task.FromResult(false);
         }
 
         protected string StrippedPath(IPublishedContent content, string strip) {

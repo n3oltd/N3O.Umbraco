@@ -42,8 +42,8 @@
         }
         
         public static class SecurityGroups {
-            public const string ExportUser = "Export User";
-            public const string ImportUser = "Import User";
+            public const string ExportUser = "Export Users";
+            public const string ImportUser = "Import Users";
         }
         
         public static class Tables {

@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Payments.Stripe</RootNamespace>
-        <TargetFramework>net5.0</TargetFramework>
-        <LangVersion>9.0</LangVersion>
+        <TargetFramework>net6.0</TargetFramework>
+        <LangVersion>10.0</LangVersion>
         <Copyright>Copyright © 2022 N3O Ltd</Copyright>
     </PropertyGroup>
 
@@ -40,6 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Stripe.net" Version="39.118.0" />
+      <PackageReference Include="Stripe.net" Version="39.119.0" />
     </ItemGroup>
 </Project>

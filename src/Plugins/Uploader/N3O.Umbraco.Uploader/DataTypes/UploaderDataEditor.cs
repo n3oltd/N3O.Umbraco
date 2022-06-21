@@ -1,5 +1,6 @@
 ﻿using Umbraco.Cms.Core.IO;
 using Umbraco.Cms.Core.PropertyEditors;
+using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Uploader.DataTypes {
     [DataEditor(UploaderConstants.PropertyEditorAlias,
@@ -9,14 +10,18 @@ namespace N3O.Umbraco.Uploader.DataTypes {
                 ValueType = "JSON")]
     public class UploaderDataEditor : DataEditor {
         private readonly IIOHelper _ioHelper;
-    
-        public UploaderDataEditor(IDataValueEditorFactory dataValueEditorFactory, IIOHelper ioHelper)
+        private readonly IEditorConfigurationParser _editorConfigurationParser;
+
+        public UploaderDataEditor(IDataValueEditorFactory dataValueEditorFactory,
+                                  IIOHelper ioHelper,
+                                  IEditorConfigurationParser editorConfigurationParser)
             : base(dataValueEditorFactory) {
             _ioHelper = ioHelper;
+            _editorConfigurationParser = editorConfigurationParser;
         }
 
         protected override IConfigurationEditor CreateConfigurationEditor() {
-            return new UploaderConfigurationEditor(_ioHelper);
+            return new UploaderConfigurationEditor(_ioHelper, _editorConfigurationParser);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Storage.Azure.Services;
@@ -7,8 +6,6 @@ using N3O.Umbraco.Storage.Services;
 using System.Linq;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
-using Umbraco.Cms.Web.Common.ApplicationBuilder;
-using Umbraco.StorageProviders.AzureBlob;
 
 namespace N3O.Umbraco.Storage.Azure {
     [ComposeAfter(typeof(StorageComposer))]
@@ -24,13 +21,6 @@ namespace N3O.Umbraco.Storage.Azure {
 
             if (storageConfigured) {
                 builder.AddAzureBlobMediaFileSystem();
-
-                builder.Services.Configure<UmbracoPipelineOptions>(opt => {
-                    var filter = new UmbracoPipelineFilter("AzureStorage");
-                    filter.Endpoints = app => app.UseMiddleware<AzureBlobFileSystemMiddleware>();
-            
-                    opt.AddFilter(filter);
-                });
             }
         }
     }

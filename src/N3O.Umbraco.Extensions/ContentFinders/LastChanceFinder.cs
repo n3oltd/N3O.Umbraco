@@ -2,6 +2,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Pages;
 using N3O.Umbraco.Redirects;
 using System.Net;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Extensions;
 
@@ -15,9 +16,9 @@ namespace N3O.Umbraco.ContentFinders {
             _redirectManagement = redirectManagement;
         }
 
-        public bool TryFindContent(IPublishedRequestBuilder request) {
+        public Task<bool> TryFindContent(IPublishedRequestBuilder request) {
             if (TryFindRedirectContent(request)) {
-                return false;
+                return Task.FromResult(false);
             }
 
             if (request != null && request.ResponseStatusCode == 404) {
@@ -25,10 +26,10 @@ namespace N3O.Umbraco.ContentFinders {
                 request.SetResponseStatus(notFound);
                 request.SetPublishedContent(_contentCache.Single<NotFoundPageContent>()?.Content());
 
-                return true;
+                return Task.FromResult(true);
             }
 
-            return false;
+            return Task.FromResult(false);
         }
 
         private bool TryFindRedirectContent(IPublishedRequestBuilder request) {

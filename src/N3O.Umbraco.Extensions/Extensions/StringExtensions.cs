@@ -175,11 +175,13 @@ namespace N3O.Umbraco.Extensions {
         }
 
         public static string Sha1(this string s) {
-            using (var sha1 = new SHA1CryptoServiceProvider()) {
-                var sb = new StringBuilder();
+            using (var sha1 = SHA1.Create()) {
+                var bytes = Encoding.UTF8.GetBytes(s);
+                var hash = sha1.ComputeHash(bytes);
+                var sb = new StringBuilder(hash.Length * 2);
 
-                foreach (var b in sha1.ComputeHash(Encoding.UTF8.GetBytes(s.ToLower()))) {
-                    sb.Append(b.ToString("x2").ToLower());
+                foreach (var b in hash) {
+                    sb.Append(b.ToString("x2"));
                 }
 
                 return sb.ToString();

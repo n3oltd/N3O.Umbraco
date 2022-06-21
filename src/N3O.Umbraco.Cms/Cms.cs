@@ -12,9 +12,10 @@ namespace N3O.Umbraco {
 
             var hostBuilder = Host.CreateDefaultBuilder(args)
                                   .ConfigureLogging(x => x.ClearProviders())
+                                  .ConfigureUmbracoDefaults()
                                   .ConfigureWebHostDefaults(webBuilder => {
                                       webBuilder.RunExtensions();
-                                  
+                                      webBuilder.UseStaticWebAssets();
                                       webBuilder.UseStartup<TStartup>();
                                   });
 

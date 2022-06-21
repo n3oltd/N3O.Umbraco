@@ -115,24 +115,32 @@ namespace N3O.Umbraco.Data {
         private readonly IDataTypeService _dataTypeService;
         private readonly IConfigurationEditorJsonSerializer _configurationEditorJsonSerializer;
         private readonly IDataValueEditorFactory _dataValueEditorFactory;
+        private readonly IEditorConfigurationParser _editorConfigurationParser;
         private readonly IIOHelper _iioHelper;
 
         public DataComponent(IRuntimeState runtimeState,
                              IDataTypeService dataTypeService,
                              IConfigurationEditorJsonSerializer configurationEditorJsonSerializer,
                              IDataValueEditorFactory dataValueEditorFactory,
+                             IEditorConfigurationParser editorConfigurationParser,
                              IIOHelper iioHelper) {
             _runtimeState = runtimeState;
             _dataTypeService = dataTypeService;
             _configurationEditorJsonSerializer = configurationEditorJsonSerializer;
             _dataValueEditorFactory = dataValueEditorFactory;
+            _editorConfigurationParser = editorConfigurationParser;
             _iioHelper = iioHelper;
         }
         
         public void Initialize() {
             if (_runtimeState.Level == RuntimeLevel.Run) {
-                EnsureDataTypeExists(new ImportNoticesViewerDataEditor(_dataValueEditorFactory, _iioHelper));
-                EnsureDataTypeExists(new ImportDataEditorDataEditor(_dataValueEditorFactory, _iioHelper));
+                EnsureDataTypeExists(new ImportNoticesViewerDataEditor(_dataValueEditorFactory,
+                                                                       _iioHelper,
+                                                                       _editorConfigurationParser));
+                
+                EnsureDataTypeExists(new ImportDataEditorDataEditor(_dataValueEditorFactory,
+                                                                    _iioHelper,
+                                                                    _editorConfigurationParser));
             }
         }
 

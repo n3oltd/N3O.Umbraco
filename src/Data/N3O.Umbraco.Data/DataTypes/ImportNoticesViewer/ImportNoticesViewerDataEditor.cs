@@ -1,5 +1,6 @@
 ﻿using Umbraco.Cms.Core.IO;
 using Umbraco.Cms.Core.PropertyEditors;
+using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Data.DataTypes {
     [DataEditor(DataConstants.PropertyEditorAliases.ImportNoticesViewer,
@@ -11,14 +12,18 @@ namespace N3O.Umbraco.Data.DataTypes {
         public const string DataEditorName = "N3O Import Notices Viewer";
         
         private readonly IIOHelper _ioHelper;
-    
-        public ImportNoticesViewerDataEditor(IDataValueEditorFactory dataValueEditorFactory, IIOHelper ioHelper)
+        private readonly IEditorConfigurationParser _editorConfigurationParser;
+
+        public ImportNoticesViewerDataEditor(IDataValueEditorFactory dataValueEditorFactory,
+                                             IIOHelper ioHelper,
+                                             IEditorConfigurationParser editorConfigurationParser)
             : base(dataValueEditorFactory) {
             _ioHelper = ioHelper;
+            _editorConfigurationParser = editorConfigurationParser;
         }
 
         protected override IConfigurationEditor CreateConfigurationEditor() {
-            return new ImportNoticesViewerConfigurationEditor(_ioHelper);
+            return new ImportNoticesViewerConfigurationEditor(_ioHelper, _editorConfigurationParser);
         }
     }
 }
