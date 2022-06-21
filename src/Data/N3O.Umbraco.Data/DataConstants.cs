@@ -41,6 +41,11 @@
             public const string ImportDataEditor = "N3O.Umbraco.Data.ImportDataEditor";
         }
         
+        public static class SecurityGroups {
+            public const string ExportUser = "Export User";
+            public const string ImportUser = "Import User";
+        }
+        
         public static class Tables {
             public static class Imports {
                 public const string Name = "N3O_Imports";

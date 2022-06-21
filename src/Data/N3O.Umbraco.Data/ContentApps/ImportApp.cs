@@ -17,7 +17,8 @@ namespace N3O.Umbraco.Data.ContentApps {
         }
 
         public ContentApp GetContentAppFor(object source, IEnumerable<IReadOnlyUserGroup> userGroups) {
-            if (userGroups.All(x => x.Alias.ToLowerInvariant() != UmbracoSecurity.AdminGroupAlias)) {
+            if (userGroups.All(x => x.Alias.ToLowerInvariant() != UmbracoSecurity.AdminGroupAlias && 
+                                    x.Name != DataConstants.SecurityGroups.ImportUser)) {
                 return null;
             }
 
