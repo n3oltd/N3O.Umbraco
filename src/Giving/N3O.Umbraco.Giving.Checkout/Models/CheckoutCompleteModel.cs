@@ -1,9 +1,9 @@
-﻿namespace N3O.Umbraco.Giving.Checkout.Models {
-    public class CheckoutCompleteModel {
-        public CheckoutCompleteModel(Entities.Checkout checkout) {
-            Checkout = checkout;
-        }
+namespace N3O.Umbraco.Giving.Checkout.Models;
 
-        public Entities.Checkout Checkout { get; }
+public class CheckoutCompleteModel {
+    public CheckoutCompleteModel(Entities.Checkout checkout) {
+        Checkout = checkout;
     }
+
+    public Entities.Checkout Checkout { get; }
 }

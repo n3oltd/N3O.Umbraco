@@ -6,24 +6,24 @@ using N3O.Umbraco.Payments.GoCardless.Content;
 using N3O.Umbraco.Payments.GoCardless.Models;
 using N3O.Umbraco.Payments.Lookups;
 
-namespace N3O.Umbraco.Payments.GoCardless {
-    public class GoCardlessPaymentMethod : PaymentMethod {
-        public GoCardlessPaymentMethod() : base("goCardless", "GoCardless", null, typeof(GoCardlessCredential)) { }
+namespace N3O.Umbraco.Payments.GoCardless;
 
-        public override string GetSettingsContentTypeAlias() {
-            return AliasHelper<GoCardlessSettingsContent>.ContentTypeAlias();
+public class GoCardlessPaymentMethod : PaymentMethod {
+    public GoCardlessPaymentMethod() : base("goCardless", "GoCardless", null, typeof(GoCardlessCredential)) { }
+
+    public override string GetSettingsContentTypeAlias() {
+        return AliasHelper<GoCardlessSettingsContent>.ContentTypeAlias();
+    }
+    
+    public override bool IsAvailable(Country country, Currency currency) {
+        if (!country.Iso3Code.EqualsInvariant(GoCardlessConstants.Codes.Iso3CountryCodes.UnitedKingdom)) {
+            return false;
         }
-        
-        public override bool IsAvailable(Country country, Currency currency) {
-            if (!country.Iso3Code.EqualsInvariant(GoCardlessConstants.Codes.Iso3CountryCodes.UnitedKingdom)) {
-                return false;
-            }
 
-            if (!currency.Name.EqualsInvariant(GoCardlessConstants.Codes.Currencies.GBP)) {
-                return false;
-            }
-
-            return true;
+        if (!currency.Name.EqualsInvariant(GoCardlessConstants.Codes.Currencies.GBP)) {
+            return false;
         }
+
+        return true;
     }
 }

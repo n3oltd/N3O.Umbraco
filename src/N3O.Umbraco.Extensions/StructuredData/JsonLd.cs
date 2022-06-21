@@ -1,39 +1,39 @@
 using System.Collections.Generic;
 
-namespace N3O.Umbraco.StructuredData {
-    public class JsonLd : Dictionary<string, object> {
-        private JsonLd() { }
+namespace N3O.Umbraco.StructuredData;
 
-        public JsonLd OfType(string type) {
-            Custom("@type", type);
+public class JsonLd : Dictionary<string, object> {
+    private JsonLd() { }
 
-            return this;
-        }
+    public JsonLd OfType(string type) {
+        Custom("@type", type);
 
-        public JsonLd Custom(string key, object value) {
-            this[key] = value;
+        return this;
+    }
 
-            return this;
-        }
+    public JsonLd Custom(string key, object value) {
+        this[key] = value;
 
-        public JsonLd Nest(string key) {
-            var jsonLd = New();
+        return this;
+    }
 
-            this[key] = jsonLd;
+    public JsonLd Nest(string key) {
+        var jsonLd = New();
 
-            return jsonLd;
-        }
-        
-        public static JsonLd Root() {
-            var structuredData = New();
-        
-            structuredData.Custom("@context", "https://schema.org");
+        this[key] = jsonLd;
 
-            return structuredData;
-        }
+        return jsonLd;
+    }
     
-        public static JsonLd New() {
-            return new JsonLd();
-        }
+    public static JsonLd Root() {
+        var structuredData = New();
+    
+        structuredData.Custom("@context", "https://schema.org");
+
+        return structuredData;
+    }
+
+    public static JsonLd New() {
+        return new JsonLd();
     }
 }

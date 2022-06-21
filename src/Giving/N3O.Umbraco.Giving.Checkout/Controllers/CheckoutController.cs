@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Giving.Checkout.Commands;
@@ -11,48 +11,48 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
 
-namespace N3O.Umbraco.Giving.Checkout.Controllers {
-    [ApiDocument(CheckoutConstants.ApiName)]
-    public class CheckoutController : LookupsController<CheckoutLookupsRes> {
-        private readonly IMediator _mediator;
+namespace N3O.Umbraco.Giving.Checkout.Controllers;
 
-        public CheckoutController(IMediator mediator, ILookups lookups, IUmbracoMapper mapper) : base(lookups, mapper) {
-            _mediator = mediator;
-        }
+[ApiDocument(CheckoutConstants.ApiName)]
+public class CheckoutController : LookupsController<CheckoutLookupsRes> {
+    private readonly IMediator _mediator;
 
-        [HttpGet("current")]
-        public async Task<ActionResult<CheckoutRes>> GetCurrentCheckout() {
-            var res = await _mediator.SendAsync<GetOrBeginCheckoutCommand, None, CheckoutRes>(None.Empty);
-             
-            return Ok(res);
-        }
+    public CheckoutController(IMediator mediator, ILookups lookups, IUmbracoMapper mapper) : base(lookups, mapper) {
+        _mediator = mediator;
+    }
 
-        [HttpGet("lookups/" + CheckoutLookupTypes.CheckoutStages)]
-        public async Task<ActionResult<IEnumerable<NamedLookupRes>>> GetLookupCheckoutStages() {
-            var res = await GetLookupsAsync<CheckoutStage>();
+    [HttpGet("current")]
+    public async Task<ActionResult<CheckoutRes>> GetCurrentCheckout() {
+        var res = await _mediator.SendAsync<GetOrBeginCheckoutCommand, None, CheckoutRes>(None.Empty);
+         
+        return Ok(res);
+    }
 
-            return Ok(res);
-        }
-        
-        [HttpGet("lookups/" + CheckoutLookupTypes.RegularGivingFrequencies)]
-        public async Task<ActionResult<IEnumerable<NamedLookupRes>>> GetRegularGivingFrequencies() {
-            var res = await GetLookupsAsync<RegularGivingFrequency>();
+    [HttpGet("lookups/" + CheckoutLookupTypes.CheckoutStages)]
+    public async Task<ActionResult<IEnumerable<NamedLookupRes>>> GetLookupCheckoutStages() {
+        var res = await GetLookupsAsync<CheckoutStage>();
 
-            return Ok(res);
-        }
-        
-        [HttpPost("{checkoutRevisionId:revisionId}/account")]
-        public async Task<ActionResult<CheckoutRes>> UpdateAccount(AccountReq req) {
-            var res = await _mediator.SendAsync<UpdateAccountCommand, AccountReq, CheckoutRes>(req);
-             
-            return Ok(res);
-        }
-        
-        [HttpPost("{checkoutRevisionId:revisionId}/regularGiving/options")]
-        public async Task<ActionResult<CheckoutRes>> UpdateRegularGivingOptions(RegularGivingOptionsReq req) {
-            var res = await _mediator.SendAsync<UpdateRegularGivingOptionsCommand, RegularGivingOptionsReq, CheckoutRes>(req);
-             
-            return Ok(res);
-        }
+        return Ok(res);
+    }
+    
+    [HttpGet("lookups/" + CheckoutLookupTypes.RegularGivingFrequencies)]
+    public async Task<ActionResult<IEnumerable<NamedLookupRes>>> GetRegularGivingFrequencies() {
+        var res = await GetLookupsAsync<RegularGivingFrequency>();
+
+        return Ok(res);
+    }
+    
+    [HttpPost("{checkoutRevisionId:revisionId}/account")]
+    public async Task<ActionResult<CheckoutRes>> UpdateAccount(AccountReq req) {
+        var res = await _mediator.SendAsync<UpdateAccountCommand, AccountReq, CheckoutRes>(req);
+         
+        return Ok(res);
+    }
+    
+    [HttpPost("{checkoutRevisionId:revisionId}/regularGiving/options")]
+    public async Task<ActionResult<CheckoutRes>> UpdateRegularGivingOptions(RegularGivingOptionsReq req) {
+        var res = await _mediator.SendAsync<UpdateRegularGivingOptionsCommand, RegularGivingOptionsReq, CheckoutRes>(req);
+         
+        return Ok(res);
     }
 }

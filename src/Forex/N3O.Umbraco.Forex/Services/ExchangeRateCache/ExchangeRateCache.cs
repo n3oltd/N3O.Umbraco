@@ -9,88 +9,88 @@ using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Extensions;
 
-namespace N3O.Umbraco.Forex {
-    public class ExchangeRateCache : IExchangeRateCache {
-        private readonly ConcurrentDictionary<string, decimal> _cache = new();
-        private readonly IRepository<CachedExchangeRate> _repository;
-        private readonly IClock _clock;
-        private readonly IExchangeRateProvider _exchangeRateProvider;
+namespace N3O.Umbraco.Forex;
 
-        public ExchangeRateCache(IRepository<CachedExchangeRate> repository,
-                                 IClock clock,
-                                 IExchangeRateProvider exchangeRateProvider) {
-            _repository = repository;
-            _clock = clock;
-            _exchangeRateProvider = exchangeRateProvider;
-        }
+public class ExchangeRateCache : IExchangeRateCache {
+    private readonly ConcurrentDictionary<string, decimal> _cache = new();
+    private readonly IRepository<CachedExchangeRate> _repository;
+    private readonly IClock _clock;
+    private readonly IExchangeRateProvider _exchangeRateProvider;
+
+    public ExchangeRateCache(IRepository<CachedExchangeRate> repository,
+                             IClock clock,
+                             IExchangeRateProvider exchangeRateProvider) {
+        _repository = repository;
+        _clock = clock;
+        _exchangeRateProvider = exchangeRateProvider;
+    }
+    
+    public async Task<decimal> GetHistoricalRateAsync(LocalDate date,
+                                                      Currency baseCurrency,
+                                                      Currency quoteCurrency,
+                                                      CancellationToken cancellationToken = default) {
+        var rate = await GetOrCreateAsync(date,
+                                          baseCurrency,
+                                          quoteCurrency,
+                                          x => x.GetHistoricalRateAsync(date,
+                                                                        baseCurrency,
+                                                                        quoteCurrency,
+                                                                        cancellationToken));
+
+        return rate;
+    }
+
+    public async Task<decimal> GetLiveRateAsync(Currency baseCurrency,
+                                                Currency quoteCurrency,
+                                                CancellationToken cancellationToken = default) {
+        var date = _clock.GetCurrentInstant().InUtc().Date;
         
-        public async Task<decimal> GetHistoricalRateAsync(LocalDate date,
-                                                          Currency baseCurrency,
-                                                          Currency quoteCurrency,
-                                                          CancellationToken cancellationToken = default) {
-            var rate = await GetOrCreateAsync(date,
-                                              baseCurrency,
-                                              quoteCurrency,
-                                              x => x.GetHistoricalRateAsync(date,
-                                                                            baseCurrency,
-                                                                            quoteCurrency,
-                                                                            cancellationToken));
+        var rate = await GetOrCreateAsync(date,
+                                          baseCurrency,
+                                          quoteCurrency,
+                                          x => x.GetLiveRateAsync(baseCurrency, quoteCurrency, cancellationToken));
 
-            return rate;
-        }
+        return rate;
+    }
+    
+    private async Task<decimal> GetOrCreateAsync(LocalDate date,
+                                                 Currency baseCurrency,
+                                                 Currency quoteCurrency,
+                                                 Func<IExchangeRateProvider, Task<decimal>> getRateAsync) {
+        var key = $"{date.ToYearMonthDayString()}_{baseCurrency.Id}_{quoteCurrency.Id}";
+        var cacheKey = CacheKey.Generate<ExchangeRateCache>(key);
 
-        public async Task<decimal> GetLiveRateAsync(Currency baseCurrency,
-                                                    Currency quoteCurrency,
-                                                    CancellationToken cancellationToken = default) {
-            var date = _clock.GetCurrentInstant().InUtc().Date;
-            
-            var rate = await GetOrCreateAsync(date,
-                                              baseCurrency,
-                                              quoteCurrency,
-                                              x => x.GetLiveRateAsync(baseCurrency, quoteCurrency, cancellationToken));
+        var result = await _cache.GetOrAddAtomicAsync(cacheKey, async () => {
+            var id = key.ToGuid();
 
-            return rate;
-        }
-        
-        private async Task<decimal> GetOrCreateAsync(LocalDate date,
-                                                     Currency baseCurrency,
-                                                     Currency quoteCurrency,
-                                                     Func<IExchangeRateProvider, Task<decimal>> getRateAsync) {
-            var key = $"{date.ToYearMonthDayString()}_{baseCurrency.Id}_{quoteCurrency.Id}";
-            var cacheKey = CacheKey.Generate<ExchangeRateCache>(key);
+            var cachedExchangeRate = await _repository.GetAsync(id);
 
-            var result = await _cache.GetOrAddAtomicAsync(cacheKey, async () => {
-                var id = key.ToGuid();
+            if (cachedExchangeRate == null) {
+                var rate = await getRateAsync(_exchangeRateProvider);
+                
+                cachedExchangeRate = await CreateCachedExchangeRateAsync(id,
+                                                                         date,
+                                                                         baseCurrency,
+                                                                         quoteCurrency,
+                                                                         rate);
+            }
 
-                var cachedExchangeRate = await _repository.GetAsync(id);
+            return cachedExchangeRate.Rate;
+        });
 
-                if (cachedExchangeRate == null) {
-                    var rate = await getRateAsync(_exchangeRateProvider);
-                    
-                    cachedExchangeRate = await CreateCachedExchangeRateAsync(id,
-                                                                             date,
-                                                                             baseCurrency,
-                                                                             quoteCurrency,
-                                                                             rate);
-                }
-
-                return cachedExchangeRate.Rate;
-            });
-
-            return result;
-        }
+        return result;
+    }
 
 
-        private async Task<CachedExchangeRate> CreateCachedExchangeRateAsync(EntityId id,
-                                                                             LocalDate date,
-                                                                             Currency baseCurrency,
-                                                                             Currency quoteCurrency,
-                                                                             decimal rate) {
-            var cachedExchangeRate = CachedExchangeRate.Create(id, date, baseCurrency, quoteCurrency, rate);
+    private async Task<CachedExchangeRate> CreateCachedExchangeRateAsync(EntityId id,
+                                                                         LocalDate date,
+                                                                         Currency baseCurrency,
+                                                                         Currency quoteCurrency,
+                                                                         decimal rate) {
+        var cachedExchangeRate = CachedExchangeRate.Create(id, date, baseCurrency, quoteCurrency, rate);
 
-            await _repository.InsertAsync(cachedExchangeRate);
+        await _repository.InsertAsync(cachedExchangeRate);
 
-            return cachedExchangeRate;
-        }
+        return cachedExchangeRate;
     }
 }

@@ -1,28 +1,28 @@
-﻿using Flurl;
+using Flurl;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Forex.Currencylayer.Content;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Forex.Currencylayer {
-    public class AppendApiKeyHandler : DelegatingHandler {
-        private readonly IContentCache _contentCache;
+namespace N3O.Umbraco.Forex.Currencylayer;
 
-        public AppendApiKeyHandler(HttpMessageHandler innerHandler, IContentCache contentCache) : base(innerHandler) {
-            _contentCache = contentCache;
-        }
+public class AppendApiKeyHandler : DelegatingHandler {
+    private readonly IContentCache _contentCache;
 
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
-                                                                     CancellationToken cancellationToken) {
-            var settings = _contentCache.Single<CurrencylayerSettingsContent>();
-        
-            var url = new Url(request.RequestUri);
-            url.SetQueryParam("access_key", settings.ApiKey);
+    public AppendApiKeyHandler(HttpMessageHandler innerHandler, IContentCache contentCache) : base(innerHandler) {
+        _contentCache = contentCache;
+    }
 
-            request.RequestUri = url.ToUri();
+    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+                                                                 CancellationToken cancellationToken) {
+        var settings = _contentCache.Single<CurrencylayerSettingsContent>();
+    
+        var url = new Url(request.RequestUri);
+        url.SetQueryParam("access_key", settings.ApiKey);
 
-            return await base.SendAsync(request, cancellationToken);
-        }
+        request.RequestUri = url.ToUri();
+
+        return await base.SendAsync(request, cancellationToken);
     }
 }

@@ -1,12 +1,12 @@
 using N3O.Umbraco.Lookups;
 
-namespace N3O.Umbraco.Giving.Lookups {
-    public class Gender : NamedLookup {
-        public Gender(string id, string name) : base(id, name) { }
-    }
+namespace N3O.Umbraco.Giving.Lookups;
 
-    public class Genders : StaticLookupsCollection<Gender> {
-        public static readonly Gender Female = new("female", "Female");
-        public static readonly Gender Male = new("male", "Male");
-    }
+public class Gender : NamedLookup {
+    public Gender(string id, string name) : base(id, name) { }
+}
+
+public class Genders : StaticLookupsCollection<Gender> {
+    public static readonly Gender Female = new("female", "Female");
+    public static readonly Gender Male = new("male", "Male");
 }

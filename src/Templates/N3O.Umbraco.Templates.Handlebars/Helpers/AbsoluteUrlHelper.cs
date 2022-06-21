@@ -1,26 +1,26 @@
-﻿using HandlebarsDotNet;
+using HandlebarsDotNet;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Utilities;
 
-namespace N3O.Umbraco.Templates.Handlebars.Helpers {
-    public class AbsoluteUrlHelper : Helper {
-        private readonly IUrlBuilder _urlBuilder;
+namespace N3O.Umbraco.Templates.Handlebars.Helpers;
 
-        public AbsoluteUrlHelper(ILogger<AbsoluteUrlHelper> logger, IJsonProvider jsonProvider, IUrlBuilder urlBuilder)
-            : base(logger, jsonProvider, 1) {
-            _urlBuilder = urlBuilder;
-        }
+public class AbsoluteUrlHelper : Helper {
+    private readonly IUrlBuilder _urlBuilder;
 
-        protected override void Execute(EncodedTextWriter writer,
-                                        HandlebarsDotNet.Context context,
-                                        HandlebarsArguments args) {
-            var path = args.Get<string>(0);
-            var output = _urlBuilder.Root().AppendPathSegment(path).ToString();
-            
-            writer.Write(output);
-        }
-        
-        public override string Name => "absoluteUrl";
+    public AbsoluteUrlHelper(ILogger<AbsoluteUrlHelper> logger, IJsonProvider jsonProvider, IUrlBuilder urlBuilder)
+        : base(logger, jsonProvider, 1) {
+        _urlBuilder = urlBuilder;
     }
+
+    protected override void Execute(EncodedTextWriter writer,
+                                    HandlebarsDotNet.Context context,
+                                    HandlebarsArguments args) {
+        var path = args.Get<string>(0);
+        var output = _urlBuilder.Root().AppendPathSegment(path).ToString();
+        
+        writer.Write(output);
+    }
+    
+    public override string Name => "absoluteUrl";
 }

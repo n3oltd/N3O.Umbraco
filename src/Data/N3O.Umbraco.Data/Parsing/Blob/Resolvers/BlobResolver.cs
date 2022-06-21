@@ -1,31 +1,31 @@
 using N3O.Umbraco.Data.Models;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Data.Parsing {
-    public abstract class BlobResolver : IBlobResolver {
-        public bool CanResolve(string value) {
-            try {
-                if (value == null) {
-                    return false;
-                }
+namespace N3O.Umbraco.Data.Parsing;
 
-                return TryCanResolve(value.Trim());
-            } catch {
+public abstract class BlobResolver : IBlobResolver {
+    public bool CanResolve(string value) {
+        try {
+            if (value == null) {
                 return false;
             }
+
+            return TryCanResolve(value.Trim());
+        } catch {
+            return false;
         }
-
-        public async Task<ParseResult<Blob>> ResolveAsync(string value) {
-            try {
-                var blob = await TryResolveAsync(value.Trim());
-
-                return ParseResult.Success(blob);
-            } catch {
-                return ParseResult.Fail<Blob>();
-            }
-        }
-
-        protected abstract bool TryCanResolve(string value);
-        protected abstract Task<Blob> TryResolveAsync(string value);
     }
+
+    public async Task<ParseResult<Blob>> ResolveAsync(string value) {
+        try {
+            var blob = await TryResolveAsync(value.Trim());
+
+            return ParseResult.Success(blob);
+        } catch {
+            return ParseResult.Fail<Blob>();
+        }
+    }
+
+    protected abstract bool TryCanResolve(string value);
+    protected abstract Task<Blob> TryResolveAsync(string value);
 }

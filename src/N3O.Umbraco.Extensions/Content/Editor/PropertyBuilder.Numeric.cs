@@ -1,15 +1,15 @@
-﻿namespace N3O.Umbraco.Content {
-    public class NumericPropertyBuilder : PropertyBuilder {
-        public void SetDecimal(decimal? value) {
-            Value = value;
-        }
+namespace N3O.Umbraco.Content;
 
-        public void SetInteger(int? value) {
-            Value = value;
-        }
-        
-        public void SetInteger(long? value) {
-            SetInteger((int?) value);
-        }
+public class NumericPropertyBuilder : PropertyBuilder {
+    public void SetDecimal(decimal? value) {
+        Value = value;
+    }
+
+    public void SetInteger(int? value) {
+        Value = value;
+    }
+    
+    public void SetInteger(long? value) {
+        SetInteger((int?) value);
     }
 }

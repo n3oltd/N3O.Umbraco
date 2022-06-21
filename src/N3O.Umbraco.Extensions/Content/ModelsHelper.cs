@@ -8,39 +8,39 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
-namespace N3O.Umbraco.Content {
-    public class ModelsHelper {
-        private static readonly ConcurrentDictionary<string, Type> TypeCache = new(StringComparer.InvariantCultureIgnoreCase);
-    
-        public static Type GetOrCreateModelsBuilderType(string modelsNamespace, string contentType) {
-            var cacheKey = CacheKey.Generate<ModelsHelper>(contentType);
-            
-            return TypeCache.GetOrAdd(cacheKey, () => {
-                var typeName = contentType.Pascalize();
+namespace N3O.Umbraco.Content;
 
-                var type = OurAssemblies.GetTypes(t => t.Name == typeName &&
-                                                       t.IsSubclassOfType(typeof(PublishedContentModel)))
-                                        .SingleOrDefault();
+public class ModelsHelper {
+    private static readonly ConcurrentDictionary<string, Type> TypeCache = new(StringComparer.InvariantCultureIgnoreCase);
 
-                if (type == null) {
-                    var fullTypeName = $"{modelsNamespace}.{typeName}";
-                    var assemblyName = new AssemblyName($"assembly_{Guid.NewGuid()}");
-                    var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
-                    var moduleBuilder = assemblyBuilder.DefineDynamicModule($"module_{Guid.NewGuid()}");
+    public static Type GetOrCreateModelsBuilderType(string modelsNamespace, string contentType) {
+        var cacheKey = CacheKey.Generate<ModelsHelper>(contentType);
+        
+        return TypeCache.GetOrAdd(cacheKey, () => {
+            var typeName = contentType.Pascalize();
 
-                    var typeAttributes = TypeAttributes.AnsiClass |
-                                         TypeAttributes.AutoClass |
-                                         TypeAttributes.Class |
-                                         TypeAttributes.ExplicitLayout |
-                                         TypeAttributes.Public;
+            var type = OurAssemblies.GetTypes(t => t.Name == typeName &&
+                                                   t.IsSubclassOfType(typeof(PublishedContentModel)))
+                                    .SingleOrDefault();
 
-                    var typeBuilder = moduleBuilder.DefineType(fullTypeName, typeAttributes, null);
+            if (type == null) {
+                var fullTypeName = $"{modelsNamespace}.{typeName}";
+                var assemblyName = new AssemblyName($"assembly_{Guid.NewGuid()}");
+                var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
+                var moduleBuilder = assemblyBuilder.DefineDynamicModule($"module_{Guid.NewGuid()}");
 
-                    type = typeBuilder.CreateType();
-                }
+                var typeAttributes = TypeAttributes.AnsiClass |
+                                     TypeAttributes.AutoClass |
+                                     TypeAttributes.Class |
+                                     TypeAttributes.ExplicitLayout |
+                                     TypeAttributes.Public;
 
-                return type;
-            });
-        }
+                var typeBuilder = moduleBuilder.DefineType(fullTypeName, typeAttributes, null);
+
+                type = typeBuilder.CreateType();
+            }
+
+            return type;
+        });
     }
 }

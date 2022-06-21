@@ -4,20 +4,20 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace N3O.Umbraco.Json {
-    public class JsonContractResolver : CamelCasePropertyNamesContractResolver {
-        protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization) {
-            var jProperty = base.CreateProperty(member, memberSerialization);
+namespace N3O.Umbraco.Json;
 
-            jProperty.Writable = jProperty.Writable || (member as PropertyInfo)?.SetMethod != null;
+public class JsonContractResolver : CamelCasePropertyNamesContractResolver {
+    protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization) {
+        var jProperty = base.CreateProperty(member, memberSerialization);
 
-            return jProperty;
-        }
+        jProperty.Writable = jProperty.Writable || (member as PropertyInfo)?.SetMethod != null;
 
-        protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization) {
-            var props = base.CreateProperties(type, memberSerialization);
+        return jProperty;
+    }
 
-            return props;
-        }
+    protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization) {
+        var props = base.CreateProperties(type, memberSerialization);
+
+        return props;
     }
 }

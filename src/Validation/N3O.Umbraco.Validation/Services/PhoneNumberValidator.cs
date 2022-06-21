@@ -1,14 +1,14 @@
 using N3O.Umbraco.Lookups;
 using PhoneNumbers;
 
-namespace N3O.Umbraco.Validation {
-    public class PhoneNumberValidator : IPhoneNumberValidator {
-        public bool IsValid(string number, Country country) {
-            var phoneNumberUtil = PhoneNumberUtil.GetInstance();
-            var phoneNumber = phoneNumberUtil.Parse(number, country.Iso2Code);
-            var isValid = phoneNumberUtil.IsValidNumber(phoneNumber);
+namespace N3O.Umbraco.Validation;
 
-            return isValid;
-        }
+public class PhoneNumberValidator : IPhoneNumberValidator {
+    public bool IsValid(string number, Country country) {
+        var phoneNumberUtil = PhoneNumberUtil.GetInstance();
+        var phoneNumber = phoneNumberUtil.Parse(number, country.Iso2Code);
+        var isValid = phoneNumberUtil.IsValidNumber(phoneNumber);
+
+        return isValid;
     }
 }

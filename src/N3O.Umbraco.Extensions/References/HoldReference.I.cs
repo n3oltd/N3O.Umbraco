@@ -1,5 +1,5 @@
-﻿namespace N3O.Umbraco.References {
-    public interface IHoldReference {
-        Reference Reference { get; }
-    }
+namespace N3O.Umbraco.References;
+
+public interface IHoldReference {
+    Reference Reference { get; }
 }

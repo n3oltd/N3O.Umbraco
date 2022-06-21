@@ -1,10 +1,10 @@
-namespace N3O.Umbraco.Payments.GoCardless.Models {
-    public partial class GoCardlessCredential {
-        public void CompleteRedirectFlow(string customerId, string mandateId) {
-            GoCardlessCustomerId = customerId;
-            GoCardlessMandateId = mandateId;
+namespace N3O.Umbraco.Payments.GoCardless.Models;
 
-            SetUp();
-        }
+public partial class GoCardlessCredential {
+    public void CompleteRedirectFlow(string customerId, string mandateId) {
+        GoCardlessCustomerId = customerId;
+        GoCardlessMandateId = mandateId;
+
+        SetUp();
     }
 }

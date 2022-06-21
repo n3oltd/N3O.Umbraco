@@ -2,19 +2,19 @@ using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
-namespace N3O.Umbraco.Content {
-    public class ContentVisibility : IContentVisibility {
-        private readonly IReadOnlyList<IContentVisibilityFilter> _filters;
+namespace N3O.Umbraco.Content;
 
-        public ContentVisibility(IEnumerable<IContentVisibilityFilter> filters) {
-            _filters = filters.ToList();
-        }
-    
-        public bool IsVisible(IPublishedContent content) {
-            var isVisible = _filters.Where(x => x.IsFilterFor(content))
-                                    .All(x => x.IsVisible(content));
+public class ContentVisibility : IContentVisibility {
+    private readonly IReadOnlyList<IContentVisibilityFilter> _filters;
 
-            return isVisible;
-        }
+    public ContentVisibility(IEnumerable<IContentVisibilityFilter> filters) {
+        _filters = filters.ToList();
+    }
+
+    public bool IsVisible(IPublishedContent content) {
+        var isVisible = _filters.Where(x => x.IsFilterFor(content))
+                                .All(x => x.IsVisible(content));
+
+        return isVisible;
     }
 }

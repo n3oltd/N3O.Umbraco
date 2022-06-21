@@ -6,41 +6,41 @@ using N3O.Umbraco.Security;
 using System;
 using System.Collections.Generic;
 
-namespace N3O.Umbraco.Data.Builders {
-    public interface IFluentColumnRangeBuilder<TValue> {
-        IFluentColumnRangeBuilder<TValue> AddAttribute(Attribute attribute);
+namespace N3O.Umbraco.Data.Builders;
 
-        IFluentColumnRangeBuilder<TValue> AddMetadata(string key, object value);
-        IFluentColumnRangeBuilder<TValue> AddMetadata(string key, IEnumerable<object> values);
+public interface IFluentColumnRangeBuilder<TValue> {
+    IFluentColumnRangeBuilder<TValue> AddAttribute(Attribute attribute);
 
-        IFluentColumnRangeBuilder<TValue> Comment(string comment);
-        IFluentColumnRangeBuilder<TValue> Comment(Func<IFormatter, string> getComment);
-        
-        IFluentColumnRangeBuilder<TValue> Title<TStrings>(Func<TStrings, string> propertySelector)
-            where TStrings : class, IStrings, new();
-        IFluentColumnRangeBuilder<TValue> Title(string text);
-        IFluentColumnRangeBuilder<TValue> Title(string keyPrefix, string text);
-        IFluentColumnRangeBuilder<TValue> Title<T>() where T : IColumnHeading;
-        IFluentColumnRangeBuilder<TValue> Title(Type columnHeadingType);
-        IFluentColumnRangeBuilder<TValue> TitleFromMetadata();
-        IFluentColumnRangeBuilder<TValue> TitleFromValue();
+    IFluentColumnRangeBuilder<TValue> AddMetadata(string key, object value);
+    IFluentColumnRangeBuilder<TValue> AddMetadata(string key, IEnumerable<object> values);
 
-        IFluentColumnRangeBuilder<TValue> Converter<TCellConverter>() where TCellConverter : ICellConverter<TValue>;
-        IFluentColumnRangeBuilder<TValue> Converter(Type cellConverterType);
+    IFluentColumnRangeBuilder<TValue> Comment(string comment);
+    IFluentColumnRangeBuilder<TValue> Comment(Func<IFormatter, string> getComment);
+    
+    IFluentColumnRangeBuilder<TValue> Title<TStrings>(Func<TStrings, string> propertySelector)
+        where TStrings : class, IStrings, new();
+    IFluentColumnRangeBuilder<TValue> Title(string text);
+    IFluentColumnRangeBuilder<TValue> Title(string keyPrefix, string text);
+    IFluentColumnRangeBuilder<TValue> Title<T>() where T : IColumnHeading;
+    IFluentColumnRangeBuilder<TValue> Title(Type columnHeadingType);
+    IFluentColumnRangeBuilder<TValue> TitleFromMetadata();
+    IFluentColumnRangeBuilder<TValue> TitleFromValue();
 
-        IFluentColumnRangeBuilder<TValue> CommaSeparateValues();
-        IFluentColumnRangeBuilder<TValue> ValuePerColumn();
-        IFluentColumnRangeBuilder<TValue> CollectionLayout(CollectionLayout collectionLayout);
+    IFluentColumnRangeBuilder<TValue> Converter<TCellConverter>() where TCellConverter : ICellConverter<TValue>;
+    IFluentColumnRangeBuilder<TValue> Converter(Type cellConverterType);
 
-        IFluentColumnRangeBuilder<TValue> PreserveColumnOrder();
-        IFluentColumnRangeBuilder<TValue> SortColumns();
-        IFluentColumnRangeBuilder<TValue> RangeColumnSort(RangeColumnSort rangeColumnSort);
+    IFluentColumnRangeBuilder<TValue> CommaSeparateValues();
+    IFluentColumnRangeBuilder<TValue> ValuePerColumn();
+    IFluentColumnRangeBuilder<TValue> CollectionLayout(CollectionLayout collectionLayout);
 
-        IFluentColumnRangeBuilder<TValue> Hidden();
-        IFluentColumnRangeBuilder<TValue> VisibleTo(AccessControlList accessControlList);
+    IFluentColumnRangeBuilder<TValue> PreserveColumnOrder();
+    IFluentColumnRangeBuilder<TValue> SortColumns();
+    IFluentColumnRangeBuilder<TValue> RangeColumnSort(RangeColumnSort rangeColumnSort);
 
-        IFluentColumnRangeBuilder<TValue> SetOrder(int order);
-        
-        ColumnRange<TValue> Build();
-    }
+    IFluentColumnRangeBuilder<TValue> Hidden();
+    IFluentColumnRangeBuilder<TValue> VisibleTo(AccessControlList accessControlList);
+
+    IFluentColumnRangeBuilder<TValue> SetOrder(int order);
+    
+    ColumnRange<TValue> Build();
 }

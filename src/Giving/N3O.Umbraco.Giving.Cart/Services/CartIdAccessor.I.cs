@@ -1,8 +1,8 @@
-﻿using N3O.Umbraco.Entities;
+using N3O.Umbraco.Entities;
 
-namespace N3O.Umbraco.Giving.Cart {
-    public interface ICartIdAccessor {
-        EntityId GetId();
-        RevisionId GetRevisionId();
-    }
+namespace N3O.Umbraco.Giving.Cart;
+
+public interface ICartIdAccessor {
+    EntityId GetId();
+    RevisionId GetRevisionId();
 }

@@ -1,5 +1,5 @@
-namespace N3O.Umbraco.Context {
-    public interface ICurrencyCodeAccessor {
-        string GetCurrencyCode();
-    }
+namespace N3O.Umbraco.Context;
+
+public interface ICurrencyCodeAccessor {
+    string GetCurrencyCode();
 }

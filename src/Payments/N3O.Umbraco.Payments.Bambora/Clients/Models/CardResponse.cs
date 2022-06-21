@@ -1,26 +1,26 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 
-namespace N3O.Umbraco.Payments.Bambora.Client {
-    public class CardResponse {
-        [JsonProperty("last_four")]
-        public string LastFour { get; set; }
+namespace N3O.Umbraco.Payments.Bambora.Client;
 
-        [JsonProperty("cvd_match")]
-        public int? CvdMatch { get; set; }
+public class CardResponse {
+    [JsonProperty("last_four")]
+    public string LastFour { get; set; }
 
-        [JsonProperty("address_match")]
-        public int? AddressMatch { get; set; }
+    [JsonProperty("cvd_match")]
+    public int? CvdMatch { get; set; }
 
-        [JsonProperty("postal_result")]
-        public int? PostalMatch { get; set; }
+    [JsonProperty("address_match")]
+    public int? AddressMatch { get; set; }
 
-        [JsonProperty("avs_result")]
-        public string AvsResult { get; set; }
+    [JsonProperty("postal_result")]
+    public int? PostalMatch { get; set; }
 
-        [JsonProperty("cvd_result")]
-        public string CvdResult { get; set; }
+    [JsonProperty("avs_result")]
+    public string AvsResult { get; set; }
 
-        [JsonProperty("card_type")]
-        public string CardType { get; set; }
-    }
+    [JsonProperty("cvd_result")]
+    public string CvdResult { get; set; }
+
+    [JsonProperty("card_type")]
+    public string CardType { get; set; }
 }

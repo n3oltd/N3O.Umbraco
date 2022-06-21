@@ -1,25 +1,25 @@
-﻿using N3O.Umbraco.Lookups;
+using N3O.Umbraco.Lookups;
 
-namespace N3O.Umbraco.Templates {
-    public abstract class TemplateStyle : NamedLookup {
-        private readonly string _name;
+namespace N3O.Umbraco.Templates;
 
-        protected TemplateStyle(string id, string name, string description, string cssClass) : base(id, name) {
-            _name = name;
-            Description = description;
-            CssClass = cssClass;
-        }
+public abstract class TemplateStyle : NamedLookup {
+    private readonly string _name;
 
-        public string Description { get; }
-        public string CssClass { get; }
-        public override string Name => $"{NamePrefix}: {_name}";
-
-        public abstract string Icon { get; }
-        
-        protected abstract string NamePrefix { get; }
+    protected TemplateStyle(string id, string name, string description, string cssClass) : base(id, name) {
+        _name = name;
+        Description = description;
+        CssClass = cssClass;
     }
 
-    public interface ITemplateStylesCollection { }
+    public string Description { get; }
+    public string CssClass { get; }
+    public override string Name => $"{NamePrefix}: {_name}";
 
-    public class TemplateStyles : DistributedLookupsCollection<TemplateStyle, ITemplateStylesCollection> { }
+    public abstract string Icon { get; }
+    
+    protected abstract string NamePrefix { get; }
 }
+
+public interface ITemplateStylesCollection { }
+
+public class TemplateStyles : DistributedLookupsCollection<TemplateStyle, ITemplateStylesCollection> { }

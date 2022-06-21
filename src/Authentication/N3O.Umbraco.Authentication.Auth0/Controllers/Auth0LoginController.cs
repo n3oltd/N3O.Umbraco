@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -16,75 +16,75 @@ using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Cms.Web.Common.Security;
 using Umbraco.Cms.Web.Website.Controllers;
 
-namespace N3O.Umbraco.Authentication.Auth0.Controllers {
-    public class Auth0LoginController : SurfaceController {
-        private const string DefaultMemberTypeAlias = global::Umbraco.Cms.Core.Constants.Security.DefaultMemberTypeAlias;
+namespace N3O.Umbraco.Authentication.Auth0.Controllers;
 
-        private readonly IMemberManager _memberManager;
-        private readonly IMemberService _memberService;
-        private readonly MemberSignInManager _memberSignInManager;
-        private readonly Auth0MemberAuthenticationOptions _options;
+public class Auth0LoginController : SurfaceController {
+    private const string DefaultMemberTypeAlias = global::Umbraco.Cms.Core.Constants.Security.DefaultMemberTypeAlias;
 
-        public Auth0LoginController(IUmbracoContextAccessor umbracoContextAccessor,
-                                    IUmbracoDatabaseFactory databaseFactory,
-                                    ServiceContext services,
-                                    AppCaches appCaches,
-                                    IProfilingLogger profilingLogger,
-                                    IPublishedUrlProvider publishedUrlProvider,
-                                    IMemberManager memberManager,
-                                    IMemberService memberService,
-                                    MemberSignInManager memberSignInManager,
-                                    IOptions<Auth0MemberAuthenticationOptions> options)
-            : base(umbracoContextAccessor,
-                   databaseFactory,
-                   services,
-                   appCaches,
-                   profilingLogger,
-                   publishedUrlProvider) {
-            _memberManager = memberManager;
-            _memberService = memberService;
-            _memberSignInManager = memberSignInManager;
-            _options = options.Value;
-        }
+    private readonly IMemberManager _memberManager;
+    private readonly IMemberService _memberService;
+    private readonly MemberSignInManager _memberSignInManager;
+    private readonly Auth0MemberAuthenticationOptions _options;
+
+    public Auth0LoginController(IUmbracoContextAccessor umbracoContextAccessor,
+                                IUmbracoDatabaseFactory databaseFactory,
+                                ServiceContext services,
+                                AppCaches appCaches,
+                                IProfilingLogger profilingLogger,
+                                IPublishedUrlProvider publishedUrlProvider,
+                                IMemberManager memberManager,
+                                IMemberService memberService,
+                                MemberSignInManager memberSignInManager,
+                                IOptions<Auth0MemberAuthenticationOptions> options)
+        : base(umbracoContextAccessor,
+               databaseFactory,
+               services,
+               appCaches,
+               profilingLogger,
+               publishedUrlProvider) {
+        _memberManager = memberManager;
+        _memberService = memberService;
+        _memberSignInManager = memberSignInManager;
+        _options = options.Value;
+    }
+    
+    [HttpPost]
+    public IActionResult ExternalLogin(string returnUrl) {
+        return Challenge(new AuthenticationProperties {
+            RedirectUri = Url.Action(nameof(ExternalLoginCallback)), 
+            Items = {{ "returnUrl", returnUrl }}
+        }, Auth0MemberLoginProviderOptions.SchemaNameWithPrefix);
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> ExternalLoginCallback() {
+        var authResult = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
         
-        [HttpPost]
-        public IActionResult ExternalLogin(string returnUrl) {
-            return Challenge(new AuthenticationProperties {
-                RedirectUri = Url.Action(nameof(ExternalLoginCallback)), 
-                Items = {{ "returnUrl", returnUrl }}
-            }, Auth0MemberLoginProviderOptions.SchemaNameWithPrefix);
+        if (!authResult.Succeeded) {
+            throw new Exception("Missing external cookie");
         }
+
+        var email = authResult.Principal.FindFirstValue(ClaimTypes.Email)
+                    ?? authResult.Principal.FindFirstValue("email")
+                    ?? throw new Exception("Missing email claim");
+
+        var member = await _memberManager.FindByEmailAsync(email);
+        if (member == null) {
+            _memberService.CreateMemberWithIdentity(email, email, email, DefaultMemberTypeAlias);
+
+            member = await _memberManager.FindByNameAsync(email);
+            await _memberManager.AddToRolesAsync(member, new[] { "User" });
+        }
+
+        await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
         
-        [HttpGet]
-        public async Task<IActionResult> ExternalLoginCallback() {
-            var authResult = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
-            
-            if (!authResult.Succeeded) {
-                throw new Exception("Missing external cookie");
-            }
+        await _memberSignInManager.SignInAsync(member, false);
 
-            var email = authResult.Principal.FindFirstValue(ClaimTypes.Email)
-                        ?? authResult.Principal.FindFirstValue("email")
-                        ?? throw new Exception("Missing email claim");
-
-            var member = await _memberManager.FindByEmailAsync(email);
-            if (member == null) {
-                _memberService.CreateMemberWithIdentity(email, email, email, DefaultMemberTypeAlias);
-
-                member = await _memberManager.FindByNameAsync(email);
-                await _memberManager.AddToRolesAsync(member, new[] { "User" });
-            }
-
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-            
-            await _memberSignInManager.SignInAsync(member, false);
-
-            var returnUrl = authResult.Properties?.Items["returnUrl"];
-            if (returnUrl == null || !Url.IsLocalUrl(returnUrl)) {
-                returnUrl = "~/";
-            }
-
-            return new RedirectResult(returnUrl);
+        var returnUrl = authResult.Properties?.Items["returnUrl"];
+        if (returnUrl == null || !Url.IsLocalUrl(returnUrl)) {
+            returnUrl = "~/";
         }
+
+        return new RedirectResult(returnUrl);
     }
 }

@@ -4,14 +4,14 @@ using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Extensions;
 
-namespace N3O.Umbraco.ContentFinders {
-    public class ContentFindersComposer : Composer {
-        public override void Compose(IUmbracoBuilder builder) {
-            builder.SetContentLastChanceFinder<LastChanceFinder>();
+namespace N3O.Umbraco.ContentFinders;
 
-            RegisterAll(t => t.ImplementsInterface<IContentFinder>() &&
-                             !t.ImplementsInterface<IContentLastChanceFinder>(),
-                        (type, index) => builder.ContentFinders().Insert(index, type));
-        }
+public class ContentFindersComposer : Composer {
+    public override void Compose(IUmbracoBuilder builder) {
+        builder.SetContentLastChanceFinder<LastChanceFinder>();
+
+        RegisterAll(t => t.ImplementsInterface<IContentFinder>() &&
+                         !t.ImplementsInterface<IContentLastChanceFinder>(),
+                    (type, index) => builder.ContentFinders().Insert(index, type));
     }
 }

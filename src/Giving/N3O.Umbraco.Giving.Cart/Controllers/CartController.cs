@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Attributes;
@@ -12,58 +12,58 @@ using N3O.Umbraco.Mediator;
 using System;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Giving.Cart.Controllers {
-    [ApiDocument(CartConstants.ApiName)]
-    public class CartController : ApiController {
-        private readonly ILogger<CartController> _logger;
-        private readonly IMediator _mediator;
-        private readonly CartCookie _cartCookie;
+namespace N3O.Umbraco.Giving.Cart.Controllers;
 
-        public CartController(ILogger<CartController> logger, IMediator mediator, CartCookie cartCookie) {
-            _logger = logger;
-            _mediator = mediator;
-            _cartCookie = cartCookie;
-        }
+[ApiDocument(CartConstants.ApiName)]
+public class CartController : ApiController {
+    private readonly ILogger<CartController> _logger;
+    private readonly IMediator _mediator;
+    private readonly CartCookie _cartCookie;
 
-        [HttpPost("add")]
-        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-        public async Task<ActionResult> Add(AddToCartReq req) {
-            try {
-                var revisionId = await _mediator.SendAsync<AddToCartCommand, AddToCartReq, RevisionId>(req);
+    public CartController(ILogger<CartController> logger, IMediator mediator, CartCookie cartCookie) {
+        _logger = logger;
+        _mediator = mediator;
+        _cartCookie = cartCookie;
+    }
 
-                _cartCookie.SetValue(revisionId);
-                
-                return Ok();
-            } catch (Exception ex) {
-                _logger.LogError(ex, "Failed to add to cart for request {@Req}", req);
-                
-                return UnprocessableEntity();
-            }
-        }
-        
-        [HttpGet("summary")]
-        public async Task<ActionResult<CartSummaryRes>> GetSummary() {
-            var res = await _mediator.SendAsync<GetCartSummaryQuery, None, CartSummaryRes>(None.Empty);
+    [HttpPost("add")]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult> Add(AddToCartReq req) {
+        try {
+            var revisionId = await _mediator.SendAsync<AddToCartCommand, AddToCartReq, RevisionId>(req);
 
-            _cartCookie.SetValue(res.RevisionId);
+            _cartCookie.SetValue(revisionId);
             
-            return Ok(res);
+            return Ok();
+        } catch (Exception ex) {
+            _logger.LogError(ex, "Failed to add to cart for request {@Req}", req);
+            
+            return UnprocessableEntity();
         }
+    }
+    
+    [HttpGet("summary")]
+    public async Task<ActionResult<CartSummaryRes>> GetSummary() {
+        var res = await _mediator.SendAsync<GetCartSummaryQuery, None, CartSummaryRes>(None.Empty);
 
-        [HttpDelete("remove")]
-        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-        public async Task<ActionResult> Remove(RemoveFromCartReq req) {
-            try {
-                var revisionId = await _mediator.SendAsync<RemoveFromCartCommand, RemoveFromCartReq, RevisionId>(req);
-                
-                _cartCookie.SetValue(revisionId);
+        _cartCookie.SetValue(res.RevisionId);
+        
+        return Ok(res);
+    }
 
-                return Ok();
-            } catch (Exception ex) {
-                _logger.LogError(ex, "Failed to remove item from cart");
+    [HttpDelete("remove")]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult> Remove(RemoveFromCartReq req) {
+        try {
+            var revisionId = await _mediator.SendAsync<RemoveFromCartCommand, RemoveFromCartReq, RevisionId>(req);
+            
+            _cartCookie.SetValue(revisionId);
 
-                return UnprocessableEntity();
-            }
+            return Ok();
+        } catch (Exception ex) {
+            _logger.LogError(ex, "Failed to remove item from cart");
+
+            return UnprocessableEntity();
         }
     }
 }

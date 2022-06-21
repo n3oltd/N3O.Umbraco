@@ -5,36 +5,36 @@ using N3O.Umbraco.Financial;
 using System;
 using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
-namespace N3O.Umbraco.Data.Parsing {
-    public class MoneyParser : DataTypeParser<Money>, IMoneyParser {
-        private readonly IDecimalParser _decimalParser;
+namespace N3O.Umbraco.Data.Parsing;
 
-        public MoneyParser(IDecimalParser decimalParser) {
-            _decimalParser = decimalParser;
-        }
+public class MoneyParser : DataTypeParser<Money>, IMoneyParser {
+    private readonly IDecimalParser _decimalParser;
 
-        public override bool CanParse(DataType dataType) {
-            return dataType == OurDataTypes.Money;
-        }
+    public MoneyParser(IDecimalParser decimalParser) {
+        _decimalParser = decimalParser;
+    }
 
-        protected override ParseResult<Money> TryParse(string text, Type targetType) {
-            throw new NotImplementedException();
-        }
+    public override bool CanParse(DataType dataType) {
+        return dataType == OurDataTypes.Money;
+    }
 
-        public ParseResult<Money> Parse(string text, Type targetType, Currency currency) {
-            var parsedAmount = _decimalParser.Parse(text, targetType);
+    protected override ParseResult<Money> TryParse(string text, Type targetType) {
+        throw new NotImplementedException();
+    }
 
-            if (parsedAmount.Success) {
-                Money value = null;
+    public ParseResult<Money> Parse(string text, Type targetType, Currency currency) {
+        var parsedAmount = _decimalParser.Parse(text, targetType);
 
-                if (parsedAmount.Value.HasValue()) {
-                    value = new Money(parsedAmount.Value.GetValueOrThrow(), currency);
-                }
+        if (parsedAmount.Success) {
+            Money value = null;
 
-                return ParseResult.Success(value);
-            } else {
-                return ParseResult.Fail<Money>();
+            if (parsedAmount.Value.HasValue()) {
+                value = new Money(parsedAmount.Value.GetValueOrThrow(), currency);
             }
+
+            return ParseResult.Success(value);
+        } else {
+            return ParseResult.Fail<Money>();
         }
     }
 }

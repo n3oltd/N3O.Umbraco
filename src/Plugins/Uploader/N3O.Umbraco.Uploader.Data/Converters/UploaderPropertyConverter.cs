@@ -10,44 +10,44 @@ using System.Collections.Generic;
 using Umbraco.Extensions;
 using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
-namespace N3O.Umbraco.Uploader.Data.Converters {
-    public class UploaderPropertyConverter : PropertyConverter<Blob, string> {
-        private readonly IContentHelper _contentHelper;
-        private readonly IUrlBuilder _urlBuilder;
+namespace N3O.Umbraco.Uploader.Data.Converters;
 
-        public UploaderPropertyConverter(IColumnRangeBuilder columnRangeBuilder,
-                                        IContentHelper contentHelper,
-                                        IUrlBuilder urlBuilder)
-            : base(columnRangeBuilder) {
-            _contentHelper = contentHelper;
-            _urlBuilder = urlBuilder;
-        }
+public class UploaderPropertyConverter : PropertyConverter<Blob, string> {
+    private readonly IContentHelper _contentHelper;
+    private readonly IUrlBuilder _urlBuilder;
 
-        public override bool IsConverter(UmbracoPropertyInfo propertyInfo) {
-            return propertyInfo.Type.PropertyEditorAlias.EqualsInvariant(UploaderConstants.PropertyEditorAlias);
-        }
+    public UploaderPropertyConverter(IColumnRangeBuilder columnRangeBuilder,
+                                    IContentHelper contentHelper,
+                                    IUrlBuilder urlBuilder)
+        : base(columnRangeBuilder) {
+        _contentHelper = contentHelper;
+        _urlBuilder = urlBuilder;
+    }
 
-        protected override IEnumerable<Cell<string>> GetCells(IContentProperty contentProperty,
-                                                              UmbracoPropertyInfo propertyInfo) {
-            var fileUpload = _contentHelper.GetFileUpload(contentProperty);
+    public override bool IsConverter(UmbracoPropertyInfo propertyInfo) {
+        return propertyInfo.Type.PropertyEditorAlias.EqualsInvariant(UploaderConstants.PropertyEditorAlias);
+    }
 
-            return OurDataTypes.String
-                               .Cell(fileUpload.IfNotNull(x => _urlBuilder.Root().AppendPathSegment(x.Src)))
-                               .Yield();
-        }
+    protected override IEnumerable<Cell<string>> GetCells(IContentProperty contentProperty,
+                                                          UmbracoPropertyInfo propertyInfo) {
+        var fileUpload = _contentHelper.GetFileUpload(contentProperty);
 
-        public override void Import(IContentBuilder contentBuilder,
-                                    IEnumerable<IPropertyConverter> converters,
-                                    IParser parser,
-                                    ErrorLog errorLog,
-                                    string columnTitlePrefix,
-                                    UmbracoPropertyInfo propertyInfo,
-                                    IEnumerable<ImportField> fields) {
-            Import(errorLog,
-                   propertyInfo,
-                   fields,
-                   s => parser.Blob.Parse(s, OurDataTypes.Blob.GetClrType()),
-                   (alias, value) => value.IfNotNull(x => contentBuilder.Uploader(alias).SetFile(x)));
-        }
+        return OurDataTypes.String
+                           .Cell(fileUpload.IfNotNull(x => _urlBuilder.Root().AppendPathSegment(x.Src)))
+                           .Yield();
+    }
+
+    public override void Import(IContentBuilder contentBuilder,
+                                IEnumerable<IPropertyConverter> converters,
+                                IParser parser,
+                                ErrorLog errorLog,
+                                string columnTitlePrefix,
+                                UmbracoPropertyInfo propertyInfo,
+                                IEnumerable<ImportField> fields) {
+        Import(errorLog,
+               propertyInfo,
+               fields,
+               s => parser.Blob.Parse(s, OurDataTypes.Blob.GetClrType()),
+               (alias, value) => value.IfNotNull(x => contentBuilder.Uploader(alias).SetFile(x)));
     }
 }

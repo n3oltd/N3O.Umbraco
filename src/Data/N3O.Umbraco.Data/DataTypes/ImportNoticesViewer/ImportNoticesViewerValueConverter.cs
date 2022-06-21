@@ -6,31 +6,31 @@ using System;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
 
-namespace N3O.Umbraco.Data.DataTypes {
-    public class ImportNoticesViewerValueConverter : PropertyValueConverter {
-        public override bool IsConverter(IPublishedPropertyType propertyType) {
-            return propertyType.EditorAlias.EqualsInvariant(DataConstants.PropertyEditorAliases.ImportNoticesViewer);
+namespace N3O.Umbraco.Data.DataTypes;
+
+public class ImportNoticesViewerValueConverter : PropertyValueConverter {
+    public override bool IsConverter(IPublishedPropertyType propertyType) {
+        return propertyType.EditorAlias.EqualsInvariant(DataConstants.PropertyEditorAliases.ImportNoticesViewer);
+    }
+
+    public override object ConvertSourceToIntermediate(IPublishedElement owner,
+                                                       IPublishedPropertyType propertyType,
+                                                       object source,
+                                                       bool preview) {
+        var importNotices = default(ImportNotices);
+
+        if (source is string json && json.HasValue()) {
+            importNotices = JsonConvert.DeserializeObject<ImportNotices>(json);
         }
 
-        public override object ConvertSourceToIntermediate(IPublishedElement owner,
-                                                           IPublishedPropertyType propertyType,
-                                                           object source,
-                                                           bool preview) {
-            var importNotices = default(ImportNotices);
+        return importNotices;
+    }
 
-            if (source is string json && json.HasValue()) {
-                importNotices = JsonConvert.DeserializeObject<ImportNotices>(json);
-            }
+    public override Type GetPropertyValueType(IPublishedPropertyType propertyType) {
+        return typeof(ImportNotices);
+    }
 
-            return importNotices;
-        }
-
-        public override Type GetPropertyValueType(IPublishedPropertyType propertyType) {
-            return typeof(ImportNotices);
-        }
-
-        public override PropertyCacheLevel GetPropertyCacheLevel(IPublishedPropertyType propertyType) {
-            return PropertyCacheLevel.Element;
-        }
+    public override PropertyCacheLevel GetPropertyCacheLevel(IPublishedPropertyType propertyType) {
+        return PropertyCacheLevel.Element;
     }
 }

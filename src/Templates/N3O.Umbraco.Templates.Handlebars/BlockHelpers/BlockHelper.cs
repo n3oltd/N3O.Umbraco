@@ -1,27 +1,27 @@
-﻿using HandlebarsDotNet;
+using HandlebarsDotNet;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Json;
 
-namespace N3O.Umbraco.Templates.Handlebars.BlockHelpers {
-    public abstract class BlockHelper : HelperBase, IBlockHelper {
-        protected BlockHelper(ILogger logger, IJsonProvider jsonProvider, int args)
-            : base(logger, jsonProvider, args) { }
+namespace N3O.Umbraco.Templates.Handlebars.BlockHelpers;
 
-        protected BlockHelper(ILogger logger, IJsonProvider jsonProvider, int minArgs, int maxArgs) :
-            base(logger, jsonProvider, minArgs, maxArgs) { }
+public abstract class BlockHelper : HelperBase, IBlockHelper {
+    protected BlockHelper(ILogger logger, IJsonProvider jsonProvider, int args)
+        : base(logger, jsonProvider, args) { }
 
-        public abstract string Name { get; }
+    protected BlockHelper(ILogger logger, IJsonProvider jsonProvider, int minArgs, int maxArgs) :
+        base(logger, jsonProvider, minArgs, maxArgs) { }
 
-        public void Execute(EncodedTextWriter output,
-                            BlockHelperOptions options,
-                            HandlebarsDotNet.Context context,
-                            Arguments args) {
-            Try(args, x => Execute(output, options, context, x));
-        }
+    public abstract string Name { get; }
 
-        protected abstract void Execute(EncodedTextWriter output,
-                                        BlockHelperOptions options,
-                                        HandlebarsDotNet.Context context,
-                                        HandlebarsArguments args);
+    public void Execute(EncodedTextWriter output,
+                        BlockHelperOptions options,
+                        HandlebarsDotNet.Context context,
+                        Arguments args) {
+        Try(args, x => Execute(output, options, context, x));
     }
+
+    protected abstract void Execute(EncodedTextWriter output,
+                                    BlockHelperOptions options,
+                                    HandlebarsDotNet.Context context,
+                                    HandlebarsArguments args);
 }

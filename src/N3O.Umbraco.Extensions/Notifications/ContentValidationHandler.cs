@@ -9,56 +9,56 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Notifications;
 
-namespace N3O.Umbraco.Notifications {
-    public class ContentValidationHandler : INotificationAsyncHandler<ContentSavingNotification> {
-        private readonly ILogger _logger;
-        private readonly IContentHelper _contentHelper;
-        private readonly IReadOnlyList<IContentValidator> _contentValidators;
+namespace N3O.Umbraco.Notifications;
 
-        public ContentValidationHandler(ILogger<ContentValidationHandler> logger,
-                                        IContentHelper contentHelper,
-                                        IEnumerable<IContentValidator> contentValidators) {
-            _logger = logger;
-            _contentHelper = contentHelper;
-            _contentValidators = contentValidators.OrEmpty().ToList();
+public class ContentValidationHandler : INotificationAsyncHandler<ContentSavingNotification> {
+    private readonly ILogger _logger;
+    private readonly IContentHelper _contentHelper;
+    private readonly IReadOnlyList<IContentValidator> _contentValidators;
+
+    public ContentValidationHandler(ILogger<ContentValidationHandler> logger,
+                                    IContentHelper contentHelper,
+                                    IEnumerable<IContentValidator> contentValidators) {
+        _logger = logger;
+        _contentHelper = contentHelper;
+        _contentValidators = contentValidators.OrEmpty().ToList();
+    }
+
+    public Task HandleAsync(ContentSavingNotification notification, CancellationToken cancellationToken) {
+        foreach (var content in notification.SavedEntities) {
+            var contentProperties = _contentHelper.GetContentProperties(content);
+
+            Validate(contentProperties, notification);
         }
 
-        public Task HandleAsync(ContentSavingNotification notification, CancellationToken cancellationToken) {
-            foreach (var content in notification.SavedEntities) {
-                var contentProperties = _contentHelper.GetContentProperties(content);
+        return Task.CompletedTask;
+    }
 
-                Validate(contentProperties, notification);
+    private void Validate(ContentProperties content, ContentSavingNotification notification) {
+        try {
+            foreach (var contentValidator in _contentValidators) {
+                if (contentValidator.IsValidator(content)) {
+                    contentValidator.Validate(content);
+                }
             }
 
-            return Task.CompletedTask;
-        }
-
-        private void Validate(ContentProperties content, ContentSavingNotification notification) {
-            try {
-                foreach (var contentValidator in _contentValidators) {
-                    if (contentValidator.IsValidator(content)) {
-                        contentValidator.Validate(content);
-                    }
-                }
-
-                var nestedContents = content.NestedContentProperties
-                                            .OrEmpty()
-                                            .SelectMany(x => x.Value)
-                                            .ToList();
-                
-                foreach (var nestedContent in nestedContents) {
-                    Validate(nestedContent, notification);
-                }
-            } catch (ContentValidationErrorException error) {
-                notification.CancelOperation(error.PopupMessage);
-            } catch (ContentValidationWarningException warning) {
-                notification.Messages.Add(warning.PopupMessage);
-            } catch (Exception ex) {
-                _logger.LogError(ex,
-                                 "Error whilst validating content of type {Type} with ID {ID}",
-                                 content.ContentTypeAlias,
-                                 content.Id);
+            var nestedContents = content.NestedContentProperties
+                                        .OrEmpty()
+                                        .SelectMany(x => x.Value)
+                                        .ToList();
+            
+            foreach (var nestedContent in nestedContents) {
+                Validate(nestedContent, notification);
             }
+        } catch (ContentValidationErrorException error) {
+            notification.CancelOperation(error.PopupMessage);
+        } catch (ContentValidationWarningException warning) {
+            notification.Messages.Add(warning.PopupMessage);
+        } catch (Exception ex) {
+            _logger.LogError(ex,
+                             "Error whilst validating content of type {Type} with ID {ID}",
+                             content.ContentTypeAlias,
+                             content.Id);
         }
     }
 }

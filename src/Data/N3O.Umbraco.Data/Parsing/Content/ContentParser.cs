@@ -11,70 +11,70 @@ using Umbraco.Cms.Core.Web;
 using OurDataType = N3O.Umbraco.Data.Lookups.DataType;
 using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
-namespace N3O.Umbraco.Data.Parsing {
-    public class ContentParser : DataTypeParser<IContent>, IContentParser {
-        private readonly IUmbracoContextFactory _umbracoContextFactory;
-        private readonly IContentService _contentService;
-        private readonly IContentHelper _contentHelper;
+namespace N3O.Umbraco.Data.Parsing;
 
-        public ContentParser(IUmbracoContextFactory umbracoContextFactory,
-                             IContentService contentService,
-                             IContentHelper contentHelper) {
-            _umbracoContextFactory = umbracoContextFactory;
-            _contentService = contentService;
-            _contentHelper = contentHelper;
-        }
+public class ContentParser : DataTypeParser<IContent>, IContentParser {
+    private readonly IUmbracoContextFactory _umbracoContextFactory;
+    private readonly IContentService _contentService;
+    private readonly IContentHelper _contentHelper;
+
+    public ContentParser(IUmbracoContextFactory umbracoContextFactory,
+                         IContentService contentService,
+                         IContentHelper contentHelper) {
+        _umbracoContextFactory = umbracoContextFactory;
+        _contentService = contentService;
+        _contentHelper = contentHelper;
+    }
+    
+    public override bool CanParse(OurDataType dataType) {
+        return dataType == OurDataTypes.Content;
+    }
+
+    public override ParseResult<IContent> Parse(string text, Type targetType) {
+        return Parse(text, targetType, null);
+    }
+
+    public ParseResult<IContent> Parse(string text, Type targetType, Guid? parentId) {
+        IContent value = null;
         
-        public override bool CanParse(OurDataType dataType) {
-            return dataType == OurDataTypes.Content;
-        }
+        if (text.HasValue()) {
+            using (_umbracoContextFactory.EnsureUmbracoContext()) {
+                text = text.Trim();
+                
+                if (Guid.TryParse(text, out var id)) {
+                    value = _contentService.GetById(id);
+                } else {
+                    var searchRoots = new List<IContent>();
 
-        public override ParseResult<IContent> Parse(string text, Type targetType) {
-            return Parse(text, targetType, null);
-        }
-
-        public ParseResult<IContent> Parse(string text, Type targetType, Guid? parentId) {
-            IContent value = null;
-            
-            if (text.HasValue()) {
-                using (_umbracoContextFactory.EnsureUmbracoContext()) {
-                    text = text.Trim();
-                    
-                    if (Guid.TryParse(text, out var id)) {
-                        value = _contentService.GetById(id);
+                    if (parentId != null) {
+                        searchRoots.Add(_contentService.GetById(parentId.Value));
                     } else {
-                        var searchRoots = new List<IContent>();
-
-                        if (parentId != null) {
-                            searchRoots.Add(_contentService.GetById(parentId.Value));
-                        } else {
-                            searchRoots.AddRange(_contentService.GetRootContent());
-                        }
-
-                        var matches = searchRoots.SelectMany(r => _contentHelper.GetDescendants(r)
-                                                                                .Where(c => c.Name.EqualsInvariant(text)))
-                                                 .ToList();
-
-                        if (matches.IsSingle()) {
-                            value = matches.Single();
-                        }
+                        searchRoots.AddRange(_contentService.GetRootContent());
                     }
 
-                    if (value == null) {
-                        return ParseResult.Fail<IContent>();
+                    var matches = searchRoots.SelectMany(r => _contentHelper.GetDescendants(r)
+                                                                            .Where(c => c.Name.EqualsInvariant(text)))
+                                             .ToList();
+
+                    if (matches.IsSingle()) {
+                        value = matches.Single();
                     }
                 }
-            }
-            
-            return ParseResult.Success(value);
-        }
 
-        public ParseResult<IContent> Parse(JToken token, Type targetType, Guid? parentId) {
-            if (token.Type == JTokenType.String) {
-                return Parse((string) token, targetType, parentId);
-            } else {
-                return ParseResult.Fail<IContent>();
+                if (value == null) {
+                    return ParseResult.Fail<IContent>();
+                }
             }
+        }
+        
+        return ParseResult.Success(value);
+    }
+
+    public ParseResult<IContent> Parse(JToken token, Type targetType, Guid? parentId) {
+        if (token.Type == JTokenType.String) {
+            return Parse((string) token, targetType, parentId);
+        } else {
+            return ParseResult.Fail<IContent>();
         }
     }
 }

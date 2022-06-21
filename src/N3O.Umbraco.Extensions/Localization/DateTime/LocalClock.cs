@@ -1,80 +1,80 @@
 using NodaTime;
 using NodaTime.TimeZones;
 
-namespace N3O.Umbraco.Localization {
-    public class LocalClock : ILocalClock {
-        private readonly ILocalizationSettingsAccessor _settingsAccessor;
-        private readonly IClock _clock;
+namespace N3O.Umbraco.Localization;
 
-        public LocalClock(ILocalizationSettingsAccessor settingsAccessor, IClock clock) {
-            _settingsAccessor = settingsAccessor;
-            _clock = clock;
-        }
+public class LocalClock : ILocalClock {
+    private readonly ILocalizationSettingsAccessor _settingsAccessor;
+    private readonly IClock _clock;
 
-        public Instant GetCurrentInstant() {
-            return _clock.GetCurrentInstant();
-        }
+    public LocalClock(ILocalizationSettingsAccessor settingsAccessor, IClock clock) {
+        _settingsAccessor = settingsAccessor;
+        _clock = clock;
+    }
 
-        public LocalDate GetLocalToday() {
-            var now = GetLocalNow();
+    public Instant GetCurrentInstant() {
+        return _clock.GetCurrentInstant();
+    }
 
-            return now.Date;
-        }
+    public LocalDate GetLocalToday() {
+        var now = GetLocalNow();
 
-        public LocalDateTime GetLocalNow() {
-            var zonedDateTime = GetZonedNow();
+        return now.Date;
+    }
 
-            return zonedDateTime.LocalDateTime;
-        }
+    public LocalDateTime GetLocalNow() {
+        var zonedDateTime = GetZonedNow();
 
-        public DateTimeZone GetZone() {
-            var timezone = GetTimezone();
+        return zonedDateTime.LocalDateTime;
+    }
 
-            return timezone.Zone;
-        }
+    public DateTimeZone GetZone() {
+        var timezone = GetTimezone();
 
-        public Timezone GetTimezone() {
-            var timezone = _settingsAccessor.GetSettings()
-                                            .Timezone;
+        return timezone.Zone;
+    }
 
-            return timezone;
-        }
+    public Timezone GetTimezone() {
+        var timezone = _settingsAccessor.GetSettings()
+                                        .Timezone;
 
-        public ZonedDateTime GetZonedNow() {
-            var timezone = GetTimezone();
-            var instant = GetCurrentInstant();
+        return timezone;
+    }
 
-            return instant.InZone(timezone.Zone);
-        }
+    public ZonedDateTime GetZonedNow() {
+        var timezone = GetTimezone();
+        var instant = GetCurrentInstant();
 
-        public Instant ToInstant(LocalDateTime localDateTime) {
-            var zonedDateTime = ToZonedDateTime(localDateTime);
+        return instant.InZone(timezone.Zone);
+    }
 
-            return zonedDateTime.ToInstant();
-        }
+    public Instant ToInstant(LocalDateTime localDateTime) {
+        var zonedDateTime = ToZonedDateTime(localDateTime);
 
-        public LocalDateTime ToLocalDateTime(Instant instant) {
-            var zonedDateTime = ToZonedDateTime(instant);
+        return zonedDateTime.ToInstant();
+    }
 
-            return zonedDateTime.LocalDateTime;
-        }
+    public LocalDateTime ToLocalDateTime(Instant instant) {
+        var zonedDateTime = ToZonedDateTime(instant);
 
-        public LocalDateTime ToLocalDateTime(LocalDateTime localDateTime) {
-            var zonedDateTime = ToZonedDateTime(localDateTime);
+        return zonedDateTime.LocalDateTime;
+    }
 
-            return zonedDateTime.LocalDateTime;
-        }
+    public LocalDateTime ToLocalDateTime(LocalDateTime localDateTime) {
+        var zonedDateTime = ToZonedDateTime(localDateTime);
 
-        public ZonedDateTime ToZonedDateTime(Instant instant) {
-            var dateTimeZone = GetZone();
+        return zonedDateTime.LocalDateTime;
+    }
 
-            return instant.InZone(dateTimeZone);
-        }
+    public ZonedDateTime ToZonedDateTime(Instant instant) {
+        var dateTimeZone = GetZone();
 
-        public ZonedDateTime ToZonedDateTime(LocalDateTime localDateTime) {
-            var dateTimeZone = GetZone();
+        return instant.InZone(dateTimeZone);
+    }
 
-            return localDateTime.InZone(dateTimeZone, Resolvers.LenientResolver);
-        }
+    public ZonedDateTime ToZonedDateTime(LocalDateTime localDateTime) {
+        var dateTimeZone = GetZone();
+
+        return localDateTime.InZone(dateTimeZone, Resolvers.LenientResolver);
     }
 }

@@ -7,38 +7,38 @@ using System.Linq.Expressions;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 
-namespace N3O.Umbraco.Content {
-    public abstract class UmbracoElement<T> : Value, IUmbracoElement {
-        public IPublishedElement Content { get; set; }
-    
-        protected TProperty GetAs<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
-            var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-            var value = (IPublishedContent) Content.Value(alias);
+namespace N3O.Umbraco.Content;
 
-            return value.As<TProperty>();
-        }
-    
-        protected IEnumerable<TProperty> GetCollectionAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
-            var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-            var values = (IEnumerable) Content.Value(alias);
+public abstract class UmbracoElement<T> : Value, IUmbracoElement {
+    public IPublishedElement Content { get; set; }
 
-            return values.Cast<IPublishedContent>().Select(x => x.As<TProperty>());
-        }
-    
-        protected TProperty GetValue<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
-            var alias = AliasHelper<T>.PropertyAlias(memberExpression);
+    protected TProperty GetAs<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
+        var alias = AliasHelper<T>.PropertyAlias(memberExpression);
+        var value = (IPublishedContent) Content.Value(alias);
 
-            var propertyValue = Content.GetProperty(alias).GetValue();
+        return value.As<TProperty>();
+    }
 
-            if (propertyValue is TProperty typedProperty) {
-                return typedProperty;
-            } else if (propertyValue is IPublishedContent publishedContent) {
-                return publishedContent.As<TProperty>();
-            } else if (propertyValue is IPublishedElement publishedElement) {
-                return publishedElement.As<TProperty>();
-            } else {
-                return default;
-            }
+    protected IEnumerable<TProperty> GetCollectionAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
+        var alias = AliasHelper<T>.PropertyAlias(memberExpression);
+        var values = (IEnumerable) Content.Value(alias);
+
+        return values.Cast<IPublishedContent>().Select(x => x.As<TProperty>());
+    }
+
+    protected TProperty GetValue<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
+        var alias = AliasHelper<T>.PropertyAlias(memberExpression);
+
+        var propertyValue = Content.GetProperty(alias).GetValue();
+
+        if (propertyValue is TProperty typedProperty) {
+            return typedProperty;
+        } else if (propertyValue is IPublishedContent publishedContent) {
+            return publishedContent.As<TProperty>();
+        } else if (propertyValue is IPublishedElement publishedElement) {
+            return publishedElement.As<TProperty>();
+        } else {
+            return default;
         }
     }
 }

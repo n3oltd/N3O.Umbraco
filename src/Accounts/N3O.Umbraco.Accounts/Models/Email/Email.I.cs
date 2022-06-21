@@ -1,5 +1,5 @@
-namespace N3O.Umbraco.Accounts.Models {
-    public interface IEmail {
-        string Address { get; }
-    }
+namespace N3O.Umbraco.Accounts.Models;
+
+public interface IEmail {
+    string Address { get; }
 }

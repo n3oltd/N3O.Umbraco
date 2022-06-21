@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
@@ -12,34 +12,34 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Web.Common.Controllers;
 
-namespace N3O.Umbraco.Search.Controllers {
-    public class SitemapController : UmbracoPageController, IVirtualPageController {
-        private static readonly string SitemapAlias = AliasHelper<SitemapContent>.ContentTypeAlias();
-        
-        private readonly IUmbracoContextFactory _umbracoContextFactory;
-        private readonly ISitemap _sitemap;
+namespace N3O.Umbraco.Search.Controllers;
 
-        public SitemapController(ILogger<UmbracoPageController> logger,
-                                 ICompositeViewEngine compositeViewEngine,
-                                 IUmbracoContextFactory umbracoContextFactory,
-                                 ISitemap sitemap)
-            : base(logger, compositeViewEngine) {
-            _umbracoContextFactory = umbracoContextFactory;
-            _sitemap = sitemap;
-        }
-        
-        [HttpGet]
-        public async Task IndexAsync() {
-            Response.ContentType = "application/xml";
-            await Response.WriteAsync(_sitemap.GetXml());
-        }
-        
-        public IPublishedContent FindContent(ActionExecutingContext actionExecutingContext) {
-            var umbracoContext = _umbracoContextFactory.EnsureUmbracoContext().UmbracoContext;
-            var contentType = umbracoContext.Content.GetContentType(SitemapAlias);
-            var content = contentType.IfNotNull(x => umbracoContext.Content.GetByContentType(x))?.SingleOrDefault();
+public class SitemapController : UmbracoPageController, IVirtualPageController {
+    private static readonly string SitemapAlias = AliasHelper<SitemapContent>.ContentTypeAlias();
+    
+    private readonly IUmbracoContextFactory _umbracoContextFactory;
+    private readonly ISitemap _sitemap;
 
-            return content;
-        }
+    public SitemapController(ILogger<UmbracoPageController> logger,
+                             ICompositeViewEngine compositeViewEngine,
+                             IUmbracoContextFactory umbracoContextFactory,
+                             ISitemap sitemap)
+        : base(logger, compositeViewEngine) {
+        _umbracoContextFactory = umbracoContextFactory;
+        _sitemap = sitemap;
+    }
+    
+    [HttpGet]
+    public async Task IndexAsync() {
+        Response.ContentType = "application/xml";
+        await Response.WriteAsync(_sitemap.GetXml());
+    }
+    
+    public IPublishedContent FindContent(ActionExecutingContext actionExecutingContext) {
+        var umbracoContext = _umbracoContextFactory.EnsureUmbracoContext().UmbracoContext;
+        var contentType = umbracoContext.Content.GetContentType(SitemapAlias);
+        var content = contentType.IfNotNull(x => umbracoContext.Content.GetByContentType(x))?.SingleOrDefault();
+
+        return content;
     }
 }

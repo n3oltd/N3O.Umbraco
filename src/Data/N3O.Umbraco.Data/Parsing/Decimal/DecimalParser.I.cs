@@ -1,3 +1,3 @@
-namespace N3O.Umbraco.Data.Parsing {
-    public interface IDecimalParser : IDataTypeParser<decimal?> { }
-}
+namespace N3O.Umbraco.Data.Parsing;
+
+public interface IDecimalParser : IDataTypeParser<decimal?> { }

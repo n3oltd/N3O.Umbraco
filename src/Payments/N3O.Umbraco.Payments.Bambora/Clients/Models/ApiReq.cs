@@ -1,20 +1,20 @@
 using Newtonsoft.Json;
 
-namespace N3O.Umbraco.Payments.Bambora.Client {
-    public abstract class ApiReq {
-        [JsonProperty("token")]
-        public Token Token { get; set; }
+namespace N3O.Umbraco.Payments.Bambora.Client;
 
-        [JsonProperty("billing")]
-        public ApiBillingAddressReq BillingAddress { get; set; }
+public abstract class ApiReq {
+    [JsonProperty("token")]
+    public Token Token { get; set; }
 
-        [JsonProperty("customer_ip")]
-        public string CustomerIp { get; set; }
+    [JsonProperty("billing")]
+    public ApiBillingAddressReq BillingAddress { get; set; }
 
-        [JsonProperty("term_url")]
-        public string ReturnUrl { get; set; }
+    [JsonProperty("customer_ip")]
+    public string CustomerIp { get; set; }
 
-        [JsonProperty("validate")]
-        public bool Validate { get; set; } = true;
-    }
+    [JsonProperty("term_url")]
+    public string ReturnUrl { get; set; }
+
+    [JsonProperty("validate")]
+    public bool Validate { get; set; } = true;
 }

@@ -1,22 +1,22 @@
 using System.Collections.Generic;
 
-namespace N3O.Umbraco.References {
-    public class Reference : Value, IReference {
-        public Reference(ReferenceType type, long number) {
-            Type = type;
-            Number = number;
-        }
+namespace N3O.Umbraco.References;
 
-        public ReferenceType Type { get; }
-        public long Number { get; }
-        public string Text => $"{Type.Prefix}{Number}";
+public class Reference : Value, IReference {
+    public Reference(ReferenceType type, long number) {
+        Type = type;
+        Number = number;
+    }
 
-        public override string ToString() {
-            return Text;
-        }
+    public ReferenceType Type { get; }
+    public long Number { get; }
+    public string Text => $"{Type.Prefix}{Number}";
 
-        protected override IEnumerable<object> GetAtomicValues() {
-            yield return Text;
-        }
+    public override string ToString() {
+        return Text;
+    }
+
+    protected override IEnumerable<object> GetAtomicValues() {
+        yield return Text;
     }
 }

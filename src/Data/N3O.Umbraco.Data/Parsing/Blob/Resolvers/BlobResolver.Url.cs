@@ -7,44 +7,44 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Data.Parsing {
-    [Order(0)]
-    public class UrlBlobResolver : BlobResolver {
-        protected override bool TryCanResolve(string value) {
-            return value.IsValidUrl();
-        }
+namespace N3O.Umbraco.Data.Parsing;
 
-        protected override async Task<Blob> TryResolveAsync(string url) {
-            var client = new HttpClient();
+[Order(0)]
+public class UrlBlobResolver : BlobResolver {
+    protected override bool TryCanResolve(string value) {
+        return value.IsValidUrl();
+    }
 
-            var response = await client.GetAsync(url);
+    protected override async Task<Blob> TryResolveAsync(string url) {
+        var client = new HttpClient();
 
-            var filename = GetFilename(url, response.Content.Headers.ContentDisposition);
-            var contentLength = ByteSize.FromBytes(response.Content.Headers.ContentLength.GetValueOrThrow());
-            var contentType = GetContentType(filename, response.Content.Headers.ContentType);
-            var stream = await response.Content.ReadAsStreamAsync();
+        var response = await client.GetAsync(url);
 
-            return new Blob(filename, null, contentType, contentLength, stream);
-        }
+        var filename = GetFilename(url, response.Content.Headers.ContentDisposition);
+        var contentLength = ByteSize.FromBytes(response.Content.Headers.ContentLength.GetValueOrThrow());
+        var contentType = GetContentType(filename, response.Content.Headers.ContentType);
+        var stream = await response.Content.ReadAsStreamAsync();
 
-        private string GetFilename(string url, ContentDispositionHeaderValue header) {
-            try {
-                if (header != null) {
-                    return header.FileName.Replace("\"", "");
-                } else {
-                    return Path.GetFileName(url);
-                }
-            } catch {
-                return "unknown";
-            }
-        }
+        return new Blob(filename, null, contentType, contentLength, stream);
+    }
 
-        private string GetContentType(string filename, MediaTypeHeaderValue header) {
+    private string GetFilename(string url, ContentDispositionHeaderValue header) {
+        try {
             if (header != null) {
-                return header.MediaType;
+                return header.FileName.Replace("\"", "");
             } else {
-                return FileUtility.GetContentType(filename);
+                return Path.GetFileName(url);
             }
+        } catch {
+            return "unknown";
+        }
+    }
+
+    private string GetContentType(string filename, MediaTypeHeaderValue header) {
+        if (header != null) {
+            return header.MediaType;
+        } else {
+            return FileUtility.GetContentType(filename);
         }
     }
 }

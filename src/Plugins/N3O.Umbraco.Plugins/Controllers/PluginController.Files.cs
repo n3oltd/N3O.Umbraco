@@ -4,39 +4,39 @@ using N3O.Umbraco.Plugins.Models;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Plugins.Controllers {
-    public partial class PluginController {
-        protected async Task<UploadedFile> GetUploadedFileAsync(FileUploadReq req) {
-            try {
-                using (var reqStream = req.File.OpenReadStream()) {
-                    var fileStream = new MemoryStream();
+namespace N3O.Umbraco.Plugins.Controllers;
 
-                    await reqStream.CopyToAsync(fileStream);
+public partial class PluginController {
+    protected async Task<UploadedFile> GetUploadedFileAsync(FileUploadReq req) {
+        try {
+            using (var reqStream = req.File.OpenReadStream()) {
+                var fileStream = new MemoryStream();
 
-                    fileStream.Rewind();
+                await reqStream.CopyToAsync(fileStream);
 
-                    var uploadedFile = new UploadedFile(fileStream, req.File.ContentDisposition, req.File.FileName);
+                fileStream.Rewind();
 
-                    if (req.ImagesOnly == true) {
-                        var metadata = fileStream.GetImageMetadata();
+                var uploadedFile = new UploadedFile(fileStream, req.File.ContentDisposition, req.File.FileName);
 
-                        var uploadedImage = new UploadedImage(uploadedFile, metadata);
+                if (req.ImagesOnly == true) {
+                    var metadata = fileStream.GetImageMetadata();
 
-                        if (!SizeAndDimensionsAreValid(uploadedImage,
-                                                       req.MinHeight,
-                                                       req.MinWidth,
-                                                       req.MaxHeight,
-                                                       req.MaxWidth,
-                                                       req.MaxFileSizeMb)) {
-                            uploadedFile = null;
-                        }
+                    var uploadedImage = new UploadedImage(uploadedFile, metadata);
+
+                    if (!SizeAndDimensionsAreValid(uploadedImage,
+                                                   req.MinHeight,
+                                                   req.MinWidth,
+                                                   req.MaxHeight,
+                                                   req.MaxWidth,
+                                                   req.MaxFileSizeMb)) {
+                        uploadedFile = null;
                     }
-
-                    return uploadedFile;
                 }
-            } catch {
-                return null;
+
+                return uploadedFile;
             }
+        } catch {
+            return null;
         }
     }
 }

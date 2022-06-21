@@ -5,13 +5,13 @@ using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.References;
 using NodaTime;
 
-namespace N3O.Umbraco.Payments.Entities {
-    public interface IPaymentsFlow : IEntity, IBillingInfoAccessor, IHoldReference {
-        void BeginPaymentFlow(IClock clock);
-        void EndPaymentFlow();
-        PaymentObject GetPaymentObject(PaymentObjectType type);
-        public string GetTransactionDescription(IPaymentMethodSettings paymentMethodSettings);
-        string GetTransactionId(IPaymentMethodSettings paymentMethodSettings, string idempotencyKey);
-        void SetPaymentObject(PaymentObjectType type, PaymentObject paymentObject);
-    }
+namespace N3O.Umbraco.Payments.Entities;
+
+public interface IPaymentsFlow : IEntity, IBillingInfoAccessor, IHoldReference {
+    void BeginPaymentFlow(IClock clock);
+    void EndPaymentFlow();
+    PaymentObject GetPaymentObject(PaymentObjectType type);
+    public string GetTransactionDescription(IPaymentMethodSettings paymentMethodSettings);
+    string GetTransactionId(IPaymentMethodSettings paymentMethodSettings, string idempotencyKey);
+    void SetPaymentObject(PaymentObjectType type, PaymentObject paymentObject);
 }

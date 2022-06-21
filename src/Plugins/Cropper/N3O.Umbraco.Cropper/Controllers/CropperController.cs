@@ -10,61 +10,61 @@ using System.IO;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.IO;
 
-namespace N3O.Umbraco.Cropper.Controllers {
-    [ApiDocument(CropperConstants.ApiName)]
-    public class CropperController : PluginController {
-        private readonly IClock _clock;
-        private readonly MediaFileManager _mediaFileManager;
+namespace N3O.Umbraco.Cropper.Controllers;
 
-        public CropperController(IClock clock, MediaFileManager mediaFileManager) {
-            _clock = clock;
-            _mediaFileManager = mediaFileManager;
+[ApiDocument(CropperConstants.ApiName)]
+public class CropperController : PluginController {
+    private readonly IClock _clock;
+    private readonly MediaFileManager _mediaFileManager;
+
+    public CropperController(IClock clock, MediaFileManager mediaFileManager) {
+        _clock = clock;
+        _mediaFileManager = mediaFileManager;
+    }
+
+    [HttpGet("media/{mediaId}")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult<ImageMedia> GetMediaById(string mediaId) {
+        var file = _mediaFileManager.GetSourceFile(mediaId);
+
+        if (file == null) {
+            return NotFound();
         }
 
-        [HttpGet("media/{mediaId}")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<ImageMedia> GetMediaById(string mediaId) {
-            var file = _mediaFileManager.GetSourceFile(mediaId);
+        using (var stream = _mediaFileManager.FileSystem.OpenFile(file)) {
+            var metadata = stream.GetImageMetadata();
 
-            if (file == null) {
-                return NotFound();
+            return Ok(GetResponse(file, metadata.Height, metadata.Width));
+        }
+    }
+
+    [HttpPost("upload")]
+    public async Task<ActionResult<ImageMedia>> Upload([FromForm] ImageUploadReq req) {
+        var now = _clock.GetCurrentInstant();
+    
+        using (var uploadedImage = await GetUploadedImageAsync(req)) {
+            if (uploadedImage == null) {
+                return BadRequest();
             }
 
-            using (var stream = _mediaFileManager.FileSystem.OpenFile(file)) {
-                var metadata = stream.GetImageMetadata();
+            var storagePath = uploadedImage.Filename.GetStoragePath(now);
 
-                return Ok(GetResponse(file, metadata.Height, metadata.Width));
-            }
+            _mediaFileManager.FileSystem.AddFile(storagePath, uploadedImage.Stream, false);
+
+            return Ok(GetResponse(storagePath, uploadedImage.Metadata.Height, uploadedImage.Metadata.Width));
         }
+    }
 
-        [HttpPost("upload")]
-        public async Task<ActionResult<ImageMedia>> Upload([FromForm] ImageUploadReq req) {
-            var now = _clock.GetCurrentInstant();
-        
-            using (var uploadedImage = await GetUploadedImageAsync(req)) {
-                if (uploadedImage == null) {
-                    return BadRequest();
-                }
+    private ImageMedia GetResponse(string storagePath, int height, int width) {
+        var mediaId = Path.GetDirectoryName(storagePath);
+        var filename = Path.GetFileName(storagePath);
 
-                var storagePath = uploadedImage.Filename.GetStoragePath(now);
-
-                _mediaFileManager.FileSystem.AddFile(storagePath, uploadedImage.Stream, false);
-
-                return Ok(GetResponse(storagePath, uploadedImage.Metadata.Height, uploadedImage.Metadata.Width));
-            }
-        }
-
-        private ImageMedia GetResponse(string storagePath, int height, int width) {
-            var mediaId = Path.GetDirectoryName(storagePath);
-            var filename = Path.GetFileName(storagePath);
-
-            return new ImageMedia {
-                UrlPath = "/media/" + mediaId + "/" + filename,
-                MediaId = mediaId,
-                Filename = filename,
-                Height = height,
-                Width = width
-            };
-        }
+        return new ImageMedia {
+            UrlPath = "/media/" + mediaId + "/" + filename,
+            MediaId = mediaId,
+            Filename = filename,
+            Height = height,
+            Width = width
+        };
     }
 }

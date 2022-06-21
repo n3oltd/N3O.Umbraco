@@ -1,14 +1,14 @@
 using Newtonsoft.Json;
 
-namespace N3O.Umbraco.Payments.Opayo.Clients {
-    public class ApiCredentialTypeReq {
-        [JsonProperty("cofUsage")]
-        public string CofUsage { get; set; }
+namespace N3O.Umbraco.Payments.Opayo.Clients;
 
-        [JsonProperty("initiatedType")]
-        public string InitiatedType { get; set; }
+public class ApiCredentialTypeReq {
+    [JsonProperty("cofUsage")]
+    public string CofUsage { get; set; }
 
-        [JsonProperty("mitType")]
-        public string MitType { get; set; }
-    }
+    [JsonProperty("initiatedType")]
+    public string InitiatedType { get; set; }
+
+    [JsonProperty("mitType")]
+    public string MitType { get; set; }
 }

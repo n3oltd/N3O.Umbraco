@@ -9,35 +9,35 @@ using System;
 using System.Reflection;
 using Umbraco.Cms.Core.DependencyInjection;
 
-namespace N3O.Umbraco.Validation {
-    public class ValidationComposer : Composer {
-        public override void Compose(IUmbracoBuilder builder) {
-            builder.Services.AddFluentValidation(config => {
-                config.DisableDataAnnotationsValidation = true;
-                config.ImplicitlyValidateChildProperties = true;
-                config.ImplicitlyValidateRootCollectionElements = true;
+namespace N3O.Umbraco.Validation;
 
-                config.RegisterValidatorsFromAssemblies(OurAssemblies.GetAllAssemblies());
-            });
-        
-            builder.Services.AddSingleton<IPhoneNumberValidator, PhoneNumberValidator>();
+public class ValidationComposer : Composer {
+    public override void Compose(IUmbracoBuilder builder) {
+        builder.Services.AddFluentValidation(config => {
+            config.DisableDataAnnotationsValidation = true;
+            config.ImplicitlyValidateChildProperties = true;
+            config.ImplicitlyValidateRootCollectionElements = true;
 
-            RegisterAll(t => t.ImplementsGenericInterface(typeof(IValidator<>)),
-                        t => RegisterValidator(builder, t));
+            config.RegisterValidatorsFromAssemblies(OurAssemblies.GetAllAssemblies());
+        });
+    
+        builder.Services.AddSingleton<IPhoneNumberValidator, PhoneNumberValidator>();
 
-            ValidatorOptions.Global.DisplayNameResolver = (_, member, _) => {
-                var propertyInfo = member as PropertyInfo;
+        RegisterAll(t => t.ImplementsGenericInterface(typeof(IValidator<>)),
+                    t => RegisterValidator(builder, t));
 
-                return propertyInfo?.GetCustomAttribute<NameAttribute>()?.Name;
-            };
-        }
+        ValidatorOptions.Global.DisplayNameResolver = (_, member, _) => {
+            var propertyInfo = member as PropertyInfo;
 
-        private void RegisterValidator(IUmbracoBuilder builder, Type validatorType) {
-            var interfaceTypes = validatorType.GetInterfaces();
+            return propertyInfo?.GetCustomAttribute<NameAttribute>()?.Name;
+        };
+    }
 
-            foreach (var interfaceType in interfaceTypes) {
-                builder.Services.AddTransient(interfaceType, validatorType);
-            }
+    private void RegisterValidator(IUmbracoBuilder builder, Type validatorType) {
+        var interfaceTypes = validatorType.GetInterfaces();
+
+        foreach (var interfaceType in interfaceTypes) {
+            builder.Services.AddTransient(interfaceType, validatorType);
         }
     }
 }

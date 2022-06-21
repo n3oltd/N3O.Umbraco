@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Data.Builders;
 using N3O.Umbraco.Data.ContentApps;
@@ -21,141 +21,141 @@ using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
 
-namespace N3O.Umbraco.Data {
-    public class DataComposer : Composer {
-        public override void Compose(IUmbracoBuilder builder) {
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+namespace N3O.Umbraco.Data;
 
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            
-            builder.PropertyValueConverters().Append<ImportNoticesViewerValueConverter>();
-            builder.PropertyValueConverters().Append<ImportDataEditorValueConverter>();
+public class DataComposer : Composer {
+    public override void Compose(IUmbracoBuilder builder) {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-            RegisterApis(builder);
-            RegisterContentSummarisers(builder);
-            RegisterConverters(builder);
-            RegisterExports(builder);
-            RegisterImports(builder);
-            RegisterMatchers(builder);
-            RegisterTables(builder);
-            
-            builder.Components().Append<DataComponent>();
-        }
-
-        private void RegisterApis(IUmbracoBuilder builder) {
-            builder.Services.AddOpenApiDocument(DataConstants.ApiNames.Content);
-            builder.Services.AddOpenApiDocument(DataConstants.ApiNames.ContentTypes);
-            builder.Services.AddOpenApiDocument(DataConstants.ApiNames.DataTypes);
-            builder.Services.AddOpenApiDocument(DataConstants.ApiNames.Exports);
-            builder.Services.AddOpenApiDocument(DataConstants.ApiNames.Imports);
-        }
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         
-        private void RegisterContentSummarisers(IUmbracoBuilder builder) {
-            RegisterAll(t => t.ImplementsInterface<IContentSummariser>(),
-                        t => builder.Services.AddTransient(typeof(IContentSummariser), t));
-        }
+        builder.PropertyValueConverters().Append<ImportNoticesViewerValueConverter>();
+        builder.PropertyValueConverters().Append<ImportDataEditorValueConverter>();
 
-        private void RegisterConverters(IUmbracoBuilder builder) {
-            RegisterAll(t => t.ImplementsInterface<IContentMetadataConverter>(),
-                        t => builder.Services.AddTransient(typeof(IContentMetadataConverter), t));
-            
-            RegisterAll(t => t.ImplementsInterface<IPropertyConverter>(),
-                        t => builder.Services.AddTransient(typeof(IPropertyConverter), t));
-        }
-
-        private void RegisterExports(IUmbracoBuilder builder) {
-            RegisterAll(t => t.ImplementsInterface<IExportContentFilter>(),
-                        t => builder.Services.AddTransient(typeof(IExportContentFilter), t));
-
-            RegisterAll(t => t.ImplementsInterface<IExportPropertyFilter>(),
-                        t => builder.Services.AddTransient(typeof(IExportPropertyFilter), t));
-
-            builder.ContentApps().Append<ExportApp>();
-        }
-
-        private void RegisterImports(IUmbracoBuilder builder) {
-            builder.Services.AddTransient<IImportProcessingQueue, ImportProcessingQueue>();
-
-            builder.Components().Append<ImportsMigrationsComponent>();
-
-            RegisterAll(t => t.ImplementsInterface<IImportContentFilter>(),
-                        t => builder.Services.AddTransient(typeof(IImportContentFilter), t));
-
-            RegisterAll(t => t.ImplementsInterface<IImportPropertyFilter>(),
-                        t => builder.Services.AddTransient(typeof(IImportPropertyFilter), t));
-
-            builder.ContentApps().Append<ImportApp>();
-        }
+        RegisterApis(builder);
+        RegisterContentSummarisers(builder);
+        RegisterConverters(builder);
+        RegisterExports(builder);
+        RegisterImports(builder);
+        RegisterMatchers(builder);
+        RegisterTables(builder);
         
-        private void RegisterMatchers(IUmbracoBuilder builder) {
-            RegisterAll(t => t.ImplementsInterface<IContentMatcher>(),
-                        t => builder.Services.AddTransient(typeof(IContentMatcher), t));
-        }
+        builder.Components().Append<DataComponent>();
+    }
 
-        private void RegisterTables(IUmbracoBuilder builder) {
-            builder.Services.AddTransient<IColumnRangeBuilder, ColumnRangeBuilder>();
-            builder.Services.AddTransient<IColumnVisibility, ColumnVisibility>();
-            builder.Services.AddTransient<IExcelTableBuilder, ExcelTableBuilder>();
-            builder.Services.AddTransient<ITableBuilder, TableBuilder>();
-            builder.Services.AddTransient<IWorkspace, Workspace>();
+    private void RegisterApis(IUmbracoBuilder builder) {
+        builder.Services.AddOpenApiDocument(DataConstants.ApiNames.Content);
+        builder.Services.AddOpenApiDocument(DataConstants.ApiNames.ContentTypes);
+        builder.Services.AddOpenApiDocument(DataConstants.ApiNames.DataTypes);
+        builder.Services.AddOpenApiDocument(DataConstants.ApiNames.Exports);
+        builder.Services.AddOpenApiDocument(DataConstants.ApiNames.Imports);
+    }
+    
+    private void RegisterContentSummarisers(IUmbracoBuilder builder) {
+        RegisterAll(t => t.ImplementsInterface<IContentSummariser>(),
+                    t => builder.Services.AddTransient(typeof(IContentSummariser), t));
+    }
 
-            RegisterAll(t => t.ImplementsGenericInterface(typeof(IExcelCellConverter<>)),
-                        t => t.GetInterfaces().Concat(t).Do(i => builder.Services.AddTransient(i, t)));
+    private void RegisterConverters(IUmbracoBuilder builder) {
+        RegisterAll(t => t.ImplementsInterface<IContentMetadataConverter>(),
+                    t => builder.Services.AddTransient(typeof(IContentMetadataConverter), t));
+        
+        RegisterAll(t => t.ImplementsInterface<IPropertyConverter>(),
+                    t => builder.Services.AddTransient(typeof(IPropertyConverter), t));
+    }
 
-            RegisterAll(t => t.ImplementsGenericInterface(typeof(ICellConverter<>)),
-                        t => t.GetInterfaces().Concat(t).Do(i => builder.Services.AddTransient(i, t)));
+    private void RegisterExports(IUmbracoBuilder builder) {
+        RegisterAll(t => t.ImplementsInterface<IExportContentFilter>(),
+                    t => builder.Services.AddTransient(typeof(IExportContentFilter), t));
 
-            RegisterAll(t => t.ImplementsGenericInterface(typeof(ITextConverter<>)),
-                        t => t.GetInterfaces().Concat(t).Do(i => builder.Services.AddTransient(i, t)));
+        RegisterAll(t => t.ImplementsInterface<IExportPropertyFilter>(),
+                    t => builder.Services.AddTransient(typeof(IExportPropertyFilter), t));
+
+        builder.ContentApps().Append<ExportApp>();
+    }
+
+    private void RegisterImports(IUmbracoBuilder builder) {
+        builder.Services.AddTransient<IImportProcessingQueue, ImportProcessingQueue>();
+
+        builder.Components().Append<ImportsMigrationsComponent>();
+
+        RegisterAll(t => t.ImplementsInterface<IImportContentFilter>(),
+                    t => builder.Services.AddTransient(typeof(IImportContentFilter), t));
+
+        RegisterAll(t => t.ImplementsInterface<IImportPropertyFilter>(),
+                    t => builder.Services.AddTransient(typeof(IImportPropertyFilter), t));
+
+        builder.ContentApps().Append<ImportApp>();
+    }
+    
+    private void RegisterMatchers(IUmbracoBuilder builder) {
+        RegisterAll(t => t.ImplementsInterface<IContentMatcher>(),
+                    t => builder.Services.AddTransient(typeof(IContentMatcher), t));
+    }
+
+    private void RegisterTables(IUmbracoBuilder builder) {
+        builder.Services.AddTransient<IColumnRangeBuilder, ColumnRangeBuilder>();
+        builder.Services.AddTransient<IColumnVisibility, ColumnVisibility>();
+        builder.Services.AddTransient<IExcelTableBuilder, ExcelTableBuilder>();
+        builder.Services.AddTransient<ITableBuilder, TableBuilder>();
+        builder.Services.AddTransient<IWorkspace, Workspace>();
+
+        RegisterAll(t => t.ImplementsGenericInterface(typeof(IExcelCellConverter<>)),
+                    t => t.GetInterfaces().Concat(t).Do(i => builder.Services.AddTransient(i, t)));
+
+        RegisterAll(t => t.ImplementsGenericInterface(typeof(ICellConverter<>)),
+                    t => t.GetInterfaces().Concat(t).Do(i => builder.Services.AddTransient(i, t)));
+
+        RegisterAll(t => t.ImplementsGenericInterface(typeof(ITextConverter<>)),
+                    t => t.GetInterfaces().Concat(t).Do(i => builder.Services.AddTransient(i, t)));
+    }
+}
+
+public class DataComponent : IComponent {
+    private readonly IRuntimeState _runtimeState;
+    private readonly IDataTypeService _dataTypeService;
+    private readonly IConfigurationEditorJsonSerializer _configurationEditorJsonSerializer;
+    private readonly IDataValueEditorFactory _dataValueEditorFactory;
+    private readonly IEditorConfigurationParser _editorConfigurationParser;
+    private readonly IIOHelper _iioHelper;
+
+    public DataComponent(IRuntimeState runtimeState,
+                         IDataTypeService dataTypeService,
+                         IConfigurationEditorJsonSerializer configurationEditorJsonSerializer,
+                         IDataValueEditorFactory dataValueEditorFactory,
+                         IEditorConfigurationParser editorConfigurationParser,
+                         IIOHelper iioHelper) {
+        _runtimeState = runtimeState;
+        _dataTypeService = dataTypeService;
+        _configurationEditorJsonSerializer = configurationEditorJsonSerializer;
+        _dataValueEditorFactory = dataValueEditorFactory;
+        _editorConfigurationParser = editorConfigurationParser;
+        _iioHelper = iioHelper;
+    }
+    
+    public void Initialize() {
+        if (_runtimeState.Level == RuntimeLevel.Run) {
+            EnsureDataTypeExists(new ImportNoticesViewerDataEditor(_dataValueEditorFactory,
+                                                                   _iioHelper,
+                                                                   _editorConfigurationParser));
+            
+            EnsureDataTypeExists(new ImportDataEditorDataEditor(_dataValueEditorFactory,
+                                                                _iioHelper,
+                                                                _editorConfigurationParser));
         }
     }
 
-    public class DataComponent : IComponent {
-        private readonly IRuntimeState _runtimeState;
-        private readonly IDataTypeService _dataTypeService;
-        private readonly IConfigurationEditorJsonSerializer _configurationEditorJsonSerializer;
-        private readonly IDataValueEditorFactory _dataValueEditorFactory;
-        private readonly IEditorConfigurationParser _editorConfigurationParser;
-        private readonly IIOHelper _iioHelper;
-
-        public DataComponent(IRuntimeState runtimeState,
-                             IDataTypeService dataTypeService,
-                             IConfigurationEditorJsonSerializer configurationEditorJsonSerializer,
-                             IDataValueEditorFactory dataValueEditorFactory,
-                             IEditorConfigurationParser editorConfigurationParser,
-                             IIOHelper iioHelper) {
-            _runtimeState = runtimeState;
-            _dataTypeService = dataTypeService;
-            _configurationEditorJsonSerializer = configurationEditorJsonSerializer;
-            _dataValueEditorFactory = dataValueEditorFactory;
-            _editorConfigurationParser = editorConfigurationParser;
-            _iioHelper = iioHelper;
+    private void EnsureDataTypeExists(DataEditor dataEditor) {
+        if (_dataTypeService.GetDataType(dataEditor.Name) != null) {
+            return;
         }
         
-        public void Initialize() {
-            if (_runtimeState.Level == RuntimeLevel.Run) {
-                EnsureDataTypeExists(new ImportNoticesViewerDataEditor(_dataValueEditorFactory,
-                                                                       _iioHelper,
-                                                                       _editorConfigurationParser));
-                
-                EnsureDataTypeExists(new ImportDataEditorDataEditor(_dataValueEditorFactory,
-                                                                    _iioHelper,
-                                                                    _editorConfigurationParser));
-            }
-        }
+        var dataType = new DataType(dataEditor, _configurationEditorJsonSerializer);
+        dataType.Name = dataEditor.Name;
+        dataType.Key = UmbracoId.Generate(IdScope.DataType, dataEditor.Alias);
 
-        private void EnsureDataTypeExists(DataEditor dataEditor) {
-            if (_dataTypeService.GetDataType(dataEditor.Name) != null) {
-                return;
-            }
-            
-            var dataType = new DataType(dataEditor, _configurationEditorJsonSerializer);
-            dataType.Name = dataEditor.Name;
-            dataType.Key = UmbracoId.Generate(IdScope.DataType, dataEditor.Alias);
-
-            _dataTypeService.Save(dataType);
-        }
-
-        public void Terminate() { }
+        _dataTypeService.Save(dataType);
     }
+
+    public void Terminate() { }
 }

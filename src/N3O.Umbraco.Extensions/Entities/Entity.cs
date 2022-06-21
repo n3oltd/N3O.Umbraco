@@ -2,39 +2,39 @@ using N3O.Umbraco.Extensions;
 using Newtonsoft.Json;
 using NodaTime;
 
-namespace N3O.Umbraco.Entities {
-    public abstract class Entity : IEntity {
-        protected Entity() {
-            Id = EntityId.New();
-            Revision = 0;
+namespace N3O.Umbraco.Entities;
+
+public abstract class Entity : IEntity {
+    protected Entity() {
+        Id = EntityId.New();
+        Revision = 0;
+    }
+    
+    public EntityId Id { get; private set; }
+    public Instant Timestamp { get; private set; }
+    public int Revision { get; private set; }
+
+    [JsonIgnore]
+    public RevisionId RevisionId => new(Id, Revision);
+    
+    [JsonIgnore]
+    public bool IsNew => Revision == 0;
+    
+    public virtual void OnSaving(Instant timestamp, RevisionBehaviour revisionBehaviour) {
+        Timestamp = timestamp;
+
+        if (revisionBehaviour == RevisionBehaviour.Increment) {
+            Revision++;
         }
-        
-        public EntityId Id { get; private set; }
-        public Instant Timestamp { get; private set; }
-        public int Revision { get; private set; }
+    }
 
-        [JsonIgnore]
-        public RevisionId RevisionId => new(Id, Revision);
-        
-        [JsonIgnore]
-        public bool IsNew => Revision == 0;
-        
-        public virtual void OnSaving(Instant timestamp, RevisionBehaviour revisionBehaviour) {
-            Timestamp = timestamp;
+    protected static TEntity Create<TEntity>(EntityId id = null) where TEntity : Entity, new() {
+        var entity = new TEntity();
 
-            if (revisionBehaviour == RevisionBehaviour.Increment) {
-                Revision++;
-            }
+        if (id.HasValue()) {
+            entity.Id = id;
         }
 
-        protected static TEntity Create<TEntity>(EntityId id = null) where TEntity : Entity, new() {
-            var entity = new TEntity();
-
-            if (id.HasValue()) {
-                entity.Id = id;
-            }
-
-            return entity;
-        }
+        return entity;
     }
 }

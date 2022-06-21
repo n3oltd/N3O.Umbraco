@@ -4,45 +4,45 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 
-namespace N3O.Umbraco.Json {
-    public class LookupJsonConverter : JsonConverter {
-        private readonly Lazy<ILookups> _lookups;
-    
-        public LookupJsonConverter(Lazy<ILookups> lookups) {
-            _lookups = lookups;
+namespace N3O.Umbraco.Json;
+
+public class LookupJsonConverter : JsonConverter {
+    private readonly Lazy<ILookups> _lookups;
+
+    public LookupJsonConverter(Lazy<ILookups> lookups) {
+        _lookups = lookups;
+    }
+
+    public override bool CanConvert(Type objectType) {
+        return objectType.ImplementsInterface<ILookup>();
+    }
+
+    public override object ReadJson(JsonReader reader,
+                                    Type objectType,
+                                    object existingValue,
+                                    JsonSerializer serializer) {
+        if (reader.TokenType == JsonToken.Null) {
+            return null;
         }
 
-        public override bool CanConvert(Type objectType) {
-            return objectType.ImplementsInterface<ILookup>();
+        if (reader.TokenType != JsonToken.String) {
+            throw new JsonSerializationException();
         }
 
-        public override object ReadJson(JsonReader reader,
-                                        Type objectType,
-                                        object existingValue,
-                                        JsonSerializer serializer) {
-            if (reader.TokenType == JsonToken.Null) {
-                return null;
-            }
+        var lookupId = (string) reader.Value;
 
-            if (reader.TokenType != JsonToken.String) {
-                throw new JsonSerializationException();
-            }
+        return _lookups.Value.FindById(objectType, lookupId);
+    }
 
-            var lookupId = (string) reader.Value;
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
+        var lookup = value as ILookup;
 
-            return _lookups.Value.FindById(objectType, lookupId);
+        if (lookup == null) {
+            return;
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
-            var lookup = value as ILookup;
+        var jValue = new JValue(lookup.Id);
 
-            if (lookup == null) {
-                return;
-            }
-
-            var jValue = new JValue(lookup.Id);
-
-            jValue.WriteTo(writer);
-        }
+        jValue.WriteTo(writer);
     }
 }

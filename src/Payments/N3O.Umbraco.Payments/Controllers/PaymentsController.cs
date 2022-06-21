@@ -11,28 +11,28 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
 
-namespace N3O.Umbraco.Payments.Controller {
-    [ApiDocument(PaymentsConstants.ApiName)]
-    public class PaymentsController : LookupsController<PaymentsLookupsRes> {
-        private readonly IMediator _mediator;
+namespace N3O.Umbraco.Payments.Controller;
 
-        public PaymentsController(ILookups lookups, IUmbracoMapper mapper, IMediator mediator)
-            : base(lookups, mapper) {
-            _mediator = mediator;
-        }
+[ApiDocument(PaymentsConstants.ApiName)]
+public class PaymentsController : LookupsController<PaymentsLookupsRes> {
+    private readonly IMediator _mediator;
 
-        [HttpPost("paymentMethods/find")]
-        public async Task<ActionResult<IEnumerable<PaymentMethodRes>>> FindPaymentMethods(PaymentMethodCriteria req) {
-            var res = await _mediator.SendAsync<FindPaymentMethodsQuery, PaymentMethodCriteria, IEnumerable<PaymentMethodRes>>(req);
+    public PaymentsController(ILookups lookups, IUmbracoMapper mapper, IMediator mediator)
+        : base(lookups, mapper) {
+        _mediator = mediator;
+    }
 
-            return Ok(res);
-        }
+    [HttpPost("paymentMethods/find")]
+    public async Task<ActionResult<IEnumerable<PaymentMethodRes>>> FindPaymentMethods(PaymentMethodCriteria req) {
+        var res = await _mediator.SendAsync<FindPaymentMethodsQuery, PaymentMethodCriteria, IEnumerable<PaymentMethodRes>>(req);
 
-        [HttpGet("lookups/" + PaymentsLookupTypes.PaymentMethods)]
-        public async Task<ActionResult<IEnumerable<PaymentMethodRes>>> GetLookupPaymentMethods() {
-            var res = await GetLookupsAsync<PaymentMethod, PaymentMethodRes>();
+        return Ok(res);
+    }
 
-            return Ok(res);
-        }
+    [HttpGet("lookups/" + PaymentsLookupTypes.PaymentMethods)]
+    public async Task<ActionResult<IEnumerable<PaymentMethodRes>>> GetLookupPaymentMethods() {
+        var res = await GetLookupsAsync<PaymentMethod, PaymentMethodRes>();
+
+        return Ok(res);
     }
 }

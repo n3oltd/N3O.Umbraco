@@ -8,31 +8,32 @@ using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
-namespace N3O.Umbraco.Analytics.Modules {
-    public class GoogleTagManagerPageModule : IPageModule {
-        private readonly IContentCache _contentCache;
+namespace N3O.Umbraco.Analytics.Modules;
 
-        public GoogleTagManagerPageModule(IContentCache contentCache) {
-            _contentCache = contentCache;
-        }
+public class GoogleTagManagerPageModule : IPageModule {
+    private readonly IContentCache _contentCache;
 
-        public bool ShouldExecute(IPublishedContent page) {
-            var tagManagerSettings = _contentCache.Single<GoogleTagManagerSettingsContent>();
+    public GoogleTagManagerPageModule(IContentCache contentCache) {
+        _contentCache = contentCache;
+    }
 
-            return tagManagerSettings.HasValue(x => x.ContainerId);
-        }
+    public bool ShouldExecute(IPublishedContent page) {
+        var tagManagerSettings = _contentCache.Single<GoogleTagManagerSettingsContent>();
 
-        public Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
-            var tagManagerSettings = _contentCache.Single<GoogleTagManagerSettingsContent>();
+        return tagManagerSettings.HasValue(x => x.ContainerId);
+    }
 
-            var bodyCode = new HtmlString(@"
+    public Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
+        var tagManagerSettings = _contentCache.Single<GoogleTagManagerSettingsContent>();
+
+        var bodyCode = new HtmlString(@"
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src=""https://www.googletagmanager.com/ns.html?id=" + tagManagerSettings.ContainerId + @"""
 height=""0"" width=""0"" style=""display:none;visibility:hidden""></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 ");
-            
-            var headCode = new HtmlString(@"
+        
+        var headCode = new HtmlString(@"
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -42,9 +43,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
 ");
 
-            return Task.FromResult<object>(new GoogleTagManagerCode(bodyCode, headCode));
-        }
-
-        public string Key => AnalyticsConstants.PageModuleKeys.GoogleTagManager;
+        return Task.FromResult<object>(new GoogleTagManagerCode(bodyCode, headCode));
     }
+
+    public string Key => AnalyticsConstants.PageModuleKeys.GoogleTagManager;
 }

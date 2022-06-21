@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
-namespace N3O.Umbraco.Parameters {
-    public interface IFluentParametersBuilder {
-        public IFluentParametersBuilder Add<TNamedParameter>(TNamedParameter namedParameter)
-            where TNamedParameter : INamedParameter;
+namespace N3O.Umbraco.Parameters;
 
-        public IFluentParametersBuilder Add<TNamedParameter>(string value)
-            where TNamedParameter : INamedParameter, new();
+public interface IFluentParametersBuilder {
+    public IFluentParametersBuilder Add<TNamedParameter>(TNamedParameter namedParameter)
+        where TNamedParameter : INamedParameter;
 
-        public IFluentParametersBuilder Add(string name, string value);
+    public IFluentParametersBuilder Add<TNamedParameter>(string value)
+        where TNamedParameter : INamedParameter, new();
 
-        IReadOnlyDictionary<string, string> Build();
-    }
+    public IFluentParametersBuilder Add(string name, string value);
+
+    IReadOnlyDictionary<string, string> Build();
 }

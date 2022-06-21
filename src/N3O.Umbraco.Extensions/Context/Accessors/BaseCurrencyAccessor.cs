@@ -1,18 +1,18 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Financial;
 
-namespace N3O.Umbraco.Context {
-    public class BaseCurrencyAccessor : IBaseCurrencyAccessor {
-        private readonly IContentCache _contentCache;
+namespace N3O.Umbraco.Context;
 
-        public BaseCurrencyAccessor(IContentCache contentCache) {
-            _contentCache = contentCache;
-        }
+public class BaseCurrencyAccessor : IBaseCurrencyAccessor {
+    private readonly IContentCache _contentCache;
 
-        public Currency GetBaseCurrency() {
-            var baseCurrency = _contentCache.Single<Currency>(x => x.IsBaseCurrency);
+    public BaseCurrencyAccessor(IContentCache contentCache) {
+        _contentCache = contentCache;
+    }
 
-            return baseCurrency;
-        }
+    public Currency GetBaseCurrency() {
+        var baseCurrency = _contentCache.Single<Currency>(x => x.IsBaseCurrency);
+
+        return baseCurrency;
     }
 }

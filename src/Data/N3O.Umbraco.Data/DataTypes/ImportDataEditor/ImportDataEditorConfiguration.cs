@@ -1,3 +1,3 @@
-namespace N3O.Umbraco.Data.DataTypes {
-    public class ImportDataEditorConfiguration { }
-}
+namespace N3O.Umbraco.Data.DataTypes;
+
+public class ImportDataEditorConfiguration { }

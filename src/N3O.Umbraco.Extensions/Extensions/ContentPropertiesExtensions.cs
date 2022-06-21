@@ -1,22 +1,22 @@
-﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Content;
 using System.Linq;
 
-namespace N3O.Umbraco.Extensions {
-    public static class ContentPropertiesExtensions {
-        public static IContentProperty GetPropertyByAlias(this ContentProperties contentProperties, string alias) {
-            IContentProperty contentProperty = contentProperties.Properties
-                                                                .SingleOrDefault(x => x.Alias.EqualsInvariant(alias));
+namespace N3O.Umbraco.Extensions;
 
-            if (contentProperty == null) {
-                contentProperty = contentProperties.NestedContentProperties
-                                                   .SingleOrDefault(x => x.Alias.EqualsInvariant(alias));
-            }
+public static class ContentPropertiesExtensions {
+    public static IContentProperty GetPropertyByAlias(this ContentProperties contentProperties, string alias) {
+        IContentProperty contentProperty = contentProperties.Properties
+                                                            .SingleOrDefault(x => x.Alias.EqualsInvariant(alias));
 
-            return contentProperty;
+        if (contentProperty == null) {
+            contentProperty = contentProperties.NestedContentProperties
+                                               .SingleOrDefault(x => x.Alias.EqualsInvariant(alias));
         }
-        
-        public static T GetPropertyValueByAlias<T>(this ContentProperties contentProperties, string alias) {
-            return (T) GetPropertyByAlias(contentProperties, alias)?.Value;
-        }
+
+        return contentProperty;
+    }
+    
+    public static T GetPropertyValueByAlias<T>(this ContentProperties contentProperties, string alias) {
+        return (T) GetPropertyByAlias(contentProperties, alias)?.Value;
     }
 }

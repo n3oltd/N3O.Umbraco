@@ -4,19 +4,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Lookups {
-    [StaticLookups]
-    public abstract class DistributedLookupsCollection<T, TInterface> : LookupsCollection<T> where T : ILookup {
-        private static readonly IReadOnlyList<T> All;
+namespace N3O.Umbraco.Lookups;
 
-        static DistributedLookupsCollection() {
-            var classes = OurAssemblies.GetTypes(t => t.IsConcreteClass() && t.ImplementsInterface<TInterface>());
-            
-            All = classes.SelectMany(StaticLookups.GetAll<T>).ToList();
-        }
+[StaticLookups]
+public abstract class DistributedLookupsCollection<T, TInterface> : LookupsCollection<T> where T : ILookup {
+    private static readonly IReadOnlyList<T> All;
 
-        public override Task<IReadOnlyList<T>> GetAllAsync() {
-            return Task.FromResult(All);
-        }
+    static DistributedLookupsCollection() {
+        var classes = OurAssemblies.GetTypes(t => t.IsConcreteClass() && t.ImplementsInterface<TInterface>());
+        
+        All = classes.SelectMany(StaticLookups.GetAll<T>).ToList();
+    }
+
+    public override Task<IReadOnlyList<T>> GetAllAsync() {
+        return Task.FromResult(All);
     }
 }

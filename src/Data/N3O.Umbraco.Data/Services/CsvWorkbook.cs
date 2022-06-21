@@ -10,124 +10,124 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Data.Services {
-    public class CsvWorkbook : ICsvWorkbook {
-        private readonly IColumnVisibility _columnVisibility;
-        private ITable _table;
-        private bool _headers = true;
-        private TextEncoding _encoding = TextEncodings.Utf8;
+namespace N3O.Umbraco.Data.Services;
 
-        public CsvWorkbook(IColumnVisibility columnVisibility) {
-            _columnVisibility = columnVisibility;
-        }
+public class CsvWorkbook : ICsvWorkbook {
+    private readonly IColumnVisibility _columnVisibility;
+    private ITable _table;
+    private bool _headers = true;
+    private TextEncoding _encoding = TextEncodings.Utf8;
 
-        public void AddTable(ITable table) {
-            _table = table;
-        }
+    public CsvWorkbook(IColumnVisibility columnVisibility) {
+        _columnVisibility = columnVisibility;
+    }
 
-        public void Encoding(TextEncoding encoding) {
-            _encoding = encoding;
-        }
+    public void AddTable(ITable table) {
+        _table = table;
+    }
 
-        public void Headers(bool enabled) {
-            _headers = enabled;
-        }
+    public void Encoding(TextEncoding encoding) {
+        _encoding = encoding;
+    }
 
-        public async Task SaveAsync(Stream stream, CancellationToken cancellationToken = default) {
-            var textEncoding = System.Text.Encoding.GetEncoding(_encoding.CodePage);
+    public void Headers(bool enabled) {
+        _headers = enabled;
+    }
 
-            await using (var memoryStream = new MemoryStream()) {
-                await using (var writer = new StreamWriter(memoryStream, textEncoding)) {
-                    var configuration = GetCsvConfiguration();
+    public async Task SaveAsync(Stream stream, CancellationToken cancellationToken = default) {
+        var textEncoding = System.Text.Encoding.GetEncoding(_encoding.CodePage);
 
-                    await using (var csv = new CsvWriter(writer, configuration)) {
-                        var visibleColumns = new List<Column>();
+        await using (var memoryStream = new MemoryStream()) {
+            await using (var writer = new StreamWriter(memoryStream, textEncoding)) {
+                var configuration = GetCsvConfiguration();
 
-                        foreach (var column in _table.Columns) {
-                            var isVisible = _columnVisibility.IsVisible(column);
+                await using (var csv = new CsvWriter(writer, configuration)) {
+                    var visibleColumns = new List<Column>();
 
-                            if (isVisible) {
-                                visibleColumns.Add(column);
-                            }
+                    foreach (var column in _table.Columns) {
+                        var isVisible = _columnVisibility.IsVisible(column);
+
+                        if (isVisible) {
+                            visibleColumns.Add(column);
                         }
-
-                        if (_headers) {
-                            await WriteHeadersAsync(csv, visibleColumns);
-                        }
-
-                        await WriteBodyAsync(csv, visibleColumns);
                     }
-                }
 
-                var bytes = memoryStream.ToArray();
-
-                stream.Write(textEncoding.GetPreamble());
-                stream.Write(bytes);
-            }
-        }
-
-        public async Task WriteTemplateAsync(IEnumerable<Column> columns,
-                                             Stream stream,
-                                             CancellationToken cancellationToken = default) {
-            var textEncoding = System.Text.Encoding.GetEncoding(_encoding.CodePage);
-
-            await using (var memoryStream = new MemoryStream()) {
-                await using (var writer = new StreamWriter(memoryStream, textEncoding)) {
-                    var configuration = GetCsvConfiguration();
-
-                    await using (var csv = new CsvWriter(writer, configuration)) {
-                        await WriteHeadersAsync(csv, columns);
+                    if (_headers) {
+                        await WriteHeadersAsync(csv, visibleColumns);
                     }
+
+                    await WriteBodyAsync(csv, visibleColumns);
                 }
-
-                var bytes = memoryStream.ToArray();
-
-                stream.Write(textEncoding.GetPreamble());
-                stream.Write(bytes);
             }
+
+            var bytes = memoryStream.ToArray();
+
+            stream.Write(textEncoding.GetPreamble());
+            stream.Write(bytes);
+        }
+    }
+
+    public async Task WriteTemplateAsync(IEnumerable<Column> columns,
+                                         Stream stream,
+                                         CancellationToken cancellationToken = default) {
+        var textEncoding = System.Text.Encoding.GetEncoding(_encoding.CodePage);
+
+        await using (var memoryStream = new MemoryStream()) {
+            await using (var writer = new StreamWriter(memoryStream, textEncoding)) {
+                var configuration = GetCsvConfiguration();
+
+                await using (var csv = new CsvWriter(writer, configuration)) {
+                    await WriteHeadersAsync(csv, columns);
+                }
+            }
+
+            var bytes = memoryStream.ToArray();
+
+            stream.Write(textEncoding.GetPreamble());
+            stream.Write(bytes);
+        }
+    }
+
+    private CsvConfiguration GetCsvConfiguration() {
+        var configuration = new CsvConfiguration(CultureInfo.InvariantCulture);
+        configuration.NewLine = "\r\n";
+        configuration.TrimOptions = TrimOptions.Trim;
+        configuration.ShouldQuote = args => Regex.IsMatch(args.Field ?? "",
+                                                          @"[\s\n]",
+                                                          RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
+        return configuration;
+    }
+
+    private async Task WriteHeadersAsync(CsvWriter csv, IEnumerable<Column> columns) {
+        foreach (var column in columns) {
+            csv.WriteField(column.Title);
         }
 
-        private CsvConfiguration GetCsvConfiguration() {
-            var configuration = new CsvConfiguration(CultureInfo.InvariantCulture);
-            configuration.NewLine = "\r\n";
-            configuration.TrimOptions = TrimOptions.Trim;
-            configuration.ShouldQuote = args => Regex.IsMatch(args.Field ?? "",
-                                                              @"[\s\n]",
-                                                              RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        await csv.NextRecordAsync();
+    }
 
-            return configuration;
-        }
-
-        private async Task WriteHeadersAsync(CsvWriter csv, IEnumerable<Column> columns) {
+    private async Task WriteBodyAsync(CsvWriter csv, IEnumerable<Column> columns) {
+        for (var row = 0; row < _table.RowCount; row++) {
             foreach (var column in columns) {
-                csv.WriteField(column.Title);
+                var cell = _table[column, row];
+
+                var csvText = GetCsvText(column, cell);
+
+                csv.WriteField(csvText);
             }
 
             await csv.NextRecordAsync();
         }
+    }
 
-        private async Task WriteBodyAsync(CsvWriter csv, IEnumerable<Column> columns) {
-            for (var row = 0; row < _table.RowCount; row++) {
-                foreach (var column in columns) {
-                    var cell = _table[column, row];
+    private string GetCsvText(Column column, Cell cell) {
+        var csvValue = "";
 
-                    var csvText = GetCsvText(column, cell);
-
-                    csv.WriteField(csvText);
-                }
-
-                await csv.NextRecordAsync();
-            }
+        if (cell.HasValue(x => x.Value)) {
+            csvValue = cell.Type.ConvertToText(column.Formatter, cell.Value);
         }
 
-        private string GetCsvText(Column column, Cell cell) {
-            var csvValue = "";
-
-            if (cell.HasValue(x => x.Value)) {
-                csvValue = cell.Type.ConvertToText(column.Formatter, cell.Value);
-            }
-
-            return csvValue;
-        }
+        return csvValue;
     }
 }

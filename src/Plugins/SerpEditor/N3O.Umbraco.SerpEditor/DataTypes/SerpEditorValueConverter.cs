@@ -6,39 +6,39 @@ using System;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
 
-namespace N3O.Umbraco.SerpEditor.DataTypes {
-    public class SerpEditorValueConverter : PropertyValueConverter {
-        private readonly IJsonProvider _jsonProvider;
+namespace N3O.Umbraco.SerpEditor.DataTypes;
 
-        public SerpEditorValueConverter(IJsonProvider jsonProvider) {
-            _jsonProvider = jsonProvider;
+public class SerpEditorValueConverter : PropertyValueConverter {
+    private readonly IJsonProvider _jsonProvider;
+
+    public SerpEditorValueConverter(IJsonProvider jsonProvider) {
+        _jsonProvider = jsonProvider;
+    }
+
+    public override bool IsConverter(IPublishedPropertyType propertyType) {
+        return propertyType.EditorAlias.EqualsInvariant(SerpEditorConstants.PropertyEditorAlias);
+    }
+
+    public override object ConvertSourceToIntermediate(IPublishedElement owner,
+                                                       IPublishedPropertyType propertyType,
+                                                       object source,
+                                                       bool preview) {
+        SerpEntry entry;
+
+        if (source is string json && json.HasValue()) {
+            entry = _jsonProvider.DeserializeObject<SerpEntry>(json);
+        } else {
+            entry = new SerpEntry();
         }
 
-        public override bool IsConverter(IPublishedPropertyType propertyType) {
-            return propertyType.EditorAlias.EqualsInvariant(SerpEditorConstants.PropertyEditorAlias);
-        }
+        return entry;
+    }
 
-        public override object ConvertSourceToIntermediate(IPublishedElement owner,
-                                                           IPublishedPropertyType propertyType,
-                                                           object source,
-                                                           bool preview) {
-            SerpEntry entry;
+    public override Type GetPropertyValueType(IPublishedPropertyType propertyType) {
+        return typeof(SerpEntry);
+    }
 
-            if (source is string json && json.HasValue()) {
-                entry = _jsonProvider.DeserializeObject<SerpEntry>(json);
-            } else {
-                entry = new SerpEntry();
-            }
-
-            return entry;
-        }
-
-        public override Type GetPropertyValueType(IPublishedPropertyType propertyType) {
-            return typeof(SerpEntry);
-        }
-
-        public override PropertyCacheLevel GetPropertyCacheLevel(IPublishedPropertyType propertyType) {
-            return PropertyCacheLevel.Element;
-        }
+    public override PropertyCacheLevel GetPropertyCacheLevel(IPublishedPropertyType propertyType) {
+        return PropertyCacheLevel.Element;
     }
 }

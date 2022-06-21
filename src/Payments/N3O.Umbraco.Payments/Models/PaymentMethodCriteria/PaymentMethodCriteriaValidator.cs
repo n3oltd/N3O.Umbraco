@@ -1,22 +1,22 @@
-﻿using FluentValidation;
+using FluentValidation;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
 
-namespace N3O.Umbraco.Payments.Criteria {
-    public class PaymentMethodCriteriaValidator : ModelValidator<PaymentMethodCriteria> {
-        public PaymentMethodCriteriaValidator(IFormatter formatter) : base(formatter) {
-            RuleFor(x => x.Country)
-                .NotNull()
-                .WithMessage(Get<Strings>(s => s.SpecifyCountry));
+namespace N3O.Umbraco.Payments.Criteria;
 
-            RuleFor(x => x.Currency)
-                .NotNull()
-                .WithMessage(Get<Strings>(s => s.SpecifyCurrency));
-        }
+public class PaymentMethodCriteriaValidator : ModelValidator<PaymentMethodCriteria> {
+    public PaymentMethodCriteriaValidator(IFormatter formatter) : base(formatter) {
+        RuleFor(x => x.Country)
+            .NotNull()
+            .WithMessage(Get<Strings>(s => s.SpecifyCountry));
 
-        public class Strings : ValidationStrings {
-            public string SpecifyCountry => "Please specify country";
-            public string SpecifyCurrency => "Please specify currency";
-        }
+        RuleFor(x => x.Currency)
+            .NotNull()
+            .WithMessage(Get<Strings>(s => s.SpecifyCurrency));
+    }
+
+    public class Strings : ValidationStrings {
+        public string SpecifyCountry => "Please specify country";
+        public string SpecifyCurrency => "Please specify currency";
     }
 }

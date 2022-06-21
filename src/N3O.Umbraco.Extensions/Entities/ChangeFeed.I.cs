@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Entities {
-    public interface IChangeFeed {
-        Task ProcessChangeAsync(EntityChange entityChange);
-    }
+namespace N3O.Umbraco.Entities;
 
-    public interface IChangeFeed<T> : IChangeFeed where T : IEntity { }
+public interface IChangeFeed {
+    Task ProcessChangeAsync(EntityChange entityChange);
 }
+
+public interface IChangeFeed<T> : IChangeFeed where T : IEntity { }

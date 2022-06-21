@@ -6,83 +6,83 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace N3O.Umbraco.Data.Builders {
-    public class TypedTableBuilder<TRow> : ITypedTableBuilder<TRow> {
-        private readonly IColumnRangeBuilder _columnRangeBuilder;
-        private readonly IUntypedTableBuilder _tableBuilder;
-        private readonly List<IRowProperty<TRow>> _rowProperties = new();
-        private bool _schemaCreated;
-        private int _rowCount;
+namespace N3O.Umbraco.Data.Builders;
 
-        public TypedTableBuilder(IColumnRangeBuilder columnRangeBuilder, string name) {
-            _columnRangeBuilder = columnRangeBuilder;
-            _tableBuilder = new UntypedTableBuilder(name);
+public class TypedTableBuilder<TRow> : ITypedTableBuilder<TRow> {
+    private readonly IColumnRangeBuilder _columnRangeBuilder;
+    private readonly IUntypedTableBuilder _tableBuilder;
+    private readonly List<IRowProperty<TRow>> _rowProperties = new();
+    private bool _schemaCreated;
+    private int _rowCount;
+
+    public TypedTableBuilder(IColumnRangeBuilder columnRangeBuilder, string name) {
+        _columnRangeBuilder = columnRangeBuilder;
+        _tableBuilder = new UntypedTableBuilder(name);
+    }
+
+    public void AddRow(TRow row, Action<AddedRow<TRow>> rowAddedCallback = null) {
+        if (!_schemaCreated) {
+            CreateSchema();
         }
 
-        public void AddRow(TRow row, Action<AddedRow<TRow>> rowAddedCallback = null) {
-            if (!_schemaCreated) {
-                CreateSchema();
-            }
-
-            foreach (var property in _rowProperties) {
-                property.AddValues(row);
-            }
-
-            if (rowAddedCallback != null) {
-                var args = new AddedRow<TRow>(_rowCount, row);
-
-                rowAddedCallback(args);
-            }
-
-            _tableBuilder.NextRow();
-            _rowCount++;
+        foreach (var property in _rowProperties) {
+            property.AddValues(row);
         }
 
-        public void AddRows(IEnumerable<TRow> rows, Action<AddedRow<TRow>> rowAddedCallback = null) {
-            foreach (var row in rows) {
-                AddRow(row, rowAddedCallback);
-            }
+        if (rowAddedCallback != null) {
+            var args = new AddedRow<TRow>(_rowCount, row);
+
+            rowAddedCallback(args);
         }
 
-        private void CreateSchema() {
-            var properties = typeof(TRow).GetProperties()
-                                            .Where(x => x.HasAttribute<ColumnRangeAttribute>())
-                                            .OrderBy(x => x.GetCustomAttribute<ColumnRangeAttribute>().Order)
-                                            .ThenBy(x => x.Name)
-                                            .ToList();
+        _tableBuilder.NextRow();
+        _rowCount++;
+    }
 
-            foreach (var property in properties) {
-                var propertyType = property.PropertyType;
-                var valueType = GetValueType(propertyType);
+    public void AddRows(IEnumerable<TRow> rows, Action<AddedRow<TRow>> rowAddedCallback = null) {
+        foreach (var row in rows) {
+            AddRow(row, rowAddedCallback);
+        }
+    }
 
-                var rowPropertyType = typeof(RowProperty<,,>).MakeGenericType(typeof(TRow), propertyType, valueType);
-                var rowProperty = (IRowProperty<TRow>)Activator.CreateInstance(rowPropertyType,
-                                                                               property,
-                                                                               _columnRangeBuilder,
-                                                                               _tableBuilder);
+    private void CreateSchema() {
+        var properties = typeof(TRow).GetProperties()
+                                        .Where(x => x.HasAttribute<ColumnRangeAttribute>())
+                                        .OrderBy(x => x.GetCustomAttribute<ColumnRangeAttribute>().Order)
+                                        .ThenBy(x => x.Name)
+                                        .ToList();
 
-                rowProperty.CreateColumnRange();
+        foreach (var property in properties) {
+            var propertyType = property.PropertyType;
+            var valueType = GetValueType(propertyType);
 
-                _rowProperties.Add(rowProperty);
-            }
+            var rowPropertyType = typeof(RowProperty<,,>).MakeGenericType(typeof(TRow), propertyType, valueType);
+            var rowProperty = (IRowProperty<TRow>)Activator.CreateInstance(rowPropertyType,
+                                                                           property,
+                                                                           _columnRangeBuilder,
+                                                                           _tableBuilder);
 
-            _schemaCreated = true;
+            rowProperty.CreateColumnRange();
+
+            _rowProperties.Add(rowProperty);
         }
 
-        private Type GetValueType(Type propertyType) {
-            var valueType = propertyType;
+        _schemaCreated = true;
+    }
 
-            if (propertyType.IsCollectionType()) {
-                valueType = propertyType.GetCollectionType();
-            }
+    private Type GetValueType(Type propertyType) {
+        var valueType = propertyType;
 
-            return valueType;
+        if (propertyType.IsCollectionType()) {
+            valueType = propertyType.GetCollectionType();
         }
 
-        public ITable Build() {
-            var table = _tableBuilder.Build();
+        return valueType;
+    }
 
-            return table;
-        }
+    public ITable Build() {
+        var table = _tableBuilder.Build();
+
+        return table;
     }
 }

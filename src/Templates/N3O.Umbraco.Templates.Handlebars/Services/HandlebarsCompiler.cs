@@ -2,61 +2,61 @@ using HandlebarsDotNet;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 
-namespace N3O.Umbraco.Templates.Handlebars {
-    public class HandlebarsCompiler : IHandlebarsCompiler {
-        private readonly IMemoryCache _cache;
-        private readonly IHandlebarsFactory _handlebarsFactory;
-        private IHandlebars _handlebars;
+namespace N3O.Umbraco.Templates.Handlebars;
 
-        public HandlebarsCompiler(IMemoryCache cache, IHandlebarsFactory handlebarsFactory) {
-            _cache = cache;
-            _handlebarsFactory = handlebarsFactory;
-        }
+public class HandlebarsCompiler : IHandlebarsCompiler {
+    private readonly IMemoryCache _cache;
+    private readonly IHandlebarsFactory _handlebarsFactory;
+    private IHandlebars _handlebars;
 
-        public bool IsSyntaxValid(string content) {
-            try {
-                var handlebars = GetHandlebars();
-            
-                handlebars.Compile(content);
+    public HandlebarsCompiler(IMemoryCache cache, IHandlebarsFactory handlebarsFactory) {
+        _cache = cache;
+        _handlebarsFactory = handlebarsFactory;
+    }
 
-                return true;
-            } catch {
-                return false;
-            }
-        }
-
-        public HandlebarsTemplate<object, object> Compile(string markup, string cacheKey = null) {
-            HandlebarsTemplate<object, object> compiled;
-
-            if (cacheKey != null) {
-                compiled = _cache.GetOrCreate(cacheKey, c => {
-                    var result = DoCompile(markup);
-
-                    c.SlidingExpiration = TimeSpan.FromHours(1);
-
-                    return result;
-                });
-            } else {
-                compiled = DoCompile(markup);
-            }
-
-            return compiled;
-        }
-
-        private HandlebarsTemplate<object, object> DoCompile(string markup) {
+    public bool IsSyntaxValid(string content) {
+        try {
             var handlebars = GetHandlebars();
         
-            var compiledTemplate = handlebars.Compile(markup);
+            handlebars.Compile(content);
 
-            return compiledTemplate;
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
+    public HandlebarsTemplate<object, object> Compile(string markup, string cacheKey = null) {
+        HandlebarsTemplate<object, object> compiled;
+
+        if (cacheKey != null) {
+            compiled = _cache.GetOrCreate(cacheKey, c => {
+                var result = DoCompile(markup);
+
+                c.SlidingExpiration = TimeSpan.FromHours(1);
+
+                return result;
+            });
+        } else {
+            compiled = DoCompile(markup);
         }
 
-        private IHandlebars GetHandlebars() {
-            if (_handlebars == null) {
-                _handlebars = _handlebarsFactory.Create();
-            }
+        return compiled;
+    }
 
-            return _handlebars;
+    private HandlebarsTemplate<object, object> DoCompile(string markup) {
+        var handlebars = GetHandlebars();
+    
+        var compiledTemplate = handlebars.Compile(markup);
+
+        return compiledTemplate;
+    }
+
+    private IHandlebars GetHandlebars() {
+        if (_handlebars == null) {
+            _handlebars = _handlebarsFactory.Create();
         }
+
+        return _handlebars;
     }
 }

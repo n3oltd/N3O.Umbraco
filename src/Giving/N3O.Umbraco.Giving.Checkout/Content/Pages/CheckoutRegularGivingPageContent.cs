@@ -1,5 +1,5 @@
-﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Content;
 
-namespace N3O.Umbraco.Giving.Checkout.Content {
-    public class CheckoutRegularGivingPageContent : UmbracoContent<CheckoutRegularGivingPageContent> { }
-}
+namespace N3O.Umbraco.Giving.Checkout.Content;
+
+public class CheckoutRegularGivingPageContent : UmbracoContent<CheckoutRegularGivingPageContent> { }

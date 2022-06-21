@@ -1,14 +1,14 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 
-namespace N3O.Umbraco.Payments.Bambora.Client {
-    public class Link {
-        [JsonProperty("rel")]
-        public string Rel { get; set; }
+namespace N3O.Umbraco.Payments.Bambora.Client;
 
-        [JsonProperty("href")]
-        public string Href { get; set; }
+public class Link {
+    [JsonProperty("rel")]
+    public string Rel { get; set; }
 
-        [JsonProperty("method")]
-        public string Method { get; set; }
-    }
+    [JsonProperty("href")]
+    public string Href { get; set; }
+
+    [JsonProperty("method")]
+    public string Method { get; set; }
 }

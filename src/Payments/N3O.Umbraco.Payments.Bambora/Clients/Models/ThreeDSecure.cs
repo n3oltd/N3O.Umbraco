@@ -1,17 +1,17 @@
 using Newtonsoft.Json;
 
-namespace N3O.Umbraco.Payments.Bambora.Client {
-    public class ThreeDSecure {
-        [JsonProperty("browser")]
-        public BrowserReq Browser { get; set; }
+namespace N3O.Umbraco.Payments.Bambora.Client;
 
-        [JsonProperty("enabled")]
-        public bool Enabled { get; set; }
+public class ThreeDSecure {
+    [JsonProperty("browser")]
+    public BrowserReq Browser { get; set; }
 
-        [JsonProperty("version")]
-        public int Version { get; set; }
+    [JsonProperty("enabled")]
+    public bool Enabled { get; set; }
 
-        [JsonProperty("auth_required")]
-        public bool AuthRequired { get; set; }
-    }
+    [JsonProperty("version")]
+    public int Version { get; set; }
+
+    [JsonProperty("auth_required")]
+    public bool AuthRequired { get; set; }
 }

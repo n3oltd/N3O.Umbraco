@@ -12,69 +12,69 @@ using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Extensions;
 
-namespace N3O.Umbraco.Cropper.Notifications {
-    public class CropperNotificationHandlers : INotificationAsyncHandler<ContentPublishingNotification> {
-        private readonly IDataTypeService _dataTypeService;
-        private readonly IContentHelper _contentHelper;
-        private readonly IImageCropper _imageCropper;
+namespace N3O.Umbraco.Cropper.Notifications;
 
-        public CropperNotificationHandlers(IDataTypeService dataTypeService,
-                                           IContentHelper contentHelper,
-                                           IImageCropper imageCropper) {
-            _dataTypeService = dataTypeService;
-            _contentHelper = contentHelper;
-            _imageCropper = imageCropper;
-        }
-    
-        public async Task HandleAsync(ContentPublishingNotification notification, CancellationToken cancellationToken) {
-            foreach (var content in notification.PublishedEntities) {
-                var contentProperties = _contentHelper.GetContentProperties(content);
-                var properties = GetProperties(contentProperties);
+public class CropperNotificationHandlers : INotificationAsyncHandler<ContentPublishingNotification> {
+    private readonly IDataTypeService _dataTypeService;
+    private readonly IContentHelper _contentHelper;
+    private readonly IImageCropper _imageCropper;
 
-                var cropperProperties = properties.Where(x => x.Type.HasEditorAlias(CropperConstants.PropertyEditorAlias))
-                                                  .ToList();
+    public CropperNotificationHandlers(IDataTypeService dataTypeService,
+                                       IContentHelper contentHelper,
+                                       IImageCropper imageCropper) {
+        _dataTypeService = dataTypeService;
+        _contentHelper = contentHelper;
+        _imageCropper = imageCropper;
+    }
 
-                foreach (var property in cropperProperties) {
-                    try {
-                        await GenerateCropsAsync(property, cancellationToken);
-                    } catch (Exception ex) {
-                        var message = new EventMessage("Error",
-                                                       $"Generating image crops failed with error: {ex.Message}",
-                                                       EventMessageType.Error);
-                    
-                        notification.Cancel = true;
-                        notification.Messages.Add(message);
-                    }
+    public async Task HandleAsync(ContentPublishingNotification notification, CancellationToken cancellationToken) {
+        foreach (var content in notification.PublishedEntities) {
+            var contentProperties = _contentHelper.GetContentProperties(content);
+            var properties = GetProperties(contentProperties);
+
+            var cropperProperties = properties.Where(x => x.Type.HasEditorAlias(CropperConstants.PropertyEditorAlias))
+                                              .ToList();
+
+            foreach (var property in cropperProperties) {
+                try {
+                    await GenerateCropsAsync(property, cancellationToken);
+                } catch (Exception ex) {
+                    var message = new EventMessage("Error",
+                                                   $"Generating image crops failed with error: {ex.Message}",
+                                                   EventMessageType.Error);
+                
+                    notification.Cancel = true;
+                    notification.Messages.Add(message);
                 }
             }
         }
+    }
 
-        private IReadOnlyList<IContentProperty> GetProperties(ContentProperties content) {
-            var list = new List<IContentProperty>();
+    private IReadOnlyList<IContentProperty> GetProperties(ContentProperties content) {
+        var list = new List<IContentProperty>();
 
-            list.AddRange(content.Properties.OrEmpty());
+        list.AddRange(content.Properties.OrEmpty());
+        
+        var nestedContents = content.NestedContentProperties.OrEmpty()
+                                    .SelectMany(x => x.Value)
+                                    .ToList();
             
-            var nestedContents = content.NestedContentProperties.OrEmpty()
-                                        .SelectMany(x => x.Value)
-                                        .ToList();
-                
-            foreach (var nestedContent in nestedContents) {
-                list.AddRange(GetProperties(nestedContent));
-            }
-
-            return list;
+        foreach (var nestedContent in nestedContents) {
+            list.AddRange(GetProperties(nestedContent));
         }
 
-        private async Task GenerateCropsAsync(IContentProperty property, CancellationToken cancellationToken) {
-            var dataType = _dataTypeService.GetDataType(property.Type.DataTypeId);
-            var configuration = dataType.ConfigurationAs<CropperConfiguration>();
-            var json = property.Value?.ToString();
-        
-            if (json.HasValue()) {
-                var cropperSource = JsonConvert.DeserializeObject<CropperSource>(json);
+        return list;
+    }
 
-                await _imageCropper.CropAllAsync(configuration, cropperSource, cancellationToken);
-            }
+    private async Task GenerateCropsAsync(IContentProperty property, CancellationToken cancellationToken) {
+        var dataType = _dataTypeService.GetDataType(property.Type.DataTypeId);
+        var configuration = dataType.ConfigurationAs<CropperConfiguration>();
+        var json = property.Value?.ToString();
+    
+        if (json.HasValue()) {
+            var cropperSource = JsonConvert.DeserializeObject<CropperSource>(json);
+
+            await _imageCropper.CropAllAsync(configuration, cropperSource, cancellationToken);
         }
     }
 }

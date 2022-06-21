@@ -6,31 +6,31 @@ using System;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
 
-namespace N3O.Umbraco.Data.DataTypes {
-    public class ImportDataEditorValueConverter : PropertyValueConverter {
-        public override bool IsConverter(IPublishedPropertyType propertyType) {
-            return propertyType.EditorAlias.EqualsInvariant(DataConstants.PropertyEditorAliases.ImportDataEditor);
+namespace N3O.Umbraco.Data.DataTypes;
+
+public class ImportDataEditorValueConverter : PropertyValueConverter {
+    public override bool IsConverter(IPublishedPropertyType propertyType) {
+        return propertyType.EditorAlias.EqualsInvariant(DataConstants.PropertyEditorAliases.ImportDataEditor);
+    }
+
+    public override object ConvertSourceToIntermediate(IPublishedElement owner,
+                                                       IPublishedPropertyType propertyType,
+                                                       object source,
+                                                       bool preview) {
+        var importData = default(ImportData);
+
+        if (source is string json && json.HasValue()) {
+            importData = JsonConvert.DeserializeObject<ImportData>(json);
         }
 
-        public override object ConvertSourceToIntermediate(IPublishedElement owner,
-                                                           IPublishedPropertyType propertyType,
-                                                           object source,
-                                                           bool preview) {
-            var importData = default(ImportData);
+        return importData;
+    }
 
-            if (source is string json && json.HasValue()) {
-                importData = JsonConvert.DeserializeObject<ImportData>(json);
-            }
+    public override Type GetPropertyValueType(IPublishedPropertyType propertyType) {
+        return typeof(ImportData);
+    }
 
-            return importData;
-        }
-
-        public override Type GetPropertyValueType(IPublishedPropertyType propertyType) {
-            return typeof(ImportData);
-        }
-
-        public override PropertyCacheLevel GetPropertyCacheLevel(IPublishedPropertyType propertyType) {
-            return PropertyCacheLevel.Element;
-        }
+    public override PropertyCacheLevel GetPropertyCacheLevel(IPublishedPropertyType propertyType) {
+        return PropertyCacheLevel.Element;
     }
 }

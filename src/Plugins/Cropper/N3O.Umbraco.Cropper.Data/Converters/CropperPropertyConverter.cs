@@ -11,46 +11,46 @@ using System.Collections.Generic;
 using Umbraco.Extensions;
 using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
-namespace N3O.Umbraco.Cropper.Data.Converters {
-    public class CropperPropertyConverter : PropertyConverter<Blob, string> {
-        private readonly IContentHelper _contentHelper;
-        private readonly IUrlBuilder _urlBuilder;
+namespace N3O.Umbraco.Cropper.Data.Converters;
 
-        public CropperPropertyConverter(IColumnRangeBuilder columnRangeBuilder,
-                                        IContentHelper contentHelper,
-                                        IUrlBuilder urlBuilder)
-            : base(columnRangeBuilder) {
-            _contentHelper = contentHelper;
-            _urlBuilder = urlBuilder;
-        }
+public class CropperPropertyConverter : PropertyConverter<Blob, string> {
+    private readonly IContentHelper _contentHelper;
+    private readonly IUrlBuilder _urlBuilder;
 
-        public override bool IsConverter(UmbracoPropertyInfo propertyInfo) {
-            return propertyInfo.Type.PropertyEditorAlias.EqualsInvariant(CropperConstants.PropertyEditorAlias);
-        }
+    public CropperPropertyConverter(IColumnRangeBuilder columnRangeBuilder,
+                                    IContentHelper contentHelper,
+                                    IUrlBuilder urlBuilder)
+        : base(columnRangeBuilder) {
+        _contentHelper = contentHelper;
+        _urlBuilder = urlBuilder;
+    }
 
-        protected override IEnumerable<Cell<string>> GetCells(IContentProperty contentProperty,
-                                                              UmbracoPropertyInfo propertyInfo) {
-            var croppedImage = _contentHelper.GetCroppedImage(contentProperty);
+    public override bool IsConverter(UmbracoPropertyInfo propertyInfo) {
+        return propertyInfo.Type.PropertyEditorAlias.EqualsInvariant(CropperConstants.PropertyEditorAlias);
+    }
 
-            return OurDataTypes.String.Cell(croppedImage?.GetUncroppedUrl(_urlBuilder).AbsoluteUri).Yield();
-        }
+    protected override IEnumerable<Cell<string>> GetCells(IContentProperty contentProperty,
+                                                          UmbracoPropertyInfo propertyInfo) {
+        var croppedImage = _contentHelper.GetCroppedImage(contentProperty);
 
-        public override void Import(IContentBuilder contentBuilder,
-                                    IEnumerable<IPropertyConverter> converters,
-                                    IParser parser,
-                                    ErrorLog errorLog,
-                                    string columnTitlePrefix,
-                                    UmbracoPropertyInfo propertyInfo,
-                                    IEnumerable<ImportField> fields) {
-            var configuration = propertyInfo.DataType.ConfigurationAs<CropperConfiguration>();
-            
-            Import(errorLog,
-                   propertyInfo,
-                   fields,
-                   s => parser.Blob.Parse(s, OurDataTypes.Blob.GetClrType()),
-                   (alias, value) => value.IfNotNull(x => contentBuilder.Cropper(alias)
-                                                                        .SetImage(x)
-                                                                        .AutoCrop(configuration)));
-        }
+        return OurDataTypes.String.Cell(croppedImage?.GetUncroppedUrl(_urlBuilder).AbsoluteUri).Yield();
+    }
+
+    public override void Import(IContentBuilder contentBuilder,
+                                IEnumerable<IPropertyConverter> converters,
+                                IParser parser,
+                                ErrorLog errorLog,
+                                string columnTitlePrefix,
+                                UmbracoPropertyInfo propertyInfo,
+                                IEnumerable<ImportField> fields) {
+        var configuration = propertyInfo.DataType.ConfigurationAs<CropperConfiguration>();
+        
+        Import(errorLog,
+               propertyInfo,
+               fields,
+               s => parser.Blob.Parse(s, OurDataTypes.Blob.GetClrType()),
+               (alias, value) => value.IfNotNull(x => contentBuilder.Cropper(alias)
+                                                                    .SetImage(x)
+                                                                    .AutoCrop(configuration)));
     }
 }

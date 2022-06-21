@@ -5,22 +5,22 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Payments.Bambora.Client {
-    public class AuthorizationHandler : DelegatingHandler {
-        private readonly string _base64Credentials;
+namespace N3O.Umbraco.Payments.Bambora.Client;
 
-        public AuthorizationHandler(string merchantId, string passcode) {
-            var bytes = Encoding.UTF8.GetBytes($"{merchantId}:{passcode}");
-            _base64Credentials = Convert.ToBase64String(bytes);
+public class AuthorizationHandler : DelegatingHandler {
+    private readonly string _base64Credentials;
 
-            InnerHandler = new HttpClientHandler();
-        }
+    public AuthorizationHandler(string merchantId, string passcode) {
+        var bytes = Encoding.UTF8.GetBytes($"{merchantId}:{passcode}");
+        _base64Credentials = Convert.ToBase64String(bytes);
 
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
-                                                                     CancellationToken cancellationToken) {
-            request.Headers.Authorization = new AuthenticationHeaderValue("Passcode", _base64Credentials);
+        InnerHandler = new HttpClientHandler();
+    }
 
-            return await base.SendAsync(request, cancellationToken);
-        }
+    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+                                                                 CancellationToken cancellationToken) {
+        request.Headers.Authorization = new AuthenticationHeaderValue("Passcode", _base64Credentials);
+
+        return await base.SendAsync(request, cancellationToken);
     }
 }

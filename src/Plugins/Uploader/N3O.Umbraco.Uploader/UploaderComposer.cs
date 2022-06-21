@@ -3,12 +3,12 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Uploader.DataTypes;
 using Umbraco.Cms.Core.DependencyInjection;
 
-namespace N3O.Umbraco.Uploader {
-    public class UploaderComposer : Composer {
-        public override void Compose(IUmbracoBuilder builder) {
-            builder.PropertyValueConverters().Append<UploaderValueConverter>();
-            
-            builder.Services.AddOpenApiDocument(UploaderConstants.ApiName);
-        }
+namespace N3O.Umbraco.Uploader;
+
+public class UploaderComposer : Composer {
+    public override void Compose(IUmbracoBuilder builder) {
+        builder.PropertyValueConverters().Append<UploaderValueConverter>();
+        
+        builder.Services.AddOpenApiDocument(UploaderConstants.ApiName);
     }
 }

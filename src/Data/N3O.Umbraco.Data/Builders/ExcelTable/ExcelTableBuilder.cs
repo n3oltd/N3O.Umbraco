@@ -4,25 +4,25 @@ using N3O.Umbraco.Lookups;
 using System;
 using System.Collections.Generic;
 
-namespace N3O.Umbraco.Data.Builders {
-    public class ExcelTableBuilder : IExcelTableBuilder {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly ILookups _lookups;
-        private readonly IEnumerable<IDefaultExcelCellConverter> _defaultExcelCellConverters;
+namespace N3O.Umbraco.Data.Builders;
 
-        public ExcelTableBuilder(IServiceProvider serviceProvider,
-                                 ILookups lookups,
-                                 IEnumerable<IDefaultExcelCellConverter> defaultExcelCellConverters) {
-            _serviceProvider = serviceProvider;
-            _lookups = lookups;
-            _defaultExcelCellConverters = defaultExcelCellConverters;
-        }
+public class ExcelTableBuilder : IExcelTableBuilder {
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ILookups _lookups;
+    private readonly IEnumerable<IDefaultExcelCellConverter> _defaultExcelCellConverters;
 
-        public IFluentExcelTableBuilder ForTable(ITable table) {
-            return new FluentExcelTableBuilder(_serviceProvider,
-                                               _lookups,
-                                               _defaultExcelCellConverters,
-                                               table);
-        }
+    public ExcelTableBuilder(IServiceProvider serviceProvider,
+                             ILookups lookups,
+                             IEnumerable<IDefaultExcelCellConverter> defaultExcelCellConverters) {
+        _serviceProvider = serviceProvider;
+        _lookups = lookups;
+        _defaultExcelCellConverters = defaultExcelCellConverters;
+    }
+
+    public IFluentExcelTableBuilder ForTable(ITable table) {
+        return new FluentExcelTableBuilder(_serviceProvider,
+                                           _lookups,
+                                           _defaultExcelCellConverters,
+                                           table);
     }
 }

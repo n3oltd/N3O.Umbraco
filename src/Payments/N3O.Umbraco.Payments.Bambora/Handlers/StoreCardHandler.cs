@@ -13,66 +13,66 @@ using Refit;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Payments.Bambora.Handlers {
-    public class StoreCardHandler : PaymentsHandler<StoreCardCommand, StoreCardReq, BamboraCredential> {
-        private readonly IRemoteIpAddressAccessor _remoteIpAddressAccessor;
-        private readonly IActionLinkGenerator _actionLinkGenerator;
-        private readonly IBrowserInfoAccessor _browserInfoAccessor;
-        private readonly IBamboraProfilesClient _profilesClient;
+namespace N3O.Umbraco.Payments.Bambora.Handlers;
 
-        public StoreCardHandler(IPaymentsScope paymentsScope,
-                                IRemoteIpAddressAccessor remoteIpAddressAccessor,
-                                IActionLinkGenerator actionLinkGenerator,
-                                IBrowserInfoAccessor browserInfoAccessor,
-                                IBamboraProfilesClient profilesClient)
-            : base(paymentsScope) {
-            _remoteIpAddressAccessor = remoteIpAddressAccessor;
-            _actionLinkGenerator = actionLinkGenerator;
-            _browserInfoAccessor = browserInfoAccessor;
-            _profilesClient = profilesClient;
-        }
+public class StoreCardHandler : PaymentsHandler<StoreCardCommand, StoreCardReq, BamboraCredential> {
+    private readonly IRemoteIpAddressAccessor _remoteIpAddressAccessor;
+    private readonly IActionLinkGenerator _actionLinkGenerator;
+    private readonly IBrowserInfoAccessor _browserInfoAccessor;
+    private readonly IBamboraProfilesClient _profilesClient;
 
-        protected override async Task HandleAsync(StoreCardCommand req,
-                                                  BamboraCredential credential,
-                                                  PaymentsParameters parameters,
-                                                  CancellationToken cancellationToken) {
-            try {
-                var apiRequest = GetRequest(req.Model, parameters);
+    public StoreCardHandler(IPaymentsScope paymentsScope,
+                            IRemoteIpAddressAccessor remoteIpAddressAccessor,
+                            IActionLinkGenerator actionLinkGenerator,
+                            IBrowserInfoAccessor browserInfoAccessor,
+                            IBamboraProfilesClient profilesClient)
+        : base(paymentsScope) {
+        _remoteIpAddressAccessor = remoteIpAddressAccessor;
+        _actionLinkGenerator = actionLinkGenerator;
+        _browserInfoAccessor = browserInfoAccessor;
+        _profilesClient = profilesClient;
+    }
 
-                var apiProfile = await _profilesClient.CreateProfileAsync(apiRequest);
+    protected override async Task HandleAsync(StoreCardCommand req,
+                                              BamboraCredential credential,
+                                              PaymentsParameters parameters,
+                                              CancellationToken cancellationToken) {
+        try {
+            var apiRequest = GetRequest(req.Model, parameters);
 
-                credential.UpdateToken(req.Model.Token);
+            var apiProfile = await _profilesClient.CreateProfileAsync(apiRequest);
 
-                if (apiProfile.IsSuccessful()) {
-                    credential.SetUp(apiProfile.CustomerCode, apiProfile.Message, apiProfile.Code);
-                } else {
-                    throw UnrecognisedValueException.For(apiProfile.Code);
-                }
-            } catch (ApiException apiException) {
-                var apiPaymentError = apiException.Content.IfNotNull(JsonConvert.DeserializeObject<ApiPaymentError>);
+            credential.UpdateToken(req.Model.Token);
 
-                credential.Error(apiPaymentError.Code, apiPaymentError.Message);
+            if (apiProfile.IsSuccessful()) {
+                credential.SetUp(apiProfile.CustomerCode, apiProfile.Message, apiProfile.Code);
+            } else {
+                throw UnrecognisedValueException.For(apiProfile.Code);
             }
-        }
+        } catch (ApiException apiException) {
+            var apiPaymentError = apiException.Content.IfNotNull(JsonConvert.DeserializeObject<ApiPaymentError>);
 
-        private ApiProfileReq GetRequest(StoreCardReq req, PaymentsParameters parameters) {
-            var billingInfo = parameters.BillingInfoAccessor.GetBillingInfo();
-
-            var apiReq = new ApiProfileReq();
-            apiReq.BillingAddress = billingInfo.GetApiBillingAddress();
-            apiReq.CustomerIp =  _remoteIpAddressAccessor.GetRemoteIpAddress().ToString();
-            apiReq.Token = new Token();
-            apiReq.Token.Code = req.Token;
-            apiReq.Token.Complete = true;
-            apiReq.Token.Name = billingInfo.Name.FirstName;
-            apiReq.Token.ThreeDSecure = new ThreeDSecure();
-            apiReq.Token.ThreeDSecure.Enabled = true;
-            apiReq.Token.ThreeDSecure.Version = 2;
-            apiReq.Token.ThreeDSecure.AuthRequired = false;
-            apiReq.Token.ThreeDSecure.Browser = _browserInfoAccessor.GetBrowserReq(req.BrowserParameters);
-            apiReq.ReturnUrl = _actionLinkGenerator.GetPaymentThreeDSecureUrl(parameters.FlowId);
-            
-            return apiReq;
+            credential.Error(apiPaymentError.Code, apiPaymentError.Message);
         }
+    }
+
+    private ApiProfileReq GetRequest(StoreCardReq req, PaymentsParameters parameters) {
+        var billingInfo = parameters.BillingInfoAccessor.GetBillingInfo();
+
+        var apiReq = new ApiProfileReq();
+        apiReq.BillingAddress = billingInfo.GetApiBillingAddress();
+        apiReq.CustomerIp =  _remoteIpAddressAccessor.GetRemoteIpAddress().ToString();
+        apiReq.Token = new Token();
+        apiReq.Token.Code = req.Token;
+        apiReq.Token.Complete = true;
+        apiReq.Token.Name = billingInfo.Name.FirstName;
+        apiReq.Token.ThreeDSecure = new ThreeDSecure();
+        apiReq.Token.ThreeDSecure.Enabled = true;
+        apiReq.Token.ThreeDSecure.Version = 2;
+        apiReq.Token.ThreeDSecure.AuthRequired = false;
+        apiReq.Token.ThreeDSecure.Browser = _browserInfoAccessor.GetBrowserReq(req.BrowserParameters);
+        apiReq.ReturnUrl = _actionLinkGenerator.GetPaymentThreeDSecureUrl(parameters.FlowId);
+        
+        return apiReq;
     }
 }

@@ -4,45 +4,45 @@ using NodaTime;
 using System;
 using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
-namespace N3O.Umbraco.Data.Converters {
-    public class DateCellConverter :
-        INullableCellConverter<Instant>,
-        INullableCellConverter<LocalDateTime>,
-        INullableCellConverter<LocalDate> {
-        public Cell Convert(IFormatter formatter, ILocalClock clock, Instant value, Type targetType) {
-            return Convert(formatter, clock, (Instant?) value, targetType);
+namespace N3O.Umbraco.Data.Converters;
+
+public class DateCellConverter :
+    INullableCellConverter<Instant>,
+    INullableCellConverter<LocalDateTime>,
+    INullableCellConverter<LocalDate> {
+    public Cell Convert(IFormatter formatter, ILocalClock clock, Instant value, Type targetType) {
+        return Convert(formatter, clock, (Instant?) value, targetType);
+    }
+
+    public Cell Convert(IFormatter formatter, ILocalClock clock, Instant? value, Type targetType) {
+        LocalDate? date = null;
+
+        if (value != null) {
+            date = value.Value.InZone(clock.GetTimezone().Zone).Date;
         }
 
-        public Cell Convert(IFormatter formatter, ILocalClock clock, Instant? value, Type targetType) {
-            LocalDate? date = null;
+        var cell = GetCell(date);
 
-            if (value != null) {
-                date = value.Value.InZone(clock.GetTimezone().Zone).Date;
-            }
+        return cell;
+    }
 
-            var cell = GetCell(date);
+    public Cell Convert(IFormatter formatter, ILocalClock clock, LocalDateTime value, Type targetType) {
+        return Convert(formatter, clock, (LocalDateTime?) value, targetType);
+    }
 
-            return cell;
-        }
+    public Cell Convert(IFormatter formatter, ILocalClock clock, LocalDateTime? value, Type targetType) {
+        return GetCell(value?.Date);
+    }
 
-        public Cell Convert(IFormatter formatter, ILocalClock clock, LocalDateTime value, Type targetType) {
-            return Convert(formatter, clock, (LocalDateTime?) value, targetType);
-        }
+    public Cell Convert(IFormatter formatter, ILocalClock clock, LocalDate value, Type targetType) {
+        return Convert(formatter, clock, (LocalDate?) value, targetType);
+    }
 
-        public Cell Convert(IFormatter formatter, ILocalClock clock, LocalDateTime? value, Type targetType) {
-            return GetCell(value?.Date);
-        }
+    public Cell Convert(IFormatter formatter, ILocalClock clock, LocalDate? value, Type targetType) {
+        return GetCell(value);
+    }
 
-        public Cell Convert(IFormatter formatter, ILocalClock clock, LocalDate value, Type targetType) {
-            return Convert(formatter, clock, (LocalDate?) value, targetType);
-        }
-
-        public Cell Convert(IFormatter formatter, ILocalClock clock, LocalDate? value, Type targetType) {
-            return GetCell(value);
-        }
-
-        private Cell GetCell(LocalDate? value) {
-            return OurDataTypes.Date.Cell(value);
-        }
+    private Cell GetCell(LocalDate? value) {
+        return OurDataTypes.Date.Cell(value);
     }
 }

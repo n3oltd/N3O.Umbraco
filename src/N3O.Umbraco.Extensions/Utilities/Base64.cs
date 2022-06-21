@@ -2,26 +2,26 @@ using StackExchange.Profiling.Internal;
 using System;
 using System.Text;
 
-namespace N3O.Umbraco.Utilities {
-    public static class Base64 {
-        public static string Encode(string plainText) {
-            var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+namespace N3O.Umbraco.Utilities;
 
-            return Convert.ToBase64String(plainTextBytes);
-        }
+public static class Base64 {
+    public static string Encode(string plainText) {
+        var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
 
-        public static string Decode(string base64EncodedData) {
-            try {
-                if (!base64EncodedData.HasValue()) {
-                    return null;
-                }
+        return Convert.ToBase64String(plainTextBytes);
+    }
 
-                var base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
-
-                return Encoding.UTF8.GetString(base64EncodedBytes);
-            } catch {
+    public static string Decode(string base64EncodedData) {
+        try {
+            if (!base64EncodedData.HasValue()) {
                 return null;
             }
+
+            var base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
+
+            return Encoding.UTF8.GetString(base64EncodedBytes);
+        } catch {
+            return null;
         }
     }
 }

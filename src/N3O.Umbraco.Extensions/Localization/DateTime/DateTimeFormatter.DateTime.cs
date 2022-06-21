@@ -1,77 +1,77 @@
-﻿using NodaTime;
+using NodaTime;
 using System;
 using System.Globalization;
 
-namespace N3O.Umbraco.Localization {
-    public partial class DateTimeFormatter {
-        public string FormatDate(DateTime? dateTime, DateFormat dateFormat = null) {
-            if (dateTime == null) {
-                return null;
-            }
+namespace N3O.Umbraco.Localization;
 
-            var localFormat = GetDateFormatInfo(null);
-
-            return dateTime.Value.ToString("d", localFormat);
+public partial class DateTimeFormatter {
+    public string FormatDate(DateTime? dateTime, DateFormat dateFormat = null) {
+        if (dateTime == null) {
+            return null;
         }
 
-        public string FormatDate(DateTime? dateTime, string specifier) {
-            var localFormat = GetDateFormatInfo(null);
-        
-            return dateTime?.ToString(specifier, localFormat);
+        var localFormat = GetDateFormatInfo(null);
+
+        return dateTime.Value.ToString("d", localFormat);
+    }
+
+    public string FormatDate(DateTime? dateTime, string specifier) {
+        var localFormat = GetDateFormatInfo(null);
+    
+        return dateTime?.ToString(specifier, localFormat);
+    }
+
+    public string FormatTime(DateTime? dateTime, TimeFormat timeFormat = null) {
+        if (dateTime == null) {
+            return null;
         }
 
-        public string FormatTime(DateTime? dateTime, TimeFormat timeFormat = null) {
-            if (dateTime == null) {
-                return null;
-            }
+        var localFormat = GetDateFormatInfo(null);
 
-            var localFormat = GetDateFormatInfo(null);
+        return dateTime.Value.ToString("t", localFormat);
+    }
 
-            return dateTime.Value.ToString("t", localFormat);
+    public string FormatTime(DateTime? dateTime, string specifier) {
+        var localFormat = GetDateFormatInfo(null);
+
+        return dateTime?.ToString(specifier, localFormat);
+    }
+
+    public string FormatDateWithTime(DateTime? dateTime) {
+        if (dateTime == null) {
+            return null;
         }
 
-        public string FormatTime(DateTime? dateTime, string specifier) {
-            var localFormat = GetDateFormatInfo(null);
+        return $"{FormatDate(dateTime)} {FormatTime(dateTime)}";
+    }
 
-            return dateTime?.ToString(specifier, localFormat);
+    private DateTimeZone GetDateTimezone() {
+        var timezone = _settingsAccessor.GetSettings().Timezone;
+
+        return timezone.Zone;
+    }
+
+    private DateTimeFormatInfo GetDateFormatInfo(DateFormat dateFormat) {
+        if (dateFormat == null) {
+            dateFormat = _settingsAccessor.GetSettings().DateFormat;
         }
 
-        public string FormatDateWithTime(DateTime? dateTime) {
-            if (dateTime == null) {
-                return null;
-            }
+        var dateTimeFormatInfo = GetDateTimeFormatInfo(dateFormat.CultureCode);
 
-            return $"{FormatDate(dateTime)} {FormatTime(dateTime)}";
+        dateTimeFormatInfo.DateSeparator = dateFormat.Separator;
+
+        return dateTimeFormatInfo;
+    }
+
+    private DateTimeFormatInfo GetTimeFormatInfo(TimeFormat timeFormat) {
+        if (timeFormat == null) {
+            timeFormat = _settingsAccessor.GetSettings().TimeFormat;
         }
 
-        private DateTimeZone GetDateTimezone() {
-            var timezone = _settingsAccessor.GetSettings().Timezone;
+        return GetDateTimeFormatInfo(timeFormat.CultureCode);
+    }
 
-            return timezone.Zone;
-        }
-
-        private DateTimeFormatInfo GetDateFormatInfo(DateFormat dateFormat) {
-            if (dateFormat == null) {
-                dateFormat = _settingsAccessor.GetSettings().DateFormat;
-            }
-
-            var dateTimeFormatInfo = GetDateTimeFormatInfo(dateFormat.CultureCode);
-
-            dateTimeFormatInfo.DateSeparator = dateFormat.Separator;
-
-            return dateTimeFormatInfo;
-        }
-
-        private DateTimeFormatInfo GetTimeFormatInfo(TimeFormat timeFormat) {
-            if (timeFormat == null) {
-                timeFormat = _settingsAccessor.GetSettings().TimeFormat;
-            }
-
-            return GetDateTimeFormatInfo(timeFormat.CultureCode);
-        }
-
-        private DateTimeFormatInfo GetDateTimeFormatInfo(string cultureCode) {
-            return ((CultureInfo) CultureInfo.GetCultureInfo(cultureCode).Clone()).DateTimeFormat;
-        }
+    private DateTimeFormatInfo GetDateTimeFormatInfo(string cultureCode) {
+        return ((CultureInfo) CultureInfo.GetCultureInfo(cultureCode).Clone()).DateTimeFormat;
     }
 }

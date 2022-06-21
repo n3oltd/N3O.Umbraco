@@ -5,24 +5,24 @@ using N3O.Umbraco.Extensions;
 using System.Linq;
 using Umbraco.Cms.Core.DependencyInjection;
 
-namespace N3O.Umbraco.Markup.Markdown {
-    public class MarkdownMarkupComposer : Composer {
-        public override void Compose(IUmbracoBuilder builder) {
-            builder.Services.AddSingleton<IMarkupEngine, MarkdownEngine>();
+namespace N3O.Umbraco.Markup.Markdown;
 
-            RegisterAll(t => t.ImplementsInterface<IMarkdownExtension>(),
-                        t => builder.Services.AddSingleton(typeof(IMarkdownExtension), t));
-            
-            builder.Services.AddSingleton<MarkdownPipeline>(serviceProvider => {
-                var extensions = serviceProvider.GetServices<IMarkdownExtension>().ApplyAttributeOrdering().ToList();
+public class MarkdownMarkupComposer : Composer {
+    public override void Compose(IUmbracoBuilder builder) {
+        builder.Services.AddSingleton<IMarkupEngine, MarkdownEngine>();
 
-                var pipelineBuilder = new MarkdownPipelineBuilder();
+        RegisterAll(t => t.ImplementsInterface<IMarkdownExtension>(),
+                    t => builder.Services.AddSingleton(typeof(IMarkdownExtension), t));
+        
+        builder.Services.AddSingleton<MarkdownPipeline>(serviceProvider => {
+            var extensions = serviceProvider.GetServices<IMarkdownExtension>().ApplyAttributeOrdering().ToList();
 
-                extensions.Do(pipelineBuilder.Extensions.Add);
-                pipelineBuilder.UseAdvancedExtensions();
+            var pipelineBuilder = new MarkdownPipelineBuilder();
 
-                return pipelineBuilder.Build();
-            });
-        }
+            extensions.Do(pipelineBuilder.Extensions.Add);
+            pipelineBuilder.UseAdvancedExtensions();
+
+            return pipelineBuilder.Build();
+        });
     }
 }

@@ -5,91 +5,91 @@ using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Extensions;
 
-namespace N3O.Umbraco.Utilities {
-    public partial class DynamicPager<T> {
-        private readonly Uri _currentUrl;
-        private int? _currentPageNumber;
+namespace N3O.Umbraco.Utilities;
 
-        public DynamicPager(Uri currentUrl,
-                            Func<int, int, IEnumerable<T>> getResults,
-                            int totalResults,
-                            int pageSize,
-                            int? firstPageSize = null) {
-            _currentUrl = currentUrl;
-            PageSize = pageSize;
-            FirstPageSize = firstPageSize ?? pageSize;
+public partial class DynamicPager<T> {
+    private readonly Uri _currentUrl;
+    private int? _currentPageNumber;
 
-            TotalResults = totalResults;
+    public DynamicPager(Uri currentUrl,
+                        Func<int, int, IEnumerable<T>> getResults,
+                        int totalResults,
+                        int pageSize,
+                        int? firstPageSize = null) {
+        _currentUrl = currentUrl;
+        PageSize = pageSize;
+        FirstPageSize = firstPageSize ?? pageSize;
 
-            var pages = new List<ResultsPage>();
-            pages.Add(new ResultsPage(getResults, 1, 0, FirstPageSize));
+        TotalResults = totalResults;
 
-            var start = FirstPageSize;
-            var pageNumber = 1;
-            while (totalResults > start) {
-                var num = Math.Min(PageSize, totalResults - start);
+        var pages = new List<ResultsPage>();
+        pages.Add(new ResultsPage(getResults, 1, 0, FirstPageSize));
 
-                pages.Add(new ResultsPage(getResults, pageNumber, start, num));
+        var start = FirstPageSize;
+        var pageNumber = 1;
+        while (totalResults > start) {
+            var num = Math.Min(PageSize, totalResults - start);
 
-                pageNumber++;
-                start += num;
-            }
+            pages.Add(new ResultsPage(getResults, pageNumber, start, num));
 
-            Pages = pages;
+            pageNumber++;
+            start += num;
         }
 
-        public IReadOnlyList<ResultsPage> Pages { get; }
+        Pages = pages;
+    }
 
-        public string NavigatePageUrl(int pageNumber) {
-            var url = new Url(_currentUrl.GetAbsolutePathDecoded());
+    public IReadOnlyList<ResultsPage> Pages { get; }
 
-            url.Query = _currentUrl.Query;
+    public string NavigatePageUrl(int pageNumber) {
+        var url = new Url(_currentUrl.GetAbsolutePathDecoded());
 
-            if (pageNumber == 1) {
-                url.RemoveQueryParams(Pager.QueryString);
-            } else {
-                url.SetQueryParam(Pager.QueryString, pageNumber);
-            }
+        url.Query = _currentUrl.Query;
 
-            return url.ToString();
+        if (pageNumber == 1) {
+            url.RemoveQueryParams(Pager.QueryString);
+        } else {
+            url.SetQueryParam(Pager.QueryString, pageNumber);
         }
 
-        public string NavigateNextPageUrl() => NavigatePageUrl(CurrentPageNumber + 1);
+        return url.ToString();
+    }
 
-        public string NavigatePreviousPageUrl() => NavigatePageUrl(CurrentPageNumber - 1);
+    public string NavigateNextPageUrl() => NavigatePageUrl(CurrentPageNumber + 1);
 
-        public int StartPage => Math.Max(1, CurrentPageNumber - 2);
+    public string NavigatePreviousPageUrl() => NavigatePageUrl(CurrentPageNumber - 1);
 
-        public int EndPage => Math.Min(TotalPages, StartPage + 4);
+    public int StartPage => Math.Max(1, CurrentPageNumber - 2);
 
-        public int TotalPages => Pages.Count;
+    public int EndPage => Math.Min(TotalPages, StartPage + 4);
 
-        public bool HasNextPage => CurrentPageNumber != TotalPages;
+    public int TotalPages => Pages.Count;
 
-        public bool HasPreviousPage => CurrentPageNumber != 1;
+    public bool HasNextPage => CurrentPageNumber != TotalPages;
 
-        public ResultsPage CurrentPage => Pages?.ElementAt(CurrentPageNumber - 1);
+    public bool HasPreviousPage => CurrentPageNumber != 1;
 
-        public int CurrentPageNumber {
-            get {
-                if (_currentPageNumber == null) {
-                    var queryParams = new QueryParamCollection(_currentUrl.Query);
+    public ResultsPage CurrentPage => Pages?.ElementAt(CurrentPageNumber - 1);
 
-                    var pageNumber = 1;
+    public int CurrentPageNumber {
+        get {
+            if (_currentPageNumber == null) {
+                var queryParams = new QueryParamCollection(_currentUrl.Query);
 
-                    if (queryParams.Contains(Pager.QueryString)) {
-                        pageNumber = int.Parse((string) queryParams.Single(x => x.Name == Pager.QueryString).Value);
-                    }
+                var pageNumber = 1;
 
-                    _currentPageNumber = Math.Min(Math.Max(pageNumber, 1), TotalPages);
+                if (queryParams.Contains(Pager.QueryString)) {
+                    pageNumber = int.Parse((string) queryParams.Single(x => x.Name == Pager.QueryString).Value);
                 }
 
-                return _currentPageNumber.Value;
+                _currentPageNumber = Math.Min(Math.Max(pageNumber, 1), TotalPages);
             }
-        }
 
-        public int FirstPageSize { get; }
-        public int PageSize { get; }
-        public int TotalResults { get; }
+            return _currentPageNumber.Value;
+        }
     }
+
+    public int FirstPageSize { get; }
+    public int PageSize { get; }
+    public int TotalResults { get; }
 }

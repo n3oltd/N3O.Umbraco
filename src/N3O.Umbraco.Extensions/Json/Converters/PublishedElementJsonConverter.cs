@@ -1,43 +1,43 @@
-﻿using Humanizer;
+using Humanizer;
 using N3O.Umbraco.Extensions;
 using Newtonsoft.Json;
 using System;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
-namespace N3O.Umbraco.Json {
-    public class PublishedElementJsonConverter : JsonConverter {
-        public override bool CanRead => false;
+namespace N3O.Umbraco.Json;
 
-        public override bool CanConvert(Type objectType) {
-            return objectType.ImplementsInterface<IPublishedElement>();
-        }
+public class PublishedElementJsonConverter : JsonConverter {
+    public override bool CanRead => false;
 
-        public override object ReadJson(JsonReader reader,
-                                        Type objectType,
-                                        object existingValue,
-                                        JsonSerializer serializer) {
-            throw new NotImplementedException();
-        }
+    public override bool CanConvert(Type objectType) {
+        return objectType.ImplementsInterface<IPublishedElement>();
+    }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
-            if (value != null) {
-                var publishedElement = (IPublishedElement) value;
+    public override object ReadJson(JsonReader reader,
+                                    Type objectType,
+                                    object existingValue,
+                                    JsonSerializer serializer) {
+        throw new NotImplementedException();
+    }
 
-                writer.WriteStartObject();
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
+        if (value != null) {
+            var publishedElement = (IPublishedElement) value;
 
-                writer.WritePropertyName(nameof(IPublishedElement.Key).Camelize());
-                writer.WriteValue(publishedElement.Key);
+            writer.WriteStartObject();
 
-                writer.WritePropertyName(nameof(IPublishedElement.ContentType).Camelize());
-                writer.WriteValue(publishedElement.ContentType.Alias);
+            writer.WritePropertyName(nameof(IPublishedElement.Key).Camelize());
+            writer.WriteValue(publishedElement.Key);
 
-                foreach (var property in publishedElement.Properties) {
-                    writer.WritePropertyName(property.Alias);
-                    serializer.Serialize(writer, property.GetValue());
-                }
+            writer.WritePropertyName(nameof(IPublishedElement.ContentType).Camelize());
+            writer.WriteValue(publishedElement.ContentType.Alias);
 
-                writer.WriteEndObject();
+            foreach (var property in publishedElement.Properties) {
+                writer.WritePropertyName(property.Alias);
+                serializer.Serialize(writer, property.GetValue());
             }
+
+            writer.WriteEndObject();
         }
     }
 }

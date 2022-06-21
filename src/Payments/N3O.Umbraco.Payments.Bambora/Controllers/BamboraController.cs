@@ -7,34 +7,34 @@ using N3O.Umbraco.Payments.Bambora.Models;
 using N3O.Umbraco.Payments.Models;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Payments.Bambora.Controllers {
-    [ApiDocument(BamboraConstants.ApiName)]
-    public class BamboraController : ApiController {
-        private readonly IMediator _mediator;
+namespace N3O.Umbraco.Payments.Bambora.Controllers;
 
-        public BamboraController(IMediator mediator) {
-            _mediator = mediator;
-        }
+[ApiDocument(BamboraConstants.ApiName)]
+public class BamboraController : ApiController {
+    private readonly IMediator _mediator;
 
-        [HttpPost("payments/{flowId:entityId}/charge")]
-        public async Task<ActionResult<PaymentFlowRes<BamboraPayment>>> ChargeCard(ChargeCardReq req) {
-            var res = await _mediator.SendAsync<ChargeCardCommand, ChargeCardReq, PaymentFlowRes<BamboraPayment>>(req);
+    public BamboraController(IMediator mediator) {
+        _mediator = mediator;
+    }
 
-            return Ok(res);
-        }
-        
-        [HttpPost("payments/{flowId:entityId}/completeThreeDSecure")]
-        public async Task<RedirectResult> CompletePaymentThreeDSecure([FromForm] CompleteThreeDSecureReq req) {
-            var res = await _mediator.SendAsync<CompleteThreeDSecureCommand, CompleteThreeDSecureReq, PaymentFlowRes<BamboraPayment>>(req);
+    [HttpPost("payments/{flowId:entityId}/charge")]
+    public async Task<ActionResult<PaymentFlowRes<BamboraPayment>>> ChargeCard(ChargeCardReq req) {
+        var res = await _mediator.SendAsync<ChargeCardCommand, ChargeCardReq, PaymentFlowRes<BamboraPayment>>(req);
 
-            return Redirect(res.Result.ReturnUrl);
-        }
-        
-        [HttpPost("credentials/{flowId:entityId}/store")]
-        public async Task<ActionResult<PaymentFlowRes<BamboraPayment>>> StoreCard(StoreCardReq req) {
-            var res = await _mediator.SendAsync<StoreCardCommand, StoreCardReq, PaymentFlowRes<BamboraCredential>>(req);
+        return Ok(res);
+    }
+    
+    [HttpPost("payments/{flowId:entityId}/completeThreeDSecure")]
+    public async Task<RedirectResult> CompletePaymentThreeDSecure([FromForm] CompleteThreeDSecureReq req) {
+        var res = await _mediator.SendAsync<CompleteThreeDSecureCommand, CompleteThreeDSecureReq, PaymentFlowRes<BamboraPayment>>(req);
 
-            return Ok(res);
-        }
+        return Redirect(res.Result.ReturnUrl);
+    }
+    
+    [HttpPost("credentials/{flowId:entityId}/store")]
+    public async Task<ActionResult<PaymentFlowRes<BamboraPayment>>> StoreCard(StoreCardReq req) {
+        var res = await _mediator.SendAsync<StoreCardCommand, StoreCardReq, PaymentFlowRes<BamboraCredential>>(req);
+
+        return Ok(res);
     }
 }

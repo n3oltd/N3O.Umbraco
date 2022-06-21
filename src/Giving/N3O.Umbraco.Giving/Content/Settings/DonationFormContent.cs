@@ -1,29 +1,29 @@
-﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
 
-namespace N3O.Umbraco.Giving.Content {
-    public class DonationFormContent : UmbracoContent<DonationFormContent> {
-        private IReadOnlyList<DonationOptionContent> _options;
+namespace N3O.Umbraco.Giving.Content;
 
-        public string Title => GetValue(x => x.Title);
+public class DonationFormContent : UmbracoContent<DonationFormContent> {
+    private IReadOnlyList<DonationOptionContent> _options;
 
-        public IReadOnlyList<DonationOptionContent> GetOptions() {
-            if (_options == null) {
-                var list = new List<DonationOptionContent>();
-            
-                foreach (var child in Content().Children) {
-                    var donationOption = child.As<DonationOptionContent>();
+    public string Title => GetValue(x => x.Title);
 
-                    if (donationOption.IsValid()) {
-                        list.Add(donationOption);
-                    }
+    public IReadOnlyList<DonationOptionContent> GetOptions() {
+        if (_options == null) {
+            var list = new List<DonationOptionContent>();
+        
+            foreach (var child in Content().Children) {
+                var donationOption = child.As<DonationOptionContent>();
+
+                if (donationOption.IsValid()) {
+                    list.Add(donationOption);
                 }
-
-                _options = list;
             }
 
-            return _options;
+            _options = list;
         }
+
+        return _options;
     }
 }

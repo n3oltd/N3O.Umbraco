@@ -1,5 +1,5 @@
-﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Content;
 
-namespace N3O.Umbraco.Vacancies.Content {
-    public class VacanciesContent : UmbracoContent<VacanciesContent> { }
-}
+namespace N3O.Umbraco.Vacancies.Content;
+
+public class VacanciesContent : UmbracoContent<VacanciesContent> { }

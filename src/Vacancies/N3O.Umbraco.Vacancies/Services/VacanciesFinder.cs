@@ -9,35 +9,35 @@ using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
-namespace N3O.Umbraco.Vacancies {
-    public class VacanciesFinder : IVacanciesFinder {
-        private readonly IContentCache _contentCache;
-        private readonly ILocalClock _localClock;
-        private readonly VacancyQueryFilter _queryFilter;
+namespace N3O.Umbraco.Vacancies;
 
-        public VacanciesFinder(IContentCache contentCache, ILocalClock localClock, VacancyQueryFilter queryFilter) {
-            _contentCache = contentCache;
-            _localClock = localClock;
-            _queryFilter = queryFilter;
-        }
+public class VacanciesFinder : IVacanciesFinder {
+    private readonly IContentCache _contentCache;
+    private readonly ILocalClock _localClock;
+    private readonly VacancyQueryFilter _queryFilter;
 
-        public IReadOnlyList<T> FindVacancies<T>(VacancyCriteria criteria = null) where T : IPublishedContent {
-            var all = _contentCache.All<T>();
-            var results = criteria == null ? all : _queryFilter.Apply(all, criteria).ToList();
+    public VacanciesFinder(IContentCache contentCache, ILocalClock localClock, VacancyQueryFilter queryFilter) {
+        _contentCache = contentCache;
+        _localClock = localClock;
+        _queryFilter = queryFilter;
+    }
 
-            return results;
+    public IReadOnlyList<T> FindVacancies<T>(VacancyCriteria criteria = null) where T : IPublishedContent {
+        var all = _contentCache.All<T>();
+        var results = criteria == null ? all : _queryFilter.Apply(all, criteria).ToList();
+
+        return results;
+    }
+    
+    public IReadOnlyList<T> FindOpenVacancies<T>(VacancyCriteria criteria = null) where T : IPublishedContent {
+        criteria ??= new VacancyCriteria();
+
+        if (criteria.ClosingDate.HasValue()) {
+            throw new Exception($"Criteria passed to {nameof(FindOpenVacancies)} cannot specify {nameof(VacancyCriteria.ClosingDate)}");
         }
         
-        public IReadOnlyList<T> FindOpenVacancies<T>(VacancyCriteria criteria = null) where T : IPublishedContent {
-            criteria ??= new VacancyCriteria();
+        criteria.ClosingDate = new Range<LocalDate?>(null, _localClock.GetLocalToday());
 
-            if (criteria.ClosingDate.HasValue()) {
-                throw new Exception($"Criteria passed to {nameof(FindOpenVacancies)} cannot specify {nameof(VacancyCriteria.ClosingDate)}");
-            }
-            
-            criteria.ClosingDate = new Range<LocalDate?>(null, _localClock.GetLocalToday());
-
-            return FindVacancies<T>(criteria);
-        }
+        return FindVacancies<T>(criteria);
     }
 }

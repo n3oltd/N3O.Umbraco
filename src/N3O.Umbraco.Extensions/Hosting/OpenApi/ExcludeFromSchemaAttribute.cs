@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace N3O.Umbraco.Hosting {
-    [AttributeUsage(AttributeTargets.Property)]
-    public class ExcludeFromSchemaAttribute : Attribute { }
-}
+namespace N3O.Umbraco.Hosting;
+
+[AttributeUsage(AttributeTargets.Property)]
+public class ExcludeFromSchemaAttribute : Attribute { }

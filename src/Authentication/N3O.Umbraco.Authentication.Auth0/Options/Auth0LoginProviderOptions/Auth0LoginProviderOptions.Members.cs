@@ -1,34 +1,34 @@
-﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
 using System;
 using Umbraco.Cms.Web.Common.Security;
 
-namespace N3O.Umbraco.Authentication.Auth0 {
-    public class Auth0MemberLoginProviderOptions : IConfigureNamedOptions<MemberExternalLoginProviderOptions> {
-        private const string SchemePrefix = global::Umbraco.Cms.Core.Constants.Security.MemberExternalAuthenticationTypePrefix;
-        public const string SchemeName = "Auth0";
-        public const string SchemaNameWithPrefix = SchemePrefix + SchemeName;
-        
-        private readonly Action<MemberExternalLoginProviderOptions> _configure;
+namespace N3O.Umbraco.Authentication.Auth0;
 
-        public Auth0MemberLoginProviderOptions(Action<MemberExternalLoginProviderOptions> configure = null) {
-            _configure = configure;
+public class Auth0MemberLoginProviderOptions : IConfigureNamedOptions<MemberExternalLoginProviderOptions> {
+    private const string SchemePrefix = global::Umbraco.Cms.Core.Constants.Security.MemberExternalAuthenticationTypePrefix;
+    public const string SchemeName = "Auth0";
+    public const string SchemaNameWithPrefix = SchemePrefix + SchemeName;
+    
+    private readonly Action<MemberExternalLoginProviderOptions> _configure;
+
+    public Auth0MemberLoginProviderOptions(Action<MemberExternalLoginProviderOptions> configure = null) {
+        _configure = configure;
+    }
+
+    public void Configure(string name, MemberExternalLoginProviderOptions options) {
+        if (name != SchemaNameWithPrefix) {
+            return;
         }
 
-        public void Configure(string name, MemberExternalLoginProviderOptions options) {
-            if (name != SchemaNameWithPrefix) {
-                return;
-            }
+        Configure(options);
+    }
 
-            Configure(options);
-        }
+    public void Configure(MemberExternalLoginProviderOptions options) {
+        options.AutoLinkOptions = new MemberExternalSignInAutoLinkOptions(autoLinkExternalAccount: true,
+                                                                          defaultIsApproved: true);
+        options.AutoLinkOptions.OnAutoLinking = (_, _) => { };
+        options.AutoLinkOptions.OnExternalLogin = (_, _) => true;
 
-        public void Configure(MemberExternalLoginProviderOptions options) {
-            options.AutoLinkOptions = new MemberExternalSignInAutoLinkOptions(autoLinkExternalAccount: true,
-                                                                              defaultIsApproved: true);
-            options.AutoLinkOptions.OnAutoLinking = (_, _) => { };
-            options.AutoLinkOptions.OnExternalLogin = (_, _) => true;
-
-            _configure?.Invoke(options);
-        }
+        _configure?.Invoke(options);
     }
 }

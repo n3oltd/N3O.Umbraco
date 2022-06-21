@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using N3O.Umbraco.Analytics.Extensions;
@@ -7,29 +7,29 @@ using N3O.Umbraco.Pages;
 using System;
 using Umbraco.Extensions;
 
-namespace N3O.Umbraco.Analytics.TagHelpers {
-    [HtmlTargetElement("n3o-data-layer")]
-    public class DataLayerTagHelper : TagHelper {
-        [HtmlAttributeName("model")]
-        public IPageViewModel Model { get; set; }
+namespace N3O.Umbraco.Analytics.TagHelpers;
 
-        public override void Process(TagHelperContext context, TagHelperOutput output) {
-            if (Model == null) {
-                throw new ArgumentException(nameof(Model));
-            }
+[HtmlTargetElement("n3o-data-layer")]
+public class DataLayerTagHelper : TagHelper {
+    [HtmlAttributeName("model")]
+    public IPageViewModel Model { get; set; }
 
-            if (!Model.DataLayer().HasValue(x => x.JavaScript)) {
-                output.SuppressOutput();
-            } else {
-                output.TagName = null;
+    public override void Process(TagHelperContext context, TagHelperOutput output) {
+        if (Model == null) {
+            throw new ArgumentException(nameof(Model));
+        }
 
-                var scriptTag = new TagBuilder("script");
+        if (!Model.DataLayer().HasValue(x => x.JavaScript)) {
+            output.SuppressOutput();
+        } else {
+            output.TagName = null;
 
-                scriptTag.InnerHtml.AppendHtmlLine("window.dataLayer = window.dataLayer || [];");
-                scriptTag.InnerHtml.AppendHtml(Model.DataLayer().JavaScript);
+            var scriptTag = new TagBuilder("script");
 
-                output.Content.SetHtmlContent(scriptTag.ToHtmlString());
-            }
+            scriptTag.InnerHtml.AppendHtmlLine("window.dataLayer = window.dataLayer || [];");
+            scriptTag.InnerHtml.AppendHtml(Model.DataLayer().JavaScript);
+
+            output.Content.SetHtmlContent(scriptTag.ToHtmlString());
         }
     }
 }

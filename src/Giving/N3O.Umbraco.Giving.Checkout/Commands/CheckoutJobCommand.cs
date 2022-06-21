@@ -1,5 +1,5 @@
-﻿using N3O.Umbraco.Mediator;
+using N3O.Umbraco.Mediator;
 
-namespace N3O.Umbraco.Giving.Checkout.Commands {
-    public abstract class CheckoutJobCommand : Request<Entities.Checkout, None> { }
-}
+namespace N3O.Umbraco.Giving.Checkout.Commands;
+
+public abstract class CheckoutJobCommand : Request<Entities.Checkout, None> { }

@@ -6,49 +6,49 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Extensions;
 
-namespace N3O.Umbraco.ContentFinders {
-    public class LastChanceFinder : IContentLastChanceFinder {
-        private readonly IContentCache _contentCache;
-        private readonly IRedirectManagement _redirectManagement;
+namespace N3O.Umbraco.ContentFinders;
 
-        public LastChanceFinder(IContentCache contentCache, IRedirectManagement redirectManagement) {
-            _contentCache = contentCache;
-            _redirectManagement = redirectManagement;
-        }
+public class LastChanceFinder : IContentLastChanceFinder {
+    private readonly IContentCache _contentCache;
+    private readonly IRedirectManagement _redirectManagement;
 
-        public Task<bool> TryFindContent(IPublishedRequestBuilder request) {
-            if (TryFindRedirectContent(request)) {
-                return Task.FromResult(false);
-            }
+    public LastChanceFinder(IContentCache contentCache, IRedirectManagement redirectManagement) {
+        _contentCache = contentCache;
+        _redirectManagement = redirectManagement;
+    }
 
-            if (request != null && request.ResponseStatusCode == 404) {
-                var notFound = (int) HttpStatusCode.NotFound;
-                request.SetResponseStatus(notFound);
-                request.SetPublishedContent(_contentCache.Single<NotFoundPageContent>()?.Content());
-
-                return Task.FromResult(true);
-            }
-
+    public Task<bool> TryFindContent(IPublishedRequestBuilder request) {
+        if (TryFindRedirectContent(request)) {
             return Task.FromResult(false);
         }
 
-        private bool TryFindRedirectContent(IPublishedRequestBuilder request) {
-            var requestedPath = request.Uri.GetAbsolutePathDecoded().ToLowerInvariant();
+        if (request != null && request.ResponseStatusCode == 404) {
+            var notFound = (int) HttpStatusCode.NotFound;
+            request.SetResponseStatus(notFound);
+            request.SetPublishedContent(_contentCache.Single<NotFoundPageContent>()?.Content());
 
-            var redirect = _redirectManagement.FindRedirect(requestedPath);
-
-            if (redirect != null) {
-                var redirectUrl = redirect.Url;
-
-                _redirectManagement.LogHit(redirect.Id);
-
-                var httpCode = redirect.Temporary ? HttpStatusCode.TemporaryRedirect : HttpStatusCode.Redirect;
-                request.SetRedirect(redirectUrl, (int) httpCode);
-
-                return true;
-            }
-
-            return false;
+            return Task.FromResult(true);
         }
+
+        return Task.FromResult(false);
+    }
+
+    private bool TryFindRedirectContent(IPublishedRequestBuilder request) {
+        var requestedPath = request.Uri.GetAbsolutePathDecoded().ToLowerInvariant();
+
+        var redirect = _redirectManagement.FindRedirect(requestedPath);
+
+        if (redirect != null) {
+            var redirectUrl = redirect.Url;
+
+            _redirectManagement.LogHit(redirect.Id);
+
+            var httpCode = redirect.Temporary ? HttpStatusCode.TemporaryRedirect : HttpStatusCode.Redirect;
+            request.SetRedirect(redirectUrl, (int) httpCode);
+
+            return true;
+        }
+
+        return false;
     }
 }

@@ -12,69 +12,69 @@ using Umbraco.Extensions;
 using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 
-namespace N3O.Umbraco.Data.Converters {
-    public class MultiNodeTreePickerPropertyConverter : PropertyConverter<IPublishedContent> {
-        private readonly IContentHelper _contentHelper;
+namespace N3O.Umbraco.Data.Converters;
 
-        public MultiNodeTreePickerPropertyConverter(IColumnRangeBuilder columnRangeBuilder,
-                                                    IContentHelper contentHelper)
-            : base(columnRangeBuilder) {
-            _contentHelper = contentHelper;
-        }
-        
-        public override bool IsConverter(UmbracoPropertyInfo propertyInfo) {
-            return propertyInfo.Type
-                               .PropertyEditorAlias
-                               .EqualsInvariant(UmbracoPropertyEditors.Aliases.MultiNodeTreePicker);
-        }
+public class MultiNodeTreePickerPropertyConverter : PropertyConverter<IPublishedContent> {
+    private readonly IContentHelper _contentHelper;
 
-        protected override IEnumerable<Cell<IPublishedContent>> GetCells(IContentProperty contentProperty,
-                                                                         UmbracoPropertyInfo propertyInfo) {
-            IEnumerable<IPublishedContent> values;
+    public MultiNodeTreePickerPropertyConverter(IColumnRangeBuilder columnRangeBuilder,
+                                                IContentHelper contentHelper)
+        : base(columnRangeBuilder) {
+        _contentHelper = contentHelper;
+    }
+    
+    public override bool IsConverter(UmbracoPropertyInfo propertyInfo) {
+        return propertyInfo.Type
+                           .PropertyEditorAlias
+                           .EqualsInvariant(UmbracoPropertyEditors.Aliases.MultiNodeTreePicker);
+    }
 
-            if (GetMaxValues(propertyInfo) == 1) {
-                values = _contentHelper.GetPickerValue<IPublishedContent>(contentProperty).Yield();
-            } else {
-                values = _contentHelper.GetPickerValues<IPublishedContent>(contentProperty);
-            }
+    protected override IEnumerable<Cell<IPublishedContent>> GetCells(IContentProperty contentProperty,
+                                                                     UmbracoPropertyInfo propertyInfo) {
+        IEnumerable<IPublishedContent> values;
 
-            return values.ExceptNull().Select(x => OurDataTypes.PublishedContent.Cell(x, x.GetType()));
+        if (GetMaxValues(propertyInfo) == 1) {
+            values = _contentHelper.GetPickerValue<IPublishedContent>(contentProperty).Yield();
+        } else {
+            values = _contentHelper.GetPickerValues<IPublishedContent>(contentProperty);
         }
 
-        public override void Import(IContentBuilder contentBuilder,
-                                    IEnumerable<IPropertyConverter> converters,
-                                    IParser parser,
-                                    ErrorLog errorLog,
-                                    string columnTitlePrefix,
-                                    UmbracoPropertyInfo propertyInfo,
-                                    IEnumerable<ImportField> fields) {
-            ImportAll(errorLog,
-                      propertyInfo,
-                      fields,
-                      s => Parse(parser, propertyInfo, s),
-                      (alias, values) => contentBuilder.ContentPicker(alias).SetContent(values));
+        return values.ExceptNull().Select(x => OurDataTypes.PublishedContent.Cell(x, x.GetType()));
+    }
+
+    public override void Import(IContentBuilder contentBuilder,
+                                IEnumerable<IPropertyConverter> converters,
+                                IParser parser,
+                                ErrorLog errorLog,
+                                string columnTitlePrefix,
+                                UmbracoPropertyInfo propertyInfo,
+                                IEnumerable<ImportField> fields) {
+        ImportAll(errorLog,
+                  propertyInfo,
+                  fields,
+                  s => Parse(parser, propertyInfo, s),
+                  (alias, values) => contentBuilder.ContentPicker(alias).SetContent(values));
+    }
+
+    protected override int GetMaxValues(UmbracoPropertyInfo propertyInfo) {
+        var configuration = propertyInfo.DataType.ConfigurationAs<MultiNodePickerConfiguration>();
+
+        if (configuration.MaxNumber == 0) {
+            return DataConstants.Limits.Columns.MaxValues;
+        } else {
+            return configuration.MaxNumber;
+        }
+    }
+    
+    private ParseResult<IPublishedContent> Parse(IParser parser, UmbracoPropertyInfo propertyInfo, string source) {
+        var configuration = propertyInfo.DataType.ConfigurationAs<MultiNodePickerConfiguration>();
+        var parentId = configuration.TreeSource?.StartNodeId?.ToId();
+
+        if (parentId == null && configuration.TreeSource.HasValue(x => x.StartNodeQuery)) {
+            // As IPublishedQuery.ContentAtXPath() does not work without variables such as $root, $site etc.
+            throw new Exception("XPath based tree pickers are not supported");
         }
 
-        protected override int GetMaxValues(UmbracoPropertyInfo propertyInfo) {
-            var configuration = propertyInfo.DataType.ConfigurationAs<MultiNodePickerConfiguration>();
-
-            if (configuration.MaxNumber == 0) {
-                return DataConstants.Limits.Columns.MaxValues;
-            } else {
-                return configuration.MaxNumber;
-            }
-        }
-        
-        private ParseResult<IPublishedContent> Parse(IParser parser, UmbracoPropertyInfo propertyInfo, string source) {
-            var configuration = propertyInfo.DataType.ConfigurationAs<MultiNodePickerConfiguration>();
-            var parentId = configuration.TreeSource?.StartNodeId?.ToId();
-
-            if (parentId == null && configuration.TreeSource.HasValue(x => x.StartNodeQuery)) {
-                // As IPublishedQuery.ContentAtXPath() does not work without variables such as $root, $site etc.
-                throw new Exception("XPath based tree pickers are not supported");
-            }
-
-            return parser.PublishedContent.Parse(source, OurDataTypes.PublishedContent.GetClrType(), parentId);
-        }
+        return parser.PublishedContent.Parse(source, OurDataTypes.PublishedContent.GetClrType(), parentId);
     }
 }

@@ -1,29 +1,29 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace N3O.Umbraco.Parameters {
-    public class NamedParameterBinder : INamedParameterBinder {
-        private readonly IEnumerable<IParameterDataSource> _parameterDataSources;
+namespace N3O.Umbraco.Parameters;
 
-        public NamedParameterBinder(IEnumerable<IParameterDataSource> parameterDataSources) {
-            _parameterDataSources = parameterDataSources.OrderByDescending(x => x.Order).ToList();
-        }
+public class NamedParameterBinder : INamedParameterBinder {
+    private readonly IEnumerable<IParameterDataSource> _parameterDataSources;
 
-        public object Bind(Type namedParameterType) {
-            var namedParameter = NamedParameter.Create(namedParameterType);
+    public NamedParameterBinder(IEnumerable<IParameterDataSource> parameterDataSources) {
+        _parameterDataSources = parameterDataSources.OrderByDescending(x => x.Order).ToList();
+    }
 
-            foreach (var parameterDataSource in _parameterDataSources) {
-                var parameterData = parameterDataSource.GetData();
+    public object Bind(Type namedParameterType) {
+        var namedParameter = NamedParameter.Create(namedParameterType);
 
-                if (parameterData.ContainsKey(namedParameter.Name)) {
-                    ((INamedParameterFromString) namedParameter).FromString(parameterData[namedParameter.Name]);
-                    
-                    break;
-                }
+        foreach (var parameterDataSource in _parameterDataSources) {
+            var parameterData = parameterDataSource.GetData();
+
+            if (parameterData.ContainsKey(namedParameter.Name)) {
+                ((INamedParameterFromString) namedParameter).FromString(parameterData[namedParameter.Name]);
+                
+                break;
             }
-
-            return namedParameter;
         }
+
+        return namedParameter;
     }
 }

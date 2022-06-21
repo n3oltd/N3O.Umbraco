@@ -4,22 +4,22 @@ using N3O.Umbraco.Plugins.Controllers;
 using N3O.Umbraco.SerpEditor.Content;
 using N3O.Umbraco.SerpEditor.Models;
 
-namespace N3O.Umbraco.SerpEditor.Controllers {
-    public class SerpEditorController : PluginController {
-        private readonly IContentCache _contentCache;
+namespace N3O.Umbraco.SerpEditor.Controllers;
 
-        public SerpEditorController(IContentCache contentCache) {
-            _contentCache = contentCache;
-        }
-        
-        [HttpGet("templateOptions")]
-        public ActionResult<TemplateOptionsRes> GetTemplateOptions() {
-            var templateOptions = _contentCache.Single<TemplateContent>();
+public class SerpEditorController : PluginController {
+    private readonly IContentCache _contentCache;
 
-            var res = new TemplateOptionsRes();
-            res.TitleSuffix = templateOptions?.TitleSuffix;
+    public SerpEditorController(IContentCache contentCache) {
+        _contentCache = contentCache;
+    }
+    
+    [HttpGet("templateOptions")]
+    public ActionResult<TemplateOptionsRes> GetTemplateOptions() {
+        var templateOptions = _contentCache.Single<TemplateContent>();
 
-            return Ok(res);
-        }
+        var res = new TemplateOptionsRes();
+        res.TitleSuffix = templateOptions?.TitleSuffix;
+
+        return Ok(res);
     }
 }

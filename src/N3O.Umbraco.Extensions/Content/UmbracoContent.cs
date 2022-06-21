@@ -8,78 +8,78 @@ using System.Linq.Expressions;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 
-namespace N3O.Umbraco.Content {
-    public abstract class UmbracoContent<T> : Value, IUmbracoContent {
-        private IPublishedContent _content;
+namespace N3O.Umbraco.Content;
 
-        // Do not use get/set property as causes issues with model validation
-        public virtual IPublishedContent Content() => _content;
-        public virtual void Content(IPublishedContent value) => _content = value;
+public abstract class UmbracoContent<T> : Value, IUmbracoContent {
+    private IPublishedContent _content;
 
-        protected TProperty Child<TProperty>(Expression<Func<T, TProperty>> memberExpression)
-            where TProperty : UmbracoContent<TProperty> {
-            var alias = AliasHelper<TProperty>.ContentTypeAlias();
-            var child = Content().Children.SingleOrDefault(x => x.ContentType.Alias.EqualsInvariant(alias));
+    // Do not use get/set property as causes issues with model validation
+    public virtual IPublishedContent Content() => _content;
+    public virtual void Content(IPublishedContent value) => _content = value;
 
-            return child.As<TProperty>();
-        }
+    protected TProperty Child<TProperty>(Expression<Func<T, TProperty>> memberExpression)
+        where TProperty : UmbracoContent<TProperty> {
+        var alias = AliasHelper<TProperty>.ContentTypeAlias();
+        var child = Content().Children.SingleOrDefault(x => x.ContentType.Alias.EqualsInvariant(alias));
 
-        protected TProperty GetAs<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
-            var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-            var value = (IPublishedContent) Content().Value(alias);
+        return child.As<TProperty>();
+    }
 
-            return value.As<TProperty>();
-        }
+    protected TProperty GetAs<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
+        var alias = AliasHelper<T>.PropertyAlias(memberExpression);
+        var value = (IPublishedContent) Content().Value(alias);
+
+        return value.As<TProperty>();
+    }
+
+    protected IEnumerable<TProperty> GetNestedAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
+        var alias = AliasHelper<T>.PropertyAlias(memberExpression);
+        var values = (IEnumerable) Content().Value(alias) ?? Enumerable.Empty<IPublishedElement>();
+
+        return values.Cast<IPublishedElement>().Select(x => x.As<TProperty>());
+    }
     
-        protected IEnumerable<TProperty> GetNestedAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
-            var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-            var values = (IEnumerable) Content().Value(alias) ?? Enumerable.Empty<IPublishedElement>();
+    protected IEnumerable<TProperty> GetPickedAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
+        var alias = AliasHelper<T>.PropertyAlias(memberExpression);
+        var values = (IEnumerable) Content().Value(alias) ?? Enumerable.Empty<IPublishedContent>();
 
-            return values.Cast<IPublishedElement>().Select(x => x.As<TProperty>());
+        return values.Cast<IPublishedContent>().Select(x => x.As<TProperty>());
+    }
+
+    protected LocalDate? GetLocalDate(Expression<Func<T, LocalDate?>> memberExpression) {
+        return GetConvertedValue<DateTime?, LocalDate?>(memberExpression, dt => dt?.ToLocalDate());
+    }
+    
+    protected LocalDate GetLocalDate(Expression<Func<T, LocalDate>> memberExpression) {
+        return GetConvertedValue<DateTime, LocalDate>(memberExpression, dt => dt.ToLocalDate());
+    }
+    
+    protected TProperty GetValue<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
+        var alias = AliasHelper<T>.PropertyAlias(memberExpression);
+
+        var property = Content().GetProperty(alias);
+
+        if (property == null) {
+            return default;
         }
-        
-        protected IEnumerable<TProperty> GetPickedAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
-            var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-            var values = (IEnumerable) Content().Value(alias) ?? Enumerable.Empty<IPublishedContent>();
 
-            return values.Cast<IPublishedContent>().Select(x => x.As<TProperty>());
+        var propertyValue = property.GetValue();
+
+        if (propertyValue is TProperty typedProperty) {
+            return typedProperty;
+        } else if (propertyValue is IPublishedContent publishedContent) {
+            return publishedContent.As<TProperty>();
+        } else if (propertyValue is IPublishedElement publishedElement) {
+            return publishedElement.As<TProperty>();
+        } else {
+            return default;
         }
+    }
+    
+    protected TConverted GetConvertedValue<TProperty, TConverted>(Expression<Func<T, TConverted>> memberExpression,
+                                                                  Func<TProperty, TConverted> convert) {
+        var alias = AliasHelper<T>.PropertyAlias(memberExpression);
 
-        protected LocalDate? GetLocalDate(Expression<Func<T, LocalDate?>> memberExpression) {
-            return GetConvertedValue<DateTime?, LocalDate?>(memberExpression, dt => dt?.ToLocalDate());
-        }
-        
-        protected LocalDate GetLocalDate(Expression<Func<T, LocalDate>> memberExpression) {
-            return GetConvertedValue<DateTime, LocalDate>(memberExpression, dt => dt.ToLocalDate());
-        }
-        
-        protected TProperty GetValue<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
-            var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-
-            var property = Content().GetProperty(alias);
-
-            if (property == null) {
-                return default;
-            }
-
-            var propertyValue = property.GetValue();
-
-            if (propertyValue is TProperty typedProperty) {
-                return typedProperty;
-            } else if (propertyValue is IPublishedContent publishedContent) {
-                return publishedContent.As<TProperty>();
-            } else if (propertyValue is IPublishedElement publishedElement) {
-                return publishedElement.As<TProperty>();
-            } else {
-                return default;
-            }
-        }
-        
-        protected TConverted GetConvertedValue<TProperty, TConverted>(Expression<Func<T, TConverted>> memberExpression,
-                                                                      Func<TProperty, TConverted> convert) {
-            var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-
-            return convert(Content().Value<TProperty>(alias));
-        }
+        return convert(Content().Value<TProperty>(alias));
     }
 }

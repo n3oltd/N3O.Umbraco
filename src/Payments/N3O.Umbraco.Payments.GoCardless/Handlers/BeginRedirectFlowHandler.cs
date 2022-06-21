@@ -1,4 +1,4 @@
-﻿using GoCardless;
+using GoCardless;
 using GoCardless.Services;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Hosting;
@@ -13,68 +13,68 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Payments.GoCardless.Handlers {
-    public class BeginRedirectFlowHandler :
-        PaymentsHandler<BeginRedirectFlowCommand, RedirectFlowReq, GoCardlessCredential> {
-        private readonly IContentCache _contentCache;
-        private readonly GoCardlessClient _goCardlessClient;
-        private readonly IActionLinkGenerator _actionLinkGenerator;
+namespace N3O.Umbraco.Payments.GoCardless.Handlers;
 
-        public BeginRedirectFlowHandler(IContentCache contentCache,
-                                        GoCardlessClient goCardlessClient,
-                                        IPaymentsScope paymentsScope,
-                                        IActionLinkGenerator actionLinkGenerator)
-            : base(paymentsScope) {
-            _contentCache = contentCache;
-            _goCardlessClient = goCardlessClient;
-            _actionLinkGenerator = actionLinkGenerator;
-        }
+public class BeginRedirectFlowHandler :
+    PaymentsHandler<BeginRedirectFlowCommand, RedirectFlowReq, GoCardlessCredential> {
+    private readonly IContentCache _contentCache;
+    private readonly GoCardlessClient _goCardlessClient;
+    private readonly IActionLinkGenerator _actionLinkGenerator;
 
-        protected override async Task HandleAsync(BeginRedirectFlowCommand req,
-                                                  GoCardlessCredential credential,
-                                                  PaymentsParameters parameters,
-                                                  CancellationToken cancellationToken) {
-            var request = GetRedirectFlowCreateRequest(parameters, req.FlowId.Value);
-            var redirectFlowResponse = await _goCardlessClient.RedirectFlows.CreateAsync(request);
-            var redirectFlow = redirectFlowResponse.RedirectFlow;
-            
-            credential.BeginRedirectFlow(redirectFlow.Id,
-                                         redirectFlow.SessionToken,
-                                         redirectFlow.RedirectUrl,
-                                         req.Model.ReturnUrl);
-        }
+    public BeginRedirectFlowHandler(IContentCache contentCache,
+                                    GoCardlessClient goCardlessClient,
+                                    IPaymentsScope paymentsScope,
+                                    IActionLinkGenerator actionLinkGenerator)
+        : base(paymentsScope) {
+        _contentCache = contentCache;
+        _goCardlessClient = goCardlessClient;
+        _actionLinkGenerator = actionLinkGenerator;
+    }
 
-        private RedirectFlowCreateRequest GetRedirectFlowCreateRequest(PaymentsParameters parameters, Guid flowId) {
-            var settings = _contentCache.Single<GoCardlessSettingsContent>();
+    protected override async Task HandleAsync(BeginRedirectFlowCommand req,
+                                              GoCardlessCredential credential,
+                                              PaymentsParameters parameters,
+                                              CancellationToken cancellationToken) {
+        var request = GetRedirectFlowCreateRequest(parameters, req.FlowId.Value);
+        var redirectFlowResponse = await _goCardlessClient.RedirectFlows.CreateAsync(request);
+        var redirectFlow = redirectFlowResponse.RedirectFlow;
+        
+        credential.BeginRedirectFlow(redirectFlow.Id,
+                                     redirectFlow.SessionToken,
+                                     redirectFlow.RedirectUrl,
+                                     req.Model.ReturnUrl);
+    }
 
-            var createRequest = new RedirectFlowCreateRequest();
-            createRequest.Description = parameters.GetTransactionDescription(settings);
-            createRequest.SessionToken = Guid.NewGuid().ToString();
-            createRequest.SuccessRedirectUrl = _actionLinkGenerator.GetUrl<GoCardlessController>(x => x.CompleteRedirectFlow(),
-                                                                                                 new { flowId = flowId.ToString() });
-            createRequest.PrefilledCustomer = GetPrefilledCustomer(parameters.BillingInfoAccessor);
+    private RedirectFlowCreateRequest GetRedirectFlowCreateRequest(PaymentsParameters parameters, Guid flowId) {
+        var settings = _contentCache.Single<GoCardlessSettingsContent>();
 
-            return createRequest;
-        }
+        var createRequest = new RedirectFlowCreateRequest();
+        createRequest.Description = parameters.GetTransactionDescription(settings);
+        createRequest.SessionToken = Guid.NewGuid().ToString();
+        createRequest.SuccessRedirectUrl = _actionLinkGenerator.GetUrl<GoCardlessController>(x => x.CompleteRedirectFlow(),
+                                                                                             new { flowId = flowId.ToString() });
+        createRequest.PrefilledCustomer = GetPrefilledCustomer(parameters.BillingInfoAccessor);
 
-        private RedirectFlowCreateRequest.RedirectFlowPrefilledCustomer GetPrefilledCustomer(IBillingInfoAccessor billingInfoAccessor) {
-            var customer = new RedirectFlowCreateRequest.RedirectFlowPrefilledCustomer();
+        return createRequest;
+    }
 
-            var billingInfo = billingInfoAccessor.GetBillingInfo();
+    private RedirectFlowCreateRequest.RedirectFlowPrefilledCustomer GetPrefilledCustomer(IBillingInfoAccessor billingInfoAccessor) {
+        var customer = new RedirectFlowCreateRequest.RedirectFlowPrefilledCustomer();
 
-            customer.GivenName = billingInfo.Name.FirstName;
-            customer.FamilyName = billingInfo.Name.LastName;
-            customer.AddressLine1 = billingInfo.Address.Line1;
-            customer.AddressLine2 = billingInfo.Address.Line2;
-            customer.AddressLine3 = billingInfo.Address.Line3;
-            customer.City = billingInfo.Address.Locality;
-            customer.Region = billingInfo.Address.AdministrativeArea;
-            customer.PostalCode = billingInfo.Address.PostalCode;
-            customer.CountryCode = billingInfo.Address.Country.Iso2Code;
-            customer.Email = billingInfo.Email.Address;
-            customer.PhoneNumber = billingInfo.Telephone?.Number;
+        var billingInfo = billingInfoAccessor.GetBillingInfo();
 
-            return customer;
-        }
+        customer.GivenName = billingInfo.Name.FirstName;
+        customer.FamilyName = billingInfo.Name.LastName;
+        customer.AddressLine1 = billingInfo.Address.Line1;
+        customer.AddressLine2 = billingInfo.Address.Line2;
+        customer.AddressLine3 = billingInfo.Address.Line3;
+        customer.City = billingInfo.Address.Locality;
+        customer.Region = billingInfo.Address.AdministrativeArea;
+        customer.PostalCode = billingInfo.Address.PostalCode;
+        customer.CountryCode = billingInfo.Address.Country.Iso2Code;
+        customer.Email = billingInfo.Email.Address;
+        customer.PhoneNumber = billingInfo.Telephone?.Number;
+
+        return customer;
     }
 }

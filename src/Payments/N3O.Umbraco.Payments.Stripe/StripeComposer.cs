@@ -8,41 +8,41 @@ using N3O.Umbraco.Payments.Stripe.Models;
 using Stripe;
 using Umbraco.Cms.Core.DependencyInjection;
 
-namespace N3O.Umbraco.Payments.Stripe {
-    public class StripeComposer : Composer {
-        public override void Compose(IUmbracoBuilder builder) {
-            builder.Services.AddOpenApiDocument(StripeConstants.ApiName);
-            
-            builder.Services.AddTransient<StripeApiSettings>(serviceProvider => {
-                var contentCache = serviceProvider.GetRequiredService<IContentCache>();
-                var webHostEnvironment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
-                var apiSettings = GetApiSettings(contentCache, webHostEnvironment);
+namespace N3O.Umbraco.Payments.Stripe;
 
-                return apiSettings;
-            });
-            
-            builder.Services.AddTransient<StripeClient>(serviceProvider => {
-                var apiSettings = serviceProvider.GetRequiredService<StripeApiSettings>();
-
-                return new StripeClient(apiSettings.SecretKey);
-            });
-            
-            builder.Services.AddTransient<ICustomers, Customers>();
-        }
+public class StripeComposer : Composer {
+    public override void Compose(IUmbracoBuilder builder) {
+        builder.Services.AddOpenApiDocument(StripeConstants.ApiName);
         
-        private static StripeApiSettings GetApiSettings(IContentCache contentCache, IHostEnvironment environment) {
-            var settings = contentCache.Single<StripeSettingsContent>();
-            StripeApiSettings apiSettings = null;
-            
-            if (settings != null) {
-                if (environment.IsProduction()) {
-                    apiSettings = new StripeApiSettings(settings.ProductionClientKey, settings.ProductionSecretKey);
-                } else {
-                    apiSettings = new StripeApiSettings(settings.StagingClientKey, settings.StagingSecretKey);
-                }
-            }
+        builder.Services.AddTransient<StripeApiSettings>(serviceProvider => {
+            var contentCache = serviceProvider.GetRequiredService<IContentCache>();
+            var webHostEnvironment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
+            var apiSettings = GetApiSettings(contentCache, webHostEnvironment);
 
             return apiSettings;
+        });
+        
+        builder.Services.AddTransient<StripeClient>(serviceProvider => {
+            var apiSettings = serviceProvider.GetRequiredService<StripeApiSettings>();
+
+            return new StripeClient(apiSettings.SecretKey);
+        });
+        
+        builder.Services.AddTransient<ICustomers, Customers>();
+    }
+    
+    private static StripeApiSettings GetApiSettings(IContentCache contentCache, IHostEnvironment environment) {
+        var settings = contentCache.Single<StripeSettingsContent>();
+        StripeApiSettings apiSettings = null;
+        
+        if (settings != null) {
+            if (environment.IsProduction()) {
+                apiSettings = new StripeApiSettings(settings.ProductionClientKey, settings.ProductionSecretKey);
+            } else {
+                apiSettings = new StripeApiSettings(settings.StagingClientKey, settings.StagingSecretKey);
+            }
         }
+
+        return apiSettings;
     }
 }

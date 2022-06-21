@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Html;
 using N3O.Umbraco.Extensions;
 
-namespace N3O.Umbraco.Analytics.Models {
-    public class StructuredDataCode : Value {
-        public StructuredDataCode(HtmlString javaScriptObject) {
-            JavaScriptObject = javaScriptObject;
-        }
+namespace N3O.Umbraco.Analytics.Models;
 
-        public HtmlString JavaScriptObject { get; }
+public class StructuredDataCode : Value {
+    public StructuredDataCode(HtmlString javaScriptObject) {
+        JavaScriptObject = javaScriptObject;
+    }
 
-        public bool HasValue() {
-            return JavaScriptObject.HasValue();
-        }
+    public HtmlString JavaScriptObject { get; }
+
+    public bool HasValue() {
+        return JavaScriptObject.HasValue();
     }
 }

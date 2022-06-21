@@ -1,19 +1,19 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Mediator {
-    public interface IMediator {
-        Task<None> SendAsync<TRequest, TModel>(TModel model, CancellationToken cancellationToken = default)
-            where TRequest : Request<TModel, None>;
+namespace N3O.Umbraco.Mediator;
 
-        Task<TResponse> SendAsync<TRequest, TModel, TResponse>(TModel model,
-                                                               CancellationToken cancellationToken = default)
-            where TRequest : Request<TModel, TResponse>;
+public interface IMediator {
+    Task<None> SendAsync<TRequest, TModel>(TModel model, CancellationToken cancellationToken = default)
+        where TRequest : Request<TModel, None>;
 
-        Task<object> SendAsync(Type requestType,
-                               Type responseType,
-                               object model,
-                               CancellationToken cancellationToken = default);
-    }
+    Task<TResponse> SendAsync<TRequest, TModel, TResponse>(TModel model,
+                                                           CancellationToken cancellationToken = default)
+        where TRequest : Request<TModel, TResponse>;
+
+    Task<object> SendAsync(Type requestType,
+                           Type responseType,
+                           object model,
+                           CancellationToken cancellationToken = default);
 }

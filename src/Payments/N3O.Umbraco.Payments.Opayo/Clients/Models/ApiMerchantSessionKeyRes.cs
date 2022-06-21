@@ -4,15 +4,15 @@ using NodaTime;
 using NodaTime.Extensions;
 using System;
 
-namespace N3O.Umbraco.Payments.Opayo.Clients {
-    public class ApiMerchantSessionKeyRes : IMerchantSessionKey {
-        [JsonProperty("merchantSessionKey")]
-        public string Key { get; set; }
+namespace N3O.Umbraco.Payments.Opayo.Clients;
 
-        [JsonProperty("expiry")]
-        public string ExpiresAt { get; set; }
-        
-        [JsonIgnore]
-        Instant IMerchantSessionKey.ExpiresAt => DateTime.Parse(ExpiresAt).ToUniversalTime().ToInstant();
-    }
+public class ApiMerchantSessionKeyRes : IMerchantSessionKey {
+    [JsonProperty("merchantSessionKey")]
+    public string Key { get; set; }
+
+    [JsonProperty("expiry")]
+    public string ExpiresAt { get; set; }
+    
+    [JsonIgnore]
+    Instant IMerchantSessionKey.ExpiresAt => DateTime.Parse(ExpiresAt).ToUniversalTime().ToInstant();
 }

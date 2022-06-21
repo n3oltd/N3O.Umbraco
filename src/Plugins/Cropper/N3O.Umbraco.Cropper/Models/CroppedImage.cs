@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Cropper.DataTypes;
+using N3O.Umbraco.Cropper.DataTypes;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using System;
@@ -7,62 +7,62 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 
-namespace N3O.Umbraco.Cropper.Models {
-    public class CroppedImage : DynamicObject, IEnumerable<ImageCrop> {
-        private readonly Dictionary<string, ImageCrop> _crops = new(StringComparer.InvariantCultureIgnoreCase);
-        private readonly CropperSource _cropperSource;
+namespace N3O.Umbraco.Cropper.Models;
 
-        public CroppedImage(CropperConfiguration configuration, CropperSource cropperSource) {
-            _cropperSource = cropperSource;
-            AltText = cropperSource.AltText;
+public class CroppedImage : DynamicObject, IEnumerable<ImageCrop> {
+    private readonly Dictionary<string, ImageCrop> _crops = new(StringComparer.InvariantCultureIgnoreCase);
+    private readonly CropperSource _cropperSource;
 
-            foreach (var (crop, index) in cropperSource.Crops.SelectWithIndex()) {
-                var definition = configuration.CropDefinitions.ElementAtOrDefault(index);
+    public CroppedImage(CropperConfiguration configuration, CropperSource cropperSource) {
+        _cropperSource = cropperSource;
+        AltText = cropperSource.AltText;
 
-                if (definition != null) {
-                    AddImageCrop(definition, cropperSource.MediaId, cropperSource.Filename, crop);
-                }
+        foreach (var (crop, index) in cropperSource.Crops.SelectWithIndex()) {
+            var definition = configuration.CropDefinitions.ElementAtOrDefault(index);
+
+            if (definition != null) {
+                AddImageCrop(definition, cropperSource.MediaId, cropperSource.Filename, crop);
             }
         }
+    }
 
-        public Uri GetUncroppedUrl(IUrlBuilder urlBuilder) {
-            return urlBuilder.Root().AppendPathSegment(_cropperSource.Src).ToUri();
-        }
+    public Uri GetUncroppedUrl(IUrlBuilder urlBuilder) {
+        return urlBuilder.Root().AppendPathSegment(_cropperSource.Src).ToUri();
+    }
 
-        public bool HasCrop(string alias) {
-            return _crops.ContainsKey(alias);
-        }
-    
-        public string AltText { get; }
-        public ImageCrop Crop => this.Single();
+    public bool HasCrop(string alias) {
+        return _crops.ContainsKey(alias);
+    }
 
-        public override bool TryGetMember(GetMemberBinder binder, out object result) {
-            var alias = binder.Name;
-            var exists = _crops.ContainsKey(alias);
-            var crop = exists ? _crops[alias] : null;
+    public string AltText { get; }
+    public ImageCrop Crop => this.Single();
 
-            result = crop;
+    public override bool TryGetMember(GetMemberBinder binder, out object result) {
+        var alias = binder.Name;
+        var exists = _crops.ContainsKey(alias);
+        var crop = exists ? _crops[alias] : null;
 
-            return exists;
-        }
+        result = crop;
 
-        public IEnumerator<ImageCrop> GetEnumerator() {
-            return _crops.Values.GetEnumerator();
-        }
+        return exists;
+    }
 
-        IEnumerator IEnumerable.GetEnumerator() {
-            return _crops.Values.GetEnumerator();
-        }
+    public IEnumerator<ImageCrop> GetEnumerator() {
+        return _crops.Values.GetEnumerator();
+    }
 
-        public ImageCrop this[string alias] => _crops[alias];
+    IEnumerator IEnumerable.GetEnumerator() {
+        return _crops.Values.GetEnumerator();
+    }
 
-        private void AddImageCrop(CropDefinition definition, string mediaId, string sourceFile, CropperSource.Crop crop) {
-            var imageCrop = new ImageCrop(definition.Alias,
-                                          ImagePath.Get(mediaId, sourceFile, definition, crop),
-                                          definition.Height,
-                                          definition.Width);
+    public ImageCrop this[string alias] => _crops[alias];
 
-            _crops[definition.Alias] = imageCrop;
-        }
+    private void AddImageCrop(CropDefinition definition, string mediaId, string sourceFile, CropperSource.Crop crop) {
+        var imageCrop = new ImageCrop(definition.Alias,
+                                      ImagePath.Get(mediaId, sourceFile, definition, crop),
+                                      definition.Height,
+                                      definition.Width);
+
+        _crops[definition.Alias] = imageCrop;
     }
 }

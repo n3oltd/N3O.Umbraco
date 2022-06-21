@@ -8,37 +8,37 @@ using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
-namespace N3O.Umbraco.Analytics.Modules {
-    public class GoogleAnalytics4PageModule : IPageModule {
-        private readonly IContentCache _contentCache;
+namespace N3O.Umbraco.Analytics.Modules;
 
-        public GoogleAnalytics4PageModule(IContentCache contentCache) {
-            _contentCache = contentCache;
-        }
+public class GoogleAnalytics4PageModule : IPageModule {
+    private readonly IContentCache _contentCache;
 
-        public bool ShouldExecute(IPublishedContent page) {
-            var analyticsSettings = _contentCache.Single<GoogleAnalytics4SettingsContent>();
+    public GoogleAnalytics4PageModule(IContentCache contentCache) {
+        _contentCache = contentCache;
+    }
 
-            return analyticsSettings.HasValue(x => x.MeasurementId);
-        }
+    public bool ShouldExecute(IPublishedContent page) {
+        var analyticsSettings = _contentCache.Single<GoogleAnalytics4SettingsContent>();
 
-        public Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
-            var analyticsSettings = _contentCache.Single<GoogleAnalytics4SettingsContent>();
+        return analyticsSettings.HasValue(x => x.MeasurementId);
+    }
 
-            var code = new HtmlString(@"
+    public Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
+        var analyticsSettings = _contentCache.Single<GoogleAnalytics4SettingsContent>();
+
+        var code = new HtmlString(@"
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src=""https://www.googletagmanager.com/gtag/js?id=" + analyticsSettings.MeasurementId + @"""></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag() { dataLayer.push(arguments); }
-  gtag('js', new Date());
+window.dataLayer = window.dataLayer || [];
+function gtag() { dataLayer.push(arguments); }
+gtag('js', new Date());
 
-  gtag('config', '" + analyticsSettings.MeasurementId + @"');
+gtag('config', '" + analyticsSettings.MeasurementId + @"');
 </script>");
 
-            return Task.FromResult<object>(new Code(code));
-        }
-
-        public string Key => AnalyticsConstants.PageModuleKeys.GoogleAnalytics4;
+        return Task.FromResult<object>(new Code(code));
     }
+
+    public string Key => AnalyticsConstants.PageModuleKeys.GoogleAnalytics4;
 }

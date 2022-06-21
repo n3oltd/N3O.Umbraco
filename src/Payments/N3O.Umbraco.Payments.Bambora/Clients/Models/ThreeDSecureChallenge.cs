@@ -1,14 +1,14 @@
 using Newtonsoft.Json;
 
-namespace N3O.Umbraco.Payments.Bambora.Client {
-    public class ThreeDSecureChallenge {
-        [JsonProperty("payment_method")]
-        public string PaymentMethod { get; set; }
+namespace N3O.Umbraco.Payments.Bambora.Client;
 
-        [JsonProperty("card_response")]
-        public ThreeDSecureCardResponse CardResponse { get; set; }
+public class ThreeDSecureChallenge {
+    [JsonProperty("payment_method")]
+    public string PaymentMethod { get; set; }
 
-        [JsonIgnore]
-        public string ThreeDSessionData { get; set; }
-    }
+    [JsonProperty("card_response")]
+    public ThreeDSecureCardResponse CardResponse { get; set; }
+
+    [JsonIgnore]
+    public string ThreeDSessionData { get; set; }
 }

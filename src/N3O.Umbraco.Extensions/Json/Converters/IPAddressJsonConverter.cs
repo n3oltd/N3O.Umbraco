@@ -1,25 +1,25 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Net;
 using Umbraco.Extensions;
 
-namespace N3O.Umbraco.Json {
-    public class IPAddressJsonConverter : JsonConverter {
-        public override bool CanConvert(Type objectType) {
-            return objectType.IsAssignableTo(typeof(IPAddress));
-        }
+namespace N3O.Umbraco.Json;
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
-            writer.WriteValue(value.ToString());
-        }
+public class IPAddressJsonConverter : JsonConverter {
+    public override bool CanConvert(Type objectType) {
+        return objectType.IsAssignableTo(typeof(IPAddress));
+    }
 
-        public override object ReadJson(JsonReader reader,
-                                        Type objectType,
-                                        object existingValue,
-                                        JsonSerializer serializer) {
-            var str = (string) reader.Value;
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
+        writer.WriteValue(value.ToString());
+    }
 
-            return str.IfNotNull(IPAddress.Parse);
-        }
+    public override object ReadJson(JsonReader reader,
+                                    Type objectType,
+                                    object existingValue,
+                                    JsonSerializer serializer) {
+        var str = (string) reader.Value;
+
+        return str.IfNotNull(IPAddress.Parse);
     }
 }

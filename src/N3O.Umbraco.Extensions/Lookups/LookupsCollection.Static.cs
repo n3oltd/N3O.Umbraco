@@ -1,17 +1,17 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Lookups {
-    [StaticLookups]
-    public abstract class StaticLookupsCollection<T> : LookupsCollection<T> where T : ILookup {
-        private readonly IReadOnlyList<T> _all;
+namespace N3O.Umbraco.Lookups;
 
-        protected StaticLookupsCollection() {
-            _all = StaticLookups.GetAll<T>(GetType());
-        }
+[StaticLookups]
+public abstract class StaticLookupsCollection<T> : LookupsCollection<T> where T : ILookup {
+    private readonly IReadOnlyList<T> _all;
 
-        public override Task<IReadOnlyList<T>> GetAllAsync() {
-            return Task.FromResult(_all);
-        }
+    protected StaticLookupsCollection() {
+        _all = StaticLookups.GetAll<T>(GetType());
+    }
+
+    public override Task<IReadOnlyList<T>> GetAllAsync() {
+        return Task.FromResult(_all);
     }
 }

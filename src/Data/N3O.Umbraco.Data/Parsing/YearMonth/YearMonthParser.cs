@@ -8,42 +8,42 @@ using System.Collections.Generic;
 using System.Globalization;
 using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
-namespace N3O.Umbraco.Data.Parsing {
-    public abstract class YearMonthParser : DataTypeParser<YearMonth?>, IYearMonthParser {
-        private readonly List<YearMonthPattern> _patterns = new();
+namespace N3O.Umbraco.Data.Parsing;
 
-        public override bool CanParse(DataType dataType) {
-            return dataType == OurDataTypes.YearMonth;
-        }
+public abstract class YearMonthParser : DataTypeParser<YearMonth?>, IYearMonthParser {
+    private readonly List<YearMonthPattern> _patterns = new();
 
-        protected override Models.ParseResult<YearMonth?> TryParse(string text, Type targetType) {
-            YearMonth? value = null;
+    public override bool CanParse(DataType dataType) {
+        return dataType == OurDataTypes.YearMonth;
+    }
 
-            if (text.HasValue()) {
-                text = text.Trim();
+    protected override Models.ParseResult<YearMonth?> TryParse(string text, Type targetType) {
+        YearMonth? value = null;
 
-                foreach (var pattern in _patterns) {
-                    var nodaResult = pattern.Parse(text);
+        if (text.HasValue()) {
+            text = text.Trim();
 
-                    if (nodaResult.Success) {
-                        value = nodaResult.Value;
+            foreach (var pattern in _patterns) {
+                var nodaResult = pattern.Parse(text);
 
-                        break;
-                    }
-                }
+                if (nodaResult.Success) {
+                    value = nodaResult.Value;
 
-                if (value == null) {
-                    return ParseResult.Fail<YearMonth?>();
+                    break;
                 }
             }
 
-            return ParseResult.Success(value);
+            if (value == null) {
+                return ParseResult.Fail<YearMonth?>();
+            }
         }
 
-        protected void AddPattern(string patternText) {
-            var pattern = YearMonthPattern.Create(patternText, CultureInfo.InvariantCulture);
+        return ParseResult.Success(value);
+    }
 
-            _patterns.Add(pattern);
-        }
+    protected void AddPattern(string patternText) {
+        var pattern = YearMonthPattern.Create(patternText, CultureInfo.InvariantCulture);
+
+        _patterns.Add(pattern);
     }
 }

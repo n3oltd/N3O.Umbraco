@@ -1,23 +1,23 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
-namespace N3O.Umbraco.Lookups {
-    public abstract class NamedLookup : Lookup, INamedLookup {
-        protected NamedLookup(string id, string name) : base(id) {
-            Name = name;
-        }
+namespace N3O.Umbraco.Lookups;
 
-        public virtual string Name { get; }
-        
-        public override IEnumerable<string> GetTextValues() {
-            foreach (var value in base.GetTextValues()) {
-                yield return value;
-            }
+public abstract class NamedLookup : Lookup, INamedLookup {
+    protected NamedLookup(string id, string name) : base(id) {
+        Name = name;
+    }
 
-            yield return Name;
-        }
+    public virtual string Name { get; }
     
-        public override string ToString() {
-            return Name;
+    public override IEnumerable<string> GetTextValues() {
+        foreach (var value in base.GetTextValues()) {
+            yield return value;
         }
+
+        yield return Name;
+    }
+
+    public override string ToString() {
+        return Name;
     }
 }

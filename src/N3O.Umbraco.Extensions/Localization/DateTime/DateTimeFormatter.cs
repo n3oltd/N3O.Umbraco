@@ -1,12 +1,12 @@
-﻿namespace N3O.Umbraco.Localization {
-    public partial class DateTimeFormatter : IDateTimeFormatter {
-        private readonly ILocalizationSettingsAccessor _settingsAccessor;
+namespace N3O.Umbraco.Localization;
 
-        public DateTimeFormatter(ILocalizationSettingsAccessor settingsAccessor) {
-            _settingsAccessor = settingsAccessor;
-        }
+public partial class DateTimeFormatter : IDateTimeFormatter {
+    private readonly ILocalizationSettingsAccessor _settingsAccessor;
 
-        public static readonly IDateTimeFormatter Invariant =
-            new DateTimeFormatter(DefaultLocalizationSettingsAccessor.Instance);
+    public DateTimeFormatter(ILocalizationSettingsAccessor settingsAccessor) {
+        _settingsAccessor = settingsAccessor;
     }
+
+    public static readonly IDateTimeFormatter Invariant =
+        new DateTimeFormatter(DefaultLocalizationSettingsAccessor.Instance);
 }

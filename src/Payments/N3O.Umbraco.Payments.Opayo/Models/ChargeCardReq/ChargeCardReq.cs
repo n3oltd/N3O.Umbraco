@@ -3,24 +3,24 @@ using N3O.Umbraco.Financial;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.Opayo.Lookups;
 
-namespace N3O.Umbraco.Payments.Opayo.Models {
-    public class ChargeCardReq {
-        [Name("Merchant SessionKey")]
-        public string MerchantSessionKey { get; set; }
-        
-        [Name("Card Identifier")]
-        public string CardIdentifier { get; set; }
+namespace N3O.Umbraco.Payments.Opayo.Models;
 
-        [Name("Value")]
-        public MoneyReq Value { get; set; }
+public class ChargeCardReq {
+    [Name("Merchant SessionKey")]
+    public string MerchantSessionKey { get; set; }
+    
+    [Name("Card Identifier")]
+    public string CardIdentifier { get; set; }
 
-        [Name("Browser Parameters")]
-        public BrowserParametersReq BrowserParameters { get; set; }
+    [Name("Value")]
+    public MoneyReq Value { get; set; }
 
-        [Name("Challenge Window Size")]
-        public ChallengeWindowSize ChallengeWindowSize { get; set; }
-        
-        [Name("Return URL")]
-        public string ReturnUrl { get; set; }
-    }
+    [Name("Browser Parameters")]
+    public BrowserParametersReq BrowserParameters { get; set; }
+
+    [Name("Challenge Window Size")]
+    public ChallengeWindowSize ChallengeWindowSize { get; set; }
+    
+    [Name("Return URL")]
+    public string ReturnUrl { get; set; }
 }

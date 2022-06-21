@@ -3,21 +3,21 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Storage.Services;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Data.Parsing {
-    [Order(1)]
-    public class StorageFolderBlobResolver : BlobResolver {
-        private readonly IStorageFolder _storageFolder;
+namespace N3O.Umbraco.Data.Parsing;
 
-        public StorageFolderBlobResolver(IStorageFolder storageFolder) {
-            _storageFolder = storageFolder;
-        }
+[Order(1)]
+public class StorageFolderBlobResolver : BlobResolver {
+    private readonly IStorageFolder _storageFolder;
 
-        protected override bool TryCanResolve(string value) {
-            return value.HasValue();
-        }
+    public StorageFolderBlobResolver(IStorageFolder storageFolder) {
+        _storageFolder = storageFolder;
+    }
 
-        protected override async Task<Blob> TryResolveAsync(string value) {
-            return await _storageFolder.GetFileAsync(value.Trim());
-        }
+    protected override bool TryCanResolve(string value) {
+        return value.HasValue();
+    }
+
+    protected override async Task<Blob> TryResolveAsync(string value) {
+        return await _storageFolder.GetFileAsync(value.Trim());
     }
 }

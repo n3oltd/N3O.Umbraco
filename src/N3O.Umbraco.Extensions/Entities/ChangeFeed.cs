@@ -1,31 +1,31 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Extensions;
 using System;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Entities {
-    public abstract class ChangeFeed<T> : IChangeFeed<T> where T : IEntity {
-        private readonly ILogger _logger;
+namespace N3O.Umbraco.Entities;
 
-        protected ChangeFeed(ILogger logger) {
-            _logger = logger;
-        }
+public abstract class ChangeFeed<T> : IChangeFeed<T> where T : IEntity {
+    private readonly ILogger _logger;
 
-        public async Task ProcessChangeAsync(EntityChange entityChange) {
-            try {
-                var typedEntityChange = new EntityChange<T>((T) entityChange.SessionEntity, (T) entityChange.DatabaseEntity, entityChange.Operation);
-
-                await ProcessChangeAsync(typedEntityChange);
-            } catch (Exception ex) {
-                _logger.LogError(ex,
-                                 "Error processing change feed {ChangeFeedType} for {EntityType} with operation {Operation} and revision ID {RevisionId}",
-                                 GetType().FullName.Quote(),
-                                 typeof(T).GetFriendlyName(),
-                                 entityChange.Operation,
-                                 (entityChange.SessionEntity ?? entityChange.DatabaseEntity).RevisionId);
-            }
-        }
-
-        protected abstract Task ProcessChangeAsync(EntityChange<T> entityChange);
+    protected ChangeFeed(ILogger logger) {
+        _logger = logger;
     }
+
+    public async Task ProcessChangeAsync(EntityChange entityChange) {
+        try {
+            var typedEntityChange = new EntityChange<T>((T) entityChange.SessionEntity, (T) entityChange.DatabaseEntity, entityChange.Operation);
+
+            await ProcessChangeAsync(typedEntityChange);
+        } catch (Exception ex) {
+            _logger.LogError(ex,
+                             "Error processing change feed {ChangeFeedType} for {EntityType} with operation {Operation} and revision ID {RevisionId}",
+                             GetType().FullName.Quote(),
+                             typeof(T).GetFriendlyName(),
+                             entityChange.Operation,
+                             (entityChange.SessionEntity ?? entityChange.DatabaseEntity).RevisionId);
+        }
+    }
+
+    protected abstract Task ProcessChangeAsync(EntityChange<T> entityChange);
 }

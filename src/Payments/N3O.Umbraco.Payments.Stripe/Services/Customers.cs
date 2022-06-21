@@ -2,33 +2,33 @@ using N3O.Umbraco.Payments.Models;
 using Stripe;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Payments.Stripe {
-    public class Customers : ICustomers {
-        private readonly StripeClient _stripeClient;
+namespace N3O.Umbraco.Payments.Stripe;
 
-        public Customers(StripeClient stripeClient) {
-            _stripeClient = stripeClient;
-        }
+public class Customers : ICustomers {
+    private readonly StripeClient _stripeClient;
 
-        public async Task<Customer> CreateCustomerAsync(IBillingInfo billingInfo) {
-            var customerService = new CustomerService(_stripeClient);
+    public Customers(StripeClient stripeClient) {
+        _stripeClient = stripeClient;
+    }
 
-            var customerCreateOptions = CreateCustomerOptions(billingInfo);
+    public async Task<Customer> CreateCustomerAsync(IBillingInfo billingInfo) {
+        var customerService = new CustomerService(_stripeClient);
 
-            var customer = await customerService.CreateAsync(customerCreateOptions);
+        var customerCreateOptions = CreateCustomerOptions(billingInfo);
 
-            return customer;
-        }
+        var customer = await customerService.CreateAsync(customerCreateOptions);
 
-        private CustomerCreateOptions CreateCustomerOptions(IBillingInfo billingInfo) {
-            var options = new CustomerCreateOptions();
+        return customer;
+    }
 
-            options.Name = billingInfo.Name.ToFullName();
-            options.Email = billingInfo.Email.Address;
-            options.Phone = billingInfo.Telephone.Number;
-            options.Address = billingInfo.Address.ToAddressOptions();
+    private CustomerCreateOptions CreateCustomerOptions(IBillingInfo billingInfo) {
+        var options = new CustomerCreateOptions();
 
-            return options;
-        }
+        options.Name = billingInfo.Name.ToFullName();
+        options.Email = billingInfo.Email.Address;
+        options.Phone = billingInfo.Telephone.Number;
+        options.Address = billingInfo.Address.ToAddressOptions();
+
+        return options;
     }
 }

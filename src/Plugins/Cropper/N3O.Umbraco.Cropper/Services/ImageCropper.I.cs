@@ -1,11 +1,11 @@
-﻿using N3O.Umbraco.Cropper.DataTypes;
+using N3O.Umbraco.Cropper.DataTypes;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Cropper {
-    public interface IImageCropper {
-        Task CropAllAsync(CropperConfiguration configuration,
-                          CropperSource source,
-                          CancellationToken cancellationToken = default);
-    }
+namespace N3O.Umbraco.Cropper;
+
+public interface IImageCropper {
+    Task CropAllAsync(CropperConfiguration configuration,
+                      CropperSource source,
+                      CancellationToken cancellationToken = default);
 }

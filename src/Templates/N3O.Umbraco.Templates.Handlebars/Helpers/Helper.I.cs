@@ -1,9 +1,9 @@
-﻿using HandlebarsDotNet;
+using HandlebarsDotNet;
 
-namespace N3O.Umbraco.Templates.Handlebars.Helpers {
-    public interface IHelper {
-        string Name { get; }
+namespace N3O.Umbraco.Templates.Handlebars.Helpers;
 
-        void Execute(EncodedTextWriter writer, HandlebarsDotNet.Context context, Arguments args);
-    }
+public interface IHelper {
+    string Name { get; }
+
+    void Execute(EncodedTextWriter writer, HandlebarsDotNet.Context context, Arguments args);
 }

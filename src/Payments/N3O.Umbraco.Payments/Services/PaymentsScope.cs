@@ -6,26 +6,26 @@ using NodaTime;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Payments {
-    public class PaymentsScope : PaymentsScopeBase {
-        private readonly IRepository<IPaymentsFlow> _repository;
-        private readonly FlowId _flowId;
-        private IPaymentsFlow _flow;
+namespace N3O.Umbraco.Payments;
 
-        public PaymentsScope(IClock clock, IFormatter formatter, IRepository<IPaymentsFlow> repository, FlowId flowId)
-            : base(clock, formatter) {
-            _repository = repository;
-            _flowId = flowId;
-        }
+public class PaymentsScope : PaymentsScopeBase {
+    private readonly IRepository<IPaymentsFlow> _repository;
+    private readonly FlowId _flowId;
+    private IPaymentsFlow _flow;
 
-        protected override async Task<IPaymentsFlow> LoadAsync(CancellationToken cancellationToken) {
-            _flow ??= await _flowId.RunAsync(_repository.GetAsync, true);
+    public PaymentsScope(IClock clock, IFormatter formatter, IRepository<IPaymentsFlow> repository, FlowId flowId)
+        : base(clock, formatter) {
+        _repository = repository;
+        _flowId = flowId;
+    }
 
-            return _flow;
-        }
+    protected override async Task<IPaymentsFlow> LoadAsync(CancellationToken cancellationToken) {
+        _flow ??= await _flowId.RunAsync(_repository.GetAsync, true);
 
-        protected override async Task UpdateAsync(IPaymentsFlow flow, CancellationToken cancellationToken) {
-            await _repository.UpdateAsync(flow);
-        }
+        return _flow;
+    }
+
+    protected override async Task UpdateAsync(IPaymentsFlow flow, CancellationToken cancellationToken) {
+        await _repository.UpdateAsync(flow);
     }
 }

@@ -5,21 +5,21 @@ using N3O.Umbraco.Payments.Opayo.Models;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Payments.Opayo.Handlers {
-    public class StoreCardHandler : PaymentsHandler<StoreCardCommand, StoreCardReq, OpayoCredential> {
-        private readonly IOpayoHelper _opayoHelper;
+namespace N3O.Umbraco.Payments.Opayo.Handlers;
 
-        public StoreCardHandler(IPaymentsScope paymentsScope, IOpayoHelper opayoHelper) : base(paymentsScope) {
-            _opayoHelper = opayoHelper;
-        }
+public class StoreCardHandler : PaymentsHandler<StoreCardCommand, StoreCardReq, OpayoCredential> {
+    private readonly IOpayoHelper _opayoHelper;
 
-        protected override async Task HandleAsync(StoreCardCommand req,
-                                                  OpayoCredential credential,
-                                                  PaymentsParameters parameters,
-                                                  CancellationToken cancellationToken) {
-            await DoAsync<OpayoPayment>(async payment => {
-                await _opayoHelper.ChargeAsync(payment, req.Model.AdvancePayment, parameters, true);
-            }, cancellationToken);
-        }
+    public StoreCardHandler(IPaymentsScope paymentsScope, IOpayoHelper opayoHelper) : base(paymentsScope) {
+        _opayoHelper = opayoHelper;
+    }
+
+    protected override async Task HandleAsync(StoreCardCommand req,
+                                              OpayoCredential credential,
+                                              PaymentsParameters parameters,
+                                              CancellationToken cancellationToken) {
+        await DoAsync<OpayoPayment>(async payment => {
+            await _opayoHelper.ChargeAsync(payment, req.Model.AdvancePayment, parameters, true);
+        }, cancellationToken);
     }
 }

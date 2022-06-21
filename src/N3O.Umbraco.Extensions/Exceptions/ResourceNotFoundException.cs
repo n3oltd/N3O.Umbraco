@@ -1,22 +1,22 @@
-﻿using N3O.Umbraco.Localization;
+using N3O.Umbraco.Localization;
 using System.Net;
 
-namespace N3O.Umbraco.Exceptions {
-    public class ResourceNotFoundException : ExceptionWithProblemDetails {
-        public ResourceNotFoundException() { }
+namespace N3O.Umbraco.Exceptions;
 
-        public ResourceNotFoundException(string parameterName, string parameterValue) {
-            ParameterName = parameterName;
-            ParameterValue = parameterValue;
-        }
+public class ResourceNotFoundException : ExceptionWithProblemDetails {
+    public ResourceNotFoundException() { }
 
-        public string ParameterName { get; }
-        public string ParameterValue { get; }
+    public ResourceNotFoundException(string parameterName, string parameterValue) {
+        ParameterName = parameterName;
+        ParameterValue = parameterValue;
+    }
 
-        public override ProblemDetails GetProblemDetails(IFormatter formatter) {
-            var problemDetails = new ProblemDetails(HttpStatusCode.NotFound, ParameterName, ParameterValue);
+    public string ParameterName { get; }
+    public string ParameterValue { get; }
 
-            return problemDetails;
-        }
+    public override ProblemDetails GetProblemDetails(IFormatter formatter) {
+        var problemDetails = new ProblemDetails(HttpStatusCode.NotFound, ParameterName, ParameterValue);
+
+        return problemDetails;
     }
 }

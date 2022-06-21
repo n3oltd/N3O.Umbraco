@@ -1,21 +1,21 @@
-﻿using Flurl;
+using Flurl;
 using Microsoft.AspNetCore.Hosting;
 using N3O.Umbraco.Content;
 
-namespace N3O.Umbraco.Utilities {
-    public class UrlBuilder : IUrlBuilder {
-        private readonly IContentCache _contentCache;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+namespace N3O.Umbraco.Utilities;
 
-        public UrlBuilder(IContentCache contentCache, IWebHostEnvironment webHostEnvironment) {
-            _contentCache = contentCache;
-            _webHostEnvironment = webHostEnvironment;
-        }
-        
-        public Url Root() {
-            var urlSettings = _contentCache.Single<UrlSettingsContent>();
+public class UrlBuilder : IUrlBuilder {
+    private readonly IContentCache _contentCache;
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
-            return urlSettings.BaseUrl(_webHostEnvironment);
-        }
+    public UrlBuilder(IContentCache contentCache, IWebHostEnvironment webHostEnvironment) {
+        _contentCache = contentCache;
+        _webHostEnvironment = webHostEnvironment;
+    }
+    
+    public Url Root() {
+        var urlSettings = _contentCache.Single<UrlSettingsContent>();
+
+        return urlSettings.BaseUrl(_webHostEnvironment);
     }
 }

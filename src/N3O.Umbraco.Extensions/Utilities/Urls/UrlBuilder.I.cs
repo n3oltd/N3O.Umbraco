@@ -1,7 +1,7 @@
-﻿using Flurl;
+using Flurl;
 
-namespace N3O.Umbraco.Utilities {
-    public interface IUrlBuilder {
-        Url Root();
-    }
+namespace N3O.Umbraco.Utilities;
+
+public interface IUrlBuilder {
+    Url Root();
 }

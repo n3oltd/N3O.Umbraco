@@ -1,9 +1,9 @@
-﻿using HandlebarsDotNet;
+using HandlebarsDotNet;
 
-namespace N3O.Umbraco.Templates.Handlebars.BlockHelpers {
-    public interface IBlockHelper {
-        string Name { get; }
+namespace N3O.Umbraco.Templates.Handlebars.BlockHelpers;
 
-        void Execute(EncodedTextWriter output, BlockHelperOptions options, HandlebarsDotNet.Context context, Arguments args);
-    }
+public interface IBlockHelper {
+    string Name { get; }
+
+    void Execute(EncodedTextWriter output, BlockHelperOptions options, HandlebarsDotNet.Context context, Arguments args);
 }

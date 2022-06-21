@@ -1,11 +1,11 @@
-﻿namespace N3O.Umbraco.Mediator {
-    public abstract class Request<TModel, TResponse> : IRequest<TModel, TResponse> {
-        public TModel Model { get; set; }
+namespace N3O.Umbraco.Mediator;
 
-        object IModel.Model {
-            get => Model;
+public abstract class Request<TModel, TResponse> : IRequest<TModel, TResponse> {
+    public TModel Model { get; set; }
 
-            set => Model = (TModel) value;
-        }
+    object IModel.Model {
+        get => Model;
+
+        set => Model = (TModel) value;
     }
 }

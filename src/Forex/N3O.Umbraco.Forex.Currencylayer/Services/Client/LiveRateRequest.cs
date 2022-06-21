@@ -1,7 +1,7 @@
-﻿using N3O.Umbraco.Financial;
+using N3O.Umbraco.Financial;
 
-namespace N3O.Umbraco.Forex.Currencylayer {
-    public class LiveRateRequest : ApiRequest {
-        public LiveRateRequest(Currency baseCurrency, Currency quoteCurrency) : base(baseCurrency, quoteCurrency) { }
-    }
+namespace N3O.Umbraco.Forex.Currencylayer;
+
+public class LiveRateRequest : ApiRequest {
+    public LiveRateRequest(Currency baseCurrency, Currency quoteCurrency) : base(baseCurrency, quoteCurrency) { }
 }

@@ -4,52 +4,52 @@ using N3O.Umbraco.Giving.Checkout.Content;
 using N3O.Umbraco.Lookups;
 using System;
 
-namespace N3O.Umbraco.Giving.Checkout.Lookups {
-    public class CheckoutStage : NamedLookup {
-        private readonly Func<Entities.Checkout, bool> _isComplete;
-        private readonly Func<IContentCache, IUmbracoContent> _getPage;
+namespace N3O.Umbraco.Giving.Checkout.Lookups;
 
-        public CheckoutStage(string id,
-                             string name,
-                             string transctionIdPrefix,
-                             Func<Entities.Checkout, bool> isComplete,
-                             int order,
-                             Func<IContentCache, IUmbracoContent> getPage)
-            : base(id, name) {
-            _isComplete = isComplete;
-            _getPage = getPage;
-            TransctionIdPrefix = transctionIdPrefix;
-            Order = order;
-        }
+public class CheckoutStage : NamedLookup {
+    private readonly Func<Entities.Checkout, bool> _isComplete;
+    private readonly Func<IContentCache, IUmbracoContent> _getPage;
 
-        public string TransctionIdPrefix { get; }
-        public int Order { get; }
-        
-        public bool IsComplete(Entities.Checkout checkout) => _isComplete(checkout);
-        
-        public string GetUrl(IContentCache contentCache) => _getPage(contentCache).Content().AbsoluteUrl();
+    public CheckoutStage(string id,
+                         string name,
+                         string transctionIdPrefix,
+                         Func<Entities.Checkout, bool> isComplete,
+                         int order,
+                         Func<IContentCache, IUmbracoContent> getPage)
+        : base(id, name) {
+        _isComplete = isComplete;
+        _getPage = getPage;
+        TransctionIdPrefix = transctionIdPrefix;
+        Order = order;
     }
 
-    public class CheckoutStages : StaticLookupsCollection<CheckoutStage> {
-        public static readonly CheckoutStage Account = new("account",
-                                                           "Account",
-                                                           null,
-                                                           c => c.Account.HasValue(),
-                                                           0,
-                                                           c => c.Single<CheckoutAccountPageContent>());
+    public string TransctionIdPrefix { get; }
+    public int Order { get; }
+    
+    public bool IsComplete(Entities.Checkout checkout) => _isComplete(checkout);
+    
+    public string GetUrl(IContentCache contentCache) => _getPage(contentCache).Content().AbsoluteUrl();
+}
 
-        public static readonly CheckoutStage Donation = new("donation",
-                                                            "Donation",
-                                                            "DN",
-                                                            c => c.Donation.IsComplete,
-                                                            2,
-                                                            c => c.Single<CheckoutDonationPageContent>());
-        
-        public static readonly CheckoutStage RegularGiving = new("regularGiving",
-                                                                 "Regular Giving",
-                                                                 "RG",
-                                                                 c => c.RegularGiving.IsComplete,
-                                                                 1,
-                                                                 c => c.Single<CheckoutRegularGivingPageContent>());
-    }
+public class CheckoutStages : StaticLookupsCollection<CheckoutStage> {
+    public static readonly CheckoutStage Account = new("account",
+                                                       "Account",
+                                                       null,
+                                                       c => c.Account.HasValue(),
+                                                       0,
+                                                       c => c.Single<CheckoutAccountPageContent>());
+
+    public static readonly CheckoutStage Donation = new("donation",
+                                                        "Donation",
+                                                        "DN",
+                                                        c => c.Donation.IsComplete,
+                                                        2,
+                                                        c => c.Single<CheckoutDonationPageContent>());
+    
+    public static readonly CheckoutStage RegularGiving = new("regularGiving",
+                                                             "Regular Giving",
+                                                             "RG",
+                                                             c => c.RegularGiving.IsComplete,
+                                                             1,
+                                                             c => c.Single<CheckoutRegularGivingPageContent>());
 }

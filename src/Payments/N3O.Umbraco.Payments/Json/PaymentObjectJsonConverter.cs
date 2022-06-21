@@ -8,62 +8,62 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace N3O.Umbraco.Payments.Json {
-    public class PaymentObjectJsonConverter : JsonConverter {
-        private readonly Lazy<ILookups> _lookups;
+namespace N3O.Umbraco.Payments.Json;
 
-        public PaymentObjectJsonConverter(Lazy<ILookups> lookups) {
-            _lookups = lookups;
+public class PaymentObjectJsonConverter : JsonConverter {
+    private readonly Lazy<ILookups> _lookups;
+
+    public PaymentObjectJsonConverter(Lazy<ILookups> lookups) {
+        _lookups = lookups;
+    }
+
+    public override bool CanConvert(Type objectType) {
+        return objectType.IsAbstract && objectType.IsAssignableTo(typeof(PaymentObject));
+    }
+
+    public override bool CanWrite => false;
+
+    public override object ReadJson(JsonReader reader,
+                                    Type objectType,
+                                    object existingValue,
+                                    JsonSerializer serializer) {
+        if (reader.TokenType == JsonToken.Null) {
+            return null;
         }
 
-        public override bool CanConvert(Type objectType) {
-            return objectType.IsAbstract && objectType.IsAssignableTo(typeof(PaymentObject));
+        if (reader.TokenType != JsonToken.StartObject) {
+            throw new JsonSerializationException();
         }
 
-        public override bool CanWrite => false;
+        var jObject = JObject.Load(reader);
+        var properties = jObject.Properties().ToList();
 
-        public override object ReadJson(JsonReader reader,
-                                        Type objectType,
-                                        object existingValue,
-                                        JsonSerializer serializer) {
-            if (reader.TokenType == JsonToken.Null) {
-                return null;
-            }
+        var paymentMethod = GetPropertyValue<PaymentMethod>(properties, nameof(PaymentObject.Method));
+        var paymentObjectType = GetPropertyValue<PaymentObjectType>(properties, nameof(PaymentObject.Type));
+        
+        var paymentObject = jObject.ToObject(paymentMethod.GetObjectType(paymentObjectType), serializer);
 
-            if (reader.TokenType != JsonToken.StartObject) {
-                throw new JsonSerializationException();
-            }
+        return paymentObject;
+    }
 
-            var jObject = JObject.Load(reader);
-            var properties = jObject.Properties().ToList();
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
+        throw new NotImplementedException();
+    }
 
-            var paymentMethod = GetPropertyValue<PaymentMethod>(properties, nameof(PaymentObject.Method));
-            var paymentObjectType = GetPropertyValue<PaymentObjectType>(properties, nameof(PaymentObject.Type));
-            
-            var paymentObject = jObject.ToObject(paymentMethod.GetObjectType(paymentObjectType), serializer);
-
-            return paymentObject;
+    private T GetPropertyValue<T>(IReadOnlyList<JProperty> properties, string propertyName) where T : ILookup {
+        var property = properties.SingleOrDefault(x => x.Name.EqualsInvariant(propertyName));
+       
+        if (property == null) {
+            throw new Exception($"No property found with name {propertyName}");
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
-            throw new NotImplementedException();
+        var lookupId = (string) property.Value;
+        var lookup = _lookups.Value.FindById<T>(lookupId);
+
+        if (lookup == null) {
+            throw new Exception($"Property {propertyName} contains invalid value {lookupId} for lookup {typeof(T).GetFriendlyName()}");
         }
-
-        private T GetPropertyValue<T>(IReadOnlyList<JProperty> properties, string propertyName) where T : ILookup {
-            var property = properties.SingleOrDefault(x => x.Name.EqualsInvariant(propertyName));
-           
-            if (property == null) {
-                throw new Exception($"No property found with name {propertyName}");
-            }
-
-            var lookupId = (string) property.Value;
-            var lookup = _lookups.Value.FindById<T>(lookupId);
-
-            if (lookup == null) {
-                throw new Exception($"Property {propertyName} contains invalid value {lookupId} for lookup {typeof(T).GetFriendlyName()}");
-            }
-            
-            return lookup;
-        }
+        
+        return lookup;
     }
 }

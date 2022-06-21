@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Content;
@@ -11,36 +11,36 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Web;
 
-namespace N3O.Umbraco.Giving.Checkout.Controllers {
-    public class CheckoutCompletePageController : CheckoutStagePageController {
-        private readonly CartCookie _cartCookie;
+namespace N3O.Umbraco.Giving.Checkout.Controllers;
 
-        public CheckoutCompletePageController(ILogger<CheckoutCompletePageController> logger,
-                                              ICompositeViewEngine compositeViewEngine,
-                                              IUmbracoContextAccessor umbracoContextAccessor,
-                                              IPublishedUrlProvider publishedUrlProvider,
-                                              IPagePipeline pagePipeline,
-                                              IContentCache contentCache,
-                                              IServiceProvider serviceProvider,
-                                              ICheckoutAccessor checkoutAccessor,
-                                              CartCookie cartCookie)
-            : base(logger,
-                   compositeViewEngine,
-                   umbracoContextAccessor,
-                   publishedUrlProvider,
-                   pagePipeline,
-                   contentCache,
-                   serviceProvider,
-                   checkoutAccessor) {
-            _cartCookie = cartCookie;
-        }
+public class CheckoutCompletePageController : CheckoutStagePageController {
+    private readonly CartCookie _cartCookie;
 
-        protected override CheckoutStage Stage => null;
+    public CheckoutCompletePageController(ILogger<CheckoutCompletePageController> logger,
+                                          ICompositeViewEngine compositeViewEngine,
+                                          IUmbracoContextAccessor umbracoContextAccessor,
+                                          IPublishedUrlProvider publishedUrlProvider,
+                                          IPagePipeline pagePipeline,
+                                          IContentCache contentCache,
+                                          IServiceProvider serviceProvider,
+                                          ICheckoutAccessor checkoutAccessor,
+                                          CartCookie cartCookie)
+        : base(logger,
+               compositeViewEngine,
+               umbracoContextAccessor,
+               publishedUrlProvider,
+               pagePipeline,
+               contentCache,
+               serviceProvider,
+               checkoutAccessor) {
+        _cartCookie = cartCookie;
+    }
 
-        public override async Task<IActionResult> Index(CancellationToken cancellationToken) {
-            _cartCookie.DeferredReset();
-            
-            return await base.Index(cancellationToken);
-        }
+    protected override CheckoutStage Stage => null;
+
+    public override async Task<IActionResult> Index(CancellationToken cancellationToken) {
+        _cartCookie.DeferredReset();
+        
+        return await base.Index(cancellationToken);
     }
 }
