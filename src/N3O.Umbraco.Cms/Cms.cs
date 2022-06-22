@@ -16,7 +16,7 @@ public static class Cms {
                               .ConfigureUmbracoDefaults()
                               .ConfigureWebHostDefaults(webBuilder => {
                                   webBuilder.RunExtensions();
-                                  
+                                  webBuilder.UseStaticWebAssets();
                                   webBuilder.UseStartup<TStartup>();
                               });
 
