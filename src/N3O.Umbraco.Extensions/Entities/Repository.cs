@@ -32,7 +32,7 @@ namespace N3O.Umbraco.Entities {
 
                 await RunChangeFeedsAsync(EntityOperations.Delete,
                                           null,
-                                          _entityStore.GetOrDefault(entity.Id));
+                                          entity);
             }
         }
         
