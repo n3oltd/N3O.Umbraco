@@ -3,7 +3,7 @@ angular.module("umbraco")
         $scope.startOver = function () {
             $scope.processing = false;
             $scope.contentType = null;
-            $scope.errorMessage = null;
+            $scope.errorMessages = null;
             $scope.show = "form";
         };
 
@@ -114,7 +114,7 @@ angular.module("umbraco")
 
         function processingError(message) {
             $scope.processing = false;
-            $scope.errorMessage = message;
+            $scope.errorMessages = message;
             $scope.show = "error";
         }
 
