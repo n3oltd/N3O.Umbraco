@@ -33,7 +33,7 @@ public class Repository<T> : IRepository<T> where T : class, IEntity {
 
             await RunChangeFeedsAsync(EntityOperations.Delete,
                                       null,
-                                      _entityStore.GetOrDefault(entity.Id));
+                                      entity);
         }
     }
     
