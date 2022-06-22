@@ -4,6 +4,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Json;
+using N3O.Umbraco.Locks;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Webhooks.Attributes;
 using N3O.Umbraco.Webhooks.Extensions;
@@ -29,39 +30,45 @@ public class DonationItemReceiver : WebhookReceiver {
     private readonly IContentService _contentService;
     private readonly IContentHelper _contentHelper;
     private readonly ILookups _lookups;
+    private readonly ILocker _locker;
 
     public DonationItemReceiver(IJsonProvider jsonProvider,
                                 IContentCache contentCache,
                                 IContentEditor contentEditor,
                                 IContentService contentService,
                                 IContentHelper contentHelper,
-                                ILookups lookups) {
+                                ILookups lookups,
+                                ILocker locker) {
         _jsonProvider = jsonProvider;
         _contentCache = contentCache;
         _contentEditor = contentEditor;
         _contentService = contentService;
         _contentHelper = contentHelper;
         _lookups = lookups;
+        _locker = locker;
     }
 
     protected override Task ProcessAsync(WebhookPayload payload, CancellationToken cancellationToken) {
-        var eventType = payload.GetEventType();
+        var donationItem = payload.GetBody<DonationItem>(_jsonProvider);
 
-        switch (eventType) {
-            case EventTypes.Published:
-                CreateOrUpdate(payload);
-                break;
+        using (_locker.Lock(donationItem.Name)) {
+            var eventType = payload.GetEventType();
 
-            case EventTypes.Unpublished:
-                Unpublish(payload);
-                break;
+            switch (eventType) {
+                case EventTypes.Published:
+                    CreateOrUpdate(payload, donationItem);
+                    break;
+
+                case EventTypes.Unpublished:
+                    Unpublish(payload, donationItem);
+                    break;
+            }
         }
 
         return Task.CompletedTask;
     }
 
-    private void CreateOrUpdate(WebhookPayload payload) {
-        var donationItem = payload.GetBody<DonationItem>(_jsonProvider);
+    private void CreateOrUpdate(WebhookPayload payload, DonationItem donationItem) {
         var collection = _contentCache.Single<DonationItemsContent>();
         var existingContent = GetExistingContent(donationItem.Name, payload.GetHeader(Headers.PreviousName));
 
@@ -99,8 +106,7 @@ public class DonationItemReceiver : WebhookReceiver {
         contentPublisher.SaveAndPublish();
     }
 
-    private void Unpublish(WebhookPayload payload) {
-        var donationItem = payload.GetBody<DonationItem>(_jsonProvider);
+    private void Unpublish(WebhookPayload payload, DonationItem donationItem) {
         var existingContent = GetExistingContent(donationItem.Name, payload.GetHeader(Headers.PreviousName));
 
         if (existingContent != null) {
