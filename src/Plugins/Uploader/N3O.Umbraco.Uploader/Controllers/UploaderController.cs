@@ -39,7 +39,7 @@ public class UploaderController : PluginController {
     
     [HttpPost("upload")]
     public async Task<ActionResult<FileMedia>> Upload([FromForm] FileUploadReq req) {
-        var now = _clock.GetCurrentInstant();
+        var now = _clock.GetCurrentInstant().ToUnixTimeTicks().ToString();
     
         using (var uploadedFile = await GetUploadedFileAsync(req)) {
             if (uploadedFile == null) {

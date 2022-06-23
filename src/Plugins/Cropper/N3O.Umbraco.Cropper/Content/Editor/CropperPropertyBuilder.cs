@@ -86,7 +86,7 @@ public class CropperPropertyBuilder : PropertyBuilder {
     }
 
     public CropperPropertyBuilder SetImage(Stream stream, string filename) {
-        var instant = _clock.GetCurrentInstant();
+        var instant = _clock.GetCurrentInstant().ToUnixTimeTicks().ToString();
 
         stream.Rewind();
 
@@ -100,7 +100,7 @@ public class CropperPropertyBuilder : PropertyBuilder {
         _height = metadata.Height;
         _width = metadata.Width;
         _filename = filename;
-        _mediaId = instant.GetMediaId();
+        _mediaId = instant;
         _src = filename.GetMediaUrlPath(instant);
 
         return this;

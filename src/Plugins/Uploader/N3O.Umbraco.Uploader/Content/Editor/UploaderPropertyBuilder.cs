@@ -53,7 +53,7 @@ public class UploaderPropertyBuilder : PropertyBuilder {
     }
 
     public UploaderPropertyBuilder SetFile(Stream stream, string filename) {
-        var instant = _clock.GetCurrentInstant();
+        var instant = _clock.GetCurrentInstant().ToUnixTimeTicks().ToString();
 
         stream.Rewind();
 
