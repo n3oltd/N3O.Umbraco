@@ -40,14 +40,14 @@ public class CropperController : PluginController {
 
     [HttpPost("upload")]
     public async Task<ActionResult<ImageMedia>> Upload([FromForm] ImageUploadReq req) {
-        var now = _clock.GetCurrentInstant();
+        var instant = _clock.GetCurrentInstant();
     
         using (var uploadedImage = await GetUploadedImageAsync(req)) {
             if (uploadedImage == null) {
                 return BadRequest();
             }
 
-            var storagePath = uploadedImage.Filename.GetStoragePath(now);
+            var storagePath = uploadedImage.Filename.GetStoragePath(instant);
 
             _mediaFileManager.FileSystem.AddFile(storagePath, uploadedImage.Stream, false);
 
