@@ -153,8 +153,15 @@ public class QueueImportsHandler : IRequestHandler<QueueImportsCommand, QueueImp
                 var replacesCriteria = canReplace
                                            ? csvReader.Row.GetRawField(_replacesColumnTitle)
                                            : null;
-                Guid? contentId = hasContentKey ? Guid.Parse(csvReader.Row.GetRawField(_contentIdColumnTitle)) : null;
-
+                var contentIdField = csvReader.Row.GetRawField(_contentIdColumnTitle);
+                Guid? contentId = hasContentKey && contentIdField.HasValue() ? Guid.Parse(contentIdField) : null;
+                
+                if (replacesCriteria.HasValue() && contentId.HasValue()) {
+                    _errorLog.AddError<Strings>(s => s.BothReplaceCriteriaContentKeySpecified_1, _replacesColumnTitle + ", " + _contentIdColumnTitle);
+                }
+                
+                _errorLog.ThrowIfHasErrors();
+                
                 if (replacesCriteria.HasValue()) {
                     import.Action = ImportActions.Update;
                     import.ReplacesId = FindExistingId(containerContent,
@@ -309,5 +316,6 @@ public class QueueImportsHandler : IRequestHandler<QueueImportsCommand, QueueImp
         public string MissingColumn_1 => $"CSV file is missing column {"{0}".Quote()}";
         public string MultipleContentMatched_1 => $"More than one content found for {"{0}".Quote()}";
         public string NoContentMatched_1 => $"No content found for {"{0}".Quote()}";
+        public string BothReplaceCriteriaContentKeySpecified_1 => $"Specified columns cannot conatin values at the same  time : {"{0}".Quote()}";
     }
 }
