@@ -49,13 +49,7 @@ angular.module("umbraco")
             
             const csvFile = document.getElementById("csvFile");
             const zipFile = document.getElementById("zipFile");
-            
-            if (!$scope.dateFormat) {
-                processingError("Please specify the date format used in the CSV file");
 
-                return;
-            }
-            
             if (!csvFile.value || csvFile.value.split(".")[1].toLowerCase() != "csv") {
                 processingError("A valid CSV file must be specified");
                 
@@ -63,7 +57,7 @@ angular.module("umbraco")
             }
 
             if (zipFile.value && zipFile.value.split(".")[1].toLowerCase() != "zip") {
-                errorImporting("The selected file is not a valid ZIP file");
+                processingError("The selected file is not a valid ZIP file");
                 
                 return;
             }
@@ -113,6 +107,10 @@ angular.module("umbraco")
         }
 
         function processingError(message) {
+            if(Array.isArray(message) === false){
+                message = [message];
+            }
+
             $scope.processing = false;
             $scope.errorMessages = message;
             $scope.show = "error";
