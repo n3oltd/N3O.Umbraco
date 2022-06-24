@@ -120,10 +120,14 @@
                 <div class="umb-property">
                     <div class="control-group umb-control-group">
                         <div class="umb-el-wrap">
-                            <p>
-                              <em class="text-error" ng-show="errorMessage">{{errorMessage}}</em>
-                            </p>
-                            
+                            <div ng-show="errorMessages">
+                                <ul>
+                                    <li ng-repeat="errorMessage in errorMessages">
+                                        <em class="text-error">{{errorMessage}}</em>
+                                    </li>
+                                </ul>
+                            </div>
+
                             <p>
                                 <a href class="btn btn-secondary" ng-click="startOver()">Start Over</a>
                             </p>
