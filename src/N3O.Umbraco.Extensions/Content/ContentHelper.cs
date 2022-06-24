@@ -141,7 +141,7 @@ public class ContentHelper : IContentHelper {
         while (true) {
             descendants.AddRange(getPagedContent(content.Id, pageIndex, pageSize, out var totalRecords));
 
-            if ((pageIndex + pageSize) >= totalRecords) {
+            if ((pageIndex + 1) * pageSize >= totalRecords) {
                 break;
             }
 
