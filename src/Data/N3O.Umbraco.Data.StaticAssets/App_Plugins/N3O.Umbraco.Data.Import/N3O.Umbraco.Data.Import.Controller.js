@@ -106,13 +106,13 @@ angular.module("umbraco")
             return await res.json();
         }
 
-        function processingError(message) {
-            if(Array.isArray(message) === false){
-                message = [message];
+        function processingError(messages) {
+            if (!Array.isArray(messages)) {
+                messages = [ messages ];
             }
 
             $scope.processing = false;
-            $scope.errorMessages = message;
+            $scope.errorMessages = messages;
             $scope.show = "error";
         }
 
