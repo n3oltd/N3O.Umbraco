@@ -123,7 +123,7 @@ public class QueueImportsHandler : IRequestHandler<QueueImportsCommand, QueueImp
             var queuedAt = _clock.GetLocalNow().ToDateTimeUnspecified();
             var canReplace = csvReader.GetColumnHeadings().Contains(_replacesColumnTitle, true);
             var hasNameColumn = csvReader.GetColumnHeadings().Contains(_nameColumnTitle, true);
-            var hasContentKey= csvReader.GetColumnHeadings().Contains(_contentIdColumnTitle, true);
+            var hasContentId = csvReader.GetColumnHeadings().Contains(_contentIdColumnTitle, true);
             
             var contentMatchers = _contentMatchers.Where(x => x.IsMatcher(contentType.Alias)).ToList();
             var parserSettings =  _jsonProvider.SerializeObject(new ParserSettings(req.Model.DatePattern,
@@ -154,10 +154,14 @@ public class QueueImportsHandler : IRequestHandler<QueueImportsCommand, QueueImp
                                            ? csvReader.Row.GetRawField(_replacesColumnTitle)
                                            : null;
                 var contentIdField = csvReader.Row.GetRawField(_contentIdColumnTitle);
-                Guid? contentId = hasContentKey && contentIdField.HasValue() ? Guid.Parse(contentIdField) : null;
+                var contentId = hasContentId && contentIdField.HasValue()
+                                    ? Guid.Parse(contentIdField)
+                                    : default(Guid?);
                 
                 if (replacesCriteria.HasValue() && contentId.HasValue()) {
-                    _errorLog.AddError<Strings>(s => s.BothReplaceCriteriaContentKeySpecified_1, _replacesColumnTitle + ", " + _contentIdColumnTitle);
+                    _errorLog.AddError<Strings>(s => s.CannotSpecifyContentIdAndReplaces_2,
+                                                _contentIdColumnTitle,
+                                                _replacesColumnTitle);
                 }
                 
                 _errorLog.ThrowIfHasErrors();
@@ -312,10 +316,11 @@ public class QueueImportsHandler : IRequestHandler<QueueImportsCommand, QueueImp
     }
     
     public class Strings : CodeStrings {
+        public string CannotSpecifyContentIdAndReplaces_2 => $"{"{0}".Quote()} and {"{1}".Quote()} columns cannot both be specified";
         public string MaxRowsExceeded_1 => $"The CSV file contains more than the maximum allowed {0} rows";
         public string MissingColumn_1 => $"CSV file is missing column {"{0}".Quote()}";
         public string MultipleContentMatched_1 => $"More than one content found for {"{0}".Quote()}";
         public string NoContentMatched_1 => $"No content found for {"{0}".Quote()}";
-        public string BothReplaceCriteriaContentKeySpecified_1 => $"Specified columns cannot conatin values at the same  time : {"{0}".Quote()}";
+        
     }
 }
