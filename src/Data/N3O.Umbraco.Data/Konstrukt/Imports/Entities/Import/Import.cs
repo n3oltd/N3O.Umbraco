@@ -13,47 +13,43 @@ public partial class Import {
     
     [Column(nameof(Reference))]
     public string Reference { get; set; }
-    
-    [Column(nameof(Name))]
-    public string Name { get; set; }
-    
+
     [Column(nameof(QueuedAt))]
     public DateTime QueuedAt { get; set; }
 
-    [Column(nameof(QueuedByUser))]
-    public Guid QueuedByUser { get; set; }
-    
-    [Column(nameof(QueuedByName))]
-    public string QueuedByName { get; set; }
+    [Column(nameof(QueuedBy))]
+    [NullSetting(NullSetting = NullSettings.Null)]
+    public string QueuedBy { get; set; }
 
     [Column(nameof(Action))]
     public string Action { get; set; }
 
-    [Column(nameof(BatchReference))]
-    public string BatchReference { get; set; }
-
-    [Column(nameof(BatchFilename))]
-    public string BatchFilename { get; set; }
+    [Column(nameof(Filename))]
+    public string Filename { get; set; }
+    
+    [Column(nameof(Row))]
+    [NullSetting(NullSetting = NullSettings.Null)]
+    public int? Row { get; set; }
     
     [Column(nameof(ParserSettings))]
     [NullSetting(NullSetting = NullSettings.Null)]
     public string ParserSettings { get; set; }
-    
-    [Column(nameof(FileRowNumber))]
-    public int FileRowNumber { get; set; }
 
     [Column(nameof(ContentTypeAlias))]
     public string ContentTypeAlias { get; set; }
     
     [Column(nameof(ContentTypeName))]
     public string ContentTypeName { get; set; }
-    
+
     [Column(nameof(ReplacesId))]
     [NullSetting(NullSetting = NullSettings.Null)]
     public Guid? ReplacesId { get; set; }
     
-    [Column(nameof(ParentId))]
-    public Guid ParentId { get; set; }
+    [Column(nameof(ContainerId))]
+    public Guid ContainerId { get; set; }
+    
+    [Column(nameof(Name))]
+    public string Name { get; set; }
     
     [Column(nameof(Data))]
     [SpecialDbType(SpecialDbTypes.NTEXT)]

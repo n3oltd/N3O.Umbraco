@@ -37,6 +37,7 @@
         <ProjectReference Include="..\..\Scheduler\N3O.Umbraco.Scheduler\N3O.Umbraco.Scheduler.csproj" />
         <ProjectReference Include="..\..\Storage\N3O.Umbraco.Storage\N3O.Umbraco.Storage.csproj" />
         <ProjectReference Include="..\..\Validation\N3O.Umbraco.Validation\N3O.Umbraco.Validation.csproj" />
+        <ProjectReference Include="..\..\Webhooks\N3O.Umbraco.Webhooks\N3O.Umbraco.Webhooks.csproj" />
     </ItemGroup>
 
     <ItemGroup>

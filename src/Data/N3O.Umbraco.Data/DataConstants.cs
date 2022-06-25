@@ -53,4 +53,16 @@ public static class DataConstants {
             public const string PrimaryKey = "PK_N3O_Imports";
         }
     }
+
+    public static class Webhooks {
+        public static class HookIds {
+            public const string Import = nameof(Import);
+        }
+        
+        public static class Headers {
+            public const string ContentId = "N3O-Import-Content-Id";
+            public const string Name = "N3O-Import-Name";
+            public const string Replaces = "N3O-Import-Replaces";
+        }
+    }
 }

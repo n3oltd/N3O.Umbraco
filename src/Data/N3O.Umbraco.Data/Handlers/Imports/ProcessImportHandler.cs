@@ -156,7 +156,7 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
         if (import.Action == ImportActions.Create) {
             var contentType = _contentTypeService.Get(import.ContentTypeAlias);
 
-            contentPublisher = _contentEditor.New(import.Name, import.ParentId, contentType.Alias, contentId);
+            contentPublisher = _contentEditor.New(import.Name, import.ContainerId, contentType.Alias, contentId);
         } else if (import.Action == ImportActions.Update) {
             contentPublisher = _contentEditor.ForExisting(import.ReplacesId.Value);
         } else {

@@ -74,6 +74,7 @@ public class DataComposer : Composer {
     }
 
     private void RegisterImports(IUmbracoBuilder builder) {
+        builder.Services.AddTransient<IImportQueue, ImportQueue>();
         builder.Services.AddTransient<IImportProcessingQueue, ImportProcessingQueue>();
 
         builder.Components().Append<ImportsMigrationsComponent>();
