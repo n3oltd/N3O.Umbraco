@@ -3,8 +3,6 @@ using N3O.Umbraco.Data.Konstrukt;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Mediator;
-using N3O.Umbraco.Storage.Extensions;
-using N3O.Umbraco.Storage.Services;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Infrastructure.Persistence;

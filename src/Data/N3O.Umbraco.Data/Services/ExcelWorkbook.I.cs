@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Data.Services;
+namespace N3O.Umbraco.Data;
 
 public interface IExcelWorkbook {
     void AddWorksheet(IExcelTable table);

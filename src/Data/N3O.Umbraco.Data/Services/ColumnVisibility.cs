@@ -2,7 +2,7 @@ using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Security;
 using Umbraco.Cms.Core.Security;
 
-namespace N3O.Umbraco.Data.Services;
+namespace N3O.Umbraco.Data;
 
 public class ColumnVisibility : IColumnVisibility {
     private readonly IBackOfficeSecurityAccessor _backOfficeSecurityAccessor;

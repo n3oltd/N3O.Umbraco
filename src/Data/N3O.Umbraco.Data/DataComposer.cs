@@ -7,7 +7,6 @@ using N3O.Umbraco.Data.DataTypes;
 using N3O.Umbraco.Data.Filters;
 using N3O.Umbraco.Data.Konstrukt;
 using N3O.Umbraco.Data.Providers;
-using N3O.Umbraco.Data.Services;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using OfficeOpenXml;

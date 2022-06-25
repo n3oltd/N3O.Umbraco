@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using IParser = N3O.Umbraco.Data.Parsing.IParser;
 
-namespace N3O.Umbraco.Data.Services;
+namespace N3O.Umbraco.Data;
 
 public class CsvReader : ICsvReader {
     private readonly IParser _parser;

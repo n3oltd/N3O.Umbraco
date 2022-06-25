@@ -4,7 +4,7 @@ using N3O.Umbraco.Data.Parsing;
 using System.Collections.Generic;
 using System.IO;
 
-namespace N3O.Umbraco.Data.Services;
+namespace N3O.Umbraco.Data;
 
 public class Workspace : IWorkspace {
     private readonly IParserFactory _parserFactory;

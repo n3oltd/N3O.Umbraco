@@ -1,13 +1,12 @@
 using Azure.Storage.Blobs;
 using Humanizer.Bytes;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Storage.Services;
 using N3O.Umbraco.Utilities;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Storage.Azure.Services;
+namespace N3O.Umbraco.Storage.Azure;
 
 public class AzureStorageFolder : IStorageFolder {
     private readonly BlobContainerClient _container;

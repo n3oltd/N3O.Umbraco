@@ -10,7 +10,7 @@ using ExcelColumn = N3O.Umbraco.Data.Models.ExcelColumn;
 using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 using WorkTable = OfficeOpenXml.Table.ExcelTable;
 
-namespace N3O.Umbraco.Data.Services;
+namespace N3O.Umbraco.Data;
 
 public class ExcelWorksheetWriter {
     private const int FirstColumn = 1;

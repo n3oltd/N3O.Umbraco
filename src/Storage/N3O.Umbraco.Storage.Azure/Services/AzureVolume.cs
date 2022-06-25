@@ -1,12 +1,11 @@
 using Azure.Storage.Blobs;
 using Microsoft.Extensions.Configuration;
 using N3O.Umbraco.Locks;
-using N3O.Umbraco.Storage.Services;
 using N3O.Umbraco.Utilities;
 using System.Threading.Tasks;
 using Umbraco.StorageProviders.AzureBlob.IO;
 
-namespace N3O.Umbraco.Storage.Azure.Services;
+namespace N3O.Umbraco.Storage.Azure;
 
 public class AzureVolume : IVolume {
     private readonly ILocker _locker;

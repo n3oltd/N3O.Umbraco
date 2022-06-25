@@ -1,5 +1,4 @@
 using Konstrukt.Events;
-using N3O.Umbraco.Data.Services;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Storage.Services;
+namespace N3O.Umbraco.Storage;
 
 public class DiskVolume : IVolume {
     private readonly IWebHostEnvironment _webHostEnvironment;

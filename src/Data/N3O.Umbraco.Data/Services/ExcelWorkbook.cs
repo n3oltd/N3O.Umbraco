@@ -6,7 +6,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Data.Services;
+namespace N3O.Umbraco.Data;
 
 public class ExcelWorkbook : IExcelWorkbook {
     private readonly IColumnVisibility _columnVisibility;

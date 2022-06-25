@@ -2,7 +2,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Storage.Services;
+namespace N3O.Umbraco.Storage;
 
 public interface IStorageFolder {
     Task AddFileAsync(string filename, Stream stream);

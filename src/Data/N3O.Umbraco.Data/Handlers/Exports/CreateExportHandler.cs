@@ -6,7 +6,6 @@ using N3O.Umbraco.Data.Extensions;
 using N3O.Umbraco.Data.Filters;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
-using N3O.Umbraco.Data.Services;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Mediator;

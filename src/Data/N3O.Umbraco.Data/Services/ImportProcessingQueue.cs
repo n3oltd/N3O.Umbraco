@@ -5,7 +5,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Scheduler;
 using System.Collections.Generic;
 
-namespace N3O.Umbraco.Data.Services;
+namespace N3O.Umbraco.Data;
 
 public class ImportProcessingQueue : IImportProcessingQueue {
     private readonly IBackgroundJob _backgroundJob;

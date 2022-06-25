@@ -5,7 +5,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Storage.Services;
+namespace N3O.Umbraco.Storage;
 
 public class DiskStorageFolder : IStorageFolder {
     private readonly string _folderPath;

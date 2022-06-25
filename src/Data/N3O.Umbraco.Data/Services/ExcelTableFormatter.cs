@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
-namespace N3O.Umbraco.Data.Services;
+namespace N3O.Umbraco.Data;
 
 public class ExcelTableFormatter : IExcelTableFormatter {
     private readonly IReadOnlyDictionary<DataType, IExcelCellConverter> _defaultConverters;

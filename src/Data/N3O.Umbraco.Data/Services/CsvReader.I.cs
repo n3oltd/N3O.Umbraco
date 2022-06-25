@@ -2,7 +2,7 @@ using N3O.Umbraco.Data.Models;
 using System;
 using System.Collections.Generic;
 
-namespace N3O.Umbraco.Data.Services;
+namespace N3O.Umbraco.Data;
 
 public interface ICsvReader : IDisposable {
     IReadOnlyList<string> GetColumnHeadings();
