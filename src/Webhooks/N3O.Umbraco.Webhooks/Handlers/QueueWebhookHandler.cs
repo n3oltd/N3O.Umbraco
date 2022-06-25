@@ -40,13 +40,14 @@ public class QueueWebhookHandler : IRequestHandler<QueueWebhookCommand, None, No
         return Task.FromResult(None.Empty);
     }
 
-    private WebhookPayload CreatePayload(string eventId, string route) {
+    private WebhookPayload CreatePayload(string hookId, string route) {
         var httpRequest = _httpContextAccessor.HttpContext.Request;
 
         var timestamp = _clock.GetCurrentInstant();
         var remoteIp = _remoteIpAddressAccessor.GetRemoteIpAddress();
         var routeSegments = HttpUtility.UrlDecode(route ?? "")
-                                       .Split("/", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                                       .Split("/",
+                                              StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
         var headerData = new Dictionary<string, string>();
         foreach (var header in httpRequest.Headers) {
@@ -70,6 +71,6 @@ public class QueueWebhookHandler : IRequestHandler<QueueWebhookCommand, None, No
             body = reader.ReadToEnd();
         }
 
-        return new WebhookPayload(eventId, timestamp, remoteIp, headerData, postData, queryData, routeSegments, body);
+        return new WebhookPayload(hookId, timestamp, remoteIp, headerData, postData, queryData, routeSegments, body);
     }
 }
