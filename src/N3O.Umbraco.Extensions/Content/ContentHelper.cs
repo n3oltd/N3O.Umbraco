@@ -135,17 +135,17 @@ public class ContentHelper : IContentHelper {
     private IReadOnlyList<IContent> GetAllPagedContent(IContent content, GetPagedContent getPagedContent) {
         var descendants = new List<IContent>();
 
-        var startIndex = 0;
+        var pageIndex = 0;
         var pageSize = 100;
 
         while (true) {
-            descendants.AddRange(getPagedContent(content.Id, startIndex, pageSize, out var totalRecords));
+            descendants.AddRange(getPagedContent(content.Id, pageIndex, pageSize, out var totalRecords));
 
-            if ((startIndex + pageSize) >= totalRecords) {
+            if ((pageIndex + 1) * pageSize >= totalRecords) {
                 break;
             }
 
-            startIndex += pageSize;
+            pageIndex++;
         }
 
         return descendants;
