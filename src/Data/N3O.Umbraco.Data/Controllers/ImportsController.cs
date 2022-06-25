@@ -67,7 +67,7 @@ public class ImportsController : PluginController {
         return File(res.Contents, DataConstants.ContentTypes.Csv, res.Filename);
     }
     
-    [HttpPost("queue/{contentId:guid}/{contentType}")]
+    [HttpPost("queue/{containerId:guid}/{contentType}")]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<QueueImportsRes>> Queue(QueueImportsReq req) {
         try {

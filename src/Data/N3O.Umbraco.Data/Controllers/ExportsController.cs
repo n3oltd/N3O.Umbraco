@@ -54,7 +54,7 @@ public class ExportsController : PluginController {
         }
     }
 
-    [HttpPost("export/{contentId:guid}/{contentType}")]
+    [HttpPost("export/{containerId:guid}/{contentType}")]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> CreateExport(ExportReq req) {
         try {

@@ -53,7 +53,7 @@ public class CreateExportHandler : IRequestHandler<CreateExportCommand, ExportRe
     }
 
     public async Task<ExportFile> Handle(CreateExportCommand req, CancellationToken cancellationToken) {
-        var containerContent = req.ContentId.Run(_contentService.GetById, true);
+        var containerContent = req.ContainerId.Run(_contentService.GetById, true);
         var contentType = _contentTypeService.Get(req.ContentType);
 
         bool Filter(UmbracoPropertyInfo propertyInfo) {
