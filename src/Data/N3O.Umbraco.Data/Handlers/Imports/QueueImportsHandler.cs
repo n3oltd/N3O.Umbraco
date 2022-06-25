@@ -13,6 +13,7 @@ using N3O.Umbraco.Json;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.References;
+using N3O.Umbraco.Storage;
 using N3O.Umbraco.Storage.Extensions;
 using System;
 using System.Collections.Generic;
