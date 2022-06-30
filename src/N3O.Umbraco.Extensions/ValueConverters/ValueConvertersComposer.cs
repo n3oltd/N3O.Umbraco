@@ -6,6 +6,6 @@ namespace N3O.Umbraco.ValueConverters;
 
 public class ValueConvertersComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
-        var index = builder.PropertyValueConverters().InsertBefore<MultiNodeTreePickerValueConverter, StronglyTypedMultiNodeTreePickerValueConverter>();
+        builder.PropertyValueConverters().InsertBefore<MultiNodeTreePickerValueConverter, StronglyTypedMultiNodeTreePickerValueConverter>();
     }
 }
