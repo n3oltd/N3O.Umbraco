@@ -5,6 +5,6 @@
         <link>https://n3o.ltd</link>
     </creator>
     <area alias="dashboardTabs">
-        <key alias="Hangfire">Contentment</key>
+        <key alias="schedulerDashboard">Scheduler</key>
     </area>
 </language>
