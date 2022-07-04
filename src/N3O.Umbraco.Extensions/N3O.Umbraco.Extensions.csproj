@@ -44,10 +44,10 @@
         <PackageReference Include="Perplex.ContentBlocks.Core" Version="2.1.4" />
         <PackageReference Include="Refit" Version="6.3.2" />
         <PackageReference Include="Refit.Newtonsoft.Json" Version="6.3.2" />
-        <PackageReference Include="Umbraco.Cms.Core" Version="10.0.0" />
-        <PackageReference Include="Umbraco.Cms.Web.Common" Version="10.0.0" />
-        <PackageReference Include="Umbraco.Cms.Web.Website" Version="10.0.0" />
-        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="10.0.0" />
+        <PackageReference Include="Umbraco.Cms.Core" Version="10.0.1" />
+        <PackageReference Include="Umbraco.Cms.Web.Common" Version="10.0.1" />
+        <PackageReference Include="Umbraco.Cms.Web.Website" Version="10.0.1" />
+        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="10.0.1" />
         <PackageReference Include="Umbraco.Code" Version="2.0.0" />
     </ItemGroup>
 
