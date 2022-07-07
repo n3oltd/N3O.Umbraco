@@ -16,7 +16,7 @@ public class ImportsConfigurator : IKonstruktConfigurator {
         var collection = dashboard.SetCollection<Import>(x => x.Id,
                                                          "Import",
                                                          "Imports",
-                                                         "imports",
+                                                         "Imports queue",
                                                          "icon-arrow-up",
                                                          "icon-arrow-up");
 
