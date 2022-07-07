@@ -79,6 +79,7 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
                     var propertyInfoFields = _jsonProvider.DeserializeObject<ImportData>(import.Data)
                                                           .Fields
                                                           .GroupBy(x => x.Property)
+                                                          .Where(x => x.Any(f => f.Value.HasValue()))
                                                           .ToDictionary(x => propertyInfos[x.Key],
                                                                         x => x.ToList());
                     var importData = _jsonProvider.DeserializeObject<ImportData>(import.Data);
