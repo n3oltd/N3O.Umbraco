@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Core.Content
+namespace DemoSite.Content
 {
 	// Mixin Content Type with alias "emailTemplate"
 	/// <summary>Email Template</summary>
@@ -25,7 +25,7 @@ namespace DemoSite.Core.Content
 		/// <summary>Assets</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.TemplateAssetItem> Assets { get; }
+		global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.TemplateAssetItem> Assets { get; }
 	}
 
 	/// <summary>Email Template</summary>
@@ -65,11 +65,11 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("assets")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.TemplateAssetItem> Assets => GetAssets(this, _publishedValueFallback);
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.TemplateAssetItem> Assets => GetAssets(this, _publishedValueFallback);
 
 		/// <summary>Static getter for Assets</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.TemplateAssetItem> GetAssets(IEmailTemplate that, IPublishedValueFallback publishedValueFallback) => that.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.TemplateAssetItem>>(publishedValueFallback, "assets");
+		public static global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.TemplateAssetItem> GetAssets(IEmailTemplate that, IPublishedValueFallback publishedValueFallback) => that.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.TemplateAssetItem>>(publishedValueFallback, "assets");
 	}
 }

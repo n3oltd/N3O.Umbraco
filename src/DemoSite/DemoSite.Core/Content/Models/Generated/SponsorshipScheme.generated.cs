@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Core.Content
+namespace DemoSite.Content
 {
 	/// <summary>Sponsorship Scheme</summary>
 	[PublishedModel("sponsorshipScheme")]
@@ -71,7 +71,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("dimension1Options")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension1Value> Dimension1Options => global::DemoSite.Core.Content.FundDimensionsOptions.GetDimension1Options(this, _publishedValueFallback);
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FundDimension1Value> Dimension1Options => global::DemoSite.Content.FundDimensionsOptions.GetDimension1Options(this, _publishedValueFallback);
 
 		///<summary>
 		/// Themes
@@ -79,7 +79,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("dimension2Options")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension2Value> Dimension2Options => global::DemoSite.Core.Content.FundDimensionsOptions.GetDimension2Options(this, _publishedValueFallback);
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FundDimension2Value> Dimension2Options => global::DemoSite.Content.FundDimensionsOptions.GetDimension2Options(this, _publishedValueFallback);
 
 		///<summary>
 		/// Stipulations
@@ -87,6 +87,6 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("dimension3Options")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension3Value> Dimension3Options => global::DemoSite.Core.Content.FundDimensionsOptions.GetDimension3Options(this, _publishedValueFallback);
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FundDimension3Value> Dimension3Options => global::DemoSite.Content.FundDimensionsOptions.GetDimension3Options(this, _publishedValueFallback);
 	}
 }

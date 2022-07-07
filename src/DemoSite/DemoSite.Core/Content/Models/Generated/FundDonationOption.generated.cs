@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Core.Content
+namespace DemoSite.Content
 {
 	/// <summary>Fund</summary>
 	[PublishedModel("fundDonationOption")]
@@ -55,7 +55,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("donationItem")]
-		public virtual global::DemoSite.Core.Content.DonationItem DonationItem => this.Value<global::DemoSite.Core.Content.DonationItem>(_publishedValueFallback, "donationItem");
+		public virtual global::DemoSite.Content.DonationItem DonationItem => this.Value<global::DemoSite.Content.DonationItem>(_publishedValueFallback, "donationItem");
 
 		///<summary>
 		/// Price Handles
@@ -63,7 +63,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("donationPriceHandles")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.PriceHandle> DonationPriceHandles => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.PriceHandle>>(_publishedValueFallback, "donationPriceHandles");
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.PriceHandle> DonationPriceHandles => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.PriceHandle>>(_publishedValueFallback, "donationPriceHandles");
 
 		///<summary>
 		/// Price Handles
@@ -71,7 +71,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("regularGivingPriceHandles")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.PriceHandle> RegularGivingPriceHandles => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.PriceHandle>>(_publishedValueFallback, "regularGivingPriceHandles");
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.PriceHandle> RegularGivingPriceHandles => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.PriceHandle>>(_publishedValueFallback, "regularGivingPriceHandles");
 
 		///<summary>
 		/// Default Giving Type
@@ -79,7 +79,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("defaultGivingType")]
-		public virtual global::N3O.Umbraco.Giving.Lookups.GivingType DefaultGivingType => global::DemoSite.Core.Content.DonationOption.GetDefaultGivingType(this, _publishedValueFallback);
+		public virtual global::N3O.Umbraco.Giving.Lookups.GivingType DefaultGivingType => global::DemoSite.Content.DonationOption.GetDefaultGivingType(this, _publishedValueFallback);
 
 		///<summary>
 		/// Location
@@ -87,7 +87,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("dimension1")]
-		public virtual global::DemoSite.Core.Content.FundDimension1Value Dimension1 => global::DemoSite.Core.Content.DonationOption.GetDimension1(this, _publishedValueFallback);
+		public virtual global::DemoSite.Content.FundDimension1Value Dimension1 => global::DemoSite.Content.DonationOption.GetDimension1(this, _publishedValueFallback);
 
 		///<summary>
 		/// Theme
@@ -95,7 +95,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("dimension2")]
-		public virtual global::DemoSite.Core.Content.FundDimension2Value Dimension2 => global::DemoSite.Core.Content.DonationOption.GetDimension2(this, _publishedValueFallback);
+		public virtual global::DemoSite.Content.FundDimension2Value Dimension2 => global::DemoSite.Content.DonationOption.GetDimension2(this, _publishedValueFallback);
 
 		///<summary>
 		/// Stipulation
@@ -103,27 +103,27 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("dimension3")]
-		public virtual global::DemoSite.Core.Content.FundDimension3Value Dimension3 => global::DemoSite.Core.Content.DonationOption.GetDimension3(this, _publishedValueFallback);
+		public virtual global::DemoSite.Content.FundDimension3Value Dimension3 => global::DemoSite.Content.DonationOption.GetDimension3(this, _publishedValueFallback);
 
 		///<summary>
 		/// Hide
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[ImplementPropertyType("hideDonation")]
-		public virtual bool HideDonation => global::DemoSite.Core.Content.DonationOption.GetHideDonation(this, _publishedValueFallback);
+		public virtual bool HideDonation => global::DemoSite.Content.DonationOption.GetHideDonation(this, _publishedValueFallback);
 
 		///<summary>
 		/// Hide Quantity
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[ImplementPropertyType("hideQuantity")]
-		public virtual bool HideQuantity => global::DemoSite.Core.Content.DonationOption.GetHideQuantity(this, _publishedValueFallback);
+		public virtual bool HideQuantity => global::DemoSite.Content.DonationOption.GetHideQuantity(this, _publishedValueFallback);
 
 		///<summary>
 		/// Hide
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[ImplementPropertyType("hideRegularGiving")]
-		public virtual bool HideRegularGiving => global::DemoSite.Core.Content.DonationOption.GetHideRegularGiving(this, _publishedValueFallback);
+		public virtual bool HideRegularGiving => global::DemoSite.Content.DonationOption.GetHideRegularGiving(this, _publishedValueFallback);
 	}
 }

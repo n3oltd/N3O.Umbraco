@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Core.Content
+namespace DemoSite.Content
 {
 	/// <summary>PayPal Settings</summary>
 	[PublishedModel("payPalSettings")]
@@ -87,7 +87,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("restrictCollectionDaysTo")]
-		public virtual global::System.Collections.Generic.List<global::N3O.Umbraco.Lookups.DayOfMonth> RestrictCollectionDaysTo => global::DemoSite.Core.Content.PaymentMethodSettings.GetRestrictCollectionDaysTo(this, _publishedValueFallback);
+		public virtual global::System.Collections.Generic.List<global::N3O.Umbraco.Lookups.DayOfMonth> RestrictCollectionDaysTo => global::DemoSite.Content.PaymentMethodSettings.GetRestrictCollectionDaysTo(this, _publishedValueFallback);
 
 		///<summary>
 		/// Transaction Description
@@ -95,7 +95,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("transactionDescription")]
-		public virtual string TransactionDescription => global::DemoSite.Core.Content.PaymentMethodSettings.GetTransactionDescription(this, _publishedValueFallback);
+		public virtual string TransactionDescription => global::DemoSite.Content.PaymentMethodSettings.GetTransactionDescription(this, _publishedValueFallback);
 
 		///<summary>
 		/// Transaction ID
@@ -103,6 +103,6 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("transactionId")]
-		public virtual string TransactionId => global::DemoSite.Core.Content.PaymentMethodSettings.GetTransactionId(this, _publishedValueFallback);
+		public virtual string TransactionId => global::DemoSite.Content.PaymentMethodSettings.GetTransactionId(this, _publishedValueFallback);
 	}
 }

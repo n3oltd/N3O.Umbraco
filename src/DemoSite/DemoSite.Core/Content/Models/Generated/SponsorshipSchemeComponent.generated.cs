@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Core.Content
+namespace DemoSite.Content
 {
 	/// <summary>Component</summary>
 	[PublishedModel("sponsorshipSchemeComponent")]
@@ -61,14 +61,14 @@ namespace DemoSite.Core.Content
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[ImplementPropertyType("priceAmount")]
-		public virtual decimal PriceAmount => global::DemoSite.Core.Content.Price.GetPriceAmount(this, _publishedValueFallback);
+		public virtual decimal PriceAmount => global::DemoSite.Content.Price.GetPriceAmount(this, _publishedValueFallback);
 
 		///<summary>
 		/// Price Locked
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[ImplementPropertyType("priceLocked")]
-		public virtual bool PriceLocked => global::DemoSite.Core.Content.Price.GetPriceLocked(this, _publishedValueFallback);
+		public virtual bool PriceLocked => global::DemoSite.Content.Price.GetPriceLocked(this, _publishedValueFallback);
 
 		///<summary>
 		/// Price Rules
@@ -76,6 +76,6 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("priceRules")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.PricingRule> PriceRules => global::DemoSite.Core.Content.PricingRules.GetPriceRules(this, _publishedValueFallback);
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.PricingRule> PriceRules => global::DemoSite.Content.PricingRules.GetPriceRules(this, _publishedValueFallback);
 	}
 }

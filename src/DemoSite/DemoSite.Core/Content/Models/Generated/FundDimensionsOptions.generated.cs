@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Core.Content
+namespace DemoSite.Content
 {
 	// Mixin Content Type with alias "fundDimensionsOptions"
 	/// <summary>Fund Dimensions Options</summary>
@@ -25,17 +25,17 @@ namespace DemoSite.Core.Content
 		/// <summary>Locations</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension1Value> Dimension1Options { get; }
+		global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FundDimension1Value> Dimension1Options { get; }
 
 		/// <summary>Themes</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension2Value> Dimension2Options { get; }
+		global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FundDimension2Value> Dimension2Options { get; }
 
 		/// <summary>Stipulations</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension3Value> Dimension3Options { get; }
+		global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FundDimension3Value> Dimension3Options { get; }
 	}
 
 	/// <summary>Fund Dimensions Options</summary>
@@ -75,12 +75,12 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("dimension1Options")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension1Value> Dimension1Options => GetDimension1Options(this, _publishedValueFallback);
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FundDimension1Value> Dimension1Options => GetDimension1Options(this, _publishedValueFallback);
 
 		/// <summary>Static getter for Locations</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension1Value> GetDimension1Options(IFundDimensionsOptions that, IPublishedValueFallback publishedValueFallback) => that.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension1Value>>(publishedValueFallback, "dimension1Options");
+		public static global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FundDimension1Value> GetDimension1Options(IFundDimensionsOptions that, IPublishedValueFallback publishedValueFallback) => that.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FundDimension1Value>>(publishedValueFallback, "dimension1Options");
 
 		///<summary>
 		/// Themes
@@ -88,12 +88,12 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("dimension2Options")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension2Value> Dimension2Options => GetDimension2Options(this, _publishedValueFallback);
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FundDimension2Value> Dimension2Options => GetDimension2Options(this, _publishedValueFallback);
 
 		/// <summary>Static getter for Themes</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension2Value> GetDimension2Options(IFundDimensionsOptions that, IPublishedValueFallback publishedValueFallback) => that.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension2Value>>(publishedValueFallback, "dimension2Options");
+		public static global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FundDimension2Value> GetDimension2Options(IFundDimensionsOptions that, IPublishedValueFallback publishedValueFallback) => that.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FundDimension2Value>>(publishedValueFallback, "dimension2Options");
 
 		///<summary>
 		/// Stipulations
@@ -101,11 +101,11 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("dimension3Options")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension3Value> Dimension3Options => GetDimension3Options(this, _publishedValueFallback);
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FundDimension3Value> Dimension3Options => GetDimension3Options(this, _publishedValueFallback);
 
 		/// <summary>Static getter for Stipulations</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension3Value> GetDimension3Options(IFundDimensionsOptions that, IPublishedValueFallback publishedValueFallback) => that.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FundDimension3Value>>(publishedValueFallback, "dimension3Options");
+		public static global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FundDimension3Value> GetDimension3Options(IFundDimensionsOptions that, IPublishedValueFallback publishedValueFallback) => that.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FundDimension3Value>>(publishedValueFallback, "dimension3Options");
 	}
 }

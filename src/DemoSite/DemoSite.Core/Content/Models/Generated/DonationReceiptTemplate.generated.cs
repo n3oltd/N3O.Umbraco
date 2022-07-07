@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Core.Content
+namespace DemoSite.Content
 {
 	/// <summary>Donation Receipt Template</summary>
 	[PublishedModel("donationReceiptTemplate")]
@@ -55,6 +55,6 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("assets")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.TemplateAssetItem> Assets => global::DemoSite.Core.Content.EmailTemplate.GetAssets(this, _publishedValueFallback);
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.TemplateAssetItem> Assets => global::DemoSite.Content.EmailTemplate.GetAssets(this, _publishedValueFallback);
 	}
 }

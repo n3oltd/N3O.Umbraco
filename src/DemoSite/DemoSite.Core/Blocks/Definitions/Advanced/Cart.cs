@@ -1,7 +1,7 @@
 using N3O.Umbraco.Blocks;
-using DemoSite.Core.Content;
+using DemoSite.Content;
 
-namespace DemoSite.Core.Blocks.Definitions;
+namespace DemoSite.Blocks.Definitions;
 
 public class Cart : BlockBuilder {
     public Cart() {

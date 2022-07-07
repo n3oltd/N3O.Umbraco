@@ -1,7 +1,7 @@
 using N3O.Umbraco.Content;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
-namespace DemoSite.Core.Content;
+namespace DemoSite.Content;
 
 public class PageVisibilityFilter : IContentVisibilityFilter {
     public bool IsFilterFor(IPublishedContent content) {

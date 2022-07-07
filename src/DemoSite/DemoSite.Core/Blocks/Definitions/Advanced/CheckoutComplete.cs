@@ -1,7 +1,7 @@
-using DemoSite.Core.Content;
+using DemoSite.Content;
 using N3O.Umbraco.Blocks;
 
-namespace DemoSite.Core.Blocks.Definitions;
+namespace DemoSite.Blocks.Definitions;
 
 public class CheckoutComplete : BlockBuilder {
     public CheckoutComplete() {

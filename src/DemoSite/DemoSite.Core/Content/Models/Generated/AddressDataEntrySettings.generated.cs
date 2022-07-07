@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Core.Content
+namespace DemoSite.Content
 {
 	/// <summary>Address Data Entry Settings</summary>
 	[PublishedModel("addressDataEntrySettings")]
@@ -55,7 +55,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("administrativeArea")]
-		public virtual global::DemoSite.Core.Content.AddressField AdministrativeArea => this.Value<global::DemoSite.Core.Content.AddressField>(_publishedValueFallback, "administrativeArea");
+		public virtual global::DemoSite.Content.AddressField AdministrativeArea => this.Value<global::DemoSite.Content.AddressField>(_publishedValueFallback, "administrativeArea");
 
 		///<summary>
 		/// Country
@@ -63,7 +63,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("country")]
-		public virtual global::DemoSite.Core.Content.AddressField Country => this.Value<global::DemoSite.Core.Content.AddressField>(_publishedValueFallback, "country");
+		public virtual global::DemoSite.Content.AddressField Country => this.Value<global::DemoSite.Content.AddressField>(_publishedValueFallback, "country");
 
 		///<summary>
 		/// Default
@@ -71,7 +71,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("defaultCountry")]
-		public virtual global::DemoSite.Core.Content.Country DefaultCountry => this.Value<global::DemoSite.Core.Content.Country>(_publishedValueFallback, "defaultCountry");
+		public virtual global::DemoSite.Content.Country DefaultCountry => this.Value<global::DemoSite.Content.Country>(_publishedValueFallback, "defaultCountry");
 
 		///<summary>
 		/// Line 1
@@ -79,7 +79,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("line1")]
-		public virtual global::DemoSite.Core.Content.AddressField Line1 => this.Value<global::DemoSite.Core.Content.AddressField>(_publishedValueFallback, "line1");
+		public virtual global::DemoSite.Content.AddressField Line1 => this.Value<global::DemoSite.Content.AddressField>(_publishedValueFallback, "line1");
 
 		///<summary>
 		/// Line 2
@@ -87,7 +87,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("line2")]
-		public virtual global::DemoSite.Core.Content.AddressField Line2 => this.Value<global::DemoSite.Core.Content.AddressField>(_publishedValueFallback, "line2");
+		public virtual global::DemoSite.Content.AddressField Line2 => this.Value<global::DemoSite.Content.AddressField>(_publishedValueFallback, "line2");
 
 		///<summary>
 		/// Line 3
@@ -95,7 +95,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("line3")]
-		public virtual global::DemoSite.Core.Content.AddressField Line3 => this.Value<global::DemoSite.Core.Content.AddressField>(_publishedValueFallback, "line3");
+		public virtual global::DemoSite.Content.AddressField Line3 => this.Value<global::DemoSite.Content.AddressField>(_publishedValueFallback, "line3");
 
 		///<summary>
 		/// Locality
@@ -103,7 +103,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("locality")]
-		public virtual global::DemoSite.Core.Content.AddressField Locality => this.Value<global::DemoSite.Core.Content.AddressField>(_publishedValueFallback, "locality");
+		public virtual global::DemoSite.Content.AddressField Locality => this.Value<global::DemoSite.Content.AddressField>(_publishedValueFallback, "locality");
 
 		///<summary>
 		/// Postal Code
@@ -111,6 +111,6 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("postalCode")]
-		public virtual global::DemoSite.Core.Content.AddressField PostalCode => this.Value<global::DemoSite.Core.Content.AddressField>(_publishedValueFallback, "postalCode");
+		public virtual global::DemoSite.Content.AddressField PostalCode => this.Value<global::DemoSite.Content.AddressField>(_publishedValueFallback, "postalCode");
 	}
 }

@@ -1,9 +1,9 @@
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.StructuredData;
-using DemoSite.Core.Content;
+using DemoSite.Content;
 using Umbraco.Extensions;
 
-namespace DemoSite.Core.StructuredData;
+namespace DemoSite.StructuredData;
 
 public class HomePageStructuredData : StructuredDataProvider<HomePage> {
     protected override void AddStructuredData(JsonLd jsonLd, HomePage page) {

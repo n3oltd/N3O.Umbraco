@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Core.Content
+namespace DemoSite.Content
 {
 	// Mixin Content Type with alias "fundDimensionsValues"
 	/// <summary>Fund Dimensions Values</summary>
@@ -25,17 +25,17 @@ namespace DemoSite.Core.Content
 		/// <summary>Location</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		global::DemoSite.Core.Content.FundDimension1Value Dimension1 { get; }
+		global::DemoSite.Content.FundDimension1Value Dimension1 { get; }
 
 		/// <summary>Theme</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		global::DemoSite.Core.Content.FundDimension2Value Dimension2 { get; }
+		global::DemoSite.Content.FundDimension2Value Dimension2 { get; }
 
 		/// <summary>Stipulation</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		global::DemoSite.Core.Content.FundDimension3Value Dimension3 { get; }
+		global::DemoSite.Content.FundDimension3Value Dimension3 { get; }
 	}
 
 	/// <summary>Fund Dimensions Values</summary>
@@ -75,12 +75,12 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("dimension1")]
-		public virtual global::DemoSite.Core.Content.FundDimension1Value Dimension1 => GetDimension1(this, _publishedValueFallback);
+		public virtual global::DemoSite.Content.FundDimension1Value Dimension1 => GetDimension1(this, _publishedValueFallback);
 
 		/// <summary>Static getter for Location</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static global::DemoSite.Core.Content.FundDimension1Value GetDimension1(IFundDimensionsValues that, IPublishedValueFallback publishedValueFallback) => that.Value<global::DemoSite.Core.Content.FundDimension1Value>(publishedValueFallback, "dimension1");
+		public static global::DemoSite.Content.FundDimension1Value GetDimension1(IFundDimensionsValues that, IPublishedValueFallback publishedValueFallback) => that.Value<global::DemoSite.Content.FundDimension1Value>(publishedValueFallback, "dimension1");
 
 		///<summary>
 		/// Theme
@@ -88,12 +88,12 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("dimension2")]
-		public virtual global::DemoSite.Core.Content.FundDimension2Value Dimension2 => GetDimension2(this, _publishedValueFallback);
+		public virtual global::DemoSite.Content.FundDimension2Value Dimension2 => GetDimension2(this, _publishedValueFallback);
 
 		/// <summary>Static getter for Theme</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static global::DemoSite.Core.Content.FundDimension2Value GetDimension2(IFundDimensionsValues that, IPublishedValueFallback publishedValueFallback) => that.Value<global::DemoSite.Core.Content.FundDimension2Value>(publishedValueFallback, "dimension2");
+		public static global::DemoSite.Content.FundDimension2Value GetDimension2(IFundDimensionsValues that, IPublishedValueFallback publishedValueFallback) => that.Value<global::DemoSite.Content.FundDimension2Value>(publishedValueFallback, "dimension2");
 
 		///<summary>
 		/// Stipulation
@@ -101,11 +101,11 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("dimension3")]
-		public virtual global::DemoSite.Core.Content.FundDimension3Value Dimension3 => GetDimension3(this, _publishedValueFallback);
+		public virtual global::DemoSite.Content.FundDimension3Value Dimension3 => GetDimension3(this, _publishedValueFallback);
 
 		/// <summary>Static getter for Stipulation</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static global::DemoSite.Core.Content.FundDimension3Value GetDimension3(IFundDimensionsValues that, IPublishedValueFallback publishedValueFallback) => that.Value<global::DemoSite.Core.Content.FundDimension3Value>(publishedValueFallback, "dimension3");
+		public static global::DemoSite.Content.FundDimension3Value GetDimension3(IFundDimensionsValues that, IPublishedValueFallback publishedValueFallback) => that.Value<global::DemoSite.Content.FundDimension3Value>(publishedValueFallback, "dimension3");
 	}
 }

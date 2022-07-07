@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Core.Content
+namespace DemoSite.Content
 {
 	/// <summary>Staging Settings</summary>
 	[PublishedModel("stagingSettings")]
@@ -63,7 +63,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("rules")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FirewallRule> Rules => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.FirewallRule>>(_publishedValueFallback, "rules");
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FirewallRule> Rules => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FirewallRule>>(_publishedValueFallback, "rules");
 
 		///<summary>
 		/// Username

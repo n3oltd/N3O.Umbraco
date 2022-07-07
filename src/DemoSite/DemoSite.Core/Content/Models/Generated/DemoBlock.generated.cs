@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Core.Content
+namespace DemoSite.Content
 {
 	/// <summary>Demo</summary>
 	[PublishedModel("demoBlock")]
@@ -63,6 +63,6 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("notes")]
-		public virtual string Notes => global::DemoSite.Core.Content.Block.GetNotes(this, _publishedValueFallback);
+		public virtual string Notes => global::DemoSite.Content.Block.GetNotes(this, _publishedValueFallback);
 	}
 }

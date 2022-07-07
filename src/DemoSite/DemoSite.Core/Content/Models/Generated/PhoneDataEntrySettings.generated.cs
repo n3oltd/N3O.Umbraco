@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Core.Content
+namespace DemoSite.Content
 {
 	/// <summary>Phone Data Entry Settings</summary>
 	[PublishedModel("phoneDataEntrySettings")]
@@ -55,7 +55,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("defaultCountry")]
-		public virtual global::DemoSite.Core.Content.Country DefaultCountry => this.Value<global::DemoSite.Core.Content.Country>(_publishedValueFallback, "defaultCountry");
+		public virtual global::DemoSite.Content.Country DefaultCountry => this.Value<global::DemoSite.Content.Country>(_publishedValueFallback, "defaultCountry");
 
 		///<summary>
 		/// Help Text

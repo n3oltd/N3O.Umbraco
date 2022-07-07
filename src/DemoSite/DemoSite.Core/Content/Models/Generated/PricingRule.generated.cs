@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Core.Content
+namespace DemoSite.Content
 {
 	/// <summary>Pricing Rule</summary>
 	[PublishedModel("pricingRule")]
@@ -55,7 +55,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("dimension1")]
-		public virtual global::DemoSite.Core.Content.FundDimension1Value Dimension1 => global::DemoSite.Core.Content.FundDimensionsValues.GetDimension1(this, _publishedValueFallback);
+		public virtual global::DemoSite.Content.FundDimension1Value Dimension1 => global::DemoSite.Content.FundDimensionsValues.GetDimension1(this, _publishedValueFallback);
 
 		///<summary>
 		/// Theme
@@ -63,7 +63,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("dimension2")]
-		public virtual global::DemoSite.Core.Content.FundDimension2Value Dimension2 => global::DemoSite.Core.Content.FundDimensionsValues.GetDimension2(this, _publishedValueFallback);
+		public virtual global::DemoSite.Content.FundDimension2Value Dimension2 => global::DemoSite.Content.FundDimensionsValues.GetDimension2(this, _publishedValueFallback);
 
 		///<summary>
 		/// Stipulation
@@ -71,20 +71,20 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("dimension3")]
-		public virtual global::DemoSite.Core.Content.FundDimension3Value Dimension3 => global::DemoSite.Core.Content.FundDimensionsValues.GetDimension3(this, _publishedValueFallback);
+		public virtual global::DemoSite.Content.FundDimension3Value Dimension3 => global::DemoSite.Content.FundDimensionsValues.GetDimension3(this, _publishedValueFallback);
 
 		///<summary>
 		/// Price
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[ImplementPropertyType("priceAmount")]
-		public virtual decimal PriceAmount => global::DemoSite.Core.Content.Price.GetPriceAmount(this, _publishedValueFallback);
+		public virtual decimal PriceAmount => global::DemoSite.Content.Price.GetPriceAmount(this, _publishedValueFallback);
 
 		///<summary>
 		/// Price Locked
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[ImplementPropertyType("priceLocked")]
-		public virtual bool PriceLocked => global::DemoSite.Core.Content.Price.GetPriceLocked(this, _publishedValueFallback);
+		public virtual bool PriceLocked => global::DemoSite.Content.Price.GetPriceLocked(this, _publishedValueFallback);
 	}
 }

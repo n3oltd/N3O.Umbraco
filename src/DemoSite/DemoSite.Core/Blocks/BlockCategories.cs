@@ -1,7 +1,7 @@
 using N3O.Umbraco.Blocks;
 using N3O.Umbraco.Lookups;
 
-namespace DemoSite.Core.Blocks;
+namespace DemoSite.Blocks;
 
 public class BlockCategories : StaticLookupsCollection<BlockCategory> {
     public static readonly BlockCategory Advanced = new("advanced", "Advanced", "icon-code", 2);

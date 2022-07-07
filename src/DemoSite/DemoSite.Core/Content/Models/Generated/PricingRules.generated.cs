@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Core.Content
+namespace DemoSite.Content
 {
 	// Mixin Content Type with alias "pricingRules"
 	/// <summary>Pricing Rules</summary>
@@ -25,7 +25,7 @@ namespace DemoSite.Core.Content
 		/// <summary>Price Rules</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.PricingRule> PriceRules { get; }
+		global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.PricingRule> PriceRules { get; }
 	}
 
 	/// <summary>Pricing Rules</summary>
@@ -65,11 +65,11 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("priceRules")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.PricingRule> PriceRules => GetPriceRules(this, _publishedValueFallback);
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.PricingRule> PriceRules => GetPriceRules(this, _publishedValueFallback);
 
 		/// <summary>Static getter for Price Rules</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.PricingRule> GetPriceRules(IPricingRules that, IPublishedValueFallback publishedValueFallback) => that.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.PricingRule>>(publishedValueFallback, "priceRules");
+		public static global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.PricingRule> GetPriceRules(IPricingRules that, IPublishedValueFallback publishedValueFallback) => that.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.PricingRule>>(publishedValueFallback, "priceRules");
 	}
 }

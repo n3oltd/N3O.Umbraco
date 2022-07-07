@@ -1,6 +1,6 @@
 using N3O.Umbraco.Blocks;
 
-namespace DemoSite.Core.Blocks.Definitions;
+namespace DemoSite.Blocks.Definitions;
 
 public class Demo : BlockBuilder {
     public Demo() {

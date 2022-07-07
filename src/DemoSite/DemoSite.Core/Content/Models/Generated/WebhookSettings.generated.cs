@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Core.Content
+namespace DemoSite.Content
 {
 	/// <summary>Webhook Settings</summary>
 	[PublishedModel("webhookSettings")]
@@ -55,7 +55,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("productionWebhooks")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.Webhook> ProductionWebhooks => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.Webhook>>(_publishedValueFallback, "productionWebhooks");
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.Webhook> ProductionWebhooks => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.Webhook>>(_publishedValueFallback, "productionWebhooks");
 
 		///<summary>
 		/// Webhooks
@@ -63,6 +63,6 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("stagingWebhooks")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.Webhook> StagingWebhooks => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.Webhook>>(_publishedValueFallback, "stagingWebhooks");
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.Webhook> StagingWebhooks => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.Webhook>>(_publishedValueFallback, "stagingWebhooks");
 	}
 }

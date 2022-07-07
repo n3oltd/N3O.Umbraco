@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Core.Content
+namespace DemoSite.Content
 {
 	/// <summary>Template Footer</summary>
 	[PublishedModel("templateFooter")]
@@ -55,7 +55,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("links")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.Link> Links => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.Link>>(_publishedValueFallback, "links");
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.Link> Links => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.Link>>(_publishedValueFallback, "links");
 
 		///<summary>
 		/// Text Line 1

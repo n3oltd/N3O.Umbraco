@@ -16,7 +16,7 @@ using Umbraco.Cms.Infrastructure.ModelsBuilder;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
 
-namespace DemoSite.Core.Content
+namespace DemoSite.Content
 {
 	/// <summary>Consent Option</summary>
 	[PublishedModel("consentOption")]
@@ -55,7 +55,7 @@ namespace DemoSite.Core.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "10.0.0+e3f4b86")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("categories")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.ConsentCategory> Categories => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Core.Content.ConsentCategory>>(_publishedValueFallback, "categories");
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.ConsentCategory> Categories => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.ConsentCategory>>(_publishedValueFallback, "categories");
 
 		///<summary>
 		/// Channel
