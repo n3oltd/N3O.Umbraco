@@ -3,7 +3,6 @@ using N3O.Umbraco.Data.Builders;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Parsing;
 using N3O.Umbraco.Extensions;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -15,6 +14,7 @@ using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 namespace N3O.Umbraco.Data.Converters;
 
 public class MultiNodeTreePickerPropertyConverter : PropertyConverter<IPublishedContent> {
+    private static readonly string EditorAlias = UmbracoPropertyEditors.Aliases.MultiNodeTreePicker; 
     private readonly IContentHelper _contentHelper;
 
     public MultiNodeTreePickerPropertyConverter(IColumnRangeBuilder columnRangeBuilder,
@@ -24,9 +24,19 @@ public class MultiNodeTreePickerPropertyConverter : PropertyConverter<IPublished
     }
     
     public override bool IsConverter(UmbracoPropertyInfo propertyInfo) {
-        return propertyInfo.Type
-                           .PropertyEditorAlias
-                           .EqualsInvariant(UmbracoPropertyEditors.Aliases.MultiNodeTreePicker);
+        if (!propertyInfo.Type.PropertyEditorAlias.EqualsInvariant(EditorAlias)) {
+            return false;
+        }
+        
+        var configuration = propertyInfo.DataType.ConfigurationAs<MultiNodePickerConfiguration>();
+        var parentId = configuration.TreeSource?.StartNodeId?.ToId();
+
+        if (parentId == null && configuration.TreeSource.HasValue(x => x.StartNodeQuery)) {
+            // As IPublishedQuery.ContentAtXPath() does not work without variables such as $root, $site etc.
+            return false;
+        }
+
+        return true;
     }
 
     protected override IEnumerable<Cell<IPublishedContent>> GetCells(IContentProperty contentProperty,
@@ -69,11 +79,6 @@ public class MultiNodeTreePickerPropertyConverter : PropertyConverter<IPublished
     private ParseResult<IPublishedContent> Parse(IParser parser, UmbracoPropertyInfo propertyInfo, string source) {
         var configuration = propertyInfo.DataType.ConfigurationAs<MultiNodePickerConfiguration>();
         var parentId = configuration.TreeSource?.StartNodeId?.ToId();
-
-        if (parentId == null && configuration.TreeSource.HasValue(x => x.StartNodeQuery)) {
-            // As IPublishedQuery.ContentAtXPath() does not work without variables such as $root, $site etc.
-            throw new Exception("XPath based tree pickers are not supported");
-        }
 
         return parser.PublishedContent.Parse(source, OurDataTypes.PublishedContent.GetClrType(), parentId);
     }
