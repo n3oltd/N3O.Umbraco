@@ -25,6 +25,57 @@ var ContentTypesClient = /** @class */ (function () {
         this.http = http ? http : window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
+    ContentTypesClient.prototype.findContentTypes = function (req) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/ContentTypes/find";
+        url_ = url_.replace(/[?&]$/, "");
+        var content_ = JSON.stringify(req);
+        var options_ = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processFindContentTypes(_response);
+        });
+    };
+    ContentTypesClient.prototype.processFindContentTypes = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
     ContentTypesClient.prototype.getContentTypeByAlias = function (contentType) {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/ContentTypes/{contentType}";

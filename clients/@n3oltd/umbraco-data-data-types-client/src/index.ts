@@ -18,7 +18,7 @@ export class DataTypesClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
 
-    findDataTypes(req: DataTypeCriteria): Promise<DataTypeSummary[]> {
+    findDataTypes(req: DataTypeCriteria): Promise<DataTypeRes[]> {
         let url_ = this.baseUrl + "/umbraco/api/DataTypes/find";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -38,13 +38,13 @@ export class DataTypesClient {
         });
     }
 
-    protected processFindDataTypes(response: Response): Promise<DataTypeSummary[]> {
+    protected processFindDataTypes(response: Response): Promise<DataTypeRes[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DataTypeSummary[];
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as DataTypeRes[];
             return result200;
             });
         } else if (status === 400) {
@@ -62,12 +62,12 @@ export class DataTypesClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<DataTypeSummary[]>(null as any);
+        return Promise.resolve<DataTypeRes[]>(null as any);
     }
 }
 
-export interface DataTypeSummary {
-    alias?: string | undefined;
+export interface DataTypeRes {
+    editorAlias?: string | undefined;
     name?: string | undefined;
 }
 
@@ -80,6 +80,7 @@ export interface ProblemDetails {
 }
 
 export interface DataTypeCriteria {
+    editorAlias?: string | undefined;
 }
 
 export class ApiException extends Error {

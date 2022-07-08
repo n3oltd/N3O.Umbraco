@@ -5,4 +5,4 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Data.Queries;
 
-public class FindDataTypesQuery : Request<DataTypeCriteria, IEnumerable<DataTypeSummary>> { }
+public class FindDataTypesQuery : Request<DataTypeCriteria, IEnumerable<DataTypeRes>> { }

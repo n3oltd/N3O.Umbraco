@@ -21,6 +21,13 @@ namespace N3O.Umbraco.Clients.Data.Exports
     public partial interface IExportsClient
     {
         /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ContentMetadataRes>> GetLookupContentMetadataAsync();
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ContentMetadataRes>> GetLookupContentMetadataAsync(System.Threading.CancellationToken cancellationToken);
+
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ExportableProperty>> GetExportablePropertiesAsync(string contentType);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -28,11 +35,11 @@ namespace N3O.Umbraco.Clients.Data.Exports
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ExportableProperty>> GetExportablePropertiesAsync(string contentType, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task CreateExportAsync(string contentId, string contentType, ExportReq req);
+        System.Threading.Tasks.Task CreateExportAsync(string containerId, string contentType, ExportReq req);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task CreateExportAsync(string contentId, string contentType, ExportReq req, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task CreateExportAsync(string containerId, string contentType, ExportReq req, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -69,6 +76,94 @@ namespace N3O.Umbraco.Clients.Data.Exports
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, string url);
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
+
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ContentMetadataRes>> GetLookupContentMetadataAsync()
+        {
+            return GetLookupContentMetadataAsync(System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ContentMetadataRes>> GetLookupContentMetadataAsync(System.Threading.CancellationToken cancellationToken)
+        {
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/umbraco/backoffice/api/Exports/lookups/contentMetadata");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ContentMetadataRes>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetails>("A server side error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 500)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("A server side error occurred.", status_, responseText_, headers_, null);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ExportableProperty>> GetExportablePropertiesAsync(string contentType)
@@ -173,17 +268,17 @@ namespace N3O.Umbraco.Clients.Data.Exports
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task CreateExportAsync(string contentId, string contentType, ExportReq req)
+        public virtual System.Threading.Tasks.Task CreateExportAsync(string containerId, string contentType, ExportReq req)
         {
-            return CreateExportAsync(contentId, contentType, req, System.Threading.CancellationToken.None);
+            return CreateExportAsync(containerId, contentType, req, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task CreateExportAsync(string contentId, string contentType, ExportReq req, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task CreateExportAsync(string containerId, string contentType, ExportReq req, System.Threading.CancellationToken cancellationToken)
         {
-            if (contentId == null)
-                throw new System.ArgumentNullException("contentId");
+            if (containerId == null)
+                throw new System.ArgumentNullException("containerId");
 
             if (contentType == null)
                 throw new System.ArgumentNullException("contentType");
@@ -192,8 +287,8 @@ namespace N3O.Umbraco.Clients.Data.Exports
                 throw new System.ArgumentNullException("req");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/umbraco/backoffice/api/Exports/export/{contentId}/{contentType}");
-            urlBuilder_.Replace("{contentId}", System.Uri.EscapeDataString(ConvertToString(contentId, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/umbraco/backoffice/api/Exports/export/{containerId}/{contentType}");
+            urlBuilder_.Replace("{containerId}", System.Uri.EscapeDataString(ConvertToString(containerId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{contentType}", System.Uri.EscapeDataString(ConvertToString(contentType, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -382,13 +477,19 @@ namespace N3O.Umbraco.Clients.Data.Exports
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v9.0.0.0))")]
-    public partial class ExportableProperty
+    public partial class ContentMetadataRes
     {
-        [Newtonsoft.Json.JsonProperty("alias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Alias { get; set; }
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("columnTitle", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ColumnTitle { get; set; }
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("autoSelected", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool AutoSelected { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("displayOrder", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int DisplayOrder { get; set; }
 
     }
 
@@ -422,17 +523,31 @@ namespace N3O.Umbraco.Clients.Data.Exports
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v9.0.0.0))")]
+    public partial class ExportableProperty
+    {
+        [Newtonsoft.Json.JsonProperty("alias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Alias { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("columnTitle", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ColumnTitle { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v9.0.0.0))")]
     public partial class ExportReq
     {
-        [Newtonsoft.Json.JsonProperty("properties", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<string> Properties { get; set; }
+        [Newtonsoft.Json.JsonProperty("format", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public WorkbookFormat? Format { get; set; }
 
         [Newtonsoft.Json.JsonProperty("includeUnpublished", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool? IncludeUnpublished { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("format", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public WorkbookFormat? Format { get; set; }
+        [Newtonsoft.Json.JsonProperty("metadata", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore, ItemConverterType = typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public System.Collections.Generic.ICollection<ContentMetadata> Metadata { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("properties", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> Properties { get; set; }
 
     }
 
@@ -448,6 +563,96 @@ namespace N3O.Umbraco.Clients.Data.Exports
 
         [System.Runtime.Serialization.EnumMember(Value = @"excel")]
         Excel = 1,
+
+    }
+
+    /// <summary>
+    /// One of 'createdAt', 'createdBy', 'editLink', 'hasUnpublishedChanges', 'isPublished', 'name', 'path', 'updatedAt', 'updatedBy'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v9.0.0.0))")]
+    public enum ContentMetadata
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"createdAt")]
+        CreatedAt = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"createdBy")]
+        CreatedBy = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"editLink")]
+        EditLink = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"hasUnpublishedChanges")]
+        HasUnpublishedChanges = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"isPublished")]
+        IsPublished = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"name")]
+        Name = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"path")]
+        Path = 6,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"updatedAt")]
+        UpdatedAt = 7,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"updatedBy")]
+        UpdatedBy = 8,
+
+    }
+
+    /// <summary>
+    /// One of 'blob', 'bool', 'content', 'date', 'dateTime', 'decimal', 'guid', 'integer', 'lookup', 'money', 'publishedContent', 'reference', 'string', 'time', 'yearMonth'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v9.0.0.0))")]
+    public enum DataType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"blob")]
+        Blob = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"bool")]
+        Bool = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"content")]
+        Content = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"date")]
+        Date = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"dateTime")]
+        DateTime = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"decimal")]
+        Decimal = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"guid")]
+        Guid = 6,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"integer")]
+        Integer = 7,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"lookup")]
+        Lookup = 8,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"money")]
+        Money = 9,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"publishedContent")]
+        PublishedContent = 10,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"reference")]
+        Reference = 11,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"string")]
+        String = 12,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"time")]
+        Time = 13,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"yearMonth")]
+        YearMonth = 14,
 
     }
 

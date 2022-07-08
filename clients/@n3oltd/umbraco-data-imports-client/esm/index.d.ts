@@ -11,7 +11,7 @@ export declare class ImportsClient {
     protected processGetLookupDatePatterns(response: Response): Promise<NamedLookupRes[]>;
     getTemplate(contentType: string): Promise<void>;
     protected processGetTemplate(response: Response): Promise<void>;
-    queue(contentId: string, contentType: string, req: QueueImportsReq): Promise<QueueImportsRes>;
+    queue(containerId: string, contentType: string, req: QueueImportsReq): Promise<QueueImportsRes>;
     protected processQueue(response: Response): Promise<QueueImportsRes>;
 }
 export interface ProblemDetails {

@@ -1,6 +1,7 @@
 using N3O.Umbraco.Data.Criteria;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Queries;
+using N3O.Umbraco.Data.QueryFilters;
 using N3O.Umbraco.Mediator;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,19 +14,24 @@ using Umbraco.Cms.Core.Services;
 namespace N3O.Umbraco.Data.Handlers;
 
 public class FindDataTypesHandler :
-    IRequestHandler<FindDataTypesQuery, DataTypeCriteria, IEnumerable<DataTypeSummary>> {
+    IRequestHandler<FindDataTypesQuery, DataTypeCriteria, IEnumerable<DataTypeRes>> {
     private readonly IDataTypeService _dataTypeService;
+    private readonly DataTypeQueryFilter _dataTypeQueryFilter;
     private readonly IUmbracoMapper _mapper;
 
-    public FindDataTypesHandler(IDataTypeService dataTypeService, IUmbracoMapper mapper) {
+    public FindDataTypesHandler(IDataTypeService dataTypeService,
+                                DataTypeQueryFilter dataTypeQueryFilter,
+                                IUmbracoMapper mapper) {
         _dataTypeService = dataTypeService;
+        _dataTypeQueryFilter = dataTypeQueryFilter;
         _mapper = mapper;
     }
     
-    public Task<IEnumerable<DataTypeSummary>> Handle(FindDataTypesQuery req, CancellationToken cancellationToken) {
-        var dataTypes = _dataTypeService.GetByEditorAlias(req.Model.EditorAlias)
-                                        .Select(_mapper.Map<IDataType, DataTypeSummary>);
+    public Task<IEnumerable<DataTypeRes>> Handle(FindDataTypesQuery req, CancellationToken cancellationToken) {
+        var dataTypes = _dataTypeService.GetAll();
 
-        return Task.FromResult(dataTypes);
+        dataTypes = _dataTypeQueryFilter.Apply(dataTypes, req.Model);
+
+        return Task.FromResult(dataTypes.Select(_mapper.Map<IDataType, DataTypeRes>));
     }
 }

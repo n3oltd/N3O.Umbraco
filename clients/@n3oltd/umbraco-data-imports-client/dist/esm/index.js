@@ -185,12 +185,12 @@ var ImportsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    ImportsClient.prototype.queue = function (contentId, contentType, req) {
+    ImportsClient.prototype.queue = function (containerId, contentType, req) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/backoffice/api/Imports/queue/{contentId}/{contentType}";
-        if (contentId === undefined || contentId === null)
-            throw new Error("The parameter 'contentId' must be defined.");
-        url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
+        var url_ = this.baseUrl + "/umbraco/backoffice/api/Imports/queue/{containerId}/{contentType}";
+        if (containerId === undefined || containerId === null)
+            throw new Error("The parameter 'containerId' must be defined.");
+        url_ = url_.replace("{containerId}", encodeURIComponent("" + containerId));
         if (contentType === undefined || contentType === null)
             throw new Error("The parameter 'contentType' must be defined.");
         url_ = url_.replace("{contentType}", encodeURIComponent("" + contentType));

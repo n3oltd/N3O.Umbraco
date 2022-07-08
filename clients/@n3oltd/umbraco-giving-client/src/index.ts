@@ -756,20 +756,20 @@ export interface PricingRuleElement {
 }
 
 export interface IPublishedElement {
-    contentType?: IPublishedContentType | undefined;
+    contentType?: IPublishedContentType;
     key?: string;
-    properties?: IPublishedProperty[] | undefined;
+    properties?: IPublishedProperty[];
 }
 
 export interface IPublishedContentType {
     key?: string;
     id?: number;
-    alias?: string | undefined;
+    alias?: string;
     itemType?: PublishedItemType;
-    compositionAliases?: string[] | undefined;
+    compositionAliases?: string[];
     variations?: ContentVariation;
     isElement?: boolean;
-    propertyTypes?: IPublishedPropertyType[] | undefined;
+    propertyTypes?: IPublishedPropertyType[];
 }
 
 export enum PublishedItemType {
@@ -789,19 +789,19 @@ export enum ContentVariation {
 
 export interface IPublishedPropertyType {
     contentType?: IPublishedContentType | undefined;
-    dataType?: PublishedDataType | undefined;
-    alias?: string | undefined;
-    editorAlias?: string | undefined;
+    dataType?: PublishedDataType;
+    alias?: string;
+    editorAlias?: string;
     isUserProperty?: boolean;
     variations?: ContentVariation;
     cacheLevel?: PropertyCacheLevel;
-    modelClrType?: string | undefined;
+    modelClrType?: string;
     clrType?: string | undefined;
 }
 
 export interface PublishedDataType {
     id?: number;
-    editorAlias?: string | undefined;
+    editorAlias?: string;
     configuration?: any | undefined;
 }
 
@@ -814,8 +814,8 @@ export enum PropertyCacheLevel {
 }
 
 export interface IPublishedProperty {
-    propertyType?: IPublishedPropertyType | undefined;
-    alias?: string | undefined;
+    propertyType?: IPublishedPropertyType;
+    alias?: string;
 }
 
 export interface PriceHandleRes {

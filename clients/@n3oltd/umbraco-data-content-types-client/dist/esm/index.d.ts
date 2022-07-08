@@ -5,10 +5,12 @@ export declare class ContentTypesClient {
     constructor(baseUrl?: string, http?: {
         fetch(url: RequestInfo, init?: RequestInit): Promise<Response>;
     });
+    findContentTypes(req: ContentTypeCriteria): Promise<ContentTypeRes[]>;
+    protected processFindContentTypes(response: Response): Promise<ContentTypeRes[]>;
     getContentTypeByAlias(contentType: string): Promise<ContentTypeRes>;
     protected processGetContentTypeByAlias(response: Response): Promise<ContentTypeRes>;
-    getRelationContentTypes(type: string | null | undefined, contentId: string): Promise<ContentTypeSummary[]>;
-    protected processGetRelationContentTypes(response: Response): Promise<ContentTypeSummary[]>;
+    getRelationContentTypes(type: string | null | undefined, contentId: string): Promise<ContentTypeRes[]>;
+    protected processGetRelationContentTypes(response: Response): Promise<ContentTypeRes[]>;
 }
 export interface ContentTypeRes {
     alias?: string | undefined;
@@ -28,9 +30,8 @@ export interface ProblemDetails {
     detail?: string | undefined;
     instance?: string | undefined;
 }
-export interface ContentTypeSummary {
+export interface ContentTypeCriteria {
     alias?: string | undefined;
-    name?: string | undefined;
 }
 export declare class ApiException extends Error {
     message: string;

@@ -1,4 +1,5 @@
 using Humanizer;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using Newtonsoft.Json;
 using System;
@@ -26,10 +27,10 @@ public class PublishedElementJsonConverter : JsonConverter {
 
             writer.WriteStartObject();
 
-            writer.WritePropertyName(nameof(IPublishedElement.Key).Camelize());
+            writer.WritePropertyName(nameof(ContentElementRes.Key).Camelize());
             writer.WriteValue(publishedElement.Key);
 
-            writer.WritePropertyName(nameof(IPublishedElement.ContentType).Camelize());
+            writer.WritePropertyName(nameof(ContentElementRes.ContentTypeAlias).Camelize());
             writer.WriteValue(publishedElement.ContentType.Alias);
 
             foreach (var property in publishedElement.Properties) {

@@ -18,6 +18,49 @@ export class ExportsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
 
+    getLookupContentMetadata(): Promise<ContentMetadataRes[]> {
+        let url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/lookups/contentMetadata";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetLookupContentMetadata(_response);
+        });
+    }
+
+    protected processGetLookupContentMetadata(response: Response): Promise<ContentMetadataRes[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ContentMetadataRes[];
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ContentMetadataRes[]>(null as any);
+    }
+
     getExportableProperties(contentType: string): Promise<ExportableProperty[]> {
         let url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/exportableProperties/{contentType}";
         if (contentType === undefined || contentType === null)
@@ -70,11 +113,11 @@ export class ExportsClient {
         return Promise.resolve<ExportableProperty[]>(null as any);
     }
 
-    createExport(contentId: string, contentType: string, req: ExportReq): Promise<void> {
-        let url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/export/{contentId}/{contentType}";
-        if (contentId === undefined || contentId === null)
-            throw new Error("The parameter 'contentId' must be defined.");
-        url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
+    createExport(containerId: string, contentType: string, req: ExportReq): Promise<void> {
+        let url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/export/{containerId}/{contentType}";
+        if (containerId === undefined || containerId === null)
+            throw new Error("The parameter 'containerId' must be defined.");
+        url_ = url_.replace("{containerId}", encodeURIComponent("" + containerId));
         if (contentType === undefined || contentType === null)
             throw new Error("The parameter 'contentType' must be defined.");
         url_ = url_.replace("{contentType}", encodeURIComponent("" + contentType));
@@ -127,9 +170,11 @@ export class ExportsClient {
     }
 }
 
-export interface ExportableProperty {
-    alias?: string | undefined;
-    columnTitle?: string | undefined;
+export interface ContentMetadataRes {
+    name?: string | undefined;
+    id?: string | undefined;
+    autoSelected?: boolean;
+    displayOrder?: number;
 }
 
 export interface ProblemDetails {
@@ -140,16 +185,54 @@ export interface ProblemDetails {
     instance?: string | undefined;
 }
 
+export interface ExportableProperty {
+    alias?: string | undefined;
+    columnTitle?: string | undefined;
+}
+
 export interface ExportReq {
-    properties?: string[] | undefined;
-    includeUnpublished?: boolean | undefined;
     format?: WorkbookFormat | undefined;
+    includeUnpublished?: boolean | undefined;
+    metadata?: ContentMetadata[] | undefined;
+    properties?: string[] | undefined;
 }
 
 /** One of 'csv', 'excel' */
 export enum WorkbookFormat {
     Csv = "csv",
     Excel = "excel",
+}
+
+/** One of 'createdAt', 'createdBy', 'editLink', 'hasUnpublishedChanges', 'isPublished', 'name', 'path', 'updatedAt', 'updatedBy' */
+export enum ContentMetadata {
+    CreatedAt = "createdAt",
+    CreatedBy = "createdBy",
+    EditLink = "editLink",
+    HasUnpublishedChanges = "hasUnpublishedChanges",
+    IsPublished = "isPublished",
+    Name = "name",
+    Path = "path",
+    UpdatedAt = "updatedAt",
+    UpdatedBy = "updatedBy",
+}
+
+/** One of 'blob', 'bool', 'content', 'date', 'dateTime', 'decimal', 'guid', 'integer', 'lookup', 'money', 'publishedContent', 'reference', 'string', 'time', 'yearMonth' */
+export enum DataType {
+    Blob = "blob",
+    Bool = "bool",
+    Content = "content",
+    Date = "date",
+    DateTime = "dateTime",
+    Decimal = "decimal",
+    Guid = "guid",
+    Integer = "integer",
+    Lookup = "lookup",
+    Money = "money",
+    PublishedContent = "publishedContent",
+    Reference = "reference",
+    String = "string",
+    Time = "time",
+    YearMonth = "yearMonth",
 }
 
 export class ApiException extends Error {

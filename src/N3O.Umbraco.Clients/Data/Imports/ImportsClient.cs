@@ -42,11 +42,11 @@ namespace N3O.Umbraco.Clients.Data.Imports
         System.Threading.Tasks.Task GetTemplateAsync(string contentType, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<QueueImportsRes> QueueAsync(string contentId, string contentType, QueueImportsReq req);
+        System.Threading.Tasks.Task<QueueImportsRes> QueueAsync(string containerId, string contentType, QueueImportsReq req);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<QueueImportsRes> QueueAsync(string contentId, string contentType, QueueImportsReq req, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<QueueImportsRes> QueueAsync(string containerId, string contentType, QueueImportsReq req, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -371,17 +371,17 @@ namespace N3O.Umbraco.Clients.Data.Imports
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<QueueImportsRes> QueueAsync(string contentId, string contentType, QueueImportsReq req)
+        public virtual System.Threading.Tasks.Task<QueueImportsRes> QueueAsync(string containerId, string contentType, QueueImportsReq req)
         {
-            return QueueAsync(contentId, contentType, req, System.Threading.CancellationToken.None);
+            return QueueAsync(containerId, contentType, req, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<QueueImportsRes> QueueAsync(string contentId, string contentType, QueueImportsReq req, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<QueueImportsRes> QueueAsync(string containerId, string contentType, QueueImportsReq req, System.Threading.CancellationToken cancellationToken)
         {
-            if (contentId == null)
-                throw new System.ArgumentNullException("contentId");
+            if (containerId == null)
+                throw new System.ArgumentNullException("containerId");
 
             if (contentType == null)
                 throw new System.ArgumentNullException("contentType");
@@ -390,8 +390,8 @@ namespace N3O.Umbraco.Clients.Data.Imports
                 throw new System.ArgumentNullException("req");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/umbraco/backoffice/api/Imports/queue/{contentId}/{contentType}");
-            urlBuilder_.Replace("{contentId}", System.Uri.EscapeDataString(ConvertToString(contentId, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/umbraco/backoffice/api/Imports/queue/{containerId}/{contentType}");
+            urlBuilder_.Replace("{containerId}", System.Uri.EscapeDataString(ConvertToString(containerId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{contentType}", System.Uri.EscapeDataString(ConvertToString(contentType, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;

@@ -21,11 +21,11 @@ namespace N3O.Umbraco.Clients.Data.DataTypes
     public partial interface IDataTypesClient
     {
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<DataTypeSummary>> FindDataTypesAsync(DataTypeCriteria req);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<DataTypeRes>> FindDataTypesAsync(DataTypeCriteria req);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<DataTypeSummary>> FindDataTypesAsync(DataTypeCriteria req, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<DataTypeRes>> FindDataTypesAsync(DataTypeCriteria req, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -64,14 +64,14 @@ namespace N3O.Umbraco.Clients.Data.DataTypes
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<DataTypeSummary>> FindDataTypesAsync(DataTypeCriteria req)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<DataTypeRes>> FindDataTypesAsync(DataTypeCriteria req)
         {
             return FindDataTypesAsync(req, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<DataTypeSummary>> FindDataTypesAsync(DataTypeCriteria req, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<DataTypeRes>> FindDataTypesAsync(DataTypeCriteria req, System.Threading.CancellationToken cancellationToken)
         {
             if (req == null)
                 throw new System.ArgumentNullException("req");
@@ -114,7 +114,7 @@ namespace N3O.Umbraco.Clients.Data.DataTypes
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<DataTypeSummary>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<DataTypeRes>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -261,10 +261,10 @@ namespace N3O.Umbraco.Clients.Data.DataTypes
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v9.0.0.0))")]
-    public partial class DataTypeSummary
+    public partial class DataTypeRes
     {
-        [Newtonsoft.Json.JsonProperty("alias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Alias { get; set; }
+        [Newtonsoft.Json.JsonProperty("editorAlias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string EditorAlias { get; set; }
 
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Name { get; set; }
@@ -303,6 +303,8 @@ namespace N3O.Umbraco.Clients.Data.DataTypes
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v9.0.0.0))")]
     public partial class DataTypeCriteria
     {
+        [Newtonsoft.Json.JsonProperty("editorAlias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string EditorAlias { get; set; }
 
     }
 

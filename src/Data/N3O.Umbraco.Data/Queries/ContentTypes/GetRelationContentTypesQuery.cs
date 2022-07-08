@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Data.Queries;
 
-public class GetRelationContentTypesQuery : Request<string, IEnumerable<ContentTypeSummary>> {
+public class GetRelationContentTypesQuery : Request<string, IEnumerable<ContentTypeRes>> {
     public GetRelationContentTypesQuery(ContentId contentId) {
         ContentId = contentId;
     }

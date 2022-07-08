@@ -1,5 +1,5 @@
-using N3O.Umbraco.Data.Queries;
 using N3O.Umbraco.Data.Models;
+using N3O.Umbraco.Data.Queries;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Mediator;
@@ -13,7 +13,7 @@ using Umbraco.Cms.Core.Services;
 namespace N3O.Umbraco.Data.Handlers;
 
 public class GetRelationContentTypesHandler :
-    IRequestHandler<GetRelationContentTypesQuery, string, IEnumerable<ContentTypeSummary>> {
+    IRequestHandler<GetRelationContentTypesQuery, string, IEnumerable<ContentTypeRes>> {
     private readonly IContentService _contentService;
     private readonly IContentTypeService _contentTypeService;
 
@@ -22,8 +22,8 @@ public class GetRelationContentTypesHandler :
         _contentTypeService = contentTypeService;
     }
     
-    public Task<IEnumerable<ContentTypeSummary>> Handle(GetRelationContentTypesQuery req,
-                                                        CancellationToken cancellationToken) {
+    public Task<IEnumerable<ContentTypeRes>> Handle(GetRelationContentTypesQuery req,
+                                                    CancellationToken cancellationToken) {
         var content = req.ContentId.Run(_contentService.GetById, true);
         var contentType = _contentTypeService.Get(content.ContentType.Id);
         var relationContentsTypes = new List<IContentType>();
@@ -42,16 +42,16 @@ public class GetRelationContentTypesHandler :
                 throw UnrecognisedValueException.For(req.Model);
         }
 
-        var res = new List<ContentTypeSummary>();
+        var res = new List<ContentTypeRes>();
 
         foreach (var allowedContentType in relationContentsTypes.OrderBy(x => x.Name)) {
-            res.Add(new ContentTypeSummary {
+            res.Add(new ContentTypeRes {
                 Alias = allowedContentType.Alias,
                 Name = allowedContentType.Name
             });
         }
 
-        return Task.FromResult<IEnumerable<ContentTypeSummary>>(res);
+        return Task.FromResult<IEnumerable<ContentTypeRes>>(res);
     }
 
     private void PopulateDescendantsContentTypes(List<IContentType> list, IContentType contentType) {

@@ -20,8 +20,8 @@ public class DataTypesController : ApiController {
     }
 
     [HttpPost("find")]
-    public async Task<ActionResult<IEnumerable<DataTypeSummary>>> FindDataTypes(DataTypeCriteria req) {
-        var res = await _mediator.SendAsync<FindDataTypesQuery, DataTypeCriteria, IEnumerable<DataTypeSummary>>(req);
+    public async Task<ActionResult<IEnumerable<DataTypeRes>>> FindDataTypes(DataTypeCriteria req) {
+        var res = await _mediator.SendAsync<FindDataTypesQuery, DataTypeCriteria, IEnumerable<DataTypeRes>>(req);
 
         return Ok(res);
     }

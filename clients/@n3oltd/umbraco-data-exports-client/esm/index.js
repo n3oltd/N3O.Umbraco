@@ -25,6 +25,54 @@ var ExportsClient = /** @class */ (function () {
         this.http = http ? http : window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
+    ExportsClient.prototype.getLookupContentMetadata = function () {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/lookups/contentMetadata";
+        url_ = url_.replace(/[?&]$/, "");
+        var options_ = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processGetLookupContentMetadata(_response);
+        });
+    };
+    ExportsClient.prototype.processGetLookupContentMetadata = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
     ExportsClient.prototype.getExportableProperties = function (contentType) {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/exportableProperties/{contentType}";
@@ -83,12 +131,12 @@ var ExportsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    ExportsClient.prototype.createExport = function (contentId, contentType, req) {
+    ExportsClient.prototype.createExport = function (containerId, contentType, req) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/export/{contentId}/{contentType}";
-        if (contentId === undefined || contentId === null)
-            throw new Error("The parameter 'contentId' must be defined.");
-        url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
+        var url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/export/{containerId}/{contentType}";
+        if (containerId === undefined || containerId === null)
+            throw new Error("The parameter 'containerId' must be defined.");
+        url_ = url_.replace("{containerId}", encodeURIComponent("" + containerId));
         if (contentType === undefined || contentType === null)
             throw new Error("The parameter 'contentType' must be defined.");
         url_ = url_.replace("{contentType}", encodeURIComponent("" + contentType));
@@ -153,6 +201,38 @@ export var WorkbookFormat;
     WorkbookFormat["Csv"] = "csv";
     WorkbookFormat["Excel"] = "excel";
 })(WorkbookFormat || (WorkbookFormat = {}));
+/** One of 'createdAt', 'createdBy', 'editLink', 'hasUnpublishedChanges', 'isPublished', 'name', 'path', 'updatedAt', 'updatedBy' */
+export var ContentMetadata;
+(function (ContentMetadata) {
+    ContentMetadata["CreatedAt"] = "createdAt";
+    ContentMetadata["CreatedBy"] = "createdBy";
+    ContentMetadata["EditLink"] = "editLink";
+    ContentMetadata["HasUnpublishedChanges"] = "hasUnpublishedChanges";
+    ContentMetadata["IsPublished"] = "isPublished";
+    ContentMetadata["Name"] = "name";
+    ContentMetadata["Path"] = "path";
+    ContentMetadata["UpdatedAt"] = "updatedAt";
+    ContentMetadata["UpdatedBy"] = "updatedBy";
+})(ContentMetadata || (ContentMetadata = {}));
+/** One of 'blob', 'bool', 'content', 'date', 'dateTime', 'decimal', 'guid', 'integer', 'lookup', 'money', 'publishedContent', 'reference', 'string', 'time', 'yearMonth' */
+export var DataType;
+(function (DataType) {
+    DataType["Blob"] = "blob";
+    DataType["Bool"] = "bool";
+    DataType["Content"] = "content";
+    DataType["Date"] = "date";
+    DataType["DateTime"] = "dateTime";
+    DataType["Decimal"] = "decimal";
+    DataType["Guid"] = "guid";
+    DataType["Integer"] = "integer";
+    DataType["Lookup"] = "lookup";
+    DataType["Money"] = "money";
+    DataType["PublishedContent"] = "publishedContent";
+    DataType["Reference"] = "reference";
+    DataType["String"] = "string";
+    DataType["Time"] = "time";
+    DataType["YearMonth"] = "yearMonth";
+})(DataType || (DataType = {}));
 var ApiException = /** @class */ (function (_super) {
     __extends(ApiException, _super);
     function ApiException(message, status, response, headers, result) {

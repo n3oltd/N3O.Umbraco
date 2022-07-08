@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Data.Criteria;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Queries;
 using N3O.Umbraco.Exceptions;
@@ -20,6 +21,17 @@ public class ContentTypesController : ApiController {
         _mediator = mediator;
     }
 
+    [HttpPost("find")]
+    public async Task<ActionResult<IEnumerable<ContentTypeRes>>> FindContentTypes(ContentTypeCriteria req) {
+        try {
+            var res = await _mediator.SendAsync<FindContentTypesQuery, ContentTypeCriteria, IEnumerable<ContentTypeRes>>(req);
+
+            return Ok(res);
+        } catch (ResourceNotFoundException ex) {
+            return NotFound(ex);
+        }
+    }
+    
     [HttpPost("{contentType}")]
     public async Task<ActionResult<ContentTypeRes>> GetContentTypeByAlias() {
         try {
@@ -33,9 +45,9 @@ public class ContentTypesController : ApiController {
 
     [HttpGet("{contentId:guid}/relations")]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<IEnumerable<ContentTypeSummary>>> GetRelationContentTypes([FromQuery] string type) {
+    public async Task<ActionResult<IEnumerable<ContentTypeRes>>> GetRelationContentTypes([FromQuery] string type) {
         try {
-            var res = await _mediator.SendAsync<GetRelationContentTypesQuery, string, IEnumerable<ContentTypeSummary>>(type);
+            var res = await _mediator.SendAsync<GetRelationContentTypesQuery, string, IEnumerable<ContentTypeRes>>(type);
 
             return Ok(res);
         } catch (ResourceNotFoundException ex) {

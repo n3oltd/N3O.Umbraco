@@ -163,11 +163,11 @@ export class ImportsClient {
         return Promise.resolve<void>(null as any);
     }
 
-    queue(contentId: string, contentType: string, req: QueueImportsReq): Promise<QueueImportsRes> {
-        let url_ = this.baseUrl + "/umbraco/backoffice/api/Imports/queue/{contentId}/{contentType}";
-        if (contentId === undefined || contentId === null)
-            throw new Error("The parameter 'contentId' must be defined.");
-        url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
+    queue(containerId: string, contentType: string, req: QueueImportsReq): Promise<QueueImportsRes> {
+        let url_ = this.baseUrl + "/umbraco/backoffice/api/Imports/queue/{containerId}/{contentType}";
+        if (containerId === undefined || containerId === null)
+            throw new Error("The parameter 'containerId' must be defined.");
+        url_ = url_.replace("{containerId}", encodeURIComponent("" + containerId));
         if (contentType === undefined || contentType === null)
             throw new Error("The parameter 'contentType' must be defined.");
         url_ = url_.replace("{contentType}", encodeURIComponent("" + contentType));
