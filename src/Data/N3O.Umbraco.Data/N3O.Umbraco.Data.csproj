@@ -47,7 +47,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="CsvHelper" Version="27.2.1" />
+      <PackageReference Include="CsvHelper" Version="28.0.0" />
       <PackageReference Include="EPPlus" Version="6.0.6" />
       <PackageReference Include="Umbraco.Cms.Core" Version="10.0.1" />
     </ItemGroup>
