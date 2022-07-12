@@ -40,7 +40,11 @@ public abstract class CmsStartup {
         }
 
         app.UseRewriter(GetRewriteOptions());
-        app.UseStaticFiles();
+        
+        var staticFileOptions = new StaticFileOptions();
+        ConfigureStaticFiles(staticFileOptions);
+        app.UseStaticFiles(staticFileOptions);
+        
         app.UseOpenApiWithUI();
 
         app.UseUmbraco()
@@ -63,7 +67,8 @@ public abstract class CmsStartup {
 
     protected virtual void ConfigureEndpoints(IUmbracoEndpointBuilderContext umbraco) { }
     protected virtual void ConfigureMiddleware(IUmbracoApplicationBuilderContext umbraco) { }
-    
+    protected virtual void ConfigureStaticFiles(StaticFileOptions staticFileOptions) { }
+
     private RewriteOptions GetRewriteOptions() {
         var canonicalDomain = Environment.GetEnvironmentVariable("N3O_Canonical_Domain");
         var options = new RewriteOptions();
