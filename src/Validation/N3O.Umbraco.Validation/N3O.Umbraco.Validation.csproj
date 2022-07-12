@@ -36,7 +36,7 @@
     <ItemGroup>
         <PackageReference Include="FluentValidation.AspNetCore" Version="11.1.2" />
         <PackageReference Include="ISO3166" Version="1.0.4" />
-        <PackageReference Include="libphonenumber-csharp" Version="8.12.50" />
+        <PackageReference Include="libphonenumber-csharp" Version="8.12.51" />
     </ItemGroup>
 
     <ItemGroup>

@@ -44,7 +44,7 @@ public class CsvReader : ICsvReader {
         csvConfiguration.HasHeaderRecord = hasColumnHeadings;
         csvConfiguration.BadDataFound = null;
         csvConfiguration.ReadingExceptionOccurred = OnReadingExceptionOccurred;
-        csvConfiguration.ShouldSkipRecord = r => r.Record.None(f => f.HasValue());
+        csvConfiguration.ShouldSkipRecord = ShouldSkipRecord;
         csvConfiguration.TrimOptions = TrimOptions.Trim | TrimOptions.InsideQuotes;
 
         _csv = new CsvHelper.CsvReader(_streamReader, csvConfiguration);
@@ -188,5 +188,15 @@ public class CsvReader : ICsvReader {
     private void RaiseError(object sender, CsvErrorEventArgs e) {
         var handler = OnRowError;
         handler?.Invoke(this, e);
+    }
+    
+    private bool ShouldSkipRecord(ShouldSkipRecordArgs args) {
+        for (var i = 0; i < args.Row.ColumnCount; i++) {
+            if (args.Row[i].HasValue()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

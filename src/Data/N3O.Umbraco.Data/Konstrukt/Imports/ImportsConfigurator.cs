@@ -6,8 +6,9 @@ namespace N3O.Umbraco.Data.Konstrukt;
 
 public class ImportsConfigurator : IKonstruktConfigurator {
     public void Configure(KonstruktConfigBuilder builder) {
-        var dashboard = builder.AddDashboard("Imports");
-        dashboard.SetVisibility(cfg => cfg.ShowInSection("content"));
+        var section = builder.WithSection("content");
+        var dashboard = section.AddDashboard("Imports");
+        dashboard.SetVisibility(cfg => cfg.ShowForUserGroup(DataConstants.SecurityGroups.ImportUser));
 
         ConfigureCollection(dashboard);
     }
