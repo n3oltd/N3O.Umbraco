@@ -19,7 +19,7 @@ public class GetContentTypeByAliasHandler : IRequestHandler<GetContentTypeByAlia
     }
 
     public Task<ContentTypeRes> Handle(GetContentTypeByAliasQuery req, CancellationToken cancellationToken) {
-        var contentType = _contentTypeService.Get(req.ContentType.Value);
+        var contentType = req.ContentType.Run(_contentTypeService.Get, true);
 
         var res = _mapper.Map<IContentType, ContentTypeRes>(contentType);
 
