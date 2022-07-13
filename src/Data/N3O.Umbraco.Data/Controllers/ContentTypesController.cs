@@ -23,13 +23,9 @@ public class ContentTypesController : ApiController {
 
     [HttpPost("find")]
     public async Task<ActionResult<IEnumerable<ContentTypeRes>>> FindContentTypes(ContentTypeCriteria req) {
-        try {
-            var res = await _mediator.SendAsync<FindContentTypesQuery, ContentTypeCriteria, IEnumerable<ContentTypeRes>>(req);
+        var res = await _mediator.SendAsync<FindContentTypesQuery, ContentTypeCriteria, IEnumerable<ContentTypeRes>>(req);
 
-            return Ok(res);
-        } catch (ResourceNotFoundException ex) {
-            return NotFound(ex);
-        }
+        return Ok(res);
     }
     
     [HttpPost("{contentType}")]
