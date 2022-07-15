@@ -20,7 +20,7 @@ public class ContentCache : IContentCache {
     public IReadOnlyList<T> All<T>(Func<T, bool> predicate = null) {
         var cacheKey = GetCacheKey<T>();
 
-        var all = (IReadOnlyList<T>) _typedStore.GetOrAdd(cacheKey, _ => _contentLocator.All<T>());
+        var all = (IReadOnlyList<T>) _typedStore.GetOrAdd(cacheKey, _contentLocator.All<T>());
 
         if (predicate == null) {
             return all;
@@ -33,7 +33,7 @@ public class ContentCache : IContentCache {
                                                 Func<IPublishedContent, bool> predicate = null) {
         var cacheKey = GetCacheKey(contentTypeAlias);
 
-        var all = _untypedStore.GetOrAdd(cacheKey, _ => _contentLocator.All(contentTypeAlias));
+        var all = _untypedStore.GetOrAdd(cacheKey, _contentLocator.All(contentTypeAlias));
 
         if (predicate == null) {
             return all;
@@ -43,7 +43,7 @@ public class ContentCache : IContentCache {
     }
 
     public void Flush(IEnumerable<string> contentTypeAliases) {
-        var prefixes = contentTypeAliases.Select(x => CacheKey.Generate<ContentCache>(x)).ToList();
+        var prefixes = contentTypeAliases.Select(GetCacheKey).ToList();
     
         _typedStore.RemoveWhereKey(x => prefixes.Any(p => x.StartsWith(p, StringComparison.InvariantCultureIgnoreCase)));
         _untypedStore.RemoveWhereKey(x => prefixes.Any(p => x.StartsWith(p, StringComparison.InvariantCultureIgnoreCase)));
@@ -58,13 +58,12 @@ public class ContentCache : IContentCache {
     }
 
     private string GetCacheKey<T>() {
-        var contentTypeAlias = AliasHelper<T>.ContentTypeAlias();
-        var cacheKey = CacheKey.Generate<ContentCache>(contentTypeAlias, typeof(T).FullName);
-        
-        return cacheKey;
+        return GetCacheKey(AliasHelper<T>.ContentTypeAlias());
     }
 
     private string GetCacheKey(string contentTypeAlias) {
-        return contentTypeAlias;
+        var cacheKey = CacheKey.Generate<ContentCache>(contentTypeAlias);
+        
+        return cacheKey;
     }
 }
