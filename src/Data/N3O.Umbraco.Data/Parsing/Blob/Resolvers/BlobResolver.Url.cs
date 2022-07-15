@@ -30,7 +30,7 @@ public class UrlBlobResolver : BlobResolver {
 
     private string GetFilename(string url, ContentDispositionHeaderValue header) {
         try {
-            if (header != null) {
+            if (header.HasValue(x => x.FileName)) {
                 return header.FileName.Replace("\"", "");
             } else {
                 return Path.GetFileName(url);
