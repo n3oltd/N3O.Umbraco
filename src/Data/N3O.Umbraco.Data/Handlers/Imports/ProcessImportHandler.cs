@@ -13,6 +13,7 @@ using N3O.Umbraco.Json;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Storage;
+using NodaTime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,7 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
     private readonly IContentService _contentService;
     private readonly IContentTypeService _contentTypeService;
     private readonly IJsonProvider _jsonProvider;
+    private readonly IClock _clock;
     private readonly IDataTypeService _dataTypeService;
     private readonly IParserFactory _parserFactory;
     private readonly IVolume _volume;
@@ -44,6 +46,7 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
                                 IContentService contentService,
                                 IContentTypeService contentTypeService,
                                 IJsonProvider jsonProvider,
+                                IClock clock,
                                 IDataTypeService dataTypeService,
                                 IParserFactory parserFactory,
                                 IVolume volume,
@@ -56,6 +59,7 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
         _contentService = contentService;
         _contentTypeService = contentTypeService;
         _jsonProvider = jsonProvider;
+        _clock = clock;
         _dataTypeService = dataTypeService;
         _parserFactory = parserFactory;
         _volume = volume;
@@ -101,9 +105,10 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
                         var contentSummary = GetContentSummary(savedContent);
                         
                         if (wasPublished) {
-                            import.SavedAndPublished(savedContent.Key, contentSummary);
+                            import.SavedAndPublished(_clock, savedContent.Key, contentSummary);
                         } else {
                             import.Saved(_jsonProvider,
+                                         _clock,
                                          savedContent.Key,
                                          contentSummary,
                                          GetSaveWarnings(publishResult));
