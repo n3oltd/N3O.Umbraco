@@ -106,11 +106,17 @@ public class QueueImportsHandler : IRequestHandler<QueueImportsCommand, QueueImp
                     _errorLog.ThrowIfHasErrors();
                 }
                 
-                var contentIdField = csvReader.Row.GetRawField(_contentIdColumnTitle);
-                var contentId = hasContentIdColumn && contentIdField.HasValue()
-                                    ? Guid.Parse(contentIdField)
-                                    : default(Guid?);
                 
+                var contentId = default(Guid?);
+
+                if (hasContentIdColumn) {
+                    var contentIdField = csvReader.Row.GetRawField(_contentIdColumnTitle);
+
+                    if (contentIdField.HasValue()) {
+                        contentId = Guid.Parse(contentIdField);
+                    }
+                }
+
                 var name = hasNameColumn ? csvReader.Row.GetRawField(_nameColumnTitle) : null;
                 var replacesCriteria = hasReplaceColumn ? csvReader.Row.GetRawField(_replacesColumnTitle) : null;
                 var sourceValues = columnHeadings.ToDictionary(x => x, x => csvReader.Row.GetRawField(x));

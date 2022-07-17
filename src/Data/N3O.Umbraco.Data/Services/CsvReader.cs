@@ -191,12 +191,6 @@ public class CsvReader : ICsvReader {
     }
     
     private bool ShouldSkipRecord(ShouldSkipRecordArgs args) {
-        for (var i = 0; i < args.Row.ColumnCount; i++) {
-            if (args.Row[i].HasValue()) {
-                return false;
-            }
-        }
-
-        return true;
+        return args.Row.Parser.Record.OrEmpty().None(x => x.HasValue());
     }
 }
