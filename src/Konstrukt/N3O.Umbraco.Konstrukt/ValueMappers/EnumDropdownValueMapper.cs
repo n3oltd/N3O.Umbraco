@@ -3,7 +3,7 @@ using N3O.Umbraco.Extensions;
 using Newtonsoft.Json;
 using System;
 
-namespace N3O.Umbraco.Data.Konstrukt;
+namespace N3O.Umbraco.Konstrukt.ValueMappers;
 
 public class EnumDropdownValueMapper<T> : KonstruktValueMapper where T : struct, Enum {
     public override object ModelToEditor(object input) {

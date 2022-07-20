@@ -6,7 +6,7 @@ using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 
-namespace N3O.Umbraco.Data.Konstrukt;
+namespace N3O.Umbraco.Konstrukt.ValueMappers;
 
 public class UdiToIntContentPickerValueMapper : KonstruktValueMapper {
     private readonly IIdKeyMap _idKeyMap;
