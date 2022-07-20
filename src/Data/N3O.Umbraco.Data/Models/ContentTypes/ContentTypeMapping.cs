@@ -33,7 +33,10 @@ public class ContentTypeMapping : IMapDefinition {
         
         res.Alias = src.Type.Alias;
         res.Group = src.Group.Name;
-        res.DataType = src.DataType.EditorAlias;
+        res.DataType = new UmbracoDataTypeRes {
+            EditorAlias = src.DataType.EditorAlias,
+            Name = src.DataType.Name
+        };
         res.Name = src.Type.Name;
 
         return res;
