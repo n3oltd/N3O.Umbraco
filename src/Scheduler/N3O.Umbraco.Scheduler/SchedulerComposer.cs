@@ -52,7 +52,9 @@ public class SchedulerComposer : IComposer {
                    .UseMaxLinesInExceptionDetails(200);
             });
 
-            builder.Services.AddHangfireServer();
+            builder.Services.AddHangfireServer(opt => {
+                opt.WorkerCount = 5;
+            });
 
             AddAuthorizedUmbracoDashboard(builder);
 
