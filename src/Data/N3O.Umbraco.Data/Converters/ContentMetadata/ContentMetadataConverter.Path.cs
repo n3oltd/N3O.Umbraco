@@ -32,7 +32,7 @@ public class PathContentMetadataConverter : ContentMetadataConverter<string> {
 
             segments.Reverse();
     
-            return string.Join(" // ", segments);
+            return string.Join($" {DataConstants.Separator} ", segments);
         });
     }
     

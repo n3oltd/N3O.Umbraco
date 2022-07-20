@@ -185,9 +185,9 @@ public class NestedContentPropertyConverter : IPropertyConverter {
         var titlePrefix = propertyInfo.GetColumnTitle(columnTitlePrefix);
 
         if (i == 1) {
-            titlePrefix += " // ";
+            titlePrefix += $" {DataConstants.Separator} ";
         } else {
-            titlePrefix += $" {i} // ";
+            titlePrefix += $" {i} {DataConstants.Separator} ";
         }
         
         if (!propertyInfo.NestedContent.IsSingle()) {

@@ -44,7 +44,7 @@ public class DropdownPropertyConverter : PropertyConverter<string> {
         } else if (value is string s) {
             return s;
         } else if (value is IEnumerable<string> strings) {
-            return string.Join(" // ", strings);
+            return string.Join($" {DataConstants.Separator} ", strings);
         } else {
             throw UnrecognisedValueException.For(value);
         }

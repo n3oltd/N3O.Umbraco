@@ -1,6 +1,8 @@
 namespace N3O.Umbraco.Data;
 
 public static class DataConstants {
+    public const string Separator = "//";
+    
     public static class ApiNames {
         public const string Content = "Content";
         public const string ContentTypes = "ContentTypes";
