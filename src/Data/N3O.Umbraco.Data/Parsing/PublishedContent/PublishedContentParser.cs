@@ -45,9 +45,13 @@ public class PublishedContentParser : DataTypeParser<IPublishedContent>, IPublis
                         searchRoots.AddRange(contextReference.UmbracoContext.Content.GetAtRoot());
                     }
 
-                    var matches = searchRoots.SelectMany(r => r.Descendants()
-                                                               .Where(c => c.Name.EqualsInvariant(text)))
-                                             .ToList();
+                    IReadOnlyList<IPublishedContent> matches;
+
+                    if (text.Contains(DataConstants.Separator)) {
+                        matches = PathSearch(searchRoots, text);
+                    } else {
+                        matches = NameSearch(searchRoots, text);
+                    }
 
                     if (matches.IsSingle()) {
                         value = matches.Single();
@@ -69,5 +73,51 @@ public class PublishedContentParser : DataTypeParser<IPublishedContent>, IPublis
         } else {
             return ParseResult.Fail<IPublishedContent>();
         }
+    }
+    
+    private IReadOnlyList<IPublishedContent> PathSearch(IReadOnlyList<IPublishedContent> searchRoots, string text) {
+        var path = text.Split(DataConstants.Separator,
+                              StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        
+        return searchRoots.SelectMany(r => r.Descendants().Select(x => new { Content = x, Path = GetPath(r, x)}))
+                          .Where(x => PathsMatch(path, x.Path))
+                          .Select(x => x.Content)
+                          .ToList();
+    }
+
+    private IReadOnlyList<IPublishedContent> NameSearch(IReadOnlyList<IPublishedContent> searchRoots, string text) {
+        return searchRoots.SelectMany(r => r.Descendants().Where(c => c.Name.EqualsInvariant(text))).ToList();
+    }
+    
+    private IReadOnlyList<string> GetPath(IPublishedContent root, IPublishedContent content) {
+        var path = new List<string>();
+
+        while (true) {
+            path.Add(content.Name);
+            
+            content = content.Parent;
+
+            if (content == root) {
+                break;
+            }
+        }
+
+        path.Reverse();
+
+        return path;
+    }
+    
+    private bool PathsMatch(IReadOnlyList<string> path1, IReadOnlyList<string> path2) {
+        if (path1.Count != path2.Count) {
+            return false;
+        }
+
+        for (var i = 0; i < path1.Count; i++) {
+            if (!path1[i].EqualsInvariant(path2[i])) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
