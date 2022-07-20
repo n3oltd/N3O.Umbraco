@@ -175,8 +175,13 @@ export interface ContentTypeRes {
 export interface UmbracoPropertyInfoRes {
     alias?: string | undefined;
     group?: string | undefined;
-    dataType?: string | undefined;
+    dataType?: UmbracoDataTypeRes | undefined;
     name?: string | undefined;
+}
+
+export interface UmbracoDataTypeRes {
+    name?: string | undefined;
+    editorAlias?: string | undefined;
 }
 
 export interface ProblemDetails {
