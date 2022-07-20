@@ -45,12 +45,21 @@ public class PublishedContentParser : DataTypeParser<IPublishedContent>, IPublis
                         searchRoots.AddRange(contextReference.UmbracoContext.Content.GetAtRoot());
                     }
 
+                    string country = string.Empty;
+                    
+                    if (text.Contains("//")) {
+                        country = text.Split(" // ").First();
+                        text = text.Split(" // ").Last();
+                    }
+                    
                     var matches = searchRoots.SelectMany(r => r.Descendants()
                                                                .Where(c => c.Name.EqualsInvariant(text)))
                                              .ToList();
 
                     if (matches.IsSingle()) {
                         value = matches.Single();
+                    } else {
+                        value = matches.FirstOrDefault(x => x.Parent.Name == country);
                     }
                 }
 
