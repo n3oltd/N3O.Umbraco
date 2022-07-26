@@ -58,11 +58,12 @@ public class ContentCache : IContentCache {
     }
 
     private string GetCacheKey<T>() {
-        return GetCacheKey(AliasHelper<T>.ContentTypeAlias());
+        // Not AliasHelper<T>.ContentTypeAlias() as need to distinguish T and TContent : UmbracoContent<TContent>
+        return GetCacheKey(typeof(T).FullName);
     }
-
-    private string GetCacheKey(string contentTypeAlias) {
-        var cacheKey = CacheKey.Generate<ContentCache>(contentTypeAlias);
+    
+    private string GetCacheKey(string value) {
+        var cacheKey = CacheKey.Generate<ContentCache>(value);
         
         return cacheKey;
     }
