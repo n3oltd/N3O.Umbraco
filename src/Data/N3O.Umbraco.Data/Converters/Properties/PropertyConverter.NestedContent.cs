@@ -191,7 +191,7 @@ public class NestedContentPropertyConverter : IPropertyConverter {
         }
         
         if (!propertyInfo.NestedContent.IsSingle()) {
-            titlePrefix += $"  {nestedContentInfo.ContentType.Name}: ";
+            titlePrefix += $" {nestedContentInfo.ContentType.Name}: ";
         }
 
         return titlePrefix;
