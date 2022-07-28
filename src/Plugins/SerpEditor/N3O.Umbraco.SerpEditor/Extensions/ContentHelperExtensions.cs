@@ -10,7 +10,7 @@ namespace N3O.Umbraco.SerpEditor.Extensions;
 public static class ContentHelperExtensions {
     public static SerpEntry GetSerpEntry(this IContentHelper contentHelper, IContentProperty property) {
         if (!property.Type.HasEditorAlias(SerpEditorConstants.PropertyEditorAlias)) {
-            throw new Exception("Property is not Serp Editor");
+            throw new Exception("Property is not a SERP Editor");
         }
 
         return GetSerpEntry(contentHelper, property.ContentType.Alias, property.Type.Alias, property.Value);
@@ -20,7 +20,7 @@ public static class ContentHelperExtensions {
                                          string contentTypeAlias,
                                          IProperty property) {
         if (!property.PropertyType.HasEditorAlias(SerpEditorConstants.PropertyEditorAlias)) {
-            throw new Exception("Property is not Serp Editor");
+            throw new Exception("Property is not a SERP Editor");
         }
 
         return GetSerpEntry(contentHelper, contentTypeAlias, property.PropertyType.Alias, property.GetValue());

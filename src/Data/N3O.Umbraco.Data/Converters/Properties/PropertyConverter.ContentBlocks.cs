@@ -32,12 +32,12 @@ public class ContentBlocksPropertyConverter : PropertyConverter<Blob, string> {
                                 string columnTitlePrefix,
                                 UmbracoPropertyInfo propertyInfo,
                                 IEnumerable<ImportField> fields) {
-        var field = fields.Single();
+        var parseResult = parser.String.Parse(fields.Single().Value, OurDataTypes.String.GetClrType());
 
-        if (field.Value.HasValue()) {
-            var value = JsonConvert.DeserializeObject<ContentBlocksModelValue>(field.Value);
+        if (parseResult.Value.HasValue()) {
+            var modelValue = JsonConvert.DeserializeObject<ContentBlocksModelValue>(parseResult.Value);
             
-            contentBuilder.ContentBlocks(propertyInfo.Type.Alias).Set(value);
+            contentBuilder.ContentBlocks(propertyInfo.Type.Alias).Set(modelValue);
         }
     }
 }

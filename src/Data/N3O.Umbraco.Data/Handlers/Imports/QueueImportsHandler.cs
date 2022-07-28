@@ -105,8 +105,7 @@ public class QueueImportsHandler : IRequestHandler<QueueImportsCommand, QueueImp
                     _errorLog.AddError<Strings>(s => s.MaxRowsExceeded_1, MaxRowsCount);
                     _errorLog.ThrowIfHasErrors();
                 }
-                
-                
+
                 var contentId = default(Guid?);
 
                 if (hasContentIdColumn) {
