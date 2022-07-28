@@ -11,6 +11,9 @@ public class SerpEntry {
         Description = other.Description;
     }
     
+    [JsonProperty("title")]
     public string Title { get; set; }
+    
+    [JsonProperty("description")]
     public string Description { get; set; }
 }

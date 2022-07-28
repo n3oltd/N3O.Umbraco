@@ -7,21 +7,21 @@ using System;
 namespace N3O.Umbraco.SerpEditor.Content;
 
 public class SerpEditorPropertyBuilder : PropertyBuilder {
-    private string _title;
     private string _description;
-    
+    private string _title;
+
+    public SerpEditorPropertyBuilder SetDescription(string description) {
+        _description = description;
+
+        return this;
+    }
+
     public SerpEditorPropertyBuilder SetTitle(string title) {
         _title = title;
 
         return this;
     }
 
-    public SerpEditorPropertyBuilder SetDescription(string description) {
-        _description = description;
-        
-        return this;
-    }
-    
     public override object Build() {
         Validate();
 
@@ -39,5 +39,4 @@ public class SerpEditorPropertyBuilder : PropertyBuilder {
             throw new Exception("Title must be specified");
         }
     }
-    
 }

@@ -29,6 +29,7 @@
       <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.Stripe\N3O.Umbraco.Payments.Stripe.csproj" />
       <ProjectReference Include="..\..\Plugins\Cropper\N3O.Umbraco.Cropper.Data\N3O.Umbraco.Cropper.Data.csproj" />
       <ProjectReference Include="..\..\Plugins\Cropper\N3O.Umbraco.Cropper\N3O.Umbraco.Cropper.csproj" />
+      <ProjectReference Include="..\..\Plugins\SerpEditor\N3O.Umbraco.SerpEditor.Data\N3O.Umbraco.SerpEditor.Data.csproj" />
       <ProjectReference Include="..\..\Plugins\SerpEditor\N3O.Umbraco.SerpEditor\N3O.Umbraco.SerpEditor.csproj" />
       <ProjectReference Include="..\..\Plugins\TextResourceEditor\N3O.Umbraco.TextResourceEditor\N3O.Umbraco.TextResourceEditor.csproj" />
       <ProjectReference Include="..\..\Plugins\Uploader\N3O.Umbraco.Uploader.Data\N3O.Umbraco.Uploader.Data.csproj" />
