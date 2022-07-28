@@ -121,7 +121,7 @@ public abstract class PropertyConverter<TImport, TExport> : IPropertyConverter {
             if (parseResult.Success) {
                 values.Add(parseResult.Value);
             } else {
-                errorLog.AddError<Strings>(s => s.ParsingFailed_2, field.Value, field.Name);
+                errorLog.AddError<PropertyConverterStrings>(s => s.ParsingFailed_2, field.Value, field.Name);
             }
         }
 
@@ -139,7 +139,7 @@ public abstract class PropertyConverter<TImport, TExport> : IPropertyConverter {
                                                                .Build());
     }
 
-    public class Strings : CodeStrings {
+    public class PropertyConverterStrings : CodeStrings {
         public string ParsingFailed_2 => $"The value {"{0}".Quote()} is invalid for {"{1}".Quote()}";
     }
 }
