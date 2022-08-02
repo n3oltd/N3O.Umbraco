@@ -1,4 +1,5 @@
 using N3O.Umbraco.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,8 +15,12 @@ public abstract class LookupsCollection<T> : ILookupsCollection<T> where T : ILo
     }
 
     public virtual async Task<T> FindByNameAsync(string name) {
+        if (!typeof(T).ImplementsInterface<INamedLookup>()) {
+            throw new Exception($"{typeof(T).GetFriendlyName()} does not implement {nameof(INamedLookup)} so cannot be searched by name");
+        }
+        
         var all = await GetAllAsync();
-        var lookup = all.FirstOrDefault(x => x.Name.EqualsInvariant(name));
+        var lookup = all.FirstOrDefault(x => ((INamedLookup) x).Name.EqualsInvariant(name));
 
         return lookup;
     }
