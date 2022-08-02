@@ -1,4 +1,3 @@
-using Humanizer;
 using N3O.Giving.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
