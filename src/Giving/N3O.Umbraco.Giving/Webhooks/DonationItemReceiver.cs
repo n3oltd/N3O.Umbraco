@@ -1,3 +1,4 @@
+using Humanizer;
 using N3O.Giving.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
@@ -131,16 +132,18 @@ public class DonationItemReceiver : WebhookReceiver {
     }
 
     private IReadOnlyList<T> GetLookups<T>(IEnumerable<string> ids) where T : ILookup {
+        ids = ids.Select(x => x.RemoveWhitespace().Camelize());
+        
         return ids.OrEmpty().Select(x => _lookups.FindById<T>(x)).ExceptNull().ToList();
     }
 
     private void AddPriceRule(IContentBuilder contentBuilder, PricingRule priceRule) {
         contentBuilder.Numeric(Aliases.Price.Properties.Amount).SetDecimal(priceRule.Price?.Amount);
         contentBuilder.Toggle(Aliases.Price.Properties.Locked).Set(priceRule.Price?.Locked);
-        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension1).SetContent(_lookups.FindById<FundDimension1Value>(priceRule.Dimension1));
-        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension2).SetContent(_lookups.FindById<FundDimension2Value>(priceRule.Dimension2));
-        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension3).SetContent(_lookups.FindById<FundDimension3Value>(priceRule.Dimension3));
-        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension4).SetContent(_lookups.FindById<FundDimension4Value>(priceRule.Dimension4));
+        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension1).SetContent(_lookups.FindById<FundDimension1Value>(priceRule.Dimension1?.RemoveWhitespace().Camelize()));
+        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension2).SetContent(_lookups.FindById<FundDimension2Value>(priceRule.Dimension2?.RemoveWhitespace().Camelize()));
+        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension3).SetContent(_lookups.FindById<FundDimension3Value>(priceRule.Dimension3?.RemoveWhitespace().Camelize()));
+        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension4).SetContent(_lookups.FindById<FundDimension4Value>(priceRule.Dimension4?.RemoveWhitespace().Camelize()));
     }
     
     public class DonationItem {
