@@ -12,7 +12,8 @@ public abstract class Lookup : Value, ILookup {
     }
 
     public string Id { get; }
-    
+    public string Name { get; }
+
     public virtual IEnumerable<string> GetTextValues() {
         yield return Id;
     }

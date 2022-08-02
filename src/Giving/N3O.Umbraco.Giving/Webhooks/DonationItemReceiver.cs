@@ -79,11 +79,11 @@ public class DonationItemReceiver : WebhookReceiver {
                                                     collection.Content().Key,
                                                     Aliases.DonationItem.ContentType);
         
-        var allowedGivingTypes = GetLookups<GivingType>(donationItem.AllowedGivingTypes);
-        var dimension1Options = GetLookups<FundDimension1Value>(donationItem.Dimension1Options);
-        var dimension2Options = GetLookups<FundDimension2Value>(donationItem.Dimension2Options);
-        var dimension3Options = GetLookups<FundDimension3Value>(donationItem.Dimension3Options);
-        var dimension4Options = GetLookups<FundDimension4Value>(donationItem.Dimension4Options);
+        var allowedGivingTypes = GetLookupsById<GivingType>(donationItem.AllowedGivingTypes);
+        var dimension1Options = GetLookupsByName<FundDimension1Value>(donationItem.Dimension1Options);
+        var dimension2Options = GetLookupsByName<FundDimension2Value>(donationItem.Dimension2Options);
+        var dimension3Options = GetLookupsByName<FundDimension3Value>(donationItem.Dimension3Options);
+        var dimension4Options = GetLookupsByName<FundDimension4Value>(donationItem.Dimension4Options);
 
         contentPublisher.SetName(donationItem.Name);
         contentPublisher.Content.DataList(Aliases.DonationItem.Properties.AllowedGivingTypes).SetLookups(allowedGivingTypes);
@@ -131,19 +131,21 @@ public class DonationItemReceiver : WebhookReceiver {
         }
     }
 
-    private IReadOnlyList<T> GetLookups<T>(IEnumerable<string> ids) where T : ILookup {
-        ids = ids.Select(x => x.RemoveWhitespace().Camelize());
-        
+    private IReadOnlyList<T> GetLookupsById<T>(IEnumerable<string> ids) where T : ILookup {
         return ids.OrEmpty().Select(x => _lookups.FindById<T>(x)).ExceptNull().ToList();
+    }
+    
+    private IReadOnlyList<T> GetLookupsByName<T>(IEnumerable<string> ids) where T : ILookup {
+        return ids.OrEmpty().Select(x => _lookups.FindByName<T>(x)).ExceptNull().ToList();
     }
 
     private void AddPriceRule(IContentBuilder contentBuilder, PricingRule priceRule) {
         contentBuilder.Numeric(Aliases.Price.Properties.Amount).SetDecimal(priceRule.Price?.Amount);
         contentBuilder.Toggle(Aliases.Price.Properties.Locked).Set(priceRule.Price?.Locked);
-        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension1).SetContent(_lookups.FindById<FundDimension1Value>(priceRule.Dimension1?.RemoveWhitespace().Camelize()));
-        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension2).SetContent(_lookups.FindById<FundDimension2Value>(priceRule.Dimension2?.RemoveWhitespace().Camelize()));
-        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension3).SetContent(_lookups.FindById<FundDimension3Value>(priceRule.Dimension3?.RemoveWhitespace().Camelize()));
-        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension4).SetContent(_lookups.FindById<FundDimension4Value>(priceRule.Dimension4?.RemoveWhitespace().Camelize()));
+        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension1).SetContent(_lookups.FindByName<FundDimension1Value>(priceRule.Dimension1));
+        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension2).SetContent(_lookups.FindByName<FundDimension2Value>(priceRule.Dimension2));
+        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension3).SetContent(_lookups.FindByName<FundDimension3Value>(priceRule.Dimension3));
+        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension4).SetContent(_lookups.FindByName<FundDimension4Value>(priceRule.Dimension4));
     }
     
     public class DonationItem {
