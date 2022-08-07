@@ -31,12 +31,12 @@ public class StripeComposer : Composer {
         builder.Services.AddTransient<ICustomers, Customers>();
     }
     
-    private static StripeApiSettings GetApiSettings(IContentCache contentCache, IHostEnvironment environment) {
+    private static StripeApiSettings GetApiSettings(IContentCache contentCache, IWebHostEnvironment webHostEnvironment) {
         var settings = contentCache.Single<StripeSettingsContent>();
         StripeApiSettings apiSettings = null;
         
         if (settings != null) {
-            if (environment.IsProduction()) {
+            if (webHostEnvironment.IsProduction()) {
                 apiSettings = new StripeApiSettings(settings.ProductionClientKey, settings.ProductionSecretKey);
             } else {
                 apiSettings = new StripeApiSettings(settings.StagingClientKey, settings.StagingSecretKey);

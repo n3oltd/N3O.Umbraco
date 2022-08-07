@@ -41,11 +41,11 @@ public class PayPalComposer : Composer {
         });
     }
     
-    private PayPalApiSettings GetApiSettings(IContentCache contentCache, IHostEnvironment environment) {
+    private PayPalApiSettings GetApiSettings(IContentCache contentCache, IWebHostEnvironment webHostEnvironment) {
         var settings = contentCache.Single<PayPalSettingsContent>();
         
         if (settings != null) {
-            if (environment.IsProduction()) {
+            if (webHostEnvironment.IsProduction()) {
                 return new PayPalApiSettings("https://api-m.paypal.com",
                                              settings.ProductionAccessToken,
                                              settings.ProductionClientId);

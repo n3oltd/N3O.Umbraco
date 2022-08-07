@@ -59,11 +59,11 @@ public class BamboraComposer : Composer {
         });
     }
 
-    private BamboraApiSettings GetApiSettings(IContentCache contentCache, IHostEnvironment environment) {
+    private BamboraApiSettings GetApiSettings(IContentCache contentCache, IWebHostEnvironment webHostEnvironment) {
         var settings = contentCache.Single<BamboraSettingsContent>();
 
         if (settings != null) {
-            if (environment.IsProduction()) {
+            if (webHostEnvironment.IsProduction()) {
                 return new BamboraApiSettings(settings.ProductionMerchantId,
                                               settings.ProductionPaymentsPasscode,
                                               settings.ProductionProfilesPasscode);

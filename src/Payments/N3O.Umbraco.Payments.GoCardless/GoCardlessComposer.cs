@@ -35,11 +35,11 @@ public class GoCardlessComposer : Composer {
         });
     }
     
-    public GoCardlessApiSettings GetApiSettings(IContentCache contentCache, IHostEnvironment environment) {
+    public GoCardlessApiSettings GetApiSettings(IContentCache contentCache, IWebHostEnvironment webHostEnvironment) {
         var settings = contentCache.Single<GoCardlessSettingsContent>();
         
         if (settings != null) {
-            if (environment.IsProduction()) {
+            if (webHostEnvironment.IsProduction()) {
                 return new GoCardlessApiSettings(settings.ProductionAccessToken,
                                                  GoCardlessClient.Environment.LIVE);
             } else {

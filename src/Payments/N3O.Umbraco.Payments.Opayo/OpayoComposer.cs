@@ -45,11 +45,11 @@ public class OpayoComposer : Composer {
         builder.Services.AddTransient<IOpayoHelper, OpayoHelper>();
     }
     
-    private OpayoApiSettings GetApiSettings(IContentCache contentCache, IHostEnvironment environment) {
+    private OpayoApiSettings GetApiSettings(IContentCache contentCache, IWebHostEnvironment webHostEnvironment) {
         var settings = contentCache.Single<OpayoSettingsContent>();
         
         if (settings != null) {
-            if (environment.IsProduction()) {
+            if (webHostEnvironment.IsProduction()) {
                 return new OpayoApiSettings("https://pi-live.sagepay.com",
                                             settings.ProductionIntegrationKey,
                                             settings.ProductionIntegrationPassword,
