@@ -11,7 +11,6 @@ public class TextEncoding : NamedLookup {
     public int CodePage { get; }
 }
 
-[StaticLookups]
 public class TextEncodings : StaticLookupsCollection<TextEncoding> {
     public static readonly TextEncoding Iso88591 = new("iso88591", "ISO-8859-1", 28591);
     public static readonly TextEncoding Utf8 = new("utf8", "UTF8", Encoding.UTF8.CodePage);

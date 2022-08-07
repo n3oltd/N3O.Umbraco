@@ -24,7 +24,6 @@ public class AggregationFunction : NamedLookup {
     public DataType ResultType { get; }
 }
 
-[StaticLookups]
 public class AggregationFunctions : StaticLookupsCollection<AggregationFunction> {
     public static readonly AggregationFunction Average = new("average", "Average", OurDataTypes.NumericTypes, "Average");
     public static readonly AggregationFunction Count = new("count", "Count", OurDataTypes.GetAllTypes(), "Count", false, OurDataTypes.Integer);

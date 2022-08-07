@@ -96,7 +96,6 @@ public class DataType<T, TDefaultCellConverter, TTextConverter> : DataType
     }
 }
 
-[StaticLookups]
 public class DataTypes : StaticLookupsCollection<DataType> {
     public static readonly DataType<Blob, BlobCellConverter, BlobTextConverter> Blob =
         new("blob", "Blob", false, (a, b) => a == b);

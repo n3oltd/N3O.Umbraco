@@ -21,7 +21,6 @@ public class BooleanValue : NamedLookup {
     }
 }
 
-[StaticLookups]
 public class BooleanValues : StaticLookupsCollection<BooleanValue> {
     public static readonly BooleanValue True = new("true", "True", true, "yes", "y", "1");
     public static readonly BooleanValue False = new("false", "False", false, "no", "n", "0");

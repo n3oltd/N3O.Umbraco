@@ -15,7 +15,6 @@ public class ContentMetadata : NamedLookup {
     public int DisplayOrder { get; }
 }
 
-[StaticLookups]
 public class ContentMetadatas : StaticLookupsCollection<ContentMetadata> {
     public static readonly ContentMetadata CreatedAt = new("createdAt", "Created At", DataTypes.DateTime, 5, false);
     public static readonly ContentMetadata CreatedBy = new("createdBy", "Created By", DataTypes.String, 6, false);

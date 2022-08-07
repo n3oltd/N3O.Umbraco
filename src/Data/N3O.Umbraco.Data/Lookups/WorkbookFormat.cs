@@ -20,7 +20,6 @@ public class WorkbookFormat : NamedLookup {
     }
 }
 
-[StaticLookups]
 public class WorkbookFormats : StaticLookupsCollection<WorkbookFormat> {
     public static readonly WorkbookFormat Csv = new("csv", "CSV", DataConstants.ContentTypes.Csv, false);
     public static readonly WorkbookFormat Excel = new("excel", "Excel", DataConstants.ContentTypes.Excel, true);

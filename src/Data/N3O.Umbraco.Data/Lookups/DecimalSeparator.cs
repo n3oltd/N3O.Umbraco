@@ -16,7 +16,6 @@ public class DecimalSeparator : NamedLookup {
     public NumberFormat ExampleFormat { get; }
 }
 
-[StaticLookups]
 public class DecimalSeparators : StaticLookupsCollection<DecimalSeparator> {
     public static readonly DecimalSeparator Comma = new("comma",
                                                         "Comma",

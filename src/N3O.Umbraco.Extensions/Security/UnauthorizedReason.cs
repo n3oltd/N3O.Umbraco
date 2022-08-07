@@ -11,7 +11,6 @@ public class UnauthorizedReason : Lookup {
     public int StatusCode { get; }
 }
 
-[StaticLookups]
 public class UnauthorizedReasons : StaticLookupsCollection<UnauthorizedReason> {
     public static readonly UnauthorizedReason InsufficientPermissions = new("insufficientPermissions", HttpStatusCode.Unauthorized);
     public static readonly UnauthorizedReason RestrictionsNotMet = new("restrictionsNotMet", HttpStatusCode.Unauthorized);
