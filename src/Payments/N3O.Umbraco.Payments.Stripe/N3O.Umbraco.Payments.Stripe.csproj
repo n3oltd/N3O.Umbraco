@@ -40,6 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Stripe.net" Version="40.1.0" />
+      <PackageReference Include="Stripe.net" Version="40.2.0" />
     </ItemGroup>
 </Project>
