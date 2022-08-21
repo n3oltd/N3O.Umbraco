@@ -40,6 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Markdig" Version="0.30.2" />
+      <PackageReference Include="Markdig" Version="0.30.3" />
     </ItemGroup>
 </Project>
