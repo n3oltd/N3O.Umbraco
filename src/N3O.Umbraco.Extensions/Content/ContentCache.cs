@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Content;
 
@@ -50,10 +51,7 @@ public class ContentCache : IContentCache {
     }
 
     public void Flush(string contentTypeAlias) {
-        var prefix = GetCacheKey(contentTypeAlias);
-
-        _typedStore.RemoveWhereKey(x => x.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase));
-        _untypedStore.RemoveWhereKey(x => x.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase));
+        Flush(contentTypeAlias.Yield());
     }
 
     public T Single<T>(Func<T, bool> predicate = null) {
