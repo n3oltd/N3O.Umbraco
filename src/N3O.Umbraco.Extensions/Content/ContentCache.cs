@@ -49,6 +49,13 @@ public class ContentCache : IContentCache {
         _untypedStore.RemoveWhereKey(x => prefixes.Any(p => x.StartsWith(p, StringComparison.InvariantCultureIgnoreCase)));
     }
 
+    public void Flush(string contentTypeAlias) {
+        var prefix = GetCacheKey(contentTypeAlias);
+
+        _typedStore.RemoveWhereKey(x => x.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase));
+        _untypedStore.RemoveWhereKey(x => x.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase));
+    }
+
     public T Single<T>(Func<T, bool> predicate = null) {
         return All(predicate).SingleOrDefault();
     }
