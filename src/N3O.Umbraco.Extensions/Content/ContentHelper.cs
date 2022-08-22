@@ -64,7 +64,7 @@ public class ContentHelper : IContentHelper {
 
         foreach (var property in properties) {
             if (property.Type.IsNestedContent()) {
-                var (nestedContents, json) = GetJsonPropertyValue(property.Value);
+                var (nestedContents, json) = GetJsonPropertyValue(contentId, contentTypeAlias, property.Type.Name, property.Value);
                     
                 var elements = GetContentPropertiesForNestedContent(nestedContents);
                 var nestedContentProperty = new NestedContentProperty(contentType,
@@ -74,7 +74,7 @@ public class ContentHelper : IContentHelper {
                 
                 nestedContentProperties.Add(nestedContentProperty);
             } else if (property.Type.IsContentBlocks()) {
-                var (blockContent, json) = GetJsonPropertyValue(property.Value);
+                var (blockContent, json) = GetJsonPropertyValue(contentId, contentTypeAlias, property.Type.Name, property.Value);// Content Id, contentType alias, and property name
 
                 var elements = GetContentPropertiesForBlockContent(blockContent);
                 var nestedContentProperty = new NestedContentProperty(contentType,
@@ -90,7 +90,7 @@ public class ContentHelper : IContentHelper {
 
         return new ContentProperties(contentId, contentTypeAlias, contentProperties, nestedContentProperties);
     }
-
+    
     public TProperty GetConvertedValue<TConverter, TProperty>(string contentTypeAlias,
                                                               string propertyTypeAlias,
                                                               object propertyValue)
@@ -203,7 +203,7 @@ public class ContentHelper : IContentHelper {
         return GetContentProperties(id, contentTypeAlias, properties);
     }
     
-    private (JToken, string) GetJsonPropertyValue(object propertyValue) {
+    private (JToken, string) GetJsonPropertyValue(Guid contentId, string contentTypeAlias, string typeName, object propertyValue) {
         if (propertyValue == null) {
             return (null, null);
         }
@@ -216,7 +216,7 @@ public class ContentHelper : IContentHelper {
             obj = jToken;
             json = JsonConvert.SerializeObject(obj);
         } else {
-            throw new Exception("Property value is not JObject or JSON");
+            throw new Exception($"Property value {propertyValue} is not JObject or JSON of {typeName} for contentType {contentTypeAlias} and content id {contentId}");
         }
 
         return (obj, json);
