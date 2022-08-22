@@ -18,8 +18,18 @@ public class CropBuilder : ICropBuilder {
     }
 
     public void AutoCrop(CropDefinition cropDefinition) {
-        var x = Math.Max(0, (_imageWidth - cropDefinition.Width) / 2m);
-        var y = Math.Max(0, (_imageHeight - cropDefinition.Height) / 2m);
+        var aspectRatio = cropDefinition.Height > cropDefinition.Width ? cropDefinition.Height / cropDefinition.Width : cropDefinition.Width / cropDefinition.Height;
+
+        if (_imageWidth * aspectRatio <= _imageHeight) {
+            _height = _imageWidth * aspectRatio;
+            _width = _imageWidth;
+        } else {
+            _width = _imageHeight * aspectRatio;
+            _height = _imageHeight;
+        }
+
+        var x = Math.Max(0, _imageWidth - _width.GetValueOrThrow());
+        var y = Math.Max(0, _imageHeight - _height.GetValueOrThrow());
 
         CropTo((int) x,
                (int) y,
