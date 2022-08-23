@@ -74,7 +74,7 @@ public class ContentHelper : IContentHelper {
                 
                 nestedContentProperties.Add(nestedContentProperty);
             } else if (property.Type.IsContentBlocks()) {
-                var (blockContent, json) = GetJsonPropertyValue(contentId, contentTypeAlias, property.Type.Name, property.Value);// Content Id, contentType alias, and property name
+                var (blockContent, json) = GetJsonPropertyValue(contentId, contentTypeAlias, property.Type.Name, property.Value);
 
                 var elements = GetContentPropertiesForBlockContent(blockContent);
                 var nestedContentProperty = new NestedContentProperty(contentType,
@@ -203,7 +203,10 @@ public class ContentHelper : IContentHelper {
         return GetContentProperties(id, contentTypeAlias, properties);
     }
     
-    private (JToken, string) GetJsonPropertyValue(Guid contentId, string contentTypeAlias, string typeName, object propertyValue) {
+    private (JToken, string) GetJsonPropertyValue(Guid contentId,
+                                                  string contentTypeAlias,
+                                                  string typeName,
+                                                  object propertyValue) {
         if (propertyValue == null) {
             return (null, null);
         }
@@ -216,7 +219,7 @@ public class ContentHelper : IContentHelper {
             obj = jToken;
             json = JsonConvert.SerializeObject(obj);
         } else {
-            throw new Exception($"Property value {propertyValue} is not JObject or JSON of {typeName} for contentType {contentTypeAlias} and content id {contentId}");
+            throw new Exception($"Unexpected property value of type {propertyValue.GetType().GetFriendlyName()}, expected JObject or JSON for content type {contentTypeAlias.Quote()} with ID {contentId}");
         }
 
         return (obj, json);

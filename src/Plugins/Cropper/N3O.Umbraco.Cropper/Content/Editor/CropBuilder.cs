@@ -1,6 +1,9 @@
 using N3O.Umbraco.Cropper.DataTypes;
 using N3O.Umbraco.Extensions;
 using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 
 namespace N3O.Umbraco.Cropper.Content;
 
@@ -18,23 +21,21 @@ public class CropBuilder : ICropBuilder {
     }
 
     public void AutoCrop(CropDefinition cropDefinition) {
-        var aspectRatio = cropDefinition.Height > cropDefinition.Width ? cropDefinition.Height / cropDefinition.Width : cropDefinition.Width / cropDefinition.Height;
+        var aspectRatio = cropDefinition.Width / (decimal) cropDefinition.Height;
+        var cropCandidates = new List<Rectangle>();
+        
+        cropCandidates.Add(new Rectangle(0, 0, _imageWidth, (int) (_imageWidth / aspectRatio)));
+        cropCandidates.Add(new Rectangle(0, 0, (int) (_imageHeight * aspectRatio), _imageHeight));
+        cropCandidates.Add(new Rectangle((int) Math.Max(0, (_imageWidth - cropDefinition.Width) / 2m),
+                                         (int) Math.Max(0, (_imageHeight - cropDefinition.Height) / 2m),
+                                         Math.Min(cropDefinition.Width, _imageWidth),
+                                         Math.Min(cropDefinition.Height, _imageHeight)));
 
-        if (_imageWidth * aspectRatio <= _imageHeight) {
-            _height = _imageWidth * aspectRatio;
-            _width = _imageWidth;
-        } else {
-            _width = _imageHeight * aspectRatio;
-            _height = _imageHeight;
-        }
 
-        var x = Math.Max(0, _imageWidth - _width.GetValueOrThrow());
-        var y = Math.Max(0, _imageHeight - _height.GetValueOrThrow());
+        var crop = cropCandidates.Where(r => r.X + r.Width <= _imageWidth && r.Y + r.Height <= _imageHeight)
+                                 .MaxBy(x => x.Width * x.Height);
 
-        CropTo((int) x,
-               (int) y,
-               Math.Min(cropDefinition.Width, _imageWidth),
-               Math.Min(cropDefinition.Height, _imageHeight));
+        CropTo(crop.X, crop.Y, crop.Width, crop.Height);
     }
 
     public void CropTo(int x, int y, int width, int height) {
