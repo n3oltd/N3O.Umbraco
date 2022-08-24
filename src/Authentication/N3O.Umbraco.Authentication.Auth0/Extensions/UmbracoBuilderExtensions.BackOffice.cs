@@ -13,9 +13,10 @@ namespace N3O.Umbraco.Authentication.Auth0.Extensions;
 
 public static partial class UmbracoBuilderExtensions {
     public static IUmbracoBuilder AddAuth0BackOfficeAuthentication(this IUmbracoBuilder builder,
-                                                                   Action<BackOfficeExternalLoginProviderOptions> configure = null) {
-        if (configure != null) {
-            builder.Services.AddSingleton(configure);
+                                                                   Action<BackOfficeExternalLoginProviderOptions> configurLoginProviderOptions = null,
+                                                                   Action<OpenIdConnectOptions> configureOpenIdConnectOptions = null) {
+        if (configurLoginProviderOptions != null) {
+            builder.Services.AddSingleton(configurLoginProviderOptions);
         }
 
         builder.Services.ConfigureOptions<Auth0BackOfficeLoginProviderOptions>();
@@ -39,6 +40,9 @@ public static partial class UmbracoBuilderExtensions {
                             opt.GetClaimsFromUserInfoEndpoint = true;
                             opt.SaveTokens = true;
                             opt.UsePkce = true;
+                            
+                            configureOpenIdConnectOptions?.Invoke(opt);
+                            
                             opt.Events.OnRedirectToIdentityProvider = context => {
                                 context.ProtocolMessage.SetParameter("audience", "https://n3o.ltd/karakoram");
                                 return Task.CompletedTask;
