@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Data.Commands;
 using N3O.Umbraco.Data.Exceptions;
-using N3O.Umbraco.Data.Konstrukt;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Queries;
@@ -16,7 +15,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
-using Umbraco.Cms.Infrastructure.Persistence;
 
 namespace N3O.Umbraco.Data.Controllers;
 
@@ -26,20 +24,15 @@ public class ImportsController : PluginController {
     private readonly Lazy<ILookups> _lookups;
     private readonly Lazy<IUmbracoMapper> _mapper;
     private readonly Lazy<IMediator> _mediator;
-    private readonly IImportProcessingQueue _importProcessingQueue;
-    private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
+    
     public ImportsController(ILogger<ImportsController> logger,
                              Lazy<ILookups> lookups,
                              Lazy<IUmbracoMapper> mapper,
-                             Lazy<IMediator> mediator,
-                             IImportProcessingQueue importProcessingQueue,
-                             IUmbracoDatabaseFactory umbracoDatabaseFactory) {
+                             Lazy<IMediator> mediator) {
         _logger = logger;
         _lookups = lookups;
         _mapper = mapper;
         _mediator = mediator;
-        _importProcessingQueue = importProcessingQueue;
-        _umbracoDatabaseFactory = umbracoDatabaseFactory;
     }
     
     [HttpPost("queued/{referenceId}/files")]
@@ -90,15 +83,10 @@ public class ImportsController : PluginController {
         }
     }
     
-    [HttpPut("requeue")]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async void Requeue() {
-        using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-            var failedImports = db.Query<Import>().Where(x => x.Status == "Error");
-            
-            foreach (var failedImport in failedImports.ToList()) {
-                _importProcessingQueue.Add(failedImport);
-            }
-        }
+    [HttpPut("requeueFailed")]
+    public async Task<ActionResult> RequeueFailed() {
+        await _mediator.Value.SendAsync<RequeueFailedImportsCommand, None, None>(None.Empty);
+
+        return Ok();
     }
 }
