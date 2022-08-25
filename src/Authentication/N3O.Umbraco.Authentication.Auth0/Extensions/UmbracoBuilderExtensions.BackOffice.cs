@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using N3O.Umbraco.Authentication.Extensions;
 using System;
-using System.Threading.Tasks;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Web.BackOffice.Security;
 using Umbraco.Extensions;
@@ -13,10 +12,10 @@ namespace N3O.Umbraco.Authentication.Auth0.Extensions;
 
 public static partial class UmbracoBuilderExtensions {
     public static IUmbracoBuilder AddAuth0BackOfficeAuthentication(this IUmbracoBuilder builder,
-                                                                   Action<BackOfficeExternalLoginProviderOptions> configurLoginProviderOptions = null,
+                                                                   Action<BackOfficeExternalLoginProviderOptions> configureLoginProviderOptions = null,
                                                                    Action<OpenIdConnectOptions> configureOpenIdConnectOptions = null) {
-        if (configurLoginProviderOptions != null) {
-            builder.Services.AddSingleton(configurLoginProviderOptions);
+        if (configureLoginProviderOptions != null) {
+            builder.Services.AddSingleton(configureLoginProviderOptions);
         }
 
         builder.Services.ConfigureOptions<Auth0BackOfficeLoginProviderOptions>();
@@ -42,11 +41,6 @@ public static partial class UmbracoBuilderExtensions {
                             opt.UsePkce = true;
                             
                             configureOpenIdConnectOptions?.Invoke(opt);
-                            
-                            opt.Events.OnRedirectToIdentityProvider = context => {
-                                context.ProtocolMessage.SetParameter("audience", "https://n3o.ltd/karakoram");
-                                return Task.CompletedTask;
-                            };
                             
                             opt.Scope.Add("openid");
                             opt.Scope.Add("email");
