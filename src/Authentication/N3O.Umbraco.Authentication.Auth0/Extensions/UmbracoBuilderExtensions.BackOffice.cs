@@ -12,9 +12,10 @@ namespace N3O.Umbraco.Authentication.Auth0.Extensions;
 
 public static partial class UmbracoBuilderExtensions {
     public static IUmbracoBuilder AddAuth0BackOfficeAuthentication(this IUmbracoBuilder builder,
-                                                                   Action<BackOfficeExternalLoginProviderOptions> configure = null) {
-        if (configure != null) {
-            builder.Services.AddSingleton(configure);
+                                                                   Action<BackOfficeExternalLoginProviderOptions> configureLoginProviderOptions = null,
+                                                                   Action<OpenIdConnectOptions> configureOpenIdConnectOptions = null) {
+        if (configureLoginProviderOptions != null) {
+            builder.Services.AddSingleton(configureLoginProviderOptions);
         }
 
         builder.Services.ConfigureOptions<Auth0BackOfficeLoginProviderOptions>();
@@ -38,7 +39,9 @@ public static partial class UmbracoBuilderExtensions {
                             opt.GetClaimsFromUserInfoEndpoint = true;
                             opt.SaveTokens = true;
                             opt.UsePkce = true;
-
+                            
+                            configureOpenIdConnectOptions?.Invoke(opt);
+                            
                             opt.Scope.Add("openid");
                             opt.Scope.Add("email");
                             opt.Scope.Add("roles");
