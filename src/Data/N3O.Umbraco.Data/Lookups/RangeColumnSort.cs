@@ -14,10 +14,10 @@ public class RangeColumnSort : NamedLookup {
 
 public class RangeColumnSorts : StaticLookupsCollection<RangeColumnSort> {
     public const string Preserve_Id = "preserve";
-    public static readonly RangeColumnSort Preserve = new RangeColumnSort(Preserve_Id, "Preserve", _ => { });
+    public static readonly RangeColumnSort Preserve = new(Preserve_Id, "Preserve", _ => { });
 
     public const string Alphabetical_Id = "alphabetical";
-    public static readonly RangeColumnSort Alphabetical = new RangeColumnSort("alphabetical", "Alphabetical", x => x.Sort(StringComparer.InvariantCultureIgnoreCase));
+    public static readonly RangeColumnSort Alphabetical = new("alphabetical", "Alphabetical", x => x.Sort(StringComparer.InvariantCultureIgnoreCase));
 
     public static RangeColumnSort GetById(string id) {
         if (id == Alphabetical_Id) {

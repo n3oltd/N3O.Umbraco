@@ -60,9 +60,9 @@ public class Timezones : LookupsCollection<Timezone> {
                                     .ToList();
     }
 
-    public static Timezone Utc => new Timezone(DateTimeZone.Utc.Id.ToLowerInvariant(),
-                                               DateTimeZone.Utc.Id,
-                                               SystemClock.Instance);
+    public static Timezone Utc => new(DateTimeZone.Utc.Id.ToLowerInvariant(),
+                                      DateTimeZone.Utc.Id,
+                                      SystemClock.Instance);
 
     public override Task<IReadOnlyList<Timezone>> GetAllAsync() {
         return Task.FromResult(All);

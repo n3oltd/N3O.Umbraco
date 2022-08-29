@@ -44,7 +44,7 @@ public static partial class UmbracoBuilderExtensions {
                             
                             opt.Scope.Add("openid");
                             opt.Scope.Add("email");
-                            opt.Scope.Add("roles");
+                            opt.Scope.Add("profile");
                         });
                 });
         });

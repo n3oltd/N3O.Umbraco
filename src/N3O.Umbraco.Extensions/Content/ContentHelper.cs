@@ -3,6 +3,7 @@ using N3O.Umbraco.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models;
@@ -218,6 +219,9 @@ public class ContentHelper : IContentHelper {
         } else if (propertyValue is JToken jToken) {
             obj = jToken;
             json = JsonConvert.SerializeObject(obj);
+        } else if (propertyValue is IEnumerable objects) {
+            obj = JArray.FromObject(objects);
+            json = JsonConvert.SerializeObject(objects);
         } else {
             throw new Exception($"Unexpected property value of type {propertyValue.GetType().GetFriendlyName()}, expected JObject or JSON for content type {contentTypeAlias.Quote()} with ID {contentId}");
         }

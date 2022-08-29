@@ -7,9 +7,9 @@ public class Language : NamedLookup {
 }
 
 public class Languages : StaticLookupsCollection<Language> {
-    public static readonly Language English = new Language("en", "English");
-    public static readonly Language French = new Language("fr", "French");
-    public static readonly Language Spanish = new Language("es", "Spanish");
+    public static readonly Language English = new("en", "English");
+    public static readonly Language French = new("fr", "French");
+    public static readonly Language Spanish = new("es", "Spanish");
 
-    public static readonly Language LocalizationTest = new Language("xx", "Localization Test");
+    public static readonly Language LocalizationTest = new("xx", "Localization Test");
 }

@@ -13,6 +13,6 @@ public class TimeFormat : NamedLookup {
 }
 
 public class TimeFormats : StaticLookupsCollection<TimeFormat> {
-    public static readonly TimeFormat _12 = new TimeFormat("12", "12 Hour Format", true, "en-US");
-    public static readonly TimeFormat _24 = new TimeFormat("24", "24 Hour Format", false, "en-GB");
+    public static readonly TimeFormat _12 = new("12", "12 Hour Format", true, "en-US");
+    public static readonly TimeFormat _24 = new("24", "24 Hour Format", false, "en-GB");
 }

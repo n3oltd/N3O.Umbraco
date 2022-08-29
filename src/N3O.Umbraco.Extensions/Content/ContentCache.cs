@@ -1,11 +1,9 @@
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Content;
 
@@ -43,15 +41,9 @@ public class ContentCache : IContentCache {
         }
     }
 
-    public void Flush(IEnumerable<string> contentTypeAliases) {
-        var prefixes = contentTypeAliases.Select(GetCacheKey).ToList();
-    
-        _typedStore.RemoveWhereKey(x => prefixes.Any(p => x.StartsWith(p, StringComparison.InvariantCultureIgnoreCase)));
-        _untypedStore.RemoveWhereKey(x => prefixes.Any(p => x.StartsWith(p, StringComparison.InvariantCultureIgnoreCase)));
-    }
-
-    public void Flush(string contentTypeAlias) {
-        Flush(contentTypeAlias.Yield());
+    public void Flush() {
+        _typedStore.Clear();
+        _untypedStore.Clear();
     }
 
     public T Single<T>(Func<T, bool> predicate = null) {

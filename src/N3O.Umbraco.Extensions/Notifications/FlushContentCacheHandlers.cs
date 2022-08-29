@@ -1,7 +1,5 @@
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
@@ -28,9 +26,7 @@ public class FlushContentCacheHandlers :
     }
 
     private Task ProcessAsync(IEnumerable<IContent> entities) {
-        var aliases = entities.OrEmpty().Select(x => x.ContentType.Alias).Distinct().ToList();
-    
-        _contentCache.Flush(aliases);
+        _contentCache.Flush();
     
         return Task.CompletedTask;
     }

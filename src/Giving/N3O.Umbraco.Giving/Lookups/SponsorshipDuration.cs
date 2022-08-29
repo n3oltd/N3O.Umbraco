@@ -11,8 +11,8 @@ public class SponsorshipDuration : NamedLookup {
 }
 
 public class SponsorshipDurations : StaticLookupsCollection<SponsorshipDuration> {
-    public static readonly SponsorshipDuration SixMonths = new SponsorshipDuration("_6", "6 Months", 6);
-    public static readonly SponsorshipDuration TwelveMonths = new SponsorshipDuration("_12", "12 Months", 12);
-    public static readonly SponsorshipDuration EighteenMonths = new SponsorshipDuration("_18", "18 Months", 18);
-    public static readonly SponsorshipDuration TwentyFourMonths = new SponsorshipDuration("_24", "24 Months", 24);
+    public static readonly SponsorshipDuration SixMonths = new("_6", "6 Months", 6);
+    public static readonly SponsorshipDuration TwelveMonths = new("_12", "12 Months", 12);
+    public static readonly SponsorshipDuration EighteenMonths = new("_18", "18 Months", 18);
+    public static readonly SponsorshipDuration TwentyFourMonths = new("_24", "24 Months", 24);
 }

@@ -1,5 +1,4 @@
 ﻿using N3O.Umbraco.Content;
-using N3O.Umbraco.Extensions;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
@@ -15,11 +14,7 @@ public class USyncItemImported : INotificationAsyncHandler<uSyncImportedItemNoti
     }
 
     public Task HandleAsync(uSyncImportedItemNotification notification, CancellationToken cancellationToken) {
-        var contentTypeAlias = notification.Item.Attribute("Alias")?.Value;
-
-        if (contentTypeAlias.HasValue()) {
-            _contentCache.Flush(contentTypeAlias);
-        }
+        _contentCache.Flush();
         
         return Task.CompletedTask;
     }
