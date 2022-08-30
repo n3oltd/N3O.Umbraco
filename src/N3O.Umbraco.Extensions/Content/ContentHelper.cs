@@ -65,7 +65,7 @@ public class ContentHelper : IContentHelper {
 
         foreach (var property in properties) {
             if (property.Type.IsNestedContent()) {
-                var (nestedContents, json) = GetJsonPropertyValue(contentId, contentTypeAlias, property.Type.Name, property.Value);
+                var (nestedContents, json) = GetJsonPropertyValue(property.Value);
                     
                 var elements = GetContentPropertiesForNestedContent(nestedContents);
                 var nestedContentProperty = new NestedContentProperty(contentType,
@@ -75,7 +75,7 @@ public class ContentHelper : IContentHelper {
                 
                 nestedContentProperties.Add(nestedContentProperty);
             } else if (property.Type.IsContentBlocks()) {
-                var (blockContent, json) = GetJsonPropertyValue(contentId, contentTypeAlias, property.Type.Name, property.Value);
+                var (blockContent, json) = GetJsonPropertyValue(property.Value);
 
                 var elements = GetContentPropertiesForBlockContent(blockContent);
                 var nestedContentProperty = new NestedContentProperty(contentType,
@@ -160,7 +160,13 @@ public class ContentHelper : IContentHelper {
         }
         
         foreach (var block in blockContent["blocks"]) {
-            contentProperties.AddRange(GetContentPropertiesForNestedContent(block["content"]));
+            var content = block["content"];
+
+            if (content is JArray jArray) {
+                contentProperties.AddRange(GetContentPropertiesForNestedContent(jArray.Single()));
+            } else {
+                contentProperties.AddRange(GetContentPropertiesForNestedContent(content));
+            }
         }
 
         return contentProperties;
@@ -204,29 +210,22 @@ public class ContentHelper : IContentHelper {
         return GetContentProperties(id, contentTypeAlias, properties);
     }
     
-    private (JToken, string) GetJsonPropertyValue(Guid contentId,
-                                                  string contentTypeAlias,
-                                                  string typeName,
-                                                  object propertyValue) {
+    private (JToken, string) GetJsonPropertyValue(object propertyValue) {
         if (propertyValue == null) {
             return (null, null);
         }
         
         JToken obj;
 
-        if (propertyValue is string json) {
-            obj = (JToken) JsonConvert.DeserializeObject(json);
+        if (propertyValue is string str) {
+            obj = (JToken) JsonConvert.DeserializeObject(str);
         } else if (propertyValue is JToken jToken) {
             obj = jToken;
-            json = JsonConvert.SerializeObject(obj);
-        } else if (propertyValue is IEnumerable objects) {
-            obj = JArray.FromObject(objects);
-            json = JsonConvert.SerializeObject(objects);
         } else {
-            throw new Exception($"Unexpected property value of type {propertyValue.GetType().GetFriendlyName()}, expected JObject or JSON for content type {contentTypeAlias.Quote()} with ID {contentId}");
+            obj = JToken.FromObject(propertyValue);
         }
 
-        return (obj, json);
+        return (obj, JsonConvert.SerializeObject(obj));
     }
 
     private delegate IEnumerable<IContent> GetPagedContent(int id,
