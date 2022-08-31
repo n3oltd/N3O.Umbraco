@@ -69,7 +69,7 @@ public class CropperNotificationHandlers : INotificationAsyncHandler<ContentPubl
     private async Task GenerateCropsAsync(IContentProperty property, CancellationToken cancellationToken) {
         var dataType = _dataTypeService.GetDataType(property.Type.DataTypeId);
         var configuration = dataType.ConfigurationAs<CropperConfiguration>();
-        var json = property.Value.IfNotNull(JsonConvert.SerializeObject);
+        var json = property.Value?.ToString();
     
         if (json.HasValue()) {
             var cropperSource = JsonConvert.DeserializeObject<CropperSource>(json);
