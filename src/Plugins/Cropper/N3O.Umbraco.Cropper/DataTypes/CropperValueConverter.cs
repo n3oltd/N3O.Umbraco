@@ -17,8 +17,9 @@ public class CropperValueConverter : PropertyValueConverterBase {
                                                        object source,
                                                        bool preview) {
         CroppedImage croppedImage = null;
+        var json = source as string ?? source.IfNotNull(JsonConvert.SerializeObject);
 
-        if (source is string json && json.HasValue()) {
+        if (json.HasValue()) {
             var configuration = propertyType.DataType.ConfigurationAs<CropperConfiguration>();
             var cropperSource = JsonConvert.DeserializeObject<CropperSource>(json);
         
