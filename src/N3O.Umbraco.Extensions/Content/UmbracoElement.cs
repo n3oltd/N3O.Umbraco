@@ -29,7 +29,13 @@ public abstract class UmbracoElement<T> : Value, IUmbracoElement {
     protected TProperty GetValue<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
 
-        var propertyValue = Content.GetProperty(alias).GetValue();
+        var property = Content.GetProperty(alias);
+
+        if (property == null) {
+            return default;
+        }
+
+        var propertyValue = property.GetValue();
 
         if (propertyValue is TProperty typedProperty) {
             return typedProperty;
