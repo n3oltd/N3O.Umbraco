@@ -21,6 +21,7 @@ public static class ContentServiceExtensions {
         list.Add(content);
         
         if (content.ParentId > 0) {
+            list.Add(contentService.GetById(content.ParentId));
             list.AddRange(contentService.GetAncestors(content.ParentId));
         }
 
