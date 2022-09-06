@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using N3O.Umbraco.Authentication.Extensions;
 using System;
+using System.Security.Claims;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Web.Common.Security;
 using Umbraco.Extensions;
@@ -32,8 +33,9 @@ public static partial class UmbracoBuilderExtensions {
                             opt.ClientSecret = auth0Settings[Auth0AuthenticationConstants.Configuration.Keys.ClientSecret];
                             opt.ResponseType = OpenIdConnectResponseType.Code;
                             opt.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
-                            opt.TokenValidationParameters.NameClaimType = "name";
-                            opt.TokenValidationParameters.RoleClaimType = "role";
+                            opt.CallbackPath = "/umbraco/signin-oidc";
+                            opt.TokenValidationParameters.NameClaimType = ClaimTypes.Name;
+                            opt.TokenValidationParameters.RoleClaimType = ClaimTypes.Role;
                             opt.RequireHttpsMetadata = true;
                             opt.GetClaimsFromUserInfoEndpoint = true;
                             opt.SaveTokens = true;
@@ -41,7 +43,7 @@ public static partial class UmbracoBuilderExtensions {
 
                             opt.Scope.Add("openid");
                             opt.Scope.Add("email");
-                            opt.Scope.Add("roles");
+                            opt.Scope.Add("profile");
                         });
                 });
         });
