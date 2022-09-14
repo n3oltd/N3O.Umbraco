@@ -30,6 +30,12 @@ public static partial class ContentHelperExtensions {
                                         string contentTypeAlias,
                                         string propertyTypeAlias,
                                         object propertyValue) {
+        if (propertyValue is string strValue) {
+            if (!strValue.HasValue() || strValue == "[]") {
+                return default;
+            }
+        }
+                                        
         return contentHelper.GetConvertedValue<DataListValueConverter, T>(contentTypeAlias,
                                                                           propertyTypeAlias,
                                                                           propertyValue);
@@ -39,7 +45,7 @@ public static partial class ContentHelperExtensions {
         if (!property.Type.IsDataList()) {
             throw new Exception("Property is not data list");
         }
-        
+
         return GetDataListValues<T>(contentHelper, property.ContentType.Alias, property.Type.Alias, property.Value);
     }
     
@@ -57,6 +63,12 @@ public static partial class ContentHelperExtensions {
                                                         string contentTypeAlias,
                                                         string propertyTypeAlias,
                                                         object propertyValue) {
+        if (propertyValue is string strValue) {
+            if (!strValue.HasValue() || strValue == "[]") {
+                return new List<T>();
+            }
+        }
+        
         var items = contentHelper.GetConvertedValue<DataListValueConverter, IEnumerable<T>>(contentTypeAlias,
                                                                                             propertyTypeAlias,
                                                                                             propertyValue);
