@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Configuration;
+using System;
 
 namespace N3O.Umbraco.Authentication.Extensions;
 
@@ -19,5 +20,9 @@ public static class ConfigurationExtensions {
         return configuration.GetSection(AuthenticationConstants.Configuration.Section)
                             .GetSection(type)
                             .GetSection(key);
+    }
+    
+    public static bool IsN3OInstance(this IConfiguration configuration) {
+        return Environment.GetEnvironmentVariable("Headless__BaseUrl")!.Equals("https://n3oltd.n3o.cloud/");
     }
 }
