@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Preview</title>
+    <link href="/App_Plugins/Plumber/Backoffice/css/styles.css" rel="stylesheet" type="text/css" />
+    <meta name="robots" content="noindex, nofollow">
+</head>
+<body ng-controller="workflow.offline.controller as vm" class="workflow workflow-offline" ng-class="{ 'loaded': vm.frameLoaded }">
+
+    <div class="alert-wrapper alert-error-wrapper" ng-class="{ 'show': vm.invalid }">
+        <div class="alert alert-error umb-notifications__notification">
+            <localize key="workflow_invalidOfflineUrl">
+                <strong>INVALID REQUEST:</strong> The requested URL does not map to a valid workflow process. 
+                The task may have already been completed, or the requesting user does not have permission to action the task.
+            </localize>
+        </div>
+    </div>
+
+    <iframe id="resultFrame" ng-src="{{ vm.pageUrl }}" iframe-loaded></iframe>
+
+    <div data-element="editor-footer" class="umb-editor-footer" ng-if="!vm.invalid">
+        <div class="umb-editor-footer-content">
+            <div class="umb-editor-footer-content__right-side">
+                <umb-button action="vm.detail()"
+                            type="button"
+                            disabled="!vm.showFooter"
+                            button-style="info"
+                            label-key="workflow_actionWorkflow"></umb-button>
+            </div>
+        </div>
+    </div>
+
+    <!-- these bits are required for Umbraco UI stuff -->
+    <div class="umb-editor__overlay" ng-if="vm.infiniteMode"></div>
+    <umb-editors ng-show="vm.infiniteMode"></umb-editors>
+    <umb-load-indicator ng-show="!vm.frameLoaded"></umb-load-indicator>
+    <umb-notifications></umb-notifications>
+
+    <script>
+
+        var Umbraco = {};
+        Umbraco.Sys = {};
+        Umbraco.Sys.ServerVariables = ##Variables##;
+
+        var link = document.createElement('link');
+        link.href = '/umbraco/assets/css/umbraco.min.css';
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+
+        document.head.appendChild(link);
+    </script>
+
+    <script src="/umbraco/lib/lazyload-js/lazyload.min.js"></script>
+    <script src="/app_plugins/plumber/backoffice/js/plumber-offline-loader.js"></script>
+
+</body>
+</html>
+

@@ -1,0 +1,74 @@
+<div class="umb-panel workflow workflow-licensing" ng-controller="Workflow.Licensing.Controller as vm">
+    <umb-editor-view footer="false">
+        <umb-editor-header name="vm.sectionName"
+                           name-locked="true"
+                           hide-icon="true"
+                           hide-description="true"
+                           hide-alias="true">
+        </umb-editor-header>
+        <umb-editor-container impersonation-banner>
+
+            <div class="mb-2">
+                <div class="intro-text">
+                    <localize key="workflow_licensingIntro">Plumber is, and always will be, free. Advanced features require a paid license - purchasing the license removes all restrictions and enables all features.</localize>
+                </div>
+                <div class="intro-text">
+                    <a class="btn btn-primary mr-2" href="{{ vm.licensingUrl }}" target="_blank" rel="noopener">
+                        <umb-icon icon="icon-certificate"></umb-icon>
+                        <localize key="workflow_buyLicense">Buy a license</localize>
+                    </a>
+                    <button type="button" class="btn btn-info" ng-click="vm.getEula()">
+                        <umb-icon icon="icon-book"></umb-icon>
+                        <localize key="workflow_readEula">Read EULA</localize>
+                    </button>
+                </div>
+            </div>
+
+            <umb-box>
+                <umb-box-header title-key="workflow_validateLicense" description-key="workflow_validateLicenseDescription"></umb-box-header>
+                <umb-box-content>
+                    <div class="flex-row">
+                        <div>
+                            <label class="control-label" for="licenseTextarea">{{ vm.licenseStr }}</label>
+                            <textarea id="licenseTextarea" ng-model="vm.licenseString"></textarea>
+                        </div>
+                        <div>
+                            <label class="control-label" for="keyTextarea">{{ vm.keyStr }}</label>
+                            <textarea id="keyTextarea" ng-model="vm.keyString"></textarea>
+                        </div>
+                    </div>
+                    <umb-button type="button"
+                                button-style="success"
+                                action="vm.validate()"
+                                label-key="workflow_validate">
+                    </umb-button>
+                </umb-box-content>
+            </umb-box>
+
+            <!-- current license -->
+            <umb-box ng-if="vm.license">
+                <umb-box-header title-key="workflow_currentLicense">
+                </umb-box-header>
+                <umb-box-content class="block-form">
+                    <ul class="mb-0">
+                        <li>
+                            <localize key="workflow_licenseType">License type</localize>:
+                            <umb-badge color="{{ vm.license.isImpersonating ? 'secondary' : 'primary' }}" 
+                                       style="padding-top:0; padding-bottom:0"
+                                       size="xxs">
+                                {{ vm.license.isImpersonating ? 'Impersonating' : vm.license.type }}</umb-badge>
+                        </li>
+                        <li><localize key="workflow_validDomain">Valid domain</localize>: <span ng-bind="vm.license.domain || 'any'"></span></li>
+                        <li><localize key="workflow_customerName">Customer name</localize>: <span ng-bind="vm.license.customerName"></span></li>
+                        <li><localize key="workflow_customerEmail">Customer email</localize>: <span ng-bind="vm.license.email"></span></li>
+                        <li><localize key="workflow_customerId">Customer ID</localize>: <span ng-bind="vm.license.customerId"></span></li>
+                    </ul>
+                    <p ng-if="vm.license.message" class="mt-2 alert alert-warning">{{ vm.license.message }}</p>
+                </umb-box-content>
+            </umb-box>
+        </umb-editor-container>
+    </umb-editor-view>
+
+    <umb-load-indicator ng-if="vm.loading"></umb-load-indicator>
+
+</div>

@@ -1,0 +1,70 @@
+<div class="flex-row" ng-if="model.settings">
+    <div>
+        <umb-box>
+            <umb-box-header title-key="general_general"></umb-box-header>
+            <umb-box-content>
+                <umb-property property="property" alias="{{ property.alias }}" ng-repeat="property in model.settings.general.properties">
+                    <umb-property-editor model="property"></umb-property-editor>
+                </umb-property>
+            </umb-box-content>
+        </umb-box>
+    </div>
+    <div>
+        <umb-box>
+            <umb-box-header title-key="workflow_newNodeFlow" description-key="workflow_newNodeFlowDescription"></umb-box-header>
+            <umb-box-content class="block-form">
+                <umb-control-group hide-label="true">
+                    <div class="pos-relative"
+                         ui-sortable="model.sortOptions"
+                         ng-model="model.newNodeFlow.value"
+                         ng-show="model.newNodeFlow.value.length">
+                        <umb-node-preview ng-repeat="group in model.newNodeFlow.value track by $index"
+                                          name="model.groupName(group.groupName, $index)"
+                                          sortable="true"
+                                          allow-remove="true"
+                                          allow-edit="true"
+                                          on-remove="model.removeNewNodeFlowGroup(group)"
+                                          on-edit="model.editGroup(group)">
+                        </umb-node-preview>
+                    </div>
+
+                    <button type="button"
+                            class="umb-node-preview-add"
+                            ng-click="model.openGroupOverlay()">
+                        <localize key="general_add">Add</localize>
+                    </button>
+                </umb-control-group>
+            </umb-box-content>
+        </umb-box>
+        <umb-box licensed>
+            <umb-box-header title-key="workflow_contentTypeSettings" description-key="workflow_documentFlowsDescription"></umb-box-header>
+            <umb-box-content class="block-form">
+                <umb-control-group hide-label="true">
+                    <umb-node-preview ng-repeat="type in model.contentTypePermissionsSyncModel | filter: model.hasPermissions | orderBy:name"
+                                      name="type.name"
+                                      icon="type.icon || 'icon-folder'"
+                                      sortable="false"
+                                      allow-remove="true"
+                                      allow-edit="true"
+                                      on-remove="model.removeDocTypeFlow(type)"
+                                      on-edit="model.editDocTypeFlow(type)">
+                    </umb-node-preview>
+                    <button type="button"
+                            class="umb-node-preview-add"
+                            ng-click="model.editDocTypeFlow()">
+                        <localize key="general_add">Add</localize>
+                    </button>
+                </umb-control-group>
+            </umb-box-content>
+        </umb-box>
+
+        <umb-box class="hide-form-labels" licensed>
+            <umb-box-header title-key="workflow_excludeNodes" description-key="workflow_excludeNodesDescription"></umb-box-header>
+            <umb-box-content>
+                <umb-property property="model.settings.general.excludeNodes">
+                    <umb-property-editor model="model.settings.general.excludeNodes"></umb-property-editor>
+                </umb-property>
+            </umb-box-content>
+        </umb-box>
+    </div>
+</div>

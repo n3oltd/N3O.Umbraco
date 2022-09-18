@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<language alias="en_us" intName="English (US)" localName="English (US)" lcid="" culture="en-US">
+	<area alias="dashboardTabs">
+		<key alias="workflow">Workflow</key>
+	</area>
+	<area alias="sections">
+		<key alias="workflow">Workflow</key>
+	</area>
+	<area alias="workflow">
+		<!-- simple stuff -->
+		<key alias="ok">Ok</key>
+		<key alias="go">Go</key>
+		<key alias="active">active</key>
+		<key alias="activeWorkflow">Active workflow</key>
+		<key alias="activity">Activity</key>
+		<key alias="add">Add</key>
+		<key alias="action">Action</key>
+		<key alias="asAdmin">as admin</key> 
+		<key alias="admin">Admin</key>
+		<key alias="administrator">Administrator</key>
+		<key alias="approve">Approve</key>
+		<key alias="editButton">Go to node</key>
+		<key alias="cancel">Cancel</key>
+		<key alias="dismiss">Dismiss</key>
+		<key alias="reject">Reject</key>
+		<key alias="save">Save</key>
+		<key alias="resubmit">Resubmit</key>
+		<key alias="removeAll">Remove all</key>
+		<key alias="publishButton">Request publish</key>
+		<key alias="unpublishButton">Request unpublish</key>
+		<key alias="detail">Detail</key>
+		<key alias="detailButton">Workflow detail</key>
+		<key alias="actionWorkflow">Action workflow</key>
+		<key alias="initiateWorkflow">Initiate workflow</key>
+		<key alias="dateRange">Range (days)</key>
+		<key alias="configuration">Configuration</key>
+		<key alias="viewType">View type</key>
+		<key alias="flowType">Flow type</key>
+		<key alias="showAll">Show all</key>
+		<key alias="unlimited">unlimited</key>
+		<key alias="selectNode">Select node</key>
+		<key alias="selectUser">Select user</key>
+		<key alias="describeChanges">Describe the changes</key>
+		<key alias="addComment">Add a comment</key>
+		<key alias="commentMaxLength">(Comment max length exceeded - limit is %0% characters)</key>
+		<key alias="commentRemaining">(%0% characters remaining)</key>
+		<key alias="requestedBy">Requested by</key>
+		<key alias="requestedOn">Requested on</key>
+		<key alias="createdDate">Created date</key>
+		<key alias="completedDate">Completed date</key>
+		<key alias="pendingApproval">Pending approval</key>
+		<key alias="awaitingResubmission">Awaiting resubmission</key>
+		<key alias="plusMore">plus %0% more</key>
+		<key alias="lastDays">last %0% days</key>
+		<key alias="stage">Stage</key>
+		<key alias="for">for</key>
+		<key alias="releaseNotes">Release notes</key>
+		<key alias="releaseDate">Release date</key>
+		<key alias="filters">Filters</key>
+		<key alias="node">Node</key>
+		<key alias="pageSize">Page size</key>
+		<key alias="attachment">Attachment (optional)</key>
+		<key alias="addFile">Add file</key>
+		<key alias="both">Both</key>
+		<key alias="by">by</key>
+		<key alias="at">at</key>
+		<key alias="on">on</key>
+		<key alias="unpublished">Unpublished</key>
+		<key alias="when">when</key>
+		<key alias="include">Include</key>
+		<key alias="hasChanged">has changed</key>
+		<key alias="workflowEmail">Workflow email</key>
+		<key alias="licensedFeature">This feature requires a license.</key>
+		<key alias="noUnpublishPermissions">No unpublish workflow configured for this content item.</key>
+		<key alias="invalidContent">Invalid content can not be submitted for workflow approval</key>
+		<key alias="noActiveWorkflow">No active workflow found</key>
+		<key alias="extendPermissions">Extend permissions</key>
+
+		<key alias="fastestApproval">Fastest approval</key>
+		<key alias="slowestApproval">Slowest approval</key>
+		<key alias="averageApproval">Average</key>
+
+		<key alias="noGroup">GROUP NOT FOUND</key>
+		<key alias="noNode">NODE NOT FOUND</key>
+		<key alias="noUser">USER NOT FOUND</key>
+		<key alias="noContentType">CONTENT TYPE NOT FOUND</key>
+		<key alias="noApproval">APPROVAL NOT REQUIRED</key>
+
+		<key alias="workflowAdministration">Workflow administration</key>
+		<key alias="workflowActivity">Workflow activity</key>
+		<key alias="history">History</key>
+		<key alias="historyFor">Workflow history for %0%</key>
+		<key alias="workflowHistory">Workflow history</key>
+		<key alias="permissions">Permissions</key>
+		<key alias="docIsActive">Document is currently in a workflow</key>
+		<key alias="cannotBeEdited">and cannot be edited</key>
+		<key alias="previousChangesRejected">Previous changes were rejected</key>
+		<key alias="unsavedChanges">Pending content changes will be saved automatically</key>
+		<key alias="currentPageExcluded">Current page is excluded from the workflow</key>
+		<key alias="selectDoctypes">Document type</key>
+
+		<key alias="newNodeFlow">New node approval flow</key>
+		<key alias="newNodeFlowDescription">All new nodes use this workflow for initial publishing</key>
+		<key alias="newNodeConfig">New nodes must be saved before configuring workflow</key>
+
+		<!-- workflow email -->
+		<key alias="emailTemplate">Email template</key>
+		<key alias="approvalRequest">Approval request</key>
+		<key alias="approvalRejection">Approval rejection</key>
+		<key alias="pendingResubmission">Pending resubmission</key>
+		<key alias="approvedAndCompleted">Approved and completed</key>
+		<key alias="approvedAndCompletedForScheduler">Approved and completed for scheduler</key>
+		<key alias="schedulerActionCancelled">Scheduler action cancelled</key>
+		<key alias="workflowCancelled">Workflow cancelled</key>
+		<key alias="workflowErrored">Workflow errored</key>
+		<key alias="reminder">Reminder</key>
+		<key alias="summary">Summary</key>
+		<key alias="changeDescription">Change description</key>
+		<key alias="currentStatus">Current status</key>
+
+		<!-- status name keys - one per workflow status, based on the enum value -->
+		<!-- done this way to make lookups easier as the status int is always know, text value is not -->
+		<key alias="status1">Approved</key>
+		<key alias="status2">Rejected</key>
+		<key alias="status3">Pending approval</key>
+		<key alias="status4">Not required</key>
+		<key alias="status5">Cancelled</key>
+		<key alias="status6">Errored</key>
+		<key alias="status7">Resubmitted</key>
+		<key alias="status8">Cancelled by third party</key>
+
+		<key alias="changeDescriptionDetail">%0% requested by %1% on %2%</key>
+
+		<key alias="sendTo">Send to</key>
+		<key alias="adminEmail">Admin</key>
+		<key alias="allEmail">All</key>
+		<key alias="authorEmail">Author</key>
+		<key alias="groupEmail">Group</key>
+		<key alias="sendToDescription">
+			<![CDATA[      
+        <ul>
+          <li><strong>All</strong> sends to all members of all groups up to and including the current task</li>
+          <li><strong>Admin</strong> includes the system email</li>
+          <li><strong>Author</strong> includes the editor who initiated the workflow</li>
+          <li><strong>Group</strong> sends to the group responsible for the current task</li>
+          <li>Duplicate users are removed</li>
+        </ul>
+      ]]>
+		</key>
+
+		<!-- flow types -->
+		<key alias="contentApprovalFlow">Content approval flow</key>
+		<key alias="inheritedApprovalFlow">Inherited approval flow</key>
+		<key alias="nodeApprovalFlows">Node-based approvals</key>
+		<key alias="documentFlows">Document-type approvals</key>
+		<key alias="docTypeApprovalFlow">Document-type approval flow</key>
+		<key alias="currentPageInheritsFrom">The current page is inheriting from</key>
+		<key alias="noInheritedFlow">No inherited approval flow exists for this document</key>
+		<key alias="noDoctypeFlow">No document type flow set for</key>
+		<key alias="currentFlow">Current flow</key>
+
+		<!-- groups -->
+		<key alias="approvalGroups">Approval groups</key>
+		<key alias="members">Members</key>
+		<key alias="roles">Roles</key>
+		<key alias="membership">Group members</key>
+		<key alias="inheritedMembership">Inherited group membership</key>
+		<key alias="inheritedMembershipDescription">Inherit group membership from an existing Umbraco group</key>
+		<key alias="currentWorkflowRoles">Current workflow roles</key>
+		<key alias="offlineApproval">Enable offline approval</key>
+		<key alias="emailGroup">Email group</key>
+		<key alias="editGroup">Edit group</key>
+		<key alias="saveGroup">Save group</key>
+		<key alias="deleteGroup">Delete group</key>
+		<key alias="createGroup">Create group</key>
+		<key alias="defaultApprovalGroup">Default approval group</key>
+		<key alias="workflowGroupEmail">Notifications will be sent to this address instead of group members</key>
+		<key alias="workflowGroupLanguage">Only required when the group has an email address</key>
+		<key alias="groupsLimitedByLicense">Maximum groups restricted by license type</key>
+		<key alias="maximumMembers">Maximum members</key>
+		<key alias="deleteGroupWarning">
+			<![CDATA[<h4>Careful! This is a destructive action.</h4>
+        <p>Deleting a group will cancel all pending tasks and workflows where the group is a participant, and will delete all permissions assigned to the group.</p><p>To delete, type <strong>%0%</strong> below.</p>]]>
+		</key>
+		<key alias="groupWorkflowsCancelled">Group workflows cancelled</key>
+		<key alias="groupPermissionsRemoved">Group permissions removed</key>
+
+		<!-- settings -->
+		<key alias="settings">Settings</key>
+		<key alias="workflowSettings">Workflow settings</key>
+		<key alias="excludeNodes">Exclude nodes</key>
+		<key alias="sendNotifications">Send notifications</key>
+		<key alias="reminderDelay">Reminder delay (days)</key>
+		<key alias="editSiteUrl">Edit site URL</key>
+		<key alias="baseSiteUrl">Site URL</key>
+		<key alias="saveSettings">Save settings</key>
+		<key alias="settingsUpdated">Settings updated</key>
+		<key alias="docTypeApprovalFlowUpdated">Document type approval flow updated</key>
+		<key alias="allowAttachments">Allow attachments</key>
+		<key alias="allowAttachmentsDescription">Enable referencing a media item when intiating a workflow - useful when a workflow requires documentation</key>
+		<key alias="viewAttachment">View attachment</key>
+		<key alias="requireUnpublish">Use workflow for unpublish</key>
+		<key alias="requireUnpublishDescription">Should unpublish actions require workflow approval?</key>
+		<key alias="publishOnly">Publish only</key>
+		<key alias="publishAndUnpublish">Publish and unpublish</key>
+		<key alias="unpublishDisabled">Unpublish workflows are disabled globally</key>
+		<key alias="appliesTo">Applies to</key>
+
+		<!-- dashboards -->
+		<key alias="myTasks">Tasks requiring my approval</key>
+		<key alias="mySubmissions">My submissions</key>
+
+		<!-- settings box titles -->
+		<key alias="generalSettings">General</key>
+		<key alias="notifications">Notifications</key>
+		<key alias="emailTemplates">Email templates</key>
+		<key alias="lockIfActive">Lock active content</key>
+		<key alias="emailSettings">Notifications / email</key>
+		<key alias="excludeNodeSettings">Exclusions</key>
+		<key alias="contentTypeSettings">Document type approval flows</key>
+
+		<!-- variants -->
+		<key alias="thisVariant">Just this one</key>
+		<key alias="invariant">Invariant</key>
+		<key alias="invariantWorkflow">Invariant workflow</key>
+		<key alias="selectVariants">Select languages</key>
+		<key alias="multiVariant">Multi-variant</key>
+		<key alias="multiVariantWorkflow">Multi-variant workflow</key>
+		<key alias="variant">Variant</key>
+
+		<key alias="thisVariantDesc">The current language (%0%) will be sent for publishing.</key>
+		<key alias="invariantDesc">Languages without pending workflows will be sent for publishing, using the workflow set on the default language (%0%).</key>
+		<key alias="multiVariantDesc">Languages without pending workflows will be sent for publishing, using the workflow set on each language.</key>
+		<key alias="variantsActiveAndUnavailable">Variant workflows unavailable as the following languages have active workflows:</key>
+
+		<!-- doctype approval flow -->
+		<key alias="addCondition">Add condition</key>
+		<key alias="addStatus">Add status</key>
+
+		<!-- licensing and subscriptions -->
+		<key alias="licensing">Licensing</key>
+		<key alias="currentLicense">Current license</key>
+		<key alias="licenseType">License type</key>
+		<key alias="validateLicense">Validate license and key</key>
+		<key alias="validateLicenseDescription">Upload a valid license and key pair - leave blank to revalidate current license</key>
+		<key alias="validDomain">Valid domain</key>
+		<key alias="customerName">Customer name</key>
+		<key alias="customerEmail">Customer email</key>
+		<key alias="customerId">Customer ID</key>
+		<key alias="buyLicense">Buy a license</key>
+		<key alias="readEula">Read the EULA</key>
+		<key alias="eulaTitle">Ugh. Boring.</key>
+		<key alias="limitedByLicense">Limited by license</key>
+		<key alias="license">License</key>
+		<key alias="key">Key</key>
+		<key alias="validate">Validate</key>
+
+		<!-- longer descriptions -->
+		<key alias="cancelledWithError">Processing cancelled due to error</key>
+		<key alias="userCannotAction">Current user does not have permission to action the workflow.</key>
+		<key alias="defaultApprovalGroupDescription">The fallback publishing group for cases when no workflows are configured</key>
+		<key alias="licensingIntro">Plumber is, and always will be, free. Advanced features require a paid license - purchasing the license removes all restrictions and enables all features.</key>
+		<key alias="outOfDate">You're missing out! Plumber is out of date</key>
+		<key alias="upToDate">You're up to date, running Plumber</key>
+		<key alias="nightly">You're on a nightly build, running Plumber</key>
+		<key alias="scheduledForAt">Scheduled for %0% on %1% at %2%</key>
+		<key alias="pendingForNode">Pending %0% workflow for '%1%'</key>
+
+		<key alias="flowTypeDescription">
+			<![CDATA[<p>Controls how the original author is managed in subsequent tasks:</p>
+      <ul>
+          <li>Explicit requires all steps be approved, including steps where the original change author is a group member.</li>
+          <li>Implicit auto-approves steps where the author is a member of the approving group.</li>
+          <li>Exclude behaves similar to Explicit, but excludes the original author from any notifications (ie the author can not approve their own work).</li></ul>]]>
+		</key>
+
+		<key alias="lockIfActiveDescription">Controls editing access on a content node in a workflow.</key>
+		<key alias="lockIfActiveDescriptionDetail">Set to true to prevent edits on content while in a workflow, set to false to allow the active workflow group to make modifications to content without having to cancel the workflow process.</key>
+		<key alias="sendNotificationsDescription">Should email notifications be sent to approval groups?</key>
+		<key alias="reminderDelayDescription">Send reminder emails for inactive tasks, after this many days. Set to 0 to disable.</key>
+		<key alias="workflowEmailDescription">FROM address for email notifications</key>
+		<key alias="editSiteUrlDescription">Edit site URL for inclusion in email notifications (eg http://edit.mydomain.com)</key>
+		<key alias="baseSiteUrlDescription">Live site URL for inclusion in email notifications (eg http://www.mydomain.com)</key>
+		<key alias="settingsEmailDescription">Both fields below are optional and will be populated with the current domain if not set. Set these fields if the public production site is served from a different domain to the Umbraco backoffice (typically a load-balanced/distributed environment). If that doesn't sound familiar, leave these blank.</key>
+
+		<key alias="excludeNodesDescription">Nodes (and their descendants) selected here will NOT be included in the workflow, and will revert to the default Umbraco actions</key>
+		<key alias="documentFlowsDescription">Configure default workflows for all nodes of a given document type</key>
+		<key alias="nodeApprovalFlowsDescription">These workflows apply only to the specified node</key>
+
+		<key alias="offlineApprovalDescription">Set to true to allow users in this group to approve changes without logging in to the backoffice. Refer to the documentation for full details and setup.</key>
+
+		<key alias="notConfigured">Workflow not configured</key>
+		<key alias="notConfiguredDescription">Please ensure the content nodes listed below either have an explicit workflow set or are excluded from workflow approvals:</key>
+
+		<key alias="licensedFeatureDescription">
+			<![CDATA[<p>Plumber's advanced features require a license. To test these in a development environment, add an empty file named `test.lic` to Plumber's App_Plugin folder.</p>]]>
+		</key>
+
+		<key alias="extendPermissionsDescription">Should Plumber extend or replace users' save and publish permissions? (default behaviour is replace)</key>
+		<key alias="invalidOfflineUrl">
+			<![CDATA[<strong>INVALID REQUEST:</strong> The requested URL does not map to a valid workflow process. The task may have already been completed, or the requesting user does not have permission to action the task.]]>
+		</key>
+		
+		<!-- scheduling -->
+		<key alias="scheduledDate">Scheduled date (optional)</key>
+		<key alias="scheduling">Scheduling</key>
+		<key alias="scheduleDescription">If the scheduled date passes before the workflow is completed, the changes will be published when the final workflow stage has been approved.</key>
+		<key alias="schedulePassed">Scheduled date passed before the workflow was completed. Content will be released when the current workflow is completed.</key>
+
+		<!-- diffs -->
+		<key alias="showDiff">View differences</key>
+		<key alias="diffHelp">
+			<![CDATA[The table above shows the differences between the current published version and the pending changes in this workflow.<br /><br />
+          <del>Red text</del> will be removed. <ins>Green text</ins> will be added.]]>
+		</key>
+		<key alias="diffVariants">
+			The active workflow includes multiple content variants. Select the language below to view the changes for each variant.
+		</key>
+		<key alias="diffNoVersions">
+			Unable to find versions for comparison. Maybe they've been deleted? Try Umbraco's Rollback tool to view all available change history for this item.
+		</key>
+	</area>
+	<area alias="workflowNotifications">
+		<key alias="initiate">%0% submitted for %1% approval.</key>
+		<key alias="initiateScheduled">Changes scheduled for release on %0% at %1%.</key>
+		<key alias="pendingApproval">Workflow task completed. Page will be %0% following workflow completion.</key>
+		<key alias="pendingApprovalLog">Workflow %0% task on %1% [%2%] approved by %3%.</key>
+		<key alias="pendingApprovalResubmit">Changes resubmitted. Page will be %0% following workflow completion.</key>
+		<key alias="pendingApprovalResubmitLog">%0% request for %1% [%2%] was resubmitted by %3%.</key>
+		<key alias="rejected">%0% request has been rejected.</key>
+		<key alias="rejectedLog">%0% request for %1% [%2%] rejected by %3%.</key>
+		<key alias="cancelled">%0% request has been cancelled.</key>
+		<key alias="cancelledLog">%0% request for %1% [%2%] cancelled by %3%.</key>
+		<key alias="approved">Workflow completed.</key>
+		<key alias="approvedLog">Workflow approved by %0% on %1% [%2%].</key>
+		<key alias="pageHasBeen">Page has been %0%</key>
+	</area>
+	<area alias="treeHeaders">
+		<key alias="approval-groups">Approval groups</key>
+		<key alias="history">History</key>
+		<key alias="documentation">Documentation</key>
+		<key alias="licensing">Licensing</key>
+		<key alias="settings">Settings</key>
+		<key alias="active">Active workflows</key>
+	</area>
+	<area alias="workflowCommentTemplates">
+		<!-- comment templates-->
+		<!-- use these to add a default template to the initiate workflow textarea - similar to github templates
+         key alias is the document type alias
+         
+         because this is going directly into the textarea, formatting is important - leading spaces on a new line will be visible in the textarea
+         so new-lines need to be hard-left aligned
+    -->
+		<key alias="homepage">
+			<![CDATA[This is an important
+template for the homepage doctype
+
+it can have spaces
+
+and new lines]]>
+		</key>
+	</area>
+</language>

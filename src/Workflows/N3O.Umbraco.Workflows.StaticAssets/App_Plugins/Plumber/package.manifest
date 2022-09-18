@@ -1,0 +1,9 @@
+{
+  "javascript": [
+    "~/App_Plugins/Plumber/Backoffice/js/plumber.js"
+  ],
+  "css": [
+    "~/App_Plugins/Plumber/Backoffice/css/styles.css"
+  ],  
+  "bundleOptions": "None"
+} 

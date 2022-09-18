@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<language alias="da" intName="Danish" localName="dansk" lcid="6" culture="da-DK">
+	<area alias="dashboardTabs">
+		<key alias="workflow">Workflow</key>
+	</area>
+	<area alias="sections">
+		<key alias="workflow">Workflow</key>
+	</area>
+	<area alias="workflow">
+		<!-- simple stuff -->
+		<key alias="ok">Ok</key>
+		<key alias="go">Kør</key>
+		<key alias="active">aktiv</key>
+		<key alias="activeWorkflow">Aktiv workflow</key>
+		<key alias="activity">Aktivitet</key>
+		<key alias="add">Tilføj</key>
+		<key alias="action">Muligheder</key>
+		<key alias="asAdmin">som administrator</key>
+		<key alias="admin">Admin</key>
+		<key alias="administrator">Administrator</key>
+		<key alias="approve">Godkend</key>
+		<key alias="editButton">Gå til node</key>
+		<key alias="cancel">Anuller</key>
+		<key alias="dismiss">Afvis</key>
+		<key alias="reject">Afvis</key>
+		<key alias="save">Gem</key>
+		<key alias="resubmit">Genanmod</key>
+		<key alias="removeAll">Fjern alle</key>
+		<key alias="publishButton">Anmod om publicering</key>
+		<key alias="unpublishButton">Anmod om afpublicering</key>
+		<key alias="detail">Detaljer</key>
+		<key alias="detailButton">Workflow detaljer</key>
+		<key alias="actionWorkflow">Administrer workflow</key>
+		<key alias="initiateWorkflow">Start workflow</key>
+		<key alias="dateRange">Interval (dage)</key>
+		<key alias="configuration">Konfiguration</key>
+		<key alias="viewType">Visningstype</key>
+		<key alias="flowType">Flowtype</key>
+		<key alias="showAll">Vis alle</key>
+		<key alias="unlimited">ubegrænset</key>
+		<key alias="selectNode">Vælg node</key>
+		<key alias="selectUser">Vælg bruger</key>
+		<key alias="describeChanges">Beskrivelse af ændringerne</key>
+		<key alias="addComment">Tilføj kommentar</key>
+		<key alias="commentMaxLength">(Maks længde på kommentar overskredet - grænsen er %0% tegn)</key>
+		<key alias="commentRemaining">(%0% tegn tilbage)</key>
+		<key alias="requestedBy">Anmodet af</key>
+		<key alias="requestedOn">Dato for anmodning</key>
+		<key alias="createdDate">Oprettet dato</key>
+		<key alias="completedDate">Afsluttet dato</key>
+		<key alias="pendingApproval">Afventende godkendelser</key>
+		<key alias="awaitingResubmission">Afventer genanmodning</key>
+		<key alias="plusMore">plus %0% mere</key>
+		<key alias="lastDays">sidste %0% dage</key>
+		<key alias="stage">Trin</key>
+		<key alias="for">til</key>
+		<key alias="releaseNotes">Udgivelsesnoter</key>
+		<key alias="releaseDate">Udgivelsesdato</key>
+		<key alias="filters">Filtre</key>
+		<key alias="node">Node</key>
+		<key alias="pageSize">Sidestørrelse</key>
+		<key alias="attachment">Vedhæftet fil (valgfri)</key>
+		<key alias="addFile">Tilføj fil</key>
+		<key alias="both">Both</key>
+		<key alias="by">ved</key>
+		<key alias="at">på</key>
+		<key alias="on">på</key>
+		<key alias="unpublished">Upubliceret</key>
+		<key alias="when">hvornår</key>
+		<key alias="include">Omfatte</key>
+		<key alias="hasChanged">har ændret</key>
+		<key alias="workflowEmail">Workflow email</key>
+		<key alias="licensedFeature">This feature requires a license.</key>
+		<key alias="noUnpublishPermissions">No unpublish workflow configured for this content item.</key>
+		<key alias="invalidContent">Invalid content can not be submitted for workflow approval</key>
+		<key alias="noActiveWorkflow">No active workflow found</key>
+		<key alias="extendPermissions">Extend permissions</key>
+
+		<key alias="fastestApproval">Hurtigste</key>
+		<key alias="slowestApproval">Langsomst</key>
+		<key alias="averageApproval">Gennemsnit</key>
+
+		<key alias="noGroup">GRUPPEN IKKE FUNDET</key>
+		<key alias="noNode">NODE IKKE FUNDET</key>
+		<key alias="noUser">BRUGER IKKE FUNDET</key>
+		<key alias="noContentType">INDHOLDSTYPE IKKE FUNDET</key>
+		<key alias="noApproval">GODKENDELSE IKKE PÅKRÆVET</key>
+
+		<key alias="workflowAdministration">Workflow administration</key>
+		<key alias="workflowActivity">Workflow aktivitet</key>
+		<key alias="history">Historik</key>
+		<key alias="historyFor">Workflow historik til %0%</key>
+		<key alias="workflowHistory">Workflow historik</key>
+		<key alias="permissions">Tilladelser</key>
+		<key alias="docIsActive">Noden er i et workflow</key>
+		<key alias="cannotBeEdited">og kan ikke redigeres</key>
+		<key alias="previousChangesRejected">Forrige ændringer blev afvist</key>
+		<key alias="unsavedChanges">Ikke gemte ændringer vil blive gemt automatisk</key>
+		<key alias="currentPageExcluded">Aktuelle node er ekskluderet fra workflowet</key>
+		<key alias="selectDoctypes">Dokumenttype</key>
+
+		<key alias="newNodeFlow">New node approval flow</key>
+		<key alias="newNodeFlowDescription">All new nodes use this workflow for initial publishing</key>
+		<key alias="newNodeConfig">New nodes must be saved before configuring workflow</key>
+
+		<!-- workflow email -->
+		<key alias="emailTemplate">E-mail-skabelon</key>
+		<key alias="approvalRequest">Godkendelsesanmodning</key>
+		<key alias="approvalRejection">Afvisning af godkendelse</key>
+		<key alias="pendingResubmission">Afventer genindsendelse</key>
+		<key alias="approvedAndCompleted">Godkendt og afsluttet</key>
+		<key alias="approvedAndCompletedForScheduler">Godkendt og afsluttet til planlægning</key>
+		<key alias="schedulerActionCancelled">Planlægningshandling annulleret</key>
+		<key alias="workflowCancelled">Workflow aflyst</key>
+		<key alias="workflowErrored">Workflow fejlede</key>
+		<key alias="reminder">Påmindelse</key>
+		<key alias="summary">Resumé</key>
+		<key alias="changeDescription">Skift beskrivelse</key>
+		<key alias="currentStatus">Nuværende status</key>
+
+		<!-- status name keys - one per workflow status, based on the enum value -->
+		<!-- done this way to make lookups easier as the status int is always know, text value is not -->
+		<key alias="status1">Godkendt</key>
+		<key alias="status2">Afvist</key>
+		<key alias="status3">Afventer godkendelse</key>
+		<key alias="status4">Ikke påkrævet</key>
+		<key alias="status5">Aflyst</key>
+		<key alias="status6">Der opstod en fejl</key>
+		<key alias="status7">Genindsendt</key>
+		<key alias="status8">Annulleret af tredjepart</key>
+
+		<key alias="changeDescriptionDetail">%0% efterspurgt af %1% på %2%</key>
+
+		<key alias="sendTo">Send til</key>
+		<key alias="adminEmail">Administrator</key>
+		<key alias="allEmail">Alle</key>
+		<key alias="authorEmail">Forfatter</key>
+		<key alias="groupEmail">Gruppe</key>
+		<key alias="sendToDescription">
+			<![CDATA[      
+        <ul>
+          <li><strong>All</strong> sends to all members of all groups up to and including the current task</li>
+          <li><strong>Admin</strong> includes the system email</li>
+          <li><strong>Author</strong> includes the editor who initiated the workflow</li>
+          <li><strong>Group</strong> sends to the group responsible for the current task</li>
+          <li>Duplicate users are removed</li>
+        </ul>
+      ]]>
+		</key>
+
+		<!-- flow types -->
+		<key alias="contentApprovalFlow">Nodebaseret godkendelsesflow</key>
+		<key alias="inheritedApprovalFlow">Nedarvet godkendelsesflow</key>
+		<key alias="nodeApprovalFlows">Nodebaseret godkendelser</key>
+		<key alias="documentFlows">Dokumenttype godkendelser</key>
+		<key alias="docTypeApprovalFlow">Dokumenttype godkendelsesflow</key>
+		<key alias="currentPageInheritsFrom">Denne node nedarver fra</key>
+		<key alias="noInheritedFlow">Der er ikke nogle nedarvede godkendelsesflow for denne node</key>
+		<key alias="noDoctypeFlow">Ingen dokumenttype godkendelsflows er sat for</key>
+		<key alias="currentFlow">Aktuelle godkendelsesflow</key>
+
+		<!-- groups -->
+		<key alias="approvalGroups">Godkendelsesgrupper</key>
+		<key alias="members">Medlemmer</key>
+		<key alias="roles">Roller</key>
+		<key alias="membership">Gruppemedlemmer</key>
+		<key alias="inheritedMembership">Nedarvede grupper</key>
+		<key alias="inheritedMembershipDescription">Nedarv gruppemedlemskab fra en eksisterende Umbraco gruppe</key>
+		<key alias="currentWorkflowRoles">Aktuelle workflow roller</key>
+		<key alias="offlineApproval">Aktiver offline godkendelse</key>
+		<key alias="emailGroup">Email gruppe</key>
+		<key alias="editGroup">Rediger gruppe</key>
+		<key alias="saveGroup">Gem gruppe</key>
+		<key alias="deleteGroup">Slet gruppe</key>
+		<key alias="createGroup">Opret gruppe</key>
+		<key alias="defaultApprovalGroup">Standard godkendelsesgruppe</key>
+		<key alias="workflowGroupEmail">Notifikationer vil blive sendt to denne adresse i stedet for gruppemedlemmerne</key>
+		<key alias="workflowGroupLanguage">Kræves kun, når gruppen har en email adresse</key>
+		<key alias="groupsLimitedByLicense">Det maksimale antal grupper er begrænset af licenstypen</key>
+		<key alias="maximumMembers">Maks antal medlemmer</key>
+		<key alias="deleteGroupWarning">
+			<![CDATA[<h4>Forsigtig! Dette er en destruktiv handling.</h4>
+        <p>Sletning af en gruppe annullerer alle afventende opgaver og arbejdsgange, hvor gruppen er en deltager, og vil slette alle tilladelser, der er tildelt gruppen.</p><p>For at slette skal du skrive %0% nedenfor.</p>]]>
+		</key>
+		<key alias="groupWorkflowsCancelled">Gruppearbejdsgange annulleret</key>
+		<key alias="groupPermissionsRemoved">Gruppetilladelser fjernet</key>
+
+		<!-- settings -->
+		<key alias="settings">Indstillinger</key>
+		<key alias="workflowSettings">Workflow indstillinger</key>
+		<key alias="excludeNodes">Ekskluder noder</key>
+		<key alias="sendNotifications">Send notifikationer</key>
+		<key alias="reminderDelay">Påmindelse forsinkelse</key>
+		<key alias="editSiteUrl">Backoffice webadresse</key>
+		<key alias="baseSiteUrl">Websteds URL</key>
+		<key alias="saveSettings">Gem indstillinger</key>
+		<key alias="settingsUpdated">Indstillinger opdateret</key>
+		<key alias="docTypeApprovalFlowUpdated">Dokumenttype godkendelsesflow opdateret</key>
+		<key alias="allowAttachments">Tillad vedhæftede filer</key>
+		<key alias="allowAttachmentsDescription">Tillader af referere en mediefil når der startes et workflow - nyttigt hvis et workflow kræver dokumentation</key>
+		<key alias="viewAttachment">Vis vedhæftede fil</key>
+		<key alias="requireUnpublish">Brug workflow ved afpublicér</key>
+		<key alias="requireUnpublishDescription">Skal afpublicér kræver workflow godkendelse?</key>
+		<key alias="publishOnly">Kun publicéring</key>
+		<key alias="publishAndUnpublish">Publicéring og afpublicéring</key>
+		<key alias="unpublishDisabled">Workflow for afpublicéring er slået fra globalt</key>
+		<key alias="appliesTo">Gælder</key>
+
+		<!-- dashboards -->
+		<key alias="myTasks">Ændringer der kræver min godkendelse</key>
+		<key alias="mySubmissions">Mine ændringsanmodninger</key>
+
+		<!-- settings box titles -->
+		<key alias="generalSettings">Generelt</key>
+		<key alias="notifications">Notifications</key>
+		<key alias="emailTemplates">Email templates</key>
+		<key alias="lockIfActive">Lås aktivt indhold</key>
+		<key alias="emailSettings">Notifikationer / email</key>
+		<key alias="excludeNodeSettings">Undtagelser</key>
+		<key alias="contentTypeSettings">Dokumenttype godkendelsesflow</key>
+
+		<!-- variants -->
+		<key alias="thisVariant">Kun denne</key>
+		<key alias="invariant">Invariant</key>
+		<key alias="invariantWorkflow">Invariant workflow</key>
+		<key alias="selectVariants">Vælg sprog</key>
+		<key alias="multiVariant">Multi-variant</key>
+		<key alias="multiVariantWorkflow">Multi-variant workflow</key>
+		<key alias="variant">Variant</key>
+
+		<key alias="thisVariantDesc">Det nuværende sprog (%0%) vil blive sendt til udgivelse.</key>
+		<key alias="invariantDesc">Sprog uden afventende arbejdsgange sendes til udgivelse ved hjælp af arbejdsgangen, der er angivet på standardsproget (%0%).</key>
+		<key alias="multiVariantDesc">Sprog uden afventende arbejdsgange vil blive sendt til udgivelse ved hjælp af arbejdsgangen på hvert sprog.</key>
+		<key alias="variantsActiveAndUnavailable">Workflows for varianten er ikke tilgængelig, da følgende sprog har et aktivt workflow:</key>
+
+		<!-- doctype approval flow -->
+		<key alias="addCondition">Tilføj betingelse</key>
+		<key alias="addStatus">Tilføj status</key>
+
+		<!-- licensing and subscriptions -->
+		<key alias="licensing">Licens</key>
+		<key alias="currentLicense">Aktuelle licens</key>
+		<key alias="licenseType">Licenstype</key>
+		<key alias="validateLicense">Valider licens og nøgle</key>
+		<key alias="validateLicenseDescription">Upload en gyldig licens og dens nøgle - efterlad tomt for at forny den nuværende licens</key>
+		<key alias="validDomain">Gyldigt domæne</key>
+		<key alias="customerName">Kunde navn</key>
+		<key alias="customerEmail">Kunde email</key>
+		<key alias="customerId">Kunde ID</key>
+		<key alias="buyLicense">Køb licens</key>
+		<key alias="readEula">Læs EULA</key>
+		<key alias="eulaTitle">Uhh. Kedeligt.</key>
+		<key alias="limitedByLicense">Begrænset af licensen</key>
+		<key alias="license">Licens</key>
+		<key alias="key">Nøgle</key>
+		<key alias="validate">Valider</key>
+
+		<!-- longer descriptions -->
+		<key alias="cancelledWithError">Proces stoppet grundet en fejl</key>
+		<key alias="userCannotAction">Aktuelle bruger har ikke rettigheder til at administrere workflowet.</key>
+		<key alias="defaultApprovalGroupDescription">Den standard publiceringsgruppe der bruges når ingen workflows er konfigureret</key>
+		<key alias="licensingIntro">Plumber er, og vil altid være, gratis. Advancerede funktioner kræver en købt licens - køb af licens fjerner alle begrænsninger og aktiverer alle funktioner.</key>
+		<key alias="outOfDate">Gå ikke glip af de nyeste funktioner! Der er en ny version af Plumber tilgængelig</key>
+		<key alias="upToDate">Du bruger den nyeste version af Plumber</key>
+		<key alias="nightly">Du bruger en natlig version af Plumber</key>
+		<key alias="pendingForNode">Verserende %0% arbejdsgang til '%1%'</key>
+		<key alias="scheduledForAt">Planlagt til %0% på %1% på %2%</key>
+
+		<key alias="flowTypeDescription">
+			<![CDATA[<p>Angiver hvordan den originale redaktør er håndteret i efterfølgende flows:</p>
+      <ul>
+          <li>Explicit kræver at alle grupper bliver godkendt, inklusiv grupper hvor den originale redaktør er medlem af.</li>
+          <li>Implicit auto-godkender grupper hvor den originale redaktør er medlem af.</li>
+          <li>Exclude fungerer lige som Explicit, men undlader at notificere den originale redaktør (dvs. redaktøren kan ikke godkende sit eget arbejde).</li></ul>]]>
+		</key>
+
+		<key alias="lockIfActiveDescription">Angiver om en node kan redigeres mens den er i et aktivt workflow.</key>
+		<key alias="lockIfActiveDescriptionDetail">Slå denne funktion til  for at forhindre ændringer mens noden er i et workflow, slå denne funktion fra for at tillade medlemmer af den aktive gruppe til at lave ændringer uden at skulle anullere workflowet.</key>
+		<key alias="sendNotificationsDescription">Skal der sendes email notifikationer til godkendelsesgrupper?</key>
+		<key alias="reminderDelayDescription">Send reminder emails for inactive tasks, after this many days. Set to 0 to disable.</key>
+		<key alias="workflowEmailDescription">Afsender adresse for email notifikationer</key>
+		<key alias="editSiteUrlDescription">Backoffice site URL som bruges i email notifikationer (f.eks. http://edit.mydomain.com)</key>
+		<key alias="baseSiteUrlDescription">site URL som bruges i email notifikationer (f.eks. http://www.mydomain.com)</key>
+		<key alias="settingsEmailDescription">Begge felter er valgfri og vil vil bruge det aktuelle domæner hvis de ikke er udfyldt. Udfyld disse felter hvis produktions sitet bruger et anden domæne end Umbraco backoffice (typisk i et load-balanced/distribueret miljø). Hvis det ikke lyder bekendt, efterlad disse felter tomme.</key>
+
+		<key alias="excludeNodesDescription">Noder (og deres underliggende noder) der vælges her vil ikke blive inkluderet i workflows, og vil fungere som standard Umbraco noder</key>
+		<key alias="documentFlowsDescription">Tilføjer standard workflows for alle noder af en given dokumenttype</key>
+		<key alias="nodeApprovalFlowsDescription">Disse workflows tilknytter sig kun til de angivede noder</key>
+
+		<key alias="offlineApprovalDescription">Slå denne funktion til for at tillade redaktører i denne gruppe godkende ændringer uden at logge ind i Umbraco backoffice. Henviser til dokumentationen for yderligere informationer og opsætning.</key>
+
+		<key alias="notConfigured">Workflow er ikke konfigureret</key>
+		<key alias="notConfiguredDescription">Venligst sikre at noderne herunder enten har et explicit workflow tilknyttet eller er eksluderet fra workflows:</key>
+
+		<key alias="licensedFeatureDescription">
+			<![CDATA[<p>Plumber's advanced features require a license. To test these in a development environment, add an empty file named `test.lic` to Plumber's App_Plugin folder.</p>]]>
+		</key>
+
+		<key alias="extendPermissionsDescription">Should Plumber extend or replace users' save and publish permissions? (default behaviour is replace)</key>
+		<key alias="invalidOfflineUrl">
+			<![CDATA[<strong>INVALID REQUEST:</strong> The requested URL does not map to a valid workflow process. The task may have already been completed, or the requesting user does not have permission to action the task.]]>
+		</key>
+		
+		<!-- scheduling -->
+		<key alias="scheduledDate">Planlagt publiceringsdato (valgfri)</key>
+		<key alias="scheduling">Planlæg</key>
+		<key alias="scheduleDescription">Hvis den planlagte publiceringsdato er overskredet inden workflowet er afsluttet, vil ændringerne bliver publiceret når den sidste gruppe i workflowet her godkendt ændringerne.</key>
+		<key alias="schedulePassed">Planlagt publiceringsdato er overskredet før workflowet var afsluttet. Ændringerne vil blive publiceret når workflowet er afsluttet.</key>
+
+		<!-- diffs -->
+		<key alias="showDiff">Vis verschillen</key>
+		<key alias="diffHelp">
+			<![CDATA[Tabellen her over viser forskellen på det aktuelle publicerede indhold og de afventende ændringer i workflowet.<br /><br />
+          <del>Rød tekst</del> vil blive fjernet. <ins>Grøn tekst</ins> vil blive tilføjet.]]>
+		</key>
+		<key alias="diffVariants">
+			Det aktive workflow indeholder flere varianter. Vælg sprog her under for at se ændringerne til hver variant.
+		</key>
+		<key alias="diffNoVersions">
+			Kunne ikke finde en version at sammenligne med. Måske er de blevet slettet? Prøv Umbraco's "Fortryd ændringer" funktion for at se alle tidligere ændringer for denne node.
+		</key>
+	</area>
+	<area alias="workflowNotifications">
+		<key alias="initiate">%0% indsendt til %1% godkendelse.</key>
+		<key alias="initiateScheduled">Ændringer planlagt til frigivelse den %0% på %1%.</key>
+		<key alias="pendingApproval">Workflow-opgave afsluttet. Side bliver %0% efter afslutning af workflow.</key>
+		<key alias="pendingApprovalLog">Workflow %0% opgave den %1% [%2%] godkendt af %3%.</key>
+		<key alias="pendingApprovalResubmit">ændringer genindsendt. Side bliver %0% efter afslutning af workflow.</key>
+		<key alias="pendingApprovalResubmitLog">%0% blev sendt igen af %1% [%2%] blev indsendt af %3%.</key>
+		<key alias="rejected">%0% anmodning er blevet afvist.</key>
+		<key alias="rejectedLog">%0% anmodning om %1% [%2%] afvist af %3%.</key>
+		<key alias="cancelled">%0% anmodningen er annulleret.</key>
+		<key alias="cancelledLog">%0% anmodning om %1% [%2%] annulleret af %3%.</key>
+		<key alias="approved">Workflow afsluttet.</key>
+		<key alias="approvedLog">Workflow godkendt af %0% på %1% [%2%]</key>
+		<key alias="pageHasBeen">Siden har været %0%</key>
+	</area>
+	<area alias="treeHeaders">
+		<key alias="approval-groups">Godkendelsesgrupper</key>
+		<key alias="history">Historie</key>
+		<key alias="documentation">Dokumentation</key>
+		<key alias="licensing">Licensering</key>
+		<key alias="settings">Indstillinger</key>
+		<key alias="active">Aktiv workflows</key>
+	</area>
+	<area alias="workflowCommentTemplates">
+		<!-- comment templates-->
+		<!-- use these to add a default template to the initiate workflow textarea - similar to github templates
+         key alias is the document type alias
+         
+         because this is going directly into the textarea, formatting is important - leading spaces on a new line will be visible in the textarea
+         so new-lines need to be hard-left aligned
+    -->
+		<key alias="homepage">
+			<![CDATA[This is an important
+template for the homepage doctype
+
+it can have spaces
+
+and new lines]]>
+		</key>
+	</area>
+</language>

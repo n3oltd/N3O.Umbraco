@@ -1,0 +1,14 @@
+<div ng-controller="Workflow.Groups.Delete.Dialog.Controller as vm" class="workflow">
+    <div ng-bind-html="vm.deleteGroupWarning"></div>
+    <input ng-model="model.groupNameConfirmed" type="text" class="mt-2" />
+
+    <umb-load-indicator ng-if="model.deleting"></umb-load-indicator>
+
+    <div class="alert alert-success mt-2 mb-0" ng-if="vm.messages.length">
+        <ul class="unstyled mb-0">
+            <li ng-repeat="msg in vm.messages">
+                <localize key="workflow_{{ msg.key}}"></localize>: {{ msg.value }}
+            </li>
+        </ul>
+    </div>
+</div>

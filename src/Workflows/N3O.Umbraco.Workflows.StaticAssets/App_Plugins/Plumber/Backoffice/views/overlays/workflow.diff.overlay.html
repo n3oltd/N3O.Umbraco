@@ -1,0 +1,20 @@
+<umb-editor-view>
+    <umb-editor-header name="model.title"
+                       name-locked="true"
+                       hide-alias="true"
+                       hide-description="model.hideDescription"
+                       hide-icon="true">
+    </umb-editor-header>
+    <umb-editor-container>
+        <workflow-diff guid="model.guid"></workflow-diff>
+    </umb-editor-container>
+    <umb-editor-footer>
+        <umb-editor-footer-content-right>
+            <umb-button type="button"
+                        button-style="link"
+                        label-key="general_close"
+                        action="model.close()">
+            </umb-button>
+        </umb-editor-footer-content-right>
+    </umb-editor-footer>
+</umb-editor-view>

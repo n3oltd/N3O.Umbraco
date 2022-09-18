@@ -1,0 +1,179 @@
+<div ng-controller="Workflow.FilterPicker.Controller as vm">
+    <umb-editor-view>
+        <umb-editor-header name="model.title"
+                           name-locked="true"
+                           hide-alias="true"
+                           hide-description="model.hideDescription"
+                           hide-icon="true">
+        </umb-editor-header>
+        <umb-editor-container>
+            <div class="workflow workflow-history">
+                <umb-box>
+                    <umb-box-content>
+                        <!-- filter by node -->
+                        <div class="umb-control-group control-group" ng-if="!model.nodeView && !vm.disabledFilters.includes('node')">
+                            <label class="control-label">
+                                <localize key="workflow_node">Node</localize>
+                            </label>
+                            <umb-node-preview ng-if="model.filters.node"
+                                              icon="model.filters.node.icon"
+                                              name="model.filters.node.name"
+                                              published="model.filters.node.published"
+                                              description="model.filters.node.url"
+                                              allow-remove="true"
+                                              on-remove="model.filters.node = null">
+                            </umb-node-preview>
+
+                            <button ng-show="!model.filters.node"
+                                    type="button"
+                                    class="umb-node-preview-add"
+                                    ng-click="vm.select('node')">
+                                <localize key="workflow_selectNode">Select node</localize>
+                            </button>
+                        </div>
+
+                        <!-- filter by user -->
+                        <div class="umb-control-group control-group" ng-if="!vm.disabledFilters.includes('user')">
+                            <label class="control-label">
+                                <localize key="workflow_requestedBy">Requested by</localize>
+                            </label>
+                            <umb-user-preview ng-if="model.filters.user"
+                                              avatars="model.filters.user.avatars"
+                                              name="model.filters.user.name"
+                                              allow-remove="true"
+                                              on-remove="model.filters.user = null">
+                            </umb-user-preview>
+
+                            <button ng-show="!model.filters.user"
+                                    type="button"
+                                    class="umb-node-preview-add"
+                                    ng-click="vm.select('user')">
+                                <localize key="workflow_selectUser">Select user</localize>
+                            </button>
+                        </div>
+
+                        <div class="umb-control-group control-group" ng-if="!vm.disabledFilters.includes('created')">
+                            <label class="control-label">
+                                <localize key="workflow_createdDate">Created date</localize>
+                            </label>
+                            <div class="flex justify-between">
+                                <div class="flex date-wrapper__date">
+                                    <workflow-datepicker date="model.filters.createdFrom" label-key="template_from">></workflow-datepicker>
+                                </div>
+                                <div class="flex date-wrapper__date">
+                                    <workflow-datepicker date="model.filters.createdTo" label-key="general_to"></workflow-datepicker>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="umb-control-group control-group" ng-if="!vm.disabledFilters.includes('completed')">
+                            <label class="control-label">
+                                <localize key="workflow_completedDate">Completed date</localize>
+                            </label>
+                            <div class="flex justify-between">
+                                <div class="flex date-wrapper__date">
+                                    <workflow-datepicker date="model.filters.completedFrom" label-key="template_from"></workflow-datepicker>
+                                </div>
+                                <div class="flex date-wrapper__date">
+                                    <workflow-datepicker date="model.filters.completedTo" label-key="general_to"></workflow-datepicker>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- filter by language variant -->
+                        <div class="umb-control-group control-group" ng-if="!vm.disabledFilters.includes('variant') && vm.languages.length > 1">
+                            <label class="control-label" for="filterLanguage">
+                                <localize key="general_language">Language</localize>
+                            </label>
+                            <div class="umb-node-preview">
+                                <div class="umb-node-preview__content">
+                                    <select class="mb-0"
+                                            id="filterLanguage"
+                                            ng-model="model.filters.variant"
+                                            ng-options="l.culture as l.name for l in vm.languages">
+                                    </select>
+                                </div>
+                                <div class="umb-node-preview__actions">
+                                    <button type="button" class="umb-node-preview__action" ng-click="model.filters.variant = null" ng-if="model.filters.variant">
+                                        <localize key="general_remove">Remove</localize>
+                                        <span class="sr-only">{{ model.filters.variant }} </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- filter by workflow type -->
+                        <div class="umb-control-group control-group" ng-if="!vm.disabledFilters.includes('type')">
+                            <label class="control-label" for="filterType">
+                                <localize key="general_type">Type</localize>
+                            </label>
+                            <div class="umb-node-preview">
+                                <div class="umb-node-preview__content">
+                                    <select class="mb-0"
+                                            id="filterType"
+                                            ng-model="model.filters.type"
+                                            ng-options="t.value as t.key for t in vm.typeValues">
+                                    </select>
+                                </div>
+                                <div class="umb-node-preview__actions">
+                                    <button type="button" class="umb-node-preview__action" ng-click="model.filters.type = null" ng-if="model.filters.type">
+                                        <localize key="general_remove">Remove</localize>
+                                        <span class="sr-only">{{ model.filters.type }} </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- filter by workflow status -->
+                        <div class="umb-control-group control-group" ng-if="!vm.disabledFilters.includes('status')">
+                            <label class="control-label" for="filterStatus">
+                                <localize key="general_status">Status</localize>
+                            </label>
+                            <div class="ml-0 mb2" ng-if="model.filters.status.length">
+                                <div class="umb-node-preview umb-node-preview--or" ng-repeat="s in model.filters.status track by $index">
+                                    <div class="umb-node-preview__content">
+                                        <select class="mb-0" 
+                                                id="filterStatus"
+                                                ng-model="model.filters.status[$index]"
+                                                ng-options="v.value as v.key for v in vm.statusValues">
+                                        </select>
+                                    </div>
+                                    <div class="umb-node-preview__actions">
+                                        <button type="button" class="umb-node-preview__action" ng-click="vm.removeFilter($index, 'status')">
+                                            <localize key="general_remove">Remove</localize>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="umb-node-preview-add" type="button" ng-click="vm.addFilter('status')">
+                                <localize key="workflow_addStatus">Add status</localize>
+                            </button>
+                        </div>
+                    </umb-box-content>
+                </umb-box>
+            </div>
+        </umb-editor-container>
+        <umb-editor-footer>
+            <umb-editor-footer-content-left>
+                <umb-button type="button"
+                            button-style="default"
+                            label-key="general_clear"
+                            action="vm.clear()">
+                </umb-button>
+            </umb-editor-footer-content-left>
+            <umb-editor-footer-content-right>
+                <umb-button type="button"
+                            button-style="link"
+                            label-key="general_close"
+                            action="model.close()">
+                </umb-button>
+                <umb-button type="button"
+                            button-style="success"
+                            label-key="general_submit"
+                            action="model.submit(model.filters)">
+                </umb-button>
+            </umb-editor-footer-content-right>
+        </umb-editor-footer>
+    </umb-editor-view>
+</div>

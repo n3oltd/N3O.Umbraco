@@ -1,0 +1,41 @@
+<div class="workflow" ng-controller="Workflow.AdminDashboard.Controller as vm" impersonation-banner>
+    <div ng-if="vm.version">
+        <div class="alert alert-workflow alert-workflow--upgrade d-block" id="upgradeAlert" ng-if="!vm.version.isNightly && vm.version.outOfDate">
+            <button type="button" class="close" title="I don't care about cool new features" data-dismiss="alert" ng-click="vm.updateAlertHidden()">&times;</button>
+            <h3 class="d-flex items-center mt0">
+                <umb-icon icon="icon-alert"></umb-icon>
+                <localize key="workflow_outOfDate">You're missing out! Plumber is out of date</localize>
+            </h3>
+            <div class="release-notes">
+                <h4>{{ vm.version.currentVersion }} <localize key="workflow_releaseNotes">release notes</localize></h4>
+                <div ng-bind-html="vm.version.releaseNotes"></div>
+            </div>
+            <p class="mb-1"><localize key="workflow_releaseDate">Release date</localize>: {{ vm.version.releaseDate }}</p>
+        </div>
+
+        <div class="alert alert-workflow alert-workflow--upgrade" ng-if="!vm.version.isNightly && !vm.version.outOfDate">
+            <umb-icon icon="icon-checkbox"></umb-icon>
+            <p><localize key="workflow_upToDate">You're up to date, running Plumber</localize> {{ vm.version.currentVersion }}</p>
+        </div>
+
+        <div class="alert alert-workflow alert-workflow--upgrade" ng-if="vm.version.isNightly && !vm.version.outOfDate">
+            <svg width="22" height="22" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <g>
+                    <path d="m346 61c-8.291 0-15 6.709-15 15s6.709 15 15 15c24.814 0 45 20.186 45 45 0 8.291 6.709 15 15 15s15-6.709 15-15c0-24.814 20.186-45 45-45 8.291 0 15-6.709 15-15s-6.709-15-15-15c-24.814 0-45-21.186-45-46 0-8.291-6.709-15-15-15s-15 6.709-15 15c0 24.814-20.186 46-45 46z" />
+                    <path d="m181 196c0 8.291 6.709 15 15 15 41.353 0 75 33.647 75 75 0 8.291 6.709 15 15 15s15-6.709 15-15c0-41.353 33.647-75 75-75 8.291 0 15-6.709 15-15s-6.709-15-15-15c-41.353 0-75-33.647-75-75 0-8.291-6.709-15-15-15s-15 6.709-15 15c0 41.353-33.647 75-75 75-8.291 0-15 6.709-15 15z" />
+                    <path d="m256 512c126.738 0 238.71-95.717 255.864-221.298.937-6.943-3.032-13.594-9.565-16.069-6.563-2.476-13.945-.103-17.798 5.742-33.531 50.479-93.076 80.625-153.501 80.625-99.258 0-180-80.742-180-180 0-60.425 30.146-119.987 80.624-153.517 5.831-3.867 8.218-11.25 5.743-17.798-2.476-6.533-9.155-10.43-16.069-9.565-125.581 17.153-221.298 129.142-221.298 255.88 0 140.61 115.39 256 256 256z" />
+                </g>
+            </svg>
+            <p><localize key="workflow_nightly">You're on a nightly build, running Plumber</localize> {{ vm.version.currentVersion }}</p>
+        </div>
+    </div>
+
+    <umb-box>
+        <umb-box-header title-key="workflow_activity">
+            <workflow-day-range on-change="vm.updateChartRange(range)" value="28"></workflow-day-range>
+        </umb-box-header>
+        <umb-box-content>
+            <workflow-chart range="vm.chartRange"></workflow-chart>
+        </umb-box-content>
+    </umb-box>
+</div>

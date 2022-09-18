@@ -1,0 +1,63 @@
+<div ng-controller="Workflow.Settings.EditTemplate.Controller as vm" class="workflow">
+    <form name="emailTemplateForm" novalidate ng-submit="vm.save()" val-form-manager>
+        <umb-editor-view>
+            <umb-editor-header name="vm.sectionName"
+                               name-locked="true"
+                               hide-alias="true"
+                               hide-description="model.hideDescription"
+                               hide-icon="true">
+            </umb-editor-header>
+            <umb-editor-container>
+                <umb-box>
+                    <umb-box-content>
+                        <!-- not using umb-control-group here as the description needs to be html-->
+                        <div class="umb-property form-horizontal wide-label">
+                            <div class="control-group umb-control-group">
+                                <div class="umb-el-wrap">
+                                    <label class="control-label" for="mail-to-checkboxlist" style="width:420px">
+                                        <span>
+                                            <localize key="workflow_sendTo"></localize>
+                                        </span>
+                                        <small>
+                                            <localize key="workflow_sendToDescription"></localize>
+                                        </small>
+                                    </label>
+                                    <div class="controls">
+                                        <umb-property-editor model="vm.emailToOptionsModel"
+                                                             ng-if="vm.emailToOptionsModel"
+                                                             id="mail-to-checkboxlist"></umb-property-editor>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div auto-scale="85"
+                             ng-if="vm.partialView"
+                             umb-ace-editor="vm.aceOption"
+                             model="vm.partialView.content">
+                        </div>
+                    </umb-box-content>
+                </umb-box>
+
+                <umb-load-indicator ng-if="vm.loading"></umb-load-indicator>
+            </umb-editor-container>
+            <umb-editor-footer>
+                <umb-editor-footer-content-right>
+                    <umb-button type="button"
+                                button-style="link"
+                                label-key="general_close"
+                                action="model.close()">
+                    </umb-button>
+                    <umb-button alias="save"
+                                type="submit"
+                                button-style="success"
+                                state="vm.saveButtonState"
+                                shortcut="ctrl+s"
+                                label="Save"
+                                label-key="buttons_save">
+                    </umb-button>
+                </umb-editor-footer-content-right>
+            </umb-editor-footer>
+        </umb-editor-view>
+    </form>
+</div>

@@ -1,0 +1,33 @@
+<div class="workflow workflow-settings" ng-controller="Workflow.Settings.Overview.Controller as vm">
+    <form name="workflowSettingsForm"
+          ng-submit="vm.save()"
+          novalidate
+          val-form-manager>
+        <umb-editor-view footer="true">
+            <umb-editor-header name="vm.sectionName"
+                               name-locked="true"
+                               hide-icon="true"
+                               hide-description="true"
+                               navigation="vm.navigation"
+                               hide-alias="true">
+            </umb-editor-header>
+
+            <umb-editor-container impersonation-banner>
+                <umb-editor-sub-views ng-if="vm.loaded"
+                                      sub-views="vm.navigation"
+                                      model="vm">
+                </umb-editor-sub-views>
+            </umb-editor-container>
+
+            <umb-editor-footer>
+                <umb-editor-footer-content-right>
+                    <umb-button type="submit"
+                                button-style="success"
+                                shortcut="ctrl+s"
+                                label-key="workflow_saveSettings">
+                    </umb-button>
+                </umb-editor-footer-content-right>
+            </umb-editor-footer>
+        </umb-editor-view>
+    </form>
+</div>

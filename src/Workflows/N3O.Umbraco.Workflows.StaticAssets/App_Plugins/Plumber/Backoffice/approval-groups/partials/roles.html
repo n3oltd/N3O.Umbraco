@@ -1,0 +1,53 @@
+<umb-box class="permissions form-horizontal">
+    <umb-box-header title-key="workflow_currentWorkflowRoles"></umb-box-header>
+    <umb-box-content>
+        <umb-control-group label="@workflow_nodeApprovalFlows" description="@workflow_nodeApprovalFlowsDescription">
+            <umb-node-preview ng-repeat="node in model.pagedNodePermissions | filter: { nodeName : '!!' }"
+                              style="max-width: 100%;"
+                              allow-edit="node.nodeId > 0"
+                              on-edit="model.editContentPermission(node.nodeId, node.path)"
+                              icon="node.icon"
+                              name="node.name">
+            </umb-node-preview>
+
+            <div class="flex justify-center">
+                <umb-pagination ng-if="model.nodePermissionsPagination.totalPages > 1 && model.pagedNodePermissions.length"
+                                page-number="model.nodePermissionsPagination.pageNumber"
+                                total-pages="model.nodePermissionsPagination.totalPages"
+                                on-next="model.nodePermissionsPagination.goToPage"
+                                on-prev="model.nodePermissionsPagination.goToPage"
+                                on-go-to-page="model.nodePermissionsPagination.goToPage">
+                </umb-pagination>
+            </div>
+
+            <umb-empty-state ng-if="!model.nodePermissions.length" position="center">
+                <localize key="content_listViewNoItems">There are no items show in the list.</localize>
+            </umb-empty-state>
+
+        </umb-control-group>
+        <umb-control-group label="@workflow_documentFlows" description="@workflow_documentFlowsDescription" licensed>
+            <umb-node-preview ng-repeat="docType in model.docPermissions"
+                              style="max-width: 100%;"
+                              allow-edit="true"
+                              on-edit="model.editDocTypePermission(docType)"
+                              icon="docType.icon"
+                              name="docType.name">
+            </umb-node-preview>
+
+            <div class="flex justify-center">
+                <umb-pagination ng-if="model.docPermissionsPagination.totalPages > 1 && model.docPermissionsPagination.length"
+                                page-number="model.docPermissionsPagination.pageNumber"
+                                total-pages="model.docPermissionsPagination.totalPages"
+                                on-next="model.docPermissionsPagination.goToPage"
+                                on-prev="model.docPermissionsPagination.goToPage"
+                                on-go-to-page="model.docPermissionsPagination.goToPage">
+                </umb-pagination>
+            </div>
+
+            <umb-empty-state ng-if="!model.docPermissions.length" position="center">
+                <localize key="content_listViewNoItems">There are no items show in the list.</localize>
+            </umb-empty-state>
+
+        </umb-control-group>
+    </umb-box-content>
+</umb-box>
