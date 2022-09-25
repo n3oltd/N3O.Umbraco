@@ -22,7 +22,7 @@ public abstract class LookupsDataSource<T> : IDataListSourceValueConverter where
     public OverlaySize OverlaySize => OverlaySize.Small;
     
     public IEnumerable<DataListItem> GetItems(Dictionary<string, object> config) {
-        return _lookups.GetAll<T>().Select(ToDataListItem).ToList();
+        return _lookups.GetAll<T>().Select(ToDataListItem).OrderBy(x => x.Name).ToList();
     }
 
     public Type GetValueType(Dictionary<string, object> config) {
