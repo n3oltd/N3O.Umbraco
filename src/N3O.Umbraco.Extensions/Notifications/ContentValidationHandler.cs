@@ -51,9 +51,9 @@ public class ContentValidationHandler : INotificationAsyncHandler<ContentSavingN
                 Validate(nestedContent, notification);
             }
         } catch (ContentValidationErrorException error) {
-            notification.CancelOperation(error.PopupMessage);
+            notification.CancelOperation(error.EventMessage);
         } catch (ContentValidationWarningException warning) {
-            notification.Messages.Add(warning.PopupMessage);
+            notification.Messages.Add(warning.EventMessage);
         } catch (Exception ex) {
             _logger.LogError(ex,
                              "Error whilst validating content of type {Type} with ID {ID}",

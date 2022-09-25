@@ -39,12 +39,7 @@ public class CropperNotificationHandlers : INotificationAsyncHandler<ContentPubl
                 try {
                     await GenerateCropsAsync(property, cancellationToken);
                 } catch (Exception ex) {
-                    var message = new EventMessage("Error",
-                                                   $"Generating image crops failed with error: {ex.Message}",
-                                                   EventMessageType.Error);
-                
-                    notification.Cancel = true;
-                    notification.Messages.Add(message);
+                    notification.CancelWithError($"Generating image crops failed with error: {ex.Message}");
                 }
             }
         }
