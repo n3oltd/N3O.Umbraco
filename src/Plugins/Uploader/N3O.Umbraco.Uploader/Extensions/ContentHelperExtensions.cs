@@ -8,6 +8,14 @@ using Umbraco.Cms.Core.Models;
 namespace N3O.Umbraco.Uploader.Extensions;
 
 public static class ContentHelperExtensions {
+    public static FileUpload GetFileUpload(this IContentHelper contentHelper,
+                                           ContentProperties contentProperties,
+                                           string propertyTypeAlias) {
+        var contentProperty = contentProperties.GetPropertyByAlias(propertyTypeAlias);
+        
+        return GetFileUpload(contentHelper, contentProperty);
+    }
+    
     public static FileUpload GetFileUpload(this IContentHelper contentHelper, IContentProperty property) {
         if (!property.Type.HasEditorAlias(UploaderConstants.PropertyEditorAlias)) {
             throw new Exception("Property is not uploader");

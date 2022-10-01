@@ -8,6 +8,14 @@ using Umbraco.Cms.Core.Models;
 namespace N3O.Umbraco.SerpEditor.Extensions;
 
 public static class ContentHelperExtensions {
+    public static SerpEntry GetSerpEntry(this IContentHelper contentHelper,
+                                         ContentProperties contentProperties,
+                                         string propertyTypeAlias) {
+        var contentProperty = contentProperties.GetPropertyByAlias(propertyTypeAlias);
+        
+        return GetSerpEntry(contentHelper, contentProperty);
+    }
+    
     public static SerpEntry GetSerpEntry(this IContentHelper contentHelper, IContentProperty property) {
         if (!property.Type.HasEditorAlias(SerpEditorConstants.PropertyEditorAlias)) {
             throw new Exception("Property is not a SERP Editor");

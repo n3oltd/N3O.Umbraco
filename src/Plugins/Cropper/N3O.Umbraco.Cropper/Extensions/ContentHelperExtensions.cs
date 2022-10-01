@@ -8,6 +8,14 @@ using Umbraco.Cms.Core.Models;
 namespace N3O.Umbraco.Cropper.Extensions;
 
 public static class ContentHelperExtensions {
+    public static CroppedImage GetCroppedImage(this IContentHelper contentHelper,
+                                               ContentProperties contentProperties,
+                                               string propertyTypeAlias) {
+        var contentProperty = contentProperties.GetPropertyByAlias(propertyTypeAlias);
+        
+        return GetCroppedImage(contentHelper, contentProperty);
+    }
+    
     public static CroppedImage GetCroppedImage(this IContentHelper contentHelper, IContentProperty property) {
         if (!property.Type.HasEditorAlias(CropperConstants.PropertyEditorAlias)) {
             throw new Exception("Property is not image cropper");

@@ -9,6 +9,14 @@ using Umbraco.Cms.Core.PropertyEditors.ValueConverters;
 namespace N3O.Umbraco.Extensions;
 
 public static partial class ContentHelperExtensions {
+    public static T GetPickerValue<T>(this IContentHelper contentHelper,
+                                      ContentProperties contentProperties,
+                                      string propertyTypeAlias) {
+        var contentProperty = contentProperties.GetPropertyByAlias(propertyTypeAlias);
+        
+        return GetPickerValue<T>(contentHelper, contentProperty);
+    }
+    
     public static T GetPickerValue<T>(this IContentHelper contentHelper, IContentProperty property) {
         if (!property.Type.IsPicker()) {
             throw new Exception("Property is not picker");

@@ -8,6 +8,14 @@ using Umbraco.Community.Contentment.DataEditors;
 namespace N3O.Umbraco.Extensions;
 
 public static partial class ContentHelperExtensions {
+    public static T GetDataListValue<T>(this IContentHelper contentHelper,
+                                        ContentProperties contentProperties,
+                                        string propertyTypeAlias) {
+        var contentProperty = contentProperties.GetPropertyByAlias(propertyTypeAlias);
+        
+        return GetDataListValue<T>(contentHelper, contentProperty);
+    }
+    
     public static T GetDataListValue<T>(this IContentHelper contentHelper, IContentProperty property) {
         if (!property.Type.IsDataList()) {
             throw new Exception("Property is not data list");
@@ -39,6 +47,14 @@ public static partial class ContentHelperExtensions {
         return contentHelper.GetConvertedValue<DataListValueConverter, T>(contentTypeAlias,
                                                                           propertyTypeAlias,
                                                                           propertyValue);
+    }
+    
+    public static IReadOnlyList<T> GetDataListValues<T>(this IContentHelper contentHelper,
+                                                        ContentProperties contentProperties,
+                                                        string propertyTypeAlias) {
+        var contentProperty = contentProperties.GetPropertyByAlias(propertyTypeAlias);
+        
+        return GetDataListValues<T>(contentHelper, contentProperty);
     }
 
     public static IReadOnlyList<T> GetDataListValues<T>(this IContentHelper contentHelper, IContentProperty property) {
