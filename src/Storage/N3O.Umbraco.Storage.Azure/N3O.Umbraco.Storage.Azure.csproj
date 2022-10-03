@@ -35,7 +35,7 @@
 
     <ItemGroup>
       <!-- Re-enable once https://github.com/umbraco/Umbraco.StorageProviders/issues/45 is resolved -->
-      <PackageReference Include="Azure.Storage.Blobs" Version="12.12.0" />
+      <PackageReference Include="Azure.Storage.Blobs" Version="12.13.1" />
       <PackageReference Include="SixLabors.ImageSharp.Web.Providers.Azure" Version="2.0.1" />
       <!--<PackageReference Include="Umbraco.StorageProviders.AzureBlob" Version="10.0.0" />-->
     </ItemGroup>
