@@ -3001,6 +3001,7 @@ exports.constants = {
         saveAndPublish: 'saveAndPublish',
         schedulePublish: 'schedulePublish',
         publishDescendant: 'publishDescendant',
+        sendToPublish: 'sendToPublish',
     },
     sizes: {
         s: 'small',
@@ -4515,6 +4516,9 @@ class StateFactory {
                     else if (this.originalDefaultButton && !subButtons.find(x => x.alias === constants_1.constants.actions.saveAndPublish)) {
                         subButtons.splice(0, 0, this.originalDefaultButton);
                     }
+                    // always remove send to publish, as this causes confusion since workflow
+                    // is doing much the same thing, but better :)
+                    this.removeButtons(subButtons, [constants_1.constants.actions.sendToPublish]);
                 }
                 // if lockIfActive remove save, save+publish
                 if (this.settings.lockIfActive && (this.pending.task || this.pending.variantTasks)) {

@@ -41,6 +41,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Plumber.Workflow" Version="10.1.0" />
+      <PackageReference Include="Plumber.Workflow" Version="10.1.1" />
     </ItemGroup>
 </Project>

@@ -43,6 +43,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Plumber.Core" Version="10.1.0" />
+      <PackageReference Include="Plumber.Core" Version="10.1.1" />
     </ItemGroup>
 </Project>
