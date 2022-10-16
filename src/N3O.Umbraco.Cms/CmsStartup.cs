@@ -71,10 +71,11 @@ public abstract class CmsStartup {
 
     private RewriteOptions GetRewriteOptions() {
         var canonicalDomain = Environment.GetEnvironmentVariable("N3O_Canonical_Domain");
+        var aliasDomains = Environment.GetEnvironmentVariable("N3O_Alias_Domains");
         var options = new RewriteOptions();
         
         if (canonicalDomain.HasValue()) {
-            options.Rules.Add(new CanonicalDomainRedirectRule(canonicalDomain));
+            options.Rules.Add(new CanonicalDomainRedirectRule(canonicalDomain, aliasDomains.Or("").Split('|')));
         }
 
         return options;
