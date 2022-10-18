@@ -47,6 +47,10 @@ public static class ContentBuilderExtensions {
                                                                  string propertyTypeAlias) {
         return builder.Property<RadioButtonListPropertyBuilder>(propertyTypeAlias);
     }
+    
+    public static TemplatedLabelPropertyBuilder TemplatedLabel(this IContentBuilder builder, string propertyTypeAlias) {
+        return builder.Property<TemplatedLabelPropertyBuilder>(propertyTypeAlias);
+    }
 
     public static TextareaPropertyBuilder Textarea(this IContentBuilder builder, string propertyTypeAlias) {
         return builder.Property<TextareaPropertyBuilder>(propertyTypeAlias);
