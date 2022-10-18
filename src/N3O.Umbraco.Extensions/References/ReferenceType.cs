@@ -31,4 +31,6 @@ public class ReferenceType : Lookup {
     }
 }
 
-public class ReferenceTypes : TypesLookupsCollection<ReferenceType> { }
+public class ReferenceTypes : TypesLookupsCollection<ReferenceType> {
+    public static readonly ReferenceType Account = new("AC", 1_000_001);
+}
