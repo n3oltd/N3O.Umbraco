@@ -1,5 +1,3 @@
-using System;
-
 namespace N3O.Umbraco.Content;
 
 public class LabelPropertyBuilder : PropertyBuilder {
