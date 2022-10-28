@@ -57,7 +57,7 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
                               pricedAmountValidator.IsValid(x.Value,
                                                             x.Component,
                                                             req.FundDimensions,
-                                                            req.Sponsorship.Duration.Months))
+                                                            req.Sponsorship.Duration?.Months ?? 1))
             .When(x => x.Sponsorship.HasValue())
             .WithMessage(Get<Strings>(s => s.InvalidValue));
 
