@@ -12,7 +12,9 @@ public class PricedAmountValidator : IPricedAmountValidator {
         _priceCalculator = priceCalculator;
     }
     
-    public bool IsValid(Money value, IPricing pricing, IFundDimensionValues fundDimensions, decimal multiplier = 1m) {
+    public bool IsValid(Money value, IPricing pricing, IFundDimensionValues fundDimensions, decimal? multiplier) {
+        multiplier ??= 1m;
+        
         var price = _priceCalculator.InCurrency(pricing, fundDimensions, value.Currency);
 
         var requiredAmount = price.Amount * multiplier;
