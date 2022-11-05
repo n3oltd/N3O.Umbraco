@@ -19,9 +19,9 @@
         <ProjectReference Include="..\..\Plugins\SerpEditor\N3O.Umbraco.SerpEditor.StaticAssets\N3O.Umbraco.SerpEditor.StaticAssets.csproj" />
         <ProjectReference Include="..\..\Plugins\TextResourceEditor\N3O.Umbraco.TextResourceEditor.StaticAssets\N3O.Umbraco.TextResourceEditor.StaticAssets.csproj" />
         <ProjectReference Include="..\..\Plugins\Uploader\N3O.Umbraco.Uploader.StaticAssets\N3O.Umbraco.Uploader.StaticAssets.csproj" />
+        <ProjectReference Include="..\..\Plugins\WelcomeDashboard\N3O.Umbraco.WelcomeDashboard.StaticAssets\N3O.Umbraco.WelcomeDashboard.StaticAssets.csproj" />
         <ProjectReference Include="..\..\Scheduler\N3O.Umbraco.Scheduler.StaticAssets\N3O.Umbraco.Scheduler.StaticAssets.csproj" />
         <ProjectReference Include="..\..\Workflows\N3O.Umbraco.Workflows.StaticAssets\N3O.Umbraco.Workflows.StaticAssets.csproj" />
-        <ProjectReference Include="..\..\Workflows\N3O.Umbraco.Workflows\N3O.Umbraco.Workflows.csproj" />
         <ProjectReference Include="..\DemoSite.Core\DemoSite.Core.csproj" />
     </ItemGroup>
 
@@ -31,6 +31,7 @@
     <Import Project="..\..\Plugins\SerpEditor\N3O.Umbraco.SerpEditor.StaticAssets\build\N3O.Umbraco.SerpEditor.StaticAssets.targets" />
     <Import Project="..\..\Plugins\TextResourceEditor\N3O.Umbraco.TextResourceEditor.StaticAssets\build\N3O.Umbraco.TextResourceEditor.StaticAssets.targets" />
     <Import Project="..\..\Plugins\Uploader\N3O.Umbraco.Uploader.StaticAssets\build\N3O.Umbraco.Uploader.StaticAssets.targets" />
+    <Import Project="..\..\Plugins\WelcomeDashboard\N3O.Umbraco.WelcomeDashboard.StaticAssets\build\N3O.Umbraco.WelcomeDashboard.StaticAssets.targets" />
     <Import Project="..\..\Scheduler\N3O.Umbraco.Scheduler.StaticAssets\build\N3O.Umbraco.Scheduler.StaticAssets.targets" />
 
     <PropertyGroup>

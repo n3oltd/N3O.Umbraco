@@ -34,12 +34,14 @@
       <ProjectReference Include="..\..\Plugins\TextResourceEditor\N3O.Umbraco.TextResourceEditor\N3O.Umbraco.TextResourceEditor.csproj" />
       <ProjectReference Include="..\..\Plugins\Uploader\N3O.Umbraco.Uploader.Data\N3O.Umbraco.Uploader.Data.csproj" />
       <ProjectReference Include="..\..\Plugins\Uploader\N3O.Umbraco.Uploader\N3O.Umbraco.Uploader.csproj" />
+      <ProjectReference Include="..\..\Plugins\WelcomeDashboard\N3O.Umbraco.WelcomeDashboard\N3O.Umbraco.WelcomeDashboard.csproj" />
       <ProjectReference Include="..\..\Scheduler\N3O.Umbraco.Scheduler\N3O.Umbraco.Scheduler.csproj" />
       <ProjectReference Include="..\..\Search\N3O.Umbraco.Search.Google\N3O.Umbraco.Search.Google.csproj" />
       <ProjectReference Include="..\..\Sync\N3O.Umbraco.Sync\N3O.Umbraco.Sync.csproj" />
       <ProjectReference Include="..\..\TaxRelief\N3O.Umbraco.TaxRelief.UnitedKingdom\N3O.Umbraco.TaxRelief.UnitedKingdom.csproj" />
       <ProjectReference Include="..\..\Templates\N3O.Umbraco.Templates.Handlebars\N3O.Umbraco.Templates.Handlebars.csproj" />
       <ProjectReference Include="..\..\Vacancies\N3O.Umbraco.Vacancies\N3O.Umbraco.Vacancies.csproj" />
+      <ProjectReference Include="..\..\Workflows\N3O.Umbraco.Workflows\N3O.Umbraco.Workflows.csproj" />
     </ItemGroup>
 
 </Project>
