@@ -1,0 +1,27 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <PropertyGroup>
+        <N3OUmbracoWelcomeDashboardContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.WelcomeDashboard\**\*.*</N3OUmbracoWelcomeDashboardContentFilesPath>
+    </PropertyGroup>
+
+    <Target Name="CopyN3OUmbracoWelcomeDashboardAssets" BeforeTargets="Build">
+        <ItemGroup>
+            <N3OUmbracoWelcomeDashboardContentFiles Include="$(N3OUmbracoWelcomeDashboardContentFilesPath)"/>
+        </ItemGroup>
+        <Message Text="Copying welcome dashboard files: $(N3OUmbracoWelcomeDashboardContentFilesPath) - #@(N3OUmbracoWelcomeDashboardContentFiles->Count()) files" Importance="high"/>
+        <Copy
+                SourceFiles="@(N3OUmbracoWelcomeDashboardContentFiles)"
+                DestinationFiles="@(N3OUmbracoWelcomeDashboardContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.WelcomeDashboard\%(RecursiveDir)%(Filename)%(Extension)')"
+                SkipUnchangedFiles="true"/>
+
+    </Target>
+
+    <Target Name="ClearN3OUmbracoWelcomeDashboardAssets" BeforeTargets="Clean">
+        <ItemGroup>
+            <N3OUmbracoWelcomeDashboardDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.WelcomeDashboard\"/>
+        </ItemGroup>
+        <Message Text="Clear old welcome dashboard files" Importance="high"/>
+        <RemoveDir Directories="@(N3OUmbracoWelcomeDashboardDir)"/>
+    </Target>
+
+</Project>

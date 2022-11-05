@@ -1,0 +1,5 @@
+{
+    "javascript": [
+        "~/App_Plugins/N3O.Umbraco.WelcomeDashboard/N3O.Umbraco.WelcomeDashboard.Controller.js"
+    ]
+}
