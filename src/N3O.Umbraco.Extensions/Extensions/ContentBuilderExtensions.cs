@@ -30,6 +30,10 @@ public static class ContentBuilderExtensions {
     public static LabelPropertyBuilder Label(this IContentBuilder builder, string propertyTypeAlias) {
         return builder.Property<LabelPropertyBuilder>(propertyTypeAlias);
     }
+    
+    public static MultipleTextPropertyBuilder MultipleText(this IContentBuilder builder, string propertyTypeAlias) {
+        return builder.Property<MultipleTextPropertyBuilder>(propertyTypeAlias);
+    }
 
     public static NestedPropertyBuilder Nested(this IContentBuilder builder, string propertyTypeAlias) {
         return builder.Property<NestedPropertyBuilder>(propertyTypeAlias);
