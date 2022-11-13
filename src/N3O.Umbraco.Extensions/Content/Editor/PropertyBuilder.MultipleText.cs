@@ -1,4 +1,5 @@
 using N3O.Umbraco.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,6 +11,6 @@ public class MultipleTextPropertyBuilder : PropertyBuilder {
     }
 
     public void Set(params string[] values) {
-        Value = values;
+        Value = string.Join(Environment.NewLine, values);
     }
 }
