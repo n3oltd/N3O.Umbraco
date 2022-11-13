@@ -11,6 +11,6 @@ public class MultipleTextPropertyBuilder : PropertyBuilder {
     }
 
     public void Set(params string[] values) {
-        Value = string.Join(Environment.NewLine, values);
+        Value = string.Join(Environment.NewLine, values.OrEmpty().Where(x => x.HasValue()));
     }
 }
