@@ -14,6 +14,7 @@ public static class DataConstants {
     public static class ContentTypes {
         public const string Csv = "text/csv";
         public const string Excel = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        public const string Zip = "application/zip";
     }
     
     public static class DatePatterns {
