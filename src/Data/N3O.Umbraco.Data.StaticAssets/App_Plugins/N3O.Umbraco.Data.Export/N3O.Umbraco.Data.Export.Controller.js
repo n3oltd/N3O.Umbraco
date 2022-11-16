@@ -1,6 +1,7 @@
 angular.module("umbraco")
     .controller("N3O.Umbraco.Data.Export", function ($scope, editorState, contentResource, assetsService) {
         $scope.processing = false;
+        $scope.progress = '';
         $scope.contentType = null;
         $scope.errorMessage = null;
         $scope.includeUnpublished = false;
@@ -42,9 +43,44 @@ angular.module("umbraco")
                 $scope.metadatas = res;
             });
         })();
-        
+
+        $scope.poll = async function(exportId) {
+            const executePoll = async (resolve, reject) => {
+                let getProgress = await fetch(`/umbraco/backoffice/api/Exports/export/${exportId}/progress`, {
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    method: "GET"
+                });
+
+                var progressRes = await getProgress.json();
+
+                if (getProgress.status !== 200) {
+                    processingError(progressRes);
+
+                    return;
+                }
+
+                if (progressRes.isComplete === true) {
+                    return resolve(progressRes);
+                } else {
+                    if (progressRes.processed !== 0) {
+                        $scope.progress = ` ${progressRes.processed}`;
+                    }
+
+                    $scope.$digest();
+
+                    setTimeout(executePoll, 5000, resolve, reject);
+                }
+            };
+
+            return new Promise(executePoll);
+        };
+
         $scope.export = async function () {
             $scope.processing = true;
+            $scope.progress = '';
             $scope.errorMessage = null;
             
             if (!$scope.contentType) {
@@ -69,7 +105,7 @@ angular.module("umbraco")
                 properties: selectedPropertyAliases
             };
             
-            let res = await fetch(`/umbraco/backoffice/api/Exports/export/${$scope.content.key}/${$scope.contentType.alias}`, {
+            let createExport = await fetch(`/umbraco/backoffice/api/Exports/export/${$scope.content.key}/${$scope.contentType.alias}`, {
                 headers: {
                     "Accept": "application/json",
                     "Content-Type": "application/json"
@@ -77,30 +113,50 @@ angular.module("umbraco")
                 method: "POST",
                 body: JSON.stringify(req)
             });
-            
-            if (res.status !== 200) {
-                processingError(await res.json());
+
+            var createRes = await createExport.json();
+
+            if (createExport.status !== 200) {
+                processingError(createRes);
 
                 return;
             }
 
-            const blob = await res.blob();
-            const header = res.headers.get("Content-Disposition");
-            const parts = header.split(";");
-            const filename = parts[1].split("=")[1].replaceAll('"', '');
-            const newBlob = new Blob([blob]);
-            const blobUrl = window.URL.createObjectURL(newBlob);
-            const link = document.createElement("a");
-            link.href = blobUrl;
-            link.setAttribute("download", filename);
-            document.body.appendChild(link);
-            link.click();
-            link.parentNode.removeChild(link);
-            window.URL.revokeObjectURL(blobUrl);
+            $scope.poll(createRes.id)
+                .then(async function(res) {
+                    let exportFile = await fetch(`/umbraco/backoffice/api/Exports/export/${res.id}/file`, {
+                        headers: {
+                            "Accept": "application/json",
+                            "Content-Type": "application/json"
+                        },
+                        method: "GET"
+                    });
 
-            $scope.processing = false;
-             
-            $scope.$digest();
+                    if (exportFile.status !== 200) {
+                        processingError(await exportFile.json());
+
+                        return;
+                    }
+
+                    const blob = await exportFile.blob();
+                    const header = exportFile.headers.get("Content-Disposition");
+                    const parts = header.split(";");
+                    const filename = parts[1].split("=")[1].replaceAll('"', '');
+                    const newBlob = new Blob([blob]);
+                    const blobUrl = window.URL.createObjectURL(newBlob);
+                    const link = document.createElement("a");
+                    link.href = blobUrl;
+                    link.setAttribute("download", filename);
+                    document.body.appendChild(link);
+                    link.click();
+                    link.parentNode.removeChild(link);
+                    window.URL.revokeObjectURL(blobUrl);
+
+                    $scope.processing = false;
+                    $scope.progress = '';
+
+                    $scope.$digest();
+                });
         }
 
         $scope.selectAllMetadatas = function () {
@@ -129,6 +185,7 @@ angular.module("umbraco")
         
         function processingError(message) {
             $scope.processing = false;
+            $scope.progress = '';
             $scope.errorMessage = message;
         }
 

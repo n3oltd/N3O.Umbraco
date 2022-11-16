@@ -1,7 +1,9 @@
+using System.IO;
+
 namespace N3O.Umbraco.Data.Models;
 
-public class ExportFile : Value {
-    public ExportFile(string filename, string contentType, byte[] contents) {
+public class ExportFile {
+    public ExportFile(string filename, string contentType, Stream contents) {
         Filename = filename;
         ContentType = contentType;
         Contents = contents;
@@ -9,5 +11,5 @@ public class ExportFile : Value {
 
     public string Filename { get; }
     public string ContentType { get; }
-    public byte[] Contents { get; }
+    public Stream Contents { get; }
 }

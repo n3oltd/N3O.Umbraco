@@ -33,13 +33,21 @@ public class ExportsController : PluginController {
         _lookups = lookups;
         _mapper = mapper;
     }
-    
-    [HttpGet("lookups/contentMetadata")]
-    public async Task<ActionResult<IEnumerable<ContentMetadataRes>>> GetLookupContentMetadata() {
-        var listLookups = new ListCustomLookups<ContentMetadata, ContentMetadataRes>(_lookups.Value, _mapper.Value);
-        var res = await listLookups.RunAsync();
 
-        return Ok(res);
+    [HttpPost("export/{containerId:guid}/{contentType}")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ExportProgressRes>> CreateExport(ExportReq req) {
+        try {
+            var res = await _mediator.SendAsync<CreateExportCommand, ExportReq, ExportProgressRes>(req);
+
+            return Ok(res);
+        } catch (ResourceNotFoundException ex) {
+            return NotFound(ex);
+        } catch (Exception ex) {
+            _logger.LogError(ex, "Export failed");
+
+            return UnprocessableEntity("Error generating export, please contact support");
+        }
     }
 
     [HttpGet("exportableProperties/{contentType}")]
@@ -54,19 +62,30 @@ public class ExportsController : PluginController {
         }
     }
 
-    [HttpPost("export/{containerId:guid}/{contentType}")]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> CreateExport(ExportReq req) {
-        try {
-            var res = await _mediator.SendAsync<CreateExportCommand, ExportReq, ExportFile>(req);
+    [HttpGet("export/{exportId:entityId}/file")]
+    public async Task<FileResult> GetExportFile() {
+        var res = await _mediator.SendAsync<GetExportFileQuery, None, ExportFile>(None.Empty);
 
-            return File(res.Contents, res.ContentType, res.Filename);
+        return File(res.Contents, res.ContentType, res.Filename);
+    }
+
+    [HttpGet("export/{exportId:entityId}/progress")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ExportProgressRes>> GetExportProgress() {
+        try {
+            var res = await _mediator.SendAsync<GetExportProgressQuery, None, ExportProgressRes>(None.Empty);
+
+            return Ok(res);
         } catch (ResourceNotFoundException ex) {
             return NotFound(ex);
-        } catch (Exception ex) {
-            _logger.LogError(ex, "Export failed");
-            
-            return UnprocessableEntity("Error generating export, please contact support");
         }
+    }
+    
+    [HttpGet("lookups/contentMetadata")]
+    public async Task<ActionResult<IEnumerable<ContentMetadataRes>>> GetLookupContentMetadata() {
+        var listLookups = new ListCustomLookups<ContentMetadata, ContentMetadataRes>(_lookups.Value, _mapper.Value);
+        var res = await listLookups.RunAsync();
+
+        return Ok(res);
     }
 }

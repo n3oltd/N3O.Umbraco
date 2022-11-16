@@ -4,7 +4,7 @@ using N3O.Umbraco.Mediator;
 
 namespace N3O.Umbraco.Data.Commands;
 
-public class CreateExportCommand : Request<ExportReq, ExportFile> {
+public class CreateExportCommand : Request<ExportReq, ExportProgressRes> {
     public CreateExportCommand(ContainerId containerId, ContentType contentType) {
         ContainerId = containerId;
         ContentType = contentType;
