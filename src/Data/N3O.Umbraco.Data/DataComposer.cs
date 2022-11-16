@@ -95,7 +95,6 @@ public class DataComposer : Composer {
 
     private void RegisterTables(IUmbracoBuilder builder) {
         builder.Services.AddTransient<IColumnRangeBuilder, ColumnRangeBuilder>();
-        builder.Services.AddTransient<IColumnVisibility, ColumnVisibility>();
         builder.Services.AddTransient<IExcelTableBuilder, ExcelTableBuilder>();
         builder.Services.AddTransient<ITableBuilder, TableBuilder>();
         builder.Services.AddTransient<IWorkspace, Workspace>();

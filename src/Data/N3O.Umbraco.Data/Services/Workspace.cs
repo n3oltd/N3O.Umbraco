@@ -8,28 +8,25 @@ namespace N3O.Umbraco.Data;
 
 public class Workspace : IWorkspace {
     private readonly IParserFactory _parserFactory;
-    private readonly IColumnVisibility _columnVisibility;
     private readonly IColumnRangeBuilder _columnRangeBuilder;
 
     public Workspace(ITableBuilder tableBuilder,
                      IColumnRangeBuilder columnRangeBuilder,
-                     IParserFactory parserFactory,
-                     IColumnVisibility columnVisibility) {
+                     IParserFactory parserFactory) {
         TableBuilder = tableBuilder;
         ColumnRangeBuilder = columnRangeBuilder;
         _columnRangeBuilder = columnRangeBuilder;
         _parserFactory = parserFactory;
-        _columnVisibility = columnVisibility;
     }
 
     public ICsvWorkbook CreateCsvWorkbook() {
-        var workbook = new CsvWorkbook(_columnVisibility);
+        var workbook = new CsvWorkbook();
 
         return workbook;
     }
 
     public IExcelWorkbook CreateExcelWorkbook() {
-        var workbook = new ExcelWorkbook(_columnVisibility);
+        var workbook = new ExcelWorkbook();
 
         return workbook;
     }

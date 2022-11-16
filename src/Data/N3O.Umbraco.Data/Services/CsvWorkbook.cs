@@ -13,14 +13,9 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Data;
 
 public class CsvWorkbook : ICsvWorkbook {
-    private readonly IColumnVisibility _columnVisibility;
     private ITable _table;
     private bool _headers = true;
     private TextEncoding _encoding = TextEncodings.Utf8;
-
-    public CsvWorkbook(IColumnVisibility columnVisibility) {
-        _columnVisibility = columnVisibility;
-    }
 
     public void AddTable(ITable table) {
         _table = table;
@@ -42,21 +37,11 @@ public class CsvWorkbook : ICsvWorkbook {
                 var configuration = GetCsvConfiguration();
 
                 await using (var csv = new CsvWriter(writer, configuration)) {
-                    var visibleColumns = new List<Column>();
-
-                    foreach (var column in _table.Columns) {
-                        var isVisible = _columnVisibility.IsVisible(column);
-
-                        if (isVisible) {
-                            visibleColumns.Add(column);
-                        }
-                    }
-
                     if (_headers) {
-                        await WriteHeadersAsync(csv, visibleColumns);
+                        await WriteHeadersAsync(csv, _table.Columns);
                     }
 
-                    await WriteBodyAsync(csv, visibleColumns);
+                    await WriteBodyAsync(csv, _table.Columns);
                 }
             }
 

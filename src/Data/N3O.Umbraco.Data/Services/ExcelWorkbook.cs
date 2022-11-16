@@ -9,17 +9,12 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Data;
 
 public class ExcelWorkbook : IExcelWorkbook {
-    private readonly IColumnVisibility _columnVisibility;
     private readonly List<ExcelWorksheetWriter> _worksheetsWriters = new();
     private string _password;
     private bool _formatAsTable = true;
 
-    public ExcelWorkbook(IColumnVisibility columnVisibility) {
-        _columnVisibility = columnVisibility;
-    }
-
     public void AddWorksheet(IExcelTable table) {
-        var worksheetWriter = new ExcelWorksheetWriter(table, _columnVisibility);
+        var worksheetWriter = new ExcelWorksheetWriter(table);
 
         _worksheetsWriters.Add(worksheetWriter);
     }
