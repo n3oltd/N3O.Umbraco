@@ -28,6 +28,14 @@ public static class DataConstants {
         public const string Point = ".";
     }
 
+    public static class Export {
+        public static class Stages {
+            public const string Collating = "Collating";
+            public const string Complete = "Complete";
+            public const string Formatting = "Formatting";
+        }
+    }
+
     public static class Limits {
         public static class Columns {
             public const int MaxValues = 10;

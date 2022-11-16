@@ -124,7 +124,7 @@ public class ProcessExportHandler : IRequestHandler<ProcessExportCommand, Export
                 tableBuilder.NextRow();
             }
 
-            export.UpdateProgress(processedRecords);
+            export.Collated(processedRecords);
 
             await _repository.UpdateAsync(export);
 
@@ -132,6 +132,10 @@ public class ProcessExportHandler : IRequestHandler<ProcessExportCommand, Export
                 break;
             }
         }
+
+        export.Formatting();
+
+        await _repository.UpdateAsync(export);
         
         var table = tableBuilder.Build();
 

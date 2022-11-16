@@ -65,13 +65,11 @@ angular.module("umbraco")
                 if (progressRes.isComplete === true) {
                     return resolve(progressRes);
                 } else {
-                    if (progressRes.processed !== 0) {
-                        $scope.progress = ` ${progressRes.processed}`;
-                    }
+                    $scope.progress = progressRes.text;
 
                     $scope.$digest();
 
-                    setTimeout(executePoll, 5000, resolve, reject);
+                    setTimeout(executePoll, 2500, resolve, reject);
                 }
             };
 

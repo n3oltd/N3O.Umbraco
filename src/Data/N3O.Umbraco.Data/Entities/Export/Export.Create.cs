@@ -21,8 +21,9 @@ public partial class Export {
         export.Format = format;
         export.StorageFolderName = StorageConstants.StorageFolders.Temp;
         export.Filename = format.AppendFileExtension($"{contentType.Name} Export {export.Number}");
+        export.Stage = DataConstants.Export.Stages.Collating;
         export.IsComplete = false;
-        export.Processed = 0;
+        export.CollatedRecords = 0;
 
         return export;
     }
