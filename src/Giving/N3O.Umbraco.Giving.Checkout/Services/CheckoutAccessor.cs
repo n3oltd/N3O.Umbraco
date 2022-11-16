@@ -38,7 +38,7 @@ public class CheckoutAccessor : ICheckoutAccessor {
     public async Task<Entities.Checkout> GetAsync(CancellationToken cancellationToken = default) {
         var checkoutId = _checkoutIdAccessor.GetId();
 
-        var checkout = await _repository.GetAsync(checkoutId);
+        var checkout = await _repository.GetAsync(checkoutId, cancellationToken);
 
         return checkout;
     }
@@ -47,7 +47,7 @@ public class CheckoutAccessor : ICheckoutAccessor {
         var checkoutId = _checkoutIdAccessor.GetId();
         
         using (await _locker.LockAsync(checkoutId.ToString())) {
-            var checkout = await _repository.GetAsync(checkoutId);
+            var checkout = await _repository.GetAsync(checkoutId, cancellationToken);
 
             if (checkout == null) {
                 var cart = await _cartAccessor.Value.GetAsync(cancellationToken);

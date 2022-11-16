@@ -20,7 +20,7 @@ public class PaymentsScope : PaymentsScopeBase {
     }
 
     protected override async Task<IPaymentsFlow> LoadAsync(CancellationToken cancellationToken) {
-        _flow ??= await _flowId.RunAsync(_repository.GetAsync, true);
+        _flow ??= await _flowId.RunAsync(_repository.GetAsync, true, cancellationToken);
 
         return _flow;
     }

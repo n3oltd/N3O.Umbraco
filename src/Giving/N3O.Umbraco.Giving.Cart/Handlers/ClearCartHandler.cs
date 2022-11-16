@@ -15,7 +15,7 @@ public class ClearCartHandler : IRequestHandler<ClearCartCommand, ClearCartReq, 
     }
 
     public async Task<None> Handle(ClearCartCommand req, CancellationToken cancellationToken) {
-        var cart = await req.CartId.RunAsync(_repository.GetAsync, true);
+        var cart = await req.CartId.RunAsync(_repository.GetAsync, true, cancellationToken);
 
         cart.RemoveAll(req.Model.GivingType);
 

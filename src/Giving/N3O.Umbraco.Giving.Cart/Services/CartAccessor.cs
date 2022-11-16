@@ -35,7 +35,7 @@ public class CartAccessor : ICartAccessor {
         
         using (await _locker.LockAsync(cartId.ToString())) {
             var currency = _currencyAccessor.GetCurrency();
-            var cart = await _repository.GetAsync(cartId);
+            var cart = await _repository.GetAsync(cartId, cancellationToken);
 
             if (cart == null) {
                 cart = Entities.Cart.Create(cartId, currency);

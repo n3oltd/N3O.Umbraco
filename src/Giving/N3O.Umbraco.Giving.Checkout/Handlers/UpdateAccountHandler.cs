@@ -19,7 +19,7 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccountCommand, Accoun
     }
     
     public async Task<CheckoutRes> Handle(UpdateAccountCommand req, CancellationToken cancellationToken) {
-        var checkout = await req.CheckoutRevisionId.RunAsync(_repository.GetAsync, true);
+        var checkout = await req.CheckoutRevisionId.RunAsync(_repository.GetAsync, true, cancellationToken);
 
         checkout.UpdateAccount(req.Model);
         

@@ -5,6 +5,7 @@ using N3O.Umbraco.Json;
 using NodaTime;
 using System;
 using System.Collections.Concurrent;
+using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Infrastructure.Persistence;
 
@@ -37,7 +38,7 @@ public class Repository<T> : IRepository<T> where T : class, IEntity {
         }
     }
     
-    public async Task<T> GetAsync(EntityId id) {
+    public async Task<T> GetAsync(EntityId id, CancellationToken cancellationToken = default) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
             var row = await db.SingleOrDefaultAsync<EntityRow>($"SELECT * FROM {Tables.Entities.Name} WHERE Id = '{id.Value}'");
 
@@ -53,8 +54,8 @@ public class Repository<T> : IRepository<T> where T : class, IEntity {
         }
     }
 
-    public async Task<T> GetAsync(RevisionId revisionId) {
-        var entity = await GetAsync(revisionId.Id);
+    public async Task<T> GetAsync(RevisionId revisionId, CancellationToken cancellationToken = default) {
+        var entity = await GetAsync(revisionId.Id, cancellationToken);
         
         if (entity != null && !revisionId.RevisionMatches(entity.Revision)) {
             throw new RevisionMismatchException(revisionId);

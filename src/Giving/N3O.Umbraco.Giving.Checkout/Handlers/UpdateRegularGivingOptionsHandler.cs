@@ -19,7 +19,7 @@ public class UpdateRegularGivingOptionsHandler :
     }
     
     public async Task<CheckoutRes> Handle(UpdateRegularGivingOptionsCommand req, CancellationToken cancellationToken) {
-        var checkout = await req.CheckoutRevisionId.RunAsync(_repository.GetAsync, true);
+        var checkout = await req.CheckoutRevisionId.RunAsync(_repository.GetAsync, true, cancellationToken);
 
         checkout.UpdateRegularGivingOptions(req.Model);
         

@@ -1,4 +1,3 @@
-using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.Dashboards;
 
