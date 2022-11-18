@@ -187,7 +187,7 @@ public class OpayoHelper : IOpayoHelper {
             return null;
         }
 
-        return value.RemoveNonAscii().Trim().Right(maxLength);
+        return value.RemoveNonAscii().Trim().Left(maxLength);
     }
 
     private ApiBillingAddressReq GetBillingAddress(IAddress address) {

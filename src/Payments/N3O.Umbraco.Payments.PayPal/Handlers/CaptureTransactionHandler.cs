@@ -1,4 +1,5 @@
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Payments.Handlers;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.PayPal.Clients;
@@ -48,11 +49,19 @@ public class CaptureTransactionHandler :
                                                              PayPalSettingsContent settings) {
         var request = new ApiAuthorizePaymentReq();
         request.FinalCapture = true;
-        request.InvoiceId = parameters.FlowId;
-        request.NoteToPayer = parameters.GetTransactionDescription(settings);
-        request.SoftDescriptor = parameters.GetTransactionId(settings, req.AuthorizationId);
+        request.InvoiceId = GetText(parameters.FlowId, 127);
+        request.NoteToPayer = GetText(parameters.GetTransactionDescription(settings), 255);
+        request.SoftDescriptor = GetText(parameters.GetTransactionId(settings, req.AuthorizationId), 22);
         request.AuthorizationId = req.AuthorizationId;
 
         return request;
+    }
+    
+    private string GetText(string value, int maxLength) {
+        if (value == null) {
+            return null;
+        }
+
+        return value.RemoveNonAscii().Trim().Left(maxLength);
     }
 }

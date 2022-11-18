@@ -39,7 +39,7 @@ public static class BillingInfoExtensions {
             return null;
         }
 
-        return value.RemoveNonAscii().Trim().Right(maxLength);
+        return value.RemoveNonAscii().Trim().Left(maxLength);
     }
 
     private static string GetCanadaProvinceCode(string administrativeArea) {
