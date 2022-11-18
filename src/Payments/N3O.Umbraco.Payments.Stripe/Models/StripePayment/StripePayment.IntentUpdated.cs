@@ -1,6 +1,5 @@
 using N3O.Umbraco.Exceptions;
 using Stripe;
-using System.Linq;
 
 namespace N3O.Umbraco.Payments.Stripe.Models;
 
@@ -9,7 +8,7 @@ public partial class StripePayment {
         ClearErrors();
 
         if (paymentIntent.Status == "succeeded") {
-            var charge = paymentIntent.Charges.Single();
+            var charge = paymentIntent.LatestCharge;
 
             Paid(charge.Id);
         } else if (paymentIntent.Status == "requires_action") {
