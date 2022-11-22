@@ -107,8 +107,10 @@ public class ContentJsonConverter : JsonConverter {
                                                               _contentTypeFactory.Value);
 
         var converter = _propertyValueConverters.Value
-                                                .FirstOrDefault(x => x is not MustBeStringValueConverter &&
-                                                                     x.IsConverter(publishedPropertyType));
+                                                .Where(x => x is not MustBeStringValueConverter &&
+                                                            x.IsConverter(publishedPropertyType))
+                                                .OrderBy(x => x.GetType() == typeof(JsonValueConverter) ? 1 : 0)
+                                                .FirstOrDefault();
 
         var intermediate = converter.ConvertSourceToIntermediate(null,
                                                                  publishedPropertyType,
