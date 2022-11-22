@@ -23,7 +23,7 @@ public class YouTubeVideoTagHelper : TagHelper {
             iframeTag.Attributes.Add("src", $"https://www.youtube.com/embed/{videoId}?enablejsapi=1");
             iframeTag.Attributes.Add("frameborder", "0");
             iframeTag.Attributes.Add("allowfullscreen", "true");
-            iframeTag.Attributes.Add("style", "position: absolute; top: 0; left: 0; width: 100%; height: 100%;");
+            iframeTag.Attributes.Add("style", "position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;");
 
             output.Content.SetHtmlContent(iframeTag.ToHtmlString());
         }
