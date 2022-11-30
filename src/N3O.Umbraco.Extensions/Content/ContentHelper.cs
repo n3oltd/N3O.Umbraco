@@ -202,7 +202,7 @@ public class ContentHelper : IContentHelper {
             foreach (var propertyType in propertyGroup.PropertyTypes) {
                 var propertyValue = element[propertyType.Alias];
 
-                properties.Add((propertyType, propertyValue.ConvertToObject()));
+                properties.Add((propertyType, propertyValue?.ConvertToObject()));
             }
         }
             
