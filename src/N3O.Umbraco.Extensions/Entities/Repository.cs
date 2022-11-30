@@ -41,7 +41,7 @@ public class Repository<T> : IRepository<T> where T : class, IEntity {
 
     public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-            var rows = await db.FetchAsync<EntityRow>($"SELECT * FROM {Tables.Entities.Name}");
+            var rows = await db.FetchAsync<EntityRow>($"SELECT * FROM {Tables.Entities.Name} WHERE Type = '{typeof(T).AssemblyQualifiedName}'");
 
             var entities = new List<T>();
 
