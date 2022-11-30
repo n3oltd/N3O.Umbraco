@@ -37,7 +37,7 @@
         <PackageReference Include="Flurl" Version="3.0.6" />
         <PackageReference Include="Humanizer.Core" Version="2.14.1" />
         <PackageReference Include="MimeTypesMap" Version="1.0.8" />
-        <PackageReference Include="NodaTime" Version="3.1.5" />
+        <PackageReference Include="NodaTime" Version="3.1.6" />
         <PackageReference Include="NodaTime.Serialization.JsonNet" Version="3.0.1" />
         <PackageReference Include="NSwag.AspNetCore" Version="13.18.0" />
         <PackageReference Include="Our.Umbraco.Community.Contentment.Core" Version="4.2.1" />
