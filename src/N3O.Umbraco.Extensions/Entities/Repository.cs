@@ -5,6 +5,7 @@ using N3O.Umbraco.Json;
 using NodaTime;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Infrastructure.Persistence;
@@ -37,7 +38,25 @@ public class Repository<T> : IRepository<T> where T : class, IEntity {
                                       entity);
         }
     }
-    
+
+    public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default) {
+        using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
+            var rows = await db.FetchAsync<EntityRow>($"SELECT * FROM {Tables.Entities.Name}");
+
+            var entities = new List<T>();
+
+            foreach (var row in rows) {
+                var type = Type.GetType(row.Type);
+
+                _entityStore[row.Id] = (T) _jsonProvider.DeserializeObject(row.Json, type);
+
+                entities.Add((T) _jsonProvider.DeserializeObject(row.Json, type));
+            }
+
+            return entities;
+        }
+    }
+
     public async Task<T> GetAsync(EntityId id, CancellationToken cancellationToken = default) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
             var row = await db.SingleOrDefaultAsync<EntityRow>($"SELECT * FROM {Tables.Entities.Name} WHERE Id = '{id.Value}'");
