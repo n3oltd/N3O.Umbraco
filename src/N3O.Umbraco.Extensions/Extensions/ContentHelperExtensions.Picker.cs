@@ -46,6 +46,14 @@ public static partial class ContentHelperExtensions {
         return (T) item;
     }
 
+    public static IReadOnlyList<T> GetPickerValues<T>(this IContentHelper contentHelper,
+                                                      ContentProperties contentProperties,
+                                                      string propertyTypeAlias) {
+        var contentProperty = contentProperties.GetPropertyByAlias(propertyTypeAlias);
+
+        return GetPickerValues<T>(contentHelper, contentProperty);
+    }
+
     public static IReadOnlyList<T> GetPickerValues<T>(this IContentHelper contentHelper, IContentProperty property) {
         if (!property.Type.IsPicker()) {
             throw new Exception("Property is not picker");
