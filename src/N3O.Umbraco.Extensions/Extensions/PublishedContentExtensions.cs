@@ -17,6 +17,10 @@ public static class PublishedContentExtensions {
             return typedContent;
         }
 
+        if (publishedContent == null) {
+            return default;
+        }
+
         if (!typeof(T).ImplementsInterface<IUmbracoContent>()) {
             throw new Exception($"{typeof(T).GetFriendlyName()} does not implement {nameof(IUmbracoContent)}");
         }

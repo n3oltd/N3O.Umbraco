@@ -42,7 +42,7 @@ public class RedirectManagement : IRedirectManagement {
                                                     x.HitCount,
                                                     x.LastHitDate,
                                                     x.Temporary,
-                                                    x.Content().AbsoluteUrl()));
+                                                    x.GetLinkUrl()));
     }
 
     public void LogHit(Guid redirectId) {
