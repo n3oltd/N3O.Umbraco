@@ -97,6 +97,12 @@ public class ContentJsonConverter : JsonConverter {
     }
 
     private object GetPublishedValue(string contentTypeAlias, IProperty property) {
+        var propertyValue = property.GetValue();
+
+        if (propertyValue == null) {
+            return null;
+        }
+
         var umbracoContext = _umbracoContextFactory.Value.EnsureUmbracoContext().UmbracoContext;
     
         var contentType =  umbracoContext.PublishedSnapshot.Content.GetContentType(contentTypeAlias);
@@ -114,7 +120,7 @@ public class ContentJsonConverter : JsonConverter {
 
         var intermediate = converter.ConvertSourceToIntermediate(null,
                                                                  publishedPropertyType,
-                                                                 property.GetValue(),
+                                                                 propertyValue,
                                                                  false);
 
         return converter.ConvertIntermediateToObject(null,

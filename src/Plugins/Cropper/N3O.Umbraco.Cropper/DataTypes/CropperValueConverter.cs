@@ -23,7 +23,7 @@ public class CropperValueConverter : PropertyValueConverterBase {
             var configuration = propertyType.DataType.ConfigurationAs<CropperConfiguration>();
             var cropperSource = JsonConvert.DeserializeObject<CropperSource>(json);
         
-            croppedImage = new CroppedImage(configuration, cropperSource);
+            croppedImage = cropperSource.IfNotNull(x => new CroppedImage(configuration, x));
         }
 
         return croppedImage;

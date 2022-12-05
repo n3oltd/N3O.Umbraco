@@ -21,7 +21,7 @@ public class UploaderValueConverter : PropertyValueConverterBase {
         if (source is string json && json.HasValue()) {
             var uploaderSource = JsonConvert.DeserializeObject<UploaderSource>(json);
         
-            fileUpload = new FileUpload(uploaderSource);
+            fileUpload = uploaderSource.IfNotNull(x => new FileUpload(x));
         }
 
         return fileUpload;
