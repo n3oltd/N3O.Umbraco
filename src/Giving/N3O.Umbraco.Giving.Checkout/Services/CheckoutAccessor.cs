@@ -1,7 +1,7 @@
+using AsyncKeyedLock;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Giving.Cart;
-using N3O.Umbraco.Locks;
 using N3O.Umbraco.References;
 using System;
 using System.Threading;
@@ -11,14 +11,14 @@ namespace N3O.Umbraco.Giving.Checkout;
 
 public class CheckoutAccessor : ICheckoutAccessor {
     private readonly ICheckoutIdAccessor _checkoutIdAccessor;
-    private readonly ILocker _locker;
+    private readonly AsyncKeyedLocker<string> _locker;
     private readonly IRepository<Entities.Checkout> _repository;
     private readonly Lazy<ICartAccessor> _cartAccessor;
     private readonly Lazy<ICounters> _counters;
     private readonly Lazy<IRemoteIpAddressAccessor> _remoteIpAddressAccessor;
 
     public CheckoutAccessor(ICheckoutIdAccessor checkoutIdAccessor,
-                            ILocker locker,
+                            AsyncKeyedLocker<string> locker,
                             IRepository<Entities.Checkout> repository,
                             Lazy<ICartAccessor> cartAccessor,
                             Lazy<ICounters> counters,
@@ -46,7 +46,7 @@ public class CheckoutAccessor : ICheckoutAccessor {
     public async Task<Entities.Checkout> GetOrCreateAsync(CancellationToken cancellationToken) {
         var checkoutId = _checkoutIdAccessor.GetId();
         
-        using (await _locker.LockAsync(checkoutId.ToString())) {
+        using (await _locker.LockAsync(checkoutId.ToString(), cancellationToken).ConfigureAwait(false)) {
             var checkout = await _repository.GetAsync(checkoutId, cancellationToken);
 
             if (checkout == null) {

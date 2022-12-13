@@ -1,10 +1,10 @@
+using AsyncKeyedLock;
 using N3O.Giving.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Json;
-using N3O.Umbraco.Locks;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Webhooks.Attributes;
 using N3O.Umbraco.Webhooks.Extensions;
@@ -30,7 +30,7 @@ public class DonationItemReceiver : WebhookReceiver {
     private readonly IContentService _contentService;
     private readonly IContentHelper _contentHelper;
     private readonly ILookups _lookups;
-    private readonly ILocker _locker;
+    private readonly AsyncKeyedLocker<string> _locker;
 
     public DonationItemReceiver(IJsonProvider jsonProvider,
                                 IContentCache contentCache,
@@ -38,7 +38,7 @@ public class DonationItemReceiver : WebhookReceiver {
                                 IContentService contentService,
                                 IContentHelper contentHelper,
                                 ILookups lookups,
-                                ILocker locker) {
+                                AsyncKeyedLocker<string> locker) {
         _jsonProvider = jsonProvider;
         _contentCache = contentCache;
         _contentEditor = contentEditor;
@@ -48,10 +48,10 @@ public class DonationItemReceiver : WebhookReceiver {
         _locker = locker;
     }
 
-    protected override Task ProcessAsync(WebhookPayload payload, CancellationToken cancellationToken) {
+    protected override async Task ProcessAsync(WebhookPayload payload, CancellationToken cancellationToken) {
         var donationItem = payload.GetBody<DonationItem>(_jsonProvider);
 
-        using (_locker.Lock(donationItem.Name)) {
+        using (await _locker.LockAsync(donationItem.Name, cancellationToken).ConfigureAwait(false)) {
             var eventType = payload.GetEventType();
 
             switch (eventType) {
@@ -64,8 +64,6 @@ public class DonationItemReceiver : WebhookReceiver {
                     break;
             }
         }
-
-        return Task.CompletedTask;
     }
 
     private void CreateOrUpdate(WebhookPayload payload, DonationItem donationItem) {

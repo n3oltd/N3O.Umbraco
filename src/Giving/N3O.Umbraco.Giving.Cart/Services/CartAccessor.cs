@@ -1,6 +1,6 @@
+using AsyncKeyedLock;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Entities;
-using N3O.Umbraco.Locks;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,13 +12,13 @@ public class CartAccessor : ICartAccessor {
     private readonly IRepository<Entities.Cart> _repository;
     private readonly ICurrencyAccessor _currencyAccessor;
     private readonly Lazy<ICartValidator> _cartValidator;
-    private readonly ILocker _locker;
+    private readonly AsyncKeyedLocker<string> _locker;
 
     public CartAccessor(ICartIdAccessor cartIdAccessor,
                         IRepository<Entities.Cart> repository,
                         ICurrencyAccessor currencyAccessor,
                         Lazy<ICartValidator> cartValidator,
-                        ILocker locker) {
+                        AsyncKeyedLocker<string> locker) {
         _cartIdAccessor = cartIdAccessor;
         _repository = repository;
         _currencyAccessor = currencyAccessor;
@@ -33,7 +33,7 @@ public class CartAccessor : ICartAccessor {
     public async Task<Entities.Cart> GetAsync(CancellationToken cancellationToken = default) {
         var cartId = _cartIdAccessor.GetId();
         
-        using (await _locker.LockAsync(cartId.ToString())) {
+        using (await _locker.LockAsync(cartId.ToString(), cancellationToken).ConfigureAwait(false)) {
             var currency = _currencyAccessor.GetCurrency();
             var cart = await _repository.GetAsync(cartId, cancellationToken);
 

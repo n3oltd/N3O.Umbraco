@@ -1,7 +1,7 @@
+using AsyncKeyedLock;
 using Humanizer;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Locks;
 using N3O.Umbraco.Utilities;
 using Newtonsoft.Json;
 using System;
@@ -23,11 +23,11 @@ public class StringLocalizer : IStringLocalizer {
 
     private readonly IContentService _contentService;
     private readonly IUmbracoContextFactory _umbracoContextFactory;
-    private readonly ILocker _locker;
+    private readonly AsyncKeyedLocker<string> _locker;
 
     public StringLocalizer(IContentService contentService,
                            IUmbracoContextFactory umbracoContextFactory,
-                           ILocker locker) {
+                           AsyncKeyedLocker<string> locker) {
         _contentService = contentService;
         _umbracoContextFactory = umbracoContextFactory;
         _locker = locker;
