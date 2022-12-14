@@ -1,5 +1,5 @@
+using AsyncKeyedLock;
 using N3O.Umbraco.Entities;
-using N3O.Umbraco.Locks;
 using N3O.Umbraco.Utilities;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,10 +8,10 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.References;
 
 public class Counters : ICounters {
-    private readonly ILocker _locker;
+    private readonly AsyncKeyedLocker<string> _locker;
     private readonly IRepository<Counter> _repository;
 
-    public Counters(ILocker locker, IRepository<Counter> repository) {
+    public Counters(AsyncKeyedLocker<string> locker, IRepository<Counter> repository) {
         _locker = locker;
         _repository = repository;
     }
@@ -21,10 +21,10 @@ public class Counters : ICounters {
                                       CancellationToken cancellationToken = default) {
         var lockKey = LockKey.Generate<Counters>(key);
 
-        using (await _locker.LockAsync(lockKey)) {
+        using (await _locker.LockAsync(lockKey, cancellationToken).ConfigureAwait(false)) {
             var id = key.ToGuid();
             
-            var counter = await _repository.GetAsync(id) ?? await CreateCounterAsync(id, startFrom);
+            var counter = await _repository.GetAsync(id, cancellationToken) ?? await CreateCounterAsync(id, startFrom);
 
             var next = counter.Next;
             

@@ -1,6 +1,6 @@
+using AsyncKeyedLock;
 using Azure.Storage.Blobs;
 using Microsoft.Extensions.Configuration;
-using N3O.Umbraco.Locks;
 using N3O.Umbraco.Utilities;
 using System.Threading.Tasks;
 using Umbraco.StorageProviders.AzureBlob.IO;
@@ -8,11 +8,11 @@ using Umbraco.StorageProviders.AzureBlob.IO;
 namespace N3O.Umbraco.Storage.Azure;
 
 public class AzureVolume : IVolume {
-    private readonly ILocker _locker;
+    private readonly AsyncKeyedLocker<string> _locker;
     private readonly BlobServiceClient _serviceClient;
     private BlobContainerClient _container;
 
-    public AzureVolume(IConfiguration configuration, ILocker locker) {
+    public AzureVolume(IConfiguration configuration, AsyncKeyedLocker<string> locker) {
         _locker = locker;
         var options = new AzureBlobFileSystemOptions();
         
@@ -28,7 +28,7 @@ public class AzureVolume : IVolume {
     
     private async Task<BlobContainerClient> GetContainerAsync() {
         if (_container == null) {
-            using (await _locker.LockAsync(LockKey.Generate<AzureVolume>(nameof(GetContainerAsync)))) {
+            using (await _locker.LockAsync(LockKey.Generate<AzureVolume>(nameof(GetContainerAsync))).ConfigureAwait(false)) {
                 _container = _serviceClient.GetBlobContainerClient(AzureStorageConstants.StorageContainerName
                                                                                         .ToLowerInvariant());
 
