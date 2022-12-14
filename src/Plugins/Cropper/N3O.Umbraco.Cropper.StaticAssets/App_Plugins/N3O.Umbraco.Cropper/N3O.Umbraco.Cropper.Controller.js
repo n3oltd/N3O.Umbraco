@@ -37,6 +37,8 @@ angular.module("umbraco").controller("N3O.Umbraco.Cropper",
                 resizable: true,
                 zoomable: false,
                 viewMode: 2,
+                minContainerWidth: 500,
+                minContainerHeight: 500,
                 crop: function (cropData) {
                     if ($scope.cropperLoading && restoreCropData) {
                         return;
@@ -194,9 +196,10 @@ angular.module("umbraco").controller("N3O.Umbraco.Cropper",
                 $timeout(function () {
                     window.setTimeout(function () {
                         if ($scope.model.value) {
-                            if ($scope.model.value.crops.length === $scope.model.config.cropDefinitions.length) {
+                            if ($scope.model.value.crops.length === $scope.model.config.cropDefinitions.length && ($scope.model?.value?.cropBoxes?.length !== undefined)) {
                                 $scope.selectCrop(0);
                             } else {
+                                let isCropBoxNotSaved = $scope.model.value.crops.length === $scope.model.config.cropDefinitions.length && ($scope.model?.value?.cropBoxes?.length === undefined);
                                 $scope.model.value.crops = new Array($scope.model.config.cropDefinitions.length);
                                 $scope.model.value.cropBoxes = new Array($scope.model.config.cropDefinitions.length);
 
@@ -205,7 +208,7 @@ angular.module("umbraco").controller("N3O.Umbraco.Cropper",
                                     $scope.model.value.cropBoxes[i] = null;
                                 }
 
-                                $scope.selectCrop(0);
+                            isCropBoxNotSaved ? $scope.createCropTool($scope.model.value.crops.length - 1, false, false) : $scope.selectCrop(0);
                             }
                         }
 
