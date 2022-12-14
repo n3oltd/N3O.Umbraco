@@ -40,6 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="YoutubeExplode" Version="6.2.4" />
+      <PackageReference Include="YoutubeExplode" Version="6.2.5" />
     </ItemGroup>
 </Project>

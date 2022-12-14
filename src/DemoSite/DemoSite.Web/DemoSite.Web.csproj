@@ -25,6 +25,12 @@
         <ProjectReference Include="..\DemoSite.Core\DemoSite.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Remove="appsettings-schema.usync.json" />
+      <Content Remove="appsettings-schema.Umbraco.Forms.json" />
+      <Content Remove="appsettings-schema.Umbraco.Cms.json" />
+    </ItemGroup>
+
     <Import Project="..\..\N3O.Umbraco.Cms\build\N3O.Umbraco.Cms.targets" />
     <Import Project="..\..\Data\N3O.Umbraco.Data.StaticAssets\build\N3O.Umbraco.Data.StaticAssets.targets" />
     <Import Project="..\..\Plugins\Cropper\N3O.Umbraco.Cropper.StaticAssets\build\N3O.Umbraco.Cropper.StaticAssets.targets" />
