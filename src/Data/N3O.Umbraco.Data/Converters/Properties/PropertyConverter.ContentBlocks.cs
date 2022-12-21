@@ -13,7 +13,7 @@ using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
 namespace N3O.Umbraco.Data.Converters;
 
-public class ContentBlocksPropertyConverter : PropertyConverter<Blob, string> {
+public class ContentBlocksPropertyConverter : PropertyConverter<string> {
     public ContentBlocksPropertyConverter(IColumnRangeBuilder columnRangeBuilder) : base(columnRangeBuilder) { }
 
     public override bool IsConverter(UmbracoPropertyInfo propertyInfo) {
