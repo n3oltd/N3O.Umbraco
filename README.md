@@ -54,6 +54,7 @@ Provides support for taking one-off and recurring payments using various gateway
 
 Provides a number of back office extensions such as:
 
+- Data Grid
 - File Uploader
 - Image Cropper
 - SERP Entry Editor
