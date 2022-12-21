@@ -1,0 +1,25 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <PropertyGroup>
+        <N3OUmbracoCellsContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.Cells\**\*.*</N3OUmbracoCellsContentFilesPath>
+    </PropertyGroup>
+
+    <Target Name="CopyN3OUmbracoCellsAssets" BeforeTargets="Build">
+        <ItemGroup>
+            <N3OUmbracoCellsContentFiles Include="$(N3OUmbracoCellsContentFilesPath)"/>
+        </ItemGroup>
+        <Message Text="Copying N3O Cells files: $(N3OUmbracoCellsContentFilesPath) - #@(N3OUmbracoCellsContentFiles->Count()) files" Importance="high"/>
+        <Copy SourceFiles="@(N3OUmbracoCellsContentFiles)"
+              DestinationFiles="@(N3OUmbracoCellsContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Cells\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"/>
+    </Target>
+
+    <Target Name="ClearN3OUmbracoCellsAssets" BeforeTargets="Clean">
+        <ItemGroup>
+            <N3OUmbracoCellsDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Cells\"/>
+        </ItemGroup>
+        <Message Text="Clear old N3O Cells files" Importance="high"/>
+        <RemoveDir Directories="@(N3OUmbracoCellsDir)"/>
+    </Target>
+
+</Project>

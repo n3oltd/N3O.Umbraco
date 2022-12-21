@@ -1,0 +1,6 @@
+{
+  javascript: [
+    '/App_Plugins/N3O.Umbraco.Cells/handsontable.full.min.js',
+    '/App_Plugins/N3O.Umbraco.Cells/N3O.Umbraco.Cells.Controller.js'
+  ]
+}
