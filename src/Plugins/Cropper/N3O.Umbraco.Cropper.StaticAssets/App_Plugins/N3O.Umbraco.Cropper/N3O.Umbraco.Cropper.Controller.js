@@ -126,13 +126,11 @@ angular.module("umbraco").controller("N3O.Umbraco.Cropper",
                     filename: response.filename,
                     width: response.width,
                     height: response.height,
-                    crops: new Array($scope.model.config.cropDefinitions.length),
-                    cropBoxes: new Array($scope.model.config.cropDefinitions.length)
+                    crops: new Array($scope.model.config.cropDefinitions.length)
                 };
 
                 for (var i = 0; i < $scope.model.value.crops.length; i++) {
                     $scope.model.value.crops[i] = null;
-                    $scope.model.value.cropBoxes[i] = null;
                 }
 
                 $scope.createCropTool($scope.model.value.crops.length - 1, false, false);
@@ -198,6 +196,22 @@ angular.module("umbraco").controller("N3O.Umbraco.Cropper",
                         if ($scope.model.value) {
                             if ($scope.model.value.crops.length === $scope.model.config.cropDefinitions.length && ($scope.model?.value?.cropBoxes?.length !== undefined)) {
                                 $scope.selectCrop(0);
+                            } else if($scope.model.value.crops.length === $scope.model.config.cropDefinitions.length && ($scope.model?.value?.cropBoxes?.length === undefined)){
+                                $scope.model.value.cropBoxes = new Array($scope.model.config.cropDefinitions.length)
+
+                                for (var i = 0; i < $scope.model.value.crops.length; i++) {
+                                    $scope.model.value.cropBoxes[i] = null;
+                                }
+
+                                for (var i = 0; i < $scope.model.value.crops.length; i++) {
+                                    let left = $scope.model.value.crops[i].x / 5;
+                                    let top = $scope.model.value.crops[i].y / 5;
+                                    let width = (500 - (($scope.model.value.crops[i].width / 5)) / 500);
+                                    let height = (500 - (($scope.model.value.crops[i].height / 5)) / 500);
+
+                                    $scope.model.value.cropBoxes[i] = {left, top, width, height};
+                                }
+                                $scope.selectCrop(0);
                             } else {
                                 let isCropBoxNotSaved = $scope.model.value.crops.length === $scope.model.config.cropDefinitions.length && ($scope.model?.value?.cropBoxes?.length === undefined);
                                 $scope.model.value.crops = new Array($scope.model.config.cropDefinitions.length);
@@ -208,7 +222,7 @@ angular.module("umbraco").controller("N3O.Umbraco.Cropper",
                                     $scope.model.value.cropBoxes[i] = null;
                                 }
 
-                            isCropBoxNotSaved ? $scope.createCropTool($scope.model.value.crops.length - 1, false, false) : $scope.selectCrop(0);
+                                isCropBoxNotSaved ? $scope.createCropTool($scope.model.value.crops.length - 1, false, false) : $scope.selectCrop(0);
                             }
                         }
 
