@@ -206,8 +206,8 @@ angular.module("umbraco").controller("N3O.Umbraco.Cropper",
                                 for (var i = 0; i < $scope.model.value.crops.length; i++) {
                                     let left = $scope.model.value.crops[i].x / 5;
                                     let top = $scope.model.value.crops[i].y / 5;
-                                    let width = (500 - (($scope.model.value.crops[i].width / 5)) / 500);
-                                    let height = (500 - (($scope.model.value.crops[i].height / 5)) / 500);
+                                    let width = (500 - (($scope.model.value.crops[i].width / 5) / 500));
+                                    let height = (500 - (($scope.model.value.crops[i].height / 5) / 500));
 
                                     $scope.model.value.cropBoxes[i] = {left, top, width, height};
                                 }
