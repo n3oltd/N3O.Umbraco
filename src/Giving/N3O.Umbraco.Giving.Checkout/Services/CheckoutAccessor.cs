@@ -46,7 +46,7 @@ public class CheckoutAccessor : ICheckoutAccessor {
     public async Task<Entities.Checkout> GetOrCreateAsync(CancellationToken cancellationToken) {
         var checkoutId = _checkoutIdAccessor.GetId();
         
-        using (await _locker.LockAsync(checkoutId.ToString(), cancellationToken).ConfigureAwait(false)) {
+        using (await _locker.LockAsync(checkoutId.ToString(), cancellationToken)) {
             var checkout = await _repository.GetAsync(checkoutId, cancellationToken);
 
             if (checkout == null) {

@@ -28,7 +28,7 @@ public class AzureVolume : IVolume {
     
     private async Task<BlobContainerClient> GetContainerAsync() {
         if (_container == null) {
-            using (await _locker.LockAsync(LockKey.Generate<AzureVolume>(nameof(GetContainerAsync))).ConfigureAwait(false)) {
+            using (await _locker.LockAsync(LockKey.Generate<AzureVolume>(nameof(GetContainerAsync)))) {
                 _container = _serviceClient.GetBlobContainerClient(AzureStorageConstants.StorageContainerName
                                                                                         .ToLowerInvariant());
 

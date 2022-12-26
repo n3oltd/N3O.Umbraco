@@ -21,7 +21,7 @@ public class Counters : ICounters {
                                       CancellationToken cancellationToken = default) {
         var lockKey = LockKey.Generate<Counters>(key);
 
-        using (await _locker.LockAsync(lockKey, cancellationToken).ConfigureAwait(false)) {
+        using (await _locker.LockAsync(lockKey, cancellationToken)) {
             var id = key.ToGuid();
             
             var counter = await _repository.GetAsync(id, cancellationToken) ?? await CreateCounterAsync(id, startFrom);

@@ -33,7 +33,7 @@ public class CartAccessor : ICartAccessor {
     public async Task<Entities.Cart> GetAsync(CancellationToken cancellationToken = default) {
         var cartId = _cartIdAccessor.GetId();
         
-        using (await _locker.LockAsync(cartId.ToString(), cancellationToken).ConfigureAwait(false)) {
+        using (await _locker.LockAsync(cartId.ToString(), cancellationToken)) {
             var currency = _currencyAccessor.GetCurrency();
             var cart = await _repository.GetAsync(cartId, cancellationToken);
 

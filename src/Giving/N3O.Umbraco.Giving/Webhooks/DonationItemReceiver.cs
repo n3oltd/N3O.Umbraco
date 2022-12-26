@@ -51,7 +51,7 @@ public class DonationItemReceiver : WebhookReceiver {
     protected override async Task ProcessAsync(WebhookPayload payload, CancellationToken cancellationToken) {
         var donationItem = payload.GetBody<DonationItem>(_jsonProvider);
 
-        using (await _locker.LockAsync(donationItem.Name, cancellationToken).ConfigureAwait(false)) {
+        using (await _locker.LockAsync(donationItem.Name, cancellationToken)) {
             var eventType = payload.GetEventType();
 
             switch (eventType) {
