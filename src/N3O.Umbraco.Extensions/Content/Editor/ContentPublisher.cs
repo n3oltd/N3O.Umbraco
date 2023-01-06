@@ -23,17 +23,13 @@ public class ContentPublisher : IContentPublisher {
     }
 
     public PublishResult SaveAndPublish() {
-        var newPropertyValues = Content.Build();
-
-        foreach (var (propertyTypeAlias, value) in newPropertyValues) {
-            if (HasProperty(propertyTypeAlias)) {
-                _content.SetValue(propertyTypeAlias, value);
-            }
-        }
-
-        return _contentService.SaveAndPublish(_content);
+        return Save(() => _contentService.SaveAndPublish(_content));
     }
-    
+
+    public OperationResult SaveUnpublished() {
+        return Save(() => _contentService.Save(_content));
+    }
+
     public void SetName(string name) {
         _content.Name = name;
     }
@@ -43,4 +39,16 @@ public class ContentPublisher : IContentPublisher {
     }
 
     public IContentBuilder Content { get; }
+
+    private T Save<T>(Func<T> save) {
+        var newPropertyValues = Content.Build();
+
+        foreach (var (propertyTypeAlias, value) in newPropertyValues) {
+            if (HasProperty(propertyTypeAlias)) {
+                _content.SetValue(propertyTypeAlias, value);
+            }
+        }
+
+        return save();
+    }
 }
