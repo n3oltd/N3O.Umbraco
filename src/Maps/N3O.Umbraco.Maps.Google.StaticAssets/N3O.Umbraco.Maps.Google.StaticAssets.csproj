@@ -34,7 +34,7 @@
     </ItemGroup>
     
     <ItemGroup>
-        <PackageReference Include="Our.Umbraco.GMaps" Version="2.1.0" />
+        <PackageReference Include="Our.Umbraco.GMaps" Version="2.1.3" />
     </ItemGroup>
 
     <ItemGroup>
