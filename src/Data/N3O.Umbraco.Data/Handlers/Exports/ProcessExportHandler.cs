@@ -18,6 +18,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Scoping;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Data.Handlers;
@@ -36,6 +38,7 @@ public class ProcessExportHandler : IRequestHandler<ProcessExportCommand, Export
     private readonly Lazy<IExcelTableBuilder> _excelTableBuilder;
     private readonly IRepository<Export> _repository;
     private readonly IVolume _volume;
+    private readonly ICoreScopeProvider _coreScopeProvider;
 
     public ProcessExportHandler(IContentService contentService,
                                 IContentTypeService contentTypeService,
@@ -47,7 +50,8 @@ public class ProcessExportHandler : IRequestHandler<ProcessExportCommand, Export
                                 IEnumerable<IContentMetadataConverter> metadataConverters,
                                 Lazy<IExcelTableBuilder> excelTableBuilder,
                                 IRepository<Export> repository,
-                                IVolume volume) {
+                                IVolume volume,
+                                ICoreScopeProvider coreScopeProvider) {
         _contentService = contentService;
         _contentTypeService = contentTypeService;
         _dataTypeService = dataTypeService;
@@ -59,6 +63,7 @@ public class ProcessExportHandler : IRequestHandler<ProcessExportCommand, Export
         _excelTableBuilder = excelTableBuilder;
         _repository = repository;
         _volume = volume;
+        _coreScopeProvider = coreScopeProvider;
     }
 
     public async Task<None> Handle(ProcessExportCommand req, CancellationToken cancellationToken) {
@@ -84,21 +89,19 @@ public class ProcessExportHandler : IRequestHandler<ProcessExportCommand, Export
 
         var processedRecords = 0;
         for (var pageIndex = 0; true; pageIndex++) {
+            var query = publishedOnly
+                            ? _coreScopeProvider.CreateQuery<IContent>().Where(x => x.ContentTypeId == contentType.Id &
+                                                                                    x.Published == true)
+                            : _coreScopeProvider.CreateQuery<IContent>().Where(x => x.ContentTypeId == contentType.Id);
+
             var page = _contentService.GetPagedDescendants(containerContent.Id,
                                                            pageIndex,
                                                            PageSize,
-                                                           out var totalRecords);
+                                                           out var totalRecords,
+                                                           query);
 
             foreach (var content in page) {
                 processedRecords++;
-
-                if (content.ContentType.Id != contentType.Id) {
-                    continue;
-                }
-                
-                if (publishedOnly && !content.Published) {
-                    continue;
-                }
 
                 foreach (var (columnRange, converter) in metadataConverters) {
                     tableBuilder.AddValue(columnRange, converter.GetValue(content));    
