@@ -8,7 +8,9 @@ using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
 using System;
+using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco;
 

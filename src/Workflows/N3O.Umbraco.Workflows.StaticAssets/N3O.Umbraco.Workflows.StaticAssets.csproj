@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Workflows.StaticAssets</RootNamespace>
-        <TargetFramework>net6.0</TargetFramework>
-        <LangVersion>10.0</LangVersion>
+        <TargetFramework>net7.0</TargetFramework>
+        <LangVersion>11</LangVersion>
         <Copyright>Copyright © 2022 N3O Ltd</Copyright>
     </PropertyGroup>
 
@@ -16,9 +16,9 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageProjectUrl>https://n3o.ltd</PackageProjectUrl>
         <RepositoryUrl>https://github.com/n3oltd/N3O.Umbraco</RepositoryUrl>
-        <Version>10.0.0</Version>
-        <AssemblyVersion>10.0.0</AssemblyVersion>
-        <FileVersion>10.0.0</FileVersion>
+        <Version>11.0.0</Version>
+        <AssemblyVersion>11.0.0</AssemblyVersion>
+        <FileVersion>11.0.0</FileVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

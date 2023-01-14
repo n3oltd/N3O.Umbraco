@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco</RootNamespace>
-        <TargetFramework>net6.0</TargetFramework>
-        <LangVersion>10.0</LangVersion>
+        <TargetFramework>net7.0</TargetFramework>
+        <LangVersion>11</LangVersion>
         <Copyright>Copyright © 2022 N3O Ltd</Copyright>
     </PropertyGroup>
 
@@ -16,9 +16,9 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageProjectUrl>https://n3o.ltd</PackageProjectUrl>
         <RepositoryUrl>https://github.com/n3oltd/N3O.Umbraco</RepositoryUrl>
-        <Version>10.0.0</Version>
-        <AssemblyVersion>10.0.0</AssemblyVersion>
-        <FileVersion>10.0.0</FileVersion>
+        <Version>11.0.0</Version>
+        <AssemblyVersion>11.0.0</AssemblyVersion>
+        <FileVersion>11.0.0</FileVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -45,10 +45,11 @@
         <PackageReference Include="Perplex.ContentBlocks.Core" Version="2.1.7" />
         <PackageReference Include="Refit" Version="6.3.2" />
         <PackageReference Include="Refit.Newtonsoft.Json" Version="6.3.2" />
-        <PackageReference Include="Umbraco.Cms.Core" Version="10.3.2" />
-        <PackageReference Include="Umbraco.Cms.Web.Common" Version="10.3.2" />
-        <PackageReference Include="Umbraco.Cms.Web.Website" Version="10.3.2" />
-        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="10.3.2" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="2.1.3" />
+        <PackageReference Include="Umbraco.Cms.Core" Version="11.1.0" />
+        <PackageReference Include="Umbraco.Cms.Web.Common" Version="11.0.0" />
+        <PackageReference Include="Umbraco.Cms.Web.Website" Version="11.0.0" />
+        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="11.0.0" />
         <PackageReference Include="Umbraco.Code" Version="2.0.0" />
     </ItemGroup>
 
