@@ -3,7 +3,7 @@
         <RootNamespace>N3O.Umbraco.MessageBus</RootNamespace>
         <TargetFramework>net7.0</TargetFramework>
         <LangVersion>11</LangVersion>
-        <Copyright>Copyright © 2022 N3O Ltd</Copyright>
+        <Copyright>Copyright © 2023 N3O Ltd</Copyright>
     </PropertyGroup>
 
     <PropertyGroup>
