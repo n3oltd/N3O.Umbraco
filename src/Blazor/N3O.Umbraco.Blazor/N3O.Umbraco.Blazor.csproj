@@ -37,12 +37,9 @@
         <None Update="README.md">
             <Pack>True</Pack>
         </None>
-        <None Update="README.md">
-          <Pack>True</Pack>
-        </None>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.2" />
+      <PackageReference Include="Microsoft.AspNetCore.Components.CustomElements" Version="7.0.2" />
     </ItemGroup>
 </Project>
