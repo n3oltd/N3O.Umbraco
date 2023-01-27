@@ -1,0 +1,5 @@
+﻿{
+    "javascript": [
+        "~/App_Plugins/N3O.Umbraco.Blazor.BackOffice/N3O.Umbraco.Blazor.BackOffice.js"
+    ]
+}

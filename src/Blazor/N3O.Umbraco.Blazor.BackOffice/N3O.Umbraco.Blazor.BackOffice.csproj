@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <RootNamespace>N3O.Umbraco.Blazor.Backoffice</RootNamespace>
+        <RootNamespace>N3O.Umbraco.Blazor.BackOffice</RootNamespace>
         <TargetFramework>net7.0</TargetFramework>
         <LangVersion>11</LangVersion>
         <Copyright>Copyright © 2023 N3O Ltd</Copyright>
     </PropertyGroup>
 
     <PropertyGroup>
-        <PackageId>N3O.Umbraco.Blazor.Backoffice</PackageId>
+        <PackageId>N3O.Umbraco.Blazor.BackOffice</PackageId>
         <IsPackable>true</IsPackable>
         <ContentTargetFolders>.</ContentTargetFolders>
         <Authors>N3O Ltd</Authors>
