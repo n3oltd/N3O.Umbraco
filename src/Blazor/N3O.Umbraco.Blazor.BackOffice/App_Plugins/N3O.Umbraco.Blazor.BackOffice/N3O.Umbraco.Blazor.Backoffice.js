@@ -5,7 +5,7 @@ function blazorIsLoaded(){
         return ($(this).attr('src') === blazorJsFile);
     });
 
-    return scripts.length !== 0;
+    return scripts.length !== 1;
 }
 
 if (blazorIsLoaded()) {
@@ -15,7 +15,7 @@ if (blazorIsLoaded()) {
 
     scriptElement.setAttribute("autostart", "false");
 
-    document.head.appendChild(blazorScript);
+    document.body.appendChild(scriptElement);
 }
 
 async function startBlazor() {

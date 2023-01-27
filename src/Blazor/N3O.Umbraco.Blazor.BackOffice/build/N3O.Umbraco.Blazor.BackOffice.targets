@@ -7,7 +7,7 @@
     <ItemGroup>
       <N3OUmbracoBlazorBackofficeContentFiles Include="$(N3OUmbracoBlazorBackofficeContentFilesPath)" />
     </ItemGroup>
-    <Message Text="N3O Blazor backoffice files: $(N3OUmbracoBlazorBackofficeContentFilesPath) - #@(N3OUmbracoBlazorBackofficeContentFiles->Count()) files" Importance="high" />
+    <Message Text="Copying N3O Blazor backoffice files: $(N3OUmbracoBlazorBackofficeContentFilesPath) - #@(N3OUmbracoBlazorBackofficeContentFiles->Count()) files" Importance="high"/>
     <Copy SourceFiles="@(N3OUmbracoBlazorBackofficeContentFiles)" DestinationFiles="@(N3OUmbracoBlazorBackofficeContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Blazor.Backoffice\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 
