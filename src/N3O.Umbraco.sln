@@ -270,7 +270,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Blazor", "Blazor", "{E9AD09
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Blazor", "Blazor\N3O.Umbraco.Blazor\N3O.Umbraco.Blazor.csproj", "{5BCB81FE-3663-4A9B-B98F-08D01CEDD3C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Blazor.Backoffice", "Blazor\N3O.Umbraco.Blazor.Backoffice\N3O.Umbraco.Blazor.Backoffice.csproj", "{87967EFA-D07C-44FB-BDF5-C72870B6EFB6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Blazor.BackOffice", "Blazor\N3O.Umbraco.Blazor.BackOffice\N3O.Umbraco.Blazor.BackOffice.csproj", "{87967EFA-D07C-44FB-BDF5-C72870B6EFB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
