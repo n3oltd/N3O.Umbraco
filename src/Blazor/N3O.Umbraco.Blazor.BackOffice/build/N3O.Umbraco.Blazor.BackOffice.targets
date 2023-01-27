@@ -1,0 +1,21 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <N3OUmbracoBlazorBackofficeContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.Blazor.Backoffice\**\*.*</N3OUmbracoBlazorBackofficeContentFilesPath>
+  </PropertyGroup>
+
+  <Target Name="CopyN3OUmbracoBlazorBackofficeAssets" BeforeTargets="Build">
+    <ItemGroup>
+      <N3OUmbracoBlazorBackofficeContentFiles Include="$(N3OUmbracoBlazorBackofficeContentFilesPath)" />
+    </ItemGroup>
+    <Message Text="Copying N3O Blazor backoffice files: $(N3OUmbracoBlazorBackofficeContentFilesPath) - #@(N3OUmbracoBlazorBackofficeContentFiles->Count()) files" Importance="high"/>
+    <Copy SourceFiles="@(N3OUmbracoBlazorBackofficeContentFiles)" DestinationFiles="@(N3OUmbracoBlazorBackofficeContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Blazor.Backoffice\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+
+  <Target Name="ClearN3OUmbracoBlazorBackofficeAssets" BeforeTargets="Clean">
+    <ItemGroup>
+      <N3OUmbracoBlazorBackofficeDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Blazor.Backoffice\" />
+    </ItemGroup>
+    <Message Text="Clear old N3O Blazor backoffice files" Importance="high" />
+    <RemoveDir Directories="@(N3OUmbracoBlazorBackofficeDir)" />
+  </Target>
+</Project>
