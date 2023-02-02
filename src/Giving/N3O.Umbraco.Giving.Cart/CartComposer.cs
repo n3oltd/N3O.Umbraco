@@ -10,7 +10,9 @@ public class CartComposer : Composer {
         builder.Services.AddTransient<ICartAccessor, CartAccessor>();
         builder.Services.AddTransient<ICartIdAccessor, CartIdAccessor>();
         builder.Services.AddTransient<ICartValidator, CartValidator>();
+        builder.Services.AddTransient<UpsellService>();
 
         builder.Services.AddOpenApiDocument(CartConstants.ApiName);
+        builder.Services.AddOpenApiDocument(UpsellConstants.ApiName);
     }
 }

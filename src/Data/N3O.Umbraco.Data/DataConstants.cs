@@ -54,8 +54,8 @@ public static class DataConstants {
     }
     
     public static class SecurityGroups {
-        public const string ExportUser = "Export Users";
-        public const string ImportUser = "Import Users";
+        public const string ExportUsers = "Export Users";
+        public const string ImportUsers = "Import Users";
     }
     
     public static class Tables {
