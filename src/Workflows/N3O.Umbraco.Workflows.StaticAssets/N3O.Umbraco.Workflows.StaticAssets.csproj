@@ -41,6 +41,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Plumber.Workflow" Version="10.1.1" />
+      <PackageReference Include="Umbraco.Workflow" Version="11.0.1" />
     </ItemGroup>
 </Project>
