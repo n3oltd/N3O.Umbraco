@@ -10,5 +10,5 @@ public interface IAllocation {
     IFundDimensionValues FundDimensions { get; }
     IFundAllocation Fund { get; }
     ISponsorshipAllocation Sponsorship { get; }
-    bool IsUpsellItem { get; }
+    bool Upsell { get; }
 }

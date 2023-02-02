@@ -34,14 +34,14 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AsyncKeyedLock" Version="6.1.0" />
+        <PackageReference Include="AsyncKeyedLock" Version="6.1.1" />
         <PackageReference Include="Flurl" Version="3.0.7" />
         <PackageReference Include="Humanizer.Core" Version="2.14.1" />
         <PackageReference Include="MimeTypesMap" Version="1.0.8" />
         <PackageReference Include="NodaTime" Version="3.1.6" />
         <PackageReference Include="NodaTime.Serialization.JsonNet" Version="3.0.1" />
         <PackageReference Include="NSwag.AspNetCore" Version="13.18.2" />
-        <PackageReference Include="Our.Umbraco.Community.Contentment.Core" Version="4.4.0" />
+        <PackageReference Include="Our.Umbraco.Community.Contentment.Core" Version="4.4.1" />
         <PackageReference Include="Perplex.ContentBlocks.Core" Version="2.1.7" />
         <PackageReference Include="Refit" Version="6.3.2" />
         <PackageReference Include="Refit.Newtonsoft.Json" Version="6.3.2" />

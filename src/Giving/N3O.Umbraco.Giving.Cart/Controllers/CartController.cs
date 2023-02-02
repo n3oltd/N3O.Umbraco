@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Entities;
+using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Giving.Cart.Commands;
 using N3O.Umbraco.Giving.Cart.Context;
 using N3O.Umbraco.Giving.Cart.Models;
@@ -38,6 +39,25 @@ public class CartController : ApiController {
         } catch (Exception ex) {
             _logger.LogError(ex, "Failed to add to cart for request {@Req}", req);
             
+            return UnprocessableEntity();
+        }
+    }
+
+    [HttpPost("upsells/{upsellId:guid}/addToCart")]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> AddUpsellToCart() {
+        try {
+            var revisionId = await _mediator.SendAsync<AddUpsellToCartCommand, None, RevisionId>(None.Empty);
+
+            _cartCookie.SetValue(revisionId);
+
+            return Ok();
+        } catch (ResourceNotFoundException ex) {
+            return NotFound(ex);
+        } catch (Exception ex) {
+            _logger.LogError(ex, ex.Message);
+
             return UnprocessableEntity();
         }
     }

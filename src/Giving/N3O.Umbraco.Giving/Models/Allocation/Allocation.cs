@@ -13,13 +13,13 @@ public class Allocation : Value, IAllocation {
                       FundDimensionValues fundDimensions,
                       FundAllocation fund,
                       SponsorshipAllocation sponsorship,
-                      bool isUpsellItem) {
+                      bool upsell) {
         Type = type;
         Value = value;
         FundDimensions = fundDimensions;
         Fund = fund;
         Sponsorship = sponsorship;
-        IsUpsellItem = isUpsellItem;
+        Upsell = upsell;
     }
 
     public Allocation(IAllocation allocation)
@@ -28,14 +28,14 @@ public class Allocation : Value, IAllocation {
                allocation.FundDimensions.IfNotNull(x => new FundDimensionValues(x)),
                allocation.Fund.IfNotNull(x => new FundAllocation(x)),
                allocation.Sponsorship.IfNotNull(x => new SponsorshipAllocation(x)),
-               allocation.IsUpsellItem) { }
+               allocation.Upsell) { }
 
     public AllocationType Type { get; }
     public Money Value { get; }
     public FundDimensionValues FundDimensions { get; }
     public FundAllocation Fund { get; }
     public SponsorshipAllocation Sponsorship { get; }
-    public bool IsUpsellItem { get; }
+    public bool Upsell { get; }
 
     [JsonIgnore]
     IFundDimensionValues IAllocation.FundDimensions => FundDimensions;
