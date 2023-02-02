@@ -22,6 +22,8 @@ public class AllocationReq : IAllocation {
     [Name("Sponsorship")]
     public SponsorshipAllocationReq Sponsorship { get; set; }
     
+    public bool IsUpsellItem { get; set; }
+    
     [JsonIgnore]
     IFundDimensionValues IAllocation.FundDimensions => FundDimensions;
     

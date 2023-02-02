@@ -11,3 +11,7 @@ public static class CartConstants {
         public const string CheckoutView = "r";
     }
 }
+
+public static class UpsellConstants {
+    public const string ApiName = "Upsell";
+}

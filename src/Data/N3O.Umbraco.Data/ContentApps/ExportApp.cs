@@ -18,7 +18,7 @@ public class ExportApp : IContentAppFactory {
 
     public ContentApp GetContentAppFor(object source, IEnumerable<IReadOnlyUserGroup> userGroups) {
         if (userGroups.All(x => x.Alias.ToLowerInvariant() != UmbracoSecurity.AdminGroupAlias && 
-                                x.Name != DataConstants.SecurityGroups.ExportUser)) {
+                                x.Name != DataConstants.SecurityGroups.ExportUsers)) {
             return null;
         }
 
