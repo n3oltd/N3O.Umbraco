@@ -52,11 +52,18 @@ public static class DataConstants {
         public const string ImportNoticesViewer = "N3O.Umbraco.Data.ImportNoticesViewer";
         public const string ImportDataEditor = "N3O.Umbraco.Data.ImportDataEditor";
     }
-    
+
     public static class SecurityGroups {
-        public const string ExportUsers = "Export Users";
-        public const string ImportUsers = "Import Users";
+        public static class ExportUsers {
+            public const string Alias = "exportUsers";
+            public const string Name = "Export Users";
+        }
+
+        public static class ImportUsers { 
+            public const string Alias = "importUsers";
+            public const string Name = "Import Users";
     }
+}
     
     public static class Tables {
         public static class Imports {

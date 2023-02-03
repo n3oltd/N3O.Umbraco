@@ -19,7 +19,7 @@ public class ImportApp : IContentAppFactory {
 
     public ContentApp GetContentAppFor(object source, IEnumerable<IReadOnlyUserGroup> userGroups) {
         if (userGroups.All(x => x.Alias.ToLowerInvariant() != UmbracoSecurity.AdminGroupAlias && 
-                                x.Name != DataConstants.SecurityGroups.ImportUsers)) {
+                                x.Name != DataConstants.SecurityGroups.ImportUsers.Name)) {
             return null;
         }
 

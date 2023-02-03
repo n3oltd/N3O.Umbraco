@@ -1,3 +1,4 @@
+using Humanizer;
 using Konstrukt.Configuration;
 using Konstrukt.Configuration.Builders;
 using N3O.Umbraco.Data.DataTypes;
@@ -8,7 +9,7 @@ public class ImportsConfigurator : IKonstruktConfigurator {
     public void Configure(KonstruktConfigBuilder builder) {
         var section = builder.WithSection("content");
         var dashboard = section.AddDashboard("Imports");
-        dashboard.SetVisibility(cfg => cfg.ShowForUserGroup(DataConstants.SecurityGroups.ImportUsers));
+        dashboard.SetVisibility(cfg => cfg.ShowForUserGroup(DataConstants.SecurityGroups.ImportUsers.Alias));
 
         ConfigureCollection(dashboard);
     }
