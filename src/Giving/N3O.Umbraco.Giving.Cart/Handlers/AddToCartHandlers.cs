@@ -22,17 +22,20 @@ public class AddToCartHandlers :
     private readonly IRepository<Entities.Cart> _repository;
     private readonly Lazy<IContentLocator> _contentLocator;
     private readonly Lazy<IForexConverter> _forexConverter;
+    private readonly Lazy<IPriceCalculator> _priceCalculator;
     private readonly Lazy<ICurrencyAccessor> _currencyAccessor;
 
     public AddToCartHandlers(ICartAccessor cartAccessor,
                              IRepository<Entities.Cart> repository,
                              Lazy<IContentLocator> contentLocator,
                              Lazy<IForexConverter> forexConverter,
+                             Lazy<IPriceCalculator> priceCalculator,
                              Lazy<ICurrencyAccessor> currencyAccessor) {
         _cartAccessor = cartAccessor;
         _repository = repository;
         _contentLocator = contentLocator;
         _forexConverter = forexConverter;
+        _priceCalculator = priceCalculator;
         _currencyAccessor = currencyAccessor;
     }
 
@@ -49,7 +52,9 @@ public class AddToCartHandlers :
         var upsellContent = req.UpsellId.Run(_contentLocator.Value.ById<UpsellContent>, true);
 
         var currency = _currencyAccessor.Value.GetCurrency();
-        var allocation = await upsellContent.GetAllocationAsync(_forexConverter.Value, currency);
+        var allocation = await upsellContent.GetAllocationAsync(_forexConverter.Value,
+                                                                _priceCalculator.Value,
+                                                                currency);
 
         var revisionId = await AddToCartAsync(upsellContent.GivingType, allocation, 1, cancellationToken);
 
