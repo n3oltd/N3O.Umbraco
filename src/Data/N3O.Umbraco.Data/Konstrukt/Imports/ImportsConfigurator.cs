@@ -1,4 +1,3 @@
-using Humanizer;
 using Konstrukt.Configuration;
 using Konstrukt.Configuration.Builders;
 using N3O.Umbraco.Data.DataTypes;
