@@ -19,6 +19,10 @@ public static class DateTimeExtensions {
     }
     
     public static ZonedDateTime InTimezone(this DateTime dateTime, Timezone timezone) {
+        if (dateTime.Kind != DateTimeKind.Utc) {
+            dateTime = DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
+        }
+
         var zonedDateTime = new ZonedDateTime(Instant.FromDateTimeUtc(dateTime), timezone.Zone);
     
         return  zonedDateTime;
