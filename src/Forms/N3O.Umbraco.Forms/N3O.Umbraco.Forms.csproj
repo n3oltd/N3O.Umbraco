@@ -30,7 +30,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
+        <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -40,6 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Umbraco.Forms.Core" Version="11.0.1" />
+        <PackageReference Include="Umbraco.Forms.Core" Version="11.0.2"/>
     </ItemGroup>
 </Project>
