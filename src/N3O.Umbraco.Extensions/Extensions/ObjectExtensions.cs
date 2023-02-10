@@ -69,10 +69,9 @@ public static class ObjectExtensions {
                                                                     Func<TValue, TIntermediate> selector,
                                                                     Func<TIntermediate, TResult> func)
         where TValue : class
-        where TResult : class
         where TIntermediate : class {
         if (value == null) {
-            return null;
+            return default;
         }
 
         var intermediate = selector(value);
@@ -84,10 +83,9 @@ public static class ObjectExtensions {
                                                                     Func<TValue, TIntermediate> selector,
                                                                     Func<TIntermediate, TResult> func)
         where TValue : struct
-        where TResult : class
         where TIntermediate : class {
         if (value == null) {
-            return null;
+            return default;
         }
 
         var intermediate = selector(value.Value);
@@ -96,10 +94,9 @@ public static class ObjectExtensions {
     }
 
     public static TResult IfNotNull<TValue, TResult>(this TValue value, Func<TValue, TResult> func)
-        where TValue : class
-        where TResult : class {
+        where TValue : class {
         if (value == null) {
-            return null;
+            return default;
         }
 
         var result = func(value);
@@ -108,10 +105,9 @@ public static class ObjectExtensions {
     }
 
     public static TResult IfNotNull<TValue, TResult>(this TValue? value, Func<TValue, TResult> func)
-        where TValue : struct
-        where TResult : class {
+        where TValue : struct {
         if (value == null) {
-            return null;
+            return default;
         }
 
         var result = func(value.Value);
