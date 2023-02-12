@@ -54,7 +54,7 @@ public class SchedulerComposer : IComposer {
             });
 
             builder.Services.AddHangfireServer(opt => {
-                opt.WorkerCount = 5;
+                opt.WorkerCount = 1;
             });
 
             AddAuthorizedUmbracoDashboard(builder);
