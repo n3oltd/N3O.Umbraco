@@ -49,52 +49,52 @@ public class DonationItemReceiver : WebhookReceiver {
     }
 
     protected override async Task ProcessAsync(WebhookPayload payload, CancellationToken cancellationToken) {
-        var donationItem = payload.GetBody<DonationItem>(_jsonProvider);
+        var webhookDonationItem = payload.GetBody<WebhookDonationItem>(_jsonProvider);
 
-        using (await _locker.LockAsync(donationItem.Name, cancellationToken)) {
+        using (await _locker.LockAsync(webhookDonationItem.Name, cancellationToken)) {
             var eventType = payload.GetEventType();
 
             switch (eventType) {
                 case EventTypes.Published:
-                    CreateOrUpdate(payload, donationItem);
+                    CreateOrUpdate(payload, webhookDonationItem);
                     break;
 
                 case EventTypes.Unpublished:
-                    Unpublish(payload, donationItem);
+                    Unpublish(payload, webhookDonationItem);
                     break;
             }
         }
     }
 
-    private void CreateOrUpdate(WebhookPayload payload, DonationItem donationItem) {
+    private void CreateOrUpdate(WebhookPayload payload, WebhookDonationItem webhookDonationItem) {
         var collection = _contentCache.Single<DonationItemsContent>();
-        var existingContent = GetExistingContent(donationItem.Name, payload.GetHeader(Headers.PreviousName));
+        var existingContent = GetExistingContent(webhookDonationItem.Name, payload.GetHeader(Headers.PreviousName));
 
         var contentPublisher = existingContent != null
                                ? _contentEditor.ForExisting(existingContent.Key)
-                               : _contentEditor.New(donationItem.Name,
+                               : _contentEditor.New(webhookDonationItem.Name,
                                                     collection.Content().Key,
                                                     Aliases.DonationItem.ContentType);
         
-        var allowedGivingTypes = GetLookupsById<GivingType>(donationItem.AllowedGivingTypes);
-        var dimension1Options = GetLookupsByName<FundDimension1Value>(donationItem.Dimension1Options);
-        var dimension2Options = GetLookupsByName<FundDimension2Value>(donationItem.Dimension2Options);
-        var dimension3Options = GetLookupsByName<FundDimension3Value>(donationItem.Dimension3Options);
-        var dimension4Options = GetLookupsByName<FundDimension4Value>(donationItem.Dimension4Options);
+        var allowedGivingTypes = ToLookups<GivingType>(webhookDonationItem.AllowedGivingTypes);
+        var dimension1Options = GetLookupsByName<FundDimension1Value>(webhookDonationItem.FundDimensionOptions.Dimension1);
+        var dimension2Options = GetLookupsByName<FundDimension2Value>(webhookDonationItem.FundDimensionOptions.Dimension2);
+        var dimension3Options = GetLookupsByName<FundDimension3Value>(webhookDonationItem.FundDimensionOptions.Dimension3);
+        var dimension4Options = GetLookupsByName<FundDimension4Value>(webhookDonationItem.FundDimensionOptions.Dimension4);
 
-        contentPublisher.SetName(donationItem.Name);
+        contentPublisher.SetName(webhookDonationItem.Name);
         contentPublisher.Content.DataList(Aliases.DonationItem.Properties.AllowedGivingTypes).SetLookups(allowedGivingTypes);
         contentPublisher.Content.ContentPicker(Aliases.DonationItem.Properties.Dimension1Options).SetContent(dimension1Options);
         contentPublisher.Content.ContentPicker(Aliases.DonationItem.Properties.Dimension2Options).SetContent(dimension2Options);
         contentPublisher.Content.ContentPicker(Aliases.DonationItem.Properties.Dimension3Options).SetContent(dimension3Options);
         contentPublisher.Content.ContentPicker(Aliases.DonationItem.Properties.Dimension4Options).SetContent(dimension4Options);
-        contentPublisher.Content.Numeric(Aliases.Price.Properties.Amount).SetDecimal(donationItem.Price?.Amount);
-        contentPublisher.Content.Toggle(Aliases.Price.Properties.Locked).Set(donationItem.Price?.Locked);
+        contentPublisher.Content.Numeric(Aliases.Price.Properties.Amount).SetDecimal(webhookDonationItem.Price?.Amount);
+        contentPublisher.Content.Toggle(Aliases.Price.Properties.Locked).Set(webhookDonationItem.Price?.Locked);
 
-        if (donationItem.PriceRules.HasAny()) {
+        if (webhookDonationItem.PriceRules.HasAny()) {
             var nestedContent = contentPublisher.Content.Nested(Aliases.DonationItem.Properties.PriceRules);
             
-            foreach (var priceRule in donationItem.PriceRules) {
+            foreach (var priceRule in webhookDonationItem.PriceRules) {
                 AddPriceRule(nestedContent.Add(Aliases.PricingRule.ContentType), priceRule);
             }
         } else {
@@ -104,8 +104,8 @@ public class DonationItemReceiver : WebhookReceiver {
         contentPublisher.SaveAndPublish();
     }
 
-    private void Unpublish(WebhookPayload payload, DonationItem donationItem) {
-        var existingContent = GetExistingContent(donationItem.Name, payload.GetHeader(Headers.PreviousName));
+    private void Unpublish(WebhookPayload payload, WebhookDonationItem webhookDonationItem) {
+        var existingContent = GetExistingContent(webhookDonationItem.Name, payload.GetHeader(Headers.PreviousName));
 
         if (existingContent != null) {
             _contentEditor.ForExisting(existingContent.Key).Unpublish();
@@ -128,45 +128,59 @@ public class DonationItemReceiver : WebhookReceiver {
         }
     }
 
-    private IReadOnlyList<T> GetLookupsById<T>(IEnumerable<string> ids) where T : ILookup {
-        return ids.OrEmpty().Select(x => _lookups.FindById<T>(x)).ExceptNull().ToList();
+    private IReadOnlyList<T> ToLookups<T>(IEnumerable<WebhookLookup> webhookLookups) where T : ILookup {
+        return webhookLookups.OrEmpty().Select(x => _lookups.FindById<T>(x.Id)).ExceptNull().ToList();
     }
     
     private IReadOnlyList<T> GetLookupsByName<T>(IEnumerable<string> names) where T : ILookup {
         return names.OrEmpty().Select(x => _lookups.FindByName<T>(x)).ExceptNull().ToList();
     }
 
-    private void AddPriceRule(IContentBuilder contentBuilder, PricingRule priceRule) {
-        contentBuilder.Numeric(Aliases.Price.Properties.Amount).SetDecimal(priceRule.Price?.Amount);
-        contentBuilder.Toggle(Aliases.Price.Properties.Locked).Set(priceRule.Price?.Locked);
-        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension1).SetContent(_lookups.FindByName<FundDimension1Value>(priceRule.Dimension1));
-        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension2).SetContent(_lookups.FindByName<FundDimension2Value>(priceRule.Dimension2));
-        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension3).SetContent(_lookups.FindByName<FundDimension3Value>(priceRule.Dimension3));
-        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension4).SetContent(_lookups.FindByName<FundDimension4Value>(priceRule.Dimension4));
+    private void AddPriceRule(IContentBuilder contentBuilder, WebhookPricingRule webhookPricingRule) {
+        contentBuilder.Numeric(Aliases.Price.Properties.Amount).SetDecimal(webhookPricingRule.Price?.Amount);
+        contentBuilder.Toggle(Aliases.Price.Properties.Locked).Set(webhookPricingRule.Price?.Locked);
+        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension1).SetContent(_lookups.FindByName<FundDimension1Value>(webhookPricingRule.FundDimensions.Dimension1));
+        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension2).SetContent(_lookups.FindByName<FundDimension2Value>(webhookPricingRule.FundDimensions.Dimension2));
+        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension3).SetContent(_lookups.FindByName<FundDimension3Value>(webhookPricingRule.FundDimensions.Dimension3));
+        contentBuilder.ContentPicker(Aliases.PricingRule.Properties.Dimension4).SetContent(_lookups.FindByName<FundDimension4Value>(webhookPricingRule.FundDimensions.Dimension4));
     }
     
-    public class DonationItem {
-        public string Name { get; set; }
-        public IEnumerable<string> AllowedGivingTypes { get; set; }
-        public IEnumerable<string> Dimension1Options { get; set; }
-        public IEnumerable<string> Dimension2Options { get; set; }
-        public IEnumerable<string> Dimension3Options { get; set; }
-        public IEnumerable<string> Dimension4Options { get; set; }
-        public Price Price { get; set; }
-        public IEnumerable<PricingRule> PriceRules { get; set; }
-        public string Status { get; set; }
-    }
+    public class WebhookDonationItem : WebhookEntity {
+        public WebhookDonationItem(WebhookRevision revision,
+                                   WebhookReference reference,
+                                   string name,
+                                   IEnumerable<WebhookLookup> allowedGivingTypes,
+                                   WebhookFundDimensionOptions fundDimensionOptions,
+                                   WebhookPrice price,
+                                   IEnumerable<WebhookPricingRule> priceRules,
+                                   string status,
+                                   bool isActive)
+            : base(revision, reference) {
+            Name = name;
+            AllowedGivingTypes = allowedGivingTypes;
+            FundDimensionOptions = fundDimensionOptions;
+            Price = price;
+            PriceRules = priceRules;
+            Status = status;
+            IsActive = isActive;
+        }
 
-    public class Price {
-        public decimal? Amount { get; set; }
-        public bool? Locked { get; set; }
-    }
+        public string Name { get; }
+        public IEnumerable<WebhookLookup> AllowedGivingTypes { get; }
+        public WebhookFundDimensionOptions FundDimensionOptions { get; }
+        public WebhookPrice Price { get; }
+        public IEnumerable<WebhookPricingRule> PriceRules { get; }
+        public string Status { get; }
+        public bool IsActive { get; }
 
-    public class PricingRule {
-        public Price Price { get; set; }
-        public string Dimension1 { get; set; }
-        public string Dimension2 { get; set; }
-        public string Dimension3 { get; set; }
-        public string Dimension4 { get; set; }
+        protected override IEnumerable<object> GetValues() {
+            yield return Name;
+            yield return AllowedGivingTypes;
+            yield return FundDimensionOptions;
+            yield return Price;
+            yield return PriceRules;
+            yield return Status;
+            yield return IsActive;
+        }
     }
 }
