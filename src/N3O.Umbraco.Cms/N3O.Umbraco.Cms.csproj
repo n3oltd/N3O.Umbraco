@@ -47,7 +47,7 @@
 
     <ItemGroup>
       <PackageReference Include="Diplo.GodMode" Version="10.2.2" />
-      <PackageReference Include="Our.Umbraco.Community.Contentment" Version="4.4.1" />
+      <PackageReference Include="Our.Umbraco.Community.Contentment" Version="4.4.2" />
       <PackageReference Include="Perplex.ContentBlocks" Version="2.1.7" />
       <PackageReference Include="Umbraco.Cms" Version="11.2.0" />
     </ItemGroup>
