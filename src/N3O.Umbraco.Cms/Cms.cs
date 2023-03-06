@@ -7,7 +7,7 @@ using N3O.Umbraco.Utilities;
 namespace N3O.Umbraco;
 
 public static class Cms {
-    public static void Run<TStartup>(string[] args, string ourAssembliesPrefix)
+    public static void Run<TStartup>(string[] args, string ourAssembliesPrefix, bool useIisIntegration = false)
         where TStartup : CmsStartup {
         OurAssemblies.Configure(ourAssembliesPrefix);
 
@@ -18,6 +18,10 @@ public static class Cms {
                                   webBuilder.RunExtensions();
                                   webBuilder.UseStaticWebAssets();
                                   webBuilder.UseStartup<TStartup>();
+
+                                  if (useIisIntegration) {
+                                      webBuilder.UseIISIntegration();
+                                  }
                               });
 
         hostBuilder.RunExtensions();
