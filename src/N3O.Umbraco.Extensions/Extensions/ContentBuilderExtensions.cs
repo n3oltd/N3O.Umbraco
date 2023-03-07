@@ -27,6 +27,10 @@ public static class ContentBuilderExtensions {
         return builder.Property<DropdownPropertyBuilder>(propertyTypeAlias);
     }
     
+    public static EmailPropertyBuilder Email(this IContentBuilder builder, string propertyTypeAlias) {
+        return builder.Property<EmailPropertyBuilder>(propertyTypeAlias);
+    }
+    
     public static LabelPropertyBuilder Label(this IContentBuilder builder, string propertyTypeAlias) {
         return builder.Property<LabelPropertyBuilder>(propertyTypeAlias);
     }
