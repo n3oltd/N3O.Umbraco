@@ -51,7 +51,7 @@ public class CartBlockModule : IBlockModule {
         var currency = _currencyAccessor.Value.GetCurrency();
         var cart = await _cartAccessor.Value.GetAsync(cancellationToken);
         // TODO Fix this
-        var upsellContent = (block.GetProperty("upsell").GetValue() as IPublishedContent)?.As<UpsellContent>();
+        var upsellContent = (block.GetProperty("upsell")?.GetValue() as IPublishedContent)?.As<UpsellContent>();
         var upsell = await GetUpsellAsync(upsellContent, currency);
         
         var cartModel = new CartModel(_formatter.Value,
