@@ -62,6 +62,20 @@ public class CartController : ApiController {
         }
     }
     
+    [HttpDelete("reset")]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult> Reset() {
+        try {
+            await _mediator.SendAsync<ResetCartCommand, None, None>(None.Empty);
+            
+            return Ok();
+        } catch (Exception ex) {
+            _logger.LogError(ex, "Failed to reset cart");
+
+            return UnprocessableEntity();
+        }
+    }
+    
     [HttpGet("summary")]
     public async Task<ActionResult<CartSummaryRes>> GetSummary() {
         var res = await _mediator.SendAsync<GetCartSummaryQuery, None, CartSummaryRes>(None.Empty);
