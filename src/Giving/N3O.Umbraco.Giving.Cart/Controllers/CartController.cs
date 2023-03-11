@@ -62,7 +62,16 @@ public class CartController : ApiController {
         }
     }
     
-    [HttpDelete("reset")]
+    [HttpGet("summary")]
+    public async Task<ActionResult<CartSummaryRes>> GetSummary() {
+        var res = await _mediator.SendAsync<GetCartSummaryQuery, None, CartSummaryRes>(None.Empty);
+
+        _cartCookie.SetValue(res.RevisionId);
+        
+        return Ok(res);
+    }
+    
+    [HttpPut("reset")]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult> Reset() {
         try {
@@ -74,15 +83,6 @@ public class CartController : ApiController {
 
             return UnprocessableEntity();
         }
-    }
-    
-    [HttpGet("summary")]
-    public async Task<ActionResult<CartSummaryRes>> GetSummary() {
-        var res = await _mediator.SendAsync<GetCartSummaryQuery, None, CartSummaryRes>(None.Empty);
-
-        _cartCookie.SetValue(res.RevisionId);
-        
-        return Ok(res);
     }
 
     [HttpDelete("remove")]
