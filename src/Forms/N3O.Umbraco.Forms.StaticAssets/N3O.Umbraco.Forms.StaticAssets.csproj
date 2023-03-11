@@ -30,8 +30,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj"/>
-        <ProjectReference Include="..\N3O.Umbraco.Forms\N3O.Umbraco.Forms.csproj"/>
+        <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
+        <ProjectReference Include="..\N3O.Umbraco.Forms\N3O.Umbraco.Forms.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -41,6 +41,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Umbraco.Forms" Version="11.0.2"/>
+        <PackageReference Include="Umbraco.Forms" Version="11.0.3" />
     </ItemGroup>
 </Project>
