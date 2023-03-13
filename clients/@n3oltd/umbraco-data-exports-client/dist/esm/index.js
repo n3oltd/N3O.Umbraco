@@ -25,21 +25,30 @@ var ExportsClient = /** @class */ (function () {
         this.http = http ? http : window;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
-    ExportsClient.prototype.getLookupContentMetadata = function () {
+    ExportsClient.prototype.createExport = function (containerId, contentType, req) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/lookups/contentMetadata";
+        var url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/export/{containerId}/{contentType}";
+        if (containerId === undefined || containerId === null)
+            throw new Error("The parameter 'containerId' must be defined.");
+        url_ = url_.replace("{containerId}", encodeURIComponent("" + containerId));
+        if (contentType === undefined || contentType === null)
+            throw new Error("The parameter 'contentType' must be defined.");
+        url_ = url_.replace("{contentType}", encodeURIComponent("" + contentType));
         url_ = url_.replace(/[?&]$/, "");
+        var content_ = JSON.stringify(req);
         var options_ = {
-            method: "GET",
+            body: content_,
+            method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processGetLookupContentMetadata(_response);
+            return _this.processCreateExport(_response);
         });
     };
-    ExportsClient.prototype.processGetLookupContentMetadata = function (response) {
+    ExportsClient.prototype.processCreateExport = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -64,6 +73,13 @@ var ExportsClient = /** @class */ (function () {
         else if (status === 500) {
             return response.text().then(function (_responseText) {
                 return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status === 404) {
+            return response.text().then(function (_responseText) {
+                var result404 = null;
+                result404 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result404);
             });
         }
         else if (status !== 200 && status !== 204) {
@@ -131,29 +147,22 @@ var ExportsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    ExportsClient.prototype.createExport = function (containerId, contentType, req) {
+    ExportsClient.prototype.getExportFile = function (exportId) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/export/{containerId}/{contentType}";
-        if (containerId === undefined || containerId === null)
-            throw new Error("The parameter 'containerId' must be defined.");
-        url_ = url_.replace("{containerId}", encodeURIComponent("" + containerId));
-        if (contentType === undefined || contentType === null)
-            throw new Error("The parameter 'contentType' must be defined.");
-        url_ = url_.replace("{contentType}", encodeURIComponent("" + contentType));
+        var url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/export/{exportId}/file";
+        if (exportId === undefined || exportId === null)
+            throw new Error("The parameter 'exportId' must be defined.");
+        url_ = url_.replace("{exportId}", encodeURIComponent("" + exportId));
         url_ = url_.replace(/[?&]$/, "");
-        var content_ = JSON.stringify(req);
         var options_ = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            }
+            method: "GET",
+            headers: {}
         };
         return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processCreateExport(_response);
+            return _this.processGetExportFile(_response);
         });
     };
-    ExportsClient.prototype.processCreateExport = function (response) {
+    ExportsClient.prototype.processGetExportFile = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};
@@ -178,11 +187,110 @@ var ExportsClient = /** @class */ (function () {
                 return throwException("A server side error occurred.", status, _responseText, _headers);
             });
         }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
+    ExportsClient.prototype.getExportProgress = function (exportId) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/export/{exportId}/progress";
+        if (exportId === undefined || exportId === null)
+            throw new Error("The parameter 'exportId' must be defined.");
+        url_ = url_.replace("{exportId}", encodeURIComponent("" + exportId));
+        url_ = url_.replace(/[?&]$/, "");
+        var options_ = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processGetExportProgress(_response);
+        });
+    };
+    ExportsClient.prototype.processGetExportProgress = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
         else if (status === 404) {
             return response.text().then(function (_responseText) {
                 var result404 = null;
                 result404 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
                 return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
+    ExportsClient.prototype.getLookupContentMetadata = function () {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/lookups/contentMetadata";
+        url_ = url_.replace(/[?&]$/, "");
+        var options_ = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processGetLookupContentMetadata(_response);
+        });
+    };
+    ExportsClient.prototype.processGetLookupContentMetadata = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
             });
         }
         else if (status !== 200 && status !== 204) {

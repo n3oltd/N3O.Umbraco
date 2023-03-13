@@ -80,6 +80,67 @@ var CartClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
+    CartClient.prototype.addUpsellToCart = function (upsellId) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Cart/upsells/{upsellId}/addToCart";
+        if (upsellId === undefined || upsellId === null)
+            throw new Error("The parameter 'upsellId' must be defined.");
+        url_ = url_.replace("{upsellId}", encodeURIComponent("" + upsellId));
+        url_ = url_.replace(/[?&]$/, "");
+        var options_ = {
+            method: "POST",
+            headers: {}
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processAddUpsellToCart(_response);
+        });
+    };
+    CartClient.prototype.processAddUpsellToCart = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                return;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status === 422) {
+            return response.text().then(function (_responseText) {
+                var result422 = null;
+                result422 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result422);
+            });
+        }
+        else if (status === 404) {
+            return response.text().then(function (_responseText) {
+                var result404 = null;
+                result404 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
     CartClient.prototype.getSummary = function () {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Cart/summary";
@@ -119,6 +180,57 @@ var CartClient = /** @class */ (function () {
         else if (status === 500) {
             return response.text().then(function (_responseText) {
                 return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
+    CartClient.prototype.reset = function () {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Cart/reset";
+        url_ = url_.replace(/[?&]$/, "");
+        var options_ = {
+            method: "PUT",
+            headers: {}
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processReset(_response);
+        });
+    };
+    CartClient.prototype.processReset = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                return;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status === 422) {
+            return response.text().then(function (_responseText) {
+                var result422 = null;
+                result422 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result422);
             });
         }
         else if (status !== 200 && status !== 204) {

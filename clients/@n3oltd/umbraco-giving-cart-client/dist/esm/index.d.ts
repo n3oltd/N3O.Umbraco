@@ -7,8 +7,12 @@ export declare class CartClient {
     });
     add(req: AddToCartReq): Promise<void>;
     protected processAdd(response: Response): Promise<void>;
+    addUpsellToCart(upsellId: string): Promise<void>;
+    protected processAddUpsellToCart(response: Response): Promise<void>;
     getSummary(): Promise<CartSummaryRes>;
     protected processGetSummary(response: Response): Promise<CartSummaryRes>;
+    reset(): Promise<void>;
+    protected processReset(response: Response): Promise<void>;
     remove(req: RemoveFromCartReq): Promise<void>;
     protected processRemove(response: Response): Promise<void>;
 }
@@ -35,6 +39,7 @@ export interface AllocationReq {
     fundDimensions?: FundDimensionValuesReq | undefined;
     fund?: FundAllocationReq | undefined;
     sponsorship?: SponsorshipAllocationReq | undefined;
+    upsell?: boolean | undefined;
 }
 /** One of 'fund', 'sponsorship' */
 export declare enum AllocationType {

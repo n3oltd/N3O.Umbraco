@@ -1043,6 +1043,9 @@ namespace N3O.Umbraco.Clients.Giving.Checkout
         [Newtonsoft.Json.JsonProperty("sponsorship", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public SponsorshipAllocationRes Sponsorship { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("upsell", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool Upsell { get; set; }
+
     }
 
     /// <summary>

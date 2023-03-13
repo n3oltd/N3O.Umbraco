@@ -18,29 +18,39 @@ export class ExportsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:6001";
     }
 
-    getLookupContentMetadata(): Promise<ContentMetadataRes[]> {
-        let url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/lookups/contentMetadata";
+    createExport(containerId: string, contentType: string, req: ExportReq): Promise<ExportProgressRes> {
+        let url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/export/{containerId}/{contentType}";
+        if (containerId === undefined || containerId === null)
+            throw new Error("The parameter 'containerId' must be defined.");
+        url_ = url_.replace("{containerId}", encodeURIComponent("" + containerId));
+        if (contentType === undefined || contentType === null)
+            throw new Error("The parameter 'contentType' must be defined.");
+        url_ = url_.replace("{contentType}", encodeURIComponent("" + contentType));
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(req);
+
         let options_: RequestInit = {
-            method: "GET",
+            body: content_,
+            method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetLookupContentMetadata(_response);
+            return this.processCreateExport(_response);
         });
     }
 
-    protected processGetLookupContentMetadata(response: Response): Promise<ContentMetadataRes[]> {
+    protected processCreateExport(response: Response): Promise<ExportProgressRes> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ContentMetadataRes[];
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ExportProgressRes;
             return result200;
             });
         } else if (status === 400) {
@@ -53,12 +63,18 @@ export class ExportsClient {
             return response.text().then((_responseText) => {
             return throwException("A server side error occurred.", status, _responseText, _headers);
             });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            let result404: any = null;
+            result404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ContentMetadataRes[]>(null as any);
+        return Promise.resolve<ExportProgressRes>(null as any);
     }
 
     getExportableProperties(contentType: string): Promise<ExportableProperty[]> {
@@ -113,37 +129,76 @@ export class ExportsClient {
         return Promise.resolve<ExportableProperty[]>(null as any);
     }
 
-    createExport(containerId: string, contentType: string, req: ExportReq): Promise<void> {
-        let url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/export/{containerId}/{contentType}";
-        if (containerId === undefined || containerId === null)
-            throw new Error("The parameter 'containerId' must be defined.");
-        url_ = url_.replace("{containerId}", encodeURIComponent("" + containerId));
-        if (contentType === undefined || contentType === null)
-            throw new Error("The parameter 'contentType' must be defined.");
-        url_ = url_.replace("{contentType}", encodeURIComponent("" + contentType));
+    getExportFile(exportId: string): Promise<void> {
+        let url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/export/{exportId}/file";
+        if (exportId === undefined || exportId === null)
+            throw new Error("The parameter 'exportId' must be defined.");
+        url_ = url_.replace("{exportId}", encodeURIComponent("" + exportId));
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(req);
-
         let options_: RequestInit = {
-            body: content_,
-            method: "POST",
+            method: "GET",
             headers: {
-                "Content-Type": "application/json",
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateExport(_response);
+            return this.processGetExportFile(_response);
         });
     }
 
-    protected processCreateExport(response: Response): Promise<void> {
+    protected processGetExportFile(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    getExportProgress(exportId: string): Promise<ExportProgressRes> {
+        let url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/export/{exportId}/progress";
+        if (exportId === undefined || exportId === null)
+            throw new Error("The parameter 'exportId' must be defined.");
+        url_ = url_.replace("{exportId}", encodeURIComponent("" + exportId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetExportProgress(_response);
+        });
+    }
+
+    protected processGetExportProgress(response: Response): Promise<ExportProgressRes> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ExportProgressRes;
+            return result200;
             });
         } else if (status === 400) {
             return response.text().then((_responseText) => {
@@ -166,15 +221,57 @@ export class ExportsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<ExportProgressRes>(null as any);
+    }
+
+    getLookupContentMetadata(): Promise<ContentMetadataRes[]> {
+        let url_ = this.baseUrl + "/umbraco/backoffice/api/Exports/lookups/contentMetadata";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetLookupContentMetadata(_response);
+        });
+    }
+
+    protected processGetLookupContentMetadata(response: Response): Promise<ContentMetadataRes[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ContentMetadataRes[];
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ContentMetadataRes[]>(null as any);
     }
 }
 
-export interface ContentMetadataRes {
-    name?: string | undefined;
-    id?: string | undefined;
-    autoSelected?: boolean;
-    displayOrder?: number;
+export interface ExportProgressRes {
+    id?: string;
+    isComplete?: boolean;
+    text?: string | undefined;
 }
 
 export interface ProblemDetails {
@@ -183,11 +280,6 @@ export interface ProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
-}
-
-export interface ExportableProperty {
-    alias?: string | undefined;
-    columnTitle?: string | undefined;
 }
 
 export interface ExportReq {
@@ -233,6 +325,18 @@ export enum DataType {
     String = "string",
     Time = "time",
     YearMonth = "yearMonth",
+}
+
+export interface ExportableProperty {
+    alias?: string | undefined;
+    columnTitle?: string | undefined;
+}
+
+export interface ContentMetadataRes {
+    name?: string | undefined;
+    id?: string | undefined;
+    autoSelected?: boolean;
+    displayOrder?: number;
 }
 
 export class ApiException extends Error {
