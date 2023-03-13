@@ -13,6 +13,8 @@ export declare class ImportsClient {
     protected processGetTemplate(response: Response): Promise<void>;
     queue(containerId: string, contentType: string, req: QueueImportsReq): Promise<QueueImportsRes>;
     protected processQueue(response: Response): Promise<QueueImportsRes>;
+    requeueFailed(): Promise<void>;
+    protected processRequeueFailed(response: Response): Promise<void>;
 }
 export interface ProblemDetails {
     type?: string | undefined;

@@ -408,6 +408,7 @@ export interface AllocationRes {
     fundDimensions?: FundDimensionValuesRes | undefined;
     fund?: FundAllocationRes | undefined;
     sponsorship?: SponsorshipAllocationRes | undefined;
+    upsell?: boolean;
 }
 
 /** One of 'fund', 'sponsorship' */

@@ -249,6 +249,50 @@ var ImportsClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
+    ImportsClient.prototype.requeueFailed = function () {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/backoffice/api/Imports/requeueFailed";
+        url_ = url_.replace(/[?&]$/, "");
+        var options_ = {
+            method: "PUT",
+            headers: {}
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processRequeueFailed(_response);
+        });
+    };
+    ImportsClient.prototype.processRequeueFailed = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                return;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
     return ImportsClient;
 }());
 export { ImportsClient };

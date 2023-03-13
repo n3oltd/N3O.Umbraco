@@ -5,18 +5,21 @@ export declare class ExportsClient {
     constructor(baseUrl?: string, http?: {
         fetch(url: RequestInfo, init?: RequestInit): Promise<Response>;
     });
-    getLookupContentMetadata(): Promise<ContentMetadataRes[]>;
-    protected processGetLookupContentMetadata(response: Response): Promise<ContentMetadataRes[]>;
+    createExport(containerId: string, contentType: string, req: ExportReq): Promise<ExportProgressRes>;
+    protected processCreateExport(response: Response): Promise<ExportProgressRes>;
     getExportableProperties(contentType: string): Promise<ExportableProperty[]>;
     protected processGetExportableProperties(response: Response): Promise<ExportableProperty[]>;
-    createExport(containerId: string, contentType: string, req: ExportReq): Promise<void>;
-    protected processCreateExport(response: Response): Promise<void>;
+    getExportFile(exportId: string): Promise<void>;
+    protected processGetExportFile(response: Response): Promise<void>;
+    getExportProgress(exportId: string): Promise<ExportProgressRes>;
+    protected processGetExportProgress(response: Response): Promise<ExportProgressRes>;
+    getLookupContentMetadata(): Promise<ContentMetadataRes[]>;
+    protected processGetLookupContentMetadata(response: Response): Promise<ContentMetadataRes[]>;
 }
-export interface ContentMetadataRes {
-    name?: string | undefined;
-    id?: string | undefined;
-    autoSelected?: boolean;
-    displayOrder?: number;
+export interface ExportProgressRes {
+    id?: string;
+    isComplete?: boolean;
+    text?: string | undefined;
 }
 export interface ProblemDetails {
     type?: string | undefined;
@@ -24,10 +27,6 @@ export interface ProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
-}
-export interface ExportableProperty {
-    alias?: string | undefined;
-    columnTitle?: string | undefined;
 }
 export interface ExportReq {
     format?: WorkbookFormat | undefined;
@@ -69,6 +68,16 @@ export declare enum DataType {
     String = "string",
     Time = "time",
     YearMonth = "yearMonth"
+}
+export interface ExportableProperty {
+    alias?: string | undefined;
+    columnTitle?: string | undefined;
+}
+export interface ContentMetadataRes {
+    name?: string | undefined;
+    id?: string | undefined;
+    autoSelected?: boolean;
+    displayOrder?: number;
 }
 export declare class ApiException extends Error {
     message: string;
