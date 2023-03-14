@@ -15,4 +15,6 @@ public class SponsorshipDurations : StaticLookupsCollection<SponsorshipDuration>
     public static readonly SponsorshipDuration TwelveMonths = new("_12", "12 Months", 12);
     public static readonly SponsorshipDuration EighteenMonths = new("_18", "18 Months", 18);
     public static readonly SponsorshipDuration TwentyFourMonths = new("_24", "24 Months", 24);
+    public static readonly SponsorshipDuration FourtyEightMonths = new("_48", "48 Months", 48);
+    public static readonly SponsorshipDuration SixtyMonths = new("_60", "60 Months", 60);
 }
