@@ -34,7 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Google.Apis.CustomSearchAPI.v1" Version="1.60.0.2455" />
+        <PackageReference Include="Google.Apis.CustomSearchAPI.v1" Version="1.60.0.3001" />
     </ItemGroup>
 
     <ItemGroup>
