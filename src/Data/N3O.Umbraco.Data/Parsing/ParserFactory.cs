@@ -5,6 +5,7 @@ using System.Collections.Generic;
 namespace N3O.Umbraco.Data.Parsing;
 
 public class ParserFactory : IParserFactory {
+    private readonly ILocalClock _localClock;
     private readonly IBoolParser _boolParser;
     private readonly IContentParser _contentParser;
     private readonly IDateParserFactory _dateParserFactory;
@@ -17,7 +18,8 @@ public class ParserFactory : IParserFactory {
     private readonly IStringParser _stringParser;
     private readonly IYearMonthParserFactory _yearMonthParserFactory;
 
-    public ParserFactory(IBoolParser boolParser,
+    public ParserFactory(ILocalClock localClock,
+                         IBoolParser boolParser,
                          IContentParser contentParser,
                          IDateParserFactory dateParserFactory,
                          IDecimalParserFactory decimalParserFactory,
@@ -28,6 +30,7 @@ public class ParserFactory : IParserFactory {
                          IReferenceParser referenceParser,
                          IStringParser stringParser,
                          IYearMonthParserFactory yearMonthParserFactory) {
+        _localClock = localClock;
         _boolParser = boolParser;
         _contentParser = contentParser;
         _yearMonthParserFactory = yearMonthParserFactory;
@@ -45,7 +48,7 @@ public class ParserFactory : IParserFactory {
                              DecimalSeparator decimalSeparator,
                              IEnumerable<IBlobResolver> blobResolvers,
                              Timezone timezone = null) {
-        timezone ??= Timezones.Utc;
+        timezone ??= _localClock.GetTimezone();
 
         var blobParser = new BlobParser(blobResolvers);
         var dateParser = _dateParserFactory.Create(datePattern, timezone);
