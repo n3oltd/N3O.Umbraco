@@ -1,8 +1,9 @@
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
 
-namespace N3O.Giving.Models;
+namespace N3O.Umbraco.Giving.Lookups;
 
 public abstract class FundDimension<T, TValue> : LookupContent<T> where T : FundDimension<T, TValue> {
     protected FundDimension(int index) {

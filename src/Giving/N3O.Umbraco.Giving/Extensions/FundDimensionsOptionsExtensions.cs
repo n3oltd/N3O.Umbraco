@@ -1,5 +1,5 @@
-using N3O.Giving.Models;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Models;
 using System.Collections.Generic;
 using System.Linq;
 

@@ -1,5 +1,4 @@
 using FluentValidation;
-using N3O.Giving.Models;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;

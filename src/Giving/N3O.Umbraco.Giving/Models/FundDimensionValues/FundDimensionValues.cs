@@ -1,7 +1,6 @@
-using N3O.Umbraco;
 using Newtonsoft.Json;
 
-namespace N3O.Giving.Models;
+namespace N3O.Umbraco.Giving.Models;
 
 public class FundDimensionValues : Value, IFundDimensionValues {
     [JsonConstructor]

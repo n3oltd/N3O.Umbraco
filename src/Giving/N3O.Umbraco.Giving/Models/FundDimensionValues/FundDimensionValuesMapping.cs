@@ -1,6 +1,6 @@
 using Umbraco.Cms.Core.Mapping;
 
-namespace N3O.Giving.Models;
+namespace N3O.Umbraco.Giving.Models;
 
 public class FundDimensionValuesMapping : IMapDefinition {
     public void DefineMaps(IUmbracoMapper mapper) {

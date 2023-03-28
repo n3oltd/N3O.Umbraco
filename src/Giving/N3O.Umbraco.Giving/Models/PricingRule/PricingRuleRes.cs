@@ -1,4 +1,3 @@
-using N3O.Giving.Models;
 using Newtonsoft.Json;
 
 namespace N3O.Umbraco.Giving.Models;

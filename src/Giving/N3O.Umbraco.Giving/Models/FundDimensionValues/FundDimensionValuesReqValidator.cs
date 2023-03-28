@@ -1,13 +1,13 @@
 using FluentValidation;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving;
+using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace N3O.Giving.Models;
+namespace N3O.Umbraco.Giving.Models;
 
 public class FundDimensionValuesReqValidator : ModelValidator<FundDimensionValuesReq> {
     public FundDimensionValuesReqValidator(IFormatter formatter, IFundStructureAccessor fundStructureAccessor)

@@ -1,6 +1,6 @@
-using N3O.Umbraco;
+using N3O.Umbraco.Giving.Lookups;
 
-namespace N3O.Giving.Models;
+namespace N3O.Umbraco.Giving.Models;
 
 public class FundStructure : Value {
     public FundStructure(FundDimension1 dimension1,

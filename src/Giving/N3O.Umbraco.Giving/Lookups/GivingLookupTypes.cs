@@ -1,5 +1,5 @@
 using N3O.Umbraco.Financial;
-using N3O.Giving.Models;
+using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Lookups;
 
 namespace N3O.Umbraco.Giving.Lookups;

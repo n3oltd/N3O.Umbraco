@@ -1,4 +1,4 @@
-namespace N3O.Giving.Models;
+namespace N3O.Umbraco.Giving.Models;
 
 public class FundDimensionValuesRes : IFundDimensionValues {
     public FundDimension1Value Dimension1 { get; set; }

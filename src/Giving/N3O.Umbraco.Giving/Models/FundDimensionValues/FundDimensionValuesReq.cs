@@ -1,6 +1,6 @@
 using N3O.Umbraco.Attributes;
 
-namespace N3O.Giving.Models;
+namespace N3O.Umbraco.Giving.Models;
 
 public class FundDimensionValuesReq : IFundDimensionValues {
     [Name("Dimension 1")]

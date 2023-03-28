@@ -1,4 +1,3 @@
-using N3O.Giving.Models;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Lookups;

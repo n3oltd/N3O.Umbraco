@@ -1,4 +1,3 @@
-using N3O.Giving.Models;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Lookups;
 using System.Collections.Generic;

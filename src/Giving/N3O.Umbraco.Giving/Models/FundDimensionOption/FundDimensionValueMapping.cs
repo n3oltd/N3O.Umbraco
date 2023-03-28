@@ -1,7 +1,7 @@
 using N3O.Umbraco.Lookups;
 using Umbraco.Cms.Core.Mapping;
 
-namespace N3O.Giving.Models;
+namespace N3O.Umbraco.Giving.Models;
 
 public abstract class FundDimensionValueMapping<T> : IMapDefinition where T : FundDimensionValue<T> {
     public void DefineMaps(IUmbracoMapper mapper) {
