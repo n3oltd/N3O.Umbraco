@@ -31,7 +31,9 @@ public class LookupJsonConverter : JsonConverter {
 
         var lookupId = (string) reader.Value;
 
-        return _lookups.Value.FindById(objectType, lookupId);
+        var lookup = _lookups.Value.FindById(objectType, lookupId) ?? _lookups.Value.FindByName(objectType, lookupId);
+
+        return lookup;
     }
 
     public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
