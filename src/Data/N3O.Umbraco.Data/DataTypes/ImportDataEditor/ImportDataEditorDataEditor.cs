@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Data.DataTypes;
             DataEditorName,
             "~/App_Plugins/N3O.Umbraco.Data.ImportDataEditor/N3O.Umbraco.Data.ImportDataEditor.html",
             HideLabel = false,
-            ValueType = "JSON")]
+            ValueType = ValueTypes.Json)]
 public class ImportDataEditorDataEditor : DataEditor {
     public const string DataEditorName = "N3O Import Data Editor";
     

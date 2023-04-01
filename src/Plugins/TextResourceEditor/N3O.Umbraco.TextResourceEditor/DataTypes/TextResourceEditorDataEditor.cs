@@ -8,7 +8,7 @@ namespace N3O.Umbraco.TextResourceEditor.DataTypes;
             "N3O Text Resource Editor",
             "~/App_Plugins/N3O.Umbraco.TextResourceEditor/N3O.Umbraco.TextResourceEditor.html",
             HideLabel = false,
-            ValueType = "JSON")]
+            ValueType = ValueTypes.Json)]
 public class TextResourceEditorDataEditor : DataEditor {
     private readonly IIOHelper _ioHelper;
     private readonly IEditorConfigurationParser _editorConfigurationParser;

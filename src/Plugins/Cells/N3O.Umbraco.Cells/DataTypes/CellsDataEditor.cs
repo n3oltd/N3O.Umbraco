@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Cells.DataTypes;
             "N3O Cells",
             "~/App_Plugins/N3O.Umbraco.Cells/N3O.Umbraco.Cells.html",
             HideLabel = false,
-            ValueType = "JSON")]
+            ValueType = ValueTypes.Json)]
 public class CellsDataEditor : DataEditor {
     private readonly IIOHelper _ioHelper;
     private readonly IEditorConfigurationParser _editorConfigurationParser;

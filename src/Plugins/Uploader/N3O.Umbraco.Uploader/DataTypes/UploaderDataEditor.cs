@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Uploader.DataTypes;
             "N3O Uploader",
             "~/App_Plugins/N3O.Umbraco.Uploader/N3O.Umbraco.Uploader.html",
             HideLabel = false,
-            ValueType = "JSON")]
+            ValueType = ValueTypes.Json)]
 public class UploaderDataEditor : DataEditor {
     private readonly IIOHelper _ioHelper;
     private readonly IEditorConfigurationParser _editorConfigurationParser;

@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Data.DataTypes;
             DataEditorName,
             "~/App_Plugins/N3O.Umbraco.Data.ImportNoticesViewer/N3O.Umbraco.Data.ImportNoticesViewer.html",
             HideLabel = false,
-            ValueType = "JSON")]
+            ValueType = ValueTypes.Json)]
 public class ImportNoticesViewerDataEditor : DataEditor {
     public const string DataEditorName = "N3O Import Notices Viewer";
     

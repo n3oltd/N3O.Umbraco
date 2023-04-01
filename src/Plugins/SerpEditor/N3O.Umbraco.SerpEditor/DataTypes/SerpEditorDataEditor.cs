@@ -8,7 +8,7 @@ namespace N3O.Umbraco.SerpEditor.DataTypes;
             "N3O SERP Editor",
             "~/App_Plugins/N3O.Umbraco.SerpEditor/N3O.Umbraco.SerpEditor.html",
             HideLabel = false,
-            ValueType = "JSON")]
+            ValueType = ValueTypes.Json)]
 public class SerpEditorDataEditor : DataEditor {
     private readonly IIOHelper _ioHelper;
     private readonly IEditorConfigurationParser _editorConfigurationParser;

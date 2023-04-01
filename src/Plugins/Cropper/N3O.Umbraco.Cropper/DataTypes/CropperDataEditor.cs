@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Cropper.DataTypes;
             "N3O Cropper",
             "~/App_Plugins/N3O.Umbraco.Cropper/N3O.Umbraco.Cropper.html",
             HideLabel = false,
-            ValueType = "JSON")]
+            ValueType = ValueTypes.Json)]
 public class CropperDataEditor : DataEditor {
     private readonly IIOHelper _ioHelper;
     private readonly IEditorConfigurationParser _editorConfigurationParser;
