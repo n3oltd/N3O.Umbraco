@@ -15,7 +15,8 @@ public interface IWorkspace {
                             IEnumerable<IBlobResolver> blobResolvers,
                             TextEncoding textEncoding,
                             Stream stream,
-                            bool hasColumnHeadings);
+                            bool hasColumnHeadings,
+                            string delimiter = ",");
 
     IColumnRangeBuilder ColumnRangeBuilder { get; }
     ITableBuilder TableBuilder { get; }

@@ -30,7 +30,8 @@ public class CsvReader : ICsvReader {
                      IColumnRangeBuilder columnRangeBuilder,
                      TextEncoding textEncoding,
                      Stream stream,
-                     bool hasColumnHeadings) {
+                     bool hasColumnHeadings,
+                     string delimiter) {
         var encoding = Encoding.GetEncoding(textEncoding.CodePage);
         
         _parser = parser;
@@ -46,6 +47,7 @@ public class CsvReader : ICsvReader {
         csvConfiguration.ReadingExceptionOccurred = OnReadingExceptionOccurred;
         csvConfiguration.ShouldSkipRecord = ShouldSkipRecord;
         csvConfiguration.TrimOptions = TrimOptions.Trim | TrimOptions.InsideQuotes;
+        csvConfiguration.Delimiter = delimiter;
 
         _csv = new CsvHelper.CsvReader(_streamReader, csvConfiguration);
         
