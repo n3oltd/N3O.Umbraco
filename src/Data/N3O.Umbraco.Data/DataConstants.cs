@@ -71,11 +71,6 @@ public static class DataConstants {
 }
     
     public static class Tables {
-        public static class Beneficiaries {
-            public const string Name = "N3O_Beneficiaries";
-            public const string PrimaryKey = "PK_N3O_Beneficiaries";
-        }
-        
         public static class Imports {
             public const string Name = "N3O_Imports";
             public const string PrimaryKey = "PK_N3O_Imports";

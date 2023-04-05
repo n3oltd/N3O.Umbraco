@@ -16,7 +16,7 @@ public interface IWorkspace {
                             TextEncoding textEncoding,
                             Stream stream,
                             bool hasColumnHeadings,
-                            string delimiter = ",");
+                            string delimiter = DataConstants.Delimiters.Comma);
 
     IColumnRangeBuilder ColumnRangeBuilder { get; }
     ITableBuilder TableBuilder { get; }

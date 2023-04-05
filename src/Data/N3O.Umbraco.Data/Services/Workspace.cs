@@ -37,7 +37,7 @@ public class Workspace : IWorkspace {
                                    TextEncoding textEncoding,
                                    Stream stream,
                                    bool hasColumnHeadings,
-                                   string delimiter = ",") {
+                                   string delimiter = DataConstants.Delimiters.Comma) {
         var parser = _parserFactory.GetParser(datePattern, decimalSeparator, blobResolvers);
         
         return new CsvReader(parser,
