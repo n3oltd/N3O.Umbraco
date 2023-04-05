@@ -36,7 +36,8 @@ public class Workspace : IWorkspace {
                                    IEnumerable<IBlobResolver> blobResolvers,
                                    TextEncoding textEncoding,
                                    Stream stream,
-                                   bool hasColumnHeadings) {
+                                   bool hasColumnHeadings,
+                                   string delimiter = ",") {
         var parser = _parserFactory.GetParser(datePattern, decimalSeparator, blobResolvers);
         
         return new CsvReader(parser,
@@ -44,7 +45,8 @@ public class Workspace : IWorkspace {
                              _columnRangeBuilder,
                              textEncoding,
                              stream,
-                             hasColumnHeadings);
+                             hasColumnHeadings,
+                             delimiter);
     }
 
     public IColumnRangeBuilder ColumnRangeBuilder { get; }
