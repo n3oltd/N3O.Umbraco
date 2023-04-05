@@ -57,7 +57,7 @@ angular.module("umbraco").controller("N3O.Umbraco.Uploader",
         };
 
         $scope.loadMediaById = function () {
-            if (!$scope.mediaId || $scope.mediaId.length !== 12) {
+            if (!$scope.mediaId || $scope.mediaId.length !== 17) {
                 return;
             }
 

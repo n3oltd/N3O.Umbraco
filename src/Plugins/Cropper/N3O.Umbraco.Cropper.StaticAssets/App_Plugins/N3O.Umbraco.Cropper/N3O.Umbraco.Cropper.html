@@ -61,8 +61,15 @@
             </p>
 
             <div class="start-over">
-                <div style="float: left;"><a ng-click="copytoClipboard(model.value.mediaId)">{{ model.value.mediaId }}</a></div>
-                <div style="float: right;"><a ng-click="startOver(true)" class="reset cursor">Delete image</a></div>
+                <div style="float: left;"><a ng-click="copytoClipboard(model.value.mediaId)">
+                    {{ model.value.mediaId }}</a>
+                    |
+                    <a href="{{model.value.src}}" target="_blank">Download</a>
+                </div>
+
+                <div style="float: right;">
+                    <a ng-click="startOver(true)" class="reset cursor">Delete image</a>
+                </div>
             </div>
         </div>
     </div>
