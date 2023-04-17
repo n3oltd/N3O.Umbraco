@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Payments.Worldline</RootNamespace>
         <TargetFramework>net7.0</TargetFramework>
@@ -40,6 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="connect-sdk-dotnet" Version="3.37.0" />
+      <PackageReference Include="connect-sdk-dotnet" Version="3.38.0" />
     </ItemGroup>
 </Project>
