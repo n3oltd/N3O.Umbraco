@@ -70,7 +70,7 @@ Provides pluggable implementations for providing site indexing and search functi
 
 Provides pluggable implementations for managing charitable tax relief, such as the UK Gift Aid scheme.
 
-#### Thanks
+## Thanks
 
 A big [#h5yr](https://community.umbraco.com/learn-about-the-community/h5yr/) to:
 
