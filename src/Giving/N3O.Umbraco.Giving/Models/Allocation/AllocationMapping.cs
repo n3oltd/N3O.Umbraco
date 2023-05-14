@@ -15,6 +15,7 @@ public class AllocationMapping : IMapDefinition {
         dest.FundDimensions = ctx.Map<FundDimensionValues, FundDimensionValuesRes>(src.FundDimensions);
         dest.Fund = ctx.Map<FundAllocation, FundAllocationRes>(src.Fund);
         dest.Sponsorship = ctx.Map<SponsorshipAllocation, SponsorshipAllocationRes>(src.Sponsorship);
+        dest.Feedback = ctx.Map<FeedbackAllocation, FeedbackAllocationRes>(src.Feedback);
         dest.Upsell = src.Upsell;
     }
 }

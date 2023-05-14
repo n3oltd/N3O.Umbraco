@@ -46,6 +46,11 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
             .When(x => x.Type != AllocationTypes.Sponsorship)
             .WithMessage(Get<Strings>(s => s.SponsorshipAllocationNotAllowed));
 
+        RuleFor(x => x.Feedback)
+            .Null()
+            .When(x => x.Type != AllocationTypes.Feedback)
+            .WithMessage(Get<Strings>(s => s.FeedbackAllocationNotAllowed));
+
         RuleFor(x => x.Value)
             .Must((req, x) => pricedAmountValidator.IsValid(x, req.Fund.DonationItem, req.FundDimensions))
             .When(x => x.Value.HasValue() && x.Fund?.DonationItem?.HasPricing() == true)
@@ -109,6 +114,7 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
         public string SpecifyFundDimensions => "Please specify the fund dimensions";
         public string SpecifySponsorshipAllocation => "Please specify the sponsorship allocation";
         public string SponsorshipAllocationNotAllowed => "Sponsorship cannot be specified for this type of allocation";
+        public string FeedbackAllocationNotAllowed => "Feedback cannot be specified for this type of allocation";
         public string SpecifyType => "Please specify the allocation type";
     }
 }

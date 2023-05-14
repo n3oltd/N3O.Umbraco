@@ -9,5 +9,6 @@ public interface IAllocation {
     IFundDimensionValues FundDimensions { get; }
     IFundAllocation Fund { get; }
     ISponsorshipAllocation Sponsorship { get; }
+    IFeedbackAllocation Feedback { get; }
     bool Upsell { get; }
 }

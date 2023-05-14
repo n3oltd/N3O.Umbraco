@@ -10,6 +10,7 @@ public class AllocationRes : IAllocation {
     public FundDimensionValuesRes FundDimensions { get; set; }
     public FundAllocationRes Fund { get; set; }
     public SponsorshipAllocationRes Sponsorship { get; set; }
+    public FeedbackAllocationRes Feedback { get; set; }
     public bool Upsell { get; set; }
     
     [JsonIgnore]
@@ -20,6 +21,9 @@ public class AllocationRes : IAllocation {
 
     [JsonIgnore]
     ISponsorshipAllocation IAllocation.Sponsorship => Sponsorship;
+    
+    [JsonIgnore]
+    IFeedbackAllocation IAllocation.Feedback => Feedback;
 
     [JsonIgnore]
     Money IAllocation.Value => Value;
