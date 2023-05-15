@@ -5,14 +5,7 @@ namespace N3O.Umbraco.Giving.Extensions;
 
 public static class AllocationExtensions {
     public static IFundDimensionsOptions GetFundDimensionsOptions(this IAllocation allocation) {
-        if (allocation.Fund?.DonationItem != null) {
-            return (IFundDimensionsOptions) allocation.Fund?.DonationItem;
-        } else if (allocation.Sponsorship?.Scheme != null) {
-            return (IFundDimensionsOptions) allocation.Sponsorship.Scheme;
-        } else if (allocation.Feedback?.Scheme != null) {
-            return (IFundDimensionsOptions) allocation.Feedback.Scheme;
-        }
-
-        throw new Exception("Invalid fund dimension options");
+        return (IFundDimensionsOptions) allocation.Fund?.DonationItem ??
+               (IFundDimensionsOptions) allocation.Sponsorship?.Scheme ?? allocation.Feedback?.Scheme;
     }
 }
