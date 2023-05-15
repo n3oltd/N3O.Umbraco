@@ -4,6 +4,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using Newtonsoft.Json;
+using System;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Giving.Content;
@@ -11,6 +12,7 @@ namespace N3O.Umbraco.Giving.Content;
 public class DonationOptionContent : UmbracoContent<DonationOptionContent>, IFundDimensionValues {
     private static readonly string FundDonationOptionAlias = AliasHelper<FundDonationOptionContent>.ContentTypeAlias();
     private static readonly string SponsorshipDonationOptionAlias = AliasHelper<SponsorshipDonationOptionContent>.ContentTypeAlias();
+    private static readonly string FeedbackDonationOptionAlias = AliasHelper<FeedbackDonationOptionContent>.ContentTypeAlias();
 
     public override void Content(IPublishedContent value) {
         base.Content(value);
@@ -21,6 +23,9 @@ public class DonationOptionContent : UmbracoContent<DonationOptionContent>, IFun
         } else if (Type == AllocationTypes.Sponsorship) {
             Sponsorship = new SponsorshipDonationOptionContent();
             Sponsorship.Content(value);
+        } else if (Type == AllocationTypes.Feedback) {
+            Feedback = new FeedbackDonationOptionContent();
+            Feedback.Content(value);
         } else {
             throw UnrecognisedValueException.For(Type);
         }
@@ -38,9 +43,11 @@ public class DonationOptionContent : UmbracoContent<DonationOptionContent>, IFun
 
     public FundDonationOptionContent Fund { get; private set; }
     public SponsorshipDonationOptionContent Sponsorship { get; private set; }
+    public FeedbackDonationOptionContent Feedback { get; private set; }
 
     public IFundDimensionsOptions GetFundDimensionOptions() {
-        return (IFundDimensionsOptions) Fund?.DonationItem ?? Sponsorship?.Scheme;
+        return (IFundDimensionsOptions) Fund?.DonationItem ??
+               (IFundDimensionsOptions) Sponsorship?.Scheme ?? Feedback?.Scheme;
     }
 
     public bool IsValid() {
@@ -48,6 +55,8 @@ public class DonationOptionContent : UmbracoContent<DonationOptionContent>, IFun
             return Fund.IsValid();
         } else if (Type == AllocationTypes.Sponsorship) {
             return Sponsorship.IsValid();
+        } else if (Type == AllocationTypes.Feedback) {
+            return Feedback.IsValid();
         } else {
             throw UnrecognisedValueException.For(Type);
         }
@@ -60,6 +69,8 @@ public class DonationOptionContent : UmbracoContent<DonationOptionContent>, IFun
                 return AllocationTypes.Fund;
             } else if (Content().ContentType.Alias.EqualsInvariant(SponsorshipDonationOptionAlias)) {
                 return AllocationTypes.Sponsorship;
+            } else if (Content().ContentType.Alias.EqualsInvariant(FeedbackDonationOptionAlias)) {
+                return AllocationTypes.Feedback;
             } else {
                 throw UnrecognisedValueException.For(Content().ContentType.Alias);
             }
