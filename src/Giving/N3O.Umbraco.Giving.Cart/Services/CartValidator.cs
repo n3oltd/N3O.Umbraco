@@ -75,21 +75,6 @@ public class CartValidator : ICartValidator {
             if (!feedback.HasValue(x => x.Scheme)) {
                 return false;
             }
-
-            foreach (var componentAllocation in feedback.Components.OrEmpty()) {
-                if (!componentAllocation.HasValue(x => x.Component)) {
-                    return false;
-                }
-                
-                if (componentAllocation.Component.GetScheme() != allocation.Feedback.Scheme) {
-                    return false;
-                }
-            }
-
-            if (feedback.Scheme.Components.Any(c => c.Mandatory &&
-                                                       feedback.Components.None(x => x.Component == c))) {
-                return false;
-            }
         }
         else {
             throw UnrecognisedValueException.For(allocation.Type);

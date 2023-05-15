@@ -1,4 +1,3 @@
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Models;
 using System;
 

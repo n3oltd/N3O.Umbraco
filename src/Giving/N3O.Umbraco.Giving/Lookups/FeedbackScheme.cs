@@ -1,4 +1,4 @@
-using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
@@ -13,6 +13,5 @@ public class FeedbackScheme :
     public IEnumerable<FundDimension3Value> Dimension3Options => GetPickedAs(x => x.Dimension3Options);
     public IEnumerable<FundDimension4Value> Dimension4Options => GetPickedAs(x => x.Dimension4Options);
 
-    public IEnumerable<FeedbackComponent> Components => Content()
-                                                        .Children.As<FeedbackComponent>();
+    public IEnumerable<FeedbackCustomFieldElement> CustomFields => GetNestedAs(x => x.CustomFields);
 }

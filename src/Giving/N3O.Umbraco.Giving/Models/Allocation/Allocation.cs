@@ -52,5 +52,5 @@ public class Allocation : Value, IAllocation {
     [JsonIgnore]
     IFeedbackAllocation IAllocation.Feedback => Feedback;
 
-    public string Summary => Fund?.Summary ?? Sponsorship?.Summary;
+    public string Summary => Fund?.Summary ?? Sponsorship?.Summary ?? Feedback?.Summary;
 }
