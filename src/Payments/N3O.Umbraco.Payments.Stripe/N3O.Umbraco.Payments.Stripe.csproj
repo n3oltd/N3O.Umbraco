@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Payments.Stripe</RootNamespace>
         <TargetFramework>net7.0</TargetFramework>
@@ -40,6 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Stripe.net" Version="40.16.0" />
+        <PackageReference Include="Stripe.net" Version="41.16.0" />
     </ItemGroup>
 </Project>
