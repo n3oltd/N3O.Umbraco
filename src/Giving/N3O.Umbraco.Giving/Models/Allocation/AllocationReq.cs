@@ -14,6 +14,9 @@ public class AllocationReq : IAllocation {
 
     [Name("Fund Dimensions")]
     public FundDimensionValuesReq FundDimensions { get; set; }
+    
+    [Name("Feedback")]
+    public FeedbackAllocationReq Feedback { get; set; }
 
     [Name("Fund")]
     public FundAllocationReq Fund { get; set; }
@@ -21,9 +24,6 @@ public class AllocationReq : IAllocation {
     [Name("Sponsorship")]
     public SponsorshipAllocationReq Sponsorship { get; set; }
     
-    [Name("Feedback")]
-    public FeedbackAllocationReq Feedback { get; set; }
-
     [Name("Upsell")]
     public bool? Upsell { get; set; }
     
@@ -31,14 +31,14 @@ public class AllocationReq : IAllocation {
     IFundDimensionValues IAllocation.FundDimensions => FundDimensions;
     
     [JsonIgnore]
+    IFeedbackAllocation IAllocation.Feedback => Feedback;
+    
+    [JsonIgnore]
     IFundAllocation IAllocation.Fund => Fund;
 
     [JsonIgnore]
     ISponsorshipAllocation IAllocation.Sponsorship => Sponsorship; 
     
-    [JsonIgnore]
-    IFeedbackAllocation IAllocation.Feedback => Feedback;
-
     [JsonIgnore]
     Money IAllocation.Value => Value;
 
