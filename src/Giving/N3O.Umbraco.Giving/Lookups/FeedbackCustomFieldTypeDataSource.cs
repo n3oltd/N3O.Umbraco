@@ -7,7 +7,7 @@ public class FeedbackCustomFieldTypeDataSource : LookupsDataSource<FeedbackCusto
     
     public override string Name => "Feedback Custom Fields";
     public override string Description => "Custom Fields for Feedbacks";
-    public override string Icon => "icon-globe";
+    public override string Icon => " icon-newspaper-alt";
 
-    protected override string GetIcon(FeedbackCustomFieldType FeedbackCustomField) => "icon-globe";
+    protected override string GetIcon(FeedbackCustomFieldType FeedbackCustomField) => " icon-newspaper-alt";
 }
