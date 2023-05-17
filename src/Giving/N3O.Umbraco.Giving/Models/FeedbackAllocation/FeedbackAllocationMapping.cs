@@ -1,3 +1,5 @@
+using N3O.Umbraco.Extensions;
+using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Giving.Models;
@@ -9,5 +11,6 @@ public class FeedbackAllocationMapping : IMapDefinition {
 
     private void Map(FeedbackAllocation src, FeedbackAllocationRes dest, MapperContext ctx) {
         dest.Scheme = src.Scheme;
+        dest.CustomFields = src.CustomFields.OrEmpty().Select(ctx.Map<FeedbackCustomField, FeedbackCustomFieldRes>);
     }
 }

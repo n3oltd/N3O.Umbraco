@@ -13,6 +13,9 @@ public class GivingLookupTypes : ILookupTypesSet {
     
     [LookupInfo(typeof(DonationItem))]
     public const string DonationItems = "donationItems";
+    
+    [LookupInfo(typeof(FeedbackScheme))]
+    public const string FeedbackSchemes = "feedbackSchemes";
 
     [LookupInfo(typeof(FundDimension1Value))]
     public const string FundDimension1Values = "fundDimension1Values";

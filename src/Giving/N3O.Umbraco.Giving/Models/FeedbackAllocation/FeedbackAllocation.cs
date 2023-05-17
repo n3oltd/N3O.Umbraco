@@ -1,18 +1,27 @@
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Lookups;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace N3O.Umbraco.Giving.Models;
 
 public class FeedbackAllocation : Value, IFeedbackAllocation {
     [JsonConstructor]
-    public FeedbackAllocation(FeedbackScheme scheme) {
+    public FeedbackAllocation(FeedbackScheme scheme, IEnumerable<FeedbackCustomField> customFields) {
         Scheme = scheme;
+        CustomFields = customFields;
     }
 
     public FeedbackAllocation(IFeedbackAllocation feedback)
-        : this(feedback.Scheme) { }
-    
+        : this(feedback.Scheme, feedback.CustomFields.OrEmpty().Select(x => new FeedbackCustomField(x))) { }
+
     public FeedbackScheme Scheme { get; }
+    public IEnumerable<FeedbackCustomField> CustomFields { get; }
+    
 
     public string Summary => Scheme?.Name;
+
+    [JsonIgnore]
+    IEnumerable<IFeedbackCustomField> IFeedbackAllocation.CustomFields => CustomFields;
 }
