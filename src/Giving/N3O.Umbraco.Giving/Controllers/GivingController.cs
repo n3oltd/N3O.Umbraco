@@ -64,6 +64,13 @@ public class GivingController : LookupsController<GivingLookupsRes> {
 
         return Ok(res);
     }
+    
+    [HttpGet("lookups/" + GivingLookupTypes.FeedbackSchemes)]
+    public async Task<ActionResult<IEnumerable<FeedbackScheme>>> GetLookupFeedbackSchemes() {
+        var res = await GetLookupsAsync<FeedbackScheme, FeedbackSchemeRes>();
+
+        return Ok(res);
+    }
 
     [HttpGet("lookups/" + GivingLookupTypes.FundDimension1Values)]
     public async Task<ActionResult<IEnumerable<FundDimensionValueRes>>> GetLookupFundDimension1Values() {

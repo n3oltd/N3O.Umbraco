@@ -25,6 +25,11 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
         RuleFor(x => x.FundDimensions)
             .NotNull()
             .WithMessage(Get<Strings>(s => s.SpecifyFundDimensions));
+        
+        RuleFor(x => x.Feedback)
+           .Null()
+           .When(x => x.Type != AllocationTypes.Feedback)
+           .WithMessage(Get<Strings>(s => s.FeedbackAllocationNotAllowed));
 
         RuleFor(x => x.Fund)
             .NotNull()
@@ -45,7 +50,7 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
             .Null()
             .When(x => x.Type != AllocationTypes.Sponsorship)
             .WithMessage(Get<Strings>(s => s.SponsorshipAllocationNotAllowed));
-
+        
         RuleFor(x => x.Value)
             .Must((req, x) => pricedAmountValidator.IsValid(x, req.Fund.DonationItem, req.FundDimensions))
             .When(x => x.Value.HasValue() && x.Fund?.DonationItem?.HasPricing() == true)
@@ -102,6 +107,7 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
 
     public class Strings : ValidationStrings {
         public string CurrencyMismatch => "All currencies must be the same and must match the currently active currency";
+        public string FeedbackAllocationNotAllowed => "Feedback cannot be specified for this type of allocation";
         public string FundAllocationNotAllowed => "Fund cannot be specified for this type of allocation";
         public string InvalidFundDimensions => "One or more fund dimension values are invalid";
         public string InvalidValue => "Invalid value specified";

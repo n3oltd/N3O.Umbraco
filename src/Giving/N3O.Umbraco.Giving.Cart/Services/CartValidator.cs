@@ -69,7 +69,14 @@ public class CartValidator : ICartValidator {
                                                        sponsorship.Components.None(x => x.Component == c))) {
                 return false;
             }
-        } else {
+        } else if (allocation.Type == AllocationTypes.Feedback) {
+            var feedback = allocation.Feedback;
+        
+            if (!feedback.HasValue(x => x.Scheme)) {
+                return false;
+            }
+        }
+        else {
             throw UnrecognisedValueException.For(allocation.Type);
         }
 

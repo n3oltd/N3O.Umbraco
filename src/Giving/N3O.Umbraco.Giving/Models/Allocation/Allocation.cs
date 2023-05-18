@@ -10,6 +10,7 @@ public class Allocation : Value, IAllocation {
     public Allocation(AllocationType type,
                       Money value,
                       FundDimensionValues fundDimensions,
+                      FeedbackAllocation feedback,
                       FundAllocation fund,
                       SponsorshipAllocation sponsorship,
                       bool upsell) {
@@ -18,6 +19,7 @@ public class Allocation : Value, IAllocation {
         FundDimensions = fundDimensions;
         Fund = fund;
         Sponsorship = sponsorship;
+        Feedback = feedback;
         Upsell = upsell;
     }
 
@@ -25,6 +27,7 @@ public class Allocation : Value, IAllocation {
         : this(allocation.Type,
                allocation.Value,
                allocation.FundDimensions.IfNotNull(x => new FundDimensionValues(x)),
+               allocation.Feedback.IfNotNull(x => new FeedbackAllocation(x)),
                allocation.Fund.IfNotNull(x => new FundAllocation(x)),
                allocation.Sponsorship.IfNotNull(x => new SponsorshipAllocation(x)),
                allocation.Upsell) { }
@@ -32,6 +35,7 @@ public class Allocation : Value, IAllocation {
     public AllocationType Type { get; }
     public Money Value { get; }
     public FundDimensionValues FundDimensions { get; }
+    public FeedbackAllocation Feedback { get; }
     public FundAllocation Fund { get; }
     public SponsorshipAllocation Sponsorship { get; }
     public bool Upsell { get; }
@@ -40,10 +44,13 @@ public class Allocation : Value, IAllocation {
     IFundDimensionValues IAllocation.FundDimensions => FundDimensions;
     
     [JsonIgnore]
+    IFeedbackAllocation IAllocation.Feedback => Feedback;
+    
+    [JsonIgnore]
     IFundAllocation IAllocation.Fund => Fund;
 
     [JsonIgnore]
     ISponsorshipAllocation IAllocation.Sponsorship => Sponsorship;
 
-    public string Summary => Fund?.Summary ?? Sponsorship?.Summary;
+    public string Summary => Fund?.Summary ?? Sponsorship?.Summary ?? Feedback?.Summary;
 }
