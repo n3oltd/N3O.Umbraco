@@ -6,8 +6,8 @@ public class FeedbackCustomFieldTypeDataSource : LookupsDataSource<FeedbackCusto
     public FeedbackCustomFieldTypeDataSource(ILookups lookups) : base(lookups) { }
     
     public override string Name => "Feedback Custom Fields";
-    public override string Description => "Custom Fields for Feedbacks";
-    public override string Icon => " icon-newspaper-alt";
+    public override string Description => "Data source for feedback custom fields";
+    public override string Icon => " icon-edit";
 
-    protected override string GetIcon(FeedbackCustomFieldType FeedbackCustomField) => " icon-newspaper-alt";
+    protected override string GetIcon(FeedbackCustomFieldType feedbackCustomField) => " icon-edit";
 }

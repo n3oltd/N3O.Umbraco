@@ -10,6 +10,8 @@ public class FeedbackCustomFieldMapping : IMapDefinition {
 
     private void Map(FeedbackCustomFieldElement src, FeedbackCustomFieldRes dest, MapperContext ctx) {
         dest.Type = src.Type;
-        dest.Value = src.Value;
+        dest.Bool = src.Bool;
+        dest.Date = src.Date;
+        dest.Text = src.Text;
     }
 }

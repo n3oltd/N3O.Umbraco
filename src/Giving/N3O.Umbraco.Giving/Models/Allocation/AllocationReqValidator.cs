@@ -25,11 +25,6 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
         RuleFor(x => x.FundDimensions)
             .NotNull()
             .WithMessage(Get<Strings>(s => s.SpecifyFundDimensions));
-        
-        RuleFor(x => x.Feedback)
-           .Null()
-           .When(x => x.Type != AllocationTypes.Feedback)
-           .WithMessage(Get<Strings>(s => s.FeedbackAllocationNotAllowed));
 
         RuleFor(x => x.Fund)
             .NotNull()
@@ -50,6 +45,11 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
             .Null()
             .When(x => x.Type != AllocationTypes.Sponsorship)
             .WithMessage(Get<Strings>(s => s.SponsorshipAllocationNotAllowed));
+        
+        RuleFor(x => x.Feedback)
+            .Null()
+            .When(x => x.Type != AllocationTypes.Feedback)
+            .WithMessage(Get<Strings>(s => s.FeedbackAllocationNotAllowed));
         
         RuleFor(x => x.Value)
             .Must((req, x) => pricedAmountValidator.IsValid(x, req.Fund.DonationItem, req.FundDimensions))

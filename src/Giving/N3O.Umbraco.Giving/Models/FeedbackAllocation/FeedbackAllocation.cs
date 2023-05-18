@@ -18,7 +18,6 @@ public class FeedbackAllocation : Value, IFeedbackAllocation {
 
     public FeedbackScheme Scheme { get; }
     public IEnumerable<FeedbackCustomField> CustomFields { get; }
-    
 
     public string Summary => Scheme?.Name;
 

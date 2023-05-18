@@ -15,15 +15,16 @@ public class AllocationRes : IAllocation {
     
     [JsonIgnore]
     IFundDimensionValues IAllocation.FundDimensions => FundDimensions;
-    
-    [JsonIgnore]
-    IFeedbackAllocation IAllocation.Feedback => Feedback;
-    
+
     [JsonIgnore]
     IFundAllocation IAllocation.Fund => Fund;
 
     [JsonIgnore]
     ISponsorshipAllocation IAllocation.Sponsorship => Sponsorship;
+    
+    
+    [JsonIgnore]
+    IFeedbackAllocation IAllocation.Feedback => Feedback;
 
     [JsonIgnore]
     Money IAllocation.Value => Value;

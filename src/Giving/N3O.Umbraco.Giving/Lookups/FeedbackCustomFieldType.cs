@@ -7,6 +7,7 @@ public class FeedbackCustomFieldType : NamedLookup {
 }
 
 public class FeedbackCustomFieldTypes : StaticLookupsCollection<FeedbackCustomFieldType> {
-    public static readonly FeedbackCustomFieldType Text = new("text", "Text");
+    public static readonly FeedbackCustomFieldType Bool = new("bool", "Bool");
     public static readonly FeedbackCustomFieldType Date = new("date", "Date");
+    public static readonly FeedbackCustomFieldType Text = new("text", "Text");
 }

@@ -7,8 +7,8 @@ public interface IAllocation {
     AllocationType Type { get; }
     Money Value { get; }
     IFundDimensionValues FundDimensions { get; }
-    IFeedbackAllocation Feedback { get; }
     IFundAllocation Fund { get; }
     ISponsorshipAllocation Sponsorship { get; }
+    IFeedbackAllocation Feedback { get; }
     bool Upsell { get; }
 }
