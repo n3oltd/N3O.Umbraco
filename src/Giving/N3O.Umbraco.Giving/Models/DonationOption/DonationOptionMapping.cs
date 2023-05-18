@@ -31,6 +31,8 @@ public class DonationOptionMapping : IMapDefinition {
             dest.Fund = src.Fund.IfNotNull(ctx.Map<FundDonationOptionContent, FundDonationOptionRes>);
         } else if (src.Type == AllocationTypes.Sponsorship) {
             dest.Sponsorship = src.Sponsorship.IfNotNull(ctx.Map<SponsorshipDonationOptionContent, SponsorshipDonationOptionRes>);
+        } else if (src.Type == AllocationTypes.Feedback) {
+            dest.Feedback = src.Feedback.IfNotNull(ctx.Map<FeedbackDonationOptionContent, FeedbackDonationOptionRes>);
         } else {
             throw UnrecognisedValueException.For(src.Type);
         }

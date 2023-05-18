@@ -15,4 +15,5 @@ public class DonationOptionRes {
     public bool HideRegularGiving { get; set; }
     public FundDonationOptionRes Fund { get; set; }
     public SponsorshipDonationOptionRes Sponsorship { get; set; }
+    public FeedbackDonationOptionRes Feedback { get; set; }
 }
