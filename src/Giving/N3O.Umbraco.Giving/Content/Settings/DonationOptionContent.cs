@@ -4,7 +4,6 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using Newtonsoft.Json;
-using System;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Giving.Content;
@@ -47,7 +46,8 @@ public class DonationOptionContent : UmbracoContent<DonationOptionContent>, IFun
 
     public IFundDimensionsOptions GetFundDimensionOptions() {
         return (IFundDimensionsOptions) Fund?.DonationItem ??
-               (IFundDimensionsOptions) Sponsorship?.Scheme ?? Feedback?.Scheme;
+               (IFundDimensionsOptions) Sponsorship?.Scheme ??
+               (IFundDimensionsOptions) Feedback?.Scheme;
     }
 
     public bool IsValid() {
