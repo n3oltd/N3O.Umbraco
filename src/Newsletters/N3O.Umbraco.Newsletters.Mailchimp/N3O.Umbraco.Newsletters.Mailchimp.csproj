@@ -34,7 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="MailChimp.Net.V3" Version="5.4.1" />
+        <PackageReference Include="MailChimp.Net.V3" Version="5.5.0" />
     </ItemGroup>
 
     <ItemGroup>
