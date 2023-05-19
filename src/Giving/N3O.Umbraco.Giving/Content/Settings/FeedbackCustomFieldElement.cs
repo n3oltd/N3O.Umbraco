@@ -16,8 +16,8 @@ public class FeedbackCustomFieldElement : UmbracoElement<FeedbackCustomFieldElem
     [UmbracoProperty("fieldRequired")]
     public bool Required => GetValue(x => x.Required);
     
-    [UmbracoProperty("fieldTextOptions")]
-    public int? MaxTextLength => GetValue(x => x.MaxTextLength);
+    [UmbracoProperty("fieldTextMaxLength")]
+    public int? TextMaxLength => GetValue(x => x.TextMaxLength);
     
     public string Alias => Name.Camelize();
 }

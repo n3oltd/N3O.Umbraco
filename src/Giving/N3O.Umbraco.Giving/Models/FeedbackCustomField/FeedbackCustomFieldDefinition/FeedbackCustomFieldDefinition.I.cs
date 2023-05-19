@@ -7,5 +7,5 @@ public interface IFeedbackCustomFieldDefinition {
     string Alias { get; }
     string Name { get; }
     bool Required { get; }
-    int? MaxTextLength { get; }
+    int? TextMaxLength { get; }
 }

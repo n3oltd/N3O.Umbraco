@@ -7,17 +7,17 @@ public class FeedbackCustomFieldDefinition : Value, IFeedbackCustomFieldDefiniti
                                          string alias,
                                          string name,
                                          bool required,
-                                         int maxTextLength) {
+                                         int textMaxLength) {
         Type = type;
         Alias = alias;
         Name = name;
         Required = required;
-        MaxTextLength = maxTextLength;
+        TextMaxLength = textMaxLength;
     }
 
     public FeedbackCustomFieldType Type { get; }
     public string Alias { get; }
     public string Name { get; }
     public bool Required { get; }
-    public int? MaxTextLength { get; }
+    public int? TextMaxLength { get; }
 }

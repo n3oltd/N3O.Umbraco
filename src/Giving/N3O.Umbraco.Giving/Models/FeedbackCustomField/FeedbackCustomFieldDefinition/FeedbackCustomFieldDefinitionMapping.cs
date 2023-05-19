@@ -12,7 +12,7 @@ public class FeedbackCustomFieldDefinitionMapping : IMapDefinition {
         dest.Type = src.Type;
         dest.Alias = src.Alias;
         dest.Name = src.Name;
-        dest.MaxTextLength = src.MaxTextLength;
+        dest.TextMaxLength = src.TextMaxLength;
         dest.Required = src.Required;
     }
 }

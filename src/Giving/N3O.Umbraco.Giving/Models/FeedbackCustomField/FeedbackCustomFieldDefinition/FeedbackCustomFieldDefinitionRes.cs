@@ -7,5 +7,5 @@ public class FeedbackCustomFieldDefinitionRes : IFeedbackCustomFieldDefinition {
     public string Alias { get; set; }
     public string Name { get; set; }
     public bool Required { get; set; }
-    public int? MaxTextLength { get; set; }
+    public int? TextMaxLength { get; set; }
 }
