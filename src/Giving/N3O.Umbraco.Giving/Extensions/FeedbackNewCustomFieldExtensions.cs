@@ -20,7 +20,7 @@ public static class FeedbackNewCustomFieldExtensions {
     }
     
     public static bool PassesValidation(this IFeedbackNewCustomField feedbackNewFeedbackCustomField,
-                                        FeedbackCustomFieldElement definition) {
+                                        IFeedbackCustomFieldDefinition definition) {
         if (definition.Required && !GetValue(feedbackNewFeedbackCustomField, definition.Type).HasValue()) {
             return false;
         }
@@ -34,7 +34,7 @@ public static class FeedbackNewCustomFieldExtensions {
     }
 
     public static FeedbackCustomField ToFeedbackCustomField(this IFeedbackNewCustomField feedbackNewFeedbackCustomField,
-                                                            FeedbackCustomFieldElement definition) {
+                                                            IFeedbackCustomFieldDefinition definition) {
         var feedbackCustomField = new FeedbackCustomField(definition.Type,
                                                           definition.Alias,
                                                           definition.Name,

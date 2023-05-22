@@ -4,7 +4,7 @@ using NodaTime;
 
 namespace N3O.Umbraco.Giving.Models;
 
-public class FeedbackCustomField : IFeedbackCustomField {
+public class FeedbackCustomField : Value, IFeedbackCustomField {
     [JsonConstructor]
     public FeedbackCustomField(FeedbackCustomFieldType type,
                                string alias,
