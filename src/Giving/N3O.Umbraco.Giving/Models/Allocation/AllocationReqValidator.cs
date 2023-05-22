@@ -1,5 +1,6 @@
 using FluentValidation;
 using N3O.Umbraco.Context;
+using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Extensions;
@@ -65,6 +66,21 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
             .When(x => x.Sponsorship.HasValue())
             .WithMessage(Get<Strings>(s => s.InvalidValue));
 
+        RuleFor(x => x.Feedback.CustomFields)
+           .Must((req, x) => AllRequiredFieldsAreIncluded(req.Feedback.Scheme, x))
+           .When(x => x.Feedback.HasValue())
+           .WithMessage(Get<Strings>(s => s.FeedbackRequiredFieldsMissing));
+
+        RuleForEach(x => x.Feedback.CustomFields.Entries)
+           .Must((req, x) => AllValuesAreValid(req.Feedback.Scheme, x))
+           .When(x => x.Feedback.HasValue())
+           .WithMessage(Get<Strings>(s => s.FeedbackInvalidFieldValues));
+
+        RuleForEach(x => x.Feedback.CustomFields.Entries)
+           .Must((req, x) => AllFieldAliasesAreValid(req.Feedback.Scheme, x))
+           .When(x => x.Feedback.HasValue())
+           .WithMessage(Get<Strings>(s => s.FeedbackInvalidFields));
+
         RuleFor(x => x.Value)
             .Must((req, x) => x.Amount.GetValueOrThrow() == req.Sponsorship.Components.Sum(x => x.Value.Amount.GetValueOrThrow()))
             .When(x => x.Value.HasValue(v => v.Amount) && x.Sponsorship.HasValue() && x.Sponsorship.Components.All(c => c.Value.HasValue(v => v.Amount)))
@@ -90,6 +106,36 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
             .WithMessage(Get<Strings>(s => s.CurrencyMismatch));
     }
 
+    private bool AllRequiredFieldsAreIncluded(FeedbackScheme feedbackScheme,
+                                              FeedbackNewCustomFieldsReq newCustomFieldReq) {
+        foreach (var customField in feedbackScheme.CustomFields.Where(x => x.Required)) {
+            if (newCustomFieldReq.Entries.None(x => x.Alias == customField.Alias)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private bool AllValuesAreValid(FeedbackScheme feedbackScheme,
+                                        IFeedbackNewCustomField newCustomFieldReq) {
+        var definition = feedbackScheme.GetFeedbackCustomFieldDefinition(newCustomFieldReq.Alias);
+
+        if (definition.HasValue()) {
+            return HasOnlyValueOfType(newCustomFieldReq, definition.Type) &&
+                   newCustomFieldReq.PassesValidation(definition);
+        }
+
+        return true;
+    }
+
+    private bool AllFieldAliasesAreValid(FeedbackScheme feedbackScheme,
+                                              IFeedbackNewCustomField newCustomFieldReq) {
+        var definition = feedbackScheme.GetFeedbackCustomFieldDefinition(newCustomFieldReq.Alias);
+
+        return definition != null;
+    }
+
     private bool FundDimensionsAreValid(FundDimensionValuesReq req, IFundDimensionsOptions options) {
         if (FundDimensionIsValid(req.Dimension1, options?.Dimension1Options) &&
             FundDimensionIsValid(req.Dimension2, options?.Dimension2Options) &&
@@ -105,9 +151,24 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
         return value == null || options?.Contains(value) != false;
     }
 
+    private bool HasOnlyValueOfType(IFeedbackNewCustomField req, FeedbackCustomFieldType type) {
+        if (type == FeedbackCustomFieldTypes.Bool) {
+            return req.Date == null && req.Text == null;
+        } else if (type == FeedbackCustomFieldTypes.Date) {
+            return req.Text == null && req.Bool == null;
+        } else if (type == FeedbackCustomFieldTypes.Text) {
+            return req.Bool == null && req.Date == null;
+        } else {
+            throw UnrecognisedValueException.For(type);
+        }
+    }
+
     public class Strings : ValidationStrings {
         public string CurrencyMismatch => "All currencies must be the same and must match the currently active currency";
         public string FeedbackAllocationNotAllowed => "Feedback cannot be specified for this type of allocation";
+        public string FeedbackInvalidFields => "The feedback allocation contains invalid custom fields";
+        public string FeedbackInvalidFieldValues => "One or more of the feedback allocation custom fields have invalid values";
+        public string FeedbackRequiredFieldsMissing => "Feedback allocation is missing a required field";
         public string FundAllocationNotAllowed => "Fund cannot be specified for this type of allocation";
         public string InvalidFundDimensions => "One or more fund dimension values are invalid";
         public string InvalidValue => "Invalid value specified";

@@ -6,7 +6,7 @@ namespace N3O.Umbraco.Giving.Models;
 
 public class FeedbackSchemeRes : NamedLookupRes {
     public IEnumerable<GivingType> AllowedGivingTypes { get; set; }
-    public IEnumerable<FeedbackCustomFieldRes> CustomFields { get; set; }
+    public IEnumerable<FeedbackCustomFieldDefinitionRes> CustomFields { get; set; }
     public IEnumerable<FundDimensionValueRes> Dimension1Options { get; set; }
     public IEnumerable<FundDimensionValueRes> Dimension2Options { get; set; }
     public IEnumerable<FundDimensionValueRes> Dimension3Options { get; set; }

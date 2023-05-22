@@ -13,10 +13,5 @@ public class FeedbackDonationOptionMapping : IMapDefinition {
     // Umbraco.Code.MapAll
     private void Map(FeedbackDonationOptionContent src, FeedbackDonationOptionRes dest, MapperContext ctx) {
         dest.Scheme = src.Scheme;
-        dest.CustomFields = src.Scheme
-                               .CustomFields
-                               .OrEmpty()
-                               .Select(ctx.Map<FeedbackCustomFieldElement, FeedbackCustomFieldRes>)
-                               .ToList();
     }
 }
