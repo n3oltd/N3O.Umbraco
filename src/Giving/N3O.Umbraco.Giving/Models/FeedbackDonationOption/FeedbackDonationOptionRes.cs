@@ -5,5 +5,4 @@ namespace N3O.Umbraco.Giving.Models;
 
 public class FeedbackDonationOptionRes {
     public FeedbackScheme Scheme { get; set; }
-    public IEnumerable<FeedbackCustomFieldRes> CustomFields { get; set; }
 }
