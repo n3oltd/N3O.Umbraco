@@ -6,7 +6,8 @@ using System.Linq;
 namespace N3O.Umbraco.Giving.Extensions; 
 
 public static class FeedbackSchemeExtensions {
-    public static FeedbackCustomFieldElement GetFeedbackCustomFieldDefinition(this FeedbackScheme scheme, string alias) {
+    public static FeedbackCustomFieldDefinitionElement GetFeedbackCustomFieldDefinition(this FeedbackScheme scheme,
+                                                                                        string alias) {
         return scheme.CustomFields.SingleOrDefault(x => x.Alias.EqualsInvariant(alias));
     }
 }

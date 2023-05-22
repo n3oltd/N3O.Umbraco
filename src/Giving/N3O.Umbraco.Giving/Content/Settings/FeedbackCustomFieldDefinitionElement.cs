@@ -6,7 +6,8 @@ using N3O.Umbraco.Giving.Models;
 
 namespace N3O.Umbraco.Giving.Content;
 
-public class FeedbackCustomFieldElement : UmbracoElement<FeedbackCustomFieldElement>, IFeedbackCustomFieldDefinition {
+public class FeedbackCustomFieldDefinitionElement :
+    UmbracoElement<FeedbackCustomFieldDefinitionElement>, IFeedbackCustomFieldDefinition {
     [UmbracoProperty("fieldType")]
     public FeedbackCustomFieldType Type => GetValue(x => x.Type);
     

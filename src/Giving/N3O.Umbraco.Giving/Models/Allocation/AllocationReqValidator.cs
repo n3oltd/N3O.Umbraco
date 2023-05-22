@@ -68,21 +68,21 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
 
         RuleFor(x => x.Feedback.CustomFields)
            .Must((req, x) => AllRequiredFieldsAreIncluded(req.Feedback.Scheme, x))
-           .When(x => x.Feedback.HasValue())
+           .When(x => x.Feedback.HasValue(f => f.CustomFields))
            .WithMessage(Get<Strings>(s => s.FeedbackRequiredFieldsMissing));
 
         RuleForEach(x => x.Feedback.CustomFields.Entries)
-           .Must((req, x) => AllValuesAreValid(req.Feedback.Scheme, x))
-           .When(x => x.Feedback.HasValue())
+           .Must((req, x) => CustomFieldValueIsValid(req.Feedback.Scheme, x))
+           .When(x => x.Feedback.HasAny(f => f.CustomFields.Entries))
            .WithMessage(Get<Strings>(s => s.FeedbackInvalidFieldValues));
 
         RuleForEach(x => x.Feedback.CustomFields.Entries)
-           .Must((req, x) => AllFieldAliasesAreValid(req.Feedback.Scheme, x))
-           .When(x => x.Feedback.HasValue())
+           .Must((req, x) => CustomFieldAliasIsValid(req.Feedback.Scheme, x))
+           .When(x => x.Feedback.HasAny(f => f.CustomFields.Entries))
            .WithMessage(Get<Strings>(s => s.FeedbackInvalidFields));
 
         RuleFor(x => x.Value)
-            .Must((req, x) => x.Amount.GetValueOrThrow() == req.Sponsorship.Components.Sum(x => x.Value.Amount.GetValueOrThrow()))
+            .Must((req, x) => x.Amount.GetValueOrThrow() == req.Sponsorship.Components.Sum(c => c.Value.Amount.GetValueOrThrow()))
             .When(x => x.Value.HasValue(v => v.Amount) && x.Sponsorship.HasValue() && x.Sponsorship.Components.All(c => c.Value.HasValue(v => v.Amount)))
             .WithMessage(Get<Strings>(s => s.InvalidValue));
 
@@ -117,8 +117,7 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
         return true;
     }
 
-    private bool AllValuesAreValid(FeedbackScheme feedbackScheme,
-                                        IFeedbackNewCustomField newCustomFieldReq) {
+    private bool CustomFieldValueIsValid(FeedbackScheme feedbackScheme, IFeedbackNewCustomField newCustomFieldReq) {
         var definition = feedbackScheme.GetFeedbackCustomFieldDefinition(newCustomFieldReq.Alias);
 
         if (definition.HasValue()) {
@@ -129,8 +128,7 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
         return true;
     }
 
-    private bool AllFieldAliasesAreValid(FeedbackScheme feedbackScheme,
-                                              IFeedbackNewCustomField newCustomFieldReq) {
+    private bool CustomFieldAliasIsValid(FeedbackScheme feedbackScheme, IFeedbackNewCustomField newCustomFieldReq) {
         var definition = feedbackScheme.GetFeedbackCustomFieldDefinition(newCustomFieldReq.Alias);
 
         return definition != null;

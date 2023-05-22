@@ -18,7 +18,7 @@ public class FeedbackSchemeMapping : IMapDefinition {
 
         dest.AllowedGivingTypes = src.AllowedGivingTypes;
         dest.CustomFields = src.CustomFields.OrEmpty()
-                               .Select(ctx.Map<FeedbackCustomFieldElement, FeedbackCustomFieldDefinitionRes>);
+                               .Select(ctx.Map<FeedbackCustomFieldDefinitionElement, FeedbackCustomFieldDefinitionRes>);
         
         dest.Dimension1Options = src.Dimension1Options
                                     .OrEmpty()

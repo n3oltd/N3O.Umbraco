@@ -5,10 +5,10 @@ namespace N3O.Umbraco.Giving.Models;
 
 public class FeedbackCustomFieldDefinitionMapping : IMapDefinition {
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<FeedbackCustomFieldElement, FeedbackCustomFieldDefinitionRes>((_, _) => new FeedbackCustomFieldDefinitionRes(), Map);
+        mapper.Define<FeedbackCustomFieldDefinitionElement, FeedbackCustomFieldDefinitionRes>((_, _) => new FeedbackCustomFieldDefinitionRes(), Map);
     }
 
-    private void Map(FeedbackCustomFieldElement src, FeedbackCustomFieldDefinitionRes dest, MapperContext ctx) {
+    private void Map(FeedbackCustomFieldDefinitionElement src, FeedbackCustomFieldDefinitionRes dest, MapperContext ctx) {
         dest.Type = src.Type;
         dest.Alias = src.Alias;
         dest.Name = src.Name;
