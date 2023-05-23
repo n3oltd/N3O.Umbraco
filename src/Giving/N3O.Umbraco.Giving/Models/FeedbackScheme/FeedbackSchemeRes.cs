@@ -11,4 +11,5 @@ public class FeedbackSchemeRes : NamedLookupRes {
     public IEnumerable<FundDimensionValueRes> Dimension2Options { get; set; }
     public IEnumerable<FundDimensionValueRes> Dimension3Options { get; set; }
     public IEnumerable<FundDimensionValueRes> Dimension4Options { get; set; }
+    public PricingRes Pricing { get; set; }
 }
