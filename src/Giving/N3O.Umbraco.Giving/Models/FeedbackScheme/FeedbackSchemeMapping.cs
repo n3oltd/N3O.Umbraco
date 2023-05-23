@@ -36,5 +36,6 @@ public class FeedbackSchemeMapping : IMapDefinition {
                                     .OrEmpty()
                                     .Select(ctx.Map<FundDimension4Value, FundDimensionValueRes>)
                                     .ToList();
+        dest.Pricing = ctx.Map<IPricing, PricingRes>(src);
     }
 }
