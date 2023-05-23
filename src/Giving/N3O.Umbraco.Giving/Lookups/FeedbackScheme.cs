@@ -15,7 +15,6 @@ public class FeedbackScheme :
     public IEnumerable<FundDimension2Value> Dimension2Options => GetPickedAs(x => x.Dimension2Options);
     public IEnumerable<FundDimension3Value> Dimension3Options => GetPickedAs(x => x.Dimension3Options);
     public IEnumerable<FundDimension4Value> Dimension4Options => GetPickedAs(x => x.Dimension4Options);
-    
     public PriceContent Price => Content().As<PriceContent>();
     public IEnumerable<PricingRuleElement> PriceRules => GetNestedAs(x => x.PriceRules);
     
