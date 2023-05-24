@@ -6,4 +6,8 @@ public class Country : LookupContent<Country> {
     public string DiallingCode => GetValue(x => x.DiallingCode);
     public bool LocalityOptional => GetValue(x => x.LocalityOptional);
     public bool PostalCodeOptional => GetValue(x => x.PostalCodeOptional);
+
+    protected override string GetId() {
+        return Iso2Code;
+    }
 }
