@@ -27,4 +27,11 @@ public static class ContentServiceExtensions {
 
         return list;
     }
+    
+    public static IContent GetContentByUdi(this IContentService contentService, string udi) {
+        var contentId = Guid.ParseExact(udi.Substring(udi.Length - 32), "N");
+        var content = contentService.GetById(contentId);
+
+        return content;
+    }
 }
