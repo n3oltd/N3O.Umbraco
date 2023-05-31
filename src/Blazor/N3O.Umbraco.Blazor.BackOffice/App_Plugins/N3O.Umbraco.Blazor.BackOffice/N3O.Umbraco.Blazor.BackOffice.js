@@ -22,7 +22,10 @@ async function startBlazor() {
     Blazor.start({
         configureSignalR: function (builder) {
             builder.withUrl("/_blazor");
-            builder.serverTimeoutInMilliseconds = 120_000;
+            builder.withAutomaticReconnect([0, 2000, 10000, 15000, 20000, 30000, 60000]);
+
+            const connection = builder.build();
+            connection.serverTimeoutInMilliseconds = 120_000;
         }
     });
 }
