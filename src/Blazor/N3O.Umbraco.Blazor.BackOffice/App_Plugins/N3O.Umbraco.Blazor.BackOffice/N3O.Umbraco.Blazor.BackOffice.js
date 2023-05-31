@@ -25,7 +25,7 @@ async function startBlazor() {
             builder.withAutomaticReconnect([0, 2000, 10000, 15000, 20000, 30000, 60000]);
 
             const connection = builder.build();
-            connection.serverTimeoutInMilliseconds = 120_000;
+            connection.serverTimeoutInMilliseconds = 30_000;
         }
     });
 }
