@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Composing;
+using N3O.Umbraco.Extensions;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using StackExchange.Profiling.Internal;
@@ -16,26 +17,29 @@ public class TelemetryComposer : Composer {
 
         builder.Config.GetSection("Tracing").Bind(config);
 
-        if (config.ExporterUrl.HasValue()) {
+        if (ExtensionMethods.HasValue(config.ExporterUrl)) {
             builder.Services.AddHttpClient();
             builder.Services.AddSingleton<IDurationWeightFinder, DurationWeightFinder>();
 
             builder.Services
                    .AddOpenTelemetry()
                    .WithTracing(b => {
-                        if (config.Source.HasValue()) {
+                        if (ExtensionMethods.HasValue(config.Source)) {
                             b.SetResourceBuilder(ResourceBuilder.CreateDefault()
                                                                 .AddService(serviceName: config.Source));
                             b.AddSource(config.Source);
                         }
+
+                        if (config.Console.EqualsInvariant("enabled")) {
+                            b.AddConsoleExporter();
+                        }
                         
-                        b.AddConsoleExporter();
                         b.AddOtlpExporter(opt => opt.Endpoint = new Uri(config.ExporterUrl));
                         b.AddAspNetCoreInstrumentation();
                     });
         }
 
-        if (config.Source.HasValue()) {
+        if (ExtensionMethods.HasValue(config.Source)) {
             builder.Services.AddSingleton(new ActivitySource(config.Source));
         }
     }
