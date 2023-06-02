@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <RootNamespace>N3O.Umbraco.Scheduler</RootNamespace>
+        <RootNamespace>N3O.Umbraco.Telemetry</RootNamespace>
         <TargetFramework>net7.0</TargetFramework>
         <LangVersion>11</LangVersion>
         <Copyright>Copyright © 2023 N3O Ltd</Copyright>
     </PropertyGroup>
 
     <PropertyGroup>
-        <PackageId>N3O.Umbraco.Scheduler</PackageId>
+        <PackageId>N3O.Umbraco.Telemetry</PackageId>
         <IsPackable>true</IsPackable>
         <ContentTargetFolders>.</ContentTargetFolders>
         <Authors>N3O Ltd</Authors>
@@ -30,19 +30,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Mediator\N3O.Umbraco.Mediator\N3O.Umbraco.Mediator.csproj" />
-        <ProjectReference Include="..\..\Monitoring\N3O.Umbraco.Telemetry\N3O.Umbraco.Telemetry.csproj" />
-        <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Hangfire" Version="1.8.2" />
-        <PackageReference Include="Hangfire.SqlServer" Version="1.8.2" />
-    </ItemGroup>
-
-    <ItemGroup>
         <None Update="README.md">
             <Pack>True</Pack>
         </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.4.0" />
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.4.0" />
+        <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.4.0" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc9.14" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.0.0-rc9.14" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
     </ItemGroup>
 </Project>
