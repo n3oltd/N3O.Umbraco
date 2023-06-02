@@ -38,6 +38,7 @@ public class StorageController : ApiController {
     }
     
     [HttpPost("tempUpload")]
+    [RequestSizeLimit(500_000_000)]
     public async Task<ActionResult<StorageToken>> TempUpload([FromForm] UploadReq req) {
         var folderPath = Path.Join(StorageConstants.StorageFolders.Temp,
                                          $"_{_clock.GetCurrentInstant().ToUnixTimeTicks()}");
