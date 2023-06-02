@@ -14,7 +14,8 @@ public abstract class NotificationAsyncHandler<TNotification> : INotificationAsy
     private readonly IDurationWeightFinder _durationWeightFinder;
     private readonly ActivitySource _activitySource;
 
-    protected NotificationAsyncHandler(ActivitySource activitySource, IDurationWeightFinder durationWeightFinder) {
+    protected NotificationAsyncHandler(ActivitySource activitySource = null,
+                                       IDurationWeightFinder durationWeightFinder = null) {
         _durationWeightFinder = durationWeightFinder;
         _activitySource = activitySource;
     }
