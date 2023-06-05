@@ -6,19 +6,18 @@ using System.Diagnostics;
 namespace N3O.Umbraco.Telemetry;
 
 public class TimedActivity : IDisposable {
-    private const string DurationNanoSeconds = nameof(DurationNanoSeconds);
-    private const string DurationWeight = nameof(DurationWeight);
-    
-    private readonly IDurationWeightFinder _weightFinder;
+    private readonly IActivityDurationBucketer _activityDurationBucketer;
     private readonly string _eventName;
     private readonly Activity _activity;
     private readonly List<KeyValuePair<string, object>> _tags = new();
     private readonly Stopwatch _stopWatch = new();
 
-    public TimedActivity(IDurationWeightFinder weightFinder, ActivitySource source, string eventName, string eventCategory) {
-        _weightFinder = weightFinder;
+    public TimedActivity(ActivitySource source,
+                         string eventName,
+                         IActivityDurationBucketer activityDurationBucketer = null) {
         _eventName = eventName;
         _activity = source.StartActivity();
+        _activityDurationBucketer = activityDurationBucketer ?? new DefaultActivityDurationBucketer();
     }
 
     public TimedActivity AddTag(string key, object value) {
@@ -36,14 +35,15 @@ public class TimedActivity : IDisposable {
     public TimedActivity Stop() {
         var duration = _stopWatch.ElapsedDuration();
 
-        AddTag(DurationNanoSeconds, duration.TotalNanoseconds);
+        AddTag("DurationNanoseconds", duration.TotalNanoseconds);
+        AddTag("DurationBucket", _activityDurationBucketer.GetBucket(duration));
 
-        return AddTag(DurationWeight, _weightFinder.GetWeight(duration));
+        return this;
     }
 
     public void Dispose() {
         _activity?.AddEvent(new ActivityEvent(_eventName, tags : new ActivityTagsCollection(_tags)));
-        
+        _activity?.Stop();
         _activity?.Dispose();
     }
 }
