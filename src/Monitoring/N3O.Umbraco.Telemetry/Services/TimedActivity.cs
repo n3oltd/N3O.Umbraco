@@ -19,7 +19,13 @@ public class TimedActivity : IDisposable {
         _activity = source.StartActivity();
         _activityDurationBucketer = activityDurationBucketer ?? new DefaultActivityDurationBucketer();
     }
+    
+    public TimedActivity AddEvent(string name, IReadOnlyList<KeyValuePair<string, object>> tags) {
+        _activity?.AddEvent(new ActivityEvent(name, tags : new ActivityTagsCollection(tags)));
 
+        return this;
+    }
+    
     public TimedActivity AddTag(string key, object value) {
         _tags.Add(new KeyValuePair<string, object>(key, value));
 
@@ -38,12 +44,15 @@ public class TimedActivity : IDisposable {
         AddTag("DurationNanoseconds", duration.TotalNanoseconds);
         AddTag("DurationBucket", _activityDurationBucketer.GetBucket(duration));
 
+        _activity?.Stop();
+
         return this;
     }
 
     public void Dispose() {
+        Stop();
+        
         _activity?.AddEvent(new ActivityEvent(_eventName, tags : new ActivityTagsCollection(_tags)));
-        _activity?.Stop();
         _activity?.Dispose();
     }
 }
