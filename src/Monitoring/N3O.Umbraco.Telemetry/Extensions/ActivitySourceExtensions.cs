@@ -4,17 +4,19 @@ namespace N3O.Umbraco.Telemetry.Extensions;
 
 public static class ActivitySourceExtensions {
     public static TimedActivity StartTimedActivity(this ActivitySource activitySource,
-                                                   string eventName,
-                                                   string eventCategory,
-                                                   IActivityDurationBucketer activityDurationBucketer = null) {
+                                                   string name,
+                                                   string category,
+                                                   ITelemetryStopwatch stopwatch = null) {
+        var timedActivity = default(TimedActivity);
+        
         if (activitySource != null) {
-            var timedActivity = new TimedActivity(activitySource, eventName, activityDurationBucketer);
+            timedActivity = new TimedActivity(activitySource, name, stopwatch);
 
-            timedActivity.AddTag("Category", eventCategory).Start();
+            timedActivity.AddTag("category", category);
 
-            return timedActivity;
+            timedActivity.Start();
         }
 
-        return null;
+        return timedActivity;
     }
 }

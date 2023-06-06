@@ -1,50 +1,53 @@
-using NodaTime.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace N3O.Umbraco.Telemetry;
 
 public class TimedActivity : IDisposable {
-    private readonly IActivityDurationBucketer _activityDurationBucketer;
-    private readonly string _eventName;
+    private readonly ITelemetryStopwatch _stopwatch;
     private readonly Activity _activity;
-    private readonly List<KeyValuePair<string, object>> _tags = new();
-    private readonly Stopwatch _stopWatch = new();
 
-    public TimedActivity(ActivitySource source,
-                         string eventName,
-                         IActivityDurationBucketer activityDurationBucketer = null) {
-        _eventName = eventName;
-        _activity = source.StartActivity();
-        _activityDurationBucketer = activityDurationBucketer ?? new DefaultActivityDurationBucketer();
+    public TimedActivity(ActivitySource source, string name, ITelemetryStopwatch stopwatch = null) {
+        _activity = source.StartActivity(name);
+        _stopwatch = stopwatch ?? new TelemetryStopwatch();
     }
     
-    public TimedActivity AddEvent(string name, IReadOnlyList<KeyValuePair<string, object>> tags) {
-        _activity?.AddEvent(new ActivityEvent(name, tags : new ActivityTagsCollection(tags)));
+    public TimedEvent BeginEvent(string name) {
+        var timedEvent = new TimedEvent(_stopwatch, _activity, name);
+
+        timedEvent.Start();
+
+        return timedEvent;
+    }
+    
+    public TimedActivity AddBaggage(string key, string value) {
+        _activity.AddBaggage(key, value);
 
         return this;
     }
-    
+
     public TimedActivity AddTag(string key, object value) {
-        _tags.Add(new KeyValuePair<string, object>(key, value));
+        _activity.AddTag(key, value);
 
         return this;
     }
 
     public TimedActivity Start() {
-        _stopWatch.Start();
+        _stopwatch.Start();
 
         return this;
     }
     
     public TimedActivity Stop() {
-        var duration = _stopWatch.ElapsedDuration();
+        foreach (var (key, value) in _activity.Baggage) {
+            _activity.AddTag(key, value);
+        }
 
-        AddTag("DurationNanoseconds", duration.TotalNanoseconds);
-        AddTag("DurationBucket", _activityDurationBucketer.GetBucket(duration));
+        foreach (var (key, value) in _stopwatch.Stop()) {
+            _activity.AddTag(key, value);    
+        }
 
-        _activity?.Stop();
+        _activity.Stop();
 
         return this;
     }
@@ -52,7 +55,6 @@ public class TimedActivity : IDisposable {
     public void Dispose() {
         Stop();
         
-        _activity?.AddEvent(new ActivityEvent(_eventName, tags : new ActivityTagsCollection(_tags)));
         _activity?.Dispose();
     }
 }

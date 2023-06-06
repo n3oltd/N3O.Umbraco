@@ -20,7 +20,7 @@ public class TelemetryComposer : Composer {
         if (config.Enabled) {
             builder.Services.AddHttpClient();
 
-            builder.Services.AddSingleton<IActivityDurationBucketer, DefaultActivityDurationBucketer>();
+            builder.Services.AddSingleton<ITelemetryStopwatch, TelemetryStopwatch>();
 
             builder.Services
                    .AddOpenTelemetry()
