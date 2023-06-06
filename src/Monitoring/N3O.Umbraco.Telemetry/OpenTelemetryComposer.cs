@@ -4,7 +4,6 @@ using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using StackExchange.Profiling.Internal;
 using System;
 using System.Diagnostics;
 using Umbraco.Cms.Core.DependencyInjection;
@@ -17,14 +16,14 @@ public class TelemetryComposer : Composer {
 
         builder.Config.GetSection("Tracing").Bind(config);
 
-        if (ExtensionMethods.HasValue(config.ExporterUrl)) {
+        if (config.ExporterUrl.HasValue()) {
             builder.Services.AddHttpClient();
             builder.Services.AddSingleton<IDurationWeightFinder, DurationWeightFinder>();
 
             builder.Services
                    .AddOpenTelemetry()
                    .WithTracing(b => {
-                        if (ExtensionMethods.HasValue(config.Source)) {
+                        if (config.Source.HasValue()) {
                             b.SetResourceBuilder(ResourceBuilder.CreateDefault()
                                                                 .AddService(serviceName: config.Source));
                             b.AddSource(config.Source);
@@ -39,7 +38,7 @@ public class TelemetryComposer : Composer {
                     });
         }
 
-        if (ExtensionMethods.HasValue(config.Source)) {
+        if (config.Source.HasValue()) {
             builder.Services.AddSingleton(new ActivitySource(config.Source));
         }
     }
