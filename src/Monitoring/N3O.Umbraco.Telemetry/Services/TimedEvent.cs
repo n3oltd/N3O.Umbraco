@@ -39,6 +39,6 @@ public class TimedEvent : IDisposable {
     public void Dispose() {
         Stop();
 
-        _activity.AddEvent(new ActivityEvent(_name, tags: new ActivityTagsCollection(_tags)));
+        _activity?.AddEvent(new ActivityEvent(_name, tags: new ActivityTagsCollection(_tags)));
     }
 }

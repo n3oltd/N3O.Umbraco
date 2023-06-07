@@ -1,3 +1,4 @@
+using N3O.Umbraco.Extensions;
 using System;
 using System.Diagnostics;
 
@@ -21,13 +22,13 @@ public class TimedActivity : IDisposable {
     }
     
     public TimedActivity AddBaggage(string key, string value) {
-        _activity.AddBaggage(key, value);
+        _activity?.AddBaggage(key, value);
 
         return this;
     }
 
     public TimedActivity AddTag(string key, object value) {
-        _activity.AddTag(key, value);
+        _activity?.AddTag(key, value);
 
         return this;
     }
@@ -39,15 +40,17 @@ public class TimedActivity : IDisposable {
     }
     
     public TimedActivity Stop() {
-        foreach (var (key, value) in _activity.Baggage) {
-            _activity.AddTag(key, value);
+        if (_activity?.Baggage != null) {
+            foreach (var (key, value) in _activity.Baggage) {
+                _activity.AddTag(key, value);
+            }
         }
 
         foreach (var (key, value) in _stopwatch.Stop()) {
-            _activity.AddTag(key, value);    
+            _activity?.AddTag(key, value);    
         }
 
-        _activity.Stop();
+        _activity?.Stop();
 
         return this;
     }
