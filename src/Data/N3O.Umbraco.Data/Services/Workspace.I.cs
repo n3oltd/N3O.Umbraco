@@ -1,13 +1,14 @@
 using N3O.Umbraco.Data.Builders;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Parsing;
+using N3O.Umbraco.Localization;
 using System.Collections.Generic;
 using System.IO;
 
 namespace N3O.Umbraco.Data;
 
 public interface IWorkspace {
-    ICsvWorkbook CreateCsvWorkbook();
+    ICsvWorkbook CreateCsvWorkbook(LocalizationSettings localizationSettings = null);
     IExcelWorkbook CreateExcelWorkbook();
 
     ICsvReader GetCsvReader(DatePattern datePattern,

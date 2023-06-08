@@ -1,23 +1,33 @@
 using N3O.Umbraco.Constants;
 using N3O.Umbraco.Lookups;
+using System.Globalization;
 
 namespace N3O.Umbraco.Localization;
 
 public class DateFormat : NamedLookup {
+    private readonly string _cultureCode;
+
     public DateFormat(string id,
                       string name,
                       string cultureCode,
                       string pattern,
                       string separator)
         : base(id, name) {
-        CultureCode = cultureCode;
+        _cultureCode = cultureCode;
         Pattern = pattern;
         Separator = separator;
     }
 
-    public string CultureCode { get; }
     public string Pattern { get; }
     public string Separator { get; }
+
+    public DateTimeFormatInfo GetDateTimeFormatInfo() {
+        var dateTimeFormatInfo = ((CultureInfo) CultureInfo.GetCultureInfo(_cultureCode).Clone()).DateTimeFormat;
+
+        dateTimeFormatInfo.DateSeparator = Separator;
+
+        return dateTimeFormatInfo;
+    }
 }
 
 public class DateFormats : StaticLookupsCollection<DateFormat> {

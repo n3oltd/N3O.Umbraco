@@ -1,6 +1,7 @@
 using N3O.Umbraco.Data.Builders;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Parsing;
+using N3O.Umbraco.Localization;
 using System.Collections.Generic;
 using System.IO;
 
@@ -10,17 +11,15 @@ public class Workspace : IWorkspace {
     private readonly IParserFactory _parserFactory;
     private readonly IColumnRangeBuilder _columnRangeBuilder;
 
-    public Workspace(ITableBuilder tableBuilder,
-                     IColumnRangeBuilder columnRangeBuilder,
-                     IParserFactory parserFactory) {
+    public Workspace(ITableBuilder tableBuilder, IColumnRangeBuilder columnRangeBuilder, IParserFactory parserFactory) {
         TableBuilder = tableBuilder;
         ColumnRangeBuilder = columnRangeBuilder;
         _columnRangeBuilder = columnRangeBuilder;
         _parserFactory = parserFactory;
     }
 
-    public ICsvWorkbook CreateCsvWorkbook() {
-        var workbook = new CsvWorkbook();
+    public ICsvWorkbook CreateCsvWorkbook(LocalizationSettings localizationSettings = null) {
+        var workbook = new CsvWorkbook(localizationSettings);
 
         return workbook;
     }

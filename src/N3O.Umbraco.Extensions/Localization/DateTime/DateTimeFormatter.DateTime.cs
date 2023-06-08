@@ -56,22 +56,8 @@ public partial class DateTimeFormatter {
             dateFormat = _settingsAccessor.GetSettings().DateFormat;
         }
 
-        var dateTimeFormatInfo = GetDateTimeFormatInfo(dateFormat.CultureCode);
-
-        dateTimeFormatInfo.DateSeparator = dateFormat.Separator;
+        var dateTimeFormatInfo = dateFormat.GetDateTimeFormatInfo();
 
         return dateTimeFormatInfo;
-    }
-
-    private DateTimeFormatInfo GetTimeFormatInfo(TimeFormat timeFormat) {
-        if (timeFormat == null) {
-            timeFormat = _settingsAccessor.GetSettings().TimeFormat;
-        }
-
-        return GetDateTimeFormatInfo(timeFormat.CultureCode);
-    }
-
-    private DateTimeFormatInfo GetDateTimeFormatInfo(string cultureCode) {
-        return ((CultureInfo) CultureInfo.GetCultureInfo(cultureCode).Clone()).DateTimeFormat;
     }
 }

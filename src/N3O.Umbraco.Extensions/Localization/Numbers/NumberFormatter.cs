@@ -16,7 +16,7 @@ public class NumberFormatter : INumberFormatter {
             numberFormat = _settingsAccessor.GetSettings().NumberFormat;
         }
 
-        var cultureInfo = new CultureInfo(numberFormat.CultureCode);
+        var cultureInfo = numberFormat.GetCultureInfo();
 
         var ordinal = number.Ordinalize(cultureInfo);
 
@@ -80,13 +80,9 @@ public class NumberFormatter : INumberFormatter {
             numberFormat = _settingsAccessor.GetSettings().NumberFormat;
         }
 
-        var numberFormatInfo = GetNumberFormatInfo(numberFormat.CultureCode);
+        var numberFormatInfo = numberFormat.GetNumberFormatInfo();
 
         return numberFormatInfo;
-    }
-
-    private NumberFormatInfo GetNumberFormatInfo(string cultureCode) {
-        return ((CultureInfo)CultureInfo.GetCultureInfo(cultureCode).Clone()).NumberFormat;
     }
 
     public static readonly INumberFormatter Invariant =

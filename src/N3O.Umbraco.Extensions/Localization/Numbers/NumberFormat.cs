@@ -1,23 +1,35 @@
 using N3O.Umbraco.Constants;
 using N3O.Umbraco.Lookups;
+using System.Globalization;
 
 namespace N3O.Umbraco.Localization;
 
 public class NumberFormat : NamedLookup {
+    private readonly string _cultureCode;
+
     public NumberFormat(string id,
                         string name,
                         string cultureCode,
                         string decimalSeparator,
                         string thousandsSeparator)
         : base(id, name) {
-        CultureCode = cultureCode;
+        _cultureCode = cultureCode;
         DecimalSeparator = decimalSeparator;
         ThousandsSeparator = thousandsSeparator;
     }
 
-    public string CultureCode { get; }
     public string DecimalSeparator { get; }
     public string ThousandsSeparator { get; }
+
+    public CultureInfo GetCultureInfo() {
+        return ((CultureInfo) CultureInfo.GetCultureInfo(_cultureCode).Clone());
+    }
+    
+    public NumberFormatInfo GetNumberFormatInfo() {
+        var numberFormatInfo = GetCultureInfo().NumberFormat;
+        
+        return numberFormatInfo;
+    }
 }
 
 public class NumberFormats : StaticLookupsCollection<NumberFormat> {
