@@ -35,6 +35,8 @@ public abstract class DataTypeParser<T> : IDataTypeParser<T> {
             var text = (string) token;
 
             parseResult = Parse(text, targetType);
+        } else if (token.Type == JTokenType.Null) {
+            parseResult = ParseResult.Success<T>(default);
         } else if (TokenTypes.Contains(token.Type)) {
             parseResult = TryParseToken(token, targetType);
         } else {
