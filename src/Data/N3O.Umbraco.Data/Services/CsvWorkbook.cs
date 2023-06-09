@@ -80,7 +80,7 @@ public class CsvWorkbook : ICsvWorkbook {
     }
 
     private CsvConfiguration GetCsvConfiguration() {
-        var culture = CultureInfo.InvariantCulture;
+        var culture = (CultureInfo) CultureInfo.InvariantCulture.Clone();
 
         if (_localizationSettings.HasValue(x => x.NumberFormat)) {
             culture.NumberFormat = _localizationSettings.NumberFormat.GetNumberFormatInfo();
