@@ -90,7 +90,7 @@ public class CsvWorkbook : ICsvWorkbook {
             culture.DateTimeFormat = _localizationSettings.DateFormat.GetDateTimeFormatInfo();
         }
 
-        var configuration = new CsvConfiguration(CultureInfo.InvariantCulture);
+        var configuration = new CsvConfiguration(culture);
         configuration.NewLine = "\r\n";
         configuration.TrimOptions = TrimOptions.Trim;
         configuration.ShouldQuote = args => Regex.IsMatch(args.Field ?? "",
