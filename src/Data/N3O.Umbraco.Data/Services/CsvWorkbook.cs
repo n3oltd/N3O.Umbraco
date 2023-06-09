@@ -3,7 +3,6 @@ using CsvHelper.Configuration;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Localization;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -14,14 +13,9 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Data;
 
 public class CsvWorkbook : ICsvWorkbook {
-    private readonly LocalizationSettings _localizationSettings;
     private ITable _table;
     private bool _headers = true;
     private TextEncoding _encoding = TextEncodings.Utf8;
-
-    public CsvWorkbook(LocalizationSettings localizationSettings = null) {
-        _localizationSettings = localizationSettings;
-    }
 
     public void AddTable(ITable table) {
         _table = table;
@@ -80,17 +74,7 @@ public class CsvWorkbook : ICsvWorkbook {
     }
 
     private CsvConfiguration GetCsvConfiguration() {
-        var culture = (CultureInfo) CultureInfo.InvariantCulture.Clone();
-
-        if (_localizationSettings.HasValue(x => x.NumberFormat)) {
-            culture.NumberFormat = _localizationSettings.NumberFormat.GetNumberFormatInfo();
-        }
-
-        if (_localizationSettings.HasValue(x => x.DateFormat)) {
-            culture.DateTimeFormat = _localizationSettings.DateFormat.GetDateTimeFormatInfo();
-        }
-
-        var configuration = new CsvConfiguration(culture);
+        var configuration = new CsvConfiguration(CultureInfo.InvariantCulture);
         configuration.NewLine = "\r\n";
         configuration.TrimOptions = TrimOptions.Trim;
         configuration.ShouldQuote = args => Regex.IsMatch(args.Field ?? "",

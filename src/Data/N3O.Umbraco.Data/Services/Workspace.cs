@@ -1,7 +1,6 @@
 using N3O.Umbraco.Data.Builders;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Parsing;
-using N3O.Umbraco.Localization;
 using System.Collections.Generic;
 using System.IO;
 
@@ -18,8 +17,8 @@ public class Workspace : IWorkspace {
         _parserFactory = parserFactory;
     }
 
-    public ICsvWorkbook CreateCsvWorkbook(LocalizationSettings localizationSettings = null) {
-        var workbook = new CsvWorkbook(localizationSettings);
+    public ICsvWorkbook CreateCsvWorkbook() {
+        var workbook = new CsvWorkbook();
 
         return workbook;
     }
