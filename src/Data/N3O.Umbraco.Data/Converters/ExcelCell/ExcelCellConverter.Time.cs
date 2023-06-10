@@ -15,7 +15,7 @@ public class TimeExcelCellConverter : ExcelCellConverter<LocalTime?>, IDefaultEx
     }
 
     protected override ExcelNumberFormat GetNumberFormat(Column column, LocalTime? value) {
-        return new TimeExcelNumberFormat(column.LocalizationSettings.TimeFormat);
+        return new TimeExcelNumberFormat(column.Formatter.DateTime.TimeFormat);
     }
 
     protected override void ApplyFormatting(Column column, Cell<LocalTime?> cell, ExcelFormatting formatting) {

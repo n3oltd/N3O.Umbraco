@@ -46,14 +46,14 @@ public partial class DateTimeFormatter {
     }
 
     private DateTimeZone GetDateTimezone() {
-        var timezone = _settingsAccessor.GetSettings().Timezone;
+        var timezone = Timezone;
 
         return timezone.Zone;
     }
 
     private DateTimeFormatInfo GetDateFormatInfo(DateFormat dateFormat) {
         if (dateFormat == null) {
-            dateFormat = _settingsAccessor.GetSettings().DateFormat;
+            dateFormat = DateFormat;
         }
 
         var dateTimeFormatInfo = dateFormat.GetDateTimeFormatInfo();

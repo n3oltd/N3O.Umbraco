@@ -13,7 +13,6 @@ namespace N3O.Umbraco.Data.Models;
 
 public class ColumnRange<TValue> : IColumnRange {
     private readonly IFormatter _formatter;
-    private readonly LocalizationSettings _localizationSettings;
     private readonly ILocalClock _localClock;
     private readonly ICellConverter<TValue> _cellConverter;
     private readonly IColumnHeading _columnHeading;
@@ -29,7 +28,6 @@ public class ColumnRange<TValue> : IColumnRange {
     private readonly IEnumerable<Attribute> _attributes;
 
     public ColumnRange(IFormatter formatter,
-                       LocalizationSettings localizationSettings,
                        ILocalClock localClock,
                        ICellConverter<TValue> cellConverter,
                        IColumnHeading columnHeading,
@@ -43,7 +41,6 @@ public class ColumnRange<TValue> : IColumnRange {
                        IEnumerable<Attribute> attributes,
                        int order) {
         _formatter = formatter;
-        _localizationSettings = localizationSettings;
         _localClock = localClock;
         _rangeColumnSort = rangeColumnSort;
         _collectionLayout = collectionLayout;
@@ -156,7 +153,6 @@ public class ColumnRange<TValue> : IColumnRange {
                                     comment,
                                     _formatter,
                                     _localClock,
-                                    _localizationSettings,
                                     _hidden,
                                     _accessControlList,
                                     _attributes,

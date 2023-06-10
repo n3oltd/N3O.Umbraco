@@ -1,4 +1,5 @@
 using N3O.Umbraco.Data.Lookups;
+using N3O.Umbraco.Localization;
 
 namespace N3O.Umbraco.Data.Builders;
 
@@ -15,4 +16,6 @@ public interface IColumnRangeBuilder {
     IFluentColumnRangeBuilder<TValue> Time<TValue>();
 
     IFluentColumnRangeBuilder<TValue> OfType<TValue>(DataType dataType);
+    
+    IColumnRangeBuilder UseFormatter(IFormatter formatter);
 }

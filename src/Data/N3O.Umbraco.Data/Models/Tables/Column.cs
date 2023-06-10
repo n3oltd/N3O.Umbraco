@@ -12,7 +12,6 @@ public class Column : Value {
                   string comment,
                   IFormatter formatter,
                   ILocalClock localClock,
-                  LocalizationSettings localizationSettings,
                   bool hidden,
                   AccessControlList accessControlList,
                   IEnumerable<Attribute> attributes,
@@ -22,7 +21,6 @@ public class Column : Value {
         Comment = comment;
         Formatter = formatter;
         LocalClock = localClock;
-        LocalizationSettings = localizationSettings;
         Hidden = hidden;
         AccessControlList = accessControlList;
         Attributes = attributes;
@@ -37,6 +35,5 @@ public class Column : Value {
     public IEnumerable<Attribute> Attributes { get; }
     public IFormatter Formatter { get; }
     public ILocalClock LocalClock { get; }
-    public LocalizationSettings LocalizationSettings { get; }
     public Dictionary<string, IEnumerable<object>> Metadata { get; }
 }

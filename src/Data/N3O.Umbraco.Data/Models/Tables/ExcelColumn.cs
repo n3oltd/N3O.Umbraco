@@ -9,7 +9,6 @@ public class ExcelColumn : Column {
                column.Comment,
                column.Formatter,
                column.LocalClock,
-               column.LocalizationSettings,
                column.Hidden,
                column.AccessControlList,
                column.Attributes,

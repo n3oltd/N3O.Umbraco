@@ -38,4 +38,8 @@ public interface IDateTimeFormatter {
     string FormatDateWithTime(Instant? instant);
     string FormatDateWithTime(LocalDateTime? instant);
     string FormatDateWithTime(ZonedDateTime? instant);
+    
+    DateFormat DateFormat { get; }
+    TimeFormat TimeFormat { get; }
+    Timezone Timezone { get; }
 }

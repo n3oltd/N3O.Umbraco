@@ -1,6 +1,7 @@
 using N3O.Umbraco.Data.Attributes;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Localization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -84,5 +85,9 @@ public class TypedTableBuilder<TRow> : ITypedTableBuilder<TRow> {
         var table = _tableBuilder.Build();
 
         return table;
+    }
+
+    public void UseFormatter(IFormatter formatter) {
+        _columnRangeBuilder.UseFormatter(formatter);
     }
 }

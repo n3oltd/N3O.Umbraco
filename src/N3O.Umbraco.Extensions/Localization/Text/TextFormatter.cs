@@ -29,4 +29,8 @@ public class TextFormatter : ITextFormatter {
     }
 
     public static ITextFormatter Invariant = new TextFormatter(new InvariantStringLocalizer());
+
+    public static ITextFormatter Create(IStringLocalizer stringLocalizer) {
+        return new TextFormatter(stringLocalizer);
+    }
 }

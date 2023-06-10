@@ -10,7 +10,7 @@ public class DateExcelCellConverter : ExcelCellConverter<LocalDate?>, IDefaultEx
     }
 
     protected override ExcelNumberFormat GetNumberFormat(Column column, LocalDate? value) {
-        return new DateExcelNumberFormat(column.LocalizationSettings.DateFormat);
+        return new DateExcelNumberFormat(column.Formatter.DateTime.DateFormat);
     }
 
     protected override void ApplyFormatting(Column column, Cell<LocalDate?> cell, ExcelFormatting formatting) {

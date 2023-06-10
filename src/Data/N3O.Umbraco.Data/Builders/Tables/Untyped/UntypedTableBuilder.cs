@@ -54,7 +54,7 @@ public class UntypedTableBuilder : IUntypedTableBuilder {
 
         return table;
     }
-
+    
     private IReadOnlyList<Column> GetColumns() {
         var columns = new List<Column>();
 

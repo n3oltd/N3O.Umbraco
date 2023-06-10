@@ -10,8 +10,8 @@ public class DateTimeExcelCellConverter : ExcelCellConverter<LocalDateTime?>, ID
     }
 
     protected override ExcelNumberFormat GetNumberFormat(Column column, LocalDateTime? value) {
-        return new DateTimeExcelNumberFormat(column.LocalizationSettings.DateFormat,
-                                             column.LocalizationSettings.TimeFormat);
+        return new DateTimeExcelNumberFormat(column.Formatter.DateTime.DateFormat,
+                                             column.Formatter.DateTime.TimeFormat);
     }
 
     protected override void ApplyFormatting(Column column, Cell<LocalDateTime?> cell, ExcelFormatting formatting) {

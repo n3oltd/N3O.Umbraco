@@ -10,6 +10,7 @@ public class LocalizationComposer : Composer {
         builder.Services.AddSingleton<IClock>(SystemClock.Instance);
         builder.Services.AddSingleton<IDateTimeFormatter, DateTimeFormatter>();
         builder.Services.AddSingleton<IFormatter, Formatter>();
+        builder.Services.AddSingleton<IFormatterFactory, FormatterFactory>();
         builder.Services.AddSingleton<ILocalClock, LocalClock>();
         builder.Services.AddSingleton<ILocalizationSettingsAccessor, LocalizationSettingsAccessor>();
         builder.Services.AddSingleton<INumberFormatter, NumberFormatter>();

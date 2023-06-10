@@ -15,7 +15,6 @@ public class FluentColumnRangeBuilder<TValue> : IFluentColumnRangeBuilder<TValue
     private readonly IServiceProvider _serviceProvider;
     private readonly IFormatter _formatter;
     private readonly IStringLocalizer _stringLocalizer;
-    private readonly LocalizationSettings _localizationSettings;
     private readonly ILocalClock _localClock;
     private readonly DataType _dataType;
     private readonly List<Attribute> _attributes = new();
@@ -32,13 +31,11 @@ public class FluentColumnRangeBuilder<TValue> : IFluentColumnRangeBuilder<TValue
     public FluentColumnRangeBuilder(IServiceProvider serviceProvider,
                                     IFormatter formatter,
                                     IStringLocalizer stringLocalizer,
-                                    LocalizationSettings localizationSettings,
                                     ILocalClock localClock,
                                     DataType dataType) {
         _serviceProvider = serviceProvider;
         _formatter = formatter;
         _stringLocalizer = stringLocalizer;
-        _localizationSettings = localizationSettings;
         _localClock = localClock;
         _dataType = dataType;
     }
@@ -188,7 +185,6 @@ public class FluentColumnRangeBuilder<TValue> : IFluentColumnRangeBuilder<TValue
         Validate();
 
         var columnRange = new ColumnRange<TValue>(_formatter,
-                                                  _localizationSettings,
                                                   _localClock,
                                                   _cellConverter,
                                                   _columnHeading,

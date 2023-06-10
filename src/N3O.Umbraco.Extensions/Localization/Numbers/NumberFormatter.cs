@@ -5,15 +5,15 @@ using System.Globalization;
 namespace N3O.Umbraco.Localization;
 
 public class NumberFormatter : INumberFormatter {
-    private readonly ILocalizationSettingsAccessor _settingsAccessor;
+    public NumberFormatter(ILocalizationSettingsAccessor settingsAccessor) : this(settingsAccessor.GetSettings()) { }
 
-    public NumberFormatter(ILocalizationSettingsAccessor settingsAccessor) {
-        _settingsAccessor = settingsAccessor;
+    private NumberFormatter(LocalizationSettings settings) {
+        NumberFormat = settings.NumberFormat;
     }
 
     public string FormatOrdinal(int number, NumberFormat numberFormat = null) {
         if (numberFormat == null) {
-            numberFormat = _settingsAccessor.GetSettings().NumberFormat;
+            numberFormat = NumberFormat;
         }
 
         var cultureInfo = numberFormat.GetCultureInfo();
@@ -47,6 +47,8 @@ public class NumberFormatter : INumberFormatter {
         return FormatMoney(new Money(amount, currency), numberFormat);
     }
 
+    public NumberFormat NumberFormat { get; }
+
     public string FormatMoneyAbbreviated(Money money, NumberFormat numberFormat = null) {
         if (money == null) {
             return null;
@@ -77,7 +79,7 @@ public class NumberFormatter : INumberFormatter {
 
     private NumberFormatInfo GetNumberFormatInfo(NumberFormat numberFormat) {
         if (numberFormat == null) {
-            numberFormat = _settingsAccessor.GetSettings().NumberFormat;
+            numberFormat = NumberFormat;
         }
 
         var numberFormatInfo = numberFormat.GetNumberFormatInfo();
@@ -87,4 +89,8 @@ public class NumberFormatter : INumberFormatter {
 
     public static readonly INumberFormatter Invariant =
         new NumberFormatter(DefaultLocalizationSettingsAccessor.Instance);
+
+    public static INumberFormatter Create(LocalizationSettings settings) {
+        return new NumberFormatter(settings);
+    }
 }

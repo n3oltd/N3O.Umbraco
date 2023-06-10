@@ -7,21 +7,18 @@ namespace N3O.Umbraco.Data.Builders;
 
 public class ColumnRangeBuilder : IColumnRangeBuilder {
     private readonly IServiceProvider _serviceProvider;
-    private readonly IFormatter _formatter;
     private readonly IStringLocalizer _stringLocalizer;
     private readonly ILocalClock _localClock;
-    private readonly ILocalizationSettingsAccessor _localizationSettingsAccessor;
+    private IFormatter _formatter;
 
     public ColumnRangeBuilder(IServiceProvider serviceProvider,
-                              IFormatter formatter,
                               IStringLocalizer stringLocalizer,
                               ILocalClock localClock,
-                              ILocalizationSettingsAccessor localizationSettingsAccessor) {
+                              IFormatter formatter) {
         _serviceProvider = serviceProvider;
-        _formatter = formatter;
         _stringLocalizer = stringLocalizer;
         _localClock = localClock;
-        _localizationSettingsAccessor = localizationSettingsAccessor;
+        _formatter = formatter;
     }
     
     public IFluentColumnRangeBuilder<TValue> Bool<TValue>() {
@@ -65,15 +62,18 @@ public class ColumnRangeBuilder : IColumnRangeBuilder {
     }
 
     public IFluentColumnRangeBuilder<TValue> OfType<TValue>(DataType dataType) {
-        var localizationSettings = _localizationSettingsAccessor.GetSettings();
-        
         var builder = new FluentColumnRangeBuilder<TValue>(_serviceProvider,
                                                            _formatter,
                                                            _stringLocalizer,
-                                                           localizationSettings,
                                                            _localClock,
                                                            dataType);
 
         return builder;
+    }
+
+    public IColumnRangeBuilder UseFormatter(IFormatter formatter) {
+        _formatter = formatter;
+
+        return this;
     }
 }
