@@ -3,6 +3,7 @@ using CsvHelper.Configuration;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Localization;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -97,20 +98,28 @@ public class CsvWorkbook : ICsvWorkbook {
             foreach (var column in columns) {
                 var cell = _table[column, row];
 
-                var csvText = GetCsvText(column, cell);
+                var csvText = GetCsvText(column.Formatter, cell);
 
-                csv.WriteField(csvText);
+                csv.WriteField(csvText, csvText.ContainsAny(',', '\n'));
             }
 
             await csv.NextRecordAsync();
         }
     }
 
-    private string GetCsvText(Column column, Cell cell) {
+    private string GetCsvText(IFormatter formatter, Cell cell) {
         var csvValue = "";
 
         if (cell.HasValue(x => x.Value)) {
-            csvValue = cell.Type.ConvertToText(column.Formatter, cell.Value);
+            if (cell.Type.IsAnyOf(Lookups.DataTypes.Date,
+                                  Lookups.DataTypes.DateTime,
+                                  Lookups.DataTypes.Decimal,
+                                  Lookups.DataTypes.Integer,
+                                  Lookups.DataTypes.Time)) {
+                csvValue = cell.Type.ToInvariantText(cell.Value);
+            } else {
+                csvValue = cell.Type.ToText(formatter, cell.Value);
+            }
         }
 
         return csvValue;

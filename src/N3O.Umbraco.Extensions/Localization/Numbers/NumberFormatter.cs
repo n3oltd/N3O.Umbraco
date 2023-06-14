@@ -87,7 +87,7 @@ public class NumberFormatter : INumberFormatter {
         return numberFormatInfo;
     }
 
-    public static readonly INumberFormatter Invariant =
+    public static readonly INumberFormatter Default =
         new NumberFormatter(DefaultLocalizationSettingsAccessor.Instance);
 
     public static INumberFormatter Create(LocalizationSettings settings) {

@@ -4,7 +4,11 @@ using N3O.Umbraco.Localization;
 namespace N3O.Umbraco.Data.Converters;
 
 public class BoolTextConverter : ITextConverter<bool?> {
-    public string Convert(IFormatter formatter, bool? value) {
+    public string ToInvariantText(bool? value) {
+        return value?.ToString().ToLowerInvariant();
+    }
+
+    public string ToText(IFormatter formatter, bool? value) {
         return value.ToYesNoString(formatter.Text);
     }
 }

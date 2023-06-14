@@ -22,7 +22,7 @@ public abstract class Cell : Value {
     public Dictionary<string, IEnumerable<object>> Metadata { get; }
 
     public string ToString(IFormatter formatter) {
-        return Type.ConvertToText(formatter, Value);
+        return Type.ToText(formatter, Value);
     }
 }
 

@@ -9,7 +9,7 @@ public partial class DateTimeFormatter : IDateTimeFormatter {
         Timezone = settings.Timezone;
     }
 
-    public static readonly IDateTimeFormatter Invariant =
+    public static readonly IDateTimeFormatter Default =
         new DateTimeFormatter(DefaultLocalizationSettingsAccessor.Instance);
 
     public DateFormat DateFormat { get; }

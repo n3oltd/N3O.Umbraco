@@ -4,7 +4,11 @@ using System;
 namespace N3O.Umbraco.Data.Converters;
 
 public class GuidTextConverter : ITextConverter<Guid?> {
-    public string Convert(IFormatter formatter, Guid? value) {
+    public string ToInvariantText(Guid? value) {
         return value?.ToString();
+    }
+
+    public string ToText(IFormatter formatter, Guid? value) {
+        return ToInvariantText(value);
     }
 }

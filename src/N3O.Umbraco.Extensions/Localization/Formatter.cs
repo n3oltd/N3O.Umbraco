@@ -13,7 +13,7 @@ public class Formatter : IFormatter {
     public IDateTimeFormatter DateTime { get; }
     public ITextFormatter Text { get; }
     
-    public static IFormatter Invariant => new Formatter(NumberFormatter.Invariant,
-                                                        DateTimeFormatter.Invariant,
-                                                        TextFormatter.Invariant);
+    public static IFormatter Default => new Formatter(NumberFormatter.Default,
+                                                      DateTimeFormatter.Default,
+                                                      TextFormatter.Default);
 }

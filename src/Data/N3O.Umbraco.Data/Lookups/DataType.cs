@@ -32,8 +32,9 @@ public abstract class DataType : NamedLookup {
     public object GetDefaultValue() => _defaultValue;
 
     public abstract Cell Cell(object value, Type targetType);
-    public abstract string ConvertToText(IFormatter formatter, object value);
     public abstract Type GetDefaultCellConverterType();
+    public abstract string ToInvariantText(object value);
+    public abstract string ToText(IFormatter formatter, object value);
     public abstract bool ValuesAreEqual(object value1, object value2);
 
     public virtual object GetRequest(object value, Type targetType) => value;
@@ -71,12 +72,20 @@ public class DataType<T, TDefaultCellConverter, TTextConverter> : DataType
         return Cell((T) value, targetType);
     }
 
-    public string ConvertToText(IFormatter formatter, T value) {
-        return _textConverter.Convert(formatter, value);
+    public string ToInvariantText(T value) {
+        return _textConverter.ToInvariantText(value);
     }
 
-    public override string ConvertToText(IFormatter formatter, object value) {
-        return ConvertToText(formatter, (T) value);
+    public override string ToInvariantText(object value) {
+        return ToInvariantText((T) value);
+    }
+    
+    public string ToText(IFormatter formatter, T value) {
+        return _textConverter.ToText(formatter, value);
+    }
+
+    public override string ToText(IFormatter formatter, object value) {
+        return ToText(formatter, (T) value);
     }
 
     public override bool ValuesAreEqual(object obj1, object obj2) {

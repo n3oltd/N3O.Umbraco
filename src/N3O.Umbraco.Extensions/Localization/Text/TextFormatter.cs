@@ -28,7 +28,7 @@ public class TextFormatter : ITextFormatter {
         return lookup.Name;
     }
 
-    public static ITextFormatter Invariant = new TextFormatter(new InvariantStringLocalizer());
+    public static ITextFormatter Default = new TextFormatter(new InvariantStringLocalizer());
 
     public static ITextFormatter Create(IStringLocalizer stringLocalizer) {
         return new TextFormatter(stringLocalizer);
