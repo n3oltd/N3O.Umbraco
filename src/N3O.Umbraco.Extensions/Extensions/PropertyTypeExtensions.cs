@@ -15,6 +15,10 @@ public static class PropertyTypeExtensions {
     public static bool IsDataList(this IPropertyType propertyType) {
         return propertyType.HasEditorAlias("Umbraco.Community.Contentment.DataList");
     }
+    
+    public static bool IsDropdown(this IPropertyType propertyType) {
+        return propertyType.HasEditorAlias(Aliases.DropDownListFlexible);
+    }
 
     public static bool IsNestedContent(this IPropertyType propertyType) {
         return propertyType.HasEditorAlias(Aliases.NestedContent);
