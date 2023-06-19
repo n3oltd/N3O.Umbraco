@@ -66,7 +66,7 @@ public class ContentJsonConverter : JsonConverter {
             writer.WritePropertyName(nameof(ContentRes.CreateDate).Camelize());
             writer.WriteValue(content.CreateDate);
 
-            writer.WritePropertyName(nameof(ContentRes. UpdateDate).Camelize());
+            writer.WritePropertyName(nameof(ContentRes.UpdateDate).Camelize());
             writer.WriteValue(content.UpdateDate);
             
             writer.WritePropertyName(nameof(ContentRes.CreatorName).Camelize());
@@ -115,8 +115,7 @@ public class ContentJsonConverter : JsonConverter {
         var converter = _propertyValueConverters.Value
                                                 .Where(x => x is not MustBeStringValueConverter &&
                                                             x.IsConverter(publishedPropertyType))
-                                                .OrderBy(x => x is JsonValueConverter ? 1 : 0)
-                                                .FirstOrDefault();
+                                                .MinBy(x => x is JsonValueConverter ? 1 : 0);
 
         var intermediate = converter.ConvertSourceToIntermediate(null,
                                                                  publishedPropertyType,
