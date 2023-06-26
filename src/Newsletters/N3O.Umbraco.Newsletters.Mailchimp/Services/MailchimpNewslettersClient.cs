@@ -13,13 +13,16 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Newsletters.Mailchimp;
 
-public class MailchimpClient : INewslettersClient {
+public class MailchimpNewslettersClient : INewslettersClient {
     private readonly ILogger _logger;
     private readonly ITextFormatter _textFormatter;
     private readonly IMailChimpManager _manager;
     private readonly string _audienceId;
 
-    public MailchimpClient(ILogger<MailchimpClient> logger, ITextFormatter textFormatter, IMailChimpManager manager, string audienceId) {
+    public MailchimpNewslettersClient(ILogger<MailchimpNewslettersClient> logger,
+                                      ITextFormatter textFormatter,
+                                      IMailChimpManager manager,
+                                      string audienceId) {
         _logger = logger;
         _textFormatter = textFormatter;
         _manager = manager;

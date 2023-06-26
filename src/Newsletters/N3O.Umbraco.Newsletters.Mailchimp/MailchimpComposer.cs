@@ -12,13 +12,13 @@ namespace N3O.Umbraco.Newsletters.Mailchimp;
 public class MailchimpComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddTransient<INewslettersClient>(serviceProvider => {
-            var logger = serviceProvider.GetRequiredService<ILogger<MailchimpClient>>();
+            var logger = serviceProvider.GetRequiredService<ILogger<MailchimpNewslettersClient>>();
             var textFormatter = serviceProvider.GetRequiredService<ITextFormatter>();
             var contentCache = serviceProvider.GetRequiredService<IContentCache>();
             var settings = contentCache.Single<MailchimpSettingsContent>();
     
             var manager = new MailChimpManager(settings.ApiKey);
-            var client = new MailchimpClient(logger, textFormatter, manager, settings.AudienceId);
+            var client = new MailchimpNewslettersClient(logger, textFormatter, manager, settings.AudienceId);
 
             return client;
         });
