@@ -22,7 +22,7 @@ public class MarketingApiClient : ApiClient, IMarketingApiClient {
                                               IReadOnlyDictionary<string, object> customFields) {
         try {
             var apiReq = new ApiAddOrUpdateContactsReq();
-            var existing = await GetContactAsync(email);
+            var existing = await GetContactByEmailAsync(email);
             var apiContactReq = CreateContact(existing, email, reservedFields, customFields);
 
             apiReq.ListIds = listId.Yield().ToList();
@@ -83,7 +83,7 @@ public class MarketingApiClient : ApiClient, IMarketingApiClient {
 
     public async Task<RemoveContactResult> RemoveContactAsync(string email, string listId) {
         try {
-            var existing = await GetContactAsync(email);
+            var existing = await GetContactByEmailAsync(email);
 
             if (existing != null) {
                 await DeleteAsync($"marketing/lists/{listId}/contacts?contact_ids={existing.Id}");
@@ -107,13 +107,21 @@ public class MarketingApiClient : ApiClient, IMarketingApiClient {
         }
     }
 
-    private async Task<ApiContactRes> GetContactAsync(string email) {
-        var apiReq = new ApiSearchContactsReq();
-        apiReq.Query = $"email LIKE '{email}'";
-        
-        var res = await PostAsync<ApiSearchContactsReq, ApiSearchContactsRes>("marketing/contacts/search", apiReq);
+    private async Task<ApiContactRes> GetContactByEmailAsync(string email) {
+        try {
+            var apiReq = new ApiGetContactByEmailReq();
+            apiReq.Emails = email.Yield();
 
-        return res.Result;
+            var res = await PostAsync<ApiGetContactByEmailReq, ApiGetContactByEmailRes>("marketing/contacts/search/emails", apiReq);
+
+            return res.Result.First().Value;
+        } catch (Exception ex) {
+            if (ex.IsNotFound()) {
+                return null;
+            } else {
+                throw;
+            }
+        }
     }
 
     private ApiContactReq CreateContact(ApiContactRes existing,
@@ -123,12 +131,12 @@ public class MarketingApiClient : ApiClient, IMarketingApiClient {
         var contact = new ApiContactReq();
         contact.Email = email;
 
-        if (reservedFields.HasAny()  || existing.ReservedFields.HasAny()) {
+        if (reservedFields.HasAny() || existing.HasAny(x => x.ReservedFields)) {
             contact.ReservedFields = new Dictionary<string, object>(reservedFields.OrEmpty()
                                                                                   .Concat(existing.OrEmpty(x => x.ReservedFields)));
         }
 
-        if (customFields.HasAny()) {
+        if (customFields.HasAny() || existing.HasAny(x => x.CustomFields)) {
             contact.CustomFields = new Dictionary<string, object>(customFields.OrEmpty()
                                                                               .Concat(existing.OrEmpty(x => x.CustomFields)));
         }

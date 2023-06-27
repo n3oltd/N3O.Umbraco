@@ -20,6 +20,8 @@ public class SendGridComposer : Composer {
 
             return marketingClient;
         });
+        
+        builder.Services.AddTransient<INewslettersClient, SendGridNewslettersClient>();
     }
     
     private SendGridClient GetSendGridClient(string apiKey) {

@@ -52,7 +52,7 @@ public abstract class ApiClient : IApiClient {
     protected async Task<TRes> PostAsync<TReq, TRes>(string urlPath, TReq req)
         where TReq : class
         where TRes : class {
-        var res = await RequestAsync<TReq, TRes>(BaseClient.Method.GET , urlPath: urlPath, req);
+        var res = await RequestAsync<TReq, TRes>(BaseClient.Method.POST , urlPath: urlPath, req);
 
         return res;
     }
@@ -60,7 +60,7 @@ public abstract class ApiClient : IApiClient {
     protected async Task<TRes> PutAsync<TReq, TRes>(string urlPath, TReq req)
         where TReq : class
         where TRes : class {
-        var res = await RequestAsync<TReq, TRes>(BaseClient.Method.GET , urlPath: urlPath, req);
+        var res = await RequestAsync<TReq, TRes>(BaseClient.Method.PUT , urlPath: urlPath, req);
 
         return res;
     }
