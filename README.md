@@ -36,7 +36,7 @@ Provides realtime currency conversion using market data.
 
 #### Newsletters
 
-Provides functionality for integrating with newsletter platforms such as Mailchimp.
+Provides functionality for integrating with newsletter platforms such as Mailchimp and SendGrid.
 
 #### Payments
 
