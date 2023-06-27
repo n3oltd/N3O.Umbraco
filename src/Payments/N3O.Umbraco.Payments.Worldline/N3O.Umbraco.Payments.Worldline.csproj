@@ -40,6 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="connect-sdk-dotnet" Version="3.39.0" />
+      <PackageReference Include="connect-sdk-dotnet" Version="3.39.1" />
     </ItemGroup>
 </Project>
