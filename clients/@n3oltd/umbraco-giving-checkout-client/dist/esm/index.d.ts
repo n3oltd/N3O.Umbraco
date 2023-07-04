@@ -114,12 +114,14 @@ export interface AllocationRes {
     type?: AllocationType | undefined;
     value?: MoneyRes | undefined;
     fundDimensions?: FundDimensionValuesRes | undefined;
+    feedback?: FeedbackAllocationRes | undefined;
     fund?: FundAllocationRes | undefined;
     sponsorship?: SponsorshipAllocationRes | undefined;
     upsell?: boolean;
 }
-/** One of 'fund', 'sponsorship' */
+/** One of 'feedback', 'fund', 'sponsorship' */
 export declare enum AllocationType {
+    Feedback = "feedback",
     Fund = "fund",
     Sponsorship = "sponsorship"
 }
@@ -134,26 +136,22 @@ export interface FundDimensionValuesRes {
     dimension3?: string | undefined;
     dimension4?: string | undefined;
 }
-export interface FundAllocationRes {
-    donationItem?: string | undefined;
+export interface FeedbackAllocationRes {
+    scheme?: string | undefined;
+    customFields?: FeedbackCustomFieldRes[] | undefined;
 }
 /** One of 'donation', 'regularGiving' */
 export declare enum GivingType {
     Donation = "donation",
     RegularGiving = "regularGiving"
 }
-export interface PriceContent {
-    amount?: number;
-    locked?: boolean;
-}
-export interface PricingRuleElement {
+export interface FeedbackCustomFieldDefinitionElement {
     content?: IPublishedElement | undefined;
-    amount?: number;
-    locked?: boolean;
-    dimension1?: string | undefined;
-    dimension2?: string | undefined;
-    dimension3?: string | undefined;
-    dimension4?: string | undefined;
+    type?: FeedbackCustomFieldType | undefined;
+    name?: string | undefined;
+    required?: boolean;
+    textMaxLength?: number | undefined;
+    alias?: string | undefined;
 }
 export interface IPublishedElement {
     contentType?: IPublishedContentType;
@@ -210,18 +208,51 @@ export interface IPublishedProperty {
     propertyType?: IPublishedPropertyType;
     alias?: string;
 }
+/** One of 'bool', 'date', 'text' */
+export declare enum FeedbackCustomFieldType {
+    Bool = "bool",
+    Date = "date",
+    Text = "text"
+}
+export interface PriceContent {
+    amount?: number;
+    locked?: boolean;
+}
+export interface PricingRuleElement {
+    content?: IPublishedElement | undefined;
+    amount?: number;
+    locked?: boolean;
+    dimension1?: string | undefined;
+    dimension2?: string | undefined;
+    dimension3?: string | undefined;
+    dimension4?: string | undefined;
+}
+export interface FeedbackCustomFieldRes {
+    type?: FeedbackCustomFieldType | undefined;
+    alias?: string | undefined;
+    name?: string | undefined;
+    bool?: boolean | undefined;
+    date?: Date | undefined;
+    text?: string | undefined;
+}
+export interface FundAllocationRes {
+    donationItem?: string | undefined;
+}
 export interface SponsorshipAllocationRes {
     beneficiary?: string | undefined;
     scheme?: string | undefined;
     duration?: SponsorshipDuration | undefined;
     components?: SponsorshipComponentAllocationRes[] | undefined;
 }
-/** One of '_6', '_12', '_18', '_24' */
+/** One of '_6', '_12', '_18', '_24', '_36', '_48', '_60' */
 export declare enum SponsorshipDuration {
     _6 = "_6",
     _12 = "_12",
     _18 = "_18",
-    _24 = "_24"
+    _24 = "_24",
+    _36 = "_36",
+    _48 = "_48",
+    _60 = "_60"
 }
 export interface SponsorshipComponentAllocationRes {
     component?: string | undefined;
@@ -308,6 +339,7 @@ export interface ProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
+    [key: string]: any;
 }
 export interface NamedLookupRes {
     id?: string | undefined;

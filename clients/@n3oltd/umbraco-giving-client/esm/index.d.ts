@@ -15,6 +15,8 @@ export declare class GivingClient {
     protected processGetLookupCurrencies(response: Response): Promise<CurrencyRes[]>;
     getLookupDonationItems(): Promise<DonationItemRes[]>;
     protected processGetLookupDonationItems(response: Response): Promise<DonationItemRes[]>;
+    getLookupFeedbackSchemes(): Promise<string[]>;
+    protected processGetLookupFeedbackSchemes(response: Response): Promise<string[]>;
     getLookupFundDimension1Values(): Promise<FundDimensionValueRes[]>;
     protected processGetLookupFundDimension1Values(response: Response): Promise<FundDimensionValueRes[]>;
     getLookupFundDimension2Values(): Promise<FundDimensionValueRes[]>;
@@ -53,9 +55,11 @@ export interface DonationOptionRes {
     hideRegularGiving?: boolean;
     fund?: FundDonationOptionRes | undefined;
     sponsorship?: SponsorshipDonationOptionRes | undefined;
+    feedback?: FeedbackDonationOptionRes | undefined;
 }
-/** One of 'fund', 'sponsorship' */
+/** One of 'feedback', 'fund', 'sponsorship' */
 export declare enum AllocationType {
+    Feedback = "feedback",
     Fund = "fund",
     Sponsorship = "sponsorship"
 }
@@ -162,12 +166,32 @@ export interface MoneyRes {
 export interface SponsorshipDonationOptionRes {
     scheme?: string | undefined;
 }
-/** One of '_6', '_12', '_18', '_24' */
+/** One of '_6', '_12', '_18', '_24', '_36', '_48', '_60' */
 export declare enum SponsorshipDuration {
     _6 = "_6",
     _12 = "_12",
     _18 = "_18",
-    _24 = "_24"
+    _24 = "_24",
+    _36 = "_36",
+    _48 = "_48",
+    _60 = "_60"
+}
+export interface FeedbackDonationOptionRes {
+    scheme?: string | undefined;
+}
+export interface FeedbackCustomFieldDefinitionElement {
+    content?: IPublishedElement | undefined;
+    type?: FeedbackCustomFieldType | undefined;
+    name?: string | undefined;
+    required?: boolean;
+    textMaxLength?: number | undefined;
+    alias?: string | undefined;
+}
+/** One of 'bool', 'date', 'text' */
+export declare enum FeedbackCustomFieldType {
+    Bool = "bool",
+    Date = "date",
+    Text = "text"
 }
 export interface ProblemDetails {
     type?: string | undefined;
@@ -175,6 +199,7 @@ export interface ProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
+    [key: string]: any;
 }
 export interface FundStructureRes {
     dimension1?: FundDimensionRes | undefined;

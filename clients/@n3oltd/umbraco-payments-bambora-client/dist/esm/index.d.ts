@@ -9,8 +9,8 @@ export declare class BamboraClient {
     protected processChargeCard(response: Response): Promise<PaymentFlowResOfBamboraPayment>;
     completePaymentThreeDSecure(flowId: string, cRes: string | null | undefined, paRes: string | null | undefined): Promise<void>;
     protected processCompletePaymentThreeDSecure(response: Response): Promise<void>;
-    storeCard(flowId: string, req: StoreCardReq): Promise<PaymentFlowResOfBamboraPayment>;
-    protected processStoreCard(response: Response): Promise<PaymentFlowResOfBamboraPayment>;
+    storeCard(flowId: string, req: StoreCardReq): Promise<PaymentFlowResOfBamboraCredential>;
+    protected processStoreCard(response: Response): Promise<PaymentFlowResOfBamboraCredential>;
 }
 export interface PaymentFlowResOfBamboraPayment {
     flowRevision?: number;
@@ -75,6 +75,7 @@ export interface ProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
+    [key: string]: any;
 }
 export interface ChargeCardReq {
     token?: string | undefined;
@@ -93,6 +94,44 @@ export interface BrowserParametersReq {
     screenHeight?: number | undefined;
     screenWidth?: number | undefined;
     utcOffsetMinutes?: number | undefined;
+}
+export interface PaymentFlowResOfBamboraCredential {
+    flowRevision?: number;
+    result?: BamboraCredential | undefined;
+}
+export interface BamboraCredential {
+    advancePayment?: Payment | undefined;
+    setupAt?: Date | undefined;
+    isSetUp?: boolean;
+    type?: PaymentObjectType | undefined;
+    completeAt?: Date | undefined;
+    errorAt?: Date | undefined;
+    errorMessage?: string | undefined;
+    exceptionDetails?: string | undefined;
+    status?: PaymentObjectStatus | undefined;
+    bamboraErrorCode?: number | undefined;
+    bamboraErrorMessage?: string | undefined;
+    bamboraCustomerCode?: string | undefined;
+    bamboraStatusCode?: number | undefined;
+    bamboraStatusDetail?: string | undefined;
+    bamboraToken?: string | undefined;
+    returnUrl?: string | undefined;
+    cardPayment?: CardPayment | undefined;
+    method?: string | undefined;
+}
+export interface Payment {
+    completeAt?: Date | undefined;
+    errorAt?: Date | undefined;
+    errorMessage?: string | undefined;
+    exceptionDetails?: string | undefined;
+    status?: PaymentObjectStatus | undefined;
+    card?: CardPayment | undefined;
+    paidAt?: Date | undefined;
+    declinedAt?: Date | undefined;
+    declinedReason?: string | undefined;
+    isDeclined?: boolean;
+    isPaid?: boolean;
+    type?: PaymentObjectType | undefined;
 }
 export interface StoreCardReq {
     token?: string | undefined;

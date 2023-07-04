@@ -66,6 +66,7 @@ export interface ProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
+    [key: string]: any;
 }
 export interface PayPalTransactionReq {
     email?: string | undefined;

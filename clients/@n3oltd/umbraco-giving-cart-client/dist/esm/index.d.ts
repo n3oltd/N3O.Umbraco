@@ -22,6 +22,7 @@ export interface ProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
+    [key: string]: any;
 }
 export interface AddToCartReq {
     givingType?: GivingType | undefined;
@@ -37,12 +38,14 @@ export interface AllocationReq {
     type?: AllocationType | undefined;
     value?: MoneyReq | undefined;
     fundDimensions?: FundDimensionValuesReq | undefined;
+    feedback?: FeedbackAllocationReq | undefined;
     fund?: FundAllocationReq | undefined;
     sponsorship?: SponsorshipAllocationReq | undefined;
     upsell?: boolean | undefined;
 }
-/** One of 'fund', 'sponsorship' */
+/** One of 'feedback', 'fund', 'sponsorship' */
 export declare enum AllocationType {
+    Feedback = "feedback",
     Fund = "fund",
     Sponsorship = "sponsorship"
 }
@@ -56,21 +59,17 @@ export interface FundDimensionValuesReq {
     dimension3?: string | undefined;
     dimension4?: string | undefined;
 }
-export interface FundAllocationReq {
-    donationItem?: string | undefined;
+export interface FeedbackAllocationReq {
+    scheme?: string | undefined;
+    customFields?: FeedbackNewCustomFieldsReq | undefined;
 }
-export interface PriceContent {
-    amount?: number;
-    locked?: boolean;
-}
-export interface PricingRuleElement {
+export interface FeedbackCustomFieldDefinitionElement {
     content?: IPublishedElement | undefined;
-    amount?: number;
-    locked?: boolean;
-    dimension1?: string | undefined;
-    dimension2?: string | undefined;
-    dimension3?: string | undefined;
-    dimension4?: string | undefined;
+    type?: FeedbackCustomFieldType | undefined;
+    name?: string | undefined;
+    required?: boolean;
+    textMaxLength?: number | undefined;
+    alias?: string | undefined;
 }
 export interface IPublishedElement {
     contentType?: IPublishedContentType;
@@ -127,18 +126,52 @@ export interface IPublishedProperty {
     propertyType?: IPublishedPropertyType;
     alias?: string;
 }
+/** One of 'bool', 'date', 'text' */
+export declare enum FeedbackCustomFieldType {
+    Bool = "bool",
+    Date = "date",
+    Text = "text"
+}
+export interface PriceContent {
+    amount?: number;
+    locked?: boolean;
+}
+export interface PricingRuleElement {
+    content?: IPublishedElement | undefined;
+    amount?: number;
+    locked?: boolean;
+    dimension1?: string | undefined;
+    dimension2?: string | undefined;
+    dimension3?: string | undefined;
+    dimension4?: string | undefined;
+}
+export interface FeedbackNewCustomFieldsReq {
+    entries?: FeedbackNewCustomFieldReq[] | undefined;
+}
+export interface FeedbackNewCustomFieldReq {
+    alias?: string | undefined;
+    bool?: boolean | undefined;
+    date?: Date | undefined;
+    text?: string | undefined;
+}
+export interface FundAllocationReq {
+    donationItem?: string | undefined;
+}
 export interface SponsorshipAllocationReq {
     beneficiary?: string | undefined;
     scheme?: string | undefined;
     duration?: SponsorshipDuration | undefined;
     components?: SponsorshipComponentAllocationReq[] | undefined;
 }
-/** One of '_6', '_12', '_18', '_24' */
+/** One of '_6', '_12', '_18', '_24', '_36', '_48', '_60' */
 export declare enum SponsorshipDuration {
     _6 = "_6",
     _12 = "_12",
     _18 = "_18",
-    _24 = "_24"
+    _24 = "_24",
+    _36 = "_36",
+    _48 = "_48",
+    _60 = "_60"
 }
 export interface SponsorshipComponentAllocationReq {
     component?: string | undefined;

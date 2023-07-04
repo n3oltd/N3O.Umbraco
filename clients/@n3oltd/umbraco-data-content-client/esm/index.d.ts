@@ -28,6 +28,7 @@ export interface ContentRes {
     properties?: {
         [key: string]: any;
     } | undefined;
+    [key: string]: any;
 }
 export interface ProblemDetails {
     type?: string | undefined;
@@ -35,6 +36,7 @@ export interface ProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
+    [key: string]: any;
 }
 export interface ContentCriteria {
     contentTypeAlias?: string | undefined;

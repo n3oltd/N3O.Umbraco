@@ -37,6 +37,9 @@ n3o-tool clients --url "https://localhost:6001/swagger/Payments/swagger.json" --
 n3o-tool clients --url "https://localhost:6001/swagger/Bambora/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-payments-bambora-client" --name "BamboraClient" --package-name "@n3oltd/umbraco-payments-bambora-client" --package-description "TODO"
 n3o-tool clients --url "https://localhost:6001/swagger/Bambora/swagger.json" --language "CSharp" --output-path "../src/N3O.Umbraco.Clients/Payments/Bambora" --name "BamboraClient" --namespace "N3O.Umbraco.Clients.Payments.Bambora"
 
+n3o-tool clients --url "https://localhost:6001/swagger/DirectDebitUK/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-payments-directdebituk-client" --name "DirectDebitUKClient" --package-name "@n3oltd/umbraco-payments-directdebituk-client" --package-description "TODO"
+n3o-tool clients --url "https://localhost:6001/swagger/DirectDebitUK/swagger.json" --language "CSharp" --output-path "../src/N3O.Umbraco.Clients/Payments/DirectDebitUK" --name "DirectDebitUKClient" --namespace "N3O.Umbraco.Clients.Payments.DirectDebitUK"
+
 n3o-tool clients --url "https://localhost:6001/swagger/GoCardless/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-payments-gocardless-client" --name "GoCardlessClient" --package-name "@n3oltd/umbraco-payments-gocardless-client" --package-description "TODO"
 n3o-tool clients --url "https://localhost:6001/swagger/GoCardless/swagger.json" --language "CSharp" --output-path "../src/N3O.Umbraco.Clients/Payments/GoCardless" --name "GoCardlessClient" --namespace "N3O.Umbraco.Clients.Payments.GoCardless"
 

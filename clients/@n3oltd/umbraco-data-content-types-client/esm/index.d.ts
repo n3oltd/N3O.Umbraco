@@ -33,6 +33,7 @@ export interface ProblemDetails {
     status?: number | undefined;
     detail?: string | undefined;
     instance?: string | undefined;
+    [key: string]: any;
 }
 export interface ContentTypeCriteria {
     alias?: string | undefined;
