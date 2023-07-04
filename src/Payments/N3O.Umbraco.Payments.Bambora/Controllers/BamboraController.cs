@@ -32,7 +32,7 @@ public class BamboraController : ApiController {
     }
     
     [HttpPost("credentials/{flowId:entityId}/store")]
-    public async Task<ActionResult<PaymentFlowRes<BamboraPayment>>> StoreCard(StoreCardReq req) {
+    public async Task<ActionResult<PaymentFlowRes<BamboraCredential>>> StoreCard(StoreCardReq req) {
         var res = await _mediator.SendAsync<StoreCardCommand, StoreCardReq, PaymentFlowRes<BamboraCredential>>(req);
 
         return Ok(res);
