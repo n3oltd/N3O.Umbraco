@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace N3O.Umbraco.Payments.Bambora.Client;
+namespace N3O.Umbraco.Payments.Bambora.Clients;
 
 public class ThreeDRes {
     [JsonProperty("3d_session_data")]

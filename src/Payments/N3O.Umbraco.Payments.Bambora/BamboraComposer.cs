@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Payments.Bambora.Client;
+using N3O.Umbraco.Payments.Bambora.Clients;
 using N3O.Umbraco.Payments.Bambora.Content;
 using N3O.Umbraco.Payments.Bambora.Models;
 using Refit;

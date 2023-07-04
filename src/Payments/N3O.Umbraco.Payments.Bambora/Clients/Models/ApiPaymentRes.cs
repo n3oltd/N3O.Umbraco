@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace N3O.Umbraco.Payments.Bambora.Client;
+namespace N3O.Umbraco.Payments.Bambora.Clients;
 
 public class ApiPaymentRes : IApiPaymentRes {
     [JsonProperty("id")]

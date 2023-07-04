@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Payments.Bambora.Client;
+namespace N3O.Umbraco.Payments.Bambora.Clients;
 
 public class AuthorizationHandler : DelegatingHandler {
     private readonly string _base64Credentials;

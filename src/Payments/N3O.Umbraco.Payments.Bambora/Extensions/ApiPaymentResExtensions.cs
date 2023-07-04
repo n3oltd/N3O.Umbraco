@@ -1,5 +1,5 @@
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Payments.Bambora.Client;
+using N3O.Umbraco.Payments.Bambora.Clients;
 
 namespace N3O.Umbraco.Payments.Bambora.Extensions;
 

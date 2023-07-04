@@ -1,6 +1,6 @@
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Payments.Bambora.Client;
+using N3O.Umbraco.Payments.Bambora.Clients;
 using N3O.Umbraco.Payments.Models;
 
 namespace N3O.Umbraco.Payments.Bambora.Extensions;

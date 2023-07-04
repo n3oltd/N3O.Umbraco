@@ -1,7 +1,7 @@
 using Refit;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Payments.Bambora.Client;
+namespace N3O.Umbraco.Payments.Bambora.Clients;
 
 public interface IBamboraPaymentsClient {
     [Post("/payments")]
