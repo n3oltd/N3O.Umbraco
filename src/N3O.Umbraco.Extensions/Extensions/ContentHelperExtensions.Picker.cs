@@ -19,7 +19,7 @@ public static partial class ContentHelperExtensions {
     
     public static T GetPickerValue<T>(this IContentHelper contentHelper, IContentProperty property) {
         if (!property.Type.IsPicker()) {
-            throw new Exception("Property is not picker");
+            throw new Exception("Property is not a picker");
         }
         
         return GetPickerValue<T>(contentHelper, property.ContentType.Alias, property.Type.Alias, property.Value);
@@ -29,7 +29,7 @@ public static partial class ContentHelperExtensions {
                                       string contentTypeAlias,
                                       IProperty property) {
         if (!property.PropertyType.IsPicker()) {
-            throw new Exception("Property is not picker");
+            throw new Exception("Property is not a picker");
         }
         
         return GetPickerValue<T>(contentHelper, contentTypeAlias, property.PropertyType.Alias, property.GetValue());
@@ -56,7 +56,7 @@ public static partial class ContentHelperExtensions {
 
     public static IReadOnlyList<T> GetPickerValues<T>(this IContentHelper contentHelper, IContentProperty property) {
         if (!property.Type.IsPicker()) {
-            throw new Exception("Property is not picker");
+            throw new Exception("Property is not a picker");
         }
         
         return GetPickerValues<T>(contentHelper, property.ContentType.Alias, property.Type.Alias, property.Value);
@@ -66,7 +66,7 @@ public static partial class ContentHelperExtensions {
                                                       string contentTypeAlias,
                                                       IProperty property) {
         if (!property.PropertyType.IsPicker()) {
-            throw new Exception("Property is not picker");
+            throw new Exception("Property is not a picker");
         }
         
         return GetPickerValues<T>(contentHelper, contentTypeAlias, property.PropertyType.Alias, property.GetValue());
