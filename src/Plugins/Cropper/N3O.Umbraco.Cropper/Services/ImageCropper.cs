@@ -38,14 +38,14 @@ public class ImageCropper : IImageCropper {
                                  CancellationToken cancellationToken = default) {
         using (var srcStream = _mediaFileManager.FileSystem.OpenFile($"{source.MediaId}/{source.Filename}")) {
             using (var destStream = new MemoryStream()) {
-                using (var image = Image.Load(srcStream, out var format)) {
+                using (var image = Image.Load(srcStream)) {
                     var clone = image.Clone(i => {
                         i.Crop(new Rectangle(crop.X, crop.Y, crop.Width, crop.Height));
 
                         i.Resize(definition.Width, definition.Height);
                     });
 
-                    await clone.SaveAsync(destStream, format, cancellationToken);
+                    await clone.SaveAsync(destStream, image.Metadata.DecodedImageFormat, cancellationToken);
                 }
                 
                 destStream.Rewind();
