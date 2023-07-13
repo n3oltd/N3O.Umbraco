@@ -16,9 +16,9 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageProjectUrl>https://n3o.ltd</PackageProjectUrl>
         <RepositoryUrl>https://github.com/n3oltd/N3O.Umbraco</RepositoryUrl>
-        <Version>11.0.0</Version>
-        <AssemblyVersion>11.0.0</AssemblyVersion>
-        <FileVersion>11.0.0</FileVersion>
+        <Version>12.0.0</Version>
+        <AssemblyVersion>12.0.0</AssemblyVersion>
+        <FileVersion>12.0.0</FileVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
