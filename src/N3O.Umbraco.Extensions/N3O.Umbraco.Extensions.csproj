@@ -43,13 +43,13 @@
         <PackageReference Include="NSwag.AspNetCore" Version="13.19.0" />
         <PackageReference Include="Our.Umbraco.Community.Contentment.Core" Version="4.4.4" />
         <PackageReference Include="Perplex.ContentBlocks.Core" Version="2.1.9" />
-        <PackageReference Include="Refit" Version="6.5.1" />
-        <PackageReference Include="Refit.Newtonsoft.Json" Version="6.5.1" />
-        <PackageReference Include="SixLabors.ImageSharp" Version="2.1.3" />
-        <PackageReference Include="Umbraco.Cms.Core" Version="11.4.1" />
-        <PackageReference Include="Umbraco.Cms.Web.Common" Version="11.4.1" />
-        <PackageReference Include="Umbraco.Cms.Web.Website" Version="11.4.1" />
-        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="11.4.1" />
+        <PackageReference Include="Refit" Version="7.0.0" />
+        <PackageReference Include="Refit.Newtonsoft.Json" Version="7.0.0" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
+        <PackageReference Include="Umbraco.Cms.Core" Version="12.0.1" />
+        <PackageReference Include="Umbraco.Cms.Web.Common" Version="12.0.1" />
+        <PackageReference Include="Umbraco.Cms.Web.Website" Version="12.0.1" />
+        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="12.0.1" />
         <PackageReference Include="Umbraco.Code" Version="2.0.0" />
     </ItemGroup>
 
