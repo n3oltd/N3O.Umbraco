@@ -40,6 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Konstrukt.Web.UI" Version="1.6.4" />
+      <PackageReference Include="Konstrukt.Web.UI" Version="1.6.5" />
     </ItemGroup>
 </Project>
