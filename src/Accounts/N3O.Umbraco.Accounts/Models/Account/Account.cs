@@ -34,6 +34,49 @@ public class Account : Value, IAccount {
     public Telephone Telephone { get; }
     public Consent Consent { get; }
     public TaxStatus TaxStatus { get; }
+    public bool IsTaxStatusEligible { get; set; }
+    
+    public bool IsComplete => IsAccountComplete();
+    
+    public Account WithUpdatedName(Name name) {
+        return new Account(name, Address, Email, Telephone, Consent, TaxStatus);
+    }
+    
+    public Account WithUpdatedAddress(Address address) {
+        return new Account(Name, address, Email, Telephone, Consent, TaxStatus);
+    }
+    
+    public Account WithUpdatedEmail(Email email) {
+        return new Account(Name, Address, email, Telephone, Consent, TaxStatus);
+    }
+    
+    public Account WithUpdatedTelephone(Telephone telephone) {
+        return new Account(Name, Address, Email, telephone, Consent, TaxStatus);
+    }
+    
+    public Account WithUpdatedConsent(Consent consent) {
+        return new Account(Name, Address, Email, Telephone, consent, TaxStatus);
+    }
+
+    public Account WithUpdatedTaxStatus(TaxStatus taxStatus) {
+        return new Account(Name, Address, Email, Telephone, Consent, taxStatus);
+    }
+
+    private bool IsAccountComplete() {
+        if (!Name.HasValue()) {
+            return false;
+        }
+
+        if (!Address.HasValue()) {
+            return false;
+        }
+
+        if (IsTaxStatusEligible && !TaxStatus.HasValue()) {
+            return false;
+        }
+
+        return true;
+    }
 
     [JsonIgnore]
     IName IAccount.Name => Name;
