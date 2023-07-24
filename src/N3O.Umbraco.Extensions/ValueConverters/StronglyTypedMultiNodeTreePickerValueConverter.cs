@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Configuration.Models;
+using Umbraco.Cms.Core.DeliveryApi;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.PropertyEditors.ValueConverters;
@@ -23,8 +24,10 @@ public class StronglyTypedMultiNodeTreePickerValueConverter : MultiNodeTreePicke
     public StronglyTypedMultiNodeTreePickerValueConverter(IPublishedSnapshotAccessor publishedSnapshotAccessor,
                                                           IUmbracoContextAccessor umbracoContextAccessor,
                                                           IMemberService memberService,
-                                                          IOptions<ModelsBuilderSettings> modelBuilderSettings)
-        : base(publishedSnapshotAccessor, umbracoContextAccessor, memberService) {
+                                                          IApiContentBuilder apiContentBuilder,
+                                                          IApiMediaBuilder apiMediaBuilder,
+                                                          IOptions<ModelsBuilderSettings> modelBuilderSettings) :
+        base(publishedSnapshotAccessor, umbracoContextAccessor, memberService, apiContentBuilder, apiMediaBuilder) {
         _modelBuilderSettings = modelBuilderSettings.Value;
     }
 

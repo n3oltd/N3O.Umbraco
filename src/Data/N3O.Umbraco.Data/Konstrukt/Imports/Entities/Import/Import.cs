@@ -52,12 +52,12 @@ public partial class Import {
     public string Name { get; set; }
     
     [Column(nameof(Data))]
-    [SpecialDbType(SpecialDbTypes.NTEXT)]
+    [SpecialDbType(SpecialDbTypes.NVARCHARMAX)]
     public string Data { get; set; }
 
     [Column(nameof(Notices))]
     [NullSetting(NullSetting = NullSettings.Null)]
-    [SpecialDbType(SpecialDbTypes.NTEXT)]
+    [SpecialDbType(SpecialDbTypes.NVARCHARMAX)]
     public string Notices { get; set; }
     
     [Column(nameof(Status))]

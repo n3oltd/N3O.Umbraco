@@ -25,6 +25,6 @@ public class EntityRow {
 
     [Column(nameof(Json))]
     [NullSetting(NullSetting = NullSettings.Null)]
-    [SpecialDbType(SpecialDbTypes.NTEXT)]
+    [SpecialDbType(SpecialDbTypes.NVARCHARMAX)]
     public string Json { get; set; }
 }
