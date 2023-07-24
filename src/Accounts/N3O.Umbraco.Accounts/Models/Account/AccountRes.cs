@@ -10,7 +10,6 @@ public class AccountRes : IAccount {
     public TelephoneRes Telephone { get; set; }
     public ConsentRes Consent { get; set; }
     public TaxStatus TaxStatus { get; set; }
-    public bool IsComplete { get; set; }
 
     [JsonIgnore]
     IName IAccount.Name => Name;

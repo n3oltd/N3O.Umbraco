@@ -22,7 +22,7 @@ public class UpdateAccountConsentHandler :
     public async Task<CheckoutRes> Handle(UpdateAccountConsentCommand req, CancellationToken cancellationToken) {
         var checkout = await req.CheckoutRevisionId.RunAsync(_repository.GetAsync, true, cancellationToken);
 
-        checkout.UpdateConsent(req.Model);
+        checkout.UpdateAccount(account => account.WithUpdatedConsent(req.Model));
         
         await _repository.UpdateAsync(checkout);
         

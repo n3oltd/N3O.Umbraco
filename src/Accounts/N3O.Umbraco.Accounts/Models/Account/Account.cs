@@ -28,54 +28,37 @@ public class Account : Value, IAccount {
                account.Consent.IfNotNull(x => new Consent(x)),
                account.TaxStatus) { }
 
+    public Account() { }
+
     public Name Name { get; }
     public Address Address { get; }
     public Email Email { get; }
     public Telephone Telephone { get; }
     public Consent Consent { get; }
     public TaxStatus TaxStatus { get; }
-    public bool IsTaxStatusEligible { get; set; }
     
-    public bool IsComplete => IsAccountComplete();
-    
-    public Account WithUpdatedName(Name name) {
-        return new Account(name, Address, Email, Telephone, Consent, TaxStatus);
+    public Account WithUpdatedAddress(IAddress address) {
+        return new Account(Name, address.IfNotNull(x => new Address(x)), Email, Telephone, Consent, TaxStatus);
     }
     
-    public Account WithUpdatedAddress(Address address) {
-        return new Account(Name, address, Email, Telephone, Consent, TaxStatus);
+    public Account WithUpdatedConsent(IConsent consent) {
+        return new Account(Name, Address, Email, Telephone, consent.IfNotNull(x => new Consent(x)), TaxStatus);
     }
     
-    public Account WithUpdatedEmail(Email email) {
-        return new Account(Name, Address, email, Telephone, Consent, TaxStatus);
+    public Account WithUpdatedEmail(IEmail email) {
+        return new Account(Name, Address, email.IfNotNull(x => new Email(x)), Telephone, Consent, TaxStatus);
     }
     
-    public Account WithUpdatedTelephone(Telephone telephone) {
-        return new Account(Name, Address, Email, telephone, Consent, TaxStatus);
+    public Account WithUpdatedName(IName name) {
+        return new Account(name.IfNotNull(x => new Name(x)), Address, Email, Telephone, Consent, TaxStatus);
     }
     
-    public Account WithUpdatedConsent(Consent consent) {
-        return new Account(Name, Address, Email, Telephone, consent, TaxStatus);
-    }
-
     public Account WithUpdatedTaxStatus(TaxStatus taxStatus) {
         return new Account(Name, Address, Email, Telephone, Consent, taxStatus);
     }
 
-    private bool IsAccountComplete() {
-        if (!Name.HasValue()) {
-            return false;
-        }
-
-        if (!Address.HasValue()) {
-            return false;
-        }
-
-        if (IsTaxStatusEligible && !TaxStatus.HasValue()) {
-            return false;
-        }
-
-        return true;
+    public Account WithUpdatedTelephone(ITelephone telephone) {
+        return new Account(Name, Address, Email, telephone.IfNotNull(x => new Telephone(x)), Consent, TaxStatus);
     }
 
     [JsonIgnore]

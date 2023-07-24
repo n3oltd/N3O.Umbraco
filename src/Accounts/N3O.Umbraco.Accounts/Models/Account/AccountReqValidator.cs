@@ -1,23 +1,16 @@
 using FluentValidation;
 using N3O.Umbraco.Accounts.Content;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
-using N3O.Umbraco.TaxRelief;
-using N3O.Umbraco.TaxRelief.Lookups;
 using N3O.Umbraco.Validation;
 
 namespace N3O.Umbraco.Accounts.Models;
 
 public class AccountReqValidator : ModelValidator<AccountReq> {
-    public AccountReqValidator(IFormatter formatter,
-                               IContentCache contentCache,
-                               ITaxReliefSchemeAccessor taxReliefSchemeAccessor)
-        : base(formatter) {
+    public AccountReqValidator(IFormatter formatter, IContentCache contentCache) : base(formatter) {
         var emailDataEntrySettings = contentCache.Single<EmailDataEntrySettingsContent>();
         var phoneDataEntrySettings = contentCache.Single<PhoneDataEntrySettingsContent>();
-        var taxReliefScheme = taxReliefSchemeAccessor.GetScheme();
-    
+
         RuleFor(x => x.Name)
             .NotNull()
             .WithMessage(Get<Strings>(s => s.SpecifyName));

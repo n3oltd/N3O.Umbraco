@@ -15,6 +15,5 @@ public class AccountMapping : IMapDefinition {
         dest.Telephone = ctx.Map<Telephone, TelephoneRes>(src.Telephone);
         dest.Consent = ctx.Map<Consent, ConsentRes>(src.Consent);
         dest.TaxStatus = src.TaxStatus;
-        dest.IsComplete = src.IsComplete;
     }
 }

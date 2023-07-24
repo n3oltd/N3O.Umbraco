@@ -5,8 +5,7 @@ using N3O.Umbraco.Validation;
 namespace N3O.Umbraco.Accounts.Models;
 
 public class TaxStatusReqValidator : ModelValidator<TaxStatusReq> {
-    public TaxStatusReqValidator(IFormatter formatter)
-        : base(formatter) {
+    public TaxStatusReqValidator(IFormatter formatter) : base(formatter) {
         RuleFor(x => x.TaxStatus)
            .NotNull()
            .WithMessage(Get<Strings>(s => s.SpecifyTaxStatus));
