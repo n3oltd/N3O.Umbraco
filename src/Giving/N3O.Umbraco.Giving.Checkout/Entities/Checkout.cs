@@ -1,4 +1,3 @@
-using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Checkout.Models;
@@ -14,7 +13,7 @@ public partial class Checkout : Entity, IPaymentsFlow {
     public Reference Reference { get; private set; }
     public Currency Currency { get; private set; }
     public CheckoutProgress Progress { get; private set; }
-    public Account Account { get; private set; }
+    public CheckoutAccount Account { get; private set; }
     public DonationCheckout Donation { get; private set; }
     public RegularGivingCheckout RegularGiving { get; private set; }
     public IPAddress RemoteIp { get; private set; }
