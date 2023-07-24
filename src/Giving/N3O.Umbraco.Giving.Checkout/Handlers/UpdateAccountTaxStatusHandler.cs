@@ -22,7 +22,7 @@ public class UpdateAccountTaxStatusHandler :
     public async Task<CheckoutRes> Handle(UpdateAccountTaxStatusCommand req, CancellationToken cancellationToken) {
         var checkout = await req.CheckoutRevisionId.RunAsync(_repository.GetAsync, true, cancellationToken);
 
-        checkout.UpdateAccountTaxStatus(req.Model.TaxStatus);
+        checkout.UpdateTaxStatus(req.Model.TaxStatus);
         
         await _repository.UpdateAsync(checkout);
         

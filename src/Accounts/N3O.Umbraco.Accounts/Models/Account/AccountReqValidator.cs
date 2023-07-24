@@ -35,26 +35,12 @@ public class AccountReqValidator : ModelValidator<AccountReq> {
             .NotNull()
             .When(_ => phoneDataEntrySettings.Required)
             .WithMessage(Get<Strings>(s => s.SpecifyTelephone));
-
-        RuleFor(x => x.TaxStatus)
-            .NotNull()
-            .When(req => req.Address.HasValue(x => x.Country) &&
-                         taxReliefScheme?.IsEligible(req.Address.Country, false) == true)
-            .WithMessage(Get<Strings>(s => s.SpecifyTaxStatus));
-        
-        RuleFor(x => x.TaxStatus)
-            .Must(x => x != TaxStatuses.Payer)
-            .When(req => req.Address.HasValue(x => x.Country) &&
-                         taxReliefScheme?.IsEligible(req.Address.Country, false) == false)
-            .WithMessage(Get<Strings>(s => s.InvalidTaxStatus)); 
     }
 
     public class Strings : ValidationStrings {
-        public string InvalidTaxStatus => "Invalid tax status selected";
         public string SpecifyAddress => "Please specify your address";
         public string SpecifyEmail => "Please specify your email";
         public string SpecifyName => "Please specify your name";
         public string SpecifyTelephone => "Please specify your telephone number";
-        public string SpecifyTaxStatus => "Please specify your tax status";
     }
 }

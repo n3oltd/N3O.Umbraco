@@ -1,36 +1,60 @@
 using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving.Checkout.Models;
 using N3O.Umbraco.TaxRelief.Lookups;
 
 namespace N3O.Umbraco.Giving.Checkout.Entities;
 
 public partial class Checkout {
-    public void UpdateAccount(IAccount account) {
-        Account = new Account(account);
+    public void UpdateAccount(IAccount account, TaxReliefScheme taxReliefScheme) {
+        var isEligible = taxReliefScheme?.IsEligible(account.Address.Country, false) == true;
+
+        UpdateName(account.Name);
+        UpdateAddress(account.Address);
+
+        if (account.Email.HasValue()) {
+            UpdateEmail(account.Email);
+        }
+
+        if (account.Telephone.HasValue()) {
+            UpdateTelephone(account.Telephone);
+        }
+
+        if (account.Consent.HasValue()) {
+            UpdateConsent(account.Consent);
+        }
+
+        if (account.TaxStatus.HasValue() && isEligible) {
+            UpdateTaxStatus(account.TaxStatus);
+        }
+
+        if (Account.TaxStatus.HasValue() && !isEligible) {
+            UpdateTaxStatus(null);
+        }
+
+        Account.IsTaxStatusEligible = isEligible;
+    }
+
+    public void UpdateTaxStatus(TaxStatus taxStatus) {
+        Account = Account.WithUpdatedTaxStatus(taxStatus);
+    }
+
+    public void UpdateConsent(IConsent consent) {
+        Account = Account.WithUpdatedConsent(new Consent(consent));
     }
     
-    public void UpdateAccountTaxStatus(TaxStatus taxStatus) {
-        if (Account.HasValue()) {
-            Account = Account.UpdateAccountTaxStatus(taxStatus);
-        } else {
-            Account = new Account(null, null, null, null, null, taxStatus);
-        }
+    private void UpdateName(IName name) {
+        Account = Account.WithUpdatedName(name.IfNotNull(x => new Name(x)));
     }
-    
-    public void UpdateAccountConsent(ConsentReq consent) {
-        if (Account.HasValue()) {
-            Account = Account.UpdateAccountConsent(consent.IfNotNull(x => new Consent(x)));
-        } else {
-            Account = new Account(null, null, null, null, new Consent(consent), null);
-        }
+
+    private void UpdateAddress(IAddress address) {
+        Account = Account.WithUpdatedAddress(address.IfNotNull(x => new Address(x)));
     }
-    
-    public void UpdateAccountInformation(AccountInformationReq req) {
-        if (Account.HasValue()) {
-            Account = Account.UpdateAccountInformation(req.Name, req.Address, req.Email, req.Telephone);
-        } else {
-            Account = new Account(req.Name, req.Address, req.Email, req.Telephone, null, null);
-        }
+
+    private void UpdateTelephone(ITelephone telephone) {
+        Account = Account.WithUpdatedTelephone(telephone.IfNotNull(x => new Telephone(x)));
+    }
+
+    private void UpdateEmail(IEmail email) {
+        Account = Account.WithUpdatedEmail(email.IfNotNull(x => new Accounts.Models.Email(x)));
     }
 }
