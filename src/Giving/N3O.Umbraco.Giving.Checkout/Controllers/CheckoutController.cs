@@ -49,6 +49,27 @@ public class CheckoutController : LookupsController<CheckoutLookupsRes> {
         return Ok(res);
     }
     
+    [HttpPost("{checkoutRevisionId:revisionId}/account/information")]
+    public async Task<ActionResult<CheckoutRes>> UpdateAccountInformation(AccountInformationReq req) {
+        var res = await _mediator.SendAsync<UpdateAccountInformationCommand, AccountInformationReq, CheckoutRes>(req);
+         
+        return Ok(res);
+    }
+    
+    [HttpPost("{checkoutRevisionId:revisionId}/account/consent")]
+    public async Task<ActionResult<CheckoutRes>> UpdateAccountConsent(ConsentReq req) {
+        var res = await _mediator.SendAsync<UpdateAccountConsentCommand, ConsentReq, CheckoutRes>(req);
+         
+        return Ok(res);
+    }
+    
+    [HttpPost("{checkoutRevisionId:revisionId}/account/taxStatus")]
+    public async Task<ActionResult<CheckoutRes>> UpdateAccountTaxStatus(TaxStatusReq req) {
+        var res = await _mediator.SendAsync<UpdateAccountTaxStatusCommand, TaxStatusReq, CheckoutRes>(req);
+         
+        return Ok(res);
+    }
+    
     [HttpPost("{checkoutRevisionId:revisionId}/regularGiving/options")]
     public async Task<ActionResult<CheckoutRes>> UpdateRegularGivingOptions(RegularGivingOptionsReq req) {
         var res = await _mediator.SendAsync<UpdateRegularGivingOptionsCommand, RegularGivingOptionsReq, CheckoutRes>(req);

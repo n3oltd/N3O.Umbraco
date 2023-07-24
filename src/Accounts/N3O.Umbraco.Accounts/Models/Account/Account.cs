@@ -34,6 +34,18 @@ public class Account : Value, IAccount {
     public Telephone Telephone { get; }
     public Consent Consent { get; }
     public TaxStatus TaxStatus { get; }
+    
+    public Account UpdateAccountInformation(Name name, Address address, Email email, Telephone telephone) {
+        return new Account(name, address, email, telephone, Consent, TaxStatus);
+    }
+    
+    public Account UpdateAccountConsent(Consent consent) {
+        return new Account(Name, Address, Email, Telephone, consent, TaxStatus);
+    }
+
+    public Account UpdateAccountTaxStatus(TaxStatus taxStatus) {
+        return new Account(Name, Address, Email, Telephone, Consent, taxStatus);
+    }
 
     [JsonIgnore]
     IName IAccount.Name => Name;
