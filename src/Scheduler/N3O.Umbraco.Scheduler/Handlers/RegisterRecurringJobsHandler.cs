@@ -31,9 +31,14 @@ public class RegisterRecurringJobsHandler :
         var modelJson = _jsonProvider.SerializeObject(None.Empty);
 
         foreach (var job in req.Model.Jobs) {
-            RecurringJob.AddOrUpdate<JobTrigger>(j => j.TriggerAsync(job.JobName, job.TriggerKey, modelJson, null),
+            var options = new RecurringJobOptions();
+            options.MisfireHandling = MisfireHandlingMode.Relaxed;
+            options.TimeZone = TimeZoneInfo.Utc;
+            
+            RecurringJob.AddOrUpdate<JobTrigger>(job.GetJobId(),
+                                                 j => j.TriggerAsync(job.JobName, job.TriggerKey, modelJson, null),
                                                  job.CronExpression,
-                                                 TimeZoneInfo.Utc);
+                                                 options);
         }
 
         return Task.FromResult(None.Empty);

@@ -1,4 +1,5 @@
 using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Extensions;
 
 namespace N3O.Umbraco.Scheduler.Models;
 
@@ -11,4 +12,8 @@ public class QueueRecurringJobReq {
 
     [Name("Trigger Key")]
     public string TriggerKey { get; set; }
+
+    public string GetJobId() {
+        return $"{CronExpression}{JobName}{TriggerKey}".Sha1();
+    }
 }
