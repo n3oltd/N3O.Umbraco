@@ -3,6 +3,7 @@ using N3O.Umbraco.Giving.Lookups;
 namespace N3O.Umbraco.Giving.Models;
 
 public class DonationOptionRes {
+    public int Id { get; set; }
     public string Name { get; set; }
     public AllocationType Type { get; set; }
     public GivingType DefaultGivingType { get; set; }

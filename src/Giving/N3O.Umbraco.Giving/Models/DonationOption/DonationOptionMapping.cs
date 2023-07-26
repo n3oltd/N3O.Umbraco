@@ -17,6 +17,7 @@ public class DonationOptionMapping : IMapDefinition {
     // Umbraco.Code.MapAll
     private void Map(DonationOptionContent src, DonationOptionRes dest, MapperContext ctx) {
         dest.Name = src.Name;
+        dest.Id = src.Id;
         dest.Type = src.Type;
         dest.DefaultGivingType = src.DefaultGivingType;
         dest.Dimension1 = GetInitial(ctx, src.Dimension1, src.GetFundDimensionOptions().DefaultFundDimension1(), src.GetFundDimensionOptions().Dimension1Options);

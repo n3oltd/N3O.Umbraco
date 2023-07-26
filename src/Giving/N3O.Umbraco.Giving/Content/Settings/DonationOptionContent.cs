@@ -30,6 +30,7 @@ public class DonationOptionContent : UmbracoContent<DonationOptionContent>, IFun
         }
     }
 
+    public int Id => Content().Id;
     public string Name => Content()?.Name;
     public GivingType DefaultGivingType => GetValue(x => x.DefaultGivingType);
     public FundDimension1Value Dimension1 => GetAs(x => x.Dimension1);
