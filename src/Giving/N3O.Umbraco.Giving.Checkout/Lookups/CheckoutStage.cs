@@ -35,7 +35,7 @@ public class CheckoutStages : StaticLookupsCollection<CheckoutStage> {
     public static readonly CheckoutStage Account = new("account",
                                                        "Account",
                                                        null,
-                                                       c => c.Account.IsComplete,
+                                                       c => c.Account?.IsComplete == true,
                                                        0,
                                                        c => c.Single<CheckoutAccountPageContent>());
 
