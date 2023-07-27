@@ -11,8 +11,11 @@ public class CheckoutAccount : Account {
                            Accounts.Models.Email email,
                            Telephone telephone,
                            Consent consent,
-                           TaxStatus taxStatus)
-        : base(name, address, email, telephone, consent, taxStatus) { }
+                           TaxStatus taxStatus,
+                           bool isComplete)
+        : base(name, address, email, telephone, consent, taxStatus) {
+        IsComplete = isComplete;
+    }
 
     public CheckoutAccount(Account account, bool isComplete) : base(account) {
         IsComplete = isComplete;
