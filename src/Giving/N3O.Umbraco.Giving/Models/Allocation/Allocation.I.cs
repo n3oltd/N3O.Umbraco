@@ -1,5 +1,6 @@
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Lookups;
+using System;
 
 namespace N3O.Umbraco.Giving.Models;
 
@@ -10,5 +11,5 @@ public interface IAllocation {
     IFundAllocation Fund { get; }
     ISponsorshipAllocation Sponsorship { get; }
     IFeedbackAllocation Feedback { get; }
-    bool Upsell { get; }
+    Guid? UpsellId { get; }
 }

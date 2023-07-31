@@ -9,6 +9,7 @@ using N3O.Umbraco.Giving.Cart.Models;
 using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Localization;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -51,33 +52,40 @@ public class CartBlockModule : IBlockModule {
         var currency = _currencyAccessor.Value.GetCurrency();
         var cart = await _cartAccessor.Value.GetAsync(cancellationToken);
         // TODO Fix this
-        var upsellContent = (block.GetProperty("upsell")?.GetValue() as IPublishedContent)?.As<UpsellContent>();
-        var upsell = await GetUpsellAsync(upsellContent, currency);
+        var upsellContents = (block.GetProperty("upsells")?.GetValue() as IEnumerable<IPublishedContent>)?.As<UpsellContent>();
+        var upsells = await GetUpsellsAsync(upsellContents, currency);
         
         var cartModel = new CartModel(_formatter.Value,
                                       _contentCache.Value,
                                       currency,
                                       cart.Donation,
                                       cart.RegularGiving,
-                                      upsell,
+                                      upsells,
                                       checkoutView.HasValue());
         
         return cartModel;
     }
 
-    private async Task<UpsellModel> GetUpsellAsync(UpsellContent upsell, Currency currency) {
-        if (upsell == null) {
+    private async Task<IReadOnlyList<UpsellModel>> GetUpsellsAsync(IEnumerable<UpsellContent> upsellContents,
+                                                                   Currency currency) {
+        if (upsellContents.None()) {
             return null;
         }
 
-        var priceOrAmount = await upsell.GetPriceOrAmountInCurrencyAsync(_forexConverter.Value,
-                                                                         _priceCalculator.Value,
-                                                                         currency);
+        var upsells = new List<UpsellModel>();
 
-        return new UpsellModel(upsell.Content().Key,
-                               upsell.Content().Name,
-                               upsell.Description,
-                               priceOrAmount);
+        foreach (var upsellContent in upsellContents) {
+            var priceOrAmount = await upsellContent.GetPriceOrAmountInCurrencyAsync(_forexConverter.Value,
+                                                                                    _priceCalculator.Value,
+                                                                                    currency);
+
+            upsells.Add(new UpsellModel(upsellContent.Content().Key,
+                                        upsellContent.Content().Name,
+                                        upsellContent.Description,
+                                        priceOrAmount));
+        }
+
+        return upsells;
     }
 
     public string Key => CartConstants.BlockModuleKeys.Cart;

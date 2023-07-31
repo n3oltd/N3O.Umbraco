@@ -2,6 +2,7 @@ using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Lookups;
 using Newtonsoft.Json;
+using System;
 
 namespace N3O.Umbraco.Giving.Models;
 
@@ -24,8 +25,8 @@ public class AllocationReq : IAllocation {
     [Name("Sponsorship")]
     public SponsorshipAllocationReq Sponsorship { get; set; }
     
-    [Name("Upsell")]
-    public bool? Upsell { get; set; }
+    [Name("Upsell ID")]
+    public Guid? UpsellId { get; set; }
     
     [JsonIgnore]
     IFundDimensionValues IAllocation.FundDimensions => FundDimensions;
@@ -41,7 +42,4 @@ public class AllocationReq : IAllocation {
     
     [JsonIgnore]
     Money IAllocation.Value => Value;
-
-    [JsonIgnore]
-    bool IAllocation.Upsell => Upsell.GetValueOrDefault(false);
 }

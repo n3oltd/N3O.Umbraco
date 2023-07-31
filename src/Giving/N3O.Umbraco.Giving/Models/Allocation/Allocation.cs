@@ -2,6 +2,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Lookups;
 using Newtonsoft.Json;
+using System;
 
 namespace N3O.Umbraco.Giving.Models;
 
@@ -13,14 +14,14 @@ public class Allocation : Value, IAllocation {
                       FundAllocation fund,
                       SponsorshipAllocation sponsorship,
                       FeedbackAllocation feedback,
-                      bool upsell) {
+                      Guid? upsellId) {
         Type = type;
         Value = value;
         FundDimensions = fundDimensions;
         Fund = fund;
         Sponsorship = sponsorship;
         Feedback = feedback;
-        Upsell = upsell;
+        UpsellId = upsellId;
     }
 
     public Allocation(IAllocation allocation)
@@ -30,7 +31,7 @@ public class Allocation : Value, IAllocation {
                allocation.Fund.IfNotNull(x => new FundAllocation(x)),
                allocation.Sponsorship.IfNotNull(x => new SponsorshipAllocation(x)),
                allocation.Feedback.IfNotNull(x => new FeedbackAllocation(x)),
-               allocation.Upsell) { }
+               allocation.UpsellId) { }
 
     public AllocationType Type { get; }
     public Money Value { get; }
@@ -38,7 +39,7 @@ public class Allocation : Value, IAllocation {
     public FundAllocation Fund { get; }
     public SponsorshipAllocation Sponsorship { get; }
     public FeedbackAllocation Feedback { get; }
-    public bool Upsell { get; }
+    public Guid? UpsellId { get; }
 
     [JsonIgnore]
     IFundDimensionValues IAllocation.FundDimensions => FundDimensions;

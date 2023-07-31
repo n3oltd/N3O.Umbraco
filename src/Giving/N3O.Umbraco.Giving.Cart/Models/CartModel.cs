@@ -20,13 +20,13 @@ public class CartModel {
                      Currency currency,
                      CartContents donation,
                      CartContents regularGiving,
-                     UpsellModel upsell,
+                     IEnumerable<UpsellModel> upsells,
                      bool checkoutView) {
         _formatter = formatter;
         Currency = currency;
         Donation = donation;
         RegularGiving = regularGiving;
-        Upsell = upsell;
+        Upsells = upsells;
         CheckoutView = checkoutView;
         TotalText = GetTotalText(donation, regularGiving);
         TotalItems = donation.Allocations.Count() + regularGiving.Allocations.Count();
@@ -37,7 +37,7 @@ public class CartModel {
     public Currency Currency { get; }
     public CartContents Donation { get; }
     public CartContents RegularGiving { get; }
-    public UpsellModel Upsell { get; }
+    public IEnumerable<UpsellModel> Upsells { get; }
     public bool CheckoutView { get; }
     public string TotalText { get; }
     public int TotalItems { get; }
@@ -45,7 +45,7 @@ public class CartModel {
     public string DonateUrl { get; }
 
     public bool ContainsUpsell() {
-        return Donation.OrEmpty(x => x.Allocations).Any(x => x.Upsell);
+        return Donation.OrEmpty(x => x.Allocations).Any(x => x.UpsellId.HasValue());
     }
 
     public bool IsEmpty() => Donation.IsEmpty() && RegularGiving.IsEmpty();

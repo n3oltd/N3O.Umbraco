@@ -7,6 +7,6 @@ public static class CartExtensions {
     public static bool ContainsUpsell(this Entities.Cart cart) {
         return cart.Donation
                    .OrEmpty(x => x.Allocations)
-                   .Any(x => x.Upsell);
+                   .Any(x => x.UpsellId.HasValue());
     }
 }

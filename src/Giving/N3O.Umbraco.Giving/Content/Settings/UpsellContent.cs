@@ -25,7 +25,13 @@ public class UpsellContent : UmbracoContent<UpsellContent> {
         var fundAllocation = new FundAllocation(DonationItem);
         var priceOrAmount = await GetPriceOrAmountInCurrencyAsync(forexConverter, priceCalculator, currency);
 
-        return new Allocation(AllocationTypes.Fund, priceOrAmount, fundDimensions, fundAllocation, null, null, true);
+        return new Allocation(AllocationTypes.Fund,
+                              priceOrAmount,
+                              fundDimensions,
+                              fundAllocation,
+                              null,
+                              null,
+                              Content().Key);
     }
 
     public async Task<Money> GetPriceOrAmountInCurrencyAsync(IForexConverter forexConverter,

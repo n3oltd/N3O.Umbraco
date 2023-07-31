@@ -1,3 +1,4 @@
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using Umbraco.Cms.Core.Mapping;
 
@@ -16,6 +17,7 @@ public class AllocationMapping : IMapDefinition {
         dest.Fund = ctx.Map<FundAllocation, FundAllocationRes>(src.Fund);
         dest.Sponsorship = ctx.Map<SponsorshipAllocation, SponsorshipAllocationRes>(src.Sponsorship);
         dest.Feedback = ctx.Map<FeedbackAllocation, FeedbackAllocationRes>(src.Feedback);
-        dest.Upsell = src.Upsell;
+        dest.UpsellId = src.UpsellId;
+        dest.Upsell = src.UpsellId.HasValue();
     }
 }
