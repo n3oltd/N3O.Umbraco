@@ -2,11 +2,14 @@ using N3O.Umbraco.Blocks;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex;
 using N3O.Umbraco.Giving.Cart.Content;
 using N3O.Umbraco.Giving.Cart.Extensions;
 using N3O.Umbraco.Giving.Cart.Models;
 using N3O.Umbraco.Giving.Content;
+using N3O.Umbraco.Giving.Extensions;
+using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Localization;
 using System;
 using System.Collections.Generic;
@@ -51,19 +54,35 @@ public class CartBlockModule : IBlockModule {
         var checkoutView = _queryStringAccessor.Value.GetValue(CartConstants.QueryString.CheckoutView);
         var currency = _currencyAccessor.Value.GetCurrency();
         var cart = await _cartAccessor.Value.GetAsync(cancellationToken);
-        // TODO Fix this
-        var upsellContents = (block.GetProperty("upsells")?.GetValue() as IEnumerable<IPublishedContent>)?.As<UpsellContent>();
-        var upsells = await cart.GetUpsellsAsync(_forexConverter.Value, _priceCalculator.Value, upsellContents, currency);
+        var upsellOffers = await GetUpsellOffersAsync(block, cart, currency);
         
         var cartModel = new CartModel(_formatter.Value,
                                       _contentCache.Value,
                                       currency,
                                       cart.Donation,
                                       cart.RegularGiving,
-                                      upsells,
+                                      upsellOffers,
                                       checkoutView.HasValue());
         
         return cartModel;
+    }
+
+    private async Task<IReadOnlyList<UpsellOffer>> GetUpsellOffersAsync(IPublishedElement block,
+                                                                        Entities.Cart cart,
+                                                                        Currency currency) {
+        // TODO Fix this
+        var upsellContents = (block.GetProperty("upsells")?.GetValue() as IEnumerable<IPublishedContent>)?.As<UpsellContent>();
+
+        var upsellOffers = new List<UpsellOffer>();
+
+        foreach (var upsellContent in upsellContents) {
+            upsellOffers.Add(await upsellContent.ToUpsellOfferAsync(_forexConverter.Value,
+                                                                    _priceCalculator.Value,
+                                                                    currency,
+                                                                    cart.GetTotalExcludingUpsells(upsellContent.GivingType)));
+        }
+
+        return upsellOffers;
     }
 
     public string Key => CartConstants.BlockModuleKeys.Cart;

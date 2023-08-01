@@ -3,24 +3,24 @@ using N3O.Umbraco.Giving.Content;
 using System;
 using System.Collections.Generic;
 
-namespace N3O.Umbraco.Giving.Cart.Models;
+namespace N3O.Umbraco.Giving.Models;
 
-public class UpsellModel {
-    public UpsellModel(Guid id,
+public class UpsellOffer {
+    public UpsellOffer(Guid upsellId,
                        string title,
                        string description,
-                       Money amount,
+                       Money price,
                        IEnumerable<PriceHandleElement> priceHandles) {
-        Id = id;
+        UpsellId = upsellId;
         Title = title;
         Description = description;
-        Amount = amount;
+        Price = price;
         PriceHandles = priceHandles;
     }
 
-    public Guid Id { get; }
+    public Guid UpsellId { get; }
     public string Title { get; }
     public string Description { get; }
-    public Money Amount { get; }
+    public Money Price { get; }
     public IEnumerable<PriceHandleElement> PriceHandles { get; }
 }

@@ -43,7 +43,7 @@ public class CartController : ApiController {
         }
     }
 
-    [HttpPost("upsells/addToCart")]
+    [HttpPost("upsells/{upsellId:guid}/addToCart")]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> AddUpsellToCart(AddUpsellToCartReq req) {
@@ -111,7 +111,7 @@ public class CartController : ApiController {
 
             return Ok();
         } catch (Exception ex) {
-            _logger.LogError(ex, "Failed to remove upsell item from cart");
+            _logger.LogError(ex, "Failed to remove upsell from cart");
 
             return UnprocessableEntity();
         }

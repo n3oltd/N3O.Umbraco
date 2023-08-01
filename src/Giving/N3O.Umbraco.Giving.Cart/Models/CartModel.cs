@@ -2,6 +2,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Content;
+using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Localization;
 using System;
 using System.Collections.Generic;
@@ -21,13 +22,13 @@ public class CartModel {
                      Currency currency,
                      CartContents donation,
                      CartContents regularGiving,
-                     IEnumerable<UpsellModel> upsells,
+                     IEnumerable<UpsellOffer> upsellOffers,
                      bool checkoutView) {
         _formatter = formatter;
         Currency = currency;
         Donation = donation;
         RegularGiving = regularGiving;
-        Upsells = upsells;
+        UpsellOffers = upsellOffers.OrEmpty().ToList();
         CheckoutView = checkoutView;
         TotalText = GetTotalText(donation, regularGiving);
         TotalItems = donation.Allocations.Count() + regularGiving.Allocations.Count();
@@ -38,7 +39,7 @@ public class CartModel {
     public Currency Currency { get; }
     public CartContents Donation { get; }
     public CartContents RegularGiving { get; }
-    public IEnumerable<UpsellModel> Upsells { get; }
+    public IReadOnlyList<UpsellOffer> UpsellOffers { get; }
     public bool CheckoutView { get; }
     public string TotalText { get; }
     public int TotalItems { get; }

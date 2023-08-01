@@ -1,15 +1,27 @@
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Forex;
 using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Giving.Cart.Models;
 using N3O.Umbraco.Giving.Lookups;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Giving.Cart.Entities;
 
 public partial class Cart {
-    public void Add(GivingType givingType, IAllocation allocation, int quantity = 1) {
+    public async Task AddAsync(IContentLocator contentLocator,
+                               IForexConverter forexConverter,
+                               IPriceCalculator priceCalculator,
+                               GivingType givingType,
+                               IAllocation allocation,
+                               int quantity = 1) {
         while (quantity > 0) {
-            ReplaceContents(givingType, c => AddToContents(c, allocation));
+            await ReplaceContentsAsync(contentLocator,
+                                       forexConverter,
+                                       priceCalculator,
+                                       givingType,
+                                       c => AddToContents(c, allocation));
 
             quantity--;
         }
