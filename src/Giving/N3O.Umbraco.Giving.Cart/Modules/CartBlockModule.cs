@@ -2,9 +2,9 @@ using N3O.Umbraco.Blocks;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex;
 using N3O.Umbraco.Giving.Cart.Content;
+using N3O.Umbraco.Giving.Cart.Extensions;
 using N3O.Umbraco.Giving.Cart.Models;
 using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Localization;
@@ -53,7 +53,7 @@ public class CartBlockModule : IBlockModule {
         var cart = await _cartAccessor.Value.GetAsync(cancellationToken);
         // TODO Fix this
         var upsellContents = (block.GetProperty("upsells")?.GetValue() as IEnumerable<IPublishedContent>)?.As<UpsellContent>();
-        var upsells = await GetUpsellsAsync(upsellContents, currency, cart.RegularGiving.Total, cart.Donation.Total);
+        var upsells = await cart.GetUpsellsAsync(_forexConverter.Value, _priceCalculator.Value, upsellContents, currency);
         
         var cartModel = new CartModel(_formatter.Value,
                                       _contentCache.Value,
@@ -64,33 +64,6 @@ public class CartBlockModule : IBlockModule {
                                       checkoutView.HasValue());
         
         return cartModel;
-    }
-
-    private async Task<IReadOnlyList<UpsellModel>> GetUpsellsAsync(IEnumerable<UpsellContent> upsellContents,
-                                                                   Currency currency,
-                                                                   Money regularTotal,
-                                                                   Money donationTotal) {
-        if (upsellContents.None()) {
-            return null;
-        }
-
-        var upsells = new List<UpsellModel>();
-
-        foreach (var upsellContent in upsellContents) {
-            var priceOrAmount = await upsellContent.GetPriceOrAmountInCurrencyAsync(_forexConverter.Value,
-                                                                                    _priceCalculator.Value,
-                                                                                    currency,
-                                                                                    regularTotal,
-                                                                                    donationTotal);
-
-            upsells.Add(new UpsellModel(upsellContent.Content().Key,
-                                        upsellContent.Content().Name,
-                                        upsellContent.Description,
-                                        priceOrAmount,
-                                        upsellContent.PriceHandles));
-        }
-
-        return upsells;
     }
 
     public string Key => CartConstants.BlockModuleKeys.Cart;
