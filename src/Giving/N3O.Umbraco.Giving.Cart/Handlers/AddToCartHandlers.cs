@@ -2,7 +2,6 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Forex;
 using N3O.Umbraco.Giving.Cart.Commands;
 using N3O.Umbraco.Giving.Cart.Models;
 using N3O.Umbraco.Giving.Content;
@@ -17,25 +16,19 @@ namespace N3O.Umbraco.Giving.Cart.Handlers;
 
 public class AddToCartHandlers :
     IRequestHandler<AddToCartCommand, AddToCartReq, RevisionId>,
-    IRequestHandler<AddUpsellToCartCommand, None, RevisionId> {
+    IRequestHandler<AddUpsellToCartCommand, AddUpsellToCartReq, RevisionId> {
     private readonly ICartAccessor _cartAccessor;
     private readonly IRepository<Entities.Cart> _repository;
     private readonly Lazy<IContentLocator> _contentLocator;
-    private readonly Lazy<IForexConverter> _forexConverter;
-    private readonly Lazy<IPriceCalculator> _priceCalculator;
     private readonly Lazy<ICurrencyAccessor> _currencyAccessor;
 
     public AddToCartHandlers(ICartAccessor cartAccessor,
                              IRepository<Entities.Cart> repository,
                              Lazy<IContentLocator> contentLocator,
-                             Lazy<IForexConverter> forexConverter,
-                             Lazy<IPriceCalculator> priceCalculator,
                              Lazy<ICurrencyAccessor> currencyAccessor) {
         _cartAccessor = cartAccessor;
         _repository = repository;
         _contentLocator = contentLocator;
-        _forexConverter = forexConverter;
-        _priceCalculator = priceCalculator;
         _currencyAccessor = currencyAccessor;
     }
 
@@ -49,12 +42,11 @@ public class AddToCartHandlers :
     }
 
     public async Task<RevisionId> Handle(AddUpsellToCartCommand req, CancellationToken cancellationToken) {
-        var upsellContent = req.UpsellId.Run(_contentLocator.Value.ById<UpsellContent>, true);
+        var upsellContent = _contentLocator.Value.ById<UpsellContent>(req.Model.UpsellId);
 
         var currency = _currencyAccessor.Value.GetCurrency();
-        var allocation = await upsellContent.GetAllocationAsync(_forexConverter.Value,
-                                                                _priceCalculator.Value,
-                                                                currency);
+        
+        var allocation = await upsellContent.GetAllocationAsync(req.Model.Amount, currency);
 
         var revisionId = await AddToCartAsync(upsellContent.GivingType, allocation, 1, cancellationToken);
 
