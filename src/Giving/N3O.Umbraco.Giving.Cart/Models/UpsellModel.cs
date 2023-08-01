@@ -6,7 +6,11 @@ using System.Collections.Generic;
 namespace N3O.Umbraco.Giving.Cart.Models;
 
 public class UpsellModel {
-    public UpsellModel(Guid id, string title, string description, Money amount, IEnumerable<PriceHandleElement> priceHandles) {
+    public UpsellModel(Guid id,
+                       string title,
+                       string description,
+                       Money amount,
+                       IEnumerable<PriceHandleElement> priceHandles) {
         Id = id;
         Title = title;
         Description = description;
