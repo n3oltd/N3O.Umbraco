@@ -43,12 +43,12 @@ public class CartController : ApiController {
         }
     }
 
-    [HttpPost("upsells/{upsellId:guid}/addToCart")]
+    [HttpPost("upsells/addToCart")]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> AddUpsellToCart() {
+    public async Task<ActionResult> AddUpsellToCart(AddUpsellToCartReq req) {
         try {
-            var revisionId = await _mediator.SendAsync<AddUpsellToCartCommand, None, RevisionId>(None.Empty);
+            var revisionId = await _mediator.SendAsync<AddUpsellToCartCommand, AddUpsellToCartReq, RevisionId>(req);
 
             _cartCookie.SetValue(revisionId);
 
@@ -96,6 +96,22 @@ public class CartController : ApiController {
             return Ok();
         } catch (Exception ex) {
             _logger.LogError(ex, "Failed to remove item from cart");
+
+            return UnprocessableEntity();
+        }
+    }
+    
+    [HttpDelete("upsells/{upsellId:guid}/removeFromCart")]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult> RemoveUpsellFromCart() {
+        try {
+            var revisionId = await _mediator.SendAsync<RemoveUpsellFromCartCommand, None, RevisionId>(None.Empty);
+
+            _cartCookie.SetValue(revisionId);
+
+            return Ok();
+        } catch (Exception ex) {
+            _logger.LogError(ex, "Failed to remove upsell item from cart");
 
             return UnprocessableEntity();
         }

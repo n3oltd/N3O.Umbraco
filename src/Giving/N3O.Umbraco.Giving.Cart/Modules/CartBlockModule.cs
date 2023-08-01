@@ -53,7 +53,7 @@ public class CartBlockModule : IBlockModule {
         var cart = await _cartAccessor.Value.GetAsync(cancellationToken);
         // TODO Fix this
         var upsellContents = (block.GetProperty("upsells")?.GetValue() as IEnumerable<IPublishedContent>)?.As<UpsellContent>();
-        var upsells = await GetUpsellsAsync(upsellContents, currency);
+        var upsells = await GetUpsellsAsync(upsellContents, currency, cart.RegularGiving.Total, cart.Donation.Total);
         
         var cartModel = new CartModel(_formatter.Value,
                                       _contentCache.Value,
@@ -67,7 +67,9 @@ public class CartBlockModule : IBlockModule {
     }
 
     private async Task<IReadOnlyList<UpsellModel>> GetUpsellsAsync(IEnumerable<UpsellContent> upsellContents,
-                                                                   Currency currency) {
+                                                                   Currency currency,
+                                                                   Money regularTotal,
+                                                                   Money donationTotal) {
         if (upsellContents.None()) {
             return null;
         }
@@ -77,12 +79,15 @@ public class CartBlockModule : IBlockModule {
         foreach (var upsellContent in upsellContents) {
             var priceOrAmount = await upsellContent.GetPriceOrAmountInCurrencyAsync(_forexConverter.Value,
                                                                                     _priceCalculator.Value,
-                                                                                    currency);
+                                                                                    currency,
+                                                                                    regularTotal,
+                                                                                    donationTotal);
 
             upsells.Add(new UpsellModel(upsellContent.Content().Key,
                                         upsellContent.Content().Name,
                                         upsellContent.Description,
-                                        priceOrAmount));
+                                        priceOrAmount,
+                                        upsellContent.PriceHandles));
         }
 
         return upsells;

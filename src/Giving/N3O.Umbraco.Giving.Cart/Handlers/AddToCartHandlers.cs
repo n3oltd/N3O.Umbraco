@@ -17,7 +17,7 @@ namespace N3O.Umbraco.Giving.Cart.Handlers;
 
 public class AddToCartHandlers :
     IRequestHandler<AddToCartCommand, AddToCartReq, RevisionId>,
-    IRequestHandler<AddUpsellToCartCommand, None, RevisionId> {
+    IRequestHandler<AddUpsellToCartCommand, AddUpsellToCartReq, RevisionId> {
     private readonly ICartAccessor _cartAccessor;
     private readonly IRepository<Entities.Cart> _repository;
     private readonly Lazy<IContentLocator> _contentLocator;
@@ -49,51 +49,11 @@ public class AddToCartHandlers :
     }
 
     public async Task<RevisionId> Handle(AddUpsellToCartCommand req, CancellationToken cancellationToken) {
-        var upsellContent = req.UpsellId.Run(_contentLocator.Value.ById<UpsellContent>, true);
+        var upsellContent = _contentLocator.Value.ById<UpsellContent>(req.Model.UpsellId);
 
         var currency = _currencyAccessor.Value.GetCurrency();
         
-        // Add a contentment lookup called UpsellPricingMode with values
-        // DonationItem, Fixed, Any, PriceHandles, Custom
-        // Validate that if donation item has pricing, then mode must be DonationItem
-        // if not fixed, fixed amount must be blank and vice versa etc.
-        // If PriceHandles then have a property group for titled price handles
-        // If set to Custom then in UpsellContent look for a specific class that implements an interface and has the methods, e.g.
-        
-        
-        /*
-         *      General
-         *          Name:
-         *          Item:
-         *          Pricing Mode: Handles
-         *
-         *      Fixed
-         *          Amount:
-         *
-         *      Price Handles:
-         *          Amount
-         *          Locked
-         *          (compose same way donation items)
-         */
-        
-        /*
-         * public class OneNationUpsellPricing : ICustomUpsellPricing {
-         *      Money GetAmount(UpsellContent content) {
-         *            Do any formula to calculate this
-         *      }
-         * 
-         * }
-         *
-         * UpsellContent -> OurAssemblies.GetTypes(t => t.COncrete() && t.parameterlessconstructor() && t.implementinterface<ICustomUpsellPricing>())
-         * .Single() -> you can call the methods
-         */
-        
-        
-        
-        
-        var allocation = await upsellContent.GetAllocationAsync(_forexConverter.Value,
-                                                                _priceCalculator.Value,
-                                                                currency);
+        var allocation = await upsellContent.GetAllocationAsync(req.Model.Amount, currency);
 
         var revisionId = await AddToCartAsync(upsellContent.GivingType, allocation, 1, cancellationToken);
 

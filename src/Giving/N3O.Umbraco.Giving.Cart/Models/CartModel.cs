@@ -3,6 +3,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Localization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Extensions;
@@ -46,6 +47,10 @@ public class CartModel {
 
     public bool ContainsUpsell() {
         return Donation.OrEmpty(x => x.Allocations).Any(x => x.UpsellId.HasValue());
+    }
+    
+    public bool ContainsUpsell(Guid upsellId) {
+        return Donation.OrEmpty(x => x.Allocations).Any(x => x.UpsellId == upsellId);
     }
 
     public bool IsEmpty() => Donation.IsEmpty() && RegularGiving.IsEmpty();
