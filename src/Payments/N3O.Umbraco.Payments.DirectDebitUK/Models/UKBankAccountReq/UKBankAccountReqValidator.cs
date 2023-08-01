@@ -16,6 +16,7 @@ public class UKBankAccountReqValidator : ModelValidator<UKBankAccountReq> {
 
     public UKBankAccountReqValidator(IFormatter formatter, ILoqateApiClient loqateApiClient) : base(formatter) {
         _loqateApiClient = loqateApiClient;
+        
         RuleFor(x => x.AccountHolder)
             .NotEmpty()
             .WithMessage(Get<Strings>(s => s.SpecifyAccountHolder));
