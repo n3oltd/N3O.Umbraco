@@ -53,7 +53,7 @@ public partial class Cart {
                                                                                 priceCalculator,
                                                                                 Currency,
                                                                                 allocation.Value.Amount,
-                                                                                this.GetTotalExcludingUpsells(upsellContent.GivingType));
+                                                                                cartContents.Allocations.GetTotalExcludingUpsells(Currency));
 
                 if (newUpsellAllocation.Value == allocation.Value) {
                     allocations.Add(allocation);

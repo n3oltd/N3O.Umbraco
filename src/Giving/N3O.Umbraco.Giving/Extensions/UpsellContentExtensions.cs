@@ -68,7 +68,7 @@ public static class UpsellContentExtensions {
                                                                      upsellContent.FundDimensions,
                                                                      currency)).Amount,
                               currency);
-        } else if (upsellContent.FixedAmount.HasValue()) {
+        } else if (upsellContent.FixedAmount.GetValueOrDefault() != default) {
             price = (await forexConverter.BaseToQuote()
                                          .ToCurrency(currency)
                                          .ConvertAsync(upsellContent.FixedAmount.GetValueOrThrow())).Quote;
