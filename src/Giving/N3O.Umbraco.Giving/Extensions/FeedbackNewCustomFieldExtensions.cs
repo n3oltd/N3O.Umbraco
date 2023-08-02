@@ -25,6 +25,7 @@ public static class FeedbackNewCustomFieldExtensions {
         }
 
         if (definition.HasValue(x => x.TextMaxLength) &&
+            definition.TextMaxLength.GetValueOrDefault() != default &&
             (GetValue(feedbackNewFeedbackCustomField, definition.Type) as string)?.Length > definition.TextMaxLength.GetValueOrThrow()) {
             return false;
         }
