@@ -54,7 +54,7 @@ public class AddToCartHandlers :
         var cart = await _cartAccessor.GetAsync(cancellationToken);
         var upsellContent = req.UpsellId.Run(_contentLocator.ById<UpsellOfferContent>, true);
         
-        if (cart.ContainsUpsell(req.UpsellId.Value) && !upsellContent.AllowMultiple) {
+        if (cart.ContainsUpsell(upsellContent.GivingType, req.UpsellId.Value) && !upsellContent.AllowMultiple) {
             throw new Exception($"Upsell offer {req.UpsellId.Value} is already added to cart and is not allowed multiple time");
         }
 

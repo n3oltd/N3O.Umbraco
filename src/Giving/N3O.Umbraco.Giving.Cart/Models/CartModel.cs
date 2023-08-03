@@ -1,7 +1,9 @@
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Content;
+using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Localization;
 using System;
@@ -46,12 +48,24 @@ public class CartModel {
     public string CheckoutUrl { get; }
     public string DonateUrl { get; }
 
-    public bool ContainsUpsell() {
-        return Donation.OrEmpty(x => x.Allocations).Any(x => x.UpsellId.HasValue());
+    public bool ContainsUpsell(GivingType givingType) {
+        if (givingType == GivingTypes.Donation) {
+            return Donation.OrEmpty(x => x.Allocations).Any(x => x.UpsellId.HasValue());
+        } else if (givingType == GivingTypes.RegularGiving) {
+            return RegularGiving.OrEmpty(x => x.Allocations).Any(x => x.UpsellId.HasValue());
+        } else {
+            throw UnrecognisedValueException.For(givingType);
+        }
     }
     
-    public bool ContainsUpsell(Guid upsellId) {
-        return Donation.OrEmpty(x => x.Allocations).Any(x => x.UpsellId == upsellId);
+    public bool ContainsUpsell(GivingType givingType, Guid upsellId) {
+        if (givingType == GivingTypes.Donation) {
+            return Donation.OrEmpty(x => x.Allocations).Any(x => x.UpsellId == upsellId);
+        } else if (givingType == GivingTypes.RegularGiving) {
+            return RegularGiving.OrEmpty(x => x.Allocations).Any(x => x.UpsellId == upsellId);
+        } else {
+            throw UnrecognisedValueException.For(givingType);
+        }
     }
 
     public bool IsEmpty() => Donation.IsEmpty() && RegularGiving.IsEmpty();
