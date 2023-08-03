@@ -49,7 +49,7 @@ public class UpsellContentValidator : ContentValidator {
         var givingType = content.GetPropertyByAlias(GivingType)
                                   .IfNotNull(x => ContentHelper.GetDataListValue<GivingType>(x));
 
-        if (!donationItem.AllowedGivingTypes.HasAny(x => x == givingType)) {
+        if (givingType!= null && !donationItem.AllowedGivingTypes.HasAny(x => x == givingType)) {
             ErrorResult("Donation item does not allow specified giving type");
         }
     }
