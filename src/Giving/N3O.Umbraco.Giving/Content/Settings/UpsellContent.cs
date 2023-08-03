@@ -16,8 +16,8 @@ public class UpsellContent : UmbracoContent<UpsellContent> {
     public decimal? FixedAmount => GetValue(x => x.FixedAmount);
     public IEnumerable<PriceHandleElement> PriceHandles => GetNestedAs(x => x.PriceHandles);
 
-    public FundDimensionValues FundDimensions => new FundDimensionValues(Dimension1,
-                                                                         Dimension2,
-                                                                         Dimension3,
-                                                                         Dimension4);
+    public FundDimensionValues FundDimensions => new(Dimension1,
+                                                     Dimension2,
+                                                     Dimension3,
+                                                     Dimension4);
 }
