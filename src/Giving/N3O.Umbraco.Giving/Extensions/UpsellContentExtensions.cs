@@ -17,12 +17,13 @@ public static class UpsellContentExtensions {
                                                            IPriceCalculator priceCalculator,
                                                            Currency currency,
                                                            decimal? customAmount,
+                                                           GivingType givingType,
                                                            Money cartTotal) {
         if (upsellContent == null) {
             return null;
         }
         
-        var amount = await CalculatePriceAsync(forexConverter, priceCalculator, upsellContent, currency, cartTotal)
+        var amount = await CalculatePriceAsync(forexConverter, priceCalculator, upsellContent, currency, givingType, cartTotal)
                      ?? customAmount.IfNotNull(x => new Money(x, currency));
 
         if (amount == null) {
@@ -42,12 +43,18 @@ public static class UpsellContentExtensions {
                                                              IForexConverter forexConverter,
                                                              IPriceCalculator priceCalculator,
                                                              Currency currency,
+                                                             GivingType givingType,
                                                              Money cartTotal) {
         if (upsellContent == null) {
             return null;
         }
-        
-        var price = await CalculatePriceAsync(forexConverter, priceCalculator, upsellContent, currency, cartTotal);
+
+        var price = await CalculatePriceAsync(forexConverter,
+                                              priceCalculator,
+                                              upsellContent,
+                                              currency,
+                                              givingType,
+                                              cartTotal);
 
         return new UpsellOffer(upsellContent.Content().Key,
                                upsellContent.Content().Name,
@@ -60,6 +67,7 @@ public static class UpsellContentExtensions {
                                                          IPriceCalculator priceCalculator,
                                                          UpsellContent upsellContent,
                                                          Currency currency,
+                                                         GivingType givingType,
                                                          Money cartTotal) {
         Money price;
 
@@ -73,7 +81,7 @@ public static class UpsellContentExtensions {
                                          .ToCurrency(currency)
                                          .ConvertAsync(upsellContent.FixedAmount.GetValueOrThrow())).Quote;
         } else {
-            price = GetCustomPrice(forexConverter, upsellContent, currency, cartTotal);
+            price = GetCustomPrice(forexConverter, upsellContent, currency, givingType, cartTotal);
         }
 
         return price;
@@ -82,6 +90,7 @@ public static class UpsellContentExtensions {
     private static Money GetCustomPrice(IForexConverter forexConverter,
                                         UpsellContent upsellContent,
                                         Currency currency,
+                                        GivingType givingType,
                                         Money cartTotal) {
         var customUpsellPricingType = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
                                                                   t.HasParameterlessConstructor() &&
@@ -94,6 +103,6 @@ public static class UpsellContentExtensions {
 
         var customUpsellPricing = (ICustomUpsellPricing) Activator.CreateInstance(customUpsellPricingType);
 
-        return customUpsellPricing.GetPrice(forexConverter, upsellContent, currency, cartTotal);
+        return customUpsellPricing.GetPrice(forexConverter, upsellContent, currency, givingType, cartTotal);
     }
 }

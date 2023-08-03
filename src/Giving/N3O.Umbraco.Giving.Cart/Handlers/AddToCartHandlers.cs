@@ -60,6 +60,7 @@ public class AddToCartHandlers :
                                                                _priceCalculator,
                                                                currency,
                                                                req.Model.Amount,
+                                                               upsellContent.GivingType,
                                                                cart.GetTotalExcludingUpsells(upsellContent.GivingType));
 
         var revisionId = await AddToCartAsync(upsellContent.GivingType, allocation, 1, cancellationToken);

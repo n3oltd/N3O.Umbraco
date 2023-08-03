@@ -79,6 +79,7 @@ public class CartBlockModule : IBlockModule {
             upsellOffers.Add(await upsellContent.ToUpsellOfferAsync(_forexConverter.Value,
                                                                     _priceCalculator.Value,
                                                                     currency,
+                                                                    upsellContent.GivingType,
                                                                     cart.GetTotalExcludingUpsells(upsellContent.GivingType)));
         }
 
