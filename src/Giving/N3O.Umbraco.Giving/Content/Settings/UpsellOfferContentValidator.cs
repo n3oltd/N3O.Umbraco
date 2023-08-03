@@ -10,14 +10,14 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Giving.Content;
 
 public class UpsellContentValidator : ContentValidator {
-    private static readonly string UpsellContentContentTypeAlias = AliasHelper<UpsellContent>.ContentTypeAlias();
-    private static readonly string Dimension1Alias = AliasHelper<UpsellContent>.PropertyAlias(x => x.Dimension1);
-    private static readonly string Dimension2Alias = AliasHelper<UpsellContent>.PropertyAlias(x => x.Dimension2);
-    private static readonly string Dimension3Alias = AliasHelper<UpsellContent>.PropertyAlias(x => x.Dimension3);
-    private static readonly string Dimension4Alias = AliasHelper<UpsellContent>.PropertyAlias(x => x.Dimension4);
-    private static readonly string DonationItemAlias = AliasHelper<UpsellContent>.PropertyAlias(x => x.DonationItem);
-    private static readonly string FixedAmount = AliasHelper<UpsellContent>.PropertyAlias(x => x.FixedAmount);
-    private static readonly string PriceHandles = AliasHelper<UpsellContent>.PropertyAlias(x => x.PriceHandles);
+    private static readonly string UpsellContentContentTypeAlias = AliasHelper<UpsellOfferContent>.ContentTypeAlias();
+    private static readonly string Dimension1Alias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.Dimension1);
+    private static readonly string Dimension2Alias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.Dimension2);
+    private static readonly string Dimension3Alias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.Dimension3);
+    private static readonly string Dimension4Alias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.Dimension4);
+    private static readonly string DonationItemAlias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.DonationItem);
+    private static readonly string FixedAmount = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.FixedAmount);
+    private static readonly string PriceHandles = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.PriceHandles);
 
     public UpsellContentValidator(IContentHelper contentHelper) : base(contentHelper) { }
 

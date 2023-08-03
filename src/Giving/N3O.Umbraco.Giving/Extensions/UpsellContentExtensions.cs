@@ -9,21 +9,26 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Giving.Extensions; 
+namespace N3O.Umbraco.Giving.Extensions;
 
 public static class UpsellContentExtensions {
-    public static async Task<Allocation> ToAllocationAsync(this UpsellContent upsellContent,
+    public static async Task<Allocation> ToAllocationAsync(this UpsellOfferContent upsellOfferContent,
                                                            IForexConverter forexConverter,
                                                            IPriceCalculator priceCalculator,
                                                            Currency currency,
                                                            decimal? customAmount,
                                                            GivingType givingType,
                                                            Money cartTotal) {
-        if (upsellContent == null) {
+        if (upsellOfferContent == null) {
             return null;
         }
-        
-        var amount = await CalculatePriceAsync(forexConverter, priceCalculator, upsellContent, currency, givingType, cartTotal)
+
+        var amount = await CalculatePriceAsync(forexConverter,
+                                               priceCalculator,
+                                               upsellOfferContent,
+                                               currency,
+                                               givingType,
+                                               cartTotal)
                      ?? customAmount.IfNotNull(x => new Money(x, currency));
 
         if (amount == null) {
@@ -32,63 +37,66 @@ public static class UpsellContentExtensions {
 
         return new Allocation(AllocationTypes.Fund,
                               amount,
-                              upsellContent.FundDimensions,
-                              new FundAllocation(upsellContent.DonationItem),
+                              upsellOfferContent.FundDimensions,
+                              new FundAllocation(upsellOfferContent.DonationItem),
                               null,
                               null,
-                              upsellContent.Content().Key);
+                              upsellOfferContent.Content().Key);
     }
-    
-    public static async Task<UpsellOffer> ToUpsellOfferAsync(this UpsellContent upsellContent,
+
+    public static async Task<UpsellOffer> ToUpsellOfferAsync(this UpsellOfferContent upsellOfferContent,
                                                              IForexConverter forexConverter,
                                                              IPriceCalculator priceCalculator,
                                                              Currency currency,
                                                              GivingType givingType,
                                                              Money cartTotal) {
-        if (upsellContent == null) {
+        if (upsellOfferContent == null) {
             return null;
         }
 
         var price = await CalculatePriceAsync(forexConverter,
                                               priceCalculator,
-                                              upsellContent,
+                                              upsellOfferContent,
                                               currency,
                                               givingType,
                                               cartTotal);
 
-        return new UpsellOffer(upsellContent.Content().Key,
-                               upsellContent.Content().Name,
-                               upsellContent.Description,
+        return new UpsellOffer(upsellOfferContent.AllowMultiple,
+                               upsellOfferContent.Content().Key,
+                               upsellOfferContent.Content().Name,
+                               upsellOfferContent.Description,
+                               upsellOfferContent.OfferedFor,
+                               upsellOfferContent.GivingType,
                                price,
-                               upsellContent.PriceHandles);
+                               upsellOfferContent.PriceHandles);
     }
 
     private static async Task<Money> CalculatePriceAsync(IForexConverter forexConverter,
                                                          IPriceCalculator priceCalculator,
-                                                         UpsellContent upsellContent,
+                                                         UpsellOfferContent upsellOfferContent,
                                                          Currency currency,
                                                          GivingType givingType,
                                                          Money cartTotal) {
-        Money price;
+        Money price = null;
 
-        if (upsellContent.DonationItem.HasPricing()) {
-            price = new Money((await priceCalculator.InCurrencyAsync(upsellContent.DonationItem,
-                                                                     upsellContent.FundDimensions,
+        if (upsellOfferContent.DonationItem.HasPricing()) {
+            price = new Money((await priceCalculator.InCurrencyAsync(upsellOfferContent.DonationItem,
+                                                                     upsellOfferContent.FundDimensions,
                                                                      currency)).Amount,
                               currency);
-        } else if (upsellContent.FixedAmount.GetValueOrDefault() != default) {
+        } else if (upsellOfferContent.FixedAmount.GetValueOrDefault() != default) {
             price = (await forexConverter.BaseToQuote()
                                          .ToCurrency(currency)
-                                         .ConvertAsync(upsellContent.FixedAmount.GetValueOrThrow())).Quote;
-        } else {
-            price = GetCustomPrice(forexConverter, upsellContent, currency, givingType, cartTotal);
+                                         .ConvertAsync(upsellOfferContent.FixedAmount.GetValueOrThrow())).Quote;
+        } else if (!upsellOfferContent.PriceHandles.HasAny()) {
+            price = GetCustomPrice(forexConverter, upsellOfferContent, currency, givingType, cartTotal);
         }
 
         return price;
     }
 
     private static Money GetCustomPrice(IForexConverter forexConverter,
-                                        UpsellContent upsellContent,
+                                        UpsellOfferContent upsellOfferContent,
                                         Currency currency,
                                         GivingType givingType,
                                         Money cartTotal) {
@@ -103,6 +111,6 @@ public static class UpsellContentExtensions {
 
         var customUpsellPricing = (ICustomUpsellPricing) Activator.CreateInstance(customUpsellPricingType);
 
-        return customUpsellPricing.GetPrice(forexConverter, upsellContent, currency, givingType, cartTotal);
+        return customUpsellPricing.GetPrice(forexConverter, upsellOfferContent, currency, givingType, cartTotal);
     }
 }

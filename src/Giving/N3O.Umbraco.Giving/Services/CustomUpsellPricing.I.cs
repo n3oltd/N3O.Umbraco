@@ -7,7 +7,7 @@ namespace N3O.Umbraco.Giving;
 
 public interface ICustomUpsellPricing {
     Money GetPrice(IForexConverter forexConverter,
-                   UpsellContent upsellContent,
+                   UpsellOfferContent upsellOfferContent,
                    Currency currency,
                    GivingType givingType,
                    Money cartTotal);

@@ -2,7 +2,6 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Forex;
-using N3O.Umbraco.Giving.Cart.Extensions;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Cart.Models;
 using N3O.Umbraco.Giving.Content;
@@ -47,7 +46,7 @@ public partial class Cart {
         
         foreach (var allocation in cartContents.Allocations) {
             if (allocation.UpsellId.HasValue()) {
-                var upsellContent = contentLocator.ById<UpsellContent>(allocation.UpsellId.GetValueOrThrow());
+                var upsellContent = contentLocator.ById<UpsellOfferContent>(allocation.UpsellId.GetValueOrThrow());
                 
                 var newUpsellAllocation = await upsellContent.ToAllocationAsync(forexConverter,
                                                                                 priceCalculator,
