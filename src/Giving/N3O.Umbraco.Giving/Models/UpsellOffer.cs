@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Giving.Models;
 
 public class UpsellOffer {
     public UpsellOffer(bool allowMultiple,
-                       Guid upsellId,
+                       Guid upsellOfferId,
                        string title,
                        string description,
                        IEnumerable<GivingType> offeredFor,
@@ -16,7 +16,7 @@ public class UpsellOffer {
                        Money price,
                        IEnumerable<PriceHandleElement> priceHandles) {
         AllowMultiple = allowMultiple;
-        UpsellId = upsellId;
+        UpsellOfferId = upsellOfferId;
         Title = title;
         Description = description;
         GivingType = givingType;
@@ -26,7 +26,7 @@ public class UpsellOffer {
     }
 
     public bool AllowMultiple { get; }
-    public Guid UpsellId { get; }
+    public Guid UpsellOfferId { get; }
     public string Title { get; }
     public string Description { get; }
     public GivingType GivingType { get; }

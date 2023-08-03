@@ -47,25 +47,33 @@ public class CartModel {
     public int TotalItems { get; }
     public string CheckoutUrl { get; }
     public string DonateUrl { get; }
-
-    public bool ContainsUpsell(GivingType givingType) {
-        if (givingType == GivingTypes.Donation) {
-            return Donation.OrEmpty(x => x.Allocations).Any(x => x.UpsellId.HasValue());
-        } else if (givingType == GivingTypes.RegularGiving) {
-            return RegularGiving.OrEmpty(x => x.Allocations).Any(x => x.UpsellId.HasValue());
-        } else {
-            throw UnrecognisedValueException.For(givingType);
+    
+    public bool ContainsUpsell(Guid upsellOfferId, params GivingType[] givingTypes) {
+        if (givingTypes.Contains(GivingTypes.Donation) &&
+            Donation.OrEmpty(x => x.Allocations).Any(x => x.UpsellOfferId == upsellOfferId)) {
+            return true;
         }
+        
+        if (givingTypes.Contains(GivingTypes.RegularGiving) &&
+            RegularGiving.OrEmpty(x => x.Allocations).Any(x => x.UpsellOfferId == upsellOfferId)) {
+            return true;
+        }
+
+        return false;
     }
     
-    public bool ContainsUpsell(GivingType givingType, Guid upsellId) {
-        if (givingType == GivingTypes.Donation) {
-            return Donation.OrEmpty(x => x.Allocations).Any(x => x.UpsellId == upsellId);
-        } else if (givingType == GivingTypes.RegularGiving) {
-            return RegularGiving.OrEmpty(x => x.Allocations).Any(x => x.UpsellId == upsellId);
-        } else {
-            throw UnrecognisedValueException.For(givingType);
+    public bool ContainsUpsells(params GivingType[] givingTypes) {
+        if (givingTypes.Contains(GivingTypes.Donation) &&
+            Donation.OrEmpty(x => x.Allocations).Any(x => x.UpsellOfferId.HasValue())) {
+            return true;
         }
+        
+        if (givingTypes.Contains(GivingTypes.RegularGiving) &&
+            RegularGiving.OrEmpty(x => x.Allocations).Any(x => x.UpsellOfferId.HasValue())) {
+            return true;
+        }
+
+        return false;
     }
 
     public bool IsEmpty() => Donation.IsEmpty() && RegularGiving.IsEmpty();

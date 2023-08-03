@@ -68,16 +68,20 @@ export class CartClient {
         return Promise.resolve<void>(null as any);
     }
 
-    addUpsellToCart(upsellId: string): Promise<void> {
-        let url_ = this.baseUrl + "/umbraco/api/Cart/upsells/{upsellId}/addToCart";
-        if (upsellId === undefined || upsellId === null)
-            throw new Error("The parameter 'upsellId' must be defined.");
-        url_ = url_.replace("{upsellId}", encodeURIComponent("" + upsellId));
+    addUpsellToCart(upsellOfferId: string, req: AddUpsellToCartReq): Promise<void> {
+        let url_ = this.baseUrl + "/umbraco/api/Cart/upsells/{upsellOfferId}/addToCart";
+        if (upsellOfferId === undefined || upsellOfferId === null)
+            throw new Error("The parameter 'upsellOfferId' must be defined.");
+        url_ = url_.replace("{upsellOfferId}", encodeURIComponent("" + upsellOfferId));
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(req);
+
         let options_: RequestInit = {
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
             }
         };
 
@@ -261,6 +265,55 @@ export class CartClient {
         }
         return Promise.resolve<void>(null as any);
     }
+
+    removeUpsellFromCart(upsellOfferId: string): Promise<void> {
+        let url_ = this.baseUrl + "/umbraco/api/Cart/upsells/{upsellOfferId}/removeFromCart";
+        if (upsellOfferId === undefined || upsellOfferId === null)
+            throw new Error("The parameter 'upsellOfferId' must be defined.");
+        url_ = url_.replace("{upsellOfferId}", encodeURIComponent("" + upsellOfferId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processRemoveUpsellFromCart(_response);
+        });
+    }
+
+    protected processRemoveUpsellFromCart(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status === 422) {
+            return response.text().then((_responseText) => {
+            let result422: any = null;
+            result422 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result422);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
 }
 
 export interface ProblemDetails {
@@ -292,7 +345,7 @@ export interface AllocationReq {
     feedback?: FeedbackAllocationReq | undefined;
     fund?: FundAllocationReq | undefined;
     sponsorship?: SponsorshipAllocationReq | undefined;
-    upsell?: boolean | undefined;
+    upsellOfferId?: string | undefined;
 }
 
 /** One of 'feedback', 'fund', 'sponsorship' */
@@ -368,6 +421,7 @@ export interface IPublishedPropertyType {
     isUserProperty?: boolean;
     variations?: ContentVariation;
     cacheLevel?: PropertyCacheLevel;
+    deliveryApiCacheLevel?: PropertyCacheLevel;
     modelClrType?: string;
     clrType?: string | undefined;
 }
@@ -449,6 +503,10 @@ export enum SponsorshipDuration {
 export interface SponsorshipComponentAllocationReq {
     component?: string | undefined;
     value?: MoneyReq | undefined;
+}
+
+export interface AddUpsellToCartReq {
+    amount?: number | undefined;
 }
 
 export interface CartSummaryRes {

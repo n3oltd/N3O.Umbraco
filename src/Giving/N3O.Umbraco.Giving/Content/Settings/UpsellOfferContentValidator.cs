@@ -9,8 +9,8 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Giving.Content;
 
-public class UpsellContentValidator : ContentValidator {
-    private static readonly string UpsellContentContentTypeAlias = AliasHelper<UpsellOfferContent>.ContentTypeAlias();
+public class UpsellOfferContentValidator : ContentValidator {
+    private static readonly string UpsellOfferContentContentTypeAlias = AliasHelper<UpsellOfferContent>.ContentTypeAlias();
     private static readonly string Dimension1Alias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.Dimension1);
     private static readonly string Dimension2Alias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.Dimension2);
     private static readonly string Dimension3Alias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.Dimension3);
@@ -20,10 +20,10 @@ public class UpsellContentValidator : ContentValidator {
     private static readonly string GivingType = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.GivingType);
     private static readonly string PriceHandles = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.PriceHandles);
 
-    public UpsellContentValidator(IContentHelper contentHelper) : base(contentHelper) { }
+    public UpsellOfferContentValidator(IContentHelper contentHelper) : base(contentHelper) { }
 
     public override bool IsValidator(ContentProperties content) {
-        return content.ContentTypeAlias.Equals(UpsellContentContentTypeAlias);
+        return content.ContentTypeAlias.Equals(UpsellOfferContentContentTypeAlias);
     }
 
     public override void Validate(ContentProperties content) {

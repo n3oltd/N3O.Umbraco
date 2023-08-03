@@ -5,10 +5,10 @@ using N3O.Umbraco.Mediator;
 namespace N3O.Umbraco.Giving.Cart.Commands; 
 
 public class RemoveUpsellFromCartCommand : Request<None, RevisionId> {
-    public RemoveUpsellFromCartCommand(UpsellId upsellId) {
-        UpsellId = upsellId;
+    public RemoveUpsellFromCartCommand(UpsellOfferId upsellOfferId) {
+        UpsellOfferId = upsellOfferId;
     }
 
-    public UpsellId UpsellId { get; }
+    public UpsellOfferId UpsellOfferId { get; }
 }
     

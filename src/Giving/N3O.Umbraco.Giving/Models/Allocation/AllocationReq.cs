@@ -25,8 +25,8 @@ public class AllocationReq : IAllocation {
     [Name("Sponsorship")]
     public SponsorshipAllocationReq Sponsorship { get; set; }
     
-    [Name("Upsell ID")]
-    public Guid? UpsellId { get; set; }
+    [Name("Upsell Offer ID")]
+    public Guid? UpsellOfferId { get; set; }
     
     [JsonIgnore]
     IFundDimensionValues IAllocation.FundDimensions => FundDimensions;

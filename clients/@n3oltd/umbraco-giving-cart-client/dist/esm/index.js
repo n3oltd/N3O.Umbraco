@@ -80,16 +80,20 @@ var CartClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    CartClient.prototype.addUpsellToCart = function (upsellId) {
+    CartClient.prototype.addUpsellToCart = function (upsellOfferId, req) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Cart/upsells/{upsellId}/addToCart";
-        if (upsellId === undefined || upsellId === null)
-            throw new Error("The parameter 'upsellId' must be defined.");
-        url_ = url_.replace("{upsellId}", encodeURIComponent("" + upsellId));
+        var url_ = this.baseUrl + "/umbraco/api/Cart/upsells/{upsellOfferId}/addToCart";
+        if (upsellOfferId === undefined || upsellOfferId === null)
+            throw new Error("The parameter 'upsellOfferId' must be defined.");
+        url_ = url_.replace("{upsellOfferId}", encodeURIComponent("" + upsellOfferId));
         url_ = url_.replace(/[?&]$/, "");
+        var content_ = JSON.stringify(req);
         var options_ = {
+            body: content_,
             method: "POST",
-            headers: {}
+            headers: {
+                "Content-Type": "application/json",
+            }
         };
         return this.http.fetch(url_, options_).then(function (_response) {
             return _this.processAddUpsellToCart(_response);
@@ -257,6 +261,60 @@ var CartClient = /** @class */ (function () {
         });
     };
     CartClient.prototype.processRemove = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                return;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status === 422) {
+            return response.text().then(function (_responseText) {
+                var result422 = null;
+                result422 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result422);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
+    CartClient.prototype.removeUpsellFromCart = function (upsellOfferId) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Cart/upsells/{upsellOfferId}/removeFromCart";
+        if (upsellOfferId === undefined || upsellOfferId === null)
+            throw new Error("The parameter 'upsellOfferId' must be defined.");
+        url_ = url_.replace("{upsellOfferId}", encodeURIComponent("" + upsellOfferId));
+        url_ = url_.replace(/[?&]$/, "");
+        var options_ = {
+            method: "DELETE",
+            headers: {}
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processRemoveUpsellFromCart(_response);
+        });
+    };
+    CartClient.prototype.processRemoveUpsellFromCart = function (response) {
         var _this = this;
         var status = response.status;
         var _headers = {};

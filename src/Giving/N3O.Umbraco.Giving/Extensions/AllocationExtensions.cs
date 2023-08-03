@@ -14,7 +14,7 @@ public static class AllocationExtensions {
     }
     
     public static Money GetTotalExcludingUpsells(this IEnumerable<Allocation> allocations, Currency currency) {
-        allocations = allocations.OrEmpty().Where(x => !x.UpsellId.HasValue()).ToList();
+        allocations = allocations.OrEmpty().Where(x => !x.UpsellOfferId.HasValue()).ToList();
         
         if (allocations.Any()) {
             return allocations.Select(x => x.Value).Sum();

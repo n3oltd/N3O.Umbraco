@@ -17,7 +17,7 @@ public class AllocationMapping : IMapDefinition {
         dest.Fund = ctx.Map<FundAllocation, FundAllocationRes>(src.Fund);
         dest.Sponsorship = ctx.Map<SponsorshipAllocation, SponsorshipAllocationRes>(src.Sponsorship);
         dest.Feedback = ctx.Map<FeedbackAllocation, FeedbackAllocationRes>(src.Feedback);
-        dest.UpsellId = src.UpsellId;
-        dest.Upsell = src.UpsellId.HasValue();
+        dest.UpsellOfferId = src.UpsellOfferId;
+        dest.Upsell = src.UpsellOfferId.HasValue();
     }
 }

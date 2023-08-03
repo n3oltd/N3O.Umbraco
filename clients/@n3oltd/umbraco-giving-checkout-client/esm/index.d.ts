@@ -13,6 +13,10 @@ export declare class CheckoutClient {
     protected processGetRegularGivingFrequencies(response: Response): Promise<NamedLookupRes[]>;
     updateAccount(checkoutRevisionId: string, req: AccountReq): Promise<CheckoutRes>;
     protected processUpdateAccount(response: Response): Promise<CheckoutRes>;
+    updateAccountConsent(checkoutRevisionId: string, req: ConsentReq): Promise<CheckoutRes>;
+    protected processUpdateAccountConsent(response: Response): Promise<CheckoutRes>;
+    updateAccountTaxStatus(checkoutRevisionId: string, req: TaxStatusReq): Promise<CheckoutRes>;
+    protected processUpdateAccountTaxStatus(response: Response): Promise<CheckoutRes>;
     updateRegularGivingOptions(checkoutRevisionId: string, req: RegularGivingOptionsReq): Promise<CheckoutRes>;
     protected processUpdateRegularGivingOptions(response: Response): Promise<CheckoutRes>;
     getAllLookups(criteria: LookupsCriteria): Promise<CheckoutLookupsRes>;
@@ -117,6 +121,7 @@ export interface AllocationRes {
     feedback?: FeedbackAllocationRes | undefined;
     fund?: FundAllocationRes | undefined;
     sponsorship?: SponsorshipAllocationRes | undefined;
+    upsellOfferId?: string | undefined;
     upsell?: boolean;
 }
 /** One of 'feedback', 'fund', 'sponsorship' */
@@ -189,6 +194,7 @@ export interface IPublishedPropertyType {
     isUserProperty?: boolean;
     variations?: ContentVariation;
     cacheLevel?: PropertyCacheLevel;
+    deliveryApiCacheLevel?: PropertyCacheLevel;
     modelClrType?: string;
     clrType?: string | undefined;
 }
@@ -381,6 +387,9 @@ export interface ConsentChoiceReq {
     channel?: ConsentChannel | undefined;
     category?: string | undefined;
     response?: ConsentResponse | undefined;
+}
+export interface TaxStatusReq {
+    taxStatus?: TaxStatus | undefined;
 }
 export interface RegularGivingOptionsReq {
     preferredCollectionDay?: string | undefined;

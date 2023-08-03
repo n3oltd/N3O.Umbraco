@@ -14,18 +14,16 @@ public partial class Cart {
                                         IForexConverter forexConverter,
                                         IPriceCalculator priceCalculator,
                                         GivingType givingType,
-                                        Guid upsellId) {
+                                        Guid upsellOfferId) {
         await ReplaceContentsAsync(contentLocator,
                                    forexConverter,
                                    priceCalculator,
                                    givingType,
-                                   c => RemoveContents(c, upsellId));
+                                   c => RemoveUpsellByOfferId(c, upsellOfferId));
     }
 
-    private CartContents RemoveContents(CartContents contents, Guid upsellId) {
-        var newAllocations = contents.Allocations
-                                     .ExceptWhere(x => x.UpsellId == upsellId)
-                                     .ToList();
+    private CartContents RemoveUpsellByOfferId(CartContents contents, Guid upsellOfferId) {
+        var newAllocations = contents.Allocations.ExceptWhere(x => x.UpsellOfferId == upsellOfferId).ToList();
 
         return new CartContents(Currency, contents.Type, newAllocations);
     }

@@ -9,24 +9,34 @@ using System.Linq;
 namespace N3O.Umbraco.Giving.Cart.Extensions;
 
 public static class CartExtensions {
-    public static bool ContainsUpsell(this Entities.Cart cart, GivingType givingType, Guid upsellId) {
-        if (givingType == GivingTypes.Donation) {
-            return cart.Donation.OrEmpty(x => x.Allocations).Any(x => x.UpsellId == upsellId);
-        } else if (givingType == GivingTypes.RegularGiving) {
-            return cart.RegularGiving.OrEmpty(x => x.Allocations).Any(x => x.UpsellId == upsellId);
-        } else {
-            throw UnrecognisedValueException.For(givingType);
+    public static bool ContainsUpsell(this Entities.Cart cart,
+                                      Guid upsellOfferId,
+                                      params GivingType[] givingTypes) {
+        if (givingTypes.Contains(GivingTypes.Donation) &&
+            cart.Donation.OrEmpty(x => x.Allocations).Any(x => x.UpsellOfferId == upsellOfferId)) {
+            return true;
         }
+        
+        if (givingTypes.Contains(GivingTypes.RegularGiving) &&
+            cart.RegularGiving.OrEmpty(x => x.Allocations).Any(x => x.UpsellOfferId == upsellOfferId)) {
+            return true;
+        }
+
+        return false;
     }
     
-    public static bool ContainsUpsells(this Entities.Cart cart, GivingType givingType) {
-        if (givingType == GivingTypes.Donation) {
-            return cart.Donation.OrEmpty(x => x.Allocations).Any(x => x.UpsellId.HasValue());
-        } else if (givingType == GivingTypes.RegularGiving) {
-            return cart.RegularGiving.OrEmpty(x => x.Allocations).Any(x => x.UpsellId.HasValue());
-        } else {
-            throw UnrecognisedValueException.For(givingType);
+    public static bool ContainsUpsells(this Entities.Cart cart, params GivingType[] givingTypes) {
+        if (givingTypes.Contains(GivingTypes.Donation) &&
+            cart.Donation.OrEmpty(x => x.Allocations).Any(x => x.UpsellOfferId.HasValue())) {
+            return true;
         }
+        
+        if (givingTypes.Contains(GivingTypes.RegularGiving) &&
+            cart.RegularGiving.OrEmpty(x => x.Allocations).Any(x => x.UpsellOfferId.HasValue())) {
+            return true;
+        }
+
+        return false;
     }
 
     public static Money GetTotalExcludingUpsells(this Entities.Cart cart, GivingType givingType) {

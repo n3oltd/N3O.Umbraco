@@ -14,14 +14,14 @@ public class Allocation : Value, IAllocation {
                       FundAllocation fund,
                       SponsorshipAllocation sponsorship,
                       FeedbackAllocation feedback,
-                      Guid? upsellId) {
+                      Guid? upsellOfferId) {
         Type = type;
         Value = value;
         FundDimensions = fundDimensions;
         Fund = fund;
         Sponsorship = sponsorship;
         Feedback = feedback;
-        UpsellId = upsellId;
+        UpsellOfferId = upsellOfferId;
     }
 
     public Allocation(IAllocation allocation)
@@ -31,7 +31,7 @@ public class Allocation : Value, IAllocation {
                allocation.Fund.IfNotNull(x => new FundAllocation(x)),
                allocation.Sponsorship.IfNotNull(x => new SponsorshipAllocation(x)),
                allocation.Feedback.IfNotNull(x => new FeedbackAllocation(x)),
-               allocation.UpsellId) { }
+               allocation.UpsellOfferId) { }
 
     public AllocationType Type { get; }
     public Money Value { get; }
@@ -39,7 +39,7 @@ public class Allocation : Value, IAllocation {
     public FundAllocation Fund { get; }
     public SponsorshipAllocation Sponsorship { get; }
     public FeedbackAllocation Feedback { get; }
-    public Guid? UpsellId { get; }
+    public Guid? UpsellOfferId { get; }
 
     [JsonIgnore]
     IFundDimensionValues IAllocation.FundDimensions => FundDimensions;

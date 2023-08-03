@@ -197,6 +197,106 @@ export class CheckoutClient {
         return Promise.resolve<CheckoutRes>(null as any);
     }
 
+    updateAccountConsent(checkoutRevisionId: string, req: ConsentReq): Promise<CheckoutRes> {
+        let url_ = this.baseUrl + "/umbraco/api/Checkout/{checkoutRevisionId}/account/consent";
+        if (checkoutRevisionId === undefined || checkoutRevisionId === null)
+            throw new Error("The parameter 'checkoutRevisionId' must be defined.");
+        url_ = url_.replace("{checkoutRevisionId}", encodeURIComponent("" + checkoutRevisionId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(req);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateAccountConsent(_response);
+        });
+    }
+
+    protected processUpdateAccountConsent(response: Response): Promise<CheckoutRes> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as CheckoutRes;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CheckoutRes>(null as any);
+    }
+
+    updateAccountTaxStatus(checkoutRevisionId: string, req: TaxStatusReq): Promise<CheckoutRes> {
+        let url_ = this.baseUrl + "/umbraco/api/Checkout/{checkoutRevisionId}/account/taxStatus";
+        if (checkoutRevisionId === undefined || checkoutRevisionId === null)
+            throw new Error("The parameter 'checkoutRevisionId' must be defined.");
+        url_ = url_.replace("{checkoutRevisionId}", encodeURIComponent("" + checkoutRevisionId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(req);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateAccountTaxStatus(_response);
+        });
+    }
+
+    protected processUpdateAccountTaxStatus(response: Response): Promise<CheckoutRes> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as CheckoutRes;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CheckoutRes>(null as any);
+    }
+
     updateRegularGivingOptions(checkoutRevisionId: string, req: RegularGivingOptionsReq): Promise<CheckoutRes> {
         let url_ = this.baseUrl + "/umbraco/api/Checkout/{checkoutRevisionId}/regularGiving/options";
         if (checkoutRevisionId === undefined || checkoutRevisionId === null)
@@ -409,6 +509,7 @@ export interface AllocationRes {
     feedback?: FeedbackAllocationRes | undefined;
     fund?: FundAllocationRes | undefined;
     sponsorship?: SponsorshipAllocationRes | undefined;
+    upsellOfferId?: string | undefined;
     upsell?: boolean;
 }
 
@@ -492,6 +593,7 @@ export interface IPublishedPropertyType {
     isUserProperty?: boolean;
     variations?: ContentVariation;
     cacheLevel?: PropertyCacheLevel;
+    deliveryApiCacheLevel?: PropertyCacheLevel;
     modelClrType?: string;
     clrType?: string | undefined;
 }
@@ -715,6 +817,10 @@ export interface ConsentChoiceReq {
     channel?: ConsentChannel | undefined;
     category?: string | undefined;
     response?: ConsentResponse | undefined;
+}
+
+export interface TaxStatusReq {
+    taxStatus?: TaxStatus | undefined;
 }
 
 export interface RegularGivingOptionsReq {

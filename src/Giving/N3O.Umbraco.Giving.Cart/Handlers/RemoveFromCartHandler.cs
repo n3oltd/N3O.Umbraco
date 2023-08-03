@@ -48,14 +48,13 @@ public class RemoveFromCartHandler :
 
     public async Task<RevisionId> Handle(RemoveUpsellFromCartCommand req, CancellationToken cancellationToken) {
         var cart = await _cartAccessor.GetAsync(cancellationToken);
-        
-        var upsellContent = req.UpsellId.Run(_contentLocator.ById<UpsellOfferContent>, true);
+        var upsellOfferContent = req.UpsellOfferId.Run(_contentLocator.ById<UpsellOfferContent>, true);
         
         await cart.RemoveUpsellAsync(_contentLocator,
                                      _forexConverter,
                                      _priceCalculator,
-                                     upsellContent.GivingType,
-                                     req.UpsellId.Value);
+                                     upsellOfferContent.GivingType,
+                                     req.UpsellOfferId.Value);
         
         await _repository.UpdateAsync(cart);
 

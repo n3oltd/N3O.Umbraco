@@ -43,6 +43,7 @@ export interface DonationFormRes {
     options?: DonationOptionRes[] | undefined;
 }
 export interface DonationOptionRes {
+    id?: number;
     name?: string | undefined;
     type?: AllocationType | undefined;
     defaultGivingType?: GivingType | undefined;
@@ -132,6 +133,7 @@ export interface IPublishedPropertyType {
     isUserProperty?: boolean;
     variations?: ContentVariation;
     cacheLevel?: PropertyCacheLevel;
+    deliveryApiCacheLevel?: PropertyCacheLevel;
     modelClrType?: string;
     clrType?: string | undefined;
 }

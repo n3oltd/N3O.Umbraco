@@ -1736,6 +1736,9 @@ namespace N3O.Umbraco.Clients.Giving
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.0.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v10.0.0.0))")]
     public partial class DonationOptionRes
     {
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int Id { get; set; }
+
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Name { get; set; }
 
@@ -1988,6 +1991,9 @@ namespace N3O.Umbraco.Clients.Giving
 
         [Newtonsoft.Json.JsonProperty("cacheLevel", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public PropertyCacheLevel CacheLevel { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("deliveryApiCacheLevel", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PropertyCacheLevel DeliveryApiCacheLevel { get; set; }
 
         [Newtonsoft.Json.JsonProperty("modelClrType", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ModelClrType { get; set; }

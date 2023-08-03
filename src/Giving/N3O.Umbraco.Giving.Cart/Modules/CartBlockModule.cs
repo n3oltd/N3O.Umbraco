@@ -73,40 +73,37 @@ public class CartBlockModule : IBlockModule {
                                                                         Entities.Cart cart,
                                                                         Currency currency) {
         // TODO Fix this
-        var upsellOffersContent = GetUpsellOffersContent(block, cart);
+        var upsellOffersContents = GetUpsellOffers(block, cart);
 
         var upsellOffers = new List<UpsellOffer>();
 
-        foreach (var upsellContent in upsellOffersContent.OrEmpty()) {
-            upsellOffers.Add(await upsellContent.ToUpsellOfferAsync(_forexConverter.Value,
-                                                                    _priceCalculator.Value,
-                                                                    currency,
-                                                                    upsellContent.GivingType,
-                                                                    cart.GetTotalExcludingUpsells(upsellContent.GivingType)));
+        foreach (var upsellOffersContent in upsellOffersContents.OrEmpty()) {
+            upsellOffers.Add(await upsellOffersContent.ToUpsellOfferAsync(_forexConverter.Value,
+                                                                          _priceCalculator.Value,
+                                                                          currency,
+                                                                          upsellOffersContent.GivingType,
+                                                                          cart.GetTotalExcludingUpsells(upsellOffersContent.GivingType)));
         }
 
         return upsellOffers;
     }
 
-    private IReadOnlyList<UpsellOfferContent> GetUpsellOffersContent(IPublishedElement block,
-                                                                     Entities.Cart cart) {
-        var upsellOffersContent = (block.GetProperty("upsellOffers")?.GetValue() as IEnumerable<IPublishedContent>)?.As<UpsellOfferContent>();
+    private IReadOnlyList<UpsellOfferContent> GetUpsellOffers(IPublishedElement block, Entities.Cart cart) {
+        var upsellOffers = (block.GetProperty("upsellOffers")?.GetValue() as IEnumerable<IPublishedContent>)?.As<UpsellOfferContent>();
         
         if (cart.Donation.IsEmpty()) {
-            upsellOffersContent = upsellOffersContent
-                                ?.ExceptWhere(x => x.OfferedFor.HasAny(x => x == GivingTypes.Donation) &&
-                                                   x.OfferedFor.Count() == 1)
-                                 .ToList();
+            upsellOffers = upsellOffers?.ExceptWhere(x => x.OfferedFor.HasAny(x => x == GivingTypes.Donation) &&
+                                                          x.OfferedFor.Count() == 1)
+                                       .ToList();
         }
 
         if (cart.RegularGiving.IsEmpty()) {
-            upsellOffersContent = upsellOffersContent
-                                ?.ExceptWhere(x => x.OfferedFor.HasAny(x => x == GivingTypes.RegularGiving) && 
-                                                   x.OfferedFor.Count() == 1)
-                                 .ToList();
+            upsellOffers = upsellOffers?.ExceptWhere(x => x.OfferedFor.HasAny(x => x == GivingTypes.RegularGiving) && 
+                                                          x.OfferedFor.Count() == 1)
+                                       .ToList();
         }
         
-        return upsellOffersContent;
+        return upsellOffers;
     }
     
     public string Key => CartConstants.BlockModuleKeys.Cart;

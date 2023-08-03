@@ -11,5 +11,5 @@ public interface IAllocation {
     IFundAllocation Fund { get; }
     ISponsorshipAllocation Sponsorship { get; }
     IFeedbackAllocation Feedback { get; }
-    Guid? UpsellId { get; }
+    Guid? UpsellOfferId { get; }
 }

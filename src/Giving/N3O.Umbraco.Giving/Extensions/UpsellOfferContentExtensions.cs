@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Giving.Extensions;
 
-public static class UpsellContentExtensions {
+public static class UpsellOfferContentExtensions {
     public static async Task<Allocation> ToAllocationAsync(this UpsellOfferContent upsellOfferContent,
                                                            IForexConverter forexConverter,
                                                            IPriceCalculator priceCalculator,

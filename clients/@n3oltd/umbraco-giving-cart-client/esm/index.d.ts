@@ -7,7 +7,7 @@ export declare class CartClient {
     });
     add(req: AddToCartReq): Promise<void>;
     protected processAdd(response: Response): Promise<void>;
-    addUpsellToCart(upsellId: string): Promise<void>;
+    addUpsellToCart(upsellOfferId: string, req: AddUpsellToCartReq): Promise<void>;
     protected processAddUpsellToCart(response: Response): Promise<void>;
     getSummary(): Promise<CartSummaryRes>;
     protected processGetSummary(response: Response): Promise<CartSummaryRes>;
@@ -15,6 +15,8 @@ export declare class CartClient {
     protected processReset(response: Response): Promise<void>;
     remove(req: RemoveFromCartReq): Promise<void>;
     protected processRemove(response: Response): Promise<void>;
+    removeUpsellFromCart(upsellOfferId: string): Promise<void>;
+    protected processRemoveUpsellFromCart(response: Response): Promise<void>;
 }
 export interface ProblemDetails {
     type?: string | undefined;
@@ -41,7 +43,7 @@ export interface AllocationReq {
     feedback?: FeedbackAllocationReq | undefined;
     fund?: FundAllocationReq | undefined;
     sponsorship?: SponsorshipAllocationReq | undefined;
-    upsell?: boolean | undefined;
+    upsellOfferId?: string | undefined;
 }
 /** One of 'feedback', 'fund', 'sponsorship' */
 export declare enum AllocationType {
@@ -107,6 +109,7 @@ export interface IPublishedPropertyType {
     isUserProperty?: boolean;
     variations?: ContentVariation;
     cacheLevel?: PropertyCacheLevel;
+    deliveryApiCacheLevel?: PropertyCacheLevel;
     modelClrType?: string;
     clrType?: string | undefined;
 }
@@ -176,6 +179,9 @@ export declare enum SponsorshipDuration {
 export interface SponsorshipComponentAllocationReq {
     component?: string | undefined;
     value?: MoneyReq | undefined;
+}
+export interface AddUpsellToCartReq {
+    amount?: number | undefined;
 }
 export interface CartSummaryRes {
     /** A well formed revision ID string */

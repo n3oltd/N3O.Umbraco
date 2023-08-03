@@ -38,22 +38,22 @@ public partial class Cart {
                                                               IForexConverter forexConverter,
                                                               IPriceCalculator priceCalculator,
                                                               CartContents cartContents) {
-        if (cartContents.Allocations.None(x => x.UpsellId.HasValue())) {
+        if (cartContents.Allocations.None(x => x.UpsellOfferId.HasValue())) {
             return cartContents;
         }
 
         var allocations = new List<Allocation>();
         
         foreach (var allocation in cartContents.Allocations) {
-            if (allocation.UpsellId.HasValue()) {
-                var upsellContent = contentLocator.ById<UpsellOfferContent>(allocation.UpsellId.GetValueOrThrow());
+            if (allocation.UpsellOfferId.HasValue()) {
+                var upsellOfferContent = contentLocator.ById<UpsellOfferContent>(allocation.UpsellOfferId.GetValueOrThrow());
                 
-                var newUpsellAllocation = await upsellContent.ToAllocationAsync(forexConverter,
-                                                                                priceCalculator,
-                                                                                Currency,
-                                                                                allocation.Value.Amount,
-                                                                                cartContents.Type,
-                                                                                cartContents.Allocations.GetTotalExcludingUpsells(Currency));
+                var newUpsellAllocation = await upsellOfferContent.ToAllocationAsync(forexConverter,
+                                                                                     priceCalculator,
+                                                                                     Currency,
+                                                                                     allocation.Value.Amount,
+                                                                                     cartContents.Type,
+                                                                                     cartContents.Allocations.GetTotalExcludingUpsells(Currency));
 
                 if (newUpsellAllocation.Value == allocation.Value) {
                     allocations.Add(allocation);

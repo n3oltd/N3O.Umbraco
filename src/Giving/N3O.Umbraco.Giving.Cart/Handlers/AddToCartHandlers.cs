@@ -52,22 +52,22 @@ public class AddToCartHandlers :
 
     public async Task<RevisionId> Handle(AddUpsellToCartCommand req, CancellationToken cancellationToken) {
         var cart = await _cartAccessor.GetAsync(cancellationToken);
-        var upsellContent = req.UpsellId.Run(_contentLocator.ById<UpsellOfferContent>, true);
+        var upsellOfferContent = req.UpsellOfferId.Run(_contentLocator.ById<UpsellOfferContent>, true);
         
-        if (cart.ContainsUpsell(upsellContent.GivingType, req.UpsellId.Value) && !upsellContent.AllowMultiple) {
-            throw new Exception($"Upsell offer {req.UpsellId.Value} is already added to cart and is not allowed multiple time");
+        if (cart.ContainsUpsell(req.UpsellOfferId.Value) && !upsellOfferContent.AllowMultiple) {
+            throw new Exception($"Offer {req.UpsellOfferId.Value} already exists in this cart");
         }
 
         var currency = _currencyAccessor.Value.GetCurrency();
         
-        var allocation = await upsellContent.ToAllocationAsync(_forexConverter,
-                                                               _priceCalculator,
-                                                               currency,
-                                                               req.Model.Amount,
-                                                               upsellContent.GivingType,
-                                                               cart.GetTotalExcludingUpsells(upsellContent.GivingType));
+        var allocation = await upsellOfferContent.ToAllocationAsync(_forexConverter,
+                                                                    _priceCalculator,
+                                                                    currency,
+                                                                    req.Model.Amount,
+                                                                    upsellOfferContent.GivingType,
+                                                                    cart.GetTotalExcludingUpsells(upsellOfferContent.GivingType));
 
-        var revisionId = await AddToCartAsync(upsellContent.GivingType, allocation, 1, cancellationToken);
+        var revisionId = await AddToCartAsync(upsellOfferContent.GivingType, allocation, 1, cancellationToken);
 
         return revisionId;
     }

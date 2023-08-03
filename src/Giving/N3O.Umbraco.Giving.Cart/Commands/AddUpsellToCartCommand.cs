@@ -6,9 +6,9 @@ using N3O.Umbraco.Mediator;
 namespace N3O.Umbraco.Giving.Cart.Commands;
 
 public class AddUpsellToCartCommand : Request<AddUpsellToCartReq, RevisionId> {
-    public AddUpsellToCartCommand(UpsellId upsellId) {
-        UpsellId = upsellId;
+    public AddUpsellToCartCommand(UpsellOfferId upsellOfferId) {
+        UpsellOfferId = upsellOfferId;
     }
 
-    public UpsellId UpsellId { get; }
+    public UpsellOfferId UpsellOfferId { get; }
 }

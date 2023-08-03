@@ -12,7 +12,7 @@ public class AllocationRes : IAllocation {
     public FeedbackAllocationRes Feedback { get; set; }
     public FundAllocationRes Fund { get; set; }
     public SponsorshipAllocationRes Sponsorship { get; set; }
-    public Guid? UpsellId { get; set; }
+    public Guid? UpsellOfferId { get; set; }
     public bool Upsell { get; set; }
     
     [JsonIgnore]
