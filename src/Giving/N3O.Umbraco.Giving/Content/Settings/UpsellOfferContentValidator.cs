@@ -17,6 +17,7 @@ public class UpsellContentValidator : ContentValidator {
     private static readonly string Dimension4Alias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.Dimension4);
     private static readonly string DonationItemAlias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.DonationItem);
     private static readonly string FixedAmount = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.FixedAmount);
+    private static readonly string GivingType = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.GivingType);
     private static readonly string PriceHandles = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.PriceHandles);
 
     public UpsellContentValidator(IContentHelper contentHelper) : base(contentHelper) { }
@@ -32,6 +33,7 @@ public class UpsellContentValidator : ContentValidator {
             ErrorResult("Donation item must be specified");
         } else {
             ValidateFundDimensions(content, donationItem);
+            ValidateGivingType(content, donationItem);
             ValidatePricing(content, donationItem);
         }
     }
@@ -41,6 +43,15 @@ public class UpsellContentValidator : ContentValidator {
         DimensionAllowed(content, donationItem.Dimension2Options, Dimension2Alias);
         DimensionAllowed(content, donationItem.Dimension3Options, Dimension3Alias);
         DimensionAllowed(content, donationItem.Dimension4Options, Dimension4Alias);
+    }
+    
+    private void ValidateGivingType(ContentProperties content, DonationItem donationItem) {
+        var givingType = content.GetPropertyByAlias(GivingType)
+                                  .IfNotNull(x => ContentHelper.GetDataListValue<GivingType>(x));
+
+        if (!donationItem.AllowedGivingTypes.HasAny(x => x == givingType)) {
+            ErrorResult("Donation item does not allow specified giving type");
+        }
     }
     
     private void ValidatePricing(ContentProperties content, DonationItem donationItem) {
