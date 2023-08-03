@@ -4,6 +4,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Forex;
 using N3O.Umbraco.Giving.Cart.Commands;
 using N3O.Umbraco.Giving.Cart.Models;
+using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Mediator;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,9 +48,15 @@ public class RemoveFromCartHandler :
 
     public async Task<RevisionId> Handle(RemoveUpsellFromCartCommand req, CancellationToken cancellationToken) {
         var cart = await _cartAccessor.GetAsync(cancellationToken);
-
-        cart.RemoveUpsell(cart.Donation, req.UpsellId.Value);
-            
+        
+        var upsellContent = req.UpsellId.Run(_contentLocator.ById<UpsellOfferContent>, true);
+        
+        await cart.RemoveUpsellAsync(_contentLocator,
+                                     _forexConverter,
+                                     _priceCalculator,
+                                     upsellContent.GivingType,
+                                     req.UpsellId.Value);
+        
         await _repository.UpdateAsync(cart);
 
         return cart.RevisionId;

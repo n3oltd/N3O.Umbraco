@@ -9,10 +9,12 @@ using N3O.Umbraco.Giving.Cart.Extensions;
 using N3O.Umbraco.Giving.Cart.Models;
 using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Giving.Extensions;
+using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Localization;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -71,11 +73,11 @@ public class CartBlockModule : IBlockModule {
                                                                         Entities.Cart cart,
                                                                         Currency currency) {
         // TODO Fix this
-        var upsellContents = (block.GetProperty("upsells")?.GetValue() as IEnumerable<IPublishedContent>)?.As<UpsellContent>();
+        var upsellOffersContent = GetUpsellOffersContent(block, cart);
 
         var upsellOffers = new List<UpsellOffer>();
 
-        foreach (var upsellContent in upsellContents) {
+        foreach (var upsellContent in upsellOffersContent.OrEmpty()) {
             upsellOffers.Add(await upsellContent.ToUpsellOfferAsync(_forexConverter.Value,
                                                                     _priceCalculator.Value,
                                                                     currency,
@@ -86,5 +88,26 @@ public class CartBlockModule : IBlockModule {
         return upsellOffers;
     }
 
+    private IReadOnlyList<UpsellOfferContent> GetUpsellOffersContent(IPublishedElement block,
+                                                                     Entities.Cart cart) {
+        var upsellOffersContent = (block.GetProperty("upsellOffers")?.GetValue() as IEnumerable<IPublishedContent>)?.As<UpsellOfferContent>();
+        
+        if (cart.Donation.IsEmpty()) {
+            upsellOffersContent = upsellOffersContent
+                                ?.ExceptWhere(x => x.OfferedFor.HasAny(x => x == GivingTypes.Donation) &&
+                                                   x.OfferedFor.Count() == 1)
+                                 .ToList();
+        }
+
+        if (cart.RegularGiving.IsEmpty()) {
+            upsellOffersContent = upsellOffersContent
+                                ?.ExceptWhere(x => x.OfferedFor.HasAny(x => x == GivingTypes.RegularGiving) && 
+                                                   x.OfferedFor.Count() == 1)
+                                 .ToList();
+        }
+        
+        return upsellOffersContent;
+    }
+    
     public string Key => CartConstants.BlockModuleKeys.Cart;
 }

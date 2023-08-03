@@ -10,14 +10,15 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Giving.Content;
 
 public class UpsellContentValidator : ContentValidator {
-    private static readonly string UpsellContentContentTypeAlias = AliasHelper<UpsellContent>.ContentTypeAlias();
-    private static readonly string Dimension1Alias = AliasHelper<UpsellContent>.PropertyAlias(x => x.Dimension1);
-    private static readonly string Dimension2Alias = AliasHelper<UpsellContent>.PropertyAlias(x => x.Dimension2);
-    private static readonly string Dimension3Alias = AliasHelper<UpsellContent>.PropertyAlias(x => x.Dimension3);
-    private static readonly string Dimension4Alias = AliasHelper<UpsellContent>.PropertyAlias(x => x.Dimension4);
-    private static readonly string DonationItemAlias = AliasHelper<UpsellContent>.PropertyAlias(x => x.DonationItem);
-    private static readonly string FixedAmount = AliasHelper<UpsellContent>.PropertyAlias(x => x.FixedAmount);
-    private static readonly string PriceHandles = AliasHelper<UpsellContent>.PropertyAlias(x => x.PriceHandles);
+    private static readonly string UpsellContentContentTypeAlias = AliasHelper<UpsellOfferContent>.ContentTypeAlias();
+    private static readonly string Dimension1Alias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.Dimension1);
+    private static readonly string Dimension2Alias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.Dimension2);
+    private static readonly string Dimension3Alias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.Dimension3);
+    private static readonly string Dimension4Alias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.Dimension4);
+    private static readonly string DonationItemAlias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.DonationItem);
+    private static readonly string FixedAmount = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.FixedAmount);
+    private static readonly string GivingType = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.GivingType);
+    private static readonly string PriceHandles = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.PriceHandles);
 
     public UpsellContentValidator(IContentHelper contentHelper) : base(contentHelper) { }
 
@@ -32,6 +33,7 @@ public class UpsellContentValidator : ContentValidator {
             ErrorResult("Donation item must be specified");
         } else {
             ValidateFundDimensions(content, donationItem);
+            ValidateGivingType(content, donationItem);
             ValidatePricing(content, donationItem);
         }
     }
@@ -41,6 +43,15 @@ public class UpsellContentValidator : ContentValidator {
         DimensionAllowed(content, donationItem.Dimension2Options, Dimension2Alias);
         DimensionAllowed(content, donationItem.Dimension3Options, Dimension3Alias);
         DimensionAllowed(content, donationItem.Dimension4Options, Dimension4Alias);
+    }
+    
+    private void ValidateGivingType(ContentProperties content, DonationItem donationItem) {
+        var givingType = content.GetPropertyByAlias(GivingType)
+                                  .IfNotNull(x => ContentHelper.GetDataListValue<GivingType>(x));
+
+        if (givingType!= null && !donationItem.AllowedGivingTypes.HasAny(x => x == givingType)) {
+            ErrorResult("Donation item does not allow specified giving type");
+        }
     }
     
     private void ValidatePricing(ContentProperties content, DonationItem donationItem) {
