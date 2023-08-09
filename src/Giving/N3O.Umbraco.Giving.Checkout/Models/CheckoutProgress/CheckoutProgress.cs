@@ -1,5 +1,7 @@
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Checkout.Lookups;
+using N3O.Umbraco.Lookups;
+using N3O.Umbraco.Utilities;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,19 +19,7 @@ public class CheckoutProgress : Value {
     }
 
     public CheckoutProgress(Entities.Checkout checkout) {
-        var requiredStages = new List<CheckoutStage>();
-        
-        requiredStages.Add(CheckoutStages.Account);
-        
-        if (checkout.Donation.IsRequired) {
-            requiredStages.Add(CheckoutStages.Donation);
-        }
-        
-        if (checkout.RegularGiving.IsRequired) {
-            requiredStages.Add(CheckoutStages.RegularGiving);
-        }
-        
-        requiredStages = requiredStages.OrderBy(x => x.Order).ToList();
+        var requiredStages = GetRequiredStages(checkout);
 
         CurrentStage = requiredStages.First();
         RequiredStages = requiredStages;
@@ -45,5 +35,42 @@ public class CheckoutProgress : Value {
         var current = remaining.FirstOrDefault();
         
         return new CheckoutProgress(current, RequiredStages, remaining);
+    }
+
+    private IEnumerable<CheckoutStage> GetRequiredStages(Entities.Checkout checkout) {
+        var requiredStages = new List<CheckoutStage>();
+
+        var additionalImplementation = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
+                                                                   t.IsSubclassOf(typeof(StaticLookupsCollection<CheckoutStage>)) &&
+                                                                   t.Namespace?.Equals(typeof(CheckoutStages).Namespace) == false)
+                                                    .SingleOrDefault();
+
+        if (additionalImplementation.HasValue()) {
+            var additionalProperties = additionalImplementation.GetFields()
+                                                               .Select(x => (CheckoutStage) x.GetValue(null))
+                                                               .ToList();
+
+            if (!checkout.Donation.IsRequired) {
+                additionalProperties.Remove(additionalProperties.FirstOrDefault(x => x.Id == CheckoutStages.Donation.Id));
+            }
+
+            if (!checkout.RegularGiving.IsRequired) {
+                additionalProperties.Remove(additionalProperties.FirstOrDefault(x => x.Id == CheckoutStages.RegularGiving.Id));
+            }
+
+            requiredStages.AddRange(additionalProperties);
+        } else {
+            requiredStages.Add(CheckoutStages.Account);
+
+            if (checkout.Donation.IsRequired) {
+                requiredStages.Add(CheckoutStages.Donation);
+            }
+
+            if (checkout.RegularGiving.IsRequired) {
+                requiredStages.Add(CheckoutStages.RegularGiving);
+            }
+        }
+
+        return requiredStages.OrderBy(x => x.Order).ToList();
     }
 }
