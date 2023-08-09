@@ -40,25 +40,25 @@ public class CheckoutProgress : Value {
     private IEnumerable<CheckoutStage> GetRequiredStages(Entities.Checkout checkout) {
         var requiredStages = new List<CheckoutStage>();
 
-        var additionalImplementation = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
-                                                                   t.IsSubclassOf(typeof(StaticLookupsCollection<CheckoutStage>)) &&
-                                                                   t.Namespace?.Equals(typeof(CheckoutStages).Namespace) == false)
-                                                    .SingleOrDefault();
+        var alternateImplementation = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
+                                                                  t.IsSubclassOf(typeof(StaticLookupsCollection<CheckoutStage>)) &&
+                                                                  t.Namespace?.Equals(typeof(CheckoutStages).Namespace) == false)
+                                                   .SingleOrDefault();
 
-        if (additionalImplementation.HasValue()) {
-            var additionalProperties = additionalImplementation.GetFields()
-                                                               .Select(x => (CheckoutStage) x.GetValue(null))
-                                                               .ToList();
+        if (alternateImplementation.HasValue()) {
+            var alternateProperties = alternateImplementation.GetFields()
+                                                             .Select(x => (CheckoutStage) x.GetValue(null))
+                                                             .ToList();
 
             if (!checkout.Donation.IsRequired) {
-                additionalProperties.Remove(additionalProperties.FirstOrDefault(x => x.Id == CheckoutStages.Donation.Id));
+                alternateProperties.Remove(alternateProperties.FirstOrDefault(x => x.Id == CheckoutStages.Donation.Id));
             }
 
             if (!checkout.RegularGiving.IsRequired) {
-                additionalProperties.Remove(additionalProperties.FirstOrDefault(x => x.Id == CheckoutStages.RegularGiving.Id));
+                alternateProperties.Remove(alternateProperties.FirstOrDefault(x => x.Id == CheckoutStages.RegularGiving.Id));
             }
 
-            requiredStages.AddRange(additionalProperties);
+            requiredStages.AddRange(alternateProperties);
         } else {
             requiredStages.Add(CheckoutStages.Account);
 
