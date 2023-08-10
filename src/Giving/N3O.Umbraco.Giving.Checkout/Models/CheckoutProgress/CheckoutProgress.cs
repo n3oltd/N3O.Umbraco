@@ -1,5 +1,6 @@
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Checkout.Lookups;
+using N3O.Umbraco.Lookups;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,20 +17,9 @@ public class CheckoutProgress : Value {
         RemainingStages = remainingStages.OrEmpty().ToList();
     }
 
-    public CheckoutProgress(Entities.Checkout checkout) {
-        var requiredStages = new List<CheckoutStage>();
-        
-        requiredStages.Add(CheckoutStages.Account);
-        
-        if (checkout.Donation.IsRequired) {
-            requiredStages.Add(CheckoutStages.Donation);
-        }
-        
-        if (checkout.RegularGiving.IsRequired) {
-            requiredStages.Add(CheckoutStages.RegularGiving);
-        }
-        
-        requiredStages = requiredStages.OrderBy(x => x.Order).ToList();
+    public CheckoutProgress(ILookups lookups, Entities.Checkout checkout) {
+        var allStages = lookups.GetAll<CheckoutStage>();
+        var requiredStages = allStages.Where(x => x.IsRequired(checkout)).OrderBy(x => x.Order).ToList();
 
         CurrentStage = requiredStages.First();
         RequiredStages = requiredStages;

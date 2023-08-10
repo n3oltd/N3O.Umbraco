@@ -2,6 +2,7 @@ using AsyncKeyedLock;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Giving.Cart;
+using N3O.Umbraco.Lookups;
 using N3O.Umbraco.References;
 using System;
 using System.Threading;
@@ -15,6 +16,7 @@ public class CheckoutAccessor : ICheckoutAccessor {
     private readonly IRepository<Entities.Checkout> _repository;
     private readonly Lazy<ICartAccessor> _cartAccessor;
     private readonly Lazy<ICounters> _counters;
+    private readonly Lazy<ILookups> _lookups;
     private readonly Lazy<IRemoteIpAddressAccessor> _remoteIpAddressAccessor;
 
     public CheckoutAccessor(ICheckoutIdAccessor checkoutIdAccessor,
@@ -22,12 +24,14 @@ public class CheckoutAccessor : ICheckoutAccessor {
                             IRepository<Entities.Checkout> repository,
                             Lazy<ICartAccessor> cartAccessor,
                             Lazy<ICounters> counters,
+                            Lazy<ILookups> lookups,
                             Lazy<IRemoteIpAddressAccessor> remoteIpAddressAccessor) {
         _checkoutIdAccessor = checkoutIdAccessor;
         _locker = locker;
         _repository = repository;
         _cartAccessor = cartAccessor;
         _counters = counters;
+        _lookups = lookups;
         _remoteIpAddressAccessor = remoteIpAddressAccessor;
     }
 
@@ -54,6 +58,7 @@ public class CheckoutAccessor : ICheckoutAccessor {
 
                 if (!cart.IsEmpty()) {
                     checkout = await Entities.Checkout.CreateAsync(_counters.Value,
+                                                                   _lookups.Value,
                                                                    _remoteIpAddressAccessor.Value,
                                                                    checkoutId,
                                                                    cart);
