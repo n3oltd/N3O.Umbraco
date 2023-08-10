@@ -34,7 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="uSync.Complete" Version="12.0.2" />
+      <PackageReference Include="uSync.Complete" Version="12.1.0" />
     </ItemGroup>
 
     <ItemGroup>

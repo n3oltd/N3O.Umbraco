@@ -34,7 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="LigerShark.WebOptimizer.Core" Version="3.0.384" />
+      <PackageReference Include="LigerShark.WebOptimizer.Core" Version="3.0.386" />
       <PackageReference Include="LigerShark.WebOptimizer.Sass" Version="3.0.99" />
     </ItemGroup>
 
