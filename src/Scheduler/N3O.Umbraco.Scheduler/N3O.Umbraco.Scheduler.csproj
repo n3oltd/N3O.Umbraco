@@ -37,7 +37,7 @@
 
     <ItemGroup>
         <PackageReference Include="Hangfire" Version="1.8.4" />
-        <PackageReference Include="Hangfire.SqlServer" Version="1.8.4" />
+        <PackageReference Include="Hangfire.SqlServer" Version="1.8.5" />
     </ItemGroup>
 
     <ItemGroup>
