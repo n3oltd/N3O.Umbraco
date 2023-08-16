@@ -1,7 +1,7 @@
 using Refit;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Payments.DirectDebitUK.Clients;
+namespace N3O.Umbraco.Payments.DirectDebitUK.Clients.Loqate;
 
 public interface ILoqateApiClient {
     [Get("/Validate/v2/json3.ws")]

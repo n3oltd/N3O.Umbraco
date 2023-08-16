@@ -1,10 +1,4 @@
-using System.Collections.Generic;
-
-namespace N3O.Umbraco.Payments.DirectDebitUK.Clients;
-
-public class ValidateResponse {
-    public IEnumerable<ValidateResult> Items { get; set; }
-}
+﻿namespace N3O.Umbraco.Payments.DirectDebitUK.Clients.Loqate;
 
 public class ValidateResult {
     public bool IsCorrect { get; set; }

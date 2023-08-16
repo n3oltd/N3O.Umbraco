@@ -1,7 +1,6 @@
 using FluentValidation;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
-using N3O.Umbraco.Payments.DirectDebitUK.Clients;
 using N3O.Umbraco.Validation;
 using System.Linq;
 using System.Threading;
@@ -12,10 +11,11 @@ namespace N3O.Umbraco.Payments.DirectDebitUK.Models;
 public class UKBankAccountReqValidator : ModelValidator<UKBankAccountReq> {
     private const int AccountHolderMaxLength = 18;
     
-    private readonly ILoqateApiClient _loqateApiClient;
+    private readonly IUKBankAccountValidator _bankAccountValidator;
 
-    public UKBankAccountReqValidator(IFormatter formatter, ILoqateApiClient loqateApiClient) : base(formatter) {
-        _loqateApiClient = loqateApiClient;
+    public UKBankAccountReqValidator(IFormatter formatter, IUKBankAccountValidator bankAccountValidator = null)
+        : base(formatter) {
+        _bankAccountValidator = bankAccountValidator;
         
         RuleFor(x => x.AccountHolder)
             .NotEmpty()
@@ -52,10 +52,10 @@ public class UKBankAccountReqValidator : ModelValidator<UKBankAccountReq> {
     }
 
     private async Task<bool> AccountIsValidAsync(UKBankAccountReq req, CancellationToken cancellationToken) {
-        if (_loqateApiClient != null) {
-            var result = await _loqateApiClient.ValidateAsync(req.AccountNumber, req.SortCode);
+        if (_bankAccountValidator != null) {
+            var result = await _bankAccountValidator.IsValidAsync(req.AccountNumber, req.SortCode);
 
-            return result.Items.Single().IsCorrect;
+            return result;
         } else {
             return true;
         }

@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Payments.DirectDebitUK.Clients;
+using N3O.Umbraco.Payments.DirectDebitUK.Clients.Fetchify;
+using N3O.Umbraco.Payments.DirectDebitUK.Clients.Loqate;
 using N3O.Umbraco.Payments.DirectDebitUK.Content;
-using N3O.Umbraco.Payments.DirectDebitUK.Models;
 using Refit;
 using Umbraco.Cms.Core.DependencyInjection;
 
@@ -14,24 +14,45 @@ namespace N3O.Umbraco.Payments.DirectDebitUK;
 public class DirectDebitUKComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddOpenApiDocument(DirectDebitUKConstants.ApiName);
-        
-        builder.Services.AddSingleton<LoqateApiSettings>(serviceProvider => {
+
+        RegisterFetchify(builder);
+        RegisterLoqate(builder);
+    }
+
+    private void RegisterFetchify(IUmbracoBuilder builder) {
+        builder.Services.AddSingleton<IFetchifyApiClient>(serviceProvider => {
             var contentCache = serviceProvider.GetRequiredService<IContentCache>();
-            var webHostEnvironment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
-            var apiSettings = GetApiSettings(contentCache, webHostEnvironment);
+            var settings = contentCache.Single<DirectDebitUKSettingsContent>();
+            var apiKey = settings?.FetchifyApiKey;
+            
+            IFetchifyApiClient client = null;
 
-            return apiSettings;
-        });
-        
-        builder.Services.AddSingleton<ILoqateApiClient>(serviceProvider => {
-            var apiSettings = serviceProvider.GetRequiredService<LoqateApiSettings>();
-            ILoqateApiClient client = null;
-
-            if (apiSettings != null) {
+            if (apiKey.HasValue()) {
                 var refitSettings = new RefitSettings();
                 refitSettings.ContentSerializer = new NewtonsoftJsonContentSerializer();
 
-                refitSettings.HttpMessageHandlerFactory = () => new AuthorizationHandler(apiSettings.ApiKey);
+                refitSettings.HttpMessageHandlerFactory = () => new AppendApiKeyToQueryStringHandler("key", apiKey);
+                
+                client = RestService.For<IFetchifyApiClient>("https://api.craftyclicks.co.uk/bank", refitSettings);
+            }
+
+            return client;
+        });
+    }
+    
+    private void RegisterLoqate(IUmbracoBuilder builder) {
+        builder.Services.AddSingleton<ILoqateApiClient>(serviceProvider => {
+            var contentCache = serviceProvider.GetRequiredService<IContentCache>();
+            var settings = contentCache.Single<DirectDebitUKSettingsContent>();
+            var apiKey = settings?.LoqateApiKey;
+            
+            ILoqateApiClient client = null;
+
+            if (apiKey.HasValue()) {
+                var refitSettings = new RefitSettings();
+                refitSettings.ContentSerializer = new NewtonsoftJsonContentSerializer();
+
+                refitSettings.HttpMessageHandlerFactory = () => new AppendApiKeyToQueryStringHandler("key", apiKey);
                 
                 client = RestService.For<ILoqateApiClient>("https://api.addressy.com/BankAccountValidation/Interactive",
                                                            refitSettings);
@@ -39,15 +60,5 @@ public class DirectDebitUKComposer : Composer {
 
             return client;
         });
-    }
-
-    private LoqateApiSettings GetApiSettings(IContentCache contentCache, IWebHostEnvironment webHostEnvironment) {
-        var settings = contentCache.Single<DirectDebitUKSettingsContent>();
-
-        if (settings != null) {
-            return new LoqateApiSettings(settings.LoqateApiKey);
-        }
-
-        return null;
     }
 }
