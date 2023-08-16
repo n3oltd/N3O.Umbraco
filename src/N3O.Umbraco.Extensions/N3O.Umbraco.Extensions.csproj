@@ -40,16 +40,16 @@
         <PackageReference Include="MimeTypesMap" Version="1.0.8" />
         <PackageReference Include="NodaTime" Version="3.1.9" />
         <PackageReference Include="NodaTime.Serialization.JsonNet" Version="3.0.1" />
-        <PackageReference Include="NSwag.AspNetCore" Version="13.19.0" />
-        <PackageReference Include="Our.Umbraco.Community.Contentment.Core" Version="4.4.4" />
+        <PackageReference Include="NSwag.AspNetCore" Version="13.20.0" />
+        <PackageReference Include="Our.Umbraco.Community.Contentment.Core" Version="4.4.5" />
         <PackageReference Include="Perplex.ContentBlocks.Core" Version="2.1.9" />
         <PackageReference Include="Refit" Version="7.0.0" />
         <PackageReference Include="Refit.Newtonsoft.Json" Version="7.0.0" />
         <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
-        <PackageReference Include="Umbraco.Cms.Core" Version="12.1.0" />
-        <PackageReference Include="Umbraco.Cms.Web.Common" Version="12.1.0" />
-        <PackageReference Include="Umbraco.Cms.Web.Website" Version="12.1.0" />
-        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="12.1.0" />
+        <PackageReference Include="Umbraco.Cms.Core" Version="12.1.1" />
+        <PackageReference Include="Umbraco.Cms.Web.Common" Version="12.1.1" />
+        <PackageReference Include="Umbraco.Cms.Web.Website" Version="12.1.1" />
+        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="12.1.1" />
         <PackageReference Include="Umbraco.Code" Version="2.0.0" />
     </ItemGroup>
 
