@@ -1,8 +1,8 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace N3O.Umbraco.Payments.DirectDebitUK.Clients;
 
-public class ValidateResponse {
+public class ValidateLoqateResponse {
     public IEnumerable<ValidateResult> Items { get; set; }
 }
 

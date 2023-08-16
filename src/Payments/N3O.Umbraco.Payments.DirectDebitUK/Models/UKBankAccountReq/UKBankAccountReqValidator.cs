@@ -12,9 +12,11 @@ namespace N3O.Umbraco.Payments.DirectDebitUK.Models;
 public class UKBankAccountReqValidator : ModelValidator<UKBankAccountReq> {
     private const int AccountHolderMaxLength = 18;
     
+    private readonly IFetchifyApiClient _fetchifyApiClient;
     private readonly ILoqateApiClient _loqateApiClient;
 
-    public UKBankAccountReqValidator(IFormatter formatter, ILoqateApiClient loqateApiClient) : base(formatter) {
+    public UKBankAccountReqValidator(IFormatter formatter, IFetchifyApiClient fetchifyApiClient, ILoqateApiClient loqateApiClient) : base(formatter) {
+        _fetchifyApiClient = fetchifyApiClient;
         _loqateApiClient = loqateApiClient;
         
         RuleFor(x => x.AccountHolder)
@@ -44,16 +46,20 @@ public class UKBankAccountReqValidator : ModelValidator<UKBankAccountReq> {
             .WithMessage((_, x) => Get<Strings>(s => s.SortCodeInvalid_1, x));
 
         RuleFor(x => x)
-            .MustAsync(AccountIsValidAsync)
+            .Must(AccountIsValid)
             .When(x => x.AccountHolder.HasValue() && x.AccountHolder.Length <= AccountHolderMaxLength &&
                        x.AccountNumber.HasValue() && IsAccountNumberValid(x.AccountNumber) &&
                        x.SortCode.HasValue() && IsSortCodeValid(x.SortCode))
             .WithMessage(Get<Strings>(s => s.AccountDetailsInvalid));
     }
 
-    private async Task<bool> AccountIsValidAsync(UKBankAccountReq req, CancellationToken cancellationToken) {
-        if (_loqateApiClient != null) {
-            var result = await _loqateApiClient.ValidateAsync(req.AccountNumber, req.SortCode);
+    private bool AccountIsValid(UKBankAccountReq req) {
+        if (_fetchifyApiClient != null) {
+            var result = _fetchifyApiClient.ValidateAsync(req.AccountNumber, req.SortCode).GetAwaiter().GetResult();
+
+            return result.BankValidate.IsCorrect;
+        } else if(_loqateApiClient != null) {
+            var result = _loqateApiClient.ValidateAsync(req.AccountNumber, req.SortCode).GetAwaiter().GetResult();
 
             return result.Items.Single().IsCorrect;
         } else {
