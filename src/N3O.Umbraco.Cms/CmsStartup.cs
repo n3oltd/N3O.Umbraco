@@ -29,6 +29,7 @@ public abstract class CmsStartup {
         services.AddUmbraco(_webHostEnvironment, _configuration)
                 .AddBackOffice()
                 .AddWebsite()
+                .AddDeliveryApi()
                 .AddComposers()
                 .AddContentment(opt => opt.DisableTelemetry = true)
                 .Build();
