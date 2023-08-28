@@ -79,7 +79,7 @@ public class CsvWorkbook : ICsvWorkbook {
         configuration.NewLine = "\r\n";
         configuration.TrimOptions = TrimOptions.Trim;
         configuration.ShouldQuote = args => Regex.IsMatch(args.Field ?? "",
-                                                          @"[\s\n]",
+                                                          @"[\s\n,]",
                                                           RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
         return configuration;
