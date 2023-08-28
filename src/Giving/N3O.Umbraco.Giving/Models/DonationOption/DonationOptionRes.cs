@@ -5,6 +5,7 @@ namespace N3O.Umbraco.Giving.Models;
 public class DonationOptionRes {
     public int Id { get; set; }
     public string Name { get; set; }
+    public string CampaignName { get; set; }
     public AllocationType Type { get; set; }
     public GivingType DefaultGivingType { get; set; }
     public InitialFundDimensionValueRes Dimension1 { get; set; }

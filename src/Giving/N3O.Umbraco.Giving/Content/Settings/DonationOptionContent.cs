@@ -13,18 +13,18 @@ public class DonationOptionContent : UmbracoContent<DonationOptionContent>, IFun
     private static readonly string SponsorshipDonationOptionAlias = AliasHelper<SponsorshipDonationOptionContent>.ContentTypeAlias();
     private static readonly string FeedbackDonationOptionAlias = AliasHelper<FeedbackDonationOptionContent>.ContentTypeAlias();
 
-    public override void Content(IPublishedContent value) {
-        base.Content(value);
+    public override void Content(IPublishedContent content) {
+        base.Content(content);
         
         if (Type == AllocationTypes.Fund) {
             Fund = new FundDonationOptionContent();
-            Fund.Content(value);
+            Fund.Content(content);
         } else if (Type == AllocationTypes.Sponsorship) {
             Sponsorship = new SponsorshipDonationOptionContent();
-            Sponsorship.Content(value);
+            Sponsorship.Content(content);
         } else if (Type == AllocationTypes.Feedback) {
             Feedback = new FeedbackDonationOptionContent();
-            Feedback.Content(value);
+            Feedback.Content(content);
         } else {
             throw UnrecognisedValueException.For(Type);
         }
@@ -32,6 +32,7 @@ public class DonationOptionContent : UmbracoContent<DonationOptionContent>, IFun
 
     public int Id => Content().Id;
     public string Name => Content()?.Name;
+    public string CampaignName => GetCampaignName();
     public GivingType DefaultGivingType => GetValue(x => x.DefaultGivingType);
     public FundDimension1Value Dimension1 => GetAs(x => x.Dimension1);
     public FundDimension2Value Dimension2 => GetAs(x => x.Dimension2);
@@ -75,6 +76,17 @@ public class DonationOptionContent : UmbracoContent<DonationOptionContent>, IFun
             } else {
                 throw UnrecognisedValueException.For(Content().ContentType.Alias);
             }
+        }
+    }
+    
+    private string GetCampaignName() {
+        var parent = Content()?.Parent;
+        
+        // TODO Swap out magic string
+        if (parent?.ContentType.Alias.EqualsInvariant("donationCampaign") == true) {
+            return parent.Name;
+        } else {
+            return null;
         }
     }
 }

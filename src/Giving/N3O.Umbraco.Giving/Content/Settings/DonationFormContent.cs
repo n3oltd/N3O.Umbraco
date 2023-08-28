@@ -1,6 +1,7 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Giving.Content;
 
@@ -13,8 +14,8 @@ public class DonationFormContent : UmbracoContent<DonationFormContent> {
         if (_options == null) {
             var list = new List<DonationOptionContent>();
         
-            foreach (var child in Content().Children) {
-                var donationOption = child.As<DonationOptionContent>();
+            foreach (var descendant in Content().Descendants()) {
+                var donationOption = descendant.As<DonationOptionContent>();
 
                 if (donationOption.IsValid()) {
                     list.Add(donationOption);

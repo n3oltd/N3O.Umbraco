@@ -3,8 +3,6 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.DirectDebitUK.Models;
 

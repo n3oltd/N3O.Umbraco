@@ -15,7 +15,7 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
 
     // Do not use get/set property as causes issues with model validation
     public virtual IPublishedContent Content() => _content;
-    public virtual void Content(IPublishedContent value) => _content = value;
+    public virtual void Content(IPublishedContent content) => _content = content;
 
     protected TProperty Child<TProperty>(Expression<Func<T, TProperty>> memberExpression)
         where TProperty : UmbracoContent<TProperty> {

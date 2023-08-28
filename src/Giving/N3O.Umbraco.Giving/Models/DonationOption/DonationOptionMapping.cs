@@ -18,6 +18,7 @@ public class DonationOptionMapping : IMapDefinition {
     private void Map(DonationOptionContent src, DonationOptionRes dest, MapperContext ctx) {
         dest.Id = src.Id;
         dest.Name = src.Name;
+        dest.CampaignName = src.CampaignName;
         dest.Type = src.Type;
         dest.DefaultGivingType = src.DefaultGivingType;
         dest.Dimension1 = GetInitial(ctx, src.Dimension1, src.GetFundDimensionOptions().DefaultFundDimension1(), src.GetFundDimensionOptions().Dimension1Options);

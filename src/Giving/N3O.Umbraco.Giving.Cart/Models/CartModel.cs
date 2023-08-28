@@ -1,5 +1,4 @@
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Content;
