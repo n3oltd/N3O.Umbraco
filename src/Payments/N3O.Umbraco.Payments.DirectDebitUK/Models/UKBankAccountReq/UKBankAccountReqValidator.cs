@@ -44,16 +44,16 @@ public class UKBankAccountReqValidator : ModelValidator<UKBankAccountReq> {
             .WithMessage((_, x) => Get<Strings>(s => s.SortCodeInvalid_1, x));
 
         RuleFor(x => x)
-            .MustAsync(AccountIsValidAsync)
+            .Must(AccountIsValid)
             .When(x => x.AccountHolder.HasValue() && x.AccountHolder.Length <= AccountHolderMaxLength &&
                        x.AccountNumber.HasValue() && IsAccountNumberValid(x.AccountNumber) &&
                        x.SortCode.HasValue() && IsSortCodeValid(x.SortCode))
             .WithMessage(Get<Strings>(s => s.AccountDetailsInvalid));
     }
 
-    private async Task<bool> AccountIsValidAsync(UKBankAccountReq req, CancellationToken cancellationToken) {
+    private bool AccountIsValid(UKBankAccountReq req) {
         if (_bankAccountValidator != null) {
-            var result = await _bankAccountValidator.IsValidAsync(req.AccountNumber, req.SortCode);
+            var result = _bankAccountValidator.IsValidAsync(req.AccountNumber, req.SortCode).GetAwaiter().GetResult();
 
             return result;
         } else {
