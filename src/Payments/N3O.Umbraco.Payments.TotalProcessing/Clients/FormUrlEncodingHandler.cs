@@ -43,38 +43,43 @@ public class FormUrlEncodingHandler : DelegatingHandler {
         foreach (var (key, value) in jObject) {
             var propertyKey = prefix.HasValue() ? $"{prefix}.{key}" : key;
 
-            properties.AddRange(HandleJObject(propertyKey, value));
+            properties.AddRange(GetJObjectProperties(propertyKey, value));
         }
 
         return properties;
     }
 
-    private IReadOnlyList<KeyValuePair<string, string>> HandleJArray(string propertyKey, JToken jToken) {
+    private IReadOnlyList<KeyValuePair<string, string>> GetJArrayProperties(string propertyKey, JToken jToken) {
         var res = new List<KeyValuePair<string, string>>();
 
-        foreach (var (item, index) in jToken.ToArray()
-                                            .SelectWithIndex()) {
+        foreach (var (item, index) in jToken.SelectWithIndex()) {
             propertyKey += $"[{index}]";
-            res.AddRange(HandleJObject(propertyKey, item));
+            res.AddRange(GetJObjectProperties(propertyKey, item));
         }
 
         return res;
     }
 
-    private IEnumerable<KeyValuePair<string, string>> HandleJObject(string key, JToken jToken) {
+    private IEnumerable<KeyValuePair<string, string>> GetJObjectProperties(string key, JToken jToken) {
+        var properties = new List<KeyValuePair<string, string>>();
+        
         switch (jToken.Type) {
             case JTokenType.Array:
-                return HandleJArray(key, jToken);
+                properties.AddRange(GetJArrayProperties(key, jToken));
+                break;
+            
             case JTokenType.Object:
-                return GetProperties(jToken.ToObject<JObject>(), key)
-                   .ToList();
+                properties.AddRange(GetProperties(jToken.ToObject<JObject>(), key).ToList());
+                break;
+            
             case JTokenType.Null:
-                return Enumerable.Empty<KeyValuePair<string, string>>();
+                break;
             default: {
-                return new[] {
-                                 new KeyValuePair<string, string>(key, jToken.ToString())
-                             };
+                properties.Add(new KeyValuePair<string, string>(key, jToken.ToString()));
+                break;
             }
         }
+
+        return properties;
     }
 }
