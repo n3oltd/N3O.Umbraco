@@ -53,4 +53,9 @@ public static class GivingConstants {
             public const string PreviousName = "N3O-Donation-Item-Previous-Name";
         }
     }
+
+    public static class DonationOptionContentProperties {
+        public const string DonationCampaign = "donationCampaign";
+        public const string DonationOption = "donationOption";
+    }
 }
