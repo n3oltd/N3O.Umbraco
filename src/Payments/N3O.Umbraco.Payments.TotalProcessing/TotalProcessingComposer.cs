@@ -17,9 +17,10 @@ namespace N3O.Umbraco.Payments.TotalProcessing;
 public class TotalProcessingComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddOpenApiDocument(TotalProcessingConstants.ApiName);
+        
         builder.Services.AddTransient<ITotalProcessingHelper, TotalProcessingHelper>();
 
-        builder.Services.AddSingleton(serviceProvider => {
+        builder.Services.AddSingleton<TotalProcessingApiSettings>(serviceProvider => {
             var contentCache = serviceProvider.GetRequiredService<IContentCache>();
             var webHostEnvironment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
             var apiSettings = GetApiSettings(contentCache, webHostEnvironment);
@@ -33,7 +34,7 @@ public class TotalProcessingComposer : Composer {
             ITotalProcessingClient client = null;
 
             if (apiSettings != null) {
-                var authorizationHandler = new CheckoutAuthorizationHandler(apiSettings.AccessToken);
+                var authorizationHandler = new AuthorizationHandler(apiSettings.AccessToken);
                 
                 var httpClient = new HttpClient(new FormUrlEncodingHandler(authorizationHandler));
                 httpClient.BaseAddress = new Uri(apiSettings.BaseUrl);
@@ -48,7 +49,8 @@ public class TotalProcessingComposer : Composer {
         });
     }
     
-    private TotalProcessingApiSettings GetApiSettings(IContentCache contentCache, IWebHostEnvironment webHostEnvironment) {
+    private TotalProcessingApiSettings GetApiSettings(IContentCache contentCache,
+                                                      IWebHostEnvironment webHostEnvironment) {
         var settings = contentCache.Single<TotalProcessingSettingsContent>();
         
         if (settings != null) {

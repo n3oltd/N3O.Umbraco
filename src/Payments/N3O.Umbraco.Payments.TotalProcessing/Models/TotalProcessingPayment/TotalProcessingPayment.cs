@@ -4,7 +4,7 @@ using N3O.Umbraco.Payments.Models;
 namespace N3O.Umbraco.Payments.TotalProcessing.Models;
 
 public partial class TotalProcessingPayment : Payment {
-    public string ReturnUrl { get; set; }
+    public string ReturnUrl { get; private set; }
     
     public string TotalProcessingCheckoutId { get; private set; }
     public string TotalProcessingTransactionId { get; private set; }

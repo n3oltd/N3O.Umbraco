@@ -1,11 +1,11 @@
 namespace N3O.Umbraco.Payments.TotalProcessing.Models;
 
 public partial class TotalProcessingPayment {
-    public void UpdateCheckoutId(string returnUrl, string ndc, string checkoutId){
+    public void CheckoutPrepared(string returnUrl, string checkoutId, string uniqueReference) {
         ClearErrors();
         
         TotalProcessingCheckoutId = checkoutId;
-        TotalProcessingUniqueReference = ndc;
+        TotalProcessingUniqueReference = uniqueReference;
 
         ReturnUrl = returnUrl;
     }

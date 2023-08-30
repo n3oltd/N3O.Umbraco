@@ -8,10 +8,10 @@ public class PaymentProcessedReqValidator : ModelValidator<PaymentProcessedReq> 
     public PaymentProcessedReqValidator(IFormatter formatter) : base(formatter) {
         RuleFor(x => x.Id)
            .NotEmpty()
-           .WithMessage(Get<Strings>(x => x.SpecifyValue));
+           .WithMessage(Get<Strings>(x => x.SpecifyPaymentId));
     }
 
     public class Strings : ValidationStrings {
-        public string SpecifyValue => "Please specify the value";
+        public string SpecifyPaymentId => "Please specify the payment ID";
     }
 }

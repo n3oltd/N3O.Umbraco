@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.TotalProcessing.Handlers;
 
-public class PrepareCheckoutHandler : PaymentsHandler<PrepareCheckoutCommand, PrepareCheckoutReq, TotalProcessingPayment> {
+public class PrepareCheckoutHandler :
+    PaymentsHandler<PrepareCheckoutCommand, PrepareCheckoutReq, TotalProcessingPayment> {
     private readonly ITotalProcessingHelper _totalProcessingHelper;
 
-    public PrepareCheckoutHandler(IPaymentsScope paymentsScope,
-                                  ITotalProcessingHelper totalProcessingHelper)
+    public PrepareCheckoutHandler(IPaymentsScope paymentsScope, ITotalProcessingHelper totalProcessingHelper)
         : base(paymentsScope) {
         _totalProcessingHelper = totalProcessingHelper;
     }
@@ -20,6 +20,6 @@ public class PrepareCheckoutHandler : PaymentsHandler<PrepareCheckoutCommand, Pr
                                               TotalProcessingPayment payment,
                                               PaymentsParameters parameters,
                                               CancellationToken cancellationToken) {
-        await _totalProcessingHelper.PrepareCheckout(payment, req.Model, parameters, false);
+        await _totalProcessingHelper.PrepareCheckoutAsync(payment, req.Model, parameters, false);
     }
 }

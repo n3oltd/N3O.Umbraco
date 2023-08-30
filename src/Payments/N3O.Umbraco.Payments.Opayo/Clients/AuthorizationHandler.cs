@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.Opayo.Clients;
 
-public class CredentialsAuthorizationHandler : DelegatingHandler {
+public class AuthorizationHandler : DelegatingHandler {
     private readonly string _base64Credentials;
 
-    public CredentialsAuthorizationHandler(string integrationKey, string integrationPassword) {
+    public AuthorizationHandler(string integrationKey, string integrationPassword) {
         var bytes = Encoding.UTF8.GetBytes($"{integrationKey}:{integrationPassword}");
         _base64Credentials = Convert.ToBase64String(bytes);
 

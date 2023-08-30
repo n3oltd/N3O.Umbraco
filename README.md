@@ -48,6 +48,7 @@ Provides support for taking one-off and recurring payments using various gateway
 - Opayo
 - PayPal
 - Stripe
+- Total Processing
 - Worldline
 
 #### Plugins

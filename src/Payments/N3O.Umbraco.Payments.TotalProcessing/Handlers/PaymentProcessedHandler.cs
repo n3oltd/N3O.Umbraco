@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.TotalProcessing.Handlers;
 
-public class PaymentProcessedHandler : PaymentsHandler<PaymentProcessedCommand, PaymentProcessedReq, TotalProcessingPayment> {
+public class PaymentProcessedHandler :
+    PaymentsHandler<PaymentProcessedCommand, PaymentProcessedReq, TotalProcessingPayment> {
     private readonly ITotalProcessingClient _checkoutClient;
     private readonly ITotalProcessingHelper _totalProcessingHelper;
     private readonly TotalProcessingApiSettings _totalProcessingApiSettings;

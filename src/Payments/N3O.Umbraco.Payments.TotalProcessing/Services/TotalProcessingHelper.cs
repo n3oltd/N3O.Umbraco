@@ -4,17 +4,17 @@ using N3O.Umbraco.Payments.TotalProcessing.Clients;
 using N3O.Umbraco.Payments.TotalProcessing.Extensions;
 using N3O.Umbraco.Payments.TotalProcessing.Models;
 using Payments.TotalProcessing.Clients.Models;
-using Refit;
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.TotalProcessing;
 
 public class TotalProcessingHelper : ITotalProcessingHelper {
-    private readonly ITotalProcessingClient _checkoutClient;
+    private readonly Lazy<ITotalProcessingClient> _checkoutClient;
     private readonly TotalProcessingApiSettings _totalProcessingApiSettings;
 
-    public TotalProcessingHelper(ITotalProcessingClient checkoutClient,
+    public TotalProcessingHelper(Lazy<ITotalProcessingClient> checkoutClient,
                                  TotalProcessingApiSettings totalProcessingApiSettings) {
         _checkoutClient = checkoutClient;
         _totalProcessingApiSettings = totalProcessingApiSettings;
@@ -41,25 +41,25 @@ public class TotalProcessingHelper : ITotalProcessingHelper {
         }
     }
 
-    public async Task PrepareCheckout(TotalProcessingPayment payment,
-                                      PrepareCheckoutReq req,
-                                      PaymentsParameters parameters,
-                                      bool saveCard) {
+    public async Task PrepareCheckoutAsync(TotalProcessingPayment payment,
+                                           PrepareCheckoutReq req,
+                                           PaymentsParameters parameters,
+                                           bool saveCard) {
         var checkoutReq = GetPaymentReq(req);
 
-        var res = await _checkoutClient.PrepareCheckoutAsync(checkoutReq);
+        var res = await _checkoutClient.Value.PrepareCheckoutAsync(checkoutReq);
 
-        payment.UpdateCheckoutId(req.ReturnUrl, res.Ndc, res.Id);
+        payment.CheckoutPrepared(req.ReturnUrl, res.Ndc, res.Id);
     }
 
     private PaymentReq GetPaymentReq(PrepareCheckoutReq req) {
         var paymentReq = new PaymentReq();
-        paymentReq.Amount = req.Value.Amount?.ToString();
+        paymentReq.Amount = req.Value.Amount?.ToString(CultureInfo.InvariantCulture);
         paymentReq.Currency = req.Value.Currency.Name;
         paymentReq.PaymentType = "DB";
         paymentReq.EntityId = _totalProcessingApiSettings.EntityId;
-        paymentReq.StandingInstruction = new StandingInstruction();
 
+        paymentReq.StandingInstruction = new StandingInstruction();
         paymentReq.StandingInstruction.Source = "CIT";
         paymentReq.StandingInstruction.Mode = "INITIAL";
         paymentReq.StandingInstruction.Type = "UNSCHEDULED";

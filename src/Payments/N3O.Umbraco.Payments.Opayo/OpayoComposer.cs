@@ -33,7 +33,7 @@ public class OpayoComposer : Composer {
                 refitSettings.ContentSerializer = new NewtonsoftJsonContentSerializer();
 
                 refitSettings.HttpMessageHandlerFactory =
-                    () => new CredentialsAuthorizationHandler(apiSettings.IntegrationKey,
+                    () => new AuthorizationHandler(apiSettings.IntegrationKey,
                                                               apiSettings.IntegrationPassword);
 
                 client = RestService.For<IOpayoClient>(apiSettings.BaseUrl, refitSettings);
