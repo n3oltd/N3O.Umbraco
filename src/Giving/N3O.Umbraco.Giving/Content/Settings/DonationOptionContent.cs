@@ -82,8 +82,7 @@ public class DonationOptionContent : UmbracoContent<DonationOptionContent>, IFun
     private string GetCampaignName() {
         var parent = Content()?.Parent;
         
-        // TODO Swap out magic string
-        if (parent?.ContentType.Alias.EqualsInvariant("donationCampaign") == true) {
+        if (parent?.ContentType.Alias.EqualsInvariant(GivingConstants.DonationOptionContentProperties.DonationCampaign) == true) {
             return parent.Name;
         } else {
             return null;

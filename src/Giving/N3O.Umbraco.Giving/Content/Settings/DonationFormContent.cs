@@ -15,10 +15,12 @@ public class DonationFormContent : UmbracoContent<DonationFormContent> {
             var list = new List<DonationOptionContent>();
         
             foreach (var descendant in Content().Descendants()) {
-                var donationOption = descendant.As<DonationOptionContent>();
+                if (descendant.ContentType.CompositionAliases.Contains(GivingConstants.DonationOptionContentProperties.DonationOption)) {
+                    var donationOption = descendant.As<DonationOptionContent>();
 
-                if (donationOption.IsValid()) {
-                    list.Add(donationOption);
+                    if (donationOption.IsValid()) {
+                        list.Add(donationOption);
+                    }
                 }
             }
 
