@@ -12,7 +12,6 @@ public class PaymentProcessedReqValidator : ModelValidator<PaymentProcessedReq> 
     }
 
     public class Strings : ValidationStrings {
-        public string SpecifyReturnUrl => "Please specify the return URL";
         public string SpecifyValue => "Please specify the value";
     }
 }

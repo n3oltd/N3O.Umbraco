@@ -19,7 +19,7 @@ public class TotalProcessingComposer : Composer {
         builder.Services.AddOpenApiDocument(TotalProcessingConstants.ApiName);
         builder.Services.AddTransient<ITotalProcessingHelper, TotalProcessingHelper>();
 
-        builder.Services.AddSingleton<TotalProcessingApiSettings>(serviceProvider => {
+        builder.Services.AddSingleton(serviceProvider => {
             var contentCache = serviceProvider.GetRequiredService<IContentCache>();
             var webHostEnvironment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
             var apiSettings = GetApiSettings(contentCache, webHostEnvironment);
@@ -27,7 +27,7 @@ public class TotalProcessingComposer : Composer {
             return apiSettings;
         });
         
-        builder.Services.AddTransient<ITotalProcessingClient>(serviceProvider => {
+        builder.Services.AddTransient(serviceProvider => {
             var apiSettings = serviceProvider.GetRequiredService<TotalProcessingApiSettings>();
 
             ITotalProcessingClient client = null;
