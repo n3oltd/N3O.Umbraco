@@ -20,6 +20,6 @@ public class PrepareCheckoutHandler :
                                               TotalProcessingPayment payment,
                                               PaymentsParameters parameters,
                                               CancellationToken cancellationToken) {
-        await _totalProcessingHelper.PrepareCheckoutAsync(payment, req.Model, parameters, false);
+        await _totalProcessingHelper.PrepareCheckoutAsync(payment, req.Model);
     }
 }

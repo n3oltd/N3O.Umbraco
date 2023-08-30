@@ -42,9 +42,7 @@ public class TotalProcessingHelper : ITotalProcessingHelper {
     }
 
     public async Task PrepareCheckoutAsync(TotalProcessingPayment payment,
-                                           PrepareCheckoutReq req,
-                                           PaymentsParameters parameters,
-                                           bool saveCard) {
+                                           PrepareCheckoutReq req) {
         var checkoutReq = GetPaymentReq(req);
 
         var res = await _checkoutClient.Value.PrepareCheckoutAsync(checkoutReq);
