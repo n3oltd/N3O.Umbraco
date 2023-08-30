@@ -15,7 +15,7 @@ public class DonationFormContent : UmbracoContent<DonationFormContent> {
             var list = new List<DonationOptionContent>();
         
             foreach (var descendant in Content().Descendants()) {
-                if (descendant.ContentType.CompositionAliases.Contains(GivingConstants.DonationOptionContentProperties.DonationOption)) {
+                if (descendant.ContentType.CompositionAliases.Contains(GivingConstants.Aliases.DonationOption.ContentType)) {
                     var donationOption = descendant.As<DonationOptionContent>();
 
                     if (donationOption.IsValid()) {

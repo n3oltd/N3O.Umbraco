@@ -19,6 +19,14 @@ public static class GivingConstants {
                 public static readonly string PriceRules = AliasHelper<Lookups.DonationItem>.PropertyAlias(x => x.PriceRules);
             }
         }
+
+        public static class DonationCampaign {
+            public static readonly string ContentType = "donationCampaign";
+        }
+        
+        public static class DonationOption {
+            public static readonly string ContentType = "donationOption";
+        }
         
         public static class Price {
             public static class Properties {
@@ -52,10 +60,5 @@ public static class GivingConstants {
         public static class Headers {
             public const string PreviousName = "N3O-Donation-Item-Previous-Name";
         }
-    }
-
-    public static class DonationOptionContentProperties {
-        public const string DonationCampaign = "donationCampaign";
-        public const string DonationOption = "donationOption";
     }
 }
