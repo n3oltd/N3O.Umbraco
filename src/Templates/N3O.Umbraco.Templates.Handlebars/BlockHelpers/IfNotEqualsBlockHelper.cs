@@ -2,25 +2,23 @@
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
-using N3O.Umbraco.Templates.Handlebars;
-using N3O.Umbraco.Templates.Handlebars.BlockHelpers;
 
-namespace Karakoram.Templates.Engine.Handlebars.Domain;
+namespace N3O.Umbraco.Templates.Handlebars.BlockHelpers;
 
-public class IfEqualsBlockHelper : BlockHelper {
-    public IfEqualsBlockHelper(ILogger<IfEqualsBlockHelper> logger, IJsonProvider jsonProvider) 
+public class IfNotEqualsBlockHelper : BlockHelper {
+    public IfNotEqualsBlockHelper(ILogger<IfNotEqualsBlockHelper> logger, IJsonProvider jsonProvider)
         : base(logger, jsonProvider, 2) { }
-
-    public override string Name => "if_equals";
+    
+    public override string Name => "if_not_equals";
 
     protected override void Execute(EncodedTextWriter output,
                                     BlockHelperOptions options,
-                                    Context context,
+                                    HandlebarsDotNet.Context context,
                                     HandlebarsArguments args) {
-        var arg1 = args.Get<string>(0);
-        var arg2 = args.Get<string>(1);
+        var arg1 = args.GetJson(0);
+        var arg2 = args.GetJson(1);
 
-        if (AreEqual(arg1, arg2)) {
+        if (!AreEqual(arg1, arg2)) {
             options.Template(output, context);
         } else {
             options.Inverse(output, context);
