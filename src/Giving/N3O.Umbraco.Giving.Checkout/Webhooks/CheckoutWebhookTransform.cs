@@ -109,7 +109,7 @@ public class CheckoutWebhookTransform : WebhookTransform {
                                     JObject jObject) {
         foreach (var allocation in allocations.OrEmpty().Where(x => x.Type == AllocationTypes.Feedback)) {
             var key = $"{givingType.Id}{allocation.Feedback.Scheme.Id.Pascalize()}Feedbacks";
-            
+
             if (!jObject.ContainsKey(key)) {
                 jObject[key] = new JArray();
             }
@@ -131,7 +131,7 @@ public class CheckoutWebhookTransform : WebhookTransform {
                                        JObject jObject) {
         foreach (var allocation in allocations.OrEmpty().Where(x => x.Type == AllocationTypes.Sponsorship)) {
             var key = $"{givingType.Id}{allocation.Sponsorship.Scheme.Id.Pascalize()}Sponsorships";
-            
+
             if (!jObject.ContainsKey(key)) {
                 jObject[key] = new JArray();
             }
