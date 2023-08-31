@@ -18,9 +18,6 @@ using System.Linq;
 namespace N3O.Umbraco.Giving.Checkout.Webhooks;
 
 public class CheckoutWebhookTransform : WebhookTransform {
-    private const string Feedbacks = "feedbacks";
-    private const string Sponsorships = "sponsorships";
-    
     private static readonly string RestrictCollectionDaysToAlias =
         AliasHelper<PaymentMethodSettingsContent<IPaymentMethodSettings>>.PropertyAlias(x => x.RestrictCollectionDaysTo);
     
@@ -107,21 +104,23 @@ public class CheckoutWebhookTransform : WebhookTransform {
                                     GivingType givingType,
                                     IEnumerable<Allocation> allocations,
                                     JObject jObject) {
+        var globalKey = $"{givingType.Id}Feedbacks";
+        
         foreach (var allocation in allocations.OrEmpty().Where(x => x.Type == AllocationTypes.Feedback)) {
-            var key = $"{givingType.Id}{allocation.Feedback.Scheme.Id.Pascalize()}Feedbacks";
+            var schemeKey = $"{givingType.Id}{allocation.Feedback.Scheme.Id.Pascalize()}Feedbacks";
 
-            if (!jObject.ContainsKey(key)) {
-                jObject[key] = new JArray();
+            if (!jObject.ContainsKey(globalKey)) {
+                jObject[globalKey] = new JArray();
             }
             
-            if (!jObject.ContainsKey(Feedbacks)) {
-                jObject[Feedbacks] = new JArray();
+            if (!jObject.ContainsKey(schemeKey)) {
+                jObject[schemeKey] = new JArray();
             }
 
             var allocationJObject = JObject.FromObject(allocation, serializer);
 
-            ((JArray) jObject[key]).Add(allocationJObject);
-            ((JArray) jObject[Feedbacks]).Add(allocationJObject);
+            ((JArray) jObject[globalKey]).Add(allocationJObject);
+            ((JArray) jObject[schemeKey]).Add(allocationJObject);
         }
     }
 
@@ -129,15 +128,17 @@ public class CheckoutWebhookTransform : WebhookTransform {
                                        GivingType givingType,
                                        IEnumerable<Allocation> allocations,
                                        JObject jObject) {
+        var globalKey = $"{givingType.Id}Sponsorships";
+        
         foreach (var allocation in allocations.OrEmpty().Where(x => x.Type == AllocationTypes.Sponsorship)) {
-            var key = $"{givingType.Id}{allocation.Sponsorship.Scheme.Id.Pascalize()}Sponsorships";
+            var schemeKey = $"{givingType.Id}{allocation.Sponsorship.Scheme.Id.Pascalize()}Sponsorships";
 
-            if (!jObject.ContainsKey(key)) {
-                jObject[key] = new JArray();
+            if (!jObject.ContainsKey(globalKey)) {
+                jObject[globalKey] = new JArray();
             }
             
-            if (!jObject.ContainsKey(Sponsorships)) {
-                jObject[Sponsorships] = new JArray();
+            if (!jObject.ContainsKey(schemeKey)) {
+                jObject[schemeKey] = new JArray();
             }
 
             var allocationJObject = JObject.FromObject(allocation, serializer);
@@ -155,8 +156,8 @@ public class CheckoutWebhookTransform : WebhookTransform {
                                      (k, v) => component[k] = JObject.FromObject(v, serializer));
             }
 
-            ((JArray) jObject[key]).Add(allocationJObject);
-            ((JArray) jObject[Sponsorships]).Add(allocationJObject);
+            ((JArray) jObject[globalKey]).Add(allocationJObject);
+            ((JArray) jObject[schemeKey]).Add(allocationJObject);
         }
     }
 
