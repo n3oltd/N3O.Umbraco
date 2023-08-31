@@ -1,5 +1,4 @@
 using N3O.Umbraco.Exceptions;
-using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.TotalProcessing.Clients;
 using N3O.Umbraco.Payments.TotalProcessing.Extensions;
 using N3O.Umbraco.Payments.TotalProcessing.Models;

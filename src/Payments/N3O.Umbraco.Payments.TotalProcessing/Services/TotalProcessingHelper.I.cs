@@ -1,4 +1,3 @@
-using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.TotalProcessing.Models;
 using Payments.TotalProcessing.Clients.Models;
 using System.Threading.Tasks;
