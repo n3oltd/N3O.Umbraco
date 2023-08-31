@@ -18,6 +18,9 @@ using System.Linq;
 namespace N3O.Umbraco.Giving.Checkout.Webhooks;
 
 public class CheckoutWebhookTransform : WebhookTransform {
+    private const string Feedbacks = "feedbacks";
+    private const string Sponsorships = "sponsorships";
+    
     private static readonly string RestrictCollectionDaysToAlias =
         AliasHelper<PaymentMethodSettingsContent<IPaymentMethodSettings>>.PropertyAlias(x => x.RestrictCollectionDaysTo);
     
@@ -110,10 +113,15 @@ public class CheckoutWebhookTransform : WebhookTransform {
             if (!jObject.ContainsKey(key)) {
                 jObject[key] = new JArray();
             }
+            
+            if (!jObject.ContainsKey(Feedbacks)) {
+                jObject[Feedbacks] = new JArray();
+            }
 
             var allocationJObject = JObject.FromObject(allocation, serializer);
 
             ((JArray) jObject[key]).Add(allocationJObject);
+            ((JArray) jObject[Feedbacks]).Add(allocationJObject);
         }
     }
 
@@ -126,6 +134,10 @@ public class CheckoutWebhookTransform : WebhookTransform {
 
             if (!jObject.ContainsKey(key)) {
                 jObject[key] = new JArray();
+            }
+            
+            if (!jObject.ContainsKey(Sponsorships)) {
+                jObject[Sponsorships] = new JArray();
             }
 
             var allocationJObject = JObject.FromObject(allocation, serializer);
@@ -144,6 +156,7 @@ public class CheckoutWebhookTransform : WebhookTransform {
             }
 
             ((JArray) jObject[key]).Add(allocationJObject);
+            ((JArray) jObject[Sponsorships]).Add(allocationJObject);
         }
     }
 
