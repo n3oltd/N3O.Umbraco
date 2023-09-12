@@ -8,6 +8,6 @@ public class CalendarWeekExcelCellConverter : ExcelCellConverter<CalendarWeek>, 
     }
     
     protected override ExcelNumberFormat GetNumberFormat(Column column, CalendarWeek value) {
-        return new StringExcelNumberFormat();
+        return new CalendarWeekExcelNumberFormat();
     }
 }

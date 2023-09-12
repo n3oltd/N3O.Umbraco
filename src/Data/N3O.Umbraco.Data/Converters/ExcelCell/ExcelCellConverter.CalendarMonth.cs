@@ -8,6 +8,6 @@ public class CalendarMonthExcelCellConverter : ExcelCellConverter<CalendarMonth>
     }
     
     protected override ExcelNumberFormat GetNumberFormat(Column column, CalendarMonth value) {
-        return new StringExcelNumberFormat();
+        return new CalendarMonthExcelNumberFormat();
     }
 }
