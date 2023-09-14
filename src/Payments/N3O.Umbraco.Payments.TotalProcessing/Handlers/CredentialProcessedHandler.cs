@@ -29,18 +29,18 @@ public class CredentialProcessedHandler :
                                               TotalProcessingCredential credential,
                                               PaymentsParameters parameters,
                                               CancellationToken cancellationToken) {
-        var apiTransaction = await _checkoutClient.GetPaymentAsync(_totalProcessingApiSettings.EntityId, req.Model.Id);
+        var apiPayment = await _checkoutClient.GetPaymentAsync(_totalProcessingApiSettings.EntityId, req.Model.Id);
 
         await DoAsync<TotalProcessingPayment>(payment => {
-            _totalProcessingHelper.ApplyApiTransaction(payment, apiTransaction);
+            _totalProcessingHelper.ApplyApiTransaction(payment, apiPayment);
 
             return Task.CompletedTask;
         }, cancellationToken);
         
-        if (apiTransaction.RegistrationId.HasValue()) {
-            credential.SetUp(apiTransaction.RegistrationId);
+        if (apiPayment.RegistrationId.HasValue()) {
+            credential.SetUp(apiPayment.RegistrationId);
         } else {
-            credential.Error(apiTransaction.Result.Code, apiTransaction.Result.Description);
+            credential.Error(apiPayment.Result.Code, apiPayment.Result.Description);
         }
     }
 }

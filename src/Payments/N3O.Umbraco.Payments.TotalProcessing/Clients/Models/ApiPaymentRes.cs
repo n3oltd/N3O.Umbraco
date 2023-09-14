@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace Payments.TotalProcessing.Clients.Models;
 
-public class ApiTransactionRes {
+public class ApiPaymentRes {
     [JsonProperty("id")]
     public string Id { get; set; }
 

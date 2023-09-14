@@ -22,24 +22,24 @@ public class TotalProcessingHelper : ITotalProcessingHelper {
         _totalProcessingApiSettings = totalProcessingApiSettings;
     }
 
-    public void ApplyApiTransaction(TotalProcessingPayment payment, ApiTransactionRes apiTransaction) {
-        if (apiTransaction.IsAuthorised()) {
-            payment.Paid(apiTransaction.Id,
-                         apiTransaction.Result.Code,
-                         apiTransaction.Result.Description,
-                         apiTransaction.ResultDetails?.ConnectorTxID1,
-                         apiTransaction.ResultDetails?.ConnectorTxID2,
-                         apiTransaction.ResultDetails?.ConnectorTxID3);
-        } else if (apiTransaction.IsDeclined()) {
-            payment.Declined(apiTransaction.Id,
-                             apiTransaction.Result.Code,
-                             apiTransaction.Result.Description);
-        } else if (apiTransaction.IsRejected() || apiTransaction.HasError()) {
-            payment.Error(apiTransaction.Id,
-                          apiTransaction.Result.Code,
-                          apiTransaction.Result.Description);
+    public void ApplyApiTransaction(TotalProcessingPayment payment, ApiPaymentRes apiPayment) {
+        if (apiPayment.IsAuthorised()) {
+            payment.Paid(apiPayment.Id,
+                         apiPayment.Result.Code,
+                         apiPayment.Result.Description,
+                         apiPayment.ResultDetails?.ConnectorTxID1,
+                         apiPayment.ResultDetails?.ConnectorTxID2,
+                         apiPayment.ResultDetails?.ConnectorTxID3);
+        } else if (apiPayment.IsDeclined()) {
+            payment.Declined(apiPayment.Id,
+                             apiPayment.Result.Code,
+                             apiPayment.Result.Description);
+        } else if (apiPayment.IsRejected() || apiPayment.HasError()) {
+            payment.Error(apiPayment.Id,
+                          apiPayment.Result.Code,
+                          apiPayment.Result.Description);
         } else {
-            throw UnrecognisedValueException.For(apiTransaction.Result.Code);
+            throw UnrecognisedValueException.For(apiPayment.Result.Code);
         }
     }
 
@@ -66,29 +66,29 @@ public class TotalProcessingHelper : ITotalProcessingHelper {
     private PaymentReq GetPaymentReq(MoneyReq value, PaymentsParameters parameters) {
         var billingInfo = parameters.BillingInfoAccessor.GetBillingInfo();
         
-        var paymentReq = new PaymentReq();
-        paymentReq.Amount = value.Amount?.ToString(CultureInfo.InvariantCulture);
-        paymentReq.Currency = value.Currency.Name;
-        paymentReq.PaymentType = "DB";
-        paymentReq.EntityId = _totalProcessingApiSettings.EntityId;
-        paymentReq.Billing = GetBillingAddress(billingInfo);
-        paymentReq.StandingInstruction = new StandingInstruction();
-        paymentReq.StandingInstruction.Source = "CIT";
-        paymentReq.StandingInstruction.Mode = "INITIAL";
-        paymentReq.StandingInstruction.Type = "UNSCHEDULED";
-        paymentReq.CreateRegistration = true;
+        var req = new PaymentReq();
+        req.Amount = value.Amount?.ToString(CultureInfo.InvariantCulture);
+        req.Currency = value.Currency.Name;
+        req.PaymentType = "DB";
+        req.EntityId = _totalProcessingApiSettings.EntityId;
+        req.Billing = GetBillingAddress(billingInfo);
+        req.StandingInstruction = new StandingInstruction();
+        req.StandingInstruction.Source = "CIT";
+        req.StandingInstruction.Mode = "INITIAL";
+        req.StandingInstruction.Type = "UNSCHEDULED";
+        req.CreateRegistration = true;
 
-        return paymentReq;
+        return req;
     }
     
     private ApiBillingReq GetBillingAddress(IBillingInfo billing) {
-        var billingAddress = new ApiBillingReq();
-        billingAddress.Street1 = GetText(billing.Address.Line1, 50, true);
-        billingAddress.City = GetText(billing.Address.Locality, 40, true);
-        billingAddress.Postcode = GetText(billing.Address.PostalCode, 10, true, "0000");
-        billingAddress.Country = billing.Address.Country.Iso2Code;
+        var req = new ApiBillingReq();
+        req.Street1 = GetText(billing.Address.Line1, 50, true);
+        req.City = GetText(billing.Address.Locality, 40, true);
+        req.Postcode = GetText(billing.Address.PostalCode, 10, true, "0000");
+        req.Country = billing.Address.Country.Iso2Code;
 
-        return billingAddress;
+        return req;
     }
     
     private string GetText(string value, int maxLength, bool required, string defaultValue = ".") {

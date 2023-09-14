@@ -11,24 +11,24 @@ public static class ApiPaymentResExtensions {
     private const string SystemErrorsRejectionPattern = @"/^800\.[56]|999\.|600\.1|800\.800\.[84]/";
     private const string ValidationPattern = @"200\.[123]|100\.[53][07]|800\.900|100\.[69]00\.500";
 
-    public static bool IsAuthorised(this ApiTransactionRes transaction) {
+    public static bool IsAuthorised(this ApiPaymentRes transaction) {
         return HasResultCode(transaction, SuccessfullyProcessedTransactions);
     }
 
-    public static bool IsDeclined(this ApiTransactionRes transaction) {
+    public static bool IsDeclined(this ApiPaymentRes transaction) {
         return HasResultCode(transaction, ExternalBankRejectionPattern);
     }
     
-    public static bool IsRejected(this ApiTransactionRes transaction) {
+    public static bool IsRejected(this ApiPaymentRes transaction) {
         return HasResultCode(transaction, ThreeDSecureRejectionPattern) ||
                HasResultCode(transaction, SystemErrorsRejectionPattern);
     }
     
-    public static bool HasError(this ApiTransactionRes transaction) {
+    public static bool HasError(this ApiPaymentRes transaction) {
         return HasResultCode(transaction, ValidationPattern);
     }
 
-    private static bool HasResultCode(ApiTransactionRes transaction, string pattern) {
+    private static bool HasResultCode(ApiPaymentRes transaction, string pattern) {
         var match = Regex.Match(transaction.Result.Code, pattern);
 
         return match.Success;

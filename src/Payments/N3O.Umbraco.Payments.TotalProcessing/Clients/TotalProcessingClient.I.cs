@@ -9,5 +9,5 @@ public interface ITotalProcessingClient {
     public Task<TokenRes> PrepareCheckoutAsync(PaymentReq req);
 
     [Get("/v1/checkouts/{paymentId}/payment")]
-    public Task<ApiTransactionRes> GetPaymentAsync([Query] string entityId, string paymentId);
+    public Task<ApiPaymentRes> GetPaymentAsync([Query] string entityId, string paymentId);
 }
