@@ -46,7 +46,7 @@ public class TotalProcessingHelper : ITotalProcessingHelper {
     public async Task PrepareCredentialCheckoutAsync(TotalProcessingCredential credential,
                                                      PaymentsParameters parameters,
                                                      PrepareCheckoutReq req) {
-        var paymentReq = GetPaymentReq(req.Value, parameters);
+        var paymentReq = GetPaymentReq(req.Value, parameters, true);
         
         var res = await _checkoutClient.Value.PrepareCheckoutAsync(paymentReq);
 
@@ -56,14 +56,14 @@ public class TotalProcessingHelper : ITotalProcessingHelper {
     public async Task PreparePaymentCheckoutAsync(TotalProcessingPayment payment,
                                                   PaymentsParameters parameters,
                                                   PrepareCheckoutReq req) {
-        var paymentReq = GetPaymentReq(req.Value, parameters);
+        var paymentReq = GetPaymentReq(req.Value, parameters, false);
 
         var res = await _checkoutClient.Value.PrepareCheckoutAsync(paymentReq);
 
         payment.CheckoutPrepared(req.ReturnUrl, res.Ndc, res.Id);
     }
     
-    private PaymentReq GetPaymentReq(MoneyReq value, PaymentsParameters parameters) {
+    private PaymentReq GetPaymentReq(MoneyReq value, PaymentsParameters parameters, bool store) {
         var billingInfo = parameters.BillingInfoAccessor.GetBillingInfo();
         
         var req = new PaymentReq();
@@ -72,11 +72,14 @@ public class TotalProcessingHelper : ITotalProcessingHelper {
         req.PaymentType = "DB";
         req.EntityId = _totalProcessingApiSettings.EntityId;
         req.Billing = GetBillingAddress(billingInfo);
-        req.StandingInstruction = new StandingInstruction();
-        req.StandingInstruction.Source = "CIT";
-        req.StandingInstruction.Mode = "INITIAL";
-        req.StandingInstruction.Type = "UNSCHEDULED";
-        req.CreateRegistration = true;
+
+        if (store) {
+            req.CreateRegistration = true;
+            req.StandingInstruction = new StandingInstruction();
+            req.StandingInstruction.Source = "CIT";
+            req.StandingInstruction.Mode = "INITIAL";
+            req.StandingInstruction.Type = "UNSCHEDULED";
+        }
 
         return req;
     }
