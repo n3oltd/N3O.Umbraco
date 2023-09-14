@@ -81,6 +81,18 @@ public static class StringExtensions {
         return string.IsNullOrWhiteSpace(s);
     }
     
+    public static bool IsValidEmailAddress(this string email) {
+        if (!email.HasValue()) {
+            return false;
+        }
+
+        var index = email.IndexOf('@');
+
+        return index > 0 &&
+               index != email.Length - 1 &&
+               index == email.LastIndexOf('@');
+    }
+    
     public static bool IsValidUrl(this string url, params string[] uriSchemes) {
         var allowedSchemes = uriSchemes.Or(new[] { Uri.UriSchemeHttp, Uri.UriSchemeHttps });
 

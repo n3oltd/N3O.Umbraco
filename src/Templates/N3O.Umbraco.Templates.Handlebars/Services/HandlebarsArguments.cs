@@ -27,6 +27,16 @@ public class HandlebarsArguments {
 
         return _jsonProvider.DeserializeObject<TValue>(json);
     }
+    
+    public string GetJson( int index) {
+        var arg = Get<object>(index);
+
+        if (arg == null) {
+            return null;
+        } else {
+            return _jsonProvider.SerializeObject(arg);
+        }
+    }
 
     public bool TryGet<TValue>(int index, out TValue value) {
         try {

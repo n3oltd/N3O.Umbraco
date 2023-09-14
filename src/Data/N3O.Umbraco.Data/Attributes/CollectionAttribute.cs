@@ -22,6 +22,18 @@ public class BoolCollectionAttribute : CollectionAttribute {
 }
 
 [AttributeUsage(AttributeTargets.Property)]
+public class CalendarMonthCollectionAttribute : CollectionAttribute {
+    public CalendarMonthCollectionAttribute(int order, string layout, string sort = null)
+        : base(order, OurDataTypes.CalendarMonth, layout, sort) { }
+}
+
+[AttributeUsage(AttributeTargets.Property)]
+public class CalendarWeekCollectionAttribute : CollectionAttribute {
+    public CalendarWeekCollectionAttribute(int order, string layout, string sort = null)
+        : base(order, OurDataTypes.CalendarWeek, layout, sort) { }
+}
+
+[AttributeUsage(AttributeTargets.Property)]
 public class ContentCollectionAttribute : CollectionAttribute {
     public ContentCollectionAttribute(int order, string layoutId, string sort = null)
         : base(order, OurDataTypes.Content, layoutId, sort) { }

@@ -5,6 +5,8 @@ namespace N3O.Umbraco.Data.Builders;
 
 public interface IColumnRangeBuilder {
     IFluentColumnRangeBuilder<TValue> Bool<TValue>();
+    IFluentColumnRangeBuilder<TValue> CalendarMonth<TValue>();
+    IFluentColumnRangeBuilder<TValue> CalendarWeek<TValue>();
     IFluentColumnRangeBuilder<TValue> Date<TValue>();
     IFluentColumnRangeBuilder<TValue> DateTime<TValue>();
     IFluentColumnRangeBuilder<TValue> Decimal<TValue>();

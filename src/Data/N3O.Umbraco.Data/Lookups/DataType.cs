@@ -112,6 +112,12 @@ public class DataTypes : StaticLookupsCollection<DataType> {
     public static readonly DataType<bool?, BoolCellConverter, BoolTextConverter> Bool
         = new("bool", "Boolean", false, (a, b) => a == b);
 
+    public static readonly DataType<CalendarMonth, CalendarMonthCellConverter, CalendarMonthTextConverter> CalendarMonth
+        = new("calendarMonth", "Calendar Month", false, (a, b) => a == b);
+    
+    public static readonly DataType<CalendarWeek, CalendarWeekCellConverter, CalendarWeekTextConverter> CalendarWeek
+        = new("calendarWeek", "Calendar Week", false, (a, b) => a == b);
+    
     public static readonly DataType<IContent, ContentCellConverter, ContentTextConverter> Content
         = new("content", "Content", false, (a, b) => a?.Id == b?.Id);
     

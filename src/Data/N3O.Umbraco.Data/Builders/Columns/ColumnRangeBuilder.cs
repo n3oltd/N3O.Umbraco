@@ -25,6 +25,14 @@ public class ColumnRangeBuilder : IColumnRangeBuilder {
         return OfType<TValue>(OurDataTypes.Bool);
     }
 
+    public IFluentColumnRangeBuilder<TValue> CalendarMonth<TValue>() {
+        return OfType<TValue>(OurDataTypes.CalendarMonth);
+    }
+
+    public IFluentColumnRangeBuilder<TValue> CalendarWeek<TValue>() {
+        return OfType<TValue>(OurDataTypes.CalendarWeek);
+    }
+
     public IFluentColumnRangeBuilder<TValue> Date<TValue>() {
         return OfType<TValue>(OurDataTypes.Date);
     }
