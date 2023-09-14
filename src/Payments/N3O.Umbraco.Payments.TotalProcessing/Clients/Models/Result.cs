@@ -1,5 +1,5 @@
 using Newtonsoft.Json;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Payments.TotalProcessing.Clients.Models;
 
@@ -11,5 +11,5 @@ public class Result {
     public string Description { get; set; }
 
     [JsonProperty("parameterErrors")]
-    public IEnumerable ParameterErrors { get; set; }
+    public IEnumerable<ParameterError> ParameterErrors { get; set; }
 }

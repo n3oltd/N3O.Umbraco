@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Payments.TotalProcessing;
 
 public interface ITotalProcessingHelper {
-    public void ApplyApiPayment(TotalProcessingPayment payment, ApiTransactionRes transaction);
-    public Task PrepareCheckoutAsync(TotalProcessingPayment payment, PrepareCheckoutReq req);
+    void ApplyApiTransaction(TotalProcessingPayment payment, ApiTransactionRes transaction);
+    Task PreparePaymentCheckoutAsync(TotalProcessingPayment payment,
+                                     PaymentsParameters parameters,
+                                     PrepareCheckoutReq req);
+    
+    Task PrepareCredentialCheckoutAsync(TotalProcessingCredential credential,
+                                        PaymentsParameters parameters,
+                                        PrepareCheckoutReq req);
 }

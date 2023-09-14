@@ -3,7 +3,7 @@ using N3O.Umbraco.Attributes;
 
 namespace N3O.Umbraco.Payments.TotalProcessing.Models;
 
-public class PaymentProcessedReq {
+public class CheckoutCompletedReq {
     [Name("ID")]
     [FromQuery(Name = "id")]
     public string Id { get; set; }

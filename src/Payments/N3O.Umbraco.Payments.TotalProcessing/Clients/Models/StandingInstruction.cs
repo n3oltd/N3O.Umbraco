@@ -11,4 +11,7 @@ public class StandingInstruction {
 
     [JsonProperty("type")]
     public string Type { get; set; }
+    
+    [JsonProperty("initialTransactionId ")]
+    public string InitialTransactionId  { get; set; }
 }

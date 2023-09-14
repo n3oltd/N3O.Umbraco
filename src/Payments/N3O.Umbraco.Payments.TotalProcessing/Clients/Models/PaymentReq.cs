@@ -10,13 +10,16 @@ public class PaymentReq {
     public string Amount { get; set; }
 
     [JsonProperty("billing")]
-    public BillingReq Billing { get; set; }
+    public ApiBillingReq Billing { get; set; }
     
     [JsonProperty("currency")]
     public string Currency { get; set; }
 
     [JsonProperty("paymentType")]
     public string PaymentType { get; set; }
+    
+    [JsonProperty("createRegistration")]
+    public bool? CreateRegistration { get; set; }
 
     [JsonProperty("standingInstruction")]
     public StandingInstruction StandingInstruction { get; set; }

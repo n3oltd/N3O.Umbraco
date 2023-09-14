@@ -11,4 +11,7 @@ public class CustomParametersRes {
 
     [JsonProperty("StoredCredentialType")]
     public string StoredCredentialType { get; set; }
+
+    [JsonProperty("StandingInstruction")]
+    public string StandingInstruction { get; set; }
 }
