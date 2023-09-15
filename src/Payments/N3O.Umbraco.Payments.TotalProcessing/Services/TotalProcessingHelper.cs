@@ -1,4 +1,7 @@
 using N3O.Umbraco.Exceptions;
+using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Financial;
+using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.TotalProcessing.Clients;
 using N3O.Umbraco.Payments.TotalProcessing.Extensions;
 using N3O.Umbraco.Payments.TotalProcessing.Models;
@@ -19,7 +22,7 @@ public class TotalProcessingHelper : ITotalProcessingHelper {
         _totalProcessingApiSettings = totalProcessingApiSettings;
     }
 
-    public void ApplyApiPayment(TotalProcessingPayment payment, ApiTransactionRes apiPayment) {
+    public void ApplyApiPayment(TotalProcessingPayment payment, ApiPaymentRes apiPayment) {
         if (apiPayment.IsAuthorised()) {
             payment.Paid(apiPayment.Id,
                          apiPayment.Result.Code,
@@ -31,7 +34,7 @@ public class TotalProcessingHelper : ITotalProcessingHelper {
             payment.Declined(apiPayment.Id,
                              apiPayment.Result.Code,
                              apiPayment.Result.Description);
-        } else if (apiPayment.IsRejected()) {
+        } else if (apiPayment.IsRejected() || apiPayment.HasError()) {
             payment.Error(apiPayment.Id,
                           apiPayment.Result.Code,
                           apiPayment.Result.Description);
@@ -40,27 +43,66 @@ public class TotalProcessingHelper : ITotalProcessingHelper {
         }
     }
 
-    public async Task PrepareCheckoutAsync(TotalProcessingPayment payment,
-                                           PrepareCheckoutReq req) {
-        var checkoutReq = GetPaymentReq(req);
+    public async Task PrepareCredentialCheckoutAsync(TotalProcessingCredential credential,
+                                                     PaymentsParameters parameters,
+                                                     PrepareCheckoutReq req) {
+        var paymentReq = GetPaymentReq(req.Value, parameters, true);
+        
+        var res = await _checkoutClient.Value.PrepareCheckoutAsync(paymentReq);
 
-        var res = await _checkoutClient.Value.PrepareCheckoutAsync(checkoutReq);
+        credential.CheckoutPrepared(req.ReturnUrl, res.Ndc, res.Id);
+    }
+
+    public async Task PreparePaymentCheckoutAsync(TotalProcessingPayment payment,
+                                                  PaymentsParameters parameters,
+                                                  PrepareCheckoutReq req) {
+        var paymentReq = GetPaymentReq(req.Value, parameters, false);
+
+        var res = await _checkoutClient.Value.PrepareCheckoutAsync(paymentReq);
 
         payment.CheckoutPrepared(req.ReturnUrl, res.Ndc, res.Id);
     }
+    
+    private PaymentReq GetPaymentReq(MoneyReq value, PaymentsParameters parameters, bool store) {
+        var billingInfo = parameters.BillingInfoAccessor.GetBillingInfo();
+        
+        var req = new PaymentReq();
+        req.Amount = value.Amount?.ToString(CultureInfo.InvariantCulture);
+        req.Currency = value.Currency.Name;
+        req.PaymentType = "DB";
+        req.EntityId = _totalProcessingApiSettings.EntityId;
+        req.Billing = GetBillingAddress(billingInfo);
 
-    private PaymentReq GetPaymentReq(PrepareCheckoutReq req) {
-        var paymentReq = new PaymentReq();
-        paymentReq.Amount = req.Value.Amount?.ToString(CultureInfo.InvariantCulture);
-        paymentReq.Currency = req.Value.Currency.Name;
-        paymentReq.PaymentType = "DB";
-        paymentReq.EntityId = _totalProcessingApiSettings.EntityId;
+        if (store) {
+            req.CreateRegistration = true;
+            req.StandingInstruction = new StandingInstruction();
+            req.StandingInstruction.Source = "CIT";
+            req.StandingInstruction.Mode = "INITIAL";
+            req.StandingInstruction.Type = "UNSCHEDULED";
+        }
 
-        paymentReq.StandingInstruction = new StandingInstruction();
-        paymentReq.StandingInstruction.Source = "CIT";
-        paymentReq.StandingInstruction.Mode = "INITIAL";
-        paymentReq.StandingInstruction.Type = "UNSCHEDULED";
+        return req;
+    }
+    
+    private ApiBillingReq GetBillingAddress(IBillingInfo billing) {
+        var req = new ApiBillingReq();
+        req.Street1 = GetText(billing.Address.Line1, 50, true);
+        req.City = GetText(billing.Address.Locality, 40, true);
+        req.Postcode = GetText(billing.Address.PostalCode, 10, true, "0000");
+        req.Country = billing.Address.Country.Iso2Code;
 
-        return paymentReq;
+        return req;
+    }
+    
+    private string GetText(string value, int maxLength, bool required, string defaultValue = ".") {
+        if (!value.HasValue() && required) {
+            value = defaultValue;
+        }
+
+        if (value == null) {
+            return null;
+        }
+
+        return value.RemoveNonAscii().Trim().Left(maxLength);
     }
 }

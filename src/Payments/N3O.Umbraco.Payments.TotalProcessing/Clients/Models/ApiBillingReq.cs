@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace Payments.TotalProcessing.Clients.Models;
 
-public class BillingReq {
+public class ApiBillingReq {
     [JsonProperty("city")]
     public string City { get; set; }
 
@@ -14,7 +14,7 @@ public class BillingReq {
 
     [JsonProperty("postcode")]
     public string Postcode { get; set; }
-    
+
     [JsonProperty("email")]
     public string Email { get; set; }
 

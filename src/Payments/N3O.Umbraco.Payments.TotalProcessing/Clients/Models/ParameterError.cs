@@ -2,13 +2,12 @@ using Newtonsoft.Json;
 
 namespace Payments.TotalProcessing.Clients.Models;
 
-public class ParameterError
-{
+public class ParameterError {
     [JsonProperty("name")]
     public string Name { get; set; }
 
     [JsonProperty("value")]
-    public object Value { get; set; }
+    public string Value { get; set; }
 
     [JsonProperty("message")]
     public string Message { get; set; }

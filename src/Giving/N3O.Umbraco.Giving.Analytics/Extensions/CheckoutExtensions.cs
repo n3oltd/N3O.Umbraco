@@ -17,7 +17,7 @@ public static class CheckoutExtensions {
         var purchase = new Purchase();
         purchase.Id = checkout.Reference.Text;
         purchase.Affiliation = "Website";
-        purchase.Value = checkout.GetValue().Amount;
+        purchase.Value = checkout.GetTotalValue().Amount;
         purchase.Tax = 0;
         purchase.Shipping = 0;
         purchase.Currency = checkout.Currency.Code.ToUpper();
