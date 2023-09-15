@@ -22,7 +22,7 @@ public class TotalProcessingHelper : ITotalProcessingHelper {
         _totalProcessingApiSettings = totalProcessingApiSettings;
     }
 
-    public void ApplyApiTransaction(TotalProcessingPayment payment, ApiPaymentRes apiPayment) {
+    public void ApplyApiPayment(TotalProcessingPayment payment, ApiPaymentRes apiPayment) {
         if (apiPayment.IsAuthorised()) {
             payment.Paid(apiPayment.Id,
                          apiPayment.Result.Code,

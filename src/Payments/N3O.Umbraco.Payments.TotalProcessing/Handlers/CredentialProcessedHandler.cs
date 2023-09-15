@@ -32,7 +32,7 @@ public class CredentialProcessedHandler :
         var apiPayment = await _checkoutClient.GetPaymentAsync(_totalProcessingApiSettings.EntityId, req.Model.Id);
 
         await DoAsync<TotalProcessingPayment>(payment => {
-            _totalProcessingHelper.ApplyApiTransaction(payment, apiPayment);
+            _totalProcessingHelper.ApplyApiPayment(payment, apiPayment);
 
             return Task.CompletedTask;
         }, cancellationToken);

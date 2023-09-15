@@ -30,6 +30,6 @@ public class PaymentProcessedHandler :
                                               CancellationToken cancellationToken) {
         var apiPayment = await _checkoutClient.GetPaymentAsync(_totalProcessingApiSettings.EntityId, req.Model.Id);
 
-        _totalProcessingHelper.ApplyApiTransaction(payment, apiPayment);
+        _totalProcessingHelper.ApplyApiPayment(payment, apiPayment);
     }
 }
