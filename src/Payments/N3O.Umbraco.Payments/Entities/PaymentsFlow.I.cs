@@ -14,6 +14,5 @@ public interface IPaymentsFlow : IEntity, IBillingInfoAccessor, IHoldReference {
     PaymentObject GetPaymentObject(PaymentObjectType type);
     public string GetTransactionDescription(IPaymentMethodSettings paymentMethodSettings);
     string GetTransactionId(IPaymentMethodSettings paymentMethodSettings, string idempotencyKey);
-    Money GetValue();
     void SetPaymentObject(PaymentObjectType type, PaymentObject paymentObject);
 }

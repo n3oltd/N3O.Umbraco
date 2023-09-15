@@ -1,17 +1,14 @@
-using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Financial;
-using N3O.Umbraco.Giving.Checkout.Lookups;
+using N3O.Umbraco.Giving.Lookups;
 
 namespace N3O.Umbraco.Giving.Checkout.Entities;
 
 public partial class Checkout {
     public Money GetValue() {
-        if (Progress.CurrentStage == CheckoutStages.Donation) {
-            return Donation.Total;
-        } else if (Progress.CurrentStage == CheckoutStages.RegularGiving) {
-            return RegularGiving.Total;
-        } else {
-            throw UnrecognisedValueException.For(Progress.CurrentStage);
-        }
+        var donationAmount = (Donation?.Total.Amount ?? 0m) * GivingTypes.Donation.ValueMultiplier;
+        var regularGivingAmount = (RegularGiving?.Total.Amount ?? 0m) * GivingTypes.RegularGiving.ValueMultiplier;
+        var totalAmount = donationAmount + regularGivingAmount;
+
+        return new Money(totalAmount, Currency);
     }
 }

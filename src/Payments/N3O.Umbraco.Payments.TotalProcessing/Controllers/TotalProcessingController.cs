@@ -22,20 +22,6 @@ public class TotalProcessingController : ApiController {
         _mediator = mediator;
     }
     
-    [HttpPost("credentials/{flowId:entityId}/checkout")]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-    public async Task<ActionResult<TotalProcessingCredential>> PrepareCredentialCheckout(PrepareCheckoutReq req) {
-        try {
-            var res = await _mediator.SendAsync<PrepareCredentialCheckoutCommand, PrepareCheckoutReq, PaymentFlowRes<TotalProcessingCredential>>(req);
-
-            return Ok(res);
-        } catch (Exception ex) {
-            _logger.LogError(ex, "Failed to prepare checkout");
-
-            return UnprocessableEntity();
-        }
-    }
-    
     [HttpGet("credentials/{flowId:entityId}/processed")]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult> CredentialProcessed([FromQuery] CheckoutCompletedReq req) {
@@ -45,6 +31,34 @@ public class TotalProcessingController : ApiController {
             return Redirect(res.Result.ReturnUrl);
         } catch (Exception ex) {
             _logger.LogError(ex, "Failed to process credential");
+
+            return UnprocessableEntity();
+        }
+    }
+    
+    [HttpGet("payments/{flowId:entityId}/processed")]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult> PaymentProcessed([FromQuery] CheckoutCompletedReq req) {
+        try {
+            var res = await _mediator.SendAsync<PaymentProcessedCommand, CheckoutCompletedReq,PaymentFlowRes<TotalProcessingPayment>>(req);
+            
+            return Redirect(res.Result.ReturnUrl);
+        } catch (Exception ex) {
+            _logger.LogError(ex, "Failed to process payment");
+
+            return UnprocessableEntity();
+        }
+    }
+    
+    [HttpPost("credentials/{flowId:entityId}/checkout")]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult<TotalProcessingCredential>> PrepareCredentialCheckout(PrepareCheckoutReq req) {
+        try {
+            var res = await _mediator.SendAsync<PrepareCredentialCheckoutCommand, PrepareCheckoutReq, PaymentFlowRes<TotalProcessingCredential>>(req);
+
+            return Ok(res);
+        } catch (Exception ex) {
+            _logger.LogError(ex, "Failed to prepare checkout");
 
             return UnprocessableEntity();
         }
@@ -59,20 +73,6 @@ public class TotalProcessingController : ApiController {
             return Ok(res);
         } catch (Exception ex) {
             _logger.LogError(ex, "Failed to prepare checkout");
-
-            return UnprocessableEntity();
-        }
-    }
-
-    [HttpGet("payments/{flowId:entityId}/processed")]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-    public async Task<ActionResult> PaymentProcessed([FromQuery] CheckoutCompletedReq req) {
-        try {
-            var res = await _mediator.SendAsync<PaymentProcessedCommand, CheckoutCompletedReq,PaymentFlowRes<TotalProcessingPayment>>(req);
-            
-            return Redirect(res.Result.ReturnUrl);
-        } catch (Exception ex) {
-            _logger.LogError(ex, "Failed to process payment");
 
             return UnprocessableEntity();
         }
