@@ -1,16 +1,12 @@
-name: Main CI
+name: Main Branch CI
 
 on:
   push:
-    branches:
-      - main
+    branches: main
 
   workflow_dispatch:
 
 jobs:
-  main-build-job:
-    uses: n3oltd/actions/.github/workflows/n3o-dotnet-build-pack-push.yml@main
-    with:
-      nuget-packages: ''
-      npm-packages: ''        
-    secrets: inherit      
+  build:
+    name: Build
+    uses: n3oltd/actions/.github/workflows/dotnet-build-pack-push.yml@main
