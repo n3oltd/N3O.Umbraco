@@ -1,0 +1,11 @@
+name: Main PR
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-job:
+    uses: n3oltd/actions/.github/workflows/n3o-dotnet-build.yml@main
+    secrets: inherit
