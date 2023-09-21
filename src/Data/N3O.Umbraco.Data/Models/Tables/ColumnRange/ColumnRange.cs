@@ -19,7 +19,6 @@ public class ColumnRange<TValue> : IColumnRange {
     private readonly Func<IFormatter, string> _getComment;
     private readonly RangeColumnSort _rangeColumnSort;
     private readonly CollectionLayout _collectionLayout;
-    private readonly DataType _dataType;
     private readonly Dictionary<string, IEnumerable<object>> _columnMetadata;
     private readonly bool _hidden;
     private readonly AccessControlList _accessControlList;
@@ -34,7 +33,7 @@ public class ColumnRange<TValue> : IColumnRange {
                        Func<IFormatter, string> getComment,
                        RangeColumnSort rangeColumnSort,
                        CollectionLayout collectionLayout,
-                       DataType dataType,
+                       DataType dataDataType,
                        Dictionary<string, IEnumerable<object>> columnMetadata,
                        bool hidden,
                        AccessControlList accessControlList,
@@ -44,7 +43,6 @@ public class ColumnRange<TValue> : IColumnRange {
         _localClock = localClock;
         _rangeColumnSort = rangeColumnSort;
         _collectionLayout = collectionLayout;
-        _dataType = dataType;
         _cellConverter = cellConverter;
         _columnHeading = columnHeading;
         _getComment = getComment;
@@ -52,6 +50,7 @@ public class ColumnRange<TValue> : IColumnRange {
         _hidden = hidden;
         _accessControlList = accessControlList;
         _attributes = attributes;
+        DataType = dataDataType;
         Order = order;
     }
 
@@ -97,6 +96,7 @@ public class ColumnRange<TValue> : IColumnRange {
     }
     
     public int Order { get; }
+    public DataType DataType { get; }
 
     private void AddValue(int row, TValue value) {
         AddValue(row, null, value);
@@ -148,7 +148,7 @@ public class ColumnRange<TValue> : IColumnRange {
         var result = _columns.GetOrAdd(headingText, () => {
             var comment = _getComment?.Invoke(_formatter);
             
-            var column = new Column(_dataType,
+            var column = new Column(DataType,
                                     headingText,
                                     comment,
                                     _formatter,
