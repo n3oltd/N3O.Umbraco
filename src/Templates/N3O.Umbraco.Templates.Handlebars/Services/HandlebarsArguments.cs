@@ -12,6 +12,8 @@ public class HandlebarsArguments {
         _arguments = arguments;
     }
 
+    public int Count => _arguments.Length;
+
     public TValue Get<TValue>(int index) {
         var argument = _arguments[index];
 

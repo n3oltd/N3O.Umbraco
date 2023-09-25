@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using X.Web.Sitemap;
+using X.Web.Sitemap.Extensions;
 using XSitemap = X.Web.Sitemap.Sitemap;
 
 namespace N3O.Umbraco.Search;

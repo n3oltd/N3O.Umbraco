@@ -1,5 +1,4 @@
 using N3O.Umbraco.Entities;
-using N3O.Umbraco.Financial;
 using N3O.Umbraco.Payments.Content;
 using N3O.Umbraco.Payments.Lookups;
 using N3O.Umbraco.Payments.Models;

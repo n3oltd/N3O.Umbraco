@@ -1,23 +1,24 @@
 using HandlebarsDotNet;
 using Microsoft.Extensions.Logging;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 
 namespace N3O.Umbraco.Templates.Handlebars.BlockHelpers;
 
-public class IsNotBlockHelper : BlockHelper {
-    public IsNotBlockHelper(ILogger<IsNotBlockHelper> logger, IJsonProvider jsonProvider)
+public class IfLongerThanBlockHelper : BlockHelper {
+    public IfLongerThanBlockHelper(ILogger<IfLongerThanBlockHelper> logger, IJsonProvider jsonProvider)
         : base(logger, jsonProvider, 2) { }
-
-    public override string Name => "is-not";
+    
+    public override string Name => "if_longer_than";
 
     protected override void Execute(EncodedTextWriter output,
                                     BlockHelperOptions options,
                                     HandlebarsDotNet.Context context,
                                     HandlebarsArguments args) {
-        var val1 = args.Get<string>(0)?.ToLowerInvariant();
-        var val2 = args.Get<string>(1).ToLowerInvariant();
+        var text = args.Get<string>(0);
+        var maxLength = args.Get<int>(1);
 
-        if (val1 != val2) {
+        if (text.HasValue() && text.Length > maxLength) {
             options.Template(output, context);
         } else {
             options.Inverse(output, context);
