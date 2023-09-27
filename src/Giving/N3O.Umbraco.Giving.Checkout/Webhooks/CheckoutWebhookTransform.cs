@@ -36,8 +36,6 @@ public class CheckoutWebhookTransform : WebhookTransform {
 
         TransformConsent(checkout, jObject);
         TransformCollectionDay(checkout, jObject);
-        TransformAllocations(GivingTypes.Donation, jObject);
-        TransformAllocations(GivingTypes.RegularGiving, jObject);
         TransformFeedbacks(serializer, GivingTypes.Donation, checkout.Donation?.Allocations, jObject);
         TransformFeedbacks(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject);
         TransformSponsorships(serializer, GivingTypes.Donation, checkout.Donation?.Allocations, jObject);
@@ -102,26 +100,12 @@ public class CheckoutWebhookTransform : WebhookTransform {
         return allowedCollectionDays;
     }
     
-    private void TransformAllocations(GivingType givingType, JObject jObject) {
-        if (!jObject.ContainsKey(givingType.Id)) {
-            return;
-        }
-
-        var reference = (string) jObject["reference"]["text"];
-
-        var index = 1;
-        foreach (var allocation in jObject[givingType.Id]["allocations"]) {
-            allocation["reference"] = $"{reference}-{index}";
-
-            index++;
-        }
-    }
-    
     private void TransformFeedbacks(JsonSerializer serializer,
                                     GivingType givingType,
                                     IEnumerable<Allocation> allocations,
                                     JObject jObject) {
         var globalKey = $"{givingType.Id}Feedbacks";
+        var reference = (string) jObject["reference"]["text"];
         
         foreach (var allocation in allocations.OrEmpty().Where(x => x.Type == AllocationTypes.Feedback)) {
             var schemeKey = $"{givingType.Id}{allocation.Feedback.Scheme.Id.Pascalize()}Feedbacks";
@@ -135,6 +119,13 @@ public class CheckoutWebhookTransform : WebhookTransform {
             }
 
             var allocationJObject = JObject.FromObject(allocation, serializer);
+
+            var allocationIndex = allocations.IndexOf(allocation) + 1;
+            allocationJObject["reference"] = $"{reference}-{givingType.Id}-{allocationIndex}";
+
+            foreach (var customField in allocation.Feedback.OrEmpty(x => x.CustomFields)) {
+                allocationJObject[$"cf_{customField.Alias}"] = customField.GetJValue();
+            }
 
             ((JArray) jObject[globalKey]).Add(allocationJObject);
             ((JArray) jObject[schemeKey]).Add(allocationJObject);

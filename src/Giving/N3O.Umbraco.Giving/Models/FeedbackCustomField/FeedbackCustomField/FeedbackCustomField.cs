@@ -1,5 +1,8 @@
+using N3O.Umbraco.Exceptions;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Lookups;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NodaTime;
 
 namespace N3O.Umbraco.Giving.Models;
@@ -34,4 +37,26 @@ public class FeedbackCustomField : Value, IFeedbackCustomField {
     public bool? Bool { get; }
     public LocalDate? Date { get; }
     public string Text { get; }
+
+    public JValue GetJValue() {
+        var jValue = JValue.CreateNull();
+        
+        if (Type == FeedbackCustomFieldTypes.Bool) {
+            if (Bool.HasValue()) {
+                jValue = new JValue(Bool.GetValueOrThrow());
+            }
+        } else if (Type == FeedbackCustomFieldTypes.Date) {
+            if (Date.HasValue()) {
+                jValue = new JValue(Date.GetValueOrThrow().ToDateTimeUnspecified());
+            }
+        } else if (Type == FeedbackCustomFieldTypes.Text) {
+            if (Text.HasValue()) {
+                jValue = new JValue(Text);
+            }
+        } else {
+            throw UnrecognisedValueException.For(Type);
+        }
+
+        return jValue;
+    }
 }
