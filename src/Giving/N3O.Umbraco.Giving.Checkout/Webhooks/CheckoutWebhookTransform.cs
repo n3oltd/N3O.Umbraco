@@ -36,6 +36,8 @@ public class CheckoutWebhookTransform : WebhookTransform {
 
         TransformConsent(checkout, jObject);
         TransformCollectionDay(checkout, jObject);
+        TransformAllocations(GivingTypes.Donation, jObject);
+        TransformAllocations(GivingTypes.RegularGiving, jObject);
         TransformFeedbacks(serializer, GivingTypes.Donation, checkout.Donation?.Allocations, jObject);
         TransformFeedbacks(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject);
         TransformSponsorships(serializer, GivingTypes.Donation, checkout.Donation?.Allocations, jObject);
@@ -98,6 +100,21 @@ public class CheckoutWebhookTransform : WebhookTransform {
         }
 
         return allowedCollectionDays;
+    }
+    
+    private void TransformAllocations(GivingType givingType, JObject jObject) {
+        if (!jObject.ContainsKey(givingType.Id)) {
+            return;
+        }
+
+        var reference = (string) jObject["reference"]["text"];
+
+        var index = 1;
+        foreach (var allocation in jObject[givingType.Id]["allocations"]) {
+            allocation["reference"] = $"{reference}-{index}";
+
+            index++;
+        }
     }
     
     private void TransformFeedbacks(JsonSerializer serializer,
