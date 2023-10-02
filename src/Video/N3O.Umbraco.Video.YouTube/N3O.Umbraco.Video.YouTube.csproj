@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Video.YouTube</RootNamespace>
         <TargetFramework>net7.0</TargetFramework>
@@ -40,6 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="YoutubeExplode" Version="6.3.4" />
+      <PackageReference Include="YoutubeExplode" Version="6.3.5" />
     </ItemGroup>
 </Project>
