@@ -9,7 +9,7 @@ public class HasUnpublishedChangesContentMetadataConverter : ContentMetadataConv
         : base(columnRangeBuilder, ContentMetadatas.HasUnpublishedChanges) { }
 
     public override object GetValue(IContent content) {
-        return content.PublishedVersionId == content.VersionId;
+        return content.Edited && content.Published;
     }
     
     protected override string Title => "Has Unpublished Changes";
