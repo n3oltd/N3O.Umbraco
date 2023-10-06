@@ -137,6 +137,7 @@ public class CheckoutWebhookTransform : WebhookTransform {
                                        IEnumerable<Allocation> allocations,
                                        JObject jObject) {
         var globalKey = $"{givingType.Id}Sponsorships";
+        var reference = (string) jObject["reference"]["text"];
         
         foreach (var allocation in allocations.OrEmpty().Where(x => x.Type == AllocationTypes.Sponsorship)) {
             var schemeKey = $"{givingType.Id}{allocation.Sponsorship.Scheme.Id.Pascalize()}Sponsorships";
@@ -151,6 +152,9 @@ public class CheckoutWebhookTransform : WebhookTransform {
 
             var allocationJObject = JObject.FromObject(allocation, serializer);
             var components = (JArray) allocationJObject["sponsorship"]["components"];
+            
+            var allocationIndex = allocations.IndexOf(allocation) + 1;
+            allocationJObject["reference"] = $"{reference}-{givingType.Id}-{allocationIndex}";
 
             SetSponsorshipValues(allocation.Value,
                                  allocation.Sponsorship.Duration?.Months,
