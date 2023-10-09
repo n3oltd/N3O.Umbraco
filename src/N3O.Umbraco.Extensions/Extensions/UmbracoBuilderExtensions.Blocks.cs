@@ -65,6 +65,24 @@ public static partial class UmbracoBuilderExtensions {
 
         return builder;
     }
+    
+    public static IUmbracoBuilder AddBlockViewModel<TBlock, TViewModel, T1, T2, T3, T4, T5, T6>(this IUmbracoBuilder builder,
+                                                                                                Func<BlockParameters<TBlock>, T1, T2, T3, T4, T5, T6, TViewModel> constructor)
+        where TViewModel : IBlockViewModel<TBlock>
+        where TBlock : class, IPublishedElement {
+        AddBlockViewModel<TBlock, TViewModel>(builder, (s, p) => {
+            var arg1 = s.GetRequiredService<T1>();
+            var arg2 = s.GetRequiredService<T2>();
+            var arg3 = s.GetRequiredService<T3>();
+            var arg4 = s.GetRequiredService<T4>();
+            var arg5 = s.GetRequiredService<T5>();
+            var arg6 = s.GetRequiredService<T6>();
+        
+            return constructor(p, arg1, arg2, arg3, arg4, arg5, arg6);
+        });
+
+        return builder;
+    }
 
     public static IUmbracoBuilder AddDefaultBlockViewModel(this IUmbracoBuilder builder, Type blockType) {
         builder.Services.TryAddTransient(typeof(IContentBlockViewModelFactory<>).MakeGenericType(blockType),
