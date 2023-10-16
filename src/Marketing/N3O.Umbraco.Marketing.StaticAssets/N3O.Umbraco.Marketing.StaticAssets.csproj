@@ -40,8 +40,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="uMarketingSuite" Version="1.24.0" />
+        <PackageReference Include="uMarketingSuite" Version="1.24.1" />
         <PackageReference Include="uMarketingSuite.ContentBlocks" Version="1.1.1" />
-        <PackageReference Include="uMarketingSuite.UmbracoForms" Version="1.3.0" />
+        <PackageReference Include="uMarketingSuite.UmbracoForms" Version="1.4.0" />
     </ItemGroup>
 </Project>
