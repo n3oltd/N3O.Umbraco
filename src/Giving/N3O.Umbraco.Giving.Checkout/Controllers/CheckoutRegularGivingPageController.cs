@@ -9,7 +9,7 @@ using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Giving.Checkout.Controllers;
 
-public class CheckoutRegularGivingPageController : CheckoutStagePageController {
+public abstract class CheckoutRegularGivingPageController : CheckoutStagePageController {
     public CheckoutRegularGivingPageController(ILogger<CheckoutRegularGivingPageController> logger,
                                                ICompositeViewEngine compositeViewEngine,
                                                IUmbracoContextAccessor umbracoContextAccessor,

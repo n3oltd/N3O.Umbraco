@@ -19,6 +19,7 @@ public class CheckoutStage : NamedLookup {
                          Func<Entities.Checkout, bool> isRequired,
                          Func<Entities.Checkout, bool> isComplete,
                          int order,
+                         bool canRevisit,
                          Func<IContentCache, IUmbracoContent> getPage)
         : base(id, name) {
         _isRequired = isRequired;
@@ -26,10 +27,12 @@ public class CheckoutStage : NamedLookup {
         _getPage = getPage;
         TransactionIdPrefix = transactionIdPrefix;
         Order = order;
+        CanRevisit = canRevisit;
     }
 
     public string TransactionIdPrefix { get; }
     public int Order { get; }
+    public bool CanRevisit { get; set; }
     
     public bool IsComplete(Entities.Checkout checkout) => _isComplete(checkout);
     
@@ -57,6 +60,7 @@ public static class CheckoutStages {
                                                        _ => true,
                                                        c => c.Account?.IsComplete == true,
                                                        0,
+                                                       false,
                                                        c => c.Single<CheckoutAccountPageContent>());
 
     public static readonly CheckoutStage Donation = new("donation",
@@ -65,6 +69,7 @@ public static class CheckoutStages {
                                                         c => c.Donation.IsRequired,
                                                         c => c.Donation.IsComplete,
                                                         20,
+                                                        false,
                                                         c => c.Single<CheckoutDonationPageContent>());
     
     public static readonly CheckoutStage RegularGiving = new("regularGiving",
@@ -73,5 +78,6 @@ public static class CheckoutStages {
                                                              c => c.RegularGiving.IsRequired,
                                                              c => c.RegularGiving.IsComplete,
                                                              10,
+                                                             false,
                                                              c => c.Single<CheckoutRegularGivingPageContent>());
 }

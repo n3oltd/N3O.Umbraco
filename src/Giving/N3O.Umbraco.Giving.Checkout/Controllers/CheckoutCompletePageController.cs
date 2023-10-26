@@ -13,7 +13,7 @@ using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Giving.Checkout.Controllers;
 
-public class CheckoutCompletePageController : CheckoutStagePageController {
+public abstract class CheckoutCompletePageController : CheckoutStagePageController {
     private readonly CartCookie _cartCookie;
 
     public CheckoutCompletePageController(ILogger<CheckoutCompletePageController> logger,
