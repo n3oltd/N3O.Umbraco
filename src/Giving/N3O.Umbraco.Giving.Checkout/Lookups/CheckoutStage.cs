@@ -60,7 +60,7 @@ public static class CheckoutStages {
                                                        _ => true,
                                                        c => c.Account?.IsComplete == true,
                                                        0,
-                                                       false,
+                                                       true,
                                                        c => c.Single<CheckoutAccountPageContent>());
 
     public static readonly CheckoutStage Donation = new("donation",
