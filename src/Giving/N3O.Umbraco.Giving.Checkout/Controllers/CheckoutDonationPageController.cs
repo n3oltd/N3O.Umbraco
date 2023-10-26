@@ -9,7 +9,7 @@ using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Giving.Checkout.Controllers;
 
-public abstract class CheckoutDonationPageController : CheckoutStagePageController {
+public class CheckoutDonationPageController : CheckoutStagePageController {
     public CheckoutDonationPageController(ILogger<CheckoutDonationPageController> logger,
                                           ICompositeViewEngine compositeViewEngine,
                                           IUmbracoContextAccessor umbracoContextAccessor,
