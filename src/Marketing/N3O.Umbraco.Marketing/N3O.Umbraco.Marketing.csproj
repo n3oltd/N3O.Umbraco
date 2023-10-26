@@ -41,6 +41,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="uMarketingSuite.Core" Version="1.24.1" />
+      <PackageReference Include="uMarketingSuite.Core" Version="1.24.3" />
     </ItemGroup>
 </Project>
