@@ -50,7 +50,7 @@ public abstract class CheckoutStagePageController : PageController {
             redirectUrl = _contentCache.Single<DonatePageContent>().Content().AbsoluteUrl();
         } else if (checkout.IsComplete && !CurrentPage.ContentType.Alias.EqualsInvariant(CompletePageAlias)) {
             redirectUrl = _contentCache.Single<CheckoutCompletePageContent>().Content().AbsoluteUrl();
-        } else if (checkout.Progress.CurrentStage != Stage) {
+        } else if (checkout.Progress.CurrentStage != Stage && !Stage.CanRevisit) {
             redirectUrl = checkout.Progress.CurrentStage.GetUrl(_contentCache);
         }
 
