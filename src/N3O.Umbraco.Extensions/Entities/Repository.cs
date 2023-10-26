@@ -95,7 +95,7 @@ public class Repository<T> : IRepository<T> where T : class, IEntity {
     
     public async Task UpdateAsync(T entity, RevisionBehaviour revisionBehaviour = RevisionBehaviour.Increment) {
         // TODO The update SQL should check the revision number hasn't changed and fail if it has
-        await SaveAsync(entity, (db, r) => db.UpdateAsync(r));
+        await SaveAsync(entity, (db, r) => db.UpdateAsync(r), revisionBehaviour);
         
         await RunChangeFeedsAsync(EntityOperations.Update, entity, _entityStore.GetOrDefault(entity.Id));
     }
