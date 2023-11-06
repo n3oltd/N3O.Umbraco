@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco</RootNamespace>
         <TargetFramework>net7.0</TargetFramework>
@@ -49,7 +49,7 @@
         <PackageReference Include="Umbraco.Cms.Core" Version="12.3.0" />
         <PackageReference Include="Umbraco.Cms.Web.Common" Version="12.3.0" />
         <PackageReference Include="Umbraco.Cms.Web.Website" Version="12.3.0" />
-        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="12.2.0" />
+        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="12.3.0" />
         <PackageReference Include="Umbraco.Code" Version="2.0.0" />
     </ItemGroup>
 
