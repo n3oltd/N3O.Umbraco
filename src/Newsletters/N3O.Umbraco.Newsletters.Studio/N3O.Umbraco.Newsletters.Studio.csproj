@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Newsletters.Studio</RootNamespace>
         <TargetFramework>net7.0</TargetFramework>
@@ -34,7 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="NewsletterStudio.Core" Version="12.1.0" />
+        <PackageReference Include="NewsletterStudio.Core" Version="12.1.2" />
     </ItemGroup>
 
     <ItemGroup>
