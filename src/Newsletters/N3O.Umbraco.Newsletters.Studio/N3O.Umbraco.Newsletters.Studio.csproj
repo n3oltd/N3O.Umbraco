@@ -34,7 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="NewsletterStudio.Core" Version="12.1.0" />
+        <PackageReference Include="NewsletterStudio.Core" Version="12.1.2" />
     </ItemGroup>
 
     <ItemGroup>
