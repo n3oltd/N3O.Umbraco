@@ -1,5 +1,6 @@
 using N3O.Umbraco.Content;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
@@ -17,17 +18,23 @@ public class FlushContentCacheHandlers :
         _contentCache = contentCache;
     }
 
-    public async Task HandleAsync(ContentDeletedNotification notification, CancellationToken cancellationToken) {
-        await ProcessAsync(notification.DeletedEntities);
+    public Task HandleAsync(ContentDeletedNotification notification, CancellationToken cancellationToken) {
+        Process(notification.DeletedEntities);
+        
+        return Task.CompletedTask;
     }
     
-    public async Task HandleAsync(ContentPublishedNotification notification, CancellationToken cancellationToken) {
-        await ProcessAsync(notification.PublishedEntities);
+    public Task HandleAsync(ContentPublishedNotification notification, CancellationToken cancellationToken) {
+        Process(notification.PublishedEntities);
+        
+        return Task.CompletedTask;
     }
 
-    private Task ProcessAsync(IEnumerable<IContent> entities) {
-        _contentCache.Flush();
-    
-        return Task.CompletedTask;
+    private void Process(IEnumerable<IContent> entities) {
+        var contentTypeAliases = entities.Select(x => x.ContentType.Alias).Distinct().ToList();
+
+        if (contentTypeAliases.Any(x => _contentCache.ContainsContentType(x))) {
+            _contentCache.Flush();
+        }
     }
 }

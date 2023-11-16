@@ -1,3 +1,4 @@
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using System;
 using System.Collections.Concurrent;
@@ -11,6 +12,7 @@ public class ContentCache : IContentCache {
     private readonly IContentLocator _contentLocator;
     private readonly ConcurrentDictionary<string, object> _typedStore = new(StringComparer.InvariantCultureIgnoreCase);
     private readonly ConcurrentDictionary<string, IReadOnlyList<IPublishedContent>> _untypedStore = new(StringComparer.InvariantCultureIgnoreCase);
+    private readonly HashSet<string> _heldContentTypes = new(StringComparer.InvariantCultureIgnoreCase);
 
     public ContentCache(IContentLocator contentLocator) {
         _contentLocator = contentLocator;
@@ -20,12 +22,19 @@ public class ContentCache : IContentCache {
         var cacheKey = GetCacheKey<T>();
 
         var all = (IReadOnlyList<T>) _typedStore.GetOrAdd(cacheKey, _contentLocator.All<T>());
+        IReadOnlyList<T> res;
 
         if (predicate == null) {
-            return all;
+            res = all;
         } else {
-            return all.Where(predicate).ToList();
+            res = all.Where(predicate).ToList();
         }
+
+        if (res.HasAny()) {
+            _heldContentTypes.AddIfNotExists(AliasHelper<T>.ContentTypeAlias());
+        }
+
+        return res;
     }
     
     public IReadOnlyList<IPublishedContent> All(string contentTypeAlias,
@@ -33,25 +42,47 @@ public class ContentCache : IContentCache {
         var cacheKey = GetCacheKey(contentTypeAlias);
 
         var all = _untypedStore.GetOrAdd(cacheKey, _contentLocator.All(contentTypeAlias));
+        IReadOnlyList<IPublishedContent> res;
 
         if (predicate == null) {
-            return all;
+            res = all;
         } else {
-            return all.Where(predicate).ToList();
+            res = all.Where(predicate).ToList();
         }
+        
+        _heldContentTypes.AddRangeIfNotExists(res.Select(x => x.ContentType.Alias));
+
+        return res;
+    }
+    
+    public bool ContainsContentType(string contentTypeAlias) {
+        return _heldContentTypes.Contains(contentTypeAlias);
     }
 
     public void Flush() {
+        _heldContentTypes.Clear();
         _typedStore.Clear();
         _untypedStore.Clear();
     }
 
     public T Single<T>(Func<T, bool> predicate = null) {
-        return All(predicate).SingleOrDefault();
+        var res = All(predicate).SingleOrDefault();
+
+        if (res.HasValue()) {
+            _heldContentTypes.AddIfNotExists(AliasHelper<T>.ContentTypeAlias());
+        }
+
+        return res;
     }
     
     public IPublishedContent Single(string contentTypeAlias, Func<IPublishedContent, bool> predicate = null) {
-        return All(contentTypeAlias, predicate).SingleOrDefault();
+        var res = All(contentTypeAlias, predicate).SingleOrDefault();
+        
+        if (res.HasValue()) {
+            _heldContentTypes.AddIfNotExists(res.ContentType.Alias);
+        }
+
+        return res;
     }
 
     private string GetCacheKey<T>() {
