@@ -8,6 +8,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
 
@@ -20,16 +22,18 @@ public class StringLocalizer : IStringLocalizer {
     private static readonly string TextContainerAlias = AliasHelper<TextContainerContent>.ContentTypeAlias();
     private static readonly string TextContainerFolderAlias = AliasHelper<TextContainerFolderContent>.ContentTypeAlias();
     private static readonly string TextSettingsContentAlias = AliasHelper<TextSettingsContent>.ContentTypeAlias();
-
     private readonly IContentService _contentService;
-    private readonly IUmbracoContextFactory _umbracoContextFactory;
+    private readonly IUmbracoContextAccessor _umbracoContextAccessor;
+    /*private readonly IUmbracoContextFactory _umbracoContextFactory;*/
     private readonly AsyncKeyedLocker<string> _locker;
 
     public StringLocalizer(IContentService contentService,
-                           IUmbracoContextFactory umbracoContextFactory,
+                           IUmbracoContextAccessor umbracoContextAccessor,
+                           /*IUmbracoContextFactory umbracoContextFactory,*/
                            AsyncKeyedLocker<string> locker) {
         _contentService = contentService;
-        _umbracoContextFactory = umbracoContextFactory;
+        _umbracoContextAccessor = umbracoContextAccessor;
+        /*_umbracoContextFactory = umbracoContextFactory;*/
         _locker = locker;
     }
 
@@ -58,10 +62,9 @@ public class StringLocalizer : IStringLocalizer {
         var cacheKey = CacheKey.Generate<StringLocalizer>(nameof(GetOrCreateFolderId), folder);
 
         return GuidCache.GetOrAdd(cacheKey, _ => {
-            var folderId = Run(u => u.Content
-                                     .GetByContentType(u.Content.GetContentType(TextContainerFolderAlias))
+            var folderId = Run(u => u.GetContentCache().GetByContentType(u.GetContentCache().GetContentType(TextContainerFolderAlias))
                                      .SingleOrDefault(x => x.Name.EqualsInvariant(folder))
-                                     ?.Key);
+                                    ?.Key);
 
             if (folderId == null) {
                 folderId = CreateFolder(folder);
@@ -72,8 +75,7 @@ public class StringLocalizer : IStringLocalizer {
     }
 
     private Guid CreateFolder(string name) {
-        var textSettings = Run(u => u.Content
-                                     .GetByContentType(u.Content.GetContentType(TextSettingsContentAlias))
+        var textSettings = Run(u => u.GetContentCache().GetByContentType(u.GetContentCache().GetContentType(TextSettingsContentAlias))
                                      .SingleOrDefault());
 
         if (textSettings == null) {
@@ -97,8 +99,7 @@ public class StringLocalizer : IStringLocalizer {
 
             name = name.Pascalize();
             
-            var containerId = Run(u => u.Content
-                                        .GetByContentType(u.Content.GetContentType(TextContainerAlias))
+            var containerId = Run(u => u.GetContentCache().GetByContentType(u.GetContentCache().GetContentType(TextContainerAlias))
                                         .SingleOrDefault(x => x.Name.EqualsInvariant(name) &&
                                                               x.Parent.Key == folderId)
                                         ?.Key);
@@ -120,7 +121,7 @@ public class StringLocalizer : IStringLocalizer {
     }
 
     private TextResource CreateOrUpdateResource(Guid containerId, string text) {
-        var container = Run(u => u.Content.GetById(containerId).As<TextContainerContent>());
+        var container = Run(u => u.GetContentCache().GetById(containerId).As<TextContainerContent>());
 
         var resources = container.Resources.OrEmpty().ToList();
 
@@ -157,10 +158,12 @@ public class StringLocalizer : IStringLocalizer {
         }
     }
 
-    private T Run<T>(Func<IUmbracoContext, T> func) {
-        using (var contextReference = _umbracoContextFactory.EnsureUmbracoContext()) {
+    private T Run<T>(Func<IUmbracoContextAccessor, T> func) {
+        /*using (var contextReference = _umbracoContextFactory.EnsureUmbracoContext()) {
             return func(contextReference.UmbracoContext);
-        }
+        }*/
+
+        return func(_umbracoContextAccessor);
     }
     
     // public IStringLocalizer Invariant = new StringLocalizer()

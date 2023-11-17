@@ -8,6 +8,7 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.PropertyEditors.ValueConverters;
+using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
 
@@ -15,18 +16,21 @@ namespace N3O.Umbraco.Json;
 
 public class ContentJsonConverter : JsonConverter {
     private readonly Lazy<PropertyValueConverterCollection> _propertyValueConverters;
-    private readonly Lazy<IUmbracoContextFactory> _umbracoContextFactory;
+    private readonly Lazy<IUmbracoContextAccessor> _publsihedContentCache;
+    //private readonly Lazy<IUmbracoContextFactory> _umbracoContextFactory;
     private readonly Lazy<IPublishedModelFactory> _publishedModelFactory;
     private readonly Lazy<IPublishedContentTypeFactory> _contentTypeFactory;
     private readonly Lazy<IUserService> _userService;
 
     public ContentJsonConverter(Lazy<PropertyValueConverterCollection> propertyValueConverters,
-                                Lazy<IUmbracoContextFactory> umbracoContextFactory,
+                                /*Lazy<IUmbracoContextFactory> umbracoContextFactory,*/
+                                Lazy<IUmbracoContextAccessor> publsihedContentCache,
                                 Lazy<IPublishedModelFactory> publishedModelFactory,
                                 Lazy<IPublishedContentTypeFactory> contentTypeFactory,
                                 Lazy<IUserService> userService) {
         _propertyValueConverters = propertyValueConverters;
-        _umbracoContextFactory = umbracoContextFactory;
+        _publsihedContentCache = publsihedContentCache;
+        /*_umbracoContextFactory = umbracoContextFactory;*/
         _publishedModelFactory = publishedModelFactory;
         _contentTypeFactory = contentTypeFactory;
         _userService = userService;
@@ -103,9 +107,9 @@ public class ContentJsonConverter : JsonConverter {
             return null;
         }
 
-        var umbracoContext = _umbracoContextFactory.Value.EnsureUmbracoContext().UmbracoContext;
+        //var umbracoContext = _umbracoContextFactory.Value.EnsureUmbracoContext().UmbracoContext;
     
-        var contentType =  umbracoContext.PublishedSnapshot.Content.GetContentType(contentTypeAlias);
+        var contentType =  _publsihedContentCache.Value.GetContentCache().GetContentType(contentTypeAlias);
         var publishedPropertyType = new PublishedPropertyType(contentType,
                                                               property.PropertyType,
                                                               _propertyValueConverters.Value,

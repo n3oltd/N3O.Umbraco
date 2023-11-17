@@ -9,6 +9,7 @@ using N3O.Umbraco.Search.Content;
 using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Web.Common.Controllers;
 
@@ -17,15 +18,18 @@ namespace N3O.Umbraco.Search.Controllers;
 public class SitemapController : UmbracoPageController, IVirtualPageController {
     private static readonly string SitemapAlias = AliasHelper<SitemapContent>.ContentTypeAlias();
     
-    private readonly IUmbracoContextFactory _umbracoContextFactory;
+    /*private readonly IUmbracoContextFactory _umbracoContextFactory;*/
+    private readonly IUmbracoContextAccessor _umbracoContextAccessor;
     private readonly ISitemap _sitemap;
 
     public SitemapController(ILogger<UmbracoPageController> logger,
                              ICompositeViewEngine compositeViewEngine,
-                             IUmbracoContextFactory umbracoContextFactory,
+                             /*IUmbracoContextFactory umbracoContextFactory,*/
+                             IUmbracoContextAccessor umbracoContextAccessor,
                              ISitemap sitemap)
         : base(logger, compositeViewEngine) {
-        _umbracoContextFactory = umbracoContextFactory;
+        /*_umbracoContextFactory = umbracoContextFactory;*/
+        _umbracoContextAccessor = umbracoContextAccessor;
         _sitemap = sitemap;
     }
     
@@ -36,9 +40,11 @@ public class SitemapController : UmbracoPageController, IVirtualPageController {
     }
     
     public IPublishedContent FindContent(ActionExecutingContext actionExecutingContext) {
-        var umbracoContext = _umbracoContextFactory.EnsureUmbracoContext().UmbracoContext;
-        var contentType = umbracoContext.Content.GetContentType(SitemapAlias);
-        var content = contentType.IfNotNull(x => umbracoContext.Content.GetByContentType(x))?.SingleOrDefault();
+        //var umbracoContext = _umbracoContextFactory.EnsureUmbracoContext().UmbracoContext;
+        //var contentType = umbracoContext.Content.GetContentType(SitemapAlias);
+        var contentType = _umbracoContextAccessor.GetContentCache().GetContentType(SitemapAlias);
+        //var content = contentType.IfNotNull(x => umbracoContext.Content.GetByContentType(x))?.SingleOrDefault();
+        var content = contentType.IfNotNull(x => _umbracoContextAccessor.GetContentCache().GetByContentType(x))?.SingleOrDefault();
 
         return content;
     }

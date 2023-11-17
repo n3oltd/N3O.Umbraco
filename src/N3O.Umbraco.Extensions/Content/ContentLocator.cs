@@ -3,16 +3,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Content;
 
 public class ContentLocator : IContentLocator {
-    private readonly IUmbracoContextFactory _umbracoContextFactory;
+    private readonly IUmbracoContextAccessor _umbracoContextAccessor;
+    //private readonly IUmbracoContextFactory _umbracoContextFactory;
 
-    public ContentLocator(IUmbracoContextFactory umbracoContextFactory) {
-        _umbracoContextFactory = umbracoContextFactory;
+    public ContentLocator(/*IUmbracoContextFactory umbracoContextFactory*/IUmbracoContextAccessor umbracoContextAccessor) {
+        _umbracoContextAccessor = umbracoContextAccessor;
+        /*_umbracoContextFactory = umbracoContextFactory;*/
     }
 
     public IReadOnlyList<IPublishedContent> All(Func<IPublishedContent, bool> predicate = null) {
@@ -20,7 +23,7 @@ public class ContentLocator : IContentLocator {
     }
 
     public IReadOnlyList<IPublishedContent> All(string contentTypeAlias,
-                                                    Func<IPublishedContent, bool> predicate = null) {
+                                                Func<IPublishedContent, bool> predicate = null) {
         var allContent = GetAllContent(contentTypeAlias);
         var filteredContent = allContent.Where(x => predicate?.Invoke(x) ?? true).ToList();
 
@@ -36,7 +39,7 @@ public class ContentLocator : IContentLocator {
     }
 
     public IPublishedContent ById(int id) {
-        return Run(c => c.Content.GetById(id));
+        return Run(c => c.GetById(id));
     }
 
     public T ById<T>(int id) {
@@ -44,7 +47,7 @@ public class ContentLocator : IContentLocator {
     }
 
     public IPublishedContent ById(Guid id) {
-        return Run(c => c.Content.GetById(id));
+        return Run(c => c.GetById(id));
     }
 
     public T ById<T>(Guid id) {
@@ -67,7 +70,7 @@ public class ContentLocator : IContentLocator {
         return Run(c => {
             var allContent = new List<IPublishedContent>();
 
-            foreach (var rootContent in c.Content.GetAtRoot()) {
+            foreach (var rootContent in c.GetAtRoot()) {
                 if (contentTypeAlias == null) {
                     allContent.AddRange(rootContent.Descendants());
                 } else {
@@ -83,12 +86,14 @@ public class ContentLocator : IContentLocator {
         });
     }
 
-    private T Run<T>(Func<IUmbracoContext, T> func) {
+    private T Run<T>(Func<IPublishedContentCache, T> func) {
         // TODO If the Umbraco context is actually created then this wil dispose it once
         // the content is fetched and will fail in later code, e.g. when resolving property values
         // as won't be able to get published content snapshot.
-        using (var contextReference = _umbracoContextFactory.EnsureUmbracoContext()) {
+        /*using (var contextReference = _umbracoContextFactory.EnsureUmbracoContext()) {
             return func(contextReference.UmbracoContext);
-        }
+        }*/
+
+        return func(_umbracoContextAccessor.GetContentCache());
     }
 }
