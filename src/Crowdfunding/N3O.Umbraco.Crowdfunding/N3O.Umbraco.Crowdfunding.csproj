@@ -30,7 +30,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Konstrukt\N3O.Umbraco.Konstrukt\N3O.Umbraco.Konstrukt.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
+        <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Checkout\N3O.Umbraco.Giving.Checkout.csproj" />
+        <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Cart\N3O.Umbraco.Giving.Cart.csproj" />
     </ItemGroup>
 
     <ItemGroup>
