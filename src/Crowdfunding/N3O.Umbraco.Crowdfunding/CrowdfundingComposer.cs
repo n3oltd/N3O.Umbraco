@@ -6,6 +6,6 @@ namespace N3O.Umbraco.CrowdFunding;
 
 public class CrowdfundingComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
-        builder.Components().Append<CrowdfundingDonationsMigrationsComponent>();
+        builder.Components().Append<CrowdfundingDonationMigrationsComponent>();
     }
 }

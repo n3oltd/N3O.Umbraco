@@ -6,7 +6,7 @@ namespace N3O.Umbraco.CrowdFunding.Konstrukt;
 
 [TableName(CrowdfundingConstants.Tables.CrowdfundingDonations.Name)]
 [PrimaryKey("Id")]
-public class CrowdfundingDonations {
+public class CrowdfundingDonation {
     [PrimaryKeyColumn(Name = CrowdfundingConstants.Tables.CrowdfundingDonations.PrimaryKey)]
     public int Id { get; set; }
     

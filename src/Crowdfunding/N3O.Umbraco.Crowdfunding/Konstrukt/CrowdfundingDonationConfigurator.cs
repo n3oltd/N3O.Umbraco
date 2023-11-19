@@ -3,7 +3,7 @@ using Konstrukt.Configuration.Builders;
 
 namespace N3O.Umbraco.CrowdFunding.Konstrukt;
 
-public class CrowdfundingDonationsConfigurator : IKonstruktConfigurator {
+public class CrowdfundingDonationConfigurator : IKonstruktConfigurator {
     public void Configure(KonstruktConfigBuilder builder) {
         var section = builder.AddSectionAfter("content","Donations");
         var dashboard = section.AddDashboard("List");
@@ -12,7 +12,7 @@ public class CrowdfundingDonationsConfigurator : IKonstruktConfigurator {
     }
 
     private void ConfigureCollection(KonstruktDashboardConfigBuilder dashboard) {
-        var collection = dashboard.SetCollection<CrowdfundingDonations>(x => x.Id,
+        var collection = dashboard.SetCollection<CrowdfundingDonation>(x => x.Id,
                                                                         "CrowdfundingDonation",
                                                                         "CrowdfundingDonations",
                                                                         "Crowdfunding Donations",
@@ -33,7 +33,7 @@ public class CrowdfundingDonationsConfigurator : IKonstruktConfigurator {
         ConfigureEditor(collection);
     }
 
-    private void ConfigureListView(KonstruktDashboardCollectionConfigBuilder<CrowdfundingDonations> collection) {
+    private void ConfigureListView(KonstruktDashboardCollectionConfigBuilder<CrowdfundingDonation> collection) {
         var listView = collection.ListView();
         listView.AddField(c => c.Reference);
         listView.AddField(c => c.CreatedAt);
@@ -41,7 +41,7 @@ public class CrowdfundingDonationsConfigurator : IKonstruktConfigurator {
         listView.AddField(c => c.Comment);
     }
 
-    private void ConfigureEditor(KonstruktDashboardCollectionConfigBuilder<CrowdfundingDonations> collection) {
+    private void ConfigureEditor(KonstruktDashboardCollectionConfigBuilder<CrowdfundingDonation> collection) {
         var editor = collection.Editor();
         var recordTab = editor.AddTab("Donation");
         
