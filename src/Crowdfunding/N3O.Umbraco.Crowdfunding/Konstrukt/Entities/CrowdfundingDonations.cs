@@ -1,10 +1,8 @@
-using N3O.Umbraco.Accounts.Models;
-using N3O.Umbraco.Financial;
 using NPoco;
 using System;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 
-namespace N3O.Umbraco.CrowdFunding;
+namespace N3O.Umbraco.CrowdFunding.Konstrukt;
 
 [TableName(CrowdfundingConstants.Tables.CrowdfundingDonations.Name)]
 [PrimaryKey("Id")]

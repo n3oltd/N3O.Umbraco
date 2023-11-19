@@ -7,7 +7,7 @@ using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Migrations;
 using Umbraco.Cms.Infrastructure.Migrations.Upgrade;
 
-namespace N3O.Umbraco.CrowdFunding;
+namespace N3O.Umbraco.CrowdFunding.Konstrukt;
 
 public class CrowdfundingDonationsMigrationsComponent : IComponent {
     private readonly IRuntimeState _runtimeState;
