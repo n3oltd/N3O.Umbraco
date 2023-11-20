@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Search.Google</RootNamespace>
         <TargetFramework>net7.0</TargetFramework>
@@ -34,7 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Google.Apis.CustomSearchAPI.v1" Version="1.63.0.3106" />
+        <PackageReference Include="Google.Apis.CustomSearchAPI.v1" Version="1.64.0.3106" />
     </ItemGroup>
 
     <ItemGroup>
