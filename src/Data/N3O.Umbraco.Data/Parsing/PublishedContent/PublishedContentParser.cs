@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
 using OurDataType = N3O.Umbraco.Data.Lookups.DataType;
@@ -13,12 +14,15 @@ using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 namespace N3O.Umbraco.Data.Parsing;
 
 public class PublishedContentParser : DataTypeParser<IPublishedContent>, IPublishedContentParser {
-    private readonly IUmbracoContextFactory _umbracoContextFactory;
+    private readonly IPublishedContentCache _publishedContentCache;
+    //private readonly IUmbracoContextFactory _umbracoContextFactory;
 
-    public PublishedContentParser(IUmbracoContextFactory umbracoContextFactory) {
-        _umbracoContextFactory = umbracoContextFactory;
+    public PublishedContentParser( /*IUmbracoContextFactory umbracoContextFactory*/
+        IPublishedContentCache publishedContentCache) {
+        _publishedContentCache = publishedContentCache;
+        //_umbracoContextFactory = umbracoContextFactory;
     }
-    
+
     public override bool CanParse(OurDataType dataType) {
         return dataType == OurDataTypes.Content;
     }
@@ -29,39 +33,43 @@ public class PublishedContentParser : DataTypeParser<IPublishedContent>, IPublis
 
     public ParseResult<IPublishedContent> Parse(string text, Type targetType, Guid? parentId) {
         IPublishedContent value = null;
-        
+
         if (text.HasValue()) {
-            using (var contextReference = _umbracoContextFactory.EnsureUmbracoContext()) {
-                text = text.Trim();
-                
-                if (Guid.TryParse(text, out var id)) {
-                    value = contextReference.UmbracoContext.Content.GetById(id);
+            //using (var contextReference = _umbracoContextFactory.EnsureUmbracoContext()) {
+
+            text = text.Trim();
+
+            if (Guid.TryParse(text, out var id)) {
+                //value = contextReference.UmbracoContext.Content.GetById(id);
+                value = _publishedContentCache.GetById(id);
+            } else {
+                var searchRoots = new List<IPublishedContent>();
+
+                if (parentId != null) {
+                    //searchRoots.Add(contextReference.UmbracoContext.Content.GetById(parentId.Value));
+                    searchRoots.Add(_publishedContentCache.GetById(parentId.Value));
                 } else {
-                    var searchRoots = new List<IPublishedContent>();
-
-                    if (parentId != null) {
-                        searchRoots.Add(contextReference.UmbracoContext.Content.GetById(parentId.Value));
-                    } else {
-                        searchRoots.AddRange(contextReference.UmbracoContext.Content.GetAtRoot());
-                    }
-
-                    IReadOnlyList<IPublishedContent> matches;
-
-                    if (text.Contains(DataConstants.Separator)) {
-                        matches = PathSearch(searchRoots, text);
-                    } else {
-                        matches = NameSearch(searchRoots, text);
-                    }
-
-                    if (matches.IsSingle()) {
-                        value = matches.Single();
-                    }
+                    //searchRoots.AddRange(contextReference.UmbracoContext.Content.GetAtRoot());
+                    searchRoots.AddRange(_publishedContentCache.GetAtRoot());
                 }
 
-                if (value == null) {
-                    return ParseResult.Fail<IPublishedContent>();
+                IReadOnlyList<IPublishedContent> matches;
+
+                if (text.Contains(DataConstants.Separator)) {
+                    matches = PathSearch(searchRoots, text);
+                } else {
+                    matches = NameSearch(searchRoots, text);
+                }
+
+                if (matches.IsSingle()) {
+                    value = matches.Single();
                 }
             }
+
+            if (value == null) {
+                return ParseResult.Fail<IPublishedContent>();
+            }
+            //}
         }
         
         return ParseResult.Success(value);

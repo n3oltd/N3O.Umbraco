@@ -14,14 +14,14 @@ using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 namespace N3O.Umbraco.Data.Parsing;
 
 public class ContentParser : DataTypeParser<IContent>, IContentParser {
-    private readonly IUmbracoContextFactory _umbracoContextFactory;
+    //private readonly IUmbracoContextFactory _umbracoContextFactory;
     private readonly IContentService _contentService;
     private readonly IContentHelper _contentHelper;
 
-    public ContentParser(IUmbracoContextFactory umbracoContextFactory,
+    public ContentParser(/*IUmbracoContextFactory umbracoContextFactory,*/
                          IContentService contentService,
                          IContentHelper contentHelper) {
-        _umbracoContextFactory = umbracoContextFactory;
+        //_umbracoContextFactory = umbracoContextFactory;
         _contentService = contentService;
         _contentHelper = contentHelper;
     }
@@ -38,7 +38,7 @@ public class ContentParser : DataTypeParser<IContent>, IContentParser {
         IContent value = null;
         
         if (text.HasValue()) {
-            using (_umbracoContextFactory.EnsureUmbracoContext()) {
+            //using (_umbracoContextFactory.EnsureUmbracoContext()) {
                 text = text.Trim();
                 
                 if (Guid.TryParse(text, out var id)) {
@@ -64,7 +64,7 @@ public class ContentParser : DataTypeParser<IContent>, IContentParser {
                 if (value == null) {
                     return ParseResult.Fail<IContent>();
                 }
-            }
+            //}
         }
         
         return ParseResult.Success(value);
