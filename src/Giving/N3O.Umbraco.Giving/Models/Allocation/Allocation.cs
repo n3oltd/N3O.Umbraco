@@ -6,6 +6,12 @@ using System;
 
 namespace N3O.Umbraco.Giving.Models;
 
+/*
+ * Add an AllocationExtensionData class similar to BlockModulesData which allows us to store an arbitrary number
+ * of extensions under different keys, e.g. one key would be crowdfunding. This allows us to extend the allocations
+ * without bloating this object, or requiring it to reference the crowdfunding project etc.
+ */
+
 public class Allocation : Value, IAllocation {
     [JsonConstructor]
     public Allocation(AllocationType type,

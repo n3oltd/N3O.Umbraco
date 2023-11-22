@@ -21,6 +21,21 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Giving.Checkout.ChangeFeeds;
 
+/*
+ * We can define an interface (along the lines of, don't take too literally)
+ * ICheckoutNotificationHandler which we can inject the IEnumerable<> of into
+ * this class. We can then call those notifications as required. We can keep this
+ * general or simplify it by keeping it very specific, e.g. CrowdFundingCheckoutCompleteHandler
+ * which is passed the completed checkout object, looks into the allocation and copies
+ * the relevant data into the SQL table.
+ *
+ * In some sense this is redundant in that our system already supports multiple change feeds
+ * so we could argue it is easier just to add a changefeed<checkout> rather than another layer
+ * of abstraction. The only advantage of a more specialised interface is we don't distribute
+ * the meaning of when a checkout is complete and also we can ensure that critical steps complete
+ * before the less essential ones.
+ */
+
 public class CheckoutFeed : ChangeFeed<Entities.Checkout> {
     private readonly Lazy<IWebhooks> _webhooks;
     private readonly Lazy<IEmailBuilder> _emailBuilder;

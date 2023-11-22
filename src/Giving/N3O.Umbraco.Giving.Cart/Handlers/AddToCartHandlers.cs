@@ -42,6 +42,15 @@ public class AddToCartHandlers :
     }
 
     public async Task<RevisionId> Handle(AddToCartCommand req, CancellationToken cancellationToken) {
+        /*
+         * In this case we wouldn't simply use the constructor which takes the interface, we would
+         * instead need to add an allocationbuilder class which can build the allocation. The constuctor
+         * for allocationbuilder should inject IEnumerable<IAllocationExtensionBuilder> (better name needed)
+         * so for example in N3O.Crowdfunding we register CrowdfundingAllocationExtensionBuilder which
+         * looks inside the AllocationReq for the crowdfunding data and if present uses it to build
+         * the relevant allocation extension data.
+         */
+        
         var revisionId = await AddToCartAsync(req.Model.GivingType,
                                               req.Model.Allocation,
                                               req.Model.Quantity.GetValueOrThrow(),

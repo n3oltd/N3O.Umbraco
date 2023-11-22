@@ -6,6 +6,20 @@ using System;
 
 namespace N3O.Umbraco.Giving.Models;
 
+/*
+ * We would need to make this more dynamic (similar to AccountReq in K2.Accounts where we can
+ * pass in additional properties on the frontend, e.g.
+ * {
+ *      crowdFunding: {
+ *          comment: ...
+ *          etc.
+ *      }
+ * }
+ *
+ * these then can be stored in the JSON extension data or similar to at least ensure the data
+ * is available at runtime to us
+ */
+
 public class AllocationReq : IAllocation {
     [Name("Type")]
     public AllocationType Type { get; set; }

@@ -5,6 +5,10 @@ using System;
 
 namespace N3O.Umbraco.Giving.Models;
 
+/*
+ * This will need to be updated to have a property exposing the extension data and this should
+ * be set in the mapper.
+ */
 public class AllocationRes : IAllocation {
     public AllocationType Type { get; set; }
     public MoneyRes Value { get; set; }
@@ -23,7 +27,6 @@ public class AllocationRes : IAllocation {
 
     [JsonIgnore]
     ISponsorshipAllocation IAllocation.Sponsorship => Sponsorship;
-    
     
     [JsonIgnore]
     IFeedbackAllocation IAllocation.Feedback => Feedback;

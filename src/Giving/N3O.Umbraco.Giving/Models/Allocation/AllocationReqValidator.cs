@@ -12,6 +12,10 @@ using System.Linq;
 
 namespace N3O.Umbraco.Giving.Models;
 
+/* This will also need to inject AllocationReqValidators such as CrowdFunding which will
+ check if the allocationreq contains crowdfunding data, and if it does will perform the 
+ relevant validation, returning any ValidationFailures for failed validation */
+
 public class AllocationReqValidator : ModelValidator<AllocationReq> {
     public AllocationReqValidator(IFormatter formatter,
                                   ICurrencyAccessor currencyAccessor,
