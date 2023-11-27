@@ -12,4 +12,5 @@ public interface IAllocation {
     ISponsorshipAllocation Sponsorship { get; }
     IFeedbackAllocation Feedback { get; }
     Guid? UpsellOfferId { get; }
+    /*AllocationExtensionData AllocationExtensionData { get; }*/
 }
