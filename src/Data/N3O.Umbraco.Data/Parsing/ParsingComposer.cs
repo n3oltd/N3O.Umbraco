@@ -13,11 +13,11 @@ public class ParsingComposer : Composer {
         builder.Services.AddSingleton<IGuidParser, GuidParser>();
         builder.Services.AddSingleton<IIntegerParserFactory, IntegerParserFactory>();
         builder.Services.AddSingleton<ILookupParser, LookupParser>();
-        builder.Services.AddSingleton<IParserFactory, ParserFactory>();
-        builder.Services.AddSingleton<IPublishedContentParser, PublishedContentParser>();
         builder.Services.AddSingleton<IReferenceParser, ReferenceParser>();
         builder.Services.AddSingleton<IStringParser, StringParser>();
-        builder.Services.AddSingleton<IParserFactory, ParserFactory>();
         builder.Services.AddSingleton<IYearMonthParserFactory, YearMonthParserFactory>();
+        
+        builder.Services.AddScoped<IParserFactory, ParserFactory>();
+        builder.Services.AddScoped<IPublishedContentParser, PublishedContentParser>();
     }
 }

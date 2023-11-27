@@ -9,7 +9,6 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Persistence.Querying;
 using Umbraco.Cms.Core.PropertyEditors;
-using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
 
@@ -21,20 +20,17 @@ public class ContentHelper : IContentHelper {
     private readonly Lazy<IContentTypeService> _contentTypeService;
     private readonly Lazy<IContentLocator> _contentLocator;
     private readonly Lazy<IUmbracoContextAccessor> _umbracoContextAccessor;
-    //private readonly Lazy<IUmbracoContextFactory> _umbracoContextFactory;
 
     public ContentHelper(Lazy<IServiceProvider> serviceProvider,
                          Lazy<IContentService> contentService,
                          Lazy<IContentTypeService> contentTypeService,
                          Lazy<IContentLocator> contentLocator,
-                         /*Lazy<IUmbracoContextFactory> umbracoContextFactory,*/
                          Lazy<IUmbracoContextAccessor> umbracoContextAccessor) {
         _serviceProvider = serviceProvider;
         _contentService = contentService;
         _contentTypeService = contentTypeService;
         _contentLocator = contentLocator;
         _umbracoContextAccessor = umbracoContextAccessor;
-        //_umbracoContextFactory = umbracoContextFactory;
     }
 
     public IReadOnlyList<IContent> GetAncestors(IContent content) {
@@ -99,8 +95,6 @@ public class ContentHelper : IContentHelper {
                                                               string propertyTypeAlias,
                                                               object propertyValue)
         where TConverter : class, IPropertyValueConverter {
-        //var umbracoContext = _umbracoContextFactory.Value.EnsureUmbracoContext().UmbracoContext;
-        //var umbracoContext = _umbracoContextFactory.Value.EnsureUmbracoContext().UmbracoContext;
         var converter = _serviceProvider.Value.GetRequiredService<TConverter>();
         var publishedContentType = _umbracoContextAccessor.Value.GetContentCache().GetContentType(contentTypeAlias);
         var publishedPropertyType = publishedContentType.GetPropertyType(propertyTypeAlias);

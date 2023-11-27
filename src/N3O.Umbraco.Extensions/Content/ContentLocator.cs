@@ -11,11 +11,9 @@ namespace N3O.Umbraco.Content;
 
 public class ContentLocator : IContentLocator {
     private readonly IUmbracoContextAccessor _umbracoContextAccessor;
-    //private readonly IUmbracoContextFactory _umbracoContextFactory;
 
-    public ContentLocator(/*IUmbracoContextFactory umbracoContextFactory*/IUmbracoContextAccessor umbracoContextAccessor) {
+    public ContentLocator(IUmbracoContextAccessor umbracoContextAccessor) {
         _umbracoContextAccessor = umbracoContextAccessor;
-        /*_umbracoContextFactory = umbracoContextFactory;*/
     }
 
     public IReadOnlyList<IPublishedContent> All(Func<IPublishedContent, bool> predicate = null) {
@@ -90,10 +88,6 @@ public class ContentLocator : IContentLocator {
         // TODO If the Umbraco context is actually created then this wil dispose it once
         // the content is fetched and will fail in later code, e.g. when resolving property values
         // as won't be able to get published content snapshot.
-        /*using (var contextReference = _umbracoContextFactory.EnsureUmbracoContext()) {
-            return func(contextReference.UmbracoContext);
-        }*/
-
         return func(_umbracoContextAccessor.GetContentCache());
     }
 }

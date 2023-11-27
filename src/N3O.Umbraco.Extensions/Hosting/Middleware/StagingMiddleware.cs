@@ -10,7 +10,6 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
 
@@ -22,16 +21,13 @@ public class StagingMiddleware : IMiddleware {
     private static readonly TimeSpan LockOutPeriod = TimeSpan.FromMinutes(5);
     private static readonly MemoryCache FailedLogins = new(new MemoryCacheOptions());
 
-    //private readonly Lazy<IUmbracoContextFactory> _umbracoContextFactory;
     private readonly Lazy<IUmbracoContextAccessor> _umbracoContextAccessor;
     private readonly Lazy<IRemoteIpAddressAccessor> _remoteIpAddressAccessor;
     private readonly Lazy<IOptionsSnapshot<CookieAuthenticationOptions>> _cookieAuthenticationOptions;
 
     public StagingMiddleware(Lazy<IUmbracoContextAccessor> umbracoContextAccessor,
-                             /*Lazy<IUmbracoContextFactory> umbracoContextFactory,*/
                              Lazy<IRemoteIpAddressAccessor> remoteIpAddressAccessor,
                              Lazy<IOptionsSnapshot<CookieAuthenticationOptions>> cookieAuthenticationOptions) {
-        //_umbracoContextFactory = umbracoContextFactory;
         _umbracoContextAccessor = umbracoContextAccessor;
         _remoteIpAddressAccessor = remoteIpAddressAccessor;
         _cookieAuthenticationOptions = cookieAuthenticationOptions;
@@ -41,8 +37,6 @@ public class StagingMiddleware : IMiddleware {
         if (!context.Request.GetDisplayUrl().Contains("/umbraco", StringComparison.InvariantCultureIgnoreCase) &&
             !context.Request.GetDisplayUrl().Contains("/App_Plugins", StringComparison.InvariantCultureIgnoreCase) &&
             !context.Request.GetDisplayUrl().Contains("/sb", StringComparison.InvariantCultureIgnoreCase)) {
-            /*var umbracoContext = _umbracoContextFactory.Value.EnsureUmbracoContext()
-                                                       .UmbracoContext;*/
 
             var contentType = _umbracoContextAccessor.Value.GetContentCache().GetContentType(StagingSettingsAlias);
             var stagingSettings = contentType.IfNotNull(x => _umbracoContextAccessor.Value.GetContentCache().GetByContentType(x))

@@ -8,8 +8,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
 
@@ -24,16 +22,13 @@ public class StringLocalizer : IStringLocalizer {
     private static readonly string TextSettingsContentAlias = AliasHelper<TextSettingsContent>.ContentTypeAlias();
     private readonly IContentService _contentService;
     private readonly IUmbracoContextAccessor _umbracoContextAccessor;
-    /*private readonly IUmbracoContextFactory _umbracoContextFactory;*/
     private readonly AsyncKeyedLocker<string> _locker;
 
     public StringLocalizer(IContentService contentService,
                            IUmbracoContextAccessor umbracoContextAccessor,
-                           /*IUmbracoContextFactory umbracoContextFactory,*/
                            AsyncKeyedLocker<string> locker) {
         _contentService = contentService;
         _umbracoContextAccessor = umbracoContextAccessor;
-        /*_umbracoContextFactory = umbracoContextFactory;*/
         _locker = locker;
     }
 
@@ -159,12 +154,6 @@ public class StringLocalizer : IStringLocalizer {
     }
 
     private T Run<T>(Func<IUmbracoContextAccessor, T> func) {
-        /*using (var contextReference = _umbracoContextFactory.EnsureUmbracoContext()) {
-            return func(contextReference.UmbracoContext);
-        }*/
-
         return func(_umbracoContextAccessor);
     }
-    
-    // public IStringLocalizer Invariant = new StringLocalizer()
 }
