@@ -14,9 +14,17 @@ public class ExcelWorkbook : IExcelWorkbook {
     private bool _formatAsTable = true;
 
     public void AddWorksheet(IExcelTable table) {
-        var worksheetWriter = new ExcelWorksheetWriter(table);
+        var worksheetWriter = new ExcelWorksheetWriter();
+        
+        _worksheetsWriters.Add(worksheetWriter);
+    }
+    
+    public ExcelWorksheetWriter AddWorksheet() {
+        var worksheetWriter = new ExcelWorksheetWriter();
 
         _worksheetsWriters.Add(worksheetWriter);
+        
+        return worksheetWriter;
     }
 
     public void FormatAsTable(bool enabled) {
@@ -27,6 +35,7 @@ public class ExcelWorkbook : IExcelWorkbook {
         _password = password;
     }
 
+    
     public async Task SaveAsync(Stream stream, CancellationToken cancellationToken = default) {
         using (var package = new ExcelPackage()) {
             if (_password.HasValue()) {

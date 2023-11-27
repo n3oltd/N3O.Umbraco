@@ -190,7 +190,7 @@ public class ProcessExportHandler : IRequestHandler<ProcessExportCommand, Export
 
     private async Task WriteExcelAsync(ITable table, Stream stream) {
         var workbook = _workspace.CreateExcelWorkbook();
-        workbook.AddWorksheet(_excelTableBuilder.Value.ForTable(table).Build());
+        workbook.AddWorksheet().InsertTable(_excelTableBuilder.Value.ForTable(table).Build());
         workbook.FormatAsTable(true);
         
         await workbook.SaveAsync(stream);
