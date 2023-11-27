@@ -6,15 +6,13 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Lookups;
 
 public class UmbracoLookupsCollection<T> : LookupsCollection<T> where T : LookupContent<T> {
-    private readonly IContentCache _contentCache;
+    private readonly IReadOnlyList<T> _items;
 
     public UmbracoLookupsCollection(IContentCache contentCache) {
-        _contentCache = contentCache;
+        _items = contentCache.All<T>().OrderBy(x => x.Content().SortOrder).ToList();
     }
 
     public override Task<IReadOnlyList<T>> GetAllAsync() {
-        var items = _contentCache.All<T>().OrderBy(x => x.Content().SortOrder).ToList();
-
-        return Task.FromResult<IReadOnlyList<T>>(items);
+        return Task.FromResult(_items);
     }
 }
