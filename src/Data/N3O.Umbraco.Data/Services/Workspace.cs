@@ -10,11 +10,16 @@ public class Workspace : IWorkspace {
     private readonly IParserFactory _parserFactory;
     private readonly IColumnRangeBuilder _columnRangeBuilder;
 
-    public Workspace(ITableBuilder tableBuilder, IColumnRangeBuilder columnRangeBuilder, IParserFactory parserFactory) {
-        TableBuilder = tableBuilder;
+    public Workspace(ITableBuilder tableBuilder,
+                     IColumnRangeBuilder columnRangeBuilder,
+                     IDataSummaryBuilder dataSummaryBuilder,
+                     IParserFactory parserFactory) {
         ColumnRangeBuilder = columnRangeBuilder;
+        DataSummaryBuilder = dataSummaryBuilder;
+        TableBuilder = tableBuilder;
         _columnRangeBuilder = columnRangeBuilder;
         _parserFactory = parserFactory;
+        
     }
 
     public ICsvWorkbook CreateCsvWorkbook() {
@@ -48,5 +53,6 @@ public class Workspace : IWorkspace {
     }
 
     public IColumnRangeBuilder ColumnRangeBuilder { get; }
+    public IDataSummaryBuilder DataSummaryBuilder { get; }
     public ITableBuilder TableBuilder { get; }
 }

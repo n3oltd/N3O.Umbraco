@@ -1,6 +1,5 @@
 using N3O.Umbraco.Data.Extensions;
 using N3O.Umbraco.Data.Models;
-using N3O.Umbraco.Data.Models.CustomTable;
 using N3O.Umbraco.Extensions;
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
@@ -47,8 +46,7 @@ public class ExcelWorksheetWriter {
     }
 
     private void WriteDataSummary(ExcelWorksheet worksheet, bool formatAsTable) {
-        //use DataSummary here
-        for (int i = 0; i < _dataSummary.blankLinesBefore; i++) {
+        for (int i = 0; i < _dataSummary.LinesBefore; i++) {
             NextRow();
         }
 
@@ -59,11 +57,11 @@ public class ExcelWorksheetWriter {
             WriteValue(worksheet, row.Label, boldText);
 
             foreach (var value in row.Values) {
-                WriteValue(worksheet,value.Value,value.formatting);
+                WriteValue(worksheet, value.Value,  new ExcelFormatting(){ NumberFormat = value.Formatting });
             }
         }
         
-        for (int i = 0; i < _dataSummary.blankLinesAfter; i++) {
+        for (int i = 0; i < _dataSummary.LinesAfter; i++) {
             NextRow();
         }
     }
@@ -181,22 +179,6 @@ public class ExcelWorksheetWriter {
 
         NextColumn();
     }
-    
-    // private void WriteDateTime(ExcelWorksheet worksheet, DateTime? value, ExcelFormatting formatting = null) {
-    //     WriteValue(worksheet, value, formatting);
-    // }
-    //
-    // private void WriteDecimal(ExcelWorksheet worksheet, decimal? value, ExcelFormatting formatting = null) {
-    //     WriteValue(worksheet, value, formatting);
-    // }
-    //
-    // private void WriteInt(ExcelWorksheet worksheet, int? value, ExcelFormatting formatting = null) {
-    //     WriteValue(worksheet, value, formatting);
-    // }
-    //
-    // private void WriteText(ExcelWorksheet worksheet, string text, ExcelFormatting formatting = null) {
-    //     WriteValue(worksheet, text, formatting);
-    // }
     
     private void WriteValue(ExcelWorksheet worksheet, object value, ExcelFormatting formatting) {
         var workCell = GetCurrentCell(worksheet);
