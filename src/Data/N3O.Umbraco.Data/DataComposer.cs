@@ -30,6 +30,8 @@ public class DataComposer : Composer {
         
         builder.PropertyValueConverters().Append<ImportNoticesViewerValueConverter>();
         builder.PropertyValueConverters().Append<ImportDataEditorValueConverter>();
+        
+        builder.Services.AddTransient<IDataSummaryBuilder, DataSummaryBuilder>();
 
         RegisterApis(builder);
         RegisterContentSummarisers(builder);

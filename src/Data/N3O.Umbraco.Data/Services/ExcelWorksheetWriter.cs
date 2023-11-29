@@ -25,22 +25,25 @@ public class ExcelWorksheetWriter {
     private int _rowCursor = FirstRow;
     private int _columnCursor = FirstColumn;
     private DataSummary _dataSummary;
+    private string _sheetName;
 
     public void InsertTable(IExcelTable table) {
         _renderMode = RenderMode.Table;
         _table = table;
     }
     
-    public void InsertDataSummary(DataSummary dataSummary) {
+    public void InsertDataSummary(DataSummary dataSummary, string sheetName) {
         _renderMode = RenderMode.DataSummary;
         _dataSummary = dataSummary;
+        _sheetName = sheetName;
     }
 
     public void Write(ExcelWorksheets worksheets, bool formatAsTable) {
-        var worksheet = worksheets.Add(GetExcelSafeName(_table.Name, WorksheetNameMaxLength));
         if (_renderMode == RenderMode.Table) {
+            var worksheet = worksheets.Add(GetExcelSafeName(_table.Name, WorksheetNameMaxLength));
             WriteTable(worksheet, formatAsTable);    
         } else {
+            var worksheet = worksheets.Add(GetExcelSafeName(_sheetName, WorksheetNameMaxLength));
             WriteDataSummary(worksheet, formatAsTable);
         }
     }
