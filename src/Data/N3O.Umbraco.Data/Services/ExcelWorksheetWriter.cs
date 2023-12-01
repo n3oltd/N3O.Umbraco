@@ -62,6 +62,7 @@ public class ExcelWorksheetWriter {
             foreach (var value in row.Values) {
                 WriteValue(worksheet, value.Value,  new ExcelFormatting(){ NumberFormat = value.Formatting });
             }
+            NextRow();
         }
         
         for (int i = 0; i < _dataSummary.LinesAfter; i++) {
