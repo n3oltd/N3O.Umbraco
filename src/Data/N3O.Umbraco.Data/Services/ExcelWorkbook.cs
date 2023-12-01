@@ -15,6 +15,7 @@ public class ExcelWorkbook : IExcelWorkbook {
 
     public void AddWorksheet(IExcelTable table) {
         var worksheetWriter = new ExcelWorksheetWriter();
+        worksheetWriter.InsertTable(table);
         
         _worksheetsWriters.Add(worksheetWriter);
     }
