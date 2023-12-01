@@ -41,7 +41,7 @@ public class DataSummaryRowBuilder : IDataSummaryRowBuilder {
     }
     
     public IDataSummaryRowBuilder AddPercentage(decimal value) {
-        return AddValue(value, new BoolExcelNumberFormat());
+        return AddValue(value, new PercentageExcelNumberFormat());
     }
     
     private IDataSummaryRowBuilder AddValue<T>(T value, ExcelNumberFormat formatting) {
