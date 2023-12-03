@@ -1,6 +1,7 @@
 using N3O.Umbraco.Data.Builders;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Parsing;
+using N3O.Umbraco.Localization;
 using System.Collections.Generic;
 using System.IO;
 
@@ -8,13 +9,20 @@ namespace N3O.Umbraco.Data;
 
 public class Workspace : IWorkspace {
     private readonly IParserFactory _parserFactory;
+    private readonly IFormatter _formatter;
     private readonly IColumnRangeBuilder _columnRangeBuilder;
 
-    public Workspace(ITableBuilder tableBuilder, IColumnRangeBuilder columnRangeBuilder, IParserFactory parserFactory) {
-        TableBuilder = tableBuilder;
+    public Workspace(ITableBuilder tableBuilder,
+                     IColumnRangeBuilder columnRangeBuilder,
+                     ISummaryFieldsBuilder summaryFieldsBuilder,
+                     IParserFactory parserFactory,
+                     IFormatter formatter) {
         ColumnRangeBuilder = columnRangeBuilder;
+        SummaryFieldsBuilder = summaryFieldsBuilder;
+        TableBuilder = tableBuilder;
         _columnRangeBuilder = columnRangeBuilder;
         _parserFactory = parserFactory;
+        _formatter = formatter;
     }
 
     public ICsvWorkbook CreateCsvWorkbook() {
@@ -24,7 +32,7 @@ public class Workspace : IWorkspace {
     }
 
     public IExcelWorkbook CreateExcelWorkbook() {
-        var workbook = new ExcelWorkbook();
+        var workbook = new ExcelWorkbook(_formatter);
 
         return workbook;
     }
@@ -48,5 +56,6 @@ public class Workspace : IWorkspace {
     }
 
     public IColumnRangeBuilder ColumnRangeBuilder { get; }
+    public ISummaryFieldsBuilder SummaryFieldsBuilder { get; }
     public ITableBuilder TableBuilder { get; }
 }

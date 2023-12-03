@@ -19,5 +19,6 @@ public interface IWorkspace {
                             string delimiter = DataConstants.Delimiters.Comma);
 
     IColumnRangeBuilder ColumnRangeBuilder { get; }
+    ISummaryFieldsBuilder SummaryFieldsBuilder { get; }
     ITableBuilder TableBuilder { get; }
 }
