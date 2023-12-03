@@ -56,6 +56,7 @@ public class ExcelWorksheetWriter {
             } else {
                 throw UnrecognisedValueException.For(renderMode);
             }
+            NextRow();
         }
         
         worksheet.Cells.AutoFitColumns();
