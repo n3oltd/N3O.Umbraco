@@ -1,5 +1,5 @@
-using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Localization;
 using OfficeOpenXml;
 using System.Collections.Generic;
 using System.IO;
@@ -9,33 +9,27 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Data;
 
 public class ExcelWorkbook : IExcelWorkbook {
+    private readonly IFormatter _formatter;
     private readonly List<ExcelWorksheetWriter> _worksheetsWriters = new();
     private string _password;
-    private bool _formatAsTable = true;
 
-    public void AddWorksheet(IExcelTable table) {
-        var worksheetWriter = new ExcelWorksheetWriter();
-        worksheetWriter.InsertTable(table);
-        
-        _worksheetsWriters.Add(worksheetWriter);
+    public ExcelWorkbook(IFormatter formatter) {
+        _formatter = formatter;
     }
-    
-    public ExcelWorksheetWriter AddWorksheet() {
-        var worksheetWriter = new ExcelWorksheetWriter();
+
+    public ExcelWorksheetWriter AddWorksheet(string name) {
+        var worksheetWriter = new ExcelWorksheetWriter(_formatter);
 
         _worksheetsWriters.Add(worksheetWriter);
+        
+        worksheetWriter.SetSheetName(name);
         
         return worksheetWriter;
-    }
-
-    public void FormatAsTable(bool enabled) {
-        _formatAsTable = enabled;
     }
 
     public void PasswordProtect(string password) {
         _password = password;
     }
-
     
     public async Task SaveAsync(Stream stream, CancellationToken cancellationToken = default) {
         using (var package = new ExcelPackage()) {
@@ -45,7 +39,7 @@ public class ExcelWorkbook : IExcelWorkbook {
             }
         
             foreach (var writer in _worksheetsWriters) {
-                writer.Write(package.Workbook.Worksheets, _formatAsTable);
+                writer.Write(package.Workbook.Worksheets);
             }
 
             var packageBytes = await package.GetAsByteArrayAsync(cancellationToken);

@@ -1,6 +1,8 @@
 using N3O.Umbraco.Data.Extensions;
 using N3O.Umbraco.Data.Models;
+using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Localization;
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
 using System;
@@ -13,88 +15,94 @@ using WorkTable = OfficeOpenXml.Table.ExcelTable;
 namespace N3O.Umbraco.Data;
 
 public class ExcelWorksheetWriter {
-    private enum RenderMode {Table, DataSummary} 
+    private enum RenderMode { Table, SummaryFields }
+    
     private const int FirstColumn = 1;
     private const int FirstRow = 1;
     private const int TableNameMaxLength = 255;
     private const int WorksheetNameMaxLength = 31;
     
     private readonly Dictionary<ExcelColumn, ExcelFormatting> _footerFormatting = new();
-    private RenderMode _renderMode;
-    private IExcelTable _table;
+    private readonly List<(RenderMode, object)> _toRender = new();
+    private readonly IFormatter _formatter;
     private int _rowCursor = FirstRow;
     private int _columnCursor = FirstColumn;
-    private DataSummary _dataSummary;
     private string _sheetName;
 
-    public void InsertTable(IExcelTable table) {
-        _renderMode = RenderMode.Table;
-        _table = table;
+    public ExcelWorksheetWriter(IFormatter formatter) {
+        _formatter = formatter;
+    }
+
+    public void InsertSummaryFields(SummaryFields summaryFields) {
+        _toRender.Add((RenderMode.SummaryFields, summaryFields));
     }
     
-    public void InsertDataSummary(DataSummary dataSummary, string sheetName) {
-        _renderMode = RenderMode.DataSummary;
-        _dataSummary = dataSummary;
+    public void InsertTable(IExcelTable table) {
+        _toRender.Add((RenderMode.Table, table));
+    }
+
+    public void SetSheetName(string sheetName) {
         _sheetName = sheetName;
     }
 
-    public void Write(ExcelWorksheets worksheets, bool formatAsTable) {
-        if (_renderMode == RenderMode.Table) {
-            var worksheet = worksheets.Add(GetExcelSafeName(_table.Name, WorksheetNameMaxLength));
-            WriteTable(worksheet, formatAsTable);    
-        } else {
-            var worksheet = worksheets.Add(GetExcelSafeName(_sheetName, WorksheetNameMaxLength));
-            WriteDataSummary(worksheet, formatAsTable);
-        }
-    }
+    public void Write(ExcelWorksheets worksheets) {
+        var worksheet = worksheets.Add(GetExcelSafeName(_sheetName, WorksheetNameMaxLength));
 
-    private void WriteDataSummary(ExcelWorksheet worksheet, bool formatAsTable) {
-        for (int i = 0; i < _dataSummary.LinesBefore; i++) {
-            NextRow();
-        }
-
-        foreach (var row in _dataSummary.Rows) {
-            var boldText = new ExcelFormatting();
-            boldText.NumberFormat = new StringExcelNumberFormat();
-            boldText.Bold();
-            WriteValue(worksheet, row.Label, boldText);
-
-            foreach (var value in row.Values) {
-                WriteValue(worksheet, value.Value,  new ExcelFormatting(){ NumberFormat = value.Formatting });
+        foreach (var (renderMode, target) in _toRender) {
+            if (renderMode == RenderMode.SummaryFields) {
+                WriteSummaryFields(worksheet, (SummaryFields) target);
+            } else if (renderMode == RenderMode.Table) {
+                WriteTable(worksheet, (IExcelTable) target);
+            } else {
+                throw UnrecognisedValueException.For(renderMode);
             }
         }
         
-        for (int i = 0; i < _dataSummary.LinesAfter; i++) {
+        worksheet.Cells.AutoFitColumns();
+    }
+
+    private void WriteSummaryFields(ExcelWorksheet worksheet, SummaryFields summaryFields) {
+        for (int i = 0; i < summaryFields.LinesBefore; i++) {
+            NextRow();
+        }
+
+        foreach (var field in summaryFields.Fields) {
+            WriteValue(worksheet, field.Label, f => f.Bold());
+
+            foreach (var cell in field.Cells) {
+                WriteValue(worksheet, cell.Value, f => f.NumberFormat = cell.GetExcelNumberFormat(_formatter));
+            }
+        }
+        
+        for (int i = 0; i < summaryFields.LinesAfter; i++) {
             NextRow();
         }
     }
 
-    private void WriteTable(ExcelWorksheet worksheet, bool formatAsTable) {
+    private void WriteTable(ExcelWorksheet worksheet, IExcelTable table, bool formatAsTable = true) {
         if (formatAsTable) {
-            WriteHeaders(worksheet);
+            WriteHeaders(worksheet, table);
         }
 
-        WriteBody(worksheet);
+        WriteBody(worksheet, table);
 
         if (formatAsTable) {
             var lastRow = _rowCursor - 1;
-            var lastColumn = _table.ColumnCount;
+            var lastColumn = table.ColumnCount;
 
             if (lastColumn > FirstColumn) {
                 var tableRange = new ExcelAddressBase(FirstRow, FirstColumn, lastRow, lastColumn);
-                var tableName = GetExcelSafeName(_table.Name, TableNameMaxLength);
+                var tableName = GetExcelSafeName(table.Name, TableNameMaxLength);
 
-                var table = worksheet.Tables.Add(tableRange, tableName);
-                WriteFooters(worksheet, table);
+                var excelTable = worksheet.Tables.Add(tableRange, tableName);
+                WriteFooters(worksheet, table, excelTable);
             }
         }
-
-        worksheet.Cells.AutoFitColumns();
     }
 
-    private void WriteHeaders(ExcelWorksheet worksheet) {
-        foreach (var column in _table.Columns) {
-            var titleCell = ExcelCell.FromCell(OurDataTypes.String.Cell(column.Title, null),
+    private void WriteHeaders(ExcelWorksheet worksheet, IExcelTable table) {
+        foreach (var column in table.Columns) {
+            var titleCell = ExcelCell.FromCell(OurDataTypes.String.Cell(column.Title),
                                                column.Title,
                                                column.Comment,
                                                null,
@@ -106,10 +114,10 @@ public class ExcelWorksheetWriter {
         NextRow();
     }
 
-    private void WriteBody(ExcelWorksheet worksheet) {
-        for (var row = 0; row < _table.RowCount; row++) {
-            foreach (var column in _table.Columns) {
-                var cell = _table[column, row];
+    private void WriteBody(ExcelWorksheet worksheet, IExcelTable table) {
+        for (var row = 0; row < table.RowCount; row++) {
+            foreach (var column in table.Columns) {
+                var cell = table[column, row];
 
                 WriteCell(worksheet, cell);
 
@@ -134,10 +142,10 @@ public class ExcelWorksheetWriter {
         }
     }
 
-    private void WriteFooters(ExcelWorksheet worksheet, WorkTable workTable) {
-        if (_table.HasFooters) {
-            for (var i = 0; i < _table.ColumnCount; i++) {
-                var column = _table.Columns[i];
+    private void WriteFooters(ExcelWorksheet worksheet, IExcelTable table, WorkTable workTable) {
+        if (table.HasFooters) {
+            for (var i = 0; i < table.ColumnCount; i++) {
+                var column = table.Columns[i];
 
                 workTable.ShowTotal = true;
 
@@ -183,12 +191,15 @@ public class ExcelWorksheetWriter {
         NextColumn();
     }
     
-    private void WriteValue(ExcelWorksheet worksheet, object value, ExcelFormatting formatting) {
+    private void WriteValue(ExcelWorksheet worksheet, object value, Action<ExcelFormatting> applyFormatting = null) {
         var workCell = GetCurrentCell(worksheet);
 
         workCell.Value = value;
 
-        if (formatting.HasValue()) {
+        if (applyFormatting.HasValue()) {
+            var formatting = new ExcelFormatting();
+            applyFormatting(formatting);
+            
             workCell.ApplyFormatting(formatting);
         }
 
