@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
-using Umbraco.Cms.Core.Web;
 using OurDataType = N3O.Umbraco.Data.Lookups.DataType;
 using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 
