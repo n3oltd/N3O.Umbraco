@@ -9,7 +9,7 @@ namespace N3O.Umbraco.Lookups;
 public abstract class ApiLookupsCollection<T> : LookupsCollection<T> where T : ILookup {
     private static readonly MemoryCache Cache = new(new MemoryCacheOptions());
 
-    public override async Task<IReadOnlyList<T>> GetAllAsync() {
+    protected override async Task<IReadOnlyList<T>> LoadAllAsync() {
         var items = await Cache.GetOrCreateAsync(CacheKey.Generate<ApiLookupsCollection<T>>(), c => {
             c.AbsoluteExpirationRelativeToNow = CacheDuration;
 

@@ -50,7 +50,7 @@ public class LookupTypes : LookupsCollection<LookupInfo> {
         All = list;
     }
 
-    public override Task<IReadOnlyList<LookupInfo>> GetAllAsync() {
+    protected override Task<IReadOnlyList<LookupInfo>> LoadAllAsync() {
         return Task.FromResult(All);
     }
 

@@ -97,7 +97,7 @@ public class DaysOfMonth : LookupsCollection<DayOfMonth> {
         All = list;
     }
 
-    public override Task<IReadOnlyList<DayOfMonth>> GetAllAsync() {
+    protected override Task<IReadOnlyList<DayOfMonth>> LoadAllAsync() {
         return Task.FromResult(All);
     }
 }

@@ -7,9 +7,15 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Lookups;
 
 public abstract class LookupsCollection<T> : ILookupsCollection<T> where T : ILookup {
+    private bool _loaded;
+    private Dictionary<string, T> _idDictionary;
+    private Dictionary<string, T> _nameDictionary;
+    private IReadOnlyList<T> _all;
+    
     public virtual async Task<T> FindByIdAsync(string id) {
-        var all = await GetAllAsync();
-        var lookup = all.FirstOrDefault(x => x.Id.EqualsInvariant(id));
+        await EnsureLoadedAsync();
+        
+        _idDictionary.TryGetValue(id, out var lookup);
 
         return lookup;
     }
@@ -19,8 +25,9 @@ public abstract class LookupsCollection<T> : ILookupsCollection<T> where T : ILo
             throw new Exception($"{typeof(T).GetFriendlyName()} does not implement {nameof(INamedLookup)} so cannot be searched by name");
         }
         
-        var all = await GetAllAsync();
-        var lookup = all.FirstOrDefault(x => ((INamedLookup) x).Name.EqualsInvariant(name));
+        await EnsureLoadedAsync();
+        
+        _nameDictionary.TryGetValue(name, out var lookup);
 
         return lookup;
     }
@@ -43,5 +50,28 @@ public abstract class LookupsCollection<T> : ILookupsCollection<T> where T : ILo
         return all.Cast<ILookup>().ToList();
     }
 
-    public abstract Task<IReadOnlyList<T>> GetAllAsync();
+    public async Task<IReadOnlyList<T>> GetAllAsync() {
+        await EnsureLoadedAsync();
+
+        return _all;
+    }
+    
+    private async Task EnsureLoadedAsync() {
+        if (!_loaded) {
+            _all = await LoadAllAsync();
+            _idDictionary = _all.ToDictionary(x => x.Id,
+                                              x => x,
+                                              StringComparer.InvariantCultureIgnoreCase);
+
+            if (typeof(T).ImplementsInterface<INamedLookup>()) {
+                _nameDictionary = _all.ToDictionary(x => ((INamedLookup) x).Name,
+                                                    x => x,
+                                                    StringComparer.InvariantCultureIgnoreCase);
+            }
+
+            _loaded = true;
+        }
+    }
+    
+    protected abstract Task<IReadOnlyList<T>> LoadAllAsync();
 }

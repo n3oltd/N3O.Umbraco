@@ -64,7 +64,7 @@ public class Timezones : LookupsCollection<Timezone> {
                                       DateTimeZone.Utc.Id,
                                       SystemClock.Instance);
 
-    public override Task<IReadOnlyList<Timezone>> GetAllAsync() {
+    protected override Task<IReadOnlyList<Timezone>> LoadAllAsync() {
         return Task.FromResult(All);
     }
 }

@@ -19,7 +19,7 @@ public abstract class TypesLookupsCollection<T> : LookupsCollection<T> where T :
                            .ToList();
     }
 
-    public override Task<IReadOnlyList<T>> GetAllAsync() {
+    protected override Task<IReadOnlyList<T>> LoadAllAsync() {
         return Task.FromResult(All);
     }
 }

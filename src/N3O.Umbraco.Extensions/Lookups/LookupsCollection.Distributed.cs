@@ -16,7 +16,7 @@ public abstract class DistributedLookupsCollection<T, TInterface> : LookupsColle
         All = classes.SelectMany(StaticLookups.GetAll<T>).ToList();
     }
 
-    public override Task<IReadOnlyList<T>> GetAllAsync() {
+    protected override Task<IReadOnlyList<T>> LoadAllAsync() {
         return Task.FromResult(All);
     }
 }

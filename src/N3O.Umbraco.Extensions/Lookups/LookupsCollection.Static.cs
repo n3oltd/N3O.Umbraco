@@ -11,7 +11,7 @@ public abstract class StaticLookupsCollection<T> : LookupsCollection<T> where T 
         _all = StaticLookups.GetAll<T>(GetType());
     }
 
-    public override Task<IReadOnlyList<T>> GetAllAsync() {
+    protected override Task<IReadOnlyList<T>> LoadAllAsync() {
         return Task.FromResult(_all);
     }
 }

@@ -42,7 +42,7 @@ public class CheckoutStage : NamedLookup {
 }
 
 public class CheckoutStagesCollection : LookupsCollection<CheckoutStage> {
-    public override Task<IReadOnlyList<CheckoutStage>> GetAllAsync() {
+    protected override Task<IReadOnlyList<CheckoutStage>> LoadAllAsync() {
         var checkoutStages = new List<CheckoutStage>();
         
         checkoutStages.Add(CheckoutStages.Account);
