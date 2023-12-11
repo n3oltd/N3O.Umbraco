@@ -132,7 +132,7 @@ public class DonationItemReceiver : WebhookReceiver {
     }
     
     private IReadOnlyList<T> GetLookupsByName<T>(IEnumerable<string> names) where T : ILookup {
-        return names.OrEmpty().Select(x => _lookups.FindByName<T>(x)).ExceptNull().ToList();
+        return names.OrEmpty().SelectMany(x => _lookups.FindByName<T>(x)).ExceptNull().ToList();
     }
 
     private void AddPriceRule(IContentBuilder contentBuilder, WebhookPricingRule webhookPricingRule) {
