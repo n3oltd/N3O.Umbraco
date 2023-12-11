@@ -12,11 +12,11 @@ public interface ILookups {
     Task<ILookup> FindByIdAsync(Type lookupType, string id, CancellationToken cancellationToken = default);
     ILookup FindById(Type lookupType, string id);
     
-    Task<T> FindByNameAsync<T>(string name, CancellationToken cancellationToken = default) where T : ILookup;
-    T FindByName<T>(string name) where T : ILookup;
+    Task<IEnumerable<T>> FindByNameAsync<T>(string name, CancellationToken cancellationToken = default) where T : ILookup;
+    IEnumerable<T> FindByName<T>(string name) where T : ILookup;
 
-    Task<ILookup> FindByNameAsync(Type lookupType, string name, CancellationToken cancellationToken = default);
-    ILookup FindByName(Type lookupType, string name);
+    Task<IEnumerable<ILookup>> FindByNameAsync(Type lookupType, string name, CancellationToken cancellationToken = default);
+    IEnumerable<ILookup> FindByName(Type lookupType, string name);
 
     Task<IReadOnlyList<T>> GetAllAsync<T>(CancellationToken cancellationToken = default) where T : ILookup;
     IReadOnlyList<T> GetAll<T>() where T : ILookup;

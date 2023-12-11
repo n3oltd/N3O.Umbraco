@@ -31,16 +31,16 @@ public class Lookups : ILookups {
         return result;
     }
     
-    public async Task<T> FindByNameAsync<T>(string name, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<T>> FindByNameAsync<T>(string name, CancellationToken cancellationToken = default)
         where T : ILookup {
-        var lookup = await FindByNameAsync(typeof(T), name, cancellationToken);
+        var lookups = await FindByNameAsync(typeof(T), name, cancellationToken);
 
-        return (T) lookup;
+        return lookups.Cast<T>().ToList();
     }
     
-    public async Task<ILookup> FindByNameAsync(Type lookupType,
-                                               string name,
-                                               CancellationToken cancellationToken = default) {
+    public async Task<IEnumerable<ILookup>> FindByNameAsync(Type lookupType,
+                                                            string name,
+                                                            CancellationToken cancellationToken = default) {
         var result = await ExecuteAsync(lookupType,
                                         lookupsCollection => lookupsCollection.FindByNameAsync(name),
                                         null,
@@ -57,11 +57,11 @@ public class Lookups : ILookups {
         return FindByIdAsync(lookupType, id).GetAwaiter().GetResult();
     }
     
-    public T FindByName<T>(string name) where T : ILookup {
+    public IEnumerable<T> FindByName<T>(string name) where T : ILookup {
         return FindByNameAsync<T>(name).GetAwaiter().GetResult();
     }
     
-    public ILookup FindByName(Type lookupType, string name) {
+    public IEnumerable<ILookup> FindByName(Type lookupType, string name) {
         return FindByNameAsync(lookupType, name).GetAwaiter().GetResult();
     }
 

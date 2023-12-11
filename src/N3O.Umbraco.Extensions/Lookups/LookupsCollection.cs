@@ -9,7 +9,7 @@ namespace N3O.Umbraco.Lookups;
 public abstract class LookupsCollection<T> : ILookupsCollection<T> where T : ILookup {
     private bool _loaded;
     private Dictionary<string, T> _idDictionary;
-    private Dictionary<string, T> _nameDictionary;
+    private Dictionary<string, IReadOnlyList<T>> _nameDictionary;
     private IReadOnlyList<T> _all;
     
     public virtual async Task<T> FindByIdAsync(string id) {
@@ -20,16 +20,16 @@ public abstract class LookupsCollection<T> : ILookupsCollection<T> where T : ILo
         return lookup;
     }
 
-    public virtual async Task<T> FindByNameAsync(string name) {
+    public virtual async Task<IEnumerable<T>> FindByNameAsync(string name) {
         if (!typeof(T).ImplementsInterface<INamedLookup>()) {
             throw new Exception($"{typeof(T).GetFriendlyName()} does not implement {nameof(INamedLookup)} so cannot be searched by name");
         }
         
         await EnsureLoadedAsync();
         
-        _nameDictionary.TryGetValue(name, out var lookup);
+        _nameDictionary.TryGetValue(name, out var lookups);
 
-        return lookup;
+        return lookups.OrEmpty();
     }
     
     async Task<ILookup> ILookupsCollection.FindByIdAsync(string id) {
@@ -38,10 +38,10 @@ public abstract class LookupsCollection<T> : ILookupsCollection<T> where T : ILo
         return lookup;
     }
     
-    async Task<ILookup> ILookupsCollection.FindByNameAsync(string name) {
-        var lookup = await FindByNameAsync(name);
+    async Task<IEnumerable<ILookup>> ILookupsCollection.FindByNameAsync(string name) {
+        var lookups = await FindByNameAsync(name);
 
-        return lookup;
+        return lookups.Cast<ILookup>().ToList();
     }
 
     async Task<IReadOnlyList<ILookup>> ILookupsCollection.GetAllAsync() {
@@ -64,8 +64,9 @@ public abstract class LookupsCollection<T> : ILookupsCollection<T> where T : ILo
                                               StringComparer.InvariantCultureIgnoreCase);
 
             if (typeof(T).ImplementsInterface<INamedLookup>()) {
-                _nameDictionary = _all.ToDictionary(x => ((INamedLookup) x).Name,
-                                                    x => x,
+                _nameDictionary = _all.GroupBy(x => ((INamedLookup) x).Name.ToLowerInvariant())
+                                      .ToDictionary(x => x.Key,
+                                                    x => (IReadOnlyList<T>) x.ToList(),
                                                     StringComparer.InvariantCultureIgnoreCase);
             }
 
