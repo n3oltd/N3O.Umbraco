@@ -8,6 +8,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
 
@@ -41,7 +42,7 @@ public class StringLocalizer : IStringLocalizer {
 
     public string Get(string folder, string name, string text) {
         return Lock(() => {
-            var cacheKey = CacheKey.Generate<StringLocalizer>(nameof(Get), folder, name, text);
+            var cacheKey = GetCacheKey(nameof(Get), folder, name, text);
 
             return StringCache.GetOrAdd(cacheKey, _ => {
                 var folderId = GetOrCreateFolderId(folder);
@@ -54,7 +55,7 @@ public class StringLocalizer : IStringLocalizer {
     }
 
     private Guid GetOrCreateFolderId(string folder) {
-        var cacheKey = CacheKey.Generate<StringLocalizer>(nameof(GetOrCreateFolderId), folder);
+        var cacheKey = GetCacheKey(nameof(GetOrCreateFolderId), folder);
 
         return GuidCache.GetOrAdd(cacheKey, _ => {
             var folderId = Run(u => u.GetContentCache().GetByContentType(u.GetContentCache().GetContentType(TextContainerFolderAlias))
@@ -85,7 +86,7 @@ public class StringLocalizer : IStringLocalizer {
     }
 
     private Guid GetOrCreateTextContainerId(Guid folderId, string name) {
-        var cacheKey = CacheKey.Generate<StringLocalizer>(nameof(GetOrCreateTextContainerId), folderId, name);
+        var cacheKey = GetCacheKey(nameof(GetOrCreateTextContainerId), folderId, name);
 
         return GuidCache.GetOrAdd(cacheKey, _ => {
             if (name.Contains("\\")) {
@@ -155,5 +156,9 @@ public class StringLocalizer : IStringLocalizer {
 
     private T Run<T>(Func<IUmbracoContextAccessor, T> func) {
         return func(_umbracoContextAccessor);
+    }
+
+    private static string GetCacheKey(params object[] values) {
+        return CacheKey.Generate<StringComparer>(Thread.CurrentThread.CurrentCulture.Name, values);
     }
 }
