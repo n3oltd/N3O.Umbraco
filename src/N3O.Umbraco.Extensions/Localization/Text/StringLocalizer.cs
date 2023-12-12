@@ -9,12 +9,16 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Localization;
 
 public class StringLocalizer : IStringLocalizer {
+    private const string EnglishUS = "en-US";
+    
     private static readonly ConcurrentDictionary<string, Guid> GuidCache = new ();
     private static readonly ConcurrentDictionary<string, string> StringCache = new ();
     private static readonly string ResourcesAlias = AliasHelper<TextContainerContent>.PropertyAlias(x => x.Resources);
@@ -24,13 +28,16 @@ public class StringLocalizer : IStringLocalizer {
     private readonly IContentService _contentService;
     private readonly IUmbracoContextAccessor _umbracoContextAccessor;
     private readonly AsyncKeyedLocker<string> _locker;
+    private readonly IVariationContextAccessor _variationContextAccessor;
 
     public StringLocalizer(IContentService contentService,
                            IUmbracoContextAccessor umbracoContextAccessor,
-                           AsyncKeyedLocker<string> locker) {
+                           AsyncKeyedLocker<string> locker,
+                           IVariationContextAccessor variationContextAccessor) {
         _contentService = contentService;
         _umbracoContextAccessor = umbracoContextAccessor;
         _locker = locker;
+        _variationContextAccessor = variationContextAccessor;
     }
 
     public void Flush(IEnumerable<string> aliases) {
@@ -58,9 +65,8 @@ public class StringLocalizer : IStringLocalizer {
         var cacheKey = GetCacheKey(nameof(GetOrCreateFolderId), folder);
 
         return GuidCache.GetOrAdd(cacheKey, _ => {
-            var folderId = Run(u => u.GetContentCache().GetByContentType(u.GetContentCache().GetContentType(TextContainerFolderAlias))
-                                     .SingleOrDefault(x => x.Name.EqualsInvariant(folder))
-                                    ?.Key);
+            var folderId = Run(u => GetByContentType(u, TextContainerFolderAlias))
+                          .SingleOrDefault(x => x.Name.EqualsInvariant(folder))?.Key;
 
             if (folderId == null) {
                 folderId = CreateFolder(folder);
@@ -71,8 +77,7 @@ public class StringLocalizer : IStringLocalizer {
     }
 
     private Guid CreateFolder(string name) {
-        var textSettings = Run(u => u.GetContentCache().GetByContentType(u.GetContentCache().GetContentType(TextSettingsContentAlias))
-                                     .SingleOrDefault());
+        var textSettings = Run(u => GetByContentType(u, TextSettingsContentAlias)).SingleOrDefault();
 
         if (textSettings == null) {
             throw new Exception($"Could not find {nameof(TextSettingsContent)} content");
@@ -95,22 +100,30 @@ public class StringLocalizer : IStringLocalizer {
 
             name = name.Pascalize();
             
-            var containerId = Run(u => u.GetContentCache().GetByContentType(u.GetContentCache().GetContentType(TextContainerAlias))
-                                        .SingleOrDefault(x => x.Name.EqualsInvariant(name) &&
-                                                              x.Parent.Key == folderId)
-                                        ?.Key);
+            var container = Run(u => GetByContentType(u, TextContainerAlias))
+                            .SingleOrDefault(x => x.Name(_variationContextAccessor, EnglishUS).EqualsInvariant(name) &&
+                                                  x.Parent.Key == folderId);
 
-            if (containerId == null) {
-                containerId = CreateContainer(name, folderId);
+            Guid containerId;
+
+            if (container != null && container.IsInvariantOrHasCulture(Thread.CurrentThread.CurrentCulture.IetfLanguageTag)) {
+                containerId = container.Key;
+            } else {
+                containerId = CreateContainerOrAddCulture(container, name, folderId);
             }
 
-            return containerId.Value;
+            return containerId;
         });
     }
 
-    private Guid CreateContainer(string name, Guid folderId) {
-        var content = _contentService.Create<TextContainerContent>(name, folderId);
-
+    private Guid CreateContainerOrAddCulture(IPublishedContent container, string name, Guid folderId) {
+        var content = container == null 
+                          ? _contentService.Create<TextContainerContent>(name, folderId) 
+                          : _contentService.GetById(container.Id);
+        
+        content.SetCultureName(name, EnglishUS);
+        content.SetCultureName(name, Thread.CurrentThread.CurrentCulture.IetfLanguageTag);
+        
         _contentService.SaveAndPublish(content);
 
         return content.Key;
@@ -134,12 +147,18 @@ public class StringLocalizer : IStringLocalizer {
             var json = JsonConvert.SerializeObject(resources);
             var content = _contentService.GetById(container.Content().Id);
 
-            content.SetValue(ResourcesAlias,json);
+            content.SetValue(ResourcesAlias, json, Thread.CurrentThread.CurrentCulture.IetfLanguageTag);
 
             _contentService.SaveAndPublish(content);
         }
 
         return resource;
+    }
+    
+    private IEnumerable<IPublishedContent> GetByContentType(IUmbracoContextAccessor umbracoContextAccessor, string contentTypeAlias) {
+        return umbracoContextAccessor.GetContentCache()
+                                     .GetAtRoot()
+                                     .SelectMany(x => x.DescendantsOrSelfOfType(_variationContextAccessor, contentTypeAlias, EnglishUS));
     }
 
     private T Lock<T>(Func<T> action) {
@@ -159,6 +178,8 @@ public class StringLocalizer : IStringLocalizer {
     }
 
     private static string GetCacheKey(params object[] values) {
-        return CacheKey.Generate<StringComparer>(Thread.CurrentThread.CurrentCulture.Name, values);
+        var newValues = new []{Thread.CurrentThread.CurrentCulture.Name}.Concat(values).ToArray();
+        
+        return CacheKey.Generate<StringComparer>(newValues);
     }
 }
