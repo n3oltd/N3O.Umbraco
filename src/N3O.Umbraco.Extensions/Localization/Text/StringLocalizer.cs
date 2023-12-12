@@ -65,7 +65,7 @@ public class StringLocalizer : IStringLocalizer {
         var cacheKey = GetCacheKey(nameof(GetOrCreateFolderId), folder);
 
         return GuidCache.GetOrAdd(cacheKey, _ => {
-            var folderId = Run(u => GetByContentType(u, TextContainerFolderAlias))
+            var folderId = Run(u => GetEnglishUSByContentType(u, TextContainerFolderAlias))
                           .SingleOrDefault(x => x.Name.EqualsInvariant(folder))?.Key;
 
             if (folderId == null) {
@@ -77,7 +77,7 @@ public class StringLocalizer : IStringLocalizer {
     }
 
     private Guid CreateFolder(string name) {
-        var textSettings = Run(u => GetByContentType(u, TextSettingsContentAlias)).SingleOrDefault();
+        var textSettings = Run(u => GetEnglishUSByContentType(u, TextSettingsContentAlias)).SingleOrDefault();
 
         if (textSettings == null) {
             throw new Exception($"Could not find {nameof(TextSettingsContent)} content");
@@ -100,13 +100,13 @@ public class StringLocalizer : IStringLocalizer {
 
             name = name.Pascalize();
             
-            var container = Run(u => GetByContentType(u, TextContainerAlias))
+            var container = Run(u => GetEnglishUSByContentType(u, TextContainerAlias))
                             .SingleOrDefault(x => x.Name(_variationContextAccessor, EnglishUS).EqualsInvariant(name) &&
                                                   x.Parent.Key == folderId);
 
             Guid containerId;
 
-            if (container != null && container.IsInvariantOrHasCulture(Thread.CurrentThread.CurrentCulture.IetfLanguageTag)) {
+            if (container != null && container.IsInvariantOrHasCulture(CurrentCultureCode)) {
                 containerId = container.Key;
             } else {
                 containerId = CreateContainerOrAddCulture(container, name, folderId);
@@ -122,7 +122,7 @@ public class StringLocalizer : IStringLocalizer {
                           : _contentService.GetById(container.Id);
         
         content.SetCultureName(name, EnglishUS);
-        content.SetCultureName(name, Thread.CurrentThread.CurrentCulture.IetfLanguageTag);
+        content.SetCultureName(name, CurrentCultureCode);
         
         _contentService.SaveAndPublish(content);
 
@@ -147,7 +147,7 @@ public class StringLocalizer : IStringLocalizer {
             var json = JsonConvert.SerializeObject(resources);
             var content = _contentService.GetById(container.Content().Id);
 
-            content.SetValue(ResourcesAlias, json, Thread.CurrentThread.CurrentCulture.IetfLanguageTag);
+            content.SetValue(ResourcesAlias, json, CurrentCultureCode);
 
             _contentService.SaveAndPublish(content);
         }
@@ -155,10 +155,13 @@ public class StringLocalizer : IStringLocalizer {
         return resource;
     }
     
-    private IEnumerable<IPublishedContent> GetByContentType(IUmbracoContextAccessor umbracoContextAccessor, string contentTypeAlias) {
+    private IEnumerable<IPublishedContent> GetEnglishUSByContentType(IUmbracoContextAccessor umbracoContextAccessor,
+                                                                     string contentTypeAlias) {
         return umbracoContextAccessor.GetContentCache()
                                      .GetAtRoot()
-                                     .SelectMany(x => x.DescendantsOrSelfOfType(_variationContextAccessor, contentTypeAlias, EnglishUS));
+                                     .SelectMany(x => x.DescendantsOrSelfOfType(_variationContextAccessor,
+                                                                                contentTypeAlias,
+                                                                                EnglishUS));
     }
 
     private T Lock<T>(Func<T> action) {
@@ -178,8 +181,10 @@ public class StringLocalizer : IStringLocalizer {
     }
 
     private static string GetCacheKey(params object[] values) {
-        var newValues = new []{Thread.CurrentThread.CurrentCulture.Name}.Concat(values).ToArray();
+        var newValues = CurrentCultureCode.Yield().Concat(values).ToArray();
         
         return CacheKey.Generate<StringComparer>(newValues);
     }
+    
+    private static string CurrentCultureCode => Thread.CurrentThread.CurrentCulture.IetfLanguageTag;
 }
