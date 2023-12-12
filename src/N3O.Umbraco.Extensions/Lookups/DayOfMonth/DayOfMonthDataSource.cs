@@ -7,5 +7,5 @@ public class DayOfMonthDataSource : LookupsDataSource<DayOfMonth> {
     public override string Description => "Data source for day of month";
     public override string Icon => "icon-calendar";
 
-    protected override string GetIcon(DayOfMonth consentChannel) => "icon-calendar";
+    protected override string GetIcon(DayOfMonth dayOfMonth) => "icon-calendar";
 }
