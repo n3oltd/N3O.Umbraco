@@ -1,10 +1,7 @@
 namespace N3O.Umbraco.Lookups;
 
 public class Country : LookupContent<Country> {
-    public override string Id {
-        get => Iso2Code;
-        set { }
-    }
+    public override string Id => ToUniqueId(Iso2Code, Content().Key);
 
     public string Iso2Code => GetValue(x => x.Iso2Code);
     public string Iso3Code => GetValue(x => x.Iso3Code);

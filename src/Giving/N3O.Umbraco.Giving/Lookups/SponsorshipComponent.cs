@@ -13,11 +13,10 @@ public class SponsorshipComponent : LookupContent<SponsorshipComponent>, IPricin
             var scheme = GetScheme();
             var baseId = base.Id;
 
-            return $"{scheme.Id}_{baseId}";
+            return ToUniqueId($"{scheme.Id}_{baseId}", Content().Key);
         }
-        
-        set { }
     }
+    
     public bool Mandatory => GetValue(x => x.Mandatory);
     public PriceContent Price => Content().As<PriceContent>();
     public IEnumerable<PricingRuleElement> PriceRules => GetNestedAs(x => x.PriceRules);
