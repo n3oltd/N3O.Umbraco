@@ -120,10 +120,12 @@ public class StringLocalizer : IStringLocalizer {
         var content = container == null 
                           ? _contentService.Create<TextContainerContent>(name, folderId) 
                           : _contentService.GetById(container.Id);
-        
-        content.SetCultureName(name, EnglishUS);
-        content.SetCultureName(name, CurrentCultureCode);
-        
+
+        if (content.ContentType.VariesByCulture()) {
+            content.SetCultureName(name, EnglishUS);
+            content.SetCultureName(name, CurrentCultureCode);
+        }
+
         _contentService.SaveAndPublish(content);
 
         return content.Key;
@@ -147,7 +149,11 @@ public class StringLocalizer : IStringLocalizer {
             var json = JsonConvert.SerializeObject(resources);
             var content = _contentService.GetById(container.Content().Id);
 
-            content.SetValue(ResourcesAlias, json, CurrentCultureCode);
+            if (content.ContentType.VariesByCulture()) {
+                content.SetValue(ResourcesAlias, json, CurrentCultureCode);
+            } else {
+                content.SetValue(ResourcesAlias, json);
+            }
 
             _contentService.SaveAndPublish(content);
         }
