@@ -42,6 +42,8 @@ public class LabelPropertyConverter : PropertyConverter<string> {
                 return ExportValue<TimeOnly?>(contentProperty, x => OurDataTypes.String.Cell(x?.ToString()));
             
             case ValueTypes.Integer:
+                return ExportValue<int?>(contentProperty, x => OurDataTypes.String.Cell(x?.ToString()));
+
             case ValueTypes.Bigint:
                 return ExportValue<long?>(contentProperty, x => OurDataTypes.String.Cell(x?.ToString()));
             
