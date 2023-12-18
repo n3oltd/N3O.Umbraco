@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <RootNamespace>N3O.Umbraco.CrowdFunding</RootNamespace>
+        <RootNamespace>N3O.Umbraco.Crowdfunding</RootNamespace>
         <TargetFramework>net7.0</TargetFramework>
         <LangVersion>11</LangVersion>
         <Copyright>Copyright © 2023 N3O Ltd</Copyright>
     </PropertyGroup>
 
     <PropertyGroup>
-        <PackageId>N3O.Umbraco.CrowdFunding</PackageId>
+        <PackageId>N3O.Umbraco.Crowdfunding</PackageId>
         <IsPackable>true</IsPackable>
         <ContentTargetFolders>.</ContentTargetFolders>
         <Authors>N3O Ltd</Authors>
@@ -30,6 +30,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Checkout\N3O.Umbraco.Giving.Checkout.csproj" />
+        <ProjectReference Include="..\..\Konstrukt\N3O.Umbraco.Konstrukt\N3O.Umbraco.Konstrukt.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
     </ItemGroup>
 
