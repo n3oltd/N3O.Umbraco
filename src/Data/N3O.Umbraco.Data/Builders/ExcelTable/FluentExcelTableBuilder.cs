@@ -14,18 +14,18 @@ namespace N3O.Umbraco.Data.Builders;
 public class FluentExcelTableBuilder : IFluentExcelTableBuilder {
     private readonly IServiceProvider _serviceProvider;
     private readonly ILookups _lookups;
-    private readonly IReadOnlyList<IExcelCellConverter> _defaultConverters;
+    private readonly IExcelCellFormatter _excelCellFormatter;
     private readonly ITable _table;
     private readonly Dictionary<Column, IExcelCellConverter> _customColumnConverters = new();
     private readonly Dictionary<Column, AggregationFunction> _footerFunctions = new();
 
     public FluentExcelTableBuilder(IServiceProvider serviceProvider,
                                    ILookups lookups,
-                                   IEnumerable<IDefaultExcelCellConverter> defaultConverters,
+                                   IExcelCellFormatter excelCellFormatter,
                                    ITable table) {
         _serviceProvider = serviceProvider;
         _lookups = lookups;
-        _defaultConverters = defaultConverters.ToList();
+        _excelCellFormatter = excelCellFormatter;
         _table = table;
 
         PopulateFooterFunctions();
@@ -42,9 +42,7 @@ public class FluentExcelTableBuilder : IFluentExcelTableBuilder {
     }
 
     public IExcelTable Build() {
-        var tableFormatter = new ExcelTableFormatter(_defaultConverters,
-                                                     _customColumnConverters,
-                                                     _footerFunctions);
+        var tableFormatter = new ExcelTableFormatter(_excelCellFormatter, _customColumnConverters, _footerFunctions);
 
         return new ExcelTable(_table, tableFormatter);
     }

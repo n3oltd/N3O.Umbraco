@@ -9,16 +9,18 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Data;
 
 public class ExcelWorkbook : IExcelWorkbook {
+    private readonly IExcelCellFormatter _excelCellFormatter;
     private readonly IFormatter _formatter;
     private readonly List<ExcelWorksheetWriter> _worksheetsWriters = new();
     private string _password;
 
-    public ExcelWorkbook(IFormatter formatter) {
+    public ExcelWorkbook(IExcelCellFormatter excelCellFormatter, IFormatter formatter) {
+        _excelCellFormatter = excelCellFormatter;
         _formatter = formatter;
     }
 
     public ExcelWorksheetWriter AddWorksheet(string name) {
-        var worksheetWriter = new ExcelWorksheetWriter(_formatter);
+        var worksheetWriter = new ExcelWorksheetWriter(_excelCellFormatter, _formatter);
 
         _worksheetsWriters.Add(worksheetWriter);
         

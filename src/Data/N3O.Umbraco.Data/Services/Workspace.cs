@@ -9,6 +9,7 @@ namespace N3O.Umbraco.Data;
 
 public class Workspace : IWorkspace {
     private readonly IParserFactory _parserFactory;
+    private readonly IExcelCellFormatter _excelCellFormatter;
     private readonly IFormatter _formatter;
     private readonly IColumnRangeBuilder _columnRangeBuilder;
 
@@ -16,12 +17,14 @@ public class Workspace : IWorkspace {
                      IColumnRangeBuilder columnRangeBuilder,
                      ISummaryFieldsBuilder summaryFieldsBuilder,
                      IParserFactory parserFactory,
+                     IExcelCellFormatter excelCellFormatter,
                      IFormatter formatter) {
         ColumnRangeBuilder = columnRangeBuilder;
         SummaryFieldsBuilder = summaryFieldsBuilder;
         TableBuilder = tableBuilder;
         _columnRangeBuilder = columnRangeBuilder;
         _parserFactory = parserFactory;
+        _excelCellFormatter = excelCellFormatter;
         _formatter = formatter;
     }
 
@@ -32,7 +35,7 @@ public class Workspace : IWorkspace {
     }
 
     public IExcelWorkbook CreateExcelWorkbook() {
-        var workbook = new ExcelWorkbook(_formatter);
+        var workbook = new ExcelWorkbook(_excelCellFormatter, _formatter);
 
         return workbook;
     }

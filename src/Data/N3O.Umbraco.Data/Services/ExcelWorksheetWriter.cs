@@ -24,12 +24,14 @@ public class ExcelWorksheetWriter {
     
     private readonly Dictionary<ExcelColumn, ExcelFormatting> _footerFormatting = new();
     private readonly List<(RenderMode, object)> _toRender = new();
+    private readonly IExcelCellFormatter _excelCellFormatter;
     private readonly IFormatter _formatter;
     private int _rowCursor = FirstRow;
     private int _columnCursor = FirstColumn;
     private string _sheetName;
 
-    public ExcelWorksheetWriter(IFormatter formatter) {
+    public ExcelWorksheetWriter(IExcelCellFormatter excelCellFormatter, IFormatter formatter) {
+        _excelCellFormatter = excelCellFormatter;
         _formatter = formatter;
     }
 
@@ -46,7 +48,7 @@ public class ExcelWorksheetWriter {
     }
 
     public void Write(ExcelWorksheets worksheets) {
-        var worksheet = worksheets.Add(GetExcelSafeName(_sheetName, WorksheetNameMaxLength));
+        var worksheet = worksheets.Add(_sheetName.Left(WorksheetNameMaxLength));
 
         foreach (var (renderMode, target) in _toRender) {
             if (renderMode == RenderMode.SummaryFields) {
@@ -68,11 +70,18 @@ public class ExcelWorksheetWriter {
         }
 
         foreach (var field in summaryFields.Fields) {
-            WriteValue(worksheet, field.Label, f => f.Bold());
+            var labelExcelCell = _excelCellFormatter.FormatCell(OurDataTypes.String.Cell(field.Label), _formatter);
+            labelExcelCell.Formatting.Bold();
+            
+            WriteCell(worksheet, labelExcelCell);
 
             foreach (var cell in field.Cells) {
-                WriteValue(worksheet, cell.Value, f => f.NumberFormat = cell.GetExcelNumberFormat(_formatter));
+                var fieldExcelCell = _excelCellFormatter.FormatCell(cell, _formatter);
+                
+                WriteCell(worksheet, fieldExcelCell);
             }
+            
+            NextRow();
         }
         
         for (int i = 0; i < summaryFields.LinesAfter; i++) {
@@ -81,6 +90,9 @@ public class ExcelWorksheetWriter {
     }
 
     private void WriteTable(ExcelWorksheet worksheet, IExcelTable table, bool formatAsTable = true) {
+        var startRow = _rowCursor;
+        var startColumn = _columnCursor;
+        
         if (formatAsTable) {
             WriteHeaders(worksheet, table);
         }
@@ -91,9 +103,9 @@ public class ExcelWorksheetWriter {
             var lastRow = _rowCursor - 1;
             var lastColumn = table.ColumnCount;
 
-            if (lastColumn > FirstColumn) {
-                var tableRange = new ExcelAddressBase(FirstRow, FirstColumn, lastRow, lastColumn);
-                var tableName = GetExcelSafeName(table.Name, TableNameMaxLength);
+            if (lastColumn > startColumn) {
+                var tableRange = new ExcelAddressBase(startRow, startColumn, lastRow, lastColumn);
+                var tableName = GetTableSafeName(table.Name, TableNameMaxLength);
 
                 var excelTable = worksheet.Tables.Add(tableRange, tableName);
                 WriteFooters(worksheet, table, excelTable);
@@ -191,21 +203,6 @@ public class ExcelWorksheetWriter {
 
         NextColumn();
     }
-    
-    private void WriteValue(ExcelWorksheet worksheet, object value, Action<ExcelFormatting> applyFormatting = null) {
-        var workCell = GetCurrentCell(worksheet);
-
-        workCell.Value = value;
-
-        if (applyFormatting.HasValue()) {
-            var formatting = new ExcelFormatting();
-            applyFormatting(formatting);
-            
-            workCell.ApplyFormatting(formatting);
-        }
-
-        NextColumn();
-    }
 
     private ExcelRange GetCurrentCell(ExcelWorksheet worksheet) {
         var workCell = worksheet.Cells[_rowCursor, _columnCursor];
@@ -222,7 +219,7 @@ public class ExcelWorksheetWriter {
         _columnCursor++;
     }
 
-    private string GetExcelSafeName(string name, int maxLength) {
+    private string GetTableSafeName(string name, int maxLength) {
         var safeName = Regex.Replace(name, "[^a-z0-9]", "_", RegexOptions.IgnoreCase);
 
         if (safeName.Length > maxLength) {

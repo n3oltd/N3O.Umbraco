@@ -1,28 +1,23 @@
-using N3O.Umbraco.Data.Converters;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Lookups;
 using System;
-using System.Collections.Generic;
 
 namespace N3O.Umbraco.Data.Builders;
 
 public class ExcelTableBuilder : IExcelTableBuilder {
     private readonly IServiceProvider _serviceProvider;
     private readonly ILookups _lookups;
-    private readonly IEnumerable<IDefaultExcelCellConverter> _defaultExcelCellConverters;
+    private readonly IExcelCellFormatter _excelCellFormatter;
 
     public ExcelTableBuilder(IServiceProvider serviceProvider,
                              ILookups lookups,
-                             IEnumerable<IDefaultExcelCellConverter> defaultExcelCellConverters) {
+                             IExcelCellFormatter excelCellFormatter) {
         _serviceProvider = serviceProvider;
         _lookups = lookups;
-        _defaultExcelCellConverters = defaultExcelCellConverters;
+        _excelCellFormatter = excelCellFormatter;
     }
 
     public IFluentExcelTableBuilder ForTable(ITable table) {
-        return new FluentExcelTableBuilder(_serviceProvider,
-                                           _lookups,
-                                           _defaultExcelCellConverters,
-                                           table);
+        return new FluentExcelTableBuilder(_serviceProvider, _lookups, _excelCellFormatter, table);
     }
 }

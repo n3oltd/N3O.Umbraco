@@ -1,48 +1,7 @@
-﻿using N3O.Umbraco.Data.Models;
-using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Localization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace N3O.Umbraco.Data.Builders; 
+﻿namespace N3O.Umbraco.Data.Builders; 
 
 public class SummaryFieldsBuilder : ISummaryFieldsBuilder {
-    private readonly List<ISummaryFieldBuilder> _fieldBuilders = new();
-    private int _linesBefore;
-    private int _linesAfter;
-
-    public ISummaryFieldBuilder AddField() {
-        var fieldBuilder = new SummaryFieldBuilder();
-        
-        _fieldBuilders.Add(fieldBuilder);
-        
-        return fieldBuilder;
-    }
-
-    public ISummaryFieldsBuilder SetLinesAfter(int lines) {
-        _linesAfter = lines;
-        
-        return this;
-    }
-    
-    public ISummaryFieldsBuilder SetLinesBefore(int lines) {
-        _linesBefore = lines;
-        
-        return this;
-    }
-
-    public SummaryFields Build(IFormatter formatter) {
-        Validate();
-        
-        var fields = _fieldBuilders.Select(x => x.Build(formatter)).ToList();
-
-        return new SummaryFields(_linesAfter, _linesBefore, fields);
-    }
-
-    private void Validate() {
-        if (_fieldBuilders.None()) {
-            throw new Exception("At least one field must be specified");
-        }
+    public IFluentSummaryFieldsBuilder Create() {
+        return new FluentSummaryFieldsBuilder();
     }
 }
