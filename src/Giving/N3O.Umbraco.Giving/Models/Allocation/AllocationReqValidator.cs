@@ -15,7 +15,8 @@ namespace N3O.Umbraco.Giving.Models;
 public class AllocationReqValidator : ModelValidator<AllocationReq> {
     public AllocationReqValidator(IFormatter formatter,
                                   ICurrencyAccessor currencyAccessor,
-                                  IPricedAmountValidator pricedAmountValidator)
+                                  IPricedAmountValidator pricedAmountValidator,
+                                  IEnumerable<IAllocationExtensionValidator> allocationExtensionValidators)
         : base(formatter) {
         var currentCurrency = currencyAccessor.GetCurrency();
 
@@ -91,7 +92,20 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
             .When(x => x.FundDimensions.HasValue())
             .WithMessage(Get<Strings>(s => s.InvalidFundDimensions));
 
+        RuleFor(x => x)
+           .Must((req) => ValidateAllocationExtensionData(req, allocationExtensionValidators));
+
         ValidateCurrencies(currentCurrency);
+    }
+
+    private bool ValidateAllocationExtensionData(AllocationReq allocationReq,
+                                                 IEnumerable<IAllocationExtensionValidator> allocationExtensionValidators) {
+        foreach (var allocationExtensionValidator in allocationExtensionValidators) {
+            allocationExtensionValidator.Validate(allocationReq);
+        }
+
+        //TODO Fix
+        return true;
     }
 
     private void ValidateCurrencies(Currency currency) {

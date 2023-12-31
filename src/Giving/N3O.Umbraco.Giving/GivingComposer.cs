@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Models;
 using Umbraco.Cms.Core.DependencyInjection;
 
 namespace N3O.Umbraco.Giving;
@@ -12,5 +13,8 @@ public class GivingComposer : Composer {
         builder.Services.AddSingleton<IFundStructureAccessor, FundStructureAccessor>();
         builder.Services.AddSingleton<IPricedAmountValidator, PricedAmountValidator>();
         builder.Services.AddSingleton<IPriceCalculator, PriceCalculator>();
+        
+        RegisterAll(t => t.ImplementsInterface<IAllocationExtensionValidator>(),
+                    t => builder.Services.AddTransient(typeof(IAllocationExtensionValidator), t));
     }
 }

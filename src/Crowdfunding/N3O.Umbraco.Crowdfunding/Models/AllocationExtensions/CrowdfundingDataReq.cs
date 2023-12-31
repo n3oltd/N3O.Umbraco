@@ -3,10 +3,6 @@ using System;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
-public interface ICrowdfundingData {
-    
-}
-
 public class CrowdfundingDataReq : ICrowdfundingData {
     [Name("Campaign ID")]
     public Guid? CampaignId { get; set; }
@@ -16,4 +12,10 @@ public class CrowdfundingDataReq : ICrowdfundingData {
     
     [Name("Page ID")]
     public Guid? PageId { get; set; }
+
+    [Name("Page Url")]
+    public string PageUrl { get; set; }
+
+    [Name("Comment")]
+    public string Comment { get; set; }
 }
