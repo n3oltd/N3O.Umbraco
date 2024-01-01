@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Giving.Models;
 
 public class AllocationExtensionData {
     [JsonExtensionData]
-    public IDictionary<string, JToken> JsonData { get; set; }
+    public IDictionary<string, object> JsonData { get; set; }
     
     [JsonIgnore]
     public IReadOnlyDictionary<string, object> Fields => JsonData.OrEmpty()

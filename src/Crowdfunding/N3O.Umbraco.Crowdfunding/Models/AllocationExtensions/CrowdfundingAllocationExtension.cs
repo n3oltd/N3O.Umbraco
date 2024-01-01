@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Giving.Models;
+﻿using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Models;
 using System;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
@@ -8,21 +9,25 @@ namespace N3O.Umbraco.Crowdfunding.Models;
 public static class CrowdfundingAllocationExtensions {
     public static CrowdfundingData GetCrowdfundingData(this IAllocation allocation) {
         // Check allocation.Extensions for our key and retrieve it if exists
-        throw new NotImplementedException();
+        if (HasCrowdfundingData(allocation)) {
+            return allocation.AllocationExtensionData.Get<CrowdfundingData>("crowdfunding");
+        }
+
+        return null;
     }
     
     public static Allocation SetCrowdfundingData(this IAllocation allocation, CrowdfundingData extensionData) {
         // Add or replace the extension data under the relevant key/
-        throw new NotImplementedException();
+        allocation.AllocationExtensionData.JsonData["crowdfunding"] = new CrowdfundingData(extensionData);
+
+        return new Allocation(allocation);
     }
 
     public static bool HasCrowdfundingData(this IAllocation allocation) {
-        throw new NotImplementedException();
+        if (allocation.AllocationExtensionData.Get<CrowdfundingData>("crowdfunding").HasValue()) {
+            return true;
+        }
+
+        return false;
     }
 }
-
-/*
- * E.g. in the cart view we can now do if (allocation.HasCrowdfundingData()) {
- *      fetch the data and use it to show the comment, page url or whatever else
- * }
-*/

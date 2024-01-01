@@ -14,6 +14,9 @@ public class AllocationRes : IAllocation {
     public SponsorshipAllocationRes Sponsorship { get; set; }
     public Guid? UpsellOfferId { get; set; }
     public bool Upsell { get; set; }
+
+    [JsonIgnore]
+    AllocationExtensionData IAllocation.AllocationExtensionData => null;
     
     [JsonIgnore]
     IFundDimensionValues IAllocation.FundDimensions => FundDimensions;

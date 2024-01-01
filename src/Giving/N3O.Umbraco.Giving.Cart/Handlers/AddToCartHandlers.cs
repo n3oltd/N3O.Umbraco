@@ -12,6 +12,8 @@ using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Mediator;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,22 +28,35 @@ public class AddToCartHandlers :
     private readonly Lazy<ICurrencyAccessor> _currencyAccessor;
     private readonly IForexConverter _forexConverter;
     private readonly IPriceCalculator _priceCalculator;
+    private readonly IEnumerable<IAllocationExtensionBinder> _allocationExtensionBinders;
 
     public AddToCartHandlers(ICartAccessor cartAccessor,
                              IRepository<Entities.Cart> repository,
                              IContentLocator contentLocator,
                              Lazy<ICurrencyAccessor> currencyAccessor,
                              IForexConverter forexConverter,
-                             IPriceCalculator priceCalculator) {
+                             IPriceCalculator priceCalculator,
+                             IEnumerable<IAllocationExtensionBinder> allocationExtensionBinders) {
         _cartAccessor = cartAccessor;
         _repository = repository;
         _contentLocator = contentLocator;
         _currencyAccessor = currencyAccessor;
         _forexConverter = forexConverter;
         _priceCalculator = priceCalculator;
+        _allocationExtensionBinders = allocationExtensionBinders;
     }
 
     public async Task<RevisionId> Handle(AddToCartCommand req, CancellationToken cancellationToken) {
+        //var binder = _allocationExtensionBinders.SingleOrDefault(x => x.ke)
+        
+
+
+        foreach (var allocationExtensionBinder in _allocationExtensionBinders) {
+            //var allocation = ;
+            
+            //((IAllocation) req.Model.Allocation).AllocationExtensionData = new AllocationExtensionData();
+        }
+        
         var revisionId = await AddToCartAsync(req.Model.GivingType,
                                               req.Model.Allocation,
                                               req.Model.Quantity.GetValueOrThrow(),
@@ -77,7 +92,7 @@ public class AddToCartHandlers :
                                                   int quantity,
                                                   CancellationToken cancellationToken) {
         var cart = await _cartAccessor.GetAsync(cancellationToken);
-
+        
         await cart.AddAsync(_contentLocator, _forexConverter, _priceCalculator, givingType, allocation, quantity);
 
         await _repository.UpdateAsync(cart);

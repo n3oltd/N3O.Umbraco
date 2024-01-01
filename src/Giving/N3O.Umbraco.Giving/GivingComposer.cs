@@ -16,5 +16,8 @@ public class GivingComposer : Composer {
         
         RegisterAll(t => t.ImplementsInterface<IAllocationExtensionValidator>(),
                     t => builder.Services.AddTransient(typeof(IAllocationExtensionValidator), t));
+        
+        RegisterAll(t => t.ImplementsInterface<IAllocationExtensionBinder>(),
+                    t => builder.Services.AddTransient(typeof(IAllocationExtensionBinder), t));
     }
 }

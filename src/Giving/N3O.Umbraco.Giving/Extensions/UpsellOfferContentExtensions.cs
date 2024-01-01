@@ -41,7 +41,8 @@ public static class UpsellOfferContentExtensions {
                               new FundAllocation(upsellOfferContent.DonationItem),
                               null,
                               null,
-                              upsellOfferContent.Content().Key);
+                              upsellOfferContent.Content().Key,
+                              null);
     }
 
     public static async Task<UpsellOffer> ToUpsellOfferAsync(this UpsellOfferContent upsellOfferContent,
