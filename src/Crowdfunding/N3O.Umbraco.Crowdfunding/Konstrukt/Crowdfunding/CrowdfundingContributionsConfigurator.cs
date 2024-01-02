@@ -5,7 +5,7 @@ namespace N3O.Umbraco.Crowdfunding.Konstrukt;
 
 public class CrowdfundingContributionsConfigurator : IKonstruktConfigurator {
     public void Configure(KonstruktConfigBuilder builder) {
-        var section = builder.AddSection("Crowdfunding");
+        var section = builder.AddSectionAfter("media", "Crowdfunding");
         var dashboard = section.AddDashboard("Crowdfunding Donations");
 
         ConfigureCollection(dashboard);
