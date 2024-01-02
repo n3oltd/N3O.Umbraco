@@ -10,26 +10,34 @@ public class CrowdfundingData : Value, ICrowdfundingData {
     [JsonConstructor]
     public CrowdfundingData(Guid? campaignId,
                             Guid? teamId,
+                            string teamName,
                             Guid? pageId,
                             string pageUrl,
-                            string comment) {
+                            string comment,
+                            bool anonymous) {
         CampaignId = campaignId;
         TeamId = teamId;
+        TeamName = teamName;
         PageId = pageId;
         Comment = comment;
         PageUrl = pageUrl;
+        Anonymous = anonymous;
     }
 
     public CrowdfundingData(ICrowdfundingData crowdfundingData)
         : this(crowdfundingData.CampaignId,
                crowdfundingData.TeamId,
+               crowdfundingData.TeamName,
                crowdfundingData.PageId,
                crowdfundingData.PageUrl,
-               crowdfundingData.Comment) { }
+               crowdfundingData.Comment,
+               crowdfundingData.Anonymous) { }
 
     public Guid? CampaignId { get; }
     public Guid? TeamId { get; }
+    public string TeamName { get; }
     public Guid? PageId { get; }
     public string PageUrl { get; }
     public string Comment { get; }
+    public bool Anonymous { get; }
 }
