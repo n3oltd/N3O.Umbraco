@@ -7,7 +7,7 @@ public static class ApplicationBuilderExtensions {
         if (OpenApi.IsEnabled()) {
             app.UseOpenApi();
             
-            app.UseSwaggerUi3(opt => {
+            app.UseSwaggerUi(opt => {
                 opt.DocExpansion = "list";
                 opt.OperationsSorter = "alpha";
                 opt.TagsSorter = "alpha";

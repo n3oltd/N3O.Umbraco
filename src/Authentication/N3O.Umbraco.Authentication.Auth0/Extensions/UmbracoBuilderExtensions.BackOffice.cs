@@ -35,7 +35,7 @@ public static partial class UmbracoBuilderExtensions {
                             opt.ResponseType = OpenIdConnectResponseType.Code;
                             opt.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
                             opt.CallbackPath = "/umbraco/signin-oidc";
-                            opt.TokenValidationParameters.NameClaimType = ClaimTypes.Name;
+                            opt.TokenValidationParameters.NameClaimType = "name";
                             opt.TokenValidationParameters.RoleClaimType = ClaimTypes.Role;
                             opt.RequireHttpsMetadata = true;
                             opt.GetClaimsFromUserInfoEndpoint = true;

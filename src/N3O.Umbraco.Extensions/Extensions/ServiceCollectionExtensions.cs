@@ -16,7 +16,7 @@ public static class ServiceCollectionExtensions {
             services.AddOpenApiDocument(opt => {
                 opt.Title = name;
                 opt.DocumentName = name;
-                opt.FlattenInheritanceHierarchy = true;
+                opt.SchemaSettings.FlattenInheritanceHierarchy  = true;
 
                 AddSchemaProcessors(opt);
                 AddOperationProcessors(opt);
@@ -34,7 +34,7 @@ public static class ServiceCollectionExtensions {
                                             .Select(t => (ISchemaProcessor) Activator.CreateInstance(t))
                                             .ToList();
         
-        schemaProcessors.Do(opt.SchemaProcessors.Add);
+        schemaProcessors.Do(opt.SchemaSettings.SchemaProcessors.Add);
     }
     
     private static void AddOperationProcessors(AspNetCoreOpenApiDocumentGeneratorSettings opt) {
