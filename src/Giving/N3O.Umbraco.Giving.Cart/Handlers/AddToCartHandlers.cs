@@ -28,7 +28,7 @@ public class AddToCartHandlers :
     private readonly Lazy<ICurrencyAccessor> _currencyAccessor;
     private readonly IForexConverter _forexConverter;
     private readonly IPriceCalculator _priceCalculator;
-    private readonly IEnumerable<IAllocationExtensionBinder> _allocationExtensionBinders;
+    private readonly IReadOnlyList<IAllocationExtensionBinder> _allocationExtensionBinders;
 
     public AddToCartHandlers(ICartAccessor cartAccessor,
                              IRepository<Entities.Cart> repository,
@@ -43,28 +43,20 @@ public class AddToCartHandlers :
         _currencyAccessor = currencyAccessor;
         _forexConverter = forexConverter;
         _priceCalculator = priceCalculator;
-        _allocationExtensionBinders = allocationExtensionBinders;
+        _allocationExtensionBinders = allocationExtensionBinders.ToList();
     }
 
     public async Task<RevisionId> Handle(AddToCartCommand req, CancellationToken cancellationToken) {
-        //var binder = _allocationExtensionBinders.SingleOrDefault(x => x.ke)
-        
+        var allocation = GetAllocationData(req.Model.Allocation);
 
-
-        foreach (var allocationExtensionBinder in _allocationExtensionBinders) {
-            //var allocation = ;
-            
-            //((IAllocation) req.Model.Allocation).AllocationExtensionData = new AllocationExtensionData();
-        }
-        
         var revisionId = await AddToCartAsync(req.Model.GivingType,
-                                              req.Model.Allocation,
+                                              allocation,
                                               req.Model.Quantity.GetValueOrThrow(),
                                               cancellationToken);
 
         return revisionId;
     }
-
+    
     public async Task<RevisionId> Handle(AddUpsellToCartCommand req, CancellationToken cancellationToken) {
         var cart = await _cartAccessor.GetAsync(cancellationToken);
         var upsellOfferContent = req.UpsellOfferId.Run(_contentLocator.ById<UpsellOfferContent>, true);
@@ -98,5 +90,23 @@ public class AddToCartHandlers :
         await _repository.UpdateAsync(cart);
 
         return cart.RevisionId;
+    }
+    
+    private IAllocation GetAllocationData(AllocationReq allocationReq) {
+        var allocationExtensionData = new AllocationExtensionData();
+        
+        foreach (var allocationExtensionBinder in _allocationExtensionBinders) {
+            var data = allocationExtensionBinder.Bind(allocationReq);
+
+            
+            allocationExtensionData.Add(allocationExtensionBinder.Key, data);
+        }
+
+        
+        var newAllocation = new Allocation(allocationReq);
+
+        /*newAllocation.AllocationExtensionData = new AllocationExtensionData(allocationExtensionData);*/
+
+        return newAllocation;
     }
 }

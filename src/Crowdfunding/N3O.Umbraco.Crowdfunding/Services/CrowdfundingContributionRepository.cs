@@ -12,14 +12,13 @@ using Umbraco.Cms.Infrastructure.Persistence;
 
 namespace N3O.Umbraco.Crowdfunding;
 
-// TODO Talha Name this CrowdfundingContribution repository
-public class CrowdfundingWriter : ICrowdfundingWriter {
+public class CrowdfundingContributionRepository : ICrowdfundingWriter {
     private readonly List<CrowdfundingContribution> _crowdfundingContributions = new();
     
     private readonly IContentService _contentService;
     private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
 
-    public CrowdfundingWriter(IUmbracoDatabaseFactory umbracoDatabaseFactory, IContentService contentService) {
+    public CrowdfundingContributionRepository(IUmbracoDatabaseFactory umbracoDatabaseFactory, IContentService contentService) {
         _umbracoDatabaseFactory = umbracoDatabaseFactory;
         _contentService = contentService;
     }

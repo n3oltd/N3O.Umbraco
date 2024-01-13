@@ -10,5 +10,5 @@ public class CrowdfundingAllocationExtensionBinder : AllocationExtensionBinder<C
         return new CrowdfundingData(req);
     }
     
-    protected override string Key => "crowdfunding";
+    public override string Key => "crowdfunding";
 }
