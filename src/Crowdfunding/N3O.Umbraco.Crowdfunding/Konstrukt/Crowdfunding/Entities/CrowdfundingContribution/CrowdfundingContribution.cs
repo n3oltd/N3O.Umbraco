@@ -90,4 +90,9 @@ public partial class CrowdfundingContribution {
     [Length(50)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.CrowdfundingContributions.Name + "_" + nameof(Status), ForColumns = nameof(Status))]
     public string Status { get; set; }
+    
+    [Column(nameof(Allocation))]
+    [NullSetting(NullSetting = NullSettings.Null)]
+    [SpecialDbType(SpecialDbTypes.NVARCHARMAX)]
+    public string Allocation { get; set; }
 }

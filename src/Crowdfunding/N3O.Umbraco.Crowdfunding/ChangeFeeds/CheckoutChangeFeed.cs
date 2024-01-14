@@ -13,13 +13,14 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Crowdfunding.ChangeFeeds;
 
 public class CheckoutChangeFeed : ChangeFeed<Checkout> {
-    private readonly ICrowdfundingWriter _crowdfundingQ;
     private readonly IClock _clock;
+    private readonly ICrowdfundingContributionRepository _crowdfundingRepository;
+    
     
     public CheckoutChangeFeed(ILogger<CheckoutChangeFeed> logger,
-                              ICrowdfundingWriter crowdfundingQ,
-                              IClock clock) : base(logger) {
-        _crowdfundingQ = crowdfundingQ;
+                              IClock clock,
+                              ICrowdfundingContributionRepository crowdfundingRepository) : base(logger) {
+        _crowdfundingRepository = crowdfundingRepository;
         _clock = clock;
     }
     
@@ -47,20 +48,20 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
         foreach (var crowdfundingAllocation in crowdfundingAllocations) {
             var crowdfundingData = crowdfundingAllocation.GetCrowdfundingData();
 
-            await _crowdfundingQ.AppendAsync(checkout.Reference.Text,
-                                             _clock.GetCurrentInstant(),
-                                             crowdfundingData.CampaignId,
-                                             crowdfundingData.TeamId,
-                                             crowdfundingData.TeamName,
-                                             crowdfundingData.PageId,
-                                             crowdfundingData.Anonymous,
-                                             crowdfundingData.PageUrl,
-                                             crowdfundingData.Comment,
-                                             crowdfundingAllocation.Value,
-                                             checkout.Account?.Email?.Address);
+            await _crowdfundingRepository.AppendAsync(checkout.Reference.Text,
+                                                      _clock.GetCurrentInstant(),
+                                                      crowdfundingData.CampaignId,
+                                                      crowdfundingData.TeamId,
+                                                      crowdfundingData.PageId,
+                                                      crowdfundingData.Anonymous,
+                                                      crowdfundingData.PageUrl,
+                                                      crowdfundingData.Comment,
+                                                      crowdfundingAllocation.Value,
+                                                      checkout.Account?.Email?.Address,
+                                                      crowdfundingAllocation);
         }
 
-        await _crowdfundingQ.CommitAsync();
+        await _crowdfundingRepository.CommitAsync();
     }
 
     private IReadOnlyList<Allocation> GetCrowdfundingAllocations(GivingType givingType, Checkout checkout) {

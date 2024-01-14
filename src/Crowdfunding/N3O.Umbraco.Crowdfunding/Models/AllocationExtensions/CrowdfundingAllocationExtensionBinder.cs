@@ -9,6 +9,10 @@ public class CrowdfundingAllocationExtensionBinder : AllocationExtensionBinder<C
     protected override CrowdfundingData Bind(CrowdfundingDataReq req) {
         return new CrowdfundingData(req);
     }
-    
-    public override string Key => "crowdfunding";
+
+    public override bool CanBind(AllocationReq allocationReq) {
+        return allocationReq.Extensions.ContainsKey(Key);
+    }
+
+    public override string Key => CrowdfundingConstants.CrowdfundingAllocation.Key;
 }

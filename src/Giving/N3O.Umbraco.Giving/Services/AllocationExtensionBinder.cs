@@ -9,17 +9,19 @@ public abstract class AllocationExtensionBinder<TReq, TModel> : IAllocationExten
     protected AllocationExtensionBinder(IJsonProvider jsonProvider) {
         _jsonProvider = jsonProvider;
     }
-    
-    public object Bind(AllocationReq allocationReq) {
-        if (allocationReq.Extensions.HasValue() && allocationReq.Extensions.ContainsKey(Key)) {
-            var extensionDataReq = _jsonProvider.DeserializeObject<TReq>(allocationReq.Extensions[Key].ToString());
 
-            return Bind(extensionDataReq);
-        } else {
-            return null;   
-        }
+    /*public bool CanBind(AllocationReq allocationReq) {
+        return allocationReq.Extensions.HasValue() && allocationReq.Extensions.ContainsKey(Key);
+    }*/
+
+    public object Bind(AllocationReq allocationReq) {
+        var extensionDataReq = _jsonProvider.DeserializeObject<TReq>(allocationReq.Extensions[Key].ToString());
+
+        return Bind(extensionDataReq);
     }
 
     protected abstract TModel Bind(TReq req);
+    public abstract bool CanBind(AllocationReq allocationReq);
+    
     public abstract string Key { get; }
 }

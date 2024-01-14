@@ -10,10 +10,9 @@ using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Giving.Extensions;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
+using N3O.Umbraco.Giving.Services;
 using N3O.Umbraco.Mediator;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,7 +27,7 @@ public class AddToCartHandlers :
     private readonly Lazy<ICurrencyAccessor> _currencyAccessor;
     private readonly IForexConverter _forexConverter;
     private readonly IPriceCalculator _priceCalculator;
-    private readonly IReadOnlyList<IAllocationExtensionBinder> _allocationExtensionBinders;
+    private readonly IAllocationExtensionPipeline _allocationExtensionPipeline;
 
     public AddToCartHandlers(ICartAccessor cartAccessor,
                              IRepository<Entities.Cart> repository,
@@ -36,14 +35,14 @@ public class AddToCartHandlers :
                              Lazy<ICurrencyAccessor> currencyAccessor,
                              IForexConverter forexConverter,
                              IPriceCalculator priceCalculator,
-                             IEnumerable<IAllocationExtensionBinder> allocationExtensionBinders) {
+                             IAllocationExtensionPipeline allocationExtensionPipeline) {
         _cartAccessor = cartAccessor;
         _repository = repository;
         _contentLocator = contentLocator;
         _currencyAccessor = currencyAccessor;
         _forexConverter = forexConverter;
         _priceCalculator = priceCalculator;
-        _allocationExtensionBinders = allocationExtensionBinders.ToList();
+        _allocationExtensionPipeline = allocationExtensionPipeline;
     }
 
     public async Task<RevisionId> Handle(AddToCartCommand req, CancellationToken cancellationToken) {
@@ -92,20 +91,17 @@ public class AddToCartHandlers :
         return cart.RevisionId;
     }
     
-    private IAllocation GetAllocationData(AllocationReq allocationReq) {
-        var allocationExtensionData = new AllocationExtensionData();
+    private IAllocation GetAllocationData(AllocationReq allocation) {
+        var allocationExtensionData = _allocationExtensionPipeline.Run(allocation);
         
-        foreach (var allocationExtensionBinder in _allocationExtensionBinders) {
-            var data = allocationExtensionBinder.Bind(allocationReq);
-
-            
-            allocationExtensionData.Add(allocationExtensionBinder.Key, data);
-        }
-
-        
-        var newAllocation = new Allocation(allocationReq);
-
-        /*newAllocation.AllocationExtensionData = new AllocationExtensionData(allocationExtensionData);*/
+        var newAllocation = new Allocation(allocation.Type,
+                                           allocation.Value,
+                                           allocation.FundDimensions.IfNotNull(x => new FundDimensionValues(x)),
+                                           allocation.Fund.IfNotNull(x => new FundAllocation(x)),
+                                           allocation.Sponsorship.IfNotNull(x => new SponsorshipAllocation(x)),
+                                           allocation.Feedback.IfNotNull(x => new FeedbackAllocation(x)),
+                                           allocation.UpsellOfferId,
+                                           allocationExtensionData);
 
         return newAllocation;
     }

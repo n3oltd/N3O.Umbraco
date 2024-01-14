@@ -46,7 +46,7 @@ namespace N3O.Umbraco.Crowdfunding;
  * (a) When rendering a page. This is easy, we can add a service IFundraisingPageMode which just fetches current page
  *     and current member and exposes a property with an enum so we have:
  *
- *  @if (FundraisingPageMode.Mode == Modes.View) {
+ *  @if ( .Mode == Modes.View) {
  *  } else if (FundraisingPageMode.Mode == Modes.Edit) {
  *  } else throw;
  *

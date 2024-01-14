@@ -35,7 +35,7 @@ public class AllocationReq : IAllocation {
     public IDictionary<string, JToken> Extensions { get; set; }
 
     [JsonIgnore]
-    AllocationExtensionData IAllocation.AllocationExtensionData => new(Extensions);
+    AllocationExtensionData IAllocation.AllocationExtensionData => null;
 
     [JsonIgnore]
     IFundDimensionValues IAllocation.FundDimensions => FundDimensions;

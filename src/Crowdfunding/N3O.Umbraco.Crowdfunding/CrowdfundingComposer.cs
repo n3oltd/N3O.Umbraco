@@ -9,6 +9,6 @@ public class CrowdfundingComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Components().Append<CrowdfundingContributionsMigrationsComponent>();
         
-        builder.Services.AddSingleton<ICrowdfundingWriter, CrowdfundingContributionRepository>();
+        builder.Services.AddSingleton<ICrowdfundingContributionRepository, CrowdfundingContributionRepository>();
     }
 }

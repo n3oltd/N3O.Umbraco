@@ -10,9 +10,6 @@ public class CrowdfundingDataReq : ICrowdfundingData {
     [Name("Team ID")]
     public Guid? TeamId { get; set; }
 
-    [Name("Team Name")]
-    public string TeamName { get; set;  }
-
     [Name("Page ID")]
     public Guid? PageId { get; set; }
 

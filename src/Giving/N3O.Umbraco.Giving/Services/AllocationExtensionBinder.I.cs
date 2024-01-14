@@ -2,5 +2,7 @@
 
 public interface IAllocationExtensionBinder {
     string Key { get; }
+    
+    bool CanBind(AllocationReq allocationReq);
     object Bind(AllocationReq allocationReq);
 }

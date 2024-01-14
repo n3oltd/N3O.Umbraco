@@ -13,11 +13,9 @@ public abstract class AllocationExtensionValidator<TReq> : IAllocationExtensionV
         _jsonProvider = jsonProvider;
         _validator = validator;
     }
-    
+
     public ValidationResult Validate(AllocationReq allocationReq) {
         if (allocationReq.Extensions.HasValue() && allocationReq.Extensions.ContainsKey(Key)) {
-            // TODO Fix this line, we want to convert the JObject to TReq, lots of places in Karakoram code where we do
-            // this just can't remember how
             var extensionDataReq = _jsonProvider.DeserializeObject<TReq>(allocationReq.Extensions[Key].ToString());
 
             return _validator.Validate(extensionDataReq);
@@ -27,4 +25,6 @@ public abstract class AllocationExtensionValidator<TReq> : IAllocationExtensionV
     }
     
     protected abstract string Key { get; }
+
+    public abstract bool CanValidate(AllocationReq allocationReq);
 }
