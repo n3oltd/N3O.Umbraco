@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Umbraco.Cms.Core.Collections;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Content;
@@ -12,7 +13,7 @@ public class ContentCache : IContentCache {
     private readonly IContentLocator _contentLocator;
     private readonly ConcurrentDictionary<string, object> _typedStore = new(StringComparer.InvariantCultureIgnoreCase);
     private readonly ConcurrentDictionary<string, IReadOnlyList<IPublishedContent>> _untypedStore = new(StringComparer.InvariantCultureIgnoreCase);
-    private readonly HashSet<string> _heldContentTypes = new(StringComparer.InvariantCultureIgnoreCase);
+    private readonly ConcurrentHashSet<string> _heldContentTypes = new();
 
     public ContentCache(IContentLocator contentLocator) {
         _contentLocator = contentLocator;
@@ -31,7 +32,7 @@ public class ContentCache : IContentCache {
         }
 
         if (res.HasAny()) {
-            _heldContentTypes.AddIfNotExists(AliasHelper<T>.ContentTypeAlias());
+            _heldContentTypes.AddIfNotExists(AliasHelper<T>.ContentTypeAlias().ToLowerInvariant());
         }
 
         return res;
@@ -50,13 +51,13 @@ public class ContentCache : IContentCache {
             res = all.Where(predicate).ToList();
         }
         
-        _heldContentTypes.AddRangeIfNotExists(res.Select(x => x.ContentType.Alias));
+        _heldContentTypes.AddRangeIfNotExists(res.Select(x => x.ContentType.Alias.ToLowerInvariant()));
 
         return res;
     }
     
     public bool ContainsContentType(string contentTypeAlias) {
-        return _heldContentTypes.Contains(contentTypeAlias);
+        return _heldContentTypes.Contains(contentTypeAlias.ToLowerInvariant());
     }
 
     public void Flush() {
@@ -69,7 +70,7 @@ public class ContentCache : IContentCache {
         var res = All(predicate).SingleOrDefault();
 
         if (res.HasValue()) {
-            _heldContentTypes.AddIfNotExists(AliasHelper<T>.ContentTypeAlias());
+            _heldContentTypes.AddIfNotExists(AliasHelper<T>.ContentTypeAlias().ToLowerInvariant());
         }
 
         return res;
@@ -79,7 +80,7 @@ public class ContentCache : IContentCache {
         var res = All(contentTypeAlias, predicate).SingleOrDefault();
         
         if (res.HasValue()) {
-            _heldContentTypes.AddIfNotExists(res.ContentType.Alias);
+            _heldContentTypes.AddIfNotExists(res.ContentType.Alias.ToLowerInvariant());
         }
 
         return res;
