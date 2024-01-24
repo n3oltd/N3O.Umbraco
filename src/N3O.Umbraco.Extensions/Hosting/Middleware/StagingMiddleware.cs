@@ -21,14 +21,14 @@ public class StagingMiddleware : IMiddleware {
     private static readonly TimeSpan LockOutPeriod = TimeSpan.FromMinutes(5);
     private static readonly MemoryCache FailedLogins = new(new MemoryCacheOptions());
 
-    private readonly Lazy<IUmbracoContextAccessor> _umbracoContextAccessor;
+    private readonly IUmbracoContextFactory _umbracoContextFactory;
     private readonly Lazy<IRemoteIpAddressAccessor> _remoteIpAddressAccessor;
     private readonly Lazy<IOptionsSnapshot<CookieAuthenticationOptions>> _cookieAuthenticationOptions;
 
-    public StagingMiddleware(Lazy<IUmbracoContextAccessor> umbracoContextAccessor,
+    public StagingMiddleware(IUmbracoContextFactory umbracoContextFactory,
                              Lazy<IRemoteIpAddressAccessor> remoteIpAddressAccessor,
                              Lazy<IOptionsSnapshot<CookieAuthenticationOptions>> cookieAuthenticationOptions) {
-        _umbracoContextAccessor = umbracoContextAccessor;
+        _umbracoContextFactory = umbracoContextFactory;
         _remoteIpAddressAccessor = remoteIpAddressAccessor;
         _cookieAuthenticationOptions = cookieAuthenticationOptions;
     }
@@ -37,9 +37,10 @@ public class StagingMiddleware : IMiddleware {
         if (!context.Request.GetDisplayUrl().Contains("/umbraco", StringComparison.InvariantCultureIgnoreCase) &&
             !context.Request.GetDisplayUrl().Contains("/App_Plugins", StringComparison.InvariantCultureIgnoreCase) &&
             !context.Request.GetDisplayUrl().Contains("/sb", StringComparison.InvariantCultureIgnoreCase)) {
-
-            var contentType = _umbracoContextAccessor.Value.GetContentCache().GetContentType(StagingSettingsAlias);
-            var stagingSettings = contentType.IfNotNull(x => _umbracoContextAccessor.Value.GetContentCache().GetByContentType(x))
+            var umbracoContextReference = _umbracoContextFactory.EnsureUmbracoContext();
+            var umbracoContext = umbracoContextReference.UmbracoContext;
+            var contentType = umbracoContext.Content.GetContentType(StagingSettingsAlias);
+            var stagingSettings = contentType.IfNotNull(x => umbracoContext.Content.GetByContentType(x))
                                             ?.SingleOrDefault()
                                             ?.As<StagingSettingsContent>();
 
