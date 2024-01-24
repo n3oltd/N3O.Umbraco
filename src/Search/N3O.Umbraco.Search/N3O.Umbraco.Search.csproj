@@ -34,7 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="xsitemap" Version="2.9.2" />
+      <PackageReference Include="xsitemap" Version="2.9.3" />
     </ItemGroup>
 
     <ItemGroup>
