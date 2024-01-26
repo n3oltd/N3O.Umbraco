@@ -95,7 +95,14 @@ public class ContentHelper : IContentHelper {
                                                               string propertyTypeAlias,
                                                               object propertyValue)
         where TConverter : class, IPropertyValueConverter {
-        var converter = _serviceProvider.Value.GetRequiredService<TConverter>();
+        return GetConvertedValue<TProperty>(typeof(TConverter), contentTypeAlias, propertyTypeAlias, propertyValue);
+    }
+
+    public TProperty GetConvertedValue<TProperty>(Type converterType,
+                                                  string contentTypeAlias,
+                                                  string propertyTypeAlias,
+                                                  object propertyValue) {
+        var converter = (IPropertyValueConverter) _serviceProvider.Value.GetRequiredService(converterType);
         var publishedContentType = _umbracoContextAccessor.Value.GetContentCache().GetContentType(contentTypeAlias);
         var publishedPropertyType = publishedContentType.GetPropertyType(propertyTypeAlias);
         

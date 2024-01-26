@@ -16,6 +16,11 @@ public interface IContentHelper {
     ContentProperties GetContentProperties(Guid contentId,
                                            string contentTypeAlias,
                                            IEnumerable<(IPropertyType Type, object Value)> properties);
+
+    TProperty GetConvertedValue<TProperty>(Type converterType,
+                                           string contentTypeAlias,
+                                           string propertyTypeAlias,
+                                           object propertyValue);
     
     TProperty GetConvertedValue<TConverter, TProperty>(string contentTypeAlias,
                                                        string propertyTypeAlias,
