@@ -16,6 +16,10 @@ public static class PropertyTypeExtensions {
         return propertyType.HasEditorAlias("Umbraco.Community.Contentment.DataList");
     }
     
+    public static bool IsDataPicker(this IPropertyType propertyType) {
+        return propertyType.HasEditorAlias("Umbraco.Community.Contentment.DataPicker");
+    }
+    
     public static bool IsDropdown(this IPropertyType propertyType) {
         return propertyType.HasEditorAlias(Aliases.DropDownListFlexible);
     }
