@@ -12,7 +12,6 @@ using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Community.Contentment.DataEditors;
 using Umbraco.Extensions;
-using umbIcons = Umbraco.Cms.Core.Constants.Icons;
 
 namespace N3O.Headless.Common.Lookups; 
 
@@ -22,7 +21,8 @@ public class ContentTypesDataSource : IDataPickerSource, IDataSourceValueConvert
     private readonly IContentTypeService _contentTypeService;
     private readonly IUmbracoContextAccessor _umbracoContextAccessor;
     
-    public ContentTypesDataSource(IContentTypeService contentTypeService, IUmbracoContextAccessor umbracoContextAccessor) {
+    public ContentTypesDataSource(IContentTypeService contentTypeService,
+                                  IUmbracoContextAccessor umbracoContextAccessor) {
         _contentTypeService = contentTypeService;
         _umbracoContextAccessor = umbracoContextAccessor;
     }
@@ -30,19 +30,19 @@ public class ContentTypesDataSource : IDataPickerSource, IDataSourceValueConvert
     public string Name => "Umbraco Content Types";
     public string Icon => "icon-item-arrangement";
     public string Group => "N3O";
-    public string Description => "Populate the data source using Content Types..";
+    public string Description => "A list of Umbraco content types";
     public Dictionary<string, object> DefaultValues => default;
     public IEnumerable<ConfigurationField> Fields => default;
     public OverlaySize OverlaySize => OverlaySize.Small;
     
-    public Task<IEnumerable<DataListItem>> GetItemsAsync(Dictionary<string, object> config, IEnumerable<string> values) {
+    public Task<IEnumerable<DataListItem>> GetItemsAsync(Dictionary<string, object> config,
+                                                         IEnumerable<string> values) {
         if (values.Any()) {
-            var items = values
-                       .Select(x => UdiParser.TryParse(x, out GuidUdi udi) ? udi : null)
-                       .WhereNotNull()
-                       .Select(x => _contentTypeService.Get(x.Guid))
-                       .WhereNotNull()
-                       .Select(ToDataListItem);
+            var items = values.Select(x => UdiParser.TryParse(x, out GuidUdi udi) ? udi : null)
+                              .WhereNotNull()
+                              .Select(x => _contentTypeService.Get(x.Guid))
+                              .WhereNotNull()
+                              .Select(ToDataListItem);
             
             return Task.FromResult(items);
         }
@@ -66,6 +66,7 @@ public class ContentTypesDataSource : IDataPickerSource, IDataSourceValueConvert
             var offset = pageIndex * pageSize;
             
             var results = new PagedResult<DataListItem>(totalRecords, pageNumber, pageSize);
+            
             results.Items = items.Skip(offset).Take(pageSize).Select(ToDataListItem);
 
             return Task.FromResult(results);
@@ -82,6 +83,7 @@ public class ContentTypesDataSource : IDataPickerSource, IDataSourceValueConvert
         }
 
         var key = udi.Guid;
+        
         var alias = ContentTypeAliases.GetOrAdd(udi.Guid, () => {
             var contentType = _contentTypeService.Get(key);
             

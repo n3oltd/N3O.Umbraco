@@ -18,7 +18,7 @@ public static partial class ContentHelperExtensions {
     
     public static T GetDataListValue<T>(this IContentHelper contentHelper, IContentProperty property) {
         if (!property.Type.IsDataList()) {
-            throw new Exception("Property is not data list");
+            throw new Exception("Property is not a data list");
         }
         
         return GetDataListValue<T>(contentHelper, property.ContentType.Alias, property.Type.Alias, property.Value);
@@ -28,7 +28,7 @@ public static partial class ContentHelperExtensions {
                                         string contentTypeAlias,
                                         IProperty property) {
         if (!property.PropertyType.IsDataList()) {
-            throw new Exception("Property is not data list");
+            throw new Exception("Property is not a data list");
         }
         
         return GetDataListValue<T>(contentHelper, contentTypeAlias, property.PropertyType.Alias, property.GetValue());
@@ -69,7 +69,7 @@ public static partial class ContentHelperExtensions {
                                                         string contentTypeAlias,
                                                         IProperty property) {
         if (!property.PropertyType.IsDataList()) {
-            throw new Exception("Property is not data list");
+            throw new Exception("Property is not a data list");
         }
         
         return GetDataListValues<T>(contentHelper, contentTypeAlias, property.PropertyType.Alias, property.GetValue());
