@@ -12,9 +12,7 @@ public class LoqateUKBankAccountValidator : IUKBankAccountValidator {
         _client = client;
     }
 
-    public bool CanValidate() {
-        return _client.HasValue();
-    }
+    public bool HasConfiguration => _client.HasValue();
 
     public async Task<bool> IsValidAsync(string sortCode, string accountNumber) {
         var result = await _client.ValidateAsync(accountNumber, sortCode);

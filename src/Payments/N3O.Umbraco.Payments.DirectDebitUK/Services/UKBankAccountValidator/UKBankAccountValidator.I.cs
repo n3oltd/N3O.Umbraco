@@ -3,6 +3,6 @@
 namespace N3O.Umbraco.Payments.DirectDebitUK; 
 
 public interface IUKBankAccountValidator {
-    bool CanValidate();
+    bool HasConfiguration { get; }
     Task<bool> IsValidAsync(string sortCode, string accountNumber);
 }
