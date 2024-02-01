@@ -17,6 +17,8 @@ public class DirectDebitUKComposer : Composer {
 
         RegisterFetchify(builder);
         RegisterLoqate(builder);
+
+        builder.Services.AddTransient<IUKBankAccountValidatorFactory, UKBankAccountValidatorFactory>();
         
         RegisterAll(t => t.ImplementsInterface<IUKBankAccountValidator>(),
                     t => builder.Services.AddTransient(typeof(IUKBankAccountValidator), t));
