@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Payments.DirectDebitUK.Clients.Fetchify;
+﻿using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Payments.DirectDebitUK.Clients.Fetchify;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.DirectDebitUK; 
@@ -10,9 +11,13 @@ public class FetchifyUKBankAccountValidator : IUKBankAccountValidator {
         _client = client;
     }
     
+    public bool CanValidate() {
+        return _client.HasValue();
+    }
+    
     public async Task<bool> IsValidAsync(string sortCode, string accountNumber) {
         var result = await _client.ValidateAsync(accountNumber, sortCode);
 
-        return result.Successful;
+        return result.BankValidate.IsCorrect;
     }
 }
