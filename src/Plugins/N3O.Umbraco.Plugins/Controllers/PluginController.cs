@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using N3O.Umbraco.Hosting;
 using System.Net.Mime;
 using Umbraco.Cms.Web.Common.Controllers;
 
 namespace N3O.Umbraco.Plugins.Controllers;
 
 [ApiController]
+[OurValidationFilter]
 [Route("/umbraco/backoffice/api/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]
 [ProducesResponseType(StatusCodes.Status200OK)]

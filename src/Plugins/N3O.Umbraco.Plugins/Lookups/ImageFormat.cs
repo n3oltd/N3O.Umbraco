@@ -4,6 +4,8 @@ using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Formats.Gif;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Formats.Png;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace N3O.Umbraco.Plugins.Lookups;
 
@@ -27,4 +29,6 @@ public class ImageFormats : StaticLookupsCollection<ImageFormat> {
     public static readonly ImageFormat Gif = new("gif");
     public static readonly ImageFormat Jpg = new("jpg");
     public static readonly ImageFormat Png = new("png");
+    
+    public static IEnumerable<ImageFormat> GetAllFormats() => StaticLookups.GetAll<ImageFormats, ImageFormat>().ToArray();
 }
