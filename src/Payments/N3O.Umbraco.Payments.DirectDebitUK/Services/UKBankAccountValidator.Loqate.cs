@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Payments.DirectDebitUK.Clients.Loqate;
+﻿using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Payments.DirectDebitUK.Clients.Loqate;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,7 +11,11 @@ public class LoqateUKBankAccountValidator : IUKBankAccountValidator {
     public LoqateUKBankAccountValidator(ILoqateApiClient client = null) {
         _client = client;
     }
-    
+
+    public bool CanValidate() {
+        return _client.HasValue();
+    }
+
     public async Task<bool> IsValidAsync(string sortCode, string accountNumber) {
         var result = await _client.ValidateAsync(accountNumber, sortCode);
         

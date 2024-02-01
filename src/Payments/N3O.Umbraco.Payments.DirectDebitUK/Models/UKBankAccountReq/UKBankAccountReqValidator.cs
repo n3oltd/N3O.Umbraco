@@ -2,6 +2,7 @@ using FluentValidation;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace N3O.Umbraco.Payments.DirectDebitUK.Models;
@@ -9,11 +10,11 @@ namespace N3O.Umbraco.Payments.DirectDebitUK.Models;
 public class UKBankAccountReqValidator : ModelValidator<UKBankAccountReq> {
     private const int AccountHolderMaxLength = 18;
     
-    private readonly IUKBankAccountValidator _bankAccountValidator;
+    private readonly IEnumerable<IUKBankAccountValidator> _bankAccountValidators;
 
-    public UKBankAccountReqValidator(IFormatter formatter, IUKBankAccountValidator bankAccountValidator = null)
+    public UKBankAccountReqValidator(IFormatter formatter, IEnumerable<IUKBankAccountValidator> bankAccountValidators)
         : base(formatter) {
-        _bankAccountValidator = bankAccountValidator;
+        _bankAccountValidators = bankAccountValidators.ToList();
         
         RuleFor(x => x.AccountHolder)
             .NotEmpty()
@@ -50,8 +51,10 @@ public class UKBankAccountReqValidator : ModelValidator<UKBankAccountReq> {
     }
 
     private bool AccountIsValid(UKBankAccountReq req) {
-        if (_bankAccountValidator != null) {
-            var result = _bankAccountValidator.IsValidAsync(req.AccountNumber, req.SortCode).GetAwaiter().GetResult();
+        var bankAccountValidator = _bankAccountValidators.SingleOrDefault(x => x.CanValidate());
+        
+        if (bankAccountValidator != null) {
+            var result = bankAccountValidator.IsValidAsync(req.AccountNumber, req.SortCode).GetAwaiter().GetResult();
 
             return result;
         } else {
