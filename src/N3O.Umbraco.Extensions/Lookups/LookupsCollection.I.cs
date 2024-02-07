@@ -7,6 +7,7 @@ public interface ILookupsCollection {
     Task<ILookup> FindByIdAsync(string id);
     Task<IEnumerable<ILookup>> FindByNameAsync(string name);
     Task<IReadOnlyList<ILookup>> GetAllAsync();
+    void Flush();
 }
 
 public interface ILookupsCollection<T> : ILookupsCollection where T : ILookup {

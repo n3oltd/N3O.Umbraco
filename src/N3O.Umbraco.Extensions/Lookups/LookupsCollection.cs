@@ -43,6 +43,11 @@ public abstract class LookupsCollection<T> : ILookupsCollection<T> where T : ILo
 
         return lookups.Cast<ILookup>().ToList();
     }
+    
+    public void Flush() {
+        _loaded = false;
+        _all = null;
+    }
 
     async Task<IReadOnlyList<ILookup>> ILookupsCollection.GetAllAsync() {
         var all = await GetAllAsync();

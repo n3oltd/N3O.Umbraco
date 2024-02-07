@@ -18,6 +18,8 @@ public interface ILookups {
     Task<IEnumerable<ILookup>> FindByNameAsync(Type lookupType, string name, CancellationToken cancellationToken = default);
     IEnumerable<ILookup> FindByName(Type lookupType, string name);
 
+    void Flush();
+
     Task<IReadOnlyList<T>> GetAllAsync<T>(CancellationToken cancellationToken = default) where T : ILookup;
     IReadOnlyList<T> GetAll<T>() where T : ILookup;
 

@@ -1,3 +1,5 @@
+using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,6 +65,19 @@ public class Lookups : ILookups {
     
     public IEnumerable<ILookup> FindByName(Type lookupType, string name) {
         return FindByNameAsync(lookupType, name).GetAwaiter().GetResult();
+    }
+    
+    public void Flush() {
+        var lookupTypes = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
+                                                      t.ImplementsInterface<ILookup>())
+                                       .ToList();
+
+        foreach (var lookupType in lookupTypes) {
+            var lookupsCollectionType = typeof(ILookupsCollection<>).MakeGenericType(lookupType);
+            var lookupsCollection = (ILookupsCollection) _services.GetService(lookupsCollectionType);
+
+            lookupsCollection?.Flush();
+        }
     }
 
     public IReadOnlyList<T> GetAll<T>() where T : ILookup {
