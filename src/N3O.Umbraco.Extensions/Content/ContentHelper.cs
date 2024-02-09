@@ -49,8 +49,8 @@ public class ContentHelper : IContentHelper {
         return GetAllPagedContent(content, _contentService.Value.GetPagedChildren);
     }
 
-    public ContentProperties GetContentProperties(IContent content) {
-        var properties = content.Properties.Select(x => (x.PropertyType, x.GetValue()));
+    public ContentProperties GetContentProperties(IContent content, string culture = null) {
+        var properties = content.Properties.Select(x => (x.PropertyType, x.GetValue(culture)));
         
         return GetContentProperties(content.Key, content.ContentType.Alias, properties);
     }

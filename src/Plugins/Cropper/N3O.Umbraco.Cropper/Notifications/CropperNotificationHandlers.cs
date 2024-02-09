@@ -29,7 +29,9 @@ public class CropperNotificationHandlers : INotificationAsyncHandler<ContentPubl
 
     public async Task HandleAsync(ContentPublishingNotification notification, CancellationToken cancellationToken) {
         foreach (var content in notification.PublishedEntities) {
-            var contentProperties = _contentHelper.GetContentProperties(content);
+            var publishingCulture = content.AvailableCultures
+                                           .SingleOrDefault(x => notification.IsPublishingCulture(notification.PublishedEntities.First(), x));;
+            var contentProperties = _contentHelper.GetContentProperties(content, publishingCulture);
             var properties = GetProperties(contentProperties);
 
             var cropperProperties = properties.Where(x => x.Type.HasEditorAlias(CropperConstants.PropertyEditorAlias))

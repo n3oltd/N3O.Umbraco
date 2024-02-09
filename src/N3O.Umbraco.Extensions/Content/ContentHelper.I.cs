@@ -11,7 +11,7 @@ public interface IContentHelper {
     
     IReadOnlyList<IContent> GetChildren(IContent content);
 
-    ContentProperties GetContentProperties(IContent content);
+    ContentProperties GetContentProperties(IContent content, string culture = null);
 
     ContentProperties GetContentProperties(Guid contentId,
                                            string contentTypeAlias,
