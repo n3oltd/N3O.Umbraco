@@ -11,4 +11,6 @@ public interface IContentCache {
     void Flush();
     T Single<T>(Func<T, bool> predicate = null);
     IPublishedContent Single(string contentTypeAlias, Func<IPublishedContent, bool> predicate = null);
+    
+    public event EventHandler Flushed;
 }

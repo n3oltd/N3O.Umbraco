@@ -64,6 +64,8 @@ public class ContentCache : IContentCache {
         _heldContentTypes.Clear();
         _typedStore.Clear();
         _untypedStore.Clear();
+        
+        Flushed?.Invoke(this, EventArgs.Empty);
     }
 
     public T Single<T>(Func<T, bool> predicate = null) {
@@ -85,6 +87,8 @@ public class ContentCache : IContentCache {
 
         return res;
     }
+
+    public event EventHandler Flushed;
 
     private string GetCacheKey<T>() {
         // Not AliasHelper<T>.ContentTypeAlias() as need to distinguish T and TContent : UmbracoContent<TContent>

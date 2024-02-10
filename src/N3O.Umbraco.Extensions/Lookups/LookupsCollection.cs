@@ -58,21 +58,27 @@ public abstract class LookupsCollection<T> : ILookupsCollection<T> where T : ILo
     
     private async Task EnsureLoadedAsync() {
         if (!_loaded) {
-            _all = await LoadAllAsync();
-            _idDictionary = _all.ToDictionary(x => x.Id,
-                                              x => x,
-                                              StringComparer.InvariantCultureIgnoreCase);
+            var all = await LoadAllAsync();
 
-            if (typeof(T).ImplementsInterface<INamedLookup>()) {
-                _nameDictionary = _all.GroupBy(x => ((INamedLookup) x).Name.ToLowerInvariant())
-                                      .ToDictionary(x => x.Key,
-                                                    x => (IReadOnlyList<T>) x.ToList(),
-                                                    StringComparer.InvariantCultureIgnoreCase);
-            }
+            Reload(all);
 
             _loaded = true;
         }
     }
     
     protected abstract Task<IReadOnlyList<T>> LoadAllAsync();
+
+    protected void Reload(IEnumerable<T> all) {
+        _all = all.OrEmpty().ToList();
+        _idDictionary = _all.ToDictionary(x => x.Id,
+                                          x => x,
+                                          StringComparer.InvariantCultureIgnoreCase);
+
+        if (typeof(T).ImplementsInterface<INamedLookup>()) {
+            _nameDictionary = _all.GroupBy(x => ((INamedLookup) x).Name.ToLowerInvariant())
+                                  .ToDictionary(x => x.Key,
+                                                x => (IReadOnlyList<T>) x.ToList(),
+                                                StringComparer.InvariantCultureIgnoreCase);
+        }
+    }
 }
