@@ -29,19 +29,21 @@ public class CropperNotificationHandlers : INotificationAsyncHandler<ContentPubl
 
     public async Task HandleAsync(ContentPublishingNotification notification, CancellationToken cancellationToken) {
         foreach (var content in notification.PublishedEntities) {
-            var publishingCulture = content.AvailableCultures
-                                           .SingleOrDefault(x => notification.IsPublishingCulture(notification.PublishedEntities.First(), x));;
-            var contentProperties = _contentHelper.GetContentProperties(content, publishingCulture);
-            var properties = GetProperties(contentProperties);
+            var publishingCultures = content.AvailableCultures.Where(x => notification.IsPublishingCulture(notification.PublishedEntities.First(), x));
+            
+            foreach (var publishingCulture in publishingCultures) {
+                var contentProperties = _contentHelper.GetContentProperties(content, publishingCulture);
+                var properties = GetProperties(contentProperties);
 
-            var cropperProperties = properties.Where(x => x.Type.HasEditorAlias(CropperConstants.PropertyEditorAlias))
-                                              .ToList();
+                var cropperProperties = properties.Where(x => x.Type.HasEditorAlias(CropperConstants.PropertyEditorAlias))
+                                                  .ToList();
 
-            foreach (var property in cropperProperties) {
-                try {
-                    await GenerateCropsAsync(property, cancellationToken);
-                } catch (Exception ex) {
-                    notification.CancelWithError($"Generating image crops failed with error: {ex.Message}");
+                foreach (var property in cropperProperties) {
+                    try {
+                        await GenerateCropsAsync(property, cancellationToken);
+                    } catch (Exception ex) {
+                        notification.CancelWithError($"Generating image crops failed with error: {ex.Message}");
+                    }
                 }
             }
         }
