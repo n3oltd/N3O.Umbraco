@@ -20,7 +20,8 @@ public class FundraisingPageAccessControl : IContentAccessControl {
     public bool CanEdit(IMember member, IContent content) {
         var contentProperties = _contentHelper.GetContentProperties(content);
 
-        var allowedMembers = _contentHelper.GetPickerValues<IPublishedContent>(contentProperties, CrowdfundingConstants.CrowdfundingPage.Properties.AllowedMembers);
+        var allowedMembers = _contentHelper.GetDataListValues<IPublishedContent>(contentProperties,
+                                                                               CrowdfundingConstants.CrowdfundingPage.Properties.AllowedMembers);
 
         if (allowedMembers.Any(x => x.Id == member.Id)) {
             return true;

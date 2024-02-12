@@ -1,18 +1,20 @@
 ﻿using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Members;
+using System;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models;
 
 namespace N3O.Umbraco.Crowdfunding; 
 
-public class FundraisingPageModeAccessorAccessor : IFundraisingPageModeAccessor {
+public class FundraisingPageModeAccessor : IFundraisingPageModeAccessor {
     private readonly IMembersAccessControl _membersAccessControl;
 
-    public FundraisingPageModeAccessorAccessor(IMembersAccessControl membersAccessControl) {
+    public FundraisingPageModeAccessor(IMembersAccessControl membersAccessControl) {
         _membersAccessControl = membersAccessControl;
     }
     
-    public FundraisingPageMode GetPageMode(Member member, IContent content) {
-        if (_membersAccessControl.CanEdit(member, content)) {
+    public async Task<FundraisingPageMode> GetPageMode(Guid pageId) {
+        if (await _membersAccessControl.CanEditAsync(pageId)) {
             return FundraisingPageModes.Edit;
         } else {
             return FundraisingPageModes.View;

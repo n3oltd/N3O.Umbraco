@@ -34,7 +34,7 @@ public class FundraisingPages : IFundraisingPages {
         return _contentEditor.ForExisting(id);
     }
     
-    public async Task<IContentPublisher> GetEditorAsync(string name) {
-        return _contentEditor.New(name, Guid.Empty, CrowdfundingConstants.CrowdfundingPage.Alias);
+    public IContentPublisher New(string name) {
+        return _contentEditor.New(name, Guid.Parse("d2d6ad39-623e-4710-ad51-287f9bb2d8bb"), CrowdfundingConstants.CrowdfundingPage.Alias);
     }
 }

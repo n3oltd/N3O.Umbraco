@@ -6,5 +6,5 @@ namespace N3O.Umbraco.Crowdfunding;
 
 public interface IFundraisingPages {
     Task<IContentPublisher> GetEditorAsync(Guid id);
-    Task<IContentPublisher> GetEditorAsync(string name);
+    IContentPublisher New(string name);
 }
