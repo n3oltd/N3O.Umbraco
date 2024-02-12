@@ -4,6 +4,7 @@ using N3O.Umbraco.Entities;
 using N3O.Umbraco.Giving.Checkout.Entities;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
+using N3O.Umbraco.Json;
 using NodaTime;
 using System;
 using System.Collections.Generic;
@@ -15,12 +16,15 @@ namespace N3O.Umbraco.Crowdfunding.ChangeFeeds;
 public class CheckoutChangeFeed : ChangeFeed<Checkout> {
     private readonly IClock _clock;
     private readonly ICrowdfundingContributionRepository _crowdfundingRepository;
-    
+    private readonly IJsonProvider _jsonProvider;
     
     public CheckoutChangeFeed(ILogger<CheckoutChangeFeed> logger,
                               IClock clock,
-                              ICrowdfundingContributionRepository crowdfundingRepository) : base(logger) {
+                              ICrowdfundingContributionRepository crowdfundingRepository,
+                              IJsonProvider jsonProvider) 
+        : base(logger) {
         _crowdfundingRepository = crowdfundingRepository;
+        _jsonProvider = jsonProvider;
         _clock = clock;
     }
     
@@ -46,7 +50,7 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
         var crowdfundingAllocations = GetCrowdfundingAllocations(givingType, checkout);
         
         foreach (var crowdfundingAllocation in crowdfundingAllocations) {
-            var crowdfundingData = crowdfundingAllocation.GetCrowdfundingData();
+            var crowdfundingData = crowdfundingAllocation.GetCrowdfundingData(_jsonProvider);
 
             await _crowdfundingRepository.AppendAsync(checkout.Reference.Text,
                                                       _clock.GetCurrentInstant(),

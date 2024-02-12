@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Models;
+using N3O.Umbraco.Giving.Services;
 using Umbraco.Cms.Core.DependencyInjection;
 
 namespace N3O.Umbraco.Giving;
@@ -19,5 +20,7 @@ public class GivingComposer : Composer {
         
         RegisterAll(t => t.ImplementsInterface<IAllocationExtensionBinder>(),
                     t => builder.Services.AddTransient(typeof(IAllocationExtensionBinder), t));
+        
+        builder.Services.AddSingleton<IAllocationExtensionPipeline, AllocationExtensionPipeline>();
     }
 }

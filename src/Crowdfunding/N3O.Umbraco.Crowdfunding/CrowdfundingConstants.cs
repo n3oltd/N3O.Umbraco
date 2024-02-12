@@ -1,6 +1,8 @@
 ﻿namespace N3O.Umbraco.Crowdfunding;
 
 public static class CrowdfundingConstants {
+    public const string ApiName = "Crowdfunding";
+    
     public static class CrowdfundingAllocation {
         public const string Key = "crowdfunding";
     }

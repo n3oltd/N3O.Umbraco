@@ -2,6 +2,7 @@ using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Lookups;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace N3O.Umbraco.Giving.Models;
 
@@ -14,6 +15,7 @@ public class AllocationRes : IAllocation {
     public SponsorshipAllocationRes Sponsorship { get; set; }
     public Guid? UpsellOfferId { get; set; }
     public bool Upsell { get; set; }
+    public Dictionary<string, object> Extensions { get; set; }
 
     [JsonIgnore]
     AllocationExtensionData IAllocation.AllocationExtensionData => null;

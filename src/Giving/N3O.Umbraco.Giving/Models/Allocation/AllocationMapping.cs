@@ -19,5 +19,6 @@ public class AllocationMapping : IMapDefinition {
         dest.Feedback = ctx.Map<FeedbackAllocation, FeedbackAllocationRes>(src.Feedback);
         dest.UpsellOfferId = src.UpsellOfferId;
         dest.Upsell = src.UpsellOfferId.HasValue();
+        dest.Extensions = src.AllocationExtensionData.JsonData.ToDictionary();
     }
 }

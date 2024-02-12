@@ -33,7 +33,7 @@ public class CrowdfundingDataReqValidator : ModelValidator<CrowdfundingDataReq> 
         
         RuleFor(x => x.Anonymous)
            .NotNull()
-           .WithMessage(Get<Strings>(s => s.SpecifyPresence));;
+           .WithMessage(Get<Strings>(s => s.SpecifyPresence));
 
         return base.Validate(context);
     }

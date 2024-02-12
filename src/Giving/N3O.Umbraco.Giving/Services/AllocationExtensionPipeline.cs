@@ -7,7 +7,7 @@ namespace N3O.Umbraco.Giving.Services;
 class AllocationExtensionPipeline : IAllocationExtensionPipeline {
     private readonly IReadOnlyList<IAllocationExtensionBinder> _allocationExtensionBinders;
     
-    public AllocationExtensionPipeline(IReadOnlyList<IAllocationExtensionBinder> allocationExtensionBinders) {
+    public AllocationExtensionPipeline(IEnumerable<IAllocationExtensionBinder> allocationExtensionBinders) {
         _allocationExtensionBinders = allocationExtensionBinders.ToList();
     }
     

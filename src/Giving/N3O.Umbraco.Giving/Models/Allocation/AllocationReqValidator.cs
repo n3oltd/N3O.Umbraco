@@ -93,18 +93,22 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
             .WithMessage(Get<Strings>(s => s.InvalidFundDimensions));
 
         RuleFor(x => x)
-           .Must((req) => ValidateAllocationExtensionData(req, allocationExtensionValidators));
+           .Must((req) => ValidateAllocationExtensionData(req, allocationExtensionValidators))
+           .WithMessage(Get<Strings>(s => s.InvalidAllocationExtensionData));
 
         ValidateCurrencies(currentCurrency);
     }
 
     private bool ValidateAllocationExtensionData(AllocationReq allocationReq,
                                                  IEnumerable<IAllocationExtensionValidator> allocationExtensionValidators) {
-        foreach (var allocationExtensionValidator in allocationExtensionValidators) {
-            allocationExtensionValidator.Validate(allocationReq);
+        foreach (var allocationExtensionValidator in allocationExtensionValidators.Where(x => x.CanValidate(allocationReq))) {
+            var result = allocationExtensionValidator.Validate(allocationReq);
+
+            if (!result.IsValid) {
+                return false;
+            }
         }
 
-        //TODO Fix
         return true;
     }
 
@@ -184,6 +188,7 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
         public string FundAllocationNotAllowed => "Fund cannot be specified for this type of allocation";
         public string InvalidFundDimensions => "One or more fund dimension values are invalid";
         public string InvalidValue => "Invalid value specified";
+        public string InvalidAllocationExtensionData => "One or more allocation extensions contain invalid data";
         public string SpecifyFundAllocation => "Please specify the fund allocation";
         public string SpecifyFundDimensions => "Please specify the fund dimensions";
         public string SpecifySponsorshipAllocation => "Please specify the sponsorship allocation";
