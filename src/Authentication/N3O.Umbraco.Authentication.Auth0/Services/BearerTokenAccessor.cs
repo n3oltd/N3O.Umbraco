@@ -15,9 +15,9 @@ public class BearerTokenAccessor {
     }
 
     public async Task<string> GetAsync() {
-        var token = await _auth0M2MTokenAccessor.GetTokenAsync(_auth0Options.M2MClient.Audience,
-                                                               _auth0Options.M2MClient.Id,
-                                                               _auth0Options.M2MClient.Secret);
+        var token = await _auth0M2MTokenAccessor.GetTokenAsync(_auth0Options.M2M.ApiIdentifier,
+                                                               _auth0Options.M2M.ClientId,
+                                                               _auth0Options.M2M.ClientSecret);
         
         return token;
     }

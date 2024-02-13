@@ -8,19 +8,19 @@ namespace N3O.Umbraco.Authentication.Auth0;
 public class Auth0M2MTokenAccessor {
     private static readonly MemoryCache Tokens = new(new MemoryCacheOptions());
     
-    private readonly IAuth0Client _apiClient;
+    private readonly IAuth0M2MClient _apiClient;
 
-    public Auth0M2MTokenAccessor(IAuth0Client apiClient) {
+    public Auth0M2MTokenAccessor(IAuth0M2MClient apiClient) {
         _apiClient = apiClient;
     }
 
-    public async Task<string> GetTokenAsync(string audience, string clientId, string clientSecret) {
-        var cacheKey = $"{nameof(Auth0M2MTokenAccessor)}{nameof(GetTokenAsync)}{audience}{clientId}{clientSecret}";
+    public async Task<string> GetTokenAsync(string apiIdentifier, string clientId, string clientSecret) {
+        var cacheKey = $"{nameof(Auth0M2MTokenAccessor)}{nameof(GetTokenAsync)}{apiIdentifier}{clientId}{clientSecret}";
 
         var token = await Tokens.GetOrCreateAsync(cacheKey, async cacheEntry => {
             var req = new OAuthTokenReq();
 
-            req.Audience = audience;
+            req.Audience = apiIdentifier;
             req.GrantType = "client_credentials";
             req.ClientId = clientId;
             req.ClientSecret = clientSecret;
