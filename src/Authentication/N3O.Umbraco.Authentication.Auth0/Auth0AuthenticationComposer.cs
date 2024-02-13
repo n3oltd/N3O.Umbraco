@@ -7,6 +7,7 @@ using N3O.Umbraco.Authentication.Auth0.Clients;
 using N3O.Umbraco.Authentication.Auth0.Options;
 using N3O.Umbraco.Authentication.Extensions;
 using N3O.Umbraco.Composing;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 using Refit;
 using System;
@@ -57,22 +58,31 @@ public class Auth0AuthenticationComposer : Composer {
     
     private void RegisterAuth0ManagementClient(IUmbracoBuilder builder) {
         builder.Services.AddScoped<IManagementApiClient>(serviceProvider => {
-            var auth0Options = serviceProvider.GetRequiredService<IOptions<Auth0AuthenticationOptions>>().Value;
-            var apiBaseUrl = new Url(auth0Options.ApiBaseUrl).AppendPathSegment("api").AppendPathSegment("v2");
+            var authAuthentication0Options = serviceProvider.GetRequiredService<IOptions<Auth0AuthenticationOptions>>().Value;
+            var auth0BackOfficeOptions = serviceProvider.GetRequiredService<IOptions<Auth0BackOfficeAuthenticationOptions>>().Value;
+            
+            var apiBaseUrl = GetUrlWithSegments(authAuthentication0Options.ApiBaseUrl, "api", "v2", "/");
+            var managementClientBaseUrl = GetUrlWithSegments(auth0BackOfficeOptions.Authority, "api", "v2", "/");
 
             var tokenAccessor = serviceProvider.GetRequiredService<Auth0M2MTokenAccessor>();
             var token = tokenAccessor.GetTokenAsync(apiBaseUrl,
-                                                    auth0Options.ManagementClient.Id,
-                                                    auth0Options.ManagementClient.Secret)
+                                                    authAuthentication0Options.ManagementClient.Id,
+                                                    authAuthentication0Options.ManagementClient.Secret)
                                      .GetAwaiter()
                                      .GetResult();
             var httpClient = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
 
             var connection = new HttpClientManagementConnection(httpClient);
 
-            var auth0Client = new ManagementApiClient(token, apiBaseUrl, connection);
+            var auth0Client = new ManagementApiClient(token, managementClientBaseUrl.ToUri(), connection);
 
             return auth0Client;
         });
+    }
+
+    private Url GetUrlWithSegments(string baseUrl, params string[] segments) {
+        var url = new Url(baseUrl).AppendPathSegments(segments.OrEmpty());
+
+        return url;
     }
 }
