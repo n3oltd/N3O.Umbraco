@@ -27,7 +27,7 @@ public class Auth0AuthenticationComposer : Composer {
         builder.Services.AddTransient<IUserDirectory, UserDirectory>();
         
         builder.Services.AddTransient<IAuth0Client>(serviceProvider => {
-            var auth0Options = serviceProvider.GetRequiredService<IOptions<Auth0AuthenticationOptions>>().Value;
+            var auth0BackOfficeOptions = serviceProvider.GetRequiredService<IOptions<Auth0BackOfficeAuthenticationOptions>>().Value;
             var jsonProvider = serviceProvider.GetRequiredService<IJsonProvider>();
             var jsonSettings = jsonProvider.GetSettings();
 
@@ -35,7 +35,7 @@ public class Auth0AuthenticationComposer : Composer {
             jsonSettings.ContractResolver = new SnakeCasePropertyNamesContractResolver();
             refitSettings.ContentSerializer = new NewtonsoftJsonContentSerializer(jsonSettings);
 
-            var apiClient = RestService.For<IAuth0Client>(auth0Options.ApiBaseUrl, refitSettings);
+            var apiClient = RestService.For<IAuth0Client>(auth0BackOfficeOptions.Authority, refitSettings);
 
             return apiClient;
         });
