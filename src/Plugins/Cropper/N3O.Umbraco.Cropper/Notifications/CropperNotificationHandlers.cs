@@ -30,21 +30,17 @@ public class CropperNotificationHandlers : INotificationAsyncHandler<ContentPubl
     public async Task HandleAsync(ContentPublishingNotification notification, CancellationToken cancellationToken) {
         foreach (var content in notification.PublishedEntities) {
             var publishingCultures = content.AvailableCultures.Where(x => notification.IsPublishingCulture(notification.PublishedEntities.First(), x));
-            
-            foreach (var publishingCulture in publishingCultures) {
-                var contentProperties = _contentHelper.GetContentProperties(content, publishingCulture);
-                var properties = GetProperties(contentProperties);
 
-                var cropperProperties = properties.Where(x => x.Type.HasEditorAlias(CropperConstants.PropertyEditorAlias))
-                                                  .ToList();
-
-                foreach (var property in cropperProperties) {
-                    try {
-                        await GenerateCropsAsync(property, cancellationToken);
-                    } catch (Exception ex) {
-                        notification.CancelWithError($"Generating image crops failed with error: {ex.Message}");
-                    }
+            if (publishingCultures.HasAny()) {
+                foreach (var publishingCulture in publishingCultures) {
+                    var contentProperties = _contentHelper.GetContentProperties(content, publishingCulture);
+                    
+                    await ProcessCropperPropertiesAsync(contentProperties, notification.CancelWithError, cancellationToken);
                 }
+            } else {
+                var contentProperties = _contentHelper.GetContentProperties(content);
+                
+                await ProcessCropperPropertiesAsync(contentProperties, notification.CancelWithError, cancellationToken);
             }
         }
     }
@@ -74,6 +70,23 @@ public class CropperNotificationHandlers : INotificationAsyncHandler<ContentPubl
             var cropperSource = JsonConvert.DeserializeObject<CropperSource>(json);
 
             await _imageCropper.CropAllAsync(configuration, cropperSource, cancellationToken);
+        }
+    }
+    
+    private async Task ProcessCropperPropertiesAsync(ContentProperties contentProperties,
+                                                     Action<string> cancel,
+                                                     CancellationToken cancellationToken) {
+        var properties = GetProperties(contentProperties);
+
+        var cropperProperties = properties.Where(x => x.Type.HasEditorAlias(CropperConstants.PropertyEditorAlias))
+                                          .ToList();
+
+        foreach (var property in cropperProperties) {
+            try {
+                await GenerateCropsAsync(property, cancellationToken);
+            } catch (Exception ex) {
+                cancel($"Generating image crops failed with error: {ex.Message}");
+            }
         }
     }
 }
