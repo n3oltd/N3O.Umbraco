@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
+using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Extensions;
@@ -33,14 +34,10 @@ public class CropperNotificationHandlers : INotificationAsyncHandler<ContentPubl
 
             if (publishingCultures.HasAny()) {
                 foreach (var publishingCulture in publishingCultures) {
-                    var contentProperties = _contentHelper.GetContentProperties(content, publishingCulture);
-                    
-                    await ProcessCropperPropertiesAsync(contentProperties, notification.CancelWithError, cancellationToken);
+                    await ProcessCropperPropertiesAsync(content, publishingCulture, notification.CancelWithError, cancellationToken);
                 }
             } else {
-                var contentProperties = _contentHelper.GetContentProperties(content);
-                
-                await ProcessCropperPropertiesAsync(contentProperties, notification.CancelWithError, cancellationToken);
+                await ProcessCropperPropertiesAsync(content, null, notification.CancelWithError, cancellationToken);
             }
         }
     }
@@ -73,13 +70,14 @@ public class CropperNotificationHandlers : INotificationAsyncHandler<ContentPubl
         }
     }
     
-    private async Task ProcessCropperPropertiesAsync(ContentProperties contentProperties,
+    private async Task ProcessCropperPropertiesAsync(IContent content,
+                                                     string publishingCulture,
                                                      Action<string> cancel,
                                                      CancellationToken cancellationToken) {
+        var contentProperties = _contentHelper.GetContentProperties(content, publishingCulture);
         var properties = GetProperties(contentProperties);
 
-        var cropperProperties = properties.Where(x => x.Type.HasEditorAlias(CropperConstants.PropertyEditorAlias))
-                                          .ToList();
+        var cropperProperties = properties.Where(x => x.Type.HasEditorAlias(CropperConstants.PropertyEditorAlias)).ToList();
 
         foreach (var property in cropperProperties) {
             try {
