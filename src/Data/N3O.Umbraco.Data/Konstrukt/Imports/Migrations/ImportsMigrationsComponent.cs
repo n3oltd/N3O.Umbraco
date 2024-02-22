@@ -28,7 +28,8 @@ public class ImportsMigrationsComponent : IComponent {
     public void Initialize() {
         if (_runtimeState.Level == RuntimeLevel.Run) {
             var migrationPlan = new MigrationPlan(DataConstants.Tables.Imports.Name);
-            migrationPlan.From(string.Empty).To<ImportsMigration>("v1");
+            migrationPlan.From(string.Empty).To<ImportsMigrationV1>("v1");
+            migrationPlan.From("v1").To<ImportsMigrationV2>("v2");
 
             var upgrader = new Upgrader(migrationPlan);
             upgrader.Execute(_migrationPlanExecutor.Value, _scopeProvider.Value, _keyValueService.Value);

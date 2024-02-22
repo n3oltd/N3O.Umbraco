@@ -74,6 +74,9 @@ public partial class Import {
     [Column(nameof(ImportedContentSummary))]
     [NullSetting(NullSetting = NullSettings.Null)]
     public string ImportedContentSummary { get; set; }
+    
+    [Column(nameof(MoveUpdatedContentToContainer))]
+    public bool MoveUpdatedContentToContainer { get; set; }
 
     [Ignore]
     public bool CanProcess => Status.IsAnyOf(ImportStatuses.Abandoned, ImportStatuses.Queued, ImportStatuses.Error);

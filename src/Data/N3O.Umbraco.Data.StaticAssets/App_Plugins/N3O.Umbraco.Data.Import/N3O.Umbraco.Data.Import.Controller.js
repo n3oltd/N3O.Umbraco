@@ -12,6 +12,7 @@ angular.module("umbraco")
             
             $scope.content = await contentResource.getById(editorState.current.id);
             $scope.contentTypes = await getContentTypes($scope.content.key);
+            $scope.moveUpdatedContentToCurrentLocation = false;
 
             fetch("/umbraco/backoffice/api/Imports/lookups/datePatterns", {
                 headers: {
@@ -20,8 +21,8 @@ angular.module("umbraco")
             })
             .then(res => res.json())
             .then(res => {
-                $scope.dateFormats = res;
-                $scope.dateFormat = res[0];
+                $scope.datePatterns = res;
+                $scope.datePattern = res[0];
             });
         })();
 
@@ -66,7 +67,8 @@ angular.module("umbraco")
             const zipStorageToken = await getStorageToken(zipFile);
 
             let req = {
-                datePattern: $scope.dateFormat.id,
+                datePattern: $scope.datePattern.id,
+                moveUpdatedContentToCurrentLocation: $scope.moveUpdatedContentToCurrentLocation,
                 csvFile: csvStorageToken,
                 zipFile: zipStorageToken
             };

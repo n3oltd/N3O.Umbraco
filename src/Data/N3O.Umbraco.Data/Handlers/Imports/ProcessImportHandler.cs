@@ -165,6 +165,10 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
             contentPublisher = _contentEditor.New(import.Name, import.ContainerId, contentType.Alias, contentId);
         } else if (import.Action == ImportActions.Update) {
             contentPublisher = _contentEditor.ForExisting(import.ReplacesId.Value);
+
+            if (import.MoveUpdatedContentToContainer) {
+                contentPublisher.Move(import.ContainerId);
+            }
         } else {
             throw UnrecognisedValueException.For(import.Action);
         }

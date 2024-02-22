@@ -31,13 +31,27 @@
                     <div class="control-group umb-control-group">
                         <div class="umb-el-wrap">
                             <label class="control-label">
-                                Date Format <strong class="umb-control-required">*</strong>
+                                Date Pattern <strong class="umb-control-required">*</strong>
                             </label>
 
                             <div class="controls">
-                                <select class="ng-select" ng-model="dateFormat" ng-disabled="processing" no-dirty-check>
-                                    <option ng-repeat="item in dateFormats" ng-value="item">{{item.name}}</option>
+                                <select class="ng-select" ng-model="datePattern" ng-disabled="processing" no-dirty-check>
+                                    <option ng-repeat="item in datePatterns" ng-value="item">{{item.name}}</option>
                                 </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="umb-property">
+                    <div class="control-group umb-control-group">
+                        <div class="umb-el-wrap">
+                            <label class="control-label">
+                                Move Updated Content to Current Location
+                            </label>
+
+                            <div class="controls">
+                                <input type="checkbox" ng-model="moveUpdatedContentToCurrentLocation" ng-disabled="processing" no-dirty-check />
                             </div>
                         </div>
                     </div>

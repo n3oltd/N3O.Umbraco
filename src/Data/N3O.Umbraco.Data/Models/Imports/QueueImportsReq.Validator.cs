@@ -11,6 +11,10 @@ public class QueueImportsReqValidator : ModelValidator<QueueImportsReq> {
         RuleFor(x => x.DatePattern)
             .NotNull()
             .WithMessage(Get<Strings>(s => s.SpecifyDatePattern));
+        
+        RuleFor(x => x.MoveUpdatedContentToCurrentLocation)
+            .NotNull()
+            .WithMessage(Get<Strings>(s => s.SpecifyMoveUpdatedContentToCurrentLocation));
 
         RuleFor(x => x.CsvFile)
             .NotNull()
@@ -32,5 +36,6 @@ public class QueueImportsReqValidator : ModelValidator<QueueImportsReq> {
         public string InvalidZipFile => "Invalid zip file";
         public string SpecifyCsvFile => "CSV file must be specified";
         public string SpecifyDatePattern => "Date pattern must be specified";
+        public string SpecifyMoveUpdatedContentToCurrentLocation => "Move updated content to current location must be specified";
     }
 }

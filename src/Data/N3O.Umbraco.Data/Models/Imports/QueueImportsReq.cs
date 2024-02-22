@@ -7,6 +7,9 @@ public class QueueImportsReq {
     [Name("Date Pattern")]
     public DatePattern DatePattern { get; set; }
     
+    [Name("Move Updated Content to Current Location")]
+    public bool? MoveUpdatedContentToCurrentLocation { get; set; }
+    
     [Name("CSV File")]
     public StorageToken CsvFile { get; set; }
     

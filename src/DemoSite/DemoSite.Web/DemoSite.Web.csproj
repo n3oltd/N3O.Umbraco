@@ -25,6 +25,12 @@
         <ProjectReference Include="..\DemoSite.Core\DemoSite.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\Storage\1708600983086\" />
+      <Folder Include="wwwroot\Storage\1708600996879\" />
+      <Folder Include="wwwroot\Storage\1708601036385\" />
+    </ItemGroup>
+
     <Import Project="..\..\N3O.Umbraco.Cms\build\N3O.Umbraco.Cms.targets" />
     <Import Project="..\..\Data\N3O.Umbraco.Data.StaticAssets\build\N3O.Umbraco.Data.StaticAssets.targets" />
     <Import Project="..\..\Plugins\Cropper\N3O.Umbraco.Cropper.StaticAssets\build\N3O.Umbraco.Cropper.StaticAssets.targets" />

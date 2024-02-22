@@ -22,6 +22,16 @@ public class ContentPublisher : IContentPublisher {
         return property != null;
     }
 
+    public void Move(Guid parentId) {
+        var newParent = _contentService.GetById(parentId);
+
+        if (newParent == null) {
+            throw new Exception($"Move failed as no content found with ID {parentId}");
+        }
+
+        _content.ParentId = newParent.Id;
+    }
+
     public PublishResult SaveAndPublish() {
         return Save(() => _contentService.SaveAndPublish(_content));
     }
