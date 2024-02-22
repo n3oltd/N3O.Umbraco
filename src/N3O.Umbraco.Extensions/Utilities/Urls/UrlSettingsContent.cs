@@ -9,7 +9,7 @@ namespace N3O.Umbraco.Utilities;
 public class UrlSettingsContent : UmbracoContent<UrlSettingsContent> {
     public string DevelopmentBaseUrl => GetValue(x => x.DevelopmentBaseUrl);
     public string ProductionBaseUrl => GetValue(x => x.ProductionBaseUrl);
-    public string StagingBaseUrl => GetValue(x => x.ProductionBaseUrl);
+    public string StagingBaseUrl => GetValue(x => x.StagingBaseUrl);
     
     public Url BaseUrl(IWebHostEnvironment webHostEnvironment) {
         if (webHostEnvironment.IsProduction()) {
