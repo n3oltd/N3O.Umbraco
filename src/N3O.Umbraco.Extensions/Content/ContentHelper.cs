@@ -122,8 +122,8 @@ public class ContentHelper : IContentHelper {
         return result;
     }
     
-    public IReadOnlyList<IContent> GetDescendants(IContent content) {
-        return GetAllPagedContent(content, _contentService.Value.GetPagedDescendants);
+    public IReadOnlyList<IContent> GetDescendants(IContent content, IQuery<IContent> query = null) {
+        return GetAllPagedContent(content, _contentService.Value.GetPagedDescendants, query);
     }
 
     public IReadOnlyList<T> GetPublishedAncestors<T>(IContent content) where T : IPublishedContent {
@@ -138,14 +138,16 @@ public class ContentHelper : IContentHelper {
         return GetDescendants(content).Select(x => _contentLocator.Value.ById<T>(x.Key)).ToList();
     }
     
-    private IReadOnlyList<IContent> GetAllPagedContent(IContent content, GetPagedContent getPagedContent) {
+    private IReadOnlyList<IContent> GetAllPagedContent(IContent content,
+                                                       GetPagedContent getPagedContent,
+                                                       IQuery<IContent> query = null) {
         var descendants = new List<IContent>();
 
         var pageIndex = 0;
         var pageSize = 100;
 
         while (true) {
-            descendants.AddRange(getPagedContent(content.Id, pageIndex, pageSize, out var totalRecords));
+            descendants.AddRange(getPagedContent(content.Id, pageIndex, pageSize, out var totalRecords, query));
 
             if ((pageIndex + 1) * pageSize >= totalRecords) {
                 break;
