@@ -19,6 +19,7 @@ public interface IImportQueue {
                      Guid? contentId,
                      string replacesCriteria,
                      string name,
+                     bool moveUpdatedContentToContainer,
                      IReadOnlyDictionary<string, string> sourceValues,
                      CancellationToken cancellationToken = default);
 
