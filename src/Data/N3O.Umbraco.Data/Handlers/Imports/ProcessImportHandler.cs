@@ -130,9 +130,7 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
             resolvers.Add(new StorageFolderBlobResolver(storageFolder));
         }
 
-        var parser = _parserFactory.GetParser(parserSettings.DatePattern,
-                                              parserSettings.DecimalSeparator,
-                                              resolvers);
+        var parser = _parserFactory.GetParser(parserSettings.DatePattern, parserSettings.DecimalSeparator, resolvers);
 
         return parser;
     }
@@ -182,13 +180,21 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
                                 IReadOnlyList<ImportField> fields) {
         var converter = propertyInfo.GetPropertyConverter(_converters);
 
-        converter.Import(contentPublisher.Content,
-                         _converters,
-                         parser,
-                         _errorLog,
-                         null,
-                         propertyInfo,
-                         fields);
+        converter.Import(contentPublisher.Content, _converters, parser, _errorLog, null, propertyInfo, fields);
+    }
+    
+    private void SaveOrPublishContent(IContentPublisher contentPublisher, Import import) {
+        if (import.MoveUpdatedContentToContainer && import.ReplacesId.HasValue) {
+            var content = _contentService.GetById(import.ReplacesId.Value);
+
+            if (!content.Edited && content.Published) {
+                PublishContent(contentPublisher, import);
+            } else {
+                SaveContent(contentPublisher, import);
+            }
+        } else {
+            PublishContent(contentPublisher, import);
+        }
     }
     
     private void PublishContent(IContentPublisher contentPublisher, Import import) {
@@ -204,11 +210,7 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
             if (wasPublished) {
                 import.SavedAndPublished(_clock, savedContent.Key, contentSummary);
             } else {
-                import.Saved(_jsonProvider,
-                             _clock,
-                             savedContent.Key,
-                             contentSummary,
-                             GetSaveWarnings(publishResult));
+                import.Saved(_jsonProvider, _clock, savedContent.Key, contentSummary, GetSaveWarnings(publishResult));
             }
         } else {
             import.Error(_jsonProvider, publishResult.EventMessages.GetAll().Select(x => x.Message));
@@ -224,25 +226,7 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
 
         var warningText = _formatter.Text.Format<Strings>(s => s.WasEdited_1, contentSummary);
 
-        import.Saved(_jsonProvider,
-                     _clock,
-                     savedContent.Key,
-                     contentSummary,
-                     warningText.Yield());
-    }
-    
-    private void SaveOrPublishContent(IContentPublisher contentPublisher, Import import) {
-        if (import.MoveUpdatedContentToContainer && import.ReplacesId.HasValue) {
-            var content = _contentService.GetById(import.ReplacesId.Value);
-
-            if (!content.Edited && content.Published) {
-                PublishContent(contentPublisher, import);
-            } else {
-                SaveContent(contentPublisher, import);
-            }
-        } else {
-            PublishContent(contentPublisher, import);
-        }
+        import.Saved(_jsonProvider, _clock, savedContent.Key, contentSummary, warningText.Yield());
     }
 
     public class Strings : CodeStrings {

@@ -167,7 +167,7 @@ public class ImportQueue : IImportQueue {
     private Guid? FindExistingId(IContent container,
                                  IContentType contentType,
                                  string criteria,
-                                 List<Guid> searched = null) {
+                                 HashSet<Guid> searched = null) {
         var contentMatchers = _contentMatchers.Where(x => x.IsMatcher(contentType.Alias)).ToList();
         
         if (_descendants == null) {
@@ -185,9 +185,9 @@ public class ImportQueue : IImportQueue {
         }
 
         if (matches.None() && container.ParentId != -1) {
-            searched ??= new List<Guid>();
+            searched ??= new HashSet<Guid>();
             
-            searched.AddRange(_descendants.OrEmpty().Select(x => x.Key));
+            _descendants.OrEmpty().Select(x => x.Key).Do(x => searched.Add(x));
             
             _descendants = null;
 
@@ -207,7 +207,7 @@ public class ImportQueue : IImportQueue {
         }
     }
 
-    private void PopulateDescendants(IContent container, int contentTypeId, IEnumerable<Guid> searched = null) {
+    private void PopulateDescendants(IContent container, int contentTypeId, HashSet<Guid> searched = null) {
         var query = _coreScopeProvider.CreateQuery<IContent>().Where(x => contentTypeId == x.ContentTypeId);
         
         if (searched.HasValue()) {
