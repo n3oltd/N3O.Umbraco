@@ -17,6 +17,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Scoping;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Persistence;
 
@@ -37,6 +38,7 @@ public class ImportQueue : IImportQueue {
     private readonly IReadOnlyList<IImportPropertyFilter> _propertyFilters;
     private readonly List<IContentMatcher> _contentMatchers;
     private IReadOnlyList<IContent> _descendants;
+    private readonly ICoreScopeProvider _coreScopeProvider;
 
     public ImportQueue(ICounters counters,
                        IJsonProvider jsonProvider,
@@ -49,7 +51,8 @@ public class ImportQueue : IImportQueue {
                        IFormatter formatter,
                        IEnumerable<IImportPropertyFilter> propertyFilters,
                        IEnumerable<IPropertyConverter> propertyConverters,
-                       IEnumerable<IContentMatcher> contentMatchers) {
+                       IEnumerable<IContentMatcher> contentMatchers,
+                       ICoreScopeProvider coreScopeProvider) {
         _counters = counters;
         _jsonProvider = jsonProvider;
         _contentHelper = contentHelper;
@@ -58,6 +61,7 @@ public class ImportQueue : IImportQueue {
         _dataTypeService = dataTypeService;
         _umbracoDatabaseFactory = umbracoDatabaseFactory;
         _importProcessingQueue = importProcessingQueue;
+        _coreScopeProvider = coreScopeProvider;
         _errorLog = new ErrorLog(formatter);
         _propertyConverters = propertyConverters.ToList();
         _propertyFilters = propertyFilters.ToList();
@@ -75,6 +79,7 @@ public class ImportQueue : IImportQueue {
                                   Guid? contentId,
                                   string replacesCriteria,
                                   string name,
+                                  bool moveUpdatedContentToContainer,
                                   IReadOnlyDictionary<string, string> sourceValues,
                                   CancellationToken cancellationToken = default) {
         var containerContent = _contentService.GetById(containerId);
@@ -107,6 +112,7 @@ public class ImportQueue : IImportQueue {
         import.ContentTypeAlias = contentType.Alias;
         import.ContainerId = containerContent.Key;
         import.ContentTypeName = contentType.Name;
+        import.MoveUpdatedContentToContainer = moveUpdatedContentToContainer;
 
         if (replacesCriteria.HasValue() && contentId.HasValue()) {
             _errorLog.AddError<Strings>(s => s.CannotSpecifyContentIdAndReplacementCriteria);
@@ -116,7 +122,7 @@ public class ImportQueue : IImportQueue {
 
         if (replacesCriteria.HasValue()) {
             import.Action = ImportActions.Update;
-            import.ReplacesId = FindExistingId(containerContent, contentType.Alias, replacesCriteria);
+            import.ReplacesId = FindExistingId(containerContent, contentType, replacesCriteria);
         } else {
             import.Action = ImportActions.Create;
         }
@@ -158,20 +164,34 @@ public class ImportQueue : IImportQueue {
                                                                 storageFolderName));
     }
     
-    private Guid? FindExistingId(IContent container, string contentTypeAlias, string criteria) {
-        var contentMatchers = _contentMatchers.Where(x => x.IsMatcher(contentTypeAlias)).ToList();
+    private Guid? FindExistingId(IContent container,
+                                 IContentType contentType,
+                                 string criteria,
+                                 List<Guid> searched = null) {
+        var contentMatchers = _contentMatchers.Where(x => x.IsMatcher(contentType.Alias)).ToList();
         
         if (_descendants == null) {
-            PopulateDescendants(container, contentTypeAlias);
+            PopulateDescendants(container, contentType.Id, searched);
         }
 
         var matches = new List<IContent>();
+        
         foreach (var descendant in _descendants) {
             foreach (var contentMatcher in contentMatchers) {
                 if (contentMatcher.IsMatch(descendant, criteria)) {
                     matches.Add(descendant);
                 }
             }
+        }
+
+        if (matches.None() && container.ParentId != -1) {
+            searched ??= new List<Guid>();
+            
+            searched.AddRange(_descendants.OrEmpty().Select(x => x.Key));
+            
+            _descendants = null;
+
+            return FindExistingId(_contentService.GetById(container.ParentId), contentType, criteria, searched);
         }
 
         if (matches.IsSingle()) {
@@ -187,10 +207,14 @@ public class ImportQueue : IImportQueue {
         }
     }
 
-    private void PopulateDescendants(IContent container, string contentTypeAlias) {
-        _descendants = _contentHelper.GetDescendants(container)
-                                     .Where(x => x.ContentType.Alias.EqualsInvariant(contentTypeAlias))
-                                     .ToList();
+    private void PopulateDescendants(IContent container, int contentTypeId, IEnumerable<Guid> searched = null) {
+        var query = _coreScopeProvider.CreateQuery<IContent>().Where(x => contentTypeId == x.ContentTypeId);
+        
+        if (searched.HasValue()) {
+            query = query.Where(x => !searched.Contains(x.Key));
+        }
+        
+        _descendants = _contentHelper.GetDescendants(container, query).ToList();
     }
     
     private string GetImportData(Reference reference,

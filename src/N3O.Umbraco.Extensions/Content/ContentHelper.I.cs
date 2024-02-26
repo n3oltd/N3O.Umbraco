@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.Persistence.Querying;
 using Umbraco.Cms.Core.PropertyEditors;
 
 namespace N3O.Umbraco.Content;
@@ -27,7 +28,7 @@ public interface IContentHelper {
                                                        object propertyValue)
         where TConverter : class, IPropertyValueConverter;
     
-    IReadOnlyList<IContent> GetDescendants(IContent content);
+    IReadOnlyList<IContent> GetDescendants(IContent content, IQuery<IContent> query = null);
 
     IReadOnlyList<T> GetPublishedAncestors<T>(IContent content) where T : IPublishedContent;
     

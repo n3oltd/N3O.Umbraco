@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Persistence;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Data.Handlers;
 
@@ -95,27 +96,7 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
                     
                     _errorLog.ThrowIfHasErrors();
 
-                    var publishResult = contentPublisher.SaveAndPublish();
-
-                    var savedContent = _contentService.GetById(publishResult.Content.Id);
-                    var wasSaved = savedContent != null;
-                    var wasPublished = publishResult.Success;
-
-                    if (wasSaved) {
-                        var contentSummary = GetContentSummary(savedContent);
-                        
-                        if (wasPublished) {
-                            import.SavedAndPublished(_clock, savedContent.Key, contentSummary);
-                        } else {
-                            import.Saved(_jsonProvider,
-                                         _clock,
-                                         savedContent.Key,
-                                         contentSummary,
-                                         GetSaveWarnings(publishResult));
-                        }
-                    } else {
-                        import.Error(_jsonProvider, publishResult.EventMessages.GetAll().Select(x => x.Message));
-                    }
+                    SaveOrPublishContent(contentPublisher, import);
                 } catch (ProcessingException processingException) {
                     import.Error(_jsonProvider, processingException.Errors);
                 } catch (Exception ex) {
@@ -178,21 +159,6 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
         return contentPublisher;
     }
 
-    private void ImportProperty(IContentPublisher contentPublisher,
-                                IParser parser,
-                                UmbracoPropertyInfo propertyInfo,
-                                IReadOnlyList<ImportField> fields) {
-        var converter = propertyInfo.GetPropertyConverter(_converters);
-
-        converter.Import(contentPublisher.Content,
-                         _converters,
-                         parser,
-                         _errorLog,
-                         null,
-                         propertyInfo,
-                         fields);
-    }
-
     private string GetContentSummary(IContent content) {
         var summariser = _contentSummarisers.SingleOrDefault(x => x.IsSummariser(content.ContentType.Alias));
         
@@ -209,8 +175,78 @@ public class ProcessImportHandler : IRequestHandler<ProcessImportCommand, None, 
                                                          invalidProperty.PropertyType.Name);
         }
     }
+    
+    private void ImportProperty(IContentPublisher contentPublisher,
+                                IParser parser,
+                                UmbracoPropertyInfo propertyInfo,
+                                IReadOnlyList<ImportField> fields) {
+        var converter = propertyInfo.GetPropertyConverter(_converters);
+
+        converter.Import(contentPublisher.Content,
+                         _converters,
+                         parser,
+                         _errorLog,
+                         null,
+                         propertyInfo,
+                         fields);
+    }
+    
+    private void PublishContent(IContentPublisher contentPublisher, Import import) {
+        var publishResult = contentPublisher.SaveAndPublish();
+
+        var savedContent = _contentService.GetById(publishResult.Content.Id);
+        var wasSaved = savedContent != null;
+        var wasPublished = publishResult.Success;
+
+        if (wasSaved) {
+            var contentSummary = GetContentSummary(savedContent);
+                        
+            if (wasPublished) {
+                import.SavedAndPublished(_clock, savedContent.Key, contentSummary);
+            } else {
+                import.Saved(_jsonProvider,
+                             _clock,
+                             savedContent.Key,
+                             contentSummary,
+                             GetSaveWarnings(publishResult));
+            }
+        } else {
+            import.Error(_jsonProvider, publishResult.EventMessages.GetAll().Select(x => x.Message));
+        }
+    }
+
+    private void SaveContent(IContentPublisher contentPublisher, Import import) {
+        contentPublisher.SaveUnpublished();
+
+        var savedContent = _contentService.GetById(import.ReplacesId.Value);
+                        
+        var contentSummary = GetContentSummary(savedContent);
+
+        var warningText = _formatter.Text.Format<Strings>(s => s.WasEdited_1, contentSummary);
+
+        import.Saved(_jsonProvider,
+                     _clock,
+                     savedContent.Key,
+                     contentSummary,
+                     warningText.Yield());
+    }
+    
+    private void SaveOrPublishContent(IContentPublisher contentPublisher, Import import) {
+        if (import.MoveUpdatedContentToContainer && import.ReplacesId.HasValue) {
+            var content = _contentService.GetById(import.ReplacesId.Value);
+
+            if (!content.Edited && content.Published) {
+                PublishContent(contentPublisher, import);
+            } else {
+                SaveContent(contentPublisher, import);
+            }
+        } else {
+            PublishContent(contentPublisher, import);
+        }
+    }
 
     public class Strings : CodeStrings {
         public string InvalidProperty_1 => $"The {"{0}".Quote()} property is invalid";
+        public string WasEdited_1 => $"Cannot publish edited content {"{0}".Quote()}";
     }
 }

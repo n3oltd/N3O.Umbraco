@@ -131,6 +131,7 @@ public class QueueImportsHandler : IRequestHandler<QueueImportsCommand, QueueImp
                                                contentId,
                                                replacesCriteria,
                                                name,
+                                               req.Model.MoveUpdatedContentToCurrentLocation.GetValueOrThrow(),
                                                sourceValues,
                                                cancellationToken);
 

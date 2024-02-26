@@ -51,6 +51,7 @@ public class ImportReceiver : WebhookReceiver {
                                        contentId,
                                        replacesCriteria,
                                        name,
+                                       false,
                                        sourceValues,
                                        cancellationToken);
 
