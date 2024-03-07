@@ -11,6 +11,7 @@ using N3O.Umbraco.Payments.Lookups;
 using N3O.Umbraco.Webhooks.Transforms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NodaTime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,8 +39,8 @@ public class CheckoutWebhookTransform : WebhookTransform {
         TransformCollectionDay(checkout, jObject);
         TransformFeedbacks(serializer, GivingTypes.Donation, checkout.Donation?.Allocations, jObject);
         TransformFeedbacks(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject);
-        TransformSponsorships(serializer, GivingTypes.Donation, checkout.Donation?.Allocations, jObject);
-        TransformSponsorships(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject);
+        TransformSponsorships(serializer, GivingTypes.Donation, checkout.Donation?.Allocations, jObject, checkout.Timestamp);
+        TransformSponsorships(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject, checkout.Timestamp);
 
         return jObject;
     }
@@ -135,7 +136,8 @@ public class CheckoutWebhookTransform : WebhookTransform {
     private void TransformSponsorships(JsonSerializer serializer,
                                        GivingType givingType,
                                        IEnumerable<Allocation> allocations,
-                                       JObject jObject) {
+                                       JObject jObject,
+                                       Instant checkoutTimestamp) {
         var globalKey = $"{givingType.Id}Sponsorships";
         var reference = (string) jObject["reference"]["text"];
         
@@ -155,6 +157,7 @@ public class CheckoutWebhookTransform : WebhookTransform {
             
             var allocationIndex = allocations.IndexOf(allocation) + 1;
             allocationJObject["reference"] = $"{reference}-{givingType.Id}-{allocationIndex}";
+            allocationJObject["beganOn"] = new JValue(checkoutTimestamp.ToDateTimeUtc());
 
             SetSponsorshipValues(allocation.Value,
                                  allocation.Sponsorship.Duration?.Months,
