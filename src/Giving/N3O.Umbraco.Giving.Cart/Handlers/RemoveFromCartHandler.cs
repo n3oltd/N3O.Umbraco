@@ -37,11 +37,13 @@ public class RemoveFromCartHandler :
     public async Task<RevisionId> Handle(BulkRemoveFromCartCommand req, CancellationToken cancellationToken) {
         var cart = await _cartAccessor.GetAsync(cancellationToken);
 
-        await cart.BulkRemoveAsync(_contentLocator,
+        foreach (var index in req.Model.Indexes) {
+            await cart.RemoveAsync(_contentLocator,
                                    _forexConverter,
                                    _priceCalculator,
                                    req.Model.GivingType,
-                                   req.Model.Indexes.ToList());
+                                   index);
+        }
 
         await _repository.UpdateAsync(cart);
 
