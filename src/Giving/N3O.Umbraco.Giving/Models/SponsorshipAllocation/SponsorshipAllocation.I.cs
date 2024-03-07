@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace N3O.Umbraco.Giving.Models;
 
 public interface ISponsorshipAllocation {
-    SponsorshipBeneficiary Beneficiary { get; }
+    string BeneficiaryReference { get; }
     SponsorshipScheme Scheme { get; }
     SponsorshipDuration Duration { get; }
     IEnumerable<ISponsorshipComponentAllocation> Components { get; }

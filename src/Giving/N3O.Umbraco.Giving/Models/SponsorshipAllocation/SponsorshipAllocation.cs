@@ -8,23 +8,23 @@ namespace N3O.Umbraco.Giving.Models;
 
 public class SponsorshipAllocation : Value, ISponsorshipAllocation {
     [JsonConstructor]
-    public SponsorshipAllocation(SponsorshipBeneficiary beneficiary,
+    public SponsorshipAllocation(string beneficiaryReference,
                                  SponsorshipScheme scheme,
                                  SponsorshipDuration duration,
                                  IEnumerable<SponsorshipComponentAllocation> components) {
-        Beneficiary = beneficiary;
+        BeneficiaryReference = beneficiaryReference;
         Scheme = scheme;
         Duration = duration;
         Components = components;
     }
 
     public SponsorshipAllocation(ISponsorshipAllocation sponsorship)
-        : this(sponsorship.Beneficiary,
+        : this(sponsorship.BeneficiaryReference,
                sponsorship.Scheme,
                sponsorship.Duration,
                sponsorship.Components.OrEmpty().Select(x => new SponsorshipComponentAllocation(x))) { }
 
-    public SponsorshipBeneficiary Beneficiary { get; }
+    public string BeneficiaryReference { get; }
     public SponsorshipScheme Scheme { get; }
     public SponsorshipDuration Duration { get; }
     public IEnumerable<SponsorshipComponentAllocation> Components { get; }
