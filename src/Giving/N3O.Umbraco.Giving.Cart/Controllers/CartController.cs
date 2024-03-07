@@ -62,6 +62,22 @@ public class CartController : ApiController {
         }
     }
     
+    [HttpDelete("bulkRemove")]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult> BulkRemove(BulkRemoveFromCartReq req) {
+        try { 
+            var revisionId = await _mediator.SendAsync<BulkRemoveFromCartCommand, BulkRemoveFromCartReq, RevisionId>(req);
+            
+            _cartCookie.SetValue(revisionId);
+
+            return Ok();
+        } catch (Exception ex) {
+            _logger.LogError(ex, "Failed to remove items from cart");
+
+            return UnprocessableEntity();
+        }
+    }
+    
     [HttpGet("summary")]
     public async Task<ActionResult<CartSummaryRes>> GetSummary() {
         var res = await _mediator.SendAsync<GetCartSummaryQuery, None, CartSummaryRes>(None.Empty);

@@ -6,12 +6,14 @@ using N3O.Umbraco.Giving.Cart.Commands;
 using N3O.Umbraco.Giving.Cart.Models;
 using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Mediator;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Giving.Cart.Handlers;
 
 public class RemoveFromCartHandler :
+    IRequestHandler<BulkRemoveFromCartCommand, BulkRemoveFromCartReq, RevisionId>,
     IRequestHandler<RemoveFromCartCommand, RemoveFromCartReq, RevisionId>,
     IRequestHandler<RemoveUpsellFromCartCommand, None, RevisionId> {
     private readonly IContentLocator _contentLocator;
@@ -30,6 +32,20 @@ public class RemoveFromCartHandler :
         _priceCalculator = priceCalculator;
         _cartAccessor = cartAccessor;
         _repository = repository;
+    }
+    
+    public async Task<RevisionId> Handle(BulkRemoveFromCartCommand req, CancellationToken cancellationToken) {
+        var cart = await _cartAccessor.GetAsync(cancellationToken);
+
+        await cart.BulkRemoveAsync(_contentLocator,
+                                   _forexConverter,
+                                   _priceCalculator,
+                                   req.Model.GivingType,
+                                   req.Model.Indexes.ToList());
+
+        await _repository.UpdateAsync(cart);
+
+        return cart.RevisionId;
     }
 
     public async Task<RevisionId> Handle(RemoveFromCartCommand req, CancellationToken cancellationToken) {
