@@ -8,11 +8,9 @@ using N3O.Umbraco.Giving.Cart.Commands;
 using N3O.Umbraco.Giving.Cart.Context;
 using N3O.Umbraco.Giving.Cart.Models;
 using N3O.Umbraco.Giving.Cart.Queries;
-using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Mediator;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Giving.Cart.Controllers;
