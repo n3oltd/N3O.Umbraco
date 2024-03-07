@@ -11,7 +11,7 @@ public class SponsorshipAllocationMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll
     private void Map(SponsorshipAllocation src, SponsorshipAllocationRes dest, MapperContext ctx) {
-        dest.Beneficiary = src.Beneficiary;
+        dest.BeneficiaryReference = src.BeneficiaryReference;
         dest.Scheme = src.Scheme;
         dest.Duration = src.Duration;
         dest.Components = src.Components

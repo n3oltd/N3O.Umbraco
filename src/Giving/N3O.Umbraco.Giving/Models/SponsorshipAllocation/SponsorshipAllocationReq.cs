@@ -6,8 +6,8 @@ using System.Collections.Generic;
 namespace N3O.Umbraco.Giving.Models;
 
 public class SponsorshipAllocationReq : ISponsorshipAllocation {
-    [Name("Beneficiary")]
-    public SponsorshipBeneficiary Beneficiary { get; set; }
+    [Name("Beneficiary Reference")]
+    public string BeneficiaryReference { get; set; }
 
     [Name("Scheme")]
     public SponsorshipScheme Scheme { get; set; }
