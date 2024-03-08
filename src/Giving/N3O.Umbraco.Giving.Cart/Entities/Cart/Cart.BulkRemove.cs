@@ -23,7 +23,7 @@ public partial class Cart {
     }
 
     private CartContents BulkRemoveContents(CartContents contents, IReadOnlyList<int> allocationIndexes) {
-        if (allocationIndexes.Count >= contents.Allocations.Count()) {
+        if (allocationIndexes.Count > contents.Allocations.Count()) {
             throw new ArgumentOutOfRangeException(nameof(allocationIndexes));
         }
 
