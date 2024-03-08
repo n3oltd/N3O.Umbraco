@@ -27,8 +27,7 @@ public partial class Cart {
             throw new ArgumentOutOfRangeException(nameof(allocationIndexes));
         }
 
-        var allocationsToRemove = contents.Allocations.Where((_, index) => allocationIndexes.Contains(index) == true);
-        var newAllocations = contents.Allocations.Except(allocationsToRemove);
+        var newAllocations = contents.Allocations.Where((_, index) => !allocationIndexes.Contains(index));
 
         return new CartContents(Currency, contents.Type, newAllocations);
     }
