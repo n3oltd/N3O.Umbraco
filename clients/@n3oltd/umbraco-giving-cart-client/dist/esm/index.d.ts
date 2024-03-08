@@ -9,6 +9,8 @@ export declare class CartClient {
     protected processAdd(response: Response): Promise<void>;
     addUpsellToCart(upsellOfferId: string, req: AddUpsellToCartReq): Promise<void>;
     protected processAddUpsellToCart(response: Response): Promise<void>;
+    bulkRemove(req: BulkRemoveFromCartReq): Promise<void>;
+    protected processBulkRemove(response: Response): Promise<void>;
     getSummary(): Promise<CartSummaryRes>;
     protected processGetSummary(response: Response): Promise<CartSummaryRes>;
     reset(): Promise<void>;
@@ -44,6 +46,11 @@ export interface AllocationReq {
     fund?: FundAllocationReq | undefined;
     sponsorship?: SponsorshipAllocationReq | undefined;
     upsellOfferId?: string | undefined;
+    "n3O.Umbraco.Giving.Models.IAllocation.FundDimensions"?: IFundDimensionValues | undefined;
+    "n3O.Umbraco.Giving.Models.IAllocation.Fund"?: IFundAllocation | undefined;
+    "n3O.Umbraco.Giving.Models.IAllocation.Sponsorship"?: ISponsorshipAllocation | undefined;
+    "n3O.Umbraco.Giving.Models.IAllocation.Feedback"?: IFeedbackAllocation | undefined;
+    "n3O.Umbraco.Giving.Models.IAllocation.Value"?: Money | undefined;
 }
 /** One of 'feedback', 'fund', 'sponsorship' */
 export declare enum AllocationType {
@@ -64,6 +71,7 @@ export interface FundDimensionValuesReq {
 export interface FeedbackAllocationReq {
     scheme?: string | undefined;
     customFields?: FeedbackNewCustomFieldsReq | undefined;
+    "n3O.Umbraco.Giving.Models.IFeedbackAllocation.CustomFields"?: IFeedbackCustomField[] | undefined;
 }
 export interface FeedbackCustomFieldDefinitionElement {
     content?: IPublishedElement | undefined;
@@ -147,6 +155,16 @@ export interface PricingRuleElement {
     dimension2?: string | undefined;
     dimension3?: string | undefined;
     dimension4?: string | undefined;
+    "n3O.Umbraco.Giving.Models.IPricingRule.FundDimensions"?: IFundDimensionValues | undefined;
+}
+export interface IFundDimensionValues {
+    dimension1?: string | undefined;
+    dimension2?: string | undefined;
+    dimension3?: string | undefined;
+    dimension4?: string | undefined;
+}
+export interface IPricingRule {
+    fundDimensions?: IFundDimensionValues | undefined;
 }
 export interface FeedbackNewCustomFieldsReq {
     entries?: FeedbackNewCustomFieldReq[] | undefined;
@@ -157,14 +175,23 @@ export interface FeedbackNewCustomFieldReq {
     date?: Date | undefined;
     text?: string | undefined;
 }
+export interface IFeedbackCustomField {
+    type?: FeedbackCustomFieldType | undefined;
+    alias?: string | undefined;
+    name?: string | undefined;
+    bool?: boolean | undefined;
+    date?: Date | undefined;
+    text?: string | undefined;
+}
 export interface FundAllocationReq {
     donationItem?: string | undefined;
 }
 export interface SponsorshipAllocationReq {
-    beneficiary?: string | undefined;
+    beneficiaryReference?: string | undefined;
     scheme?: string | undefined;
     duration?: SponsorshipDuration | undefined;
     components?: SponsorshipComponentAllocationReq[] | undefined;
+    "n3O.Umbraco.Giving.Models.ISponsorshipAllocation.Components"?: ISponsorshipComponentAllocation[] | undefined;
 }
 /** One of '_6', '_12', '_18', '_24', '_36', '_48', '_60' */
 export declare enum SponsorshipDuration {
@@ -179,12 +206,37 @@ export declare enum SponsorshipDuration {
 export interface SponsorshipComponentAllocationReq {
     component?: string | undefined;
     value?: MoneyReq | undefined;
+    "n3O.Umbraco.Giving.Models.ISponsorshipComponentAllocation.Value"?: Money | undefined;
+}
+export interface Money {
+    amount?: number;
+    currency?: string | undefined;
+}
+export interface ISponsorshipComponentAllocation {
+    component?: string | undefined;
+    value?: Money | undefined;
+}
+export interface IFundAllocation {
+    donationItem?: string | undefined;
+}
+export interface ISponsorshipAllocation {
+    beneficiaryReference?: string | undefined;
+    scheme?: string | undefined;
+    duration?: SponsorshipDuration | undefined;
+    components?: ISponsorshipComponentAllocation[] | undefined;
+}
+export interface IFeedbackAllocation {
+    scheme?: string | undefined;
+    customFields?: IFeedbackCustomField[] | undefined;
 }
 export interface AddUpsellToCartReq {
     amount?: number | undefined;
 }
+export interface BulkRemoveFromCartReq {
+    givingType?: GivingType | undefined;
+    indexes?: number[] | undefined;
+}
 export interface CartSummaryRes {
-    /** A well formed revision ID string */
     revisionId?: string | undefined;
     itemCount?: number;
 }
