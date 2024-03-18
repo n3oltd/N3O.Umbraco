@@ -6,7 +6,6 @@ using N3O.Umbraco.Giving.Cart.Commands;
 using N3O.Umbraco.Giving.Cart.Models;
 using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Mediator;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 

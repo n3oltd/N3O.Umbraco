@@ -4,10 +4,12 @@ using N3O.Umbraco.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Umbraco.Cms.Core.DependencyInjection;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Blocks;
 
-public abstract class BlockBuilder : IBlockBuilder {
+public abstract class BlockBuilder : IBlocksBuilder {
     private readonly List<ILayoutBuilder> _layoutBuilders = new();
     private readonly List<BlockCategory> _categories = new();
     private readonly List<string> _limitToContentTypes = new();
@@ -82,7 +84,7 @@ public abstract class BlockBuilder : IBlockBuilder {
         _name = name;
     }
 
-    public BlockDefinition Build() {
+    public IEnumerable<BlockDefinition> Build(IUmbracoBuilder builder) {
         Validate();
     
         var id = UmbracoId.Generate(IdScope.Block, _alias);
@@ -100,7 +102,7 @@ public abstract class BlockBuilder : IBlockBuilder {
                                              _limitToContentTypes,
                                              Enumerable.Empty<string>());
 
-        return definition;
+        return definition.Yield();
     }
 
     private void Validate() {

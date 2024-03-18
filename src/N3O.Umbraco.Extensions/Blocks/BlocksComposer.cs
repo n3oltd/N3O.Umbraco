@@ -19,6 +19,8 @@ namespace N3O.Umbraco.Blocks;
 
 public class BlocksComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
+        BlocksComponent.LoadDefinitions(builder);
+        
         builder.Services.AddTransient<IBlockTypesService, BlockTypesService>();
 
         foreach (var blockDefinition in BlocksComponent.BlockDefinitions) {
@@ -45,22 +47,13 @@ public class BlocksComposer : Composer {
 }
 
 public class BlocksComponent : IComponent {
-    public static IReadOnlyList<BlockDefinition> BlockDefinitions { get; }
+    public static IReadOnlyList<BlockDefinition> BlockDefinitions { get; private set; }
 
     private readonly IRuntimeState _runtimeState;
     private readonly Lazy<IBlockTypesService> _blockTypesService;
     private readonly Lazy<ILookups> _lookups;
     private readonly Lazy<IContentBlockDefinitionRepository> _blockDefinitionsRepository;
     private readonly Lazy<IContentBlockCategoryRepository> _blockCategoriesRepository;
-
-    static BlocksComponent() {
-        BlockDefinitions = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
-                                                       t.ImplementsInterface<IBlockBuilder>() &&
-                                                       t.HasParameterlessConstructor())
-                                        .Select(t => (IBlockBuilder) Activator.CreateInstance(t))
-                                        .Select(x => x.Build())
-                                        .ToList();
-    }
 
     public BlocksComponent(IRuntimeState runtimeState,
                            Lazy<IBlockTypesService> blockTypesService,
@@ -90,4 +83,13 @@ public class BlocksComponent : IComponent {
     }
 
     public void Terminate() { }
+    
+    public static void LoadDefinitions(IUmbracoBuilder builder) {
+        BlockDefinitions = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
+                                                       t.ImplementsInterface<IBlocksBuilder>() &&
+                                                       t.HasParameterlessConstructor())
+                                        .Select(t => (IBlocksBuilder) Activator.CreateInstance(t))
+                                        .SelectMany(x => x.Build(builder))
+                                        .ToList();
+    }
 }

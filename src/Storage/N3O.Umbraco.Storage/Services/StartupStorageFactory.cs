@@ -6,7 +6,7 @@ using System.Linq;
 namespace N3O.Umbraco.Storage;
 
 public class StartupStorageFactory {
-    public IStartupStorage Create() {
+    public static IStartupStorage Create() {
         var type = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
                                                t.ImplementsInterface<IStartupStorage>() &&
                                                t.HasParameterlessConstructor())

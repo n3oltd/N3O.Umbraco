@@ -1,7 +1,7 @@
-﻿using Umbraco.Cms.Core.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace N3O.Umbraco.Storage;
 
 public interface IStartupStorage {
-    IStorageFolder GetStorageFolder(IUmbracoBuilder builder, string folderPath);
+    IStorageFolder GetStorageFolder(IConfiguration configuration, string folderPath);
 }
