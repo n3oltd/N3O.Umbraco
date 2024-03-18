@@ -1,4 +1,5 @@
 using N3O.Umbraco.Utilities;
+using Newtonsoft.Json;
 using Perplex.ContentBlocks.Definitions;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ public class BlockDefinition : Value, IContentBlockDefinition {
                            string folder,
                            string previewImage,
                            IEnumerable<BlockCategory> blockCategories,
-                           IEnumerable<LayoutDefinition> layoutDefinitions,
+                           IEnumerable<LayoutDefinition> layouts,
                            IEnumerable<string> limitToContentTypes,
                            IEnumerable<string> limitToCultures) {
         Id = id;
@@ -29,7 +30,7 @@ public class BlockDefinition : Value, IContentBlockDefinition {
         PreviewImage = previewImage;
         DataTypeKey = UmbracoId.Generate(IdScope.BlockDataType, alias);
         BlockCategories = blockCategories.ToList();
-        LayoutDefinitions = layoutDefinitions.ToList();
+        Layouts = layouts.ToList();
         LimitToDocumentTypes = limitToContentTypes;
         LimitToCultures = limitToCultures;
     
@@ -47,8 +48,10 @@ public class BlockDefinition : Value, IContentBlockDefinition {
     public int? DataTypeId => null;
     public IReadOnlyList<BlockCategory> BlockCategories { get; }
     public IEnumerable<Guid> CategoryIds => _categoryIds;
-    public IReadOnlyList<LayoutDefinition> LayoutDefinitions { get; }
-    public IEnumerable<IContentBlockLayout> Layouts => LayoutDefinitions;
+    public new IReadOnlyList<LayoutDefinition> Layouts { get; }
     public IEnumerable<string> LimitToDocumentTypes { get; }
     public IEnumerable<string> LimitToCultures { get; }
+
+    [JsonIgnore]
+    IEnumerable<IContentBlockLayout> IContentBlockDefinition.Layouts => Layouts;
 }
