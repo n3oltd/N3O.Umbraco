@@ -10,7 +10,7 @@ public class DiskVolume : IVolume {
         _webHostEnvironment = webHostEnvironment;
     }
     
-    public Task<IStorageFolder> GetStorageFolderAsync(string foldePath) {
-        return Task.FromResult<IStorageFolder>(new DiskStorageFolder(_webHostEnvironment, foldePath));
+    public Task<IStorageFolder> GetStorageFolderAsync(string folderPath) {
+        return Task.FromResult<IStorageFolder>(new DiskStorageFolder(_webHostEnvironment, folderPath));
     }
 }
