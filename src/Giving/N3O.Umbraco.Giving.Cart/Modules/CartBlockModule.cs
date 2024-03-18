@@ -1,6 +1,7 @@
 using N3O.Umbraco.Blocks;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
+using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex;
@@ -89,7 +90,25 @@ public class CartBlockModule : IBlockModule {
     }
 
     private IReadOnlyList<UpsellOfferContent> GetUpsellOffers(IPublishedElement block, Entities.Cart cart) {
-        var upsellOffers = (block.GetProperty("upsellOffers")?.GetValue() as IEnumerable<IPublishedContent>)?.As<UpsellOfferContent>();
+        var upsellOffersValue = block.GetProperty("upsellOffers")?.GetValue();
+
+        if (!upsellOffersValue.HasValue()) {
+            return null;
+        }
+
+        var upsellOffers = new List<UpsellOfferContent>();
+
+        if (upsellOffersValue is IEnumerable<IPublishedContent>) {
+            var upsellOffersContent = (upsellOffersValue as IEnumerable<IPublishedContent>).As<UpsellOfferContent>();
+            
+            upsellOffers.AddRange(upsellOffersContent);
+        } else if (upsellOffersValue is IPublishedContent) {
+            var upsellOfferContent = (upsellOffersValue as IPublishedContent).As<UpsellOfferContent>();
+            
+            upsellOffers.Add(upsellOfferContent);
+        } else {
+            throw UnrecognisedValueException.For(upsellOffersValue?.GetType());
+        }
         
         if (cart.Donation.IsEmpty()) {
             upsellOffers = upsellOffers?.ExceptWhere(x => x.OfferedFor.HasAny(x => x == GivingTypes.Donation) &&
