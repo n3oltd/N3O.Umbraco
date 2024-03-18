@@ -284,6 +284,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CrowdFunding", "CrowdFundin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Crowdfunding", "Crowdfunding\N3O.Umbraco.Crowdfunding\N3O.Umbraco.Crowdfunding.csproj", "{4DDCC32D-8984-4B9D-A7F8-43E1BABB5BCE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImageProcessing", "ImageProcessing", "{107A5708-18B6-4DAB-B589-87B69F7DCE11}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.ImageProcessing", "ImageProcessing\N3O.Umbraco.ImageProcessing\N3O.Umbraco.ImageProcessing.csproj", "{83393802-6549-4709-8755-09AA7E79D41D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -686,6 +690,10 @@ Global
 		{4DDCC32D-8984-4B9D-A7F8-43E1BABB5BCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DDCC32D-8984-4B9D-A7F8-43E1BABB5BCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4DDCC32D-8984-4B9D-A7F8-43E1BABB5BCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83393802-6549-4709-8755-09AA7E79D41D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83393802-6549-4709-8755-09AA7E79D41D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83393802-6549-4709-8755-09AA7E79D41D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83393802-6549-4709-8755-09AA7E79D41D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CC9F6143-E1BB-490F-8936-A16A238E2138} = {E203E59D-7950-4F8F-8E28-79DEB112EA37}
@@ -790,5 +798,6 @@ Global
 		{BBD3D87D-67F1-4CB6-BB5B-440595459EBB} = {0E0F12B7-04FC-4F02-8A8E-9210804A0EAA}
 		{543E4F0C-5A86-42FE-915C-E2A5DF2C1BAE} = {0E0F12B7-04FC-4F02-8A8E-9210804A0EAA}
 		{4DDCC32D-8984-4B9D-A7F8-43E1BABB5BCE} = {BAA7BAC2-C56A-485B-8116-0CA1342C4BF4}
+		{83393802-6549-4709-8755-09AA7E79D41D} = {107A5708-18B6-4DAB-B589-87B69F7DCE11}
 	EndGlobalSection
 EndGlobal
