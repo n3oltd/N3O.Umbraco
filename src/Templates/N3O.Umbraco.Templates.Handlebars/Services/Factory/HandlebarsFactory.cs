@@ -20,7 +20,7 @@ public class HandlebarsFactory : IHandlebarsFactory {
         _mergeFormatters = mergeFormatters;
     }
 
-    public IHandlebars Create() {
+    public IHandlebars Create(IReadOnlyDictionary<string, string> partials = null) {
         var handlebars = HandlebarsDotNet.Handlebars.Create();
     
         _helpers.Do(h => handlebars.RegisterHelper(h.Name, h.Execute));
@@ -28,6 +28,10 @@ public class HandlebarsFactory : IHandlebarsFactory {
         _blockHelpers.Do(b => handlebars.RegisterHelper(b.Name, b.Execute));
     
         _mergeFormatters.Do(f => handlebars.Configuration.FormatterProviders.Add(new HandlebarsFormatter(f)));
+        
+        foreach (var (partialAlias, partialMarkup) in partials.OrEmpty()) {
+            handlebars.RegisterTemplate(partialAlias, partialMarkup);
+        }
 
         return handlebars;
     }

@@ -1,5 +1,6 @@
 using HandlebarsDotNet;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace N3O.Umbraco.Templates.Handlebars;
 
@@ -18,9 +19,9 @@ public class HandlebarsEngine : ITemplateEngine {
         return isValid;
     }
 
-    public string Render(string markup, object model) {
+    public string Render(string markup, object model, IReadOnlyDictionary<string, string> partials = null) {
         try {
-            var compiledHandlebars = _handlebarsCompiler.Compile(markup);
+            var compiledHandlebars = _handlebarsCompiler.Compile(markup, partials);
             var rendered = compiledHandlebars(model);
         
             return rendered;
