@@ -7,7 +7,7 @@ public class BackgroundColour : TemplateStyle {
 
     public override string Icon => "icon-colorpicker";
     
-    protected override string NamePrefix => "Background Colour";
+    public override string Category => "Background Colour";
 }
 
 public class BackgroundColours : ITemplateStylesCollection {

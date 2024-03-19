@@ -3,10 +3,10 @@ using System.Collections.Generic;
 namespace N3O.Umbraco.Templates;
 
 public interface IStyleContext {
-    T Get<T>()  where T : TemplateStyle;
-    IEnumerable<TemplateStyle> GetAll();
-    bool Has(TemplateStyle style);
+    T Get<T>()  where T : ITemplateStyle;
+    IEnumerable<ITemplateStyle> GetAll();
+    bool Has(ITemplateStyle style);
     void Pop(int count = 1);
-    void Push(TemplateStyle style);
-    void PushAll(IEnumerable<TemplateStyle> styles);
+    void Push(ITemplateStyle style);
+    void PushAll(IEnumerable<ITemplateStyle> styles);
 }

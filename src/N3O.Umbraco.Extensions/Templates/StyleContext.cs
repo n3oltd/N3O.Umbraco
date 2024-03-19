@@ -6,9 +6,9 @@ using System.Linq;
 namespace N3O.Umbraco.Templates;
 
 public class StyleContext : IStyleContext {
-    private Stack<TemplateStyle> _stack;
+    private Stack<ITemplateStyle> _stack;
 
-    public T Get<T>() where T : TemplateStyle {
+    public T Get<T>() where T : ITemplateStyle {
         foreach (var style in Stack) {
             if (style is T typedStyle) {
                 return typedStyle;
@@ -18,9 +18,9 @@ public class StyleContext : IStyleContext {
         return default;
     }
 
-    public IEnumerable<TemplateStyle> GetAll() {
+    public IEnumerable<ITemplateStyle> GetAll() {
         var seenTypes = new List<Type>();
-        var list = new List<TemplateStyle>();
+        var list = new List<ITemplateStyle>();
 
         foreach (var style in Stack) {
             if (seenTypes.Contains(style.GetType())) {
@@ -34,7 +34,7 @@ public class StyleContext : IStyleContext {
         return list;
     }
 
-    public bool Has(TemplateStyle style) {
+    public bool Has(ITemplateStyle style) {
         return GetAll().Contains(style);
     }
 
@@ -44,17 +44,17 @@ public class StyleContext : IStyleContext {
         }
     }
 
-    public void Push(TemplateStyle style) {
+    public void Push(ITemplateStyle style) {
         Stack.Push(style);
     }
 
-    public void PushAll(IEnumerable<TemplateStyle> styles) {
+    public void PushAll(IEnumerable<ITemplateStyle> styles) {
         styles.OrEmpty().Do(Push);
     }
 
-    private Stack<TemplateStyle> Stack {
+    private Stack<ITemplateStyle> Stack {
         get {
-            return _stack ??= new Stack<TemplateStyle>();
+            return _stack ??= new Stack<ITemplateStyle>();
         }
     }
 }
