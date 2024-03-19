@@ -7,7 +7,7 @@ public class HorizontalAlignment : TemplateStyle {
     
     public override string Icon => "icon-tab-key";
     
-    protected override string NamePrefix => "Horizontal Alignment";
+    public override string Category => "Horizontal Alignment";
 }
 
 public class HorizontalAlignments : ITemplateStylesCollection {
