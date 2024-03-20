@@ -35,7 +35,7 @@ public class StyleContext : IStyleContext {
     }
 
     public bool Has(ITemplateStyle style) {
-        return GetAll().Contains(style);
+        return GetAll().Any(x => x.Id.EqualsInvariant(style.Id));
     }
 
     public void Pop(int count = 1) {
