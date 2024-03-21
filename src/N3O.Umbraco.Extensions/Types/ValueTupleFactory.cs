@@ -35,7 +35,7 @@ public static class ValueTupleFactory {
         var (item3Type, item3Value) = item3();
         var (item4Type, item4Value) = item4();
 
-        var valueTupleType = typeof(ValueTuple<,,>).MakeGenericType(item1Type, item2Type, item3Type, item4Type);
+        var valueTupleType = typeof(ValueTuple<,,,>).MakeGenericType(item1Type, item2Type, item3Type, item4Type);
         var valueTuple = Activator.CreateInstance(valueTupleType, item1Value, item2Value, item3Value, item4Value);
 
         return valueTuple;
