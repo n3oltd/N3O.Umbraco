@@ -22,8 +22,20 @@ public abstract class UmbracoElement<T> : Value, IUmbracoElement {
     protected IEnumerable<TProperty> GetCollectionAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
         var values = (IEnumerable) Content.Value(alias);
+        
+        if (!values.HasValue()) {
+            return default;
+        }
 
-        return values.Cast<IPublishedContent>().Select(x => x.As<TProperty>());
+        if (values is IEnumerable<TProperty> typedProperty) {
+            return typedProperty;
+        } else if (values is IEnumerable<IPublishedContent> publishedContent) {
+            return publishedContent.Select(x => x.As<TProperty>());
+        } else if (values is IEnumerable<IPublishedElement> publishedElement) {
+            return publishedElement.Select(x => x.As<TProperty>());
+        } else {
+            return default;
+        }
     }
 
     protected TProperty GetValue<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
