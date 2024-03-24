@@ -11,7 +11,7 @@ using Umbraco.Cms.Core.Notifications;
 namespace N3O.Umbraco.Notifications;
 
 public class FlushStringLocalizerCacheHandlers :
-    INotificationAsyncHandler<ContentDeletedNotification>,
+    INotificationAsyncHandler<ContentMovedToRecycleBinNotification>,
     INotificationAsyncHandler<ContentPublishedNotification>,
     INotificationAsyncHandler<ContentUnpublishedNotification> {
     private readonly IStringLocalizer _stringLocalizer;
@@ -20,8 +20,9 @@ public class FlushStringLocalizerCacheHandlers :
         _stringLocalizer = stringLocalizer;
     }
 
-    public async Task HandleAsync(ContentDeletedNotification notification, CancellationToken cancellationToken) {
-        await ProcessAsync(notification.DeletedEntities);
+    public async Task HandleAsync(ContentMovedToRecycleBinNotification notification,
+                                  CancellationToken cancellationToken) {
+        await ProcessAsync(notification.MoveInfoCollection.Select(x => x.Entity));
     }
     
     public async Task HandleAsync(ContentPublishedNotification notification, CancellationToken cancellationToken) {

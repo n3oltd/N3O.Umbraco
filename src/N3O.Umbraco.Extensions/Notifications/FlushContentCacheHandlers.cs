@@ -10,16 +10,17 @@ using Umbraco.Cms.Core.Notifications;
 namespace N3O.Umbraco.Notifications;
 
 public class FlushContentCacheHandlers :
-    INotificationAsyncHandler<ContentDeletedNotification>,
-    INotificationAsyncHandler<ContentPublishedNotification> {
+    INotificationAsyncHandler<ContentMovedToRecycleBinNotification>,
+    INotificationAsyncHandler<ContentPublishedNotification>,
+    INotificationAsyncHandler<ContentUnpublishedNotification> {
     private readonly IContentCache _contentCache;
 
     public FlushContentCacheHandlers(IContentCache contentCache) {
         _contentCache = contentCache;
     }
 
-    public Task HandleAsync(ContentDeletedNotification notification, CancellationToken cancellationToken) {
-        Process(notification.DeletedEntities);
+    public Task HandleAsync(ContentMovedToRecycleBinNotification notification, CancellationToken cancellationToken) {
+        Process(notification.MoveInfoCollection.Select(x => x.Entity));
         
         return Task.CompletedTask;
     }
@@ -29,6 +30,13 @@ public class FlushContentCacheHandlers :
         
         return Task.CompletedTask;
     }
+    
+    public Task HandleAsync(ContentUnpublishedNotification notification, CancellationToken cancellationToken) {
+        Process(notification.UnpublishedEntities);
+        
+        return Task.CompletedTask;
+    }
+
 
     private void Process(IEnumerable<IContent> entities) {
         var contentTypeAliases = entities.Select(x => x.ContentType.Alias).Distinct().ToList();
