@@ -52,10 +52,14 @@ public class ContentHelper : IContentHelper {
     public ContentProperties GetContentProperties(IContent content, string culture = null) {
         var properties = content.Properties.Select(x => (x.PropertyType, x.GetValue(culture)));
         
-        return GetContentProperties(content.Key, content.ContentType.Alias, properties);
+        return GetContentProperties(content.Key,
+                                    content.ParentId,
+                                    content.ContentType.Alias,
+                                    properties);
     }
     
     public ContentProperties GetContentProperties(Guid contentId,
+                                                  int? parentId,
                                                   string contentTypeAlias,
                                                   IEnumerable<(IPropertyType Type, object Value)> properties) {
         var contentProperties = new List<ContentProperty>();
@@ -88,7 +92,11 @@ public class ContentHelper : IContentHelper {
             }
         }
 
-        return new ContentProperties(contentId, contentTypeAlias, contentProperties, nestedContentProperties);
+        return new ContentProperties(contentId,
+                                     parentId,
+                                     contentTypeAlias,
+                                     contentProperties,
+                                     nestedContentProperties);
     }
     
     public TProperty GetConvertedValue<TConverter, TProperty>(string contentTypeAlias,
@@ -214,7 +222,7 @@ public class ContentHelper : IContentHelper {
             }
         }
             
-        return GetContentProperties(id, contentTypeAlias, properties);
+        return GetContentProperties(id, null, contentTypeAlias, properties);
     }
     
     private (JToken, string) GetJsonPropertyValue(object propertyValue) {
