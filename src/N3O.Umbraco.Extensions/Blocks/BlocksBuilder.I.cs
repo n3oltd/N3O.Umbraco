@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Hosting;
+using System.Collections.Generic;
 using Umbraco.Cms.Core.DependencyInjection;
 
 namespace N3O.Umbraco.Blocks;
 
 public interface IBlocksBuilder {
-    IEnumerable<BlockDefinition> Build(IUmbracoBuilder builder);
+    IEnumerable<BlockDefinition> Build(IUmbracoBuilder builder, IWebHostEnvironment webHostEnvironment);
 }

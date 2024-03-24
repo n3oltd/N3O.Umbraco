@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Content;
@@ -19,7 +20,7 @@ namespace N3O.Umbraco.Blocks;
 
 public class BlocksComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
-        BlocksComponent.LoadDefinitions(builder);
+        BlocksComponent.LoadDefinitions(builder, WebHostEnvironment);
         
         builder.Services.AddTransient<IBlockTypesService, BlockTypesService>();
 
@@ -84,12 +85,12 @@ public class BlocksComponent : IComponent {
 
     public void Terminate() { }
     
-    public static void LoadDefinitions(IUmbracoBuilder builder) {
+    public static void LoadDefinitions(IUmbracoBuilder builder, IWebHostEnvironment webHostEnvironment) {
         BlockDefinitions = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
                                                        t.ImplementsInterface<IBlocksBuilder>() &&
                                                        t.HasParameterlessConstructor())
                                         .Select(t => (IBlocksBuilder) Activator.CreateInstance(t))
-                                        .SelectMany(x => x.Build(builder))
+                                        .SelectMany(x => x.Build(builder, webHostEnvironment))
                                         .ToList();
     }
 }

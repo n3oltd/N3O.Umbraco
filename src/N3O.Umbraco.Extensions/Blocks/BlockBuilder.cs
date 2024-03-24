@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Hosting;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
@@ -84,7 +85,7 @@ public abstract class BlockBuilder : IBlocksBuilder {
         _name = name;
     }
 
-    public IEnumerable<BlockDefinition> Build(IUmbracoBuilder builder) {
+    public IEnumerable<BlockDefinition> Build(IUmbracoBuilder builder, IWebHostEnvironment webHostEnvironment) {
         Validate();
     
         var id = UmbracoId.Generate(IdScope.Block, _alias);
