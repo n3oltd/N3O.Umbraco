@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Plugins.Lookups;
 using N3O.Umbraco.Validation;
+using System;
 using System.Linq;
 
 namespace N3O.Umbraco.Plugins.Models;
@@ -29,7 +30,8 @@ public class FileUploadReqValidator : ModelValidator<FileUploadReq> {
     }
 
     private bool ValidateAllowedExtensions(string allowedExtensions, IFormFile fileUpload) {
-        return allowedExtensions.Split(',').Any(fileUpload.FileName.EndsWith);
+        return allowedExtensions.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                                .Any(fileUpload.FileName.EndsWith);
     }
     
     public class Strings : ValidationStrings {
