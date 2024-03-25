@@ -1,9 +1,12 @@
-﻿using N3O.Umbraco.Plugins.Extensions;
+﻿using N3O.Umbraco.Extensions;
+using N3O.Umbraco.ImageProcessing.Operations;
+using N3O.Umbraco.Plugins.Extensions;
 using N3O.Umbraco.Utilities;
 using NodaTime;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.IO;
@@ -14,26 +17,53 @@ public class FluentImageBuilder : IFluentImageBuilder {
     private readonly IClock _clock;
     private readonly IUrlBuilder _urlBuilder;
     private readonly MediaFileManager _mediaFileManager;
-    private readonly Image<Rgba32> _image;
+    private readonly Image _image;
 
-    public FluentImageBuilder(IClock clock,
+    public FluentImageBuilder(IEnumerable<IImageOperation> allOperations,
+                              IClock clock,
                               IUrlBuilder urlBuilder,
                               MediaFileManager mediaFileManager,
                               int width,
-                              int height) {
+                              int height) {//TODO call other ctor from this one
         _clock = clock;
         _urlBuilder = urlBuilder;
         _mediaFileManager = mediaFileManager;
         _image = new Image<Rgba32>(width, height);
 
-        Processor = new ImageProcessor(_image);
+        Processor = new ImageProcessor(allOperations, _image);
     }
 
-    public async Task<string> PublishToUrl(Func<Image, Task<Stream>> saveAsync, string filename) {
-        var stream = await saveAsync(_image);
-        var url = await PublishToUrlAsync(stream, filename);
+    public FluentImageBuilder(IEnumerable<IImageOperation> allOperations,
+                              IClock clock,
+                              IUrlBuilder urlBuilder,
+                              MediaFileManager mediaFileManager,
+                              Image image) {
+        _clock = clock;
+        _urlBuilder = urlBuilder;
+        _mediaFileManager = mediaFileManager;
+        _image = image;
 
-        return url;
+        Processor = new ImageProcessor(allOperations, _image);
+    }
+
+    public async Task<Image> LoadImageAsync(string srcPath) {
+        var stream = _mediaFileManager.FileSystem.OpenFile(srcPath);
+
+        var image = await Image.LoadAsync(stream);
+
+        return image;
+    }
+
+    public async Task<string> PublishToUrlAsync(Func<Image, Stream, Task> saveAsync, string filename) {
+        using (var stream = new MemoryStream()) { 
+            await saveAsync(_image, stream);
+            
+            stream.Rewind();
+            
+            var url = await PublishToUrlAsync(stream, filename);
+
+            return url;
+        }
     }
 
     public async Task<T> SaveAsync<T>(Func<Image, Task<T>> saveAsync) {

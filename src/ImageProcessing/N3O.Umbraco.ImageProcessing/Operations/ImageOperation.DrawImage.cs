@@ -7,9 +7,9 @@ namespace N3O.Umbraco.ImageProcessing.Operations;
 
 public class DrawImageOperation : ImageOperation<DrawImageOperationContent> {
     public DrawImageOperation(MediaFileManager mediaFileManager) : base(mediaFileManager) { }
-    
-    protected override async Task ApplyAsync(DrawImageOperationContent options, IImageProcessingContext image) {
-        using (var foregroundImage = await LoadImageAsync(options.Image)) {
+
+    protected override void Apply(DrawImageOperationContent options, IImageProcessingContext image) {
+        using (var foregroundImage = LoadImage(options.Image)) {
             image.DrawImage(foregroundImage, options.Opacity);
         }
     }
