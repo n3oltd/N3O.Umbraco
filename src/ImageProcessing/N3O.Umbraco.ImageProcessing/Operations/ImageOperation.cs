@@ -16,19 +16,19 @@ public abstract class ImageOperation<TElement> : IImageOperation where TElement 
         _mediaFileManager = mediaFileManager;
     }
     
-    public async Task ApplyAsync(IPublishedElement options, IImageProcessingContext image) {
-        await ApplyAsync(options.As<TElement>(), image);
+    public void Apply(IPublishedElement options, IImageProcessingContext image) {
+        Apply(options.As<TElement>(), image);
     }
 
     public bool IsOperation(IPublishedElement options) {
         return options.ContentType.Alias.EqualsInvariant(AliasHelper<TElement>.ContentTypeAlias());
     }
 
-    protected Task<Image> LoadImageAsync(FileUpload upload) {
+    protected Image LoadImage(FileUpload upload) {
         var stream = _mediaFileManager.FileSystem.OpenFile(upload.Src);
 
-        return Image.LoadAsync(stream);
+        return Image.Load(stream);
     }
     
-    protected abstract Task ApplyAsync(TElement options, IImageProcessingContext image);
+    protected abstract void Apply(TElement options, IImageProcessingContext image);
 }
