@@ -29,7 +29,7 @@ public class FluentImageBuilder : IFluentImageBuilder {
         _mediaFileManager = mediaFileManager;
         _image = image;
 
-        Processor = new ImageProcessor(allOperations, contentCache, _image);
+        Processor = new ImageProcessor(allOperations, contentCache, mediaFileManager, _image);
     }
 
     public Image LoadMediaImage(string srcPath) {
