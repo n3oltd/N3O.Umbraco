@@ -50,12 +50,12 @@ public class OpayoComposer : Composer {
         
         if (settings != null) {
             if (webHostEnvironment.IsProduction()) {
-                return new OpayoApiSettings("https://pi-live.sagepay.com",
+                return new OpayoApiSettings("https://live.opayo.eu.elavon.com",
                                             settings.ProductionIntegrationKey,
                                             settings.ProductionIntegrationPassword,
                                             settings.ProductionVendorName);
             } else {
-                return new OpayoApiSettings("https://pi-test.sagepay.com",
+                return new OpayoApiSettings("https://sandbox.opayo.eu.elavon.com",
                                             settings.StagingIntegrationKey,
                                             settings.StagingIntegrationPassword,
                                             settings.StagingVendorName);
