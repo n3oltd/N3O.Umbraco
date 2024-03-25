@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.ImageProcessing.Content;
 using N3O.Umbraco.ImageProcessing.Models;
 using N3O.Umbraco.ImageProcessing.Operations;
 using SixLabors.ImageSharp;
@@ -13,28 +14,32 @@ namespace N3O.Umbraco.ImageProcessing;
 
 public class ImageProcessor : IImageProcessor {
     private readonly IEnumerable<IImageOperation> _allOperations;
-    private readonly Image _image;
     private readonly IContentCache _contentCache;
+    private readonly Image _image;
 
-    public ImageProcessor(IEnumerable<IImageOperation> allOperations, Image image, IContentCache contentCache) {
+    public ImageProcessor(IEnumerable<IImageOperation> allOperations, IContentCache contentCache, Image image) {
         _allOperations = allOperations;
-        _image = image;
         _contentCache = contentCache;
+        _image = image;
     }
     
-    public void ApplyOperation(string presetName) {
-        var options = _contentCache.Single(ImageProcessingConstants.Preset.ContentTypeAlias, x => x.Name.EqualsInvariant(presetName));
-        
-        options.
-    }
-
-    public IImageProcessor ApplyOperation(IPublishedElement operationOptions) {
-        var operation = _allOperations.Single(x => x.IsOperation(operationOptions));
+    public IImageProcessor ApplyOperation(IPublishedElement options) {
+        var operation = _allOperations.Single(x => x.IsOperation(options));
         
         _image.Mutate(c => {
-            operation.Apply(operationOptions, c);
+            operation.Apply(options, c);
         });
 
+        return this;
+    }
+    
+    public IImageProcessor ApplyPreset(string presetName) {
+        var preset = _contentCache.Single<ImagePresetContent>(x => x.Content().Name.EqualsInvariant(presetName));
+
+        foreach (var operation in preset.Operations) {
+            ApplyOperation(operation);
+        }
+        
         return this;
     }
 

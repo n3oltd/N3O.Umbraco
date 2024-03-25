@@ -1,9 +1,7 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Uploader.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using System.Threading.Tasks;
 using Umbraco.Cms.Core.IO;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
@@ -24,8 +22,8 @@ public abstract class ImageOperation<TElement> : IImageOperation where TElement 
         return options.ContentType.Alias.EqualsInvariant(AliasHelper<TElement>.ContentTypeAlias());
     }
 
-    protected Image LoadImage(FileUpload upload) {
-        var stream = _mediaFileManager.FileSystem.OpenFile(upload.Src);
+    protected Image LoadMediaImage(string srcPath) {
+        var stream = _mediaFileManager.FileSystem.OpenFile(srcPath);
 
         return Image.Load(stream);
     }

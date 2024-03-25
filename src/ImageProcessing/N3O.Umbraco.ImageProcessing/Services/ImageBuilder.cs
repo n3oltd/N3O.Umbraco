@@ -1,7 +1,9 @@
-﻿using N3O.Umbraco.ImageProcessing.Operations;
+﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.ImageProcessing.Operations;
 using N3O.Umbraco.Utilities;
 using NodaTime;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.IO;
@@ -13,16 +15,27 @@ public class ImageBuilder : IImageBuilder {
     private readonly IClock _clock;
     private readonly IUrlBuilder _urlBuilder;
     private readonly MediaFileManager _mediaFileManager;
+    private readonly IContentCache _contentCache;
 
-    public ImageBuilder(IEnumerable<IImageOperation> allOperations, IClock clock, IUrlBuilder urlBuilder, MediaFileManager mediaFileManager) {
+    public ImageBuilder(IEnumerable<IImageOperation> allOperations,
+                        IClock clock,
+                        IUrlBuilder urlBuilder,
+                        MediaFileManager mediaFileManager,
+                        IContentCache contentCache) {
         _allOperations = allOperations;
         _clock = clock;
         _urlBuilder = urlBuilder;
         _mediaFileManager = mediaFileManager;
+        _contentCache = contentCache;
     }
     
     public IFluentImageBuilder Create(int width, int height) {
-        return new FluentImageBuilder(_allOperations, _clock, _urlBuilder, _mediaFileManager, width, height);
+        return new FluentImageBuilder(_allOperations,
+                                      _clock,
+                                      _urlBuilder,
+                                      _mediaFileManager,
+                                      _contentCache,
+                                      new Image<Rgba32>(width, height));
     }
 
     public IFluentImageBuilder Create(Size size) {
@@ -34,6 +47,6 @@ public class ImageBuilder : IImageBuilder {
 
         var image = await Image.LoadAsync(stream);
 
-        return new FluentImageBuilder(_allOperations, _clock, _urlBuilder, _mediaFileManager, image);
+        return new FluentImageBuilder(_allOperations, _clock, _urlBuilder, _mediaFileManager, _contentCache, image);
     }
 }
