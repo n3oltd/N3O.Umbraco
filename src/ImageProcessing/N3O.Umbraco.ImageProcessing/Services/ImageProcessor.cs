@@ -14,16 +14,16 @@ namespace N3O.Umbraco.ImageProcessing;
 
 public class ImageProcessor : IImageProcessor {
     private readonly IEnumerable<IImageOperation> _allOperations;
-    private readonly IContentCache _contentCache;
+    private readonly IContentLocator _contentLocator;
     private readonly MediaFileManager _mediaFileManager;
     private readonly Image _image;
 
     public ImageProcessor(IEnumerable<IImageOperation> allOperations,
-                          IContentCache contentCache,
+                          IContentLocator contentLocator,
                           MediaFileManager mediaFileManager,
                           Image image) {
         _allOperations = allOperations;
-        _contentCache = contentCache;
+        _contentLocator = contentLocator;
         _mediaFileManager = mediaFileManager;
         _image = image;
     }
@@ -39,7 +39,7 @@ public class ImageProcessor : IImageProcessor {
     }
     
     public IImageProcessor ApplyPreset(string presetName) {
-        var preset = _contentCache.Single<ImagePresetContent>(x => x.Content().Name.EqualsInvariant(presetName));
+        var preset = _contentLocator.Single<ImagePresetContent>(x => x.Content().Name.EqualsInvariant(presetName));
 
         foreach (var operation in preset.Operations) {
             ApplyOperation(operation);

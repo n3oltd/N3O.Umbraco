@@ -39,4 +39,8 @@
             <Pack>True</Pack>
         </None>
     </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.2" />
+    </ItemGroup>
 </Project>

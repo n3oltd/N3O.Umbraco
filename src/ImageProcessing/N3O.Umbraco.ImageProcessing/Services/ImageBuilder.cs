@@ -1,52 +1,41 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.ImageProcessing.Operations;
-using N3O.Umbraco.Utilities;
-using NodaTime;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Umbraco.Cms.Core.IO;
 
 namespace N3O.Umbraco.ImageProcessing;
 
 public class ImageBuilder : IImageBuilder {
     private readonly IEnumerable<IImageOperation> _allOperations;
-    private readonly IClock _clock;
-    private readonly IUrlBuilder _urlBuilder;
     private readonly MediaFileManager _mediaFileManager;
-    private readonly IContentCache _contentCache;
+    private readonly IContentLocator _contentLocator;
 
     public ImageBuilder(IEnumerable<IImageOperation> allOperations,
-                        IClock clock,
-                        IUrlBuilder urlBuilder,
                         MediaFileManager mediaFileManager,
-                        IContentCache contentCache) {
+                        IContentLocator contentLocator) {
         _allOperations = allOperations;
-        _clock = clock;
-        _urlBuilder = urlBuilder;
         _mediaFileManager = mediaFileManager;
-        _contentCache = contentCache;
+        _contentLocator = contentLocator;
     }
     
-    public IFluentImageBuilder Create(int width, int height) {
+    public IFluentImageBuilder Create(int width, int height, Color backgroundColor) {
         return new FluentImageBuilder(_allOperations,
-                                      _clock,
-                                      _urlBuilder,
                                       _mediaFileManager,
-                                      _contentCache,
-                                      new Image<Rgba32>(width, height));
+                                      _contentLocator,
+                                      new Image<Rgba32>(width, height, backgroundColor));
     }
 
-    public IFluentImageBuilder Create(Size size) {
-        return Create(size.Width, size.Height);
+    public IFluentImageBuilder Create(Size size, Color backgroundColor) {
+        return Create(size.Width, size.Height, backgroundColor);
     }
 
-    public async Task<IFluentImageBuilder> CreateAsync(string srcPath) {
+    public IFluentImageBuilder Create(string srcPath) {
         var stream = _mediaFileManager.FileSystem.OpenFile(srcPath);
 
-        var image = await Image.LoadAsync(stream);
+        var image = Image.Load(stream);
 
-        return new FluentImageBuilder(_allOperations, _clock, _urlBuilder, _mediaFileManager, _contentCache, image);
+        return new FluentImageBuilder(_allOperations, _mediaFileManager, _contentLocator, image);
     }
 }
