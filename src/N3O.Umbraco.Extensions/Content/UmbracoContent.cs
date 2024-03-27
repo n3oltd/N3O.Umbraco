@@ -39,6 +39,13 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
         return values.Cast<IPublishedElement>().Select(x => x.As<TProperty>());
     }
     
+    protected TProperty GetPickedAs<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
+        var alias = AliasHelper<T>.PropertyAlias(memberExpression);
+        var value = (TProperty) Content().Value(alias);
+
+        return value;
+    }
+    
     protected IEnumerable<TProperty> GetPickedAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
         var values = (IEnumerable) Content().Value(alias) ?? Enumerable.Empty<IPublishedContent>();
