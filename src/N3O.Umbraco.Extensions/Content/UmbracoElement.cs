@@ -1,4 +1,5 @@
 using N3O.Umbraco.Extensions;
+using NodaTime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -32,7 +33,29 @@ public abstract class UmbracoElement<T> : Value, IUmbracoElement {
 
         return values.Cast<IPublishedElement>().Select(x => x.As<TProperty>());
     }
+    
+    protected TProperty GetPickedAs<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
+        var alias = AliasHelper<T>.PropertyAlias(memberExpression);
+        var value = (TProperty) Content.Value(alias);
 
+        return value;
+    }
+    
+    protected IEnumerable<TProperty> GetPickedAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
+        var alias = AliasHelper<T>.PropertyAlias(memberExpression);
+        var values = (IEnumerable) Content.Value(alias) ?? Enumerable.Empty<IPublishedContent>();
+
+        return values.Cast<IPublishedContent>().Select(x => x.As<TProperty>());
+    }
+
+    protected LocalDate? GetLocalDate(Expression<Func<T, LocalDate?>> memberExpression) {
+        return GetConvertedValue<DateTime?, LocalDate?>(memberExpression, dt => dt?.ToLocalDate());
+    }
+    
+    protected LocalDate GetLocalDate(Expression<Func<T, LocalDate>> memberExpression) {
+        return GetConvertedValue<DateTime, LocalDate>(memberExpression, dt => dt.ToLocalDate());
+    }
+    
     protected TProperty GetValue<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
 
@@ -53,5 +76,12 @@ public abstract class UmbracoElement<T> : Value, IUmbracoElement {
         } else {
             return default;
         }
+    }
+    
+    protected TConverted GetConvertedValue<TProperty, TConverted>(Expression<Func<T, TConverted>> memberExpression,
+                                                                  Func<TProperty, TConverted> convert) {
+        var alias = AliasHelper<T>.PropertyAlias(memberExpression);
+
+        return convert(Content.Value<TProperty>(alias));
     }
 }
