@@ -20,26 +20,34 @@ public class StyleContextTagHelper : TagHelper {
     public IPublishedElement ForBlock { get; set; }
     
     [HtmlAttributeName("with")]
-    public TemplateStyle With { get; set; }
+    public ITemplateStyle With { get; set; }
     
     [HtmlAttributeName("with2")]
-    public TemplateStyle With2 { get; set; }
+    public ITemplateStyle With2 { get; set; }
     
     [HtmlAttributeName("with3")]
-    public TemplateStyle With3 { get; set; }
+    public ITemplateStyle With3 { get; set; }
     
     [HtmlAttributeName("with4")]
-    public TemplateStyle With4 { get; set; }
+    public ITemplateStyle With4 { get; set; }
     
     [HtmlAttributeName("with5")]
-    public TemplateStyle With5 { get; set; }
+    public ITemplateStyle With5 { get; set; }
     
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output) {
+        var blockStyles = new List<ITemplateStyle>();
+        
         if (ForBlock != null) {
-            SetBlockStyles();
+            blockStyles.AddRange(GetBlockStyles());
         }
 
-        var stylesToApply = new[] { With, With2, With3, With4, With5 }.ExceptNull().ToList();
+        var stylesToApply = blockStyles.Concat(With)
+                                       .Concat(With2)
+                                       .Concat(With3)
+                                       .Concat(With4)
+                                       .Concat(With5)
+                                       .ExceptNull()
+                                       .ToList();
         
         foreach (var style in stylesToApply) {
             _styleContext.Push(style);
@@ -52,13 +60,15 @@ public class StyleContextTagHelper : TagHelper {
         _styleContext.Pop(stylesToApply.Count);
     }
 
-    private void SetBlockStyles() {
+    private IEnumerable<ITemplateStyle> GetBlockStyles() {
         var property = ForBlock?.GetProperty("templateStyles");
         
         if (property != null) {
-            var styles = (property.GetValue() as IEnumerable<TemplateStyle>).OrEmpty().ToList();
+            var styles = (property.GetValue() as IEnumerable<ITemplateStyle>).OrEmpty().ToList();
 
-            _styleContext.PushAll(styles);
+            return styles;
+        } else {
+            return Enumerable.Empty<ITemplateStyle>();
         }
     }
 }
