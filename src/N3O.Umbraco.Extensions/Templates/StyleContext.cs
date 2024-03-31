@@ -18,6 +18,16 @@ public class StyleContext : IStyleContext {
         return default;
     }
 
+    public ITemplateStyle Get(string category) {
+        foreach (var style in Stack) {
+            if (style.Category.EqualsInvariant(category)) {
+                return style;
+            }
+        }
+
+        return default;
+    }
+
     public IEnumerable<ITemplateStyle> GetAll() {
         var seenTypes = new List<Type>();
         var list = new List<ITemplateStyle>();
@@ -35,7 +45,11 @@ public class StyleContext : IStyleContext {
     }
 
     public bool Has(ITemplateStyle style) {
-        return GetAll().Any(x => x.Id.EqualsInvariant(style.Id));
+        return Has(style.Id);
+    }
+
+    public bool Has(string id) {
+        return GetAll().Any(x => x.Id.EqualsInvariant(id));
     }
 
     public void Pop(int count = 1) {
