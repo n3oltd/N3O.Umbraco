@@ -10,6 +10,6 @@ public static class HoldSizeExtensions {
     }
     
     public static bool HasSize(this IHoldSize obj) {
-        return obj.Height.HasValue() && obj.Width.HasValue();
+        return obj.Height > 0 && obj.Width > 0;
     }
 }

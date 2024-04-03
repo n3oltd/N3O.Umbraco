@@ -5,6 +5,7 @@ using N3O.Umbraco.ImageProcessing.Models;
 using N3O.Umbraco.ImageProcessing.Operations;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.IO;
@@ -64,7 +65,13 @@ public class ImageProcessor : IImageProcessor {
 
         return this;
     }
-    
+
+    public IImageProcessor Mutate(Action<IImageProcessingContext> action) {
+        _image.Mutate(action);
+
+        return this;
+    }
+
     private Image LoadMediaImage(string srcPath) {
         var stream = _mediaFileManager.FileSystem.OpenFile(srcPath);
 

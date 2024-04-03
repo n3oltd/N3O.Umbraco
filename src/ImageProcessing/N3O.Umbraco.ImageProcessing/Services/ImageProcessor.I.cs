@@ -1,4 +1,6 @@
 ﻿using N3O.Umbraco.ImageProcessing.Models;
+using SixLabors.ImageSharp.Processing;
+using System;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
@@ -9,4 +11,5 @@ public interface IImageProcessor {
     IImageProcessor ApplyPreset(string presetName);
     IImageProcessor Combine(params ImageLayer[] layers);
     IImageProcessor Combine(IEnumerable<ImageLayer> layers);
+    IImageProcessor Mutate(Action<IImageProcessingContext> action);
 }

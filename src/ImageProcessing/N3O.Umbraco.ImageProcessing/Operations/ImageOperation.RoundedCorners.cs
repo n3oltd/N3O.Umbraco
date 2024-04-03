@@ -9,10 +9,10 @@ using Umbraco.Cms.Core.IO;
 
 namespace N3O.Umbraco.ImageProcessing.Operations;
 
-public class RoundedCornersOperation : ImageOperation<RoundedCornersOperationContent> {
+public class RoundedCornersOperation : ImageOperation<RoundedCornersOperationElement> {
     public RoundedCornersOperation(MediaFileManager mediaFileManager) : base(mediaFileManager) { }
 
-    protected override void Apply(RoundedCornersOperationContent options, IImageProcessingContext image) {
+    protected override void Apply(RoundedCornersOperationElement options, IImageProcessingContext image) {
         if (options.HasSize()) {
             image = image.Resize(options.GetSize());
         }
