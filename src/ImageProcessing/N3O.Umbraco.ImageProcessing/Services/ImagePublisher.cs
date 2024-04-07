@@ -24,24 +24,30 @@ public class ImagePublisher : IImagePublisher {
 
     public Url Publish(Action<CacheKeyBuilder> cacheKeyBuilderAction,
                        Func<IImageBuilder, IFluentImageBuilder> imageBuilderAction,
-                       ImageFormat format) {
+                       ImageFormat format,
+                       bool forcePublish = false) {
         var cacheKeyBuilder = CacheKeyBuilder.Create();
 
         cacheKeyBuilderAction(cacheKeyBuilder);
         
         var cacheKey = cacheKeyBuilder.Build();
 
-        return Publish(cacheKey, imageBuilderAction, format);
+        return Publish(cacheKey, imageBuilderAction, format, forcePublish);
     }
     
     public Url Publish(string cacheKey,
                        Func<IImageBuilder, IFluentImageBuilder> imageBuilderAction,
-                       ImageFormat format) {
-        return CachedUrls.GetOrAddAtomic(cacheKey, () => {
-            var url = TryFind(cacheKey, format) ?? SaveAndPublish(cacheKey, imageBuilderAction, format);
+                       ImageFormat format,
+                       bool forcePublish = false) {
+        if (forcePublish) {
+            return SaveAndPublish(cacheKey, imageBuilderAction, format);
+        } else {
+            return CachedUrls.GetOrAddAtomic(cacheKey, () => {
+                var url = TryFind(cacheKey, format) ?? SaveAndPublish(cacheKey, imageBuilderAction, format);
 
-            return url;
-        });
+                return url;
+            });
+        }
     }
     
     private Url TryFind(string cacheKey, ImageFormat format) {

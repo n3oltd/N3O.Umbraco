@@ -8,7 +8,11 @@ namespace N3O.Umbraco.ImageProcessing;
 public interface IImagePublisher {
     Url Publish(Action<CacheKeyBuilder> cacheKeyBuilderAction,
                 Func<IImageBuilder, IFluentImageBuilder> imageBuilderAction,
-                ImageFormat format);
+                ImageFormat format,
+                bool forcePublish = false);
     
-    Url Publish(string cacheKey, Func<IImageBuilder, IFluentImageBuilder> imageBuilderAction, ImageFormat format);
+    Url Publish(string cacheKey,
+                Func<IImageBuilder, IFluentImageBuilder> imageBuilderAction,
+                ImageFormat format,
+                bool forcePublish = false);
 }
