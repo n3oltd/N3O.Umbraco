@@ -10,3 +10,8 @@ jobs:
   build:
     name: Build
     uses: n3oltd/actions/.github/workflows/dotnet-build-pack-push.yml@main
+
+  myGet:
+    name: MyGet
+    uses: n3oltd/actions/.github/workflows/myget-test.yml@main
+    secrets: inherit
