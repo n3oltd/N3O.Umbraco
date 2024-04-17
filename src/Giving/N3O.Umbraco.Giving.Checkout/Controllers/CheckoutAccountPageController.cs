@@ -7,7 +7,7 @@ using System;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Web;
 
-namespace N3O.Umbraco.Giving.Checkout.Controllers; 
+namespace N3O.Umbraco.Giving.Checkout.Controllers;
 
 public class CheckoutAccountPageController : CheckoutStagePageController {
     public CheckoutAccountPageController(ILogger<CheckoutAccountPageController> logger,
