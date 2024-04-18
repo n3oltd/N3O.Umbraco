@@ -35,27 +35,26 @@ public class BlockTypesService : IBlockTypesService {
     }
 
     private void CreateContentType(BlockDefinition definition) {
-        if (_contentTypeService.Get(definition.Id) != null) {
+        if (_contentTypeService.Get(definition.Alias) != null) {
             return;
         }
 
-        var rootContainer = GetOrCreateContentTypeContainer(UmbracoId.Generate(IdScope.ContentTypeContainer, "Blocks"),
-                                                            -1,
-                                                            "Blocks");
+        var rootContainer = GetOrCreateContentTypeContainer("Blocks");
 
         var container = rootContainer;
 
         if (definition.BlockCategories.IsSingle()) {
             var category = definition.BlockCategories.Single();
-            var containerId = UmbracoId.Generate(IdScope.ContentTypeContainer, container.Key, category.Id);
             
-            container = GetOrCreateContentTypeContainer(containerId, container.Id, category.Name);
+            container = GetOrCreateContentTypeContainer(category.Name, rootContainer.Name);
         }
 
         if (definition.Folder.HasValue()) {
-            var containerId = UmbracoId.Generate(IdScope.ContentTypeContainer, container.Key, definition.Folder);
-            
-            container = GetOrCreateContentTypeContainer(containerId, container.Id, definition.Folder);
+            if (container == rootContainer) {
+                container = GetOrCreateContentTypeContainer(definition.Folder, rootContainer.Name);    
+            } else {
+                container = GetOrCreateContentTypeContainer(definition.Folder, container.Name, rootContainer.Name);    
+            }
         }
 
         var compositionType = GetOrCreateContentTypeComposition(rootContainer);
@@ -73,8 +72,9 @@ public class BlockTypesService : IBlockTypesService {
     }
 
     private IContentType GetOrCreateContentTypeComposition(EntityContainer container) {
-        var id = UmbracoId.Generate(IdScope.ContentType, container.Key);
-        var contentType = _contentTypeService.Get(id);
+        var alias = "block";
+        var name = "Block";
+        var contentType = _contentTypeService.Get(alias);
 
         if (contentType == null) {
             var dataType = _dataTypeService.GetDataType("Textarea");
@@ -86,10 +86,10 @@ public class BlockTypesService : IBlockTypesService {
             propertyType.SortOrder = 999;
 
             contentType = new ContentType(_shortStringHelper, container.Id);
-            contentType.Key = id;
-            contentType.Alias = "block";
+            contentType.Key = UmbracoId.Generate(IdScope.ContentType, name);
+            contentType.Alias = alias;
             contentType.IsElement = true;
-            contentType.Name = "Block";
+            contentType.Name = name;
             contentType.Icon = "icon-brick";
             contentType.AddPropertyType(propertyType, "general", "General");
             
@@ -156,17 +156,32 @@ public class BlockTypesService : IBlockTypesService {
         return configuration;
     }
     
-    private EntityContainer GetOrCreateContentTypeContainer(Guid id, int parentId, string name) {
-        var container = _contentTypeService.GetContainer(id);
-
-        if (container == null) {
-            var attempt = _contentTypeService.CreateContainer(parentId, id, name);
-
-            if (!attempt.Success) {
-                throw new Exception($"Failed to create blocks container {name.Quote()}");
+    private EntityContainer GetOrCreateContentTypeContainer(string name, params string[] path) {
+        EntityContainer container = null;
+        
+        foreach (var element in path.Concat(name)) {
+            EntityContainer elementContainer;
+            
+            if (container == null) {
+                elementContainer = _contentTypeService.GetContainers(element, 1).SingleOrDefault();
+            } else {
+                elementContainer = _contentTypeService.GetContainers(element, container.Level + 1)
+                                                      .SingleOrDefault(x => x.ParentId == container.Id);
             }
+            
+            if (elementContainer == null) {
+                var attempt = _contentTypeService.CreateContainer(container?.Id ?? -1,
+                                                                  UmbracoId.Generate(IdScope.ContentTypeContainer, name),
+                                                                  name);
 
-            container = attempt.Result.Entity;
+                if (!attempt.Success) {
+                    throw new Exception($"Failed to create blocks container {name.Quote()}");
+                }
+
+                container = attempt.Result.Entity;
+            } else {
+                container = elementContainer;
+            }
         }
 
         return container;
