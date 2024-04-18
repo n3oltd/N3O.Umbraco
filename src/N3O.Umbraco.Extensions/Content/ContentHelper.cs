@@ -112,11 +112,11 @@ public class ContentHelper : IContentHelper {
                                                   object propertyValue) {
         var converter = (IPropertyValueConverter) _serviceProvider.Value.GetRequiredService(converterType);
         var publishedContentType = _umbracoContextAccessor.Value.GetContentCache().GetContentType(contentTypeAlias);
-        var publishedPropertyType = publishedContentType.GetPropertyType(propertyTypeAlias);
+        var publishedPropertyType = publishedContentType?.GetPropertyType(propertyTypeAlias);
         
         var source = propertyValue;
 
-        if (source == null || source?.ToString() == "null") {
+        if (source == null || source.ToString() == "null" || publishedPropertyType == null) {
             return default;
         }
 

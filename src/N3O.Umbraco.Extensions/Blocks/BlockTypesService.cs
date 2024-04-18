@@ -99,7 +99,7 @@ public class BlockTypesService : IBlockTypesService {
         return contentType;
     }
 
-    public void CreateDataTypes(BlockDefinition definition) {
+    private void CreateDataTypes(BlockDefinition definition) {
         var dataTypeKey = definition.DataTypeKey.Value;
     
         if (_dataTypeService.GetDataType(dataTypeKey) != null) {
@@ -111,21 +111,22 @@ public class BlockTypesService : IBlockTypesService {
             throw new InvalidOperationException("Nested Content property editor not found");
         }
 
-        var container = GetOrCreateDataTypeContainer(UmbracoId.Generate(IdScope.DataTypeContainer, "Blocks"),
-                                                     -1,
-                                                     "Blocks");
+        var rootContainer = GetOrCreateDataTypeContainer("Blocks");
 
+        var container = rootContainer;
+        
         if (definition.BlockCategories.IsSingle()) {
             var category = definition.BlockCategories.Single();
-            var containerId = UmbracoId.Generate(IdScope.DataTypeContainer, container.Key, category.Id);
             
-            container = GetOrCreateDataTypeContainer(containerId, container.Id, category.Name);
+            container = GetOrCreateDataTypeContainer(category.Name, rootContainer.Name);
         }
 
         if (definition.Folder.HasValue()) {
-            var containerId = UmbracoId.Generate(IdScope.DataTypeContainer, container.Key, definition.Folder);
-            
-            container = GetOrCreateDataTypeContainer(containerId, container.Id, definition.Folder);
+            if (container == rootContainer) {
+                container = GetOrCreateDataTypeContainer(definition.Folder, rootContainer.Name);    
+            } else {
+                container = GetOrCreateDataTypeContainer(definition.Folder, container.Name, rootContainer.Name);    
+            }
         }
         
         var dataType = new DataType(editor, _configurationEditorJsonSerializer, container.Id);
@@ -157,7 +158,7 @@ public class BlockTypesService : IBlockTypesService {
     }
     
     private EntityContainer GetOrCreateContentTypeContainer(string name, params string[] path) {
-        EntityContainer container = null;
+        var container = default(EntityContainer);
         
         foreach (var element in path.Concat(name)) {
             EntityContainer elementContainer;
@@ -187,17 +188,32 @@ public class BlockTypesService : IBlockTypesService {
         return container;
     }
     
-    private EntityContainer GetOrCreateDataTypeContainer(Guid id, int parentId, string name) {
-        var container = _dataTypeService.GetContainer(id);
-
-        if (container == null) {
-            var attempt = _dataTypeService.CreateContainer(parentId, id, name);
-
-            if (!attempt.Success) {
-                throw new Exception($"Failed to create blocks container {name.Quote()}");
+    private EntityContainer GetOrCreateDataTypeContainer(string name, params string[] path) {
+        var container = default(EntityContainer);
+        
+        foreach (var element in path.Concat(name)) {
+            EntityContainer elementContainer;
+            
+            if (container == null) {
+                elementContainer = _dataTypeService.GetContainers(element, 1).SingleOrDefault();
+            } else {
+                elementContainer = _dataTypeService.GetContainers(element, container.Level + 1)
+                                                   .SingleOrDefault(x => x.ParentId == container.Id);
             }
+            
+            if (elementContainer == null) {
+                var attempt = _dataTypeService.CreateContainer(container?.Id ?? -1,
+                                                               UmbracoId.Generate(IdScope.DataTypeContainer, name),
+                                                               name);
 
-            container = attempt.Result.Entity;
+                if (!attempt.Success) {
+                    throw new Exception($"Failed to create blocks container {name.Quote()}");
+                }
+
+                container = attempt.Result.Entity;
+            } else {
+                container = elementContainer;
+            }
         }
 
         return container;

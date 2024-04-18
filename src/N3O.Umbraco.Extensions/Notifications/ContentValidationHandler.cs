@@ -38,7 +38,11 @@ public class ContentValidationHandler : INotificationAsyncHandler<ContentSavingN
         try {
             foreach (var contentValidator in _contentValidators) {
                 if (contentValidator.IsValidator(content)) {
-                    contentValidator.Validate(content);
+                    try {
+                        contentValidator.Validate(content);
+                    } catch (Exception ex) {
+                        _logger.LogError(ex, $"Failed to execute content validator {contentValidator.GetType().GetFriendlyName().Quote()}");
+                    }
                 }
             }
 
