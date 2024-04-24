@@ -11,15 +11,15 @@ public static class StyleContextExtensions {
         return styleContext.Get(category)?.Name.EqualsInvariant(name) ?? false;
     }
     
-    public static object GetStyleValue(this IStyleContext styleContext, string category, string propertyAlias) {
-        return styleContext.Get(category)?.GetProperty(propertyAlias);
-    }
-    
-    public static int? GetIntStyleValue(this IStyleContext styleContext, string category, string propertyAlias) {
+    public static int? GetInt(this IStyleContext styleContext, string category, string propertyAlias) {
         return styleContext.Get(category)?.GetProperty<int?>(propertyAlias);
     }
     
-    public static string GetStringStyleValue(this IStyleContext styleContext, string category, string propertyAlias) {
+    public static string GetString(this IStyleContext styleContext, string category, string propertyAlias) {
         return styleContext.Get(category)?.GetProperty<string>(propertyAlias);
+    }
+    
+    public static object GetValue(this IStyleContext styleContext, string category, string propertyAlias) {
+        return styleContext.Get(category)?.GetProperty(propertyAlias);
     }
 }

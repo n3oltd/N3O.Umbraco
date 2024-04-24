@@ -25,8 +25,10 @@ public class ApplyStylesTagHelper : TagHelper {
             sb.Append(output.Attributes["class"]?.Value ?? "");
 
             foreach (var style in _styleContext.GetAll()) {
-                if (style.CssClass.HasValue()) {
-                    sb.Append($" {style.CssClass}");
+                var cssClass = style.GetProperty<string>("cssClass");
+                
+                if (cssClass.HasValue()) {
+                    sb.Append($" {cssClass}");
                 }
             }
 

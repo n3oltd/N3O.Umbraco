@@ -1,13 +1,14 @@
 using N3O.Umbraco.Templates;
+using System.Collections.Generic;
 
 namespace DemoSite.Styles;
 
 public class HorizontalAlignment : TemplateStyle {
-    public HorizontalAlignment(string id, string name, string cssClass) : base(id, name, null, cssClass) { }
-    
-    public override string Icon => "icon-tab-key";
+    public HorizontalAlignment(string id, string name, string cssClass)
+        : base(id, name, null, new KeyValuePair<string, object>(nameof(cssClass), cssClass)) { }
     
     public override string Category => "Horizontal Alignment";
+    public override string Icon => "icon-tab-key";
 }
 
 public class HorizontalAlignments : ITemplateStylesCollection {
