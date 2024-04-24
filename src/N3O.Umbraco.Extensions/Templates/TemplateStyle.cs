@@ -18,6 +18,9 @@ public abstract class TemplateStyle : NamedLookup, ITemplateStyle {
     public abstract string Icon { get; }
     
     public abstract string Category { get; }
+    
+    public virtual object GetProperty(string propertyAlias) => default;
+    public virtual T GetProperty<T>(string propertyAlias) => default;
 }
 
 public interface ITemplateStylesCollection { }

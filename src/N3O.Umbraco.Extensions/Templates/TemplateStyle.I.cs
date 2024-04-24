@@ -7,4 +7,7 @@ public interface ITemplateStyle {
     string Description { get; }
     string Icon { get; }
     string Name { get; }
+    
+    object GetProperty(string propertyAlias);
+    T GetProperty<T>(string propertyAlias);
 }
