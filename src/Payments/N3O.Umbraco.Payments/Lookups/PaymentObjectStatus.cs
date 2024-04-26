@@ -9,5 +9,5 @@ public class PaymentObjectStatus : NamedLookup {
 public class PaymentObjectStatuses : StaticLookupsCollection<PaymentObjectStatus> {
     public static readonly PaymentObjectStatus Complete = new("complete", "Complete");
     public static readonly PaymentObjectStatus Error = new("error", "Error");
-    public static readonly PaymentObjectStatus InProgress = new("inProgress", "InProgress");
+    public static readonly PaymentObjectStatus InProgress = new("inProgress", "In Progress");
 }
