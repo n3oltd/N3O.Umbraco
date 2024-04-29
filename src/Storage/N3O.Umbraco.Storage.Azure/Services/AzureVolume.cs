@@ -14,9 +14,8 @@ public class AzureVolume : IVolume {
 
     public AzureVolume(IConfiguration configuration, AsyncKeyedLocker<string> locker) {
         _locker = locker;
-        var options = new AzureBlobFileSystemOptions();
         
-        configuration.GetSection("Umbraco:Storage:AzureBlob:Media").Bind(options);
+        var options = configuration.GetSection("Umbraco:Storage:AzureBlob:Media").Get<AzureBlobFileSystemOptions>();
         _serviceClient = new BlobServiceClient(options.ConnectionString);
     }
     

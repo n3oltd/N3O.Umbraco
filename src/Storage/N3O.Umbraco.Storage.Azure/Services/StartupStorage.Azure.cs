@@ -9,8 +9,7 @@ namespace N3O.Umbraco.Storage;
 [Order(0)]
 public class AzureStartupStorage : IStartupStorage {
     public IStorageFolder GetStorageFolder(IConfiguration configuration, string folderPath) {
-        var options = new AzureBlobFileSystemOptions();
-        configuration.GetSection("Umbraco:Storage:AzureBlob:Media").Bind(options);
+        var options = configuration.GetSection("Umbraco:Storage:AzureBlob:Media").Get<AzureBlobFileSystemOptions>();
         
         var serviceClient = new BlobServiceClient(options.ConnectionString);
         var container = serviceClient.GetBlobContainerClient(AzureStorageConstants.StorageContainerName
