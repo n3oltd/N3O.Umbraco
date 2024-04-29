@@ -1,4 +1,4 @@
-using N3O.Umbraco.Data.Konstrukt;
+using N3O.Umbraco.Data.UIBuilder;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Data;

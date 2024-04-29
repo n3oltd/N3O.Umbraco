@@ -57,7 +57,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Konstrukt\N3O.Umbraco.Konstrukt.StaticAssets\N3O.Umbraco.Konstrukt.StaticAssets.csproj" />
+        <ProjectReference Include="..\..\UIBuilder\N3O.Umbraco.UIBuilder.StaticAssets\N3O.Umbraco.UIBuilder.StaticAssets.csproj" />
         <ProjectReference Include="..\N3O.Umbraco.Data\N3O.Umbraco.Data.csproj" />
     </ItemGroup>
 

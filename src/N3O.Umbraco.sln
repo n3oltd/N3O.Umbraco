@@ -196,11 +196,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Payments.Bambor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Giving.Analytics", "Giving\N3O.Umbraco.Giving.Analytics\N3O.Umbraco.Giving.Analytics.csproj", "{DF33190B-6D5B-4D00-A254-E13BA250878E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Konstrukt", "Konstrukt", "{C93D0FD2-0E42-43AD-96A4-53621B99D1B6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UIBuilder", "UIBuilder", "{C93D0FD2-0E42-43AD-96A4-53621B99D1B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Konstrukt", "Konstrukt\N3O.Umbraco.Konstrukt\N3O.Umbraco.Konstrukt.csproj", "{898E01B2-CF43-4EFD-B33C-4D8278AC8B4E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.UIBuilder", "UIBuilder\N3O.Umbraco.UIBuilder\N3O.Umbraco.UIBuilder.csproj", "{898E01B2-CF43-4EFD-B33C-4D8278AC8B4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Konstrukt.StaticAssets", "Konstrukt\N3O.Umbraco.Konstrukt.StaticAssets\N3O.Umbraco.Konstrukt.StaticAssets.csproj", "{40DD77FE-1F9A-43D2-B210-9DBF36974DD2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.UIBuilder.StaticAssets", "UIBuilder\N3O.Umbraco.UIBuilder.StaticAssets\N3O.Umbraco.UIBuilder.StaticAssets.csproj", "{40DD77FE-1F9A-43D2-B210-9DBF36974DD2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Search.Algolia", "Search\N3O.Umbraco.Search.Algolia\N3O.Umbraco.Search.Algolia.csproj", "{4D9F9D03-1C0B-45D0-A57C-240EB4533958}"
 EndProject
