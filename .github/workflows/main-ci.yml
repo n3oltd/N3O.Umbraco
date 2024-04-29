@@ -16,4 +16,6 @@ jobs:
   myget:
     name: MyGet
     uses: n3oltd/actions/.github/workflows/dotnet-build-pack-push-myget.yml@main
+    with:
+      dotnet-version: 8.x
     secrets: inherit
