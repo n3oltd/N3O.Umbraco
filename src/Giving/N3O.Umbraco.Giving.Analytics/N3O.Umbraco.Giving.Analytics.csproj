@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Giving.Analytics</RootNamespace>
-        <TargetFramework>net7.0</TargetFramework>
-        <LangVersion>11</LangVersion>
+        <TargetFramework>net8.0</TargetFramework>
+        <LangVersion>12</LangVersion>
         <Copyright>Copyright © 2023 N3O Ltd</Copyright>
     </PropertyGroup>
 
@@ -16,9 +16,9 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageProjectUrl>https://n3o.ltd</PackageProjectUrl>
         <RepositoryUrl>https://github.com/n3oltd/N3O.Umbraco</RepositoryUrl>
-        <Version>12.0.0</Version>
-        <AssemblyVersion>12.0.0</AssemblyVersion>
-        <FileVersion>12.0.0</FileVersion>
+        <Version>13.0.0</Version>
+        <AssemblyVersion>13.0.0</AssemblyVersion>
+        <FileVersion>13.0.0</FileVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
