@@ -1,0 +1,11 @@
+name: Auto add issues to projects
+
+on:
+  issues:
+    types:
+      - assigned
+
+jobs:
+  add-to-projects:
+    uses: n3oltd/actions/.github/workflows/auto-add-issue-to-projects.yml@main
+    secrets: inherit
