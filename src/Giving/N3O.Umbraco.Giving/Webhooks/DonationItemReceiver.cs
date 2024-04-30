@@ -138,10 +138,10 @@ public class DonationItemReceiver : WebhookReceiver {
     private void AddPriceRule(IContentBuilder contentBuilder, WebhookPricingRule webhookPricingRule) {
         contentBuilder.Numeric(GivingConstants.Aliases.Price.Properties.Amount).SetDecimal(webhookPricingRule.Price?.Amount);
         contentBuilder.Toggle(GivingConstants.Aliases.Price.Properties.Locked).Set(webhookPricingRule.Price?.Locked);
-        contentBuilder.ContentPicker(GivingConstants.Aliases.PricingRule.Properties.Dimension1).SetContent(_lookups.FindByName<FundDimension1Value>(webhookPricingRule.FundDimensions.Dimension1));
-        contentBuilder.ContentPicker(GivingConstants.Aliases.PricingRule.Properties.Dimension2).SetContent(_lookups.FindByName<FundDimension2Value>(webhookPricingRule.FundDimensions.Dimension2));
-        contentBuilder.ContentPicker(GivingConstants.Aliases.PricingRule.Properties.Dimension3).SetContent(_lookups.FindByName<FundDimension3Value>(webhookPricingRule.FundDimensions.Dimension3));
-        contentBuilder.ContentPicker(GivingConstants.Aliases.PricingRule.Properties.Dimension4).SetContent(_lookups.FindByName<FundDimension4Value>(webhookPricingRule.FundDimensions.Dimension4));
+        contentBuilder.ContentPicker(GivingConstants.Aliases.PricingRule.Properties.Dimension1).SetContent(webhookPricingRule.FundDimensions.Dimension1.IfNotNull(_lookups.FindByName<FundDimension1Value>));
+        contentBuilder.ContentPicker(GivingConstants.Aliases.PricingRule.Properties.Dimension2).SetContent(webhookPricingRule.FundDimensions.Dimension2.IfNotNull(_lookups.FindByName<FundDimension2Value>));
+        contentBuilder.ContentPicker(GivingConstants.Aliases.PricingRule.Properties.Dimension3).SetContent(webhookPricingRule.FundDimensions.Dimension3.IfNotNull(_lookups.FindByName<FundDimension3Value>));
+        contentBuilder.ContentPicker(GivingConstants.Aliases.PricingRule.Properties.Dimension4).SetContent(webhookPricingRule.FundDimensions.Dimension4.IfNotNull(_lookups.FindByName<FundDimension4Value>));
     }
     
     public class WebhookDonationItem : WebhookEntity {
