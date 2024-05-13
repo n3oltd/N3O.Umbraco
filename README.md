@@ -8,7 +8,7 @@
 
 This repo contains the N3O Umbraco extensions. These are a series of NuGet packages that extend the functionality of the [Umbraco CMS](https://umbraco.com). As well as providing generic functionality such as payment processing and site search, they provide ready made integration with the [Engage CRM](https://n3o.ltd/).
 
-Extensions work with both cloud and on-premises versions of Umbraco 12 or later.
+Extensions work with both cloud and on-premises versions of Umbraco 13 or later.
 
 Aside from the back office plugins and content apps, extensions do not provide any HTML, CSS or other UI. They are designed to integrate seamlessly with any standard Umbraco template and allow your site to retain a distinctive look and feel.
 
