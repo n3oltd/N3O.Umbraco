@@ -30,11 +30,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Mediator\N3O.Umbraco.Mediator\N3O.Umbraco.Mediator.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+        <PackageReference Include="FluentValidation" Version="11.9.1" />
         <PackageReference Include="ISO3166" Version="1.0.4" />
         <PackageReference Include="libphonenumber-csharp" Version="8.13.36" />
     </ItemGroup>

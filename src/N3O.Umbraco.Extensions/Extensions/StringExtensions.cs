@@ -12,6 +12,28 @@ public static class StringExtensions {
     public static int CompareInvariant(this string a, string b) {
         return string.Compare(a, b, StringComparison.InvariantCultureIgnoreCase);
     }
+    
+    public static string CombineWith(this string string1, string string2, string separator) {
+        if (!string1.HasValue() && !string2.HasValue()) {
+            return null;
+        }
+
+        var combined = "";
+
+        if (string1.HasValue()) {
+            combined += string1;
+
+            if (string2.HasValue()) {
+                combined += ".";
+            }
+        }
+
+        if (string2.HasValue()) {
+            combined += string2;
+        }
+
+        return combined;
+    }
 
     public static string DigitsOnly(this string s, char? decimalSeparator = null) {
         if (s == null) {
