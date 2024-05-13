@@ -37,8 +37,7 @@ public class HostingComposer : Composer {
             ConfigureCors(opt);
         });
         
-        builder.Services.Configure<MvcOptions>(options =>
-        {
+        builder.Services.Configure<MvcOptions>(options => {
             options.Conventions.Add(new HttpStatusCodesConvention());
         });
 
