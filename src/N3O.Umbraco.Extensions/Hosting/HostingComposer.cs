@@ -36,6 +36,11 @@ public class HostingComposer : Composer {
             AddMiddleware<CookiesMiddleware>(opt);
             ConfigureCors(opt);
         });
+        
+        builder.Services.Configure<MvcOptions>(options =>
+        {
+            options.Conventions.Add(new HttpStatusCodesConvention());
+        });
 
         RegisterRouteConstraints(builder);
     }

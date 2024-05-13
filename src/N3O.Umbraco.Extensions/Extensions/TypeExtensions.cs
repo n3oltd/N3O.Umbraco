@@ -224,6 +224,22 @@ public static class ReflectionExtensions {
             return Enumerable.Empty<Type>().ToArray();
         });
     }
+    
+    public static IReadOnlyList<Type> GetGenericParameterTypesForInheritedGenericClass(this Type type, Type genericClassType) {
+        var cacheKey = nameof(GetGenericParameterTypesForInheritedGenericClass) + type.AssemblyQualifiedName + genericClassType.AssemblyQualifiedName;
+
+        return GetOrAdd(cacheKey, () => {
+            while (type != null && type != typeof(object)) {
+                if (type.IsGenericType && type.GetGenericTypeDefinition() == genericClassType) {
+                    return type.GetGenericArguments();
+                }
+
+                type = type.BaseType;
+            }
+
+            return Enumerable.Empty<Type>().ToArray();
+        });
+    }
 
     public static IEnumerable<Type> GetParameterTypesForGenericClass(this Type type, Type genericClassType) {
         var cacheKey = nameof(GetParameterTypesForGenericClass) + type.AssemblyQualifiedName + genericClassType.AssemblyQualifiedName;
