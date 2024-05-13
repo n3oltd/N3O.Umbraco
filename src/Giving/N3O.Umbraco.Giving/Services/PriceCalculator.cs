@@ -47,7 +47,7 @@ public class PriceCalculator : IPriceCalculator {
                                               .ToCurrency(currency)
                                               .ConvertAsync(amountInBaseCurrency, cancellationToken);
 
-        var price = new Price(forexMoney.Quote.RoundUpToWholeNumber().Amount,
+        var price = new Price(forexMoney.Quote.Amount,
                               matchedRule?.Locked ?? pricing.Locked);
 
         return price;
