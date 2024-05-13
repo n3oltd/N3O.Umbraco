@@ -19,5 +19,10 @@ public class AllocationMapping : IMapDefinition {
         dest.Feedback = ctx.Map<FeedbackAllocation, FeedbackAllocationRes>(src.Feedback);
         dest.UpsellOfferId = src.UpsellOfferId;
         dest.Upsell = src.UpsellOfferId.HasValue();
+        // TODO We may need to extend this so we resolve in the constructor of this mapper
+        // IEnumerable<IAllocationExtensionMapping> and for each (key, value) in the dictionary
+        // we find the corresponding mapping (if any) and invoke it to convert the JToken value
+        // to the response model.
+        dest.Extensions = src.Extensions;
     }
 }

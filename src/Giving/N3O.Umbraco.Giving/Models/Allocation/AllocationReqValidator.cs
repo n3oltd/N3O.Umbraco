@@ -15,7 +15,8 @@ namespace N3O.Umbraco.Giving.Models;
 public class AllocationReqValidator : ModelValidator<AllocationReq> {
     public AllocationReqValidator(IFormatter formatter,
                                   ICurrencyAccessor currencyAccessor,
-                                  IPricedAmountValidator pricedAmountValidator)
+                                  IPricedAmountValidator pricedAmountValidator,
+                                  IEnumerable<IAllocationExtensionRequestValidator> extensionValidators)
         : base(formatter) {
         var currentCurrency = currencyAccessor.GetCurrency();
 
@@ -91,6 +92,9 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
             .When(x => x.FundDimensions.HasValue())
             .WithMessage(Get<Strings>(s => s.InvalidFundDimensions));
 
+        RuleFor(x => x)
+            .Custom((req, context) => ValidateAllocationExtensionData(extensionValidators, context, req));
+        
         ValidateCurrencies(currentCurrency);
     }
 
@@ -104,6 +108,16 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
             .Must(x => x.Value.Currency == currency)
             .When(x => x.Sponsorship.OrEmpty(y => y.Components).HasAny(c => c.Value.HasValue(v => v.Currency)))
             .WithMessage(Get<Strings>(s => s.CurrencyMismatch));
+    }
+    
+    private void ValidateAllocationExtensionData(IEnumerable<IAllocationExtensionRequestValidator> extensionValidators,
+                                                 ValidationContext<AllocationReq> context,
+                                                 AllocationReq req) {
+        foreach (var validator in extensionValidators.Where(x => req.Extensions.CanValidate(x))) {
+            var result = validator.Validate(req.Extensions);
+
+            result.Errors.OrEmpty().Do(context.AddFailure);
+        }
     }
 
     private bool AllRequiredFieldsAreIncluded(FeedbackScheme feedbackScheme,

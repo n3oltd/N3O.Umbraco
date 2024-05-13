@@ -22,4 +22,8 @@ public static class AllocationExtensions {
             return currency.Zero();
         }
     }
+    
+    public static bool HasExtensionDataFor(this IAllocation allocation, string key) {
+        return allocation.Extensions.HasFor(key);
+    }
 }

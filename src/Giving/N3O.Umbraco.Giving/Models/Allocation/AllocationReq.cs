@@ -2,7 +2,9 @@ using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Lookups;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 
 namespace N3O.Umbraco.Giving.Models;
 
@@ -27,6 +29,9 @@ public class AllocationReq : IAllocation {
     
     [Name("Upsell Offer ID")]
     public Guid? UpsellOfferId { get; set; }
+    
+    [JsonExtensionData]
+    public IDictionary<string, JToken> Extensions { get; set; }
     
     [JsonIgnore]
     IFundDimensionValues IAllocation.FundDimensions => FundDimensions;
