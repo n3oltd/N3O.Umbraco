@@ -290,7 +290,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.ImageProcessing
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Newsletters.SendGrid", "Newsletters\N3O.Umbraco.Newsletters.SendGrid\N3O.Umbraco.Newsletters.SendGrid.csproj", "{C455C976-21C3-4361-BCDD-AC98B67B4544}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Crowdfunding.Apps.FundraisingPageStats", "Crowdfunding\N3O.Umbraco.Crowdfunding.Apps.FundraisingPageStats\N3O.Umbraco.Crowdfunding.Apps.FundraisingPageStats.csproj", "{321C7830-3A64-425D-B6F8-CBA31D729886}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Crowdfunding.StaticAssets", "Crowdfunding\N3O.Umbraco.Crowdfunding.StaticAssets\N3O.Umbraco.Crowdfunding.StaticAssets.csproj", "{321C7830-3A64-425D-B6F8-CBA31D729886}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
