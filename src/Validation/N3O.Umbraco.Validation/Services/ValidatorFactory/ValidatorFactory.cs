@@ -15,7 +15,7 @@ public class ValidatorFactory : IValidatorFactory {
         _validators = validators.ToList();
     }
 
-    public IEnumerable<IValidator> CreateValidatorsIfDefined(Type modelType) {
+    public IEnumerable<IValidator> GetAllValidators(Type modelType) {
         var validatorTypes = GetValidatorTypesForModel(modelType);
 
         if (validatorTypes.None()) {
@@ -34,7 +34,7 @@ public class ValidatorFactory : IValidatorFactory {
     }
 
     private List<Type> GetValidatorTypesForModel(Type modelType) {
-        var key = nameof(ValidatorFactory) + nameof(GetValidatorTypesForModel) + modelType.FullName;
+        var key = nameof(ValidatorFactory) + nameof(GetValidatorTypesForModel) + modelType.AssemblyQualifiedName;
 
         return TypesCache.GetOrAdd(key, _ => {
             var list = new List<Type>();
@@ -58,19 +58,17 @@ public class ValidatorFactory : IValidatorFactory {
             return Enumerable.Empty<Type>();
         }
 
-        var validatorTypes = AllValidatorTypes
-                            .Select(validatorType => GetMatchingValidatorsForModel(validatorType, modelType))
-                            .ExceptNull()
-                            .ToList();
+        var validatorTypes = AllValidatorTypes.Select(x => GetMatchingValidatorsForModel(x, modelType))
+                                              .ExceptNull()
+                                              .ToList();
 
         return validatorTypes;
     }
 
     private Type GetMatchingValidatorsForModel(Type validatorType, Type modelType) {
-        var abstractGenericValidatorType = typeof(ModelValidator<>);
-        var validatesModelsOfType = validatorType
-                                   .GetGenericParameterTypesForInheritedGenericClass(abstractGenericValidatorType)
-                                   .Single();
+        var openGenericModelValidatorType = typeof(ModelValidator<>);
+        var validatesModelsOfType = validatorType.GetGenericParameterTypesForInheritedGenericClass(openGenericModelValidatorType)
+                                                 .Single();
 
         if (validatesModelsOfType.IsGenericTypeDefinition) {
             var type = modelType;
@@ -93,9 +91,7 @@ public class ValidatorFactory : IValidatorFactory {
     }
 
     private static readonly List<Type> AllValidatorTypes =
-        OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
-                                    t.InheritsGenericClass(typeof(ModelValidator<>)))
-                     .ToList();
+        OurAssemblies.GetTypes(t => t.IsConcreteClass() && t.InheritsGenericClass(typeof(ModelValidator<>))).ToList();
 
     private static readonly ConcurrentDictionary<string, List<Type>> TypesCache = new();
 }

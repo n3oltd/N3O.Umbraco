@@ -8,7 +8,9 @@ namespace N3O.Umbraco.Validation;
 
 public class ValidationProblemDetails : ProblemDetails {
     public ValidationProblemDetails(IFormatter formatter, IEnumerable<ValidationFailure> failures)
-        : base(HttpStatusCode.PreconditionFailed, formatter.Text.Format<Strings>(s => s.ValidationFailed), formatter.Text.Format<Strings>(s => s.SeeErrors)) {
+        : base(HttpStatusCode.PreconditionFailed,
+               formatter.Text.Format<Strings>(s => s.ValidationFailed),
+               formatter.Text.Format<Strings>(s => s.SeeErrors)) {
         ValidationFailure GetFailureDetails(ValidationFailure f) {
             var failureDetails =  new ValidationFailure(f.Property, f.Error);
 

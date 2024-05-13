@@ -25,7 +25,6 @@ public class Auth0BackOfficeLoginProviderOptions : IConfigureNamedOptions<BackOf
     }
 
     public void Configure(BackOfficeExternalLoginProviderOptions options) {
-        options.ButtonStyle = "btn-info";
         options.Icon = "fa fa-cloud";
 
         options.AutoLinkOptions = new ExternalSignInAutoLinkOptions(autoLinkExternalAccount: false,

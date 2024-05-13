@@ -14,14 +14,12 @@ public class UnhandledExceptionWrapper : ExceptionWithProblemDetails {
         var title = formatter.Text.Format<Strings>(s => s.GeneralError);
         var detail = Exception.Message;
 
-        var problemDetails = new ProblemDetails(System.Net.HttpStatusCode.InternalServerError,
-                                                title,
-                                                detail);
+        var problemDetails = new ProblemDetails(System.Net.HttpStatusCode.InternalServerError, title, detail);
 
         return problemDetails;
     }
 
-    public class Strings : UnhandledErrorStrings {
+    public class Strings : CodeStrings {
         public string GeneralError => "Sorry, an error has occurred";
     }
 }

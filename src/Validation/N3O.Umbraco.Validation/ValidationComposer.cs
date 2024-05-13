@@ -19,10 +19,27 @@ public class ValidationComposer : Composer {
         builder.Services.AddSingleton<IPhoneNumberValidator, PhoneNumberValidator>();
         
         builder.Services.AddTransient<IValidation, Validation>();
-        builder.Services.AddTransient<IValidationHandler, ValidationHandler>();
         builder.Services.AddTransient<IValidatorFactory, ValidatorFactory>();
+        builder.Services.AddTransient<IValidationHandler, ValidationHandler>();
         builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidatorPipelineBehaviour<,>));
         
+        RegisterAll(t => t.ImplementsGenericInterface(typeof(IValidator<>)),
+                    t => RegisterValidator(builder, t));
+
+        RegisterMiddleware(builder);
+
+        ConfigureFluentValidation();
+    }
+
+    private void RegisterValidator(IUmbracoBuilder builder, Type validatorType) {
+        var interfaceTypes = validatorType.GetInterfaces();
+
+        foreach (var interfaceType in interfaceTypes) {
+            builder.Services.AddTransient(interfaceType, validatorType);
+        }
+    }
+    
+    private void RegisterMiddleware(IUmbracoBuilder builder) {
         builder.Services.AddScoped<ExceptionMiddleware>();
         
         builder.Services.Configure<UmbracoPipelineOptions>(opt => {
@@ -38,22 +55,13 @@ public class ValidationComposer : Composer {
 
             opt.AddFilter(filter);
         });
-        
-        RegisterAll(t => t.ImplementsGenericInterface(typeof(IValidator<>)),
-                    t => RegisterValidator(builder, t));
-
+    }
+    
+    private void ConfigureFluentValidation() {
         ValidatorOptions.Global.DisplayNameResolver = (_, member, _) => {
             var propertyInfo = member as PropertyInfo;
 
             return propertyInfo?.GetCustomAttribute<NameAttribute>()?.Name;
         };
-    }
-
-    private void RegisterValidator(IUmbracoBuilder builder, Type validatorType) {
-        var interfaceTypes = validatorType.GetInterfaces();
-
-        foreach (var interfaceType in interfaceTypes) {
-            builder.Services.AddTransient(interfaceType, validatorType);
-        }
     }
 }

@@ -58,7 +58,7 @@ public class StagingMiddleware : IMiddleware {
                 } else {
                     LogFailure(remoteIp);
                     
-                    context.Response.Headers.Add("WWW-Authenticate", "Basic realm=\"Login to Staging Site\", charset=\"UTF-8\"");
+                    context.Response.Headers.Append("WWW-Authenticate", "Basic realm=\"Login to Staging Site\", charset=\"UTF-8\"");
                     context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                     
                     return;

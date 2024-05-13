@@ -48,7 +48,7 @@ public class BlockDefinition : Value, IContentBlockDefinition {
     public int? DataTypeId => null;
     public IReadOnlyList<BlockCategory> BlockCategories { get; }
     public IEnumerable<Guid> CategoryIds => _categoryIds;
-    public new IReadOnlyList<LayoutDefinition> Layouts { get; }
+    public IReadOnlyList<LayoutDefinition> Layouts { get; }
     public IEnumerable<string> LimitToDocumentTypes { get; }
     public IEnumerable<string> LimitToCultures { get; }
 

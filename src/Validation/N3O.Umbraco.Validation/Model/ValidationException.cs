@@ -20,7 +20,7 @@ public class ValidationException : ExceptionWithProblemDetails {
         get {
             var sb = new StringBuilder();
 
-            foreach (var (failure, i) in Failures.Select((failure, i) => (failure, i))) {
+            foreach (var (failure, i) in Failures.Select((x, i) => (x, i))) {
                 sb.AppendLine($"Failure {i}: {failure.Error}");
             }
 

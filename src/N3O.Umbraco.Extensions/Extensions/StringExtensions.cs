@@ -13,7 +13,7 @@ public static class StringExtensions {
         return string.Compare(a, b, StringComparison.InvariantCultureIgnoreCase);
     }
     
-    public static string CombineWith(this string string1, string string2, string separator) {
+    public static string CombineWith(this string string1, string string2, string separator = ".") {
         if (!string1.HasValue() && !string2.HasValue()) {
             return null;
         }
@@ -24,7 +24,7 @@ public static class StringExtensions {
             combined += string1;
 
             if (string2.HasValue()) {
-                combined += ".";
+                combined += separator;
             }
         }
 

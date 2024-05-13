@@ -14,7 +14,9 @@ public class ExceptionMiddleware : IMiddleware {
     private readonly IJsonProvider _jsonProvider;
     private readonly Lazy<ILogger<ExceptionMiddleware>> _logger;
     
-    public ExceptionMiddleware(IFormatter formatter, IJsonProvider jsonProvider, Lazy<ILogger<ExceptionMiddleware>> logger) {
+    public ExceptionMiddleware(IFormatter formatter,
+                               IJsonProvider jsonProvider,
+                               Lazy<ILogger<ExceptionMiddleware>> logger) {
         _formatter = formatter;
         _jsonProvider = jsonProvider;
         _logger = logger;
@@ -30,21 +32,22 @@ public class ExceptionMiddleware : IMiddleware {
                 problemDetailsException = new UnhandledExceptionWrapper(ex);
             }
             
-            if (ex.GetType() != typeof(ValidationException)) {
+            if (ex is not ValidationException) {
                 var endpoint = context.GetEndpoint()?.Metadata.GetMetadata<ControllerActionDescriptor>();
-                
-                _logger.Value.LogError(ex, "An Unhandled Exception has occured while executing {ActionName}. Exception message: {Message}",
-                                       endpoint.ActionName,
-                                       ex.Message);
+
+                _logger.Value
+                       .LogError(ex,
+                                 "An unhandled exception occured executing {ControllerName} / {ActionName}. Exception message: {Message}",
+                                 endpoint.ControllerName,
+                                 endpoint.ActionName,
+                                 ex.Message);
             }
 
-            await WriteProblemDetailsAsync(context.Response,
-                                           problemDetailsException);
+            await WriteProblemDetailsAsync(context.Response, problemDetailsException);
         }
     }
     
-    private async Task WriteProblemDetailsAsync(HttpResponse response,
-                                                ExceptionWithProblemDetails exception) {
+    private async Task WriteProblemDetailsAsync(HttpResponse response, ExceptionWithProblemDetails exception) {
         response.Clear();
 
         var problemDetails = exception.GetProblemDetails(_formatter);

@@ -167,8 +167,7 @@ public class Validation : IValidation {
         var failures = new List<ValidationFailure>();
 
         if (model != null) {
-            var allValidators = validatorFactory.CreateValidatorsIfDefined(modelType)
-                                                .ToList();
+            var allValidators = validatorFactory.GetAllValidators(modelType).ToList();
 
             var validationFailures = await RunValidatorsAsync(allValidators,
                                                               modelType,

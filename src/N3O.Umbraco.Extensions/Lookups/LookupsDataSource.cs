@@ -6,7 +6,7 @@ using Umbraco.Community.Contentment.DataEditors;
 
 namespace N3O.Umbraco.Lookups;
 
-public abstract class LookupsDataSource<T> : IDataListSourceValueConverter where T : INamedLookup {
+public abstract class LookupsDataSource<T> : IContentmentDataSource where T : INamedLookup {
     private readonly ILookups _lookups;
 
     protected LookupsDataSource(ILookups lookups) {
