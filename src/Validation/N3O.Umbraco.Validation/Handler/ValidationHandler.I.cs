@@ -1,7 +1,6 @@
 using N3O.Umbraco.Localization;
 using System;
 using System.Collections.Generic;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Validation;
 
