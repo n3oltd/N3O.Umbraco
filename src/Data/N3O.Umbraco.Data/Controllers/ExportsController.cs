@@ -51,7 +51,6 @@ public class ExportsController : PluginController {
     }
 
     [HttpGet("exportableProperties/{contentType}")]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IEnumerable<ExportableProperty>>> GetExportableProperties() {
         try {
             var res = await _mediator.SendAsync<GetExportablePropertiesQuery, None, ExportableProperties>(None.Empty);
@@ -70,7 +69,6 @@ public class ExportsController : PluginController {
     }
 
     [HttpGet("export/{exportId:entityId}/progress")]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ExportProgressRes>> GetExportProgress() {
         try {
             var res = await _mediator.SendAsync<GetExportProgressQuery, None, ExportProgressRes>(None.Empty);

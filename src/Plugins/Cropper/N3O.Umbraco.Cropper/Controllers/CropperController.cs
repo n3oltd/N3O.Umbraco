@@ -23,7 +23,6 @@ public class CropperController : PluginController {
     }
 
     [HttpGet("media/{mediaId}")]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<ImageMedia> GetMediaById(string mediaId) {
         var file = _mediaFileManager.GetSourceFile(mediaId);
 

@@ -24,7 +24,6 @@ public class UploaderController : PluginController {
     }
 
     [HttpGet("media/{mediaId}")]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<FileMedia> GetMediaById(string mediaId) {
         var file = _mediaFileManager.GetSourceFile(mediaId);
 
