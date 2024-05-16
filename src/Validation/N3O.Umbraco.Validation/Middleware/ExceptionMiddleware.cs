@@ -6,6 +6,7 @@ using N3O.Umbraco.Json;
 using N3O.Umbraco.Localization;
 using System;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Validation;
 
@@ -13,37 +14,42 @@ public class ExceptionMiddleware : IMiddleware {
     private readonly IFormatter _formatter;
     private readonly IJsonProvider _jsonProvider;
     private readonly Lazy<ILogger<ExceptionMiddleware>> _logger;
+    private readonly Lazy<IUmbracoContextFactory> _umbracoContextFactory;
     
     public ExceptionMiddleware(IFormatter formatter,
                                IJsonProvider jsonProvider,
-                               Lazy<ILogger<ExceptionMiddleware>> logger) {
+                               Lazy<ILogger<ExceptionMiddleware>> logger,
+                               Lazy<IUmbracoContextFactory> umbracoContextFactory) {
         _formatter = formatter;
         _jsonProvider = jsonProvider;
         _logger = logger;
+        _umbracoContextFactory = umbracoContextFactory;
     }
 
     public async Task InvokeAsync(HttpContext context, RequestDelegate next) {
         try {
             await next(context);
         } catch (Exception ex) {
-            var problemDetailsException = ex as ExceptionWithProblemDetails;
+            using (_umbracoContextFactory.Value.EnsureUmbracoContext()) {
+                var problemDetailsException = ex as ExceptionWithProblemDetails;
             
-            if (problemDetailsException == null) {
-                problemDetailsException = new UnhandledExceptionWrapper(ex);
-            }
+                if (problemDetailsException == null) {
+                    problemDetailsException = new UnhandledExceptionWrapper(ex);
+                }
             
-            if (ex is not ValidationException) {
-                var endpoint = context.GetEndpoint()?.Metadata.GetMetadata<ControllerActionDescriptor>();
+                if (ex is not ValidationException) {
+                    var endpoint = context.GetEndpoint()?.Metadata.GetMetadata<ControllerActionDescriptor>();
 
-                _logger.Value
-                       .LogError(ex,
-                                 "An unhandled exception occured executing {ControllerName} / {ActionName}. Exception message: {Message}",
-                                 endpoint.ControllerName,
-                                 endpoint.ActionName,
-                                 ex.Message);
+                    _logger.Value
+                           .LogError(ex,
+                                     "An unhandled exception occured executing {ControllerName} / {ActionName}. Exception message: {Message}",
+                                     endpoint.ControllerName,
+                                     endpoint.ActionName,
+                                     ex.Message);
+                }
+
+                await WriteProblemDetailsAsync(context.Response, problemDetailsException);    
             }
-
-            await WriteProblemDetailsAsync(context.Response, problemDetailsException);
         }
     }
     
