@@ -1,5 +1,4 @@
-﻿using N3O.Umbraco.Giving.Models;
-using N3O.Umbraco.Json;
+﻿using N3O.Umbraco.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;

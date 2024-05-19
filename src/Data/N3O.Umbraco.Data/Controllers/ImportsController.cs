@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Data.Commands;
 using N3O.Umbraco.Data.Exceptions;
@@ -20,16 +19,13 @@ namespace N3O.Umbraco.Data.Controllers;
 
 [ApiDocument(DataConstants.ApiNames.Imports)]
 public class ImportsController : PluginController {
-    private readonly ILogger<ImportsController> _logger;
     private readonly Lazy<ILookups> _lookups;
     private readonly Lazy<IUmbracoMapper> _mapper;
     private readonly Lazy<IMediator> _mediator;
     
-    public ImportsController(ILogger<ImportsController> logger,
-                             Lazy<ILookups> lookups,
+    public ImportsController(Lazy<ILookups> lookups,
                              Lazy<IUmbracoMapper> mapper,
                              Lazy<IMediator> mediator) {
-        _logger = logger;
         _lookups = lookups;
         _mapper = mapper;
         _mediator = mediator;
@@ -44,10 +40,6 @@ public class ImportsController : PluginController {
             return Ok(res);
         } catch (ResourceNotFoundException ex) {
             return NotFound(ex);
-        } catch (Exception ex) {
-            _logger.LogError(ex, "Adding file to import failed");
-            
-            return UnprocessableEntity("Error uploading file, please contact support");
         }
     }
     
@@ -60,7 +52,6 @@ public class ImportsController : PluginController {
     }
 
     [HttpGet("template/{contentType}")]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<FileContentResult> GetTemplate() {
         var res = await _mediator.Value.SendAsync<GetImportTemplateQuery, None, ImportTemplate>(None.Empty);
 
@@ -76,10 +67,6 @@ public class ImportsController : PluginController {
             return Ok(res);
         } catch (ProcessingException ex) {
             return UnprocessableEntity(ex.Errors);
-        } catch (Exception ex) {
-            _logger.LogError(ex, "Import failed");
-
-            return UnprocessableEntity("Error queuing records for import, please contact support");
         }
     }
     

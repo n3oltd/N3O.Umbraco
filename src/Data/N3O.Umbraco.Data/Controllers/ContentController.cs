@@ -46,7 +46,6 @@ public class ContentController : ApiController {
     }
 
     [HttpGet("{contentId:guid}")]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ContentRes>> GetById() {
         try {
             var res = await _mediator.SendAsync<GetContentByIdQuery, None, ContentRes>(None.Empty);

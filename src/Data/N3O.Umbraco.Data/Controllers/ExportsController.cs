@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Data.Commands;
 using N3O.Umbraco.Data.Lookups;
@@ -19,16 +18,13 @@ namespace N3O.Umbraco.Data.Controllers;
 
 [ApiDocument(DataConstants.ApiNames.Exports)]
 public class ExportsController : PluginController {
-    private readonly ILogger<ExportsController> _logger;
     private readonly IMediator _mediator;
     private readonly Lazy<ILookups> _lookups;
     private readonly Lazy<IUmbracoMapper> _mapper;
 
-    public ExportsController(ILogger<ExportsController> logger,
-                             IMediator mediator,
+    public ExportsController(IMediator mediator,
                              Lazy<ILookups> lookups,
                              Lazy<IUmbracoMapper> mapper) {
-        _logger = logger;
         _mediator = mediator;
         _lookups = lookups;
         _mapper = mapper;
@@ -43,15 +39,10 @@ public class ExportsController : PluginController {
             return Ok(res);
         } catch (ResourceNotFoundException ex) {
             return NotFound(ex);
-        } catch (Exception ex) {
-            _logger.LogError(ex, "Export failed");
-
-            return UnprocessableEntity("Error generating export, please contact support");
         }
     }
 
     [HttpGet("exportableProperties/{contentType}")]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IEnumerable<ExportableProperty>>> GetExportableProperties() {
         try {
             var res = await _mediator.SendAsync<GetExportablePropertiesQuery, None, ExportableProperties>(None.Empty);
@@ -70,7 +61,6 @@ public class ExportsController : PluginController {
     }
 
     [HttpGet("export/{exportId:entityId}/progress")]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ExportProgressRes>> GetExportProgress() {
         try {
             var res = await _mediator.SendAsync<GetExportProgressQuery, None, ExportProgressRes>(None.Empty);

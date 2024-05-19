@@ -26,7 +26,6 @@ public class GivingController : LookupsController<GivingLookupsRes> {
     }
     
     [HttpGet("donationForms/{donationFormId:guid}")]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<DonationFormRes>> GetDonationForm() {
         try {
             var res = await _mediator.SendAsync<GetDonationFormByIdQuery, None, DonationFormRes>(None.Empty);

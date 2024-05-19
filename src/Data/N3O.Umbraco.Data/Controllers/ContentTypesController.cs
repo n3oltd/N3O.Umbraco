@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Data.Criteria;
@@ -40,7 +39,6 @@ public class ContentTypesController : ApiController {
     }
 
     [HttpGet("{contentId:guid}/relations")]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IEnumerable<ContentTypeRes>>> GetRelationContentTypes([FromQuery] string type) {
         try {
             var res = await _mediator.SendAsync<GetRelationContentTypesQuery, string, IEnumerable<ContentTypeRes>>(type);
