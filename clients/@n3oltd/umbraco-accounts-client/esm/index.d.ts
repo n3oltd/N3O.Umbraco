@@ -40,9 +40,9 @@ export interface SelectFieldSettings {
     path?: string | undefined;
     visible?: boolean;
     validate?: boolean;
+    type?: string | undefined;
     options?: SelectOption[] | undefined;
     defaultOption?: SelectOption | undefined;
-    type?: string | undefined;
 }
 export interface SelectOption {
     value?: string | undefined;
@@ -56,8 +56,8 @@ export interface TextFieldSettings {
     path?: string | undefined;
     visible?: boolean;
     validate?: boolean;
-    capitalisation?: Capitalisation | undefined;
     type?: string | undefined;
+    capitalisation?: Capitalisation | undefined;
 }
 /** One of 'lower', 'title', 'upper' */
 export declare enum Capitalisation {

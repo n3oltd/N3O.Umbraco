@@ -23,9 +23,7 @@ export declare class CheckoutClient {
     protected processGetAllLookups(response: Response): Promise<CheckoutLookupsRes>;
 }
 export interface CheckoutRes {
-    /** A well formed guid */
     id?: string | undefined;
-    /** A well formed revision ID string */
     revisionId?: string | undefined;
     reference?: Reference | undefined;
     currency?: string | undefined;
@@ -41,15 +39,9 @@ export interface Reference {
     text?: string | undefined;
 }
 export interface CheckoutProgressRes {
-    currentStage?: CheckoutStage | undefined;
-    requiredStages?: CheckoutStage[] | undefined;
-    remainingStages?: CheckoutStage[] | undefined;
-}
-/** One of 'account', 'donation', 'regularGiving' */
-export declare enum CheckoutStage {
-    Account = "account",
-    Donation = "donation",
-    RegularGiving = "regularGiving"
+    currentStage?: string | undefined;
+    requiredStages?: string[] | undefined;
+    remainingStages?: string[] | undefined;
 }
 export interface AccountRes {
     name?: NameRes | undefined;
@@ -58,6 +50,11 @@ export interface AccountRes {
     telephone?: TelephoneRes | undefined;
     consent?: ConsentRes | undefined;
     taxStatus?: TaxStatus | undefined;
+    "n3O.Umbraco.Accounts.Models.IAccount.Name"?: IName | undefined;
+    "n3O.Umbraco.Accounts.Models.IAccount.Address"?: IAddress | undefined;
+    "n3O.Umbraco.Accounts.Models.IAccount.Email"?: IEmail | undefined;
+    "n3O.Umbraco.Accounts.Models.IAccount.Telephone"?: ITelephone | undefined;
+    "n3O.Umbraco.Accounts.Models.IAccount.Consent"?: IConsent | undefined;
 }
 export interface NameRes {
     title?: string | undefined;
@@ -82,6 +79,7 @@ export interface TelephoneRes {
 }
 export interface ConsentRes {
     choices?: ConsentChoiceRes[] | undefined;
+    "n3O.Umbraco.Accounts.Models.IConsent.Choices"?: IConsentChoice[] | undefined;
 }
 export interface ConsentChoiceRes {
     channel?: ConsentChannel | undefined;
@@ -101,11 +99,40 @@ export declare enum ConsentResponse {
     OptIn = "optIn",
     OptOut = "optOut"
 }
+export interface IConsentChoice {
+    channel?: ConsentChannel | undefined;
+    category?: string | undefined;
+    response?: ConsentResponse | undefined;
+}
 /** One of 'payer', 'nonPayer', 'notSpecified' */
 export declare enum TaxStatus {
     Payer = "payer",
     NonPayer = "nonPayer",
     NotSpecified = "notSpecified"
+}
+export interface IName {
+    title?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+}
+export interface IAddress {
+    line1?: string | undefined;
+    line2?: string | undefined;
+    line3?: string | undefined;
+    locality?: string | undefined;
+    administrativeArea?: string | undefined;
+    postalCode?: string | undefined;
+    country?: string | undefined;
+}
+export interface IEmail {
+    address?: string | undefined;
+}
+export interface ITelephone {
+    country?: string | undefined;
+    number?: string | undefined;
+}
+export interface IConsent {
+    choices?: IConsentChoice[] | undefined;
 }
 export interface DonationCheckoutRes {
     allocations?: AllocationRes[] | undefined;
@@ -123,6 +150,11 @@ export interface AllocationRes {
     sponsorship?: SponsorshipAllocationRes | undefined;
     upsellOfferId?: string | undefined;
     upsell?: boolean;
+    "n3O.Umbraco.Giving.Models.IAllocation.FundDimensions"?: IFundDimensionValues | undefined;
+    "n3O.Umbraco.Giving.Models.IAllocation.Feedback"?: IFeedbackAllocation | undefined;
+    "n3O.Umbraco.Giving.Models.IAllocation.Fund"?: IFundAllocation | undefined;
+    "n3O.Umbraco.Giving.Models.IAllocation.Sponsorship"?: ISponsorshipAllocation | undefined;
+    "n3O.Umbraco.Giving.Models.IAllocation.Value"?: Money | undefined;
 }
 /** One of 'feedback', 'fund', 'sponsorship' */
 export declare enum AllocationType {
@@ -144,6 +176,7 @@ export interface FundDimensionValuesRes {
 export interface FeedbackAllocationRes {
     scheme?: string | undefined;
     customFields?: FeedbackCustomFieldRes[] | undefined;
+    "n3O.Umbraco.Giving.Models.IFeedbackAllocation.CustomFields"?: IFeedbackCustomField[] | undefined;
 }
 /** One of 'donation', 'regularGiving' */
 export declare enum GivingType {
@@ -195,7 +228,9 @@ export interface IPublishedPropertyType {
     variations?: ContentVariation;
     cacheLevel?: PropertyCacheLevel;
     deliveryApiCacheLevel?: PropertyCacheLevel;
+    deliveryApiCacheLevelForExpansion?: PropertyCacheLevel;
     modelClrType?: string;
+    deliveryApiModelClrType?: string;
     clrType?: string | undefined;
 }
 export interface PublishedDataType {
@@ -232,8 +267,26 @@ export interface PricingRuleElement {
     dimension2?: string | undefined;
     dimension3?: string | undefined;
     dimension4?: string | undefined;
+    "n3O.Umbraco.Giving.Models.IPricingRule.FundDimensions"?: IFundDimensionValues | undefined;
+}
+export interface IFundDimensionValues {
+    dimension1?: string | undefined;
+    dimension2?: string | undefined;
+    dimension3?: string | undefined;
+    dimension4?: string | undefined;
+}
+export interface IPricingRule {
+    fundDimensions?: IFundDimensionValues | undefined;
 }
 export interface FeedbackCustomFieldRes {
+    type?: FeedbackCustomFieldType | undefined;
+    alias?: string | undefined;
+    name?: string | undefined;
+    bool?: boolean | undefined;
+    date?: Date | undefined;
+    text?: string | undefined;
+}
+export interface IFeedbackCustomField {
     type?: FeedbackCustomFieldType | undefined;
     alias?: string | undefined;
     name?: string | undefined;
@@ -245,10 +298,11 @@ export interface FundAllocationRes {
     donationItem?: string | undefined;
 }
 export interface SponsorshipAllocationRes {
-    beneficiary?: string | undefined;
+    beneficiaryReference?: string | undefined;
     scheme?: string | undefined;
     duration?: SponsorshipDuration | undefined;
     components?: SponsorshipComponentAllocationRes[] | undefined;
+    "n3O.Umbraco.Giving.Models.ISponsorshipAllocation.Components"?: ISponsorshipComponentAllocation[] | undefined;
 }
 /** One of '_6', '_12', '_18', '_24', '_36', '_48', '_60' */
 export declare enum SponsorshipDuration {
@@ -263,6 +317,28 @@ export declare enum SponsorshipDuration {
 export interface SponsorshipComponentAllocationRes {
     component?: string | undefined;
     value?: MoneyRes | undefined;
+    "n3O.Umbraco.Giving.Models.ISponsorshipComponentAllocation.Value"?: Money | undefined;
+}
+export interface Money {
+    amount?: number;
+    currency?: string | undefined;
+}
+export interface ISponsorshipComponentAllocation {
+    component?: string | undefined;
+    value?: Money | undefined;
+}
+export interface IFeedbackAllocation {
+    scheme?: string | undefined;
+    customFields?: IFeedbackCustomField[] | undefined;
+}
+export interface IFundAllocation {
+    donationItem?: string | undefined;
+}
+export interface ISponsorshipAllocation {
+    beneficiaryReference?: string | undefined;
+    scheme?: string | undefined;
+    duration?: SponsorshipDuration | undefined;
+    components?: ISponsorshipComponentAllocation[] | undefined;
 }
 export interface PaymentRes {
     type?: PaymentObjectType | undefined;
@@ -358,6 +434,11 @@ export interface AccountReq {
     telephone?: TelephoneReq | undefined;
     consent?: ConsentReq | undefined;
     taxStatus?: TaxStatus | undefined;
+    "n3O.Umbraco.Accounts.Models.IAccount.Name"?: IName | undefined;
+    "n3O.Umbraco.Accounts.Models.IAccount.Address"?: IAddress | undefined;
+    "n3O.Umbraco.Accounts.Models.IAccount.Email"?: IEmail | undefined;
+    "n3O.Umbraco.Accounts.Models.IAccount.Telephone"?: ITelephone | undefined;
+    "n3O.Umbraco.Accounts.Models.IAccount.Consent"?: IConsent | undefined;
 }
 export interface NameReq {
     title?: string | undefined;
@@ -382,6 +463,7 @@ export interface TelephoneReq {
 }
 export interface ConsentReq {
     choices?: ConsentChoiceReq[] | undefined;
+    "n3O.Umbraco.Accounts.Models.IConsent.Choices"?: IConsentChoice[] | undefined;
 }
 export interface ConsentChoiceReq {
     channel?: ConsentChannel | undefined;

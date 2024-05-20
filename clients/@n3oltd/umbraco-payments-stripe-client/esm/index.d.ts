@@ -31,6 +31,8 @@ export interface StripePayment {
     errorMessage?: string | undefined;
     exceptionDetails?: string | undefined;
     status?: PaymentObjectStatus | undefined;
+    method?: string | undefined;
+    clock?: IClock | undefined;
     stripeChargeId?: string | undefined;
     stripeCustomerId?: string | undefined;
     stripeDeclineCode?: string | undefined;
@@ -40,7 +42,6 @@ export interface StripePayment {
     stripePaymentIntentClientSecret?: string | undefined;
     stripePaymentMethodId?: string | undefined;
     actionRequired?: boolean;
-    method?: string | undefined;
 }
 export interface CardPayment {
     threeDSecureRequired?: boolean;
@@ -73,6 +74,9 @@ export declare enum PaymentObjectStatus {
     Error = "error",
     InProgress = "inProgress"
 }
+/** Represents a clock which can return the current time as an Instant. */
+export interface IClock {
+}
 export interface ProblemDetails {
     type?: string | undefined;
     title?: string | undefined;
@@ -103,6 +107,8 @@ export interface StripeCredential {
     errorMessage?: string | undefined;
     exceptionDetails?: string | undefined;
     status?: PaymentObjectStatus | undefined;
+    method?: string | undefined;
+    clock?: IClock | undefined;
     stripeMandateId?: string | undefined;
     stripeCustomerId?: string | undefined;
     stripeDeclineCode?: string | undefined;
@@ -112,7 +118,6 @@ export interface StripeCredential {
     stripeSetupIntentClientSecret?: string | undefined;
     stripePaymentMethodId?: string | undefined;
     actionRequired?: boolean;
-    method?: string | undefined;
 }
 export interface Payment {
     completeAt?: Date | undefined;
@@ -120,13 +125,15 @@ export interface Payment {
     errorMessage?: string | undefined;
     exceptionDetails?: string | undefined;
     status?: PaymentObjectStatus | undefined;
+    type?: PaymentObjectType | undefined;
+    method?: string | undefined;
+    clock?: IClock | undefined;
     card?: CardPayment | undefined;
     paidAt?: Date | undefined;
     declinedAt?: Date | undefined;
     declinedReason?: string | undefined;
     isDeclined?: boolean;
     isPaid?: boolean;
-    type?: PaymentObjectType | undefined;
 }
 export interface SetupIntentReq {
     paymentMethodId?: string | undefined;

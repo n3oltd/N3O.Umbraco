@@ -29,6 +29,8 @@ export interface BamboraPayment {
     errorMessage?: string | undefined;
     exceptionDetails?: string | undefined;
     status?: PaymentObjectStatus | undefined;
+    method?: string | undefined;
+    clock?: IClock | undefined;
     bamboraErrorCode?: number | undefined;
     bamboraErrorMessage?: string | undefined;
     bamboraPaymentId?: string | undefined;
@@ -36,7 +38,6 @@ export interface BamboraPayment {
     bamboraStatusDetail?: string | undefined;
     bamboraToken?: string | undefined;
     returnUrl?: string | undefined;
-    method?: string | undefined;
 }
 export interface CardPayment {
     threeDSecureRequired?: boolean;
@@ -68,6 +69,9 @@ export declare enum PaymentObjectStatus {
     Complete = "complete",
     Error = "error",
     InProgress = "inProgress"
+}
+/** Represents a clock which can return the current time as an Instant. */
+export interface IClock {
 }
 export interface ProblemDetails {
     type?: string | undefined;
@@ -109,6 +113,8 @@ export interface BamboraCredential {
     errorMessage?: string | undefined;
     exceptionDetails?: string | undefined;
     status?: PaymentObjectStatus | undefined;
+    method?: string | undefined;
+    clock?: IClock | undefined;
     bamboraErrorCode?: number | undefined;
     bamboraErrorMessage?: string | undefined;
     bamboraCustomerCode?: string | undefined;
@@ -117,7 +123,6 @@ export interface BamboraCredential {
     bamboraToken?: string | undefined;
     returnUrl?: string | undefined;
     cardPayment?: CardPayment | undefined;
-    method?: string | undefined;
 }
 export interface Payment {
     completeAt?: Date | undefined;
@@ -125,13 +130,15 @@ export interface Payment {
     errorMessage?: string | undefined;
     exceptionDetails?: string | undefined;
     status?: PaymentObjectStatus | undefined;
+    type?: PaymentObjectType | undefined;
+    method?: string | undefined;
+    clock?: IClock | undefined;
     card?: CardPayment | undefined;
     paidAt?: Date | undefined;
     declinedAt?: Date | undefined;
     declinedReason?: string | undefined;
     isDeclined?: boolean;
     isPaid?: boolean;
-    type?: PaymentObjectType | undefined;
 }
 export interface StoreCardReq {
     token?: string | undefined;

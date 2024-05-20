@@ -47,6 +47,7 @@ export interface QueueImportsRes {
 }
 export interface QueueImportsReq {
     datePattern?: DatePattern | undefined;
+    moveUpdatedContentToCurrentLocation?: boolean | undefined;
     csvFile?: string | undefined;
     zipFile?: string | undefined;
 }
