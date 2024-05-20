@@ -51,6 +51,7 @@ export interface AllocationReq {
     "n3O.Umbraco.Giving.Models.IAllocation.Sponsorship"?: ISponsorshipAllocation | undefined;
     "n3O.Umbraco.Giving.Models.IAllocation.Feedback"?: IFeedbackAllocation | undefined;
     "n3O.Umbraco.Giving.Models.IAllocation.Value"?: Money | undefined;
+    [key: string]: any;
 }
 /** One of 'feedback', 'fund', 'sponsorship' */
 export declare enum AllocationType {
@@ -118,7 +119,9 @@ export interface IPublishedPropertyType {
     variations?: ContentVariation;
     cacheLevel?: PropertyCacheLevel;
     deliveryApiCacheLevel?: PropertyCacheLevel;
+    deliveryApiCacheLevelForExpansion?: PropertyCacheLevel;
     modelClrType?: string;
+    deliveryApiModelClrType?: string;
     clrType?: string | undefined;
 }
 export interface PublishedDataType {

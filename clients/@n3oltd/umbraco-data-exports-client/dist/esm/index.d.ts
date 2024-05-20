@@ -52,10 +52,12 @@ export declare enum ContentMetadata {
     UpdatedAt = "updatedAt",
     UpdatedBy = "updatedBy"
 }
-/** One of 'blob', 'bool', 'content', 'date', 'dateTime', 'decimal', 'guid', 'integer', 'lookup', 'money', 'publishedContent', 'reference', 'string', 'time', 'yearMonth' */
+/** One of 'blob', 'bool', 'calendarMonth', 'calendarWeek', 'content', 'date', 'dateTime', 'decimal', 'guid', 'integer', 'lookup', 'money', 'publishedContent', 'reference', 'string', 'time', 'yearMonth' */
 export declare enum DataType {
     Blob = "blob",
     Bool = "bool",
+    CalendarMonth = "calendarMonth",
+    CalendarWeek = "calendarWeek",
     Content = "content",
     Date = "date",
     DateTime = "dateTime",

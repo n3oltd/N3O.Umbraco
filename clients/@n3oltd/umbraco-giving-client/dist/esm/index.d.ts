@@ -45,6 +45,7 @@ export interface DonationFormRes {
 export interface DonationOptionRes {
     id?: number;
     name?: string | undefined;
+    campaignName?: string | undefined;
     type?: AllocationType | undefined;
     defaultGivingType?: GivingType | undefined;
     dimension1?: InitialFundDimensionValueRes | undefined;
@@ -96,6 +97,7 @@ export interface PricingRuleElement {
     dimension2?: string | undefined;
     dimension3?: string | undefined;
     dimension4?: string | undefined;
+    "n3O.Umbraco.Giving.Models.IPricingRule.FundDimensions"?: IFundDimensionValues | undefined;
 }
 export interface IPublishedElement {
     contentType?: IPublishedContentType;
@@ -134,7 +136,9 @@ export interface IPublishedPropertyType {
     variations?: ContentVariation;
     cacheLevel?: PropertyCacheLevel;
     deliveryApiCacheLevel?: PropertyCacheLevel;
+    deliveryApiCacheLevelForExpansion?: PropertyCacheLevel;
     modelClrType?: string;
+    deliveryApiModelClrType?: string;
     clrType?: string | undefined;
 }
 export interface PublishedDataType {
@@ -152,6 +156,15 @@ export declare enum PropertyCacheLevel {
 export interface IPublishedProperty {
     propertyType?: IPublishedPropertyType;
     alias?: string;
+}
+export interface IFundDimensionValues {
+    dimension1?: string | undefined;
+    dimension2?: string | undefined;
+    dimension3?: string | undefined;
+    dimension4?: string | undefined;
+}
+export interface IPricingRule {
+    fundDimensions?: IFundDimensionValues | undefined;
 }
 export interface PriceHandleRes {
     amount?: number;
@@ -252,6 +265,7 @@ export interface PricingRuleRes {
     } | undefined;
     locked?: boolean;
     fundDimensions?: FundDimensionValuesRes | undefined;
+    "n3O.Umbraco.Giving.Models.IPricingRule.FundDimensions"?: IFundDimensionValues | undefined;
 }
 export interface FundDimensionValuesRes {
     dimension1?: string | undefined;

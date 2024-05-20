@@ -23,6 +23,7 @@ export interface DirectDebitUKCredential {
     exceptionDetails?: string | undefined;
     status?: PaymentObjectStatus | undefined;
     method?: string | undefined;
+    clock?: IClock | undefined;
     bankAccount?: UKBankAccount | undefined;
 }
 export interface Payment {
@@ -31,19 +32,29 @@ export interface Payment {
     errorMessage?: string | undefined;
     exceptionDetails?: string | undefined;
     status?: PaymentObjectStatus | undefined;
+    type?: PaymentObjectType | undefined;
+    method?: string | undefined;
+    clock?: IClock | undefined;
     card?: CardPayment | undefined;
     paidAt?: Date | undefined;
     declinedAt?: Date | undefined;
     declinedReason?: string | undefined;
     isDeclined?: boolean;
     isPaid?: boolean;
-    type?: PaymentObjectType | undefined;
 }
 /** One of 'complete', 'error', 'inProgress' */
 export declare enum PaymentObjectStatus {
     Complete = "complete",
     Error = "error",
     InProgress = "inProgress"
+}
+/** One of 'credential', 'payment' */
+export declare enum PaymentObjectType {
+    Credential = "credential",
+    Payment = "payment"
+}
+/** Represents a clock which can return the current time as an Instant. */
+export interface IClock {
 }
 export interface CardPayment {
     threeDSecureRequired?: boolean;
@@ -64,11 +75,6 @@ export interface ThreeDSecureV2 {
     cReq?: string | undefined;
     cRes?: string | undefined;
     html?: string | undefined;
-}
-/** One of 'credential', 'payment' */
-export declare enum PaymentObjectType {
-    Credential = "credential",
-    Payment = "payment"
 }
 export interface UKBankAccount {
     accountHolder?: string | undefined;

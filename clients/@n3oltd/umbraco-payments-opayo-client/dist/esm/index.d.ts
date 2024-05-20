@@ -31,6 +31,8 @@ export interface OpayoPayment {
     errorMessage?: string | undefined;
     exceptionDetails?: string | undefined;
     status?: PaymentObjectStatus | undefined;
+    method?: string | undefined;
+    clock?: IClock | undefined;
     opayoTransactionId?: string | undefined;
     opayoStatusCode?: number | undefined;
     opayoStatusDetail?: string | undefined;
@@ -41,7 +43,6 @@ export interface OpayoPayment {
     opayoRetrievalReference?: number | undefined;
     returnUrl?: string | undefined;
     vendorTxCode?: string | undefined;
-    method?: string | undefined;
 }
 export interface CardPayment {
     threeDSecureRequired?: boolean;
@@ -73,6 +74,9 @@ export declare enum PaymentObjectStatus {
     Complete = "complete",
     Error = "error",
     InProgress = "inProgress"
+}
+/** Represents a clock which can return the current time as an Instant. */
+export interface IClock {
 }
 export interface ProblemDetails {
     type?: string | undefined;
@@ -129,6 +133,7 @@ export interface OpayoCredential {
     exceptionDetails?: string | undefined;
     status?: PaymentObjectStatus | undefined;
     method?: string | undefined;
+    clock?: IClock | undefined;
 }
 export interface Payment {
     completeAt?: Date | undefined;
@@ -136,13 +141,15 @@ export interface Payment {
     errorMessage?: string | undefined;
     exceptionDetails?: string | undefined;
     status?: PaymentObjectStatus | undefined;
+    type?: PaymentObjectType | undefined;
+    method?: string | undefined;
+    clock?: IClock | undefined;
     card?: CardPayment | undefined;
     paidAt?: Date | undefined;
     declinedAt?: Date | undefined;
     declinedReason?: string | undefined;
     isDeclined?: boolean;
     isPaid?: boolean;
-    type?: PaymentObjectType | undefined;
 }
 export interface StoreCardReq {
     advancePayment?: ChargeCardReq | undefined;

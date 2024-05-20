@@ -66,11 +66,11 @@ var CartClient = /** @class */ (function () {
                 return throwException("A server side error occurred.", status, _responseText, _headers);
             });
         }
-        else if (status === 422) {
+        else if (status === 412) {
             return response.text().then(function (_responseText) {
-                var result422 = null;
-                result422 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return throwException("A server side error occurred.", status, _responseText, _headers, result422);
+                var result412 = null;
+                result412 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result412);
             });
         }
         else if (status !== 200 && status !== 204) {
@@ -124,18 +124,18 @@ var CartClient = /** @class */ (function () {
                 return throwException("A server side error occurred.", status, _responseText, _headers);
             });
         }
-        else if (status === 422) {
-            return response.text().then(function (_responseText) {
-                var result422 = null;
-                result422 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return throwException("A server side error occurred.", status, _responseText, _headers, result422);
-            });
-        }
         else if (status === 404) {
             return response.text().then(function (_responseText) {
                 var result404 = null;
                 result404 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
                 return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            });
+        }
+        else if (status === 412) {
+            return response.text().then(function (_responseText) {
+                var result412 = null;
+                result412 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result412);
             });
         }
         else if (status !== 200 && status !== 204) {
@@ -186,13 +186,6 @@ var CartClient = /** @class */ (function () {
                 return throwException("A server side error occurred.", status, _responseText, _headers);
             });
         }
-        else if (status === 422) {
-            return response.text().then(function (_responseText) {
-                var result422 = null;
-                result422 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return throwException("A server side error occurred.", status, _responseText, _headers, result422);
-            });
-        }
         else if (status !== 200 && status !== 204) {
             return response.text().then(function (_responseText) {
                 return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -241,6 +234,13 @@ var CartClient = /** @class */ (function () {
                 return throwException("A server side error occurred.", status, _responseText, _headers);
             });
         }
+        else if (status === 404) {
+            return response.text().then(function (_responseText) {
+                var result404 = null;
+                result404 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            });
+        }
         else if (status !== 200 && status !== 204) {
             return response.text().then(function (_responseText) {
                 return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -283,13 +283,6 @@ var CartClient = /** @class */ (function () {
         else if (status === 500) {
             return response.text().then(function (_responseText) {
                 return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        }
-        else if (status === 422) {
-            return response.text().then(function (_responseText) {
-                var result422 = null;
-                result422 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return throwException("A server side error occurred.", status, _responseText, _headers, result422);
             });
         }
         else if (status !== 200 && status !== 204) {
@@ -340,13 +333,6 @@ var CartClient = /** @class */ (function () {
                 return throwException("A server side error occurred.", status, _responseText, _headers);
             });
         }
-        else if (status === 422) {
-            return response.text().then(function (_responseText) {
-                var result422 = null;
-                result422 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return throwException("A server side error occurred.", status, _responseText, _headers, result422);
-            });
-        }
         else if (status !== 200 && status !== 204) {
             return response.text().then(function (_responseText) {
                 return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -392,13 +378,6 @@ var CartClient = /** @class */ (function () {
         else if (status === 500) {
             return response.text().then(function (_responseText) {
                 return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        }
-        else if (status === 422) {
-            return response.text().then(function (_responseText) {
-                var result422 = null;
-                result422 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return throwException("A server side error occurred.", status, _responseText, _headers, result422);
             });
         }
         else if (status !== 200 && status !== 204) {

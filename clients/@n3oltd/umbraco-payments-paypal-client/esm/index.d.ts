@@ -25,9 +25,10 @@ export interface PayPalPayment {
     errorMessage?: string | undefined;
     exceptionDetails?: string | undefined;
     status?: PaymentObjectStatus | undefined;
+    method?: string | undefined;
+    clock?: IClock | undefined;
     payPalEmail?: string | undefined;
     payPalTransactionId?: string | undefined;
-    method?: string | undefined;
 }
 export interface CardPayment {
     threeDSecureRequired?: boolean;
@@ -59,6 +60,9 @@ export declare enum PaymentObjectStatus {
     Complete = "complete",
     Error = "error",
     InProgress = "inProgress"
+}
+/** Represents a clock which can return the current time as an Instant. */
+export interface IClock {
 }
 export interface ProblemDetails {
     type?: string | undefined;
