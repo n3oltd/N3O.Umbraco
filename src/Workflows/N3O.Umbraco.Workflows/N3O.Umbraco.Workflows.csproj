@@ -43,6 +43,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Umbraco.Workflow.Core" Version="13.0.6" />
+      <PackageReference Include="Umbraco.Workflow.Core" Version="13.0.7" />
     </ItemGroup>
 </Project>
