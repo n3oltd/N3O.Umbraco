@@ -30,6 +30,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Captcha\N3O.Umbraco.Captcha\N3O.Umbraco.Captcha.csproj" />
         <ProjectReference Include="..\..\Mediator\N3O.Umbraco.Mediator\N3O.Umbraco.Mediator.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
         <ProjectReference Include="..\..\TaxRelief\N3O.Umbraco.TaxRelief\N3O.Umbraco.TaxRelief.csproj" />
