@@ -1,4 +1,5 @@
 using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Captcha.Models;
 using N3O.Umbraco.TaxRelief.Lookups;
 using Newtonsoft.Json;
 
@@ -22,6 +23,9 @@ public class AccountReq : IAccount {
 
     [Name("Tax Status")]
     public TaxStatus TaxStatus { get; set; }
+    
+    [Name("Captcha")]
+    public CaptchaReq Captcha { get; set; }
 
     [JsonIgnore]
     IName IAccount.Name => Name;
