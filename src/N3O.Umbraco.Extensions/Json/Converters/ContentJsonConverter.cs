@@ -111,7 +111,7 @@ public class ContentJsonConverter : JsonConverter {
                                                               _contentTypeFactory.Value);
 
         var converter = _propertyValueConverters.Value
-                                                .Where(x => x is not MustBeStringValueConverter &&
+                                                .Where(x => x.IsNotSecondaryConverter() &&
                                                             x.IsConverter(publishedPropertyType))
                                                 .MinBy(x => x is JsonValueConverter ? 1 : 0);
 
