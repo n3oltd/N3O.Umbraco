@@ -15,6 +15,13 @@ public class ContentComposer : Composer {
         builder.Services.AddSingleton<IContentHelper, ContentHelper>();
         builder.Services.AddSingleton<IContentLocator, ContentLocator>();
         builder.Services.AddTransient<IContentVisibility, ContentVisibility>();
+        builder.Services.AddScoped<IPageModeAccessor, PageModeAccessor>();
+        
+        RegisterAll(t => t.ImplementsInterface<IContentAccessControl>(),
+                    t => {
+                        builder.Services.AddTransient(typeof(IContentAccessControl), t);
+                        builder.Services.AddTransient(t, t);
+                    });
     
         RegisterAll(t => t.ImplementsInterface<IContentValidator>(),
                     t => builder.Services.AddTransient(typeof(IContentValidator), t));
