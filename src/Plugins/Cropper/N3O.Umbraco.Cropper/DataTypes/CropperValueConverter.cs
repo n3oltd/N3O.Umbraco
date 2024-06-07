@@ -1,5 +1,6 @@
 using N3O.Umbraco.Cropper.Models;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Utilities;
 using Newtonsoft.Json;
 using System;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -8,6 +9,12 @@ using Umbraco.Cms.Core.PropertyEditors;
 namespace N3O.Umbraco.Cropper.DataTypes;
 
 public class CropperValueConverter : PropertyValueConverterBase {
+    private readonly IUrlBuilder _urlBuilder;
+
+    public CropperValueConverter(IUrlBuilder urlBuilder) {
+        _urlBuilder = urlBuilder;
+    }
+    
     public override bool IsConverter(IPublishedPropertyType propertyType) {
         return propertyType.EditorAlias.EqualsInvariant(CropperConstants.PropertyEditorAlias);
     }
@@ -23,7 +30,7 @@ public class CropperValueConverter : PropertyValueConverterBase {
             var configuration = propertyType.DataType.ConfigurationAs<CropperConfiguration>();
             var cropperSource = JsonConvert.DeserializeObject<CropperSource>(json);
         
-            croppedImage = cropperSource.IfNotNull(x => new CroppedImage(configuration, x));
+            croppedImage = cropperSource.IfNotNull(x => new CroppedImage(_urlBuilder, configuration, x));
         }
 
         return croppedImage;

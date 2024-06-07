@@ -13,7 +13,7 @@ public class CroppedImage : DynamicObject, IEnumerable<ImageCrop> {
     private readonly Dictionary<string, ImageCrop> _crops = new(StringComparer.InvariantCultureIgnoreCase);
     private readonly CropperSource _cropperSource;
 
-    public CroppedImage(CropperConfiguration configuration, CropperSource cropperSource) {
+    public CroppedImage(IUrlBuilder urlBuilder, CropperConfiguration configuration, CropperSource cropperSource) {
         _cropperSource = cropperSource;
         AltText = cropperSource.AltText;
 
@@ -21,7 +21,7 @@ public class CroppedImage : DynamicObject, IEnumerable<ImageCrop> {
             var definition = configuration.CropDefinitions.ElementAtOrDefault(index);
 
             if (definition != null) {
-                AddImageCrop(definition, cropperSource.MediaId, cropperSource.Filename, crop);
+                AddImageCrop(urlBuilder, definition, cropperSource.MediaId, cropperSource.Filename, crop);
             }
         }
     }
@@ -57,9 +57,17 @@ public class CroppedImage : DynamicObject, IEnumerable<ImageCrop> {
 
     public ImageCrop this[string alias] => _crops[alias];
 
-    private void AddImageCrop(CropDefinition definition, string mediaId, string sourceFile, CropperSource.Crop crop) {
+    private void AddImageCrop(IUrlBuilder urlBuilder,
+                              CropDefinition definition,
+                              string mediaId,
+                              string sourceFile,
+                              CropperSource.Crop crop) {
+        var src = ImagePath.Get(mediaId, sourceFile, definition, crop);
+        var url = urlBuilder.Root().AppendPathSegment(src);
+        
         var imageCrop = new ImageCrop(definition.Alias,
-                                      ImagePath.Get(mediaId, sourceFile, definition, crop),
+                                      src,
+                                      url,
                                       definition.Height,
                                       definition.Width);
 
