@@ -111,8 +111,8 @@ public class ContentJsonConverter : JsonConverter {
                                                               _contentTypeFactory.Value);
 
         var converter = _propertyValueConverters.Value
-                                                .Where(x => x is not MustBeStringValueConverter &&
-                                                            x.IsConverter(publishedPropertyType))
+                                                .Where(x => x.IsConverter(publishedPropertyType) &&
+                                                            x.IsNotSecondaryMNTPConverter())
                                                 .MinBy(x => x is JsonValueConverter ? 1 : 0);
 
         var intermediate = converter.ConvertSourceToIntermediate(null,
