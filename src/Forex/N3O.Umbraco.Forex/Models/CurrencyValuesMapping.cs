@@ -29,11 +29,9 @@ public class CurrencyValuesMapping : IMapDefinition {
         dest[baseCurrency.Code] = ctx.Map<Money, MoneyRes>(new Money(src, baseCurrency));
 
         foreach (var currency in otherCurrencies) {
-            var forexMoney = _forexConverter.BaseToQuote()
-                                            .ToCurrency(currency)
-                                            .Convert(src);
+            var forexMoney = _forexConverter.BaseToQuote().ToCurrency(currency).Convert(src);
             
-            dest[currency.Code] = ctx.Map<Money, MoneyRes>(forexMoney.Quote.RoundUpToWholeNumber());
+            dest[currency.Code] = ctx.Map<Money, MoneyRes>(forexMoney.Quote);
         }
     }
 }
