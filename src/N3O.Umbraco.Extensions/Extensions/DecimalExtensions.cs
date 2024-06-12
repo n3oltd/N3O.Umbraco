@@ -8,4 +8,12 @@ public static class DecimalExtensions {
 
         return true;
     }
+
+    public static decimal? RoundMoney(this decimal? amount) {
+        if (amount == null) {
+            return null;
+        } else {
+            return Math.Round(amount.Value, 2, MidpointRounding.AwayFromZero);
+        }
+    }
 }
