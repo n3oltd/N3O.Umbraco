@@ -6,4 +6,8 @@ public static class AnalyticsConstants {
         public const string GoogleAnalytics4 = nameof(GoogleAnalytics4);
         public const string GoogleTagManager = nameof(GoogleTagManager);
     }
+
+    public static class AttributionCookie {
+        public const string Name = "AttributionDimensions";
+    }
 }

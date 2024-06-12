@@ -31,6 +31,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Accounts\N3O.Umbraco.Accounts\N3O.Umbraco.Accounts.csproj" />
+        <ProjectReference Include="..\..\Analytics\N3O.Umbraco.Analytics\N3O.Umbraco.Analytics.csproj" />
         <ProjectReference Include="..\..\Email\N3O.Umbraco.Email\N3O.Umbraco.Email.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
         <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments\N3O.Umbraco.Payments.csproj" />

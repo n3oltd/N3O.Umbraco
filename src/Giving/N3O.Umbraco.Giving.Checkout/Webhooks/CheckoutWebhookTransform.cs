@@ -1,4 +1,5 @@
 using Humanizer;
+using N3O.Umbraco.Analytics.Services;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
@@ -23,9 +24,15 @@ public class CheckoutWebhookTransform : WebhookTransform {
         AliasHelper<PaymentMethodSettingsContent<IPaymentMethodSettings>>.PropertyAlias(x => x.RestrictCollectionDaysTo);
     
     private readonly IContentCache _contentCache;
+    private readonly IAttributionAccessor _attributionAccessor;
 
-    public CheckoutWebhookTransform(IJsonProvider jsonProvider, IContentCache contentCache) : base(jsonProvider) {
+
+    public CheckoutWebhookTransform(IJsonProvider jsonProvider,
+                                    IContentCache contentCache,
+                                    IAttributionAccessor attributionAccessor) 
+        : base(jsonProvider) {
         _contentCache = contentCache;
+        _attributionAccessor = attributionAccessor;
     }
 
     public override bool IsTransform(object body) => body is Entities.Checkout;
@@ -41,6 +48,8 @@ public class CheckoutWebhookTransform : WebhookTransform {
         TransformFeedbacks(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject);
         TransformSponsorships(serializer, GivingTypes.Donation, checkout.Donation?.Allocations, jObject, checkout.Timestamp);
         TransformSponsorships(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject, checkout.Timestamp);
+        TransformSponsorships(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject, checkout.Timestamp);
+        TransformAttributionDimensions(serializer, jObject);
 
         return jObject;
     }
@@ -51,6 +60,22 @@ public class CheckoutWebhookTransform : WebhookTransform {
 
         AddConverter<Country>(t => t == typeof(Country),
                               x => new {x.Id, x.Name, x.Iso2Code, x.Iso3Code});
+    }
+    
+    private void TransformAttributionDimensions(JsonSerializer serializer, JObject jObject) {
+        var attribution = _attributionAccessor.GetAttribution();
+
+        if (!attribution.HasValue()) {
+            return;
+        }
+
+        var attributionDimensions = new JObject();
+
+        foreach (var attributionDimension in attribution.Dimensions) {
+            attributionDimensions.Add($"d{attributionDimension.Index}", JArray.FromObject(attributionDimension.Options, serializer));
+        }
+        
+        jObject["attributionDimensions"] = attributionDimensions;
     }
 
     private void TransformConsent(Entities.Checkout checkout, JObject jObject) {
