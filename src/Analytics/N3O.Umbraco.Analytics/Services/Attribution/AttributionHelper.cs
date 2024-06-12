@@ -84,20 +84,24 @@ public class AttributionHelper : IAttributionHelper {
     private void AddOrUpdateUtmEntries(IQueryCollection queryParameters,
                                        List<AttributionStateEntry> entries) {
         var attributionContent = _contentLocator.Single<AttributionContent>();
+
+        if (!attributionContent.HasValue()) {
+            return;
+        }
         
         var utmSource = queryParameters["utm_source"];
         var utmMedium = queryParameters["utm_medium"];
         var utmCampaign = queryParameters["utm_campaign"];
 
-        if (utmSource.HasValue()) {
+        if (utmSource.HasValue() && attributionContent.UtmSource.HasValue()) {
             AddOrUpdateEntry(entries, attributionContent.UtmSource, utmSource);
         }
         
-        if (utmMedium.HasValue()) {
+        if (utmMedium.HasValue() && attributionContent.UtmMedium.HasValue()) {
             AddOrUpdateEntry(entries, attributionContent.UtmMedium, utmMedium);
         }
         
-        if (utmCampaign.HasValue()) {
+        if (utmCampaign.HasValue() && attributionContent.UtmCampaign.HasValue()) {
             AddOrUpdateEntry(entries, attributionContent.UtmCampaign, utmCampaign);
         }
     }
