@@ -83,7 +83,7 @@ public class AttributionHelper : IAttributionHelper {
 
     private void AddOrUpdateUtmEntries(IQueryCollection queryParameters,
                                        List<AttributionStateEntry> entries) {
-        var attributionContent = _contentLocator.Single<AttributionContent>();
+        var attributionContent = _contentLocator.Single<AttributionSettingsContent>();
 
         if (!attributionContent.HasValue()) {
             return;
