@@ -1,3 +1,5 @@
+using System;
+
 namespace N3O.Umbraco.Extensions;
 
 public static class DecimalExtensions {
@@ -15,5 +17,9 @@ public static class DecimalExtensions {
         } else {
             return Math.Round(amount.Value, 2, MidpointRounding.AwayFromZero);
         }
+    }
+    
+    public static decimal RoundMoney(this decimal amount) {
+        return Math.Round(amount, 2, MidpointRounding.AwayFromZero);
     }
 }
