@@ -30,7 +30,7 @@ public class LabelPropertyConverter : PropertyConverter<string> {
                 return ExportValue<string>(contentProperty, x => OurDataTypes.String.Cell(x));
             
             case ValueTypes.Decimal:
-                return ExportValue<decimal?>(contentProperty, x => OurDataTypes.String.Cell(x?.ToString()));
+                return ExportValue<double?>(contentProperty, x => OurDataTypes.String.Cell(x?.ToString()));
             
             case ValueTypes.Date:
                 return ExportValue<DateOnly?>(contentProperty, x => OurDataTypes.String.Cell(x?.ToString()));
