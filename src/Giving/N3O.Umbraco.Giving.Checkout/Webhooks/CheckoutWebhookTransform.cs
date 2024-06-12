@@ -1,5 +1,5 @@
 using Humanizer;
-using N3O.Umbraco.Analytics.Services;
+using N3O.Umbraco.Analytics;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
@@ -26,7 +26,6 @@ public class CheckoutWebhookTransform : WebhookTransform {
     private readonly IContentCache _contentCache;
     private readonly IAttributionAccessor _attributionAccessor;
 
-
     public CheckoutWebhookTransform(IJsonProvider jsonProvider,
                                     IContentCache contentCache,
                                     IAttributionAccessor attributionAccessor) 
@@ -48,8 +47,7 @@ public class CheckoutWebhookTransform : WebhookTransform {
         TransformFeedbacks(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject);
         TransformSponsorships(serializer, GivingTypes.Donation, checkout.Donation?.Allocations, jObject, checkout.Timestamp);
         TransformSponsorships(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject, checkout.Timestamp);
-        TransformSponsorships(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject, checkout.Timestamp);
-        TransformAttributionDimensions(serializer, jObject);
+        TransformAttributions(serializer, jObject);
 
         return jObject;
     }
@@ -62,20 +60,19 @@ public class CheckoutWebhookTransform : WebhookTransform {
                               x => new {x.Id, x.Name, x.Iso2Code, x.Iso3Code});
     }
     
-    private void TransformAttributionDimensions(JsonSerializer serializer, JObject jObject) {
+    private void TransformAttributions(JsonSerializer serializer, JObject jObject) {
         var attribution = _attributionAccessor.GetAttribution();
 
-        if (!attribution.HasValue()) {
-            return;
-        }
+        if (attribution.HasAny(x => x.Dimensions)) {
+            var attributionJObject = new JObject();
 
-        var attributionDimensions = new JObject();
+            foreach (var dimension in attribution.Dimensions) {
+                attributionJObject.Add(AnalyticsConstants.Attribution.GetKey(dimension.Index),
+                                       new JArray(dimension.OptionPercentages.Select(x => JObject.FromObject(x, serializer))));
+            }
 
-        foreach (var attributionDimension in attribution.Dimensions) {
-            attributionDimensions.Add($"d{attributionDimension.Index}", JArray.FromObject(attributionDimension.Options, serializer));
+            jObject["attribution"] = attributionJObject;
         }
-        
-        jObject["attributionDimensions"] = attributionDimensions;
     }
 
     private void TransformConsent(Entities.Checkout checkout, JObject jObject) {

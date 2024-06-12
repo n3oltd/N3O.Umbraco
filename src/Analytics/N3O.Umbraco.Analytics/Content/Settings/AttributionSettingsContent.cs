@@ -3,7 +3,7 @@
 namespace N3O.Umbraco.Analytics.Content;
 
 public class  AttributionSettingsContent : UmbracoContent<AttributionSettingsContent> {
-    public int UtmSource => GetValue(x => x.UtmSource);
-    public int UtmMedium => GetValue(x => x.UtmMedium);
-    public int UtmCampaign => GetValue(x => x.UtmCampaign);
+    public int? UtmCampaignDimensionIndex => GetValue(x => x.UtmCampaignDimensionIndex);
+    public int? UtmMediumDimensionIndex => GetValue(x => x.UtmMediumDimensionIndex);
+    public int? UtmSourceDimensionIndex => GetValue(x => x.UtmSourceDimensionIndex);
 }

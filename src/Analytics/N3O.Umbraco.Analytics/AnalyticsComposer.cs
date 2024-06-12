@@ -4,7 +4,6 @@ using N3O.Umbraco.Analytics.Hosting;
 using N3O.Umbraco.Analytics.Services;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Validation;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Services;
@@ -14,12 +13,11 @@ namespace N3O.Umbraco.Analytics;
 
 public class AnalyticsComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
-        RegisterAll(t => t.ImplementsInterface<IDataLayerProvider>(),
-                    t => builder.Services.AddTransient(typeof(IDataLayerProvider), t));
-
         builder.Services.AddTransient<IDataLayerBuilder, DataLayerBuilder>();
         builder.Services.AddTransient<IAttributionAccessor, AttributionAccessor>();
-        builder.Services.AddTransient<IAttributionHelper, AttributionHelper>();
+        
+        RegisterAll(t => t.ImplementsInterface<IDataLayerProvider>(),
+                    t => builder.Services.AddTransient(typeof(IDataLayerProvider), t));
         
         RegisterMiddleware(builder);
     }
@@ -28,7 +26,7 @@ public class AnalyticsComposer : Composer {
         builder.Services.AddScoped<AttributionMiddleware>();
         
         builder.Services.Configure<UmbracoPipelineOptions>(opt => {
-            var filter = new UmbracoPipelineFilter(nameof(ExceptionMiddleware));
+            var filter = new UmbracoPipelineFilter(nameof(AttributionMiddleware));
 
             filter.PrePipeline = app => {
                 var runtimeState = app.ApplicationServices.GetRequiredService<IRuntimeState>();

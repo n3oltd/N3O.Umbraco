@@ -16,15 +16,14 @@ public class ContextComposer : Composer {
         builder.Services.AddSingleton<IQueryStringAccessor, QueryStringAccessor>();
         builder.Services.TryAddSingleton<IRemoteIpAddressAccessor, RemoteIpAddressAccessor>();
         
-        RegisterAll(t => t.ImplementsInterface<ICookie>(),
-                    t => {
-                        builder.Services.AddScoped(t, t);
-                        
-                        builder.Services.AddScoped(typeof(ICookie), serviceProvider => {
-                            var cookie = (ICookie) serviceProvider.GetRequiredService(t);
+        RegisterAll(t => t.ImplementsInterface<ICookie>(), t => {
+            builder.Services.AddScoped(t, t);
+            
+            builder.Services.AddScoped(typeof(ICookie), serviceProvider => {
+                var cookie = (ICookie) serviceProvider.GetRequiredService(t);
 
-                            return cookie;
-                        });
-                    });
+                return cookie;
+            });
+        });
     }
 }

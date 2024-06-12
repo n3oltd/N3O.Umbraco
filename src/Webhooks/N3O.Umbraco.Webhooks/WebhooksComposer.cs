@@ -12,7 +12,7 @@ public class WebhooksComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddOpenApiDocument(WebhooksConstants.ApiName);
         
-        builder.Services.AddSingleton<IWebhooks, Webhooks>();
+        builder.Services.AddTransient<IWebhooks, Webhooks>();
 
         RegisterAll(t => t.ImplementsInterface<IWebhookReceiver>() && t.HasAttribute<WebhookReceiverAttribute>(),
                     t => builder.Services.AddTransient(t));
