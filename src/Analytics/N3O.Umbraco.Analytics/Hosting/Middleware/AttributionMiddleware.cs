@@ -53,13 +53,15 @@ public class AttributionMiddleware : IMiddleware {
 
     private IEnumerable<AttributionEvent> GetAttributionEvents(IQueryCollection query, Instant expires) {
         var encodedAttribution = query[AnalyticsConstants.Attribution.QueryString.EncodedAttribution].FirstOrDefault();
-        var queryParameters = HttpUtility.ParseQueryString(Base64.Decode(encodedAttribution));
-        
-        for (var index = 0; index < AnalyticsConstants.Attribution.DimensionsCount; index++) {
-            var key = AnalyticsConstants.Attribution.GetKey(index);
+        var queryParameters = encodedAttribution.IfNotNull(x => HttpUtility.ParseQueryString(Base64.Decode(x))) ;
+
+        if (queryParameters.HasValue()) {
+            for (var index = 0; index < AnalyticsConstants.Attribution.DimensionsCount; index++) {
+                var key = AnalyticsConstants.Attribution.GetKey(index);
             
-            if (queryParameters.ContainsKey(key)) {
-                yield return new AttributionEvent(index, queryParameters[key], expires);
+                if (queryParameters.ContainsKey(key)) {
+                    yield return new AttributionEvent(index, queryParameters[key], expires);
+                }
             }
         }
     }
