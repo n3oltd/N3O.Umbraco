@@ -1,24 +1,19 @@
-﻿using N3O.Umbraco.Financial;
+﻿using N3O.Umbraco.Crowdfunding.Models;
+using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using NodaTime;
-using System;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Crowdfunding;
 
 public interface ICrowdfundingContributionRepository {
-    // TODO Either replace with or at least add an overload that takes an ICrowdfundingData which will reduce the
-    // number of properties we have to pass in
-    void Add(string checkoutReference,
-             Instant timestamp,
-             Guid? campaignId,
-             Guid? teamId,
-             Guid? pageId,
-             bool isAnonymous,
-             string pageUrl,
-             string comment,
-             string email,
-             Allocation allocation);
+    Task AddAsync(string checkoutReference,
+                  Instant timestamp,
+                  ICrowdfundingData crowdfundingData,
+                  string email,
+                  bool taxRelief,
+                  GivingType givingType,
+                  Allocation allocation);
 
     Task CommitAsync();
 }

@@ -51,9 +51,9 @@ public class BlockTypesService : IBlockTypesService {
 
         if (definition.Folder.HasValue()) {
             if (container == rootContainer) {
-                container = GetOrCreateContentTypeContainer(definition.Folder, rootContainer.Name);    
+                container = GetOrCreateContentTypeContainer(definition.Folder, rootContainer.Name);
             } else {
-                container = GetOrCreateContentTypeContainer(definition.Folder, container.Name, rootContainer.Name);    
+                container = GetOrCreateContentTypeContainer(definition.Folder, container.Name, rootContainer.Name);
             }
         }
 
@@ -123,9 +123,9 @@ public class BlockTypesService : IBlockTypesService {
 
         if (definition.Folder.HasValue()) {
             if (container == rootContainer) {
-                container = GetOrCreateDataTypeContainer(definition.Folder, rootContainer.Name);    
+                container = GetOrCreateDataTypeContainer(definition.Folder, rootContainer.Name);
             } else {
-                container = GetOrCreateDataTypeContainer(definition.Folder, container.Name, rootContainer.Name);    
+                container = GetOrCreateDataTypeContainer(definition.Folder, container.Name, rootContainer.Name);
             }
         }
         

@@ -7,6 +7,7 @@ using N3O.Umbraco.Giving.Extensions;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Json;
+using N3O.Umbraco.TaxRelief.Lookups;
 using NodaTime;
 using System;
 using System.Collections.Generic;
@@ -55,7 +56,7 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
             var allocations = getAllocations(checkout.SessionEntity);
 
             foreach (var allocation in allocations.Where(x => x.HasExtensionDataFor(CrowdfundingConstants.Allocations.Extensions.Key))) {
-                await CommitAsync(givingType, checkout.SessionEntity, allocation);    
+                await CommitAsync(givingType, checkout.SessionEntity, allocation);
             }
         }
     }
@@ -63,16 +64,13 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
     private async Task CommitAsync(GivingType givingType, Checkout checkout, Allocation allocation) {
         var crowdfundingData = allocation.GetCrowdfundingData(_jsonProvider);
 
-        _repository.Add(checkout.Reference.Text,
-                        _clock.GetCurrentInstant(),
-                        crowdfundingData.CampaignId,
-                        crowdfundingData.TeamId,
-                        crowdfundingData.PageId,
-                        crowdfundingData.Anonymous,
-                        crowdfundingData.PageUrl,
-                        crowdfundingData.Comment,
-                        checkout.Account?.Email?.Address,
-                        allocation);
+        await _repository.AddAsync(checkout.Reference.Text,
+                                   _clock.GetCurrentInstant(),
+                                   crowdfundingData,
+                                   checkout.Account?.Email?.Address,
+                                   checkout.Account?.TaxStatus == TaxStatuses.Payer,
+                                   givingType,
+                                   allocation);
 
         await _repository.CommitAsync();
     }

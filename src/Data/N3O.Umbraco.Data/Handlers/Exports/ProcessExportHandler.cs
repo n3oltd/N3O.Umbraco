@@ -104,7 +104,7 @@ public class ProcessExportHandler : IRequestHandler<ProcessExportCommand, Export
                 processedRecords++;
 
                 foreach (var (columnRange, converter) in metadataConverters) {
-                    tableBuilder.AddValue(columnRange, converter.GetValue(content));    
+                    tableBuilder.AddValue(columnRange, converter.GetValue(content));
                 }
 
                 var contentProperties = _contentHelper.GetContentProperties(content);

@@ -1,3 +1,4 @@
+using N3O.Umbraco.Exceptions;
 using System;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
@@ -15,6 +16,10 @@ public class ContentEditor : IContentEditor {
     
     public IContentPublisher ForExisting(Guid id) {
         var content = _contentService.GetById(id);
+
+        if (content == null) {
+            throw new ResourceNotFoundException(nameof(id), id.ToString());
+        }
         
         return GetContentPublisher(content);
     }

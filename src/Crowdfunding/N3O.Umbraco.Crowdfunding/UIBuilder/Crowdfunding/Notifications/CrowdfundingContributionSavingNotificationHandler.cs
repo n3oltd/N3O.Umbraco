@@ -13,7 +13,7 @@ public class CrowdfundingContributionSavingNotificationHandler :
             var before = (CrowdfundingContribution) notification.Entity.Before;
 
             if (before.CheckoutReference != after.CheckoutReference) {
-                notification.CancelWithError("Updating the name/reference of a contribution is not allowed");
+                notification.CancelWithError("Updating the reference of a contribution is not allowed");
             }
         }
 

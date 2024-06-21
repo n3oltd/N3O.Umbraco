@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
@@ -33,4 +34,13 @@ public class CrowdfundingData : Value, ICrowdfundingData {
     public string PageUrl { get; }
     public string Comment { get; }
     public bool Anonymous { get; }
+
+    protected override IEnumerable<object> GetAtomicValues() {
+        yield return CampaignId;
+        yield return TeamId;
+        yield return PageId;
+        yield return PageUrl;
+        yield return Comment;
+        yield return Anonymous;
+    }
 }

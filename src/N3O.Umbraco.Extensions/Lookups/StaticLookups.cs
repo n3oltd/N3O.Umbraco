@@ -8,6 +8,24 @@ using System.Reflection;
 namespace N3O.Umbraco.Lookups;
 
 public static class StaticLookups {
+    public static TLookup FindById<T, TLookup>(string id) where TLookup : ILookup {
+        var all = GetAll<T, TLookup>();
+
+        return all.SingleOrDefault(x => x.Id.EqualsInvariant(id));
+    }
+    
+    public static TLookup FindById<TLookup>(string id) where TLookup : ILookup {
+        var all = GetAll<TLookup>();
+
+        return all.SingleOrDefault(x => x.Id.EqualsInvariant(id));
+    }
+    
+    public static TLookup FindById<TLookup>(Type staticType, string id) where TLookup : ILookup {
+        var all = GetAll<TLookup>(staticType);
+
+        return all.SingleOrDefault(x => x.Id.EqualsInvariant(id));
+    }
+    
     public static IReadOnlyList<TLookup> GetAll<T, TLookup>() where TLookup : ILookup {
         return GetAll<TLookup>(typeof(T));
     }
@@ -25,8 +43,7 @@ public static class StaticLookups {
         return GetAll<TLookup>(staticType);
     }
 
-    public static IReadOnlyList<TLookup> GetAll<TLookup>(Type staticType)
-        where TLookup : ILookup {
+    public static IReadOnlyList<TLookup> GetAll<TLookup>(Type staticType) where TLookup : ILookup {
         var fields = staticType.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
                                .Select(f => f.GetValue(null))
                                .ToList();

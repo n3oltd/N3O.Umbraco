@@ -67,7 +67,7 @@ public class CreatePaymentIntentHandler :
         options.PaymentMethod = req.PaymentMethodId;
         options.Confirm = true;
         options.ConfirmationMethod = "manual";
-        
+        options.CaptureMethod = "automatic";
         options.PaymentMethodTypes = "card".Yield().ToList();
 
         return options;

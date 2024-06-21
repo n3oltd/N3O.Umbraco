@@ -48,7 +48,7 @@ public class ExceptionMiddleware : IMiddleware {
                                      ex.Message);
                 }
 
-                await WriteProblemDetailsAsync(context.Response, problemDetailsException);    
+                await WriteProblemDetailsAsync(context.Response, problemDetailsException);
             }
         }
     }

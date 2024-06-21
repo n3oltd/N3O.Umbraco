@@ -46,7 +46,7 @@ public class TimedActivity : IDisposable {
         }
 
         foreach (var (key, value) in _stopwatch.Stop()) {
-            _activity?.AddTag(key, value);    
+            _activity?.AddTag(key, value);
         }
 
         _activity?.Stop();

@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving;
 using N3O.Umbraco.Json;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Crowdfunding;
 
@@ -19,12 +19,12 @@ public class CrowdfundingAllocationExtension : AllocationExtension<CrowdfundingD
     }
 
     protected override CrowdfundingData Bind(CrowdfundingDataReq req) {
-        var page = _contentLocator.ById(req.PageId.GetValueOrThrow());
+        var page = _contentLocator.ById<CrowdfundingPageContent>(req.PageId.GetValueOrThrow());
         
-        return new CrowdfundingData(req.CampaignId.GetValueOrThrow(),
-                                    req.TeamId,
-                                    req.PageId.GetValueOrThrow(),
-                                    page.Url(),
+        return new CrowdfundingData(page.Campaign.Content().Key,
+                                    page.Team?.Content().Key,
+                                    page.Content().Key,
+                                    page.Content().AbsoluteUrl(),
                                     req.Comment,
                                     req.Anonymous);
     }

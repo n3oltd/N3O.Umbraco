@@ -1,4 +1,6 @@
-﻿using NPoco;
+﻿using N3O.Umbraco.Giving.Lookups;
+using N3O.Umbraco.Lookups;
+using NPoco;
 using System;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 using static N3O.Umbraco.Crowdfunding.CrowdfundingConstants;
@@ -7,7 +9,7 @@ namespace N3O.Umbraco.Crowdfunding.UIBuilder;
 
 [TableName(Tables.CrowdfundingContributions.Name)]
 [PrimaryKey("Id")]
-public partial class CrowdfundingContribution {
+public class CrowdfundingContribution {
     [PrimaryKeyColumn(Name = Tables.CrowdfundingContributions.PrimaryKey)]
     public int Id { get; set; }
 
@@ -49,9 +51,13 @@ public partial class CrowdfundingContribution {
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.CrowdfundingContributions.Name + "_" + nameof(CheckoutReference), ForColumns = nameof(CheckoutReference))]
     public string CheckoutReference { get; set; }
     
-    [Column(nameof(Currency))]
+    [Column(nameof(GivingTypeId))]
+    [Length(50)]
+    public string GivingTypeId { get; set; }
+    
+    [Column(nameof(CurrencyCode))]
     [Length(3)]
-    public string Currency { get; set; }
+    public string CurrencyCode { get; set; }
     
     [Column(nameof(QuoteAmount))]
     public decimal QuoteAmount { get; set; }
@@ -59,11 +65,8 @@ public partial class CrowdfundingContribution {
     [Column(nameof(BaseAmount))]
     public decimal BaseAmount { get; set; }
     
-    [Column(nameof(QuoteTaxReliefAmount))]
-    public decimal QuoteTaxReliefAmount { get; set; }
-    
-    [Column(nameof(BaseTaxReliefAmount))]
-    public decimal BaseTaxReliefAmount { get; set; }
+    [Column(nameof(TaxRelief))]
+    public bool TaxRelief { get; set; }
     
     [Column(nameof(Anonymous))]
     public bool Anonymous { get; set; }
@@ -93,4 +96,7 @@ public partial class CrowdfundingContribution {
     [NullSetting(NullSetting = NullSettings.Null)]
     [SpecialDbType(SpecialDbTypes.NVARCHARMAX)]
     public string AllocationJson { get; set; }
+
+    [Ignore]
+    public GivingType GivingType => StaticLookups.FindById<GivingTypes, GivingType>(GivingTypeId);
 }
