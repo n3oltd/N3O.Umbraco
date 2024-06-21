@@ -1,3 +1,4 @@
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using Umbraco.Cms.Core.Mapping;
 
@@ -16,7 +17,7 @@ public class MoneyMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll
     private void Map(Money src, MoneyRes dest, MapperContext ctx) {
-        dest.Amount = src.Amount;
+        dest.Amount = src.Amount.RoundMoney();
         dest.Currency = src.Currency;
         dest.Text = _formatter.Number.FormatMoney(src);
     }
