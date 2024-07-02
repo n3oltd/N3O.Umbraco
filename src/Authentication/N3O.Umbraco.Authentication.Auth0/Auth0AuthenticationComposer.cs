@@ -30,7 +30,7 @@ public class Auth0AuthenticationComposer : Composer {
             var httpClient = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient();
             var connection = new HttpClientAuthenticationConnection(httpClient);
             
-            var auth0Client = new AuthenticationApiClient($"https://{auth0BackOfficeOptions.Domain}", connection);
+            var auth0Client = new AuthenticationApiClient(auth0BackOfficeOptions.Domain, connection);
             
             return auth0Client;
         });
