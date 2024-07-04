@@ -28,7 +28,7 @@ public static class CrowdfundingPageExtensions {
     private static void AddAllocation(IContentBuilder contentBuilder, PageAllocationReq allocation) {
         contentBuilder.TextBox(CrowdfundingPageAllocation.Properties.Title).Set(allocation.Title);
         contentBuilder.DataList(CrowdfundingPageAllocation.Properties.Type).SetLookups(allocation.Type);
-        contentBuilder.Numeric(CrowdfundingPageAllocation.Properties.Amount).SetDecimal(allocation.Amount);
+        contentBuilder.Numeric(CrowdfundingPageAllocation.Properties.Amount).SetDecimal(allocation.Value.Amount);
         contentBuilder.ContentPicker(CrowdfundingPageAllocation.Properties.FundDimension1).SetContent(allocation.FundDimensions.Dimension1);
         contentBuilder.ContentPicker(CrowdfundingPageAllocation.Properties.FundDimension2).SetContent(allocation.FundDimensions.Dimension2);
         contentBuilder.ContentPicker(CrowdfundingPageAllocation.Properties.FundDimension3).SetContent(allocation.FundDimensions.Dimension3);

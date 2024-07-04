@@ -8,9 +8,6 @@ public class PageAllocationReq : AllocationReq {
     [Name("Title")]
     public string Title { get; set; }
     
-    [Name("Amount")]
-    public decimal Amount { get; set; }
-    
     [Name("Price Handles")]
     public IEnumerable<PriceHandleReq> PriceHandles { get; set; }
 }

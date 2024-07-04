@@ -10,13 +10,13 @@ public class PageAllocationReqValidator : ModelValidator<PageAllocationReq> {
            .NotNull()
            .WithMessage(Get<Strings>(s => s.SpecifyTitle));
         
-        RuleFor(x => x.Amount)
+        RuleFor(x => x.Value)
            .NotNull()
-           .WithMessage(Get<Strings>(s => s.SpecifyAmount));
+           .WithMessage(Get<Strings>(s => s.SpecifyValue));
     }
 
     public class Strings : ValidationStrings {
-        public string SpecifyAmount => "Please specify an amount";
+        public string SpecifyValue => "Please specify the value";
         public string SpecifyTitle => "Please specify the allocation title";
     }
 }
