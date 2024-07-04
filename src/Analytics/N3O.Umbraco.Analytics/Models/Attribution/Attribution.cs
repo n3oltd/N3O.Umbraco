@@ -16,4 +16,6 @@ public class Attribution : Value {
             yield return dimension;
         }
     }
+    
+    public static readonly Attribution Empty = new(null);
 }
