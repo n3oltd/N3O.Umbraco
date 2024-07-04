@@ -1,11 +1,17 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.CrowdFunding;
+using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.Content;
+using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
+using static N3O.Umbraco.Crowdfunding.CrowdfundingConstants;
 
 namespace N3O.Umbraco.Crowdfunding;
 
@@ -24,20 +30,17 @@ public class FundraisingPages : IFundraisingPages {
         _contentService = contentService;
         _contentLocator = contentLocator;
     }
+    
+    public CreatePageResult CreatePage(CreatePageCommand req) {
+        var fundraisingPages = _contentLocator.Single(CrowdfundingPages.Alias);
 
-    // TODO It does not really make sense to create a completely blank page. According to Figma, at the stage where
-    // we are creating the "barebones" page for the user to fill in a small number of selections have already been
-    // made. E.g. we know the page owner (logged in user), we know the campaign, possibly allocation etc. Therefore
-    // this method should have parameters for these values, and the calling controller/handler should have a request
-    // model where these are passed in from the frontend.
-    public CreatePageResult CreatePage() {
-        var fundraisingPages = _contentLocator.Single(CrowdfundingConstants.CrowdfundingPages.Alias);
+         var contentPublisher =_contentEditor.New(Guid.NewGuid().ToString(),
+                                                  fundraisingPages.Key,
+                                                  CrowdfundingPage.Alias);
+         
+         CrowdfundingPageExtensions.SetContentValues(contentPublisher, _contentLocator, req.Model);
         
-        var content = _contentService.Create(Guid.NewGuid().ToString(),
-                                             fundraisingPages.Key,
-                                             CrowdfundingConstants.CrowdfundingPage.Alias);
-
-        var publishResult = _contentService.SaveAndPublish(content);
+        var publishResult = contentPublisher.SaveAndPublish();
 
         if (publishResult.Success) {
             var publishedContent = _contentLocator.ById<CrowdfundingPageContent>(publishResult.Content.Key);
@@ -59,9 +62,20 @@ public class FundraisingPages : IFundraisingPages {
 
         return _contentEditor.ForExisting(id);
     }
+    
+    public IReadOnlyList<CrowdfundingPageContent> GetAllFundraisingPages() {
+        var fundraisingPages = _contentLocator.All<CrowdfundingPageContent>();
 
-    // TODO Implement this method
+        return fundraisingPages;
+    }
+    
+    public bool IsFundraisingPage(IContent content) {
+        return content.ContentType.Alias.EqualsInvariant(CrowdfundingPage.Alias);
+    }
+
     public bool IsPageNameAvailable(string name) {
-        return false;
+        var pages = GetAllFundraisingPages();
+
+        return pages.All(x => x.PageTitle != name);
     }
 }

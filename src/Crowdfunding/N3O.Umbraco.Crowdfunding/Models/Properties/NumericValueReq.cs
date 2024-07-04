@@ -4,10 +4,10 @@ using Newtonsoft.Json;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
-public class TextBoxValueReq : ValueReq {
+public class NumericValueReq : ValueReq {
     [Name("Value")]
-    public string Value { get; set; }
+    public decimal? Value { get; set; }
     
     [JsonIgnore]
-    public override PropertyType Type => PropertyTypes.TextBox;
+    public override PropertyType Type => PropertyTypes.Numeric;
 }

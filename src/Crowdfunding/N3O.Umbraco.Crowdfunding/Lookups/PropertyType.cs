@@ -22,5 +22,10 @@ public abstract class PropertyType<T> : PropertyType {
 
 public class PropertyTypes : StaticLookupsCollection<PropertyType> {
     public static readonly PropertyType Boolean = new BooleanPropertyType();
+    public static readonly PropertyType Cropper = new CropperPropertyType();
+    public static readonly PropertyType DateTime = new DateTimePropertyType();
+    public static readonly PropertyType Numeric = new NumericPropertyType();
+    public static readonly PropertyType Raw = new RawPropertyType();
+    public static readonly PropertyType Textarea = new TextareaPropertyType();
     public static readonly PropertyType TextBox = new TextBoxPropertyType();
 }

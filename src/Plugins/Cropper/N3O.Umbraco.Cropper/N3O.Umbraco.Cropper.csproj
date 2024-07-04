@@ -30,6 +30,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\..\Storage\N3O.Umbraco.Storage\N3O.Umbraco.Storage.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Plugins\N3O.Umbraco.Plugins.csproj" />
     </ItemGroup>
 

@@ -4,8 +4,8 @@ using N3O.Umbraco.Validation;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
-public class BooleanValueReqValidator : ModelValidator<BooleanValueReq> {
-    public BooleanValueReqValidator(IFormatter formatter) : base(formatter) {
+public class NumericValueReqValidator : ModelValidator<NumericValueReq> {
+    public NumericValueReqValidator(IFormatter formatter) : base(formatter) {
         RuleFor(x => x.Value)
            .NotNull()
            .WithMessage(Get<Strings>(x => x.SpecifyValue));

@@ -1,6 +1,17 @@
-﻿namespace N3O.Umbraco.Crowdfunding.Controllers;
+﻿using Microsoft.AspNetCore.Mvc;
+using N3O.Umbraco.Crowdfunding.Lookups;
+using N3O.Umbraco.Lookups;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace N3O.Umbraco.Crowdfunding.Controllers;
 
 public partial class CrowdfundingController {
-    // TODO Add an API that returns to the frontend the property type values so they don't have to hardcode magic
-    // strings for the various IDs but can use a strongly typed enum in typescript
+    [HttpGet("lookups/propertyTypes")]
+    public async Task<ActionResult<IEnumerable<LookupRes>>> GetLookupSponsorshipDurations() {
+        var listLookups = new ListCustomLookups<PropertyType, LookupRes>(_lookups.Value, _mapper.Value);
+        var res = await listLookups.RunAsync();
+
+        return Ok(res);
+    }
 }
