@@ -10,10 +10,10 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Content;
 
 public class ContentLocator : IContentLocator {
-    private readonly IUmbracoContextFactory _umbracoContextFactory;
+    private readonly IUmbracoContextAccessor _umbracoContextAccessor;
 
-    public ContentLocator(IUmbracoContextFactory umbracoContextFactory) {
-        _umbracoContextFactory = umbracoContextFactory;
+    public ContentLocator(IUmbracoContextAccessor umbracoContextAccessor) {
+        _umbracoContextAccessor = umbracoContextAccessor;
     }
 
     public IReadOnlyList<IPublishedContent> All(Func<IPublishedContent, bool> predicate = null) {
@@ -88,10 +88,6 @@ public class ContentLocator : IContentLocator {
         // TODO If the Umbraco context is actually created then this wil dispose it once
         // the content is fetched and will fail in later code, e.g. when resolving property values
         // as won't be able to get published content snapshot.
-        using (var umbracoContextReference = _umbracoContextFactory.EnsureUmbracoContext()) {
-            var umbracoContext = umbracoContextReference.UmbracoContext;
-            
-            return func(umbracoContext.Content);
-        }
+        return func(_umbracoContextAccessor.GetContentCache());
     }
 }

@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
@@ -30,18 +29,15 @@ public class StringLocalizer : IStringLocalizer {
     private readonly IUmbracoContextAccessor _umbracoContextAccessor;
     private readonly AsyncKeyedLocker<string> _locker;
     private readonly IVariationContextAccessor _variationContextAccessor;
-    private readonly IUmbracoContextFactory _umbracoContextFactory;
 
     public StringLocalizer(IContentService contentService,
                            IUmbracoContextAccessor umbracoContextAccessor,
                            AsyncKeyedLocker<string> locker,
-                           IVariationContextAccessor variationContextAccessor,
-                           IUmbracoContextFactory umbracoContextFactory) {
+                           IVariationContextAccessor variationContextAccessor) {
         _contentService = contentService;
         _umbracoContextAccessor = umbracoContextAccessor;
         _locker = locker;
         _variationContextAccessor = variationContextAccessor;
-        _umbracoContextFactory = umbracoContextFactory;
     }
 
     public void Flush(IEnumerable<string> aliases) {
@@ -136,7 +132,7 @@ public class StringLocalizer : IStringLocalizer {
     }
 
     private TextResource CreateOrUpdateResource(Guid containerId, string text) {
-        var container = Run(u => u.GetById(containerId).As<TextContainerContent>());
+        var container = Run(u => u.GetContentCache().GetById(containerId).As<TextContainerContent>());
 
         var resources = container.Resources.OrEmpty().ToList();
 
@@ -165,9 +161,10 @@ public class StringLocalizer : IStringLocalizer {
         return resource;
     }
     
-    private IEnumerable<IPublishedContent> GetEnglishUSByContentType(IPublishedContentCache umbracoContextAccessor,
+    private IEnumerable<IPublishedContent> GetEnglishUSByContentType(IUmbracoContextAccessor umbracoContextAccessor,
                                                                      string contentTypeAlias) {
-        return umbracoContextAccessor.GetAtRoot()
+        return umbracoContextAccessor.GetContentCache()
+                                     .GetAtRoot()
                                      .SelectMany(x => x.DescendantsOrSelfOfType(_variationContextAccessor,
                                                                                 contentTypeAlias,
                                                                                 EnglishUS));
@@ -185,11 +182,8 @@ public class StringLocalizer : IStringLocalizer {
         }
     }
 
-    private T Run<T>(Func<IPublishedContentCache, T> func) {
-        var umbracoContextReference = _umbracoContextFactory.EnsureUmbracoContext();
-        var umbracoContext = umbracoContextReference.UmbracoContext;
-        
-        return func(umbracoContext.Content);
+    private T Run<T>(Func<IUmbracoContextAccessor, T> func) {
+        return func(_umbracoContextAccessor);
     }
 
     private static string GetCacheKey(params object[] values) {
