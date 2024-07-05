@@ -38,7 +38,7 @@ public class FundraisingPages : IFundraisingPages {
                                                   fundraisingPages.Key,
                                                   CrowdfundingPage.Alias);
          
-         CrowdfundingPageExtensions.SetContentValues(contentPublisher, _contentLocator, req.Model);
+         contentPublisher.SetContentValues(_contentLocator, req.Model);
         
         var publishResult = contentPublisher.SaveAndPublish();
 

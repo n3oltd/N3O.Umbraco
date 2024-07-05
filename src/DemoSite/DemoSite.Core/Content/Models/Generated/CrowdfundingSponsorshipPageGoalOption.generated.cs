@@ -19,13 +19,13 @@ using Umbraco.Extensions;
 namespace DemoSite.Content
 {
 	/// <summary>Sponsorship Page Goal Option</summary>
-	[PublishedModel("crowdfundingSponsorshipPageGoalOption")]
-	public partial class CrowdfundingSponsorshipPageGoalOption : PublishedElementModel, ICrowdfundingPageGoalOption
+	[PublishedModel("crowdfundingPageSponsorshipGoalOption")]
+	public partial class CrowdfundingPageSponsorshipGoalOption : PublishedElementModel, ICrowdfundingPageGoalOption
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.3.2+696a711")]
-		public new const string ModelTypeAlias = "crowdfundingSponsorshipPageGoalOption";
+		public new const string ModelTypeAlias = "crowdfundingPageSponsorshipGoalOption";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.3.2+696a711")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.3.2+696a711")]
@@ -34,14 +34,14 @@ namespace DemoSite.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.3.2+696a711")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<CrowdfundingSponsorshipPageGoalOption, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<CrowdfundingPageSponsorshipGoalOption, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public CrowdfundingSponsorshipPageGoalOption(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
+		public CrowdfundingPageSponsorshipGoalOption(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;

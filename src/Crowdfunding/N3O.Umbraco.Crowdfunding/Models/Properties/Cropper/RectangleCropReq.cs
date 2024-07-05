@@ -5,8 +5,8 @@ namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class RectangleCropReq {
     [Name("Bottom Left")]
-    public Point BottomLeft { get; set; }
+    public Point? BottomLeft { get; set; }
     
     [Name("Top Right")]
-    public Point TopRight { get; set; }
+    public Point? TopRight { get; set; }
 }

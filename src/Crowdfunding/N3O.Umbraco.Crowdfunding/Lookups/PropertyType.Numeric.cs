@@ -8,7 +8,9 @@ namespace N3O.Umbraco.Crowdfunding.Lookups;
 public class NumericPropertyType : PropertyType<NumericValueReq> {
     public NumericPropertyType() : base("numeric") { }
 
-    protected override Task UpdatePropertyAsync(IContentPublisher contentPublisher, string alias, NumericValueReq data) {
+    protected override Task UpdatePropertyAsync(IContentPublisher contentPublisher,
+                                                string alias,
+                                                NumericValueReq data) {
         contentPublisher.Content.Numeric(alias).SetDecimal(data.Value);
 
         return Task.CompletedTask;

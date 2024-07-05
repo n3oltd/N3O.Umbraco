@@ -15,11 +15,6 @@ public class CreatePageHandler : IRequestHandler<CreatePageCommand, CreatePageRe
     }
     
     public Task<string> Handle(CreatePageCommand req, CancellationToken cancellationToken) {
-        if (!_fundraisingPages.IsPageNameAvailable(req.Model.Name)) {
-            throw new ValidationException(ValidationFailure.WithMessage(nameof(req.Model.Name),
-                                                                        "Page already exists with the specified name"));
-        }
-        
         var result = _fundraisingPages.CreatePage(req);
 
         if (result.Success) {

@@ -19,13 +19,13 @@ using Umbraco.Extensions;
 namespace DemoSite.Content
 {
 	/// <summary>Feedback Page Allocation</summary>
-	[PublishedModel("crowdfundingFeedbackPageAllocation")]
-	public partial class CrowdfundingFeedbackPageAllocation : PublishedElementModel, ICrowdfundingPageAllocation
+	[PublishedModel("crowdfundingPageFeedbackAllocation")]
+	public partial class CrowdfundingPageFeedbackAllocation : PublishedElementModel, ICrowdfundingPageAllocation
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.3.2+696a711")]
-		public new const string ModelTypeAlias = "crowdfundingFeedbackPageAllocation";
+		public new const string ModelTypeAlias = "crowdfundingPageFeedbackAllocation";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.3.2+696a711")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.3.2+696a711")]
@@ -34,14 +34,14 @@ namespace DemoSite.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.3.2+696a711")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<CrowdfundingFeedbackPageAllocation, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<CrowdfundingPageFeedbackAllocation, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public CrowdfundingFeedbackPageAllocation(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
+		public CrowdfundingPageFeedbackAllocation(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;

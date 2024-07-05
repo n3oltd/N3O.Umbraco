@@ -9,14 +9,13 @@ public class CropperValueReq : ValueReq {
     public StorageToken StorageToken { get; set; }
     
     [Name("Crop Type")]
-    public CropType CropType { get; set; }
+    public CropShape Shape { get; set; }
     
-    [Name("Circle Crop")]
-    public CircleCropReq CircleCrop { get; set; }
+    [Name("Circle")]
+    public CircleCropReq Circle { get; set; }
     
-    [Name("Rectangle Crop")]
-    public RectangleCropReq RectangleCrop { get; set; }
-    
+    [Name("Rectangle")]
+    public RectangleCropReq Rectangle { get; set; }
     
     public override PropertyType Type => PropertyTypes.Cropper;
 }

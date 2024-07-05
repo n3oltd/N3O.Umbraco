@@ -47,24 +47,24 @@ public static class CrowdfundingConstants {
         }
     }
 
-    public static class CrowdfundingFundPageAllocation {
-        public const string Alias = "crowdfundingFundPageAllocation";
+    public static class CrowdfundingPageFundAllocation {
+        public const string Alias = "crowdfundingPageFundAllocation";
 
         public static class Properties {
             public const string DonationItem = "donationItem";
         }
     }
     
-    public static class CrowdfundingSponsorshipPageAllocation {
-        public const string Alias = "crowdfundingSponsorshipPageAllocation";
+    public static class CrowdfundingPageSponsorshipAllocation {
+        public const string Alias = "crowdfundingPageSponsorshipAllocation";
 
         public static class Properties {
             public const string Scheme = "scheme";
         }
     }
     
-    public static class CrowdfundingFeedbackPageAllocation {
-        public const string Alias = "crowdfundingFeedbackPageAllocation";
+    public static class CrowdfundingPageFeedbackAllocation {
+        public const string Alias = "crowdfundingPageFeedbackAllocation";
 
         public static class Properties {
             public const string Scheme = "scheme";

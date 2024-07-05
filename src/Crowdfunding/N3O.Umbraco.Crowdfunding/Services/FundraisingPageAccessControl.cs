@@ -1,7 +1,7 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving.Crowdfunding.Lookups;
+using N3O.Umbraco.Crowdfunding.Lookups;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Security;
@@ -14,25 +14,27 @@ public class FundraisingPageAccessControl : MembersAccessControl {
         : base(contentHelper, memberManager) { }
 
     protected override async Task<bool> AllowEditAsync(ContentProperties contentProperties) {
-        if (await base.AllowEditAsync(contentProperties)) {
-            var status = contentProperties.GetPropertyValueByAlias<CrowdfundingPageStatus>(CrowdfundingConstants.CrowdfundingPage.Properties.PageStatus);
-            var canEdit = status == CrowdfundingPageStatuses.Open;
+        var canEdit = await base.AllowEditAsync(contentProperties);
         
-            return canEdit;
+        if (canEdit) {
+            var status = contentProperties.GetPropertyValueByAlias<CrowdfundingPageStatus>(CrowdfundingConstants.CrowdfundingPage.Properties.PageStatus);
+        
+            canEdit = status == CrowdfundingPageStatuses.Open;
         }
 
-        return false;
+        return canEdit;
     }
 
     protected override async Task<bool> AllowEditAsync(IPublishedContent content) {
-        if (await base.AllowEditAsync(content)) {
+        var canEdit = await base.AllowEditAsync(content);
+        
+        if (canEdit) {
             var status = content.Value<CrowdfundingPageStatus>(CrowdfundingConstants.CrowdfundingPage.Properties.PageStatus);
-            var canEdit = status == CrowdfundingPageStatuses.Open;
             
-            return canEdit;
+            canEdit = status == CrowdfundingPageStatuses.Open;
         }
 
-        return false;
+        return canEdit;
     }
 
     protected override string ContentTypeAlias => CrowdfundingConstants.CrowdfundingPage.Alias;

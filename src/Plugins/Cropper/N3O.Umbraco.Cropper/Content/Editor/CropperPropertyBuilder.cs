@@ -78,15 +78,11 @@ public class CropperPropertyBuilder : PropertyBuilder {
     }
 
     public async Task<CropperPropertyBuilder> SetImageAsync(StorageToken storageToken) {
-        var tempStorage = await _volume.Value.GetStorageFolderAsync(storageToken.StorageFolderName);
-        var imageFile = await tempStorage.GetFileAsync(storageToken.Filename);
+        var storageFolder = await _volume.Value.GetStorageFolderAsync(storageToken.StorageFolderName);
+        var imageFile = await storageFolder.GetFileAsync(storageToken.Filename);
 
-        try {
-            using (imageFile.Stream) {
-                SetImage(imageFile);
-            }
-        } finally {
-            await tempStorage.DeleteFileAsync(imageFile.Filename);
+        using (imageFile.Stream) {
+            SetImage(imageFile);
         }
 
         return this;

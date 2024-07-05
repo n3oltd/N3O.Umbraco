@@ -8,11 +8,13 @@ namespace N3O.Umbraco.Crowdfunding.Lookups;
 public class CropperPropertyType : PropertyType<CropperValueReq> {
     public CropperPropertyType() : base("cropper") { }
 
-    protected override async Task UpdatePropertyAsync(IContentPublisher contentPublisher, string alias, CropperValueReq data) {
-        var cropperPropertyBuilder = contentPublisher.Content.Cropper(alias);
+    protected override async Task UpdatePropertyAsync(IContentPublisher contentPublisher,
+                                                      string alias,
+                                                      CropperValueReq data) {
+        var cropper = contentPublisher.Content.Cropper(alias);
         
-        await cropperPropertyBuilder.SetImageAsync(data.StorageToken);
+        await cropper.SetImageAsync(data.StorageToken);
 
-        cropperPropertyBuilder.AddCrop();
+        cropper.AddCrop();
     }
 }

@@ -1,5 +1,5 @@
 ﻿using N3O.Umbraco.Content;
-using N3O.Umbraco.Giving.Crowdfunding.Lookups;
+using N3O.Umbraco.Crowdfunding.Lookups;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 

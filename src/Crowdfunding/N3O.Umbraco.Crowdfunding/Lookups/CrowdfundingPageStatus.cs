@@ -1,6 +1,6 @@
 ﻿using N3O.Umbraco.Lookups;
 
-namespace N3O.Umbraco.Giving.Crowdfunding.Lookups;
+namespace N3O.Umbraco.Crowdfunding.Lookups;
 
 public class CrowdfundingPageStatus : NamedLookup {
     public CrowdfundingPageStatus(string id, string name) : base(id, name) { }

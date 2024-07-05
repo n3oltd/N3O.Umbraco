@@ -8,15 +8,15 @@ public class CreatePageReq {
     [Name("Name")]
     public string Name { get; set; }
     
-    [Name("Fundraiser Name")]
-    public string FundraiserName { get; set; }
-    
     [Name("Slug")]
     public string Slug { get; set; }
     
     [Name("Campaign ID")]
     public Guid? CampaignId { get; set; }
     
-    [Name("Page Allocation")]
-    public IEnumerable<PageAllocationReq> PageAllocation { get; set; }
+    [Name("Fundraiser Name")]
+    public string FundraiserName { get; set; }
+    
+    [Name("Allocation")]
+    public IEnumerable<PageAllocationReq> Allocation { get; set; }
 }

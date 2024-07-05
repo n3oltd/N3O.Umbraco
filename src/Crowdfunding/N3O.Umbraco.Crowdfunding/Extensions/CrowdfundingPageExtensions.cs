@@ -2,7 +2,7 @@
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving.Crowdfunding.Lookups;
+using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using static N3O.Umbraco.Crowdfunding.CrowdfundingConstants;
 namespace N3O.Umbraco.Crowdfunding.Extensions;
 
 public static class CrowdfundingPageExtensions {
-    public static void SetContentValues(IContentPublisher contentPublisher,
+    public static void SetContentValues(this IContentPublisher contentPublisher,
                                          IContentLocator contentLocator,
                                          CreatePageReq req) {
         var campaign = contentLocator.ById(req.CampaignId.GetValueOrThrow());
@@ -22,7 +22,7 @@ public static class CrowdfundingPageExtensions {
         contentPublisher.Content.Label(CrowdfundingPage.Properties.FundraiserName).Set(req.FundraiserName);
         contentPublisher.Content.ContentPicker(CrowdfundingPage.Properties.Campaign).SetContent(campaign);
         
-        PopulateAllocations(contentPublisher, req.PageAllocation);
+        PopulateAllocations(contentPublisher, req.Allocation);
     }
     
     private static void AddAllocation(IContentBuilder contentBuilder, PageAllocationReq allocation) {
@@ -42,21 +42,21 @@ public static class CrowdfundingPageExtensions {
     }
     
     private static void AddFeedbackAllocation(IContentBuilder contentBuilder, PageAllocationReq allocation) {
-        contentBuilder.ContentPicker(CrowdfundingFeedbackPageAllocation.Properties.Scheme)
+        contentBuilder.ContentPicker(CrowdfundingPageFeedbackAllocation.Properties.Scheme)
                       .SetContent(allocation.Feedback.Scheme);
         
         AddAllocation(contentBuilder, allocation);
     }
 
     private static void AddFundAllocation(IContentBuilder contentBuilder, PageAllocationReq allocation) {
-        contentBuilder.ContentPicker(CrowdfundingFundPageAllocation.Properties.DonationItem)
+        contentBuilder.ContentPicker(CrowdfundingPageFundAllocation.Properties.DonationItem)
                       .SetContent(allocation.Fund.DonationItem);
         
         AddAllocation(contentBuilder, allocation);
     }
     
     private static void AddSponsorshipAllocation(IContentBuilder contentBuilder, PageAllocationReq allocation) {
-        contentBuilder.ContentPicker(CrowdfundingSponsorshipPageAllocation.Properties.Scheme)
+        contentBuilder.ContentPicker(CrowdfundingPageSponsorshipAllocation.Properties.Scheme)
                       .SetContent(allocation.Sponsorship.Scheme);
         
         AddAllocation(contentBuilder, allocation);
@@ -67,11 +67,11 @@ public static class CrowdfundingPageExtensions {
         
         foreach (var allocation in pageAllocations) {
             if (allocation.Type == AllocationTypes.Fund) {
-                AddFundAllocation(nestedContent.Add(CrowdfundingFundPageAllocation.Alias), allocation);
+                AddFundAllocation(nestedContent.Add(CrowdfundingPageFundAllocation.Alias), allocation);
             } else if (allocation.Type == AllocationTypes.Sponsorship) {
-                AddSponsorshipAllocation(nestedContent.Add(CrowdfundingSponsorshipPageAllocation.Alias), allocation);
+                AddSponsorshipAllocation(nestedContent.Add(CrowdfundingPageSponsorshipAllocation.Alias), allocation);
             } else if (allocation.Type == AllocationTypes.Feedback) {
-                AddFeedbackAllocation(nestedContent.Add(CrowdfundingFeedbackPageAllocation.Alias), allocation);
+                AddFeedbackAllocation(nestedContent.Add(CrowdfundingPageFeedbackAllocation.Alias), allocation);
             } else {
                 throw UnrecognisedValueException.For(allocation.Type);
             }

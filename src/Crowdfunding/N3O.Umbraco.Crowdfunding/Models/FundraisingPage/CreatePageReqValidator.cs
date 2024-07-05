@@ -5,7 +5,6 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
 using System;
-using System.Linq;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
@@ -14,12 +13,12 @@ public class CreatePageReqValidator : ModelValidator<CreatePageReq> {
     private const int MaximumNameLength = 50;
     
     public CreatePageReqValidator(IFormatter formatter,
-                                  IContentCache contentCache,
+                                  IContentLocator contentLocator,
                                   IFundraisingPages fundraisingPages,
                                   IProfanityGuard profanityGuard) 
         : base(formatter) {
         RuleFor(x => x.Name)
-           .NotNull()
+           .NotEmpty()
            .WithMessage(Get<Strings>(s => s.SpecifyName));
         
         RuleFor(x => x.Name)
@@ -33,7 +32,7 @@ public class CreatePageReqValidator : ModelValidator<CreatePageReq> {
           .WithMessage(Get<Strings>(s => s.UnacceptableName));
            
         RuleFor(x => x.Name)
-          .Must(x => ValidateNameAvailable(fundraisingPages, x))
+          .Must(fundraisingPages.IsPageNameAvailable)
           .When(x => x.Name.HasValue())
           .WithMessage(Get<Strings>(s => s.NameUnavailable));
         
@@ -42,32 +41,25 @@ public class CreatePageReqValidator : ModelValidator<CreatePageReq> {
            .WithMessage(Get<Strings>(s => s.SpecifyCampaignId));
         
         RuleFor(x => x.CampaignId)
-           .Must(x => ValidateCampaign(contentCache, x))
+           .Must(x => CampaignIdIsValid(contentLocator, x.GetValueOrThrow()))
            .When(x => x.CampaignId.HasValue())
            .WithMessage(Get<Strings>(s => s.InvalidCampaign));
         
-        RuleFor(x => x.PageAllocation)
+        RuleFor(x => x.Allocation)
            .NotEmpty()
            .WithMessage(Get<Strings>(s => s.SpecifyAllocation));
     }
-    
-    private bool ValidateNameAvailable(IFundraisingPages fundraisingPages, string name) {
-       return !fundraisingPages.IsPageNameAvailable(name);
-    }
 
-    private bool ValidateCampaign(IContentCache contentCache, Guid? campaignId) {
-        var campaigns = contentCache.All<CrowdfundingCampaignContent>();
-        var campaign = campaigns.SingleOrDefault(x => x.Content().Key == campaignId);
-
-        return campaign.HasValue();
+    private bool CampaignIdIsValid(IContentLocator contentLocator, Guid campaignId) {
+        return contentLocator.ById<CrowdfundingCampaignContent>(campaignId).HasValue();
     }
 
     public class Strings : ValidationStrings {
         public string InvalidCampaign => "The specified campaign is invalid";
         public string NameUnavailable => "The name is not available";
-        public string SpecifyCampaignId => "Please specify the campaign id";
-        public string SpecifyName => "Please specify the name for the page";
         public string SpecifyAllocation => "Please specify the allocation for the page";
+        public string SpecifyCampaignId => "Please specify the campaign id";
+        public string SpecifyName => "Please specify the name of the page";
         public string UnacceptableName => "The name contains unacceptable characters or words";
     }
 }
