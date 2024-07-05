@@ -20,6 +20,7 @@ using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Web.BackOffice.Authorization;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
 using UmbracoConstants = Umbraco.Cms.Core.Constants;
@@ -93,10 +94,12 @@ public class SchedulerComposer : IComposer {
     public class RegisterRecurringJobsComponent : IComponent {
         private readonly IRuntimeState _runtimeState;
         private readonly Lazy<IMediator> _mediator;
+        private readonly Lazy<IUmbracoContextFactory> _umbracoContextFactory;
 
-        public RegisterRecurringJobsComponent(IRuntimeState runtimeState, Lazy<IMediator> mediator) {
+        public RegisterRecurringJobsComponent(IRuntimeState runtimeState, Lazy<IMediator> mediator, Lazy<IUmbracoContextFactory> umbracoContextFactory) {
             _runtimeState = runtimeState;
             _mediator = mediator;
+            _umbracoContextFactory = umbracoContextFactory;
         }
     
         public void Initialize() {
@@ -106,35 +109,38 @@ public class SchedulerComposer : IComposer {
                                                      .ToList();
 
                 if (recurringJobTypes.Any()) {
-                    var jobReqs = new List<QueueRecurringJobReq>();
+                    using (_umbracoContextFactory.Value.EnsureUmbracoContext()) {
+                        var jobReqs = new List<QueueRecurringJobReq>();
 
-                    foreach (var jobType in recurringJobTypes) {
-                        if (!jobType.ImplementsGenericInterface(typeof(IRequestHandler<,,>))) {
-                            throw new Exception("Recurring job attribute can only be applied to classes that inherit IRequestHandler<,,>");
+                        foreach (var jobType in recurringJobTypes) {
+                            if (!jobType.ImplementsGenericInterface(typeof(IRequestHandler<,,>))) {
+                                throw new
+                                    Exception("Recurring job attribute can only be applied to classes that inherit IRequestHandler<,,>");
+                            }
+
+                            var attribute = jobType.GetCustomAttribute<RecurringJobAttribute>();
+                            var requestType = jobType.GetParameterTypesForGenericInterface(typeof(IRequestHandler<,,>))
+                                                     .First();
+
+                            var triggerKey = TriggerKey.Generate(requestType, typeof(None));
+
+                            var jobReq = new QueueRecurringJobReq();
+
+                            jobReq.CronExpression = attribute.CronExpression;
+                            jobReq.JobName = attribute.JobName;
+                            jobReq.TriggerKey = triggerKey;
+
+                            jobReqs.Add(jobReq);
                         }
 
-                        var attribute = jobType.GetCustomAttribute<RecurringJobAttribute>();
-                        var requestType = jobType.GetParameterTypesForGenericInterface(typeof(IRequestHandler<,,>))
-                                                 .First();
+                        var req = new RegisterRecurringJobsReq();
+                        req.Jobs = jobReqs;
 
-                        var triggerKey = TriggerKey.Generate(requestType, typeof(None));
-
-                        var jobReq = new QueueRecurringJobReq();
-
-                        jobReq.CronExpression = attribute.CronExpression;
-                        jobReq.JobName = attribute.JobName;
-                        jobReq.TriggerKey = triggerKey;
-
-                        jobReqs.Add(jobReq);
+                        _mediator.Value
+                                 .SendAsync<RegisterRecurringJobsCommand, RegisterRecurringJobsReq>(req)
+                                 .GetAwaiter()
+                                 .GetResult();
                     }
-
-                    var req = new RegisterRecurringJobsReq();
-                    req.Jobs = jobReqs;
-
-                    _mediator.Value
-                             .SendAsync<RegisterRecurringJobsCommand, RegisterRecurringJobsReq>(req)
-                             .GetAwaiter()
-                             .GetResult();
                 }
             }
         }
