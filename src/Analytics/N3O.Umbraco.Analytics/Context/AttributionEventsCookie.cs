@@ -3,35 +3,31 @@ using N3O.Umbraco.Analytics.Models;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
-using NodaTime;
 using System;
+using System.Collections.Generic;
 
 namespace N3O.Umbraco.Analytics.Context;
 
 public class AttributionEventsCookie : Cookie {
     private readonly IJsonProvider _jsonProvider;
-    private readonly IClock _clock;
 
-    public AttributionEventsCookie(IHttpContextAccessor httpContextAccessor, IJsonProvider jsonProvider, IClock clock)
+    public AttributionEventsCookie(IHttpContextAccessor httpContextAccessor, IJsonProvider jsonProvider)
         : base(httpContextAccessor) {
         _jsonProvider = jsonProvider;
-        _clock = clock;
     }
 
-    public AttributionEvents GetEvents() {
+    public Attribution GetAttribution() {
         try {
             var json = GetValue();
 
             if (json.HasValue()) {
-                return _jsonProvider.DeserializeObject<AttributionEvents>(json).PurgeExpired(_clock);
+                var attributionDimensions = _jsonProvider.DeserializeObject<IEnumerable<AttributionDimension>>(json);
+
+                return new Attribution(attributionDimensions);
             }
         } catch { }
 
-        return AttributionEvents.Empty;
-    }
-    
-    public void SetEvents(AttributionEvents attributionEvents) {
-        SetValue(attributionEvents.IfNotNull(x => _jsonProvider.SerializeObject(x.PurgeExpired(_clock))));
+        return Attribution.Empty;
     }
     
     protected override void SetOptions(CookieOptions cookieOptions) {
