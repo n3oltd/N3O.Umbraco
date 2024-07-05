@@ -15,6 +15,21 @@ public class PagePropertyReq {
     [Name("Boolean")]
     public BooleanValueReq Boolean { get; set; }
     
+    [Name("Cropper")]
+    public CropperValueReq Cropper { get; set; }
+    
+    [Name("DateTime")]
+    public DateTimeValueReq DateTime { get; set; }
+    
+    [Name("Numeric")]
+    public NumericValueReq Numeric { get; set; }
+    
+    [Name("Raw")]
+    public RawValueReq Raw { get; set; }
+    
+    [Name("Textarea")]
+    public TextareaValueReq Textarea { get; set; }
+    
     [Name("TextBox")]
     public TextBoxValueReq TextBox { get; set; }
     

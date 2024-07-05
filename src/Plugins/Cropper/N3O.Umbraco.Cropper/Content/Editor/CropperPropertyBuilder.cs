@@ -3,11 +3,13 @@ using N3O.Umbraco.Cropper.DataTypes;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Plugins.Extensions;
+using N3O.Umbraco.Storage;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.IO;
 
 namespace N3O.Umbraco.Cropper.Content;
@@ -15,6 +17,7 @@ namespace N3O.Umbraco.Cropper.Content;
 public class CropperPropertyBuilder : PropertyBuilder {
     private readonly MediaFileManager _mediaFileManager;
     private readonly ILocalClock _clock;
+    private readonly Lazy<IVolume> _volume;
     private readonly List<ICropBuilder> _cropBuilders = new();
     private string _src;
     private string _mediaId;
@@ -23,9 +26,10 @@ public class CropperPropertyBuilder : PropertyBuilder {
     private int? _height;
     private string _altText;
 
-    public CropperPropertyBuilder(MediaFileManager mediaFileManager, ILocalClock clock) {
+    public CropperPropertyBuilder(MediaFileManager mediaFileManager, ILocalClock clock, Lazy<IVolume> volume) {
         _mediaFileManager = mediaFileManager;
         _clock = clock;
+        _volume = volume;
     }
 
     public ICropBuilder AddCrop() {
@@ -68,6 +72,21 @@ public class CropperPropertyBuilder : PropertyBuilder {
 
             _height = metadata.Height;
             _width = metadata.Width;
+        }
+
+        return this;
+    }
+
+    public async Task<CropperPropertyBuilder> SetImageAsync(StorageToken storageToken) {
+        var tempStorage = await _volume.Value.GetStorageFolderAsync(storageToken.StorageFolderName);
+        var imageFile = await tempStorage.GetFileAsync(storageToken.Filename);
+
+        try {
+            using (imageFile.Stream) {
+                SetImage(imageFile);
+            }
+        } finally {
+            await tempStorage.DeleteFileAsync(imageFile.Filename);
         }
 
         return this;

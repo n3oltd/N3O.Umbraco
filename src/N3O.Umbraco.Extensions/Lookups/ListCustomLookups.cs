@@ -6,7 +6,7 @@ using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Lookups;
 
-public class ListCustomLookups<TLookup, TRes> where TLookup : INamedLookup {
+public class ListCustomLookups<TLookup, TRes> where TLookup : ILookup {
     private readonly ILookups _lookups;
     private readonly IUmbracoMapper _mapper;
 

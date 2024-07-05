@@ -1,4 +1,5 @@
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Lookups;
 using NodaTime;
 using System;
 using System.Collections;
@@ -55,6 +56,22 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
         var values = (IEnumerable) Content().Value(alias) ?? Enumerable.Empty<IPublishedContent>();
 
         return values.Cast<IPublishedContent>().Select(x => x.As<TProperty>());
+    }
+    
+    protected TProperty GetStaticLookupByNameAs<TProperty>(Expression<Func<T, TProperty>> memberExpression)
+    where TProperty : INamedLookup {
+        var alias = AliasHelper<T>.PropertyAlias(memberExpression);
+        var value = Content().Value<string>(alias);
+
+        return StaticLookups.GetAll<TProperty>().SingleOrDefault(x => x.Name.EqualsInvariant(value));
+    }
+    
+    protected TProperty GetStaticLookupByIdAs<TProperty>(Expression<Func<T, TProperty>> memberExpression)
+        where TProperty : INamedLookup {
+        var alias = AliasHelper<T>.PropertyAlias(memberExpression);
+        var value = Content().Value<string>(alias);
+
+        return StaticLookups.GetAll<TProperty>().SingleOrDefault(x => x.Id.EqualsInvariant(value));
     }
 
     protected LocalDate? GetLocalDate(Expression<Func<T, LocalDate?>> memberExpression) {
