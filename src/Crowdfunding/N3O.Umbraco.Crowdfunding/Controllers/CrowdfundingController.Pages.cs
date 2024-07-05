@@ -10,14 +10,14 @@ namespace N3O.Umbraco.Crowdfunding.Controllers;
 public partial class CrowdfundingController {
     [HttpPost("pages/checkName")]
     public async Task<ActionResult<bool>> CheckName(CreatePageReq req) {
-        var res = await _mediator.SendAsync<CheckPageNameIsAvailableQuery, CreatePageReq, bool>(req);
+        var res = await _mediator.Value.SendAsync<CheckPageNameIsAvailableQuery, CreatePageReq, bool>(req);
 
         return Ok(res);
     }
     
     [HttpPost("pages")]
     public async Task<ActionResult<string>> CreatePage(CreatePageReq req) {
-        var res = await _mediator.SendAsync<CreatePageCommand, CreatePageReq, string>(req);
+        var res = await _mediator.Value.SendAsync<CreatePageCommand, CreatePageReq, string>(req);
 
         return Ok(res);
     }
@@ -25,7 +25,7 @@ public partial class CrowdfundingController {
     [HttpPut("pages/{pageId:guid}/property")]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> UpdateProperty(PagePropertyReq req) {
-        await _mediator.SendAsync<UpdatePagePropertyCommand, PagePropertyReq>(req);
+        await _mediator.Value.SendAsync<UpdatePagePropertyCommand, PagePropertyReq>(req);
 
         return Ok();
     }

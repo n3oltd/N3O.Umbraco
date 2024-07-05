@@ -28,6 +28,7 @@ public class ValidationComposer : Composer {
 
         RegisterMiddleware(builder);
 
+        ConfigureProfanityFilter(builder);
         ConfigureFluentValidation();
     }
 
@@ -55,6 +56,10 @@ public class ValidationComposer : Composer {
 
             opt.AddFilter(filter);
         });
+    }
+    
+    private void ConfigureProfanityFilter(IUmbracoBuilder builder) {
+        builder.Services.AddSingleton<IProfanityGuard, ProfanityGuard>();
     }
     
     private void ConfigureFluentValidation() {

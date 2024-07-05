@@ -9,11 +9,11 @@ namespace N3O.Umbraco.Crowdfunding.Controllers;
 
 [ApiDocument(CrowdfundingConstants.ApiName)]
 public partial class CrowdfundingController : ApiController {
-    private readonly IMediator _mediator;
+    private readonly Lazy<IMediator> _mediator;
     private readonly Lazy<ILookups> _lookups;
     private readonly Lazy<IUmbracoMapper> _mapper;
 
-    public CrowdfundingController(IMediator mediator, Lazy<ILookups> lookups, Lazy<IUmbracoMapper> mapper) {
+    public CrowdfundingController(Lazy<IMediator> mediator, Lazy<ILookups> lookups, Lazy<IUmbracoMapper> mapper) {
         _mediator = mediator;
         _lookups = lookups;
         _mapper = mapper;

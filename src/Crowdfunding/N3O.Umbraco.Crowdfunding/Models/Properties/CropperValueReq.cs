@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using N3O.Umbraco.Attributes;
+﻿using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.CrowdFunding.Lookups;
 

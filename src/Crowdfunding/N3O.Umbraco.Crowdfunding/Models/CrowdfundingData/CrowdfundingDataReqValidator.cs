@@ -5,7 +5,6 @@ using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Crowdfunding.Lookups;
 using N3O.Umbraco.Localization;
-using N3O.Umbraco.Profanity;
 using N3O.Umbraco.Validation;
 using System;
 using System.Linq;
@@ -16,14 +15,14 @@ public class CrowdfundingDataReqValidator : ModelValidator<CrowdfundingDataReq> 
     private const int MaximumCommentLength = 200;
     
     private readonly IContentCache _contentCache;
-    private readonly IProfanityService _profanityService;
+    private readonly IProfanityGuard _profanityGuard;
     
     public CrowdfundingDataReqValidator(IFormatter formatter,
                                         IContentCache contentCache,
-                                        IProfanityService profanityService) 
+                                        IProfanityGuard profanityGuard) 
         : base(formatter) {
         _contentCache = contentCache;
-        _profanityService = profanityService;
+        _profanityGuard = profanityGuard;
     }
 
     public override ValidationResult Validate(ValidationContext<CrowdfundingDataReq> context) {
@@ -46,9 +45,9 @@ public class CrowdfundingDataReqValidator : ModelValidator<CrowdfundingDataReq> 
            .WithMessage(Get<Strings>(s => s.CommentTooLong_1, MaximumCommentLength));
         
         RuleFor(x => x.Comment)
-           .Must(_profanityService.ContainsProfanity)
+           .Must(x => !_profanityGuard.ContainsProfanity(x))
            .When(x => x.Comment.HasValue())
-           .WithMessage(Get<Strings>(s => s.CommentUnacceptable));
+           .WithMessage(Get<Strings>(s => s.UnacceptableComment));
 
         return base.Validate(context);
     }
@@ -68,8 +67,8 @@ public class CrowdfundingDataReqValidator : ModelValidator<CrowdfundingDataReq> 
 
     public class Strings : ValidationStrings {
         public string CommentTooLong_1 => "Comment length exceeds the allowed maximum of {0}";
-        public string CommentUnacceptable => "The comment contains unacceptable characters or words";
         public string SpecifyAnonymous => "Please specify if the contribution is anonymous or not";
         public string SpecifyPageId => "Please specify the page ID";
+        public string UnacceptableComment => "The comment contains unacceptable characters or words";
     }
 }

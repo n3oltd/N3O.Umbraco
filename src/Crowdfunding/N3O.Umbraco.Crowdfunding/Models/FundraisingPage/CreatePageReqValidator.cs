@@ -3,7 +3,6 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
-using N3O.Umbraco.Profanity;
 using N3O.Umbraco.Validation;
 using System;
 using System.Linq;
@@ -17,7 +16,7 @@ public class CreatePageReqValidator : ModelValidator<CreatePageReq> {
     public CreatePageReqValidator(IFormatter formatter,
                                   IContentCache contentCache,
                                   IFundraisingPages fundraisingPages,
-                                  IProfanityService profanityService) 
+                                  IProfanityGuard profanityGuard) 
         : base(formatter) {
         RuleFor(x => x.Name)
            .NotNull()
@@ -29,14 +28,14 @@ public class CreatePageReqValidator : ModelValidator<CreatePageReq> {
            .WithMessage(Get<Strings>(s => s.SpecifyName, MaximumNameLength));
 
         RuleFor(x => x.Name)
-          .Must(profanityService.ContainsProfanity)
+          .Must(x => !profanityGuard.ContainsProfanity(x))
           .When(x => x.Name.HasValue())
-          .WithMessage(Get<Strings>(s => s.NameUnacceptable));
+          .WithMessage(Get<Strings>(s => s.UnacceptableName));
            
         RuleFor(x => x.Name)
           .Must(x => ValidateNameAvailable(fundraisingPages, x))
           .When(x => x.Name.HasValue())
-          .WithMessage(Get<Strings>(s => s.NameUnacceptable));
+          .WithMessage(Get<Strings>(s => s.NameUnavailable));
         
         RuleFor(x => x.CampaignId)
            .NotNull()
@@ -64,10 +63,11 @@ public class CreatePageReqValidator : ModelValidator<CreatePageReq> {
     }
 
     public class Strings : ValidationStrings {
-        public string NameUnacceptable => "The name contains unacceptable characters or words";
         public string InvalidCampaign => "The specified campaign is invalid";
+        public string NameUnavailable => "The name is not available";
         public string SpecifyCampaignId => "Please specify the campaign id";
         public string SpecifyName => "Please specify the name for the page";
         public string SpecifyAllocation => "Please specify the allocation for the page";
+        public string UnacceptableName => "The name contains unacceptable characters or words";
     }
 }
