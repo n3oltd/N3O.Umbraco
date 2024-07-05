@@ -1,17 +1,16 @@
 ﻿using N3O.Umbraco.Analytics.Context;
-using N3O.Umbraco.Analytics.Models;
+using Newtonsoft.Json.Linq;
 
 namespace N3O.Umbraco.Analytics.Services;
 
 public class AttributionAccessor : IAttributionAccessor {
-    
-    private readonly AttributionEventsCookie _attributionEventsCookie;
+    private readonly AttributionCookie _attributionCookie;
 
-    public AttributionAccessor(AttributionEventsCookie attributionEventsCookie) {
-        _attributionEventsCookie = attributionEventsCookie;
+    public AttributionAccessor(AttributionCookie attributionCookie) {
+        _attributionCookie = attributionCookie;
     }
 
-    public Attribution GetAttribution() {
-        return _attributionEventsCookie.GetAttribution();
+    public JObject GetAttribution() {
+        return _attributionCookie.GetAttribution();
     }
 }

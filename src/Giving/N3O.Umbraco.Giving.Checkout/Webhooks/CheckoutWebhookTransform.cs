@@ -47,7 +47,7 @@ public class CheckoutWebhookTransform : WebhookTransform {
         TransformFeedbacks(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject);
         TransformSponsorships(serializer, GivingTypes.Donation, checkout.Donation?.Allocations, jObject, checkout.Timestamp);
         TransformSponsorships(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject, checkout.Timestamp);
-        TransformAttributions(serializer, jObject);
+        TransformAttributions(jObject);
 
         return jObject;
     }
@@ -60,19 +60,8 @@ public class CheckoutWebhookTransform : WebhookTransform {
                               x => new {x.Id, x.Name, x.Iso2Code, x.Iso3Code});
     }
     
-    private void TransformAttributions(JsonSerializer serializer, JObject jObject) {
-        var attribution = _attributionAccessor.GetAttribution();
-
-        if (attribution.HasAny(x => x.Dimensions)) {
-            var attributionJObject = new JObject();
-
-            foreach (var dimension in attribution.Dimensions) {
-                attributionJObject.Add(AnalyticsConstants.Attribution.GetKey(dimension.Index),
-                                       new JArray(dimension.OptionPercentages.Select(x => JObject.FromObject(x, serializer))));
-            }
-
-            jObject["attribution"] = attributionJObject;
-        }
+    private void TransformAttributions(JObject jObject) {
+        jObject["attribution"] = _attributionAccessor.GetAttribution();
     }
 
     private void TransformConsent(Entities.Checkout checkout, JObject jObject) {
