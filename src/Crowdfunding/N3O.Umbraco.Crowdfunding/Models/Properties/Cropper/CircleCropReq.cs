@@ -5,7 +5,7 @@ namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class CircleCropReq {
     [Name("Center")]
-    public Point? Center { get; set; }
+    public PointReq Center { get; set; }
     
     [Name("Radius")]
     public int? Radius { get; set; }
