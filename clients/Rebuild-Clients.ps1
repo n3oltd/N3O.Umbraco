@@ -4,6 +4,9 @@ n3o-tool clients --url "https://localhost:6001/swagger/Accounts/swagger.json" --
 n3o-tool clients --url "https://localhost:6001/swagger/Cropper/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-cropper-client" --name "CropperClient" --package-name "@n3oltd/umbraco-cropper-client" --package-description "TODO"
 n3o-tool clients --url "https://localhost:6001/swagger/Cropper/swagger.json" --language "CSharp" --output-path "../src/N3O.Umbraco.Clients/Plugins/Cropper" --name "CropperClient" --namespace "N3O.Umbraco.Clients.Plugins.Cropper"
 
+n3o-tool clients --url "https://localhost:6001/swagger/Crowdfunding/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-crowdfunding-client" --name "CrowdfundingClient" --package-name "@n3oltd/umbraco-crowdfunding-client" --package-description "TODO"
+n3o-tool clients --url "https://localhost:6001/swagger/Crowdfunding/swagger.json" --language "CSharp" --output-path "../src/N3O.Umbraco.Clients/Crowdfunding" --name "CrowdfundingClient" --namespace "N3O.Umbraco.Clients.Crowdfunding"
+
 n3o-tool clients --url "https://localhost:6001/swagger/Content/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-data-content-client" --name "ContentClient" --package-name "@n3oltd/umbraco-data-content-client" --package-description "TODO"
 n3o-tool clients --url "https://localhost:6001/swagger/Content/swagger.json" --language "CSharp" --output-path "../src/N3O.Umbraco.Clients/Data/Content" --name "ContentClient" --namespace "N3O.Umbraco.Clients.Data.Content"
 
