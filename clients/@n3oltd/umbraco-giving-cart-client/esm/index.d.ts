@@ -46,11 +46,6 @@ export interface AllocationReq {
     fund?: FundAllocationReq | undefined;
     sponsorship?: SponsorshipAllocationReq | undefined;
     upsellOfferId?: string | undefined;
-    "n3O.Umbraco.Giving.Models.IAllocation.FundDimensions"?: IFundDimensionValues | undefined;
-    "n3O.Umbraco.Giving.Models.IAllocation.Fund"?: IFundAllocation | undefined;
-    "n3O.Umbraco.Giving.Models.IAllocation.Sponsorship"?: ISponsorshipAllocation | undefined;
-    "n3O.Umbraco.Giving.Models.IAllocation.Feedback"?: IFeedbackAllocation | undefined;
-    "n3O.Umbraco.Giving.Models.IAllocation.Value"?: Money | undefined;
     [key: string]: any;
 }
 /** One of 'feedback', 'fund', 'sponsorship' */
@@ -72,7 +67,6 @@ export interface FundDimensionValuesReq {
 export interface FeedbackAllocationReq {
     scheme?: string | undefined;
     customFields?: FeedbackNewCustomFieldsReq | undefined;
-    "n3O.Umbraco.Giving.Models.IFeedbackAllocation.CustomFields"?: IFeedbackCustomField[] | undefined;
 }
 export interface FeedbackCustomFieldDefinitionElement {
     content?: IPublishedElement | undefined;
@@ -158,30 +152,12 @@ export interface PricingRuleElement {
     dimension2?: string | undefined;
     dimension3?: string | undefined;
     dimension4?: string | undefined;
-    "n3O.Umbraco.Giving.Models.IPricingRule.FundDimensions"?: IFundDimensionValues | undefined;
-}
-export interface IFundDimensionValues {
-    dimension1?: string | undefined;
-    dimension2?: string | undefined;
-    dimension3?: string | undefined;
-    dimension4?: string | undefined;
-}
-export interface IPricingRule {
-    fundDimensions?: IFundDimensionValues | undefined;
 }
 export interface FeedbackNewCustomFieldsReq {
     entries?: FeedbackNewCustomFieldReq[] | undefined;
 }
 export interface FeedbackNewCustomFieldReq {
     alias?: string | undefined;
-    bool?: boolean | undefined;
-    date?: Date | undefined;
-    text?: string | undefined;
-}
-export interface IFeedbackCustomField {
-    type?: FeedbackCustomFieldType | undefined;
-    alias?: string | undefined;
-    name?: string | undefined;
     bool?: boolean | undefined;
     date?: Date | undefined;
     text?: string | undefined;
@@ -194,7 +170,6 @@ export interface SponsorshipAllocationReq {
     scheme?: string | undefined;
     duration?: SponsorshipDuration | undefined;
     components?: SponsorshipComponentAllocationReq[] | undefined;
-    "n3O.Umbraco.Giving.Models.ISponsorshipAllocation.Components"?: ISponsorshipComponentAllocation[] | undefined;
 }
 /** One of '_6', '_12', '_18', '_24', '_36', '_48', '_60' */
 export declare enum SponsorshipDuration {
@@ -209,28 +184,6 @@ export declare enum SponsorshipDuration {
 export interface SponsorshipComponentAllocationReq {
     component?: string | undefined;
     value?: MoneyReq | undefined;
-    "n3O.Umbraco.Giving.Models.ISponsorshipComponentAllocation.Value"?: Money | undefined;
-}
-export interface Money {
-    amount?: number;
-    currency?: string | undefined;
-}
-export interface ISponsorshipComponentAllocation {
-    component?: string | undefined;
-    value?: Money | undefined;
-}
-export interface IFundAllocation {
-    donationItem?: string | undefined;
-}
-export interface ISponsorshipAllocation {
-    beneficiaryReference?: string | undefined;
-    scheme?: string | undefined;
-    duration?: SponsorshipDuration | undefined;
-    components?: ISponsorshipComponentAllocation[] | undefined;
-}
-export interface IFeedbackAllocation {
-    scheme?: string | undefined;
-    customFields?: IFeedbackCustomField[] | undefined;
 }
 export interface AddUpsellToCartReq {
     amount?: number | undefined;
