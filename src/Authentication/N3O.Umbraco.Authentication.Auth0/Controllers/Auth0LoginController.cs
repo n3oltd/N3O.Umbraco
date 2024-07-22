@@ -90,9 +90,7 @@ public class Auth0LoginController : SurfaceController {
             return CurrentUmbracoPage();
         }
 
-        var isLoggedIn = HttpContext.User.Identity?.IsAuthenticated ?? false;
-
-        if (isLoggedIn) {   
+        if (HttpContext.User.Identity?.IsAuthenticated == true) {   
             await HttpContext.SignOutAsync();
                 
             await _memberSignInManager.SignOutAsync();
