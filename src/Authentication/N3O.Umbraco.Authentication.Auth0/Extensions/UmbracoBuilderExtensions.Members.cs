@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using N3O.Umbraco.Authentication.Auth0.Options;
 using N3O.Umbraco.Authentication.Extensions;
 using System;
 using System.Linq;
@@ -28,14 +30,16 @@ public static partial class UmbracoBuilderExtensions {
         builder.AddMemberExternalLogins(logins => {
             logins.AddMemberLogin(
                 backOfficeAuthenticationBuilder => {
-                    var auth0Settings = builder.Config.GetMembersAuthenticationSection(Auth0AuthenticationConstants.Configuration.Section);
+                    var auth0Settings = builder.Config
+                                               .GetMembersAuthenticationSection()
+                                               .Get<Auth0MemberAuthenticationOptions>();
                     
                     backOfficeAuthenticationBuilder.AddOpenIdConnect(
                         backOfficeAuthenticationBuilder.SchemeForMembers(Auth0MemberLoginProviderOptions.SchemeName), opt => {
                             opt.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                            opt.Authority = auth0Settings[Auth0AuthenticationConstants.Configuration.Keys.Authority];
-                            opt.ClientId = auth0Settings[Auth0AuthenticationConstants.Configuration.Keys.ClientId];
-                            opt.ClientSecret = auth0Settings[Auth0AuthenticationConstants.Configuration.Keys.ClientSecret];
+                            opt.Authority = auth0Settings.Auth0.Login.Authority;
+                            opt.ClientId = auth0Settings.Auth0.Login.ClientId;
+                            opt.ClientSecret = auth0Settings.Auth0.Login.ClientSecret;
                             opt.ResponseType = OpenIdConnectResponseType.Code;
                             opt.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
                             opt.CallbackPath = "/signin-oidc";
