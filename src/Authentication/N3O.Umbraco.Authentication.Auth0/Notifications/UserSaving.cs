@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using N3O.Umbraco.Authentication.Auth0.Lookups;
 using N3O.Umbraco.Authentication.Auth0.Options;
 using System;
 using System.Threading;
@@ -19,10 +20,11 @@ public class UserSaving : INotificationAsyncHandler<UserSavingNotification> {
     }
 
     public async Task HandleAsync(UserSavingNotification notification, CancellationToken cancellationToken) {
-        if (_auth0BackOfficeOptions.AutoCreateDirectoryUser) {
+        if (_auth0BackOfficeOptions.Auth0.Login.AutoCreateDirectoryUser) {
             foreach (var user in notification.SavedEntities) {
-                await _userDirectory.Value.CreateUserIfNotExistsAsync(_auth0BackOfficeOptions.ClientId,
-                                                                      _auth0BackOfficeOptions.ConnectionName,
+                await _userDirectory.Value.CreateUserIfNotExistsAsync(ClientTypes.BackOffice,
+                                                                      _auth0BackOfficeOptions.Auth0.Login.ClientId,
+                                                                      _auth0BackOfficeOptions.Auth0.Login.ConnectionName,
                                                                       user.Email,
                                                                       user.Name,
                                                                       lastName: null);
