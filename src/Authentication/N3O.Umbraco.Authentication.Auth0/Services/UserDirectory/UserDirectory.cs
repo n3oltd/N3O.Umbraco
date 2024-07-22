@@ -30,7 +30,7 @@ public class UserDirectory : IUserDirectory {
                                                  string firstName,
                                                  string lastName,
                                                  string password = null) {
-        var managementClient = GetManagementClient(clientType); 
+        var managementClient = await GetManagementClientAsync(clientType); 
         var authClient = GetAuthenticationClient(clientType);
         
         var isFederated = await IsFederatedByEmailAsync(managementClient, email);
@@ -56,7 +56,7 @@ public class UserDirectory : IUserDirectory {
     }
     
     public async Task<Auth0User> GetUserByEmailAsync(ClientType clientType, string email) {
-        var managementClient = GetManagementClient(clientType);
+        var managementClient = await GetManagementClientAsync(clientType);
         
         var auth0Users = await managementClient.Users.GetUsersByEmailAsync(email.ToLowerInvariant());
 
@@ -139,9 +139,9 @@ public class UserDirectory : IUserDirectory {
         await authClient.ChangePasswordAsync(changePasswordRequest);
     }
 
-    private IManagementApiClient GetManagementClient(ClientType clientType) {
+    private async Task<IManagementApiClient> GetManagementClientAsync(ClientType clientType) {
         if (!_managementClient.HasValue()) {
-            _managementClient = _clientFactory.GetManagementApiClient(clientType);
+            _managementClient = await _clientFactory.GetManagementApiClientAsync(clientType);
         }
 
         return _managementClient;

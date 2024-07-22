@@ -63,7 +63,7 @@ public static partial class UmbracoBuilderExtensions {
     }
 
     private static void OnTokenValidated(OpenIdConnectOptions options) {
-        options.Events.OnTokenValidated = async context => {
+        options.Events.OnTokenValidated = context => {
             var claims = context?.Principal?.Claims.ToList();
             var name = claims?.SingleOrDefault(x => x.Type == Name) ?? 
                        claims?.SingleOrDefault(x => x.Type == Nickname);
@@ -78,7 +78,7 @@ public static partial class UmbracoBuilderExtensions {
                 context.Principal = new ClaimsPrincipal(new ClaimsIdentity(claims, authenticationType));
             }
 
-            await Task.FromResult(0);
+            return Task.CompletedTask;
         };
     }
 }

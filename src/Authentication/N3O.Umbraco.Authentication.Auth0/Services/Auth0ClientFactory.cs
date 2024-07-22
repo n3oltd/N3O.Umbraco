@@ -5,6 +5,7 @@ using N3O.Umbraco.Authentication.Auth0.Lookups;
 using N3O.Umbraco.Authentication.Auth0.Options;
 using N3O.Umbraco.Exceptions;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Authentication.Auth0;
 
@@ -31,11 +32,9 @@ public class Auth0ClientFactory : IAuth0ClientFactory {
         return auth0Client;
     }
     
-    public IManagementApiClient GetManagementApiClient(ClientType clientType) {
+    public async Task<IManagementApiClient> GetManagementApiClientAsync(ClientType clientType) {
         var managementOptions = GetClientOptions(clientType).Management;
-        var token = _tokenAccessor.GetTokenAsync(managementOptions, managementOptions.ApiIdentifier)
-                                  .GetAwaiter()
-                                  .GetResult();
+        var token = await _tokenAccessor.GetTokenAsync(managementOptions, managementOptions.ApiIdentifier);
         var httpClient = _httpClientFactory.CreateClient();
 
         var connection = new HttpClientManagementConnection(httpClient);
