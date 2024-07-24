@@ -29,6 +29,10 @@ public class CroppedImage : DynamicObject, IEnumerable<ImageCrop> {
     public Uri GetUncroppedUrl(IUrlBuilder urlBuilder) {
         return urlBuilder.Root().AppendPathSegment(_cropperSource.Src).ToUri();
     }
+    
+    public CropperSource GetUncroppedImage() {
+        return _cropperSource;
+    }
 
     public bool HasCrop(string alias) {
         return _crops.ContainsKey(alias);
