@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Cropper;
 using N3O.Umbraco.Cropper.Content;
 using N3O.Umbraco.Cropper.Extensions;
 using N3O.Umbraco.CrowdFunding.Lookups;
@@ -6,11 +7,15 @@ using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Lookups;
 
 public class CropperPropertyType : PropertyType<CropperValueReq> {
-    public CropperPropertyType() : base("cropper") { }
+    public CropperPropertyType()
+        : base("cropper",
+               (ctx, src, dest) => dest.Cropper = ctx.Map<IPublishedProperty, CropperValueRes>(src),
+               CropperConstants.PropertyEditorAlias) { }
 
     protected override async Task UpdatePropertyAsync(IContentPublisher contentPublisher,
                                                       string alias,

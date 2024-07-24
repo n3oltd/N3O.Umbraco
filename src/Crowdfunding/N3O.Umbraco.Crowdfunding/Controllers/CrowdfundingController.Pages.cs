@@ -22,10 +22,10 @@ public partial class CrowdfundingController {
         return Ok(res);
     }
     
-    [HttpGet("pages/{pageId:guid}/{propertyAlias}/value")]
+    [HttpGet("pages/{pageId:guid}/properties/{propertyAlias}")]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<PagePropertyValueRes>> GetPropertyValue() {
-        var res = await _mediator.Value.SendAsync<GetPropertyValueCommand, None, PagePropertyValueRes>(None.Empty);
+    public async Task<ActionResult<PagePropertyValueRes>> GetPagePropertyValue() {
+        var res = await _mediator.Value.SendAsync<GetPagePropertyValueQuery, None, PagePropertyValueRes>(None.Empty);
 
         return Ok(res);
     }
