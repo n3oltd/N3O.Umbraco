@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using N3O.Umbraco.Authentication.Auth0.Options;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -24,7 +22,6 @@ public class Auth0LoginController : SurfaceController {
     private readonly IMemberManager _memberManager;
     private readonly IMemberService _memberService;
     private readonly MemberSignInManager _memberSignInManager;
-    private readonly Auth0MemberAuthenticationOptions _options;
 
     public Auth0LoginController(IUmbracoContextAccessor umbracoContextAccessor,
                                 IUmbracoDatabaseFactory databaseFactory,
@@ -34,8 +31,7 @@ public class Auth0LoginController : SurfaceController {
                                 IPublishedUrlProvider publishedUrlProvider,
                                 IMemberManager memberManager,
                                 IMemberService memberService,
-                                MemberSignInManager memberSignInManager,
-                                IOptions<Auth0MemberAuthenticationOptions> options)
+                                MemberSignInManager memberSignInManager)
         : base(umbracoContextAccessor,
                databaseFactory,
                services,
@@ -45,7 +41,6 @@ public class Auth0LoginController : SurfaceController {
         _memberManager = memberManager;
         _memberService = memberService;
         _memberSignInManager = memberSignInManager;
-        _options = options.Value;
     }
     
     [HttpPost]
@@ -86,5 +81,20 @@ public class Auth0LoginController : SurfaceController {
         }
 
         return new RedirectResult(returnUrl);
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> HandleLogout(string returnUrl) {
+        if (ModelState.IsValid == false) {
+            return CurrentUmbracoPage();
+        }
+
+        if (HttpContext.User.Identity?.IsAuthenticated == true) {   
+            await HttpContext.SignOutAsync();
+                
+            await _memberSignInManager.SignOutAsync();
+        }
+        
+        return Redirect(returnUrl);
     }
 }

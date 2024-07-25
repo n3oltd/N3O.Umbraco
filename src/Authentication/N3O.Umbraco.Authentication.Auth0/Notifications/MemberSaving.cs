@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using N3O.Umbraco.Authentication.Auth0.Lookups;
 using N3O.Umbraco.Authentication.Auth0.Options;
 using System;
 using System.Threading;
@@ -13,16 +14,17 @@ public class MemberSaving : INotificationAsyncHandler<MemberSavingNotification> 
     private readonly Auth0MemberAuthenticationOptions _auth0MemberOptions;
 
     public MemberSaving(Lazy<IUserDirectory> userDirectory,
-                        IOptions<Auth0MemberAuthenticationOptions> auth0MemberOptions) {
+                        IOptions<Auth0MemberAuthenticationOptions> auth0MembersOptions) {
         _userDirectory = userDirectory;
-        _auth0MemberOptions = auth0MemberOptions.Value;
+        _auth0MemberOptions = auth0MembersOptions.Value;
     }
 
     public async Task HandleAsync(MemberSavingNotification notification, CancellationToken cancellationToken) {
-        if (_auth0MemberOptions.AutoCreateDirectoryUser) {
+        if (_auth0MemberOptions.Auth0.Login.AutoCreateDirectoryUser) {
             foreach (var user in notification.SavedEntities) {
-                await _userDirectory.Value.CreateUserIfNotExistsAsync(_auth0MemberOptions.ClientId,
-                                                                      _auth0MemberOptions.ConnectionName,
+                await _userDirectory.Value.CreateUserIfNotExistsAsync(ClientTypes.Members,
+                                                                      _auth0MemberOptions.Auth0.Login.ClientId,
+                                                                      _auth0MemberOptions.Auth0.Login.ConnectionName,
                                                                       user.Email,
                                                                       user.Name,
                                                                       lastName: null);

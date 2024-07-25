@@ -1,10 +1,14 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using N3O.Umbraco.Authentication.Auth0.Options;
 using N3O.Umbraco.Authentication.Extensions;
 using System;
+using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Web.Common.Security;
 using Umbraco.Extensions;
@@ -12,6 +16,9 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Authentication.Auth0.Extensions;
 
 public static partial class UmbracoBuilderExtensions {
+    private const string Name = "Name";
+    private const string Nickname = "Nickname";
+    
     public static IUmbracoBuilder AddAuth0MemberExternalLogins(this IUmbracoBuilder builder,
                                                                Action<MemberExternalLoginProviderOptions> configure = null) {
         if (configure != null) {
@@ -23,17 +30,19 @@ public static partial class UmbracoBuilderExtensions {
         builder.AddMemberExternalLogins(logins => {
             logins.AddMemberLogin(
                 backOfficeAuthenticationBuilder => {
-                    var auth0Settings = builder.Config.GetMembersAuthenticationSection(Auth0AuthenticationConstants.Configuration.Section);
+                    var auth0Settings = builder.Config
+                                               .GetMembersAuthenticationSection()
+                                               .Get<Auth0MemberAuthenticationOptions>();
                     
                     backOfficeAuthenticationBuilder.AddOpenIdConnect(
                         backOfficeAuthenticationBuilder.SchemeForMembers(Auth0MemberLoginProviderOptions.SchemeName), opt => {
                             opt.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                            opt.Authority = auth0Settings[Auth0AuthenticationConstants.Configuration.Keys.Authority];
-                            opt.ClientId = auth0Settings[Auth0AuthenticationConstants.Configuration.Keys.ClientId];
-                            opt.ClientSecret = auth0Settings[Auth0AuthenticationConstants.Configuration.Keys.ClientSecret];
+                            opt.Authority = auth0Settings.Auth0.Login.Authority;
+                            opt.ClientId = auth0Settings.Auth0.Login.ClientId;
+                            opt.ClientSecret = auth0Settings.Auth0.Login.ClientSecret;
                             opt.ResponseType = OpenIdConnectResponseType.Code;
                             opt.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
-                            opt.CallbackPath = "/umbraco/signin-oidc";
+                            opt.CallbackPath = "/signin-oidc";
                             opt.TokenValidationParameters.NameClaimType = ClaimTypes.Name;
                             opt.TokenValidationParameters.RoleClaimType = ClaimTypes.Role;
                             opt.RequireHttpsMetadata = true;
@@ -44,10 +53,32 @@ public static partial class UmbracoBuilderExtensions {
                             opt.Scope.Add("openid");
                             opt.Scope.Add("email");
                             opt.Scope.Add("profile");
+                            
+                            OnTokenValidated(opt);
                         });
                 });
         });
 
         return builder;
+    }
+
+    private static void OnTokenValidated(OpenIdConnectOptions options) {
+        options.Events.OnTokenValidated = context => {
+            var claims = context?.Principal?.Claims.ToList();
+            var name = claims?.SingleOrDefault(x => x.Type == Name) ?? 
+                       claims?.SingleOrDefault(x => x.Type == Nickname);
+                                
+            if (name != null) {
+                claims.Add(new Claim(ClaimTypes.Name, name.Value));
+            }
+
+            if (context != null) {
+                var authenticationType = context.Principal?.Identity?.AuthenticationType;
+                                    
+                context.Principal = new ClaimsPrincipal(new ClaimsIdentity(claims, authenticationType));
+            }
+
+            return Task.CompletedTask;
+        };
     }
 }

@@ -1,23 +1,44 @@
 ﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Lookups;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core.Mapping;
+using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Lookups;
 
 public abstract class PropertyType : Lookup {
-    protected PropertyType(string id) : base(id) { }
+    private readonly Action<MapperContext, IPublishedProperty, PagePropertyValueRes> _populateRes;
 
-    public abstract Task UpdatePropertyAsync(IContentPublisher contentPublisher, string alias, object data);
-}
-
-public abstract class PropertyType<T> : PropertyType {
-    protected PropertyType(string id) : base(id) { }
-
-    public override async Task UpdatePropertyAsync(IContentPublisher contentPublisher, string alias, object data) {
-        await UpdatePropertyAsync(contentPublisher, alias, (T) data);
+    protected PropertyType(string id,
+                           Action<MapperContext, IPublishedProperty, PagePropertyValueRes> populateRes,
+                           params string[] editorAliases) : base(id) {
+        _populateRes = populateRes;
+        EditorAliases = editorAliases;
     }
 
-    protected abstract Task UpdatePropertyAsync(IContentPublisher contentPublisher, string alias, T data);
+    public IEnumerable<string> EditorAliases { get; }
+
+    public abstract Task UpdatePropertyAsync(IContentPublisher contentPublisher, string alias, object data);
+
+    public void PopulateRes(MapperContext ctx, IPublishedProperty src, PagePropertyValueRes dest) {
+        _populateRes(ctx, src, dest);
+    }
+}
+
+public abstract class PropertyType<TReq> : PropertyType {
+    protected PropertyType(string id,
+                           Action<MapperContext, IPublishedProperty, PagePropertyValueRes> populateRes,
+                           params string[] editorAliases)
+        : base(id, populateRes, editorAliases) { }
+
+    public override async Task UpdatePropertyAsync(IContentPublisher contentPublisher, string alias, object data) {
+        await UpdatePropertyAsync(contentPublisher, alias, (TReq) data);
+    }
+
+    protected abstract Task UpdatePropertyAsync(IContentPublisher contentPublisher, string alias, TReq data);
 }
 
 public class PropertyTypes : StaticLookupsCollection<PropertyType> {

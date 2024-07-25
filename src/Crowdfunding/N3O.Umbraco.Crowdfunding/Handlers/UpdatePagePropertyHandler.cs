@@ -16,7 +16,7 @@ public class UpdatePagePropertyHandler : IRequestHandler<UpdatePagePropertyComma
     public async Task<None> Handle(UpdatePagePropertyCommand req, CancellationToken cancellationToken) {
         var contentPublisher = await req.PageId.RunAsync(id => _fundraisingPages.GetEditorAsync(id), true);
 
-        await req.Model.Type.UpdatePropertyAsync(contentPublisher, req.Model.Alias, req.Model.Value);
+        await req.Model.Type.UpdatePropertyAsync(contentPublisher, req.Model.Alias, req.Model.Value.Value);
 
         contentPublisher.SaveAndPublish();
         

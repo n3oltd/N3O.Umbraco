@@ -15,7 +15,7 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cropper.Notifications;
 
-public class CropperNotificationHandlers : INotificationAsyncHandler<ContentPublishingNotification> {
+public class CropperNotificationHandlers : INotificationAsyncHandler<ContentSavingNotification> {
     private readonly IDataTypeService _dataTypeService;
     private readonly IContentHelper _contentHelper;
     private readonly IImageCropper _imageCropper;
@@ -28,9 +28,9 @@ public class CropperNotificationHandlers : INotificationAsyncHandler<ContentPubl
         _imageCropper = imageCropper;
     }
 
-    public async Task HandleAsync(ContentPublishingNotification notification, CancellationToken cancellationToken) {
-        foreach (var content in notification.PublishedEntities) {
-            var publishingCultures = content.AvailableCultures.Where(x => notification.IsPublishingCulture(notification.PublishedEntities.First(), x));
+    public async Task HandleAsync(ContentSavingNotification notification, CancellationToken cancellationToken) {
+        foreach (var content in notification.SavedEntities) {
+            var publishingCultures = content.AvailableCultures.Where(x => notification.IsSavingCulture(notification.SavedEntities.First(), x));
 
             if (publishingCultures.HasAny()) {
                 foreach (var publishingCulture in publishingCultures) {

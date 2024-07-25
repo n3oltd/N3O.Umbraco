@@ -97,7 +97,6 @@ export interface PricingRuleElement {
     dimension2?: string | undefined;
     dimension3?: string | undefined;
     dimension4?: string | undefined;
-    "n3O.Umbraco.Giving.Models.IPricingRule.FundDimensions"?: IFundDimensionValues | undefined;
 }
 export interface IPublishedElement {
     contentType?: IPublishedContentType;
@@ -156,15 +155,6 @@ export declare enum PropertyCacheLevel {
 export interface IPublishedProperty {
     propertyType?: IPublishedPropertyType;
     alias?: string;
-}
-export interface IFundDimensionValues {
-    dimension1?: string | undefined;
-    dimension2?: string | undefined;
-    dimension3?: string | undefined;
-    dimension4?: string | undefined;
-}
-export interface IPricingRule {
-    fundDimensions?: IFundDimensionValues | undefined;
 }
 export interface PriceHandleRes {
     amount?: number;
@@ -265,7 +255,6 @@ export interface PricingRuleRes {
     } | undefined;
     locked?: boolean;
     fundDimensions?: FundDimensionValuesRes | undefined;
-    "n3O.Umbraco.Giving.Models.IPricingRule.FundDimensions"?: IFundDimensionValues | undefined;
 }
 export interface FundDimensionValuesRes {
     dimension1?: string | undefined;

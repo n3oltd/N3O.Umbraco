@@ -1,27 +1,70 @@
 ﻿using FluentValidation;
+using N3O.Umbraco.CrowdFunding.Services;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class PagePropertyReqValidator : ModelValidator<PagePropertyReq> {
-    // TODO Need to ensure based on type selected that the respective properties are all either null or not null
-    // Need to ensure that the property with that "alias" is actually of "type" as this is a public API
-    // We will probably need to implement an ICrowdfundingPagePropertyValidator that has an IsValidator(string alias)
-    // so that in code we can define any custom validation rules around page properties and so that this code here
-    // can remain generic and not need to change as we add property types.
-    public PagePropertyReqValidator(IFormatter formatter) : base(formatter) {
-        RuleFor(x => x.Alias)
-            .NotEmpty()
-            .WithMessage(Get<Strings>(s => s.SpecifyAlias));
+    private readonly IEnumerable<IFundraisingPagePropertyValidator> _validators;
+    
+    public PagePropertyReqValidator(IFormatter formatter, IEnumerable<IFundraisingPagePropertyValidator> validators) : base(formatter) {
+        _validators = validators;
         
+        RuleFor(x => x.Alias)
+           .NotEmpty()
+           .WithMessage(Get<Strings>(x => x.SpecifyAlias));
+
         RuleFor(x => x.Type)
-            .NotEmpty()
-            .WithMessage(Get<Strings>(s => s.SpecifyType));
+           .NotNull()
+           .WithMessage(Get<Strings>(x => x.SpecifyPropertyType));
+        
+        RuleFor(x => x)
+           .Must(ValidatePropertyType)
+           .WithMessage(Get<Strings>(s => s.PropertyTypeInvalid));
+        
+        RuleFor(x => x)
+           .Must(ValidatePropertyTypeValue)
+           .WithMessage(Get<Strings>(s => s.SpecifyValidPropertyTypeValue));
     }
     
+    private bool ValidatePropertyType(PagePropertyReq req) {
+        var validator = _validators.SingleOrDefault(x => x.IsValidator(req.Alias));
+        
+        if (validator != null) {
+            var result = validator.IsValid(req.Alias, req.Type);
+
+            return result;
+        } else {
+            return true;
+        }
+    }
+    
+    private bool ValidatePropertyTypeValue(PagePropertyReq req) {
+        var type = req.Type?.GetType().BaseType.GenericTypeArguments.First();
+        
+        var modelProperties = req.GetType()
+                                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                                 .Where(x => typeof(ValueReq).IsAssignableFrom(x.PropertyType))
+                                 .ToList();
+
+        bool isValid = modelProperties.SingleOrDefault(x => x.PropertyType == type)?.GetValue(req).HasValue() == true;
+
+        if (modelProperties.Where(x => x.PropertyType != type).Any(x => x.GetValue(req).HasValue())) {
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
     public class Strings : ValidationStrings {
         public string SpecifyAlias => "Please specify the alias";
-        public string SpecifyType => "Please specify the type";
+        public string SpecifyPropertyType => "Please specify the property type";
+        public string PropertyTypeInvalid => "The property type is invalid for the specified property";
+        public string SpecifyValidPropertyTypeValue => "Please specify valid value for the specified property type";
     }
 }
