@@ -4,10 +4,12 @@ using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Mediator;
 using System;
 using Umbraco.Cms.Core.Mapping;
+using Umbraco.Cms.Web.Common.Filters;
 
 namespace N3O.Umbraco.Crowdfunding.Controllers;
 
 [ApiDocument(CrowdfundingConstants.ApiName)]
+[UmbracoMemberAuthorize]
 public partial class CrowdfundingController : ApiController {
     private readonly Lazy<IMediator> _mediator;
     private readonly Lazy<ILookups> _lookups;

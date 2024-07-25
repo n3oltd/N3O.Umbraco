@@ -1,0 +1,36 @@
+﻿@using Umbraco.Cms.Web.Common.Security
+@using Umbraco.Cms.Web.Website.Controllers
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.LoginPage>
+@using ContentModels = DemoSite.Content;
+
+@inject IMemberExternalLoginProviders MemberExternalLoginProviders
+
+@{
+	Layout = null;
+
+	var loginProviders = await MemberExternalLoginProviders.GetMemberProvidersAsync();
+	var externalSignInError = ViewData.GetExternalSignInProviderErrors();
+	var isAuthenticated = Context.User?.Identity?.IsAuthenticated  == true;
+}
+
+@if (!isAuthenticated && loginProviders.Any()) {
+	if (externalSignInError?.AuthenticationType is null && externalSignInError?.Errors.Any() == true){
+		@Html.DisplayFor(x => externalSignInError.Errors);
+	}
+
+	@foreach (var login in await MemberExternalLoginProviders.GetMemberProvidersAsync()) {
+		@using (Html.BeginUmbracoForm<UmbExternalLoginController>(nameof(UmbExternalLoginController.ExternalLogin))) {
+			<button type="submit" name="provider" value="@login.ExternalLoginProvider.AuthenticationType">
+				Sign in with @login.AuthenticationScheme.DisplayName
+			</button>
+
+			if (externalSignInError?.AuthenticationType == login.ExternalLoginProvider.AuthenticationType) {
+				@Html.DisplayFor(x => externalSignInError.Errors)
+			}
+		}
+	}
+}
+
+@if (isAuthenticated) {
+	<p>User @Context.User.Identity.Name is logged in</p>
+}
