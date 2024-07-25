@@ -41,6 +41,6 @@
 
     <ItemGroup>
       <PackageReference Include="Umbraco.Forms.StaticAssets" Version="13.1.2" />
-      <PackageReference Include="uSync.Forms" Version="13.2.0" />
+      <PackageReference Include="uSync.Forms" Version="13.3.0" />
     </ItemGroup>
 </Project>

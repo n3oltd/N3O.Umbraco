@@ -40,6 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.17.5" />
+      <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.18.0" />
     </ItemGroup>
 </Project>
