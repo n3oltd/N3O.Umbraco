@@ -38,4 +38,13 @@
             <Pack>True</Pack>
         </None>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="js\public\" />
+    </ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Condition="$(Configuration) == 'Debug'" WorkingDirectory="js" Command="npm run build" />
+	</Target>
+
 </Project>
