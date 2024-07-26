@@ -84,7 +84,7 @@ public class Auth0LoginController : SurfaceController {
     }
     
     [HttpPost]
-    public async Task<IActionResult> HandleLogout(string returnUrl) {
+    public async Task<IActionResult> HandleLogout() {
         if (ModelState.IsValid == false) {
             return CurrentUmbracoPage();
         }
@@ -95,6 +95,6 @@ public class Auth0LoginController : SurfaceController {
             await _memberSignInManager.SignOutAsync();
         }
         
-        return Redirect(returnUrl);
+        return RedirectToCurrentUmbracoPage();
     }
 }
