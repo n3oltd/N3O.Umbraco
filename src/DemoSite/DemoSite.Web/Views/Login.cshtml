@@ -1,4 +1,5 @@
-﻿@using Umbraco.Cms.Web.Common.Security
+﻿@using N3O.Umbraco.Authentication.Auth0.Controllers
+@using Umbraco.Cms.Web.Common.Security
 @using Umbraco.Cms.Web.Website.Controllers
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.LoginPage>
 @using ContentModels = DemoSite.Content;
@@ -33,4 +34,9 @@
 
 @if (isAuthenticated) {
 	<p>User @Context.User.Identity.Name is logged in</p>
+	
+	@using (Html.BeginUmbracoForm<Auth0LoginController>("HandleLogout"))
+	{
+		<button type="submit" class="btn btn-primary">Log out</button>
+	}
 }
