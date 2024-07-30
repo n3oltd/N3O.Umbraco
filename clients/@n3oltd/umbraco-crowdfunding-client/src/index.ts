@@ -173,6 +173,61 @@ export class CrowdfundingClient {
         return Promise.resolve<string>(null as any);
     }
 
+    getPagePropertyValue(pageId: string, propertyAlias: string): Promise<PagePropertyValueRes> {
+        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/pages/{pageId}/properties/{propertyAlias}";
+        if (pageId === undefined || pageId === null)
+            throw new Error("The parameter 'pageId' must be defined.");
+        url_ = url_.replace("{pageId}", encodeURIComponent("" + pageId));
+        if (propertyAlias === undefined || propertyAlias === null)
+            throw new Error("The parameter 'propertyAlias' must be defined.");
+        url_ = url_.replace("{propertyAlias}", encodeURIComponent("" + propertyAlias));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetPagePropertyValue(_response);
+        });
+    }
+
+    protected processGetPagePropertyValue(response: Response): Promise<PagePropertyValueRes> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PagePropertyValueRes;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            let result404: any = null;
+            result404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PagePropertyValueRes>(null as any);
+    }
+
     updateProperty(pageId: string, req: PagePropertyReq): Promise<void> {
         let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/pages/{pageId}/property";
         if (pageId === undefined || pageId === null)
@@ -433,16 +488,16 @@ export interface PriceHandleReq {
     description?: string | undefined;
 }
 
-export interface PagePropertyReq {
+export interface PagePropertyValueRes {
     alias?: string | undefined;
     type?: PropertyType | undefined;
-    boolean?: BooleanValueReq | undefined;
-    cropper?: CropperValueReq | undefined;
-    dateTime?: DateTimeValueReq | undefined;
-    numeric?: NumericValueReq | undefined;
-    raw?: RawValueReq | undefined;
-    textarea?: TextareaValueReq | undefined;
-    textBox?: TextBoxValueReq | undefined;
+    boolean?: BooleanValueRes | undefined;
+    cropper?: CropperValueRes | undefined;
+    dateTime?: DateTimeValueRes | undefined;
+    numeric?: NumericValueRes | undefined;
+    raw?: RawValueRes | undefined;
+    textarea?: TextareaValueRes | undefined;
+    textBox?: TextBoxValueRes | undefined;
 }
 
 /** One of 'boolean', 'cropper', 'dateTime', 'numeric', 'raw', 'textarea', 'textBox' */
@@ -454,6 +509,63 @@ export enum PropertyType {
     Raw = "raw",
     Textarea = "textarea",
     TextBox = "textBox",
+}
+
+export interface BooleanValueRes {
+    value?: boolean | undefined;
+}
+
+export interface CropperValueRes {
+    image?: CropperSource | undefined;
+}
+
+export interface CropperSource {
+    src?: string | undefined;
+    mediaId?: string | undefined;
+    filename?: string | undefined;
+    width?: number;
+    height?: number;
+    altText?: string | undefined;
+    crops?: Crop[] | undefined;
+}
+
+export interface Crop {
+    x?: number;
+    y?: number;
+    width?: number;
+    height?: number;
+}
+
+export interface DateTimeValueRes {
+    value?: Date | undefined;
+}
+
+export interface NumericValueRes {
+    value?: number | undefined;
+}
+
+export interface RawValueRes {
+    value?: string | undefined;
+}
+
+export interface TextareaValueRes {
+    value?: string | undefined;
+}
+
+export interface TextBoxValueRes {
+    value?: string | undefined;
+}
+
+export interface PagePropertyReq {
+    alias?: string | undefined;
+    type?: PropertyType | undefined;
+    boolean?: BooleanValueReq | undefined;
+    cropper?: CropperValueReq | undefined;
+    dateTime?: DateTimeValueReq | undefined;
+    numeric?: NumericValueReq | undefined;
+    raw?: RawValueReq | undefined;
+    textarea?: TextareaValueReq | undefined;
+    textBox?: TextBoxValueReq | undefined;
 }
 
 export interface BooleanValueReq {

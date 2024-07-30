@@ -11,6 +11,8 @@ export declare class CrowdfundingClient {
     protected processCheckName(response: Response): Promise<boolean>;
     createPage(req: CreatePageReq): Promise<string>;
     protected processCreatePage(response: Response): Promise<string>;
+    getPagePropertyValue(pageId: string, propertyAlias: string): Promise<PagePropertyValueRes>;
+    protected processGetPagePropertyValue(response: Response): Promise<PagePropertyValueRes>;
     updateProperty(pageId: string, req: PagePropertyReq): Promise<void>;
     protected processUpdateProperty(response: Response): Promise<void>;
 }
@@ -190,16 +192,16 @@ export interface PriceHandleReq {
     amount?: number | undefined;
     description?: string | undefined;
 }
-export interface PagePropertyReq {
+export interface PagePropertyValueRes {
     alias?: string | undefined;
     type?: PropertyType | undefined;
-    boolean?: BooleanValueReq | undefined;
-    cropper?: CropperValueReq | undefined;
-    dateTime?: DateTimeValueReq | undefined;
-    numeric?: NumericValueReq | undefined;
-    raw?: RawValueReq | undefined;
-    textarea?: TextareaValueReq | undefined;
-    textBox?: TextBoxValueReq | undefined;
+    boolean?: BooleanValueRes | undefined;
+    cropper?: CropperValueRes | undefined;
+    dateTime?: DateTimeValueRes | undefined;
+    numeric?: NumericValueRes | undefined;
+    raw?: RawValueRes | undefined;
+    textarea?: TextareaValueRes | undefined;
+    textBox?: TextBoxValueRes | undefined;
 }
 /** One of 'boolean', 'cropper', 'dateTime', 'numeric', 'raw', 'textarea', 'textBox' */
 export declare enum PropertyType {
@@ -210,6 +212,53 @@ export declare enum PropertyType {
     Raw = "raw",
     Textarea = "textarea",
     TextBox = "textBox"
+}
+export interface BooleanValueRes {
+    value?: boolean | undefined;
+}
+export interface CropperValueRes {
+    image?: CropperSource | undefined;
+}
+export interface CropperSource {
+    src?: string | undefined;
+    mediaId?: string | undefined;
+    filename?: string | undefined;
+    width?: number;
+    height?: number;
+    altText?: string | undefined;
+    crops?: Crop[] | undefined;
+}
+export interface Crop {
+    x?: number;
+    y?: number;
+    width?: number;
+    height?: number;
+}
+export interface DateTimeValueRes {
+    value?: Date | undefined;
+}
+export interface NumericValueRes {
+    value?: number | undefined;
+}
+export interface RawValueRes {
+    value?: string | undefined;
+}
+export interface TextareaValueRes {
+    value?: string | undefined;
+}
+export interface TextBoxValueRes {
+    value?: string | undefined;
+}
+export interface PagePropertyReq {
+    alias?: string | undefined;
+    type?: PropertyType | undefined;
+    boolean?: BooleanValueReq | undefined;
+    cropper?: CropperValueReq | undefined;
+    dateTime?: DateTimeValueReq | undefined;
+    numeric?: NumericValueReq | undefined;
+    raw?: RawValueReq | undefined;
+    textarea?: TextareaValueReq | undefined;
+    textBox?: TextBoxValueReq | undefined;
 }
 export interface BooleanValueReq {
     value?: boolean | undefined;
