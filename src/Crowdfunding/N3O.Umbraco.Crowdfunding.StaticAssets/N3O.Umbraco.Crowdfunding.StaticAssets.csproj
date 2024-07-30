@@ -34,9 +34,27 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Content Include="Views\**\*.*">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
+
+        <None Include="build\**\*.*">
+            <Pack>True</Pack>
+            <PackagePath>buildTransitive</PackagePath>
+        </None>
+        
+    </ItemGroup>
+
+    <ItemGroup>
         <None Update="README.md">
             <Pack>True</Pack>
         </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="content\assets\css\" />
+      <Folder Include="content\assets\js\" />
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
