@@ -52,11 +52,6 @@
         </None>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="content\assets\css\" />
-      <Folder Include="content\assets\js\" />
-    </ItemGroup>
-
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Exec Condition="$(Configuration) == 'Debug'" WorkingDirectory="js" Command="npm run build"/>
     </Target>
