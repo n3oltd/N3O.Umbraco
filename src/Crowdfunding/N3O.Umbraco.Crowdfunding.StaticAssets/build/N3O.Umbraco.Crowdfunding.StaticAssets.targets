@@ -1,0 +1,27 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <PropertyGroup>
+        <N3OUmbracoCrowdfundingAssetsFilesPath>$(MSBuildThisFileDirectory)..\content\assets\**\*.*</N3OUmbracoCrowdfundingAssetsFilesPath>
+        <N3OUmbracoCrowdfundingViewFilesPath>$(MSBuildThisFileDirectory)..\content\views\**\*.*</N3OUmbracoCrowdfundingViewFilesPath>
+    </PropertyGroup>
+
+    <Target Name="CopyN3OUmbracoCrowdfundingAssets" BeforeTargets="Build">
+        <ItemGroup>
+            <N3OUmbracoCrowdfundingAssetsFiles Include="$(N3OUmbracoCrowdfundingAssetsFilesPath)"/>
+        </ItemGroup>
+        <Message Text="Copying N3O Crowdfunding asset files: $(N3OUmbracoCrowdfundingAssetsFilesPath) - #@(N3OUmbracoCrowdfundingAssetsFiles->Count()) files" Importance="high"/>
+        <Copy SourceFiles="@(N3OUmbracoCrowdfundingAssetsFiles)"
+              DestinationFiles="@(N3OUmbracoCrowdfundingAssetsFiles->'$(MSBuildProjectDirectory)\wwwroot\assets\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"/>
+    </Target>
+
+    <Target Name="CopyN3OUmbracoCrowdfundingViews" BeforeTargets="Build">
+        <ItemGroup>
+            <N3OUmbracoCrowdfundingViewFiles Include="$(N3OUmbracoCrowdfundingViewFilesPath)"/>
+        </ItemGroup>
+        <Message Text="Copying N3O Crowdfunding view files: $(N3OUmbracoCrowdfundingViewFilesPath) - #@(N3OUmbracoCrowdfundingViewFiles->Count()) files" Importance="high"/>
+        <Copy SourceFiles="@(N3OUmbracoCrowdfundingViewFiles)"
+              DestinationFiles="@(N3OUmbracoCrowdfundingViewFiles->'$(MSBuildProjectDirectory)\Views\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"/>
+    </Target>
+</Project>

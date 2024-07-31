@@ -34,6 +34,19 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Content Include="Views\**\*.*">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
+
+        <None Include="build\**\*.*">
+            <Pack>True</Pack>
+            <PackagePath>buildTransitive</PackagePath>
+        </None>
+        
+    </ItemGroup>
+
+    <ItemGroup>
         <None Update="README.md">
             <Pack>True</Pack>
         </None>

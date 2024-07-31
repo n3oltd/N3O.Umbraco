@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm install && tsc -b && vite build",
+    "build": "npm install && tsc -b && vite build && npm run copy",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "copy": "shx cp dist/index.js ../wwwroot/assets/js/site.js",
+    "copy": "shx cp build/crowdfunding.js ../content/assets/js/crowdfunding.js && shx cp build/crowdfunding.css ../content/assets/css/crowdfunding.css",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -36,6 +36,7 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
     "typescript": "^5.2.2",
-    "vite": "^5.3.1"
+    "vite": "^5.3.1",
+    "shx": "^0.3.4"
   }
 }
