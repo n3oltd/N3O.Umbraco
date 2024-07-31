@@ -30,7 +30,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\N3O.Umbraco.Crowdfunding\N3O.Umbraco.Crowdfunding.csproj"/>
+        <ProjectReference Include="..\N3O.Umbraco.Crowdfunding\N3O.Umbraco.Crowdfunding.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -47,13 +47,207 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Include="js\.git\COMMIT_EDITMSG" />
+      <None Include="js\.git\config" />
+      <None Include="js\.git\description" />
+      <None Include="js\.git\HEAD" />
+      <None Include="js\.git\hooks\applypatch-msg.sample" />
+      <None Include="js\.git\hooks\commit-msg.sample" />
+      <None Include="js\.git\hooks\fsmonitor-watchman.sample" />
+      <None Include="js\.git\hooks\post-update.sample" />
+      <None Include="js\.git\hooks\pre-applypatch.sample" />
+      <None Include="js\.git\hooks\pre-commit.sample" />
+      <None Include="js\.git\hooks\pre-merge-commit.sample" />
+      <None Include="js\.git\hooks\pre-push.sample" />
+      <None Include="js\.git\hooks\pre-rebase.sample" />
+      <None Include="js\.git\hooks\pre-receive.sample" />
+      <None Include="js\.git\hooks\prepare-commit-msg.sample" />
+      <None Include="js\.git\hooks\push-to-checkout.sample" />
+      <None Include="js\.git\hooks\sendemail-validate.sample" />
+      <None Include="js\.git\hooks\update.sample" />
+      <None Include="js\.git\index" />
+      <None Include="js\.git\info\exclude" />
+      <None Include="js\.git\logs\HEAD" />
+      <None Include="js\.git\logs\refs\heads\initial-skelton" />
+      <None Include="js\.git\logs\refs\heads\main" />
+      <None Include="js\.git\logs\refs\remotes\origin\initial-skelton" />
+      <None Include="js\.git\logs\refs\remotes\origin\main" />
+      <None Include="js\.git\objects\01\68a139192d6ef094afaa3cddbd93860df49f48" />
+      <None Include="js\.git\objects\01\895a99283e99040f8899983c663c37d21e6af2" />
+      <None Include="js\.git\objects\03\309d7aa7343613c16ce9a760cc1122abd6e000" />
+      <None Include="js\.git\objects\04\88d07c7f7d66530b36c6498fdd09a48bec2577" />
+      <None Include="js\.git\objects\04\8d1bdeb5a414046ad8e8dfd0a3f21ec2b28e08" />
+      <None Include="js\.git\objects\08\01c5353a83a2046ddc2ff6fe2e3088bda5b84a" />
+      <None Include="js\.git\objects\09\94daf7f96d3c6c3e0068d8df243175b60081f1" />
+      <None Include="js\.git\objects\09\eda3cd9d6beee0af10a82f58b9537a3cee3f4f" />
+      <None Include="js\.git\objects\0c\786b448477a95839c0a666066c402d8db76114" />
+      <None Include="js\.git\objects\11\f02fe2a0061d6e6e1f271b21da95423b448b32" />
+      <None Include="js\.git\objects\12\9fdb50717259f177ea6506921117cdb400c05e" />
+      <None Include="js\.git\objects\13\8393aa5cccecef06aeadfaf618c27124856acc" />
+      <None Include="js\.git\objects\16\5d3c3d9783e20d395d977ba362f85cd0b9a841" />
+      <None Include="js\.git\objects\16\82980afdf8c11ee320922b06150f65171ebf31" />
+      <None Include="js\.git\objects\19\3c6a382ab5a75ea6e65f4a3fca2eb19292cb6b" />
+      <None Include="js\.git\objects\1b\aa4049bfd7439996c4cbc4914e9b412380d64e" />
+      <None Include="js\.git\objects\1d\86a863eab9195cfda19487156e9296ec400493" />
+      <None Include="js\.git\objects\1e\4f4f462dd3fa1d88519006e5474dba08eb8a7d" />
+      <None Include="js\.git\objects\1e\804ffb8b96d91c9e4010b91a1c1a1869e7e5da" />
+      <None Include="js\.git\objects\26\db486076237d02077a31d4a9eeb741ce19e9bd" />
+      <None Include="js\.git\objects\27\7cd76ce8828c3a630d68f6ee8005c93a7000a0" />
+      <None Include="js\.git\objects\29\f6fd8ed69308334cf31c1962ef73f8552c940e" />
+      <None Include="js\.git\objects\2a\2648a5a19c430140329ad83320782d255d2b1a" />
+      <None Include="js\.git\objects\2d\ba4115a77a578fad530717e1da9f5a923a2050" />
+      <None Include="js\.git\objects\2e\5fd05f362332efaada29f4e299f9655e299475" />
+      <None Include="js\.git\objects\2e\c4552fc0fc3f42c92521de4cef3c450a2f4675" />
+      <None Include="js\.git\objects\30\1eb56deea816151774376bd6626d6fd49b5102" />
+      <None Include="js\.git\objects\30\f1208557d6d508e84094d036a490ca1ae32336" />
+      <None Include="js\.git\objects\31\924e465bc8cff7796443d53aae434994004ee1" />
+      <None Include="js\.git\objects\32\aa7441766de8c9dbefb4741f00fbbfe40003e3" />
+      <None Include="js\.git\objects\34\3db1c8c892cf6a7fdd11d9eb04233c7a250d7f" />
+      <None Include="js\.git\objects\35\c0492a37903fc1c8edb4b080877b24703830fd" />
+      <None Include="js\.git\objects\37\7979b4d686737bfad5e39c0a55754e95304853" />
+      <None Include="js\.git\objects\37\84891ec2155034636714cc75fb38d5c5e34044" />
+      <None Include="js\.git\objects\37\a62d5685ea06a1a9ea21575a1b052349dd76df" />
+      <None Include="js\.git\objects\39\f68fecaa46df42cea61acd9a1175441ce4068c" />
+      <None Include="js\.git\objects\3a\fdd6e38438be7612befbd4b656af7bed27a31a" />
+      <None Include="js\.git\objects\3b\f2a8ad85b1c8b4fb9658aaac50d975bedd625f" />
+      <None Include="js\.git\objects\3d\7150da80e43e3650342aa4758fa8b74e95d6d6" />
+      <None Include="js\.git\objects\3d\cfbd46c38d70bf7afc727dc8d958a6c573bc3b" />
+      <None Include="js\.git\objects\3f\d597feeea732c591a3a21eae48ead7fab5d605" />
+      <None Include="js\.git\objects\42\daaef2c7241ae871781d1395d6910e97696245" />
+      <None Include="js\.git\objects\44\2348bac2f57e9acbda9de36f34ebd9f718e5b2" />
+      <None Include="js\.git\objects\44\957fe19cc413459aea2b7b1c54f93d399e9b1e" />
+      <None Include="js\.git\objects\46\309e966a2e5a9118d531aec070da47339058cb" />
+      <None Include="js\.git\objects\47\5c8a61f2e257448f9452706aa46129fa93a96e" />
+      <None Include="js\.git\objects\47\8580b22c3d34707a101bafa85f6e706328f74f" />
+      <None Include="js\.git\objects\4a\f54ed2b6c3ed904e76fdde1fbd591ca7ca5192" />
+      <None Include="js\.git\objects\4a\fd312f8fc078353ad4a621d17a701b349b4ca2" />
+      <None Include="js\.git\objects\4d\80599ea04b74b86d8af8cd8a0370d1a7b95ab4" />
+      <None Include="js\.git\objects\51\a386adbf8ac530fd96c9a7a732e62aae09472d" />
+      <None Include="js\.git\objects\53\24f1b7d317b05366474c517f2e8ce82c611e26" />
+      <None Include="js\.git\objects\57\79b60aea7be1f63eab2413787688f0bf8b4ab5" />
+      <None Include="js\.git\objects\5a\33944a9b41b59a9cf06ee4bb5586c77510f06b" />
+      <None Include="js\.git\objects\5b\2cd2afcea2bc185547aa873e5dde0aa2e16e38" />
+      <None Include="js\.git\objects\5b\388b0dd39cf2b90d400325360129e8b5c4bf07" />
+      <None Include="js\.git\objects\5c\66d95ce734eabe978111e518b425e7175bf360" />
+      <None Include="js\.git\objects\63\6cb967363794e2c466d3914b2b2406e69a3303" />
+      <None Include="js\.git\objects\66\540578195e7c0e15762df48733eb0c5f3d3e91" />
+      <None Include="js\.git\objects\68\e15d1d714b73986b85fd2bf73bcab1492cd112" />
+      <None Include="js\.git\objects\69\e93babda7efaf9e9b6c83a422bc7dcfc6fa46e" />
+      <None Include="js\.git\objects\6a\86e635c8e98ab57e74742f5f5f4f2a15835147" />
+      <None Include="js\.git\objects\6b\53b08596645f1b10ea34f740404244ab5003b9" />
+      <None Include="js\.git\objects\6b\c59c6f688aefcfc42b53f9aca30807591f6d3d" />
+      <None Include="js\.git\objects\6c\27f7d951af7b06c55d2ac51460389b4dc0e3be" />
+      <None Include="js\.git\objects\6c\397306f89d7e59c2133c21dd230f5879300082" />
+      <None Include="js\.git\objects\6c\87de9bb3358469122cc991d5cf578927246184" />
+      <None Include="js\.git\objects\6d\eaf1b00b48c8e8fb812ae50426beb1927e8439" />
+      <None Include="js\.git\objects\6e\a672cfcb8f9bf53d177f317ccaecd0ce5b5b9e" />
+      <None Include="js\.git\objects\72\0268601dd90f3f4f1990d8626152091467b273" />
+      <None Include="js\.git\objects\73\549c91b8400709c6637a949a45cdc3cf6987a9" />
+      <None Include="js\.git\objects\73\e47646552136b6667a16a0acc7037c1802cb34" />
+      <None Include="js\.git\objects\74\3c5d61b6f98dbdd12418930eb3f821c2e3dc46" />
+      <None Include="js\.git\objects\74\59f61d0db5a8081f0c287f418262c41efe8786" />
+      <None Include="js\.git\objects\77\3647b8c36a8b35d435998db69749335af0a636" />
+      <None Include="js\.git\objects\82\b720f541d365cd81a9138d99949cf4222b4fcf" />
+      <None Include="js\.git\objects\84\b7eb68503f90a9e67b9a24e2dc8f1678cf0c26" />
+      <None Include="js\.git\objects\88\83d4226b84d7c686ab50c9a51dba0c805de019" />
+      <None Include="js\.git\objects\88\ce9d51edbe6bc11767a3d89dbc0346bbe08c92" />
+      <None Include="js\.git\objects\89\2f808e96130422a26e082fe3e6a6fe82944c8d" />
+      <None Include="js\.git\objects\8a\6945c1dc6f0a0b4c4c9ef92e93199cc8bc6d4b" />
+      <None Include="js\.git\objects\8f\bc57a983c59f039bdb3a5107cad296843f48c7" />
+      <None Include="js\.git\objects\90\66de28338e78f6a4df67d8c53a761d7edb7fe6" />
+      <None Include="js\.git\objects\94\c0b2fc152a086447a04f62793957235d2475be" />
+      <None Include="js\.git\objects\95\01dabc540b3ca27c6ff60ab56f8cc777a0d665" />
+      <None Include="js\.git\objects\95\04faf909530b27602b1b9cc9689e64e352b4d1" />
+      <None Include="js\.git\objects\95\2e684f5cc2e284bb560a4a412aa50f1d9a2a14" />
+      <None Include="js\.git\objects\95\c9e72e1f9b5c6b477120acd1501e21d2099fd6" />
+      <None Include="js\.git\objects\97\a9b082535be9310bb291e090912ad9d4b721b4" />
+      <None Include="js\.git\objects\97\e110269a75e9b44ae00f9bdf734481161f3a97" />
+      <None Include="js\.git\objects\9a\d3f67be3b98618ada7ba527cd6e85059b8ce2b" />
+      <None Include="js\.git\objects\9b\2587462e4f16ac176cf819031efdd4bf0c476f" />
+      <None Include="js\.git\objects\9f\6060b1a03977d8653d9596d78353f59e746394" />
+      <None Include="js\.git\objects\a1\c0692e3df4ffa1f24d38ee156456b963241db8" />
+      <None Include="js\.git\objects\a5\47bf36d8d11a4f89c59c144f24795749086dd1" />
+      <None Include="js\.git\objects\a5\b6a6e54acdddf8989e4e78d18a3a0fae5a3aa8" />
+      <None Include="js\.git\objects\a7\ab41933913e2036ccfa8d4bf139722fb19494c" />
+      <None Include="js\.git\objects\ac\007ae4ff39cc1355f63780faace3024954a3e4" />
+      <None Include="js\.git\objects\b0\5146cef6975458a446414c6c7e4fd65e3bf24f" />
+      <None Include="js\.git\objects\b1\8cf524ee696495c37c9282d48e818596dbdc1e" />
+      <None Include="js\.git\objects\b1\c695f6435c04fd507c9e459576fc4fd12f6dcb" />
+      <None Include="js\.git\objects\b2\d9a13d4d36495e6d6b60db0ee3a22d8aeb81dd" />
+      <None Include="js\.git\objects\b2\eead74ed575b4642786451f7de4b06f1c2872c" />
+      <None Include="js\.git\objects\b4\ff456472a17ae9bed9d75c817f8b34de269122" />
+      <None Include="js\.git\objects\b6\918c16bae89888b439455c10773c9123788d0e" />
+      <None Include="js\.git\objects\b7\5beb43e1314eaa24fe7d1bc5901d36d0bc44d7" />
+      <None Include="js\.git\objects\b7\65f4f464b508f61aeee80dcb62ce246c244282" />
+      <None Include="js\.git\objects\b7\7f24bea2206c3a9772a021e6c8a95f4d03e689" />
+      <None Include="js\.git\objects\bd\4d46bf1f7c88f91d86acef00f6daa3c10b4294" />
+      <None Include="js\.git\objects\be\b73172243f0259645de8c3761ec2ce0230cf93" />
+      <None Include="js\.git\objects\be\ead6418c708f8b0fa92f561812db8854921848" />
+      <None Include="js\.git\objects\c2\53cc3604e68b9d58b7334f98f7cb929a438afe" />
+      <None Include="js\.git\objects\c3\11b729a623c9c674ff22e4415e20fe69b01df7" />
+      <None Include="js\.git\objects\c3\5702e641f2118f0626daf0aff8bea8f8303286" />
+      <None Include="js\.git\objects\c4\bd204de8cb83fc63474a21be60e1264f1ed947" />
+      <None Include="js\.git\objects\c8\2f28b7b36e67bf91251c16f68c1f82de16c6b9" />
+      <None Include="js\.git\objects\c9\0657803c5b59e807ba7b08b3c9c41f736c0c0f" />
+      <None Include="js\.git\objects\ca\36601268dca6bf81000dfa41c0b3ccb8603da5" />
+      <None Include="js\.git\objects\cb\c5b825ac1d195a6972d21270c03932075f3737" />
+      <None Include="js\.git\objects\cd\0805fdb831c14d6f209ca41c157000afe66f5e" />
+      <None Include="js\.git\objects\cd\d3a612076501ada1bc63b297bc8d53a229faae" />
+      <None Include="js\.git\objects\ce\ae23be0dcbb0cfa0bdf68d9c5ff3d228789049" />
+      <None Include="js\.git\objects\d0\96ad9f5c0daf7b0b65ce408ae434b1d0699d39" />
+      <None Include="js\.git\objects\d1\b44c15c86336e035780c41b49577e899645351" />
+      <None Include="js\.git\objects\d2\0175b7467a4628e5bb8bfe7cc31cae35c2b65e" />
+      <None Include="js\.git\objects\d4\a5818e296d7a9b47b1b72d515e16baf5174ddd" />
+      <None Include="js\.git\objects\d6\c953795300e4256c76542d6bb0fe06f08b5ad6" />
+      <None Include="js\.git\objects\da\4eefb8c30b83e8725623b5aa66f1fded933051" />
+      <None Include="js\.git\objects\db\00c7f7885d621ff236bca94898ab82a827abd0" />
+      <None Include="js\.git\objects\dc\713e715bb9ff0ce77a2b982f1f685d00efe088" />
+      <None Include="js\.git\objects\dc\bffb3945c444aa0a43f57f6666b8d7c8e753a6" />
+      <None Include="js\.git\objects\dd\4463efd681cec1cafc0fa0170d50e095f2c704" />
+      <None Include="js\.git\objects\de\41160f08c2718fdae4686ea8359a14c1df199f" />
+      <None Include="js\.git\objects\df\1666c4dd584938da598d4ffd450b3dc15a7a12" />
+      <None Include="js\.git\objects\df\2c330bbe75bc857f7a7257ff74e14932cb4c22" />
+      <None Include="js\.git\objects\e1\26d5205d37206bd9b4833aea021c80cb1ff595" />
+      <None Include="js\.git\objects\e2\4a787e739fb60ac5db5bb3a949d241727de1f7" />
+      <None Include="js\.git\objects\e4\57540044fe85b438b88f6d0e5b3a1d7debe6db" />
+      <None Include="js\.git\objects\e5\a3575fc68007c3d6b170ecc4a51558ef3f6eee" />
+      <None Include="js\.git\objects\e5\e7c2a6c1197d96c1e34a6f11a457078a55a379" />
+      <None Include="js\.git\objects\e6\0b7b7822869ad8e7d0b4fa108cfaebdb7a0943" />
+      <None Include="js\.git\objects\e6\2241a9c3f0c2b18abdf8d656dfa525776a2967" />
+      <None Include="js\.git\objects\e6\27790deb32c65231f0abd37f70117a306b761d" />
+      <None Include="js\.git\objects\e6\9de29bb2d1d6434b8b29ae775ad8c2e48c5391" />
+      <None Include="js\.git\objects\e9\fff577e8ffd97a961b982e82f0852f6be85bc4" />
+      <None Include="js\.git\objects\ea\9d0cd8255683d84f125948115daf1de0f06b1f" />
+      <None Include="js\.git\objects\eb\3cba8c5518ab0e891afa1737cdc4662c9ae57f" />
+      <None Include="js\.git\objects\f0\38ce6047e5a2f41332ac4b82765c38f00cafd0" />
+      <None Include="js\.git\objects\f3\906c8d51ab462bbe9fd9159a1e813070f7fdad" />
+      <None Include="js\.git\objects\f7\452691baf34ff48562a19d83475159cb416a85" />
+      <None Include="js\.git\objects\f8\3c97c3c3cd5c88f7b15c3f861f4b28a5e13c8b" />
+      <None Include="js\.git\objects\fb\1f7311f6d07f24ddabb34ba1d099680f8d5a72" />
+      <None Include="js\.git\objects\fb\8fc889a667a65e3dfd1c4027e9b3dbc930fa8e" />
+      <None Include="js\.git\objects\fb\9e33189deba58efa7d51c9af77f068ec5778e2" />
+      <None Include="js\.git\objects\fc\08610d4720c7120c32d2a059821933266c1f23" />
+      <None Include="js\.git\objects\fe\30fe0e15fe5ed26d95b55b39520006d21efe91" />
+      <None Include="js\.git\refs\heads\initial-skelton" />
+      <None Include="js\.git\refs\heads\main" />
+      <None Include="js\.git\refs\remotes\origin\initial-skelton" />
+      <None Include="js\.git\refs\remotes\origin\main" />
+    </ItemGroup>
+
+    <ItemGroup>
         <None Update="README.md">
             <Pack>True</Pack>
         </None>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="js\.git\objects\info\" />
+      <Folder Include="js\.git\objects\pack\" />
+      <Folder Include="js\.git\refs\tags\" />
+    </ItemGroup>
+
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Condition="$(Configuration) == 'Debug'" WorkingDirectory="js" Command="npm run build"/>
+        <Exec Condition="$(Configuration) == 'Debug'" WorkingDirectory="js" Command="npm run build" />
     </Target>
 
 </Project>

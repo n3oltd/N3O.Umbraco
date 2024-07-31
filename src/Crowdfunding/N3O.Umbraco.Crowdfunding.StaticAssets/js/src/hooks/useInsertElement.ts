@@ -1,11 +1,15 @@
 import { useRef, useEffect, MutableRefObject } from 'react';
+import { PropertyType } from '@n3oltd/umbraco-crowdfunding-client';
 import { useEventListener } from 'ahooks';
+
 import { handleModalClick } from '../helpers/js/modals';
 import { usePageData } from './usePageData';
+import { PropertyAlias } from '../editors/types/propertyAlias';
 
 type UseInsertElementHook = (
   containerId: string,
-  options: useInsertElementOptions
+  options: useInsertElementOptions,
+  updatePropertyInfo: (info: PropertyAlias) => void
 ) => MutableRefObject<HTMLDivElement | null>;
 
 type useInsertElementOptions = {
@@ -15,7 +19,7 @@ type useInsertElementOptions = {
 }
 
 
-export const useInsertElement: UseInsertElementHook = (containerId, options: useInsertElementOptions) => {
+export const useInsertElement: UseInsertElementHook = (containerId, options: useInsertElementOptions, updatePropertyInfo: (info: PropertyAlias) => void) => {
   const elementRef = useRef<HTMLDivElement | null>(null);
   const {isPageEditable} = usePageData()
   useEventListener('click', e => handleModalClick(e, elementRef.current), {target: elementRef})
@@ -52,6 +56,14 @@ export const useInsertElement: UseInsertElementHook = (containerId, options: use
 
         div.addEventListener('click', (e) => handleModalClick(e, div));
 
+        const {type, propertyAlias} = (container.querySelector('[data-type]') as HTMLDivElement).dataset || {}
+        
+        if(type && propertyAlias) {
+          updatePropertyInfo({
+            type: type as PropertyType,
+            alias: propertyAlias
+          })
+        }
 
         elementRef.current = div;
       }
@@ -60,11 +72,14 @@ export const useInsertElement: UseInsertElementHook = (containerId, options: use
     return () => {
       if (elementRef.current) {
         elementRef.current.removeEventListener('click', (e) => handleModalClick(e, div));
-
+        updatePropertyInfo({
+          alias: '',
+          type: undefined,
+        })
         elementRef.current.remove();
       }
     };
-  }, [containerId, options, isPageEditable]);
+  }, [containerId, options, isPageEditable, updatePropertyInfo]);
 
   return elementRef;
 };

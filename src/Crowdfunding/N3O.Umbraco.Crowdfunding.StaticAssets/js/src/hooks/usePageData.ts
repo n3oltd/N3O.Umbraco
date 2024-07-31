@@ -10,7 +10,7 @@ export const usePageData = (): PageDataEditable => {
     const { pageMode, pageId } = document.body.dataset;
 
     const validatedPageData = {
-      pageId: pageId ? Number(pageId) : undefined,
+      pageId: pageId || undefined,
       pageMode: pageMode || 'VIEW', 
     };
 
