@@ -1,0 +1,14 @@
+﻿@using N3O.Umbraco.CrowdFunding.Services
+
+@inject IEnumerable<IFundraisingPage> FundraisingPages
+
+@{
+    var fundraisingPagePath = FundraisingPageUrl.GetFundraisingPagePath(Context.Request.Path);
+}
+
+@foreach (var fundraisingPage in FundraisingPages) {
+    if (fundraisingPage.IsMatch(fundraisingPagePath)) {
+        await Html.RenderPartialAsync($"~/Views/Partials/Crowdfunding/{fundraisingPage.ViewName}.cshtml",
+                                      await fundraisingPage.GetViewModelAsync(fundraisingPagePath));
+    }
+}
