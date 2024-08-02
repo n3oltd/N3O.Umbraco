@@ -75,7 +75,11 @@ public static class CrowdfundingConstants {
     public static class CrowdfundingPages {
         public const string Alias = "crowdfundingPages";
     }
-    
+
+    public static class FundraisingPage {
+        public const string Alias = "fundraisingPage";
+    }
+
     public static class Tables {
         public static class CrowdfundingContributions {
             public const string Name = "N3O_CrowdfundingContributions";

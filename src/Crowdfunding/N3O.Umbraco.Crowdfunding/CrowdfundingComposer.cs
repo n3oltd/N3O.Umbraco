@@ -17,6 +17,9 @@ public class CrowdfundingComposer : Composer {
         builder.Services.AddScoped<IFundraisingPages, FundraisingPages>();
         
         RegisterFundraisingPagePropertyValidators(builder);
+        
+        RegisterAll(t => t.ImplementsInterface<IFundraisingPage>(),
+                    t => builder.Services.AddTransient(typeof(IFundraisingPage), t));
     }
     
     private void RegisterFundraisingPagePropertyValidators(IUmbracoBuilder builder) {
