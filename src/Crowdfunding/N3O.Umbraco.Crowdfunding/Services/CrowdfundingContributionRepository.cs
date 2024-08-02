@@ -7,6 +7,7 @@ using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Localization;
 using NodaTime;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -62,6 +63,22 @@ public class CrowdfundingContributionRepository : ICrowdfundingContributionRepos
         }
         
         _crowdfundingContributions.Clear();
+    }
+
+    public async Task<IEnumerable<CrowdfundingContribution>> GetAllContributionsAsync() {
+        var query = $"SELECT * FROM {CrowdfundingConstants.Tables.CrowdfundingContributions.Name}";
+        
+        using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
+            return await db.FetchAsync<CrowdfundingContribution>(query);
+        }
+    }
+    
+    public async Task<IEnumerable<CrowdfundingContribution>> GetAllContributionsForPageAsync(Guid pageId) {
+        var query = $"SELECT * FROM {CrowdfundingConstants.Tables.CrowdfundingContributions.Name} WHERE PageId = '{pageId.ToString()}'";
+        
+        using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
+            return await db.FetchAsync<CrowdfundingContribution>(query);
+        }
     }
 
     private async Task<CrowdfundingContribution> GetCrowdfundingContributionAsync(string checkoutReference,
