@@ -1,0 +1,111 @@
+﻿@model N3O.Umbraco.CrowdFunding.Models.FundraisingPage.CrowdfundingPageViewModel
+
+@if(true) {
+    <div class="donation__wrapper">
+        <div class="donation">
+            <div class="donation__head">
+                <div class="donation__head-tab tabBtn active" data-tab="#tab-1">
+                    <h4>Latest Donations</h4>
+                </div>
+                <div class="donation__head-tab tabBtn" data-tab="#tab-2">
+                    <h4>
+                        Fundraisers
+                        <span> 7 </span>
+                    </h4>
+                </div>
+            </div>
+            <div class="donation__list tabEvent active" id="tab-1">
+                <div class="donationItem">
+                    <div class="donationItem__avatar">
+                        <img src="../../images/avatars/8.png" alt="" />
+                    </div>
+                    <div class="donationItem__row">
+                        <div class="donationItem__name">
+                            <div class="large">Marley Dokidis</div>
+                        </div>
+                        <div class="donationItem__info big">
+                            <div class="subtle">
+                                <b class="large"> £20.00 </b>
+                                + £5.00 gift aid
+                            </div>
+                            <div class="subtle">16 minutes ago</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="donation__foot">
+                    <button class="button secondary">
+                        <svg>
+                            <use xlink:href="#mailIcon"></use>
+                        </svg>
+                        View All
+                    </button>
+                </div>
+            </div>
+            <div class="donation__list fund tabEvent" id="tab-2">
+                <div class="donationItem">
+                    <div class="donationItem__avatar">
+                        <img src="../../images/avatars/5.png" alt="" />
+                    </div>
+                    <div class="donationItem__row">
+                        <div class="donationItem__name">
+                            <div class="large">Ryan Bator</div>
+                            <div class="subtle">Organiser</div>
+                        </div>
+                        <div class="donationItem__info">
+                            <div class="large">
+                                <p>Raised</p>
+                                <b> £1,234 </b>
+                            </div>
+                            <div class="subtle">
+                                of
+                                <b> £2,345 </b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="donation__foot">
+                    <button class="button secondary">
+                        <svg>
+                            <use xlink:href="#mailIcon"></use>
+                        </svg>
+                        View All
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+} else {
+    <div class="donation__wrapper">
+      <div class="donation">
+        <div class="donation__head">
+          <div class="donation__head-tab tabBtn" data-tab="#tab-1">
+            <h4>Latest Donations</h4>
+          </div>
+          <div class="donation__head-tab tabBtn active" data-tab="#tab-2">
+            <h4>
+              Fundraisers
+              <span> 7 </span>
+            </h4>
+          </div>
+        </div>
+        <div class="donation__list tabEvent" id="tab-1">
+          <div class="donation__empty">
+            <h2>Looking For Supporters</h2>
+            <div class="donation__empty-image">
+              <img src="../../images/empty-state.svg" alt="">
+            </div>
+            <p>Will that be you? Be the first to donate!</p>
+          </div>
+        </div>
+        <div class="donation__list tabEvent active" id="tab-2">
+          <div class="donation__empty">
+            <h2>Looking For Supporters</h2>
+            <div class="donation__empty-image">
+              <img src="../../images/empty-state.svg" alt="">
+            </div>
+            <p>Will that be you? Be the first to donate!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+}
