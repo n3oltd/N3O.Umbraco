@@ -30,7 +30,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\N3O.Umbraco.Crowdfunding\N3O.Umbraco.Crowdfunding.csproj"/>
+        <ProjectReference Include="..\N3O.Umbraco.Crowdfunding\N3O.Umbraco.Crowdfunding.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -53,7 +53,7 @@
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Condition="$(Configuration) == 'Debug'" WorkingDirectory="js" Command="npm run build"/>
+        <Exec Condition="$(Configuration) == 'Debug'" WorkingDirectory="js" Command="npm run build:prod" />
     </Target>
 
 </Project>

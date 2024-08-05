@@ -1,3 +1,5 @@
+
+
 export function handleModalClick(_, triggerBtn) {
   const currentBtn = triggerBtn;
   const tabId = currentBtn.getAttribute("data-mod");
@@ -20,5 +22,7 @@ export function handleModalClick(_, triggerBtn) {
       currentTab.classList.remove("active");
       document.body.classList.remove("active");
     }
-  } 
-}
+  }
+  
+
+}// modals end

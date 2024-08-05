@@ -5,14 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm install && tsc -b && vite build && npm run copy",
+    "build": "tsc -b && vite build",
+    "build:prod": "npm install && tsc -b && vite build && npm run copy",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "copy": "shx cp build/crowdfunding.js ../content/assets/js/crowdfunding.js && shx cp build/crowdfunding.css ../content/assets/css/crowdfunding.css",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "copy": "shx cp build/crowdfunding.js ../content/assets/js/crowdfunding.js && shx cp build/crowdfunding.css ../content/assets/css/crowdfunding.css"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-react": "^8.0.0",
-    "@n3oltd/umbraco-crowdfunding-client": "^13.0.11",
+    "@n3oltd/umbraco-crowdfunding-client": "^13.0.15",
     "@uppy/core": "^4.0.1",
     "@uppy/dashboard": "^4.0.1",
     "@uppy/drag-drop": "^4.0.1",
@@ -35,8 +36,8 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
+    "shx": "^0.3.4",
     "typescript": "^5.2.2",
-    "vite": "^5.3.1",
-    "shx": "^0.3.4"
+    "vite": "^5.3.1"
   }
 }
