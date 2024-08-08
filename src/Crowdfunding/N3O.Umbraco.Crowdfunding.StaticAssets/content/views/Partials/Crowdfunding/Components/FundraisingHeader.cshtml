@@ -1,0 +1,36 @@
+﻿@using N3O.Umbraco.Templates
+@inject IPartialText PartialText
+
+@{
+    PartialText.SetPartialName("Header");
+}
+
+<div>
+    <header class="header" id="header">
+        <div class="auto__container">
+            <div class="header__inner">
+                <a href="#" class="header__inner-logo">
+                    <b> LOGO </b>
+                </a>
+                <div class="header__inner-side">
+                    @if(true) {
+                        <div class="header__inner-buttons mobRem">
+                            <a href="#" class="button secondary">
+                                Create A Fundraising Page
+                            </a>
+                            <a href="#" class="button secondary"> Create A Team </a>
+                        </div>
+                        <div class="header__inner-avatar">
+                            <img src="../images/avatar.png" alt="" />
+                        </div>
+                    } else {
+                        <div class="header__inner-buttons">
+                            <a href="#" class="button secondary"> Create A Campaign </a>
+                            <a href="#" class="button secondary"> Sign In </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </header>
+</div>

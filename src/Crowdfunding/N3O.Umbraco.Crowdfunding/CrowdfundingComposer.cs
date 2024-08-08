@@ -14,6 +14,7 @@ public class CrowdfundingComposer : Composer {
         builder.Components().Append<CrowdfundingContributionsMigrationsComponent>();
         
         builder.Services.AddSingleton<ICrowdfundingContributionRepository, CrowdfundingContributionRepository>();
+        builder.Services.AddScoped<FundraisingPageHelper>();
         builder.Services.AddScoped<IFundraisingPages, FundraisingPages>();
         
         RegisterFundraisingPagePropertyValidators(builder);

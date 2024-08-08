@@ -3,7 +3,7 @@ using N3O.Umbraco.Crowdfunding.UIBuilder;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using NodaTime;
-using System;
+using NPoco;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -20,5 +20,5 @@ public interface ICrowdfundingContributionRepository {
 
     Task CommitAsync();
     Task<IEnumerable<CrowdfundingContribution>> GetAllContributionsAsync();
-    Task<IEnumerable<CrowdfundingContribution>> GetAllContributionsForPageAsync(Guid pageId);
+    Task<IEnumerable<CrowdfundingContribution>> FetchContributionsAsync(Sql sql);
 }

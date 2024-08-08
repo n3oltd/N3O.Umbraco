@@ -10,20 +10,20 @@ namespace N3O.Umbraco.CrowdFunding.Services;
 public class FundraisingSignInPage : FundraisingPageBase {
     private readonly IMemberExternalLoginProviders _memberExternalLoginProviders;
     private readonly IMemberManager _memberManager;
-
+    
     public FundraisingSignInPage(IMemberExternalLoginProviders memberExternalLoginProviders, IMemberManager memberManager) {
         _memberExternalLoginProviders = memberExternalLoginProviders;
         _memberManager = memberManager;
     }
-    
+
     public override bool IsMatch(string path) {
-        return Regex.IsMatch(path, FundraisingPageUrl.FundraisingSignInPagePath, RegexOptions.IgnoreCase);
+        return Regex.IsMatch(path, FundraisingPageUrls.FundraisingSignInPagePath, RegexOptions.IgnoreCase);
     }
 
     public override async Task<object> GetViewModelAsync(string path) {
         var loginProviders = await _memberExternalLoginProviders.GetMemberProvidersAsync();
         
-        var viewModel = new CrowdfundingSignInPageViewModel();
+        var viewModel = new FundraisingSignInPageViewModel();
         viewModel.Auth0LoginProvider = loginProviders.Single();
         viewModel.IsAuthenticated = _memberManager.IsLoggedIn();
 

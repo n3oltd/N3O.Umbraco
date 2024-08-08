@@ -12,8 +12,8 @@ namespace N3O.Umbraco.Crowdfunding.Extensions;
 
 public static class CrowdfundingPageExtensions {
     public static void SetContentValues(this IContentPublisher contentPublisher,
-                                         IContentLocator contentLocator,
-                                         CreatePageReq req) {
+                                        IContentLocator contentLocator,
+                                        CreatePageReq req) {
         var campaign = contentLocator.ById(req.CampaignId.GetValueOrThrow());
         
         contentPublisher.Content.Label(CrowdfundingPage.Properties.PageSlug).Set(req.Slug);

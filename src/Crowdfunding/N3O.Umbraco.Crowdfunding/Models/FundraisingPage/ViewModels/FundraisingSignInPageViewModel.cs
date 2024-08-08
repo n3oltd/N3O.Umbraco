@@ -2,7 +2,7 @@
 
 namespace N3O.Umbraco.CrowdFunding.Models.FundraisingPage;
 
-public class CrowdfundingSignInPageViewModel {
+public class FundraisingSignInPageViewModel {
     public MemberExternalLoginProviderScheme Auth0LoginProvider { get; set; }
     public bool IsAuthenticated { get; set; }
 }
