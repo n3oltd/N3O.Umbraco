@@ -1,5 +1,5 @@
 import React from "react";
-import { PageData, PageDataEditable } from "@/common/pageData";
+import { PageData, PageDataEditable } from "../common/types/pageData";
 
 const EDIT_MODE = 'edit';
 
