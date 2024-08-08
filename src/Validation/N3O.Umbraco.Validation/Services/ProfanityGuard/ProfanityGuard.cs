@@ -10,6 +10,6 @@ public class ProfanityGuard : IProfanityGuard {
     }
     
     public bool ContainsProfanity(string text) {
-        return !_profanityFilter.ContainsProfanity(text);
+        return _profanityFilter.ContainsProfanity(text);
     }
 }

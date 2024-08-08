@@ -19,7 +19,7 @@ public class CrowdfundingPageUrlResolver : IContentFinder {
         var crowdfundingPage = _contentCache.Single(CrowdfundingConstants.FundraisingPage.Alias);
 
         if (!crowdfundingPage.HasValue()) {
-            throw new ResourceNotFoundException();
+            return Task.FromResult(false);
         }
         
         var crowdfundingPageUrl = crowdfundingPage.RelativeUrl();

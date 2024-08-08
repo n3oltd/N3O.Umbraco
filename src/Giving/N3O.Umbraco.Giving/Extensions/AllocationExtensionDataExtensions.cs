@@ -24,7 +24,7 @@ public static class AllocationExtensionDataExtensions {
     
     public static bool CanValidate(this IDictionary<string, JToken> req,
                                    IAllocationExtensionRequestValidator validator) {
-        return req.ContainsKey(validator.Key);
+        return req?.ContainsKey(validator.Key) == true;
     }
 
     public static bool HasFor(this IDictionary<string, JToken> extensionData, string key) {
