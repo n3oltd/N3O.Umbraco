@@ -22,6 +22,8 @@ public class CrowdfundingPageUrlResolver : IContentFinder {
             return Task.FromResult(false);
         }
         
+        CrowdfundingPageUrlConstants.SetRootPath(crowdfundingPage.RelativeUrl().TrimEnd("/"));
+        
         var crowdfundingPageUrl = crowdfundingPage.RelativeUrl();
         var requestedPath = request.Uri.GetAbsolutePathDecoded().ToLowerInvariant();
 

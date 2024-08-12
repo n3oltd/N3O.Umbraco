@@ -14,11 +14,11 @@ public class CreatePageHandler : IRequestHandler<CreatePageCommand, CreatePageRe
         _fundraisingPages = fundraisingPages;
     }
     
-    public Task<string> Handle(CreatePageCommand req, CancellationToken cancellationToken) {
-        var result = _fundraisingPages.CreatePage(req);
+    public async Task<string> Handle(CreatePageCommand req, CancellationToken cancellationToken) {
+        var result = await _fundraisingPages.CreatePageAsync(req);
 
         if (result.Success) {
-            return Task.FromResult(result.Url);
+            return result.Url;
         } else {
             throw new ValidationException(ValidationFailure.WithMessage(null, result.Error));
         }
