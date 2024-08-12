@@ -8,13 +8,13 @@ using Umbraco.Cms.Core.Strings;
 namespace N3O.Umbraco.Crowdfunding.Content;
 
 public class CrowdfundingPageContent : UmbracoContent<CrowdfundingPageContent> {
-    public string FundraiserName => GetValue(x => x.FundraiserName);
     public string PageTitle => GetValue(x => x.PageTitle);
     public string PageDescription => GetValue(x => x.PageDescription);
     public string PageSlug => GetValue(x => x.PageSlug);
     public HtmlEncodedString AboutPage => GetValue(x => x.AboutPage);
     public CroppedImage HeroImageBanner => GetValue(x => x.HeroImageBanner);
     public CrowdfundingCampaignContent Campaign => GetPickedAs(x => x.Campaign);
+    public IPublishedContent Fundraiser => GetPickedAs(x => x.Fundraiser);
     public CrowdfundingTeamContent Team => GetPickedAs(x => x.Team);
     public IEnumerable<IPublishedContent> PageTags => GetPickedAs(x => x.PageTags);
     public CrowdfundingPageStatus PageStatus => GetStaticLookupByNameAs(x => x.PageStatus);
