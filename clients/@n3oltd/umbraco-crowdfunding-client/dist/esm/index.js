@@ -372,12 +372,13 @@ export var SponsorshipDuration;
     SponsorshipDuration["_48"] = "_48";
     SponsorshipDuration["_60"] = "_60";
 })(SponsorshipDuration || (SponsorshipDuration = {}));
-/** One of 'boolean', 'cropper', 'dateTime', 'numeric', 'raw', 'textarea', 'textBox' */
+/** One of 'boolean', 'cropper', 'dateTime', 'nested', 'numeric', 'raw', 'textarea', 'textBox' */
 export var PropertyType;
 (function (PropertyType) {
     PropertyType["Boolean"] = "boolean";
     PropertyType["Cropper"] = "cropper";
     PropertyType["DateTime"] = "dateTime";
+    PropertyType["Nested"] = "nested";
     PropertyType["Numeric"] = "numeric";
     PropertyType["Raw"] = "raw";
     PropertyType["Textarea"] = "textarea";
