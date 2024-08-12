@@ -30,6 +30,9 @@ public class PagePropertyReq {
     [Name("Textarea")]
     public TextareaValueReq Textarea { get; set; }
     
+    [Name("Nested Content")]
+    public NestedContentValueReq NestedContent { get; set; }
+    
     [Name("TextBox")]
     public TextBoxValueReq TextBox { get; set; }
     
