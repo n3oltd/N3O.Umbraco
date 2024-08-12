@@ -56,7 +56,7 @@ public class CrowdfundingContributionsConfigurator : IKonstruktConfigurator {
         recordFieldset.AddField(c => c.Email).MakeReadOnly();
         recordFieldset.AddField(c => c.CurrencyCode).MakeReadOnly();
         recordFieldset.AddField(c => c.BaseAmount).MakeReadOnly();
-        recordFieldset.AddField(c => c.PageUrl).MakeReadOnly();
+        recordFieldset.AddField(c => c.FundraiserUrl).MakeReadOnly();
         recordFieldset.AddField(c => c.CampaignName).MakeReadOnly();
         recordFieldset.AddField(c => c.TeamName).MakeReadOnly();
         recordFieldset.AddField(c => c.TaxRelief).MakeReadOnly();

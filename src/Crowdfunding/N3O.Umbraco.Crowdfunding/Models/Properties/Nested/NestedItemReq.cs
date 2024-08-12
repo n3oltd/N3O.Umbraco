@@ -8,5 +8,5 @@ public class NestedItemReq {
     public string ContentTypeAlias { get; set; }
     
     [Name("Properties")]
-    public IEnumerable<PagePropertyReq> Properties { get; set; }
+    public IEnumerable<ContentPropertyReq> Properties { get; set; }
 }

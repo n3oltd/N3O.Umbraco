@@ -25,14 +25,14 @@ public class CrowdfundingDataReqValidator : ModelValidator<CrowdfundingDataReq> 
     }
 
     public override ValidationResult Validate(ValidationContext<CrowdfundingDataReq> context) {
-        RuleFor(x => x.PageId)
+        RuleFor(x => x.FundraiserId)
            .NotEmpty()
-           .WithMessage(Get<Strings>(s => s.SpecifyPageId));
+           .WithMessage(Get<Strings>(s => s.SpecifyFundraiserId));
         
-        RuleFor(x => x.PageId)
+        RuleFor(x => x.FundraiserId)
            .Must(x => CanDonate(x.GetValueOrThrow()))
-           .When(x => x.PageId.HasValue)
-           .WithMessage(Get<Strings>(s => s.PageNotAcceptingDonations));
+           .When(x => x.FundraiserId.HasValue)
+           .WithMessage(Get<Strings>(s => s.FundraiserNotAcceptingDonations));
         
         RuleFor(x => x.Anonymous)
            .NotNull()
@@ -51,17 +51,17 @@ public class CrowdfundingDataReqValidator : ModelValidator<CrowdfundingDataReq> 
         return base.Validate(context);
     }
 
-    private bool CanDonate(Guid pageId) {
-        var page = _contentLocator.ById<CrowdfundingPageContent>(pageId);
+    private bool CanDonate(Guid fundraiserId) {
+        var fundraiser = _contentLocator.ById<FundraiserContent>(fundraiserId);
 
-        return page?.PageStatus == CrowdfundingPageStatuses.Open;
+        return fundraiser?.Status == FundraiserStatuses.Open;
     }
 
     public class Strings : ValidationStrings {
         public string CommentTooLong_1 => "Comment length exceeds the allowed maximum of {0} characters";
-        public string PageNotAcceptingDonations => "The specified page is not currently accepting donations";
+        public string FundraiserNotAcceptingDonations => "The specified fundraiser is not currently accepting donations";
         public string SpecifyAnonymous => "Please specify if the contribution is anonymous or not";
-        public string SpecifyPageId => "Please specify the page ID";
+        public string SpecifyFundraiserId => "Please specify the fundraiser ID";
         public string UnacceptableComment => "The comment contains unacceptable characters or words";
     }
 }

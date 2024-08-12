@@ -23,7 +23,7 @@ public class NestedContentValueResMapping : IMapDefinition {
     }
 
     private NestedItemRes PopulateNestedItem(MapperContext ctx, IPublishedElement element) {
-        var properties = element.Properties.Select(ctx.Map<IPublishedProperty, PagePropertyValueRes>);
+        var properties = element.Properties.Select(ctx.Map<IPublishedProperty, ContentPropertyValueRes>);
         
         var res = new NestedItemRes();
         res.ContentTypeAlias = element.ContentType.Alias;
