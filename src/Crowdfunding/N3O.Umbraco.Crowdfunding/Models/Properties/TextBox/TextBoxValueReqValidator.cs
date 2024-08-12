@@ -7,7 +7,7 @@ namespace N3O.Umbraco.Crowdfunding.Models;
 public class TextBoxValueReqValidator : ModelValidator<TextBoxValueReq> {
     public TextBoxValueReqValidator(IFormatter formatter) : base(formatter) {
         RuleFor(x => x.Value)
-           .NotNull()
+           .NotEmpty()
            .WithMessage(Get<Strings>(x => x.SpecifyValue));
     }
 
