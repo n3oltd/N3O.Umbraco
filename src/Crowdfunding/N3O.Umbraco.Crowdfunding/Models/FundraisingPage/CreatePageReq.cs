@@ -14,9 +14,6 @@ public class CreatePageReq {
     [Name("Campaign ID")]
     public Guid? CampaignId { get; set; }
     
-    [Name("Fundraiser Name")]
-    public string FundraiserName { get; set; }
-    
     [Name("Allocation")]
     public IEnumerable<PageAllocationReq> Allocation { get; set; }
 }
