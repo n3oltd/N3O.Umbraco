@@ -10,7 +10,7 @@ using Umbraco.Cms.Core.Models;
 namespace N3O.Umbraco.Crowdfunding;
 
 public interface IFundraisingPages {
-    CreatePageResult CreatePage(CreatePageCommand req);
+    Task<CreatePageResult> CreatePageAsync(CreatePageCommand req);
     Task<IContentPublisher> GetEditorAsync(Guid id);
     IReadOnlyList<CrowdfundingPageContent> GetAllFundraisingPages();
     public bool IsFundraisingPage(IContent content);

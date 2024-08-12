@@ -6,6 +6,7 @@ using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using System.Collections.Generic;
+using Umbraco.Cms.Core.Models.PublishedContent;
 using static N3O.Umbraco.Crowdfunding.CrowdfundingConstants;
 
 namespace N3O.Umbraco.Crowdfunding.Extensions;
@@ -13,13 +14,14 @@ namespace N3O.Umbraco.Crowdfunding.Extensions;
 public static class CrowdfundingPageExtensions {
     public static void SetContentValues(this IContentPublisher contentPublisher,
                                         IContentLocator contentLocator,
-                                        CreatePageReq req) {
+                                        CreatePageReq req,
+                                        IPublishedContent member) {
         var campaign = contentLocator.ById(req.CampaignId.GetValueOrThrow());
         
         contentPublisher.Content.Label(CrowdfundingPage.Properties.PageSlug).Set(req.Slug);
         contentPublisher.Content.Label(CrowdfundingPage.Properties.PageTitle).Set(req.Name);
         contentPublisher.Content.Label(CrowdfundingPage.Properties.PageStatus).Set(CrowdfundingPageStatuses.Pending.Name);
-        contentPublisher.Content.Label(CrowdfundingPage.Properties.FundraiserName).Set(req.FundraiserName);
+        contentPublisher.Content.ContentPicker(CrowdfundingPage.Properties.Fundraiser).SetContent(member);
         contentPublisher.Content.ContentPicker(CrowdfundingPage.Properties.Campaign).SetContent(campaign);
         
         PopulateAllocations(contentPublisher, req.Allocation);

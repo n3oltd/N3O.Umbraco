@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Core.Services;
 using static N3O.Umbraco.Crowdfunding.CrowdfundingConstants;
 
@@ -20,25 +21,30 @@ public class FundraisingPages : IFundraisingPages {
     private readonly IContentEditor _contentEditor;
     private readonly IContentService _contentService;
     private readonly IContentLocator _contentLocator;
+    private readonly IMemberManager _memberManager;
 
     public FundraisingPages(FundraisingPageAccessControl fundraisingPageAccessControl,
                             IContentEditor contentEditor,
                             IContentService contentService,
-                            IContentLocator contentLocator) {
+                            IContentLocator contentLocator,
+                            IMemberManager memberManager) {
         _fundraisingPageAccessControl = fundraisingPageAccessControl;
         _contentEditor = contentEditor;
         _contentService = contentService;
         _contentLocator = contentLocator;
+        _memberManager = memberManager;
     }
     
-    public CreatePageResult CreatePage(CreatePageCommand req) {
+    public async Task<CreatePageResult> CreatePageAsync(CreatePageCommand req) {
         var fundraisingPages = _contentLocator.Single(CrowdfundingPages.Alias);
 
          var contentPublisher =_contentEditor.New(Guid.NewGuid().ToString(),
                                                   fundraisingPages.Key,
                                                   CrowdfundingPage.Alias);
          
-         contentPublisher.SetContentValues(_contentLocator, req.Model);
+         var member = await MemberExtensions.GetCurrentMemberAsync(_memberManager);
+         
+         contentPublisher.SetContentValues(_contentLocator, req.Model, member);
         
         var publishResult = contentPublisher.SaveAndPublish();
 
