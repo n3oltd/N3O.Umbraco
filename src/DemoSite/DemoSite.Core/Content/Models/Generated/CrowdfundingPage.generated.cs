@@ -82,12 +82,12 @@ namespace DemoSite.Content
 		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingPageCampaignImages> CampaignImages => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingPageCampaignImages>>(_publishedValueFallback, "campaignImages");
 
 		///<summary>
-		/// Fundraiser Name
+		/// Fundraiser
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("fundraiserName")]
-		public virtual string FundraiserName => this.Value<string>(_publishedValueFallback, "fundraiserName");
+		[ImplementPropertyType("fundraiser")]
+		public virtual global::Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent Fundraiser => this.Value<global::Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent>(_publishedValueFallback, "fundraiser");
 
 		///<summary>
 		/// Hero Image Banner
@@ -128,14 +128,6 @@ namespace DemoSite.Content
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("pageStatus")]
 		public virtual string PageStatus => this.Value<string>(_publishedValueFallback, "pageStatus");
-
-		///<summary>
-		/// Tags
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("pageTags")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingCampaignTag> PageTags => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingCampaignTag>>(_publishedValueFallback, "pageTags");
 
 		///<summary>
 		/// Page Title
