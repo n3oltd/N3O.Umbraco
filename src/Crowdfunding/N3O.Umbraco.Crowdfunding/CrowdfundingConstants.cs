@@ -15,7 +15,7 @@ public static class CrowdfundingConstants {
         public static class Properties {
             public const string Allocations = "allocations";
             public const string Campaign = "campaign";
-            public const string FundraiserName = "fundraiserName";
+            public const string Fundraiser = "fundraiser";
             public const string PageOwners = "pageOwners";
             public const string PageSlug = "pageSlug";
             public const string PageStatus = "pageStatus";

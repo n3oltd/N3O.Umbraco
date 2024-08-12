@@ -20,8 +20,8 @@ public class CrowdfundingComposer : Composer {
         
         RegisterFundraisingPagePropertyValidators(builder);
         
-        RegisterAll(t => t.ImplementsInterface<IFundraisingPage>(),
-                    t => builder.Services.AddTransient(typeof(IFundraisingPage), t));
+        RegisterAll(t => t.ImplementsInterface<ICrowdfundingPage>(),
+                    t => builder.Services.AddTransient(typeof(ICrowdfundingPage), t));
     }
     
     private void RegisterFundraisingPagePropertyValidators(IUmbracoBuilder builder) {

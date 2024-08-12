@@ -1,6 +1,6 @@
 ﻿@using N3O.Umbraco.Extensions
 @using N3O.Umbraco.Templates
-@model N3O.Umbraco.CrowdFunding.Models.FundraisingPage.FundraisingContentPageViewModel
+@model N3O.Umbraco.CrowdFunding.Models.FundraisingPage.CrowdfundingContentPageViewModel
 
 @inject IPartialText PartialText
 
@@ -31,7 +31,7 @@ PartialText.SetPartialName("DonationList");
                 <p>@PartialText.Get("Will that be you? Be the first to donate!")</p>
             </div>
             } else {
-            @foreach (var donation in Model.PageDonations) {
+            @foreach (var donation in Model.PageDonations.Take(10)) {
             <div class="donationItem">
                 <div class="donationItem__avatar">
                     <img src="@donation.AvatarLink" alt=""/>
@@ -42,7 +42,7 @@ PartialText.SetPartialName("DonationList");
                     </div>
                     <div class="donationItem__info big">
                         <div class="subtle">
-                            <b class="large"> @donation.Amount.Currency.Symbol @donation.Amount.Amount </b>
+                            <b class="large"> @($"{@donation.Amount.Currency.Symbol}{@donation.Amount.Amount}") </b>
                             @*+ £5.00 gift aid*@
                         </div>
                         <div class="subtle">@donation.DonatedAt</div>
@@ -51,14 +51,16 @@ PartialText.SetPartialName("DonationList");
             </div>
             }
 
-            <div class="donation__foot">
-                <button class="button secondary">
-                    <svg>
-                        <use xlink:href="#mailIcon"></use>
-                    </svg>
-                    @PartialText.Get("View All")
-                </button>
-            </div>
+            @if(Model.PageDonations.Count() > 10){
+                <div class="donation__foot">
+                    <button class="button secondary">
+                        <svg>
+                            <use xlink:href="#mailIcon"></use>
+                        </svg>
+                        @PartialText.Get("View All")
+                    </button>
+                </div>
+            }
             }
         </div>
 
@@ -72,7 +74,7 @@ PartialText.SetPartialName("DonationList");
                 <p>@PartialText.Get("Will that be you? Be the first to donate!")</p>
             </div>
             } else {
-            @foreach (var fundraiser in Model.CampaignFundraisers) {
+            @foreach (var fundraiser in Model.CampaignFundraisers.Take(10)) {
             <div class="donationItem">
                 <div class="donationItem__avatar">
                     <img src="@fundraiser.AvatarLink" alt=""/>
@@ -85,25 +87,26 @@ PartialText.SetPartialName("DonationList");
                     <div class="donationItem__info">
                         <div class="large">
                             <p>Raised</p>
-                            <b> @fundraiser.RaisedAmount?.Currency.Symbol @fundraiser.RaisedAmount?.Amount </b>
+                            <b> @($"{@fundraiser.RaisedAmount?.Currency.Symbol}{@fundraiser.RaisedAmount?.Amount}") </b>
                         </div>
                         <div class="subtle">
                             of
-                            <b> @fundraiser.TargetAmount?.Currency.Symbol @fundraiser.TargetAmount?.Amount </b>
+                            <b> @($"{@fundraiser.TargetAmount?.Currency.Symbol}{@fundraiser.TargetAmount?.Amount}") </b>
                         </div>
                     </div>
                 </div>
             </div>
             }
-
-            <div class="donation__foot">
-                <button class="button secondary">
-                    <svg>
-                        <use xlink:href="#mailIcon"></use>
-                    </svg>
-                    @PartialText.Get("View All")
-                </button>
-            </div>
+            @if(Model.PageDonations.Count() > 10){
+                <div class="donation__foot">
+                    <button class="button secondary">
+                        <svg>
+                            <use xlink:href="#mailIcon"></use>
+                        </svg>
+                        @PartialText.Get("View All")
+                    </button>
+                </div>
+            }
             }
         </div>
     </div>
