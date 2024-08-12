@@ -36,7 +36,12 @@ export const RichTextEditor: React.FC = () => {
 
   const {runAsync: updateProperty,} = useRequest((req: PagePropertyReq) => _client.updateProperty(pageId as string, req), {
     manual: true,
-    onSuccess: () => buttonRef.current?.click()
+    onSuccess: () => {
+      if (buttonRef.current) {
+        buttonRef.current.disabled = false;
+        buttonRef.current?.click()
+      }
+    }
   })
 
   useMutationObserver(

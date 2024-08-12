@@ -14,6 +14,11 @@ export const EDIT_TYPE = {
     editText: 'Edit',
     dataModId: '#edit-campaign-title'
   },
+  description: {
+    svgIconName: '#editIcon',
+    editText: 'Edit',
+    dataModId: '#edit-campaign-description'
+  },
   about: {
     svgIconName: '#editIcon',
     editText: 'Edit',

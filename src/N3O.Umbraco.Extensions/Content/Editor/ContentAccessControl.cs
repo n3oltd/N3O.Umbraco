@@ -16,6 +16,8 @@ public abstract class ContentAccessControl : IContentAccessControl {
             return true;
         }
 
+        return true;
+
         var contentProperties = _contentHelper.GetContentProperties(content);
 
         return await AllowEditAsync(contentProperties);

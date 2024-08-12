@@ -4,6 +4,21 @@
 <link href="/assets/css/crowdfunding-editor.css" rel="stylesheet"/>
 <link href="/assets/css/crowdfunding-main.css" rel="stylesheet"/>
 
+<style>
+    .hero__bg .campaign__edit {
+        top: 290px;
+        right: 150px;
+    }
+
+    .edit__wrapper {
+        padding: 0;
+    }
+
+    .edit__top .campaign__edit {
+        top: 80px;
+    }
+</style>
+
 <div class="main">
     @await Html.PartialAsync("~/Views/Partials/Crowdfunding/Components/ContentPage/HeroImageBanner.cshtml", Model)
     <section class="info">

@@ -64,9 +64,12 @@ export const EditCampaignGoal: React.FC = () => {
       const req: PagePropertyReq = {
         alias: properytInfo.alias,
         type: PropertyType.TextBox,
-        textBox: {
-          value: state.title
-        } 
+        cropper: {
+          rectangle: {
+            bottomLeft: {},
+            topRight: {}
+          }
+        }
       }
 
       await updateProperty(req)
@@ -86,9 +89,10 @@ export const EditCampaignGoal: React.FC = () => {
         <ImageUploader 
           aspectRatio={4/3} 
           onFileUpload={handleUplodedFile}
+          onCrop={console.debug}
           maxFiles={3}
-          uploaderId='campaign-cover'
-          uploadUrl='https://n3oltd.n3o.cloud/umbraco/api/Storage/tempUpload'
+          elementId='campaign-cover'
+          uploadUrl='https://localhost:6001/umbraco/api/Storage/tempUpload'
           />
         {/* <div className='image-container'>
           <div className='image-wrapper'>

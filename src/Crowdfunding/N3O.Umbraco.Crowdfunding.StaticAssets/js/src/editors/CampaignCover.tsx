@@ -1,6 +1,6 @@
 import React from "react";
 
-import { PagePropertyReq, PropertyType } from "@n3oltd/umbraco-crowdfunding-client";
+import { CropperValueRes, CropShape, PagePropertyReq, PropertyType, RectangleCropReq } from "@n3oltd/umbraco-crowdfunding-client";
 import { useMutationObserver, useReactive, useRequest } from "ahooks";
 
 import { ImageUploader } from "./ImageUploader"
@@ -10,15 +10,21 @@ import { handleClassMutation } from "../helpers/handleClassMutation";
 import { PropertyAlias } from "./types/propertyAlias";
 import { EDIT_TYPE } from "../common/editTypes";
 import { _client } from "../common/cfClient";
+import { Uppy } from "@uppy/core";
 
 
 export const CampaignCover: React.FC = () => {
 
   const ref = React.useRef<HTMLDivElement>(null);
   const buttonRef = React.useRef<HTMLButtonElement>(null);
-  const state = useReactive({
+  const state = useReactive<{
+    uppy: Uppy | undefined | null,
+    token: string,
+    crop: RectangleCropReq
+  }>({
     token: '',
-    image: ''
+    crop:{},
+    uppy: null
   });
 
   const {pageId} = usePageData();
@@ -30,12 +36,12 @@ export const CampaignCover: React.FC = () => {
   const {run: loadPropertyValue} = useRequest(() => _client.getPagePropertyValue(pageId as string, properytInfo.alias), {
     manual: true,
     ready: !!pageId && isModalOpen && !!properytInfo.alias,
-    onSuccess: data => state.image = data?.cropper?.image?.src || ''
+    onSuccess: data => onFileLoadSuccess(data?.cropper)
   });
 
-  const {runAsync: updateProperty,} = useRequest((req: PagePropertyReq) => _client.updateProperty(pageId as string, req), {
+  const {runAsync: updateProperty, loading: updating} = useRequest((req: PagePropertyReq) => _client.updateProperty(pageId as string, req), {
     manual: true,
-    onSuccess: () => buttonRef.current?.click()
+    onSuccess: () => handleClose()
   })
 
   useMutationObserver(
@@ -48,21 +54,55 @@ export const CampaignCover: React.FC = () => {
     if (isModalOpen) {
       loadPropertyValue()
     }
+  }, [loadPropertyValue, isModalOpen]);
 
-    if (!isModalOpen) {
-      state.token = ''
-      state.image = ''
+  const setUppyInstance = React.useCallback(uppyInstance => {
+    state.uppy = uppyInstance;
+  }, [state]);
+
+  const onFileLoadSuccess = async (cropperResponse: CropperValueRes | undefined) => {
+    if (cropperResponse?.image?.src) {
+    const response = await fetch(`${window.location.origin}${cropperResponse.image.src}`);
+    if (!response.ok) {
+      return
     }
+    const blob = await response.blob();
 
-  }, [loadPropertyValue, state, isModalOpen, ]);
+      const file = {
+          id: cropperResponse.image.mediaId,
+          name: cropperResponse.image.filename as string,
+          type: blob.type,
+          data: blob
+      }
+
+      state.uppy?.addFile(file)
+    } 
+  }
+
+  const handleCrop = event => {
+    state.crop.bottomLeft = {
+          x: Math.floor(event.detail.x),
+          y: Math.floor(event.detail.y) 
+        };
+
+    state.crop.topRight = {
+      x: Math.floor(event.detail.width),
+      y: Math.floor(event.detail.height)
+    };
+  }
 
   const saveContent = async () => {
+    if (!state.token) {
+      return;
+    }
     try {
       const req: PagePropertyReq = {
         alias: properytInfo.alias,
         type: PropertyType.Cropper,
         cropper: {
-          storageToken: state.token
+          storageToken: state.token,
+          shape: CropShape.Rectangle,
+          rectangle: state.crop
         } 
       }
 
@@ -72,8 +112,15 @@ export const CampaignCover: React.FC = () => {
     }
   }
 
+  const handleClose = () => {
+    state.crop = {}
+    state.token = '';
+    state.uppy?.clear();
+    buttonRef.current?.click()
+  }
+
   return <>
-    <div className="modalsItem modall" id="edit-campaign-cover">
+    <div className="modalsItem modall" id="edit-campaign-cover" ref={ref}>
       <div className="edit__wrapper" style={{margin: 'auto'}}>
         <div className="edit">
           <h3>Upload Cover Image</h3>
@@ -81,14 +128,19 @@ export const CampaignCover: React.FC = () => {
             <ImageUploader 
               aspectRatio={4/1}
               maxFiles={1}
-              onFileUpload={token => state.token = token}
-              uploaderId="campaign-cover"
-              uploadUrl="https://n3oltd.n3o.cloud/umbraco/api/Storage/tempUpload"
+              setUppyInstance={setUppyInstance}
+              onFileUpload={(token, uppy )=> {
+                state.token = token;
+                state.uppy = uppy
+              }}
+              onCrop={handleCrop}
+              elementId="campaign-cover"
+              uploadUrl="https://localhost:6001/umbraco/api/Storage/tempUpload"
               hieght={200}
             />
           <div className="edit__foot">
-            <button type="button" data-modal-close="true" className="button secondary" ref={buttonRef}>Cancel</button>
-            <button type="button" className="button primary" onClick={saveContent}>Save</button>
+            <button type="button" data-modal-close="true" className="button secondary" onClick={handleClose} ref={buttonRef}>Cancel</button>
+            <button type="button" className="button primary" disabled={updating} onClick={saveContent}>Save</button>
           </div>
         </div>
       </div>

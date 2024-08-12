@@ -56,7 +56,7 @@ export const useInsertElement: UseInsertElementHook = (containerId, options: use
 
         div.addEventListener('click', (e) => handleModalClick(e, div));
 
-        const {type, propertyAlias} = (container.querySelector('[data-type]') as HTMLDivElement).dataset || {}
+        const {type, propertyAlias} = (container.querySelector('[data-type]') as HTMLDivElement)?.dataset || {}
         
         if(type && propertyAlias) {
           updatePropertyInfo({
