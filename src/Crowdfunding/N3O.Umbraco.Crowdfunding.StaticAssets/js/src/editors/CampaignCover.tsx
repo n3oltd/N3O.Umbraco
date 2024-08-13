@@ -11,6 +11,7 @@ import { PropertyAlias } from "./types/propertyAlias";
 import { EDIT_TYPE } from "../common/editTypes";
 import { _client } from "../common/cfClient";
 import { Uppy } from "@uppy/core";
+import { ImageUploadStoragePath } from "../common/constants";
 
 
 export const CampaignCover: React.FC = () => {
@@ -135,7 +136,7 @@ export const CampaignCover: React.FC = () => {
               }}
               onCrop={handleCrop}
               elementId="campaign-cover"
-              uploadUrl="https://localhost:6001/umbraco/api/Storage/tempUpload"
+              uploadUrl={`${window.location.origin}${ImageUploadStoragePath}`}
               hieght={200}
             />
           <div className="edit__foot">

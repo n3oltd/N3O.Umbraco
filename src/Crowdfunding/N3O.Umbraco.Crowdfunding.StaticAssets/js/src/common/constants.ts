@@ -1,0 +1,1 @@
+export const ImageUploadStoragePath = '/umbraco/api/Storage/tempUpload'

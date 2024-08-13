@@ -9,6 +9,7 @@ import { handleClassMutation } from '../helpers/handleClassMutation';
 import { PropertyAlias } from './types/propertyAlias';
 import { EDIT_TYPE } from '../common/editTypes';
 import { _client } from '../common/cfClient';
+import { ImageUploadStoragePath } from '../common/constants';
 
 import './EditCampaign.css';
 
@@ -92,7 +93,7 @@ export const EditCampaignGoal: React.FC = () => {
           onCrop={console.debug}
           maxFiles={3}
           elementId='campaign-cover'
-          uploadUrl='https://localhost:6001/umbraco/api/Storage/tempUpload'
+          uploadUrl={`${window.location.origin}${ImageUploadStoragePath}`}
           />
         {/* <div className='image-container'>
           <div className='image-wrapper'>
