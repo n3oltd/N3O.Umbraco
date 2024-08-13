@@ -13,10 +13,10 @@ public class TextBoxPropertyType : PropertyType<TextBoxValueReq> {
                (ctx, src, dest) => dest.TextBox = ctx.Map<IPublishedProperty, TextBoxValueRes>(src),
                UmbracoPropertyEditors.Aliases.TextBox) { }
 
-    protected override Task UpdatePropertyAsync(IContentPublisher contentPublisher,
+    protected override Task UpdatePropertyAsync(IContentBuilder contentBuilder,
                                                 string alias,
                                                 TextBoxValueReq data) {
-        contentPublisher.Content.TextBox(alias).Set(data.Value);
+        contentBuilder.TextBox(alias).Set(data.Value);
 
         return Task.CompletedTask;
     }

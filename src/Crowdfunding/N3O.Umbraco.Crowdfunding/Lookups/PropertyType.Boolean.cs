@@ -13,10 +13,10 @@ public class BooleanPropertyType : PropertyType<BooleanValueReq> {
                (ctx, src, dest) => dest.Boolean = ctx.Map<IPublishedProperty, BooleanValueRes>(src),
                UmbracoPropertyEditors.Aliases.Boolean) { }
 
-    protected override Task UpdatePropertyAsync(IContentPublisher contentPublisher,
+    protected override Task UpdatePropertyAsync(IContentBuilder contentBuilder,
                                                 string alias,
                                                 BooleanValueReq data) {
-        contentPublisher.Content.Boolean(alias).Set(data.Value.GetValueOrThrow());
+        contentBuilder.Boolean(alias).Set(data.Value.GetValueOrThrow());
 
         return Task.CompletedTask;
     }

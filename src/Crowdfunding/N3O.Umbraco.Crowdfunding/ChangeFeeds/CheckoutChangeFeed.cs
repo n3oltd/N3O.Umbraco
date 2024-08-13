@@ -18,15 +18,15 @@ namespace N3O.Umbraco.Crowdfunding.ChangeFeeds;
 
 public class CheckoutChangeFeed : ChangeFeed<Checkout> {
     private readonly IClock _clock;
-    private readonly ICrowdfundingContributionRepository _repository;
+    private readonly IContributionRepository _contributionRepository;
     private readonly IJsonProvider _jsonProvider;
     
     public CheckoutChangeFeed(ILogger<CheckoutChangeFeed> logger,
                               IClock clock,
-                              ICrowdfundingContributionRepository repository,
+                              IContributionRepository contributionRepository,
                               IJsonProvider jsonProvider) 
         : base(logger) {
-        _repository = repository;
+        _contributionRepository = contributionRepository;
         _jsonProvider = jsonProvider;
         _clock = clock;
     }
@@ -64,14 +64,14 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
     private async Task CommitAsync(GivingType givingType, Checkout checkout, Allocation allocation) {
         var crowdfundingData = allocation.GetCrowdfundingData(_jsonProvider);
 
-        await _repository.AddAsync(checkout.Reference.Text,
-                                   _clock.GetCurrentInstant(),
-                                   crowdfundingData,
-                                   checkout.Account?.Email?.Address,
-                                   checkout.Account?.TaxStatus == TaxStatuses.Payer,
-                                   givingType,
-                                   allocation);
+        await _contributionRepository.AddAsync(checkout.Reference.Text,
+                                               _clock.GetCurrentInstant(),
+                                               crowdfundingData,
+                                               checkout.Account?.Email?.Address,
+                                               checkout.Account?.TaxStatus == TaxStatuses.Payer,
+                                               givingType,
+                                               allocation);
 
-        await _repository.CommitAsync();
+        await _contributionRepository.CommitAsync();
     }
 }

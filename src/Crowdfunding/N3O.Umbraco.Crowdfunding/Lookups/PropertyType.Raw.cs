@@ -13,10 +13,10 @@ public class RawPropertyType : PropertyType<RawValueReq> {
                (ctx, src, dest) => dest.Raw = ctx.Map<IPublishedProperty, RawValueRes>(src),
                UmbracoPropertyEditors.Aliases.TinyMce) { }
 
-    protected override Task UpdatePropertyAsync(IContentPublisher contentPublisher,
+    protected override Task UpdatePropertyAsync(IContentBuilder contentBuilder,
                                                 string alias,
                                                 RawValueReq data) {
-        contentPublisher.Content.Raw(alias).Set(data.Value);
+        contentBuilder.Raw(alias).Set(data.Value);
 
         return Task.CompletedTask;
     }

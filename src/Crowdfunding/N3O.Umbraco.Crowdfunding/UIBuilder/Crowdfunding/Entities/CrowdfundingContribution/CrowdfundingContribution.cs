@@ -37,14 +37,14 @@ public class CrowdfundingContribution {
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.CrowdfundingContributions.Name + "_" + nameof(TeamName), ForColumns = nameof(TeamName))]
     public string TeamName { get; set; }
     
-    [Column(nameof(PageId))]
-    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.CrowdfundingContributions.Name + "_" + nameof(PageId), ForColumns = nameof(PageId))]
-    public Guid PageId { get; set; }
+    [Column(nameof(FundraiserId))]
+    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.CrowdfundingContributions.Name + "_" + nameof(FundraiserId), ForColumns = nameof(FundraiserId))]
+    public Guid FundraiserId { get; set; }
     
-    [Column(nameof(PageUrl))]
+    [Column(nameof(FundraiserUrl))]
     [Length(400)]
-    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.CrowdfundingContributions.Name + "_" + nameof(PageUrl), ForColumns = nameof(PageUrl))]
-    public string PageUrl { get; set; }
+    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.CrowdfundingContributions.Name + "_" + nameof(FundraiserUrl), ForColumns = nameof(FundraiserUrl))]
+    public string FundraiserUrl { get; set; }
     
     [Column(nameof(CheckoutReference))]
     [Length(50)]

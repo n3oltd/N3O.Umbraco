@@ -13,10 +13,10 @@ public class NumericPropertyType : PropertyType<NumericValueReq> {
                (ctx, src, dest) => dest.Numeric = ctx.Map<IPublishedProperty, NumericValueRes>(src),
                UmbracoPropertyEditors.Aliases.Decimal) { }
 
-    protected override Task UpdatePropertyAsync(IContentPublisher contentPublisher,
+    protected override Task UpdatePropertyAsync(IContentBuilder contentBuilder,
                                                 string alias,
                                                 NumericValueReq data) {
-        contentPublisher.Content.Numeric(alias).SetDecimal(data.Value);
+        contentBuilder.Numeric(alias).SetDecimal(data.Value);
 
         return Task.CompletedTask;
     }

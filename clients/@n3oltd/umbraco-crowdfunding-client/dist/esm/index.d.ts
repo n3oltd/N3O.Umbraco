@@ -198,16 +198,18 @@ export interface PagePropertyValueRes {
     boolean?: BooleanValueRes | undefined;
     cropper?: CropperValueRes | undefined;
     dateTime?: DateTimeValueRes | undefined;
+    nested?: NestedContentValueRes | undefined;
     numeric?: NumericValueRes | undefined;
     raw?: RawValueRes | undefined;
     textarea?: TextareaValueRes | undefined;
     textBox?: TextBoxValueRes | undefined;
 }
-/** One of 'boolean', 'cropper', 'dateTime', 'numeric', 'raw', 'textarea', 'textBox' */
+/** One of 'boolean', 'cropper', 'dateTime', 'nested', 'numeric', 'raw', 'textarea', 'textBox' */
 export declare enum PropertyType {
     Boolean = "boolean",
     Cropper = "cropper",
     DateTime = "dateTime",
+    Nested = "nested",
     Numeric = "numeric",
     Raw = "raw",
     Textarea = "textarea",
@@ -237,11 +239,20 @@ export interface Crop {
 export interface DateTimeValueRes {
     value?: Date | undefined;
 }
+export interface NestedContentValueRes {
+    items?: NestedItemRes[] | undefined;
+}
+export interface NestedItemRes {
+    contentTypeAlias?: string | undefined;
+    properties?: PagePropertyValueRes[] | undefined;
+}
 export interface NumericValueRes {
     value?: number | undefined;
 }
 export interface RawValueRes {
-    value?: string | undefined;
+    value?: HtmlEncodedString | undefined;
+}
+export interface HtmlEncodedString {
 }
 export interface TextareaValueRes {
     value?: string | undefined;
@@ -258,6 +269,7 @@ export interface PagePropertyReq {
     numeric?: NumericValueReq | undefined;
     raw?: RawValueReq | undefined;
     textarea?: TextareaValueReq | undefined;
+    nestedContent?: NestedContentValueReq | undefined;
     textBox?: TextBoxValueReq | undefined;
 }
 export interface BooleanValueReq {
@@ -309,6 +321,13 @@ export interface RawValueReq {
 }
 export interface TextareaValueReq {
     value?: string | undefined;
+}
+export interface NestedContentValueReq {
+    items?: NestedItemReq[] | undefined;
+}
+export interface NestedItemReq {
+    contentTypeAlias?: string | undefined;
+    properties?: PagePropertyReq[] | undefined;
 }
 export interface TextBoxValueReq {
     value?: string | undefined;

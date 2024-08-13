@@ -8,14 +8,14 @@ public class CrowdfundingData : Value, ICrowdfundingData {
     [JsonConstructor]
     public CrowdfundingData(Guid campaignId,
                             Guid? teamId,
-                            Guid pageId,
-                            string pageUrl,
+                            Guid fundraiserId,
+                            string fundraiserUrl,
                             string comment,
                             bool anonymous) {
         CampaignId = campaignId;
         TeamId = teamId;
-        PageId = pageId;
-        PageUrl = pageUrl;
+        FundraiserId = fundraiserId;
+        FundraiserUrl = fundraiserUrl;
         Comment = comment;
         Anonymous = anonymous;
     }
@@ -23,23 +23,23 @@ public class CrowdfundingData : Value, ICrowdfundingData {
     public CrowdfundingData(ICrowdfundingData crowdfundingData)
         : this(crowdfundingData.CampaignId,
                crowdfundingData.TeamId,
-               crowdfundingData.PageId,
-               crowdfundingData.PageUrl,
+               crowdfundingData.FundraiserId,
+               crowdfundingData.FundraiserUrl,
                crowdfundingData.Comment,
                crowdfundingData.Anonymous) { }
 
     public Guid CampaignId { get; }
     public Guid? TeamId { get; }
-    public Guid PageId { get; }
-    public string PageUrl { get; }
+    public Guid FundraiserId { get; }
+    public string FundraiserUrl { get; }
     public string Comment { get; }
     public bool Anonymous { get; }
 
     protected override IEnumerable<object> GetAtomicValues() {
         yield return CampaignId;
         yield return TeamId;
-        yield return PageId;
-        yield return PageUrl;
+        yield return FundraiserId;
+        yield return FundraiserUrl;
         yield return Comment;
         yield return Anonymous;
     }

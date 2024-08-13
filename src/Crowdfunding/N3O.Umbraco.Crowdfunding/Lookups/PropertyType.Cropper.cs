@@ -17,10 +17,10 @@ public class CropperPropertyType : PropertyType<CropperValueReq> {
                (ctx, src, dest) => dest.Cropper = ctx.Map<IPublishedProperty, CropperValueRes>(src),
                CropperConstants.PropertyEditorAlias) { }
 
-    protected override async Task UpdatePropertyAsync(IContentPublisher contentPublisher,
+    protected override async Task UpdatePropertyAsync(IContentBuilder contentBuilder,
                                                       string alias,
                                                       CropperValueReq data) {
-        var cropper = contentPublisher.Content.Cropper(alias);
+        var cropper = contentBuilder.Cropper(alias);
         
         await cropper.SetImageAsync(data.StorageToken);
 
@@ -57,5 +57,4 @@ public class CropperPropertyType : PropertyType<CropperValueReq> {
                            width,
                            height);
     }
-    
 }

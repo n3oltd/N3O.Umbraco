@@ -13,10 +13,10 @@ public class TextareaPropertyType : PropertyType<TextareaValueReq> {
                (ctx, src, dest) => dest.Textarea = ctx.Map<IPublishedProperty, TextareaValueRes>(src),
                UmbracoPropertyEditors.Aliases.TextArea) { }
 
-    protected override Task UpdatePropertyAsync(IContentPublisher contentPublisher,
+    protected override Task UpdatePropertyAsync(IContentBuilder contentBuilder,
                                                 string alias,
                                                 TextareaValueReq data) {
-        contentPublisher.Content.Textarea(alias).Set(data.Value);
+        contentBuilder.Textarea(alias).Set(data.Value);
 
         return Task.CompletedTask;
     }
