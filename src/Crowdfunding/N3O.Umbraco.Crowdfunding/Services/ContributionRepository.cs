@@ -65,12 +65,12 @@ public class ContributionRepository : IContributionRepository {
         _toCommit.Clear();
     }
 
-    public async Task<IEnumerable<CrowdfundingContribution>> FindByFundraiserAsync(params Guid[] fundraiserId) {
-        using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-            var sql = $"SELECT * FROM {CrowdfundingConstants.Tables.CrowdfundingContributions.Name} WHERE {nameof(CrowdfundingContribution.FundraiserId)} IN ({fundraiserId.Select(x => $"'{x}'").ToCsv()})";
-            
-            return await db.FetchAsync<CrowdfundingContribution>(sql);
-        }
+    public async Task<IEnumerable<CrowdfundingContribution>> FindByCampaignAsync(params Guid[] campaignIds) {
+        return await FindContributionsAsync($"{nameof(CrowdfundingContribution.CampaignId)} IN ({campaignIds.Select(x => $"'{x}'").ToCsv()})");
+    }
+
+    public async Task<IEnumerable<CrowdfundingContribution>> FindByFundraiserAsync(params Guid[] fundraiserIds) {
+        return await FindContributionsAsync($"{nameof(CrowdfundingContribution.FundraiserId)} IN ({fundraiserIds.Select(x => $"'{x}'").ToCsv()})");
     }
 
     private async Task<CrowdfundingContribution> GetCrowdfundingContributionAsync(string checkoutReference,
@@ -110,5 +110,13 @@ public class ContributionRepository : IContributionRepository {
         crowdfundingContribution.AllocationJson = _jsonProvider.SerializeObject(allocation);
 
         return crowdfundingContribution;
+    }
+    
+    private async Task<IEnumerable<CrowdfundingContribution>> FindContributionsAsync(string whereClause) {
+        using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
+            var sql = $"SELECT * FROM {CrowdfundingConstants.Tables.CrowdfundingContributions.Name} WHERE {whereClause}";
+            
+            return await db.FetchAsync<CrowdfundingContribution>(sql);
+        }
     }
 }

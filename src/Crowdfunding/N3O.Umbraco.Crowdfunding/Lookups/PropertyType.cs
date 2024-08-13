@@ -45,7 +45,7 @@ public class PropertyTypes : StaticLookupsCollection<PropertyType> {
     public static readonly PropertyType Boolean = new BooleanPropertyType();
     public static readonly PropertyType Cropper = new CropperPropertyType();
     public static readonly PropertyType DateTime = new DateTimePropertyType();
-    public static readonly PropertyType NestedContent = new NestedContentPropertyType();
+    public static readonly PropertyType Nested = new NestedPropertyType();
     public static readonly PropertyType Numeric = new NumericPropertyType();
     public static readonly PropertyType Raw = new RawPropertyType();
     public static readonly PropertyType Textarea = new TextareaPropertyType();

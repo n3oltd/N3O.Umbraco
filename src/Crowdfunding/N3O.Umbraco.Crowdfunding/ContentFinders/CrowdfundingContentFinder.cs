@@ -16,7 +16,7 @@ public class CrowdfundingContentFinder : IContentFinder {
         var crowdfundingPath = _crowdfundingHelper.GetCrowdfundingPath(request.Uri);
 
         if (crowdfundingPath.HasValue()) {
-            request.SetPublishedContent(_crowdfundingHelper.GetRootPage());
+            request.SetPublishedContent(_crowdfundingHelper.GetCrowdfundingHomePage());
 
             return Task.FromResult(true);
         } else {

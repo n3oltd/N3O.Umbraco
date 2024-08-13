@@ -4,24 +4,21 @@ using N3O.Umbraco.CrowdFunding.Extensions;
 using N3O.Umbraco.Crowdfunding.UIBuilder;
 using System.Collections.Generic;
 
-namespace N3O.Umbraco.CrowdFunding.Models.FundraisingPage;
+namespace N3O.Umbraco.CrowdFunding.Models;
 
-public partial class FundraiserViewModel : CrowdfundingViewModel<FundraiserContent> {
-    public IReadOnlyList<Allocation> Allocations { get; set; }
-    public ProgressInfo Progress { get; set; }
+public partial class FundraiserViewModel : FundraiserOrCampaignViewModel<FundraiserContent> {
     public OwnerInfo Owner { get; set; }
-    public IEnumerable<Contribution> Contributions { get; set; }
-
+    
     public static FundraiserViewModel For(ICrowdfundingHelper crowdfundingHelper,
                                           FundraiserContent fundraiser,
                                           IEnumerable<CrowdfundingContribution> contributions) {
-        var viewModel = new FundraiserViewModel();
+        var viewModel = For<FundraiserViewModel>(crowdfundingHelper, fundraiser, contributions);
         
-        viewModel.Content = fundraiser;
+        // TODO Talha this is needed on CampaignViewModel also, so should be refactored to avoid the hard dependency
+        // on fundraiser
         viewModel.Allocations = fundraiser.Allocations.ToReadOnlyList(x => Allocation.For(crowdfundingHelper, x));
         viewModel.Progress = ProgressInfo.For(crowdfundingHelper, contributions, fundraiser);
         viewModel.Owner = OwnerInfo.For(fundraiser);
-        viewModel.Contributions = contributions.ToReadOnlyList(x => Contribution.For(crowdfundingHelper, x));
         
         return viewModel;
     }

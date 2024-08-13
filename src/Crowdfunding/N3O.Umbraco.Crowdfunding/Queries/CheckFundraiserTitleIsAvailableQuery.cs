@@ -5,4 +5,4 @@ using N3O.Umbraco.Validation;
 namespace N3O.Umbraco.Crowdfunding.Queries;
 
 [NoValidation]
-public class CheckFundraiserNameIsAvailableQuery : Request<CreateFundraiserReq, bool> { }
+public class CheckFundraiserTitleIsAvailableQuery : Request<CreateFundraiserReq, bool> { }

@@ -6,12 +6,12 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
-public class NestedContentValueResMapping : IMapDefinition {
+public class NestedValueResMapping : IMapDefinition {
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<IPublishedProperty, NestedContentValueRes>((_, _) => new NestedContentValueRes(), Map);
+        mapper.Define<IPublishedProperty, NestedValueRes>((_, _) => new NestedValueRes(), Map);
     }
 
-    private void Map(IPublishedProperty src, NestedContentValueRes dest, MapperContext ctx) {
+    private void Map(IPublishedProperty src, NestedValueRes dest, MapperContext ctx) {
         var elements = src.GetValue() as List<IPublishedElement>;
         var items = new List<NestedItemRes>();
         

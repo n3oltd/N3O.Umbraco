@@ -9,7 +9,7 @@ public class Crowdfunding : BlockBuilder {
         WithIcon("icon-users-alt");
         WithDescription("Block required to enable crowdfunding functionality");
         AddToCategory(BlockCategories.Advanced);
-        LimitTo(CrowdfundingConstants.CrowdfundingPage.Alias);
+        LimitTo(CrowdfundingConstants.CrowdfundingHomePage.Alias);
         SingleLayout();
     }
 }

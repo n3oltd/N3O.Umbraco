@@ -5,9 +5,9 @@ using N3O.Umbraco.Financial;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace N3O.Umbraco.CrowdFunding.Models.FundraisingPage;
+namespace N3O.Umbraco.CrowdFunding.Models;
 
-public partial class FundraiserViewModel {
+public partial class FundraiserOrCampaignViewModel<TContent> {
     public class ProgressInfo {
         public int SupportersCount { get; set; }
         public Money RaisedAmount { get; set; }

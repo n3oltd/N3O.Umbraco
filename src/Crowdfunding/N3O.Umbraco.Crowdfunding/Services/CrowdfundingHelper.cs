@@ -21,26 +21,26 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Crowdfunding;
 
 public class CrowdfundingHelper : ICrowdfundingHelper {
-    private IPublishedContent _rootPage;
-    private string _rootPath;
+    private IPublishedContent _crowdfundingHomePage;
+    private string _crowdfundingHomePath;
     
-    private readonly FundraiserAccessControl _fundraiserAccessControl;
-    private readonly IContentCache _contentCache;
-    private readonly IContentEditor _contentEditor;
-    private readonly IContentService _contentService;
-    private readonly IContentLocator _contentLocator;
-    private readonly IMemberManager _memberManager;
-    private readonly ICurrencyAccessor _currencyAccessor;
-    private readonly IForexConverter _forexConverter;
+    private readonly Lazy<FundraiserAccessControl> _fundraiserAccessControl;
+    private readonly Lazy<IContentCache> _contentCache;
+    private readonly Lazy<IContentEditor> _contentEditor;
+    private readonly Lazy<IContentService> _contentService;
+    private readonly Lazy<IContentLocator> _contentLocator;
+    private readonly Lazy<IMemberManager> _memberManager;
+    private readonly Lazy<ICurrencyAccessor> _currencyAccessor;
+    private readonly Lazy<IForexConverter> _forexConverter;
 
-    public CrowdfundingHelper(FundraiserAccessControl fundraiserAccessControl,
-                              IContentCache contentCache,
-                              IContentEditor contentEditor,
-                              IContentService contentService,
-                              IContentLocator contentLocator,
-                              IMemberManager memberManager,
-                              ICurrencyAccessor currencyAccessor,
-                              IForexConverter forexConverter) {
+    public CrowdfundingHelper(Lazy<FundraiserAccessControl> fundraiserAccessControl,
+                              Lazy<IContentCache> contentCache,
+                              Lazy<IContentEditor> contentEditor,
+                              Lazy<IContentService> contentService,
+                              Lazy<IContentLocator> contentLocator,
+                              Lazy<IMemberManager> memberManager,
+                              Lazy<ICurrencyAccessor> currencyAccessor,
+                              Lazy<IForexConverter> forexConverter) {
         _fundraiserAccessControl = fundraiserAccessControl;
         _contentCache = contentCache;
         _contentEditor = contentEditor;
@@ -51,90 +51,90 @@ public class CrowdfundingHelper : ICrowdfundingHelper {
         _forexConverter = forexConverter;
     }
     
-    public string GetCrowdfundingPath(Uri requestUri) {
-        var rootPath = GetRootPath();
-        var requestedPath = requestUri.GetAbsolutePathDecoded().ToLowerInvariant();
-        
-        if (requestedPath.StartsWith(rootPath)) {
-            return requestedPath.Substring(rootPath.Length + 1);
-        } else {
-            return null;
-        }
-    }
-    
-    public IPublishedContent GetRootPage() {
-        if (_rootPage == null) {
-            _rootPage = _contentCache.Single(CrowdfundingConstants.Root.Alias);
-        }
-
-        return _rootPage;
-    }
-    
-    public string GetRootPath() {
-        if (_rootPath == null) {
-            var rootPage = GetRootPage();
-            
-            if (rootPage.HasValue()) {
-                _rootPath = _rootPage.RelativeUrl().TrimEnd("/");
-            }
-        }
-
-        return _rootPath;
-    }
-    
     public async Task<CreateFundraiserResult> CreateFundraiserAsync(CreateFundraiserCommand req) {
-        var fundraisingPages = _contentLocator.Single(CrowdfundingConstants.Fundraisers.Alias);
+        var fundraisersCollection = _contentLocator.Value.Single(CrowdfundingConstants.Fundraisers.Alias);
 
-         var contentPublisher =_contentEditor.New(Guid.NewGuid().ToString(),
-                                                  fundraisingPages.Key,
-                                                  CrowdfundingConstants.CrowdfundingPage.Alias);
+         var contentPublisher =_contentEditor.Value.New(Guid.NewGuid().ToString(),
+                                                        fundraisersCollection.Key,
+                                                        CrowdfundingConstants.Fundraiser.Alias);
          
-         var member = await MemberExtensions.GetCurrentMemberAsync(_memberManager);
+         var member = await MemberExtensions.GetCurrentMemberAsync(_memberManager.Value);
          
-         contentPublisher.SetContentValues(_contentLocator, req.Model, member);
+         contentPublisher.PopulateFundraiser(_contentLocator.Value, req.Model, member);
         
         var publishResult = contentPublisher.SaveAndPublish();
 
         if (publishResult.Success) {
-            var publishedContent = _contentLocator.ById<FundraiserContent>(publishResult.Content.Key);
+            var publishedContent = _contentLocator.Value.ById<FundraiserContent>(publishResult.Content.Key);
 
             return CreateFundraiserResult.ForSuccess(publishedContent);
         } else {
             return CreateFundraiserResult.ForError(publishResult.EventMessages.OrEmpty(x => x.GetAll()));
         }
     }
+    
+    public IPublishedContent GetCrowdfundingHomePage() {
+        if (_crowdfundingHomePage == null) {
+            _crowdfundingHomePage = _contentCache.Value.Single(CrowdfundingConstants.CrowdfundingHomePage.Alias);
+        }
 
+        return _crowdfundingHomePage;
+    }
+
+    public string GetCrowdfundingPath(Uri requestUri) {
+        var crowdfundingHomePath = GetCrowdfundingHomePath();
+        var requestedPath = requestUri.GetAbsolutePathDecoded().ToLowerInvariant();
+        
+        if (requestedPath.StartsWith(crowdfundingHomePath)) {
+            return requestedPath.Substring(crowdfundingHomePath.Length + 1);
+        } else {
+            return null;
+        }
+    }
+    
+    public IReadOnlyList<FundraiserContent> GetAllFundraisers() {
+        var allFundraisers = _contentLocator.Value.All<FundraiserContent>();
+
+        return allFundraisers;
+    }
+    
     public async Task<IContentPublisher> GetEditorAsync(Guid id) {
-        var content = _contentService.GetById(id);
+        var content = _contentService.Value.GetById(id);
 
-        var canEdit = await _fundraiserAccessControl.CanEditAsync(content);
+        var canEdit = await _fundraiserAccessControl.Value.CanEditAsync(content);
 
         if (!canEdit) {
             throw new UnauthorizedAccessException();
         }
 
-        return _contentEditor.ForExisting(id);
+        return _contentEditor.Value.ForExisting(id);
     }
-    
-    public Money GetQuoteMoney(decimal amount) {
-        var currency = _currencyAccessor.GetCurrency();
 
-        return _forexConverter.BaseToQuote().ToCurrency(currency).Convert(amount).Quote;
-    }
-    
-    public IReadOnlyList<FundraiserContent> GetAllFundraisers() {
-        var fundraisingPages = _contentLocator.All<FundraiserContent>();
+    public Money GetQuoteMoney(decimal baseAmount) {
+        var currency = _currencyAccessor.Value.GetCurrency();
 
-        return fundraisingPages;
+        return _forexConverter.Value.BaseToQuote().ToCurrency(currency).Convert(baseAmount).Quote;
     }
     
     public bool IsFundraiser(IContent content) {
         return content.ContentType.Alias.EqualsInvariant(CrowdfundingConstants.Fundraiser.Alias);
     }
 
-    public bool IsFundraiserNameAvailable(string name) {
+    public bool IsFundraiserTitleAvailable(string title) {
         var allFundraisers = GetAllFundraisers();
 
-        return allFundraisers.All(x => !x.Title.EqualsInvariant(name));
+        return allFundraisers.All(x => !x.Title.EqualsInvariant(title));
+    }
+    
+    private string GetCrowdfundingHomePath() {
+        if (_crowdfundingHomePath == null) {
+            var crowdfundingHomePage = GetCrowdfundingHomePage();
+            
+            if (crowdfundingHomePage.HasValue()) {
+                _crowdfundingHomePath = crowdfundingHomePage.RelativeUrl().TrimEnd("/");
+            }
+        }
+
+        return _crowdfundingHomePath;
     }
 }

@@ -5,8 +5,8 @@ using System.Collections.Generic;
 namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class CreateFundraiserReq {
-    [Name("Name")]
-    public string Name { get; set; }
+    [Name("Title")]
+    public string Title { get; set; }
     
     [Name("Slug")]
     public string Slug { get; set; }
@@ -14,6 +14,6 @@ public class CreateFundraiserReq {
     [Name("Campaign ID")]
     public Guid? CampaignId { get; set; }
     
-    [Name("Allocation")]
-    public IEnumerable<FundraiserAllocationReq> Allocation { get; set; }
+    [Name("Allocations")]
+    public IEnumerable<FundraiserAllocationReq> Allocations { get; set; }
 }

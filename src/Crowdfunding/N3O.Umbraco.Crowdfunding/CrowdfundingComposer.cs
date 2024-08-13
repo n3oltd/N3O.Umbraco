@@ -16,7 +16,14 @@ public class CrowdfundingComposer : Composer {
         
         builder.Services.AddSingleton<IContributionRepository, ContributionRepository>();
         builder.Services.AddScoped<ICrowdfundingHelper, CrowdfundingHelper>();
-        builder.Services.AddSingleton<ISlugHelper, SlugHelper>();
+        builder.Services.AddSingleton<ISlugHelper>(_ => {
+            var config = new SlugHelperConfiguration();
+            config.DeniedCharactersRegex = CrowdfundingUrl.Routes.Slugs.DeniedCharacters;
+            config.CollapseDashes = true;
+            config.ForceLowerCase = true;
+
+            return new SlugHelper(config);
+        });
         
         RegisterAll(t => t.ImplementsInterface<IContentPropertyValidator>(),
                     t => builder.Services.AddTransient(typeof(IContentPropertyValidator), t));

@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
-public class NestedContentValueReq : ValueReq {
+public class NestedValueReq : ValueReq {
     [Name("Items")]
     public IEnumerable<NestedItemReq> Items { get; set; }
     
     [JsonIgnore]
-    public override PropertyType Type => PropertyTypes.NestedContent;
+    public override PropertyType Type => PropertyTypes.Nested;
 }

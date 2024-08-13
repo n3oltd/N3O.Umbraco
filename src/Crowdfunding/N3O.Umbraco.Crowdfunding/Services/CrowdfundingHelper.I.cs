@@ -13,11 +13,11 @@ namespace N3O.Umbraco.Crowdfunding;
 
 public interface ICrowdfundingHelper {
     Task<CreateFundraiserResult> CreateFundraiserAsync(CreateFundraiserCommand req);
+    IPublishedContent GetCrowdfundingHomePage();
     string GetCrowdfundingPath(Uri requestUri);
-    Task<IContentPublisher> GetEditorAsync(Guid id);
     IReadOnlyList<FundraiserContent> GetAllFundraisers();
+    Task<IContentPublisher> GetEditorAsync(Guid id);
+    Money GetQuoteMoney(decimal baseAmount);
     public bool IsFundraiser(IContent content);
-    bool IsFundraiserNameAvailable(string name);
-    Money GetQuoteMoney(decimal amount);
-    IPublishedContent GetRootPage();
+    bool IsFundraiserTitleAvailable(string title);
 }

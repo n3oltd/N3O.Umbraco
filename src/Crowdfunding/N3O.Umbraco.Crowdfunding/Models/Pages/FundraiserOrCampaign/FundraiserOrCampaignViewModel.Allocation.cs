@@ -5,9 +5,9 @@ using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using System.Collections.Generic;
 
-namespace N3O.Umbraco.CrowdFunding.Models.FundraisingPage;
+namespace N3O.Umbraco.CrowdFunding.Models;
 
-public partial class FundraiserViewModel {
+public partial class FundraiserOrCampaignViewModel<TContent> {
     public class Allocation {
         public string Title { get; set; }
         public decimal Amount { get; set; }
@@ -15,11 +15,11 @@ public partial class FundraiserViewModel {
         public FundDimension2Value FundDimension2Value { get; set; }
         public FundDimension3Value FundDimension3Value { get; set; }
         public FundDimension4Value FundDimension4Value { get; set; }
-        public IReadOnlyList<PriceHandle> PriceHandles { get; set; }
-
+        public AllocationType Type { get; set; }
         public DonationItem DonationItem { get; set; }
         public SponsorshipScheme SponsorshipScheme { get; set; }
         public FeedbackScheme FeedbackScheme { get; set; }
+        public IReadOnlyList<PriceHandle> PriceHandles { get; set; }
 
         public static Allocation For(ICrowdfundingHelper crowdfundingHelper,
                                      FundraiserAllocationElement fundraiserAllocation) {
@@ -31,10 +31,10 @@ public partial class FundraiserViewModel {
             allocation.FundDimension2Value = fundraiserAllocation.Dimension2;
             allocation.FundDimension3Value = fundraiserAllocation.Dimension3;
             allocation.FundDimension4Value = fundraiserAllocation.Dimension4;
-            allocation.DonationItem = fundraiserAllocation.DonationItem;
-            allocation.SponsorshipScheme = fundraiserAllocation.SponsorshipScheme;
-            allocation.FeedbackScheme = fundraiserAllocation.FeedbackScheme;
-            allocation.FeedbackScheme = fundraiserAllocation.FeedbackScheme;
+            allocation.Type = fundraiserAllocation.Type;
+            allocation.DonationItem = fundraiserAllocation.Fund?.DonationItem;
+            allocation.SponsorshipScheme = fundraiserAllocation.Sponsorship?.Scheme;
+            allocation.FeedbackScheme = fundraiserAllocation.Feedback?.Scheme;
             allocation.PriceHandles = fundraiserAllocation.PriceHandles
                                                           .ToReadOnlyList(x => PriceHandle.For(crowdfundingHelper, x));
 

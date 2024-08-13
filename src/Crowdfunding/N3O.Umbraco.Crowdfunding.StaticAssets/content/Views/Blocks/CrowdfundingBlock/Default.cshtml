@@ -4,8 +4,6 @@
 
 @foreach (var crowdfundingPage in CrowdfundingPages) {
     if (crowdfundingPage.IsMatch(Context.Request.Path)) {
-        var viewModel = await crowdfundingPage.GetViewModelAsync(crowdfundingPagePath)
-
-        await Html.RenderPartialAsync($"~/Views/Partials/Crowdfunding/{crowdfundingPage.ViewName}.cshtml", viewModel);
+        await Html.RenderCrowdfundingPageAsync(crowdfundingPage, Context.Request.Uri());
     }
 }

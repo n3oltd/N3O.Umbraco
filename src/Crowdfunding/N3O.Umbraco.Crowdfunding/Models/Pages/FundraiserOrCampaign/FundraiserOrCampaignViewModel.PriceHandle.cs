@@ -2,9 +2,9 @@
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Content;
 
-namespace N3O.Umbraco.CrowdFunding.Models.FundraisingPage;
+namespace N3O.Umbraco.CrowdFunding.Models;
 
-public partial class FundraiserViewModel {
+public partial class FundraiserOrCampaignViewModel<TContent> {
     public class PriceHandle {
         public Money Amount { get; set; }
         public string Description { get; set; }

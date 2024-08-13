@@ -13,8 +13,8 @@ public static class CrowdfundingConstants {
         public const string Alias = "crowdfundingCampaign";
     }
     
-    public static class CrowdfundingPage {
-        public const string Alias = "crowdfundingPage";
+    public static class CrowdfundingHomePage {
+        public const string Alias = "crowdfundingHomePage";
     }
 
     public static class Fundraiser {
@@ -82,15 +82,6 @@ public static class CrowdfundingConstants {
                 }
             }
         }
-    }
-
-    public static class Root {
-        public const string Alias = "crowdfudingRoot";
-    }
-    
-    public class Routes {
-        public const string Fundraiser = "pages/([0-9]+)/([a-z0-9-]+)";
-        public const string SignIn = "sign-in";
     }
 
     public static class Tables {
