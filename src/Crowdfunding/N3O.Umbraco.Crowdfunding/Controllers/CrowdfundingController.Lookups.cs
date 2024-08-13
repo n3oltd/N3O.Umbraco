@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Crowdfunding.Controllers;
 
 public partial class CrowdfundingController {
     [HttpGet("lookups/propertyTypes")]
-    public async Task<ActionResult<IEnumerable<LookupRes>>> GetCrowdfundingPagePropertyTypes() {
+    public async Task<ActionResult<IEnumerable<LookupRes>>> GetPropertyTypes() {
         var listLookups = new ListCustomLookups<PropertyType, LookupRes>(_lookups.Value, _mapper.Value);
         var res = await listLookups.RunAsync();
 

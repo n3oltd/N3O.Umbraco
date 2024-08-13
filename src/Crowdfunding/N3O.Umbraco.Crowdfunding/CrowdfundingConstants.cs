@@ -9,23 +9,60 @@ public static class CrowdfundingConstants {
         }
     }
     
+    public static class Campaign {
+        public const string Alias = "crowdfundingCampaign";
+    }
+    
     public static class CrowdfundingPage {
         public const string Alias = "crowdfundingPage";
+    }
+
+    public static class Fundraiser {
+        public const string Alias = "crowdfundingFundraiser";
         
         public static class Properties {
             public const string Allocations = "allocations";
             public const string Campaign = "campaign";
-            public const string Fundraiser = "fundraiser";
-            public const string PageOwners = "pageOwners";
-            public const string PageSlug = "pageSlug";
-            public const string PageStatus = "pageStatus";
-            public const string PageTitle = "pageTitle";
+            public const string Owner = "owner";
+            public const string Slug = "slug";
+            public const string Status = "status";
+            public const string Team = "team";
+            public const string Title = "title";
         }
     }
+    
+    public static class Fundraisers {
+        public const string Alias = "crowdfundingFundraisers";
+    }
 
-    public static class CrowdfundingPageAllocation {
-        public const string Alias = "crowdfundingPageAllocation";
+    public static class FundraiserAllocation {
+        public const string Alias = "crowdfundingFundraiserAllocation";
 
+        public static class Feedback {
+            public const string Alias = "crowdfundingFundraiserFeedbackAllocation";
+
+            public static class Properties {
+                public const string Scheme = "scheme";
+                public const string CustomFields = "customFields";
+            }
+        }
+    
+        public static class Fund {
+            public const string Alias = "crowdfundingFundraiserFundAllocation";
+
+            public static class Properties {
+                public const string DonationItem = "donationItem";
+            }
+        }
+    
+        public static class Sponsorship {
+            public const string Alias = "crowdfundingFundraiserSponsorshipAllocation";
+
+            public static class Properties {
+                public const string Scheme = "scheme";
+            }
+        }
+        
         public static class Properties {
             public const string Title = "title";
             public const string Type = "type";
@@ -47,37 +84,13 @@ public static class CrowdfundingConstants {
         }
     }
 
-    public static class CrowdfundingPageFundAllocation {
-        public const string Alias = "crowdfundingPageFundAllocation";
-
-        public static class Properties {
-            public const string DonationItem = "donationItem";
-        }
+    public static class Root {
+        public const string Alias = "crowdfudingRoot";
     }
     
-    public static class CrowdfundingPageSponsorshipAllocation {
-        public const string Alias = "crowdfundingPageSponsorshipAllocation";
-
-        public static class Properties {
-            public const string Scheme = "scheme";
-        }
-    }
-    
-    public static class CrowdfundingPageFeedbackAllocation {
-        public const string Alias = "crowdfundingPageFeedbackAllocation";
-
-        public static class Properties {
-            public const string Scheme = "scheme";
-            public const string CustomFields = "customFields";
-        }
-    }
-    
-    public static class CrowdfundingPages {
-        public const string Alias = "crowdfundingPages";
-    }
-
-    public static class FundraisingPage {
-        public const string Alias = "fundraisingPage";
+    public class Routes {
+        public const string Fundraiser = "pages/([0-9]+)/([a-z0-9-]+)";
+        public const string SignIn = "sign-in";
     }
 
     public static class Tables {
@@ -85,5 +98,9 @@ public static class CrowdfundingConstants {
             public const string Name = "N3O_CrowdfundingContributions";
             public const string PrimaryKey = "PK_N3O_CrowdfundingContributions";
         }
+    }
+    
+    public static class Team {
+        public const string Alias = "crowdfundingTeam";
     }
 }

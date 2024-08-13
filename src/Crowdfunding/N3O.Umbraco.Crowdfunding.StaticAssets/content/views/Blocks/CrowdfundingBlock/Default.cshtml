@@ -1,15 +1,11 @@
 ﻿@using N3O.Umbraco.Crowdfunding
-@using N3O.Umbraco.CrowdFunding.Services
 
 @inject IEnumerable<ICrowdfundingPage> CrowdfundingPages
 
-@{
-    var crowdfundingPagePath = CrowdfundingPageUrlConstants.GetCrowdfundingPagePath(Context.Request.Path);
-}
-
 @foreach (var crowdfundingPage in CrowdfundingPages) {
-    if (crowdfundingPage.IsMatch(crowdfundingPagePath)) {
-        await Html.RenderPartialAsync($"~/Views/Partials/Crowdfunding/{crowdfundingPage.ViewName}.cshtml",
-                                      await crowdfundingPage.GetViewModelAsync(crowdfundingPagePath));
+    if (crowdfundingPage.IsMatch(Context.Request.Path)) {
+        var viewModel = await crowdfundingPage.GetViewModelAsync(crowdfundingPagePath)
+
+        await Html.RenderPartialAsync($"~/Views/Partials/Crowdfunding/{crowdfundingPage.ViewName}.cshtml", viewModel);
     }
 }

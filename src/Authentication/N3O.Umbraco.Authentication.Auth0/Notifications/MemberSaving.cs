@@ -25,14 +25,15 @@ public class MemberSaving : INotificationAsyncHandler<MemberSavingNotification> 
     public async Task HandleAsync(MemberSavingNotification notification, CancellationToken cancellationToken) {
         if (_auth0MemberOptions.Auth0.Login.AutoCreateDirectoryUser) {
             foreach (var member in notification.SavedEntities) {
-                var auth0User = await _userDirectory.Value.CreateUserIfNotExistsAsync(ClientTypes.Members,
-                                                                      _auth0MemberOptions.Auth0.Login.ClientId,
-                                                                      _auth0MemberOptions.Auth0.Login.ConnectionName,
-                                                                      member.Email,
-                                                                      member.Name,
-                                                                      lastName: null);
+                var auth0User = await _userDirectory.Value
+                                                    .CreateUserIfNotExistsAsync(ClientTypes.Members,
+                                                                                _auth0MemberOptions.Auth0.Login.ClientId,
+                                                                                _auth0MemberOptions.Auth0.Login.ConnectionName,
+                                                                                member.Email,
+                                                                                member.Name,
+                                                                                lastName: null);
 
-                if (auth0User.HasValue()) {
+                if (auth0User.HasValue(x => x.Picture)) {
                     SetMemberAvatarLink(member, auth0User.Picture);
                 }
             }
@@ -41,7 +42,7 @@ public class MemberSaving : INotificationAsyncHandler<MemberSavingNotification> 
 
     private void SetMemberAvatarLink(IMember member, string pictureUrl) {
         if (member.HasProperty(MemberConstants.Member.Properties.AvatarLink) &&
-            !member.GetValue<string>(MemberConstants.Member.Properties.AvatarLink).Equals(pictureUrl)) {
+            member.GetValue<string>(MemberConstants.Member.Properties.AvatarLink) != pictureUrl) {
             member.SetValue(MemberConstants.Member.Properties.AvatarLink, pictureUrl);
         }
     }

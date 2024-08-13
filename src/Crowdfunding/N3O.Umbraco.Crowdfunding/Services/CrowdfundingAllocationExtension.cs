@@ -19,7 +19,7 @@ public class CrowdfundingAllocationExtension : AllocationExtension<CrowdfundingD
     }
 
     protected override CrowdfundingData Bind(CrowdfundingDataReq req) {
-        var page = _contentLocator.ById<CrowdfundingPageContent>(req.PageId.GetValueOrThrow());
+        var page = _contentLocator.ById<FundraiserContent>(req.FundraiserId.GetValueOrThrow());
         
         return new CrowdfundingData(page.Campaign.Content().Key,
                                     page.Team?.Content().Key,

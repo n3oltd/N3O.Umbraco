@@ -24,12 +24,12 @@ public class UserDirectory : IUserDirectory {
     }
 
     public async Task<Auth0User> CreateUserIfNotExistsAsync(ClientType clientType,
-                                                 string clientId,
-                                                 string connectionName,
-                                                 string email,
-                                                 string firstName,
-                                                 string lastName,
-                                                 string password = null) {
+                                                            string clientId,
+                                                            string connectionName,
+                                                            string email,
+                                                            string firstName,
+                                                            string lastName,
+                                                            string password = null) {
         var managementClient = await GetManagementClientAsync(clientType); 
         var authClient = GetAuthenticationClient(clientType);
         
