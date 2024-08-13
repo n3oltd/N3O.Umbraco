@@ -34,7 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="X.Web.Sitemap" Version="2.10.1" />
+      <PackageReference Include="X.Web.Sitemap" Version="2.10.3" />
     </ItemGroup>
 
     <ItemGroup>

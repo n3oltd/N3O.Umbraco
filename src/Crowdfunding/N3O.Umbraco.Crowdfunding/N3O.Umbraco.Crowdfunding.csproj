@@ -43,7 +43,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="HtmlSanitizer" Version="8.0.865" />
+      <PackageReference Include="HtmlSanitizer" Version="8.1.870" />
       <PackageReference Include="Slugify.Core" Version="4.0.1" />
     </ItemGroup>
 </Project>
