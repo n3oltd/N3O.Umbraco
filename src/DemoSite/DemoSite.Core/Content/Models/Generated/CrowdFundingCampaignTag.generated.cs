@@ -48,5 +48,13 @@ namespace DemoSite.Content
 		}
 
 		// properties
+
+		///<summary>
+		/// Category
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("category")]
+		public virtual global::DemoSite.Content.CampaignTagCategory Category => this.Value<global::DemoSite.Content.CampaignTagCategory>(_publishedValueFallback, "category");
 	}
 }

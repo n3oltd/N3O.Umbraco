@@ -48,13 +48,5 @@ namespace DemoSite.Content
 		}
 
 		// properties
-
-		///<summary>
-		/// Profile Picture
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("profilePicture")]
-		public virtual string ProfilePicture => this.Value<string>(_publishedValueFallback, "profilePicture");
 	}
 }

@@ -16,16 +16,11 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Core.Services;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Crowdfunding;
 
-public class CrowdfundingHelper : ICrowdfundingHelper {
-    private IPublishedContent _crowdfundingHomePage;
-    private string _crowdfundingHomePath;
-    
+public partial class CrowdfundingHelper : ICrowdfundingHelper {
     private readonly Lazy<FundraiserAccessControl> _fundraiserAccessControl;
-    private readonly Lazy<IContentCache> _contentCache;
     private readonly Lazy<IContentEditor> _contentEditor;
     private readonly Lazy<IContentService> _contentService;
     private readonly Lazy<IContentLocator> _contentLocator;
@@ -34,7 +29,6 @@ public class CrowdfundingHelper : ICrowdfundingHelper {
     private readonly Lazy<IForexConverter> _forexConverter;
 
     public CrowdfundingHelper(Lazy<FundraiserAccessControl> fundraiserAccessControl,
-                              Lazy<IContentCache> contentCache,
                               Lazy<IContentEditor> contentEditor,
                               Lazy<IContentService> contentService,
                               Lazy<IContentLocator> contentLocator,
@@ -42,7 +36,6 @@ public class CrowdfundingHelper : ICrowdfundingHelper {
                               Lazy<ICurrencyAccessor> currencyAccessor,
                               Lazy<IForexConverter> forexConverter) {
         _fundraiserAccessControl = fundraiserAccessControl;
-        _contentCache = contentCache;
         _contentEditor = contentEditor;
         _contentService = contentService;
         _contentLocator = contentLocator;
@@ -74,22 +67,11 @@ public class CrowdfundingHelper : ICrowdfundingHelper {
     }
     
     public IPublishedContent GetCrowdfundingHomePage() {
-        if (_crowdfundingHomePage == null) {
-            _crowdfundingHomePage = _contentCache.Value.Single(CrowdfundingConstants.CrowdfundingHomePage.Alias);
-        }
-
-        return _crowdfundingHomePage;
+        return GetCrowdfundingHomePage(_contentLocator.Value);
     }
 
     public string GetCrowdfundingPath(Uri requestUri) {
-        var crowdfundingHomePath = GetCrowdfundingHomePath();
-        var requestedPath = requestUri.GetAbsolutePathDecoded().ToLowerInvariant();
-        
-        if (requestedPath.StartsWith(crowdfundingHomePath)) {
-            return requestedPath.Substring(crowdfundingHomePath.Length + 1);
-        } else {
-            return null;
-        }
+        return GetCrowdfundingPath(_contentLocator.Value, requestUri);
     }
     
     public IReadOnlyList<FundraiserContent> GetAllFundraisers() {
@@ -124,17 +106,5 @@ public class CrowdfundingHelper : ICrowdfundingHelper {
         var allFundraisers = GetAllFundraisers();
 
         return allFundraisers.All(x => !x.Title.EqualsInvariant(title));
-    }
-    
-    private string GetCrowdfundingHomePath() {
-        if (_crowdfundingHomePath == null) {
-            var crowdfundingHomePage = GetCrowdfundingHomePage();
-            
-            if (crowdfundingHomePage.HasValue()) {
-                _crowdfundingHomePath = crowdfundingHomePage.RelativeUrl().TrimEnd("/");
-            }
-        }
-
-        return _crowdfundingHomePath;
     }
 }

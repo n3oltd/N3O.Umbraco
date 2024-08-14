@@ -9,7 +9,6 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Accounts\N3O.Umbraco.Accounts\N3O.Umbraco.Accounts.csproj" />
       <ProjectReference Include="..\..\Analytics\N3O.Umbraco.Analytics\N3O.Umbraco.Analytics.csproj" />
-      <ProjectReference Include="..\..\Authentication\N3O.Umbraco.Authentication.Auth0\N3O.Umbraco.Authentication.Auth0.csproj" />
       <ProjectReference Include="..\..\Blog\N3O.Umbraco.Blog\N3O.Umbraco.Blog.csproj" />
       <ProjectReference Include="..\..\Captcha\N3O.Umbraco.Captcha\N3O.Umbraco.Captcha.csproj" />
       <ProjectReference Include="..\..\Cdn\N3O.Umbraco.Cdn.Cloudflare\N3O.Umbraco.Cdn.Cloudflare.csproj" />

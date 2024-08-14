@@ -15,8 +15,8 @@ public class AddressReqValidator : ModelValidator<AddressReq> {
         
         RuleFor(x => x.Line1)
             .NotEmpty()
-            .When(_ => settings.Line1.Required)
-            .WithMessage(Get<Strings>(x => x.Specify_1, settings.Line1.Label));
+            .When(_ => settings?.Line1.Required == true)
+            .WithMessage(Get<Strings>(x => x.Specify_1, settings?.Line1.Label));
 
         RuleFor(x => x.Line1)
             .Length(0, AddressFieldMaxLength)
@@ -25,8 +25,8 @@ public class AddressReqValidator : ModelValidator<AddressReq> {
 
         RuleFor(x => x.Line2)
             .NotEmpty()
-            .When(_ => settings.Line2.Required)
-            .WithMessage(Get<Strings>(x => x.Specify_1, settings.Line2.Label));
+            .When(_ => settings?.Line2.Required == true)
+            .WithMessage(Get<Strings>(x => x.Specify_1, settings?.Line2.Label));
         
         RuleFor(x => x.Line2)
             .Length(0, AddressFieldMaxLength)
@@ -34,8 +34,8 @@ public class AddressReqValidator : ModelValidator<AddressReq> {
 
         RuleFor(x => x.Line3)
             .NotEmpty()
-            .When(_ => settings.Line3.Required)
-            .WithMessage(Get<Strings>(x => x.Specify_1, settings.Line3.Label));
+            .When(_ => settings?.Line3.Required == true)
+            .WithMessage(Get<Strings>(x => x.Specify_1, settings?.Line3.Label));
         
         RuleFor(x => x.Line3)
             .Length(0, AddressFieldMaxLength)
@@ -43,10 +43,10 @@ public class AddressReqValidator : ModelValidator<AddressReq> {
 
         RuleFor(x => x.Locality)
             .NotEmpty()
-            .When(x => settings.Locality.Required &&
+            .When(x => settings?.Locality.Required == true &&
                        x.Country.HasValue() &&
                        !x.Country.LocalityOptional)
-            .WithMessage(Get<Strings>(x => x.Specify_1, settings.Locality.Label));
+            .WithMessage(Get<Strings>(x => x.Specify_1, settings?.Locality.Label));
 
         RuleFor(x => x.Locality)
             .Length(0, AddressFieldMaxLength)
@@ -54,8 +54,8 @@ public class AddressReqValidator : ModelValidator<AddressReq> {
 
         RuleFor(x => x.AdministrativeArea)
             .NotEmpty()
-            .When(_ => settings.AdministrativeArea.Required)
-            .WithMessage(Get<Strings>(x => x.Specify_1, settings.AdministrativeArea.Label));
+            .When(_ => settings?.AdministrativeArea.Required == true)
+            .WithMessage(Get<Strings>(x => x.Specify_1, settings?.AdministrativeArea.Label));
         
         RuleFor(x => x.AdministrativeArea)
             .Length(0, AddressFieldMaxLength)
@@ -63,10 +63,10 @@ public class AddressReqValidator : ModelValidator<AddressReq> {
 
         RuleFor(x => x.PostalCode)
             .NotEmpty()
-            .When(x => settings.PostalCode.Required &&
+            .When(x => settings?.PostalCode.Required == true &&
                        x.Country.HasValue() &&
                        !x.Country.PostalCodeOptional)
-            .WithMessage(Get<Strings>(x => x.Specify_1, settings.PostalCode.Label));
+            .WithMessage(Get<Strings>(x => x.Specify_1, settings?.PostalCode.Label));
 
         RuleFor(x => x.PostalCode)
             .Length(0, AddressFieldMaxLength)
