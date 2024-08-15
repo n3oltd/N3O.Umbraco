@@ -13,10 +13,10 @@ public class DateTimePropertyType : PropertyType<DateTimeValueReq> {
                (ctx, src, dest) => dest.DateTime = ctx.Map<IPublishedProperty, DateTimeValueRes>(src),
                UmbracoPropertyEditors.Aliases.DateTime) { }
 
-    protected override Task UpdatePropertyAsync(IContentPublisher contentPublisher,
+    protected override Task UpdatePropertyAsync(IContentBuilder contentBuilder,
                                                 string alias,
                                                 DateTimeValueReq data) {
-        contentPublisher.Content.DateTime(alias).SetDateTime(data.Value);
+        contentBuilder.DateTime(alias).SetDateTime(data.Value);
 
         return Task.CompletedTask;
     }

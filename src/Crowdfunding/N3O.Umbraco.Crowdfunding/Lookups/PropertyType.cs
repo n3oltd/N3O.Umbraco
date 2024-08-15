@@ -10,10 +10,10 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Crowdfunding.Lookups;
 
 public abstract class PropertyType : Lookup {
-    private readonly Action<MapperContext, IPublishedProperty, PagePropertyValueRes> _populateRes;
+    private readonly Action<MapperContext, IPublishedProperty, ContentPropertyValueRes> _populateRes;
 
     protected PropertyType(string id,
-                           Action<MapperContext, IPublishedProperty, PagePropertyValueRes> populateRes,
+                           Action<MapperContext, IPublishedProperty, ContentPropertyValueRes> populateRes,
                            params string[] editorAliases) : base(id) {
         _populateRes = populateRes;
         EditorAliases = editorAliases;
@@ -21,30 +21,31 @@ public abstract class PropertyType : Lookup {
 
     public IEnumerable<string> EditorAliases { get; }
 
-    public abstract Task UpdatePropertyAsync(IContentPublisher contentPublisher, string alias, object data);
+    public abstract Task UpdatePropertyAsync(IContentBuilder contentBuilder, string alias, object data);
 
-    public void PopulateRes(MapperContext ctx, IPublishedProperty src, PagePropertyValueRes dest) {
+    public void PopulateRes(MapperContext ctx, IPublishedProperty src, ContentPropertyValueRes dest) {
         _populateRes(ctx, src, dest);
     }
 }
 
 public abstract class PropertyType<TReq> : PropertyType {
     protected PropertyType(string id,
-                           Action<MapperContext, IPublishedProperty, PagePropertyValueRes> populateRes,
+                           Action<MapperContext, IPublishedProperty, ContentPropertyValueRes> populateRes,
                            params string[] editorAliases)
         : base(id, populateRes, editorAliases) { }
 
-    public override async Task UpdatePropertyAsync(IContentPublisher contentPublisher, string alias, object data) {
-        await UpdatePropertyAsync(contentPublisher, alias, (TReq) data);
+    public override async Task UpdatePropertyAsync(IContentBuilder contentBuilder, string alias, object data) {
+        await UpdatePropertyAsync(contentBuilder, alias, (TReq) data);
     }
 
-    protected abstract Task UpdatePropertyAsync(IContentPublisher contentPublisher, string alias, TReq data);
+    protected abstract Task UpdatePropertyAsync(IContentBuilder contentBuilder, string alias, TReq data);
 }
 
 public class PropertyTypes : StaticLookupsCollection<PropertyType> {
     public static readonly PropertyType Boolean = new BooleanPropertyType();
     public static readonly PropertyType Cropper = new CropperPropertyType();
     public static readonly PropertyType DateTime = new DateTimePropertyType();
+    public static readonly PropertyType Nested = new NestedPropertyType();
     public static readonly PropertyType Numeric = new NumericPropertyType();
     public static readonly PropertyType Raw = new RawPropertyType();
     public static readonly PropertyType Textarea = new TextareaPropertyType();

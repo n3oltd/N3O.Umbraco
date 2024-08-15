@@ -23,20 +23,20 @@ public class UserDirectory : IUserDirectory {
         _clientFactory = clientFactory;
     }
 
-    public async Task CreateUserIfNotExistsAsync(ClientType clientType,
-                                                 string clientId,
-                                                 string connectionName,
-                                                 string email,
-                                                 string firstName,
-                                                 string lastName,
-                                                 string password = null) {
+    public async Task<Auth0User> CreateUserIfNotExistsAsync(ClientType clientType,
+                                                            string clientId,
+                                                            string connectionName,
+                                                            string email,
+                                                            string firstName,
+                                                            string lastName,
+                                                            string password = null) {
         var managementClient = await GetManagementClientAsync(clientType); 
         var authClient = GetAuthenticationClient(clientType);
         
         var isFederated = await IsFederatedByEmailAsync(managementClient, email);
 
         if (isFederated) {
-            return;
+            return null;
         }
 
         var user = await GetDirectoryUserByEmailAsync(managementClient, email);
@@ -49,10 +49,12 @@ public class UserDirectory : IUserDirectory {
                                                       PasswordCharacters.AlphaNumeric);
             }
 
-            await CreateDirectoryUserAsync(managementClient, connectionName, email, firstName, lastName, password);
+            user = await CreateDirectoryUserAsync(managementClient, connectionName, email, firstName, lastName, password);
 
             await SendPasswordResetEmailAsync(managementClient, authClient, clientId, connectionName, email);
         }
+
+        return user;
     }
     
     public async Task<Auth0User> GetUserByEmailAsync(ClientType clientType, string email) {

@@ -13,16 +13,16 @@ public class NameReqValidator : ModelValidator<NameReq> {
     private const int NameMaxLength = 50;
 
     public NameReqValidator(IFormatter formatter, IContentCache contentCache) : base(formatter) {
-        var settings = contentCache.Single<NameDataEntrySettingsContent>().ToDataEntrySettings();
+        var settings = contentCache.Single<NameDataEntrySettingsContent>()?.ToDataEntrySettings();
         
         RuleFor(x => x.Title)
             .NotNull()
-            .When(_ => settings.Title.Required)
+            .When(_ => settings?.Title.Required == true)
             .WithMessage(Get<Strings>(x => x.SpecifyTitle));
 
         RuleFor(x => x.FirstName)
             .NotEmpty()
-            .When(_ => settings.FirstName.Required)
+            .When(_ => settings?.FirstName.Required == true)
             .WithMessage(Get<Strings>(x => x.SpecifyFirstName));
 
         RuleFor(x => x.FirstName)
@@ -32,7 +32,7 @@ public class NameReqValidator : ModelValidator<NameReq> {
 
         RuleFor(x => x.LastName)
             .NotEmpty()
-            .When(_ => settings.LastName.Required)
+            .When(_ => settings?.LastName.Required == true)
             .WithMessage(Get<Strings>(x => x.SpecifyLastName));
 
         RuleFor(x => x.LastName)

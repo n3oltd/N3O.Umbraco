@@ -1,5 +1,7 @@
-﻿namespace N3O.Umbraco.Crowdfunding.Models;
+﻿using Umbraco.Cms.Core.Strings;
+
+namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class RawValueRes {
-    public string Value { get; set; }
+    public HtmlEncodedString Value { get; set; }
 }

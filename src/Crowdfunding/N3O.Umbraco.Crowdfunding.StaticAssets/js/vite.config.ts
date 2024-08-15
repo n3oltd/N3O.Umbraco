@@ -13,8 +13,8 @@ export default defineConfig({
         main: 'index.html',
       },
       output: {
-        entryFileNames: 'crowdfunding.js',
-        assetFileNames: 'crowdfunding.css'
+        entryFileNames: 'crowdfunding-editor.js',
+        assetFileNames: 'crowdfunding-editor.css'
       },
     },
   }

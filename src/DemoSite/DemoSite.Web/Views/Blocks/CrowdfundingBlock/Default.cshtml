@@ -1,0 +1,10 @@
+﻿@using N3O.Umbraco.CrowdFunding
+@using N3O.Umbraco.CrowdFunding.Extensions
+
+@inject IEnumerable<ICrowdfundingPage> CrowdfundingPages
+
+@foreach (var crowdfundingPage in CrowdfundingPages) {
+    if (crowdfundingPage.IsMatch(Context.Request.Uri())) {
+        await Html.RenderCrowdfundingPageAsync(crowdfundingPage, Context.Request.Uri());
+    }
+}

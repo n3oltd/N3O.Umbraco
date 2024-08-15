@@ -1,0 +1,13 @@
+﻿@using Humanizer
+@model N3O.Umbraco.CrowdFunding.Models.FundraisingPage.CrowdfundingContentPageViewModel
+
+<section class="hero">
+    <div class="hero__bg" data-cover-edit="edit-campaign-cover">
+        <img src="@Model.Content.HeroImageBanner.Crop.Src" alt="" data-type="cropper" data-property-alias="@nameof(Model.Content.HeroImageBanner).Camelize()">
+    </div>
+    <div class="auto__container">
+        <div class="hero__inner">
+            @await Html.PartialAsync("~/Views/Partials/Crowdfunding/Components/ContentPage/OwnerInfo.cshtml", Model.OwnerInfo);
+        </div>
+    </div>
+</section>

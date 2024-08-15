@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Composing;
-using N3O.Umbraco.CrowdFunding.Services;
+using N3O.Umbraco.CrowdFunding;
 using N3O.Umbraco.Crowdfunding.UIBuilder;
 using N3O.Umbraco.Extensions;
+using Slugify;
 using Umbraco.Cms.Core.DependencyInjection;
 
 namespace N3O.Umbraco.Crowdfunding;
@@ -13,14 +14,21 @@ public class CrowdfundingComposer : Composer {
         
         builder.Components().Append<CrowdfundingContributionsMigrationsComponent>();
         
-        builder.Services.AddSingleton<ICrowdfundingContributionRepository, CrowdfundingContributionRepository>();
-        builder.Services.AddScoped<IFundraisingPages, FundraisingPages>();
+        builder.Services.AddSingleton<IContributionRepository, ContributionRepository>();
+        builder.Services.AddScoped<ICrowdfundingHelper, CrowdfundingHelper>();
+        builder.Services.AddSingleton<ISlugHelper>(_ => {
+            var config = new SlugHelperConfiguration();
+            config.DeniedCharactersRegex = CrowdfundingUrl.Routes.Slugs.DeniedCharacters;
+            config.CollapseDashes = true;
+            config.ForceLowerCase = true;
+
+            return new SlugHelper(config);
+        });
         
-        RegisterFundraisingPagePropertyValidators(builder);
-    }
-    
-    private void RegisterFundraisingPagePropertyValidators(IUmbracoBuilder builder) {
-        RegisterAll(t => t.ImplementsInterface<IFundraisingPagePropertyValidator>(),
-                    t => builder.Services.AddTransient(typeof(IFundraisingPagePropertyValidator), t));
+        RegisterAll(t => t.ImplementsInterface<IContentPropertyValidator>(),
+                    t => builder.Services.AddTransient(typeof(IContentPropertyValidator), t));
+        
+        RegisterAll(t => t.ImplementsInterface<ICrowdfundingPage>(),
+                    t => builder.Services.AddTransient(typeof(ICrowdfundingPage), t));
     }
 }
