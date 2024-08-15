@@ -1,5 +1,5 @@
 ﻿using N3O.Umbraco.Crowdfunding;
-using N3O.Umbraco.CrowdFunding.Models.FundraisingPage;
+using N3O.Umbraco.CrowdFunding.Models;
 using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Security;
@@ -20,7 +20,7 @@ public class SignInPage : CrowdfundingPage {
     }
 
     protected override bool IsMatch(string crowdfundingPath) {
-        return IsMatch(crowdfundingPath, CrowdfundingConstants.Routes.SignIn);
+        return IsMatch(crowdfundingPath, CrowdfundingUrl.Routes.SignIn);
     }
 
     protected override async Task<object> GetViewModelAsync(string crowdfundingPath) {

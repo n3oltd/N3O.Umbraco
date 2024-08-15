@@ -29,7 +29,8 @@ public static class PublishedElementExtensions {
     
     private static T ConvertTo<T>(this IPublishedElement publishedElement) {
         var model = Activator.CreateInstance<T>();
-        ((IUmbracoElement) model).Content = publishedElement;
+        
+        ((IUmbracoElement) model).Content(publishedElement);
 
         return model;
     }

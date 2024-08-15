@@ -1,6 +1,6 @@
 ﻿using Umbraco.Cms.Web.Common.Security;
 
-namespace N3O.Umbraco.CrowdFunding.Models.FundraisingPage;
+namespace N3O.Umbraco.CrowdFunding.Models;
 
 public class SignInViewModel {
     public MemberExternalLoginProviderScheme Auth0LoginProvider { get; set; }

@@ -23,7 +23,8 @@ public class GetContentPropertyValueHandler :
 
     public Task<ContentPropertyValueRes> Handle(GetContentPropertyValueQuery req, CancellationToken cancellationToken) {
         var content = req.ContentId.Run(_contentLocator.ById, true);
-        var property = req.PropertyAlias.Run(alias => content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(alias)),
+        var property = req.PropertyAlias.Run(alias => content.Properties
+                                                             .SingleOrDefault(x => x.Alias.EqualsInvariant(alias)),
                                              true);
         
         var res = _mapper.Map<IPublishedProperty, ContentPropertyValueRes>(property);

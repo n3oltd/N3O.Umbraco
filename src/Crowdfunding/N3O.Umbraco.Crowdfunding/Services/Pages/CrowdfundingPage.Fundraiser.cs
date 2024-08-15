@@ -1,7 +1,7 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding;
 using N3O.Umbraco.Crowdfunding.Content;
-using N3O.Umbraco.CrowdFunding.Models.FundraisingPage;
+using N3O.Umbraco.CrowdFunding.Models;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.CrowdFunding;
@@ -19,13 +19,13 @@ public class FundraiserPage : CrowdfundingPage {
     }
 
     protected override bool IsMatch(string crowdfundingPath) {
-        return IsMatch(crowdfundingPath, CrowdfundingConstants.Routes.Fundraiser);
+        return IsMatch(crowdfundingPath, CrowdfundingUrl.Routes.Fundraiser);
     }
 
     protected override async Task<object> GetViewModelAsync(string crowdfundingPath) {
-        var match = Match(crowdfundingPath, CrowdfundingConstants.Routes.Fundraiser);
-        var pageId = int.Parse(match.Groups[1].Value);
-        var fundraiser = _contentLocator.ById<FundraiserContent>(pageId);
+        var match = Match(crowdfundingPath, CrowdfundingUrl.Routes.Fundraiser);
+        var fundraiserId = int.Parse(match.Groups[1].Value);
+        var fundraiser = _contentLocator.ById<FundraiserContent>(fundraiserId);
 
         var contributions = await _contributionRepository.FindByFundraiserAsync(fundraiser.Content().Key);
 

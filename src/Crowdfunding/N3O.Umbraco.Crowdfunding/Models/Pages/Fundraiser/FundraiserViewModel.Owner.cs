@@ -2,7 +2,7 @@
 using N3O.Umbraco.Crowdfunding.Content;
 using Umbraco.Extensions;
 
-namespace N3O.Umbraco.CrowdFunding.Models.FundraisingPage;
+namespace N3O.Umbraco.CrowdFunding.Models;
 
 public partial class FundraiserViewModel {
     public class OwnerInfo {

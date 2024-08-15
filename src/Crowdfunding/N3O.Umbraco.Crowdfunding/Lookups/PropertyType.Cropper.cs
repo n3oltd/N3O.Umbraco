@@ -57,5 +57,4 @@ public class CropperPropertyType : PropertyType<CropperValueReq> {
                            width,
                            height);
     }
-    
 }

@@ -20,6 +20,9 @@ public class ContentPropertyReq {
     
     [Name("DateTime")]
     public DateTimeValueReq DateTime { get; set; }
+
+    [Name("Nested")]
+    public NestedValueReq Nested { get; set; }
     
     [Name("Numeric")]
     public NumericValueReq Numeric { get; set; }
@@ -29,9 +32,6 @@ public class ContentPropertyReq {
     
     [Name("Textarea")]
     public TextareaValueReq Textarea { get; set; }
-    
-    [Name("Nested Content")]
-    public NestedContentValueReq NestedContent { get; set; }
     
     [Name("TextBox")]
     public TextBoxValueReq TextBox { get; set; }

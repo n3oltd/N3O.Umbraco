@@ -49,15 +49,19 @@ public class StringLocalizer : IStringLocalizer {
 
     public string Get(string folder, string name, string text) {
         return Lock(() => {
-            var cacheKey = GetCacheKey(nameof(Get), folder, name, text);
+            try {
+                var cacheKey = GetCacheKey(nameof(Get), folder, name, text);
 
-            return StringCache.GetOrAdd(cacheKey, _ => {
-                var folderId = GetOrCreateFolderId(folder);
-                var dictionaryId = GetOrCreateTextContainerId(folderId, name);
-                var textResource = CreateOrUpdateResource(dictionaryId, text);
+                return StringCache.GetOrAdd(cacheKey, _ => {
+                    var folderId = GetOrCreateFolderId(folder);
+                    var dictionaryId = GetOrCreateTextContainerId(folderId, name);
+                    var textResource = CreateOrUpdateResource(dictionaryId, text);
 
-                return textResource.Value;
-            });
+                    return textResource.Value;
+                });
+            } catch {
+                return text;
+            }
         });
     }
 
@@ -172,13 +176,9 @@ public class StringLocalizer : IStringLocalizer {
 
     private T Lock<T>(Func<T> action) {
         using (_locker.Lock(LockKey.Generate<StringLocalizer>())) {
-            try {
-                var result = action();
+            var result = action();
 
-                return result;
-            } catch {
-                return default;
-            }
+            return result;
         }
     }
 

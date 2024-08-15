@@ -23,11 +23,11 @@ public abstract class CrowdfundingPage : ICrowdfundingPage {
     }
 
     protected bool IsMatch(string crowdfundingPath, string pattern) {
-        return Regex.IsMatch(crowdfundingPath, pattern, RegexOptions.IgnoreCase);
+        return Regex.IsMatch(crowdfundingPath, pattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
     }
     
     protected Match Match(string crowdfundingPath, string pattern) {
-        return Regex.Match(crowdfundingPath, pattern, RegexOptions.IgnoreCase);
+        return Regex.Match(crowdfundingPath, pattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
     }
 
     protected abstract bool IsMatch(string crowdfundingPath);

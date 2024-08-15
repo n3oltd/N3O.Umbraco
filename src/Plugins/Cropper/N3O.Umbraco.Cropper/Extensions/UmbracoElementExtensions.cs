@@ -10,7 +10,7 @@ public static class UmbracoElementExtensions {
     public static CroppedImage GetCroppedImageAs<T, TProperty>(this UmbracoElement<T> umbracoElement,
                                                                Expression<Func<T, TProperty>> memberExpression) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-        var value = (CroppedImage) umbracoElement.Content.Value(alias);
+        var value = (CroppedImage) umbracoElement.Content().Value(alias);
 
         return value;
     }

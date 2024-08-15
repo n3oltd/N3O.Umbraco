@@ -19,5 +19,6 @@ public interface IContributionRepository {
                   Allocation allocation);
 
     Task CommitAsync();
-    Task<IEnumerable<CrowdfundingContribution>> FindByFundraiserAsync(params Guid[] fundraiserId);
+    Task<IEnumerable<CrowdfundingContribution>> FindByCampaignAsync(params Guid[] campaignIds);
+    Task<IEnumerable<CrowdfundingContribution>> FindByFundraiserAsync(params Guid[] fundraiserIds);
 }

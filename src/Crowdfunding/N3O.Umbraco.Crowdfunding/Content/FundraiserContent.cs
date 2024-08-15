@@ -14,12 +14,11 @@ public class FundraiserContent : UmbracoContent<FundraiserContent> {
     public string Description => GetValue(x => x.Description);
     public string Slug => GetValue(x => x.Slug);
     public HtmlEncodedString Body => GetValue(x => x.Body);
-    public CroppedImage HeroImage => GetValue(x => x.HeroImage);
+    public CroppedImage BackgroundImage => GetValue(x => x.BackgroundImage);
     public CampaignContent Campaign => GetPickedAs(x => x.Campaign);
     public IPublishedContent Owner => GetPickedAs(x => x.Owner);
     public TeamContent Team => GetPickedAs(x => x.Team);
-    public IEnumerable<IPublishedContent> Tags => GetPickedAs(x => x.Tags);
     public FundraiserStatus Status => GetStaticLookupByNameAs(x => x.Status);
-    public IEnumerable<CampaignImagesElement> CampaignImages => GetNestedAs(x => x.CampaignImages);
+    public IEnumerable<HeroImagesElement> HeroImages => GetNestedAs(x => x.HeroImages);
     public IEnumerable<FundraiserAllocationElement> Allocations => GetNestedAs(x => x.Allocations);
 }
