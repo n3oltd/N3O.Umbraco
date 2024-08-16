@@ -20,6 +20,7 @@ public class NestedValueResMapping : IMapDefinition {
         }
         
         dest.Items = items;
+        dest.Schema = ctx.Map<IPublishedProperty, NestedSchemaRes>(src);
     }
 
     private NestedItemRes PopulateNestedItem(MapperContext ctx, IPublishedElement element) {
