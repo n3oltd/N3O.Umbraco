@@ -26,7 +26,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   onCrop,
   aspectRatio,
   setUppyInstance,
-  uploadUrl = `https://localhost:6001/umbraco/api/Storage/tempUpload`,
+  uploadUrl,
   elementId = 'uppy',
   hieght = 550
 }) => {

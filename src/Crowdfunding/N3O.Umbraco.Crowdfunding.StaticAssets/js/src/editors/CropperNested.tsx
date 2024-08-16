@@ -1,69 +1,58 @@
 import React from 'react';
-import { useReactive, useRequest, useMutationObserver } from 'ahooks';
-import { PagePropertyReq, PropertyType } from '@n3oltd/umbraco-crowdfunding-client';
 
-import { ImageUploader } from './ImageUploader';
-import { useInsertElement } from '../hooks/useInsertElement';
+import { useReactive, useRequest } from 'ahooks';
+import { ContentPropertyReq, PropertyType, CropperSource } from '@n3oltd/umbraco-crowdfunding-client';
+
+import { ImageUploader } from './common/ImageUploader';
+import { Modal } from './common/Modal';
+
 import { usePageData } from '../hooks/usePageData';
-import { handleClassMutation } from '../helpers/handleClassMutation';
-import { PropertyAlias } from './types/propertyAlias';
-import { EDIT_TYPE } from '../common/editTypes';
+
 import { _client } from '../common/cfClient';
+import { EditorProps } from './types/EditorProps';
 import { ImageUploadStoragePath } from '../common/constants';
 
-import './EditCampaign.css';
+import './CropperNested.css';
 
-export const EditCampaignGoal: React.FC = () => {
+export const CropperNested: React.FC<EditorProps> = ({
+  open,
+  propAlias,
+  onClose
+}) => {
   
   const [videoLink, setVideoLink] = React.useState<string>();
   const [, setFiles] = React.useState<Array<string>>([]);
 
-  const ref = React.useRef<HTMLDivElement>(null);
-  const buttonRef = React.useRef<HTMLButtonElement>(null);
-  const state = useReactive({
-    title: '',
-    description: ''
+  const state = useReactive<{
+    image: CropperSource | undefined
+  }>({
+    image: undefined,
+    
   });
 
   const {pageId} = usePageData();
-  const [isModalOpen, setIsModalOpen] = React.useState<boolean>();
-  const [properytInfo, setProperytInfo] = React.useState<PropertyAlias>({alias: ''});
 
-  useInsertElement(`[data-images-edit="edit-campaign-images"]`, EDIT_TYPE.images, setProperytInfo);
-
-  const {run: loadPropertyValue} = useRequest(() => _client.getPagePropertyValue(pageId as string, properytInfo.alias), {
+  const {run: loadPropertyValue} = useRequest(() => _client.getContentPropertyValue(pageId as string, propAlias), {
     manual: true,
-    ready: !!pageId && isModalOpen && !!properytInfo.alias,
-    onSuccess: data => state.title = data?.textBox?.value || ''
+    ready: open && !!propAlias,
+    onSuccess: data => state.image = data?.cropper?.image
   });
 
-  const {runAsync: updateProperty,} = useRequest((req: PagePropertyReq) => _client.updateProperty(pageId as string, req), {
+  const {runAsync: updateProperty,} = useRequest((req: ContentPropertyReq) => _client.updateProperty(pageId as string, req), {
     manual: true,
-    onSuccess: () => buttonRef.current?.click()
+    onSuccess: () => onClose
   })
 
-  useMutationObserver(
-    handleClassMutation(setIsModalOpen),
-    ref,
-    { attributes: true },
-  );
-
   React.useEffect(() => {
-    if (isModalOpen) {
+    if (open) {
       loadPropertyValue()
     }
-
-    if (!isModalOpen) {
-      state.title = ''
-      state.description = ''
-    }
-
-  }, [loadPropertyValue, state, isModalOpen, ]);
+  }, [loadPropertyValue, state, open, ]);
 
   const saveContent = async () => {
     try {
-      const req: PagePropertyReq = {
-        alias: properytInfo.alias,
+      const req: ContentPropertyReq = {
+        alias: propAlias,
         type: PropertyType.TextBox,
         cropper: {
           rectangle: {
@@ -84,8 +73,12 @@ export const EditCampaignGoal: React.FC = () => {
   }, [setFiles]);
 
   return <>
-    <div className="modalsItem modall" id="edit-campaign-images" style={{overflowY: 'scroll'}}>
-      <div className="edit">
+    <Modal
+      id="cropper-nested-edit"
+      isOpen={open}
+      onOk={saveContent}
+      onClose={onClose}
+    >
         <h3>Upload Campaign Images</h3>
         <ImageUploader 
           aspectRatio={4/3} 
@@ -133,11 +126,6 @@ export const EditCampaignGoal: React.FC = () => {
             }} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>}
           </div>
         </div>
-        <div className="edit__foot">
-          <button type="button" data-modal-close="true" className="button secondary" ref={buttonRef}>Cancel</button>
-          <button type="button" className="button primary" onClick={saveContent}>Save</button>
-        </div>
-      </div>
-    </div>
+      </Modal>
   </>
 }
