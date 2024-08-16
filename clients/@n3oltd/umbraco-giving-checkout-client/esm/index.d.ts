@@ -143,70 +143,11 @@ export declare enum GivingType {
     RegularGiving = "regularGiving"
 }
 export interface FeedbackCustomFieldDefinitionElement {
-    content?: IPublishedElement | undefined;
     type?: FeedbackCustomFieldType | undefined;
     name?: string | undefined;
     required?: boolean;
     textMaxLength?: number | undefined;
     alias?: string | undefined;
-}
-export interface IPublishedElement {
-    contentType?: IPublishedContentType;
-    key?: string;
-    properties?: IPublishedProperty[];
-}
-export interface IPublishedContentType {
-    key?: string;
-    id?: number;
-    alias?: string;
-    itemType?: PublishedItemType;
-    compositionAliases?: string[];
-    variations?: ContentVariation;
-    isElement?: boolean;
-    propertyTypes?: IPublishedPropertyType[];
-}
-export declare enum PublishedItemType {
-    Unknown = 0,
-    Element = 1,
-    Content = 2,
-    Media = 3,
-    Member = 4
-}
-export declare enum ContentVariation {
-    Nothing = 0,
-    Culture = 1,
-    Segment = 2,
-    CultureAndSegment = 3
-}
-export interface IPublishedPropertyType {
-    contentType?: IPublishedContentType | undefined;
-    dataType?: PublishedDataType;
-    alias?: string;
-    editorAlias?: string;
-    isUserProperty?: boolean;
-    variations?: ContentVariation;
-    cacheLevel?: PropertyCacheLevel;
-    deliveryApiCacheLevel?: PropertyCacheLevel;
-    deliveryApiCacheLevelForExpansion?: PropertyCacheLevel;
-    modelClrType?: string;
-    deliveryApiModelClrType?: string;
-    clrType?: string | undefined;
-}
-export interface PublishedDataType {
-    id?: number;
-    editorAlias?: string;
-    configuration?: any | undefined;
-}
-export declare enum PropertyCacheLevel {
-    Unknown = 0,
-    Element = 1,
-    Elements = 2,
-    Snapshot = 3,
-    None = 4
-}
-export interface IPublishedProperty {
-    propertyType?: IPublishedPropertyType;
-    alias?: string;
 }
 /** One of 'bool', 'date', 'text' */
 export declare enum FeedbackCustomFieldType {
@@ -219,7 +160,6 @@ export interface PriceContent {
     locked?: boolean;
 }
 export interface PricingRuleElement {
-    content?: IPublishedElement | undefined;
     amount?: number;
     locked?: boolean;
     dimension1?: string | undefined;

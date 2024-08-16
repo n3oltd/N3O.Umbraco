@@ -24,39 +24,46 @@ namespace N3O.Umbraco.Clients.Crowdfunding
     public partial interface ICrowdfundingClient
     {
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<LookupRes>> GetCrowdfundingPagePropertyTypesAsync();
+        System.Threading.Tasks.Task<ContentPropertyValueRes> GetContentPropertyValueAsync(string contentId, string propertyAlias);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<LookupRes>> GetCrowdfundingPagePropertyTypesAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ContentPropertyValueRes> GetContentPropertyValueAsync(string contentId, string propertyAlias, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> CheckNameAsync(CreatePageReq req);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<bool> CheckNameAsync(CreatePageReq req, System.Threading.CancellationToken cancellationToken);
-
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<string> CreatePageAsync(CreatePageReq req);
+        System.Threading.Tasks.Task<NestedPropertySchemaRes> GetNestedPropertySchemaAsync(string contentId, string propertyAlias);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<string> CreatePageAsync(CreatePageReq req, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<NestedPropertySchemaRes> GetNestedPropertySchemaAsync(string contentId, string propertyAlias, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<PagePropertyValueRes> GetPagePropertyValueAsync(string pageId, string propertyAlias);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<PagePropertyValueRes> GetPagePropertyValueAsync(string pageId, string propertyAlias, System.Threading.CancellationToken cancellationToken);
-
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task UpdatePropertyAsync(string pageId, PagePropertyReq req);
+        System.Threading.Tasks.Task UpdatePropertyAsync(string contentId, ContentPropertyReq req);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task UpdatePropertyAsync(string pageId, PagePropertyReq req, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task UpdatePropertyAsync(string contentId, ContentPropertyReq req, System.Threading.CancellationToken cancellationToken);
+
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<bool> CheckTitleAsync(CreateFundraiserReq req);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<bool> CheckTitleAsync(CreateFundraiserReq req, System.Threading.CancellationToken cancellationToken);
+
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<string> CreateFundraiserAsync(CreateFundraiserReq req);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<string> CreateFundraiserAsync(CreateFundraiserReq req, System.Threading.CancellationToken cancellationToken);
+
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<LookupRes>> GetPropertyTypesAsync();
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<LookupRes>> GetPropertyTypesAsync(System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -104,15 +111,21 @@ namespace N3O.Umbraco.Clients.Crowdfunding
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<LookupRes>> GetCrowdfundingPagePropertyTypesAsync()
+        public virtual System.Threading.Tasks.Task<ContentPropertyValueRes> GetContentPropertyValueAsync(string contentId, string propertyAlias)
         {
-            return GetCrowdfundingPagePropertyTypesAsync(System.Threading.CancellationToken.None);
+            return GetContentPropertyValueAsync(contentId, propertyAlias, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<LookupRes>> GetCrowdfundingPagePropertyTypesAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ContentPropertyValueRes> GetContentPropertyValueAsync(string contentId, string propertyAlias, System.Threading.CancellationToken cancellationToken)
         {
+            if (contentId == null)
+                throw new System.ArgumentNullException("contentId");
+
+            if (propertyAlias == null)
+                throw new System.ArgumentNullException("propertyAlias");
+
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
@@ -124,8 +137,11 @@ namespace N3O.Umbraco.Clients.Crowdfunding
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "umbraco/api/Crowdfunding/lookups/propertyTypes"
-                    urlBuilder_.Append("umbraco/api/Crowdfunding/lookups/propertyTypes");
+                    // Operation Path: "umbraco/api/Crowdfunding/content/{contentId}/properties/{propertyAlias}"
+                    urlBuilder_.Append("umbraco/api/Crowdfunding/content/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(contentId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/properties/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(propertyAlias, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -152,7 +168,7 @@ namespace N3O.Umbraco.Clients.Crowdfunding
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<LookupRes>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ContentPropertyValueRes>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -206,14 +222,234 @@ namespace N3O.Umbraco.Clients.Crowdfunding
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<bool> CheckNameAsync(CreatePageReq req)
+        public virtual System.Threading.Tasks.Task<NestedPropertySchemaRes> GetNestedPropertySchemaAsync(string contentId, string propertyAlias)
         {
-            return CheckNameAsync(req, System.Threading.CancellationToken.None);
+            return GetNestedPropertySchemaAsync(contentId, propertyAlias, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<bool> CheckNameAsync(CreatePageReq req, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<NestedPropertySchemaRes> GetNestedPropertySchemaAsync(string contentId, string propertyAlias, System.Threading.CancellationToken cancellationToken)
+        {
+            if (contentId == null)
+                throw new System.ArgumentNullException("contentId");
+
+            if (propertyAlias == null)
+                throw new System.ArgumentNullException("propertyAlias");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                    if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
+                    // Operation Path: "umbraco/api/Crowdfunding/content/{contentId}/nested/{propertyAlias}/schema"
+                    urlBuilder_.Append("umbraco/api/Crowdfunding/content/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(contentId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/nested/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(propertyAlias, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/schema");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<NestedPropertySchemaRes>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetails>("A server side error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 500)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("A server side error occurred.", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 404)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetails>("A server side error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task UpdatePropertyAsync(string contentId, ContentPropertyReq req)
+        {
+            return UpdatePropertyAsync(contentId, req, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task UpdatePropertyAsync(string contentId, ContentPropertyReq req, System.Threading.CancellationToken cancellationToken)
+        {
+            if (contentId == null)
+                throw new System.ArgumentNullException("contentId");
+
+            if (req == null)
+                throw new System.ArgumentNullException("req");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(req, _settings.Value);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("PUT");
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                    if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
+                    // Operation Path: "umbraco/api/Crowdfunding/content/{contentId}/property"
+                    urlBuilder_.Append("umbraco/api/Crowdfunding/content/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(contentId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/property");
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            return;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetails>("A server side error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 500)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("A server side error occurred.", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 404)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetails>("A server side error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<bool> CheckTitleAsync(CreateFundraiserReq req)
+        {
+            return CheckTitleAsync(req, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<bool> CheckTitleAsync(CreateFundraiserReq req, System.Threading.CancellationToken cancellationToken)
         {
             if (req == null)
                 throw new System.ArgumentNullException("req");
@@ -233,8 +469,8 @@ namespace N3O.Umbraco.Clients.Crowdfunding
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "umbraco/api/Crowdfunding/pages/checkName"
-                    urlBuilder_.Append("umbraco/api/Crowdfunding/pages/checkName");
+                    // Operation Path: "umbraco/api/Crowdfunding/fundraisers/checkTitle"
+                    urlBuilder_.Append("umbraco/api/Crowdfunding/fundraisers/checkTitle");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -315,14 +551,14 @@ namespace N3O.Umbraco.Clients.Crowdfunding
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<string> CreatePageAsync(CreatePageReq req)
+        public virtual System.Threading.Tasks.Task<string> CreateFundraiserAsync(CreateFundraiserReq req)
         {
-            return CreatePageAsync(req, System.Threading.CancellationToken.None);
+            return CreateFundraiserAsync(req, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<string> CreatePageAsync(CreatePageReq req, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<string> CreateFundraiserAsync(CreateFundraiserReq req, System.Threading.CancellationToken cancellationToken)
         {
             if (req == null)
                 throw new System.ArgumentNullException("req");
@@ -342,8 +578,8 @@ namespace N3O.Umbraco.Clients.Crowdfunding
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "umbraco/api/Crowdfunding/pages"
-                    urlBuilder_.Append("umbraco/api/Crowdfunding/pages");
+                    // Operation Path: "umbraco/api/Crowdfunding/fundraisers"
+                    urlBuilder_.Append("umbraco/api/Crowdfunding/fundraisers");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -424,21 +660,15 @@ namespace N3O.Umbraco.Clients.Crowdfunding
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<PagePropertyValueRes> GetPagePropertyValueAsync(string pageId, string propertyAlias)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<LookupRes>> GetPropertyTypesAsync()
         {
-            return GetPagePropertyValueAsync(pageId, propertyAlias, System.Threading.CancellationToken.None);
+            return GetPropertyTypesAsync(System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<PagePropertyValueRes> GetPagePropertyValueAsync(string pageId, string propertyAlias, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<LookupRes>> GetPropertyTypesAsync(System.Threading.CancellationToken cancellationToken)
         {
-            if (pageId == null)
-                throw new System.ArgumentNullException("pageId");
-
-            if (propertyAlias == null)
-                throw new System.ArgumentNullException("propertyAlias");
-
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
@@ -450,11 +680,8 @@ namespace N3O.Umbraco.Clients.Crowdfunding
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "umbraco/api/Crowdfunding/pages/{pageId}/properties/{propertyAlias}"
-                    urlBuilder_.Append("umbraco/api/Crowdfunding/pages/");
-                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(pageId, System.Globalization.CultureInfo.InvariantCulture)));
-                    urlBuilder_.Append("/properties/");
-                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(propertyAlias, System.Globalization.CultureInfo.InvariantCulture)));
+                    // Operation Path: "umbraco/api/Crowdfunding/lookups/propertyTypes"
+                    urlBuilder_.Append("umbraco/api/Crowdfunding/lookups/propertyTypes");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -481,120 +708,12 @@ namespace N3O.Umbraco.Clients.Crowdfunding
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<PagePropertyValueRes>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<LookupRes>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
-                        }
-                        else
-                        if (status_ == 400)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new ApiException<ProblemDetails>("A server side error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 500)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("A server side error occurred.", status_, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ == 404)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new ApiException<ProblemDetails>("A server side error occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task UpdatePropertyAsync(string pageId, PagePropertyReq req)
-        {
-            return UpdatePropertyAsync(pageId, req, System.Threading.CancellationToken.None);
-        }
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task UpdatePropertyAsync(string pageId, PagePropertyReq req, System.Threading.CancellationToken cancellationToken)
-        {
-            if (pageId == null)
-                throw new System.ArgumentNullException("pageId");
-
-            if (req == null)
-                throw new System.ArgumentNullException("req");
-
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(req, _settings.Value);
-                    var content_ = new System.Net.Http.StringContent(json_);
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("PUT");
-
-                    var urlBuilder_ = new System.Text.StringBuilder();
-                    if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "umbraco/api/Crowdfunding/pages/{pageId}/property"
-                    urlBuilder_.Append("umbraco/api/Crowdfunding/pages/");
-                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(pageId, System.Globalization.CultureInfo.InvariantCulture)));
-                    urlBuilder_.Append("/property");
-
-                    PrepareRequest(client_, request_, urlBuilder_);
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-
-                    PrepareRequest(client_, request_, url_);
-
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
-                        foreach (var item_ in response_.Headers)
-                            headers_[item_.Key] = item_.Value;
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-                        ProcessResponse(client_, response_);
-
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
-                        {
-                            return;
                         }
                         else
                         if (status_ == 400)
@@ -755,517 +874,7 @@ namespace N3O.Umbraco.Clients.Crowdfunding
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class LookupRes
-    {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Id { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ProblemDetails
-    {
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Type { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Title { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int? Status { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("detail", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Detail { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("instance", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Instance { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class CreatePageReq
-    {
-        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Name { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("slug", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Slug { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("campaignId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid? CampaignId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("fundraiserName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string FundraiserName { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("allocation", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<PageAllocationReq> Allocation { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class PageAllocationReq
-    {
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public AllocationType? Type { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public MoneyReq Value { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("fundDimensions", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public FundDimensionValuesReq FundDimensions { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("feedback", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public FeedbackAllocationReq Feedback { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("fund", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public FundAllocationReq Fund { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("sponsorship", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public SponsorshipAllocationReq Sponsorship { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("upsellOfferId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid? UpsellOfferId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Title { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("priceHandles", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<PriceHandleReq> PriceHandles { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    /// <summary>
-    /// One of 'feedback', 'fund', 'sponsorship'
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum AllocationType
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"feedback")]
-        Feedback = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"fund")]
-        Fund = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"sponsorship")]
-        Sponsorship = 2,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class MoneyReq
-    {
-        [Newtonsoft.Json.JsonProperty("amount", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public decimal? Amount { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("currency", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Currency { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class FundDimensionValuesReq
-    {
-        [Newtonsoft.Json.JsonProperty("dimension1", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Dimension1 { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("dimension2", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Dimension2 { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("dimension3", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Dimension3 { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("dimension4", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Dimension4 { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class FeedbackAllocationReq
-    {
-        [Newtonsoft.Json.JsonProperty("scheme", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Scheme { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("customFields", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public FeedbackNewCustomFieldsReq CustomFields { get; set; }
-
-    }
-
-    /// <summary>
-    /// One of 'donation', 'regularGiving'
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum GivingType
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"donation")]
-        Donation = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"regularGiving")]
-        RegularGiving = 1,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class FeedbackCustomFieldDefinitionElement
-    {
-        [Newtonsoft.Json.JsonProperty("content", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public IPublishedElement Content { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public FeedbackCustomFieldType? Type { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Name { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("required", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool? Required { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("textMaxLength", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int? TextMaxLength { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("alias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Alias { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public abstract partial class IPublishedElement
-    {
-        [Newtonsoft.Json.JsonProperty("contentType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public IPublishedContentType ContentType { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("key", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid? Key { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("properties", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<IPublishedProperty> Properties { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public abstract partial class IPublishedContentType
-    {
-        [Newtonsoft.Json.JsonProperty("key", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid? Key { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int? Id { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("alias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Alias { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("itemType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public PublishedItemType? ItemType { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("compositionAliases", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<string> CompositionAliases { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("variations", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public ContentVariation? Variations { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("isElement", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool? IsElement { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("propertyTypes", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<IPublishedPropertyType> PropertyTypes { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum PublishedItemType
-    {
-
-        Unknown = 0,
-
-        Element = 1,
-
-        Content = 2,
-
-        Media = 3,
-
-        Member = 4,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    [System.Flags]
-    public enum ContentVariation
-    {
-
-        Nothing = 0,
-
-        Culture = 1,
-
-        Segment = 2,
-
-        CultureAndSegment = 3,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public abstract partial class IPublishedPropertyType
-    {
-        [Newtonsoft.Json.JsonProperty("contentType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public IPublishedContentType ContentType { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("dataType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public PublishedDataType DataType { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("alias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Alias { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("editorAlias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string EditorAlias { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("isUserProperty", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool? IsUserProperty { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("variations", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public ContentVariation? Variations { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("cacheLevel", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public PropertyCacheLevel? CacheLevel { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("deliveryApiCacheLevel", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public PropertyCacheLevel? DeliveryApiCacheLevel { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("deliveryApiCacheLevelForExpansion", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public PropertyCacheLevel? DeliveryApiCacheLevelForExpansion { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("modelClrType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ModelClrType { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("deliveryApiModelClrType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string DeliveryApiModelClrType { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("clrType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ClrType { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class PublishedDataType
-    {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int? Id { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("editorAlias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string EditorAlias { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("configuration", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Configuration { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum PropertyCacheLevel
-    {
-
-        Unknown = 0,
-
-        Element = 1,
-
-        Elements = 2,
-
-        Snapshot = 3,
-
-        None = 4,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public abstract partial class IPublishedProperty
-    {
-        [Newtonsoft.Json.JsonProperty("propertyType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public IPublishedPropertyType PropertyType { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("alias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Alias { get; set; }
-
-    }
-
-    /// <summary>
-    /// One of 'bool', 'date', 'text'
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum FeedbackCustomFieldType
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"bool")]
-        Bool = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"date")]
-        Date = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"text")]
-        Text = 2,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class PriceContent
-    {
-        [Newtonsoft.Json.JsonProperty("amount", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public decimal? Amount { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("locked", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool? Locked { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class PricingRuleElement
-    {
-        [Newtonsoft.Json.JsonProperty("content", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public IPublishedElement Content { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("amount", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public decimal? Amount { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("locked", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool? Locked { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("dimension1", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Dimension1 { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("dimension2", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Dimension2 { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("dimension3", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Dimension3 { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("dimension4", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Dimension4 { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class FeedbackNewCustomFieldsReq
-    {
-        [Newtonsoft.Json.JsonProperty("entries", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<FeedbackNewCustomFieldReq> Entries { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class FeedbackNewCustomFieldReq
-    {
-        [Newtonsoft.Json.JsonProperty("alias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Alias { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("bool", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool? Bool { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("date", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
-        public System.DateTimeOffset? Date { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("text", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Text { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class FundAllocationReq
-    {
-        [Newtonsoft.Json.JsonProperty("donationItem", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string DonationItem { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class SponsorshipAllocationReq
-    {
-        [Newtonsoft.Json.JsonProperty("beneficiaryReference", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string BeneficiaryReference { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("scheme", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Scheme { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("duration", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public SponsorshipDuration? Duration { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("components", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<SponsorshipComponentAllocationReq> Components { get; set; }
-
-    }
-
-    /// <summary>
-    /// One of '_6', '_12', '_18', '_24', '_36', '_48', '_60'
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum SponsorshipDuration
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"_6")]
-        _6 = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"_12")]
-        _12 = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"_18")]
-        _18 = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"_24")]
-        _24 = 3,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"_36")]
-        _36 = 4,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"_48")]
-        _48 = 5,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"_60")]
-        _60 = 6,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class SponsorshipComponentAllocationReq
-    {
-        [Newtonsoft.Json.JsonProperty("component", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Component { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public MoneyReq Value { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class PriceHandleReq
-    {
-        [Newtonsoft.Json.JsonProperty("amount", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public decimal? Amount { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Description { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class PagePropertyValueRes
+    public partial class ContentPropertyValueRes
     {
         [Newtonsoft.Json.JsonProperty("alias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Alias { get; set; }
@@ -1283,6 +892,9 @@ namespace N3O.Umbraco.Clients.Crowdfunding
         [Newtonsoft.Json.JsonProperty("dateTime", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public DateTimeValueRes DateTime { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("nested", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public NestedValueRes Nested { get; set; }
+
         [Newtonsoft.Json.JsonProperty("numeric", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public NumericValueRes Numeric { get; set; }
 
@@ -1298,7 +910,7 @@ namespace N3O.Umbraco.Clients.Crowdfunding
     }
 
     /// <summary>
-    /// One of 'boolean', 'cropper', 'dateTime', 'numeric', 'raw', 'textarea', 'textBox'
+    /// One of 'boolean', 'cropper', 'dateTime', 'nested', 'numeric', 'raw', 'textarea', 'textBox'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum PropertyType
@@ -1313,17 +925,20 @@ namespace N3O.Umbraco.Clients.Crowdfunding
         [System.Runtime.Serialization.EnumMember(Value = @"dateTime")]
         DateTime = 2,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"nested")]
+        Nested = 3,
+
         [System.Runtime.Serialization.EnumMember(Value = @"numeric")]
-        Numeric = 3,
+        Numeric = 4,
 
         [System.Runtime.Serialization.EnumMember(Value = @"raw")]
-        Raw = 4,
+        Raw = 5,
 
         [System.Runtime.Serialization.EnumMember(Value = @"textarea")]
-        Textarea = 5,
+        Textarea = 6,
 
         [System.Runtime.Serialization.EnumMember(Value = @"textBox")]
-        TextBox = 6,
+        TextBox = 7,
 
     }
 
@@ -1395,6 +1010,59 @@ namespace N3O.Umbraco.Clients.Crowdfunding
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class NestedValueRes
+    {
+        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<NestedItemRes> Items { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("schema", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public NestedSchemaRes Schema { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class NestedItemRes
+    {
+        [Newtonsoft.Json.JsonProperty("contentTypeAlias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ContentTypeAlias { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("properties", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<ContentPropertyValueRes> Properties { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class NestedSchemaRes
+    {
+        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<NestedSchemaItemRes> Items { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class NestedSchemaItemRes
+    {
+        [Newtonsoft.Json.JsonProperty("contentTypeAlias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ContentTypeAlias { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("properties", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<NestedSchemaPropertyRes> Properties { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class NestedSchemaPropertyRes
+    {
+        [Newtonsoft.Json.JsonProperty("alias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Alias { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public PropertyType? Type { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class NumericValueRes
     {
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -1406,7 +1074,13 @@ namespace N3O.Umbraco.Clients.Crowdfunding
     public partial class RawValueRes
     {
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Value { get; set; }
+        public HtmlEncodedString Value { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class HtmlEncodedString
+    {
 
     }
 
@@ -1427,7 +1101,42 @@ namespace N3O.Umbraco.Clients.Crowdfunding
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class PagePropertyReq
+    public partial class ProblemDetails
+    {
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("detail", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Detail { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("instance", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Instance { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class NestedPropertySchemaRes
+    {
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ContentPropertyReq
     {
         [Newtonsoft.Json.JsonProperty("alias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Alias { get; set; }
@@ -1444,6 +1153,9 @@ namespace N3O.Umbraco.Clients.Crowdfunding
 
         [Newtonsoft.Json.JsonProperty("dateTime", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public DateTimeValueReq DateTime { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("nested", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public NestedValueReq Nested { get; set; }
 
         [Newtonsoft.Json.JsonProperty("numeric", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public NumericValueReq Numeric { get; set; }
@@ -1578,6 +1290,25 @@ namespace N3O.Umbraco.Clients.Crowdfunding
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class NestedValueReq
+    {
+        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<NestedItemReq> Items { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class NestedItemReq
+    {
+        [Newtonsoft.Json.JsonProperty("contentTypeAlias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ContentTypeAlias { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("properties", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<ContentPropertyReq> Properties { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class NumericValueReq
     {
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -1623,6 +1354,322 @@ namespace N3O.Umbraco.Clients.Crowdfunding
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public PropertyType? Type { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class CreateFundraiserReq
+    {
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("slug", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Slug { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("campaignId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid? CampaignId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("allocations", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<FundraiserAllocationReq> Allocations { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FundraiserAllocationReq
+    {
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AllocationType? Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public MoneyReq Value { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("fundDimensions", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FundDimensionValuesReq FundDimensions { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("feedback", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FeedbackAllocationReq Feedback { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("fund", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FundAllocationReq Fund { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("sponsorship", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SponsorshipAllocationReq Sponsorship { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("upsellOfferId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid? UpsellOfferId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("priceHandles", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<PriceHandleReq> PriceHandles { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    /// <summary>
+    /// One of 'feedback', 'fund', 'sponsorship'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AllocationType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"feedback")]
+        Feedback = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"fund")]
+        Fund = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"sponsorship")]
+        Sponsorship = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class MoneyReq
+    {
+        [Newtonsoft.Json.JsonProperty("amount", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public decimal? Amount { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("currency", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Currency { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FundDimensionValuesReq
+    {
+        [Newtonsoft.Json.JsonProperty("dimension1", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Dimension1 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dimension2", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Dimension2 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dimension3", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Dimension3 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dimension4", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Dimension4 { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FeedbackAllocationReq
+    {
+        [Newtonsoft.Json.JsonProperty("scheme", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Scheme { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("customFields", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FeedbackNewCustomFieldsReq CustomFields { get; set; }
+
+    }
+
+    /// <summary>
+    /// One of 'donation', 'regularGiving'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GivingType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"donation")]
+        Donation = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"regularGiving")]
+        RegularGiving = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FeedbackCustomFieldDefinitionElement
+    {
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FeedbackCustomFieldType? Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("required", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Required { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("textMaxLength", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? TextMaxLength { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("alias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Alias { get; set; }
+
+    }
+
+    /// <summary>
+    /// One of 'bool', 'date', 'text'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FeedbackCustomFieldType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"bool")]
+        Bool = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"date")]
+        Date = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"text")]
+        Text = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PriceContent
+    {
+        [Newtonsoft.Json.JsonProperty("amount", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public decimal? Amount { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("locked", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Locked { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PricingRuleElement
+    {
+        [Newtonsoft.Json.JsonProperty("amount", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public decimal? Amount { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("locked", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Locked { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dimension1", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Dimension1 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dimension2", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Dimension2 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dimension3", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Dimension3 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dimension4", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Dimension4 { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FeedbackNewCustomFieldsReq
+    {
+        [Newtonsoft.Json.JsonProperty("entries", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<FeedbackNewCustomFieldReq> Entries { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FeedbackNewCustomFieldReq
+    {
+        [Newtonsoft.Json.JsonProperty("alias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Alias { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("bool", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Bool { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("date", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(DateFormatConverter))]
+        public System.DateTimeOffset? Date { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("text", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Text { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FundAllocationReq
+    {
+        [Newtonsoft.Json.JsonProperty("donationItem", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string DonationItem { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class SponsorshipAllocationReq
+    {
+        [Newtonsoft.Json.JsonProperty("beneficiaryReference", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string BeneficiaryReference { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("scheme", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Scheme { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("duration", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public SponsorshipDuration? Duration { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("components", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<SponsorshipComponentAllocationReq> Components { get; set; }
+
+    }
+
+    /// <summary>
+    /// One of '_6', '_12', '_18', '_24', '_36', '_48', '_60'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SponsorshipDuration
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"_6")]
+        _6 = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"_12")]
+        _12 = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"_18")]
+        _18 = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"_24")]
+        _24 = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"_36")]
+        _36 = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"_48")]
+        _48 = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"_60")]
+        _60 = 6,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class SponsorshipComponentAllocationReq
+    {
+        [Newtonsoft.Json.JsonProperty("component", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Component { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public MoneyReq Value { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PriceHandleReq
+    {
+        [Newtonsoft.Json.JsonProperty("amount", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public decimal? Amount { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Description { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.3.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class LookupRes
+    {
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Id { get; set; }
 
     }
 
