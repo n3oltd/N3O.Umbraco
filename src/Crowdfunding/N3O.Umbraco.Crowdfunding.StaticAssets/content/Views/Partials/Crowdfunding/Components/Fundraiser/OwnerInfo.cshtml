@@ -1,5 +1,5 @@
 ﻿@using N3O.Umbraco.Templates
-@model N3O.Umbraco.CrowdFunding.Models.FundraisingPage.CrowdfundingPageOwner
+@model N3O.Umbraco.CrowdFunding.Models.FundraiserViewModel.OwnerInfo
 
 @inject IPartialText PartialText
 
@@ -17,11 +17,11 @@ PartialText.SetPartialName("CrowdfundingPageAccountInfoViewModel");
                 <div class="large">
                     @Model?.Name
                 </div>
-                @if(Model.TeamName.HasValue()) {
+                @*@if(Model.TeamName.HasValue()) {
                     <p class="subtle">
                         @PartialText.Get("Fundraising for") @Model?.TeamName
                     </p>
-                }
+                }*@
             </div>
         </div>
         <div class="account__buttons">

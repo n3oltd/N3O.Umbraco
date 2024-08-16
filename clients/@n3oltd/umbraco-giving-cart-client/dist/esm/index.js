@@ -403,29 +403,6 @@ export var AllocationType;
     AllocationType["Fund"] = "fund";
     AllocationType["Sponsorship"] = "sponsorship";
 })(AllocationType || (AllocationType = {}));
-export var PublishedItemType;
-(function (PublishedItemType) {
-    PublishedItemType[PublishedItemType["Unknown"] = 0] = "Unknown";
-    PublishedItemType[PublishedItemType["Element"] = 1] = "Element";
-    PublishedItemType[PublishedItemType["Content"] = 2] = "Content";
-    PublishedItemType[PublishedItemType["Media"] = 3] = "Media";
-    PublishedItemType[PublishedItemType["Member"] = 4] = "Member";
-})(PublishedItemType || (PublishedItemType = {}));
-export var ContentVariation;
-(function (ContentVariation) {
-    ContentVariation[ContentVariation["Nothing"] = 0] = "Nothing";
-    ContentVariation[ContentVariation["Culture"] = 1] = "Culture";
-    ContentVariation[ContentVariation["Segment"] = 2] = "Segment";
-    ContentVariation[ContentVariation["CultureAndSegment"] = 3] = "CultureAndSegment";
-})(ContentVariation || (ContentVariation = {}));
-export var PropertyCacheLevel;
-(function (PropertyCacheLevel) {
-    PropertyCacheLevel[PropertyCacheLevel["Unknown"] = 0] = "Unknown";
-    PropertyCacheLevel[PropertyCacheLevel["Element"] = 1] = "Element";
-    PropertyCacheLevel[PropertyCacheLevel["Elements"] = 2] = "Elements";
-    PropertyCacheLevel[PropertyCacheLevel["Snapshot"] = 3] = "Snapshot";
-    PropertyCacheLevel[PropertyCacheLevel["None"] = 4] = "None";
-})(PropertyCacheLevel || (PropertyCacheLevel = {}));
 /** One of 'bool', 'date', 'text' */
 export var FeedbackCustomFieldType;
 (function (FeedbackCustomFieldType) {

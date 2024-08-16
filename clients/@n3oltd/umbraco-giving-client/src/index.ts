@@ -883,79 +883,12 @@ export interface PriceContent {
 }
 
 export interface PricingRuleElement {
-    content?: IPublishedElement | undefined;
     amount?: number;
     locked?: boolean;
     dimension1?: string | undefined;
     dimension2?: string | undefined;
     dimension3?: string | undefined;
     dimension4?: string | undefined;
-}
-
-export interface IPublishedElement {
-    contentType?: IPublishedContentType;
-    key?: string;
-    properties?: IPublishedProperty[];
-}
-
-export interface IPublishedContentType {
-    key?: string;
-    id?: number;
-    alias?: string;
-    itemType?: PublishedItemType;
-    compositionAliases?: string[];
-    variations?: ContentVariation;
-    isElement?: boolean;
-    propertyTypes?: IPublishedPropertyType[];
-}
-
-export enum PublishedItemType {
-    Unknown = 0,
-    Element = 1,
-    Content = 2,
-    Media = 3,
-    Member = 4,
-}
-
-export enum ContentVariation {
-    Nothing = 0,
-    Culture = 1,
-    Segment = 2,
-    CultureAndSegment = 3,
-}
-
-export interface IPublishedPropertyType {
-    contentType?: IPublishedContentType | undefined;
-    dataType?: PublishedDataType;
-    alias?: string;
-    editorAlias?: string;
-    isUserProperty?: boolean;
-    variations?: ContentVariation;
-    cacheLevel?: PropertyCacheLevel;
-    deliveryApiCacheLevel?: PropertyCacheLevel;
-    deliveryApiCacheLevelForExpansion?: PropertyCacheLevel;
-    modelClrType?: string;
-    deliveryApiModelClrType?: string;
-    clrType?: string | undefined;
-}
-
-export interface PublishedDataType {
-    id?: number;
-    editorAlias?: string;
-    configuration?: any | undefined;
-}
-
-export enum PropertyCacheLevel {
-    Unknown = 0,
-    Element = 1,
-    Elements = 2,
-    Snapshot = 3,
-    None = 4,
-}
-
-export interface IPublishedProperty {
-    propertyType?: IPublishedPropertyType;
-    alias?: string;
 }
 
 export interface PriceHandleRes {
@@ -990,7 +923,6 @@ export interface FeedbackDonationOptionRes {
 }
 
 export interface FeedbackCustomFieldDefinitionElement {
-    content?: IPublishedElement | undefined;
     type?: FeedbackCustomFieldType | undefined;
     name?: string | undefined;
     required?: boolean;
