@@ -34,25 +34,22 @@ public class ContentPropertyReqValidator : ModelValidator<ContentPropertyReq> {
            .WithMessage(Get<Strings>(x => x.SpecifyPropertyType));
         
         RuleFor(x => x)
-           .Must(ValidatePropertyType)
-           .WithMessage(Get<Strings>(s => s.PropertyTypeInvalid));
+           .Custom((req, context) => ValidatePropertyType(context, req));
         
         RuleFor(x => x)
            .Must(ValidatePropertyTypeValue)
            .WithMessage(Get<Strings>(s => s.SpecifyValidPropertyTypeValue));
     }
     
-    private bool ValidatePropertyType(ContentPropertyReq req) {
+    private void ValidatePropertyType(ValidationContext<ContentPropertyReq> context, ContentPropertyReq req) {
         var content = _contentId.Run(id => _contentLocator.ById(id), false);
         
         var validator = _validators.SingleOrDefault(x => x.IsValidator(content.ContentType.Alias, req.Alias));
         
         if (validator != null) {
-            var result = validator.IsValid(content, req.Alias, req.Value.Value);
+            var result = validator.Validate(content, req.Alias, req.Value.Value);
 
-            return result;
-        } else {
-            return true;
+            result.Errors.OrEmpty().Do(context.AddFailure);
         }
     }
     
