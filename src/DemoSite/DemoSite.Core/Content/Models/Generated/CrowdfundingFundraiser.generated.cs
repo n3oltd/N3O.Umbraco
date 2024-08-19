@@ -103,7 +103,7 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("owner")]
-		public virtual global::Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent Owner => this.Value<global::Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent>(_publishedValueFallback, "owner");
+		public virtual global::DemoSite.Content.Member Owner => this.Value<global::DemoSite.Content.Member>(_publishedValueFallback, "owner");
 
 		///<summary>
 		/// Slug
