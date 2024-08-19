@@ -7,6 +7,7 @@ import { usePageData } from "../hooks/usePageData";
 
 import { Modal } from "./common/Modal";
 import { _client } from "../common/cfClient";
+import { loadingToast, updatingToast } from "../helpers/toaster";
 import { EditorProps } from "./types/EditorProps";
 
 export const Textarea: React.FC<EditorProps> = ({
@@ -21,7 +22,7 @@ export const Textarea: React.FC<EditorProps> = ({
 
   const {pageId} = usePageData();
 
-  const {run: loadPropertyValue, loading: isPropLoading} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias), {
+  const {runAsync: loadPropertyValue, loading: isPropLoading} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias), {
     manual: true,
     ready: !!propAlias && open,
     onSuccess: data => state.description = data?.textarea?.value || ''
@@ -36,7 +37,7 @@ export const Textarea: React.FC<EditorProps> = ({
 
   React.useEffect(() => {
     if (open && pageId) {
-      loadPropertyValue(pageId as string)
+      loadingToast(loadPropertyValue(pageId as string))
     }
 
   }, [loadPropertyValue, pageId, open]);
@@ -50,7 +51,7 @@ export const Textarea: React.FC<EditorProps> = ({
           value: state.description
         } 
       } 
-      await updateProperty(req, pageId as string)
+      updatingToast(updateProperty(req, pageId as string))
     } catch(e) {
       console.error(e)
     }

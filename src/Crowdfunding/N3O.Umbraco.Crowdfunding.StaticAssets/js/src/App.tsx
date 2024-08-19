@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { Toaster } from 'react-hot-toast';
 import { useReactive } from 'ahooks';
 
 import { usePageData } from './hooks/usePageData';
@@ -16,7 +17,6 @@ declare global {
 function App() {
 
   const state = useReactive<PropConfig>({
-    selector: "",    
     propType: undefined,
     propAlias: "",
     nested: false,
@@ -29,6 +29,7 @@ function App() {
     state.isOpen = config.isOpen,
     state.propType = config.propType;
     state.propAlias = config.propAlias;
+    state.nested = config.nested;
     forceUpdate(prev => !prev);
 
   };
@@ -54,6 +55,9 @@ function App() {
       <div className='modals'>
         <Component open={state.isOpen} onClose={onClose} {...state} />
       </div>
+      <Toaster 
+          position="bottom-right"
+      />
     </>
   )
 }

@@ -7,6 +7,7 @@ import { ContentPropertyReq, PropertyType } from "@n3oltd/umbraco-crowdfunding-c
 
 import { Modal } from "./common/Modal";
 import { CkEditor } from "./common/CKEditor";
+import { loadingToast, updatingToast } from "../helpers/toaster";
 
 import { usePageData } from "../hooks/usePageData";
 
@@ -26,7 +27,7 @@ export const RichTextEditor: React.FC<EditorProps> = ({
   const {pageId} = usePageData();
   const [editorContent, setEditorContent] =  React.useState<string>('');
 
-  const {run: loadPropertyValue} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias), {
+  const {runAsync: loadPropertyValue} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias), {
     manual: true,
     ready: open && !!propAlias,
     onSuccess: data => editor.current?.editor?.setData(data?.raw?.value as string)
@@ -40,8 +41,8 @@ export const RichTextEditor: React.FC<EditorProps> = ({
   })
 
   React.useEffect(() => {
-    if (open) {
-      loadPropertyValue(pageId as string)
+    if (open && pageId) {
+     loadingToast(loadPropertyValue(pageId as string))
     }
   }, [loadPropertyValue, pageId, open]);
 
@@ -60,7 +61,7 @@ export const RichTextEditor: React.FC<EditorProps> = ({
         } 
       }
 
-      await updateProperty(req, pageId as string)
+      updatingToast(updateProperty(req, pageId as string))
     } catch(e) {
       console.error(e)
     }
@@ -72,7 +73,6 @@ export const RichTextEditor: React.FC<EditorProps> = ({
       isOpen={open}
       onOk={saveContent}
       onClose={onClose}
-
     >
       <h3>About this campaign</h3>
           <div className="edit__info">

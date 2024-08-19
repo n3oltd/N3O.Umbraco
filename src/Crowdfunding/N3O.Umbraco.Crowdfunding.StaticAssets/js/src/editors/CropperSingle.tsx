@@ -3,12 +3,14 @@ import React from "react";
 import { Uppy } from "@uppy/core";
 import { CropperValueRes, CropShape, ContentPropertyReq, PropertyType, RectangleCropReq } from "@n3oltd/umbraco-crowdfunding-client";
 import { useReactive, useRequest } from "ahooks";
+import toast from "react-hot-toast";
 
 import { Modal } from "./common/Modal";
 import { ImageUploader } from "./common/ImageUploader"
 
 import { usePageData } from "../hooks/usePageData";
 
+import { loadingToast, updatingToast } from "../helpers/toaster";
 import { _client } from "../common/cfClient";
 import { ImageUploadStoragePath } from "../common/constants";
 import { EditorProps } from "./types/EditorProps";
@@ -21,18 +23,18 @@ export const CropperSingle: React.FC<EditorProps> = ({
 
   const state = useReactive<{
     uppy: Uppy | undefined | null,
-    token: string,
-    crop: RectangleCropReq
+    files: Array<{
+      token: string,
+      crop: RectangleCropReq
+    }>
   }>({
-    token: '',
-    crop:{},
+    files: [],
     uppy: null
   });
 
   const {pageId} = usePageData();
 
-
-  const {run: loadPropertyValue} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId as string, propAlias), {
+  const {runAsync: loadPropertyValue} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId as string, propAlias), {
     manual: true,
     ready: open && !!propAlias,
     onSuccess: data => onFileLoadSuccess(data?.cropper)
@@ -40,14 +42,15 @@ export const CropperSingle: React.FC<EditorProps> = ({
 
   const {runAsync: updateProperty, loading: updating} = useRequest((req: ContentPropertyReq, pageId: string) => _client.updateProperty(pageId, req), {
     manual: true,
+    onError(e) {
+      toast.error(e.message)
+    },
     onSuccess: () => onClose()
   })
 
-  
-
   React.useEffect(() => {
-    if (open) {
-      loadPropertyValue(pageId as string)
+    if (open && pageId) {
+      loadingToast(loadPropertyValue(pageId as string))
     }
   }, [loadPropertyValue, pageId, open]);
 
@@ -72,44 +75,36 @@ export const CropperSingle: React.FC<EditorProps> = ({
 
       state.uppy?.addFile(file)
     } 
-  }
-
-  const handleCrop = event => {
-    state.crop.bottomLeft = {
-          x: Math.floor(event.detail.x),
-          y: Math.floor(event.detail.y) 
-        };
-
-    state.crop.topRight = {
-      x: Math.floor(event.detail.width),
-      y: Math.floor(event.detail.height)
-    };
-  }
+  }  
 
   const saveContent = async () => {
-    if (!state.token) {
+    if (!state.files.length) {
       return;
     }
-    try {
-      const req: ContentPropertyReq = {
-        alias: propAlias,
-        type: PropertyType.Cropper,
-        cropper: {
-          storageToken: state.token,
-          shape: CropShape.Rectangle,
-          rectangle: state.crop
-        } 
-      }
 
-      await updateProperty(req, pageId as string)
+    try {
+      updatingToast(Promise.all(state.files.map(async (f) => {
+        const req: ContentPropertyReq = {
+          alias: propAlias,
+          type: PropertyType.Cropper,
+          cropper: {
+            storageToken: f.token,
+            shape: CropShape.Rectangle,
+            rectangle: f.crop
+          } 
+        }
+
+        await updateProperty(req, pageId as string)
+      })))
+
     } catch(e) {
-      console.error(e)
+      toast.error("Something went wrong. Please try again")
     }
   }
 
   return <>
     <Modal
-      id="cropper-single-edit"
+      id="cropper-edit"
       isOpen={open}
       onOk={saveContent}
       onClose={onClose}
@@ -123,13 +118,11 @@ export const CropperSingle: React.FC<EditorProps> = ({
         aspectRatio={4/1}
         maxFiles={1}
         setUppyInstance={setUppyInstance}
-        onFileUpload={(token, uppy )=> {
-          state.token = token;
-          state.uppy = uppy
+        onFileUpload={(token, crop)=> {
+          state.files.push({token, crop})
         }}
-        onCrop={handleCrop}
-        elementId="campaign-cover"
-        uploadUrl={`${window.location.origin}${ImageUploadStoragePath}`}
+        elementId="image-upload"
+        uploadUrl={`https://localhost:6001${ImageUploadStoragePath}`}
         hieght={200}
       />
     </Modal>

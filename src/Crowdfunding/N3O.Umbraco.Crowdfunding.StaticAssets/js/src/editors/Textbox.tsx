@@ -5,8 +5,9 @@ import { useRequest, useReactive } from "ahooks";
 
 import { usePageData } from "../hooks/usePageData";
 
-import { _client } from "../common/cfClient";
 import { Modal } from "./common/Modal";
+import { _client } from "../common/cfClient";
+import { loadingToast, updatingToast } from "../helpers/toaster";
 import { EditorProps } from "./types/EditorProps";
 
 export const Textbox: React.FC<EditorProps> = ({
@@ -22,7 +23,7 @@ export const Textbox: React.FC<EditorProps> = ({
   const {pageId} = usePageData();
 
 
-  const {run: loadPropertyValue, loading: isPropLoading} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias), {
+  const {runAsync: loadPropertyValue, loading: isPropLoading} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias), {
     manual: true,
     ready: !!propAlias && open,
     onSuccess: data => state.title = data?.textBox?.value || ''
@@ -36,10 +37,9 @@ export const Textbox: React.FC<EditorProps> = ({
   })
 
   React.useEffect(() => {
-    if (open) {
-      loadPropertyValue(pageId as string)
+    if (open && pageId) {
+      loadingToast(loadPropertyValue(pageId as string))
     }
-
   }, [loadPropertyValue, open, pageId]);
 
   const saveContent = async () => {
@@ -50,8 +50,10 @@ export const Textbox: React.FC<EditorProps> = ({
         textBox: {
           value: state.title
         } 
-      } 
-      await updateProperty(req, pageId as string)
+      }
+
+      updatingToast(updateProperty(req, pageId as string))
+
     } catch(e) {
       console.error(e)
     }
