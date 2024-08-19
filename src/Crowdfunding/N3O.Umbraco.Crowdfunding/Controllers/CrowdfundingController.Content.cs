@@ -16,14 +16,6 @@ public partial class CrowdfundingController {
         return Ok(res);
     }
     
-    [HttpGet("content/{contentId:guid}/nested/{propertyAlias}/schema")]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<NestedPropertySchemaRes>> GetNestedPropertySchema() {
-        var res = await _mediator.Value.SendAsync<GetNestedPropertySchemaQuery, None, NestedPropertySchemaRes>(None.Empty);
-
-        return Ok(res);
-    }
-    
     [HttpPut("content/{contentId:guid}/property")]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> UpdateProperty(ContentPropertyReq req) {
