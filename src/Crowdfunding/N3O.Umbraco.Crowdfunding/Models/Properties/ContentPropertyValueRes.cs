@@ -1,10 +1,6 @@
-﻿using N3O.Umbraco.Crowdfunding.Lookups;
-
-namespace N3O.Umbraco.Crowdfunding.Models; 
+﻿namespace N3O.Umbraco.Crowdfunding.Models; 
 
 public class ContentPropertyValueRes {
-    public string Alias { get; set; }
-    public PropertyType Type { get; set; }
     public BooleanValueRes Boolean { get; set; }
     public CropperValueRes Cropper { get; set; }
     public DateTimeValueRes DateTime { get; set; }

@@ -8,13 +8,13 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.CrowdFunding;
 
-public class FundraiserTitleValidator : ContentPropertyValidator<TextBoxValueReq> {
-    private const int MaxLength = 100;
+public class FundraiserDescriptionValidator : ContentPropertyValidator<TextareaValueReq> {
+    private const int MaxLength = 200;
     
-    public FundraiserTitleValidator(IFormatter formatter)
-        : base(formatter, CrowdfundingConstants.Fundraiser.Alias, CrowdfundingConstants.Fundraiser.Properties.Title) { }
+    public FundraiserDescriptionValidator(IFormatter formatter)
+        : base(formatter, CrowdfundingConstants.Fundraiser.Alias, CrowdfundingConstants.Fundraiser.Properties.Description) { }
     
-    protected override void Validate(IPublishedContent content, string propertyAlias, TextBoxValueReq req) {
+    protected override void Validate(IPublishedContent content, string propertyAlias, TextareaValueReq req) {
         if (req.Value.Length > MaxLength) {
             AddFailure<Strings>(propertyAlias, x => x.MaxLength, MaxLength);
         }
@@ -23,14 +23,14 @@ public class FundraiserTitleValidator : ContentPropertyValidator<TextBoxValueReq
     public override void PopulateContentPropertyCriteriaRes(IPropertyType property,
                                                             PublishedDataType dataType,
                                                             ContentPropertyCriteriaRes res) {
-        var textBoxCriteria = new TextBoxCriteriaRes();
+        var textBoxCriteria = new TextareaCriteriaRes();
         textBoxCriteria.MaximumLength = MaxLength;
         textBoxCriteria.Description = property.Description;
         
-        res.TextBox = textBoxCriteria;
+        res.Textarea = textBoxCriteria;
     }
     
     public class Strings : ValidationStrings {
-        public string MaxLength => $"Title cannot exceed {"{0}".Quote()} characters.";
+        public string MaxLength => $"Description cannot exceed {"{0}".Quote()} characters.";
     }
 }

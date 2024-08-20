@@ -7,12 +7,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
-using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Handlers;
 
 public class GetContentPropertyValueHandler :
-    IRequestHandler<GetContentPropertyValueQuery, None, ContentPropertyValueRes> {
+    IRequestHandler<GetContentPropertyValueQuery, None, ContentPropertyRes> {
     private readonly IContentLocator _contentLocator;
     private readonly IUmbracoMapper _mapper;
 
@@ -21,13 +20,15 @@ public class GetContentPropertyValueHandler :
         _contentLocator = contentLocator;
     }
 
-    public Task<ContentPropertyValueRes> Handle(GetContentPropertyValueQuery req, CancellationToken cancellationToken) {
+    public Task<ContentPropertyRes> Handle(GetContentPropertyValueQuery req, CancellationToken cancellationToken) {
         var content = req.ContentId.Run(_contentLocator.ById, true);
         var property = req.PropertyAlias.Run(alias => content.Properties
                                                              .SingleOrDefault(x => x.Alias.EqualsInvariant(alias)),
                                              true);
+
+        var publishedContentProperty = new PublishedContentProperty(content.ContentType.Alias, property);
         
-        var res = _mapper.Map<IPublishedProperty, ContentPropertyValueRes>(property);
+        var res = _mapper.Map<PublishedContentProperty, ContentPropertyRes>(publishedContentProperty);
         
         return Task.FromResult(res);
     }

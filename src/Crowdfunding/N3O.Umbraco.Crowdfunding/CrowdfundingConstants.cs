@@ -22,7 +22,10 @@ public static class CrowdfundingConstants {
         
         public static class Properties {
             public const string Allocations = "allocations";
+            public const string Body = "body";
             public const string Campaign = "campaign";
+            public const string Description = "description";
+            public const string HeroImages = "heroImages";
             public const string Owner = "owner";
             public const string Slug = "slug";
             public const string Status = "status";

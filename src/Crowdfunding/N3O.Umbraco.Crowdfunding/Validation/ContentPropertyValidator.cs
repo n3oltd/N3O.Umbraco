@@ -4,6 +4,7 @@ using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using System;
+using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.CrowdFunding;
@@ -52,5 +53,8 @@ public abstract class ContentPropertyValidator<T> : IContentPropertyValidator wh
         return new ValidationResult();
     }
 
+    public abstract void PopulateContentPropertyCriteriaRes(IPropertyType property,
+                                                            PublishedDataType dataType,
+                                                            ContentPropertyCriteriaRes res);
     protected abstract void Validate(IPublishedContent content, string propertyAlias, T req);
 }

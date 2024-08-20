@@ -8,13 +8,13 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.CrowdFunding;
 
-public class FundraiserTitleValidator : ContentPropertyValidator<TextBoxValueReq> {
-    private const int MaxLength = 100;
+public class FundraiserBodyValidator : ContentPropertyValidator<RawValueReq> {
+    private const int MaxLength = 1000;
     
-    public FundraiserTitleValidator(IFormatter formatter)
-        : base(formatter, CrowdfundingConstants.Fundraiser.Alias, CrowdfundingConstants.Fundraiser.Properties.Title) { }
+    public FundraiserBodyValidator(IFormatter formatter)
+        : base(formatter, CrowdfundingConstants.Fundraiser.Alias, CrowdfundingConstants.Fundraiser.Properties.Body) { }
     
-    protected override void Validate(IPublishedContent content, string propertyAlias, TextBoxValueReq req) {
+    protected override void Validate(IPublishedContent content, string propertyAlias, RawValueReq req) {
         if (req.Value.Length > MaxLength) {
             AddFailure<Strings>(propertyAlias, x => x.MaxLength, MaxLength);
         }
@@ -23,14 +23,14 @@ public class FundraiserTitleValidator : ContentPropertyValidator<TextBoxValueReq
     public override void PopulateContentPropertyCriteriaRes(IPropertyType property,
                                                             PublishedDataType dataType,
                                                             ContentPropertyCriteriaRes res) {
-        var textBoxCriteria = new TextBoxCriteriaRes();
-        textBoxCriteria.MaximumLength = MaxLength;
-        textBoxCriteria.Description = property.Description;
+        var rawCriteria = new RawCriteriaRes();
+        rawCriteria.MaximumLength = MaxLength;
+        rawCriteria.Description = property.Description;
         
-        res.TextBox = textBoxCriteria;
-    }
+        res.Raw = rawCriteria;
+    }   
     
     public class Strings : ValidationStrings {
-        public string MaxLength => $"Title cannot exceed {"{0}".Quote()} characters.";
+        public string MaxLength => $"Body cannot exceed {"{0}".Quote()} characters.";
     }
 }
