@@ -54,7 +54,6 @@ public abstract class ContentPropertyValidator<T> : IContentPropertyValidator wh
     }
 
     public abstract void PopulateContentPropertyCriteriaRes(IPropertyType property,
-                                                            PublishedDataType dataType,
                                                             ContentPropertyCriteriaRes res);
     protected abstract void Validate(IPublishedContent content, string propertyAlias, T req);
 }

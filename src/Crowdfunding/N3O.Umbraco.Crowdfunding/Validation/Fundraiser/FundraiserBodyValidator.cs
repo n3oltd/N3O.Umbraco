@@ -21,7 +21,6 @@ public class FundraiserBodyValidator : ContentPropertyValidator<RawValueReq> {
     }
     
     public override void PopulateContentPropertyCriteriaRes(IPropertyType property,
-                                                            PublishedDataType dataType,
                                                             ContentPropertyCriteriaRes res) {
         var rawCriteria = new RawCriteriaRes();
         rawCriteria.MaximumLength = MaxLength;

@@ -21,7 +21,6 @@ public class FundraiserTitleValidator : ContentPropertyValidator<TextBoxValueReq
     }
     
     public override void PopulateContentPropertyCriteriaRes(IPropertyType property,
-                                                            PublishedDataType dataType,
                                                             ContentPropertyCriteriaRes res) {
         var textBoxCriteria = new TextBoxCriteriaRes();
         textBoxCriteria.MaximumLength = MaxLength;

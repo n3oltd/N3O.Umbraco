@@ -59,9 +59,8 @@ public class ContentPropertyResMapping : IMapDefinition {
 
         if (validator.HasValue()) {
             var propertyType = GetPropertyType(publishedContentProperty.ContentTypeAlias, publishedContentProperty.Property.Alias);
-            var dataType = publishedContentProperty.Property.PropertyType.DataType;
             
-            validator.PopulateContentPropertyCriteriaRes(propertyType, dataType, res);
+            validator.PopulateContentPropertyCriteriaRes(propertyType, res);
         }
         
         return res;

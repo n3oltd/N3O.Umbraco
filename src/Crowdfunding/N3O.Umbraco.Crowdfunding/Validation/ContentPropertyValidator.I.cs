@@ -7,7 +7,6 @@ namespace N3O.Umbraco.CrowdFunding;
 
 public interface IContentPropertyValidator {
     void PopulateContentPropertyCriteriaRes(IPropertyType property,
-                                            PublishedDataType dataType,
                                             ContentPropertyCriteriaRes res);
     bool IsValidator(string contentTypeAlias, string propertyAlias);
     ValidationResult Validate(IPublishedContent content, string propertyAlias, ValueReq req);

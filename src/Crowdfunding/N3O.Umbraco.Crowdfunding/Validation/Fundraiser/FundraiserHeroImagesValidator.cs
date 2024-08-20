@@ -6,22 +6,19 @@ using N3O.Umbraco.Validation;
 using System.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.PropertyEditors;
 
 namespace N3O.Umbraco.CrowdFunding;
 
 public class FundraiserHeroImagesValidator : ContentPropertyValidator<NestedValueReq> {
     private const int MinItems = 1;
+    private const int MaxItems = 5;
     
     public FundraiserHeroImagesValidator(IFormatter formatter)
         : base(formatter, CrowdfundingConstants.Fundraiser.Alias, CrowdfundingConstants.Fundraiser.Properties.HeroImages) { }
     
     protected override void Validate(IPublishedContent content, string propertyAlias, NestedValueReq req) {
-        var property = content.Properties.SingleOrDefault(x => x.Alias == propertyAlias);
-        var configuration = property?.PropertyType.DataType.ConfigurationAs<NestedContentConfiguration>();
-        
-        if (req.Items.Count() > configuration?.MaxItems) {
-            AddFailure<Strings>(propertyAlias, x => x.MaxItems, configuration.MaxItems);
+        if (req.Items.Count() > MaxItems) {
+            AddFailure<Strings>(propertyAlias, x => x.MaxItems, MaxItems);
         }
         
         if (req.Items.Count() < MinItems) {
@@ -30,13 +27,10 @@ public class FundraiserHeroImagesValidator : ContentPropertyValidator<NestedValu
     }
     
     public override void PopulateContentPropertyCriteriaRes(IPropertyType property,
-                                                            PublishedDataType dataType,
                                                             ContentPropertyCriteriaRes res) {
-        var configuration = dataType.ConfigurationAs<NestedContentConfiguration>();
-        
         var nestedCriteria = new NestedCriteriaRes();
         nestedCriteria.Description = property.Description;
-        nestedCriteria.MaximumItems = configuration.MaxItems.GetValueOrDefault();
+        nestedCriteria.MaximumItems = MaxItems;
         nestedCriteria.MinimumItems = MinItems;
         
         res.Nested = nestedCriteria;

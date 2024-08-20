@@ -21,13 +21,12 @@ public class FundraiserDescriptionValidator : ContentPropertyValidator<TextareaV
     }
     
     public override void PopulateContentPropertyCriteriaRes(IPropertyType property,
-                                                            PublishedDataType dataType,
                                                             ContentPropertyCriteriaRes res) {
-        var textBoxCriteria = new TextareaCriteriaRes();
-        textBoxCriteria.MaximumLength = MaxLength;
-        textBoxCriteria.Description = property.Description;
+        var textareaCriteria = new TextareaCriteriaRes();
+        textareaCriteria.MaximumLength = MaxLength;
+        textareaCriteria.Description = property.Description;
         
-        res.Textarea = textBoxCriteria;
+        res.Textarea = textareaCriteria;
     }
     
     public class Strings : ValidationStrings {
