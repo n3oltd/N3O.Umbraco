@@ -24,7 +24,9 @@ public class NestedValueResMapping : IMapDefinition {
     }
 
     private NestedItemRes PopulateNestedItem(MapperContext ctx, IPublishedElement element) {
-        var properties = element.Properties.Select(ctx.Map<IPublishedProperty, ContentPropertyRes>);
+        var publishedContentProperties = element.Properties.Select(x => new PublishedContentProperty(element.ContentType.Alias, x));
+        
+        var properties = publishedContentProperties.Select(ctx.Map<PublishedContentProperty, ContentPropertyRes>);
         
         var res = new NestedItemRes();
         res.ContentTypeAlias = element.ContentType.Alias;
