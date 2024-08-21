@@ -7,7 +7,7 @@ namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class TextareaConfigurationResMapping : ContentPropertyConfigurationMapping<TextareaConfigurationRes> {
     public TextareaConfigurationResMapping(IContentTypeService contentTypeService,
-                                          IEnumerable<IContentPropertyValidator> validators) 
+                                           IEnumerable<IContentPropertyValidator> validators) 
         : base(contentTypeService, validators) { }
 
     public override void Map(PublishedContentProperty src, TextareaConfigurationRes dest, MapperContext ctx) {

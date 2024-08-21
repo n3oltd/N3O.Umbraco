@@ -12,7 +12,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Crowdfunding.Content;
 
 [UmbracoContent(CrowdfundingConstants.FundraiserAllocation.Alias)]
-public class FundraiserAllocationElement : UmbracoElement<FundraiserAllocationElement> {
+public class FundraiserAllocationElement : UmbracoElement<FundraiserAllocationElement>, IFundDimensionValues {
     public string Title => GetValue(x => x.Title);
     public decimal Amount => GetValue(x => x.Amount);
     public FundDimension1Value FundDimension1 => GetAs(x => x.FundDimension1);
@@ -62,4 +62,16 @@ public class FundraiserAllocationElement : UmbracoElement<FundraiserAllocationEl
             }
         }
     }
+    
+    [JsonIgnore]
+    FundDimension1Value IFundDimensionValues.Dimension1 => FundDimension1;
+    
+    [JsonIgnore]
+    FundDimension2Value IFundDimensionValues.Dimension2 => FundDimension2;
+    
+    [JsonIgnore]
+    FundDimension3Value IFundDimensionValues.Dimension3 => FundDimension3;
+    
+    [JsonIgnore]
+    FundDimension4Value IFundDimensionValues.Dimension4 => FundDimension4;
 }

@@ -24,19 +24,12 @@ public abstract class ContentPropertyValidator<TReq, TRes> : IContentPropertyVal
         _propertyAlias = propertyAlias;
     }
     
-    protected void AddFailure<TStrings>(string propertyAlias,
-                                        Func<TStrings, string> propertySelector,
-                                        params object[] formatArgs) 
-        where TStrings : class, IStrings, new() {
-        AddFailure(propertyAlias, f => f.Text.Format(propertySelector, formatArgs));
-    }
-    
-    private void AddFailure(string propertyAlias, Func<IFormatter, string> getErrorMessage) {
-        Failures.Add(new ValidationFailure(propertyAlias, getErrorMessage(_formatter)));
-    }
-    
     public bool IsValidator(string contentTypeAlias, string propertyAlias) {
         return contentTypeAlias.EqualsInvariant(_contentTypeAlias) && propertyAlias.EqualsInvariant(_propertyAlias);
+    }
+    
+    public void PopulatePropertyConfiguration(IPropertyType property, ContentPropertyConfigurationRes res) {
+        PopulatePropertyConfiguration(property, (TRes) res);
     }
 
     public ValidationResult Validate(IPublishedContent content, string propertyAlias, ValueReq req) {
@@ -47,8 +40,15 @@ public abstract class ContentPropertyValidator<TReq, TRes> : IContentPropertyVal
         return result;
     }
     
-    public void PopulatePropertyConfiguration(IPropertyType property, ContentPropertyConfigurationRes res) {
-        PopulatePropertyConfiguration(property, (TRes) res);
+    protected void AddFailure<TStrings>(string propertyAlias,
+                                        Func<TStrings, string> propertySelector,
+                                        params object[] formatArgs) 
+        where TStrings : class, IStrings, new() {
+        AddFailure(propertyAlias, f => f.Text.Format(propertySelector, formatArgs));
+    }
+    
+    private void AddFailure(string propertyAlias, Func<IFormatter, string> getErrorMessage) {
+        Failures.Add(new ValidationFailure(propertyAlias, getErrorMessage(_formatter)));
     }
 
     private ValidationResult GetValidationResult() {

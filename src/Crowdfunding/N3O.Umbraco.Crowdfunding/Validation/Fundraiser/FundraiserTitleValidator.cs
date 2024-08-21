@@ -14,15 +14,15 @@ public class FundraiserTitleValidator : ContentPropertyValidator<TextBoxValueReq
     public FundraiserTitleValidator(IFormatter formatter)
         : base(formatter, CrowdfundingConstants.Fundraiser.Alias, CrowdfundingConstants.Fundraiser.Properties.Title) { }
     
+    protected override void PopulatePropertyConfiguration(IPropertyType property, TextBoxConfigurationRes res) {
+        res.MaximumLength = MaxLength;
+        res.Description = property.Description;
+    }
+    
     protected override void Validate(IPublishedContent content, string propertyAlias, TextBoxValueReq req) {
         if (req.Value.Length > MaxLength) {
             AddFailure<Strings>(propertyAlias, x => x.MaxLength, MaxLength);
         }
-    }
-    
-    protected override void PopulatePropertyConfiguration(IPropertyType property, TextBoxConfigurationRes res) {
-        res.MaximumLength = MaxLength;
-        res.Description = property.Description;
     }
     
     public class Strings : ValidationStrings {

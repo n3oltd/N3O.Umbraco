@@ -7,6 +7,7 @@ public class PublishedContentProperty {
         ContentTypeAlias = contentTypeAlias;
         Property = property;
     }
+    
     public string ContentTypeAlias { get; }
     public IPublishedProperty Property { get; }
 }
