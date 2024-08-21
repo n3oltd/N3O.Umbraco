@@ -1,14 +1,13 @@
 using Umbraco.Cms.Core.Mapping;
-using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class NumericValueResMapping : IMapDefinition {
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<IPublishedProperty, NumericValueRes>((_, _) => new NumericValueRes(), Map);
+        mapper.Define<PublishedContentProperty, NumericValueRes>((_, _) => new NumericValueRes(), Map);
     }
 
-    private void Map(IPublishedProperty src, NumericValueRes dest, MapperContext ctx) {
-        dest.Value = (decimal?) src.GetValue();
+    private void Map(PublishedContentProperty src, NumericValueRes dest, MapperContext ctx) {
+        dest.Value = (decimal?) src.Property.GetValue();
     }
 }
