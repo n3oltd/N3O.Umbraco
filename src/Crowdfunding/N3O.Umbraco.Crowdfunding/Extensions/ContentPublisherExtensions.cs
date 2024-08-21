@@ -69,10 +69,10 @@ public static class ContentPublisherExtensions {
         contentBuilder.TextBox(FundraiserAllocation.Properties.Title).Set(allocation.Title);
         contentBuilder.DataList(FundraiserAllocation.Properties.Type).SetLookups(allocation.Type);
         contentBuilder.Numeric(FundraiserAllocation.Properties.Amount).SetDecimal(allocation.Value.Amount);
-        contentBuilder.ContentPicker(FundraiserAllocation.Properties.Dimension1).SetContent(allocation.FundDimensions.Dimension1);
-        contentBuilder.ContentPicker(FundraiserAllocation.Properties.Dimension2).SetContent(allocation.FundDimensions.Dimension2);
-        contentBuilder.ContentPicker(FundraiserAllocation.Properties.Dimension3).SetContent(allocation.FundDimensions.Dimension3);
-        contentBuilder.ContentPicker(FundraiserAllocation.Properties.Dimension4).SetContent(allocation.FundDimensions.Dimension4);
+        contentBuilder.ContentPicker(FundraiserAllocation.Properties.FundDimension1).SetContent(allocation.FundDimensions.Dimension1);
+        contentBuilder.ContentPicker(FundraiserAllocation.Properties.FundDimension2).SetContent(allocation.FundDimensions.Dimension2);
+        contentBuilder.ContentPicker(FundraiserAllocation.Properties.FundDimension3).SetContent(allocation.FundDimensions.Dimension3);
+        contentBuilder.ContentPicker(FundraiserAllocation.Properties.FundDimension4).SetContent(allocation.FundDimensions.Dimension4);
         
         var priceHandles = contentBuilder.Nested(FundraiserAllocation.Properties.PriceHandles);
 

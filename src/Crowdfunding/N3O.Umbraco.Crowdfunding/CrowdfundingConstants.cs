@@ -70,10 +70,10 @@ public static class CrowdfundingConstants {
             public const string Title = "title";
             public const string Type = "type";
             public const string Amount = "amount";
-            public const string Dimension1 = "dimension1";
-            public const string Dimension2 = "dimension2";
-            public const string Dimension3 = "dimension3";
-            public const string Dimension4 = "dimension4";
+            public const string FundDimension1 = "fundDimension1";
+            public const string FundDimension2 = "fundDimension2";
+            public const string FundDimension3 = "fundDimension3";
+            public const string FundDimension4 = "fundDimension4";
             public const string PriceHandles = "priceHandles";
             
             public static class PriceHandle {
