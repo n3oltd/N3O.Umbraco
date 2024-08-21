@@ -5,17 +5,16 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
-using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Lookups;
 
 public abstract class PropertyType : Lookup {
-    private readonly Action<MapperContext, IPublishedProperty, ContentPropertyValueRes> _populateRes;
+    private readonly Action<MapperContext, PublishedContentProperty, ContentPropertyValueRes> _populateValueRes;
 
     protected PropertyType(string id,
-                           Action<MapperContext, IPublishedProperty, ContentPropertyValueRes> populateRes,
+                           Action<MapperContext, PublishedContentProperty, ContentPropertyValueRes> populateValueRes,
                            params string[] editorAliases) : base(id) {
-        _populateRes = populateRes;
+        _populateValueRes = populateValueRes;
         EditorAliases = editorAliases;
     }
 
@@ -23,16 +22,16 @@ public abstract class PropertyType : Lookup {
 
     public abstract Task UpdatePropertyAsync(IContentBuilder contentBuilder, string alias, object data);
 
-    public void PopulateRes(MapperContext ctx, IPublishedProperty src, ContentPropertyValueRes dest) {
-        _populateRes(ctx, src, dest);
+    public void PopulateValueRes(MapperContext ctx, PublishedContentProperty src, ContentPropertyValueRes dest) {
+        _populateValueRes(ctx, src, dest);
     }
 }
 
 public abstract class PropertyType<TReq> : PropertyType {
     protected PropertyType(string id,
-                           Action<MapperContext, IPublishedProperty, ContentPropertyValueRes> populateRes,
+                           Action<MapperContext, PublishedContentProperty, ContentPropertyValueRes> populateValueRes,
                            params string[] editorAliases)
-        : base(id, populateRes, editorAliases) { }
+        : base(id, populateValueRes, editorAliases) { }
 
     public override async Task UpdatePropertyAsync(IContentBuilder contentBuilder, string alias, object data) {
         await UpdatePropertyAsync(contentBuilder, alias, (TReq) data);

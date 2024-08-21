@@ -12,13 +12,13 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Crowdfunding.Content;
 
 [UmbracoContent(CrowdfundingConstants.FundraiserAllocation.Alias)]
-public class FundraiserAllocationElement : UmbracoElement<FundraiserAllocationElement>, IFundDimensionValues {
+public class FundraiserAllocationElement : UmbracoElement<FundraiserAllocationElement> {
     public string Title => GetValue(x => x.Title);
     public decimal Amount => GetValue(x => x.Amount);
-    public FundDimension1Value Dimension1 => GetAs(x => x.Dimension1);
-    public FundDimension2Value Dimension2 => GetAs(x => x.Dimension2);
-    public FundDimension3Value Dimension3 => GetAs(x => x.Dimension3);
-    public FundDimension4Value Dimension4 => GetAs(x => x.Dimension4);
+    public FundDimension1Value FundDimension1 => GetAs(x => x.FundDimension1);
+    public FundDimension2Value FundDimension2 => GetAs(x => x.FundDimension2);
+    public FundDimension3Value FundDimension3 => GetAs(x => x.FundDimension3);
+    public FundDimension4Value FundDimension4 => GetAs(x => x.FundDimension4);
     public IEnumerable<PriceHandleElement> PriceHandles => GetNestedAs(x => x.PriceHandles);
 
     public override void Content(IPublishedElement content) {

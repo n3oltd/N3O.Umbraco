@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models;
-using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
 using PropertyType = N3O.Umbraco.Crowdfunding.Lookups.PropertyType;
@@ -21,11 +20,11 @@ public class NestedSchemaResMapping : IMapDefinition {
     }
     
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<IPublishedProperty, NestedSchemaRes>((_, _) => new NestedSchemaRes(), Map);
+        mapper.Define<PublishedContentProperty, NestedSchemaRes>((_, _) => new NestedSchemaRes(), Map);
     }
 
-    private void Map(IPublishedProperty src, NestedSchemaRes dest, MapperContext ctx) {
-        var nestedConfiguration = src.PropertyType.DataType.ConfigurationAs<NestedContentConfiguration>();
+    private void Map(PublishedContentProperty src, NestedSchemaRes dest, MapperContext ctx) {
+        var nestedConfiguration = src.Property.PropertyType.DataType.ConfigurationAs<NestedContentConfiguration>();
         
         var items = new List<NestedSchemaItemRes>();
 

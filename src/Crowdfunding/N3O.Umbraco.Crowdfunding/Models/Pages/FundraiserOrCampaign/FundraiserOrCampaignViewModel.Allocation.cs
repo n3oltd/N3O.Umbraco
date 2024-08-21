@@ -27,10 +27,10 @@ public partial class FundraiserOrCampaignViewModel<TContent> {
 
             allocation.Title = fundraiserAllocation.Title;
             allocation.Amount = fundraiserAllocation.Amount;
-            allocation.FundDimension1Value = fundraiserAllocation.Dimension1;
-            allocation.FundDimension2Value = fundraiserAllocation.Dimension2;
-            allocation.FundDimension3Value = fundraiserAllocation.Dimension3;
-            allocation.FundDimension4Value = fundraiserAllocation.Dimension4;
+            allocation.FundDimension1Value = fundraiserAllocation.FundDimension1;
+            allocation.FundDimension2Value = fundraiserAllocation.FundDimension2;
+            allocation.FundDimension3Value = fundraiserAllocation.FundDimension3;
+            allocation.FundDimension4Value = fundraiserAllocation.FundDimension4;
             allocation.Type = fundraiserAllocation.Type;
             allocation.DonationItem = fundraiserAllocation.Fund?.DonationItem;
             allocation.SponsorshipScheme = fundraiserAllocation.Sponsorship?.Scheme;

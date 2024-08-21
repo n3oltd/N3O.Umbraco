@@ -2,7 +2,6 @@
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
 using System.Threading.Tasks;
-using Umbraco.Cms.Core.Models.PublishedContent;
 using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 
 namespace N3O.Umbraco.Crowdfunding.Lookups;
@@ -10,7 +9,7 @@ namespace N3O.Umbraco.Crowdfunding.Lookups;
 public class TextareaPropertyType : PropertyType<TextareaValueReq> {
     public TextareaPropertyType()
         : base("textarea",
-               (ctx, src, dest) => dest.Textarea = ctx.Map<IPublishedProperty, TextareaValueRes>(src),
+               (ctx, src, dest) => dest.Textarea = ctx.Map<PublishedContentProperty, TextareaValueRes>(src),
                UmbracoPropertyEditors.Aliases.TextArea) { }
 
     protected override Task UpdatePropertyAsync(IContentBuilder contentBuilder,

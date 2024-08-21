@@ -2,7 +2,6 @@
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
 using System.Threading.Tasks;
-using Umbraco.Cms.Core.Models.PublishedContent;
 using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 
 namespace N3O.Umbraco.Crowdfunding.Lookups;
@@ -10,7 +9,7 @@ namespace N3O.Umbraco.Crowdfunding.Lookups;
 public class NestedPropertyType : PropertyType<NestedValueReq> {
     public NestedPropertyType()
         : base("nested",
-               (ctx, src, dest) => dest.Nested = ctx.Map<IPublishedProperty, NestedValueRes>(src),
+               (ctx, src, dest) => dest.Nested = ctx.Map<PublishedContentProperty, NestedValueRes>(src),
                UmbracoPropertyEditors.Aliases.NestedContent) { }
 
     protected override Task UpdatePropertyAsync(IContentBuilder contentBuilder,

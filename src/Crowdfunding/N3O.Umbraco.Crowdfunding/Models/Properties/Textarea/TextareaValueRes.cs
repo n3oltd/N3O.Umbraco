@@ -2,4 +2,5 @@
 
 public class TextareaValueRes {
     public string Value { get; set; }
+    public TextareaConfigurationRes Configuration { get; set; }
 }
