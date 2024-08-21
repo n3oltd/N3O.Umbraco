@@ -1,6 +1,5 @@
 namespace N3O.Umbraco.Crowdfunding.Models;
 
-public class RawCriteriaRes {
+public class RawConfigurationRes : ContentPropertyConfigurationRes {
     public int MaximumLength { get; set; }
-    public string Description { get; set; }
 }

@@ -9,7 +9,9 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.CrowdFunding;
 
-public abstract class ContentPropertyValidator<T> : IContentPropertyValidator where T : ValueReq {
+public abstract class ContentPropertyValidator<TReq, TRes> : IContentPropertyValidator 
+    where TReq : ValueReq
+    where TRes : ContentPropertyConfigurationRes {
     protected readonly List<ValidationFailure> Failures = new();
     
     private readonly IFormatter _formatter;
@@ -38,11 +40,15 @@ public abstract class ContentPropertyValidator<T> : IContentPropertyValidator wh
     }
 
     public ValidationResult Validate(IPublishedContent content, string propertyAlias, ValueReq req) {
-        Validate(content, propertyAlias, (T) req);
+        Validate(content, propertyAlias, (TReq) req);
 
         var result = GetValidationResult();
 
         return result;
+    }
+    
+    public void PopulatePropertyConfiguration(IPropertyType property, ContentPropertyConfigurationRes res) {
+        PopulatePropertyConfiguration(property, (TRes) res);
     }
 
     private ValidationResult GetValidationResult() {
@@ -53,7 +59,6 @@ public abstract class ContentPropertyValidator<T> : IContentPropertyValidator wh
         return new ValidationResult();
     }
 
-    public abstract void PopulateContentPropertyCriteriaRes(IPropertyType property,
-                                                            ContentPropertyCriteriaRes res);
-    protected abstract void Validate(IPublishedContent content, string propertyAlias, T req);
+    protected abstract void PopulatePropertyConfiguration(IPropertyType property, TRes res);
+    protected abstract void Validate(IPublishedContent content, string propertyAlias, TReq req);
 }

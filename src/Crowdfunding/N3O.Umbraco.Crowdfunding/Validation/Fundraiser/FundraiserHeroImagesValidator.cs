@@ -9,7 +9,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.CrowdFunding;
 
-public class FundraiserHeroImagesValidator : ContentPropertyValidator<NestedValueReq> {
+public class FundraiserHeroImagesValidator : ContentPropertyValidator<NestedValueReq, NestedConfigurationRes> {
     private const int MinItems = 1;
     private const int MaxItems = 5;
     
@@ -26,14 +26,10 @@ public class FundraiserHeroImagesValidator : ContentPropertyValidator<NestedValu
         }
     }
     
-    public override void PopulateContentPropertyCriteriaRes(IPropertyType property,
-                                                            ContentPropertyCriteriaRes res) {
-        var nestedCriteria = new NestedCriteriaRes();
-        nestedCriteria.Description = property.Description;
-        nestedCriteria.MaximumItems = MaxItems;
-        nestedCriteria.MinimumItems = MinItems;
-        
-        res.Nested = nestedCriteria;
+    protected override void PopulatePropertyConfiguration(IPropertyType property, NestedConfigurationRes res) {
+        res.Description = property.Description;
+        res.MaximumItems = MaxItems;
+        res.MinimumItems = MinItems;
     }
     
     public class Strings : ValidationStrings {

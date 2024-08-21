@@ -12,5 +12,6 @@ public class CropperValueResMapping : IMapDefinition {
         var croppedImage = (CroppedImage) src.Property.GetValue();
 
         dest.Image = croppedImage?.GetUncroppedImage();
+        dest.Configuration = ctx.Map<PublishedContentProperty, CropperConfigurationRes>(src);
     }
 }

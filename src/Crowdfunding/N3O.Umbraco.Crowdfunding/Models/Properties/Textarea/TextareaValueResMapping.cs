@@ -9,5 +9,6 @@ public class TextareaValueResMapping : IMapDefinition {
 
     private void Map(PublishedContentProperty src, TextareaValueRes dest, MapperContext ctx) {
         dest.Value = src.Property.GetValue() as string;
+        dest.Configuration = ctx.Map<PublishedContentProperty, TextareaConfigurationRes>(src);
     }
 }

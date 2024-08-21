@@ -6,8 +6,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.CrowdFunding;
 
 public interface IContentPropertyValidator {
-    void PopulateContentPropertyCriteriaRes(IPropertyType property,
-                                            ContentPropertyCriteriaRes res);
+    void PopulatePropertyConfiguration(IPropertyType property, ContentPropertyConfigurationRes res);
     bool IsValidator(string contentTypeAlias, string propertyAlias);
     ValidationResult Validate(IPublishedContent content, string propertyAlias, ValueReq req);
 }

@@ -9,6 +9,7 @@ public class DateTimeValueResMapping : IMapDefinition {
     }
 
     private void Map(PublishedContentProperty src, DateTimeValueRes dest, MapperContext ctx) {
-        dest.Value = (DateTime?) src.Property.GetValue() ;
+        dest.Value = (DateTime?) src.Property.GetValue();
+        dest.Configuration = ctx.Map<PublishedContentProperty, DateTimeConfigurationRes>(src);
     }
 }

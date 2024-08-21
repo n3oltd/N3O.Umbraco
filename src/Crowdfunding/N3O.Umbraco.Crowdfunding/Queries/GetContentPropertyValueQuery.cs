@@ -4,7 +4,7 @@ using N3O.Umbraco.Mediator;
 
 namespace N3O.Umbraco.Crowdfunding.Queries;
 
-public class GetContentPropertyValueQuery : Request<None, ContentPropertyRes> {
+public class GetContentPropertyValueQuery : Request<None, ContentPropertyValueRes> {
     public ContentId ContentId { get; }
     public PropertyAlias PropertyAlias { get; }
 

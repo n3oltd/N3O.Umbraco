@@ -8,7 +8,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.CrowdFunding;
 
-public class FundraiserTitleValidator : ContentPropertyValidator<TextBoxValueReq> {
+public class FundraiserTitleValidator : ContentPropertyValidator<TextBoxValueReq, TextBoxConfigurationRes> {
     private const int MaxLength = 100;
     
     public FundraiserTitleValidator(IFormatter formatter)
@@ -20,13 +20,9 @@ public class FundraiserTitleValidator : ContentPropertyValidator<TextBoxValueReq
         }
     }
     
-    public override void PopulateContentPropertyCriteriaRes(IPropertyType property,
-                                                            ContentPropertyCriteriaRes res) {
-        var textBoxCriteria = new TextBoxCriteriaRes();
-        textBoxCriteria.MaximumLength = MaxLength;
-        textBoxCriteria.Description = property.Description;
-        
-        res.TextBox = textBoxCriteria;
+    protected override void PopulatePropertyConfiguration(IPropertyType property, TextBoxConfigurationRes res) {
+        res.MaximumLength = MaxLength;
+        res.Description = property.Description;
     }
     
     public class Strings : ValidationStrings {

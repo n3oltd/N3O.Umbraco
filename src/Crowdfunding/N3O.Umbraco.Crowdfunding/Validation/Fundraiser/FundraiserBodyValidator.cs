@@ -8,7 +8,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.CrowdFunding;
 
-public class FundraiserBodyValidator : ContentPropertyValidator<RawValueReq> {
+public class FundraiserBodyValidator : ContentPropertyValidator<RawValueReq, RawConfigurationRes> {
     private const int MaxLength = 1000;
     
     public FundraiserBodyValidator(IFormatter formatter)
@@ -20,14 +20,10 @@ public class FundraiserBodyValidator : ContentPropertyValidator<RawValueReq> {
         }
     }
     
-    public override void PopulateContentPropertyCriteriaRes(IPropertyType property,
-                                                            ContentPropertyCriteriaRes res) {
-        var rawCriteria = new RawCriteriaRes();
-        rawCriteria.MaximumLength = MaxLength;
-        rawCriteria.Description = property.Description;
-        
-        res.Raw = rawCriteria;
-    }   
+    protected override void PopulatePropertyConfiguration(IPropertyType property, RawConfigurationRes res) {
+        res.MaximumLength = MaxLength;
+        res.Description = property.Description;
+    }  
     
     public class Strings : ValidationStrings {
         public string MaxLength => $"Body cannot exceed {"{0}".Quote()} characters.";

@@ -21,6 +21,7 @@ public class NestedValueResMapping : IMapDefinition {
         
         dest.Items = items;
         dest.Schema = ctx.Map<PublishedContentProperty, NestedSchemaRes>(src);
+        dest.Configuration = ctx.Map<PublishedContentProperty, NestedConfigurationRes>(src);
     }
 
     private NestedItemRes PopulateNestedItem(MapperContext ctx, IPublishedElement element) {
