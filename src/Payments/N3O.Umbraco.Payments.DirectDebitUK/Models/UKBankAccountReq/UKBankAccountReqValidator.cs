@@ -53,7 +53,7 @@ public class UKBankAccountReqValidator : ModelValidator<UKBankAccountReq> {
         var bankAccountValidator = _bankAccountValidatorsFactory.CreateValidator();
         
         if (bankAccountValidator != null) {
-            var result = bankAccountValidator.IsValidAsync(req.AccountNumber, req.SortCode).GetAwaiter().GetResult();
+            var result = bankAccountValidator.IsValidAsync(req.SortCode, req.AccountNumber).GetAwaiter().GetResult();
 
             return result;
         } else {
