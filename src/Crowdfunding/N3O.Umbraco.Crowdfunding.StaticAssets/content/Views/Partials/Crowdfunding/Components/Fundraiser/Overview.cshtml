@@ -1,5 +1,5 @@
 ﻿@using N3O.Umbraco.Extensions
-@model N3O.Umbraco.CrowdFunding.Models.FundraisingPage.CrowdfundingContentPageViewModel
+@model N3O.Umbraco.CrowdFunding.Models.FundraiserViewModel
 
 <div class="campaign">
     <div class="campaign__top" data-images-edit="edit-campaign-images">
@@ -7,13 +7,13 @@
             <use xlink:href="#imageIcon"></use>
         </svg>
 
-        @if (Model.Content.CampaignImages.HasAny()) {
-        <div class="campaignSlider" data-type="cropper" data-property-alias="@nameof(Model.Content.CampaignImages)">
+        @if (Model.Content.HeroImages.HasAny()) {
+        <div class="campaignSlider" data-type="cropper" data-property-alias="@nameof(Model.Content.HeroImages)">
             @{
-            foreach (var campaignImage in Model.Content.CampaignImages) {
+            foreach (var campaignImage in Model.Content.HeroImages) {
             <div class="campaignSlider__item">
                 <div class="campaignSlider__item-inner">
-                    <img src="@campaignImage.CampaignImage.Crop.Src" alt=""/>
+                    <img src="@campaignImage.Image.Crop.Src" alt=""/>
                 </div>
             </div>
             }
@@ -24,9 +24,9 @@
 
     <div class="campaign__content" data-title-edit="edit-campaign-title">
         <div class="campaign__title">
-            <h2 data-type="textbox" data-property-alias="@nameof(Model.Content.PageTitle)">@Model.Content.PageTitle</h2>
-            <p data-type="textbox" data-property-alias="@nameof(Model.Content.PageDescription)">
-                @Model.Content.PageDescription
+            <h2 data-type="textbox" data-property-alias="@nameof(Model.Content.Title)">@Model.Content.Title</h2>
+            <p data-type="textbox" data-property-alias="@nameof(Model.Content.Description)">
+                @Model.Content.Description
             </p>
         </div>
         <div class="fprogress">
@@ -43,8 +43,8 @@
                 <span style="max-width: @Model.Progress.PercentageCompleted%"></span>
             </div>
         </div>
-        <div class="campaign__footer">
-            @foreach (var tag in Model.Content.PageTags) {
+        @*<div class="campaign__footer">
+            @foreach (var tag in Model.Content) {
             <a href="#" class="campaign__footer-tag">
                 <svg>
                     <use xlink:href="#megaphone"></use>
@@ -52,6 +52,6 @@
                 <b> @tag.Name </b>
             </a>
             }
-        </div>
+        </div>*@
     </div>
 </div>

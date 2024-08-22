@@ -5,200 +5,26 @@ export declare class CrowdfundingClient {
     constructor(baseUrl?: string, http?: {
         fetch(url: RequestInfo, init?: RequestInit): Promise<Response>;
     });
-    getCrowdfundingPagePropertyTypes(): Promise<LookupRes[]>;
-    protected processGetCrowdfundingPagePropertyTypes(response: Response): Promise<LookupRes[]>;
-    checkName(req: CreatePageReq): Promise<boolean>;
-    protected processCheckName(response: Response): Promise<boolean>;
-    createPage(req: CreatePageReq): Promise<string>;
-    protected processCreatePage(response: Response): Promise<string>;
-    getPagePropertyValue(pageId: string, propertyAlias: string): Promise<PagePropertyValueRes>;
-    protected processGetPagePropertyValue(response: Response): Promise<PagePropertyValueRes>;
-    updateProperty(pageId: string, req: PagePropertyReq): Promise<void>;
+    getContentPropertyValue(contentId: string, propertyAlias: string): Promise<ContentPropertyValueRes>;
+    protected processGetContentPropertyValue(response: Response): Promise<ContentPropertyValueRes>;
+    getNestedPropertySchema(contentId: string, propertyAlias: string): Promise<NestedSchemaRes>;
+    protected processGetNestedPropertySchema(response: Response): Promise<NestedSchemaRes>;
+    updateProperty(contentId: string, req: ContentPropertyReq): Promise<void>;
     protected processUpdateProperty(response: Response): Promise<void>;
+    checkTitle(req: CreateFundraiserReq): Promise<boolean>;
+    protected processCheckTitle(response: Response): Promise<boolean>;
+    createFundraiser(req: CreateFundraiserReq): Promise<string>;
+    protected processCreateFundraiser(response: Response): Promise<string>;
+    getPropertyTypes(): Promise<LookupRes[]>;
+    protected processGetPropertyTypes(response: Response): Promise<LookupRes[]>;
 }
-export interface LookupRes {
-    id?: string | undefined;
-}
-export interface ProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
-    [key: string]: any;
-}
-export interface CreatePageReq {
-    name?: string | undefined;
-    slug?: string | undefined;
-    campaignId?: string | undefined;
-    fundraiserName?: string | undefined;
-    allocation?: PageAllocationReq[] | undefined;
-}
-export interface PageAllocationReq {
-    type?: AllocationType | undefined;
-    value?: MoneyReq | undefined;
-    fundDimensions?: FundDimensionValuesReq | undefined;
-    feedback?: FeedbackAllocationReq | undefined;
-    fund?: FundAllocationReq | undefined;
-    sponsorship?: SponsorshipAllocationReq | undefined;
-    upsellOfferId?: string | undefined;
-    title?: string | undefined;
-    priceHandles?: PriceHandleReq[] | undefined;
-    [key: string]: any;
-}
-/** One of 'feedback', 'fund', 'sponsorship' */
-export declare enum AllocationType {
-    Feedback = "feedback",
-    Fund = "fund",
-    Sponsorship = "sponsorship"
-}
-export interface MoneyReq {
-    amount?: number | undefined;
-    currency?: string | undefined;
-}
-export interface FundDimensionValuesReq {
-    dimension1?: string | undefined;
-    dimension2?: string | undefined;
-    dimension3?: string | undefined;
-    dimension4?: string | undefined;
-}
-export interface FeedbackAllocationReq {
-    scheme?: string | undefined;
-    customFields?: FeedbackNewCustomFieldsReq | undefined;
-}
-/** One of 'donation', 'regularGiving' */
-export declare enum GivingType {
-    Donation = "donation",
-    RegularGiving = "regularGiving"
-}
-export interface FeedbackCustomFieldDefinitionElement {
-    content?: IPublishedElement | undefined;
-    type?: FeedbackCustomFieldType | undefined;
-    name?: string | undefined;
-    required?: boolean;
-    textMaxLength?: number | undefined;
-    alias?: string | undefined;
-}
-export interface IPublishedElement {
-    contentType?: IPublishedContentType;
-    key?: string;
-    properties?: IPublishedProperty[];
-}
-export interface IPublishedContentType {
-    key?: string;
-    id?: number;
-    alias?: string;
-    itemType?: PublishedItemType;
-    compositionAliases?: string[];
-    variations?: ContentVariation;
-    isElement?: boolean;
-    propertyTypes?: IPublishedPropertyType[];
-}
-export declare enum PublishedItemType {
-    Unknown = 0,
-    Element = 1,
-    Content = 2,
-    Media = 3,
-    Member = 4
-}
-export declare enum ContentVariation {
-    Nothing = 0,
-    Culture = 1,
-    Segment = 2,
-    CultureAndSegment = 3
-}
-export interface IPublishedPropertyType {
-    contentType?: IPublishedContentType | undefined;
-    dataType?: PublishedDataType;
-    alias?: string;
-    editorAlias?: string;
-    isUserProperty?: boolean;
-    variations?: ContentVariation;
-    cacheLevel?: PropertyCacheLevel;
-    deliveryApiCacheLevel?: PropertyCacheLevel;
-    deliveryApiCacheLevelForExpansion?: PropertyCacheLevel;
-    modelClrType?: string;
-    deliveryApiModelClrType?: string;
-    clrType?: string | undefined;
-}
-export interface PublishedDataType {
-    id?: number;
-    editorAlias?: string;
-    configuration?: any | undefined;
-}
-export declare enum PropertyCacheLevel {
-    Unknown = 0,
-    Element = 1,
-    Elements = 2,
-    Snapshot = 3,
-    None = 4
-}
-export interface IPublishedProperty {
-    propertyType?: IPublishedPropertyType;
-    alias?: string;
-}
-/** One of 'bool', 'date', 'text' */
-export declare enum FeedbackCustomFieldType {
-    Bool = "bool",
-    Date = "date",
-    Text = "text"
-}
-export interface PriceContent {
-    amount?: number;
-    locked?: boolean;
-}
-export interface PricingRuleElement {
-    content?: IPublishedElement | undefined;
-    amount?: number;
-    locked?: boolean;
-    dimension1?: string | undefined;
-    dimension2?: string | undefined;
-    dimension3?: string | undefined;
-    dimension4?: string | undefined;
-}
-export interface FeedbackNewCustomFieldsReq {
-    entries?: FeedbackNewCustomFieldReq[] | undefined;
-}
-export interface FeedbackNewCustomFieldReq {
-    alias?: string | undefined;
-    bool?: boolean | undefined;
-    date?: Date | undefined;
-    text?: string | undefined;
-}
-export interface FundAllocationReq {
-    donationItem?: string | undefined;
-}
-export interface SponsorshipAllocationReq {
-    beneficiaryReference?: string | undefined;
-    scheme?: string | undefined;
-    duration?: SponsorshipDuration | undefined;
-    components?: SponsorshipComponentAllocationReq[] | undefined;
-}
-/** One of '_6', '_12', '_18', '_24', '_36', '_48', '_60' */
-export declare enum SponsorshipDuration {
-    _6 = "_6",
-    _12 = "_12",
-    _18 = "_18",
-    _24 = "_24",
-    _36 = "_36",
-    _48 = "_48",
-    _60 = "_60"
-}
-export interface SponsorshipComponentAllocationReq {
-    component?: string | undefined;
-    value?: MoneyReq | undefined;
-}
-export interface PriceHandleReq {
-    amount?: number | undefined;
-    description?: string | undefined;
-}
-export interface PagePropertyValueRes {
+export interface ContentPropertyValueRes {
     alias?: string | undefined;
     type?: PropertyType | undefined;
     boolean?: BooleanValueRes | undefined;
     cropper?: CropperValueRes | undefined;
     dateTime?: DateTimeValueRes | undefined;
-    nested?: NestedContentValueRes | undefined;
+    nested?: NestedValueRes | undefined;
     numeric?: NumericValueRes | undefined;
     raw?: RawValueRes | undefined;
     textarea?: TextareaValueRes | undefined;
@@ -217,9 +43,14 @@ export declare enum PropertyType {
 }
 export interface BooleanValueRes {
     value?: boolean | undefined;
+    configuration?: BooleanConfigurationRes | undefined;
+}
+export interface BooleanConfigurationRes {
+    description?: string | undefined;
 }
 export interface CropperValueRes {
     image?: CropperSource | undefined;
+    configuration?: CropperConfigurationRes | undefined;
 }
 export interface CropperSource {
     src?: string | undefined;
@@ -236,40 +67,92 @@ export interface Crop {
     width?: number;
     height?: number;
 }
+export interface CropperConfigurationRes {
+    description?: string | undefined;
+}
 export interface DateTimeValueRes {
     value?: Date | undefined;
+    configuration?: DateTimeConfigurationRes | undefined;
 }
-export interface NestedContentValueRes {
+export interface DateTimeConfigurationRes {
+    description?: string | undefined;
+}
+export interface NestedValueRes {
     items?: NestedItemRes[] | undefined;
+    schema?: NestedSchemaRes | undefined;
+    configuration?: NestedConfigurationRes | undefined;
 }
 export interface NestedItemRes {
     contentTypeAlias?: string | undefined;
-    properties?: PagePropertyValueRes[] | undefined;
+    properties?: ContentPropertyValueRes[] | undefined;
+}
+export interface NestedSchemaRes {
+    items?: NestedSchemaItemRes[] | undefined;
+}
+export interface NestedSchemaItemRes {
+    contentTypeAlias?: string | undefined;
+    properties?: NestedSchemaPropertyRes[] | undefined;
+}
+export interface NestedSchemaPropertyRes {
+    alias?: string | undefined;
+    type?: PropertyType | undefined;
+}
+export interface NestedConfigurationRes {
+    description?: string | undefined;
+    maximumItems?: number;
+    minimumItems?: number;
 }
 export interface NumericValueRes {
     value?: number | undefined;
+    configuration?: NumericConfigurationRes | undefined;
+}
+export interface NumericConfigurationRes {
+    description?: string | undefined;
 }
 export interface RawValueRes {
     value?: HtmlEncodedString | undefined;
+    configuration?: RawConfigurationRes | undefined;
 }
 export interface HtmlEncodedString {
 }
+export interface RawConfigurationRes {
+    description?: string | undefined;
+    maximumLength?: number;
+}
 export interface TextareaValueRes {
     value?: string | undefined;
+    configuration?: TextareaConfigurationRes | undefined;
+}
+export interface TextareaConfigurationRes {
+    description?: string | undefined;
+    maximumLength?: number;
 }
 export interface TextBoxValueRes {
     value?: string | undefined;
+    configuration?: TextBoxConfigurationRes | undefined;
 }
-export interface PagePropertyReq {
+export interface TextBoxConfigurationRes {
+    description?: string | undefined;
+    maximumLength?: number;
+}
+export interface ProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
+    [key: string]: any;
+}
+export interface ContentPropertyReq {
     alias?: string | undefined;
     type?: PropertyType | undefined;
     boolean?: BooleanValueReq | undefined;
     cropper?: CropperValueReq | undefined;
     dateTime?: DateTimeValueReq | undefined;
+    nested?: NestedValueReq | undefined;
     numeric?: NumericValueReq | undefined;
     raw?: RawValueReq | undefined;
     textarea?: TextareaValueReq | undefined;
-    nestedContent?: NestedContentValueReq | undefined;
     textBox?: TextBoxValueReq | undefined;
 }
 export interface BooleanValueReq {
@@ -313,6 +196,13 @@ export interface RectangleCropReq {
 export interface DateTimeValueReq {
     value?: Date | undefined;
 }
+export interface NestedValueReq {
+    items?: NestedItemReq[] | undefined;
+}
+export interface NestedItemReq {
+    contentTypeAlias?: string | undefined;
+    properties?: ContentPropertyReq[] | undefined;
+}
 export interface NumericValueReq {
     value?: number | undefined;
 }
@@ -322,13 +212,6 @@ export interface RawValueReq {
 export interface TextareaValueReq {
     value?: string | undefined;
 }
-export interface NestedContentValueReq {
-    items?: NestedItemReq[] | undefined;
-}
-export interface NestedItemReq {
-    contentTypeAlias?: string | undefined;
-    properties?: PagePropertyReq[] | undefined;
-}
 export interface TextBoxValueReq {
     value?: string | undefined;
 }
@@ -337,6 +220,113 @@ export interface AutoPropertyOfValueReq {
 }
 export interface ValueReq {
     type?: PropertyType | undefined;
+}
+export interface CreateFundraiserReq {
+    title?: string | undefined;
+    slug?: string | undefined;
+    campaignId?: string | undefined;
+    allocations?: FundraiserAllocationReq[] | undefined;
+}
+export interface FundraiserAllocationReq {
+    type?: AllocationType | undefined;
+    value?: MoneyReq | undefined;
+    fundDimensions?: FundDimensionValuesReq | undefined;
+    feedback?: FeedbackAllocationReq | undefined;
+    fund?: FundAllocationReq | undefined;
+    sponsorship?: SponsorshipAllocationReq | undefined;
+    upsellOfferId?: string | undefined;
+    title?: string | undefined;
+    priceHandles?: PriceHandleReq[] | undefined;
+    [key: string]: any;
+}
+/** One of 'feedback', 'fund', 'sponsorship' */
+export declare enum AllocationType {
+    Feedback = "feedback",
+    Fund = "fund",
+    Sponsorship = "sponsorship"
+}
+export interface MoneyReq {
+    amount?: number | undefined;
+    currency?: string | undefined;
+}
+export interface FundDimensionValuesReq {
+    dimension1?: string | undefined;
+    dimension2?: string | undefined;
+    dimension3?: string | undefined;
+    dimension4?: string | undefined;
+}
+export interface FeedbackAllocationReq {
+    scheme?: string | undefined;
+    customFields?: FeedbackNewCustomFieldsReq | undefined;
+}
+/** One of 'donation', 'regularGiving' */
+export declare enum GivingType {
+    Donation = "donation",
+    RegularGiving = "regularGiving"
+}
+export interface FeedbackCustomFieldDefinitionElement {
+    type?: FeedbackCustomFieldType | undefined;
+    name?: string | undefined;
+    required?: boolean;
+    textMaxLength?: number | undefined;
+    alias?: string | undefined;
+}
+/** One of 'bool', 'date', 'text' */
+export declare enum FeedbackCustomFieldType {
+    Bool = "bool",
+    Date = "date",
+    Text = "text"
+}
+export interface PriceContent {
+    amount?: number;
+    locked?: boolean;
+}
+export interface PricingRuleElement {
+    amount?: number;
+    locked?: boolean;
+    dimension1?: string | undefined;
+    dimension2?: string | undefined;
+    dimension3?: string | undefined;
+    dimension4?: string | undefined;
+}
+export interface FeedbackNewCustomFieldsReq {
+    entries?: FeedbackNewCustomFieldReq[] | undefined;
+}
+export interface FeedbackNewCustomFieldReq {
+    alias?: string | undefined;
+    bool?: boolean | undefined;
+    date?: Date | undefined;
+    text?: string | undefined;
+}
+export interface FundAllocationReq {
+    donationItem?: string | undefined;
+}
+export interface SponsorshipAllocationReq {
+    beneficiaryReference?: string | undefined;
+    scheme?: string | undefined;
+    duration?: SponsorshipDuration | undefined;
+    components?: SponsorshipComponentAllocationReq[] | undefined;
+}
+/** One of '_6', '_12', '_18', '_24', '_36', '_48', '_60' */
+export declare enum SponsorshipDuration {
+    _6 = "_6",
+    _12 = "_12",
+    _18 = "_18",
+    _24 = "_24",
+    _36 = "_36",
+    _48 = "_48",
+    _60 = "_60"
+}
+export interface SponsorshipComponentAllocationReq {
+    component?: string | undefined;
+    value?: MoneyReq | undefined;
+}
+export interface PriceHandleReq {
+    amount?: number | undefined;
+    description?: string | undefined;
+}
+export interface LookupRes {
+    id?: string | undefined;
 }
 export declare class ApiException extends Error {
     message: string;

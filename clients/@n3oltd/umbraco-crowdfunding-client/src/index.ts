@@ -18,166 +18,11 @@ export class CrowdfundingClient {
         this.baseUrl = baseUrl ?? "https://localhost:6001";
     }
 
-    getCrowdfundingPagePropertyTypes(): Promise<LookupRes[]> {
-        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/lookups/propertyTypes";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetCrowdfundingPagePropertyTypes(_response);
-        });
-    }
-
-    protected processGetCrowdfundingPagePropertyTypes(response: Response): Promise<LookupRes[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as LookupRes[];
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            let result400: any = null;
-            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        } else if (status === 500) {
-            return response.text().then((_responseText) => {
-            return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            result404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
-            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<LookupRes[]>(null as any);
-    }
-
-    checkName(req: CreatePageReq): Promise<boolean> {
-        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/pages/checkName";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(req);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCheckName(_response);
-        });
-    }
-
-    protected processCheckName(response: Response): Promise<boolean> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as boolean;
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            let result400: any = null;
-            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        } else if (status === 500) {
-            return response.text().then((_responseText) => {
-            return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        } else if (status === 412) {
-            return response.text().then((_responseText) => {
-            let result412: any = null;
-            result412 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
-            return throwException("A server side error occurred.", status, _responseText, _headers, result412);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<boolean>(null as any);
-    }
-
-    createPage(req: CreatePageReq): Promise<string> {
-        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/pages";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(req);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreatePage(_response);
-        });
-    }
-
-    protected processCreatePage(response: Response): Promise<string> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            let result400: any = null;
-            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        } else if (status === 500) {
-            return response.text().then((_responseText) => {
-            return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        } else if (status === 412) {
-            return response.text().then((_responseText) => {
-            let result412: any = null;
-            result412 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
-            return throwException("A server side error occurred.", status, _responseText, _headers, result412);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<string>(null as any);
-    }
-
-    getPagePropertyValue(pageId: string, propertyAlias: string): Promise<PagePropertyValueRes> {
-        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/pages/{pageId}/properties/{propertyAlias}";
-        if (pageId === undefined || pageId === null)
-            throw new Error("The parameter 'pageId' must be defined.");
-        url_ = url_.replace("{pageId}", encodeURIComponent("" + pageId));
+    getContentPropertyValue(contentId: string, propertyAlias: string): Promise<ContentPropertyValueRes> {
+        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/content/{contentId}/properties/{propertyAlias}";
+        if (contentId === undefined || contentId === null)
+            throw new Error("The parameter 'contentId' must be defined.");
+        url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
         if (propertyAlias === undefined || propertyAlias === null)
             throw new Error("The parameter 'propertyAlias' must be defined.");
         url_ = url_.replace("{propertyAlias}", encodeURIComponent("" + propertyAlias));
@@ -191,17 +36,17 @@ export class CrowdfundingClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetPagePropertyValue(_response);
+            return this.processGetContentPropertyValue(_response);
         });
     }
 
-    protected processGetPagePropertyValue(response: Response): Promise<PagePropertyValueRes> {
+    protected processGetContentPropertyValue(response: Response): Promise<ContentPropertyValueRes> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PagePropertyValueRes;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ContentPropertyValueRes;
             return result200;
             });
         } else if (status === 400) {
@@ -225,14 +70,69 @@ export class CrowdfundingClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<PagePropertyValueRes>(null as any);
+        return Promise.resolve<ContentPropertyValueRes>(null as any);
     }
 
-    updateProperty(pageId: string, req: PagePropertyReq): Promise<void> {
-        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/pages/{pageId}/property";
-        if (pageId === undefined || pageId === null)
-            throw new Error("The parameter 'pageId' must be defined.");
-        url_ = url_.replace("{pageId}", encodeURIComponent("" + pageId));
+    getNestedPropertySchema(contentId: string, propertyAlias: string): Promise<NestedSchemaRes> {
+        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/content/{contentId}/nested/{propertyAlias}/schema";
+        if (contentId === undefined || contentId === null)
+            throw new Error("The parameter 'contentId' must be defined.");
+        url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
+        if (propertyAlias === undefined || propertyAlias === null)
+            throw new Error("The parameter 'propertyAlias' must be defined.");
+        url_ = url_.replace("{propertyAlias}", encodeURIComponent("" + propertyAlias));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetNestedPropertySchema(_response);
+        });
+    }
+
+    protected processGetNestedPropertySchema(response: Response): Promise<NestedSchemaRes> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as NestedSchemaRes;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            let result404: any = null;
+            result404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NestedSchemaRes>(null as any);
+    }
+
+    updateProperty(contentId: string, req: ContentPropertyReq): Promise<void> {
+        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/content/{contentId}/property";
+        if (contentId === undefined || contentId === null)
+            throw new Error("The parameter 'contentId' must be defined.");
+        url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(req);
@@ -280,221 +180,170 @@ export class CrowdfundingClient {
         }
         return Promise.resolve<void>(null as any);
     }
+
+    checkTitle(req: CreateFundraiserReq): Promise<boolean> {
+        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers/checkTitle";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(req);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCheckTitle(_response);
+        });
+    }
+
+    protected processCheckTitle(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as boolean;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status === 412) {
+            return response.text().then((_responseText) => {
+            let result412: any = null;
+            result412 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result412);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(null as any);
+    }
+
+    createFundraiser(req: CreateFundraiserReq): Promise<string> {
+        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(req);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateFundraiser(_response);
+        });
+    }
+
+    protected processCreateFundraiser(response: Response): Promise<string> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status === 412) {
+            return response.text().then((_responseText) => {
+            let result412: any = null;
+            result412 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result412);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string>(null as any);
+    }
+
+    getPropertyTypes(): Promise<LookupRes[]> {
+        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/lookups/propertyTypes";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetPropertyTypes(_response);
+        });
+    }
+
+    protected processGetPropertyTypes(response: Response): Promise<LookupRes[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as LookupRes[];
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            let result404: any = null;
+            result404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<LookupRes[]>(null as any);
+    }
 }
 
-export interface LookupRes {
-    id?: string | undefined;
-}
-
-export interface ProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
-
-    [key: string]: any;
-}
-
-export interface CreatePageReq {
-    name?: string | undefined;
-    slug?: string | undefined;
-    campaignId?: string | undefined;
-    fundraiserName?: string | undefined;
-    allocation?: PageAllocationReq[] | undefined;
-}
-
-export interface PageAllocationReq {
-    type?: AllocationType | undefined;
-    value?: MoneyReq | undefined;
-    fundDimensions?: FundDimensionValuesReq | undefined;
-    feedback?: FeedbackAllocationReq | undefined;
-    fund?: FundAllocationReq | undefined;
-    sponsorship?: SponsorshipAllocationReq | undefined;
-    upsellOfferId?: string | undefined;
-    title?: string | undefined;
-    priceHandles?: PriceHandleReq[] | undefined;
-
-    [key: string]: any;
-}
-
-/** One of 'feedback', 'fund', 'sponsorship' */
-export enum AllocationType {
-    Feedback = "feedback",
-    Fund = "fund",
-    Sponsorship = "sponsorship",
-}
-
-export interface MoneyReq {
-    amount?: number | undefined;
-    currency?: string | undefined;
-}
-
-export interface FundDimensionValuesReq {
-    dimension1?: string | undefined;
-    dimension2?: string | undefined;
-    dimension3?: string | undefined;
-    dimension4?: string | undefined;
-}
-
-export interface FeedbackAllocationReq {
-    scheme?: string | undefined;
-    customFields?: FeedbackNewCustomFieldsReq | undefined;
-}
-
-/** One of 'donation', 'regularGiving' */
-export enum GivingType {
-    Donation = "donation",
-    RegularGiving = "regularGiving",
-}
-
-export interface FeedbackCustomFieldDefinitionElement {
-    content?: IPublishedElement | undefined;
-    type?: FeedbackCustomFieldType | undefined;
-    name?: string | undefined;
-    required?: boolean;
-    textMaxLength?: number | undefined;
-    alias?: string | undefined;
-}
-
-export interface IPublishedElement {
-    contentType?: IPublishedContentType;
-    key?: string;
-    properties?: IPublishedProperty[];
-}
-
-export interface IPublishedContentType {
-    key?: string;
-    id?: number;
-    alias?: string;
-    itemType?: PublishedItemType;
-    compositionAliases?: string[];
-    variations?: ContentVariation;
-    isElement?: boolean;
-    propertyTypes?: IPublishedPropertyType[];
-}
-
-export enum PublishedItemType {
-    Unknown = 0,
-    Element = 1,
-    Content = 2,
-    Media = 3,
-    Member = 4,
-}
-
-export enum ContentVariation {
-    Nothing = 0,
-    Culture = 1,
-    Segment = 2,
-    CultureAndSegment = 3,
-}
-
-export interface IPublishedPropertyType {
-    contentType?: IPublishedContentType | undefined;
-    dataType?: PublishedDataType;
-    alias?: string;
-    editorAlias?: string;
-    isUserProperty?: boolean;
-    variations?: ContentVariation;
-    cacheLevel?: PropertyCacheLevel;
-    deliveryApiCacheLevel?: PropertyCacheLevel;
-    deliveryApiCacheLevelForExpansion?: PropertyCacheLevel;
-    modelClrType?: string;
-    deliveryApiModelClrType?: string;
-    clrType?: string | undefined;
-}
-
-export interface PublishedDataType {
-    id?: number;
-    editorAlias?: string;
-    configuration?: any | undefined;
-}
-
-export enum PropertyCacheLevel {
-    Unknown = 0,
-    Element = 1,
-    Elements = 2,
-    Snapshot = 3,
-    None = 4,
-}
-
-export interface IPublishedProperty {
-    propertyType?: IPublishedPropertyType;
-    alias?: string;
-}
-
-/** One of 'bool', 'date', 'text' */
-export enum FeedbackCustomFieldType {
-    Bool = "bool",
-    Date = "date",
-    Text = "text",
-}
-
-export interface PriceContent {
-    amount?: number;
-    locked?: boolean;
-}
-
-export interface PricingRuleElement {
-    content?: IPublishedElement | undefined;
-    amount?: number;
-    locked?: boolean;
-    dimension1?: string | undefined;
-    dimension2?: string | undefined;
-    dimension3?: string | undefined;
-    dimension4?: string | undefined;
-}
-
-export interface FeedbackNewCustomFieldsReq {
-    entries?: FeedbackNewCustomFieldReq[] | undefined;
-}
-
-export interface FeedbackNewCustomFieldReq {
-    alias?: string | undefined;
-    bool?: boolean | undefined;
-    date?: Date | undefined;
-    text?: string | undefined;
-}
-
-export interface FundAllocationReq {
-    donationItem?: string | undefined;
-}
-
-export interface SponsorshipAllocationReq {
-    beneficiaryReference?: string | undefined;
-    scheme?: string | undefined;
-    duration?: SponsorshipDuration | undefined;
-    components?: SponsorshipComponentAllocationReq[] | undefined;
-}
-
-/** One of '_6', '_12', '_18', '_24', '_36', '_48', '_60' */
-export enum SponsorshipDuration {
-    _6 = "_6",
-    _12 = "_12",
-    _18 = "_18",
-    _24 = "_24",
-    _36 = "_36",
-    _48 = "_48",
-    _60 = "_60",
-}
-
-export interface SponsorshipComponentAllocationReq {
-    component?: string | undefined;
-    value?: MoneyReq | undefined;
-}
-
-export interface PriceHandleReq {
-    amount?: number | undefined;
-    description?: string | undefined;
-}
-
-export interface PagePropertyValueRes {
+export interface ContentPropertyValueRes {
     alias?: string | undefined;
     type?: PropertyType | undefined;
     boolean?: BooleanValueRes | undefined;
     cropper?: CropperValueRes | undefined;
     dateTime?: DateTimeValueRes | undefined;
-    nested?: NestedContentValueRes | undefined;
+    nested?: NestedValueRes | undefined;
     numeric?: NumericValueRes | undefined;
     raw?: RawValueRes | undefined;
     textarea?: TextareaValueRes | undefined;
@@ -515,10 +364,16 @@ export enum PropertyType {
 
 export interface BooleanValueRes {
     value?: boolean | undefined;
+    configuration?: BooleanConfigurationRes | undefined;
+}
+
+export interface BooleanConfigurationRes {
+    description?: string | undefined;
 }
 
 export interface CropperValueRes {
     image?: CropperSource | undefined;
+    configuration?: CropperConfigurationRes | undefined;
 }
 
 export interface CropperSource {
@@ -538,48 +393,112 @@ export interface Crop {
     height?: number;
 }
 
-export interface DateTimeValueRes {
-    value?: Date | undefined;
+export interface CropperConfigurationRes {
+    description?: string | undefined;
 }
 
-export interface NestedContentValueRes {
+export interface DateTimeValueRes {
+    value?: Date | undefined;
+    configuration?: DateTimeConfigurationRes | undefined;
+}
+
+export interface DateTimeConfigurationRes {
+    description?: string | undefined;
+}
+
+export interface NestedValueRes {
     items?: NestedItemRes[] | undefined;
+    schema?: NestedSchemaRes | undefined;
+    configuration?: NestedConfigurationRes | undefined;
 }
 
 export interface NestedItemRes {
     contentTypeAlias?: string | undefined;
-    properties?: PagePropertyValueRes[] | undefined;
+    properties?: ContentPropertyValueRes[] | undefined;
+}
+
+export interface NestedSchemaRes {
+    items?: NestedSchemaItemRes[] | undefined;
+}
+
+export interface NestedSchemaItemRes {
+    contentTypeAlias?: string | undefined;
+    properties?: NestedSchemaPropertyRes[] | undefined;
+}
+
+export interface NestedSchemaPropertyRes {
+    alias?: string | undefined;
+    type?: PropertyType | undefined;
+}
+
+export interface NestedConfigurationRes {
+    description?: string | undefined;
+    maximumItems?: number;
+    minimumItems?: number;
 }
 
 export interface NumericValueRes {
     value?: number | undefined;
+    configuration?: NumericConfigurationRes | undefined;
+}
+
+export interface NumericConfigurationRes {
+    description?: string | undefined;
 }
 
 export interface RawValueRes {
     value?: HtmlEncodedString | undefined;
+    configuration?: RawConfigurationRes | undefined;
 }
 
 export interface HtmlEncodedString {
 }
 
+export interface RawConfigurationRes {
+    description?: string | undefined;
+    maximumLength?: number;
+}
+
 export interface TextareaValueRes {
     value?: string | undefined;
+    configuration?: TextareaConfigurationRes | undefined;
+}
+
+export interface TextareaConfigurationRes {
+    description?: string | undefined;
+    maximumLength?: number;
 }
 
 export interface TextBoxValueRes {
     value?: string | undefined;
+    configuration?: TextBoxConfigurationRes | undefined;
 }
 
-export interface PagePropertyReq {
+export interface TextBoxConfigurationRes {
+    description?: string | undefined;
+    maximumLength?: number;
+}
+
+export interface ProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface ContentPropertyReq {
     alias?: string | undefined;
     type?: PropertyType | undefined;
     boolean?: BooleanValueReq | undefined;
     cropper?: CropperValueReq | undefined;
     dateTime?: DateTimeValueReq | undefined;
+    nested?: NestedValueReq | undefined;
     numeric?: NumericValueReq | undefined;
     raw?: RawValueReq | undefined;
     textarea?: TextareaValueReq | undefined;
-    nestedContent?: NestedContentValueReq | undefined;
     textBox?: TextBoxValueReq | undefined;
 }
 
@@ -632,6 +551,15 @@ export interface DateTimeValueReq {
     value?: Date | undefined;
 }
 
+export interface NestedValueReq {
+    items?: NestedItemReq[] | undefined;
+}
+
+export interface NestedItemReq {
+    contentTypeAlias?: string | undefined;
+    properties?: ContentPropertyReq[] | undefined;
+}
+
 export interface NumericValueReq {
     value?: number | undefined;
 }
@@ -644,15 +572,6 @@ export interface TextareaValueReq {
     value?: string | undefined;
 }
 
-export interface NestedContentValueReq {
-    items?: NestedItemReq[] | undefined;
-}
-
-export interface NestedItemReq {
-    contentTypeAlias?: string | undefined;
-    properties?: PagePropertyReq[] | undefined;
-}
-
 export interface TextBoxValueReq {
     value?: string | undefined;
 }
@@ -663,6 +582,133 @@ export interface AutoPropertyOfValueReq {
 
 export interface ValueReq {
     type?: PropertyType | undefined;
+}
+
+export interface CreateFundraiserReq {
+    title?: string | undefined;
+    slug?: string | undefined;
+    campaignId?: string | undefined;
+    allocations?: FundraiserAllocationReq[] | undefined;
+}
+
+export interface FundraiserAllocationReq {
+    type?: AllocationType | undefined;
+    value?: MoneyReq | undefined;
+    fundDimensions?: FundDimensionValuesReq | undefined;
+    feedback?: FeedbackAllocationReq | undefined;
+    fund?: FundAllocationReq | undefined;
+    sponsorship?: SponsorshipAllocationReq | undefined;
+    upsellOfferId?: string | undefined;
+    title?: string | undefined;
+    priceHandles?: PriceHandleReq[] | undefined;
+
+    [key: string]: any;
+}
+
+/** One of 'feedback', 'fund', 'sponsorship' */
+export enum AllocationType {
+    Feedback = "feedback",
+    Fund = "fund",
+    Sponsorship = "sponsorship",
+}
+
+export interface MoneyReq {
+    amount?: number | undefined;
+    currency?: string | undefined;
+}
+
+export interface FundDimensionValuesReq {
+    dimension1?: string | undefined;
+    dimension2?: string | undefined;
+    dimension3?: string | undefined;
+    dimension4?: string | undefined;
+}
+
+export interface FeedbackAllocationReq {
+    scheme?: string | undefined;
+    customFields?: FeedbackNewCustomFieldsReq | undefined;
+}
+
+/** One of 'donation', 'regularGiving' */
+export enum GivingType {
+    Donation = "donation",
+    RegularGiving = "regularGiving",
+}
+
+export interface FeedbackCustomFieldDefinitionElement {
+    type?: FeedbackCustomFieldType | undefined;
+    name?: string | undefined;
+    required?: boolean;
+    textMaxLength?: number | undefined;
+    alias?: string | undefined;
+}
+
+/** One of 'bool', 'date', 'text' */
+export enum FeedbackCustomFieldType {
+    Bool = "bool",
+    Date = "date",
+    Text = "text",
+}
+
+export interface PriceContent {
+    amount?: number;
+    locked?: boolean;
+}
+
+export interface PricingRuleElement {
+    amount?: number;
+    locked?: boolean;
+    dimension1?: string | undefined;
+    dimension2?: string | undefined;
+    dimension3?: string | undefined;
+    dimension4?: string | undefined;
+}
+
+export interface FeedbackNewCustomFieldsReq {
+    entries?: FeedbackNewCustomFieldReq[] | undefined;
+}
+
+export interface FeedbackNewCustomFieldReq {
+    alias?: string | undefined;
+    bool?: boolean | undefined;
+    date?: Date | undefined;
+    text?: string | undefined;
+}
+
+export interface FundAllocationReq {
+    donationItem?: string | undefined;
+}
+
+export interface SponsorshipAllocationReq {
+    beneficiaryReference?: string | undefined;
+    scheme?: string | undefined;
+    duration?: SponsorshipDuration | undefined;
+    components?: SponsorshipComponentAllocationReq[] | undefined;
+}
+
+/** One of '_6', '_12', '_18', '_24', '_36', '_48', '_60' */
+export enum SponsorshipDuration {
+    _6 = "_6",
+    _12 = "_12",
+    _18 = "_18",
+    _24 = "_24",
+    _36 = "_36",
+    _48 = "_48",
+    _60 = "_60",
+}
+
+export interface SponsorshipComponentAllocationReq {
+    component?: string | undefined;
+    value?: MoneyReq | undefined;
+}
+
+export interface PriceHandleReq {
+    amount?: number | undefined;
+    description?: string | undefined;
+}
+
+export interface LookupRes {
+    id?: string | undefined;
 }
 
 export class ApiException extends Error {

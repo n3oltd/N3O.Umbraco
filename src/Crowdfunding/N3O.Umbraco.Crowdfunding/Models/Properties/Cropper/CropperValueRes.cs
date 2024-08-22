@@ -4,4 +4,5 @@ namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class CropperValueRes {
     public CropperSource Image { get; set; }
+    public CropperConfigurationRes Configuration { get; set; }
 }

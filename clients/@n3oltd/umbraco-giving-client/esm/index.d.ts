@@ -15,8 +15,8 @@ export declare class GivingClient {
     protected processGetLookupCurrencies(response: Response): Promise<CurrencyRes[]>;
     getLookupDonationItems(): Promise<DonationItemRes[]>;
     protected processGetLookupDonationItems(response: Response): Promise<DonationItemRes[]>;
-    getLookupFeedbackSchemes(): Promise<string[]>;
-    protected processGetLookupFeedbackSchemes(response: Response): Promise<string[]>;
+    getLookupFeedbackSchemes(): Promise<FeedbackSchemeRes[]>;
+    protected processGetLookupFeedbackSchemes(response: Response): Promise<FeedbackSchemeRes[]>;
     getLookupFundDimension1Values(): Promise<FundDimensionValueRes[]>;
     protected processGetLookupFundDimension1Values(response: Response): Promise<FundDimensionValueRes[]>;
     getLookupFundDimension2Values(): Promise<FundDimensionValueRes[]>;
@@ -90,71 +90,12 @@ export interface PriceContent {
     locked?: boolean;
 }
 export interface PricingRuleElement {
-    content?: IPublishedElement | undefined;
     amount?: number;
     locked?: boolean;
     dimension1?: string | undefined;
     dimension2?: string | undefined;
     dimension3?: string | undefined;
     dimension4?: string | undefined;
-}
-export interface IPublishedElement {
-    contentType?: IPublishedContentType;
-    key?: string;
-    properties?: IPublishedProperty[];
-}
-export interface IPublishedContentType {
-    key?: string;
-    id?: number;
-    alias?: string;
-    itemType?: PublishedItemType;
-    compositionAliases?: string[];
-    variations?: ContentVariation;
-    isElement?: boolean;
-    propertyTypes?: IPublishedPropertyType[];
-}
-export declare enum PublishedItemType {
-    Unknown = 0,
-    Element = 1,
-    Content = 2,
-    Media = 3,
-    Member = 4
-}
-export declare enum ContentVariation {
-    Nothing = 0,
-    Culture = 1,
-    Segment = 2,
-    CultureAndSegment = 3
-}
-export interface IPublishedPropertyType {
-    contentType?: IPublishedContentType | undefined;
-    dataType?: PublishedDataType;
-    alias?: string;
-    editorAlias?: string;
-    isUserProperty?: boolean;
-    variations?: ContentVariation;
-    cacheLevel?: PropertyCacheLevel;
-    deliveryApiCacheLevel?: PropertyCacheLevel;
-    deliveryApiCacheLevelForExpansion?: PropertyCacheLevel;
-    modelClrType?: string;
-    deliveryApiModelClrType?: string;
-    clrType?: string | undefined;
-}
-export interface PublishedDataType {
-    id?: number;
-    editorAlias?: string;
-    configuration?: any | undefined;
-}
-export declare enum PropertyCacheLevel {
-    Unknown = 0,
-    Element = 1,
-    Elements = 2,
-    Snapshot = 3,
-    None = 4
-}
-export interface IPublishedProperty {
-    propertyType?: IPublishedPropertyType;
-    alias?: string;
 }
 export interface PriceHandleRes {
     amount?: number;
@@ -185,7 +126,6 @@ export interface FeedbackDonationOptionRes {
     scheme?: string | undefined;
 }
 export interface FeedbackCustomFieldDefinitionElement {
-    content?: IPublishedElement | undefined;
     type?: FeedbackCustomFieldType | undefined;
     name?: string | undefined;
     required?: boolean;
@@ -261,6 +201,24 @@ export interface FundDimensionValuesRes {
     dimension2?: string | undefined;
     dimension3?: string | undefined;
     dimension4?: string | undefined;
+}
+export interface FeedbackSchemeRes {
+    name?: string | undefined;
+    id?: string | undefined;
+    allowedGivingTypes?: GivingType[] | undefined;
+    customFields?: FeedbackCustomFieldDefinitionRes[] | undefined;
+    dimension1Options?: FundDimensionValueRes[] | undefined;
+    dimension2Options?: FundDimensionValueRes[] | undefined;
+    dimension3Options?: FundDimensionValueRes[] | undefined;
+    dimension4Options?: FundDimensionValueRes[] | undefined;
+    pricing?: PricingRes | undefined;
+}
+export interface FeedbackCustomFieldDefinitionRes {
+    type?: FeedbackCustomFieldType | undefined;
+    alias?: string | undefined;
+    name?: string | undefined;
+    required?: boolean;
+    textMaxLength?: number | undefined;
 }
 export interface SponsorshipDurationRes {
     name?: string | undefined;
