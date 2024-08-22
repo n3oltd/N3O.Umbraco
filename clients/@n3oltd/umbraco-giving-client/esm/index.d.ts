@@ -15,8 +15,8 @@ export declare class GivingClient {
     protected processGetLookupCurrencies(response: Response): Promise<CurrencyRes[]>;
     getLookupDonationItems(): Promise<DonationItemRes[]>;
     protected processGetLookupDonationItems(response: Response): Promise<DonationItemRes[]>;
-    getLookupFeedbackSchemes(): Promise<string[]>;
-    protected processGetLookupFeedbackSchemes(response: Response): Promise<string[]>;
+    getLookupFeedbackSchemes(): Promise<FeedbackSchemeRes[]>;
+    protected processGetLookupFeedbackSchemes(response: Response): Promise<FeedbackSchemeRes[]>;
     getLookupFundDimension1Values(): Promise<FundDimensionValueRes[]>;
     protected processGetLookupFundDimension1Values(response: Response): Promise<FundDimensionValueRes[]>;
     getLookupFundDimension2Values(): Promise<FundDimensionValueRes[]>;
@@ -201,6 +201,24 @@ export interface FundDimensionValuesRes {
     dimension2?: string | undefined;
     dimension3?: string | undefined;
     dimension4?: string | undefined;
+}
+export interface FeedbackSchemeRes {
+    name?: string | undefined;
+    id?: string | undefined;
+    allowedGivingTypes?: GivingType[] | undefined;
+    customFields?: FeedbackCustomFieldDefinitionRes[] | undefined;
+    dimension1Options?: FundDimensionValueRes[] | undefined;
+    dimension2Options?: FundDimensionValueRes[] | undefined;
+    dimension3Options?: FundDimensionValueRes[] | undefined;
+    dimension4Options?: FundDimensionValueRes[] | undefined;
+    pricing?: PricingRes | undefined;
+}
+export interface FeedbackCustomFieldDefinitionRes {
+    type?: FeedbackCustomFieldType | undefined;
+    alias?: string | undefined;
+    name?: string | undefined;
+    required?: boolean;
+    textMaxLength?: number | undefined;
 }
 export interface SponsorshipDurationRes {
     name?: string | undefined;

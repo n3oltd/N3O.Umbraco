@@ -266,7 +266,7 @@ export class GivingClient {
         return Promise.resolve<DonationItemRes[]>(null as any);
     }
 
-    getLookupFeedbackSchemes(): Promise<string[]> {
+    getLookupFeedbackSchemes(): Promise<FeedbackSchemeRes[]> {
         let url_ = this.baseUrl + "/umbraco/api/Giving/lookups/feedbackSchemes";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -282,13 +282,13 @@ export class GivingClient {
         });
     }
 
-    protected processGetLookupFeedbackSchemes(response: Response): Promise<string[]> {
+    protected processGetLookupFeedbackSchemes(response: Response): Promise<FeedbackSchemeRes[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string[];
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as FeedbackSchemeRes[];
             return result200;
             });
         } else if (status === 400) {
@@ -312,7 +312,7 @@ export class GivingClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<string[]>(null as any);
+        return Promise.resolve<FeedbackSchemeRes[]>(null as any);
     }
 
     getLookupFundDimension1Values(): Promise<FundDimensionValueRes[]> {
@@ -1005,6 +1005,26 @@ export interface FundDimensionValuesRes {
     dimension2?: string | undefined;
     dimension3?: string | undefined;
     dimension4?: string | undefined;
+}
+
+export interface FeedbackSchemeRes {
+    name?: string | undefined;
+    id?: string | undefined;
+    allowedGivingTypes?: GivingType[] | undefined;
+    customFields?: FeedbackCustomFieldDefinitionRes[] | undefined;
+    dimension1Options?: FundDimensionValueRes[] | undefined;
+    dimension2Options?: FundDimensionValueRes[] | undefined;
+    dimension3Options?: FundDimensionValueRes[] | undefined;
+    dimension4Options?: FundDimensionValueRes[] | undefined;
+    pricing?: PricingRes | undefined;
+}
+
+export interface FeedbackCustomFieldDefinitionRes {
+    type?: FeedbackCustomFieldType | undefined;
+    alias?: string | undefined;
+    name?: string | undefined;
+    required?: boolean;
+    textMaxLength?: number | undefined;
 }
 
 export interface SponsorshipDurationRes {
