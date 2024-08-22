@@ -73,7 +73,7 @@ export class CrowdfundingClient {
         return Promise.resolve<ContentPropertyValueRes>(null as any);
     }
 
-    getNestedPropertySchema(contentId: string, propertyAlias: string): Promise<NestedPropertySchemaRes> {
+    getNestedPropertySchema(contentId: string, propertyAlias: string): Promise<NestedSchemaRes> {
         let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/content/{contentId}/nested/{propertyAlias}/schema";
         if (contentId === undefined || contentId === null)
             throw new Error("The parameter 'contentId' must be defined.");
@@ -95,13 +95,13 @@ export class CrowdfundingClient {
         });
     }
 
-    protected processGetNestedPropertySchema(response: Response): Promise<NestedPropertySchemaRes> {
+    protected processGetNestedPropertySchema(response: Response): Promise<NestedSchemaRes> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as NestedPropertySchemaRes;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as NestedSchemaRes;
             return result200;
             });
         } else if (status === 400) {
@@ -125,7 +125,7 @@ export class CrowdfundingClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<NestedPropertySchemaRes>(null as any);
+        return Promise.resolve<NestedSchemaRes>(null as any);
     }
 
     updateProperty(contentId: string, req: ContentPropertyReq): Promise<void> {
@@ -364,10 +364,16 @@ export enum PropertyType {
 
 export interface BooleanValueRes {
     value?: boolean | undefined;
+    configuration?: BooleanConfigurationRes | undefined;
+}
+
+export interface BooleanConfigurationRes {
+    description?: string | undefined;
 }
 
 export interface CropperValueRes {
     image?: CropperSource | undefined;
+    configuration?: CropperConfigurationRes | undefined;
 }
 
 export interface CropperSource {
@@ -387,13 +393,23 @@ export interface Crop {
     height?: number;
 }
 
+export interface CropperConfigurationRes {
+    description?: string | undefined;
+}
+
 export interface DateTimeValueRes {
     value?: Date | undefined;
+    configuration?: DateTimeConfigurationRes | undefined;
+}
+
+export interface DateTimeConfigurationRes {
+    description?: string | undefined;
 }
 
 export interface NestedValueRes {
     items?: NestedItemRes[] | undefined;
     schema?: NestedSchemaRes | undefined;
+    configuration?: NestedConfigurationRes | undefined;
 }
 
 export interface NestedItemRes {
@@ -415,23 +431,52 @@ export interface NestedSchemaPropertyRes {
     type?: PropertyType | undefined;
 }
 
+export interface NestedConfigurationRes {
+    description?: string | undefined;
+    maximumItems?: number;
+    minimumItems?: number;
+}
+
 export interface NumericValueRes {
     value?: number | undefined;
+    configuration?: NumericConfigurationRes | undefined;
+}
+
+export interface NumericConfigurationRes {
+    description?: string | undefined;
 }
 
 export interface RawValueRes {
     value?: HtmlEncodedString | undefined;
+    configuration?: RawConfigurationRes | undefined;
 }
 
 export interface HtmlEncodedString {
 }
 
+export interface RawConfigurationRes {
+    description?: string | undefined;
+    maximumLength?: number;
+}
+
 export interface TextareaValueRes {
     value?: string | undefined;
+    configuration?: TextareaConfigurationRes | undefined;
+}
+
+export interface TextareaConfigurationRes {
+    description?: string | undefined;
+    maximumLength?: number;
 }
 
 export interface TextBoxValueRes {
     value?: string | undefined;
+    configuration?: TextBoxConfigurationRes | undefined;
+}
+
+export interface TextBoxConfigurationRes {
+    description?: string | undefined;
+    maximumLength?: number;
 }
 
 export interface ProblemDetails {
@@ -442,9 +487,6 @@ export interface ProblemDetails {
     instance?: string | undefined;
 
     [key: string]: any;
-}
-
-export interface NestedPropertySchemaRes {
 }
 
 export interface ContentPropertyReq {

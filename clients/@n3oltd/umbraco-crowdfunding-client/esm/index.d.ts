@@ -7,8 +7,8 @@ export declare class CrowdfundingClient {
     });
     getContentPropertyValue(contentId: string, propertyAlias: string): Promise<ContentPropertyValueRes>;
     protected processGetContentPropertyValue(response: Response): Promise<ContentPropertyValueRes>;
-    getNestedPropertySchema(contentId: string, propertyAlias: string): Promise<NestedPropertySchemaRes>;
-    protected processGetNestedPropertySchema(response: Response): Promise<NestedPropertySchemaRes>;
+    getNestedPropertySchema(contentId: string, propertyAlias: string): Promise<NestedSchemaRes>;
+    protected processGetNestedPropertySchema(response: Response): Promise<NestedSchemaRes>;
     updateProperty(contentId: string, req: ContentPropertyReq): Promise<void>;
     protected processUpdateProperty(response: Response): Promise<void>;
     checkTitle(req: CreateFundraiserReq): Promise<boolean>;
@@ -43,9 +43,14 @@ export declare enum PropertyType {
 }
 export interface BooleanValueRes {
     value?: boolean | undefined;
+    configuration?: BooleanConfigurationRes | undefined;
+}
+export interface BooleanConfigurationRes {
+    description?: string | undefined;
 }
 export interface CropperValueRes {
     image?: CropperSource | undefined;
+    configuration?: CropperConfigurationRes | undefined;
 }
 export interface CropperSource {
     src?: string | undefined;
@@ -62,12 +67,20 @@ export interface Crop {
     width?: number;
     height?: number;
 }
+export interface CropperConfigurationRes {
+    description?: string | undefined;
+}
 export interface DateTimeValueRes {
     value?: Date | undefined;
+    configuration?: DateTimeConfigurationRes | undefined;
+}
+export interface DateTimeConfigurationRes {
+    description?: string | undefined;
 }
 export interface NestedValueRes {
     items?: NestedItemRes[] | undefined;
     schema?: NestedSchemaRes | undefined;
+    configuration?: NestedConfigurationRes | undefined;
 }
 export interface NestedItemRes {
     contentTypeAlias?: string | undefined;
@@ -84,19 +97,43 @@ export interface NestedSchemaPropertyRes {
     alias?: string | undefined;
     type?: PropertyType | undefined;
 }
+export interface NestedConfigurationRes {
+    description?: string | undefined;
+    maximumItems?: number;
+    minimumItems?: number;
+}
 export interface NumericValueRes {
     value?: number | undefined;
+    configuration?: NumericConfigurationRes | undefined;
+}
+export interface NumericConfigurationRes {
+    description?: string | undefined;
 }
 export interface RawValueRes {
     value?: HtmlEncodedString | undefined;
+    configuration?: RawConfigurationRes | undefined;
 }
 export interface HtmlEncodedString {
 }
+export interface RawConfigurationRes {
+    description?: string | undefined;
+    maximumLength?: number;
+}
 export interface TextareaValueRes {
     value?: string | undefined;
+    configuration?: TextareaConfigurationRes | undefined;
+}
+export interface TextareaConfigurationRes {
+    description?: string | undefined;
+    maximumLength?: number;
 }
 export interface TextBoxValueRes {
     value?: string | undefined;
+    configuration?: TextBoxConfigurationRes | undefined;
+}
+export interface TextBoxConfigurationRes {
+    description?: string | undefined;
+    maximumLength?: number;
 }
 export interface ProblemDetails {
     type?: string | undefined;
@@ -105,8 +142,6 @@ export interface ProblemDetails {
     detail?: string | undefined;
     instance?: string | undefined;
     [key: string]: any;
-}
-export interface NestedPropertySchemaRes {
 }
 export interface ContentPropertyReq {
     alias?: string | undefined;
