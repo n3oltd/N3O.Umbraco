@@ -65,7 +65,7 @@ public class GivingController : LookupsController<GivingLookupsRes> {
     }
     
     [HttpGet("lookups/" + GivingLookupTypes.FeedbackSchemes)]
-    public async Task<ActionResult<IEnumerable<FeedbackScheme>>> GetLookupFeedbackSchemes() {
+    public async Task<ActionResult<IEnumerable<FeedbackSchemeRes>>> GetLookupFeedbackSchemes() {
         var res = await GetLookupsAsync<FeedbackScheme, FeedbackSchemeRes>();
 
         return Ok(res);
