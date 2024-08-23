@@ -23,10 +23,12 @@ export const Textbox: React.FC<EditorProps> = ({
   const {pageId} = usePageData();
 
 
-  const {runAsync: loadPropertyValue, loading: isPropLoading} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias), {
+  const {runAsync: loadPropertyValue, data: dataResponse, loading: isPropLoading} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias), {
     manual: true,
     ready: !!propAlias && open,
-    onSuccess: data => state.title = data?.textBox?.value || ''
+    onSuccess: data => {
+      state.title = data?.textBox?.value || ''
+    }
   });
 
   const {runAsync: updateProperty, loading} = useRequest((req: ContentPropertyReq, pageId: string) => _client.updateProperty(pageId, req), {
@@ -69,10 +71,14 @@ export const Textbox: React.FC<EditorProps> = ({
         disabled: loading
       }}
     >
-        <h3>Campaign Name</h3>
+      {isPropLoading ? <p>Loading...</p> : <>
+        <h3>{dataResponse?.textBox?.configuration?.description}</h3>
         <div className="input big">
-          <input type="text" placeholder="E.g. Building a school" value={state.title} onChange={e => state.title = e.target.value} disabled={isPropLoading}/>
+          <input type="text" 
+            maxLength={dataResponse?.textBox?.configuration?.maximumLength}
+            placeholder="E.g. Building a school" value={state.title} onChange={e => state.title = e.target.value} disabled={isPropLoading}/>
         </div>
+        </>}
     </Modal>
   </>
 }

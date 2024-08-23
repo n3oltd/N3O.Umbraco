@@ -27,10 +27,13 @@ export const RichTextEditor: React.FC<EditorProps> = ({
   const {pageId} = usePageData();
   const [editorContent, setEditorContent] =  React.useState<string>('');
 
-  const {runAsync: loadPropertyValue} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias), {
+  const {runAsync: loadPropertyValue, data: dataResponse, loading} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias), {
     manual: true,
     ready: open && !!propAlias,
-    onSuccess: data => editor.current?.editor?.setData(data?.raw?.value as string)
+    onSuccess: data => {
+      editor.current?.editor?.setData(data?.raw?.value as string)
+      setEditorContent(data?.raw?.value as string)
+    }
   });
 
   const {runAsync: updateProperty,} = useRequest((req: ContentPropertyReq, pageId) => _client.updateProperty(pageId, req), {
@@ -39,7 +42,7 @@ export const RichTextEditor: React.FC<EditorProps> = ({
       onClose()
     }
   })
-
+  
   React.useEffect(() => {
     if (open && pageId) {
      loadingToast(loadPropertyValue(pageId as string))
@@ -73,19 +76,24 @@ export const RichTextEditor: React.FC<EditorProps> = ({
       isOpen={open}
       onOk={saveContent}
       onClose={onClose}
+      oKButtonProps={{
+        disabled: loading
+      }}
     >
-      <h3>About this campaign</h3>
+      {loading ? <p>Loading...</p> : <>
+        <h3>{dataResponse?.raw?.configuration?.description}</h3>
           <div className="edit__info">
-            <div className="detail">Write up to 1600 characters</div>
+            <div className="detail">Write up to {dataResponse?.raw?.configuration?.maximumLength} characters</div>
           </div>
           <div className="richText" style={{paddingTop: '24px'}}>
               <CkEditor 
                 editor={editor}
                 onChange={handleContentChange}
                 initialContent={editorContent}
-                characterLimit={1600}
+                characterLimit={dataResponse?.raw?.configuration?.maximumLength}
               />
           </div>
+        </>}
     </Modal>
   </>
 }

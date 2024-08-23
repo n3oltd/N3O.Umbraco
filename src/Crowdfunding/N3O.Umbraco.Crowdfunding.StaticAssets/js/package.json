@@ -9,11 +9,11 @@
     "build:prod": "npm install && tsc -b && vite build && npm run copy",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "copy": "shx cp build/crowdfunding.js ../content/assets/js/crowdfunding.js && shx cp build/crowdfunding.css ../content/assets/css/crowdfunding.css"
+    "copy": "shx cp build/crowdfunding-editor.js ../content/assets/js/crowdfunding-editor.js && shx cp build/crowdfunding-editor.css ../content/assets/css/crowdfunding-editor.css"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-react": "^8.0.0",
-    "@n3oltd/umbraco-crowdfunding-client": "^13.0.19",
+    "@n3oltd/umbraco-crowdfunding-client": "^13.0.21",
     "@uppy/core": "^4.0.1",
     "@uppy/dashboard": "^4.0.1",
     "@uppy/drag-drop": "^4.0.1",

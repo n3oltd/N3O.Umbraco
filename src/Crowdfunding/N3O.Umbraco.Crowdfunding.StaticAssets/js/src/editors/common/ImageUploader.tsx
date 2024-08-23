@@ -15,10 +15,13 @@ type ImageUploaderProps = {
   onCrop?: (event: CustomEvent<any>) => void;
   setUppyInstance?: (uppy: Uppy) => void;
   maxFiles: number,
+  minFiles?: number,
   aspectRatio: number,
   uploadUrl: string,
   elementId: string,
-  hieght?: number
+  hieght?: number,
+  crop?: any,
+  openEditor?: boolean
 }
 
 const handleCrop = event => {
@@ -36,26 +39,30 @@ const handleCrop = event => {
 }
 
 export const ImageUploader: React.FC<ImageUploaderProps> = ({
-  maxFiles = 10,
+  maxFiles,
   onFileUpload,
   onFileAdded,
   onCrop,
   aspectRatio,
   setUppyInstance,
   uploadUrl,
+  minFiles = 1,
+  openEditor = true,
   elementId = 'uppy',
   hieght = 550
 }) => {
 
-  const filesCropInfo = React.useRef<Array<{file?: any, crop?: any}>>([]);
+  const filesCropInfo = React.useRef<Array<{file?: any, crop?: any, orignalCrop?: any}>>([]);
 
   const [uppy] = React.useState(() => {
     const uppy = new Uppy({
       id: elementId,
     
       restrictions: {
-        minNumberOfFiles: 1,
-        maxNumberOfFiles: maxFiles
+        minNumberOfFiles: minFiles,
+        maxNumberOfFiles: maxFiles,
+        allowedFileTypes: ['image/*'],
+        
       },
       onBeforeUpload(files) {
         const filesArray = Object.entries(files);
@@ -83,35 +90,50 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
       },
       cropperOptions: {
         aspectRatio: aspectRatio,
+        responsive: true,
         autoCrop: true,
+        movable: false,
         crop: (event: any) => {
           onCrop?.(event)
           const filePosition = filesCropInfo.current.findIndex(f => f.file.name.includes(event.srcElement.alt));
           filesCropInfo.current[filePosition].crop = handleCrop(event)
+          filesCropInfo.current[filePosition].orignalCrop = event.detail
         }
           
       }
     })
     .use(XHR, { endpoint: uploadUrl});
 
-    uppy.on('upload-success', (file, response) => {
+    uppy.on('upload-success', (file: any, response) => {
       const body = response.body as unknown;
       const cropInfo = filesCropInfo.current.find(f => file?.id === f.file.id)
-      onFileUpload(body as string, cropInfo?.crop)
+      onFileUpload(body as string, cropInfo?.crop || file?.crop)
     });
 
     uppy.on("file-added", e => {
       onFileAdded?.(e)
     })
 
-    uppy.on('file-editor:start', (file) => {
+    uppy.on('file-editor:start', (file: any) => {
  
       const existingFile = filesCropInfo.current.find(f => f.file.id === file.id);
- 
+      const editorPlugin = uppy.getPlugin<any>('ImageEditor');
+      
       if (!existingFile) {
         filesCropInfo.current.push({file})
       }
 
+      if (existingFile &&  editorPlugin?.cropper) {
+        const cropper = editorPlugin?.cropper;
+        cropper.setData(existingFile.orignalCrop);
+      }
+
+      if (file.crop &&  editorPlugin?.cropper) {
+        editorPlugin?.cropper?.setData(file.crop);
+        uppy.setFileState(file.id, {
+          
+        })
+      }
     });
 
     uppy.on('file-editor:complete', (updatedFile: any) => {
@@ -142,7 +164,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   
   return <>
     <ReactDashboard 
-      autoOpen={'imageEditor'}
+      autoOpen={openEditor ? 'imageEditor' :  null}
       uppy={uppy}
       height={hieght} 
       id={elementId}

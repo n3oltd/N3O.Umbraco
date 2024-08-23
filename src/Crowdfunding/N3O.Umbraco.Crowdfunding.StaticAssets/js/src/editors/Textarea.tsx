@@ -22,7 +22,7 @@ export const Textarea: React.FC<EditorProps> = ({
 
   const {pageId} = usePageData();
 
-  const {runAsync: loadPropertyValue, loading: isPropLoading} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias), {
+  const {runAsync: loadPropertyValue, data: dataResponse, loading: isPropLoading} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias), {
     manual: true,
     ready: !!propAlias && open,
     onSuccess: data => state.description = data?.textarea?.value || ''
@@ -67,7 +67,8 @@ export const Textarea: React.FC<EditorProps> = ({
         disabled: isPropLoading || loading
       }}
     >
-      <h3>Campaign Description</h3>
+      {isPropLoading ? <p>Loading...</p> : <>
+        <h3>{dataResponse?.textarea?.configuration?.description}</h3>
       <div className="edit__content">
         <div className="input__outer dark">
           <p>Short Description (Optional)</p>
@@ -77,16 +78,18 @@ export const Textarea: React.FC<EditorProps> = ({
               rows={3}
               value={state.description}
               placeholder="Type your message here"
-              maxLength={160}
+              maxLength={dataResponse?.textarea?.configuration?.maximumLength}
               disabled={isPropLoading}
             ></textarea>
           </div>
         </div>
         <p className="subtle">
           Slightly longer text that will appear after the campaign name. You
-          can write up to 160 characters.
+          can write up to {dataResponse?.textarea?.configuration?.maximumLength} characters.
         </p>
       </div>
+      </>}
+      
     </Modal>
   </>
 }

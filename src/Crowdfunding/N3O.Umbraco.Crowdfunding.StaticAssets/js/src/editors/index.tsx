@@ -4,8 +4,7 @@ import {Textbox} from './Textbox';
 import {Textarea} from './Textarea';
 import {RichTextEditor} from './RichTextEditor';
 import {CropperSingle} from './CropperSingle';
-import {CropperNested} from './CropperNested';
-
+import {Gallery} from './Gallery';
 
 export const Components = {
   [PropertyType.TextBox]: Textbox,
@@ -13,7 +12,7 @@ export const Components = {
   [PropertyType.Raw]: RichTextEditor,
   [PropertyType.Cropper]: {
     single: CropperSingle,
-    nested: CropperNested
+    nested: Gallery
   }
 }
 
@@ -31,7 +30,6 @@ export const getComponentForPropType = (propType, components, nested = false) =>
   if (!nested && propType === PropertyType.Cropper) {
     return components[propType]['single'];
   }
-
 
   return null
 }
