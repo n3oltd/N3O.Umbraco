@@ -1,10 +1,10 @@
-﻿using N3O.Umbraco.Crowdfunding.Models;
+using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Crowdfunding.NamedParameters;
 using N3O.Umbraco.Mediator;
 
 namespace N3O.Umbraco.Crowdfunding.Queries;
 
-public class GetNestedPropertySchemaQuery : Request<None, NestedPropertySchemaRes> {
+public class GetNestedPropertySchemaQuery : Request<None, NestedSchemaRes> {
     public ContentId ContentId { get; }
     public PropertyAlias PropertyAlias { get; }
 

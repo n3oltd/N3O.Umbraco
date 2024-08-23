@@ -15,10 +15,10 @@ namespace N3O.Umbraco.Crowdfunding.Content;
 public class FundraiserAllocationElement : UmbracoElement<FundraiserAllocationElement>, IFundDimensionValues {
     public string Title => GetValue(x => x.Title);
     public decimal Amount => GetValue(x => x.Amount);
-    public FundDimension1Value Dimension1 => GetAs(x => x.Dimension1);
-    public FundDimension2Value Dimension2 => GetAs(x => x.Dimension2);
-    public FundDimension3Value Dimension3 => GetAs(x => x.Dimension3);
-    public FundDimension4Value Dimension4 => GetAs(x => x.Dimension4);
+    public FundDimension1Value FundDimension1 => GetAs(x => x.FundDimension1);
+    public FundDimension2Value FundDimension2 => GetAs(x => x.FundDimension2);
+    public FundDimension3Value FundDimension3 => GetAs(x => x.FundDimension3);
+    public FundDimension4Value FundDimension4 => GetAs(x => x.FundDimension4);
     public IEnumerable<PriceHandleElement> PriceHandles => GetNestedAs(x => x.PriceHandles);
 
     public override void Content(IPublishedElement content) {
@@ -62,4 +62,16 @@ public class FundraiserAllocationElement : UmbracoElement<FundraiserAllocationEl
             }
         }
     }
+    
+    [JsonIgnore]
+    FundDimension1Value IFundDimensionValues.Dimension1 => FundDimension1;
+    
+    [JsonIgnore]
+    FundDimension2Value IFundDimensionValues.Dimension2 => FundDimension2;
+    
+    [JsonIgnore]
+    FundDimension3Value IFundDimensionValues.Dimension3 => FundDimension3;
+    
+    [JsonIgnore]
+    FundDimension4Value IFundDimensionValues.Dimension4 => FundDimension4;
 }

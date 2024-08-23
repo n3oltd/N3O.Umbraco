@@ -8,11 +8,11 @@ namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class NestedValueResMapping : IMapDefinition {
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<IPublishedProperty, NestedValueRes>((_, _) => new NestedValueRes(), Map);
+        mapper.Define<PublishedContentProperty, NestedValueRes>((_, _) => new NestedValueRes(), Map);
     }
 
-    private void Map(IPublishedProperty src, NestedValueRes dest, MapperContext ctx) {
-        var elements = src.GetValue() as List<IPublishedElement>;
+    private void Map(PublishedContentProperty src, NestedValueRes dest, MapperContext ctx) {
+        var elements = src.Property.GetValue() as List<IPublishedElement>;
         var items = new List<NestedItemRes>();
         
         foreach (var element in elements.OrEmpty()) {
@@ -20,11 +20,14 @@ public class NestedValueResMapping : IMapDefinition {
         }
         
         dest.Items = items;
-        dest.Schema = ctx.Map<IPublishedProperty, NestedSchemaRes>(src);
+        dest.Schema = ctx.Map<PublishedContentProperty, NestedSchemaRes>(src);
+        dest.Configuration = ctx.Map<PublishedContentProperty, NestedConfigurationRes>(src);
     }
 
     private NestedItemRes PopulateNestedItem(MapperContext ctx, IPublishedElement element) {
-        var properties = element.Properties.Select(ctx.Map<IPublishedProperty, ContentPropertyValueRes>);
+        var publishedContentProperties = element.Properties.Select(x => new PublishedContentProperty(element.ContentType.Alias, x));
+        
+        var properties = publishedContentProperties.Select(ctx.Map<PublishedContentProperty, ContentPropertyValueRes>);
         
         var res = new NestedItemRes();
         res.ContentTypeAlias = element.ContentType.Alias;

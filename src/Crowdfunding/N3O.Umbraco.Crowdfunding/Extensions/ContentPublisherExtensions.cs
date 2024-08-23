@@ -21,7 +21,7 @@ public static class ContentPublisherExtensions {
         contentPublisher.Content.Label(Fundraiser.Properties.Slug).Set(req.Slug);
         contentPublisher.Content.Label(Fundraiser.Properties.Title).Set(req.Title);
         contentPublisher.Content.Label(Fundraiser.Properties.Status).Set(FundraiserStatuses.Pending.Name);
-        contentPublisher.Content.ContentPicker(Fundraiser.Properties.Owner).SetContent(member);
+        contentPublisher.Content.ContentPicker(Fundraiser.Properties.Owner).SetMember(member);
         contentPublisher.Content.ContentPicker(Fundraiser.Properties.Campaign).SetContent(campaign);
         
         PopulateAllocations(contentPublisher, req.Allocations);

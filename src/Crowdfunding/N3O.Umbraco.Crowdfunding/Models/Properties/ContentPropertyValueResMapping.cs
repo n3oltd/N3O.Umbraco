@@ -3,7 +3,6 @@ using N3O.Umbraco.Lookups;
 using System;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
-using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
@@ -15,20 +14,20 @@ public class ContentPropertyValueResMapping : IMapDefinition {
     }
     
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<IPublishedProperty, ContentPropertyValueRes>((_, _) => new ContentPropertyValueRes(), Map);
+        mapper.Define<PublishedContentProperty, ContentPropertyValueRes>((_, _) => new ContentPropertyValueRes(), Map);
     }
 
-    private void Map(IPublishedProperty src, ContentPropertyValueRes dest, MapperContext ctx) {
+    private void Map(PublishedContentProperty src, ContentPropertyValueRes dest, MapperContext ctx) {
         var propertyTypes = _lookups.GetAll<PropertyType>();
-        var propertyType = propertyTypes.SingleOrDefault(x => x.EditorAliases.Contains(src.PropertyType.EditorAlias));
+        var propertyType = propertyTypes.SingleOrDefault(x => x.EditorAliases.Contains(src.Property.PropertyType.EditorAlias));
 
         if (propertyType == null) {
-            throw new Exception($"Could not resolve property type for property editor {src.PropertyType.EditorAlias}");
+            throw new Exception($"Could not resolve property type for property editor {src.Property.PropertyType.EditorAlias}");
         }
 
-        dest.Alias = src.Alias;
+        dest.Alias = src.Property.Alias;
         dest.Type = propertyType;
 
-        propertyType.PopulateRes(ctx, src, dest);
+        propertyType.PopulateValueRes(ctx, src, dest);
     }
 }

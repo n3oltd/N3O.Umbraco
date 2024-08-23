@@ -121,9 +121,9 @@ public class OurPublishedRouter : IPublishedRouter {
 
     /// <inheritdoc />
     public async Task<IPublishedRequest> UpdateRequestAsync(IPublishedRequest request,
-                                                            IPublishedContent? publishedContent) {
+                                                            IPublishedContent publishedContent) {
         // store the original (if any)
-        IPublishedContent? content = request.PublishedContent;
+        IPublishedContent content = request.PublishedContent;
 
         IPublishedRequestBuilder builder = new PublishedRequestBuilder(request.Uri, _fileService);
 
@@ -195,8 +195,8 @@ public class OurPublishedRouter : IPublishedRouter {
         return request.Build();
     }
 
-    private void SetVariationContext(string? culture) {
-        VariationContext? variationContext = _variationContextAccessor.VariationContext;
+    private void SetVariationContext(string culture) {
+        VariationContext variationContext = _variationContextAccessor.VariationContext;
         if (variationContext != null && variationContext.Culture == culture) {
             return;
         }
@@ -266,12 +266,12 @@ public class OurPublishedRouter : IPublishedRouter {
 
     /// <inheritdoc />
     public bool UpdateVariationContext(Uri uri) {
-        DomainAndUri? domain = FindDomain(uri, out _);
+        DomainAndUri domain = FindDomain(uri, out _);
         SetVariationContext(domain?.Culture);
         return domain?.Culture is not null;
     }
 
-    private DomainAndUri? FindDomain(Uri uri, out string? defaultCulture) {
+    private DomainAndUri FindDomain(Uri uri, out string defaultCulture) {
         const string tracePrefix = "FindDomain: ";
 
         // note - we are not handling schemes nor ports here.
@@ -282,7 +282,7 @@ public class OurPublishedRouter : IPublishedRouter {
         using (var context = _umbracoContextFactory.EnsureUmbracoContext()) {
             IUmbracoContext umbracoContext = context.UmbracoContext;
 
-            IDomainCache? domainsCache = umbracoContext.PublishedSnapshot.Domains;
+            IDomainCache domainsCache = umbracoContext.PublishedSnapshot.Domains;
             var domains = domainsCache?.GetAll(false)
                                        .ToList();
 
@@ -292,7 +292,7 @@ public class OurPublishedRouter : IPublishedRouter {
             // not apply
             bool IsPublishedContentDomain(Domain domain) {
                 // just get it from content cache - optimize there, not here
-                IPublishedContent? domainDocument = umbracoContext.PublishedSnapshot.Content?.GetById(domain.ContentId);
+                IPublishedContent domainDocument = umbracoContext.PublishedSnapshot.Content?.GetById(domain.ContentId);
 
                 // not published - at all
                 if (domainDocument == null) {
@@ -324,7 +324,7 @@ public class OurPublishedRouter : IPublishedRouter {
     internal bool FindAndSetDomain(IPublishedRequestBuilder request) {
         const string tracePrefix = "FindDomain: ";
         // try to find a domain matching the current request
-        DomainAndUri? domainAndUri = FindDomain(request.Uri, out var defaultCulture);
+        DomainAndUri domainAndUri = FindDomain(request.Uri, out var defaultCulture);
 
         // handle domain - always has a contentId and a culture
         if (domainAndUri != null) {
@@ -380,7 +380,7 @@ public class OurPublishedRouter : IPublishedRouter {
 
         using (var context = _umbracoContextFactory.EnsureUmbracoContext()) {
             IUmbracoContext umbracoContext = context.UmbracoContext;
-            Domain? domain =
+            Domain domain =
                 DomainUtilities.FindWildcardDomainInPath(umbracoContext.PublishedSnapshot.Domains?.GetAll(true),
                                                          nodePath,
                                                          rootNodeId);
@@ -402,7 +402,7 @@ public class OurPublishedRouter : IPublishedRouter {
         }
     }
 
-    internal bool FindTemplateRenderingEngineInDirectory(DirectoryInfo? directory, string alias, string[] extensions) {
+    internal bool FindTemplateRenderingEngineInDirectory(DirectoryInfo directory, string alias, string[] extensions) {
         if (directory == null || directory.Exists == false) {
             return false;
         }
@@ -410,7 +410,7 @@ public class OurPublishedRouter : IPublishedRouter {
         var pos = alias.IndexOf('/');
         if (pos > 0) {
             // recurse
-            DirectoryInfo? subdir = directory.GetDirectories(alias.Substring(0, pos))
+            DirectoryInfo subdir = directory.GetDirectories(alias.Substring(0, pos))
                                              .FirstOrDefault();
 
             alias = alias.Substring(pos + 1);
@@ -432,7 +432,7 @@ public class OurPublishedRouter : IPublishedRouter {
         // look for the document
         // the first successful finder, if any, will set this.PublishedContent, and may also set this.Template
         // some finders may implement caching
-        DisposableTimer? profilingScope = null;
+        DisposableTimer profilingScope = null;
         try {
             if (_logger.IsEnabled(LogLevel.Debug)) {
                 profilingScope = _profilingLogger.DebugDuration<PublishedRouter>($"{tracePrefix}Begin finders",
@@ -557,7 +557,7 @@ public class OurPublishedRouter : IPublishedRouter {
 
         var redirect = false;
         var valid = false;
-        IPublishedContent? internalRedirectNode = null;
+        IPublishedContent internalRedirectNode = null;
         var internalRedirectId = request.PublishedContent.Value(_publishedValueFallback,
                                                                 global::Umbraco.Cms.Core.Constants.Conventions.Content
                                                                        .InternalRedirectId,
@@ -571,11 +571,11 @@ public class OurPublishedRouter : IPublishedRouter {
                 valid = true;
                 internalRedirectNode = umbracoContext.Content?.GetById(internalRedirectId);
             } else {
-                GuidUdi? udiInternalRedirectId = request.PublishedContent.Value<GuidUdi>(_publishedValueFallback,
-                                                                                         global::Umbraco.Cms.Core
-                                                                                                .Constants.Conventions
-                                                                                                .Content
-                                                                                                .InternalRedirectId);
+                GuidUdi udiInternalRedirectId = request.PublishedContent.Value<GuidUdi>(_publishedValueFallback,
+                                                                                        global::Umbraco.Cms.Core
+                                                                                               .Constants.Conventions
+                                                                                               .Content
+                                                                                               .InternalRedirectId);
 
                 if (udiInternalRedirectId is not null) {
                     // try and get the redirect node from a UDI Guid
@@ -610,7 +610,7 @@ public class OurPublishedRouter : IPublishedRouter {
                 }
             } else {
                 // save since it will be cleared
-                ITemplate? template = request.Template;
+                ITemplate template = request.Template;
 
                 request.SetInternalRedirect(internalRedirectNode); // don't use .PublishedContent here
 
@@ -676,7 +676,7 @@ public class OurPublishedRouter : IPublishedRouter {
             // TODO: We need to limit altTemplate to only allow templates that are assigned to the current document type!
             // if the template isn't assigned to the document type we should log a warning and return 404
             if (request.PublishedContent.TemplateId is int templateId && templateId != default) {
-                ITemplate? template = GetTemplate(templateId);
+                ITemplate template = GetTemplate(templateId);
                 request.SetTemplate(template);
                 if (template != null) {
                     if (_logger.IsEnabled(LogLevel.Debug)) {
@@ -711,7 +711,7 @@ public class OurPublishedRouter : IPublishedRouter {
                                                            _webRoutingSettings.ValidateAlternativeTemplates,
                                                            altTemplate)) {
                 // allowed, use
-                ITemplate? template = _fileService.GetTemplate(altTemplate);
+                ITemplate template = _fileService.GetTemplate(altTemplate);
 
                 if (template != null) {
                     request.SetTemplate(template);
@@ -733,7 +733,7 @@ public class OurPublishedRouter : IPublishedRouter {
 
                 // no allowed, back to default
                 var templateId = request.PublishedContent.TemplateId;
-                ITemplate? template = GetTemplate(templateId);
+                ITemplate template = GetTemplate(templateId);
                 request.SetTemplate(template);
                 if (_logger.IsEnabled(LogLevel.Debug)) {
                     _logger.LogDebug("FindTemplate: Running with template id={TemplateId} alias={TemplateAlias}",
@@ -759,7 +759,7 @@ public class OurPublishedRouter : IPublishedRouter {
         }
     }
 
-    private ITemplate? GetTemplate(int? templateId) {
+    private ITemplate GetTemplate(int? templateId) {
         if (templateId.HasValue == false || templateId.Value == default) {
             if (_logger.IsEnabled(LogLevel.Debug)) {
                 _logger.LogDebug("GetTemplateModel: No template.");
@@ -776,7 +776,7 @@ public class OurPublishedRouter : IPublishedRouter {
             throw new InvalidOperationException("The template is not set, the page cannot render.");
         }
 
-        ITemplate? template = _fileService.GetTemplate(templateId.Value);
+        ITemplate template = _fileService.GetTemplate(templateId.Value);
         if (template == null) {
             throw new InvalidOperationException("The template with Id " + templateId +
                                                 " does not exist, the page cannot render.");
@@ -815,7 +815,7 @@ public class OurPublishedRouter : IPublishedRouter {
             redirectUrl = _publishedUrlProvider.GetUrl(redirectId);
         } else {
             // might be a UDI instead of an int Id
-            GuidUdi? redirectUdi =
+            GuidUdi redirectUdi =
                 request.PublishedContent.Value<GuidUdi>(_publishedValueFallback,
                                                         global::Umbraco.Cms.Core.Constants.Conventions.Content
                                                                .Redirect);
