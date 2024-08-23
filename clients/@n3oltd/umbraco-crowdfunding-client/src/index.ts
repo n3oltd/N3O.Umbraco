@@ -287,6 +287,53 @@ export class CrowdfundingClient {
         return Promise.resolve<string>(null as any);
     }
 
+    updateFundraiserAllocation(contentId: string, req: UpdateFundraiserAllocationsReq): Promise<void> {
+        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers/{contentId}/allocations";
+        if (contentId === undefined || contentId === null)
+            throw new Error("The parameter 'contentId' must be defined.");
+        url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(req);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpdateFundraiserAllocation(_response);
+        });
+    }
+
+    protected processUpdateFundraiserAllocation(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
     getPropertyTypes(): Promise<LookupRes[]> {
         let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/lookups/propertyTypes";
         url_ = url_.replace(/[?&]$/, "");
@@ -588,80 +635,14 @@ export interface CreateFundraiserReq {
     title?: string | undefined;
     slug?: string | undefined;
     campaignId?: string | undefined;
+    endDate?: Date | undefined;
     allocations?: FundraiserAllocationReq[] | undefined;
 }
 
 export interface FundraiserAllocationReq {
-    type?: AllocationType | undefined;
-    value?: MoneyReq | undefined;
-    fundDimensions?: FundDimensionValuesReq | undefined;
-    feedback?: FeedbackAllocationReq | undefined;
-    fund?: FundAllocationReq | undefined;
-    sponsorship?: SponsorshipAllocationReq | undefined;
-    upsellOfferId?: string | undefined;
-    title?: string | undefined;
-    priceHandles?: PriceHandleReq[] | undefined;
-
-    [key: string]: any;
-}
-
-/** One of 'feedback', 'fund', 'sponsorship' */
-export enum AllocationType {
-    Feedback = "feedback",
-    Fund = "fund",
-    Sponsorship = "sponsorship",
-}
-
-export interface MoneyReq {
     amount?: number | undefined;
-    currency?: string | undefined;
-}
-
-export interface FundDimensionValuesReq {
-    dimension1?: string | undefined;
-    dimension2?: string | undefined;
-    dimension3?: string | undefined;
-    dimension4?: string | undefined;
-}
-
-export interface FeedbackAllocationReq {
-    scheme?: string | undefined;
-    customFields?: FeedbackNewCustomFieldsReq | undefined;
-}
-
-/** One of 'donation', 'regularGiving' */
-export enum GivingType {
-    Donation = "donation",
-    RegularGiving = "regularGiving",
-}
-
-export interface FeedbackCustomFieldDefinitionElement {
-    type?: FeedbackCustomFieldType | undefined;
-    name?: string | undefined;
-    required?: boolean;
-    textMaxLength?: number | undefined;
-    alias?: string | undefined;
-}
-
-/** One of 'bool', 'date', 'text' */
-export enum FeedbackCustomFieldType {
-    Bool = "bool",
-    Date = "date",
-    Text = "text",
-}
-
-export interface PriceContent {
-    amount?: number;
-    locked?: boolean;
-}
-
-export interface PricingRuleElement {
-    amount?: number;
-    locked?: boolean;
-    dimension1?: string | undefined;
-    dimension2?: string | undefined;
-    dimension3?: string | undefined;
-    dimension4?: string | undefined;
+    goalId?: string | undefined;
+    feedbackNewCustomFields?: FeedbackNewCustomFieldsReq | undefined;
 }
 
 export interface FeedbackNewCustomFieldsReq {
@@ -675,36 +656,13 @@ export interface FeedbackNewCustomFieldReq {
     text?: string | undefined;
 }
 
-export interface FundAllocationReq {
-    donationItem?: string | undefined;
+export interface UpdateFundraiserAllocationsReq {
+    allocations?: UpdateFundraiserAllocationReq[] | undefined;
 }
 
-export interface SponsorshipAllocationReq {
-    beneficiaryReference?: string | undefined;
-    scheme?: string | undefined;
-    duration?: SponsorshipDuration | undefined;
-    components?: SponsorshipComponentAllocationReq[] | undefined;
-}
-
-/** One of '_6', '_12', '_18', '_24', '_36', '_48', '_60' */
-export enum SponsorshipDuration {
-    _6 = "_6",
-    _12 = "_12",
-    _18 = "_18",
-    _24 = "_24",
-    _36 = "_36",
-    _48 = "_48",
-    _60 = "_60",
-}
-
-export interface SponsorshipComponentAllocationReq {
-    component?: string | undefined;
-    value?: MoneyReq | undefined;
-}
-
-export interface PriceHandleReq {
-    amount?: number | undefined;
-    description?: string | undefined;
+export interface UpdateFundraiserAllocationReq {
+    allocationId?: string | undefined;
+    allocation?: FundraiserAllocationReq | undefined;
 }
 
 export interface LookupRes {

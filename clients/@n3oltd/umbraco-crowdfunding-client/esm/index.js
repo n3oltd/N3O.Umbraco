@@ -321,6 +321,57 @@ var CrowdfundingClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
+    CrowdfundingClient.prototype.updateFundraiserAllocation = function (contentId, req) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers/{contentId}/allocations";
+        if (contentId === undefined || contentId === null)
+            throw new Error("The parameter 'contentId' must be defined.");
+        url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
+        url_ = url_.replace(/[?&]$/, "");
+        var content_ = JSON.stringify(req);
+        var options_ = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processUpdateFundraiserAllocation(_response);
+        });
+    };
+    CrowdfundingClient.prototype.processUpdateFundraiserAllocation = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                return;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
     CrowdfundingClient.prototype.getPropertyTypes = function () {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Crowdfunding/lookups/propertyTypes";
@@ -397,37 +448,6 @@ export var CropShape;
     CropShape["Circle"] = "circle";
     CropShape["Rectangle"] = "rectangle";
 })(CropShape || (CropShape = {}));
-/** One of 'feedback', 'fund', 'sponsorship' */
-export var AllocationType;
-(function (AllocationType) {
-    AllocationType["Feedback"] = "feedback";
-    AllocationType["Fund"] = "fund";
-    AllocationType["Sponsorship"] = "sponsorship";
-})(AllocationType || (AllocationType = {}));
-/** One of 'donation', 'regularGiving' */
-export var GivingType;
-(function (GivingType) {
-    GivingType["Donation"] = "donation";
-    GivingType["RegularGiving"] = "regularGiving";
-})(GivingType || (GivingType = {}));
-/** One of 'bool', 'date', 'text' */
-export var FeedbackCustomFieldType;
-(function (FeedbackCustomFieldType) {
-    FeedbackCustomFieldType["Bool"] = "bool";
-    FeedbackCustomFieldType["Date"] = "date";
-    FeedbackCustomFieldType["Text"] = "text";
-})(FeedbackCustomFieldType || (FeedbackCustomFieldType = {}));
-/** One of '_6', '_12', '_18', '_24', '_36', '_48', '_60' */
-export var SponsorshipDuration;
-(function (SponsorshipDuration) {
-    SponsorshipDuration["_6"] = "_6";
-    SponsorshipDuration["_12"] = "_12";
-    SponsorshipDuration["_18"] = "_18";
-    SponsorshipDuration["_24"] = "_24";
-    SponsorshipDuration["_36"] = "_36";
-    SponsorshipDuration["_48"] = "_48";
-    SponsorshipDuration["_60"] = "_60";
-})(SponsorshipDuration || (SponsorshipDuration = {}));
 var ApiException = /** @class */ (function (_super) {
     __extends(ApiException, _super);
     function ApiException(message, status, response, headers, result) {
