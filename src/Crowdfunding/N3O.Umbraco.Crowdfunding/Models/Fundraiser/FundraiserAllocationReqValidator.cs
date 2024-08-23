@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+﻿/*using FluentValidation;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
 
@@ -19,4 +19,4 @@ public class FundraiserAllocationReqValidator : ModelValidator<FundraiserAllocat
         public string SpecifyTitle => "Please specify the allocation title";
         public string SpecifyValue => "Please specify the value";
     }
-}
+}*/

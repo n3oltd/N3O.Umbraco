@@ -1,0 +1,162 @@
+﻿@using N3O.Umbraco.Giving.Lookups
+@using N3O.Umbraco.Templates
+@inject IPartialText PartialText
+@model N3O.Umbraco.CrowdFunding.Models.CreatePageViewModel
+
+@{
+PartialText.SetPartialName("Create Page");
+}
+
+<div class="setting__wrapper">
+    <div class="setting">
+        <div class="steps">
+            <div class="steps__button tabBtn active" data-tab="#tab-1">
+                <h4>Step 1</h4>
+                <div class="detail">Set Goal</div>
+            </div>
+            <div class="steps__button tabBtn" data-tab="#tab-2">
+                <h4>Step 2</h4>
+                <div class="detail">About your page</div>
+            </div>
+        </div>
+        <div class="setting__body tabEvent active" id="tab-1">
+            <h4>Select the project you would like to fundraise for</h4>
+            <div class="select__outer">
+                <div class="select">
+                    <div class="select__selected">Select project</div>
+                    <input type="hidden" value="0" />
+                    <ul class="select__options">
+                        <div class="select__search">
+                            <svg>
+                                <use xlink:href="#searchIcon"></use>
+                            </svg>
+                            <input
+                                type="text"
+                                id="mySearch"
+                                placeholder="Type to search..."
+                                onkeyup="myFunction()"
+                            />
+                        </div>
+                        <div class="select__options-body" id="myMenu">
+                            @foreach (var goal in Model.Goals) {
+                            <li data-value="@goal.GoalId"
+                                data-type="@goal.Type"
+                                data-custom-fields='@(goal.Type == AllocationTypes.Feedback ? Json.Serialize(goal.CustomFieldDefinitions.First()) : "")'>
+                                @goal.GoalName
+                            </li>
+                            }
+                        </div>
+                    </ul>
+                    <svg>
+                        <use xlink:href="#chevron-bottom"></use>
+                    </svg>
+                </div>
+            </div>
+            <button type="submit" class="button primary" disabled>
+                Continue
+            </button>
+        </div>
+        <div class="setting__body tabEvent" id="tab-2">
+            <label class="input__outer">
+                <h4>Page Title</h4>
+                <div class="input big">
+                    <input
+                        type="text"
+                        id="pageTitle"
+                        placeholder="E.g. Building a school"
+                    />
+                </div>
+                <p class="subtle">Write campaign name up to 60 characters.</p>
+            </label>
+            <label class="input__outer">
+                <h4>Your Name (Appears on page)</h4>
+                <div class="input big">
+                    <input type="text" id="pageName" />
+                </div>
+            </label>
+            <label class="input__outer">
+                <h4>Customise page web URL</h4>
+                <div class="input big">
+                    <input type="text" placeholder="jon-doe-page1" id="urlChanger" />
+                </div>
+                <a href="#" class="subtle"
+                >charity.org/fundraising/<span id="urlEnd">jon-doe-page1</span></a
+                >
+            </label>
+            <div class="checkout__message" id="errorMessage2">
+                <svg>
+                    <use xlink:href="#alertIcon"></use>
+                </svg>
+                <p class="detail">
+                    Please complete the form before proceed to payment.
+                </p>
+            </div>
+            <button type="submit" class="button primary submit2">Continue</button>
+            <div class="subtle">
+                On the next screen, you will be able to associate your page with a
+                fundraising team should you wish
+            </div>
+        </div>
+    </div>
+</div>
+
+<svg style="display: none">
+    <symbol id="alertIcon" viewBox="0 0 20 20" fill="none">
+        <g clip-path="url(#clip0_1078_67061)">
+            <path
+                d="M10.0013 18.3337C14.6037 18.3337 18.3346 14.6027 18.3346 10.0003C18.3346 5.39795 14.6037 1.66699 10.0013 1.66699C5.39893 1.66699 1.66797 5.39795 1.66797 10.0003C1.66797 14.6027 5.39893 18.3337 10.0013 18.3337Z"
+                stroke="#EF4444"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+            <path
+                d="M10 6.66699V10.0003"
+                stroke="#EF4444"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+            <path
+                d="M10 13.333H10.0083"
+                stroke="#EF4444"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+        </g>
+        <defs>
+            <clipPath id="clip0_1078_67061">
+                <rect width="20" height="20" fill="white" />
+            </clipPath>
+        </defs>
+    </symbol>
+    <symbol id="chevron-bottom" viewBox="0 0 20 20" fill="none">
+        <path
+            d="M5 7.5L10 12.5L15 7.5"
+            stroke="black"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        />
+    </symbol>
+</svg>
+<svg style="display: none">
+    <symbol id="searchIcon" viewBox="0 0 16 16" fill="none">
+        <g opacity="0.5">
+            <path
+                d="M7.33333 12.6667C10.2789 12.6667 12.6667 10.2789 12.6667 7.33333C12.6667 4.38781 10.2789 2 7.33333 2C4.38781 2 2 4.38781 2 7.33333C2 10.2789 4.38781 12.6667 7.33333 12.6667Z"
+                stroke="#0F172A"
+                stroke-width="1.33333"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+            <path
+                d="M14.0016 13.9996L11.1016 11.0996"
+                stroke="#0F172A"
+                stroke-width="1.33333"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+        </g>
+    </symbol>
+</svg>

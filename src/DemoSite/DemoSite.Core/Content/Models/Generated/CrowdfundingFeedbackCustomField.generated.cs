@@ -18,14 +18,14 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Content
 {
-	/// <summary>Custom Field Definition</summary>
-	[PublishedModel("feedbackCustomFieldDefinition")]
-	public partial class FeedbackCustomFieldDefinition : PublishedContentModel
+	/// <summary>Feedback Custom Field</summary>
+	[PublishedModel("crowdfundingFeedbackCustomField")]
+	public partial class CrowdfundingFeedbackCustomField : PublishedElementModel
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		public new const string ModelTypeAlias = "feedbackCustomFieldDefinition";
+		public new const string ModelTypeAlias = "crowdfundingFeedbackCustomField";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
@@ -34,14 +34,14 @@ namespace DemoSite.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<FeedbackCustomFieldDefinition, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<CrowdfundingFeedbackCustomField, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public FeedbackCustomFieldDefinition(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
+		public CrowdfundingFeedbackCustomField(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
@@ -50,33 +50,33 @@ namespace DemoSite.Content
 		// properties
 
 		///<summary>
-		/// Name
+		/// Alias
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("fieldName")]
-		public virtual string FieldName => this.Value<string>(_publishedValueFallback, "fieldName");
+		[ImplementPropertyType("alias")]
+		public virtual string Alias => this.Value<string>(_publishedValueFallback, "alias");
 
 		///<summary>
-		/// Required
+		/// Bool
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[ImplementPropertyType("fieldRequired")]
-		public virtual bool FieldRequired => this.Value<bool>(_publishedValueFallback, "fieldRequired");
+		[ImplementPropertyType("bool")]
+		public virtual bool Bool => this.Value<bool>(_publishedValueFallback, "bool");
 
 		///<summary>
-		/// Max Length
+		/// Date
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[ImplementPropertyType("fieldTextMaxLength")]
-		public virtual int FieldTextMaxLength => this.Value<int>(_publishedValueFallback, "fieldTextMaxLength");
+		[ImplementPropertyType("date")]
+		public virtual global::System.DateTime Date => this.Value<global::System.DateTime>(_publishedValueFallback, "date");
 
 		///<summary>
-		/// Type
+		/// Text
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("fieldType")]
-		public virtual global::N3O.Umbraco.Giving.Lookups.FeedbackCustomFieldType FieldType => this.Value<global::N3O.Umbraco.Giving.Lookups.FeedbackCustomFieldType>(_publishedValueFallback, "fieldType");
+		[ImplementPropertyType("text")]
+		public virtual string Text => this.Value<string>(_publishedValueFallback, "text");
 	}
 }

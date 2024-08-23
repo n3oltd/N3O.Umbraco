@@ -1,4 +1,4 @@
-using N3O.Umbraco.Attributes;
+﻿using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
@@ -11,10 +11,10 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
-[UmbracoContent(CrowdfundingConstants.FundraiserAllocation.Alias)]
-public class FundraiserAllocationElement : UmbracoElement<FundraiserAllocationElement>, IFundDimensionValues {
+[UmbracoContent(CrowdfundingConstants.CampaignGoal.Alias)]
+public class CampaignGoalElement : UmbracoElement<CampaignGoalElement>, IFundDimensionValues {
     public string Title => GetValue(x => x.Title);
-    public decimal Amount => GetValue(x => x.Amount);
+    //public decimal Amount => GetValue(x => x.Amount);
     public FundDimension1Value FundDimension1 => GetAs(x => x.FundDimension1);
     public FundDimension2Value FundDimension2 => GetAs(x => x.FundDimension2);
     public FundDimension3Value FundDimension3 => GetAs(x => x.FundDimension3);
@@ -25,18 +25,18 @@ public class FundraiserAllocationElement : UmbracoElement<FundraiserAllocationEl
         base.Content(content);
         
         if (Type == AllocationTypes.Fund) {
-            Fund = new FundFundraiserAllocationElement();
+            Fund = new FundCampaignGoalElement();
             Fund.Content(content);
         } else if (Type == AllocationTypes.Feedback) {
-            Feedback = new FeedbackFundraiserAllocationElement();
+            Feedback = new FeedbackCampaignGoalElement();
             Feedback.Content(content);
         } else {
             throw UnrecognisedValueException.For(Type);
         }
     }
     
-    public FundFundraiserAllocationElement Fund { get; private set; }
-    public FeedbackFundraiserAllocationElement Feedback { get; private set; }
+    public FundCampaignGoalElement Fund { get; private set; }
+    public FeedbackCampaignGoalElement Feedback { get; private set; }
 
     public IFundDimensionsOptions GetFundDimensionOptions() {
         return (IFundDimensionsOptions) Fund?.DonationItem ??
@@ -46,9 +46,9 @@ public class FundraiserAllocationElement : UmbracoElement<FundraiserAllocationEl
     [JsonIgnore]
     public AllocationType Type {
         get {
-            if (Content().ContentType.Alias.EqualsInvariant(CrowdfundingConstants.FundraiserAllocation.Fund.Alias)) {
+            if (Content().ContentType.Alias.EqualsInvariant(CrowdfundingConstants.CampaignGoal.Fund.Alias)) {
                 return AllocationTypes.Fund;
-            } else if (Content().ContentType.Alias.EqualsInvariant(CrowdfundingConstants.FundraiserAllocation.Feedback.Alias)) {
+            } else if (Content().ContentType.Alias.EqualsInvariant(CrowdfundingConstants.CampaignGoal.Feedback.Alias)) {
                 return AllocationTypes.Feedback;
             } else {
                 throw UnrecognisedValueException.For(Content().ContentType.Alias);

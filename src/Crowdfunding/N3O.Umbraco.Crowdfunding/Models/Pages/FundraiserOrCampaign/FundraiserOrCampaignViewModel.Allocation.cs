@@ -33,7 +33,6 @@ public partial class FundraiserOrCampaignViewModel<TContent> {
             allocation.FundDimension4Value = fundraiserAllocation.FundDimension4;
             allocation.Type = fundraiserAllocation.Type;
             allocation.DonationItem = fundraiserAllocation.Fund?.DonationItem;
-            allocation.SponsorshipScheme = fundraiserAllocation.Sponsorship?.Scheme;
             allocation.FeedbackScheme = fundraiserAllocation.Feedback?.Scheme;
             allocation.PriceHandles = fundraiserAllocation.PriceHandles
                                                           .ToReadOnlyList(x => PriceHandle.For(crowdfundingHelper, x));

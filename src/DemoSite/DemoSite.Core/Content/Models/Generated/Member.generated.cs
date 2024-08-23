@@ -48,5 +48,13 @@ namespace DemoSite.Content
 		}
 
 		// properties
+
+		///<summary>
+		/// umbracoMemberComments
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("umbracoMemberComments")]
+		public virtual string UmbracoMemberComments => this.Value<string>(_publishedValueFallback, "umbracoMemberComments");
 	}
 }

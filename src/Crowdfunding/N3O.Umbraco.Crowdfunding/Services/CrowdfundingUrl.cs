@@ -12,6 +12,7 @@ public static class CrowdfundingUrl {
         public const string Campaign = $"campaigns/([0-9]+)/({Slugs.AllowedCharacters}+)";
         public const string Fundraiser = $"pages/([0-9]+)/({Slugs.AllowedCharacters}+)";
         public const string SignIn = "sign-in";
+        public const string Create = $"create/([0-9]+)";
 
         public static class Slugs {
             public const string AllowedCharacters = @"[a-zA-Z0-9\-]";
