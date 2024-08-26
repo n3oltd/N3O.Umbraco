@@ -9,6 +9,7 @@ public class AccountMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll
     private void Map(Account src, AccountRes dest, MapperContext ctx) {
+        dest.Type = src.Type;
         dest.Name = ctx.Map<Name, NameRes>(src.Name);
         dest.Address = ctx.Map<Address, AddressRes>(src.Address);
         dest.Email = ctx.Map<Email, EmailRes>(src.Email);
