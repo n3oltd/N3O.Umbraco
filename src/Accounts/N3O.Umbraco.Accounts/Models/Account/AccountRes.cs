@@ -1,9 +1,11 @@
+using N3O.Umbraco.Accounts.Lookups;
 using N3O.Umbraco.TaxRelief.Lookups;
 using Newtonsoft.Json;
 
 namespace N3O.Umbraco.Accounts.Models;
 
 public class AccountRes : IAccount {
+    public AccountType Type { get; set; }
     public NameRes Name { get; set; }
     public AddressRes Address { get; set; }
     public EmailRes Email { get; set; }
