@@ -6,7 +6,8 @@ namespace N3O.Umbraco.Accounts.Models;
 
 public class AccountRes : IAccount {
     public AccountType Type { get; set; }
-    public NameRes Name { get; set; }
+    public IndividualRes Individual { get; set; }
+    public OrganizationRes Organization { get; set; }
     public AddressRes Address { get; set; }
     public EmailRes Email { get; set; }
     public TelephoneRes Telephone { get; set; }
@@ -14,7 +15,10 @@ public class AccountRes : IAccount {
     public TaxStatus TaxStatus { get; set; }
 
     [JsonIgnore]
-    IName IAccount.Name => Name;
+    IIndividual IAccount.Individual => Individual;
+
+    [JsonIgnore]
+    IOrganization IAccount.Organization => Organization;
 
     [JsonIgnore]
     IAddress IAccount.Address => Address;
@@ -24,7 +28,7 @@ public class AccountRes : IAccount {
 
     [JsonIgnore]
     ITelephone IAccount.Telephone => Telephone;
-    
+
     [JsonIgnore]
     IConsent IAccount.Consent => Consent;
 }

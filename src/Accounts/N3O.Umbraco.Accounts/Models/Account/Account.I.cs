@@ -5,7 +5,8 @@ namespace N3O.Umbraco.Accounts.Models;
 
 public interface IAccount {
     AccountType Type { get; }
-    IName Name { get; }
+    IIndividual Individual { get; }
+    IOrganization Organization { get; }
     IAddress Address { get; }
     IEmail Email { get; }
     ITelephone Telephone { get; }

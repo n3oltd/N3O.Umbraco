@@ -8,14 +8,16 @@ namespace N3O.Umbraco.Accounts.Models;
 public class Account : Value, IAccount {
     [JsonConstructor]
     public Account(AccountType type,
-                   Name name,
+                   Individual individual,
+                   Organization organization,
                    Address address,
                    Email email,
                    Telephone telephone,
                    Consent consent,
                    TaxStatus taxStatus) {
         Type = type;
-        Name = name;
+        Individual = individual;
+        Organization = organization;
         Address = address;
         Email = email;
         Telephone = telephone;
@@ -25,7 +27,8 @@ public class Account : Value, IAccount {
 
     public Account(IAccount account)
         : this(account.Type,
-               account.Name.IfNotNull(x => new Name(x)),
+               account.Individual.IfNotNull(x => new Individual(x)),
+               account.Organization.IfNotNull(x => new Organization(x)),
                account.Address.IfNotNull(x => new Address(x)),
                account.Email.IfNotNull(x => new Email(x)),
                account.Telephone.IfNotNull(x => new Telephone(x)),
@@ -35,7 +38,8 @@ public class Account : Value, IAccount {
     public Account() { }
 
     public AccountType Type { get; }
-    public Name Name { get; }
+    public Individual Individual { get; }
+    public Organization Organization { get; }
     public Address Address { get; }
     public Email Email { get; }
     public Telephone Telephone { get; }
@@ -43,31 +47,38 @@ public class Account : Value, IAccount {
     public TaxStatus TaxStatus { get; }
 
     public Account WithUpdatedAddress(IAddress address) {
-        return new Account(Type, Name, address.IfNotNull(x => new Address(x)), Email, Telephone, Consent, TaxStatus);
+        return new Account(Type, Individual, Organization, address.IfNotNull(x => new Address(x)), Email, Telephone, Consent, TaxStatus);
     }
 
     public Account WithUpdatedConsent(IConsent consent) {
-        return new Account(Type, Name, Address, Email, Telephone, consent.IfNotNull(x => new Consent(x)), TaxStatus);
+        return new Account(Type, Individual, Organization, Address, Email, Telephone, consent.IfNotNull(x => new Consent(x)), TaxStatus);
     }
 
     public Account WithUpdatedEmail(IEmail email) {
-        return new Account(Type, Name, Address, email.IfNotNull(x => new Email(x)), Telephone, Consent, TaxStatus);
+        return new Account(Type, Individual, Organization, Address, email.IfNotNull(x => new Email(x)), Telephone, Consent, TaxStatus);
     }
 
-    public Account WithUpdatedName(IName name) {
-        return new Account(Type, name.IfNotNull(x => new Name(x)), Address, Email, Telephone, Consent, TaxStatus);
+    public Account WithUpdatedIndividualName(IIndividual individual) {
+        return new Account(Type, individual.IfNotNull(x => new Individual(x)), Organization, Address, Email, Telephone, Consent, TaxStatus);
+    }
+
+    public Account WithUpdatedOrganization(IOrganization organization) {
+        return new Account(Type, Individual, organization.IfNotNull(x => new Organization(x)), Address, Email, Telephone, Consent, TaxStatus);
     }
 
     public Account WithUpdatedTaxStatus(TaxStatus taxStatus) {
-        return new Account(Type, Name, Address, Email, Telephone, Consent, taxStatus);
+        return new Account(Type, Individual, Organization, Address, Email, Telephone, Consent, taxStatus);
     }
 
     public Account WithUpdatedTelephone(ITelephone telephone) {
-        return new Account(Type, Name, Address, Email, telephone.IfNotNull(x => new Telephone(x)), Consent, TaxStatus);
+        return new Account(Type, Individual, Organization, Address, Email, telephone.IfNotNull(x => new Telephone(x)), Consent, TaxStatus);
     }
 
     [JsonIgnore]
-    IName IAccount.Name => Name;
+    IIndividual IAccount.Individual => Individual;
+
+    [JsonIgnore]
+    IOrganization IAccount.Organization => Organization;
 
     [JsonIgnore]
     IAddress IAccount.Address => Address;
