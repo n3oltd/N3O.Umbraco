@@ -37,6 +37,10 @@ public class CreateFundraiserReqValidator : ModelValidator<CreateFundraiserReq> 
           .When(x => x.Title.HasValue())
           .WithMessage(Get<Strings>(s => s.TitleUnavailable));
         
+        RuleFor(x => x.AccountReference)
+          .NotEmpty()
+          .WithMessage(Get<Strings>(s => s.SpecifyAccountReference));
+        
         RuleFor(x => x.CampaignId)
            .NotNull()
            .WithMessage(Get<Strings>(s => s.SpecifyCampaignId));
@@ -46,13 +50,13 @@ public class CreateFundraiserReqValidator : ModelValidator<CreateFundraiserReq> 
            .When(x => x.CampaignId.HasValue())
            .WithMessage(Get<Strings>(s => s.InvalidCampaign));
         
-        /*RuleFor(x => x.Allocations)
+        RuleFor(x => x.Allocations)
            .NotEmpty()
            .WithMessage(Get<Strings>(s => s.SpecifyAllocations));
         
         RuleFor(x => x.Allocations)
            .Must(x => x.OrEmpty().Count() <= MaximumAllocations)
-           .WithMessage(Get<Strings>(s => s.TooManyAllocations));*/
+           .WithMessage(Get<Strings>(s => s.TooManyAllocations));
     }
 
     private bool CampaignIdIsValid(IContentLocator contentLocator, Guid campaignId) {
@@ -61,6 +65,7 @@ public class CreateFundraiserReqValidator : ModelValidator<CreateFundraiserReq> 
 
     public class Strings : ValidationStrings {
         public string InvalidCampaign => "The specified campaign is invalid";
+        public string SpecifyAccountReference => "Please specify the account reference";
         public string SpecifyAllocations => "Please specify the allocations for the fundraiser";
         public string SpecifyCampaignId => "Please specify the campaign id";
         public string SpecifyTitle => "Please specify the title of the fundraiser";

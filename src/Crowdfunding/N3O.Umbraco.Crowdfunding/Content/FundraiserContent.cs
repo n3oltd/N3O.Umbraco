@@ -12,6 +12,9 @@ namespace N3O.Umbraco.Crowdfunding.Content;
 public class FundraiserContent : UmbracoContent<FundraiserContent> {
     public string Title => GetValue(x => x.Title);
     public string Description => GetValue(x => x.Description);
+    public string AccountReference => GetValue(x => x.AccountReference);
+    public string AllocationsHash => GetValue(x => x.AllocationsHash);
+    public string PledgeId => GetValue(x => x.PledgeId);
     public string Slug => GetValue(x => x.Slug);
     public HtmlEncodedString Body => GetValue(x => x.Body);
     public CroppedImage BackgroundImage => GetValue(x => x.BackgroundImage);
