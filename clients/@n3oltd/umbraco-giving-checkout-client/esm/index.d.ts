@@ -44,17 +44,36 @@ export interface CheckoutProgressRes {
     remainingStages?: string[] | undefined;
 }
 export interface AccountRes {
-    name?: NameRes | undefined;
+    type?: AccountType | undefined;
+    individual?: IndividualRes | undefined;
+    organization?: OrganizationRes | undefined;
     address?: AddressRes | undefined;
     email?: EmailRes | undefined;
     telephone?: TelephoneRes | undefined;
     consent?: ConsentRes | undefined;
     taxStatus?: TaxStatus | undefined;
 }
+/** One of 'individual', 'organization' */
+export declare enum AccountType {
+    Individual = "individual",
+    Organization = "organization"
+}
+export interface IndividualRes {
+    name?: NameRes | undefined;
+}
 export interface NameRes {
     title?: string | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
+}
+export interface OrganizationRes {
+    type?: OrganizationType | undefined;
+    name?: string | undefined;
+    contact?: NameRes | undefined;
+}
+/** One of 'business' */
+export declare enum OrganizationType {
+    Business = "business"
 }
 export interface AddressRes {
     line1?: string | undefined;
@@ -172,7 +191,7 @@ export interface FeedbackCustomFieldRes {
     alias?: string | undefined;
     name?: string | undefined;
     bool?: boolean | undefined;
-    date?: Date | undefined;
+    date?: string | undefined;
     text?: string | undefined;
 }
 export interface FundAllocationRes {
@@ -259,13 +278,13 @@ export interface CredentialRes {
     isComplete?: boolean;
     isInProgress?: boolean;
     advancePayment?: PaymentRes | undefined;
-    setupAt?: Date | undefined;
+    setupAt?: string | undefined;
     isSetUp?: boolean;
 }
 export interface RegularGivingOptionsRes {
     preferredCollectionDay?: string | undefined;
     frequency?: RegularGivingFrequency | undefined;
-    firstCollectionDate?: Date | undefined;
+    firstCollectionDate?: string | undefined;
 }
 /** One of 'annually', 'monthly', 'quarterly' */
 export declare enum RegularGivingFrequency {
@@ -286,7 +305,9 @@ export interface NamedLookupRes {
     name?: string | undefined;
 }
 export interface AccountReq {
-    name?: NameReq | undefined;
+    type?: AccountType | undefined;
+    individual?: IndividualReq | undefined;
+    organization?: OrganizationReq | undefined;
     address?: AddressReq | undefined;
     email?: EmailReq | undefined;
     telephone?: TelephoneReq | undefined;
@@ -294,10 +315,18 @@ export interface AccountReq {
     taxStatus?: TaxStatus | undefined;
     captcha?: CaptchaReq | undefined;
 }
+export interface IndividualReq {
+    name?: NameReq | undefined;
+}
 export interface NameReq {
     title?: string | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
+}
+export interface OrganizationReq {
+    type?: OrganizationType | undefined;
+    name?: string | undefined;
+    contact?: NameReq | undefined;
 }
 export interface AddressReq {
     line1?: string | undefined;
@@ -333,7 +362,7 @@ export interface TaxStatusReq {
 export interface RegularGivingOptionsReq {
     preferredCollectionDay?: string | undefined;
     frequency?: RegularGivingFrequency | undefined;
-    firstCollectionDate?: Date | undefined;
+    firstCollectionDate?: string | undefined;
 }
 export interface CheckoutLookupsRes {
     checkoutStages?: NamedLookupRes[] | undefined;

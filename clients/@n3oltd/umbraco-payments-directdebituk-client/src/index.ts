@@ -82,11 +82,11 @@ export interface PaymentFlowResOfDirectDebitUKCredential {
 
 export interface DirectDebitUKCredential {
     advancePayment?: Payment | undefined;
-    setupAt?: Date | undefined;
+    setupAt?: string | undefined;
     isSetUp?: boolean;
     type?: PaymentObjectType | undefined;
-    completeAt?: Date | undefined;
-    errorAt?: Date | undefined;
+    completeAt?: string | undefined;
+    errorAt?: string | undefined;
     errorMessage?: string | undefined;
     exceptionDetails?: string | undefined;
     status?: PaymentObjectStatus | undefined;
@@ -96,8 +96,8 @@ export interface DirectDebitUKCredential {
 }
 
 export interface Payment {
-    completeAt?: Date | undefined;
-    errorAt?: Date | undefined;
+    completeAt?: string | undefined;
+    errorAt?: string | undefined;
     errorMessage?: string | undefined;
     exceptionDetails?: string | undefined;
     status?: PaymentObjectStatus | undefined;
@@ -105,8 +105,8 @@ export interface Payment {
     method?: string | undefined;
     clock?: IClock | undefined;
     card?: CardPayment | undefined;
-    paidAt?: Date | undefined;
-    declinedAt?: Date | undefined;
+    paidAt?: string | undefined;
+    declinedAt?: string | undefined;
     declinedReason?: string | undefined;
     isDeclined?: boolean;
     isPaid?: boolean;

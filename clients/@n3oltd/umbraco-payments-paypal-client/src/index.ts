@@ -82,14 +82,14 @@ export interface PaymentFlowResOfPayPalPayment {
 
 export interface PayPalPayment {
     card?: CardPayment | undefined;
-    paidAt?: Date | undefined;
-    declinedAt?: Date | undefined;
+    paidAt?: string | undefined;
+    declinedAt?: string | undefined;
     declinedReason?: string | undefined;
     isDeclined?: boolean;
     isPaid?: boolean;
     type?: PaymentObjectType | undefined;
-    completeAt?: Date | undefined;
-    errorAt?: Date | undefined;
+    completeAt?: string | undefined;
+    errorAt?: string | undefined;
     errorMessage?: string | undefined;
     exceptionDetails?: string | undefined;
     status?: PaymentObjectStatus | undefined;

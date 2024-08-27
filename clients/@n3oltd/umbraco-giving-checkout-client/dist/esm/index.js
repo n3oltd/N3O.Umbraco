@@ -495,6 +495,17 @@ var CheckoutClient = /** @class */ (function () {
     return CheckoutClient;
 }());
 export { CheckoutClient };
+/** One of 'individual', 'organization' */
+export var AccountType;
+(function (AccountType) {
+    AccountType["Individual"] = "individual";
+    AccountType["Organization"] = "organization";
+})(AccountType || (AccountType = {}));
+/** One of 'business' */
+export var OrganizationType;
+(function (OrganizationType) {
+    OrganizationType["Business"] = "business";
+})(OrganizationType || (OrganizationType = {}));
 /** One of 'email', 'sms', 'post', 'telephone' */
 export var ConsentChannel;
 (function (ConsentChannel) {
