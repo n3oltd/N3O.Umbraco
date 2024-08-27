@@ -1,19 +1,22 @@
-﻿using N3O.Umbraco.Accounts.Models;
+﻿using N3O.Umbraco.Accounts.Lookups;
+using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.TaxRelief.Lookups;
 using Newtonsoft.Json;
 
-namespace N3O.Umbraco.Giving.Checkout.Models; 
+namespace N3O.Umbraco.Giving.Checkout.Models;
 
 public class CheckoutAccount : Account {
     [JsonConstructor]
-    public CheckoutAccount(Name name,
+    public CheckoutAccount(AccountType type,
+                           Individual individual,
+                           Organization organization,
                            Address address,
                            Accounts.Models.Email email,
                            Telephone telephone,
                            Consent consent,
                            TaxStatus taxStatus,
                            bool isComplete)
-        : base(name, address, email, telephone, consent, taxStatus) {
+        : base(type, individual, organization, address, email, telephone, consent, taxStatus) {
         IsComplete = isComplete;
     }
 

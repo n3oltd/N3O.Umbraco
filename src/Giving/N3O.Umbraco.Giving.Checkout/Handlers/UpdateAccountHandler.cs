@@ -32,26 +32,30 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccountCommand, Accoun
         var checkout = await req.CheckoutRevisionId.RunAsync(_repository.GetAsync, true, cancellationToken);
 
         checkout.UpdateAccount(_contentCache, _taxReliefSchemeAccessor, account => {
-            if (req.Model.Name.HasValue()) {
-                account = account.WithUpdatedName(req.Model.Name);
+            if (req.Model.Individual.Name.HasValue()) {
+                account = account.WithUpdatedIndividualName(req.Model.Individual);
             }
-            
+
+            if (req.Model.Organization.HasValue()) {
+                account = account.WithUpdatedOrganization(req.Model.Organization);
+            }
+
             if (req.Model.Address.HasValue()) {
                 account = account.WithUpdatedAddress(req.Model.Address);
             }
-            
+
             if (req.Model.Email.HasValue()) {
                 account = account.WithUpdatedEmail(req.Model.Email);
             }
-            
+
             if (req.Model.Telephone.HasValue()) {
                 account = account.WithUpdatedTelephone(req.Model.Telephone);
             }
-            
+
             if (req.Model.Consent.HasValue()) {
                 account = account.WithUpdatedConsent(req.Model.Consent);
             }
-            
+
             if (req.Model.TaxStatus.HasValue()) {
                 account = account.WithUpdatedTaxStatus(req.Model.TaxStatus);
             }

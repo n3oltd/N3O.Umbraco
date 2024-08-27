@@ -1,9 +1,12 @@
+using N3O.Umbraco.Accounts.Lookups;
 using N3O.Umbraco.TaxRelief.Lookups;
 
 namespace N3O.Umbraco.Accounts.Models;
 
 public interface IAccount {
-    IName Name { get; }
+    AccountType Type { get; }
+    IIndividual Individual { get; }
+    IOrganization Organization { get; }
     IAddress Address { get; }
     IEmail Email { get; }
     ITelephone Telephone { get; }

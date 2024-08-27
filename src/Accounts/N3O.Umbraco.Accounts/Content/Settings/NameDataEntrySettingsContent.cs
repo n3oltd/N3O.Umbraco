@@ -31,14 +31,14 @@ public class NameDataEntrySettingsContent : UmbracoContent<NameDataEntrySettings
                                             TitleRequired,                                                
                                             TitleLabel,
                                             TitleHelpText,
-                                            HtmlField.Name<AccountReq>(x => x.Name.Title),
+                                            HtmlField.Name<AccountReq>(x => x.Individual.Name.Title),
                                             TitleOptions.Select(x => new SelectOption(x, x)).ToList(),
                                             TitleOrder);
         var firstName = new TextFieldSettings(true,
                                               FirstNameRequired,
                                               FirstNameLabel,
                                               FirstNameHelpText,
-                                              HtmlField.Name<AccountReq>(x => x.Name.FirstName),
+                                              HtmlField.Name<AccountReq>(x => x.Individual.Name.FirstName),
                                               FirstNameOrder,
                                               false,
                                               FirstNameCapitalisation);
@@ -46,7 +46,7 @@ public class NameDataEntrySettingsContent : UmbracoContent<NameDataEntrySettings
                                              LastNameRequired,
                                              LastNameLabel,
                                              LastNameHelpText,
-                                             HtmlField.Name<AccountReq>(x => x.Name.LastName),
+                                             HtmlField.Name<AccountReq>(x => x.Individual.Name.LastName),
                                              LastNameOrder,
                                              false,
                                              LastNameCapitalisation);

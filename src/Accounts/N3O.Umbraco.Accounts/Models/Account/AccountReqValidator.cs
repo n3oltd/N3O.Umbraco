@@ -1,5 +1,6 @@
 using FluentValidation;
 using N3O.Umbraco.Accounts.Content;
+using N3O.Umbraco.Accounts.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
@@ -11,23 +12,24 @@ public class AccountReqValidator : ModelValidator<AccountReq> {
         var emailDataEntrySettings = contentCache.Single<EmailDataEntrySettingsContent>();
         var phoneDataEntrySettings = contentCache.Single<PhoneDataEntrySettingsContent>();
 
-        RuleFor(x => x.Name)
-            .NotNull()
-            .WithMessage(Get<Strings>(s => s.SpecifyName));
-    
+        RuleFor(x => x.Individual.Name)
+           .NotNull()
+           .When(x => x.Type == AccountTypes.Individual)
+           .WithMessage(Get<Strings>(s => s.SpecifyName));
+
         RuleFor(x => x.Address)
-            .NotNull()
-            .WithMessage(Get<Strings>(s => s.SpecifyAddress));
+           .NotNull()
+           .WithMessage(Get<Strings>(s => s.SpecifyAddress));
 
         RuleFor(x => x.Email)
-            .NotNull()
-            .When(_ => emailDataEntrySettings.Required)
-            .WithMessage(Get<Strings>(s => s.SpecifyEmail));
+           .NotNull()
+           .When(_ => emailDataEntrySettings.Required)
+           .WithMessage(Get<Strings>(s => s.SpecifyEmail));
 
         RuleFor(x => x.Telephone)
-            .NotNull()
-            .When(_ => phoneDataEntrySettings.Required)
-            .WithMessage(Get<Strings>(s => s.SpecifyTelephone));
+           .NotNull()
+           .When(_ => phoneDataEntrySettings.Required)
+           .WithMessage(Get<Strings>(s => s.SpecifyTelephone));
     }
 
     public class Strings : ValidationStrings {

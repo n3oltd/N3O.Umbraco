@@ -9,7 +9,7 @@ public partial class Checkout {
         } else {
             return new BillingInfo(Account.Address,
                                    Account.Email,
-                                   Account.Name,
+                                   Account.Individual.Name,
                                    Account.Telephone);
         }
     }
