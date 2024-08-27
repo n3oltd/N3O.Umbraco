@@ -1,4 +1,6 @@
-﻿namespace N3O.Umbraco.Engage.Constants;
+﻿using System.Collections.Generic;
+
+namespace N3O.Umbraco.Crm.Engage.Constants;
 
 public static class ClientConstants {
     public static class HttpRetry {

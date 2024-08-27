@@ -56,7 +56,7 @@ public abstract class MembersAccessControl : ContentAccessControl {
     }
     
     private async Task<bool> AllowEditAsync(Func<IEnumerable<IPublishedContent>> getAllowedMembers) {
-        var member = await MemberExtensions.GetCurrentMemberAsync(_memberManager);
+        var member = await _memberManager.GetCurrentPublishedMemberAsync();
 
         if (member == null) {
             return false;

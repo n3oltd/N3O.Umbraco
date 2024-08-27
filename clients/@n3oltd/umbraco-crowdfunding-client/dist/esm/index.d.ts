@@ -295,7 +295,7 @@ export interface FeedbackNewCustomFieldsReq {
 export interface FeedbackNewCustomFieldReq {
     alias?: string | undefined;
     bool?: boolean | undefined;
-    date?: Date | undefined;
+    date?: string | undefined;
     text?: string | undefined;
 }
 export interface FundAllocationReq {

@@ -1,9 +1,10 @@
-﻿using N3O.Umbraco.Engage.Lookups;
+﻿using N3O.Umbraco.Crm.Engage.Lookups;
 using N3O.Umbraco.Entities;
 using Newtonsoft.Json;
+using System;
 using Umbraco.Extensions;
 
-namespace N3O.Umbraco.Engage.Models;
+namespace N3O.Umbraco.Crm.Engage.Models;
 
 public class SubscriptionInfo : Value {
     [JsonConstructor]

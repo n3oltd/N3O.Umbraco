@@ -9,14 +9,12 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Accounts\N3O.Umbraco.Accounts\N3O.Umbraco.Accounts.csproj" />
       <ProjectReference Include="..\..\Analytics\N3O.Umbraco.Analytics\N3O.Umbraco.Analytics.csproj" />
-      <ProjectReference Include="..\..\Authentication\N3O.Umbraco.Authentication.Auth0\N3O.Umbraco.Authentication.Auth0.csproj" />
       <ProjectReference Include="..\..\Blog\N3O.Umbraco.Blog\N3O.Umbraco.Blog.csproj" />
       <ProjectReference Include="..\..\Captcha\N3O.Umbraco.Captcha\N3O.Umbraco.Captcha.csproj" />
       <ProjectReference Include="..\..\Cdn\N3O.Umbraco.Cdn.Cloudflare\N3O.Umbraco.Cdn.Cloudflare.csproj" />
       <ProjectReference Include="..\..\Crowdfunding\N3O.Umbraco.Crowdfunding\N3O.Umbraco.Crowdfunding.csproj" />
       <ProjectReference Include="..\..\Data\N3O.Umbraco.Data\N3O.Umbraco.Data.csproj" />
       <ProjectReference Include="..\..\Email\N3O.Umbraco.Email.SendGrid\N3O.Umbraco.Email.SendGrid.csproj" />
-      <ProjectReference Include="..\..\Engage\N3O.Umbraco.Engage\N3O.Umbraco.Engage.csproj" />
       <ProjectReference Include="..\..\Events\N3O.Umbraco.Events\N3O.Umbraco.Events.csproj" />
       <ProjectReference Include="..\..\Forex\N3O.Umbraco.Forex.Currencylayer\N3O.Umbraco.Forex.Currencylayer.csproj" />
       <ProjectReference Include="..\..\Forms\N3O.Umbraco.Forms\N3O.Umbraco.Forms.csproj" />

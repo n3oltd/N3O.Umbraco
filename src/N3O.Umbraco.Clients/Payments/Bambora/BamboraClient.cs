@@ -563,10 +563,10 @@ namespace N3O.Umbraco.Clients.Payments.Bambora
         public CardPayment Card { get; set; }
 
         [Newtonsoft.Json.JsonProperty("paidAt", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset? PaidAt { get; set; }
+        public string PaidAt { get; set; }
 
         [Newtonsoft.Json.JsonProperty("declinedAt", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset? DeclinedAt { get; set; }
+        public string DeclinedAt { get; set; }
 
         [Newtonsoft.Json.JsonProperty("declinedReason", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string DeclinedReason { get; set; }
@@ -582,10 +582,10 @@ namespace N3O.Umbraco.Clients.Payments.Bambora
         public PaymentObjectType? Type { get; set; }
 
         [Newtonsoft.Json.JsonProperty("completeAt", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset? CompleteAt { get; set; }
+        public string CompleteAt { get; set; }
 
         [Newtonsoft.Json.JsonProperty("errorAt", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset? ErrorAt { get; set; }
+        public string ErrorAt { get; set; }
 
         [Newtonsoft.Json.JsonProperty("errorMessage", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ErrorMessage { get; set; }
@@ -823,7 +823,7 @@ namespace N3O.Umbraco.Clients.Payments.Bambora
         public Payment AdvancePayment { get; set; }
 
         [Newtonsoft.Json.JsonProperty("setupAt", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset? SetupAt { get; set; }
+        public string SetupAt { get; set; }
 
         [Newtonsoft.Json.JsonProperty("isSetUp", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool? IsSetUp { get; set; }
@@ -833,10 +833,10 @@ namespace N3O.Umbraco.Clients.Payments.Bambora
         public PaymentObjectType? Type { get; set; }
 
         [Newtonsoft.Json.JsonProperty("completeAt", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset? CompleteAt { get; set; }
+        public string CompleteAt { get; set; }
 
         [Newtonsoft.Json.JsonProperty("errorAt", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset? ErrorAt { get; set; }
+        public string ErrorAt { get; set; }
 
         [Newtonsoft.Json.JsonProperty("errorMessage", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ErrorMessage { get; set; }
@@ -884,10 +884,10 @@ namespace N3O.Umbraco.Clients.Payments.Bambora
     public abstract partial class Payment
     {
         [Newtonsoft.Json.JsonProperty("completeAt", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset? CompleteAt { get; set; }
+        public string CompleteAt { get; set; }
 
         [Newtonsoft.Json.JsonProperty("errorAt", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset? ErrorAt { get; set; }
+        public string ErrorAt { get; set; }
 
         [Newtonsoft.Json.JsonProperty("errorMessage", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ErrorMessage { get; set; }
@@ -913,10 +913,10 @@ namespace N3O.Umbraco.Clients.Payments.Bambora
         public CardPayment Card { get; set; }
 
         [Newtonsoft.Json.JsonProperty("paidAt", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset? PaidAt { get; set; }
+        public string PaidAt { get; set; }
 
         [Newtonsoft.Json.JsonProperty("declinedAt", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset? DeclinedAt { get; set; }
+        public string DeclinedAt { get; set; }
 
         [Newtonsoft.Json.JsonProperty("declinedReason", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string DeclinedReason { get; set; }

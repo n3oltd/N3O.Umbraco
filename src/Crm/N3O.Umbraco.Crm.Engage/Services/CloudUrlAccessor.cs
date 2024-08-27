@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace N3O.Umbraco.Engage.Services;
+namespace N3O.Umbraco.Crm.Engage;
 
 public class CloudUrlAccessor {
     private readonly IWebHostEnvironment _webHostEnvironment;

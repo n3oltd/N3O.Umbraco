@@ -1,7 +1,10 @@
 ﻿using StackExchange.Profiling.Internal;
+using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Engage.Security;
+namespace N3O.Umbraco.Crm.Engage;
 
 public class AuthorizationHandler : DelegatingHandler {
     private readonly string _bearerToken;

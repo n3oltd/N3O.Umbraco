@@ -3,7 +3,7 @@
         <RootNamespace>N3O.Umbraco.Payments.Bambora</RootNamespace>
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
-        <Copyright>Copyright © 2023 N3O Ltd</Copyright>
+        <Copyright>Copyright © 2024 N3O Ltd</Copyright>
     </PropertyGroup>
 
     <PropertyGroup>

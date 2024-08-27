@@ -292,9 +292,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Newsletters.Sen
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Crowdfunding.StaticAssets", "Crowdfunding\N3O.Umbraco.Crowdfunding.StaticAssets\N3O.Umbraco.Crowdfunding.StaticAssets.csproj", "{321C7830-3A64-425D-B6F8-CBA31D729886}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engage", "Engage", "{D421FBFA-B2C2-4BCE-91AA-E88E88FC6AAE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Crm", "Crm", "{D421FBFA-B2C2-4BCE-91AA-E88E88FC6AAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Engage", "Engage\N3O.Umbraco.Engage\N3O.Umbraco.Engage.csproj", "{70FE1162-A5C0-4D88-9F6E-35F6418251FC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Crm.Engage", "Crm\N3O.Umbraco.Crm.Engage\N3O.Umbraco.Crm.Engage.csproj", "{70FE1162-A5C0-4D88-9F6E-35F6418251FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -47,23 +47,58 @@ public class Account : Value, IAccount {
     public TaxStatus TaxStatus { get; }
 
     public Account WithUpdatedAddress(IAddress address) {
-        return new Account(Type, Individual, Organization, address.IfNotNull(x => new Address(x)), Email, Telephone, Consent, TaxStatus);
+        return new Account(Type,
+                           Individual,
+                           Organization,
+                           address.IfNotNull(x => new Address(x)),
+                           Email,
+                           Telephone,
+                           Consent,
+                           TaxStatus);
     }
 
     public Account WithUpdatedConsent(IConsent consent) {
-        return new Account(Type, Individual, Organization, Address, Email, Telephone, consent.IfNotNull(x => new Consent(x)), TaxStatus);
+        return new Account(Type,
+                           Individual,
+                           Organization,
+                           Address,
+                           Email,
+                           Telephone,
+                           consent.IfNotNull(x => new Consent(x)),
+                           TaxStatus);
     }
 
     public Account WithUpdatedEmail(IEmail email) {
-        return new Account(Type, Individual, Organization, Address, email.IfNotNull(x => new Email(x)), Telephone, Consent, TaxStatus);
+        return new Account(Type,
+                           Individual,
+                           Organization,
+                           Address,
+                           email.IfNotNull(x => new Email(x)),
+                           Telephone,
+                           Consent,
+                           TaxStatus);
     }
 
-    public Account WithUpdatedIndividualName(IIndividual individual) {
-        return new Account(Type, individual.IfNotNull(x => new Individual(x)), Organization, Address, Email, Telephone, Consent, TaxStatus);
+    public Account WithUpdatedIndividual(IIndividual individual) {
+        return new Account(Type,
+                           individual.IfNotNull(x => new Individual(x)),
+                           Organization,
+                           Address,
+                           Email,
+                           Telephone,
+                           Consent,
+                           TaxStatus);
     }
 
     public Account WithUpdatedOrganization(IOrganization organization) {
-        return new Account(Type, Individual, organization.IfNotNull(x => new Organization(x)), Address, Email, Telephone, Consent, TaxStatus);
+        return new Account(Type,
+                           Individual,
+                           organization.IfNotNull(x => new Organization(x)),
+                           Address,
+                           Email,
+                           Telephone,
+                           Consent,
+                           TaxStatus);
     }
 
     public Account WithUpdatedTaxStatus(TaxStatus taxStatus) {
@@ -71,7 +106,14 @@ public class Account : Value, IAccount {
     }
 
     public Account WithUpdatedTelephone(ITelephone telephone) {
-        return new Account(Type, Individual, Organization, Address, Email, telephone.IfNotNull(x => new Telephone(x)), Consent, TaxStatus);
+        return new Account(Type,
+                           Individual,
+                           Organization,
+                           Address,
+                           Email,
+                           telephone.IfNotNull(x => new Telephone(x)),
+                           Consent,
+                           TaxStatus);
     }
 
     [JsonIgnore]

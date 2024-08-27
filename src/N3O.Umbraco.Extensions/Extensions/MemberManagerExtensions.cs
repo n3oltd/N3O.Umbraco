@@ -4,8 +4,8 @@ using Umbraco.Cms.Core.Security;
 
 namespace N3O.Umbraco.Extensions;
 
-public static class MemberExtensions {
-    public static async Task<IPublishedContent> GetCurrentMemberAsync(IMemberManager memberManager) {
+public static class MemberManagerExtensions {
+    public static async Task<IPublishedContent> GetCurrentPublishedMemberAsync(this IMemberManager memberManager) {
         var memberIdentity = await memberManager.GetCurrentMemberAsync();
         
         if (memberIdentity == null) {

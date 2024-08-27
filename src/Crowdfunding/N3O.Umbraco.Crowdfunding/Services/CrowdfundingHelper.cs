@@ -51,7 +51,7 @@ public partial class CrowdfundingHelper : ICrowdfundingHelper {
                                                         fundraisersCollection.Key,
                                                         CrowdfundingConstants.Fundraiser.Alias);
          
-         var member = await MemberExtensions.GetCurrentMemberAsync(_memberManager.Value);
+         var member = await _memberManager.Value.GetCurrentPublishedMemberAsync();
          
          contentPublisher.PopulateFundraiser(_contentLocator.Value, req.Model, member);
         

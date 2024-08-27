@@ -1,6 +1,6 @@
 ﻿using N3O.Umbraco.Lookups;
 
-namespace N3O.Umbraco.Engage.Lookups;
+namespace N3O.Umbraco.Crm.Engage.Lookups;
 
 public class DataRegion : NamedLookup {
     public DataRegion(string id, string name) : base(id, name) { }

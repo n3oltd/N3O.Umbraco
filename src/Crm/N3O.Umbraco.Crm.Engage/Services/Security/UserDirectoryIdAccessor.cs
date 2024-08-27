@@ -1,24 +1,25 @@
 ﻿using N3O.Umbraco.Authentication.Auth0;
+using N3O.Umbraco.Authentication.Auth0.Lookups;
+using N3O.Umbraco.Crm.Engage.NamedParameters;
 using N3O.Umbraco.Extensions;
 using System.Collections.Concurrent;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Security;
-using N3O.Umbraco.Authentication.Auth0.Lookups;
-using N3O.Umbraco.Engage.NamedParameters;
 
-namespace N3O.Umbraco.Engage.Security;
+namespace N3O.Umbraco.Crm.Engage;
 
 public class UserDirectoryIdAccessor : IUserDirectoryIdAccessor {
     private static readonly ConcurrentDictionary<string, string> Cache = new();
 
-    private readonly IBackOfficeSecurityAccessor _backOfficeSecurityAccessor;
+    private readonly IMemberManager _memberManager;
     private readonly IUserDirectory _userDirectory;
     private readonly UserDirectoryId _userDirectoryId;
     private string _value;
 
-    public UserDirectoryIdAccessor(IBackOfficeSecurityAccessor backOfficeSecurityAccessor,
+    public UserDirectoryIdAccessor(IMemberManager memberManager,
                                    IUserDirectory userDirectory,
                                    UserDirectoryId userDirectoryId = null) {
-        _backOfficeSecurityAccessor = backOfficeSecurityAccessor;
+        _memberManager = memberManager;
         _userDirectory = userDirectory;
         _userDirectoryId = userDirectoryId;
     }
@@ -28,11 +29,11 @@ public class UserDirectoryIdAccessor : IUserDirectoryIdAccessor {
             _value ??= _userDirectoryId?.Value;
 
             if (_value == null) {
-                var currentUser = _backOfficeSecurityAccessor.BackOfficeSecurity?.CurrentUser;
+                var currentMember = await _memberManager.GetCurrentPublishedMemberAsync();
 
-                if (currentUser != null) {
-                    _value = await Cache.GetOrAddAtomicAsync(currentUser.Email, async () => {
-                        var directoryUser = await _userDirectory.GetUserByEmailAsync(ClientTypes.Members, currentUser.Email);
+                if (currentMember != null) {
+                    _value = await Cache.GetOrAddAtomicAsync(currentMember.Email, async () => {
+                        var directoryUser = await _userDirectory.GetUserByEmailAsync(ClientTypes.Members, currentMember.Email);
 
                         return directoryUser?.UserId;
                     });

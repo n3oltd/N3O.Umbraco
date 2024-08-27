@@ -12,6 +12,20 @@ public class AccountReqValidator : ModelValidator<AccountReq> {
         var emailDataEntrySettings = contentCache.Single<EmailDataEntrySettingsContent>();
         var phoneDataEntrySettings = contentCache.Single<PhoneDataEntrySettingsContent>();
 
+        RuleFor(x => x.Type)
+            .NotNull()
+            .WithMessage(Get<Strings>(s => s.SpecifyType));
+        
+        RuleFor(x => x.Individual)
+            .Null()
+            .When(x => x.Type != AccountTypes.Individual)
+            .WithMessage(Get<Strings>(s => s.IndividualNotAllowed));
+        
+        RuleFor(x => x.Organization)
+            .Null()
+            .When(x => x.Type != AccountTypes.Organization)
+            .WithMessage(Get<Strings>(s => s.OrganizationNotAllowed));
+        
         RuleFor(x => x.Individual.Name)
            .NotNull()
            .When(x => x.Type == AccountTypes.Individual)
@@ -33,9 +47,12 @@ public class AccountReqValidator : ModelValidator<AccountReq> {
     }
 
     public class Strings : ValidationStrings {
+        public string IndividualNotAllowed => "Individual not allowed for this account type";
+        public string OrganizationNotAllowed => "Organization not allowed for this account type";
         public string SpecifyAddress => "Please specify your address";
         public string SpecifyEmail => "Please specify your email";
         public string SpecifyName => "Please specify your name";
         public string SpecifyTelephone => "Please specify your telephone number";
+        public string SpecifyType => "Please specify the account type";
     }
 }

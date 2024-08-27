@@ -1,17 +1,18 @@
-﻿using Microsoft.Extensions.Http;
+﻿using Flurl;
+using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Authentication.Auth0;
-using N3O.Umbraco.Engage.Models;
-using N3O.Umbraco.Engage.Security;
-using N3O.Umbraco.Engage.Services;
-using N3O.Umbraco.Extensions;
-using Flurl;
 using N3O.Umbraco.Authentication.Auth0.Lookups;
+using N3O.Umbraco.Crm.Engage.Constants;
+using N3O.Umbraco.Crm.Engage.Models;
+using N3O.Umbraco.Extensions;
 using Polly;
 using Polly.Extensions.Http;
-using N3O.Umbraco.Engage.Constants;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Engage.Clients;
+namespace N3O.Umbraco.Crm.Engage;
 
 public class ClientFactory<T> {
     private const int RetryAttempts = 4;
@@ -51,7 +52,7 @@ public class ClientFactory<T> {
         var transientErrorPolicyHandler = GetTransientErrorPolicyHttpMessageHandler();
         transientErrorPolicyHandler.InnerHandler = new HttpClientHandler();
 
-        var bearerToken = await _bearerTokenAccessor.GetAsync(ClientTypes.Members);
+        var bearerToken = await _bearerTokenAccessor.GetAsync(ClientTypes.BackOffice);
         var authHandler = new AuthorizationHandler(bearerToken, onBehalfOf, transientErrorPolicyHandler);
 
         var httpClient = new HttpClient(authHandler);

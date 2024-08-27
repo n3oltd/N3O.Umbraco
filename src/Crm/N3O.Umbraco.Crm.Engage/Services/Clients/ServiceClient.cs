@@ -1,11 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
-using N3O.Umbraco.Engage.Exceptions;
+using N3O.Umbraco.Crm.Engage.Exceptions;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Validation;
 using Newtonsoft.Json;
+using System;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Engage.Clients;
+namespace N3O.Umbraco.Crm.Engage;
 
 public class ServiceClient<TClient> {
     private readonly ILogger<ServiceClient<TClient>> _logger;

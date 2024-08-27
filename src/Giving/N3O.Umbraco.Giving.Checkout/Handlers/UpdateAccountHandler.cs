@@ -32,8 +32,8 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccountCommand, Accoun
         var checkout = await req.CheckoutRevisionId.RunAsync(_repository.GetAsync, true, cancellationToken);
 
         checkout.UpdateAccount(_contentCache, _taxReliefSchemeAccessor, account => {
-            if (req.Model.Individual.Name.HasValue()) {
-                account = account.WithUpdatedIndividualName(req.Model.Individual);
+            if (req.Model.Individual.HasValue()) {
+                account = account.WithUpdatedIndividual(req.Model.Individual);
             }
 
             if (req.Model.Organization.HasValue()) {

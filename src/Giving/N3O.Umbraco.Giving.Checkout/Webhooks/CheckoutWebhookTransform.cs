@@ -41,6 +41,7 @@ public class CheckoutWebhookTransform : WebhookTransform {
         var serializer = GetJsonSerializer();
         var jObject = JObject.FromObject(checkout, serializer);
 
+        TransformAccount(serializer, checkout, jObject);
         TransformConsent(checkout, jObject);
         TransformCollectionDay(checkout, jObject);
         TransformFeedbacks(serializer, GivingTypes.Donation, checkout.Donation?.Allocations, jObject);
@@ -59,7 +60,13 @@ public class CheckoutWebhookTransform : WebhookTransform {
         AddConverter<Country>(t => t == typeof(Country),
                               x => new {x.Id, x.Name, x.Iso2Code, x.Iso3Code});
     }
-    
+
+    private void TransformAccount(JsonSerializer serializer, Entities.Checkout checkout, JObject jObject) {
+        if (checkout.HasValue(x => x.Account?.Individual?.Name)) {
+            jObject["account"]["name"] = JObject.FromObject(checkout.Account.Individual.Name, serializer);   
+        }
+    }
+
     private void TransformAttributions(JObject jObject) {
         jObject["attribution"] = _attributionAccessor.GetAttribution();
     }

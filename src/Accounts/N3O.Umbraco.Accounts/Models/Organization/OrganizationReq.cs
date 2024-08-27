@@ -16,5 +16,4 @@ public class OrganizationReq : IOrganization {
     
     [JsonIgnore]
     IName IOrganization.Contact => Contact;
-    
 }
