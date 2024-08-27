@@ -63,6 +63,7 @@ public abstract class TypeTransformationFilter : ISchemaProcessor  {
             _context.Schema.Example = example;
         } 
         
+        _context.Schema.Format = null;
         _context.Schema.AllOf.Clear();
         _context.Schema.Items.Clear();
         _context.Schema.Properties.Clear();
