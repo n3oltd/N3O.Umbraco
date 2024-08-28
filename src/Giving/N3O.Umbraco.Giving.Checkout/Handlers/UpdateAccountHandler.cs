@@ -39,6 +39,11 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccountCommand, Accoun
             if (req.Model.Organization.HasValue()) {
                 account = account.WithUpdatedOrganization(req.Model.Organization);
             }
+            
+            if (req.Model.Type.HasValue()) {
+                account = account.WithUpdatedType(req.Model.Type);
+            }
+            
 
             if (req.Model.Address.HasValue()) {
                 account = account.WithUpdatedAddress(req.Model.Address);

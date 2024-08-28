@@ -115,6 +115,10 @@ public class Account : Value, IAccount {
                            Consent,
                            TaxStatus);
     }
+    
+    public Account WithUpdatedType(AccountType type) {
+        return new Account(type, Individual, Organization, Address, Email, Telephone, Consent, TaxStatus);
+    }
 
     [JsonIgnore]
     IIndividual IAccount.Individual => Individual;

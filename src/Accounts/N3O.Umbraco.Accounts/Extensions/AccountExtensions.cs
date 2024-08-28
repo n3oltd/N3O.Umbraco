@@ -14,7 +14,11 @@ public static class AccountExtensions {
         var phoneDataEntrySettings = contentCache.Single<PhoneDataEntrySettingsContent>();
         var taxReliefScheme = taxReliefSchemeAccessor.GetScheme();
 
-        if (account.HasValue(x => x?.Individual?.Name)) {
+        if (!account.HasValue(x => x?.Individual?.Name)) {
+            return false;
+        }
+        
+        if (!account.Type.HasValue()) {
             return false;
         }
 
