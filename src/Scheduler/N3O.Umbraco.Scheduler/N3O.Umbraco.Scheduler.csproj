@@ -41,7 +41,7 @@
         <!--In .Net 8 the SqlClient had some compatibility issues that were fixed in version 5.2.0 of SqlClient but
          the hangfire package still references the old version that causes the jobs to fail. Remove the below package
          reference once the hangfire is updated to use the latest SqlClient package.-->
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.1" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
     </ItemGroup>
 
     <ItemGroup>
