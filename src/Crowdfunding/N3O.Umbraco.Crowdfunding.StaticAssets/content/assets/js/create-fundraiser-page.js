@@ -18,7 +18,7 @@
 
 import { CrowdfundingClient } from "/assets/index.js";
 
-const client = new CrowdfundingClient();
+const client = new CrowdfundingClient(window.location.origin);
 
 class SelectedGoal {
     constructor() {
