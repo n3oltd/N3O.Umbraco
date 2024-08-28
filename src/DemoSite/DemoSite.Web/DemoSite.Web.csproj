@@ -26,6 +26,10 @@
         <ProjectReference Include="..\DemoSite.Core\DemoSite.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\Storage\" />
+    </ItemGroup>
+
     <Import Project="..\..\N3O.Umbraco.Cms\build\N3O.Umbraco.Cms.targets" />
     <Import Project="..\..\Data\N3O.Umbraco.Data.StaticAssets\build\N3O.Umbraco.Data.StaticAssets.targets" />
     <Import Project="..\..\Crowdfunding\N3O.Umbraco.Crowdfunding.StaticAssets\build\N3O.Umbraco.Crowdfunding.StaticAssets.targets" />

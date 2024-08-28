@@ -1,106 +1,99 @@
 import React from "react";
-import { useMutationObserver, useRequest } from "ahooks";
+
+import { useRequest } from "ahooks";
 import { ClassicEditor } from "ckeditor5";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
+import { ContentPropertyReq, PropertyType } from "@n3oltd/umbraco-crowdfunding-client";
 
-import { PagePropertyReq, PropertyType } from "@n3oltd/umbraco-crowdfunding-client";
+import { Modal } from "./common/Modal";
+import { CkEditor } from "./common/CKEditor";
+import { loadingToast, updatingToast } from "../helpers/toaster";
 
-import { CkEditor } from "./CKEditor";
 import { usePageData } from "../hooks/usePageData";
-import { useInsertElement } from "../hooks/useInsertElement";
-import { handleClassMutation } from "../helpers/handleClassMutation";
-import { PropertyAlias } from "./types/propertyAlias";
-import { EDIT_TYPE } from "../common/editTypes";
+
 import { _client } from "../common/cfClient";
+import { EditorProps } from "./types/EditorProps";
 
 import './RichTextEditor.css'
 
-export const RichTextEditor: React.FC = () => {
+export const RichTextEditor: React.FC<EditorProps> = ({
+  open,
+  propAlias,
+  onClose
+}) => {
   
   const editor = React.useRef<CKEditor<ClassicEditor> | null>(null);
-  const ref = React.useRef<HTMLDivElement>(null);
-  const buttonRef = React.useRef<HTMLButtonElement>(null);
 
   const {pageId} = usePageData();
   const [editorContent, setEditorContent] =  React.useState<string>('');
-  const [isModalOpen, setIsModalOpen] = React.useState<boolean>();
-  const [properytInfo, setProperytInfo] = React.useState<PropertyAlias>({alias: ''});
 
-  useInsertElement(`[data-about-edit="edit-campaign-about"]`, EDIT_TYPE.about, setProperytInfo);
-
-  const {run: loadPropertyValue} = useRequest(() => _client.getPagePropertyValue(pageId as string, properytInfo.alias), {
+  const {runAsync: loadPropertyValue, data: dataResponse, loading} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias), {
     manual: true,
-    ready: !!pageId && isModalOpen && !!properytInfo.alias,
-    onSuccess: data => setEditorContent(data?.textarea?.value as string)
+    ready: open && !!propAlias,
+    onSuccess: data => {
+      editor.current?.editor?.setData(data?.raw?.value as string)
+      setEditorContent(data?.raw?.value as string)
+    }
   });
 
-  const {runAsync: updateProperty,} = useRequest((req: PagePropertyReq) => _client.updateProperty(pageId as string, req), {
+  const {runAsync: updateProperty,} = useRequest((req: ContentPropertyReq, pageId) => _client.updateProperty(pageId, req), {
     manual: true,
-    onSuccess: () => buttonRef.current?.click()
+    onSuccess: () => {
+      onClose()
+    }
   })
-
-  useMutationObserver(
-    handleClassMutation(setIsModalOpen),
-    ref,
-    { attributes: true },
-  );
-
+  
   React.useEffect(() => {
-    if (isModalOpen) {
-      loadPropertyValue()
+    if (open && pageId) {
+     loadingToast(loadPropertyValue(pageId as string))
     }
-
-    if (!isModalOpen) {
-      setEditorContent('');
-      editor.current?.editor?.setData('')
-    }
-  }, [loadPropertyValue, setEditorContent, isModalOpen, editor]);
+  }, [loadPropertyValue, pageId, open]);
 
   const handleContentChange = React.useCallback(content => {
     setEditorContent(content);
   }, [setEditorContent]);
 
   const saveContent = async () => {
-    const content = editor.current?.editor?.getData()
-    console.log(content) 
 
     try {
-      const req: PagePropertyReq = {
-        alias: properytInfo.alias,
-        type: PropertyType.Textarea,
-        textarea: {
+      const req: ContentPropertyReq = {
+        alias: propAlias,
+        type: PropertyType.Raw,
+        raw: {
           value: editorContent
         } 
       }
 
-      await updateProperty(req)
+      updatingToast(updateProperty(req, pageId as string))
     } catch(e) {
       console.error(e)
     }
   }
 
   return <>
-    <div className="modalsItem modall" ref={ref} id="edit-campaign-info" style={{overflowY: 'scroll'}}>
-      <div className="edit__wrapper" style={{margin: 'auto'}}>
-        <div className="edit">
-          <h3>About this campaign</h3>
+    <Modal
+      id="raw-edit"
+      isOpen={open}
+      onOk={saveContent}
+      onClose={onClose}
+      oKButtonProps={{
+        disabled: loading
+      }}
+    >
+      {loading ? <p>Loading...</p> : <>
+        <h3>{dataResponse?.raw?.configuration?.description}</h3>
           <div className="edit__info">
-            <div className="detail">Write up to 1600 characters</div>
+            <div className="detail">Write up to {dataResponse?.raw?.configuration?.maximumLength} characters</div>
           </div>
           <div className="richText" style={{paddingTop: '24px'}}>
               <CkEditor 
                 editor={editor}
                 onChange={handleContentChange}
                 initialContent={editorContent}
-                characterLimit={1600}
+                characterLimit={dataResponse?.raw?.configuration?.maximumLength}
               />
           </div>
-          <div className="edit__foot">
-            <button type="button" className="button secondary" data-modal-close="true" ref={buttonRef}>Cancel</button>
-            <button type="button" className="button primary" onClick={saveContent}>Save</button>
-          </div>
-        </div>
-      </div>
-    </div>
+        </>}
+    </Modal>
   </>
 }

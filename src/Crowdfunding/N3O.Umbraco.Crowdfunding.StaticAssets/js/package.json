@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@ckeditor/ckeditor5-react": "^8.0.0",
-    "@n3oltd/umbraco-crowdfunding-client": "^13.0.15",
+    "@n3oltd/umbraco-crowdfunding-client": "^13.0.21",
     "@uppy/core": "^4.0.1",
     "@uppy/dashboard": "^4.0.1",
     "@uppy/drag-drop": "^4.0.1",
@@ -25,7 +25,8 @@
     "ahooks": "^3.8.0",
     "ckeditor5": "^42.0.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-hot-toast": "^2.4.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
