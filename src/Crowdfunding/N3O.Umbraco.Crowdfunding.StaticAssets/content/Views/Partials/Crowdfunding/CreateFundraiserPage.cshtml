@@ -1,0 +1,44 @@
+﻿@model N3O.Umbraco.CrowdFunding.Models.CreateFundraiserViewModel
+
+@**
+TODO Shagufta, convert to actual code
+
+if (Model.IsLoggedIn) {
+    if (Model.HasSelectedAccount) {
+        // Do all of this in an account component partial so we can reuse it across other pages if needed
+        // The account component partial will use a member component partial which can be used anywhere that we
+        // need the person signed in but not necessarily associated with an account
+        // show modal for them to confirm the account details are correct
+    } else if (Model.AvailableAccounts.IsSingle()) {
+        // Show them the UI to update the account
+    } else if (Model.AavailableAccounts.None()) {
+        // show them the modal to create
+    } else {
+        // Show the modal to pick an account first, and then to update that selected account
+    }
+
+
+} else {
+    // Invoke JS to show the modal saying you must be logged in, and that's it
+    // Also need to wire up the JS so if they click the button they are redirected to Auth0
+}
+
+<div id="login-modal" hidden by default>
+   Put content here pulled from settings, so should add to the CreateFundraiserViewModel a property called
+   LoginSettings, which is of type UmbracoContent<LoginSettings> this will then have properties like:
+
+    ModalTitle, ButtonText etc.
+</div>
+
+<form id="accountform">
+    // copy the structure of checkout forms
+    <input type="text" name="Html.FormField<AccountReq>(x => x.Name)" >
+</form>
+
+<script>
+    <script which wires up submitting the form for the account to the server
+        -> if errors show these inline
+        -> if success, reload the current page which will cause the isloggedin and isaccountselected to pass this time
+</script>
+
+**@

@@ -6,13 +6,13 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.CrowdFunding.Models;
 
-public partial class FundraiserViewModel : FundraiserOrCampaignViewModel<FundraiserContent> {
+public partial class ViewEditFundraiserViewModel : FundraiserOrCampaignViewModel<FundraiserContent> {
     public OwnerInfo Owner { get; set; }
     
-    public static FundraiserViewModel For(ICrowdfundingHelper crowdfundingHelper,
-                                          FundraiserContent fundraiser,
-                                          IEnumerable<CrowdfundingContribution> contributions) {
-        var viewModel = For<FundraiserViewModel>(crowdfundingHelper, fundraiser, contributions);
+    public static ViewEditFundraiserViewModel For(ICrowdfundingHelper crowdfundingHelper,
+                                                  FundraiserContent fundraiser,
+                                                  IEnumerable<CrowdfundingContribution> contributions) {
+        var viewModel = For<ViewEditFundraiserViewModel>(crowdfundingHelper, fundraiser, contributions);
         
         // TODO Talha this is needed on CampaignViewModel also, so should be refactored to avoid the hard dependency
         // on fundraiser

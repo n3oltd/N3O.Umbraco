@@ -9,9 +9,10 @@ public static class CrowdfundingUrl {
     public static string ForTeam() => throw new NotImplementedException();
     
     public static class Routes {
-        public const string Campaign = $"campaigns/([0-9]+)/({Slugs.AllowedCharacters}+)";
-        public const string Fundraiser = $"pages/([0-9]+)/({Slugs.AllowedCharacters}+)";
+        public const string CreateFundraiser = "pages/create";
         public const string SignIn = "sign-in";
+        public const string ViewCampaign = $"campaigns/([0-9]+)/({Slugs.AllowedCharacters}+)";
+        public const string ViewEditFundraiser = $"pages/([0-9]+)/({Slugs.AllowedCharacters}+)";
 
         public static class Slugs {
             public const string AllowedCharacters = @"[a-zA-Z0-9\-]";

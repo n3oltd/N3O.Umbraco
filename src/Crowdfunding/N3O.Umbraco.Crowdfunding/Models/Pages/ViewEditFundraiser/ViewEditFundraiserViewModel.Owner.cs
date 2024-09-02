@@ -4,7 +4,7 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.CrowdFunding.Models;
 
-public partial class FundraiserViewModel {
+public partial class ViewEditFundraiserViewModel {
     public class OwnerInfo {
         public string Name { get; set; }
         public string AvatarLink { get; set; }

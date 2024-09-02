@@ -1,13 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <RootNamespace>N3O.Umbraco.Crowdfunding.StaticAssets</RootNamespace>
+        <RootNamespace>N3O.Umbraco.Crm</RootNamespace>
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Copyright>Copyright © 2024 N3O Ltd</Copyright>
     </PropertyGroup>
 
     <PropertyGroup>
-        <PackageId>N3O.Umbraco.Crowdfunding.StaticAssets</PackageId>
+        <PackageId>N3O.Umbraco.Crm</PackageId>
         <IsPackable>true</IsPackable>
         <ContentTargetFolders>.</ContentTargetFolders>
         <Authors>N3O Ltd</Authors>
@@ -30,30 +30,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\N3O.Umbraco.Crowdfunding\N3O.Umbraco.Crowdfunding.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Content Include="Views\**\*.*">
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-        </Content>
-
-        <None Include="build\**\*.*">
+        <None Update="README.md">
             <Pack>True</Pack>
-            <PackagePath>buildTransitive</PackagePath>
         </None>
-        
-    </ItemGroup>
-
-    <ItemGroup>
         <None Update="README.md">
             <Pack>True</Pack>
         </None>
     </ItemGroup>
 
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Condition="$(Configuration) == 'Debug'" WorkingDirectory="js" Command="npm run build:prod" />
-    </Target>
-
+    <ItemGroup>
+        <ProjectReference Include="..\..\Accounts\N3O.Umbraco.Accounts\N3O.Umbraco.Accounts.csproj" />
+        <ProjectReference Include="..\..\Validation\N3O.Umbraco.Validation\N3O.Umbraco.Validation.csproj" />
+    </ItemGroup>
 </Project>

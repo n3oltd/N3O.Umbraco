@@ -40,7 +40,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Authentication\N3O.Umbraco.Authentication.Auth0\N3O.Umbraco.Authentication.Auth0.csproj" />
-      <ProjectReference Include="..\..\Validation\N3O.Umbraco.Validation\N3O.Umbraco.Validation.csproj" />
+      <ProjectReference Include="..\N3O.Umbraco.Crm\N3O.Umbraco.Crm.csproj" />
     </ItemGroup>
 
     <ItemGroup>
