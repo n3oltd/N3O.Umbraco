@@ -121,6 +121,14 @@ namespace DemoSite.Content
 		public virtual string PledgeRevisionID => this.Value<string>(_publishedValueFallback, "pledgeRevisionID");
 
 		///<summary>
+		/// Status
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("status")]
+		public virtual string Status => this.Value<string>(_publishedValueFallback, "status");
+
+		///<summary>
 		/// Tags
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
