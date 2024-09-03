@@ -67,11 +67,11 @@ public class ContributionRepository : IContributionRepository {
     }
 
     public async Task<IEnumerable<CrowdfundingContribution>> FindByCampaignAsync(params Guid[] campaignIds) {
-        return await FindContributionsAsync(new Sql($"{nameof(CrowdfundingContribution.CampaignId)} IN (@0)", campaignIds));
+        return await FindContributionsAsync(Sql.Builder.Where($"{nameof(CrowdfundingContribution.CampaignId)} IN (@0)", campaignIds));
     }
 
     public async Task<IEnumerable<CrowdfundingContribution>> FindByFundraiserAsync(params Guid[] fundraiserIds) {
-        return await FindContributionsAsync(new Sql($"{nameof(CrowdfundingContribution.CampaignId)} IN (@0)", fundraiserIds));
+        return await FindContributionsAsync(Sql.Builder.Where($"{nameof(CrowdfundingContribution.CampaignId)} IN (@0)", fundraiserIds));
     }
 
     private async Task<CrowdfundingContribution> GetCrowdfundingContributionAsync(string checkoutReference,
@@ -115,7 +115,7 @@ public class ContributionRepository : IContributionRepository {
     
     private async Task<IEnumerable<CrowdfundingContribution>> FindContributionsAsync(Sql whereClause) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-            var sql = new Sql($"SELECT * FROM {CrowdfundingConstants.Tables.CrowdfundingContributions.Name} WHERE").Append(whereClause);
+            var sql = new Sql($"SELECT * FROM {CrowdfundingConstants.Tables.CrowdfundingContributions.Name}").Append(whereClause);
             
             return await db.FetchAsync<CrowdfundingContribution>(sql);
         }
