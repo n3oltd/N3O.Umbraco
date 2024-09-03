@@ -19,7 +19,7 @@ public class OfflineContributionsRepository : IOfflineContributionsRepository {
     public async Task AddOrUpdateAsync(WebhookPledge pledge) {
         var (isNew, offlineContributions) = await GetCrowdfundingOfflineContributionsAsync(pledge);
         
-        if(offlineContributions.PledgeRevision <= pledge.Revision.Number){
+        if(offlineContributions.PledgeRevision >= pledge.Revision.Number){
             return;
         }
 
