@@ -13,8 +13,10 @@ public class CrowdfundingComposer : Composer {
         builder.Services.AddOpenApiDocument(CrowdfundingConstants.ApiName);
         
         builder.Components().Append<CrowdfundingContributionsMigrationsComponent>();
+        builder.Components().Append<CrowdfundingOfflineContributionsMigrationsComponent>();
         
         builder.Services.AddSingleton<IContributionRepository, ContributionRepository>();
+        builder.Services.AddSingleton<IOfflineContributionsRepository, OfflineContributionsRepository>();
         builder.Services.AddScoped<ICrowdfundingHelper, CrowdfundingHelper>();
         builder.Services.AddSingleton<ISlugHelper>(_ => {
             var config = new SlugHelperConfiguration();

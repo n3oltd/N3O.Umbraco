@@ -7,6 +7,7 @@ using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Localization;
 using NodaTime;
+using NPoco;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,11 +67,11 @@ public class ContributionRepository : IContributionRepository {
     }
 
     public async Task<IEnumerable<CrowdfundingContribution>> FindByCampaignAsync(params Guid[] campaignIds) {
-        return await FindContributionsAsync($"{nameof(CrowdfundingContribution.CampaignId)} IN ({campaignIds.Select(x => $"'{x}'").ToCsv()})");
+        return await FindContributionsAsync(new Sql($"{nameof(CrowdfundingContribution.CampaignId)} IN (@0)", campaignIds));
     }
 
     public async Task<IEnumerable<CrowdfundingContribution>> FindByFundraiserAsync(params Guid[] fundraiserIds) {
-        return await FindContributionsAsync($"{nameof(CrowdfundingContribution.FundraiserId)} IN ({fundraiserIds.Select(x => $"'{x}'").ToCsv()})");
+        return await FindContributionsAsync(new Sql($"{nameof(CrowdfundingContribution.CampaignId)} IN (@0)", fundraiserIds));
     }
 
     private async Task<CrowdfundingContribution> GetCrowdfundingContributionAsync(string checkoutReference,
@@ -112,9 +113,9 @@ public class ContributionRepository : IContributionRepository {
         return crowdfundingContribution;
     }
     
-    private async Task<IEnumerable<CrowdfundingContribution>> FindContributionsAsync(string whereClause) {
+    private async Task<IEnumerable<CrowdfundingContribution>> FindContributionsAsync(Sql whereClause) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-            var sql = $"SELECT * FROM {CrowdfundingConstants.Tables.CrowdfundingContributions.Name} WHERE {whereClause}";
+            var sql = new Sql($"SELECT * FROM {CrowdfundingConstants.Tables.CrowdfundingContributions.Name} WHERE").Append(whereClause);
             
             return await db.FetchAsync<CrowdfundingContribution>(sql);
         }

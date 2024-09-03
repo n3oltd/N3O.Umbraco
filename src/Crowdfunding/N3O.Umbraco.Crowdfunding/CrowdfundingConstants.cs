@@ -92,9 +92,26 @@ public static class CrowdfundingConstants {
             public const string Name = "N3O_CrowdfundingContributions";
             public const string PrimaryKey = "PK_N3O_CrowdfundingContributions";
         }
+        
+        public static class CrowdfundingOfflineContributions {
+            public const string Name = "N3O_CrowdfundingOfflineContributions";
+            public const string PrimaryKey = "PK_N3O_CrowdfundingOfflineContributions";
+        }
     }
     
     public static class Team {
         public const string Alias = "crowdfundingTeam";
+    }
+    
+    public static class Webhooks {
+        public static class EventTypes {
+            public static class Pledges {
+                public const string PledgeUpdated = "pledge.updated";
+            }
+        }
+
+        public static class HookIds {
+            public const string Pledges = nameof(Pledges);
+        }
     }
 }
