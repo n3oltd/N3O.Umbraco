@@ -1,4 +1,3 @@
-using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
@@ -11,58 +10,40 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
-[UmbracoContent(CrowdfundingConstants.FundraiserAllocation.Alias)]
-public class FundraiserAllocationElement : UmbracoElement<FundraiserAllocationElement>, IFundDimensionValues {
+public abstract class CrowdfundingGoalElement : UmbracoElement<CrowdfundingGoalElement>, IFundDimensionValues {
     public string Title => GetValue(x => x.Title);
     public decimal Amount => GetValue(x => x.Amount);
     public FundDimension1Value FundDimension1 => GetAs(x => x.FundDimension1);
     public FundDimension2Value FundDimension2 => GetAs(x => x.FundDimension2);
     public FundDimension3Value FundDimension3 => GetAs(x => x.FundDimension3);
     public FundDimension4Value FundDimension4 => GetAs(x => x.FundDimension4);
+    public IEnumerable<IPublishedContent> Tags => GetPickedAs(x => x.Tags);
     public IEnumerable<PriceHandleElement> PriceHandles => GetNestedAs(x => x.PriceHandles);
-
-    public override void Content(IPublishedElement content) {
-        base.Content(content);
-        
-        if (Type == AllocationTypes.Fund) {
-            Fund = new FundFundraiserAllocationElement();
-            Fund.Content(content);
-        } else if (Type == AllocationTypes.Feedback) {
-            Feedback = new FeedbackFundraiserAllocationElement();
-            Feedback.Content(content);
-        } else if (Type == AllocationTypes.Sponsorship) {
-            Sponsorship = new SponsorshipFundraiserAllocationElement();
-            Sponsorship.Content(content);
-        } else {
-            throw UnrecognisedValueException.For(Type);
-        }
-    }
     
-    public FundFundraiserAllocationElement Fund { get; private set; }
-    public FeedbackFundraiserAllocationElement Feedback { get; private set; }
-    public SponsorshipFundraiserAllocationElement Sponsorship { get; private set; }
-
+    public CrowdfundingFundGoalElement Fund { get; protected set; }
+    public CrowdfundingFeedbackGoalElement Feedback { get; protected set; }
+    
     public IFundDimensionsOptions GetFundDimensionOptions() {
         return (IFundDimensionsOptions) Fund?.DonationItem ??
-               (IFundDimensionsOptions) Sponsorship?.Scheme ??
                (IFundDimensionsOptions) Feedback?.Scheme;
     }
     
     [JsonIgnore]
     public AllocationType Type {
         get {
-            if (Content().ContentType.Alias.EqualsInvariant(CrowdfundingConstants.FundraiserAllocation.Fund.Alias)) {
+            if (Content().ContentType.Alias.EqualsInvariant(FundContentTypeAlias)) {
                 return AllocationTypes.Fund;
-            } else if (Content().ContentType.Alias.EqualsInvariant(CrowdfundingConstants.FundraiserAllocation.Feedback.Alias)) {
+            } else if (Content().ContentType.Alias.EqualsInvariant(FeedbackContentTypeAlias)) {
                 return AllocationTypes.Feedback;
-            } else if (Content().ContentType.Alias.EqualsInvariant(CrowdfundingConstants.FundraiserAllocation.Sponsorship.Alias)) {
-                return AllocationTypes.Sponsorship;
             } else {
                 throw UnrecognisedValueException.For(Content().ContentType.Alias);
             }
         }
     }
     
+    public abstract string FundContentTypeAlias { get; }
+    public abstract string FeedbackContentTypeAlias { get; }
+
     [JsonIgnore]
     FundDimension1Value IFundDimensionValues.Dimension1 => FundDimension1;
     

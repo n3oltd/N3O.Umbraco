@@ -6,17 +6,17 @@ namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class FundraiserAllocationReqValidator : ModelValidator<FundraiserAllocationReq> {
     public FundraiserAllocationReqValidator(IFormatter formatter) : base(formatter) {
-        RuleFor(x => x.Title)
-           .NotEmpty()
-           .WithMessage(Get<Strings>(s => s.SpecifyTitle));
-        
-        RuleFor(x => x.Value)
+        RuleFor(x => x.Amount)
            .NotNull()
-           .WithMessage(Get<Strings>(s => s.SpecifyValue));
+           .WithMessage(Get<Strings>(s => s.SpecifyAmount));
+
+        RuleFor(x => x.GoalId)
+           .NotNull()
+           .WithMessage(Get<Strings>(s => s.SpecifyGoalId));
     }
 
     public class Strings : ValidationStrings {
-        public string SpecifyTitle => "Please specify the allocation title";
-        public string SpecifyValue => "Please specify the value";
+        public string SpecifyAmount => "Please specify the amount for the allocation";
+        public string SpecifyGoalId => "Please specify the goal id for the allocation";
     }
 }
