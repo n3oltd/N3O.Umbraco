@@ -20,7 +20,6 @@ public class CrowdfundingComposer : Composer {
         builder.Services.AddSingleton<IContributionRepository, ContributionRepository>();
         builder.Services.AddSingleton<IOfflineContributionsRepository, OfflineContributionsRepository>();
         builder.Services.AddScoped<ICrowdfundingHelper, CrowdfundingHelper>();
-        builder.Services.AddScoped<CrmHelper>();
         builder.Services.AddSingleton<ISlugHelper>(_ => {
             var config = new SlugHelperConfiguration();
             config.DeniedCharactersRegex = CrowdfundingUrl.Routes.Slugs.DeniedCharacters;
