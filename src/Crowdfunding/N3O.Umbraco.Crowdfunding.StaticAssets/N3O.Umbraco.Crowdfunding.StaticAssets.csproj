@@ -47,6 +47,17 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Remove="content\assets\js\create-fundraiser-page.js" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="content\assets\js\create-fundraiser-page.js">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
         <None Update="README.md">
             <Pack>True</Pack>
         </None>
