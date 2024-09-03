@@ -1,6 +1,6 @@
 using N3O.Umbraco.Crowdfunding;
+using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Crowdfunding.Models;
-using N3O.Umbraco.Crowdfunding.Tables.Entities;
 using N3O.Umbraco.Extensions;
 using NPoco;
 using System;
@@ -18,6 +18,10 @@ public class OfflineContributionsRepository : IOfflineContributionsRepository {
 
     public async Task AddOrUpdateAsync(WebhookPledge pledge) {
         var (isNew, offlineContributions) = await GetCrowdfundingOfflineContributionsAsync(pledge);
+        
+        if(offlineContributions.PledgeRevision <= pledge.Revision.Number){
+            return;
+        }
 
         using var db = _umbracoDatabaseFactory.CreateDatabase();
 

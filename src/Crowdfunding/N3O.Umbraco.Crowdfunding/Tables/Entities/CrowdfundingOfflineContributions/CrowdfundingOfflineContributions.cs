@@ -2,7 +2,7 @@
 using System;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 
-namespace N3O.Umbraco.Crowdfunding.Tables.Entities;
+namespace N3O.Umbraco.Crowdfunding.Entities;
 
 [TableName(CrowdfundingConstants.Tables.CrowdfundingOfflineContributions.Name)]
 [PrimaryKey("Id")]

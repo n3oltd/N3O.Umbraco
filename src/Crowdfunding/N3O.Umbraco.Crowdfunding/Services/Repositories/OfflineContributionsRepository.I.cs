@@ -1,5 +1,5 @@
-﻿using N3O.Umbraco.Crowdfunding.Models;
-using N3O.Umbraco.Crowdfunding.Tables.Entities;
+﻿using N3O.Umbraco.Crowdfunding.Entities;
+using N3O.Umbraco.Crowdfunding.Models;
 using System;
 using System.Threading.Tasks;
 

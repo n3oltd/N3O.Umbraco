@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.CrowdFunding;
+using N3O.Umbraco.Crowdfunding.Migrations;
+using N3O.Umbraco.CrowdFunding.Services;
 using N3O.Umbraco.Crowdfunding.UIBuilder;
 using N3O.Umbraco.Extensions;
 using Slugify;
@@ -18,6 +20,7 @@ public class CrowdfundingComposer : Composer {
         builder.Services.AddSingleton<IContributionRepository, ContributionRepository>();
         builder.Services.AddSingleton<IOfflineContributionsRepository, OfflineContributionsRepository>();
         builder.Services.AddScoped<ICrowdfundingHelper, CrowdfundingHelper>();
+        builder.Services.AddScoped<CrmHelper>();
         builder.Services.AddSingleton<ISlugHelper>(_ => {
             var config = new SlugHelperConfiguration();
             config.DeniedCharactersRegex = CrowdfundingUrl.Routes.Slugs.DeniedCharacters;
