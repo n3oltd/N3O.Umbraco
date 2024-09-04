@@ -18,14 +18,14 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Content
 {
-	/// <summary>Fundraiser Feedback Allocation</summary>
-	[PublishedModel("crowdfundingFundraiserFeedbackAllocation")]
-	public partial class CrowdfundingFundraiserFeedbackAllocation : PublishedElementModel, ICrowdfundingFundraiserAllocation
+	/// <summary>Fundraiser Fund Goal</summary>
+	[PublishedModel("crowdfundingFundraiserFundGoal")]
+	public partial class CrowdfundingFundraiserFundGoal : PublishedElementModel, ICrowdfundingFundraiserGoal
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		public new const string ModelTypeAlias = "crowdfundingFundraiserFeedbackAllocation";
+		public new const string ModelTypeAlias = "crowdfundingFundraiserFundGoal";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
@@ -34,14 +34,14 @@ namespace DemoSite.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<CrowdfundingFundraiserFeedbackAllocation, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<CrowdfundingFundraiserFundGoal, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public CrowdfundingFundraiserFeedbackAllocation(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
+		public CrowdfundingFundraiserFundGoal(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
@@ -50,43 +50,51 @@ namespace DemoSite.Content
 		// properties
 
 		///<summary>
-		/// Scheme
+		/// Donation Item
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("scheme")]
-		public virtual global::DemoSite.Content.FeedbackScheme Scheme => this.Value<global::DemoSite.Content.FeedbackScheme>(_publishedValueFallback, "scheme");
+		[ImplementPropertyType("donationItem")]
+		public virtual global::DemoSite.Content.DonationItem DonationItem => this.Value<global::DemoSite.Content.DonationItem>(_publishedValueFallback, "donationItem");
 
 		///<summary>
 		/// Amount
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[ImplementPropertyType("amount")]
-		public virtual decimal Amount => global::DemoSite.Content.CrowdfundingFundraiserAllocation.GetAmount(this, _publishedValueFallback);
+		public virtual decimal Amount => global::DemoSite.Content.CrowdfundingFundraiserGoal.GetAmount(this, _publishedValueFallback);
+
+		///<summary>
+		/// Goal ID
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("campaignGoalID")]
+		public virtual string CampaignGoalID => global::DemoSite.Content.CrowdfundingFundraiserGoal.GetCampaignGoalID(this, _publishedValueFallback);
 
 		///<summary>
 		/// Location
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("dimension1")]
-		public virtual global::DemoSite.Content.FundDimension1Value Dimension1 => global::DemoSite.Content.CrowdfundingFundraiserAllocation.GetDimension1(this, _publishedValueFallback);
+		[ImplementPropertyType("fundDimension1")]
+		public virtual global::DemoSite.Content.FundDimension1Value FundDimension1 => global::DemoSite.Content.CrowdfundingFundraiserGoal.GetFundDimension1(this, _publishedValueFallback);
 
 		///<summary>
 		/// Theme
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("dimension2")]
-		public virtual global::DemoSite.Content.FundDimension2Value Dimension2 => global::DemoSite.Content.CrowdfundingFundraiserAllocation.GetDimension2(this, _publishedValueFallback);
+		[ImplementPropertyType("fundDimension2")]
+		public virtual global::DemoSite.Content.FundDimension2Value FundDimension2 => global::DemoSite.Content.CrowdfundingFundraiserGoal.GetFundDimension2(this, _publishedValueFallback);
 
 		///<summary>
 		/// Stipulation
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("dimension3")]
-		public virtual global::DemoSite.Content.FundDimension3Value Dimension3 => global::DemoSite.Content.CrowdfundingFundraiserAllocation.GetDimension3(this, _publishedValueFallback);
+		[ImplementPropertyType("fundDimension3")]
+		public virtual global::DemoSite.Content.FundDimension3Value FundDimension3 => global::DemoSite.Content.CrowdfundingFundraiserGoal.GetFundDimension3(this, _publishedValueFallback);
 
 		///<summary>
 		/// Price Handles
@@ -94,7 +102,15 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("priceHandles")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.PriceHandle> PriceHandles => global::DemoSite.Content.CrowdfundingFundraiserAllocation.GetPriceHandles(this, _publishedValueFallback);
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.PriceHandle> PriceHandles => global::DemoSite.Content.CrowdfundingFundraiserGoal.GetPriceHandles(this, _publishedValueFallback);
+
+		///<summary>
+		/// Tags
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("tags")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingCampaignTag> Tags => global::DemoSite.Content.CrowdfundingFundraiserGoal.GetTags(this, _publishedValueFallback);
 
 		///<summary>
 		/// Title
@@ -102,6 +118,6 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("title")]
-		public virtual string Title => global::DemoSite.Content.CrowdfundingFundraiserAllocation.GetTitle(this, _publishedValueFallback);
+		public virtual string Title => global::DemoSite.Content.CrowdfundingFundraiserGoal.GetTitle(this, _publishedValueFallback);
 	}
 }

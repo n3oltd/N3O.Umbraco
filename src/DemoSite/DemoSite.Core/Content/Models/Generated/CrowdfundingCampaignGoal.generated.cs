@@ -22,6 +22,10 @@ namespace DemoSite.Content
 	/// <summary>Campaign Goal</summary>
 	public partial interface ICrowdfundingCampaignGoal : IPublishedElement
 	{
+		/// <summary>Amount</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		decimal Amount { get; }
+
 		/// <summary>Location</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
@@ -37,10 +41,15 @@ namespace DemoSite.Content
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		global::DemoSite.Content.FundDimension3Value FundDimension3 { get; }
 
-		/// <summary>Options</summary>
+		/// <summary>Price Handles</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingCampaignGoalOption> Options { get; }
+		global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.PriceHandle> PriceHandles { get; }
+
+		/// <summary>Tags</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingCampaignTag> Tags { get; }
 
 		/// <summary>Title</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
@@ -78,6 +87,17 @@ namespace DemoSite.Content
 		}
 
 		// properties
+
+		///<summary>
+		/// Amount
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[ImplementPropertyType("amount")]
+		public virtual decimal Amount => GetAmount(this, _publishedValueFallback);
+
+		/// <summary>Static getter for Amount</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		public static decimal GetAmount(ICrowdfundingCampaignGoal that, IPublishedValueFallback publishedValueFallback) => that.Value<decimal>(publishedValueFallback, "amount");
 
 		///<summary>
 		/// Location
@@ -119,17 +139,30 @@ namespace DemoSite.Content
 		public static global::DemoSite.Content.FundDimension3Value GetFundDimension3(ICrowdfundingCampaignGoal that, IPublishedValueFallback publishedValueFallback) => that.Value<global::DemoSite.Content.FundDimension3Value>(publishedValueFallback, "fundDimension3");
 
 		///<summary>
-		/// Options
+		/// Price Handles
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("options")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingCampaignGoalOption> Options => GetOptions(this, _publishedValueFallback);
+		[ImplementPropertyType("priceHandles")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.PriceHandle> PriceHandles => GetPriceHandles(this, _publishedValueFallback);
 
-		/// <summary>Static getter for Options</summary>
+		/// <summary>Static getter for Price Handles</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingCampaignGoalOption> GetOptions(ICrowdfundingCampaignGoal that, IPublishedValueFallback publishedValueFallback) => that.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingCampaignGoalOption>>(publishedValueFallback, "options");
+		public static global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.PriceHandle> GetPriceHandles(ICrowdfundingCampaignGoal that, IPublishedValueFallback publishedValueFallback) => that.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.PriceHandle>>(publishedValueFallback, "priceHandles");
+
+		///<summary>
+		/// Tags
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("tags")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingCampaignTag> Tags => GetTags(this, _publishedValueFallback);
+
+		/// <summary>Static getter for Tags</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		public static global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingCampaignTag> GetTags(ICrowdfundingCampaignGoal that, IPublishedValueFallback publishedValueFallback) => that.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingCampaignTag>>(publishedValueFallback, "tags");
 
 		///<summary>
 		/// Title
