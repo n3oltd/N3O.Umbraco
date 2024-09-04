@@ -2,5 +2,5 @@
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
-[UmbracoContent(CrowdfundingConstants.FundraiserAllocation.Feedback.Alias)]
+[UmbracoContent(CrowdfundingConstants.FundraiserGoal.Feedback.Alias)]
 public class FeedbackCampaignGoalElement : CrowdfundingFeedbackGoalElement { }

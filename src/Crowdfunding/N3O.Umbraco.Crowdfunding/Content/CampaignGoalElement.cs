@@ -23,4 +23,5 @@ public class CampaignGoalElement : CrowdfundingGoalElement {
 
     public override string FundContentTypeAlias => CrowdfundingConstants.CampaignGoal.Fund.Alias;
     public override string FeedbackContentTypeAlias => CrowdfundingConstants.CampaignGoal.Feedback.Alias;
+    public override string CampaignGoalID => Content().Key.ToString();
 }

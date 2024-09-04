@@ -5,8 +5,10 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
-[UmbracoContent(CrowdfundingConstants.FundraiserAllocation.Alias)]
+[UmbracoContent(CrowdfundingConstants.FundraiserGoal.Alias)]
 public class FundraiserGoalElement : CrowdfundingGoalElement {
+    public override string CampaignGoalID => GetValue(x => x.CampaignGoalID);
+    
     public override void Content(IPublishedElement content) {
         base.Content(content);
         
@@ -21,6 +23,6 @@ public class FundraiserGoalElement : CrowdfundingGoalElement {
         }
     }
     
-    public override string FundContentTypeAlias => CrowdfundingConstants.FundraiserAllocation.Fund.Alias;
-    public override string FeedbackContentTypeAlias => CrowdfundingConstants.FundraiserAllocation.Feedback.Alias;
+    public override string FundContentTypeAlias => CrowdfundingConstants.FundraiserGoal.Fund.Alias;
+    public override string FeedbackContentTypeAlias => CrowdfundingConstants.FundraiserGoal.Feedback.Alias;
 }

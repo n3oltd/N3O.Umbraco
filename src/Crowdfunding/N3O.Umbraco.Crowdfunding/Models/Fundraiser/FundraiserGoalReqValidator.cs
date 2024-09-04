@@ -4,8 +4,8 @@ using N3O.Umbraco.Validation;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
-public class FundraiserAllocationReqValidator : ModelValidator<FundraiserAllocationReq> {
-    public FundraiserAllocationReqValidator(IFormatter formatter) : base(formatter) {
+public class FundraiserGoalReqValidator : ModelValidator<FundraiserGoalReq> {
+    public FundraiserGoalReqValidator(IFormatter formatter) : base(formatter) {
         RuleFor(x => x.Amount)
            .NotNull()
            .WithMessage(Get<Strings>(s => s.SpecifyAmount));

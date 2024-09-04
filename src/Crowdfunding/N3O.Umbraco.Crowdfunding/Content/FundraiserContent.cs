@@ -22,6 +22,7 @@ public class FundraiserContent : UmbracoContent<FundraiserContent> {
     public IPublishedContent Owner => GetPickedAs(x => x.Owner);
     public TeamContent Team => GetPickedAs(x => x.Team);
     public FundraiserStatus Status => GetStaticLookupByNameAs(x => x.Status);
+    public IEnumerable<FundraiserGoalElement> Goals => GetNestedAs(x => x.Goals);
     public IEnumerable<HeroImagesElement> HeroImages => GetNestedAs(x => x.HeroImages);
-    public IEnumerable<FundraiserGoalElement> Allocations => GetNestedAs(x => x.Allocations);
+    public IEnumerable<IPublishedContent> Tags => GetPickedAs(x => x.Tags);
 }

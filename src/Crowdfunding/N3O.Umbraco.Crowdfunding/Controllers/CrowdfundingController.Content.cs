@@ -9,7 +9,6 @@ namespace N3O.Umbraco.Crowdfunding.Controllers;
 
 public partial class CrowdfundingController {
     [HttpGet("content/{contentId:guid}/properties/{propertyAlias}")]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ContentPropertyValueRes>> GetContentPropertyValue() {
         var res = await _mediator.Value.SendAsync<GetContentPropertyValueQuery, None, ContentPropertyValueRes>(None.Empty);
 
@@ -17,7 +16,6 @@ public partial class CrowdfundingController {
     }
     
     [HttpGet("content/{contentId:guid}/nested/{propertyAlias}/schema")]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<NestedSchemaRes>> GetNestedPropertySchema() {
         var res = await _mediator.Value.SendAsync<GetNestedPropertySchemaQuery, None, NestedSchemaRes>(None.Empty);
 

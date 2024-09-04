@@ -3,7 +3,7 @@ using System;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
-public class FundraiserAllocationReq {
+public class FundraiserGoalReq {
     [Name("Amount")]
     public decimal? Amount { get; set; }
     

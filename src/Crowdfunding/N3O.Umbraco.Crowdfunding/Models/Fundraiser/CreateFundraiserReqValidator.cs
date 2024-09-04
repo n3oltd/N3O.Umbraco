@@ -54,11 +54,11 @@ public class CreateFundraiserReqValidator : ModelValidator<CreateFundraiserReq> 
            .When(x => x.CampaignId.HasValue())
            .WithMessage(Get<Strings>(s => s.InvalidCampaign));
         
-        RuleFor(x => x.Allocations)
+        RuleFor(x => x.Goals)
            .NotEmpty()
            .WithMessage(Get<Strings>(s => s.SpecifyAllocations));
         
-        RuleFor(x => x.Allocations)
+        RuleFor(x => x.Goals)
            .Must(x => x.OrEmpty().Count() <= MaximumAllocations)
            .WithMessage(Get<Strings>(s => s.TooManyAllocations));
     }

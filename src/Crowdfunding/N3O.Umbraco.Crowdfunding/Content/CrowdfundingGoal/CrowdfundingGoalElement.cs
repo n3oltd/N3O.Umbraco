@@ -43,6 +43,7 @@ public abstract class CrowdfundingGoalElement : UmbracoElement<CrowdfundingGoalE
     
     public abstract string FundContentTypeAlias { get; }
     public abstract string FeedbackContentTypeAlias { get; }
+    public abstract string CampaignGoalID { get; }
 
     [JsonIgnore]
     FundDimension1Value IFundDimensionValues.Dimension1 => FundDimension1;

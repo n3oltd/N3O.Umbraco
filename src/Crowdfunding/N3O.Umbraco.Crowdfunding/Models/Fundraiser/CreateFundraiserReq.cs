@@ -25,5 +25,5 @@ public class CreateFundraiserReq {
     public LocalDate? EndDate { get; set; }
     
     [Name("Allocations")]
-    public IEnumerable<FundraiserAllocationReq> Allocations { get; set; }
+    public IEnumerable<FundraiserGoalReq> Goals { get; set; }
 }
