@@ -31,50 +31,50 @@ public static class ContentPublisherExtensions {
         contentPublisher.Content.ContentPicker(Fundraiser.Properties.Owner).SetMember(member);
         contentPublisher.Content.ContentPicker(Fundraiser.Properties.Campaign).SetContent(campaign);
         
-        PopulateAllocations(contentPublisher, req.Goals, campaign);
+        PopulateGoals(contentPublisher, req.Goals, campaign);
     }
     
-    public static void PopulateAllocations(this IContentPublisher contentPublisher,
-                                           IEnumerable<FundraiserGoalReq> allocations,
-                                           CampaignContent campaign) {
+    public static void PopulateGoals(this IContentPublisher contentPublisher,
+                                     IEnumerable<FundraiserGoalReq> goals,
+                                     CampaignContent campaign) {
         var nestedContent = contentPublisher.Content.Nested(Fundraiser.Properties.Goals);
         
-        foreach (var fundraiserGoal in allocations) {
+        foreach (var fundraiserGoal in goals) {
             var goal = campaign.Goals.Single(x => x.Content().Key == fundraiserGoal.GoalId);
             
             if (goal.Type == AllocationTypes.Fund) {
-                AddFundAllocation(nestedContent.Add(FundraiserGoal.Fund.Alias), fundraiserGoal, goal);
+                AddFundGoal(nestedContent.Add(FundraiserGoal.Fund.Alias), fundraiserGoal, goal);
             } else if (goal.Type == AllocationTypes.Feedback) {
-                AddFeedbackAllocation(nestedContent.Add(FundraiserGoal.Feedback.Alias), fundraiserGoal, goal);
+                AddFeedbackGoal(nestedContent.Add(FundraiserGoal.Feedback.Alias), fundraiserGoal, goal);
             } else {
                 throw UnrecognisedValueException.For(goal.Type);
             }
         }
     }
     
-    private static void AddFundAllocation(IContentBuilder contentBuilder,
-                                          FundraiserGoalReq goal,
-                                          CampaignGoalElement campaignGoal) {
+    private static void AddFundGoal(IContentBuilder contentBuilder,
+                                    FundraiserGoalReq goal,
+                                    CampaignGoalElement campaignGoal) {
         contentBuilder.ContentPicker(FundraiserGoal.Fund.Properties.DonationItem).SetContent(campaignGoal.Fund.DonationItem);
         
-        AddAllocation(contentBuilder, goal, campaignGoal);
+        AddGoal(contentBuilder, goal, campaignGoal);
     }
     
-    private static void AddFeedbackAllocation(IContentBuilder contentBuilder,
-                                              FundraiserGoalReq goal,
-                                              CampaignGoalElement campaignGoal) {
+    private static void AddFeedbackGoal(IContentBuilder contentBuilder,
+                                        FundraiserGoalReq goal,
+                                        CampaignGoalElement campaignGoal) {
         contentBuilder.ContentPicker(FundraiserGoal.Feedback.Properties.Scheme).SetContent(campaignGoal.Feedback.Scheme);
         
         PopulateCustomFields(contentBuilder, campaignGoal.Feedback.Scheme, goal.Feedback.CustomFields.Entries);
-        AddAllocation(contentBuilder, goal, campaignGoal);
+        AddGoal(contentBuilder, goal, campaignGoal);
     }
     
-    private static void AddAllocation(IContentBuilder contentBuilder,
+    private static void AddGoal(IContentBuilder contentBuilder,
                                       FundraiserGoalReq goal,
                                       CampaignGoalElement campaignGoal) {
         contentBuilder.Numeric(FundraiserGoal.Properties.Amount).SetDecimal(goal.Amount);
         contentBuilder.TextBox(FundraiserGoal.Properties.Title).Set(campaignGoal.Title);
-        contentBuilder.Label(FundraiserGoal.Properties.GoalID).Set(campaignGoal.CampaignGoalID);
+        contentBuilder.Label(FundraiserGoal.Properties.CampaignGoalID).Set(campaignGoal.CampaignGoalID);
         contentBuilder.ContentPicker(FundraiserGoal.Properties.FundDimension1).SetContent(campaignGoal.FundDimension1);
         contentBuilder.ContentPicker(FundraiserGoal.Properties.FundDimension2).SetContent(campaignGoal.FundDimension2);
         contentBuilder.ContentPicker(FundraiserGoal.Properties.FundDimension3).SetContent(campaignGoal.FundDimension3);
