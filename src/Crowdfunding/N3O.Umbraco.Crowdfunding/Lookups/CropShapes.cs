@@ -7,6 +7,6 @@ public class CropShape : NamedLookup {
 }
 
 public class CropShapes : StaticLookupsCollection<CropShape> {
-    public static readonly CropShape Circle = new("circle", "circle");
-    public static readonly CropShape Rectangle = new("rectangle", "rectangle");
+    public static readonly CropShape Circle = new("circle", "Circle");
+    public static readonly CropShape Rectangle = new("rectangle", "Rectangle");
 }

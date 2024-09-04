@@ -88,14 +88,14 @@ public static class CrowdfundingConstants {
     }
 
     public static class Tables {
-        public static class CrowdfundingContributions {
-            public const string Name = "N3O_CrowdfundingContributions";
-            public const string PrimaryKey = "PK_N3O_CrowdfundingContributions";
-        }
-        
-        public static class CrowdfundingOfflineContributions {
+        public static class OfflineContributions {
             public const string Name = "N3O_CrowdfundingOfflineContributions";
             public const string PrimaryKey = "PK_N3O_CrowdfundingOfflineContributions";
+        }
+        
+        public static class OnlineContributions {
+            public const string Name = "N3O_OnlineContributions";
+            public const string PrimaryKey = "PK_N3O_OnlineContributions";
         }
     }
     

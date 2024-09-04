@@ -1,9 +1,10 @@
 ﻿using Konstrukt.Configuration;
 using Konstrukt.Configuration.Builders;
+using N3O.Umbraco.Crowdfunding.Entities;
 
 namespace N3O.Umbraco.Crowdfunding.UIBuilder;
 
-public class CrowdfundingContributionsConfigurator : IKonstruktConfigurator {
+public class OnlineContributionsConfigurator : IKonstruktConfigurator {
     public void Configure(KonstruktConfigBuilder builder) {
         var section = builder.AddSectionAfter("media", "Crowdfunding");
         var dashboard = section.AddDashboard("Crowdfunding Donations");
@@ -12,12 +13,12 @@ public class CrowdfundingContributionsConfigurator : IKonstruktConfigurator {
     }
 
     private void ConfigureCollection(KonstruktDashboardConfigBuilder dashboard) {
-        var collection = dashboard.SetCollection<CrowdfundingContribution>(x => x.Id,
-                                                                           "Crowdfunding Donation",
-                                                                           "Crowdfunding Donations",
-                                                                           "Crowdfunding Donations List",
-                                                                           "icon-arrow-up",
-                                                                           "icon-arrow-up");
+        var collection = dashboard.SetCollection<OnlineContribution>(x => x.Id,
+                                                                     "Crowdfunding Donation",
+                                                                     "Crowdfunding Donations",
+                                                                     "Crowdfunding Donations List",
+                                                                     "icon-arrow-up",
+                                                                     "icon-arrow-up");
 
         collection.SetAlias("allCrowdfundingDonations");
         collection.SetDateCreatedProperty(c => c.Timestamp);
@@ -30,14 +31,14 @@ public class CrowdfundingContributionsConfigurator : IKonstruktConfigurator {
         collection.AddSearchableProperty(c => c.Comment);
         collection.DisableCreate();
         collection.DisableDelete();
-        collection.SetDataViewsBuilder<CrowdfundingContributionStatusDataViewsBuilder>();
+        collection.SetDataViewsBuilder<OnlineContributionStatusDataViewsBuilder>();
 
         ConfigureListView(collection);
 
         ConfigureEditor(collection);
     }
 
-    private void ConfigureListView(KonstruktDashboardCollectionConfigBuilder<CrowdfundingContribution> collection) {
+    private void ConfigureListView(KonstruktDashboardCollectionConfigBuilder<OnlineContribution> collection) {
         var listView = collection.ListView();
         
         listView.AddField(c => c.CampaignName);
@@ -46,7 +47,7 @@ public class CrowdfundingContributionsConfigurator : IKonstruktConfigurator {
         listView.AddField(c => c.Status);
     }
 
-    private void ConfigureEditor(KonstruktDashboardCollectionConfigBuilder<CrowdfundingContribution> collection) {
+    private void ConfigureEditor(KonstruktDashboardCollectionConfigBuilder<OnlineContribution> collection) {
         var editor = collection.Editor();
         var recordTab = editor.AddTab("Donation");
         

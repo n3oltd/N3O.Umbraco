@@ -8,14 +8,14 @@ namespace N3O.Umbraco.CrowdFunding;
 
 public class ViewCampaignPage : CrowdfundingPage {
     private readonly IContentLocator _contentLocator;
-    private readonly IContributionRepository _contributionRepository;
+    private readonly IOnlineContributionRepository _onlineContributionRepository;
 
     public ViewCampaignPage(ICrowdfundingHelper crowdfundingHelper,
                             IContentLocator contentLocator,
-                            IContributionRepository contributionRepository)
+                            IOnlineContributionRepository onlineContributionRepository)
         : base(crowdfundingHelper) {
         _contentLocator = contentLocator;
-        _contributionRepository = contributionRepository;
+        _onlineContributionRepository = onlineContributionRepository;
     }
 
     protected override bool IsMatch(string crowdfundingPath) {
@@ -27,7 +27,7 @@ public class ViewCampaignPage : CrowdfundingPage {
         var campaignId = int.Parse(match.Groups[1].Value);
         var campaign = _contentLocator.ById<CampaignContent>(campaignId);
 
-        var contributions = await _contributionRepository.FindByCampaignAsync(campaign.Content().Key);
+        var contributions = await _onlineContributionRepository.FindByCampaignAsync(campaign.Content().Key);
 
         return ViewCampaignViewModel.For(CrowdfundingHelper, campaign, contributions);
     }

@@ -1,5 +1,5 @@
-﻿using N3O.Umbraco.Crowdfunding.Models;
-using N3O.Umbraco.Crowdfunding.UIBuilder;
+﻿using N3O.Umbraco.Crowdfunding.Entities;
+using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using NodaTime;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Crowdfunding;
 
-public interface IContributionRepository {
+public interface IOnlineContributionRepository {
     Task AddAsync(string checkoutReference,
                   Instant timestamp,
                   ICrowdfundingData crowdfundingData,
@@ -19,6 +19,6 @@ public interface IContributionRepository {
                   Allocation allocation);
 
     Task CommitAsync();
-    Task<IEnumerable<CrowdfundingContribution>> FindByCampaignAsync(params Guid[] campaignIds);
-    Task<IEnumerable<CrowdfundingContribution>> FindByFundraiserAsync(params Guid[] fundraiserIds);
+    Task<IEnumerable<OnlineContribution>> FindByCampaignAsync(params Guid[] campaignIds);
+    Task<IEnumerable<OnlineContribution>> FindByFundraiserAsync(params Guid[] fundraiserIds);
 }

@@ -1,7 +1,7 @@
 ﻿using N3O.Umbraco.Crowdfunding;
 using N3O.Umbraco.Crowdfunding.Content;
+using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.CrowdFunding.Extensions;
-using N3O.Umbraco.Crowdfunding.UIBuilder;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.CrowdFunding.Models;
@@ -11,13 +11,13 @@ public partial class ViewEditFundraiserViewModel : FundraiserOrCampaignViewModel
     
     public static ViewEditFundraiserViewModel For(ICrowdfundingHelper crowdfundingHelper,
                                                   FundraiserContent fundraiser,
-                                                  IEnumerable<CrowdfundingContribution> contributions) {
-        var viewModel = For<ViewEditFundraiserViewModel>(crowdfundingHelper, fundraiser, contributions);
+                                                  IEnumerable<OnlineContribution> onlineContributions) {
+        var viewModel = For<ViewEditFundraiserViewModel>(crowdfundingHelper, fundraiser, onlineContributions);
         
         // TODO Talha this is needed on CampaignViewModel also, so should be refactored to avoid the hard dependency
         // on fundraiser
         viewModel.Allocations = fundraiser.Allocations.ToReadOnlyList(x => Allocation.For(crowdfundingHelper, x));
-        viewModel.Progress = ProgressInfo.For(crowdfundingHelper, contributions, fundraiser);
+        viewModel.Progress = ProgressInfo.For(crowdfundingHelper, onlineContributions, fundraiser);
         viewModel.Owner = OwnerInfo.For(fundraiser);
         
         return viewModel;

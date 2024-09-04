@@ -1,6 +1,6 @@
 ﻿namespace N3O.Umbraco.Crowdfunding.UIBuilder;
 
-public static class CrowdfundingContributionStatuses {
+public static class OnlineContributionStatuses {
     public static readonly string Hidden = "Hidden";
     public static readonly string Visible = "Visible";
 

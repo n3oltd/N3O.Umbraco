@@ -58,14 +58,6 @@ namespace DemoSite.Content
 		public virtual string AccountReference => this.Value<string>(_publishedValueFallback, "accountReference");
 
 		///<summary>
-		/// Allocation Hash
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("allocationHash")]
-		public virtual string AllocationHash => this.Value<string>(_publishedValueFallback, "allocationHash");
-
-		///<summary>
 		/// Background Image
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]

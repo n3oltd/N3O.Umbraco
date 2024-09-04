@@ -1,6 +1,6 @@
 ﻿using N3O.Umbraco.Crowdfunding;
+using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.CrowdFunding.Extensions;
-using N3O.Umbraco.Crowdfunding.UIBuilder;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.CrowdFunding.Models;
@@ -13,11 +13,11 @@ public abstract partial class FundraiserOrCampaignViewModel<TContent> : Crowdfun
 
     public static T For<T>(ICrowdfundingHelper crowdfundingHelper,
                            TContent content,
-                           IEnumerable<CrowdfundingContribution> contributions)
+                           IEnumerable<OnlineContribution> onlineContributions)
         where T : FundraiserOrCampaignViewModel<TContent>, new() {
         var viewModel = new T();
         viewModel.Content = content;
-        viewModel.Contributions = contributions.ToReadOnlyList(x => Contribution.For(crowdfundingHelper, x));
+        viewModel.Contributions = onlineContributions.ToReadOnlyList(x => Contribution.For(crowdfundingHelper, x));
         
         return viewModel;
     }

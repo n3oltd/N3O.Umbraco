@@ -29,7 +29,7 @@ public class PledgesReceiver : WebhookReceiver {
     protected override async Task ProcessAsync(WebhookPayload payload, CancellationToken cancellationToken) {
         var webhookPledge = payload.GetBody<WebhookPledge>(_jsonProvider);
 
-        if (!webhookPledge.Crowdfunding.HasValue()) {
+        if (!webhookPledge.Crowdfunder.HasValue()) {
             return;
         }
         
@@ -45,7 +45,7 @@ public class PledgesReceiver : WebhookReceiver {
     }
 
     private void Enqueue<TEvent>(WebhookPledge webhookPledge) where TEvent : PledgeEvent {
-        var contentId = webhookPledge.Crowdfunding.FundraiserId ?? webhookPledge.Crowdfunding.CampaignId;
+        var contentId = webhookPledge.Crowdfunder.Id;
         
         _backgroundJob.Enqueue<TEvent, WebhookPledge>($"{typeof(TEvent).Name.Replace("Event", "")}",
                                                       webhookPledge,

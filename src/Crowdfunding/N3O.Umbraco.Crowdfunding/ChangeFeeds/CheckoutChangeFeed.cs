@@ -18,15 +18,15 @@ namespace N3O.Umbraco.Crowdfunding.ChangeFeeds;
 
 public class CheckoutChangeFeed : ChangeFeed<Checkout> {
     private readonly IClock _clock;
-    private readonly IContributionRepository _contributionRepository;
+    private readonly IOnlineContributionRepository _onlineContributionRepository;
     private readonly IJsonProvider _jsonProvider;
     
     public CheckoutChangeFeed(ILogger<CheckoutChangeFeed> logger,
                               IClock clock,
-                              IContributionRepository contributionRepository,
+                              IOnlineContributionRepository onlineContributionRepository,
                               IJsonProvider jsonProvider) 
         : base(logger) {
-        _contributionRepository = contributionRepository;
+        _onlineContributionRepository = onlineContributionRepository;
         _jsonProvider = jsonProvider;
         _clock = clock;
     }
@@ -64,14 +64,14 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
     private async Task CommitAsync(GivingType givingType, Checkout checkout, Allocation allocation) {
         var crowdfundingData = allocation.GetCrowdfundingData(_jsonProvider);
 
-        await _contributionRepository.AddAsync(checkout.Reference.Text,
-                                               _clock.GetCurrentInstant(),
-                                               crowdfundingData,
-                                               checkout.Account?.Email?.Address,
-                                               checkout.Account?.TaxStatus == TaxStatuses.Payer,
-                                               givingType,
-                                               allocation);
+        await _onlineContributionRepository.AddAsync(checkout.Reference.Text,
+                                                     _clock.GetCurrentInstant(),
+                                                     crowdfundingData,
+                                                     checkout.Account?.Email?.Address,
+                                                     checkout.Account?.TaxStatus == TaxStatuses.Payer,
+                                                     givingType,
+                                                     allocation);
 
-        await _contributionRepository.CommitAsync();
+        await _onlineContributionRepository.CommitAsync();
     }
 }

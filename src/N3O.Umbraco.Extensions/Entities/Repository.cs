@@ -33,9 +33,7 @@ public class Repository<T> : IRepository<T> where T : class, IEntity {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
             await db.ExecuteAsync($"DELETE FROM {Tables.Entities.Name} WHERE Id = '{entity.Id.Value}'");
 
-            await RunChangeFeedsAsync(EntityOperations.Delete,
-                                      null,
-                                      entity);
+            await RunChangeFeedsAsync(EntityOperations.Delete, null, entity);
         }
     }
 
@@ -117,9 +115,7 @@ public class Repository<T> : IRepository<T> where T : class, IEntity {
         }
     }
         
-    private async Task RunChangeFeedsAsync(EntityOperation operation,
-                                           T sessionEntity,
-                                           T dbEntity) {
+    private async Task RunChangeFeedsAsync(EntityOperation operation, T sessionEntity, T dbEntity) {
         var entityType = (sessionEntity ?? dbEntity).GetType();
         
         var changeFeeds = _changeFeedFactory.GetChangeFeeds(entityType);

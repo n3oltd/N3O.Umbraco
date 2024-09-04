@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Lookups;
+using N3O.Umbraco.References;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace N3O.Umbraco.Webhooks.Models;
 
@@ -17,5 +21,11 @@ public class WebhookReference : Value {
         yield return Prefix;
         yield return Number;
         yield return Text;
+    }
+
+    public Reference ToReference() {
+        var type = StaticLookups.GetAll<ReferenceType>().Single(x => x.Prefix.EqualsInvariant(Prefix));
+
+        return type.ToReference(Text);
     }
 }

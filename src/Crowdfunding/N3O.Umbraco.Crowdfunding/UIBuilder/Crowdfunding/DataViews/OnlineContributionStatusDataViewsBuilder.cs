@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Konstrukt.Configuration.Builders.DataViews;
+using Konstrukt.Models;
+using N3O.Umbraco.Crowdfunding.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Konstrukt.Configuration.Builders.DataViews;
-using Konstrukt.Models;
 
 namespace N3O.Umbraco.Crowdfunding.UIBuilder;
 
-public class CrowdfundingContributionStatusDataViewsBuilder : KonstruktDataViewsBuilder<CrowdfundingContribution> {
+public class OnlineContributionStatusDataViewsBuilder : KonstruktDataViewsBuilder<OnlineContribution> {
     private const string AllAlias = "all";
     private const string Group = "Status";
 
@@ -17,7 +18,7 @@ public class CrowdfundingContributionStatusDataViewsBuilder : KonstruktDataViews
             Group = Group
         };
         
-        foreach (var status in CrowdfundingContributionStatuses.All) {
+        foreach (var status in OnlineContributionStatuses.All) {
             yield return new KonstruktDataViewSummary {
                 Alias = status,
                 Name = status,
@@ -26,7 +27,7 @@ public class CrowdfundingContributionStatusDataViewsBuilder : KonstruktDataViews
         }
     }
 
-    public override Expression<Func<CrowdfundingContribution, bool>> GetDataViewWhereClause(string dataViewAlias) {
+    public override Expression<Func<OnlineContribution, bool>> GetDataViewWhereClause(string dataViewAlias) {
         if (dataViewAlias == AllAlias) {
             return null;
         } else {

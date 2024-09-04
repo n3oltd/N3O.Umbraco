@@ -10,25 +10,27 @@ public class WebhookPledge : WebhookEntity {
                          WebhookCurrency currency,
                          LocalDate date,
                          WebhookAccountInfo account,
-                         WebhookCrowdfundingInfo crowdfunding,
+                         WebhookCrowdfunderInfo crowdfunder,
                          WebhookPledgeBalanceSummary balanceSummary)
         : base(revision, reference) {
         Currency = currency;
         Date = date;
         Account = account;
-        Crowdfunding = crowdfunding;
+        Crowdfunder = crowdfunder;
         BalanceSummary = balanceSummary;
     }
 
     public WebhookCurrency Currency { get; }
     public LocalDate Date { get; }
     public WebhookAccountInfo Account { get; }
-    public WebhookCrowdfundingInfo Crowdfunding { get; }
+    public WebhookCrowdfunderInfo Crowdfunder { get; }
     public WebhookPledgeBalanceSummary BalanceSummary { get; }
 
     protected override IEnumerable<object> GetValues() {
         yield return Currency;
         yield return Date;
         yield return Account;
+        yield return Crowdfunder;
+        yield return BalanceSummary;
     }
 }

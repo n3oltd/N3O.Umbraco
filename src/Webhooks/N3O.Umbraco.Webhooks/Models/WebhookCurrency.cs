@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using N3O.Umbraco.Financial;
+using N3O.Umbraco.Lookups;
+using System.Collections.Generic;
 
 namespace N3O.Umbraco.Webhooks.Models;
 
@@ -14,5 +16,9 @@ public class WebhookCurrency : Value {
     protected override IEnumerable<object> GetAtomicValues() {
         yield return Code;
         yield return Name;
+    }
+
+    public Currency ToCurrency(ILookups lookups) {
+        return lookups.FindById<Currency>(Code);
     }
 }
