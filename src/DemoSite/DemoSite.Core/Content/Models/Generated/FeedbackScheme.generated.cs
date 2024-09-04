@@ -58,14 +58,6 @@ namespace DemoSite.Content
 		public virtual global::System.Collections.Generic.List<global::N3O.Umbraco.Giving.Lookups.GivingType> AllowedGivingTypes => this.Value<global::System.Collections.Generic.List<global::N3O.Umbraco.Giving.Lookups.GivingType>>(_publishedValueFallback, "allowedGivingTypes");
 
 		///<summary>
-		/// Custom Fields
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("customFields")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FeedbackCustomField> CustomFields => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.FeedbackCustomField>>(_publishedValueFallback, "customFields");
-
-		///<summary>
 		/// Locations
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]

@@ -18,14 +18,14 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Content
 {
-	/// <summary>Campaign Fund Goal</summary>
-	[PublishedModel("crowdfundingCampaignFundGoal")]
-	public partial class CrowdfundingCampaignFundGoal : PublishedElementModel, ICrowdfundingCampaignGoal
+	/// <summary>Campaign Sponsorship Goal</summary>
+	[PublishedModel("crowdfundingCampaignSponsorshipGoal")]
+	public partial class CrowdfundingCampaignSponsorshipGoal : PublishedElementModel, ICrowdfundingCampaignGoal
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		public new const string ModelTypeAlias = "crowdfundingCampaignFundGoal";
+		public new const string ModelTypeAlias = "crowdfundingCampaignSponsorshipGoal";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
@@ -34,14 +34,14 @@ namespace DemoSite.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<CrowdfundingCampaignFundGoal, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<CrowdfundingCampaignSponsorshipGoal, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public CrowdfundingCampaignFundGoal(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
+		public CrowdfundingCampaignSponsorshipGoal(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
@@ -50,12 +50,12 @@ namespace DemoSite.Content
 		// properties
 
 		///<summary>
-		/// Donation Item
+		/// Scheme
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("donationItem")]
-		public virtual global::DemoSite.Content.DonationItem DonationItem => this.Value<global::DemoSite.Content.DonationItem>(_publishedValueFallback, "donationItem");
+		[ImplementPropertyType("scheme")]
+		public virtual global::DemoSite.Content.SponsorshipScheme Scheme => this.Value<global::DemoSite.Content.SponsorshipScheme>(_publishedValueFallback, "scheme");
 
 		///<summary>
 		/// Location
