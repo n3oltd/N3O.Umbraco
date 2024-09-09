@@ -7,17 +7,17 @@ namespace N3O.Umbraco.Crowdfunding.Content;
 
 [UmbracoContent(CrowdfundingConstants.FundraiserGoal.Alias)]
 public class FundraiserGoalElement : CrowdfundingGoalElement {
-    public override string CampaignGoalID => GetValue(x => x.CampaignGoalID);
+    public override string CampaignGoalId => GetValue(x => x.CampaignGoalId);
     
-    public override void Content(IPublishedElement content) {
-        base.Content(content);
+    public override void Content(IPublishedElement content, IPublishedContent parent) {
+        base.Content(content, parent);
         
         if (Type == AllocationTypes.Fund) {
             Fund = new FundFundraiserGoalElement();
-            Fund.Content(content);
+            Fund.Content(content, parent);
         } else if (Type == AllocationTypes.Feedback) {
             Feedback = new FeedbackFundraiserGoalElement();
-            Feedback.Content(content);
+            Feedback.Content(content, parent);
         } else {
             throw UnrecognisedValueException.For(Type);
         }

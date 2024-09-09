@@ -37,11 +37,7 @@ public class CreateFundraiserReqValidator : ModelValidator<CreateFundraiserReq> 
           .When(x => x.Title.HasValue())
           .WithMessage(Get<Strings>(s => s.TitleUnavailable));
         
-        RuleFor(x => x.AccountReference)
-          .NotEmpty()
-          .WithMessage(Get<Strings>(s => s.SpecifyAccountReference));
-        
-        RuleFor(x => x.DisplayName)
+        RuleFor(x => x.Name)
           .NotEmpty()
           .WithMessage(Get<Strings>(s => s.SpecifyName));
         
@@ -69,7 +65,6 @@ public class CreateFundraiserReqValidator : ModelValidator<CreateFundraiserReq> 
 
     public class Strings : ValidationStrings {
         public string InvalidCampaign => "The specified campaign is invalid";
-        public string SpecifyAccountReference => "Please specify the account reference";
         public string SpecifyAllocations => "Please specify the allocations for the fundraiser";
         public string SpecifyCampaignId => "Please specify the campaign id";
         public string SpecifyName => "Please specify the name of the fundraiser";

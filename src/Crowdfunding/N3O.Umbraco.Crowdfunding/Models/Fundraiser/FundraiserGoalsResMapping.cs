@@ -10,7 +10,7 @@ public class FundraiserGoalsResMapping : IMapDefinition {
     }
 
     private void Map(FundraiserContent src, FundraiserGoalsRes dest, MapperContext ctx) {
-        dest.Goals = src.Campaign.Goals.Select(ctx.Map<CampaignGoalElement, FundraiserGoalRes>);
+        dest.AvailableGoals = src.Campaign.Goals.Select(ctx.Map<CampaignGoalElement, FundraiserGoalRes>);
         dest.SelectedGoals = src.Goals.Select(ctx.Map<FundraiserGoalElement, FundraiserSelectedGoalRes>);
     }
 }

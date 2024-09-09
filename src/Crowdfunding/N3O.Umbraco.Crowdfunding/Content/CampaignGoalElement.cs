@@ -7,15 +7,15 @@ namespace N3O.Umbraco.Crowdfunding.Content;
 
 [UmbracoContent(CrowdfundingConstants.CampaignGoal.Alias)]
 public class CampaignGoalElement : CrowdfundingGoalElement {
-    public override void Content(IPublishedElement content) {
-        base.Content(content);
+    public override void Content(IPublishedElement content, IPublishedContent parent) {
+        base.Content(content, parent);
         
         if (Type == AllocationTypes.Fund) {
             Fund = new FundCampaignGoalElement();
-            Fund.Content(content);
+            Fund.Content(content, parent);
         } else if (Type == AllocationTypes.Feedback) {
             Feedback = new FeedbackCampaignGoalElement();
-            Feedback.Content(content);
+            Feedback.Content(content, parent);
         } else {
             throw UnrecognisedValueException.For(Type);
         }
@@ -23,5 +23,5 @@ public class CampaignGoalElement : CrowdfundingGoalElement {
 
     public override string FundContentTypeAlias => CrowdfundingConstants.CampaignGoal.Fund.Alias;
     public override string FeedbackContentTypeAlias => CrowdfundingConstants.CampaignGoal.Feedback.Alias;
-    public override string CampaignGoalID => Content().Key.ToString();
+    public override string CampaignGoalId => $"{Parent().Key}_{Content().Key}";
 }

@@ -40,7 +40,11 @@ public static class ContentPublisherExtensions {
         var nestedContent = contentPublisher.Content.Nested(Fundraiser.Properties.Goals);
         
         foreach (var fundraiserGoal in goals) {
-            var goal = campaign.Goals.Single(x => x.Content().Key == fundraiserGoal.GoalId);
+            var goal = campaign.Goals.SingleOrDefault(x => x.CampaignGoalId == fundraiserGoal.GoalId);
+
+            if (goal == null) {
+                throw new Exception($"No goal found with id {fundraiserGoal.GoalId}");
+            }
             
             if (goal.Type == AllocationTypes.Fund) {
                 AddFundGoal(nestedContent.Add(FundraiserGoal.Fund.Alias), fundraiserGoal, goal);
@@ -74,7 +78,7 @@ public static class ContentPublisherExtensions {
                                       CampaignGoalElement campaignGoal) {
         contentBuilder.Numeric(FundraiserGoal.Properties.Amount).SetDecimal(goal.Amount);
         contentBuilder.TextBox(FundraiserGoal.Properties.Title).Set(campaignGoal.Title);
-        contentBuilder.Label(FundraiserGoal.Properties.CampaignGoalID).Set(campaignGoal.CampaignGoalID);
+        contentBuilder.Label(FundraiserGoal.Properties.CampaignGoalId).Set(campaignGoal.CampaignGoalId);
         contentBuilder.ContentPicker(FundraiserGoal.Properties.FundDimension1).SetContent(campaignGoal.FundDimension1);
         contentBuilder.ContentPicker(FundraiserGoal.Properties.FundDimension2).SetContent(campaignGoal.FundDimension2);
         contentBuilder.ContentPicker(FundraiserGoal.Properties.FundDimension3).SetContent(campaignGoal.FundDimension3);

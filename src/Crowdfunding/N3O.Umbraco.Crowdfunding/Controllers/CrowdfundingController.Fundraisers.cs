@@ -22,7 +22,7 @@ public partial class CrowdfundingController {
     }
     
     [HttpGet("fundraisers/goals/{contentId:guid}")]
-    public async Task<ActionResult<ContentPropertyValueRes>> GetFundraiserGoals() {
+    public async Task<ActionResult<FundraiserGoalsRes>> GetFundraiserGoals() {
         var res = await _mediator.Value.SendAsync<GetFundraiserGoalsQuery, None, FundraiserGoalsRes>(None.Empty);
 
         return Ok(res);

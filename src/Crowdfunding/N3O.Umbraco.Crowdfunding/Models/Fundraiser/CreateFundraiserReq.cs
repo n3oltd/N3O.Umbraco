@@ -12,11 +12,8 @@ public class CreateFundraiserReq {
     [Name("Slug")]
     public string Slug { get; set; }
     
-    [Name("Account Reference")]
-    public string AccountReference { get; set; }
-    
-    [Name("Display Name")]
-    public string DisplayName { get; set; }
+    [Name("Name")]
+    public string Name { get; set; }
     
     [Name("Campaign ID")]
     public Guid? CampaignId { get; set; }

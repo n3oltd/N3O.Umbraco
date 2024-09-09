@@ -7,8 +7,8 @@ public class FundraiserGoalReq {
     [Name("Amount")]
     public decimal? Amount { get; set; }
     
-    [Name("Goal Id")]
-    public Guid? GoalId { get; set; }
+    [Name("Goal ID")]
+    public string GoalId { get; set; }
     
     [Name("Feedback")]
     public FeedbackGoalReq Feedback { get; set; }

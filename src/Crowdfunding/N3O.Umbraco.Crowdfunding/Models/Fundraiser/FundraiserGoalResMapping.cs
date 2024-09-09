@@ -10,7 +10,7 @@ public class FundraiserGoalResMapping : IMapDefinition {
     }
 
     private void Map(CrowdfundingGoalElement src, FundraiserGoalRes dest, MapperContext ctx) {
-        dest.GoalId = src.CampaignGoalID;
+        dest.GoalId = src.CampaignGoalId;
         dest.GoalName = src.Title;
         dest.Type = src.Type;
         dest.Tags = src.Tags.Select(x => x.Name);

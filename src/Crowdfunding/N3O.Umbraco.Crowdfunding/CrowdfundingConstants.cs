@@ -35,7 +35,6 @@ public static class CrowdfundingConstants {
         public static class Properties {
             public const string AccountReference = "accountReference";
             public const string Goals = "goals";
-            public const string GoalsHash = "goalsHash";
             public const string Body = "body";
             public const string Campaign = "campaign";
             public const string Description = "description";
@@ -43,7 +42,6 @@ public static class CrowdfundingConstants {
             public const string EndDate = "endDate";
             public const string HeroImages = "heroImages";
             public const string Owner = "owner";
-            public const string PledgeRevisionId = "pledgeRevisionId";
             public const string Slug = "slug";
             public const string Status = "status";
             public const string Team = "team";
@@ -95,7 +93,7 @@ public static class CrowdfundingConstants {
             public const string FundDimension2 = "fundDimension2";
             public const string FundDimension3 = "fundDimension3";
             public const string FundDimension4 = "fundDimension4";
-            public const string CampaignGoalID = "campaignGoalID";
+            public const string CampaignGoalId = "campaignGoalId";
             public const string PriceHandles = "priceHandles";
             public const string Tags = "tags";
             
