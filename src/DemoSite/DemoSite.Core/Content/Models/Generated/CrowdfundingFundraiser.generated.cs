@@ -50,12 +50,20 @@ namespace DemoSite.Content
 		// properties
 
 		///<summary>
-		/// Allocations
+		/// Account Reference
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("allocations")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::Umbraco.Cms.Core.Models.PublishedContent.IPublishedElement> Allocations => this.Value<global::System.Collections.Generic.IEnumerable<global::Umbraco.Cms.Core.Models.PublishedContent.IPublishedElement>>(_publishedValueFallback, "allocations");
+		[ImplementPropertyType("accountReference")]
+		public virtual string AccountReference => this.Value<string>(_publishedValueFallback, "accountReference");
+
+		///<summary>
+		/// Allocations Hash
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("allocationsHash")]
+		public virtual string AllocationsHash => this.Value<string>(_publishedValueFallback, "allocationsHash");
 
 		///<summary>
 		/// Background Image
@@ -90,12 +98,28 @@ namespace DemoSite.Content
 		public virtual string Description => this.Value<string>(_publishedValueFallback, "description");
 
 		///<summary>
+		/// Display Name
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("displayName")]
+		public virtual string DisplayName => this.Value<string>(_publishedValueFallback, "displayName");
+
+		///<summary>
+		/// Goals
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("goals")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::Umbraco.Cms.Core.Models.PublishedContent.IPublishedElement> Goals => this.Value<global::System.Collections.Generic.IEnumerable<global::Umbraco.Cms.Core.Models.PublishedContent.IPublishedElement>>(_publishedValueFallback, "goals");
+
+		///<summary>
 		/// Hero Images
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("heroImages")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingHeroImage> HeroImages => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingHeroImage>>(_publishedValueFallback, "heroImages");
+		public virtual global::System.Collections.Generic.IEnumerable<global::Umbraco.Cms.Core.Models.PublishedContent.IPublishedElement> HeroImages => this.Value<global::System.Collections.Generic.IEnumerable<global::Umbraco.Cms.Core.Models.PublishedContent.IPublishedElement>>(_publishedValueFallback, "heroImages");
 
 		///<summary>
 		/// Owner
@@ -104,6 +128,14 @@ namespace DemoSite.Content
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("owner")]
 		public virtual global::DemoSite.Content.Member Owner => this.Value<global::DemoSite.Content.Member>(_publishedValueFallback, "owner");
+
+		///<summary>
+		/// Pledge Revision ID
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("pledgeRevisionID")]
+		public virtual string PledgeRevisionID => this.Value<string>(_publishedValueFallback, "pledgeRevisionID");
 
 		///<summary>
 		/// Slug
