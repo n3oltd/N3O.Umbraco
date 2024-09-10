@@ -28,10 +28,32 @@ public static class GivingConstants {
             public static readonly string ContentType = "donationOption";
         }
         
+        public static class FeedbackCustomField {
+            public const string ContentType = "feedbackCustomField";
+
+            public static class Properties {
+                public const string Alias = "alias";
+                public const string Bool = "bool";
+                public const string Date = "date";
+                public const string Name = "displayName";
+                public const string Text = "text";
+                public const string Type = "type";
+            }
+        }
+        
         public static class Price {
             public static class Properties {
                 public static readonly string Amount = AliasHelper<PriceContent>.PropertyAlias(x => x.Amount);
                 public static readonly string Locked = AliasHelper<PriceContent>.PropertyAlias(x => x.Locked);
+            }
+        }
+        
+        public static class PriceHandle {
+            public static readonly string ContentType = "priceHandle";
+
+            public static class Properties {
+                public static readonly string Amount = "amount";
+                public static readonly string Description = "description";
             }
         }
         

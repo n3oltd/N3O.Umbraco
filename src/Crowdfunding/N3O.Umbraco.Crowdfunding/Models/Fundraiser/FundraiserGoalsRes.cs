@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using N3O.Umbraco.Financial;
+using System.Collections.Generic;
 
 namespace N3O.Umbraco.Crowdfunding.Models; 
 
 public class FundraiserGoalsRes {
-    public IEnumerable<FundraiserGoalRes> AvailableGoals { get; set; }
-    public IEnumerable<FundraiserSelectedGoalRes> SelectedGoals { get; set; }
+    public CurrencyRes Currency { get; set; }
+    public IEnumerable<AvailableGoalRes> Available { get; set; }
+    public IEnumerable<SelectedGoalRes> Selected { get; set; }
 }

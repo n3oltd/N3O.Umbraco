@@ -18,9 +18,9 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Content
 {
-	/// <summary>Custom Field Definition</summary>
+	/// <summary>Feedback Custom Field Definition</summary>
 	[PublishedModel("feedbackCustomFieldDefinition")]
-	public partial class FeedbackCustomFieldDefinition : PublishedContentModel
+	public partial class FeedbackCustomFieldDefinition : PublishedElementModel
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
@@ -41,7 +41,7 @@ namespace DemoSite.Content
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public FeedbackCustomFieldDefinition(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
+		public FeedbackCustomFieldDefinition(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;

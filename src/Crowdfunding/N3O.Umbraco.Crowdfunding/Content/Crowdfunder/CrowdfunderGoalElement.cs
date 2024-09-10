@@ -10,7 +10,8 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
-public abstract class CrowdfunderGoalElement : UmbracoElement<CrowdfunderGoalElement>, IFundDimensionValues {
+public abstract class CrowdfunderGoalElement<T> : UmbracoElement<T>, IFundDimensionValues
+    where T : CrowdfunderGoalElement<T> {
     public string Title => GetValue(x => x.Title);
     public decimal Amount => GetValue(x => x.Amount);
     public FundDimension1Value FundDimension1 => GetAs(x => x.FundDimension1);
@@ -23,6 +24,20 @@ public abstract class CrowdfunderGoalElement : UmbracoElement<CrowdfunderGoalEle
     public CrowdfunderFundGoalElement Fund { get; protected set; }
     public CrowdfunderFeedbackGoalElement Feedback { get; protected set; }
     
+    public override void Content(IPublishedElement content, IPublishedContent parent) {
+        base.Content(content, parent);
+        
+        if (Type == AllocationTypes.Fund) {
+            Fund = new CrowdfunderFundGoalElement();
+            Fund.Content(content, parent);
+        } else if (Type == AllocationTypes.Feedback) {
+            Feedback = new CrowdfunderFeedbackGoalElement();
+            Feedback.Content(content, parent);
+        } else {
+            throw UnrecognisedValueException.For(Type);
+        }
+    }
+    
     public IFundDimensionsOptions GetFundDimensionOptions() {
         return (IFundDimensionsOptions) Fund?.DonationItem ??
                (IFundDimensionsOptions) Feedback?.Scheme;
@@ -31,19 +46,15 @@ public abstract class CrowdfunderGoalElement : UmbracoElement<CrowdfunderGoalEle
     [JsonIgnore]
     public AllocationType Type {
         get {
-            if (Content().ContentType.Alias.EqualsInvariant(FundContentTypeAlias)) {
+            if (Content().ContentType.Alias.EqualsInvariant(CrowdfundingConstants.CrowdfunderGoal.Fund.Alias)) {
                 return AllocationTypes.Fund;
-            } else if (Content().ContentType.Alias.EqualsInvariant(FeedbackContentTypeAlias)) {
+            } else if (Content().ContentType.Alias.EqualsInvariant(CrowdfundingConstants.CrowdfunderGoal.Feedback.Alias)) {
                 return AllocationTypes.Feedback;
             } else {
                 throw UnrecognisedValueException.For(Content().ContentType.Alias);
             }
         }
     }
-    
-    public abstract string FundContentTypeAlias { get; }
-    public abstract string FeedbackContentTypeAlias { get; }
-    public abstract string CampaignGoalId { get; }
 
     [JsonIgnore]
     FundDimension1Value IFundDimensionValues.Dimension1 => FundDimension1;

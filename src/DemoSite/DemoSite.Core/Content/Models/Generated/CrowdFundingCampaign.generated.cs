@@ -95,7 +95,7 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("heroImages")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::Umbraco.Cms.Core.Models.PublishedContent.IPublishedElement> HeroImages => this.Value<global::System.Collections.Generic.IEnumerable<global::Umbraco.Cms.Core.Models.PublishedContent.IPublishedElement>>(_publishedValueFallback, "heroImages");
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingHeroImage> HeroImages => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingHeroImage>>(_publishedValueFallback, "heroImages");
 
 		///<summary>
 		/// Minimum Amount
@@ -105,20 +105,12 @@ namespace DemoSite.Content
 		public virtual decimal MinimumAmount => this.Value<decimal>(_publishedValueFallback, "minimumAmount");
 
 		///<summary>
-		/// Pledge Revision ID
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("pledgeRevisionID")]
-		public virtual string PledgeRevisionID => this.Value<string>(_publishedValueFallback, "pledgeRevisionID");
-
-		///<summary>
 		/// Tags
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("tags")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingCampaignTag> Tags => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingCampaignTag>>(_publishedValueFallback, "tags");
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingTag> Tags => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingTag>>(_publishedValueFallback, "tags");
 
 		///<summary>
 		/// Title

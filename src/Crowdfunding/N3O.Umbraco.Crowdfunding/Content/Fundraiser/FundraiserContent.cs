@@ -2,6 +2,8 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Cropper.Models;
 using N3O.Umbraco.Crowdfunding.Lookups;
+using N3O.Umbraco.Financial;
+using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Strings;
@@ -25,4 +27,8 @@ public class FundraiserContent : UmbracoContent<FundraiserContent> {
     public IEnumerable<FundraiserGoalElement> Goals => GetNestedAs(x => x.Goals);
     public IEnumerable<HeroImagesElement> HeroImages => GetNestedAs(x => x.HeroImages);
     public IEnumerable<IPublishedContent> Tags => GetPickedAs(x => x.Tags);
+
+    public Currency GetCurrency(ILookups lookups) {
+        return lookups.FindById<Currency>(Currency);
+    }
 }

@@ -13,15 +13,34 @@ public static class CrowdfundingConstants {
         public const string Alias = "crowdfundingCampaign";
     }
     
-    public static class CampaignGoal {
-        public const string Alias = "crowdfundingCampaignGoal";
-
+    public static class CrowdfunderGoal {
         public static class Feedback {
-            public const string Alias = "crowdfundingCampaignFeedbackGoal";
+            public const string Alias = "crowdfundingFeedbackCrowdfunderGoal";
+            
+            public static class Properties {
+                public const string CustomFields = "customFields";
+                public const string Scheme = "scheme";
+            }
         }
-    
+
         public static class Fund {
-            public const string Alias = "crowdfundingCampaignFundGoal";
+            public const string Alias = "crowdfundingFundCrowdfunderGoal";
+
+
+            public static class Properties {
+                public const string DonationItem = "donationItem";
+            }
+        }
+        
+        public static class Properties {
+            public const string Title = "title";
+            public const string Amount = "amount";
+            public const string FundDimension1 = "fundDimension1";
+            public const string FundDimension2 = "fundDimension2";
+            public const string FundDimension3 = "fundDimension3";
+            public const string FundDimension4 = "fundDimension4";
+            public const string PriceHandles = "priceHandles";
+            public const string Tags = "tags";
         }
     }
     
@@ -38,74 +57,24 @@ public static class CrowdfundingConstants {
             public const string Body = "body";
             public const string Campaign = "campaign";
             public const string Description = "description";
-            public static string DisplayName = "displayName";
+            public const string DisplayName = "displayName";
             public const string EndDate = "endDate";
             public const string HeroImages = "heroImages";
             public const string Owner = "owner";
             public const string Slug = "slug";
             public const string Status = "status";
-            public const string Team = "team";
             public const string Title = "title";
+        }
+    }
+    
+    public static class FundraiserGoal {
+        public static class Properties {
+            public const string CampaignGoalId = "campaignGoalId";
         }
     }
     
     public static class Fundraisers {
         public const string Alias = "crowdfundingFundraisers";
-    }
-
-    public static class FundraiserGoal {
-        public const string Alias = "crowdfundingFundraiserGoal";
-
-        public static class Feedback {
-            public const string Alias = "crowdfundingFundraiserFeedbackGoal";
-            
-            public static class CustomField {
-                public const string Alias = "crowdfundingFeedbackCustomField";
-
-                public static class Properties {
-                    public const string Alias = "alias";
-                    public const string Bool = "bool";
-                    public const string Date = "date";
-                    public const string Text = "text";
-                    public const string Type = "type";
-                }
-            }
-
-            public static class Properties {
-                public const string Scheme = "scheme";
-                public const string CustomFields = "customFields";
-            }
-        }
-    
-        public static class Fund {
-            public const string Alias = "crowdfundingFundraiserFundGoal";
-
-            public static class Properties {
-                public const string DonationItem = "donationItem";
-            }
-        }
-        
-        public static class Properties {
-            public const string Title = "title";
-            public const string Type = "type";
-            public const string Amount = "amount";
-            public const string FundDimension1 = "fundDimension1";
-            public const string FundDimension2 = "fundDimension2";
-            public const string FundDimension3 = "fundDimension3";
-            public const string FundDimension4 = "fundDimension4";
-            public const string CampaignGoalId = "campaignGoalId";
-            public const string PriceHandles = "priceHandles";
-            public const string Tags = "tags";
-            
-            public static class PriceHandle {
-                public const string Alias = "priceHandle";
-
-                public static class Properties {
-                    public const string Amount = "amount";
-                    public const string Description = "description";
-                }
-            }
-        }
     }
 
     public static class Tables {

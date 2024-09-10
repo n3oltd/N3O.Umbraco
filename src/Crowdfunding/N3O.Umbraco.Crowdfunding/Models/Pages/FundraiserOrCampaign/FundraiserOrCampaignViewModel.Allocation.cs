@@ -21,8 +21,9 @@ public partial class FundraiserOrCampaignViewModel<TContent> {
         public FeedbackScheme FeedbackScheme { get; set; }
         public IReadOnlyList<PriceHandle> PriceHandles { get; set; }
 
-        public static Allocation For(ICrowdfundingHelper crowdfundingHelper,
-                                     CrowdfunderGoalElement crowdfunderGoal) {
+        public static Allocation For<T>(ICrowdfundingHelper crowdfundingHelper,
+                                        CrowdfunderGoalElement<T> crowdfunderGoal)
+            where T : CrowdfunderGoalElement<T> {
             var allocation = new Allocation();
 
             allocation.Title = crowdfunderGoal.Title;

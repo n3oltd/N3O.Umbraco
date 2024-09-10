@@ -5,6 +5,7 @@ using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Crowdfunding.Lookups;
+using N3O.Umbraco.Giving;
 using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Giving.Extensions;
 using N3O.Umbraco.Giving.Lookups;
@@ -40,93 +41,105 @@ public static class ContentPublisherExtensions {
         contentPublisher.Content.ContentPicker(Fundraiser.Properties.Owner).SetMember(member);
         contentPublisher.Content.ContentPicker(Fundraiser.Properties.Campaign).SetContent(campaign);
         
-        PopulateGoals(contentPublisher, req.Goals, campaign);
+        PopulateFundraiserGoals(contentPublisher, req.Goals, campaign);
     }
     
-    public static void PopulateGoals(this IContentPublisher contentPublisher,
-                                     IEnumerable<FundraiserGoalReq> goals,
-                                     CampaignContent campaign) {
+    public static void PopulateFundraiserGoals(this IContentPublisher contentPublisher,
+                                               IEnumerable<FundraiserGoalReq> fundraiserGoals,
+                                               CampaignContent campaign) {
         var nestedContent = contentPublisher.Content.Nested(Fundraiser.Properties.Goals);
         
-        foreach (var fundraiserGoal in goals) {
-            var goal = campaign.Goals.SingleOrDefault(x => x.CampaignGoalId == fundraiserGoal.GoalId);
+        foreach (var fundraiserGoal in fundraiserGoals) {
+            var campaignGoal = campaign.Goals.SingleOrDefault(x => x.GetGoalId().EqualsInvariant(fundraiserGoal.GoalId));
 
-            if (goal == null) {
-                throw new Exception($"No goal found with ID {fundraiserGoal.GoalId}");
+            if (campaignGoal == null) {
+                throw new Exception($"No campaign goal found with ID {fundraiserGoal.GoalId}");
             }
             
-            if (goal.Type == AllocationTypes.Fund) {
-                AddFundGoal(nestedContent.Add(FundraiserGoal.Fund.Alias), fundraiserGoal, goal);
-            } else if (goal.Type == AllocationTypes.Feedback) {
-                AddFeedbackGoal(nestedContent.Add(FundraiserGoal.Feedback.Alias), fundraiserGoal, goal);
+            if (campaignGoal.Type == AllocationTypes.Fund) {
+                AddFundraiserFundGoal(nestedContent, fundraiserGoal, campaignGoal);
+            } else if (campaignGoal.Type == AllocationTypes.Feedback) {
+                AddFundraiserFeedbackGoal(nestedContent, fundraiserGoal, campaignGoal);
             } else {
-                throw UnrecognisedValueException.For(goal.Type);
+                throw UnrecognisedValueException.For(campaignGoal.Type);
             }
         }
     }
     
-    private static void AddFundGoal(IContentBuilder contentBuilder,
-                                    FundraiserGoalReq goal,
-                                    CampaignGoalElement campaignGoal) {
-        contentBuilder.ContentPicker(FundraiserGoal.Fund.Properties.DonationItem).SetContent(campaignGoal.Fund.DonationItem);
+    private static void AddFundraiserFundGoal(NestedPropertyBuilder nestedPropertyBuilder,
+                                              FundraiserGoalReq goal,
+                                              CampaignGoalElement campaignGoal) {
+        var contentBuilder = nestedPropertyBuilder.Add(CrowdfunderGoal.Fund.Alias);
         
-        AddGoal(contentBuilder, goal, campaignGoal);
+        PopulateFundraiserGoal(contentBuilder, goal, campaignGoal);
+        
+        contentBuilder.ContentPicker(CrowdfunderGoal.Fund.Properties.DonationItem)
+                      .SetContent(campaignGoal.Fund.DonationItem);
     }
     
-    private static void AddFeedbackGoal(IContentBuilder contentBuilder,
-                                        FundraiserGoalReq goal,
-                                        CampaignGoalElement campaignGoal) {
-        contentBuilder.ContentPicker(FundraiserGoal.Feedback.Properties.Scheme).SetContent(campaignGoal.Feedback.Scheme);
+    private static void AddFundraiserFeedbackGoal(NestedPropertyBuilder nestedPropertyBuilder,
+                                                  FundraiserGoalReq goal,
+                                                  CampaignGoalElement campaignGoal) {
+        var contentBuilder = nestedPropertyBuilder.Add(CrowdfunderGoal.Feedback.Alias);
+        
+        PopulateFundraiserGoal(contentBuilder, goal, campaignGoal);
+        
+        contentBuilder.ContentPicker(CrowdfunderGoal.Feedback.Properties.Scheme).SetContent(campaignGoal.Feedback.Scheme);
         
         PopulateCustomFields(contentBuilder, campaignGoal.Feedback.Scheme, goal.Feedback.CustomFields.Entries);
-        AddGoal(contentBuilder, goal, campaignGoal);
     }
     
-    private static void AddGoal(IContentBuilder contentBuilder,
-                                      FundraiserGoalReq goal,
-                                      CampaignGoalElement campaignGoal) {
-        contentBuilder.Numeric(FundraiserGoal.Properties.Amount).SetDecimal(goal.Amount);
-        contentBuilder.TextBox(FundraiserGoal.Properties.Title).Set(campaignGoal.Title);
-        contentBuilder.Label(FundraiserGoal.Properties.CampaignGoalId).Set(campaignGoal.CampaignGoalId);
-        contentBuilder.ContentPicker(FundraiserGoal.Properties.FundDimension1).SetContent(campaignGoal.FundDimension1);
-        contentBuilder.ContentPicker(FundraiserGoal.Properties.FundDimension2).SetContent(campaignGoal.FundDimension2);
-        contentBuilder.ContentPicker(FundraiserGoal.Properties.FundDimension3).SetContent(campaignGoal.FundDimension3);
-        contentBuilder.ContentPicker(FundraiserGoal.Properties.FundDimension4).SetContent(campaignGoal.FundDimension4);
-        contentBuilder.ContentPicker(FundraiserGoal.Properties.Tags).SetContent(campaignGoal.Tags);
+    private static void PopulateFundraiserGoal(IContentBuilder contentBuilder,
+                                               FundraiserGoalReq goal,
+                                               CampaignGoalElement campaignGoal) {
+        contentBuilder.Numeric(CrowdfunderGoal.Properties.Amount).SetDecimal(goal.Amount);
+        contentBuilder.TextBox(CrowdfunderGoal.Properties.Title).Set(campaignGoal.Title);
+        contentBuilder.Label(FundraiserGoal.Properties.CampaignGoalId).Set(campaignGoal.GetGoalId());
+        contentBuilder.ContentPicker(CrowdfunderGoal.Properties.FundDimension1).SetContent(campaignGoal.FundDimension1);
+        contentBuilder.ContentPicker(CrowdfunderGoal.Properties.FundDimension2).SetContent(campaignGoal.FundDimension2);
+        contentBuilder.ContentPicker(CrowdfunderGoal.Properties.FundDimension3).SetContent(campaignGoal.FundDimension3);
+        contentBuilder.ContentPicker(CrowdfunderGoal.Properties.FundDimension4).SetContent(campaignGoal.FundDimension4);
+        contentBuilder.ContentPicker(CrowdfunderGoal.Properties.Tags).SetContent(campaignGoal.Tags);
         
-        var priceHandles = contentBuilder.Nested(FundraiserGoal.Properties.PriceHandles);
+        var priceHandlesBuilder = contentBuilder.Nested(CrowdfunderGoal.Properties.PriceHandles);
 
         foreach (var priceHandle in campaignGoal.PriceHandles.OrEmpty()) {
-            PopulatePriceHandles(priceHandles.Add(FundraiserGoal.Properties.PriceHandle.Alias), priceHandle);
+            AddPriceHandle(priceHandlesBuilder, priceHandle);
         }
     }
     
     private static void PopulateCustomFields(IContentBuilder contentBuilder,
                                              FeedbackScheme feedbackScheme,
-                                             IEnumerable<FeedbackNewCustomFieldReq> customFields) {
-        var nestedContent = contentBuilder.Nested(FundraiserGoal.Feedback.Properties.CustomFields);
+                                             IEnumerable<FeedbackNewCustomFieldReq> newCustomFields) {
+        var nestedContent = contentBuilder.Nested(CrowdfunderGoal.Feedback.Properties.CustomFields);
 
-        foreach (var customField in customFields) {
-            var customFieldBuilder = nestedContent.Add(FundraiserGoal.Feedback.CustomField.Alias);
-            var feedbackCustomField = customField.ToFeedbackCustomField(feedbackScheme);
+        foreach (var newCustomField in newCustomFields) {
+            var customFieldBuilder = nestedContent.Add(GivingConstants.Aliases.FeedbackCustomField.ContentType);
+            var feedbackCustomField = newCustomField.ToFeedbackCustomField(feedbackScheme);
             
-            customFieldBuilder.TextBox(FundraiserGoal.Feedback.CustomField.Properties.Alias).Set(customField.Alias);
-            customFieldBuilder.DataList(FundraiserGoal.Feedback.CustomField.Properties.Type).SetLookups(feedbackCustomField.Type);
+            customFieldBuilder.TextBox(GivingConstants.Aliases.FeedbackCustomField.Properties.Alias).Set(newCustomField.Alias);
+            customFieldBuilder.DataList(GivingConstants.Aliases.FeedbackCustomField.Properties.Type).SetLookups(feedbackCustomField.Type);
+            customFieldBuilder.TextBox(GivingConstants.Aliases.FeedbackCustomField.Properties.Name).Set(feedbackCustomField.Name);
 
             if (feedbackCustomField.Type == FeedbackCustomFieldTypes.Bool) {
-                customFieldBuilder.Boolean(FundraiserGoal.Feedback.CustomField.Properties.Bool).Set(feedbackCustomField.Bool);
+                customFieldBuilder.Boolean(GivingConstants.Aliases.FeedbackCustomField.Properties.Bool).Set(feedbackCustomField.Bool);
             } else if (feedbackCustomField.Type == FeedbackCustomFieldTypes.Date) {
-                customFieldBuilder.DateTime(FundraiserGoal.Feedback.CustomField.Properties.Date).SetDate(feedbackCustomField.Date);
+                customFieldBuilder.DateTime(GivingConstants.Aliases.FeedbackCustomField.Properties.Date).SetDate(feedbackCustomField.Date);
             }  else if (feedbackCustomField.Type == FeedbackCustomFieldTypes.Text) {
-                customFieldBuilder.TextBox(FundraiserGoal.Feedback.CustomField.Properties.Text).Set(feedbackCustomField.Text);
+                customFieldBuilder.TextBox(GivingConstants.Aliases.FeedbackCustomField.Properties.Text).Set(feedbackCustomField.Text);
             } else {
-                throw UnrecognisedValueException.For(customField);
+                throw UnrecognisedValueException.For(feedbackCustomField.Type);
             }
         }
     }
     
-    private static void PopulatePriceHandles(IContentBuilder contentBuilder, PriceHandleElement priceHandleElement) {
-        contentBuilder.Numeric(FundraiserGoal.Properties.PriceHandle.Properties.Amount).SetDecimal(priceHandleElement.Amount);
-        contentBuilder.TextBox(FundraiserGoal.Properties.PriceHandle.Properties.Description).Set(priceHandleElement.Description);
+    private static void AddPriceHandle(NestedPropertyBuilder propertyBuilder, PriceHandleElement priceHandleElement) {
+        var contentBuilder = propertyBuilder.Add(GivingConstants.Aliases.PriceHandle.ContentType);
+        
+        contentBuilder.Numeric(GivingConstants.Aliases.PriceHandle.Properties.Amount)
+                      .SetDecimal(priceHandleElement.Amount);
+        
+        contentBuilder.TextBox(GivingConstants.Aliases.PriceHandle.Properties.Description)
+                      .Set(priceHandleElement.Description);
     }
 }

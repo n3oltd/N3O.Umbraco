@@ -18,39 +18,9 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Content
 {
-	// Mixin Content Type with alias "crowdfundingCampaignGoal"
-	/// <summary>Campaign Goal</summary>
-	public partial interface ICrowdfundingCampaignGoal : IPublishedElement
-	{
-		/// <summary>Location</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		global::DemoSite.Content.FundDimension1Value FundDimension1 { get; }
-
-		/// <summary>Theme</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		global::DemoSite.Content.FundDimension2Value FundDimension2 { get; }
-
-		/// <summary>Stipulation</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		global::DemoSite.Content.FundDimension3Value FundDimension3 { get; }
-
-		/// <summary>Options</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingCampaignGoalOption> Options { get; }
-
-		/// <summary>Title</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		string Title { get; }
-	}
-
 	/// <summary>Campaign Goal</summary>
 	[PublishedModel("crowdfundingCampaignGoal")]
-	public partial class CrowdfundingCampaignGoal : PublishedElementModel, ICrowdfundingCampaignGoal
+	public partial class CrowdfundingCampaignGoal : PublishedElementModel, ICrowdfundingCrowdfunderGoal
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
@@ -80,17 +50,19 @@ namespace DemoSite.Content
 		// properties
 
 		///<summary>
+		/// Amount
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[ImplementPropertyType("amount")]
+		public virtual decimal Amount => global::DemoSite.Content.CrowdfundingCrowdfunderGoal.GetAmount(this, _publishedValueFallback);
+
+		///<summary>
 		/// Location
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("fundDimension1")]
-		public virtual global::DemoSite.Content.FundDimension1Value FundDimension1 => GetFundDimension1(this, _publishedValueFallback);
-
-		/// <summary>Static getter for Location</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static global::DemoSite.Content.FundDimension1Value GetFundDimension1(ICrowdfundingCampaignGoal that, IPublishedValueFallback publishedValueFallback) => that.Value<global::DemoSite.Content.FundDimension1Value>(publishedValueFallback, "fundDimension1");
+		public virtual global::DemoSite.Content.FundDimension1Value FundDimension1 => global::DemoSite.Content.CrowdfundingCrowdfunderGoal.GetFundDimension1(this, _publishedValueFallback);
 
 		///<summary>
 		/// Theme
@@ -98,12 +70,7 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("fundDimension2")]
-		public virtual global::DemoSite.Content.FundDimension2Value FundDimension2 => GetFundDimension2(this, _publishedValueFallback);
-
-		/// <summary>Static getter for Theme</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static global::DemoSite.Content.FundDimension2Value GetFundDimension2(ICrowdfundingCampaignGoal that, IPublishedValueFallback publishedValueFallback) => that.Value<global::DemoSite.Content.FundDimension2Value>(publishedValueFallback, "fundDimension2");
+		public virtual global::DemoSite.Content.FundDimension2Value FundDimension2 => global::DemoSite.Content.CrowdfundingCrowdfunderGoal.GetFundDimension2(this, _publishedValueFallback);
 
 		///<summary>
 		/// Stipulation
@@ -111,25 +78,23 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("fundDimension3")]
-		public virtual global::DemoSite.Content.FundDimension3Value FundDimension3 => GetFundDimension3(this, _publishedValueFallback);
-
-		/// <summary>Static getter for Stipulation</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static global::DemoSite.Content.FundDimension3Value GetFundDimension3(ICrowdfundingCampaignGoal that, IPublishedValueFallback publishedValueFallback) => that.Value<global::DemoSite.Content.FundDimension3Value>(publishedValueFallback, "fundDimension3");
+		public virtual global::DemoSite.Content.FundDimension3Value FundDimension3 => global::DemoSite.Content.CrowdfundingCrowdfunderGoal.GetFundDimension3(this, _publishedValueFallback);
 
 		///<summary>
-		/// Options
+		/// Price Handles
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("options")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingCampaignGoalOption> Options => GetOptions(this, _publishedValueFallback);
+		[ImplementPropertyType("priceHandles")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.PriceHandle> PriceHandles => global::DemoSite.Content.CrowdfundingCrowdfunderGoal.GetPriceHandles(this, _publishedValueFallback);
 
-		/// <summary>Static getter for Options</summary>
+		///<summary>
+		/// Tags
+		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingCampaignGoalOption> GetOptions(ICrowdfundingCampaignGoal that, IPublishedValueFallback publishedValueFallback) => that.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingCampaignGoalOption>>(publishedValueFallback, "options");
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("tags")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingTag> Tags => global::DemoSite.Content.CrowdfundingCrowdfunderGoal.GetTags(this, _publishedValueFallback);
 
 		///<summary>
 		/// Title
@@ -137,11 +102,6 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("title")]
-		public virtual string Title => GetTitle(this, _publishedValueFallback);
-
-		/// <summary>Static getter for Title</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static string GetTitle(ICrowdfundingCampaignGoal that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "title");
+		public virtual string Title => global::DemoSite.Content.CrowdfundingCrowdfunderGoal.GetTitle(this, _publishedValueFallback);
 	}
 }

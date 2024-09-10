@@ -3,6 +3,6 @@ using N3O.Umbraco.Giving.Lookups;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
-public abstract class CrowdfunderFundGoalElement : UmbracoElement<CrowdfunderFundGoalElement> {
+public class CrowdfunderFundGoalElement : UmbracoElement<CrowdfunderFundGoalElement> {
     public DonationItem DonationItem => GetAs(x => x.DonationItem);
 }
