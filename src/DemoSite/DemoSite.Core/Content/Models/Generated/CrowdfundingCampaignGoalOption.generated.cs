@@ -18,14 +18,14 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Content
 {
-	/// <summary>Feedback Custom Field</summary>
-	[PublishedModel("FeedbackCustomField")]
-	public partial class FeedbackCustomField : PublishedElementModel
+	/// <summary>Campaign Goal Option</summary>
+	[PublishedModel("crowdfundingCampaignGoalOption")]
+	public partial class CrowdfundingCampaignGoalOption : PublishedElementModel
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		public new const string ModelTypeAlias = "FeedbackCustomField";
+		public new const string ModelTypeAlias = "crowdfundingCampaignGoalOption";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
@@ -34,14 +34,14 @@ namespace DemoSite.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<FeedbackCustomField, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<CrowdfundingCampaignGoalOption, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public FeedbackCustomField(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
+		public CrowdfundingCampaignGoalOption(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
@@ -50,33 +50,17 @@ namespace DemoSite.Content
 		// properties
 
 		///<summary>
-		/// Name
+		/// Amount
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("fieldName")]
-		public virtual string FieldName => this.Value<string>(_publishedValueFallback, "fieldName");
+		[ImplementPropertyType("amount")]
+		public virtual decimal Amount => this.Value<decimal>(_publishedValueFallback, "amount");
 
 		///<summary>
-		/// Required
+		/// Quantity
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[ImplementPropertyType("fieldRequired")]
-		public virtual bool FieldRequired => this.Value<bool>(_publishedValueFallback, "fieldRequired");
-
-		///<summary>
-		/// Max Length
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[ImplementPropertyType("fieldTextMaxLength")]
-		public virtual int FieldTextMaxLength => this.Value<int>(_publishedValueFallback, "fieldTextMaxLength");
-
-		///<summary>
-		/// Type
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("fieldType")]
-		public virtual global::N3O.Umbraco.Giving.Lookups.FeedbackCustomFieldType FieldType => this.Value<global::N3O.Umbraco.Giving.Lookups.FeedbackCustomFieldType>(_publishedValueFallback, "fieldType");
+		[ImplementPropertyType("quantity")]
+		public virtual int Quantity => this.Value<int>(_publishedValueFallback, "quantity");
 	}
 }
