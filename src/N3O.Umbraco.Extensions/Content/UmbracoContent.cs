@@ -37,7 +37,7 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
         var values = (IEnumerable) Content().Value(alias) ?? Enumerable.Empty<IPublishedElement>();
 
-        return values.Cast<IPublishedElement>().Select(x => x.As<TProperty>());
+        return values.Cast<IPublishedElement>().Select(x => x.As<TProperty>(_content));
     }
     
     protected TProperty GetPickedAs<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
@@ -98,7 +98,7 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
         } else if (propertyValue is IPublishedContent publishedContent) {
             return publishedContent.As<TProperty>();
         } else if (propertyValue is IPublishedElement publishedElement) {
-            return publishedElement.As<TProperty>();
+            return publishedElement.As<TProperty>(_content);
         } else {
             return default;
         }

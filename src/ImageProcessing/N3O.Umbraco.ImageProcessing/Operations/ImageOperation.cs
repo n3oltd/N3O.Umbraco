@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.ImageProcessing.Content;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using Umbraco.Cms.Core.IO;
@@ -14,8 +15,8 @@ public abstract class ImageOperation<TElement> : IImageOperation where TElement 
         _mediaFileManager = mediaFileManager;
     }
     
-    public void Apply(IPublishedElement options, IImageProcessingContext image) {
-        Apply(options.As<TElement>(), image);
+    public void Apply(IPublishedElement options, IImageProcessingContext image, ImagePresetContent preset) {
+        Apply(options.As<TElement>(preset.Content()), image);
     }
 
     public bool IsOperation(IPublishedElement options) {

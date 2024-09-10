@@ -29,11 +29,11 @@ public class ImageProcessor : IImageProcessor {
         _image = image;
     }
     
-    public IImageProcessor ApplyOperation(IPublishedElement options) {
+    public IImageProcessor ApplyOperation(IPublishedElement options, ImagePresetContent preset) {
         var operation = _allOperations.Single(x => x.IsOperation(options));
         
         _image.Mutate(c => {
-            operation.Apply(options, c);
+            operation.Apply(options, c, preset);
         });
 
         return this;
@@ -43,7 +43,7 @@ public class ImageProcessor : IImageProcessor {
         var preset = _contentLocator.Single<ImagePresetContent>(x => x.Content().Name.EqualsInvariant(presetName));
 
         foreach (var operation in preset.Operations) {
-            ApplyOperation(operation);
+            ApplyOperation(operation, preset);
         }
         
         return this;

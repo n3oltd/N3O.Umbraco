@@ -4,5 +4,6 @@ namespace N3O.Umbraco.Content;
 
 public interface IUmbracoElement {
     IPublishedElement Content();
-    void Content(IPublishedElement content);
+    IPublishedContent Parent();
+    void Content(IPublishedElement content, IPublishedContent parent);
 }
