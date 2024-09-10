@@ -12,10 +12,16 @@ namespace N3O.Umbraco.Content;
 
 public abstract class UmbracoElement<T> : Value, IUmbracoElement {
     private IPublishedElement _content;
+    private IPublishedContent _parent;
 
     // Do not use get/set property as causes issues with model validation
     public virtual IPublishedElement Content() => _content;
-    public virtual void Content(IPublishedElement content) => _content = content;
+    public virtual IPublishedContent Parent() => _parent;
+
+    public virtual void Content(IPublishedElement content, IPublishedContent parent) {
+        _content = content;
+        _parent = parent;
+    }
 
     protected TProperty GetAs<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
@@ -35,7 +41,7 @@ public abstract class UmbracoElement<T> : Value, IUmbracoElement {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
         var values = (IEnumerable) Content().Value(alias) ?? Enumerable.Empty<IPublishedElement>();
 
-        return values.Cast<IPublishedElement>().Select(x => x.As<TProperty>());
+        return values.Cast<IPublishedElement>().Select(x => x.As<TProperty>(_parent));
     }
     
     protected TProperty GetPickedAs<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
@@ -80,7 +86,7 @@ public abstract class UmbracoElement<T> : Value, IUmbracoElement {
         } else if (propertyValue is IPublishedContent publishedContent) {
             return publishedContent.As<TProperty>();
         } else if (propertyValue is IPublishedElement publishedElement) {
-            return publishedElement.As<TProperty>();
+            return publishedElement.As<TProperty>(_parent);
         } else {
             return default;
         }

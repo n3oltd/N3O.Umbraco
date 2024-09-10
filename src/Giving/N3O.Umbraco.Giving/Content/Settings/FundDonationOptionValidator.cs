@@ -45,7 +45,7 @@ public class FundDonationOptionValidator : DonationOptionValidator<FundDonationO
         var property = content.NestedContentProperties.SingleOrDefault(x => x.Alias.EqualsInvariant(propertyAlias));
         var priceHandles = property.IfNotNull(x => ContentHelper.GetNestedContents(x))
                                    .OrEmpty()
-                                   .As<PriceHandleElement>()
+                                   .As<PriceHandleElement>(null)
                                    .ToList();
 
         if (priceHandles.HasAny()) {
