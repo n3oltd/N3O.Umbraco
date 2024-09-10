@@ -3,4 +3,4 @@
 namespace N3O.Umbraco.Crowdfunding.Content;
 
 [UmbracoContent(CrowdfundingConstants.CampaignGoal.Fund.Alias)]
-public class FundCampaignGoalElement : CrowdfundingFundGoalElement { }
+public class FundCampaignGoalElement : CrowdfunderFundGoalElement { }

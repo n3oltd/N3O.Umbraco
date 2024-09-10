@@ -1,5 +1,4 @@
 ﻿using N3O.Umbraco.Attributes;
-using System;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 

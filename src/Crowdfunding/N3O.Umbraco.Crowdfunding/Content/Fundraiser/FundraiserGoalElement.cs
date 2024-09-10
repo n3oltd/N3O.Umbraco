@@ -6,7 +6,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Crowdfunding.Content;
 
 [UmbracoContent(CrowdfundingConstants.FundraiserGoal.Alias)]
-public class FundraiserGoalElement : CrowdfundingGoalElement {
+public class FundraiserGoalElement : CrowdfunderGoalElement {
     public override string CampaignGoalId => GetValue(x => x.CampaignGoalId);
     
     public override void Content(IPublishedElement content, IPublishedContent parent) {

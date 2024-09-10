@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Crm;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Exceptions;
@@ -8,6 +9,7 @@ using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Giving.Extensions;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -18,14 +20,21 @@ namespace N3O.Umbraco.Crowdfunding.Extensions;
 public static class ContentPublisherExtensions {
     public static void PopulateFundraiser(this IContentPublisher contentPublisher,
                                           IContentLocator contentLocator,
+                                          IAccountInfoAccessor accountInfoAccessor,
                                           CreateFundraiserReq req,
                                           IPublishedContent member) {
+        var accountReference = accountInfoAccessor.GetReference();
+
+        if (!accountReference.HasValue()) {
+            throw new Exception("Could not resolve a valid account reference when populating fundraiser");
+        }
+        
         var campaign = contentLocator.ById<CampaignContent>(req.CampaignId.GetValueOrThrow());
         
         contentPublisher.Content.Label(Fundraiser.Properties.Slug).Set(req.Slug);
         contentPublisher.Content.Label(Fundraiser.Properties.Title).Set(req.Title);
-        contentPublisher.Content.Label(Fundraiser.Properties.AccountReference).Set(req.AccountReference);
-        contentPublisher.Content.Label(Fundraiser.Properties.DisplayName).Set(req.DisplayName);
+        contentPublisher.Content.Label(Fundraiser.Properties.AccountReference).Set(accountReference);
+        contentPublisher.Content.Label(Fundraiser.Properties.DisplayName).Set(req.Name);
         contentPublisher.Content.DateTime(Fundraiser.Properties.EndDate).SetDate(req.EndDate);
         contentPublisher.Content.Label(Fundraiser.Properties.Status).Set(FundraiserStatuses.Pending.Name);
         contentPublisher.Content.ContentPicker(Fundraiser.Properties.Owner).SetMember(member);
@@ -43,7 +52,7 @@ public static class ContentPublisherExtensions {
             var goal = campaign.Goals.SingleOrDefault(x => x.CampaignGoalId == fundraiserGoal.GoalId);
 
             if (goal == null) {
-                throw new Exception($"No goal found with id {fundraiserGoal.GoalId}");
+                throw new Exception($"No goal found with ID {fundraiserGoal.GoalId}");
             }
             
             if (goal.Type == AllocationTypes.Fund) {

@@ -4,7 +4,7 @@ using System;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
-public class CrowdfundingFeedbackCustomFieldElement : UmbracoElement<CrowdfundingFeedbackCustomFieldElement> {
+public class CrowdfunderFeedbackCustomFieldElement : UmbracoElement<CrowdfunderFeedbackCustomFieldElement> {
     public string Alias => GetValue(x => x.Alias);
     public string Text => GetValue(x => x.Text);
     public bool? Bool => GetValue(x => x.Bool);

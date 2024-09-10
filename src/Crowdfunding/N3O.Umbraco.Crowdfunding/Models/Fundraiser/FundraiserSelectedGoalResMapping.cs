@@ -9,7 +9,7 @@ public class FundraiserSelectedGoalResMapping : IMapDefinition {
     }
 
     private void Map(FundraiserGoalElement src, FundraiserSelectedGoalRes dest, MapperContext ctx) {
-        dest.GoalId = src.CampaignGoalID;
+        dest.GoalId = src.CampaignGoalId;
         dest.Value = src.Amount;
     }
 }

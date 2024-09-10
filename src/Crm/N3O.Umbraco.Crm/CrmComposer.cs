@@ -9,6 +9,6 @@ public class CrmComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddOpenApiDocument(CrmConstants.ApiName);
         
-        builder.Services.AddTransient<IAccountIdAccessor, AccountIdAccessor>();
+        builder.Services.AddTransient<IAccountInfoAccessor, AccountInfoAccessor>();
     }
 }

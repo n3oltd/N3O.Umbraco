@@ -19,7 +19,7 @@ public partial class FundraiserOrCampaignViewModel<TContent> {
                                        FundraiserContent fundraiser) {
             var progress = new ProgressInfo();
             
-            progress.TargetAmount = crowdfundingHelper.GetQuoteMoney(fundraiser.Allocations.Sum(x => x.Amount));
+            progress.TargetAmount = crowdfundingHelper.GetQuoteMoney(fundraiser.Goals.Sum(x => x.Amount));
             progress.RaisedAmount = crowdfundingHelper.GetQuoteMoney(onlineContributions.Sum(x => x.BaseAmount));
             progress.SupportersCount = onlineContributions.Count();
             progress.PercentageCompleted = progress.RaisedAmount.Amount / progress.TargetAmount.Amount * 100m;

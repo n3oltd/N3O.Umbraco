@@ -16,7 +16,7 @@ public class FundraiserGoalReqValidator : ModelValidator<FundraiserGoalReq> {
     }
 
     public class Strings : ValidationStrings {
-        public string SpecifyAmount => "Please specify the amount for the allocation";
-        public string SpecifyGoalId => "Please specify the goal id for the allocation";
+        public string SpecifyAmount => "Please specify the amount";
+        public string SpecifyGoalId => "Please specify the goal IDn";
     }
 }

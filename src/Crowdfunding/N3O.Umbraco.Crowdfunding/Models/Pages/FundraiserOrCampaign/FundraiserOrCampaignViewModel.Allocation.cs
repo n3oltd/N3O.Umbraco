@@ -22,21 +22,20 @@ public partial class FundraiserOrCampaignViewModel<TContent> {
         public IReadOnlyList<PriceHandle> PriceHandles { get; set; }
 
         public static Allocation For(ICrowdfundingHelper crowdfundingHelper,
-                                     FundraiserAllocationElement fundraiserAllocation) {
+                                     CrowdfunderGoalElement crowdfunderGoal) {
             var allocation = new Allocation();
 
-            allocation.Title = fundraiserAllocation.Title;
-            allocation.Amount = fundraiserAllocation.Amount;
-            allocation.FundDimension1Value = fundraiserAllocation.FundDimension1;
-            allocation.FundDimension2Value = fundraiserAllocation.FundDimension2;
-            allocation.FundDimension3Value = fundraiserAllocation.FundDimension3;
-            allocation.FundDimension4Value = fundraiserAllocation.FundDimension4;
-            allocation.Type = fundraiserAllocation.Type;
-            allocation.DonationItem = fundraiserAllocation.Fund?.DonationItem;
-            allocation.SponsorshipScheme = fundraiserAllocation.Sponsorship?.Scheme;
-            allocation.FeedbackScheme = fundraiserAllocation.Feedback?.Scheme;
-            allocation.PriceHandles = fundraiserAllocation.PriceHandles
-                                                          .ToReadOnlyList(x => PriceHandle.For(crowdfundingHelper, x));
+            allocation.Title = crowdfunderGoal.Title;
+            allocation.Amount = crowdfunderGoal.Amount;
+            allocation.FundDimension1Value = crowdfunderGoal.FundDimension1;
+            allocation.FundDimension2Value = crowdfunderGoal.FundDimension2;
+            allocation.FundDimension3Value = crowdfunderGoal.FundDimension3;
+            allocation.FundDimension4Value = crowdfunderGoal.FundDimension4;
+            allocation.Type = crowdfunderGoal.Type;
+            allocation.DonationItem = crowdfunderGoal.Fund?.DonationItem;
+            allocation.FeedbackScheme = crowdfunderGoal.Feedback?.Scheme;
+            allocation.PriceHandles = crowdfunderGoal.PriceHandles
+                                                     .ToReadOnlyList(x => PriceHandle.For(crowdfundingHelper, x));
 
             return allocation;
         }

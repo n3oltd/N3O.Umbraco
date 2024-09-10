@@ -16,7 +16,7 @@ public partial class ViewEditFundraiserViewModel : FundraiserOrCampaignViewModel
         
         // TODO Talha this is needed on CampaignViewModel also, so should be refactored to avoid the hard dependency
         // on fundraiser
-        viewModel.Allocations = fundraiser.Allocations.ToReadOnlyList(x => Allocation.For(crowdfundingHelper, x));
+        viewModel.Allocations = fundraiser.Goals.ToReadOnlyList(x => Allocation.For(crowdfundingHelper, x));
         viewModel.Progress = ProgressInfo.For(crowdfundingHelper, onlineContributions, fundraiser);
         viewModel.Owner = OwnerInfo.For(fundraiser);
         

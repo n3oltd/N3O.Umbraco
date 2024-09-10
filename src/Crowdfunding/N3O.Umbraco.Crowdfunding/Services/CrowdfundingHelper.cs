@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
+using N3O.Umbraco.Crm;
 using N3O.Umbraco.CrowdFunding;
 using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.Content;
@@ -27,6 +28,7 @@ public partial class CrowdfundingHelper : ICrowdfundingHelper {
     private readonly Lazy<IMemberManager> _memberManager;
     private readonly Lazy<ICurrencyAccessor> _currencyAccessor;
     private readonly Lazy<IForexConverter> _forexConverter;
+    private readonly Lazy<IAccountInfoAccessor> _accountInfoAccessor;
 
     public CrowdfundingHelper(Lazy<FundraiserAccessControl> fundraiserAccessControl,
                               Lazy<IContentEditor> contentEditor,
@@ -34,7 +36,8 @@ public partial class CrowdfundingHelper : ICrowdfundingHelper {
                               Lazy<IContentLocator> contentLocator,
                               Lazy<IMemberManager> memberManager,
                               Lazy<ICurrencyAccessor> currencyAccessor,
-                              Lazy<IForexConverter> forexConverter) {
+                              Lazy<IForexConverter> forexConverter,
+                              Lazy<IAccountInfoAccessor> accountInfoAccessor) {
         _fundraiserAccessControl = fundraiserAccessControl;
         _contentEditor = contentEditor;
         _contentService = contentService;
@@ -42,6 +45,7 @@ public partial class CrowdfundingHelper : ICrowdfundingHelper {
         _memberManager = memberManager;
         _currencyAccessor = currencyAccessor;
         _forexConverter = forexConverter;
+        _accountInfoAccessor = accountInfoAccessor;
     }
     
     public async Task<CreateFundraiserResult> CreateFundraiserAsync(CreateFundraiserCommand req) {
@@ -53,7 +57,7 @@ public partial class CrowdfundingHelper : ICrowdfundingHelper {
          
          var member = await _memberManager.Value.GetCurrentPublishedMemberAsync();
          
-         contentPublisher.PopulateFundraiser(_contentLocator.Value, req.Model, member);
+         contentPublisher.PopulateFundraiser(_contentLocator.Value, _accountInfoAccessor.Value, req.Model, member);
         
         var publishResult = contentPublisher.SaveAndPublish();
 

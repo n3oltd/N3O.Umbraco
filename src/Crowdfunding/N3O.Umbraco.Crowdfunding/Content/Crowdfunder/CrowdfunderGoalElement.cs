@@ -10,7 +10,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
-public abstract class CrowdfundingGoalElement : UmbracoElement<CrowdfundingGoalElement>, IFundDimensionValues {
+public abstract class CrowdfunderGoalElement : UmbracoElement<CrowdfunderGoalElement>, IFundDimensionValues {
     public string Title => GetValue(x => x.Title);
     public decimal Amount => GetValue(x => x.Amount);
     public FundDimension1Value FundDimension1 => GetAs(x => x.FundDimension1);
@@ -20,8 +20,8 @@ public abstract class CrowdfundingGoalElement : UmbracoElement<CrowdfundingGoalE
     public IEnumerable<IPublishedContent> Tags => GetPickedAs(x => x.Tags);
     public IEnumerable<PriceHandleElement> PriceHandles => GetNestedAs(x => x.PriceHandles);
     
-    public CrowdfundingFundGoalElement Fund { get; protected set; }
-    public CrowdfundingFeedbackGoalElement Feedback { get; protected set; }
+    public CrowdfunderFundGoalElement Fund { get; protected set; }
+    public CrowdfunderFeedbackGoalElement Feedback { get; protected set; }
     
     public IFundDimensionsOptions GetFundDimensionOptions() {
         return (IFundDimensionsOptions) Fund?.DonationItem ??

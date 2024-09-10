@@ -54,15 +54,23 @@ public abstract class Cookie : ICookie {
     }
     
     protected abstract string Name { get; }
-    protected abstract TimeSpan Lifetime { get; }
 
+    protected virtual TimeSpan Lifetime => TimeSpan.Zero;
+    protected virtual bool Session => false;
     protected virtual string GetDefaultValue() => null;
 
     protected virtual void SetOptions(CookieOptions cookieOptions) {
         cookieOptions.Path = "/";
-        cookieOptions.Expires = DateTimeOffset.UtcNow.Add(Lifetime);
         cookieOptions.IsEssential = true;
         cookieOptions.HttpOnly = true;
         cookieOptions.Secure = true;
+
+        if (!Session) {
+            if (Lifetime == TimeSpan.Zero) {
+                throw new Exception("Lifetime must be specified for non-session cookies");
+            }
+            
+            cookieOptions.Expires = DateTimeOffset.UtcNow.Add(Lifetime);
+        }
     }
 }
