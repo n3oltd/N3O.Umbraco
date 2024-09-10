@@ -12,6 +12,9 @@ namespace N3O.Umbraco.Crowdfunding.Content;
 public class FundraiserContent : UmbracoContent<FundraiserContent> {
     public string Title => GetValue(x => x.Title);
     public string Description => GetValue(x => x.Description);
+    public string Currency => GetValue(x => x.Currency);
+    public string AccountReference => GetValue(x => x.AccountReference);
+    public string AllocationsHash => GetValue(x => x.AllocationsHash);
     public string Slug => GetValue(x => x.Slug);
     public HtmlEncodedString Body => GetValue(x => x.Body);
     public CroppedImage BackgroundImage => GetValue(x => x.BackgroundImage);
@@ -19,6 +22,7 @@ public class FundraiserContent : UmbracoContent<FundraiserContent> {
     public IPublishedContent Owner => GetPickedAs(x => x.Owner);
     public TeamContent Team => GetPickedAs(x => x.Team);
     public FundraiserStatus Status => GetStaticLookupByNameAs(x => x.Status);
+    public IEnumerable<FundraiserGoalElement> Goals => GetNestedAs(x => x.Goals);
     public IEnumerable<HeroImagesElement> HeroImages => GetNestedAs(x => x.HeroImages);
-    public IEnumerable<FundraiserAllocationElement> Allocations => GetNestedAs(x => x.Allocations);
+    public IEnumerable<IPublishedContent> Tags => GetPickedAs(x => x.Tags);
 }

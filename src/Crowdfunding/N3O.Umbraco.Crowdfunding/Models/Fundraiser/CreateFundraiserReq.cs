@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Attributes;
+using NodaTime;
 using System;
 using System.Collections.Generic;
 
@@ -11,9 +12,15 @@ public class CreateFundraiserReq {
     [Name("Slug")]
     public string Slug { get; set; }
     
+    [Name("Name")]
+    public string Name { get; set; }
+    
     [Name("Campaign ID")]
     public Guid? CampaignId { get; set; }
     
+    [Name("End Date")]
+    public LocalDate? EndDate { get; set; }
+    
     [Name("Allocations")]
-    public IEnumerable<FundraiserAllocationReq> Allocations { get; set; }
+    public IEnumerable<FundraiserGoalReq> Goals { get; set; }
 }
