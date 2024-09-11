@@ -20,7 +20,7 @@ namespace DemoSite.Content
 {
 	/// <summary>Fundraiser</summary>
 	[PublishedModel("crowdfundingFundraiser")]
-	public partial class CrowdfundingFundraiser : PublishedContentModel
+	public partial class CrowdfundingFundraiser : PublishedContentModel, ICrowdfundingCrowdfunder
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
@@ -50,20 +50,12 @@ namespace DemoSite.Content
 		// properties
 
 		///<summary>
-		/// Background Image
+		/// Account
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("backgroundImage")]
-		public virtual global::N3O.Umbraco.Cropper.Models.CroppedImage BackgroundImage => this.Value<global::N3O.Umbraco.Cropper.Models.CroppedImage>(_publishedValueFallback, "backgroundImage");
-
-		///<summary>
-		/// Body
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("body")]
-		public virtual global::Umbraco.Cms.Core.Strings.IHtmlEncodedString Body => this.Value<global::Umbraco.Cms.Core.Strings.IHtmlEncodedString>(_publishedValueFallback, "body");
+		[ImplementPropertyType("account")]
+		public virtual string Account => this.Value<string>(_publishedValueFallback, "account");
 
 		///<summary>
 		/// Campaign
@@ -72,30 +64,6 @@ namespace DemoSite.Content
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("campaign")]
 		public virtual global::DemoSite.Content.CrowdfundingCampaign Campaign => this.Value<global::DemoSite.Content.CrowdfundingCampaign>(_publishedValueFallback, "campaign");
-
-		///<summary>
-		/// Description
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("description")]
-		public virtual string Description => this.Value<string>(_publishedValueFallback, "description");
-
-		///<summary>
-		/// Goals
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("goals")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::Umbraco.Cms.Core.Models.PublishedContent.IPublishedElement> Goals => this.Value<global::System.Collections.Generic.IEnumerable<global::Umbraco.Cms.Core.Models.PublishedContent.IPublishedElement>>(_publishedValueFallback, "goals");
-
-		///<summary>
-		/// Hero Images
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("heroImages")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingHeroImage> HeroImages => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingHeroImage>>(_publishedValueFallback, "heroImages");
 
 		///<summary>
 		/// Owner
@@ -122,11 +90,67 @@ namespace DemoSite.Content
 		public virtual string Status => this.Value<string>(_publishedValueFallback, "status");
 
 		///<summary>
+		/// Hash
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("allocationsHash")]
+		public virtual string AllocationsHash => global::DemoSite.Content.CrowdfundingCrowdfunder.GetAllocationsHash(this, _publishedValueFallback);
+
+		///<summary>
+		/// Background Image
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("backgroundImage")]
+		public virtual global::N3O.Umbraco.Cropper.Models.CroppedImage BackgroundImage => global::DemoSite.Content.CrowdfundingCrowdfunder.GetBackgroundImage(this, _publishedValueFallback);
+
+		///<summary>
+		/// Body
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("body")]
+		public virtual global::Umbraco.Cms.Core.Strings.IHtmlEncodedString Body => global::DemoSite.Content.CrowdfundingCrowdfunder.GetBody(this, _publishedValueFallback);
+
+		///<summary>
+		/// Currency
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("currency")]
+		public virtual global::N3O.Umbraco.Financial.Currency Currency => global::DemoSite.Content.CrowdfundingCrowdfunder.GetCurrency(this, _publishedValueFallback);
+
+		///<summary>
+		/// Description
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("description")]
+		public virtual string Description => global::DemoSite.Content.CrowdfundingCrowdfunder.GetDescription(this, _publishedValueFallback);
+
+		///<summary>
+		/// Goals
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("goals")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::Umbraco.Cms.Core.Models.PublishedContent.IPublishedElement> Goals => global::DemoSite.Content.CrowdfundingCrowdfunder.GetGoals(this, _publishedValueFallback);
+
+		///<summary>
+		/// Hero Images
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("heroImages")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingHeroImage> HeroImages => global::DemoSite.Content.CrowdfundingCrowdfunder.GetHeroImages(this, _publishedValueFallback);
+
+		///<summary>
 		/// Title
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("title")]
-		public virtual string Title => this.Value<string>(_publishedValueFallback, "title");
+		public virtual string Title => global::DemoSite.Content.CrowdfundingCrowdfunder.GetTitle(this, _publishedValueFallback);
 	}
 }

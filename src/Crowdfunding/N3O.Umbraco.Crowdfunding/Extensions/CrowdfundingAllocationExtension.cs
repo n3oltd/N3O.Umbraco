@@ -7,21 +7,21 @@ using static N3O.Umbraco.Crowdfunding.CrowdfundingConstants;
 namespace N3O.Umbraco.Crowdfunding.Extensions; 
 
 public static class CrowdfundingAllocationExtensions {
-    public static CrowdfundingData GetCrowdfundingData(this IAllocation allocation, IJsonProvider jsonProvider) {
-        if (!HasCrowdfundingData(allocation)) {
+    public static CrowdfunderData GetCrowdfunderData(this IAllocation allocation, IJsonProvider jsonProvider) {
+        if (!HasCrowdfunderData(allocation)) {
             return null;
         }
 
-        return allocation.Extensions.Get<CrowdfundingData>(jsonProvider, Allocations.Extensions.Key);
+        return allocation.Extensions.Get<CrowdfunderData>(jsonProvider, Allocations.Extensions.Key);
     }
     
-    public static bool HasCrowdfundingData(this IAllocation allocation) {
+    public static bool HasCrowdfunderData(this IAllocation allocation) {
         return allocation.Extensions.ContainsKey(Allocations.Extensions.Key);
     }
     
-    public static Allocation SetCrowdfundingData(this IAllocation allocation,
-                                                 IJsonProvider jsonProvider,
-                                                 CrowdfundingData extensionData) {
+    public static Allocation SetCrowdfunderData(this IAllocation allocation,
+                                                IJsonProvider jsonProvider,
+                                                CrowdfunderData extensionData) {
         allocation.Extensions.Set(jsonProvider, Allocations.Extensions.Key, extensionData);
 
         return new Allocation(allocation);

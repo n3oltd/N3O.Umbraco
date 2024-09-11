@@ -2,7 +2,7 @@
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
-public interface ICrowdfundingData {
+public interface ICrowdfunderData {
     Guid CampaignId { get; }
     Guid? TeamId { get; }
     Guid FundraiserId { get; }

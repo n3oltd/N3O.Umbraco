@@ -8,10 +8,10 @@ namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class SelectedFeedbackGoalResMapping : IMapDefinition {
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<CrowdfunderFeedbackGoalElement, SelectedFeedbackGoalRes>((_, _) => new SelectedFeedbackGoalRes(), Map);
+        mapper.Define<FeedbackGoalElement, SelectedFeedbackGoalRes>((_, _) => new SelectedFeedbackGoalRes(), Map);
     }
 
-    private void Map(CrowdfunderFeedbackGoalElement src, SelectedFeedbackGoalRes dest, MapperContext ctx) {
+    private void Map(FeedbackGoalElement src, SelectedFeedbackGoalRes dest, MapperContext ctx) {
         dest.Feedback = src.CustomFields
                            .OrEmpty()
                            .Select(ctx.Map<IFeedbackCustomField, FeedbackCustomFieldRes>)

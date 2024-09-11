@@ -4,14 +4,14 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
-public class CrowdfundingData : Value, ICrowdfundingData {
+public class CrowdfunderData : Value, ICrowdfunderData {
     [JsonConstructor]
-    public CrowdfundingData(Guid campaignId,
-                            Guid? teamId,
-                            Guid fundraiserId,
-                            string fundraiserUrl,
-                            string comment,
-                            bool anonymous) {
+    public CrowdfunderData(Guid campaignId,
+                           Guid? teamId,
+                           Guid fundraiserId,
+                           string fundraiserUrl,
+                           string comment,
+                           bool anonymous) {
         CampaignId = campaignId;
         TeamId = teamId;
         FundraiserId = fundraiserId;
@@ -20,13 +20,13 @@ public class CrowdfundingData : Value, ICrowdfundingData {
         Anonymous = anonymous;
     }
 
-    public CrowdfundingData(ICrowdfundingData crowdfundingData)
-        : this(crowdfundingData.CampaignId,
-               crowdfundingData.TeamId,
-               crowdfundingData.FundraiserId,
-               crowdfundingData.FundraiserUrl,
-               crowdfundingData.Comment,
-               crowdfundingData.Anonymous) { }
+    public CrowdfunderData(ICrowdfunderData crowdfunderData)
+        : this(crowdfunderData.CampaignId,
+               crowdfunderData.TeamId,
+               crowdfunderData.FundraiserId,
+               crowdfunderData.FundraiserUrl,
+               crowdfunderData.Comment,
+               crowdfunderData.Anonymous) { }
 
     public Guid CampaignId { get; }
     public Guid? TeamId { get; }

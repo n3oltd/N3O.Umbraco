@@ -41,20 +41,20 @@ public class OnlineContributionRepository : IOnlineContributionRepository {
 
     public async Task AddAsync(string checkoutReference,
                                Instant timestamp,
-                               ICrowdfundingData crowdfundingData,
+                               ICrowdfunderData crowdfunderData,
                                string email,
                                bool taxRelief,
                                GivingType givingType,
                                Allocation allocation) {
-        var OnlineContribution = await GetOnlineContributionAsync(checkoutReference,
+        var onlineContribution = await GetOnlineContributionAsync(checkoutReference,
                                                                               timestamp,
-                                                                              crowdfundingData,
+                                                                              crowdfunderData,
                                                                               email,
                                                                               taxRelief,
                                                                               givingType,
                                                                               allocation);
         
-        _toCommit.Add(OnlineContribution);
+        _toCommit.Add(onlineContribution);
     }
 
     public async Task CommitAsync() {
@@ -77,41 +77,41 @@ public class OnlineContributionRepository : IOnlineContributionRepository {
 
     private async Task<OnlineContribution> GetOnlineContributionAsync(string checkoutReference,
                                                                                   Instant timestamp,
-                                                                                  ICrowdfundingData crowdfundingData,
+                                                                                  ICrowdfunderData crowdfunderData,
                                                                                   string email,
                                                                                   bool taxRelief,
                                                                                   GivingType givingType,
                                                                                   Allocation allocation) {
-        var campaign = _contentService.GetById(crowdfundingData.CampaignId);
-        var team = crowdfundingData.TeamId.IfNotNull(x => _contentService.GetById(x));
+        var campaign = _contentService.GetById(crowdfunderData.CampaignId);
+        var team = crowdfunderData.TeamId.IfNotNull(x => _contentService.GetById(x));
         var date = timestamp.InZone(_localClock.GetZone()).Date;
         var value = await _forexConverter.QuoteToBase()
                                          .UsingRateOn(date)
                                          .FromCurrency(allocation.Value.Currency)
                                          .ConvertAsync(allocation.Value.Amount);
         
-        var OnlineContribution = new OnlineContribution();
-        OnlineContribution.Timestamp = timestamp.ToDateTimeUtc();
-        OnlineContribution.CampaignId = campaign.Key;
-        OnlineContribution.CampaignName = campaign.Name;
-        OnlineContribution.TeamId = team?.Key;
-        OnlineContribution.TeamName = team?.Name;
-        OnlineContribution.FundraiserId = crowdfundingData.FundraiserId;
-        OnlineContribution.FundraiserUrl = crowdfundingData.FundraiserUrl;
-        OnlineContribution.CheckoutReference = checkoutReference;
-        OnlineContribution.GivingTypeId = givingType.Id;
-        OnlineContribution.CurrencyCode = value.Quote.Currency.Code;
-        OnlineContribution.QuoteAmount = value.Quote.Amount;
-        OnlineContribution.BaseAmount = value.Base.Amount;
-        OnlineContribution.TaxRelief = taxRelief;
-        OnlineContribution.Anonymous = crowdfundingData.Anonymous;
-        OnlineContribution.Name = checkoutReference;
-        OnlineContribution.Email = email;
-        OnlineContribution.Comment = crowdfundingData.Comment;
-        OnlineContribution.Status = OnlineContributionStatuses.Visible;
-        OnlineContribution.AllocationJson = _jsonProvider.SerializeObject(allocation);
+        var onlineContribution = new OnlineContribution();
+        onlineContribution.Timestamp = timestamp.ToDateTimeUtc();
+        onlineContribution.CampaignId = campaign.Key;
+        onlineContribution.CampaignName = campaign.Name;
+        onlineContribution.TeamId = team?.Key;
+        onlineContribution.TeamName = team?.Name;
+        onlineContribution.FundraiserId = crowdfunderData.FundraiserId;
+        onlineContribution.FundraiserUrl = crowdfunderData.FundraiserUrl;
+        onlineContribution.CheckoutReference = checkoutReference;
+        onlineContribution.GivingTypeId = givingType.Id;
+        onlineContribution.CurrencyCode = value.Quote.Currency.Code;
+        onlineContribution.QuoteAmount = value.Quote.Amount;
+        onlineContribution.BaseAmount = value.Base.Amount;
+        onlineContribution.TaxRelief = taxRelief;
+        onlineContribution.Anonymous = crowdfunderData.Anonymous;
+        onlineContribution.Name = checkoutReference;
+        onlineContribution.Email = email;
+        onlineContribution.Comment = crowdfunderData.Comment;
+        onlineContribution.Status = OnlineContributionStatuses.Visible;
+        onlineContribution.AllocationJson = _jsonProvider.SerializeObject(allocation);
 
-        return OnlineContribution;
+        return onlineContribution;
     }
     
     private async Task<IEnumerable<OnlineContribution>> FindContributionsAsync(Sql whereClause) {

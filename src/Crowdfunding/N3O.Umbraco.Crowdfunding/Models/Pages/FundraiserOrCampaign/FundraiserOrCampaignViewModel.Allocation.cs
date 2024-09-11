@@ -21,22 +21,19 @@ public partial class FundraiserOrCampaignViewModel<TContent> {
         public FeedbackScheme FeedbackScheme { get; set; }
         public IReadOnlyList<PriceHandle> PriceHandles { get; set; }
 
-        public static Allocation For<T>(ICrowdfundingHelper crowdfundingHelper,
-                                        CrowdfunderGoalElement<T> crowdfunderGoal)
-            where T : CrowdfunderGoalElement<T> {
+        public static Allocation For(ICrowdfundingHelper crowdfundingHelper, GoalElement goal) {
             var allocation = new Allocation();
 
-            allocation.Title = crowdfunderGoal.Title;
-            allocation.Amount = crowdfunderGoal.Amount;
-            allocation.FundDimension1Value = crowdfunderGoal.FundDimension1;
-            allocation.FundDimension2Value = crowdfunderGoal.FundDimension2;
-            allocation.FundDimension3Value = crowdfunderGoal.FundDimension3;
-            allocation.FundDimension4Value = crowdfunderGoal.FundDimension4;
-            allocation.Type = crowdfunderGoal.Type;
-            allocation.DonationItem = crowdfunderGoal.Fund?.DonationItem;
-            allocation.FeedbackScheme = crowdfunderGoal.Feedback?.Scheme;
-            allocation.PriceHandles = crowdfunderGoal.PriceHandles
-                                                     .ToReadOnlyList(x => PriceHandle.For(crowdfundingHelper, x));
+            allocation.Title = goal.Title;
+            allocation.Amount = goal.Amount;
+            allocation.FundDimension1Value = goal.FundDimension1;
+            allocation.FundDimension2Value = goal.FundDimension2;
+            allocation.FundDimension3Value = goal.FundDimension3;
+            allocation.FundDimension4Value = goal.FundDimension4;
+            allocation.Type = goal.Type;
+            allocation.DonationItem = goal.Fund?.DonationItem;
+            allocation.FeedbackScheme = goal.Feedback?.Scheme;
+            allocation.PriceHandles = goal.PriceHandles.ToReadOnlyList(x => PriceHandle.For(crowdfundingHelper, x));
 
             return allocation;
         }

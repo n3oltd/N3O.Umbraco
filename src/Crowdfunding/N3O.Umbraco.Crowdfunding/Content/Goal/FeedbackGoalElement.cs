@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
-public class CrowdfunderFeedbackGoalElement : UmbracoElement<CrowdfunderFeedbackGoalElement> {
+public class FeedbackGoalElement : UmbracoElement<FeedbackGoalElement> {
     public FeedbackScheme Scheme => GetValue(x => x.Scheme);
     public IEnumerable<FeedbackCustomFieldElement> CustomFields => GetNestedAs(x => x.CustomFields);
 }

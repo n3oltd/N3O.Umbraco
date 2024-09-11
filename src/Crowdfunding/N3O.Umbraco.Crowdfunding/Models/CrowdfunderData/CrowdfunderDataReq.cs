@@ -3,7 +3,7 @@ using System;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
-public class CrowdfundingDataReq {
+public class CrowdfunderDataReq {
     [Name("Fundraiser ID")]
     public Guid? FundraiserId { get; set; }
 

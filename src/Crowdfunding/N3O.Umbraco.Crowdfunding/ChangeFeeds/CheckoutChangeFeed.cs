@@ -62,11 +62,11 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
     }
 
     private async Task CommitAsync(GivingType givingType, Checkout checkout, Allocation allocation) {
-        var crowdfundingData = allocation.GetCrowdfundingData(_jsonProvider);
+        var crowdfunderData = allocation.GetCrowdfunderData(_jsonProvider);
 
         await _onlineContributionRepository.AddAsync(checkout.Reference.Text,
                                                      _clock.GetCurrentInstant(),
-                                                     crowdfundingData,
+                                                     crowdfunderData,
                                                      checkout.Account?.Email?.Address,
                                                      checkout.Account?.TaxStatus == TaxStatuses.Payer,
                                                      givingType,

@@ -12,7 +12,7 @@ namespace N3O.Umbraco.Crowdfunding;
 public interface IOnlineContributionRepository {
     Task AddAsync(string checkoutReference,
                   Instant timestamp,
-                  ICrowdfundingData crowdfundingData,
+                  ICrowdfunderData crowdfunderData,
                   string email,
                   bool taxRelief,
                   GivingType givingType,

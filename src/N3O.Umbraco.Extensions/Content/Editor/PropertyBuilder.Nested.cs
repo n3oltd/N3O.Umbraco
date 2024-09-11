@@ -6,22 +6,22 @@ using System.Collections.Generic;
 namespace N3O.Umbraco.Content;
 
 public class NestedPropertyBuilder : PropertyBuilder {
-    private readonly List<(string, IContentBuilder)> _contentBuilders = new();
+    private readonly List<(string, (IContentBuilder ContentBuilder, Guid Key))> _contentBuilders = new();
     private readonly IServiceProvider _serviceProvider;
 
     public NestedPropertyBuilder(IServiceProvider serviceProvider) {
         _serviceProvider = serviceProvider;
     }
 
-    public IContentBuilder Add(string contentTypeAlias, int? order = null) {
+    public IContentBuilder Add(string contentTypeAlias, Guid? customKey = null, int? order = null) {
         var contentBuilder = new ContentBuilder(_serviceProvider);
-
-        if (order.HasValue()) {
-            _contentBuilders.Insert(order.GetValueOrThrow() - 1, (contentTypeAlias, contentBuilder));
-        } else {
-            _contentBuilders.Add((contentTypeAlias, contentBuilder));
-        }
+        var key = customKey ?? Guid.NewGuid();
         
+        if (order.HasValue()) {
+            _contentBuilders.Insert(order.GetValueOrThrow() - 1, (contentTypeAlias, (contentBuilder, key)));
+        } else {
+            _contentBuilders.Add((contentTypeAlias, (contentBuilder, key)));
+        }
 
         return contentBuilder;
     }
@@ -30,9 +30,9 @@ public class NestedPropertyBuilder : PropertyBuilder {
         var rowValues = new List<NestedContentRowValue>();
 
         var index = 1;
-        foreach (var (contentTypeAlias, contentBuilder) in _contentBuilders) {
+        foreach (var (contentTypeAlias, (contentBuilder, key)) in _contentBuilders) {
             var rowValue = new NestedContentRowValue();
-            rowValue.Id = Guid.NewGuid();
+            rowValue.Id = key;
             rowValue.Name = $"Item {index}";
             rowValue.ContentTypeAlias = contentTypeAlias;
             rowValue.RawPropertyValues = contentBuilder.Build();

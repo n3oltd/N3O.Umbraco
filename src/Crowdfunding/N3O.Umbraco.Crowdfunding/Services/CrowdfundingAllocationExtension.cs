@@ -8,25 +8,25 @@ using N3O.Umbraco.Json;
 
 namespace N3O.Umbraco.Crowdfunding;
 
-public class CrowdfundingAllocationExtension : AllocationExtension<CrowdfundingDataReq, CrowdfundingData> {
+public class CrowdfundingAllocationExtension : AllocationExtension<CrowdfunderDataReq, CrowdfunderData> {
     private readonly IContentLocator _contentLocator;
 
     public CrowdfundingAllocationExtension(IJsonProvider jsonProvider,
-                                           IValidator<CrowdfundingDataReq> validator,
+                                           IValidator<CrowdfunderDataReq> validator,
                                            IContentLocator contentLocator)
         : base(jsonProvider, validator) {
         _contentLocator = contentLocator;
     }
 
-    protected override CrowdfundingData Bind(CrowdfundingDataReq req) {
+    protected override CrowdfunderData Bind(CrowdfunderDataReq req) {
         var page = _contentLocator.ById<FundraiserContent>(req.FundraiserId.GetValueOrThrow());
         
-        return new CrowdfundingData(page.Campaign.Content().Key,
-                                    page.Team?.Content().Key,
-                                    page.Content().Key,
-                                    page.Content().AbsoluteUrl(),
-                                    req.Comment,
-                                    req.Anonymous);
+        return new CrowdfunderData(page.Campaign.Content().Key,
+                                   null,
+                                   page.Content().Key,
+                                   page.Content().AbsoluteUrl(),
+                                   req.Comment,
+                                   req.Anonymous);
     }
 
     public override string Key => CrowdfundingConstants.Allocations.Extensions.Key;

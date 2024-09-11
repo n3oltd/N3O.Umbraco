@@ -10,21 +10,21 @@ using System;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
-public class CrowdfundingDataReqValidator : ModelValidator<CrowdfundingDataReq> {
+public class CrowdfunderDataReqValidator : ModelValidator<CrowdfunderDataReq> {
     private const int MaximumCommentLength = 200;
     
     private readonly IContentLocator _contentLocator;
     private readonly IProfanityGuard _profanityGuard;
     
-    public CrowdfundingDataReqValidator(IFormatter formatter,
-                                        IContentLocator contentLocator,
-                                        IProfanityGuard profanityGuard) 
+    public CrowdfunderDataReqValidator(IFormatter formatter,
+                                       IContentLocator contentLocator,
+                                       IProfanityGuard profanityGuard) 
         : base(formatter) {
         _contentLocator = contentLocator;
         _profanityGuard = profanityGuard;
     }
 
-    public override ValidationResult Validate(ValidationContext<CrowdfundingDataReq> context) {
+    public override ValidationResult Validate(ValidationContext<CrowdfunderDataReq> context) {
         RuleFor(x => x.FundraiserId)
            .NotEmpty()
            .WithMessage(Get<Strings>(s => s.SpecifyFundraiserId));

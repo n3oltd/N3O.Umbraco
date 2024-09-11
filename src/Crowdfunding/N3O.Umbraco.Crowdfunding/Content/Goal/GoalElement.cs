@@ -5,13 +5,13 @@ using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
-public abstract class CrowdfunderGoalElement<T> : UmbracoElement<T>, IFundDimensionValues
-    where T : CrowdfunderGoalElement<T> {
+public class GoalElement : UmbracoElement<GoalElement>, IFundDimensionValues {
     public string Title => GetValue(x => x.Title);
     public decimal Amount => GetValue(x => x.Amount);
     public FundDimension1Value FundDimension1 => GetAs(x => x.FundDimension1);
@@ -21,17 +21,17 @@ public abstract class CrowdfunderGoalElement<T> : UmbracoElement<T>, IFundDimens
     public IEnumerable<IPublishedContent> Tags => GetPickedAs(x => x.Tags);
     public IEnumerable<PriceHandleElement> PriceHandles => GetNestedAs(x => x.PriceHandles);
     
-    public CrowdfunderFundGoalElement Fund { get; protected set; }
-    public CrowdfunderFeedbackGoalElement Feedback { get; protected set; }
+    public FundGoalElement Fund { get; protected set; }
+    public FeedbackGoalElement Feedback { get; protected set; }
     
     public override void Content(IPublishedElement content, IPublishedContent parent) {
         base.Content(content, parent);
         
         if (Type == AllocationTypes.Fund) {
-            Fund = new CrowdfunderFundGoalElement();
+            Fund = new FundGoalElement();
             Fund.Content(content, parent);
         } else if (Type == AllocationTypes.Feedback) {
-            Feedback = new CrowdfunderFeedbackGoalElement();
+            Feedback = new FeedbackGoalElement();
             Feedback.Content(content, parent);
         } else {
             throw UnrecognisedValueException.For(Type);
@@ -46,15 +46,18 @@ public abstract class CrowdfunderGoalElement<T> : UmbracoElement<T>, IFundDimens
     [JsonIgnore]
     public AllocationType Type {
         get {
-            if (Content().ContentType.Alias.EqualsInvariant(CrowdfundingConstants.CrowdfunderGoal.Fund.Alias)) {
+            if (Content().ContentType.Alias.EqualsInvariant(CrowdfundingConstants.Goal.Fund.Alias)) {
                 return AllocationTypes.Fund;
-            } else if (Content().ContentType.Alias.EqualsInvariant(CrowdfundingConstants.CrowdfunderGoal.Feedback.Alias)) {
+            } else if (Content().ContentType.Alias.EqualsInvariant(CrowdfundingConstants.Goal.Feedback.Alias)) {
                 return AllocationTypes.Feedback;
             } else {
                 throw UnrecognisedValueException.For(Content().ContentType.Alias);
             }
         }
     }
+    
+    [JsonIgnore]
+    public Guid GoalId => Content().Key;
 
     [JsonIgnore]
     FundDimension1Value IFundDimensionValues.Dimension1 => FundDimension1;

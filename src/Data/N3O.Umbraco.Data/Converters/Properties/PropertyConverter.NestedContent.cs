@@ -146,7 +146,7 @@ public class NestedContentPropertyConverter : IPropertyConverter {
 
                     var converter = nestedPropertyInfo.GetPropertyConverter(converters);
 
-                    nestedContentBuilder ??= nestedPropertyBuilder.Add(nestedContent.ContentType.Alias, order);
+                    nestedContentBuilder ??= nestedPropertyBuilder.Add(nestedContent.ContentType.Alias, order: order);
 
                     converter.Import(nestedContentBuilder,
                                      converters,

@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Attributes;
+using System;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
@@ -7,7 +8,7 @@ public class FundraiserGoalReq {
     public decimal? Amount { get; set; }
     
     [Name("Goal ID")]
-    public string GoalId { get; set; }
+    public Guid? GoalId { get; set; }
     
     [Name("Feedback")]
     public FeedbackGoalReq Feedback { get; set; }

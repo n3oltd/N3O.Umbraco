@@ -9,11 +9,11 @@ namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class AvailableGoalResMapping : IMapDefinition {
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<CampaignGoalElement, AvailableGoalRes>((_, _) => new AvailableGoalRes(), Map);
+        mapper.Define<GoalElement, AvailableGoalRes>((_, _) => new AvailableGoalRes(), Map);
     }
 
-    private void Map(CampaignGoalElement src, AvailableGoalRes dest, MapperContext ctx) {
-        dest.Id = src.GetGoalId();
+    private void Map(GoalElement src, AvailableGoalRes dest, MapperContext ctx) {
+        dest.Id = src.GoalId;
         dest.Title = src.Title;
         dest.Type = src.Type;
         dest.Tags = src.Tags.Select(x => x.Name).ToList();
