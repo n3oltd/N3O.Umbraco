@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Crowdfunding.Controllers;
 
 public partial class CrowdfundingController {
-    [HttpPost("fundraisers/checkTitle")]
-    public async Task<ActionResult<bool>> CheckTitle(CreateFundraiserReq req) {
-        var res = await _mediator.Value.SendAsync<CheckFundraiserTitleIsAvailableQuery, CreateFundraiserReq, bool>(req);
+    [HttpPost("fundraisers/suggestSlug")]
+    public async Task<ActionResult<string>> SuggestSlug([FromQuery] string name) {
+        var res = await _mediator.Value.SendAsync<SuggestSlugQuery, string, string>(name);
 
         return Ok(res);
     }

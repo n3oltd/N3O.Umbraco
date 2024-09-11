@@ -22,6 +22,7 @@ public static class CrowdfundingConstants {
         
         public static class Properties {
             public const string AccountReference = "accountReference";
+            public const string Currency = "currency";
             public const string Goals = "goals";
             public const string Body = "body";
             public const string Campaign = "campaign";

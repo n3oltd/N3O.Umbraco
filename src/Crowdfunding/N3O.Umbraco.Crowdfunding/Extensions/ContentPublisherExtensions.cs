@@ -35,6 +35,7 @@ public static class ContentPublisherExtensions {
         contentPublisher.Content.Label(Fundraiser.Properties.Slug).Set(req.Slug);
         contentPublisher.Content.Label(Fundraiser.Properties.Title).Set(req.Title);
         contentPublisher.Content.Label(Fundraiser.Properties.AccountReference).Set(accountReference);
+        contentPublisher.Content.DataList(Fundraiser.Properties.Currency).SetLookups(req.Currency);
         contentPublisher.Content.Label(Fundraiser.Properties.DisplayName).Set(req.Name);
         contentPublisher.Content.DateTime(Fundraiser.Properties.EndDate).SetDate(req.EndDate);
         contentPublisher.Content.Label(Fundraiser.Properties.Status).Set(FundraiserStatuses.Pending.Name);
