@@ -46,6 +46,7 @@
     <ItemGroup>
       <PackageReference Include="HtmlSanitizer" Version="8.1.870" />
       <PackageReference Include="Slugify.Core" Version="4.0.1" />
+      <PackageReference Include="AngleSharp" Version="1.1.2" />
     </ItemGroup>
 
     <ItemGroup>
