@@ -5,16 +5,16 @@ using N3O.Umbraco.Giving.Content;
 namespace N3O.Umbraco.CrowdFunding.Models;
 
 public class FundraiserOrCampaignPriceHandleViewModel {
-    public Money Amount { get; set; }
-    public string Description { get; set; }
+    public Money Amount { get; private set; }
+    public string Description { get; private set; }
 
     public static FundraiserOrCampaignPriceHandleViewModel For(ICrowdfundingHelper crowdfundingHelper,
                                                                PriceHandleElement fundraiserPriceHandle) {
-        var priceHandle = new FundraiserOrCampaignPriceHandleViewModel();
+        var viewModel = new FundraiserOrCampaignPriceHandleViewModel();
 
-        priceHandle.Amount = crowdfundingHelper.GetQuoteMoney(fundraiserPriceHandle.Amount);
-        priceHandle.Description = fundraiserPriceHandle.Description;
+        viewModel.Amount = crowdfundingHelper.GetQuoteMoney(fundraiserPriceHandle.Amount);
+        viewModel.Description = fundraiserPriceHandle.Description;
 
-        return priceHandle;
+        return viewModel;
     }
 }

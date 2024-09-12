@@ -12,18 +12,18 @@
     <div class="cta" id="showMoreWrapper">
         <div class="cta__title start">
             <h2>@PartialText.Get("Contribute to this campaign")</h2>
-            @if (Model.Allocations.Count > 1) {
+            @if (Model.Goals.Count > 1) {
                 <p>Select either a single option or one from each category.</p>
             }
         </div>
 
         @{
-            foreach (var allocation in Model.Allocations) {
+            foreach (var goal in Model.Goals) {
                 <div class="ctaFund showMore big">
-                    <h4>@allocation.Title</h4>
-                    @foreach (var priceHandle in allocation.PriceHandles) {
+                    <h4>@goal.Title</h4>
+                    @foreach (var priceHandle in goal.PriceHandles) {
                         <div class="ctaFund__item">
-                            <input type="radio" name="@allocation.Title.Camelize()"/>
+                            <input type="radio" name="@goal.Title.Camelize()"/>
                             <div class="ctaFund__item-inner">
                                 @*TODO currency*@
                                 <h3>@($"{priceHandle.Amount.Currency.Symbol}{priceHandle.Amount.Amount}")</h3>
@@ -36,7 +36,7 @@
 
                         </div>
                     }
-                    @if (allocation.PriceHandles.Count > 3) {
+                    @if (goal.PriceHandles.Count > 3) {
                         <div class="large showMoreBtn">@PartialText.Get("More Options")</div>
                     }
                 </div>

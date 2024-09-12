@@ -9,9 +9,9 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.CrowdFunding.Models.Header;
 
 public class HeaderViewModel {
-    public MemberExternalLoginProviderScheme LoginProvider { get; set; }
-    public bool IsLoggedIn { get; set; }
-    public string AvatarLink { get; set; }
+    public MemberExternalLoginProviderScheme LoginProvider { get; private set; }
+    public bool IsLoggedIn { get; private set; }
+    public string AvatarLink { get; private set; }
     
     public static async Task<HeaderViewModel> ForAsync(IMemberExternalLoginProviders memberExternalLoginProviders,
                                                        IMemberManager memberManager) {

@@ -1,4 +1,5 @@
 using N3O.Umbraco.Crowdfunding;
+using N3O.Umbraco.Localization;
 using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -6,8 +7,9 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.CrowdFunding;
 
 public abstract class CrowdfundingPage : ICrowdfundingPage {
-    protected CrowdfundingPage(ICrowdfundingHelper crowdfundingHelper) {
+    protected CrowdfundingPage(ICrowdfundingHelper crowdfundingHelper, IFormatter formatter) {
         CrowdfundingHelper = crowdfundingHelper;
+        Formatter = formatter;
     }
 
     public bool IsMatch(Uri requestUri) {
@@ -37,4 +39,5 @@ public abstract class CrowdfundingPage : ICrowdfundingPage {
     public string ViewName => GetType().Name;
     
     protected ICrowdfundingHelper CrowdfundingHelper { get; }
+    protected IFormatter Formatter { get; }
 }

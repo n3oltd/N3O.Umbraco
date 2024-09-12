@@ -8,21 +8,20 @@ using System.Linq;
 namespace N3O.Umbraco.CrowdFunding.Models;
 
 public class FundraiserOrCampaignProgressViewModel {
-    public int SupportersCount { get; set; }
-    public Money RaisedAmount { get; set; }
-    public Money TargetAmount { get; set; }
-    public decimal PercentageCompleted { get; set; }
+    public int SupportersCount { get; private set; }
+    public Money RaisedAmount { get; private set; }
+    public Money TargetAmount { get; private set; }
+    public decimal PercentageCompleted => RaisedAmount.Amount / TargetAmount.Amount * 100m;
         
     public static FundraiserOrCampaignProgressViewModel For(ICrowdfundingHelper crowdfundingHelper,
                                                             IEnumerable<OnlineContribution> onlineContributions,
                                                             IEnumerable<GoalElement> goals) {
-        var progress = new FundraiserOrCampaignProgressViewModel();
+        var viewModel = new FundraiserOrCampaignProgressViewModel();
             
-        progress.TargetAmount = crowdfundingHelper.GetQuoteMoney(goals.Sum(x => x.Amount));
-        progress.RaisedAmount = crowdfundingHelper.GetQuoteMoney(onlineContributions.Sum(x => x.BaseAmount));
-        progress.SupportersCount = onlineContributions.Count();
-        progress.PercentageCompleted = progress.RaisedAmount.Amount / progress.TargetAmount.Amount * 100m;
+        viewModel.TargetAmount = crowdfundingHelper.GetQuoteMoney(goals.Sum(x => x.Amount));
+        viewModel.RaisedAmount = crowdfundingHelper.GetQuoteMoney(onlineContributions.Sum(x => x.BaseAmount));
+        viewModel.SupportersCount = onlineContributions.Count();
 
-        return progress;
+        return viewModel;
     }
 }

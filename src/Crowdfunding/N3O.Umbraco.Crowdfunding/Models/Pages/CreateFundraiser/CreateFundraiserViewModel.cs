@@ -13,13 +13,13 @@ using Umbraco.Cms.Core.Security;
 namespace N3O.Umbraco.CrowdFunding.Models;
 
 public class CreateFundraiserViewModel {
-    public string SelectedAccountId { get; set; }
-    public IEnumerable<AccountRes> AvailableAccounts { get; set; }
+    public string SelectedAccountId { get; private set; }
+    public IEnumerable<AccountRes> AvailableAccounts { get; private set; }
     public bool HasSelectedAccount => SelectedAccountId.HasValue();
-    public bool IsLoggedIn { get; set; }
-    public GuestFundraiserViewModel GuestFundraiser { get; set; }
-    public DataEntrySettings DataEntrySettings { get; set; }
-    public TaxReliefScheme TaxReliefScheme { get; set; }
+    public bool IsLoggedIn { get; private set; }
+    public GuestFundraiserViewModel GuestFundraiser { get; private set; }
+    public DataEntrySettings DataEntrySettings { get; private set; }
+    public TaxReliefScheme TaxReliefScheme { get; private set; }
 
     public static async Task<CreateFundraiserViewModel> ForAsync(IAccountManager accountManager,
                                                                  IAccountInfoAccessor accountInfoAccessor,
