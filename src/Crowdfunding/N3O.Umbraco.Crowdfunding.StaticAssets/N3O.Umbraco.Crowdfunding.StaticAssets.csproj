@@ -39,23 +39,17 @@
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
         </Content>
 
+        <Content Include="wwwroot\**\*.*">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
+
         <None Include="build\**\*.*">
             <Pack>True</Pack>
             <PackagePath>buildTransitive</PackagePath>
         </None>
-        
     </ItemGroup>
 
-    <ItemGroup>
-      <None Remove="content\assets\js\create-fundraiser-page.js" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Include="content\assets\js\create-fundraiser-page.js">
-        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </Content>
-    </ItemGroup>
 
     <ItemGroup>
         <None Update="README.md">
