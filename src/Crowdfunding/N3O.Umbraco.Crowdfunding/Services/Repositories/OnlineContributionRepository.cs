@@ -72,7 +72,7 @@ public class OnlineContributionRepository : IOnlineContributionRepository {
     }
 
     public async Task<IEnumerable<OnlineContribution>> FindByFundraiserAsync(params Guid[] fundraiserIds) {
-        return await FindContributionsAsync(Sql.Builder.Where($"{nameof(OnlineContribution.CampaignId)} IN (@0)", fundraiserIds));
+        return await FindContributionsAsync(Sql.Builder.Where($"{nameof(OnlineContribution.FundraiserId)} IN (@0)", fundraiserIds));
     }
 
     private async Task<OnlineContribution> GetOnlineContributionAsync(string checkoutReference,
