@@ -1,8 +1,8 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
     <PropertyGroup>
-        <N3OUmbracoCrowdfundingAssetsFilesPath>$(MSBuildThisFileDirectory)..\content\assets\**\*.*</N3OUmbracoCrowdfundingAssetsFilesPath>
-        <N3OUmbracoCrowdfundingViewFilesPath>$(MSBuildThisFileDirectory)..\content\views\**\*.*</N3OUmbracoCrowdfundingViewFilesPath>
+        <N3OUmbracoCrowdfundingAssetsFilesPath>$(MSBuildThisFileDirectory)..\wwwroot\assets\**\*.*</N3OUmbracoCrowdfundingAssetsFilesPath>
+        <N3OUmbracoCrowdfundingViewFilesPath>$(MSBuildThisFileDirectory)..\views\**\*.*</N3OUmbracoCrowdfundingViewFilesPath>
     </PropertyGroup>
 
     <Target Name="CopyN3OUmbracoCrowdfundingAssets" BeforeTargets="Build">
