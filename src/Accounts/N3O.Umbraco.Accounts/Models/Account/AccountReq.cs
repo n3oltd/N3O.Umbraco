@@ -1,12 +1,19 @@
 using N3O.Umbraco.Accounts.Lookups;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Captcha.Models;
+using N3O.Umbraco.Entities;
 using N3O.Umbraco.TaxRelief.Lookups;
 using Newtonsoft.Json;
 
 namespace N3O.Umbraco.Accounts.Models;
 
 public class AccountReq : IAccount {
+    [Name("Id")]
+    public EntityId Id { get; set; }
+    
+    [Name("Reference")]
+    public string Reference { get; set; }
+    
     [Name("Type")]
     public AccountType Type { get; set; }
 

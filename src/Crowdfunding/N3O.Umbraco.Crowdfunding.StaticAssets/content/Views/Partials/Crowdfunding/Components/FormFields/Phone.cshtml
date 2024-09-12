@@ -1,0 +1,19 @@
+@model (N3O.Umbraco.Accounts.Models.PhoneDataEntrySettings PhoneDataEntrySettings, string PhoneNumber, string Country)
+
+<link rel="stylesheet" href="/assets/css/intlTelInput.css">
+
+<div class="input__outer">
+    <h4> @Html.Raw(Model.PhoneDataEntrySettings.Number.Required ? $"{Model.PhoneDataEntrySettings.Country.Label} <span> *</span>" : $"{Model.PhoneDataEntrySettings.Country.Label}")</h4>
+    <div class="input">
+        <input id="phone"
+               type="@Model.PhoneDataEntrySettings.Number.Type"
+               name="@Model.PhoneDataEntrySettings.Number.Path"
+               placeholder="@Model.PhoneDataEntrySettings.Number.Label"
+               value="@Model.PhoneNumber"
+               style="width: 100%"
+               class="auto-capitalise form-control rounded-0">
+        <input id="countryCode" type="text" name="@Model.PhoneDataEntrySettings.Country.Path" value="@Model.Country" hidden>
+        <span id ="@Model.PhoneDataEntrySettings.Number.Path" class="input-validation-error hidden"></span>
+        <span id ="@Model.PhoneDataEntrySettings.Country.Path" class="input-validation-error"></span>
+    </div>
+</div>

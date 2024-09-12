@@ -17,6 +17,29 @@ public static class CrowdfundingConstants {
         public const string Alias = "crowdfundingHomePage";
     }
 
+    public static class GuestFundraiser {
+        public const string Alias = "crowdfundingGuestFundraiser";
+
+        public static class Properties {
+            public const string Title = "title";
+            public const string Logo = "logo";
+            public const string Text = "text";
+            public const string Description = "description";
+            public const string ButtonText = "buttonText";
+            public const string Items = "items";
+        }
+    }
+
+    public static class GuestFundraiserItemElement {
+        public const string Alias = "crowdfundingGuestFundraiserItem";
+        
+        public static class Properties {
+            public const string Icon = "icon";
+            public const string Title = "title";
+            public const string Text = "text";
+        }
+    }
+
     public static class Fundraiser {
         public const string Alias = "crowdfundingFundraiser";
         
@@ -32,6 +55,7 @@ public static class CrowdfundingConstants {
             public const string Owner = "owner";
             public const string Slug = "slug";
             public const string Status = "status";
+            public const string Team = "team";
             public const string Title = "title";
         }
     }
@@ -70,7 +94,7 @@ public static class CrowdfundingConstants {
             public const string Tags = "tags";
         }
     }
-    
+
     public static class Tables {
         public static class OfflineContributions {
             public const string Name = "N3O_CrowdfundingOfflineContributions";

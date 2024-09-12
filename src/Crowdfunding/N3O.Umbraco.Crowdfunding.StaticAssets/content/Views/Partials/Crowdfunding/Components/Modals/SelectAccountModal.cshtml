@@ -1,0 +1,80 @@
+@using N3O.Umbraco.CrowdFunding.Extensions;
+
+@model (N3O.Umbraco.CrowdFunding.Models.CreateFundraiserViewModel FundraiserViewModel, string email)
+
+<div class="modalsItem modall" id="selectAccount-modal">
+    <div class="sign__wrapper" style="margin: auto; width: 90vw">
+        <div class="sign">
+            <div class="sign__title">
+                <div class="signWarn">
+                    <p>
+                        Your email <b>@Model.email</b> is associated with
+                        multiple accounts found in our records.
+                    </p>
+                </div>
+                <p>
+                    Please select which account you want to use as fundraiser. You can
+                    always update the details later.
+                </p>
+            </div>
+            @foreach(var account in Model.FundraiserViewModel.AvailableAccounts) {
+            <a href="#" class="signItem account-select" data-account='@(Json.Serialize(account))'>
+                <div class="signItem__col">
+                    <p>@account.Individual.Name.ToDisplayName()</p>
+                    <div class="detail">
+                        @account.Address?.Line1<br/>
+                        @account.Address?.PostalCode <br/>
+                        @account.Address?.Country?.Iso2Code
+                    </div>
+                </div>
+                <div class="signItem__col">
+                    <div class="detail">Reference No. @account.Reference</div>
+                </div>
+                <span>
+              <img src="../../../../../assets/images/icons/arrow-right.svg" alt=""/>
+          </span>
+            </a>
+            }
+
+            <span id="error" class="input-validation-error hidden"></span>
+        </div>
+    </div>
+</div>
+
+<script>
+    const accountSelectors = document.querySelectorAll('.account-select');
+    const errorSpan = document.getElementById('error'); 
+
+    document.querySelectorAll('.account-select').forEach(function (elm) {
+        elm.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                errorSpan.classList.add('hidden');
+                await selectAccount(JSON.parse(elm.dataset.account));
+            } catch (e) {
+                errorSpan.textContent = "An error occurred while selecting the account. Please try again.";
+                errorSpan.classList.remove('hidden');
+            }
+        })
+    })
+
+
+    async function selectAccount(account) {
+        const response = await fetch('/umbraco/api/crm/accounts/select', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                accountId: account.id.value,
+                accountReference: account.reference
+            })
+        })
+        
+        if (response.ok) {
+            const currentUrl = window.location.href;
+            window.location.href = currentUrl;
+        } else {
+            throw new Error('Failed to select the account');
+        }
+    }
+
+</script>

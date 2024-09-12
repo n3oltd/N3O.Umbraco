@@ -15,11 +15,15 @@ public class ServiceClient<TClient> {
     private readonly TClient _client;
     private readonly string _subscriptionId;
 
-    public ServiceClient(TClient client, ILogger<ServiceClient<TClient>> logger, string subscriptionId) {
+    public ServiceClient(TClient client,
+                         ILogger<ServiceClient<TClient>> logger,
+                         string subscriptionId) {
         _client = client;
         _subscriptionId = subscriptionId;
         _logger = logger;
     }
+
+    // public void ConfigureClient(Action<TClient> action) => action(_client);
 
     public async Task InvokeAsync(Func<TClient, Func<string, string, string, string, string, CancellationToken, Task>> resolve,
                                   CancellationToken cancellationToken = default) {

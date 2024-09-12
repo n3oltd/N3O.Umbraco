@@ -1,0 +1,50 @@
+@using N3O.Umbraco.Accounts.Extensions
+@using N3O.Umbraco.Extensions
+@using N3O.Umbraco.Accounts.Models
+@model N3O.Umbraco.CrowdFunding.Models.CreateFundraiserViewModel
+
+@if (Model.IsLoggedIn) {
+    if (Model.HasSelectedAccount) {
+    
+    } else if (Model.AvailableAccounts.IsSingle()) {
+        @await Html.PartialAsync("~/Views/Partials/Crowdfunding/Components/Modals/UpdateAccountDetailsModal.cshtml", (Model, Model.AvailableAccounts.First().ToAccount()))
+
+        <script>
+           document.addEventListener("DOMContentLoaded", function () {
+           showModal('updateAccount-modal');
+          });
+        </script>
+    } else if (Model.AvailableAccounts.None()) {
+        @await Html.PartialAsync("~/Views/Partials/Crowdfunding/Components/Modals/NewAccountDetailsModal.cshtml", (Model, new Account()))
+
+        <script>
+           document.addEventListener("DOMContentLoaded", function () {
+           showModal('newAccount-modal');
+          });
+        </script>
+    } else {
+        @await Html.PartialAsync("~/Views/Partials/Crowdfunding/Components/Modals/SelectAccountModal.cshtml", (Model, Context.User?.Identity?.Name))
+
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+          showModal('selectAccount-modal');
+          });
+       </script>
+    }
+} else {
+    @await Html.PartialAsync("~/Views/Partials/Crowdfunding/Components/Modals/GuestFundraiserModal.cshtml", Model.GuestFundraiser)
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        showModal('guestFundraiser-modal');
+    });
+</script>
+}
+<script>
+    function showModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.add('active');
+        }
+    }
+</script>
