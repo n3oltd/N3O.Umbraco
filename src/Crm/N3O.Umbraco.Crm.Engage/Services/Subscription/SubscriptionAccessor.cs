@@ -1,7 +1,8 @@
+using N3O.Umbraco.Crm.Engage.Models;
 using N3O.Umbraco.Extensions;
 using System;
 
-namespace N3O.Umbraco.Subscription;
+namespace N3O.Umbraco.Crm.Engage;
 
 public class SubscriptionAccessor : ISubscriptionAccessor {
     private SubscriptionInfo _subscription;

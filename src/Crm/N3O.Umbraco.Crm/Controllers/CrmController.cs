@@ -4,7 +4,6 @@ using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Crm.Models;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Lookups;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
@@ -19,20 +18,6 @@ public class CrmController : LookupsController<CrmLookupsRes> {
         : base(lookups, mapper) {
         _accountManager = accountManager;
     }
-    
-    // TODO Shagufta Add an update account endpoint here that will go via the account manager
-    [HttpPut("accounts/current")]
-    public Task<ActionResult> UpdateCurrentAccount(AccountReq req) {
-        // Inject the IAccountAccessor, check that an account has been selected (i.e. accountaccessor does not return null)
-        // also check the email on this account matches the member email to guard against cookie tampering. Also more secure
-        // to use account ID in cookie rather than reference but should be fine either way.
-        //
-        // var accountId = _currentAccountAccessor.Get().Id;
-        // 
-        //_accountManager.UpdateAccountAsync(accountId, req);
-        
-        throw new NotImplementedException();
-    }
 
     [HttpPut("accounts/find/{emailAddress}")]
     public async Task<IEnumerable<AccountRes>> FindAccountByEmail([FromRoute] string emailAddress) {
@@ -41,11 +26,18 @@ public class CrmController : LookupsController<CrmLookupsRes> {
         return res;
     }
 
-    [HttpPost("accounts/select")]
-    public async Task<ActionResult> SelectAccountAsync(SelectAccountReq req) {
+    [HttpPut("accounts/select")]
+    public Task<ActionResult> SelectAccountAsync(SelectAccountReq req) {
+        // Inject the IAccountAccessor, check that an account has been selected (i.e. accountaccessor does not return null)
+        // also check the email on this account matches the member email to guard against cookie tampering. Also more secure
+        // to use account ID in cookie rather than reference but should be fine either way.
+        //
+        // var accountId = _currentAccountAccessor.Get().Id;
+        // 
+        //_accountManager.UpdateAccountAsync(accountId, req);
         var res = _accountManager.SelectAccount(req.AccountId, req.AccountReference);
 
-        return Ok(res);
+        return Task.FromResult<ActionResult>(Ok(res));
     }
 }
 

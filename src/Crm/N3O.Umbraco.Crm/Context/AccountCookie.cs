@@ -44,6 +44,6 @@ public class AccountCookie : Cookie {
         SetValue(base64);
     }
 
-    protected override string Name => "AccountId";
+    protected override string Name => "Account";
     protected override bool Session => true;
 }
