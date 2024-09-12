@@ -4,8 +4,11 @@
 
 @inject IEnumerable<ICrowdfundingPage> CrowdfundingPages
 
+
 @foreach (var crowdfundingPage in CrowdfundingPages) {
     if (crowdfundingPage.IsMatch(Context.Request.Uri())) {
         await Html.RenderCrowdfundingPageAsync(crowdfundingPage, Context.Request.Uri());
     }
 }
+
+<script src="../../../assets/js/modals.js"></script>

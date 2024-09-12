@@ -5,6 +5,7 @@ using N3O.Umbraco.Crm.Models;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Lookups;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
 
@@ -32,4 +33,19 @@ public class CrmController : LookupsController<CrmLookupsRes> {
         
         throw new NotImplementedException();
     }
+
+    [HttpPut("accounts/find/{emailAddress}")]
+    public async Task<IEnumerable<AccountRes>> FindAccountByEmail([FromRoute] string emailAddress) {
+        var res = await _accountManager.FindAccountsByEmailAsync(emailAddress);
+
+        return res;
+    }
+
+    [HttpPost("accounts/select")]
+    public async Task<ActionResult> SelectAccountAsync(SelectAccountReq req) {
+        var res = _accountManager.SelectAccount(req.AccountId, req.AccountReference);
+
+        return Ok(res);
+    }
 }
+

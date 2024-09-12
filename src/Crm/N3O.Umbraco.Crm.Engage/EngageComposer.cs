@@ -10,6 +10,6 @@ public class EngageComposer : Composer {
         builder.Services.AddSingleton<CloudUrlAccessor>();
         builder.Services.AddScoped<IUserDirectoryIdAccessor, UserDirectoryIdAccessor>();
         
-        builder.Services.AddSingleton<IAccountManager, EngageAccountManager>();
+        builder.Services.AddScoped<IAccountManager, EngageAccountManager>();
     }
 }

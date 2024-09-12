@@ -1,10 +1,14 @@
 using N3O.Umbraco.Accounts.Lookups;
+using N3O.Umbraco.Entities;
+using N3O.Umbraco.References;
 using N3O.Umbraco.TaxRelief.Lookups;
 using Newtonsoft.Json;
 
 namespace N3O.Umbraco.Accounts.Models;
 
 public class AccountRes : IAccount {
+    public EntityId Id { get; set; }
+    public string Reference { get; set; }
     public AccountType Type { get; set; }
     public IndividualRes Individual { get; set; }
     public OrganizationRes Organization { get; set; }
