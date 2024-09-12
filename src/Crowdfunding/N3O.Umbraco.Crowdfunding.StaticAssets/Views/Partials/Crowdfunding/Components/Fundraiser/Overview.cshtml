@@ -1,0 +1,57 @@
+﻿@using N3O.Umbraco.Extensions
+@model N3O.Umbraco.CrowdFunding.Models.FundraiserViewModel
+
+<div class="campaign">
+    <div class="campaign__top" data-images-edit="edit-campaign-images">
+        <svg>
+            <use xlink:href="#imageIcon"></use>
+        </svg>
+
+        @if (Model.Content.HeroImages.HasAny()) {
+        <div class="campaignSlider" data-type="cropper" data-property-alias="@nameof(Model.Content.HeroImages)">
+            @{
+            foreach (var campaignImage in Model.Content.HeroImages) {
+            <div class="campaignSlider__item">
+                <div class="campaignSlider__item-inner">
+                    <img src="@campaignImage.Image.Crop.Src" alt=""/>
+                </div>
+            </div>
+            }
+            }
+        </div>
+        }
+    </div>
+
+    <div class="campaign__content" data-title-edit="edit-campaign-title">
+        <div class="campaign__title">
+            <h2 data-type="textbox" data-property-alias="@nameof(Model.Content.Title)">@Model.Content.Title</h2>
+            <p data-type="textbox" data-property-alias="@nameof(Model.Content.Description)">
+                @Model.Content.Description
+            </p>
+        </div>
+        <div class="fprogress">
+            <div class="fprogress__row">
+                <h4>@($"{Model.Progress.SupportersCount}") @(Model.Progress.SupportersCount == 1 ? "Supporter" : "Supporters" )</h4>
+                <h4>@($"{Model.Progress.RaisedAmount.Currency.Symbol}{Model.Progress.RaisedAmount.Amount}") /
+                    @($"{Model.Progress.TargetAmount.Currency.Symbol}{Model.Progress.TargetAmount.Amount}")</h4>
+            </div>
+            <div class="fprogress__row">
+                <div class="detail">@($"{Model.Progress.PercentageCompleted}% Collected")</div>
+                <div class="detail">48 Days left</div>
+            </div>
+            <div class="fprogress__bar">
+                <span style="max-width: @Model.Progress.PercentageCompleted%"></span>
+            </div>
+        </div>
+        @*<div class="campaign__footer">
+            @foreach (var tag in Model.Content) {
+            <a href="#" class="campaign__footer-tag">
+                <svg>
+                    <use xlink:href="#megaphone"></use>
+                </svg>
+                <b> @tag.Name </b>
+            </a>
+            }
+        </div>*@
+    </div>
+</div>

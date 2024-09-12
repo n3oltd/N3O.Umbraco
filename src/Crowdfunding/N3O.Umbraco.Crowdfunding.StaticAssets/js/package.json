@@ -9,7 +9,7 @@
     "build:prod": "npm install && tsc -b && vite build && npm run copy",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "copy": "shx cp build/crowdfunding-editor.js ../content/assets/js/crowdfunding-editor.js && shx cp build/crowdfunding-editor.css ../content/assets/css/crowdfunding-editor.css"
+    "copy": "shx cp build/crowdfunding-editor.js ../wwwroot/assets/js/crowdfunding-editor.js && shx cp build/crowdfunding-editor.css ../wwwroot/assets/css/crowdfunding-editor.css"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-react": "^8.0.0",

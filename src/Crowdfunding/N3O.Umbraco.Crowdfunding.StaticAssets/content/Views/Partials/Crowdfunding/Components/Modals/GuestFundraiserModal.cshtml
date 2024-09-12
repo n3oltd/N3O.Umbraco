@@ -1,0 +1,63 @@
+@using Umbraco.Cms.Web.Common.Security
+@using Umbraco.Cms.Web.Website.Controllers
+
+@model N3O.Umbraco.CrowdFunding.Models.GuestFundraiserViewModel
+
+@inject IMemberExternalLoginProviders MemberExternalLoginProviders
+
+@{
+var loginProviders = await MemberExternalLoginProviders.GetMemberProvidersAsync();
+var externalSignInError = ViewData.GetExternalSignInProviderErrors();
+}
+
+<div class="modalsItem modall" id="guestFundraiser-modal">
+    <div class="onboard">
+        <div class="onboard__content">
+            <h2>
+                @Model.Title
+            </h2>
+            @foreach (var item in Model.Items) {
+            <div class="onboardItem">
+                <div class="onboardItem__icon">
+                    <img src="@item.Icon" alt=""/>
+                </div>
+                <div class="onboardItem__text">
+                    <p>
+                        <b> @item.Title </b> <br/>
+                        @item.Text
+                    </p>
+                </div>
+            </div>
+            }
+        </div>
+        <div class="onboard__side">
+            <div class="onboard__title">
+                <div class="onboard__logo">
+                    <img src="@Model.Logo.Crop.Src" alt=""/>
+                </div>
+                <h4>@Model.Text</h4>
+            </div>
+            <div class="onboard__foot">
+                <p>
+                    @Model.Description
+                </p>
+
+                @if(externalSignInError?.AuthenticationType is null && externalSignInError?.Errors.Any() == true) {
+                  @Html.DisplayFor(x => externalSignInError.Errors)
+                }
+
+                 @foreach (var login in await MemberExternalLoginProviders.GetMemberProvidersAsync()) {
+                  @using (Html.BeginUmbracoForm<UmbExternalLoginController>(nameof(UmbExternalLoginController.ExternalLogin))) {
+                     <button type="submit" name="provider" class="button primary" value="@login.ExternalLoginProvider.AuthenticationType">
+                        @Model.ButtonText
+                     </button>
+
+                  if (externalSignInError?.AuthenticationType == login.ExternalLoginProvider.AuthenticationType) {
+                   @Html.DisplayFor(x => externalSignInError.Errors)
+                  }
+                 }
+                }
+            </div>
+        </div>
+    </div>
+</div>

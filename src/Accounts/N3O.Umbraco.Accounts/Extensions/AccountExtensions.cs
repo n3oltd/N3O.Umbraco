@@ -4,7 +4,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.TaxRelief;
 
-namespace N3O.Umbraco.Accounts.Extensions; 
+namespace N3O.Umbraco.Accounts.Extensions;
 
 public static class AccountExtensions {
     public static bool IsComplete(this IAccount account,
@@ -45,5 +45,9 @@ public static class AccountExtensions {
         }
 
         return true;
+    }
+
+    public static IAccount ToAccount(this AccountRes accountRes) {
+        return new Account(accountRes);
     }
 }

@@ -9,6 +9,8 @@ public class AccountMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll
     private void Map(Account src, AccountRes dest, MapperContext ctx) {
+        dest.Id = src.Id;
+        dest.Reference = src.Reference;
         dest.Type = src.Type;
         dest.Individual = ctx.Map<Individual, IndividualRes>(src.Individual);
         dest.Organization = ctx.Map<Organization, OrganizationRes>(src.Organization);
