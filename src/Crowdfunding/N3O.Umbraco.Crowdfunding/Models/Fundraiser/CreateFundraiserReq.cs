@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Financial;
 using NodaTime;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,9 @@ public class CreateFundraiserReq {
     [Name("End Date")]
     public LocalDate? EndDate { get; set; }
     
-    [Name("Allocations")]
+    [Name("Currency")]
+    public Currency Currency { get; set; }
+    
+    [Name("Goals")]
     public IEnumerable<FundraiserGoalReq> Goals { get; set; }
 }

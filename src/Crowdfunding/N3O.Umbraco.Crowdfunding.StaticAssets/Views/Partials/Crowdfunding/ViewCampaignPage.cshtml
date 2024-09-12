@@ -1,19 +1,38 @@
-﻿@page
-@model N3O.Umbraco.Crowdfunding.StaticAssets.content.Views.Partials.Crowdfunding.FundraiserPage
+@model N3O.Umbraco.CrowdFunding.Models.IFundraiserOrCampaignViewModel
 
-@{
-    Layout = null;
-}
+<body data-page-id="@Model.Content.Key" data-page-mode="edit">
+<link href="/assets/css/crowdfunding-editor.css" rel="stylesheet"/>
+<link href="/assets/css/crowdfunding-main.css" rel="stylesheet"/>
 
-<!DOCTYPE html>
+<div class="main">
 
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-    <div>
-          
-    </div>
+
+    <section class="hero">
+        @await Html.PartialAsync("~/Views/Partials/Crowdfunding/Components/ViewPage/BackgroundImage.cshtml", Model)
+        @await Html.PartialAsync("~/Views/Partials/Crowdfunding/Components/ViewPage/OwnerInfo.cshtml", Model)
+    </section>
+    <section class="info">
+        <div class="auto__container">
+            <div class="info__inner">
+                <div class="info__inner-row">
+                    <div class="info__inner-col">
+                        @await Html.PartialAsync("~/Views/Partials/Crowdfunding/Components/ViewPage/Overview.cshtml", Model)
+                        @await Html.PartialAsync("~/Views/Partials/Crowdfunding/Components/ViewPage/AboutCampaign.cshtml", Model)
+                    </div>
+                    <div class="info__inner-col">
+                        @await Html.PartialAsync("~/Views/Partials/Crowdfunding/Components/ViewPage/DonationForm.cshtml", Model)
+                        @await Html.PartialAsync("~/Views/Partials/Crowdfunding/Components/ViewPage/Contributions.cshtml", Model)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="cf-container"></div>
+
+    @await Html.PartialAsync("~/Views/Partials/Crowdfunding/Components/Modals/LatestDonationsModal.cshtml", Model);
+    @await Html.PartialAsync("~/Views/Partials/Crowdfunding/Components/Svgs.cshtml");
+
+    <script type="module" src="/assets/js/crowdfunding-editor.js"></script>
+</div>
 </body>
-</html>

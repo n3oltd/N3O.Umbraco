@@ -1,0 +1,6 @@
+﻿@using Humanizer
+@model N3O.Umbraco.CrowdFunding.Models.IFundraiserOrCampaignViewModel
+
+<div class="hero__bg" data-cover-edit="edit-campaign-cover">
+    <img src="@Model.Content.BackgroundImage.Crop.Src" alt="" data-type="cropper" data-property-alias="@nameof(Model.Content.BackgroundImage).Camelize()">
+</div>
