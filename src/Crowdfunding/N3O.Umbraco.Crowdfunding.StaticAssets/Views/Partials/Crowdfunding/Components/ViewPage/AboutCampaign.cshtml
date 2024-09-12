@@ -1,11 +1,11 @@
 ﻿@using Humanizer
 @using N3O.Umbraco.Templates
-@model N3O.Umbraco.CrowdFunding.Models.FundraiserViewModel
+@model N3O.Umbraco.CrowdFunding.Models.IFundraiserOrCampaignViewModel
 
 @inject IPartialText PartialText
 
 @{
-PartialText.SetPartialName("Description");
+    PartialText.SetPartialName("Description");
 }
 
 <div class="campaign">

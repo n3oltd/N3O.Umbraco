@@ -1,13 +1,14 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Cropper.Models;
 using N3O.Umbraco.Financial;
+using System;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Strings;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
-public abstract class CrowdfunderContent<T> : UmbracoContent<T>
-    where T : CrowdfunderContent<T> {
+public abstract class CrowdfunderContent<T> : UmbracoContent<T>, ICrowdfunderContent where T : CrowdfunderContent<T> {
+    public Guid Key => Content().Key;
     public string AllocationsHash => GetValue(x => x.AllocationsHash);
     public CroppedImage BackgroundImage => GetValue(x => x.BackgroundImage);
     public HtmlEncodedString Body => GetValue(x => x.Body);

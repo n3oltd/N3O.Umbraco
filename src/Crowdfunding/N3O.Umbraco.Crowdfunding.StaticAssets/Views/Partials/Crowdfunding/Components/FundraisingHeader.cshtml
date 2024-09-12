@@ -1,0 +1,65 @@
+﻿@inject IPartialText PartialText
+
+@using N3O.Umbraco.Authentication.Auth0.Controllers
+@using N3O.Umbraco.Templates
+@using Umbraco.Cms.Web.Website.Controllers
+@using Umbraco.Extensions
+@model N3O.Umbraco.CrowdFunding.Models.Header.HeaderViewModel
+
+@{
+    PartialText.SetPartialName("Header");
+}
+
+<div>
+    <header class="header" id="header">
+        <div class="auto__container">
+            <div class="header__inner">
+                <a href="#" class="header__inner-logo" style="visibility: hidden">
+                    <b> LOGO </b>
+                </a>
+
+                <div class="header__inner-side">
+                    @if (Model.IsLoggedIn) {
+                        <div class="header__inner-buttons mobRem">
+                            <a href="#" class="button secondary">
+                                @PartialText.Get("Create A Fundraising Page")
+                            </a>
+                        </div>
+                        <div class="header__inner-avatar">
+                            <img src="@Model.AvatarLink" alt=""/>
+
+                            <div class="dropMenu">
+                                @using (Html.BeginUmbracoForm<Auth0LoginController>(nameof(Auth0LoginController.HandleLogout))) {
+                                    <a id="handle-logout" href="#">
+                                        <svg>
+                                            <use xlink:href="#logoutIcon"></use>
+                                        </svg>
+                                        @PartialText.Get("Log out")
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    } else {
+                        <div class="header__inner-buttons">
+                            <a href="#" class="button secondary"> @PartialText.Get("Create A Campaign") </a>
+
+                            @using (Html.BeginUmbracoForm<UmbExternalLoginController>(nameof(UmbExternalLoginController.ExternalLogin))) {
+                                <button class="button secondary" type="submit" name="provider" value="@Model.LoginProvider.ExternalLoginProvider.AuthenticationType">
+                                    @PartialText.Get("Sign in")
+                                </button>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </header>
+</div>
+
+<script>
+    document.querySelector('#handle-logout')?.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        document.getElementById('handle-logout').closest('form').submit();
+    })
+</script>

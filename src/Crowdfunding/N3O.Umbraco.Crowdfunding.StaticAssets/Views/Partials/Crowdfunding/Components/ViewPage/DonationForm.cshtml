@@ -1,0 +1,62 @@
+﻿@using Humanizer
+@using N3O.Umbraco.Templates
+@model N3O.Umbraco.CrowdFunding.Models.IFundraiserOrCampaignViewModel
+
+@inject IPartialText PartialText
+
+@{
+    PartialText.SetPartialName("DonationForm");
+}
+
+<div class="cta__wrapper">
+    <div class="cta" id="showMoreWrapper">
+        <div class="cta__title start">
+            <h2>@PartialText.Get("Contribute to this campaign")</h2>
+            @if (Model.Allocations.Count > 1) {
+                <p>Select either a single option or one from each category.</p>
+            }
+        </div>
+
+        @{
+            foreach (var allocation in Model.Allocations) {
+                <div class="ctaFund showMore big">
+                    <h4>@allocation.Title</h4>
+                    @foreach (var priceHandle in allocation.PriceHandles) {
+                        <div class="ctaFund__item">
+                            <input type="radio" name="@allocation.Title.Camelize()"/>
+                            <div class="ctaFund__item-inner">
+                                @*TODO currency*@
+                                <h3>@($"{priceHandle.Amount.Currency.Symbol}{priceHandle.Amount.Amount}")</h3>
+                                <hr/>
+                                <p class="subtle">@priceHandle.Description</p>
+                                <svg>
+                                    <use xlink:href="#checkIcon"></use>
+                                </svg>
+                            </div>
+
+                        </div>
+                    }
+                    @if (allocation.PriceHandles.Count > 3) {
+                        <div class="large showMoreBtn">@PartialText.Get("More Options")</div>
+                    }
+                </div>
+            }
+        }
+
+        @*TODO for open amount*@
+        <div class="cta__input">
+            <label class="large" for="openAmount"> £ </label>
+            <input id="openAmount" placeholder="75|" type="text" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="" data-type="currency">
+            <div class="cta__input-select">
+                <select name="currency" id="">
+                    <option value="GBP">GBP</option>
+                    <option value="USD">USD</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="cta__foot">
+            <button type="button" class="button primary">@PartialText.Get("Donate")</button>
+        </div>
+    </div>
+</div>
