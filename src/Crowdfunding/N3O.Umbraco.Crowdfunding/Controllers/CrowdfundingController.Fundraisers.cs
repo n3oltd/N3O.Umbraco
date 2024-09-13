@@ -27,4 +27,18 @@ public partial class CrowdfundingController {
 
         return Ok(res);
     }
+    
+    [HttpPost("fundraisers/publish/{contentId:guid}")]
+    public async Task<ActionResult> PublishFundraiser() {
+        await _mediator.Value.SendAsync<PublishFundraiserCommand, None, None>(None.Empty);
+        
+        return Ok();
+    }
+    
+    [HttpPut("fundraisers/goals/{contentId:guid}")]
+    public async Task<ActionResult> UpdateFundraiserAllocation(UpdateFundraiserGoalsReq req) {
+        var res = await _mediator.Value.SendAsync<UpdateFundraiserGoalsCommand, UpdateFundraiserGoalsReq, None>(req);
+
+        return Ok(res);
+    }
 }
