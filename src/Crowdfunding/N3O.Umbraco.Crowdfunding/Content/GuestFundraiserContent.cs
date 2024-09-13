@@ -1,11 +1,9 @@
-﻿using N3O.Umbraco.Attributes;
-using N3O.Umbraco.Content;
+﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Cropper.Models;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
-[UmbracoContent(CrowdfundingConstants.GuestFundraiser.Alias)]
 public class GuestFundraiserContent : UmbracoContent<GuestFundraiserContent> {
     public string Title => GetValue(x => x.Title);
     public string Text => GetValue(x => x.Text);

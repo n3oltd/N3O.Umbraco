@@ -4,9 +4,9 @@ using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Authentication.Auth0;
 using N3O.Umbraco.Authentication.Auth0.Lookups;
 using N3O.Umbraco.Crm.Engage.Constants;
+using N3O.Umbraco.Crm.Engage.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
-using N3O.Umbraco.Subscription;
 using Newtonsoft.Json;
 using Polly;
 using Polly.Extensions.Http;
@@ -17,8 +17,8 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Crm.Engage;
 
 public class ClientFactory<T> {
-    private const int RetryAttempts = 4;
     private const string BaseUrl = nameof(BaseUrl);
+    private const int RetryAttempts = 4;
 
     private readonly BearerTokenAccessor _bearerTokenAccessor;
     private readonly CloudUrlAccessor _cloudUrlAccessor;

@@ -2,6 +2,7 @@
 using N3O.Umbraco.Crowdfunding;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.CrowdFunding.Models;
+using N3O.Umbraco.Localization;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.CrowdFunding;
@@ -11,9 +12,10 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
     private readonly IOnlineContributionRepository _onlineContributionRepository;
 
     public ViewEditFundraiserPage(ICrowdfundingHelper crowdfundingHelper,
+                                  IFormatter formatter,
                                   IContentLocator contentLocator,
                                   IOnlineContributionRepository onlineContributionRepository)
-        : base(crowdfundingHelper) {
+        : base(crowdfundingHelper, formatter) {
         _contentLocator = contentLocator;
         _onlineContributionRepository = onlineContributionRepository;
     }
@@ -29,6 +31,6 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
 
         var contributions = await _onlineContributionRepository.FindByFundraiserAsync(fundraiser.Content().Key);
 
-        return ViewEditFundraiserViewModel.For(CrowdfundingHelper, fundraiser, contributions);
+        return ViewEditFundraiserViewModel.For(CrowdfundingHelper, Formatter, fundraiser, contributions);
     }
 }

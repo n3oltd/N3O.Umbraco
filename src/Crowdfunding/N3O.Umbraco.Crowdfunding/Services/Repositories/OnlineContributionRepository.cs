@@ -72,16 +72,16 @@ public class OnlineContributionRepository : IOnlineContributionRepository {
     }
 
     public async Task<IEnumerable<OnlineContribution>> FindByFundraiserAsync(params Guid[] fundraiserIds) {
-        return await FindContributionsAsync(Sql.Builder.Where($"{nameof(OnlineContribution.CampaignId)} IN (@0)", fundraiserIds));
+        return await FindContributionsAsync(Sql.Builder.Where($"{nameof(OnlineContribution.FundraiserId)} IN (@0)", fundraiserIds));
     }
 
     private async Task<OnlineContribution> GetOnlineContributionAsync(string checkoutReference,
-                                                                                  Instant timestamp,
-                                                                                  ICrowdfunderData crowdfunderData,
-                                                                                  string email,
-                                                                                  bool taxRelief,
-                                                                                  GivingType givingType,
-                                                                                  Allocation allocation) {
+                                                                      Instant timestamp,
+                                                                      ICrowdfunderData crowdfunderData,
+                                                                      string email,
+                                                                      bool taxRelief,
+                                                                      GivingType givingType,
+                                                                      Allocation allocation) {
         var campaign = _contentService.GetById(crowdfunderData.CampaignId);
         var team = crowdfunderData.TeamId.IfNotNull(x => _contentService.GetById(x));
         var date = timestamp.InZone(_localClock.GetZone()).Date;
@@ -92,6 +92,7 @@ public class OnlineContributionRepository : IOnlineContributionRepository {
         
         var onlineContribution = new OnlineContribution();
         onlineContribution.Timestamp = timestamp.ToDateTimeUtc();
+        onlineContribution.Date = date.ToDateOnly();
         onlineContribution.CampaignId = campaign.Key;
         onlineContribution.CampaignName = campaign.Name;
         onlineContribution.TeamId = team?.Key;
@@ -110,6 +111,7 @@ public class OnlineContributionRepository : IOnlineContributionRepository {
         onlineContribution.Comment = crowdfunderData.Comment;
         onlineContribution.Status = OnlineContributionStatuses.Visible;
         onlineContribution.AllocationJson = _jsonProvider.SerializeObject(allocation);
+        //onlineContribution.AllocationSummary = allocation.Summary;
 
         return onlineContribution;
     }

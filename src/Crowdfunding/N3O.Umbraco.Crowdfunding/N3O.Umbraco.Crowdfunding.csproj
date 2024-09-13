@@ -44,6 +44,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Handlebars.Net" Version="2.1.6" />
       <PackageReference Include="HtmlSanitizer" Version="8.1.870" />
       <PackageReference Include="Slugify.Core" Version="4.0.1" />
       <PackageReference Include="AngleSharp" Version="1.1.2" />

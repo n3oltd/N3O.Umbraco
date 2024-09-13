@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Crowdfunding;
 using N3O.Umbraco.CrowdFunding.Models;
+using N3O.Umbraco.Localization;
 using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Security;
@@ -12,9 +13,10 @@ public class SignInPage : CrowdfundingPage {
     private readonly IMemberManager _memberManager;
 
     public SignInPage(ICrowdfundingHelper crowdfundingHelper,
+                      IFormatter formatter,
                       IMemberExternalLoginProviders memberExternalLoginProviders,
                       IMemberManager memberManager)
-        : base(crowdfundingHelper) {
+        : base(crowdfundingHelper, formatter) {
         _memberExternalLoginProviders = memberExternalLoginProviders;
         _memberManager = memberManager;
     }

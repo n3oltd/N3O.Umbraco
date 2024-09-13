@@ -47,7 +47,7 @@ public static class AccountExtensions {
         return true;
     }
 
-    public static IAccount ToAccount(this AccountRes accountRes) {
-        return new Account(accountRes);
+    public static Account ToAccount(this IAccount account) {
+        return new Account(account);
     }
 }

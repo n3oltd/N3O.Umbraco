@@ -2,6 +2,7 @@
 using N3O.Umbraco.Crm;
 using N3O.Umbraco.Crowdfunding;
 using N3O.Umbraco.CrowdFunding.Models;
+using N3O.Umbraco.Localization;
 using N3O.Umbraco.Lookups;
 using System;
 using System.Threading.Tasks;
@@ -18,13 +19,14 @@ public class CreateFundraiserPage : CrowdfundingPage {
     private readonly Lazy<IContentCache> _contentCache;
 
     public CreateFundraiserPage(ICrowdfundingHelper crowdfundingHelper,
+                                IFormatter formatter,
                                 Lazy<IAccountManager> accountManager,
                                 Lazy<IAccountInfoAccessor> accountInfoAccessor,
                                 Lazy<IMemberManager> memberManager,
                                 Lazy<IContentLocator> contentLocator,
                                 Lazy<IContentCache> contentCache,
                                 ILookups lookups)
-        : base(crowdfundingHelper) {
+        : base(crowdfundingHelper, formatter) {
         _accountManager = accountManager;
         _accountInfoAccessor = accountInfoAccessor;
         _memberManager = memberManager;

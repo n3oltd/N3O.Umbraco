@@ -28,6 +28,22 @@ public class TextFormatter : ITextFormatter {
         return lookup.Name;
     }
 
+    public string FormatName(string firstName, string lastName) {
+        return FormatName(null, firstName, lastName);
+    }
+
+    // TODO Implement this properly by loading preference from subscription
+    // or similar means as French has SURNAME FirstName for example
+    public string FormatName(string title, string firstName, string lastName) {
+        var names = new[] {
+            title, firstName, lastName
+        }.ExceptNull();
+
+        var formattedName = string.Join(" ", names);
+
+        return formattedName;
+    }
+
     public static ITextFormatter Default = new TextFormatter(new InvariantStringLocalizer());
 
     public static ITextFormatter Create(IStringLocalizer stringLocalizer) {

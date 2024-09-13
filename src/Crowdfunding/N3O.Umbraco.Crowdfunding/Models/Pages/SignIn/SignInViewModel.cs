@@ -3,8 +3,8 @@
 namespace N3O.Umbraco.CrowdFunding.Models;
 
 public class SignInViewModel {
-    public MemberExternalLoginProviderScheme Auth0LoginProvider { get; set; }
-    public bool IsAuthenticated { get; set; }
+    public MemberExternalLoginProviderScheme Auth0LoginProvider { get; private set; }
+    public bool IsAuthenticated { get; private set; }
 
     public static SignInViewModel For(MemberExternalLoginProviderScheme auth0LoginProvider, bool isLoggedIn) {
         var viewModel = new SignInViewModel();

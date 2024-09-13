@@ -17,46 +17,33 @@ public static class CrowdfundingConstants {
         public const string Alias = "crowdfundingHomePage";
     }
 
-    public static class GuestFundraiser {
-        public const string Alias = "crowdfundingGuestFundraiser";
-
-        public static class Properties {
-            public const string Title = "title";
-            public const string Logo = "logo";
-            public const string Text = "text";
-            public const string Description = "description";
-            public const string ButtonText = "buttonText";
-            public const string Items = "items";
-        }
-    }
-
-    public static class GuestFundraiserItemElement {
-        public const string Alias = "crowdfundingGuestFundraiserItem";
-        
-        public static class Properties {
-            public const string Icon = "icon";
-            public const string Title = "title";
-            public const string Text = "text";
-        }
-    }
-
     public static class Fundraiser {
         public const string Alias = "crowdfundingFundraiser";
         
         public static class Properties {
             public const string AccountReference = "accountReference";
-            public const string Goals = "goals";
+            public const string BackgroundImage = "backgroundImage";
             public const string Body = "body";
             public const string Campaign = "campaign";
+            public const string Currency = "currency";
             public const string Description = "description";
             public const string DisplayName = "displayName";
             public const string EndDate = "endDate";
+            public const string Goals = "goals";
             public const string HeroImages = "heroImages";
             public const string Owner = "owner";
             public const string Slug = "slug";
             public const string Status = "status";
             public const string Team = "team";
             public const string Title = "title";
+        }
+    }
+    
+    public static class FundraiserHeroImages {
+        public const string Alias = "crowdfundingHeroImage";
+
+        public static class Properties {
+            public const string Image = "image";
         }
     }
     

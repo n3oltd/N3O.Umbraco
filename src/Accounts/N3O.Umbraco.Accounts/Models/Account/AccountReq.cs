@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 namespace N3O.Umbraco.Accounts.Models;
 
 public class AccountReq : IAccount {
-    [Name("Id")]
+    [Name("ID")]
     public EntityId Id { get; set; }
     
     [Name("Reference")]

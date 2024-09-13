@@ -1,23 +1,21 @@
 ﻿using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Crm.Context;
 using N3O.Umbraco.Crm.Engage.Clients;
-using N3O.Umbraco.Subscription;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Crm.Engage;
 
-// TODO SHagufta, implement this
 public class EngageAccountManager : AccountManager {
-    private readonly AccountCookie _accountCookie;
     private readonly ClientFactory<AccountsClient> _clientFactory;
     private readonly ISubscriptionAccessor _subscriptionAccessor;
+    private ServiceClient<AccountsClient> _client;
 
     public EngageAccountManager(AccountCookie accountCookie,
                                 ClientFactory<AccountsClient> clientFactory,
-                                ISubscriptionAccessor subscriptionAccessor) : base(accountCookie) {
+                                ISubscriptionAccessor subscriptionAccessor)
+        : base(accountCookie) {
         _clientFactory = clientFactory;
         _subscriptionAccessor = subscriptionAccessor;
     }
@@ -29,11 +27,9 @@ public class EngageAccountManager : AccountManager {
     }
 
     public override async Task<IEnumerable<AccountRes>> FindAccountsByEmailAsync(string email) {
-        var subscription = _subscriptionAccessor.GetSubscription();
+        var client = await GetClientAsync();
 
-        Client = await _clientFactory.CreateAsync(subscription);
-
-        var res = await Client.InvokeAsync<ICollection<AccountRes>>(x => x.FindMatchesByEmailAsync, email, CancellationToken.None);
+        var res = await client.InvokeAsync<ICollection<AccountRes>>(x => x.FindMatchesByEmailAsync, email);
 
         return res;
     }
@@ -41,6 +37,13 @@ public class EngageAccountManager : AccountManager {
     public override async Task UpdateAccountAsync(AccountReq account) {
         throw new NotImplementedException();
     }
+    
+    private async Task<ServiceClient<AccountsClient>> GetClientAsync() {
+        if (_client == null) {
+            var subscription = _subscriptionAccessor.GetSubscription();
+            _client = await _clientFactory.CreateAsync(subscription);
+        }
 
-    protected ServiceClient<AccountsClient> Client { get; private set; }
+        return _client;
+    }
 }
