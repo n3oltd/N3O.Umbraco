@@ -5,12 +5,12 @@ using System.Collections.Generic;
 namespace N3O.Umbraco.CrowdFunding.Models;
 
 public class GuestFundraiserViewModel {
-    public string Title { get; set; }
-    public string Text { get; set; }
-    public string Description { get; set; }
-    public string ButtonText { get; set; }
-    public CroppedImage Logo { get; set; }
-    public IEnumerable<GuestFundraiserItemElement> Items { get; set; }
+    public string Title { get; private set; }
+    public string Text { get; private set; }
+    public string Description { get; private set; }
+    public string ButtonText { get; private set; }
+    public CroppedImage Logo { get; private set; }
+    public IEnumerable<GuestFundraiserItemElement> Items { get; private set; }
 
     public static GuestFundraiserViewModel For(GuestFundraiserContent guestFundraiserContent) {
         var viewModel = new GuestFundraiserViewModel();

@@ -1,5 +1,7 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm;
+using N3O.Umbraco.Cropper.Extensions;
+using N3O.Umbraco.Cropper.Models;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Exceptions;
@@ -35,12 +37,14 @@ public static class ContentPublisherExtensions {
         contentPublisher.Content.Label(Fundraiser.Properties.Slug).Set(req.Slug);
         contentPublisher.Content.Label(Fundraiser.Properties.Title).Set(req.Title);
         contentPublisher.Content.Label(Fundraiser.Properties.AccountReference).Set(accountReference);
+        contentPublisher.Content.DataList(Fundraiser.Properties.Currency).SetLookups(req.Currency);
         contentPublisher.Content.Label(Fundraiser.Properties.DisplayName).Set(req.Name);
         contentPublisher.Content.DateTime(Fundraiser.Properties.EndDate).SetDate(req.EndDate);
         contentPublisher.Content.Label(Fundraiser.Properties.Status).Set(FundraiserStatuses.Pending.Name);
         contentPublisher.Content.ContentPicker(Fundraiser.Properties.Owner).SetMember(member);
         contentPublisher.Content.ContentPicker(Fundraiser.Properties.Campaign).SetContent(campaign);
         
+        PopulateDefaultContent(contentPublisher, campaign);
         PopulateFundraiserGoals(contentPublisher, req.Goals, campaign);
     }
     
@@ -91,6 +95,16 @@ public static class ContentPublisherExtensions {
                              req.Feedback.OrEmpty(x => x?.CustomFields.Entries));
     }
     
+    private static void CopyCroppedImage(IContentBuilder builder, CroppedImage image, string destinationPropertyAlias) {
+        var sourceImage = image.GetUncroppedImage();
+
+        var cropper = builder.Cropper(destinationPropertyAlias).SetImage(sourceImage.MediaId);
+
+        foreach (var crop in sourceImage.Crops) {
+            cropper.AddCrop().CropTo(crop.X, crop.Y, crop.Width, crop.Height);
+        }
+    }
+    
     private static void PopulateFundraiserGoal(IContentBuilder contentBuilder,
                                                FundraiserGoalReq req,
                                                GoalElement campaignGoal) {
@@ -106,6 +120,22 @@ public static class ContentPublisherExtensions {
 
         foreach (var priceHandle in campaignGoal.PriceHandles.OrEmpty()) {
             AddPriceHandle(priceHandlesBuilder, priceHandle);
+        }
+    }
+    
+    private static void PopulateDefaultContent(IContentPublisher contentPublisher, CampaignContent campaign) {
+        contentPublisher.Content.TextBox(Fundraiser.Properties.Description).Set(campaign.Description);
+        contentPublisher.Content.Raw(Fundraiser.Properties.Body).Set(campaign.Body);
+        
+        CopyCroppedImage(contentPublisher.Content, campaign.BackgroundImage, Fundraiser.Properties.BackgroundImage);
+        PopulateHeroImages(contentPublisher, campaign);
+    }
+    
+    private static void PopulateHeroImages(IContentPublisher contentPublisher, CampaignContent campaign) {
+        var nestedContent = contentPublisher.Content.Nested(Fundraiser.Properties.HeroImages);
+            
+        foreach (var heroImage in campaign.HeroImages) {
+            CopyCroppedImage(nestedContent.Add(FundraiserHeroImages.Alias), heroImage.Image, FundraiserHeroImages.Properties.Image);
         }
     }
     

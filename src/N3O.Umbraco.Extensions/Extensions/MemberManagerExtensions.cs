@@ -8,12 +8,8 @@ namespace N3O.Umbraco.Extensions;
 public static class MemberManagerExtensions {
     public static async Task<string> GetCurrentPublishedMemberEmailAsync(this IMemberManager memberManager) {
         var member = await GetCurrentPublishedMemberAsync(memberManager);
-       
-        if (member.HasValue()) {
-            return member.Value("email")?.ToString();
-        }
 
-        return null;
+        return member?.Value("email")?.ToString();
     }
 
     public static async Task<IPublishedContent> GetCurrentPublishedMemberAsync(this IMemberManager memberManager) {

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Crowdfunding.Queries;
@@ -7,13 +7,6 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Crowdfunding.Controllers;
 
 public partial class CrowdfundingController {
-    [HttpPost("fundraisers/checkTitle")]
-    public async Task<ActionResult<bool>> CheckTitle(CreateFundraiserReq req) {
-        var res = await _mediator.Value.SendAsync<CheckFundraiserTitleIsAvailableQuery, CreateFundraiserReq, bool>(req);
-
-        return Ok(res);
-    }
-    
     [HttpPost("fundraisers")]
     public async Task<ActionResult<string>> CreateFundraiser(CreateFundraiserReq req) {
         var res = await _mediator.Value.SendAsync<CreateFundraiserCommand, CreateFundraiserReq, string>(req);
@@ -28,11 +21,11 @@ public partial class CrowdfundingController {
         return Ok(res);
     }
     
-    [HttpPost("fundraisers/publish/{contentId:guid}")]
-    public async Task<ActionResult> PublishFundraiser() {
-        await _mediator.Value.SendAsync<PublishFundraiserCommand, None, None>(None.Empty);
-        
-        return Ok();
+    [HttpPost("fundraisers/suggestSlug")]
+    public async Task<ActionResult<string>> SuggestSlug([FromQuery] string name) {
+        var res = await _mediator.Value.SendAsync<SuggestSlugQuery, string, string>(name);
+
+        return Ok(res);
     }
     
     [HttpPut("fundraisers/goals/{contentId:guid}")]

@@ -23,8 +23,6 @@ public class ServiceClient<TClient> {
         _logger = logger;
     }
 
-    // public void ConfigureClient(Action<TClient> action) => action(_client);
-
     public async Task InvokeAsync(Func<TClient, Func<string, string, string, string, string, CancellationToken, Task>> resolve,
                                   CancellationToken cancellationToken = default) {
         var funcAsync = resolve(_client);

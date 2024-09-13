@@ -1,9 +1,19 @@
-﻿@using N3O.Umbraco.CrowdFunding
+@using N3O.Umbraco.CrowdFunding
 @using N3O.Umbraco.CrowdFunding.Extensions
+@using N3O.Umbraco.CrowdFunding.Models.Header
 @using N3O.Umbraco.Extensions
+@using Umbraco.Cms.Core.Security
+@using Umbraco.Cms.Web.Common.Security
 
 @inject IEnumerable<ICrowdfundingPage> CrowdfundingPages
+@inject IMemberExternalLoginProviders ExternalLoginProviders
+@inject IMemberManager MemberManager
 
+<link rel="stylesheet" href="/assets/css/crowdfunding-main.css"/>
+
+@{
+await Html.RenderCrowdfundingComponentAsync("FundraisingHeader", await HeaderViewModel.ForAsync(ExternalLoginProviders, MemberManager));
+}
 
 @foreach (var crowdfundingPage in CrowdfundingPages) {
     if (crowdfundingPage.IsMatch(Context.Request.Uri())) {
@@ -11,4 +21,9 @@
     }
 }
 
-<script src="../../../assets/js/modals.js"></script>
+<script src="/assets/js/jquery.js"></script>
+<script src="/assets/js/slick.min.js"></script>
+<script src="/assets/js/crowdfunding-main.js"></script>
+<script src="/assets/js/tabs.js"></script>
+<script src="/assets/js/modals.js"></script>
+<script src="/assets/js/numberVal.js"></script>
