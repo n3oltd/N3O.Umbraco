@@ -8,4 +8,6 @@ public interface ITextFormatter {
         where TStrings : class, IStrings, new();
 
     string FormatLookupName(INamedLookup lookup);
+    string FormatName(string firstName, string lastName);
+    string FormatName(string title, string firstName, string lastName);
 }

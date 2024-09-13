@@ -18,14 +18,14 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Content
 {
-	/// <summary>Guest Fundraiser</summary>
-	[PublishedModel("crowdfundingGuestFundraiser")]
-	public partial class CrowdfundingGuestFundraiser : PublishedContentModel
+	/// <summary>Feedback Custom Field</summary>
+	[PublishedModel("feedbackCustomField")]
+	public partial class FeedbackCustomField : PublishedElementModel
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		public new const string ModelTypeAlias = "crowdfundingGuestFundraiser";
+		public new const string ModelTypeAlias = "feedbackCustomField";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
@@ -34,14 +34,14 @@ namespace DemoSite.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<CrowdfundingGuestFundraiser, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<FeedbackCustomField, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public CrowdfundingGuestFundraiser(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
+		public FeedbackCustomField(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
@@ -50,36 +50,34 @@ namespace DemoSite.Content
 		// properties
 
 		///<summary>
-		/// Button Text
+		/// Alias
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("buttonText")]
-		public virtual string ButtonText => this.Value<string>(_publishedValueFallback, "buttonText");
+		[ImplementPropertyType("alias")]
+		public virtual string Alias => this.Value<string>(_publishedValueFallback, "alias");
 
 		///<summary>
-		/// Description
+		/// Bool
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("description")]
-		public virtual string Description => this.Value<string>(_publishedValueFallback, "description");
+		[ImplementPropertyType("bool")]
+		public virtual bool Bool => this.Value<bool>(_publishedValueFallback, "bool");
 
 		///<summary>
-		/// Items
+		/// Date
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("items")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingGuestFundraiserItem> Items => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingGuestFundraiserItem>>(_publishedValueFallback, "items");
+		[ImplementPropertyType("date")]
+		public virtual global::System.DateTime Date => this.Value<global::System.DateTime>(_publishedValueFallback, "date");
 
 		///<summary>
-		/// Logo
+		/// Name
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("logo")]
-		public virtual global::N3O.Umbraco.Cropper.Models.CroppedImage Logo => this.Value<global::N3O.Umbraco.Cropper.Models.CroppedImage>(_publishedValueFallback, "logo");
+		[ImplementPropertyType("displayName")]
+		public virtual string DisplayName => this.Value<string>(_publishedValueFallback, "displayName");
 
 		///<summary>
 		/// Text
@@ -90,11 +88,11 @@ namespace DemoSite.Content
 		public virtual string Text => this.Value<string>(_publishedValueFallback, "text");
 
 		///<summary>
-		/// Title
+		/// Type
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("title")]
-		public virtual string Title => this.Value<string>(_publishedValueFallback, "title");
+		[ImplementPropertyType("type")]
+		public virtual global::N3O.Umbraco.Giving.Lookups.FeedbackCustomFieldType Type => this.Value<global::N3O.Umbraco.Giving.Lookups.FeedbackCustomFieldType>(_publishedValueFallback, "type");
 	}
 }

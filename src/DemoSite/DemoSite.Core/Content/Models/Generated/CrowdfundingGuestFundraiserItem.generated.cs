@@ -18,14 +18,14 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Content
 {
-	/// <summary>Guest Fundraiser</summary>
-	[PublishedModel("crowdfundingGuestFundraiser")]
-	public partial class CrowdfundingGuestFundraiser : PublishedContentModel
+	/// <summary>Guest Fundraiser Item</summary>
+	[PublishedModel("crowdfundingGuestFundraiserItem")]
+	public partial class CrowdfundingGuestFundraiserItem : PublishedElementModel
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		public new const string ModelTypeAlias = "crowdfundingGuestFundraiser";
+		public new const string ModelTypeAlias = "crowdfundingGuestFundraiserItem";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
@@ -34,14 +34,14 @@ namespace DemoSite.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<CrowdfundingGuestFundraiser, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<CrowdfundingGuestFundraiserItem, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public CrowdfundingGuestFundraiser(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
+		public CrowdfundingGuestFundraiserItem(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
@@ -50,36 +50,12 @@ namespace DemoSite.Content
 		// properties
 
 		///<summary>
-		/// Button Text
+		/// Icon
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("buttonText")]
-		public virtual string ButtonText => this.Value<string>(_publishedValueFallback, "buttonText");
-
-		///<summary>
-		/// Description
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("description")]
-		public virtual string Description => this.Value<string>(_publishedValueFallback, "description");
-
-		///<summary>
-		/// Items
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("items")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingGuestFundraiserItem> Items => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingGuestFundraiserItem>>(_publishedValueFallback, "items");
-
-		///<summary>
-		/// Logo
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("logo")]
-		public virtual global::N3O.Umbraco.Cropper.Models.CroppedImage Logo => this.Value<global::N3O.Umbraco.Cropper.Models.CroppedImage>(_publishedValueFallback, "logo");
+		[ImplementPropertyType("icon")]
+		public virtual global::N3O.Umbraco.Uploader.Models.FileUpload Icon => this.Value<global::N3O.Umbraco.Uploader.Models.FileUpload>(_publishedValueFallback, "icon");
 
 		///<summary>
 		/// Text

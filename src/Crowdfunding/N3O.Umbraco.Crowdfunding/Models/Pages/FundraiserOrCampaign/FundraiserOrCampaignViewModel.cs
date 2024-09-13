@@ -1,7 +1,7 @@
 ﻿using N3O.Umbraco.Crowdfunding;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
-using N3O.Umbraco.CrowdFunding.Extensions;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using System;
 using System.Collections.Generic;

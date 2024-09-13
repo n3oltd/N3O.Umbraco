@@ -627,6 +627,10 @@ public static class EnumerableExtensions {
 
         return keyValuePairs.ToDictionary();
     }
+    
+    public static IReadOnlyList<U> ToReadOnlyList<T, U>(this IEnumerable<T> source, Func<T, U> map) {
+        return source.OrEmpty().Select(map).ToList();
+    }
 
     public static string ToString<T>(this IEnumerable<T> source, string separator) {
         return ToString(source, separator, separator);
