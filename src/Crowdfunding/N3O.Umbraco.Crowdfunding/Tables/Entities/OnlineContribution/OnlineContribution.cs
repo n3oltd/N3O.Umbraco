@@ -17,6 +17,10 @@ public class OnlineContribution {
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.OnlineContributions.Name + "_" + nameof(Timestamp), ForColumns = nameof(Timestamp))]
     public DateTime Timestamp { get; set; }
     
+    [Column(nameof(Date))]
+    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.OnlineContributions.Name + "_" + nameof(Date), ForColumns = nameof(Date))]
+    public DateOnly Date { get; set; }
+    
     [Column(nameof(CampaignId))]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.OnlineContributions.Name + "_" + nameof(CampaignId), ForColumns = nameof(CampaignId))]
     public Guid CampaignId { get; set; }
@@ -38,8 +42,9 @@ public class OnlineContribution {
     public string TeamName { get; set; }
     
     [Column(nameof(FundraiserId))]
+    [NullSetting(NullSetting = NullSettings.Null)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.OnlineContributions.Name + "_" + nameof(FundraiserId), ForColumns = nameof(FundraiserId))]
-    public Guid FundraiserId { get; set; }
+    public Guid? FundraiserId { get; set; }
     
     [Column(nameof(FundraiserUrl))]
     [Length(400)]
