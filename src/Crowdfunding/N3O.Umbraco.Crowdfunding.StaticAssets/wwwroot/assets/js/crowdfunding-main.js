@@ -1,66 +1,20 @@
-﻿// // menu start
-// var menu = document.getElementById("menu");
-// var menuBtn = document.getElementById("menuBtn");
-// menuBtn.onclick = function () {
-//   menu.classList.toggle("active");
-//   menuBtn.classList.toggle("active");
-//   body.classList.toggle("active");
-// };
-// window.onclick = function (event) {
-//   if (event.target == menu) {
-//     menu.classList.remove("active");
-//     menuBtn.classList.remove("active");
-//     body.classList.remove("active");
-//   }
-// };
-// // menu end
-var body = document.body;
+﻿var body = document.body;
 
 // scroll start
 let header = document.getElementById("header");
 function scrollFunc() {
   if (window.scrollY >= 60) {
-    header?.classList.add("sticky");
+    header.classList.add("sticky");
   } else {
-    header?.classList.remove("sticky");
+    header.classList.remove("sticky");
   }
 }
-window.onscroll = function () {
-  scrollFunc();
-};
+if (header) {
+  window.onscroll = function () {
+    scrollFunc();
+  };
+}
 // scroll end
-// // faq start
-// const tabBtn = document.querySelectorAll(".tabBtn");
-// const tabEvent = document.querySelectorAll(".tabEvent");
-// tabBtn.forEach((e) => {
-//   onTabClick(tabBtn, tabEvent, e);
-// });
-// function onTabClick(tabBtns, tabItems, item) {
-//   item.addEventListener("click", function (e) {
-//     let currentBtn = item;
-//     let tabId = currentBtn.getAttribute("data-tab");
-//     let currentTab = document.querySelector(tabId);
-//     if (currentBtn.classList.contains("active")) {
-//       console.log("now active");
-//       const faq = currentBtn.parentElement.querySelector(".tabEvent");
-//       if (faq) {
-//         faq.classList.remove("active");
-//         currentBtn.classList.remove("active");
-//       }
-//     } else if (!currentBtn.classList.contains("active")) {
-//       tabBtns.forEach(function (item) {
-//         item.classList.remove("active");
-//       });
-
-//       tabItems.forEach(function (item) {
-//         item.classList.remove("active");
-//       });
-//       currentBtn.classList.add("active");
-//       currentTab.classList.add("active");
-//     }
-//   });
-// }
-// // faq end
 // sliders
 $(function () {
   $(".campaignSlider").slick({
@@ -104,6 +58,37 @@ const selectFunc = () => {
   });
 };
 selectFunc();
+
+const sortFunc = () => {
+  const sorts = document.querySelectorAll(".sort");
+  sorts.forEach((sort) => {
+    const selected = sort.querySelector(".sort__selected");
+    const selectedText = selected.querySelector("b");
+    const sortOptions = sort.querySelector(".sort__options");
+    const listItems = sortOptions.querySelectorAll("li");
+    const input = sort.querySelector("input[type='hidden']");
+    selected.onclick = () => {
+      sort.classList.toggle("active");
+      eventHandler();
+    };
+    listItems.forEach((listItem) => {
+      listItem.onclick = () => {
+        selectedText.innerHTML = listItem.innerHTML;
+        sort.classList.remove("active");
+        input.value = listItem.getAttribute("data-value");
+        eventHandler();
+      };
+    });
+    const eventHandler = () => {
+      window.addEventListener("click", (e) => {
+        if (!sort.contains(e.target)) {
+          sort.classList.remove("active");
+        }
+      });
+    };
+  });
+};
+sortFunc();
 
 const checkoutForm = document.getElementById("checkoutForm");
 if (checkoutForm) {
@@ -153,9 +138,14 @@ if (checkoutForm) {
       }
       inputs.forEach((input) => {
         const inputWrapper = input.parentElement;
+
         if (input.value == "") {
           inputWrapper.classList.add("error");
           checkoutMessage.classList.add("active");
+          if (inputWrapper.classList.contains("iti")) {
+            inputWrapper.classList.remove("error");
+            inputWrapper.parentElement.classList.add("error");
+          }
         }
       });
     };
@@ -193,3 +183,87 @@ if (showMoreWrapper) {
   });
 }
 // showMore end
+
+// copy url start
+const copyButton = document.getElementById("copyBtn");
+if (copyButton) {
+  const textElement = document.getElementById("myUrl");
+
+  const copyText = (e) => {
+    window.getSelection().selectAllChildren(textElement);
+    document.execCommand("copy");
+  };
+  copyButton.addEventListener("click", (e) => copyText(e));
+}
+// copy end
+
+// url to ifram start
+$(document).ready(function () {
+  $("#sendUrl").click(function () {
+    function getId(url) {
+      var regExp =
+          /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      var match = url.match(regExp);
+
+      if (match && match[2].length == 11) {
+        return match[2];
+      } else {
+        return "error";
+      }
+    }
+    var videoId = $("#url").val();
+    var myId = getId(videoId);
+
+    $("#videoSrc").html(myId);
+
+    $("#myVideo").html(
+        '<iframe src="//www.youtube.com/embed/' +
+        myId +
+        '" frameborder="0" allowfullscreen></iframe>'
+    );
+  });
+});
+
+// url to ifram end
+
+// adminC contribution start
+const adminC = document.getElementById("adminC");
+if (adminC) {
+  const adminCText = adminC.querySelector(".adminC__text");
+  const adminCRow = adminC.querySelector(".adminC__row");
+  const adminCRowCustom = adminC.querySelector(".adminC__foot");
+  const customFeeBtns = adminC.querySelectorAll(".customBtn");
+  const customBack = adminC.querySelector(".customBack");
+  const customInput = adminC.querySelector(".cta__input");
+  const adminCSlider = adminC.querySelector(".adminC__slider");
+  customFeeBtns.forEach((customFeeBtn) => {
+    customFeeBtn.onclick = () => {
+      customInput.classList.add("active");
+      adminCRowCustom.classList.add("active");
+      adminCText.classList.remove("active");
+      adminCRow.classList.remove("active");
+      adminCSlider.classList.remove("active");
+    };
+  });
+  customBack.onclick = () => {
+    customInput.classList.remove("active");
+    adminCRowCustom.classList.remove("active");
+    adminCText.classList.add("active");
+    adminCRow.classList.remove("active");
+    adminCSlider.classList.add("active");
+  };
+}
+// adminC contribution end
+
+const cta_amounts = document.querySelectorAll(".ctaAmount");
+cta_amounts.forEach((cta_amount) => {
+  const cta_select = cta_amount.querySelector("select");
+  const cta_label = cta_amount.querySelector("label");
+  cta_select.onchange = (e) => {
+    if (e.target.value === "GBP") {
+      cta_label.innerHTML = "£";
+    } else if (e.target.value === "USD") {
+      cta_label.innerHTML = "$";
+    }
+  };
+});

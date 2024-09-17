@@ -13,7 +13,7 @@
         </svg>
 
         @if (Model.Content.HeroImages.HasAny()) {
-            <div class="campaignSlider" n3o-editor="(Model, PropertyTypes.Nested, nameof(Model.Content.HeroImages)">
+            <div class="campaignSlider" n3o-editor="@(Model, PropertyTypes.Nested, nameof(Model.Content.HeroImages))">
                 @foreach (var heroImage in Model.Content.HeroImages) {
                     <div class="campaignSlider__item">
                         <div class="campaignSlider__item-inner">
@@ -27,9 +27,9 @@
 
     <div class="campaign__content">
         <div class="campaign__title">
-            <h2 n3o-editor="(Model, PropertyTypes.TextBox, nameof(Model.Content.Name)">@Model.Content.Name</h2>
+            <h2 n3o-editor="@(Model, PropertyTypes.TextBox, nameof(Model.Content.Name))">@Model.Content.Name</h2>
             
-            <p n3o-editor="(Model, PropertyTypes.Textarea, nameof(Model.Content.Description)">
+            <p n3o-editor="@(Model, PropertyTypes.Textarea, nameof(Model.Content.Description))">
                 @Model.Content.Description
             </p>
         </div>
