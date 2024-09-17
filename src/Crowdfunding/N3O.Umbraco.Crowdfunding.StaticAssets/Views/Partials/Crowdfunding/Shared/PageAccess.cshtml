@@ -3,25 +3,28 @@
 @model ICrowdfundingViewModel
 
 @if (Model.Page.Access.RequiresSignIn && !Model.IsSignedIn) {
-    @ShowModal("SignIn", Model.SignIn())
+    ShowModal("SignIn", Model.SignIn());
 } else if (Model.Page.Access.RequiresAccount && !Model.AccountSelected) {
     if (Model.SelectAccount().AvailableAccounts.None()) {
-        @ShowModal("CreateAccount", Model.SelectAccount())
+        ShowModal("CreateAccount", Model.SelectAccount());
     } else if (Model.SelectAccount().AvailableAccounts.IsSingle()) {
-        @ShowModal("UpdateAccount", Model.SelectAccount())
+        ShowModal("UpdateAccount", Model.SelectAccount());
     } else {
-        @ShowModal("SelectAccount", Model.SelectAccount())
+        ShowModal("SelectAccount", Model.SelectAccount());
     }
 }
 
-@helper ShowModal(string modalName, object modalViewModel) {
-    @Html.CrowdfundingPartial($"~/Views/Partials/Crowdfunding/Shared/Modals/{modalName}Modal.cshtml", modalViewModel)
-    
-    <script>
+
+@{
+    void ShowModal(string modalName, object modalViewModel) {
+        @Html.CrowdfundingPartial($"~/Views/Partials/Crowdfunding/Shared/Modals/{modalName}Modal.cshtml", modalViewModel)
+
+        <script>
         document.addEventListener("DOMContentLoaded", function () {
             const modal = document.getElementById("@modalName.Camelize()-modal");
 
             modal.classList.add('active');
         });
     </script>
+    }
 }
