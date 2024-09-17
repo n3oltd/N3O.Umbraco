@@ -3,7 +3,6 @@ using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
-using Slugify;
 using Smidge;
 using System;
 using System.Collections.Generic;
