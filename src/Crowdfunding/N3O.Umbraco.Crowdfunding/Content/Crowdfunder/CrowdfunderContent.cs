@@ -2,7 +2,6 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm.Models;
 using N3O.Umbraco.Cropper.Models;
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using System;
 using System.Collections.Generic;
@@ -27,9 +26,9 @@ public abstract class CrowdfunderContent<T> : UmbracoContent<T>, ICrowdfunderCon
     public abstract Guid? TeamId { get; }
     public abstract string TeamName { get; }
     public abstract Guid? FundraiserId { get; }
-    public abstract string FundraiserUrl { get; }
     
     public Guid Id => Key;
-    public string Url => Content().AbsoluteUrl();
     IEnumerable<ICrowdfunderGoal> ICrowdfunder.Goals => Goals;
+
+    public abstract string Url(IContentLocator contentLocator);
 }

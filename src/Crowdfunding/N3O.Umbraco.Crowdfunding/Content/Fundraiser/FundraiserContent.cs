@@ -1,8 +1,7 @@
-﻿using N3O.Umbraco.Crm.Models;
+﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Crm.Models;
 using N3O.Umbraco.Crowdfunding.Lookups;
-using N3O.Umbraco.Extensions;
 using System;
-using System.Collections.Generic;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
@@ -19,5 +18,8 @@ public class FundraiserContent : CrowdfunderContent<FundraiserContent>, IFundrai
     public override Guid? TeamId => null;
     public override string TeamName => null;
     public override Guid? FundraiserId => Key;
-    public override string FundraiserUrl => Content().AbsoluteUrl();
+    
+    public override string Url(IContentLocator contentLocator) {
+        return ViewEditFundraiserPage.Url(contentLocator, Key);
+    }
 }

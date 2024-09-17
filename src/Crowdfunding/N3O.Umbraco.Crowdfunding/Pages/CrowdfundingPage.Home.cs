@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding.Models;
+using Slugify;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

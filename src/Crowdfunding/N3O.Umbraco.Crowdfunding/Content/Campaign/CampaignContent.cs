@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm.Models;
 using System;
 using System.Collections.Generic;
@@ -15,5 +16,8 @@ public class CampaignContent : CrowdfunderContent<CampaignContent>, ICampaign {
     public override Guid? TeamId => null;
     public override string TeamName => null;
     public override Guid? FundraiserId => null;
-    public override string FundraiserUrl => null;
+
+    public override string Url(IContentLocator contentLocator) {
+        return ViewCampaignPage.Url(contentLocator, Key);
+    }
 }

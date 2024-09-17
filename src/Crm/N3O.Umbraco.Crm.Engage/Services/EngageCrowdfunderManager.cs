@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Crm.Engage.Clients;
+﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Crm.Engage.Clients;
 using N3O.Umbraco.Crm.Engage.Extensions;
 using N3O.Umbraco.Crm.Models;
 using N3O.Umbraco.Exceptions;
@@ -17,13 +18,16 @@ namespace N3O.Umbraco.Crm.Engage;
 public class EngageCrowdfunderManager : ICrowdfunderManager {
     private readonly ClientFactory<CrowdfundingClient> _clientFactory;
     private readonly ISubscriptionAccessor _subscriptionAccessor;
+    private readonly IContentLocator _contentLocator;
     private readonly Lazy<IAccountIdentityAccessor> _accountIdentityAccessor;
 
     public EngageCrowdfunderManager(ClientFactory<CrowdfundingClient> clientFactory,
                                     ISubscriptionAccessor subscriptionAccessor,
+                                    IContentLocator contentLocator,
                                     Lazy<IAccountIdentityAccessor> accountIdentityAccessor) {
         _clientFactory = clientFactory;
         _subscriptionAccessor = subscriptionAccessor;
+        _contentLocator = contentLocator;
         _accountIdentityAccessor = accountIdentityAccessor;
     }
 
@@ -53,7 +57,7 @@ public class EngageCrowdfunderManager : ICrowdfunderManager {
         syncCrowdfunderReq.Name.Value = crowdfunder.Name;
         
         syncCrowdfunderReq.Url = new CrowdfunderUrlReq();
-        syncCrowdfunderReq.Url.Value = crowdfunder.Url;
+        syncCrowdfunderReq.Url.Value = crowdfunder.Url(_contentLocator);
         
         syncCrowdfunderReq.Allocations = GetCrowdfunderAllocationsReq(crowdfunder.Goals,
                                                                       crowdfunder.Currency.ToEngageCurrency());
@@ -81,7 +85,7 @@ public class EngageCrowdfunderManager : ICrowdfunderManager {
         var req = new CreateCrowdfunderReq();
         req.Id = crowdfunder.Id;
         req.Name = crowdfunder.Name;
-        req.Url = crowdfunder.Url;
+        req.Url = crowdfunder.Url(_contentLocator);
         req.Currency = crowdfunder.Currency.ToEngageCurrency();
         req.Allocations = GetCrowdfunderAllocationsReq(crowdfunder.Goals, crowdfunder.Currency.ToEngageCurrency());
 

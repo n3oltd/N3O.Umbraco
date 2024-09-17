@@ -1,9 +1,11 @@
-﻿using N3O.Umbraco.Content;
+﻿using Flurl;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Crowdfunding;
@@ -19,12 +21,12 @@ public class ViewCampaignPage : CrowdfundingPage {
     }
 
     protected override bool IsMatch(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
-        return IsMatch(crowdfundingPath, CrowdfundingConstants.Routes.ViewCampaign);
+        return IsMatch(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewCampaign);
     }
 
     protected override async Task<ICrowdfundingViewModel> GetViewModelAsync(string crowdfundingPath,
                                                                             IReadOnlyDictionary<string, string> query) {
-        var match = Match(crowdfundingPath, CrowdfundingConstants.Routes.ViewCampaign);
+        var match = Match(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewCampaign);
         var campaignId = int.Parse(match.Groups[1].Value);
         var campaign = ContentLocator.ById<CampaignContent>(campaignId);
 
@@ -39,7 +41,9 @@ public class ViewCampaignPage : CrowdfundingPage {
     
     public static string Url(IContentLocator contentLocator, Guid campaignKey) {
         var campaign = contentLocator.ById<CampaignContent>(campaignKey);
+        var relativeUrl = new Url(campaign.Content().RelativeUrl());
         
-        return GenerateUrl(contentLocator, campaign.Content().RelativeUrl());
+        return GenerateUrl(contentLocator, CrowdfundingConstants.Routes.ViewCampaign_2.FormatWith(campaign.Id,
+                                                                                                  relativeUrl.PathSegments.Last()));
     }
 }

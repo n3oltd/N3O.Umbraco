@@ -1,6 +1,5 @@
 ﻿using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.Models;
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Mediator;
 using System;
 using System.Threading;
@@ -22,9 +21,7 @@ public partial class CreateOrUpdateFundraiserHandlers :
         var publishResult = contentPublisher.SaveAndPublish();
 
         if (publishResult.Success) {
-            var publishedContent = _contentLocator.ById(publishResult.Content.Key);
-
-            return publishedContent.AbsoluteUrl();
+            return ViewEditFundraiserPage.Url(_contentLocator, publishResult.Content.Key);
         } else {
             throw ToValidationException(publishResult);
         }

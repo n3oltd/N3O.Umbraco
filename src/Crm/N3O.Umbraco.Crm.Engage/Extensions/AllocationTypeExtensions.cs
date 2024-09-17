@@ -1,5 +1,4 @@
-﻿using N3O.Umbraco.Financial;
-using N3O.Umbraco.Giving.Lookups;
+﻿using N3O.Umbraco.Giving.Lookups;
 using System;
 using EngageAllocationType = N3O.Umbraco.Crm.Engage.Clients.AllocationType;
 

@@ -1,6 +1,3 @@
-@using N3O.Umbraco.Crowdfunding.Extensions
-@using N3O.Umbraco.Crowdfunding.Models
-
 @model SelectAccountViewModel
 
 @foreach (var field in Model.DataEntrySettings.Name.GetFieldSettings().Where(x => x.Visible)) {

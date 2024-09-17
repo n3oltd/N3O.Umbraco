@@ -5,6 +5,7 @@ using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Crowdfunding.UIBuilder;
 using N3O.Umbraco.Exceptions;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Forex;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
@@ -109,7 +110,7 @@ public class ContributionRepository : IContributionRepository {
         contribution.TeamId = crowdfunder.TeamId;
         contribution.TeamName = crowdfunder.TeamName;
         contribution.FundraiserId = crowdfunder.FundraiserId;
-        contribution.FundraiserUrl = crowdfunder.FundraiserUrl;
+        contribution.FundraiserUrl = crowdfunder.FundraiserId.HasValue() ? crowdfunder.Url(_contentLocator) : null;
         contribution.CheckoutReference = checkoutReference;
         contribution.GivingTypeId = givingType.Id;
         contribution.CurrencyCode = allocation.Value.Currency.Code;

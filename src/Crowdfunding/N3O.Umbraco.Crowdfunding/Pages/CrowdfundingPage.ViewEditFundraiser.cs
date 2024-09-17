@@ -26,12 +26,12 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
     }
 
     protected override bool IsMatch(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
-        return IsMatch(crowdfundingPath, CrowdfundingConstants.Routes.ViewEditFundraiser);
+        return IsMatch(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewEditFundraiser);
     }
 
     protected override async Task<ICrowdfundingViewModel> GetViewModelAsync(string crowdfundingPath,
                                                                             IReadOnlyDictionary<string, string> query) {
-        var match = Match(crowdfundingPath, CrowdfundingConstants.Routes.ViewEditFundraiser);
+        var match = Match(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewEditFundraiser);
         var fundraiserId = int.Parse(match.Groups[1].Value);
         var fundraiser = ContentLocator.ById<FundraiserContent>(fundraiserId);
 
@@ -48,6 +48,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
     public static string Url(IContentLocator contentLocator, Guid fundraiserKey) {
         var fundraiser = contentLocator.ById<FundraiserContent>(fundraiserKey);
         
-        return GenerateUrl(contentLocator, fundraiser.Content().RelativeUrl());
+        return GenerateUrl(contentLocator, CrowdfundingConstants.Routes.ViewEditFundraiser_2.FormatWith(fundraiser.Id,
+                                                                                                        fundraiser.Slug));
     }
 }
