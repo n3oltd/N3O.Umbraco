@@ -48,7 +48,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
     public static string Url(IContentLocator contentLocator, Guid fundraiserKey) {
         var fundraiser = contentLocator.ById<FundraiserContent>(fundraiserKey);
         
-        return GenerateUrl(contentLocator, CrowdfundingConstants.Routes.ViewEditFundraiser_2.FormatWith(fundraiser.Id,
+        return GenerateUrl(contentLocator, CrowdfundingConstants.Routes.ViewEditFundraiser_2.FormatWith(fundraiser.Content().Id,
                                                                                                         fundraiser.Slug));
     }
 }

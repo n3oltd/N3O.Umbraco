@@ -41,9 +41,10 @@ public class ViewCampaignPage : CrowdfundingPage {
     
     public static string Url(IContentLocator contentLocator, Guid campaignKey) {
         var campaign = contentLocator.ById<CampaignContent>(campaignKey);
+        
         var relativeUrl = new Url(campaign.Content().RelativeUrl());
         
-        return GenerateUrl(contentLocator, CrowdfundingConstants.Routes.ViewCampaign_2.FormatWith(campaign.Id,
+        return GenerateUrl(contentLocator, CrowdfundingConstants.Routes.ViewCampaign_2.FormatWith(campaign.Content().Id,
                                                                                                   relativeUrl.PathSegments.Last()));
     }
 }
