@@ -24,7 +24,7 @@ public class Bundler : IBundler {
     public async Task<IEnumerable<string>> GenerateJsUrlsAsync() {
         ProcessAssetBundles();
         
-        return await _smidgeHelper.GenerateCssUrlsAsync();
+        return await _smidgeHelper.GenerateJsUrlsAsync();
     }
 
     public IBundler RequiresCss(params string[] paths) {

@@ -9,7 +9,7 @@ public class EngageComposer : Composer {
         builder.Services.AddScoped(typeof(ClientFactory<>));
         builder.Services.AddSingleton<CloudUrlAccessor>();
         builder.Services.AddScoped<IAccountManager, EngageAccountManager>();
-        //builder.Services.AddScoped<ICrowdfunderManager, EngageCrowdfunderManager>();
+        builder.Services.AddScoped<ICrowdfunderManager, EngageCrowdfunderManager>();
         builder.Services.AddSingleton<ISubscriptionAccessor, SubscriptionAccessor>();
         builder.Services.AddScoped<IUserDirectoryIdAccessor, UserDirectoryIdAccessor>();
     }

@@ -48,11 +48,6 @@ public class GoalElement : UmbracoElement<GoalElement>, IFundDimensionValues, IC
         }
     }
     
-    public IFundDimensionsOptions GetFundDimensionOptions() {
-        return (IFundDimensionsOptions) Fund?.DonationItem ??
-               (IFundDimensionsOptions) Feedback?.Scheme;
-    }
-    
     public AllocationType Type {
         get {
             if (Content().ContentType.Alias.EqualsInvariant(CrowdfundingConstants.Goal.Fund.Alias)) {
