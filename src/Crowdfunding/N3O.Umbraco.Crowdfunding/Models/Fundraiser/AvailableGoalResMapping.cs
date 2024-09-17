@@ -14,7 +14,7 @@ public class AvailableGoalResMapping : IMapDefinition {
 
     private void Map(GoalElement src, AvailableGoalRes dest, MapperContext ctx) {
         dest.Id = src.GoalId;
-        dest.Title = src.Title;
+        dest.Name = src.Name;
         dest.Type = src.Type;
         dest.Tags = src.Tags.Select(x => x.Name).ToList();
         dest.Fund = src.Fund.IfNotNull(x => ctx.Map<DonationItem, DonationItemRes>(x.DonationItem));

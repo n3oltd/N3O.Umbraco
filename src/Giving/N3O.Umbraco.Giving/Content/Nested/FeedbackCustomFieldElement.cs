@@ -1,7 +1,6 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
-using Newtonsoft.Json;
 using NodaTime;
 using System;
 
@@ -15,9 +14,11 @@ public class FeedbackCustomFieldElement : UmbracoElement<FeedbackCustomFieldElem
     public DateTime? Date => GetValue(x => x.Date);
     public FeedbackCustomFieldType Type => GetValue(x => x.Type);
 
-    [JsonIgnore]
     string IFeedbackCustomField.Name => DisplayName;
     
-    [JsonIgnore]
     LocalDate? IFeedbackCustomField.Date => Date == null ? null : LocalDate.FromDateTime(Date.Value);
+
+    public FeedbackCustomField ToFeedbackCustomField() {
+        return new FeedbackCustomField(this);
+    }
 }

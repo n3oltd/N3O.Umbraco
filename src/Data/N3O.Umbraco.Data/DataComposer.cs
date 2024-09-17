@@ -41,6 +41,9 @@ public class DataComposer : Composer {
         RegisterMatchers(builder);
         RegisterTables(builder);
         
+        RegisterAll(t => t.ImplementsInterface<IContentPropertyValidator>(),
+                    t => builder.Services.AddTransient(typeof(IContentPropertyValidator), t));
+        
         builder.Components().Append<DataComponent>();
     }
 

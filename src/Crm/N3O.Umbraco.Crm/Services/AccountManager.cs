@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Crm;
 public abstract class AccountManager : IAccountManager {
     private readonly AccountCookie _accountCookie;
 
-    public AccountManager(AccountCookie accountCookie) {
+    protected AccountManager(AccountCookie accountCookie) {
         _accountCookie = accountCookie;
     }
 
@@ -16,8 +16,8 @@ public abstract class AccountManager : IAccountManager {
     public abstract Task<IEnumerable<AccountRes>> FindAccountsByEmailAsync(string email);
     public abstract Task UpdateAccountAsync(AccountReq account);
 
-    public Task SelectAccount(string accountId, string accountReference) {
-        _accountCookie.Set(accountId, accountReference);
+    public Task SelectAccount(string accountId, string accountReference, string accountToken) {
+        _accountCookie.Set(accountId, accountReference, accountToken);
         
         return Task.CompletedTask;
     }

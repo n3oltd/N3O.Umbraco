@@ -1,12 +1,11 @@
-﻿using System;
+﻿using N3O.Umbraco.Crm.Lookups;
+using System;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
 public interface ICrowdfunderData {
-    Guid CampaignId { get; }
-    Guid? TeamId { get; }
-    Guid FundraiserId { get; }
-    string FundraiserUrl { get; }
+    Guid CrowdfunderId { get; }
+    CrowdfunderType CrowdfunderType { get; }
     string Comment { get; }
     bool Anonymous { get; }
 }

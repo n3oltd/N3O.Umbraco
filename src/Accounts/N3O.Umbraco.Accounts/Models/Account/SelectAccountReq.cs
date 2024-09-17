@@ -8,4 +8,7 @@ public class SelectAccountReq {
     
     [Name("Account Reference")]
     public string AccountReference { get; set; }
+    
+    [Name("Account Token")]
+    public string AccountToken { get; set; }
 }

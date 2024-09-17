@@ -7,7 +7,7 @@ namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class AvailableGoalRes {
     public Guid Id { get; set; }
-    public string Title { get; set; }
+    public string Name { get; set; }
     public AllocationType Type { get; set; }
     public IEnumerable<string> Tags { get; set; }
     public DonationItemRes Fund { get; set; }

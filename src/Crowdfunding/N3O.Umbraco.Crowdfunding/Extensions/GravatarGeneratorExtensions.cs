@@ -3,7 +3,7 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace N3O.Umbraco.CrowdFunding.Extensions;
+namespace N3O.Umbraco.Crowdfunding.Extensions;
 
 public static class GravatarGeneratorExtensions {
     private const string GravatarBaseUrl = "https://www.gravatar.com/avatar";

@@ -1,12 +1,23 @@
-﻿using N3O.Umbraco.Crowdfunding.Lookups;
+﻿using N3O.Umbraco.Crm.Models;
+using N3O.Umbraco.Crowdfunding.Lookups;
+using N3O.Umbraco.Extensions;
+using System;
+using System.Collections.Generic;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
-public class FundraiserContent : CrowdfunderContent<FundraiserContent> {
+public class FundraiserContent : CrowdfunderContent<FundraiserContent>, IFundraiser {
     public string Account => GetValue(x => x.Account);
     public string Slug => GetValue(x => x.Slug);
     public CampaignContent Campaign => GetPickedAs(x => x.Campaign);
     public IPublishedContent Owner => GetPickedAs(x => x.Owner);
     public FundraiserStatus Status => GetStaticLookupByNameAs(x => x.Status);
+    
+    public override Guid CampaignId => Campaign.Key;
+    public override string CampaignName => Campaign.Name;
+    public override Guid? TeamId => null;
+    public override string TeamName => null;
+    public override Guid? FundraiserId => Key;
+    public override string FundraiserUrl => Content().AbsoluteUrl();
 }

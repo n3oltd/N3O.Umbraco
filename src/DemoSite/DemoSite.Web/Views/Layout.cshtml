@@ -1,11 +1,6 @@
-﻿@using N3O.Umbraco.Analytics.TagHelpers
-@using Umbraco.Cms.Web.Common.Security
-@using Umbraco.Cms.Web.Website.Controllers
-@inherits UmbracoViewPage<IPageViewModel>
-@inject IMemberExternalLoginProviders MemberExternalLoginProviders
-@inject IContentCache ContentCache;
+﻿@inherits UmbracoViewPage<IPageViewModel>
+
 @inject ITemplateText TemplateText;
-@inject IWebHostEnvironment WebHostEnvironment;
 
 @{
     Layout = null;
@@ -21,7 +16,7 @@
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="stylesheet" href="/assets/css/crowdfunding-main.css"/>
+        
         <title>@content.TitleMeta.Title</title>
         
         @if (content.TitleMeta.Description.HasValue()) {
@@ -33,6 +28,9 @@
         }
 
         <link rel="canonical" href="@content.AbsoluteUrl()">
+
+        <n3o-css-bundle />
+        <n3o-js-bundle />
         
         <n3o-google-analytics-4 model="@Model"></n3o-google-analytics-4>
         <n3o-google-tag-manager model="@Model" render="head"></n3o-google-tag-manager>
@@ -44,39 +42,8 @@
         <n3o-data-layer model="@Model" />
 
         <main>
-            <h1>@TemplateText.Get("Hello World!!!")</h1>
-            @{
-            Layout = null;
-
-            var loginProviders = await MemberExternalLoginProviders.GetMemberProvidersAsync();
-            var externalSignInError = ViewData.GetExternalSignInProviderErrors();
-            var isAuthenticated = Context.User?.Identity?.IsAuthenticated  == true;
-            }
-
-            @if (!isAuthenticated && loginProviders.Any()) {
-            if (externalSignInError?.AuthenticationType is null && externalSignInError?.Errors.Any() == true){
-            @Html.DisplayFor(x => externalSignInError.Errors);
-            }
-
-            @foreach (var login in await MemberExternalLoginProviders.GetMemberProvidersAsync()) {
-            @using (Html.BeginUmbracoForm<UmbExternalLoginController>(nameof(UmbExternalLoginController.ExternalLogin))) {
-            <button type="submit" name="provider" value="@login.ExternalLoginProvider.AuthenticationType">
-                Sign in with @login.AuthenticationScheme.DisplayName
-            </button>
-
-            if (externalSignInError?.AuthenticationType == login.ExternalLoginProvider.AuthenticationType) {
-            @Html.DisplayFor(x => externalSignInError.Errors)
-            }
-            }
-            }
-            }
-
-            @if (isAuthenticated) {
-            <p>User @Context.User.Identity.Name is logged in</p>
-            }
-            
-            
-            
+            <h1>@TemplateText.Get("Hello World!")</h1>
+ 
             @RenderBody()
         </main>
 

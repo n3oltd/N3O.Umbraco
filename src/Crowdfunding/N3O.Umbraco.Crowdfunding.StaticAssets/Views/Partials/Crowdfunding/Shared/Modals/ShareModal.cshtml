@@ -1,0 +1,34 @@
+﻿@using Microsoft.AspNetCore.Http.Extensions
+
+@inject IPartialText PartialText
+
+@{
+    PartialText.SetPartialName("CrowdfundingShareModal");
+}
+
+<div class="modalsItem modall" id="modal-1">
+    <div class="share">
+        <h2>@PartialText.Get("Share This Page")</h2>
+        
+        <div class="share__text">
+            <p class="detail">
+                @PartialText.Get("Share the link below and help spread the word.")
+            </p>
+        </div>
+        
+        <div class="share__link">
+            <div class="lead" id="myUrl">
+                @Context.Request.GetDisplayUrl()
+            </div>
+            
+            @**TODO Don't think this works**@
+            <button type="button" id="copyBtn">
+                <svg>
+                    <use xlink:href="#copyIcon"></use>
+                </svg>
+            </button>
+        </div>
+        
+        <button type="button" class="button secondary">@PartialText.Get("Close")</button>
+    </div>
+</div>

@@ -1,9 +1,13 @@
-﻿using N3O.Umbraco.Attributes;
+﻿using Microsoft.AspNetCore.Mvc;
+using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Crowdfunding.Queries;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Mediator;
 using System;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
+using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Web.Common.Filters;
 
 namespace N3O.Umbraco.Crowdfunding.Controllers;
@@ -12,12 +16,27 @@ namespace N3O.Umbraco.Crowdfunding.Controllers;
 [UmbracoMemberAuthorize]
 public partial class CrowdfundingController : ApiController {
     private readonly Lazy<IMediator> _mediator;
+    private readonly Lazy<IContentService> _contentService;
+    private readonly Lazy<FundraiserAccessControl> _fundraiserAccessControl;
     private readonly Lazy<ILookups> _lookups;
     private readonly Lazy<IUmbracoMapper> _mapper;
 
-    public CrowdfundingController(Lazy<IMediator> mediator, Lazy<ILookups> lookups, Lazy<IUmbracoMapper> mapper) {
+    public CrowdfundingController(Lazy<IMediator> mediator,
+                                  Lazy<IContentService> contentService,
+                                  Lazy<FundraiserAccessControl> fundraiserAccessControl,
+                                  Lazy<ILookups> lookups,
+                                  Lazy<IUmbracoMapper> mapper) {
         _mediator = mediator;
+        _contentService = contentService;
+        _fundraiserAccessControl = fundraiserAccessControl;
         _lookups = lookups;
         _mapper = mapper;
+    }
+    
+    [HttpPost("suggestSlug")]
+    public async Task<ActionResult<string>> SuggestSlug([FromQuery] string name) {
+        var res = await _mediator.Value.SendAsync<SuggestSlugQuery, string, string>(name);
+
+        return Ok(res);
     }
 }

@@ -14,16 +14,16 @@ public partial class CrowdfundingController {
         return Ok(res);
     }
     
-    [HttpGet("fundraisers/goals/{contentId:guid}")]
+    [HttpGet("fundraisers/{contentId:guid}/goals")]
     public async Task<ActionResult<FundraiserGoalsRes>> GetFundraiserGoals() {
         var res = await _mediator.Value.SendAsync<GetFundraiserGoalsQuery, None, FundraiserGoalsRes>(None.Empty);
 
         return Ok(res);
     }
     
-    [HttpPost("fundraisers/suggestSlug")]
-    public async Task<ActionResult<string>> SuggestSlug([FromQuery] string name) {
-        var res = await _mediator.Value.SendAsync<SuggestSlugQuery, string, string>(name);
+    [HttpPut("fundraisers/{contentId:guid}/goals")]
+    public async Task<ActionResult> UpdateFundraiserGoals(FundraiserGoalsReq req) {
+        var res = await _mediator.Value.SendAsync<UpdateFundraiserGoalsCommand, FundraiserGoalsReq>(req);
 
         return Ok(res);
     }

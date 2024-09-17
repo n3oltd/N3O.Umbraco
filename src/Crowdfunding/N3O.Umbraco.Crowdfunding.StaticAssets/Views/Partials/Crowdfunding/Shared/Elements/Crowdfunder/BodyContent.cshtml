@@ -1,0 +1,11 @@
+﻿@model ICrowdfunderViewModel
+
+<div class="campaign">
+    <div class="campaign__content">
+        <div class="campaign__title big">
+            <div id="about-description" n3o-editor="(Model, PropertyTypes.Textarea, nameof(Model.Content.Body)">
+                @Html.Raw(Model.Content.Body)
+            </div>
+        </div>
+    </div>
+</div>

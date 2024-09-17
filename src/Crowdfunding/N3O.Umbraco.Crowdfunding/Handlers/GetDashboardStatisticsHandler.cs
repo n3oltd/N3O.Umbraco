@@ -9,7 +9,8 @@ namespace N3O.Umbraco.Crowdfunding.Handlers;
 
 public class GetDashboardStatisticsHandler :
     IRequestHandler<GetDashboardStatisticsQuery, DashboardStatisticsCriteria, DashboardStatisticsRes> {
-    public Task<DashboardStatisticsRes> Handle(GetDashboardStatisticsQuery request, CancellationToken cancellationToken) {
+    public async Task<DashboardStatisticsRes> Handle(GetDashboardStatisticsQuery req,
+                                                     CancellationToken cancellationToken) {
         throw new System.NotImplementedException();
     }
 }

@@ -1,29 +1,13 @@
-@using N3O.Umbraco.CrowdFunding
-@using N3O.Umbraco.CrowdFunding.Extensions
-@using N3O.Umbraco.CrowdFunding.Models.Header
-@using N3O.Umbraco.Extensions
-@using Umbraco.Cms.Core.Security
-@using Umbraco.Cms.Web.Common.Security
+@using N3O.Umbraco.Blocks
+@using N3O.Umbraco.Crowdfunding.Extensions
+@using Umbraco.Cms.Web.Common.Views
 
-@inject IEnumerable<ICrowdfundingPage> CrowdfundingPages
-@inject IMemberExternalLoginProviders ExternalLoginProviders
-@inject IMemberManager MemberManager
+@inherits UmbracoViewPage<IBlockViewModel>
 
-<link rel="stylesheet" href="/assets/css/crowdfunding-main.css"/>
+@Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/PageAccess.cshtml", Model.Crowdfunding().ViewModel)
 
-@{
-await Html.RenderCrowdfundingComponentAsync("FundraisingHeader", await HeaderViewModel.ForAsync(ExternalLoginProviders, MemberManager));
-}
+@Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/TopBar.cshtml", Model.Crowdfunding().ViewModel)
 
-@foreach (var crowdfundingPage in CrowdfundingPages) {
-    if (crowdfundingPage.IsMatch(Context.Request.Uri())) {
-        await Html.RenderCrowdfundingPageAsync(crowdfundingPage, Context.Request.Uri());
-    }
-}
+@Html.CrowdfundingPartial(Model.Crowdfunding().CurrentPage.ViewName, Model.Crowdfunding().ViewModel)
 
-<script src="/assets/js/jquery.js"></script>
-<script src="/assets/js/slick.min.js"></script>
-<script src="/assets/js/crowdfunding-main.js"></script>
-<script src="/assets/js/tabs.js"></script>
-<script src="/assets/js/modals.js"></script>
-<script src="/assets/js/numberVal.js"></script>
+@Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Svgs.cshtml", null)

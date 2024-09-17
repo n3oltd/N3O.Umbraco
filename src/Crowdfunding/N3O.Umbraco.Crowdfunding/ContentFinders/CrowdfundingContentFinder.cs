@@ -1,10 +1,10 @@
 ﻿using N3O.Umbraco.Content;
-using N3O.Umbraco.Crowdfunding;
+using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Extensions;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Routing;
 
-namespace N3O.Umbraco.CrowdFunding;
+namespace N3O.Umbraco.Crowdfunding;
 
 public class CrowdfundingContentFinder : IContentFinder {
     private readonly IContentLocator _contentLocator;
@@ -14,10 +14,10 @@ public class CrowdfundingContentFinder : IContentFinder {
     }
     
     public Task<bool> TryFindContent(IPublishedRequestBuilder request) {
-        var crowdfundingPath = CrowdfundingHelper.GetCrowdfundingPath(_contentLocator, request.Uri);
+        var crowdfundingPath = CrowdfundingPathParser.ParseUri(_contentLocator, request.Uri);
 
         if (crowdfundingPath.HasValue()) {
-            request.SetPublishedContent(CrowdfundingHelper.GetCrowdfundingHomePage(_contentLocator));
+            request.SetPublishedContent(_contentLocator.Single<HomePageContent>().Content());
 
             return Task.FromResult(true);
         } else {

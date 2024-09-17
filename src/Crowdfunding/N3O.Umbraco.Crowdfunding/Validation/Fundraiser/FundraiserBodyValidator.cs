@@ -1,18 +1,18 @@
-﻿using N3O.Umbraco.Crowdfunding;
-using N3O.Umbraco.Crowdfunding.Models;
+﻿using N3O.Umbraco.Data;
+using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
-namespace N3O.Umbraco.CrowdFunding;
+namespace N3O.Umbraco.Crowdfunding;
 
 public class FundraiserBodyValidator : ContentPropertyValidator<RawValueReq, RawConfigurationRes> {
     private const int MaxLength = 1000;
     
     public FundraiserBodyValidator(IFormatter formatter)
-        : base(formatter, CrowdfundingConstants.Fundraiser.Alias, CrowdfundingConstants.Fundraiser.Properties.Body) { }
+        : base(formatter, CrowdfundingConstants.Fundraiser.Alias, CrowdfundingConstants.Crowdfunder.Properties.Body) { }
     
     protected override void PopulatePropertyConfiguration(IPropertyType property, RawConfigurationRes res) {
         res.MaximumLength = MaxLength;

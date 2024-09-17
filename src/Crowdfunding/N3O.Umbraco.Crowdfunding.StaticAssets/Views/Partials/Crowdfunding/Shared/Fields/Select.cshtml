@@ -1,0 +1,28 @@
+@model (SelectFieldSettings FieldSettings, object Data)
+
+<div class="input sel">
+    <h4>@Html.Raw(Model.FieldSettings.Required ? $"{Model.FieldSettings.Label} <span> *</span>" : $"{Model.FieldSettings.Label}")</h4>
+
+    <div class="input">
+        <select name="@Model.FieldSettings.Path" placeholder="@Model.FieldSettings.Label" style="width: 100%">
+
+            @foreach (var option in Model.FieldSettings.Options) {
+                if (Model.Data.ResolvePathValue(Model.FieldSettings.Path) != null) {
+                    if (Model.FieldSettings.Path.Contains("country")) {
+                        <option value="@option.Value" selected="@(option.Value.Equals(Model.Data.ResolvePathValue(Model.FieldSettings.Path + ".Iso2Code")))">@option.Text</option>
+                    } else {
+                        <option value="@option.Value" selected="@(option.Value.Equals(Model.Data.ResolvePathValue(Model.FieldSettings.Path)))">@option.Text</option>
+                    }
+                } else {
+                    if (option == Model.FieldSettings.DefaultOption) {
+                        <option selected value="@option.Value">@option.Text</option>
+                    } else {
+                        <option value="@option.Value">@option.Text</option>
+                    }
+                }
+            }
+        </select>
+    </div>
+    
+    <span id="@Model.FieldSettings.Path" class="input-validation-error"></span>
+</div>

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using N3O.Umbraco.Crm.Lookups;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -6,40 +7,27 @@ namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class CrowdfunderData : Value, ICrowdfunderData {
     [JsonConstructor]
-    public CrowdfunderData(Guid campaignId,
-                           Guid? teamId,
-                           Guid fundraiserId,
-                           string fundraiserUrl,
-                           string comment,
-                           bool anonymous) {
-        CampaignId = campaignId;
-        TeamId = teamId;
-        FundraiserId = fundraiserId;
-        FundraiserUrl = fundraiserUrl;
+    public CrowdfunderData(Guid crowdfunderId, CrowdfunderType crowdfunderType, string comment, bool anonymous) {
+        CrowdfunderId = crowdfunderId;
+        CrowdfunderType = crowdfunderType;
         Comment = comment;
         Anonymous = anonymous;
     }
 
     public CrowdfunderData(ICrowdfunderData crowdfunderData)
-        : this(crowdfunderData.CampaignId,
-               crowdfunderData.TeamId,
-               crowdfunderData.FundraiserId,
-               crowdfunderData.FundraiserUrl,
+        : this(crowdfunderData.CrowdfunderId,
+               crowdfunderData.CrowdfunderType,
                crowdfunderData.Comment,
                crowdfunderData.Anonymous) { }
 
-    public Guid CampaignId { get; }
-    public Guid? TeamId { get; }
-    public Guid FundraiserId { get; }
-    public string FundraiserUrl { get; }
+    public Guid CrowdfunderId { get; }
+    public CrowdfunderType CrowdfunderType { get; }
     public string Comment { get; }
     public bool Anonymous { get; }
 
     protected override IEnumerable<object> GetAtomicValues() {
-        yield return CampaignId;
-        yield return TeamId;
-        yield return FundraiserId;
-        yield return FundraiserUrl;
+        yield return CrowdfunderId;
+        yield return CrowdfunderType;
         yield return Comment;
         yield return Anonymous;
     }

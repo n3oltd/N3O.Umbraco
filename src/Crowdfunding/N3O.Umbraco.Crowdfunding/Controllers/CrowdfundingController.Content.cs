@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using N3O.Umbraco.Crowdfunding.Commands;
-using N3O.Umbraco.Crowdfunding.Models;
-using N3O.Umbraco.Crowdfunding.Queries;
+using N3O.Umbraco.Data.Commands;
+using N3O.Umbraco.Data.Models;
+using N3O.Umbraco.Data.Queries;
+using System;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Crowdfunding.Controllers;
@@ -24,7 +25,15 @@ public partial class CrowdfundingController {
     
     [HttpPut("content/{contentId:guid}/property")]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> UpdateProperty(ContentPropertyReq req) {
+    public async Task<ActionResult> UpdateProperty([FromRoute] Guid contentId, ContentPropertyReq req) {
+        var content = _contentService.Value.GetById(contentId);
+
+        var canEdit = await _fundraiserAccessControl.Value.CanEditAsync(content);
+
+        if (!canEdit) {
+            throw new UnauthorizedAccessException();
+        }
+        
         await _mediator.Value.SendAsync<UpdateContentPropertyCommand, ContentPropertyReq>(req);
 
         return Ok();

@@ -1,5 +1,4 @@
 ﻿using N3O.Umbraco.Content;
-using N3O.Umbraco.Crowdfunding;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Lookups;
@@ -11,7 +10,7 @@ using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Extensions;
 
-namespace N3O.Umbraco.CrowdFunding;
+namespace N3O.Umbraco.Crowdfunding;
 
 public class FundraiserAccessControl : MembersAccessControl {
     private readonly ILookups _lookups;

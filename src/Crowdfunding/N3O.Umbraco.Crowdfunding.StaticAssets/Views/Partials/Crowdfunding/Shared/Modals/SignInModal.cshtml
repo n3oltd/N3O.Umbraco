@@ -1,0 +1,60 @@
+﻿@using N3O.Umbraco.Extensions
+@using Umbraco.Cms.Web.Website.Controllers
+@using Umbraco.Extensions
+
+@model N3O.Umbraco.Crowdfunding.Models.SignInViewModel
+
+@{
+    var externalSignInError = ViewData.GetExternalSignInProviderErrors();
+}
+
+<div class="modalsItem modall" id="signIn-modal">
+    <div class="onboard">
+        <div class="onboard__content">
+            <h2>
+                @Model.Settings.Title
+            </h2>
+
+            @foreach (var item in Model.Settings.Items) {
+                <div class="onboardItem">
+                    <div class="onboardItem__icon">
+                        <img src="@item.Icon" alt=""/>
+                    </div>
+                    
+                    <div class="onboardItem__text">
+                        <p>
+                            <b>@item.Title</b><br/>
+                            @item.Text
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+        
+        <div class="onboard__side">
+            <div class="onboard__title">
+                <div class="onboard__logo">
+                    <img src="@Model.Settings.LogoSvg.Src" alt="@Model.Settings.LogoText"/>
+                </div>
+                
+                <h4>@Model.Settings.LogoText</h4>
+            </div>
+            
+            <div class="onboard__foot">
+                <p>
+                    @Model.Settings.AboveButtonText
+                </p>
+
+                @if (externalSignInError.HasAny(x => x.Errors)) {
+                    @Html.DisplayFor(x => externalSignInError.Errors)
+                }
+
+                @using (Html.BeginUmbracoForm<UmbExternalLoginController>(nameof(UmbExternalLoginController.ExternalLogin))) {
+                    <button type="submit" name="provider" class="button primary" value="@Model.LoginProvider.ExternalLoginProvider.AuthenticationType">
+                        @Model.Settings.ButtonLabel
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>

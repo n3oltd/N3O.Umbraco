@@ -280,7 +280,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Payments.TotalP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Payments.DirectDebitUK", "Payments\N3O.Umbraco.Payments.DirectDebitUK\N3O.Umbraco.Payments.DirectDebitUK.csproj", "{543E4F0C-5A86-42FE-915C-E2A5DF2C1BAE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CrowdFunding", "CrowdFunding", "{BAA7BAC2-C56A-485B-8116-0CA1342C4BF4}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Crowdfunding", "Crowdfunding", "{BAA7BAC2-C56A-485B-8116-0CA1342C4BF4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Crowdfunding", "Crowdfunding\N3O.Umbraco.Crowdfunding\N3O.Umbraco.Crowdfunding.csproj", "{4DDCC32D-8984-4B9D-A7F8-43E1BABB5BCE}"
 EndProject

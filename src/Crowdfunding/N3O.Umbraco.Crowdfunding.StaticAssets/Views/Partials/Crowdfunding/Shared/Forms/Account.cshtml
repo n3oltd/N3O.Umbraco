@@ -1,0 +1,16 @@
+@using N3O.Umbraco.Crowdfunding.Extensions
+@using N3O.Umbraco.Crowdfunding.Models
+
+@model SelectAccountViewModel
+
+@foreach (var field in Model.DataEntrySettings.Name.GetFieldSettings().Where(x => x.Visible)) {
+    @Html.CrowdfundingPartial($"/Views/Partials/Crowdfunding/Shared/FormFields/{field.Type}.cshtml", field)
+}
+
+@Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Components/FormFields/Phone.cshtml", Model.DataEntrySettings.Phone)
+
+@Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Components/FormFields/Text.cshtml", Model.DataEntrySettings.Email)
+
+@foreach (var field in Model.DataEntrySettings.Address.GetFieldSettings().Where(x => x.Visible)) {
+    @await Html.PartialAsync($"~/Views/Partials/Crowdfunding/Shared/FormFields/{field.Type}.cshtml", field)
+}

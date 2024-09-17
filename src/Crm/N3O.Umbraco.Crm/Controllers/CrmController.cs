@@ -35,7 +35,7 @@ public class CrmController : LookupsController<CrmLookupsRes> {
         // var accountId = _currentAccountAccessor.Get().Id;
         // 
         //_accountManager.UpdateAccountAsync(accountId, req);
-        var res = _accountManager.SelectAccount(req.AccountId, req.AccountReference);
+        var res = _accountManager.SelectAccount(req.AccountId, req.AccountReference, req.AccountToken);
 
         return Task.FromResult<ActionResult>(Ok(res));
     }

@@ -1,0 +1,115 @@
+﻿@model CreateFundraiserViewModel
+
+@inject IPartialText PartialText
+
+@{
+    PartialText.SetPartialName("CrowdfundingCreateFundraiserPage");
+}
+
+<div class="setting__wrapper">
+    <div class="setting">
+        <div class="steps">
+            <div class="steps__button tabBtn active" data-tab="#tab-1">
+                <h4>@PartialText.Get("Step 1")</h4>
+
+                <div class="detail">@PartialText.Get("Select Project")</div>
+            </div>
+
+            <div class="steps__button tabBtn" data-tab="#tab-2">
+                <h4>@PartialText.Get("Step 2")</h4>
+
+                <div class="detail">@PartialText.Get("About your page")</div>
+            </div>
+        </div>
+
+        <div class="setting__body tabEvent active" id="tab-1">
+            <h4>@PartialText.Get("Select the project you would like to fundraise for")</h4>
+
+            <div class="select__outer">
+                <div class="select">
+                    <div class="select__selected">@PartialText.Get("Select project")</div>
+
+                    <input type="hidden" value="0"/>
+
+                    <ul class="select__options">
+                        <div class="select__search">
+
+                            <svg>
+                                <use xlink:href="#searchIcon"></use>
+                            </svg>
+
+                            <input type="text" id="goals-search" placeholder="@PartialText.Get("Type to search...")" onkeyup="filterGoals()"/>
+                        </div>
+
+                        <div class="select__options-body" id="goal-selection">
+                            @foreach (var goal in Model.Campaign.Goals) {
+                                <li data-value="@goal.GoalId" data-type="@goal.Type" data-custom-fields='@(goal.Type == AllocationTypes.Feedback ? Json.Serialize(goal.Feedback.CustomFields.OrEmpty().Select(x => x.ToFeedbackCustomField())) : "")'>
+                                    @goal.Name
+                                </li>
+                            }
+                        </div>
+                    </ul>
+
+                    <svg>
+                        <use xlink:href="#chevron-bottom"></use>
+                    </svg>
+                </div>
+            </div>
+
+            <h4 class="goal-fields" style="display: none">@PartialText.Get("I want to raise")</h4>
+
+            <div class="cta__input active goal-fields" style="display: none">
+                <label class="large" for="goal-amount">£</label>
+
+                <input id="goal-amount" placeholder="75" type="text" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="" data-type="currency"/>
+
+                <div class="cta__input-select">
+                    <select name="currency" id="goal-currency">
+                        <option value="GBP" data-symbol="&#163;">GBP</option>
+                        <option value="USD" data-symbol="&#36;">USD</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="goal-custom-fields"></div>
+
+            <button type="button" id="goal-next-tab" class="button primary" disabled>
+                @PartialText.Get("Continue")
+            </button>
+
+        </div>
+
+        <div class="setting__body tabEvent" id="tab-2">
+            <label class="input__outer">
+                <h4>@PartialText.Get("Page Name")</h4>
+                
+                <div class="input big">
+                    <input type="text" id="pageTitle" />
+                </div>
+
+                <p class="subtle">@PartialText.Get("Choose a short, descriptive name for your page.")</p>
+            </label>
+
+            @**TODO Fix this*@
+            <label class="input__outer">
+                <h4>Customise page web URL</h4>
+
+                <div class="input big">
+                    <input type="text" placeholder="jon-doe-page1" id="slug"/>
+                </div>
+
+                <a href="#" class="subtle">charity.org/fundraising/<span id="urlEnd">jon-doe-page1</span></a>
+            </label>
+
+            <div class="checkout__message" id="errorMessage2">
+                <svg>
+                    <use xlink:href="#alertIcon"></use>
+                </svg>
+
+                <p class="detail"></p>
+            </div>
+
+            <button type="submit" disabled id="create-page-btn" class="button primary submit2">@PartialText.Get("Continue")</button>
+        </div>
+    </div>
+</div>

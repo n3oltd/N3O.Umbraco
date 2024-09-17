@@ -1,0 +1,37 @@
+﻿@model ICrowdfunderViewModel
+
+@inject IPartialText PartialText
+
+@{
+    PartialText.SetPartialName("CrowdfundingCrowdfunderOwnerInfo");
+}
+
+<div class="auto__container">
+    <div class="hero__inner">
+        <div class="account sm">
+            <div class="account__main">
+                <div class="account__info">
+                    <div class="account__info-avatar">
+                        <img src="@Model.OwnerInfo.ProfilePicture" alt="">
+                    </div>
+                    
+                    <div class="account__info-name">
+                        <div class="large">
+                            @Model.OwnerInfo.Name
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="account__buttons">
+                    <button type="button" class="button secondary modallBtn" data-mod="#modal-1">
+                        <svg>
+                            <use xlink:href="#shareIcon"></use>
+                        </svg>
+                        
+                        @PartialText.Get("Share")
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,75 @@
+@using N3O.Umbraco.Authentication.Controllers
+@using N3O.Umbraco.Crowdfunding
+@using Umbraco.Cms.Web.Website.Controllers
+@using Umbraco.Extensions
+
+@model ICrowdfundingViewModel
+
+@inject IPartialText PartialText
+
+@{
+    PartialText.SetPartialName("CrowdfundingTopBar");
+}
+
+<div>
+    <header class="header" id="header">
+        <div class="auto__container">
+            <div class="header__inner">
+                @*TODO Fix need for visibility=hidden*@
+                <a href="@Model.Link(HomePage.Url)" class="header__inner-logo" style="visibility: hidden">
+                    <b> LOGO </b>
+                </a>
+
+                <div class="header__inner-side">
+                    @if (Model.IsSignedIn) {
+                        <div class="header__inner-buttons mobRem">
+                            @CreateFundraiserLink()
+                        </div>
+                        <div class="header__inner-avatar">
+                            <img src="@Model.Member.AvatarLink" alt=""/>
+
+                            <div class="dropMenu">
+                                @using (Html.BeginUmbracoForm<AuthenticationController>(nameof(AuthenticationController.HandleLogout), new { returnUrl = Model.Link(HomePage.Url) })) {
+                                    <a id="handle-logout" href="#">
+                                        <svg>
+                                            <use xlink:href="#logoutIcon"></use>
+                                        </svg>
+                                        
+                                        @PartialText.Get("Sign Out")
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    } else {
+                        <div class="header__inner-buttons">
+                            @CreateFundraiserLink()
+                            
+                            @using (Html.BeginUmbracoForm<UmbExternalLoginController>(nameof(UmbExternalLoginController.ExternalLogin))) {
+                                <button class="button secondary" type="submit" name="provider" value="@Model.SignIn().LoginProvider.ExternalLoginProvider.AuthenticationType">
+                                    @PartialText.Get("Sign In")
+                                </button>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </header>
+</div>
+
+<script>
+    @*TODO Currently necessary because logout button is a link but umbraco form requires a button*@
+    document.querySelector('#handle-logout')?.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        document.getElementById('handle-logout').closest('form').submit();
+    })
+
+</script>
+
+@helper CreateFundraiserLink() {
+        if (Model.CurrentCampaign().HasValue()) {
+            <a href="@Model.Link(x => CreateFundraiserPage.Url(x, Model.CurrentCampaign().Key))" class="button secondary">@PartialText.Get("Create a Fundraising Page")</a>
+        }
+    }
+}

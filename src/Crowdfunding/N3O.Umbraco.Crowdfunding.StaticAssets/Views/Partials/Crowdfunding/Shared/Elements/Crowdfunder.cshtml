@@ -1,0 +1,38 @@
+@model ICrowdfunderViewModel
+
+<div class="main" @if (Model.EditMode()) { <text>data-page-id="@Model.Content.Key" data-page-mode="edit"</text>}>
+    <section class="hero">
+        @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Crowdfunder/BackgroundImage.cshtml", Model)
+        @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Crowdfunder/OwnerInfo.cshtml", Model)
+    </section>
+    
+    <section class="info">
+        <div class="auto__container">
+            <div class="info__inner">
+                <div class="info__inner-row">
+                    <div class="info__inner-col">
+                        @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Crowdfunder/Overview.cshtml", Model)
+                        @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Crowdfunder/BodyContent.cshtml", Model)
+                    </div>
+                    
+                    <div class="info__inner-col">
+                        @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Crowdfunder/DonationForm.cshtml", Model)
+                        @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Crowdfunder/Contributions.cshtml", Model)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="cf-container"></div>
+
+    @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Modals/AllContributionsModal.cshtml", Model);
+    @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Modals/ShareModal.cshtml", Model);
+
+    @** TODO Look at if this can be moved to Smidge as it doesn't support modules **@
+
+    @if (Model.EditMode()) {
+        <script type="module" src="/assets/js/crowdfunding-editor.js"></script>
+        <link href="/assets/css/crowdfunding-editor.css" rel="stylesheet"/>
+    }
+</div>

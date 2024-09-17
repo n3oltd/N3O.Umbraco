@@ -1,5 +1,5 @@
-﻿using N3O.Umbraco.Crowdfunding;
-using N3O.Umbraco.Crowdfunding.Models;
+﻿using N3O.Umbraco.Data;
+using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
@@ -7,14 +7,14 @@ using System.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
-namespace N3O.Umbraco.CrowdFunding;
+namespace N3O.Umbraco.Crowdfunding;
 
 public class FundraiserHeroImagesValidator : ContentPropertyValidator<NestedValueReq, NestedConfigurationRes> {
     private const int MinItems = 1;
     private const int MaxItems = 5;
     
     public FundraiserHeroImagesValidator(IFormatter formatter)
-        : base(formatter, CrowdfundingConstants.Fundraiser.Alias, CrowdfundingConstants.Fundraiser.Properties.HeroImages) { }
+        : base(formatter, CrowdfundingConstants.Fundraiser.Alias, CrowdfundingConstants.Crowdfunder.Properties.HeroImages) { }
     
     protected override void PopulatePropertyConfiguration(IPropertyType property, NestedConfigurationRes res) {
         res.Description = property.Description;

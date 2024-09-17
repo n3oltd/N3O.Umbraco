@@ -1,0 +1,34 @@
+@using N3O.Umbraco.Accounts.Content
+@using N3O.Umbraco.Content
+
+@model SelectAccountViewModel
+
+@inject IContentCache ContentCache
+
+<div class="modalsItem modall" id="updateAccount-modal">
+    <div class="newAccount__wrapper" style="margin: auto; width: 90vw">
+        <div class="newAccount" id="newAccount">
+            <div class="newAccount__head">
+                <h4>Confirm your details</h4>
+                <div class="detail">
+                    You can update or make any corrections below before continuing.
+                </div>
+            </div>
+            <div class="newAccount__body">
+                <form id="update-account-form" method="post" action="" autocomplete="on">
+                    @Html.CrowdfundingPartial("/Views/Partials/Crowdfunding/Shared/Forms/Account.cshtml", Model)
+                    
+                    <button type="button" class="button primary" id="newAccountBtn">
+                        Continue
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/assets/js/newAccount.js"></script>
+
+<script>
+    @Html.Raw(ContentCache.Single<DataEntrySettingsContent>().JavaScript);
+</script>

@@ -4,12 +4,12 @@ using System;
 namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class CrowdfunderDataReq {
-    [Name("Fundraiser ID")]
-    public Guid? FundraiserId { get; set; }
+    [Name("Crowdfunder ID")]
+    public Guid? CrowdfunderId { get; set; }
 
     [Name("Comment")]
     public string Comment { get; set; }
 
     [Name("Anonymous")]
-    public bool Anonymous { get; set; }
+    public bool? Anonymous { get; set; }
 }

@@ -10,6 +10,7 @@ public interface INumberFormatter {
     string FormatMoneyAbbreviated(Money money, NumberFormat numberFormat = null);
     string FormatMoney(Money money, NumberFormat numberFormat = null);
     string FormatMoney(decimal amount, Currency currency, NumberFormat numberFormat = null);
+    string FormatPercentage(decimal number);
     
     NumberFormat NumberFormat { get; }
 }

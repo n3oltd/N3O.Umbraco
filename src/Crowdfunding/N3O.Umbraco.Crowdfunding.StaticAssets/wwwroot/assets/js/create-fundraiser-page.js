@@ -16,9 +16,9 @@
     }
 }
 
-import { CrowdfundingClient } from "https://unpkg.com/@n3oltd/umbraco-crowdfunding-client@latest/dist/index.js";
+import { CrowdfundingClient } from "/assets/index.js";
 
-const client = new CrowdfundingClient();
+const client = new CrowdfundingClient(window.location.origin);
 
 class SelectedGoal {
     constructor() {
@@ -212,13 +212,13 @@ class PageManager {
     handleGoalAmount() {
         document.getElementById('goal-amount').addEventListener('blur', event => {
             this.selectedGoal.amount = event.target.value;
-            this.selectedGoal.currency = document.getElementById('goal-curreny').value;
+            this.selectedGoal.currency = document.getElementById('goal-currency').value;
             this.toggleAboutPageTab();
         });
     }
 
     handleCurrencySelection() {
-        document.getElementById('goal-curreny').addEventListener('change', event => {
+        document.getElementById('goal-currency').addEventListener('change', event => {
             this.selectedGoal.currency = event.target.value;
             const { symbol } = event.target.selectedOptions[0].dataset;
             document.querySelector("[for='goal-amount']").innerHTML = symbol;
@@ -363,3 +363,6 @@ class PageManager {
 
 const pageManager = new PageManager();
 pageManager.attachEventListeners();
+
+
+//TODO: Worke Left to do for capturing campaignid & account referrence. need to circle back once those done

@@ -1,4 +1,7 @@
-﻿using Slugify;
+﻿using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Extensions;
+using Slugify;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
@@ -6,24 +9,23 @@ using Umbraco.Cms.Core.Notifications;
 
 namespace N3O.Umbraco.Crowdfunding.Notifications;
 
+[Order(1)]
 public class FundraiserSaving : INotificationAsyncHandler<ContentSavingNotification> {
-    private readonly ICrowdfundingHelper _crowdfundingHelper;
-    private readonly ISlugHelper _slugHelper;
+    private readonly Lazy<ISlugHelper> _slugHelper;
 
-    public FundraiserSaving(ICrowdfundingHelper crowdfundingHelper, ISlugHelper slugHelper) {
-        _crowdfundingHelper = crowdfundingHelper;
+    public FundraiserSaving(Lazy<ISlugHelper> slugHelper) {
         _slugHelper = slugHelper;
     }
     
     public Task HandleAsync(ContentSavingNotification notification, CancellationToken cancellationToken) {
         foreach (var content in notification.SavedEntities) {
-            if (_crowdfundingHelper.IsFundraiser(content)) {
-                var title = content.GetValue<string>(CrowdfundingConstants.Fundraiser.Properties.Title);
+            if (content.ContentType.Alias.EqualsInvariant(CrowdfundingConstants.Fundraiser.Alias)) {
+                var name = content.GetValue<string>(CrowdfundingConstants.Crowdfunder.Properties.Name);
                 var slug = content.GetValue<string>(CrowdfundingConstants.Fundraiser.Properties.Slug);
 
-                slug ??= _slugHelper.GenerateSlug(title);
+                slug ??= _slugHelper.Value.GenerateSlug(name);
                 
-                content.Name =  $"{title} ({slug})";
+                content.Name =  $"{name} ({slug})";
             }
         }
 

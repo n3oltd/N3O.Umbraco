@@ -18,8 +18,12 @@ public class AccountCookie : Cookie {
         return Get()?.Reference;
     }
     
-    public void Set(string id, string reference) {
-        Set(new AccountIdReference { Id = id, Reference = reference });
+    public string GetToken() {
+        return Get()?.Token;
+    }
+    
+    public void Set(string id, string reference, string token) {
+        Set(new AccountIdentity(id, reference, token));
     }
     
     protected override string GetDefaultValue() {
@@ -32,14 +36,14 @@ public class AccountCookie : Cookie {
         cookieOptions.HttpOnly = false;
     }
 
-    private AccountIdReference Get() {
+    private AccountIdentity Get() {
         var base64 = Base64.Decode(GetValue());
         
-        return base64.IfNotNull(JsonConvert.DeserializeObject<AccountIdReference>);
+        return base64.IfNotNull(JsonConvert.DeserializeObject<AccountIdentity>);
     }
 
-    private void Set(AccountIdReference idReference) {
-        var base64 = Base64.Encode(JsonConvert.SerializeObject(idReference));
+    private void Set(AccountIdentity accountIdentity) {
+        var base64 = Base64.Encode(JsonConvert.SerializeObject(accountIdentity));
         
         SetValue(base64);
     }

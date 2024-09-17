@@ -1,0 +1,68 @@
+﻿@model ICrowdfunderViewModel
+
+@inject IPartialText PartialText
+
+@{
+    PartialText.SetPartialName("CrowdfundingCrowdfunderOverview");
+}
+
+<div class="campaign">
+    <div class="campaign__top">
+        <svg>
+            <use xlink:href="#imageIcon"></use>
+        </svg>
+
+        @if (Model.Content.HeroImages.HasAny()) {
+            <div class="campaignSlider" n3o-editor="(Model, PropertyTypes.Nested, nameof(Model.Content.HeroImages)">
+                @foreach (var heroImage in Model.Content.HeroImages) {
+                    <div class="campaignSlider__item">
+                        <div class="campaignSlider__item-inner">
+                            <img src="@heroImage.Image.Crop.Src" alt=""/>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <div class="campaign__content">
+        <div class="campaign__title">
+            <h2 n3o-editor="(Model, PropertyTypes.TextBox, nameof(Model.Content.Name)">@Model.Content.Name</h2>
+            
+            <p n3o-editor="(Model, PropertyTypes.Textarea, nameof(Model.Content.Description)">
+                @Model.Content.Description
+            </p>
+        </div>
+        
+        <div class="fprogress">
+            <div class="fprogress__row">
+                <h4>@Model.CrowdfunderProgress.SupportersCount @(Model.CrowdfunderProgress.SupportersCount == 1 ? PartialText.Get("Supporter") : PartialText.Get("Supporters"))</h4>
+                
+                <h4>
+                    @Model.Formatter.Number.FormatMoney(Model.CrowdfunderProgress.RaisedAmount) /
+                    @Model.Formatter.Number.FormatMoney(Model.CrowdfunderProgress.TargetAmount)
+                </h4>
+            </div>
+            
+            <div class="fprogress__row">
+                <div class="detail">@Model.Formatter.Number.FormatPercentage(Model.CrowdfunderProgress.PercentageCompleted) @PartialText.Get("Complete")</div>
+            </div>
+            
+            <div class="fprogress__bar">
+                <span style="max-width: @Model.CrowdfunderProgress.PercentageCompleted%"></span>
+            </div>
+        </div>
+        
+        <div class="campaign__footer">
+            @foreach (var tag in Model.Tags) {
+                @*TODO These should not be links*@
+                <a href="#" class="campaign__footer-tag">
+                    <svg>
+                        <use xlink:href="#megaphone"></use>
+                    </svg>
+                    <b>@tag</b>
+                </a>
+            }
+        </div>
+    </div>
+</div>

@@ -14,5 +14,12 @@ public interface ICrowdfunderContent {
     public string Description { get; }
     public IEnumerable<GoalElement> Goals { get; }
     public IEnumerable<HeroImagesElement> HeroImages { get; }
-    public string Title { get; }
+    public string Name { get; }
+    
+    Guid CampaignId { get; }
+    string CampaignName { get; }
+    Guid? TeamId { get; }
+    string TeamName { get; }
+    Guid? FundraiserId { get; }
+    string FundraiserUrl { get; }
 }

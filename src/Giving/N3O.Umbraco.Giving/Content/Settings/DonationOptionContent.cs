@@ -3,7 +3,6 @@ using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
-using Newtonsoft.Json;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Giving.Content;
@@ -64,7 +63,6 @@ public class DonationOptionContent : UmbracoContent<DonationOptionContent>, IFun
         }
     }
     
-    [JsonIgnore]
     public AllocationType Type {
         get {
             if (Content().ContentType.Alias.EqualsInvariant(FundDonationOptionAlias)) {

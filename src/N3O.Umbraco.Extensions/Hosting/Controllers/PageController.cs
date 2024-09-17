@@ -45,13 +45,21 @@ public class PageController : RenderController {
         return CurrentTemplate(viewModel);
     }
 
-    protected IActionResult Redirect<T>() where T : IPublishedContent {
+    protected IActionResult Redirect<T>() {
         var content = _contentCache.Single<T>();
 
-        return new RedirectToUmbracoPageResult(content, _publishedUrlProvider, _umbracoContextAccessor);
+        if (content is IPublishedContent publishedContent) {
+            return new RedirectToUmbracoPageResult(publishedContent, _publishedUrlProvider, _umbracoContextAccessor);    
+        } else if (content is UmbracoContent<T> umbracoContent) {
+            return new RedirectToUmbracoPageResult(umbracoContent.Content(),
+                                                   _publishedUrlProvider,
+                                                   _umbracoContextAccessor);
+        } else {
+            throw new Exception($"{typeof(T)} must be {nameof(IPublishedContent)} or {nameof(UmbracoContent<T>)}");
+        }
     }
 
-    protected async Task<object> GetViewModelAsync(CancellationToken cancellationToken = default) {
+    protected async Task<IPageViewModel> GetViewModelAsync(CancellationToken cancellationToken = default) {
         var pageType = CurrentPage.GetType();
         var pageModuleData = await _pagePipeline.RunAsync(CurrentPage, cancellationToken);
         var factoryType = typeof(IPageViewModelFactory<>).MakeGenericType(pageType);

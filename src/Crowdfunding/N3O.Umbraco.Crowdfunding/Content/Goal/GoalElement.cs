@@ -1,18 +1,20 @@
+using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Crm.Models;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
-public class GoalElement : UmbracoElement<GoalElement>, IFundDimensionValues {
-    public string Title => GetValue(x => x.Title);
+public class GoalElement : UmbracoElement<GoalElement>, IFundDimensionValues, ICrowdfunderGoal {
+    [UmbracoProperty(CrowdfundingConstants.Goal.Properties.Name)]
+    public string Name => GetValue(x => x.Name);
     public decimal Amount => GetValue(x => x.Amount);
     public FundDimension1Value FundDimension1 => GetAs(x => x.FundDimension1);
     public FundDimension2Value FundDimension2 => GetAs(x => x.FundDimension2);
@@ -23,6 +25,14 @@ public class GoalElement : UmbracoElement<GoalElement>, IFundDimensionValues {
     
     public FundGoalElement Fund { get; protected set; }
     public FeedbackGoalElement Feedback { get; protected set; }
+
+    public IFundDimensionValues FundDimensions => new FundDimensionValues(FundDimension1,
+                                                                          FundDimension2,
+                                                                          FundDimension3,
+                                                                          FundDimension4);
+
+    IFundCrowdfunderGoal ICrowdfunderGoal.Fund => Fund;
+    IFeedbackCrowdfunderGoal ICrowdfunderGoal.Feedback => Feedback;
     
     public override void Content(IPublishedElement content, IPublishedContent parent) {
         base.Content(content, parent);
@@ -43,7 +53,6 @@ public class GoalElement : UmbracoElement<GoalElement>, IFundDimensionValues {
                (IFundDimensionsOptions) Feedback?.Scheme;
     }
     
-    [JsonIgnore]
     public AllocationType Type {
         get {
             if (Content().ContentType.Alias.EqualsInvariant(CrowdfundingConstants.Goal.Fund.Alias)) {
@@ -56,18 +65,10 @@ public class GoalElement : UmbracoElement<GoalElement>, IFundDimensionValues {
         }
     }
     
-    [JsonIgnore]
     public Guid GoalId => Content().Key;
 
-    [JsonIgnore]
     FundDimension1Value IFundDimensionValues.Dimension1 => FundDimension1;
-    
-    [JsonIgnore]
     FundDimension2Value IFundDimensionValues.Dimension2 => FundDimension2;
-    
-    [JsonIgnore]
     FundDimension3Value IFundDimensionValues.Dimension3 => FundDimension3;
-    
-    [JsonIgnore]
     FundDimension4Value IFundDimensionValues.Dimension4 => FundDimension4;
 }

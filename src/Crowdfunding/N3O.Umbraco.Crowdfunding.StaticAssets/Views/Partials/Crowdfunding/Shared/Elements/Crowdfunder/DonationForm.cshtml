@@ -1,0 +1,64 @@
+﻿@model ICrowdfunderViewModel
+
+@inject IPartialText PartialText
+
+@{
+    PartialText.SetPartialName("CrowdfundingCrowdfunderDonationForm");
+}
+
+<div class="cta__wrapper">
+    <div class="cta" id="showMoreWrapper">
+        <div class="cta__title start">
+            <h2>@PartialText.Get("Contribute to this page")</h2>
+
+            @if (Model.Goals.Count > 1) {
+                <p>@PartialText.Get("Select which project(s) you would like to support.")</p>
+            }
+        </div>
+
+        @foreach (var goal in Model.Goals) {
+            <div class="ctaFund showMore big">
+                <h4>@goal.Name</h4>
+
+                @foreach (var priceHandle in goal.PriceHandles) {
+                    <div class="ctaFund__item">
+                        <input type="radio" name="goal-@goal.Id" />
+                        
+                        <div class="ctaFund__item-inner">
+                            @*TODO currency*@
+                            <h3>@Model.Formatter.Number.FormatMoney(priceHandle.Amount)</h3>
+                            
+                            <hr/>
+                            
+                            <p class="subtle">@priceHandle.Description</p>
+                            
+                            <svg>
+                                <use xlink:href="#checkIcon"></use>
+                            </svg>
+                        </div>
+                    </div>
+                }
+                
+                @if (goal.PriceHandles.Count > 3) {
+                    <div class="large showMoreBtn">@PartialText.Get("Show All")</div>
+                }
+            </div>
+        }
+
+        @*TODO for open amount*@
+        <div class="cta__input">
+            <label class="large" for="openAmount"> £ </label>
+            <input id="openAmount" placeholder="75|" type="text" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="" data-type="currency">
+            <div class="cta__input-select">
+                <select name="currency" id="">
+                    <option value="GBP">GBP</option>
+                    <option value="USD">USD</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="cta__foot">
+            <button type="button" class="button primary">@PartialText.Get("Donate")</button>
+        </div>
+    </div>
+</div>

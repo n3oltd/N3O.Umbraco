@@ -5,41 +5,29 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
 using System;
-using System.Linq;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class CreateFundraiserReqValidator : ModelValidator<CreateFundraiserReq> {
-    private const int MaximumAllocations = 50;
-    private const int MaximumTitleLength = 50;
+    private const int MaximumNameLength = 50;
     
     public CreateFundraiserReqValidator(IFormatter formatter,
                                         IContentLocator contentLocator,
-                                        ICrowdfundingHelper crowdfundingHelper,
                                         IProfanityGuard profanityGuard) 
         : base(formatter) {
-        RuleFor(x => x.Title)
+        RuleFor(x => x.Name)
            .NotEmpty()
-           .WithMessage(Get<Strings>(s => s.SpecifyTitle));
-        
-        RuleFor(x => x.Title)
-           .MaximumLength(MaximumTitleLength)
-           .When(x => x.Title.HasValue())
-           .WithMessage(Get<Strings>(s => s.SpecifyTitle, MaximumTitleLength));
-
-        RuleFor(x => x.Title)
-          .Must(x => !profanityGuard.ContainsProfanity(x))
-          .When(x => x.Title.HasValue())
-          .WithMessage(Get<Strings>(s => s.UnacceptableTitle));
-           
-        RuleFor(x => x.Title)
-          .Must(crowdfundingHelper.IsFundraiserTitleAvailable)
-          .When(x => x.Title.HasValue())
-          .WithMessage(Get<Strings>(s => s.TitleUnavailable));
+           .WithMessage(Get<Strings>(s => s.SpecifyName));
         
         RuleFor(x => x.Name)
-          .NotEmpty()
-          .WithMessage(Get<Strings>(s => s.SpecifyName));
+           .MaximumLength(MaximumNameLength)
+           .When(x => x.Name.HasValue())
+           .WithMessage(Get<Strings>(s => s.SpecifyName, MaximumNameLength));
+
+        RuleFor(x => x.Name)
+          .Must(x => !profanityGuard.ContainsProfanity(x))
+          .When(x => x.Name.HasValue())
+          .WithMessage(Get<Strings>(s => s.UnacceptableName));
         
         RuleFor(x => x.Currency)
           .NotNull()
@@ -56,11 +44,7 @@ public class CreateFundraiserReqValidator : ModelValidator<CreateFundraiserReq> 
         
         RuleFor(x => x.Goals)
            .NotEmpty()
-           .WithMessage(Get<Strings>(s => s.SpecifyAllocations));
-        
-        RuleFor(x => x.Goals)
-           .Must(x => x.OrEmpty().Count() <= MaximumAllocations)
-           .WithMessage(Get<Strings>(s => s.TooManyAllocations));
+           .WithMessage(Get<Strings>(s => s.SpecifyGoals));
     }
 
     private bool CampaignIdIsValid(IContentLocator contentLocator, Guid campaignId) {
@@ -69,13 +53,10 @@ public class CreateFundraiserReqValidator : ModelValidator<CreateFundraiserReq> 
 
     public class Strings : ValidationStrings {
         public string InvalidCampaign => "The specified campaign is invalid";
-        public string SpecifyAllocations => "Please specify the allocations for the fundraiser";
-        public string SpecifyCampaignId => "Please specify the campaign id";
+        public string SpecifyCampaignId => "Please specify the campaign ID";
         public string SpecifyCurrency => "Please specify the currency of the fundraiser";
+        public string SpecifyGoals => "Please specify the goals for the fundraiser";
         public string SpecifyName => "Please specify the name of the fundraiser";
-        public string SpecifyTitle => "Please specify the title of the fundraiser";
-        public string TitleUnavailable => "The title is not available";
-        public string TooManyAllocations => $"A maximum of {MaximumAllocations} allocations are allowed";
-        public string UnacceptableTitle => "The title contains unacceptable characters or words";
+        public string UnacceptableName => "The name contains unacceptable characters or words";
     }
 }

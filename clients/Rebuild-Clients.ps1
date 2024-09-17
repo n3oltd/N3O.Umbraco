@@ -57,3 +57,6 @@ n3o-tool clients --url "https://localhost:6001/swagger/Stripe/swagger.json" --la
 
 n3o-tool clients --url "https://localhost:6001/swagger/Uploader/swagger.json" --language "TypeScript" --output-path "@n3oltd/umbraco-uploader-client" --name "UploaderClient" --package-name "@n3oltd/umbraco-uploader-client" --package-description "TODO"
 n3o-tool clients --url "https://localhost:6001/swagger/Uploader/swagger.json" --language "CSharp" --output-path "../src/N3O.Umbraco.Clients/Plugins/Uploader" --name "UploaderClient" --namespace "N3O.Umbraco.Clients.Plugins.Uploader"
+
+n3o-tool clients --url "https://beta.n3o.cloud/eu1/api/accounts/docs/swagger/public-v1.0/swagger.json" --language "CSharp" --output-path "../src/Crm/N3O.Umbraco.Crm.Engage/Clients" --name "AccountsClient" --namespace "N3O.Umbraco.Crm.Engage.Clients" --no-models
+n3o-tool clients --url "https://beta.n3o.cloud/eu1/api/crowdfunding/docs/swagger/public-v1.0/swagger.json" --language "CSharp" --output-path "../src/Crm/N3O.Umbraco.Crm.Engage/Clients" --name "CrowdfundingClient" --namespace "N3O.Umbraco.Crm.Engage.Clients" --exclude-models "ApiException"
