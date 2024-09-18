@@ -44,6 +44,8 @@ export interface CheckoutProgressRes {
     remainingStages?: string[] | undefined;
 }
 export interface AccountRes {
+    id?: string | undefined;
+    reference?: string | undefined;
     type?: AccountType | undefined;
     individual?: IndividualRes | undefined;
     organization?: OrganizationRes | undefined;
@@ -305,6 +307,8 @@ export interface NamedLookupRes {
     name?: string | undefined;
 }
 export interface AccountReq {
+    id?: string | undefined;
+    reference?: string | undefined;
     type?: AccountType | undefined;
     individual?: IndividualReq | undefined;
     organization?: OrganizationReq | undefined;

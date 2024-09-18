@@ -11,12 +11,18 @@ export declare class CrowdfundingClient {
     protected processGetNestedPropertySchema(response: Response): Promise<NestedSchemaRes>;
     updateProperty(contentId: string, req: ContentPropertyReq): Promise<void>;
     protected processUpdateProperty(response: Response): Promise<void>;
-    checkTitle(req: CreateFundraiserReq): Promise<boolean>;
-    protected processCheckTitle(response: Response): Promise<boolean>;
+    suggestSlug(name: string | null | undefined): Promise<string>;
+    protected processSuggestSlug(response: Response): Promise<string>;
     createFundraiser(req: CreateFundraiserReq): Promise<string>;
     protected processCreateFundraiser(response: Response): Promise<string>;
+    getFundraiserGoals(contentId: string): Promise<FundraiserGoalsRes>;
+    protected processGetFundraiserGoals(response: Response): Promise<FundraiserGoalsRes>;
+    updateFundraiserGoals(contentId: string, req: FundraiserGoalsReq): Promise<void>;
+    protected processUpdateFundraiserGoals(response: Response): Promise<void>;
     getPropertyTypes(): Promise<LookupRes[]>;
     protected processGetPropertyTypes(response: Response): Promise<LookupRes[]>;
+    getDashboardStatistics(req: DashboardStatisticsCriteria): Promise<DashboardStatisticsRes>;
+    protected processGetDashboardStatistics(response: Response): Promise<DashboardStatisticsRes>;
 }
 export interface ContentPropertyValueRes {
     alias?: string | undefined;
@@ -222,72 +228,22 @@ export interface ValueReq {
     type?: PropertyType | undefined;
 }
 export interface CreateFundraiserReq {
-    title?: string | undefined;
+    name?: string | undefined;
     slug?: string | undefined;
     campaignId?: string | undefined;
-    allocations?: FundraiserAllocationReq[] | undefined;
-}
-export interface FundraiserAllocationReq {
-    type?: AllocationType | undefined;
-    value?: MoneyReq | undefined;
-    fundDimensions?: FundDimensionValuesReq | undefined;
-    feedback?: FeedbackAllocationReq | undefined;
-    fund?: FundAllocationReq | undefined;
-    sponsorship?: SponsorshipAllocationReq | undefined;
-    upsellOfferId?: string | undefined;
-    title?: string | undefined;
-    priceHandles?: PriceHandleReq[] | undefined;
-    [key: string]: any;
-}
-/** One of 'feedback', 'fund', 'sponsorship' */
-export declare enum AllocationType {
-    Feedback = "feedback",
-    Fund = "fund",
-    Sponsorship = "sponsorship"
-}
-export interface MoneyReq {
-    amount?: number | undefined;
     currency?: string | undefined;
+    goals?: FundraiserGoalsReq | undefined;
 }
-export interface FundDimensionValuesReq {
-    dimension1?: string | undefined;
-    dimension2?: string | undefined;
-    dimension3?: string | undefined;
-    dimension4?: string | undefined;
+export interface FundraiserGoalsReq {
+    items?: FundraiserGoalReq[] | undefined;
 }
-export interface FeedbackAllocationReq {
-    scheme?: string | undefined;
+export interface FundraiserGoalReq {
+    amount?: number | undefined;
+    goalId?: string | undefined;
+    feedback?: FeedbackGoalReq | undefined;
+}
+export interface FeedbackGoalReq {
     customFields?: FeedbackNewCustomFieldsReq | undefined;
-}
-/** One of 'donation', 'regularGiving' */
-export declare enum GivingType {
-    Donation = "donation",
-    RegularGiving = "regularGiving"
-}
-export interface FeedbackCustomFieldDefinitionElement {
-    type?: FeedbackCustomFieldType | undefined;
-    name?: string | undefined;
-    required?: boolean;
-    textMaxLength?: number | undefined;
-    alias?: string | undefined;
-}
-/** One of 'bool', 'date', 'text' */
-export declare enum FeedbackCustomFieldType {
-    Bool = "bool",
-    Date = "date",
-    Text = "text"
-}
-export interface PriceContent {
-    amount?: number;
-    locked?: boolean;
-}
-export interface PricingRuleElement {
-    amount?: number;
-    locked?: boolean;
-    dimension1?: string | undefined;
-    dimension2?: string | undefined;
-    dimension3?: string | undefined;
-    dimension4?: string | undefined;
 }
 export interface FeedbackNewCustomFieldsReq {
     entries?: FeedbackNewCustomFieldReq[] | undefined;
@@ -298,35 +254,167 @@ export interface FeedbackNewCustomFieldReq {
     date?: string | undefined;
     text?: string | undefined;
 }
-export interface FundAllocationReq {
-    donationItem?: string | undefined;
+export interface FundraiserGoalsRes {
+    currency?: CurrencyRes | undefined;
+    available?: AvailableGoalRes[] | undefined;
+    selected?: SelectedGoalRes[] | undefined;
 }
-export interface SponsorshipAllocationReq {
-    beneficiaryReference?: string | undefined;
-    scheme?: string | undefined;
-    duration?: SponsorshipDuration | undefined;
-    components?: SponsorshipComponentAllocationReq[] | undefined;
+export interface CurrencyRes {
+    name?: string | undefined;
+    id?: string | undefined;
+    code?: string | undefined;
+    isBaseCurrency?: boolean;
+    symbol?: string | undefined;
 }
-/** One of '_6', '_12', '_18', '_24', '_36', '_48', '_60' */
-export declare enum SponsorshipDuration {
-    _6 = "_6",
-    _12 = "_12",
-    _18 = "_18",
-    _24 = "_24",
-    _36 = "_36",
-    _48 = "_48",
-    _60 = "_60"
+export interface AvailableGoalRes {
+    id?: string;
+    name?: string | undefined;
+    type?: AllocationType | undefined;
+    tags?: string[] | undefined;
+    fund?: DonationItemRes | undefined;
+    feedback?: FeedbackSchemeRes | undefined;
 }
-export interface SponsorshipComponentAllocationReq {
-    component?: string | undefined;
-    value?: MoneyReq | undefined;
+/** One of 'feedback', 'fund', 'sponsorship' */
+export declare enum AllocationType {
+    Feedback = "feedback",
+    Fund = "fund",
+    Sponsorship = "sponsorship"
 }
-export interface PriceHandleReq {
-    amount?: number | undefined;
-    description?: string | undefined;
+export interface DonationItemRes {
+    name?: string | undefined;
+    id?: string | undefined;
+    allowedGivingTypes?: GivingType[] | undefined;
+    dimension1Options?: FundDimensionValueRes[] | undefined;
+    dimension2Options?: FundDimensionValueRes[] | undefined;
+    dimension3Options?: FundDimensionValueRes[] | undefined;
+    dimension4Options?: FundDimensionValueRes[] | undefined;
+    pricing?: PricingRes | undefined;
+}
+/** One of 'donation', 'regularGiving' */
+export declare enum GivingType {
+    Donation = "donation",
+    RegularGiving = "regularGiving"
+}
+export interface FundDimensionValueRes {
+    name?: string | undefined;
+    id?: string | undefined;
+    isUnrestricted?: boolean;
+}
+export interface PricingRes {
+    amount?: number;
+    currencyValues?: {
+        [key: string]: MoneyRes;
+    } | undefined;
+    locked?: boolean;
+    priceRules?: PricingRuleRes[] | undefined;
+}
+export interface MoneyRes {
+    amount?: number;
+    currency?: string | undefined;
+    text?: string | undefined;
+}
+export interface PricingRuleRes {
+    amount?: number;
+    currencyValues?: {
+        [key: string]: MoneyRes;
+    } | undefined;
+    locked?: boolean;
+    fundDimensions?: FundDimensionValuesRes | undefined;
+}
+export interface FundDimensionValuesRes {
+    dimension1?: string | undefined;
+    dimension2?: string | undefined;
+    dimension3?: string | undefined;
+    dimension4?: string | undefined;
+}
+export interface FeedbackSchemeRes {
+    name?: string | undefined;
+    id?: string | undefined;
+    allowedGivingTypes?: GivingType[] | undefined;
+    customFields?: FeedbackCustomFieldDefinitionRes[] | undefined;
+    dimension1Options?: FundDimensionValueRes[] | undefined;
+    dimension2Options?: FundDimensionValueRes[] | undefined;
+    dimension3Options?: FundDimensionValueRes[] | undefined;
+    dimension4Options?: FundDimensionValueRes[] | undefined;
+    pricing?: PricingRes | undefined;
+}
+export interface FeedbackCustomFieldDefinitionRes {
+    type?: FeedbackCustomFieldType | undefined;
+    alias?: string | undefined;
+    name?: string | undefined;
+    required?: boolean;
+    textMaxLength?: number | undefined;
+}
+/** One of 'bool', 'date', 'text' */
+export declare enum FeedbackCustomFieldType {
+    Bool = "bool",
+    Date = "date",
+    Text = "text"
+}
+export interface SelectedGoalRes {
+    campaignGoalId?: string;
+    value?: number;
+    feedback?: SelectedFeedbackGoalRes | undefined;
+}
+export interface SelectedFeedbackGoalRes {
+    feedback?: FeedbackCustomFieldRes[] | undefined;
+}
+export interface FeedbackCustomFieldRes {
+    type?: FeedbackCustomFieldType | undefined;
+    alias?: string | undefined;
+    name?: string | undefined;
+    bool?: boolean | undefined;
+    date?: string | undefined;
+    text?: string | undefined;
 }
 export interface LookupRes {
     id?: string | undefined;
+}
+export interface DashboardStatisticsRes {
+    baseCurrency?: CurrencyRes | undefined;
+    contributions?: ContributionStatisticsRes | undefined;
+    allocations?: AllocationStatisticsRes | undefined;
+    campaigns?: CampaignStatisticsRes | undefined;
+    fundraisers?: FundraiserStatisticsRes | undefined;
+}
+export interface ContributionStatisticsRes {
+    total?: MoneyRes | undefined;
+    average?: MoneyRes | undefined;
+    count?: number;
+}
+export interface AllocationStatisticsRes {
+    topItems?: AllocationStatisticsItemRes | undefined;
+}
+export interface AllocationStatisticsItemRes {
+    summary?: string | undefined;
+    total?: MoneyRes | undefined;
+}
+export interface CampaignStatisticsRes {
+    contributionsTotal?: MoneyRes | undefined;
+    topItems?: CampaignStatisticsItemRes | undefined;
+    activeCount?: number;
+    goalsTotal?: MoneyRes | undefined;
+}
+export interface CampaignStatisticsItemRes {
+    name?: string | undefined;
+    total?: MoneyRes | undefined;
+}
+export interface FundraiserStatisticsRes {
+    contributionsTotal?: MoneyRes | undefined;
+    topItems?: FundraiserStatisticsItemRes | undefined;
+    activeCount?: number;
+    goalsTotal?: MoneyRes | undefined;
+}
+export interface FundraiserStatisticsItemRes {
+    name?: string | undefined;
+    total?: MoneyRes | undefined;
+}
+export interface DashboardStatisticsCriteria {
+    period?: RangeOfNullableLocalDate | undefined;
+}
+export interface RangeOfNullableLocalDate {
+    from?: string | undefined;
+    to?: string | undefined;
 }
 export declare class ApiException extends Error {
     message: string;
