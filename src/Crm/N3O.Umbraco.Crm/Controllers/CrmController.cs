@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using N3O.Umbraco.Accounts.Exceptions;
 using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Crm.Models;
-using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
@@ -31,10 +31,10 @@ public class CrmController : LookupsController<CrmLookupsRes> {
     public async Task<ActionResult> SelectAccountAsync(SelectAccountReq req) {
         try {
             await _accountManager.SelectAccountAsync(req.AccountId, req.AccountReference, req.AccountToken);
+            
+            return Ok();
         } catch (InvalidAccountException ex) {
             return await Task.FromResult<ActionResult>(BadRequest(ex.Message));
         }
-
-        return Ok();
     }
 }

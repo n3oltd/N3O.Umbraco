@@ -9,5 +9,4 @@ public interface IAccountManager {
     Task<IEnumerable<AccountRes>> FindAccountsByEmailAsync(string email);
     Task SelectAccountAsync(string accountId, string accountReference, string accountToken);
     Task UpdateAccountAsync(AccountReq account);
-    Task<IEnumerable<AccountRes>> FindAccountsWithEmailAsync(string email);
 }
