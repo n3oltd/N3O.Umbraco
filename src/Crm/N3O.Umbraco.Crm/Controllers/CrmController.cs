@@ -2,6 +2,7 @@
 using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Crm.Models;
+using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
@@ -27,17 +28,13 @@ public class CrmController : LookupsController<CrmLookupsRes> {
     }
 
     [HttpPut("accounts/select")]
-    public Task<ActionResult> SelectAccountAsync(SelectAccountReq req) {
-        // Inject the IAccountAccessor, check that an account has been selected (i.e. accountaccessor does not return null)
-        // also check the email on this account matches the member email to guard against cookie tampering. Also more secure
-        // to use account ID in cookie rather than reference but should be fine either way.
-        //
-        // var accountId = _currentAccountAccessor.Get().Id;
-        // 
-        //_accountManager.UpdateAccountAsync(accountId, req);
-        var res = _accountManager.SelectAccount(req.AccountId, req.AccountReference, req.AccountToken);
+    public async Task<ActionResult> SelectAccountAsync(SelectAccountReq req) {
+        try {
+            await _accountManager.SelectAccountAsync(req.AccountId, req.AccountReference, req.AccountToken);
+        } catch (InvalidAccountException ex) {
+            return await Task.FromResult<ActionResult>(BadRequest(ex.Message));
+        }
 
-        return Task.FromResult<ActionResult>(Ok(res));
+        return Ok();
     }
 }
-

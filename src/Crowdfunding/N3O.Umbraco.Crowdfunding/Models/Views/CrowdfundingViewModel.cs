@@ -19,8 +19,8 @@ public abstract class CrowdfundingViewModel : ICrowdfundingViewModel {
     public MemberContent Member { get; private set; }
     public bool IsSignedIn { get; private set; }
     public AccountIdentity Account { get; private set; }
-    public bool AccountSelected => Account.HasValue();
-    
+    public bool AccountSelected => Account.HasValue(x => x.Id);
+
     public string Link(Func<IContentLocator, string> getUrl) {
         return getUrl(ContentLocator);
     }
