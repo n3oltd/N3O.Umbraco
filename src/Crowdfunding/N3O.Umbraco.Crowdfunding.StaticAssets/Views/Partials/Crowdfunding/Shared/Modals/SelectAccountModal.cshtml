@@ -67,7 +67,7 @@
 
     async function selectAccount(account) {
         const response = await fetch('/umbraco/api/crm/accounts/select', {
-            method: 'POST',
+            method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 accountId: account.id.value,

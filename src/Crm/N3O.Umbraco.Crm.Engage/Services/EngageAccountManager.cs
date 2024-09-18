@@ -4,18 +4,22 @@ using N3O.Umbraco.Crm.Engage.Clients;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core.Security;
 
 namespace N3O.Umbraco.Crm.Engage;
 
 public class EngageAccountManager : AccountManager {
+    private readonly IMemberManager _memberManager;
     private readonly ClientFactory<AccountsClient> _clientFactory;
     private readonly ISubscriptionAccessor _subscriptionAccessor;
     private ServiceClient<AccountsClient> _client;
 
     public EngageAccountManager(AccountCookie accountCookie,
+                                IMemberManager memberManager,
                                 ClientFactory<AccountsClient> clientFactory,
                                 ISubscriptionAccessor subscriptionAccessor)
-        : base(accountCookie) {
+        : base(memberManager, accountCookie) {
+        _memberManager = memberManager;
         _clientFactory = clientFactory;
         _subscriptionAccessor = subscriptionAccessor;
     }
@@ -26,7 +30,7 @@ public class EngageAccountManager : AccountManager {
         throw new NotImplementedException();
     }
 
-    public override async Task<IEnumerable<AccountRes>> FindAccountsByEmailAsync(string email) {
+    public override async Task<IEnumerable<AccountRes>> FindAccountsWithEmailAsync(string email) {
         var client = await GetClientAsync();
 
         var res = await client.InvokeAsync<ICollection<AccountRes>>(x => x.FindMatchesByEmailAsync, email);
