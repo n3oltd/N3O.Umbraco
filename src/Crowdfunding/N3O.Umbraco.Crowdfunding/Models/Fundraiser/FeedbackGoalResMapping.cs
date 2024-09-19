@@ -6,12 +6,12 @@ using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
-public class SelectedFeedbackGoalResMapping : IMapDefinition {
+public class FeedbackGoalResMapping : IMapDefinition {
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<FeedbackGoalElement, SelectedFeedbackGoalRes>((_, _) => new SelectedFeedbackGoalRes(), Map);
+        mapper.Define<FeedbackGoalElement, FeedbackGoalRes>((_, _) => new FeedbackGoalRes(), Map);
     }
 
-    private void Map(FeedbackGoalElement src, SelectedFeedbackGoalRes dest, MapperContext ctx) {
+    private void Map(FeedbackGoalElement src, FeedbackGoalRes dest, MapperContext ctx) {
         dest.Feedback = src.CustomFields
                            .OrEmpty()
                            .Select(ctx.Map<IFeedbackCustomField, FeedbackCustomFieldRes>)
