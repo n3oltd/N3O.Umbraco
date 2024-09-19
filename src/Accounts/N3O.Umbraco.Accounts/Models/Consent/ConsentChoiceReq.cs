@@ -12,4 +12,6 @@ public class ConsentChoiceReq : IConsentChoice {
     
     [Name("Preference")]
     public ConsentResponse Response { get; set; }
+
+    public string CategoryName => Category?.Name;
 }
