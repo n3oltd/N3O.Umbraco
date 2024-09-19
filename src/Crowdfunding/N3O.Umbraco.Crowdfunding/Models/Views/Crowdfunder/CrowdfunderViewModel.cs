@@ -17,7 +17,7 @@ public abstract class CrowdfunderViewModel<TContent> :
     public CrowdfunderType CrowdfunderType { get; private set; }
     public IReadOnlyList<CrowdfunderGoalViewModel> Goals { get; private set; }
     public IReadOnlyList<CrowdfunderContributionViewModel> Contributions { get; private set; }
-    public IReadOnlyList<CrowdfunderTagsViewModel> Tags { get; private set; }
+    public IReadOnlyList<CrowdfunderTagViewModel> Tags { get; private set; }
     public CrowdfunderProgressViewModel CrowdfunderProgress { get; private set; }
     public CrowdfunderOwnerViewModel OwnerInfo { get; private set; }
     
@@ -41,7 +41,7 @@ public abstract class CrowdfunderViewModel<TContent> :
                                                                                                          lookups,
                                                                                                          x));
         
-        viewModel.Tags = content.Goals.SelectMany(x => x.Tags.Select(CrowdfunderTagsViewModel.For)).ToList();
+        viewModel.Tags = content.Goals.SelectMany(x => x.Tags.Select(CrowdfunderTagViewModel.For)).ToList();
         viewModel.CrowdfunderProgress = CrowdfunderProgressViewModel.For(content.Currency,
                                                                          contributions,
                                                                          content.Goals);

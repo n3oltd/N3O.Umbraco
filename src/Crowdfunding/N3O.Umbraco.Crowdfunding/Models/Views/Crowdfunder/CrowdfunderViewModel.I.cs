@@ -11,7 +11,7 @@ public interface ICrowdfunderViewModel : ICrowdfundingViewModel {
     CrowdfunderProgressViewModel CrowdfunderProgress { get; }
     IReadOnlyList<CrowdfunderContributionViewModel> Contributions { get; }
     CrowdfunderOwnerViewModel OwnerInfo { get; }
-    IReadOnlyList<CrowdfunderTagsViewModel> Tags { get; }
+    IReadOnlyList<CrowdfunderTagViewModel> Tags { get; }
 
     bool EditMode();
 }
