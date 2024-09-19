@@ -48,7 +48,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
                                                           _fundraiserAccessControl,
                                                           this,
                                                           fundraiser,
-                                                          contributions.ToList());
+                                                          contributions);
     }
     
     public static string Url(IContentLocator contentLocator, Guid fundraiserKey) {
