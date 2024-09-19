@@ -30,7 +30,7 @@ public class EngageAccountManager : AccountManager {
         throw new NotImplementedException();
     }
 
-    public override async Task<IEnumerable<AccountRes>> FindAccountsWithEmailAsync(string email) {
+    protected override async Task<IEnumerable<AccountRes>> FindAccountsWithEmailAsync(string email) {
         var client = await GetClientAsync();
 
         var res = await client.InvokeAsync<ICollection<AccountRes>>(x => x.FindMatchesByEmailAsync, email);
