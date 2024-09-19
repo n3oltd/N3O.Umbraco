@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Content;
+﻿using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm.Models;
 using N3O.Umbraco.Crowdfunding.Lookups;
 using System;
@@ -6,6 +7,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
+[UmbracoContent(CrowdfundingConstants.Fundraiser.Alias)]
 public class FundraiserContent : CrowdfunderContent<FundraiserContent>, IFundraiser {
     public string Account => GetValue(x => x.Account);
     public string Slug => GetValue(x => x.Slug);
