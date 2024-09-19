@@ -1,9 +1,8 @@
-﻿using N3O.Umbraco.Crowdfunding;
-using N3O.Umbraco.Exceptions;
+﻿using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
 
-namespace N3O.Umbraco.Crm.Lookups;
+namespace N3O.Umbraco.Crowdfunding.Lookups;
 
 public class CrowdfunderType : NamedLookup {
     public CrowdfunderType(string id, string name) : base(id, name) { }

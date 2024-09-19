@@ -1,6 +1,7 @@
-﻿using N3O.Umbraco.Crm.Lookups;
+﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
+using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Extensions;
 using System;
 using System.Collections.Generic;

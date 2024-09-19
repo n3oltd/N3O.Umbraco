@@ -1,5 +1,5 @@
-﻿using N3O.Umbraco.Crm.Lookups;
-using N3O.Umbraco.Crowdfunding.Content;
+﻿using N3O.Umbraco.Crowdfunding.Content;
+using N3O.Umbraco.Crowdfunding.Lookups;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
