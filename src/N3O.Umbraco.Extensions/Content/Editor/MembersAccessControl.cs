@@ -45,7 +45,7 @@ public abstract class MembersAccessControl : ContentAccessControl {
 
     protected override async Task<bool> AllowEditAsync(IPublishedContent content) {
         var property = content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(PropertyAlias));
-        var maxValues = GetMaxValues((IDataType) property.PropertyType.DataType);
+        var maxValues = GetMaxValues(_dataTypeService.GetDataType(property.PropertyType.DataType.Id));
         
         if (maxValues == 1) {
             return await AllowEditAsync(() => ((IPublishedContent) property.GetValue(PropertyAlias)).Yield());
