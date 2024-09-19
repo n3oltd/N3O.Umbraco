@@ -122,6 +122,10 @@ public static class CrowdfundingConstants {
         }
     }
     
+    public static class Tags {
+        public const string Alias = "crowdfundingTag";
+    }
+    
     public static class Webhooks {
         public static class EventTypes {
             public static class Pledges {
