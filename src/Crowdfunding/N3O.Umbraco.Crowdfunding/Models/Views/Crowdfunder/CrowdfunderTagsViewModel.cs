@@ -8,6 +8,7 @@ public class CrowdfunderTagsViewModel {
 
     public static CrowdfunderTagsViewModel For(TagContent tag) {
         var viewModel = new CrowdfunderTagsViewModel();
+        
         viewModel.Name = tag.Name;
         viewModel.IconUrl = tag.Category.Icon.Src;
 
