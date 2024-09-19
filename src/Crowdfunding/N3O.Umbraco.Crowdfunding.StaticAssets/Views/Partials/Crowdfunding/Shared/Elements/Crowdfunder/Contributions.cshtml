@@ -15,7 +15,7 @@
             
             @if (Model.CrowdfunderType == CrowdfunderTypes.Campaign) {
                 <div class="donation__head-tab tabBtn" data-tab="#tab-2">
-                    <h4>@PartialText.Get("Fundraisers")<span> 7 </span></h4>
+                    <h4>@PartialText.Get("Fundraisers")<span> @(((ViewCampaignViewModel) Model).FundraisersContributions.Count) </span></h4>
                 </div>
             }
         </div>
