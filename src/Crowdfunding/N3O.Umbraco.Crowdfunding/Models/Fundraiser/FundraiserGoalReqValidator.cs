@@ -10,6 +10,10 @@ public class FundraiserGoalReqValidator : ModelValidator<FundraiserGoalReq> {
            .NotNull()
            .WithMessage(Get<Strings>(s => s.SpecifyAmount));
 
+        RuleFor(x => x.FundDimensions)
+           .NotNull()
+           .WithMessage(Get<Strings>(s => s.SpecifyFundDimensions));
+        
         RuleFor(x => x.GoalId)
            .NotNull()
            .WithMessage(Get<Strings>(s => s.SpecifyGoalId));
@@ -17,6 +21,7 @@ public class FundraiserGoalReqValidator : ModelValidator<FundraiserGoalReq> {
 
     public class Strings : ValidationStrings {
         public string SpecifyAmount => "Please specify the amount";
+        public string SpecifyFundDimensions => "Please specify the fund dimensions";
         public string SpecifyGoalId => "Please specify the goal IDn";
     }
 }

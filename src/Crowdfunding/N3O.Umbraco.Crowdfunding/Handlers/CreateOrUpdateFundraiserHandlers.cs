@@ -68,7 +68,7 @@ public partial class CreateOrUpdateFundraiserHandlers {
         var nestedContent = contentPublisher.Content.Nested(CrowdfundingConstants.Crowdfunder.Properties.Goals);
         
         foreach (var req in reqs) {
-            var campaignGoal = campaign.Goals.SingleOrDefault(x => x.GoalId == req.GoalId.GetValueOrThrow());
+            var campaignGoal = campaign.GoalOptions.SingleOrDefault(x => x.GoalId == req.GoalId.GetValueOrThrow());
 
             if (campaignGoal == null) {
                 throw new Exception($"No campaign goal found with ID {req.GoalId}");
@@ -86,7 +86,7 @@ public partial class CreateOrUpdateFundraiserHandlers {
     
     private void AddFundraiserFundGoal(NestedPropertyBuilder nestedPropertyBuilder,
                                        FundraiserGoalReq req,
-                                       GoalElement campaignGoal) {
+                                       CampaignGoalOptionElement campaignGoal) {
         var contentBuilder = nestedPropertyBuilder.Add(CrowdfundingConstants.Goal.Fund.Alias, campaignGoal.GoalId);
         
         PopulateFundraiserGoal(contentBuilder, req, campaignGoal);
@@ -97,7 +97,7 @@ public partial class CreateOrUpdateFundraiserHandlers {
     
     private void AddFundraiserFeedbackGoal(NestedPropertyBuilder nestedPropertyBuilder,
                                            FundraiserGoalReq req,
-                                           GoalElement campaignGoal) {
+                                           CampaignGoalOptionElement campaignGoal) {
         var contentBuilder = nestedPropertyBuilder.Add(CrowdfundingConstants.Goal.Feedback.Alias);
         
         PopulateFundraiserGoal(contentBuilder, req, campaignGoal);
@@ -112,7 +112,7 @@ public partial class CreateOrUpdateFundraiserHandlers {
     private void CopyCroppedImage(IContentBuilder builder, CroppedImage image, string destinationPropertyAlias) {
         var sourceImage = image.GetUncroppedImage();
 
-        var cropper = builder.Cropper(destinationPropertyAlias).SetImage(sourceImage.MediaId);
+        var cropper = builder.Cropper(destinationPropertyAlias).SetImage(sourceImage);
 
         foreach (var crop in sourceImage.Crops) {
             cropper.AddCrop().CropTo(crop.X, crop.Y, crop.Width, crop.Height);
@@ -121,13 +121,13 @@ public partial class CreateOrUpdateFundraiserHandlers {
     
     private void PopulateFundraiserGoal(IContentBuilder contentBuilder,
                                         FundraiserGoalReq req,
-                                        GoalElement campaignGoal) {
+                                        CampaignGoalOptionElement campaignGoal) {
         contentBuilder.Numeric(CrowdfundingConstants.Goal.Properties.Amount).SetDecimal(req.Amount);
         contentBuilder.TextBox(CrowdfundingConstants.Goal.Properties.Name).Set(campaignGoal.Name);
-        contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.FundDimension1).SetContent(campaignGoal.FundDimension1);
-        contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.FundDimension2).SetContent(campaignGoal.FundDimension2);
-        contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.FundDimension3).SetContent(campaignGoal.FundDimension3);
-        contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.FundDimension4).SetContent(campaignGoal.FundDimension4);
+        contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.FundDimension1).SetContent(req.FundDimensions.Dimension1);
+        contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.FundDimension2).SetContent(req.FundDimensions.Dimension2);
+        contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.FundDimension3).SetContent(req.FundDimensions.Dimension3);
+        contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.FundDimension4).SetContent(req.FundDimensions.Dimension4);
         contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.Tags).SetContent(campaignGoal.Tags);
         
         var priceHandlesBuilder = contentBuilder.Nested(CrowdfundingConstants.Goal.Properties.PriceHandles);

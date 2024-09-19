@@ -12,7 +12,7 @@ public class FundraiserGoalsResMapping : IMapDefinition {
 
     private void Map(FundraiserContent src, FundraiserGoalsRes dest, MapperContext ctx) {
         dest.Currency = ctx.Map<Currency, CurrencyRes>(src.Currency);
-        dest.Available = src.Campaign.Goals.Select(ctx.Map<GoalElement, AvailableGoalRes>);
-        dest.Selected = src.Goals.Select(ctx.Map<GoalElement, SelectedGoalRes>);
+        dest.GoalOptions = src.Campaign.GoalOptions.Select(ctx.Map<CampaignGoalOptionElement, GoalOptionRes>);
+        dest.SelectedGoals = src.Goals.Select(ctx.Map<GoalElement, GoalRes>);
     }
 }

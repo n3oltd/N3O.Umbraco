@@ -16,6 +16,16 @@ public static class CrowdfundingConstants {
     public static class Campaign {
         public const string Alias = "crowdfundingCampaign";
     }
+    
+    public static class CampaignGoalOption {
+        public static class Feedback {
+            public const string Alias = "crowdfundingCampaignFeedbackGoalOption";
+        }
+
+        public static class Fund {
+            public const string Alias = "crowdfundingCampaignFundGoalOption";
+        }
+    }
 
     public static class Crowdfunder {
         public static class Properties {

@@ -42,10 +42,10 @@
                         </div>
 
                         <div class="select__options-body" id="goal-selection">
-                            @foreach (var goal in Model.Campaign.Goals) {
-                                <li data-value="@goal.GoalId" data-type="@goal.Type" data-custom-fields='@(goal.Type == AllocationTypes.Feedback ? Json.Serialize(goal.Feedback.CustomFields.OrEmpty().Select(x => x.ToFeedbackCustomField())) : "")'>
-                                    @goal.Name
-                                </li>
+                            @foreach (var goal in Model.Campaign.GoalOptions) {
+                            <li data-value="@goal.GoalId" data-type="@goal.Type">
+                                @goal.Name
+                            </li>
                             }
                         </div>
                     </ul>
@@ -59,14 +59,15 @@
             <h4 class="goal-fields" style="display: none">@PartialText.Get("I want to raise")</h4>
 
             <div class="cta__input active goal-fields" style="display: none">
-                <label class="large" for="goal-amount">£</label>
+                <label class="large" for="goal-amount"></label>
 
                 <input id="goal-amount" placeholder="75" type="text" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="" data-type="currency"/>
 
                 <div class="cta__input-select">
                     <select name="currency" id="goal-currency">
-                        <option value="GBP" data-symbol="&#163;">GBP</option>
-                        <option value="USD" data-symbol="&#36;">USD</option>
+                        @foreach (var currency in Model.Currencies) {
+                        <option value="@currency.Id" data-symbol="@currency.Symbol">@currency.Code</option>
+                        }
                     </select>
                 </div>
             </div>

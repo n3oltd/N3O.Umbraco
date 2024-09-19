@@ -3,6 +3,8 @@ using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Forex;
+using N3O.Umbraco.Lookups;
 using Smidge;
 using System;
 using System.Collections.Generic;
@@ -11,8 +13,17 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Crowdfunding;
 
 public class CreateFundraiserPage : CrowdfundingPage {
-    public CreateFundraiserPage(IContentLocator contentLocator, ICrowdfundingViewModelFactory viewModelFactory)
-        : base(contentLocator, viewModelFactory) { }
+    private readonly ILookups _lookups;
+    private readonly IForexConverter _forexConverter;
+
+    public CreateFundraiserPage(IContentLocator contentLocator,
+                                ICrowdfundingViewModelFactory viewModelFactory,
+                                ILookups lookups,
+                                IForexConverter forexConverter)
+        : base(contentLocator, viewModelFactory) {
+        _lookups = lookups;
+        _forexConverter = forexConverter;
+    }
 
     public override void AddAssets(ISmidgeRequire bundle) {
         bundle.RequiresJs("~/assets/js/create-fundraiser-page.js");
@@ -34,7 +45,11 @@ public class CreateFundraiserPage : CrowdfundingPage {
                                                                             IReadOnlyDictionary<string, string> query) {
         var campaignContent = GetCampaignContent(query);
         
-        return await CreateFundraiserViewModel.ForAsync(ViewModelFactory, this, campaignContent);
+        return await CreateFundraiserViewModel.ForAsync(ViewModelFactory,
+                                                        _forexConverter,
+                                                        _lookups,
+                                                        this,
+                                                        campaignContent);
     }
 
     public override PageAccess Access => PageAccesses.SignedInWithAccount;

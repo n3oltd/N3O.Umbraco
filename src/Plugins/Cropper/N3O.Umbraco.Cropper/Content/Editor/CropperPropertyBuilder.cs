@@ -57,6 +57,16 @@ public class CropperPropertyBuilder : PropertyBuilder {
 
         return this;
     }
+    
+    public CropperPropertyBuilder SetImage(CropperSource source) {
+        _src = source.Src;
+        _mediaId = source.MediaId;
+        _height = source.Height;
+        _width = source.Width;
+        _filename = source.Filename;
+
+        return this;
+    }
 
     public CropperPropertyBuilder SetImage(string mediaId) {
         _src = _mediaFileManager.GetSourceFile(mediaId);
