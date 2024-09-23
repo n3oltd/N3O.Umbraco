@@ -20,7 +20,7 @@ public class GoalElement : UmbracoElement<GoalElement>, IFundDimensionValues, IC
     public FundDimension2Value FundDimension2 => GetAs(x => x.FundDimension2);
     public FundDimension3Value FundDimension3 => GetAs(x => x.FundDimension3);
     public FundDimension4Value FundDimension4 => GetAs(x => x.FundDimension4);
-    public IEnumerable<IPublishedContent> Tags => GetPickedAs(x => x.Tags);
+    public IEnumerable<TagContent> Tags => GetPickedAs(x => x.Tags);
     public IEnumerable<PriceHandleElement> PriceHandles => GetNestedAs(x => x.PriceHandles);
     
     public FundGoalElement Fund { get; protected set; }

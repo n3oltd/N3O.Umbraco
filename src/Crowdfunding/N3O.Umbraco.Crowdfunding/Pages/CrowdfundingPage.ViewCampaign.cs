@@ -1,8 +1,10 @@
 ﻿using Flurl;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding.Content;
+using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Lookups;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +14,15 @@ namespace N3O.Umbraco.Crowdfunding;
 
 public class ViewCampaignPage : CrowdfundingPage {
     private readonly IContributionRepository _contributionRepository;
+    private readonly ILookups _lookups;
 
     public ViewCampaignPage(IContentLocator contentLocator,
                             ICrowdfundingViewModelFactory viewModelFactory,
-                            IContributionRepository contributionRepository)
+                            IContributionRepository contributionRepository,
+                            ILookups lookups)
         : base(contentLocator, viewModelFactory) {
         _contributionRepository = contributionRepository;
+        _lookups = lookups;
     }
 
     protected override bool IsMatch(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
@@ -29,14 +34,19 @@ public class ViewCampaignPage : CrowdfundingPage {
         var match = Match(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewCampaign);
         var campaignId = int.Parse(match.Groups[1].Value);
         var campaign = ContentLocator.ById<CampaignContent>(campaignId);
-
-        var contributions = await _contributionRepository.FindByCampaignAsync(campaign.Content().Key);
+        var campaignFundraisers = GetFundraisersContent(campaign.CampaignId);
+        
+        var campaignContributions = await _contributionRepository.FindByCampaignAsync(campaign.Content().Key);
+        var fundraisersContributions = await GetFundraisersContributions(campaignFundraisers);
 
         return await ViewCampaignViewModel.ForAsync(ViewModelFactory,
                                                     ContentLocator,
+                                                    _lookups,
                                                     this,
                                                     campaign,
-                                                    contributions);
+                                                    campaignContributions,
+                                                    fundraisersContributions,
+                                                    campaignFundraisers);
     }
     
     public static string Url(IContentLocator contentLocator, Guid campaignKey) {
@@ -46,5 +56,24 @@ public class ViewCampaignPage : CrowdfundingPage {
         
         return GenerateUrl(contentLocator, CrowdfundingConstants.Routes.ViewCampaign_2.FormatWith(campaign.Content().Id,
                                                                                                   relativeUrl.PathSegments.Last()));
+    }
+
+    private List<FundraiserContent> GetFundraisersContent(Guid campaignId) {
+        var campaignFundraisers = ContentLocator.All<FundraiserContent>()
+                                                .Where(x => x.Campaign.Id == campaignId);
+        
+        return campaignFundraisers.ToList();
+    }
+    
+    private async Task<List<Contribution>> GetFundraisersContributions(List<FundraiserContent> campaignFundraisers) {
+        if (!campaignFundraisers.HasAny()) {
+            return Enumerable.Empty<Contribution>().ToList();
+        }
+        
+        var fundraisersIds = campaignFundraisers.Select(x => x.FundraiserId.GetValueOrThrow()).ToArray();
+        
+        var fundraiserContributions = await _contributionRepository.FindByFundraiserAsync(fundraisersIds.ToArray());
+        
+        return fundraiserContributions.ToList();
     }
 }

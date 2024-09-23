@@ -3,6 +3,7 @@ using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Localization;
+using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Umbraco.Extensions;
@@ -17,12 +18,14 @@ public class ViewEditFundraiserViewModel : CrowdfunderViewModel<FundraiserConten
     }
 
     public static async Task<ViewEditFundraiserViewModel> ForAsync(ICrowdfundingViewModelFactory viewModelFactory,
+                                                                   ILookups lookups,
                                                                    ITextFormatter textFormatter,
                                                                    FundraiserAccessControl fundraiserAccessControl,
                                                                    ViewEditFundraiserPage page,
                                                                    FundraiserContent fundraiser,
                                                                    IEnumerable<Contribution> contributions) {
         var viewModel = await ForAsync<ViewEditFundraiserViewModel>(viewModelFactory,
+                                                                    lookups,
                                                                     page,
                                                                     fundraiser,
                                                                     CrowdfunderTypes.Fundraiser,

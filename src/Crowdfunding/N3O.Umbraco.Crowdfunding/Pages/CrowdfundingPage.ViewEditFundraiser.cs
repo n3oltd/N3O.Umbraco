@@ -3,6 +3,7 @@ using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
+using N3O.Umbraco.Lookups;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace N3O.Umbraco.Crowdfunding;
 
 public class ViewEditFundraiserPage : CrowdfundingPage {
     private readonly IContributionRepository _contributionRepository;
+    private readonly ILookups _lookups;
     private readonly ITextFormatter _textFormatter;
     private readonly FundraiserAccessControl _fundraiserAccessControl;
 
@@ -18,11 +20,13 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
                                   ICrowdfundingViewModelFactory viewModelFactory,
                                   IContributionRepository contributionRepository,
                                   ITextFormatter textFormatter,
-                                  FundraiserAccessControl fundraiserAccessControl)
+                                  FundraiserAccessControl fundraiserAccessControl,
+                                  ILookups lookups)
         : base(contentLocator, viewModelFactory) {
         _contributionRepository = contributionRepository;
         _textFormatter = textFormatter;
         _fundraiserAccessControl = fundraiserAccessControl;
+        _lookups = lookups;
     }
 
     protected override bool IsMatch(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
@@ -38,6 +42,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
         var contributions = await _contributionRepository.FindByFundraiserAsync(fundraiser.Content().Key);
 
         return await ViewEditFundraiserViewModel.ForAsync(ViewModelFactory,
+                                                          _lookups,
                                                           _textFormatter,
                                                           _fundraiserAccessControl,
                                                           this,

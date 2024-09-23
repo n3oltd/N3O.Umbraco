@@ -3,13 +3,14 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm.Models;
 using System;
 using System.Collections.Generic;
-using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
 [UmbracoContent(CrowdfundingConstants.Campaign.Alias)]
 public class CampaignContent : CrowdfunderContent<CampaignContent>, ICampaign {
-    public IEnumerable<IPublishedContent> Tags => GetPickedAs(x => x.Tags);
+    public decimal MinimumAmount => GetValue(x => x.MinimumAmount);
+    public IEnumerable<TagContent> Tags => GetPickedAs(x => x.Tags);
+    public IEnumerable<CampaignGoalOptionElement> GoalOptions => GetNestedAs(x => x.GoalOptions);
     
     public override Guid CampaignId => Key;
     public override string CampaignName => Name;

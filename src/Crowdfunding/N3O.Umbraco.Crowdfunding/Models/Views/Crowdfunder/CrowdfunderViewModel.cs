@@ -2,6 +2,7 @@
 using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Lookups;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ public abstract class CrowdfunderViewModel<TContent> :
     public CrowdfunderType CrowdfunderType { get; private set; }
     public IReadOnlyList<CrowdfunderGoalViewModel> Goals { get; private set; }
     public IReadOnlyList<CrowdfunderContributionViewModel> Contributions { get; private set; }
-    public IReadOnlyList<string> Tags { get; private set; }
+    public IReadOnlyList<CrowdfunderTagViewModel> Tags { get; private set; }
     public CrowdfunderProgressViewModel CrowdfunderProgress { get; private set; }
     public CrowdfunderOwnerViewModel OwnerInfo { get; private set; }
     
@@ -25,6 +26,7 @@ public abstract class CrowdfunderViewModel<TContent> :
     public abstract bool EditMode();
     
     protected static async Task<T> ForAsync<T>(ICrowdfundingViewModelFactory viewModelFactory,
+                                               ILookups lookups,
                                                ICrowdfundingPage page,
                                                TContent content,
                                                CrowdfunderType crowdfunderType,
@@ -36,9 +38,10 @@ public abstract class CrowdfunderViewModel<TContent> :
         viewModel.CrowdfunderType = crowdfunderType;
         viewModel.Goals = content.Goals.ToReadOnlyList(x => CrowdfunderGoalViewModel.For(content.Currency, x));
         viewModel.Contributions = contributions.ToReadOnlyList(x => CrowdfunderContributionViewModel.For(viewModel.Formatter,
-                                                                                                         content.Currency,
+                                                                                                         lookups,
                                                                                                          x));
-        viewModel.Tags = content.Goals.SelectMany(x => x.Tags.Select(t => t.Name)).ToList();
+        
+        viewModel.Tags = content.Goals.SelectMany(x => x.Tags.Select(CrowdfunderTagViewModel.For)).ToList();
         viewModel.CrowdfunderProgress = CrowdfunderProgressViewModel.For(content.Currency,
                                                                          contributions,
                                                                          content.Goals);

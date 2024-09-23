@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Crowdfunding.Queries;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Mediator;
 using Slugify;
 using System.Threading;
@@ -14,7 +15,7 @@ public class SuggestSlugHandler : IRequestHandler<SuggestSlugQuery, string, stri
     }
     
     public Task<string> Handle(SuggestSlugQuery req, CancellationToken cancellationToken) {
-        var slug = _slugHelper.GenerateSlug(req.Model);
+        var slug = req.Model.IfNotNull(_slugHelper.GenerateSlug);
 
         return Task.FromResult(slug);
     }
