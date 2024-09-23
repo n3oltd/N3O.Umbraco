@@ -14,6 +14,7 @@ namespace N3O.Umbraco.Crowdfunding.Models;
 public class SelectAccountViewModel {
     public string Email { get; private set; }
     public IReadOnlyList<IAccount> AvailableAccounts { get; private set; }
+    public IAccount CurrentAccount { get; private set; }
     public DataEntrySettings DataEntrySettings { get; private set; }
 
     public static async Task<SelectAccountViewModel> ForAsync(IAccountManager accountManager,
@@ -31,6 +32,10 @@ public class SelectAccountViewModel {
         viewModel.Email = currentMemberEmail;
         viewModel.DataEntrySettings = dataEntrySettings;
         viewModel.AvailableAccounts = availableAccounts.OrEmpty().ToList();
+        
+        if (availableAccounts.IsSingle()) {
+            viewModel.CurrentAccount = availableAccounts.First();
+        }
 
         return viewModel;
     }

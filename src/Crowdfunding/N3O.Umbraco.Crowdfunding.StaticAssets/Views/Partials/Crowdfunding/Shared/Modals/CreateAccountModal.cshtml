@@ -1,6 +1,10 @@
+@using N3O.Umbraco.Accounts.Content
+@using N3O.Umbraco.Content
+
 @model SelectAccountViewModel
 
 @inject IPartialText PartialText
+@inject IContentCache ContentCache
 
 @{
     PartialText.SetPartialName("CrowdfundingCreateAccountModal");
@@ -29,3 +33,10 @@
         </div>
     </div>
 </div>
+
+<script src="/assets/js/newAccount.js"></script>
+
+<script type="text/javascript">
+    @Html.Raw(ContentCache.Single<DataEntrySettingsContent>().JavaScript)
+    createAccount()
+</script>

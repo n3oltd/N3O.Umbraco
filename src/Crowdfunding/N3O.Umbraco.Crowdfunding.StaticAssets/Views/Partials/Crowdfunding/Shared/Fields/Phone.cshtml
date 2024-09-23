@@ -1,17 +1,17 @@
-@model (N3O.Umbraco.Accounts.Models.PhoneDataEntrySettings FieldSettings, string PhoneNumber, string Country)
+@model N3O.Umbraco.Accounts.Models.PhoneDataEntrySettings
 
 <div class="input__outer">
-    <h4> @Html.Raw(Model.FieldSettings.Number.Required ? $"{Model.FieldSettings.Country.Label} <span> *</span>" : $"{Model.FieldSettings.Country.Label}")</h4>
+    <p> @Html.Raw(Model.Number.Required ? $"{Model.Country.Label} <span> *</span>" : $"{Model.Country.Label}")</p>
     <div class="input">
         <input id="phone"
-               type="@Model.FieldSettings.Number.Type"
-               name="@Model.FieldSettings.Number.Path"
-               placeholder="@Model.FieldSettings.Number.Label"
-               value="@Model.PhoneNumber"
+               type="@Model.Number.Type"
+               name="@Model.Number.Path"
+               placeholder="@Model.Number.Label"
+               value=""
                style="width: 100%"
                class="auto-capitalise form-control rounded-0">
-        <input id="countryCode" type="text" name="@Model.FieldSettings.Country.Path" value="@Model.Country" hidden>
-        <span id ="@Model.FieldSettings.Number.Path" class="input-validation-error hidden"></span>
-        <span id ="@Model.FieldSettings.Country.Path" class="input-validation-error"></span>
+        <input id="countryCode" type="text" name="@Model.Country.Path" value="" hidden>
+        <span id ="@Model.Number.Path" class="input-validation-error hidden"></span>
+        <span id ="@Model.Country.Path" class="input-validation-error"></span>
     </div>
 </div>

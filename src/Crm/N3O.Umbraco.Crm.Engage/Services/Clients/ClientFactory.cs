@@ -52,7 +52,7 @@ public class ClientFactory<T> {
 
         _jsonProvider.ApplySettings((JsonSerializerSettings) client.GetPropertyInfo("JsonSerializerSettings").GetValue(client));
 
-        return new ServiceClient<T>(client, _logger, subscription.Id);
+        return new ServiceClient<T>(client,_jsonProvider, _logger, subscription.Id);
     }
 
     private async Task<HttpClient> GetHttpClientAsync(string onBehalfOf) {

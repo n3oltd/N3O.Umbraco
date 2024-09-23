@@ -1,8 +1,10 @@
 ﻿using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Crm.Context;
 using N3O.Umbraco.Crm.Engage.Clients;
+using N3O.Umbraco.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Security;
 
@@ -24,10 +26,14 @@ public class EngageAccountManager : AccountManager {
         _subscriptionAccessor = subscriptionAccessor;
     }
 
-    public override async Task CreateAccountAsync(AccountReq account) {
+    public override async Task<string> CreateAccountAsync(AccountReq account) {
         // Forward the request to Engage, only bit that needs some thought is how we bubble up errors via
         // the validation/problem details mechanism
-        throw new NotImplementedException();
+        var client = await GetClientAsync();
+
+        var res = await client.InvokeAsync<AccountReq, string>(x => x.CreateAccountAsync, account, CancellationToken.None);
+
+        return res;
     }
 
     protected override async Task<IEnumerable<AccountRes>> FindAccountsWithEmailAsync(string email) {
@@ -38,10 +44,14 @@ public class EngageAccountManager : AccountManager {
         return res;
     }
 
-    public override async Task UpdateAccountAsync(AccountReq account) {
-        throw new NotImplementedException();
+    public override async Task<AccountRes> UpdateAccountAsync(AccountReq account) {
+        var client = await GetClientAsync();
+
+        var res = await client.InvokeAsync<AccountReq, AccountRes>(x => x.UpdateAccountAsync, account.Id, account, CancellationToken.None);
+
+        return res;
     }
-    
+
     private async Task<ServiceClient<AccountsClient>> GetClientAsync() {
         if (_client == null) {
             var subscription = _subscriptionAccessor.GetSubscription();

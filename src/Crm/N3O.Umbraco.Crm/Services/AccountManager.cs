@@ -49,7 +49,7 @@ public abstract class AccountManager : IAccountManager {
         _accountCookie.Set(accountId, accountReference, accountToken);
     }
 
-    public abstract Task CreateAccountAsync(AccountReq account);
-    public abstract Task UpdateAccountAsync(AccountReq account);
+    public abstract Task<string> CreateAccountAsync(AccountReq account);
+    public abstract Task<AccountRes> UpdateAccountAsync(AccountReq account);
     protected abstract Task<IEnumerable<AccountRes>> FindAccountsWithEmailAsync(string email);
 }

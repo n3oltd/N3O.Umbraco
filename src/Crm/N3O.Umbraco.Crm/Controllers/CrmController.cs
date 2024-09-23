@@ -5,6 +5,8 @@ using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Crm.Models;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Lookups;
+using N3O.Umbraco.Validation;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
@@ -35,6 +37,27 @@ public class CrmController : LookupsController<CrmLookupsRes> {
             return Ok();
         } catch (InvalidAccountException ex) {
             return await Task.FromResult<ActionResult>(BadRequest(ex.Message));
+        }
+    }
+
+    [HttpPost("accounts/create")]
+    public async Task<string> CreateAccountAsync(AccountReq req) {
+        var res = await _accountManager.CreateAccountAsync(req);
+
+        return res;
+    }
+
+    [HttpPut("accounts/update")]
+    public async Task<ActionResult> UpdateAccountAsync(AccountReq req) {
+        try {
+            var res = await _accountManager.UpdateAccountAsync(req);
+
+            return Ok(res);
+        } catch (Exception ex) when (ex is ValidationException validationException) {
+            return StatusCode(412, new {
+                                           Message = "Validation failed",
+                                           Details = validationException.Failures
+                                       });
         }
     }
 }
