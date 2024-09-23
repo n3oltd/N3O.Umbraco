@@ -44,6 +44,11 @@
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
         </Content>
 
+        <Content Include="App_Plugins\N3O.Umbraco.Crowdfunding.Statistics\**\*.*">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
+
         <None Include="build\**\*.*">
             <Pack>True</Pack>
             <PackagePath>buildTransitive</PackagePath>

@@ -58,7 +58,7 @@ namespace DemoSite.Content
 		public virtual string AvatarLink => this.Value<string>(_publishedValueFallback, "avatarLink");
 
 		///<summary>
-		/// umbracoMemberComments
+ 		/// Comments
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
