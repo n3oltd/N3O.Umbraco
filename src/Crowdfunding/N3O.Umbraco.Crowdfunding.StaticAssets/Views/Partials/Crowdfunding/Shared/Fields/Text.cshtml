@@ -1,12 +1,11 @@
-@model (N3O.Umbraco.Accounts.Models.FieldSettings FieldSettings, object Data)
-
+@model N3O.Umbraco.Accounts.Models.FieldSettings
 <div class="input__outer">
-    <h4>@Html.Raw(Model.FieldSettings.Required ? $"{Model.FieldSettings.Label} <span> *</span>" : $"{Model.FieldSettings.Label}")</h4>
+    <p>@Html.Raw(Model.Required ? $"{Model.Label} <span> *</span>" : $"{Model.Label}")</p>
     <div class="input">
-        <input type="@Model.FieldSettings.Type"
-               name="@Model.FieldSettings.Path"
-               placeholder="@Model.FieldSettings.Label"
-               value="@Model.Data.ResolvePathValue(Model.FieldSettings.Path)"/>
-        <span id ="@Model.FieldSettings.Path" class="input-validation-error"></span>
+        <input type="@Model.Type"
+               name="@Model.Path"
+               placeholder="@Model.Label"
+               value=""/>
+        <span id ="@Model.Path" class="input-validation-error"></span>
     </div>
 </div>

@@ -1,24 +1,28 @@
 ﻿using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Crm.Engage.Exceptions;
-using N3O.Umbraco.Exceptions;
+using N3O.Umbraco.Json;
 using N3O.Umbraco.Validation;
 using Newtonsoft.Json;
 using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using ProblemDetails = N3O.Umbraco.Exceptions.ProblemDetails;
 
 namespace N3O.Umbraco.Crm.Engage;
 
 public class ServiceClient<TClient> {
     private readonly ILogger<ServiceClient<TClient>> _logger;
     private readonly TClient _client;
+    private readonly IJsonProvider _jsonProvider;
     private readonly string _subscriptionId;
 
     public ServiceClient(TClient client,
+                         IJsonProvider jsonProvider,
                          ILogger<ServiceClient<TClient>> logger,
                          string subscriptionId) {
         _client = client;
+        _jsonProvider = jsonProvider;
         _subscriptionId = subscriptionId;
         _logger = logger;
     }
@@ -206,16 +210,16 @@ public class ServiceClient<TClient> {
         }
     }
 
-    private ServiceClientException ToServiceClientException(Exception exception) {
+    private Exception ToServiceClientException(Exception exception) {
         _logger.LogError(exception, "Error calling API: {Error}", exception.Message);
 
         try {
             var content = JsonConvert.SerializeObject(exception.GetType().GetProperty("Result").GetValue(exception));
 
             if ((int) exception.GetType().GetProperty("StatusCode").GetValue(exception) == (int) HttpStatusCode.PreconditionFailed) {
-                var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(content);
+                var problemDetails = _jsonProvider.DeserializeObject<ValidationProblemDetails>(content);
 
-                return new ServiceClientException(exception, problemDetails);
+                return new ValidationException(problemDetails.Errors);
             } else {
                 var problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(content);
 

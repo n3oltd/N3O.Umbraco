@@ -6,6 +6,8 @@
 @inject IContentCache ContentCache
 
 <div class="modalsItem modall" id="updateAccount-modal">
+    <input type="hidden" id="n3o_cdf-selected-account-id" name="account-id" value="@Model.CurrentAccount.Id"/>
+    <input type="hidden" id="n3o_cdf-selected-account-ref" name="account-ref" value="@Model.CurrentAccount.Reference"/>
     <div class="newAccount__wrapper" style="margin: auto; width: 90vw">
         <div class="newAccount" id="newAccount">
             <div class="newAccount__head">
@@ -15,10 +17,10 @@
                 </div>
             </div>
             <div class="newAccount__body">
-                <form id="update-account-form" method="post" action="" autocomplete="on">
+                <form id="update-account-form" autocomplete="off">
                     @Html.CrowdfundingPartial("/Views/Partials/Crowdfunding/Shared/Forms/Account.cshtml", Model)
-                    
-                    <button type="button" class="button primary" id="newAccountBtn">
+
+                    <button type="submit" class="button primary" id="newAccountBtn">
                         Continue
                     </button>
                 </form>
@@ -27,8 +29,11 @@
     </div>
 </div>
 
+
 <script src="/assets/js/newAccount.js"></script>
 
-<script>
-    @Html.Raw(ContentCache.Single<DataEntrySettingsContent>().JavaScript);
+<script type="text/javascript">
+    @Html.Raw(ContentCache.Single<DataEntrySettingsContent>().JavaScript)
+    const account = @Html.Raw(Json.Serialize(Model.CurrentAccount));
+    updateAccount(account)
 </script>
