@@ -25,6 +25,67 @@ var CrowdfundingClient = /** @class */ (function () {
         this.http = http ? http : window;
         this.baseUrl = baseUrl !== null && baseUrl !== void 0 ? baseUrl : "https://localhost:6001";
     }
+    CrowdfundingClient.prototype.getCampaignGoalOptions = function (campaignId, goalOptionId) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Crowdfunding/campaigns/{campaignId}/goalOptions/{goalOptionId}";
+        if (campaignId === undefined || campaignId === null)
+            throw new Error("The parameter 'campaignId' must be defined.");
+        url_ = url_.replace("{campaignId}", encodeURIComponent("" + campaignId));
+        if (goalOptionId === undefined || goalOptionId === null)
+            throw new Error("The parameter 'goalOptionId' must be defined.");
+        url_ = url_.replace("{goalOptionId}", encodeURIComponent("" + goalOptionId));
+        url_ = url_.replace(/[?&]$/, "");
+        var options_ = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processGetCampaignGoalOptions(_response);
+        });
+    };
+    CrowdfundingClient.prototype.processGetCampaignGoalOptions = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                var result200 = null;
+                result200 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return result200;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status === 404) {
+            return response.text().then(function (_responseText) {
+                var result404 = null;
+                result404 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
     CrowdfundingClient.prototype.getContentPropertyValue = function (contentId, propertyAlias) {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Crowdfunding/content/{contentId}/properties/{propertyAlias}";
@@ -545,24 +606,6 @@ var CrowdfundingClient = /** @class */ (function () {
     return CrowdfundingClient;
 }());
 export { CrowdfundingClient };
-/** One of 'boolean', 'cropper', 'dateTime', 'nested', 'numeric', 'raw', 'textarea', 'textBox' */
-export var PropertyType;
-(function (PropertyType) {
-    PropertyType["Boolean"] = "boolean";
-    PropertyType["Cropper"] = "cropper";
-    PropertyType["DateTime"] = "dateTime";
-    PropertyType["Nested"] = "nested";
-    PropertyType["Numeric"] = "numeric";
-    PropertyType["Raw"] = "raw";
-    PropertyType["Textarea"] = "textarea";
-    PropertyType["TextBox"] = "textBox";
-})(PropertyType || (PropertyType = {}));
-/** One of 'circle', 'rectangle' */
-export var CropShape;
-(function (CropShape) {
-    CropShape["Circle"] = "circle";
-    CropShape["Rectangle"] = "rectangle";
-})(CropShape || (CropShape = {}));
 /** One of 'feedback', 'fund', 'sponsorship' */
 export var AllocationType;
 (function (AllocationType) {
@@ -583,6 +626,24 @@ export var FeedbackCustomFieldType;
     FeedbackCustomFieldType["Date"] = "date";
     FeedbackCustomFieldType["Text"] = "text";
 })(FeedbackCustomFieldType || (FeedbackCustomFieldType = {}));
+/** One of 'boolean', 'cropper', 'dateTime', 'nested', 'numeric', 'raw', 'textarea', 'textBox' */
+export var PropertyType;
+(function (PropertyType) {
+    PropertyType["Boolean"] = "boolean";
+    PropertyType["Cropper"] = "cropper";
+    PropertyType["DateTime"] = "dateTime";
+    PropertyType["Nested"] = "nested";
+    PropertyType["Numeric"] = "numeric";
+    PropertyType["Raw"] = "raw";
+    PropertyType["Textarea"] = "textarea";
+    PropertyType["TextBox"] = "textBox";
+})(PropertyType || (PropertyType = {}));
+/** One of 'circle', 'rectangle' */
+export var CropShape;
+(function (CropShape) {
+    CropShape["Circle"] = "circle";
+    CropShape["Rectangle"] = "rectangle";
+})(CropShape || (CropShape = {}));
 var ApiException = /** @class */ (function (_super) {
     __extends(ApiException, _super);
     function ApiException(message, status, response, headers, result) {

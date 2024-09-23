@@ -54,6 +54,7 @@ export interface AccountRes {
     telephone?: TelephoneRes | undefined;
     consent?: ConsentRes | undefined;
     taxStatus?: TaxStatus | undefined;
+    token?: string | undefined;
 }
 /** One of 'individual', 'organization' */
 export declare enum AccountType {
@@ -355,6 +356,7 @@ export interface ConsentChoiceReq {
     channel?: ConsentChannel | undefined;
     category?: string | undefined;
     response?: ConsentResponse | undefined;
+    categoryName?: string | undefined;
 }
 export interface CaptchaReq {
     token?: string | undefined;

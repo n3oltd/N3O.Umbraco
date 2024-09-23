@@ -478,6 +478,7 @@ export interface AccountRes {
     telephone?: TelephoneRes | undefined;
     consent?: ConsentRes | undefined;
     taxStatus?: TaxStatus | undefined;
+    token?: string | undefined;
 }
 
 /** One of 'individual', 'organization' */
@@ -830,6 +831,7 @@ export interface ConsentChoiceReq {
     channel?: ConsentChannel | undefined;
     category?: string | undefined;
     response?: ConsentResponse | undefined;
+    categoryName?: string | undefined;
 }
 
 export interface CaptchaReq {
