@@ -1209,6 +1209,9 @@ namespace N3O.Umbraco.Clients.Giving.Checkout
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public TaxStatus? TaxStatus { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("token", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Token { get; set; }
+
     }
 
     /// <summary>
@@ -2096,6 +2099,9 @@ namespace N3O.Umbraco.Clients.Giving.Checkout
         [Newtonsoft.Json.JsonProperty("response", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ConsentResponse? Response { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("categoryName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string CategoryName { get; set; }
 
     }
 

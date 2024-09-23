@@ -5,6 +5,8 @@ export declare class CrowdfundingClient {
     constructor(baseUrl?: string, http?: {
         fetch(url: RequestInfo, init?: RequestInit): Promise<Response>;
     });
+    getCampaignGoalOptions(campaignId: string, goalOptionId: string): Promise<GoalOptionRes>;
+    protected processGetCampaignGoalOptions(response: Response): Promise<GoalOptionRes>;
     getContentPropertyValue(contentId: string, propertyAlias: string): Promise<ContentPropertyValueRes>;
     protected processGetContentPropertyValue(response: Response): Promise<ContentPropertyValueRes>;
     getNestedPropertySchema(contentId: string, propertyAlias: string): Promise<NestedSchemaRes>;
@@ -23,6 +25,107 @@ export declare class CrowdfundingClient {
     protected processGetPropertyTypes(response: Response): Promise<LookupRes[]>;
     getDashboardStatistics(req: DashboardStatisticsCriteria): Promise<DashboardStatisticsRes>;
     protected processGetDashboardStatistics(response: Response): Promise<DashboardStatisticsRes>;
+}
+export interface GoalOptionRes {
+    id?: string;
+    name?: string | undefined;
+    type?: AllocationType | undefined;
+    tags?: string[] | undefined;
+    dimension1?: GoalOptionFundDimensionRes | undefined;
+    dimension2?: GoalOptionFundDimensionRes | undefined;
+    dimension3?: GoalOptionFundDimensionRes | undefined;
+    dimension4?: GoalOptionFundDimensionRes | undefined;
+    fund?: DonationItemRes | undefined;
+    feedback?: FeedbackSchemeRes | undefined;
+}
+/** One of 'feedback', 'fund', 'sponsorship' */
+export declare enum AllocationType {
+    Feedback = "feedback",
+    Fund = "fund",
+    Sponsorship = "sponsorship"
+}
+export interface GoalOptionFundDimensionRes {
+    default?: FundDimensionValueRes | undefined;
+    allowedOptions?: FundDimensionValueRes[] | undefined;
+}
+export interface FundDimensionValueRes {
+    name?: string | undefined;
+    id?: string | undefined;
+    isUnrestricted?: boolean;
+}
+export interface DonationItemRes {
+    name?: string | undefined;
+    id?: string | undefined;
+    allowedGivingTypes?: GivingType[] | undefined;
+    dimension1Options?: FundDimensionValueRes[] | undefined;
+    dimension2Options?: FundDimensionValueRes[] | undefined;
+    dimension3Options?: FundDimensionValueRes[] | undefined;
+    dimension4Options?: FundDimensionValueRes[] | undefined;
+    pricing?: PricingRes | undefined;
+}
+/** One of 'donation', 'regularGiving' */
+export declare enum GivingType {
+    Donation = "donation",
+    RegularGiving = "regularGiving"
+}
+export interface PricingRes {
+    amount?: number;
+    currencyValues?: {
+        [key: string]: MoneyRes;
+    } | undefined;
+    locked?: boolean;
+    priceRules?: PricingRuleRes[] | undefined;
+}
+export interface MoneyRes {
+    amount?: number;
+    currency?: string | undefined;
+    text?: string | undefined;
+}
+export interface PricingRuleRes {
+    amount?: number;
+    currencyValues?: {
+        [key: string]: MoneyRes;
+    } | undefined;
+    locked?: boolean;
+    fundDimensions?: FundDimensionValuesRes | undefined;
+}
+export interface FundDimensionValuesRes {
+    dimension1?: string | undefined;
+    dimension2?: string | undefined;
+    dimension3?: string | undefined;
+    dimension4?: string | undefined;
+}
+export interface FeedbackSchemeRes {
+    name?: string | undefined;
+    id?: string | undefined;
+    allowedGivingTypes?: GivingType[] | undefined;
+    customFields?: FeedbackCustomFieldDefinitionRes[] | undefined;
+    dimension1Options?: FundDimensionValueRes[] | undefined;
+    dimension2Options?: FundDimensionValueRes[] | undefined;
+    dimension3Options?: FundDimensionValueRes[] | undefined;
+    dimension4Options?: FundDimensionValueRes[] | undefined;
+    pricing?: PricingRes | undefined;
+}
+export interface FeedbackCustomFieldDefinitionRes {
+    type?: FeedbackCustomFieldType | undefined;
+    alias?: string | undefined;
+    name?: string | undefined;
+    required?: boolean;
+    textMaxLength?: number | undefined;
+}
+/** One of 'bool', 'date', 'text' */
+export declare enum FeedbackCustomFieldType {
+    Bool = "bool",
+    Date = "date",
+    Text = "text"
+}
+export interface ProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
+    [key: string]: any;
 }
 export interface ContentPropertyValueRes {
     alias?: string | undefined;
@@ -141,14 +244,6 @@ export interface TextBoxConfigurationRes {
     description?: string | undefined;
     maximumLength?: number;
 }
-export interface ProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
-    [key: string]: any;
-}
 export interface ContentPropertyReq {
     alias?: string | undefined;
     type?: PropertyType | undefined;
@@ -240,7 +335,14 @@ export interface FundraiserGoalsReq {
 export interface FundraiserGoalReq {
     amount?: number | undefined;
     goalId?: string | undefined;
+    fundDimensions?: FundDimensionValuesReq | undefined;
     feedback?: FeedbackGoalReq | undefined;
+}
+export interface FundDimensionValuesReq {
+    dimension1?: string | undefined;
+    dimension2?: string | undefined;
+    dimension3?: string | undefined;
+    dimension4?: string | undefined;
 }
 export interface FeedbackGoalReq {
     customFields?: FeedbackNewCustomFieldsReq | undefined;
@@ -256,8 +358,8 @@ export interface FeedbackNewCustomFieldReq {
 }
 export interface FundraiserGoalsRes {
     currency?: CurrencyRes | undefined;
-    available?: AvailableGoalRes[] | undefined;
-    selected?: SelectedGoalRes[] | undefined;
+    goalOptions?: GoalOptionRes[] | undefined;
+    selectedGoals?: GoalRes[] | undefined;
 }
 export interface CurrencyRes {
     name?: string | undefined;
@@ -266,97 +368,12 @@ export interface CurrencyRes {
     isBaseCurrency?: boolean;
     symbol?: string | undefined;
 }
-export interface AvailableGoalRes {
-    id?: string;
-    name?: string | undefined;
-    type?: AllocationType | undefined;
-    tags?: string[] | undefined;
-    fund?: DonationItemRes | undefined;
-    feedback?: FeedbackSchemeRes | undefined;
-}
-/** One of 'feedback', 'fund', 'sponsorship' */
-export declare enum AllocationType {
-    Feedback = "feedback",
-    Fund = "fund",
-    Sponsorship = "sponsorship"
-}
-export interface DonationItemRes {
-    name?: string | undefined;
-    id?: string | undefined;
-    allowedGivingTypes?: GivingType[] | undefined;
-    dimension1Options?: FundDimensionValueRes[] | undefined;
-    dimension2Options?: FundDimensionValueRes[] | undefined;
-    dimension3Options?: FundDimensionValueRes[] | undefined;
-    dimension4Options?: FundDimensionValueRes[] | undefined;
-    pricing?: PricingRes | undefined;
-}
-/** One of 'donation', 'regularGiving' */
-export declare enum GivingType {
-    Donation = "donation",
-    RegularGiving = "regularGiving"
-}
-export interface FundDimensionValueRes {
-    name?: string | undefined;
-    id?: string | undefined;
-    isUnrestricted?: boolean;
-}
-export interface PricingRes {
-    amount?: number;
-    currencyValues?: {
-        [key: string]: MoneyRes;
-    } | undefined;
-    locked?: boolean;
-    priceRules?: PricingRuleRes[] | undefined;
-}
-export interface MoneyRes {
-    amount?: number;
-    currency?: string | undefined;
-    text?: string | undefined;
-}
-export interface PricingRuleRes {
-    amount?: number;
-    currencyValues?: {
-        [key: string]: MoneyRes;
-    } | undefined;
-    locked?: boolean;
-    fundDimensions?: FundDimensionValuesRes | undefined;
-}
-export interface FundDimensionValuesRes {
-    dimension1?: string | undefined;
-    dimension2?: string | undefined;
-    dimension3?: string | undefined;
-    dimension4?: string | undefined;
-}
-export interface FeedbackSchemeRes {
-    name?: string | undefined;
-    id?: string | undefined;
-    allowedGivingTypes?: GivingType[] | undefined;
-    customFields?: FeedbackCustomFieldDefinitionRes[] | undefined;
-    dimension1Options?: FundDimensionValueRes[] | undefined;
-    dimension2Options?: FundDimensionValueRes[] | undefined;
-    dimension3Options?: FundDimensionValueRes[] | undefined;
-    dimension4Options?: FundDimensionValueRes[] | undefined;
-    pricing?: PricingRes | undefined;
-}
-export interface FeedbackCustomFieldDefinitionRes {
-    type?: FeedbackCustomFieldType | undefined;
-    alias?: string | undefined;
-    name?: string | undefined;
-    required?: boolean;
-    textMaxLength?: number | undefined;
-}
-/** One of 'bool', 'date', 'text' */
-export declare enum FeedbackCustomFieldType {
-    Bool = "bool",
-    Date = "date",
-    Text = "text"
-}
-export interface SelectedGoalRes {
+export interface GoalRes {
     campaignGoalId?: string;
     value?: number;
-    feedback?: SelectedFeedbackGoalRes | undefined;
+    feedback?: FeedbackGoalRes | undefined;
 }
-export interface SelectedFeedbackGoalRes {
+export interface FeedbackGoalRes {
     feedback?: FeedbackCustomFieldRes[] | undefined;
 }
 export interface FeedbackCustomFieldRes {

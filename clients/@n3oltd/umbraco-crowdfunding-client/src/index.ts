@@ -18,6 +18,61 @@ export class CrowdfundingClient {
         this.baseUrl = baseUrl ?? "https://localhost:6001";
     }
 
+    getCampaignGoalOptions(campaignId: string, goalOptionId: string): Promise<GoalOptionRes> {
+        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/campaigns/{campaignId}/goalOptions/{goalOptionId}";
+        if (campaignId === undefined || campaignId === null)
+            throw new Error("The parameter 'campaignId' must be defined.");
+        url_ = url_.replace("{campaignId}", encodeURIComponent("" + campaignId));
+        if (goalOptionId === undefined || goalOptionId === null)
+            throw new Error("The parameter 'goalOptionId' must be defined.");
+        url_ = url_.replace("{goalOptionId}", encodeURIComponent("" + goalOptionId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetCampaignGoalOptions(_response);
+        });
+    }
+
+    protected processGetCampaignGoalOptions(response: Response): Promise<GoalOptionRes> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GoalOptionRes;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            let result404: any = null;
+            result404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GoalOptionRes>(null as any);
+    }
+
     getContentPropertyValue(contentId: string, propertyAlias: string): Promise<ContentPropertyValueRes> {
         let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/content/{contentId}/properties/{propertyAlias}";
         if (contentId === undefined || contentId === null)
@@ -487,6 +542,118 @@ export class CrowdfundingClient {
     }
 }
 
+export interface GoalOptionRes {
+    id?: string;
+    name?: string | undefined;
+    type?: AllocationType | undefined;
+    tags?: string[] | undefined;
+    dimension1?: GoalOptionFundDimensionRes | undefined;
+    dimension2?: GoalOptionFundDimensionRes | undefined;
+    dimension3?: GoalOptionFundDimensionRes | undefined;
+    dimension4?: GoalOptionFundDimensionRes | undefined;
+    fund?: DonationItemRes | undefined;
+    feedback?: FeedbackSchemeRes | undefined;
+}
+
+/** One of 'feedback', 'fund', 'sponsorship' */
+export enum AllocationType {
+    Feedback = "feedback",
+    Fund = "fund",
+    Sponsorship = "sponsorship",
+}
+
+export interface GoalOptionFundDimensionRes {
+    default?: FundDimensionValueRes | undefined;
+    allowedOptions?: FundDimensionValueRes[] | undefined;
+}
+
+export interface FundDimensionValueRes {
+    name?: string | undefined;
+    id?: string | undefined;
+    isUnrestricted?: boolean;
+}
+
+export interface DonationItemRes {
+    name?: string | undefined;
+    id?: string | undefined;
+    allowedGivingTypes?: GivingType[] | undefined;
+    dimension1Options?: FundDimensionValueRes[] | undefined;
+    dimension2Options?: FundDimensionValueRes[] | undefined;
+    dimension3Options?: FundDimensionValueRes[] | undefined;
+    dimension4Options?: FundDimensionValueRes[] | undefined;
+    pricing?: PricingRes | undefined;
+}
+
+/** One of 'donation', 'regularGiving' */
+export enum GivingType {
+    Donation = "donation",
+    RegularGiving = "regularGiving",
+}
+
+export interface PricingRes {
+    amount?: number;
+    currencyValues?: { [key: string]: MoneyRes; } | undefined;
+    locked?: boolean;
+    priceRules?: PricingRuleRes[] | undefined;
+}
+
+export interface MoneyRes {
+    amount?: number;
+    currency?: string | undefined;
+    text?: string | undefined;
+}
+
+export interface PricingRuleRes {
+    amount?: number;
+    currencyValues?: { [key: string]: MoneyRes; } | undefined;
+    locked?: boolean;
+    fundDimensions?: FundDimensionValuesRes | undefined;
+}
+
+export interface FundDimensionValuesRes {
+    dimension1?: string | undefined;
+    dimension2?: string | undefined;
+    dimension3?: string | undefined;
+    dimension4?: string | undefined;
+}
+
+export interface FeedbackSchemeRes {
+    name?: string | undefined;
+    id?: string | undefined;
+    allowedGivingTypes?: GivingType[] | undefined;
+    customFields?: FeedbackCustomFieldDefinitionRes[] | undefined;
+    dimension1Options?: FundDimensionValueRes[] | undefined;
+    dimension2Options?: FundDimensionValueRes[] | undefined;
+    dimension3Options?: FundDimensionValueRes[] | undefined;
+    dimension4Options?: FundDimensionValueRes[] | undefined;
+    pricing?: PricingRes | undefined;
+}
+
+export interface FeedbackCustomFieldDefinitionRes {
+    type?: FeedbackCustomFieldType | undefined;
+    alias?: string | undefined;
+    name?: string | undefined;
+    required?: boolean;
+    textMaxLength?: number | undefined;
+}
+
+/** One of 'bool', 'date', 'text' */
+export enum FeedbackCustomFieldType {
+    Bool = "bool",
+    Date = "date",
+    Text = "text",
+}
+
+export interface ProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
+
+    [key: string]: any;
+}
+
 export interface ContentPropertyValueRes {
     alias?: string | undefined;
     type?: PropertyType | undefined;
@@ -629,16 +796,6 @@ export interface TextBoxConfigurationRes {
     maximumLength?: number;
 }
 
-export interface ProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
-
-    [key: string]: any;
-}
-
 export interface ContentPropertyReq {
     alias?: string | undefined;
     type?: PropertyType | undefined;
@@ -749,7 +906,15 @@ export interface FundraiserGoalsReq {
 export interface FundraiserGoalReq {
     amount?: number | undefined;
     goalId?: string | undefined;
+    fundDimensions?: FundDimensionValuesReq | undefined;
     feedback?: FeedbackGoalReq | undefined;
+}
+
+export interface FundDimensionValuesReq {
+    dimension1?: string | undefined;
+    dimension2?: string | undefined;
+    dimension3?: string | undefined;
+    dimension4?: string | undefined;
 }
 
 export interface FeedbackGoalReq {
@@ -769,8 +934,8 @@ export interface FeedbackNewCustomFieldReq {
 
 export interface FundraiserGoalsRes {
     currency?: CurrencyRes | undefined;
-    available?: AvailableGoalRes[] | undefined;
-    selected?: SelectedGoalRes[] | undefined;
+    goalOptions?: GoalOptionRes[] | undefined;
+    selectedGoals?: GoalRes[] | undefined;
 }
 
 export interface CurrencyRes {
@@ -781,106 +946,13 @@ export interface CurrencyRes {
     symbol?: string | undefined;
 }
 
-export interface AvailableGoalRes {
-    id?: string;
-    name?: string | undefined;
-    type?: AllocationType | undefined;
-    tags?: string[] | undefined;
-    fund?: DonationItemRes | undefined;
-    feedback?: FeedbackSchemeRes | undefined;
-}
-
-/** One of 'feedback', 'fund', 'sponsorship' */
-export enum AllocationType {
-    Feedback = "feedback",
-    Fund = "fund",
-    Sponsorship = "sponsorship",
-}
-
-export interface DonationItemRes {
-    name?: string | undefined;
-    id?: string | undefined;
-    allowedGivingTypes?: GivingType[] | undefined;
-    dimension1Options?: FundDimensionValueRes[] | undefined;
-    dimension2Options?: FundDimensionValueRes[] | undefined;
-    dimension3Options?: FundDimensionValueRes[] | undefined;
-    dimension4Options?: FundDimensionValueRes[] | undefined;
-    pricing?: PricingRes | undefined;
-}
-
-/** One of 'donation', 'regularGiving' */
-export enum GivingType {
-    Donation = "donation",
-    RegularGiving = "regularGiving",
-}
-
-export interface FundDimensionValueRes {
-    name?: string | undefined;
-    id?: string | undefined;
-    isUnrestricted?: boolean;
-}
-
-export interface PricingRes {
-    amount?: number;
-    currencyValues?: { [key: string]: MoneyRes; } | undefined;
-    locked?: boolean;
-    priceRules?: PricingRuleRes[] | undefined;
-}
-
-export interface MoneyRes {
-    amount?: number;
-    currency?: string | undefined;
-    text?: string | undefined;
-}
-
-export interface PricingRuleRes {
-    amount?: number;
-    currencyValues?: { [key: string]: MoneyRes; } | undefined;
-    locked?: boolean;
-    fundDimensions?: FundDimensionValuesRes | undefined;
-}
-
-export interface FundDimensionValuesRes {
-    dimension1?: string | undefined;
-    dimension2?: string | undefined;
-    dimension3?: string | undefined;
-    dimension4?: string | undefined;
-}
-
-export interface FeedbackSchemeRes {
-    name?: string | undefined;
-    id?: string | undefined;
-    allowedGivingTypes?: GivingType[] | undefined;
-    customFields?: FeedbackCustomFieldDefinitionRes[] | undefined;
-    dimension1Options?: FundDimensionValueRes[] | undefined;
-    dimension2Options?: FundDimensionValueRes[] | undefined;
-    dimension3Options?: FundDimensionValueRes[] | undefined;
-    dimension4Options?: FundDimensionValueRes[] | undefined;
-    pricing?: PricingRes | undefined;
-}
-
-export interface FeedbackCustomFieldDefinitionRes {
-    type?: FeedbackCustomFieldType | undefined;
-    alias?: string | undefined;
-    name?: string | undefined;
-    required?: boolean;
-    textMaxLength?: number | undefined;
-}
-
-/** One of 'bool', 'date', 'text' */
-export enum FeedbackCustomFieldType {
-    Bool = "bool",
-    Date = "date",
-    Text = "text",
-}
-
-export interface SelectedGoalRes {
+export interface GoalRes {
     campaignGoalId?: string;
     value?: number;
-    feedback?: SelectedFeedbackGoalRes | undefined;
+    feedback?: FeedbackGoalRes | undefined;
 }
 
-export interface SelectedFeedbackGoalRes {
+export interface FeedbackGoalRes {
     feedback?: FeedbackCustomFieldRes[] | undefined;
 }
 
