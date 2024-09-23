@@ -95,6 +95,10 @@ public static class CrowdfundingConstants {
         public const string Alias = "crowdfundingOurProfileSettings";
     }
     
+    public static class Root {
+        public const string Alias = "crowdfundingRoot";
+    }
+    
     public static class Routes {
         public const string CreateFundraiser = "pages/create";
         public const string ViewCampaign_2 = "campaigns/{0}/{1}";

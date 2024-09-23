@@ -1,0 +1,5 @@
+{
+    "javascript": [
+        "~/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/N3O.Umbraco.Crowdfunding.Statistics.Controller.js"
+    ]
+}
