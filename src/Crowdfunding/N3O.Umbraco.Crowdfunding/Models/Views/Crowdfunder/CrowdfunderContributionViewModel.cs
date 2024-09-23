@@ -4,7 +4,6 @@ using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Lookups;
-using System.Linq;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
@@ -22,8 +21,7 @@ public class CrowdfunderContributionViewModel {
                                                        Contribution contribution) {
         var viewModel = new CrowdfunderContributionViewModel();
 
-        var quoteCurrency = lookups.GetAll<Currency>()
-                                   .Single(x => x.Code == contribution.CurrencyCode);
+        var quoteCurrency = contribution.GetCurrency(lookups);
 
         viewModel.IsAnonymous = contribution.Anonymous;
         viewModel.Comment = contribution.Comment;

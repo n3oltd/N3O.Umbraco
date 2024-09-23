@@ -37,7 +37,7 @@ public class ViewCampaignPage : CrowdfundingPage {
         var campaignFundraisers = GetFundraisersContent(campaign.CampaignId);
         
         var campaignContributions = await _contributionRepository.FindByCampaignAsync(campaign.Content().Key);
-        var fundraisersContributions = await GetFundraisersContributions(campaignFundraisers);
+        var fundraiserContributions = await GetFundraiserContributions(campaignFundraisers);
 
         return await ViewCampaignViewModel.ForAsync(ViewModelFactory,
                                                     ContentLocator,
@@ -45,7 +45,7 @@ public class ViewCampaignPage : CrowdfundingPage {
                                                     this,
                                                     campaign,
                                                     campaignContributions,
-                                                    fundraisersContributions,
+                                                    fundraiserContributions,
                                                     campaignFundraisers);
     }
     
@@ -59,21 +59,20 @@ public class ViewCampaignPage : CrowdfundingPage {
     }
 
     private List<FundraiserContent> GetFundraisersContent(Guid campaignId) {
-        var campaignFundraisers = ContentLocator.All<FundraiserContent>()
-                                                .Where(x => x.Campaign.Id == campaignId);
+        var campaignFundraisers = ContentLocator.All<FundraiserContent>().Where(x => x.Campaign.Id == campaignId);
         
         return campaignFundraisers.ToList();
     }
     
-    private async Task<List<Contribution>> GetFundraisersContributions(List<FundraiserContent> campaignFundraisers) {
-        if (!campaignFundraisers.HasAny()) {
-            return Enumerable.Empty<Contribution>().ToList();
+    private async Task<IReadOnlyList<Contribution>> GetFundraiserContributions(IReadOnlyList<FundraiserContent> fundraisers) {
+        if (fundraisers.None()) {
+            return new List<Contribution>();
         }
         
-        var fundraisersIds = campaignFundraisers.Select(x => x.FundraiserId.GetValueOrThrow()).ToArray();
+        var fundraisersIds = fundraisers.Select(x => x.FundraiserId.GetValueOrThrow()).ToArray();
         
-        var fundraiserContributions = await _contributionRepository.FindByFundraiserAsync(fundraisersIds.ToArray());
+        var contributions = await _contributionRepository.FindByFundraiserAsync(fundraisersIds.ToArray());
         
-        return fundraiserContributions.ToList();
+        return contributions;
     }
 }

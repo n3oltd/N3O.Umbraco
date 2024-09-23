@@ -86,26 +86,26 @@ public partial class CreateOrUpdateFundraiserHandlers {
     
     private void AddFundraiserFundGoal(NestedPropertyBuilder nestedPropertyBuilder,
                                        FundraiserGoalReq req,
-                                       CampaignGoalOptionElement campaignGoal) {
-        var contentBuilder = nestedPropertyBuilder.Add(CrowdfundingConstants.Goal.Fund.Alias, campaignGoal.GoalId);
+                                       CampaignGoalOptionElement goalOption) {
+        var contentBuilder = nestedPropertyBuilder.Add(CrowdfundingConstants.Goal.Fund.Alias, goalOption.GoalId);
         
-        PopulateFundraiserGoal(contentBuilder, req, campaignGoal);
+        PopulateFundraiserGoal(contentBuilder, req, goalOption);
         
         contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Fund.Properties.DonationItem)
-                      .SetContent(campaignGoal.Fund.DonationItem);
+                      .SetContent(goalOption.Fund.DonationItem);
     }
     
     private void AddFundraiserFeedbackGoal(NestedPropertyBuilder nestedPropertyBuilder,
                                            FundraiserGoalReq req,
-                                           CampaignGoalOptionElement campaignGoal) {
-        var contentBuilder = nestedPropertyBuilder.Add(CrowdfundingConstants.Goal.Feedback.Alias, campaignGoal.GoalId);
+                                           CampaignGoalOptionElement goalOption) {
+        var contentBuilder = nestedPropertyBuilder.Add(CrowdfundingConstants.Goal.Feedback.Alias, goalOption.GoalId);
         
-        PopulateFundraiserGoal(contentBuilder, req, campaignGoal);
+        PopulateFundraiserGoal(contentBuilder, req, goalOption);
         
-        contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Feedback.Properties.Scheme).SetContent(campaignGoal.Feedback.Scheme);
+        contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Feedback.Properties.Scheme).SetContent(goalOption.Feedback.Scheme);
 
         PopulateCustomFields(contentBuilder,
-                             campaignGoal.Feedback.Scheme,
+                             goalOption.Feedback.Scheme,
                              req.Feedback.OrEmpty(x => x?.CustomFields.Entries));
     }
     
@@ -121,18 +121,18 @@ public partial class CreateOrUpdateFundraiserHandlers {
     
     private void PopulateFundraiserGoal(IContentBuilder contentBuilder,
                                         FundraiserGoalReq req,
-                                        CampaignGoalOptionElement campaignGoal) {
+                                        CampaignGoalOptionElement goalOption) {
         contentBuilder.Numeric(CrowdfundingConstants.Goal.Properties.Amount).SetDecimal(req.Amount);
-        contentBuilder.TextBox(CrowdfundingConstants.Goal.Properties.Name).Set(campaignGoal.Name);
+        contentBuilder.TextBox(CrowdfundingConstants.Goal.Properties.Name).Set(goalOption.Name);
         contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.FundDimension1).SetContent(req.FundDimensions.Dimension1);
         contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.FundDimension2).SetContent(req.FundDimensions.Dimension2);
         contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.FundDimension3).SetContent(req.FundDimensions.Dimension3);
         contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.FundDimension4).SetContent(req.FundDimensions.Dimension4);
-        contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.Tags).SetContent(campaignGoal.Tags);
+        contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.Tags).SetContent(goalOption.Tags);
         
         var priceHandlesBuilder = contentBuilder.Nested(CrowdfundingConstants.Goal.Properties.PriceHandles);
 
-        foreach (var priceHandle in campaignGoal.PriceHandles.OrEmpty()) {
+        foreach (var priceHandle in goalOption.PriceHandles.OrEmpty()) {
             AddPriceHandle(priceHandlesBuilder, priceHandle);
         }
     }

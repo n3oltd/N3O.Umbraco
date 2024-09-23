@@ -3,7 +3,6 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex;
 using N3O.Umbraco.Lookups;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,17 +24,15 @@ public class CreateFundraiserViewModel : CrowdfundingViewModel {
         viewModel.Currencies = lookups.GetAll<Currency>();
         viewModel.MinimumAmountValues =  await GetCurrencyValues(forexConverter,
                                                                  viewModel.Currencies,
-                                                                 campaignContent.Currency,
-                                                                 campaignContent.MinimumAmount);
+                                                                 new Money(campaignContent.MinimumAmount, campaignContent.Currency));
 
         return viewModel;
     }
     
     private static async Task<Dictionary<string, Money>> GetCurrencyValues(IForexConverter forexConverter,
                                                                            IReadOnlyList<Currency> currencies,
-                                                                           Currency crowdfunderCurrency,
-                                                                           decimal minimumAmount) {
-        var baseValue = await GetBaseValue(forexConverter, currencies, crowdfunderCurrency, minimumAmount);
+                                                                           Money minimumValue) {
+        var baseValue = await GetBaseValue(forexConverter, currencies, minimumValue);
         
         var currencyValues = new Dictionary<string, Money>();
         
@@ -52,16 +49,15 @@ public class CreateFundraiserViewModel : CrowdfundingViewModel {
 
     private static async Task<Money> GetBaseValue(IForexConverter forexConverter,
                                                   IReadOnlyList<Currency> currencies,
-                                                  Currency crowdfunderCurrency,
-                                                  decimal minimumAmount) {
+                                                  Money minimumValue) {
         Money baseValue;
 
-        if (currencies.Single(x => x.IsBaseCurrency) == crowdfunderCurrency) {
-            baseValue = new Money(minimumAmount, crowdfunderCurrency);
+        if (currencies.Single(x => x.IsBaseCurrency) == minimumValue.Currency) {
+            baseValue = minimumValue;
         } else {
             var forexValue = await forexConverter.QuoteToBase()
-                                                 .FromCurrency(crowdfunderCurrency)
-                                                 .ConvertAsync(minimumAmount);
+                                                 .FromCurrency(minimumValue.Currency)
+                                                 .ConvertAsync(minimumValue.Amount);
             
             baseValue = forexValue.Base;
         }

@@ -74,11 +74,11 @@ public class ContributionRepository : IContributionRepository {
         _toCommit.Clear();
     }
 
-    public async Task<IEnumerable<Contribution>> FindByCampaignAsync(params Guid[] campaignIds) {
+    public async Task<IReadOnlyList<Contribution>> FindByCampaignAsync(params Guid[] campaignIds) {
         return await FindContributionsAsync(Sql.Builder.Where($"{nameof(Contribution.CampaignId)} IN (@0)", campaignIds));
     }
 
-    public async Task<IEnumerable<Contribution>> FindByFundraiserAsync(params Guid[] fundraiserIds) {
+    public async Task<IReadOnlyList<Contribution>> FindByFundraiserAsync(params Guid[] fundraiserIds) {
         return await FindContributionsAsync(Sql.Builder.Where($"{nameof(Contribution.FundraiserId)} IN (@0)", fundraiserIds));
     }
 
@@ -142,7 +142,7 @@ public class ContributionRepository : IContributionRepository {
         }
     }
 
-    private async Task<IEnumerable<Contribution>> FindContributionsAsync(Sql whereClause) {
+    private async Task<IReadOnlyList<Contribution>> FindContributionsAsync(Sql whereClause) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
             var sql = new Sql($"SELECT * FROM {CrowdfundingConstants.Tables.Contributions.Name}").Append(whereClause);
             

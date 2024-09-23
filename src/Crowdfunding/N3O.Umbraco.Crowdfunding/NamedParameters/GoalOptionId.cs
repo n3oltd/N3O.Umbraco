@@ -3,6 +3,6 @@ using System;
 
 namespace N3O.Umbraco.Crowdfunding.NamedParameters; 
 
-public class GoalId : NamedParameter<Guid> {
-    public override string Name => "goalId";
+public class GoalOptionId : NamedParameter<Guid> {
+    public override string Name => "goalOptionId";
 }

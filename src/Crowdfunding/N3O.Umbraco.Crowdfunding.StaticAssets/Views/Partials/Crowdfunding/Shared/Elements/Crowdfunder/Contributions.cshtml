@@ -15,7 +15,7 @@
             
             @if (Model.CrowdfunderType == CrowdfunderTypes.Campaign) {
                 <div class="donation__head-tab tabBtn" data-tab="#tab-2">
-                    <h4>@PartialText.Get("Fundraisers")<span> @(((ViewCampaignViewModel) Model).FundraisersContributions.Count) </span></h4>
+                    <h4>@PartialText.Get("Fundraisers")<span> @(((ViewCampaignViewModel) Model).Fundraisers.Count) </span></h4>
                 </div>
             }
         </div>
@@ -65,24 +65,28 @@
         
         @if (Model.CrowdfunderType == CrowdfunderTypes.Campaign) {
             <div class="donation__list fund tabEvent" id="tab-2">
-                @foreach (var fundraiserContribution in ((ViewCampaignViewModel) Model).FundraisersContributions.OrEmpty()) {
+                @foreach (var fundraiser in ((ViewCampaignViewModel) Model).Fundraisers.OrEmpty()) {
                     <div class="donationItem">
                         <div class="donationItem__avatar">
-                            <img src="@fundraiserContribution.AvatarLink" alt="">
+                            <img src="@fundraiser.OwnerAvatarLink" alt="">
                         </div>
+                        
                         <div class="donationItem__row">
                             <div class="donationItem__name">
-                                <div class="large">@fundraiserContribution.Name</div>
-                                <div class="subtle">@fundraiserContribution.Subtitle</div>
+                                <div class="large">@fundraiser.Name</div>
+                                <div class="subtle">@fundraiser.Subtitle</div>
                             </div>
+                            
                             <div class="donationItem__info">
                                 <div class="large">
                                     <p>@PartialText.Get("Raised")</p>
-                                    <b> @Model.Formatter.Number.FormatMoney(fundraiserContribution.RaisedValue) </b>
+                                    <b> @Model.Formatter.Number.FormatMoney(fundraiser.ContributionsTotal) </b>
                                 </div>
+                                
                                 <div class="subtle">
                                     @PartialText.Get("of")
-                                    <b> @Model.Formatter.Number.FormatMoney(fundraiserContribution.TargetValue) </b>
+                                    
+                                    <b> @Model.Formatter.Number.FormatMoney(fundraiser.GoalsTotal) </b>
                                 </div>
                             </div>
                         </div>

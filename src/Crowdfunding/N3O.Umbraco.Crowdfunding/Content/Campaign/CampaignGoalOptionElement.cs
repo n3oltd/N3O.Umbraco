@@ -21,8 +21,8 @@ public class CampaignGoalOptionElement : UmbracoElement<CampaignGoalOptionElemen
     public IEnumerable<TagContent> Tags => GetPickedAs(x => x.Tags);
     public IEnumerable<PriceHandleElement> PriceHandles => GetNestedAs(x => x.PriceHandles);
     
-    public CampaignFundGoalOptionElement Fund { get; protected set; }
-    public CampaignFeedbackGoalOptionElement Feedback { get; protected set; }
+    public CampaignFundGoalOptionElement Fund { get; private set; }
+    public CampaignFeedbackGoalOptionElement Feedback { get; private set; }
     
     public IFundDimensionsOptions GetFundDimensionOptions() {
         return (IFundDimensionsOptions) Fund?.DonationItem ??

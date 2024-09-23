@@ -1,7 +1,9 @@
-﻿using N3O.Umbraco.Giving.Lookups;
+﻿using N3O.Umbraco.Financial;
+using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Lookups;
 using NPoco;
 using System;
+using System.Linq;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 using static N3O.Umbraco.Crowdfunding.CrowdfundingConstants;
 
@@ -113,4 +115,8 @@ public class Contribution {
 
     [Ignore]
     public GivingType GivingType => StaticLookups.FindById<GivingTypes, GivingType>(GivingTypeId);
+
+    public Currency GetCurrency(ILookups lookups) {
+        return lookups.GetAll<Currency>().Single(x => x.Code == CurrencyCode);
+    }
 }
