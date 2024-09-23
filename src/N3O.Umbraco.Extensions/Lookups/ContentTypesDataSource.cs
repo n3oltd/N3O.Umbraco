@@ -13,7 +13,7 @@ using Umbraco.Cms.Core.Web;
 using Umbraco.Community.Contentment.DataEditors;
 using Umbraco.Extensions;
 
-namespace N3O.Headless.Common.Lookups; 
+namespace N3O.Umbraco.Lookups;
 
 public class ContentTypesDataSource : IDataPickerSource, IDataSourceValueConverter {
     private static readonly ConcurrentDictionary<Guid, string> ContentTypeAliases = new();
