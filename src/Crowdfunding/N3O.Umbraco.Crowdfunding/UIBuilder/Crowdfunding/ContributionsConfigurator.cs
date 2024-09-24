@@ -1,12 +1,12 @@
-﻿using Konstrukt.Configuration;
-using Konstrukt.Configuration.Builders;
+﻿using Konstrukt.Configuration.Builders;
 using N3O.Umbraco.Crowdfunding.Entities;
+using N3O.Umbraco.UIBuilder;
 
 namespace N3O.Umbraco.Crowdfunding.UIBuilder;
 
-public class ContributionsConfigurator : IKonstruktConfigurator {
-    public void Configure(KonstruktConfigBuilder builder) {
-        var section = builder.WithSection("content");
+public class ContributionsConfigurator : KonstruktConfigurator {
+    public override void Configure(KonstruktConfigBuilder builder) {
+        var section = GetContentSection(builder);
         var dashboard = section.AddDashboard("Crowdfunding");
         dashboard.SetVisibility(cfg => cfg.ShowForUserGroup("editor"));
 

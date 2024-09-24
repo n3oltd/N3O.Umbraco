@@ -1,12 +1,12 @@
-using Konstrukt.Configuration;
 using Konstrukt.Configuration.Builders;
 using N3O.Umbraco.Data.DataTypes;
+using N3O.Umbraco.UIBuilder;
 
 namespace N3O.Umbraco.Data.UIBuilder;
 
-public class ImportsConfigurator : IKonstruktConfigurator {
-    public void Configure(KonstruktConfigBuilder builder) {
-        var section = builder.WithSection("content");
+public class ImportsConfigurator : KonstruktConfigurator {
+    public override void Configure(KonstruktConfigBuilder builder) {
+        var section = GetContentSection(builder);
         var dashboard = section.AddDashboard("Imports");
         dashboard.SetVisibility(cfg => cfg.ShowForUserGroup(DataConstants.SecurityGroups.ImportUsers.Alias));
 
