@@ -43,6 +43,7 @@ public class ViewCampaignPage : CrowdfundingPage {
                                                     ContentLocator,
                                                     _lookups,
                                                     this,
+                                                    query,
                                                     campaign,
                                                     campaignContributions,
                                                     fundraiserContributions,

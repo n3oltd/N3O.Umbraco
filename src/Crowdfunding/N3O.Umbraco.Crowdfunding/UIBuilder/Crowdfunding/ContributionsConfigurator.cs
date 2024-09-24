@@ -6,8 +6,9 @@ namespace N3O.Umbraco.Crowdfunding.UIBuilder;
 
 public class ContributionsConfigurator : IKonstruktConfigurator {
     public void Configure(KonstruktConfigBuilder builder) {
-        var section = builder.AddSectionAfter("media", "Crowdfunding");
-        var dashboard = section.AddDashboard("Crowdfunding Donations");
+        var section = builder.WithSection("content");
+        var dashboard = section.AddDashboard("Crowdfunding");
+        dashboard.SetVisibility(cfg => cfg.ShowForUserGroup("editor"));
 
         ConfigureCollection(dashboard);
     }

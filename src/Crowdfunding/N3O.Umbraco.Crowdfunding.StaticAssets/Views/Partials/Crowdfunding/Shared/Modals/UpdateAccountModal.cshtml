@@ -1,27 +1,32 @@
-@using N3O.Umbraco.Accounts.Content
-@using N3O.Umbraco.Content
+@model AccountsViewModel
 
-@model SelectAccountViewModel
-
+@inject IPartialText PartialText
 @inject IContentCache ContentCache
 
+@{
+    PartialText.SetPartialName("CrowdfundingUpdateAccountModal");
+}
+
 <div class="modalsItem modall" id="updateAccount-modal">
-    <input type="hidden" id="n3o_cdf-selected-account-id" name="account-id" value="@Model.CurrentAccount.Id"/>
-    <input type="hidden" id="n3o_cdf-selected-account-ref" name="account-ref" value="@Model.CurrentAccount.Reference"/>
+    <input type="hidden" id="n3o_cdf-selected-account-id" name="account-id" value="@Model.Selected.Id"/>
+    <input type="hidden" id="n3o_cdf-selected-account-ref" name="account-ref" value="@Model.Selected.Reference"/>
+    
     <div class="newAccount__wrapper" style="margin: auto; width: 90vw">
         <div class="newAccount" id="newAccount">
             <div class="newAccount__head">
-                <h4>Confirm your details</h4>
+                <h4>@PartialText.Get("Confirm Your Details")</h4>
+                
                 <div class="detail">
-                    You can update or make any corrections below before continuing.
+                    @PartialText.Get("Please check the below details are correct and update before continuing.")
                 </div>
             </div>
+            
             <div class="newAccount__body">
                 <form id="update-account-form" autocomplete="off">
                     @Html.CrowdfundingPartial("/Views/Partials/Crowdfunding/Shared/Forms/Account.cshtml", Model)
 
                     <button type="submit" class="button primary" id="newAccountBtn">
-                        Continue
+                        @PartialText.Get("Continue")
                     </button>
                 </form>
             </div>
@@ -29,11 +34,10 @@
     </div>
 </div>
 
-
-<script src="/assets/js/newAccount.js"></script>
-
 <script type="text/javascript">
     @Html.Raw(ContentCache.Single<DataEntrySettingsContent>().JavaScript)
-    const account = @Html.Raw(Json.Serialize(Model.CurrentAccount));
-    updateAccount(account)
+    
+    const account = @Html.Raw(Json.Serialize(Model.Selected));
+    
+    updateAccount(account);
 </script>

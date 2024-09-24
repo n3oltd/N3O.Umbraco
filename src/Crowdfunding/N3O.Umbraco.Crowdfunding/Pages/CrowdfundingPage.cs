@@ -23,7 +23,11 @@ public abstract class CrowdfundingPage : ICrowdfundingPage {
     public bool IsMatch(Uri requestUri, IReadOnlyDictionary<string, string> requestQuery) {
         var crowdfundingPath = CrowdfundingPathParser.ParseUri(ContentLocator, requestUri);
 
-        return IsMatch(crowdfundingPath, requestQuery);
+        if (crowdfundingPath.HasValue()) {
+            return IsMatch(crowdfundingPath, requestQuery);    
+        } else {
+            return false;
+        }
     }
 
     public async Task<ICrowdfundingViewModel> GetViewModelAsync(Uri requestUri,

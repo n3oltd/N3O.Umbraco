@@ -22,11 +22,13 @@ public class ViewEditFundraiserViewModel : CrowdfunderViewModel<FundraiserConten
                                                                    ITextFormatter textFormatter,
                                                                    FundraiserAccessControl fundraiserAccessControl,
                                                                    ViewEditFundraiserPage page,
+                                                                   IReadOnlyDictionary<string, string> query,
                                                                    FundraiserContent fundraiser,
                                                                    IEnumerable<Contribution> contributions) {
         var viewModel = await ForAsync<ViewEditFundraiserViewModel>(viewModelFactory,
                                                                     lookups,
                                                                     page,
+                                                                    query,
                                                                     fundraiser,
                                                                     CrowdfunderTypes.Fundraiser,
                                                                     contributions,

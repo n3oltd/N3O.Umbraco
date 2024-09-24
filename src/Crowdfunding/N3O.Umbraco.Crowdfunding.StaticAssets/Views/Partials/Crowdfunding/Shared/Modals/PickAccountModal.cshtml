@@ -1,14 +1,15 @@
 @using N3O.Umbraco.Accounts.Extensions
-@model SelectAccountViewModel
+
+@model AccountsViewModel
 
 @inject IFormatter Formatter
 @inject IPartialText PartialText
 
 @{
-    PartialText.SetPartialName("CrowdfundingSelectAccountModal");
+    PartialText.SetPartialName("CrowdfundingPickAccountModal");
 }
 
-<div class="modalsItem modall" id="selectAccount-modal">
+<div class="modalsItem modall" id="pickAccount-modal">
     <div class="sign__wrapper" style="margin: auto; width: 90vw">
         <div class="sign">
             <div class="sign__title">
@@ -23,7 +24,7 @@
                 </p>
             </div>
 
-            @foreach (var account in Model.AvailableAccounts) {
+            @foreach (var account in Model.Available) {
                 <a href="#" class="signItem account-select" data-account='@(Json.Serialize(account))'>
                     <div class="signItem__col">
                         <p>@Formatter.Text.ToDisplayName(account.Individual.Name)</p>
@@ -41,45 +42,26 @@
                     </span>
                 </a>
             }
-
-            <span id="error" class="input-validation-error hidden"></span>
         </div>
     </div>
 </div>
 
 <script>
     const accountSelectors = document.querySelectorAll('.account-select');
-    const errorSpan = document.getElementById('error'); 
 
     document.querySelectorAll('.account-select').forEach(function (elm) {
         elm.addEventListener('click', async (e) => {
             e.preventDefault();
-            try {
-                errorSpan.classList.add('hidden');
-                await selectAccount(JSON.parse(elm.dataset.account));
-            } catch (e) {
-                errorSpan.textContent = "An error occurred while selecting the account. Please try again.";
-                errorSpan.classList.remove('hidden');
-            }
+
+            pickAccount(JSON.parse(elm.dataset.account));
         })
     })
 
-
-    async function selectAccount(account) {
-        const response = await fetch('/umbraco/api/crm/accounts/select', {
-            method: 'PUT',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                accountId: account.id.value,
-                accountReference: account.reference,
-                accountToken: account.token
-            })
-        });
+    function pickAccount(account) {
+        let currentUrl = window.location.href;
+        currentUrl += currentUrl.indexOf("?") === -1 ? "?" : "&";
+        currentUrl  += `account=${account.id}`;
         
-        if (response.ok) {
-            const currentUrl = window.location.href;
-            window.location.href = currentUrl;
-        } else {
-        }
+        window.location.href = currentUrl;
     }
 </script>

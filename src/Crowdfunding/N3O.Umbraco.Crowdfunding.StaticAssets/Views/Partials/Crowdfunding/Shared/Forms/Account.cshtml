@@ -1,4 +1,4 @@
-@model SelectAccountViewModel
+@model AccountsViewModel
 
 @foreach (var field in Model.DataEntrySettings.Name.GetFieldSettings().Where(x => x.Visible)) {
     @Html.CrowdfundingPartial($"/Views/Partials/Crowdfunding/Shared/Fields/{field.Type}.cshtml", field)

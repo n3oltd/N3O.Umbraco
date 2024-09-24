@@ -15,7 +15,7 @@ public class CrowdfunderHomePage : CrowdfundingPage {
 
     protected override async Task<ICrowdfundingViewModel> GetViewModelAsync(string crowdfundingPath,
                                                                             IReadOnlyDictionary<string, string> query) {
-        var viewModel = await HomeViewModel.ForAsync(ViewModelFactory, this);
+        var viewModel = await HomeViewModel.ForAsync(ViewModelFactory, this, query);
 
         return viewModel;
     }

@@ -18,8 +18,9 @@ public class CreateFundraiserViewModel : CrowdfundingViewModel {
                                                                  IForexConverter forexConverter,
                                                                  ILookups lookups,
                                                                  CreateFundraiserPage page,
+                                                                 IReadOnlyDictionary<string, string> query,
                                                                  CampaignContent campaignContent) {
-        var viewModel = await viewModelFactory.CreateViewModelAsync<CreateFundraiserViewModel>(page);
+        var viewModel = await viewModelFactory.CreateViewModelAsync<CreateFundraiserViewModel>(page, query);
         viewModel.Campaign = campaignContent;
         viewModel.Currencies = lookups.GetAll<Currency>();
         viewModel.MinimumAmountValues =  await GetCurrencyValues(forexConverter,

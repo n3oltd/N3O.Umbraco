@@ -6,6 +6,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Lookups;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Web.Common.Security;
@@ -37,32 +38,21 @@ public class CrowdfundingViewModelFactory : ICrowdfundingViewModelFactory {
         _formatter = formatter;
     }
     
-    public async Task<T> CreateViewModelAsync<T>(ICrowdfundingPage page) where T : CrowdfundingViewModel, new() {
-        SelectAccountViewModel GetSelectAccount() {
-            return SelectAccountViewModel.ForAsync(_accountManager.Value,
-                                                   _memberManager.Value,
-                                                   _contentLocator.Value,
-                                                   _lookups.Value)
-                                         .GetAwaiter()
-                                         .GetResult();
-        }
-        
-        SignInViewModel GetSignIn() {
-            var signInSettingsContent = _contentLocator.Value.Single<SignInModalSettingsContent>();
-            
-            return SignInViewModel.ForAsync(_memberExternalLoginProviders.Value, signInSettingsContent)
-                                  .GetAwaiter()
-                                  .GetResult();
-        }
-
+    public async Task<T> CreateViewModelAsync<T>(ICrowdfundingPage page, IReadOnlyDictionary<string, string> query)
+        where T : CrowdfundingViewModel, new() {
         var viewModel = CrowdfundingViewModel.For<T>(_contentLocator.Value,
                                                      _formatter.Value,
                                                      page,
-                                                     (await _memberManager.Value.GetCurrentPublishedMemberAsync()).As<MemberContent>(),
-                                                     _memberManager.Value.IsLoggedIn(),
-                                                     _accountIdentityAccessor.Value.Get(),
-                                                     GetSelectAccount,
-                                                     GetSignIn);
+                                                     await AccountsViewModel.ForAsync(_accountManager.Value,
+                                                                                      _memberManager.Value,
+                                                                                      _contentLocator.Value,
+                                                                                      _lookups.Value,
+                                                                                      _accountIdentityAccessor.Value.Get(),
+                                                                                      query),
+                                                     await SignInViewModel.ForAsync(_memberExternalLoginProviders.Value,
+                                                                                    _contentLocator.Value.Single<SignInModalSettingsContent>(),
+                                                                                    (await _memberManager.Value.GetCurrentPublishedMemberAsync()).As<MemberContent>(),
+                                                                                    _memberManager.Value.IsLoggedIn()));
 
         return viewModel;
     }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Crm.Engage.Exceptions;
+using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Validation;
 using Newtonsoft.Json;
@@ -34,7 +35,7 @@ public class ServiceClient<TClient> {
         try {
             await funcAsync("false", "false", null, null, _subscriptionId, cancellationToken);
         } catch (Exception ex) when (IsApiException(ex)) {
-            throw ToServiceClientException(ex);
+            throw ToExceptionWithProblemDetails(ex);
         }
     }
 
@@ -46,7 +47,7 @@ public class ServiceClient<TClient> {
         try {
             await funcAsync(routeParameter1, "false", "false", null, null, _subscriptionId, cancellationToken);
         } catch (Exception ex) when (IsApiException(ex)) {
-            throw ToServiceClientException(ex);
+            throw ToExceptionWithProblemDetails(ex);
         }
     }
 
@@ -59,7 +60,7 @@ public class ServiceClient<TClient> {
         try {
             await funcAsync(routeParameter1, routeParameter2, "false", "false", null, null, _subscriptionId, cancellationToken);
         } catch (Exception ex) when (IsApiException(ex)) {
-            throw ToServiceClientException(ex);
+            throw ToExceptionWithProblemDetails(ex);
         }
     }
 
@@ -71,7 +72,7 @@ public class ServiceClient<TClient> {
         try {
             await funcAsync("false", "false", null, null, _subscriptionId, req, cancellationToken);
         } catch (Exception ex) when (IsApiException(ex)) {
-            throw ToServiceClientException(ex);
+            throw ToExceptionWithProblemDetails(ex);
         }
     }
 
@@ -84,7 +85,7 @@ public class ServiceClient<TClient> {
 
             return res;
         } catch (Exception ex) when (IsApiException(ex)) {
-            throw ToServiceClientException(ex);
+            throw ToExceptionWithProblemDetails(ex);
         }
     }
 
@@ -97,7 +98,7 @@ public class ServiceClient<TClient> {
         try {
             await funcAsync(routeParameter1, "false", "false", null, null, _subscriptionId, req, cancellationToken);
         } catch (Exception ex) when (IsApiException(ex)) {
-            throw ToServiceClientException(ex);
+            throw ToExceptionWithProblemDetails(ex);
         }
     }
 
@@ -111,7 +112,7 @@ public class ServiceClient<TClient> {
         try {
             await funcAsync(routeParameter1, routeParameter2, "false", "false", null, null, _subscriptionId, req, cancellationToken);
         } catch (Exception ex) when (IsApiException(ex)) {
-            throw ToServiceClientException(ex);
+            throw ToExceptionWithProblemDetails(ex);
         }
     }
 
@@ -131,7 +132,7 @@ public class ServiceClient<TClient> {
 
             return res;
         } catch (Exception ex) when (IsApiException(ex)) {
-            throw ToServiceClientException(ex);
+            throw ToExceptionWithProblemDetails(ex);
         }
     }
 
@@ -153,7 +154,7 @@ public class ServiceClient<TClient> {
 
             return res;
         } catch (Exception ex) when (IsApiException(ex)) {
-            throw ToServiceClientException(ex);
+            throw ToExceptionWithProblemDetails(ex);
         }
     }
 
@@ -177,7 +178,7 @@ public class ServiceClient<TClient> {
 
             return res;
         } catch (Exception ex) when (IsApiException(ex)) {
-            throw ToServiceClientException(ex);
+            throw ToExceptionWithProblemDetails(ex);
         }
     }
 
@@ -191,7 +192,7 @@ public class ServiceClient<TClient> {
 
             return res;
         } catch (Exception ex) when (IsApiException(ex)) {
-            throw ToServiceClientException(ex);
+            throw ToExceptionWithProblemDetails(ex);
         }
     }
 
@@ -206,11 +207,11 @@ public class ServiceClient<TClient> {
 
             return res;
         } catch (Exception ex) when (IsApiException(ex)) {
-            throw ToServiceClientException(ex);
+            throw ToExceptionWithProblemDetails(ex);
         }
     }
 
-    private Exception ToServiceClientException(Exception exception) {
+    private ExceptionWithProblemDetails ToExceptionWithProblemDetails(Exception exception) {
         _logger.LogError(exception, "Error calling API: {Error}", exception.Message);
 
         try {
@@ -223,7 +224,7 @@ public class ServiceClient<TClient> {
             } else {
                 var problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(content);
 
-                return new ServiceClientException(problemDetails);
+                return new ServiceClientException(exception, problemDetails);
             }
         } catch (Exception ex) {
             _logger.LogError(ex, "Error occured converting Engage exception to ServiceClientException {Error}", exception.Message);

@@ -28,12 +28,13 @@ public abstract class CrowdfunderViewModel<TContent> :
     protected static async Task<T> ForAsync<T>(ICrowdfundingViewModelFactory viewModelFactory,
                                                ILookups lookups,
                                                ICrowdfundingPage page,
+                                               IReadOnlyDictionary<string, string> query,
                                                TContent content,
                                                CrowdfunderType crowdfunderType,
                                                IEnumerable<Contribution> contributions,
                                                Func<CrowdfunderOwnerViewModel> getOwnerInfo)
         where T : CrowdfunderViewModel<TContent>, new() {
-        var viewModel = await viewModelFactory.CreateViewModelAsync<T>(page);
+        var viewModel = await viewModelFactory.CreateViewModelAsync<T>(page, query);
         viewModel.Content = content;
         viewModel.CrowdfunderType = crowdfunderType;
         viewModel.Goals = content.Goals.ToReadOnlyList(x => CrowdfunderGoalViewModel.For(content.Currency, x));

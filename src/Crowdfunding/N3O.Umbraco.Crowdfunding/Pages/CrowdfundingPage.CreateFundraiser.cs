@@ -49,6 +49,7 @@ public class CreateFundraiserPage : CrowdfundingPage {
                                                         _forexConverter,
                                                         _lookups,
                                                         this,
+                                                        query,
                                                         campaignContent);
     }
 

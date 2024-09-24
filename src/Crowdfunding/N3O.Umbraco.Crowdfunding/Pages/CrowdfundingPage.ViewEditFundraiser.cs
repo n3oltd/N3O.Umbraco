@@ -46,6 +46,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
                                                           _textFormatter,
                                                           _fundraiserAccessControl,
                                                           this,
+                                                          query,
                                                           fundraiser,
                                                           contributions);
     }

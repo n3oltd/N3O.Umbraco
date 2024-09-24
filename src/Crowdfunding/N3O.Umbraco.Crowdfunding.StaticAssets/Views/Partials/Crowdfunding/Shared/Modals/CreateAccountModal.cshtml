@@ -1,7 +1,4 @@
-@using N3O.Umbraco.Accounts.Content
-@using N3O.Umbraco.Content
-
-@model SelectAccountViewModel
+@model AccountsViewModel
 
 @inject IPartialText PartialText
 @inject IContentCache ContentCache
@@ -34,9 +31,11 @@
     </div>
 </div>
 
-<script src="/assets/js/newAccount.js"></script>
-
 <script type="text/javascript">
     @Html.Raw(ContentCache.Single<DataEntrySettingsContent>().JavaScript)
-    createAccount()
+    
+    createAccount();
+    
+    // TODO This should show a spinner and please wait whilst your account is created message
+    // periodically call CRM API to check if account exists yet
 </script>

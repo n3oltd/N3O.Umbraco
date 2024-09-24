@@ -21,12 +21,12 @@
                 </a>
 
                 <div class="header__inner-side">
-                    @if (Model.IsSignedIn) {
+                    @if (Model.SignIn.IsSignedIn) {
                         <div class="header__inner-buttons mobRem">
                             @{ CreateFundraiserLink(); }
                         </div>
                         <div class="header__inner-avatar">
-                            <img src="@Model.Member.AvatarLink" alt=""/>
+                            <img src="@Model.SignIn.Member.AvatarLink" alt=""/>
 
                             <div class="dropMenu">
                                 @using (Html.BeginUmbracoForm<AuthenticationController>(nameof(AuthenticationController.HandleLogout), new {returnUrl = Model.Link(CrowdfunderHomePage.Url)})) {
@@ -45,7 +45,7 @@
                             @{ CreateFundraiserLink(); }
 
                             @using (Html.BeginUmbracoForm<UmbExternalLoginController>(nameof(UmbExternalLoginController.ExternalLogin))) {
-                                <button class="button secondary" type="submit" name="provider" value="@Model.SignIn().LoginProvider.ExternalLoginProvider.AuthenticationType">
+                                <button class="button secondary" type="submit" name="provider" value="@Model.SignIn.LoginProvider.ExternalLoginProvider.AuthenticationType">
                                     @PartialText.Get("Sign In")
                                 </button>
                             }
