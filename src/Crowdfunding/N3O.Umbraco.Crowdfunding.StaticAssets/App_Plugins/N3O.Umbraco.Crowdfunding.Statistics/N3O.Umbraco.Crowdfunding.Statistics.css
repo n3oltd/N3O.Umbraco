@@ -1,0 +1,616 @@
+/* Basic reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Flexbox Layout */
+body {
+    font-family: Lato, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Top Menu Bar */
+.top-menu {
+    display: flex;
+    flex-direction: column;
+    background-color: #1B264F;
+    color: white;
+    padding: 1rem;
+    text-align: left;
+    font-size: 16px;
+}
+
+/* Menu items inside the top bar */
+.top-menu nav span {
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.rectangle{
+    width: 100%;
+    height: 5px;
+    background-color: #1B264F;
+}
+
+.small-portion{
+    background-color: #F5C1BC;
+    width: 50px;
+    height:5px;
+    margin-left: 2px;
+    margin-top: 17px;
+}
+
+
+/* Main container that holds both sidebar and dashboard */
+.main-container {
+    display: flex;
+    flex: 1;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    background-color: #ffffff;
+    width: 550px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+/* Sidebar links */
+.sidebar ul {
+    list-style-type: none;
+}
+
+.sidebar ul li {
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+
+/* Toggle button styles */
+.toggle-btn {
+    color: #1B264F;
+    border: none;
+    padding:15px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    font-size: 20px;
+}
+
+/* Hidden content starts out hidden */
+.toggle-content {
+    display: none;
+    margin-top: 10px;
+}
+
+/* Change arrow direction when content is shown */
+.toggle-btn.active:after {
+    content: ' ';
+    float: right;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+}
+
+.menu-item img{
+    width: 20px;
+    height: 20px;
+    margin: 10px;
+}
+
+.menu-item span{
+    margin-right: 10px;
+}
+
+
+
+/*search bar row items */
+.search-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center ;
+    gap: 20px;
+    height: auto;
+    padding-bottom: 15px;
+}
+
+.search-buttons input[type= "text"]{
+    padding: 8px;
+    font-size: 12px;
+    flex-grow: 1;
+    border: 1px solid #E9E9EB;
+
+}
+
+.content-button{
+    border-bottom: 5px solid pink;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    font-size: 16px;
+    background: none;
+    cursor: pointer;
+}
+
+.content-button img {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 5px;
+}
+
+.content-button span {
+    font-size: 14px;
+}
+
+.info-button{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px;
+    font-size: 16px;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.info-button img {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 5px;
+}
+
+.info-button span {
+    font-size: 14px;
+}
+
+.actions-button{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.actions-button span {
+    font-size: 14px;
+}
+
+/*overview row*/
+.overview {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background-color: #f5f5f5;
+    padding:20px;
+}
+
+
+.overview-date {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.date-filter label {
+    margin-right: 10px;
+}
+
+
+
+/* Dashboard Area */
+.dashboard {
+    flex: 1;
+    flex-direction: column;
+    background-color: white;
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dashboard-content {
+    width: 100%;
+    height: 100%;
+    background-color: #f5f5f5;
+    padding-bottom:15px;
+    padding-left: 15px;
+    padding-right:15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+
+/*graphs start here*/
+.graphs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(11, auto);
+    row-gap: 13px;
+    column-gap: 19px;
+}
+
+/*donations panel*/
+.donations{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 30px;
+    border: 1px solid #E9E9EB;
+    background-color: #ffffff;
+    grid-column: 1/1;
+    grid-row: 1/4;
+    width: 100%;
+}
+
+.donations-icon img {
+    width: 50px;
+    height: 35px;
+    margin-bottom: 3px;
+}
+
+.donations-title {
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.donations-total-amount {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.donations-details {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    flex-direction: row;
+}
+
+.donations-details div {
+    display: flex;
+    flex-direction: column;
+    flex:1;
+    align-items: center;
+    border-top: 1px solid #E9E9EB;
+    height: 100px;
+    padding:40px;
+    font-size: 14px;
+}
+
+.donations-details span {
+    font-size: 14px;
+}
+
+#average-donation{
+    padding: 5px;
+    font-size: 24px;
+}
+#donation-count{
+    padding: 5px;
+    font-size: 24px;
+}
+
+
+/*supporters panel*/
+.supporters{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    border: 1px solid #E9E9EB;
+    background-color: #ffffff;
+    grid-column: 2/2;
+    grid-row: 1/4;
+    width: 100%
+}
+
+.supporters-icon img {
+    width: 50px;
+    height: 35px;
+    margin-bottom: 3px;
+}
+
+.supporters-title {
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.supporters-total-amount {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.supporters-details {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    flex-direction: row;
+}
+
+.supporters-details div {
+    display: flex;
+    flex-direction: column;
+    flex:1;
+    align-items: center;
+    border-top: 1px solid #E9E9EB;
+    height: 100px;
+    padding: 40px;
+    font-size: 14px;
+}
+
+.supporters-details span {
+    font-size: 14px;
+}
+
+#One-off-supporters{
+    padding: 5px;
+    font-size: 24px;
+}
+
+#Regular-supporters{
+    padding: 5px;
+    font-size: 24px;
+}
+
+/*pages*/
+.active-pages,
+.new-pages,
+.completed-pages {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 20px;
+    align-items: center;
+    grid-column: 3/4;
+    grid-row: auto/auto;
+    background-color: white;
+    border: 1px solid #E9E9EB;
+}
+
+.active-pages-icon img,
+.new-pages-icon img,
+.completed-pages-icon img {
+    width: 30px;
+    height: 30px;
+}
+
+.active-pages-title,
+.new-pages-title,
+.completed-pages-title {
+    flex-grow: 1;
+    margin-left: 10px;
+}
+
+#num-new-pages,
+.completed-pages-amount,
+.active-pages-amount{
+    font-size: 28px;
+    font-weight: bold;
+}
+
+
+/*Income by date*/
+.income-by-date{
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    padding: 20px;
+    border: 1px solid #E9E9EB;
+    background-color: #ffffff;
+    width: 100%;
+    grid-column: 1/ 3;
+    grid-row: 4/7;
+}
+
+.income-by-date-title{
+    font-size: 19px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.income-by-date-graph{
+    margin-left:150px;
+}
+
+.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 120px;
+    height: auto;
+    padding: 5px;
+    font: 12px sans-serif;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+
+/*Toggle view - top campaigns/fundraisers*/
+.top-campaigns-fundraisers{
+    grid-column: 3/3;
+    grid-row: 4/12;
+    background-color: white;
+    border: 1px solid #E9E9EB;
+    width: 600px;
+}
+.top-campaigns-fundraisers > div {
+    display: flex;
+    width: 100%;
+}
+.tab {
+    cursor: pointer;
+    padding: 10px;
+    background: #ffffff;
+    flex: 1;
+    justify-content: center;
+    padding: 15px 0;
+    text-align: center;
+    border-bottom: 2px solid transparent;
+    transition: border-bottom 0.3s ease;
+    font-size: 19px;
+    height: 60px;
+}
+.tab.active {
+    border-bottom: 5px solid pink;
+    font-weight: bold;
+    font-size: 19px;
+    height: 60px;
+    justify-content: center;
+    padding: 15px 0;
+}
+.container {
+    opacity:0;
+    pointer-events: none;
+    height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, height 0.3s ease;
+}
+.container.active {
+    opacity:1;
+    pointer-events: auto;
+    height:auto;
+}
+.header-row{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 50px;
+    border-bottom: 1px solid #E9E9EB;
+    width: 600px;
+    height: 60px;
+    justify-content: space-around;
+    flex:1;
+}
+
+
+.campaigns-row,
+.fundraisers-row{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    border-bottom: 1px solid #E9E9EB;
+    width: 600px;
+    height: 55px;
+    padding: 10px 20px;
+    box-sizing: border-box;
+}
+
+.campaigns-row img,
+.fundraisers-row img{
+    height: 20px;
+    width: 20px;
+}
+
+.progress-bars {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    margin-left: 200px;
+}
+
+.Fundraiser-totals,
+.Campaign-totals{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.active-campaigns,
+.total-campaign-donations{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    font-size: 20px;
+    align-items: center;
+}
+.active-fundraisers,
+.total-fundraiser-donations{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    font-size: 20px;
+    align-items: center;
+}
+.vertical-rectangle{
+    width: 3px;
+    height: 80px;
+    background-color:#F5C1BC;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.span-number{
+    font-size: 35px;
+    font-weight: bold;
+}
+
+
+/*Top Allocations*/
+.top-allocations{
+    grid-column: 1;
+    grid-row: 7/12;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    padding: 20px;
+    border: 1px solid #E9E9EB;
+    background-color: #ffffff;
+}
+
+.top-allocations-title{
+    font-size: 19px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.top-allocations-headings{
+    display: flex;
+    flex-direction: row;
+    font-size: 16px;
+    justify-content: space-between;
+    width:100%;
+    padding: 20px 20px 0px 20px;
+}
+
+/*Donut chart - fundraisers by campaign*/
+.fundraisers-by-campaign{
+    grid-column: 2;
+    grid-row: 7/12;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    padding: 20px;
+    border: 1px solid #E9E9EB;
+    background-color: #ffffff;
+}
+
+.fundraisers-by-campaign-title{
+    font-size: 19px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}

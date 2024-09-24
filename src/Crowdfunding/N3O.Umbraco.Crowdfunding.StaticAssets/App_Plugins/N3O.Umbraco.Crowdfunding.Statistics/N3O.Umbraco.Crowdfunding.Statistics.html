@@ -1,5 +1,297 @@
 <div class="form-horizontal" ng-controller="N3O.Umbraco.Crowdfunding.Statistics">
-   Stats go here
+   <main class="dashboard">
+      <!-- row for overview heading and date filter -->
+      <div class="overview">
+         <h1>Overview</h1>
+         <div class="date-filter">
+            <label for="date-range">Date Range:</label>
+            <input type="date" id="start-date">
+            <input type="date" id="end-date">
+         </div>
+      </div>
+
+      <div class="dashboard-content">
+         <!-- section/grid for the dashboard graphs -->
+         <div class="graphs">
+            <!-- more containers for the graph layout-->
+            <div class="donations">
+               <div class="donations-icon">
+                  <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/money.png" alt = "money icon">
+               </div>
+               <div class="donations-title">Total Amount Donated</div>
+               <div class="donations-total-amount" id="total-amount"></div>
+               <div class="donations-details">
+                  <div class="average-donation">
+                     <span>Average Donation</span>
+                     <span id="average-donation"></span>
+                  </div>
+                  <div class="donation-count">
+                     <span>Donation Count</span>
+                     <span id="donation-count"></span>
+                  </div>
+               </div>
+            </div>
+
+            <div class="supporters">
+               <div class="supporters-icon">
+                  <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/supportersicon.png" alt = "money icon">
+               </div>
+               <div class="supporters-title">Total Supporters</div>
+               <div class="supporters-total-amount" id="supporters-total-amount"></div>
+               <div class="supporters-details">
+                  <div class="One-off-supporters">
+                     <span>One-Off</span>
+                     <span id="One-off-supporters"></span>
+                  </div>
+                  <div class="Regular-supporters">
+                     <span>Regular</span>
+                     <span id="Regular-supporters"></span>
+                  </div>
+               </div>
+            </div>
+
+            <div class="active-pages">
+               <div class="active-pages-icon">
+                  <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/star.png" alt="star icon">
+               </div>
+               <div class="active-pages-title">Active Pages</div>
+               <div class="active-pages-amount" id = "active-pages-amount"></div>
+            </div>
+
+            <div class="new-pages">
+               <div class="new-pages-icon">
+                  <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/flag.png" alt="flag icon">
+               </div>
+               <div class="new-pages-title">New Pages</div>
+               <div id="num-new-pages"></div>
+            </div>
+
+            <script>
+               window.onload = function () {
+                  let newpages = "256";
+
+                  function populatenewpages(data) {
+                     document.querySelector("#num-new-pages").textContent = data;
+                  }
+
+                  populatenewpages(newpages);
+               };
+            </script>
+
+            <div class="completed-pages">
+               <div class="completed-pages-icon">
+                  <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/checkeredflag.png" alt="checkered flag icon">
+               </div>
+               <div class="completed-pages-title">Completed Pages</div>
+               <div class="completed-pages-amount" id ="completed-pages-amount" ></div>
+            </div>
+
+            <div class="income-by-date">
+               <div class="income-by-date-title">Income By Date</div>
+               <div class="income-by-date-graph"></div>
+            </div>
+
+            <div class="top-campaigns-fundraisers">
+               <div>
+                  <div class="tab active" onclick="showContainer('campaigns')">Top Active Campaigns</div>
+                  <div class="tab" onclick="showContainer('fundraisers')">Top Fundraisers</div>
+               </div>
+               <div id="campaigns" class="container active">
+                  <div class="campaigns-tab">
+                     <div class="header-row">
+                        <span>Campaign</span>
+                        <span>Funds Raised</span>
+                     </div>
+                     <div class="campaigns-row">
+                        <span>Gaza Crisis</span>
+                        <div class="progress-bars">
+                           <div class="c-progress-bar-1"></div>
+                        </div>
+                        <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/openinnewtab.png" />
+                     </div>
+                     <div class="campaigns-row">
+                        <span>Ramadan Appeal</span>
+                        <div class="progress-bars">
+                           <div class="c-progress-bar-2"></div>
+                        </div>
+                        <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/openinnewtab.png" />
+                     </div>
+                     <div class="campaigns-row">
+                        <span>Winter Walk for Gaza</span>
+                        <div class="progress-bars">
+                           <div class="c-progress-bar-3"></div>
+                        </div>
+                        <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/openinnewtab.png" />
+                     </div>
+                     <div class="campaigns-row">
+                        <span>Campaign 1</span>
+                        <div class="progress-bars">
+                           <div class="c-progress-bar-4"></div>
+                        </div>
+                        <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/openinnewtab.png" />
+                     </div>
+                     <div class="campaigns-row">
+                        <span>Campaign 2</span>
+                        <div class="progress-bars">
+                           <div class="c-progress-bar-5"></div>
+                        </div>
+                        <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/openinnewtab.png" />
+                     </div>
+                     <div class="campaigns-row">
+                        <span>Campaign 3</span>
+                        <div class="progress-bars">
+                           <div class="c-progress-bar-6"></div>
+                        </div>
+                        <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/openinnewtab.png" />
+                     </div>
+                     <div class="campaigns-row">
+                        <span>Campaign 4</span>
+                        <div class="progress-bars">
+                           <div class="c-progress-bar-7"></div>
+                        </div>
+                        <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/openinnewtab.png" />
+                     </div>
+                     <div class="campaigns-row">
+                        <span>Campaign 5</span>
+                        <div class="progress-bars">
+                           <div class="c-progress-bar-8"></div>
+                        </div>
+                        <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/openinnewtab.png" />
+                     </div>
+                     <div class="campaigns-row">
+                        <span>Campaign 6</span>
+                        <div class="progress-bars">
+                           <div class="c-progress-bar-9"></div>
+                        </div>
+                        <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/openinnewtab.png" />
+                     </div>
+                     <div class="campaigns-row">
+                        <span>Campaign 7</span>
+                        <div class="progress-bars">
+                           <div class="c-progress-bar-10"></div>
+                        </div>
+                        <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/openinnewtab.png" />
+                     </div>
+                     <div class="Campaign-totals">
+                        <div class="active-campaigns">
+                           <span >Active Campaigns</span>
+                           <span class="span-number">250</span>
+                        </div>
+                        <div class="vertical-rectangle"></div>
+                        <div class="total-campaign-donations">
+                           <span>Total Donations</span>
+                           <span class="span-number">75%</span>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div id="fundraisers" class="container">
+                  <div class="fundraisers-tab">
+                     <div class="header-row">
+                        <span>Fundraiser</span>
+                        <span>Funds Raised</span>
+                     </div>
+                     <div class="fundraisers-row">
+                        <span>[Fundraiser Name]</span>
+                        <div class="progress-bars">
+                           <div class="f-progress-bar-1"></div>
+                        </div>
+                        <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/openinnewtab.png" />
+                     </div>
+                     <div class="fundraisers-row">
+                        <span>[Fundraiser Name]</span>
+                        <div class="progress-bars">
+                           <div class="f-progress-bar-2"></div>
+                        </div>
+                        <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/openinnewtab.png" />
+                     </div>
+                     <div class="fundraisers-row">
+                        <span>[Fundraiser Name]</span>
+                        <div class="progress-bars">
+                           <div class="f-progress-bar-3"></div>
+                        </div>
+                        <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/openinnewtab.png" />
+                     </div>
+                     <div class="fundraisers-row">
+                        <span>[Fundraiser Name]</span>
+                        <div class="progress-bars">
+                           <div class="f-progress-bar-4"></div>
+                        </div>
+                        <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/openinnewtab.png" />
+                     </div>
+                     <div class="fundraisers-row">
+                        <span>[Fundraiser Name]</span>
+                        <div class="progress-bars">
+                           <div class="f-progress-bar-5"></div>
+                        </div>
+                        <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/openinnewtab.png" />
+                     </div>
+                     <div class="fundraisers-row">
+                        <span>[Fundraiser Name]</span>
+                        <div class="progress-bars">
+                           <div class="f-progress-bar-6"></div>
+                        </div>
+                        <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/openinnewtab.png" />
+                     </div>
+                     <div class="fundraisers-row">
+                        <span>[Fundraiser Name]</span>
+                        <div class="progress-bars">
+                           <div class="f-progress-bar-7"></div>
+                        </div>
+                        <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/openinnewtab.png" />
+                     </div>
+                     <div class="fundraisers-row">
+                        <span>[Fundraiser Name]</span>
+                        <div class="progress-bars">
+                           <div class="f-progress-bar-8"></div>
+                        </div>
+                        <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/openinnewtab.png" />
+                     </div>
+                     <div class="fundraisers-row">
+                        <span>[Fundraiser Name]</span>
+                        <div class="progress-bars">
+                           <div class="f-progress-bar-9"></div>
+                        </div>
+                        <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/openinnewtab.png" />
+                     </div>
+                     <div class="fundraisers-row">
+                        <span>[Fundraiser Name]</span>
+                        <div class="progress-bars">
+                           <div class="f-progress-bar-10"></div>
+                        </div>
+                        <img src="/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/images/openinnewtab.png" />
+                     </div>
+                     <div class="Fundraiser-totals">
+                        <div class="active-fundraisers">
+                           <span>Active Fundraisers</span>
+                           <span class="span-number">300</span>
+                        </div>
+                        <div class="vertical-rectangle"></div>
+                        <div class="total-fundraiser-donations">
+                           <span>Total Donations</span>
+                           <span class="span-number">80%</span>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            <div class="top-allocations">
+               <div class="top-allocations-title">Top Allocations</div>
+               <div class="top-allocations-headings">
+                  <span>Allocations</span>
+                  <span>Total Counts</span>
+               </div>
+               <div class="top-allocations-graph"></div>
+            </div>
+
+            <div class="fundraisers-by-campaign">
+               <div class="fundraisers-by-campaign-title">Fundraisers by Campaign</div>
+               <div class="fundraisers-by-campaign-graph"></div>
+            </div>
+         </div>
+      </div>
+   </main>
 </div>
 
 
