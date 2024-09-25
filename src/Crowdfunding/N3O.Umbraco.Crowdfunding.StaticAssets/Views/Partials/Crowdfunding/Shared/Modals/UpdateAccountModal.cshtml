@@ -8,21 +8,23 @@
 }
 
 <div class="modalsItem modall" id="updateAccount-modal">
-    <input type="hidden" id="n3o_cdf-selected-account-id" name="account-id" value="@Model.Selected.Id"/>
-    <input type="hidden" id="n3o_cdf-selected-account-ref" name="account-ref" value="@Model.Selected.Reference"/>
-    
+    <input type="hidden" id="n3o_cdf-selected-account-id" name="account-id" value="@Model.Picked.Id"/>
+    <input type="hidden" id="n3o_cdf-selected-account-ref" name="account-ref" value="@Model.Picked.Reference"/>
+
     <div class="newAccount__wrapper" style="margin: auto; width: 90vw">
         <div class="newAccount" id="newAccount">
             <div class="newAccount__head">
                 <h4>@PartialText.Get("Confirm Your Details")</h4>
-                
+
                 <div class="detail">
                     @PartialText.Get("Please check the below details are correct and update before continuing.")
                 </div>
             </div>
-            
+
             <div class="newAccount__body">
                 <form id="update-account-form" autocomplete="off">
+                    <span id ="errors" style="color: red;" class="input-validation-error hidden"></span>
+                    
                     @Html.CrowdfundingPartial("/Views/Partials/Crowdfunding/Shared/Forms/Account.cshtml", Model)
 
                     <button type="submit" class="button primary" id="newAccountBtn">
@@ -37,7 +39,6 @@
 <script type="text/javascript">
     @Html.Raw(ContentCache.Single<DataEntrySettingsContent>().JavaScript)
     
-    const account = @Html.Raw(Json.Serialize(Model.Selected));
-    
-    updateAccount(account);
+    const account = @Html.Raw(Json.Serialize(Model.Picked));
+    n3o_cdf_updateAccount(account);
 </script>

@@ -39,6 +39,14 @@ public class EngageAccountManager : AccountManager {
         return res;
     }
 
+    protected override async Task<AccountRes> CreatedAccountStatusAsync(string accountId) {
+        var client = await GetClientAsync();
+
+        var res = await client.InvokeAsync<AccountRes>(x => x.GetAccountCreatedStatusAsync, accountId);
+
+        return res;
+    }
+
     protected override async Task UpdateExistingAccountAsync(AccountReq account) {
         var client = await GetClientAsync();
 

@@ -9,7 +9,7 @@
         if (Model.Accounts.Available.None()) {
             ShowModal("CreateAccount", Model.Accounts);
         } else if (Model.Accounts.Picked.HasValue()) {
-            ShowModal("UpdateAccount", Model.Accounts.Picked);
+            ShowModal("UpdateAccount", Model.Accounts);
         } else {
             ShowModal("PickAccount", Model.Accounts);
         }
