@@ -6,7 +6,7 @@
     PartialText.SetPartialName("CrowdfundingCrowdfunderDonationForm");
 }
 
-<div class="cta__wrapper">
+<div class="cta__wrapper" data-crowdfunder-id="@Model.Content.Key" data-crowdfunder-type="@Model.CrowdfunderType.Id">
     <div class="cta" id="showMoreWrapper">
         <div class="cta__title start">
             <h2>@PartialText.Get("Contribute to this page")</h2>
@@ -137,19 +137,19 @@
                 items.push(goalReq);
             });
 
-            let pageElement = document.querySelector('[data-page-id]');
+            let pageElement = document.querySelector('[data-crowdfunder-id]');
 
-            let pageId = pageElement.dataset.pageId;
-            let fundraiserType = pageElement.dataset.pageType;
+            let crowdfunderId = pageElement.dataset.crowdfunderId;
+            let crowdfunderType = pageElement.dataset.crowdfunderType;
             let crowdfunderData = {};
 
-            crowdfunderData.crowdfunderId = pageId;
+            crowdfunderData.crowdfunderId = crowdfunderId;
             crowdfunderData.comment = document.querySelector('#donors-comment').value;
             crowdfunderData.anonymous = document.querySelector('#donor-is-anonymous')?.checked;
 
             donationReq.crowdfunding = crowdfunderData;
 
-            donationReq.type = fundraiserType;
+            donationReq.type = crowdfunderType;
 
             donationReq.items = items;
 
@@ -275,10 +275,10 @@
 
     })()
 
-    document.getElementById('submit-donation')?.addEventListener?.('click', n3o_cdf-donationCart.handleDonationSummaryModal);
+    document.getElementById('submit-donation')?.addEventListener?.('click', n3o_cdf_donationCart.handleDonationSummaryModal);
 
     document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('add-donation-to-cart')?.addEventListener?.('click', n3o_cdf-donationCart.handleDonationReq);
+        document.getElementById('add-donation-to-cart')?.addEventListener?.('click', n3o_cdf_donationCart.handleDonationReq);
     });
 
     const showDonationSummaryModal = () => {
