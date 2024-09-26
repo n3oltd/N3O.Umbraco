@@ -28,29 +28,29 @@ namespace N3O.Umbraco.Crowdfunding.Handlers;
 public class AddToCartHandler : IRequestHandler<AddToCartCommand, AddToCartReq, RevisionId> {
     private readonly IContentLocator _contentLocator;
     private readonly ICartAccessor _cartAccessor;
+    private readonly IForexConverter _forexConverter;
+    private readonly IJsonProvider _jsonProvider;
+    private readonly IPriceCalculator _priceCalculator;
     private readonly IRepository<N3O.Umbraco.Giving.Cart.Entities.Cart> _repository;
     private readonly IValidation _validation;
     private readonly IValidationHandler _validationHandler;
-    private readonly IForexConverter _forexConverter;
-    private readonly IPriceCalculator _priceCalculator;
-    private readonly IJsonProvider _jsonProvider;
 
     public AddToCartHandler(IContentLocator contentLocator,
                             ICartAccessor cartAccessor,
+                            IForexConverter forexConverter,
+                            IJsonProvider jsonProvider,
+                            IPriceCalculator priceCalculator,
                             IRepository<N3O.Umbraco.Giving.Cart.Entities.Cart> repository,
                             IValidation validation,
-                            IValidationHandler validationHandler,
-                            IForexConverter forexConverter,
-                            IPriceCalculator priceCalculator,
-                            IJsonProvider jsonProvider) {
+                            IValidationHandler validationHandler) {
         _contentLocator = contentLocator;
         _cartAccessor = cartAccessor;
+        _forexConverter = forexConverter;
+        _jsonProvider = jsonProvider;
+        _priceCalculator = priceCalculator;
         _repository = repository;
         _validation = validation;
         _validationHandler = validationHandler;
-        _forexConverter = forexConverter;
-        _priceCalculator = priceCalculator;
-        _jsonProvider = jsonProvider;
     }
     
     public async Task<RevisionId> Handle(AddToCartCommand req, CancellationToken cancellationToken) {
@@ -87,28 +87,41 @@ public class AddToCartHandler : IRequestHandler<AddToCartCommand, AddToCartReq, 
             if (isGoalTypeFund) {
                 fundAllocation = new FundAllocation(goalContent.Fund.DonationItem);
             }
+
+            var allocationReq = new AllocationReq();
+            allocationReq.Type = goalContent.Type;
+            allocationReq.Value = goal.Value;
             
-            var allocationReq = new AllocationReq {
-                                                      Type = goalContent.Type,
-                                                      Value = goal.Value,
-                                                      FundDimensions = new FundDimensionValuesReq {
-                                                                                                      Dimension1 = goalContent.FundDimensions.Dimension1,
-                                                                                                      Dimension2 = goalContent.FundDimensions.Dimension2,
-                                                                                                      Dimension3 = goalContent.FundDimensions.Dimension3,
-                                                                                                      Dimension4 = goalContent.FundDimensions.Dimension4
-                                                                                                  },
-                                                      Fund = fundAllocation != null ? new FundAllocationReq {
-                                                                                                                DonationItem = fundAllocation.DonationItem,
-                                                                                                            } : null,
-                                                      Feedback = feedbackAllocation != null ? new FeedbackAllocationReq {
-                                                                                                                            Scheme = goalContent.Feedback.Scheme,
-                                                                                                                            CustomFields = new FeedbackNewCustomFieldsReq {
-                                                                                                                                                                            Entries = feedbackCustomFields
-                                                                                                                                                                          }
-                                                                                                                        } : null
-                                                  };
+            var fundimensionValuesReq = new FundDimensionValuesReq();
+            fundimensionValuesReq.Dimension1 = goalContent.FundDimensions.Dimension1;
+            fundimensionValuesReq.Dimension2 = goalContent.FundDimensions.Dimension2;
+            fundimensionValuesReq.Dimension3 = goalContent.FundDimensions.Dimension3;
+            fundimensionValuesReq.Dimension4 = goalContent.FundDimensions.Dimension4;
+
+            allocationReq.FundDimensions = fundimensionValuesReq;
+
+            if (fundAllocation != null) {
+                allocationReq.Fund = new FundAllocationReq {
+                                                               DonationItem = fundAllocation.DonationItem,
+                                                           };
+            } else {
+                allocationReq.Fund = null;
+            }
+
+            if (feedbackAllocation != null) {
+                var customFields = new FeedbackNewCustomFieldsReq {
+                                                                      Entries = feedbackCustomFields
+                                                                  };
+                
+                allocationReq.Feedback = new FeedbackAllocationReq {
+                                              Scheme = goalContent.Feedback.Scheme,
+                                              CustomFields = customFields
+                                          };
+            } else {
+                allocationReq.Feedback = null;
+            }
             
-            var validationFailure = await _validation.ValidateModelAsync(allocationReq);
+            var validationFailure = (await _validation.ValidateModelAsync(allocationReq, cancellationToken: cancellationToken)).ToList();
 
             if (validationFailure.HasAny()) {
                 _validationHandler.Handle(validationFailure);
