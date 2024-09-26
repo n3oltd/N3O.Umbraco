@@ -92,7 +92,7 @@ public class AddToCartHandlers :
     }
     
     private IAllocation GetAllocationData(AllocationReq req) {
-        var extensionData = req.Extensions.BindAll(_extensionBinders);
+        var extensionData = req.Extensions?.BindAll(_extensionBinders);
         
         var allocation = new Allocation(req, extensionData);
 
