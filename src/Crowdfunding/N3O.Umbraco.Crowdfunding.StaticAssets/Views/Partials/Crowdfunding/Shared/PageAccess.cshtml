@@ -4,15 +4,13 @@
 
 @if (Model.Page.Access.RequiresSignIn && !Model.SignIn.IsSignedIn) {
     ShowModal("SignIn", Model.SignIn);
-} else if (Model.Page.Access.RequiresAccount) {
-    if (!Model.Accounts.Selected.HasValue()) {
-        if (Model.Accounts.Available.None()) {
-            ShowModal("CreateAccount", Model.Accounts);
-        } else if (Model.Accounts.Picked.HasValue()) {
-            ShowModal("UpdateAccount", Model.Accounts);
-        } else {
-            ShowModal("PickAccount", Model.Accounts);
-        }
+} else if (Model.Page.Access.RequiresAccount && !Model.Accounts.Selected.HasValue()) {
+    if (Model.Accounts.Available.None()) {
+        ShowModal("CreateAccount", Model.Accounts);
+    } else if (Model.Accounts.Picked.HasValue()) {
+        ShowModal("UpdateAccount", Model.Accounts);
+    } else {
+        ShowModal("PickAccount", Model.Accounts);
     }
 }
 

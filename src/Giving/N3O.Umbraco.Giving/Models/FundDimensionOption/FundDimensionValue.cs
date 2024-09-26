@@ -2,7 +2,11 @@ using N3O.Umbraco.Lookups;
 
 namespace N3O.Umbraco.Giving.Models;
 
-public abstract class FundDimensionValue<T> : LookupContent<T> where T : FundDimensionValue<T> {
+public interface IFundDimensionValue : INamedLookup {
+    bool IsUnrestricted { get; }
+}
+
+public abstract class FundDimensionValue<T> : LookupContent<T>, IFundDimensionValue where T : FundDimensionValue<T> {
     public bool IsUnrestricted => GetValue(x => x.IsUnrestricted);
 }
 

@@ -1,4 +1,6 @@
 using N3O.Umbraco.Giving.Lookups;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace N3O.Umbraco.Giving.Models;
 
@@ -17,4 +19,14 @@ public class FundStructure : Value {
     public FundDimension2 Dimension2 { get; }
     public FundDimension3 Dimension3 { get; }
     public FundDimension4 Dimension4 { get; }
+
+    [JsonIgnore]
+    public IEnumerable<IFundDimension> Dimensions {
+        get {
+            yield return Dimension1;
+            yield return Dimension2;
+            yield return Dimension3;
+            yield return Dimension4;
+        }
+    } 
 }

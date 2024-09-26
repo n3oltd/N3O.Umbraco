@@ -26,6 +26,8 @@ public class ViewCampaignPage : CrowdfundingPage {
     }
 
     protected override bool IsMatch(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
+        //TODO We need to actually check that this campaign exists with the content locator, and we also need to 
+        //check that the campaign status is not draft.
         return IsMatch(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewCampaign);
     }
 

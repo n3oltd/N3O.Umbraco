@@ -6,7 +6,9 @@ using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Giving.Models;
 
-public abstract class FundDimensionMapping<T, TValue> : IMapDefinition where T : FundDimension<T, TValue> {
+public abstract class FundDimensionMapping<T, TValue> : IMapDefinition
+    where T : FundDimension<T, TValue>
+    where TValue : FundDimensionValue<TValue> {
     public void DefineMaps(IUmbracoMapper mapper) {
         mapper.Define<FundDimension<T, TValue>, FundDimensionRes>((_, _) => new FundDimensionRes(), Map);
     }

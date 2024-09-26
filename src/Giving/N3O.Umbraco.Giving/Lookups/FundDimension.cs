@@ -1,11 +1,22 @@
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Lookups;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Giving.Lookups;
 
-public abstract class FundDimension<T, TValue> : LookupContent<T> where T : FundDimension<T, TValue> {
+public interface IFundDimension : INamedLookup {
+    bool IsActive { get; }
+    IEnumerable<IFundDimensionValue> Options { get; }
+    int Index { get; }
+    
+    int Number => Index + 1;
+}
+
+public abstract class FundDimension<T, TValue> : LookupContent<T>, IFundDimension
+    where T : FundDimension<T, TValue>
+    where TValue : FundDimensionValue<TValue> {
     protected FundDimension(int index) {
         Index = index;
     }
@@ -13,6 +24,9 @@ public abstract class FundDimension<T, TValue> : LookupContent<T> where T : Fund
     public bool IsActive => GetValue(x => x.IsActive);
     public IReadOnlyList<TValue> Options => Content().Children.As<TValue>();
     public int Index { get; }
+
+    [JsonIgnore]
+    IEnumerable<IFundDimensionValue> IFundDimension.Options => Options;
 }
 
 public class FundDimension1 : FundDimension<FundDimension1, FundDimension1Value> {

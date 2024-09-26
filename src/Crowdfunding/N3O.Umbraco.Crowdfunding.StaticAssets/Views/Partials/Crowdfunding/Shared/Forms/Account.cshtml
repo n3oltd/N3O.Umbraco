@@ -1,5 +1,11 @@
 @model AccountsViewModel
 
+@inject IPartialText PartialText
+
+@{
+    PartialText.SetPartialName("CrowdfundingAccount");
+}
+
 @foreach (var field in Model.DataEntrySettings.Name.GetFieldSettings().Where(x => x.Visible)) {
     @Html.CrowdfundingPartial($"/Views/Partials/Crowdfunding/Shared/Fields/{field.Type}.cshtml", field)
 }
@@ -10,6 +16,7 @@
 
 <div class="newAccount__address">
     <h4>Address</h4>
+    
     @foreach (var field in Model.DataEntrySettings.Address.GetFieldSettings().Where(x => x.Visible)) {
         @await Html.PartialAsync($"~/Views/Partials/Crowdfunding/Shared/Fields/{field.Type}.cshtml", field)
     }

@@ -42,7 +42,7 @@ public class CreateFundraiserViewModel : CrowdfundingViewModel {
         foreach (var currency in currencies.Except(baseValue.Currency)) {
             var forexMoney = await forexConverter.BaseToQuote().ToCurrency(currency).ConvertAsync(baseValue.Amount);
             
-            currencyValues.Add(currency.Code, forexMoney.Quote);
+            currencyValues.Add(currency.Code, new Money(forexMoney.Quote.Amount.RoundMoney(), currency));
         }
 
         return currencyValues;
@@ -60,7 +60,7 @@ public class CreateFundraiserViewModel : CrowdfundingViewModel {
                                                  .FromCurrency(minimumValue.Currency)
                                                  .ConvertAsync(minimumValue.Amount);
             
-            baseValue = forexValue.Base;
+            baseValue = new Money(forexValue.Base.Amount.RoundMoney(), forexValue.Base.Currency);
         }
 
         return baseValue;

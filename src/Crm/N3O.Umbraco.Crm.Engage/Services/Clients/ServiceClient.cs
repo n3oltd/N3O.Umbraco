@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Crm.Engage.Exceptions;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Validation;
 using Newtonsoft.Json;
 using System;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using ProblemDetails = N3O.Umbraco.Exceptions.ProblemDetails;
@@ -212,12 +212,15 @@ public class ServiceClient<TClient> {
     }
 
     private ExceptionWithProblemDetails ToExceptionWithProblemDetails(Exception exception) {
-        _logger.LogError(exception, "Error calling API: {Error}", exception.Message);
-
         try {
             var content = JsonConvert.SerializeObject(exception.GetType().GetProperty("Result").GetValue(exception));
+            var statusCode = (int) exception.GetType().GetProperty("StatusCode").GetValue(exception);
 
-            if ((int) exception.GetType().GetProperty("StatusCode").GetValue(exception) == (int) HttpStatusCode.PreconditionFailed) {
+            if (statusCode >= 500) {
+                _logger.LogError(exception, "Error calling API: {Error}", exception.Message);
+            }
+
+            if (statusCode == StatusCodes.Status412PreconditionFailed) {
                 var problemDetails = _jsonProvider.DeserializeObject<ValidationProblemDetails>(content);
 
                 return new ValidationException(problemDetails.Errors);
@@ -228,6 +231,7 @@ public class ServiceClient<TClient> {
             }
         } catch (Exception ex) {
             _logger.LogError(ex, "Error occured converting Engage exception to ServiceClientException {Error}", exception.Message);
+            
             throw;
         }
     }

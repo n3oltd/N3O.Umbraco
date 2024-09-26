@@ -90,7 +90,7 @@ function n3o_cdf_poolRequest(fetcher, successAction, ...args) {
 }
 
 const n3o_cdf_checkAccountCreated = async accountId => {
-    const resp = await fetch(`/umbraco/api/Crm/accounts/createdStatus/${accountId}`);
+    const resp = await fetch(`/umbraco/api/Crm/accounts/${accountId}/checkCreatedStatus`);
    
     return  resp;
 }

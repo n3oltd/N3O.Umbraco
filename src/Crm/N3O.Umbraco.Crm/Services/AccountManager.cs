@@ -3,25 +3,26 @@ using N3O.Umbraco.Accounts.Exceptions;
 using N3O.Umbraco.Accounts.Extensions;
 using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Crm.Context;
+using N3O.Umbraco.Crm.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Security;
 
 namespace N3O.Umbraco.Crm;
 
 public abstract class AccountManager : IAccountManager {
+    private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(15);
     private static readonly MemoryCache MemoryCache = new(new MemoryCacheOptions());
 
     private readonly IMemberManager _memberManager;
     private readonly AccountCookie _accountCookie;
     private readonly IFormatter _formatter;
 
-    protected AccountManager(IMemberManager memberManager,
-                             AccountCookie accountCookie,
-                             IFormatter formatter) {
+    protected AccountManager(IMemberManager memberManager, AccountCookie accountCookie, IFormatter formatter) {
         _memberManager = memberManager;
         _accountCookie = accountCookie;
         _formatter = formatter;
@@ -32,28 +33,32 @@ public abstract class AccountManager : IAccountManager {
 
         var id = await CreateNewAccountAsync(account);
 
-        await SelectAccountAsync(id, null, null, true);
+        SelectAccount(id, null, null);
 
         return id;
     }
 
-    public async Task<AccountRes> CheckCreatedStatusAsync(string accountId) {
-        if (_accountCookie.GetId() != accountId) {
-            throw new Exception("Invalid account Id is provided");
+    public async Task<CreatedStatus<AccountRes>> CheckCreatedStatusAsync(string accountId) {
+        await VerifyAccountAccessAsync(accountId);
+
+        var res = await CheckCreatedAccountStatusAsync(accountId);
+
+        if (res.HasValue()) {
+            SelectAccount(accountId, res.Reference, res.Token);
+
+            AppendToCache(res);
+            
+            return CreatedStatus.ForCreated(res);
+        } else {
+            return CreatedStatus.ForNotCreated<AccountRes>();
         }
-
-        var account = await CreatedAccountStatusAsync(accountId);
-
-        await SelectAccountAsync(accountId, account.Reference, account.Token, true);
-
-        return account;
     }
 
     public async Task<IEnumerable<AccountRes>> FindAccountsByEmailAsync(string email) {
-        var cacheKey = $"{nameof(FindAccountsByEmailAsync)}{email}";
+        var cacheKey = GetCacheKey(email);
 
         var accounts = await MemoryCache.GetOrCreateAsync(cacheKey, async cacheEntry => {
-            cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
+            cacheEntry.AbsoluteExpirationRelativeToNow = CacheDuration;
 
             return await FindAccountsWithEmailAsync(email);
         });
@@ -67,14 +72,22 @@ public abstract class AccountManager : IAccountManager {
         
         await UpdateExistingAccountAsync(account);
         
-        await SelectAccountAsync(account.Id, account.Reference, account.GetToken(_formatter));
+        SelectAccount(account.Id, account.Reference, account.GetToken(_formatter));
     }
 
-    private async Task SelectAccountAsync(string accountId, string accountReference, string accountToken, bool isNewAccount = false) {
-        if (!isNewAccount) {
-            await VerifyAccountAccessAsync(accountId);
-        }
+    private void AppendToCache(AccountRes res) {
+        var cacheKey = GetCacheKey(res.Email.Address);
 
+        if (MemoryCache.TryGetValue(cacheKey, out IEnumerable<AccountRes> existing)) {
+            MemoryCache.Set(cacheKey, existing.Concat(res).ToList(), CacheDuration);
+        }
+    }
+    
+    private string GetCacheKey(string email) {
+        return email.ToLowerInvariant();
+    }
+
+    private void SelectAccount(string accountId, string accountReference, string accountToken) {
         _accountCookie.Set(accountId, accountReference, accountToken);
     }
 
@@ -105,8 +118,8 @@ public abstract class AccountManager : IAccountManager {
         return memberEmail;
     }
 
+    protected abstract Task<AccountRes> CheckCreatedAccountStatusAsync(string accountId);
     protected abstract Task<string> CreateNewAccountAsync(AccountReq account);
-    protected abstract Task<AccountRes> CreatedAccountStatusAsync(string accountId);
     protected abstract Task<IEnumerable<AccountRes>> FindAccountsWithEmailAsync(string email);
     protected abstract Task UpdateExistingAccountAsync(AccountReq account);
 }

@@ -1,8 +1,13 @@
-﻿@model CreateFundraiserViewModel
+﻿@using Flurl
 
+@model CreateFundraiserViewModel
+
+@inject IFundStructureAccessor FundStructureAccessor
 @inject IPartialText PartialText
 
 @{
+    var fundStructure = FundStructureAccessor.GetFundStructure();
+    
     PartialText.SetPartialName("CrowdfundingCreateFundraiserPage");
 }
 
@@ -24,6 +29,7 @@
 
         <div class="setting__body tabEvent active" id="tab-1">
             <h4>@PartialText.Get("Select the project you would like to fundraise for")</h4>
+            
             <div class="select__outer">
                 <div class="select">
                     <div class="select__selected">@PartialText.Get("Select project")</div>
@@ -55,114 +61,33 @@
                 </div>
             </div>
 
-            <h4 class="dimension-1" style="display: none;">@PartialText.Get("Select Dimension 1")</h4>
-            <div class="select__outer dimension-1" style="display: none;" id="dimension-1">
-                <div class="select">
-                    <div class="select__selected">@PartialText.Get("Select project")</div>
+            @foreach (var fundDimension in fundStructure.Dimensions) {
+                <h4 class="dimension-@fundDimension.Number" style="display: none;">@PartialText.Get("Select {0}").FormatWith(fundDimension.Name)</h4>
+                
+                <div class="select__outer dimension-@fundDimension.Number" style="display: none;" id="dimension-@fundDimension.Number">
+                    <div class="select">
+                        <div class="select__selected">@PartialText.Get("Select {0}").FormatWith(fundDimension.Name)</div>
 
-                    <input type="hidden" value="0"/>
+                        <input type="hidden" value="0" />
 
-                    <ul class="select__options">
-                        <div class="select__search">
+                        <ul class="select__options">
+                            <div class="select__search">
+                                <svg>
+                                    <use xlink:href="#searchIcon"></use>
+                                </svg>
 
-                            <svg>
-                                <use xlink:href="#searchIcon"></use>
-                            </svg>
+                                <input type="text" id="goals-dimension-@fundDimension.Number" placeholder="@PartialText.Get("Type to search...")" onkeyup="n3o_cdf_filterList('goals-dimension-@fundDimension.Number', 'goal-selection-dimension-@fundDimension.Number')"/>
+                            </div>
 
-                            <input type="text" id="goals-dimension-1" placeholder="@PartialText.Get("Type to search...")" onkeyup="n3o_cdf_filterList('goals-dimension-1', 'goal-selection-dimension-1')"/>
-                        </div>
+                            <div class="select__options-body" id="goal-selection-dimension-@fundDimension.Number"></div>
+                        </ul>
 
-                        <div class="select__options-body" id="goal-selection-dimension-1">
-                        </div>
-                    </ul>
-
-                    <svg>
-                        <use xlink:href="#chevron-bottom"></use>
-                    </svg>
+                        <svg>
+                            <use xlink:href="#chevron-bottom"></use>
+                        </svg>
+                    </div>
                 </div>
-            </div>
-
-
-            <h4 class="dimension-2" style="display: none;"> @PartialText.Get("Select Dimension 2")</h4>
-            <div class="select__outer dimension-2" style="display: none;" id="dimension-2">
-                <div class="select">
-                    <div class="select__selected">@PartialText.Get("Select project")</div>
-
-                    <input type="hidden" value="0"/>
-
-                    <ul class="select__options">
-                        <div class="select__search">
-
-                            <svg>
-                                <use xlink:href="#searchIcon"></use>
-                            </svg>
-
-                            <input type="text" id="goals-dimension-1" placeholder="@PartialText.Get("Type to search...")" onkeyup="n3o_cdf_filterList('goals-dimension-2', 'goal-selection-dimension-2')"/>
-                        </div>
-
-                        <div class="select__options-body" id="goal-selection-dimension-2">
-                        </div>
-                    </ul>
-
-                    <svg>
-                        <use xlink:href="#chevron-bottom"></use>
-                    </svg>
-                </div>
-            </div>
-
-            <h4 class="dimension-3" style="display: none;">@PartialText.Get("Select Dimension 3")</h4>
-            <div class="select__outer dimension-3" style="display: none;" id="dimension-3">
-                <div class="select">
-                    <div class="select__selected">@PartialText.Get("Select project")</div>
-
-                    <input type="hidden" value=""/>
-
-                    <ul class="select__options">
-                        <div class="select__search">
-
-                            <svg>
-                                <use xlink:href="#searchIcon"></use>
-                            </svg>
-
-                            <input type="text" id="goals-dimension-3" placeholder="@PartialText.Get("Type to search...")" onkeyup="n3o_cdf_filterList('goals-dimension-3', 'goal-selection-dimension-3')"/>
-                        </div>
-
-                        <div class="select__options-body" id="goal-selection-dimension-3">
-                        </div>
-                    </ul>
-
-                    <svg>
-                        <use xlink:href="#chevron-bottom"></use>
-                    </svg>
-                </div>
-            </div>
-
-            <h4 class="dimension-4" style="display: none;">@PartialText.Get("Select Dimension 4")</h4>
-            <div class="select__outer dimension-4" style="display: none;" id="dimension-4">
-                <div class="select">
-                    <div class="select__selected">@PartialText.Get("Select project")</div>
-
-                    <input type="hidden" value="0"/>
-
-                    <ul class="select__options">
-                        <div class="select__search">
-
-                            <svg>
-                                <use xlink:href="#searchIcon"></use>
-                            </svg>
-
-                            <input type="text" id="goals-dimension-4" placeholder="@PartialText.Get("Type to search...")" onkeyup="n3o_cdf_filterList('goals-dimension-4', 'goal-selection-dimension-4')"/>
-                        </div>
-
-                        <div class="select__options-body" id="goal-selection-dimension-4">
-                        </div>
-                    </ul>
-
-                    <svg>
-                        <use xlink:href="#chevron-bottom"></use>
-                    </svg>
-                </div>
-            </div>
+            }
             
             <h4 class="goal-fields" style="display: none">@PartialText.Get("I want to raise")</h4>
 
@@ -170,12 +95,13 @@
                 <label class="large" for="goal-amount">@Model.Campaign.Currency.Symbol</label>
 
                 <input id="goal-amount" placeholder="100" type="number" 
-                    @foreach (var item in Model.MinimumAmountValues)
-                {
-                    <text>data-@item.Key="@item.Value.Amount.RoundMoney()"</text>
-                }
+                    @foreach (var item in Model.MinimumAmountValues) {
+                        <text>@($"data-{item.Key}={item.Value.Amount}")</text>
+                    }
                 />
+                
                 <span id="multiple-of"></span>
+                
                 <div class="cta__input-select">
                     <select name="currency" id="goal-currency">
                         @foreach (var currency in Model.Currencies) {
@@ -187,8 +113,6 @@
 
             <div id="goal-custom-fields"></div>
 
-
-
             <div class="checkout__message" id="errorMessage">
                 <svg>
                     <use xlink:href="#alertIcon"></use>
@@ -196,7 +120,9 @@
 
                 <p class="detail"></p>
             </div>
-            <a href="#" class="subtle">@PartialText.Get("Note: Minimum amount for goal is ")<span id="n3o_cdf-min-amount">@Model.Campaign.Currency.Symbol@Model.MinimumAmountValues[Model.Campaign.Currency.Code].Amount.RoundMoney()</span></a>
+            
+            <a href="#" class="subtle">@PartialText.Get("Note: Minimum amount is")<span id="n3o_cdf-min-amount">@Model.Formatter.Number.FormatMoney(Model.MinimumAmountValues[Model.Campaign.Currency.Code])</span></a>
+            
             <button type="button" id="goal-next-tab" class="button primary" disabled>
                 @PartialText.Get("Continue")
             </button>
@@ -214,7 +140,6 @@
                 <p class="subtle">@PartialText.Get("Choose a short, descriptive name for your page.")</p>
             </label>
 
-            @**TODO Fix this*@
             <label class="input__outer">
                 <h4>>@PartialText.Get("Customise page web URL")</h4>
 
@@ -222,7 +147,7 @@
                     <input type="text" placeholder="jon-doe-page1" id="slug"/>
                 </div>
 
-                <a href="#" class="subtle">charity.org/fundraising/<span id="urlEnd"></span></a>
+                <a href="#" class="subtle">@Context.Request.Uri().ResetToRoot().../<span id="urlEnd"></span></a>
             </label>
 
             <div class="checkout__message" id="errorMessage2">
@@ -237,6 +162,3 @@
         </div>
     </div>
 </div>
-
-@* Todo remove me once bundling is fixed *@
-<script src="/assets/js/create-fundraiser-page.js"></script>

@@ -1,6 +1,8 @@
-﻿using N3O.Umbraco.Accounts.Models;
+﻿using Microsoft.AspNetCore.Http;
+using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Crm.Context;
 using N3O.Umbraco.Crm.Engage.Clients;
+using N3O.Umbraco.Crm.Engage.Exceptions;
 using N3O.Umbraco.Localization;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -22,6 +24,22 @@ public class EngageAccountManager : AccountManager {
         _clientFactory = clientFactory;
         _subscriptionAccessor = subscriptionAccessor;
     }
+    
+    protected override async Task<AccountRes> CheckCreatedAccountStatusAsync(string accountId) {
+        var client = await GetClientAsync();
+
+        try {
+            var res = await client.InvokeAsync<AccountRes>(x => x.GetAccountCreatedStatusAsync, accountId);
+
+            return res;
+        } catch (ServiceClientException ex) when (ex.InnerException is ApiException apiException) {
+            if (apiException.StatusCode == StatusCodes.Status404NotFound) {
+                return null;
+            }
+
+            throw;
+        }
+    }
 
     protected override async Task<string> CreateNewAccountAsync(AccountReq account) {
         var client = await GetClientAsync();
@@ -35,14 +53,6 @@ public class EngageAccountManager : AccountManager {
         var client = await GetClientAsync();
 
         var res = await client.InvokeAsync<ICollection<AccountRes>>(x => x.FindMatchesByEmailAsync, email);
-
-        return res;
-    }
-
-    protected override async Task<AccountRes> CreatedAccountStatusAsync(string accountId) {
-        var client = await GetClientAsync();
-
-        var res = await client.InvokeAsync<AccountRes>(x => x.GetAccountCreatedStatusAsync, accountId);
 
         return res;
     }

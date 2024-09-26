@@ -21,7 +21,7 @@ if (accounts) {
     });
 }
 
-function formDataToObject(form) {
+function n3o_cdf_formDataToObject(form) {
     const formData = new FormData(form)
 
     const output = {};
@@ -32,27 +32,27 @@ function formDataToObject(form) {
     return output
 }
 
-function convertToFlatStructure(input) {
+function n3o_cdf_convertToFlatStructure(input) {
     const output = {};
 
-    function traverseObject(object, path = "") {
+    function n3o_cdf_traverseObject(object, path = "") {
         for (const key in object) {
             const newPath = path ? `${path}.${key}` : key;
 
             if (typeof object[key] === 'object' && object[key] !== null) {
-                traverseObject(object[key], newPath);
+                n3o_cdf_traverseObject(object[key], newPath);
             } else {
                 output[newPath] = object[key];
             }
         }
     }
 
-    traverseObject(input);
+    n3o_cdf_traverseObject(input);
 
     return output;
 }
 
-function convertToObject(dataObject) {
+function n3o_cdf_convertToObject(dataObject) {
     const parsedData = dataObject;
 
     const convertedObject = {};
@@ -74,55 +74,99 @@ function convertToObject(dataObject) {
     return convertedObject;
 }
 
-const createAccount = () => {
+function n3o_cdf_poolRequest(fetcher, successAction, ...args) {
+    const intervalId = setInterval(async () => {
+        const result = await fetcher(args);
+        
+        if (result.status === 200) {
+            const data = await result.json();
+            
+            if (data && data.id) {
+                clearInterval(intervalId);
+                successAction();
+            }
+        }
+    }, 15000)
+}
+
+const n3o_cdf_checkAccountCreated = async accountId => {
+    const resp = await fetch(`/umbraco/api/Crm/accounts/${accountId}/checkCreatedStatus`);
+   
+    return  resp;
+}
+
+const n3o_cdf_createAccount = () => {
     const accountForm = document.querySelector('#create-account-form');
     const emailField = document.querySelector('input[type="email"]');
-    emailField.disabled = true;
+    emailField.value = document.getElementById("memberEmail").value;
+    emailField.readOnly = true;
+
+    const phoneCountry = document.querySelector("#countryCode");
+    phoneCountry.value = document.getElementById("address.country").value;
 
     accountForm.addEventListener('submit', async e => {
         e.preventDefault();
 
-        const accountInfo = formDataToObject(accountForm);
-        const accountReq = convertToObject(accountInfo);
+        const accountInfo = n3o_cdf_formDataToObject(accountForm);
+        const accountReq = n3o_cdf_convertToObject(accountInfo);
 
-        await sendCreateAccount(accountReq);
+        await n3o_cdf_sendCreateAccount(accountReq);
     });
 
-    async function sendCreateAccount(req) {
-        const response = await fetch('/umbraco/api/crm/accounts/create', {
-            method: "POST",
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(req)
+    async function n3o_cdf_sendCreateAccount(req) {
+        const response = await fetch('/umbraco/api/crm/accounts', {
+            method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(req)
         })
 
         if (response.ok) {
-            console.log('happy');
-            return
+            n3o_cdf_toggleConfirmAccountModal(true);
+
+            let accountId = await response.text();
+
+            accountId = accountId.replace(/^"|"$/g, '');
+
+            n3o_cdf_poolRequest(n3o_cdf_checkAccountCreated, () => {
+                n3o_cdf_toggleConfirmAccountModal(false);
+
+                window.location.reload();
+            }, accountId)
         }
 
         document.querySelector('#newAccountBtn').removeAttribute('disabled')
         if (response.status === 412) {
-            console.log('not happy, handle errors', response);
-
             if (window.themeConfig) {
-
-                window.themeConfig.showErrors(response.errors)
+                window.themeConfig.showError(response.errors)
             }
         }
 
         if (!response.ok) {
-            console.log('show generic error');
+            if (window.themeConfig) {
+                window.themeConfig.showError(response.errors)
+            }
+        }
+    }
+
+    function n3o_cdf_toggleConfirmAccountModal(show) {
+        const modal = document.getElementById("confirmAccount-modal");
+
+        if (show) {
+            modal.classList.add('active');
+        } else {
+            modal.classList.remove('active');
         }
     }
 }
 
-const updateAccount = (account) => {
+const n3o_cdf_updateAccount = (account) => {
     const accountModal = document.querySelector('#updateAccount-modal');
     const accountForm = document.querySelector('#update-account-form');
     const emailField = document.querySelector('input[type="email"]');
-    emailField.disabled = true;
+    emailField.readOnly = true;
 
-    const flatAccount = convertToFlatStructure(account);
+    const phoneCountry = document.querySelector("#countryCode");
+    phoneCountry.value = document.getElementById("address.country").value;
+
+    const flatAccount = n3o_cdf_convertToFlatStructure(account);
 
     for (let [key, value] of Object.entries(flatAccount)) {
         const elm = accountModal.querySelector(`[name='${key}']`);
@@ -135,38 +179,53 @@ const updateAccount = (account) => {
     accountForm.addEventListener('submit', async e => {
         e.preventDefault();
 
-        const accountInfo = formDataToObject(accountForm);
-        const accountReq = convertToObject(accountInfo);
+        const accountInfo = n3o_cdf_formDataToObject(accountForm);
+        const accountReq = n3o_cdf_convertToObject(accountInfo);
         accountReq.id = document.querySelector('#n3o_cdf-selected-account-id').value;
         accountReq.referrence = document.querySelector('#n3o_cdf-selected-account-ref').value;
 
-        await sendUpdateAccount(accountReq);
+        await n3o_cdf_sendUpdateAccount(accountReq);
     });
 
-    async function sendUpdateAccount(req) {
-        const response = await fetch('/umbraco/api/crm/accounts/update', {
-            method: "PUT",
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(req)
+    async function n3o_cdf_sendUpdateAccount(req) {
+        const response = await fetch('/umbraco/api/crm/accounts', {
+            method: "PUT", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(req)
         })
 
         if (response.ok) {
-            console.log('happy');
             return
         }
 
         document.querySelector('#newAccountBtn').removeAttribute('disabled')
         if (response.status === 412) {
-            console.log('not happy, handle errors', response);
+            const res = await response.json();
 
             if (window.themeConfig) {
-
-                window.themeConfig.showErrors(response.errors)
+                window.themeConfig.showError(response.errors)
             }
+            const errorSpan = document.getElementById('errors');
+
+            res.errors.map(e => {
+                const elm = document.getElementById(e.property)
+
+                if (elm) {
+                    elm.innerText = e.error;
+                    elm.classList.remove('hidden');
+                }
+
+                if (!elm) {
+                    errorSpan.innerHTML = errorSpan.innerHTML + e.error;
+                    errorSpan.classList.remove('hidden');
+                }
+            })
+
         }
 
         if (!response.ok) {
-            console.log('show generic error');
+            if (window.themeConfig) {
+                window.themeConfig.showError(response.errors)
+            }
         }
+
     }
 };
