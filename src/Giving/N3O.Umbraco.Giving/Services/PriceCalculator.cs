@@ -68,10 +68,10 @@ public class PriceCalculator : IPriceCalculator {
     }
 
     private bool RuleMatches(IPricingRule rule, IFundDimensionValues ourValues) {
-        if (DimensionMatches(rule.FundDimensions.Dimension1, ourValues.Dimension1) &&
-            DimensionMatches(rule.FundDimensions.Dimension2, ourValues.Dimension2) &&
-            DimensionMatches(rule.FundDimensions.Dimension3, ourValues.Dimension3) &&
-            DimensionMatches(rule.FundDimensions.Dimension4, ourValues.Dimension4)) {
+        if (DimensionMatches(rule.FundDimensions.Dimension1, ourValues?.Dimension1) &&
+            DimensionMatches(rule.FundDimensions.Dimension2, ourValues?.Dimension2) &&
+            DimensionMatches(rule.FundDimensions.Dimension3, ourValues?.Dimension3) &&
+            DimensionMatches(rule.FundDimensions.Dimension4, ourValues?.Dimension4)) {
             return true;
         }
 
