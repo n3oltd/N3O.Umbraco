@@ -45,7 +45,7 @@
             </div>
             
             <div class="fprogress__row">
-                <div class="detail">@Model.Formatter.Number.FormatPercentage(Model.CrowdfunderProgress.PercentageCompleted) @PartialText.Get("Complete")</div>
+                <div class="detail">@Model.Formatter.Number.FormatPercentage(Model.CrowdfunderProgress.PercentageCompleted, 0) @PartialText.Get("Complete")</div>
             </div>
             
             <div class="fprogress__bar">
