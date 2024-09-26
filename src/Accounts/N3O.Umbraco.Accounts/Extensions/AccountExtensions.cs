@@ -14,7 +14,7 @@ namespace N3O.Umbraco.Accounts.Extensions;
 public static class AccountExtensions {
     public static string GetToken(this IAccount account, IFormatter formatter) {
         var data = new {
-            Id = account.Id.Value,
+            Id = account.Id?.Value,
             Reference = account.Reference,
             Name = GetName(formatter, account),
             Initials = GetInitials(account)
