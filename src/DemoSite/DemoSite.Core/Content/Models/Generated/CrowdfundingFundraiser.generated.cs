@@ -82,14 +82,6 @@ namespace DemoSite.Content
 		public virtual string Slug => this.Value<string>(_publishedValueFallback, "slug");
 
 		///<summary>
-		/// Status
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("status")]
-		public virtual string Status => this.Value<string>(_publishedValueFallback, "status");
-
-		///<summary>
 		/// Background Image
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
@@ -144,5 +136,20 @@ namespace DemoSite.Content
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("heroImages")]
 		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingHeroImage> HeroImages => global::DemoSite.Content.CrowdfundingCrowdfunder.GetHeroImages(this, _publishedValueFallback);
+
+		///<summary>
+		/// Status
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("status")]
+		public virtual string Status => global::DemoSite.Content.CrowdfundingCrowdfunder.GetStatus(this, _publishedValueFallback);
+
+		///<summary>
+		/// Toggle Status
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[ImplementPropertyType("toggleStatus")]
+		public virtual bool ToggleStatus => global::DemoSite.Content.CrowdfundingCrowdfunder.GetToggleStatus(this, _publishedValueFallback);
 	}
 }
