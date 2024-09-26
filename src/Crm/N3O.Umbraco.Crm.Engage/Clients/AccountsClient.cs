@@ -38,12 +38,12 @@ namespace N3O.Umbraco.Crm.Engage.Clients
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<string> GetAccountCreatedStatusAsync(string accountId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID);
+        System.Threading.Tasks.Task<AccountRes> GetAccountCreatedStatusAsync(string accountId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<string> GetAccountCreatedStatusAsync(string accountId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<AccountRes> GetAccountCreatedStatusAsync(string accountId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -274,7 +274,7 @@ namespace N3O.Umbraco.Crm.Engage.Clients
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<string> GetAccountCreatedStatusAsync(string accountId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID)
+        public virtual System.Threading.Tasks.Task<AccountRes> GetAccountCreatedStatusAsync(string accountId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID)
         {
             return GetAccountCreatedStatusAsync(accountId, n3O_Ignore_Validation_Warnings, n3O_Service_Cache, n3O_Route_Key, n3O_Clock_Adjustment, n3O_Subscription_ID, System.Threading.CancellationToken.None);
         }
@@ -282,7 +282,7 @@ namespace N3O.Umbraco.Crm.Engage.Clients
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<string> GetAccountCreatedStatusAsync(string accountId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<AccountRes> GetAccountCreatedStatusAsync(string accountId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, System.Threading.CancellationToken cancellationToken)
         {
             if (accountId == null)
                 throw new System.ArgumentNullException("accountId");
@@ -344,7 +344,7 @@ namespace N3O.Umbraco.Crm.Engage.Clients
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<string>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AccountRes>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -465,7 +465,6 @@ namespace N3O.Umbraco.Crm.Engage.Clients
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
@@ -497,14 +496,14 @@ namespace N3O.Umbraco.Crm.Engage.Clients
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200) {
+                        if (status_ == 200)
+                        {
                             return;
                         }
                         else
                         if (status_ == 204)
                         {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("No Content", status_, responseText_, headers_, null);
+                            return;
                         }
                         else
                         if (status_ == 400)

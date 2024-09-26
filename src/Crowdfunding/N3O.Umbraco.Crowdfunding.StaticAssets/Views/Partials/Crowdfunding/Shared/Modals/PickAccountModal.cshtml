@@ -58,10 +58,11 @@
     })
 
     function pickAccount(account) {
-        let currentUrl = window.location.href;
-        currentUrl += currentUrl.indexOf("?") === -1 ? "?" : "&";
-        currentUrl  += `account=${account.id}`;
-        
-        window.location.href = currentUrl;
+        let currentUrl = new URL(window.location);
+        const params = new URLSearchParams(window.location.search);
+        params.append('account', account.id.value)
+        currentUrl.search = params.toString();
+
+        window.location = currentUrl;
     }
 </script>

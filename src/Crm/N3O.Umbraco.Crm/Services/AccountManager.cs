@@ -32,9 +32,21 @@ public abstract class AccountManager : IAccountManager {
 
         var id = await CreateNewAccountAsync(account);
 
-        await SelectAccountAsync(id, null, null);
+        await SelectAccountAsync(id, null, null, true);
 
         return id;
+    }
+
+    public async Task<AccountRes> CheckCreatedStatusAsync(string accountId) {
+        if (_accountCookie.GetId() != accountId) {
+            throw new Exception("Invalid account Id is provided");
+        }
+
+        var account = await CreatedAccountStatusAsync(accountId);
+
+        await SelectAccountAsync(accountId, account.Reference, account.Token, true);
+
+        return account;
     }
 
     public async Task<IEnumerable<AccountRes>> FindAccountsByEmailAsync(string email) {
@@ -57,10 +69,12 @@ public abstract class AccountManager : IAccountManager {
         
         await SelectAccountAsync(account.Id, account.Reference, account.GetToken(_formatter));
     }
-    
-    private async Task SelectAccountAsync(string accountId, string accountReference, string accountToken) {
-        await VerifyAccountAccessAsync(accountId);
-        
+
+    private async Task SelectAccountAsync(string accountId, string accountReference, string accountToken, bool isNewAccount = false) {
+        if (!isNewAccount) {
+            await VerifyAccountAccessAsync(accountId);
+        }
+
         _accountCookie.Set(accountId, accountReference, accountToken);
     }
 
@@ -92,6 +106,7 @@ public abstract class AccountManager : IAccountManager {
     }
 
     protected abstract Task<string> CreateNewAccountAsync(AccountReq account);
+    protected abstract Task<AccountRes> CreatedAccountStatusAsync(string accountId);
     protected abstract Task<IEnumerable<AccountRes>> FindAccountsWithEmailAsync(string email);
     protected abstract Task UpdateExistingAccountAsync(AccountReq account);
 }

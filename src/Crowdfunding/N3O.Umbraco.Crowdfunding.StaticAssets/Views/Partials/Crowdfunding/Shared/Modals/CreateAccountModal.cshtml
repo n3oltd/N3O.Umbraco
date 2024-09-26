@@ -1,3 +1,4 @@
+@using N3O.Umbraco.Accounts.Lookups
 @model AccountsViewModel
 
 @inject IPartialText PartialText
@@ -7,7 +8,7 @@
     PartialText.SetPartialName("CrowdfundingCreateAccountModal");
 }
 
-<div class="modalsItem modall" id="newAccount-modal">
+<div class="modalsItem modall" id="createAccount-modal">
     <div class="newAccount__wrapper" style="margin: auto; width: 90vw">
         <div class="newAccount" id="newAccount">
             <div class="newAccount__head">
@@ -22,7 +23,10 @@
                 <form id="create-account-form" method="post" action="" autocomplete="on">
                     @Html.CrowdfundingPartial("/Views/Partials/Crowdfunding/Shared/Forms/Account.cshtml", Model)
 
-                    <button type="button" class="button primary" id="newAccountBtn">
+                    <input type="hidden" id="memberEmail" name="memberEmail" value="@Model.Email" />
+                    <input type="hidden" id="accountType" name="type" value="@AccountTypes.Individual" />
+                    
+                    <button type="submit" class="button primary" id="newAccountBtn">
                         @PartialText.Get("Create Account")
                     </button>
                 </form>
@@ -31,11 +35,19 @@
     </div>
 </div>
 
+<div class="modalsItem modall" id="confirmAccount-modal">
+    <div class="auth__wrapper" style="margin: auto; width: 90vw">
+        <div class="auth">
+            <div class="auth__title">
+                <h2>@PartialText.Get("Please Wait")</h2>
+                <p>@PartialText.Get("You’ll be redirected automatically once your account is ready")</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
     @Html.Raw(ContentCache.Single<DataEntrySettingsContent>().JavaScript)
-    
-    createAccount();
-    
-    // TODO This should show a spinner and please wait whilst your account is created message
-    // periodically call CRM API to check if account exists yet
+
+    n3o_cdf_createAccount();
 </script>

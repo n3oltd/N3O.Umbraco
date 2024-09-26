@@ -19,16 +19,24 @@ public class CrmController : LookupsController<CrmLookupsRes> {
     }
     
     [HttpPost("accounts")]
-    public async Task<string> CreateAccountAsync(AccountReq req) {
+    public async Task<string> CreateAccount(AccountReq req) {
         var res = await _accountManager.CreateAccountAsync(req);
 
         return res;
     }
 
     [HttpPut("accounts")]
-    public async Task<ActionResult> UpdateAccountAsync(AccountReq req) {
+    public async Task<ActionResult> UpdateAccount(AccountReq req) {
         await _accountManager.UpdateAccountAsync(req);
 
         return Ok();
     }
+
+    [HttpGet("accounts/createdStatus/{accountId}")]
+    public async Task<ActionResult<AccountRes>> CreatedStatus([FromRoute] string accountId) {
+        var res = await _accountManager.CheckCreatedStatusAsync(accountId);
+
+        return res;
+    }
+    
 }

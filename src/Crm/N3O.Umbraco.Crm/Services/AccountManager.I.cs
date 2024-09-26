@@ -6,6 +6,7 @@ namespace N3O.Umbraco.Crm;
 
 public interface IAccountManager {
     Task<string> CreateAccountAsync(AccountReq account);
+    Task<AccountRes> CheckCreatedStatusAsync(string accountId);
     Task<IEnumerable<AccountRes>> FindAccountsByEmailAsync(string email);
     Task UpdateAccountAsync(AccountReq account);
 }

@@ -1,10 +1,10 @@
 @model SelectFieldSettings
 
 <div class="input__outer big">
-    <p>@Html.Raw(Model.Required ? $"{Model.Label} <span> *</span>" : $"{Model.Label}")</p>
+    <p>@Html.Raw(Model.Required ? $"{Model.Label} <span style='color: red;'> *</span>" : $"{Model.Label}")</p>
 
     <div class="input sel">
-        <select name="@Model.Path" placeholder="@Model.Label" style="width: 100%">
+        <select id="@Model.Path" name="@Model.Path" placeholder="@Model.Label" style="width: 100%">
 
             @foreach (var option in Model.Options) {
                     if (option == Model.DefaultOption) {

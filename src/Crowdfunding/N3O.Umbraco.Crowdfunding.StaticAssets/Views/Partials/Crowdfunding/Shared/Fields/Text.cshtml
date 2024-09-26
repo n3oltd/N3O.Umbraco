@@ -1,6 +1,6 @@
 @model N3O.Umbraco.Accounts.Models.FieldSettings
 <div class="input__outer">
-    <p>@Html.Raw(Model.Required ? $"{Model.Label} <span> *</span>" : $"{Model.Label}")</p>
+    <p>@Html.Raw(Model.Required ? $"{Model.Label} <span style='color: red;'> *</span>" : $"{Model.Label}")</p>
     <div class="input">
         <input type="@Model.Type"
                name="@Model.Path"

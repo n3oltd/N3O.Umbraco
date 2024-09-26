@@ -8,6 +8,9 @@
 
 @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Fields/Text.cshtml", Model.DataEntrySettings.Email)
 
-@foreach (var field in Model.DataEntrySettings.Address.GetFieldSettings().Where(x => x.Visible)) {
-    @await Html.PartialAsync($"~/Views/Partials/Crowdfunding/Shared/Fields/{field.Type}.cshtml", field)
-}
+<div class="newAccount__address">
+    <h4>Address</h4>
+    @foreach (var field in Model.DataEntrySettings.Address.GetFieldSettings().Where(x => x.Visible)) {
+        @await Html.PartialAsync($"~/Views/Partials/Crowdfunding/Shared/Fields/{field.Type}.cshtml", field)
+    }
+</div>

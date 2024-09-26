@@ -1,7 +1,7 @@
 @model N3O.Umbraco.Accounts.Models.PhoneDataEntrySettings
 
 <div class="input__outer">
-    <p> @Html.Raw(Model.Number.Required ? $"{Model.Country.Label} <span> *</span>" : $"{Model.Country.Label}")</p>
+    <p> @Html.Raw(Model.Number.Required ? $"{Model.Country.Label} <span style='color: red;'> *</span>" : $"{Model.Country.Label}")</p>
     <div class="input">
         <input id="phone"
                type="@Model.Number.Type"
@@ -12,6 +12,6 @@
                class="auto-capitalise form-control rounded-0">
         <input id="countryCode" type="text" name="@Model.Country.Path" value="" hidden>
         <span id ="@Model.Number.Path" class="input-validation-error hidden"></span>
-        <span id ="@Model.Country.Path" class="input-validation-error"></span>
+        <span id ="@Model.Country.Path" class="input-validation-error hidden"></span>
     </div>
 </div>
