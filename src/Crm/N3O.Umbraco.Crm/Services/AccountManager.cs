@@ -39,15 +39,15 @@ public abstract class AccountManager : IAccountManager {
     }
 
     public async Task<CreatedStatus<AccountRes>> CheckCreatedStatusAsync(string accountId) {
-        await VerifyAccountAccessAsync(accountId);
-
         var res = await CheckCreatedAccountStatusAsync(accountId);
 
         if (res.HasValue()) {
             SelectAccount(accountId, res.Reference, res.Token);
 
             AppendToCache(res);
-            
+
+            await VerifyAccountAccessAsync(accountId);
+
             return CreatedStatus.ForCreated(res);
         } else {
             return CreatedStatus.ForNotCreated<AccountRes>();
