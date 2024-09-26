@@ -7,6 +7,9 @@ public class PriceCriteria {
     [Name("Donation Item")]
     public DonationItem DonationItem { get; set; }
     
+    [Name("Feedback Scheme")]
+    public FeedbackScheme FeedbackScheme { get; set; }
+    
     [Name("Sponsorship Component")]
     public SponsorshipComponent SponsorshipComponent { get; set; }
 

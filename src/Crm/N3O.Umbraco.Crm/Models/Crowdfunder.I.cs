@@ -9,6 +9,8 @@ public interface ICrowdfunder {
     Guid Id { get; }
     string Name { get; }
     Currency Currency { get; }
+    bool Activate { get; }
+    bool Deactivate { get; }
     IEnumerable<ICrowdfunderGoal> Goals { get; }
 
     string Url(IContentLocator contentLocator);

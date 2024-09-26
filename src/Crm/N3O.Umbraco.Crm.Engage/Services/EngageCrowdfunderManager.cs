@@ -20,6 +20,7 @@ public class EngageCrowdfunderManager : ICrowdfunderManager {
     private readonly ISubscriptionAccessor _subscriptionAccessor;
     private readonly IContentLocator _contentLocator;
     private readonly Lazy<IAccountIdentityAccessor> _accountIdentityAccessor;
+    private ServiceClient<CrowdfundingClient> _client;
 
     public EngageCrowdfunderManager(ClientFactory<CrowdfundingClient> clientFactory,
                                     ISubscriptionAccessor subscriptionAccessor,
@@ -34,21 +35,21 @@ public class EngageCrowdfunderManager : ICrowdfunderManager {
     public async Task CreateCampaignAsync(ICampaign campaign) {
         var req = GetCreateCampaignReq(campaign);
 
-        var client = await _clientFactory.CreateAsync(_subscriptionAccessor.GetSubscription());
+        var client = await GetClientAsync();
 
-        var res = await client.InvokeAsync<CreateCampaignReq, CampaignRes>(x => x.CreateCampaignAsync, req);
+        await client.InvokeAsync(x => x.CreateCampaignAsync, req);
     }
 
     public async Task CreateFundraiserAsync(IFundraiser fundraiser) {
         var req = GetCreateFundraiserReq(fundraiser);
 
-        var client = await _clientFactory.CreateAsync(_subscriptionAccessor.GetSubscription());
+        var client = await GetClientAsync();
 
-        var res = await client.InvokeAsync<CreateFundraiserReq, FundraiserRes>(x => x.CreateFundraiserAsync, req);
+        await client.InvokeAsync(x => x.CreateFundraiserAsync, req);
     }
 
     public async Task UpdateCrowdfunderAsync(string id, ICrowdfunder crowdfunder) {
-        var client = await _clientFactory.CreateAsync(_subscriptionAccessor.GetSubscription());
+        var client = await GetClientAsync();
         var crowdfunderRes = await client.InvokeAsync<CrowdfunderRes>(x => x.GetCrowdfunderByIdAsync, id);
 
         var syncCrowdfunderReq = new SyncCrowdfunderReq();
@@ -59,10 +60,23 @@ public class EngageCrowdfunderManager : ICrowdfunderManager {
         syncCrowdfunderReq.Url = new CrowdfunderUrlReq();
         syncCrowdfunderReq.Url.Value = crowdfunder.Url(_contentLocator);
         
+        syncCrowdfunderReq.Activate = crowdfunder.Activate ? true : null;
+        syncCrowdfunderReq.Deactivate = crowdfunder.Deactivate ? true : null;
+        
         syncCrowdfunderReq.Allocations = GetCrowdfunderAllocationsReq(crowdfunder.Goals,
                                                                       crowdfunder.Currency.ToEngageCurrency());
 
         await client.InvokeAsync(x => x.SyncCrowdfunderAsync, crowdfunderRes.RevisionId, syncCrowdfunderReq);
+    }
+    
+    private async Task<ServiceClient<CrowdfundingClient>> GetClientAsync() {
+        if (_client == null) {
+            var subscription = _subscriptionAccessor.GetSubscription();
+            
+            _client = await _clientFactory.CreateAsync(subscription);
+        }
+
+        return _client;
     }
 
     private CreateCampaignReq GetCreateCampaignReq(ICampaign campaign) {
@@ -83,7 +97,7 @@ public class EngageCrowdfunderManager : ICrowdfunderManager {
 
     private CreateCrowdfunderReq GetCreateCrowdfunderReq(ICrowdfunder crowdfunder) {
         var req = new CreateCrowdfunderReq();
-        req.Id = crowdfunder.Id;
+        req.Id = crowdfunder.Id.ToString();
         req.Name = crowdfunder.Name;
         req.Url = crowdfunder.Url(_contentLocator);
         req.Currency = crowdfunder.Currency.ToEngageCurrency();

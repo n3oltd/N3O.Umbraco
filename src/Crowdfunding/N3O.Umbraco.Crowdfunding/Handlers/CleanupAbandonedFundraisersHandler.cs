@@ -32,7 +32,7 @@ public class CleanupAbandonedFundraisersHandler : IRequestHandler<CleanupAbandon
         var allFundraisers = _contentLocator.All<FundraiserContent>();
         var thirtyDaysAgo = _localClock.GetLocalNow().Minus(Period.FromDays(30)).ToDateTimeUnspecified();
         
-        var toDelete = allFundraisers.Where(x => x.Status == FundraiserStatuses.Pending &&
+        var toDelete = allFundraisers.Where(x => (!x.Status.HasValue() || x.Status == CrowdfunderStatuses.Draft) &&
                                                  x.Content().UpdateDate < thirtyDaysAgo);
         
         toDelete.Do(DeleteExpiredFundraiser);

@@ -3,7 +3,6 @@ using N3O.Umbraco.Crm;
 using N3O.Umbraco.Cropper.Extensions;
 using N3O.Umbraco.Cropper.Models;
 using N3O.Umbraco.Crowdfunding.Content;
-using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
@@ -55,7 +54,6 @@ public partial class CreateOrUpdateFundraiserHandlers {
         contentPublisher.Content.Label(CrowdfundingConstants.Fundraiser.Properties.Slug).Set(req.Slug);
         contentPublisher.Content.Label(CrowdfundingConstants.Fundraiser.Properties.AccountReference).Set(accountReference);
         contentPublisher.Content.ContentPicker(CrowdfundingConstants.Fundraiser.Properties.Campaign).SetContent(campaign);
-        contentPublisher.Content.Label(CrowdfundingConstants.Fundraiser.Properties.Status).Set(FundraiserStatuses.Pending.Name);
         contentPublisher.Content.ContentPicker(CrowdfundingConstants.Fundraiser.Properties.Owner).SetMember(member);
         
         PopulateDefaultContent(contentPublisher, campaign);
