@@ -10,7 +10,7 @@ public class GoalResMapping : IMapDefinition {
     }
 
     private void Map(GoalElement src, GoalRes dest, MapperContext ctx) {
-        dest.CampaignGoalId = src.GoalId;
+        dest.OptionId = src.OptionId;
         dest.Value = src.Amount;
         dest.Feedback = src.Feedback.IfNotNull(ctx.Map<FeedbackGoalElement, FeedbackGoalRes>);
     }

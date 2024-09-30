@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class CrowdfunderGoalViewModel {
-    public Guid Id { get; private set; }
+    public string OptionId { get; private set; }
     public string Name { get; private set; }
     public decimal Amount { get; private set; }
     public FundDimension1Value FundDimension1Value { get; private set; }
@@ -24,7 +24,7 @@ public class CrowdfunderGoalViewModel {
     public static CrowdfunderGoalViewModel For(Currency crowdfunderCurrency, GoalElement goal) {
         var viewModel = new CrowdfunderGoalViewModel();
 
-        viewModel.Id = goal.GoalId;
+        viewModel.OptionId = goal.OptionId;
         viewModel.Name = goal.Name;
         viewModel.Amount = goal.Amount;
         viewModel.FundDimension1Value = goal.FundDimension1;

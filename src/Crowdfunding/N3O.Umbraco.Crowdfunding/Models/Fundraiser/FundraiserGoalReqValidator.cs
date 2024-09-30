@@ -14,14 +14,14 @@ public class FundraiserGoalReqValidator : ModelValidator<FundraiserGoalReq> {
            .NotNull()
            .WithMessage(Get<Strings>(s => s.SpecifyFundDimensions));
         
-        RuleFor(x => x.GoalId)
-           .NotNull()
-           .WithMessage(Get<Strings>(s => s.SpecifyGoalId));
+        RuleFor(x => x.GoalOptionId)
+           .NotEmpty()
+           .WithMessage(Get<Strings>(s => s.SpecifyGoalOptionId));
     }
 
     public class Strings : ValidationStrings {
         public string SpecifyAmount => "Please specify the amount";
         public string SpecifyFundDimensions => "Please specify the fund dimensions";
-        public string SpecifyGoalId => "Please specify the goal ID";
+        public string SpecifyGoalOptionId => "Please specify the goal option ID";
     }
 }

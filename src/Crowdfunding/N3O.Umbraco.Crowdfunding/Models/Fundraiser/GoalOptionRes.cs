@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace N3O.Umbraco.Crowdfunding.Models; 
 
 public class GoalOptionRes {
-    public Guid Id { get; set; }
+    public string Id { get; set; }
     public string Name { get; set; }
     public AllocationType Type { get; set; }
     public IEnumerable<string> Tags { get; set; }

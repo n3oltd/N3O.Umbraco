@@ -15,6 +15,7 @@ using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Validation;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Security;
@@ -68,18 +69,18 @@ public partial class CreateOrUpdateFundraiserHandlers {
         var nestedContent = contentPublisher.Content.Nested(CrowdfundingConstants.Crowdfunder.Properties.Goals);
         
         foreach (var req in reqs) {
-            var campaignGoal = campaign.GoalOptions.SingleOrDefault(x => x.GoalId == req.GoalId.GetValueOrThrow());
+            var goalOption = campaign.GoalOptions.SingleOrDefault(x => x.Id == req.GoalOptionId);
 
-            if (campaignGoal == null) {
-                throw new Exception($"No campaign goal found with ID {req.GoalId}");
+            if (goalOption == null) {
+                throw new Exception($"No campaign goal option found with ID {req.GoalOptionId}");
             }
             
-            if (campaignGoal.Type == AllocationTypes.Fund) {
-                AddFundraiserFundGoal(nestedContent, req, campaignGoal);
-            } else if (campaignGoal.Type == AllocationTypes.Feedback) {
-                AddFundraiserFeedbackGoal(nestedContent, req, campaignGoal);
+            if (goalOption.Type == AllocationTypes.Fund) {
+                AddFundraiserFundGoal(nestedContent, req, goalOption);
+            } else if (goalOption.Type == AllocationTypes.Feedback) {
+                AddFundraiserFeedbackGoal(nestedContent, req, goalOption);
             } else {
-                throw UnrecognisedValueException.For(campaignGoal.Type);
+                throw UnrecognisedValueException.For(goalOption.Type);
             }
         }
     }
@@ -87,7 +88,7 @@ public partial class CreateOrUpdateFundraiserHandlers {
     private void AddFundraiserFundGoal(NestedPropertyBuilder nestedPropertyBuilder,
                                        FundraiserGoalReq req,
                                        CampaignGoalOptionElement goalOption) {
-        var contentBuilder = nestedPropertyBuilder.Add(CrowdfundingConstants.Goal.Fund.Alias, goalOption.GoalId.Increment());
+        var contentBuilder = nestedPropertyBuilder.Add(CrowdfundingConstants.Goal.Fund.Alias);
         
         PopulateFundraiserGoal(contentBuilder, req, goalOption);
         
@@ -98,7 +99,7 @@ public partial class CreateOrUpdateFundraiserHandlers {
     private void AddFundraiserFeedbackGoal(NestedPropertyBuilder nestedPropertyBuilder,
                                            FundraiserGoalReq req,
                                            CampaignGoalOptionElement goalOption) {
-        var contentBuilder = nestedPropertyBuilder.Add(CrowdfundingConstants.Goal.Feedback.Alias, goalOption.GoalId);
+        var contentBuilder = nestedPropertyBuilder.Add(CrowdfundingConstants.Goal.Feedback.Alias);
         
         PopulateFundraiserGoal(contentBuilder, req, goalOption);
         
@@ -122,6 +123,7 @@ public partial class CreateOrUpdateFundraiserHandlers {
     private void PopulateFundraiserGoal(IContentBuilder contentBuilder,
                                         FundraiserGoalReq req,
                                         CampaignGoalOptionElement goalOption) {
+        contentBuilder.Label(CrowdfundingConstants.Goal.Properties.OptionId).Set(goalOption.Id);
         contentBuilder.Numeric(CrowdfundingConstants.Goal.Properties.Amount).SetDecimal(req.Amount);
         contentBuilder.TextBox(CrowdfundingConstants.Goal.Properties.Name).Set(goalOption.Name);
         contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.FundDimension1).SetContent(req.FundDimensions.Dimension1);

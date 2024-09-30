@@ -8,8 +8,8 @@ public class FundraiserGoalReq {
     [Name("Amount")]
     public decimal? Amount { get; set; }
     
-    [Name("Goal ID")]
-    public Guid? GoalId { get; set; }
+    [Name("Goal Option ID")]
+    public string GoalOptionId { get; set; }
     
     [Name("Fund Dimensions")]
     public FundDimensionValuesReq FundDimensions { get; set; }

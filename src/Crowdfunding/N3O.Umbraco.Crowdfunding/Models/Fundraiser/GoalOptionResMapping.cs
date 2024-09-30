@@ -14,7 +14,7 @@ public class GoalOptionResMapping : IMapDefinition {
     }
 
     private void Map(CampaignGoalOptionElement src, GoalOptionRes dest, MapperContext ctx) {
-        dest.Id = src.GoalId;
+        dest.Id = src.Id;
         dest.Name = src.Name;
         dest.Type = src.Type;
         dest.Tags = src.Tags.Select(x => x.Name).ToList();

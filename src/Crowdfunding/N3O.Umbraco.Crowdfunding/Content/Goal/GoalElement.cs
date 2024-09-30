@@ -16,6 +16,7 @@ public class GoalElement : UmbracoElement<GoalElement>, IFundDimensionValues, IC
     [UmbracoProperty(CrowdfundingConstants.Goal.Properties.Name)]
     public string Name => GetValue(x => x.Name);
     public decimal Amount => GetValue(x => x.Amount);
+    public string OptionId => GetValue(x => x.OptionId);
     public FundDimension1Value FundDimension1 => GetAs(x => x.FundDimension1);
     public FundDimension2Value FundDimension2 => GetAs(x => x.FundDimension2);
     public FundDimension3Value FundDimension3 => GetAs(x => x.FundDimension3);
@@ -59,8 +60,6 @@ public class GoalElement : UmbracoElement<GoalElement>, IFundDimensionValues, IC
             }
         }
     }
-    
-    public Guid GoalId => Content().Key.Decrement();
 
     FundDimension1Value IFundDimensionValues.Dimension1 => FundDimension1;
     FundDimension2Value IFundDimensionValues.Dimension2 => FundDimension2;
