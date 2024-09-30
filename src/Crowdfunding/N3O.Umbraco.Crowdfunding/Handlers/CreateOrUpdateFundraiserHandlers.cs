@@ -87,7 +87,7 @@ public partial class CreateOrUpdateFundraiserHandlers {
     private void AddFundraiserFundGoal(NestedPropertyBuilder nestedPropertyBuilder,
                                        FundraiserGoalReq req,
                                        CampaignGoalOptionElement goalOption) {
-        var contentBuilder = nestedPropertyBuilder.Add(CrowdfundingConstants.Goal.Fund.Alias, goalOption.GoalId);
+        var contentBuilder = nestedPropertyBuilder.Add(CrowdfundingConstants.Goal.Fund.Alias, goalOption.GoalId.Increment());
         
         PopulateFundraiserGoal(contentBuilder, req, goalOption);
         
