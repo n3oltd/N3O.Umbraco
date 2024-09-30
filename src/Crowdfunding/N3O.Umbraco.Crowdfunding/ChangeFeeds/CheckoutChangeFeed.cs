@@ -68,6 +68,7 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
                                                                  _clock.GetCurrentInstant(),
                                                                  crowdfunderData,
                                                                  checkout.Account?.Email?.Address,
+                                                                 checkout.Account?.Individual?.Name?.GetFullName(),
                                                                  checkout.Account?.TaxStatus == TaxStatuses.Payer,
                                                                  givingType,
                                                                  allocation);

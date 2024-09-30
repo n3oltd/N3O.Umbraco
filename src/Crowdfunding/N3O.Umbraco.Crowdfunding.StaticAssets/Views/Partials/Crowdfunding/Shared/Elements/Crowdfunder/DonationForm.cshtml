@@ -6,59 +6,288 @@
     PartialText.SetPartialName("CrowdfundingCrowdfunderDonationForm");
 }
 
-<div class="cta__wrapper">
+<div class="cta__wrapper" data-crowdfunder-id="@Model.Content.Key" data-crowdfunder-type="@Model.CrowdfunderType.Id">
     <div class="cta" id="showMoreWrapper">
         <div class="cta__title start">
             <h2>@PartialText.Get("Contribute to this page")</h2>
 
             @if (Model.Goals.Count > 1) {
-                <p>@PartialText.Get("Select which project(s) you would like to support.")</p>
+            <p>@PartialText.Get("Select which project(s) you would like to support.")</p>
             }
         </div>
-
         @foreach (var goal in Model.Goals) {
+            <input type="hidden" name="goal" value="@goal.Id"/>
             <div class="ctaFund showMore big">
-                <h4>@goal.Name</h4>
+                <h4 id="goal-name-@goal.Id">@goal.Name</h4>
 
                 @foreach (var priceHandle in goal.PriceHandles) {
-                    <div class="ctaFund__item">
-                        <input type="radio" name="goal-@goal.Id" />
-                        
-                        <div class="ctaFund__item-inner">
-                            @*TODO currency*@
-                            <h3>@Model.Formatter.Number.FormatMoney(priceHandle.Amount)</h3>
-                            
-                            <hr/>
-                            
-                            <p class="subtle">@priceHandle.Description</p>
-                            
-                            <svg>
-                                <use xlink:href="#checkIcon"></use>
-                            </svg>
-                        </div>
+                <div class="ctaFund__item">
+                    <input type="checkbox" name="goal-price-@goal.Id" data-goal-amount="@priceHandle.Amount.Amount"/>
+                    <div class="ctaFund__item-inner">
+                        @*TODO currency*@
+                        <h3>@Model.Formatter.Number.FormatMoney(priceHandle.Amount)</h3>
+
+                        <hr/>
+
+                        <p class="subtle">@priceHandle.Description</p>
+
+                        <svg>
+                            <use xlink:href="#checkIcon"></use>
+                        </svg>
                     </div>
+                </div>
                 }
-                
-                @if (goal.PriceHandles.Count > 3) {
-                    <div class="large showMoreBtn">@PartialText.Get("Show All")</div>
-                }
+                <div class="ctaAmount">
+                    <input type="checkbox" name="custom-goal-@goal.Id"/>
+                    <div class="ctaAmount__inner">
+                        <div class="subtle">Custom Quantity</div>
+                        <div class="cta__input">
+                            <label class="large" for="goal-custom-amount-symbol-@goal.Id"> £ </label>
+                            <input id="goal-custom-amount-@goal.Id" disabled type="number" placeholder="1,500"/>
+                            <div class="cta__input-select">
+                                @*TODO currency*@
+                                <select name="currency" id="currency-@goal.Id">
+                                    <option value="gbp">GBP</option>
+                                    <option value="usd">USD</option>
+                                </select>
+                            </div>
+                        </div>
+                        <svg>
+                            <use xlink:href="#checkIcon"></use>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="large showMoreBtn">More Options</div>
             </div>
         }
-
-        @*TODO for open amount*@
-        <div class="cta__input">
-            <label class="large" for="openAmount"> £ </label>
-            <input id="openAmount" placeholder="75|" type="text" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="" data-type="currency">
-            <div class="cta__input-select">
-                <select name="currency" id="">
-                    <option value="GBP">GBP</option>
-                    <option value="USD">USD</option>
-                </select>
-            </div>
-        </div>
-
         <div class="cta__foot">
-            <button type="button" class="button primary">@PartialText.Get("Donate")</button>
+            <button type="button" id="submit-donation" class="button primary submit3" disabled>
+                Donate
+                <span></span>
+            </button>
         </div>
     </div>
 </div>
+
+<script>
+    const n3o_cdf_donationCart = (() => {
+
+        const submitDonationReq = async req => {
+
+            try {
+                const response = await fetch('/umbraco/api/CrowdfundingCart/add', {
+                    method: "POST",
+                    body: JSON.stringify(req),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                if (response.ok){
+                    window.themeConfig.showCart();
+                    hideDonationSummaryModal();
+                }
+
+                if (!response.ok){
+                    window.themeConfig.showError(response.errors)
+                }
+            }
+            catch (e) {
+                window.themeConfig.showError(e.errors)
+            }
+        }
+
+        function handleDonationReq() {
+            let donationReq = {};
+
+            const items = [];
+            const goalInputs = document.querySelectorAll("input[name='goal']")
+
+            goalInputs.forEach(input => {
+                const goalId = input.value;
+
+                const goalReq = {};
+                const goalValue = {};
+
+                goalReq.goalId = goalId;
+
+                const goalPriceElm = document.querySelector(`input[name='goal-price-${goalId}']`);
+                const customPriceElm = document.querySelector(`input[name='custom-goal-${goalId}']`);
+
+                const hasAmount = goalPriceElm.checked  || customPriceElm.checked
+
+                if (!hasAmount){
+                    return
+                }
+
+                if (goalPriceElm.checked) {
+                    const {goalAmount} = goalPriceElm.dataset;
+                    goalValue.amount = goalAmount;
+                }
+
+                if (customPriceElm.checked) {
+                    goalValue.amount = document.querySelector(`#goal-custom-amount-${goalId}`).value;
+                }
+
+                goalValue.currency = document.querySelector(`#currency-${goalId}`).value;
+
+                goalReq.value = goalValue;
+
+                items.push(goalReq);
+            });
+
+            let pageElement = document.querySelector('[data-crowdfunder-id]');
+
+            let crowdfunderId = pageElement.dataset.crowdfunderId;
+            let crowdfunderType = pageElement.dataset.crowdfunderType;
+            let crowdfunderData = {};
+
+            crowdfunderData.crowdfunderId = crowdfunderId;
+            crowdfunderData.comment = document.querySelector('#donors-comment').value;
+            crowdfunderData.anonymous = document.querySelector('#donor-is-anonymous')?.checked;
+
+            donationReq.crowdfunding = crowdfunderData;
+
+            donationReq.type = crowdfunderType;
+
+            donationReq.items = items;
+
+            if (items.length){
+                submitDonationReq(donationReq)
+            }
+        }
+
+        function handleDonationSummaryModal() {
+            let donationReq = {};
+
+            const items = [];
+            const goalInputs = document.querySelectorAll("input[name='goal']")
+
+            goalInputs.forEach(input => {
+                const goalId = input.value;
+
+                const goalName = document.querySelector(`#goal-name-${goalId}`).textContent.trim();
+
+                const goalPriceHandleElem = document.querySelector(`input[name='goal-price-${goalId}']:checked`);
+
+                const customPriceElm = document.querySelector(`input[name='custom-goal-${goalId}']:checked`);
+
+                const hasAmount = goalPriceHandleElem !== null  || customPriceElm !== null
+
+                if (!hasAmount){
+                    return
+                }
+
+                if (goalPriceHandleElem !== null) {
+                    const ctaFundItemInner = goalPriceHandleElem.nextElementSibling;
+                    let priceHandleAmount = ctaFundItemInner.querySelector('h3').textContent;
+                    const priceHandleDescription = ctaFundItemInner.querySelector('p').textContent;
+
+                    let priceHandleObj = {
+                        title: goalName,
+                        amount: priceHandleAmount.trim(),
+                        description: priceHandleDescription.trim()
+                    };
+
+                    items.push(priceHandleObj);
+                }
+
+                if (customPriceElm !== null) {
+                    let amountElem = document.querySelector(`#goal-custom-amount-${goalId}`);
+                    let currencyElem =  amountElem.previousElementSibling;
+
+                    let price = currencyElem.textContent.trim() + ' ' + amountElem.value;
+
+                    let priceHandleObj = {
+                        title: goalName,
+                        amount: price,
+                        description: 'Your custom amount'
+                    };
+
+                    items.push(priceHandleObj);
+                }
+            });
+
+            if (items.length){
+                const modal = document.getElementById('donationSummary-modal');
+
+                const existingItems = modal.querySelectorAll('.ctaFund');
+                existingItems.forEach(item => item.remove());
+
+                const insertAfterElement = modal.querySelector('.cta__title.start');
+
+                items.reverse();
+
+                items.forEach(item => {
+                    const fundBlock = createFundBlock(item);
+                    insertAfterElement.insertAdjacentElement('afterend', fundBlock);
+                });
+
+                showDonationSummaryModal();
+            }
+        }
+
+        function createFundBlock(item) {
+            // Create the outer div with class ctaFund
+            const ctaFundDiv = document.createElement('div');
+            ctaFundDiv.classList.add('ctaFund');
+
+            // Create the h4 title
+            const h4 = document.createElement('h4');
+            h4.textContent = item.title;
+            ctaFundDiv.appendChild(h4);
+
+            // Create the inner div structure
+            const ctaFundItemDiv = document.createElement('div');
+            ctaFundItemDiv.classList.add('ctaFund__item');
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.name = 'fundOption'; // Ensure all radios have the same name for exclusive selection
+            ctaFundItemDiv.appendChild(input);
+
+            const innerDiv = document.createElement('div');
+            innerDiv.classList.add('ctaFund__item-inner', 'uniq');
+
+            const h3 = document.createElement('h3');
+            h3.textContent = item.amount;
+            innerDiv.appendChild(h3);
+
+            const hr = document.createElement('hr');
+            innerDiv.appendChild(hr);
+
+            const p = document.createElement('p');
+            p.classList.add('subtle');
+            p.textContent = item.description;
+            innerDiv.appendChild(p);
+
+            ctaFundItemDiv.appendChild(innerDiv);
+            ctaFundDiv.appendChild(ctaFundItemDiv);
+
+            return ctaFundDiv;
+        }
+
+        return {
+            handleDonationReq,
+            handleDonationSummaryModal,
+            createFundBlock
+        }
+
+    })()
+
+    document.getElementById('submit-donation')?.addEventListener?.('click', n3o_cdf_donationCart.handleDonationSummaryModal);
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('add-donation-to-cart')?.addEventListener?.('click', n3o_cdf_donationCart.handleDonationReq);
+    });
+
+    const showDonationSummaryModal = () => {
+        document.getElementById('donationSummary-modal')?.classList.add("active");
+    };
+
+    const hideDonationSummaryModal = () => {
+        document.getElementById('donationSummary-modal')?.classList.remove("active");
+    };
+    
+
+</script>

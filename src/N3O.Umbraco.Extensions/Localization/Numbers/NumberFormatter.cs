@@ -1,7 +1,7 @@
 using Humanizer;
 using N3O.Umbraco.Financial;
+using System;
 using System.Globalization;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Localization;
 
@@ -49,8 +49,8 @@ public class NumberFormatter : INumberFormatter {
     }
 
     // TODO Add support for languages that put the percentage sign in a different place
-    public string FormatPercentage(decimal number) {
-        return $"{number.Normalize()}%";
+    public string FormatPercentage(decimal number, int decimalDigits) {
+        return $"{Math.Round(number, decimalDigits)}%";
     }
 
     public NumberFormat NumberFormat { get; }

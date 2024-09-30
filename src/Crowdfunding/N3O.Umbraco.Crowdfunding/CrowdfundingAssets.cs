@@ -15,5 +15,6 @@ public class CrowdfundingAssets : IAssetBundle {
         bundle.RequiresJs("~/assets/js/tabs.js");
         bundle.RequiresJs("~/assets/js/modals.js");
         bundle.RequiresJs("~/assets/js/numberVal.js");
+        bundle.RequiresJs("~/assets/js/cta-box.js");
     }
 }
