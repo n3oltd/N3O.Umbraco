@@ -60,7 +60,7 @@ public class GoalElement : UmbracoElement<GoalElement>, IFundDimensionValues, IC
         }
     }
     
-    public Guid GoalId => Content().Key;
+    public Guid GoalId => Content().Key.Decrement();
 
     FundDimension1Value IFundDimensionValues.Dimension1 => FundDimension1;
     FundDimension2Value IFundDimensionValues.Dimension2 => FundDimension2;
