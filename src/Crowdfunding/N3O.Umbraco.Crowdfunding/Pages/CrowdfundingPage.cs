@@ -24,7 +24,7 @@ public abstract class CrowdfundingPage : ICrowdfundingPage {
         var crowdfundingPath = CrowdfundingPathParser.ParseUri(ContentLocator, requestUri);
 
         if (crowdfundingPath.HasValue()) {
-            return IsMatch(crowdfundingPath, requestQuery);    
+            return IsMatch(crowdfundingPath, requestQuery);
         } else {
             return false;
         }

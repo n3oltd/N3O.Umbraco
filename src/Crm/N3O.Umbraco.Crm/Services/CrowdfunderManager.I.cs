@@ -6,5 +6,5 @@ namespace N3O.Umbraco.Crm;
 public interface ICrowdfunderManager {
     Task CreateCampaignAsync(ICampaign campaign);
     Task CreateFundraiserAsync(IFundraiser fundraiser);
-    Task UpdateCrowdfunderAsync(string id, ICrowdfunder crowdfunder);
+    Task UpdateCrowdfunderAsync(string id, ICrowdfunder crowdfunder, bool toggleStatus);
 }

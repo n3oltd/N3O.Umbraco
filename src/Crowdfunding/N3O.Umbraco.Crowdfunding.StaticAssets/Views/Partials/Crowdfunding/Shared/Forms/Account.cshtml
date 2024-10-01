@@ -21,3 +21,6 @@
         @await Html.PartialAsync($"~/Views/Partials/Crowdfunding/Shared/Fields/{field.Type}.cshtml", field)
     }
 </div>
+
+@Model.DataEntrySettingsContent.BodyHtml
+@Model.DataEntrySettingsContent.JavaScript

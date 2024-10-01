@@ -26,13 +26,7 @@ public partial class CrowdfundingController {
     [HttpPut("content/{contentId:guid}/property")]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> UpdateProperty([FromRoute] Guid contentId, ContentPropertyReq req) {
-        var content = _contentService.Value.GetById(contentId);
-
-        var canEdit = await _fundraiserAccessControl.Value.CanEditAsync(content);
-
-        if (!canEdit) {
-            throw new UnauthorizedAccessException();
-        }
+        await EnforceFundraiserAccessControlsAsync(contentId);
         
         await _mediator.Value.SendAsync<UpdateContentPropertyCommand, ContentPropertyReq>(req);
 

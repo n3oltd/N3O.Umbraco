@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crm.Models;
 using N3O.Umbraco.Cropper.Models;
 using N3O.Umbraco.Financial;
@@ -20,6 +21,8 @@ public abstract class CrowdfunderContent<T> : UmbracoContent<T>, ICrowdfunderCon
     public IEnumerable<HeroImagesElement> HeroImages => GetNestedAs(x => x.HeroImages);
     [UmbracoProperty(CrowdfundingConstants.Crowdfunder.Properties.Name)]
     public string Name => GetValue(x => x.Name);
+    public bool ToggleStatus => GetValue(x => x.ToggleStatus);
+    public CrowdfunderStatus Status => GetStaticLookupByNameAs(x => x.Status);
     
     public abstract Guid CampaignId { get; }
     public abstract string CampaignName { get; }

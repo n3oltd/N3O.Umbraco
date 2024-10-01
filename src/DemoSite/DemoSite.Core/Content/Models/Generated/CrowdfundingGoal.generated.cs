@@ -46,6 +46,11 @@ namespace DemoSite.Content
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		global::DemoSite.Content.FundDimension3Value FundDimension3 { get; }
 
+		/// <summary>Option ID</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		string OptionId { get; }
+
 		/// <summary>Price Handles</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
@@ -150,6 +155,19 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		public static global::DemoSite.Content.FundDimension3Value GetFundDimension3(ICrowdfundingGoal that, IPublishedValueFallback publishedValueFallback) => that.Value<global::DemoSite.Content.FundDimension3Value>(publishedValueFallback, "fundDimension3");
+
+		///<summary>
+		/// Option ID
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("optionId")]
+		public virtual string OptionId => GetOptionId(this, _publishedValueFallback);
+
+		/// <summary>Static getter for Option ID</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		public static string GetOptionId(ICrowdfundingGoal that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "optionId");
 
 		///<summary>
 		/// Price Handles
