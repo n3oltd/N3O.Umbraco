@@ -1,7 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using N3O.Umbraco.Authentication.Auth0.Lookups;
+using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Authentication.Auth0;
 
 public interface IUserDirectoryIdAccessor {
-    Task<string> GetIdAsync();
+    Task<string> GetIdAsync(ClientType clientType);
 }
