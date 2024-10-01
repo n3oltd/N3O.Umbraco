@@ -27,9 +27,9 @@ public class FundraiserAccessControl : MembersAccessControl {
         var canEdit = await base.AllowEditAsync(contentProperties);
         
         if (canEdit) {
-            var status = GetFundraiserStatus(() => contentProperties.GetPropertyValueByAlias<string>(CrowdfundingConstants.Fundraiser.Properties.Status));
+            var status = GetFundraiserStatus(() => contentProperties.GetPropertyValueByAlias<string>(CrowdfundingConstants.Crowdfunder.Properties.Status));
         
-            canEdit = status != FundraiserStatuses.Closed;
+            canEdit = status != CrowdfunderStatuses.Ended;
         }
 
         return canEdit;
@@ -39,16 +39,16 @@ public class FundraiserAccessControl : MembersAccessControl {
         var canEdit = await base.AllowEditAsync(content);
         
         if (canEdit) {
-            var status = GetFundraiserStatus(() => content.Value<string>(CrowdfundingConstants.Fundraiser.Properties.Status));
+            var status = GetFundraiserStatus(() => content.Value<string>(CrowdfundingConstants.Crowdfunder.Properties.Status));
             
-            canEdit = status != FundraiserStatuses.Closed;
+            canEdit = status != CrowdfunderStatuses.Ended;
         }
 
         return canEdit;
     }
     
-    private FundraiserStatus GetFundraiserStatus(Func<string> getValue) {
-        return _lookups.FindByName<FundraiserStatus>(getValue()).Single();
+    private CrowdfunderStatus GetFundraiserStatus(Func<string> getValue) {
+        return _lookups.FindByName<CrowdfunderStatus>(getValue()).Single();
     }
 
     protected override string ContentTypeAlias => CrowdfundingConstants.Fundraiser.Alias;

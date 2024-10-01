@@ -8,5 +8,6 @@ public interface ICrowdfunderInfo {
     Guid Id { get; }
     Reference Reference { get; }
     CrowdfunderType Type { get; }
+    CrowdfunderStatus Status { get; }
     IFundraiserInfo Fundraiser { get; }
 }

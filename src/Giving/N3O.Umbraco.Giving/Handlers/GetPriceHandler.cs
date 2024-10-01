@@ -23,7 +23,9 @@ public class GetPriceHandler : IRequestHandler<GetPriceQuery, PriceCriteria, Pri
     
     public async Task<PriceRes> Handle(GetPriceQuery req, CancellationToken cancellationToken) {
         var currency = _currencyAccessor.GetCurrency();
-        var pricing = (IPricing) req.Model.DonationItem ?? req.Model.SponsorshipComponent;
+        var pricing = (IPricing) req.Model.DonationItem ??
+                      (IPricing) req.Model.SponsorshipComponent ??
+                      (IPricing) req.Model.FeedbackScheme;
 
         PriceRes res = null;
 
