@@ -9,6 +9,7 @@ using N3O.Umbraco.Mediator;
 using System;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
+using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Web.Common.Filters;
 
@@ -46,5 +47,15 @@ public partial class CrowdfundingController : ApiController {
         var res = await _mediator.Value.SendAsync<SuggestSlugQuery, string, string>(name);
 
         return Ok(res);
+    }
+
+    private async Task EnforceFundraiserAccessControlsAsync(Guid contentId) {
+        var content = _contentService.Value.GetById(contentId);
+
+        var canEdit = await _fundraiserAccessControl.Value.CanEditAsync(content);
+
+        if (!canEdit) {
+            throw new UnauthorizedAccessException();
+        }
     }
 }

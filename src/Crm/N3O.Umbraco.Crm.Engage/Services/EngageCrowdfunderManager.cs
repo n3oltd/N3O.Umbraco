@@ -1,6 +1,7 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm.Engage.Clients;
 using N3O.Umbraco.Crm.Engage.Extensions;
+using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crm.Models;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
@@ -48,7 +49,7 @@ public class EngageCrowdfunderManager : ICrowdfunderManager {
         await client.InvokeAsync(x => x.CreateFundraiserAsync, req);
     }
 
-    public async Task UpdateCrowdfunderAsync(string id, ICrowdfunder crowdfunder) {
+    public async Task UpdateCrowdfunderAsync(string id, ICrowdfunder crowdfunder, bool toggleStatus) {
         var client = await GetClientAsync();
         var crowdfunderRes = await client.InvokeAsync<CrowdfunderRes>(x => x.GetCrowdfunderByIdAsync, id);
 
@@ -59,9 +60,16 @@ public class EngageCrowdfunderManager : ICrowdfunderManager {
         
         syncCrowdfunderReq.Url = new CrowdfunderUrlReq();
         syncCrowdfunderReq.Url.Value = crowdfunder.Url(_contentLocator);
-        
-        syncCrowdfunderReq.Activate = crowdfunder.Activate ? true : null;
-        syncCrowdfunderReq.Deactivate = crowdfunder.Deactivate ? true : null;
+
+        if (crowdfunder.Status.CanToggle && toggleStatus) {
+            if (crowdfunder.Status.ToggleAction == CrowdfunderActivationActions.Activate) {
+                syncCrowdfunderReq.Activate = true;
+            } else if (crowdfunder.Status.ToggleAction == CrowdfunderActivationActions.Deactivate) {
+                syncCrowdfunderReq.Deactivate = true;
+            } else {
+                throw UnrecognisedValueException.For(crowdfunder.Status.ToggleAction);
+            }
+        }
         
         syncCrowdfunderReq.Allocations = GetCrowdfunderAllocationsReq(crowdfunder.Goals,
                                                                       crowdfunder.Currency.ToEngageCurrency());

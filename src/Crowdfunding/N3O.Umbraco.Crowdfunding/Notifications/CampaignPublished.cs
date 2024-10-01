@@ -26,7 +26,9 @@ public class CampaignPublished : INotificationAsyncHandler<ContentPublishedNotif
                 if (!campaign.Status.HasValue()) {
                     await _crowdfunderManager.CreateCampaignAsync(campaign);
                 } else {
-                    await _crowdfunderManager.UpdateCrowdfunderAsync(campaign.Key.ToString(), campaign);
+                    await _crowdfunderManager.UpdateCrowdfunderAsync(campaign.Key.ToString(),
+                                                                     campaign,
+                                                                     campaign.ToggleStatus);
                 }
             }
         }

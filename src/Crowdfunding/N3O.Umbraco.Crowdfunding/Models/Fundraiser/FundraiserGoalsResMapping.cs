@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Crowdfunding.Content;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex;
 using System.Collections.Generic;
@@ -19,7 +20,12 @@ public class FundraiserGoalsResMapping : IMapDefinition {
     }
 
     private void Map(FundraiserContent src, FundraiserGoalsRes dest, MapperContext ctx) {
-        var value = _forexConverter.QuoteToBase().FromCurrency(src.Campaign.Currency).Convert(src.Campaign.MinimumAmount);
+        var value = _forexConverter.QuoteToBase()
+                                   .FromCurrency(src.Campaign.Currency)
+                                   .UsingRateOn(src.Campaign.Content().CreateDate.ToLocalDate())
+                                   .ConvertAsync(src.Campaign.MinimumAmount)
+                                   .GetAwaiter()
+                                   .GetResult();
         
         dest.Currency = ctx.Map<Currency, CurrencyRes>(src.Currency);
         dest.MinimumValues = ctx.Map<decimal, Dictionary<string, MoneyRes>>(value.Base.Amount);

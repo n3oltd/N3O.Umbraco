@@ -1,8 +1,8 @@
-﻿using N3O.Umbraco.Content;
+﻿using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Commands;
-using N3O.Umbraco.Crowdfunding.Content;
-using N3O.Umbraco.Crowdfunding.Lookups;
+using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Mediator;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Services;
@@ -11,19 +11,27 @@ namespace N3O.Umbraco.Crowdfunding.Handlers;
 
 public class PublishFundraiserHandler : IRequestHandler<PublishFundraiserCommand, None, None> {
     private readonly IContentService _contentService;
+    private readonly ILookups _lookups;
 
-    public PublishFundraiserHandler(IContentService contentService) {
+    public PublishFundraiserHandler(IContentService contentService, ILookups lookups) {
         _contentService = contentService;
+        _lookups = lookups;
     }
 
-    public async Task<None> Handle(PublishFundraiserCommand req, CancellationToken cancellationToken) {
+    public Task<None> Handle(PublishFundraiserCommand req, CancellationToken cancellationToken) {
         var fundraiser = req.FundraiserId.Run(_contentService.GetById, true);
-        
-        fundraiser.SetValue(CrowdfundingConstants.Crowdfunder.Properties.Status, CrowdfunderStatuses.Active.Name);
-        fundraiser.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, true);
 
-        _contentService.SaveAndPublish(fundraiser);
+        var currentStatusStr = fundraiser.GetValue<string>(CrowdfundingConstants.Crowdfunder.Properties.Status);
+        var currentStatus = _lookups.FindByName<CrowdfunderStatus>(currentStatusStr).Single();
 
-        return None.Empty;
+        if (currentStatus.CanToggle &&
+            currentStatus.ToggleAction == CrowdfunderActivationActions.Activate &&
+            currentStatus != CrowdfunderStatuses.Active) {
+            fundraiser.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, true);
+
+            _contentService.SaveAndPublish(fundraiser);
+        }
+
+        return Task.FromResult(None.Empty);
     }
 }

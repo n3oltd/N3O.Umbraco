@@ -36,8 +36,8 @@ public static class CrowdfundingConstants {
             public const string Goals = "goals";
             public const string HeroImages = "heroImages";
             public const string Name = "displayName";
-            public const string ToggleStatus = "toggleStatus";
             public const string Status = "status";
+            public const string ToggleStatus = "toggleStatus";
         }
     }
 
@@ -144,19 +144,19 @@ public static class CrowdfundingConstants {
     
     public static class Webhooks {
         public static class EventTypes {
-            public static class Pledges {
-                public const string PledgeUpdated = "pledge.updated";
-            }
-            
             public static class Crowdfunder {
                 public const string CrowdfunderCreated = "crowdfunder.created";
                 public const string CrowdfunderUpdated = "crowdfunder.updated";
             }
+            
+            public static class Pledges {
+                public const string PledgeUpdated = "pledge.updated";
+            }
         }
 
         public static class HookIds {
-            public const string Pledges = nameof(Pledges);
             public const string Crowdfunder = nameof(Crowdfunder);
+            public const string Pledges = nameof(Pledges);
         }
     }
 }

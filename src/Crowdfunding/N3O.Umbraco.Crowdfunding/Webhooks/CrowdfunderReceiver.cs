@@ -20,7 +20,9 @@ public class CrowdfunderReceiver : WebhookReceiver {
     private readonly IJsonProvider _jsonProvider;
     private readonly AsyncKeyedLocker<string> _locker;
 
-    public CrowdfunderReceiver(IJsonProvider jsonProvider, AsyncKeyedLocker<string> locker, IBackgroundJob backgroundJob) {
+    public CrowdfunderReceiver(IJsonProvider jsonProvider,
+                               AsyncKeyedLocker<string> locker,
+                               IBackgroundJob backgroundJob) {
         _jsonProvider = jsonProvider;
         _locker = locker;
         _backgroundJob = backgroundJob;

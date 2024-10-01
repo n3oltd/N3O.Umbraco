@@ -7,8 +7,7 @@ using Umbraco.Cms.Core.Services;
 namespace N3O.Umbraco.Crowdfunding.Events;
 
 public class CrowdfunderCreatedHandler : CrowdfunderEventHandler<CrowdfunderCreatedEvent> {
-    public CrowdfunderCreatedHandler(AsyncKeyedLocker<string> asyncKeyedLocker,
-                                     IContentService contentService) 
+    public CrowdfunderCreatedHandler(AsyncKeyedLocker<string> asyncKeyedLocker, IContentService contentService) 
         : base(asyncKeyedLocker, contentService) { }
 
     protected override Task HandleEventAsync(CrowdfunderCreatedEvent req, CancellationToken cancellationToken) {

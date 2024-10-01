@@ -1,8 +1,8 @@
 ﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Scheduler.Attributes;

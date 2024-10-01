@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Crowdfunding.Lookups;
+﻿using N3O.Umbraco.Crm.Lookups;
+using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.References;
 using System;
 

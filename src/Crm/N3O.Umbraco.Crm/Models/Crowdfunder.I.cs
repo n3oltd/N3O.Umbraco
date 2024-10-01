@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Financial;
 using System;
 using System.Collections.Generic;
@@ -9,9 +10,8 @@ public interface ICrowdfunder {
     Guid Id { get; }
     string Name { get; }
     Currency Currency { get; }
-    bool Activate { get; }
-    bool Deactivate { get; }
     IEnumerable<ICrowdfunderGoal> Goals { get; }
+    CrowdfunderStatus Status { get; }
 
     string Url(IContentLocator contentLocator);
 }

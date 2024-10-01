@@ -30,10 +30,6 @@ public class QuoteToBaseForexConverter {
 
         return this;
     }
-    
-    public ForexMoney Convert(decimal quoteAmount) {
-        return ConvertAsync(quoteAmount).GetAwaiter().GetResult();
-    }
 
     public async Task<ForexMoney> ConvertAsync(decimal quoteAmount) {
         if (_quoteCurrency == null) {
