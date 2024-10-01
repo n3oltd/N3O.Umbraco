@@ -57,18 +57,6 @@ public class UserDirectory : IUserDirectory {
         return user;
     }
     
-    public async Task<Auth0User> GetUserByEmailAsync(ClientType clientType, string email) {
-        var managementClient = await GetManagementClientAsync(clientType);
-        
-        var auth0Users = await managementClient.Users.GetUsersByEmailAsync(email.ToLowerInvariant());
-
-        if (auth0Users.Count > 1) {
-            throw new Exception($"Multiple users with email {email.Quote()} found in Auth0");
-        }
-
-        return auth0Users.SingleOrDefault();
-    }
-    
     public async Task<string> GetPasswordResetUrlAsync(ClientType clientType, string directoryId) {
         var managementClient = await GetManagementClientAsync(clientType);
         
@@ -85,6 +73,18 @@ public class UserDirectory : IUserDirectory {
         var ticket = await _managementClient.Tickets.CreatePasswordChangeTicketAsync(request);
 
         return ticket.Value;
+    }
+    
+    public async Task<Auth0User> GetUserByEmailAsync(ClientType clientType, string email) {
+        var managementClient = await GetManagementClientAsync(clientType);
+        
+        var auth0Users = await managementClient.Users.GetUsersByEmailAsync(email.ToLowerInvariant());
+
+        if (auth0Users.Count > 1) {
+            throw new Exception($"Multiple users with email {email.Quote()} found in Auth0");
+        }
+
+        return auth0Users.SingleOrDefault();
     }
 
     private async Task<Auth0User> CreateDirectoryUserAsync(IManagementApiClient managementClient,
