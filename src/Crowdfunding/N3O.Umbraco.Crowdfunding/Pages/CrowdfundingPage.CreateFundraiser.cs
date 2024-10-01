@@ -59,7 +59,7 @@ public class CreateFundraiserPage : CrowdfundingPage {
         var campaignId = query[Parameters.CampaignId].TryParseAs<Guid>();
         var content = campaignId.IfNotNull(x => ContentLocator.ById(x));
 
-        if (content.ContentType.Alias.EqualsInvariant(CrowdfundingConstants.Campaign.Alias)) {
+        if (content?.ContentType.Alias.EqualsInvariant(CrowdfundingConstants.Campaign.Alias) == true) {
             return content.As<CampaignContent>();
         } else {
             return null;

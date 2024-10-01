@@ -39,7 +39,7 @@ public class ClientFactory<T> {
     }
 
     public async Task<ServiceClient<T>> CreateAsync(SubscriptionInfo subscription, string onBehalfOf = null) {
-        onBehalfOf ??= await _userDirectoryIdAccessor.GetIdAsync();
+        onBehalfOf ??= await _userDirectoryIdAccessor.GetIdAsync(ClientTypes.Members);
 
         var httpClient = await GetHttpClientAsync(onBehalfOf);
 

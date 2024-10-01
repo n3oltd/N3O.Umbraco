@@ -14,5 +14,6 @@ public interface IUserDirectory {
                                                string lastName,
                                                string password = null);
     
-    Task<User> GetUserByEmailAsync(ClientType clientType, string email);
+    Task<string> GetPasswordResetUrlAsync(ClientType clientType, string directoryId);
+    Task<Auth0User> GetUserByEmailAsync(ClientType clientType, string email);
 }
