@@ -21,7 +21,7 @@ public class GetCampaignGoalOptionByIdHandler : IRequestHandler<GetCampaignGoalO
     
     public Task<GoalOptionRes> Handle(GetCampaignGoalOptionByIdQuery req, CancellationToken cancellationToken) {
         var campaign = req.CampaignId.Run(_contentLocator.ById<CampaignContent>, true);
-        var goalOption = req.GoalOptionId.Run(x => campaign.GoalOptions.SingleOrDefault(o => o.GoalId == x), true);
+        var goalOption = req.GoalOptionId.Run(x => campaign.GoalOptions.SingleOrDefault(o => o.Id == x), true);
         
         var res = _mapper.Map<CampaignGoalOptionElement, GoalOptionRes>(goalOption);
         

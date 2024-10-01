@@ -27,7 +27,7 @@
 
     <div class="campaign__content">
         <div class="campaign__title">
-            <h2 n3o-editor="@(Model, PropertyTypes.TextBox, nameof(Model.Content.Name))">@Model.Content.Name</h2>
+            <h2 n3o-editor="@(Model, PropertyTypes.TextBox, CrowdfundingConstants.Crowdfunder.Properties.Name)">@Model.Content.Name</h2>
             
             <p n3o-editor="@(Model, PropertyTypes.Textarea, nameof(Model.Content.Description))">
                 @Model.Content.Description
@@ -45,7 +45,7 @@
             </div>
             
             <div class="fprogress__row">
-                <div class="detail">@Model.Formatter.Number.FormatPercentage(Model.CrowdfunderProgress.PercentageCompleted) @PartialText.Get("Complete")</div>
+                <div class="detail">@PartialText.Get("{0} Complete").FormatWith(Model.Formatter.Number.FormatPercentage(Model.CrowdfunderProgress.PercentageCompleted / 100m, 0))</div>
             </div>
             
             <div class="fprogress__bar">

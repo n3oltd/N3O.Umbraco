@@ -81,6 +81,7 @@ public static class CrowdfundingConstants {
             public const string FundDimension3 = "fundDimension3";
             public const string FundDimension4 = "fundDimension4";
             public const string Name = "displayName";
+            public const string OptionId = "optionId";
             public const string PriceHandles = "priceHandles";
             public const string Tags = "tags";
         }

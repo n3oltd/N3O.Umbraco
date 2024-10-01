@@ -14,6 +14,7 @@ public interface IContributionRepository {
                                     Instant timestamp,
                                     ICrowdfunderData crowdfunderData,
                                     string email,
+                                    string name,
                                     bool taxRelief,
                                     GivingType givingType,
                                     Allocation allocation);

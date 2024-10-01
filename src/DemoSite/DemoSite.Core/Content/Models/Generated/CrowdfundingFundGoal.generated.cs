@@ -97,6 +97,14 @@ namespace DemoSite.Content
 		public virtual global::DemoSite.Content.FundDimension3Value FundDimension3 => global::DemoSite.Content.CrowdfundingGoal.GetFundDimension3(this, _publishedValueFallback);
 
 		///<summary>
+		/// Option ID
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("optionId")]
+		public virtual string OptionId => global::DemoSite.Content.CrowdfundingGoal.GetOptionId(this, _publishedValueFallback);
+
+		///<summary>
 		/// Price Handles
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]

@@ -1,6 +1,6 @@
 @model ICrowdfunderViewModel
 
-<div class="main" @if (Model.EditMode()) { <text>data-page-id="@Model.Content.Key" data-page-mode="edit"</text>}>
+<div class="main" @if (Model.EditMode()) { <text>data-page-id="@Model.Content.Key" data-page-mode="edit" data-page-type="@Model.CrowdfunderType.Id"</text>}>
     <section class="hero">
         @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Crowdfunder/BackgroundImage.cshtml", Model)
         @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Crowdfunder/OwnerInfo.cshtml", Model)
@@ -28,6 +28,7 @@
 
     @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Modals/AllContributionsModal.cshtml", Model);
     @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Modals/ShareModal.cshtml", Model);
+    @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Modals/DonationSummaryModal.cshtml", null);
 
     @** TODO Look at if this can be moved to Smidge as it doesn't support modules **@
 
