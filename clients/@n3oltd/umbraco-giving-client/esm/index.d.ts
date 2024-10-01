@@ -251,6 +251,7 @@ export interface PriceRes {
 }
 export interface PriceCriteria {
     donationItem?: string | undefined;
+    feedbackScheme?: string | undefined;
     sponsorshipComponent?: string | undefined;
     fundDimensions?: FundDimensionValuesReq | undefined;
 }
