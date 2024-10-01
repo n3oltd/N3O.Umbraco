@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding.Queries;
+using N3O.Umbraco.Giving.Cart.Context;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Mediator;
@@ -20,17 +22,23 @@ public partial class CrowdfundingController : ApiController {
     private readonly Lazy<FundraiserAccessControl> _fundraiserAccessControl;
     private readonly Lazy<ILookups> _lookups;
     private readonly Lazy<IUmbracoMapper> _mapper;
+    private readonly Lazy<CartCookie> _cartCookie;
+    private readonly Lazy<IContentLocator> _contentLocator;
 
     public CrowdfundingController(Lazy<IMediator> mediator,
                                   Lazy<IContentService> contentService,
                                   Lazy<FundraiserAccessControl> fundraiserAccessControl,
                                   Lazy<ILookups> lookups,
-                                  Lazy<IUmbracoMapper> mapper) {
+                                  Lazy<IUmbracoMapper> mapper,
+                                  Lazy<CartCookie> cartCookie,
+                                  Lazy<IContentLocator> contentLocator) {
         _mediator = mediator;
         _contentService = contentService;
         _fundraiserAccessControl = fundraiserAccessControl;
         _lookups = lookups;
         _mapper = mapper;
+        _cartCookie = cartCookie;
+        _contentLocator = contentLocator;
     }
     
     [HttpPost("suggestSlug")]

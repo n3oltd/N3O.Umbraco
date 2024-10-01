@@ -1,35 +1,41 @@
 ﻿@inject IPartialText PartialText
 
 @{
-    PartialText.SetPartialName("DonationSummaryModal");
+    PartialText.SetPartialName("CrowdfundingDonationSummaryModal");
 }
 
 <div class="modalsItem modall" id="donationSummary-modal">
     <div class="cta">
         <div class="cta__title start">
             <h2>@PartialText.Get("Donation Summary")</h2>
+            
             <p>@PartialText.Get("Here’s the detail of your donation:")</p>
         </div>
 
         <label class="input__outer">
-            <div class="small">@PartialText.Get("Your message (Optional)")</div>
+            <div class="small">@PartialText.Get("Your message (optional)")</div>
+            
             <div class="input big">
-                <textarea rows="3" placeholder="Type your message here" id="donors-comment"></textarea>
+                <textarea rows="3" placeholder="@PartialText.Get("Type your message here")" id="donors-comment"></textarea>
             </div>
+            
             <p class="subtle">
-                @PartialText.Get("Your message will be displayed with your donation on the fundraising page.")
+                @PartialText.Get("Your message will be displayed alongside your donation on the fundraising page.")
             </p>
         </label>
+        
         <label class="check">
             <div class="check__box">
                 <input type="checkbox" id="donor-is-anonymous"/>
                 <span></span>
             </div>
-            <p class="small">@PartialText.Get("Hide my name on donors list")</p>
+            
+            <p class="small">@PartialText.Get("Hide my name")</p>
         </label>
+        
         <div class="cta__foot">
             <button type="button" class="button primary" id="add-donation-to-cart">
-                Add donations to Basket
+                @PartialText.Get("Add to Basket")
             </button>
         </div>
     </div>

@@ -3,13 +3,12 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
-using System;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class CrowdfunderGoalViewModel {
-    public string OptionId { get; private set; }
+    public string Id { get; private set; }
     public string Name { get; private set; }
     public decimal Amount { get; private set; }
     public FundDimension1Value FundDimension1Value { get; private set; }
@@ -24,7 +23,7 @@ public class CrowdfunderGoalViewModel {
     public static CrowdfunderGoalViewModel For(Currency crowdfunderCurrency, GoalElement goal) {
         var viewModel = new CrowdfunderGoalViewModel();
 
-        viewModel.OptionId = goal.OptionId;
+        viewModel.Id = goal.Id;
         viewModel.Name = goal.Name;
         viewModel.Amount = goal.Amount;
         viewModel.FundDimension1Value = goal.FundDimension1;

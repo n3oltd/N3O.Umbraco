@@ -2,13 +2,13 @@
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
 
-namespace N3O.Umbraco.Crowdfunding.Models.AddToCart;
+namespace N3O.Umbraco.Crowdfunding.Models;
 
-public class AddToCartReqValidator : ModelValidator<AddToCartReq> {
-    public AddToCartReqValidator(IFormatter formatter) : base(formatter) {
+public class CrowdfundingCartReqValidator : ModelValidator<CrowdfundingCartReq> {
+    public CrowdfundingCartReqValidator(IFormatter formatter) : base(formatter) {
         RuleFor(x => x.Crowdfunding)
            .NotEmpty()
-           .WithMessage(Get<Strings>(s => s.SpecifyCrowdfunderData));
+           .WithMessage(Get<Strings>(s => s.SpecifyCrowdfundingData));
         
         RuleFor(x => x.Items)
            .NotEmpty()
@@ -20,8 +20,8 @@ public class AddToCartReqValidator : ModelValidator<AddToCartReq> {
     }
     
     public class Strings : ValidationStrings {
-        public string SpecifyCrowdfunderData => "Please specify the crowdfunder data";
+        public string SpecifyCrowdfundingData => "Please specify the crowdfunding data";
         public string SpecifyCrowdfunderType => "Please specify the crowdfunder type";
-        public string SpecifyItems => "Please select items to add to cart.";
+        public string SpecifyItems => "Please specify the items";
     }
 }

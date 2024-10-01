@@ -20,7 +20,8 @@ namespace N3O.Umbraco.Giving.Cart.Handlers;
 
 public class AddToCartHandlers :
     IRequestHandler<AddToCartCommand, AddToCartReq, RevisionId>,
-    IRequestHandler<AddUpsellToCartCommand, AddUpsellToCartReq, RevisionId> {
+    IRequestHandler<AddUpsellToCartCommand, AddUpsellToCartReq, RevisionId>,
+    IRequestHandler<BulkAddToCartCommand, BulkAddToCartReq, RevisionId> {
     private readonly ICartAccessor _cartAccessor;
     private readonly IRepository<Entities.Cart> _repository;
     private readonly IContentLocator _contentLocator;
@@ -74,6 +75,21 @@ public class AddToCartHandlers :
                                                                     cart.GetTotalExcludingUpsells(upsellOfferContent.GivingType));
 
         var revisionId = await AddToCartAsync(upsellOfferContent.GivingType, allocation, 1, cancellationToken);
+
+        return revisionId;
+    }
+    
+    public async Task<RevisionId> Handle(BulkAddToCartCommand req, CancellationToken cancellationToken) {
+        RevisionId revisionId = null;
+        
+        foreach (var reqItem in req.Model.Items) {
+            var allocation = GetAllocationData(reqItem.Allocation);
+
+            revisionId = await AddToCartAsync(reqItem.GivingType,
+                                              allocation,
+                                              reqItem.Quantity.GetValueOrThrow(),
+                                              cancellationToken);
+        }
 
         return revisionId;
     }

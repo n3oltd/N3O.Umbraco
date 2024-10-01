@@ -2,10 +2,10 @@
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
 
-namespace N3O.Umbraco.Crowdfunding.Models.AddToCart;
+namespace N3O.Umbraco.Crowdfunding.Models;
 
-public class AddToCartItemReqValidator : ModelValidator<AddToCartItemReq> {
-    public AddToCartItemReqValidator(IFormatter formatter) : base(formatter) {
+public class CrowdfundingCartItemReqValidator : ModelValidator<CrowdfundingCartItemReq> {
+    public CrowdfundingCartItemReqValidator(IFormatter formatter) : base(formatter) {
         RuleFor(x => x.Value)
            .NotEmpty()
            .WithMessage(Get<Strings>(x => x.SpecifyValue));

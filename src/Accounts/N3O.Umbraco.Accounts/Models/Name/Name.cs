@@ -12,10 +12,6 @@ public class Name : Value, IName {
 
     public Name(IName name) : this(name.Title, name.FirstName, name.LastName) { }
 
-    public string GetFullName() {
-        return $"{FirstName} {LastName}".Trim();
-    }
-
     public string Title { get; }
     public string FirstName { get; }
     public string LastName { get; }

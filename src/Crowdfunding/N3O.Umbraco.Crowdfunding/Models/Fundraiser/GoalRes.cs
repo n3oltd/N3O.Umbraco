@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace N3O.Umbraco.Crowdfunding.Models;
+﻿namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class GoalRes {
     public string OptionId { get; set; }

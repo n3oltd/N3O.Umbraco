@@ -15,7 +15,6 @@ using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Validation;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Security;
