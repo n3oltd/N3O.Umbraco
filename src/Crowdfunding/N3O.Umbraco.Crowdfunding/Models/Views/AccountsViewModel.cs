@@ -18,6 +18,7 @@ public class AccountsViewModel {
     public IAccount Picked { get; private set; }
     public IAccount Selected { get; private set; }
     public DataEntrySettings DataEntrySettings { get; private set; }
+    public DataEntrySettingsContent DataEntrySettingsContent { get; private set; }
 
     public static async Task<AccountsViewModel> ForAsync(IAccountManager accountManager,
                                                          IMemberManager memberManager,
@@ -38,6 +39,7 @@ public class AccountsViewModel {
         var viewModel = new AccountsViewModel();
         viewModel.Email = currentMemberEmail;
         viewModel.DataEntrySettings = dataEntrySettings;
+        viewModel.DataEntrySettingsContent = dataEntrySettingsContent;
         viewModel.Available = availableAccounts.OrEmpty().ToList();
 
         if (!account.Id.HasValue()) {
