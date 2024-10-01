@@ -86,6 +86,61 @@ var CrowdfundingClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
+    CrowdfundingClient.prototype.addToCart = function (crowdfundingReq) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Crowdfunding/addToCart";
+        url_ = url_.replace(/[?&]$/, "");
+        var content_ = JSON.stringify(crowdfundingReq);
+        var options_ = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processAddToCart(_response);
+        });
+    };
+    CrowdfundingClient.prototype.processAddToCart = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                return;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status === 412) {
+            return response.text().then(function (_responseText) {
+                var result412 = null;
+                result412 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result412);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
     CrowdfundingClient.prototype.getContentPropertyValue = function (contentId, propertyAlias) {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Crowdfunding/content/{contentId}/properties/{propertyAlias}";
@@ -490,6 +545,60 @@ var CrowdfundingClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
+    CrowdfundingClient.prototype.publishFundraiser = function (fundraiserId) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers/{fundraiserId}/publish";
+        if (fundraiserId === undefined || fundraiserId === null)
+            throw new Error("The parameter 'fundraiserId' must be defined.");
+        url_ = url_.replace("{fundraiserId}", encodeURIComponent("" + fundraiserId));
+        url_ = url_.replace(/[?&]$/, "");
+        var options_ = {
+            method: "POST",
+            headers: {}
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processPublishFundraiser(_response);
+        });
+    };
+    CrowdfundingClient.prototype.processPublishFundraiser = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                return;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status === 412) {
+            return response.text().then(function (_responseText) {
+                var result412 = null;
+                result412 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result412);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
     CrowdfundingClient.prototype.getPropertyTypes = function () {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Crowdfunding/lookups/propertyTypes";
@@ -626,6 +735,12 @@ export var FeedbackCustomFieldType;
     FeedbackCustomFieldType["Date"] = "date";
     FeedbackCustomFieldType["Text"] = "text";
 })(FeedbackCustomFieldType || (FeedbackCustomFieldType = {}));
+/** One of 'campaign', 'fundraiser' */
+export var CrowdfunderType;
+(function (CrowdfunderType) {
+    CrowdfunderType["Campaign"] = "campaign";
+    CrowdfunderType["Fundraiser"] = "fundraiser";
+})(CrowdfunderType || (CrowdfunderType = {}));
 /** One of 'boolean', 'cropper', 'dateTime', 'nested', 'numeric', 'raw', 'textarea', 'textBox' */
 export var PropertyType;
 (function (PropertyType) {

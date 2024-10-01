@@ -2562,6 +2562,9 @@ namespace N3O.Umbraco.Clients.Giving
         [Newtonsoft.Json.JsonProperty("donationItem", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string DonationItem { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("feedbackScheme", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string FeedbackScheme { get; set; }
+
         [Newtonsoft.Json.JsonProperty("sponsorshipComponent", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string SponsorshipComponent { get; set; }
 

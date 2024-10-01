@@ -7,6 +7,8 @@ export declare class CrowdfundingClient {
     });
     getCampaignGoalOptions(campaignId: string, goalOptionId: string): Promise<GoalOptionRes>;
     protected processGetCampaignGoalOptions(response: Response): Promise<GoalOptionRes>;
+    addToCart(crowdfundingReq: CrowdfundingCartReq): Promise<void>;
+    protected processAddToCart(response: Response): Promise<void>;
     getContentPropertyValue(contentId: string, propertyAlias: string): Promise<ContentPropertyValueRes>;
     protected processGetContentPropertyValue(response: Response): Promise<ContentPropertyValueRes>;
     getNestedPropertySchema(contentId: string, propertyAlias: string): Promise<NestedSchemaRes>;
@@ -21,13 +23,15 @@ export declare class CrowdfundingClient {
     protected processGetFundraiserGoals(response: Response): Promise<FundraiserGoalsRes>;
     updateFundraiserGoals(contentId: string, req: FundraiserGoalsReq): Promise<void>;
     protected processUpdateFundraiserGoals(response: Response): Promise<void>;
+    publishFundraiser(fundraiserId: string): Promise<void>;
+    protected processPublishFundraiser(response: Response): Promise<void>;
     getPropertyTypes(): Promise<LookupRes[]>;
     protected processGetPropertyTypes(response: Response): Promise<LookupRes[]>;
     getDashboardStatistics(req: DashboardStatisticsCriteria): Promise<DashboardStatisticsRes>;
     protected processGetDashboardStatistics(response: Response): Promise<DashboardStatisticsRes>;
 }
 export interface GoalOptionRes {
-    id?: string;
+    id?: string | undefined;
     name?: string | undefined;
     type?: AllocationType | undefined;
     tags?: string[] | undefined;
@@ -126,6 +130,42 @@ export interface ProblemDetails {
     detail?: string | undefined;
     instance?: string | undefined;
     [key: string]: any;
+}
+export interface CrowdfundingCartReq {
+    items?: CrowdfundingCartItemReq[] | undefined;
+    type?: CrowdfunderType | undefined;
+    crowdfunding?: CrowdfunderDataReq | undefined;
+}
+export interface CrowdfundingCartItemReq {
+    goalId?: string | undefined;
+    value?: MoneyReq | undefined;
+    feedback?: FeebackCrowdfundingCartItemReq | undefined;
+}
+export interface MoneyReq {
+    amount?: number | undefined;
+    currency?: string | undefined;
+}
+export interface FeebackCrowdfundingCartItemReq {
+    customFields?: FeedbackNewCustomFieldsReq | undefined;
+}
+export interface FeedbackNewCustomFieldsReq {
+    entries?: FeedbackNewCustomFieldReq[] | undefined;
+}
+export interface FeedbackNewCustomFieldReq {
+    alias?: string | undefined;
+    bool?: boolean | undefined;
+    date?: string | undefined;
+    text?: string | undefined;
+}
+/** One of 'campaign', 'fundraiser' */
+export declare enum CrowdfunderType {
+    Campaign = "campaign",
+    Fundraiser = "fundraiser"
+}
+export interface CrowdfunderDataReq {
+    crowdfunderId?: string | undefined;
+    comment?: string | undefined;
+    anonymous?: boolean | undefined;
 }
 export interface ContentPropertyValueRes {
     alias?: string | undefined;
@@ -334,7 +374,7 @@ export interface FundraiserGoalsReq {
 }
 export interface FundraiserGoalReq {
     amount?: number | undefined;
-    goalId?: string | undefined;
+    goalOptionId?: string | undefined;
     fundDimensions?: FundDimensionValuesReq | undefined;
     feedback?: FeedbackGoalReq | undefined;
 }
@@ -347,17 +387,11 @@ export interface FundDimensionValuesReq {
 export interface FeedbackGoalReq {
     customFields?: FeedbackNewCustomFieldsReq | undefined;
 }
-export interface FeedbackNewCustomFieldsReq {
-    entries?: FeedbackNewCustomFieldReq[] | undefined;
-}
-export interface FeedbackNewCustomFieldReq {
-    alias?: string | undefined;
-    bool?: boolean | undefined;
-    date?: string | undefined;
-    text?: string | undefined;
-}
 export interface FundraiserGoalsRes {
     currency?: CurrencyRes | undefined;
+    minimumValues?: {
+        [key: string]: MoneyRes;
+    } | undefined;
     goalOptions?: GoalOptionRes[] | undefined;
     selectedGoals?: GoalRes[] | undefined;
 }
@@ -369,9 +403,11 @@ export interface CurrencyRes {
     symbol?: string | undefined;
 }
 export interface GoalRes {
-    campaignGoalId?: string;
+    optionId?: string | undefined;
     value?: number;
+    fundDimensions?: FundDimensionValuesRes | undefined;
     feedback?: FeedbackGoalRes | undefined;
+    tags?: TagRes[] | undefined;
 }
 export interface FeedbackGoalRes {
     feedback?: FeedbackCustomFieldRes[] | undefined;
@@ -383,6 +419,10 @@ export interface FeedbackCustomFieldRes {
     bool?: boolean | undefined;
     date?: string | undefined;
     text?: string | undefined;
+}
+export interface TagRes {
+    name?: string | undefined;
+    iconUrl?: string | undefined;
 }
 export interface LookupRes {
     id?: string | undefined;

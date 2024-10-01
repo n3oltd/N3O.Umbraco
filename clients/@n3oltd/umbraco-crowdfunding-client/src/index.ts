@@ -73,6 +73,56 @@ export class CrowdfundingClient {
         return Promise.resolve<GoalOptionRes>(null as any);
     }
 
+    addToCart(crowdfundingReq: CrowdfundingCartReq): Promise<void> {
+        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/addToCart";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(crowdfundingReq);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAddToCart(_response);
+        });
+    }
+
+    protected processAddToCart(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status === 412) {
+            return response.text().then((_responseText) => {
+            let result412: any = null;
+            result412 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result412);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
     getContentPropertyValue(contentId: string, propertyAlias: string): Promise<ContentPropertyValueRes> {
         let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/content/{contentId}/properties/{propertyAlias}";
         if (contentId === undefined || contentId === null)
@@ -439,6 +489,55 @@ export class CrowdfundingClient {
         return Promise.resolve<void>(null as any);
     }
 
+    publishFundraiser(fundraiserId: string): Promise<void> {
+        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers/{fundraiserId}/publish";
+        if (fundraiserId === undefined || fundraiserId === null)
+            throw new Error("The parameter 'fundraiserId' must be defined.");
+        url_ = url_.replace("{fundraiserId}", encodeURIComponent("" + fundraiserId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPublishFundraiser(_response);
+        });
+    }
+
+    protected processPublishFundraiser(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status === 412) {
+            return response.text().then((_responseText) => {
+            let result412: any = null;
+            result412 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result412);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
     getPropertyTypes(): Promise<LookupRes[]> {
         let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/lookups/propertyTypes";
         url_ = url_.replace(/[?&]$/, "");
@@ -543,7 +642,7 @@ export class CrowdfundingClient {
 }
 
 export interface GoalOptionRes {
-    id?: string;
+    id?: string | undefined;
     name?: string | undefined;
     type?: AllocationType | undefined;
     tags?: string[] | undefined;
@@ -652,6 +751,50 @@ export interface ProblemDetails {
     instance?: string | undefined;
 
     [key: string]: any;
+}
+
+export interface CrowdfundingCartReq {
+    items?: CrowdfundingCartItemReq[] | undefined;
+    type?: CrowdfunderType | undefined;
+    crowdfunding?: CrowdfunderDataReq | undefined;
+}
+
+export interface CrowdfundingCartItemReq {
+    goalId?: string | undefined;
+    value?: MoneyReq | undefined;
+    feedback?: FeebackCrowdfundingCartItemReq | undefined;
+}
+
+export interface MoneyReq {
+    amount?: number | undefined;
+    currency?: string | undefined;
+}
+
+export interface FeebackCrowdfundingCartItemReq {
+    customFields?: FeedbackNewCustomFieldsReq | undefined;
+}
+
+export interface FeedbackNewCustomFieldsReq {
+    entries?: FeedbackNewCustomFieldReq[] | undefined;
+}
+
+export interface FeedbackNewCustomFieldReq {
+    alias?: string | undefined;
+    bool?: boolean | undefined;
+    date?: string | undefined;
+    text?: string | undefined;
+}
+
+/** One of 'campaign', 'fundraiser' */
+export enum CrowdfunderType {
+    Campaign = "campaign",
+    Fundraiser = "fundraiser",
+}
+
+export interface CrowdfunderDataReq {
+    crowdfunderId?: string | undefined;
+    comment?: string | undefined;
+    anonymous?: boolean | undefined;
 }
 
 export interface ContentPropertyValueRes {
@@ -905,7 +1048,7 @@ export interface FundraiserGoalsReq {
 
 export interface FundraiserGoalReq {
     amount?: number | undefined;
-    goalId?: string | undefined;
+    goalOptionId?: string | undefined;
     fundDimensions?: FundDimensionValuesReq | undefined;
     feedback?: FeedbackGoalReq | undefined;
 }
@@ -921,19 +1064,9 @@ export interface FeedbackGoalReq {
     customFields?: FeedbackNewCustomFieldsReq | undefined;
 }
 
-export interface FeedbackNewCustomFieldsReq {
-    entries?: FeedbackNewCustomFieldReq[] | undefined;
-}
-
-export interface FeedbackNewCustomFieldReq {
-    alias?: string | undefined;
-    bool?: boolean | undefined;
-    date?: string | undefined;
-    text?: string | undefined;
-}
-
 export interface FundraiserGoalsRes {
     currency?: CurrencyRes | undefined;
+    minimumValues?: { [key: string]: MoneyRes; } | undefined;
     goalOptions?: GoalOptionRes[] | undefined;
     selectedGoals?: GoalRes[] | undefined;
 }
@@ -947,9 +1080,11 @@ export interface CurrencyRes {
 }
 
 export interface GoalRes {
-    campaignGoalId?: string;
+    optionId?: string | undefined;
     value?: number;
+    fundDimensions?: FundDimensionValuesRes | undefined;
     feedback?: FeedbackGoalRes | undefined;
+    tags?: TagRes[] | undefined;
 }
 
 export interface FeedbackGoalRes {
@@ -963,6 +1098,11 @@ export interface FeedbackCustomFieldRes {
     bool?: boolean | undefined;
     date?: string | undefined;
     text?: string | undefined;
+}
+
+export interface TagRes {
+    name?: string | undefined;
+    iconUrl?: string | undefined;
 }
 
 export interface LookupRes {
