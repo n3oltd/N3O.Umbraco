@@ -1,6 +1,6 @@
 ﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Lookups;
 using System;
 using System.Linq;
@@ -27,9 +27,7 @@ public class FundraiserAccessControl : MembersAccessControl {
         var canEdit = await base.AllowEditAsync(contentProperties);
         
         if (canEdit) {
-            var status = GetFundraiserStatus(() => contentProperties.GetPropertyValueByAlias<string>(CrowdfundingConstants.Fundraiser.Properties.Status));
-        
-            canEdit = status != FundraiserStatuses.Closed;
+            canEdit = CanEdit(() => contentProperties.GetPropertyValueByAlias<string>(CrowdfundingConstants.Crowdfunder.Properties.Status));
         }
 
         return canEdit;
@@ -39,16 +37,16 @@ public class FundraiserAccessControl : MembersAccessControl {
         var canEdit = await base.AllowEditAsync(content);
         
         if (canEdit) {
-            var status = GetFundraiserStatus(() => content.Value<string>(CrowdfundingConstants.Fundraiser.Properties.Status));
-            
-            canEdit = status != FundraiserStatuses.Closed;
+            canEdit = CanEdit(() => content.Value<string>(CrowdfundingConstants.Crowdfunder.Properties.Status));
         }
 
         return canEdit;
     }
-    
-    private FundraiserStatus GetFundraiserStatus(Func<string> getValue) {
-        return _lookups.FindByName<FundraiserStatus>(getValue()).Single();
+
+    private bool CanEdit(Func<string> getValue) {
+        var status = _lookups.FindByName<CrowdfunderStatus>(getValue()).SingleOrDefault();
+        
+        return status?.CanEdit != false;
     }
 
     protected override string ContentTypeAlias => CrowdfundingConstants.Fundraiser.Alias;

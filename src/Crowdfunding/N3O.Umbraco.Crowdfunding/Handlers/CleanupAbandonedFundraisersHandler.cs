@@ -1,8 +1,8 @@
 ﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Scheduler.Attributes;
@@ -32,7 +32,7 @@ public class CleanupAbandonedFundraisersHandler : IRequestHandler<CleanupAbandon
         var allFundraisers = _contentLocator.All<FundraiserContent>();
         var thirtyDaysAgo = _localClock.GetLocalNow().Minus(Period.FromDays(30)).ToDateTimeUnspecified();
         
-        var toDelete = allFundraisers.Where(x => x.Status == FundraiserStatuses.Pending &&
+        var toDelete = allFundraisers.Where(x => (!x.Status.HasValue() || x.Status == CrowdfunderStatuses.Draft) &&
                                                  x.Content().UpdateDate < thirtyDaysAgo);
         
         toDelete.Do(DeleteExpiredFundraiser);

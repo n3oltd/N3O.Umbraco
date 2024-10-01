@@ -77,11 +77,10 @@ function n3o_cdf_convertToObject(dataObject) {
 function n3o_cdf_poolRequest(fetcher, successAction, ...args) {
     const intervalId = setInterval(async () => {
         const result = await fetcher(args);
-        
         if (result.status === 200) {
             const data = await result.json();
             
-            if (data && data.id) {
+            if (data && data.isCreated) {
                 clearInterval(intervalId);
                 successAction();
             }
@@ -101,9 +100,14 @@ const n3o_cdf_createAccount = () => {
     emailField.value = document.getElementById("memberEmail").value;
     emailField.readOnly = true;
 
+    const countryField = document.getElementById("address.country");
     const phoneCountry = document.querySelector("#countryCode");
-    phoneCountry.value = document.getElementById("address.country").value;
+    phoneCountry.value = countryField.value;
 
+    countryField.addEventListener("change", function () {
+        phoneCountry.value = countryField.value;
+    });
+    
     accountForm.addEventListener('submit', async e => {
         e.preventDefault();
 

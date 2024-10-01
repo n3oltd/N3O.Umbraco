@@ -5,7 +5,6 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
-using System;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
@@ -20,6 +19,8 @@ public class CampaignGoalOptionElement : UmbracoElement<CampaignGoalOptionElemen
     public IEnumerable<FundDimension4Value> FundDimension4 => GetPickedAs(x => x.FundDimension4);
     public IEnumerable<TagContent> Tags => GetPickedAs(x => x.Tags);
     public IEnumerable<PriceHandleElement> PriceHandles => GetNestedAs(x => x.PriceHandles);
+    
+    public string Id => Content().Key.ToString().ToLowerInvariant();
     
     public CampaignFundGoalOptionElement Fund { get; private set; }
     public CampaignFeedbackGoalOptionElement Feedback { get; private set; }
@@ -54,8 +55,6 @@ public class CampaignGoalOptionElement : UmbracoElement<CampaignGoalOptionElemen
             }
         }
     }
-    
-    public Guid GoalId => Content().Key;
 
     IEnumerable<FundDimension1Value> IFundDimensionsOptions.Dimension1Options => FundDimension1;
     IEnumerable<FundDimension2Value> IFundDimensionsOptions.Dimension2Options => FundDimension2;

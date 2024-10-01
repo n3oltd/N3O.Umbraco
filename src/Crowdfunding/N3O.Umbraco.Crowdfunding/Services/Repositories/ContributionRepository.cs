@@ -50,6 +50,7 @@ public class ContributionRepository : IContributionRepository {
                                                  Instant timestamp,
                                                  ICrowdfunderData crowdfunderData,
                                                  string email,
+                                                 string name,
                                                  bool taxRelief,
                                                  GivingType givingType,
                                                  Allocation allocation) {
@@ -57,6 +58,7 @@ public class ContributionRepository : IContributionRepository {
                                                       timestamp,
                                                       crowdfunderData,
                                                       email,
+                                                      name,
                                                       taxRelief,
                                                       givingType,
                                                       allocation);
@@ -86,6 +88,7 @@ public class ContributionRepository : IContributionRepository {
                                                           Instant timestamp,
                                                           ICrowdfunderData crowdfunderData,
                                                           string email,
+                                                          string name,
                                                           bool taxRelief,
                                                           GivingType givingType,
                                                           Allocation allocation) {
@@ -119,9 +122,9 @@ public class ContributionRepository : IContributionRepository {
         contribution.CrowdfunderAmount = crowdfunderForex.Base.Amount;
         contribution.TaxReliefQuoteAmount = taxRelief ? taxReliefScheme.GetAllowanceValue(date, allocation.Value).Amount : 0m;
         contribution.TaxReliefBaseAmount = taxRelief ? taxReliefScheme.GetAllowanceValue(date, baseForex.Base).Amount : 0m;
-        contribution.CrowdfunderAmount = taxRelief ? taxReliefScheme.GetAllowanceValue(date, crowdfunderForex.Base).Amount : 0m;
+        contribution.TaxReliefCrowdfunderAmount = taxRelief ? taxReliefScheme.GetAllowanceValue(date, crowdfunderForex.Base).Amount : 0m;
         contribution.Anonymous = crowdfunderData.Anonymous;
-        contribution.Name = checkoutReference;
+        contribution.Name = name;
         contribution.Email = email;
         contribution.Comment = crowdfunderData.Comment;
         contribution.Status = ContributionStatuses.Visible;
@@ -135,7 +138,7 @@ public class ContributionRepository : IContributionRepository {
     private ICrowdfunderContent GetCrowdfunderContent(ICrowdfunderData crowdfunderData) {
         if (crowdfunderData.CrowdfunderType == CrowdfunderTypes.Campaign) {
             return _contentLocator.ById<CampaignContent>(crowdfunderData.CrowdfunderId);
-        } else if (crowdfunderData.CrowdfunderType == CrowdfunderTypes.Campaign) {
+        } else if (crowdfunderData.CrowdfunderType == CrowdfunderTypes.Fundraiser) {
             return _contentLocator.ById<FundraiserContent>(crowdfunderData.CrowdfunderId);
         } else {
             throw UnrecognisedValueException.For(crowdfunderData.CrowdfunderType);

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Crowdfunding.Controllers;
 
 public partial class CrowdfundingController {
-    [HttpGet("campaigns/{campaignId:guid}/goalOptions/{goalOptionId:guid}")]
+    [HttpGet("campaigns/{campaignId:guid}/goalOptions/{goalOptionId}")]
     public async Task<ActionResult<GoalOptionRes>> GetCampaignGoalOptions() {
         var res = await _mediator.Value.SendAsync<GetCampaignGoalOptionByIdQuery, None, GoalOptionRes>(None.Empty);
 

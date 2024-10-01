@@ -63,7 +63,7 @@ public class CheckoutWebhookTransform : WebhookTransform {
 
     private void TransformAccount(JsonSerializer serializer, Entities.Checkout checkout, JObject jObject) {
         if (checkout.HasValue(x => x.Account?.Individual?.Name)) {
-            jObject["account"]["name"] = JObject.FromObject(checkout.Account.Individual.Name, serializer);   
+            jObject["account"]["name"] = JObject.FromObject(checkout.Account.Individual.Name, serializer);
         }
     }
 

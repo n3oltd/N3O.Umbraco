@@ -20,7 +20,8 @@ namespace N3O.Umbraco.Giving.Cart.Handlers;
 
 public class AddToCartHandlers :
     IRequestHandler<AddToCartCommand, AddToCartReq, RevisionId>,
-    IRequestHandler<AddUpsellToCartCommand, AddUpsellToCartReq, RevisionId> {
+    IRequestHandler<AddUpsellToCartCommand, AddUpsellToCartReq, RevisionId>,
+    IRequestHandler<BulkAddToCartCommand, BulkAddToCartReq, RevisionId> {
     private readonly ICartAccessor _cartAccessor;
     private readonly IRepository<Entities.Cart> _repository;
     private readonly IContentLocator _contentLocator;
@@ -77,6 +78,21 @@ public class AddToCartHandlers :
 
         return revisionId;
     }
+    
+    public async Task<RevisionId> Handle(BulkAddToCartCommand req, CancellationToken cancellationToken) {
+        RevisionId revisionId = null;
+        
+        foreach (var reqItem in req.Model.Items) {
+            var allocation = GetAllocationData(reqItem.Allocation);
+
+            revisionId = await AddToCartAsync(reqItem.GivingType,
+                                              allocation,
+                                              reqItem.Quantity.GetValueOrThrow(),
+                                              cancellationToken);
+        }
+
+        return revisionId;
+    }
 
     private async Task<RevisionId> AddToCartAsync(GivingType givingType,
                                                   IAllocation allocation,
@@ -92,7 +108,7 @@ public class AddToCartHandlers :
     }
     
     private IAllocation GetAllocationData(AllocationReq req) {
-        var extensionData = req.Extensions.BindAll(_extensionBinders);
+        var extensionData = req.Extensions?.BindAll(_extensionBinders);
         
         var allocation = new Allocation(req, extensionData);
 

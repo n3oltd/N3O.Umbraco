@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Crowdfunding.Lookups;
+﻿using N3O.Umbraco.Crm.Lookups;
+using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.References;
 using System;
 
@@ -8,5 +9,6 @@ public interface ICrowdfunderInfo {
     Guid Id { get; }
     Reference Reference { get; }
     CrowdfunderType Type { get; }
+    CrowdfunderStatus Status { get; }
     IFundraiserInfo Fundraiser { get; }
 }

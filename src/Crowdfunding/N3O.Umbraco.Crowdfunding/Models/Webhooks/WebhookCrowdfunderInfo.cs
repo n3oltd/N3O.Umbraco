@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Crowdfunding.Lookups;
+﻿using N3O.Umbraco.Crm.Lookups;
+using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.References;
 using N3O.Umbraco.Webhooks.Models;
@@ -12,16 +13,19 @@ public class WebhookCrowdfunderInfo : Value, ICrowdfunderInfo {
     public WebhookCrowdfunderInfo(Guid id,
                                   WebhookReference reference,
                                   WebhookLookup type,
+                                  WebhookLookup status,
                                   WebhookFundraiserInfo fundraiser) {
         Id = id;
         Reference = reference;
         Type = type;
+        Status = status;
         Fundraiser = fundraiser;
     }
 
     public Guid Id { get; }
     public WebhookReference Reference { get; }
     public WebhookLookup Type { get; }
+    public WebhookLookup Status { get; }
     public WebhookFundraiserInfo Fundraiser { get; }
 
     protected override IEnumerable<object> GetAtomicValues() {
@@ -36,6 +40,9 @@ public class WebhookCrowdfunderInfo : Value, ICrowdfunderInfo {
 
     [JsonIgnore]
     CrowdfunderType ICrowdfunderInfo.Type => StaticLookups.FindById<CrowdfunderType>(Type.Id);
+    
+    [JsonIgnore]
+    CrowdfunderStatus ICrowdfunderInfo.Status => StaticLookups.FindById<CrowdfunderStatus>(Status.Id);
     
     [JsonIgnore]
     IFundraiserInfo ICrowdfunderInfo.Fundraiser => Fundraiser;

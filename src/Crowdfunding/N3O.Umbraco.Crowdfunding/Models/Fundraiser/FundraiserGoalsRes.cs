@@ -5,6 +5,7 @@ namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class FundraiserGoalsRes {
     public CurrencyRes Currency { get; set; }
+    public Dictionary<string, MoneyRes> MinimumValues { get; set; }
     public IEnumerable<GoalOptionRes> GoalOptions { get; set; }
     public IEnumerable<GoalRes> SelectedGoals { get; set; }
 }

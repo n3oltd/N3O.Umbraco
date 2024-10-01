@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using N3O.Umbraco.Accounts.Extensions;
 using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Extensions;
@@ -7,6 +8,7 @@ using N3O.Umbraco.Giving.Extensions;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Json;
+using N3O.Umbraco.Localization;
 using N3O.Umbraco.TaxRelief.Lookups;
 using NodaTime;
 using System;
@@ -18,17 +20,20 @@ namespace N3O.Umbraco.Crowdfunding.ChangeFeeds;
 
 public class CheckoutChangeFeed : ChangeFeed<Checkout> {
     private readonly IClock _clock;
+    private readonly IFormatter _formatter;
     private readonly IContributionRepository _contributionRepository;
     private readonly IJsonProvider _jsonProvider;
     
     public CheckoutChangeFeed(ILogger<CheckoutChangeFeed> logger,
                               IClock clock,
+                              IFormatter formatter,
                               IContributionRepository contributionRepository,
                               IJsonProvider jsonProvider) 
         : base(logger) {
         _contributionRepository = contributionRepository;
         _jsonProvider = jsonProvider;
         _clock = clock;
+        _formatter = formatter;
     }
     
     protected override async Task ProcessChangeAsync(EntityChange<Checkout> entityChange) {
@@ -68,6 +73,7 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
                                                                  _clock.GetCurrentInstant(),
                                                                  crowdfunderData,
                                                                  checkout.Account?.Email?.Address,
+                                                                 checkout.Account?.GetName(_formatter),
                                                                  checkout.Account?.TaxStatus == TaxStatuses.Payer,
                                                                  givingType,
                                                                  allocation);

@@ -49,7 +49,7 @@ public class PageController : RenderController {
         var content = _contentCache.Single<T>();
 
         if (content is IPublishedContent publishedContent) {
-            return new RedirectToUmbracoPageResult(publishedContent, _publishedUrlProvider, _umbracoContextAccessor);    
+            return new RedirectToUmbracoPageResult(publishedContent, _publishedUrlProvider, _umbracoContextAccessor);
         } else if (content is UmbracoContent<T> umbracoContent) {
             return new RedirectToUmbracoPageResult(umbracoContent.Content(),
                                                    _publishedUrlProvider,
