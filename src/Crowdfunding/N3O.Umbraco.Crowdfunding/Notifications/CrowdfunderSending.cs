@@ -36,10 +36,10 @@ public class CrowdfunderSending : INotificationAsyncHandler<SendingContentNotifi
         var toggleStatusProperty = GetProperty(statusTab, CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus);
 
         var statusStr = (string) statusProperty.Value;
-        var status = _lookups.FindByName<CrowdfunderStatus>(statusStr).Single();
+        var status = statusStr.HasValue() ? _lookups.FindByName<CrowdfunderStatus>(statusStr).Single() : null;
         
-        if (!statusProperty.HasValue()) {
-            statusTab.Properties = statusTab.Properties?.Except([statusProperty, toggleStatusProperty]);
+        if (!status.HasValue()) {
+            variant.Tabs = variant.Tabs.Except(statusTab);
         } else if (status.CanToggle) {
             toggleStatusProperty.Label = status.ToggleAction.Label;
         }
