@@ -1,0 +1,26 @@
+﻿@model ICrowdfunderViewModel
+
+<script>
+    function injectOGTags() {
+        addOrReplaceOGMetaTag('og:title', '@Model.Content.Name');
+        addOrReplaceOGMetaTag('og:description', '@Model.Content.Description');
+        addOrReplaceOGMetaTag('og:image', '@Model.Content.BackgroundImage.Crop.Url');
+        addOrReplaceOGMetaTag('og:url', window.location.href);
+    }
+
+    function addOrReplaceOGMetaTag(name, content) {
+        let existingOGTag = document.querySelector(`meta[property="${name}"]`);
+    
+        if (existingOGTag) {
+            existingOGTag.setAttribute('content', content);
+        } else {
+            const meta = document.createElement('meta');
+            meta.setAttribute('property', name);
+            meta.setAttribute('content', content);
+            document.getElementsByTagName('head')[0].appendChild(meta);
+        }
+    }
+
+    window.addEventListener('load', injectOGTags);
+</script>
+

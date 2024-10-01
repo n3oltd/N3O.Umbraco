@@ -48,7 +48,7 @@
 
                         <div class="select__options-body" id="goal-selection">
                             @foreach (var goalOption in Model.Campaign.GoalOptions) {
-                                <li data-id="@goalOption.GoalId" data-type="@goalOption.Type">
+                                <li data-id="@goalOption.Id" data-type="@goalOption.Type">
                                     @goalOption.Name
                                 </li>
                             }

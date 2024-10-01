@@ -32,6 +32,9 @@
 
     @** TODO Look at if this can be moved to Smidge as it doesn't support modules **@
 
+    @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Tags/OpenGraphTags.cshtml", Model);
+    @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Tags/CanonicalMetaTags.cshtml", null);
+
     @if (Model.EditMode()) {
         <script type="module" src="/assets/js/crowdfunding-editor.js"></script>
         <link href="/assets/css/crowdfunding-editor.css" rel="stylesheet"/>

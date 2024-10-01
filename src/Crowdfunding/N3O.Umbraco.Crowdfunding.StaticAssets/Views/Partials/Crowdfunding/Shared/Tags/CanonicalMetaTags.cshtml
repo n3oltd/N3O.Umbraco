@@ -1,0 +1,20 @@
+﻿<script>
+    function CanonicalTag() {
+        const newCanonicalUrl = window.location.href;
+
+        let existingCanonicalTag = document.querySelector('link[rel="canonical"]');
+
+        if (existingCanonicalTag) {
+            existingCanonicalTag.setAttribute('href', newCanonicalUrl);
+        } else {
+            let newCanonicalTag = document.createElement('link');
+            newCanonicalTag.setAttribute('rel', 'canonical');
+            newCanonicalTag.setAttribute('href', newCanonicalUrl);
+
+            document.head.appendChild(newCanonicalTag);
+        }
+    }
+
+    window.addEventListener('load', CanonicalTag);
+</script>
+
