@@ -7,7 +7,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Extensions;
 
 public static class PublishedElementExtensions {
-    public static T As<T>(this IPublishedElement publishedElement, IPublishedContent parent) {
+    public static T As<T>(this IPublishedElement publishedElement, IPublishedContent parent = null) {
         if (publishedElement is T typedContent) {
             return typedContent;
         }
@@ -19,11 +19,13 @@ public static class PublishedElementExtensions {
         return ConvertTo<T>(publishedElement, parent);
     }
 
-    public static IReadOnlyList<T> As<T>(this IEnumerable<IPublishedElement> publishedElements, IPublishedContent parent) {
+    public static IReadOnlyList<T> As<T>(this IEnumerable<IPublishedElement> publishedElements,
+                                         IPublishedContent parent = null) {
         return publishedElements.Select(x => x.As<T>(parent)).ToList();
     }
 
-    public static T To<T>(this IPublishedElement publishedElement, IPublishedContent parent) where T : IUmbracoContent, new() {
+    public static T To<T>(this IPublishedElement publishedElement, IPublishedContent parent = null)
+        where T : IUmbracoContent, new() {
         return ConvertTo<T>(publishedElement, parent);
     }
     
