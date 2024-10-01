@@ -1,5 +1,3 @@
-@using N3O.Umbraco.Authentication.Controllers
-@using N3O.Umbraco.Crowdfunding
 @using Umbraco.Cms.Web.Website.Controllers
 @using Umbraco.Extensions
 
@@ -29,15 +27,21 @@
                             <img src="@Model.SignIn.Member.AvatarLink" alt=""/>
 
                             <div class="dropMenu">
-                                @using (Html.BeginUmbracoForm<AuthenticationController>(nameof(AuthenticationController.HandleLogout), new {returnUrl = Model.Link(CrowdfunderHomePage.Url)})) {
-                                    <a id="handle-logout" href="#">
-                                        <svg>
-                                            <use xlink:href="#logoutIcon"></use>
-                                        </svg>
-                                        
-                                        @PartialText.Get("Sign Out")
-                                    </a>
-                                }
+                                <a href="@Url.Action("GetPasswordResetUrl", "Authentication")" target="_blank">
+                                    <svg>
+                                        <use xlink:href="#editIcon"></use>
+                                    </svg>
+
+                                    @PartialText.Get("Change Password")
+                                </a>
+
+                                <a href="@Url.Action("HandleLogout", "Authentication")">
+                                    <svg>
+                                        <use xlink:href="#logoutIcon"></use>
+                                    </svg>
+
+                                    @PartialText.Get("Sign Out")
+                                </a>
                             </div>
                         </div>
                     } else {
@@ -56,16 +60,6 @@
         </div>
     </header>
 </div>
-
-<script>
-    @*TODO Currently necessary because logout button is a link but umbraco form requires a button*@
-    document.querySelector('#handle-logout')?.addEventListener('click', function (e) {
-        e.preventDefault();
-
-        document.getElementById('handle-logout').closest('form').submit();
-    })
-
-</script>
 
 @{
     void CreateFundraiserLink() {

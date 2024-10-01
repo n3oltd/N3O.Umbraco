@@ -68,6 +68,24 @@ public class UserDirectory : IUserDirectory {
 
         return auth0Users.SingleOrDefault();
     }
+    
+    public async Task<string> GetPasswordResetUrlAsync(ClientType clientType, string directoryId) {
+        var managementClient = await GetManagementClientAsync(clientType);
+        
+        var isFederated = await IsFederatedByIdAsync(managementClient, directoryId);
+
+        if (isFederated) {
+            throw new Exception("Password reset emails cannot be sent for federated users");
+        }
+
+        var request = new PasswordChangeTicketRequest();
+        request.UserId = directoryId;
+        request.Ttl = TimeSpan.FromHours(1).Seconds;
+
+        var ticket = await _managementClient.Tickets.CreatePasswordChangeTicketAsync(request);
+
+        return ticket.Value;
+    }
 
     private async Task<Auth0User> CreateDirectoryUserAsync(IManagementApiClient managementClient,
                                                            string connectionName,
@@ -99,6 +117,16 @@ public class UserDirectory : IUserDirectory {
 
         return auth0Users.FirstOrDefault();
     }
+    
+    private async Task<Auth0User> GetDirectoryUserByIdAsync(string directoryId, bool throwIfNotFound) {
+            var directoryUser = await _managementClient.Users.GetAsync(directoryId);
+    
+            if (directoryUser == null && throwIfNotFound) {
+                throw new Exception($"No Auth0 user found with ID {directoryId}");
+            }
+    
+            return directoryUser;
+        }
 
     private async Task<bool> IsFederatedByEmailAsync(IManagementApiClient managementClient, string email) {
         var request = new GetConnectionsRequest();
@@ -120,6 +148,14 @@ public class UserDirectory : IUserDirectory {
         }
 
         return false;
+    }
+    
+    private async Task<bool> IsFederatedByIdAsync(IManagementApiClient managementApiClient, string directoryId) {
+        var user = await GetDirectoryUserByIdAsync(directoryId, true);
+
+        var isFederated = await IsFederatedByEmailAsync(managementApiClient, user.Email);
+
+        return isFederated;
     }
 
     private async Task SendPasswordResetEmailAsync(IManagementApiClient managementClient,

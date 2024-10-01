@@ -1,6 +1,5 @@
-﻿using N3O.Umbraco.Authentication.Auth0;
-using N3O.Umbraco.Authentication.Auth0.Lookups;
-using N3O.Umbraco.Crm.Engage.NamedParameters;
+﻿using N3O.Umbraco.Authentication.Auth0.Lookups;
+using N3O.Umbraco.Authentication.Auth0.NamedParameters;
 using N3O.Umbraco.Extensions;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
@@ -8,7 +7,7 @@ using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
 
-namespace N3O.Umbraco.Crm.Engage;
+namespace N3O.Umbraco.Authentication.Auth0;
 
 public class UserDirectoryIdAccessor : IUserDirectoryIdAccessor {
     private static readonly ConcurrentDictionary<string, string> Cache = new();
