@@ -1,8 +1,6 @@
-@using N3O.Umbraco.Blocks
 @using N3O.Umbraco.Crowdfunding.Extensions
-@using Umbraco.Cms.Web.Common.Views
 
-@inherits UmbracoViewPage<IBlockViewModel>
+@inherits  Umbraco.Cms.Web.Common.Views.UmbracoViewPage<N3O.Umbraco.Blocks.IBlockViewModel>
 
 @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/PageAccess.cshtml", Model.Crowdfunding().ViewModel)
 
