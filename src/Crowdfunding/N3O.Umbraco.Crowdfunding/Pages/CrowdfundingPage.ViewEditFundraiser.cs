@@ -4,6 +4,7 @@ using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Lookups;
+using N3O.Umbraco.OpenGraph;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -32,13 +33,22 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
     protected override bool IsMatch(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
         return IsMatch(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewEditFundraiser);
     }
+    
+    protected override void AddOpenGraph(IOpenGraphBuilder builder,
+                                         string crowdfundingPath,
+                                         IReadOnlyDictionary<string, string> query) {
+        var fundraiser = GetFundraiser(crowdfundingPath);
+
+        builder.WithTitle(fundraiser.Name);
+        builder.WithDescription(fundraiser.Description);
+        
+        //TODO
+        //builder.WithImageUrl(campaign.OpenGraphImageUrl);
+    }
 
     protected override async Task<ICrowdfundingViewModel> GetViewModelAsync(string crowdfundingPath,
                                                                             IReadOnlyDictionary<string, string> query) {
-        var match = Match(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewEditFundraiser);
-        var fundraiserId = int.Parse(match.Groups[1].Value);
-        var fundraiser = ContentLocator.ById<FundraiserContent>(fundraiserId);
-
+        var fundraiser = GetFundraiser(crowdfundingPath);
         var contributions = await _contributionRepository.FindByFundraiserAsync(fundraiser.Content().Key);
 
         return await ViewEditFundraiserViewModel.ForAsync(ViewModelFactory,
@@ -50,11 +60,19 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
                                                           fundraiser,
                                                           contributions);
     }
-    
+
     public static string Url(IContentLocator contentLocator, Guid fundraiserKey) {
         var fundraiser = contentLocator.ById<FundraiserContent>(fundraiserKey);
         
         return GenerateUrl(contentLocator, CrowdfundingConstants.Routes.ViewEditFundraiser_2.FormatWith(fundraiser.Content().Id,
                                                                                                         fundraiser.Slug));
+    }
+    
+    private FundraiserContent GetFundraiser(string crowdfundingPath) {
+        var match = Match(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewEditFundraiser);
+        var fundraiserId = int.Parse(match.Groups[1].Value);
+        var fundraiser = ContentLocator.ById<FundraiserContent>(fundraiserId);
+
+        return fundraiser;
     }
 }

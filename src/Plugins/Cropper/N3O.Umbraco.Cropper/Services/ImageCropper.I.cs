@@ -8,4 +8,9 @@ public interface IImageCropper {
     Task CropAllAsync(CropperConfiguration configuration,
                       CropperSource source,
                       CancellationToken cancellationToken = default);
+
+    public Task CropAsync(CropDefinition definition,
+                          CropperSource.Crop crop,
+                          CropperSource source,
+                          CancellationToken cancellationToken = default);
 }

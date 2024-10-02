@@ -20,29 +20,37 @@ public class CropBuilder : ICropBuilder {
         _imageHeight = imageHeight;
     }
 
-    public void AutoCrop(CropDefinition cropDefinition) {
-        var aspectRatio = cropDefinition.Width / (decimal) cropDefinition.Height;
+    public ICropBuilder AutoCrop(CropDefinition cropDefinition) {
+        return AutoCrop(cropDefinition.Width, cropDefinition.Height);
+    }
+
+    public ICropBuilder AutoCrop(int width, int height) {
+        var aspectRatio = width / (decimal) height;
         var cropCandidates = new List<Rectangle>();
         
         cropCandidates.Add(new Rectangle(0, 0, _imageWidth, (int) (_imageWidth / aspectRatio)));
         cropCandidates.Add(new Rectangle(0, 0, (int) (_imageHeight * aspectRatio), _imageHeight));
-        cropCandidates.Add(new Rectangle((int) Math.Max(0, (_imageWidth - cropDefinition.Width) / 2m),
-                                         (int) Math.Max(0, (_imageHeight - cropDefinition.Height) / 2m),
-                                         Math.Min(cropDefinition.Width, _imageWidth),
-                                         Math.Min(cropDefinition.Height, _imageHeight)));
+        cropCandidates.Add(new Rectangle((int) Math.Max(0, (_imageWidth - width) / 2m),
+                                         (int) Math.Max(0, (_imageHeight - height) / 2m),
+                                         Math.Min(width, _imageWidth),
+                                         Math.Min(height, _imageHeight)));
 
 
         var crop = cropCandidates.Where(r => r.X + r.Width <= _imageWidth && r.Y + r.Height <= _imageHeight)
                                  .MaxBy(x => x.Width * x.Height);
 
         CropTo(crop.X, crop.Y, crop.Width, crop.Height);
+
+        return this;
     }
 
-    public void CropTo(int x, int y, int width, int height) {
+    public ICropBuilder CropTo(int x, int y, int width, int height) {
         _x = x;
         _y = y;
         _height = height;
         _width = width;
+
+        return this;
     }
 
     public CropperSource.Crop Build() {

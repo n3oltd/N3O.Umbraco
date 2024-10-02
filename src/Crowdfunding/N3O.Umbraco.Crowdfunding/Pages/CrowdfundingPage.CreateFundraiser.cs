@@ -5,6 +5,7 @@ using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Forex;
 using N3O.Umbraco.Lookups;
+using N3O.Umbraco.OpenGraph;
 using Smidge;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,12 @@ public class CreateFundraiserPage : CrowdfundingPage {
 
     public override void AddAssets(ISmidgeRequire bundle) {
         bundle.RequiresJs("~/assets/js/create-fundraiser-page.js");
+    }
+
+    protected override void AddOpenGraph(IOpenGraphBuilder builder,
+                                         string crowdfundingPath,
+                                         IReadOnlyDictionary<string, string> query) {
+        // TODO
     }
 
     protected override bool IsMatch(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {

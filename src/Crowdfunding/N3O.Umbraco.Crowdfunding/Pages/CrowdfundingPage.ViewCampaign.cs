@@ -5,6 +5,7 @@ using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
+using N3O.Umbraco.OpenGraph;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,12 +31,22 @@ public class ViewCampaignPage : CrowdfundingPage {
         //check that the campaign status is not draft.
         return IsMatch(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewCampaign);
     }
+    
+    protected override void AddOpenGraph(IOpenGraphBuilder builder,
+                                         string crowdfundingPath,
+                                         IReadOnlyDictionary<string, string> query) {
+        var campaign = GetCampaign(crowdfundingPath);
+
+        builder.WithTitle(campaign.Name);
+        builder.WithDescription(campaign.Description);
+        
+        //TODO
+        //builder.WithImageUrl(campaign.OpenGraphImageUrl);
+    }
 
     protected override async Task<ICrowdfundingViewModel> GetViewModelAsync(string crowdfundingPath,
                                                                             IReadOnlyDictionary<string, string> query) {
-        var match = Match(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewCampaign);
-        var campaignId = int.Parse(match.Groups[1].Value);
-        var campaign = ContentLocator.ById<CampaignContent>(campaignId);
+        var campaign = GetCampaign(crowdfundingPath);
         var campaignFundraisers = GetFundraisersContent(campaign.CampaignId);
         
         var campaignContributions = await _contributionRepository.FindByCampaignAsync(campaign.Content().Key);
@@ -51,7 +62,7 @@ public class ViewCampaignPage : CrowdfundingPage {
                                                     fundraiserContributions,
                                                     campaignFundraisers);
     }
-    
+
     public static string Url(IContentLocator contentLocator, Guid campaignKey) {
         var campaign = contentLocator.ById<CampaignContent>(campaignKey);
         
@@ -59,6 +70,14 @@ public class ViewCampaignPage : CrowdfundingPage {
         
         return GenerateUrl(contentLocator, CrowdfundingConstants.Routes.ViewCampaign_2.FormatWith(campaign.Content().Id,
                                                                                                   relativeUrl.PathSegments.Last()));
+    }
+    
+    private CampaignContent GetCampaign(string crowdfundingPath) {
+        var match = Match(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewCampaign);
+        var campaignId = int.Parse(match.Groups[1].Value);
+        var campaign = ContentLocator.ById<CampaignContent>(campaignId);
+
+        return campaign;
     }
 
     private List<FundraiserContent> GetFundraisersContent(Guid campaignId) {

@@ -6,7 +6,7 @@ namespace N3O.Umbraco.Accounts.Models;
 
 public interface IAccount {
     EntityId Id { get; }
-    string Reference { get;  }
+    string Reference { get; }
     AccountType Type { get; }
     IIndividual Individual { get; }
     IOrganization Organization { get; }
