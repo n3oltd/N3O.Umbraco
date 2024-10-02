@@ -84,7 +84,7 @@ public class ContributionRepository : IContributionRepository {
         return await FindContributionsAsync(Sql.Builder.Where($"{nameof(Contribution.FundraiserId)} IN (@0)", fundraiserIds));
     }
 
-    private async Task<Contribution> GetContributionAsync(string checkoutReference,
+    private async Task<Contribution> GetContributionAsync(string transactionReference,
                                                           Instant timestamp,
                                                           ICrowdfunderData crowdfunderData,
                                                           string email,
@@ -114,7 +114,7 @@ public class ContributionRepository : IContributionRepository {
         contribution.TeamName = crowdfunder.TeamName;
         contribution.FundraiserId = crowdfunder.FundraiserId;
         contribution.FundraiserUrl = crowdfunder.FundraiserId.HasValue() ? crowdfunder.Url(_contentLocator) : null;
-        contribution.CheckoutReference = checkoutReference;
+        contribution.TransactionReference = transactionReference;
         contribution.GivingTypeId = givingType.Id;
         contribution.CurrencyCode = allocation.Value.Currency.Code;
         contribution.QuoteAmount = allocation.Value.Amount;

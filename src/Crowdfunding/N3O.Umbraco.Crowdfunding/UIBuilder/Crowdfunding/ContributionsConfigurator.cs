@@ -23,8 +23,8 @@ public class ContributionsConfigurator : KonstruktConfigurator {
 
         collection.SetAlias("allCrowdfundingDonations");
         collection.SetDateCreatedProperty(c => c.Timestamp);
-        collection.SetNameProperty(c => c.CheckoutReference);
-        collection.AddFilterableProperty(c => c.CheckoutReference);
+        collection.SetNameProperty(c => c.TransactionReference);
+        collection.AddFilterableProperty(c => c.TransactionReference);
         collection.AddSearchableProperty(c => c.Email);
         collection.AddSearchableProperty(c => c.Name);
         collection.AddSearchableProperty(c => c.TeamName);
@@ -53,7 +53,7 @@ public class ContributionsConfigurator : KonstruktConfigurator {
         var recordTab = editor.AddTab("Donation");
         
         var recordFieldset = recordTab.AddFieldset("Donation");
-        recordFieldset.AddField(c => c.CheckoutReference).MakeReadOnly();
+        recordFieldset.AddField(c => c.TransactionReference).MakeReadOnly();
         recordFieldset.AddField(c => c.Name).MakeReadOnly();
         recordFieldset.AddField(c => c.Email).MakeReadOnly();
         recordFieldset.AddField(c => c.CurrencyCode).MakeReadOnly();

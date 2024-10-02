@@ -1,10 +1,3 @@
-﻿using N3O.Umbraco.Financial;
+﻿namespace N3O.Umbraco.Crowdfunding.Models;
 
-namespace N3O.Umbraco.Crowdfunding.Models;
-
-public class CampaignStatisticsRes {
-    public MoneyRes ContributionsTotal { get; set; }
-    public CampaignStatisticsItemRes TopItems { get; set; }
-    public int ActiveCount { get; set; }
-    public MoneyRes GoalsTotal { get; set; }
-}
+public class CampaignStatisticsRes : CrowdfunderStatisticsRes { }
