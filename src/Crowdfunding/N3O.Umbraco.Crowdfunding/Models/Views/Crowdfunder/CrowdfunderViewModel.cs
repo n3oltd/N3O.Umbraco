@@ -1,7 +1,10 @@
-﻿using N3O.Umbraco.Crowdfunding.Content;
+﻿using N3O.Umbraco.Context;
+using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Financial;
+using N3O.Umbraco.Forex;
 using N3O.Umbraco.Lookups;
 using System;
 using System.Collections.Generic;
@@ -15,9 +18,11 @@ public abstract class CrowdfunderViewModel<TContent> :
     where TContent : CrowdfunderContent<TContent> {
     public TContent Content { get; private set; }
     public CrowdfunderType CrowdfunderType { get; private set; }
+    public Currency SiteCurrency { get; private set; }
     public IReadOnlyList<CrowdfunderGoalViewModel> Goals { get; private set; }
     public IReadOnlyList<CrowdfunderContributionViewModel> Contributions { get; private set; }
     public IReadOnlyList<CrowdfunderTagViewModel> Tags { get; private set; }
+    public IReadOnlyList<Currency> Currencies { get; private set; }
     public CrowdfunderProgressViewModel CrowdfunderProgress { get; private set; }
     public CrowdfunderOwnerViewModel OwnerInfo { get; private set; }
     
@@ -26,6 +31,8 @@ public abstract class CrowdfunderViewModel<TContent> :
     public abstract bool EditMode();
     
     protected static async Task<T> ForAsync<T>(ICrowdfundingViewModelFactory viewModelFactory,
+                                               ICurrencyAccessor currencyAccessor,
+                                               IForexConverter forexConverter,
                                                ILookups lookups,
                                                ICrowdfundingPage page,
                                                IReadOnlyDictionary<string, string> query,
@@ -37,7 +44,12 @@ public abstract class CrowdfunderViewModel<TContent> :
         var viewModel = await viewModelFactory.CreateViewModelAsync<T>(page, query);
         viewModel.Content = content;
         viewModel.CrowdfunderType = crowdfunderType;
-        viewModel.Goals = content.Goals.ToReadOnlyList(x => CrowdfunderGoalViewModel.For(content.Currency, x));
+        viewModel.Currencies = lookups.GetAll<Currency>();
+        viewModel.SiteCurrency = currencyAccessor.GetCurrency();
+        viewModel.Goals = await content.Goals.ToReadOnlyListAsync(async x => await CrowdfunderGoalViewModel.ForAsync(content.Currency,
+                                                                                              forexConverter,
+                                                                                              lookups, 
+                                                                                              x));
         viewModel.Contributions = contributions.ToReadOnlyList(x => CrowdfunderContributionViewModel.For(viewModel.Formatter,
                                                                                                          lookups,
                                                                                                          x));

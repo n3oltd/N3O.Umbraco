@@ -18,11 +18,16 @@ public class CrowdfundingCartItemReqValidator : ModelValidator<CrowdfundingCartI
         RuleFor(x => x.GoalId)
            .NotNull()
            .WithMessage(Get<Strings>(s => s.SpecifyGoalId));
+
+        RuleFor(x => x.Quantity)
+           .NotNull()
+           .WithMessage(Get<Strings>(s => s.SpecifyQuantity));
     }
     
     public class Strings : ValidationStrings {
         public string SpecifyGoalId => "Please specify the goal ID";
         public string SpecifyValue => "Please specify the value";
         public string SpecifyValueAmount => "Please specify the value amount";
+        public string SpecifyQuantity => "Please specify the quantity";
     }
 }

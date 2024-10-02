@@ -1,9 +1,12 @@
 ﻿using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
+using N3O.Umbraco.Forex;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
+using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
@@ -20,7 +23,10 @@ public class CrowdfunderGoalViewModel {
     public FeedbackScheme FeedbackScheme { get; private set; }
     public IReadOnlyList<CrowdfunderPriceHandleViewModel> PriceHandles { get; private set; }
 
-    public static CrowdfunderGoalViewModel For(Currency crowdfunderCurrency, GoalElement goal) {
+    public static async Task<CrowdfunderGoalViewModel> ForAsync(Currency crowdfunderCurrency,
+                                                                IForexConverter forexConverter,
+                                                                ILookups lookups,
+                                                                GoalElement goal) {
         var viewModel = new CrowdfunderGoalViewModel();
 
         viewModel.Id = goal.Id;
@@ -33,8 +39,11 @@ public class CrowdfunderGoalViewModel {
         viewModel.Type = goal.Type;
         viewModel.DonationItem = goal.Fund?.DonationItem;
         viewModel.FeedbackScheme = goal.Feedback?.Scheme;
-        viewModel.PriceHandles = goal.PriceHandles
-                                     .ToReadOnlyList(x => CrowdfunderPriceHandleViewModel.For(crowdfunderCurrency, x));
+        viewModel.PriceHandles = await goal.PriceHandles
+                                     .ToReadOnlyListAsync(async x => await CrowdfunderPriceHandleViewModel.ForAsync(crowdfunderCurrency,
+                                                                                                                    forexConverter,
+                                                                                                                    lookups,
+                                                                                                                    x));
 
         return viewModel;
     }
