@@ -1,7 +1,9 @@
 ﻿using N3O.Umbraco.Constants;
+using N3O.Umbraco.Context;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Crowdfunding.Lookups;
+using N3O.Umbraco.Forex;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
@@ -18,6 +20,8 @@ public class ViewEditFundraiserViewModel : CrowdfunderViewModel<FundraiserConten
     }
 
     public static async Task<ViewEditFundraiserViewModel> ForAsync(ICrowdfundingViewModelFactory viewModelFactory,
+                                                                   ICurrencyAccessor currencyAccessor,
+                                                                   IForexConverter forexConverter,
                                                                    ILookups lookups,
                                                                    ITextFormatter textFormatter,
                                                                    FundraiserAccessControl fundraiserAccessControl,
@@ -26,7 +30,9 @@ public class ViewEditFundraiserViewModel : CrowdfunderViewModel<FundraiserConten
                                                                    FundraiserContent fundraiser,
                                                                    IEnumerable<Contribution> contributions) {
         var viewModel = await ForAsync<ViewEditFundraiserViewModel>(viewModelFactory,
-                                                                    lookups,
+                                                                    currencyAccessor,
+                                                                    forexConverter,
+                                                                    lookups,                                                                    
                                                                     page,
                                                                     query,
                                                                     fundraiser,

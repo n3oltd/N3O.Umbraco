@@ -1,8 +1,10 @@
 ﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Context;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Forex;
 using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +18,8 @@ public class ViewCampaignViewModel : CrowdfunderViewModel<CampaignContent> {
 
     public static async Task<ViewCampaignViewModel> ForAsync(ICrowdfundingViewModelFactory viewModelFactory,
                                                              IContentLocator contentLocator,
+                                                             ICurrencyAccessor currencyAccessor,
+                                                             IForexConverter forexConverter,
                                                              ILookups lookups,
                                                              ViewCampaignPage page,
                                                              IReadOnlyDictionary<string, string> query,
@@ -24,6 +28,8 @@ public class ViewCampaignViewModel : CrowdfunderViewModel<CampaignContent> {
                                                              IReadOnlyList<Contribution> fundraiserContributions,
                                                              IReadOnlyList<FundraiserContent> fundraisers) {
         var viewModel = await ForAsync<ViewCampaignViewModel>(viewModelFactory,
+                                                              currencyAccessor,
+                                                              forexConverter,
                                                               lookups,
                                                               page,
                                                               query,

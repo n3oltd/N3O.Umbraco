@@ -1,9 +1,11 @@
 ﻿using Flurl;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Context;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Forex;
 using N3O.Umbraco.Lookups;
 using System;
 using System.Collections.Generic;
@@ -14,15 +16,22 @@ namespace N3O.Umbraco.Crowdfunding;
 
 public class ViewCampaignPage : CrowdfundingPage {
     private readonly IContributionRepository _contributionRepository;
+    private readonly ICurrencyAccessor _currencyAccessor;
+    private readonly IForexConverter _forexConverter;
     private readonly ILookups _lookups;
 
     public ViewCampaignPage(IContentLocator contentLocator,
                             ICrowdfundingViewModelFactory viewModelFactory,
                             IContributionRepository contributionRepository,
-                            ILookups lookups)
+                            ICurrencyAccessor currencyAccessor,
+                            IForexConverter forexConverter,
+                            ILookups lookups
+                            )
         : base(contentLocator, viewModelFactory) {
         _contributionRepository = contributionRepository;
-        _lookups = lookups;
+        _currencyAccessor = currencyAccessor;
+        _forexConverter = forexConverter;
+        _lookups = lookups;        
     }
 
     protected override bool IsMatch(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
@@ -43,6 +52,8 @@ public class ViewCampaignPage : CrowdfundingPage {
 
         return await ViewCampaignViewModel.ForAsync(ViewModelFactory,
                                                     ContentLocator,
+                                                    _currencyAccessor,
+                                                    _forexConverter,
                                                     _lookups,
                                                     this,
                                                     query,
