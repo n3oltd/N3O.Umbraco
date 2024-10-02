@@ -12,7 +12,4 @@ public class CrowdfundingCartItemReq {
 
     [Name("Feedback")]
     public FeebackCrowdfundingCartItemReq Feedback { get; set; }
-    
-    [Name("Quantity")]
-    public int Quantity { get; set; }
 }

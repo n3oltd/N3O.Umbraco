@@ -40,10 +40,10 @@ public class CrowdfunderGoalViewModel {
         viewModel.DonationItem = goal.Fund?.DonationItem;
         viewModel.FeedbackScheme = goal.Feedback?.Scheme;
         viewModel.PriceHandles = await goal.PriceHandles
-                                     .ToReadOnlyListAsync(async x => await CrowdfunderPriceHandleViewModel.ForAsync(crowdfunderCurrency,
-                                                                                                                    forexConverter,
-                                                                                                                    lookups,
-                                                                                                                    x));
+                                           .ToReadOnlyListAsync(async x => await CrowdfunderPriceHandleViewModel.ForAsync(crowdfunderCurrency,
+                                                                                                                          forexConverter,
+                                                                                                                          lookups,
+                                                                                                                          x));
 
         return viewModel;
     }

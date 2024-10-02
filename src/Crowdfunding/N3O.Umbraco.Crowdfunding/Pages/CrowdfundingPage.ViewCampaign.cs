@@ -26,8 +26,7 @@ public class ViewCampaignPage : CrowdfundingPage {
                             IContributionRepository contributionRepository,
                             ICurrencyAccessor currencyAccessor,
                             IForexConverter forexConverter,
-                            ILookups lookups
-                            )
+                            ILookups lookups)
         : base(contentLocator, viewModelFactory) {
         _contributionRepository = contributionRepository;
         _currencyAccessor = currencyAccessor;

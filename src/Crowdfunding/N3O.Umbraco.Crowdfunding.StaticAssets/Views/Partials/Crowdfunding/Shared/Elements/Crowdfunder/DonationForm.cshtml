@@ -25,19 +25,19 @@
                 @foreach (var priceHandle in goal.PriceHandles) {
                     <div class="ctaFund__item">
                         <input type="checkbox" name="goal-price-@goal.Id"
-                               
                                @foreach (var currencyAmountValue in priceHandle.CurrencyAmountValues) {
-                                   @Html.Raw($"data-goal-amount-{currencyAmountValue.Key.ToLower()}=\"{currencyAmountValue.Value.Amount}\" ")
+                                   @Html.Raw($"data-goal-amount-{currencyAmountValue.Key.Code.ToLower()}=\"{currencyAmountValue.Value.Amount}\" ")
                                }
                                
-                               data-goal-amount="@priceHandle.Amount.Amount"/>
+                               data-goal-amount="@priceHandle.Amount.Amount" />
         
                         <div class="ctaFund__item-inner">
                             @{
-                                var priceHandleAmount = priceHandle.CurrencyAmountValues.Single(x => x.Key.ToUpperInvariant() == Model.SiteCurrency.Code);
+                                var priceHandleAmount = priceHandle.CurrencyAmountValues[Model.SiteCurrency];
                             }
                             
-                            <h3>@Model.Formatter.Number.FormatMoney(priceHandleAmount.Value)</h3>
+                            <h3>@Model.Formatter.Number.FormatMoney(priceHandleAmount)</h3>
+                            
                             <hr/>
 
                             <p class="subtle">@priceHandle.Description</p>
@@ -114,7 +114,7 @@
             }
         }
         
-        const submitCurrencyCookieReq = async req => {
+        const changeCurrency = async req => {
             try {
                 const response = await fetch(`/umbraco/api/giving/currency/${req}`, {
                     method: "POST"                    
@@ -123,17 +123,17 @@
                 if (response.ok) {                   
                     return true;
                 } else {
-                    window.themeConfig.showError(response.errors)
+                    window.themeConfig.showError(response.errors);
+                    
                     return false;
                 }
-            }
-            catch (e) {
-                window.themeConfig.showError(e.errors)
+            } catch (e) {
+                window.themeConfig.showError(e.errors);
             }
         }
 
         function handleDonationReq() {
-            let contributionReq = {};
+            let crowdfundingCartReq = {};
 
             const items = [];
             const goalInputs = document.querySelectorAll("input[name='goal']")
@@ -141,7 +141,7 @@
             goalInputs.forEach(input => {
                 const goalId = input.value;
 
-                const contributionItemReq = {};
+                const crowdfundingCartItemReq = {};
                 const goalValue = {};
 
                 const goalPriceElement = document.querySelector(`input[name='goal-price-${goalId}']`);
@@ -153,7 +153,7 @@
                     return
                 }
 
-                if (goalPriceElement.checked) {                   
+                if (goalPriceElement.checked) {
                     goalValue.amount = goalPriceElement.dataset[`goalAmount${capitalizeFirstLetter(n3oSelectedCurrency)}`];
                 } else if (customPriceElement.checked) {
                     goalValue.amount = document.querySelector(`#goal-custom-amount-${goalId}`).value;
@@ -161,11 +161,10 @@
 
                 goalValue.currency = document.querySelector(`#currency-${goalId}`).value;
                 
-                contributionItemReq.goalId = goalId;
-                contributionItemReq.value = goalValue;
-                contributionItemReq.quantity = 1; //hardcoded for now
+                crowdfundingCartItemReq.goalId = goalId;
+                crowdfundingCartItemReq.value = goalValue;
 
-                items.push(contributionItemReq);
+                items.push(crowdfundingCartItemReq);
             });
 
             let wrapperElement = document.querySelector('[data-crowdfunder-id]');
@@ -176,12 +175,12 @@
                 anonymous: document.querySelector('#donor-is-anonymous')?.checked
             };
 
-            contributionReq.crowdfunding = crowdfunderData;
-            contributionReq.type = wrapperElement.dataset.crowdfunderType;
-            contributionReq.items = items;
+            crowdfundingCartReq.crowdfunding = crowdfunderData;
+            crowdfundingCartReq.type = wrapperElement.dataset.crowdfunderType;
+            crowdfundingCartReq.items = items;
 
             if (items.length) {
-                submitCrowdfundingCartReq(contributionReq)
+                submitCrowdfundingCartReq(crowdfundingCartReq)
             }
         }
 
@@ -261,7 +260,8 @@
                     let currencyId = selectedOption.value;
                     let currencySymbol = selectedOption.getAttribute('data-symbol');
 
-                    let success = submitCurrencyCookieReq(currencyId);
+                    let success = changeCurrency(currencyId);
+                    
                     if (!success) {
                         return;
                     }
@@ -269,16 +269,18 @@
                     n3oSelectedCurrency = currencyId;
                     
                     let currencyLabels = document.querySelectorAll('.n3o-currency-label');
+                    
                     currencyLabels.forEach(function(label) {
                         label.textContent = currencySymbol;
                     });
                     
                     let goalPriceHandles = document.querySelectorAll('.ctaFund__item');
+                    
                     goalPriceHandles.forEach(function (priceHandle) {
                         let inputElement = priceHandle.querySelector('input');
                         let goalAmount = inputElement.getAttribute(`data-goal-amount-${n3oSelectedCurrency}`);
-                    
                         let h3Element= priceHandle.querySelector('h3');
+                        
                         h3Element.textContent = `${currencySymbol} ${goalAmount}`;
                     });
 
@@ -330,6 +332,7 @@
 
         function capitalizeFirstLetter(str) {
             if (!str) return str;
+            
             return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
         }
 
