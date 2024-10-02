@@ -177,7 +177,7 @@ namespace N3O.Umbraco.Crm.Engage.Clients
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
-                    var url_ = urlBuilder_.ToString().Replace("https://beta.n3o.cloud/eu1/api/crowdfunding/", "http://localhost:11206/");
+                    var url_ = urlBuilder_.ToString();
                     request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
