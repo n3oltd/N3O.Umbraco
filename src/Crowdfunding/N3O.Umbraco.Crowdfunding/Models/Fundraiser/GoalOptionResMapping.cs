@@ -17,7 +17,7 @@ public class GoalOptionResMapping : IMapDefinition {
         dest.Id = src.Id;
         dest.Name = src.Name;
         dest.Type = src.Type;
-        dest.Tags = src.Tags.Select(x => x.Name).ToList();
+        dest.Tags = src.Tags.OrEmpty().Select(ctx.Map<TagContent, TagRes>);
         dest.Fund = src.Fund.IfNotNull(x => ctx.Map<DonationItem, DonationItemRes>(x.DonationItem));
         dest.Feedback = src.Feedback.IfNotNull(x => ctx.Map<FeedbackScheme, FeedbackSchemeRes>(x.Scheme));
         
