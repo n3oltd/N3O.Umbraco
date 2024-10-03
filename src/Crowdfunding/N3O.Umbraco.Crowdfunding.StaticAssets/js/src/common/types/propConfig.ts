@@ -1,7 +1,9 @@
 import { PropertyType } from "@n3oltd/umbraco-crowdfunding-client";
 
+export type PropertyTypeWithGoal = PropertyType & 'GoalEditor'
+
 export type PropConfig = {
-  propType: PropertyType | undefined;
+  propType: PropertyTypeWithGoal | undefined;
   propAlias: string;
   nested: boolean;
   isOpen: boolean;

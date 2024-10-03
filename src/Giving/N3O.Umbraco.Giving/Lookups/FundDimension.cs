@@ -11,7 +11,7 @@ public interface IFundDimension : INamedLookup {
     IEnumerable<IFundDimensionValue> Options { get; }
     int Index { get; }
     
-    int Number => Index + 1;
+    int Number => Index;
 }
 
 public abstract class FundDimension<T, TValue> : LookupContent<T>, IFundDimension

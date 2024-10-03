@@ -186,7 +186,7 @@ const n3o_cdf_updateAccount = (account) => {
         const accountInfo = n3o_cdf_formDataToObject(accountForm);
         const accountReq = n3o_cdf_convertToObject(accountInfo);
         accountReq.id = document.querySelector('#n3o_cdf-selected-account-id').value;
-        accountReq.referrence = document.querySelector('#n3o_cdf-selected-account-ref').value;
+        accountReq.reference = document.querySelector('#n3o_cdf-selected-account-ref').value;
 
         await n3o_cdf_sendUpdateAccount(accountReq);
     });

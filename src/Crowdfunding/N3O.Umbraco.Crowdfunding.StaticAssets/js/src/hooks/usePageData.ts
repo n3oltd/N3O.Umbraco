@@ -7,7 +7,9 @@ export const usePageData = (): PageDataEditable => {
   const [pageData, setPageData] = React.useState<PageData>();
 
   React.useEffect(() => {
-    const { pageMode, pageId } = document.body.dataset;
+    const pageContainer: HTMLDivElement | null = document.querySelector('[data-page-id]');
+    const { pageMode, pageId } = pageContainer?.dataset || {};
+
 
     const validatedPageData = {
       pageId: pageId || undefined,

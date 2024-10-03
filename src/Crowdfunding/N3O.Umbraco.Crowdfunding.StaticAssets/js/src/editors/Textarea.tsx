@@ -31,7 +31,8 @@ export const Textarea: React.FC<EditorProps> = ({
   const {runAsync: updateProperty, loading} = useRequest((req: ContentPropertyReq, pageId: string) => _client.updateProperty(pageId, req), {
     manual: true,
     onSuccess: () => {
-      onClose()
+      onClose();
+      window.location.reload()
     }
   })
 

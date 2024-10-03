@@ -5,6 +5,7 @@ import {Textarea} from './Textarea';
 import {RichTextEditor} from './RichTextEditor';
 import {CropperSingle} from './CropperSingle';
 import {Gallery} from './Gallery';
+import {GoalEditor} from './GoalEditor';
 
 export const Components = {
   [PropertyType.TextBox]: Textbox,
@@ -13,7 +14,8 @@ export const Components = {
   [PropertyType.Cropper]: {
     single: CropperSingle,
     nested: Gallery
-  }
+  },
+  ['GoalEditor']: GoalEditor
 }
 
 export const getComponentForPropType = (propType, components, nested = false) => {
