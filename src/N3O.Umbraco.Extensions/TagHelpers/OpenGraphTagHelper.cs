@@ -23,8 +23,8 @@ public class OpenGraphTagHelper : TagHelper {
 
         AddOpenGraphTag(output, "title", openGraphData?.Title);
         AddOpenGraphTag(output, "description", openGraphData?.Description);
+        AddOpenGraphTag(output, "url", openGraphData?.Url ?? Model.Content.AbsoluteUrl());
         AddOpenGraphTag(output, "image", openGraphData?.ImageUrl);
-        AddOpenGraphTag(output, "url", Model.Content.AbsoluteUrl());
     }
 
     private void AddOpenGraphTag(TagHelperOutput output, string property, string content) {

@@ -56,6 +56,7 @@ public class ViewCampaignPage : CrowdfundingPage {
 
         builder.WithTitle(campaign.Name);
         builder.WithDescription(campaign.Description);
+        builder.WithUrl(Url(ContentLocator, campaign.CampaignId));
         builder.WithImagePath(campaign.OpenGraphImagePath);
     }
 

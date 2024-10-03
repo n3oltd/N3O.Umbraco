@@ -8,6 +8,7 @@ public class OpenGraphBuilder : IOpenGraphBuilder {
     private string _title;
     private string _imageUrl;
     private string _description;
+    private string _url;
 
     public OpenGraphBuilder(IUrlBuilder urlBuilder) {
         _urlBuilder = urlBuilder;
@@ -37,8 +38,14 @@ public class OpenGraphBuilder : IOpenGraphBuilder {
         return this;
     }
 
+    public IOpenGraphBuilder WithUrl(string url) {
+        _url = url;
+
+        return this;
+    }
+
     public OpenGraphData Build() {
-        return new OpenGraphData(_title, _description, _imageUrl);
+        return new OpenGraphData(_title, _description, _url, _imageUrl);
     }
 
     public bool HasData => _title.HasValue() || _description.HasValue() || _imageUrl.HasValue();

@@ -60,6 +60,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
 
         builder.WithTitle(fundraiser.Name);
         builder.WithDescription(fundraiser.Description);
+        builder.WithUrl(Url(ContentLocator, fundraiser.Key));
         builder.WithImagePath(fundraiser.OpenGraphImagePath);
     }
 

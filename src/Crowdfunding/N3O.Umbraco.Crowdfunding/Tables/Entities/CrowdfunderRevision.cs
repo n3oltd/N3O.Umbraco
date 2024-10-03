@@ -1,6 +1,16 @@
-﻿namespace N3O.Umbraco.Crowdfunding.Entities;
+﻿using NPoco;
+using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
+using static N3O.Umbraco.Crowdfunding.CrowdfundingConstants;
 
+namespace N3O.Umbraco.Crowdfunding.Entities;
+
+[TableName(Tables.CrowdfunderRevisions.Name)]
+[PrimaryKey("Id")]
 public class CrowdfunderRevision {
+    [PrimaryKeyColumn(Name = Tables.CrowdfunderRevisions.PrimaryKey)]
+    public int Id { get; set; }
+}
+
     /*
      * Key
      * Type (1 = Campaign, 2 = Fundraiser)
@@ -20,4 +30,3 @@ public class CrowdfunderRevision {
      * Activated -> Insert a new row into the table
      * Deactivated -> Update the last row in the table to set the ActiveTo column
      */    
-}

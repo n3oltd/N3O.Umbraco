@@ -5,6 +5,7 @@ public interface IOpenGraphBuilder {
     IOpenGraphBuilder WithDescription(string description);
     IOpenGraphBuilder WithImagePath(string imagePath);
     IOpenGraphBuilder WithImageUrl(string imageUrl);
+    IOpenGraphBuilder WithUrl(string url);
 
     OpenGraphData Build();
     

@@ -114,6 +114,7 @@ public static class CrowdfundingConstants {
     
     public static class Routes {
         public const string CreateFundraiser = "pages/create";
+        public const string HomePage = "";
         public const string ViewCampaign_2 = "campaigns/{0}/{1}";
         public const string ViewEditFundraiser_2 = "pages/{0}/{1}";
         
@@ -136,6 +137,16 @@ public static class CrowdfundingConstants {
         public static class Contributions {
             public const string Name = "N3O_CrowdfundingContributions";
             public const string PrimaryKey = "PK_N3O_CrowdfundingContributions";
+        }
+        
+        public static class Crowdfunders {
+            public const string Name = "N3O_CrowdfundingCrowdfunders";
+            public const string PrimaryKey = "PK_N3O_CrowdfundingCrowdfunders";
+        }
+        
+        public static class CrowdfunderRevisions {
+            public const string Name = "N3O_CrowdfundingCrowdfunderRevisions";
+            public const string PrimaryKey = "PK_N3O_CrowdfundingCrowdfunderRevisions";
         }
     }
     

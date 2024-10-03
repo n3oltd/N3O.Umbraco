@@ -32,7 +32,7 @@ public abstract class CrowdfundingPage : ICrowdfundingPage {
     public bool IsMatch(Uri requestUri, IReadOnlyDictionary<string, string> requestQuery) {
         var crowdfundingPath = CrowdfundingPathParser.ParseUri(ContentLocator, requestUri);
 
-        if (crowdfundingPath.HasValue()) {
+        if (crowdfundingPath != null) {
             return IsMatch(crowdfundingPath, requestQuery);
         } else {
             return false;

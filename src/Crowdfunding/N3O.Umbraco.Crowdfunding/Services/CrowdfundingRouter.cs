@@ -25,6 +25,8 @@ public class CrowdfundingRouter : ICrowdfundingRouter {
                 foreach (var crowdfundingPage in _crowdfundingPages) {
                     if (crowdfundingPage.IsMatch(RequestUri, RequestQuery)) {
                         _currentPage = crowdfundingPage;
+                        
+                        break;
                     }
                 }           
             }
