@@ -113,26 +113,31 @@ public class Contribution {
     public int ContributionType { get; set; }
     
     [Column(nameof(AllocationSummary))]
+    [NullSetting(NullSetting = NullSettings.Null)]
     [Length(200)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(AllocationSummary), ForColumns = nameof(AllocationSummary))]
     public string AllocationSummary { get; set; }
     
     [Column(nameof(FundDimension1))]
+    [NullSetting(NullSetting = NullSettings.Null)]
     [Length(100)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(FundDimension1), ForColumns = nameof(FundDimension1))]
     public string FundDimension1 { get; set; }
     
     [Column(nameof(FundDimension2))]
+    [NullSetting(NullSetting = NullSettings.Null)]
     [Length(100)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(FundDimension2), ForColumns = nameof(FundDimension2))]
     public string FundDimension2 { get; set; }
     
     [Column(nameof(FundDimension3))]
+    [NullSetting(NullSetting = NullSettings.Null)]
     [Length(100)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(FundDimension3), ForColumns = nameof(FundDimension3))]
     public string FundDimension3 { get; set; }
     
     [Column(nameof(FundDimension4))]
+    [NullSetting(NullSetting = NullSettings.Null)]
     [Length(100)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(FundDimension4), ForColumns = nameof(FundDimension4))]
     public string FundDimension4 { get; set; }
