@@ -1,4 +1,5 @@
 ﻿@using Flurl
+@using N3O.Umbraco.Giving
 
 @model CreateFundraiserViewModel
 
@@ -59,6 +60,7 @@
                         <use xlink:href="#chevron-bottom"></use>
                     </svg>
                 </div>
+                <div class="setting__tags" id="goal-option-tag"></div>
             </div>
 
             @foreach (var fundDimension in fundStructure.Dimensions) {
@@ -68,7 +70,7 @@
                     <div class="select">
                         <div class="select__selected">@PartialText.Get("Select {0}").FormatWith(fundDimension.Name)</div>
 
-                        <input type="hidden" value="0" />
+                        <input type="hidden" value="" />
 
                         <ul class="select__options">
                             <div class="select__search">
@@ -141,13 +143,13 @@
             </label>
 
             <label class="input__outer">
-                <h4>>@PartialText.Get("Customise page web URL")</h4>
+                <h4>@PartialText.Get("Customise page web URL")</h4>
 
                 <div class="input big">
                     <input type="text" placeholder="jon-doe-page1" id="slug"/>
                 </div>
 
-                <a href="#" class="subtle">@Context.Request.Uri().ResetToRoot().../<span id="urlEnd"></span></a>
+                <a href="#" class="subtle">@Context.Request.Uri().ResetToRoot()/.../<span id="urlEnd"></span></a>
             </label>
 
             <div class="checkout__message" id="errorMessage2">

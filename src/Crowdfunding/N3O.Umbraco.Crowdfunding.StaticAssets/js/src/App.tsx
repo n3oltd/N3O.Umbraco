@@ -11,7 +11,7 @@ import { PropConfig } from './common/types/propConfig';
 import './App.css';
 
 declare global {
-  interface Window { __openEditor: unknown; }
+  interface Window { __openEditor: unknown; __openGoalEditor: unknown; }
 }
 
 function App() {
@@ -31,7 +31,13 @@ function App() {
     state.propAlias = config.propAlias;
     state.nested = config.nested;
     forceUpdate(prev => !prev);
+  };
 
+  window.__openGoalEditor = () => {
+    state.isOpen = true,
+    state.propType = 'GoalEditor' as any;
+    state.propAlias = '';
+    forceUpdate(prev => !prev);
   };
   
   const {isPageEditable} = usePageData();

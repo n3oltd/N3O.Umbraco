@@ -45,7 +45,10 @@ export const CropperSingle: React.FC<EditorProps> = ({
     onError(e) {
       toast.error(e.message)
     },
-    onSuccess: () => onClose()
+    onSuccess: () => {
+      onClose();
+      window.location.reload()
+    }
   })
 
   React.useEffect(() => {

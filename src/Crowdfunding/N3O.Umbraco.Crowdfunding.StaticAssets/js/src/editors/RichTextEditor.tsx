@@ -36,10 +36,11 @@ export const RichTextEditor: React.FC<EditorProps> = ({
     }
   });
 
-  const {runAsync: updateProperty,} = useRequest((req: ContentPropertyReq, pageId) => _client.updateProperty(pageId, req), {
+  const {runAsync: updateProperty, loading: updating} = useRequest((req: ContentPropertyReq, pageId) => _client.updateProperty(pageId, req), {
     manual: true,
     onSuccess: () => {
-      onClose()
+      onClose();
+      window.location.reload()
     }
   })
   
@@ -77,7 +78,7 @@ export const RichTextEditor: React.FC<EditorProps> = ({
       onOk={saveContent}
       onClose={onClose}
       oKButtonProps={{
-        disabled: loading
+        disabled: loading || updating
       }}
     >
       {loading ? <p>Loading...</p> : <>

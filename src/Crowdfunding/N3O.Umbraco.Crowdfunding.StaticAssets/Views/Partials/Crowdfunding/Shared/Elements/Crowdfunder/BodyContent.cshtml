@@ -1,9 +1,25 @@
 ﻿@model ICrowdfunderViewModel
 
+@inject IPartialText PartialText
+
+
+@{
+    PartialText.SetPartialName("CrowdfundingCrowdfunderBodyContent");
+}
+
 <div class="campaign">
     <div class="campaign__content">
+        @if (Model.EditMode())
+        {
+            <div class="campaign__edit modallBtn" n3o-editor="@(Model, PropertyTypes.Raw, nameof(Model.Content.Body))">
+                <svg class="sm">
+                    <use xlink:href="#editIcon"></use>
+                </svg>
+                <b> @PartialText.Get("Edit") </b>
+            </div>
+        }
         <div class="campaign__title big">
-            <div id="about-description" n3o-editor="@(Model, PropertyTypes.Textarea, nameof(Model.Content.Body))">
+            <div id="about-description" >
                 @Html.Raw(Model.Content.Body)
             </div>
         </div>
