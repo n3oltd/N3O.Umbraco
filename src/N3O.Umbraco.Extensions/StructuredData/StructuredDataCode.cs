@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Html;
 using N3O.Umbraco.Extensions;
 
-namespace N3O.Umbraco.Analytics.Models;
+namespace N3O.Umbraco.StructuredData;
 
 public class StructuredDataCode : Value {
     public StructuredDataCode(HtmlString javaScriptObject) {

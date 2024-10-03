@@ -14,6 +14,9 @@ namespace N3O.Umbraco.Crowdfunding.Entities;
 public class Contribution {
     [PrimaryKeyColumn(Name = Tables.Contributions.PrimaryKey)]
     public int Id { get; set; }
+    
+    // Add a column to indicate the contribution type, with 1 for online and 2 for offline
+    // Update Maria's queries to add this WHERE clause respectively
 
     [Column(nameof(Timestamp))]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(Timestamp), ForColumns = nameof(Timestamp))]
@@ -53,10 +56,10 @@ public class Contribution {
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(FundraiserUrl), ForColumns = nameof(FundraiserUrl))]
     public string FundraiserUrl { get; set; }
     
-    [Column(nameof(CheckoutReference))]
+    [Column(nameof(TransactionReference))]
     [Length(50)]
-    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(CheckoutReference), ForColumns = nameof(CheckoutReference))]
-    public string CheckoutReference { get; set; }
+    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(TransactionReference), ForColumns = nameof(TransactionReference))]
+    public string TransactionReference { get; set; }
     
     [Column(nameof(GivingTypeId))]
     [Length(50)]
@@ -103,10 +106,19 @@ public class Contribution {
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(Comment), ForColumns = nameof(Comment))]
     public string Comment { get; set; }
     
+    // TODO Talha When populating the view model with these we should be filtering out the hidden ones
     [Column(nameof(Status))]
     [Length(50)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(Status), ForColumns = nameof(Status))]
     public string Status { get; set; }
+
+    // TODO Talha
+    // Before AllocationJson we should put simple columns for:
+    // AllocationSummary
+    // FundDimension1
+    // FundDimension2
+    // FundDimension3
+    // FundDimension4
     
     [Column(nameof(AllocationJson))]
     [NullSetting(NullSetting = NullSettings.Null)]

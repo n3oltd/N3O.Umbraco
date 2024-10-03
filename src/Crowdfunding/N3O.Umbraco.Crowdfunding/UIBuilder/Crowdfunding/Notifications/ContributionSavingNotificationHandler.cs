@@ -13,7 +13,7 @@ public class ContributionSavingNotificationHandler :
         if (notification.Entity.After is Contribution after) {
             var before = (Contribution) notification.Entity.Before;
 
-            if (before.CheckoutReference != after.CheckoutReference) {
+            if (before.TransactionReference != after.TransactionReference) {
                 notification.CancelWithError("Updating the reference of a contribution is not allowed");
             }
         }

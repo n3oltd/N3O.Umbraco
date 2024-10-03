@@ -1,3 +1,5 @@
+using System.Threading;
+
 namespace N3O.Umbraco.Localization;
 
 public class Formatter : IFormatter {
@@ -12,7 +14,9 @@ public class Formatter : IFormatter {
     public INumberFormatter Number { get; }
     public IDateTimeFormatter DateTime { get; }
     public ITextFormatter Text { get; }
-    
+
+    public static string CultureCode => Thread.CurrentThread.CurrentUICulture.ToString();
+
     public static IFormatter Default => new Formatter(NumberFormatter.Default,
                                                       DateTimeFormatter.Default,
                                                       TextFormatter.Default);

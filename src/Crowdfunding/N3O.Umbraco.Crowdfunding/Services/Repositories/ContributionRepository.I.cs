@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Crowdfunding;
 
 public interface IContributionRepository {
-    Task AddOnlineContributionAsync(string checkoutReference,
+    Task AddOnlineContributionAsync(string transactionReference,
                                     Instant timestamp,
                                     ICrowdfunderData crowdfunderData,
                                     string email,

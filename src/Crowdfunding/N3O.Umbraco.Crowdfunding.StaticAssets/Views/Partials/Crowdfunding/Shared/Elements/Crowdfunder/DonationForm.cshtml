@@ -19,17 +19,25 @@
         @foreach (var goal in Model.Goals) {
             <input type="hidden" name="goal" value="@goal.Id"/>
             
-            <div class="ctaFund showMore big">
+            <div class="ctaFund showMore @if(goal.PriceHandles.Count > 2){<text>big</text>}">
                 <h4 id="goal-name-@goal.Id">@goal.Name</h4>
 
                 @foreach (var priceHandle in goal.PriceHandles) {
                     <div class="ctaFund__item">
-                        <input type="checkbox" name="goal-price-@goal.Id" data-goal-amount="@priceHandle.Amount.Amount"/>
+                        <input type="checkbox" name="goal-price-@goal.Id"
+                               @foreach (var currencyAmountValue in priceHandle.CurrencyAmountValues) {
+                                   @Html.Raw($"data-goal-amount-{currencyAmountValue.Key.Code.ToLower()}=\"{currencyAmountValue.Value.Amount}\" ")
+                               }
+                               
+                               data-goal-amount="@priceHandle.Amount.Amount" />
         
                         <div class="ctaFund__item-inner">
-                            @*TODO currency*@
-                            <h3>@Model.Formatter.Number.FormatMoney(priceHandle.Amount)</h3>
-
+                            @{
+                                var priceHandleAmount = priceHandle.CurrencyAmountValues[Model.SiteCurrency];
+                            }
+                            
+                            <h3>@Model.Formatter.Number.FormatMoney(priceHandleAmount)</h3>
+                            
                             <hr/>
 
                             <p class="subtle">@priceHandle.Description</p>
@@ -48,15 +56,16 @@
                         <div class="subtle">@PartialText.Get("Custom Amount")</div>
                         
                         <div class="cta__input">
-                            <label class="large" for="goal-custom-amount-symbol-@goal.Id"> £ </label>
+                            <label class="large n3o-currency-label" for="goal-custom-amount-symbol-@goal.Id"> @Model.SiteCurrency.Symbol </label>
                             
                             <input id="goal-custom-amount-@goal.Id" disabled type="number" />
                             
                             <div class="cta__input-select">
                                 @*TODO currency*@
-                                <select name="currency" id="currency-@goal.Id">
-                                    <option value="gbp">GBP</option>
-                                    <option value="usd">USD</option>
+                                <select class="n3o-currency-picker" name="currency" id="currency-@goal.Id">
+                                    @foreach (var currency in Model.Currencies) {
+                                        <!option value="@currency.Id" data-currency data-symbol="@currency.Symbol" @if (currency == Model.SiteCurrency) { <text>selected="selected"</text> }>@currency.Code</!option>
+                                    }
                                 </select>
                             </div>
                         </div>
@@ -65,9 +74,10 @@
                         </svg>
                     </div>
                 </div>
-
-                <div class="large showMoreBtn">@PartialText.Get("More Options")</div>
-            </div>
+                @if (goal.PriceHandles.Count > 2) {
+                    <div class="large showMoreBtn">@PartialText.Get("More Options")</div>
+                }
+    </div>
         }
         <div class="cta__foot">
             <button type="button" id="submit-donation" class="button primary submit3" disabled>
@@ -79,7 +89,9 @@
 </div>
 
 <script>
-    const n3o_cdf_donationCart = (() => {
+    const n3o_cdf_donationCart = (() => {        
+        let n3oSelectedCurrency = '@Model.SiteCurrency.Code.ToLowerInvariant()';
+    
         const submitCrowdfundingCartReq = async req => {
             try {
                 const response = await fetch('/umbraco/api/crowdfunding/addToCart', {
@@ -102,9 +114,27 @@
                 window.themeConfig.showError(e.errors)
             }
         }
+        
+        const changeCurrency = async req => {
+            try {
+                const response = await fetch(`/umbraco/api/giving/currency/${req}`, {
+                    method: "POST"                    
+                });
+
+                if (response.ok) {                   
+                    return true;
+                } else {
+                    window.themeConfig.showError(response.errors);
+                    
+                    return false;
+                }
+            } catch (e) {
+                window.themeConfig.showError(e.errors);
+            }
+        }
 
         function handleDonationReq() {
-            let contributionReq = {};
+            let crowdfundingCartReq = {};
 
             const items = [];
             const goalInputs = document.querySelectorAll("input[name='goal']")
@@ -112,7 +142,7 @@
             goalInputs.forEach(input => {
                 const goalId = input.value;
 
-                const contributionItemReq = {};
+                const crowdfundingCartItemReq = {};
                 const goalValue = {};
 
                 const goalPriceElement = document.querySelector(`input[name='goal-price-${goalId}']`);
@@ -125,17 +155,17 @@
                 }
 
                 if (goalPriceElement.checked) {
-                    goalValue.amount = goalPriceElement.dataset;
+                    goalValue.amount = goalPriceElement.dataset[`goalAmount${capitalizeFirstLetter(n3oSelectedCurrency)}`];
                 } else if (customPriceElement.checked) {
                     goalValue.amount = document.querySelector(`#goal-custom-amount-${goalId}`).value;
                 }
 
                 goalValue.currency = document.querySelector(`#currency-${goalId}`).value;
                 
-                contributionItemReq.goalId = goalId;
-                contributionItemReq.value = goalValue;
+                crowdfundingCartItemReq.goalId = goalId;
+                crowdfundingCartItemReq.value = goalValue;
 
-                items.push(contributionItemReq);
+                items.push(crowdfundingCartItemReq);
             });
 
             let wrapperElement = document.querySelector('[data-crowdfunder-id]');
@@ -146,12 +176,12 @@
                 anonymous: document.querySelector('#donor-is-anonymous')?.checked
             };
 
-            contributionReq.crowdfunding = crowdfunderData;
-            contributionReq.type = wrapperElement.dataset.crowdfunderType;
-            contributionReq.items = items;
+            crowdfundingCartReq.crowdfunding = crowdfunderData;
+            crowdfundingCartReq.type = wrapperElement.dataset.crowdfunderType;
+            crowdfundingCartReq.items = items;
 
             if (items.length) {
-                submitCrowdfundingCartReq(contributionReq)
+                submitCrowdfundingCartReq(crowdfundingCartReq)
             }
         }
 
@@ -221,6 +251,46 @@
                 showDonationSummaryModal();
             }
         }
+        
+        function handleCurrencySelection() {
+            const currencyPickers = document.querySelectorAll('.n3o-currency-picker');
+
+            currencyPickers.forEach(function(picker) {
+                picker.addEventListener('change', function(event) {
+                    let selectedOption = event.target.options[event.target.selectedIndex];
+                    let currencyId = selectedOption.value;
+                    let currencySymbol = selectedOption.getAttribute('data-symbol');
+
+                    let success = changeCurrency(currencyId);
+                    
+                    if (!success) {
+                        return;
+                    }
+
+                    n3oSelectedCurrency = currencyId;
+                    
+                    let currencyLabels = document.querySelectorAll('.n3o-currency-label');
+                    
+                    currencyLabels.forEach(function(label) {
+                        label.textContent = currencySymbol;
+                    });
+                    
+                    let goalPriceHandles = document.querySelectorAll('.ctaFund__item');
+                    
+                    goalPriceHandles.forEach(function (priceHandle) {
+                        let inputElement = priceHandle.querySelector('input');
+                        let goalAmount = inputElement.getAttribute(`data-goal-amount-${n3oSelectedCurrency}`);
+                        let h3Element= priceHandle.querySelector('h3');
+                        
+                        h3Element.textContent = `${currencySymbol} ${goalAmount}`;
+                    });
+
+                    currencyPickers.forEach( otherPicker => {
+                        otherPicker.value = n3oSelectedCurrency;
+                    });
+                });
+            });
+        }
 
         function createFundBlock(item) {
             // Create the outer div with class ctaFund
@@ -261,9 +331,16 @@
             return ctaFundDiv;
         }
 
+        function capitalizeFirstLetter(str) {
+            if (!str) return str;
+            
+            return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+        }
+
         return {
             handleDonationReq,
             handleDonationSummaryModal,
+            handleCurrencySelection,
             createFundBlock
         }
     })();
@@ -273,6 +350,8 @@
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('add-donation-to-cart')?.addEventListener?.('click', n3o_cdf_donationCart.handleDonationReq);
     });
+
+    n3o_cdf_donationCart.handleCurrencySelection();
 
     const showDonationSummaryModal = () => {
         document.getElementById('donationSummary-modal')?.classList.add("active");

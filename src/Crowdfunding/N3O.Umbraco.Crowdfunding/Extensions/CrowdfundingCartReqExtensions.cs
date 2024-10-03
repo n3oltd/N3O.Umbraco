@@ -41,6 +41,7 @@ public static class CrowdfundingCartReqExtensions {
 
         var addToCartReq = new AddToCartReq();
         addToCartReq.GivingType = GivingTypes.Donation;
+        addToCartReq.Quantity = 1;
         addToCartReq.Allocation = new AllocationReq();
         
         addToCartReq.Allocation.Type = goal.Type;

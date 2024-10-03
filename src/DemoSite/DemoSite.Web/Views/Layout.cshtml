@@ -1,11 +1,15 @@
-﻿@inherits UmbracoViewPage<IPageViewModel>
+﻿@using N3O.Umbraco.Context
+@inherits UmbracoViewPage<IPageViewModel>
 
+@inject ICurrencyAccessor CurrencyAccessor;
 @inject ITemplateText TemplateText;
 
 @{
     Layout = null;
 
     TemplateText.SetTemplateName("Layout");
+
+    var currency = CurrencyAccessor.GetCurrency();
 }
 
 @if (Model.Content is IPage content) {
@@ -36,6 +40,26 @@
         <n3o-google-tag-manager model="@Model" render="head"></n3o-google-tag-manager>
         
         <n3o-structured-data model="@Model" />
+        <n3o-open-graph model="@Model" />
+
+        <script>
+            window.themeConfig = window.themeConfig || { };
+            window.themeConfig.formatter = {
+                dateTime: {
+                    format: function(date) {
+                        new Intl.DateTimeFormat('@Formatter.CultureCode').format(date);
+                    }
+                },
+                number: {
+                    format: function (number) {
+                        new Intl.NumberFormat('@Formatter.CultureCode').format(number);
+                    },
+                    formatMoney: function (amount, currency) {
+                        new Intl.NumberFormat('@Formatter.CultureCode', { style: 'currency', currency: currency ?? '@currency.Code' }).format(amount);
+                    }
+                }
+            };
+        </script>
     </head>
 
     <body>

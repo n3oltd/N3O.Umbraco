@@ -6,17 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Umbraco.Cms.Core.Hosting;
 using Umbraco.Cms.Core.IO;
 
 namespace N3O.Umbraco.Cropper;
 
 public class ImageCropper : IImageCropper {
-    private readonly IHostingEnvironment _hostingEnvironment;
     private readonly MediaFileManager _mediaFileManager;
 
-    public ImageCropper(IHostingEnvironment hostingEnvironment, MediaFileManager mediaFileManager) {
-        _hostingEnvironment = hostingEnvironment;
+    public ImageCropper(MediaFileManager mediaFileManager) {
         _mediaFileManager = mediaFileManager;
     }
 
@@ -32,13 +29,13 @@ public class ImageCropper : IImageCropper {
         }
     }
 
-    private async Task CropAsync(CropDefinition definition,
-                                 CropperSource.Crop crop,
-                                 CropperSource source,
-                                 CancellationToken cancellationToken = default) {
+    public async Task CropAsync(CropDefinition definition,
+                                CropperSource.Crop crop,
+                                CropperSource source,
+                                CancellationToken cancellationToken = default) {
         using (var srcStream = _mediaFileManager.FileSystem.OpenFile($"{source.MediaId}/{source.Filename}")) {
             using (var destStream = new MemoryStream()) {
-                using (var image = Image.Load(srcStream)) {
+                using (var image = await Image.LoadAsync(srcStream, cancellationToken)) {
                     var clone = image.Clone(i => {
                         i.Crop(new Rectangle(crop.X, crop.Y, crop.Width, crop.Height));
 

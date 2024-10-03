@@ -1,5 +1,7 @@
-﻿namespace N3O.Umbraco.Crowdfunding.Models;
+﻿using System.Collections.Generic;
+
+namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class AllocationStatisticsRes {
-    public AllocationStatisticsItemRes TopItems { get; set; }
+    public IEnumerable<AllocationStatisticsItemRes> TopItems { get; set; }
 }

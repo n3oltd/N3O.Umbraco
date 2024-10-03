@@ -15,12 +15,12 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cropper.Notifications;
 
-public class CropperNotificationHandlers : INotificationAsyncHandler<ContentSavingNotification> {
+public class CropperContentSavingHandler : INotificationAsyncHandler<ContentSavingNotification> {
     private readonly IDataTypeService _dataTypeService;
     private readonly IContentHelper _contentHelper;
     private readonly IImageCropper _imageCropper;
 
-    public CropperNotificationHandlers(IDataTypeService dataTypeService,
+    public CropperContentSavingHandler(IDataTypeService dataTypeService,
                                        IContentHelper contentHelper,
                                        IImageCropper imageCropper) {
         _dataTypeService = dataTypeService;

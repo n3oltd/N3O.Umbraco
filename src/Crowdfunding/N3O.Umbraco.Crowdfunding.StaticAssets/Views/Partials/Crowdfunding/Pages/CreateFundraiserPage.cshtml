@@ -123,7 +123,7 @@
                 <p class="detail"></p>
             </div>
             
-            <a href="#" class="subtle">@PartialText.Get("Note: Minimum amount is ")<span id="n3o_cdf-min-amount">@Model.Formatter.Number.FormatMoney(Model.MinimumAmountValues[Model.Campaign.Currency.Code])</span></a>
+            <a href="#" class="subtle">@PartialText.Get("Note: Minimum amount is")<span id="n3o_cdf-min-amount">@Model.Formatter.Number.FormatMoney(Model.MinimumAmountValues[Model.Campaign.Currency])</span></a>
             
             <button type="button" id="goal-next-tab" class="button primary" disabled>
                 @PartialText.Get("Continue")

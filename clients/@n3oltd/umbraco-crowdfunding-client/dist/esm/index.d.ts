@@ -34,7 +34,7 @@ export interface GoalOptionRes {
     id?: string | undefined;
     name?: string | undefined;
     type?: AllocationType | undefined;
-    tags?: string[] | undefined;
+    tags?: TagRes[] | undefined;
     dimension1?: GoalOptionFundDimensionRes | undefined;
     dimension2?: GoalOptionFundDimensionRes | undefined;
     dimension3?: GoalOptionFundDimensionRes | undefined;
@@ -47,6 +47,10 @@ export declare enum AllocationType {
     Feedback = "feedback",
     Fund = "fund",
     Sponsorship = "sponsorship"
+}
+export interface TagRes {
+    name?: string | undefined;
+    iconUrl?: string | undefined;
 }
 export interface GoalOptionFundDimensionRes {
     default?: FundDimensionValueRes | undefined;
@@ -420,10 +424,6 @@ export interface FeedbackCustomFieldRes {
     date?: string | undefined;
     text?: string | undefined;
 }
-export interface TagRes {
-    name?: string | undefined;
-    iconUrl?: string | undefined;
-}
 export interface LookupRes {
     id?: string | undefined;
 }
@@ -438,33 +438,43 @@ export interface ContributionStatisticsRes {
     total?: MoneyRes | undefined;
     average?: MoneyRes | undefined;
     count?: number;
+    daily?: DailyContributionStatisticsRes[] | undefined;
+}
+export interface DailyContributionStatisticsRes {
+    date?: string;
+    total?: MoneyRes | undefined;
+    count?: number;
 }
 export interface AllocationStatisticsRes {
-    topItems?: AllocationStatisticsItemRes | undefined;
+    topItems?: AllocationStatisticsItemRes[] | undefined;
 }
 export interface AllocationStatisticsItemRes {
     summary?: string | undefined;
     total?: MoneyRes | undefined;
 }
 export interface CampaignStatisticsRes {
-    contributionsTotal?: MoneyRes | undefined;
-    topItems?: CampaignStatisticsItemRes | undefined;
-    activeCount?: number;
-    goalsTotal?: MoneyRes | undefined;
+    count?: number;
+    averagePercentageComplete?: number;
+    topItems?: CrowdfunderStatisticsItemRes[] | undefined;
 }
-export interface CampaignStatisticsItemRes {
+export interface CrowdfunderStatisticsItemRes {
     name?: string | undefined;
-    total?: MoneyRes | undefined;
+    goalsTotal?: MoneyRes | undefined;
+    contributionsTotal?: MoneyRes | undefined;
+    url?: string | undefined;
 }
 export interface FundraiserStatisticsRes {
-    contributionsTotal?: MoneyRes | undefined;
-    topItems?: FundraiserStatisticsItemRes | undefined;
+    count?: number;
+    averagePercentageComplete?: number;
+    topItems?: CrowdfunderStatisticsItemRes[] | undefined;
     activeCount?: number;
-    goalsTotal?: MoneyRes | undefined;
+    newCount?: number;
+    completedCount?: number;
+    byCampaign?: FundraiserByCampaignStatisticsRes[] | undefined;
 }
-export interface FundraiserStatisticsItemRes {
-    name?: string | undefined;
-    total?: MoneyRes | undefined;
+export interface FundraiserByCampaignStatisticsRes {
+    campaignName?: string | undefined;
+    count?: number;
 }
 export interface DashboardStatisticsCriteria {
     period?: RangeOfNullableLocalDate | undefined;
