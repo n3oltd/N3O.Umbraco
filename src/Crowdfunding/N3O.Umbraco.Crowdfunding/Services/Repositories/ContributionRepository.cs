@@ -54,7 +54,8 @@ public class ContributionRepository : IContributionRepository {
                                                  bool taxRelief,
                                                  GivingType givingType,
                                                  Allocation allocation) {
-        var contribution = await GetContributionAsync(checkoutReference,
+        var contribution = await GetContributionAsync(ContributionType.Online,
+                                                      checkoutReference,
                                                       timestamp,
                                                       crowdfunderData,
                                                       email,
@@ -84,7 +85,8 @@ public class ContributionRepository : IContributionRepository {
         return await FindContributionsAsync(Sql.Builder.Where($"{nameof(Contribution.FundraiserId)} IN (@0)", fundraiserIds));
     }
 
-    private async Task<Contribution> GetContributionAsync(string transactionReference,
+    private async Task<Contribution> GetContributionAsync(ContributionType type,
+                                                          string transactionReference,
                                                           Instant timestamp,
                                                           ICrowdfunderData crowdfunderData,
                                                           string email,
@@ -128,7 +130,7 @@ public class ContributionRepository : IContributionRepository {
         contribution.Email = email;
         contribution.Comment = crowdfunderData.Comment;
         contribution.Status = ContributionStatuses.Visible;
-        contribution.ContributionType = 1;
+        contribution.ContributionType = (int) type;
         contribution.AllocationSummary = allocation.Summary;
         contribution.FundDimension1 = allocation.FundDimensions.Dimension1.Name;
         contribution.FundDimension2 = allocation.FundDimensions.Dimension2.Name;
@@ -142,11 +144,13 @@ public class ContributionRepository : IContributionRepository {
     private ICrowdfunderContent GetCrowdfunderContent(ICrowdfunderData crowdfunderData) {
         if (crowdfunderData.CrowdfunderType == CrowdfunderTypes.Campaign) {
             return _contentLocator.ById<CampaignContent>(crowdfunderData.CrowdfunderId);
-        } else if (crowdfunderData.CrowdfunderType == CrowdfunderTypes.Fundraiser) {
-            return _contentLocator.ById<FundraiserContent>(crowdfunderData.CrowdfunderId);
-        } else {
-            throw UnrecognisedValueException.For(crowdfunderData.CrowdfunderType);
         }
+
+        if (crowdfunderData.CrowdfunderType == CrowdfunderTypes.Fundraiser) {
+            return _contentLocator.ById<FundraiserContent>(crowdfunderData.CrowdfunderId);
+        }
+
+        throw UnrecognisedValueException.For(crowdfunderData.CrowdfunderType);
     }
 
     private async Task<IReadOnlyList<Contribution>> FindContributionsAsync(Sql whereClause) {

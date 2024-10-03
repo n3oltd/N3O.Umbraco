@@ -109,30 +109,31 @@ public class Contribution {
     public string Status { get; set; }
 
     [Column(nameof(ContributionType))]
+    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(AllocationSummary), ForColumns = nameof(AllocationSummary))]
     public int ContributionType { get; set; }
     
     [Column(nameof(AllocationSummary))]
-    [Length(50)]
+    [Length(200)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(AllocationSummary), ForColumns = nameof(AllocationSummary))]
     public string AllocationSummary { get; set; }
     
     [Column(nameof(FundDimension1))]
-    [Length(50)]
+    [Length(100)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(FundDimension1), ForColumns = nameof(FundDimension1))]
     public string FundDimension1 { get; set; }
     
     [Column(nameof(FundDimension2))]
-    [Length(50)]
+    [Length(100)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(FundDimension2), ForColumns = nameof(FundDimension2))]
     public string FundDimension2 { get; set; }
     
     [Column(nameof(FundDimension3))]
-    [Length(50)]
+    [Length(100)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(FundDimension3), ForColumns = nameof(FundDimension3))]
     public string FundDimension3 { get; set; }
     
     [Column(nameof(FundDimension4))]
-    [Length(50)]
+    [Length(100)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(FundDimension4), ForColumns = nameof(FundDimension4))]
     public string FundDimension4 { get; set; }
     
