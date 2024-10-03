@@ -16,6 +16,7 @@ public interface ICrowdfunderContent {
     public IEnumerable<GoalElement> Goals { get; }
     public IEnumerable<HeroImagesElement> HeroImages { get; }
     public string Name { get; }
+    public string OpenGraphImageUrl { get; }
     
     Guid CampaignId { get; }
     string CampaignName { get; }

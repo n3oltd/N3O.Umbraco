@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
+using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
@@ -39,7 +40,17 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
     }
 
     protected override bool IsMatch(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
-        return IsMatch(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewEditFundraiser);
+        var isMatch = IsMatch(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewEditFundraiser);
+
+        if (!isMatch) {
+            return false;
+        }
+        
+        var fundraiser = GetFundraiser(crowdfundingPath);
+
+        isMatch = fundraiser.HasValue() && fundraiser.Status != CrowdfunderStatuses.Draft;
+        
+        return isMatch;
     }
     
     protected override void AddOpenGraph(IOpenGraphBuilder builder,
@@ -49,9 +60,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
 
         builder.WithTitle(fundraiser.Name);
         builder.WithDescription(fundraiser.Description);
-        
-        //TODO
-        //builder.WithImageUrl(campaign.OpenGraphImageUrl);
+        builder.WithImageUrl(fundraiser.OpenGraphImageUrl);
     }
 
     protected override async Task<ICrowdfundingViewModel> GetViewModelAsync(string crowdfundingPath,
