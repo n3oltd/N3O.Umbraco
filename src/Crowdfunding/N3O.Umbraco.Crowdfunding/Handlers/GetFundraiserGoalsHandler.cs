@@ -20,7 +20,7 @@ public class GetFundraiserGoalsHandler :
     }
 
     public Task<FundraiserGoalsRes> Handle(GetFundraiserGoalsQuery req, CancellationToken cancellationToken) {
-        var content = req.ContentId.Run(_contentLocator.ById<FundraiserContent>, true);
+        var content = req.FundraiserId.Run(_contentLocator.ById<FundraiserContent>, true);
         
         var res = _mapper.Map<FundraiserContent, FundraiserGoalsRes>(content);
         
