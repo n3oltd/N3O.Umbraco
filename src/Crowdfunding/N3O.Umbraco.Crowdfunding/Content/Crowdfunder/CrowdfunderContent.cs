@@ -21,6 +21,8 @@ public abstract class CrowdfunderContent<T> : UmbracoContent<T>, ICrowdfunderCon
     public IEnumerable<HeroImagesElement> HeroImages => GetNestedAs(x => x.HeroImages);
     [UmbracoProperty(CrowdfundingConstants.Crowdfunder.Properties.Name)]
     public string Name => GetValue(x => x.Name);
+    public string OpenGraphImageUrl => GetValue(x => x.OpenGraphImageUrl);
+    
     public bool ToggleStatus => GetValue(x => x.ToggleStatus);
     public CrowdfunderStatus Status => GetStaticLookupByNameAs(x => x.Status);
     

@@ -1,6 +1,7 @@
 ﻿using Flurl;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
+using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Crowdfunding.Models;
@@ -31,13 +32,21 @@ public class ViewCampaignPage : CrowdfundingPage {
         _contributionRepository = contributionRepository;
         _currencyAccessor = currencyAccessor;
         _forexConverter = forexConverter;
-        _lookups = lookups;        
+        _lookups = lookups;
     }
 
     protected override bool IsMatch(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
-        //TODO We need to actually check that this campaign exists with the content locator, and we also need to 
-        //check that the campaign status is not draft.
-        return IsMatch(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewCampaign);
+        var isMatch = IsMatch(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewCampaign);
+
+        if (!isMatch) {
+            return false;
+        }
+        
+        var campaign = GetCampaign(crowdfundingPath);
+
+        isMatch = campaign.HasValue() && campaign.Status != CrowdfunderStatuses.Draft;
+        
+        return isMatch;
     }
     
     protected override void AddOpenGraph(IOpenGraphBuilder builder,
@@ -47,9 +56,7 @@ public class ViewCampaignPage : CrowdfundingPage {
 
         builder.WithTitle(campaign.Name);
         builder.WithDescription(campaign.Description);
-        
-        //TODO
-        //builder.WithImageUrl(campaign.OpenGraphImageUrl);
+        builder.WithImageUrl(campaign.OpenGraphImageUrl);
     }
 
     protected override async Task<ICrowdfundingViewModel> GetViewModelAsync(string crowdfundingPath,

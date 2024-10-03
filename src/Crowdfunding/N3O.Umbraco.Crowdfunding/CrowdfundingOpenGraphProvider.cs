@@ -6,9 +6,9 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Crowdfunding;
 
 public class CrowdfundingOpenGraphProvider : IOpenGraphProvider {
-    private readonly Lazy<CrowdfundingRouter> _crowdfundingRouter;
+    private readonly Lazy<ICrowdfundingRouter> _crowdfundingRouter;
 
-    public CrowdfundingOpenGraphProvider(Lazy<CrowdfundingRouter> crowdfundingRouter) {
+    public CrowdfundingOpenGraphProvider(Lazy<ICrowdfundingRouter> crowdfundingRouter) {
         _crowdfundingRouter = crowdfundingRouter;
     }
     
