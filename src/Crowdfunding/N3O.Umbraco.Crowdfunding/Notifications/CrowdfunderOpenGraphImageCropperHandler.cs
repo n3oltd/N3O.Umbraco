@@ -29,14 +29,9 @@ public class CrowdfunderOpenGraphImageCropperHandler : OpenGraphImageCropperHand
     }
 
     protected override CroppedImage GetImage(ContentProperties contentProperties) {
-        var heroImages = contentProperties.NestedContentProperties
-                                         .Single(x => x.Alias == CrowdfundingConstants.Crowdfunder.Properties.HeroImages);
+        var backgroundImage = contentProperties.GetPropertyByAlias(CrowdfundingConstants.Crowdfunder.Properties.BackgroundImage);
         
-        var heroImage = heroImages.Value
-                                   .First(x => x.ContentTypeAlias == CrowdfundingConstants.HeroImages.Alias)
-                                   .GetPropertyByAlias(CrowdfundingConstants.HeroImages.Properties.Image);
-        
-        var croppedImage = _contentHelper.Value.GetCroppedImage(heroImage);
+        var croppedImage = _contentHelper.Value.GetCroppedImage(backgroundImage);
 
         return croppedImage;
     }
