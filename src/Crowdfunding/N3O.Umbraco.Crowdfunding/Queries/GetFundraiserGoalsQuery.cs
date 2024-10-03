@@ -5,9 +5,9 @@ using N3O.Umbraco.Mediator;
 namespace N3O.Umbraco.Crowdfunding.Queries;
 
 public class GetFundraiserGoalsQuery : Request<None, FundraiserGoalsRes> {
-    public ContentId ContentId { get; }
+    public FundraiserId FundraiserId { get; }
 
-    public GetFundraiserGoalsQuery(ContentId contentId) {
-        ContentId = contentId;
+    public GetFundraiserGoalsQuery(FundraiserId fundraiserId) {
+        FundraiserId = fundraiserId;
     }
 }

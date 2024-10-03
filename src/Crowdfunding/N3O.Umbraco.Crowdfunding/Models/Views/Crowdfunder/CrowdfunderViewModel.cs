@@ -2,6 +2,7 @@
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Crowdfunding.Lookups;
+using N3O.Umbraco.Crowdfunding.UIBuilder;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex;
@@ -50,7 +51,8 @@ public abstract class CrowdfunderViewModel<TContent> :
                                                                                               forexConverter,
                                                                                               lookups, 
                                                                                               x));
-        viewModel.Contributions = contributions.ToReadOnlyList(x => CrowdfunderContributionViewModel.For(viewModel.Formatter,
+        viewModel.Contributions = contributions.Where(x => x.Status == ContributionStatuses.Visible)
+                                               .ToReadOnlyList(x => CrowdfunderContributionViewModel.For(viewModel.Formatter,
                                                                                                          lookups,
                                                                                                          x));
         

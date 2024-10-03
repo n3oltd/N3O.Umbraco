@@ -15,7 +15,7 @@ public partial class CrowdfundingController {
         return Ok(res);
     }
     
-    [HttpGet("fundraisers/{contentId:guid}/goals")]
+    [HttpGet("fundraisers/{fundraiserId:guid}/goals")]
     public async Task<ActionResult<FundraiserGoalsRes>> GetFundraiserGoals() {
         var res = await _mediator.Value.SendAsync<GetFundraiserGoalsQuery, None, FundraiserGoalsRes>(None.Empty);
 
@@ -31,8 +31,10 @@ public partial class CrowdfundingController {
         return Ok();
     }
     
-    [HttpPut("fundraisers/{contentId:guid}/goals")]
-    public async Task<ActionResult> UpdateFundraiserGoals(FundraiserGoalsReq req) {
+    [HttpPut("fundraisers/{fundraiserId:guid}/goals")]
+    public async Task<ActionResult> UpdateFundraiserGoals([FromRoute] Guid fundraiserId, FundraiserGoalsReq req) {
+        await EnforceFundraiserAccessControlsAsync(fundraiserId);
+        
         var res = await _mediator.Value.SendAsync<UpdateFundraiserGoalsCommand, FundraiserGoalsReq>(req);
 
         return Ok(res);
