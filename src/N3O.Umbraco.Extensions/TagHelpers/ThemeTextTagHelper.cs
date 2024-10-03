@@ -15,29 +15,34 @@ namespace N3O.Umbraco.TagHelpers;
 [HtmlTargetElement("n3o-theme-text")]
 public class ThemeTextTagHelper : TagHelper {
     private readonly IJsonProvider _jsonProvider;
+    private readonly IStringLocalizer _stringLocalizer;
 
     [HtmlAttributeName("path")]
     public string Path { get; set; }
     
     [HtmlAttributeName("strings")]
-    public Type Strings { get; set; }
+    public Type StringsType { get; set; }
 
-    public ThemeTextTagHelper(IJsonProvider jsonProvider) {
+    public ThemeTextTagHelper(IJsonProvider jsonProvider, IStringLocalizer stringLocalizer) {
         _jsonProvider = jsonProvider;
+        _stringLocalizer = stringLocalizer;
     }
 
     public override void Process(TagHelperContext context, TagHelperOutput output) {
-        if (!Strings.ImplementsInterface<IStrings>() || !Strings.HasParameterlessConstructor()) {
-            throw new ArgumentException(nameof(Strings));
+        if (!StringsType.ImplementsInterface<IStrings>() || !StringsType.HasParameterlessConstructor()) {
+            throw new ArgumentException(nameof(StringsType));
         }
-
-        var strings = Activator.CreateInstance(Strings);
+        
+        var strings = (IStrings) Activator.CreateInstance(StringsType);
         var serializerSettings = _jsonProvider.GetSettings();
         var serializer = JsonSerializer.Create(serializerSettings);
+        serializer.ContractResolver = new TypeOnlyContractResolver(StringsType);
         
         var jObject = JObject.FromObject(strings, serializer);
-        jObject.Remove(nameof(IStrings.Folder).Camelize());
-        jObject.Remove(nameof(IStrings.Name).Camelize());
+
+        foreach (var (key, value) in jObject) {
+            jObject[key] = _stringLocalizer.Get(strings.Folder, strings.Name, (string) value);
+        }
         
         var javascript = $"window.themeConfig.text.{Path.Camelize()} = {jObject}";
         
