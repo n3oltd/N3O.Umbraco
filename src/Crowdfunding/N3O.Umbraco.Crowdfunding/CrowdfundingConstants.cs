@@ -36,7 +36,7 @@ public static class CrowdfundingConstants {
             public const string Goals = "goals";
             public const string HeroImages = "heroImages";
             public const string Name = "displayName";
-            public const string OpenGraphImageUrl = "openGraphImageUrl";
+            public const string OpenGraphImagePath = "openGraphImagePath";
             public const string Status = "status";
             public const string ToggleStatus = "toggleStatus";
         }

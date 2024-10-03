@@ -36,17 +36,17 @@ public class ViewCampaignPage : CrowdfundingPage {
     }
 
     protected override bool IsMatch(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
-        var isMatch = IsMatch(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewCampaign);
-
-        if (!isMatch) {
+        if (!IsMatch(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewCampaign)) {
             return false;
         }
         
         var campaign = GetCampaign(crowdfundingPath);
 
-        isMatch = campaign.HasValue() && campaign.Status != CrowdfunderStatuses.Draft;
+        if (campaign == null || campaign.Status == CrowdfunderStatuses.Draft) {
+            return false;
+        }
         
-        return isMatch;
+        return true;
     }
     
     protected override void AddOpenGraph(IOpenGraphBuilder builder,
@@ -56,7 +56,7 @@ public class ViewCampaignPage : CrowdfundingPage {
 
         builder.WithTitle(campaign.Name);
         builder.WithDescription(campaign.Description);
-        builder.WithImageUrl(campaign.OpenGraphImageUrl);
+        builder.WithImagePath(campaign.OpenGraphImagePath);
     }
 
     protected override async Task<ICrowdfundingViewModel> GetViewModelAsync(string crowdfundingPath,

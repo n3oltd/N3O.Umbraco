@@ -1,11 +1,17 @@
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Utilities;
 
 namespace N3O.Umbraco.OpenGraph;
 
 public class OpenGraphBuilder : IOpenGraphBuilder {
+    private readonly IUrlBuilder _urlBuilder;
     private string _title;
     private string _imageUrl;
     private string _description;
+
+    public OpenGraphBuilder(IUrlBuilder urlBuilder) {
+        _urlBuilder = urlBuilder;
+    }
 
     public IOpenGraphBuilder WithTitle(string title) {
         _title = title;
@@ -17,6 +23,12 @@ public class OpenGraphBuilder : IOpenGraphBuilder {
         _description = description;
 
         return this;
+    }
+
+    public IOpenGraphBuilder WithImagePath(string imagePath) {
+        var imageUrl = _urlBuilder.Root().AppendPathSegment(imagePath);
+
+        return WithImageUrl(imageUrl);
     }
 
     public IOpenGraphBuilder WithImageUrl(string imageUrl) {

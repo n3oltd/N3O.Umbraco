@@ -57,10 +57,10 @@ namespace DemoSite.Content
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingHeroImage> HeroImages { get; }
 
-		/// <summary>Open Graph Image URL</summary>
+		/// <summary>Open Graph Image Path</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		string OpenGraphImageUrl { get; }
+		string OpenGraphImagePath { get; }
 
 		/// <summary>Status</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
@@ -195,17 +195,17 @@ namespace DemoSite.Content
 		public static global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingHeroImage> GetHeroImages(ICrowdfundingCrowdfunder that, IPublishedValueFallback publishedValueFallback) => that.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingHeroImage>>(publishedValueFallback, "heroImages");
 
 		///<summary>
-		/// Open Graph Image URL
+		/// Open Graph Image Path
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("openGraphImageUrl")]
-		public virtual string OpenGraphImageUrl => GetOpenGraphImageUrl(this, _publishedValueFallback);
+		[ImplementPropertyType("openGraphImagePath")]
+		public virtual string OpenGraphImagePath => GetOpenGraphImagePath(this, _publishedValueFallback);
 
-		/// <summary>Static getter for Open Graph Image URL</summary>
+		/// <summary>Static getter for Open Graph Image Path</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static string GetOpenGraphImageUrl(ICrowdfundingCrowdfunder that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "openGraphImageUrl");
+		public static string GetOpenGraphImagePath(ICrowdfundingCrowdfunder that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "openGraphImagePath");
 
 		///<summary>
 		/// Status
