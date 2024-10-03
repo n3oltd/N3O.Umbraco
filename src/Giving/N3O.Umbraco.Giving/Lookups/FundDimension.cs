@@ -10,8 +10,6 @@ public interface IFundDimension : INamedLookup {
     bool IsActive { get; }
     IEnumerable<IFundDimensionValue> Options { get; }
     int Index { get; }
-    
-    int Number => Index;
 }
 
 public abstract class FundDimension<T, TValue> : LookupContent<T>, IFundDimension

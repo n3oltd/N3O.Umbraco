@@ -265,9 +265,13 @@ class n3o_cdf_FieldHandler {
         ['dimension1', 'dimension2', 'dimension3', 'dimension4'].forEach(dimension => {
             const [currDimension, index] = n3o_cdf_splitDimensionAndNumber(dimension);
             const dimensionOptionsContainerElm = document.getElementById(`goal-selection-${currDimension}-${index}`);
-            dimensionOptionsContainerElm.innerHTML = "";
+
+            if (dimensionOptionsContainerElm) {
+                dimensionOptionsContainerElm.innerHTML = "";
+            }
+
         })
-    } 
+    }
 
     static populateDimensions(dimensions, data) {
         dimensions.forEach(dimension => {
@@ -553,7 +557,7 @@ class n3o_cdf_PageManager {
                     goals: {
                         items: [{
                             amount: +this.selectedGoal.amount,
-                            goalId: this.selectedGoal.value,
+                            goalOptionId: this.selectedGoal.value,
                             fundDimensions: goalDimensions,
                             feedback: customFieldsReq.length ? {
                                 customFields: {
@@ -621,14 +625,47 @@ class n3o_cdf_PageManager {
             this.selectedGoal.fund = response.fund;
             this.selectedGoal.feedback = response.feedback;
 
+            this.createTags(response.tags);
             this.appendOrRemoveCustomFields(response.feedback?.customFields || []);
             await this.getPrice();
             this.handleDimensionChange();
-
+            
         } catch (e) {
             n3o_cdf_ErrorHanlder.displayErrorMessages(e, 'errorMessage')
         }
         
+    }
+
+    createTags(data) {
+        const container = document.querySelector('#goal-option-tag');
+        if (!container) {
+            return;
+        }
+
+        const fragment = document.createDocumentFragment();
+
+        container.innerHTML = '';
+
+        data.forEach(item => {
+            const link = document.createElement('a');
+            link.classList.add('setting__tag');
+            link.href = "#";
+            const img = document.createElement('img');
+            img.src = item.iconUrl;
+            img.width = "16px";
+            img.height = "16px";
+
+            const text = document.createTextNode(item.name);
+            const bold = document.createElement('b');
+            bold.appendChild(text);
+
+            link.appendChild(img);
+            link.appendChild(bold);
+
+            fragment.appendChild(link);
+        });
+
+        container.appendChild(fragment);
     }
 
     isPlainObject(value) {

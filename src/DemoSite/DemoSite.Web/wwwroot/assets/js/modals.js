@@ -1,5 +1,6 @@
 ﻿// modals start
 function n3o_cdf_handleModalToggle() {
+    const body = document.body;
     const closeBtns = document.querySelectorAll(".modallClose").forEach((e) => {
         e.addEventListener("click", function (x) {
             console.log(x.target.dataset.modal);
@@ -29,7 +30,7 @@ function n3o_cdf_handleModalToggle() {
                     body.classList.remove("active");
                 });
                 //currentBtn.classList.add('active');
-                currentTab.classList.add("active");
+                currentTab && currentTab.classList.add("active");
                 body.classList.add("active");
             }
         });

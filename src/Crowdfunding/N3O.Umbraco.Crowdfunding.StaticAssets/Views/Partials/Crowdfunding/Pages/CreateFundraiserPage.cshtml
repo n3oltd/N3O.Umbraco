@@ -1,5 +1,4 @@
 ﻿@using Flurl
-@using N3O.Umbraco.Giving
 
 @model CreateFundraiserViewModel
 
@@ -64,9 +63,9 @@
             </div>
 
             @foreach (var fundDimension in fundStructure.Dimensions) {
-                <h4 class="dimension-@fundDimension.Number" style="display: none;">@PartialText.Get("Select {0}").FormatWith(fundDimension.Name)</h4>
+                <h4 class="dimension-@fundDimension.Index" style="display: none;">@PartialText.Get("Select {0}").FormatWith(fundDimension.Name)</h4>
                 
-                <div class="select__outer dimension-@fundDimension.Number" style="display: none;" id="dimension-@fundDimension.Number">
+                <div class="select__outer dimension-@fundDimension.Index" style="display: none;" id="dimension-@fundDimension.Index">
                     <div class="select">
                         <div class="select__selected">@PartialText.Get("Select {0}").FormatWith(fundDimension.Name)</div>
 
@@ -78,10 +77,10 @@
                                     <use xlink:href="#searchIcon"></use>
                                 </svg>
 
-                                <input type="text" id="goals-dimension-@fundDimension.Number" placeholder="@PartialText.Get("Type to search...")" onkeyup="n3o_cdf_filterList('goals-dimension-@fundDimension.Number', 'goal-selection-dimension-@fundDimension.Number')"/>
+                                <input type="text" id="goals-dimension-@fundDimension.Index" placeholder="@PartialText.Get("Type to search...")" onkeyup="n3o_cdf_filterList('goals-dimension-@fundDimension.Index', 'goal-selection-dimension-@fundDimension.Index')"/>
                             </div>
 
-                            <div class="select__options-body" id="goal-selection-dimension-@fundDimension.Number"></div>
+                            <div class="select__options-body" id="goal-selection-dimension-@fundDimension.Index"></div>
                         </ul>
 
                         <svg>
@@ -143,10 +142,10 @@
             </label>
 
             <label class="input__outer">
-                <h4>@PartialText.Get("Customise page web URL")</h4>
+                <h4>@PartialText.Get("Customise page URL")</h4>
 
                 <div class="input big">
-                    <input type="text" placeholder="jon-doe-page1" id="slug"/>
+                    <input type="text" id="slug"/>
                 </div>
 
                 <a href="#" class="subtle">@Context.Request.Uri().ResetToRoot()/.../<span id="urlEnd"></span></a>

@@ -32,6 +32,7 @@
                 <svg class="sm">
                     <use xlink:href="#editIcon"></use>
                 </svg>
+                
                 <b> @PartialText.Get("Edit") </b>
             </div>
         }
@@ -42,20 +43,20 @@
             <p>
                 @Model.Content.Description
             </p>
-            @if (Model.EditMode())
-            {
+            
+            @if (Model.EditMode()) {
                 <div class="campaign__edit modallBtn" n3o-editor="@(Model, PropertyTypes.Textarea, nameof(Model.Content.Description))" style="top: 70px">
                     <svg class="sm">
                         <use xlink:href="#editIcon"></use>
                     </svg>
+                    
                     <b> @PartialText.Get("Edit") </b>
                 </div>
             }
         </div>
         
         <div class="fprogress">
-            @if (Model.EditMode())
-            {
+            @if (Model.EditMode()) {
                 <div class="campaign__edit" data-goal-edit="@Model.Content.Key" style="top: 70px">
                     <svg class="sm">
                         <use xlink:href="#editIcon"></use>
@@ -63,6 +64,7 @@
                     <b> @PartialText.Get("Edit") </b>
                 </div>
             }
+            
             <div class="fprogress__row">
                 <h4>@Model.CrowdfunderProgress.SupportersCount @(Model.CrowdfunderProgress.SupportersCount == 1 ? PartialText.Get("Supporter") : PartialText.Get("Supporters"))</h4>
                 

@@ -14,7 +14,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-react": "^8.0.0",
     "@n3oltd/umbraco-crowdfunding-client": "^13.0.36",
-    "@n3oltd/umbraco-giving-client": "^13.0.35",
+    "@n3oltd/umbraco-giving-client": "^13.0.36",
     "@uppy/core": "^4.0.1",
     "@uppy/dashboard": "^4.0.1",
     "@uppy/drag-drop": "^4.0.1",
