@@ -128,9 +128,13 @@ public class ContributionRepository : IContributionRepository {
         contribution.Email = email;
         contribution.Comment = crowdfunderData.Comment;
         contribution.Status = ContributionStatuses.Visible;
+        contribution.ContributionType = 1;
+        contribution.AllocationSummary = allocation.Summary;
+        contribution.FundDimension1 = allocation.FundDimensions.Dimension1.Name;
+        contribution.FundDimension2 = allocation.FundDimensions.Dimension2.Name;
+        contribution.FundDimension3 = allocation.FundDimensions.Dimension3.Name;
+        contribution.FundDimension4 = allocation.FundDimensions.Dimension4.Name;
         contribution.AllocationJson = _jsonProvider.SerializeObject(allocation);
-        // TODO
-        //contribution.AllocationSummary = allocation.Summary;
 
         return contribution;
     }

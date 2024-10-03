@@ -14,9 +14,6 @@ namespace N3O.Umbraco.Crowdfunding.Entities;
 public class Contribution {
     [PrimaryKeyColumn(Name = Tables.Contributions.PrimaryKey)]
     public int Id { get; set; }
-    
-    // Add a column to indicate the contribution type, with 1 for online and 2 for offline
-    // Update Maria's queries to add this WHERE clause respectively
 
     [Column(nameof(Timestamp))]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(Timestamp), ForColumns = nameof(Timestamp))]
@@ -106,19 +103,38 @@ public class Contribution {
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(Comment), ForColumns = nameof(Comment))]
     public string Comment { get; set; }
     
-    // TODO Talha When populating the view model with these we should be filtering out the hidden ones
     [Column(nameof(Status))]
     [Length(50)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(Status), ForColumns = nameof(Status))]
     public string Status { get; set; }
 
-    // TODO Talha
-    // Before AllocationJson we should put simple columns for:
-    // AllocationSummary
-    // FundDimension1
-    // FundDimension2
-    // FundDimension3
-    // FundDimension4
+    [Column(nameof(ContributionType))]
+    public int ContributionType { get; set; }
+    
+    [Column(nameof(AllocationSummary))]
+    [Length(50)]
+    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(AllocationSummary), ForColumns = nameof(AllocationSummary))]
+    public string AllocationSummary { get; set; }
+    
+    [Column(nameof(FundDimension1))]
+    [Length(50)]
+    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(FundDimension1), ForColumns = nameof(FundDimension1))]
+    public string FundDimension1 { get; set; }
+    
+    [Column(nameof(FundDimension2))]
+    [Length(50)]
+    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(FundDimension2), ForColumns = nameof(FundDimension2))]
+    public string FundDimension2 { get; set; }
+    
+    [Column(nameof(FundDimension3))]
+    [Length(50)]
+    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(FundDimension3), ForColumns = nameof(FundDimension3))]
+    public string FundDimension3 { get; set; }
+    
+    [Column(nameof(FundDimension4))]
+    [Length(50)]
+    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(FundDimension4), ForColumns = nameof(FundDimension4))]
+    public string FundDimension4 { get; set; }
     
     [Column(nameof(AllocationJson))]
     [NullSetting(NullSetting = NullSettings.Null)]
