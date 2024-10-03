@@ -19,7 +19,7 @@
         @foreach (var goal in Model.Goals) {
             <input type="hidden" name="goal" value="@goal.Id"/>
             
-            <div class="ctaFund showMore big">
+            <div class="ctaFund showMore @if(goal.PriceHandles.Count > 2){<text>big</text>}">
                 <h4 id="goal-name-@goal.Id">@goal.Name</h4>
 
                 @foreach (var priceHandle in goal.PriceHandles) {
@@ -74,9 +74,10 @@
                         </svg>
                     </div>
                 </div>
-
-                <div class="large showMoreBtn">@PartialText.Get("More Options")</div>
-            </div>
+                @if (goal.PriceHandles.Count > 2) {
+                    <div class="large showMoreBtn">@PartialText.Get("More Options")</div>
+                }
+    </div>
         }
         <div class="cta__foot">
             <button type="button" id="submit-donation" class="button primary submit3" disabled>
