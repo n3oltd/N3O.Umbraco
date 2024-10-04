@@ -1,5 +1,10 @@
 ﻿function n3o_cdf_handleDonationForm() {
   const ctaFunds = document.querySelectorAll(".ctaFund");
+  
+  if (ctaFunds.length === 0) {
+    return;
+  }
+  
   const cta = document.querySelector(".cta");
   const submitBtn = cta.querySelector(".submit3");
   const submitBtnPrice = submitBtn.querySelector("span");
@@ -8,9 +13,11 @@
     const ctaItems = ctaFund.querySelectorAll(".ctaFund__item");
     const ctaAmount = ctaFund.querySelector(".ctaAmount");
     const ctaCheckbox = ctaAmount.querySelector("input[type='checkbox']");
-    const ctaInput = ctaAmount.querySelector("input[type='number']");
+    const ctaInput = ctaAmount.querySelector("input[type='number']");    
     
     ctaInput.oninput = (e) => {
+      const ctaCurrencyPickerValue = ctaAmount.querySelector(".n3o-currency-picker").value;
+      
       let oldPrice = 0;
       const ctaActiveItems = document.querySelectorAll(".ctaFund__item.active");
       
@@ -38,13 +45,15 @@
         submitBtnPrice.innerHTML = "";
         submitBtn.setAttribute("disabled", true);
       } else {
-        submitBtnPrice.innerHTML = "£" + totalPrice;
+        submitBtnPrice.innerHTML = window.themeConfig.formatter.number.formatMoney(totalPrice, ctaCurrencyPickerValue);
         submitBtn.removeAttribute("disabled");
       }
     };
     
     ctaCheckbox.onchange = (e) => {
-      if (e.target.checked) {
+      const ctaCurrencyPickerValue = ctaAmount.querySelector(".n3o-currency-picker").value;
+      
+      if (e.target.checked) {        
         ctaAmount.classList.add("active");
         ctaInput.removeAttribute("disabled");
         
@@ -82,7 +91,7 @@
           submitBtnPrice.innerHTML = "";
           submitBtn.setAttribute("disabled", true);
         } else {
-          submitBtnPrice.innerHTML = "£" + totalPrice;
+          submitBtnPrice.innerHTML = window.themeConfig.formatter.number.formatMoney(totalPrice, ctaCurrencyPickerValue);
           submitBtn.removeAttribute("disabled");
         }
       } else {
@@ -111,7 +120,7 @@
           submitBtnPrice.innerHTML = "";
           submitBtn.setAttribute("disabled", true);
         } else {
-          submitBtnPrice.innerHTML = "£" + totalPrice;
+          submitBtnPrice.innerHTML = window.themeConfig.formatter.number.formatMoney(totalPrice, ctaCurrencyPickerValue);
           submitBtn.removeAttribute("disabled");
         }
       }
@@ -121,6 +130,8 @@
       const checkbox = ctaItem.querySelector("input");
       
       checkbox.onchange = (e) => {
+        const ctaCurrencyPickerValue = ctaAmount.querySelector(".n3o-currency-picker").value;
+        
         if (e.target.checked) {
           ctaItem.classList.add("active");
           ctaAmount.classList.remove("active");
@@ -159,7 +170,7 @@
             submitBtnPrice.innerHTML = "";
             submitBtn.setAttribute("disabled", true);
           } else {
-            submitBtnPrice.innerHTML = "£" + totalPrice;
+            submitBtnPrice.innerHTML = window.themeConfig.formatter.number.formatMoney(totalPrice, ctaCurrencyPickerValue);
             submitBtn.removeAttribute("disabled");
           }
         } else {
@@ -188,7 +199,7 @@
             submitBtnPrice.innerHTML = "";
             submitBtn.setAttribute("disabled", true);
           } else {
-            submitBtnPrice.innerHTML = "£" + totalPrice;
+            submitBtnPrice.innerHTML = window.themeConfig.formatter.number.formatMoney(totalPrice, ctaCurrencyPickerValue);
             submitBtn.removeAttribute("disabled");
           }
         }
@@ -217,38 +228,7 @@
     });
   }
   
-// showMore end
-  const cta_amounts = document.querySelectorAll(".ctaAmount");
-  cta_amounts.forEach((cta_amount) => {
-    const cta_select = cta_amount.querySelector("select");
-    const cta_label = cta_amount.querySelector("label");
-    
-    cta_select.onchange = (e) => {
-      if (e.target.value === "gbp") {
-        cta_label.innerHTML = "£";
-        
-        cta_amounts.forEach((cta_amount2) => {
-          if (cta_amount2 !== cta_amount) {
-            const cta_select2 = cta_amount2.querySelector("select");
-            const cta_label2 = cta_amount2.querySelector("label");
-            cta_select2.value = "gbp";
-            cta_label2.innerHTML = "£";
-          }
-        });
-      } else if (e.target.value === "usd") {
-        cta_label.innerHTML = "$";
-        
-        cta_amounts.forEach((cta_amount2) => {
-          if (cta_amount2 !== cta_amount) {
-            const cta_select2 = cta_amount2.querySelector("select");
-            const cta_label2 = cta_amount2.querySelector("label");
-            cta_select2.value = "usd";
-            cta_label2.innerHTML = "$";
-          }
-        });
-      }
-    };
-  });
+// showMore end  
 }
 
 $(document).ready(() => {

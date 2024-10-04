@@ -31,9 +31,9 @@ function n3o_cdf_splitDimensionAndNumber(str) {
 class n3o_cdf_CreatePageAPI {
     constructor() {
         this.errorMessages = {
-            suggestSlug: 'Failed to fetch suggestSlug',
-            createFundraiser: 'Failed to create fundraiser',
-            getCampaignGoalOptions: 'Failed to fetch campaign goal options'
+            suggestSlug: window.themeConfig.text.crowdfunding.slugFetchError,
+            createFundraiser: window.themeConfig.text.crowdfunding.createFundraiserError,
+            getCampaignGoalOptions: window.themeConfig.text.crowdfunding.getCampaignGoalOptionsError
         };
     }
 
@@ -126,7 +126,7 @@ class n3o_cdf_ErrorHanlder {
         }
 
         if (error.status === 500) {
-            container.querySelector('.detail').textContent = 'Sorry, an error has occurred. Please try again or contact support!"';
+            container.querySelector('.detail').textContent = window.themeConfig.text.crowdfunding.genericError;
             container.style.display = 'inherit';
         }
     }
@@ -427,7 +427,7 @@ class n3o_cdf_PageManager {
             const { symbol } = event.target.selectedOptions[0].dataset;
             document.querySelector("[for='goal-amount']").innerHTML = symbol;
             const minAmount = document.getElementById('goal-amount').dataset[event.target.value];
-            document.getElementById('n3o_cdf-min-amount').innerText = symbol + minAmount;
+            document.getElementById('n3o_cdf-min-amount').innerText = window.themeConfig.formatter.number.formatMoney(minAmount, this.selectedGoal.currency);
 
             this.selectedGoal.currentMinAmount = Number(minAmount);
 
