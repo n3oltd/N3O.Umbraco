@@ -197,7 +197,7 @@ const n3o_cdf_updateAccount = (account) => {
         })
 
         if (response.ok) {
-            return
+            window.location.reload();
         }
 
         document.querySelector('#newAccountBtn').removeAttribute('disabled')

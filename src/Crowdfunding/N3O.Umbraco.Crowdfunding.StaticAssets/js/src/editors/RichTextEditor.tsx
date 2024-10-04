@@ -81,10 +81,10 @@ export const RichTextEditor: React.FC<EditorProps> = ({
         disabled: loading || updating
       }}
     >
-      {loading ? <p>Loading...</p> : <>
+      {loading ? <p>{window.themeConfig.text.crowdfunding.apiLoading}</p> : <>
         <h3>{dataResponse?.raw?.configuration?.description}</h3>
           <div className="edit__info">
-            <div className="detail">Write up to {dataResponse?.raw?.configuration?.maximumLength} characters</div>
+            <div className="detail">{window.themeConfig.text.crowdfunding.richTextEditorNote.replace("%val", dataResponse?.raw?.configuration?.maximumLength?.toString() || "100")}</div>
           </div>
           <div className="richText" style={{paddingTop: '24px'}}>
               <CkEditor 

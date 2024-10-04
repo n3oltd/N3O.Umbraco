@@ -68,25 +68,24 @@ export const Textarea: React.FC<EditorProps> = ({
         disabled: isPropLoading || loading
       }}
     >
-      {isPropLoading ? <p>Loading...</p> : <>
+      {isPropLoading ? <p>{window.themeConfig.text.crowdfunding.apiLoading}</p> : <>
         <h3>{dataResponse?.textarea?.configuration?.description}</h3>
       <div className="edit__content">
         <div className="input__outer dark">
-          <p>Short Description (Optional)</p>
+          <p>{window.themeConfig.text.crowdfunding.textAreaEditorTtile}</p>
           <div className="input">
             <textarea
               onChange={e => state.description = e.target.value}
               rows={3}
               value={state.description}
-              placeholder="Type your message here"
+              placeholder={window.themeConfig.text.crowdfunding.textAreaEditorPlaceholder}
               maxLength={dataResponse?.textarea?.configuration?.maximumLength}
               disabled={isPropLoading}
             ></textarea>
           </div>
         </div>
         <p className="subtle">
-          Slightly longer text that will appear after the campaign name. You
-          can write up to {dataResponse?.textarea?.configuration?.maximumLength} characters.
+        {window.themeConfig.text.crowdfunding.textAreaEditorNote.replace("%val", dataResponse?.textarea?.configuration?.maximumLength?.toString() || "100")}        
         </p>
       </div>
       </>}
