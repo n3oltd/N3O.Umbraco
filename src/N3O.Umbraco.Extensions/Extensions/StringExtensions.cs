@@ -42,6 +42,14 @@ public static class StringExtensions {
 
         return Regex.Replace(s, $"[^0-9{decimalSeparator}]", "");
     }
+    
+    public static string EnsureTrailingSlash(this string s) {
+        if (string.IsNullOrEmpty(s)) {
+            return string.Empty;
+        }
+        
+        return Regex.Replace(s, "/+$", string.Empty) + "/";
+    }
 
     public static bool EqualsInvariant(this string a, string b) {
         return CompareInvariant(a, b) == 0;
@@ -221,6 +229,14 @@ public static class StringExtensions {
 
             return sb.ToString();
         }
+    }
+    
+    public static string StripTrailingSlash(this string s) {
+        if (string.IsNullOrEmpty(s)) {
+            return string.Empty;
+        }
+        
+        return Regex.Replace(s, "/+$", string.Empty);
     }
 
     public static HtmlString ToHtmlString(this string s) {

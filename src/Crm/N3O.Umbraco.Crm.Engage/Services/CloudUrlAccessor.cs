@@ -11,7 +11,7 @@ public class CloudUrlAccessor {
     }
 
     public string Get() {
-        if (_webHostEnvironment.IsProduction() || _webHostEnvironment.IsStaging()) {
+        if (_webHostEnvironment.IsProduction()) {
             return "https://n3o.cloud";
         } else {
             return "https://beta.n3o.cloud";

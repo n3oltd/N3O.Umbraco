@@ -25,21 +25,24 @@ namespace N3O.Umbraco.Crowdfunding;
 public class ContributionRepository : IContributionRepository {
     private readonly List<Contribution> _toCommit = new();
     
-    private readonly IContentLocator _contentLocator;
     private readonly IForexConverter _forexConverter;
     private readonly ILocalClock _localClock;
     private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
+    private readonly IContentLocator _contentLocator;
+    private readonly ICrowdfundingUrlBuilder _urlBuilder;
     private readonly IJsonProvider _jsonProvider;
     private readonly ITaxReliefSchemeAccessor _taxReliefSchemeAccessor;
 
     public ContributionRepository(IUmbracoDatabaseFactory umbracoDatabaseFactory,
                                   IContentLocator contentLocator,
+                                  ICrowdfundingUrlBuilder urlBuilder,
                                   IForexConverter forexConverter,
                                   ILocalClock localClock,
                                   IJsonProvider jsonProvider,
                                   ITaxReliefSchemeAccessor taxReliefSchemeAccessor) {
         _umbracoDatabaseFactory = umbracoDatabaseFactory;
         _contentLocator = contentLocator;
+        _urlBuilder = urlBuilder;
         _forexConverter = forexConverter;
         _localClock = localClock;
         _jsonProvider = jsonProvider;
@@ -115,7 +118,7 @@ public class ContributionRepository : IContributionRepository {
         contribution.TeamId = crowdfunder.TeamId;
         contribution.TeamName = crowdfunder.TeamName;
         contribution.FundraiserId = crowdfunder.FundraiserId;
-        contribution.FundraiserUrl = crowdfunder.FundraiserId.HasValue() ? crowdfunder.Url(_contentLocator) : null;
+        contribution.FundraiserUrl = crowdfunder.FundraiserId.HasValue() ? crowdfunder.Url(_urlBuilder) : null;
         contribution.TransactionReference = transactionReference;
         contribution.GivingTypeId = givingType.Id;
         contribution.CurrencyCode = allocation.Value.Currency.Code;

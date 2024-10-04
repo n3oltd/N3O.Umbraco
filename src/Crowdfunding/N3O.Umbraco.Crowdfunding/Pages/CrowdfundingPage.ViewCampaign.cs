@@ -23,12 +23,13 @@ public class ViewCampaignPage : CrowdfundingPage {
     private readonly ILookups _lookups;
 
     public ViewCampaignPage(IContentLocator contentLocator,
+                            ICrowdfundingUrlBuilder urlBuilder,
                             ICrowdfundingViewModelFactory viewModelFactory,
                             IContributionRepository contributionRepository,
                             ICurrencyAccessor currencyAccessor,
                             IForexConverter forexConverter,
                             ILookups lookups)
-        : base(contentLocator, viewModelFactory) {
+        : base(contentLocator, urlBuilder, viewModelFactory) {
         _contributionRepository = contributionRepository;
         _currencyAccessor = currencyAccessor;
         _forexConverter = forexConverter;
@@ -56,7 +57,7 @@ public class ViewCampaignPage : CrowdfundingPage {
 
         builder.WithTitle(campaign.Name);
         builder.WithDescription(campaign.Description);
-        builder.WithUrl(Url(ContentLocator, campaign.CampaignId));
+        builder.WithUrl(Url(UrlBuilder, campaign.CampaignId));
         builder.WithImagePath(campaign.OpenGraphImagePath);
     }
 
@@ -79,15 +80,6 @@ public class ViewCampaignPage : CrowdfundingPage {
                                                     campaignContributions,
                                                     fundraiserContributions,
                                                     campaignFundraisers);
-    }
-
-    public static string Url(IContentLocator contentLocator, Guid campaignKey) {
-        var campaign = contentLocator.ById<CampaignContent>(campaignKey);
-        
-        var relativeUrl = new Url(campaign.Content().RelativeUrl());
-        
-        return GenerateUrl(contentLocator, CrowdfundingConstants.Routes.ViewCampaign_2.FormatWith(campaign.Content().Id,
-                                                                                                  relativeUrl.PathSegments.Last()));
     }
     
     private CampaignContent GetCampaign(string crowdfundingPath) {
@@ -114,5 +106,15 @@ public class ViewCampaignPage : CrowdfundingPage {
         var contributions = await _contributionRepository.FindByFundraiserAsync(fundraisersIds.ToArray());
         
         return contributions;
+    }
+    
+    public static string Url(ICrowdfundingUrlBuilder urlBuilder, Guid campaignKey) {
+        var campaign = urlBuilder.ContentLocator.ById<CampaignContent>(campaignKey);
+        
+        var relativeUrl = new Url(campaign.Content().RelativeUrl());
+        
+        return urlBuilder.GenerateUrl(CrowdfundingConstants.Routes
+                                                           .ViewCampaign_2
+                                                           .FormatWith(campaign.Content().Id, relativeUrl.PathSegments.Last()));
     }
 }

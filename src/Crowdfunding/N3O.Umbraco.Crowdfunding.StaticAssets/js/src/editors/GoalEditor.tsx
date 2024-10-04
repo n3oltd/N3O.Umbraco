@@ -223,7 +223,7 @@ export const GoalEditor: React.FC<EditorProps> = ({
                 </p>
             </div> : null
             }
-            <p className="subtle">{window.themeConfig.text.crowdfunding.minimunAmountNote} {minimumAmount}</p>
+            <p className="subtle">{window.themeConfig.text.crowdfunding.MinimumAmountNote} {minimumAmount}</p>
             <div className="editGoal__foot">
               <button type="button" className="button secondary" onClick={onClose} disabled={updating}>
                 {window.themeConfig.text.crowdfunding.cancel}

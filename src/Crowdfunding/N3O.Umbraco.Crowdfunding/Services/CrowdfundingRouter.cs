@@ -50,8 +50,9 @@ public class CrowdfundingRouter : ICrowdfundingRouter {
             if (_requestQuery == null) {
                 _requestQuery = new Dictionary<string, string>(_httpContextAccessor.HttpContext
                                                                                    .Request
-                                                                                   .Query.ToDictionary(x => x.Key,
-                                                                                                       x => x.Value.Single()),
+                                                                                   .Query
+                                                                                   .ToDictionary(x => x.Key,
+                                                                                                 x => x.Value.Single()),
                                                                StringComparer.InvariantCultureIgnoreCase);
             }
 

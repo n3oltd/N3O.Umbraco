@@ -1,5 +1,4 @@
 ﻿using N3O.Umbraco.Attributes;
-using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm.Models;
 using System;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -19,7 +18,7 @@ public class FundraiserContent : CrowdfunderContent<FundraiserContent>, IFundrai
     public override string TeamName => null;
     public override Guid? FundraiserId => Key;
     
-    public override string Url(IContentLocator contentLocator) {
-        return ViewEditFundraiserPage.Url(contentLocator, Key);
+    public override string Url(ICrowdfundingUrlBuilder urlBuilder) {
+        return ViewEditFundraiserPage.Url(urlBuilder, Key);
     }
 }

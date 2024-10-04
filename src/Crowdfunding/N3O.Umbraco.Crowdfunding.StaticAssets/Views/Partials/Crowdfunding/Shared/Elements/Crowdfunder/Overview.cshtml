@@ -8,8 +8,7 @@
 
 <div class="campaign">
     <div class="campaign__top">
-        @if (Model.EditMode())
-        {
+        @if (Model.EditMode()) {
             <div class="campaign__edit modallBtn" n3o-editor="@(Model, PropertyTypes.Nested, nameof(Model.Content.HeroImages))">
                 <svg>
                     <use xlink:href="#imagePlus"></use>

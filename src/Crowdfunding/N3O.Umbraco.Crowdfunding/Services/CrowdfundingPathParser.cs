@@ -12,10 +12,10 @@ public static class CrowdfundingPathParser {
     
     public static string ParseUri(IContentLocator contentLocator, Uri requestUri) {
         var homePath = GetHomePath(contentLocator);
-        var requestedPath = requestUri.GetAbsolutePathDecoded().ToLowerInvariant();
+        var requestedPath = requestUri.GetAbsolutePathDecoded().ToLowerInvariant().StripTrailingSlash();
         
         if (homePath.HasValue() && requestedPath.StartsWith(homePath)) {
-            return requestedPath.Substring(homePath.Length);
+            return requestedPath.Substring(homePath.Length).EnsureTrailingSlash();
         } else {
             return null;
         }
@@ -23,10 +23,10 @@ public static class CrowdfundingPathParser {
     
     private static string GetHomePath(IContentLocator contentLocator) {
         if (_homePath == null) {
-            var HomePage = GetHomePage(contentLocator);
+            var homePage = GetHomePage(contentLocator);
             
-            if (HomePage.HasValue()) {
-                _homePath = HomePage.RelativeUrl().TrimEnd("/");
+            if (homePage.HasValue()) {
+                _homePath = homePage.RelativeUrl().StripTrailingSlash();
             }
         }
 

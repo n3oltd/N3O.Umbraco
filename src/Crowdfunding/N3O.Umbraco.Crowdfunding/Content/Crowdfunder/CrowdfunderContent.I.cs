@@ -1,5 +1,4 @@
-﻿using N3O.Umbraco.Content;
-using N3O.Umbraco.Cropper.Models;
+﻿using N3O.Umbraco.Cropper.Models;
 using N3O.Umbraco.Financial;
 using System;
 using System.Collections.Generic;
@@ -24,5 +23,5 @@ public interface ICrowdfunderContent {
     string TeamName { get; }
     Guid? FundraiserId { get; }
 
-    string Url(IContentLocator contentLocator);
+    string Url(ICrowdfundingUrlBuilder urlBuilder);
 }

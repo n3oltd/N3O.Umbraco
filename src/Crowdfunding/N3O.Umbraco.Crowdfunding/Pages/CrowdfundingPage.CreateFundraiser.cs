@@ -18,10 +18,11 @@ public class CreateFundraiserPage : CrowdfundingPage {
     private readonly IForexConverter _forexConverter;
 
     public CreateFundraiserPage(IContentLocator contentLocator,
+                                ICrowdfundingUrlBuilder urlBuilder,
                                 ICrowdfundingViewModelFactory viewModelFactory,
                                 ILookups lookups,
                                 IForexConverter forexConverter)
-        : base(contentLocator, viewModelFactory) {
+        : base(contentLocator, urlBuilder, viewModelFactory) {
         _lookups = lookups;
         _forexConverter = forexConverter;
     }
@@ -73,10 +74,9 @@ public class CreateFundraiserPage : CrowdfundingPage {
         }
     }
     
-    public static string Url(IContentLocator contentLocator, Guid campaignKey) {
-        return GenerateUrl(contentLocator,
-                           CrowdfundingConstants.Routes.CreateFundraiser,
-                           url => url.SetQueryParam(Parameters.CampaignId, campaignKey));
+    public static string Url(ICrowdfundingUrlBuilder urlBuilder, Guid campaignKey) {
+        return urlBuilder.GenerateUrl(CrowdfundingConstants.Routes.CreateFundraiser,
+                                      url => url.SetQueryParam(Parameters.CampaignId, campaignKey));
     }
     
     private static class Parameters {

@@ -72,7 +72,7 @@ export const Textarea: React.FC<EditorProps> = ({
         <h3>{dataResponse?.textarea?.configuration?.description}</h3>
       <div className="edit__content">
         <div className="input__outer dark">
-          <p>{window.themeConfig.text.crowdfunding.textAreaEditorTtile}</p>
+          <p>{window.themeConfig.text.crowdfunding.TextAreaEditorTitle}</p>
           <div className="input">
             <textarea
               onChange={e => state.description = e.target.value}
