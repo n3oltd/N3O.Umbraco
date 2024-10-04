@@ -8,10 +8,18 @@
 
 <div class="campaign">
     <div class="campaign__top">
+        @if (Model.EditMode())
+        {
+            <div class="campaign__edit modallBtn" n3o-editor="@(Model, PropertyTypes.Nested, nameof(Model.Content.HeroImages))">
+                <svg>
+                    <use xlink:href="#imagePlus"></use>
+                </svg>
+                <b>@PartialText.Get("Edit Media")</b>
+            </div>
+        }
         <svg>
             <use xlink:href="#imageIcon"></use>
         </svg>
-
         @if (Model.Content.HeroImages.HasAny()) {
             <div class="campaignSlider" n3o-editor="@(Model, PropertyTypes.Nested, nameof(Model.Content.HeroImages))">
                 @foreach (var heroImage in Model.Content.HeroImages) {

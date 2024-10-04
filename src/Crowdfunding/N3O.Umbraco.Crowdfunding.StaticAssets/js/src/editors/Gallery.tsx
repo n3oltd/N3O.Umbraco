@@ -94,7 +94,7 @@ export const Gallery: React.FC<EditorProps> = ({
       }))
         
     } catch (error) {
-      toast.error('Unable to load the image. Please try again');
+      toast.error(window.themeConfig.text.crowdfunding.cropperImageLoadError);
     }
   }
 
@@ -114,13 +114,13 @@ export const Gallery: React.FC<EditorProps> = ({
    }
 
    if (totalItems < (dataResponse?.nested?.configuration?.minimumItems || 1)) {
-    toast.error(`Atleast add ${dataResponse?.nested?.configuration?.minimumItems} item`)
+    toast.error(window.themeConfig.text.crowdfunding.cropperGalleryMinimunRequired.replace("%val", dataResponse?.nested?.configuration?.minimumItems?.toString() || "1"))
     
     return;
    }
 
    if (dataResponse?.nested?.configuration?.maximumItems && totalItems > dataResponse?.nested?.configuration?.maximumItems) {
-    toast.error(`Only Max ${dataResponse?.nested?.configuration?.maximumItems} are allowed`)
+    toast.error(window.themeConfig.text.crowdfunding.cropperGalleryMinimunRequired.replace("%val", dataResponse?.nested?.configuration?.maximumItems?.toString() || "1"))
     
     return;
    }

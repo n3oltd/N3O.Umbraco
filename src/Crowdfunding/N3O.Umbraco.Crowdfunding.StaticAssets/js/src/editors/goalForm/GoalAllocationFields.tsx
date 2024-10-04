@@ -11,7 +11,6 @@ export function GoalAllocationFields({field, fieldIndex, goalIndex, register, co
 
   const error = errors.goals ? (errors.goals as any)[goalIndex]?.allocations || {} : {};
 
-
   switch (field.type) {
     case FeedbackCustomFieldType.Text:
       return (
@@ -35,7 +34,7 @@ export function GoalAllocationFields({field, fieldIndex, goalIndex, register, co
               maxLength={field.textMaxLength}
             />
           </div>
-          {error[field.alias as keyof FeedbackCustomFieldDefinitionRes] && <FieldError message={`${field.name} is required`}/>}
+          {error[field.alias as keyof FeedbackCustomFieldDefinitionRes] && <FieldError message={window.themeConfig.text.crowdfunding.goalCustomFieldRequired.replace('%name', field.name as string)}/>}
         </label>
       );
     case FeedbackCustomFieldType.Date:
@@ -49,7 +48,7 @@ export function GoalAllocationFields({field, fieldIndex, goalIndex, register, co
             }}
           >
             <input
-              placeholder="Select Date"
+              placeholder={window.themeConfig.text.crowdfunding.selectDate}
               type="text"
               {...register(
                 `goals.${goalIndex}.allocations.${field.alias}`,
@@ -61,10 +60,10 @@ export function GoalAllocationFields({field, fieldIndex, goalIndex, register, co
               onBlur={(e) => (e.target.type = "text")}
             />
             <span>
-              <img src="../../images/icons/calendar.svg" alt="" />
+              <img src="/assets/images/icons/calendar.svg" alt="" />
             </span>
           </div>
-          {error[field.alias as keyof FeedbackCustomFieldDefinitionRes] && <FieldError message={`${field.name} is required`}/>}
+          {error[field.alias as keyof FeedbackCustomFieldDefinitionRes] && <FieldError message={window.themeConfig.text.crowdfunding.goalCustomFieldRequired.replace('%name', field.name as string)}/>}
         </label>
       );
     case FeedbackCustomFieldType.Bool:
@@ -82,7 +81,7 @@ export function GoalAllocationFields({field, fieldIndex, goalIndex, register, co
             </div>
             <p className="sm">{field.name}</p>
           </label>
-          {error[field.alias as keyof FeedbackCustomFieldDefinitionRes] && <FieldError message={`${field.name} is required`}/>}
+          {error[field.alias as keyof FeedbackCustomFieldDefinitionRes] && <FieldError message={window.themeConfig.text.crowdfunding.goalCustomFieldRequired.replace('%name', field.name as string)}/>}
         </div>
       );
     default:

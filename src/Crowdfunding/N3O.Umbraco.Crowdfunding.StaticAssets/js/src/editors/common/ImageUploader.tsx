@@ -69,7 +69,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
 
           const validFiles = filesArray.filter(([, file]) => {
             if ((file as any).aspectRatioApplied) return true;
-            uppy.info({ message: "Please edit each image to apply a required crop." }, "error");
+            uppy.info({ message: window.themeConfig.text.crowdfunding.cropperImageCropRequired }, "error");
             return false;
           });
 

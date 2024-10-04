@@ -11,7 +11,12 @@ import { PropConfig } from './common/types/propConfig';
 import './App.css';
 
 declare global {
-  interface Window { __openEditor: unknown; __openGoalEditor: unknown; }
+  interface Window { __openEditor: unknown; __openGoalEditor: unknown; themeConfig: {
+      text: {
+        crowdfunding: Record<string, string>
+      }
+    } 
+  }
 }
 
 function App() {
@@ -47,7 +52,9 @@ function App() {
   }
 
   const onClose = () => {
+    console.log('closeing')
     state.isOpen = false;
+
   }
 
   const Component = getComponentForPropType(state.propType, Components, state.nested);
