@@ -40,6 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Algolia.Search" Version="7.4.3" />
+      <PackageReference Include="Algolia.Search" Version="7.5.0" />
     </ItemGroup>
 </Project>
