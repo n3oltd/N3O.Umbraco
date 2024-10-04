@@ -6,13 +6,13 @@
          <h1>Overview</h1>
          <div class="date-filter">
             <label for="date-range">Date Range:</label>
-            <uui-input
+            <uui-input id = "start-date"
                     type="datetime-local"
                     min="2023-04-13T10:00"
                     value="2023-04-20T10:00"
                     max="2023-04-28T16:00">
             </uui-input>
-            <uui-input
+            <uui-input id="end-date"
                     type="datetime-local"
                     min="2023-04-13T10:00"
                     value="2023-04-20T10:00"
@@ -36,14 +36,17 @@
                </svg>
             </div>
             <div class="donations-title">Total Amount Donated</div>
+            <div ng-controller="statistics" ng-show="populateTotalDonation"></div>
             <div class="donations-total-amount" id="total-amount"></div>
             <div class="donations-details">
                <div class="average-donation">
                   <span>Average Donation</span>
+                  <div ng-controller="statistics" ng-show="populateAverageDonation"></div>
                   <span id="average-donation"></span>
                </div>
                <div class="donation-count">
                   <span>Donation Count</span>
+                  <div ng-controller="statistics" ng-show="populateDonationCount"></div>
                   <span id="donation-count"></span>
                </div>
             </div>
@@ -64,14 +67,17 @@
                </svg>
             </div>
             <div class="supporters-title">Total Supporters</div>
+            <div ng-controller="statistics" ng-show="populateTotalSupporters"></div>
             <div class="supporters-total-amount" id="supporters-total-amount"></div>
             <div class="supporters-details">
                <div class="One-off-supporters">
                   <span>One-Off</span>
+                  <div ng-controller="statistics" ng-show="populateOneOffSupporters"></div>
                   <span id="One-off-supporters"></span>
                </div>
                <div class="Regular-supporters">
                   <span>Regular</span>
+                  <div ng-controller="statistics" ng-show="populateRegularSupporters"></div>
                   <span id="Regular-supporters"></span>
                </div>
             </div>
@@ -85,7 +91,8 @@
                      <path d="M10.9238 3.06763L8.47502 8.03263L2.99627 8.83138C2.01377 8.97388 1.62002 10.1851 2.33252 10.8789L6.29627 14.7414L5.35877 20.1976C5.19002 21.1839 6.22877 21.9226 7.09877 21.4614L12 18.8851L16.9013 21.4614C17.7713 21.9189 18.81 21.1839 18.6413 20.1976L17.7038 14.7414L21.6675 10.8789C22.38 10.1851 21.9863 8.97388 21.0038 8.83138L15.525 8.03263L13.0763 3.06763C12.6375 2.18263 11.3663 2.17138 10.9238 3.06763Z" fill="#F5C1BC"/>
                   </svg>
                </div>
-               <div class = "active-pages-title">Active Pages</div>
+               <div class = "active-pages-title" >Active Pages</div>
+               <div ng-controller="statistics" ng-show="populateactivepages"></div>
                <div class = "active-pages-amount" id = "active-pages-amount"></div>
             </div>
             <div class="n3o-umbraco-small-panel-ui">
@@ -95,7 +102,8 @@
                   </svg>
                </div>
                <div class="new-pages-title">New Pages</div>
-               <div id="num-new-pages"></div>
+               <div ng-controller="statistics" ng-show="populatenewpages"></div>
+               <div class= "new-pages-amount" id="num-new-pages"></div>
             </div>
             <div class="n3o-umbraco-small-panel-ui">
                <div class = "completed-pages-icon">
@@ -104,6 +112,7 @@
                   </svg>
                </div>
                <div class = "completed-pages-title">Completed Pages</div>
+               <div ng-controller="statistics" ng-show="populatecompletedpages"></div>
                <div class = "completed-pages-amount" id ="completed-pages-amount" ></div>
             </div>
          </div>
@@ -112,6 +121,7 @@
          <div class="n3o-umbraco-panel-ui panel-4">
             <div class="income-by-date">
                <div class = "income-by-date-title">Income By Date</div>
+               <div ng-controller="incomebydate" ng-show="renderIncomeByDateGraph"></div>
                <div class = "income-by-date-graph"></div>
             </div>
          </div>
@@ -221,12 +231,14 @@
                   <div class = "Campaign-totals">
                      <div class = "active-campaigns">
                         <span >Active Campaigns</span>
-                        <span class="span-number">250</span>
+                        <div ng-controller="statistics" ng-show="populateActiveCampaigns"></div>
+                        <span class="span-number" id="num-active-campaigns"></span>
                      </div>
                      <div class = "vertical-rectangle"></div>
                      <div class = "total-campaign-donations">
                         <span>Total Donations</span>
-                        <span class="span-number">75%</span>
+                        <div ng-controller="statistics" ng-show="populateDonationsPercentage"></div>
+                        <span class="span-number" id="total-donations-percentage"></span>
                      </div>
                   </div>
                </div>
@@ -330,12 +342,14 @@
                   <div class = "Fundraiser-totals">
                      <div class = "active-fundraisers">
                         <span>Active Fundraisers</span>
-                        <span class="span-number">300</span>
+                        <div ng-controller="statistics" ng-show="populateFundraiserAmount"></div>
+                        <span class="span-number" id="total-fundraiser-amount"></span>
                      </div>
                      <div class = "vertical-rectangle"></div>
                      <div class = "total-fundraiser-donations">
                         <span>Total Donations</span>
-                        <span class="span-number">80%</span>
+                        <div ng-controller="statistics" ng-show="populateFundraiserPercentage"></div>
+                        <span class="span-number" id="total-fundraiser-percentage"></span>
                      </div>
                   </div>
                </div>
@@ -349,30 +363,21 @@
                <span>Allocations</span>
                <span>Total Counts</span>
             </div>
+            <div ng-controller="topallocations" ng-show="renderRaceBarChart"></div>
             <div class = "top-allocations-graph"></div>
          </div>
 
          <!--Fundraisers by campaign-->
          <div class="n3o-umbraco-panel-ui panel-7">
             <div class = "fundraisers-by-campaign-title">Fundraisers by Campaign</div>
+            <div ng-controller="fundraisersbycampaign" ng-show="renderFundraisersByCampaignGraph"></div>
             <div class = "fundraisers-by-campaign-graph"></div>
          </div>
       </div>
 </div>
-<!--
-   <script src="https://d3js.org/d3.v7.min.js"></script>
-   <script src = "js/donations.js"></script>
-   <script src = "js/supporters.js"></script>
-   <script src = "js/income-by-date.js"></script>
-   <script src = "js/top-allocations.js"></script>
-   <script src = "js/fundraisers-by-campaign.js"></script>
-   <script src = "js/active-pages.js"></script>
-   <script src = "js/new-pages.js"></script>
-   <script src = "js/completed-pages.js"></script>
-   <script src = "js/top-campaigns-fundraisers.js"></script>
-   <script src = "js/progressbar-c.js"></script>
-   <script src = "js/progressbar-f.js"></script>
-   <script src = "js/togglescript.js"></script>-->
+
+   <script src= "https://d3js.org/d3.v7.min.js" defer></script>
+
    </main>
 </div>
 

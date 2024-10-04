@@ -1,5 +1,11 @@
 {
     "javascript": [
-        "~/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/N3O.Umbraco.Crowdfunding.Statistics.Controller.js"
+        "~/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/N3O.Umbraco.Crowdfunding.Statistics.Controller.js",
+        "~/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/FundraisersByCampaign.js",
+        "~/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/IncomeByDate.js",
+        "~/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/Statistics.js",
+        "~/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/togglescript.js",
+        "~/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/TopAllocations.js",
+        "~/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/TopCampaignsFundraisers.js"
     ]
 }
