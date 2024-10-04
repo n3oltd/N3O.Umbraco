@@ -11,7 +11,6 @@ public class CloudUrlAccessor {
     }
 
     public string Get() {
-        //TODO: Delete IsStaging condition when demo done
         if (_webHostEnvironment.IsProduction() || _webHostEnvironment.IsStaging()) {
             return "https://n3o.cloud";
         } else {
