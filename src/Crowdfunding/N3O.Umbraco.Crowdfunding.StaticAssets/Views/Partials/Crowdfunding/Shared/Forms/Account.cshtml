@@ -22,5 +22,7 @@
     }
 </div>
 
-@Model.DataEntrySettingsContent.BodyHtml
-@Model.DataEntrySettingsContent.JavaScript
+@Html.Raw(Model.DataEntrySettingsContent.BodyHtml)
+<script>
+    @Model.DataEntrySettingsContent.JavaScript
+</script>
