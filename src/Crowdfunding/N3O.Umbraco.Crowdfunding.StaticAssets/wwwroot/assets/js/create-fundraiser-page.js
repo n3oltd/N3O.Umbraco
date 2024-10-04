@@ -31,9 +31,9 @@ function n3o_cdf_splitDimensionAndNumber(str) {
 class n3o_cdf_CreatePageAPI {
     constructor() {
         this.errorMessages = {
-            suggestSlug: 'Failed to fetch suggestSlug',
-            createFundraiser: 'Failed to create fundraiser',
-            getCampaignGoalOptions: 'Failed to fetch campaign goal options'
+            suggestSlug: window.themeConfig.text.crowdfunding.suggestSlugError,
+            createFundraiser: window.themeConfig.text.crowdfunding.createFundraiserError,
+            getCampaignGoalOptions: window.themeConfig.text.crowdfunding.campaignGoalOptionsError
         };
     }
 
@@ -126,7 +126,7 @@ class n3o_cdf_ErrorHanlder {
         }
 
         if (error.status === 500) {
-            container.querySelector('.detail').textContent = 'Sorry, an error has occurred. Please try again or contact support!"';
+            container.querySelector('.detail').textContent = window.themeConfig.text.crowdfunding.createFundraiserError;
             container.style.display = 'inherit';
         }
     }
@@ -684,3 +684,4 @@ class n3o_cdf_PageManager {
 }
 
 new n3o_cdf_PageManager().attachEventListeners();
+window.n3o_cdf_pageManager = n3o_cdf_PageManager

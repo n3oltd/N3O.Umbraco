@@ -101,7 +101,7 @@ export function applyPricingRule(pricingRef: React.MutableRefObject<GoalPricingR
     const hasValidAmount = ((g.amount as number) % (pricingCurrency.amount || Number.MAX_VALUE)) === 0;
 
     if (!hasValidAmount) {
-      pricingErrors.push(`${goals?.goalOptions?.find(op => op.id === g.goalId)?.name} must have amount multiple of ${pricingCurrency.text}`);
+      pricingErrors.push(`${goals?.goalOptions?.find(op => op.id === g.goalId)?.name} ${window.themeConfig.text.crowdfunding.amountMultipleOf} ${pricingCurrency.text}`);
     }
 
     return pricingErrors;
