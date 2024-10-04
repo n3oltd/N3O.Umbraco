@@ -40,6 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="connect-sdk-dotnet" Version="3.47.0" />
+      <PackageReference Include="Worldline.Connect.Sdk" Version="4.1.0" />
     </ItemGroup>
 </Project>

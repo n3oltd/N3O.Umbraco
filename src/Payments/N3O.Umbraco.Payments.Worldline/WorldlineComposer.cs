@@ -1,6 +1,3 @@
-using Ingenico.Connect.Sdk;
-using Ingenico.Connect.Sdk.DefaultImpl;
-using Ingenico.Connect.Sdk.Merchant;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,6 +8,9 @@ using N3O.Umbraco.Payments.Worldline.Content;
 using N3O.Umbraco.Payments.Worldline.Models;
 using System;
 using Umbraco.Cms.Core.DependencyInjection;
+using Worldline.Connect.Sdk;
+using Worldline.Connect.Sdk.Authentication;
+using Worldline.Connect.Sdk.V1.Merchant;
 
 namespace N3O.Umbraco.Payments.Worldline;
 
@@ -31,7 +31,9 @@ public class WorldlineComposer : Composer {
             MerchantClient client = null;
 
             if (apiSettings != null) {
-                client = Factory.CreateClient(GetClientConfiguration(apiSettings)).Merchant(apiSettings.MerchantId);
+                client = Factory.CreateClient(GetClientConfiguration(apiSettings))
+                                .V1
+                                .WithNewMerchant(apiSettings.MerchantId);
             }
             
             return client;
