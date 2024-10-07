@@ -19,7 +19,7 @@ public class CrowdfundingStrings : CodeStrings {
     public string CropperImageCropRequired => "Please edit each image to apply a crop.";
     public string CropperImageLoadError => "Unable to load the image. Please try again.";
     public string CropperImageRequired => "'lease first upload image(s).";
-    public string CustomAmountDescription => "Your custom amount";
+    public string CustomAmountDescription => "Custom amount";
     public string EditGoalDescription => "You can modify and/or add projects to your page here.";
     public string EditGoalTitle => "Edit Goal";
     public string GenericError => "Sorry, an error has occurred. Please try again.";
@@ -45,5 +45,5 @@ public class CrowdfundingStrings : CodeStrings {
     public string TextAreaEditorTitle => "Text";
     public string TextEditorPlaceholder => "Enter text";
     public string TotalGoalAmountError => "Goals total amount should be at least";
-    public string TryAgainError => "Something went wrong. Please try";
+    public string TryAgainError => "Something went wrong. Please try again.";
 }
