@@ -52,7 +52,7 @@ function App() {
   }
 
   const onClose = () => {
-    console.log('closeing')
+    document?.querySelector('body')?.classList?.remove('active')
     state.isOpen = false;
 
   }
