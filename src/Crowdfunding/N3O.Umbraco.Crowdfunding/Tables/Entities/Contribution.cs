@@ -109,7 +109,7 @@ public class Contribution {
     public string Status { get; set; }
 
     [Column(nameof(ContributionType))]
-    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(AllocationSummary), ForColumns = nameof(AllocationSummary))]
+    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(ContributionType), ForColumns = nameof(ContributionType))]
     public int ContributionType { get; set; }
     
     [Column(nameof(AllocationSummary))]
