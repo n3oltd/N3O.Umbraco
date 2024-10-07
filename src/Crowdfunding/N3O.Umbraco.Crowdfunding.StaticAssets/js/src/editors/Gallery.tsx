@@ -53,7 +53,10 @@ export const Gallery: React.FC<EditorProps> = ({
 
   const {runAsync: updateProperty,} = useRequest((req: ContentPropertyReq, pageId: string) => _client.updateProperty(pageId, req), {
     manual: true,
-    onSuccess: () => onClose()
+    onSuccess: () => {
+      onClose();
+      window.location.reload();
+    }
   })
 
   React.useEffect(() => {

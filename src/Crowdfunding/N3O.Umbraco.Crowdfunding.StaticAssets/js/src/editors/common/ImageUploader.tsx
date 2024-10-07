@@ -31,11 +31,10 @@ const handleCrop = event => {
       y: Math.floor(event.detail.y) 
     },
     topRight: {
-      x: Math.floor(event.detail.width),
-      y: Math.floor(event.detail.height)
+      x: Math.floor(event.detail.x) + Math.floor(event.detail.width),
+      y: Math.floor(event.detail.y) + Math.floor(event.detail.height)
     }
   }
-
 }
 
 export const ImageUploader: React.FC<ImageUploaderProps> = ({
