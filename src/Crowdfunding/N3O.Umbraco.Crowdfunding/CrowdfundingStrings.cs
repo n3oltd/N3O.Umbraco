@@ -18,7 +18,7 @@ public class CrowdfundingStrings : CodeStrings {
     public string CropperGalleryMinimumRequired => "At least %val item(s) are required";
     public string CropperImageCropRequired => "Please edit each image to apply a crop.";
     public string CropperImageLoadError => "Unable to load the image. Please try again.";
-    public string CropperImageRequired => "'lease first upload image(s).";
+    public string CropperImageRequired => "Please first upload image(s).";
     public string CustomAmountDescription => "Custom amount";
     public string EditGoalDescription => "You can modify and/or add projects to your page here.";
     public string EditGoalTitle => "Edit Goal";
