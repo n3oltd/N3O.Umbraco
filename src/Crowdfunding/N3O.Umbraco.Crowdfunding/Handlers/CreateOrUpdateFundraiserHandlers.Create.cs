@@ -21,7 +21,7 @@ public partial class CreateOrUpdateFundraiserHandlers :
         var publishResult = contentPublisher.SaveAndPublish();
 
         if (publishResult.Success) {
-            return ViewEditFundraiserPage.Url(_contentLocator, publishResult.Content.Key);
+            return ViewEditFundraiserPage.Url(_urlBuilder, publishResult.Content.Key);
         } else {
             throw ToValidationException(publishResult);
         }

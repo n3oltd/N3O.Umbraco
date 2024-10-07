@@ -23,15 +23,18 @@ namespace N3O.Umbraco.Crowdfunding.Handlers;
 
 public partial class CreateOrUpdateFundraiserHandlers {
     private readonly IContentLocator _contentLocator;
+    private readonly ICrowdfundingUrlBuilder _urlBuilder;
     private readonly IContentEditor _contentEditor;
     private readonly IMemberManager _memberManager;
     private readonly IAccountIdentityAccessor _accountIdentityAccessor;
 
     public CreateOrUpdateFundraiserHandlers(IContentLocator contentLocator,
+                                            ICrowdfundingUrlBuilder urlBuilder,
                                             IContentEditor contentEditor,
                                             IMemberManager memberManager,
                                             IAccountIdentityAccessor accountIdentityAccessor) {
         _contentLocator = contentLocator;
+        _urlBuilder = urlBuilder;
         _contentEditor = contentEditor;
         _memberManager = memberManager;
         _accountIdentityAccessor = accountIdentityAccessor;
@@ -46,7 +49,6 @@ public partial class CreateOrUpdateFundraiserHandlers {
         }
         
         var campaign = _contentLocator.ById<CampaignContent>(req.CampaignId.GetValueOrThrow());
-        
 
         contentPublisher.Content.Label(CrowdfundingConstants.Crowdfunder.Properties.Name).Set(req.Name);
         contentPublisher.Content.DataList(CrowdfundingConstants.Crowdfunder.Properties.Currency).SetLookups(req.Currency);

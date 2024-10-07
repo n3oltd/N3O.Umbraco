@@ -26,7 +26,9 @@
                     <span id ="errors" style="color: red;" class="input-validation-error hidden"></span>
                     
                     @Html.CrowdfundingPartial("/Views/Partials/Crowdfunding/Shared/Forms/Account.cshtml", Model)
-
+                    
+                    <input type="hidden" id="accountType" name="type" value="@N3O.Umbraco.Accounts.Lookups.AccountTypes.Individual" />
+                    
                     <button type="submit" class="button primary" id="newAccountBtn">
                         @PartialText.Get("Continue")
                     </button>
@@ -38,7 +40,10 @@
 
 <script type="text/javascript">
     @Html.Raw(ContentCache.Single<DataEntrySettingsContent>().JavaScript)
-    
-    const account = @Html.Raw(Json.Serialize(Model.Picked));
-    n3o_cdf_updateAccount(account);
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const account = @Html.Raw(Json.Serialize(Model.Picked));
+        
+        n3o_cdf_updateAccount(account);
+    });
 </script>

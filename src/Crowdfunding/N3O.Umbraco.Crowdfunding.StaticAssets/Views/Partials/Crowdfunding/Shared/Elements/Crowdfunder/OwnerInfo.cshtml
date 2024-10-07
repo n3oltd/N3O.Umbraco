@@ -7,7 +7,17 @@
 }
 
 <div class="auto__container">
-    <div class="hero__inner">
+    <div class="hero__inner cov">
+        @if (Model.EditMode()) {
+            <div class="campaign__edit modallBtn" n3o-editor="@(Model, PropertyTypes.Cropper, nameof(Model.Content.BackgroundImage))">
+                <svg>
+                    <use xlink:href="#imagePlus"></use>
+                </svg>
+                
+                <b>@PartialText.Get("Edit Cover Image")</b>
+            </div>
+        }
+        
         <div class="account sm">
             <div class="account__main">
                 <div class="account__info">

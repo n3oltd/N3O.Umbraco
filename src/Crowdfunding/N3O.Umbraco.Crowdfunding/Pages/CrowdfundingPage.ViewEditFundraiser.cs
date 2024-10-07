@@ -23,6 +23,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
     private readonly FundraiserAccessControl _fundraiserAccessControl;
 
     public ViewEditFundraiserPage(IContentLocator contentLocator,
+                                  ICrowdfundingUrlBuilder urlBuilder,
                                   ICrowdfundingViewModelFactory viewModelFactory,
                                   IContributionRepository contributionRepository,
                                   ICurrencyAccessor currencyAccessor,
@@ -30,7 +31,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
                                   FundraiserAccessControl fundraiserAccessControl,
                                   IForexConverter forexConverter,
                                   ILookups lookups)
-        : base(contentLocator, viewModelFactory) {
+        : base(contentLocator, urlBuilder, viewModelFactory) {
         _contributionRepository = contributionRepository;
         _currencyAccessor = currencyAccessor;
         _textFormatter = textFormatter;
@@ -60,7 +61,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
 
         builder.WithTitle(fundraiser.Name);
         builder.WithDescription(fundraiser.Description);
-        builder.WithUrl(Url(ContentLocator, fundraiser.Key));
+        builder.WithUrl(Url(UrlBuilder, fundraiser.Key));
         builder.WithImagePath(fundraiser.OpenGraphImagePath);
     }
 
@@ -80,13 +81,6 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
                                                           fundraiser,
                                                           contributions);
     }
-
-    public static string Url(IContentLocator contentLocator, Guid fundraiserKey) {
-        var fundraiser = contentLocator.ById<FundraiserContent>(fundraiserKey);
-        
-        return GenerateUrl(contentLocator, CrowdfundingConstants.Routes.ViewEditFundraiser_2.FormatWith(fundraiser.Content().Id,
-                                                                                                        fundraiser.Slug));
-    }
     
     private FundraiserContent GetFundraiser(string crowdfundingPath) {
         var match = Match(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewEditFundraiser);
@@ -94,5 +88,13 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
         var fundraiser = ContentLocator.ById<FundraiserContent>(fundraiserId);
 
         return fundraiser;
+    }
+    
+    public static string Url(ICrowdfundingUrlBuilder urlBuilder, Guid fundraiserKey) {
+        var fundraiser = urlBuilder.ContentLocator.ById<FundraiserContent>(fundraiserKey);
+        
+        return urlBuilder.GenerateUrl(CrowdfundingConstants.Routes
+                                                           .ViewEditFundraiser_2
+                                                           .FormatWith(fundraiser.Content().Id, fundraiser.Slug));
     }
 }

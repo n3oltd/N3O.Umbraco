@@ -34,7 +34,8 @@ export const Textbox: React.FC<EditorProps> = ({
   const {runAsync: updateProperty, loading} = useRequest((req: ContentPropertyReq, pageId: string) => _client.updateProperty(pageId, req), {
     manual: true,
     onSuccess: () => {
-      onClose()
+      onClose();
+      window.location.reload()
     }
   })
 
@@ -71,7 +72,7 @@ export const Textbox: React.FC<EditorProps> = ({
         disabled: loading
       }}
     >
-      {isPropLoading ? <p>Loading...</p> : <>
+      {isPropLoading ? <p>{window.themeConfig.text.crowdfunding.apiLoading}</p> : <>
         <h3>{dataResponse?.textBox?.configuration?.description}</h3>
         <div className="input big">
           <input type="text" 

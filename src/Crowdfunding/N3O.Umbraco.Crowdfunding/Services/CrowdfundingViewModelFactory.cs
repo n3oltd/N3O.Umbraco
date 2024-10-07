@@ -15,6 +15,7 @@ namespace N3O.Umbraco.Crowdfunding;
 
 public class CrowdfundingViewModelFactory : ICrowdfundingViewModelFactory {
     private readonly Lazy<IContentLocator> _contentLocator;
+    private readonly Lazy<ICrowdfundingUrlBuilder> _crowdfundingUrlBuilder;
     private readonly Lazy<IMemberManager> _memberManager;
     private readonly Lazy<IMemberExternalLoginProviders> _memberExternalLoginProviders;
     private readonly Lazy<IAccountIdentityAccessor> _accountIdentityAccessor;
@@ -23,6 +24,7 @@ public class CrowdfundingViewModelFactory : ICrowdfundingViewModelFactory {
     private readonly Lazy<IFormatter> _formatter;
 
     public CrowdfundingViewModelFactory(Lazy<IContentLocator> contentLocator,
+                                        Lazy<ICrowdfundingUrlBuilder> crowdfundingUrlBuilder,
                                         Lazy<IMemberManager> memberManager,
                                         Lazy<IMemberExternalLoginProviders> memberExternalLoginProviders,
                                         Lazy<IAccountIdentityAccessor> accountIdentityAccessor,
@@ -30,6 +32,7 @@ public class CrowdfundingViewModelFactory : ICrowdfundingViewModelFactory {
                                         Lazy<ILookups> lookups,
                                         Lazy<IFormatter> formatter) {
         _contentLocator = contentLocator;
+        _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
         _memberManager = memberManager;
         _memberExternalLoginProviders = memberExternalLoginProviders;
         _accountIdentityAccessor = accountIdentityAccessor;
@@ -41,6 +44,7 @@ public class CrowdfundingViewModelFactory : ICrowdfundingViewModelFactory {
     public async Task<T> CreateViewModelAsync<T>(ICrowdfundingPage page, IReadOnlyDictionary<string, string> query)
         where T : CrowdfundingViewModel, new() {
         var viewModel = CrowdfundingViewModel.For<T>(_contentLocator.Value,
+                                                     _crowdfundingUrlBuilder.Value,
                                                      _formatter.Value,
                                                      page,
                                                      await AccountsViewModel.ForAsync(_accountManager.Value,

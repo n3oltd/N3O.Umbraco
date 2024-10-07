@@ -1,5 +1,4 @@
-﻿using N3O.Umbraco.Content;
-using N3O.Umbraco.Crm.Engage.Clients;
+﻿using N3O.Umbraco.Crm.Engage.Clients;
 using N3O.Umbraco.Crm.Engage.Extensions;
 using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crm.Models;
@@ -19,17 +18,17 @@ namespace N3O.Umbraco.Crm.Engage;
 public class EngageCrowdfunderManager : ICrowdfunderManager {
     private readonly ClientFactory<CrowdfundingClient> _clientFactory;
     private readonly ISubscriptionAccessor _subscriptionAccessor;
-    private readonly IContentLocator _contentLocator;
+    private readonly IServiceProvider _serviceProvider;
     private readonly Lazy<IAccountIdentityAccessor> _accountIdentityAccessor;
     private ServiceClient<CrowdfundingClient> _client;
 
     public EngageCrowdfunderManager(ClientFactory<CrowdfundingClient> clientFactory,
                                     ISubscriptionAccessor subscriptionAccessor,
-                                    IContentLocator contentLocator,
+                                    IServiceProvider serviceProvider,
                                     Lazy<IAccountIdentityAccessor> accountIdentityAccessor) {
         _clientFactory = clientFactory;
         _subscriptionAccessor = subscriptionAccessor;
-        _contentLocator = contentLocator;
+        _serviceProvider = serviceProvider;
         _accountIdentityAccessor = accountIdentityAccessor;
     }
 
@@ -59,7 +58,7 @@ public class EngageCrowdfunderManager : ICrowdfunderManager {
         syncCrowdfunderReq.Name.Value = crowdfunder.Name;
         
         syncCrowdfunderReq.Url = new CrowdfunderUrlReq();
-        syncCrowdfunderReq.Url.Value = crowdfunder.Url(_contentLocator);
+        syncCrowdfunderReq.Url.Value = crowdfunder.Url(_serviceProvider);
 
         if (crowdfunder.Status.CanToggle && toggleStatus) {
             if (crowdfunder.Status.ToggleAction == CrowdfunderActivationActions.Activate) {
@@ -107,7 +106,7 @@ public class EngageCrowdfunderManager : ICrowdfunderManager {
         var req = new CreateCrowdfunderReq();
         req.Id = crowdfunder.Id.ToString();
         req.Name = crowdfunder.Name;
-        req.Url = crowdfunder.Url(_contentLocator);
+        req.Url = crowdfunder.Url(_serviceProvider);
         req.Currency = crowdfunder.Currency.ToEngageCurrency();
         req.Allocations = GetCrowdfunderAllocationsReq(crowdfunder.Goals, crowdfunder.Currency.ToEngageCurrency());
 

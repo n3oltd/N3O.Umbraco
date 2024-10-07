@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Attributes;
+﻿using Microsoft.Extensions.DependencyInjection;
+using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crm.Models;
@@ -25,7 +26,7 @@ public abstract class CrowdfunderContent<T> : UmbracoContent<T>, ICrowdfunderCon
     
     public bool ToggleStatus => GetValue(x => x.ToggleStatus);
     public CrowdfunderStatus Status => GetStaticLookupByNameAs(x => x.Status);
-    
+
     public abstract Guid CampaignId { get; }
     public abstract string CampaignName { get; }
     public abstract Guid? TeamId { get; }
@@ -35,5 +36,9 @@ public abstract class CrowdfunderContent<T> : UmbracoContent<T>, ICrowdfunderCon
     public Guid Id => Key;
     IEnumerable<ICrowdfunderGoal> ICrowdfunder.Goals => Goals;
 
-    public abstract string Url(IContentLocator contentLocator);
+    public string Url(IServiceProvider serviceProvider) {
+        return Url(serviceProvider.GetRequiredService<ICrowdfundingUrlBuilder>());
+    }
+    
+    public abstract string Url(ICrowdfundingUrlBuilder urlBuilder);
 }

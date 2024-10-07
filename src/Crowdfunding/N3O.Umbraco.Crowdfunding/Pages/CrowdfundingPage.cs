@@ -1,9 +1,6 @@
-using Flurl;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Crowdfunding.Models;
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.OpenGraph;
 using Smidge;
 using System;
@@ -14,8 +11,11 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Crowdfunding;
 
 public abstract class CrowdfundingPage : ICrowdfundingPage {
-    protected CrowdfundingPage(IContentLocator contentLocator, ICrowdfundingViewModelFactory viewModelFactory) {
+    protected CrowdfundingPage(IContentLocator contentLocator,
+                               ICrowdfundingUrlBuilder urlBuilder,
+                               ICrowdfundingViewModelFactory viewModelFactory) {
         ContentLocator = contentLocator;
+        UrlBuilder = urlBuilder;
         ViewModelFactory = viewModelFactory;
     }
 
@@ -68,21 +68,6 @@ public abstract class CrowdfundingPage : ICrowdfundingPage {
     public virtual string ViewName => $"~/Views/Partials/Crowdfunding/Pages/{GetType().Name}.cshtml";
 
     protected IContentLocator ContentLocator { get; }
+    protected ICrowdfundingUrlBuilder UrlBuilder { get; }
     protected ICrowdfundingViewModelFactory ViewModelFactory { get; }
-    
-    protected static string GenerateUrl(IContentLocator contentLocator,
-                                        string path,
-                                        Action<Url> addQueryParameters = null) {
-        var home = contentLocator.Single<HomePageContent>();
-
-        var url = new Url(home.Content().AbsoluteUrl());
-
-        if (path.HasValue()) {
-            url.AppendPathSegment(path);
-        }
-
-        addQueryParameters?.Invoke(url);
-
-        return url.ToString();
-    }
 }

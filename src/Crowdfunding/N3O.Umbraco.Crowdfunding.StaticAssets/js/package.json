@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "@ckeditor/ckeditor5-react": "^8.0.0",
-    "@n3oltd/umbraco-crowdfunding-client": "^13.0.25",
+    "@n3oltd/umbraco-crowdfunding-client": "^13.0.36",
+    "@n3oltd/umbraco-giving-client": "^13.0.36",
     "@uppy/core": "^4.0.1",
     "@uppy/dashboard": "^4.0.1",
     "@uppy/drag-drop": "^4.0.1",
@@ -26,9 +27,11 @@
     "ckeditor5": "^42.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.0",
     "react-hot-toast": "^2.4.1"
   },
   "devDependencies": {
+    "@types/node": "^22.7.4",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^7.13.1",

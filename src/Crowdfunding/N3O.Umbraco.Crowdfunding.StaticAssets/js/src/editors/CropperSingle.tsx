@@ -45,7 +45,10 @@ export const CropperSingle: React.FC<EditorProps> = ({
     onError(e) {
       toast.error(e.message)
     },
-    onSuccess: () => onClose()
+    onSuccess: () => {
+      onClose();
+      window.location.reload()
+    }
   })
 
   React.useEffect(() => {
@@ -82,13 +85,13 @@ export const CropperSingle: React.FC<EditorProps> = ({
 
       state.uppy?.addFile(file)  
     } catch (error) {
-      toast.error('Unable to load the image. Please try again');
+      toast.error(window.themeConfig.text.crowdfunding.cropperImageLoadError);
     }
   }  
 
   const saveContent = async () => {
     if (!state.files.length) {
-      toast.error('Please first upload image(s)');
+      toast.error(window.themeConfig.text.crowdfunding.cropperImageRequired);
       return;
     }
 
@@ -108,7 +111,7 @@ export const CropperSingle: React.FC<EditorProps> = ({
       })))
 
     } catch(e) {
-      toast.error("Something went wrong. Please try again")
+      toast.error(window.themeConfig.text.crowdfunding.tryAgainError)
     }
   }
 
@@ -122,7 +125,7 @@ export const CropperSingle: React.FC<EditorProps> = ({
         disabled: updating || loading
       }}
     >
-      {loading ? <p>Loading...</p> : <>
+      {loading ? <p>{window.themeConfig.text.crowdfunding.apiLoading}</p> : <>
       <h3>{dataRepsonse?.cropper?.configuration?.description}</h3>
           
       <ImageUploader 

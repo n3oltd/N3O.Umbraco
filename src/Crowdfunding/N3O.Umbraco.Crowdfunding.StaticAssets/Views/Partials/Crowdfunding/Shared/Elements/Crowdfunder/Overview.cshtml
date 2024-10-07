@@ -8,10 +8,17 @@
 
 <div class="campaign">
     <div class="campaign__top">
+        @if (Model.EditMode()) {
+            <div class="campaign__edit modallBtn" n3o-editor="@(Model, PropertyTypes.Nested, nameof(Model.Content.HeroImages))">
+                <svg>
+                    <use xlink:href="#imagePlus"></use>
+                </svg>
+                <b>@PartialText.Get("Edit Media")</b>
+            </div>
+        }
         <svg>
             <use xlink:href="#imageIcon"></use>
         </svg>
-
         @if (Model.Content.HeroImages.HasAny()) {
             <div class="campaignSlider" n3o-editor="@(Model, PropertyTypes.Nested, nameof(Model.Content.HeroImages))">
                 @foreach (var heroImage in Model.Content.HeroImages) {
@@ -26,15 +33,45 @@
     </div>
 
     <div class="campaign__content">
+        @if (Model.EditMode())
+        {
+            <div class="campaign__edit modallBtn" n3o-editor="@(Model, PropertyTypes.TextBox, nameof(Model.Content.Name))">
+                <svg class="sm">
+                    <use xlink:href="#editIcon"></use>
+                </svg>
+                
+                <b> @PartialText.Get("Edit") </b>
+            </div>
+        }
+        
         <div class="campaign__title">
-            <h2 n3o-editor="@(Model, PropertyTypes.TextBox, CrowdfundingConstants.Crowdfunder.Properties.Name)">@Model.Content.Name</h2>
+            <h2>@Model.Content.Name</h2>
             
-            <p n3o-editor="@(Model, PropertyTypes.Textarea, nameof(Model.Content.Description))">
+            <p>
                 @Model.Content.Description
             </p>
+            
+            @if (Model.EditMode()) {
+                <div class="campaign__edit modallBtn" n3o-editor="@(Model, PropertyTypes.Textarea, nameof(Model.Content.Description))" style="top: 70px">
+                    <svg class="sm">
+                        <use xlink:href="#editIcon"></use>
+                    </svg>
+                    
+                    <b> @PartialText.Get("Edit") </b>
+                </div>
+            }
         </div>
         
         <div class="fprogress">
+            @if (Model.EditMode()) {
+                <div class="campaign__edit" data-goal-edit="@Model.Content.Key" style="top: 70px">
+                    <svg class="sm">
+                        <use xlink:href="#editIcon"></use>
+                    </svg>
+                    <b> @PartialText.Get("Edit") </b>
+                </div>
+            }
+            
             <div class="fprogress__row">
                 <h4>@Model.CrowdfunderProgress.SupportersCount @(Model.CrowdfunderProgress.SupportersCount == 1 ? PartialText.Get("Supporter") : PartialText.Get("Supporters"))</h4>
                 
@@ -56,7 +93,7 @@
         <div class="campaign__footer">
             @foreach (var tag in Model.Tags) {
                 <div class="campaign__footer-tag">
-                    <img src="@tag.IconUrl" alt=""/>
+                    <img src="@tag.IconUrl" alt="" height="16" width="16"/>
                     <b>@tag.Name</b>
                 </div>
             }

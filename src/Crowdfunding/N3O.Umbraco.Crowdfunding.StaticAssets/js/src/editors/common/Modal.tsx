@@ -21,8 +21,10 @@ export function Modal({isOpen, onClose, onOk, id, oKButtonProps, closeButtonProp
         <div className="edit">
           {children}
           <div className="edit__foot">
-            <button type="button" className="button secondary" id="modal-close" {...(closeButtonProps || {})} onClick={() => onClose?.()} data-modal-close="true">Cancel</button>
-            <button type="button" className="button primary" id="modal-ok" {...(oKButtonProps || {})}  onClick={onOk}>Save</button>
+            <button type="button" className="button secondary" id="modal-close" {...(closeButtonProps || {})} onClick={() => onClose?.()} data-modal-close="true">
+              {window.themeConfig.text.crowdfunding.cancel}
+            </button>
+            <button type="button" className="button primary" id="modal-ok" {...(oKButtonProps || {})}  onClick={onOk}>{window.themeConfig.text.crowdfunding.save}</button>
           </div>
         </div>
       </div>

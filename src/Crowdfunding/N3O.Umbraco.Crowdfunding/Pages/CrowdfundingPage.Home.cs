@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Crowdfunding;
 
 public class HomePage : CrowdfundingPage {
-    public HomePage(IContentLocator contentLocator, ICrowdfundingViewModelFactory viewModelFactory)
-        : base(contentLocator, viewModelFactory) { }
+    public HomePage(IContentLocator contentLocator,
+                    ICrowdfundingUrlBuilder urlBuilder,
+                    ICrowdfundingViewModelFactory viewModelFactory)
+        : base(contentLocator, urlBuilder, viewModelFactory) { }
 
     protected override bool IsMatch(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
-        return crowdfundingPath == CrowdfundingConstants.Routes.HomePage;
+        return IsMatch(crowdfundingPath, CrowdfundingConstants.Routes.HomePage);
     }
     
     protected override void AddOpenGraph(IOpenGraphBuilder builder,
@@ -27,7 +29,7 @@ public class HomePage : CrowdfundingPage {
         return viewModel;
     }
     
-    public static string Url(IContentLocator contentLocator) {
-        return GenerateUrl(contentLocator, null);
+    public static string Url(ICrowdfundingUrlBuilder urlBuilder) {
+        return urlBuilder.GenerateUrl(null);
     }
 }
