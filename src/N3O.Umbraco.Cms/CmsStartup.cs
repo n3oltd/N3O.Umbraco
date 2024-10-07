@@ -7,7 +7,6 @@ using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
-using System;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
 using Umbraco.Extensions;
@@ -21,6 +20,8 @@ public abstract class CmsStartup {
     protected CmsStartup(IWebHostEnvironment webHostEnvironment, IConfiguration configuration) {
         _webHostEnvironment = webHostEnvironment;
         _configuration = configuration;
+
+        EnvironmentSettings.LoadFromConfiguration(configuration);
     }
 
     public void ConfigureServices(IServiceCollection services) {
@@ -73,8 +74,8 @@ public abstract class CmsStartup {
     protected virtual void ConfigureStaticFiles(StaticFileOptions staticFileOptions) { }
 
     private RewriteOptions GetRewriteOptions() {
-        var canonicalDomain = Environment.GetEnvironmentVariable("N3O_Canonical_Domain");
-        var aliasDomains = Environment.GetEnvironmentVariable("N3O_Alias_Domains");
+        var canonicalDomain = EnvironmentSettings.GetValue("N3O_Canonical_Domain");
+        var aliasDomains = EnvironmentSettings.GetValue("N3O_Alias_Domains");
         var options = new RewriteOptions();
         
         if (canonicalDomain.HasValue()) {

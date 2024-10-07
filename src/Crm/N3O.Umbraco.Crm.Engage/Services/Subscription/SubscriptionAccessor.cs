@@ -1,6 +1,6 @@
 using N3O.Umbraco.Crm.Engage.Models;
 using N3O.Umbraco.Extensions;
-using System;
+using N3O.Umbraco.Hosting;
 
 namespace N3O.Umbraco.Crm.Engage;
 
@@ -8,7 +8,7 @@ public class SubscriptionAccessor : ISubscriptionAccessor {
     private SubscriptionInfo _subscription;
 
     public string GetId() {
-        return Environment.GetEnvironmentVariable($"N3O_SubscriptionId");
+        return GetSubscription().Id;
     }
 
     public SubscriptionInfo GetSubscription() {
@@ -23,6 +23,6 @@ public class SubscriptionAccessor : ISubscriptionAccessor {
     }
 
     private string Get(string setting) {
-        return Environment.GetEnvironmentVariable($"N3O_{setting}");
+        return EnvironmentSettings.GetValue($"N3O_{setting}");
     }
 }

@@ -7,9 +7,14 @@ namespace DemoSite.Web;
 
 public class HostBuilderExtension : IHostBuilderExtension {
     public void Run(IHostBuilder hostBuilder) {
-        if (File.Exists("appsettings.Authentication.json")) {
+        AddConfigFileIfExists(hostBuilder, "Authentication");
+        AddConfigFileIfExists(hostBuilder, "Environment");
+    }
+
+    private void AddConfigFileIfExists(IHostBuilder hostBuilder, string suffix) {
+        if (File.Exists($"appsettings.{suffix}.json")) {
             hostBuilder.ConfigureAppConfiguration(config => {
-                config.AddJsonFile("appsettings.Authentication.json");
+                config.AddJsonFile($"appsettings.{suffix}.json");
             });
         }
     }

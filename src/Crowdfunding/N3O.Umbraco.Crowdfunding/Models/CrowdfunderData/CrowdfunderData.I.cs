@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Crowdfunding.Lookups;
+﻿using N3O.Umbraco.Crm.Lookups;
 using System;
 
 namespace N3O.Umbraco.Crowdfunding.Models;

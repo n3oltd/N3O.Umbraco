@@ -1,8 +1,8 @@
 ﻿using N3O.Umbraco.Constants;
 using N3O.Umbraco.Context;
+using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
-using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Forex;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Lookups;

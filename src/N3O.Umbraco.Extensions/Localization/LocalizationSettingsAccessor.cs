@@ -1,6 +1,6 @@
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Lookups;
-using System;
 
 namespace N3O.Umbraco.Localization;
 
@@ -31,7 +31,7 @@ public class LocalizationSettingsAccessor : ILocalizationSettingsAccessor {
     }
 
     private T Get<T>(string setting, T defaultValue) where T : ILookup {
-        var id = Environment.GetEnvironmentVariable($"N3O_{setting}");
+        var id = EnvironmentSettings.GetValue($"N3O_{setting}");
         var value = id.IfNotNull(x => _lookups.FindById<T>(id));
 
         return value ?? defaultValue;
