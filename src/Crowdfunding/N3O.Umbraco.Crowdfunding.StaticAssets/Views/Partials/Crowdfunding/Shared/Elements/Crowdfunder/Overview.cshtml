@@ -35,7 +35,7 @@
     <div class="campaign__content">
         @if (Model.EditMode())
         {
-            <div class="campaign__edit modallBtn" n3o-editor="@(Model, PropertyTypes.TextBox, nameof(Model.Content.Name))">
+            <div class="campaign__edit modallBtn" n3o-editor="@(Model, PropertyTypes.TextBox, CrowdfundingConstants.Crowdfunder.Properties.Name)">
                 <svg class="sm">
                     <use xlink:href="#editIcon"></use>
                 </svg>

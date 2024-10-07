@@ -44,7 +44,7 @@ public class FundraiserAccessControl : MembersAccessControl {
     }
 
     private bool CanEdit(Func<string> getValue) {
-        var status = _lookups.FindByName<CrowdfunderStatus>(getValue()).SingleOrDefault();
+        var status = getValue().IfNotNull(_lookups.FindByName<CrowdfunderStatus>)?.SingleOrDefault();
         
         return status?.CanEdit != false;
     }
