@@ -1,13 +1,13 @@
 using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Composing;
-using System;
+using N3O.Umbraco.Hosting;
 
 namespace N3O.Umbraco.Extensions;
 
 public static class OpenApi {
     public static bool IsEnabled() {
         if (Composer.WebHostEnvironment.IsProduction() == false ||
-            Environment.GetEnvironmentVariable("N3O_OpenApi").EqualsInvariant("enabled")) {
+            EnvironmentSettings.GetValue("N3O_OpenApi").EqualsInvariant("enabled")) {
             return true;
         }
 

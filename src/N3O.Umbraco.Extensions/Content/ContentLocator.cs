@@ -85,7 +85,7 @@ public class ContentLocator : IContentLocator {
     }
 
     private T Run<T>(Func<IPublishedContentCache, T> func) {
-        // TODO If the Umbraco context is actually created then this wil dispose it once
+        // TODO If the Umbraco context is actually created then this will dispose it once
         // the content is fetched and will fail in later code, e.g. when resolving property values
         // as won't be able to get published content snapshot.
         return func(_umbracoContextAccessor.GetContentCache());

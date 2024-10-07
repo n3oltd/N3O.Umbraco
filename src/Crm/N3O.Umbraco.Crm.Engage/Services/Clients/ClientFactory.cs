@@ -38,8 +38,10 @@ public class ClientFactory<T> {
         _jsonProvider = jsonProvider;
     }
 
-    public async Task<ServiceClient<T>> CreateAsync(SubscriptionInfo subscription, string onBehalfOf = null) {
-        onBehalfOf ??= await _userDirectoryIdAccessor.GetIdAsync(ClientTypes.Members);
+    public async Task<ServiceClient<T>> CreateAsync(SubscriptionInfo subscription,
+                                                    ClientType clientType,
+                                                    string onBehalfOf = null) {
+        onBehalfOf ??= await _userDirectoryIdAccessor.GetIdAsync(clientType);
 
         var httpClient = await GetHttpClientAsync(onBehalfOf);
 

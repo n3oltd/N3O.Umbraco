@@ -46,11 +46,15 @@ public abstract class CrowdfundingPage : ICrowdfundingPage {
         return await GetViewModelAsync(crowdfundingPath, requestQuery);
     }
 
-    protected bool IsMatch(string crowdfundingPath, string pattern) {
+    protected bool IsMatch(string crowdfundingPath, string route) {
+        var pattern = $"^/?{route}/*$";
+        
         return Regex.IsMatch(crowdfundingPath, pattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
     }
     
-    protected Match Match(string crowdfundingPath, string pattern) {
+    protected Match Match(string crowdfundingPath, string typedRoute) {
+        var pattern = $"^/?{typedRoute}/*$";
+        
         return Regex.Match(crowdfundingPath, pattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
     }
 

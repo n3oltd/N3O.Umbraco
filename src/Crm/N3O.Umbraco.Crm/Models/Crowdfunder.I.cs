@@ -7,6 +7,7 @@ namespace N3O.Umbraco.Crm.Models;
 
 public interface ICrowdfunder {
     Guid Id { get; }
+    CrowdfunderType Type { get; }
     string Name { get; }
     Currency Currency { get; }
     IEnumerable<ICrowdfunderGoal> Goals { get; }

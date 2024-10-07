@@ -1,13 +1,15 @@
 ﻿// modals start
 function n3o_cdf_handleModalToggle() {
     const body = document.body;
-    const closeBtns = document.querySelectorAll(".modallClose").forEach((e) => {
+
+    document.querySelectorAll(".modallClose").forEach((e) => {
         e.addEventListener("click", function (x) {
             console.log(x.target.dataset.modal);
             var ModalId = x.target.dataset.modal;
             document.querySelector("#" + ModalId).classList.remove("active");
         });
     });
+    
     const modallBtn = document.querySelectorAll(".modallBtn");
     const modallItems = document.querySelectorAll(".modall");
     modallBtn.forEach((e) => {
@@ -45,5 +47,7 @@ function n3o_cdf_handleModalToggle() {
     }
 }
 
-n3o_cdf_handleModalToggle();
+document.addEventListener('DOMContentLoaded', function () {
+    n3o_cdf_handleModalToggle();
+})
 // modals end

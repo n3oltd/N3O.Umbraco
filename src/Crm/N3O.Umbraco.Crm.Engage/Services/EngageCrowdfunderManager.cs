@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Crm.Engage.Clients;
+﻿using N3O.Umbraco.Authentication.Auth0.Lookups;
+using N3O.Umbraco.Crm.Engage.Clients;
 using N3O.Umbraco.Crm.Engage.Extensions;
 using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crm.Models;
@@ -9,6 +10,7 @@ using N3O.Umbraco.Giving.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CrowdfunderType = N3O.Umbraco.Crm.Lookups.CrowdfunderType;
 using EngageCurrency = N3O.Umbraco.Crm.Engage.Clients.Currency;
 using FundDimensionValuesReq = N3O.Umbraco.Crm.Engage.Clients.FundDimensionValuesReq;
 using MoneyReq = N3O.Umbraco.Crm.Engage.Clients.MoneyReq;
@@ -35,7 +37,7 @@ public class EngageCrowdfunderManager : ICrowdfunderManager {
     public async Task CreateCampaignAsync(ICampaign campaign) {
         var req = GetCreateCampaignReq(campaign);
 
-        var client = await GetClientAsync();
+        var client = await GetClientAsync(CrowdfunderTypes.Campaign);
 
         await client.InvokeAsync(x => x.CreateCampaignAsync, req);
     }
@@ -43,13 +45,13 @@ public class EngageCrowdfunderManager : ICrowdfunderManager {
     public async Task CreateFundraiserAsync(IFundraiser fundraiser) {
         var req = GetCreateFundraiserReq(fundraiser);
 
-        var client = await GetClientAsync();
+        var client = await GetClientAsync(CrowdfunderTypes.Fundraiser);
 
         await client.InvokeAsync(x => x.CreateFundraiserAsync, req);
     }
 
     public async Task UpdateCrowdfunderAsync(string id, ICrowdfunder crowdfunder, bool toggleStatus) {
-        var client = await GetClientAsync();
+        var client = await GetClientAsync(crowdfunder.Type);
         var crowdfunderRes = await client.InvokeAsync<CrowdfunderRes>(x => x.GetCrowdfunderByIdAsync, id);
 
         var syncCrowdfunderReq = new SyncCrowdfunderReq();
@@ -76,11 +78,21 @@ public class EngageCrowdfunderManager : ICrowdfunderManager {
         await client.InvokeAsync(x => x.SyncCrowdfunderAsync, crowdfunderRes.RevisionId, syncCrowdfunderReq);
     }
     
-    private async Task<ServiceClient<CrowdfundingClient>> GetClientAsync() {
+    private async Task<ServiceClient<CrowdfundingClient>> GetClientAsync(CrowdfunderType crowdfunderType) {
+        ClientType clientType;
+        
+        if (crowdfunderType == CrowdfunderTypes.Campaign) {
+            clientType = ClientTypes.BackOffice;
+        } else if (crowdfunderType == CrowdfunderTypes.Fundraiser) {
+            clientType = ClientTypes.Members;
+        } else {
+            throw UnrecognisedValueException.For(crowdfunderType);
+        }
+        
         if (_client == null) {
             var subscription = _subscriptionAccessor.GetSubscription();
             
-            _client = await _clientFactory.CreateAsync(subscription);
+            _client = await _clientFactory.CreateAsync(subscription, clientType);
         }
 
         return _client;

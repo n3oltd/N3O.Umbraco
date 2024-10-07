@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Crowdfunding.Lookups;
+﻿using N3O.Umbraco.Crm.Lookups;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

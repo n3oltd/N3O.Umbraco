@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using N3O.Umbraco.Accounts.Models;
+using N3O.Umbraco.Authentication.Auth0.Lookups;
 using N3O.Umbraco.Crm.Context;
 using N3O.Umbraco.Crm.Engage.Clients;
 using N3O.Umbraco.Crm.Engage.Exceptions;
@@ -67,7 +68,7 @@ public class EngageAccountManager : AccountManager {
         if (_client == null) {
             var subscription = _subscriptionAccessor.GetSubscription();
             
-            _client = await _clientFactory.CreateAsync(subscription);
+            _client = await _clientFactory.CreateAsync(subscription, ClientTypes.Members);
         }
 
         return _client;

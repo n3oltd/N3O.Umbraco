@@ -1,5 +1,5 @@
 ﻿using CsvHelper.Configuration.Attributes;
-using N3O.Umbraco.Crowdfunding.Lookups;
+using N3O.Umbraco.Crm.Lookups;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Crowdfunding.Models;

@@ -37,7 +37,7 @@ public class ViewCampaignPage : CrowdfundingPage {
     }
 
     protected override bool IsMatch(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
-        if (!IsMatch(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewCampaign)) {
+        if (!IsMatch(crowdfundingPath, CrowdfundingConstants.Routes.TypedRoutes.ViewCampaign)) {
             return false;
         }
         
@@ -83,7 +83,7 @@ public class ViewCampaignPage : CrowdfundingPage {
     }
     
     private CampaignContent GetCampaign(string crowdfundingPath) {
-        var match = Match(crowdfundingPath, CrowdfundingConstants.Routes.Patterns.ViewCampaign);
+        var match = Match(crowdfundingPath, CrowdfundingConstants.Routes.TypedRoutes.ViewCampaign);
         var campaignId = int.Parse(match.Groups[1].Value);
         var campaign = ContentLocator.ById<CampaignContent>(campaignId);
 
@@ -110,6 +110,10 @@ public class ViewCampaignPage : CrowdfundingPage {
     
     public static string Url(ICrowdfundingUrlBuilder urlBuilder, Guid campaignKey) {
         var campaign = urlBuilder.ContentLocator.ById<CampaignContent>(campaignKey);
+
+        if (campaign == null) {
+            return null;
+        }
         
         var relativeUrl = new Url(campaign.Content().RelativeUrl());
         

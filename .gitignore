@@ -381,3 +381,4 @@ Our.Umbraco.GMaps
 **/wwwroot/media
 
 appsettings.Authentication.json
+appsettings.Environment.json
