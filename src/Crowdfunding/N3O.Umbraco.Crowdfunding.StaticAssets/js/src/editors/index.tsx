@@ -25,8 +25,8 @@ export const getComponentForPropType = (propType, components, nested = false) =>
     return Component;
   }
 
-  if (nested && propType === PropertyType.Cropper) {
-    return components[propType]['nested'];
+  if (nested && propType === PropertyType.Nested) {
+    return components[PropertyType.Cropper]['nested'];
   }
   
   if (!nested && propType === PropertyType.Cropper) {
