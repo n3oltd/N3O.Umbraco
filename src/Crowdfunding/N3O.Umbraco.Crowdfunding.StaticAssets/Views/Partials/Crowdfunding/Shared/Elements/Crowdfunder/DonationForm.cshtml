@@ -225,7 +225,7 @@
                     let priceHandleObj = {
                         title: goalName,
                         amount: price,
-                        description: '@PartialText.Get("Your custom amount")'
+                        description: window.themeConfig.text.crowdfunding.customAmountDescription
                     };
 
                     items.push(priceHandleObj);
@@ -282,7 +282,7 @@
                         let goalAmount = inputElement.getAttribute(`data-goal-amount-${n3oSelectedCurrency}`);
                         let h3Element= priceHandle.querySelector('h3');
                         
-                        h3Element.textContent = `${currencySymbol} ${goalAmount}`;
+                        h3Element.textContent = window.themeConfig.formatter.number.formatMoney(goalAmount, currencyId);
                     });
 
                     currencyPickers.forEach( otherPicker => {

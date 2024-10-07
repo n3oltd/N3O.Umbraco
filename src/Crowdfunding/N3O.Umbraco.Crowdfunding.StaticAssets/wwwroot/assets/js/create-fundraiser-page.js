@@ -31,9 +31,9 @@ function n3o_cdf_splitDimensionAndNumber(str) {
 class n3o_cdf_CreatePageAPI {
     constructor() {
         this.errorMessages = {
-            suggestSlug: window.themeConfig.text.crowdfunding.suggestSlugError,
+            suggestSlug: window.themeConfig.text.crowdfunding.slugFetchError,
             createFundraiser: window.themeConfig.text.crowdfunding.createFundraiserError,
-            getCampaignGoalOptions: window.themeConfig.text.crowdfunding.campaignGoalOptionsError
+            getCampaignGoalOptions: window.themeConfig.text.crowdfunding.getCampaignGoalOptionsError
         };
     }
 
@@ -126,7 +126,7 @@ class n3o_cdf_ErrorHanlder {
         }
 
         if (error.status === 500) {
-            container.querySelector('.detail').textContent = window.themeConfig.text.crowdfunding.createFundraiserError;
+            container.querySelector('.detail').textContent = window.themeConfig.text.crowdfunding.genericError;
             container.style.display = 'inherit';
         }
     }
@@ -265,13 +265,9 @@ class n3o_cdf_FieldHandler {
         ['dimension1', 'dimension2', 'dimension3', 'dimension4'].forEach(dimension => {
             const [currDimension, index] = n3o_cdf_splitDimensionAndNumber(dimension);
             const dimensionOptionsContainerElm = document.getElementById(`goal-selection-${currDimension}-${index}`);
-
-            if (dimensionOptionsContainerElm) {
-                dimensionOptionsContainerElm.innerHTML = "";
-            }
-
+            dimensionOptionsContainerElm.innerHTML = "";
         })
-    }
+    } 
 
     static populateDimensions(dimensions, data) {
         dimensions.forEach(dimension => {
@@ -431,7 +427,7 @@ class n3o_cdf_PageManager {
             const { symbol } = event.target.selectedOptions[0].dataset;
             document.querySelector("[for='goal-amount']").innerHTML = symbol;
             const minAmount = document.getElementById('goal-amount').dataset[event.target.value];
-            document.getElementById('n3o_cdf-min-amount').innerText = symbol + minAmount;
+            document.getElementById('n3o_cdf-min-amount').innerText = window.themeConfig.formatter.number.formatMoney(minAmount, this.selectedGoal.currency);
 
             this.selectedGoal.currentMinAmount = Number(minAmount);
 
@@ -557,7 +553,7 @@ class n3o_cdf_PageManager {
                     goals: {
                         items: [{
                             amount: +this.selectedGoal.amount,
-                            goalOptionId: this.selectedGoal.value,
+                            goalId: this.selectedGoal.value,
                             fundDimensions: goalDimensions,
                             feedback: customFieldsReq.length ? {
                                 customFields: {
@@ -625,47 +621,14 @@ class n3o_cdf_PageManager {
             this.selectedGoal.fund = response.fund;
             this.selectedGoal.feedback = response.feedback;
 
-            this.createTags(response.tags);
             this.appendOrRemoveCustomFields(response.feedback?.customFields || []);
             await this.getPrice();
             this.handleDimensionChange();
-            
+
         } catch (e) {
             n3o_cdf_ErrorHanlder.displayErrorMessages(e, 'errorMessage')
         }
         
-    }
-
-    createTags(data) {
-        const container = document.querySelector('#goal-option-tag');
-        if (!container) {
-            return;
-        }
-
-        const fragment = document.createDocumentFragment();
-
-        container.innerHTML = '';
-
-        data.forEach(item => {
-            const link = document.createElement('a');
-            link.classList.add('setting__tag');
-            link.href = "#";
-            const img = document.createElement('img');
-            img.src = item.iconUrl;
-            img.width = "16px";
-            img.height = "16px";
-
-            const text = document.createTextNode(item.name);
-            const bold = document.createElement('b');
-            bold.appendChild(text);
-
-            link.appendChild(img);
-            link.appendChild(bold);
-
-            fragment.appendChild(link);
-        });
-
-        container.appendChild(fragment);
     }
 
     isPlainObject(value) {
@@ -684,4 +647,3 @@ class n3o_cdf_PageManager {
 }
 
 new n3o_cdf_PageManager().attachEventListeners();
-window.n3o_cdf_pageManager = n3o_cdf_PageManager
