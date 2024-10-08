@@ -16,7 +16,7 @@ public abstract class ContentPropertyConfigurationMapping<T> : IMapDefinition wh
     }
     
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<PublishedContentProperty, T>((_, _) => new T(), Map);
+        mapper.Define<ContentPropertyConfiguration, T>((_, _) => new T(), Map);
     }
 
     protected void MapConfiguration(string contentTypeAlias, string propertyTypeAlias, ContentPropertyConfigurationRes dest) {
@@ -35,7 +35,7 @@ public abstract class ContentPropertyConfigurationMapping<T> : IMapDefinition wh
         return contentType.CompositionPropertyTypes.Single(x => x.Alias == propertyTypeAlias);
     }
 
-    public abstract void Map(PublishedContentProperty src, T dest, MapperContext ctx);
+    public abstract void Map(ContentPropertyConfiguration src, T dest, MapperContext ctx);
     
     public IEnumerable<IContentPropertyValidator> Validators { get; }
 }

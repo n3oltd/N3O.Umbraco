@@ -9,7 +9,7 @@ public class CropperConfigurationResMapping : ContentPropertyConfigurationMappin
                                           IEnumerable<IContentPropertyValidator> validators) 
         : base(contentTypeService, validators) { }
 
-    public override void Map(PublishedContentProperty src, CropperConfigurationRes dest, MapperContext ctx) {
-        MapConfiguration(src.ContentTypeAlias, src.Property.Alias, dest);
+    public override void Map(ContentPropertyConfiguration src, CropperConfigurationRes dest, MapperContext ctx) {
+        MapConfiguration(src.ContentTypeAlias, src.PropertyAlias, dest);
     }
 }

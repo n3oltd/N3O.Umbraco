@@ -13,6 +13,7 @@ public class CropperPropertyType : PropertyType<CropperValueReq> {
     public CropperPropertyType()
         : base("cropper",
                (ctx, src, dest) => dest.Cropper = ctx.Map<PublishedContentProperty, CropperValueRes>(src),
+               (ctx, src) => ctx.Map<ContentPropertyConfiguration, CropperConfigurationRes>(src),
                CropperConstants.PropertyEditorAlias) { }
 
     protected override async Task UpdatePropertyAsync(IContentBuilder contentBuilder,
