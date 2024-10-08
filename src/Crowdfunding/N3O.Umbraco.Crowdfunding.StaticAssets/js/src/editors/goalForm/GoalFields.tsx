@@ -96,10 +96,10 @@ export function GoalFields(props: GoalFieldsProps) {
           {window.themeConfig.text.crowdfunding.remove}
         </button>
       )}
-      <h4>{window.themeConfig.text.crowdfunding.editGoalTitle}</h4>
+      <h4>{window.themeConfig.text.crowdfunding.selectGoal}</h4>
       <div className="select__outer">
         <div className="select">
-          <div className="select__selected" id="select__selected"> {selectedGoal?.name || 'Select Goal'}</div>
+          <div className="select__selected" id="select__selected"> {selectedGoal?.name || window.themeConfig?.text?.crowdfunding?.selectGoal}</div>
           <input
             type="hidden"
             {...props.register(`goals.${props.index}.goalId`, {
@@ -119,7 +119,7 @@ export function GoalFields(props: GoalFieldsProps) {
               />
             </div>
             <div className="select__options-body" id="goal-options">
-              {props.data?.goalOptions?.map((goal, gIndex) => (
+              {props.availableGoals?.map((goal, gIndex) => (
                 <li
                   key={gIndex}
                   value={goal.id}
