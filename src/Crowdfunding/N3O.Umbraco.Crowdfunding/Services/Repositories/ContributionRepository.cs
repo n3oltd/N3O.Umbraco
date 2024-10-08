@@ -145,15 +145,13 @@ public class ContributionRepository : IContributionRepository {
     }
 
     private ICrowdfunderContent GetCrowdfunderContent(ICrowdfunderData crowdfunderData) {
-        if (crowdfunderData.CrowdfunderType == CrowdfunderTypes.Campaign) {
-            return _contentLocator.ById<CampaignContent>(crowdfunderData.CrowdfunderId);
+        if (crowdfunderData.Type == CrowdfunderTypes.Campaign) {
+            return _contentLocator.ById<CampaignContent>(crowdfunderData.Id);
+        } else if (crowdfunderData.Type == CrowdfunderTypes.Fundraiser) {
+            return _contentLocator.ById<FundraiserContent>(crowdfunderData.Id);
+        } else {
+            throw UnrecognisedValueException.For(crowdfunderData.Type);
         }
-
-        if (crowdfunderData.CrowdfunderType == CrowdfunderTypes.Fundraiser) {
-            return _contentLocator.ById<FundraiserContent>(crowdfunderData.CrowdfunderId);
-        }
-
-        throw UnrecognisedValueException.For(crowdfunderData.CrowdfunderType);
     }
 
     private async Task<IReadOnlyList<Contribution>> FindContributionsAsync(Sql whereClause) {

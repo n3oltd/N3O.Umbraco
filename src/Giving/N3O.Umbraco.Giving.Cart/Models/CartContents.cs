@@ -10,7 +10,7 @@ using System.Linq;
 namespace N3O.Umbraco.Giving.Cart.Models;
 
 public class CartContents : Value {
-    public int MaxCapacity = 100;
+    private const int MaxCapacity = 100;
     
     [JsonConstructor]
     public CartContents(GivingType type, IEnumerable<Allocation> allocations, Money total) {

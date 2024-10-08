@@ -7,27 +7,40 @@ namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class CrowdfunderData : Value, ICrowdfunderData {
     [JsonConstructor]
-    public CrowdfunderData(Guid crowdfunderId, CrowdfunderType crowdfunderType, string comment, bool anonymous) {
-        CrowdfunderId = crowdfunderId;
-        CrowdfunderType = crowdfunderType;
+    public CrowdfunderData(Guid id,
+                           CrowdfunderType type,
+                           string name,
+                           string url,
+                           string comment,
+                           bool anonymous) {
+        Id = id;
+        Type = type;
+        Name = name;
+        Url = url;
         Comment = comment;
         Anonymous = anonymous;
     }
 
     public CrowdfunderData(ICrowdfunderData crowdfunderData)
-        : this(crowdfunderData.CrowdfunderId,
-               crowdfunderData.CrowdfunderType,
+        : this(crowdfunderData.Id,
+               crowdfunderData.Type,
+               crowdfunderData.Name,
+               crowdfunderData.Url,
                crowdfunderData.Comment,
                crowdfunderData.Anonymous) { }
 
-    public Guid CrowdfunderId { get; }
-    public CrowdfunderType CrowdfunderType { get; }
+    public Guid Id { get; }
+    public CrowdfunderType Type { get; }
+    public string Name { get; }
+    public string Url { get; }
     public string Comment { get; }
     public bool Anonymous { get; }
 
     protected override IEnumerable<object> GetAtomicValues() {
-        yield return CrowdfunderId;
-        yield return CrowdfunderType;
+        yield return Id;
+        yield return Type;
+        yield return Name;
+        yield return Url;
         yield return Comment;
         yield return Anonymous;
     }

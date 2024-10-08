@@ -9,8 +9,8 @@ using N3O.Umbraco.Giving.Extensions;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Json;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace N3O.Umbraco.Crowdfunding.Extensions;
@@ -21,19 +21,19 @@ public static class CrowdfundingCartReqExtensions {
                                                       IJsonProvider jsonProvider) {
         var bulkAddToCartReq = new BulkAddToCartReq();
         bulkAddToCartReq.Items = crowdfundingReq.Items
-                                                .Select(x => ToAddToCartReq(crowdfundingReq,
-                                                                            x,
-                                                                            contentLocator,
-                                                                            jsonProvider))
+                                                .Select(x => ToAddToCartReq(contentLocator,
+                                                                            jsonProvider,
+                                                                            crowdfundingReq,
+                                                                            x))
                                                 .ToList();
 
         return bulkAddToCartReq;
     }
 
-    private static AddToCartReq ToAddToCartReq(CrowdfundingCartReq crowdfundingReq,
-                                               CrowdfundingCartItemReq itemReq,
-                                               IContentLocator contentLocator,
-                                               IJsonProvider jsonProvider) {
+    private static AddToCartReq ToAddToCartReq(IContentLocator contentLocator,
+                                               IJsonProvider jsonProvider,
+                                               CrowdfundingCartReq crowdfundingReq,
+                                               CrowdfundingCartItemReq itemReq) {
         ICrowdfunderContent crowdfunderContent;
         
         if (crowdfundingReq.Type == CrowdfunderTypes.Campaign) {
@@ -80,16 +80,11 @@ public static class CrowdfundingCartReqExtensions {
         } else {
             throw UnrecognisedValueException.For(goal.Type);
         }
-        
-        var serializerSettings = jsonProvider.GetSettings();
-        var jsonSerializer = JsonSerializer.Create(serializerSettings);
 
-        addToCartReq.Allocation.Extensions = new System.Collections.Generic.Dictionary<string, JToken> {
-            {
-                CrowdfundingConstants.Allocations.Extensions.Key,
-                JToken.FromObject(crowdfundingReq.Crowdfunding, jsonSerializer)
-            }
-        };
+        addToCartReq.Allocation.Extensions = new Dictionary<string, JToken>();
+        addToCartReq.Allocation.Extensions.Set(jsonProvider,
+                                               CrowdfundingConstants.Allocations.Extensions.Key,
+                                               crowdfundingReq.Crowdfunding);
 
         return addToCartReq;
     }
