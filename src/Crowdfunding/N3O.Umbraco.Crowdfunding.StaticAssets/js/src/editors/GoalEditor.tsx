@@ -1,7 +1,7 @@
 import React from "react";
 
 import { useReactive, useRequest } from "ahooks";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { FundraiserGoalsReq } from "@n3oltd/umbraco-crowdfunding-client";
 
 import { GoalFields } from "./goalForm/GoalFields";
@@ -28,6 +28,11 @@ export const GoalEditor: React.FC<EditorProps> = ({
   const { fields, append, remove } = useFieldArray({
     name: "goals",
     control,
+  });
+
+  const watchedGoals = useWatch({
+    control: control,
+    name: "goals",
   });
 
   const {loading, runAsync, data: goals} = useRequest((pageId) => _client.getFundraiserGoals(pageId), {
@@ -141,14 +146,15 @@ export const GoalEditor: React.FC<EditorProps> = ({
       }  
     } catch (error) {
       console.error(error)
-    }
-    
+    } 
   }
 
   const errors = JSON.parse((error as any)?.response || '{}')?.errors;
 
   const minimumAmount = getMinimunAmount(goals)?.text;
 
+  
+  const availableGoals = goals?.goalOptions?.filter(g => !watchedGoals?.find(wg => wg.goalId === g.id)) || goals?.goalOptions || [];
 
   return <Modal
     id="goal-edit"
@@ -182,6 +188,7 @@ export const GoalEditor: React.FC<EditorProps> = ({
                   index={index}
                   data={goals}
                   pricingRef={pricingRef}
+                  availableGoals={availableGoals}
                 ></GoalFields>
               );
             })}
@@ -223,7 +230,7 @@ export const GoalEditor: React.FC<EditorProps> = ({
                 </p>
             </div> : null
             }
-            <p className="subtle">{window.themeConfig.text.crowdfunding.MinimumAmountNote} {minimumAmount}</p>
+            <p className="subtle">{window.themeConfig.text.crowdfunding.minimumAmountNote} {minimumAmount}</p>
             <div className="editGoal__foot">
               <button type="button" className="button secondary" onClick={onClose} disabled={updating}>
                 {window.themeConfig.text.crowdfunding.cancel}

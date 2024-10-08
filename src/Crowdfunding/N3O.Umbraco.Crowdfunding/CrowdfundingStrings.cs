@@ -26,6 +26,7 @@ public class CrowdfundingStrings : CodeStrings {
     public string GoalAmountRequired => "Amount is required";
     public string GoalCustomFieldRequired => "%name is Required";
     public string GoalProjectRequired => "Please select the project";
+    public string SelectGoal => "Select Goal";
     public string GoalSelectDimension => "Select Dimension";
     public string GoalSelectDimension1 => "Select Dimension 1";
     public string GoalSelectDimension2 => "Select Dimension 2";

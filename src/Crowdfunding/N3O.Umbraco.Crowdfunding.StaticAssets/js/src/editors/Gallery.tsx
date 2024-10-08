@@ -117,13 +117,13 @@ export const Gallery: React.FC<EditorProps> = ({
    }
 
    if (totalItems < (dataResponse?.nested?.configuration?.minimumItems || 1)) {
-    toast.error(window.themeConfig.text.crowdfunding.CropperGalleryMinimumRequired.replace("%val", dataResponse?.nested?.configuration?.minimumItems?.toString() || "1"))
+    toast.error(window.themeConfig.text.crowdfunding.cropperGalleryMinimumRequired.replace("%val", dataResponse?.nested?.configuration?.minimumItems?.toString() || "1"))
     
     return;
    }
 
    if (dataResponse?.nested?.configuration?.maximumItems && totalItems > dataResponse?.nested?.configuration?.maximumItems) {
-    toast.error(window.themeConfig.text.crowdfunding.CropperGalleryMinimumRequired.replace("%val", dataResponse?.nested?.configuration?.maximumItems?.toString() || "1"))
+    toast.error(window.themeConfig.text.crowdfunding.cropperGalleryMinimumRequired.replace("%val", dataResponse?.nested?.configuration?.maximumItems?.toString() || "1"))
     
     return;
    }
