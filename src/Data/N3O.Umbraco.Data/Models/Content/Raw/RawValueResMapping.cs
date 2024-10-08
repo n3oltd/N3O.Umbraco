@@ -12,7 +12,7 @@ public class RawValueResMapping : IMapDefinition {
     private void Map(PublishedContentProperty src, RawValueRes dest, MapperContext ctx) {
         dest.Value = src.Property.GetValue() as HtmlEncodedString;
         dest.Configuration = (RawConfigurationRes) PropertyTypes.Raw.GetConfigurationRes(ctx,
-                                                                                             src.ContentTypeAlias,
-                                                                                             src.Property.Alias);
+                                                                                         src.ContentTypeAlias,
+                                                                                         src.Property.Alias);
     }
 }

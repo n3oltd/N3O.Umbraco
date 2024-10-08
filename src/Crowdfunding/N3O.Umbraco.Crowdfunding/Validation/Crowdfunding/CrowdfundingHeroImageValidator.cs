@@ -1,5 +1,4 @@
 ﻿using N3O.Umbraco.Cropper.DataTypes;
-using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Data;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Localization;
@@ -33,11 +32,7 @@ public class CrowdfundingHeroImageValidator : ContentPropertyValidator<CropperVa
         var property = content.Properties.SingleOrDefault(x => x.Alias == propertyAlias);
         var cropperDefinition = GetCropDefinition(property.PropertyType.DataType.Id);
         
-        var height = CropperShapeExtensions.GetHeight(req.Rectangle.TopRight.Y, req.Rectangle.BottomLeft.Y);
-        var width = CropperShapeExtensions.GetWidth(req.Rectangle.TopRight.X, req.Rectangle.BottomLeft.X);
-        
-        if (width < cropperDefinition.Width || 
-            height < cropperDefinition.Height) {
+        if (req.Rectangle.Width < cropperDefinition.Width || req.Rectangle.Height < cropperDefinition.Height) {
             AddFailure<Strings>(propertyAlias, x => x.MinimumSize);
         }
     }
