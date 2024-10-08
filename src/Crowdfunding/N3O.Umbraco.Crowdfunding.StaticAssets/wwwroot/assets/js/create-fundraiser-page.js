@@ -545,7 +545,7 @@ class n3o_cdf_PageManager {
                     }
                 })
 
-                const createPageReq = {
+                const createFundraiserReq = {
                     name: this.selectedGoal.pageTitle,
                     slug: this.selectedGoal.slug,
                     campaignId: new URLSearchParams(window.location.search).get('campaignId'),
@@ -553,7 +553,7 @@ class n3o_cdf_PageManager {
                     goals: {
                         items: [{
                             amount: +this.selectedGoal.amount,
-                            goalId: this.selectedGoal.value,
+                            goalOptionId: this.selectedGoal.value,
                             fundDimensions: goalDimensions,
                             feedback: customFieldsReq.length ? {
                                 customFields: {
@@ -565,7 +565,7 @@ class n3o_cdf_PageManager {
                 };
 
 
-                const response = await client.createFundraiser(createPageReq);
+                const response = await client.createFundraiser(createFundraiserReq);
                 if (response) {
                     window.location.href = response
                 }
