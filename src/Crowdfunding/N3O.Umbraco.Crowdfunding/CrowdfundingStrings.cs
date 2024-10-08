@@ -26,7 +26,6 @@ public class CrowdfundingStrings : CodeStrings {
     public string GoalAmountRequired => "Amount is required";
     public string GoalCustomFieldRequired => "%name is Required";
     public string GoalProjectRequired => "Please select the project";
-    public string SelectGoal => "Select Goal";
     public string GoalSelectDimension => "Select Dimension";
     public string GoalSelectDimension1 => "Select Dimension 1";
     public string GoalSelectDimension2 => "Select Dimension 2";
@@ -39,6 +38,7 @@ public class CrowdfundingStrings : CodeStrings {
     public string Save => "Save";
     public string SearchHerePlaceholder => "Type to search...";
     public string SelectDate => "Select date";
+    public string SelectGoal => "Select goal";
     public string SlugFetchError => "Failed to fetch suggestSlug";
     public string SuggestSlugError => "Failed to fetch suggested URL";
     public string TextAreaEditorNote => "Maximum %val characters.";
