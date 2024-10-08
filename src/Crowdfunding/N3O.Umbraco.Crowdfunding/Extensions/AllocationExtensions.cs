@@ -23,7 +23,9 @@ public static class AllocationExtensions {
         return allocation.Extensions?.ContainsKey(Allocations.Extensions.Key) == true;
     }
 
-    public static string GetCrowdfunderName(this IAllocation allocation, IJsonProvider jsonProvider, IContentLocator contentLocator) {
+    public static string GetCrowdfunderName(this IAllocation allocation,
+                                            IJsonProvider jsonProvider,
+                                            IContentLocator contentLocator) {
         if (!HasCrowdfunderData(allocation)) {
             return null;
         }

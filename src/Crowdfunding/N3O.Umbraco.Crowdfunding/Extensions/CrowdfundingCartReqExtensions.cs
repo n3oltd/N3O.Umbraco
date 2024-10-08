@@ -1,5 +1,4 @@
-﻿using J2N.Collections.Generic;
-using N3O.Umbraco.Content;
+﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Models;
@@ -84,11 +83,13 @@ public static class CrowdfundingCartReqExtensions {
         
         var serializerSettings = jsonProvider.GetSettings();
         var jsonSerializer = JsonSerializer.Create(serializerSettings);
-            
-        var extensions = new Dictionary<string, JToken>();
-        extensions.Add(CrowdfundingConstants.Allocations.Extensions.Key, JToken.FromObject(crowdfundingReq.Crowdfunding, jsonSerializer));
-        
-        addToCartReq.Allocation.Extensions = extensions;
+
+        addToCartReq.Allocation.Extensions = new System.Collections.Generic.Dictionary<string, JToken> {
+            {
+                CrowdfundingConstants.Allocations.Extensions.Key,
+                JToken.FromObject(crowdfundingReq.Crowdfunding, jsonSerializer)
+            }
+        };
 
         return addToCartReq;
     }
