@@ -12,7 +12,7 @@ public class NestedValueResMapping : IMapDefinition {
     }
 
     private void Map(PublishedContentProperty src, NestedValueRes dest, MapperContext ctx) {
-        var elements = src.Property.GetValue() as List<IPublishedElement>;
+        var elements = src.Property.GetValue() as IEnumerable<IPublishedElement>;
         var items = new List<NestedItemRes>();
         
         foreach (var element in elements.OrEmpty()) {

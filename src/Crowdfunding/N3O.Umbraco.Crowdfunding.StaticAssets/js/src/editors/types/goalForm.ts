@@ -1,4 +1,4 @@
-import { FeedbackCustomFieldDefinitionRes, FundraiserGoalsRes, PricingRuleRes } from "@n3oltd/umbraco-crowdfunding-client";
+import { FeedbackCustomFieldDefinitionRes, FundraiserGoalsRes, GoalOptionRes, PricingRuleRes } from "@n3oltd/umbraco-crowdfunding-client";
 
 export type GoalPricingRef = Record<string, PricingRuleRes>
 
@@ -26,6 +26,7 @@ export type GoalFieldsProps = {
   index: number;
   data: FundraiserGoalsRes | undefined,
   pricingRef: any
+  availableGoals: GoalOptionRes[]
 };
 
 export type GoalAllocationFieldsProps = {
