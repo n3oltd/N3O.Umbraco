@@ -26,7 +26,7 @@ public abstract class CrowdfundingPage : ICrowdfundingPage {
                              IReadOnlyDictionary<string, string> requestQuery) {
         var crowdfundingPath = CrowdfundingPathParser.ParseUri(ContentLocator, requestUri);
 
-        AddOpenGraph(builder, crowdfundingPath, requestQuery);
+        //AddOpenGraph(builder, crowdfundingPath, requestQuery);
     }
 
     public bool IsMatch(Uri requestUri, IReadOnlyDictionary<string, string> requestQuery) {
