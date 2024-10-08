@@ -1,3 +1,4 @@
+using N3O.Umbraco.Data.Lookups;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Strings;
 
@@ -10,6 +11,8 @@ public class RawValueResMapping : IMapDefinition {
 
     private void Map(PublishedContentProperty src, RawValueRes dest, MapperContext ctx) {
         dest.Value = src.Property.GetValue() as HtmlEncodedString;
-        dest.Configuration = ctx.Map<PublishedContentProperty, RawConfigurationRes>(src);
+        dest.Configuration = (RawConfigurationRes) PropertyTypes.Raw.GetConfigurationRes(ctx,
+                                                                                             src.ContentTypeAlias,
+                                                                                             src.Property.Alias);
     }
 }

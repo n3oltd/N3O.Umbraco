@@ -9,7 +9,7 @@ public class BooleanConfigurationResMapping : ContentPropertyConfigurationMappin
                                           IEnumerable<IContentPropertyValidator> validators) 
         : base(contentTypeService, validators) { }
 
-    public override void Map(PublishedContentProperty src, BooleanConfigurationRes dest, MapperContext ctx) {
-        MapConfiguration(src.ContentTypeAlias, src.Property.Alias, dest);
+    public override void Map(ContentPropertyConfiguration src, BooleanConfigurationRes dest, MapperContext ctx) {
+        MapConfiguration(src.ContentTypeAlias, src.PropertyAlias, dest);
     }
 }

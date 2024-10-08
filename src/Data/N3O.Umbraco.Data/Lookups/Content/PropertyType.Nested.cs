@@ -10,6 +10,7 @@ public class NestedPropertyType : PropertyType<NestedValueReq> {
     public NestedPropertyType()
         : base("nested",
                (ctx, src, dest) => dest.Nested = ctx.Map<PublishedContentProperty, NestedValueRes>(src),
+               (ctx, src) => ctx.Map<ContentPropertyConfiguration, NestedConfigurationRes>(src),
                UmbracoPropertyEditors.Aliases.NestedContent) { }
 
     protected override Task UpdatePropertyAsync(IContentBuilder contentBuilder,

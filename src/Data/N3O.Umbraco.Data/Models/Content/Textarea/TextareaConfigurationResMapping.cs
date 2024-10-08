@@ -9,7 +9,7 @@ public class TextareaConfigurationResMapping : ContentPropertyConfigurationMappi
                                            IEnumerable<IContentPropertyValidator> validators) 
         : base(contentTypeService, validators) { }
 
-    public override void Map(PublishedContentProperty src, TextareaConfigurationRes dest, MapperContext ctx) {
-        MapConfiguration(src.ContentTypeAlias, src.Property.Alias, dest);
+    public override void Map(ContentPropertyConfiguration src, TextareaConfigurationRes dest, MapperContext ctx) {
+        MapConfiguration(src.ContentTypeAlias, src.PropertyAlias, dest);
     }
 }

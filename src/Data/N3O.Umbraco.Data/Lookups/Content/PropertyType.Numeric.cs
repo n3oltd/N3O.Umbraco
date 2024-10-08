@@ -10,6 +10,7 @@ public class NumericPropertyType : PropertyType<NumericValueReq> {
     public NumericPropertyType()
         : base("numeric",
                (ctx, src, dest) => dest.Numeric = ctx.Map<PublishedContentProperty, NumericValueRes>(src),
+               (ctx, src) => ctx.Map<ContentPropertyConfiguration, NumericConfigurationRes>(src),
                UmbracoPropertyEditors.Aliases.Decimal) { }
 
     protected override Task UpdatePropertyAsync(IContentBuilder contentBuilder,
