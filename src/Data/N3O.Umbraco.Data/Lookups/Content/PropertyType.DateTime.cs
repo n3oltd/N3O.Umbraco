@@ -10,6 +10,7 @@ public class DateTimePropertyType : PropertyType<DateTimeValueReq> {
     public DateTimePropertyType()
         : base("dateTime",
                (ctx, src, dest) => dest.DateTime = ctx.Map<PublishedContentProperty, DateTimeValueRes>(src),
+               (ctx, src) => ctx.Map<ContentPropertyConfiguration, DateTimeConfigurationRes>(src),
                UmbracoPropertyEditors.Aliases.DateTime) { }
 
     protected override Task UpdatePropertyAsync(IContentBuilder contentBuilder,

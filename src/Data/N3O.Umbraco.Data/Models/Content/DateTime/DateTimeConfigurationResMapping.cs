@@ -9,7 +9,7 @@ public class DateTimeConfigurationResMapping : ContentPropertyConfigurationMappi
                                            IEnumerable<IContentPropertyValidator> validators) 
         : base(contentTypeService, validators) { }
 
-    public override void Map(PublishedContentProperty src, DateTimeConfigurationRes dest, MapperContext ctx) {
-        MapConfiguration(src.ContentTypeAlias, src.Property.Alias, dest);
+    public override void Map(ContentPropertyConfiguration src, DateTimeConfigurationRes dest, MapperContext ctx) {
+        MapConfiguration(src.ContentTypeAlias, src.PropertyAlias, dest);
     }
 }

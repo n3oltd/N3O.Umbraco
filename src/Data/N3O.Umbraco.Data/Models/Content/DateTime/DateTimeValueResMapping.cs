@@ -1,3 +1,4 @@
+using N3O.Umbraco.Data.Lookups;
 using System;
 using Umbraco.Cms.Core.Mapping;
 
@@ -10,6 +11,8 @@ public class DateTimeValueResMapping : IMapDefinition {
 
     private void Map(PublishedContentProperty src, DateTimeValueRes dest, MapperContext ctx) {
         dest.Value = (DateTime?) src.Property.GetValue();
-        dest.Configuration = ctx.Map<PublishedContentProperty, DateTimeConfigurationRes>(src);
+        dest.Configuration = (DateTimeConfigurationRes) PropertyTypes.DateTime.GetConfigurationRes(ctx,
+                                                                                                  src.ContentTypeAlias,
+                                                                                                  src.Property.Alias);
     }
 }

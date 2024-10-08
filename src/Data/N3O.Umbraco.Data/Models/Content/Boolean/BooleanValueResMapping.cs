@@ -1,3 +1,4 @@
+using N3O.Umbraco.Data.Lookups;
 using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Data.Models;
@@ -9,6 +10,8 @@ public class BooleanValueResMapping : IMapDefinition {
 
     private void Map(PublishedContentProperty src, BooleanValueRes dest, MapperContext ctx) {
         dest.Value = (bool?) src.Property.GetValue();
-        dest.Configuration = ctx.Map<PublishedContentProperty, BooleanConfigurationRes>(src);
+        dest.Configuration = (BooleanConfigurationRes) PropertyTypes.Boolean.GetConfigurationRes(ctx,
+                                                                                                 src.ContentTypeAlias,
+                                                                                                 src.Property.Alias);
     }
 }

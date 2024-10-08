@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Extensions;
+﻿using N3O.Umbraco.Data.Lookups;
+using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
@@ -12,7 +13,7 @@ public class NestedValueResMapping : IMapDefinition {
     }
 
     private void Map(PublishedContentProperty src, NestedValueRes dest, MapperContext ctx) {
-        var elements = src.Property.GetValue() as List<IPublishedElement>;
+        var elements = src.Property.GetValue() as IEnumerable<IPublishedElement>;
         var items = new List<NestedItemRes>();
         
         foreach (var element in elements.OrEmpty()) {
@@ -21,7 +22,7 @@ public class NestedValueResMapping : IMapDefinition {
         
         dest.Items = items;
         dest.Schema = ctx.Map<PublishedContentProperty, NestedSchemaRes>(src);
-        dest.Configuration = ctx.Map<PublishedContentProperty, NestedConfigurationRes>(src);
+        dest.Configuration = (NestedConfigurationRes) PropertyTypes.Nested.GetConfigurationRes(ctx, src.ContentTypeAlias, src.Property.Alias);
     }
 
     private NestedItemRes PopulateNestedItem(MapperContext ctx, IPublishedElement element) {

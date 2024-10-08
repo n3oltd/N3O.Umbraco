@@ -29,19 +29,19 @@ public class NestedSchemaResMapping : IMapDefinition {
         var items = new List<NestedSchemaItemRes>();
 
         foreach (var nestedContentType in nestedConfiguration?.ContentTypes.OrEmpty()) {
-            items.Add(PopulateContentTypes(nestedContentType.Alias));
+            items.Add(PopulateContentTypes(ctx, nestedContentType.Alias));
         }
         
         dest.Items = items;
     }
 
-    private NestedSchemaItemRes PopulateContentTypes(string contentTypeAlias) {
+    private NestedSchemaItemRes PopulateContentTypes(MapperContext ctx, string contentTypeAlias) {
         var contentType = _contentTypeService.Get(contentTypeAlias);
         
         var properties = new List<NestedSchemaPropertyRes>();
 
         foreach (var propertyType in contentType.CompositionPropertyTypes.OrEmpty()) {
-            properties.Add(GetNestedSchemaPropertyRes(propertyType));
+            properties.Add(GetNestedSchemaPropertyRes(ctx, contentTypeAlias, propertyType));
         }
         
         var res = new NestedSchemaItemRes();
@@ -51,12 +51,16 @@ public class NestedSchemaResMapping : IMapDefinition {
         return res;
     }
 
-    private NestedSchemaPropertyRes GetNestedSchemaPropertyRes(IPropertyType propertyType)  {
+    private NestedSchemaPropertyRes GetNestedSchemaPropertyRes(MapperContext ctx,
+                                                               string contentTypeAlias,
+                                                               IPropertyType propertyType)  {
         var type = _propertyTypes.SingleOrDefault(x => x.EditorAliases.Contains(propertyType.PropertyEditorAlias));
             
         var res = new NestedSchemaPropertyRes();
         res.Type = type;
         res.Alias = propertyType.Alias;
+        
+        res.Configuration = type.GetConfigurationRes(ctx, contentTypeAlias, propertyType.Alias);
 
         return res;
     }
