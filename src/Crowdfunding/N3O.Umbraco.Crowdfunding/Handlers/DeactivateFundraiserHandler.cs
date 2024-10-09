@@ -9,24 +9,24 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Crowdfunding.Handlers;
 
-public class PublishFundraiserHandler : IRequestHandler<PublishFundraiserCommand, None, None> {
+public class DeactivateFundraiserHandler : IRequestHandler<DeactivateFundraiserCommand, None, None> {
     private readonly IContentService _contentService;
     private readonly ILookups _lookups;
 
-    public PublishFundraiserHandler(IContentService contentService, ILookups lookups) {
+    public DeactivateFundraiserHandler(IContentService contentService, ILookups lookups) {
         _contentService = contentService;
         _lookups = lookups;
     }
 
-    public Task<None> Handle(PublishFundraiserCommand req, CancellationToken cancellationToken) {
+    public Task<None> Handle(DeactivateFundraiserCommand req, CancellationToken cancellationToken) {
         var fundraiser = req.FundraiserId.Run(_contentService.GetById, true);
 
         var currentStatusStr = fundraiser.GetValue<string>(CrowdfundingConstants.Crowdfunder.Properties.Status);
         var currentStatus = _lookups.FindByName<CrowdfunderStatus>(currentStatusStr).Single();
 
         if (currentStatus.CanToggle &&
-            currentStatus.ToggleAction == CrowdfunderActivationActions.Activate &&
-            currentStatus != CrowdfunderStatuses.Active) {
+            currentStatus.ToggleAction == CrowdfunderActivationActions.Deactivate &&
+            currentStatus == CrowdfunderStatuses.Active) {
             fundraiser.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, true);
 
             _contentService.SaveAndPublish(fundraiser);

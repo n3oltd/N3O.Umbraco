@@ -21,6 +21,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
     private readonly ILookups _lookups;
     private readonly ITextFormatter _textFormatter;
     private readonly FundraiserAccessControl _fundraiserAccessControl;
+    private readonly Lazy<IQueryStringAccessor> _queryStringAccessor;
 
     public ViewEditFundraiserPage(IContentLocator contentLocator,
                                   ICrowdfundingUrlBuilder urlBuilder,
@@ -30,7 +31,8 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
                                   ITextFormatter textFormatter,
                                   FundraiserAccessControl fundraiserAccessControl,
                                   IForexConverter forexConverter,
-                                  ILookups lookups)
+                                  ILookups lookups,
+                                  Lazy<IQueryStringAccessor> queryStringAccessor)
         : base(contentLocator, urlBuilder, viewModelFactory) {
         _contributionRepository = contributionRepository;
         _currencyAccessor = currencyAccessor;
@@ -38,6 +40,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
         _fundraiserAccessControl = fundraiserAccessControl;
         _forexConverter = forexConverter;
         _lookups = lookups;
+        _queryStringAccessor = queryStringAccessor;
     }
 
     protected override bool IsMatch(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
@@ -47,7 +50,13 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
         
         var fundraiser = GetFundraiser(crowdfundingPath);
 
-        if (fundraiser == null || fundraiser.Status == CrowdfunderStatuses.Draft) {
+        if (!fundraiser.HasValue()) {
+            return false;
+        }
+        
+        var canEdit = _fundraiserAccessControl.CanEditAsync(fundraiser.Content()).GetAwaiter().GetResult();
+
+        if (fundraiser.Status == CrowdfunderStatuses.Draft && !canEdit) {
             return false;
         }
         
@@ -69,6 +78,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
                                                                             IReadOnlyDictionary<string, string> query) {
         var fundraiser = GetFundraiser(crowdfundingPath);
         var contributions = await _contributionRepository.FindByFundraiserAsync(fundraiser.Content().Key);
+        var viewMode = _queryStringAccessor.Value.GetValue(Parameters.ViewMode).HasValue();
 
         return await ViewEditFundraiserViewModel.ForAsync(ViewModelFactory,
                                                           _currencyAccessor,
@@ -79,7 +89,8 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
                                                           this,
                                                           query,
                                                           fundraiser,
-                                                          contributions);
+                                                          contributions,
+                                                          viewMode);
     }
     
     private FundraiserContent GetFundraiser(string crowdfundingPath) {
@@ -100,5 +111,9 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
         return urlBuilder.GenerateUrl(CrowdfundingConstants.Routes
                                                            .ViewEditFundraiser_2
                                                            .FormatWith(fundraiser.Content().Id, fundraiser.Slug));
+    }
+    
+    private static class Parameters {
+        public const string ViewMode = "view";
     }
 }

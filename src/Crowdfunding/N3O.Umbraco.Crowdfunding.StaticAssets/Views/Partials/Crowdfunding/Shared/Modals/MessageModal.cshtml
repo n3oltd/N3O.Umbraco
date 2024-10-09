@@ -1,0 +1,19 @@
+﻿@model (string Id, string Title, string Description)
+
+@inject IPartialText PartialText
+
+@{
+PartialText.SetPartialName("MessageModal");
+}
+
+<div class="modalsItem modall" id="@Model.Id">
+    <div class="share">
+        <h2>@PartialText.Get(Model.Title)</h2>
+
+        <p class="detail">
+            @PartialText.Get(Model.Description)
+        </p>
+
+        <button type="button" class="button secondary modallClose" data-modal="@Model.Id">@PartialText.Get("Close")</button>
+    </div>
+</div>

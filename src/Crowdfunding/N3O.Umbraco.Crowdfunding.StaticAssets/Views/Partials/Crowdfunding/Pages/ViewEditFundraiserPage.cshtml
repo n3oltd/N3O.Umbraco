@@ -1,3 +1,34 @@
 @model ViewEditFundraiserViewModel
 
+@inject IPartialText PartialText
+
+@{
+    PartialText.SetPartialName("ViewEditFundraiserPage");
+}
+
+@if (!Model.Content.Status.HasValue()) {
+    <div class="modalsItem modall active" id="confirmAccount-modal">
+        <div class="auth__wrapper" style="margin: auto; width: 90vw">
+            <div class="auth">
+                <div class="auth__title">
+                    <h2>@PartialText.Get("Please Wait...")</h2>
+
+                    <p>@PartialText.Get("Page setup in progress, you will be able to view or edit the page once setup is completed.")</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("click", handler, true);
+
+        function handler(e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    </script>
+} else if (Model.EditMode()) {
+    @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Banners/ViewEditFundraiserPageBanner.cshtml", Model)
+}
+
 @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Crowdfunder.cshtml", Model)
