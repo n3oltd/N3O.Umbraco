@@ -12,10 +12,9 @@ public class CrowdfunderRevision {
 }
 
     /*
-     * Key
      * Type (1 = Campaign, 2 = Fundraiser)
-     * Id (Umbraco content ID)
-     * Revision (umbraco content version)
+     * ContentKey (Umbraco content ID)
+     * ContentRevision (umbraco content version)
      * Name
      * Url
      * Currency
