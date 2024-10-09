@@ -21,7 +21,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
     private readonly ILookups _lookups;
     private readonly ITextFormatter _textFormatter;
     private readonly FundraiserAccessControl _fundraiserAccessControl;
-    private readonly Lazy<IQueryStringAccessor> _queryStringAccessor;
+    private readonly IQueryStringAccessor _queryStringAccessor;
 
     public ViewEditFundraiserPage(IContentLocator contentLocator,
                                   ICrowdfundingUrlBuilder urlBuilder,
@@ -32,7 +32,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
                                   FundraiserAccessControl fundraiserAccessControl,
                                   IForexConverter forexConverter,
                                   ILookups lookups,
-                                  Lazy<IQueryStringAccessor> queryStringAccessor)
+                                  IQueryStringAccessor queryStringAccessor)
         : base(contentLocator, urlBuilder, viewModelFactory) {
         _contributionRepository = contributionRepository;
         _currencyAccessor = currencyAccessor;
@@ -78,7 +78,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
                                                                             IReadOnlyDictionary<string, string> query) {
         var fundraiser = GetFundraiser(crowdfundingPath);
         var contributions = await _contributionRepository.FindByFundraiserAsync(fundraiser.Content().Key);
-        var viewMode = _queryStringAccessor.Value.GetValue(Parameters.ViewMode).HasValue();
+        var preview = _queryStringAccessor.Has(Parameters.Preview);
 
         return await ViewEditFundraiserViewModel.ForAsync(ViewModelFactory,
                                                           _currencyAccessor,
@@ -90,7 +90,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
                                                           query,
                                                           fundraiser,
                                                           contributions,
-                                                          viewMode);
+                                                          preview);
     }
     
     private FundraiserContent GetFundraiser(string crowdfundingPath) {
@@ -114,6 +114,6 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
     }
     
     private static class Parameters {
-        public const string ViewMode = "view";
+        public const string Preview = "preview";
     }
 }

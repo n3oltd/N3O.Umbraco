@@ -16,14 +16,14 @@ namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class ViewEditFundraiserViewModel : CrowdfunderViewModel<FundraiserContent> {
     private FundraiserAccessControl _fundraiserAccessControl;
-    private bool _viewMode;
+    private bool _preview;
     
     public override bool EditMode() {
-        return _fundraiserAccessControl.CanEditAsync(Content.Content()).GetAwaiter().GetResult() && !_viewMode;
+        return _fundraiserAccessControl.CanEditAsync(Content.Content()).GetAwaiter().GetResult() && !_preview;
     }
     
-    public bool IsOverFunded { get; private set; }
-    public bool IsUnderFunded { get; private set; }
+    public bool HasUnallocatedFunds { get; private set; }
+    public bool HasPendingGoalsWithPricing { get; private set; }
 
     public static async Task<ViewEditFundraiserViewModel> ForAsync(ICrowdfundingViewModelFactory viewModelFactory,
                                                                    ICurrencyAccessor currencyAccessor,
@@ -35,7 +35,7 @@ public class ViewEditFundraiserViewModel : CrowdfunderViewModel<FundraiserConten
                                                                    IReadOnlyDictionary<string, string> query,
                                                                    FundraiserContent fundraiser,
                                                                    IEnumerable<Contribution> contributions,
-                                                                   bool viewMode) {
+                                                                   bool preview) {
         var viewModel = await ForAsync<ViewEditFundraiserViewModel>(viewModelFactory,
                                                                     currencyAccessor,
                                                                     forexConverter,
@@ -47,14 +47,14 @@ public class ViewEditFundraiserViewModel : CrowdfunderViewModel<FundraiserConten
                                                                     contributions,
                                                                     () => GetOwnerInfo(textFormatter, fundraiser));
         
-        var goalsWithPricing = fundraiser.Goals.Where(x => x.HasPricing).Sum(x => x.Amount);
         var contributionsTotal = contributions.OrEmpty().Sum(x => x.CrowdfunderAmount);
+        var goalsWithPricing = fundraiser.Goals.Where(x => x.HasPricing).Sum(x => x.Amount);
         
-        viewModel.IsUnderFunded = goalsWithPricing > 0 && contributionsTotal < goalsWithPricing;
-        viewModel.IsOverFunded = fundraiser.Goals.Sum(x => x.Amount) > contributions.Sum(x => x.CrowdfunderAmount);
+        viewModel.HasUnallocatedFunds = fundraiser.Goals.Sum(x => x.Amount) > contributions.Sum(x => x.CrowdfunderAmount);
+        viewModel.HasPendingGoalsWithPricing = goalsWithPricing > 0 && contributionsTotal < goalsWithPricing;
 
         viewModel._fundraiserAccessControl = fundraiserAccessControl;
-        viewModel._viewMode = viewMode;
+        viewModel._preview = preview;
         
         return viewModel;
     }
