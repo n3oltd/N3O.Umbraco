@@ -4,6 +4,7 @@ using N3O.Umbraco.Crm.Models;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Content;
+using N3O.Umbraco.Giving.Extensions;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ public class GoalElement : UmbracoElement<GoalElement>, IFundDimensionValues, IC
     public IEnumerable<PriceHandleElement> PriceHandles => GetNestedAs(x => x.PriceHandles);
     
     public string Id => Content().Key.ToString().ToLowerInvariant();
+    public bool HasPricing => ((IPricing) Fund?.DonationItem ?? Feedback?.Scheme).HasPricing();
     
     public FundGoalElement Fund { get; protected set; }
     public FeedbackGoalElement Feedback { get; protected set; }

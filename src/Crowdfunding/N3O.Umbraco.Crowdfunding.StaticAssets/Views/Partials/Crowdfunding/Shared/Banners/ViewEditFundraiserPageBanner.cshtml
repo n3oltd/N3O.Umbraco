@@ -1,0 +1,47 @@
+﻿@model ViewEditFundraiserViewModel
+
+@inject IPartialText PartialText
+
+@{
+    PartialText.SetPartialName("ViewEditFundraiserPageBanner");
+}
+
+<div class="banner">
+    @if (Model.Content.Status == CrowdfunderStatuses.Ended) {
+        @PartialText.Get("The campaign has concluded and can no longer be modified.")
+    } else {
+        <div class="banner-left-content">
+            <p>@PartialText.Get("You are in edit mode")</p>
+            <button class="banner-view-page">@PartialText.Get("View Page")</button>
+        </div>
+
+        @if (Model.IsOverFunded) {
+            <div class="banner-right-content">
+                <div class="banner-right-text">
+                    <p>@PartialText.Get("You've exceeded your goal! Congratulations!")</p>
+                    <p>@PartialText.Get("Please tell us how you'd like the extra money you've raised spent.")</p>
+                </div>
+                <button class="banner-resolve">@PartialText.Get("Resolve")</button>
+            </div>
+        }
+
+        @if (Model.Content.Status.CanToggle && Model.Content.Status.ToggleAction == CrowdfunderActivationActions.Activate) {
+            <a href="#" class="btn-banner-activate">@PartialText.Get("Activate")</a>
+        } else if (Model.Content.Status.CanToggle && Model.Content.Status.ToggleAction == CrowdfunderActivationActions.Deactivate) {
+            <a href="#"
+               @if (!Model.IsUnderFunded) { <text>id="deactivate-fundraiser"</text> }
+               @if (Model.IsUnderFunded) { <text>data-mod="#banner-modal"</text> }
+               class="btn-banner-deactivate">
+                @PartialText.Get("Deactivate")
+            </a>
+        }
+    }
+</div>
+
+@if (Model.IsUnderFunded) {
+    var id = "viewEditFundraiserPageBanner";
+    var title = PartialText.Get("Unable to deactivate");
+    var description = PartialText.Get("As your page contains one or more projects with a fixed price, please contact us [link] to advise where you would like the funds raised so far to be spent and to close your page");
+    
+    @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Modals/MessageModal.cshtml", (id, title, description))
+}

@@ -8,11 +8,29 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Crowdfunding.Controllers;
 
 public partial class CrowdfundingController {
+    [HttpPost("fundraisers/{fundraiserId:guid}/activate")]
+    public async Task<ActionResult> ActivateFundraiser([FromRoute] Guid fundraiserId) {
+        await EnforceFundraiserAccessControlsAsync(fundraiserId);
+        
+        await _mediator.Value.SendAsync<ActivateFundraiserCommand, None>(None.Empty);
+        
+        return Ok();
+    }
+    
     [HttpPost("fundraisers")]
     public async Task<ActionResult<string>> CreateFundraiser(CreateFundraiserReq req) {
         var res = await _mediator.Value.SendAsync<CreateFundraiserCommand, CreateFundraiserReq, string>(req);
 
         return Ok(res);
+    }
+    
+    [HttpPost("fundraisers/{fundraiserId:guid}/deactivate")]
+    public async Task<ActionResult> DeactivateFundraiser([FromRoute] Guid fundraiserId) {
+        await EnforceFundraiserAccessControlsAsync(fundraiserId);
+        
+        await _mediator.Value.SendAsync<ActivateFundraiserCommand, None>(None.Empty);
+        
+        return Ok();
     }
     
     [HttpGet("fundraisers/{fundraiserId:guid}/goals")]
@@ -22,14 +40,6 @@ public partial class CrowdfundingController {
         return Ok(res);
     }
     
-    [HttpPost("fundraisers/{fundraiserId:guid}/publish")]
-    public async Task<ActionResult> PublishFundraiser([FromRoute] Guid fundraiserId) {
-        await EnforceFundraiserAccessControlsAsync(fundraiserId);
-        
-        await _mediator.Value.SendAsync<PublishFundraiserCommand, None>(None.Empty);
-        
-        return Ok();
-    }
     
     [HttpPut("fundraisers/{fundraiserId:guid}/goals")]
     public async Task<ActionResult> UpdateFundraiserGoals([FromRoute] Guid fundraiserId, FundraiserGoalsReq req) {
