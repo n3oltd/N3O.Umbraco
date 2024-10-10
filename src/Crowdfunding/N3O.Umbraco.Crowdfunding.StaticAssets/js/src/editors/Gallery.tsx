@@ -25,7 +25,8 @@ export const Gallery: React.FC<EditorProps> = ({
   
   const [filesToUplaod, setFiles] = React.useState<Array<{
     crop: any,
-    token: string
+    token: string,
+    id: string
   }>>([]);
 
   const state = useReactive<{
@@ -185,8 +186,8 @@ export const Gallery: React.FC<EditorProps> = ({
     }
   }
 
-  const handleUplodedFile = React.useCallback((token: string, crop) => {
-    setFiles(prev => [...prev, {crop, token}])
+  const handleUplodedFile = React.useCallback((token: string, id, crop) => {
+    setFiles(prev => [...prev, {crop, token, id}])
   }, [setFiles]);
 
   const setUppyInstance = React.useCallback(uppyInstance => {
@@ -209,7 +210,7 @@ export const Gallery: React.FC<EditorProps> = ({
         disabled: loading
       }}
     >
-        {loading ? <p>Loading...</p> : <>
+        {loading ? <p>{window.themeConfig.text.crowdfunding.apiLoading}</p> : <>
         <h3>{dataResponse?.nested?.configuration?.description}</h3>
         <ImageUploader 
           onFileUpload={handleUplodedFile}
@@ -220,19 +221,29 @@ export const Gallery: React.FC<EditorProps> = ({
           elementId='campaign-cover'
           uploadUrl={`${HostURL}${ImageUploadStoragePath}`}
           openEditor={!state.propertyRes?.nested?.items?.length}
+          dataConfig={{
+            width: (dataResponse?.nested?.configuration as any)?.rectangle?.width,
+            height: (dataResponse?.nested?.configuration as any)?.rectangle?.height
+          }}
+          onFileRemove={file => {
+             setFiles(prevFiles => {
+              return prevFiles.filter(f => f.id !== file?.id)
+             })
+          }}
+
         />
         </>}
 
         {(!loading && hasVideoUrlContent) && <div className="edit__content">
-            <h3>Campaign Video</h3>
+            <h3>{window.themeConfig.text.crowdfunding.campaignVideo}</h3>
             <div className="input__outer">
-              <p>Youtube Video's URL</p>
+              <p>{window.themeConfig.text.crowdfunding.campaignVideoURL}</p>
               <div className="input">
                 <input
                   type="text"
                   value={state.videoUrl}
                   onChange={e => state.videoUrl = e.target.value}
-                  placeholder="example: https://www.youtube.com/embed/tnGoQ5HcaoA"
+                  placeholder={window.themeConfig.text.crowdfunding.campaignVideoURLPlaceholder}
                 />
               </div>
               {state.videoUrl && <iframe referrerPolicy="strict-origin-when-cross-origin" src={state.videoUrl} style={{

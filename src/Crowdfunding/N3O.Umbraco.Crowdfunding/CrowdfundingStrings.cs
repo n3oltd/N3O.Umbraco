@@ -19,7 +19,11 @@ public class CrowdfundingStrings : CodeStrings {
     public string CropperImageCropRequired => "Please edit each image to apply a crop.";
     public string CropperImageLoadError => "Unable to load the image. Please try again.";
     public string CropperImageRequired => "Please first upload image(s).";
+    public string CropperCropRequired => "Crop does not meet minimum required dimensions.";
     public string CustomAmountDescription => "Custom amount";
+    public string CampaignVideo = "Campaign Video";
+    public string CampaignVideoURL = "Youtube Video's URL";
+    public string CampaignVideoURLPlaceholder = "example: https://www.youtube.com/embed/tnGoQ5HcaoA";
     public string EditGoalDescription => "You can modify and/or add projects to your page here.";
     public string EditGoalTitle => "Edit Goal";
     public string GenericError => "Sorry, an error has occurred. Please try again.";

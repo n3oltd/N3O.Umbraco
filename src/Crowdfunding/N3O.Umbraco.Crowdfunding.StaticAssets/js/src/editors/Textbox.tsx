@@ -77,7 +77,7 @@ export const Textbox: React.FC<EditorProps> = ({
         <div className="input big">
           <input type="text" 
             maxLength={dataResponse?.textBox?.configuration?.maximumLength}
-            placeholder="E.g. Building a school" value={state.title} onChange={e => state.title = e.target.value} disabled={isPropLoading}/>
+            placeholder={window.themeConfig.text.crowdfunding?.textEditorPlaceholder} value={state.title} onChange={e => state.title = e.target.value} disabled={isPropLoading}/>
         </div>
         </>}
     </Modal>
