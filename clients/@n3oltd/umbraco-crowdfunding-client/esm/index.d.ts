@@ -17,14 +17,16 @@ export declare class CrowdfundingClient {
     protected processUpdateProperty(response: Response): Promise<void>;
     suggestSlug(name: string | null | undefined): Promise<string>;
     protected processSuggestSlug(response: Response): Promise<string>;
+    activateFundraiser(fundraiserId: string): Promise<void>;
+    protected processActivateFundraiser(response: Response): Promise<void>;
     createFundraiser(req: CreateFundraiserReq): Promise<string>;
     protected processCreateFundraiser(response: Response): Promise<string>;
-    getFundraiserGoals(contentId: string): Promise<FundraiserGoalsRes>;
+    deactivateFundraiser(fundraiserId: string): Promise<void>;
+    protected processDeactivateFundraiser(response: Response): Promise<void>;
+    getFundraiserGoals(fundraiserId: string): Promise<FundraiserGoalsRes>;
     protected processGetFundraiserGoals(response: Response): Promise<FundraiserGoalsRes>;
-    updateFundraiserGoals(contentId: string, req: FundraiserGoalsReq): Promise<void>;
+    updateFundraiserGoals(fundraiserId: string, req: FundraiserGoalsReq): Promise<void>;
     protected processUpdateFundraiserGoals(response: Response): Promise<void>;
-    publishFundraiser(fundraiserId: string): Promise<void>;
-    protected processPublishFundraiser(response: Response): Promise<void>;
     getPropertyTypes(): Promise<LookupRes[]>;
     protected processGetPropertyTypes(response: Response): Promise<LookupRes[]>;
     getDashboardStatistics(req: DashboardStatisticsCriteria): Promise<DashboardStatisticsRes>;
@@ -222,6 +224,11 @@ export interface Crop {
 }
 export interface CropperConfigurationRes {
     description?: string | undefined;
+    rectangle?: RectangleCropConfigurationRes | undefined;
+}
+export interface RectangleCropConfigurationRes {
+    height?: number;
+    width?: number;
 }
 export interface DateTimeValueRes {
     value?: Date | undefined;
@@ -249,6 +256,10 @@ export interface NestedSchemaItemRes {
 export interface NestedSchemaPropertyRes {
     alias?: string | undefined;
     type?: PropertyType | undefined;
+    configuration?: ContentPropertyConfigurationRes | undefined;
+}
+export interface ContentPropertyConfigurationRes {
+    description?: string | undefined;
 }
 export interface NestedConfigurationRes {
     description?: string | undefined;

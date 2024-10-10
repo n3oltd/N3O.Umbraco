@@ -378,6 +378,60 @@ var CrowdfundingClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
+    CrowdfundingClient.prototype.activateFundraiser = function (fundraiserId) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers/{fundraiserId}/activate";
+        if (fundraiserId === undefined || fundraiserId === null)
+            throw new Error("The parameter 'fundraiserId' must be defined.");
+        url_ = url_.replace("{fundraiserId}", encodeURIComponent("" + fundraiserId));
+        url_ = url_.replace(/[?&]$/, "");
+        var options_ = {
+            method: "POST",
+            headers: {}
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processActivateFundraiser(_response);
+        });
+    };
+    CrowdfundingClient.prototype.processActivateFundraiser = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                return;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status === 412) {
+            return response.text().then(function (_responseText) {
+                var result412 = null;
+                result412 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result412);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
     CrowdfundingClient.prototype.createFundraiser = function (req) {
         var _this = this;
         var url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers";
@@ -436,12 +490,66 @@ var CrowdfundingClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    CrowdfundingClient.prototype.getFundraiserGoals = function (contentId) {
+    CrowdfundingClient.prototype.deactivateFundraiser = function (fundraiserId) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers/{contentId}/goals";
-        if (contentId === undefined || contentId === null)
-            throw new Error("The parameter 'contentId' must be defined.");
-        url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
+        var url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers/{fundraiserId}/deactivate";
+        if (fundraiserId === undefined || fundraiserId === null)
+            throw new Error("The parameter 'fundraiserId' must be defined.");
+        url_ = url_.replace("{fundraiserId}", encodeURIComponent("" + fundraiserId));
+        url_ = url_.replace(/[?&]$/, "");
+        var options_ = {
+            method: "POST",
+            headers: {}
+        };
+        return this.http.fetch(url_, options_).then(function (_response) {
+            return _this.processDeactivateFundraiser(_response);
+        });
+    };
+    CrowdfundingClient.prototype.processDeactivateFundraiser = function (response) {
+        var _this = this;
+        var status = response.status;
+        var _headers = {};
+        if (response.headers && response.headers.forEach) {
+            response.headers.forEach(function (v, k) { return _headers[k] = v; });
+        }
+        ;
+        if (status === 200) {
+            return response.text().then(function (_responseText) {
+                return;
+            });
+        }
+        else if (status === 400) {
+            return response.text().then(function (_responseText) {
+                var result400 = null;
+                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        }
+        else if (status === 500) {
+            return response.text().then(function (_responseText) {
+                return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        }
+        else if (status === 412) {
+            return response.text().then(function (_responseText) {
+                var result412 = null;
+                result412 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
+                return throwException("A server side error occurred.", status, _responseText, _headers, result412);
+            });
+        }
+        else if (status !== 200 && status !== 204) {
+            return response.text().then(function (_responseText) {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve(null);
+    };
+    CrowdfundingClient.prototype.getFundraiserGoals = function (fundraiserId) {
+        var _this = this;
+        var url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers/{fundraiserId}/goals";
+        if (fundraiserId === undefined || fundraiserId === null)
+            throw new Error("The parameter 'fundraiserId' must be defined.");
+        url_ = url_.replace("{fundraiserId}", encodeURIComponent("" + fundraiserId));
         url_ = url_.replace(/[?&]$/, "");
         var options_ = {
             method: "GET",
@@ -494,12 +602,12 @@ var CrowdfundingClient = /** @class */ (function () {
         }
         return Promise.resolve(null);
     };
-    CrowdfundingClient.prototype.updateFundraiserGoals = function (contentId, req) {
+    CrowdfundingClient.prototype.updateFundraiserGoals = function (fundraiserId, req) {
         var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers/{contentId}/goals";
-        if (contentId === undefined || contentId === null)
-            throw new Error("The parameter 'contentId' must be defined.");
-        url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
+        var url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers/{fundraiserId}/goals";
+        if (fundraiserId === undefined || fundraiserId === null)
+            throw new Error("The parameter 'fundraiserId' must be defined.");
+        url_ = url_.replace("{fundraiserId}", encodeURIComponent("" + fundraiserId));
         url_ = url_.replace(/[?&]$/, "");
         var content_ = JSON.stringify(req);
         var options_ = {
@@ -536,60 +644,6 @@ var CrowdfundingClient = /** @class */ (function () {
         else if (status === 500) {
             return response.text().then(function (_responseText) {
                 return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        }
-        else if (status !== 200 && status !== 204) {
-            return response.text().then(function (_responseText) {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve(null);
-    };
-    CrowdfundingClient.prototype.publishFundraiser = function (fundraiserId) {
-        var _this = this;
-        var url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers/{fundraiserId}/publish";
-        if (fundraiserId === undefined || fundraiserId === null)
-            throw new Error("The parameter 'fundraiserId' must be defined.");
-        url_ = url_.replace("{fundraiserId}", encodeURIComponent("" + fundraiserId));
-        url_ = url_.replace(/[?&]$/, "");
-        var options_ = {
-            method: "POST",
-            headers: {}
-        };
-        return this.http.fetch(url_, options_).then(function (_response) {
-            return _this.processPublishFundraiser(_response);
-        });
-    };
-    CrowdfundingClient.prototype.processPublishFundraiser = function (response) {
-        var _this = this;
-        var status = response.status;
-        var _headers = {};
-        if (response.headers && response.headers.forEach) {
-            response.headers.forEach(function (v, k) { return _headers[k] = v; });
-        }
-        ;
-        if (status === 200) {
-            return response.text().then(function (_responseText) {
-                return;
-            });
-        }
-        else if (status === 400) {
-            return response.text().then(function (_responseText) {
-                var result400 = null;
-                result400 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        }
-        else if (status === 500) {
-            return response.text().then(function (_responseText) {
-                return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        }
-        else if (status === 412) {
-            return response.text().then(function (_responseText) {
-                var result412 = null;
-                result412 = _responseText === "" ? null : JSON.parse(_responseText, _this.jsonParseReviver);
-                return throwException("A server side error occurred.", status, _responseText, _headers, result412);
             });
         }
         else if (status !== 200 && status !== 204) {

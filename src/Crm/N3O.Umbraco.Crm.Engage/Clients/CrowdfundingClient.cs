@@ -1287,6 +1287,23 @@ namespace N3O.Umbraco.Crm.Engage.Clients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class CampaignInfoRes
+    {
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("reference", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Reference Reference { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("url", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Url { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class CampaignRes
     {
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -1384,9 +1401,6 @@ namespace N3O.Umbraco.Crm.Engage.Clients
 
         [Newtonsoft.Json.JsonProperty("campaignId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string CampaignId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("teamId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string TeamId { get; set; }
 
     }
 
@@ -2570,11 +2584,8 @@ namespace N3O.Umbraco.Crm.Engage.Clients
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class FundraiserInfoRes
     {
-        [Newtonsoft.Json.JsonProperty("campaignId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string CampaignId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("teamId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string TeamId { get; set; }
+        [Newtonsoft.Json.JsonProperty("campaign", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public CampaignInfoRes Campaign { get; set; }
 
     }
 
@@ -2637,11 +2648,8 @@ namespace N3O.Umbraco.Crm.Engage.Clients
         [Newtonsoft.Json.JsonProperty("account", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public AccountInfoRes Account { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("campaignId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string CampaignId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("teamId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string TeamId { get; set; }
+        [Newtonsoft.Json.JsonProperty("campaign", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public CampaignInfoRes Campaign { get; set; }
 
     }
 
@@ -2808,7 +2816,7 @@ namespace N3O.Umbraco.Crm.Engage.Clients
     }
 
     /// <summary>
-    /// One of 'AC', 'AL', 'AS', 'AT', 'BD', 'BP', 'BX', 'CA', 'CC', 'CF', 'CL', 'CM', 'CO', 'CR', 'CS', 'DD', 'DE', 'DF', 'DI', 'DN', 'DQ', 'DR', 'DS', 'DT', 'EM', 'FB', 'FO', 'FS', 'HH', 'LG', 'LH', 'LS', 'OB', 'PC', 'PL', 'PM', 'PR', 'RC', 'RF', 'RG', 'RI', 'RP', 'SB', 'SC', 'SG', 'SH', 'SM', 'SP', 'SS', 'TC', 'TD', 'TG', 'TI', 'TK', 'TM', 'TR', 'WH'
+    /// One of 'AC', 'AL', 'AS', 'AT', 'BD', 'BP', 'BX', 'CA', 'CC', 'CF', 'CL', 'CM', 'CO', 'CR', 'CS', 'DD', 'DE', 'DF', 'DI', 'DN', 'DQ', 'DR', 'DS', 'DT', 'EL', 'EM', 'FB', 'FO', 'FS', 'HH', 'LG', 'LH', 'LS', 'OB', 'PC', 'PL', 'PM', 'PR', 'RC', 'RF', 'RG', 'RI', 'RP', 'SB', 'SC', 'SG', 'SH', 'SM', 'SP', 'SS', 'TC', 'TD', 'TG', 'TI', 'TK', 'TM', 'TR', 'WH'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum ReferenceType
@@ -2886,104 +2894,107 @@ namespace N3O.Umbraco.Crm.Engage.Clients
         [System.Runtime.Serialization.EnumMember(Value = @"DT")]
         DT = 23,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"EL")]
+        EL = 24,
+
         [System.Runtime.Serialization.EnumMember(Value = @"EM")]
-        EM = 24,
+        EM = 25,
 
         [System.Runtime.Serialization.EnumMember(Value = @"FB")]
-        FB = 25,
+        FB = 26,
 
         [System.Runtime.Serialization.EnumMember(Value = @"FO")]
-        FO = 26,
+        FO = 27,
 
         [System.Runtime.Serialization.EnumMember(Value = @"FS")]
-        FS = 27,
+        FS = 28,
 
         [System.Runtime.Serialization.EnumMember(Value = @"HH")]
-        HH = 28,
+        HH = 29,
 
         [System.Runtime.Serialization.EnumMember(Value = @"LG")]
-        LG = 29,
+        LG = 30,
 
         [System.Runtime.Serialization.EnumMember(Value = @"LH")]
-        LH = 30,
+        LH = 31,
 
         [System.Runtime.Serialization.EnumMember(Value = @"LS")]
-        LS = 31,
+        LS = 32,
 
         [System.Runtime.Serialization.EnumMember(Value = @"OB")]
-        OB = 32,
+        OB = 33,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PC")]
-        PC = 33,
+        PC = 34,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PL")]
-        PL = 34,
+        PL = 35,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PM")]
-        PM = 35,
+        PM = 36,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PR")]
-        PR = 36,
+        PR = 37,
 
         [System.Runtime.Serialization.EnumMember(Value = @"RC")]
-        RC = 37,
+        RC = 38,
 
         [System.Runtime.Serialization.EnumMember(Value = @"RF")]
-        RF = 38,
+        RF = 39,
 
         [System.Runtime.Serialization.EnumMember(Value = @"RG")]
-        RG = 39,
+        RG = 40,
 
         [System.Runtime.Serialization.EnumMember(Value = @"RI")]
-        RI = 40,
+        RI = 41,
 
         [System.Runtime.Serialization.EnumMember(Value = @"RP")]
-        RP = 41,
+        RP = 42,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SB")]
-        SB = 42,
+        SB = 43,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SC")]
-        SC = 43,
+        SC = 44,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SG")]
-        SG = 44,
+        SG = 45,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SH")]
-        SH = 45,
+        SH = 46,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SM")]
-        SM = 46,
+        SM = 47,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SP")]
-        SP = 47,
+        SP = 48,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SS")]
-        SS = 48,
+        SS = 49,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TC")]
-        TC = 49,
+        TC = 50,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TD")]
-        TD = 50,
+        TD = 51,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TG")]
-        TG = 51,
+        TG = 52,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TI")]
-        TI = 52,
+        TI = 53,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TK")]
-        TK = 53,
+        TK = 54,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TM")]
-        TM = 54,
+        TM = 55,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TR")]
-        TR = 55,
+        TR = 56,
 
         [System.Runtime.Serialization.EnumMember(Value = @"WH")]
-        WH = 56,
+        WH = 57,
 
     }
 

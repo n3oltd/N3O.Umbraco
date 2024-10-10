@@ -337,6 +337,55 @@ export class CrowdfundingClient {
         return Promise.resolve<string>(null as any);
     }
 
+    activateFundraiser(fundraiserId: string): Promise<void> {
+        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers/{fundraiserId}/activate";
+        if (fundraiserId === undefined || fundraiserId === null)
+            throw new Error("The parameter 'fundraiserId' must be defined.");
+        url_ = url_.replace("{fundraiserId}", encodeURIComponent("" + fundraiserId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processActivateFundraiser(_response);
+        });
+    }
+
+    protected processActivateFundraiser(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status === 412) {
+            return response.text().then((_responseText) => {
+            let result412: any = null;
+            result412 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result412);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
     createFundraiser(req: CreateFundraiserReq): Promise<string> {
         let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers";
         url_ = url_.replace(/[?&]$/, "");
@@ -390,11 +439,60 @@ export class CrowdfundingClient {
         return Promise.resolve<string>(null as any);
     }
 
-    getFundraiserGoals(contentId: string): Promise<FundraiserGoalsRes> {
-        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers/{contentId}/goals";
-        if (contentId === undefined || contentId === null)
-            throw new Error("The parameter 'contentId' must be defined.");
-        url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
+    deactivateFundraiser(fundraiserId: string): Promise<void> {
+        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers/{fundraiserId}/deactivate";
+        if (fundraiserId === undefined || fundraiserId === null)
+            throw new Error("The parameter 'fundraiserId' must be defined.");
+        url_ = url_.replace("{fundraiserId}", encodeURIComponent("" + fundraiserId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeactivateFundraiser(_response);
+        });
+    }
+
+    protected processDeactivateFundraiser(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status === 412) {
+            return response.text().then((_responseText) => {
+            let result412: any = null;
+            result412 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("A server side error occurred.", status, _responseText, _headers, result412);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    getFundraiserGoals(fundraiserId: string): Promise<FundraiserGoalsRes> {
+        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers/{fundraiserId}/goals";
+        if (fundraiserId === undefined || fundraiserId === null)
+            throw new Error("The parameter 'fundraiserId' must be defined.");
+        url_ = url_.replace("{fundraiserId}", encodeURIComponent("" + fundraiserId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -442,11 +540,11 @@ export class CrowdfundingClient {
         return Promise.resolve<FundraiserGoalsRes>(null as any);
     }
 
-    updateFundraiserGoals(contentId: string, req: FundraiserGoalsReq): Promise<void> {
-        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers/{contentId}/goals";
-        if (contentId === undefined || contentId === null)
-            throw new Error("The parameter 'contentId' must be defined.");
-        url_ = url_.replace("{contentId}", encodeURIComponent("" + contentId));
+    updateFundraiserGoals(fundraiserId: string, req: FundraiserGoalsReq): Promise<void> {
+        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers/{fundraiserId}/goals";
+        if (fundraiserId === undefined || fundraiserId === null)
+            throw new Error("The parameter 'fundraiserId' must be defined.");
+        url_ = url_.replace("{fundraiserId}", encodeURIComponent("" + fundraiserId));
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(req);
@@ -480,55 +578,6 @@ export class CrowdfundingClient {
         } else if (status === 500) {
             return response.text().then((_responseText) => {
             return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    publishFundraiser(fundraiserId: string): Promise<void> {
-        let url_ = this.baseUrl + "/umbraco/api/Crowdfunding/fundraisers/{fundraiserId}/publish";
-        if (fundraiserId === undefined || fundraiserId === null)
-            throw new Error("The parameter 'fundraiserId' must be defined.");
-        url_ = url_.replace("{fundraiserId}", encodeURIComponent("" + fundraiserId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "POST",
-            headers: {
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPublishFundraiser(_response);
-        });
-    }
-
-    protected processPublishFundraiser(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            let result400: any = null;
-            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        } else if (status === 500) {
-            return response.text().then((_responseText) => {
-            return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        } else if (status === 412) {
-            return response.text().then((_responseText) => {
-            let result412: any = null;
-            result412 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
-            return throwException("A server side error occurred.", status, _responseText, _headers, result412);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -860,6 +909,12 @@ export interface Crop {
 
 export interface CropperConfigurationRes {
     description?: string | undefined;
+    rectangle?: RectangleCropConfigurationRes | undefined;
+}
+
+export interface RectangleCropConfigurationRes {
+    height?: number;
+    width?: number;
 }
 
 export interface DateTimeValueRes {
@@ -894,6 +949,11 @@ export interface NestedSchemaItemRes {
 export interface NestedSchemaPropertyRes {
     alias?: string | undefined;
     type?: PropertyType | undefined;
+    configuration?: ContentPropertyConfigurationRes | undefined;
+}
+
+export interface ContentPropertyConfigurationRes {
+    description?: string | undefined;
 }
 
 export interface NestedConfigurationRes {
