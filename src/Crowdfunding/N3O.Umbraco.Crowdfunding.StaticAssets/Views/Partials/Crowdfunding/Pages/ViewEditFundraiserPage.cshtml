@@ -32,3 +32,99 @@
 }
 
 @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Crowdfunder.cshtml", Model)
+
+<script type="text/javascript">
+        const n3o_cdf_pageApi = (() => {
+        const activatePage = async pageId => {
+            
+            try {
+                const response = await fetch(`/umbraco/api/Crowdfunding/fundraisers/${pageId}/activate`, {
+                    method: "POST"
+                })
+
+                return response.ok
+                 
+            } catch (e) {
+                console.error(e)
+            }
+
+            return false;
+        }
+
+        const deactivatePage = async pageId => {
+           try {
+                const response = await fetch(`/umbraco/api/Crowdfunding/fundraisers/${pageId}/deactivate`, {
+                    method: "POST"
+                })
+
+                return response.ok;
+
+            } catch (e) {
+                console.error(e)
+            }
+
+            return false;
+        }
+
+        return {
+            activatePage,
+            deactivatePage
+        }
+    })();
+
+
+    (() => {
+        const pageIdElm = document.querySelector('[data-page-id]');
+        if (!pageIdElm || !pageIdElm.dataset.pageId) {
+            return;
+        }
+
+        const pageId = pageIdElm.dataset.pageId;
+
+        const handlePageActivation = () => {
+           const activateButton = document.querySelector('.n3o-btn-banner-activate');
+
+           if (activateButton) {
+            activateButton.addEventListener('click', async () => {
+               activateButton.pointerEvents = "none"
+               const success = await n3o_cdf_pageApi.activatePage(pageId);
+               if (success) {
+                 window.location.reload();
+               }
+               activateButton.pointerEvents = ""
+            })
+           }
+        }
+
+        const handlePageDeactivation = () => {
+            const deactivateButton = document.querySelector('.n3o-btn-banner-deactivate');
+
+            if (deactivateButton) {
+                deactivateButton.addEventListener('click', async () => {
+                    deactivateButton.pointerEvents = "none"
+                    const success = await n3o_cdf_pageApi.deactivatePage(pageId);
+                    if (success) {
+                        window.location.reload();
+                    }
+
+                    deactivateButton.pointerEvents = "none"
+                })
+            }
+         }
+
+         const handleOverDonation = () => {
+            const resolveButton = document.querySelector('.n3o-banner-resolve');
+
+            if (resolveButton) {
+                resolveButton.addEventListener('click', async () => {
+                    window.__openGoalEditor()
+                })
+            }
+         }
+
+         handlePageActivation();
+         handlePageDeactivation();
+         handleOverDonation();
+
+    })();
+</script>
