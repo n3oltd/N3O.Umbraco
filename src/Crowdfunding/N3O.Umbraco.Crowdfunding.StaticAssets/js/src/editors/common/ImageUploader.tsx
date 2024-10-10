@@ -10,8 +10,9 @@ import '@uppy/image-editor/dist/style.min.css';
 import '@uppy/drag-drop/dist/style.min.css';
 
 type ImageUploaderProps = {
-  onFileUpload: (fileUploadResponse: string, crop?: any) => void,
+  onFileUpload: (fileUploadResponse: string, id: string, crop?: any) => void,
   onFileAdded?: (event: UppyFile<Meta, Record<string, never>>) => void,
+  onFileRemove?: (event: UppyFile<Meta, Record<string, never>>) => void,
   onCrop?: (event: CustomEvent<any>) => void;
   setUppyInstance?: (uppy: Uppy) => void;
   maxFiles: number,
@@ -21,7 +22,8 @@ type ImageUploaderProps = {
   elementId: string,
   hieght?: number,
   crop?: any,
-  openEditor?: boolean
+  openEditor?: boolean,
+  dataConfig?: Record<string, any>
 }
 
 const handleCrop = event => {
@@ -48,7 +50,9 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   minFiles = 1,
   openEditor = true,
   elementId = 'uppy',
-  hieght = 550
+  hieght = 550,
+  dataConfig,
+  onFileRemove
 }) => {
 
   const filesCropInfo = React.useRef<Array<{file?: any, crop?: any, orignalCrop?: any}>>([]);
@@ -56,7 +60,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   const [uppy] = React.useState(() => {
     const uppy = new Uppy({
       id: elementId,
-    
+      
       restrictions: {
         minNumberOfFiles: minFiles,
         maxNumberOfFiles: maxFiles,
@@ -67,7 +71,26 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
         const filesArray = Object.entries(files);
 
           const validFiles = filesArray.filter(([, file]) => {
-            if ((file as any).aspectRatioApplied) return true;
+
+            if ((file as any).aspectRatioApplied) {
+              const _file = filesCropInfo.current.find(f => f.file.id === file.id);
+      
+              const width = _file?.crop.topRight.x - _file?.crop.bottomLeft.x;
+              const height = _file?.crop.topRight.y - _file?.crop.bottomLeft.y;
+                        
+              if (
+                width < dataConfig?.width
+                || height < dataConfig?.height
+                || width > dataConfig?.width
+                || height > dataConfig?.height
+              ) {
+                uppy.info({ message: window.themeConfig.text.crowdfunding.cropperCropRequired }, "error");
+                return false;
+              }
+
+              return true;
+            }
+            
             uppy.info({ message: window.themeConfig.text.crowdfunding.cropperImageCropRequired }, "error");
             return false;
           });
@@ -92,6 +115,9 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
         responsive: true,
         autoCrop: true,
         movable: false,
+        rotatable: false,
+        cropBoxResizable: true,
+        data: {...dataConfig as any},
         crop: (event: any) => {
           onCrop?.(event)
           const filePosition = filesCropInfo.current.findIndex(f => f.file.name.includes(event.srcElement.alt));
@@ -106,12 +132,18 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
     uppy.on('upload-success', (file: any, response) => {
       const body = response.body as unknown;
       const cropInfo = filesCropInfo.current.find(f => file?.id === f.file.id)
-      onFileUpload(body as string, cropInfo?.crop || file?.crop)
+      onFileUpload(body as string, file?.id, cropInfo?.crop || file?.crop)
     });
 
     uppy.on("file-added", e => {
       onFileAdded?.(e)
-    })
+    });
+
+    uppy.on('file-removed', (file) => {
+      if (onFileRemove) {
+        onFileRemove(file);
+      }
+    });
 
     uppy.on('file-editor:start', (file: any) => {
  
@@ -167,6 +199,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
       uppy={uppy}
       height={hieght} 
       id={elementId}
+      doneButtonHandler={null}
       proudlyDisplayPoweredByUppy={false}/>
   </>
 }

@@ -26,6 +26,7 @@ export const CropperSingle: React.FC<EditorProps> = ({
     files: Array<{
       token: string,
       crop: RectangleCropReq
+      id?: string
     }>
   }>({
     files: [],
@@ -82,7 +83,7 @@ export const CropperSingle: React.FC<EditorProps> = ({
           data: blob,
           crop: (cropperResponse.image.crops && cropperResponse.image.crops[0]) || {}
       }
-
+      
       state.uppy?.addFile(file)  
     } catch (error) {
       toast.error(window.themeConfig.text.crowdfunding.cropperImageLoadError);
@@ -111,7 +112,7 @@ export const CropperSingle: React.FC<EditorProps> = ({
       })))
 
     } catch(e) {
-      toast.error(window.themeConfig.text.crowdfunding.tryAgainError)
+      console.error(e)
     }
   }
 
@@ -132,12 +133,19 @@ export const CropperSingle: React.FC<EditorProps> = ({
         aspectRatio={4/1}
         maxFiles={1}
         setUppyInstance={setUppyInstance}
-        onFileUpload={(token, crop)=> {
-          state.files.push({token, crop})
+        onFileUpload={(token, id, crop)=> {
+          state.files.push({token, id, crop})
+        }}
+        onFileRemove={file => {
+          state.files = state.files.filter(f => f.id !== file?.id)
         }}
         elementId="image-upload"
         uploadUrl={`${HostURL}${ImageUploadStoragePath}`}
         hieght={300}
+        dataConfig={{
+          width: (dataRepsonse?.cropper?.configuration as any)?.rectangle?.width,
+          height: (dataRepsonse?.cropper?.configuration as any)?.rectangle?.height
+        }}
       />
       </>}
     </Modal>
