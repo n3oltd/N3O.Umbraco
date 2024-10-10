@@ -337,7 +337,10 @@ p.sm {
   right: 530px;
 }
 
-.banner {
+/*
+    Custom CSS form Banner
+*/
+.n3o-banner {
   background-color: #f6b26b;
   color: #333;
   padding: 15px 20px;
@@ -350,34 +353,34 @@ p.sm {
   margin: 20px 0;
 }
 
-.banner-text {
+.n3o-banner-text {
   font-weight: bold;
   font-size: 16px;
 }
 
-.banner-subtext {
+.n3o-banner-subtext {
   font-size: 14px;
   margin-left: 10px;
 }
 
-.btn-banner-resolve,
-.btn-banner-deactivate {
+.n3o-btn-banner-resolve,
+.n3o-btn-banner-deactivate {
   background-color: #333;
   color: #fff;
   padding: 10px 15px;
-  border-radius: 5px;
+  border-radius: 20px;
   text-decoration: none;
   font-size: 14px;
   margin-left: 10px;
 }
 
-.btn-banner-deactivate {
+.n3o-btn-banner-deactivate {
   background-color: #ff3b3b;
 }
 
-.btn-banner-activate {
+.n3o-btn-banner-activate {
   padding: 10px 15px;
-  border-radius: 5px;
+  border-radius: 20px;
   text-decoration: none;
   font-size: 14px;
   margin-left: 10px;
@@ -386,28 +389,28 @@ p.sm {
 }
 
 
-.btn-banner-resolve:hover,
-.btn-banner-deactivate:hover {
+.n3o-btn-banner-resolve:hover,
+.n3o-btn-banner-deactivate:hover {
   opacity: 0.8;
 }
 
-.btn-banner-resolve:hover,
-.btn-banner-activate:hover {
-  opacity: 0.8;
+.n3o-btn-banner-resolve:hover,
+.n3o-btn-banner-activate:hover {
+    opacity: 0.8;
 }
 
-.banner-left-content {
+.n3o-banner-left-content {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.banner-left-content p {
+.n3o-banner-left-content p {
   margin-right: 10px;
   font-size: 16px;
 }
 
-.banner-view-page {
+.n3o-banner-view-page {
   background-color: transparent;
   border: 1px solid black;
   padding: 5px 15px;
@@ -418,12 +421,12 @@ p.sm {
   font-size: 14px;
 }
 
-.banner-view-page::after {
+.n3o-banner-view-page::after {
   content: '\1F517';
   margin-left: 5px;
 }
 
-.banner-right-content {
+.n3o-banner-right-content {
   display: flex;
   align-items: center;
   background-color: #ffffff;
@@ -432,12 +435,12 @@ p.sm {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.banner-right-text {
+.n3o-banner-right-text {
   margin-right: 10px;
   font-size: 12px;
 }
 
-.banner-resolve {
+.n3o-banner-resolve {
   background-color: black;
   color: white;
   border: none;
@@ -447,23 +450,27 @@ p.sm {
 }
 
 @media (max-width: 768px) {
-  .banner {
+  .n3o-banner {
     flex-direction: column;
   }
 
-  .banner-left-content {
+  .n3o-banner-left-content {
     margin-bottom: 10px;
   }
 
-  .banner-right-content {
+  .n3o-banner-right-content {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .banner-resolve {
+  .n3o-banner-resolve {
     margin-top: 10px;
   }
 }
+
+/*
+    Custom CSS form Banner End
+*/
 
 
 .button {

@@ -6,33 +6,33 @@
     PartialText.SetPartialName("ViewEditFundraiserPageBanner");
 }
 
-<div class="banner">
+<div class="n3o-banner">
     @if (Model.Content.Status == CrowdfunderStatuses.Ended) {
         @PartialText.Get("This fundraiser has ended and can no longer be modified.")
     } else {
-        <div class="banner-left-content">
+        <div class="n3o-banner-left-content">
             <p>@PartialText.Get("You are in edit mode")</p>
             
-            <button class="banner-view-page">@PartialText.Get("View Page")</button>
+            <button class="n3o-banner-view-page">@PartialText.Get("View Page")</button>
         </div>
 
         @if (Model.HasUnallocatedFunds) {
-            <div class="banner-right-content">
-                <div class="banner-right-text">
+            <div class="n3o-banner-right-content">
+                <div class="n3o-banner-right-text">
                     <p>@PartialText.Get("You've exceeded your fundraising goal!")</p>
                     
                     <p>@PartialText.Get("Please tell us how you'd like the extra money you've raised spent.")</p>
                 </div>
-                <button class="banner-resolve">@PartialText.Get("Resolve")</button>
+                <button class="n3o-banner-resolve">@PartialText.Get("Resolve")</button>
             </div>
         }
 
         @if (Model.Content.Status.CanToggle && Model.Content.Status.ToggleAction == CrowdfunderActivationActions.Activate) {
-            <a href="#" class="btn-banner-activate">@PartialText.Get("Activate")</a>
+            <a href="#" class="n3o-btn-banner-activate">@PartialText.Get("Activate")</a>
         } else if (Model.Content.Status.CanToggle && Model.Content.Status.ToggleAction == CrowdfunderActivationActions.Deactivate) {
             <a href="#"
                @if (!Model.HasPendingGoalsWithPricing) { <text>id="deactivate-fundraiser"</text> } else { <text>data-mod="#banner-modal"</text> }
-               class="btn-banner-deactivate">@PartialText.Get("Deactivate")</a>
+               class="n3o-btn-banner-deactivate">@PartialText.Get("Deactivate")</a>
         }
     }
 </div>
