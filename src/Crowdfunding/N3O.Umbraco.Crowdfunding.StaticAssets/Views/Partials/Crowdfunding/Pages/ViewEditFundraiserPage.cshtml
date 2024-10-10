@@ -55,12 +55,11 @@
            try {
                 const response = await fetch(`/umbraco/api/Crowdfunding/fundraisers/${pageId}/deactivate`, {
                     method: "POST"
-                })
+                });
 
                 return response.ok;
-
             } catch (e) {
-                console.error(e)
+                console.error(e);
             }
 
             return false;
@@ -69,12 +68,13 @@
         return {
             activatePage,
             deactivatePage
-        }
+        };
     })();
 
 
     (() => {
         const pageIdElm = document.querySelector('[data-page-id]');
+        
         if (!pageIdElm || !pageIdElm.dataset.pageId) {
             return;
         }
@@ -85,29 +85,34 @@
            const activateButton = document.querySelector('.n3o-btn-banner-activate');
 
            if (activateButton) {
-            activateButton.addEventListener('click', async () => {
-               activateButton.pointerEvents = "none"
-               const success = await n3o_cdf_pageApi.activatePage(pageId);
-               if (success) {
-                 window.location.reload();
-               }
-               activateButton.pointerEvents = ""
-            })
+               activateButton.addEventListener('click', async () => {
+                   activateButton.pointerEvents = "none"
+               
+                   const success = await n3o_cdf_pageApi.activatePage(pageId);
+               
+                   if (success) {
+                       window.location.reload();
+                   }
+               
+                   activateButton.pointerEvents = "";
+               });
            }
-        }
+        };
 
         const handlePageDeactivation = () => {
             const deactivateButton = document.querySelector('.n3o-btn-banner-deactivate');
 
             if (deactivateButton) {
                 deactivateButton.addEventListener('click', async () => {
-                    deactivateButton.pointerEvents = "none"
+                    deactivateButton.pointerEvents = "none";
+                    
                     const success = await n3o_cdf_pageApi.deactivatePage(pageId);
+                    
                     if (success) {
                         window.location.reload();
                     }
 
-                    deactivateButton.pointerEvents = "none"
+                    deactivateButton.pointerEvents = "none";
                 })
             }
          }
@@ -117,7 +122,7 @@
 
             if (resolveButton) {
                 resolveButton.addEventListener('click', async () => {
-                    window.__openGoalEditor()
+                    window.__openGoalEditor();
                 })
             }
          }

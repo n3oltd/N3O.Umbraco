@@ -237,13 +237,13 @@ export const Gallery: React.FC<EditorProps> = ({
         {(!loading && hasVideoUrlContent) && <div className="edit__content">
             <h3>{window.themeConfig.text.crowdfunding.campaignVideo}</h3>
             <div className="input__outer">
-              <p>{window.themeConfig.text.crowdfunding.campaignVideoURL}</p>
+              <p>{window.themeConfig.text.crowdfunding.CampaignVideoUrl}</p>
               <div className="input">
                 <input
                   type="text"
                   value={state.videoUrl}
                   onChange={e => state.videoUrl = e.target.value}
-                  placeholder={window.themeConfig.text.crowdfunding.campaignVideoURLPlaceholder}
+                  placeholder={window.themeConfig.text.crowdfunding.CampaignVideoUrlPlaceholder}
                 />
               </div>
               {state.videoUrl && <iframe referrerPolicy="strict-origin-when-cross-origin" src={state.videoUrl} style={{
