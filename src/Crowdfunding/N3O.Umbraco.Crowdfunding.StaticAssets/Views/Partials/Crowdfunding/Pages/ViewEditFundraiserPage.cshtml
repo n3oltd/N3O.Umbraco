@@ -127,9 +127,22 @@
             }
          }
 
-         handlePageActivation();
-         handlePageDeactivation();
-         handleOverDonation();
+        const handlePreviewPage = () => {
+            const viewPageButton = document.querySelector('.n3o-banner-view-page');
+            
+            if (viewPageButton) {
+                viewPageButton.addEventListener('click', async () => {
+                    var url = new URL(window.location.href)
+                    url.searchParams.append("preview", true);
+                    window.open(url.href, "_blank")
+                })
+            }            
+        }
+
+        handlePageActivation();
+        handlePageDeactivation();
+        handleOverDonation();
+        handlePreviewPage();
 
     })();
 </script>
