@@ -1,5 +1,4 @@
 ﻿using AsyncKeyedLock;
-using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding.Events;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Mediator;
@@ -11,11 +10,8 @@ namespace N3O.Umbraco.Crowdfunding.Handlers;
 public abstract class PledgeEventHandler<TEvent> : IRequestHandler<TEvent, WebhookPledge, None> 
     where TEvent : PledgeEvent {
     private readonly AsyncKeyedLocker<string> _asyncKeyedLocker;
-    private readonly IContentLocator _contentLocator;
     
-    protected PledgeEventHandler(AsyncKeyedLocker<string> asyncKeyedLocker,
-                                 IContentLocator contentLocator) {
-        _contentLocator = contentLocator;
+    protected PledgeEventHandler(AsyncKeyedLocker<string> asyncKeyedLocker) {
         _asyncKeyedLocker = asyncKeyedLocker;
     }
 

@@ -1,5 +1,4 @@
 ﻿using AsyncKeyedLock;
-using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding.Handlers;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
@@ -16,10 +15,9 @@ public class PledgeUpdatedHandler : PledgeEventHandler<PledgeUpdatedEvent> {
     private readonly ILookups _lookups;
 
     public PledgeUpdatedHandler(AsyncKeyedLocker<string> asyncKeyedLocker,
-                                IContentLocator contentLocator,
                                 IContributionRepository contributionRepository,
                                 ILookups lookups) 
-        : base(asyncKeyedLocker, contentLocator) {
+        : base(asyncKeyedLocker) {
         _contributionRepository = contributionRepository;
         _lookups = lookups;
     }
