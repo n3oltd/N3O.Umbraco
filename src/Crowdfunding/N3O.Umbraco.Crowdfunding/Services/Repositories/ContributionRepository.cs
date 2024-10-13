@@ -105,10 +105,10 @@ public class ContributionRepository : IContributionRepository {
                                               .UsingRateOn(date)
                                               .FromCurrency(allocation.Value.Currency)
                                               .ConvertAsync(allocation.Value.Amount));
-        var crowdfunderForex = (await _forexConverter.QuoteToBase()
+        var crowdfunderForex = (await _forexConverter.BaseToQuote()
                                                      .UsingRateOn(date)
-                                                     .FromCurrency(crowdfunder.Currency)
-                                                     .ConvertAsync(allocation.Value.Amount));
+                                                     .ToCurrency(crowdfunder.Currency)
+                                                     .ConvertAsync(baseForex.Base.Amount));
         
         var contribution = new Contribution();
         contribution.Timestamp = timestamp.ToDateTimeUtc();
