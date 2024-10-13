@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Crowdfunding.Models;
+using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using NodaTime;
@@ -18,8 +19,23 @@ public interface IContributionRepository {
                                     bool taxRelief,
                                     GivingType givingType,
                                     Allocation allocation);
+    
+    Task AddOfflineContributionAsync(string transactionReference,
+                                     LocalDate localDate,
+                                     ICrowdfunderInfo crowdfunderInfo,
+                                     string email,
+                                     string name,
+                                     bool anonymous,
+                                     bool taxRelief,
+                                     string fundDimension1,
+                                     string fundDimension2,
+                                     string fundDimension3,
+                                     string fundDimension4,
+                                     Money value,
+                                     GivingType givingType);
 
-    Task CommitAsync();
+    Task CommitOnlineDonationsAsync();
+    Task CommitOfflineDonationsAsync();
     Task<IReadOnlyList<Contribution>> FindByCampaignAsync(params Guid[] campaignIds);
     Task<IReadOnlyList<Contribution>> FindByFundraiserAsync(params Guid[] fundraiserIds);
 }

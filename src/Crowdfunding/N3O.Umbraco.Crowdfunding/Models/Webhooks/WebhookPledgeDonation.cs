@@ -1,5 +1,4 @@
 ﻿using N3O.Umbraco.Webhooks.Models;
-using Newtonsoft.Json;
 using NodaTime;
 using System;
 using System.Collections.Generic;
