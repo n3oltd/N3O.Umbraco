@@ -13,7 +13,7 @@ public class CrowdfundingComposer : Composer {
         
         builder.Components().Append<ContributionMigrationsComponent>();
         
-        builder.Services.AddSingleton<IContributionRepository, ContributionRepository>();
+        builder.Services.AddTransient<IContributionRepository, ContributionRepository>();
         builder.Services.AddScoped<ICrowdfundingRouter, CrowdfundingRouter>();
         builder.Services.AddTransient<ICrowdfundingUrlBuilder, CrowdfundingUrlBuilder>();
         builder.Services.AddScoped<ICrowdfundingViewModelFactory, CrowdfundingViewModelFactory>();

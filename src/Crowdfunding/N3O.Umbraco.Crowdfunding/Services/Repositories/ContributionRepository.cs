@@ -6,6 +6,7 @@ using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Crowdfunding.UIBuilder;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
@@ -16,13 +17,12 @@ using NodaTime;
 using NPoco;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Infrastructure.Persistence;
 
 namespace N3O.Umbraco.Crowdfunding;
 
-public class ContributionRepository : IContributionRepository {
+public partial class ContributionRepository : IContributionRepository {
     private readonly List<Contribution> _toCommit = new();
     
     private readonly IForexConverter _forexConverter;
@@ -49,37 +49,6 @@ public class ContributionRepository : IContributionRepository {
         _taxReliefSchemeAccessor = taxReliefSchemeAccessor;
     }
 
-    public async Task AddOnlineContributionAsync(string checkoutReference,
-                                                 Instant timestamp,
-                                                 ICrowdfunderData crowdfunderData,
-                                                 string email,
-                                                 string name,
-                                                 bool taxRelief,
-                                                 GivingType givingType,
-                                                 Allocation allocation) {
-        var contribution = await GetContributionAsync(ContributionType.Online,
-                                                      checkoutReference,
-                                                      timestamp,
-                                                      crowdfunderData,
-                                                      email,
-                                                      name,
-                                                      taxRelief,
-                                                      givingType,
-                                                      allocation);
-        
-        _toCommit.Add(contribution);
-    }
-
-    public async Task CommitAsync() {
-        if (_toCommit.Any()) {
-            using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-                await db.InsertBatchAsync(_toCommit);
-            }
-        }
-        
-        _toCommit.Clear();
-    }
-
     public async Task<IReadOnlyList<Contribution>> FindByCampaignAsync(params Guid[] campaignIds) {
         return await FindContributionsAsync(Sql.Builder.Where($"{nameof(Contribution.CampaignId)} IN (@0)", campaignIds));
     }
@@ -89,26 +58,34 @@ public class ContributionRepository : IContributionRepository {
     }
 
     private async Task<Contribution> GetContributionAsync(ContributionType type,
+                                                          CrowdfunderType crowdfunderType,
+                                                          Guid crowdfunderId,
                                                           string transactionReference,
                                                           Instant timestamp,
-                                                          ICrowdfunderData crowdfunderData,
                                                           string email,
                                                           string name,
+                                                          bool anonymous,
+                                                          string comment,
                                                           bool taxRelief,
+                                                          string fundDimension1,
+                                                          string fundDimension2,
+                                                          string fundDimension3,
+                                                          string fundDimension4,
                                                           GivingType givingType,
+                                                          Money value,
                                                           Allocation allocation) {
-        var crowdfunder = GetCrowdfunderContent(crowdfunderData);
+        var crowdfunder = GetCrowdfunderContent(crowdfunderType, crowdfunderId);
 
         var taxReliefScheme = _taxReliefSchemeAccessor.GetScheme();
         var date = timestamp.InZone(_localClock.GetZone()).Date;
         var baseForex = (await _forexConverter.QuoteToBase()
                                               .UsingRateOn(date)
-                                              .FromCurrency(allocation.Value.Currency)
-                                              .ConvertAsync(allocation.Value.Amount));
-        var crowdfunderForex = (await _forexConverter.QuoteToBase()
+                                              .FromCurrency(value.Currency)
+                                              .ConvertAsync(value.Amount));
+        var crowdfunderForex = (await _forexConverter.BaseToQuote()
                                                      .UsingRateOn(date)
-                                                     .FromCurrency(crowdfunder.Currency)
-                                                     .ConvertAsync(allocation.Value.Amount));
+                                                     .ToCurrency(crowdfunder.Currency)
+                                                     .ConvertAsync(baseForex.Base.Amount));
         
         var contribution = new Contribution();
         contribution.Timestamp = timestamp.ToDateTimeUtc();
@@ -121,36 +98,36 @@ public class ContributionRepository : IContributionRepository {
         contribution.FundraiserUrl = crowdfunder.FundraiserId.HasValue() ? crowdfunder.Url(_urlBuilder) : null;
         contribution.TransactionReference = transactionReference;
         contribution.GivingTypeId = givingType.Id;
-        contribution.CurrencyCode = allocation.Value.Currency.Code;
-        contribution.QuoteAmount = allocation.Value.Amount;
+        contribution.CurrencyCode = value.Currency.Code;
+        contribution.QuoteAmount = value.Amount;
         contribution.BaseAmount = baseForex.Base.Amount;
         contribution.CrowdfunderAmount = crowdfunderForex.Base.Amount;
         contribution.TaxReliefQuoteAmount = taxRelief ? taxReliefScheme.GetAllowanceValue(date, allocation.Value).Amount : 0m;
         contribution.TaxReliefBaseAmount = taxRelief ? taxReliefScheme.GetAllowanceValue(date, baseForex.Base).Amount : 0m;
         contribution.TaxReliefCrowdfunderAmount = taxRelief ? taxReliefScheme.GetAllowanceValue(date, crowdfunderForex.Base).Amount : 0m;
-        contribution.Anonymous = crowdfunderData.Anonymous;
+        contribution.Anonymous = anonymous;
         contribution.Name = name;
         contribution.Email = email;
-        contribution.Comment = crowdfunderData.Comment;
+        contribution.Comment = comment;
         contribution.Status = ContributionStatuses.Visible;
         contribution.ContributionType = (int) type;
         contribution.AllocationSummary = allocation.Summary;
-        contribution.FundDimension1 = allocation.FundDimensions.Dimension1.Name;
-        contribution.FundDimension2 = allocation.FundDimensions.Dimension2.Name;
-        contribution.FundDimension3 = allocation.FundDimensions.Dimension3.Name;
-        contribution.FundDimension4 = allocation.FundDimensions.Dimension4.Name;
-        contribution.AllocationJson = _jsonProvider.SerializeObject(allocation);
+        contribution.FundDimension1 = fundDimension1;
+        contribution.FundDimension2 = fundDimension2;
+        contribution.FundDimension3 = fundDimension3;
+        contribution.FundDimension4 = fundDimension4;
+        contribution.AllocationJson = allocation.IfNotNull(x => _jsonProvider.SerializeObject(x));
 
         return contribution;
     }
 
-    private ICrowdfunderContent GetCrowdfunderContent(ICrowdfunderData crowdfunderData) {
-        if (crowdfunderData.Type == CrowdfunderTypes.Campaign) {
-            return _contentLocator.ById<CampaignContent>(crowdfunderData.Id);
-        } else if (crowdfunderData.Type == CrowdfunderTypes.Fundraiser) {
-            return _contentLocator.ById<FundraiserContent>(crowdfunderData.Id);
+    private ICrowdfunderContent GetCrowdfunderContent(CrowdfunderType type, Guid id) {
+        if (type == CrowdfunderTypes.Campaign) {
+            return _contentLocator.ById<CampaignContent>(id);
+        } else if (type == CrowdfunderTypes.Fundraiser) {
+            return _contentLocator.ById<FundraiserContent>(id);
         } else {
-            throw UnrecognisedValueException.For(crowdfunderData.Type);
+            throw UnrecognisedValueException.For(type);
         }
     }
 

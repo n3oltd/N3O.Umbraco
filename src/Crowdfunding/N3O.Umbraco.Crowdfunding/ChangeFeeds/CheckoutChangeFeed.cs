@@ -78,6 +78,6 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
                                                                  givingType,
                                                                  allocation);
 
-        await _contributionRepository.CommitAsync();
+        await _contributionRepository.CommitOnlineDonationsAsync();
     }
 }
