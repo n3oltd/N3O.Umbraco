@@ -4,7 +4,7 @@ using N3O.Umbraco.Uploader.Models;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
-[UmbracoContent(CrowdfundingConstants.OurProfileSettings.Alias)]
+[UmbracoContent(CrowdfundingConstants.Settings.OurProfile.Alias)]
 public class OurProfileSettingsContent : UmbracoContent<OurProfileSettingsContent> {
     public FileUpload ProfileImage => GetValue(x => x.ProfileImage);
     public string DisplayName => GetValue(x => x.DisplayName);

@@ -48,5 +48,13 @@ namespace DemoSite.Content
 		}
 
 		// properties
+
+		///<summary>
+		/// CSS Variables
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("cssVariables")]
+		public virtual string CssVariables => this.Value<string>(_publishedValueFallback, "cssVariables");
 	}
 }

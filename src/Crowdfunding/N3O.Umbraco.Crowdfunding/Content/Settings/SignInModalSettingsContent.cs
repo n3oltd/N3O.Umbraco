@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
-[UmbracoContent(CrowdfundingConstants.SignInModalSettings.Alias)]
+[UmbracoContent(CrowdfundingConstants.Settings.SignInModal.Alias)]
 public class SignInModalSettingsContent : UmbracoContent<SignInModalSettingsContent> {
     public string Title => GetValue(x => x.Title);
     public string LogoText => GetValue(x => x.LogoText);

@@ -173,7 +173,7 @@ public partial class CreateOrUpdateFundraiserHandlers {
                 customFieldBuilder.Boolean(GivingConstants.Aliases.FeedbackCustomField.Properties.Bool).Set(feedbackCustomField.Bool);
             } else if (feedbackCustomField.Type == FeedbackCustomFieldTypes.Date) {
                 customFieldBuilder.DateTime(GivingConstants.Aliases.FeedbackCustomField.Properties.Date).SetDate(feedbackCustomField.Date);
-            }  else if (feedbackCustomField.Type == FeedbackCustomFieldTypes.Text) {
+            } else if (feedbackCustomField.Type == FeedbackCustomFieldTypes.Text) {
                 customFieldBuilder.TextBox(GivingConstants.Aliases.FeedbackCustomField.Properties.Text).Set(feedbackCustomField.Text);
             } else {
                 throw UnrecognisedValueException.For(feedbackCustomField.Type);

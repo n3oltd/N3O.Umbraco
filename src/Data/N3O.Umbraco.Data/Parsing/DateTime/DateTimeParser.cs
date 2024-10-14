@@ -64,7 +64,7 @@ public class DateTimeParser : DataTypeParser<LocalDateTime?>, IDateTimeParser {
                     
                         break;
                     }
-                }   
+                }
             }
             
             value ??= ParseUnixTimestamp(text);

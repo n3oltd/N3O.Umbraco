@@ -110,10 +110,6 @@ public static class CrowdfundingConstants {
         public const string Block = nameof(Crowdfunding);
     }
     
-    public static class OurProfileSettings {
-        public const string Alias = "crowdfundingOurProfileSettings";
-    }
-    
     public static class Root {
         public const string Alias = "crowdfundingRoot";
     }
@@ -134,9 +130,19 @@ public static class CrowdfundingConstants {
             public const string DeniedCharacters = @"[^a-zA-Z0-9\-]";
         }
     }
+
+    public static class Settings {
+        public static class OurProfile {
+            public const string Alias = "crowdfundingOurProfileSettings";
+        }
     
-    public static class SignInModalSettings {
-        public const string Alias = "crowdfundingSignInModalSettings";
+        public static class SignInModal {
+            public const string Alias = "crowdfundingSignInModalSettings";
+        }
+        
+        public static class TemplateSettings {
+            public const string Alias = "crowdfundingTemplateSettings";
+        }
     }
 
     public static class Tables {
