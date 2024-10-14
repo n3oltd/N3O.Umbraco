@@ -6,24 +6,24 @@
     PartialText.SetPartialName("CrowdfundingCrowdfunderDonationForm");
 }
 
-<div class="cta__wrapper" data-crowdfunder-id="@Model.Content.Key" data-crowdfunder-type="@Model.CrowdfunderType.Id">
-    <div class="cta" id="showMoreWrapper">
-        <div class="cta__title start">
-            <h2>@PartialText.Get("Contribute to this page")</h2>
+<div class="n3o-cta__wrapper" data-crowdfunder-id="@Model.Content.Key" data-crowdfunder-type="@Model.CrowdfunderType.Id">
+    <div class="n3o-cta" id="showMoreWrapper">
+        <div class="n3o-cta__title start">
+            <h2 class="n3o-h2">@PartialText.Get("Contribute to this page")</h2>
 
             @if (Model.Goals.Count > 1) {
-                <p>@PartialText.Get("Select which project(s) you would like to support.")</p>
+                <p class="n3o-p">@PartialText.Get("Select which project(s) you would like to support.")</p>
             }
         </div>
         
         @foreach (var goal in Model.Goals) {
             <input type="hidden" name="goal" value="@goal.Id"/>
             
-            <div class="ctaFund showMore @if(goal.PriceHandles.Count > 2){<text>big</text>}">
-                <h4 id="goal-name-@goal.Id">@goal.Name</h4>
+            <div class="n3o-ctaFund showMore @if(goal.PriceHandles.Count > 2){<text>big</text>}">
+                <h4 class="n3o-h4" id="goal-name-@goal.Id">@goal.Name</h4>
 
                 @foreach (var priceHandle in goal.PriceHandles) {
-                    <div class="ctaFund__item">
+                    <div class="n3o-ctaFund__item">
                         <input type="checkbox" name="goal-price-@goal.Id"
                                @foreach (var currencyAmountValue in priceHandle.CurrencyAmountValues) {
                                    @Html.Raw($"data-goal-amount-{currencyAmountValue.Key.Code.ToLower()}=\"{currencyAmountValue.Value.Amount}\" ")
@@ -31,16 +31,16 @@
                                
                                data-goal-amount="@priceHandle.Amount.Amount" />
         
-                        <div class="ctaFund__item-inner">
+                        <div class="n3o-ctaFund__item-inner">
                             @{
                                 var priceHandleAmount = priceHandle.CurrencyAmountValues[Model.SiteCurrency];
                             }
                             
-                            <h3>@Model.Formatter.Number.FormatMoney(priceHandleAmount)</h3>
+                            <h3 class="n3o-h3">@Model.Formatter.Number.FormatMoney(priceHandleAmount)</h3>
                             
                             <hr/>
 
-                            <p class="subtle">@priceHandle.Description</p>
+                            <p class="n3o-p n3o-subtle">@priceHandle.Description</p>
 
                             <svg>
                                 <use xlink:href="#checkIcon"></use>
@@ -49,18 +49,18 @@
                     </div>
                 }
                 
-                <div class="ctaAmount">
+                <div class="n3o-ctaAmount">
                     <input type="checkbox" name="custom-goal-@goal.Id"/>
                     
-                    <div class="ctaAmount__inner">
-                        <div class="subtle">@PartialText.Get("Custom Amount")</div>
+                    <div class="n3o-ctaAmount__inner">
+                        <div class="n3o-subtle">@PartialText.Get("Custom Amount")</div>
                         
-                        <div class="cta__input">
-                            <label class="large n3o-currency-label" for="goal-custom-amount-symbol-@goal.Id"> @Model.SiteCurrency.Symbol </label>
+                        <div class="n3o-cta__input">
+                            <label class="n3o-large n3o-currency-label" for="goal-custom-amount-symbol-@goal.Id"> @Model.SiteCurrency.Symbol </label>
                             
                             <input id="goal-custom-amount-@goal.Id" disabled type="number" />
                             
-                            <div class="cta__input-select">
+                            <div class="n3o-cta__input-select">
                                 @*TODO currency*@
                                 <select class="n3o-currency-picker" name="currency" id="currency-@goal.Id">
                                     @foreach (var currency in Model.Currencies) {
@@ -75,12 +75,12 @@
                     </div>
                 </div>
                 @if (goal.PriceHandles.Count > 2) {
-                    <div class="large showMoreBtn">@PartialText.Get("More Options")</div>
+                    <div class="n3o-large showMoreBtn">@PartialText.Get("More Options")</div>
                 }
     </div>
         }
-        <div class="cta__foot">
-            <button type="button" id="submit-donation" class="button primary submit3" disabled>
+        <div class="n3o-cta__foot">
+            <button type="button" id="submit-donation" class="n3o-button primary submit3" disabled>
                 @PartialText.Get("Donate")
                 <span></span>
             </button>

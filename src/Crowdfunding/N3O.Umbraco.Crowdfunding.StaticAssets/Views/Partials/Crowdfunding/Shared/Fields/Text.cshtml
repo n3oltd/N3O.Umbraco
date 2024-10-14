@@ -1,11 +1,11 @@
 @model N3O.Umbraco.Accounts.Models.FieldSettings
-<div class="input__outer">
-    <p>@Html.Raw(Model.Required ? $"{Model.Label} <span style='color: red;'> *</span>" : $"{Model.Label}")</p>
-    <div class="input">
+<div class="n3o-input__outer">
+    <p class="n3o-p">@Html.Raw(Model.Required ? $"{Model.Label} <span style='color: red;'> *</span>" : $"{Model.Label}")</p>
+    <div class="n3o-input">
         <input type="@Model.Type"
                name="@Model.Path"
                placeholder="@Model.Label"
                value=""/>
-        <span id ="@Model.Path" class="input-validation-error"></span>
+        <span id ="@Model.Path" class="n3o-input-validation-error"></span>
     </div>
 </div>

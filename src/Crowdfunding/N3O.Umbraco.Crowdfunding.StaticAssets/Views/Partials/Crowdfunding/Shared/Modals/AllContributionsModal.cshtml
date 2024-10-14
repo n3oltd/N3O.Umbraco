@@ -6,35 +6,35 @@
     PartialText.SetPartialName("CrowdfundingCrowdfunderAllContributionsModal");
 }
 
-<div class="modalsItem modall" id="all-donations">
-    <div class="donation">
-        <div class="donation__close modallClose" data-modal="all-donations"></div>
+<div class="n3o-modalsItem modall" id="all-donations">
+    <div class="n3o-donation">
+        <div class="n3o-donation__close modallClose" data-modal="all-donations"></div>
 
-        <div class="donation__title">
-            <h2>
+        <div class="n3o-donation__title">
+            <h2 class="n3o-h2">
                 @PartialText.Get("Donations")
 
                 <span>@Model.Contributions.Count()</span>
             </h2>
         </div>
 
-        <div class="donation__list mod active">
+        <div class="n3o-donation__list mod active">
             @foreach (var contribution in Model.Contributions) {
-                <div class="donationItem">
-                    <div class="donationItem__avatar">
+                <div class="n3o-donationItem">
+                    <div class="n3o-donationItem__avatar">
                         <img src="@contribution.AvatarLink" alt=""/>
                     </div>
                     
-                    <div class="donationItem__row">
-                        <div class="donationItem__name">
-                            <div class="large">@contribution.Name</div>
-                            <div class="subtle">@contribution.Comment</div>
+                    <div class="n3o-donationItem__row">
+                        <div class="n3o-donationItem__name">
+                            <div class="n3o-large">@contribution.Name</div>
+                            <div class="n3o-subtle">@contribution.Comment</div>
                         </div>
                         
-                        <div class="donationItem__info">
-                            <b class="large"> @Model.Formatter.Number.FormatMoney(contribution.Value)</b>
+                        <div class="n3o-donationItem__info">
+                            <b class="n3o-large"> @Model.Formatter.Number.FormatMoney(contribution.Value)</b>
                             
-                            <div class="subtle">@contribution.DonatedAt</div>
+                            <div class="n3o-subtle">@contribution.DonatedAt</div>
                         </div>
                     </div>
                 </div>

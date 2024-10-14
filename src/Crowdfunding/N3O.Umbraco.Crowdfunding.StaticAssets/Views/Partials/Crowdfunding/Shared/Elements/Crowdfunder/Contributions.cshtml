@@ -6,56 +6,56 @@
     PartialText.SetPartialName("CrowdfundingCrowdfunderContributions");
 }
 
-<div class="donation__wrapper">
-    <div class="donation">
-        <div class="donation__head">
-            <div class="donation__head-tab tabBtn active" data-tab="#tab-1">
-                <h4>@PartialText.Get("Latest Donations")</h4>
+<div class="n3o-donation__wrapper">
+    <div class="n3o-donation">
+        <div class="n3o-donation__head">
+            <div class="n3o-donation__head-tab tabBtn active" data-tab="#tab-1">
+                <h4 class="n3o-h4">@PartialText.Get("Latest Donations")</h4>
             </div>
             
             @if (Model.CrowdfunderType == CrowdfunderTypes.Campaign) {
-                <div class="donation__head-tab tabBtn" data-tab="#tab-2">
-                    <h4>@PartialText.Get("Fundraisers")<span> @(((ViewCampaignViewModel) Model).Fundraisers.Count) </span></h4>
+                <div class="n3o-donation__head-tab tabBtn" data-tab="#tab-2">
+                    <h4 class="n3o-h4">@PartialText.Get("Fundraisers")<span> @(((ViewCampaignViewModel) Model).Fundraisers.Count) </span></h4>
                 </div>
             }
         </div>
 
-        <div class="donation__list tabEvent active" id="tab-1">
+        <div class="n3o-donation__list tabEvent active" id="tab-1">
             @if (Model.Contributions.None()) {
-                <div class="donation__empty">
-                    <p>@PartialText.Get("Be the first to donate!")</p>
+                <div class="n3o-donation__empty">
+                    <p class="n3o-p">@PartialText.Get("Be the first to donate!")</p>
                 </div>
             } else {
                 @foreach (var contribution in Model.Contributions.Take(10)) {
-                    <div class="donationItem">
-                        <div class="donationItem__avatar">
+                    <div class="n3o-donationItem">
+                        <div class="n3o-donationItem__avatar">
                             <img src="@contribution.AvatarLink" alt=""/>
                         </div>
                         
-                        <div class="donationItem__row">
-                            <div class="donationItem__name">
-                                <div class="large">@contribution.Name</div>
-                                <div class="subtle">@contribution.Comment</div>
+                        <div class="n3o-donationItem__row">
+                            <div class="n3o-donationItem__name">
+                                <div class="n3o-large">@contribution.Name</div>
+                                <div class="n3o-subtle">@contribution.Comment</div>
                             </div>
                             
-                            <div class="donationItem__info big">
-                                <div class="subtle">
-                                    <b class="large">@Model.Formatter.Number.FormatMoney(contribution.Value) </b>
+                            <div class="n3o-donationItem__info big">
+                                <div class="n3o-subtle">
+                                    <b class="n3o-large">@Model.Formatter.Number.FormatMoney(contribution.Value) </b>
                                     
                                     @if (!contribution.TaxReliefValue.IsZero()) {
                                         <text>+ @Model.Formatter.Number.FormatMoney(contribution.TaxReliefValue)</text>
                                     }
                                 </div>
                                 
-                                <div class="subtle">@contribution.DonatedAt</div>
+                                <div class="n3o-subtle">@contribution.DonatedAt</div>
                             </div>
                         </div>
                     </div>
                 }
 
                 @if (Model.Contributions.Count > 10) {
-                    <div class="donation__foot">
-                        <button class="button secondary modallBtn" data-mod="#all-donations">
+                    <div class="n3o-donation__foot">
+                        <button class="n3o-button secondary modallBtn" data-mod="#all-donations">
                             @PartialText.Get("View All")
                         </button>
                     </div>
@@ -64,26 +64,26 @@
         </div>
         
         @if (Model.CrowdfunderType == CrowdfunderTypes.Campaign) {
-            <div class="donation__list fund tabEvent" id="tab-2">
+            <div class="n3o-donation__list fund tabEvent" id="tab-2">
                 @foreach (var fundraiser in ((ViewCampaignViewModel) Model).Fundraisers.OrEmpty()) {
-                    <div class="donationItem">
-                        <div class="donationItem__avatar">
+                    <div class="n3o-donationItem">
+                        <div class="n3o-donationItem__avatar">
                             <img src="@fundraiser.OwnerAvatarLink" alt="">
                         </div>
                         
-                        <div class="donationItem__row">
-                            <div class="donationItem__name">
-                                <div class="large">@fundraiser.Name</div>
-                                <div class="subtle">@fundraiser.Subtitle</div>
+                        <div class="n3o-donationItem__row">
+                            <div class="n3o-donationItem__name">
+                                <div class="n3o-large">@fundraiser.Name</div>
+                                <div class="n3o-subtle">@fundraiser.Subtitle</div>
                             </div>
                             
-                            <div class="donationItem__info">
-                                <div class="large">
-                                    <p>@PartialText.Get("Raised")</p>
-                                    <b> @Model.Formatter.Number.FormatMoney(fundraiser.ContributionsTotal) </b>
+                            <div class="n3o-donationItem__info">
+                                <div class="n3o-large">
+                                    <p class="n3o-p">@PartialText.Get("Raised")</p>
+                                    <b class="n3o-p"> @Model.Formatter.Number.FormatMoney(fundraiser.ContributionsTotal) </b>
                                 </div>
                                 
-                                <div class="subtle">
+                                <div class="n3o-subtle">
                                     @PartialText.Get("of")
                                     
                                     <b> @Model.Formatter.Number.FormatMoney(fundraiser.GoalsTotal) </b>

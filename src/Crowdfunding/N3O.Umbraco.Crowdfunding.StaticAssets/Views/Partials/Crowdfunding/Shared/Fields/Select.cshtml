@@ -1,9 +1,9 @@
 @model SelectFieldSettings
 
-<div class="input__outer big">
-    <p>@Html.Raw(Model.Required ? $"{Model.Label} <span style='color: red;'> *</span>" : $"{Model.Label}")</p>
+<div class="n3o-input__outer big">
+    <p class="n3o-p">@Html.Raw(Model.Required ? $"{Model.Label} <span style='color: red;'> *</span>" : $"{Model.Label}")</p>
 
-    <div class="input sel">
+    <div class="n3o-input sel">
         <select id="@Model.Path" name="@Model.Path" placeholder="@Model.Label" style="width: 100%">
 
             @foreach (var option in Model.Options) {
@@ -17,5 +17,5 @@
         </select>
     </div>
     
-    <span id="@Model.Path" class="input-validation-error"></span>
+    <span id="@Model.Path" class="n3o-input-validation-error"></span>
 </div>

@@ -7,21 +7,21 @@
     var externalSignInError = ViewData.GetExternalSignInProviderErrors();
 }
 
-<div class="modalsItem modall" id="signIn-modal">
-    <div class="onboard">
-        <div class="onboard__content">
-            <h2>
+<div class="n3o-modalsItem modall" id="signIn-modal">
+    <div class="n3o-onboard">
+        <div class="n3o-onboard__content">
+            <h2 class="n3o-h2">
                 @Model.Settings.Title
             </h2>
 
             @foreach (var item in Model.Settings.Items) {
-                <div class="onboardItem">
-                    <div class="onboardItem__icon">
+                <div class="n3o-onboardItem">
+                    <div class="n3o-onboardItem__icon">
                         <img src="@item.Icon.Src" alt=""/>
                     </div>
                     
-                    <div class="onboardItem__text">
-                        <p>
+                    <div class="n3o-onboardItem__text">
+                        <p class="n3o-p">
                             <b>@item.Title</b><br/>
                             @item.Text
                         </p>
@@ -30,17 +30,17 @@
             }
         </div>
         
-        <div class="onboard__side">
-            <div class="onboard__title">
-                <div class="onboard__logo">
+        <div class="n3o-onboard__side">
+            <div class="n3o-onboard__title">
+                <div class="n3o-onboard__logo">
                     <img src="@Model.Settings.LogoSvg.Src" alt="@Model.Settings.LogoText"/>
                 </div>
                 
-                <h4>@Model.Settings.LogoText</h4>
+                <h4 class="n3o-h4">@Model.Settings.LogoText</h4>
             </div>
             
-            <div class="onboard__foot">
-                <p>
+            <div class="n3o-onboard__foot">
+                <p class="n3o-p">
                     @Model.Settings.AboveButtonText
                 </p>
 
@@ -49,7 +49,7 @@
                 }
 
                 @using (Html.BeginUmbracoForm<UmbExternalLoginController>(nameof(UmbExternalLoginController.ExternalLogin))) {
-                    <button type="submit" name="provider" class="button primary" value="@Model.LoginProvider.ExternalLoginProvider.AuthenticationType">
+                    <button type="submit" name="provider" class="n3o-button primary" value="@Model.LoginProvider.ExternalLoginProvider.AuthenticationType">
                         @Model.Settings.ButtonLabel
                     </button>
                 }

@@ -6,14 +6,14 @@
     PartialText.SetPartialName("MessageModal");
 }
 
-<div class="modalsItem modall" id="@Model.Id">
-    <div class="share">
-        <h2>@PartialText.Get(Model.Title)</h2>
+<div class="n3o-modalsItem modall" id="@Model.Id">
+    <div class="n3o-share">
+        <h2 class="n3o-h2">@PartialText.Get(Model.Title)</h2>
 
-        <p class="detail">
+        <p class="n3o-p n3o-detail">
             @PartialText.Get(Model.Description)
         </p>
 
-        <button type="button" class="button secondary modallClose" data-modal="@Model.Id">@PartialText.Get("Close")</button>
+        <button type="button" class="n3o-button secondary modallClose" data-modal="@Model.Id">@PartialText.Get("Close")</button>
     </div>
 </div>

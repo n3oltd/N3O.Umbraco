@@ -6,18 +6,18 @@
     PartialText.SetPartialName("CrowdfundingShareModal");
 }
 
-<div class="modalsItem modall" id="share-modal">
-    <div class="share">
-        <h2>@PartialText.Get("Share This Page")</h2>
+<div class="n3o-modalsItem modall" id="share-modal">
+    <div class="n3o-share">
+        <h2 class="n3o-h2">@PartialText.Get("Share This Page")</h2>
         
-        <div class="share__text">
-            <p class="detail">
+        <div class="n3o-share__text">
+            <p class="n3o-p n3o-detail">
                 @PartialText.Get("Share the link below and help spread the word.")
             </p>
         </div>
         
-        <div class="share__link">
-            <div class="lead" id="myUrl">
+        <div class="n3o-share__link">
+            <div class="n3o-lead" id="myUrl">
                 @Context.Request.GetDisplayUrl()
             </div>
             
@@ -28,6 +28,6 @@
             </button>
         </div>
         
-        <button type="button" class="button secondary">@PartialText.Get("Close")</button>
+        <button type="button" class="n3o-button secondary">@PartialText.Get("Close")</button>
     </div>
 </div>

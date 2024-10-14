@@ -8,25 +8,25 @@
     PartialText.SetPartialName("CrowdfundingCreateAccountModal");
 }
 
-<div class="modalsItem modall" id="createAccount-modal">
-    <div class="newAccount__wrapper" style="margin: auto; width: 90vw">
-        <div class="newAccount" id="newAccount">
-            <div class="newAccount__head">
-                <h4>@PartialText.Get("Create an Account")</h4>
+<div class="n3o-modalsItem modall" id="createAccount-modal">
+    <div class="n3o-newAccount__wrapper" style="margin: auto; width: 90vw">
+        <div class="n3o-newAccount" id="newAccount">
+            <div class="n3o-newAccount__head">
+                <h4 class="n3o-h4">@PartialText.Get("Create an Account")</h4>
                 
-                <div class="detail">
+                <div class="n3o-detail">
                     @PartialText.Get("We could not find an existing account with the email {0}. To proceed, please create a new account by completing the form below.").FormatWith(Model.Email)
                 </div>
             </div>
             
-            <div class="newAccount__body">
+            <div class="n3o-newAccount__body">
                 <form id="create-account-form" method="post" action="" autocomplete="on">
                     @Html.CrowdfundingPartial("/Views/Partials/Crowdfunding/Shared/Forms/Account.cshtml", Model)
 
                     <input type="hidden" id="memberEmail" name="memberEmail" value="@Model.Email" />
                     <input type="hidden" id="accountType" name="type" value="@AccountTypes.Individual" />
                     
-                    <button type="submit" class="button primary" id="newAccountBtn">
+                    <button type="submit" class="n3o-button primary" id="newAccountBtn">
                         @PartialText.Get("Create Account")
                     </button>
                 </form>
@@ -35,13 +35,13 @@
     </div>
 </div>
 
-<div class="modalsItem modall" id="confirmAccount-modal">
-    <div class="auth__wrapper" style="margin: auto; width: 90vw;">
-        <div class="auth">
-            <div class="auth__title">
-                <h2>@PartialText.Get("Please Wait...")</h2>
+<div class="n3o-modalsItem modall" id="confirmAccount-modal">
+    <div class="n3o-auth__wrapper" style="margin: auto; width: 90vw;">
+        <div class="n3o-auth">
+            <div class="n3o-auth__title">
+                <h2 class="n3o-h2">@PartialText.Get("Please Wait...")</h2>
                 
-                <p>@PartialText.Get("We are creating your account and will redirect you automatically.")</p>
+                <p class="n3o-p">@PartialText.Get("We are creating your account and will redirect you automatically.")</p>
             </div>
         </div>
     </div>

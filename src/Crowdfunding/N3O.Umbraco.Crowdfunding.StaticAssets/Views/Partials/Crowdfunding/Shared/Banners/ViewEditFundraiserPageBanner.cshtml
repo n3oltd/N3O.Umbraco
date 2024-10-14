@@ -11,7 +11,7 @@
         @PartialText.Get("This fundraiser has ended and can no longer be modified.")
     } else {
         <div class="n3o-banner-left-content">
-            <p>@PartialText.Get("You are in edit mode")</p>
+            <p class="n3o-p">@PartialText.Get("You are in edit mode")</p>
             
             <button class="n3o-banner-view-page">@PartialText.Get("View Page")</button>
         </div>
@@ -19,9 +19,9 @@
         @if (Model.HasUnallocatedFunds) {
             <div class="n3o-banner-right-content">
                 <div class="n3o-banner-right-text">
-                    <p>@PartialText.Get("You've exceeded your fundraising goal!")</p>
+                    <p class="n3o-p">@PartialText.Get("You've exceeded your fundraising goal!")</p>
                     
-                    <p>@PartialText.Get("Please tell us how you'd like the extra money you've raised spent.")</p>
+                    <p class="n3o-p">@PartialText.Get("Please tell us how you'd like the extra money you've raised spent.")</p>
                 </div>
                 <button class="n3o-banner-resolve">@PartialText.Get("Resolve")</button>
             </div>

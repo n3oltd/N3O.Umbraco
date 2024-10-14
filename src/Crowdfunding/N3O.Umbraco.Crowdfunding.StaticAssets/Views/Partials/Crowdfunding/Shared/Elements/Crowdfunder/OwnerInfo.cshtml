@@ -6,10 +6,10 @@
     PartialText.SetPartialName("CrowdfundingCrowdfunderOwnerInfo");
 }
 
-<div class="auto__container">
-    <div class="hero__inner cov">
+<div class="n3o-auto__container">
+    <div class="n3o-hero__inner cov">
         @if (Model.EditMode()) {
-            <div class="campaign__edit modallBtn" n3o-editor="@(Model, PropertyTypes.Cropper, nameof(Model.Content.BackgroundImage))">
+            <div class="n3o-campaign__edit modallBtn" n3o-editor="@(Model, PropertyTypes.Cropper, nameof(Model.Content.BackgroundImage))">
                 <svg>
                     <use xlink:href="#imagePlus"></use>
                 </svg>
@@ -18,22 +18,22 @@
             </div>
         }
         
-        <div class="account sm">
-            <div class="account__main">
-                <div class="account__info">
-                    <div class="account__info-avatar">
+        <div class="n3o-account sm">
+            <div class="n3o-account__main">
+                <div class="n3o-account__info">
+                    <div class="n3o-account__info-avatar">
                         <img src="@Model.OwnerInfo.ProfilePicture" alt="">
                     </div>
                     
-                    <div class="account__info-name">
-                        <div class="large">
+                    <div class="n3o-account__info-name">
+                        <div class="n3o-large">
                             @Model.OwnerInfo.Name
                         </div>
                     </div>
                 </div>
                 
-                <div class="account__buttons">
-                    <button type="button" class="button secondary modallBtn" data-mod="#share-modal">
+                <div class="n3o-account__buttons">
+                    <button type="button" class="n3o-button secondary modallBtn" data-mod="#share-modal">
                         <svg>
                             <use xlink:href="#shareIcon"></use>
                         </svg>

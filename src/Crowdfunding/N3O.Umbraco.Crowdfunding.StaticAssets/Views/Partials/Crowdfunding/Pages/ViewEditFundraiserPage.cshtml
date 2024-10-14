@@ -7,13 +7,13 @@
 }
 
 @if (!Model.Content.Status.HasValue()) {
-    <div class="modalsItem modall active" id="confirmAccount-modal">
-        <div class="auth__wrapper" style="margin: auto; width: 90vw;">
-            <div class="auth">
-                <div class="auth__title">
-                    <h2>@PartialText.Get("Please Wait...")</h2>
+    <div class="n3o-modalsItem modall active" id="confirmAccount-modal">
+        <div class="n3o-auth__wrapper" style="margin: auto; width: 90vw;">
+            <div class="n3o-auth">
+                <div class="n3o-auth__title">
+                    <h2 class="n3o-h2">@PartialText.Get("Please Wait...")</h2>
 
-                    <p>@PartialText.Get("Page setup in progress, you will be able to view or edit the page shortly.")</p>
+                    <p class="n3o-p">@PartialText.Get("Page setup in progress, you will be able to view or edit the page shortly.")</p>
                 </div>
             </div>
         </div>

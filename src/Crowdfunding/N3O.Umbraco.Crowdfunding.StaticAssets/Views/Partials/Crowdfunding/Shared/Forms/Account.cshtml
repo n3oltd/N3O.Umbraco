@@ -14,8 +14,8 @@
 
 @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Fields/Text.cshtml", Model.DataEntrySettings.Email)
 
-<div class="newAccount__address">
-    <h4>Address</h4>
+<div class="n3o-newAccount__address">
+    <h4 class="n3o-h4">Address</h4>
     
     @foreach (var field in Model.DataEntrySettings.Address.GetFieldSettings().Where(x => x.Visible)) {
         @await Html.PartialAsync($"~/Views/Partials/Crowdfunding/Shared/Fields/{field.Type}.cshtml", field)
