@@ -17,6 +17,7 @@ using NodaTime;
 using NPoco;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Infrastructure.Persistence;
 
@@ -32,6 +33,7 @@ public partial class ContributionRepository : IContributionRepository {
     private readonly ICrowdfundingUrlBuilder _urlBuilder;
     private readonly IJsonProvider _jsonProvider;
     private readonly ITaxReliefSchemeAccessor _taxReliefSchemeAccessor;
+    private Guid? _removeOfflineContributionsForCrowdfunderId;
 
     public ContributionRepository(IUmbracoDatabaseFactory umbracoDatabaseFactory,
                                   IContentLocator contentLocator,
@@ -49,12 +51,37 @@ public partial class ContributionRepository : IContributionRepository {
         _taxReliefSchemeAccessor = taxReliefSchemeAccessor;
     }
 
+    public async Task CommitAsync() {
+        using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
+            if (_removeOfflineContributionsForCrowdfunderId.HasValue()) {
+                var sql = new Sql($"DELETE FROM Contribution WHERE {nameof(Contribution.CrowdfunderId)} = @0",
+                                  _removeOfflineContributionsForCrowdfunderId.GetValueOrThrow());
+                
+                await db.DeleteAsync(sql);
+            }
+            
+            if (_toCommit.Any()) {
+                await db.InsertBatchAsync(_toCommit);
+            }
+        }
+        
+        _toCommit.Clear();
+        
+        
+        
+        
+    }
+
     public async Task<IReadOnlyList<Contribution>> FindByCampaignAsync(params Guid[] campaignIds) {
         return await FindContributionsAsync(Sql.Builder.Where($"{nameof(Contribution.CampaignId)} IN (@0)", campaignIds));
     }
 
     public async Task<IReadOnlyList<Contribution>> FindByFundraiserAsync(params Guid[] fundraiserIds) {
         return await FindContributionsAsync(Sql.Builder.Where($"{nameof(Contribution.FundraiserId)} IN (@0)", fundraiserIds));
+    }
+    
+    public void DeleteOfflineContributionsForCrowdfunderAsync(Guid crowdfunderId) {
+        _removeOfflineContributionsForCrowdfunderId = crowdfunderId;
     }
 
     private async Task<Contribution> GetContributionAsync(ContributionType type,
@@ -90,6 +117,7 @@ public partial class ContributionRepository : IContributionRepository {
         var contribution = new Contribution();
         contribution.Timestamp = timestamp.ToDateTimeUtc();
         contribution.Date = date.ToDateTimeUnspecified();
+        contribution.CrowdfunderId = crowdfunderId;
         contribution.CampaignId = crowdfunder.CampaignId;
         contribution.CampaignName = crowdfunder.CampaignName;
         contribution.TeamId = crowdfunder.TeamId;

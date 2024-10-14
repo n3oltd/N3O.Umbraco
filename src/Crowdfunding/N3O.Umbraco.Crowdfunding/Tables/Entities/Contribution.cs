@@ -22,6 +22,10 @@ public class Contribution {
     [Column(nameof(Date))]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(Date), ForColumns = nameof(Date))]
     public DateTime Date { get; set; }
+
+    [Column(nameof(CrowdfunderId))]
+    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(CrowdfunderId), ForColumns = nameof(CrowdfunderId))]
+    public Guid CrowdfunderId { get; set; }
     
     [Column(nameof(CampaignId))]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(CampaignId), ForColumns = nameof(CampaignId))]

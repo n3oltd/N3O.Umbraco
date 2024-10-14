@@ -23,8 +23,8 @@ public class PledgeUpdatedHandler : PledgeEventHandler<PledgeUpdatedEvent> {
     }
 
     protected override async Task HandleEventAsync(PledgeUpdatedEvent req, CancellationToken cancellationToken) {
-        foreach (var offlineDonation in req.Model.Transactions.Donations) {
-            var value = GetValue(offlineDonation.Amount.Quote.Amount, offlineDonation.Amount.Quote.Currency.Code);
+        foreach (var offlineDonation in req.Model.OrEmpty(x => x?.Transactions?.Donations)) {
+            var value = GetMoney(offlineDonation.Amount.Quote.Amount, offlineDonation.Amount.Quote.Currency.Code);
             var anonymous = !offlineDonation.AccountEmail.HasValue();
 
             await _contributionRepository.AddOfflineContributionAsync(offlineDonation.AllocationReference,
@@ -42,10 +42,10 @@ public class PledgeUpdatedHandler : PledgeEventHandler<PledgeUpdatedEvent> {
                                                                       GivingTypes.Donation);
         }
 
-        await _contributionRepository.CommitOfflineDonationsAsync();
+        await _contributionRepository.CommitAsync();
     }
 
-    private Money GetValue(decimal amount, string currencyCode) {
+    private Money GetMoney(decimal amount, string currencyCode) {
         var currency = _lookups.GetAll<Currency>().Single(x => x.Code == currencyCode);
 
         return new Money(amount, currency);

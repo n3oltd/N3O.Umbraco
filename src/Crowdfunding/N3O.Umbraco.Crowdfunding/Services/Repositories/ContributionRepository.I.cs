@@ -34,8 +34,7 @@ public interface IContributionRepository {
                                      Money value,
                                      GivingType givingType);
 
-    Task CommitOnlineDonationsAsync();
-    Task CommitOfflineDonationsAsync();
+    Task CommitAsync();
     Task<IReadOnlyList<Contribution>> FindByCampaignAsync(params Guid[] campaignIds);
     Task<IReadOnlyList<Contribution>> FindByFundraiserAsync(params Guid[] fundraiserIds);
 }

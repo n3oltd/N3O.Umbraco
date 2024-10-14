@@ -2,7 +2,6 @@
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using NodaTime;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Crowdfunding;
@@ -35,15 +34,5 @@ public partial class ContributionRepository {
                                                       allocation);
         
         _toCommit.Add(contribution);
-    }
-
-    public async Task CommitOnlineDonationsAsync() {
-        if (_toCommit.Any()) {
-            using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-                await db.InsertBatchAsync(_toCommit);
-            }
-        }
-        
-        _toCommit.Clear();
     }
 }
