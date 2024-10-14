@@ -66,10 +66,6 @@ public partial class ContributionRepository : IContributionRepository {
         }
         
         _toCommit.Clear();
-        
-        
-        
-        
     }
 
     public async Task<IReadOnlyList<Contribution>> FindByCampaignAsync(params Guid[] campaignIds) {
