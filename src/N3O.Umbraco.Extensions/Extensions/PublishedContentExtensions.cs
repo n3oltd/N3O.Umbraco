@@ -84,7 +84,7 @@ public static class PublishedContentExtensions {
         }
         
         var model = Activator.CreateInstance<T>();
-        ((IUmbracoContent) model).Content( publishedContent);
+        ((IUmbracoContent) model).Content(publishedContent);
 
         return model;
     }

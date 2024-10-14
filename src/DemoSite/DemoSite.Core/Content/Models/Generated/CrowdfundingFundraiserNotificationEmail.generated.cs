@@ -18,14 +18,14 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Content
 {
-	/// <summary>Donation Receipt Template</summary>
-	[PublishedModel("donationReceiptTemplate")]
-	public partial class DonationReceiptTemplate : PublishedContentModel, IEmailTemplate
+	/// <summary>Fundraiser Notification Email</summary>
+	[PublishedModel("crowdfundingFundraiserNotificationEmail")]
+	public partial class CrowdfundingFundraiserNotificationEmail : PublishedElementModel
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		public new const string ModelTypeAlias = "donationReceiptTemplate";
+		public new const string ModelTypeAlias = "crowdfundingFundraiserNotificationEmail";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
@@ -34,14 +34,14 @@ namespace DemoSite.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<DonationReceiptTemplate, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<CrowdfundingFundraiserNotificationEmail, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public DonationReceiptTemplate(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
+		public CrowdfundingFundraiserNotificationEmail(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
@@ -50,36 +50,27 @@ namespace DemoSite.Content
 		// properties
 
 		///<summary>
-		/// Assets
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("assets")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.TemplateAssetItem> Assets => global::DemoSite.Content.EmailTemplate.GetAssets(this, _publishedValueFallback);
-
-		///<summary>
 		/// Body
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("body")]
-		public virtual string Body => global::DemoSite.Content.EmailTemplate.GetBody(this, _publishedValueFallback);
+		public virtual string Body => this.Value<string>(_publishedValueFallback, "body");
 
 		///<summary>
-		/// From Email
+		/// Resend To
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("fromEmail")]
-		public virtual string FromEmail => global::DemoSite.Content.EmailTemplate.GetFromEmail(this, _publishedValueFallback);
+		[ImplementPropertyType("resendTo")]
+		public virtual string ResendTo => this.Value<string>(_publishedValueFallback, "resendTo");
 
 		///<summary>
-		/// From Name
+		/// Sent At
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("fromName")]
-		public virtual string FromName => global::DemoSite.Content.EmailTemplate.GetFromName(this, _publishedValueFallback);
+		[ImplementPropertyType("sentAt")]
+		public virtual global::System.DateTime SentAt => this.Value<global::System.DateTime>(_publishedValueFallback, "sentAt");
 
 		///<summary>
 		/// Subject
@@ -87,6 +78,22 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("subject")]
-		public virtual string Subject => global::DemoSite.Content.EmailTemplate.GetSubject(this, _publishedValueFallback);
+		public virtual string Subject => this.Value<string>(_publishedValueFallback, "subject");
+
+		///<summary>
+		/// To
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("to")]
+		public virtual string To => this.Value<string>(_publishedValueFallback, "to");
+
+		///<summary>
+		/// Type
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("type")]
+		public virtual global::N3O.Umbraco.Crowdfunding.Lookups.FundraiserNotificationType Type => this.Value<global::N3O.Umbraco.Crowdfunding.Lookups.FundraiserNotificationType>(_publishedValueFallback, "type");
 	}
 }

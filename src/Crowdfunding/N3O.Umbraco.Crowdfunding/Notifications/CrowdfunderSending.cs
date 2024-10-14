@@ -49,7 +49,7 @@ public class CrowdfunderSending : INotificationAsyncHandler<SendingContentNotifi
     }
 
     private void ProcessStatus(ContentVariantDisplay variant) {
-        var statusTab = variant.Tabs.Single(x => x.Alias.EqualsInvariant("Status"));
+        var statusTab = variant.Tabs.Single(x => x.Alias.EqualsInvariant("crowdfunder/status"));
         var statusProperty = GetProperty(statusTab, CrowdfundingConstants.Crowdfunder.Properties.Status);
         var toggleStatusProperty = GetProperty(statusTab, CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus);
 

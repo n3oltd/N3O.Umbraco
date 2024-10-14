@@ -66,6 +66,14 @@ namespace DemoSite.Content
 		public virtual global::DemoSite.Content.CrowdfundingCampaign Campaign => this.Value<global::DemoSite.Content.CrowdfundingCampaign>(_publishedValueFallback, "campaign");
 
 		///<summary>
+		/// Emails
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("emails")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingFundraiserNotificationEmail> Emails => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingFundraiserNotificationEmail>>(_publishedValueFallback, "emails");
+
+		///<summary>
 		/// Owner
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
@@ -138,7 +146,7 @@ namespace DemoSite.Content
 		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingHeroImage> HeroImages => global::DemoSite.Content.CrowdfundingCrowdfunder.GetHeroImages(this, _publishedValueFallback);
 
 		///<summary>
-		/// Open Graph Image Path
+		/// Open Graph Image
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]

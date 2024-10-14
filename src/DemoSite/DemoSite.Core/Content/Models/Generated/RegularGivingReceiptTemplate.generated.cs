@@ -56,5 +56,37 @@ namespace DemoSite.Content
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("assets")]
 		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.TemplateAssetItem> Assets => global::DemoSite.Content.EmailTemplate.GetAssets(this, _publishedValueFallback);
+
+		///<summary>
+		/// Body
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("body")]
+		public virtual string Body => global::DemoSite.Content.EmailTemplate.GetBody(this, _publishedValueFallback);
+
+		///<summary>
+		/// From Email
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("fromEmail")]
+		public virtual string FromEmail => global::DemoSite.Content.EmailTemplate.GetFromEmail(this, _publishedValueFallback);
+
+		///<summary>
+		/// From Name
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("fromName")]
+		public virtual string FromName => global::DemoSite.Content.EmailTemplate.GetFromName(this, _publishedValueFallback);
+
+		///<summary>
+		/// Subject
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("subject")]
+		public virtual string Subject => global::DemoSite.Content.EmailTemplate.GetSubject(this, _publishedValueFallback);
 	}
 }

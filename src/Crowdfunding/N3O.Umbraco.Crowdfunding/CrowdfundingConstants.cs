@@ -41,6 +41,12 @@ public static class CrowdfundingConstants {
             public const string ToggleStatus = "toggleStatus";
         }
     }
+    
+    public static class EmailTemplates {
+        public static class ContributionReceived {
+            public const string Alias = "crowdfundingContributionReceivedTemplate";
+        }
+    }
 
     public static class Fundraiser {
         public const string Alias = "crowdfundingFundraiser";

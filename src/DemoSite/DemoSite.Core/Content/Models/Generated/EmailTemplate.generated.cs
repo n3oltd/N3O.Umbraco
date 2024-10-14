@@ -26,6 +26,26 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.TemplateAssetItem> Assets { get; }
+
+		/// <summary>Body</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		string Body { get; }
+
+		/// <summary>From Email</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		string FromEmail { get; }
+
+		/// <summary>From Name</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		string FromName { get; }
+
+		/// <summary>Subject</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		string Subject { get; }
 	}
 
 	/// <summary>Email Template</summary>
@@ -71,5 +91,57 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		public static global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.TemplateAssetItem> GetAssets(IEmailTemplate that, IPublishedValueFallback publishedValueFallback) => that.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.TemplateAssetItem>>(publishedValueFallback, "assets");
+
+		///<summary>
+		/// Body
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("body")]
+		public virtual string Body => GetBody(this, _publishedValueFallback);
+
+		/// <summary>Static getter for Body</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		public static string GetBody(IEmailTemplate that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "body");
+
+		///<summary>
+		/// From Email
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("fromEmail")]
+		public virtual string FromEmail => GetFromEmail(this, _publishedValueFallback);
+
+		/// <summary>Static getter for From Email</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		public static string GetFromEmail(IEmailTemplate that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "fromEmail");
+
+		///<summary>
+		/// From Name
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("fromName")]
+		public virtual string FromName => GetFromName(this, _publishedValueFallback);
+
+		/// <summary>Static getter for From Name</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		public static string GetFromName(IEmailTemplate that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "fromName");
+
+		///<summary>
+		/// Subject
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("subject")]
+		public virtual string Subject => GetSubject(this, _publishedValueFallback);
+
+		/// <summary>Static getter for Subject</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		public static string GetSubject(IEmailTemplate that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "subject");
 	}
 }
