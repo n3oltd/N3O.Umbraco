@@ -25,6 +25,16 @@
         <ProjectReference Include="..\..\Workflows\N3O.Umbraco.Workflows.StaticAssets\N3O.Umbraco.Workflows.StaticAssets.csproj" />
         <ProjectReference Include="..\DemoSite.Core\DemoSite.Core.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\assets\css\fonts\stylesheet.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\assets\css\fonts\WestTrial-ExtraBoldWeb.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\assets\css\fonts\WestTrial-ExtraBoldWeb.woff2" />
+      <_ContentIncludedByDefault Remove="wwwroot\assets\css\fonts\WestTrial-LightWeb.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\assets\css\fonts\WestTrial-LightWeb.woff2" />
+      <_ContentIncludedByDefault Remove="wwwroot\assets\css\fonts\WestTrial-MediumWeb.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\assets\css\fonts\WestTrial-MediumWeb.woff2" />
+    </ItemGroup>
     
     <Import Project="..\..\N3O.Umbraco.Cms\build\N3O.Umbraco.Cms.targets" />
     <Import Project="..\..\Data\N3O.Umbraco.Data.StaticAssets\build\N3O.Umbraco.Data.StaticAssets.targets" />
