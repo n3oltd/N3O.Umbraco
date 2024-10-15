@@ -1,15 +1,16 @@
 @charset "UTF-8";
 @import "./fonts/stylesheet.css";
 :root {
-  --theme-config-crowdfundingprimary: #334155;
-  --theme-config-crowdfundingprimary-hover: #64748b;
-  --theme-config-crowdfundingprimary-light: #cbd5e1;
-  --theme-config-crowdfundingprimary-subtle: #f1f5f9;
-  --theme-config-crowdfundingbutton-text: #ffffff;
-  --theme-config-crowdfundingbutton-color: #000000;
-  --theme-config-crowdfundingborder-color: #e2e8f0;
-  --theme-config-crowdfundingpanel-accent: #f8fafc;
-  --theme-config-crowdfundingpage-bg: #f8fafc;
+  --theme-crowdfunding-border-color: #e2e8f0;
+  --theme-crowdfunding-button-color: #000000;
+  --theme-crowdfunding-button-text: #ffffff;
+  --theme-crowdfunding-font-family: Signika;
+  --theme-crowdfunding-page-bg: #f8fafc;
+  --theme-crowdfunding-panel-accent: #f8fafc;
+  --theme-crowdfunding-primary: #334155;
+  --theme-crowdfunding-primary-hover: #64748b;
+  --theme-crowdfunding-primary-light: #cbd5e1;
+  --theme-crowdfunding-primary-subtle: #f1f5f9;
   --space-2xs: 2px;
   --space-xs: 4px;
   --space-sm: 6px;
@@ -231,11 +232,11 @@ Global Settings
   font-size: 16px;
   line-height: 24px;
   color: #fff;
-  background-color: var(--theme-config-crowdfundingbutton-color);
+  background-color: var(--theme-crowdfunding-button-color);
 }
 .n3o-button.primary:hover {
   opacity: 1;
-  background-color: var(--theme-config-crowdfundingprimary-hover);
+  background-color: var(--theme-crowdfunding-primary-hover);
 }
 .n3o-button.secondary {
   color: #0f172a;
@@ -273,7 +274,7 @@ Global Settings
   color: #000;
 }
 .n3o-button svg.light {
-  color: var(--theme-config-crowdfundingbutton-color);
+  color: var(--theme-crowdfunding-button-color);
 }
 .n3o-input {
   display: -webkit-box;
@@ -390,7 +391,7 @@ Global Settings
   z-index: 2;
 }
 .n3o-check__box input:checked ~ span {
-  border-color: var(--theme-config-crowdfundingbutton-color);
+  border-color: var(--theme-crowdfunding-button-color);
 }
 .n3o-check__box input:checked ~ span::before {
   opacity: 1;
@@ -413,8 +414,8 @@ Global Settings
   content: "";
   width: 8px;
   height: 4px;
-  border-top: 2px solid var(--theme-config-crowdfundingbutton-color);
-  border-right: 2px solid var(--theme-config-crowdfundingbutton-color);
+  border-top: 2px solid var(--theme-crowdfunding-button-color);
+  border-right: 2px solid var(--theme-crowdfunding-button-color);
   -webkit-transform: translate(-50%, -65%) rotate(135deg);
   transform: translate(-50%, -65%) rotate(135deg);
   -webkit-transition: 0.3s ease;
@@ -665,7 +666,7 @@ Global Settings
   cursor: pointer;
 }
 .n3o-giftaid__button input:checked ~ span {
-  background-color: var(--theme-config-crowdfundingbutton-color);
+  background-color: var(--theme-crowdfunding-button-color);
   color: #fff;
 }
 .n3o-giftaid__button span {
@@ -691,7 +692,7 @@ Global Settings
   line-height: 24px;
   font-weight: 500;
   border-radius: var(--corner-sm);
-  border: 1px solid var(--theme-config-crowdfundingborder-color);
+  border: 1px solid var(--theme-crowdfunding-border-color);
   -webkit-box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.06), 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
   box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.06), 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
   -webkit-transition: 0.3s ease;
@@ -716,7 +717,7 @@ Global Settings
   font-size: 14px;
   line-height: 24px;
   font-weight: 400;
-  background-color: var(--theme-config-crowdfundingprimary);
+  background-color: var(--theme-crowdfunding-primary);
   border-radius: var(--corner-sm) var(--corner-sm) 0 0;
   padding: var(--space-3xl);
   display: -webkit-box;
@@ -734,7 +735,7 @@ Global Settings
   color: #000;
 }
 .n3o-steps.light .n3o-steps__button::before {
-  background-color: var(--theme-config-crowdfundingprimary);
+  background-color: var(--theme-crowdfunding-primary);
 }
 .n3o-steps.light .n3o-detail {
   color: #64748b;
@@ -1257,7 +1258,7 @@ Global Settings
   cursor: pointer;
 }
 .n3o-filterItem input:checked ~ span {
-  background-color: var(--theme-config-crowdfundingprimary);
+  background-color: var(--theme-crowdfunding-primary);
   color: #fff;
 }
 .n3o-filterItem span {
@@ -1346,7 +1347,7 @@ input[type=search]::-webkit-search-results-decoration {
   line-height: 24px;
   font-weight: 400;
   background-color: rgba(255, 255, 255, 0.9);
-  border-top: 4px solid var(--theme-config-crowdfundingprimary);
+  border-top: 4px solid var(--theme-crowdfunding-primary);
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   position: absolute;
@@ -1468,7 +1469,7 @@ input[type=search]::-webkit-search-results-decoration {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: var(--theme-config-crowdfundingprimary);
+  background-color: var(--theme-crowdfunding-primary);
   opacity: 0.3;
   content: "";
   pointer-events: none;
@@ -1571,10 +1572,10 @@ input[type=search]::-webkit-search-results-decoration {
   line-height: 20px;
   color: #334155;
   padding: 11px 13px;
-  border-bottom: 1px solid var(--theme-config-crowdfundingborder-color);
+  border-bottom: 1px solid var(--theme-crowdfunding-border-color);
 }
 .n3o-dropMenu a:hover {
-  background-color: var(--theme-config-crowdfundingprimary);
+  background-color: var(--theme-crowdfunding-primary);
   color: #fff;
 }
 .n3o-dropMenu a:hover svg {
@@ -1880,7 +1881,7 @@ input[type=search]::-webkit-search-results-decoration {
   width: 100%;
   height: 100%;
   content: "";
-  background-color: var(--theme-config-crowdfundingprimary-light);
+  background-color: var(--theme-crowdfunding-primary-light);
   opacity: 0.5;
   z-index: 1;
   border-radius: var(--corner-lg);
@@ -1888,7 +1889,7 @@ input[type=search]::-webkit-search-results-decoration {
 .n3o-campaign__top > svg {
   width: 40px;
   height: 40px;
-  color: var(--theme-config-crowdfundingprimary);
+  color: var(--theme-crowdfunding-primary);
   position: absolute;
   top: 50%;
   left: 50%;
@@ -1946,7 +1947,7 @@ input[type=search]::-webkit-search-results-decoration {
   width: 16px;
   height: 6px;
   opacity: 0.2;
-  background-color: var(--theme-config-crowdfundingprimary-light);
+  background-color: var(--theme-crowdfunding-primary-light);
   border-radius: var(--corner-full);
   margin-right: var(--space-sm);
   -webkit-transition: 0.3s ease;
@@ -2021,7 +2022,7 @@ input[type=search]::-webkit-search-results-decoration {
   align-items: center;
   padding: var(--space-md) var(--space-xl);
   border-radius: var(--corner-full);
-  background-color: var(--theme-config-crowdfundingprimary-light);
+  background-color: var(--theme-crowdfunding-primary-light);
   -webkit-box-shadow: 0px 10px 10px -5px rgba(0, 0, 0, 0.04), 0px 20px 25px -5px rgba(0, 0, 0, 0.1);
   box-shadow: 0px 10px 10px -5px rgba(0, 0, 0, 0.04), 0px 20px 25px -5px rgba(0, 0, 0, 0.1);
   border: 2px solid #fff;
@@ -2077,7 +2078,7 @@ input[type=search]::-webkit-search-results-decoration {
   cursor: pointer;
   margin-right: var(--space-lg);
   padding: var(--space-xs) var(--space-md);
-  background-color: var(--theme-config-crowdfundingprimary-subtle);
+  background-color: var(--theme-crowdfunding-primary-subtle);
   border-radius: var(--corner-sm);
   opacity: 0.9;
   margin: 6px;
@@ -2085,18 +2086,18 @@ input[type=search]::-webkit-search-results-decoration {
 .n3o-campaign__footer-tag svg {
   width: 16px;
   height: 16px;
-  color: var(--theme-config-crowdfundingprimary);
+  color: var(--theme-crowdfunding-primary);
   -webkit-transition: 0.3s ease;
   transition: 0.3s ease;
   margin-right: var(--space-xs);
 }
 .n3o-campaign__footer-tag b {
-  color: var(--theme-config-crowdfundingprimary);
+  color: var(--theme-crowdfunding-primary);
   font-weight: 500;
 }
 
 .n3o-fprogress {
-  background-color: var(--theme-config-crowdfundingpage-bg);
+  background-color: var(--theme-crowdfunding-page-bg);
   border-radius: var(--corner-lg);
   padding: var(--space-lg);
   position: relative;
@@ -2117,7 +2118,7 @@ input[type=search]::-webkit-search-results-decoration {
   margin-top: 12px;
   height: 12px;
   width: 100%;
-  background-color: var(--theme-config-crowdfundingprimary-light);
+  background-color: var(--theme-crowdfunding-primary-light);
   border-radius: var(--corner-full);
   overflow: hidden;
   position: relative;
@@ -2128,7 +2129,7 @@ input[type=search]::-webkit-search-results-decoration {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: var(--theme-config-crowdfundingprimary);
+  background-color: var(--theme-crowdfunding-primary);
   border-radius: var(--corner-full);
   min-width: 11px;
 }
@@ -2221,7 +2222,7 @@ input[type=search]::-webkit-search-results-decoration {
 .n3o-auth__foot {
   margin-top: var(--space-3xl);
   padding-top: var(--space-3xl);
-  border-top: 1px solid var(--theme-config-crowdfundingborder-color);
+  border-top: 1px solid var(--theme-crowdfunding-border-color);
   text-align: center;
 }
 .n3o-auth__foot-links {
@@ -2378,10 +2379,10 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .n3o-donation__title .n3o-h2 span {
   padding: var(--space-xs) var(--space-md);
-  background-color: var(--theme-config-crowdfundingprimary-subtle);
+  background-color: var(--theme-crowdfunding-primary-subtle);
   opacity: 0.9;
   border-radius: var(--corner-full);
-  color: var(--theme-config-crowdfundingprimary);
+  color: var(--theme-crowdfunding-primary);
   font-weight: 500;
   font-size: 14px;
   line-height: 24px;
@@ -2389,7 +2390,7 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .n3o-donation__head {
   margin-bottom: var(--space-5xl);
-  border-bottom: 1px solid var(--theme-config-crowdfundingborder-color);
+  border-bottom: 1px solid var(--theme-crowdfunding-border-color);
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -2415,7 +2416,7 @@ input[type=search]::-webkit-search-results-decoration {
   transition: 0.3s ease;
 }
 .n3o-donation__head-tab.active {
-  border-color: var(--theme-config-crowdfundingbutton-color);
+  border-color: var(--theme-crowdfunding-button-color);
 }
 .n3o-donation__head-tab.active .n3o-h4 {
   color: #0f172a;
@@ -2427,10 +2428,10 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .n3o-donation__head .n3o-h4 span {
   padding: var(--space-xs) var(--space-md);
-  background-color: var(--theme-config-crowdfundingprimary-subtle);
+  background-color: var(--theme-crowdfunding-primary-subtle);
   opacity: 0.9;
   border-radius: var(--corner-full);
-  color: var(--theme-config-crowdfundingprimary);
+  color: var(--theme-crowdfunding-primary);
   font-weight: 500;
   font-size: 14px;
   line-height: 24px;
@@ -2470,7 +2471,7 @@ input[type=search]::-webkit-search-results-decoration {
   width: 100%;
 }
 .n3o-donation__foot .n3o-button.secondary:hover {
-  background-color: var(--theme-config-crowdfundingprimary-hover);
+  background-color: var(--theme-crowdfunding-primary-hover);
   color: #fff;
 }
 .n3o-donation__foot .n3o-button.secondary:hover svg {
@@ -2687,7 +2688,7 @@ input[type=search]::-webkit-search-results-decoration {
   width: 100%;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  background-color: var(--theme-config-crowdfundingprimary-subtle);
+  background-color: var(--theme-crowdfunding-primary-subtle);
   border-radius: var(--corner-2xl);
 }
 .n3o-editUpload {
@@ -2798,7 +2799,7 @@ input[type=search]::-webkit-search-results-decoration {
 .n3o-editDrag {
   padding: var(--space-3xl);
   border-radius: var(--corner-2xl);
-  background-color: var(--theme-config-crowdfundingprimary-subtle);
+  background-color: var(--theme-crowdfunding-primary-subtle);
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -2856,7 +2857,7 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .n3o-edit__info {
   padding: var(--space-lg);
-  background-color: var(--theme-config-crowdfundingprimary-subtle);
+  background-color: var(--theme-crowdfunding-primary-subtle);
   border-radius: var(--corner-sm);
   color: #000;
   margin-bottom: var(--space-lg);
@@ -2870,7 +2871,7 @@ input[type=search]::-webkit-search-results-decoration {
   justify-content: space-between;
   margin-top: var(--space-3xl);
   padding-top: var(--space-3xl);
-  border-top: 1px solid var(--theme-config-crowdfundingborder-color);
+  border-top: 1px solid var(--theme-crowdfunding-border-color);
 }
 .n3o-edit__foot .n3o-button {
   width: calc(50% - 5px);
@@ -2974,13 +2975,13 @@ input[type=search]::-webkit-search-results-decoration {
   align-items: center;
   border-radius: var(--corner-full);
   border: 2px solid #fff;
-  background-color: var(--theme-config-crowdfundingprimary-light);
+  background-color: var(--theme-crowdfunding-primary-light);
   cursor: pointer;
   -webkit-transition: 0.3s ease;
   transition: 0.3s ease;
 }
 .n3o-editGoal__remove:hover {
-  background-color: var(--theme-config-crowdfundingprimary-subtle);
+  background-color: var(--theme-crowdfunding-primary-subtle);
 }
 .n3o-editGoal__remove span {
   width: 16px;
@@ -3000,7 +3001,7 @@ input[type=search]::-webkit-search-results-decoration {
   width: 100%;
 }
 .n3o-editGoal__head {
-  background-color: var(--theme-config-crowdfundingprimary);
+  background-color: var(--theme-crowdfunding-primary);
   padding: var(--space-3xl);
   color: #fff;
   margin-bottom: var(--space-xl);
@@ -3055,7 +3056,7 @@ input[type=search]::-webkit-search-results-decoration {
   letter-spacing: -0.005em;
   color: #000000;
   background: rgba(255, 255, 255, 0.8);
-  border: 3px dashed var(--theme-config-crowdfundingprimary-light);
+  border: 3px dashed var(--theme-crowdfunding-primary-light);
   border-radius: var(--corner-sm);
   padding: var(--space-5xl);
   margin-bottom: var(--space-xl);
@@ -3064,7 +3065,7 @@ input[type=search]::-webkit-search-results-decoration {
   transition: 0.3s ease;
 }
 .n3o-editGoal__add:hover {
-  border-color: var(--theme-config-crowdfundingborder-color);
+  border-color: var(--theme-crowdfunding-border-color);
 }
 .n3o-editGoal__add span {
   width: 24px;
@@ -3084,7 +3085,7 @@ input[type=search]::-webkit-search-results-decoration {
   width: 100%;
 }
 .n3o-editGoal .n3o-select {
-  border: 1px solid var(--theme-config-crowdfundingborder-color);
+  border: 1px solid var(--theme-crowdfunding-border-color);
   border-radius: var(--corner-md);
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -3256,7 +3257,7 @@ input[type=search]::-webkit-search-results-decoration {
   right: 0;
   width: calc(100% - 84px);
   height: 1px;
-  background-color: var(--theme-config-crowdfundingborder-color);
+  background-color: var(--theme-crowdfunding-border-color);
   -webkit-transform: translateY(-50%);
   transform: translateY(-50%);
   content: "";
@@ -3383,7 +3384,7 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .n3o-share__text {
   padding: var(--space-lg);
-  background-color: var(--theme-config-crowdfundingprimary-subtle);
+  background-color: var(--theme-crowdfunding-primary-subtle);
   color: #000;
   margin-bottom: var(--space-lg);
 }
@@ -3401,7 +3402,7 @@ input[type=search]::-webkit-search-results-decoration {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   background-color: #fff;
-  border: 1px solid var(--theme-config-crowdfundingborder-color);
+  border: 1px solid var(--theme-crowdfunding-border-color);
   border-radius: var(--corner-md);
 }
 .n3o-share__link .n3o-lead {
@@ -3480,7 +3481,7 @@ input[type=search]::-webkit-search-results-decoration {
 .n3o-share > .n3o-p {
   text-align: center;
   padding: var(--space-lg) 0;
-  border-top: 1px solid var(--theme-config-crowdfundingborder-color);
+  border-top: 1px solid var(--theme-crowdfunding-border-color);
 }
 .n3o-share .n3o-button {
   margin-bottom: var(--space-lg);
@@ -3496,7 +3497,7 @@ input[type=search]::-webkit-search-results-decoration {
   line-height: 24px;
   font-weight: 400;
   margin: auto;
-  background: var(--theme-config-crowdfundingprimary-subtle);
+  background: var(--theme-crowdfunding-primary-subtle);
   -webkit-box-shadow: 0px 10px 10px -5px rgba(0, 0, 0, 0.04), 0px 5px 64px 10px rgba(0, 0, 0, 0.08);
   box-shadow: 0px 10px 10px -5px rgba(0, 0, 0, 0.04), 0px 5px 64px 10px rgba(0, 0, 0, 0.08);
   border-radius: var(--corner-xl);
@@ -3512,7 +3513,7 @@ input[type=search]::-webkit-search-results-decoration {
   width: 100%;
   max-width: 625px;
   padding: var(--space-5xl);
-  border: 1px solid var(--theme-config-crowdfundingprimary);
+  border: 1px solid var(--theme-crowdfunding-primary);
   position: relative;
 }
 .n3o-cta a {
@@ -3585,7 +3586,7 @@ input[type=search]::-webkit-search-results-decoration {
   position: sticky;
   bottom: var(--space-2xl);
   z-index: 5;
-  background-color: var(--theme-config-crowdfundingprimary-subtle);
+  background-color: var(--theme-crowdfunding-primary-subtle);
 }
 .n3o-cta__foot::before {
   position: absolute;
@@ -3594,7 +3595,7 @@ input[type=search]::-webkit-search-results-decoration {
   width: 100%;
   height: 28px;
   content: "";
-  background: var(--theme-config-crowdfundingprimary-subtle);
+  background: var(--theme-crowdfunding-primary-subtle);
   -webkit-filter: blur(2px);
   filter: blur(2px);
   z-index: 1;
@@ -3629,7 +3630,7 @@ input[type=search]::-webkit-search-results-decoration {
   padding: var(--space-lg) var(--space-xl);
   background-color: #fff;
   border-radius: var(--corner-md);
-  border: 2px solid var(--theme-config-crowdfundingprimary-light);
+  border: 2px solid var(--theme-crowdfunding-primary-light);
   margin-bottom: var(--space-2xl);
   -webkit-transition: 0.3s ease;
   transition: 0.3s ease;
@@ -3724,8 +3725,8 @@ input[type=search]::-webkit-search-results-decoration {
   width: 100%;
   height: 105px;
   content: "";
-  background: -webkit-gradient(linear, left bottom, left top, color-stop(20.5%, var(--theme-config-crowdfundingprimary-subtle)), to(#00000004));
-  background: linear-gradient(360deg, var(--theme-config-crowdfundingprimary-subtle) 20.5%, #00000004 100%);
+  background: -webkit-gradient(linear, left bottom, left top, color-stop(20.5%, var(--theme-crowdfunding-primary-subtle)), to(#00000004));
+  background: linear-gradient(360deg, var(--theme-crowdfunding-primary-subtle) 20.5%, #00000004 100%);
   -webkit-filter: blur(2px);
   filter: blur(2px);
   z-index: 2;
@@ -3755,7 +3756,7 @@ input[type=search]::-webkit-search-results-decoration {
   margin: 0;
 }
 .n3o-ctaFund__item.active .n3o-ctaFund__item-inner {
-  border-color: var(--theme-config-crowdfundingprimary);
+  border-color: var(--theme-crowdfunding-primary);
 }
 .n3o-ctaFund__item.active .n3o-ctaFund__item-inner svg {
   opacity: 1;
@@ -3771,7 +3772,7 @@ input[type=search]::-webkit-search-results-decoration {
   cursor: pointer;
 }
 .n3o-ctaFund__item input:checked ~ .n3o-ctaFund__item-inner {
-  border-color: var(--theme-config-crowdfundingprimary);
+  border-color: var(--theme-crowdfunding-primary);
 }
 .n3o-ctaFund__item input:checked ~ .n3o-ctaFund__item-inner svg {
   opacity: 1;
@@ -3785,17 +3786,17 @@ input[type=search]::-webkit-search-results-decoration {
   -ms-flex-align: center;
   align-items: center;
   border-radius: var(--corner-md);
-  border: 1px solid var(--theme-config-crowdfundingborder-color);
+  border: 1px solid var(--theme-crowdfunding-border-color);
   padding: var(--space-xl);
 }
 .n3o-ctaFund__item-inner.active {
-  border-color: var(--theme-config-crowdfundingprimary);
+  border-color: var(--theme-crowdfunding-primary);
 }
 .n3o-ctaFund__item-inner.active svg {
   opacity: 1;
 }
 .n3o-ctaFund__item-inner.uniq {
-  border: 2px solid var(--theme-config-crowdfundingprimary-hover);
+  border: 2px solid var(--theme-crowdfunding-primary-hover);
   border-radius: var(--corner-xl);
 }
 .n3o-ctaFund__item-inner.uniq .n3o-h3 {
@@ -3807,7 +3808,7 @@ input[type=search]::-webkit-search-results-decoration {
 .n3o-ctaFund__item hr {
   width: 1px;
   height: 32px;
-  background-color: var(--theme-config-crowdfundingborder-color);
+  background-color: var(--theme-crowdfunding-border-color);
   margin: 0 var(--space-xl);
 }
 .n3o-ctaFund__item .n3o-p {
@@ -3842,7 +3843,7 @@ input[type=search]::-webkit-search-results-decoration {
   z-index: 3;
 }
 .n3o-ctaFund .n3o-select {
-  border: 1px solid var(--theme-config-crowdfundingborder-color);
+  border: 1px solid var(--theme-crowdfunding-border-color);
   border-radius: var(--corner-md);
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -4017,7 +4018,7 @@ input[type=search]::-webkit-search-results-decoration {
   -ms-flex-align: center;
   align-items: center;
   border-radius: var(--corner-md);
-  border: 1px solid var(--theme-config-crowdfundingborder-color);
+  border: 1px solid var(--theme-crowdfunding-border-color);
   padding: var(--space-xl) 50px var(--space-xl) var(--space-xl);
 }
 .n3o-ctaAmount__inner .n3o-subtle {
@@ -4047,7 +4048,7 @@ input[type=search]::-webkit-search-results-decoration {
   cursor: pointer;
 }
 .n3o-ctaAmount > input:checked ~ .n3o-ctaAmount__inner {
-  border-color: var(--theme-config-crowdfundingprimary);
+  border-color: var(--theme-crowdfunding-primary);
 }
 .n3o-ctaAmount > input:checked ~ .n3o-ctaAmount__inner svg {
   opacity: 1;
@@ -4161,7 +4162,7 @@ input[type=search]::-webkit-search-results-decoration {
   margin-bottom: var(--space-md);
 }
 .n3o-setting__title {
-  background-color: var(--theme-config-crowdfundingprimary-subtle);
+  background-color: var(--theme-crowdfunding-primary-subtle);
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -4193,10 +4194,10 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .n3o-setting__title .n3o-subtle {
   font-weight: 600;
-  color: var(--theme-config-crowdfundingprimary);
+  color: var(--theme-crowdfunding-primary);
 }
 .n3o-setting__title .n3o-p {
-  color: var(--theme-config-crowdfundingprimary);
+  color: var(--theme-crowdfunding-primary);
 }
 .n3o-setting__tags {
   display: -webkit-box;
@@ -4217,7 +4218,7 @@ input[type=search]::-webkit-search-results-decoration {
   cursor: pointer;
   margin-right: var(--space-lg);
   padding: var(--space-xs) var(--space-md);
-  background-color: var(--theme-config-crowdfundingprimary-subtle);
+  background-color: var(--theme-crowdfunding-primary-subtle);
   border-radius: var(--corner-sm);
   opacity: 0.9;
   margin: 6px;
@@ -4225,13 +4226,13 @@ input[type=search]::-webkit-search-results-decoration {
 .n3o-setting__tag svg {
   width: 16px;
   height: 16px;
-  color: var(--theme-config-crowdfundingprimary);
+  color: var(--theme-crowdfunding-primary);
   -webkit-transition: 0.3s ease;
   transition: 0.3s ease;
   margin-right: var(--space-xs);
 }
 .n3o-setting__tag b {
-  color: var(--theme-config-crowdfundingprimary);
+  color: var(--theme-crowdfunding-primary);
   font-weight: 500;
 }
 .n3o-setting__radios {
@@ -4270,7 +4271,7 @@ input[type=search]::-webkit-search-results-decoration {
   cursor: pointer;
 }
 .n3o-setting__radio input:checked ~ span {
-  background-color: var(--theme-config-crowdfundingbutton-color);
+  background-color: var(--theme-crowdfunding-button-color);
   color: #fff;
 }
 .n3o-setting__radio span {
@@ -4296,7 +4297,7 @@ input[type=search]::-webkit-search-results-decoration {
   line-height: 24px;
   font-weight: 500;
   border-radius: var(--corner-sm);
-  border: 1px solid var(--theme-config-crowdfundingborder-color);
+  border: 1px solid var(--theme-crowdfunding-border-color);
   -webkit-box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.06), 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
   box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.06), 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
   -webkit-transition: 0.3s ease;
@@ -4405,7 +4406,7 @@ input[type=search]::-webkit-search-results-decoration {
   width: 100%;
 }
 .n3o-setting .n3o-select {
-  border: 1px solid var(--theme-config-crowdfundingborder-color);
+  border: 1px solid var(--theme-crowdfunding-border-color);
   border-radius: var(--corner-md);
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -4615,7 +4616,7 @@ input[type=search]::-webkit-search-results-decoration {
   pointer-events: none;
   height: 100%;
   width: 16.6%;
-  border-left: 1px solid var(--theme-config-crowdfundingborder-color);
+  border-left: 1px solid var(--theme-crowdfunding-border-color);
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   display: -webkit-box;
@@ -4623,7 +4624,7 @@ input[type=search]::-webkit-search-results-decoration {
   display: flex;
 }
 .n3o-adminC__slider-top span:last-child {
-  border-right: 1px solid var(--theme-config-crowdfundingborder-color);
+  border-right: 1px solid var(--theme-crowdfunding-border-color);
 }
 .n3o-adminC__slider input[type=range] {
   -webkit-appearance: none;
@@ -4645,7 +4646,7 @@ input[type=search]::-webkit-search-results-decoration {
   height: 28px;
   border: 5px solid #ffffffe0 !important;
   border-radius: 50%;
-  background: var(--theme-config-crowdfundingprimary);
+  background: var(--theme-crowdfunding-primary);
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   cursor: pointer;
@@ -4698,7 +4699,7 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .n3o-adminC__text {
   padding: var(--space-xl);
-  background-color: var(--theme-config-crowdfundingprimary-subtle);
+  background-color: var(--theme-crowdfunding-primary-subtle);
   border-radius: var(--corner-xl);
   display: -webkit-box;
   display: -ms-flexbox;
@@ -4739,7 +4740,7 @@ input[type=search]::-webkit-search-results-decoration {
   -ms-flex-pack: justify;
   justify-content: space-between;
   padding: var(--space-xl);
-  background-color: var(--theme-config-crowdfundingprimary-subtle);
+  background-color: var(--theme-crowdfunding-primary-subtle);
   border-radius: var(--corner-xl);
   margin-bottom: var(--space-md);
   color: #000;
@@ -4769,7 +4770,7 @@ input[type=search]::-webkit-search-results-decoration {
   -ms-flex-pack: end;
   justify-content: flex-end;
   padding: var(--space-xl);
-  background-color: var(--theme-config-crowdfundingprimary-subtle);
+  background-color: var(--theme-crowdfunding-primary-subtle);
   border-radius: var(--corner-xl);
   margin-bottom: var(--space-md);
   color: #000;
@@ -4902,7 +4903,7 @@ input[type=search]::-webkit-search-results-decoration {
   -ms-flex-align: center;
   align-items: center;
   padding-top: var(--space-sm);
-  border-top: 1px solid var(--theme-config-crowdfundingborder-color);
+  border-top: 1px solid var(--theme-crowdfunding-border-color);
   margin-bottom: var(--space-2xl);
 }
 .n3o-paymentForm__total-last .n3o-p {
@@ -4982,12 +4983,12 @@ input[type=search]::-webkit-search-results-decoration {
   left: 0;
   width: 4px;
   height: calc(100% + 2px);
-  background-color: var(--theme-config-crowdfundingprimary);
+  background-color: var(--theme-crowdfunding-primary);
   opacity: 0;
   z-index: 2;
 }
 .n3o-paymentItem.active {
-  border-left-color: var(--theme-config-crowdfundingprimary);
+  border-left-color: var(--theme-crowdfunding-primary);
 }
 .n3o-paymentItem.active::before {
   opacity: 1;
@@ -5160,7 +5161,7 @@ input[type=search]::-webkit-search-results-decoration {
   padding-bottom: 0;
 }
 .n3o-payment .n3o-steps__button::before {
-  background-color: var(--theme-config-crowdfundingprimary);
+  background-color: var(--theme-crowdfunding-primary);
 }
 .n3o-payment .n3o-steps .n3o-detail {
   color: #64748b;
@@ -5227,7 +5228,7 @@ input[type=search]::-webkit-search-results-decoration {
   width: calc(55% - 12px);
   padding: var(--space-xl);
   border-radius: var(--corner-xs);
-  background-color: var(--theme-config-crowdfundingprimary-subtle);
+  background-color: var(--theme-crowdfunding-primary-subtle);
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
@@ -5317,7 +5318,7 @@ input[type=search]::-webkit-search-results-decoration {
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: var(--theme-config-crowdfundingprimary-light);
+  background-color: var(--theme-crowdfunding-primary-light);
   border-radius: var(--corner-full);
 }
 .n3o-onboardItem__icon img {
@@ -5402,7 +5403,7 @@ input[type=search]::-webkit-search-results-decoration {
   justify-content: space-between;
   position: relative;
   padding: var(--space-xl);
-  border: 1px solid var(--theme-config-crowdfundingborder-color);
+  border: 1px solid var(--theme-crowdfunding-border-color);
   border-radius: var(--corner-xl);
   color: #000;
   -webkit-transition: 0.3s ease;
@@ -5414,14 +5415,14 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .n3o-signItem:hover {
   opacity: 1;
-  border-color: var(--theme-config-crowdfundingprimary-hover);
+  border-color: var(--theme-crowdfunding-primary-hover);
 }
 .n3o-signItem:hover span {
   opacity: 1;
 }
 .n3o-signItem__col {
   width: 50%;
-  border-right: 1px solid var(--theme-config-crowdfundingborder-color);
+  border-right: 1px solid var(--theme-crowdfunding-border-color);
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   display: -webkit-box;
@@ -5485,14 +5486,14 @@ input[type=search]::-webkit-search-results-decoration {
   -ms-flex-align: center;
   align-items: center;
   border-radius: var(--corner-xl);
-  border: 1px dashed var(--theme-config-crowdfundingprimary-light);
+  border: 1px dashed var(--theme-crowdfunding-primary-light);
   padding: var(--space-xl);
   color: #000;
   position: relative;
 }
 .n3o-signAdd:hover {
   opacity: 1;
-  border-color: var(--theme-config-crowdfundingprimary-hover);
+  border-color: var(--theme-crowdfunding-primary-hover);
 }
 .n3o-signAdd:hover span {
   opacity: 1;
@@ -5607,7 +5608,7 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .n3o-newAccount__head {
   padding: var(--space-3xl);
-  background-color: var(--theme-config-crowdfundingprimary);
+  background-color: var(--theme-crowdfunding-primary);
   color: #fff;
 }
 .n3o-newAccount__head .n3o-h4 {
@@ -5763,7 +5764,7 @@ input[type=search]::-webkit-search-results-decoration {
   display: none;
 }
 .n3o-spotlight.light {
-  background: var(--theme-config-crowdfundingprimary-subtle);
+  background: var(--theme-crowdfunding-primary-subtle);
 }
 .n3o-spotlight.sm .n3o-card {
   width: calc(25% - 32px);
@@ -5773,7 +5774,7 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .n3o-spotlight__inner-title {
   padding-bottom: 16px;
-  border-bottom: 1px solid var(--theme-config-crowdfundingborder-color);
+  border-bottom: 1px solid var(--theme-crowdfunding-border-color);
 }
 .n3o-spotlight__inner-title.base {
   padding: 0;
@@ -6062,7 +6063,7 @@ input[type=search]::-webkit-search-results-decoration {
 .n3o-card__progress {
   height: 12px;
   width: 100%;
-  background-color: var(--theme-config-crowdfundingprimary-light);
+  background-color: var(--theme-crowdfunding-primary-light);
   border-radius: var(--corner-full);
   overflow: hidden;
   position: relative;
@@ -6073,7 +6074,7 @@ input[type=search]::-webkit-search-results-decoration {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: var(--theme-config-crowdfundingprimary);
+  background-color: var(--theme-crowdfunding-primary);
   border-radius: var(--corner-full);
   min-width: 11px;
 }
@@ -6181,7 +6182,7 @@ input[type=search]::-webkit-search-results-decoration {
   -ms-flex-align: center;
   align-items: center;
   padding-bottom: var(--space-xl);
-  border-bottom: 1px solid var(--theme-config-crowdfundingborder-color);
+  border-bottom: 1px solid var(--theme-crowdfunding-border-color);
 }
 .n3o-explore__inner-side {
   display: -webkit-box;
@@ -7401,7 +7402,7 @@ input[type=search]::-webkit-search-results-decoration {
   -ms-flex-align: center;
   align-items: center;
   padding: var(--space-xs) var(--space-sm);
-  background: var(--theme-config-crowdfundingprimary-subtle);
+  background: var(--theme-crowdfunding-primary-subtle);
   border-radius: var(--corner-sm);
   margin-bottom: var(--space-lg);
 }
@@ -7476,7 +7477,7 @@ input[type=search]::-webkit-search-results-decoration {
   font-weight: 400;
   margin-top: -150px;
   padding-bottom: 112px;
-  background-color: var(--theme-config-crowdfundingpage-bg);
+  background-color: var(--theme-crowdfunding-page-bg);
 }
 .n3o-info a {
   text-decoration: none;
@@ -8620,7 +8621,7 @@ input[type=search]::-webkit-search-results-decoration {
     width: 100%;
     padding: 0 0 var(--space-xl) 0;
     border: unset;
-    border-bottom: 1px solid var(--theme-config-crowdfundingborder-color);
+    border-bottom: 1px solid var(--theme-crowdfunding-border-color);
   }
   .n3o-signItem__col:last-of-type {
     padding: var(--space-xl) 0 0 0;
