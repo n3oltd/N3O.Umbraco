@@ -17,9 +17,9 @@ public class CrowdfunderRevisionMigrationsComponent : IComponent {
     private readonly Lazy<IKeyValueService> _keyValueService;
 
     public CrowdfunderRevisionMigrationsComponent(IRuntimeState runtimeState,
-                                           Lazy<ICoreScopeProvider> scopeProvider,
-                                           Lazy<IMigrationPlanExecutor> migrationPlanExecutor,
-                                           Lazy<IKeyValueService> keyValueService) {
+                                                  Lazy<ICoreScopeProvider> scopeProvider,
+                                                  Lazy<IMigrationPlanExecutor> migrationPlanExecutor,
+                                                  Lazy<IKeyValueService> keyValueService) {
         _runtimeState = runtimeState;
         _scopeProvider = scopeProvider;
         _migrationPlanExecutor = migrationPlanExecutor;

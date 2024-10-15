@@ -24,7 +24,7 @@ public class CrowdfunderRevision {
     public int ContentRevision { get; set; }
     
     [Column(nameof(Name))]
-    [Length(100)]
+    [Length(200)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.CrowdfunderRevisions.Name + "_" + nameof(Name), ForColumns = nameof(Name))]
     public string Name { get; set; }
     

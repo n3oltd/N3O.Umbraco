@@ -37,8 +37,8 @@ public interface IContributionRepository {
                                      GivingType givingType);
 
     Task CommitAsync();
-    void DeleteOfflineContributionsForCrowdfunder(Guid crowdfunderId);
+    void DeleteOfflineContributions(Guid crowdfunderId);
     Task<IReadOnlyList<Contribution>> FindByCampaignAsync(params Guid[] campaignIds);
     Task<IReadOnlyList<Contribution>> FindByFundraiserAsync(params Guid[] fundraiserIds);
-    Task UpdateContributionsCrowdfunderNameAsync(ICrowdfunderContent crowdfunderContent, CrowdfunderType crowdfunderType);
+    Task UpdateCrowdfunderNameAsync(ICrowdfunderContent crowdfunderContent, CrowdfunderType crowdfunderType);
 }

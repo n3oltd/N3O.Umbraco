@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Crowdfunding;
 
 public interface ICrowdfunderRepository {
-    Task AddOrUpdateCrowdfunderAsync(ICrowdfunderContent crowdfunderContent);
+    Task AddOrUpdateAsync(ICrowdfunderContent content);
     Task<IReadOnlyList<Entities.Crowdfunder>> FilterByTagAsync(string tag);
     Task<IReadOnlyList<string>> GetActiveTagsAsync();
-    Task RefreshCrowdfunderStatistics(Guid crowdfunderId, CrowdfunderType keyType);
+    void QueueRecalculateContributionsTotal(Guid id, CrowdfunderType type);
+    Task RecalculateContributionsTotalAsync(Guid id);
     Task<IReadOnlyList<Entities.Crowdfunder>> SearchAsync(CrowdfunderType type, string query);
-    Task UpdateNonDonationsTotalAsync(Guid crowdfunderId, ForexMoney value);
+    Task UpdateNonDonationsTotalAsync(Guid id, ForexMoney value);
 }

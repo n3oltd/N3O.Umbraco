@@ -2,9 +2,7 @@
 using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.NamedParameters;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Scheduler;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
@@ -27,20 +25,14 @@ public class CrowdfunderPublished : INotificationAsyncHandler<ContentPublishedNo
             if (isCampaign || isFundraiser) {
                 var crowdfunderType = isCampaign ? CrowdfunderTypes.Campaign : CrowdfunderTypes.Fundraiser;
 
-                EnqueueJob<AddOrUpdateCrowdfunderCommand>(content.Key, crowdfunderType);
-                EnqueueJob<UpdateContributionCommand>(content.Key, crowdfunderType);
-                EnqueueJob<UpdateCrowdfunderRevisionCommand>(content.Key, crowdfunderType);
+                _backgroundJob.Enqueue<CrowdfunderUpdatedNotification>($"{typeof(CrowdfunderUpdatedNotification).Name} {content.Key}",
+                                                                       p => {
+                                                                           p.Add<ContentId>(content.Key.ToString());
+                                                                           p.Add<CrowdfunderTypeId>(crowdfunderType.Id);
+                                                                       });
             }
         }
 
         return Task.CompletedTask;
-    }
-
-    private void EnqueueJob<TCommand>(Guid key, CrowdfunderType crowdfunderType) where TCommand : Request<None, None> {
-        _backgroundJob.Enqueue<TCommand>($"{typeof(TCommand).Name.Replace("Command", "")} {key}",
-                                         p => {
-                                             p.Add<ContentId>(key.ToString());
-                                             p.Add<CrowdfunderTypeId>(crowdfunderType.Id);
-                                         });
     }
 }

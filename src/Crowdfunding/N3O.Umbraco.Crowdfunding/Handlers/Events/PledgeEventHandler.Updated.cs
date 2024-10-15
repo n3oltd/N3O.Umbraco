@@ -67,7 +67,7 @@ public class PledgeUpdatedHandler : PledgeEventHandler<PledgeUpdatedEvent> {
                                                                       GivingTypes.Donation);
         }
         
-        _contributionRepository.DeleteOfflineContributionsForCrowdfunder(pledge.Crowdfunder.Id);
+        _contributionRepository.DeleteOfflineContributions(pledge.Crowdfunder.Id);
 
         await _contributionRepository.CommitAsync();
     }

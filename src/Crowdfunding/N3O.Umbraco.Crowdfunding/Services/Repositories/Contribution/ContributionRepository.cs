@@ -76,8 +76,8 @@ public partial class ContributionRepository : IContributionRepository {
         return await FindContributionsAsync(Sql.Builder.Where($"{nameof(Contribution.FundraiserId)} IN (@0)", fundraiserIds));
     }
 
-    public async Task UpdateContributionsCrowdfunderNameAsync(ICrowdfunderContent crowdfunderContent,
-                                                              CrowdfunderType crowdfunderType) {
+    public async Task UpdateCrowdfunderNameAsync(ICrowdfunderContent crowdfunderContent,
+                                                 CrowdfunderType crowdfunderType) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
             var sql = Sql.Builder.Append($"UPDATE {CrowdfundingConstants.Tables.Contributions.Name}");
 
@@ -91,10 +91,6 @@ public partial class ContributionRepository : IContributionRepository {
             
             await db.ExecuteAsync(sql);
         }
-    }
-
-    public void DeleteOfflineContributionsForCrowdfunder(Guid crowdfunderId) {
-        _removeOfflineContributionsForCrowdfunderId = crowdfunderId;
     }
 
     private async Task<Contribution> GetContributionAsync(ContributionType type,

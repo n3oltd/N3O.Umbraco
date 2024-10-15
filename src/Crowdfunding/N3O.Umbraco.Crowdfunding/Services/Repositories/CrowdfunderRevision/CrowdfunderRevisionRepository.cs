@@ -1,3 +1,4 @@
+using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Extensions;
@@ -27,60 +28,72 @@ public class CrowdfunderRevisionRepository : ICrowdfunderRevisionRepository {
         _localClock = localClock;
     }
     
-    public async Task AddCrowdfunderRevisionAsync(ICrowdfunderContent crowdfunderContent, int revision) {
+    public async Task AddOrUpdateAsync(ICrowdfunderContent crowdfunderContent, int revision) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-            await AddCrowdfunderRevisionAsync(db, crowdfunderContent, revision);
+            var existing = await GetLatestRevisionAsync(db, crowdfunderContent.Key);
+
+            if (existing.HasValue()) {
+                var wasActive = existing.ActiveTo == null;
+                var isActive = crowdfunderContent.Status == CrowdfunderStatuses.Active;
+
+                if (wasActive && !isActive) {
+                    await DeactivateAsync(crowdfunderContent.Key);
+                }
+                
+                await UpdateAsync(crowdfunderContent, revision);
+            } else {
+                await AddToDbAsync(db, crowdfunderContent, revision);
+            }
         }
     }
     
-    public async Task CloseCrowdfunderRevisionAsync(Guid id) {
+    private async Task DeactivateAsync(Guid id) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-            var latestRevision = await GetLatestCrowdfunderRevisionAsync(db, id);
+            var latestRevision = await GetLatestRevisionAsync(db, id);
             
-            await CloseCrowdfunderRevisionAsync(db, latestRevision);
+            await DeactivateInDbAsync(db, latestRevision);
         }
     }
 
-    public async Task UpdateCrowdfunderRevisionAsync(ICrowdfunderContent crowdfunderContent, int revision) {
+    private async Task UpdateAsync(ICrowdfunderContent crowdfunderContent, int revision) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-            var latestRevision = await GetLatestCrowdfunderRevisionAsync(db, crowdfunderContent.Key);
+            var latestRevision = await GetLatestRevisionAsync(db, crowdfunderContent.Key);
 
             if (latestRevision.Name != crowdfunderContent.Name) {
-                await UpdateCrowdfunderRevisionNamesAsync(db, crowdfunderContent.Key, crowdfunderContent.Name);
+                await UpdateRevisionNameAsync(db, crowdfunderContent.Key, crowdfunderContent.Name);
             }
         
             if (latestRevision.GoalsTotalQuote != crowdfunderContent.Goals.Sum(x => x.Amount)) {
-                await CloseCrowdfunderRevisionAsync(db, latestRevision);
-                await AddCrowdfunderRevisionAsync(db, crowdfunderContent, revision);
+                await DeactivateInDbAsync(db, latestRevision);
+                await AddToDbAsync(db, crowdfunderContent, revision);
             }
         }
     }
     
-    private async Task AddCrowdfunderRevisionAsync(IUmbracoDatabase db, ICrowdfunderContent crowdfunderContent, int revision) {
-        var crowdfunderRevision = await GetCrowdfunderRevisionAsync(crowdfunderContent, revision);
+    private async Task AddToDbAsync(IUmbracoDatabase db, ICrowdfunderContent crowdfunderContent, int revision) {
+        var crowdfunderRevision = await GetRevisionAsync(crowdfunderContent, revision);
 
         await db.InsertAsync(crowdfunderRevision);
     }
 
-    private async Task CloseCrowdfunderRevisionAsync(IUmbracoDatabase db, CrowdfunderRevision crowdfunderRevision) {
+    private async Task DeactivateInDbAsync(IUmbracoDatabase db, CrowdfunderRevision crowdfunderRevision) {
         crowdfunderRevision.ActiveTo = _localClock.GetUtcNow();
 
         await db.UpdateAsync(crowdfunderRevision);
     }
 
-    private async Task<CrowdfunderRevision> GetLatestCrowdfunderRevisionAsync(IUmbracoDatabase db,
-                                                                              Guid contentKey) {
+    private async Task<CrowdfunderRevision> GetLatestRevisionAsync(IUmbracoDatabase db, Guid contentKey) {
         var query = Sql.Builder
                        .Append($"SELECT TOP(1) * FROM {CrowdfundingConstants.Tables.CrowdfunderRevisions.Name}")
                        .Where($"{nameof(Crowdfunder.ContentKey)} = @0", contentKey)
                        .Append($"ORDER BY {nameof(CrowdfunderRevision.ContentRevision)} DESC");
-            
-        var existing = await db.FirstOrDefaultAsync<CrowdfunderRevision>(query);
         
-        return existing;
+        var result = await db.FirstOrDefaultAsync<CrowdfunderRevision>(query);
+        
+        return result;
     }
 
-    private async Task UpdateCrowdfunderRevisionNamesAsync(IUmbracoDatabase db, Guid id, string name) {
+    private async Task UpdateRevisionNameAsync(IUmbracoDatabase db, Guid id, string name) {
         var sql = Sql.Builder
                      .Append($"UPDATE {CrowdfundingConstants.Tables.CrowdfunderRevisions.Name}")
                      .Append($"SET {nameof(CrowdfunderRevision.Name)} = @0", name)
@@ -89,11 +102,13 @@ public class CrowdfunderRevisionRepository : ICrowdfunderRevisionRepository {
         await db.ExecuteAsync(sql);
     }
 
-    private async Task<CrowdfunderRevision> GetCrowdfunderRevisionAsync(ICrowdfunderContent crowdfunder, int revision) {
+    private async Task<CrowdfunderRevision> GetRevisionAsync(ICrowdfunderContent crowdfunder, int revision) {
         var goalsTotalQuoteAmount = crowdfunder.Goals.Sum(x => x.Amount);
 
         var goalsTotalForex = await _forexConverter.QuoteToBase()
                                                    .FromCurrency(crowdfunder.Currency)
+                                                   //TODO
+                                                   //.UsingRateOn()
                                                    .ConvertAsync(goalsTotalQuoteAmount);
         
         var crowdfunderRevision = new CrowdfunderRevision();

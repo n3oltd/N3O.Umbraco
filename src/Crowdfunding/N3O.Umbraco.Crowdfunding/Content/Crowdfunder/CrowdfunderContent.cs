@@ -43,7 +43,8 @@ public abstract class CrowdfunderContent<T> : UmbracoContent<T>, ICrowdfunderCon
     
     public string GetFullText() {
         var sb = new StringBuilder();
-        sb.Append($"{Name}");
+        sb.AppendJoin(' ' , Name);
+        sb.AppendJoin(' ' , CampaignName);
         sb.AppendJoin(' ', Description);
         sb.AppendJoin(' ', Type.Name);
 
@@ -56,6 +57,7 @@ public abstract class CrowdfunderContent<T> : UmbracoContent<T>, ICrowdfunderCon
         return Url(serviceProvider.GetRequiredService<ICrowdfundingUrlBuilder>());
     }
     
-    public abstract void PopulateFullText(StringBuilder sb);
     public abstract string Url(ICrowdfundingUrlBuilder urlBuilder);
+    
+    protected abstract void PopulateFullText(StringBuilder sb);
 }

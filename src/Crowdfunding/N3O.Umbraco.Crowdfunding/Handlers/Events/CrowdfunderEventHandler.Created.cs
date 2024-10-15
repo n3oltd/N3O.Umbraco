@@ -19,9 +19,9 @@ public class CrowdfunderCreatedHandler : CrowdfunderEventHandler<CrowdfunderCrea
 
     protected override async Task HandleEventAsync(CrowdfunderCreatedEvent req, CancellationToken cancellationToken) {
         var content = GetContent(req.Model.Id);
-        var crowdfunderType = content.ContentType.Alias.ToCrowdfunderType();
+        var type = content.ContentType.Alias.ToCrowdfunderType();
 
-        await AddOrUpdateCrowdfunderRevisionAsync(content, crowdfunderType, req.Model.Status.Name);
+        await AddOrUpdateRevisionAsync(content.Key, content.VersionId, type);
 
         UpdateAndPublishStatus(content, req.Model.Status.Name);
     }

@@ -34,16 +34,16 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
         _umbracoDatabaseFactory = umbracoDatabaseFactory;
     }
 
-    public async Task AddOrUpdateCrowdfunderAsync(ICrowdfunderContent crowdfunderContent) {
+    public async Task AddOrUpdateAsync(ICrowdfunderContent content) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-            var existing = db.SingleOrDefault<Crowdfunder>($"WHERE {nameof(Crowdfunder.ContentKey)} = @0", crowdfunderContent.Key);
+            var existing = db.SingleOrDefault<Crowdfunder>($"WHERE {nameof(Crowdfunder.ContentKey)} = @0", content.Key);
 
             if (existing.HasValue()) {
-                await PopulateCrowdfunderPropertiesAsync(existing, crowdfunderContent);
+                await UpdateCrowdfunderAsync(existing, content);
 
                 await db.UpdateAsync(existing);
             } else {
-                var crowdfunder = await GetCrowdfunderAsync(crowdfunderContent);
+                var crowdfunder = await CreateCrowdfunderAsync(content);
 
                 await db.InsertAsync(crowdfunder);
             }
@@ -52,9 +52,9 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
     
     public async Task<IReadOnlyList<Crowdfunder>> FilterByTagAsync(string tag) {
         var sql = Sql.Builder
-                     .Append("Select *")
+                     .Append("SELECT *")
                      .From($"{CrowdfundingConstants.Tables.Crowdfunders.Name}")
-                     .Where($"{nameof(Crowdfunder.Tags)} Like %{tag}%");
+                     .Where($"{nameof(Crowdfunder.Tags)} LIKE %{TagsSeperator}{tag}{TagsSeperator}%");
         
         var crowdfunders = await FetchCrowdfundersAsync(sql);
 
@@ -69,17 +69,36 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
 
         var crowdfunders = await FetchCrowdfundersAsync(sql);
             
-        var tags = crowdfunders.Select(x => x.Tags.Split(TagsSeperator)).SelectMany(x => x).Distinct();
+        var tags = crowdfunders.Select(x => x.Tags.Split(TagsSeperator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                               .SelectMany(x => x).Distinct();
 
         return tags.ToList();
     }
 
-    public Task RefreshCrowdfunderStatistics(Guid crowdfunderId, CrowdfunderType crowdfunderType) {
-        CrowdfunderDebouncer.Enqueue(crowdfunderId, crowdfunderType, EnqueueUpdateCrowdfunderStatisticsCommand);
-
-        return Task.CompletedTask;
+    public void QueueRecalculateContributionsTotal(Guid id, CrowdfunderType type) {
+        CrowdfunderDebouncer.Debounce(id, type, EnqueueRecalculateContributionsTotal);
     }
-    
+
+    public async Task RecalculateContributionsTotalAsync(Guid id) {
+        using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
+            var contributionsQuoteSumSql = Sql.Builder
+                                              .Append($"SELECT SUM({nameof(Contribution.QuoteAmount)})")
+                                              .From($"{CrowdfundingConstants.Tables.Contributions.Name}")
+                                              .Where($"{nameof(Crowdfunder.Id)} = {id.ToString()}");
+
+            var contributionsBaseSumSql = Sql.Builder
+                                             .Append($"SELECT SUM({nameof(Contribution.BaseAmount)})")
+                                             .From($"{CrowdfundingConstants.Tables.Contributions.Name}")
+                                             .Where($"{nameof(Crowdfunder.Id)} = {id.ToString()}");
+
+            var sql = Sql.Builder
+                         .Append($"UPDATE {CrowdfundingConstants.Tables.Crowdfunders.Name} SET {nameof(Crowdfunder.ContributionsTotalQuote)} = ({contributionsQuoteSumSql.SQL}), {nameof(Crowdfunder.ContributionsTotalBase)} = ({contributionsBaseSumSql.SQL})")
+                         .Where($"{nameof(Crowdfunder.Id)} = {id.ToString()}");
+
+            await db.ExecuteAsync(sql);
+        }
+    }
+
     public async Task<IReadOnlyList<Crowdfunder>> SearchAsync(CrowdfunderType type, string query) {
         var sql = Sql.Builder
                      .Append("Select *")
@@ -96,9 +115,9 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
         return crowdfunders;
     }
 
-    public async Task UpdateNonDonationsTotalAsync(Guid crowdfunderId, ForexMoney nonDonationsForex) {
+    public async Task UpdateNonDonationsTotalAsync(Guid id, ForexMoney nonDonationsForex) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-            var crowdfunder = db.Single<Crowdfunder>($"WHERE {nameof(Crowdfunder.ContentKey)} = @0", crowdfunderId);
+            var crowdfunder = db.Single<Crowdfunder>($"WHERE {nameof(Crowdfunder.ContentKey)} = @0", id);
 
             crowdfunder.NonDonationsTotalBase = nonDonationsForex.Base.Amount;
             crowdfunder.NonDonationsTotalQuote = nonDonationsForex.Quote.Amount;
@@ -115,7 +134,7 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
         }
     }
     
-    private async Task<Crowdfunder> GetCrowdfunderAsync(ICrowdfunderContent crowdfunderContent) {
+    private async Task<Crowdfunder> CreateCrowdfunderAsync(ICrowdfunderContent crowdfunderContent) {
         var crowdfunder = new Crowdfunder();
         crowdfunder.CurrencyCode = crowdfunderContent.Currency.Code;
         crowdfunder.Type = (int) crowdfunderContent.Type.Key;
@@ -125,15 +144,16 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
             crowdfunder.Owner = ((FundraiserContent) crowdfunderContent).Owner.Name;
         }
 
-        await PopulateCrowdfunderPropertiesAsync(crowdfunder, crowdfunderContent);
+        await UpdateCrowdfunderAsync(crowdfunder, crowdfunderContent);
 
         return crowdfunder;
     }
     
-    private async Task PopulateCrowdfunderPropertiesAsync(Crowdfunder crowdfunder,
-                                                          ICrowdfunderContent crowdfunderContent) {
+    private async Task UpdateCrowdfunderAsync(Crowdfunder crowdfunder, ICrowdfunderContent crowdfunderContent) {
         var baseForex = await _forexConverter.QuoteToBase()
                                              .FromCurrency(crowdfunderContent.Currency)
+                                             // TODO
+                                             //.UsingRateOn()
                                              .ConvertAsync(crowdfunderContent.Goals.Sum(x => x.Amount));
         
         crowdfunder.Name = crowdfunderContent.Name;
@@ -142,14 +162,14 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
         crowdfunder.FullText = crowdfunderContent.GetFullText();
         crowdfunder.GoalsTotalQuote = crowdfunderContent.Goals.Sum(x => x.Amount);
         crowdfunder.GoalsTotalBase = baseForex.Base.Amount;
-        crowdfunder.Tags = crowdfunderContent.Tags.Select(x => x.Name).Join(TagsSeperator);
+        crowdfunder.Tags = $"{TagsSeperator}{crowdfunderContent.Tags.Select(x => x.Name).Join(TagsSeperator)}{TagsSeperator}";
     }
     
-    private void EnqueueUpdateCrowdfunderStatisticsCommand(Guid crowdfunderId, CrowdfunderType crowdfunderType) {
-        _backgroundJob.Enqueue<UpdateCrowdfunderStatisticsCommand>($"{nameof(UpdateCrowdfunderStatisticsCommand).Replace("Command", "")} {crowdfunderId.ToString()}",
-                                                                   p => { 
-                                                                       p.Add<ContentId>(crowdfunderId.ToString());
-                                                                       p.Add<CrowdfunderTypeId>(crowdfunderType.Id);
-                                                                   });
+    private void EnqueueRecalculateContributionsTotal(Guid id, CrowdfunderType type) {
+        _backgroundJob.Enqueue<RecalculateContributionTotalsCommand>($"{nameof(RecalculateContributionTotalsCommand).Replace("Command", "")} {id.ToString()}",
+                                                                     p => { 
+                                                                         p.Add<ContentId>(id.ToString());
+                                                                         p.Add<CrowdfunderTypeId>(type.Id);
+                                                                     });
     }
 }

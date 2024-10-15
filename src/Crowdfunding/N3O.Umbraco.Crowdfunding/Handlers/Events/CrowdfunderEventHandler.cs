@@ -1,9 +1,9 @@
 ﻿using AsyncKeyedLock;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Crowdfunding.Events;
-using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Crm.Lookups;
+using N3O.Umbraco.Crowdfunding.Events;
 using N3O.Umbraco.Crowdfunding.Extensions;
+using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Mediator;
 using System;
@@ -49,19 +49,10 @@ public abstract class CrowdfunderEventHandler<TEvent> : IRequestHandler<TEvent, 
         _contentService.SaveAndPublish(content);
     }
 
-    protected async Task AddOrUpdateCrowdfunderRevisionAsync(IContent content,
-                                                             CrowdfunderType crowdfunderType,
-                                                             string status) {
-        var crowdfunderContent = content.Key.ToCrowdfunderContent(_contentLocator, crowdfunderType);
-
-        var wasActive = crowdfunderContent.Status == CrowdfunderStatuses.Active;
-        var isActive = _lookups.FindByName<CrowdfunderStatus>(status) == CrowdfunderStatuses.Active;
-
-        if (!wasActive && isActive) {
-            await _crowdfunderRevisionRepository.AddCrowdfunderRevisionAsync(crowdfunderContent, content.VersionId);
-        } else if(wasActive && !isActive) {
-            await _crowdfunderRevisionRepository.CloseCrowdfunderRevisionAsync(crowdfunderContent.Key);
-        }
+    protected async Task AddOrUpdateRevisionAsync(Guid contentId, int contentVersionId, CrowdfunderType type) {
+        var content = _contentLocator.GetCrowdfunderContent(contentId, type);
+        
+        await _crowdfunderRevisionRepository.AddOrUpdateAsync(content, contentVersionId); 
     }
 
     protected IContent GetContent(Guid id) {

@@ -17,11 +17,9 @@ public class CampaignContent : CrowdfunderContent<CampaignContent>, ICampaign {
     public override string TeamName => null;
     public override Guid? FundraiserId => null;
 
-    public override void PopulateFullText(StringBuilder sb) {
-        return;
-    }
-
     public override string Url(ICrowdfundingUrlBuilder urlBuilder) {
         return ViewCampaignPage.Url(urlBuilder, Key);
     }
+
+    protected override void PopulateFullText(StringBuilder sb) { }
 }

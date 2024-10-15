@@ -20,7 +20,7 @@ public class Crowdfunder {
     public Guid ContentKey { get; set; }
     
     [Column(nameof(Name))]
-    [Length(100)]
+    [Length(200)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Crowdfunders.Name + "_" + nameof(Name), ForColumns = nameof(Name))]
     public string Name { get; set; }
     

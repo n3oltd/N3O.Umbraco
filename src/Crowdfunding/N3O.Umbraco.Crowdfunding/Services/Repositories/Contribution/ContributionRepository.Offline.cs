@@ -3,6 +3,7 @@ using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Lookups;
 using NodaTime;
 using NodaTime.Extensions;
+using System;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Crowdfunding;
@@ -42,5 +43,9 @@ public partial class ContributionRepository {
                                                       null);
         
         _toCommit.Add(contribution);
+    }
+    
+    public void DeleteOfflineContributions(Guid crowdfunderId) {
+        _removeOfflineContributionsForCrowdfunderId = crowdfunderId;
     }
 }

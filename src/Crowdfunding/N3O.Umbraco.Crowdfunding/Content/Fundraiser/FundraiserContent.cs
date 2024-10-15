@@ -19,14 +19,9 @@ public class FundraiserContent : CrowdfunderContent<FundraiserContent>, IFundrai
     public override string TeamName => null;
     public override Guid? FundraiserId => Key;
     
-    public override void PopulateFullText(StringBuilder sb) {
-        sb.AppendJoin(' ', $"{Name}");
-        sb.AppendJoin(' ', $"{Slug}");
-        sb.AppendJoin(' ', $"{CampaignName}");
-        sb.AppendJoin(' ', $"{Owner.Name}");
-    }
-    
     public override string Url(ICrowdfundingUrlBuilder urlBuilder) {
         return ViewEditFundraiserPage.Url(urlBuilder, Key);
     }
+    
+    protected override void PopulateFullText(StringBuilder sb) { }
 }

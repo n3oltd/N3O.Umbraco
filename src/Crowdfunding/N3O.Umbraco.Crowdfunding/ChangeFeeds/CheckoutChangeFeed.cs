@@ -91,6 +91,6 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
                                       .Select(x => x.GetCrowdfunderData(_jsonProvider))
                                       .GroupBy(x => (x.Id, x.Type));
             
-        crowdfunders.Do(x => _crowdfunderRepository.RefreshCrowdfunderStatistics(x.Key.Id, x.Key.Type));
+        crowdfunders.Do(x => _crowdfunderRepository.QueueRecalculateContributionsTotal(x.Key.Id, x.Key.Type));
     }
 }
