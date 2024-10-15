@@ -8,6 +8,7 @@ using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Financial;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Umbraco.Cms.Core.Strings;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
@@ -22,6 +23,7 @@ public abstract class CrowdfunderContent<T> : UmbracoContent<T>, ICrowdfunderCon
     public string Description => GetValue(x => x.Description);
     public IEnumerable<GoalElement> Goals => GetNestedAs(x => x.Goals);
     public IEnumerable<HeroImagesElement> HeroImages => GetNestedAs(x => x.HeroImages);
+    public IEnumerable<TagContent> Tags => GetPickedAs(x => x.Tags);
 
     [UmbracoProperty(CrowdfundingConstants.Crowdfunder.Properties.Name)]
     public string Name => GetValue(x => x.Name);
@@ -38,10 +40,22 @@ public abstract class CrowdfunderContent<T> : UmbracoContent<T>, ICrowdfunderCon
     
     public Guid Id => Key;
     IEnumerable<ICrowdfunderGoal> ICrowdfunder.Goals => Goals;
+    
+    public string GetFullText() {
+        var sb = new StringBuilder();
+        sb.Append($"{Name}");
+        sb.AppendJoin(' ', Description);
+        sb.AppendJoin(' ', Type.Name);
 
+        PopulateFullText(sb);
+
+        return sb.ToString();
+    }
+    
     public string Url(IServiceProvider serviceProvider) {
         return Url(serviceProvider.GetRequiredService<ICrowdfundingUrlBuilder>());
     }
     
+    public abstract void PopulateFullText(StringBuilder sb);
     public abstract string Url(ICrowdfundingUrlBuilder urlBuilder);
 }

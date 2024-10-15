@@ -12,10 +12,14 @@ public class CrowdfundingComposer : Composer {
         builder.Services.AddOpenApiDocument(CrowdfundingConstants.ApiName);
         
         builder.Components().Append<ContributionMigrationsComponent>();
+        builder.Components().Append<CrowdfunderMigrationsComponent>();
+        builder.Components().Append<CrowdfunderRevisionMigrationsComponent>();
         
         builder.Services.AddTransient<IContributionRepository, ContributionRepository>();
-        builder.Services.AddScoped<ICrowdfundingRouter, CrowdfundingRouter>();
+        builder.Services.AddTransient<ICrowdfunderRepository, CrowdfunderRepository>();
+        builder.Services.AddTransient<ICrowdfunderRevisionRepository, CrowdfunderRevisionRepository>();
         builder.Services.AddTransient<ICrowdfundingUrlBuilder, CrowdfundingUrlBuilder>();
+        builder.Services.AddScoped<ICrowdfundingRouter, CrowdfundingRouter>();
         builder.Services.AddScoped<ICrowdfundingViewModelFactory, CrowdfundingViewModelFactory>();
         
         RegisterAll(t => t.ImplementsInterface<ICrowdfundingPage>(),

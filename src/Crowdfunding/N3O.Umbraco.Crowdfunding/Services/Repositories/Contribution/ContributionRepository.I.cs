@@ -1,4 +1,6 @@
-﻿using N3O.Umbraco.Crowdfunding.Entities;
+﻿using N3O.Umbraco.Crm.Lookups;
+using N3O.Umbraco.Crowdfunding.Content;
+using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Lookups;
@@ -35,6 +37,8 @@ public interface IContributionRepository {
                                      GivingType givingType);
 
     Task CommitAsync();
+    void DeleteOfflineContributionsForCrowdfunder(Guid crowdfunderId);
     Task<IReadOnlyList<Contribution>> FindByCampaignAsync(params Guid[] campaignIds);
     Task<IReadOnlyList<Contribution>> FindByFundraiserAsync(params Guid[] fundraiserIds);
+    Task UpdateContributionsCrowdfunderNameAsync(ICrowdfunderContent crowdfunderContent, CrowdfunderType crowdfunderType);
 }
