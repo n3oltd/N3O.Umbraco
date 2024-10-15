@@ -1,6 +1,7 @@
 ﻿using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Crm.Models;
 using System;
+using System.Text;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
@@ -17,6 +18,13 @@ public class FundraiserContent : CrowdfunderContent<FundraiserContent>, IFundrai
     public override Guid? TeamId => null;
     public override string TeamName => null;
     public override Guid? FundraiserId => Key;
+    
+    public override void PopulateFullText(StringBuilder sb) {
+        sb.AppendJoin(' ', $"{Name}");
+        sb.AppendJoin(' ', $"{Slug}");
+        sb.AppendJoin(' ', $"{CampaignName}");
+        sb.AppendJoin(' ', $"{Owner.Name}");
+    }
     
     public override string Url(ICrowdfundingUrlBuilder urlBuilder) {
         return ViewEditFundraiserPage.Url(urlBuilder, Key);

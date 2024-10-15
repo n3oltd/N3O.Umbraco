@@ -23,15 +23,18 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
     private readonly IFormatter _formatter;
     private readonly IContributionRepository _contributionRepository;
     private readonly IJsonProvider _jsonProvider;
+    private readonly ICrowdfunderRepository _crowdfunderRepository;
     
     public CheckoutChangeFeed(ILogger<CheckoutChangeFeed> logger,
                               IClock clock,
                               IFormatter formatter,
                               IContributionRepository contributionRepository,
-                              IJsonProvider jsonProvider) 
+                              IJsonProvider jsonProvider,
+                              ICrowdfunderRepository crowdfunderRepository) 
         : base(logger) {
         _contributionRepository = contributionRepository;
         _jsonProvider = jsonProvider;
+        _crowdfunderRepository = crowdfunderRepository;
         _clock = clock;
         _formatter = formatter;
     }
@@ -63,6 +66,8 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
             foreach (var allocation in allocations.Where(x => x.HasExtensionDataFor(CrowdfundingConstants.Allocations.Extensions.Key))) {
                 await CommitAsync(givingType, checkout.SessionEntity, allocation);
             }
+            
+            RefreshCrowdfunderContributions(allocations);
         }
     }
 
@@ -79,5 +84,13 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
                                                                  allocation);
 
         await _contributionRepository.CommitAsync();
+    }
+
+    private void RefreshCrowdfunderContributions(IEnumerable<Allocation> allocations) {
+        var crowdfunders = allocations.Where(x => x.HasCrowdfunderData())
+                                      .Select(x => x.GetCrowdfunderData(_jsonProvider))
+                                      .GroupBy(x => (x.Id, x.Type));
+            
+        crowdfunders.Do(x => _crowdfunderRepository.RefreshCrowdfunderStatistics(x.Key.Id, x.Key.Type));
     }
 }
