@@ -9,7 +9,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Crowdfunding;
 
 public class FundraiserNameValidator : ContentPropertyValidator<TextBoxValueReq, TextBoxConfigurationRes> {
-    private const int MaxLength = 100;
+    public const int MaxLength = 200;
     
     public FundraiserNameValidator(IFormatter formatter)
         : base(formatter, CrowdfundingConstants.Fundraiser.Alias, CrowdfundingConstants.Crowdfunder.Properties.Name) { }
