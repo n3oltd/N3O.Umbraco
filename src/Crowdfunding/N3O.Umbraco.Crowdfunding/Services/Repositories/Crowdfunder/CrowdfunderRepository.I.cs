@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Crowdfunding;
 
 public interface ICrowdfunderRepository {
-    Task AddOrUpdateAsync(ICrowdfunderContent content);
+    Task AddOrUpdateAsync(ICrowdfunderContent crowdfunderContent);
     Task<IReadOnlyList<Entities.Crowdfunder>> FilterByTagAsync(string tag);
     Task<IReadOnlyList<string>> GetActiveTagsAsync();
     void QueueRecalculateContributionsTotal(Guid id, CrowdfunderType type);

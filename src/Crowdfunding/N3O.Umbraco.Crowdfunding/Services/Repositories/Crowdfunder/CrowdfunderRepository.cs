@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Crm.Lookups;
+using N3O.Umbraco.Cropper;
 using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
@@ -22,28 +23,31 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
     private readonly IBackgroundJob _backgroundJob;
     private readonly ICrowdfundingUrlBuilder _crowdfundingUrlBuilder;
     private readonly IForexConverter _forexConverter;
+    private readonly IImageCropper _imageCropper;
     private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
 
     public CrowdfunderRepository(IBackgroundJob backgroundJob,
                                  ICrowdfundingUrlBuilder crowdfundingUrlBuilder,
                                  IForexConverter forexConverter,
+                                 IImageCropper imageCropper,
                                  IUmbracoDatabaseFactory umbracoDatabaseFactory) {
         _backgroundJob = backgroundJob;
         _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
         _forexConverter = forexConverter;
+        _imageCropper = imageCropper;
         _umbracoDatabaseFactory = umbracoDatabaseFactory;
     }
 
-    public async Task AddOrUpdateAsync(ICrowdfunderContent content) {
+    public async Task AddOrUpdateAsync(ICrowdfunderContent crowdfunderContent) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-            var existing = db.SingleOrDefault<Crowdfunder>($"WHERE {nameof(Crowdfunder.ContentKey)} = @0", content.Key);
+            var existing = db.SingleOrDefault<Crowdfunder>($"WHERE {nameof(Crowdfunder.ContentKey)} = @0", crowdfunderContent.Key);
 
             if (existing.HasValue()) {
-                await UpdateCrowdfunderAsync(existing, content);
+                await UpdateCrowdfunderAsync(existing, crowdfunderContent);
 
                 await db.UpdateAsync(existing);
             } else {
-                var crowdfunder = await CreateCrowdfunderAsync(content);
+                var crowdfunder = await CreateCrowdfunderAsync(crowdfunderContent);
 
                 await db.InsertAsync(crowdfunder);
             }
@@ -52,7 +56,7 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
     
     public async Task<IReadOnlyList<Crowdfunder>> FilterByTagAsync(string tag) {
         var sql = Sql.Builder
-                     .Append("SELECT *")
+                     .Select("*")
                      .From($"{CrowdfundingConstants.Tables.Crowdfunders.Name}")
                      .Where($"{nameof(Crowdfunder.Tags)} LIKE %{TagsSeperator}{tag}{TagsSeperator}%");
         
@@ -82,12 +86,12 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
     public async Task RecalculateContributionsTotalAsync(Guid id) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
             var contributionsQuoteSumSql = Sql.Builder
-                                              .Append($"SELECT SUM({nameof(Contribution.QuoteAmount)})")
+                                              .Select($"SUM({nameof(Contribution.QuoteAmount)})")
                                               .From($"{CrowdfundingConstants.Tables.Contributions.Name}")
                                               .Where($"{nameof(Crowdfunder.Id)} = {id.ToString()}");
 
             var contributionsBaseSumSql = Sql.Builder
-                                             .Append($"SELECT SUM({nameof(Contribution.BaseAmount)})")
+                                             .Select($"SUM({nameof(Contribution.BaseAmount)})")
                                              .From($"{CrowdfundingConstants.Tables.Contributions.Name}")
                                              .Where($"{nameof(Crowdfunder.Id)} = {id.ToString()}");
 
@@ -101,7 +105,7 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
 
     public async Task<IReadOnlyList<Crowdfunder>> SearchAsync(CrowdfunderType type, string query) {
         var sql = Sql.Builder
-                     .Append("Select *")
+                     .Select("*")
                      .From($"{CrowdfundingConstants.Tables.Crowdfunders.Name}");
 
         if (type.HasValue()) {
@@ -150,10 +154,15 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
     }
     
     private async Task UpdateCrowdfunderAsync(Crowdfunder crowdfunder, ICrowdfunderContent crowdfunderContent) {
+        var heroImage = crowdfunderContent.HeroImages.First().Image;
+
+        var createdOn = crowdfunderContent.Type == CrowdfunderTypes.Campaign 
+                                 ? ((CampaignContent) crowdfunderContent).Content().CreateDate 
+                                 : ((FundraiserContent) crowdfunderContent).Content().CreateDate;
+        
         var baseForex = await _forexConverter.QuoteToBase()
                                              .FromCurrency(crowdfunderContent.Currency)
-                                             // TODO
-                                             //.UsingRateOn()
+                                             .UsingRateOn(createdOn.ToLocalDate())
                                              .ConvertAsync(crowdfunderContent.Goals.Sum(x => x.Amount));
         
         crowdfunder.Name = crowdfunderContent.Name;
@@ -163,6 +172,9 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
         crowdfunder.GoalsTotalQuote = crowdfunderContent.Goals.Sum(x => x.Amount);
         crowdfunder.GoalsTotalBase = baseForex.Base.Amount;
         crowdfunder.Tags = $"{TagsSeperator}{crowdfunderContent.Tags.Select(x => x.Name).Join(TagsSeperator)}{TagsSeperator}";
+        crowdfunder.JumboImage = await CrowdfunderCropperExtensions.GetJumboImagePath(_imageCropper, heroImage);
+        crowdfunder.TallImage = await CrowdfunderCropperExtensions.GetTallImagePathAsync(_imageCropper, heroImage);
+        crowdfunder.WideImage = await CrowdfunderCropperExtensions.GetWideImagePath(_imageCropper, heroImage);
     }
     
     private void EnqueueRecalculateContributionsTotal(Guid id, CrowdfunderType type) {
