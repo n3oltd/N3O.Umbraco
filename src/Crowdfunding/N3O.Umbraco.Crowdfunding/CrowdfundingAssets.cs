@@ -7,6 +7,7 @@ public class CrowdfundingAssets : IAssetBundle {
     public void Require(ISmidgeRequire bundle) {
         bundle.RequiresCss("~/assets/css/crowdfunding-main.css");
         bundle.RequiresCss("~/assets/css/intlTelInput.css");
+        bundle.RequiresCss("~/assets/css/banner.css");
         
         bundle.RequiresJs("~/assets/js/jquery.js");
         bundle.RequiresJs("~/assets/js/slick.min.js");
