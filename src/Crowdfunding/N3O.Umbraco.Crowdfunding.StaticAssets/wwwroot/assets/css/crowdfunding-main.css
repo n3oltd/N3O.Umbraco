@@ -1440,6 +1440,7 @@ input[type=search]::-webkit-search-results-decoration {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   position: relative;
+  margin-top: 75px;
 }
 .n3o-header__inner-logo {
   display: -webkit-box;
@@ -3765,8 +3766,8 @@ input[type=search]::-webkit-search-results-decoration {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
   opacity: 0;
   z-index: 2;
   cursor: pointer;
@@ -4041,8 +4042,8 @@ input[type=search]::-webkit-search-results-decoration {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
   opacity: 0;
   z-index: 2;
   cursor: pointer;
@@ -7802,6 +7803,10 @@ input[type=search]::-webkit-search-results-decoration {
   .--mhcartBtn span {
     width: 14px;
     height: 14px;
+  }
+  
+  .n3o-header__inner {
+    margin-top: 55px;
   }
 
   .n3o-info {
