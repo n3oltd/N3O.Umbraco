@@ -2,13 +2,13 @@ import { FundraiserGoalsRes } from "@n3oltd/umbraco-crowdfunding-client";
 import { GoalPricingRef, GoalSchema } from "@/editors/types/goalForm";
 
 export const selectFunc = () => {
-  const selects: NodeListOf<Element> = document.querySelectorAll(".select");
+  const selects: NodeListOf<Element> = document.querySelectorAll(".n3o-select");
 
   if (!selects) return;
 
   selects.forEach((select) => {
-    const selected = select.querySelector(".select__selected");
-    const selectOptions = select?.querySelector(".select__options");
+    const selected = select.querySelector(".n3o-select__selected");
+    const selectOptions = select?.querySelector(".n3o-select__options");
     const listItems = selectOptions?.querySelectorAll("li");
     const input = select?.querySelector("input[type='hidden']");
 
