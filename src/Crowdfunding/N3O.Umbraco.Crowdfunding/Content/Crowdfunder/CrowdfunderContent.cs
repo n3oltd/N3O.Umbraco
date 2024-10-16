@@ -28,7 +28,8 @@ public abstract class CrowdfunderContent<T> : UmbracoContent<T>, ICrowdfunderCon
     [UmbracoProperty(CrowdfundingConstants.Crowdfunder.Properties.Name)]
     public string Name => GetValue(x => x.Name);
     public string OpenGraphImagePath => GetValue(x => x.OpenGraphImagePath);
-    
+    public DateTime CreatedDated => Content().CreateDate;
+
     public bool ToggleStatus => GetValue(x => x.ToggleStatus);
     public CrowdfunderStatus Status => GetStaticLookupByNameAs(x => x.Status);
 

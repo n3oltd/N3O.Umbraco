@@ -8,18 +8,19 @@ using Umbraco.Cms.Core.Strings;
 namespace N3O.Umbraco.Crowdfunding.Content;
 
 public interface ICrowdfunderContent {
-    public Guid Key { get; }
-    public CrowdfunderType Type { get; }
-    public CrowdfunderStatus Status { get; }
-    public CroppedImage BackgroundImage { get; }
-    public HtmlEncodedString Body { get; }
-    public Currency Currency { get; }
-    public string Description { get; }
-    public IEnumerable<GoalElement> Goals { get; }
-    public IEnumerable<HeroImagesElement> HeroImages { get; }
-    public IEnumerable<TagContent> Tags { get; }
-    public string Name { get; }
-    public string OpenGraphImagePath { get; }
+    Guid Key { get; }
+    CrowdfunderType Type { get; }
+    CrowdfunderStatus Status { get; }
+    CroppedImage BackgroundImage { get; }
+    HtmlEncodedString Body { get; }
+    Currency Currency { get; }
+    string Description { get; }
+    IEnumerable<GoalElement> Goals { get; }
+    IEnumerable<HeroImagesElement> HeroImages { get; }
+    IEnumerable<TagContent> Tags { get; }
+    string Name { get; }
+    string OpenGraphImagePath { get; }
+    DateTime CreatedDated { get; }
     
     Guid CampaignId { get; }
     string CampaignName { get; }

@@ -104,14 +104,10 @@ public class CrowdfunderRevisionRepository : ICrowdfunderRevisionRepository {
 
     private async Task<CrowdfunderRevision> GetRevisionAsync(ICrowdfunderContent crowdfunderContent, int revision) {
         var goalsTotalQuoteAmount = crowdfunderContent.Goals.Sum(x => x.Amount);
-        
-        var createdOn = crowdfunderContent.Type == CrowdfunderTypes.Campaign 
-                            ? ((CampaignContent) crowdfunderContent).Content().CreateDate 
-                            : ((FundraiserContent) crowdfunderContent).Content().CreateDate;
 
         var goalsTotalForex = await _forexConverter.QuoteToBase()
                                                    .FromCurrency(crowdfunderContent.Currency)
-                                                   .UsingRateOn(createdOn.ToLocalDate())
+                                                   .UsingRateOn(crowdfunderContent.CreatedDated.ToLocalDate())
                                                    .ConvertAsync(goalsTotalQuoteAmount);
         
         var crowdfunderRevision = new CrowdfunderRevision();

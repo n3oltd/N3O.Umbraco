@@ -155,14 +155,10 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
     
     private async Task UpdateCrowdfunderAsync(Crowdfunder crowdfunder, ICrowdfunderContent crowdfunderContent) {
         var heroImage = crowdfunderContent.HeroImages.First().Image;
-
-        var createdOn = crowdfunderContent.Type == CrowdfunderTypes.Campaign 
-                                 ? ((CampaignContent) crowdfunderContent).Content().CreateDate 
-                                 : ((FundraiserContent) crowdfunderContent).Content().CreateDate;
         
         var baseForex = await _forexConverter.QuoteToBase()
                                              .FromCurrency(crowdfunderContent.Currency)
-                                             .UsingRateOn(createdOn.ToLocalDate())
+                                             .UsingRateOn(crowdfunderContent.CreatedDated.ToLocalDate())
                                              .ConvertAsync(crowdfunderContent.Goals.Sum(x => x.Amount));
         
         crowdfunder.Name = crowdfunderContent.Name;
@@ -172,9 +168,9 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
         crowdfunder.GoalsTotalQuote = crowdfunderContent.Goals.Sum(x => x.Amount);
         crowdfunder.GoalsTotalBase = baseForex.Base.Amount;
         crowdfunder.Tags = $"{TagsSeperator}{crowdfunderContent.Tags.Select(x => x.Name).Join(TagsSeperator)}{TagsSeperator}";
-        crowdfunder.JumboImage = await CrowdfunderCropperExtensions.GetJumboImagePath(_imageCropper, heroImage);
-        crowdfunder.TallImage = await CrowdfunderCropperExtensions.GetTallImagePathAsync(_imageCropper, heroImage);
-        crowdfunder.WideImage = await CrowdfunderCropperExtensions.GetWideImagePath(_imageCropper, heroImage);
+        crowdfunder.JumboImage = await _imageCropper.GetImagePathAsync(heroImage, ImageCropperExtensions.JumboCropDefinition);
+        crowdfunder.TallImage = await _imageCropper.GetImagePathAsync(heroImage, ImageCropperExtensions.TallCropDefinition);
+        crowdfunder.WideImage = await _imageCropper.GetImagePathAsync(heroImage, ImageCropperExtensions.WideCropDefinition);
     }
     
     private void EnqueueRecalculateContributionsTotal(Guid id, CrowdfunderType type) {

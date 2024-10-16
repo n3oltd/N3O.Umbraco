@@ -20,12 +20,12 @@ public class Crowdfunder {
     public Guid ContentKey { get; set; }
     
     [Column(nameof(Name))]
-    [Length(200)]
+    [Length(CrowdfundingConstants.Crowdfunder.NameMaxLength)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Crowdfunders.Name + "_" + nameof(Name), ForColumns = nameof(Name))]
     public string Name { get; set; }
     
     [Column(nameof(Url))]
-    [Length(400)]
+    [Length(CrowdfundingConstants.Crowdfunder.NameMaxLength + 200)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Crowdfunders.Name + "_" + nameof(Url), ForColumns = nameof(Url))]
     public string Url { get; set; }
     

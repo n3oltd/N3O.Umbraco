@@ -28,6 +28,8 @@ public static class CrowdfundingConstants {
     }
 
     public static class Crowdfunder {
+        public const int NameMaxLength = 200;
+        
         public static class Properties {
             public const string BackgroundImage = "backgroundImage";
             public const string Body = "body";
