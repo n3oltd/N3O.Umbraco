@@ -158,16 +158,6 @@ public partial class ContributionRepository : IContributionRepository {
         return contribution;
     }
 
-    private ICrowdfunderContent GetCrowdfunderContent(CrowdfunderType type, Guid id) {
-        if (type == CrowdfunderTypes.Campaign) {
-            return _contentLocator.ById<CampaignContent>(id);
-        } else if (type == CrowdfunderTypes.Fundraiser) {
-            return _contentLocator.ById<FundraiserContent>(id);
-        } else {
-            throw UnrecognisedValueException.For(type);
-        }
-    }
-
     private async Task<IReadOnlyList<Contribution>> FindContributionsAsync(Sql whereClause) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
             var sql = new Sql($"SELECT * FROM {CrowdfundingConstants.Tables.Contributions.Name}").Append(whereClause);
