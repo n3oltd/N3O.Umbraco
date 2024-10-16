@@ -24,11 +24,11 @@ $(function () {
 });
 
 const n3o_cdf_selectFunc = () => {
-  const selects = document.querySelectorAll(".select");
+  const selects = document.querySelectorAll(".n3o-select");
 
   selects.forEach((select) => {
-    const selected = select.querySelector(".select__selected");
-    const selectOptions = select.querySelector(".select__options");
+    const selected = select.querySelector(".n3o-select__selected");
+    const selectOptions = select.querySelector(".n3o-select__options");
     const listItems = selectOptions.querySelectorAll("li");
     const input = select.querySelector("input[type='hidden']");
     selected.onclick = () => {
@@ -54,11 +54,11 @@ const n3o_cdf_selectFunc = () => {
 };
 
 const n3o_cdf_sortFunc = () => {
-  const sorts = document.querySelectorAll(".sort");
+  const sorts = document.querySelectorAll(".n3o-sort");
   sorts.forEach((sort) => {
-    const selected = sort.querySelector(".sort__selected");
+    const selected = sort.querySelector(".n3o-sort__selected");
     const selectedText = selected.querySelector("b");
-    const sortOptions = sort.querySelector(".sort__options");
+    const sortOptions = sort.querySelector(".n3o-sort__options");
     const listItems = sortOptions.querySelectorAll("li");
     const input = sort.querySelector("input[type='hidden']");
     selected.onclick = () => {
