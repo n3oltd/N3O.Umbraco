@@ -14,10 +14,10 @@ export function GoalAllocationFields({field, fieldIndex, goalIndex, register, co
   switch (field.type) {
     case FeedbackCustomFieldType.Text:
       return (
-        <label className="input__outer" key={`text-${fieldIndex}`}>
+        <label className="n3o-input__outer" key={`text-${fieldIndex}`}>
           <h4>{field.name}</h4>
           <div
-            className="input big"
+            className="n3o-input big"
             style={{
               marginBottom: "12px",
             }}
@@ -39,10 +39,10 @@ export function GoalAllocationFields({field, fieldIndex, goalIndex, register, co
       );
     case FeedbackCustomFieldType.Date:
       return (
-        <label className="input__outer" key={`date-${fieldIndex}`}>
+        <label className="n3o-input__outer" key={`date-${fieldIndex}`}>
           <h4>{field.name}</h4>
           <div
-            className="setting__date-input big"
+            className="n3o-setting__date-input big"
             style={{
               marginBottom: "12px",
             }}
@@ -68,9 +68,9 @@ export function GoalAllocationFields({field, fieldIndex, goalIndex, register, co
       );
     case FeedbackCustomFieldType.Bool:
       return (
-        <div className="setting__date" id="settingDate">
-          <label className="checkD">
-            <div className="checkD__box">
+        <div className="n3o-setting__date" id="settingDate">
+          <label className="n3o-checkD">
+            <div className="n3o-checkD__box">
               <input type="checkbox" id="checkD" {...register(
                   `goals.${goalIndex}.allocations.${field.alias}`,
                   {
@@ -79,7 +79,7 @@ export function GoalAllocationFields({field, fieldIndex, goalIndex, register, co
                 )}/>
               <span></span>
             </div>
-            <p className="sm">{field.name}</p>
+            <p className="n3o-small">{field.name}</p>
           </label>
           {error[field.alias as keyof FeedbackCustomFieldDefinitionRes] && <FieldError message={window.themeConfig.text.crowdfunding.goalCustomFieldRequired.replace('%name', field.name as string)}/>}
         </div>

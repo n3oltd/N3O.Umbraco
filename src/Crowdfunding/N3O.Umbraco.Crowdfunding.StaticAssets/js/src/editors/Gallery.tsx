@@ -234,11 +234,11 @@ export const Gallery: React.FC<EditorProps> = ({
         />
         </>}
 
-        {(!loading && hasVideoUrlContent) && <div className="edit__content">
+        {(!loading && hasVideoUrlContent) && <div className="n3o-edit__content">
             <h3>{window.themeConfig.text.crowdfunding.campaignVideo}</h3>
-            <div className="input__outer">
+            <div className="n3o-input__outer">
               <p>{window.themeConfig.text.crowdfunding.CampaignVideoUrl}</p>
-              <div className="input">
+              <div className="n3o-input">
                 <input
                   type="text"
                   value={state.videoUrl}

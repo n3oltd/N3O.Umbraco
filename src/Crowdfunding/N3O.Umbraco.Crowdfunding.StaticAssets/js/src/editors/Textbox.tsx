@@ -74,7 +74,7 @@ export const Textbox: React.FC<EditorProps> = ({
     >
       {isPropLoading ? <p>{window.themeConfig.text.crowdfunding.apiLoading}</p> : <>
         <h3>{dataResponse?.textBox?.configuration?.description}</h3>
-        <div className="input big">
+        <div className="n3o-input big">
           <input type="text" 
             maxLength={dataResponse?.textBox?.configuration?.maximumLength}
             placeholder={window.themeConfig.text.crowdfunding?.textEditorPlaceholder} value={state.title} onChange={e => state.title = e.target.value} disabled={isPropLoading}/>
