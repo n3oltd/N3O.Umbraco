@@ -2,9 +2,9 @@
 using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
+using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Crowdfunding.UIBuilder;
-using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex;
@@ -82,12 +82,12 @@ public partial class ContributionRepository : IContributionRepository {
             var sql = Sql.Builder.Append($"UPDATE {CrowdfundingConstants.Tables.Contributions.Name}");
 
             if (crowdfunderType == CrowdfunderTypes.Campaign) {
-                sql.Append($"SET {nameof(Contribution.CampaignName)} = @0", crowdfunderContent.Name);
+                sql.Append($"SET {nameof(Contribution.CampaignName)} = @0", crowdfunderContent.Name)
+                   .Where($"{nameof(Contribution.CampaignId)} = (@0)", crowdfunderContent.Key);
             } else {
-                sql.Append($"SET {nameof(Contribution.FundraiserName)} = @0", crowdfunderContent.Name);
+                sql.Append($"SET {nameof(Contribution.FundraiserName)} = @0", crowdfunderContent.Name)
+                   .Where($"{nameof(Contribution.FundraiserId)} = (@0)", crowdfunderContent.Key);
             }
-        
-            sql.Where($"{nameof(Contribution.CrowdfunderId)} = (@0)", crowdfunderContent.Key);
             
             await db.ExecuteAsync(sql);
         }
@@ -110,7 +110,7 @@ public partial class ContributionRepository : IContributionRepository {
                                                           GivingType givingType,
                                                           Money value,
                                                           Allocation allocation) {
-        var crowdfunder = GetCrowdfunderContent(crowdfunderType, crowdfunderId);
+        var crowdfunder = _contentLocator.GetCrowdfunderContent(crowdfunderId, crowdfunderType);
 
         var taxReliefScheme = _taxReliefSchemeAccessor.GetScheme();
         var date = timestamp.InZone(_localClock.GetZone()).Date;
