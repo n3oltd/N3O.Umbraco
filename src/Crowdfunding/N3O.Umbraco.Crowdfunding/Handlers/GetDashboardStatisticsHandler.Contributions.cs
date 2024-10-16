@@ -31,6 +31,7 @@ public partial class GetDashboardStatisticsHandler {
         
         var totalAmount = dailyContributions.Sum(x => x.Total.Amount);
         var totalCount = dailyContributions.Sum(x => x.Count);
+        //TODO Average might be wrong
         var averageAmount = totalCount > 0 ? totalAmount / totalCount : 0; 
 
         res.Contributions = new ContributionStatisticsRes();

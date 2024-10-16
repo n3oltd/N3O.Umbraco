@@ -33,6 +33,7 @@ public partial class GetDashboardStatisticsHandler :
                                                      CancellationToken cancellationToken) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
             var res = new DashboardStatisticsRes();
+            res.BaseCurrency = new CurrencyRes();
 
             var tasks = new List<Task>();
             

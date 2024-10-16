@@ -2,6 +2,7 @@
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
+//Right hand dashboard
 public class CrowdfunderStatisticsItemRes {
     public string Name { get; set; }
     public MoneyRes GoalsTotal { get; set; }
