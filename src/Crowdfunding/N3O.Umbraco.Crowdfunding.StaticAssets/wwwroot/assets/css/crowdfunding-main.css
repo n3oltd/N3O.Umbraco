@@ -1326,7 +1326,7 @@ Global Settings
     transform: rotate(360deg);
   }
 }
-.auto__container {
+.n3o-auto__container {
   position: relative;
   max-width: 1280px;
   margin: 0 auto;
@@ -6704,7 +6704,7 @@ input[type=search]::-webkit-search-results-decoration {
 .--mhcheckoutm input[type=search]::-webkit-search-results-decoration {
   display: none;
 }
-.--mhcheckoutm .auto__container {
+.--mhcheckoutm .n3o-auto__container {
   max-width: 1580px;
 }
 .--mhcheckoutmTop {
@@ -7621,7 +7621,7 @@ input[type=search]::-webkit-search-results-decoration {
   }
 }
 @media (max-width: 1180px) {
-  .auto__container {
+  .n3o-auto__container {
     padding: 0 22px;
   }
 
@@ -8716,7 +8716,7 @@ input[type=search]::-webkit-search-results-decoration {
   .n3o-intro.big {
     padding: 0;
   }
-  .n3o-intro.big .auto__container {
+  .n3o-intro.big .n3o-auto__container {
     padding: 0;
   }
   .n3o-intro.big .n3o-intro__bg {
