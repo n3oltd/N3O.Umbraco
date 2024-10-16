@@ -1,11 +1,17 @@
+@inject IPartialText PartialText
+
 @model SelectFieldSettings
+
+@{
+PartialText.SetPartialName("CrowdfundingAccountSelectField");
+}
 
 <div class="n3o-input__outer big">
     <p class="n3o-p">@Html.Raw(Model.Required ? $"{Model.Label} <span style='color: red;'> *</span>" : $"{Model.Label}")</p>
 
     <div class="n3o-input sel">
         <select id="@Model.Path" name="@Model.Path" placeholder="@Model.Label" style="width: 100%">
-            <option value="">--Select--</option>
+            <option value="">@PartialText.Get("--Select--")</option>
             @foreach (var option in Model.Options) {
                     if (option == Model.DefaultOption) {
                         <option selected value="@option.Value">@option.Text</option>
