@@ -89,10 +89,10 @@
                     </div>
                 </div>
             }
-            
-            <h4 class="n3o-h4" class="n3o-goal-fields" style="display: none">@PartialText.Get("I want to raise")</h4>
 
-            <div class="n3o-cta__input active goal-fields" style="display: none">
+            <h4 class="n3o-h4 n3o-goal-fields" style="display: none">@PartialText.Get("I want to raise")</h4>
+
+            <div class="n3o-cta__input active n3o-goal-fields" style="display: none">
                 <label class="n3o-large" for="goal-amount">@Model.Campaign.Currency.Symbol</label>
 
                 <input id="goal-amount" placeholder="100" type="number" 
@@ -122,7 +122,7 @@
                 <p class="n3o-p n3o-detail"></p>
             </div>
             
-            <a href="#" class="n3o-subtle">@PartialText.Get("Note: Minimum amount is")<span id="n3o_cdf-min-amount">@Model.Formatter.Number.FormatMoney(Model.MinimumAmountValues[Model.Campaign.Currency])</span></a>
+            <a href="#" class="n3o-subtle">@PartialText.Get("Note: Minimum amount is ")<span id="n3o_cdf-min-amount">@Model.Formatter.Number.FormatMoney(Model.MinimumAmountValues[Model.Campaign.Currency])</span></a>
             
             <button type="button" id="goal-next-tab" class="n3o-button primary" disabled>
                 @PartialText.Get("Continue")
