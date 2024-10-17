@@ -11,7 +11,7 @@ public class DiskStorageFolder : IStorageFolder {
     private readonly string _folderPath;
     private readonly string _storageRootPath;
 
-    public DiskStorageFolder(IWebHostEnvironment webHostEnvironment,  string folderPath) {
+    public DiskStorageFolder(IWebHostEnvironment webHostEnvironment, string folderPath) {
         _folderPath = folderPath;
         _storageRootPath = Path.Combine(webHostEnvironment.WebRootPath,
                                         StorageConstants.StorageFolderName,

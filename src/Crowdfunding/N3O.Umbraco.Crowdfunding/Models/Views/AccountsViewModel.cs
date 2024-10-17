@@ -34,7 +34,7 @@ public class AccountsViewModel {
         var currentMemberEmail = await memberManager.GetCurrentPublishedMemberEmailAsync();
         var availableAccounts = currentMemberEmail.HasValue()
                                     ? await accountManager.FindAccountsByEmailAsync(currentMemberEmail)
-                                    : Enumerable.Empty<AccountRes>();
+                                    : [];
         
         var viewModel = new AccountsViewModel();
         viewModel.Email = currentMemberEmail;

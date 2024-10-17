@@ -42,6 +42,44 @@
     </div>
 </div>
 
+<section class="n3o-searchSec">
+    <div class="n3o-searchSec__bg">
+        <img src="../../images/bg.png" alt="" />
+    </div>
+    
+    <div class="auto__container">
+        <div class="n3o-searchSec__inner">
+            <div class="n3o-searchSec__inner-content">
+                <h2 class="n3o-h2">@PartialText.Get("Find a page to support")</h2>
+                
+                <p class="n3o-p sm">
+                    @PartialText.Get("Search for a fundraising page looking for your support.")
+                </p>
+                
+                <div class="n3o-searchSec__input">
+                    <span>
+                        <img src="/assets/images/icons/search.svg" alt="" />
+                    </span>
+                    
+                    <input type="search" name="text" />
+                </div>
+                
+                <a href="@Model.Link(x => SearchFundraisersPage.Url(x))" class="n3o-searchSec__link">
+                    <h3 class="n3o-h3">@PartialText.Get("See All Pages")</h3>
+                    
+                    <span>
+                        <img src="/assets/images/icons/arrow-right-white.svg" alt="" />
+                    </span>
+                </a>
+            </div>
+            
+            <div class="n3o-searchSec__inner-gallery">
+                <img src="../../images/search-gallery.png" alt="" />
+            </div>
+        </div>
+    </div>
+</section>
+
 <div class="n3o-spotlight">
     <div class="n3o-auto__container">
         <div class="n3o-spotlight__inner">

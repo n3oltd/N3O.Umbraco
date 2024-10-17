@@ -13,15 +13,15 @@ namespace N3O.Umbraco.Crowdfunding;
 
 public class CrowdfundingAllocationExtension : AllocationExtension<CrowdfunderDataReq, CrowdfunderData> {
     private readonly IContentLocator _contentLocator;
-    private readonly ICrowdfundingUrlBuilder _crowdfundingUrlBuilder;
+    private readonly ICrowdfundingUrlBuilder _urlBuilder;
 
     public CrowdfundingAllocationExtension(IJsonProvider jsonProvider,
                                            IValidator<CrowdfunderDataReq> validator,
                                            IContentLocator contentLocator,
-                                           ICrowdfundingUrlBuilder crowdfundingUrlBuilder)
+                                           ICrowdfundingUrlBuilder urlBuilder)
         : base(jsonProvider, validator) {
         _contentLocator = contentLocator;
-        _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
+        _urlBuilder = urlBuilder;
     }
 
     protected override CrowdfunderData Bind(CrowdfunderDataReq req) {
@@ -41,7 +41,7 @@ public class CrowdfundingAllocationExtension : AllocationExtension<CrowdfunderDa
         return new CrowdfunderData(crowdfunder.Key,
                                    crowdfunder.ContentType.Alias.ToCrowdfunderType(),
                                    crowdfunderContent.Name,
-                                   crowdfunderContent.Url(_crowdfundingUrlBuilder),
+                                   crowdfunderContent.Url(_urlBuilder),
                                    req.Comment,
                                    req.Anonymous.GetValueOrThrow());
     }

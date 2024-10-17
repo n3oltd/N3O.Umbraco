@@ -73,6 +73,7 @@ public class ViewCampaignPage : CrowdfundingPage {
                                                     ContentLocator,
                                                     _currencyAccessor,
                                                     _forexConverter,
+                                                    UrlBuilder,
                                                     _lookups,
                                                     this,
                                                     query,

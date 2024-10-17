@@ -49,6 +49,6 @@ public class HomePage : CrowdfundingPage {
     }
     
     public static string Url(ICrowdfundingUrlBuilder urlBuilder) {
-        return urlBuilder.GenerateUrl(null);
+        return urlBuilder.GenerateUrl(CrowdfundingConstants.Routes.HomePage);
     }
 }

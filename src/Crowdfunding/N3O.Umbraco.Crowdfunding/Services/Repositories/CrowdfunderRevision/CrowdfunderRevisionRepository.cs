@@ -13,16 +13,16 @@ using Umbraco.Cms.Infrastructure.Persistence;
 namespace N3O.Umbraco.Crowdfunding;
 
 public class CrowdfunderRevisionRepository : ICrowdfunderRevisionRepository {
-    private readonly ICrowdfundingUrlBuilder _crowdfundingUrlBuilder;
+    private readonly ICrowdfundingUrlBuilder _urlBuilder;
     private readonly IForexConverter _forexConverter;
     private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
     private readonly ILocalClock _localClock;
 
-    public CrowdfunderRevisionRepository(ICrowdfundingUrlBuilder crowdfundingUrlBuilder,
+    public CrowdfunderRevisionRepository(ICrowdfundingUrlBuilder urlBuilder,
                                          IForexConverter forexConverter,
                                          IUmbracoDatabaseFactory umbracoDatabaseFactory,
                                          ILocalClock localClock) {
-        _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
+        _urlBuilder = urlBuilder;
         _forexConverter = forexConverter;
         _umbracoDatabaseFactory = umbracoDatabaseFactory;
         _localClock = localClock;
@@ -114,7 +114,7 @@ public class CrowdfunderRevisionRepository : ICrowdfunderRevisionRepository {
         crowdfunderRevision.Name = crowdfunderContent.Name;
         crowdfunderRevision.ContentRevision = revision;
         crowdfunderRevision.Type = (int) crowdfunderContent.Type.Key;
-        crowdfunderRevision.Url = crowdfunderContent.Url(_crowdfundingUrlBuilder);
+        crowdfunderRevision.Url = crowdfunderContent.Url(_urlBuilder);
         crowdfunderRevision.ContentKey = crowdfunderContent.Key;
         crowdfunderRevision.CurrencyCode = crowdfunderContent.Currency.Code;
         crowdfunderRevision.GoalsTotalQuote = goalsTotalQuoteAmount;

@@ -34,6 +34,7 @@ public abstract class CrowdfunderViewModel<TContent> :
     protected static async Task<T> ForAsync<T>(ICrowdfundingViewModelFactory viewModelFactory,
                                                ICurrencyAccessor currencyAccessor,
                                                IForexConverter forexConverter,
+                                               ICrowdfundingUrlBuilder urlBuilder,
                                                ILookups lookups,
                                                ICrowdfundingPage page,
                                                IReadOnlyDictionary<string, string> query,
@@ -56,7 +57,7 @@ public abstract class CrowdfunderViewModel<TContent> :
                                                                                                          lookups,
                                                                                                          x));
         
-        viewModel.Tags = content.Goals.SelectMany(x => x.Tags.Select(CrowdfunderTagViewModel.For)).ToList();
+        viewModel.Tags = content.Goals.SelectMany(x => x.Tags.Select(x => CrowdfunderTagViewModel.For(urlBuilder, x))).ToList();
         viewModel.CrowdfunderProgress = CrowdfunderProgressViewModel.For(content.Currency,
                                                                          contributions,
                                                                          content.Goals);

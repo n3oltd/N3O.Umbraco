@@ -24,20 +24,20 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
     
     private readonly IBackgroundJob _backgroundJob;
     private readonly IContentLocator _contentLocator;
-    private readonly ICrowdfundingUrlBuilder _crowdfundingUrlBuilder;
+    private readonly ICrowdfundingUrlBuilder _urlBuilder;
     private readonly IForexConverter _forexConverter;
     private readonly IImageCropper _imageCropper;
     private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
 
     public CrowdfunderRepository(IBackgroundJob backgroundJob,
                                  IContentLocator contentLocator,
-                                 ICrowdfundingUrlBuilder crowdfundingUrlBuilder,
+                                 ICrowdfundingUrlBuilder urlBuilder,
                                  IForexConverter forexConverter,
                                  IImageCropper imageCropper,
                                  IUmbracoDatabaseFactory umbracoDatabaseFactory) {
         _contentLocator = contentLocator;
         _backgroundJob = backgroundJob;
-        _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
+        _urlBuilder = urlBuilder;
         _forexConverter = forexConverter;
         _imageCropper = imageCropper;
         _umbracoDatabaseFactory = umbracoDatabaseFactory;
@@ -58,17 +58,24 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
             }
         }
     }
+
+    public async Task<IReadOnlyList<Crowdfunder>> FindFundraisersAsync(string text) {
+        var crowdfunders = await FetchCrowdfundersAsync(sql => sql.Select("*"),
+                                                        sql => sql.Where($"{nameof(Crowdfunder.FullText)} LIKE %{0}%", text));
+
+        return crowdfunders;
+    }
     
-    public async Task<IReadOnlyList<Crowdfunder>> FilterByTagAsync(string tag) {
+    public async Task<IReadOnlyList<Crowdfunder>> FindFundraisersWithTagAsync(string tag) {
         var crowdfunders = await FetchCrowdfundersAsync(sql => sql.Select("*"),
                                                         sql => sql.Where($"{nameof(Crowdfunder.Tags)} LIKE %{TagsSeperator}{tag}{TagsSeperator}%"));
 
         return crowdfunders;
     }
 
-    public async Task<IReadOnlyList<string>> GetActiveTagsAsync() {
+    public async Task<IReadOnlyList<string>> GetActiveFundraiserTagsAsync() {
         var crowdfunders = await FetchCrowdfundersAsync(sql => sql.Select($"{nameof(Crowdfunder.Tags)}"),
-                                                        sql => sql.Where($"{nameof(Crowdfunder.StatusKey)} = {CrowdfunderStatuses.Active.Key}"));
+                                                        sql => sql.Where($"{nameof(Crowdfunder.Type)} = {CrowdfunderTypes.Fundraiser.Key} AND {nameof(Crowdfunder.StatusKey)} = {CrowdfunderStatuses.Active.Key}"));
             
         var tags = crowdfunders.Select(x => x.Tags.Split(TagsSeperator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
                                .SelectMany(x => x).Distinct();
@@ -206,7 +213,7 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
                                              .ConvertAsync(crowdfunderContent.Goals.Sum(x => x.Amount));
         
         crowdfunder.Name = crowdfunderContent.Name;
-        crowdfunder.Url = crowdfunderContent.Url(_crowdfundingUrlBuilder);
+        crowdfunder.Url = crowdfunderContent.Url(_urlBuilder);
         crowdfunder.StatusKey = (int?) crowdfunderContent.Status?.Key;
         crowdfunder.FullText = crowdfunderContent.GetFullText();
         crowdfunder.GoalsTotalQuote = crowdfunderContent.Goals.Sum(x => x.Amount);
