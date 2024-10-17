@@ -3,6 +3,7 @@ using N3O.Umbraco.Cropper;
 using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
+using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.NamedParameters;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
@@ -55,28 +56,39 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
     }
     
     public async Task<IReadOnlyList<Crowdfunder>> FilterByTagAsync(string tag) {
-        var sql = Sql.Builder
-                     .Select("*")
-                     .From($"{CrowdfundingConstants.Tables.Crowdfunders.Name}")
-                     .Where($"{nameof(Crowdfunder.Tags)} LIKE %{TagsSeperator}{tag}{TagsSeperator}%");
-        
-        var crowdfunders = await FetchCrowdfundersAsync(sql);
+        var crowdfunders = await FetchCrowdfundersAsync(sql => sql.Select("*"),
+                                                        sql => sql.Where($"{nameof(Crowdfunder.Tags)} LIKE %{TagsSeperator}{tag}{TagsSeperator}%"));
 
         return crowdfunders;
     }
 
     public async Task<IReadOnlyList<string>> GetActiveTagsAsync() {
-        var sql = Sql.Builder
-                     .Select($"{nameof(Crowdfunder.Tags)}")
-                     .From($"{CrowdfundingConstants.Tables.Crowdfunders.Name}")
-                     .Where($"{nameof(Crowdfunder.StatusKey)} = {(int) CrowdfunderStatuses.Active.Key}");
-
-        var crowdfunders = await FetchCrowdfundersAsync(sql);
+        var crowdfunders = await FetchCrowdfundersAsync(sql => sql.Select($"{nameof(Crowdfunder.Tags)}"),
+                                                        sql => sql.Where($"{nameof(Crowdfunder.StatusKey)} = {CrowdfunderStatuses.Active.Key}"));
             
         var tags = crowdfunders.Select(x => x.Tags.Split(TagsSeperator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
                                .SelectMany(x => x).Distinct();
 
         return tags.ToList();
+    }
+
+    public async Task<IReadOnlyList<Crowdfunder>> GetAlmostCompleteFundraisersAsync(int? take = null) {
+        return await FetchCrowdfundersAsync(sql => sql.SelectTop("*", take),
+                                            sql => sql.Where($"{nameof(Crowdfunder.Type)} = {(int) CrowdfunderTypes.Fundraiser.Key} AND {nameof(Crowdfunder.StatusKey)} = {CrowdfunderStatuses.Active.Key}"),
+                                            //LeftToRaiseQuote = GoalsTotal - NonDonationsQuote + ContributionsTotal
+                                            sql => sql.Append($"ORDER BY {nameof(Crowdfunder.LeftToRaiseQuote)}"));
+    }
+
+    public async Task<IReadOnlyList<Crowdfunder>> GetFeaturedCampaignsAsync(int? take = null) {
+        return await FetchCrowdfundersAsync(sql => sql.SelectTop("*", take),
+                                            sql => sql.Where($"{nameof(Crowdfunder.Type)} = {(int) CrowdfunderTypes.Campaign.Key} AND {nameof(Crowdfunder.StatusKey)} = {CrowdfunderStatuses.Active.Key}"),
+                                            sql => sql.Append($"ORDER BY {nameof(Crowdfunder.CreatedAt)} DESC"));
+    }
+
+    public async Task<IReadOnlyList<Crowdfunder>> GetNewFundraisersAsync(int? take = null) {
+        return await FetchCrowdfundersAsync(sql => sql.SelectTop("*", take),
+                                            sql => sql.Where($"{nameof(Crowdfunder.Type)} = {(int) CrowdfunderTypes.Fundraiser.Key} AND {nameof(Crowdfunder.StatusKey)} = {CrowdfunderStatuses.Active.Key}"),
+                                            sql => sql.Append($"ORDER BY {nameof(Crowdfunder.CreatedAt)} DESC"));
     }
 
     public void QueueRecalculateContributionsTotal(Guid id, CrowdfunderType type) {
@@ -104,17 +116,16 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
     }
 
     public async Task<IReadOnlyList<Crowdfunder>> SearchAsync(CrowdfunderType type, string query) {
-        var sql = Sql.Builder
-                     .Select("*")
-                     .From($"{CrowdfundingConstants.Tables.Crowdfunders.Name}");
+        Action<Sql> where;
 
         if (type.HasValue()) {
-            sql.Where($"{nameof(Crowdfunder.Type)} = {(int) type.Key} AND {nameof(Crowdfunder.FullText)} Like %{query}%");
+            where = sql => sql.Where($"{nameof(Crowdfunder.Type)} = {(int) type.Key} AND {nameof(Crowdfunder.FullText)} Like %{query}%");
         } else {
-            sql.Where($"{nameof(Crowdfunder.FullText)} Like %{query}%");
+            where = sql => sql.Where($"{nameof(Crowdfunder.FullText)} Like %{query}%");
         }
+
         
-        var crowdfunders = await FetchCrowdfundersAsync(sql);
+        var crowdfunders = await FetchCrowdfundersAsync(sql => sql.Select("*"), where);
 
         return crowdfunders;
     }
@@ -130,8 +141,16 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
         }
     }
 
-    private async Task<IReadOnlyList<Crowdfunder>> FetchCrowdfundersAsync(Sql sql) {
+    private async Task<IReadOnlyList<Crowdfunder>> FetchCrowdfundersAsync(Action<Sql> select,
+                                                                          Action<Sql> where,
+                                                                          Action<Sql> orderBy = null) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
+            var sql = Sql.Builder;
+            select(sql);
+            sql.From($"{CrowdfundingConstants.Tables.Crowdfunders.Name}");
+            where(sql);
+            orderBy?.Invoke(sql);
+            
             var crowdfunders = await db.FetchAsync<Crowdfunder>(sql);
             
             return crowdfunders;

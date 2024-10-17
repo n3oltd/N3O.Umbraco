@@ -1,1 +1,64 @@
 ﻿@model HomeViewModel
+
+<section class="n3o-spotlight">
+    <div class="auto__container">
+        <div class="n3o-spotlight__inner">
+            <div class="n3o-spotlight__inner-title">
+                <h2 class="n3o-h2">Spotlight Campaigns</h2>
+            </div>
+            <div class="n3o-spotlight__inner-row">
+                
+                @foreach (var featuredCampaignCard in Model.FeaturedCampaigns) {
+                    @Html.Partial("TallCard", featuredCampaignCard)
+                }
+
+
+                <div class="n3o-card">
+                    <div class="n3o-card__image">
+                        <img src="../../images/spotlight/2.png" alt=""/>
+                    </div>
+                    <div class="n3o-card__content">
+                        <h4 class="n3o-h4">
+                            Lorem qui deserunt aute exercitation Lorem qui deserunt aute
+                            exercitation
+                        </h4>
+                        <div class="n3o-card__name">
+                            <span>
+                                <img src="../../images/avatars/5.png" alt=""/>
+                            </span>
+                            <p class="n3o-p">Lorem Ipsum</p>
+                        </div>
+                        <div class="n3o-card__info">
+                            <div class="n3o-card__info-num">£1,740 raised</div>
+                            <div class="n3o-detail">48 Days left</div>
+                        </div>
+                        <div class="n3o-card__progress">
+                            <span style="max-width: 65%"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="n3o-card">
+                    <div class="n3o-card__image">
+                        <img src="../../images/spotlight/3.png" alt=""/>
+                    </div>
+                    <div class="n3o-card__content">
+                        <h4 class="n3o-h4">Lorem qui deserunt aute exercitation</h4>
+                        <div class="n3o-card__name">
+                            <span>
+                                <img src="../../images/avatars/3.png" alt=""/>
+                            </span>
+                            <p class="n3o-p">Lorem Ipsum</p>
+                        </div>
+                        <div class="n3o-card__info">
+                            <div class="n3o-card__info-num">£1,740 raised</div>
+                            <div class="n3o-detail">48 Days left</div>
+                        </div>
+                        <div class="n3o-card__progress">
+                            <span style="max-width: 65%"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

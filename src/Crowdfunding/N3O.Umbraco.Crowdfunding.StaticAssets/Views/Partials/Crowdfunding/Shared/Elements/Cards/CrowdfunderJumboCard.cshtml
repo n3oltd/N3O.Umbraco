@@ -1,0 +1,32 @@
+﻿@model CrowdfunderCardViewModel
+
+@inject IFormatter Formatter
+@inject IPartialText PartialText
+
+@{
+    PartialText.SetPartialName("CrowdfundingCrowdfunderJumboCard");
+}
+
+<div class="n3o-card feat">
+    <div class="n3o-card__image">
+        <img src="@Model.JumboImagePath" alt="@Model.Name" />
+    </div>
+    
+    <div class="n3o-card__content">
+        <h4 class="n3o-h4">@Model.Name</h4>
+        
+        <div class="n3o-card__name">
+            <span><img src="@Model.Owner.ProfilePicture" alt="@Model.Owner.Name" /></span>
+            
+            <p class="n3o-p">@Model.Owner.Name</p>
+        </div>
+        
+        <div class="n3o-card__info">
+            <div class="n3o-card__info-num">@PartialText.Get("{0} Raised").FormatWith(Formatter.Number.FormatMoney(Model.RaisedTotal))</div>
+        </div>
+        
+        <div class="n3o-card__progress">
+            <span style="max-width: @Model.PercentageComplete%"></span>
+        </div>
+    </div>
+</div>
