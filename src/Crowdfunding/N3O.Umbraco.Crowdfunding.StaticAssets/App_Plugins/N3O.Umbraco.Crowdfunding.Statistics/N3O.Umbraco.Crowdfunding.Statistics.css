@@ -54,6 +54,8 @@
 
 
     /*DONATIONS PANEL*/
+    /*SUPPORTERS PANEL*/
+
     .panel-1{
         grid-column: span 1;
         grid-row: span 1;
@@ -67,23 +69,27 @@
         box-sizing: border-box;
     }
 
+    .supporters-icon img,
     .donations-icon img {
         width: 50px;
         height: auto;
         margin-bottom: 3px;
     }
 
+    .supporters-title,
     .donations-title {
         font-size: 1rem;
         margin-bottom: 10px;
     }
 
+    .supporters-total-amount,
     .donations-total-amount {
         font-size: 2.25rem;
         font-weight: bold;
         margin-bottom: 15px;
     }
 
+    .supporters-details,
     .donations-details {
         display: flex;
         justify-content: space-between;
@@ -91,28 +97,32 @@
         flex-direction: row;
     }
 
+    .supporters-details div,
     .donations-details div {
         display: flex;
         flex-direction: column;
         flex:1;
         align-items: center;
         border-top: 1px solid #E9E9EB;
-        padding:40px;
+        padding: 20px 0 0;
         font-size: 1rem;
     }
-
+    
+    .supporters-details span,
     .donations-details span {
         font-size: 1rem;
     }
 
+    #One-off-supporters,
+    #Regular-supporters,
     #average-donation,
     #donation-count{
         padding: 5px;
-        font-size: 1rem;
+        font-size: 1.5rem;
+        font-weight:bold;
     }
 
 
-    /*SUPPORTERS PANEL*/
     .panel-2{
         grid-column: span 1;
         grid-row: span 1;
@@ -124,56 +134,7 @@
         height: auto;
         box-sizing: border-box;
     }
-    .supporters-icon img {
-        width: 50px;
-        height: 35px;
-        margin-bottom: 3px;
-    }
-
-    .supporters-title {
-        font-size: 12px;
-        margin-bottom: 10px;
-    }
-
-    .supporters-total-amount {
-        font-size: 36px;
-        font-weight: bold;
-        margin-bottom: 15px;
-    }
-
-    .supporters-details {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        flex-direction: row;
-    }
-
-    .supporters-details div {
-        display: flex;
-        flex-direction: column;
-        flex:1;
-        align-items: center;
-        border-top: 1px solid #E9E9EB;
-        height: 100px;
-        padding: 40px;
-        font-size: 14px;
-    }
-
-    .supporters-details span {
-        font-size: 14px;
-    }
-
-    #One-off-supporters{
-        padding: 5px;
-        font-size: 24px;
-    }
-
-    #Regular-supporters{
-        padding: 5px;
-        font-size: 24px;
-    }
-
-
+    
 
 
     /*pages*/
@@ -217,7 +178,7 @@
     #num-new-pages,
     .completed-pages-amount,
     .active-pages-amount{
-        font-size: 28px;
+        font-size: 1rem;
         font-weight: bold;
     }
 
@@ -227,18 +188,20 @@
     .panel-4 {
         grid-column: span 2 / span 2;
         grid-row-start: 2;
-
+        justify-content:center;
+        align-content: center;
         /* adjust this */
         height: auto;
     }
     .income-by-date-title{
-        font-size: 19px;
+        font-size: 1.5rem;
         font-weight: bold;
         margin-bottom: 10px;
     }
 
     .income-by-date-graph{
-        margin-left:150px;
+        align-content: center;
+        /*margin-left:150px;*/
     }
 
     .tooltip {
@@ -247,8 +210,8 @@
         width: 120px;
         height: auto;
         padding: 5px;
-        font: 12px sans-serif;
-        background: lightsteelblue;
+        font: 0.75rem sans-serif;
+        background: #b0c4de;
         border: 0px;
         border-radius: 8px;
         pointer-events: none;
@@ -303,7 +266,7 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        padding: 0 50px;
+        padding: 0 30px 0 10px;
         border-bottom: 1px solid #E9E9EB;
         width: 100%;
         height: 60px;
@@ -412,7 +375,7 @@
     }
 
     /* Media query for mobile screens */
-    @media (max-width: 768px) {
+    @media (max-width: 500px) {
         .n3o-overview-container {
             grid-template-columns: 1fr; /* One column layout */
             grid-template-rows: none; /* Let rows adjust automatically */
