@@ -57,10 +57,10 @@ public class Contribution {
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(FundraiserName), ForColumns = nameof(FundraiserName))]
     public string FundraiserName { get; set; }
     
-    [Column(nameof(FundraiserUrl))]
+    [Column(nameof(CrowdfunderUrl))]
     [Length(400)]
-    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(FundraiserUrl), ForColumns = nameof(FundraiserUrl))]
-    public string FundraiserUrl { get; set; }
+    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(CrowdfunderUrl), ForColumns = nameof(CrowdfunderUrl))]
+    public string CrowdfunderUrl { get; set; }
     
     [Column(nameof(TransactionReference))]
     [Length(50)]

@@ -107,7 +107,7 @@ public class CrowdfunderRevisionRepository : ICrowdfunderRevisionRepository {
 
         var goalsTotalForex = await _forexConverter.QuoteToBase()
                                                    .FromCurrency(crowdfunderContent.Currency)
-                                                   .UsingRateOn(crowdfunderContent.CreatedDated.ToLocalDate())
+                                                   .UsingRateOn(crowdfunderContent.CreatedDate.ToLocalDate())
                                                    .ConvertAsync(goalsTotalQuoteAmount);
         
         var crowdfunderRevision = new CrowdfunderRevision();

@@ -1,1 +1,58 @@
 ﻿@model HomeViewModel
+
+@inject IPartialText PartialText
+
+@{
+    PartialText.SetPartialName("HomePage");
+}
+
+<div class="n3o-spotlight">
+    <div class="n3o-auto__container">
+        <div class="n3o-spotlight__inner">
+            <div class="n3o-spotlight__inner-title">
+                <h2 class="n3o-h2">@PartialText.Get("Spotlight Campaigns")</h2>
+            </div>
+            
+            <div class="n3o-spotlight__inner-row">
+                @foreach (var featuredCampaignCard in Model.FeaturedCampaigns) {
+                    @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Cards/CrowdfunderTallCard.cshtml", featuredCampaignCard)
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="n3o-spotlight light">
+    <div class="n3o-auto__container">
+        <div class="n3o-spotlight__inner">
+            <div class="n3o-spotlight__inner-title base">
+                <h2 class="n3o-h2">@PartialText.Get("Almost Complete")</h2>
+            </div>
+            
+            <div class="n3o-spotlight__inner-grid">
+                @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Cards/CrowdfunderJumboCard.cshtml", Model.AlmostCompleteFundraisers.First())
+                <div class="n3o-spotlight__inner-col">
+                    @foreach (var featuredCampaignCard in Model.AlmostCompleteFundraisers.Skip(1)) {
+                        @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Cards/CrowdfunderWideCard.cshtml", featuredCampaignCard)
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="n3o-spotlight">
+    <div class="n3o-auto__container">
+        <div class="n3o-spotlight__inner">
+            <div class="n3o-spotlight__inner-title">
+                <h2 class="n3o-h2">@PartialText.Get("Ending Soon")</h2>
+            </div>
+            
+            <div class="n3o-spotlight__inner-row">
+                @foreach (var newFundraisers in Model.NewFundraisers) {
+                    @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Cards/CrowdfunderCompactCard.cshtml", newFundraisers)
+                }
+            </div>
+        </div>
+    </div>
+</div>
