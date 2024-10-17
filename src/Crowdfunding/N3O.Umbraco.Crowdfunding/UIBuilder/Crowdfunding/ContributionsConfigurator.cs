@@ -29,6 +29,7 @@ public class ContributionsConfigurator : KonstruktConfigurator {
         collection.AddSearchableProperty(c => c.Name);
         collection.AddSearchableProperty(c => c.TeamName);
         collection.AddSearchableProperty(c => c.CampaignName);
+        collection.AddSearchableProperty(c => c.FundraiserName);
         collection.AddSearchableProperty(c => c.Comment);
         collection.DisableCreate();
         collection.DisableDelete();
@@ -58,8 +59,9 @@ public class ContributionsConfigurator : KonstruktConfigurator {
         recordFieldset.AddField(c => c.Email).MakeReadOnly();
         recordFieldset.AddField(c => c.CurrencyCode).MakeReadOnly();
         recordFieldset.AddField(c => c.QuoteAmount).MakeReadOnly();
-        recordFieldset.AddField(c => c.FundraiserUrl).MakeReadOnly();
+        recordFieldset.AddField(c => c.CrowdfunderUrl).MakeReadOnly();
         recordFieldset.AddField(c => c.CampaignName).MakeReadOnly();
+        recordFieldset.AddField(c => c.FundraiserName).MakeReadOnly();
         recordFieldset.AddField(c => c.TeamName).MakeReadOnly();
         recordFieldset.AddField(c => c.TaxReliefQuoteAmount).MakeReadOnly();
         recordFieldset.AddField(c => c.Timestamp).MakeReadOnly();

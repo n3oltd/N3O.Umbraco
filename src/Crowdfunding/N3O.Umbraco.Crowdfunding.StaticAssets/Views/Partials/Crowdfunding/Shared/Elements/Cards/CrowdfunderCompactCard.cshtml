@@ -1,0 +1,25 @@
+﻿@model CrowdfunderCardViewModel
+
+@inject IPartialText PartialText
+
+@{
+    PartialText.SetPartialName("CrowdfundingCrowdfunderCompactCard");
+}
+
+<div class="n3o-card compact">
+    <div class="n3o-card__image">
+        <img src="@Model.WideImagePath" alt="@Model.Name" />
+    </div>
+    
+    <div class="n3o-card__content">
+        <a class="n3o-large">@Model.Name</a>
+        
+        <div class="n3o-card__name">
+            <span>
+                <img src="@Model.Owner.ProfilePicture" alt="@Model.Owner.Name" />
+            </span>
+            
+            <p class="n3o-p">@Model.Owner.Name</p>
+        </div>
+    </div>
+</div>

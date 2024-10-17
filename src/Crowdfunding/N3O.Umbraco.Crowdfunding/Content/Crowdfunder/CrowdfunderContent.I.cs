@@ -20,13 +20,14 @@ public interface ICrowdfunderContent {
     IEnumerable<TagContent> Tags { get; }
     string Name { get; }
     string OpenGraphImagePath { get; }
-    DateTime CreatedDated { get; }
+    DateTime CreatedDate { get; }
     
     Guid CampaignId { get; }
     string CampaignName { get; }
     Guid? TeamId { get; }
     string TeamName { get; }
     Guid? FundraiserId { get; }
+    string FundraiserName { get; }
 
     string GetFullText();
     string Url(ICrowdfundingUrlBuilder urlBuilder);

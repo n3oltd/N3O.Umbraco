@@ -27,7 +27,7 @@ public class CrowdfunderCardViewModel {
         viewModel.Name = crowdfunder.Name;
         viewModel.RaisedTotal = raisedTotal;
         viewModel.PercentageComplete = (int) percentageComplete;
-        viewModel.Owner = ;
+        viewModel.Owner = CrowdfunderOwnerViewModel.For(crowdfunder.OwnerName, crowdfunder.OwnerProfilePicture, null);
 
         return viewModel;
     }

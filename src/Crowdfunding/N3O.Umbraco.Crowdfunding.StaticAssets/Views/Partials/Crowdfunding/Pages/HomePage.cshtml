@@ -1,64 +1,58 @@
 ﻿@model HomeViewModel
 
-<section class="n3o-spotlight">
-    <div class="auto__container">
+@inject IPartialText PartialText
+
+@{
+    PartialText.SetPartialName("HomePage");
+}
+
+<div class="n3o-spotlight">
+    <div class="n3o-auto__container">
         <div class="n3o-spotlight__inner">
             <div class="n3o-spotlight__inner-title">
-                <h2 class="n3o-h2">Spotlight Campaigns</h2>
+                <h2 class="n3o-h2">@PartialText.Get("Spotlight Campaigns")</h2>
             </div>
+            
             <div class="n3o-spotlight__inner-row">
-                
                 @foreach (var featuredCampaignCard in Model.FeaturedCampaigns) {
-                    @Html.Partial("TallCard", featuredCampaignCard)
+                    @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Cards/CrowdfunderTallCard.cshtml", featuredCampaignCard)
                 }
+            </div>
+        </div>
+    </div>
+</div>
 
-
-                <div class="n3o-card">
-                    <div class="n3o-card__image">
-                        <img src="../../images/spotlight/2.png" alt=""/>
-                    </div>
-                    <div class="n3o-card__content">
-                        <h4 class="n3o-h4">
-                            Lorem qui deserunt aute exercitation Lorem qui deserunt aute
-                            exercitation
-                        </h4>
-                        <div class="n3o-card__name">
-                            <span>
-                                <img src="../../images/avatars/5.png" alt=""/>
-                            </span>
-                            <p class="n3o-p">Lorem Ipsum</p>
-                        </div>
-                        <div class="n3o-card__info">
-                            <div class="n3o-card__info-num">£1,740 raised</div>
-                            <div class="n3o-detail">48 Days left</div>
-                        </div>
-                        <div class="n3o-card__progress">
-                            <span style="max-width: 65%"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="n3o-card">
-                    <div class="n3o-card__image">
-                        <img src="../../images/spotlight/3.png" alt=""/>
-                    </div>
-                    <div class="n3o-card__content">
-                        <h4 class="n3o-h4">Lorem qui deserunt aute exercitation</h4>
-                        <div class="n3o-card__name">
-                            <span>
-                                <img src="../../images/avatars/3.png" alt=""/>
-                            </span>
-                            <p class="n3o-p">Lorem Ipsum</p>
-                        </div>
-                        <div class="n3o-card__info">
-                            <div class="n3o-card__info-num">£1,740 raised</div>
-                            <div class="n3o-detail">48 Days left</div>
-                        </div>
-                        <div class="n3o-card__progress">
-                            <span style="max-width: 65%"></span>
-                        </div>
-                    </div>
+<div class="n3o-spotlight light">
+    <div class="n3o-auto__container">
+        <div class="n3o-spotlight__inner">
+            <div class="n3o-spotlight__inner-title base">
+                <h2 class="n3o-h2">@PartialText.Get("Almost Complete")</h2>
+            </div>
+            
+            <div class="n3o-spotlight__inner-grid">
+                @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Cards/CrowdfunderJumboCard.cshtml", Model.AlmostCompleteFundraisers.First())
+                <div class="n3o-spotlight__inner-col">
+                    @foreach (var featuredCampaignCard in Model.AlmostCompleteFundraisers.Skip(1)) {
+                        @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Cards/CrowdfunderWideCard.cshtml", featuredCampaignCard)
+                    }
                 </div>
             </div>
         </div>
     </div>
-</section>
+</div>
+
+<div class="n3o-spotlight">
+    <div class="n3o-auto__container">
+        <div class="n3o-spotlight__inner">
+            <div class="n3o-spotlight__inner-title">
+                <h2 class="n3o-h2">@PartialText.Get("Ending Soon")</h2>
+            </div>
+            
+            <div class="n3o-spotlight__inner-row">
+                @foreach (var newFundraisers in Model.NewFundraisers) {
+                    @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Cards/CrowdfunderCompactCard.cshtml", newFundraisers)
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -129,10 +129,11 @@ public partial class ContributionRepository : IContributionRepository {
         contribution.CrowdfunderId = crowdfunderId;
         contribution.CampaignId = crowdfunder.CampaignId;
         contribution.CampaignName = crowdfunder.CampaignName;
+        contribution.FundraiserName = crowdfunder.FundraiserName;
         contribution.TeamId = crowdfunder.TeamId;
         contribution.TeamName = crowdfunder.TeamName;
         contribution.FundraiserId = crowdfunder.FundraiserId;
-        contribution.FundraiserUrl = crowdfunder.FundraiserId.HasValue() ? crowdfunder.Url(_urlBuilder) : null;
+        contribution.CrowdfunderUrl = crowdfunder.Url(_urlBuilder);
         contribution.TransactionReference = transactionReference;
         contribution.GivingTypeId = givingType.Id;
         contribution.CurrencyCode = value.Currency.Code;
