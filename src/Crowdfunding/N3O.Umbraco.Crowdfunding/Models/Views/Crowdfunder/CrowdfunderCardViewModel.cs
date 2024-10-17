@@ -13,6 +13,7 @@ public class CrowdfunderCardViewModel {
     public int PercentageComplete { get; private set; }
     public Money RaisedTotal { get; private set; }
     public CrowdfunderOwnerViewModel Owner { get; private set; }
+    public string Url { get; private set; }
     
     public static CrowdfunderCardViewModel For(ILookups lookups, Crowdfunder crowdfunder) {
         var currency = lookups.FindById<Currency>(crowdfunder.CurrencyCode);
@@ -28,6 +29,7 @@ public class CrowdfunderCardViewModel {
         viewModel.RaisedTotal = raisedTotal;
         viewModel.PercentageComplete = (int) percentageComplete;
         viewModel.Owner = CrowdfunderOwnerViewModel.For(crowdfunder.OwnerName, crowdfunder.OwnerProfilePicture, null);
+        viewModel.Url = crowdfunder.Url;
 
         return viewModel;
     }
