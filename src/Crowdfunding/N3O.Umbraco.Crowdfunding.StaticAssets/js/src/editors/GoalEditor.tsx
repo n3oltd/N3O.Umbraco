@@ -165,15 +165,15 @@ export const GoalEditor: React.FC<EditorProps> = ({
       disabled: updating || loading
     }}
   >
-   <div className="editGoal__wrapper">
-      <div className="editGoal" id="editGoal">
-        <div className="editGoal__head">
+   <div className="n3o-editGoal__wrapper">
+      <div className="n3o-editGoal" id="editGoal">
+        <div className="n3o-editGoal__head">
           <h4>{window.themeConfig.text.crowdfunding.editGoalTitle}</h4>
-          <div className="detail">
+          <div className="n3o-detail">
             {window.themeConfig.text.crowdfunding.editGoalDescription}
           </div>
         </div>
-        <div className="editGoal__body-wrapper">
+        <div className="n3o-editGoal__body-wrapper">
           <form onSubmit={handleSubmit(onSubmit)}>
             {fields.map((field, index) => {
               
@@ -198,7 +198,7 @@ export const GoalEditor: React.FC<EditorProps> = ({
                 width: "100%",
               }}
               type="button"
-              className="editGoal__add"
+              className="n3o-editGoal__add"
               onClick={() => {
                 append({
                   goalId: "",
@@ -217,8 +217,8 @@ export const GoalEditor: React.FC<EditorProps> = ({
               </span>
               <h4>{window.themeConfig.text.crowdfunding.addProject}</h4>
             </button>: null}
-            {((errors && Array.isArray(errors)) || state.errors.length) ? <div className="active checkout__message">
-                <p className="detail">
+            {((errors && Array.isArray(errors)) || state.errors.length) ? <div className="n3o-active checkout__message">
+                <p className="n3o-detail">
                     {state.errors.map(e => {
                       return <li key={e}>{e}</li>
                     })}
@@ -230,12 +230,12 @@ export const GoalEditor: React.FC<EditorProps> = ({
                 </p>
             </div> : null
             }
-            <p className="subtle">{window.themeConfig.text.crowdfunding.minimumAmountNote} {minimumAmount}</p>
-            <div className="editGoal__foot">
-              <button type="button" className="button secondary" onClick={onClose} disabled={updating}>
+            <p className="n3o-subtle">{window.themeConfig.text.crowdfunding.minimumAmountNote} {minimumAmount}</p>
+            <div className="n3o-editGoal__foot">
+              <button type="button" className="n3o-button secondary" onClick={onClose} disabled={updating}>
                 {window.themeConfig.text.crowdfunding.cancel}
               </button>
-              <button type="submit" className="button primary" disabled={updating}>
+              <button type="submit" className="n3o-button primary" disabled={updating}>
               {window.themeConfig.text.crowdfunding.save}
               </button>
             </div>
