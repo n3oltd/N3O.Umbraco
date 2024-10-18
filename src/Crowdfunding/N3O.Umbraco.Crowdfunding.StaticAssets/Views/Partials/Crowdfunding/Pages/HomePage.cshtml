@@ -6,7 +6,7 @@
     PartialText.SetPartialName("CrowdfundingHomePage");
 }
 
-<div class="n3o-spotlight">
+<div class="n3o-spotlight" style="margin-top: 100px">
     <div class="n3o-auto__container">
         <div class="n3o-spotlight__inner">
             <div class="n3o-spotlight__inner-title">
@@ -44,10 +44,10 @@
 
 <section class="n3o-searchSec">
     <div class="n3o-searchSec__bg">
-        <img src="../../images/bg.png" alt="" />
+        <img src="@Model.HomePageTemplate.SearchBackgroundImage.Src" alt="" />
     </div>
     
-    <div class="auto__container">
+    <div class="n3o-auto__container">
         <div class="n3o-searchSec__inner">
             <div class="n3o-searchSec__inner-content">
                 <h2 class="n3o-h2">@PartialText.Get("Find a page to support")</h2>
@@ -74,7 +74,7 @@
             </div>
             
             <div class="n3o-searchSec__inner-gallery">
-                <img src="../../images/search-gallery.png" alt="" />
+                <img src="@Model.HomePageTemplate.SearchSideImage.Src" alt="" />
             </div>
         </div>
     </div>

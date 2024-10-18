@@ -162,6 +162,14 @@ namespace DemoSite.Content
 		public virtual string Status => global::DemoSite.Content.CrowdfundingCrowdfunder.GetStatus(this, _publishedValueFallback);
 
 		///<summary>
+		/// Tags
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("tags")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingTag> Tags => global::DemoSite.Content.CrowdfundingCrowdfunder.GetTags(this, _publishedValueFallback);
+
+		///<summary>
 		/// Toggle Status
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]

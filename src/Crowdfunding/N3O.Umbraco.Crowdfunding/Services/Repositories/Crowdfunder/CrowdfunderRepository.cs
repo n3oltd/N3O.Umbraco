@@ -61,21 +61,21 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
 
     public async Task<IReadOnlyList<Crowdfunder>> FindFundraisersAsync(string text) {
         var crowdfunders = await FetchCrowdfundersAsync(sql => sql.Select("*"),
-                                                        sql => sql.Where($"{nameof(Crowdfunder.FullText)} LIKE %{0}%", text));
+                                                        sql => sql.Where($"{nameof(Crowdfunder.FullText)} LIKE '%{0}%'", text));
 
         return crowdfunders;
     }
     
     public async Task<IReadOnlyList<Crowdfunder>> FindFundraisersWithTagAsync(string tag) {
         var crowdfunders = await FetchCrowdfundersAsync(sql => sql.Select("*"),
-                                                        sql => sql.Where($"{nameof(Crowdfunder.Tags)} LIKE %{TagsSeperator}{tag}{TagsSeperator}%"));
+                                                        sql => sql.Where($"{nameof(Crowdfunder.Tags)} LIKE '%{TagsSeperator}{tag}{TagsSeperator}%'"));
 
         return crowdfunders;
     }
 
     public async Task<IReadOnlyList<string>> GetActiveFundraiserTagsAsync() {
         var crowdfunders = await FetchCrowdfundersAsync(sql => sql.Select($"{nameof(Crowdfunder.Tags)}"),
-                                                        sql => sql.Where($"{nameof(Crowdfunder.Type)} = {CrowdfunderTypes.Fundraiser.Key} AND {nameof(Crowdfunder.StatusKey)} = {CrowdfunderStatuses.Active.Key}"));
+                                                        sql => sql.Where($"{nameof(Crowdfunder.Type)} = {CrowdfunderTypes.Fundraiser.Key} AND {nameof(Crowdfunder.StatusKey)} = {CrowdfunderStatuses.Active.Key} AND {nameof(Crowdfunder.Tags)} IS NOT NULL"));
             
         var tags = crowdfunders.Select(x => x.Tags.Split(TagsSeperator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
                                .SelectMany(x => x).Distinct();
@@ -135,9 +135,9 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
         Action<Sql> where;
 
         if (type.HasValue()) {
-            where = sql => sql.Where($"{nameof(Crowdfunder.Type)} = {type.Key} AND {nameof(Crowdfunder.FullText)} Like %{query}%");
+            where = sql => sql.Where($"{nameof(Crowdfunder.Type)} = {type.Key} AND {nameof(Crowdfunder.FullText)} Like '%{query}%'");
         } else {
-            where = sql => sql.Where($"{nameof(Crowdfunder.FullText)} Like %{query}%");
+            where = sql => sql.Where($"{nameof(Crowdfunder.FullText)} Like '%{query}%'");
         }
 
         

@@ -146,6 +146,10 @@ public static class CrowdfundingConstants {
         public static class TemplateSettings {
             public const string Alias = "crowdfundingTemplateSettings";
         }
+        
+        public static class HomePageTemplate {
+            public const string Alias = "crowdfundingHomepageTemplate";
+        }
     }
 
     public static class Tables {

@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.OpenGraph;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Crowdfunding;
 
 public class HomePage : CrowdfundingPage {
+    private readonly IContentLocator _contentLocator;
     private readonly ICrowdfunderRepository _crowdfunderRepository;
     private readonly ILookups _lookups;
 
@@ -17,6 +19,7 @@ public class HomePage : CrowdfundingPage {
                     ICrowdfundingUrlBuilder urlBuilder,
                     ICrowdfundingViewModelFactory viewModelFactory)
         : base(contentLocator, urlBuilder, viewModelFactory) {
+        _contentLocator = contentLocator;
         _crowdfunderRepository = crowdfunderRepository;
         _lookups = lookups;
     }
@@ -36,6 +39,8 @@ public class HomePage : CrowdfundingPage {
         var featuredCampaigns = await _crowdfunderRepository.GetFeaturedCampaignsAsync();
         var almostCompleteFundraisers = await _crowdfunderRepository.GetAlmostCompleteFundraisersAsync(4);
         var newFundraisers = await _crowdfunderRepository.GetNewFundraisersAsync(4);
+
+        var homepageTemplate = _contentLocator.Single<HomePageTemplateContent>();
         
         var viewModel = await HomeViewModel.ForAsync(ViewModelFactory,
                                                      _lookups,
@@ -43,7 +48,8 @@ public class HomePage : CrowdfundingPage {
                                                      query,
                                                      featuredCampaigns,
                                                      almostCompleteFundraisers,
-                                                     newFundraisers);
+                                                     newFundraisers,
+                                                     homepageTemplate);
 
         return viewModel;
     }
