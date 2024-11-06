@@ -83,6 +83,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
         return await ViewEditFundraiserViewModel.ForAsync(ViewModelFactory,
                                                           _currencyAccessor,
                                                           _forexConverter,
+                                                          UrlBuilder,
                                                           _lookups,
                                                           _textFormatter,
                                                           _fundraiserAccessControl,

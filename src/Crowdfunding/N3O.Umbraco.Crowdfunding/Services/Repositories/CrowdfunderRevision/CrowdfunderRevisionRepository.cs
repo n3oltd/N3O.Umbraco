@@ -13,16 +13,16 @@ using Umbraco.Cms.Infrastructure.Persistence;
 namespace N3O.Umbraco.Crowdfunding;
 
 public class CrowdfunderRevisionRepository : ICrowdfunderRevisionRepository {
-    private readonly ICrowdfundingUrlBuilder _crowdfundingUrlBuilder;
+    private readonly ICrowdfundingUrlBuilder _urlBuilder;
     private readonly IForexConverter _forexConverter;
     private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
     private readonly ILocalClock _localClock;
 
-    public CrowdfunderRevisionRepository(ICrowdfundingUrlBuilder crowdfundingUrlBuilder,
+    public CrowdfunderRevisionRepository(ICrowdfundingUrlBuilder urlBuilder,
                                          IForexConverter forexConverter,
                                          IUmbracoDatabaseFactory umbracoDatabaseFactory,
                                          ILocalClock localClock) {
-        _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
+        _urlBuilder = urlBuilder;
         _forexConverter = forexConverter;
         _umbracoDatabaseFactory = umbracoDatabaseFactory;
         _localClock = localClock;
@@ -84,7 +84,7 @@ public class CrowdfunderRevisionRepository : ICrowdfunderRevisionRepository {
 
     private async Task<CrowdfunderRevision> GetLatestRevisionAsync(IUmbracoDatabase db, Guid contentKey) {
         var query = Sql.Builder
-                       .Append($"SELECT TOP(1) * FROM {CrowdfundingConstants.Tables.CrowdfunderRevisions.Name}")
+                       .Select($"TOP(1) * FROM {CrowdfundingConstants.Tables.CrowdfunderRevisions.Name}")
                        .Where($"{nameof(Crowdfunder.ContentKey)} = @0", contentKey)
                        .Append($"ORDER BY {nameof(CrowdfunderRevision.ContentRevision)} DESC");
         
@@ -102,17 +102,16 @@ public class CrowdfunderRevisionRepository : ICrowdfunderRevisionRepository {
         await db.ExecuteAsync(sql);
     }
 
-    private async Task<CrowdfunderRevision> GetRevisionAsync(ICrowdfunderContent crowdfunder, int revision) {
-        var goalsTotalQuoteAmount = crowdfunder.Goals.Sum(x => x.Amount);
+    private async Task<CrowdfunderRevision> GetRevisionAsync(ICrowdfunderContent crowdfunderContent, int revision) {
+        var goalsTotalQuoteAmount = crowdfunderContent.Goals.Sum(x => x.Amount);
 
         var goalsTotalForex = await _forexConverter.QuoteToBase()
-                                                   .FromCurrency(crowdfunder.Currency)
-                                                   //TODO
-                                                   //.UsingRateOn()
+                                                   .FromCurrency(crowdfunderContent.Currency)
+                                                   .UsingRateOn(crowdfunderContent.CreatedDate.ToLocalDate())
                                                    .ConvertAsync(goalsTotalQuoteAmount);
         
         var crowdfunderRevision = new CrowdfunderRevision();
-        crowdfunderRevision.Name = crowdfunder.Name;
+crowdfunderRevision.Name = crowdfunder.Name;
         crowdfunderRevision.ContentKey = crowdfunder.Key;
         crowdfunderRevision.ContentRevision = revision;
         crowdfunderRevision.CampaignId = crowdfunder.CampaignId;

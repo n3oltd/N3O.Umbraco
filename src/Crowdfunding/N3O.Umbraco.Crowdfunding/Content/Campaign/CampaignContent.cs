@@ -16,6 +16,7 @@ public class CampaignContent : CrowdfunderContent<CampaignContent>, ICampaign {
     public override Guid? TeamId => null;
     public override string TeamName => null;
     public override Guid? FundraiserId => null;
+    public override string FundraiserName => null;
 
     public override string Url(ICrowdfundingUrlBuilder urlBuilder) {
         return ViewCampaignPage.Url(urlBuilder, Key);

@@ -98,7 +98,7 @@ class n3o_cdf_ErrorHanlder {
         const container = document.getElementById(messageContainerId);
         if (error.errors) {
             const fragment = document.createDocumentFragment();
-            container.querySelector('.detail').innerHTML = '';
+            container.querySelector('.n3o-detail').innerHTML = '';
 
             if (error?.errors?.length) {
                 Object.values(error.errors).forEach(e => {
@@ -116,17 +116,17 @@ class n3o_cdf_ErrorHanlder {
                 });
             }
 
-            container.querySelector('.detail').appendChild(fragment);
+            container.querySelector('.n3o-detail').appendChild(fragment);
             container.style.display = 'inherit';
         }
 
         if (typeof error === 'string') {
-            container.querySelector('.detail').textContent = error;
+            container.querySelector('.n3o-detail').textContent = error;
             container.style.display = 'inherit';
         }
 
         if (error.status === 500) {
-            container.querySelector('.detail').textContent = window.themeConfig.text.crowdfunding.genericError;
+            container.querySelector('.n3o-detail').textContent = window.themeConfig.text.crowdfunding.genericError;
             container.style.display = 'inherit';
         }
     }
@@ -203,10 +203,10 @@ class n3o_cdf_SelectedGoal {
 class n3o_cdf_FieldHandler {
     static createTextInputElement(field) {
         const label = document.createElement('label');
-        label.classList.add('input__outer');
+        label.classList.add('n3o-input__outer');
         label.classList.add('field');
         label.innerHTML = `<h4>${field.name} ${field.required ? '*' : ''}</h4>
-                                   <div class="input big">
+                                   <div class="n3o-input big">
                                      <input type="text" maxlength=${field.textMaxLength > 0 ? field.textMaxLength.toString() : ''} placeholder="" ${field.required ? 'required' : ''} />
                                    </div>`;
         return label;
@@ -214,26 +214,26 @@ class n3o_cdf_FieldHandler {
 
     static createCheckboxElement(field) {
         const label = document.createElement('label');
-        label.classList.add('check__outer');
+        label.classList.add('n3o-check__outer');
         label.classList.add('field');
         label.innerHTML = `<h4>${field.name} ${field.required ? '*' : ''}</h4>
-                                   <label class="check">
-                                     <div class="check__box">
+                                   <label class="n3o-check">
+                                     <div class="n3o-check__box">
                                        <input type="checkbox" ${field.required ? 'required' : ''} />
                                        <span></span>
                                      </div>
-                                     <p class="small"></p>
+                                     <p class="n3o-small"></p>
                                    </label>`;
         return label;
     }
 
     static createCheckboxToggleElement(field) {
         const container = document.createElement('div');
-        container.classList.add('setting__date');
+        container.classList.add('n3o-setting__date');
         container.classList.add('field');
         container.innerHTML = `
-                            <label class="checkD">
-                        <div class="checkD__box">
+                            <label class="n3o-checkD">
+                        <div class="n3o-checkD__box">
                           <input type="checkbox" id="checkD" ${field.required ? 'required' : ''}  />
                           <span></span>
                         </div>
@@ -244,18 +244,17 @@ class n3o_cdf_FieldHandler {
 
     static createDatePickerElement(field) {
         const label = document.createElement('label');
-        label.classList.add('input__outer');
+        label.classList.add('n3o-input__outer');
         label.classList.add('field');
         label.innerHTML = `<h4>${field.name} ${field.required ? '*' : ''}</h4>
-                                   <div class="setting__date-input big">
+                                   <div class="n3o-setting__date-input big">
                                      <input
-                                       placeholder="Select Date"
                                        type="text"
                                        onfocus="(this.type='date')"
                                        onblur="(this.type='text')"
                                        ${field.required ? 'required' : ''}  />
                                      <span>
-                                       <img src="~/assets/images/icons/calendar.svg" alt="" />
+                                       <img src="/assets/images/icons/calendar.svg" alt="" />
                                      </span>
                                    </div>`;
         return label;
@@ -264,8 +263,16 @@ class n3o_cdf_FieldHandler {
     static clearDimensions() {
         ['dimension1', 'dimension2', 'dimension3', 'dimension4'].forEach(dimension => {
             const [currDimension, index] = n3o_cdf_splitDimensionAndNumber(dimension);
-            const dimensionOptionsContainerElm = document.getElementById(`goal-selection-${currDimension}-${index}`);
+            const dimensionOptionsContainerElm = document.getElementById(`goal-selection-dimension-${index}`);
             dimensionOptionsContainerElm.innerHTML = "";
+
+            const dimensionContainerElm = document.getElementById(`dimension-${index}`);
+            if (dimensionContainerElm) {
+                dimensionContainerElm.querySelector("input[type='hidden']").value = null;
+                dimensionContainerElm.querySelector('.n3o-select__selected').innerHTML = "";
+            }
+
+            
         })
     } 
 
@@ -273,20 +280,26 @@ class n3o_cdf_FieldHandler {
         dimensions.forEach(dimension => {
             const dimensionData = data[dimension];
 
-            if (!dimensionData || !dimensionData.default || !dimensionData.allowedOptions.length) {
+            if (!dimensionData || !dimensionData.allowedOptions.length) {
                 return;
             }
 
             const [currDimension, index] = n3o_cdf_splitDimensionAndNumber(dimension);
             const dimensionElms = document.getElementsByClassName(`${currDimension}-${index}`);
 
+            const dimensionOptionsContainerElm = document.getElementById(`goal-selection-dimension-${index}`);
             const dimensionContainerElm = document.getElementById(`${currDimension}-${index}`);
-            const dimensionOptionsContainerElm = document.getElementById(`goal-selection-${currDimension}-${index}`);
-
-            dimensionContainerElm.querySelector("input[type='hidden']").value = dimensionData.default.id;
-            dimensionContainerElm.querySelector('.select__selected').innerHTML = dimensionData.default.name;
-
             dimensionOptionsContainerElm.innerHTML = "";
+
+            if (dimensionData.default) {
+                dimensionContainerElm.querySelector("input[type='hidden']").value = dimensionData.default.id;
+                dimensionContainerElm.querySelector('.n3o-select__selected').innerHTML = dimensionData.default.name;
+            }
+
+            if (!dimensionData.default) {
+                dimensionContainerElm.querySelector("input[type='hidden']").value = dimensionData.allowedOptions[0].id;
+                dimensionContainerElm.querySelector('.n3o-select__selected').innerHTML = dimensionData.allowedOptions[0].name;
+            }
 
             for (let elm of dimensionElms) {
                 elm.style.display = 'none'
@@ -373,7 +386,7 @@ class n3o_cdf_PageManager {
     }
 
     toggleGoalAmountField() {
-        const elements = document.getElementsByClassName('goal-fields');
+        const elements = document.getElementsByClassName('n3o-goal-fields');
         for (const element of elements) {
             element.style.display = this.selectedGoal.value ? 'inherit' : 'none';
         }

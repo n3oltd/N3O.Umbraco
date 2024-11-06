@@ -2,9 +2,9 @@
 using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
+using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Crowdfunding.UIBuilder;
-using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex;
@@ -82,12 +82,12 @@ public partial class ContributionRepository : IContributionRepository {
             var sql = Sql.Builder.Append($"UPDATE {CrowdfundingConstants.Tables.Contributions.Name}");
 
             if (crowdfunderType == CrowdfunderTypes.Campaign) {
-                sql.Append($"SET {nameof(Contribution.CampaignName)} = @0", crowdfunderContent.Name);
+                sql.Append($"SET {nameof(Contribution.CampaignName)} = @0", crowdfunderContent.Name)
+                   .Where($"{nameof(Contribution.CampaignId)} = (@0)", crowdfunderContent.Key);
             } else {
-                sql.Append($"SET {nameof(Contribution.FundraiserName)} = @0", crowdfunderContent.Name);
+                sql.Append($"SET {nameof(Contribution.FundraiserName)} = @0", crowdfunderContent.Name)
+                   .Where($"{nameof(Contribution.FundraiserId)} = (@0)", crowdfunderContent.Key);
             }
-        
-            sql.Where($"{nameof(Contribution.CrowdfunderId)} = (@0)", crowdfunderContent.Key);
             
             await db.ExecuteAsync(sql);
         }
@@ -110,7 +110,7 @@ public partial class ContributionRepository : IContributionRepository {
                                                           GivingType givingType,
                                                           Money value,
                                                           Allocation allocation) {
-        var crowdfunder = GetCrowdfunderContent(crowdfunderType, crowdfunderId);
+        var crowdfunder = _contentLocator.GetCrowdfunderContent(crowdfunderId, crowdfunderType);
 
         var taxReliefScheme = _taxReliefSchemeAccessor.GetScheme();
         var date = timestamp.InZone(_localClock.GetZone()).Date;
@@ -129,10 +129,11 @@ public partial class ContributionRepository : IContributionRepository {
         contribution.CrowdfunderId = crowdfunderId;
         contribution.CampaignId = crowdfunder.CampaignId;
         contribution.CampaignName = crowdfunder.CampaignName;
+        contribution.FundraiserName = crowdfunder.FundraiserName;
         contribution.TeamId = crowdfunder.TeamId;
         contribution.TeamName = crowdfunder.TeamName;
         contribution.FundraiserId = crowdfunder.FundraiserId;
-        contribution.FundraiserUrl = crowdfunder.FundraiserId.HasValue() ? crowdfunder.Url(_urlBuilder) : null;
+        contribution.CrowdfunderUrl = crowdfunder.Url(_urlBuilder);
         contribution.TransactionReference = transactionReference;
         contribution.GivingTypeId = givingType.Id;
         contribution.CurrencyCode = value.Currency.Code;
@@ -156,16 +157,6 @@ public partial class ContributionRepository : IContributionRepository {
         contribution.AllocationJson = allocation.IfNotNull(x => _jsonProvider.SerializeObject(x));
 
         return contribution;
-    }
-
-    private ICrowdfunderContent GetCrowdfunderContent(CrowdfunderType type, Guid id) {
-        if (type == CrowdfunderTypes.Campaign) {
-            return _contentLocator.ById<CampaignContent>(id);
-        } else if (type == CrowdfunderTypes.Fundraiser) {
-            return _contentLocator.ById<FundraiserContent>(id);
-        } else {
-            throw UnrecognisedValueException.For(type);
-        }
     }
 
     private async Task<IReadOnlyList<Contribution>> FindContributionsAsync(Sql whereClause) {

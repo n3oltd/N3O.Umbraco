@@ -16,15 +16,15 @@ export function Modal({isOpen, onClose, onOk, id, oKButtonProps, closeButtonProp
   }
 
   return <>
-    <div className="modalsItem modall active" id={id} style={{overflowY: 'scroll'}}>
-      <div className="edit__wrapper" style={{margin: 'auto'}}>
-        <div className="edit">
+    <div className="n3o-modalsItem modall active" id={id} style={{overflowY: 'scroll'}}>
+      <div className="n3o-edit__wrapper" style={{margin: 'auto'}}>
+        <div className="n3o-edit">
           {children}
-          <div className="edit__foot">
-            <button type="button" className="button secondary" id="modal-close" {...(closeButtonProps || {})} onClick={() => onClose?.()} data-modal-close="true">
+          <div className="n3o-edit__foot">
+            <button type="button" className="n3o-button secondary" id="modal-close" {...(closeButtonProps || {})} onClick={() => onClose?.()} data-modal-close="true">
               {window.themeConfig.text.crowdfunding.cancel}
             </button>
-            <button type="button" className="button primary" id="modal-ok" {...(oKButtonProps || {})}  onClick={onOk}>{window.themeConfig.text.crowdfunding.save}</button>
+            <button type="button" className="n3o-button primary" id="modal-ok" {...(oKButtonProps || {})}  onClick={onOk}>{window.themeConfig.text.crowdfunding.save}</button>
           </div>
         </div>
       </div>

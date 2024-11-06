@@ -1,17 +1,17 @@
 ﻿function n3o_cdf_handleDonationForm() {
-  const ctaFunds = document.querySelectorAll(".ctaFund");
+  const ctaFunds = document.querySelectorAll(".n3o-ctaFund");
   
   if (ctaFunds.length === 0) {
     return;
   }
   
-  const cta = document.querySelector(".cta");
+  const cta = document.querySelector(".n3o-cta");
   const submitBtn = cta.querySelector(".submit3");
   const submitBtnPrice = submitBtn.querySelector("span");
   
   ctaFunds.forEach((ctaFund) => {
-    const ctaItems = ctaFund.querySelectorAll(".ctaFund__item");
-    const ctaAmount = ctaFund.querySelector(".ctaAmount");
+    const ctaItems = ctaFund.querySelectorAll(".n3o-ctaFund__item");
+    const ctaAmount = ctaFund.querySelector(".n3o-ctaAmount");
     const ctaCheckbox = ctaAmount.querySelector("input[type='checkbox']");
     const ctaInput = ctaAmount.querySelector("input[type='number']");    
     
@@ -19,14 +19,14 @@
       const ctaCurrencyPickerValue = ctaAmount.querySelector(".n3o-currency-picker").value;
       
       let oldPrice = 0;
-      const ctaActiveItems = document.querySelectorAll(".ctaFund__item.active");
+      const ctaActiveItems = document.querySelectorAll(".n3o-ctaFund__item.active");
       
       ctaActiveItems.forEach((ctaActiveItem) => {
         const price = ctaActiveItem.querySelector("h3");
         oldPrice = oldPrice + parseFloat(price.innerHTML.slice(1));
       });
       
-      const ctaAmounts = document.querySelectorAll(".ctaAmount.active");
+      const ctaAmounts = document.querySelectorAll(".n3o-ctaAmount.active");
       
       ctaAmounts.forEach((ctaAmount2) => {
         const ctaInput2 = ctaAmount2.querySelector("input[type='number']");
@@ -68,14 +68,14 @@
         });
         
         let oldPrice = 0;
-        const ctaActiveItems = document.querySelectorAll(".ctaFund__item.active");
+        const ctaActiveItems = document.querySelectorAll(".n3o-ctaFund__item.active");
         
         ctaActiveItems.forEach((ctaActiveItem) => {
           const price = ctaActiveItem.querySelector("h3");
           oldPrice = oldPrice + parseFloat(price.innerHTML.slice(1));
         });
         
-        const ctaAmounts = document.querySelectorAll(".ctaAmount.active");
+        const ctaAmounts = document.querySelectorAll(".n3o-ctaAmount.active");
         
         ctaAmounts.forEach((ctaAmount2) => {
           const ctaInput2 = ctaAmount2.querySelector("input[type='number']");
@@ -99,14 +99,14 @@
         ctaInput.setAttribute("disabled", true);
         
         let oldPrice = 0;
-        const ctaActiveItems = document.querySelectorAll(".ctaFund__item.active");
+        const ctaActiveItems = document.querySelectorAll(".n3o-ctaFund__item.active");
         
         ctaActiveItems.forEach((ctaActiveItem) => {
           const price = ctaActiveItem.querySelector("h3");
           oldPrice = oldPrice + parseFloat(price.innerHTML.slice(1));
         });
         
-        const ctaAmounts = document.querySelectorAll(".ctaAmount.active");
+        const ctaAmounts = document.querySelectorAll(".n3o-ctaAmount.active");
         
         ctaAmounts.forEach((ctaAmount2) => {
           const ctaInput2 = ctaAmount2.querySelector("input[type='number']");
@@ -134,7 +134,7 @@
         
         if (e.target.checked) {
           ctaItem.classList.add("active");
-          ctaAmount.classList.remove("active");
+          ctaAmount.classList.remove("submit3");
           ctaInput.setAttribute("disabled", true);
           ctaCheckbox.checked = false;
           
@@ -147,7 +147,7 @@
           });
           
           let oldPrice = 0;
-          const ctaActiveItems = document.querySelectorAll(".ctaFund__item.active");
+          const ctaActiveItems = document.querySelectorAll(".n3o-ctaFund__item.active");
           
           ctaActiveItems.forEach((ctaActiveItem) => {
             const price = ctaActiveItem.querySelector("h3");
@@ -155,7 +155,7 @@
             oldPrice = oldPrice + parseFloat(price.innerHTML.slice(1));
           });
           
-          const ctaAmounts = document.querySelectorAll(".ctaAmount.active");
+          const ctaAmounts = document.querySelectorAll(".n3o-ctaAmount.active");
           
           ctaAmounts.forEach((ctaAmount2) => {
             const ctaInput2 = ctaAmount2.querySelector("input[type='number']");
@@ -176,14 +176,14 @@
         } else {
           ctaItem.classList.remove("active");
           let oldPrice = 0;
-          const ctaActiveItems = document.querySelectorAll(".ctaFund__item.active");
+          const ctaActiveItems = document.querySelectorAll(".n3o-ctaFund__item.active");
           
           ctaActiveItems.forEach((ctaActiveItem) => {
             const price = ctaActiveItem.querySelector("h3");
             oldPrice = oldPrice + parseFloat(price.innerHTML.slice(1));
           });
           
-          const ctaAmounts = document.querySelectorAll(".ctaAmount.active");
+          const ctaAmounts = document.querySelectorAll(".n3o-ctaAmount.active");
           
           ctaAmounts.forEach((ctaAmount2) => {
             const ctaInput2 = ctaAmount2.querySelector("input[type='number']");

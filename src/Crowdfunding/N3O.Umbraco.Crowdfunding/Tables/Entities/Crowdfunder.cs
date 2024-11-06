@@ -19,13 +19,17 @@ public class Crowdfunder {
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Crowdfunders.Name + "_" + nameof(ContentKey), ForColumns = nameof(ContentKey))]
     public Guid ContentKey { get; set; }
     
+    [Column(nameof(CreatedAt))]
+    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Crowdfunders.Name + "_" + nameof(CreatedAt), ForColumns = nameof(CreatedAt))]
+    public DateTime CreatedAt { get; set; }
+    
     [Column(nameof(Name))]
-    [Length(200)]
+    [Length(CrowdfundingConstants.Crowdfunder.NameMaxLength)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Crowdfunders.Name + "_" + nameof(Name), ForColumns = nameof(Name))]
     public string Name { get; set; }
     
     [Column(nameof(Url))]
-    [Length(400)]
+    [Length(CrowdfundingConstants.Crowdfunder.NameMaxLength + 200)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Crowdfunders.Name + "_" + nameof(Url), ForColumns = nameof(Url))]
     public string Url { get; set; }
     
@@ -51,6 +55,12 @@ public class Crowdfunder {
     [Column(nameof(NonDonationsTotalBase))]
     public decimal NonDonationsTotalBase { get; set; }
     
+    [Column(nameof(LeftToRaiseBase))]
+    public decimal LeftToRaiseBase { get; set; }
+    
+    [Column(nameof(LeftToRaiseQuote))]
+    public decimal LeftToRaiseQuote { get; set; }
+    
     [Column(nameof(TallImage))]
     public string TallImage { get; set; }
     
@@ -60,9 +70,17 @@ public class Crowdfunder {
     [Column(nameof(JumboImage))]
     public string JumboImage { get; set; }
     
-    [Column(nameof(Owner))]
+    [Column(nameof(OwnerEmail))]
     [NullSetting(NullSetting = NullSettings.Null)]
-    public string Owner { get; set; }
+    public string OwnerEmail { get; set; }
+    
+    [Column(nameof(OwnerName))]
+    [NullSetting(NullSetting = NullSettings.Null)]
+    public string OwnerName { get; set; }
+    
+    [Column(nameof(OwnerProfilePicture))]
+    [NullSetting(NullSetting = NullSettings.Null)]
+    public string OwnerProfilePicture { get; set; }
     
     [Column(nameof(Tags))]
     [NullSetting(NullSetting = NullSettings.Null)]

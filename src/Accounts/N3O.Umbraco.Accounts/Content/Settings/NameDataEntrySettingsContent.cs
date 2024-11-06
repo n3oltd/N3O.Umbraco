@@ -28,7 +28,7 @@ public class NameDataEntrySettingsContent : UmbracoContent<NameDataEntrySettings
 
     public NameDataEntrySettings ToDataEntrySettings() {
         var title = new SelectFieldSettings(true,
-                                            TitleRequired,                                                
+                                            TitleRequired,
                                             TitleLabel,
                                             TitleHelpText,
                                             HtmlField.Name<AccountReq>(x => x.Individual.Name.Title),

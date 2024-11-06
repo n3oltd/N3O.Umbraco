@@ -1,5 +1,4 @@
-﻿using N3O.Umbraco.Constants;
-using N3O.Umbraco.Context;
+﻿using N3O.Umbraco.Context;
 using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
@@ -10,7 +9,6 @@ using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
@@ -28,6 +26,7 @@ public class ViewEditFundraiserViewModel : CrowdfunderViewModel<FundraiserConten
     public static async Task<ViewEditFundraiserViewModel> ForAsync(ICrowdfundingViewModelFactory viewModelFactory,
                                                                    ICurrencyAccessor currencyAccessor,
                                                                    IForexConverter forexConverter,
+                                                                   ICrowdfundingUrlBuilder urlBuilder,
                                                                    ILookups lookups,
                                                                    ITextFormatter textFormatter,
                                                                    FundraiserAccessControl fundraiserAccessControl,
@@ -39,7 +38,8 @@ public class ViewEditFundraiserViewModel : CrowdfunderViewModel<FundraiserConten
         var viewModel = await ForAsync<ViewEditFundraiserViewModel>(viewModelFactory,
                                                                     currencyAccessor,
                                                                     forexConverter,
-                                                                    lookups,                                                                    
+                                                                    urlBuilder,
+                                                                    lookups,
                                                                     page,
                                                                     query,
                                                                     fundraiser,
@@ -61,7 +61,7 @@ public class ViewEditFundraiserViewModel : CrowdfunderViewModel<FundraiserConten
     
     private static CrowdfunderOwnerViewModel GetOwnerInfo(ITextFormatter textFormatter, FundraiserContent fundraiser) {
         var name = fundraiser.Owner?.Name;
-        var profileImage = fundraiser.Owner?.Value<string>(MemberConstants.Member.Properties.AvatarLink);
+        var profileImage = fundraiser.Owner?.AvatarLink;
         var strapline = textFormatter.Format<Strings>(s => s.Strapline_1, fundraiser.Campaign.Name);
 
         return CrowdfunderOwnerViewModel.For(name, profileImage, strapline);

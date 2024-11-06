@@ -1,1 +1,97 @@
 ﻿@model HomeViewModel
+
+@inject IPartialText PartialText
+
+@{
+    PartialText.SetPartialName("CrowdfundingHomePage");
+}
+
+<div class="n3o-spotlight" style="margin-top: 100px">
+    <div class="n3o-auto__container">
+        <div class="n3o-spotlight__inner">
+            <div class="n3o-spotlight__inner-title">
+                <h2 class="n3o-h2">@PartialText.Get("Featured Campaigns")</h2>
+            </div>
+            
+            <div class="n3o-spotlight__inner-row">
+                @foreach (var card in Model.FeaturedCampaigns) {
+                    @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Cards/CrowdfunderTallCard.cshtml", card)
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="n3o-spotlight light">
+    <div class="n3o-auto__container">
+        <div class="n3o-spotlight__inner">
+            <div class="n3o-spotlight__inner-title base">
+                <h2 class="n3o-h2">@PartialText.Get("Almost Complete Pages")</h2>
+            </div>
+            
+            <div class="n3o-spotlight__inner-grid">
+                @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Cards/CrowdfunderJumboCard.cshtml", Model.AlmostCompleteFundraisers.First())
+                
+                <div class="n3o-spotlight__inner-col">
+                    @foreach (var card in Model.AlmostCompleteFundraisers.Skip(1)) {
+                        @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Cards/CrowdfunderWideCard.cshtml", card)
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="n3o-searchSec">
+    <div class="n3o-searchSec__bg">
+        <img src="@Model.HomePageTemplate.SearchBackgroundImage.Src" alt="" />
+    </div>
+    
+    <div class="n3o-auto__container">
+        <div class="n3o-searchSec__inner">
+            <div class="n3o-searchSec__inner-content">
+                <h2 class="n3o-h2">@PartialText.Get("Find a page to support")</h2>
+                
+                <p class="n3o-p sm">
+                    @PartialText.Get("Search for a fundraising page looking for your support.")
+                </p>
+                
+                <div class="n3o-searchSec__input">
+                    <span>
+                        <img src="/assets/images/icons/search.svg" alt="" />
+                    </span>
+                    
+                    <input type="search" name="text" />
+                </div>
+                
+                <a href="@Model.Link(x => SearchFundraisersPage.Url(x))" class="n3o-searchSec__link">
+                    <h3 class="n3o-h3">@PartialText.Get("See All Pages")</h3>
+                    
+                    <span>
+                        <img src="/assets/images/icons/arrow-right-white.svg" alt="" />
+                    </span>
+                </a>
+            </div>
+            
+            <div class="n3o-searchSec__inner-gallery">
+                <img src="@Model.HomePageTemplate.SearchSideImage.Src" alt="" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="n3o-spotlight">
+    <div class="n3o-auto__container">
+        <div class="n3o-spotlight__inner">
+            <div class="n3o-spotlight__inner-title">
+                <h2 class="n3o-h2">@PartialText.Get("New Pages")</h2>
+            </div>
+            
+            <div class="n3o-spotlight__inner-row">
+                @foreach (var card in Model.NewFundraisers) {
+                    @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Cards/CrowdfunderCompactCard.cshtml", card)
+                }
+            </div>
+        </div>
+    </div>
+</div>

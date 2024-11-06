@@ -83,12 +83,12 @@ export function GoalFields(props: GoalFieldsProps) {
   const goalErrors = (errors.goals as any)?.[props.index];
 
   return (
-    <div className="editGoal__body">
+    <div className="n3o-editGoal__body">
       {props.index > 0 && (
         <button
           type="button"
           onClick={() => props.remove(props.index)}
-          className="editGoal__remove"
+          className="n3o-editGoal__remove"
         >
           <span>
             <img src="/assets/images/icons/x-circle.svg" alt="" />
@@ -97,17 +97,17 @@ export function GoalFields(props: GoalFieldsProps) {
         </button>
       )}
       <h4>{window.themeConfig.text.crowdfunding.selectGoal}</h4>
-      <div className="select__outer">
-        <div className="select">
-          <div className="select__selected" id="select__selected"> {selectedGoal?.name || window.themeConfig?.text?.crowdfunding?.selectGoal}</div>
+      <div className="n3o-select__outer">
+        <div className="n3o-select">
+          <div className="n3o-select__selected" id="select__selected"> {selectedGoal?.name || window.themeConfig?.text?.crowdfunding?.selectGoal}</div>
           <input
             type="hidden"
             {...props.register(`goals.${props.index}.goalId`, {
               required: window.themeConfig.text.crowdfunding.goalProjectRequired,
             })}
           />
-          <ul className="select__options">
-            <div className="select__search">
+          <ul className="n3o-select__options">
+            <div className="n3o-select__search">
               <svg>
                 <use xlinkHref="#searchIcon"></use>
               </svg>
@@ -118,7 +118,7 @@ export function GoalFields(props: GoalFieldsProps) {
                 onChange={() => n3o_cdf_filterList('gaols-input', 'goal-options')}
               />
             </div>
-            <div className="select__options-body" id="goal-options">
+            <div className="n3o-select__options-body" id="goal-options">
               {props.availableGoals?.map((goal, gIndex) => (
                 <li
                   key={gIndex}
@@ -137,9 +137,9 @@ export function GoalFields(props: GoalFieldsProps) {
           </svg>
         </div>
         {goalErrors?.goalId && <FieldError message={goalErrors?.goalId?.message}></FieldError>}
-        <div className="setting__tags">
+        <div className="n3o-setting__tags">
           {props.data?.goalOptions?.find(g => g.id === selectedGoal?.id)?.tags?.map((t: any) => {
-            return <a href="#" className="setting__tag" key={t.name}>
+            return <a href="#" className="n3o-setting__tag" key={t.name}>
             <img  src={t.iconUrl} width="16px" height="16px"/>
             <b> {t.name}</b>
           </a>
@@ -149,15 +149,15 @@ export function GoalFields(props: GoalFieldsProps) {
       </div>
 
       {(selectedGoal?.dimension1?.allowedOptions as any[])?.length > 1 ? <>
-        <h4 className="dimension-1" >{window.themeConfig.text.crowdfunding.goalSelectDimension1}</h4>
-        <div className="select__outer dimension-1"  id="dimension-1">
-            <div className="select">
-                <div className="select__selected">{selectedGoal?.dimension1?.allowedOptions?.find(d => d.id === goal?.dimension1)?.name || window.themeConfig.text.crowdfunding.goalSelectDimension}</div>
+        <h4 className="n3o-dimension-1" >{window.themeConfig.text.crowdfunding.goalSelectDimension1}</h4>
+        <div className="n3o-select__outer dimension-1"  id="dimension-1">
+            <div className="n3o-select">
+                <div className="n3o-select__selected">{selectedGoal?.dimension1?.allowedOptions?.find(d => d.id === goal?.dimension1)?.name || window.themeConfig.text.crowdfunding.goalSelectDimension}</div>
 
                 <input type="hidden" {...props.register(`goals.${props.index}.dimension1`)}/>
 
-                <ul className="select__options">
-                    <div className="select__search">
+                <ul className="n3o-select__options">
+                    <div className="n3o-select__search">
 
                         <svg>
                             <use xlinkHref="#searchIcon"></use>
@@ -166,7 +166,7 @@ export function GoalFields(props: GoalFieldsProps) {
                         <input type="text" id="goals-dimension-1" placeholder={window.themeConfig.text.crowdfunding.searchHerePlaceholder} onKeyUp={() => n3o_cdf_filterList('goals-dimension-1', 'goal-selection-dimension-1')}/>
                     </div>
 
-                    <div className="select__options-body" id="goal-selection-dimension-1">
+                    <div className="n3o-select__options-body" id="goal-selection-dimension-1">
                       {selectedGoal?.dimension1?.allowedOptions?.map((dimension, dIndex) => (
                         <li
                           key={dIndex}
@@ -192,15 +192,15 @@ export function GoalFields(props: GoalFieldsProps) {
       />     
       }
       {(selectedGoal?.dimension2?.allowedOptions as any[])?.length > 1 ? <>
-        <h4 className="dimension-2" > {window.themeConfig.text.crowdfunding.goalSelectDimension2}</h4>
-        <div className="select__outer dimension-2"  id="dimension-2">
-            <div className="select">
-                <div className="select__selected">{selectedGoal?.dimension2?.allowedOptions?.find(d => d.id === goal?.dimension2)?.name || window.themeConfig.text.crowdfunding.goalSelectDimension}</div>
+        <h4 className="n3o-dimension-2" > {window.themeConfig.text.crowdfunding.goalSelectDimension2}</h4>
+        <div className="n3o-select__outer dimension-2"  id="dimension-2">
+            <div className="n3o-select">
+                <div className="n3o-select__selected">{selectedGoal?.dimension2?.allowedOptions?.find(d => d.id === goal?.dimension2)?.name || window.themeConfig.text.crowdfunding.goalSelectDimension}</div>
 
                 <input type="hidden" defaultValue="John Doe"  {...props.register(`goals.${props.index}.dimension2`)}/>
 
-                <ul className="select__options">
-                    <div className="select__search">
+                <ul className="n3o-select__options">
+                    <div className="n3o-select__search">
 
                         <svg>
                             <use xlinkHref="#searchIcon"></use>
@@ -209,7 +209,7 @@ export function GoalFields(props: GoalFieldsProps) {
                         <input type="text" id="goals-dimension-2" placeholder={window.themeConfig.text.crowdfunding.searchHerePlaceholder} onKeyUp={() => n3o_cdf_filterList('goals-dimension-2', 'goal-selection-dimension-2')}/>
                     </div>
 
-                    <div className="select__options-body" id="goal-selection-dimension-2">
+                    <div className="n3o-select__options-body" id="goal-selection-dimension-2">
                       {selectedGoal?.dimension2?.allowedOptions?.map((dimension, dIndex) => (
                           <li
                             key={dIndex}
@@ -236,15 +236,15 @@ export function GoalFields(props: GoalFieldsProps) {
       }
 
       {(selectedGoal?.dimension3?.allowedOptions as any[])?.length > 1 ? <>
-        <h4 className="dimension-3" >{window.themeConfig.text.crowdfunding.goalSelectDimension3}</h4>
-        <div className="select__outer dimension-3"  id="dimension-3">
-          <div className="select">
-              <div className="select__selected">{selectedGoal?.dimension3?.allowedOptions?.find(d => d.id === goal?.dimension3)?.name || window.themeConfig.text.crowdfunding.goalSelectDimension}</div>
+        <h4 className="n3o-dimension-3" >{window.themeConfig.text.crowdfunding.goalSelectDimension3}</h4>
+        <div className="n3o-select__outer dimension-3"  id="dimension-3">
+          <div className="n3o-select">
+              <div className="n3o-select__selected">{selectedGoal?.dimension3?.allowedOptions?.find(d => d.id === goal?.dimension3)?.name || window.themeConfig.text.crowdfunding.goalSelectDimension}</div>
 
               <input type="hidden" {...props.register(`goals.${props.index}.dimension3`)}/>
 
-              <ul className="select__options">
-                  <div className="select__search">
+              <ul className="n3o-select__options">
+                  <div className="n3o-select__search">
 
                       <svg>
                           <use xlinkHref="#searchIcon"></use>
@@ -253,7 +253,7 @@ export function GoalFields(props: GoalFieldsProps) {
                       <input type="text" id="goals-dimension-3" placeholder={window.themeConfig.text.crowdfunding.searchHerePlaceholder} onKeyUp={() => n3o_cdf_filterList('goals-dimension-3', 'goal-selection-dimension-3')}/>
                   </div>
 
-                  <div className="select__options-body" id="goal-selection-dimension-3">
+                  <div className="n3o-select__options-body" id="goal-selection-dimension-3">
                     {selectedGoal?.dimension3?.allowedOptions?.map((dimension, dIndex) => (
                       <li
                         key={dIndex}
@@ -279,15 +279,15 @@ export function GoalFields(props: GoalFieldsProps) {
       }
       
       {(selectedGoal?.dimension4?.allowedOptions as any[])?.length > 1 ? <>
-        <h4 className="dimension-4" >{window.themeConfig.text.crowdfunding.goalSelectDimension4}</h4>
-        <div className="select__outer dimension-4"  id="dimension-4">
-          <div className="select">
-              <div className="select__selected">{selectedGoal?.dimension4?.allowedOptions?.find(d => d.id === goal?.dimension4)?.name || window.themeConfig.text.crowdfunding.goalSelectDimension}</div>
+        <h4 className="n3o-dimension-4" >{window.themeConfig.text.crowdfunding.goalSelectDimension4}</h4>
+        <div className="n3o-select__outer dimension-4"  id="dimension-4">
+          <div className="n3o-select">
+              <div className="n3o-select__selected">{selectedGoal?.dimension4?.allowedOptions?.find(d => d.id === goal?.dimension4)?.name || window.themeConfig.text.crowdfunding.goalSelectDimension}</div>
 
               <input type="hidden" {...props.register(`goals.${props.index}.dimension4`)}/>
 
-              <ul className="select__options">
-                  <div className="select__search">
+              <ul className="n3o-select__options">
+                  <div className="n3o-select__search">
 
                       <svg>
                           <use xlinkHref="#searchIcon"></use>
@@ -296,7 +296,7 @@ export function GoalFields(props: GoalFieldsProps) {
                       <input type="text" id="goals-dimension-4" placeholder={window.themeConfig.text.crowdfunding.searchHerePlaceholder} onKeyUp={() => n3o_cdf_filterList('goals-dimension-4', 'goal-selection-dimension-4')}/>
                   </div>
 
-                  <div className="select__options-body" id="goal-selection-dimension-4">
+                  <div className="n3o-select__options-body" id="goal-selection-dimension-4">
                     {selectedGoal?.dimension4?.allowedOptions?.map((dimension, dIndex) => (
                       <li
                         key={dIndex}
@@ -324,8 +324,8 @@ export function GoalFields(props: GoalFieldsProps) {
       {selectedGoal?.id ? 
         <>
           <h4>{window.themeConfig.text.crowdfunding.raiseGoalAmount}</h4>
-          <div className="cta__input active">
-            <label className="large" htmlFor="openAmount">
+          <div className="n3o-cta__input active">
+            <label className="n3o-large" htmlFor="openAmount">
               {props.data?.currency?.symbol}
             </label>
             <input
@@ -338,7 +338,7 @@ export function GoalFields(props: GoalFieldsProps) {
               })}
             />
             <span> {pricing?.currencyValues?.[goal.currency]?.text} </span>
-            <div className="cta__input-select">
+            <div className="n3o-cta__input-select">
               <select
                 name="currency"
                 {...props.register(`goals.${props.index}.currency`, {
