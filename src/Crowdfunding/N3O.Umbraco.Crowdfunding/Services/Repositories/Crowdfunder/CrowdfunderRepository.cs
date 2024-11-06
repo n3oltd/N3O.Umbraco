@@ -22,21 +22,18 @@ namespace N3O.Umbraco.Crowdfunding;
 public class CrowdfunderRepository : ICrowdfunderRepository {
     private const string TagsSeperator = "þ";
     
-    private readonly IBackgroundJob _backgroundJob;
     private readonly IContentLocator _contentLocator;
     private readonly ICrowdfundingUrlBuilder _urlBuilder;
     private readonly IForexConverter _forexConverter;
     private readonly IImageCropper _imageCropper;
     private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
 
-    public CrowdfunderRepository(IBackgroundJob backgroundJob,
-                                 IContentLocator contentLocator,
+    public CrowdfunderRepository(IContentLocator contentLocator,
                                  ICrowdfundingUrlBuilder urlBuilder,
                                  IForexConverter forexConverter,
                                  IImageCropper imageCropper,
                                  IUmbracoDatabaseFactory umbracoDatabaseFactory) {
         _contentLocator = contentLocator;
-        _backgroundJob = backgroundJob;
         _urlBuilder = urlBuilder;
         _forexConverter = forexConverter;
         _imageCropper = imageCropper;
@@ -99,10 +96,6 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
         return await FetchCrowdfundersAsync(sql => sql.SelectTop("*", take),
                                             sql => sql.Where($"{nameof(Crowdfunder.Type)} = {CrowdfunderTypes.Fundraiser.Key} AND {nameof(Crowdfunder.StatusKey)} = {CrowdfunderStatuses.Active.Key}"),
                                             sql => sql.Append($"ORDER BY {nameof(Crowdfunder.CreatedAt)} DESC"));
-    }
-
-    public void QueueRecalculateContributionsTotal(Guid id, CrowdfunderType type) {
-        CrowdfunderDebouncer.Debounce(id, type, EnqueueRecalculateContributionsTotal);
     }
 
     public async Task RecalculateContributionsTotalAsync(Guid id) {
@@ -222,13 +215,5 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
         crowdfunder.JumboImage = await _imageCropper.GetImagePathAsync(heroImage, ImageCropperExtensions.JumboCropDefinition);
         crowdfunder.TallImage = await _imageCropper.GetImagePathAsync(heroImage, ImageCropperExtensions.TallCropDefinition);
         crowdfunder.WideImage = await _imageCropper.GetImagePathAsync(heroImage, ImageCropperExtensions.WideCropDefinition);
-    }
-    
-    private void EnqueueRecalculateContributionsTotal(Guid id, CrowdfunderType type) {
-        _backgroundJob.Enqueue<RecalculateContributionTotalsCommand>($"{nameof(RecalculateContributionTotalsCommand).Replace("Command", "")} {id.ToString()}",
-                                                                     p => { 
-                                                                         p.Add<ContentId>(id.ToString());
-                                                                         p.Add<CrowdfunderTypeId>(type.Id);
-                                                                     });
     }
 }
