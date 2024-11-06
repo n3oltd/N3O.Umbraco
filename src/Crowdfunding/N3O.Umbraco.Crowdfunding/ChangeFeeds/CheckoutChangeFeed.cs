@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Accounts.Extensions;
+using N3O.Umbraco.Crm.Lookups;
+using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.Extensions;
+using N3O.Umbraco.Crowdfunding.NamedParameters;
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Checkout.Entities;
@@ -9,6 +12,7 @@ using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Localization;
+using N3O.Umbraco.Scheduler;
 using N3O.Umbraco.TaxRelief.Lookups;
 using NodaTime;
 using System;
@@ -20,21 +24,21 @@ namespace N3O.Umbraco.Crowdfunding.ChangeFeeds;
 
 public class CheckoutChangeFeed : ChangeFeed<Checkout> {
     private readonly IClock _clock;
+    private readonly IBackgroundJob _backgroundJob;
     private readonly IFormatter _formatter;
     private readonly IContributionRepository _contributionRepository;
     private readonly IJsonProvider _jsonProvider;
-    private readonly ICrowdfunderRepository _crowdfunderRepository;
     
     public CheckoutChangeFeed(ILogger<CheckoutChangeFeed> logger,
+                              IBackgroundJob backgroundJob,
                               IClock clock,
                               IFormatter formatter,
                               IContributionRepository contributionRepository,
-                              IJsonProvider jsonProvider,
-                              ICrowdfunderRepository crowdfunderRepository) 
+                              IJsonProvider jsonProvider) 
         : base(logger) {
         _contributionRepository = contributionRepository;
+        _backgroundJob = backgroundJob;
         _jsonProvider = jsonProvider;
-        _crowdfunderRepository = crowdfunderRepository;
         _clock = clock;
         _formatter = formatter;
     }
@@ -91,6 +95,14 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
                                       .Select(x => x.GetCrowdfunderData(_jsonProvider))
                                       .GroupBy(x => (x.Id, x.Type));
             
-        crowdfunders.Do(x => _crowdfunderRepository.QueueRecalculateContributionsTotal(x.Key.Id, x.Key.Type));
+        crowdfunders.Do(x => CrowdfunderDebouncer.Debounce(x.Key.Id, x.Key.Type, EnqueueRecalculateContributionsTotal));
+    }
+    
+    private void EnqueueRecalculateContributionsTotal(Guid id, CrowdfunderType type) {
+        _backgroundJob.Enqueue<RecalculateContributionTotalsCommand>($"{nameof(RecalculateContributionTotalsCommand).Replace("Command", "")} {id.ToString()}",
+                                                                     p => { 
+                                                                         p.Add<ContentId>(id.ToString());
+                                                                         p.Add<CrowdfunderTypeId>(type.Id);
+                                                                     });
     }
 }

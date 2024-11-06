@@ -47,6 +47,20 @@ public class CrowdfunderRevisionRepository : ICrowdfunderRevisionRepository {
         }
     }
     
+    public async Task AddGoalUpdatedOn(Guid id) {
+        using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
+            var crowdfunder = db.Single<Crowdfunder>($"WHERE {nameof(Crowdfunder.ContentKey)} = @0", id);
+
+            if (crowdfunder.ContributionsTotalBase > crowdfunder.GoalsTotalBase) {
+                var crowdfunderRevisions = await db.FetchAsync<CrowdfunderRevision>($"WHERE {nameof(Crowdfunder.ContentKey)} = @0", id);
+                var latestRevision = crowdfunderRevisions.OrderByDescending(x => x.ContentRevision).First();
+                latestRevision.GoalCompletedOn = _localClock.GetUtcNow();
+
+                await db.UpdateAsync(latestRevision);
+            }
+        }
+    }
+    
     private async Task DeactivateAsync(Guid id) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
             var latestRevision = await GetLatestRevisionAsync(db, id);
