@@ -9,7 +9,7 @@ public class ContentPublisher : IContentPublisher {
     private readonly IContentService _contentService;
     private readonly IContent _content;
 
-    public ContentPublisher(IServiceProvider serviceProvider,  IContentService contentService, IContent content) {
+    public ContentPublisher(IServiceProvider serviceProvider, IContentService contentService, IContent content) {
         Content = new ContentBuilder(serviceProvider);
         
         _contentService = contentService;

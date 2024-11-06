@@ -40,6 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="AWSSDK.SimpleEmail" Version="3.7.401.24" />
+      <PackageReference Include="AWSSDK.SimpleEmail" Version="3.7.401.26" />
     </ItemGroup>
 </Project>

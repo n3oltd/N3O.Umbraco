@@ -235,10 +235,10 @@
             if (items.length) {
                 const modal = document.getElementById('donationSummary-modal');
 
-                const existingItems = modal.querySelectorAll('.ctaFund');
+                const existingItems = modal.querySelectorAll('.n3o-ctaFund');
                 existingItems.forEach(item => item.remove());
 
-                const insertAfterElement = modal.querySelector('.cta__title.start');
+                const insertAfterElement = modal.querySelector('.n3o-cta__title.start');
 
                 items.reverse();
 
@@ -275,7 +275,7 @@
                         label.textContent = currencySymbol;
                     });
                     
-                    let goalPriceHandles = document.querySelectorAll('.ctaFund__item');
+                    let goalPriceHandles = document.querySelectorAll('.n3o-ctaFund__item');
                     
                     goalPriceHandles.forEach(function (priceHandle) {
                         let inputElement = priceHandle.querySelector('input');
@@ -295,7 +295,7 @@
         function createFundBlock(item) {
             // Create the outer div with class ctaFund
             const ctaFundDiv = document.createElement('div');
-            ctaFundDiv.classList.add('ctaFund');
+            ctaFundDiv.classList.add('n3o-ctaFund');
 
             // Create the h4 title
             const h4 = document.createElement('h4');
@@ -304,14 +304,14 @@
 
             // Create the inner div structure
             const ctaFundItemDiv = document.createElement('div');
-            ctaFundItemDiv.classList.add('ctaFund__item');
+            ctaFundItemDiv.classList.add('n3o-ctaFund__item');
             const input = document.createElement('input');
             input.type = 'radio';
             input.name = 'fundOption'; // Ensure all radios have the same name for exclusive selection
             ctaFundItemDiv.appendChild(input);
 
             const innerDiv = document.createElement('div');
-            innerDiv.classList.add('ctaFund__item-inner', 'uniq');
+            innerDiv.classList.add('n3o-ctaFund__item-inner', 'uniq');
 
             const h3 = document.createElement('h3');
             h3.textContent = item.amount;
@@ -321,7 +321,7 @@
             innerDiv.appendChild(hr);
 
             const p = document.createElement('p');
-            p.classList.add('subtle');
+            p.classList.add('n3o-subtle');
             p.textContent = item.description;
             innerDiv.appendChild(p);
 

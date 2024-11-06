@@ -48,7 +48,7 @@ public abstract class TypeTransformationFilter : ISchemaProcessor  {
     }
 
     protected void ModelAsString(string example = null, string description = null) {
-        ModelAsType(JsonObjectType.String,  example, description);
+        ModelAsType(JsonObjectType.String, example, description);
     }
 
     private void ModelAsType(JsonObjectType type, string example, string description) {

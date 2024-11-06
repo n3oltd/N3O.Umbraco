@@ -1,6 +1,4 @@
 ﻿using N3O.Umbraco.Content;
-using N3O.Umbraco.Crm.Lookups;
-using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
@@ -34,15 +32,8 @@ public static class CrowdfundingCartReqExtensions {
                                                IJsonProvider jsonProvider,
                                                CrowdfundingCartReq crowdfundingReq,
                                                CrowdfundingCartItemReq itemReq) {
-        ICrowdfunderContent crowdfunderContent;
-        
-        if (crowdfundingReq.Type == CrowdfunderTypes.Campaign) {
-            crowdfunderContent = contentLocator.ById<CampaignContent>(crowdfundingReq.Crowdfunding.CrowdfunderId.GetValueOrThrow());
-        } else if (crowdfundingReq.Type == CrowdfunderTypes.Fundraiser) {
-            crowdfunderContent = contentLocator.ById<FundraiserContent>(crowdfundingReq.Crowdfunding.CrowdfunderId.GetValueOrThrow());
-        } else {
-            throw UnrecognisedValueException.For(crowdfundingReq.Type);
-        } 
+        var crowdfunderContent = contentLocator.GetCrowdfunderContent(crowdfundingReq.Crowdfunding.CrowdfunderId.GetValueOrThrow(),
+                                                                      crowdfundingReq.Type);
         
         // TODO This should be checked in validator
         var goal = crowdfunderContent.Goals.Single(x => x.Id == itemReq.GoalId);

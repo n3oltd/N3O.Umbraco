@@ -28,6 +28,8 @@ public static class CrowdfundingConstants {
     }
 
     public static class Crowdfunder {
+        public const int NameMaxLength = 200;
+        
         public static class Properties {
             public const string BackgroundImage = "backgroundImage";
             public const string Body = "body";
@@ -117,6 +119,7 @@ public static class CrowdfundingConstants {
     public static class Routes {
         public const string CreateFundraiser = "pages/create";
         public const string HomePage = "";
+        public const string SearchFundraisers = "pages/search";
         public const string ViewCampaign_2 = "campaigns/{0}/{1}";
         public const string ViewEditFundraiser_2 = "pages/{0}/{1}";
         
@@ -142,6 +145,10 @@ public static class CrowdfundingConstants {
         
         public static class TemplateSettings {
             public const string Alias = "crowdfundingTemplateSettings";
+        }
+        
+        public static class HomePageTemplate {
+            public const string Alias = "crowdfundingHomepageTemplate";
         }
     }
 

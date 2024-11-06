@@ -1,11 +1,9 @@
-﻿using N3O.Umbraco.Constants;
-using N3O.Umbraco.Crowdfunding.Content;
+﻿using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using System.Collections.Generic;
 using System.Linq;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
@@ -22,7 +20,7 @@ public class ViewCampaignFundraiserViewModel {
             
         viewModel.Name = fundraiser.Name;
         viewModel.Subtitle = null;
-        viewModel.OwnerAvatarLink = fundraiser.Owner.Value<string>(MemberConstants.Member.Properties.AvatarLink);
+        viewModel.OwnerAvatarLink = fundraiser.Owner.AvatarLink;
         viewModel.GoalsTotal = new Money(fundraiser.Goals.Sum(x => x.Amount), fundraiser.Currency);
         viewModel.ContributionsTotal = contributions.HasAny()
                                            ? new Money(contributions.Sum(x => x.CrowdfunderAmount), fundraiser.Currency)

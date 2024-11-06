@@ -7,4 +7,8 @@ namespace N3O.Umbraco.Crowdfunding.Content;
 public class TagContent : UmbracoContent<TagContent> {
     public string Name => Content().Name;
     public TagCategoryContent Category => GetPickedAs(x => x.Category);
+
+    public string GetUrl(ICrowdfundingUrlBuilder urlBuilder) {
+        return SearchFundraisersPage.Url(urlBuilder, tagName: Name);
+    }
 }

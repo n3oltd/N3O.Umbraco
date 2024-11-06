@@ -70,10 +70,10 @@ export const Textarea: React.FC<EditorProps> = ({
     >
       {isPropLoading ? <p>{window.themeConfig.text.crowdfunding.apiLoading}</p> : <>
         <h3>{dataResponse?.textarea?.configuration?.description}</h3>
-      <div className="edit__content">
-        <div className="input__outer dark">
+      <div className="n3o-edit__content">
+        <div className="n3o-input__outer dark">
           <p>{window.themeConfig.text.crowdfunding.textAreaEditorTitle}</p>
-          <div className="input">
+          <div className="n3o-input">
             <textarea
               onChange={e => state.description = e.target.value}
               rows={3}
@@ -84,7 +84,7 @@ export const Textarea: React.FC<EditorProps> = ({
             ></textarea>
           </div>
         </div>
-        <p className="subtle">
+        <p className="n3o-subtle">
         {window.themeConfig.text.crowdfunding.textAreaEditorNote.replace("%val", dataResponse?.textarea?.configuration?.maximumLength?.toString() || "100")}        
         </p>
       </div>

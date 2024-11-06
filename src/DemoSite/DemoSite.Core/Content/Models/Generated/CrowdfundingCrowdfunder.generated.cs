@@ -67,6 +67,11 @@ namespace DemoSite.Content
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		string Status { get; }
 
+		/// <summary>Tags</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingTag> Tags { get; }
+
 		/// <summary>Toggle Status</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		bool ToggleStatus { get; }
@@ -219,6 +224,19 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		public static string GetStatus(ICrowdfundingCrowdfunder that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "status");
+
+		///<summary>
+		/// Tags
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("tags")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingTag> Tags => GetTags(this, _publishedValueFallback);
+
+		/// <summary>Static getter for Tags</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		public static global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingTag> GetTags(ICrowdfundingCrowdfunder that, IPublishedValueFallback publishedValueFallback) => that.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingTag>>(publishedValueFallback, "tags");
 
 		///<summary>
 		/// Toggle Status
