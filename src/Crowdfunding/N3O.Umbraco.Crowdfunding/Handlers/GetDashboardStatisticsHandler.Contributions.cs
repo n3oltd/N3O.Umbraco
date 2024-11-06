@@ -4,11 +4,11 @@ using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Lookups;
-using System.Linq;
-using System.Threading.Tasks;
 using NPoco;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Umbraco.Cms.Infrastructure.Persistence;
 
 namespace N3O.Umbraco.Crowdfunding.Handlers;
@@ -37,16 +37,16 @@ public partial class GetDashboardStatisticsHandler {
         var totalCount = dailyContributions.Sum(x => x.Count);
         var averageAmount = totalCount > 0 ? totalAmount / totalCount : 0;
 
-        var donationsCount = await GetDonationsCountAsync(db, from, to);
+        var donationStatistics = await GetDonationStatisticsAsync(db, from, to);
 
         res.Contributions = new ContributionStatisticsRes();
         res.Contributions.Count = totalCount;
         res.Contributions.Total = GetMoneyRes(totalAmount);
         res.Contributions.Average = GetMoneyRes(averageAmount);
         res.Contributions.Daily = dailyContributions;
-        res.Contributions.SupportersCount = donationsCount.TotalDonationsCount;
-        res.Contributions.SingleDonationsCount = donationsCount.SingleDonationsCount;
-        res.Contributions.RegularDonationsCount = donationsCount.RegularDonationsCount;
+        res.Contributions.SupportersCount = donationStatistics.TotalDonationsCount;
+        res.Contributions.SingleDonationsCount = donationStatistics.SingleDonationsCount;
+        res.Contributions.RegularDonationsCount = donationStatistics.RegularDonationsCount;
     }
     
     private async Task<IReadOnlyList<ContributionStatisticsRow>> GetContributionRowsAsync(IUmbracoDatabase db,
@@ -66,17 +66,17 @@ public partial class GetDashboardStatisticsHandler {
         return rows;
     }
     
-    private async Task<DonationsStatistics> GetDonationsCountAsync(IUmbracoDatabase db,
-                                                                   DateTime? from,
-                                                                   DateTime? to) {
+    private async Task<DonationStatisticsRow> GetDonationStatisticsAsync(IUmbracoDatabase db,
+                                                                         DateTime? from,
+                                                                         DateTime? to) {
         var sqlQuery = Sql.Builder
-                          .Select($"COUNT(DISTINCT CASE WHEN {nameof(Contribution.GivingTypeId)} = '{GivingTypes.Donation.Id}' THEN {nameof(Contribution.Email)} END) AS {nameof(DonationsStatistics.SingleDonationsCount)}")
-                          .Append($", COUNT(DISTINCT CASE WHEN {nameof(Contribution.GivingTypeId)} = '{GivingTypes.RegularGiving.Id}' THEN {nameof(Contribution.Email)} END) AS {nameof(DonationsStatistics.RegularDonationsCount)}")
-                          .Append($", COUNT(DISTINCT {nameof(Contribution.Email)}) AS {nameof(DonationsStatistics.TotalDonationsCount)}")
+                          .Select($"COUNT(DISTINCT CASE WHEN {nameof(Contribution.GivingTypeId)} = '{GivingTypes.Donation.Id}' THEN {nameof(Contribution.Email)} END) AS {nameof(DonationStatisticsRow.SingleDonationsCount)}")
+                          .Append($", COUNT(DISTINCT CASE WHEN {nameof(Contribution.GivingTypeId)} = '{GivingTypes.RegularGiving.Id}' THEN {nameof(Contribution.Email)} END) AS {nameof(DonationStatisticsRow.RegularDonationsCount)}")
+                          .Append($", COUNT(DISTINCT {nameof(Contribution.Email)}) AS {nameof(DonationStatisticsRow.TotalDonationsCount)}")
                           .From($"{CrowdfundingConstants.Tables.Contributions.Name}")
                           .Where($"{nameof(Contribution.Date)} BETWEEN '{from}' AND '{to}'");
         
-        var donationsStatistics = await db.FetchAsync<DonationsStatistics>(sqlQuery);
+        var donationsStatistics = await db.FetchAsync<DonationStatisticsRow>(sqlQuery);
 
         return donationsStatistics.Single();
     }
@@ -92,7 +92,7 @@ public partial class GetDashboardStatisticsHandler {
         public int Count { get; set; }
     }
     
-    private class DonationsStatistics {
+    private class DonationStatisticsRow {
         [Order(1)]
         public int SingleDonationsCount { get; set; }
 

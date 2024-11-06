@@ -56,11 +56,8 @@ public partial class GetDashboardStatisticsHandler :
     }
 
     private MoneyRes GetMoneyRes(decimal baseAmount) {
-        var res = new MoneyRes();
-        res.Amount = baseAmount;
-        res.Currency = _baseCurrency;
-        res.Text = _formatter.Number.FormatMoney(baseAmount, _baseCurrency);
+        var money = new Money(baseAmount, _baseCurrency);
 
-        return res;
+        return _umbracoMapper.Map<Money, MoneyRes>(money);
     }
 }

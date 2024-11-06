@@ -6,8 +6,7 @@ using Umbraco.Cms.Infrastructure.Persistence;
 
 namespace N3O.Umbraco.Crowdfunding.Handlers;
 
-public partial class GetDashboardStatisticsHandler
-{
+public partial class GetDashboardStatisticsHandler {
     private async Task PopulateCampaignsAsync(IUmbracoDatabase db,
                                               DashboardStatisticsCriteria criteria,
                                               DashboardStatisticsRes res) {

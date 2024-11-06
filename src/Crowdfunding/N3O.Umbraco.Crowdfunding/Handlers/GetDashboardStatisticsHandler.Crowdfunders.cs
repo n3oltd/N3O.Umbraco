@@ -20,13 +20,13 @@ public partial class GetDashboardStatisticsHandler {
         var from = criteria.Period?.From?.ToDateTimeUnspecified();
         var to = criteria.Period?.To?.ToDateTimeUnspecified();
         
-        var topTenCrowdfunders = await GetTopCrowdfunderRowsAsync(db, type, from, to);
+        var topCrowdfunders = await GetTopCrowdfunderRowsAsync(db, type, from, to);
         var activeCrowdfundersCount = await GetActiveCrowdfundersCountAsync(db, type, from, to);
         var completedPercentage = await GetCompletedPercentageAsync(db, from, to);
         
         res.Count = activeCrowdfundersCount;
         res.AveragePercentageComplete = completedPercentage;
-        res.TopItems = topTenCrowdfunders.Select(x => new CrowdfunderStatisticsItemRes {
+        res.TopItems = topCrowdfunders.Select(x => new CrowdfunderStatisticsItemRes {
             Name = x.Name,
             GoalsTotal = GetMoneyRes(x.GoalsTotal),
             ContributionsTotal = GetMoneyRes(x.ContributionsTotal),

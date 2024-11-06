@@ -13,16 +13,16 @@ using Umbraco.Cms.Infrastructure.Persistence;
 namespace N3O.Umbraco.Crowdfunding;
 
 public class CrowdfunderRevisionRepository : ICrowdfunderRevisionRepository {
-    private readonly ICrowdfundingUrlBuilder _urlBuilder;
+    private readonly ICrowdfundingUrlBuilder _crowdfundingUrlBuilder;
     private readonly IForexConverter _forexConverter;
     private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
     private readonly ILocalClock _localClock;
 
-    public CrowdfunderRevisionRepository(ICrowdfundingUrlBuilder urlBuilder,
+    public CrowdfunderRevisionRepository(ICrowdfundingUrlBuilder crowdfundingUrlBuilder,
                                          IForexConverter forexConverter,
                                          IUmbracoDatabaseFactory umbracoDatabaseFactory,
                                          ILocalClock localClock) {
-        _urlBuilder = urlBuilder;
+        _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
         _forexConverter = forexConverter;
         _umbracoDatabaseFactory = umbracoDatabaseFactory;
         _localClock = localClock;
@@ -111,14 +111,14 @@ public class CrowdfunderRevisionRepository : ICrowdfunderRevisionRepository {
                                                    .ConvertAsync(goalsTotalQuoteAmount);
         
         var crowdfunderRevision = new CrowdfunderRevision();
-crowdfunderRevision.Name = crowdfunder.Name;
-        crowdfunderRevision.ContentKey = crowdfunder.Key;
+        crowdfunderRevision.Name = crowdfunderContent.Name;
+        crowdfunderRevision.ContentKey = crowdfunderContent.Key;
         crowdfunderRevision.ContentRevision = revision;
-        crowdfunderRevision.CampaignId = crowdfunder.CampaignId;
-        crowdfunderRevision.FundraiserId = crowdfunder.FundraiserId;
-        crowdfunderRevision.Type = (int) crowdfunder.Type.Key;
-        crowdfunderRevision.Url = crowdfunder.Url(_crowdfundingUrlBuilder);
-        crowdfunderRevision.CurrencyCode = crowdfunder.Currency.Code;
+        crowdfunderRevision.CampaignId = crowdfunderContent.CampaignId;
+        crowdfunderRevision.FundraiserId = crowdfunderContent.FundraiserId;
+        crowdfunderRevision.Type = (int) crowdfunderContent.Type.Key;
+        crowdfunderRevision.Url = crowdfunderContent.Url(_crowdfundingUrlBuilder);
+        crowdfunderRevision.CurrencyCode = crowdfunderContent.Currency.Code;
         crowdfunderRevision.GoalsTotalQuote = goalsTotalQuoteAmount;
         crowdfunderRevision.GoalsTotalBase = goalsTotalForex.Base.Amount;
         crowdfunderRevision.ActiveFrom = _localClock.GetUtcNow();

@@ -2,26 +2,27 @@
 using N3O.Umbraco.Crowdfunding.Criteria;
 using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Crowdfunding.Models;
-using System.Threading.Tasks;
-using Umbraco.Cms.Infrastructure.Persistence;
 using NPoco;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Umbraco.Cms.Infrastructure.Persistence;
 
 namespace N3O.Umbraco.Crowdfunding.Handlers;
 
 public partial class GetDashboardStatisticsHandler {
-    private async Task PopulateAllocationsAsync(IUmbracoDatabase db, DashboardStatisticsCriteria criteria,
+    private async Task PopulateAllocationsAsync(IUmbracoDatabase db,
+                                                DashboardStatisticsCriteria criteria,
                                                 DashboardStatisticsRes res) {
-        var allocationRows = await GetAllocationRowsAsync(db, criteria);
+        var rows = await GetAllocationRowsAsync(db, criteria);
         
         var topAllocations = new List<AllocationStatisticsItemRes>();
         
-        foreach (var row in allocationRows) {
-            var allocationRes = new AllocationStatisticsItemRes();
-            allocationRes.Summary = row.AllocationSummary;
-            allocationRes.Total = GetMoneyRes(row.TotalBaseIncome);
+        foreach (var row in rows) {
+            var item = new AllocationStatisticsItemRes();
+            item.Summary = row.AllocationSummary;
+            item.Total = GetMoneyRes(row.TotalBaseIncome);
             
-            topAllocations.Add(allocationRes);
+            topAllocations.Add(item);
         }
         
         res.Allocations = new AllocationStatisticsRes();
