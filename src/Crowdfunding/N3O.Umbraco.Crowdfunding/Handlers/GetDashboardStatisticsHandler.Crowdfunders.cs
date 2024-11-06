@@ -17,9 +17,12 @@ public partial class GetDashboardStatisticsHandler {
                                                 CrowdfunderType type,
                                                 DashboardStatisticsCriteria criteria,
                                                 CrowdfunderStatisticsRes res) {
-        var topTenCrowdfunders = await GetTopCrowdfundersAsync(db, type, criteria);
-        var activeCrowdfundersCount = await GetActiveCrowdfundersCountAsync(db, type, criteria);
-        var completedPercentage = await GetCompletedPercentageAsync(db, criteria);
+        var from = criteria.Period?.From?.ToDateTimeUnspecified();
+        var to = criteria.Period?.To?.ToDateTimeUnspecified();
+        
+        var topTenCrowdfunders = await GetTopCrowdfunderRowsAsync(db, type, from, to);
+        var activeCrowdfundersCount = await GetActiveCrowdfundersCountAsync(db, type, from, to);
+        var completedPercentage = await GetCompletedPercentageAsync(db, from, to);
         
         res.Count = activeCrowdfundersCount;
         res.AveragePercentageComplete = completedPercentage;
@@ -33,82 +36,82 @@ public partial class GetDashboardStatisticsHandler {
 
     private async Task<int> GetActiveCrowdfundersCountAsync(IUmbracoDatabase db,
                                                             CrowdfunderType type,
-                                                            DashboardStatisticsCriteria criteria) {
+                                                            DateTime? from,
+                                                            DateTime? to) {
         var totalActiveCampaignsQuery = Sql.Builder
-                                           .Select($"COUNT(*) AS {nameof(CampaignStatisticsRow.Count)}")
+                                           .Select("COUNT(*)")
                                            .From($"{CrowdfundingConstants.Tables.CrowdfunderRevisions.Name}")
                                            .Where($"{nameof(CrowdfunderRevision.Type)} = {(int) type.Key}")
-                                           .Where($"{nameof(CrowdfunderRevision.ActiveFrom)} <= @0", criteria.Period.From.Value.ToDateTimeUnspecified())
-                                           .Append($"AND ({nameof(CrowdfunderRevision.ActiveTo)} IS NULL OR {nameof(CrowdfunderRevision.ActiveTo)} >= @0)", criteria.Period.From.Value.ToDateTimeUnspecified());
+                                           .Append($"AND {nameof(CrowdfunderRevision.ActiveFrom)} <= '{to}'")
+                                           .Append($"AND ({nameof(CrowdfunderRevision.ActiveTo)} IS NULL OR {nameof(CrowdfunderRevision.ActiveTo)} >= '{from}')");
         
         var count = await db.ExecuteScalarAsync<int>(totalActiveCampaignsQuery);
         
         return count;
     }
 
-    private async Task<IReadOnlyList<CrowdfunderRow>> GetTopCrowdfundersAsync(IUmbracoDatabase db,
-                                                                              CrowdfunderType type,
-                                                                              DashboardStatisticsCriteria criteria) {
-        var crowdfunderRevisionQuery = Sql.Builder
-                                          .Select("(FR.Id, FR.Name, FR.GoalsTotalBase, FR.Url, ROW_NUMBER() OVER (PARTITION BY FR.Id ORDER BY FR.Revision DESC) AS RowNum")
-                                          .From($"{CrowdfundingConstants.Tables.CrowdfunderRevisions.Name} FR ")
-                                          .Where($"FR.Type = {(int) type.Key}) FG");
+    private async Task<IReadOnlyList<CrowdfunderRow>> GetTopCrowdfunderRowsAsync(IUmbracoDatabase db,
+                                                                                 CrowdfunderType type,
+                                                                                 DateTime? from,
+                                                                                 DateTime? to) {
+        var innerQuery = Sql.Builder
+                            .Select($"{nameof(CrowdfunderRevision.ContentKey)} AS CrowdfunderRevision_ContentKey",
+                                    $"{nameof(CrowdfunderRevision.Name)} AS CrowdfunderRevision_Name",
+                                    $"{nameof(CrowdfunderRevision.GoalsTotalBase)} AS CrowdfunderRevision_GoalsTotalBase",
+                                    $"{nameof(CrowdfunderRevision.Url)} AS CrowdfunderRevision_Url",
+                                    $"{nameof(CrowdfunderRevision.Type)} AS CrowdfunderRevision_Type",
+                                    $"ROW_NUMBER() OVER (PARTITION BY {nameof(CrowdfunderRevision.Id)} ORDER BY {nameof(CrowdfunderRevision.ContentRevision)} DESC) AS RowNum")
+                            .From($"{CrowdfundingConstants.Tables.CrowdfunderRevisions.Name}")
+                            .Where($"{nameof(CrowdfunderRevision.Type)} = {(int) type.Key}");
         
-        var sqlTopTenFundraisers = Sql.Builder
-                                      .Select(@"TOP (10) FG.Name AS [Name], FG.GoalsTotalBase AS [GoalsTotal], SUM(F.BaseAmount + F.TaxReliefBaseAmount) AS [ContributionsTotal], FG.Url AS [Url]")
-                                      .From($"{CrowdfundingConstants.Tables.Contributions.Name} F")
-                                      .InnerJoin($"({crowdfunderRevisionQuery.SQL})")  
-                                      .On("F.FundraiserId = FG.Id")
-                                      .Where("FG.RowNum = 1 AND F.FundraiserId IS NOT NULL AND F.Date BETWEEN @0 AND @1", criteria.Period.From, criteria.Period.To)
-                                      .GroupBy("FG.Name, FG.GoalsTotalBase, FG.Url")
-                                      .OrderBy("ContributionsTotal DESC");
+        var sql = new Sql()
+                 .Select("TOP 10 CrowdfunderRevision_Name AS [Name], CrowdfunderRevision_GoalsTotalBase AS [GoalsTotal], SUM(BaseAmount + TaxReliefBaseAmount) AS [ContributionsTotal], CrowdfunderRevision_Url AS [Url]")
+                 .From($"{CrowdfundingConstants.Tables.Contributions.Name}")
+                 .InnerJoin($"({innerQuery.SQL}) AS FG")
+                 .On($"{nameof(Contribution.CrowdfunderId)} = CrowdfunderRevision_ContentKey")
+                 .Where($"RowNum = 1 AND CrowdfunderRevision_Type = {(int) type.Key} AND {nameof(Contribution.Date)} BETWEEN '{from}' AND '{to}'")
+                 .GroupBy("CrowdfunderRevision_Name", "CrowdfunderRevision_GoalsTotalBase", "CrowdfunderRevision_Url")
+                 .OrderBy("ContributionsTotal DESC");
         
-        var rows = await db.FetchAsync<CrowdfunderRow>(sqlTopTenFundraisers);
+        var rows = await db.FetchAsync<CrowdfunderRow>(sql);
         
         return rows;
     }
     
-    private async Task<decimal> GetCompletedPercentageAsync(IUmbracoDatabase db, DashboardStatisticsCriteria criteria) {
-        var latestRevisionsQuery = Sql.Builder
-                                      .Select($"{nameof(CrowdfunderRevision.ContentKey)}, MAX({nameof(CrowdfunderRevision.ContentRevision)}) AS {nameof(CrowdfunderRevision.ContentRevision)}")
-                                      .From($"{CrowdfundingConstants.Tables.CrowdfunderRevisions.Name}")
-                                      .Where($"{nameof(CrowdfunderRevision.Type)} = {(int) CrowdfunderTypes.Campaign.Key}")
-                                      .Where($"{nameof(CrowdfunderRevision.ActiveFrom)} <= {criteria.Period.From.Value.ToDateTimeUnspecified()}")
-                                      .Append($"AND ({nameof(CrowdfunderRevision.ActiveFrom)} IS NULL OR {nameof(CrowdfunderRevision.ActiveFrom)} >= {criteria.Period.To.Value.ToDateTimeUnspecified()})")
-                                      .GroupBy($"{nameof(CrowdfunderRevision.Type)} = {(int) CrowdfunderTypes.Campaign.Key}");
+    private async Task<decimal> GetCompletedPercentageAsync(IUmbracoDatabase db, DateTime? from, DateTime? to) {
+        var latestRevisions = Sql.Builder
+                                 .Select($"{nameof(CrowdfunderRevision.ContentKey)}, MAX({nameof(CrowdfunderRevision.ContentRevision)}) AS MaxRevision")
+                                 .From($"{CrowdfundingConstants.Tables.CrowdfunderRevisions.Name}")
+                                 .Where($"{nameof(CrowdfunderRevision.Type)} = {(int) CrowdfunderTypes.Campaign.Key} AND {nameof(CrowdfunderRevision.ActiveFrom)} <= '{to}'")
+                                 .Append($"AND ({nameof(CrowdfunderRevision.ActiveTo)} IS NULL OR {nameof(CrowdfunderRevision.ActiveTo)} >= '{from}')")
+                                 .GroupBy($"{nameof(CrowdfunderRevision.ContentKey)}");
         
-        var totalGoalsQuery = Sql.Builder
-                                 .Select($"CR.{nameof(CrowdfunderRevision.ContentKey)}, SUM(CR.{nameof(CrowdfunderRevision.GoalsTotalBase)}) AS {nameof(CrowdfunderRevision.GoalsTotalBase)}")
-                                 .From($"{CrowdfundingConstants.Tables.CrowdfunderRevisions.Name} CR")
-                                 .InnerJoin($"({latestRevisionsQuery.SQL}) AS LR") 
-                                 .On($"CR.{nameof(CrowdfunderRevision.ContentKey)} = LR.{nameof(CrowdfunderRevision.ContentKey)} AND CR.{nameof(CrowdfunderRevision.ContentRevision)} = LR.{nameof(CrowdfunderRevision.ContentRevision)}")
-                                 .Where($"CR.{nameof(CrowdfunderRevision.Type)} = {(int) CrowdfunderTypes.Campaign.Key}")
-                                 .GroupBy($"CR.{nameof(CrowdfunderRevision.Type)} = {(int) CrowdfunderTypes.Campaign.Key}");
+        var crowdfunderGoalsSql = Sql.Builder
+                                     .Select($"CR.{nameof(CrowdfunderRevision.ContentKey)}, SUM(CR.{nameof(CrowdfunderRevision.GoalsTotalBase)}) AS TotalGoals")
+                                     .From($"{CrowdfundingConstants.Tables.CrowdfunderRevisions.Name} CR")
+                                     .InnerJoin($"({latestRevisions.SQL}) AS LR") 
+                                     .On($"CR.{nameof(CrowdfunderRevision.ContentKey)} = LR.{nameof(CrowdfunderRevision.ContentKey)} AND CR.{nameof(CrowdfunderRevision.ContentRevision)} = LR.MaxRevision")
+                                     .Where($"CR.{nameof(CrowdfunderRevision.Type)} = {(int) CrowdfunderTypes.Campaign.Key}")
+                                     .GroupBy($"CR.{nameof(CrowdfunderRevision.ContentKey)}");
         
-        var totalContributionsQuery = Sql.Builder
-                                         .Select("C.CampaignId, SUM(C.BaseAmount + C.TaxReliefBaseAmount) AS TotalContributions")
-                                         .From("Contributions C")
-                                         .InnerJoin($"({latestRevisionsQuery.SQL}) AS LR")
-                                         .On("C.CampaignId = LR.Id")
-                                         .InnerJoin("CrowdfunderRevisions CR")
-                                         .On(" CR.Id = LR.Id AND CR.Revision = LR.MaxRevision")
-                                         .Where($"C.Date BETWEEN {criteria.Period.From.Value.ToDateTimeUnspecified()} AND {criteria.Period.From.Value.ToDateTimeUnspecified()}")
-                                         .GroupBy("C.CampaignId");
+        var campaignContributionsSql = Sql.Builder
+                                          .Select($"C.{nameof(Contribution.CrowdfunderId)}, SUM(C.{nameof(Contribution.BaseAmount)} + C.{nameof(Contribution.TaxReliefBaseAmount)}) AS TotalContributions")
+                                          .From($"{CrowdfundingConstants.Tables.Contributions.Name} C")
+                                          .InnerJoin($"({latestRevisions.SQL}) AS LR")
+                                          .On($"C.{nameof(Contribution.CrowdfunderId)} = LR.{nameof(CrowdfunderRevision.ContentKey)}")
+                                          .Where($"C.{nameof(Contribution.Date)} BETWEEN '{from}' AND '{to}'")
+                                          .GroupBy($"C.{nameof(Contribution.CrowdfunderId)}");
         
-        var completedPercentages = Sql.Builder
+        var percentageCompletedSql = Sql.Builder
                                       .Select("AVG(CASE WHEN CG.TotalGoals > 0 THEN (CC.TotalContributions / CG.TotalGoals) * 100 ELSE 0 END) AS AveragePercentageComplete")
-                                      .From($"({totalGoalsQuery.SQL}) AS CG")
-                                      .InnerJoin($"({totalContributionsQuery.SQL}) AS CC")
-                                      .On("CG.Id = CC.CampaignId"); 
+                                      .From($"({crowdfunderGoalsSql.SQL}) AS CG")
+                                      .InnerJoin($"({campaignContributionsSql.SQL}) AS CC")
+                                      .On($"CG.{nameof(CrowdfunderRevision.ContentKey)} = CC.{nameof(Contribution.CrowdfunderId)}");
         
-        var averagePercentageComplete = await db.ExecuteScalarAsync<decimal>(completedPercentages);
+        var percentageComplete = await db.ExecuteScalarAsync<decimal>(percentageCompletedSql);
 
-        return averagePercentageComplete;
+        return percentageComplete;
     }
-    
-    
-
-    
     
     private class CrowdfunderRow {
         [Order(1)]
