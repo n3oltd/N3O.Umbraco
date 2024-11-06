@@ -113,10 +113,12 @@ public class CrowdfunderRevisionRepository : ICrowdfunderRevisionRepository {
         
         var crowdfunderRevision = new CrowdfunderRevision();
         crowdfunderRevision.Name = crowdfunder.Name;
+        crowdfunderRevision.ContentKey = crowdfunder.Key;
         crowdfunderRevision.ContentRevision = revision;
+        crowdfunderRevision.CampaignId = crowdfunder.CampaignId;
+        crowdfunderRevision.FundraiserId = crowdfunder.FundraiserId;
         crowdfunderRevision.Type = (int) crowdfunder.Type.Key;
         crowdfunderRevision.Url = crowdfunder.Url(_crowdfundingUrlBuilder);
-        crowdfunderRevision.ContentKey = crowdfunder.Key;
         crowdfunderRevision.CurrencyCode = crowdfunder.Currency.Code;
         crowdfunderRevision.GoalsTotalQuote = goalsTotalQuoteAmount;
         crowdfunderRevision.GoalsTotalBase = goalsTotalForex.Base.Amount;
