@@ -13,16 +13,16 @@ using Umbraco.Cms.Infrastructure.Persistence;
 namespace N3O.Umbraco.Crowdfunding;
 
 public class CrowdfunderRevisionRepository : ICrowdfunderRevisionRepository {
-    private readonly ICrowdfundingUrlBuilder _urlBuilder;
+    private readonly ICrowdfundingUrlBuilder _crowdfundingUrlBuilder;
     private readonly IForexConverter _forexConverter;
     private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
     private readonly ILocalClock _localClock;
 
-    public CrowdfunderRevisionRepository(ICrowdfundingUrlBuilder urlBuilder,
+    public CrowdfunderRevisionRepository(ICrowdfundingUrlBuilder crowdfundingUrlBuilder,
                                          IForexConverter forexConverter,
                                          IUmbracoDatabaseFactory umbracoDatabaseFactory,
                                          ILocalClock localClock) {
-        _urlBuilder = urlBuilder;
+        _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
         _forexConverter = forexConverter;
         _umbracoDatabaseFactory = umbracoDatabaseFactory;
         _localClock = localClock;
@@ -43,6 +43,20 @@ public class CrowdfunderRevisionRepository : ICrowdfunderRevisionRepository {
                 await UpdateAsync(crowdfunderContent, revision);
             } else {
                 await AddToDbAsync(db, crowdfunderContent, revision);
+            }
+        }
+    }
+    
+    public async Task AddGoalUpdatedOn(Guid id) {
+        using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
+            var crowdfunder = db.Single<Crowdfunder>($"WHERE {nameof(Crowdfunder.ContentKey)} = @0", id);
+
+            if (crowdfunder.ContributionsTotalBase > crowdfunder.GoalsTotalBase) {
+                var crowdfunderRevisions = await db.FetchAsync<CrowdfunderRevision>($"WHERE {nameof(Crowdfunder.ContentKey)} = @0", id);
+                var latestRevision = crowdfunderRevisions.OrderByDescending(x => x.ContentRevision).First();
+                latestRevision.GoalCompletedOn = _localClock.GetUtcNow();
+
+                await db.UpdateAsync(latestRevision);
             }
         }
     }
@@ -112,10 +126,12 @@ public class CrowdfunderRevisionRepository : ICrowdfunderRevisionRepository {
         
         var crowdfunderRevision = new CrowdfunderRevision();
         crowdfunderRevision.Name = crowdfunderContent.Name;
-        crowdfunderRevision.ContentRevision = revision;
-        crowdfunderRevision.Type = (int) crowdfunderContent.Type.Key;
-        crowdfunderRevision.Url = crowdfunderContent.Url(_urlBuilder);
         crowdfunderRevision.ContentKey = crowdfunderContent.Key;
+        crowdfunderRevision.ContentRevision = revision;
+        crowdfunderRevision.CampaignId = crowdfunderContent.CampaignId;
+        crowdfunderRevision.FundraiserId = crowdfunderContent.FundraiserId;
+        crowdfunderRevision.Type = (int) crowdfunderContent.Type.Key;
+        crowdfunderRevision.Url = crowdfunderContent.Url(_crowdfundingUrlBuilder);
         crowdfunderRevision.CurrencyCode = crowdfunderContent.Currency.Code;
         crowdfunderRevision.GoalsTotalQuote = goalsTotalQuoteAmount;
         crowdfunderRevision.GoalsTotalBase = goalsTotalForex.Base.Amount;

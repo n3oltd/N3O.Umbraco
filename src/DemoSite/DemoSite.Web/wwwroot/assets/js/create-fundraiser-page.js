@@ -263,8 +263,16 @@ class n3o_cdf_FieldHandler {
     static clearDimensions() {
         ['dimension1', 'dimension2', 'dimension3', 'dimension4'].forEach(dimension => {
             const [currDimension, index] = n3o_cdf_splitDimensionAndNumber(dimension);
-            const dimensionOptionsContainerElm = document.getElementById(`goal-selection-${currDimension}-${index}`);
+            const dimensionOptionsContainerElm = document.getElementById(`goal-selection-dimension-${index}`);
             dimensionOptionsContainerElm.innerHTML = "";
+
+            const dimensionContainerElm = document.getElementById(`dimension-${index}`);
+            if (dimensionContainerElm) {
+                dimensionContainerElm.querySelector("input[type='hidden']").value = null;
+                dimensionContainerElm.querySelector('.n3o-select__selected').innerHTML = "";
+            }
+
+            
         })
     } 
 
@@ -272,20 +280,26 @@ class n3o_cdf_FieldHandler {
         dimensions.forEach(dimension => {
             const dimensionData = data[dimension];
 
-            if (!dimensionData || !dimensionData.default || !dimensionData.allowedOptions.length) {
+            if (!dimensionData || !dimensionData.allowedOptions.length) {
                 return;
             }
 
             const [currDimension, index] = n3o_cdf_splitDimensionAndNumber(dimension);
             const dimensionElms = document.getElementsByClassName(`${currDimension}-${index}`);
 
+            const dimensionOptionsContainerElm = document.getElementById(`goal-selection-dimension-${index}`);
             const dimensionContainerElm = document.getElementById(`${currDimension}-${index}`);
-            const dimensionOptionsContainerElm = document.getElementById(`goal-selection-${currDimension}-${index}`);
-
-            dimensionContainerElm.querySelector("input[type='hidden']").value = dimensionData.default.id;
-            dimensionContainerElm.querySelector('.n3o-select__selected').innerHTML = dimensionData.default.name;
-
             dimensionOptionsContainerElm.innerHTML = "";
+
+            if (dimensionData.default) {
+                dimensionContainerElm.querySelector("input[type='hidden']").value = dimensionData.default.id;
+                dimensionContainerElm.querySelector('.n3o-select__selected').innerHTML = dimensionData.default.name;
+            }
+
+            if (!dimensionData.default) {
+                dimensionContainerElm.querySelector("input[type='hidden']").value = dimensionData.allowedOptions[0].id;
+                dimensionContainerElm.querySelector('.n3o-select__selected').innerHTML = dimensionData.allowedOptions[0].name;
+            }
 
             for (let elm of dimensionElms) {
                 elm.style.display = 'none'
