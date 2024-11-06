@@ -53,6 +53,7 @@ public class Contribution {
     public Guid? FundraiserId { get; set; }
     
     [Column(nameof(FundraiserName))]
+    [NullSetting(NullSetting = NullSettings.Null)]
     [Length(100)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(FundraiserName), ForColumns = nameof(FundraiserName))]
     public string FundraiserName { get; set; }
@@ -108,6 +109,7 @@ public class Contribution {
     public string Email { get; set; }
     
     [Column(nameof(Comment))]
+    [NullSetting(NullSetting = NullSettings.Null)]
     [Length(2000)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(Comment), ForColumns = nameof(Comment))]
     public string Comment { get; set; }

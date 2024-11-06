@@ -111,12 +111,14 @@ public class CrowdfunderRevisionRepository : ICrowdfunderRevisionRepository {
                                                    .ConvertAsync(goalsTotalQuoteAmount);
         
         var crowdfunderRevision = new CrowdfunderRevision();
-        crowdfunderRevision.Name = crowdfunderContent.Name;
+crowdfunderRevision.Name = crowdfunder.Name;
+        crowdfunderRevision.ContentKey = crowdfunder.Key;
         crowdfunderRevision.ContentRevision = revision;
-        crowdfunderRevision.Type = (int) crowdfunderContent.Type.Key;
-        crowdfunderRevision.Url = crowdfunderContent.Url(_urlBuilder);
-        crowdfunderRevision.ContentKey = crowdfunderContent.Key;
-        crowdfunderRevision.CurrencyCode = crowdfunderContent.Currency.Code;
+        crowdfunderRevision.CampaignId = crowdfunder.CampaignId;
+        crowdfunderRevision.FundraiserId = crowdfunder.FundraiserId;
+        crowdfunderRevision.Type = (int) crowdfunder.Type.Key;
+        crowdfunderRevision.Url = crowdfunder.Url(_crowdfundingUrlBuilder);
+        crowdfunderRevision.CurrencyCode = crowdfunder.Currency.Code;
         crowdfunderRevision.GoalsTotalQuote = goalsTotalQuoteAmount;
         crowdfunderRevision.GoalsTotalBase = goalsTotalForex.Base.Amount;
         crowdfunderRevision.ActiveFrom = _localClock.GetUtcNow();

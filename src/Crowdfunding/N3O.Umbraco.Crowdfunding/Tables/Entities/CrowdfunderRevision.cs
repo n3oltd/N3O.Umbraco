@@ -23,6 +23,15 @@ public class CrowdfunderRevision {
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.CrowdfunderRevisions.Name + "_" + nameof(ContentRevision), ForColumns = nameof(ContentRevision))]
     public int ContentRevision { get; set; }
     
+    [Column(nameof(CampaignId))]
+    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.CrowdfunderRevisions.Name + "_" + nameof(CampaignId), ForColumns = nameof(CampaignId))]
+    public Guid CampaignId { get; set; }
+    
+    [Column(nameof(FundraiserId))]
+    [NullSetting(NullSetting = NullSettings.Null)]
+    [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.Contributions.Name + "_" + nameof(FundraiserId), ForColumns = nameof(FundraiserId))]
+    public Guid? FundraiserId { get; set; }
+    
     [Column(nameof(Name))]
     [Length(CrowdfundingConstants.Crowdfunder.NameMaxLength)]
     [Index(IndexTypes.NonClustered, Name = "IX_" + Tables.CrowdfunderRevisions.Name + "_" + nameof(Name), ForColumns = nameof(Name))]
@@ -49,4 +58,8 @@ public class CrowdfunderRevision {
     [Column(nameof(ActiveTo))]
     [NullSetting(NullSetting = NullSettings.Null)]
     public DateTime? ActiveTo { get; set; }
+    
+    [Column(nameof(GoalCompletedOn))]
+    [NullSetting(NullSetting = NullSettings.Null)]
+    public DateTime? GoalCompletedOn { get; set; }
 }    
