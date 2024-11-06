@@ -7,4 +7,4 @@ using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace N3O.Umbraco.Payments.PayPal.Commands;
 
-public class CreateSubscriptionCommand : Request<PayPalCreateSubscriptionReq, PayPalCredential> { }
+public class CreateSubscriptionCommand : Request<PayPalCreateSubscriptionReq, PayPalCreateSubscriptionRes> { }

@@ -2,15 +2,12 @@
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Checkout;
 using N3O.Umbraco.Mediator;
-using N3O.Umbraco.Payments.Handlers;
-using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.PayPal.Clients;
 using N3O.Umbraco.Payments.PayPal.Clients.Models;
 using N3O.Umbraco.Payments.PayPal.Clients.PayPalErrors;
 using N3O.Umbraco.Payments.PayPal.Commands;
 using N3O.Umbraco.Payments.PayPal.Content;
 using N3O.Umbraco.Payments.PayPal.Models.PayPalCreatePlanSubscriptionReq;
-using N3O.Umbraco.Payments.PayPal.Models.PayPalCredential;
 using Newtonsoft.Json;
 using NUglify.Helpers;
 using Refit;
@@ -20,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.PayPal.Handlers;
 
-public class CreateSubscriptionHandler : IRequestHandler<CreateSubscriptionCommand, PayPalCreateSubscriptionReq, PayPalCredential> {
+public class CreateSubscriptionHandler : IRequestHandler<CreateSubscriptionCommand, PayPalCreateSubscriptionReq, PayPalCreateSubscriptionRes> {
     private readonly IPlansClient _plansClient;
     private readonly IProductsClient _productsClient;
     private readonly ISubscriptionsClient _subscriptionsClient;
@@ -39,7 +36,7 @@ public class CreateSubscriptionHandler : IRequestHandler<CreateSubscriptionComma
         _subscriptionsClient = subscriptionsClient;
     }
     
-    public async Task<PayPalCredential> Handle(CreateSubscriptionCommand req, CancellationToken cancellationToken) {
+    public async Task<PayPalCreateSubscriptionRes> Handle(CreateSubscriptionCommand req, CancellationToken cancellationToken) {
         var checkout = await _checkoutAccessor.GetAsync(cancellationToken);
         var totalAmount = checkout.RegularGiving.Total;
         var planName = totalAmount.Currency.Symbol + "-" + totalAmount.Amount.ToString("0.00");
@@ -52,7 +49,7 @@ public class CreateSubscriptionHandler : IRequestHandler<CreateSubscriptionComma
         
         var subscriptionId = await CreateSubscription(planId, req.Model.ReturnUrl, req.Model.CancelUrl);
 
-        
+        return new PayPalCreateSubscriptionRes() { SubscriptionID = subscriptionId };
     }
 
     private async Task<string> GetOrCreateProduct() {
@@ -91,7 +88,6 @@ public class CreateSubscriptionHandler : IRequestHandler<CreateSubscriptionComma
             var request = new ApiGetPlansReq();
             request.ProductId = productId;
             request.PageNumber = page.ToString();
-            
             
             var res = await _plansClient.GetPlansAsync(request);
             

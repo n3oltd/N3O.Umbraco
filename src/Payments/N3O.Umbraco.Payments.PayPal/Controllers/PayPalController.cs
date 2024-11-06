@@ -3,8 +3,10 @@ using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Payments.Models;
+using N3O.Umbraco.Payments.PayPal.Clients;
 using N3O.Umbraco.Payments.PayPal.Commands;
 using N3O.Umbraco.Payments.PayPal.Models;
+using N3O.Umbraco.Payments.PayPal.Models.PayPalCreatePlanSubscriptionReq;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.PayPal.Controllers;
@@ -24,10 +26,17 @@ public class PayPalController : ApiController {
         return Ok(res);
     }
     
-    [HttpGet("credentials/{flowId:entityId}/redirectFlow/complete")]
+    [HttpPost("credentials/{flowId:entityId}/createsubscription")]
+    public async Task<ActionResult<Subscription>> CreateSubscription(PayPalCreateSubscriptionReq req) {
+        var res = await _mediator.SendAsync<CreateSubscriptionCommand, PayPalCreateSubscriptionReq, PayPalCreateSubscriptionRes>(req);
+
+        return Ok(res);
+    }
+    
+    /*[HttpGet("credentials/{flowId:entityId}/redirectFlow/complete")]
     public async Task<RedirectResult> CompleteRedirectFlow() {
         var res = await _mediator.SendAsync<CompleteRedirectFlowCommand, None, PaymentFlowRes<GoCardlessCredential>>(None.Empty);
 
         return Redirect(res.Result.ReturnUrl);
-    }
+    }*/
 }
