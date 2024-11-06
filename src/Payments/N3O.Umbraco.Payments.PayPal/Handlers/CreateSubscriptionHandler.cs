@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Content;
+using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Checkout;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Payments.Handlers;
@@ -8,16 +9,18 @@ using N3O.Umbraco.Payments.PayPal.Clients.Models;
 using N3O.Umbraco.Payments.PayPal.Clients.PayPalErrors;
 using N3O.Umbraco.Payments.PayPal.Commands;
 using N3O.Umbraco.Payments.PayPal.Content;
+using N3O.Umbraco.Payments.PayPal.Models.PayPalCreatePlanSubscriptionReq;
 using N3O.Umbraco.Payments.PayPal.Models.PayPalCredential;
 using Newtonsoft.Json;
 using NUglify.Helpers;
 using Refit;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.PayPal.Handlers;
 
-public class CreateSubscriptionHandler : IRequestHandler<CreateSubscriptionCommand, None, PayPalCredential> {
+public class CreateSubscriptionHandler : IRequestHandler<CreateSubscriptionCommand, PayPalCreateSubscriptionReq, PayPalCredential> {
     private readonly IPlansClient _plansClient;
     private readonly IProductsClient _productsClient;
     private readonly ISubscriptionsClient _subscriptionsClient;
@@ -36,31 +39,20 @@ public class CreateSubscriptionHandler : IRequestHandler<CreateSubscriptionComma
         _subscriptionsClient = subscriptionsClient;
     }
     
-    public async Task<PayPalCredential> Handle(CreateSubscriptionCommand request, CancellationToken cancellationToken) {
-        //use refit to create a product - Use the constant value to retrieve the product with ID else create it 
-        //ID hardcoded somewhere as it would be something like GER-Donations
-        var settings = _contentCache.Single<PayPalSettingsContent>();
-
-        var product = GetOrCreateProduct().Result;
-        
-        var plan = GetOrCreatePlan(product).Result;
-        
-        //use refit to create a plan - Use the Amount and currency as a ID (ID should be unique)
-        //First use the get endpoint to retrieve, if not existing then create the plan
+    public async Task<PayPalCredential> Handle(CreateSubscriptionCommand req, CancellationToken cancellationToken) {
         var checkout = await _checkoutAccessor.GetAsync(cancellationToken);
         var totalAmount = checkout.RegularGiving.Total;
-        var planId = totalAmount.Currency.Symbol + "-" + totalAmount.Amount.ToString("0.00");
+        var planName = totalAmount.Currency.Symbol + "-" + totalAmount.Amount.ToString("0.00");
         
-        var getPlanRequest = new ApiGetPlanReq();
-        getPlanRequest.Id = planId;
+        var settings = _contentCache.Single<PayPalSettingsContent>();
 
-        try {
-            var res = await _plansClient.
-        } catch (ApiException apiException) {
-            
-        }
+        var productId = await GetOrCreateProduct();
         
-        throw new System.NotImplementedException();
+        var planId = await GetOrCreatePlan(productId, planName, totalAmount);
+        
+        var subscriptionId = await CreateSubscription(planId, req.Model.ReturnUrl, req.Model.CancelUrl);
+
+        
     }
 
     private async Task<string> GetOrCreateProduct() {
@@ -74,7 +66,7 @@ public class CreateSubscriptionHandler : IRequestHandler<CreateSubscriptionComma
         var productId = string.Empty;
 
         try {
-            var res = await _productsClient.CreateProduct(request);
+            var res = await _productsClient.CreateProductAsync(request);
             
             productId = res.Id;
         } catch (ApiException apiException) {
@@ -83,41 +75,108 @@ public class CreateSubscriptionHandler : IRequestHandler<CreateSubscriptionComma
             var issue = paypalError?.Details[0]?.Issue;
 
             if (issue != null && issue != "DUPLICATE_RESOURCE_IDENTIFIER") {
-                //throw some exception here since this is someother error
+                //throw some exception here since this is some other error
             }
         }
         
-
         return productId;
     }
 
-    private async Task<string> CreateProduct() {
-        var request = new ApiCreateProductReq();
-        request.Id = PayPalConstants.ProductId;
-        request.Name = PayPalConstants.ProductId;
-        request.Category = PayPalConstants.ProductCategory;
-        request.Type = PayPalConstants.ProductType;
-        request.Category = PayPalConstants.ProductCategory;
+    private async Task<string> GetOrCreatePlan(string productId, string planName, Money totalAmount) {
+        //TODO caching can be used here when retrieving the plans
+        var planId = string.Empty;
+        int page = 1;
         
-        var res = await _productsClient.CreateProduct(request);
+        do {
+            var request = new ApiGetPlansReq();
+            request.ProductId = productId;
+            request.PageNumber = page.ToString();
+            
+            
+            var res = await _plansClient.GetPlansAsync(request);
+            
+            if (res.TotalItems == 0) {
+                planId = await CreatePlan(productId, planId, totalAmount);
+                break;
+            } else {
+                foreach (var plan in res.Plans) {
+                    if (plan.Name == planName) {
+                        planId = plan.Id;
+                        break;
+                    }
+                }
+                page++;
+            }
+
+            if (page == res.TotalPages) {
+                planId = await CreatePlan(productId, planId, totalAmount);
+
+                break;
+            }
+        } while (true);
+        
+        return planId;
+    }
+
+    private async Task<string> CreatePlan(string productId, string planName, Money totalAmount) {
+        var fixedPrice = new FixedPrice();
+        fixedPrice.Value = totalAmount.Amount.ToString("0.00");
+        fixedPrice.CurrencyCode = totalAmount.Currency.Code;
+        
+        var pricingScheme = new PricingScheme();
+        pricingScheme.FixedPrice = fixedPrice;
+        
+        var frequency = new Frequency();
+        frequency.IntervalCount = PayPalConstants.FrequencyCount;
+        frequency.IntervalUnit = PayPalConstants.FrequencyInterval;
+        
+        var billingCycle = new BillingCycle();
+        billingCycle.TenureType = PayPalConstants.TenureType;
+        billingCycle.Sequence = PayPalConstants.BillingCycleSequence;
+        billingCycle.TotalCycles = PayPalConstants.BillingCycleTotalCycles;
+        billingCycle.PricingScheme = pricingScheme;
+
+        var billingCycles = new List<BillingCycle>(){ billingCycle };
+        
+        var setupFee = new SetupFee();
+        setupFee.CurrencyCode = totalAmount.Currency.Code;
+        setupFee.Value = totalAmount.Amount.ToString("0.00");
+        
+        var paymentPreferences = new PaymentPreferences();
+        paymentPreferences.AutoBillOutstanding = true;
+        paymentPreferences.SetupFeeFailureAction = PayPalConstants.SetupFeeFailureAction;
+        paymentPreferences.PaymentFailureThreshold = PayPalConstants.PaymentFailureThreshold;
+        paymentPreferences.SetupFee = setupFee;
+        
+        var request = new ApiCreatePlanReq();
+        request.ProductId = productId;
+        request.Name = planName;
+        request.Status = PayPalConstants.PlanStatus;
+        request.BillingCycles = billingCycles;
+        request.PaymentPreferences = paymentPreferences; 
+        
+        var res = await _plansClient.CreatePlanAsync(request);
         
         return res.Id;
     }
 
-    private async Task<string> GetOrCreatePlan(string planId) {
+    private async Task<string> CreateSubscription(string planId, string returnUrl, string cancelUrl) {
+        var request = new ApiCreateSubscription();
         
-    }
-    
-    private async Task<string> CreatePlan() {
-        var request = new ApiCreateProductReq();
-        request.Id = PayPalConstants.ProductId;
-        request.Name = PayPalConstants.ProductId;
-        request.Category = PayPalConstants.ProductCategory;
-        request.Type = PayPalConstants.ProductType;
-        request.Category = PayPalConstants.ProductCategory;
+        var paymentMethod = new PaymentMethod();
+        paymentMethod.PayeePreferred = "PAYPAL";
+        paymentMethod.PayerSelected = "IMMEDIATE_PAYMENT_REQUIRED";
         
-        var res = await _productsClient.CreateProduct(request);
+        var applicationContext = new ApplicationContext();
+        applicationContext.ReturnUrl = returnUrl;
+        applicationContext.CancelUrl = cancelUrl;
+        applicationContext.PaymentMethod = paymentMethod;
         
+        request.PlanId = planId;
+        request.ApplicationContext = applicationContext;
+
+        var res = await _subscriptionsClient.CreateSubscriptionAsync(request);
+
         return res.Id;
     }
 }

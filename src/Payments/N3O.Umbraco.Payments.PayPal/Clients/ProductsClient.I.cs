@@ -7,8 +7,5 @@ namespace N3O.Umbraco.Payments.PayPal.Clients;
 
 public interface IProductsClient {
     [Post("/v1/catalogs/products")]
-    Task<ApiProductRes> CreateProduct(ApiCreateProductReq req);
-    
-    [Get("/v1/catalogs/products/{req.Id}")]
-    Task<ApiProductRes> GetProduct(ApiGetProductReq req);
+    Task<ApiProductRes> CreateProductAsync(ApiCreateProductReq req);
 }

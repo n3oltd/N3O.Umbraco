@@ -1,6 +1,8 @@
 ﻿using N3O.Umbraco.Payments.Models;
+using N3O.Umbraco.Payments.PayPal.Clients.Models;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace N3O.Umbraco.Payments.PayPal.Clients;
 
@@ -13,6 +15,9 @@ public class Subscription {
 
     [JsonProperty("start_time")]
     public DateTime StartTime { get; set; }
+    
+    [JsonProperty("application_context")]
+    public ApplicationContext ApplicationContext { get; set; }
 
     [JsonProperty("quantity")]
     public string Quantity { get; set; }
