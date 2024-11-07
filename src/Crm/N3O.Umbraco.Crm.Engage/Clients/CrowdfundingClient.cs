@@ -27,57 +27,57 @@ namespace N3O.Umbraco.Crm.Engage.Clients
     {
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<string> CreateCampaignAsync(string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateCampaignReq body);
+        System.Threading.Tasks.Task<string> CreateCampaignAsync(string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateCampaignReq body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<string> CreateCampaignAsync(string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateCampaignReq body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<string> CreateCampaignAsync(string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateCampaignReq body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<CampaignRes> GetCampaignByIdAsync(string campaignId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<CampaignRes> GetCampaignByIdAsync(string campaignId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<CrowdfunderRes> GetCrowdfunderByIdAsync(string crowdfunderId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID);
+        System.Threading.Tasks.Task<CampaignRes> GetCampaignByIdAsync(string campaignId, string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<CrowdfunderRes> GetCrowdfunderByIdAsync(string crowdfunderId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<CampaignRes> GetCampaignByIdAsync(string campaignId, string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task SyncCrowdfunderAsync(string crowdfunderRevisionId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, SyncCrowdfunderReq body);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task SyncCrowdfunderAsync(string crowdfunderRevisionId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, SyncCrowdfunderReq body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<string> CreateFundraiserAsync(string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateFundraiserReq body);
+        System.Threading.Tasks.Task<CrowdfunderRes> GetCrowdfunderByIdAsync(string crowdfunderId, string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<string> CreateFundraiserAsync(string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateFundraiserReq body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<CrowdfunderRes> GetCrowdfunderByIdAsync(string crowdfunderId, string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<FundraiserRes> GetFundraiserByIdAsync(string fundraiserId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID);
+        System.Threading.Tasks.Task SyncCrowdfunderAsync(string crowdfunderRevisionId, string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, SyncCrowdfunderReq body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<FundraiserRes> GetFundraiserByIdAsync(string fundraiserId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task SyncCrowdfunderAsync(string crowdfunderRevisionId, string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, SyncCrowdfunderReq body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<string> CreateFundraiserAsync(string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateFundraiserReq body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<string> CreateFundraiserAsync(string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateFundraiserReq body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<FundraiserRes> GetFundraiserByIdAsync(string fundraiserId, string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<FundraiserRes> GetFundraiserByIdAsync(string fundraiserId, string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -131,15 +131,15 @@ namespace N3O.Umbraco.Crm.Engage.Clients
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<string> CreateCampaignAsync(string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateCampaignReq body)
+        public virtual System.Threading.Tasks.Task<string> CreateCampaignAsync(string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateCampaignReq body)
         {
-            return CreateCampaignAsync(n3O_Ignore_Validation_Warnings, n3O_Service_Cache, n3O_Route_Key, n3O_Clock_Adjustment, n3O_Subscription_ID, body, System.Threading.CancellationToken.None);
+            return CreateCampaignAsync(n3O_Account_Activity_Scope_ID, n3O_Ignore_Validation_Warnings, n3O_Service_Cache, n3O_Route_Key, n3O_Clock_Adjustment, n3O_Subscription_ID, body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<string> CreateCampaignAsync(string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateCampaignReq body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<string> CreateCampaignAsync(string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateCampaignReq body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -147,6 +147,9 @@ namespace N3O.Umbraco.Crm.Engage.Clients
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
+
+                    if (n3O_Account_Activity_Scope_ID != null)
+                        request_.Headers.TryAddWithoutValidation("N3O-Account-Activity-Scope-ID", ConvertToString(n3O_Account_Activity_Scope_ID, System.Globalization.CultureInfo.InvariantCulture));
 
                     if (n3O_Ignore_Validation_Warnings != null)
                         request_.Headers.TryAddWithoutValidation("N3O-Ignore-Validation-Warnings", ConvertToString(n3O_Ignore_Validation_Warnings, System.Globalization.CultureInfo.InvariantCulture));
@@ -281,15 +284,15 @@ namespace N3O.Umbraco.Crm.Engage.Clients
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<CampaignRes> GetCampaignByIdAsync(string campaignId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID)
+        public virtual System.Threading.Tasks.Task<CampaignRes> GetCampaignByIdAsync(string campaignId, string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID)
         {
-            return GetCampaignByIdAsync(campaignId, n3O_Ignore_Validation_Warnings, n3O_Service_Cache, n3O_Route_Key, n3O_Clock_Adjustment, n3O_Subscription_ID, System.Threading.CancellationToken.None);
+            return GetCampaignByIdAsync(campaignId, n3O_Account_Activity_Scope_ID, n3O_Ignore_Validation_Warnings, n3O_Service_Cache, n3O_Route_Key, n3O_Clock_Adjustment, n3O_Subscription_ID, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<CampaignRes> GetCampaignByIdAsync(string campaignId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<CampaignRes> GetCampaignByIdAsync(string campaignId, string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, System.Threading.CancellationToken cancellationToken)
         {
             if (campaignId == null)
                 throw new System.ArgumentNullException("campaignId");
@@ -300,6 +303,9 @@ namespace N3O.Umbraco.Crm.Engage.Clients
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
+
+                    if (n3O_Account_Activity_Scope_ID != null)
+                        request_.Headers.TryAddWithoutValidation("N3O-Account-Activity-Scope-ID", ConvertToString(n3O_Account_Activity_Scope_ID, System.Globalization.CultureInfo.InvariantCulture));
 
                     if (n3O_Ignore_Validation_Warnings != null)
                         request_.Headers.TryAddWithoutValidation("N3O-Ignore-Validation-Warnings", ConvertToString(n3O_Ignore_Validation_Warnings, System.Globalization.CultureInfo.InvariantCulture));
@@ -431,15 +437,15 @@ namespace N3O.Umbraco.Crm.Engage.Clients
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<CrowdfunderRes> GetCrowdfunderByIdAsync(string crowdfunderId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID)
+        public virtual System.Threading.Tasks.Task<CrowdfunderRes> GetCrowdfunderByIdAsync(string crowdfunderId, string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID)
         {
-            return GetCrowdfunderByIdAsync(crowdfunderId, n3O_Ignore_Validation_Warnings, n3O_Service_Cache, n3O_Route_Key, n3O_Clock_Adjustment, n3O_Subscription_ID, System.Threading.CancellationToken.None);
+            return GetCrowdfunderByIdAsync(crowdfunderId, n3O_Account_Activity_Scope_ID, n3O_Ignore_Validation_Warnings, n3O_Service_Cache, n3O_Route_Key, n3O_Clock_Adjustment, n3O_Subscription_ID, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<CrowdfunderRes> GetCrowdfunderByIdAsync(string crowdfunderId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<CrowdfunderRes> GetCrowdfunderByIdAsync(string crowdfunderId, string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, System.Threading.CancellationToken cancellationToken)
         {
             if (crowdfunderId == null)
                 throw new System.ArgumentNullException("crowdfunderId");
@@ -450,6 +456,9 @@ namespace N3O.Umbraco.Crm.Engage.Clients
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
+
+                    if (n3O_Account_Activity_Scope_ID != null)
+                        request_.Headers.TryAddWithoutValidation("N3O-Account-Activity-Scope-ID", ConvertToString(n3O_Account_Activity_Scope_ID, System.Globalization.CultureInfo.InvariantCulture));
 
                     if (n3O_Ignore_Validation_Warnings != null)
                         request_.Headers.TryAddWithoutValidation("N3O-Ignore-Validation-Warnings", ConvertToString(n3O_Ignore_Validation_Warnings, System.Globalization.CultureInfo.InvariantCulture));
@@ -581,15 +590,15 @@ namespace N3O.Umbraco.Crm.Engage.Clients
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task SyncCrowdfunderAsync(string crowdfunderRevisionId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, SyncCrowdfunderReq body)
+        public virtual System.Threading.Tasks.Task SyncCrowdfunderAsync(string crowdfunderRevisionId, string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, SyncCrowdfunderReq body)
         {
-            return SyncCrowdfunderAsync(crowdfunderRevisionId, n3O_Ignore_Validation_Warnings, n3O_Service_Cache, n3O_Route_Key, n3O_Clock_Adjustment, n3O_Subscription_ID, body, System.Threading.CancellationToken.None);
+            return SyncCrowdfunderAsync(crowdfunderRevisionId, n3O_Account_Activity_Scope_ID, n3O_Ignore_Validation_Warnings, n3O_Service_Cache, n3O_Route_Key, n3O_Clock_Adjustment, n3O_Subscription_ID, body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task SyncCrowdfunderAsync(string crowdfunderRevisionId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, SyncCrowdfunderReq body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task SyncCrowdfunderAsync(string crowdfunderRevisionId, string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, SyncCrowdfunderReq body, System.Threading.CancellationToken cancellationToken)
         {
             if (crowdfunderRevisionId == null)
                 throw new System.ArgumentNullException("crowdfunderRevisionId");
@@ -600,6 +609,9 @@ namespace N3O.Umbraco.Crm.Engage.Clients
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
+
+                    if (n3O_Account_Activity_Scope_ID != null)
+                        request_.Headers.TryAddWithoutValidation("N3O-Account-Activity-Scope-ID", ConvertToString(n3O_Account_Activity_Scope_ID, System.Globalization.CultureInfo.InvariantCulture));
 
                     if (n3O_Ignore_Validation_Warnings != null)
                         request_.Headers.TryAddWithoutValidation("N3O-Ignore-Validation-Warnings", ConvertToString(n3O_Ignore_Validation_Warnings, System.Globalization.CultureInfo.InvariantCulture));
@@ -729,15 +741,15 @@ namespace N3O.Umbraco.Crm.Engage.Clients
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<string> CreateFundraiserAsync(string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateFundraiserReq body)
+        public virtual System.Threading.Tasks.Task<string> CreateFundraiserAsync(string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateFundraiserReq body)
         {
-            return CreateFundraiserAsync(n3O_Ignore_Validation_Warnings, n3O_Service_Cache, n3O_Route_Key, n3O_Clock_Adjustment, n3O_Subscription_ID, body, System.Threading.CancellationToken.None);
+            return CreateFundraiserAsync(n3O_Account_Activity_Scope_ID, n3O_Ignore_Validation_Warnings, n3O_Service_Cache, n3O_Route_Key, n3O_Clock_Adjustment, n3O_Subscription_ID, body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<string> CreateFundraiserAsync(string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateFundraiserReq body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<string> CreateFundraiserAsync(string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateFundraiserReq body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -745,6 +757,9 @@ namespace N3O.Umbraco.Crm.Engage.Clients
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
+
+                    if (n3O_Account_Activity_Scope_ID != null)
+                        request_.Headers.TryAddWithoutValidation("N3O-Account-Activity-Scope-ID", ConvertToString(n3O_Account_Activity_Scope_ID, System.Globalization.CultureInfo.InvariantCulture));
 
                     if (n3O_Ignore_Validation_Warnings != null)
                         request_.Headers.TryAddWithoutValidation("N3O-Ignore-Validation-Warnings", ConvertToString(n3O_Ignore_Validation_Warnings, System.Globalization.CultureInfo.InvariantCulture));
@@ -879,15 +894,15 @@ namespace N3O.Umbraco.Crm.Engage.Clients
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<FundraiserRes> GetFundraiserByIdAsync(string fundraiserId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID)
+        public virtual System.Threading.Tasks.Task<FundraiserRes> GetFundraiserByIdAsync(string fundraiserId, string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID)
         {
-            return GetFundraiserByIdAsync(fundraiserId, n3O_Ignore_Validation_Warnings, n3O_Service_Cache, n3O_Route_Key, n3O_Clock_Adjustment, n3O_Subscription_ID, System.Threading.CancellationToken.None);
+            return GetFundraiserByIdAsync(fundraiserId, n3O_Account_Activity_Scope_ID, n3O_Ignore_Validation_Warnings, n3O_Service_Cache, n3O_Route_Key, n3O_Clock_Adjustment, n3O_Subscription_ID, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<FundraiserRes> GetFundraiserByIdAsync(string fundraiserId, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<FundraiserRes> GetFundraiserByIdAsync(string fundraiserId, string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, System.Threading.CancellationToken cancellationToken)
         {
             if (fundraiserId == null)
                 throw new System.ArgumentNullException("fundraiserId");
@@ -898,6 +913,9 @@ namespace N3O.Umbraco.Crm.Engage.Clients
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
+
+                    if (n3O_Account_Activity_Scope_ID != null)
+                        request_.Headers.TryAddWithoutValidation("N3O-Account-Activity-Scope-ID", ConvertToString(n3O_Account_Activity_Scope_ID, System.Globalization.CultureInfo.InvariantCulture));
 
                     if (n3O_Ignore_Validation_Warnings != null)
                         request_.Headers.TryAddWithoutValidation("N3O-Ignore-Validation-Warnings", ConvertToString(n3O_Ignore_Validation_Warnings, System.Globalization.CultureInfo.InvariantCulture));
@@ -2531,6 +2549,23 @@ namespace N3O.Umbraco.Crm.Engage.Clients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FundDimensionOptions
+    {
+        [Newtonsoft.Json.JsonProperty("dimension1", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> Dimension1 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dimension2", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> Dimension2 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dimension3", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> Dimension3 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dimension4", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> Dimension4 { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class FundDimensionValues
     {
         [Newtonsoft.Json.JsonProperty("dimension1", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -2816,7 +2851,7 @@ namespace N3O.Umbraco.Crm.Engage.Clients
     }
 
     /// <summary>
-    /// One of 'AC', 'AL', 'AS', 'AT', 'BD', 'BP', 'BX', 'CA', 'CC', 'CF', 'CL', 'CM', 'CO', 'CR', 'CS', 'DD', 'DE', 'DF', 'DI', 'DN', 'DQ', 'DR', 'DS', 'DT', 'EL', 'EM', 'FB', 'FO', 'FS', 'HH', 'LG', 'LH', 'LS', 'OB', 'PC', 'PL', 'PM', 'PR', 'RC', 'RF', 'RG', 'RI', 'RP', 'SB', 'SC', 'SG', 'SH', 'SM', 'SP', 'SS', 'TC', 'TD', 'TG', 'TI', 'TK', 'TM', 'TR', 'WH'
+    /// One of 'AC', 'AL', 'AS', 'AT', 'BD', 'BP', 'BX', 'CA', 'CC', 'CF', 'CL', 'CM', 'CO', 'CR', 'CS', 'DD', 'DE', 'DF', 'DI', 'DN', 'DQ', 'DR', 'DS', 'DT', 'EL', 'EM', 'FB', 'FO', 'FS', 'HH', 'LG', 'LH', 'LS', 'OB', 'PC', 'PL', 'PM', 'PR', 'RC', 'RF', 'RG', 'RI', 'RP', 'SB', 'SC', 'SG', 'SH', 'SM', 'SP', 'SS', 'TC', 'TD', 'TG', 'TI', 'TK', 'TM', 'TR', 'WA', 'WH'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum ReferenceType
@@ -2993,8 +3028,11 @@ namespace N3O.Umbraco.Crm.Engage.Clients
         [System.Runtime.Serialization.EnumMember(Value = @"TR")]
         TR = 56,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"WA")]
+        WA = 57,
+
         [System.Runtime.Serialization.EnumMember(Value = @"WH")]
-        WH = 57,
+        WH = 58,
 
     }
 
@@ -3012,6 +3050,23 @@ namespace N3O.Umbraco.Crm.Engage.Clients
 
         [Newtonsoft.Json.JsonProperty("beneficiary", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public BeneficiaryInfoRes Beneficiary { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class SponsorshipComponent
+    {
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("required", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Required { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("capacity", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? Capacity { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("pricing", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Pricing Pricing { get; set; }
 
     }
 
