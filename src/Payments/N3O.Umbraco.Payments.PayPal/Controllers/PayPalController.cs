@@ -6,6 +6,7 @@ using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.PayPal.Clients;
 using N3O.Umbraco.Payments.PayPal.Commands;
 using N3O.Umbraco.Payments.PayPal.Models;
+using N3O.Umbraco.Payments.PayPal.Models.PayPalCreatePlanRes;
 using N3O.Umbraco.Payments.PayPal.Models.PayPalCreatePlanSubscriptionReq;
 using System.Threading.Tasks;
 
@@ -29,6 +30,13 @@ public class PayPalController : ApiController {
     [HttpPost("credentials/{flowId:entityId}/createsubscription")]
     public async Task<ActionResult<Subscription>> CreateSubscription(PayPalCreateSubscriptionReq req) {
         var res = await _mediator.SendAsync<CreateSubscriptionCommand, PayPalCreateSubscriptionReq, PayPalCreateSubscriptionRes>(req);
+
+        return Ok(res);
+    }
+    
+    [HttpPost("credentials/{flowId:entityId}/createplan")]
+    public async Task<ActionResult<PayPalCreatePlanRes>> CreatePlan() {
+        var res = await _mediator.SendAsync<CreatePlanCommand, None, PayPalCreatePlanRes>(null);
 
         return Ok(res);
     }
