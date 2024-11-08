@@ -449,6 +449,9 @@ export interface ContributionStatisticsRes {
     total?: MoneyRes | undefined;
     average?: MoneyRes | undefined;
     count?: number;
+    supportersCount?: number;
+    singleDonationsCount?: number;
+    regularDonationsCount?: number;
     daily?: DailyContributionStatisticsRes[] | undefined;
 }
 export interface DailyContributionStatisticsRes {

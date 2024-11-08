@@ -5,14 +5,97 @@ export declare class PayPalClient {
     constructor(baseUrl?: string, http?: {
         fetch(url: RequestInfo, init?: RequestInit): Promise<Response>;
     });
-    capture(flowId: string, req: PayPalTransactionReq): Promise<PaymentFlowResOfPayPalPayment>;
-    protected processCapture(response: Response): Promise<PaymentFlowResOfPayPalPayment>;
     captureSubscription(flowId: string, req: PayPalSubscriptionReq): Promise<PaymentFlowResOfPayPalCredential>;
     protected processCaptureSubscription(response: Response): Promise<PaymentFlowResOfPayPalCredential>;
-    createSubscription(flowId: string, req: PayPalCreateSubscriptionReq): Promise<Subscription>;
-    protected processCreateSubscription(response: Response): Promise<Subscription>;
+    captureTransaction(flowId: string, req: PayPalTransactionReq): Promise<PaymentFlowResOfPayPalPayment>;
+    protected processCaptureTransaction(response: Response): Promise<PaymentFlowResOfPayPalPayment>;
     createPlan(flowId: string): Promise<PayPalCreatePlanRes>;
     protected processCreatePlan(response: Response): Promise<PayPalCreatePlanRes>;
+    createSubscription(flowId: string, req: PayPalCreateSubscriptionReq): Promise<Subscription>;
+    protected processCreateSubscription(response: Response): Promise<Subscription>;
+}
+export interface PaymentFlowResOfPayPalCredential {
+    flowRevision?: number;
+    result?: PayPalCredential | undefined;
+}
+export interface PayPalCredential {
+    advancePayment?: Payment | undefined;
+    setupAt?: string | undefined;
+    isSetUp?: boolean;
+    type?: PaymentObjectType | undefined;
+    completeAt?: string | undefined;
+    errorAt?: string | undefined;
+    errorMessage?: string | undefined;
+    exceptionDetails?: string | undefined;
+    status?: PaymentObjectStatus | undefined;
+    method?: string | undefined;
+    clock?: IClock | undefined;
+    payPalErrorCode?: number | undefined;
+    payPalErrorMessage?: string | undefined;
+    payPalSubscriptionId?: string | undefined;
+    payPalSubscriptionReason?: string | undefined;
+}
+export interface Payment {
+    completeAt?: string | undefined;
+    errorAt?: string | undefined;
+    errorMessage?: string | undefined;
+    exceptionDetails?: string | undefined;
+    status?: PaymentObjectStatus | undefined;
+    type?: PaymentObjectType | undefined;
+    method?: string | undefined;
+    clock?: IClock | undefined;
+    card?: CardPayment | undefined;
+    paidAt?: string | undefined;
+    declinedAt?: string | undefined;
+    declinedReason?: string | undefined;
+    isDeclined?: boolean;
+    isPaid?: boolean;
+}
+/** One of 'complete', 'error', 'inProgress' */
+export declare enum PaymentObjectStatus {
+    Complete = "complete",
+    Error = "error",
+    InProgress = "inProgress"
+}
+/** One of 'credential', 'payment' */
+export declare enum PaymentObjectType {
+    Credential = "credential",
+    Payment = "payment"
+}
+/** Represents a clock which can return the current time as an Instant. */
+export interface IClock {
+}
+export interface CardPayment {
+    threeDSecureRequired?: boolean;
+    threeDSecureCompleted?: boolean;
+    threeDSecureV1?: ThreeDSecureV1 | undefined;
+    threeDSecureV2?: ThreeDSecureV2 | undefined;
+}
+export interface ThreeDSecureV1 {
+    acsUrl?: string | undefined;
+    md?: string | undefined;
+    paReq?: string | undefined;
+    paRes?: string | undefined;
+}
+export interface ThreeDSecureV2 {
+    acsUrl?: string | undefined;
+    acsTransId?: string | undefined;
+    sessionData?: string | undefined;
+    cReq?: string | undefined;
+    cRes?: string | undefined;
+    html?: string | undefined;
+}
+export interface ProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
+    [key: string]: any;
+}
+export interface PayPalSubscriptionReq {
+    subscriptionId?: string | undefined;
+    reason?: string | undefined;
 }
 export interface PaymentFlowResOfPayPalPayment {
     flowRevision?: number;
@@ -36,90 +119,12 @@ export interface PayPalPayment {
     payPalEmail?: string | undefined;
     payPalTransactionId?: string | undefined;
 }
-export interface CardPayment {
-    threeDSecureRequired?: boolean;
-    threeDSecureCompleted?: boolean;
-    threeDSecureV1?: ThreeDSecureV1 | undefined;
-    threeDSecureV2?: ThreeDSecureV2 | undefined;
-}
-export interface ThreeDSecureV1 {
-    acsUrl?: string | undefined;
-    md?: string | undefined;
-    paReq?: string | undefined;
-    paRes?: string | undefined;
-}
-export interface ThreeDSecureV2 {
-    acsUrl?: string | undefined;
-    acsTransId?: string | undefined;
-    sessionData?: string | undefined;
-    cReq?: string | undefined;
-    cRes?: string | undefined;
-    html?: string | undefined;
-}
-/** One of 'credential', 'payment' */
-export declare enum PaymentObjectType {
-    Credential = "credential",
-    Payment = "payment"
-}
-/** One of 'complete', 'error', 'inProgress' */
-export declare enum PaymentObjectStatus {
-    Complete = "complete",
-    Error = "error",
-    InProgress = "inProgress"
-}
-/** Represents a clock which can return the current time as an Instant. */
-export interface IClock {
-}
-export interface ProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
-    [key: string]: any;
-}
 export interface PayPalTransactionReq {
     email?: string | undefined;
     authorizationId?: string | undefined;
 }
-export interface PaymentFlowResOfPayPalCredential {
-    flowRevision?: number;
-    result?: PayPalCredential | undefined;
-}
-export interface PayPalCredential {
-    advancePayment?: Payment | undefined;
-    setupAt?: string | undefined;
-    isSetUp?: boolean;
-    type?: PaymentObjectType | undefined;
-    completeAt?: string | undefined;
-    errorAt?: string | undefined;
-    errorMessage?: string | undefined;
-    exceptionDetails?: string | undefined;
-    status?: PaymentObjectStatus | undefined;
-    method?: string | undefined;
-    clock?: IClock | undefined;
-    payPalSubscriptionId?: string | undefined;
-    payPalSubscriptionReason?: string | undefined;
-}
-export interface Payment {
-    completeAt?: string | undefined;
-    errorAt?: string | undefined;
-    errorMessage?: string | undefined;
-    exceptionDetails?: string | undefined;
-    status?: PaymentObjectStatus | undefined;
-    type?: PaymentObjectType | undefined;
-    method?: string | undefined;
-    clock?: IClock | undefined;
-    card?: CardPayment | undefined;
-    paidAt?: string | undefined;
-    declinedAt?: string | undefined;
-    declinedReason?: string | undefined;
-    isDeclined?: boolean;
-    isPaid?: boolean;
-}
-export interface PayPalSubscriptionReq {
-    subscriptionId?: string | undefined;
-    reason?: string | undefined;
+export interface PayPalCreatePlanRes {
+    planId?: string | undefined;
 }
 export interface Subscription {
     id?: string | undefined;
@@ -196,9 +201,6 @@ export interface Link {
 export interface PayPalCreateSubscriptionReq {
     returnUrl?: string | undefined;
     cancelUrl?: string | undefined;
-}
-export interface PayPalCreatePlanRes {
-    planId?: string | undefined;
 }
 export declare class ApiException extends Error {
     message: string;

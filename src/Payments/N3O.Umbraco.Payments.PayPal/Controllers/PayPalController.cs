@@ -21,16 +21,16 @@ public class PayPalController : ApiController {
         _mediator = mediator;
     }
     
-    [HttpPost("payments/{flowId:entityId}/capture")]
-    public async Task<ActionResult<PaymentFlowRes<PayPalPayment>>> Capture(PayPalTransactionReq req) {
-        var res = await _mediator.SendAsync<CaptureTransactionCommand, PayPalTransactionReq, PaymentFlowRes<PayPalPayment>>(req);
+    [HttpPost("payments/{flowId:entityId}/captureSubscription")]
+    public async Task<ActionResult<PaymentFlowRes<PayPalCredential>>> CaptureSubscription(PayPalSubscriptionReq req) {
+        var res = await _mediator.SendAsync<CaptureSubscriptionCommand, PayPalSubscriptionReq, PaymentFlowRes<PayPalCredential>>(req);
 
         return Ok(res);
     }
     
-    [HttpPost("payments/{flowId:entityId}/capturesubscription")]
-    public async Task<ActionResult<PaymentFlowRes<PayPalCredential>>> CaptureSubscription(PayPalSubscriptionReq req) {
-        var res = await _mediator.SendAsync<CaptureSubscriptionCommand, PayPalSubscriptionReq, PaymentFlowRes<PayPalCredential>>(req);
+    [HttpPost("payments/{flowId:entityId}/captureTransaction")]
+    public async Task<ActionResult<PaymentFlowRes<PayPalPayment>>> CaptureTransaction(PayPalTransactionReq req) {
+        var res = await _mediator.SendAsync<CaptureTransactionCommand, PayPalTransactionReq, PaymentFlowRes<PayPalPayment>>(req);
 
         return Ok(res);
     }
@@ -42,7 +42,7 @@ public class PayPalController : ApiController {
         return Ok(res);
     }
     
-    [HttpPost("credentials/{flowId:entityId}/createsubscription")]
+    [HttpPost("credentials/{flowId:entityId}/createSubscription")]
     public async Task<ActionResult<Subscription>> CreateSubscription(PayPalCreateSubscriptionReq req) {
         var res = await _mediator.SendAsync<CreateSubscriptionCommand, PayPalCreateSubscriptionReq, PayPalCreateSubscriptionRes>(req);
 
