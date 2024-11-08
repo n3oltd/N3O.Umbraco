@@ -1,13 +1,13 @@
 ﻿namespace N3O.Umbraco.Constants;
 
 public static class Redirects {
-    public const string ContentType = "redirect";
+    public static readonly string ContentType = "redirect";
 
     public static class Properties {
-        public const string LinkContent = "linkContent";
-        public const string LinkExternalUrl = "linkExternalUrl";
-        public const string Temporary = "temporary";
-        public const string HitCount = "hitCount";
-        public const string LastHitDate = "lastHitDate";
+        public static readonly string LinkContent = "linkContent";
+        public static readonly string LinkExternalUrl = "linkExternalUrl";
+        public static readonly string Temporary = "temporary";
+        public static readonly string HitCount = "hitCount";
+        public static readonly string LastHitDate = "lastHitDate";
     }
 }

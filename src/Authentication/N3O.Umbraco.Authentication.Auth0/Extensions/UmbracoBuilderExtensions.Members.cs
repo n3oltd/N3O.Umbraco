@@ -16,8 +16,8 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Authentication.Auth0.Extensions;
 
 public static partial class UmbracoBuilderExtensions {
-    private const string Name = "name";
-    private const string Nickname = "nickname";
+    private static readonly string Name = "name";
+    private static readonly string Nickname = "nickname";
     
     public static IUmbracoBuilder AddAuth0MemberExternalLogins(this IUmbracoBuilder builder,
                                                                Action<MemberExternalLoginProviderOptions> configure = null) {

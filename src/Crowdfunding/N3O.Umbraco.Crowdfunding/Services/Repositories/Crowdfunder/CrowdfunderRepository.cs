@@ -1,15 +1,12 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Cropper;
-using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Crowdfunding.Extensions;
-using N3O.Umbraco.Crowdfunding.NamedParameters;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex;
-using N3O.Umbraco.Scheduler;
 using NPoco;
 using System;
 using System.Collections.Generic;
@@ -20,7 +17,7 @@ using Umbraco.Cms.Infrastructure.Persistence;
 namespace N3O.Umbraco.Crowdfunding;
 
 public class CrowdfunderRepository : ICrowdfunderRepository {
-    private const string TagsSeperator = "þ";
+    private static readonly string TagsSeperator = "þ";
     
     private readonly IContentLocator _contentLocator;
     private readonly ICrowdfundingUrlBuilder _urlBuilder;

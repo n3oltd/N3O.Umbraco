@@ -29,15 +29,15 @@ public static class GivingConstants {
         }
         
         public static class FeedbackCustomField {
-            public const string ContentType = "feedbackCustomField";
+            public static readonly string ContentType = "feedbackCustomField";
 
             public static class Properties {
-                public const string Alias = "alias";
-                public const string Bool = "bool";
-                public const string Date = "date";
-                public const string Name = "displayName";
-                public const string Text = "text";
-                public const string Type = "type";
+                public static readonly string Alias = "alias";
+                public static readonly string Bool = "bool";
+                public static readonly string Date = "date";
+                public static readonly string Name = "displayName";
+                public static readonly string Text = "text";
+                public static readonly string Type = "type";
             }
         }
         
@@ -80,7 +80,7 @@ public static class GivingConstants {
         }
 
         public static class Headers {
-            public const string PreviousName = "N3O-Donation-Item-Previous-Name";
+            public static readonly string PreviousName = "N3O-Donation-Item-Previous-Name";
         }
     }
 }

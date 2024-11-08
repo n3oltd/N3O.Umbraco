@@ -3,7 +3,7 @@
 public class MemberConstants {
     public class Member {
         public class Properties {
-            public const string AvatarLink = "avatarLink";
+            public static readonly string AvatarLink = "avatarLink";
         }
     }
 }

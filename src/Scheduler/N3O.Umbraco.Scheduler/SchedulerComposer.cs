@@ -28,7 +28,7 @@ using UmbracoConstants = Umbraco.Cms.Core.Constants;
 namespace N3O.Umbraco.Scheduler;
 
 public class SchedulerComposer : IComposer {
-    private const string HangfireDashboard = nameof(HangfireDashboard);
+    private static readonly string HangfireDashboard = nameof(HangfireDashboard);
 
     public void Compose(IUmbracoBuilder builder) {
         builder.Services.AddTransient<IBackgroundJob, BackgroundJob>();

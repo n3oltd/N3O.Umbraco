@@ -6,7 +6,7 @@ using System.Text;
 namespace N3O.Umbraco.Crowdfunding.Extensions;
 
 public static class GravatarGeneratorExtensions {
-    private const string GravatarBaseUrl = "https://www.gravatar.com/avatar";
+    private static readonly string GravatarBaseUrl = "https://www.gravatar.com/avatar";
     
     public static string GetGravatarUrl(this string email, int size = 80) {
         var emailHash = GetMd5Hash(email);

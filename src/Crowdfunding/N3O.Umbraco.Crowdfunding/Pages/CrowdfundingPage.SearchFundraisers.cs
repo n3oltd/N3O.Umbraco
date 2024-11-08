@@ -13,8 +13,8 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Crowdfunding;
 
 public class SearchFundraisersPage : CrowdfundingPage {
-    private const string TagParameterName = "tag";
-    private const string TextParameterName = "text";
+    private static readonly string TagParameterName = "tag";
+    private static readonly string TextParameterName = "text";
     
     private readonly ICrowdfunderRepository _crowdfunderRepository;
     private readonly ILookups _lookups;

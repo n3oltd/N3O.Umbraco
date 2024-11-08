@@ -1,10 +1,10 @@
 namespace N3O.Umbraco.Constants;
 
 public class TextFolders {
-    public const string Blocks = "Blocks";
-    public const string Code = "Code";
-    public const string Pages = "Pages";
-    public const string Partial = "Partial";
-    public const string Template = "Template";
-    public const string Validation = "Validation";
+    public static readonly string Blocks = "Blocks";
+    public static readonly string Code = "Code";
+    public static readonly string Pages = "Pages";
+    public static readonly string Partial = "Partial";
+    public static readonly string Template = "Template";
+    public static readonly string Validation = "Validation";
 }

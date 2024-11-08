@@ -4,7 +4,7 @@ using System;
 namespace N3O.Umbraco.Scheduler;
 
 public static class TriggerKey {
-    private const string Separator = "|";
+    private static readonly string Separator = "|";
 
     public static string Generate<TRequest, TModel>() where TRequest : Request<TModel, None> {
         return Generate(typeof(TRequest), typeof(TModel));

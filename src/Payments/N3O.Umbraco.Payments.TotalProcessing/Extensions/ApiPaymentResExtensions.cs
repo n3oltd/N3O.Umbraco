@@ -5,11 +5,11 @@ namespace N3O.Umbraco.Payments.TotalProcessing.Extensions;
 
 public static class ApiPaymentResExtensions {
     //https://totalprocessing.docs.oppwa.com/reference/resultCodes
-    private const string SuccessfullyProcessedPayments = "/^000.000.|000.100.1|000.[36]|000.400.[1][12]0/";
-    private const string ThreeDSecureRejectionPattern = @"/^000\.400\.[1][0-9][1-9]|000\.400\.2/";
-    private const string ExternalBankRejectionPattern = @"/^800\.[17]00|800\.800\.[123]/";
-    private const string SystemErrorsRejectionPattern = @"/^800\.[56]|999\.|600\.1|800\.800\.[84]/";
-    private const string ValidationPattern = @"200\.[123]|100\.[53][07]|800\.900|100\.[69]00\.500";
+    private static readonly string SuccessfullyProcessedPayments = "/^000.000.|000.100.1|000.[36]|000.400.[1][12]0/";
+    private static readonly string ThreeDSecureRejectionPattern = @"/^000\.400\.[1][0-9][1-9]|000\.400\.2/";
+    private static readonly string ExternalBankRejectionPattern = @"/^800\.[17]00|800\.800\.[123]/";
+    private static readonly string SystemErrorsRejectionPattern = @"/^800\.[56]|999\.|600\.1|800\.800\.[84]/";
+    private static readonly string ValidationPattern = @"200\.[123]|100\.[53][07]|800\.900|100\.[69]00\.500";
 
     public static bool IsAuthorised(this ApiPaymentRes payment) {
         return HasResultCode(payment, SuccessfullyProcessedPayments);

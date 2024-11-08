@@ -7,9 +7,9 @@ using Konstrukt.Models;
 namespace N3O.Umbraco.Data.UIBuilder;
 
 public class ImportStatusDataViewsBuilder : KonstruktDataViewsBuilder<Import> {
-    private const string AllAlias = "all";
-    private const string PendingAlias = "pending";
-    private const string Group = "Status";
+    private static readonly string AllAlias = "all";
+    private static readonly string PendingAlias = "pending";
+    private static readonly string Group = "Status";
 
     public override IEnumerable<KonstruktDataViewSummary> GetDataViews() {
         yield return new KonstruktDataViewSummary {

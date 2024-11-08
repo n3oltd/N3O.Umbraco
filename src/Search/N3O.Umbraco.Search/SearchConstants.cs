@@ -1,10 +1,10 @@
 namespace N3O.Umbraco.Search;
 
 public static class SearchConstants {
-    public const string QueryString = "q";
-    public const string SitemapXml = "sitemap.xml";
+    public static readonly string QueryString = "q";
+    public static readonly string SitemapXml = "sitemap.xml";
     
     public static class BlockModuleKeys {
-        public const string Search = nameof(Search);
+        public static readonly string Search = nameof(Search);
     }
 }

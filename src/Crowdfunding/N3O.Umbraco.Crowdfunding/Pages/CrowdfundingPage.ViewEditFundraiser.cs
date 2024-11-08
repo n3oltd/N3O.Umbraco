@@ -115,6 +115,6 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
     }
     
     private static class Parameters {
-        public const string Preview = "preview";
+        public static readonly string Preview = "preview";
     }
 }

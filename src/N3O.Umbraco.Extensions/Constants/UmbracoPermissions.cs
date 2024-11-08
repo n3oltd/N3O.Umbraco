@@ -1,19 +1,19 @@
 ﻿namespace N3O.Umbraco.Constants; 
 
 public class UmbracoPermissions {
-    public const string BrowseNode = "F";
-    public const string Copy = "O";
-    public const string Create = "C";
-    public const string CreateContentTemplate = "ï";
-    public const string CulturesAndHostnames = "I";
-    public const string Delete = "D";
-    public const string Move = "M";
-    public const string Permissions = "R";
-    public const string PublicAccess = "P";
-    public const string Publish = "U";
-    public const string Rollback = "K";
-    public const string SendToPublish = "H";
-    public const string Sort = "S";
-    public const string Unpublish = "Z";
-    public const string Update = "A";
+    public static readonly string BrowseNode = "F";
+    public static readonly string Copy = "O";
+    public static readonly string Create = "C";
+    public static readonly string CreateContentTemplate = "ï";
+    public static readonly string CulturesAndHostnames = "I";
+    public static readonly string Delete = "D";
+    public static readonly string Move = "M";
+    public static readonly string Permissions = "R";
+    public static readonly string PublicAccess = "P";
+    public static readonly string Publish = "U";
+    public static readonly string Rollback = "K";
+    public static readonly string SendToPublish = "H";
+    public static readonly string Sort = "S";
+    public static readonly string Unpublish = "Z";
+    public static readonly string Update = "A";
 }

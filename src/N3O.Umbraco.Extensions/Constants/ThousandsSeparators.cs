@@ -1,7 +1,7 @@
 namespace N3O.Umbraco.Constants;
 
 public static class ThousandsSeparators {
-    public const string Comma = ",";
-    public const string Point = ".";
-    public const string Space = " ";
+    public static readonly string Comma = ",";
+    public static readonly string Point = ".";
+    public static readonly string Space = " ";
 }

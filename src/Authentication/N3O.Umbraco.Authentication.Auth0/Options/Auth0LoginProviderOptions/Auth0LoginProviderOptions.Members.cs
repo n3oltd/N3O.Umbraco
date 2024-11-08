@@ -5,9 +5,9 @@ using Umbraco.Cms.Web.Common.Security;
 namespace N3O.Umbraco.Authentication.Auth0;
 
 public class Auth0MemberLoginProviderOptions : IConfigureNamedOptions<MemberExternalLoginProviderOptions> {
-    private const string SchemePrefix = global::Umbraco.Cms.Core.Constants.Security.MemberExternalAuthenticationTypePrefix;
-    public const string SchemeName = "Auth0";
-    public const string SchemaNameWithPrefix = SchemePrefix + SchemeName;
+    private static readonly string SchemePrefix = global::Umbraco.Cms.Core.Constants.Security.MemberExternalAuthenticationTypePrefix;
+    public static readonly string SchemeName = "Auth0";
+    public static readonly string SchemaNameWithPrefix = SchemePrefix + SchemeName;
     
     private readonly Action<MemberExternalLoginProviderOptions> _configure;
 

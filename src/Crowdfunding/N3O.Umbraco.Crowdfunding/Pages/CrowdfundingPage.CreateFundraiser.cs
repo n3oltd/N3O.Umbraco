@@ -80,6 +80,6 @@ public class CreateFundraiserPage : CrowdfundingPage {
     }
     
     private static class Parameters {
-        public const string CampaignId = "campaignId";
+        public static readonly string CampaignId = "campaignId";
     }
 }

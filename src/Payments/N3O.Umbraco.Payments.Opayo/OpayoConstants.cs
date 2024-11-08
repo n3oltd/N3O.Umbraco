@@ -5,6 +5,6 @@ public static class OpayoConstants {
     public static readonly OpayoPaymentMethod PaymentMethod = new();
     
     public static class Iso3CountryCodes {
-        public const string UnitedStates = "USA";
+        public static readonly string UnitedStates = "USA";
     }
 }

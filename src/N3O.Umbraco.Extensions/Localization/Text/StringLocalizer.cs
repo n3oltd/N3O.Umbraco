@@ -17,7 +17,7 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Localization;
 
 public class StringLocalizer : IStringLocalizer {
-    private const string EnglishUS = "en-US";
+    private static readonly string EnglishUS = "en-US";
     
     private static readonly ConcurrentDictionary<string, Guid> GuidCache = new ();
     private static readonly ConcurrentDictionary<string, string> StringCache = new ();

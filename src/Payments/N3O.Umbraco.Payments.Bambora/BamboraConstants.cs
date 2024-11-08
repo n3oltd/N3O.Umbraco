@@ -5,7 +5,7 @@ public static class BamboraConstants {
     public static readonly BamboraPaymentMethod PaymentMethod = new();
     
     public static class Iso3CountryCodes {
-        public const string Canada = "CAN";
-        public const string UnitedStates = "USA";
+        public static readonly string Canada = "CAN";
+        public static readonly string UnitedStates = "USA";
     }
 }

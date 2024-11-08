@@ -6,11 +6,11 @@ public static class GoCardlessConstants {
     
     public static class Codes {
         public static class Currencies {
-            public const string GBP = "GBP";
+            public static readonly string GBP = "GBP";
         }
 
         public static class Iso3CountryCodes {
-            public const string UnitedKingdom = "GBR";
+            public static readonly string UnitedKingdom = "GBR";
         }
     }
 }

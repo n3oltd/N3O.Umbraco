@@ -8,8 +8,8 @@ using System.Linq.Expressions;
 namespace N3O.Umbraco.Crowdfunding.UIBuilder;
 
 public class ContributionStatusDataViewsBuilder : KonstruktDataViewsBuilder<Contribution> {
-    private const string AllAlias = "all";
-    private const string Group = "Status";
+    private static readonly string AllAlias = "all";
+    private static readonly string Group = "Status";
 
     public override IEnumerable<KonstruktDataViewSummary> GetDataViews() {
         yield return new KonstruktDataViewSummary {

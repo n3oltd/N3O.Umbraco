@@ -4,7 +4,7 @@ namespace N3O.Umbraco.TagHelpers;
 
 [HtmlTargetElement(Attributes = ConditionAttributeName)]
 public class ConditionTagHelper : TagHelper {
-    public const string ConditionAttributeName = "n3o-condition";
+    private const string ConditionAttributeName = "n3o-condition";
     
     [HtmlAttributeName(ConditionAttributeName)]
     public bool Condition { get; set; }

@@ -1,7 +1,7 @@
 namespace N3O.Umbraco.Data;
 
 public static class DataConstants {
-    public const string Separator = "//";
+    public static readonly string Separator = "//";
     
     public static class ApiNames {
         public const string Content = "Content";
@@ -12,20 +12,20 @@ public static class DataConstants {
     }
 
     public static class ContentTypes {
-        public const string Csv = "text/csv";
-        public const string Excel = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-        public const string Zip = "application/zip";
+        public static readonly string Csv = "text/csv";
+        public static readonly string Excel = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        public static readonly string Zip = "application/zip";
     }
     
     public static class DatePatterns {
-        public const string DayMonthYear = "dmy";
-        public const string MonthDayYear = "mdy";
-        public const string YearMonthDay = "ymd";
+        public static readonly string DayMonthYear = "dmy";
+        public static readonly string MonthDayYear = "mdy";
+        public static readonly string YearMonthDay = "ymd";
     }
     
     public static class DecimalSeparators {
-        public const string Comma = ",";
-        public const string Point = ".";
+        public static readonly string Comma = ",";
+        public static readonly string Point = ".";
     }
     
     public static class Delimiters {
@@ -35,21 +35,21 @@ public static class DataConstants {
 
     public static class Export {
         public static class Stages {
-            public const string Collating = "Collating";
-            public const string Complete = "Complete";
-            public const string Formatting = "Formatting";
+            public static readonly string Collating = "Collating";
+            public static readonly string Complete = "Complete";
+            public static readonly string Formatting = "Formatting";
         }
     }
 
     public static class Limits {
         public static class Columns {
-            public const int MaxValues = 10;
+            public static readonly int MaxValues = 10;
         }
     }
 
     public static class MetadataKeys {
         public static class Cells {
-            public const string Title = nameof(Title);
+            public static readonly string Title = nameof(Title);
         }
     }
 
@@ -60,13 +60,13 @@ public static class DataConstants {
 
     public static class SecurityGroups {
         public static class ExportUsers {
-            public const string Alias = "exportUsers";
-            public const string Name = "Export Users";
+            public static readonly string Alias = "exportUsers";
+            public static readonly string Name = "Export Users";
         }
 
         public static class ImportUsers { 
-            public const string Alias = "importUsers";
-            public const string Name = "Import Users";
+            public static readonly string Alias = "importUsers";
+            public static readonly string Name = "Import Users";
     }
 }
     
@@ -83,9 +83,9 @@ public static class DataConstants {
         }
         
         public static class Headers {
-            public const string ContentId = "N3O-Import-Content-Id";
-            public const string Name = "N3O-Import-Name";
-            public const string Replaces = "N3O-Import-Replaces";
+            public static readonly string ContentId = "N3O-Import-Content-Id";
+            public static readonly string Name = "N3O-Import-Name";
+            public static readonly string Replaces = "N3O-Import-Replaces";
         }
     }
 }
