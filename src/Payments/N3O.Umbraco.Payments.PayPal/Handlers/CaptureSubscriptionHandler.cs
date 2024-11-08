@@ -3,12 +3,10 @@ using N3O.Umbraco.Payments.Handlers;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.PayPal.Clients;
 using N3O.Umbraco.Payments.PayPal.Clients.Models;
-using N3O.Umbraco.Payments.PayPal.Clients.PayPalErrors;
 using N3O.Umbraco.Payments.PayPal.Commands;
 using N3O.Umbraco.Payments.PayPal.Models;
 using N3O.Umbraco.Payments.PayPal.Models.PayPalCredential;
 using Refit;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 

@@ -1,7 +1,7 @@
 ﻿using N3O.Umbraco.Payments.PayPal.Clients.Models;
 using Newtonsoft.Json;
 
-namespace N3O.Umbraco.Payments.PayPal.Clients.PayPalErrors;
+namespace N3O.Umbraco.Payments.PayPal.Clients.Models;
 
 public class ApiCreateSubscription {
     [JsonProperty("plan_id")]

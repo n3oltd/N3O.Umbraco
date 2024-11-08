@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace N3O.Umbraco.Payments.PayPal.Clients.PayPalErrors;
+namespace N3O.Umbraco.Payments.PayPal.Clients.Models;
 
 public class PayPalError {
     public string Name { get; set; }

@@ -1,4 +1,4 @@
-﻿namespace N3O.Umbraco.Payments.PayPal.Clients.PayPalErrors;
+﻿namespace N3O.Umbraco.Payments.PayPal.Clients.Models;
 
 public class PayPalErrorDetail {
     public string Field { get; set; }

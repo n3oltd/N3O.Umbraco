@@ -1,5 +1,5 @@
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Payments.PayPal.Clients;
+using N3O.Umbraco.Payments.PayPal.Clients.Models;
 
 namespace N3O.Umbraco.Payments.PayPal.Extensions;
 

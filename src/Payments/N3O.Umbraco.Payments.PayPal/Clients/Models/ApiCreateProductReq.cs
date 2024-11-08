@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace N3O.Umbraco.Payments.PayPal.Clients.PayPalErrors;
+namespace N3O.Umbraco.Payments.PayPal.Clients.Models;
 
 public class ApiCreateProductReq {
     [JsonProperty("id")]

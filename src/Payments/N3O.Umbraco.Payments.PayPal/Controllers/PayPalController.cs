@@ -3,7 +3,7 @@ using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Payments.Models;
-using N3O.Umbraco.Payments.PayPal.Clients;
+using N3O.Umbraco.Payments.PayPal.Clients.Models;
 using N3O.Umbraco.Payments.PayPal.Commands;
 using N3O.Umbraco.Payments.PayPal.Models;
 using N3O.Umbraco.Payments.PayPal.Models.PayPalCreatePlanRes;

@@ -4,7 +4,6 @@ using N3O.Umbraco.Giving.Checkout;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Payments.PayPal.Clients;
 using N3O.Umbraco.Payments.PayPal.Clients.Models;
-using N3O.Umbraco.Payments.PayPal.Clients.PayPalErrors;
 using N3O.Umbraco.Payments.PayPal.Commands;
 using N3O.Umbraco.Payments.PayPal.Models.PayPalCreatePlanRes;
 using Newtonsoft.Json;

@@ -1,5 +1,4 @@
 ﻿using N3O.Umbraco.Payments.PayPal.Clients.Models;
-using N3O.Umbraco.Payments.PayPal.Clients.PayPalErrors;
 using Refit;
 using System.Threading.Tasks;
 
