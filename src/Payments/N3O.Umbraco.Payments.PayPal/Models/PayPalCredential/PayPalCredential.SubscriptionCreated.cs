@@ -1,9 +1,7 @@
-﻿using N3O.Umbraco.Payments.PayPal.Clients;
-
-namespace N3O.Umbraco.Payments.PayPal.Models.PayPalCredential;
+﻿namespace N3O.Umbraco.Payments.PayPal.Models;
 
 public partial class PayPalCredential {
-    public void Subscribed(string subscriptionId, string reason) {
+    public void SubscriptionCreated(string subscriptionId, string reason) {
         ClearErrors();
         
         PayPalSubscriptionId = subscriptionId;

@@ -9,10 +9,8 @@ export declare class PayPalClient {
     protected processCaptureSubscription(response: Response): Promise<PaymentFlowResOfPayPalCredential>;
     captureTransaction(flowId: string, req: PayPalTransactionReq): Promise<PaymentFlowResOfPayPalPayment>;
     protected processCaptureTransaction(response: Response): Promise<PaymentFlowResOfPayPalPayment>;
-    createPlan(flowId: string): Promise<PayPalCreatePlanRes>;
-    protected processCreatePlan(response: Response): Promise<PayPalCreatePlanRes>;
-    createSubscription(flowId: string, req: PayPalCreateSubscriptionReq): Promise<Subscription>;
-    protected processCreateSubscription(response: Response): Promise<Subscription>;
+    getOrCreatePlan(flowId: string, req: MoneyReq): Promise<string>;
+    protected processGetOrCreatePlan(response: Response): Promise<string>;
 }
 export interface PaymentFlowResOfPayPalCredential {
     flowRevision?: number;
@@ -123,84 +121,9 @@ export interface PayPalTransactionReq {
     email?: string | undefined;
     authorizationId?: string | undefined;
 }
-export interface PayPalCreatePlanRes {
-    planId?: string | undefined;
-}
-export interface Subscription {
-    id?: string | undefined;
-    planId?: string | undefined;
-    startTime?: Date;
-    applicationContext?: ApplicationContext | undefined;
-    quantity?: string | undefined;
-    shippingAmount?: Amount | undefined;
-    subscriber?: Subscriber | undefined;
-    billingInfo?: BillingInfo | undefined;
-    createdAt?: Date;
-    updatedAt?: Date;
-    links?: Link[] | undefined;
-    status?: string | undefined;
-    statusChangeNote?: string | undefined;
-    statusUpdatedAt?: Date;
-}
-export interface ApplicationContext {
-    returnUrl?: string | undefined;
-    cancelUrl?: string | undefined;
-    paymentMethod?: PaymentMethod2 | undefined;
-}
-export interface PaymentMethod2 {
-    payerSelected?: string | undefined;
-    payeePreferred?: string | undefined;
-}
-export interface Amount {
-    currencyCode?: string | undefined;
-    value?: number;
-}
-export interface Subscriber {
-    shippingAddress?: ShippingAddress | undefined;
-    name?: Name | undefined;
-    emailAddress?: string | undefined;
-    payerId?: string | undefined;
-}
-export interface ShippingAddress {
-    name?: Name | undefined;
-    address?: Address | undefined;
-}
-export interface Name {
-    title?: string | undefined;
-    firstName?: string | undefined;
-    lastName?: string | undefined;
-}
-export interface Address {
-    line1?: string | undefined;
-    line2?: string | undefined;
-    line3?: string | undefined;
-    locality?: string | undefined;
-    administrativeArea?: string | undefined;
-    postalCode?: string | undefined;
-    country?: string | undefined;
-}
-export interface BillingInfo {
-    address?: Address | undefined;
-    email?: Email | undefined;
-    name?: Name | undefined;
-    telephone?: Telephone | undefined;
-}
-export interface Email {
-    address?: string | undefined;
-}
-export interface Telephone {
-    country?: string | undefined;
-    number?: string | undefined;
-}
-export interface Link {
-    href?: string | undefined;
-    rel?: string | undefined;
-    method?: string | undefined;
-    encType?: string | undefined;
-}
-export interface PayPalCreateSubscriptionReq {
-    returnUrl?: string | undefined;
-    cancelUrl?: string | undefined;
+export interface MoneyReq {
+    amount?: number | undefined;
+    currency?: string | undefined;
 }
 export declare class ApiException extends Error {
     message: string;

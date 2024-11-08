@@ -3,7 +3,7 @@
 namespace N3O.Umbraco.Payments.PayPal.Models;
 
 public class PayPalSubscriptionReq {
-    [Name("Subscription Id")]
+    [Name("Subscription ID")]
     public string SubscriptionId { get; set; }
     
     [Name("Reason")]

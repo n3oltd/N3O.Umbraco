@@ -1,4 +1,4 @@
-namespace N3O.Umbraco.Payments.PayPal.Models.PayPalCredential;
+namespace N3O.Umbraco.Payments.PayPal.Models;
 
 public partial class PayPalCredential {
     protected override void ClearErrors() {

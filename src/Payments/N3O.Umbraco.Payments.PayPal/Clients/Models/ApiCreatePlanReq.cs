@@ -1,5 +1,4 @@
-﻿using N3O.Umbraco.Payments.PayPal.Clients.Models;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Payments.PayPal.Clients.Models;

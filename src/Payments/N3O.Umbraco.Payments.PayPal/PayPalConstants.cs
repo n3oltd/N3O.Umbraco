@@ -1,19 +1,18 @@
 namespace N3O.Umbraco.Payments.PayPal;
 
 public static class PayPalConstants {
-    public const int FrequencyCount = 1;
-    public const int BillingCycleSequence = 1;
-    public const int BillingCycleTotalCycles = 0;
-    public const int PaymentFailureThreshold = 3;
     public const string ApiName = "PayPal";
-    public const string FrequencyInterval = "MONTH";
-    public const string PayeePreferred = "IMMEDIATE_PAYMENT_REQUIRED";
-    public const string PayerSelected = "PAYPAL";
-    public const string PlanStatus = "ACTIVE";
-    public const string ProductId = "N3O-Website-Donations";    
-    public const string ProductCategory = "SOFTWARE";
-    public const string ProductType = "SERVICE";
-    public const string SetupFeeFailureAction = "CONTINUE";
-    public const string TenureType = "REGULAR";
+    public static readonly int BillingCycleSequence = 1;
+    public static readonly int BillingCycleTotalCycles = 0;
+    public static readonly int FrequencyCount = 1;
+    public static readonly string FrequencyInterval = "MONTH";
+    public static readonly int PaymentFailureThreshold = 3;
+    public static readonly string PlanStatus = "ACTIVE";
+    public static readonly string ProductCategory = "SOFTWARE";
+    public static readonly string ProductId = "N3O-Website-Donations";    
+    public static readonly string ProductType = "SERVICE";
+    public static readonly string SetupFeeFailureAction = "CONTINUE";
+    public static readonly string TenureType = "REGULAR";
+    
     public static readonly PayPalPaymentMethod PaymentMethod = new();
 }

@@ -1,14 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Financial;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Payments.Models;
-using N3O.Umbraco.Payments.PayPal.Clients.Models;
 using N3O.Umbraco.Payments.PayPal.Commands;
 using N3O.Umbraco.Payments.PayPal.Models;
-using N3O.Umbraco.Payments.PayPal.Models.PayPalCreatePlanRes;
-using N3O.Umbraco.Payments.PayPal.Models.PayPalCreatePlanSubscriptionReq;
-using N3O.Umbraco.Payments.PayPal.Models.PayPalCredential;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.PayPal.Controllers;
@@ -35,16 +32,9 @@ public class PayPalController : ApiController {
         return Ok(res);
     }
     
-    [HttpPost("credentials/{flowId:entityId}/createplan")]
-    public async Task<ActionResult<PayPalCreatePlanRes>> CreatePlan() {
-        var res = await _mediator.SendAsync<CreatePlanCommand, None, PayPalCreatePlanRes>(null);
-
-        return Ok(res);
-    }
-    
-    [HttpPost("credentials/{flowId:entityId}/createSubscription")]
-    public async Task<ActionResult<Subscription>> CreateSubscription(PayPalCreateSubscriptionReq req) {
-        var res = await _mediator.SendAsync<CreateSubscriptionCommand, PayPalCreateSubscriptionReq, PayPalCreateSubscriptionRes>(req);
+    [HttpPost("credentials/{flowId:entityId}/getOrCreatePlan")]
+    public async Task<ActionResult<string>> GetOrCreatePlan(MoneyReq req) {
+        var res = await _mediator.SendAsync<GetOrCreatePlanCommand, MoneyReq, string>(req);
 
         return Ok(res);
     }

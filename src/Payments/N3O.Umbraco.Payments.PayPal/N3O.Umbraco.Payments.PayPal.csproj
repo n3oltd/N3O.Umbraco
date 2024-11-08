@@ -30,7 +30,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Checkout\N3O.Umbraco.Giving.Checkout.csproj" />
         <ProjectReference Include="..\N3O.Umbraco.Payments\N3O.Umbraco.Payments.csproj" />
     </ItemGroup>
 

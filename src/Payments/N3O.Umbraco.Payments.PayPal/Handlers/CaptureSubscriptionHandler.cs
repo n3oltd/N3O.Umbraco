@@ -1,43 +1,38 @@
-﻿using N3O.Umbraco.Content;
-using N3O.Umbraco.Payments.Handlers;
+﻿using N3O.Umbraco.Payments.Handlers;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.PayPal.Clients;
 using N3O.Umbraco.Payments.PayPal.Clients.Models;
 using N3O.Umbraco.Payments.PayPal.Commands;
 using N3O.Umbraco.Payments.PayPal.Models;
-using N3O.Umbraco.Payments.PayPal.Models.PayPalCredential;
 using Refit;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.PayPal.Handlers;
 
-public class CaptureSubscriptionHandler : PaymentsHandler<CaptureSubscriptionCommand, PayPalSubscriptionReq, PayPalCredential> {
-    private readonly IContentCache _contentCache;
+public class CaptureSubscriptionHandler :
+    PaymentsHandler<CaptureSubscriptionCommand, PayPalSubscriptionReq, PayPalCredential> {
     private readonly ISubscriptionsClient _subscriptionsClient;
 
-    public CaptureSubscriptionHandler(IContentCache contentCache,
-                                      IPaymentsScope paymentsScope,
-                                      ISubscriptionsClient subscriptionsClient) : base(paymentsScope) {
-        _contentCache = contentCache;
+    public CaptureSubscriptionHandler(IPaymentsScope paymentsScope, ISubscriptionsClient subscriptionsClient)
+        : base(paymentsScope) {
         _subscriptionsClient = subscriptionsClient;
     }
 
     protected override async Task HandleAsync(CaptureSubscriptionCommand req,
-                                                   PayPalCredential payment,
-                                                   PaymentsParameters parameters,
-                                                   CancellationToken cancellationToken) {
-        var request = new ApiActivateSubscriptionReq();
-
-        request.Id = req.Model.SubscriptionId;
-        request.Reason = req.Model.Reason;
-
+                                              PayPalCredential credential,
+                                              PaymentsParameters parameters,
+                                              CancellationToken cancellationToken) {
         try {
-            await _subscriptionsClient.ActivateSubscriptionAsync(request);
+            var apiReq = new ApiActivateSubscriptionReq();
+            apiReq.Id = req.Model.SubscriptionId;
+            apiReq.Reason = req.Model.Reason;
+            
+            await _subscriptionsClient.ActivateSubscriptionAsync(apiReq);
 
-            payment.Subscribed(req.Model.SubscriptionId, req.Model.Reason);
+            credential.SubscriptionCreated(req.Model.SubscriptionId, req.Model.Reason);
         } catch (ApiException apiException) {
-            payment.Error((int) apiException.StatusCode, apiException.Message);
+            credential.Error((int) apiException.StatusCode, apiException.Message);
         }
     }
 }

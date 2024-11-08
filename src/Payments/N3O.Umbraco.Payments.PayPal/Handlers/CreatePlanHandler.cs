@@ -1,62 +1,48 @@
-﻿using N3O.Umbraco.Content;
+﻿using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
-using N3O.Umbraco.Giving.Checkout;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Payments.PayPal.Clients;
 using N3O.Umbraco.Payments.PayPal.Clients.Models;
 using N3O.Umbraco.Payments.PayPal.Commands;
-using N3O.Umbraco.Payments.PayPal.Models.PayPalCreatePlanRes;
 using Newtonsoft.Json;
-using NUglify.Helpers;
 using Refit;
-using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Payments.PayPal.Handlers;
 
-public class CreatePlanHandler : IRequestHandler<CreatePlanCommand, None, PayPalCreatePlanRes>{
-    private readonly ICheckoutAccessor _checkoutAccessor;
-    private readonly IContentCache _contentCache;
+public class GetOrCreatePlanHandler : IRequestHandler<GetOrCreatePlanCommand, MoneyReq, string> {
     private readonly IPlansClient _plansClient;
     private readonly IProductsClient _productsClient;
 
-    public CreatePlanHandler(ICheckoutAccessor checkoutAccessor,
-                             IContentCache contentCache,
-                             IPlansClient plansClient,
-                             IProductsClient productsClient) {
-        _checkoutAccessor = checkoutAccessor;
-        _contentCache = contentCache;
+    public GetOrCreatePlanHandler(IPlansClient plansClient, IProductsClient productsClient) {
         _plansClient = plansClient;
         _productsClient = productsClient;
     }
     
-    public async Task<PayPalCreatePlanRes> Handle(CreatePlanCommand request, CancellationToken cancellationToken) {
-        var checkout = await _checkoutAccessor.GetAsync(cancellationToken);
-        var totalAmount = checkout.RegularGiving.Total;
-        var planName = totalAmount.Currency.Symbol + "-" + totalAmount.Amount.ToString("0.00");
+    public async Task<string> Handle(GetOrCreatePlanCommand req, CancellationToken cancellationToken) {
+        var planName = $"{req.Model.Currency.Symbol}/{req.Model.Amount:0.00}";
 
-        var productId = await GetOrCreateProduct();
+        var productId = await GetOrCreateProductAsync();
+        var planId = await GetOrCreatePlanAsync(productId, planName, req.Model);
         
-        var planId = await GetOrCreatePlan(productId, planName, totalAmount);
-        
-        return new PayPalCreatePlanRes() { PlanId = planId };
+        return planId;
     }
     
-    private async Task<string> GetOrCreateProduct() {
-        var request = new ApiCreateProductReq();
-        request.Id = PayPalConstants.ProductId;
-        request.Name = PayPalConstants.ProductId;
-        request.Category = PayPalConstants.ProductCategory;
-        request.Type = PayPalConstants.ProductType;
-        request.Category = PayPalConstants.ProductCategory;
-
-        var productId = string.Empty;
-
+    private async Task<string> GetOrCreateProductAsync() {
+        string productId;
+        
+        var apiReq = new ApiCreateProductReq();
+        apiReq.Id = PayPalConstants.ProductId;
+        apiReq.Name = PayPalConstants.ProductId;
+        apiReq.Category = PayPalConstants.ProductCategory;
+        apiReq.Type = PayPalConstants.ProductType;
+        apiReq.Category = PayPalConstants.ProductCategory;
+        
         try {
-            var res = await _productsClient.CreateProductAsync(request);
+            var res = await _productsClient.CreateProductAsync(apiReq);
             
             productId = res.Id;
         } catch (ApiException apiException) {
@@ -65,62 +51,47 @@ public class CreatePlanHandler : IRequestHandler<CreatePlanCommand, None, PayPal
             var issue = paypalError?.Details[0]?.Issue;
 
             if (issue != null && issue == "DUPLICATE_RESOURCE_IDENTIFIER") {
-                productId = request.Id;
+                productId = apiReq.Id;
             } else {
-                throw new Exception(); //TODO we can change this to a specific exception
+                throw;
             }
         }
         
         return productId;
     }
 
-    private async Task<string> GetOrCreatePlan(string productId, string planName, Money totalAmount) {
-        //TODO caching can be used here when retrieving the plans
-        var planId = string.Empty;
-        var page = 1;
-        var foundPlan = false;
+    private async Task<string> GetOrCreatePlanAsync(string productId, string planName, Money value) {
+        var planId = default(string);
         
-        do {
-            var request = new ApiGetPlansReq();
-            request.ProductId = productId;
-            request.PageNumber = page.ToString();
-            request.TotalRequired = true;
+        for (var page = 1; true; page++) {
+            var apiReq = new ApiGetPlansReq();
+            apiReq.ProductId = productId;
+            apiReq.PageNumber = page.ToString();
+            apiReq.TotalRequired = true;
             
-            var res = await _plansClient.GetPlansAsync(request);
+            var apiRes = await _plansClient.GetPlansAsync(apiReq);
             
-            if (res.TotalItems == 0) {
-                planId = await CreatePlan(productId, planId, totalAmount);
-                
-                break;
-            } else {
-                foreach (var plan in res.Plans.Where(x => x.Status == PayPalConstants.PlanStatus)) {
-                    if (plan.Name != planName) continue;
+            if (apiRes.TotalItems > 0) {
+                var plan = apiRes.Plans.FirstOrDefault(x => x.Status == PayPalConstants.PlanStatus &&
+                                                            x.Name.EqualsInvariant(planName));
 
-                    planId = plan.Id;
-                    foundPlan = true;
-                    
-                    break;
-                }
-
-                if (foundPlan) break;
+                planId = plan?.Id;
             }
 
-            if (page == res.TotalPages) {
-                planId = await CreatePlan(productId, planName, totalAmount);
-
+            if (planId.HasValue() || page == apiRes.TotalPages) {
                 break;
             }
-            
-            page++;
-        } while (true);
+        }
+        
+        planId ??= await CreatePlanAsync(productId, planName, value);
         
         return planId;
     }
     
-    private async Task<string> CreatePlan(string productId, string planName, Money totalAmount) {
+    private async Task<string> CreatePlanAsync(string productId, string planName, Money value) {
         var fixedPrice = new FixedPrice();
-        fixedPrice.Value = totalAmount.Amount.ToString("0.00");
-        fixedPrice.CurrencyCode = totalAmount.Currency.Code;
+        fixedPrice.Value = value.Amount.ToString("0.00", CultureInfo.InvariantCulture);
+        fixedPrice.CurrencyCode = value.Currency.Code;
         
         var pricingScheme = new PricingScheme();
         pricingScheme.FixedPrice = fixedPrice;
@@ -135,29 +106,25 @@ public class CreatePlanHandler : IRequestHandler<CreatePlanCommand, None, PayPal
         billingCycle.Sequence = PayPalConstants.BillingCycleSequence;
         billingCycle.TotalCycles = PayPalConstants.BillingCycleTotalCycles;
         billingCycle.PricingScheme = pricingScheme;
-
-        var billingCycles = new List<BillingCycle>(){ billingCycle };
         
         var paymentPreferences = new PaymentPreferences();
         paymentPreferences.AutoBillOutstanding = true;
         paymentPreferences.SetupFeeFailureAction = PayPalConstants.SetupFeeFailureAction;
         paymentPreferences.PaymentFailureThreshold = PayPalConstants.PaymentFailureThreshold;
         
-        var request = new ApiCreatePlanReq();
-        request.ProductId = productId;
-        request.Name = planName;
-        request.Status = PayPalConstants.PlanStatus;
-        request.BillingCycles = billingCycles;
-        request.PaymentPreferences = paymentPreferences;
+        var apiReq = new ApiCreatePlanReq();
+        apiReq.ProductId = productId;
+        apiReq.Name = planName;
+        apiReq.Status = PayPalConstants.PlanStatus;
+        apiReq.BillingCycles = [billingCycle];
+        apiReq.PaymentPreferences = paymentPreferences;
 
         try {
-            var res = await _plansClient.CreatePlanAsync(request);
+            var res = await _plansClient.CreatePlanAsync(apiReq);
             
             return res.Id;
-        } catch (ApiException apiException) {
-            var exception = new Exception(apiException.Message);
-            
-            return string.Empty;
+        } catch (ApiException) {
+            return "";
         }
     }
 }

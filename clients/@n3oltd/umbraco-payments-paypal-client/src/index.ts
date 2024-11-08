@@ -130,60 +130,8 @@ export class PayPalClient {
         return Promise.resolve<PaymentFlowResOfPayPalPayment>(null as any);
     }
 
-    createPlan(flowId: string): Promise<PayPalCreatePlanRes> {
-        let url_ = this.baseUrl + "/umbraco/api/PayPal/credentials/{flowId}/createplan";
-        if (flowId === undefined || flowId === null)
-            throw new Error("The parameter 'flowId' must be defined.");
-        url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "POST",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreatePlan(_response);
-        });
-    }
-
-    protected processCreatePlan(response: Response): Promise<PayPalCreatePlanRes> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as PayPalCreatePlanRes;
-            return result200;
-            });
-        } else if (status === 400) {
-            return response.text().then((_responseText) => {
-            let result400: any = null;
-            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            });
-        } else if (status === 500) {
-            return response.text().then((_responseText) => {
-            return throwException("A server side error occurred.", status, _responseText, _headers);
-            });
-        } else if (status === 412) {
-            return response.text().then((_responseText) => {
-            let result412: any = null;
-            result412 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
-            return throwException("A server side error occurred.", status, _responseText, _headers, result412);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<PayPalCreatePlanRes>(null as any);
-    }
-
-    createSubscription(flowId: string, req: PayPalCreateSubscriptionReq): Promise<Subscription> {
-        let url_ = this.baseUrl + "/umbraco/api/PayPal/credentials/{flowId}/createSubscription";
+    getOrCreatePlan(flowId: string, req: MoneyReq): Promise<string> {
+        let url_ = this.baseUrl + "/umbraco/api/PayPal/credentials/{flowId}/getOrCreatePlan";
         if (flowId === undefined || flowId === null)
             throw new Error("The parameter 'flowId' must be defined.");
         url_ = url_.replace("{flowId}", encodeURIComponent("" + flowId));
@@ -201,17 +149,17 @@ export class PayPalClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateSubscription(_response);
+            return this.processGetOrCreatePlan(_response);
         });
     }
 
-    protected processCreateSubscription(response: Response): Promise<Subscription> {
+    protected processGetOrCreatePlan(response: Response): Promise<string> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as Subscription;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
             return result200;
             });
         } else if (status === 400) {
@@ -235,7 +183,7 @@ export class PayPalClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<Subscription>(null as any);
+        return Promise.resolve<string>(null as any);
     }
 }
 
@@ -363,97 +311,9 @@ export interface PayPalTransactionReq {
     authorizationId?: string | undefined;
 }
 
-export interface PayPalCreatePlanRes {
-    planId?: string | undefined;
-}
-
-export interface Subscription {
-    id?: string | undefined;
-    planId?: string | undefined;
-    startTime?: Date;
-    applicationContext?: ApplicationContext | undefined;
-    quantity?: string | undefined;
-    shippingAmount?: Amount | undefined;
-    subscriber?: Subscriber | undefined;
-    billingInfo?: BillingInfo | undefined;
-    createdAt?: Date;
-    updatedAt?: Date;
-    links?: Link[] | undefined;
-    status?: string | undefined;
-    statusChangeNote?: string | undefined;
-    statusUpdatedAt?: Date;
-}
-
-export interface ApplicationContext {
-    returnUrl?: string | undefined;
-    cancelUrl?: string | undefined;
-    paymentMethod?: PaymentMethod2 | undefined;
-}
-
-export interface PaymentMethod2 {
-    payerSelected?: string | undefined;
-    payeePreferred?: string | undefined;
-}
-
-export interface Amount {
-    currencyCode?: string | undefined;
-    value?: number;
-}
-
-export interface Subscriber {
-    shippingAddress?: ShippingAddress | undefined;
-    name?: Name | undefined;
-    emailAddress?: string | undefined;
-    payerId?: string | undefined;
-}
-
-export interface ShippingAddress {
-    name?: Name | undefined;
-    address?: Address | undefined;
-}
-
-export interface Name {
-    title?: string | undefined;
-    firstName?: string | undefined;
-    lastName?: string | undefined;
-}
-
-export interface Address {
-    line1?: string | undefined;
-    line2?: string | undefined;
-    line3?: string | undefined;
-    locality?: string | undefined;
-    administrativeArea?: string | undefined;
-    postalCode?: string | undefined;
-    country?: string | undefined;
-}
-
-export interface BillingInfo {
-    address?: Address | undefined;
-    email?: Email | undefined;
-    name?: Name | undefined;
-    telephone?: Telephone | undefined;
-}
-
-export interface Email {
-    address?: string | undefined;
-}
-
-export interface Telephone {
-    country?: string | undefined;
-    number?: string | undefined;
-}
-
-export interface Link {
-    href?: string | undefined;
-    rel?: string | undefined;
-    method?: string | undefined;
-    encType?: string | undefined;
-}
-
-export interface PayPalCreateSubscriptionReq {
-    returnUrl?: string | undefined;
-    cancelUrl?: string | undefined;
+export interface MoneyReq {
+    amount?: number | undefined;
+    currency?: string | undefined;
 }
 
 export class ApiException extends Error {
