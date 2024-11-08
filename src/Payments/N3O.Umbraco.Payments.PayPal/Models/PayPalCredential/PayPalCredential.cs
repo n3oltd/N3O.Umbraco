@@ -6,5 +6,8 @@ namespace N3O.Umbraco.Payments.PayPal.Models.PayPalCredential;
 public partial class PayPalCredential : Credential{
     public override PaymentMethod Method => PayPalConstants.PaymentMethod;
     
+    public int? PayPalErrorCode { get; private set; }
+    public string PayPalErrorMessage { get; private set; }
     public string PayPalSubscriptionId { get; private set; }
+    public string PayPalSubscriptionReason { get; private set; }
 }

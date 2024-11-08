@@ -8,4 +8,7 @@ public class ApiGetPlansReq {
     
     [JsonIgnore]
     public string PageNumber { get; set; }
+    
+    [JsonIgnore]
+    public bool TotalRequired { get; set; }
 }

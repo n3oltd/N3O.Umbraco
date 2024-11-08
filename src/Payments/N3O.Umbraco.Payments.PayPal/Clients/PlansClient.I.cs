@@ -8,6 +8,6 @@ public interface IPlansClient {
     [Post("/v1/billing/plans")]
     Task<ApiCreatePlanRes> CreatePlanAsync(ApiCreatePlanReq req);
     
-    [Get("/v1/billing/plans?product_id={req.productId}&page={req.pageNumber}")]
+    [Get("/v1/billing/plans?product_id={req.productId}&page={req.pageNumber}&total_required={req.totalRequired}")]
     Task<ApiGetPlansRes> GetPlansAsync(ApiGetPlansReq req);
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace N3O.Umbraco.Payments.PayPal.Clients.Models;
 
 public class ApiGetPlansRes {
-    [JsonProperty("id")]
+    [JsonProperty("plans")]
     public List<Plan> Plans { get; set; }
     
     [JsonProperty("total_items")]

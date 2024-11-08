@@ -7,11 +7,12 @@ using N3O.Umbraco.Payments.PayPal.Clients.Models;
 using N3O.Umbraco.Payments.PayPal.Clients.PayPalErrors;
 using N3O.Umbraco.Payments.PayPal.Commands;
 using N3O.Umbraco.Payments.PayPal.Models.PayPalCreatePlanRes;
-using N3O.Umbraco.Payments.PayPal.Models.PayPalCreatePlanSubscriptionReq;
 using Newtonsoft.Json;
 using NUglify.Helpers;
 using Refit;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,18 +23,15 @@ public class CreatePlanHandler : IRequestHandler<CreatePlanCommand, None, PayPal
     private readonly IContentCache _contentCache;
     private readonly IPlansClient _plansClient;
     private readonly IProductsClient _productsClient;
-    private readonly ISubscriptionsClient _subscriptionsClient;
 
     public CreatePlanHandler(ICheckoutAccessor checkoutAccessor,
                              IContentCache contentCache,
                              IPlansClient plansClient,
-                             IProductsClient productsClient,
-                             ISubscriptionsClient subscriptionsClient) {
+                             IProductsClient productsClient) {
         _checkoutAccessor = checkoutAccessor;
         _contentCache = contentCache;
         _plansClient = plansClient;
         _productsClient = productsClient;
-        _subscriptionsClient = subscriptionsClient;
     }
     
     public async Task<PayPalCreatePlanRes> Handle(CreatePlanCommand request, CancellationToken cancellationToken) {
@@ -67,8 +65,10 @@ public class CreatePlanHandler : IRequestHandler<CreatePlanCommand, None, PayPal
 
             var issue = paypalError?.Details[0]?.Issue;
 
-            if (issue != null && issue != "DUPLICATE_RESOURCE_IDENTIFIER") {
-                //throw some exception here since this is some other error
+            if (issue != null && issue == "DUPLICATE_RESOURCE_IDENTIFIER") {
+                productId = request.Id;
+            } else {
+                throw new Exception(); //TODO we can change this to a specific exception
             }
         }
         
@@ -85,15 +85,16 @@ public class CreatePlanHandler : IRequestHandler<CreatePlanCommand, None, PayPal
             var request = new ApiGetPlansReq();
             request.ProductId = productId;
             request.PageNumber = page.ToString();
+            request.TotalRequired = true;
             
             var res = await _plansClient.GetPlansAsync(request);
             
             if (res.TotalItems == 0) {
-                planId = await CreatePlan(productId, planName, totalAmount);
+                planId = await CreatePlan(productId, planId, totalAmount);
                 
                 break;
             } else {
-                foreach (var plan in res.Plans) {
+                foreach (var plan in res.Plans.Where(x => x.Status == PayPalConstants.PlanStatus)) {
                     if (plan.Name != planName) continue;
 
                     planId = plan.Id;
@@ -103,8 +104,6 @@ public class CreatePlanHandler : IRequestHandler<CreatePlanCommand, None, PayPal
                 }
 
                 if (foundPlan) break;
-                
-                page++;
             }
 
             if (page == res.TotalPages) {
@@ -112,6 +111,8 @@ public class CreatePlanHandler : IRequestHandler<CreatePlanCommand, None, PayPal
 
                 break;
             }
+            
+            page++;
         } while (true);
         
         return planId;
@@ -130,6 +131,7 @@ public class CreatePlanHandler : IRequestHandler<CreatePlanCommand, None, PayPal
         frequency.IntervalUnit = PayPalConstants.FrequencyInterval;
         
         var billingCycle = new BillingCycle();
+        billingCycle.Frequency = frequency;
         billingCycle.TenureType = PayPalConstants.TenureType;
         billingCycle.Sequence = PayPalConstants.BillingCycleSequence;
         billingCycle.TotalCycles = PayPalConstants.BillingCycleTotalCycles;
@@ -137,25 +139,26 @@ public class CreatePlanHandler : IRequestHandler<CreatePlanCommand, None, PayPal
 
         var billingCycles = new List<BillingCycle>(){ billingCycle };
         
-        var setupFee = new SetupFee();
-        setupFee.CurrencyCode = totalAmount.Currency.Code;
-        setupFee.Value = totalAmount.Amount.ToString("0.00");
-        
         var paymentPreferences = new PaymentPreferences();
         paymentPreferences.AutoBillOutstanding = true;
         paymentPreferences.SetupFeeFailureAction = PayPalConstants.SetupFeeFailureAction;
         paymentPreferences.PaymentFailureThreshold = PayPalConstants.PaymentFailureThreshold;
-        paymentPreferences.SetupFee = setupFee;
         
         var request = new ApiCreatePlanReq();
         request.ProductId = productId;
         request.Name = planName;
         request.Status = PayPalConstants.PlanStatus;
         request.BillingCycles = billingCycles;
-        request.PaymentPreferences = paymentPreferences; 
-        
-        var res = await _plansClient.CreatePlanAsync(request);
-        
-        return res.Id;
+        request.PaymentPreferences = paymentPreferences;
+
+        try {
+            var res = await _plansClient.CreatePlanAsync(request);
+            
+            return res.Id;
+        } catch (ApiException apiException) {
+            var exception = new Exception(apiException.Message);
+            
+            return string.Empty;
+        }
     }
 }
