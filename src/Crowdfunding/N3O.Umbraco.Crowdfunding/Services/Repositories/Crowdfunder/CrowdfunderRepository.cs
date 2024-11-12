@@ -52,6 +52,13 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
             }
         }
     }
+    
+    public async Task<Crowdfunder> FindCrowdfunderByIdAsync(Guid id) {
+        var fundraisers = await FetchCrowdfundersAsync(sql => sql.Select("*"),
+                                                       sql => sql.Where($"{nameof(Crowdfunder.ContentKey)} = {id.ToString()}"));
+
+        return fundraisers.Single();
+    }
 
     public async Task<IReadOnlyList<Crowdfunder>> FindFundraisersAsync(string text) {
         var crowdfunders = await FetchCrowdfundersAsync(sql => sql.Select("*"),

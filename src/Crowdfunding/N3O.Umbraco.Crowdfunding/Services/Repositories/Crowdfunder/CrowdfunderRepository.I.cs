@@ -10,6 +10,7 @@ namespace N3O.Umbraco.Crowdfunding;
 
 public interface ICrowdfunderRepository {
     Task AddOrUpdateAsync(ICrowdfunderContent crowdfunderContent);
+    Task<Crowdfunder> FindCrowdfunderByIdAsync(Guid id);
     Task<IReadOnlyList<Crowdfunder>> FindFundraisersAsync(string text);
     Task<IReadOnlyList<Crowdfunder>> FindFundraisersWithTagAsync(string tag);
     Task<IReadOnlyList<string>> GetActiveFundraiserTagsAsync();

@@ -48,6 +48,26 @@ public static class CrowdfundingConstants {
         public static class ContributionReceived {
             public const string Alias = "crowdfundingContributionReceivedTemplate";
         }
+        
+        public static class FundraiserAbandoned {
+            public const string Alias = "crowdfundingFundraiserAbandonedTemplate";
+        }
+        
+        public static class FundraiserCreated {
+            public const string Alias = "crowdfundingFundraiserCreatedTemplate";
+        }
+        
+        public static class GoalsCompleted {
+            public const string Alias = "crowdfundingGoalsCompletedTemplate";
+        }
+        
+        public static class GoalsExceeded {
+            public const string Alias = "crowdfundingGoalsExceededTemplate";
+        }
+        
+        public static class StillDraft {
+            public const string Alias = "crowdfundingStillDraftTemplate";
+        }
     }
 
     public static class Fundraiser {

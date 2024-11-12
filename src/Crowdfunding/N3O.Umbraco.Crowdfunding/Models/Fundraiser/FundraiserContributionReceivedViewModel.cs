@@ -1,15 +1,14 @@
-﻿using N3O.Umbraco.Crowdfunding.Content;
-using N3O.Umbraco.Giving.Checkout.Entities;
+﻿using N3O.Umbraco.Giving.Checkout.Entities;
 using N3O.Umbraco.Giving.Models;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
-public class FundraiserContributionReceivedViewModel : FundraiserNotificationViewModel {
-    public FundraiserContributionReceivedViewModel(FundraiserContent fundraiser,
+public class FundraiserContributionReceivedViewModel {
+    public FundraiserContributionReceivedViewModel(FundraiserNotificationViewModel fundraiser,
                                                    Checkout checkout,
                                                    Allocation allocation,
-                                                   CrowdfunderData contribution)
-        : base(fundraiser) {
+                                                   CrowdfunderData contribution) {
+        Fundraiser = fundraiser;
         Checkout = checkout;
         Allocation = allocation;
         Contribution = contribution;
@@ -18,4 +17,5 @@ public class FundraiserContributionReceivedViewModel : FundraiserNotificationVie
     public Checkout Checkout { get; }
     public Allocation Allocation { get; }
     public CrowdfunderData Contribution { get; }
+    public FundraiserNotificationViewModel Fundraiser { get; }
 }

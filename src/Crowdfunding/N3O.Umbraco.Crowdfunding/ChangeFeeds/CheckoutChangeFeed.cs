@@ -1,13 +1,17 @@
 ﻿using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Accounts.Extensions;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Commands;
+using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Extensions;
+using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Crowdfunding.NamedParameters;
+using N3O.Umbraco.Email;
+using N3O.Umbraco.Email.Extensions;
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Checkout.Entities;
-using N3O.Umbraco.Giving.Extensions;
 using N3O.Umbraco.Giving.Lookups;
 using N3O.Umbraco.Giving.Models;
 using N3O.Umbraco.Json;
@@ -28,19 +32,25 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
     private readonly IFormatter _formatter;
     private readonly IContributionRepository _contributionRepository;
     private readonly IJsonProvider _jsonProvider;
+    private readonly IContentLocator _contentLocator;
+    private readonly IEmailBuilder _emailBuilder;
     
     public CheckoutChangeFeed(ILogger<CheckoutChangeFeed> logger,
                               IBackgroundJob backgroundJob,
                               IClock clock,
                               IFormatter formatter,
                               IContributionRepository contributionRepository,
-                              IJsonProvider jsonProvider) 
+                              IJsonProvider jsonProvider,
+                              IContentLocator contentLocator,
+                              IEmailBuilder emailBuilder) 
         : base(logger) {
         _contributionRepository = contributionRepository;
         _backgroundJob = backgroundJob;
         _jsonProvider = jsonProvider;
         _clock = clock;
         _formatter = formatter;
+        _contentLocator = contentLocator;
+        _emailBuilder = emailBuilder;
     }
     
     protected override async Task ProcessChangeAsync(EntityChange<Checkout> entityChange) {
@@ -67,15 +77,18 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
         if (isComplete && !wasComplete) {
             var allocations = getAllocations(checkout.SessionEntity);
 
-            foreach (var allocation in allocations.Where(x => x.HasExtensionDataFor(CrowdfundingConstants.Allocations.Extensions.Key))) {
-                await CommitAsync(givingType, checkout.SessionEntity, allocation);
+            foreach (var allocation in allocations.Where(x => x.HasCrowdfunderData())) {
+                await AddAsync(givingType, checkout.SessionEntity, allocation);
             }
             
+            await _contributionRepository.CommitAsync();
+            
             RefreshCrowdfunderContributions(allocations);
+            SendEmails(checkout, allocations);
         }
     }
 
-    private async Task CommitAsync(GivingType givingType, Checkout checkout, Allocation allocation) {
+    private async Task AddAsync(GivingType givingType, Checkout checkout, Allocation allocation) {
         var crowdfunderData = allocation.GetCrowdfunderData(_jsonProvider);
 
         await _contributionRepository.AddOnlineContributionAsync(checkout.Reference.Text,
@@ -86,8 +99,6 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
                                                                  checkout.Account?.TaxStatus == TaxStatuses.Payer,
                                                                  givingType,
                                                                  allocation);
-
-        await _contributionRepository.CommitAsync();
     }
 
     private void RefreshCrowdfunderContributions(IEnumerable<Allocation> allocations) {
@@ -104,5 +115,23 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
                                                                          p.Add<ContentId>(id.ToString());
                                                                          p.Add<CrowdfunderTypeId>(type.Id);
                                                                      });
+    }
+    
+    private void SendEmails(EntityChange<Checkout> checkout, IEnumerable<Allocation> allocations) {
+        foreach (var allocation in allocations.Where(x => x.HasCrowdfunderData())) {
+            var crowdfunderData = allocation.GetCrowdfunderData(_jsonProvider);
+
+            if (crowdfunderData.Type == CrowdfunderTypes.Fundraiser) {
+                var fundraiser = _contentLocator.ById<FundraiserContent>(crowdfunderData.Id);
+                var template = _contentLocator.ById<ContributionReceivedTemplateContent>(crowdfunderData.Id);
+
+                var model = new FundraiserContributionReceivedViewModel(new FundraiserNotificationViewModel(fundraiser),
+                                                                        checkout.SessionEntity,
+                                                                        allocation,
+                                                                        crowdfunderData);
+                
+                _emailBuilder.QueueTemplate(template, model.Fundraiser.FundraiserEmail, model);
+            }
+        }
     }
 }

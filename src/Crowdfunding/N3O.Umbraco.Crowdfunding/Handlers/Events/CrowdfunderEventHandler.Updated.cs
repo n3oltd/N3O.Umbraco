@@ -2,7 +2,6 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Handlers;
-using N3O.Umbraco.Lookups;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Services;
@@ -13,9 +12,8 @@ public class CrowdfunderUpdatedUpdatedHandler : CrowdfunderEventHandler<Crowdfun
     public CrowdfunderUpdatedUpdatedHandler(AsyncKeyedLocker<string> asyncKeyedLocker,
                                             IContentService contentService,
                                             IContentLocator contentLocator,
-                                            ICrowdfunderRevisionRepository crowdfunderRevisionRepository,
-                                            ILookups lookups)
-        : base(asyncKeyedLocker, contentService, contentLocator, crowdfunderRevisionRepository, lookups) { }
+                                            ICrowdfunderRevisionRepository crowdfunderRevisionRepository)
+        : base(asyncKeyedLocker, contentService, contentLocator, crowdfunderRevisionRepository) { }
 
     protected override async Task HandleEventAsync(CrowdfunderUpdatedEvent req, CancellationToken cancellationToken) {
         var content = GetContent(req.Model.Id);

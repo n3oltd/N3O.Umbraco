@@ -7,7 +7,9 @@ public class FundraiserNotificationType : NamedLookup {
 }
 
 public class FundraiserNotificationTypes : StaticLookupsCollection<FundraiserNotificationType> {
+    public static readonly FundraiserNotificationType FundraiserAbandoned = new("fundraiserAbandoned", "Fundraiser Abandoned");
     public static readonly FundraiserNotificationType FundraiserCreated = new("fundraiserCreated", "Fundraiser Created");
     public static readonly FundraiserNotificationType GoalsCompleted = new("goalsCompleted", "Goals Completed");
+    public static readonly FundraiserNotificationType GoalsExceeded = new("goalsExceeded", "Goals Exceeded");
     public static readonly FundraiserNotificationType StillDraft = new("stillDraft", "Still Draft");
 }
