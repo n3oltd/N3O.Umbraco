@@ -78,17 +78,16 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
             var allocations = getAllocations(checkout.SessionEntity);
 
             foreach (var allocation in allocations.Where(x => x.HasCrowdfunderData())) {
-                await AddAsync(givingType, checkout.SessionEntity, allocation);
+                await RecordContributionAsync(givingType, checkout.SessionEntity, allocation);
+                RefreshCrowdfunderStatistics(allocation);
+                QueueEmail(checkout, allocation);
             }
             
             await _contributionRepository.CommitAsync();
-            
-            RefreshCrowdfunderContributions(allocations);
-            SendEmails(checkout, allocations);
         }
     }
 
-    private async Task AddAsync(GivingType givingType, Checkout checkout, Allocation allocation) {
+    private async Task RecordContributionAsync(GivingType givingType, Checkout checkout, Allocation allocation) {
         var crowdfunderData = allocation.GetCrowdfunderData(_jsonProvider);
 
         await _contributionRepository.AddOnlineContributionAsync(checkout.Reference.Text,
@@ -101,12 +100,10 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
                                                                  allocation);
     }
 
-    private void RefreshCrowdfunderContributions(IEnumerable<Allocation> allocations) {
-        var crowdfunders = allocations.Where(x => x.HasCrowdfunderData())
-                                      .Select(x => x.GetCrowdfunderData(_jsonProvider))
-                                      .GroupBy(x => (x.Id, x.Type));
-            
-        crowdfunders.Do(x => CrowdfunderDebouncer.Debounce(x.Key.Id, x.Key.Type, EnqueueRecalculateContributionsTotal));
+    private void RefreshCrowdfunderStatistics(Allocation allocation) {
+        var crowdfunderData = allocation.GetCrowdfunderData(_jsonProvider);
+
+        CrowdfunderDebouncer.Debounce(crowdfunderData.Id, crowdfunderData.Type, EnqueueRecalculateContributionsTotal);
     }
     
     private void EnqueueRecalculateContributionsTotal(Guid id, CrowdfunderType type) {
@@ -117,21 +114,19 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
                                                                      });
     }
     
-    private void SendEmails(EntityChange<Checkout> checkout, IEnumerable<Allocation> allocations) {
-        foreach (var allocation in allocations.Where(x => x.HasCrowdfunderData())) {
-            var crowdfunderData = allocation.GetCrowdfunderData(_jsonProvider);
+    private void QueueEmail(EntityChange<Checkout> checkout, Allocation allocation) {
+        var crowdfunderData = allocation.GetCrowdfunderData(_jsonProvider);
 
-            if (crowdfunderData.Type == CrowdfunderTypes.Fundraiser) {
-                var fundraiser = _contentLocator.ById<FundraiserContent>(crowdfunderData.Id);
-                var template = _contentLocator.ById<ContributionReceivedTemplateContent>(crowdfunderData.Id);
+        if (crowdfunderData.Type == CrowdfunderTypes.Fundraiser) {
+            var fundraiser = _contentLocator.ById<FundraiserContent>(crowdfunderData.Id);
+            var template = _contentLocator.ById<FundraiserContributionReceivedTemplateContent>(crowdfunderData.Id);
 
-                var model = new FundraiserContributionReceivedViewModel(new FundraiserNotificationViewModel(fundraiser),
-                                                                        checkout.SessionEntity,
-                                                                        allocation,
-                                                                        crowdfunderData);
+            var model = new FundraiserContributionReceivedViewModel(new FundraiserContentViewModel(fundraiser),
+                                                                    checkout.SessionEntity,
+                                                                    allocation,
+                                                                    crowdfunderData);
                 
-                _emailBuilder.QueueTemplate(template, model.Fundraiser.FundraiserEmail, model);
-            }
+            _emailBuilder.QueueTemplate(template, model.Fundraiser.FundraiserEmail, model);
         }
     }
 }

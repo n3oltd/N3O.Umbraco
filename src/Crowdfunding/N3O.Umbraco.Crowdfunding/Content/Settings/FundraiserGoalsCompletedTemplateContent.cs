@@ -4,4 +4,4 @@ using N3O.Umbraco.Email.Content;
 namespace N3O.Umbraco.Crowdfunding.Content.Templates;
 
 [UmbracoContent(CrowdfundingConstants.EmailTemplates.GoalsCompleted.Alias)]
-public class GoalsCompletedTemplateContent : EmailTemplateContent<GoalsCompletedTemplateContent> { }
+public class FundraiserGoalsCompletedTemplateContent : EmailTemplateContent<FundraiserGoalsCompletedTemplateContent> { }

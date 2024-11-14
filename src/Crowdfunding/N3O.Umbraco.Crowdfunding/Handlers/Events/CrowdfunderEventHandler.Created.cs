@@ -1,13 +1,11 @@
 ﻿using AsyncKeyedLock;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm.Lookups;
-using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Handlers;
 using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Crowdfunding.Models;
-using N3O.Umbraco.Scheduler;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models;
@@ -17,16 +15,16 @@ namespace N3O.Umbraco.Crowdfunding.Events;
 
 public class CrowdfunderCreatedHandler : CrowdfunderEventHandler<CrowdfunderCreatedEvent> {
     private readonly IContentLocator _contentLocator;
-    private readonly IBackgroundJob _backgroundJob;
+    private readonly ICrowdfundingNotifications _crowdfundingNotifications;
 
     public CrowdfunderCreatedHandler(AsyncKeyedLocker<string> asyncKeyedLocker,
                                      IContentService contentService,
                                      IContentLocator contentLocator,
                                      ICrowdfunderRevisionRepository crowdfunderRevisionRepository,
-                                     IBackgroundJob backgroundJob)
+                                     ICrowdfundingNotifications crowdfundingNotifications)
         : base(asyncKeyedLocker, contentService, contentLocator, crowdfunderRevisionRepository) {
         _contentLocator = contentLocator;
-        _backgroundJob = backgroundJob;
+        _crowdfundingNotifications = crowdfundingNotifications;
     }
 
     protected override async Task HandleEventAsync(CrowdfunderCreatedEvent req, CancellationToken cancellationToken) {
@@ -44,12 +42,9 @@ public class CrowdfunderCreatedHandler : CrowdfunderEventHandler<CrowdfunderCrea
 
     private void SendFundraiserCreatedEmail(IContent content) {
         var fundraiser = _contentLocator.ById<FundraiserContent>(content.Key);
-        
-        var req = new FundraiserNotificationReq();
-        req.Type = FundraiserNotificationTypes.StillDraft;
-        req.Fundraiser = new FundraiserNotificationViewModel(fundraiser);
-            
-        _backgroundJob.Enqueue<SendFundraiserNotificationCommand, FundraiserNotificationReq>($"Send{req.Type.Name}Email",
-                                                                                             req);
+        var fundraiserContentViewModel = new FundraiserContentViewModel(fundraiser);
+        var model = new FundraiserNotificationViewModel(fundraiserContentViewModel, null);
+
+        _crowdfundingNotifications.Enqueue(FundraiserNotificationTypes.StillDraft, model, fundraiser.Key);
     }
 }
