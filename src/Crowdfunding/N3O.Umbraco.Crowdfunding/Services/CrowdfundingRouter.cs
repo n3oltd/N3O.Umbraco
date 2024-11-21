@@ -52,7 +52,7 @@ public class CrowdfundingRouter : ICrowdfundingRouter {
                                                                                    .Request
                                                                                    .Query
                                                                                    .ToDictionary(x => x.Key,
-                                                                                                 x => x.Value.Single()),
+                                                                                                 x => x.Value.Single().TrimEnd('/')),
                                                                StringComparer.InvariantCultureIgnoreCase);
             }
 
