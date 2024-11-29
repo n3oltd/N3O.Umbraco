@@ -12,7 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Crowdfunding\N3O.Umbraco.Crowdfunding.StaticAssets\N3O.Umbraco.Crowdfunding.StaticAssets.csproj" />
         <ProjectReference Include="..\..\Data\N3O.Umbraco.Data.StaticAssets\N3O.Umbraco.Data.StaticAssets.csproj" />
         <ProjectReference Include="..\..\Forms\N3O.Umbraco.Forms.StaticAssets\N3O.Umbraco.Forms.StaticAssets.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Cms\N3O.Umbraco.Cms.csproj" />
@@ -27,18 +26,44 @@
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\assets\css\fonts\stylesheet.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\assets\css\fonts\WestTrial-ExtraBoldWeb.woff" />
-      <_ContentIncludedByDefault Remove="wwwroot\assets\css\fonts\WestTrial-ExtraBoldWeb.woff2" />
-      <_ContentIncludedByDefault Remove="wwwroot\assets\css\fonts\WestTrial-LightWeb.woff" />
-      <_ContentIncludedByDefault Remove="wwwroot\assets\css\fonts\WestTrial-LightWeb.woff2" />
-      <_ContentIncludedByDefault Remove="wwwroot\assets\css\fonts\WestTrial-MediumWeb.woff" />
-      <_ContentIncludedByDefault Remove="wwwroot\assets\css\fonts\WestTrial-MediumWeb.woff2" />
+      <_ContentIncludedByDefault Remove="Views\Blocks\CrowdfundingBlock\Default.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Pages\CreateFundraiserPage.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Pages\HomePage.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Pages\SearchFundraisersPage.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Pages\ViewCampaignPage.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Pages\ViewEditFundraiserPage.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Banners\ViewEditFundraiserPageBanner.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Cards\CrowdfunderCompactCard.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Cards\CrowdfunderJumboCard.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Cards\CrowdfunderTallCard.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Cards\CrowdfunderWideCard.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Crowdfunder.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Crowdfunder\BackgroundImage.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Crowdfunder\BodyContent.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Crowdfunder\Contributions.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Crowdfunder\DonationForm.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Crowdfunder\Overview.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Crowdfunder\OwnerInfo.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Fields\Phone.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Fields\Select.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Fields\Text.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Forms\Account.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Modals\AllContributionsModal.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Modals\CreateAccountModal.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Modals\DonationSummaryModal.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Modals\MessageModal.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Modals\PickAccountModal.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Modals\ShareModal.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Modals\SignInModal.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Modals\UpdateAccountModal.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\PageAccess.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Svgs.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\TopBar.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\_ViewImports.cshtml" />
     </ItemGroup>
     
     <Import Project="..\..\N3O.Umbraco.Cms\build\N3O.Umbraco.Cms.targets" />
     <Import Project="..\..\Data\N3O.Umbraco.Data.StaticAssets\build\N3O.Umbraco.Data.StaticAssets.targets" />
-    <Import Project="..\..\Crowdfunding\N3O.Umbraco.Crowdfunding.StaticAssets\build\N3O.Umbraco.Crowdfunding.StaticAssets.targets" />
     <Import Project="..\..\Plugins\Cropper\N3O.Umbraco.Cropper.StaticAssets\build\N3O.Umbraco.Cropper.StaticAssets.targets" />
     <Import Project="..\..\Plugins\SerpEditor\N3O.Umbraco.SerpEditor.StaticAssets\build\N3O.Umbraco.SerpEditor.StaticAssets.targets" />
     <Import Project="..\..\Plugins\TextResourceEditor\N3O.Umbraco.TextResourceEditor.StaticAssets\build\N3O.Umbraco.TextResourceEditor.StaticAssets.targets" />
