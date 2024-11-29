@@ -99,7 +99,7 @@ public class CrowdfundingNotifications : ICrowdfundingNotifications {
         var result = contentPublisher.SaveAndPublish();
             
         if (!result.Success) {
-            throw new Exception($"Failed to publish email content");
+            throw new Exception("Failed to publish email content");
         }
     }
 }

@@ -24,11 +24,6 @@
         <ProjectReference Include="..\..\Workflows\N3O.Umbraco.Workflows.StaticAssets\N3O.Umbraco.Workflows.StaticAssets.csproj" />
         <ProjectReference Include="..\DemoSite.Core\DemoSite.Core.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Content Remove="uSync\v9\Content\code.config" />
-      <Content Remove="uSync\v9\Content\template_2sljjobc.config" />
-    </ItemGroup>
     
     <Import Project="..\..\N3O.Umbraco.Cms\build\N3O.Umbraco.Cms.targets" />
     <Import Project="..\..\Data\N3O.Umbraco.Data.StaticAssets\build\N3O.Umbraco.Data.StaticAssets.targets" />

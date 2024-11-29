@@ -51,7 +51,8 @@ public class RecalculateContributionTotalsHandler : IRequestHandler<RecalculateC
 
     private void EnqueueFundraiserNotificationEmail(Crowdfunder crowdfunder, FundraiserContent fundraiser) {
         var fundraiserContentViewModel = new FundraiserContentViewModel(fundraiser);
-        var goalsTotalViewModel = new FundraiserGoalsTotalViewModel(crowdfunder.GoalsTotalBase, crowdfunder.ContributionsTotalBase);
+        var goalsTotalViewModel = new FundraiserGoalsTotalViewModel(crowdfunder.GoalsTotalBase,
+                                                                    crowdfunder.ContributionsTotalBase);
         
         var model = new FundraiserNotificationViewModel(fundraiserContentViewModel, goalsTotalViewModel);
         

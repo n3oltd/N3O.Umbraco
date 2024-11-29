@@ -20,7 +20,7 @@ namespace N3O.Umbraco.Crowdfunding.Handlers;
 
 [RecurringJob("Notify Abandoned Fundraisers", "0 0 * * 0")]
 public class NotifyAbandonedFundraisersHandler : IRequestHandler<NotifyAbandonedFundraisersCommand, None, None> {
-    private readonly List<int> Intervals = new() { 1, 3, 6 };
+    private static readonly List<int> MonthlyIntervals = [1, 3, 6];
     
     private readonly IContentLocator _contentLocator;
     private readonly ICrowdfundingNotifications _crowdfundingNotifications;
@@ -42,6 +42,7 @@ public class NotifyAbandonedFundraisersHandler : IRequestHandler<NotifyAbandoned
 
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
             var query = db.Query<Crowdfunder>();
+            
             query.Where(x => x.Type == CrowdfunderTypes.Fundraiser.Key);
             query.Where(x => x.LastContributionOn < _localClock.GetCurrentInstant().ToDateTimeUtc().AddDays(-30));
             query.Where(x => x.StatusKey == CrowdfunderStatuses.Active.Key);
@@ -67,10 +68,12 @@ public class NotifyAbandonedFundraisersHandler : IRequestHandler<NotifyAbandoned
                             DateTime lastContributionOn) {
         var currentDate = DateTime.UtcNow;
         
-        for (int i = 0; i < Intervals.Count; i++) {
-            var nextDueDate = lastContributionOn.AddMonths(Intervals[i]);
+        foreach (var interval in MonthlyIntervals) {
+            var nextDueDate = lastContributionOn.AddMonths(interval);
             
-            if (currentDate >= nextDueDate && sentNotifications.All(x => nextDueDate > x.SentAt) && nextDueDate >= lastContributionOn.AddMonths(i)) {
+            if (currentDate >= nextDueDate &&
+                sentNotifications.All(x => nextDueDate > x.SentAt) &&
+                nextDueDate >= lastContributionOn.AddMonths(interval)) {
                 return true;
             }
         }

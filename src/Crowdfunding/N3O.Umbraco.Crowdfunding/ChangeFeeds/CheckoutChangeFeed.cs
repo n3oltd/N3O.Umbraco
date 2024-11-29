@@ -79,7 +79,9 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
 
             foreach (var allocation in allocations.Where(x => x.HasCrowdfunderData())) {
                 await RecordContributionAsync(givingType, checkout.SessionEntity, allocation);
+                
                 RefreshCrowdfunderStatistics(allocation);
+                
                 QueueEmail(checkout, allocation);
             }
             

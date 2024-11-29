@@ -20,7 +20,7 @@ namespace N3O.Umbraco.Crowdfunding.Handlers;
 
 [RecurringJob("Notify Draft Fundraisers", "0 0 * * 0")]
 public class NotifyDraftFundraisersHandler : IRequestHandler<NotifyDraftFundraisersCommand, None, None> {
-    private readonly List<int> Intervals = new() { 7, 14 };
+    private static readonly List<TimeSpan> Intervals = [TimeSpan.FromDays(7), TimeSpan.FromDays(14)];
     
     private readonly IContentLocator _contentLocator;
     private readonly ICrowdfundingNotifications _crowdfundingNotifications;
@@ -42,6 +42,7 @@ public class NotifyDraftFundraisersHandler : IRequestHandler<NotifyDraftFundrais
         
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
             var query = db.Query<Crowdfunder>();
+            
             query.Where(x => x.Type == CrowdfunderTypes.Fundraiser.Key);
             query.Where(x => x.CreatedAt < _localClock.GetCurrentInstant().ToDateTimeUtc().AddDays(-30));
             query.Where(x => x.StatusKey == CrowdfunderStatuses.Draft.Key);
@@ -63,14 +64,15 @@ public class NotifyDraftFundraisersHandler : IRequestHandler<NotifyDraftFundrais
         return None.Empty;
     }
     
-    private bool ShouldSend(IReadOnlyList<FundraiserNotificationEmailContent> sentNotifications,
-                            DateTime createdAt) {
+    private bool ShouldSend(IReadOnlyList<FundraiserNotificationEmailContent> sentNotifications, DateTime createdAt) {
         var currentDate = DateTime.UtcNow;
         
-        for (int i = 0; i < Intervals.Count; i++) {
-            var nextDueDate = createdAt.AddDays(Intervals[i]);
+        foreach (var interval in Intervals) {
+            var nextDueDate = createdAt.Add(interval);
             
-            if (currentDate >= nextDueDate && sentNotifications.All(x => nextDueDate > x.SentAt) && nextDueDate >= createdAt.AddDays(Intervals[i])) {
+            if (currentDate >= nextDueDate &&
+                sentNotifications.All(x => nextDueDate > x.SentAt) &&
+                nextDueDate >= createdAt.Add(interval)) {
                 return true;
             }
         }
