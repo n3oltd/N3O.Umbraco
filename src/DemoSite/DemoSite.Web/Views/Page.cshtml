@@ -1,9 +1,5 @@
 ﻿@inherits UmbracoViewPage<IPageViewModel>
 
-@inject IContentBlockRenderer Renderer
-
 @{
     Layout = "Layout.cshtml";
 }
-
-@await Html.RenderContentBlocks(Model.Blocks, Renderer)

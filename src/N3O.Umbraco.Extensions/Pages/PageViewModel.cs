@@ -1,4 +1,3 @@
-using Perplex.ContentBlocks.Rendering;
 using System;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -7,7 +6,6 @@ namespace N3O.Umbraco.Pages;
 
 public interface IPageViewModel : IContentModel {
     PageModulesData ModulesData { get; }
-    IContentBlocks Blocks { get; }
 }
 
 public interface IPageViewModel<out TPage> : IPageViewModel where TPage : IPublishedContent {
@@ -23,7 +21,6 @@ public class PageViewModel<TPage> : ContentModel<TPage>, IPageViewModel<TPage> w
         _getText = parameters.GetText;
     }
 
-    public IContentBlocks Blocks => Content.GetProperty("blocks")?.GetValue() as IContentBlocks;
     public PageModulesData ModulesData { get; }
 
     public string GetText(string s) => _getText(s);

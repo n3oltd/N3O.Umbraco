@@ -25,14 +25,14 @@ public class CrowdfundingUrlBuilder : ICrowdfundingUrlBuilder {
         if (path.HasValue()) {
             url.AppendPathSegment(path);
         }
+        
+        if (_requestHandlerSettings.AddTrailingSlash && !url.ToString().EndsWith("/")) {
+            url.AppendPathSegment("/");
+        }
 
         addQueryParameters?.Invoke(url);
 
         var urlStr = url.ToString();
-
-        if (_requestHandlerSettings.AddTrailingSlash && !urlStr.EndsWith("/")) {
-            urlStr += "/";
-        }
 
         return urlStr;
     }

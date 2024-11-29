@@ -30,6 +30,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Blocks\N3O.Umbraco.Blocks\N3O.Umbraco.Blocks.csproj" />
       <ProjectReference Include="..\N3O.Umbraco.Giving\N3O.Umbraco.Giving.csproj" />
     </ItemGroup>
 
