@@ -46,7 +46,27 @@ public static class CrowdfundingConstants {
     
     public static class EmailTemplates {
         public static class ContributionReceived {
-            public const string Alias = "crowdfundingContributionReceivedTemplate";
+            public const string Alias = "crowdfundingFundraiserContributionReceivedTemplate";
+        }
+        
+        public static class FundraiserAbandoned {
+            public const string Alias = "crowdfundingFundraiserAbandonedTemplate";
+        }
+        
+        public static class FundraiserCreated {
+            public const string Alias = "crowdfundingFundraiserCreatedTemplate";
+        }
+        
+        public static class GoalsCompleted {
+            public const string Alias = "crowdfundingFundraiserGoalsCompletedTemplate";
+        }
+        
+        public static class GoalsExceeded {
+            public const string Alias = "crowdfundingFundraiserGoalsExceededTemplate";
+        }
+        
+        public static class StillDraft {
+            public const string Alias = "crowdfundingFundraiserDraftTemplate";
         }
     }
 
@@ -58,6 +78,22 @@ public static class CrowdfundingConstants {
             public static readonly string Campaign = "campaign";
             public static readonly string Owner = "owner";
             public static readonly string Slug = "slug";
+        }
+    }
+    
+    public static class FundraiserNotificationEmail {
+        public const string Alias = "crowdfundingFundraiserNotificationEmail";
+        
+        public static class Properties {
+            public static readonly string Body = "body";
+            public static readonly string FromEmail = "fromEmail";
+            public static readonly string FromName = "fromName";
+            public static readonly string Resend = "resend";
+            public static readonly string ResendTo = "resendTo";
+            public static readonly string SentAt = "sentAt";
+            public static readonly string Subject = "subject";
+            public static readonly string To = "to";
+            public static readonly string Type = "type";
         }
     }
     

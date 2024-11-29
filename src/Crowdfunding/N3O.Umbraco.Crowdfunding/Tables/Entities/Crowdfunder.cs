@@ -61,6 +61,9 @@ public class Crowdfunder {
     [Column(nameof(LeftToRaiseQuote))]
     public decimal LeftToRaiseQuote { get; set; }
     
+    [Column(nameof(LastContributionOn))]
+    public DateTime LastContributionOn { get; set; }
+    
     [Column(nameof(TallImage))]
     public string TallImage { get; set; }
     

@@ -52,6 +52,13 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
             }
         }
     }
+    
+    public async Task<Crowdfunder> FindCrowdfunderByIdAsync(Guid id) {
+        var fundraisers = await FetchCrowdfundersAsync(sql => sql.Select("*"),
+                                                       sql => sql.Where($"{nameof(Crowdfunder.ContentKey)} = {id.ToString()}"));
+
+        return fundraisers.Single();
+    }
 
     public async Task<IReadOnlyList<Crowdfunder>> FindFundraisersAsync(string text) {
         var crowdfunders = await FetchCrowdfundersAsync(sql => sql.Select("*"),
@@ -115,9 +122,15 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
                                           .Append($"UPDATE {CrowdfundingConstants.Tables.Crowdfunders.Name} SET {nameof(Crowdfunder.LeftToRaiseBase)} = {nameof(Crowdfunder.GoalsTotalBase)} - ({nameof(Crowdfunder.ContributionsTotalBase)} + {nameof(Crowdfunder.NonDonationsTotalBase)})")
                                           .Append($", {nameof(Crowdfunder.LeftToRaiseQuote)} = {nameof(Crowdfunder.GoalsTotalQuote)} - ({nameof(Crowdfunder.ContributionsTotalQuote)} + {nameof(Crowdfunder.NonDonationsTotalQuote)})")
                                           .Where($"{nameof(Crowdfunder.ContentKey)} = '{id.ToString()}'");
+            
+            var updateLastContributionOnSql = Sql.Builder
+                                                 .Append($"UPDATE {CrowdfundingConstants.Tables.Crowdfunders.Name} SET {nameof(Crowdfunder.LastContributionOn)} =")
+                                                 .Append($"(SELECT MAX({nameof(Contribution.Date)}) FROM {CrowdfundingConstants.Tables.Contributions.Name} WHERE {nameof(Contribution.CrowdfunderId)} = '{id.ToString()})")
+                                                 .Where($"{nameof(Crowdfunder.ContentKey)} = '{id.ToString()}'");
 
             await db.ExecuteAsync(sql);
             await db.ExecuteAsync(updateLeftToRaiseSql);
+            await db.ExecuteAsync(updateLastContributionOnSql);
         }
     }
 

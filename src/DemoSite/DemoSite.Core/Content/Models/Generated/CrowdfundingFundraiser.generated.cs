@@ -50,12 +50,12 @@ namespace DemoSite.Content
 		// properties
 
 		///<summary>
-		/// Account
+		/// Account Reference
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("account")]
-		public virtual string Account => this.Value<string>(_publishedValueFallback, "account");
+		[ImplementPropertyType("accountReference")]
+		public virtual string AccountReference => this.Value<string>(_publishedValueFallback, "accountReference");
 
 		///<summary>
 		/// Campaign
@@ -64,14 +64,6 @@ namespace DemoSite.Content
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("campaign")]
 		public virtual global::DemoSite.Content.CrowdfundingCampaign Campaign => this.Value<global::DemoSite.Content.CrowdfundingCampaign>(_publishedValueFallback, "campaign");
-
-		///<summary>
-		/// Emails
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("emails")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingFundraiserNotificationEmail> Emails => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingFundraiserNotificationEmail>>(_publishedValueFallback, "emails");
 
 		///<summary>
 		/// Owner
@@ -160,6 +152,14 @@ namespace DemoSite.Content
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("status")]
 		public virtual string Status => global::DemoSite.Content.CrowdfundingCrowdfunder.GetStatus(this, _publishedValueFallback);
+
+		///<summary>
+		/// Tags
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("tags")]
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CrowdfundingTag> Tags => global::DemoSite.Content.CrowdfundingCrowdfunder.GetTags(this, _publishedValueFallback);
 
 		///<summary>
 		/// Toggle Status
