@@ -1,11 +1,6 @@
 ﻿using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Crowdfunding.Lookups;
-using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Lookups;
-using Newtonsoft.Json;
 using System;
-using System.Linq;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 

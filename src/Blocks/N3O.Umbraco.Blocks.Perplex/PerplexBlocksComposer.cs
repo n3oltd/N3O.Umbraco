@@ -8,7 +8,6 @@ using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Utilities;
 using Perplex.ContentBlocks.Categories;
 using Perplex.ContentBlocks.Definitions;
-using Perplex.ContentBlocks.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +22,7 @@ namespace N3O.Umbraco.Blocks.Perplex;
 public class PerplexBlocksComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         BlocksComponent.LoadDefinitions(builder, WebHostEnvironment);
-        IContentBlocks x;
+
         builder.Services.AddTransient<IPerplexBlockTypesService, PerplexBlockTypesService>();
 
         foreach (var blockDefinition in BlocksComponent.BlockDefinitions) {
