@@ -10,7 +10,7 @@
     <p class="n3o-p">@Html.Raw(Model.Required ? $"{Model.Label} <span style='color: red;'> *</span>" : $"{Model.Label}")</p>
 
     <div class="n3o-input sel">
-        <select id="@Model.Path" name="@Model.Path" placeholder="@Model.Label" style="width: 100%">
+        <select id="@Model.Path" name="@Model.Path" placeholder="@Model.Label" style="width: 100%" data-required="@Model.Required">
             <option value="">@PartialText.Get("--Select--")</option>
             @foreach (var option in Model.Options) {
                     if (option == Model.DefaultOption) {

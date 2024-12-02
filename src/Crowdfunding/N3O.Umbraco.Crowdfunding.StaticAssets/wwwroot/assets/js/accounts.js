@@ -1,8 +1,10 @@
 const accounts = document.getElementById("newAccount");
 if (accounts) {
     const newAccountBtn = document.getElementById("newAccountBtn");
-    const allElements = accounts.querySelectorAll("input, select");
-
+    const allElements = accounts.querySelectorAll("input:not([type='hidden']):not([hidden])[data-required='True'], select:not([hidden])[data-required='True']");    
+    
+    newAccountBtn.disabled = true;
+    
     let allFilled = true;
 
     allElements.forEach((item) => {
