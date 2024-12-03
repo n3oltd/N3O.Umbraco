@@ -2,7 +2,6 @@ using Humanizer;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Elements.Lookups;
-using N3O.Umbraco.Elements.Lookups;
 using N3O.Umbraco.Elements.Models;
 
 namespace N3O.Umbraco.Elements.Content;
