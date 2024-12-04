@@ -8,10 +8,6 @@ public static class PropertyTypeExtensions {
         return propertyType.PropertyEditorAlias.EqualsInvariant(alias);
     }
     
-    public static bool IsContentBlocks(this IPropertyType propertyType) {
-        return propertyType.HasEditorAlias(Perplex.ContentBlocks.Constants.PropertyEditor.Alias);
-    }
-    
     public static bool IsDataList(this IPropertyType propertyType) {
         return propertyType.HasEditorAlias("Umbraco.Community.Contentment.DataList");
     }
@@ -25,7 +21,7 @@ public static class PropertyTypeExtensions {
     }
 
     public static bool IsNestedContent(this IPropertyType propertyType) {
-        return propertyType.HasEditorAlias(Aliases.NestedContent);
+        return propertyType.HasEditorAlias(Aliases.NestedContent) || propertyType.HasEditorAlias("Perplex.ContentBlocks");
     }
     
     public static bool IsPicker(this IPropertyType propertyType) {

@@ -7,10 +7,6 @@ public static class ContentBuilderExtensions {
         return builder.Property<BooleanPropertyBuilder>(propertyTypeAlias);
     }
     
-    public static ContentBlocksPropertyBuilder ContentBlocks(this IContentBuilder builder, string propertyTypeAlias) {
-        return builder.Property<ContentBlocksPropertyBuilder>(propertyTypeAlias);
-    }
-    
     public static ContentPickerPropertyBuilder ContentPicker(this IContentBuilder builder, string propertyTypeAlias) {
         return builder.Property<ContentPickerPropertyBuilder>(propertyTypeAlias);
     }

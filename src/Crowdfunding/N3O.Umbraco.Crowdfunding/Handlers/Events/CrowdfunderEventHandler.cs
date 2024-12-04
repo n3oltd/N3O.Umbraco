@@ -4,7 +4,6 @@ using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Events;
 using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Models;
-using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Mediator;
 using System;
 using System.Threading;
@@ -20,18 +19,15 @@ public abstract class CrowdfunderEventHandler<TEvent> : IRequestHandler<TEvent, 
     private readonly IContentService _contentService;
     private readonly IContentLocator _contentLocator;
     private readonly ICrowdfunderRevisionRepository _crowdfunderRevisionRepository;
-    private readonly ILookups _lookups;
 
     protected CrowdfunderEventHandler(AsyncKeyedLocker<string> asyncKeyedLocker,
                                       IContentService contentService,
                                       IContentLocator contentLocator,
-                                      ICrowdfunderRevisionRepository crowdfunderRevisionRepository,
-                                      ILookups lookups) {
+                                      ICrowdfunderRevisionRepository crowdfunderRevisionRepository) {
         _asyncKeyedLocker = asyncKeyedLocker;
         _contentService = contentService;
         _contentLocator = contentLocator;
         _crowdfunderRevisionRepository = crowdfunderRevisionRepository;
-        _lookups = lookups;
     }
 
     public async Task<None> Handle(TEvent req, CancellationToken cancellationToken) {
