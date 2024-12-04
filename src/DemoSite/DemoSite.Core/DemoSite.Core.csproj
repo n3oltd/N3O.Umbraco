@@ -45,7 +45,6 @@
       <ProjectReference Include="..\..\TaxRelief\N3O.Umbraco.TaxRelief.UnitedKingdom\N3O.Umbraco.TaxRelief.UnitedKingdom.csproj" />
       <ProjectReference Include="..\..\Templates\N3O.Umbraco.Templates.Handlebars\N3O.Umbraco.Templates.Handlebars.csproj" />
       <ProjectReference Include="..\..\Vacancies\N3O.Umbraco.Vacancies\N3O.Umbraco.Vacancies.csproj" />
-      <ProjectReference Include="..\..\Workflows\N3O.Umbraco.Workflows\N3O.Umbraco.Workflows.csproj" />
     </ItemGroup>
 
 </Project>
