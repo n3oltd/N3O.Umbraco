@@ -1,5 +1,5 @@
+using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Giving.Checkout.Entities;
-using N3O.Umbraco.Giving.Models;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
