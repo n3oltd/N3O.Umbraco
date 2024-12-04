@@ -1,6 +1,6 @@
 ﻿using N3O.Umbraco.Financial;
-using N3O.Umbraco.Giving.Content;
-using N3O.Umbraco.Giving.Lookups;
+using N3O.Umbraco.Giving.Allocations.Content;
+using N3O.Umbraco.Giving.Allocations.Lookups;
 using System;
 using System.Collections.Generic;
 

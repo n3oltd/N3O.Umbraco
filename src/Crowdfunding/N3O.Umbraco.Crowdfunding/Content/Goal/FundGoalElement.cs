@@ -1,6 +1,6 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm.Models;
-using N3O.Umbraco.Giving.Lookups;
+using N3O.Umbraco.Giving.Allocations.Lookups;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 

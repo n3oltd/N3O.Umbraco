@@ -1,7 +1,7 @@
 ﻿using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex;
+using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Content;
-using N3O.Umbraco.Giving.Lookups;
 
 namespace N3O.Umbraco.Giving; 
 

@@ -79,7 +79,7 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("defaultGivingType")]
-		public virtual global::N3O.Umbraco.Giving.Lookups.GivingType DefaultGivingType => global::DemoSite.Content.DonationOption.GetDefaultGivingType(this, _publishedValueFallback);
+		public virtual global::N3O.Umbraco.Giving.Allocations.Lookups.GivingType DefaultGivingType => global::DemoSite.Content.DonationOption.GetDefaultGivingType(this, _publishedValueFallback);
 
 		///<summary>
 		/// Location

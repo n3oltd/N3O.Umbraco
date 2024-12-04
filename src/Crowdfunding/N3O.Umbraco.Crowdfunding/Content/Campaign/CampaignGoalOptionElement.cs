@@ -2,9 +2,9 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving.Content;
-using N3O.Umbraco.Giving.Lookups;
-using N3O.Umbraco.Giving.Models;
+using N3O.Umbraco.Giving.Allocations.Content;
+using N3O.Umbraco.Giving.Allocations.Lookups;
+using N3O.Umbraco.Giving.Allocations.Models;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Models.PublishedContent;
 

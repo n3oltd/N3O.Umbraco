@@ -1,5 +1,5 @@
-﻿using N3O.Umbraco.Giving.Lookups;
-using N3O.Umbraco.Giving.Models;
+﻿using N3O.Umbraco.Giving.Allocations.Lookups;
+using N3O.Umbraco.Giving.Allocations.Models;
 
 namespace N3O.Umbraco.Crm.Models;
 

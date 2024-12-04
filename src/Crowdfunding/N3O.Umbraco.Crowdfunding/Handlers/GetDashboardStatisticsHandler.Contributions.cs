@@ -3,7 +3,7 @@ using N3O.Umbraco.Crowdfunding.Criteria;
 using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving.Lookups;
+using N3O.Umbraco.Giving.Allocations.Lookups;
 using NPoco;
 using System;
 using System.Collections.Generic;

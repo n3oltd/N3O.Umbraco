@@ -55,7 +55,7 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("allowedDurations")]
-		public virtual global::System.Collections.Generic.List<global::N3O.Umbraco.Giving.Lookups.SponsorshipDuration> AllowedDurations => this.Value<global::System.Collections.Generic.List<global::N3O.Umbraco.Giving.Lookups.SponsorshipDuration>>(_publishedValueFallback, "allowedDurations");
+		public virtual global::System.Collections.Generic.List<global::N3O.Umbraco.Giving.Allocations.Lookups.SponsorshipDuration> AllowedDurations => this.Value<global::System.Collections.Generic.List<global::N3O.Umbraco.Giving.Allocations.Lookups.SponsorshipDuration>>(_publishedValueFallback, "allowedDurations");
 
 		///<summary>
 		/// Allowed Giving Types
@@ -63,7 +63,7 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("allowedGivingTypes")]
-		public virtual global::System.Collections.Generic.List<global::N3O.Umbraco.Giving.Lookups.GivingType> AllowedGivingTypes => this.Value<global::System.Collections.Generic.List<global::N3O.Umbraco.Giving.Lookups.GivingType>>(_publishedValueFallback, "allowedGivingTypes");
+		public virtual global::System.Collections.Generic.List<global::N3O.Umbraco.Giving.Allocations.Lookups.GivingType> AllowedGivingTypes => this.Value<global::System.Collections.Generic.List<global::N3O.Umbraco.Giving.Allocations.Lookups.GivingType>>(_publishedValueFallback, "allowedGivingTypes");
 
 		///<summary>
 		/// Locations

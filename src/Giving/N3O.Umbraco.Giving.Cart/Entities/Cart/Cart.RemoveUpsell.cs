@@ -1,8 +1,9 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Forex;
+using N3O.Umbraco.Giving.Allocations;
+using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Cart.Models;
-using N3O.Umbraco.Giving.Lookups;
 using System;
 using System.Linq;
 using System.Threading.Tasks;

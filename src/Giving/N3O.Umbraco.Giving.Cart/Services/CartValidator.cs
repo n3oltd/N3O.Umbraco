@@ -1,8 +1,9 @@
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
-using N3O.Umbraco.Giving.Lookups;
-using N3O.Umbraco.Giving.Models;
+using N3O.Umbraco.Giving.Allocations.Extensions;
+using N3O.Umbraco.Giving.Allocations.Lookups;
+using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Giving.Cart.Models;
 using N3O.Umbraco.Giving.Extensions;
 using System.Collections.Generic;

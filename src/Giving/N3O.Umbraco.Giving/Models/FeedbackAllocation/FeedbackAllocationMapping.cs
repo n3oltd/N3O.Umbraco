@@ -1,4 +1,5 @@
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Allocations.Models;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 

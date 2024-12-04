@@ -1,5 +1,5 @@
 using N3O.Umbraco.Financial;
-using N3O.Umbraco.Giving.Content;
+using N3O.Umbraco.Giving.Allocations.Content;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Mapping;
 

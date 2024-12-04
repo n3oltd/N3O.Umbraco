@@ -1,0 +1,14 @@
+﻿<ums-overlay close="$ctrl.state.record = null" ng-if="$ctrl.state.record">
+    <ums-overlay-header>
+        <h4 class="h2 umsHeading" ng-bind="$ctrl.state.record.formName"></h4>
+        <strong ng-bind="$ctrl.state.record.timestamp | umsDate"></strong>
+    </ums-overlay-header>
+
+    <ums-overlay-body>
+        <ums-uf-record ng-if="$ctrl.state.record" record="$ctrl.state.record"></ums-uf-record>
+    </ums-overlay-body>
+</ums-overlay>
+
+<ums-umbraco-forms-submissions-list loading="$ctrl.state.loading"
+                                    submissions="$ctrl.state.records"
+                                    on-click="$ctrl.state.record = submission"></ums-umbraco-forms-submissions-list>

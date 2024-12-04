@@ -1,0 +1,9 @@
+﻿{
+  "javascript": [
+    "~/App_Plugins/Umbraco.Engage.Forms/ums-uf-init.js",
+    "~/App_Plugins/Umbraco.Engage.Forms/ums-uf-record-submissions.js",
+    "~/App_Plugins/Umbraco.Engage.Forms/ums-uf-record-submissions-api.js",
+    "~/App_Plugins/Umbraco.Engage.Forms/ums-uf-record.js",
+    "~/App_Plugins/Umbraco.Engage.Forms/goal-editor/ums-uf-goal-editor.js"
+  ]
+}

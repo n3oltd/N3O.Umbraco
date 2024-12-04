@@ -32,6 +32,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\Authentication\N3O.Umbraco.Authentication\N3O.Umbraco.Authentication.csproj" />
         <ProjectReference Include="..\..\Bundling\N3O.Umbraco.Bundling\N3O.Umbraco.Bundling.csproj" />
+        <ProjectReference Include="..\..\Crm\N3O.Umbraco.Crm.Engage\N3O.Umbraco.Crm.Engage.csproj" />
         <ProjectReference Include="..\..\Crm\N3O.Umbraco.Crm\N3O.Umbraco.Crm.csproj" />
         <ProjectReference Include="..\..\Data\N3O.Umbraco.Data\N3O.Umbraco.Data.csproj" />
         <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Checkout\N3O.Umbraco.Giving.Checkout.csproj" />

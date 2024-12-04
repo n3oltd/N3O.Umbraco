@@ -1,6 +1,6 @@
 using N3O.Umbraco.Financial;
+using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Cart.Models;
-using N3O.Umbraco.Giving.Lookups;
 
 namespace N3O.Umbraco.Giving.Cart.Entities;
 
