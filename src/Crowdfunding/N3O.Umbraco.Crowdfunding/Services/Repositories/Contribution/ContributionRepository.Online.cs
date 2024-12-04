@@ -1,6 +1,6 @@
 ﻿using N3O.Umbraco.Crowdfunding.Models;
-using N3O.Umbraco.Giving.Lookups;
-using N3O.Umbraco.Giving.Models;
+using N3O.Umbraco.Giving.Allocations.Lookups;
+using N3O.Umbraco.Giving.Allocations.Models;
 using NodaTime;
 using System.Threading.Tasks;
 

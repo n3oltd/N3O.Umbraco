@@ -30,8 +30,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Authentication\N3O.Umbraco.Authentication.Auth0\N3O.Umbraco.Authentication.Auth0.csproj" />
         <ProjectReference Include="..\..\Crm\N3O.Umbraco.Crm.Engage\N3O.Umbraco.Crm.Engage.csproj" />
+        <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Allocations\N3O.Umbraco.Giving.Allocations.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
     </ItemGroup>
 

@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Giving.Allocations.Models;
 using Newtonsoft.Json;
 using NodaTime;
 

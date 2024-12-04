@@ -1,5 +1,5 @@
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Giving.Content;
+using N3O.Umbraco.Giving.Allocations.Content;
 
 namespace N3O.Umbraco.Giving;
 
@@ -8,15 +8,15 @@ public static class GivingConstants {
 
     public static class Aliases {
         public static class DonationItem {
-            public static readonly string ContentType = AliasHelper<Lookups.DonationItem>.ContentTypeAlias();
+            public static readonly string ContentType = AliasHelper<Allocations.Lookups.DonationItem>.ContentTypeAlias();
 
             public static class Properties {
-                public static readonly string AllowedGivingTypes = AliasHelper<Lookups.DonationItem>.PropertyAlias(x => x.AllowedGivingTypes);
-                public static readonly string Dimension1Options = AliasHelper<Lookups.DonationItem>.PropertyAlias(x => x.Dimension1Options);
-                public static readonly string Dimension2Options = AliasHelper<Lookups.DonationItem>.PropertyAlias(x => x.Dimension2Options);
-                public static readonly string Dimension3Options = AliasHelper<Lookups.DonationItem>.PropertyAlias(x => x.Dimension3Options);
-                public static readonly string Dimension4Options = AliasHelper<Lookups.DonationItem>.PropertyAlias(x => x.Dimension4Options);
-                public static readonly string PriceRules = AliasHelper<Lookups.DonationItem>.PropertyAlias(x => x.PriceRules);
+                public static readonly string AllowedGivingTypes = AliasHelper<Allocations.Lookups.DonationItem>.PropertyAlias(x => x.AllowedGivingTypes);
+                public static readonly string Dimension1Options = AliasHelper<Allocations.Lookups.DonationItem>.PropertyAlias(x => x.Dimension1Options);
+                public static readonly string Dimension2Options = AliasHelper<Allocations.Lookups.DonationItem>.PropertyAlias(x => x.Dimension2Options);
+                public static readonly string Dimension3Options = AliasHelper<Allocations.Lookups.DonationItem>.PropertyAlias(x => x.Dimension3Options);
+                public static readonly string Dimension4Options = AliasHelper<Allocations.Lookups.DonationItem>.PropertyAlias(x => x.Dimension4Options);
+                public static readonly string PriceRules = AliasHelper<Allocations.Lookups.DonationItem>.PropertyAlias(x => x.PriceRules);
             }
         }
 

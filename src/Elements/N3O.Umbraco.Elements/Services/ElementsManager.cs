@@ -26,30 +26,30 @@ public class ElementsManager : IElementsManager {
         _jsonProvider = jsonProvider;
     }
 
-    public async Task CreateOrUpdateDonationOptionAsync() {
+    public async Task SaveAndPublishDonationFormAsync() {
         var subscription = _subscriptionAccessor.GetSubscription();
         var client = await _clientFactory.CreateAsync(subscription, ClientTypes.BackOffice);
-
-        var req = GetCreateElementReq();
+        
+        var req = GetSaveAndPublishReq();
         
         await client.InvokeAsync(x => x.SaveAndPublishElementAsync, req);
     }
 
-    private SaveAndPublishReq GetCreateElementReq() {
+    private SaveAndPublishReq GetSaveAndPublishReq() {
         var giving = _contentLocator.Single<GivingContent>();
 
-        var partials = new List<SaveAndPublishPartialReq>();
+        var partialReqs = new List<SaveAndPublishPartialReq>();
 
         //PopulateTopLevelCategories(partials);
-        PopulateDonationCategories(partials, giving);
-        PopulateDonationOptions(partials, giving);
+        PopulateDonationCategories(partialReqs, giving);
+        PopulateDonationOptions(partialReqs, giving);
 
         var req = new SaveAndPublishReq();
         req.Element = new SaveAndPublishElementReq();
         req.Element.Id = giving.Content().Key.ToString();
         req.Element.Type = ElementType.DonationForm;
         req.Element.Content = giving.GetFormJson(_jsonProvider);
-        req.Partials = partials;
+        req.Partials = partialReqs;
 
         return req;
     }
@@ -59,11 +59,12 @@ public class ElementsManager : IElementsManager {
         var options = giving.GetDonationOptions();
 
         foreach (var category in categories) {
-            var linkedOptions = options.Where(x => x.Categories.Contains(category)).ToList();
+            var categoryOptions = options.Where(x => x.Categories.Contains(category)).ToList();
 
             var req = new SaveAndPublishPartialReq();
             req.Id = category.Content().Key.ToString();
-            req.Content = category.ToFormJson(_jsonProvider, linkedOptions);
+            req.Content = _jsonProvider.SerializeObject(category.Content());
+            req.PublishedContent = category.ToFormJson(_jsonProvider, categoryOptions);
 
             partials.Add(req);
         }

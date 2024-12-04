@@ -1,5 +1,4 @@
-﻿using N3O.Umbraco.Crm;
-using N3O.Umbraco.Extensions;
+﻿using N3O.Umbraco.Extensions;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
@@ -20,11 +19,9 @@ public class DonationOptionOrCategoryPublished : INotificationAsyncHandler<Conte
 
     public async Task HandleAsync(ContentPublishedNotification notification, CancellationToken cancellationToken) {
         foreach (var content in notification.PublishedEntities) {
-            if(IsDonationCategoryOrDonationOption(content)) {
-                await _elementsManager.CreateOrUpdateDonationOptionAsync();
+            if (IsDonationCategoryOrDonationOption(content)) {
+                await _elementsManager.SaveAndPublishDonationFormAsync();
             }
-
-            
         }
     }
 

@@ -60,3 +60,4 @@ n3o-tool clients --url "https://localhost:6001/swagger/Uploader/swagger.json" --
 
 n3o-tool clients --url "https://beta.n3o.cloud/eu1/api/accounts/docs/swagger/public-v1.0/swagger.json" --language "CSharp" --output-path "../src/Crm/N3O.Umbraco.Crm.Engage/Clients" --name "AccountsClient" --namespace "N3O.Umbraco.Crm.Engage.Clients" --no-models
 n3o-tool clients --url "https://beta.n3o.cloud/eu1/api/crowdfunding/docs/swagger/public-v1.0/swagger.json" --language "CSharp" --output-path "../src/Crm/N3O.Umbraco.Crm.Engage/Clients" --name "CrowdfundingClient" --namespace "N3O.Umbraco.Crm.Engage.Clients" --exclude-models "ApiException"
+n3o-tool clients --url "https://beta.n3o.cloud/eu1/api/elements/docs/swagger/elements-v1.0/swagger.json" --language "CSharp" --output-path "../src/Elements/N3O.Umbraco.Elements/Clients" --name "ElementsClient" --namespace "N3O.Umbraco.Elements.Clients"

@@ -7,7 +7,7 @@ public class DonationCategoryType : NamedLookup {
 }
 
 public class DonationCategoryTypes : StaticLookupsCollection<DonationCategoryType> {
-    public static readonly DonationCategoryType DimensionCategory = new("dimensionCategory", "Dimension Category");
-    public static readonly DonationCategoryType EphemeralCategory = new("ephemeralCategory", "Ephemeral Category");
-    public static readonly DonationCategoryType DefaultCategory = new("defaultCategory", "Default Category");
+    public static readonly DonationCategoryType Dimension = new("dimension", "Dimension");
+    public static readonly DonationCategoryType Ephemeral = new("ephemeral", "Ephemeral");
+    public static readonly DonationCategoryType General = new("general", "General");
 }

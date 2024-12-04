@@ -9,10 +9,6 @@ public class GivingComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddOpenApiDocument(GivingConstants.ApiName);
         
-        builder.Services.AddSingleton<IFundStructureAccessor, FundStructureAccessor>();
-        builder.Services.AddSingleton<IPricedAmountValidator, PricedAmountValidator>();
-        builder.Services.AddSingleton<IPriceCalculator, PriceCalculator>();
-        
         RegisterAll(t => t.ImplementsInterface<IAllocationExtensionRequestBinder>(),
                     t => builder.Services.AddTransient(typeof(IAllocationExtensionRequestBinder), t));
         

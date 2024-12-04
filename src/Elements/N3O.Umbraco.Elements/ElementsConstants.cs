@@ -18,6 +18,10 @@ public static class ElementsConstants {
         }
     }
     
+    public static class GeneralDonationCategory {
+        public static readonly string Alias = "generalDonationCategory";
+    }
+    
     public static class DonationOption {
         public static readonly string Alias = "donationOption";
     }

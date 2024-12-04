@@ -9,17 +9,17 @@ namespace N3O.Umbraco.Elements.Content;
 
 public class GivingContent : UmbracoContent<GivingContent> {
     private IReadOnlyList<DonationOptionContent> _options;
-    private IReadOnlyList<DonationCategoryBaseContent> _categories;
+    private IReadOnlyList<DonationCategoryContent> _categories;
 
     public string Title => GetValue(x => x.Title);
     
-    public IReadOnlyList<DonationCategoryBaseContent> GetDonationCategories() {
-        if (_options == null) {
-            var list = new List<DonationCategoryBaseContent>();
+    public IReadOnlyList<DonationCategoryContent> GetDonationCategories() {
+        if (_categories == null) {
+            var list = new List<DonationCategoryContent>();
         
             foreach (var descendant in Content().Descendants()) {
                 if (descendant.IsDonationCategory()) {
-                    var donationCategory = descendant.As<DonationCategoryBaseContent>();
+                    var donationCategory = descendant.As<DonationCategoryContent>();
                     
                     list.Add(donationCategory);
                 }

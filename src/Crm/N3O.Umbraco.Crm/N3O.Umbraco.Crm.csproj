@@ -40,7 +40,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Accounts\N3O.Umbraco.Accounts\N3O.Umbraco.Accounts.csproj" />
-        <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving\N3O.Umbraco.Giving.csproj" />
+        <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Allocations\N3O.Umbraco.Giving.Allocations.csproj" />
         <ProjectReference Include="..\..\Validation\N3O.Umbraco.Validation\N3O.Umbraco.Validation.csproj" />
     </ItemGroup>
 </Project>

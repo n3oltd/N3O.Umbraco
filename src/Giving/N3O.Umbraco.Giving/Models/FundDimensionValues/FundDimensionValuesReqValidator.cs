@@ -1,6 +1,8 @@
 using FluentValidation;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving.Lookups;
+using N3O.Umbraco.Giving.Allocations;
+using N3O.Umbraco.Giving.Allocations.Lookups;
+using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
 using System;

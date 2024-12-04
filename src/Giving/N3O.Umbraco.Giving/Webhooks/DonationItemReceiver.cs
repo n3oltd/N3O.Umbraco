@@ -1,9 +1,9 @@
 using AsyncKeyedLock;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving.Content;
-using N3O.Umbraco.Giving.Lookups;
-using N3O.Umbraco.Giving.Models;
+using N3O.Umbraco.Giving.Allocations.Content;
+using N3O.Umbraco.Giving.Allocations.Lookups;
+using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Webhooks.Attributes;

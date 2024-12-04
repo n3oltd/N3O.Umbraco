@@ -1,6 +1,7 @@
 using N3O.Umbraco.Attributes;
-using N3O.Umbraco.Giving.Extensions;
-using N3O.Umbraco.Giving.Lookups;
+using N3O.Umbraco.Giving.Allocations.Extensions;
+using N3O.Umbraco.Giving.Allocations.Lookups;
+using N3O.Umbraco.Giving.Allocations.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;

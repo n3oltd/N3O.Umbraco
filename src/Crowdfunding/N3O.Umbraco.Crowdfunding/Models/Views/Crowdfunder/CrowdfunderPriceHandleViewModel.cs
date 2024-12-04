@@ -1,7 +1,7 @@
 ﻿using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex;
-using N3O.Umbraco.Giving.Content;
+using N3O.Umbraco.Giving.Allocations.Content;
 using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
 using System.Threading.Tasks;

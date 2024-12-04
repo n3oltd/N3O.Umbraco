@@ -93,6 +93,6 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.5.2+3431f76")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("type")]
-		public virtual global::N3O.Umbraco.Giving.Lookups.FeedbackCustomFieldType Type => this.Value<global::N3O.Umbraco.Giving.Lookups.FeedbackCustomFieldType>(_publishedValueFallback, "type");
+		public virtual global::N3O.Umbraco.Giving.Allocations.Lookups.FeedbackCustomFieldType Type => this.Value<global::N3O.Umbraco.Giving.Allocations.Lookups.FeedbackCustomFieldType>(_publishedValueFallback, "type");
 	}
 }

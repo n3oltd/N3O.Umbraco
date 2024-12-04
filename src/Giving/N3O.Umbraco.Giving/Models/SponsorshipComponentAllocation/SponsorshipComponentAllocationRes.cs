@@ -1,5 +1,6 @@
 using N3O.Umbraco.Financial;
-using N3O.Umbraco.Giving.Lookups;
+using N3O.Umbraco.Giving.Allocations.Lookups;
+using N3O.Umbraco.Giving.Allocations.Models;
 using Newtonsoft.Json;
 
 namespace N3O.Umbraco.Giving.Models;

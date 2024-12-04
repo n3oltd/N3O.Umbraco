@@ -1,0 +1,12 @@
+﻿<div class="ums-umbraco-forms-record">
+    <div class="ums-umbraco-forms-field" ng-repeat="field in $ctrl.record.fields track by field.alias">
+        <strong ng-title="{{field.alias}}" ng-bind="field.caption"></strong>
+        <br />
+        <span ng-bind="field.value"></span>
+    </div>
+</div>
+<style>
+    .ums-umbraco-forms-field {
+        padding: .5em 0;
+    }
+</style>

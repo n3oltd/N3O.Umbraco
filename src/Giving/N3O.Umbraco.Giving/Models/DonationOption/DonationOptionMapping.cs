@@ -1,8 +1,9 @@
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Allocations.Extensions;
+using N3O.Umbraco.Giving.Allocations.Lookups;
+using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Giving.Content;
-using N3O.Umbraco.Giving.Extensions;
-using N3O.Umbraco.Giving.Lookups;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;

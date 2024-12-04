@@ -1,4 +1,4 @@
-using N3O.Umbraco.Giving.Content;
+using N3O.Umbraco.Giving.Allocations.Content;
 using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Giving.Models;

@@ -1,0 +1,8 @@
+{
+    "javascript": [
+      "~/App_Plugins/Umbraco.Engage/utils/tabFocus/tab-focus.service.js",
+      "~/App_Plugins/Umbraco.Engage/utils/tabFocus/tab-focus.directive.js",
+      "~/App_Plugins/Umbraco.Engage/utils/tabFocus/tab-focus-once.directive.js",
+      "~/App_Plugins/Umbraco.Engage/utils/tabFocus/tab-refocus.directive.js"
+    ]
+}

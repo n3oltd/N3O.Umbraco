@@ -3,5 +3,5 @@
 namespace N3O.Umbraco.Elements;
 
 public interface IElementsManager {
-    Task CreateOrUpdateDonationOptionAsync();
+    Task SaveAndPublishDonationFormAsync();
 }

@@ -1,4 +1,5 @@
-using N3O.Umbraco.Giving.Lookups;
+using N3O.Umbraco.Giving.Allocations.Lookups;
+using N3O.Umbraco.Giving.Allocations.Models;
 using NodaTime;
 
 namespace N3O.Umbraco.Giving.Models;

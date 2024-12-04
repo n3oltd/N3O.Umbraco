@@ -41,6 +41,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="uMarketingSuite.Core" Version="2.6.2" />
+      <PackageReference Include="Umbraco.Engage" Version="13.0.0" />
+      <PackageReference Include="Umbraco.Engage.Forms" Version="13.0.0" />
     </ItemGroup>
 </Project>

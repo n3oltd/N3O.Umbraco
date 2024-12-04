@@ -1,0 +1,36 @@
+﻿<div ng-controller="uMarketingSuiteDashboardController as $ctrl"
+     class="u-marketing-suite-dashboard">
+
+    <div class="ums-nav__main">
+        <ums-screens>
+
+            <ums-screen name="Start">
+                <ums-startpage></ums-startpage>
+            </ums-screen>
+
+            <ums-screen name="Analytics" data-disabled="$ctrl.disableAnalytics" ng-if="$ctrl.showAnalytics">
+                <ums-analytics></ums-analytics>
+            </ums-screen>
+
+            <ums-screen name="A/B Testing" alias="ab-testing" data-disabled="$ctrl.disableAbTesting" ng-if="$ctrl.showAbTesting">
+                <ums-ab-testing></ums-ab-testing>
+            </ums-screen>
+
+            <ums-screen name="Personalization" data-disabled="$ctrl.disablePersonalization" ng-if="$ctrl.showPersonalization">
+                <ums-personalization></ums-personalization>
+            </ums-screen>
+
+            <ums-screen name="Profiles" data-disabled="$ctrl.disableProfiles" ng-if="$ctrl.showProfiles">
+                <ums-profiles></ums-profiles>
+            </ums-screen>
+
+            <ums-screen name="Reporting" data-disabled="$ctrl.disableReporting" ng-if="$ctrl.showReporting"> 
+                <ums-reporting></ums-reporting>
+            </ums-screen>
+
+            <ums-screen name="Settings" ng-if="$ctrl.showSettings">
+                <ums-settings></ums-settings>
+            </ums-screen>
+        </ums-screens>
+    </div>
+</div>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="1" height="1">
+  <defs/>
+  <g data-name="Group 4281" style="transform:rotate(45deg);transform-origin:center;">
+    <path fill="#2AC37C" d="M6 0v12A6 6 0 016 0z" data-name="Path 5364"/>
+    <path fill="#FC391C" d="M6 0v12a6 6 0 006-6 6 6 0 00-6-6z" data-name="Path 5365"/>
+	<g fill="none" stroke="#fff" stroke-width="1.6" data-name="Group 4254" transform="translate(2.35 2.35)">
+		<path d="M.79961057 3.62806564h5.65685425" data-name="Line 164"/>
+		<path d="M3.6280377 6.45649276V.79963851" data-name="Line 165"/>
+	</g>
+  </g>
+</svg>

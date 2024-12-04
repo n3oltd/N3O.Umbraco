@@ -1,5 +1,6 @@
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving.Lookups;
+using N3O.Umbraco.Giving.Allocations.Lookups;
+using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Lookups;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;

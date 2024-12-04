@@ -55,7 +55,7 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.5.2+3431f76")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("allowedGivingTypes")]
-		public virtual global::System.Collections.Generic.List<global::N3O.Umbraco.Giving.Lookups.GivingType> AllowedGivingTypes => this.Value<global::System.Collections.Generic.List<global::N3O.Umbraco.Giving.Lookups.GivingType>>(_publishedValueFallback, "allowedGivingTypes");
+		public virtual global::System.Collections.Generic.List<global::N3O.Umbraco.Giving.Allocations.Lookups.GivingType> AllowedGivingTypes => this.Value<global::System.Collections.Generic.List<global::N3O.Umbraco.Giving.Allocations.Lookups.GivingType>>(_publishedValueFallback, "allowedGivingTypes");
 
 		///<summary>
 		/// Custom Fields
