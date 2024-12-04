@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Crm;
+namespace N3O.Umbraco.Elements;
 
 public interface IElementsManager {
     Task CreateOrUpdateDonationOptionAsync();

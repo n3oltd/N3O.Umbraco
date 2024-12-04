@@ -1,5 +1,6 @@
 using N3O.Umbraco.Authentication.Auth0.Lookups;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Crm.Engage;
 using N3O.Umbraco.Elements.Clients;
 using N3O.Umbraco.Elements.Content;
 using N3O.Umbraco.Json;
@@ -7,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Crm.Engage;
+namespace N3O.Umbraco.Elements;
 
 public class ElementsManager : IElementsManager {
     private readonly ClientFactory<ElementsClient> _clientFactory;
@@ -31,49 +32,50 @@ public class ElementsManager : IElementsManager {
 
         var req = GetCreateElementReq();
         
-        //await client.InvokeAsync(x => x.CreateElementAsync, req);
+        await client.InvokeAsync(x => x.SaveAndPublishElementAsync, req);
     }
 
-    private CreateElementReq GetCreateElementReq() {
+    private SaveAndPublishReq GetCreateElementReq() {
         var giving = _contentLocator.Single<GivingContent>();
 
-        var partials = new List<PartialReq>();
+        var partials = new List<SaveAndPublishPartialReq>();
 
         //PopulateTopLevelCategories(partials);
         PopulateDonationCategories(partials, giving);
         PopulateDonationOptions(partials, giving);
 
-        var req = new CreateElementReq();
-        req.Id = giving.Content().Key.ToString();
-        req.Type = ElementType.DonationForm;
-        req.Content = (DynamicDataReq) giving.GetFormJson(_jsonProvider);
+        var req = new SaveAndPublishReq();
+        req.Element = new SaveAndPublishElementReq();
+        req.Element.Id = giving.Content().Key.ToString();
+        req.Element.Type = ElementType.DonationForm;
+        req.Element.Content = giving.GetFormJson(_jsonProvider);
         req.Partials = partials;
 
         return req;
     }
     
-    private void PopulateDonationCategories(List<PartialReq> partials, GivingContent giving) {
+    private void PopulateDonationCategories(List<SaveAndPublishPartialReq> partials, GivingContent giving) {
         var categories = giving.GetDonationCategories();
         var options = giving.GetDonationOptions();
 
         foreach (var category in categories) {
             var linkedOptions = options.Where(x => x.Categories.Contains(category)).ToList();
 
-            var req = new PartialReq();
+            var req = new SaveAndPublishPartialReq();
             req.Id = category.Content().Key.ToString();
-            req.Content = (DynamicDataReq) category.ToFormJson(_jsonProvider, linkedOptions);
+            req.Content = category.ToFormJson(_jsonProvider, linkedOptions);
 
             partials.Add(req);
         }
     }
     
-    private void PopulateDonationOptions(List<PartialReq> partials, GivingContent giving) {
+    private void PopulateDonationOptions(List<SaveAndPublishPartialReq> partials, GivingContent giving) {
         var options = giving.GetDonationOptions();
 
         foreach (var option in options) {
-            var req = new PartialReq();
+            var req = new SaveAndPublishPartialReq();
             req.Id = option.Content().Key.ToString();
-            req.Content = (DynamicDataReq) option.ToFormJson(_jsonProvider);
+            req.Content = option.ToFormJson(_jsonProvider);
 
             partials.Add(req);
         }
