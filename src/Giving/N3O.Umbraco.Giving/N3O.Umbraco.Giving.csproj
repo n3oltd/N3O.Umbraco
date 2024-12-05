@@ -41,8 +41,4 @@
             <Pack>True</Pack>
         </None>
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Models\Allocation\" />
-    </ItemGroup>
 </Project>
