@@ -1,3 +1,4 @@
+using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Content;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Elements.Content;
 
+[UmbracoContent(ElementsConstants.DonationOption.Fund.Alias)]
 public class FundDonationOptionContent : UmbracoContent<FundDonationOptionContent> {
     public DonationItem DonationItem => GetAs(x => x.DonationItem);
     public IEnumerable<PriceHandleElement> DonationPriceHandles => GetNestedAs(x => x.DonationPriceHandles);

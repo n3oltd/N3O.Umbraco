@@ -5,8 +5,7 @@ namespace N3O.Umbraco.Elements.Extensions;
 
 public static class PublishedContentExtensions {
     public static bool IsDonationCategory(this IPublishedContent content) {
-        if (content.ContentType.CompositionAliases.Contains(ElementsConstants.DonationCategory.Alias) ||
-            content.ContentType.Alias.EqualsInvariant(ElementsConstants.DonationCategory.Alias)) {
+        if (content.ContentType.CompositionAliases.Contains(ElementsConstants.DonationCategory.CompositionAlias)) {
             return true;
         }
         
@@ -14,6 +13,6 @@ public static class PublishedContentExtensions {
     }
     
     public static bool IsDonationOption(this IPublishedContent content) {
-        return content.ContentType.CompositionAliases.Contains(ElementsConstants.DonationOption.Alias);
+        return content.ContentType.CompositionAliases.Contains(ElementsConstants.DonationOption.CompositionAlias);
     }
 }

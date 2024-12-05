@@ -13,7 +13,7 @@ public class GivingContent : UmbracoContent<GivingContent> {
 
     public string Title => GetValue(x => x.Title);
     
-    public IReadOnlyList<DonationCategoryContent> GetDonationCategories() {
+    public IReadOnlyList<DonationCategoryContent> GetCategories() {
         if (_categories == null) {
             var list = new List<DonationCategoryContent>();
         
@@ -31,12 +31,12 @@ public class GivingContent : UmbracoContent<GivingContent> {
         return _categories;
     }
 
-    public IReadOnlyList<DonationOptionContent> GetDonationOptions() {
+    public IReadOnlyList<DonationOptionContent> GetOptions() {
         if (_options == null) {
             var list = new List<DonationOptionContent>();
         
             foreach (var descendant in Content().Descendants()) {
-                if (descendant.ContentType.CompositionAliases.Contains(ElementsConstants.DonationOption.Alias)) {
+                if (descendant.IsDonationOption()) {
                     var donationOption = descendant.As<DonationOptionContent>();
 
                     if (donationOption.IsValid()) {

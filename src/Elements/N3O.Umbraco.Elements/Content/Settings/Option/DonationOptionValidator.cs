@@ -8,21 +8,23 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Elements.Content;
 
 public abstract class DonationOptionValidator<TDonationOptionContent> : ContentValidator {
+    private static readonly string Alias = AliasHelper<TDonationOptionContent>.ContentTypeAlias();
     private static readonly string Dimension1Alias = AliasHelper<DonationOptionContent>.PropertyAlias(x => x.Dimension1);
     private static readonly string Dimension2Alias = AliasHelper<DonationOptionContent>.PropertyAlias(x => x.Dimension2);
     private static readonly string Dimension3Alias = AliasHelper<DonationOptionContent>.PropertyAlias(x => x.Dimension3);
     private static readonly string Dimension4Alias = AliasHelper<DonationOptionContent>.PropertyAlias(x => x.Dimension4);
     private static readonly string HideDonationAlias = AliasHelper<DonationOptionContent>.PropertyAlias(x => x.HideDonation);
     private static readonly string HideRegularGivingAlias = AliasHelper<DonationOptionContent>.PropertyAlias(x => x.HideRegularGiving);
+    
+    private readonly IContentLocator _contentLocator;
 
-    private static readonly IEnumerable<string> Aliases = new[] {
-        AliasHelper<TDonationOptionContent>.ContentTypeAlias(),
-    };
-
-    protected DonationOptionValidator(IContentHelper contentHelper) : base(contentHelper) { }
+    protected DonationOptionValidator(IContentHelper contentHelper, IContentLocator contentLocator)
+        : base(contentHelper) {
+        _contentLocator = contentLocator;
+    }
 
     public override bool IsValidator(ContentProperties content) {
-        return Aliases.Contains(content.ContentTypeAlias, true);
+        return Alias.EqualsInvariant(content.ContentTypeAlias);
     }
 
     public override void Validate(ContentProperties content) {
@@ -37,14 +39,15 @@ public abstract class DonationOptionValidator<TDonationOptionContent> : ContentV
 
         EnsureNotAllHidden(content);
         EnsureNotDuplicate(content);
+
+        ValidateOption(content);
     }
-
+    
     protected abstract IFundDimensionsOptions GetFundDimensionOptions(ContentProperties content);
-    protected abstract void EnsureNotDuplicate(ContentProperties content);
+    protected abstract bool IsDuplicate(ContentProperties content, TDonationOptionContent other);
+    protected abstract void ValidateOption(ContentProperties content);
 
-    private void DimensionAllowed<T>(ContentProperties content,
-                                     IEnumerable<T> allowedValues,
-                                     string propertyAlias)
+    private void DimensionAllowed<T>(ContentProperties content, IEnumerable<T> allowedValues, string propertyAlias)
         where T : FundDimensionValue<T> {
         var property = content.GetPropertyByAlias(propertyAlias);
         var value = property.IfNotNull(x => ContentHelper.GetPickerValue<IPublishedContent>(x).As<T>());
@@ -60,6 +63,16 @@ public abstract class DonationOptionValidator<TDonationOptionContent> : ContentV
         
         if (hideDonation && hideRegularGiving) {
             ErrorResult("Cannot hide both donation and regular giving options");
+        }
+    }
+    
+    private void EnsureNotDuplicate(ContentProperties content) {
+        var existingOption = _contentLocator.All(Alias)
+                                            .FirstOrDefault(x => x.Key != content.Id &&
+                                                                 IsDuplicate(content, x.As<TDonationOptionContent>()));
+        
+        if (existingOption.HasValue()) {
+            ErrorResult($"Cannot add this option as it is a duplicate of {existingOption.Name} ({existingOption.Id})");
         }
     }
 }

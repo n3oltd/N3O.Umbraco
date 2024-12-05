@@ -5,21 +5,14 @@ using System;
 namespace N3O.Umbraco.Elements.Content;
 
 public class EphemeralDonationCategoryValidator : DonationCategoryValidator<EphemeralDonationCategoryContent> {
-    public EphemeralDonationCategoryValidator(IContentHelper contentHelper, IContentLocator contentLocator) 
-        : base(contentHelper, contentLocator) { }
-    
-    public override void Validate(ContentProperties content) {
-        base.Validate(content);
+    public EphemeralDonationCategoryValidator(IContentHelper contentHelper) : base(contentHelper) { }
 
-        ValidateEndTime(content);
-    }
+    protected override void ValidateCategory(ContentProperties content) {
+        var startOn = content.GetPropertyValueByAlias<DateTime>(ElementsConstants.DonationCategory.Ephemeral.Properties.StartOn);
+        var endOn = content.GetPropertyValueByAlias<DateTime>(ElementsConstants.DonationCategory.Ephemeral.Properties.EndOn);
 
-    private void ValidateEndTime(ContentProperties content) {
-        var startOn = content.GetPropertyValueByAlias<DateTime>(ElementsConstants.EphemeralDonationCategory.Properties.StartOn);
-        var endOn = content.GetPropertyValueByAlias<DateTime>(ElementsConstants.EphemeralDonationCategory.Properties.EndOn);
-
-        if (endOn < startOn) {
-            ErrorResult("End date cannot be before start date");
+        if (startOn > endOn) {
+            ErrorResult("End date must be after start date");
         }
     }
 }

@@ -2,34 +2,32 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
-using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Elements.Content;
 
 public class FeedbackDonationOptionValidator : DonationOptionValidator<FeedbackDonationOptionContent> {
-    private readonly IContentLocator _contentLocator;
-    
     private static readonly string FeedbackSchemeAlias = AliasHelper<FeedbackDonationOptionContent>.PropertyAlias(x => x.Scheme);
 
-    public FeedbackDonationOptionValidator(IContentHelper contentHelper, IContentLocator contentLocator) : base(contentHelper) {
-        _contentLocator = contentLocator;
-    }
+    public FeedbackDonationOptionValidator(IContentHelper contentHelper, IContentLocator contentLocator)
+        : base(contentHelper, contentLocator) { }
 
+    protected override void ValidateOption(ContentProperties content) {
+        var feedbackScheme = GetFeedbackScheme(content);
+
+        if (!feedbackScheme.HasValue()) {
+            ErrorResult("Feedback scheme is required");
+        }
+    }
+    
     protected override IFundDimensionsOptions GetFundDimensionOptions(ContentProperties content) {
         return GetFeedbackScheme(content);
     }
 
-    protected override void EnsureNotDuplicate(ContentProperties content) {
-        var feedbackScheme = GetFeedbackScheme(content);
-
-        var allOptions = _contentLocator.All<FeedbackDonationOptionContent>().Where(x => x.Content().Key != content.Id);
-        
-        if (allOptions.Any(x => x.Scheme == feedbackScheme)) {
-            ErrorResult("Cannot add duplicate feedback donation option");
-        }
+    protected override bool IsDuplicate(ContentProperties content, FeedbackDonationOptionContent other) {
+        return GetFeedbackScheme(content) == other.Scheme;
     }
-
+    
     private FeedbackScheme GetFeedbackScheme(ContentProperties content) {
         var feedbackScheme = content.GetPropertyByAlias(FeedbackSchemeAlias)
                                        .IfNotNull(x => ContentHelper.GetPickerValue<IPublishedContent>(x)

@@ -1,28 +1,44 @@
 ﻿namespace N3O.Umbraco.Elements;
 
 public static class ElementsConstants {
-    public static class DonationCategories {
-        public static readonly string Alias = "donationCategories";
-    }
-    
     public static class DonationCategory {
-        public static readonly string Alias = "donationCategory";
-    }
-    
-    public static class EphemeralDonationCategory {
-        public static readonly string Alias = "ephemeralDonationCategory";
+        public const string CompositionAlias = "donationCategory";
 
-        public static class Properties {
-            public static readonly string EndOn = "endOn";
-            public static readonly string StartOn = "startOn";
+        public static class Dimension {
+            public const string Alias = "dimensionDonationCategory";
+            
+            public static class Properties {
+                public const string FundDimension = "fundDimension";
+            }
+        }
+        
+        public static class Ephemeral {
+            public const string Alias = "ephemeralDonationCategory";
+
+            public static class Properties {
+                public const string EndOn = "endOn";
+                public const string StartOn = "startOn";
+            }
+        }
+        
+        public static class General {
+            public const string Alias = "generalDonationCategory";
         }
     }
     
-    public static class GeneralDonationCategory {
-        public static readonly string Alias = "generalDonationCategory";
-    }
-    
     public static class DonationOption {
-        public static readonly string Alias = "donationOption";
+        public const string CompositionAlias = "donationOption";
+
+        public static class Feedback {
+            public const string Alias = "feedbackDonationOption";
+        }
+        
+        public static class Fund {
+            public const string Alias = "fundDonationOption";
+        }
+        
+        public static class Sponsorship {
+            public const string Alias = "sponsorshipDonationOption";
+        }
     }
 }

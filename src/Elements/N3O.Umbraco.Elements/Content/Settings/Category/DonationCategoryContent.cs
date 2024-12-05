@@ -14,9 +14,9 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Elements.Content;
 
 public class DonationCategoryContent : UmbracoContent<DonationCategoryContent> {
-    private static readonly string DimensionDonationCategoryAlias = AliasHelper<DimensionDonationCategoryContent>.ContentTypeAlias();
-    private static readonly string EphemeralDonationCategoryAlias = AliasHelper<EphemeralDonationCategoryContent>.ContentTypeAlias();
-    private static readonly string GeneralDonationCategoryAlias = AliasHelper<GeneralDonationCategoryContent>.ContentTypeAlias();
+    private static readonly string DimensionAlias = AliasHelper<DimensionDonationCategoryContent>.ContentTypeAlias();
+    private static readonly string EphemeralAlias = AliasHelper<EphemeralDonationCategoryContent>.ContentTypeAlias();
+    private static readonly string GeneralAlias = AliasHelper<GeneralDonationCategoryContent>.ContentTypeAlias();
     
     public string Name => Content().Name;
     public MediaWithCrops Image => GetValue(x => x.Image);
@@ -39,17 +39,17 @@ public class DonationCategoryContent : UmbracoContent<DonationCategoryContent> {
     }
     
     public DimensionDonationCategoryContent Dimension { get; private set; }
-    public GeneralDonationCategoryContent General { get; private set; }
     public EphemeralDonationCategoryContent Ephemeral { get; private set; }
+    public GeneralDonationCategoryContent General { get; private set; }
     
     public DonationCategoryType Type {
         get {
-            if (Content().ContentType.Alias.EqualsInvariant(GeneralDonationCategoryAlias)) {
-                return DonationCategoryTypes.General;
-            } else if (Content().ContentType.Alias.EqualsInvariant(DimensionDonationCategoryAlias)) {
+            if (Content().ContentType.Alias.EqualsInvariant(DimensionAlias)) {
                 return DonationCategoryTypes.Dimension;
-            } else if (Content().ContentType.Alias.EqualsInvariant(EphemeralDonationCategoryAlias)) {
+            } else if (Content().ContentType.Alias.EqualsInvariant(EphemeralAlias)) {
                 return DonationCategoryTypes.Ephemeral;
+            } else if (Content().ContentType.Alias.EqualsInvariant(GeneralAlias)) {
+                return DonationCategoryTypes.General;
             } else {
                 throw UnrecognisedValueException.For(Content().ContentType.Alias);
             }
@@ -62,7 +62,7 @@ public class DonationCategoryContent : UmbracoContent<DonationCategoryContent> {
         foreach (var option in options) {
             var entry = new {
                 option.Name,
-                option.DefaultOption,
+                option.DefaultOptionInCategory,
                 Type = PartialType.DonationFormOption,
                 Image = option.Image.Url(),
                 OptionId = option.Content().Key

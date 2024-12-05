@@ -10,20 +10,19 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Elements.Content;
 
 public class FundDonationOptionValidator : DonationOptionValidator<FundDonationOptionContent> {
-    private readonly IContentLocator _contentLocator;
-    
     private static readonly string DonationItemAlias = AliasHelper<FundDonationOptionContent>.PropertyAlias(x => x.DonationItem);
     private static readonly string DonationPriceHandlesAlias = AliasHelper<FundDonationOptionContent>.PropertyAlias(x => x.DonationPriceHandles);
     private static readonly string RegularGivingPriceHandlesAlias = AliasHelper<FundDonationOptionContent>.PropertyAlias(x => x.RegularGivingPriceHandles);
+    
+    public FundDonationOptionValidator(IContentHelper contentHelper, IContentLocator contentLocator)
+        : base(contentHelper, contentLocator) { }
 
-    public FundDonationOptionValidator(IContentHelper contentHelper, IContentLocator contentLocator) : base(contentHelper) {
-        _contentLocator = contentLocator;
-    }
-
-    public override void Validate(ContentProperties content) {
-        base.Validate(content);
-
+    protected override void ValidateOption(ContentProperties content) {
         var donationItem = GetDonationItem(content);
+
+        if (!donationItem.HasValue()) {
+            ErrorResult("Donation item is required");
+        }
         
         if (donationItem != null) {
             ValidatePriceHandles(content, donationItem, GivingTypes.Donation, DonationPriceHandlesAlias);
@@ -35,14 +34,8 @@ public class FundDonationOptionValidator : DonationOptionValidator<FundDonationO
         return GetDonationItem(content);
     }
 
-    protected override void EnsureNotDuplicate(ContentProperties content) {
-        var donationItem = GetDonationItem(content);
-
-        var allOptions = _contentLocator.All<FundDonationOptionContent>().Where(x => x.Content().Key != content.Id);
-        
-        if (allOptions.Any(x => x.DonationItem == donationItem)) {
-            ErrorResult("Cannot add duplicate fund items");
-        }
+    protected override bool IsDuplicate(ContentProperties content, FundDonationOptionContent other) {
+        return GetDonationItem(content) == other.DonationItem;
     }
 
     private DonationItem GetDonationItem(ContentProperties content) {
@@ -65,7 +58,7 @@ public class FundDonationOptionValidator : DonationOptionValidator<FundDonationO
 
         if (priceHandles.HasAny()) {
             if (donationItem.HasPricing()) {
-                ErrorResult(property, $"{donationItem.Name} has a pricing so does not allow price handles");
+                ErrorResult(property, $"{donationItem.Name} has pricing so does not allow price handles");
             }
 
             if (!donationItem.AllowedGivingTypes.OrEmpty().Contains(givingType)) {

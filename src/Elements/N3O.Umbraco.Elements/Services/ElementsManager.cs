@@ -55,11 +55,11 @@ public class ElementsManager : IElementsManager {
     }
     
     private void PopulateDonationCategories(List<SaveAndPublishPartialReq> partials, GivingContent giving) {
-        var categories = giving.GetDonationCategories();
-        var options = giving.GetDonationOptions();
+        var categories = giving.GetCategories();
+        var options = giving.GetOptions();
 
         foreach (var category in categories) {
-            var categoryOptions = options.Where(x => x.Categories.Contains(category)).ToList();
+            var categoryOptions = options.Where(x => x.AllCategories.Contains(category)).ToList();
 
             var req = new SaveAndPublishPartialReq();
             req.Id = category.Content().Key.ToString();
@@ -71,7 +71,7 @@ public class ElementsManager : IElementsManager {
     }
     
     private void PopulateDonationOptions(List<SaveAndPublishPartialReq> partials, GivingContent giving) {
-        var options = giving.GetDonationOptions();
+        var options = giving.GetOptions();
 
         foreach (var option in options) {
             var req = new SaveAndPublishPartialReq();
