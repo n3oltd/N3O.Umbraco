@@ -51,7 +51,7 @@ public class FundDonationOptionValidator : DonationOptionValidator<FundDonationO
 
         if (priceHandles.HasAny()) {
             if (donationItem.HasPricing()) {
-                ErrorResult(property, $"{donationItem.Name} has a pricing so does not allow price handles");
+                ErrorResult(property, $"{donationItem.Name} has pricing so does not allow price handles");
             }
 
             if (!donationItem.AllowedGivingTypes.OrEmpty().Contains(givingType)) {
