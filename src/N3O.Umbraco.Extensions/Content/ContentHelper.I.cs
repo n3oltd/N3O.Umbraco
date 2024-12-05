@@ -16,6 +16,7 @@ public interface IContentHelper {
 
     ContentProperties GetContentProperties(Guid contentId,
                                            int? parentId,
+                                           int level,
                                            string contentTypeAlias,
                                            IEnumerable<(IPropertyType Type, object Value)> properties);
 

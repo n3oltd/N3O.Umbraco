@@ -54,12 +54,14 @@ public class ContentHelper : IContentHelper {
         
         return GetContentProperties(content.Key,
                                     content.ParentId,
+                                    content.Level,
                                     content.ContentType.Alias,
                                     properties);
     }
     
     public ContentProperties GetContentProperties(Guid contentId,
                                                   int? parentId,
+                                                  int level,
                                                   string contentTypeAlias,
                                                   IEnumerable<(IPropertyType Type, object Value)> properties) {
         var contentProperties = new List<ContentProperty>();
@@ -84,6 +86,7 @@ public class ContentHelper : IContentHelper {
 
         return new ContentProperties(contentId,
                                      parentId,
+                                     level,
                                      contentTypeAlias,
                                      contentProperties,
                                      nestedContentProperties);
@@ -212,7 +215,7 @@ public class ContentHelper : IContentHelper {
             }
         }
             
-        return GetContentProperties(id, null, contentTypeAlias, properties);
+        return GetContentProperties(id, null, -1, contentTypeAlias, properties);
     }
     
     private (JToken, string) GetJsonPropertyValue(object propertyValue) {
