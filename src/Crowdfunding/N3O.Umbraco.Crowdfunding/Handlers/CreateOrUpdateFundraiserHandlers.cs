@@ -6,11 +6,11 @@ using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving;
+using N3O.Umbraco.Giving.Allocations;
 using N3O.Umbraco.Giving.Allocations.Content;
 using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
-using N3O.Umbraco.Giving.Models;
+using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Validation;
 using System;
 using System.Collections.Generic;
@@ -162,19 +162,19 @@ public partial class CreateOrUpdateFundraiserHandlers {
         var nestedContent = contentBuilder.Nested(CrowdfundingConstants.Goal.Feedback.Properties.CustomFields);
 
         foreach (var newCustomField in newCustomFields) {
-            var customFieldBuilder = nestedContent.Add(GivingConstants.Aliases.FeedbackCustomField.ContentType);
+            var customFieldBuilder = nestedContent.Add(AllocationsConstants.Aliases.FeedbackCustomField.ContentType);
             var feedbackCustomField = newCustomField.ToFeedbackCustomField(feedbackScheme);
             
-            customFieldBuilder.TextBox(GivingConstants.Aliases.FeedbackCustomField.Properties.Alias).Set(newCustomField.Alias);
-            customFieldBuilder.DataList(GivingConstants.Aliases.FeedbackCustomField.Properties.Type).SetLookups(feedbackCustomField.Type);
-            customFieldBuilder.TextBox(GivingConstants.Aliases.FeedbackCustomField.Properties.Name).Set(feedbackCustomField.Name);
+            customFieldBuilder.TextBox(AllocationsConstants.Aliases.FeedbackCustomField.Properties.Alias).Set(newCustomField.Alias);
+            customFieldBuilder.DataList(AllocationsConstants.Aliases.FeedbackCustomField.Properties.Type).SetLookups(feedbackCustomField.Type);
+            customFieldBuilder.TextBox(AllocationsConstants.Aliases.FeedbackCustomField.Properties.Name).Set(feedbackCustomField.Name);
 
             if (feedbackCustomField.Type == FeedbackCustomFieldTypes.Bool) {
-                customFieldBuilder.Boolean(GivingConstants.Aliases.FeedbackCustomField.Properties.Bool).Set(feedbackCustomField.Bool);
+                customFieldBuilder.Boolean(AllocationsConstants.Aliases.FeedbackCustomField.Properties.Bool).Set(feedbackCustomField.Bool);
             } else if (feedbackCustomField.Type == FeedbackCustomFieldTypes.Date) {
-                customFieldBuilder.DateTime(GivingConstants.Aliases.FeedbackCustomField.Properties.Date).SetDate(feedbackCustomField.Date);
+                customFieldBuilder.DateTime(AllocationsConstants.Aliases.FeedbackCustomField.Properties.Date).SetDate(feedbackCustomField.Date);
             } else if (feedbackCustomField.Type == FeedbackCustomFieldTypes.Text) {
-                customFieldBuilder.TextBox(GivingConstants.Aliases.FeedbackCustomField.Properties.Text).Set(feedbackCustomField.Text);
+                customFieldBuilder.TextBox(AllocationsConstants.Aliases.FeedbackCustomField.Properties.Text).Set(feedbackCustomField.Text);
             } else {
                 throw UnrecognisedValueException.For(feedbackCustomField.Type);
             }
@@ -182,12 +182,12 @@ public partial class CreateOrUpdateFundraiserHandlers {
     }
     
     private void AddPriceHandle(NestedPropertyBuilder propertyBuilder, PriceHandleElement priceHandleElement) {
-        var contentBuilder = propertyBuilder.Add(GivingConstants.Aliases.PriceHandle.ContentType);
+        var contentBuilder = propertyBuilder.Add(AllocationsConstants.Aliases.PriceHandle.ContentType);
         
-        contentBuilder.Numeric(GivingConstants.Aliases.PriceHandle.Properties.Amount)
+        contentBuilder.Numeric(AllocationsConstants.Aliases.PriceHandle.Properties.Amount)
                       .SetDecimal(priceHandleElement.Amount);
         
-        contentBuilder.TextBox(GivingConstants.Aliases.PriceHandle.Properties.Description)
+        contentBuilder.TextBox(AllocationsConstants.Aliases.PriceHandle.Properties.Description)
                       .Set(priceHandleElement.Description);
     }
 

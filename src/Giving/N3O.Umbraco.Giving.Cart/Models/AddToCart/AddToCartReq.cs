@@ -1,6 +1,6 @@
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Giving.Allocations.Lookups;
-using N3O.Umbraco.Giving.Models;
+using N3O.Umbraco.Giving.Allocations.Models;
 
 namespace N3O.Umbraco.Giving.Cart.Models;
 

@@ -5,7 +5,6 @@ using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Giving.Cart.Models;
-using N3O.Umbraco.Giving.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 

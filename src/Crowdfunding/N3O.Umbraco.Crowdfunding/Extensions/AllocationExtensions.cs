@@ -1,6 +1,6 @@
 ﻿using N3O.Umbraco.Crowdfunding.Models;
+using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Models;
-using N3O.Umbraco.Giving.Extensions;
 using N3O.Umbraco.Json;
 using static N3O.Umbraco.Crowdfunding.CrowdfundingConstants;
 

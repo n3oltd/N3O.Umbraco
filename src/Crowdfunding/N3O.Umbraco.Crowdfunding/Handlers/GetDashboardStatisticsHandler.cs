@@ -3,7 +3,6 @@ using N3O.Umbraco.Crowdfunding.Criteria;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Crowdfunding.Queries;
 using N3O.Umbraco.Financial;
-using N3O.Umbraco.Localization;
 using N3O.Umbraco.Mediator;
 using System.Collections.Generic;
 using System.Threading;
@@ -19,15 +18,12 @@ public partial class GetDashboardStatisticsHandler :
     
     private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
     private readonly IUmbracoMapper _umbracoMapper;
-    private readonly IFormatter _formatter;
     
     public GetDashboardStatisticsHandler(IUmbracoDatabaseFactory umbracoDatabaseFactory,
                                          IBaseCurrencyAccessor baseCurrencyAccessor,
-                                         IFormatter formatter,
-                                         IUmbracoMapper umbracoMapper) {
+                                         IUmbracoMapper mapper) {
         _umbracoDatabaseFactory = umbracoDatabaseFactory;
-        _formatter = formatter;
-        _umbracoMapper = umbracoMapper;
+        _umbracoMapper = mapper;
         _baseCurrency = baseCurrencyAccessor.GetBaseCurrency();
     }
     

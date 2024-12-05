@@ -1,3 +1,10 @@
-﻿namespace N3O.Umbraco.Elements.Models;
+﻿using System;
+using System.Collections.Generic;
 
-public class DonationFormElement { }
+namespace N3O.Umbraco.Elements.Models;
+
+public class DonationFormElement {
+    public Guid Id { get; set; }
+    public Guid CheckoutProfileId { get; set; }
+    public IEnumerable<DonationCategoryPartial> RootCategories { get; set; }
+}

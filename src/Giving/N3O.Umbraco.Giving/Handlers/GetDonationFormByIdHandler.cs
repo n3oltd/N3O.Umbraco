@@ -1,6 +1,6 @@
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Giving.Content;
-using N3O.Umbraco.Giving.Models;
+using N3O.Umbraco.Giving.Allocations.Content;
+using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Giving.Queries;
 using N3O.Umbraco.Mediator;
 using System.Threading;

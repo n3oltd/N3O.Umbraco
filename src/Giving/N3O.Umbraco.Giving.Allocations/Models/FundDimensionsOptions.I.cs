@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace N3O.Umbraco.Giving.Allocations.Models;
 
 public interface IFundDimensionsOptions {

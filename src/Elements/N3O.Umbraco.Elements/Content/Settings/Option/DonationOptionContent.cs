@@ -3,7 +3,6 @@ using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
-using N3O.Umbraco.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,8 +34,9 @@ public class DonationOptionContent : UmbracoContent<DonationOptionContent>, IFun
         }
     }
 
-    public Guid Key => Content().Key;
+    public Guid Id => Content().Key;
     public string Name => Content()?.Name;
+    public MediaWithCrops Image => GetValue(x => x.Image);
     public DonationCategoryContent PrimaryCategory => GetAs(x => x.PrimaryCategory);
     public IEnumerable<DonationCategoryContent> AdditionalCategories => GetPickedAs(x => x.AdditionalCategories);
     public GivingType DefaultGivingType => GetValue(x => x.DefaultGivingType);
@@ -48,10 +48,10 @@ public class DonationOptionContent : UmbracoContent<DonationOptionContent>, IFun
     public bool HideQuantity => GetValue(x => x.HideQuantity);
     public bool HideDonation => GetValue(x => x.HideDonation);
     public bool HideRegularGiving => GetValue(x => x.HideRegularGiving);
-    public MediaWithCrops Image => GetValue(x => x.Image);
-    public string Title => GetValue(x => x.Title);
     public string Synopsis => GetValue(x => x.Synopsis);
     public string Description => GetValue(x => x.Description);
+    
+    public string ImageUrl => Image.GetCropUrl(ElementsConstants.DonationOption.CropAlias);
     
     public IEnumerable<DonationCategoryContent> AllCategories => PrimaryCategory.Yield().Concat(AdditionalCategories.OrEmpty());
 
@@ -89,31 +89,5 @@ public class DonationOptionContent : UmbracoContent<DonationOptionContent>, IFun
                 throw UnrecognisedValueException.For(Content().ContentType.Alias);
             }
         }
-    }
-    
-    public object ToFormJson(IJsonProvider jsonProvider) {
-        var option = new {
-            Id = Content().Key,
-            Name,
-            Image = Image.Url(),
-            Title,
-            Description,
-            PrimaryCategoryId = PrimaryCategory.Content().Key,
-            AdditionalCategoryIds = AdditionalCategories?.Select(x => x.Content().Key),
-            DefaultGivingType,
-            HideQuantity,
-            HideDonation,
-            HideRegularGiving,
-            Dimension1,
-            Dimension2,
-            Dimension3,
-            Dimension4,
-            AllocationType = Type,
-            Fund, // TOFormJson
-            Sponsorship,
-            Feedback
-        };
-        
-        return jsonProvider.SerializeObject(option);
     }
 }

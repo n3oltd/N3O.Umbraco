@@ -32,7 +32,6 @@
     <ItemGroup>
         <ProjectReference Include="..\..\Mediator\N3O.Umbraco.Mediator\N3O.Umbraco.Mediator.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Clients\N3O.Umbraco.Clients.csproj" />
-        <ProjectReference Include="..\..\Validation\N3O.Umbraco.Validation\N3O.Umbraco.Validation.csproj" />
         <ProjectReference Include="..\..\Webhooks\N3O.Umbraco.Webhooks\N3O.Umbraco.Webhooks.csproj" />
         <ProjectReference Include="..\N3O.Umbraco.Giving.Allocations\N3O.Umbraco.Giving.Allocations.csproj" />
     </ItemGroup>
@@ -41,5 +40,9 @@
         <None Update="README.md">
             <Pack>True</Pack>
         </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\Allocation\" />
     </ItemGroup>
 </Project>

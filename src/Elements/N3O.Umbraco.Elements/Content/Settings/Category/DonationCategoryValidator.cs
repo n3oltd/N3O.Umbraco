@@ -13,7 +13,7 @@ public abstract class DonationCategoryValidator<TDonationCategoryContent> : Cont
     }
 
     public override void Validate(ContentProperties content) {
-        if (content.Level > 3) {
+        if (content.Level > 4) {
             ErrorResult("Categories cannot be nested more than two levels deep");
         }
 

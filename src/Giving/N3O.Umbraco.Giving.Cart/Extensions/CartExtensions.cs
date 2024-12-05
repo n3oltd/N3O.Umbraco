@@ -1,17 +1,15 @@
 ﻿using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
+using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
-using N3O.Umbraco.Giving.Extensions;
 using System;
 using System.Linq;
 
 namespace N3O.Umbraco.Giving.Cart.Extensions;
 
 public static class CartExtensions {
-    public static bool ContainsUpsell(this Entities.Cart cart,
-                                      Guid upsellOfferId,
-                                      params GivingType[] givingTypes) {
+    public static bool ContainsUpsell(this Entities.Cart cart, Guid upsellOfferId, params GivingType[] givingTypes) {
         if (givingTypes.Contains(GivingTypes.Donation) &&
             cart.Donation.OrEmpty(x => x.Allocations).Any(x => x.UpsellOfferId == upsellOfferId)) {
             return true;

@@ -3,6 +3,7 @@ using N3O.Umbraco.Giving.Allocations.Content;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Lookups;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace N3O.Umbraco.Giving.Allocations.Lookups;
 

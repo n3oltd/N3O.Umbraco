@@ -1,12 +1,11 @@
 ﻿using N3O.Umbraco.Content;
-using N3O.Umbraco.Elements.Clients;
 using N3O.Umbraco.Elements.Extensions;
 using N3O.Umbraco.Elements.Lookups;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
@@ -18,21 +17,25 @@ public class DonationCategoryContent : UmbracoContent<DonationCategoryContent> {
     private static readonly string EphemeralAlias = AliasHelper<EphemeralDonationCategoryContent>.ContentTypeAlias();
     private static readonly string GeneralAlias = AliasHelper<GeneralDonationCategoryContent>.ContentTypeAlias();
     
+    public Guid Id => Content().Key;
+    public Guid? ParentId => Content().Parent?.Key;
     public string Name => Content().Name;
     public MediaWithCrops Image => GetValue(x => x.Image);
+
+    public string ImageUrl => Image.GetCropUrl(ElementsConstants.DonationCategory.CropAlias);
     
     public override void Content(IPublishedContent content) {
         base.Content(content);
         
-        if (Type == DonationCategoryTypes.General) {
-            General = new GeneralDonationCategoryContent();
-            General.Content(content);
-        } else if (Type == DonationCategoryTypes.Dimension) {
+        if (Type == DonationCategoryTypes.Dimension) {
             Dimension = new DimensionDonationCategoryContent();
             Dimension.Content(content);
         } else if (Type == DonationCategoryTypes.Ephemeral) {
             Ephemeral = new EphemeralDonationCategoryContent();
             Ephemeral.Content(content);
+        } else if (Type == DonationCategoryTypes.General) {
+            General = new GeneralDonationCategoryContent();
+            General.Content(content);
         } else {
             throw UnrecognisedValueException.For(Type);
         }
@@ -55,43 +58,22 @@ public class DonationCategoryContent : UmbracoContent<DonationCategoryContent> {
             }
         }
     }
+
+    public IEnumerable<DonationCategoryContent> Categories {
+        get {
+            return Content().Children(x => x.IsDonationCategory())
+                            .As<DonationCategoryContent>()
+                            .ToList();
+        }
+    }
     
-    public object ToFormJson(IJsonProvider jsonProvider, IReadOnlyList<DonationOptionContent> options) {
-        var entries = new List<object>();
-        
-        foreach (var option in options) {
-            var entry = new {
-                option.Name,
-                option.DefaultOptionInCategory,
-                Type = PartialType.DonationFormOption,
-                Image = option.Image.Url(),
-                OptionId = option.Content().Key
-            };
-            
-            entries.Add(entry);
+    public IEnumerable<DonationOptionContent> Options {
+        get {
+            return Content().Ancestor(ElementsConstants.Giving.Alias)
+                            .As<GivingContent>()
+                            .AllOptions
+                            .Where(x => x.AllCategories.Any(y => y.Id == Id))
+                            .ToList();
         }
-
-        foreach (var childCategory in Content().Children.As<DonationCategoryContent>()) {
-            var entry = new {
-                childCategory.Content().Name,
-                //Type = PartialType.category,
-                Image = childCategory.Image.Url(), 
-                CategoryId = childCategory.Content().Key
-            };
-            
-            entries.Add(entry);
-        }
-        
-        var category = new {
-            ParentId = Content().Parent.IsDonationCategory() ? Content().Parent?.Key : Guid.Empty,
-            Id = Content().Key,
-            Type = Type.Id,
-            Image = Image?.Url(),
-            //EphemeralDonationCategory = Ephemeral.ToFormJson(),
-            //DimensionDonationCategory = Dimension.ToFormJson(),
-            Entries = entries
-        };
-
-        return jsonProvider.SerializeObject(category);
     }
 }

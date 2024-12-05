@@ -3,10 +3,12 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm.Engage;
 using N3O.Umbraco.Elements.Clients;
 using N3O.Umbraco.Elements.Content;
+using N3O.Umbraco.Elements.Models;
 using N3O.Umbraco.Json;
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Elements;
 
@@ -15,15 +17,18 @@ public class ElementsManager : IElementsManager {
     private readonly ISubscriptionAccessor _subscriptionAccessor;
     private readonly IContentLocator _contentLocator;
     private readonly IJsonProvider _jsonProvider;
+    private readonly IUmbracoMapper _mapper;
 
     public ElementsManager(ClientFactory<ElementsClient> clientFactory,
                            ISubscriptionAccessor subscriptionAccessor,
                            IContentLocator contentLocator,
-                           IJsonProvider jsonProvider) {
+                           IJsonProvider jsonProvider,
+                           IUmbracoMapper mapper) {
         _clientFactory = clientFactory;
         _subscriptionAccessor = subscriptionAccessor;
         _contentLocator = contentLocator;
         _jsonProvider = jsonProvider;
+        _mapper = mapper;
     }
 
     public async Task SaveAndPublishDonationFormAsync() {
@@ -38,47 +43,27 @@ public class ElementsManager : IElementsManager {
     private SaveAndPublishReq GetSaveAndPublishReq() {
         var giving = _contentLocator.Single<GivingContent>();
 
-        var partialReqs = new List<SaveAndPublishPartialReq>();
-
-        //PopulateTopLevelCategories(partials);
-        PopulateDonationCategories(partialReqs, giving);
-        PopulateDonationOptions(partialReqs, giving);
+        var categoryPartialReqs = giving.AllCategories.Select(x => GetSaveAndPublishPartialReq<DonationCategoryContent, DonationCategoryPartial>(x, PartialType.DonationFormCategory));
+        var optionPartialReqs = giving.AllOptions.Select(x => GetSaveAndPublishPartialReq<DonationOptionContent, DonationOptionPartial>(x, PartialType.DonationFormOption));
 
         var req = new SaveAndPublishReq();
         req.Element = new SaveAndPublishElementReq();
         req.Element.Id = giving.Content().Key.ToString();
         req.Element.Type = ElementType.DonationForm;
-        req.Element.Content = giving.GetFormJson(_jsonProvider);
-        req.Partials = partialReqs;
+        req.Element.Content = _mapper.Map<GivingContent, DonationFormElement>(giving);
+        req.Partials = categoryPartialReqs.Concat(optionPartialReqs).ToList();
 
         return req;
     }
-    
-    private void PopulateDonationCategories(List<SaveAndPublishPartialReq> partials, GivingContent giving) {
-        var categories = giving.GetCategories();
-        var options = giving.GetOptions();
 
-        foreach (var category in categories) {
-            var categoryOptions = options.Where(x => x.AllCategories.Contains(category)).ToList();
+    private SaveAndPublishPartialReq GetSaveAndPublishPartialReq<TContent, TData>(TContent content, PartialType type)
+        where TContent : UmbracoContent<TContent> {
+        var req = new SaveAndPublishPartialReq();
+        req.Id = content.Content().Key.ToString();
+        req.Type = type;
+        req.Content = JObject.Parse(_jsonProvider.SerializeObject(content.Content()));
+        req.PublishedContent = _mapper.Map<TContent, TData>(content);
 
-            var req = new SaveAndPublishPartialReq();
-            req.Id = category.Content().Key.ToString();
-            req.Content = _jsonProvider.SerializeObject(category.Content());
-            req.PublishedContent = category.ToFormJson(_jsonProvider, categoryOptions);
-
-            partials.Add(req);
-        }
-    }
-    
-    private void PopulateDonationOptions(List<SaveAndPublishPartialReq> partials, GivingContent giving) {
-        var options = giving.GetOptions();
-
-        foreach (var option in options) {
-            var req = new SaveAndPublishPartialReq();
-            req.Id = option.Content().Key.ToString();
-            req.Content = option.ToFormJson(_jsonProvider);
-
-            partials.Add(req);
-        }
+        return req;
     }
 }

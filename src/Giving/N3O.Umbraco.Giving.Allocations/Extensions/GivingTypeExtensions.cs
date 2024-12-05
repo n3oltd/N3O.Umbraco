@@ -1,4 +1,6 @@
 using N3O.Umbraco.Giving.Allocations.Lookups;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace N3O.Umbraco.Giving.Allocations.Extensions;
 
