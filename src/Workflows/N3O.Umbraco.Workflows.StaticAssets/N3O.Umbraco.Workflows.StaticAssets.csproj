@@ -30,7 +30,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
         <ProjectReference Include="..\N3O.Umbraco.Workflows\N3O.Umbraco.Workflows.csproj" />
     </ItemGroup>
 
