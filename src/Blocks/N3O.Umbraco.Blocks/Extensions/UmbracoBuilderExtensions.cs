@@ -1,4 +1,3 @@
-/*
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -105,4 +104,3 @@ public static class UmbracoBuilderExtensions {
         });
     }
 }
-*/
