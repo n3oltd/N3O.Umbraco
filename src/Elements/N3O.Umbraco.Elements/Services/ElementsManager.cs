@@ -50,7 +50,8 @@ public class ElementsManager : IElementsManager {
         req.Element = new SaveAndPublishElementReq();
         req.Element.Id = giving.Content().Key.ToString();
         req.Element.Type = ElementType.DonationForm;
-        req.Element.Content = _mapper.Map<GivingContent, DonationFormElement>(giving);
+        req.Element.Content = JObject.Parse(_jsonProvider.SerializeObject(giving.Content()));
+        req.Element.PublishedContent = _mapper.Map<GivingContent, DonationFormElement>(giving);
         req.Partials = categoryPartialReqs.Concat(optionPartialReqs).ToList();
 
         return req;

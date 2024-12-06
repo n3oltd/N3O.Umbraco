@@ -45,6 +45,6 @@ public static class ElementsConstants {
     }
 
     public static class Giving {
-        public const string Alias = "ephemeralDonationCategory";
+        public const string Alias = "giving";
     }
 }
