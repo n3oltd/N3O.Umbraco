@@ -4,7 +4,7 @@ using N3O.Umbraco.Mediator;
 
 namespace N3O.Umbraco.Data.Queries;
 
-public class GetExportablePropertiesQuery : Request<None, ExportableProperties> {
+public class GetExportablePropertiesQuery : Request<None, DataProperties> {
     public GetExportablePropertiesQuery(ContentType contentType) {
         ContentType = contentType;
     }

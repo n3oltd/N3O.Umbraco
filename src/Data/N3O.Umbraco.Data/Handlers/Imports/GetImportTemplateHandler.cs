@@ -15,7 +15,7 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Data.Handlers;
 
-public class GetImportTemplateHandler : IRequestHandler<GetImportTemplateQuery, None, ImportTemplate> {
+public class GetImportTemplateHandler : IRequestHandler<GetImportTemplateQuery, ImportTemplateReq, ImportTemplate> {
     private readonly IWorkspace _workspace;
     private readonly IReadOnlyList<IImportPropertyFilter> _propertyFilters;
     private readonly IReadOnlyList<IPropertyConverter> _propertyConverters;
@@ -50,7 +50,8 @@ public class GetImportTemplateHandler : IRequestHandler<GetImportTemplateQuery, 
 
         columns.AddRange(contentType.GetUmbracoProperties(_dataTypeService, _contentTypeService)
                                     .Where(x => x.HasPropertyConverter(_propertyConverters) &&
-                                                x.CanInclude(_propertyFilters))
+                                                x.CanInclude(_propertyFilters) &&
+                                                req.Model.Properties.Contains(x.Type.Alias, true))
                                     .SelectMany(x => x.GetColumns(_propertyConverters))
                                     .ToList());
 

@@ -22,9 +22,7 @@ public class ExportsController : PluginController {
     private readonly Lazy<ILookups> _lookups;
     private readonly Lazy<IUmbracoMapper> _mapper;
 
-    public ExportsController(IMediator mediator,
-                             Lazy<ILookups> lookups,
-                             Lazy<IUmbracoMapper> mapper) {
+    public ExportsController(IMediator mediator, Lazy<ILookups> lookups, Lazy<IUmbracoMapper> mapper) {
         _mediator = mediator;
         _lookups = lookups;
         _mapper = mapper;
@@ -43,9 +41,9 @@ public class ExportsController : PluginController {
     }
 
     [HttpGet("exportableProperties/{contentType}")]
-    public async Task<ActionResult<IEnumerable<ExportableProperty>>> GetExportableProperties() {
+    public async Task<ActionResult<IEnumerable<DataProperty>>> GetExportableProperties() {
         try {
-            var res = await _mediator.SendAsync<GetExportablePropertiesQuery, None, ExportableProperties>(None.Empty);
+            var res = await _mediator.SendAsync<GetExportablePropertiesQuery, None, DataProperties>(None.Empty);
 
             return Ok(res.Properties);
         } catch (ResourceNotFoundException ex) {

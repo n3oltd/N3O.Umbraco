@@ -1,7 +1,7 @@
 namespace N3O.Umbraco.Data.Models;
 
-public class ExportableProperty : Value {
-    public ExportableProperty(string alias, string columnTitle) {
+public class DataProperty : Value {
+    public DataProperty(string alias, string columnTitle) {
         Alias = alias;
         ColumnTitle = columnTitle;
     }

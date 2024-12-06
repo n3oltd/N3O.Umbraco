@@ -26,8 +26,43 @@ angular.module("umbraco")
             });
         })();
 
+        $scope.refreshProperties = function() {
+            fetch(`/umbraco/backoffice/api/Imports/importableProperties/${$scope.contentType.alias}`, {
+                headers: {
+                    "Accept": "application/json",
+                }
+            })
+                .then(res => res.json())
+                .then(res => {
+                    for (let property of res) {
+                        property.selected = false;
+                    }
+
+                    $scope.importableProperties = res;
+                });
+        };
+        
         $scope.getTemplate = async function () {
-            const getTemplate = await fetch(`/umbraco/backoffice/api/Imports/template/${$scope.contentType.alias}`);
+            let selectedPropertyAliases = $scope.importableProperties.filter(x => x.selected).map(x => x.alias);
+
+            if (!selectedPropertyAliases.length) {
+                processingError("At least one property must be selected");
+
+                return;
+            }
+            
+            let req = {
+                properties: selectedPropertyAliases
+            };
+            
+            const getTemplate = await fetch(`/umbraco/backoffice/api/Imports/template/${$scope.contentType.alias}`, {
+                method: "POST",
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(req)
+            });
             
             const blob = await getTemplate.blob();
             const header = getTemplate.headers.get("Content-Disposition");
@@ -70,7 +105,8 @@ angular.module("umbraco")
                 datePattern: $scope.datePattern.id,
                 moveUpdatedContentToCurrentLocation: $scope.moveUpdatedContentToCurrentLocation,
                 csvFile: csvStorageToken,
-                zipFile: zipStorageToken
+                zipFile: zipStorageToken,
+                properties: selectedPropertyAliases
             };
 
             let result = await fetch(`/umbraco/backoffice/api/Imports/queue/${$scope.content.key}/${$scope.contentType.alias}`, {
@@ -91,6 +127,18 @@ angular.module("umbraco")
             // $digest() is used to refresh the div contents. Use better alternative when possible. 
             $scope.$digest();
         };
+
+        $scope.selectAllProperties = function () {
+            for (let property of $scope.importableProperties) {
+                property.selected = true;
+            }
+        }
+
+        $scope.clearSelectedProperties = function () {
+            for (let property of $scope.importableProperties) {
+                property.selected = false;
+            }
+        }
 
         async function getStorageToken(input) {
             if (input.files.length === 0) {

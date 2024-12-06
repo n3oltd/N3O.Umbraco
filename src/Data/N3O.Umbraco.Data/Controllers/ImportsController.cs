@@ -51,11 +51,22 @@ public class ImportsController : PluginController {
         return Ok(res);
     }
 
-    [HttpGet("template/{contentType}")]
-    public async Task<FileContentResult> GetTemplate() {
-        var res = await _mediator.Value.SendAsync<GetImportTemplateQuery, None, ImportTemplate>(None.Empty);
+    [HttpPost("template/{contentType}")]
+    public async Task<FileContentResult> GetTemplate(ImportTemplateReq req) {
+        var res = await _mediator.Value.SendAsync<GetImportTemplateQuery, ImportTemplateReq, ImportTemplate>(req);
 
         return File(res.Contents, DataConstants.ContentTypes.Csv, res.Filename);
+    }
+    
+    [HttpGet("importableProperties/{contentType}")]
+    public async Task<ActionResult<IEnumerable<DataProperty>>> GetImportableProperties() {
+        try {
+            var res = await _mediator.Value.SendAsync<GetImportablePropertiesQuery, None, DataProperties>(None.Empty);
+
+            return Ok(res.Properties);
+        } catch (ResourceNotFoundException ex) {
+            return NotFound(ex);
+        }
     }
     
     [HttpPost("queue/{containerId:guid}/{contentType}")]

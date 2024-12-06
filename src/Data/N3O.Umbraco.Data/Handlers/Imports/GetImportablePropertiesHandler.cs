@@ -12,32 +12,32 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Data.Handlers;
 
-public class GetExportablePropertiesHandler
-    : IRequestHandler<GetExportablePropertiesQuery, None, DataProperties> {
+public class GetImportablePropertiesHandler
+    : IRequestHandler<GetImportablePropertiesQuery, None, DataProperties> {
     private readonly IContentTypeService _contentTypeService;
     private readonly IDataTypeService _dataTypeService;
     private readonly IReadOnlyList<IPropertyConverter> _propertyConverters;
-    private readonly IReadOnlyList<IExportPropertyFilter> _propertyFilters;
+    private readonly IReadOnlyList<IImportPropertyFilter> _propertyFilters;
 
-    public GetExportablePropertiesHandler(IContentTypeService contentTypeService,
+    public GetImportablePropertiesHandler(IContentTypeService contentTypeService,
                                           IDataTypeService dataTypeService,
                                           IEnumerable<IPropertyConverter> propertyConverters,
-                                          IEnumerable<IExportPropertyFilter> propertyFilters) {
+                                          IEnumerable<IImportPropertyFilter> propertyFilters) {
         _contentTypeService = contentTypeService;
         _dataTypeService = dataTypeService;
         _propertyConverters = propertyConverters.ToList();
         _propertyFilters = propertyFilters.ToList();
     }
     
-    public Task<DataProperties> Handle(GetExportablePropertiesQuery req, CancellationToken cancellationToken) {
+    public Task<DataProperties> Handle(GetImportablePropertiesQuery req, CancellationToken cancellationToken) {
         var contentType = _contentTypeService.Get(req.ContentType);
 
-        var exportableProperties = contentType.GetUmbracoProperties(_dataTypeService, _contentTypeService)
+        var importableProperties = contentType.GetUmbracoProperties(_dataTypeService, _contentTypeService)
                                               .Where(x => x.HasPropertyConverter(_propertyConverters) &&
                                                           x.CanInclude(_propertyFilters))
                                               .Select(x => new DataProperty(x.Type.Alias, x.GetColumnTitle()))
                                               .ToList();
 
-        return Task.FromResult(new DataProperties(exportableProperties));
+        return Task.FromResult(new DataProperties(importableProperties));
     }
 }

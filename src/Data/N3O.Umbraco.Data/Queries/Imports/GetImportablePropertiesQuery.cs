@@ -4,8 +4,8 @@ using N3O.Umbraco.Mediator;
 
 namespace N3O.Umbraco.Data.Queries;
 
-public class GetImportTemplateQuery : Request<ImportTemplateReq, ImportTemplate> {
-    public GetImportTemplateQuery(ContentType contentType) {
+public class GetImportablePropertiesQuery : Request<None, DataProperties> {
+    public GetImportablePropertiesQuery(ContentType contentType) {
         ContentType = contentType;
     }
     
