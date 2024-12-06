@@ -18,7 +18,7 @@ public class DonationOptionPartialMapping : IMapDefinition {
         dest.Id = src.Id;
         dest.Name = src.Name;
         dest.TypeId = src.Type.Id;
-        dest.DefaultGivingTypeId = src.DefaultGivingType.Id;
+        dest.DefaultGivingTypeId = src.DefaultGivingType?.Id;
         dest.Dimension1 = GetInitial(ctx, src.Dimension1, src.GetFundDimensionOptions().DefaultFundDimension1(), src.GetFundDimensionOptions().Dimension1Options);
         dest.Dimension2 = GetInitial(ctx, src.Dimension2, src.GetFundDimensionOptions().DefaultFundDimension2(), src.GetFundDimensionOptions().Dimension2Options);
         dest.Dimension3 = GetInitial(ctx, src.Dimension3, src.GetFundDimensionOptions().DefaultFundDimension3(), src.GetFundDimensionOptions().Dimension3Options);
