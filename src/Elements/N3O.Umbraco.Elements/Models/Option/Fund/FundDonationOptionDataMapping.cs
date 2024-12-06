@@ -3,7 +3,6 @@ using N3O.Umbraco.Giving.Allocations.Content;
 using N3O.Umbraco.Giving.Allocations.Models;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
-using FundDonationOptionContent = N3O.Umbraco.Elements.Content.FundDonationOptionContent;
 
 namespace N3O.Umbraco.Elements.Models;
 
