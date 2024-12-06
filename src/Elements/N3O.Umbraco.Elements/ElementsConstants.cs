@@ -3,7 +3,7 @@
 public static class ElementsConstants {
     public static class DonationCategory {
         public const string CompositionAlias = "donationCategory";
-        public const string CropAlias = "main";
+        public const string CropAlias = "m";
 
         public static class Dimension {
             public const string Alias = "dimensionDonationCategory";
@@ -29,7 +29,7 @@ public static class ElementsConstants {
     
     public static class DonationOption {
         public const string CompositionAlias = "donationOption";
-        public const string CropAlias = "main";
+        public const string CropAlias = "m";
 
         public static class Feedback {
             public const string Alias = "feedbackDonationOption";
