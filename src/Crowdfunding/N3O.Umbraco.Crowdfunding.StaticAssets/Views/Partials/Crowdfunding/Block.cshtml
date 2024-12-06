@@ -1,8 +1,6 @@
-@using N3O.Umbraco.Crowdfunding.Extensions
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<N3O.Umbraco.Blocks.IBlockViewModel>
 
-@inherits  Umbraco.Cms.Web.Common.Views.UmbracoViewPage<N3O.Umbraco.Blocks.IBlockViewModel>
-
-<n3o-theme-text path="crowdfunding" strings="@typeof(N3O.Umbraco.Crowdfunding.CrowdfundingStrings)" />
+<n3o-theme-text path="crowdfunding" strings="@typeof(CrowdfundingStrings)" />
 
 @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/PageAccess.cshtml", Model.Crowdfunding().ViewModel)
 
