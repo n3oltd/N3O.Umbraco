@@ -18,14 +18,14 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Content
 {
-	/// <summary>Checkout Survery</summary>
-	[PublishedModel("checkoutSurvery")]
-	public partial class CheckoutSurvery : PublishedContentModel
+	/// <summary>Checkout Survey</summary>
+	[PublishedModel("checkoutSurvey")]
+	public partial class CheckoutSurvey : PublishedContentModel
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		public new const string ModelTypeAlias = "checkoutSurvery";
+		public new const string ModelTypeAlias = "checkoutSurvey";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
@@ -34,14 +34,14 @@ namespace DemoSite.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<CheckoutSurvery, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<CheckoutSurvey, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public CheckoutSurvery(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
+		public CheckoutSurvey(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
@@ -55,6 +55,6 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("questions")]
-		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CheckoutSurveryQuestion> Questions => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CheckoutSurveryQuestion>>(_publishedValueFallback, "questions");
+		public virtual global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CheckoutSurveyQuestion> Questions => this.Value<global::System.Collections.Generic.IEnumerable<global::DemoSite.Content.CheckoutSurveyQuestion>>(_publishedValueFallback, "questions");
 	}
 }
