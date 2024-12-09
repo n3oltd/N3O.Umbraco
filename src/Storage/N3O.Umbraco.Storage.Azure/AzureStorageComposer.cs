@@ -20,6 +20,7 @@ public class AzureStorageComposer : Composer {
 
         if (storageConfigured) {
             builder.AddAzureBlobMediaFileSystem();
+            builder.AddAzureBlobImageSharpCache();
         }
     }
 }
