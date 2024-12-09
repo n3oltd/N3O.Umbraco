@@ -1,4 +1,4 @@
-using J2N.Collections.Generic;
+using System.Collections.Generic;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Allocations.Content;
 using Umbraco.Cms.Core.Mapping;

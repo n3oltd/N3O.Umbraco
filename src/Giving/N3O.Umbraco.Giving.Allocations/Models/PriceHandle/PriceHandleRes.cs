@@ -1,4 +1,4 @@
-using J2N.Collections.Generic;
+using System.Collections.Generic;
 using N3O.Umbraco.Financial;
 
 namespace N3O.Umbraco.Giving.Allocations.Models;
