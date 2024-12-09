@@ -23,9 +23,7 @@ public class ImportsController : PluginController {
     private readonly Lazy<IUmbracoMapper> _mapper;
     private readonly Lazy<IMediator> _mediator;
     
-    public ImportsController(Lazy<ILookups> lookups,
-                             Lazy<IUmbracoMapper> mapper,
-                             Lazy<IMediator> mediator) {
+    public ImportsController(Lazy<ILookups> lookups, Lazy<IUmbracoMapper> mapper, Lazy<IMediator> mediator) {
         _lookups = lookups;
         _mapper = mapper;
         _mediator = mediator;

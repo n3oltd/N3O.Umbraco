@@ -106,7 +106,6 @@ angular.module("umbraco")
                 moveUpdatedContentToCurrentLocation: $scope.moveUpdatedContentToCurrentLocation,
                 csvFile: csvStorageToken,
                 zipFile: zipStorageToken,
-                properties: selectedPropertyAliases
             };
 
             let result = await fetch(`/umbraco/backoffice/api/Imports/queue/${$scope.content.key}/${$scope.contentType.alias}`, {
