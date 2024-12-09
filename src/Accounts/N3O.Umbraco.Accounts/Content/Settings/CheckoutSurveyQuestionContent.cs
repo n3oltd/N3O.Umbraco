@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Accounts.Content;
 
-public class CheckoutSurveyQuestionContent : UmbracoContent<CheckoutSurveyQuestionContent> {
+public class CheckoutSurveyQuestionContent : UmbracoElement<CheckoutSurveyQuestionContent> {
     public string Question => GetValue(x => x.Question);
-    public IEnumerable<string> Options => GetPickedAs(x => x.Options);
+    public IEnumerable<string> Options => GetValue(x => x.Options);
     public int DimensionIndex => GetValue(x => x.DimensionIndex);
 }
