@@ -1,7 +1,5 @@
 ﻿using N3O.Umbraco.Pages;
 using Perplex.ContentBlocks.Rendering;
-using System.Collections.Generic;
-using Umbraco.Cms.Core.Models.Blocks;
 
 namespace N3O.Umbraco.Blocks.Perplex.Extensions;
 

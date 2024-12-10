@@ -1,6 +1,7 @@
 using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
+using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Forex;
 using N3O.Umbraco.Localization;
@@ -117,12 +118,7 @@ public class CrowdfunderRevisionRepository : ICrowdfunderRevisionRepository {
     }
 
     private async Task<CrowdfunderRevision> GetRevisionAsync(ICrowdfunderContent crowdfunderContent, int revision) {
-        var goalsTotalQuoteAmount = crowdfunderContent.Goals.Sum(x => x.Amount);
-
-        var goalsTotalForex = await _forexConverter.QuoteToBase()
-                                                   .FromCurrency(crowdfunderContent.Currency)
-                                                   .UsingRateOn(crowdfunderContent.CreatedDate.ToLocalDate())
-                                                   .ConvertAsync(goalsTotalQuoteAmount);
+        var goalsTotal = await crowdfunderContent.GetGoalsTotalAsync(_forexConverter);
         
         var crowdfunderRevision = new CrowdfunderRevision();
         crowdfunderRevision.Name = crowdfunderContent.Name;
@@ -133,8 +129,8 @@ public class CrowdfunderRevisionRepository : ICrowdfunderRevisionRepository {
         crowdfunderRevision.Type = (int) crowdfunderContent.Type.Key;
         crowdfunderRevision.Url = crowdfunderContent.Url(_crowdfundingUrlBuilder);
         crowdfunderRevision.CurrencyCode = crowdfunderContent.Currency.Code;
-        crowdfunderRevision.GoalsTotalQuote = goalsTotalQuoteAmount;
-        crowdfunderRevision.GoalsTotalBase = goalsTotalForex.Base.Amount;
+        crowdfunderRevision.GoalsTotalQuote = goalsTotal.Quote.Amount;
+        crowdfunderRevision.GoalsTotalBase = goalsTotal.Base.Amount;
         crowdfunderRevision.ActiveFrom = _localClock.GetUtcNow();
 
         return crowdfunderRevision;
