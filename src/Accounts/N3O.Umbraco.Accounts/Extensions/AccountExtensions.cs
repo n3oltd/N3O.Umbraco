@@ -33,7 +33,7 @@ public static class AccountExtensions {
     public static string GetToken(this IAccount account, IFormatter formatter) {
         var data = new {
             Id = account.Id?.Value,
-            Reference = new { Type = "AC", Number = long.Parse(account.Reference.Substring(2)), Text = account.Reference },
+            Reference = new { Type = "AC", Number = account.Reference?.Substring(2).IfNotNull(long.Parse), Text = account.Reference },
             Name = GetName(account, formatter),
             Initials = GetInitials(account)
         };
