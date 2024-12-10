@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using N3O.Umbraco.Extensions;
 using System;
 using System.Linq;
+using System.Web;
 
 namespace N3O.Umbraco.Context;
 
@@ -24,7 +25,7 @@ public abstract class Cookie : ICookie {
             var key = cookies?.Keys.SingleOrDefault(x => x.EqualsInvariant(Name));
 
             if (key != null) {
-                _value = cookies[key];
+                _value = HttpUtility.UrlDecode(cookies[key]);
             } else {
                 _value = GetDefaultValue();
             }
