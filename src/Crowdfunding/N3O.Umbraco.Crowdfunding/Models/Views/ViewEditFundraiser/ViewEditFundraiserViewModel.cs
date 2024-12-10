@@ -50,7 +50,7 @@ public class ViewEditFundraiserViewModel : CrowdfunderViewModel<FundraiserConten
         var contributionsTotal = contributions.OrEmpty().Sum(x => x.CrowdfunderAmount);
         var goalsWithPricing = fundraiser.Goals.Where(x => x.HasPricing).Sum(x => x.Amount);
         
-        viewModel.HasUnallocatedFunds = fundraiser.Goals.Sum(x => x.Amount) > contributions.Sum(x => x.CrowdfunderAmount);
+        viewModel.HasUnallocatedFunds = fundraiser.Goals.Sum(x => x.Amount) < contributions.Sum(x => x.CrowdfunderAmount);
         viewModel.HasPendingGoalsWithPricing = goalsWithPricing > 0 && contributionsTotal < goalsWithPricing;
 
         viewModel._fundraiserAccessControl = fundraiserAccessControl;
