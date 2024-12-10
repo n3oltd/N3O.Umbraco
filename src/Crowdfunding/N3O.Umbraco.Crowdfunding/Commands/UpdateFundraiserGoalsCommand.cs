@@ -5,9 +5,9 @@ using N3O.Umbraco.Mediator;
 namespace N3O.Umbraco.Crowdfunding.Commands;
 
 public class UpdateFundraiserGoalsCommand : Request<FundraiserGoalsReq, None> {
-    public ContentId ContentId { get; set; }
+    public FundraiserId FundraiserId { get; set; }
 
-    public UpdateFundraiserGoalsCommand(ContentId contentId) {
-        ContentId = contentId;
+    public UpdateFundraiserGoalsCommand(FundraiserId fundraiserId) {
+        FundraiserId = fundraiserId;
     }
 }
