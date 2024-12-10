@@ -180,11 +180,22 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
     }
     
     private async Task<Crowdfunder> CreateCrowdfunderAsync(ICrowdfunderContent crowdfunderContent) {
+        var goalsTotalForex = await _forexConverter.QuoteToBase()
+                                                   .FromCurrency(crowdfunderContent.Currency)
+                                                   .UsingRateOn(crowdfunderContent.CreatedDate.ToLocalDate())
+                                                   .ConvertAsync(crowdfunderContent.Goals.Sum(x => x.Amount));
+        
         var crowdfunder = new Crowdfunder();
         crowdfunder.CurrencyCode = crowdfunderContent.Currency.Code;
         crowdfunder.Type = (int) crowdfunderContent.Type.Key;
         crowdfunder.ContentKey = crowdfunderContent.Key;
         crowdfunder.CreatedAt = crowdfunderContent.CreatedDate;
+        crowdfunder.ContributionsTotalQuote = 0m;
+        crowdfunder.ContributionsTotalBase = 0m;
+        crowdfunder.NonDonationsTotalQuote = 0m;
+        crowdfunder.NonDonationsTotalBase = 0m;
+        crowdfunder.LeftToRaiseBase = goalsTotalForex.Base.Amount;
+        crowdfunder.LeftToRaiseQuote = crowdfunderContent.Goals.Sum(x => x.Amount);
         
         
         PopulateOwnerInfo(crowdfunderContent, crowdfunder);
@@ -210,17 +221,17 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
         var heroImage = crowdfunderContent.HeroImages.First().Image;
         var tags = crowdfunderContent.Tags.OrEmpty().Select(x => x.Name).ToList();
         
-        var baseForex = await _forexConverter.QuoteToBase()
-                                             .FromCurrency(crowdfunderContent.Currency)
-                                             .UsingRateOn(crowdfunderContent.CreatedDate.ToLocalDate())
-                                             .ConvertAsync(crowdfunderContent.Goals.Sum(x => x.Amount));
+        var goalsTotalForex = await _forexConverter.QuoteToBase()
+                                                   .FromCurrency(crowdfunderContent.Currency)
+                                                   .UsingRateOn(crowdfunderContent.CreatedDate.ToLocalDate())
+                                                   .ConvertAsync(crowdfunderContent.Goals.Sum(x => x.Amount));
         
         crowdfunder.Name = crowdfunderContent.Name;
         crowdfunder.Url = crowdfunderContent.Url(_urlBuilder);
         crowdfunder.StatusKey = (int?) crowdfunderContent.Status?.Key;
         crowdfunder.FullText = crowdfunderContent.GetFullText();
         crowdfunder.GoalsTotalQuote = crowdfunderContent.Goals.Sum(x => x.Amount);
-        crowdfunder.GoalsTotalBase = baseForex.Base.Amount;
+        crowdfunder.GoalsTotalBase = goalsTotalForex.Base.Amount;
         crowdfunder.Tags = tags.HasAny() ? $"{TagsSeperator}{tags.Join(TagsSeperator)}{TagsSeperator}" : null;
         crowdfunder.JumboImage = await _imageCropper.GetImagePathAsync(heroImage, ImageCropperExtensions.JumboCropDefinition);
         crowdfunder.TallImage = await _imageCropper.GetImagePathAsync(heroImage, ImageCropperExtensions.TallCropDefinition);

@@ -62,6 +62,7 @@ public class Crowdfunder {
     public decimal LeftToRaiseQuote { get; set; }
     
     [Column(nameof(LastContributionOn))]
+    [NullSetting(NullSetting = NullSettings.Null)]
     public DateTime LastContributionOn { get; set; }
     
     [Column(nameof(TallImage))]
