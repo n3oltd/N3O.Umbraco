@@ -10,7 +10,7 @@ namespace N3O.Umbraco.Crowdfunding.Handlers;
 public partial class CreateOrUpdateFundraiserHandlers :
     IRequestHandler<UpdateFundraiserGoalsCommand, FundraiserGoalsReq, None> {
     public Task<None> Handle(UpdateFundraiserGoalsCommand req, CancellationToken cancellationToken) {
-        var fundraiser = req.ContentId.Run(_contentLocator.ById<FundraiserContent>, true);
+        var fundraiser = req.FundraiserId.Run(_contentLocator.ById<FundraiserContent>, true);
         var contentPublisher =_contentEditor.ForExisting(fundraiser.Content().Key);
 
         PopulateFundraiserGoals(contentPublisher, req.Model.Items, fundraiser.Campaign);
