@@ -52,7 +52,7 @@
             </p>
             
             @if (Model.EditMode()) {
-                <div class="n3o-campaign__edit modallBtn" n3o-editor="@(Model, PropertyTypes.Textarea, nameof(Model.Content.Description))" style="top: 70px">
+                <div class="n3o-campaign__edit modallBtn" n3o-editor="@(Model, PropertyTypes.TextBox, nameof(Model.Content.Description))" style="top: 70px">
                     <svg class="n3o-sm">
                         <use xlink:href="#editIcon"></use>
                     </svg>

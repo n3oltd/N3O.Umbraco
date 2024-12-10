@@ -8,19 +8,19 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding;
 
-public class FundraiserDescriptionValidator : ContentPropertyValidator<TextareaValueReq, TextareaConfigurationRes> {
+public class FundraiserDescriptionValidator : ContentPropertyValidator<TextBoxValueReq, TextBoxConfigurationRes> {
     private const int MaxLength = 200;
     
     public FundraiserDescriptionValidator(IFormatter formatter)
         : base(formatter, CrowdfundingConstants.Fundraiser.Alias, CrowdfundingConstants.Crowdfunder.Properties.Description) { }
     
-    protected override void Validate(IPublishedContent content, string propertyAlias, TextareaValueReq req) {
+    protected override void Validate(IPublishedContent content, string propertyAlias, TextBoxValueReq req) {
         if (req.Value.Length > MaxLength) {
             AddFailure<Strings>(propertyAlias, x => x.MaxLength, MaxLength);
         }
     }
     
-    protected override void PopulatePropertyConfiguration(IPropertyType property, TextareaConfigurationRes res) {
+    protected override void PopulatePropertyConfiguration(IPropertyType property, TextBoxConfigurationRes res) {
         res.MaximumLength = MaxLength;
         res.Description = property.Description;
     }
