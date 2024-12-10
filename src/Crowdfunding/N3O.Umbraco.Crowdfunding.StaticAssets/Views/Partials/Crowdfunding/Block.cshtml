@@ -1,11 +1,11 @@
-@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<N3O.Umbraco.Pages.IPageViewModel>
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<N3O.Umbraco.Crowdfunding.Modules.CrowdfundingModuleData>
 
 <n3o-theme-text path="crowdfunding" strings="@typeof(CrowdfundingStrings)" />
 
-@Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/PageAccess.cshtml", Model.Crowdfunding().ViewModel)
+@Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/PageAccess.cshtml", Model.ViewModel)
 
-@Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/TopBar.cshtml", Model.Crowdfunding().ViewModel)
+@Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/TopBar.cshtml", Model.ViewModel)
 
-@Html.CrowdfundingPartial(Model.Crowdfunding().CurrentPage.ViewName, Model.Crowdfunding().ViewModel)
+@Html.CrowdfundingPartial(Model.CurrentPage.ViewName, Model.ViewModel)
 
 @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Svgs.cshtml", null)
