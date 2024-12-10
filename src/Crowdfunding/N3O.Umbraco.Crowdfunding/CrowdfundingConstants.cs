@@ -145,7 +145,8 @@ public static class CrowdfundingConstants {
     }
     
     public static class ModuleKeys {
-        public static readonly string Block = nameof(Crowdfunding);
+        public static readonly string Block = "crowdfundingBlock";
+        public static readonly string Page = "crowdfundingHomePage";
     }
     
     public static class Root {
