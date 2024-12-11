@@ -97,7 +97,7 @@
 
                 <input id="goal-amount" placeholder="100" type="number" 
                     @foreach (var item in Model.MinimumAmountValues) {
-                        <text>@($"data-{item.Key}={item.Value.Amount}")</text>
+                        <text>@($"data-{item.Key.Id}={item.Value.Amount} ")</text>
                     }
                 />
                 

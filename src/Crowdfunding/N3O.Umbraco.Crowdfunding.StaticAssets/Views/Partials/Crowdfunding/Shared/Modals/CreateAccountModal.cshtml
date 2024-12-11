@@ -50,5 +50,8 @@
 <script type="text/javascript">
     @Html.Raw(ContentCache.Single<DataEntrySettingsContent>().JavaScript)
 
-    n3o_cdf_createAccount();
+    document.addEventListener("DOMContentLoaded", () => {
+        n3o_initialize_account();
+        n3o_cdf_createAccount();
+    });  
 </script>

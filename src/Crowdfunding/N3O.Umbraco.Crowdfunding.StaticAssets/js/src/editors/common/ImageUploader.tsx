@@ -81,8 +81,6 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
               if (
                 width < dataConfig?.width
                 || height < dataConfig?.height
-                || width > dataConfig?.width
-                || height > dataConfig?.height
               ) {
                 uppy.info({ message: window.themeConfig.text.crowdfunding.cropperCropRequired }, "error");
                 return false;
