@@ -54,10 +54,10 @@ public partial class ContributionRepository : IContributionRepository {
     public async Task CommitAsync() {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
             if (_removeOfflineContributionsForCrowdfunderId.HasValue()) {
-                var sql = new Sql($"DELETE FROM Contribution WHERE {nameof(Contribution.CrowdfunderId)} = @0",
-                                  _removeOfflineContributionsForCrowdfunderId.GetValueOrThrow());
-                
-                await db.DeleteAsync(sql);
+                await db.DeleteManyAsync<Contribution>()
+                        .Where(x => x.CrowdfunderId == _removeOfflineContributionsForCrowdfunderId.GetValueOrThrow() &&
+                                    x.ContributionType == (int) ContributionType.Offline)
+                        .Execute();
             }
             
             if (_toCommit.Any()) {

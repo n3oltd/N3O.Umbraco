@@ -6,34 +6,40 @@
     PartialText.SetPartialName("ViewEditFundraiserPageBanner");
 }
 
-<div class="n3o-banner">
+<div class="auto__container" style="background: #FEF9C3; max-width: none;">
+
     @if (Model.Content.Status == CrowdfunderStatuses.Ended) {
-        @PartialText.Get("This fundraiser has ended and can no longer be modified.")
-    } else {
-        <div class="n3o-banner-left-content">
-            <p class="n3o-p">@PartialText.Get("You are in edit mode")</p>
-            
-            <button class="n3o-banner-view-page">@PartialText.Get("View Page")</button>
+        <div class="n3o-header__inner" style="justify-content: center">
+            @PartialText.Get("This fundraiser has ended and can no longer be modified.")
         </div>
+    } else {
+        <div class="n3o-header__inner">
+            <div class="n3o-header__inner-side" style="max-width: 1280px; display: flex; margin: auto; justify-content: space-between;width: 100%;">
+                <div style="font-size: large;font-weight: 600;">
+                    @PartialText.Get("You are in edit mode")
 
-        @if (Model.HasUnallocatedFunds) {
-            <div class="n3o-banner-right-content">
-                <div class="n3o-banner-right-text">
-                    <p class="n3o-p">@PartialText.Get("You've exceeded your fundraising goal!")</p>
-                    
-                    <p class="n3o-p">@PartialText.Get("Please tell us how you'd like the extra money you've raised spent.")</p>
+                    <button class="n3o-banner-view-page">@PartialText.Get("View Page")</button>
                 </div>
-                <button class="n3o-banner-resolve">@PartialText.Get("Resolve")</button>
-            </div>
-        }
 
-        @if (Model.Content.Status.CanToggle && Model.Content.Status.ToggleAction == CrowdfunderActivationActions.Activate) {
-            <a href="#" class="n3o-btn-banner-activate">@PartialText.Get("Activate")</a>
-        } else if (Model.Content.Status.CanToggle && Model.Content.Status.ToggleAction == CrowdfunderActivationActions.Deactivate) {
-            <a href="#"
-               @if (!Model.HasPendingGoalsWithPricing) { <text>id="deactivate-fundraiser"</text> } else { <text>data-mod="#banner-modal"</text> }
-               class="n3o-btn-banner-deactivate">@PartialText.Get("Deactivate")</a>
-        }
+                @if (Model.HasUnallocatedFunds) {
+                    <div class="n3o-fprogress" style="display: flex;gap: 12px;align-items: center;padding: 6px 6px 6px 12px;border: solid 1px #00000020;">
+                        <p class="n3o-p">@PartialText.Get("You've exceeded your fundraising goal! Please tell us how you'd like the extra money you've raised spent.")</p>
+                        <button id="n3o-unallocated-resolve" type="button" class="n3o-button primary" style="padding: 4px 8px;">
+                            @PartialText.Get("Resolve")
+                        </button>
+                    </div>
+                } else if (Model.Content.Status.CanToggle && Model.Content.Status.ToggleAction == CrowdfunderActivationActions.Activate) {
+                    <button id="n3o-btn-banner-activate" type="button" class="n3o-button primary" style="padding: 4px 8px;">
+                        @PartialText.Get("Activate")
+                    </button>
+                } else if (Model.Content.Status.CanToggle && Model.Content.Status.ToggleAction == CrowdfunderActivationActions.Deactivate) {
+                    <button @if (!Model.HasPendingGoalsWithPricing) { <text>id="n3o-btn-banner-deactivate"</text> } else { <text>data-mod="#banner-modal"</text> }
+                            type="button" class="n3o-button primary" style="padding: 4px 8px;">
+                        @PartialText.Get("Deactivate")
+                    </button>
+                }
+            </div>
+        </div>
     }
 </div>
 
@@ -41,6 +47,6 @@
     var id = "viewEditFundraiserPageBanner";
     var title = PartialText.Get("Unable to deactivate");
     var description = PartialText.Get("As your page contains one or more special projects, please contact us for assistance closing your fundraiser");
-    
+
     @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Modals/MessageModal.cshtml", (id, title, description))
 }

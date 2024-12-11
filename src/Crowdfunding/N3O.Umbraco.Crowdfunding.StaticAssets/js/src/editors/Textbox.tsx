@@ -72,8 +72,8 @@ export const Textbox: React.FC<EditorProps> = ({
         disabled: loading
       }}
     >
-      {isPropLoading ? <p>{window.themeConfig.text.crowdfunding.apiLoading}</p> : <>
-        <h3>{dataResponse?.textBox?.configuration?.description}</h3>
+      {isPropLoading ? <p className="n3o-p">{window.themeConfig.text.crowdfunding.apiLoading}</p> : <>
+        <h3 className="n3o-h3">{dataResponse?.textBox?.configuration?.description}</h3>
         <div className="n3o-input big">
           <input type="text" 
             maxLength={dataResponse?.textBox?.configuration?.maximumLength}

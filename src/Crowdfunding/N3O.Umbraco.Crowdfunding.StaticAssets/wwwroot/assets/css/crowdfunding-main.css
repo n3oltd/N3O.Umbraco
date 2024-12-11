@@ -111,15 +111,6 @@ body {
   scroll-behavior: smooth;
 }
 
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  border: none;
-  outline: none;
-}
-
 /*** 
 ====================================================================
 Global Settings
@@ -1350,7 +1341,6 @@ input[type=search]::-webkit-search-results-decoration {
   border-top: 4px solid var(--theme-crowdfunding-primary);
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -1440,7 +1430,6 @@ input[type=search]::-webkit-search-results-decoration {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   position: relative;
-  margin-top: 75px;
 }
 .n3o-header__inner-logo {
   display: -webkit-box;
@@ -7805,10 +7794,6 @@ input[type=search]::-webkit-search-results-decoration {
     height: 14px;
   }
   
-  .n3o-header__inner {
-    margin-top: 55px;
-  }
-
   .n3o-info {
     margin: 0;
     padding-top: 80px;

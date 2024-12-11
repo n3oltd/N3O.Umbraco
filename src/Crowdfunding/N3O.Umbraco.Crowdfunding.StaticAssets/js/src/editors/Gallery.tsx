@@ -210,8 +210,8 @@ export const Gallery: React.FC<EditorProps> = ({
         disabled: loading
       }}
     >
-        {loading ? <p>{window.themeConfig.text.crowdfunding.apiLoading}</p> : <>
-        <h3>{dataResponse?.nested?.configuration?.description}</h3>
+        {loading ? <p className="n3o-p">{window.themeConfig.text.crowdfunding.apiLoading}</p> : <>
+        <h3 className="n3o-h3">{dataResponse?.nested?.configuration?.description}</h3>
         <ImageUploader 
           onFileUpload={handleUplodedFile}
           setUppyInstance={setUppyInstance}
@@ -235,9 +235,9 @@ export const Gallery: React.FC<EditorProps> = ({
         </>}
 
         {(!loading && hasVideoUrlContent) && <div className="n3o-edit__content">
-            <h3>{window.themeConfig.text.crowdfunding.campaignVideo}</h3>
+            <h3 className="n3o-h3">{window.themeConfig.text.crowdfunding.campaignVideo}</h3>
             <div className="n3o-input__outer">
-              <p>{window.themeConfig.text.crowdfunding.CampaignVideoUrl}</p>
+              <p className="n3o-p">{window.themeConfig.text.crowdfunding.CampaignVideoUrl}</p>
               <div className="n3o-input">
                 <input
                   type="text"

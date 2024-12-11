@@ -12,7 +12,7 @@ function n3o_cdf_scrollFunc() {
 // scroll end
 // sliders
 $(function () {
-  $(".campaignSlider").slick({
+  $(".n3o-campaignSlider").slick({
     infinite: true,
     slidesToShow: 1,
     slidesToScroll: 1,

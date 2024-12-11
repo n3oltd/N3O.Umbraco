@@ -168,7 +168,7 @@ export const GoalEditor: React.FC<EditorProps> = ({
    <div className="n3o-editGoal__wrapper">
       <div className="n3o-editGoal" id="editGoal">
         <div className="n3o-editGoal__head">
-          <h4>{window.themeConfig.text.crowdfunding.editGoalTitle}</h4>
+          <h4 className="n3o-h4">{window.themeConfig.text.crowdfunding.editGoalTitle}</h4>
           <div className="n3o-detail">
             {window.themeConfig.text.crowdfunding.editGoalDescription}
           </div>
@@ -215,7 +215,7 @@ export const GoalEditor: React.FC<EditorProps> = ({
               <span>
                 <img src="/assets/images/icons/plus-circle.svg" alt="" />
               </span>
-              <h4>{window.themeConfig.text.crowdfunding.addProject}</h4>
+              <h4 className="n3o-h4">{window.themeConfig.text.crowdfunding.addProject}</h4>
             </button>: null}
             {((errors && Array.isArray(errors)) || state.errors.length) ? <div className="n3o-active checkout__message">
                 <p className="n3o-detail">

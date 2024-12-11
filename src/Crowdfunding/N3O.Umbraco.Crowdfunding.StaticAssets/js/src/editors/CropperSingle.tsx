@@ -126,8 +126,8 @@ export const CropperSingle: React.FC<EditorProps> = ({
         disabled: updating || loading
       }}
     >
-      {loading ? <p>{window.themeConfig.text.crowdfunding.apiLoading}</p> : <>
-      <h3>{dataRepsonse?.cropper?.configuration?.description}</h3>
+      {loading ? <p className="n3o-p">{window.themeConfig.text.crowdfunding.apiLoading}</p> : <>
+      <h3 className="n3o-h3">{dataRepsonse?.cropper?.configuration?.description}</h3>
           
       <ImageUploader 
         aspectRatio={4/1}
