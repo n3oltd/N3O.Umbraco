@@ -68,11 +68,11 @@ export const Textarea: React.FC<EditorProps> = ({
         disabled: isPropLoading || loading
       }}
     >
-      {isPropLoading ? <p>{window.themeConfig.text.crowdfunding.apiLoading}</p> : <>
-        <h3>{dataResponse?.textarea?.configuration?.description}</h3>
+      {isPropLoading ? <p className="n3o-p">{window.themeConfig.text.crowdfunding.apiLoading}</p> : <>
+        <h3 className="n3o-h3">{dataResponse?.textarea?.configuration?.description}</h3>
       <div className="n3o-edit__content">
         <div className="n3o-input__outer dark">
-          <p>{window.themeConfig.text.crowdfunding.textAreaEditorTitle}</p>
+          <p className="n3o-p">{window.themeConfig.text.crowdfunding.textAreaEditorTitle}</p>
           <div className="n3o-input">
             <textarea
               onChange={e => state.description = e.target.value}

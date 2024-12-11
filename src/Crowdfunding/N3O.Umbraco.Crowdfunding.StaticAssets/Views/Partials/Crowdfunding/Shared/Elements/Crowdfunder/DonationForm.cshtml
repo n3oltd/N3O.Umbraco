@@ -299,6 +299,7 @@
 
             // Create the h4 title
             const h4 = document.createElement('h4');
+            h4.classList.add('n3o-h4');
             h4.textContent = item.title;
             ctaFundDiv.appendChild(h4);
 
@@ -314,6 +315,7 @@
             innerDiv.classList.add('n3o-ctaFund__item-inner', 'uniq');
 
             const h3 = document.createElement('h3');
+            h3.classList.add('n3o-h3');
             h3.textContent = item.amount;
             innerDiv.appendChild(h3);
 
@@ -321,6 +323,7 @@
             innerDiv.appendChild(hr);
 
             const p = document.createElement('p');
+            p.classList.add('n3o-p');
             p.classList.add('n3o-subtle');
             p.textContent = item.description;
             innerDiv.appendChild(p);

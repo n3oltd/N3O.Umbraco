@@ -96,7 +96,7 @@ export function GoalFields(props: GoalFieldsProps) {
           {window.themeConfig.text.crowdfunding.remove}
         </button>
       )}
-      <h4>{window.themeConfig.text.crowdfunding.selectGoal}</h4>
+      <h4 className="n3o-h4">{window.themeConfig.text.crowdfunding.selectGoal}</h4>
       <div className="n3o-select__outer">
         <div className="n3o-select">
           <div className="n3o-select__selected" id="select__selected"> {selectedGoal?.name || window.themeConfig?.text?.crowdfunding?.selectGoal}</div>
@@ -149,7 +149,7 @@ export function GoalFields(props: GoalFieldsProps) {
       </div>
 
       {(selectedGoal?.dimension1?.allowedOptions as any[])?.length > 1 ? <>
-        <h4 className="n3o-dimension-1" >{window.themeConfig.text.crowdfunding.goalSelectDimension1}</h4>
+        <h4 className="n3o-dimension-1 n3o-h4" >{window.themeConfig.text.crowdfunding.goalSelectDimension1}</h4>
         <div className="n3o-select__outer dimension-1"  id="dimension-1">
             <div className="n3o-select">
                 <div className="n3o-select__selected">{selectedGoal?.dimension1?.allowedOptions?.find(d => d.id === goal?.dimension1)?.name || window.themeConfig.text.crowdfunding.goalSelectDimension}</div>
@@ -192,7 +192,7 @@ export function GoalFields(props: GoalFieldsProps) {
       />     
       }
       {(selectedGoal?.dimension2?.allowedOptions as any[])?.length > 1 ? <>
-        <h4 className="n3o-dimension-2" > {window.themeConfig.text.crowdfunding.goalSelectDimension2}</h4>
+        <h4 className="n3o-dimension-2 n3o-h4" > {window.themeConfig.text.crowdfunding.goalSelectDimension2}</h4>
         <div className="n3o-select__outer dimension-2"  id="dimension-2">
             <div className="n3o-select">
                 <div className="n3o-select__selected">{selectedGoal?.dimension2?.allowedOptions?.find(d => d.id === goal?.dimension2)?.name || window.themeConfig.text.crowdfunding.goalSelectDimension}</div>
@@ -236,7 +236,7 @@ export function GoalFields(props: GoalFieldsProps) {
       }
 
       {(selectedGoal?.dimension3?.allowedOptions as any[])?.length > 1 ? <>
-        <h4 className="n3o-dimension-3" >{window.themeConfig.text.crowdfunding.goalSelectDimension3}</h4>
+        <h4 className="n3o-dimension-3 n3o-h4" >{window.themeConfig.text.crowdfunding.goalSelectDimension3}</h4>
         <div className="n3o-select__outer dimension-3"  id="dimension-3">
           <div className="n3o-select">
               <div className="n3o-select__selected">{selectedGoal?.dimension3?.allowedOptions?.find(d => d.id === goal?.dimension3)?.name || window.themeConfig.text.crowdfunding.goalSelectDimension}</div>
@@ -279,7 +279,7 @@ export function GoalFields(props: GoalFieldsProps) {
       }
       
       {(selectedGoal?.dimension4?.allowedOptions as any[])?.length > 1 ? <>
-        <h4 className="n3o-dimension-4" >{window.themeConfig.text.crowdfunding.goalSelectDimension4}</h4>
+        <h4 className="n3o-dimension-4 n3o-h4" >{window.themeConfig.text.crowdfunding.goalSelectDimension4}</h4>
         <div className="n3o-select__outer dimension-4"  id="dimension-4">
           <div className="n3o-select">
               <div className="n3o-select__selected">{selectedGoal?.dimension4?.allowedOptions?.find(d => d.id === goal?.dimension4)?.name || window.themeConfig.text.crowdfunding.goalSelectDimension}</div>
@@ -323,7 +323,7 @@ export function GoalFields(props: GoalFieldsProps) {
       }
       {selectedGoal?.id ? 
         <>
-          <h4>{window.themeConfig.text.crowdfunding.raiseGoalAmount}</h4>
+          <h4 className="n3o-h4">{window.themeConfig.text.crowdfunding.raiseGoalAmount}</h4>
           <div className="n3o-cta__input active">
             <label className="n3o-large" htmlFor="openAmount">
               {props.data?.currency?.symbol}

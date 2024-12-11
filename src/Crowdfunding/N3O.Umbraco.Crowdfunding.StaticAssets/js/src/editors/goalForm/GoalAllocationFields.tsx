@@ -15,7 +15,7 @@ export function GoalAllocationFields({field, fieldIndex, goalIndex, register, co
     case FeedbackCustomFieldType.Text:
       return (
         <label className="n3o-input__outer" key={`text-${fieldIndex}`}>
-          <h4>{field.name}</h4>
+          <h4 className="n3o-h4">{field.name}</h4>
           <div
             className="n3o-input big"
             style={{
@@ -40,7 +40,7 @@ export function GoalAllocationFields({field, fieldIndex, goalIndex, register, co
     case FeedbackCustomFieldType.Date:
       return (
         <label className="n3o-input__outer" key={`date-${fieldIndex}`}>
-          <h4>{field.name}</h4>
+          <h4 className="n3o-h4">{field.name}</h4>
           <div
             className="n3o-setting__date-input big"
             style={{

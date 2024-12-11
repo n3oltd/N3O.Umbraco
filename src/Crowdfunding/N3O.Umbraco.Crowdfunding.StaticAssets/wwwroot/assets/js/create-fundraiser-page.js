@@ -205,7 +205,7 @@ class n3o_cdf_FieldHandler {
         const label = document.createElement('label');
         label.classList.add('n3o-input__outer');
         label.classList.add('field');
-        label.innerHTML = `<h4>${field.name} ${field.required ? '*' : ''}</h4>
+        label.innerHTML = `<h4 class="n3o-h4">${field.name} ${field.required ? '*' : ''}</h4>
                                    <div class="n3o-input big">
                                      <input type="text" maxlength=${field.textMaxLength > 0 ? field.textMaxLength.toString() : ''} placeholder="" ${field.required ? 'required' : ''} />
                                    </div>`;
@@ -216,7 +216,7 @@ class n3o_cdf_FieldHandler {
         const label = document.createElement('label');
         label.classList.add('n3o-check__outer');
         label.classList.add('field');
-        label.innerHTML = `<h4>${field.name} ${field.required ? '*' : ''}</h4>
+        label.innerHTML = `<h4 class="n3o-h4">${field.name} ${field.required ? '*' : ''}</h4>
                                    <label class="n3o-check">
                                      <div class="n3o-check__box">
                                        <input type="checkbox" ${field.required ? 'required' : ''} />
@@ -246,7 +246,7 @@ class n3o_cdf_FieldHandler {
         const label = document.createElement('label');
         label.classList.add('n3o-input__outer');
         label.classList.add('field');
-        label.innerHTML = `<h4>${field.name} ${field.required ? '*' : ''}</h4>
+        label.innerHTML = `<h4 class="n3o-h4">${field.name} ${field.required ? '*' : ''}</h4>
                                    <div class="n3o-setting__date-input big">
                                      <input
                                        type="text"
