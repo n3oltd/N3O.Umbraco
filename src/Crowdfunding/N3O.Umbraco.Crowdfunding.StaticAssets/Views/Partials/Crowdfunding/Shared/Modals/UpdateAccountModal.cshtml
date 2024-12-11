@@ -42,8 +42,9 @@
     @Html.Raw(ContentCache.Single<DataEntrySettingsContent>().JavaScript)
 
     document.addEventListener("DOMContentLoaded", () => {
-        const account = @Html.Raw(Json.Serialize(Model.Picked));
+        const account = @Html.Raw(Json.Serialize(Model.Picked));        
         
         n3o_cdf_updateAccount(account);
+        n3o_initialize_account();
     });
 </script>
