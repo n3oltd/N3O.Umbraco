@@ -70,7 +70,7 @@ public class UserDirectoryIdAccessor : IUserDirectoryIdAccessor {
 
     private async Task<string> GetMemberEmailAsync() {
         var publishedMember = await _memberManager.Value.GetCurrentPublishedMemberAsync();
-        var member = _memberService.Value.GetById(publishedMember.Id);
+        var member = publishedMember.IfNotNull(x => _memberService.Value.GetById(x.Id));
 
         return member?.Email;
     }
