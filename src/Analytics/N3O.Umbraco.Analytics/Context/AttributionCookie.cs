@@ -2,6 +2,7 @@
 using N3O.Umbraco.Context;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Web;
 
 namespace N3O.Umbraco.Analytics.Context;
 
@@ -12,7 +13,7 @@ public class AttributionCookie : Cookie {
         var jObject = default(JObject);
 
         try {
-            jObject = JObject.Parse(GetValue());
+            jObject = JObject.Parse(HttpUtility.UrlDecode(GetValue()));
         } catch {
             jObject = null;
         }
