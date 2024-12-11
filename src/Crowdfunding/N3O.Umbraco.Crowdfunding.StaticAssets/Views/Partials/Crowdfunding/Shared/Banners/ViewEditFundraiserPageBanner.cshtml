@@ -43,7 +43,7 @@
     }
 </div>
 
-@if (true) {
+@if (Model.HasPendingGoalsWithPricing) {
     var id = "viewEditFundraiserPageBanner";
     var title = PartialText.Get("Unable to deactivate");
     var description = PartialText.Get("As your page contains one or more special projects, please contact us for assistance closing your fundraiser");
