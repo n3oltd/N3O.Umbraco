@@ -34,7 +34,8 @@ public interface IContributionRepository {
                                      string fundDimension3,
                                      string fundDimension4,
                                      Money value,
-                                     GivingType givingType);
+                                     GivingType givingType,
+                                     string summary);
 
     Task CommitAsync();
     void DeleteOfflineContributions(Guid crowdfunderId);

@@ -22,7 +22,7 @@ public partial class GetDashboardStatisticsHandler {
         
         var topCrowdfunders = await GetTopCrowdfunderRowsAsync(db, type, from, to);
         var activeCrowdfundersCount = await GetActiveCrowdfundersCountAsync(db, type, from, to);
-        var completedPercentage = await GetCompletedPercentageAsync(db, from, to);
+        var completedPercentage = await GetCompletedPercentageAsync(db, type, from, to);
         
         res.Count = activeCrowdfundersCount;
         res.AveragePercentageComplete = completedPercentage;
@@ -38,14 +38,14 @@ public partial class GetDashboardStatisticsHandler {
                                                             CrowdfunderType type,
                                                             DateTime? from,
                                                             DateTime? to) {
-        var totalActiveCampaignsQuery = Sql.Builder
-                                           .Select("COUNT(*)")
+        var totalActiveCrowdfundersQuery = Sql.Builder
+                                           .Select($"COUNT(DISTINCT {nameof(CrowdfunderRevision.ContentKey)})")
                                            .From($"{CrowdfundingConstants.Tables.CrowdfunderRevisions.Name}")
                                            .Where($"{nameof(CrowdfunderRevision.Type)} = {(int) type.Key}")
                                            .Append($"AND {nameof(CrowdfunderRevision.ActiveFrom)} <= '{to}'")
                                            .Append($"AND ({nameof(CrowdfunderRevision.ActiveTo)} IS NULL OR {nameof(CrowdfunderRevision.ActiveTo)} >= '{from}')");
         
-        var count = await db.ExecuteScalarAsync<int>(totalActiveCampaignsQuery);
+        var count = await db.ExecuteScalarAsync<int>(totalActiveCrowdfundersQuery);
         
         return count;
     }
@@ -78,11 +78,14 @@ public partial class GetDashboardStatisticsHandler {
         return rows;
     }
     
-    private async Task<decimal> GetCompletedPercentageAsync(IUmbracoDatabase db, DateTime? from, DateTime? to) {
+    private async Task<decimal> GetCompletedPercentageAsync(IUmbracoDatabase db,
+                                                            CrowdfunderType type,
+                                                            DateTime? from,
+                                                            DateTime? to) {
         var latestRevisions = Sql.Builder
                                  .Select($"{nameof(CrowdfunderRevision.ContentKey)}, MAX({nameof(CrowdfunderRevision.ContentRevision)}) AS MaxRevision")
                                  .From($"{CrowdfundingConstants.Tables.CrowdfunderRevisions.Name}")
-                                 .Where($"{nameof(CrowdfunderRevision.Type)} = {(int) CrowdfunderTypes.Campaign.Key} AND {nameof(CrowdfunderRevision.ActiveFrom)} <= '{to}'")
+                                 .Where($"{nameof(CrowdfunderRevision.Type)} = {(int) type.Key} AND {nameof(CrowdfunderRevision.ActiveFrom)} <= '{to}'")
                                  .Append($"AND ({nameof(CrowdfunderRevision.ActiveTo)} IS NULL OR {nameof(CrowdfunderRevision.ActiveTo)} >= '{from}')")
                                  .GroupBy($"{nameof(CrowdfunderRevision.ContentKey)}");
         
@@ -91,21 +94,21 @@ public partial class GetDashboardStatisticsHandler {
                                      .From($"{CrowdfundingConstants.Tables.CrowdfunderRevisions.Name} CR")
                                      .InnerJoin($"({latestRevisions.SQL}) AS LR") 
                                      .On($"CR.{nameof(CrowdfunderRevision.ContentKey)} = LR.{nameof(CrowdfunderRevision.ContentKey)} AND CR.{nameof(CrowdfunderRevision.ContentRevision)} = LR.MaxRevision")
-                                     .Where($"CR.{nameof(CrowdfunderRevision.Type)} = {(int) CrowdfunderTypes.Campaign.Key}")
+                                     .Where($"CR.{nameof(CrowdfunderRevision.Type)} = {(int) type.Key}")
                                      .GroupBy($"CR.{nameof(CrowdfunderRevision.ContentKey)}");
         
-        var campaignContributionsSql = Sql.Builder
-                                          .Select($"C.{nameof(Contribution.CrowdfunderId)}, SUM(C.{nameof(Contribution.BaseAmount)} + C.{nameof(Contribution.TaxReliefBaseAmount)}) AS TotalContributions")
-                                          .From($"{CrowdfundingConstants.Tables.Contributions.Name} C")
-                                          .InnerJoin($"({latestRevisions.SQL}) AS LR")
-                                          .On($"C.{nameof(Contribution.CrowdfunderId)} = LR.{nameof(CrowdfunderRevision.ContentKey)}")
-                                          .Where($"C.{nameof(Contribution.Date)} BETWEEN '{from}' AND '{to}'")
-                                          .GroupBy($"C.{nameof(Contribution.CrowdfunderId)}");
+        var crowdfunderContributionsSql = Sql.Builder
+                                             .Select($"C.{nameof(Contribution.CrowdfunderId)}, SUM(C.{nameof(Contribution.BaseAmount)} + C.{nameof(Contribution.TaxReliefBaseAmount)}) AS TotalContributions")
+                                             .From($"{CrowdfundingConstants.Tables.Contributions.Name} C")
+                                             .InnerJoin($"({latestRevisions.SQL}) AS LR")
+                                             .On($"C.{nameof(Contribution.CrowdfunderId)} = LR.{nameof(CrowdfunderRevision.ContentKey)}")
+                                             .Where($"C.{nameof(Contribution.Date)} BETWEEN '{from}' AND '{to}'")
+                                             .GroupBy($"C.{nameof(Contribution.CrowdfunderId)}");
         
         var percentageCompletedSql = Sql.Builder
                                       .Select("AVG(CASE WHEN CG.TotalGoals > 0 THEN (CC.TotalContributions / CG.TotalGoals) * 100 ELSE 0 END) AS AveragePercentageComplete")
                                       .From($"({crowdfunderGoalsSql.SQL}) AS CG")
-                                      .InnerJoin($"({campaignContributionsSql.SQL}) AS CC")
+                                      .InnerJoin($"({crowdfunderContributionsSql.SQL}) AS CC")
                                       .On($"CG.{nameof(CrowdfunderRevision.ContentKey)} = CC.{nameof(Contribution.CrowdfunderId)}");
         
         var percentageComplete = await db.ExecuteScalarAsync<decimal>(percentageCompletedSql);

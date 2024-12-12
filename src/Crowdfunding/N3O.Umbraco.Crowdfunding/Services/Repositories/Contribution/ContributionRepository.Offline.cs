@@ -1,8 +1,9 @@
 ﻿using N3O.Umbraco.Crowdfunding.Models;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Allocations.Lookups;
+using N3O.Umbraco.Localization;
 using NodaTime;
-using NodaTime.Extensions;
 using System;
 using System.Threading.Tasks;
 
@@ -21,8 +22,9 @@ public partial class ContributionRepository {
                                                   string fundDimension3,
                                                   string fundDimension4,
                                                   Money value,
-                                                  GivingType givingType) {
-        var timestamp = date.ToDateTimeUnspecified().ToInstant();
+                                                  GivingType givingType,
+                                                  string summary) {
+        var timestamp = date.ToDateTimeUnspecified().InTimezone(Timezones.Utc).ToInstant();
         
         var contribution = await GetContributionAsync(ContributionType.Offline,
                                                       crowdfunderInfo.Type,
@@ -40,6 +42,7 @@ public partial class ContributionRepository {
                                                       fundDimension4,
                                                       givingType,
                                                       value,
+                                                      summary,
                                                       null);
         
         _toCommit.Add(contribution);

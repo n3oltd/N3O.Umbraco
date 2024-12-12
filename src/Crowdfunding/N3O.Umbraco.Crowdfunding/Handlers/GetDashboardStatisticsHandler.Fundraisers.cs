@@ -27,7 +27,7 @@ public partial class GetDashboardStatisticsHandler {
         
         await PopulateCrowdfunderAsync(db, CrowdfunderTypes.Fundraiser, criteria, res.Fundraisers);
         
-        res.Fundraisers.ActiveCount = res.Fundraisers.ActiveCount;
+        res.Fundraisers.ActiveCount = res.Fundraisers.Count;
         res.Fundraisers.NewCount = newFundraiser;
         res.Fundraisers.CompletedCount = completedFundraiser;
         res.Fundraisers.ByCampaign = fundraisersByCampaign.Select(x => new FundraiserByCampaignStatisticsRes {
@@ -38,10 +38,10 @@ public partial class GetDashboardStatisticsHandler {
 
     private async Task<int> GetNewFundraisersAsync(IUmbracoDatabase db, DateTime? from, DateTime? to) {
         var newFundraisers = Sql.Builder
-                                .Select("COUNT(*) AS NewCount")
+                                .Select($"COUNT(DISTINCT {nameof(CrowdfunderRevision.ContentKey)})")
                                 .From($"{CrowdfundingConstants.Tables.CrowdfunderRevisions.Name}")
                                 .Where($"{nameof(CrowdfunderRevision.Type)} = {(int) CrowdfunderTypes.Fundraiser.Key} AND {nameof(CrowdfunderRevision.ActiveFrom)} BETWEEN '{from}' AND '{to}'");
-        
+                
         var count = await db.ExecuteScalarAsync<int>(newFundraisers);
         
         return count;
