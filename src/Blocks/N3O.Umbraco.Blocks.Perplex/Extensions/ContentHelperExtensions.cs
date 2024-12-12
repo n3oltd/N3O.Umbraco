@@ -1,4 +1,5 @@
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Extensions;
 using Perplex.ContentBlocks.PropertyEditor;
 using System;
 using Umbraco.Cms.Core.Models;

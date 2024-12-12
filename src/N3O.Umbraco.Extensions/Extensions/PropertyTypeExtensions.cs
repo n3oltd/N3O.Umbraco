@@ -21,7 +21,11 @@ public static class PropertyTypeExtensions {
     }
 
     public static bool IsNestedContent(this IPropertyType propertyType) {
-        return propertyType.HasEditorAlias(Aliases.NestedContent) || propertyType.HasEditorAlias("Perplex.ContentBlocks");
+        return propertyType.HasEditorAlias(Aliases.NestedContent);
+    }
+    
+    public static bool IsPerplexBlocks(this IPropertyType propertyType) {
+        return propertyType.HasEditorAlias("Perplex.ContentBlocks");
     }
     
     public static bool IsPicker(this IPropertyType propertyType) {
