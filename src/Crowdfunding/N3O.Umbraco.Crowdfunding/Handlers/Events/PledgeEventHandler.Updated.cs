@@ -64,7 +64,8 @@ public class PledgeUpdatedHandler : PledgeEventHandler<PledgeUpdatedEvent> {
                                                                       offlineDonation.FundDimensionValues.Dimension3,
                                                                       offlineDonation.FundDimensionValues.Dimension4,
                                                                       value,
-                                                                      GivingTypes.Donation);
+                                                                      GivingTypes.Donation,
+                                                                      offlineDonation.Summary);
         }
         
         _contributionRepository.DeleteOfflineContributions(pledge.Crowdfunder.Id);

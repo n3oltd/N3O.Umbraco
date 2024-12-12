@@ -31,6 +31,7 @@ public partial class ContributionRepository {
                                                       allocation.FundDimensions.Dimension4?.Name,
                                                       givingType,
                                                       allocation.Value,
+                                                      allocation.Summary,
                                                       allocation);
         
         _toCommit.Add(contribution);

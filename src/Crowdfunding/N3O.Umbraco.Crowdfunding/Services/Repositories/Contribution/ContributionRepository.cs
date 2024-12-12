@@ -109,6 +109,7 @@ public partial class ContributionRepository : IContributionRepository {
                                                           string fundDimension4,
                                                           GivingType givingType,
                                                           Money value,
+                                                          string summary,
                                                           Allocation allocation) {
         var crowdfunder = _contentLocator.GetCrowdfunderContent(crowdfunderId, crowdfunderType);
 
@@ -140,7 +141,7 @@ public partial class ContributionRepository : IContributionRepository {
         contribution.QuoteAmount = value.Amount;
         contribution.BaseAmount = baseForex.Base.Amount;
         contribution.CrowdfunderAmount = crowdfunderForex.Base.Amount;
-        contribution.TaxReliefQuoteAmount = taxRelief ? taxReliefScheme.GetAllowanceValue(date, allocation.Value).Amount : 0m;
+        contribution.TaxReliefQuoteAmount = taxRelief ? taxReliefScheme.GetAllowanceValue(date, value).Amount : 0m;
         contribution.TaxReliefBaseAmount = taxRelief ? taxReliefScheme.GetAllowanceValue(date, baseForex.Base).Amount : 0m;
         contribution.TaxReliefCrowdfunderAmount = taxRelief ? taxReliefScheme.GetAllowanceValue(date, crowdfunderForex.Base).Amount : 0m;
         contribution.Anonymous = anonymous;
@@ -149,7 +150,7 @@ public partial class ContributionRepository : IContributionRepository {
         contribution.Comment = comment;
         contribution.Status = ContributionStatuses.Visible;
         contribution.ContributionType = (int) type;
-        contribution.AllocationSummary = allocation.Summary;
+        contribution.AllocationSummary = summary;
         contribution.FundDimension1 = fundDimension1;
         contribution.FundDimension2 = fundDimension2;
         contribution.FundDimension3 = fundDimension3;
