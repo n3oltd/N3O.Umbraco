@@ -145,18 +145,17 @@
                 const crowdfundingCartItemReq = {};
                 const goalValue = {};
 
-                const goalPriceElement = document.querySelector(`input[name='goal-price-${goalId}']`);
-                const customPriceElement = document.querySelector(`input[name='custom-goal-${goalId}']`);
-
-                const hasAmount = goalPriceElement.checked || customPriceElement.checked;
+                const goalPriceElement = document.querySelector(`input[name='goal-price-${goalId}']:checked`);
+                const customPriceElement = document.querySelector(`input[name='custom-goal-${goalId}']:checked`);
+                const hasAmount = goalPriceElement !== null || customPriceElement !== null;
 
                 if (!hasAmount) {
                     return
                 }
 
-                if (goalPriceElement.checked) {
+                if (goalPriceElement != null) {
                     goalValue.amount = goalPriceElement.dataset[`goalAmount${capitalizeFirstLetter(n3oSelectedCurrency)}`];
-                } else if (customPriceElement.checked) {
+                } else if (customPriceElement != null) {
                     goalValue.amount = document.querySelector(`#goal-custom-amount-${goalId}`).value;
                 }
 
