@@ -17,6 +17,7 @@ public partial class Checkout : Entity, IPaymentsFlow {
     public DonationCheckout Donation { get; private set; }
     public RegularGivingCheckout RegularGiving { get; private set; }
     public IPAddress RemoteIp { get; private set; }
+    public object Attribution { get; private set; }
 
     public bool IsComplete => Progress.RequiredStages.All(x => x.IsComplete(this));
 }

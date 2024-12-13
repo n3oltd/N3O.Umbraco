@@ -1,5 +1,4 @@
 using Humanizer;
-using N3O.Umbraco.Analytics;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
@@ -22,16 +21,13 @@ namespace N3O.Umbraco.Giving.Checkout.Webhooks;
 public class CheckoutWebhookTransform : WebhookTransform {
     private static readonly string RestrictCollectionDaysToAlias =
         AliasHelper<PaymentMethodSettingsContent<IPaymentMethodSettings>>.PropertyAlias(x => x.RestrictCollectionDaysTo);
-    
+
     private readonly IContentCache _contentCache;
-    private readonly IAttributionAccessor _attributionAccessor;
 
     public CheckoutWebhookTransform(IJsonProvider jsonProvider,
-                                    IContentCache contentCache,
-                                    IAttributionAccessor attributionAccessor) 
+                                    IContentCache contentCache)
         : base(jsonProvider) {
         _contentCache = contentCache;
-        _attributionAccessor = attributionAccessor;
     }
 
     public override bool IsTransform(object body) => body is Entities.Checkout;
@@ -48,7 +44,6 @@ public class CheckoutWebhookTransform : WebhookTransform {
         TransformFeedbacks(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject);
         TransformSponsorships(serializer, GivingTypes.Donation, checkout.Donation?.Allocations, jObject, checkout.Timestamp);
         TransformSponsorships(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject, checkout.Timestamp);
-        TransformAttributions(jObject);
 
         return jObject;
     }
@@ -67,10 +62,6 @@ public class CheckoutWebhookTransform : WebhookTransform {
         }
     }
 
-    private void TransformAttributions(JObject jObject) {
-        jObject["attribution"] = _attributionAccessor.GetAttribution();
-    }
-
     private void TransformConsent(Entities.Checkout checkout, JObject jObject) {
         var choices = checkout.Account.Consent.Choices.ToList();
         var channels = choices.Select(x => x.Channel).Distinct().ToList();
@@ -85,7 +76,7 @@ public class CheckoutWebhookTransform : WebhookTransform {
             consent[choice.Channel.Id][choice.Category.Id] = choice.Response.Value;
         }
     }
-    
+
     private void TransformCollectionDay(Entities.Checkout checkout, JObject jObject) {
         if (checkout.RegularGiving.HasValue(x => x.Credential) && checkout.RegularGiving.HasValue(x => x.Options)) {
             var allowedCollectionDays = GetAllowedCollectionDays(checkout.RegularGiving.Credential.Method);
