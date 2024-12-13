@@ -1,4 +1,5 @@
 using N3O.Umbraco.Accounts.Models;
+using N3O.Umbraco.Analytics;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Extensions;
@@ -16,22 +17,25 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccountCommand, Accoun
     private readonly IRepository<Entities.Checkout> _repository;
     private readonly IUmbracoMapper _mapper;
     private readonly IContentCache _contentCache;
+    private readonly IAttributionAccessor _attributionAccessor;
     private readonly ITaxReliefSchemeAccessor _taxReliefSchemeAccessor;
 
     public UpdateAccountHandler(IRepository<Entities.Checkout> repository,
                                 IUmbracoMapper mapper,
                                 IContentCache contentCache,
+                                IAttributionAccessor attributionAccessor,
                                 ITaxReliefSchemeAccessor taxReliefSchemeAccessor) {
         _repository = repository;
         _mapper = mapper;
         _contentCache = contentCache;
+        _attributionAccessor = attributionAccessor;
         _taxReliefSchemeAccessor = taxReliefSchemeAccessor;
     }
 
     public async Task<CheckoutRes> Handle(UpdateAccountCommand req, CancellationToken cancellationToken) {
         var checkout = await req.CheckoutRevisionId.RunAsync(_repository.GetAsync, true, cancellationToken);
 
-        checkout.UpdateAccount(_contentCache, _taxReliefSchemeAccessor, account => {
+        checkout.UpdateAccount(_contentCache, _attributionAccessor, _taxReliefSchemeAccessor, account => {
             if (req.Model.Individual.HasValue()) {
                 account = account.WithUpdatedIndividual(req.Model.Individual);
             }
@@ -39,11 +43,10 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccountCommand, Accoun
             if (req.Model.Organization.HasValue()) {
                 account = account.WithUpdatedOrganization(req.Model.Organization);
             }
-            
+
             if (req.Model.Type.HasValue()) {
                 account = account.WithUpdatedType(req.Model.Type);
             }
-            
 
             if (req.Model.Address.HasValue()) {
                 account = account.WithUpdatedAddress(req.Model.Address);
