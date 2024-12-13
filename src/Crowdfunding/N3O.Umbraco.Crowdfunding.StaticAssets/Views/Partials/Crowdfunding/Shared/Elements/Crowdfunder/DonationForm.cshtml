@@ -250,7 +250,7 @@
                 showDonationSummaryModal();
             }
         }
-        
+
         function handleCurrencySelection() {
             const currencyPickers = document.querySelectorAll('.n3o-currency-picker');
 
@@ -261,28 +261,50 @@
                     let currencySymbol = selectedOption.getAttribute('data-symbol');
 
                     let success = changeCurrency(currencyId);
-                    
+
                     if (!success) {
                         return;
                     }
 
                     n3oSelectedCurrency = currencyId;
-                    
+
                     let currencyLabels = document.querySelectorAll('.n3o-currency-label');
-                    
+
                     currencyLabels.forEach(function(label) {
                         label.textContent = currencySymbol;
                     });
-                    
+
                     let goalPriceHandles = document.querySelectorAll('.n3o-ctaFund__item');
-                    
+                    let goalPriceCustomAmounts = document.querySelectorAll('.n3o-ctaAmount');
+
+                    let totalSubmitAmount = 0;
+
                     goalPriceHandles.forEach(function (priceHandle) {
                         let inputElement = priceHandle.querySelector('input');
                         let goalAmount = inputElement.getAttribute(`data-goal-amount-${n3oSelectedCurrency}`);
                         let h3Element= priceHandle.querySelector('h3');
-                        
+
+                        if (inputElement.checked) {
+                            totalSubmitAmount += Number(goalAmount);
+                        }
+
                         h3Element.textContent = window.themeConfig.formatter.number.formatMoney(goalAmount, currencyId);
                     });
+
+                    goalPriceCustomAmounts.forEach(function (customAmount) {
+                        let checkboxElement = customAmount.querySelector('[name^="custom-goal-"]');
+
+                        let inputElement = customAmount.querySelector('[id^="goal-custom-amount-"]');
+                        let goalAmount = inputElement.value;
+
+                        if (checkboxElement.checked) {
+                            totalSubmitAmount += Number(goalAmount);
+                        }
+                    })
+
+                    let submitDonationButtonSpan = document.getElementById('submit-donation').querySelector("span");
+
+                    submitDonationButtonSpan.innerHTML = currencySymbol + totalSubmitAmount;                    
 
                     currencyPickers.forEach( otherPicker => {
                         otherPicker.value = n3oSelectedCurrency;

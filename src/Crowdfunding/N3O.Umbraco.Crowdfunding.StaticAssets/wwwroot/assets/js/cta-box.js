@@ -134,7 +134,7 @@
         
         if (e.target.checked) {
           ctaItem.classList.add("active");
-          ctaAmount.classList.remove("submit3");
+          ctaAmount.classList.remove("active");
           ctaInput.setAttribute("disabled", true);
           ctaCheckbox.checked = false;
           
