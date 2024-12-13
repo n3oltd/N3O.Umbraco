@@ -36,9 +36,10 @@ public class UpdateAccountConsentHandler :
         var checkout = await req.CheckoutRevisionId.RunAsync(_repository.GetAsync, true, cancellationToken);
 
         checkout.UpdateAccount(_contentCache,
-                               _attributionAccessor,
                                _taxReliefSchemeAccessor,
                                account => account.WithUpdatedConsent(req.Model));
+        
+        checkout.UpdateAttribution(_attributionAccessor);
 
         await _repository.UpdateAsync(checkout);
 

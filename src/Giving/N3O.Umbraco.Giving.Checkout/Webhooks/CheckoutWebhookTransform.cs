@@ -24,9 +24,7 @@ public class CheckoutWebhookTransform : WebhookTransform {
 
     private readonly IContentCache _contentCache;
 
-    public CheckoutWebhookTransform(IJsonProvider jsonProvider,
-                                    IContentCache contentCache)
-        : base(jsonProvider) {
+    public CheckoutWebhookTransform(IJsonProvider jsonProvider, IContentCache contentCache) : base(jsonProvider) {
         _contentCache = contentCache;
     }
 

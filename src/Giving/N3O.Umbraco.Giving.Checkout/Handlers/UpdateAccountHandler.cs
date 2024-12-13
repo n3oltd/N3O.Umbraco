@@ -35,7 +35,7 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccountCommand, Accoun
     public async Task<CheckoutRes> Handle(UpdateAccountCommand req, CancellationToken cancellationToken) {
         var checkout = await req.CheckoutRevisionId.RunAsync(_repository.GetAsync, true, cancellationToken);
 
-        checkout.UpdateAccount(_contentCache, _attributionAccessor, _taxReliefSchemeAccessor, account => {
+        checkout.UpdateAccount(_contentCache, _taxReliefSchemeAccessor, account => {
             if (req.Model.Individual.HasValue()) {
                 account = account.WithUpdatedIndividual(req.Model.Individual);
             }
@@ -71,6 +71,8 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccountCommand, Accoun
             return account;
         });
 
+        checkout.UpdateAttribution(_attributionAccessor);
+        
         await _repository.UpdateAsync(checkout);
 
         var res = _mapper.Map<Entities.Checkout, CheckoutRes>(checkout);
