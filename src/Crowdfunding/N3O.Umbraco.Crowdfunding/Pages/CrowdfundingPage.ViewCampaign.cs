@@ -92,7 +92,7 @@ public class ViewCampaignPage : CrowdfundingPage {
     }
 
     private List<FundraiserContent> GetFundraisersContent(Guid campaignId) {
-        var campaignFundraisers = ContentLocator.All<FundraiserContent>().Where(x => x.Campaign.Id == campaignId);
+        var campaignFundraisers = ContentLocator.All<FundraiserContent>().Where(x => x?.Campaign?.Id == campaignId);
         
         return campaignFundraisers.ToList();
     }
