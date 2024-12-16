@@ -62,7 +62,7 @@ function n3o_cdf_poolRequest(fetcher, successAction, ...args) {
                 successAction();
             }
         }
-    }, 15000)
+    }, 5000)
 }
 
 const n3o_cdf_checkAccountCreated = async accountId => {
