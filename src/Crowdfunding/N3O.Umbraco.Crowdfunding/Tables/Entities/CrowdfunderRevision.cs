@@ -62,4 +62,4 @@ public class CrowdfunderRevision {
     [Column(nameof(GoalCompletedOn))]
     [NullSetting(NullSetting = NullSettings.Null)]
     public DateTime? GoalCompletedOn { get; set; }
-}    
+}
