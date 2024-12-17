@@ -26,15 +26,18 @@ public class NotifyDraftFundraisersHandler : IRequestHandler<NotifyDraftFundrais
     private readonly ICrowdfundingNotifications _crowdfundingNotifications;
     private readonly ILocalClock _localClock;
     private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
+    private readonly ICrowdfundingUrlBuilder _crowdfundingUrlBuilder;
 
     public NotifyDraftFundraisersHandler(IContentLocator contentLocator,
                                          ICrowdfundingNotifications crowdfundingNotifications,
                                          ILocalClock localClock,
-                                         IUmbracoDatabaseFactory umbracoDatabaseFactory) {
+                                         IUmbracoDatabaseFactory umbracoDatabaseFactory,
+                                         ICrowdfundingUrlBuilder crowdfundingUrlBuilder) {
         _contentLocator = contentLocator;
         _crowdfundingNotifications = crowdfundingNotifications;
         _localClock = localClock;
         _umbracoDatabaseFactory = umbracoDatabaseFactory;
+        _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
     }
 
     public async Task<None> Handle(NotifyDraftFundraisersCommand req, CancellationToken cancellationToken) {
@@ -81,7 +84,7 @@ public class NotifyDraftFundraisersHandler : IRequestHandler<NotifyDraftFundrais
     }
     
     private void SendEmail(FundraiserContent fundraiser) {
-        var fundraiserContentViewModel = new FundraiserContentViewModel(fundraiser);
+        var fundraiserContentViewModel = new FundraiserContentViewModel(_crowdfundingUrlBuilder, fundraiser);
         var model = new FundraiserNotificationViewModel(fundraiserContentViewModel, null);
 
         _crowdfundingNotifications.Enqueue(FundraiserNotificationTypes.StillDraft ,model, fundraiser.Key);
