@@ -7,10 +7,10 @@ namespace N3O.Umbraco.Blocks.Perplex;
 public interface IPerplexBlockViewModel : IBlockViewModel, IContentBlockViewModel { }
 
 public interface IPerplexBlockViewModel<TBlock> :
-    IPerplexBlockViewModel, IBlockViewModel<TBlock>, IContentBlockViewModel<TBlock>
+    IPerplexBlockViewModel, IBlockViewModel<TBlock, None>, IContentBlockViewModel<TBlock>
     where TBlock : IPublishedElement { }
 
-public class PerplexBlockViewModel<TBlock> : BlockViewModel<TBlock>, IPerplexBlockViewModel<TBlock>
+public class PerplexBlockViewModel<TBlock> : BlockViewModel<TBlock, None>, IPerplexBlockViewModel<TBlock>
     where TBlock : IPublishedElement {
 
     public PerplexBlockViewModel(PerplexBlockParameters<TBlock> parameters) : base(parameters){
