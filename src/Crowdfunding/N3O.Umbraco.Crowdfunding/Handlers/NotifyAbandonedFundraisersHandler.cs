@@ -26,15 +26,18 @@ public class NotifyAbandonedFundraisersHandler : IRequestHandler<NotifyAbandoned
     private readonly ICrowdfundingNotifications _crowdfundingNotifications;
     private readonly ILocalClock _localClock;
     private readonly IUmbracoDatabaseFactory _umbracoDatabaseFactory;
+    private readonly ICrowdfundingUrlBuilder _crowdfundingUrlBuilder;
 
     public NotifyAbandonedFundraisersHandler(IContentLocator contentLocator,
                                              ICrowdfundingNotifications crowdfundingNotifications,
                                              ILocalClock localClock,
-                                             IUmbracoDatabaseFactory umbracoDatabaseFactory) {
+                                             IUmbracoDatabaseFactory umbracoDatabaseFactory,
+                                             ICrowdfundingUrlBuilder crowdfundingUrlBuilder) {
         _contentLocator = contentLocator;
         _crowdfundingNotifications = crowdfundingNotifications;
         _localClock = localClock;
         _umbracoDatabaseFactory = umbracoDatabaseFactory;
+        _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
     }
 
     public async Task<None> Handle(NotifyAbandonedFundraisersCommand req, CancellationToken cancellationToken) {
@@ -82,7 +85,7 @@ public class NotifyAbandonedFundraisersHandler : IRequestHandler<NotifyAbandoned
     }
     
     private void SendEmail(FundraiserContent fundraiser) {
-        var fundraiserContentViewModel = new FundraiserContentViewModel(fundraiser);
+        var fundraiserContentViewModel = new FundraiserContentViewModel(_crowdfundingUrlBuilder, fundraiser);
         var model = new FundraiserNotificationViewModel(fundraiserContentViewModel, null);
 
         _crowdfundingNotifications.Enqueue(FundraiserNotificationTypes.FundraiserAbandoned, model, fundraiser.Key);

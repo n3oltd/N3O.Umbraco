@@ -17,15 +17,18 @@ public class RecalculateContributionTotalsHandler : IRequestHandler<RecalculateC
     private readonly ICrowdfunderRepository _crowdfunderRepository;
     private readonly ICrowdfunderRevisionRepository _crowdfunderRevisionRepository;
     private readonly ICrowdfundingNotifications _crowdfundingNotifications;
+    private readonly ICrowdfundingUrlBuilder _crowdfundingUrlBuilder;
 
     public RecalculateContributionTotalsHandler(ICrowdfunderRepository crowdfunderRepository,
                                                 ICrowdfunderRevisionRepository crowdfunderRevisionRepository,
                                                 IContentLocator contentLocator,
-                                                ICrowdfundingNotifications crowdfundingNotifications) {
+                                                ICrowdfundingNotifications crowdfundingNotifications,
+                                                ICrowdfundingUrlBuilder crowdfundingUrlBuilder) {
         _crowdfunderRepository = crowdfunderRepository;
         _crowdfunderRevisionRepository = crowdfunderRevisionRepository;
         _contentLocator = contentLocator;
         _crowdfundingNotifications = crowdfundingNotifications;
+        _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
     }
 
     public async Task<None> Handle(RecalculateContributionTotalsCommand req, CancellationToken cancellationToken) {
@@ -50,7 +53,7 @@ public class RecalculateContributionTotalsHandler : IRequestHandler<RecalculateC
     }
 
     private void EnqueueFundraiserNotificationEmail(Crowdfunder crowdfunder, FundraiserContent fundraiser) {
-        var fundraiserContentViewModel = new FundraiserContentViewModel(fundraiser);
+        var fundraiserContentViewModel = new FundraiserContentViewModel(_crowdfundingUrlBuilder, fundraiser);
         var goalsTotalViewModel = new FundraiserGoalsTotalViewModel(crowdfunder.GoalsTotalBase,
                                                                     crowdfunder.ContributionsTotalBase);
         

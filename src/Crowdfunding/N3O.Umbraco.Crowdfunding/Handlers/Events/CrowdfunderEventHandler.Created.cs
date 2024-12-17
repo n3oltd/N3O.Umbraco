@@ -16,15 +16,18 @@ namespace N3O.Umbraco.Crowdfunding.Events;
 public class CrowdfunderCreatedHandler : CrowdfunderEventHandler<CrowdfunderCreatedEvent> {
     private readonly IContentLocator _contentLocator;
     private readonly ICrowdfundingNotifications _crowdfundingNotifications;
+    private readonly ICrowdfundingUrlBuilder _crowdfundingUrlBuilder;
 
     public CrowdfunderCreatedHandler(AsyncKeyedLocker<string> asyncKeyedLocker,
                                      IContentService contentService,
                                      IContentLocator contentLocator,
                                      ICrowdfunderRevisionRepository crowdfunderRevisionRepository,
-                                     ICrowdfundingNotifications crowdfundingNotifications)
+                                     ICrowdfundingNotifications crowdfundingNotifications,
+                                     ICrowdfundingUrlBuilder crowdfundingUrlBuilder)
         : base(asyncKeyedLocker, contentService, contentLocator, crowdfunderRevisionRepository) {
         _contentLocator = contentLocator;
         _crowdfundingNotifications = crowdfundingNotifications;
+        _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
     }
 
     protected override async Task HandleEventAsync(CrowdfunderCreatedEvent req, CancellationToken cancellationToken) {
@@ -42,9 +45,9 @@ public class CrowdfunderCreatedHandler : CrowdfunderEventHandler<CrowdfunderCrea
 
     private void SendFundraiserCreatedEmail(IContent content) {
         var fundraiser = _contentLocator.ById<FundraiserContent>(content.Key);
-        var fundraiserContentViewModel = new FundraiserContentViewModel(fundraiser);
+        var fundraiserContentViewModel = new FundraiserContentViewModel(_crowdfundingUrlBuilder, fundraiser);
         var model = new FundraiserNotificationViewModel(fundraiserContentViewModel, null);
 
-        _crowdfundingNotifications.Enqueue(FundraiserNotificationTypes.StillDraft, model, fundraiser.Key);
+        _crowdfundingNotifications.Enqueue(FundraiserNotificationTypes.FundraiserCreated, model, fundraiser.Key);
     }
 }
