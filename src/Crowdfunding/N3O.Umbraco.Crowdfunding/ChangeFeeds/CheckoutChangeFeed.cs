@@ -34,6 +34,7 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
     private readonly IJsonProvider _jsonProvider;
     private readonly IContentLocator _contentLocator;
     private readonly IEmailBuilder _emailBuilder;
+    private readonly ICrowdfundingUrlBuilder _crowdfundingUrlBuilder;
     
     public CheckoutChangeFeed(ILogger<CheckoutChangeFeed> logger,
                               IBackgroundJob backgroundJob,
@@ -42,7 +43,8 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
                               IContributionRepository contributionRepository,
                               IJsonProvider jsonProvider,
                               IContentLocator contentLocator,
-                              IEmailBuilder emailBuilder) 
+                              IEmailBuilder emailBuilder,
+                              ICrowdfundingUrlBuilder crowdfundingUrlBuilder) 
         : base(logger) {
         _contributionRepository = contributionRepository;
         _backgroundJob = backgroundJob;
@@ -51,6 +53,7 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
         _formatter = formatter;
         _contentLocator = contentLocator;
         _emailBuilder = emailBuilder;
+        _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
     }
     
     protected override async Task ProcessChangeAsync(EntityChange<Checkout> entityChange) {
@@ -123,7 +126,7 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
             var fundraiser = _contentLocator.ById<FundraiserContent>(crowdfunderData.Id);
             var template = _contentLocator.ById<FundraiserContributionReceivedTemplateContent>(crowdfunderData.Id);
 
-            var model = new FundraiserContributionReceivedViewModel(new FundraiserContentViewModel(fundraiser),
+            var model = new FundraiserContributionReceivedViewModel(new FundraiserContentViewModel(_crowdfundingUrlBuilder, fundraiser),
                                                                     checkout.SessionEntity,
                                                                     allocation,
                                                                     crowdfunderData);

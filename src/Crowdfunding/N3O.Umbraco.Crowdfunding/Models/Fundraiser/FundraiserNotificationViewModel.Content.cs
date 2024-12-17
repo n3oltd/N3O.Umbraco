@@ -1,14 +1,17 @@
 ﻿using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Financial;
+using Newtonsoft.Json;
 using System;
 using System.Linq;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class FundraiserContentViewModel {
+    [JsonConstructor]
     public FundraiserContentViewModel(string fundraiserEmail,
                                       string fundraiserName,
+                                      string fundraiserLink,
                                       string title,
                                       string campaignName,
                                       DateTime createdOn,
@@ -17,6 +20,7 @@ public class FundraiserContentViewModel {
                                       Currency currency) {
         FundraiserEmail = fundraiserEmail;
         FundraiserName = fundraiserName;
+        FundraiserLink = fundraiserLink;
         Title = title;
         CampaignName = campaignName;
         CreatedOn = createdOn;
@@ -25,9 +29,10 @@ public class FundraiserContentViewModel {
         Currency = currency;
     }
 
-    public FundraiserContentViewModel(FundraiserContent fundraiser)
+    public FundraiserContentViewModel(ICrowdfundingUrlBuilder crowdfundingUrlBuilder, FundraiserContent fundraiser)
         : this(fundraiser.Owner.Email,
                fundraiser.Owner.Name,
+               fundraiser.Url(crowdfundingUrlBuilder),
                fundraiser.Name,
                fundraiser.CampaignName,
                fundraiser.CreatedDate,
@@ -37,6 +42,7 @@ public class FundraiserContentViewModel {
 
     public string FundraiserEmail { get; set; }
     public string FundraiserName { get; set; }
+    public string FundraiserLink { get; set; }
     public string Title { get; set; }
     public string CampaignName { get; set; }
     public DateTime CreatedOn { get; set; }
