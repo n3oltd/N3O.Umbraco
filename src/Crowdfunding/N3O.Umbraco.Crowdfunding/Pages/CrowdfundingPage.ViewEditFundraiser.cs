@@ -24,6 +24,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
     private readonly IQueryStringAccessor _queryStringAccessor;
 
     public ViewEditFundraiserPage(IContentLocator contentLocator,
+                                  IFormatter formatter,
                                   ICrowdfundingUrlBuilder urlBuilder,
                                   ICrowdfundingViewModelFactory viewModelFactory,
                                   IContributionRepository contributionRepository,
@@ -33,7 +34,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
                                   IForexConverter forexConverter,
                                   ILookups lookups,
                                   IQueryStringAccessor queryStringAccessor)
-        : base(contentLocator, urlBuilder, viewModelFactory) {
+        : base(contentLocator, formatter, urlBuilder, viewModelFactory) {
         _contributionRepository = contributionRepository;
         _currencyAccessor = currencyAccessor;
         _textFormatter = textFormatter;
@@ -43,6 +44,12 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
         _queryStringAccessor = queryStringAccessor;
     }
 
+    protected override string GetPageTitle(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
+        var fundraiser = GetFundraiser(crowdfundingPath);
+
+        return fundraiser.Name;
+    }
+    
     protected override bool IsMatch(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
         if (!IsMatch(crowdfundingPath, CrowdfundingConstants.Routes.TypedRoutes.ViewEditFundraiser)) {
             return false;

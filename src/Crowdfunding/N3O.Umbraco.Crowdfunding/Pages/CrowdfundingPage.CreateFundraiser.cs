@@ -4,6 +4,7 @@ using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Forex;
+using N3O.Umbraco.Localization;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.OpenGraph;
 using Smidge;
@@ -18,11 +19,12 @@ public class CreateFundraiserPage : CrowdfundingPage {
     private readonly IForexConverter _forexConverter;
 
     public CreateFundraiserPage(IContentLocator contentLocator,
+                                IFormatter formatter,
                                 ICrowdfundingUrlBuilder urlBuilder,
                                 ICrowdfundingViewModelFactory viewModelFactory,
                                 ILookups lookups,
                                 IForexConverter forexConverter)
-        : base(contentLocator, urlBuilder, viewModelFactory) {
+        : base(contentLocator, formatter, urlBuilder, viewModelFactory) {
         _lookups = lookups;
         _forexConverter = forexConverter;
     }
@@ -35,6 +37,10 @@ public class CreateFundraiserPage : CrowdfundingPage {
                                          string crowdfundingPath,
                                          IReadOnlyDictionary<string, string> query) {
         // TODO
+    }
+    
+    protected override string GetPageTitle(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
+        return Formatter.Text.Format<Strings>(s => s.PageTitle);
     }
 
     protected override bool IsMatch(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
@@ -81,5 +87,9 @@ public class CreateFundraiserPage : CrowdfundingPage {
     
     private static class Parameters {
         public static readonly string CampaignId = "campaignId";
+    }
+
+    public class Strings : CodeStrings {
+        public string PageTitle => "Create a Fundraising Page";
     }
 }

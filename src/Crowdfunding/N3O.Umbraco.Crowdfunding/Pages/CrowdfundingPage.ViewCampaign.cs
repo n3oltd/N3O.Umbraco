@@ -7,6 +7,7 @@ using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Forex;
+using N3O.Umbraco.Localization;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.OpenGraph;
 using System;
@@ -23,17 +24,24 @@ public class ViewCampaignPage : CrowdfundingPage {
     private readonly ILookups _lookups;
 
     public ViewCampaignPage(IContentLocator contentLocator,
+                            IFormatter formatter,
                             ICrowdfundingUrlBuilder urlBuilder,
                             ICrowdfundingViewModelFactory viewModelFactory,
                             IContributionRepository contributionRepository,
                             ICurrencyAccessor currencyAccessor,
                             IForexConverter forexConverter,
                             ILookups lookups)
-        : base(contentLocator, urlBuilder, viewModelFactory) {
+        : base(contentLocator, formatter, urlBuilder, viewModelFactory) {
         _contributionRepository = contributionRepository;
         _currencyAccessor = currencyAccessor;
         _forexConverter = forexConverter;
         _lookups = lookups;
+    }
+
+    protected override string GetPageTitle(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
+        var campaign = GetCampaign(crowdfundingPath);
+
+        return campaign.Name;
     }
 
     protected override bool IsMatch(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {

@@ -1,9 +1,13 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Pages;
+using N3O.Umbraco.PageTitle;
 using N3O.Umbraco.SerpEditor.Content;
 using N3O.Umbraco.SerpEditor.Models;
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -11,10 +15,14 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.SerpEditor.Modules;
 
 public class SerpEntryPageModule : IPageModule {
+    private static readonly ConcurrentDictionary<string, string> PagePropertyAliasCache = new();
+    
     private readonly Lazy<IContentCache> _contentCache;
+    private readonly IEnumerable<IPageTitleProvider> _pageTitleProviders;
 
-    public SerpEntryPageModule(Lazy<IContentCache> contentCache) {
+    public SerpEntryPageModule(Lazy<IContentCache> contentCache, IEnumerable<IPageTitleProvider> pageTitleProviders) {
         _contentCache = contentCache;
+        _pageTitleProviders = pageTitleProviders;
     }
 
     public bool ShouldExecute(IPublishedContent page) => true;
@@ -22,12 +30,27 @@ public class SerpEntryPageModule : IPageModule {
     public Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
         SerpEntry serpEntry = null;
         
-        foreach (var property in page.Properties) {
-            if (property.PropertyType.EditorAlias.EqualsInvariant(SerpEditorConstants.PropertyEditorAlias)) {
-                serpEntry = new SerpEntry((SerpEntry) property.GetValue());
-
-                break;
+        var propertyAlias = PagePropertyAliasCache.GetOrAdd(page.ContentType.Alias, _ => {
+            foreach (var property in page.Properties) {
+                if (property.PropertyType.EditorAlias.EqualsInvariant(SerpEditorConstants.PropertyEditorAlias)) {
+                    return property.Alias;
+                }
             }
+
+            return null;
+        });
+        
+        if (propertyAlias.HasValue()) {
+            serpEntry = new SerpEntry((SerpEntry) page.GetProperty(propertyAlias)?.GetValue());
+        }
+        
+        var pageTitleProvider = _pageTitleProviders.OrEmpty().FirstOrDefault(x => x.IsProviderFor(page));
+
+        if (pageTitleProvider.HasValue()) {
+            serpEntry = new SerpEntry {
+                Title = pageTitleProvider.GetPageTitle(page),
+                Description = serpEntry?.Description
+            };
         }
 
         if (serpEntry == null) {

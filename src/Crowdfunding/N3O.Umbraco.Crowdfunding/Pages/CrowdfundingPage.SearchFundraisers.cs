@@ -4,6 +4,7 @@ using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Localization;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.OpenGraph;
 using System.Collections.Generic;
@@ -20,15 +21,20 @@ public class SearchFundraisersPage : CrowdfundingPage {
     private readonly ILookups _lookups;
 
     public SearchFundraisersPage(IContentLocator contentLocator,
+                                 IFormatter formatter,
                                  ICrowdfunderRepository crowdfunderRepository,
                                  ILookups lookups,
                                  ICrowdfundingUrlBuilder urlBuilder,
                                  ICrowdfundingViewModelFactory viewModelFactory)
-        : base(contentLocator, urlBuilder, viewModelFactory) {
+        : base(contentLocator, formatter, urlBuilder, viewModelFactory) {
         _crowdfunderRepository = crowdfunderRepository;
         _lookups = lookups;
     }
-
+    
+    protected override string GetPageTitle(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
+        return Formatter.Text.Format<Strings>(s => s.PageTitle);
+    }
+    
     protected override bool IsMatch(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
         return IsMatch(crowdfundingPath, CrowdfundingConstants.Routes.SearchFundraisers);
     }
@@ -79,5 +85,9 @@ public class SearchFundraisersPage : CrowdfundingPage {
         }
 
         return url;
+    }
+    
+    public class Strings : CodeStrings {
+        public string PageTitle => "Search";
     }
 }

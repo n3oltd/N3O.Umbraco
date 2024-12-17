@@ -1,6 +1,7 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Crowdfunding.Models;
+using N3O.Umbraco.Localization;
 using N3O.Umbraco.OpenGraph;
 using Smidge;
 using System;
@@ -12,9 +13,11 @@ namespace N3O.Umbraco.Crowdfunding;
 
 public abstract class CrowdfundingPage : ICrowdfundingPage {
     protected CrowdfundingPage(IContentLocator contentLocator,
+                               IFormatter formatter,
                                ICrowdfundingUrlBuilder urlBuilder,
                                ICrowdfundingViewModelFactory viewModelFactory) {
         ContentLocator = contentLocator;
+        Formatter = formatter;
         UrlBuilder = urlBuilder;
         ViewModelFactory = viewModelFactory;
     }
@@ -39,6 +42,16 @@ public abstract class CrowdfundingPage : ICrowdfundingPage {
         }
     }
 
+    public string GetPageTitle(Uri requestUri, IReadOnlyDictionary<string, string> requestQuery) {
+        var crowdfundingPath = CrowdfundingPathParser.ParseUri(ContentLocator, requestUri);
+        
+        if (crowdfundingPath != null) {
+            return GetPageTitle(crowdfundingPath, requestQuery);
+        } else {
+            return null;
+        }
+    }
+
     public async Task<ICrowdfundingViewModel> GetViewModelAsync(Uri requestUri,
                                                                 IReadOnlyDictionary<string, string> requestQuery) {
         var crowdfundingPath = CrowdfundingPathParser.ParseUri(ContentLocator, requestUri);
@@ -57,10 +70,12 @@ public abstract class CrowdfundingPage : ICrowdfundingPage {
         
         return Regex.Match(crowdfundingPath, pattern, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
     }
-
+    
     protected abstract void AddOpenGraph(IOpenGraphBuilder builder,
                                          string crowdfundingPath,
                                          IReadOnlyDictionary<string, string> query);
+    
+    protected abstract string GetPageTitle(string crowdfundingPath, IReadOnlyDictionary<string, string> query);
     
     protected abstract bool IsMatch(string crowdfundingPath, IReadOnlyDictionary<string, string> query);
     
@@ -72,6 +87,7 @@ public abstract class CrowdfundingPage : ICrowdfundingPage {
     public virtual string ViewName => $"~/Views/Partials/Crowdfunding/Pages/{GetType().Name}.cshtml";
 
     protected IContentLocator ContentLocator { get; }
+    protected IFormatter Formatter { get; }
     protected ICrowdfundingUrlBuilder UrlBuilder { get; }
     protected ICrowdfundingViewModelFactory ViewModelFactory { get; }
 }
