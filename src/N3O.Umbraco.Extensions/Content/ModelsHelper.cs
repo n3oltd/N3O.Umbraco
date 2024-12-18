@@ -20,7 +20,7 @@ public class ModelsHelper {
             var typeName = contentType.Pascalize();
 
             var type = OurAssemblies.GetTypes(t => t.Name == typeName &&
-                                                   t.IsSubclassOfType(typeof(PublishedContentModel)))
+                                                   (t.IsSubclassOfType(typeof(PublishedContentModel)) || t.IsSubclassOfType(typeof(PublishedElementModel))))
                                     .SingleOrDefault();
 
             if (type == null) {
