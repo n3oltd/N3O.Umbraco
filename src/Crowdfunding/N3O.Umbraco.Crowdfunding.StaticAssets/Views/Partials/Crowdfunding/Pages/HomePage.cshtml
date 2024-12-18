@@ -30,13 +30,15 @@
             </div>
             
             <div class="n3o-spotlight__inner-grid">
-                @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Cards/CrowdfunderJumboCard.cshtml", Model.AlmostCompleteFundraisers.First())
-                
-                <div class="n3o-spotlight__inner-col">
-                    @foreach (var card in Model.AlmostCompleteFundraisers.Skip(1)) {
-                        @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Cards/CrowdfunderWideCard.cshtml", card)
-                    }
-                </div>
+                @if (Model.AlmostCompleteFundraisers.HasAny()) {
+                    @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Cards/CrowdfunderJumboCard.cshtml", Model.AlmostCompleteFundraisers.First())
+                    
+                    <div class="n3o-spotlight__inner-col">
+                        @foreach (var card in Model.AlmostCompleteFundraisers.Skip(1)) {
+                            @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Cards/CrowdfunderWideCard.cshtml", card)
+                        }
+                    </div>
+                }
             </div>
         </div>
     </div>
