@@ -2,9 +2,10 @@ using Humanizer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Constants;
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using System;
+using System.Linq;
+using System.Reflection;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Blocks;
@@ -49,11 +50,16 @@ public class BlockViewModelFactory<TBlock, TSettings, TViewModel> : IBlockViewMo
 }
 
 public static class BlockViewModelFactory {
-    public static IBlockViewModelFactory Default(IHttpContextAccessor httpContextAccessor, Type blockType) {
-        return (IBlockViewModelFactory) typeof(BlockViewModelFactory).CallStaticMethod(nameof(Default))
-                                                                     .OfGenericType(blockType)
-                                                                     .WithParameter(typeof(IHttpContextAccessor), httpContextAccessor)
-                                                                     .Run();
+    public static IBlockViewModelFactory Default(IHttpContextAccessor httpContextAccessor, Type blockType, Type settingsType) {
+        var defaultMethod = typeof(BlockViewModelFactory).GetMethods(BindingFlags.Static | BindingFlags.Public)
+                                                         .Single(x => x.Name == nameof(Default) && x.IsGenericMethod)
+                                                         .MakeGenericMethod(blockType, settingsType);
+
+        if (defaultMethod == null) {
+            throw new InvalidOperationException($"Method '{nameof(Default)}' not found on type {nameof(BlockViewModelFactory)}.");
+        }
+
+        return (IBlockViewModelFactory) defaultMethod.Invoke(null, [httpContextAccessor]);
     }
 
     public static BlockViewModelFactory<TBlock, TSettings, BlockViewModel<TBlock, TSettings>> Default<TBlock, TSettings>(IHttpContextAccessor httpContextAccessor)

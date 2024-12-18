@@ -82,12 +82,12 @@ public static class UmbracoBuilderExtensions {
         return builder;
     }
 
-    public static IUmbracoBuilder AddDefaultBlockViewModel(this IUmbracoBuilder builder, Type blockType) {
+    public static IUmbracoBuilder AddDefaultBlockViewModel(this IUmbracoBuilder builder, Type blockType, Type settingsType) {
         builder.Services.TryAddTransient(typeof(IBlockViewModelFactory<,>).MakeGenericType(blockType, typeof(None)),
                                          s => {
                                              var httpContextAccessor = s.GetRequiredService<IHttpContextAccessor>();
                                              
-                                             return BlockViewModelFactory.Default(httpContextAccessor, blockType);
+                                             return BlockViewModelFactory.Default(httpContextAccessor, blockType, settingsType);
                                          });
 
         return builder;
