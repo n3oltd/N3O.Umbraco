@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Markup.Markdown.Helpers;
 public abstract class BlockHelper : BlockHelper<EmptyHelperArgs> {
     protected BlockHelper(IEnumerable<string> keywords) : base(keywords, 0, 0) { }
 
-    protected override void Parse(IReadOnlyList<string> args, EmptyHelperArgs inline) { }
+    protected override void ParseOpening(IReadOnlyList<string> args, EmptyHelperArgs inline) { }
 }
 
 public abstract class BlockHelper<T> : Helper<T> where T : HelperArgs, new() {
