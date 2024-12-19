@@ -7,9 +7,7 @@ using System.Collections.Generic;
 namespace N3O.Umbraco.Markup.Markdown.Helpers;
 
 public abstract class Helper : Helper<EmptyHelperArgs> {
-    protected Helper(IEnumerable<string> keywords, int args) : this(keywords, args, args) { }
-    
-    protected Helper(IEnumerable<string> keywords, int minArgs, int maxArgs) : base(keywords, minArgs, maxArgs) { }
+    protected Helper(IEnumerable<string> keywords) : base(keywords, 0, 0) { }
 
     protected override void Parse(IReadOnlyList<string> args, EmptyHelperArgs inline) { }
 }
