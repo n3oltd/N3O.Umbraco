@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace N3O.Umbraco.Markup.Markdown.Helpers;
 
-public abstract class BlockHelper : Helper<EmptyHelperArgs> {
+public abstract class BlockHelper : BlockHelper<EmptyHelperArgs> {
     protected BlockHelper(IEnumerable<string> keywords) : base(keywords, 0, 0) { }
 
     protected override void Parse(IReadOnlyList<string> args, EmptyHelperArgs inline) { }
