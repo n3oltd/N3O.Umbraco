@@ -24,7 +24,7 @@ public class MarkdownComposer : Composer {
             var pipelineBuilder = new MarkdownPipelineBuilder();
 
             extensions.Do(pipelineBuilder.Extensions.Add);
-            pipelineBuilder.UseAdvancedExtensions();
+            pipelineBuilder.UsePipeTables();
 
             return pipelineBuilder.Build();
         });
