@@ -15,11 +15,11 @@ public abstract class KeyValueBlockHelper<T> : BlockHelper<T> where T : HelperAr
         return base.PreprocessArgs(args);
     }
 
-    protected override void ParseOpening(IReadOnlyList<string> args, T inline) {
+    protected override void ParseOpening(IReadOnlyList<string> args, T helperArgs) {
         foreach (var (key, value) in KeyValueUtility.GetKeyValuePairs(args)) {
-            ParseOpening(key, value, inline);
+            ParseOpening(key, value, helperArgs);
         }
     }
 
-    protected abstract void ParseOpening(string key, string value, T inline);
+    protected abstract void ParseOpening(string key, string value, T helperArgs);
 }

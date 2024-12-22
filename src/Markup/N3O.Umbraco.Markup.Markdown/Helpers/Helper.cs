@@ -47,10 +47,10 @@ public abstract class Helper<T> : HtmlObjectRenderer<T>, IMarkdownExtension wher
         return args;
     }
 
-    protected override void Write(HtmlRenderer renderer, T obj) {
-        Render(renderer, obj);
+    protected override void Write(HtmlRenderer renderer, T helperArgs) {
+        Render(renderer, helperArgs);
     }
 
-    protected abstract void Parse(IReadOnlyList<string> args, T inline);
-    protected abstract void Render(HtmlRenderer renderer, T inline);
+    protected abstract void Parse(IReadOnlyList<string> args, T helperArgs);
+    protected abstract void Render(HtmlRenderer renderer, T helperArgs);
 }
