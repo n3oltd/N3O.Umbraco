@@ -47,7 +47,9 @@ public abstract class CmsStartup {
         
         var staticFileOptions = new StaticFileOptions();
         ConfigureStaticFiles(staticFileOptions);
-        app.UseStaticFiles(staticFileOptions);
+        
+        app.UseWhen(context => !context.Request.Path.StartsWithSegments("/media"),
+                    appBuilder => appBuilder.UseStaticFiles());
         
         app.UseOpenApiWithUI();
 
