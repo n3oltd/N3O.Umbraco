@@ -34,7 +34,7 @@ public static class ContentTypeExtensions {
                                                        IPropertyType propertyType,
                                                        PropertyGroup group = null) {
         var dataType = dataTypeService.GetDataType(propertyType.DataTypeId);
-        var nestedContent = new List<NestedContentInfo>();
+        var elements = new List<ElementInfo>();
         
         if (propertyType.IsNestedContent()) {
             var nestedContentConfiguration = dataType.ConfigurationAs<NestedContentConfiguration>();
@@ -43,13 +43,13 @@ public static class ContentTypeExtensions {
                                                                .ToList();
 
             foreach (var nestedContentType in nestedContentTypes) {
-                nestedContent.Add(new NestedContentInfo(nestedContentType,
-                                                        GetUmbracoProperties(nestedContentType,
-                                                                             dataTypeService,
-                                                                             contentTypeService)));
+                elements.Add(new ElementInfo(nestedContentType,
+                                             GetUmbracoProperties(nestedContentType,
+                                                                  dataTypeService,
+                                                                  contentTypeService)));
             }
         }
 
-        return new UmbracoPropertyInfo(contentType, propertyType, group, dataType, nestedContent);
+        return new UmbracoPropertyInfo(contentType, propertyType, group, dataType, elements);
     }
 }

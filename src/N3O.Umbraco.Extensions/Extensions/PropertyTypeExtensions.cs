@@ -8,6 +8,10 @@ public static class PropertyTypeExtensions {
         return propertyType.PropertyEditorAlias.EqualsInvariant(alias);
     }
     
+    public static bool IsBlockList(this IPropertyType propertyType) {
+        return propertyType.HasEditorAlias(Aliases.BlockList);
+    }
+    
     public static bool IsDataList(this IPropertyType propertyType) {
         return propertyType.HasEditorAlias("Umbraco.Community.Contentment.DataList");
     }

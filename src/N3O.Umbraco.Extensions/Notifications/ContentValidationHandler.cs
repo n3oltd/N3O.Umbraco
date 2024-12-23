@@ -42,13 +42,10 @@ public class ContentValidationHandler : INotificationAsyncHandler<ContentSavingN
                 }
             }
 
-            var nestedContents = content.NestedContentProperties
-                                        .OrEmpty()
-                                        .SelectMany(x => x.Value)
-                                        .ToList();
+            var elements = content.ElementProperties.OrEmpty().SelectMany(x => x.Value).ToList();
             
-            foreach (var nestedContent in nestedContents) {
-                Validate(nestedContent, notification);
+            foreach (var element in elements) {
+                Validate(element, notification);
             }
         } catch (ContentValidationErrorException error) {
             notification.CancelOperation(error.EventMessage);

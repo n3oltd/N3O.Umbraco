@@ -10,25 +10,25 @@ public class UmbracoPropertyInfo {
                                IPropertyType type,
                                PropertyGroup group,
                                IDataType dataType,
-                               IEnumerable<NestedContentInfo> nestedContent) {
+                               IEnumerable<ElementInfo> elements) {
         ContentType = contentType;
         Type = type;
         Group = group;
         DataType = dataType;
-        NestedContent = nestedContent.OrEmpty().ToList();
+        Elements = elements.OrEmpty().ToList();
     }
 
     public IContentType ContentType { get; }
     public IPropertyType Type { get; }
     public PropertyGroup Group { get; }
     public IDataType DataType { get; }
-    public IReadOnlyList<NestedContentInfo> NestedContent { get; }
+    public IReadOnlyList<ElementInfo> Elements { get; }
 
     public bool IsNestedContent() => Type.IsNestedContent();
 }
 
-public class NestedContentInfo {
-    public NestedContentInfo(IContentType contentType, IEnumerable<UmbracoPropertyInfo> properties) {
+public class ElementInfo {
+    public ElementInfo(IContentType contentType, IEnumerable<UmbracoPropertyInfo> properties) {
         ContentType = contentType;
         Properties = properties.OrEmpty().ToList();
     }

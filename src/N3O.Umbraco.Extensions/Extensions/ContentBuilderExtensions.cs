@@ -3,6 +3,10 @@ using N3O.Umbraco.Content;
 namespace N3O.Umbraco.Extensions;
 
 public static class ContentBuilderExtensions {
+    public static BlockListPropertyBuilder BlockList(this IContentBuilder builder, string propertyTypeAlias) {
+        return builder.Property<BlockListPropertyBuilder>(propertyTypeAlias);
+    }
+    
     public static BooleanPropertyBuilder Boolean(this IContentBuilder builder, string propertyTypeAlias) {
         return builder.Property<BooleanPropertyBuilder>(propertyTypeAlias);
     }

@@ -65,30 +65,31 @@ public class ContentHelper : IContentHelper {
                                                   string contentTypeAlias,
                                                   IEnumerable<(IPropertyType Type, object Value)> properties) {
         var contentProperties = new List<ContentProperty>();
-        var nestedContentProperties = new List<NestedContentProperty>();
+        var elementProperties = new List<ElementProperty>();
         var contentType = _contentTypeService.Value.Get(contentTypeAlias);
 
         foreach (var property in properties) {
-            if (property.Type.IsNestedContent()) {
+            if (property.Type.IsBlockList()) {
+                var (blockList, json) = GetJsonPropertyValue(property.Value);
+                    
+                var elements = GetContentPropertiesForBlockList(blockList);
+                var elementProperty = new ElementProperty(contentType, property.Type, elements, json);
+                
+                elementProperties.Add(elementProperty);
+            } else if (property.Type.IsNestedContent()) {
                 var (nestedContents, json) = GetJsonPropertyValue(property.Value);
                     
                 var elements = GetContentPropertiesForNestedContent(nestedContents);
-                var nestedContentProperty = new NestedContentProperty(contentType,
-                                                                      property.Type,
-                                                                      elements,
-                                                                      json);
+                var elementProperty = new ElementProperty(contentType, property.Type, elements, json);
                 
-                nestedContentProperties.Add(nestedContentProperty);
+                elementProperties.Add(elementProperty);
             } else if (property.Type.IsPerplexBlocks()) {
                 var (blockContent, json) = GetJsonPropertyValue(property.Value);
 
                 var elements = GetContentPropertiesForBlockContent(blockContent);
-                var nestedContentProperty = new NestedContentProperty(contentType,
-                                                                      property.Type,
-                                                                      elements,
-                                                                      json);
+                var elementProperty = new ElementProperty(contentType, property.Type, elements, json);
                 
-                nestedContentProperties.Add(nestedContentProperty);
+                elementProperties.Add(elementProperty);
             } else {
                 contentProperties.Add(new ContentProperty(contentType, property.Type, property.Value));
             }
@@ -99,7 +100,7 @@ public class ContentHelper : IContentHelper {
                                      level,
                                      contentTypeAlias,
                                      contentProperties,
-                                     nestedContentProperties);
+                                     elementProperties);
     }
     
     public TProperty GetConvertedValue<TConverter, TProperty>(string contentTypeAlias,
@@ -184,6 +185,22 @@ public class ContentHelper : IContentHelper {
                 contentProperties.AddRange(GetContentPropertiesForNestedContent(jArray.Single()));
             } else {
                 contentProperties.AddRange(GetContentPropertiesForNestedContent(content));
+            }
+        }
+
+        return contentProperties;
+    }
+    
+    private IReadOnlyList<ContentProperties> GetContentPropertiesForBlockList(JToken blockList) {
+        var contentProperties = new List<ContentProperties>();
+        
+        if (blockList == null) {
+            return contentProperties;
+        }
+        
+        foreach (var block in blockList["contentData"]) {
+            if (block is JArray jArray) {
+                jArray.Do(x => contentProperties.AddRange(GetContentPropertiesForBlockList(x)));
             }
         }
 

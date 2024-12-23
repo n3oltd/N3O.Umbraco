@@ -24,11 +24,11 @@ public class ContentProperty : ContentProperty<object> {
         : base(contentType, type, value) { }
 }
 
-public class NestedContentProperty : ContentProperty<IReadOnlyList<ContentProperties>> {
-    public NestedContentProperty(IContentType contentType,
-                                 IPropertyType type,
-                                 IReadOnlyList<ContentProperties> value,
-                                 string json)
+public class ElementProperty : ContentProperty<IReadOnlyList<ContentProperties>> {
+    public ElementProperty(IContentType contentType,
+                           IPropertyType type,
+                           IReadOnlyList<ContentProperties> value,
+                           string json)
         : base(contentType, type, value) {
         Json = json;
     }

@@ -16,19 +16,19 @@ using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 
 namespace N3O.Umbraco.Data.Converters;
 
-public class NestedContentPropertyConverter : IPropertyConverter {
+public class BlockListPropertyConverter : IPropertyConverter {
     private readonly IColumnRangeBuilder _columnRangeBuilder;
     private readonly Dictionary<string, IColumnRange> _columnRanges = new(StringComparer.InvariantCultureIgnoreCase);
     private readonly string _orderColumnTitle;
 
-    public NestedContentPropertyConverter(IColumnRangeBuilder columnRangeBuilder, IFormatter formatter) {
+    public BlockListPropertyConverter(IColumnRangeBuilder columnRangeBuilder, IFormatter formatter) {
         _columnRangeBuilder = columnRangeBuilder;
         
         _orderColumnTitle = formatter.Text.Format<DataStrings>(s => s.OrderColumnTitle);
     }
     
     public bool IsConverter(UmbracoPropertyInfo propertyInfo) {
-        return propertyInfo.Type.PropertyEditorAlias.EqualsInvariant(UmbracoPropertyEditors.Aliases.NestedContent);
+        return propertyInfo.Type.PropertyEditorAlias.EqualsInvariant(UmbracoPropertyEditors.Aliases.BlockList);
     }
 
     public void Export(IUntypedTableBuilder tableBuilder,
@@ -37,7 +37,7 @@ public class NestedContentPropertyConverter : IPropertyConverter {
                        string columnTitlePrefix,
                        IContentProperty contentProperty,
                        UmbracoPropertyInfo propertyInfo) {
-        var nestedContentConfiguration = propertyInfo.DataType.ConfigurationAs<NestedContentConfiguration>();
+        var blockListConfiguration = propertyInfo.DataType.ConfigurationAs<BlockListConfiguration>();
 
         foreach (var (elementProperties, index) in ((ElementProperty) contentProperty).OrEmpty(x => x.Value).SelectWithIndex()) {
             var elementInfo = propertyInfo.Elements
@@ -64,7 +64,7 @@ public class NestedContentPropertyConverter : IPropertyConverter {
                 columnOrder += 100;
             }
 
-            if (!nestedContentConfiguration.ContentTypes.IsSingle()) {
+            if (!blockListConfiguration.Blocks.IsSingle()) {
                 var orderColumnRange = GetOrAddColumnRange<int?>(OurDataTypes.Integer,
                                                                  GetOrderColumnTitle(elementColumnTitlePrefix));
                 
@@ -78,22 +78,22 @@ public class NestedContentPropertyConverter : IPropertyConverter {
                                             string columnTitlePrefix) {
         var columns = new List<Column>();
         var maxValues = GetMaxValues(propertyInfo);
-        var nestedContentConfiguration = propertyInfo.DataType.ConfigurationAs<NestedContentConfiguration>();
+        var blockListConfiguration = propertyInfo.DataType.ConfigurationAs<BlockListConfiguration>();
 
         foreach (var element in propertyInfo.Elements) {
             for (var i = 1; i <= maxValues; i++) {
-                var nestedColumnTitlePrefix = GetColumnTitlePrefix(propertyInfo,
-                                                                   element,
-                                                                   i,
-                                                                   columnTitlePrefix);
+                var blockListColumnTitlePrefix = GetColumnTitlePrefix(propertyInfo,
+                                                                      element,
+                                                                      i,
+                                                                      columnTitlePrefix);
 
                 foreach (var elementPropertyInfo in element.Properties) {
-                    columns.AddRange(elementPropertyInfo.GetColumns(converters, nestedColumnTitlePrefix));
+                    columns.AddRange(elementPropertyInfo.GetColumns(converters, blockListColumnTitlePrefix));
                 }
                 
-                if (!nestedContentConfiguration.ContentTypes.IsSingle()) {
+                if (!blockListConfiguration.Blocks.IsSingle()) {
                     var orderColumnRange = GetOrAddColumnRange<int?>(OurDataTypes.Integer,
-                                                                     GetOrderColumnTitle(nestedColumnTitlePrefix));
+                                                                     GetOrderColumnTitle(blockListColumnTitlePrefix));
 
                     orderColumnRange.AddValues(0, null);
                     
@@ -113,8 +113,8 @@ public class NestedContentPropertyConverter : IPropertyConverter {
                        UmbracoPropertyInfo propertyInfo,
                        IEnumerable<ImportField> fields) {
         var maxValues = GetMaxValues(propertyInfo);
-        var nestedPropertyBuilder = contentBuilder.Nested(propertyInfo.Type.Alias);
-        var nestedContentConfiguration = propertyInfo.DataType.ConfigurationAs<NestedContentConfiguration>();
+        var blockListPropertyBuilder = contentBuilder.BlockList(propertyInfo.Type.Alias);
+        var blockListConfiguration = propertyInfo.DataType.ConfigurationAs<BlockListConfiguration>();
 
         foreach (var element in propertyInfo.Elements) {
             for (var i = 1; i <= maxValues; i++) {
@@ -129,14 +129,14 @@ public class NestedContentPropertyConverter : IPropertyConverter {
 
                 int? order = null;
                 
-                if (!nestedContentConfiguration.ContentTypes.IsSingle()) {
+                if (!blockListConfiguration.Blocks.IsSingle()) {
                     var orderColumnTitle = GetOrderColumnTitle(nestedColumnTitlePrefix);
                     
                     var orderField = fields.Single(x => x.Name.EqualsInvariant(orderColumnTitle));
                     order = orderField.Value.TryParseAs<int>();
                 }
 
-                IContentBuilder nestedContentBuilder = null;
+                IContentBuilder blockListBuilder = null;
                 
                 foreach (var elementPropertyInfo in element.Properties) {
                     var nestedColumnTitle = elementPropertyInfo.GetColumnTitle(nestedColumnTitlePrefix);
@@ -145,9 +145,9 @@ public class NestedContentPropertyConverter : IPropertyConverter {
 
                     var converter = elementPropertyInfo.GetPropertyConverter(converters);
 
-                    nestedContentBuilder ??= nestedPropertyBuilder.Add(element.ContentType.Alias, order: order);
+                    blockListBuilder ??= blockListPropertyBuilder.Add(element.ContentType.Alias, order: order);
 
-                    converter.Import(nestedContentBuilder,
+                    converter.Import(blockListBuilder,
                                      converters,
                                      parser,
                                      errorLog,
@@ -160,12 +160,12 @@ public class NestedContentPropertyConverter : IPropertyConverter {
     }
 
     private int GetMaxValues(UmbracoPropertyInfo propertyInfo) {
-        var configuration = propertyInfo.DataType.ConfigurationAs<NestedContentConfiguration>();
+        var configuration = propertyInfo.DataType.ConfigurationAs<BlockListConfiguration>();
 
-        if (configuration.MaxItems == null || configuration.MaxItems == 0) {
+        if (configuration.ValidationLimit.Min == null || configuration.ValidationLimit.Max == 0) {
             return DataConstants.Limits.Columns.MaxValues;
         } else {
-            return configuration.MaxItems.GetValueOrThrow();
+            return configuration.ValidationLimit.Max.GetValueOrThrow();
         }
     }
     
