@@ -1,5 +1,4 @@
-﻿using System;
-using Umbraco.Cms.Core.Models.PublishedContent;
+﻿using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Blocks;
 

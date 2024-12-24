@@ -42,7 +42,7 @@ public class ContentValidationHandler : INotificationAsyncHandler<ContentSavingN
                 }
             }
 
-            var elements = content.ElementProperties.OrEmpty().SelectMany(x => x.Value).ToList();
+            var elements = content.ElementsProperties.OrEmpty().SelectMany(x => x.Value).ToList();
             
             foreach (var element in elements) {
                 Validate(element, notification);

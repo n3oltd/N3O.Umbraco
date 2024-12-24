@@ -8,6 +8,8 @@ using Newtonsoft.Json;
 using System;
 using System.IO;
 using Umbraco.Cms.Core.IO;
+using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Uploader.Content;
 
@@ -19,7 +21,10 @@ public class UploaderPropertyBuilder : PropertyBuilder {
     private string _altText;
     private ByteSize _fileSize;
 
-    public UploaderPropertyBuilder(MediaFileManager mediaFileManager, ILocalClock clock) {
+    public UploaderPropertyBuilder(IContentTypeService contentTypeService,
+                                   MediaFileManager mediaFileManager,
+                                   ILocalClock clock)
+        : base(contentTypeService) {
         _mediaFileManager = mediaFileManager;
         _clock = clock;
     }
@@ -68,7 +73,7 @@ public class UploaderPropertyBuilder : PropertyBuilder {
         return this;
     }
 
-    public override object Build() {
+    public override (object, IPropertyType) Build(string propertyAlias, string contentTypeAlias) {
         Validate();
 
         var uploaderSource = new UploaderSource();
@@ -80,7 +85,7 @@ public class UploaderPropertyBuilder : PropertyBuilder {
 
         Value = JsonConvert.SerializeObject(uploaderSource);
 
-        return Value;
+        return (Value, GetPropertyType(propertyAlias, contentTypeAlias));
     }
 
     private void Validate() {

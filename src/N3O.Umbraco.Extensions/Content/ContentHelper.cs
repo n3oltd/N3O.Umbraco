@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Persistence.Querying;
@@ -65,31 +66,31 @@ public class ContentHelper : IContentHelper {
                                                   string contentTypeAlias,
                                                   IEnumerable<(IPropertyType Type, object Value)> properties) {
         var contentProperties = new List<ContentProperty>();
-        var elementProperties = new List<ElementProperty>();
+        var elementsProperties = new List<ElementsProperty>();
         var contentType = _contentTypeService.Value.Get(contentTypeAlias);
 
         foreach (var property in properties) {
-            if (property.Type.IsBlockList()) {
-                var (blockList, json) = GetJsonPropertyValue(property.Value);
+            if (property.Type.IsBlockList() || property.Type.IsBlockGrid()) {
+                var (blockListOrGrid, json) = GetJsonPropertyValue(property.Value);
                     
-                var elements = GetContentPropertiesForBlockList(blockList);
-                var elementProperty = new ElementProperty(contentType, property.Type, elements, json);
+                var elements = GetContentPropertiesForBlockListOrGrid(blockListOrGrid);
+                var elementsProperty = new ElementsProperty(contentType, property.Type, elements, json);
                 
-                elementProperties.Add(elementProperty);
+                elementsProperties.Add(elementsProperty);
             } else if (property.Type.IsNestedContent()) {
                 var (nestedContents, json) = GetJsonPropertyValue(property.Value);
                     
                 var elements = GetContentPropertiesForNestedContent(nestedContents);
-                var elementProperty = new ElementProperty(contentType, property.Type, elements, json);
+                var elementsProperty = new ElementsProperty(contentType, property.Type, elements, json);
                 
-                elementProperties.Add(elementProperty);
+                elementsProperties.Add(elementsProperty);
             } else if (property.Type.IsPerplexBlocks()) {
                 var (blockContent, json) = GetJsonPropertyValue(property.Value);
 
                 var elements = GetContentPropertiesForBlockContent(blockContent);
-                var elementProperty = new ElementProperty(contentType, property.Type, elements, json);
+                var elementsProperty = new ElementsProperty(contentType, property.Type, elements, json);
                 
-                elementProperties.Add(elementProperty);
+                elementsProperties.Add(elementsProperty);
             } else {
                 contentProperties.Add(new ContentProperty(contentType, property.Type, property.Value));
             }
@@ -100,7 +101,7 @@ public class ContentHelper : IContentHelper {
                                      level,
                                      contentTypeAlias,
                                      contentProperties,
-                                     elementProperties);
+                                     elementsProperties);
     }
     
     public TProperty GetConvertedValue<TConverter, TProperty>(string contentTypeAlias,
@@ -191,20 +192,40 @@ public class ContentHelper : IContentHelper {
         return contentProperties;
     }
     
-    private IReadOnlyList<ContentProperties> GetContentPropertiesForBlockList(JToken blockList) {
+    private IReadOnlyList<ContentProperties> GetContentPropertiesForBlockListOrGrid(JToken blockListOrGrid) {
         var contentProperties = new List<ContentProperties>();
         
-        if (blockList == null) {
+        if (blockListOrGrid == null) {
             return contentProperties;
         }
         
-        foreach (var block in blockList["contentData"]) {
+        foreach (var block in blockListOrGrid["contentData"]) {
             if (block is JArray jArray) {
-                jArray.Do(x => contentProperties.AddRange(GetContentPropertiesForBlockList(x)));
+                foreach (JObject jObject in jArray) {
+                    contentProperties.Add(GetContentPropertiesForBlockListOrGridElement(jObject));
+                }
             }
         }
 
         return contentProperties;
+    }
+    
+    private ContentProperties GetContentPropertiesForBlockListOrGridElement(JObject element) {
+        var id = UdiParser.Parse((string) element["udi"]).ToId().GetValueOrThrow();
+        var contentTypeKey = Guid.Parse((string) element["contentTypeKey"]);
+        var contentType = _contentTypeService.Value.Get(contentTypeKey);
+
+        var properties = new List<(IPropertyType, object)>();
+            
+        foreach (var propertyGroup in contentType.PropertyGroups) {
+            foreach (var propertyType in propertyGroup.PropertyTypes) {
+                var propertyValue = element[propertyType.Alias];
+
+                properties.Add((propertyType, propertyValue?.ConvertToObject()));
+            }
+        }
+            
+        return GetContentProperties(id, null, -1, contentType.Alias, properties);
     }
 
     private IReadOnlyList<ContentProperties> GetContentPropertiesForNestedContent(JToken nestedContent) {

@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Blocks.Perplex.Extensions;
 
 public static class ContentHelperExtensions {
     public static global::Perplex.ContentBlocks.Rendering.ContentBlocks GetPerplexBlocks(this IContentHelper contentHelper,
-                                                                                         ElementProperty property) {
+                                                                                         ElementsProperty property) {
         if (!property.Type.IsPerplexBlocks()) {
             throw new Exception("Property is not Perplex blocks");
         }

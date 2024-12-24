@@ -10,7 +10,7 @@ public class ContentPublisher : IContentPublisher {
     private readonly IContent _content;
 
     public ContentPublisher(IServiceProvider serviceProvider, IContentService contentService, IContent content) {
-        Content = new ContentBuilder(serviceProvider);
+        Content = new ContentBuilder(serviceProvider, content.ContentType.Alias);
         
         _contentService = contentService;
         _content = content;

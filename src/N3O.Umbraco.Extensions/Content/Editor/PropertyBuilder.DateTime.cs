@@ -1,9 +1,12 @@
 using NodaTime;
 using System;
+using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Content;
 
 public class DateTimePropertyBuilder : PropertyBuilder {
+    public DateTimePropertyBuilder(IContentTypeService contentTypeService) : base(contentTypeService) { }
+    
     public void SetDate(DateTime? value) {
         Value = value?.Date;
     }

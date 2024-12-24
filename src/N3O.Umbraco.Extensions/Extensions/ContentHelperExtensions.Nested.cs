@@ -9,7 +9,7 @@ using Umbraco.Cms.Core.PropertyEditors.ValueConverters;
 namespace N3O.Umbraco.Extensions;
 
 public static partial class ContentHelperExtensions {
-    public static IPublishedElement GetNestedContent(this IContentHelper contentHelper, ElementProperty property) {
+    public static IPublishedElement GetNestedContent(this IContentHelper contentHelper, ElementsProperty property) {
         if (!property.Type.IsNestedContent()) {
             throw new Exception("Property is not nested content");
         }
@@ -39,7 +39,7 @@ public static partial class ContentHelperExtensions {
     }
     
     public static IReadOnlyList<IPublishedElement> GetNestedContents(this IContentHelper contentHelper,
-                                                                     ElementProperty property) {
+                                                                     ElementsProperty property) {
         if (!property.Type.IsNestedContent()) {
             throw new Exception("Property is not nested content");
         }

@@ -5,12 +5,15 @@ using System.Linq;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Content;
 
 public class ContentPickerPropertyBuilder : PropertyBuilder {
     private static readonly string Document = global::Umbraco.Cms.Core.Constants.UdiEntityType.Document;
     private static readonly string Member = global::Umbraco.Cms.Core.Constants.UdiEntityType.Member;
+    
+    public ContentPickerPropertyBuilder(IContentTypeService contentTypeService) : base(contentTypeService) { }
     
     public void SetContent(IEnumerable<IContent> values) {
         SetContent(values.OrEmpty().ToArray());

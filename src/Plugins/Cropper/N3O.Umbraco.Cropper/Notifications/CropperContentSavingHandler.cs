@@ -47,7 +47,7 @@ public class CropperContentSavingHandler : INotificationAsyncHandler<ContentSavi
 
         list.AddRange(content.Properties.OrEmpty());
         
-        var elements = content.ElementProperties.OrEmpty().SelectMany(x => x.Value).ToList();
+        var elements = content.ElementsProperties.OrEmpty().SelectMany(x => x.Value).ToList();
             
         foreach (var element in elements) {
             list.AddRange(GetProperties(element));

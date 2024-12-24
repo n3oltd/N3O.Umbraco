@@ -39,11 +39,11 @@ public class NestedContentPropertyConverter : IPropertyConverter {
                        UmbracoPropertyInfo propertyInfo) {
         var nestedContentConfiguration = propertyInfo.DataType.ConfigurationAs<NestedContentConfiguration>();
 
-        foreach (var (elementProperties, index) in ((ElementProperty) contentProperty).OrEmpty(x => x.Value).SelectWithIndex()) {
+        foreach (var (elementsProperties, index) in ((ElementsProperty) contentProperty).OrEmpty(x => x.Value).SelectWithIndex()) {
             var elementInfo = propertyInfo.Elements
                                           .Single(x => x.ContentType
                                                         .Alias
-                                                        .EqualsInvariant(elementProperties.ContentTypeAlias));
+                                                        .EqualsInvariant(elementsProperties.ContentTypeAlias));
 
             var elementColumnTitlePrefix = GetColumnTitlePrefix(propertyInfo,
                                                                 elementInfo,
@@ -52,13 +52,13 @@ public class NestedContentPropertyConverter : IPropertyConverter {
             
             foreach (var elementPropertyInfo in elementInfo.Properties) {
                 var converter = elementPropertyInfo.GetPropertyConverter(converters);
-                var elementProperty = elementProperties.GetPropertyByAlias(elementPropertyInfo.Type.Alias);
+                var elementsProperty = elementsProperties.GetPropertyByAlias(elementPropertyInfo.Type.Alias);
 
                 converter.Export(tableBuilder,
                                  converters,
                                  columnOrder,
                                  elementColumnTitlePrefix,
-                                 elementProperty,
+                                 elementsProperty,
                                  elementPropertyInfo);
                 
                 columnOrder += 100;

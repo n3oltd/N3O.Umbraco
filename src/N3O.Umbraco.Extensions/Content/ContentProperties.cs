@@ -11,13 +11,13 @@ public class ContentProperties {
                              int level,
                              string contentTypeAlias,
                              IEnumerable<ContentProperty> properties,
-                             IEnumerable<ElementProperty> elementProperties) {
+                             IEnumerable<ElementsProperty> elementsProperties) {
         Id = id;
         ParentId = parentId;
         Level = level;
         ContentTypeAlias = contentTypeAlias;
         Properties = properties.OrEmpty().ToList();
-        ElementProperties = elementProperties.OrEmpty().ToList();
+        ElementsProperties = elementsProperties.OrEmpty().ToList();
     }
 
     public Guid Id { get; }
@@ -25,5 +25,5 @@ public class ContentProperties {
     public int Level { get; }
     public string ContentTypeAlias { get; }
     public IReadOnlyList<ContentProperty> Properties { get; }
-    public IReadOnlyList<ElementProperty> ElementProperties { get; }
+    public IReadOnlyList<ElementsProperty> ElementsProperties { get; }
 }

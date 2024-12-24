@@ -23,7 +23,7 @@ public class ContentBlocksPropertyConverter : PropertyConverter<string> {
 
     protected override IEnumerable<Cell<string>> GetCells(IContentProperty contentProperty,
                                                           UmbracoPropertyInfo propertyInfo) {
-        return OurDataTypes.String.Cell((contentProperty as ElementProperty)?.Json).Yield();
+        return OurDataTypes.String.Cell((contentProperty as ElementsProperty)?.Json).Yield();
     }
 
     public override void Import(IContentBuilder contentBuilder,

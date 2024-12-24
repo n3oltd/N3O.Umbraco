@@ -50,7 +50,7 @@ public class FundDonationOptionValidator : DonationOptionValidator<FundDonationO
                                       DonationItem donationItem,
                                       GivingType givingType,
                                       string propertyAlias) {
-        var property = content.ElementProperties.SingleOrDefault(x => x.Alias.EqualsInvariant(propertyAlias));
+        var property = content.ElementsProperties.SingleOrDefault(x => x.Alias.EqualsInvariant(propertyAlias));
         var priceHandles = property.IfNotNull(x => ContentHelper.GetNestedContents(x))
                                    .OrEmpty()
                                    .As<PriceHandleElement>(null)

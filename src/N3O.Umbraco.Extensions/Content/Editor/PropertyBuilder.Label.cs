@@ -1,8 +1,11 @@
 using System;
+using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Content;
 
 public class LabelPropertyBuilder : PropertyBuilder {
+    public LabelPropertyBuilder(IContentTypeService contentTypeService) : base(contentTypeService) { }
+    
     public void Set(DateTime? value) {
         Value = value;
     }

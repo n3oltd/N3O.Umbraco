@@ -9,55 +9,55 @@ using Umbraco.Cms.Core.PropertyEditors.ValueConverters;
 namespace N3O.Umbraco.Extensions;
 
 public static partial class ContentHelperExtensions {
-    public static IPublishedElement GetBlockList(this IContentHelper contentHelper, ElementsProperty property) {
-        if (!property.Type.IsBlockList()) {
-            throw new Exception("Property is not block list content");
+    public static IPublishedElement GetBlockGrid(this IContentHelper contentHelper, ElementsProperty property) {
+        if (!property.Type.IsBlockGrid()) {
+            throw new Exception("Property is not block grid content");
         }
         
-        return GetBlockList(contentHelper, property.ContentType.Alias, property.Type.Alias, property.Json);
+        return GetBlockGrid(contentHelper, property.ContentType.Alias, property.Type.Alias, property.Json);
     }
     
-    public static IPublishedElement GetBlockList(this IContentHelper contentHelper,
+    public static IPublishedElement GetBlockGrid(this IContentHelper contentHelper,
                                                  string contentTypeAlias,
                                                  IProperty property) {
-        if (!property.PropertyType.IsBlockList()) {
-            throw new Exception("Property is not block list content");
+        if (!property.PropertyType.IsBlockGrid()) {
+            throw new Exception("Property is not block grid content");
         }
         
-        return GetBlockList(contentHelper, contentTypeAlias, property.PropertyType.Alias, property.GetValue());
+        return GetBlockGrid(contentHelper, contentTypeAlias, property.PropertyType.Alias, property.GetValue());
     }
     
-    public static IPublishedElement GetBlockList(this IContentHelper contentHelper,
+    public static IPublishedElement GetBlockGrid(this IContentHelper contentHelper,
                                                  string contentTypeAlias,
                                                  string propertyTypeAlias,
                                                  object propertyValue) {
-        var publishedElement = contentHelper.GetConvertedValue<BlockListPropertyValueConverter, IPublishedElement>(contentTypeAlias,
+        var publishedElement = contentHelper.GetConvertedValue<BlockGridPropertyValueConverter, IPublishedElement>(contentTypeAlias,
                                                                                                                    propertyTypeAlias,
                                                                                                                    propertyValue);
 
         return publishedElement;
     }
     
-    public static IReadOnlyList<IPublishedElement> GetBlockLists(this IContentHelper contentHelper,
+    public static IReadOnlyList<IPublishedElement> GetBlockGrids(this IContentHelper contentHelper,
                                                                  ElementsProperty property) {
-        if (!property.Type.IsBlockList()) {
-            throw new Exception("Property is not block list content");
+        if (!property.Type.IsBlockGrid()) {
+            throw new Exception("Property is not block grid content");
         }
         
-        return GetBlockLists(contentHelper, property.ContentType.Alias, property.Type.Alias, property.Json);
+        return GetBlockGrids(contentHelper, property.ContentType.Alias, property.Type.Alias, property.Json);
     }
     
-    public static IReadOnlyList<IPublishedElement> GetBlockLists(this IContentHelper contentHelper,
+    public static IReadOnlyList<IPublishedElement> GetBlockGrids(this IContentHelper contentHelper,
                                                                  string contentTypeAlias,
                                                                  IProperty property) {
-        if (!property.PropertyType.IsBlockList()) {
-            throw new Exception("Property is not block list content");
+        if (!property.PropertyType.IsBlockGrid()) {
+            throw new Exception("Property is not block grid content");
         }
         
-        return GetBlockLists(contentHelper, contentTypeAlias, property.PropertyType.Alias, property.GetValue());
+        return GetBlockGrids(contentHelper, contentTypeAlias, property.PropertyType.Alias, property.GetValue());
     }
     
-    public static IReadOnlyList<IPublishedElement> GetBlockLists(this IContentHelper contentHelper,
+    public static IReadOnlyList<IPublishedElement> GetBlockGrids(this IContentHelper contentHelper,
                                                                  string contentTypeAlias,
                                                                  string propertyTypeAlias,
                                                                  object propertyValue) {
@@ -65,7 +65,7 @@ public static partial class ContentHelperExtensions {
             return new List<IPublishedElement>();
         }
         
-        var publishedElements = contentHelper.GetConvertedValue<BlockListPropertyValueConverter, IEnumerable<IPublishedElement>>(contentTypeAlias,
+        var publishedElements = contentHelper.GetConvertedValue<BlockGridPropertyValueConverter, IEnumerable<IPublishedElement>>(contentTypeAlias,
                                                                                                                                  propertyTypeAlias,
                                                                                                                                  propertyValue);
 

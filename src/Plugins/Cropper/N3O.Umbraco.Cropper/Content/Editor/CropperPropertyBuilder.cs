@@ -11,6 +11,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.IO;
+using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Cropper.Content;
 
@@ -26,7 +28,11 @@ public class CropperPropertyBuilder : PropertyBuilder {
     private int? _height;
     private string _altText;
 
-    public CropperPropertyBuilder(MediaFileManager mediaFileManager, ILocalClock clock, Lazy<IVolume> volume) {
+    public CropperPropertyBuilder(IContentTypeService contentTypeService,
+                                  MediaFileManager mediaFileManager,
+                                  ILocalClock clock,
+                                  Lazy<IVolume> volume)
+        : base(contentTypeService) {
         _mediaFileManager = mediaFileManager;
         _clock = clock;
         _volume = volume;
@@ -131,7 +137,7 @@ public class CropperPropertyBuilder : PropertyBuilder {
         return this;
     }
 
-    public override object Build() {
+    public override (object, IPropertyType) Build(string propertyAlias, string contentTypeAlias) {
         Validate();
         
         var cropperSource = new CropperSource();
@@ -145,7 +151,7 @@ public class CropperPropertyBuilder : PropertyBuilder {
 
         Value = JsonConvert.SerializeObject(cropperSource);
 
-        return Value;
+        return (Value, GetPropertyType(propertyAlias, contentTypeAlias));
     }
 
     private void Validate() {

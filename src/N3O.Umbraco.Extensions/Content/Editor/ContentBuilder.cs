@@ -8,14 +8,15 @@ public class ContentBuilder : IContentBuilder {
     private readonly IServiceProvider _serviceProvider;
     private readonly Dictionary<string, IPropertyBuilder> _propertyBuilders = new();
 
-    public ContentBuilder(IServiceProvider serviceProvider) {
+    public ContentBuilder(IServiceProvider serviceProvider, string contentTypeAlias) {
+        ContentTypeAlias = contentTypeAlias;
         _serviceProvider = serviceProvider;
     }
 
-    public T Property<T>(string propertyTypeAlias) where T : IPropertyBuilder {
+    public T Property<T>(string propertyAlias) where T : IPropertyBuilder {
         var propertyBuilder = _serviceProvider.GetRequiredService<T>();
 
-        _propertyBuilders.Add(propertyTypeAlias, propertyBuilder);
+        _propertyBuilders.Add(propertyAlias, propertyBuilder);
         
         return propertyBuilder;
     }
@@ -23,8 +24,8 @@ public class ContentBuilder : IContentBuilder {
     public IDictionary<string, object> Build() {
         var propertyValues = new Dictionary<string, object>();
         
-        foreach (var (name, builder) in _propertyBuilders) {
-            propertyValues[name] = builder.Build();
+        foreach (var (propertyAlias, builder) in _propertyBuilders) {
+            propertyValues[propertyAlias] = builder.Build(propertyAlias, ContentTypeAlias);
         }
 
         RaiseBuilt();
@@ -38,4 +39,6 @@ public class ContentBuilder : IContentBuilder {
     }
     
     public event EventHandler<EventArgs> OnBuilt;
+    
+    public string ContentTypeAlias { get; }
 }

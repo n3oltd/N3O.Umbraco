@@ -2,6 +2,8 @@ using N3O.Umbraco.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Content;
 
@@ -9,12 +11,13 @@ public class NestedPropertyBuilder : PropertyBuilder {
     private readonly List<(string, (IContentBuilder ContentBuilder, Guid Key))> _contentBuilders = new();
     private readonly IServiceProvider _serviceProvider;
 
-    public NestedPropertyBuilder(IServiceProvider serviceProvider) {
+    public NestedPropertyBuilder(IContentTypeService contentTypeService, IServiceProvider serviceProvider)
+        : base(contentTypeService) {
         _serviceProvider = serviceProvider;
     }
 
     public IContentBuilder Add(string contentTypeAlias, Guid? customKey = null, int? order = null) {
-        var contentBuilder = new ContentBuilder(_serviceProvider);
+        var contentBuilder = new ContentBuilder(_serviceProvider, contentTypeAlias);
         var key = customKey ?? Guid.NewGuid();
         
         if (order.HasValue()) {
@@ -26,7 +29,7 @@ public class NestedPropertyBuilder : PropertyBuilder {
         return contentBuilder;
     }
 
-    public override object Build() {
+    public override (object, IPropertyType) Build(string propertyAlias, string parentContentTypeAlias) {
         var rowValues = new List<NestedContentRowValue>();
 
         var index = 1;
@@ -42,7 +45,7 @@ public class NestedPropertyBuilder : PropertyBuilder {
             index++;
         }
 
-        return JsonConvert.SerializeObject(rowValues);
+        return (JsonConvert.SerializeObject(rowValues), GetPropertyType(propertyAlias, parentContentTypeAlias));
     }
 
     // https://github.com/umbraco/Umbraco-CMS/blob/864fd2a45a6afba067cc2d03cafed0d54b602889/src/Umbraco.Infrastructure/PropertyEditors/NestedContentPropertyEditor.cs#L442

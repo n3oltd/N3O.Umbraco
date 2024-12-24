@@ -1,9 +1,11 @@
-using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using Umbraco.Cms.Core;
+using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Models.Blocks;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Content;
@@ -13,13 +15,14 @@ public class BlockListPropertyBuilder : PropertyBuilder {
     private readonly IServiceProvider _serviceProvider;
     private readonly IContentTypeService _contentTypeService;
 
-    public BlockListPropertyBuilder(IServiceProvider serviceProvider) {
+    public BlockListPropertyBuilder(IContentTypeService contentTypeService, IServiceProvider serviceProvider)
+        : base(contentTypeService) {
         _serviceProvider = serviceProvider;
-        _contentTypeService = serviceProvider.GetRequiredService<IContentTypeService>();
+        _contentTypeService = contentTypeService;
     }
 
     public IContentBuilder Add(string contentTypeAlias, Guid? customKey = null, int? order = null) {
-        var contentBuilder = new ContentBuilder(_serviceProvider);
+        var contentBuilder = new ContentBuilder(_serviceProvider, contentTypeAlias);
         var key = customKey ?? Guid.NewGuid();
         
         if (order.HasValue()) {
@@ -31,34 +34,41 @@ public class BlockListPropertyBuilder : PropertyBuilder {
         return contentBuilder;
     }
 
-    public override object Build() {
-        var jArray1 = new JArray();
+    public override (object, IPropertyType) Build(string propertyAlias, string parentContentTypeAlias) {
+        var blocksList = new JArray();
+        
         foreach (var (_, (_, key)) in _contentBuilders) {
             var jObject = new JObject();
             jObject["contentUdi"] = $"umb://element/{key}";
 
-            jArray1.Add(jObject);
+            blocksList.Add(jObject);
         }
         
-        var jArray2 = new JArray();
+        var blockItemDatas = new List<BlockItemData>();
         
         foreach (var (contentTypeAlias, (contentBuilder, key)) in _contentBuilders) {
             var contentType = _contentTypeService.Get(contentTypeAlias);
-            
-            var jObject = JObject.FromObject(contentBuilder.Build());
-            jObject["contentTypeKey"] = contentType.Key.ToString();
-            jObject["contentUdi"] = $"umb://element/{key}";
 
-            jArray2.Add(jObject);
+            var blockItemData = new BlockItemData();
+
+            blockItemData.Udi = new GuidUdi("element", key);
+            blockItemData.ContentTypeKey = contentType.Key;
+
+            foreach (var entry in JObject.FromObject(contentBuilder.Build())) {
+                blockItemData.PropertyValues[entry.Key] = new BlockItemData.BlockPropertyValue(entry.Value,
+                                                                                               GetPropertyType(entry.Key, contentTypeAlias));
+            }
+
+            blockItemDatas.Add(blockItemData);
         }
 
-        var jResult = new JObject();
-        jResult["layout"] = new JObject();
-        jResult["layout"]["Umbraco.BlockList"] = jArray1;
+        var blockValue = new BlockValue();
+        blockValue.Layout = new Dictionary<string, JToken>();
+        blockValue.Layout["layout"]["Umbraco.BlockList"] = blocksList;
 
-        jResult["contentData"] = jArray2;
-        jResult["settingsData"] = new JArray();
+        blockValue.ContentData = blockItemDatas;
+        blockValue.SettingsData = new List<BlockItemData>();
 
-        return JsonConvert.SerializeObject(jResult);
+        return (JsonConvert.SerializeObject(blockValue), GetPropertyType(propertyAlias, parentContentTypeAlias));
     }
 }

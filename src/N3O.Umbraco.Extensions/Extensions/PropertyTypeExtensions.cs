@@ -7,6 +7,10 @@ public static class PropertyTypeExtensions {
     public static bool HasEditorAlias(this IPropertyType propertyType, string alias) {
         return propertyType.PropertyEditorAlias.EqualsInvariant(alias);
     }
+
+    public static bool IsBlockGrid(this IPropertyType propertyType) {
+        return propertyType.HasEditorAlias(Aliases.BlockGrid);
+    }
     
     public static bool IsBlockList(this IPropertyType propertyType) {
         return propertyType.HasEditorAlias(Aliases.BlockList);

@@ -4,11 +4,11 @@ using System.Linq;
 namespace N3O.Umbraco.Extensions;
 
 public static class ContentPropertiesExtensions {
-    public static ElementProperty GetElementPropertyByAlias(this ContentProperties contentProperties, string alias) {
-        var elementProperty = contentProperties.ElementProperties
-                                                     .SingleOrDefault(x => x.Alias.EqualsInvariant(alias));
+    public static ElementsProperty GetElementsPropertyByAlias(this ContentProperties contentProperties, string alias) {
+        var elementsProperty = contentProperties.ElementsProperties
+                                                .SingleOrDefault(x => x.Alias.EqualsInvariant(alias));
 
-        return elementProperty;
+        return elementsProperty;
     }
     
     public static IContentProperty GetPropertyByAlias(this ContentProperties contentProperties, string alias) {
@@ -16,7 +16,7 @@ public static class ContentPropertiesExtensions {
                                                             .SingleOrDefault(x => x.Alias.EqualsInvariant(alias));
 
         if (contentProperty == null) {
-            contentProperty = contentProperties.ElementProperties
+            contentProperty = contentProperties.ElementsProperties
                                                .SingleOrDefault(x => x.Alias.EqualsInvariant(alias));
         }
 
