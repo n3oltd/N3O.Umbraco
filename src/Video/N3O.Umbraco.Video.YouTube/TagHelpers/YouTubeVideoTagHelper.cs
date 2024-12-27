@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using N3O.Umbraco.Video.YouTube.Extensions;
+using System.Text.RegularExpressions;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Video.YouTube.TagHelpers;
@@ -11,7 +11,8 @@ public class YouTubeVideoTagHelper : TagHelper {
     public string VideoUrl { get; set; }
 
     public override void Process(TagHelperContext context, TagHelperOutput output) {
-        var videoId = VideoUrl.GetYouTubeVideoId();
+        var videoId = GetVideoId();
+
         if (videoId == null) {
             output.SuppressOutput();
         } else {
@@ -26,5 +27,17 @@ public class YouTubeVideoTagHelper : TagHelper {
 
             output.Content.SetHtmlContent(iframeTag.ToHtmlString());
         }
+    }
+
+    private string GetVideoId() {
+        try {
+            var match = Regex.Match(VideoUrl, @"((?<=(v|V)/)|(?<=be/)|(?<=(\?|\&)v=)|(?<=embed/))([\w-]+)");
+
+            if (match.Success) {
+                return match.Groups[0].Value;
+            }
+        } catch { }
+
+        return null;
     }
 }
