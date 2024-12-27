@@ -2,10 +2,10 @@ using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Payments.DirectDebitUK.Clients;
 using N3O.Umbraco.Payments.DirectDebitUK.Clients.Fetchify;
 using N3O.Umbraco.Payments.DirectDebitUK.Clients.Loqate;
 using N3O.Umbraco.Payments.DirectDebitUK.Content;
+using N3O.Umbraco.Utilities;
 using Refit;
 using Umbraco.Cms.Core.DependencyInjection;
 

@@ -1,3 +1,4 @@
+using Humanizer;
 using Microsoft.AspNetCore.Html;
 using System;
 using System.Globalization;
@@ -239,6 +240,10 @@ public static class StringExtensions {
         return Regex.Replace(s, "/+$", string.Empty);
     }
 
+    public static string ToHtmlId(this string str, int index) {
+        return $"item-{str.Camelize()}-{index}";
+    }
+    
     public static HtmlString ToHtmlString(this string s) {
         if (s == null) {
             return null;

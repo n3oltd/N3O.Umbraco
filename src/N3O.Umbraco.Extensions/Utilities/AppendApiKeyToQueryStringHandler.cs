@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Payments.DirectDebitUK.Clients;
+namespace N3O.Umbraco.Utilities;
 
 public class AppendApiKeyToQueryStringHandler : DelegatingHandler {
     private readonly string _parameterName;
