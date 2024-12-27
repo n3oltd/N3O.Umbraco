@@ -16,6 +16,8 @@ public class CloudflareCdnComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddScoped<ICloudflareStreams, CloudflareStreams>();
         builder.Services.AddSingleton<IRemoteIpAddressAccessor, CloudflareIpAddressAccessor>();
+        
+        RegisterStreams(builder);
     }
 
     private void RegisterStreams(IUmbracoBuilder builder) {
