@@ -48,5 +48,21 @@ namespace DemoSite.Content
 		}
 
 		// properties
+
+		///<summary>
+		/// Account ID
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("videoAccountId")]
+		public virtual string VideoAccountId => this.Value<string>(_publishedValueFallback, "videoAccountId");
+
+		///<summary>
+		/// Token
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("videoToken")]
+		public virtual string VideoToken => this.Value<string>(_publishedValueFallback, "videoToken");
 	}
 }
