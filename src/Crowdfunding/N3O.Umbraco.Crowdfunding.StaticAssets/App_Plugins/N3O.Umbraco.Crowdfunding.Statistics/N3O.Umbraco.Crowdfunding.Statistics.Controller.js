@@ -1,5 +1,5 @@
 angular.module("umbraco")
-    .controller("N3O.Umbraco.Crowdfunding.Statistics", function ($scope, editorState, contentResource, assetsService) {
+    .controller("N3O.Umbraco.Crowdfunding.Statistics", function ($scope, editorState, contentResource, assetsService, statisticsHelper) {
         (async () => {
             let d3Script = document.createElement('script');
             d3Script.src = "https://d3js.org/d3.v7.min.js";
@@ -14,8 +14,6 @@ angular.module("umbraco")
             document.head.appendChild(d3Script);
             
             async function initializeData() {
-                const statisticsHelper = new StatisticsHelper();
-                
                 let data = await fetchData();
 
                 document.getElementById('total-amount').textContent = data.contributions.total.text;
