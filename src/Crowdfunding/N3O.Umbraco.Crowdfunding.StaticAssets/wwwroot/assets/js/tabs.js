@@ -1,6 +1,6 @@
 ﻿function n3o_cdf_handleTabClick() {
-    const tabBtn = document.querySelectorAll(".tabBtn");
-    const tabEvent = document.querySelectorAll(".tabEvent");
+    const tabBtn = document.querySelectorAll(".n3o-tabBtn");
+    const tabEvent = document.querySelectorAll(".n3o-tabEvent");
     tabBtn.forEach((e) => {
         onTabClick(tabBtn, tabEvent, e);
     });
@@ -12,7 +12,7 @@
             if (currentBtn.classList.contains("active")) {
                 console.log("now active");
                 const faq =
-                    currentBtn.parentElement.parentElement.querySelector(".tabEvent");
+                    currentBtn.parentElement.parentElement.querySelector(".n3o-tabEvent");
                 if (faq) {
                     faq.classList.remove("active");
                     currentBtn.classList.remove("active");
