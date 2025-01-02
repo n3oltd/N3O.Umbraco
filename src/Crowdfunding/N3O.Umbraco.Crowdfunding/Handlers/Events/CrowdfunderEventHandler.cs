@@ -38,13 +38,6 @@ public abstract class CrowdfunderEventHandler<TEvent> : IRequestHandler<TEvent, 
         return None.Empty;
     }
 
-    protected void UpdateAndPublishStatus(IContent content, string status) {
-        content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.Status, status);
-        content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, false);
-
-        _contentService.SaveAndPublish(content);
-    }
-
     protected async Task AddOrUpdateRevisionAsync(Guid contentId, int contentVersionId, CrowdfunderType type) {
         var content = _contentLocator.GetCrowdfunderContent(contentId, type);
         
