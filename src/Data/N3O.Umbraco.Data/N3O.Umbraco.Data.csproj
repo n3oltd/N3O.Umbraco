@@ -48,7 +48,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AngleSharp" Version="1.1.2" />
+        <PackageReference Include="AngleSharp" Version="1.2.0" />
         <PackageReference Include="CsvHelper" Version="33.0.1" />
         <PackageReference Include="EPPlus" Version="7.5.2" />
         <PackageReference Include="HtmlSanitizer" Version="8.1.870" />
