@@ -38,6 +38,7 @@
         <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Checkout\N3O.Umbraco.Giving.Checkout.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
         <ProjectReference Include="..\..\Plugins\Uploader\N3O.Umbraco.Uploader\N3O.Umbraco.Uploader.csproj" />
+        <ProjectReference Include="..\..\Sync\N3O.Umbraco.Sync\N3O.Umbraco.Sync.csproj" />
         <ProjectReference Include="..\..\Templates\N3O.Umbraco.Templates.Handlebars\N3O.Umbraco.Templates.Handlebars.csproj" />
         <ProjectReference Include="..\..\UIBuilder\N3O.Umbraco.UIBuilder\N3O.Umbraco.UIBuilder.csproj" />
     </ItemGroup>
