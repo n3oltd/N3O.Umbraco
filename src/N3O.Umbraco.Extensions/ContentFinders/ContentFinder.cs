@@ -34,14 +34,22 @@ public abstract class ContentFinder : IContentFinder {
                                                       string contentTypeAlias,
                                                       string contentCollectionTypeAlias,
                                                       IPublishedRequestBuilder request) {
-        var page = ContentCache.Single(pageTypeAlias);
-        var contentCollection = ContentCache.Single(contentCollectionTypeAlias);
-
-        if (page == null || contentCollection == null) {
+        var pages = ContentCache.All(pageTypeAlias);
+        var contentCollections = ContentCache.All(contentCollectionTypeAlias);
+        
+        if (pages.None() || contentCollections.None()) {
             return Task.FromResult(false);
         }
+        
+        if (!pages.IsSingle()) {
+            throw new Exception($"Found multiple pages for {pageTypeAlias}: {pages.Select(x => x.Id).ToCsv(true)}");
+        }
+        
+        if (!contentCollections.IsSingle()) {
+            throw new Exception($"Found multiple content collections for {contentCollectionTypeAlias}: {contentCollections.Select(x => x.Id).ToCsv(true)}");
+        }
     
-        var pagePath = page.RelativeUrl();
+        var pagePath = pages.Single().RelativeUrl();
     
         var path = GetRequestedPath(request.Uri, pagePath);
 
@@ -49,7 +57,8 @@ public abstract class ContentFinder : IContentFinder {
             return Task.FromResult(false);
         }
 
-        var match = contentCollection.Descendants()
+        var match = contentCollections.Single()
+                                      .Descendants()
                                      .Where(x => x.ContentType.Alias.EqualsInvariant(contentTypeAlias))
                                      .FirstOrDefault(x => StrippedPath(x, pagePath).EqualsInvariant(path));
 

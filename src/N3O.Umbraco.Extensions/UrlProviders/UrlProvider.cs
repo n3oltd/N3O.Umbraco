@@ -55,13 +55,17 @@ public abstract class UrlProvider : IUrlProvider {
                                          string culture,
                                          Uri current) {
         if (content != null && content.ContentType.Alias.EqualsInvariant(contentTypeAlias)) {
-            var page = _contentCache.Single(pageTypeAlias);
-
-            if (page == null) {
+            var pages = _contentCache.All(pageTypeAlias);
+            
+            if (pages.None()) {
                 return null;
             }
+            
+            if (!pages.IsSingle()) {
+                throw new Exception($"Found multiple pages for {pageTypeAlias}: {pages.Select(x => x.Id).ToCsv(true)}");
+            }
 
-            var defaultUrl = _defaultUrlProvider.GetUrl(page, mode, culture, current);
+            var defaultUrl = _defaultUrlProvider.GetUrl(pages.Single(), mode, culture, current);
             var url = new Url(defaultUrl.Text);
 
             url.AppendPathSegment(content.UrlSegment);
