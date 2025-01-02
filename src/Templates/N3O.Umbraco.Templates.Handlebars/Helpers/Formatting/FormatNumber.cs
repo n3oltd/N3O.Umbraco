@@ -1,6 +1,5 @@
 using HandlebarsDotNet;
 using Microsoft.Extensions.Logging;
-using N3O.Umbraco.Financial;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Localization;
 
