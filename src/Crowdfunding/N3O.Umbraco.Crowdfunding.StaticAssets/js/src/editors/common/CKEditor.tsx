@@ -1,3 +1,4 @@
+import React from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { ClassicEditor, Bold, Essentials, Italic, Paragraph, Undo, Underline, Strikethrough, Alignment, List, Link, Image, Heading,
   ImageCaption,
@@ -6,9 +7,9 @@ import { ClassicEditor, Bold, Essentials, Italic, Paragraph, Undo, Underline, St
   ImageUpload,
   Base64UploadAdapter,
   WordCount } from 'ckeditor5';
+import { CharacterLimit } from './plugins/CKCharacterLimit';
 
 import 'ckeditor5/ckeditor5.css';
-import React from 'react';
 
 type CKEditorProps = {
   editor: React.MutableRefObject<CKEditor<ClassicEditor> | null>,
@@ -24,26 +25,11 @@ export const CkEditor: React.FC<CKEditorProps> = ({
   characterLimit
 }) => {
 
-  const handleReady = (editor) => {
-
-    const checkCharacterLimit = () => {
-      const characterCount = editor.plugins.get('WordCount').characters;
-      if (characterLimit && characterCount >= characterLimit) {
-        // Disable input or display a warning message
-        editor.editing.view.focusTracker.isFocused = false;
-      }
-    };
-
-    editor.model.document.on('change:data', () => {
-      checkCharacterLimit();
-    });
-  };
-
+  
   return <>
       <CKEditor
           editor={ ClassicEditor }
           ref={editor}
-          onReady={handleReady}
           onChange={(_, e) => onChange(e.getData())}
           config={
               {
@@ -65,8 +51,12 @@ export const CkEditor: React.FC<CKEditorProps> = ({
                     ImageResize,
                     ImageStyle,
                     Base64UploadAdapter,
-                    WordCount
+                    WordCount,
+                    CharacterLimit
               ],
+              characterLimit: {
+                    limit: characterLimit
+              },
               link: {
                 addTargetToExternalLinks: true,
                 defaultProtocol: 'https://',
@@ -101,7 +91,7 @@ export const CkEditor: React.FC<CKEditorProps> = ({
                 ],
               },
               initialData: initialContent,
-            } 
+            } as any
           }
         /> 
   </>
