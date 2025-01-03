@@ -47,8 +47,8 @@ public class CrowdfundingStatisticsController : ApiController {
         var apiKey = Request.Headers[ApiHeaderKey];
         var environment = GetEnvironmentType();
         
-        var environmentApiKey = _contentLocator.Value.All<StatisticsEnvironmentContent>()
-                                               .SingleOrDefault(x => x.StatisticsEnvironment == environment)?
+        var environmentApiKey = _contentLocator.Value.All<EnvironmentContent>()
+                                               .SingleOrDefault(x => x.Environment == environment)?
                                                .ApiKey;
 
         if (!environmentApiKey.HasValue()) {
@@ -58,11 +58,11 @@ public class CrowdfundingStatisticsController : ApiController {
         return apiKey == environmentApiKey;
     }
 
-    private StatisticsEnvironmentType GetEnvironmentType() {
+    private CrowdfundingEnvironmentType GetEnvironmentType() {
         if (_webHostEnvironment.Value.IsProduction()) {
-            return EnvironmentTypes.Production;
+            return CrowdfundingEnvironmentTypes.Production;
         } else if (_webHostEnvironment.Value.IsStaging() || _webHostEnvironment.Value.IsDevelopment()) {
-            return EnvironmentTypes.Staging;
+            return CrowdfundingEnvironmentTypes.Staging;
         } else {
             throw UnrecognisedValueException.For(_webHostEnvironment.Value.EnvironmentName);
         }

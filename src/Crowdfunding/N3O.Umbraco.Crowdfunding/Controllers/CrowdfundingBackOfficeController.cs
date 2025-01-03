@@ -19,9 +19,9 @@ public class CrowdfundingBackOfficeController : BackofficeAuthorizedApiControlle
     }
 
     [HttpGet("Environments")]
-    public async Task<ActionResult<IEnumerable<StatisticsEnvironmentRes>>> GetStatisticsEnvironments() {
-        var environments = _contentLocator.All<StatisticsEnvironmentContent>();
-        var res = environments.Select(x => new StatisticsEnvironmentRes(x));
+    public async Task<ActionResult<IEnumerable<CrowdfundingEnvironmentRes>>> GetCrowdfundingEnvironments() {
+        var environments = _contentLocator.All<EnvironmentContent>();
+        var res = environments.Select(x => new CrowdfundingEnvironmentRes(x));
         
         return Ok(res);
     }

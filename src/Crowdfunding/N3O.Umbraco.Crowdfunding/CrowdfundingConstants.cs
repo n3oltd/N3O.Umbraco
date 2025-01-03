@@ -182,8 +182,8 @@ public static class CrowdfundingConstants {
             public const string Alias = "crowdfundingSignInModalSettings";
         }
         
-        public static class StatisticsEnvironment {
-            public const string Alias = "crowdfundingStatisticsEnvironmentSettings";
+        public static class Environment {
+            public const string Alias = "crowdfundingEnvironment";
         }
         
         public static class TemplateSettings {
