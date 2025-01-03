@@ -1,26 +1,3 @@
-const accounts = document.getElementById("newAccount");
-if (accounts) {
-    const newAccountBtn = document.getElementById("newAccountBtn");
-    const allElements = accounts.querySelectorAll("input, select");
-
-    let allFilled = true;
-
-    allElements.forEach((item) => {
-        item.onkeyup = () => {
-            allFilled = true;
-
-            for (const element of allElements) {
-                if (element.value === "") {
-                    allFilled = false;
-                    break;
-                }
-            }
-
-            newAccountBtn.disabled = !allFilled;
-        };
-    });
-}
-
 function n3o_cdf_formDataToObject(form) {
     const formData = new FormData(form)
 
@@ -79,18 +56,18 @@ function n3o_cdf_poolRequest(fetcher, successAction, ...args) {
         const result = await fetcher(args);
         if (result.status === 200) {
             const data = await result.json();
-            
+
             if (data && data.isCreated) {
                 clearInterval(intervalId);
                 successAction();
             }
         }
-    }, 15000)
+    }, 5000)
 }
 
 const n3o_cdf_checkAccountCreated = async accountId => {
     const resp = await fetch(`/umbraco/api/Crm/accounts/${accountId}/checkCreatedStatus`);
-   
+
     return  resp;
 }
 
@@ -107,7 +84,7 @@ const n3o_cdf_createAccount = () => {
     countryField.addEventListener("change", function () {
         phoneCountry.value = countryField.value;
     });
-    
+
     accountForm.addEventListener('submit', async e => {
         e.preventDefault();
 
@@ -233,3 +210,37 @@ const n3o_cdf_updateAccount = (account) => {
 
     }
 };
+
+const n3o_initialize_account = () => {
+    const accounts = document.getElementById("newAccount");
+
+    if (accounts) {
+        const newAccountBtn = document.getElementById("newAccountBtn");
+        const allElements = accounts.querySelectorAll("input:not([type='hidden']):not([hidden])[data-required='True'], select:not([hidden])[data-required='True']");
+
+        newAccountBtn.disabled = true;
+
+        let allFilled = true;
+
+        allElements.forEach((item) => {
+            if (item.value === "") {
+                allFilled = false;
+            }
+
+            item.onkeyup = () => {
+                allFilled = true;
+
+                for (const element of allElements) {
+                    if (element.value === "") {
+                        allFilled = false;
+                        break;
+                    }
+                }
+
+                newAccountBtn.disabled = !allFilled;
+            };
+        });
+
+        newAccountBtn.disabled = !allFilled;
+    }
+}
