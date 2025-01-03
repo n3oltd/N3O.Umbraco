@@ -6,7 +6,7 @@ using N3O.Umbraco.Sync;
 namespace N3O.Umbraco.Crowdfunding.Sync;
 
 public class CrowdfundingContentSyncFilter : IContentSyncFilter {
-    private static string ContentTypeAlias = AliasHelper<CrowdfunderContent<CampaignContent>>.ContentTypeAlias();
+    private static string ContentTypeAlias = AliasHelper<CampaignContent>.ContentTypeAlias();
     
     private static string[] ExcludedProperties = [
         AliasHelper<CrowdfunderContent<CampaignContent>>.PropertyAlias(x => x.Status),
