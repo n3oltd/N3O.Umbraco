@@ -1,5 +1,5 @@
 angular.module("umbraco")
-    .controller("N3O.Umbraco.Crowdfunding.Statistics", function ($scope, $cookies, editorState, contentResource, assetsService, statisticsHelper, authResource) {
+    .controller("N3O.Umbraco.Crowdfunding.Statistics", function ($scope, $cookies, editorState, contentResource, assetsService, statisticsHelper) {
         (async () => {
             let d3Script = document.createElement('script');
             d3Script.src = "https://d3js.org/d3.v7.min.js";
@@ -24,7 +24,7 @@ angular.module("umbraco")
 
                 options.forEach(option => {
                     const newOption = document.createElement('option');
-                    newOption.value = option.statisticsEnvironment;
+                    newOption.value = option.crowdfundingEnvironment;
                     newOption.textContent = option.name;
                     newOption.dataset.domain = option.domain;
                     newOption.dataset.apiKey = option.apiKey;
@@ -32,8 +32,12 @@ angular.module("umbraco")
                     dropdown.appendChild(newOption);
                     
                     if(option.default) {
-                        dropdown.value = option.statisticsEnvironment; 
+                        dropdown.value = option.crowdfundingEnvironment;
                     }
+                });
+
+                dropdown.addEventListener('change', async function (event) {
+                    await initializeData();
                 });
             }
 
@@ -78,16 +82,27 @@ angular.module("umbraco")
                 req.period.from = document.getElementById('start-date').value;
                 req.period.to = document.getElementById('end-date').value;
 
-                let environment = document.getElementById('stats-source').value;
-                
-                let res = await fetch(environment.dataset.domain, {
+                let source = document.getElementById('stats-source');
+                let environment = source.options[source.selectedIndex];
+
+                let res = await fetch(`${environment.dataset.domain}/umbraco/api/CrowdfundingStatistics/dashboard`, {
                     method: "POST",
                     headers: {
                         "Accept": "application/json",
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "Crowdfunding-API-Key": environment.dataset.apiKey
                     },
                     body: JSON.stringify(req)
                 });
+
+                if(res.status !== 200) {
+                    console.log(res)
+
+                    document.querySelector('.n3o-crowdfunding-stats').innerHTML = `There was an error fetching data, please refresh the page and if the error persists, please contact support`;
+
+                    throw Error(`Error fetching data.`);
+                }
+
                 return res.json();
             }
 
