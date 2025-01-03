@@ -35,11 +35,11 @@ public abstract class MembersAccessControl : ContentAccessControl {
         var maxValues = GetMaxValues(_dataTypeService.GetDataType(property.Type.DataTypeId));
         
         if (maxValues == 1) {
-            return await AllowEditAsync(() => _contentHelper.GetPickerValue<IPublishedContent>(contentProperties,
-                                                                                               PropertyAlias).Yield());
+            return await AllowEditAsync(() => _contentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(contentProperties,
+                                                                                                            PropertyAlias).Yield());
         } else {
-            return await AllowEditAsync(() => _contentHelper.GetPickerValues<IPublishedContent>(contentProperties,
-                                                                                                PropertyAlias));
+            return await AllowEditAsync(() => _contentHelper.GetMultiNodeTreePickerValues<IPublishedContent>(contentProperties,
+                                                                                                             PropertyAlias));
         }
     }
 
