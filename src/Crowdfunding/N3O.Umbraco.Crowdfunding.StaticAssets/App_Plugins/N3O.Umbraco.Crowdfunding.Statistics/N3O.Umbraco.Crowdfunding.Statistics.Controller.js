@@ -1,5 +1,5 @@
 angular.module("umbraco")
-    .controller("N3O.Umbraco.Crowdfunding.Statistics", function ($scope, $cookies, editorState, contentResource, assetsService, statisticsHelper) {
+    .controller("N3O.Umbraco.Crowdfunding.Statistics", function ($scope, editorState, contentResource, assetsService, statisticsHelper) {
         (async () => {
             let d3Script = document.createElement('script');
             d3Script.src = "https://d3js.org/d3.v7.min.js";
