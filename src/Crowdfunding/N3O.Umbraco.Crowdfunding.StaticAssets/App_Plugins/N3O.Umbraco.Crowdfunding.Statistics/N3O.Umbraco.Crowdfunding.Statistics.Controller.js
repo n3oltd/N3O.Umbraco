@@ -100,8 +100,6 @@ angular.module("umbraco")
                 });
 
                 if(res.status !== 200) {
-                    console.log(res)
-
                     document.querySelector('.n3o-crowdfunding-stats').innerHTML = `There was an error fetching data, please refresh the page and if the error persists, please contact support`;
 
                     throw Error(`Error fetching data.`);
