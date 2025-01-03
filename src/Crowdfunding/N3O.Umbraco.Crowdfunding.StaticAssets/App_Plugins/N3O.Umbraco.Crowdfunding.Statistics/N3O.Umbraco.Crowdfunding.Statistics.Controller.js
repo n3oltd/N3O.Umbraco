@@ -18,23 +18,27 @@ angular.module("umbraco")
             async function initializeEnvironments() {
                 let res = await fetch(`/umbraco/backoffice/api/CrowdfundingBackOffice/Environments`);
 
-                let options = await res.json();
+                let environments = await res.json();
 
                 const dropdown = document.getElementById('stats-source');
 
-                options.forEach(option => {
+                environments.forEach(environment => {
                     const newOption = document.createElement('option');
-                    newOption.value = option.crowdfundingEnvironment;
-                    newOption.textContent = option.name;
-                    newOption.dataset.domain = option.domain;
-                    newOption.dataset.apiKey = option.apiKey;
+                    newOption.value = environment.crowdfundingEnvironment;
+                    newOption.textContent = environment.name;
+                    newOption.dataset.domain = environment.domain;
+                    newOption.dataset.apiKey = environment.apiKey;
                     
                     dropdown.appendChild(newOption);
-                    
-                    if(option.default) {
-                        dropdown.value = option.crowdfundingEnvironment;
+
+                    if(environment.default) {
+                        dropdown.value = environment.crowdfundingEnvironment;
                     }
                 });
+
+                if(environments.length === 1 && environments.some(item => item.default)) {
+                    document.querySelector('.stats-source-container').style.display = 'none';
+                }
 
                 dropdown.addEventListener('change', async function (event) {
                     await initializeData();
