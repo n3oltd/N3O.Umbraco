@@ -13,14 +13,12 @@ import 'ckeditor5/ckeditor5.css';
 
 type CKEditorProps = {
   editor: React.MutableRefObject<CKEditor<ClassicEditor> | null>,
-  onChange: (content: string) => void,
   initialContent: string,
   characterLimit?: number
 }
 
 export const CkEditor: React.FC<CKEditorProps> = ({
   editor,
-  onChange,
   initialContent,
   characterLimit
 }) => {
@@ -30,7 +28,6 @@ export const CkEditor: React.FC<CKEditorProps> = ({
       <CKEditor
           editor={ ClassicEditor }
           ref={editor}
-          onChange={(_, e) => onChange(e.getData())}
           config={
               {
                 wordCount: {
