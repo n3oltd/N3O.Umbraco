@@ -9,18 +9,18 @@
 <div class="n3o-donation__wrapper">
     <div class="n3o-donation">
         <div class="n3o-donation__head">
-            <div class="n3o-donation__head-tab tabBtn active" data-tab="#tab-1">
+            <div class="n3o-donation__head-tab n3o-tabBtn active" data-tab="#tab-1">
                 <h4 class="n3o-h4">@PartialText.Get("Latest Donations")</h4>
             </div>
             
             @if (Model.CrowdfunderType == CrowdfunderTypes.Campaign) {
-                <div class="n3o-donation__head-tab tabBtn" data-tab="#tab-2">
+                <div class="n3o-donation__head-tab n3o-tabBtn" data-tab="#tab-2">
                     <h4 class="n3o-h4">@PartialText.Get("Fundraisers")<span> @(((ViewCampaignViewModel) Model).Fundraisers.Count) </span></h4>
                 </div>
             }
         </div>
 
-        <div class="n3o-donation__list tabEvent active" id="tab-1">
+        <div class="n3o-donation__list n3o-tabEvent active" id="tab-1">
             @if (Model.Contributions.None()) {
                 <div class="n3o-donation__empty">
                     <p class="n3o-p">@PartialText.Get("Be the first to donate!")</p>
@@ -34,7 +34,7 @@
                         
                         <div class="n3o-donationItem__row">
                             <div class="n3o-donationItem__name">
-                                <div class="n3o-large">@contribution.Name</div>
+                                <div class="n3o-large">@(contribution.IsAnonymous ? PartialText.Get("Anonymous") : contribution.Name)</div>
                                 <div class="n3o-subtle">@contribution.Comment</div>
                             </div>
                             
@@ -64,7 +64,7 @@
         </div>
         
         @if (Model.CrowdfunderType == CrowdfunderTypes.Campaign) {
-            <div class="n3o-donation__list fund tabEvent" id="tab-2">
+            <div class="n3o-donation__list fund n3o-tabEvent" id="tab-2">
                 @foreach (var fundraiser in ((ViewCampaignViewModel) Model).Fundraisers.OrEmpty()) {
                     <div class="n3o-donationItem">
                         <div class="n3o-donationItem__avatar">
