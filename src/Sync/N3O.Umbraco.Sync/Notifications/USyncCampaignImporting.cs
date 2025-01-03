@@ -16,7 +16,7 @@ public class USyncCampaignImporting : INotificationAsyncHandler<uSyncImportingIt
     }
     
     public Task HandleAsync(uSyncImportingItemNotification notification, CancellationToken cancellationToken) {
-        var contentTypeAlias = "TODO";
+        var contentTypeAlias = "crowdfundingCampaign";
 
         var filter = _contentSyncFilters.FirstOrDefault(x => x.IsFilter(contentTypeAlias));
 
