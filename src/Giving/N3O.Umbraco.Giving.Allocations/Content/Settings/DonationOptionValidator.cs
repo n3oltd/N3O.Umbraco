@@ -45,7 +45,7 @@ public abstract class DonationOptionValidator<TDonationOptionContent> : ContentV
                                      string propertyAlias)
         where T : FundDimensionValue<T> {
         var property = content.GetPropertyByAlias(propertyAlias);
-        var value = property.IfNotNull(x => ContentHelper.GetPickerValue<IPublishedContent>(x).As<T>());
+        var value = property.IfNotNull(x => ContentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(x).As<T>());
 
         if (value != null && allowedValues != null && !allowedValues.Contains(value)) {
             ErrorResult(property, $"{value.Name} is not a permitted fund dimension value");

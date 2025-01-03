@@ -30,8 +30,8 @@ public class FeedbackDonationOptionValidator : DonationOptionValidator<FeedbackD
     
     private FeedbackScheme GetFeedbackScheme(ContentProperties content) {
         var feedbackScheme = content.GetPropertyByAlias(FeedbackSchemeAlias)
-                                       .IfNotNull(x => ContentHelper.GetPickerValue<IPublishedContent>(x)
-                                                                    .As<FeedbackScheme>());
+                                    .IfNotNull(x => ContentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(x)
+                                                                 .As<FeedbackScheme>());
 
         return feedbackScheme;
     }

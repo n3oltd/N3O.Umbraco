@@ -30,8 +30,8 @@ public class SponsorshipDonationOptionValidator : DonationOptionValidator<Sponso
     
     private SponsorshipScheme GetSponsorshipScheme(ContentProperties content) {
         var sponsorshipScheme = content.GetPropertyByAlias(SponsorshipSchemeAlias)
-                                    .IfNotNull(x => ContentHelper.GetPickerValue<IPublishedContent>(x)
-                                                                 .As<SponsorshipScheme>());
+                                       .IfNotNull(x => ContentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(x)
+                                                                    .As<SponsorshipScheme>());
 
         return sponsorshipScheme;
     }
