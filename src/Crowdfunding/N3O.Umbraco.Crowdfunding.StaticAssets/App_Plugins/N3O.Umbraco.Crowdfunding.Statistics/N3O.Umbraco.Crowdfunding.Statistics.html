@@ -1,194 +1,208 @@
 <div class="form-horizontal" ng-controller="N3O.Umbraco.Crowdfunding.Statistics">
-   <main class="dashboard">
-      <div class="n3o-crowdfunding-stats">
-         
-      <div class="overview">
-         <h1>Overview</h1>
-         <div class="date-filter">
-            <label>Date Range:</label>
-            <input id="start-date" type="date" >
-            <input id="end-date" type="date" >
-         </div>
-      </div>
-         
-      <div class="n3o-overview-container">
-         
-         <div class="n3o-umbraco-panel-ui panel-1">
-            <div class = "donations-icon">
-               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="33" viewBox="0 0 32 33" fill="none">
-                  <g clip-path="url(#clip0_5329_4612)">
-                     <path d="M31.058 6.42305C29.1185 5.60955 27.1775 5.30005 25.2375 5.30005C19.079 5.29955 12.921 8.41705 6.7625 8.41705C5.218 8.41705 3.6745 8.22105 2.13 7.73105C1.9565 7.67605 1.7825 7.65005 1.6125 7.65005C0.752 7.65005 0 8.31605 0 9.24055V25.1035C0 25.735 0.3615 26.3335 0.942 26.5765C2.8815 27.3905 4.8225 27.7 6.7625 27.7C12.921 27.7 19.0795 24.5825 25.238 24.5825C26.7825 24.5825 28.326 24.7785 29.8705 25.2685C30.044 25.3235 30.218 25.3495 30.388 25.3495C31.2485 25.3495 32.0005 24.6835 32.0005 23.759V7.89655C32 7.26455 31.6385 6.66655 31.058 6.42305V6.42305ZM2.4 10.311C3.406 10.563 4.456 10.6895 5.536 10.7575C5.242 12.227 3.95 13.3345 2.4 13.3345V10.311ZM2.4 24.561V22.172C4.1185 22.172 5.509 23.5355 5.5855 25.242C4.459 25.1515 3.406 24.9265 2.4 24.561V24.561ZM16 21.3C13.7905 21.3 12 19.1505 12 16.5C12 13.849 13.791 11.7 16 11.7C18.209 11.7 20 13.849 20 16.5C20 19.1515 18.2085 21.3 16 21.3ZM29.6 22.689C28.724 22.4695 27.8145 22.3465 26.884 22.267C27.1775 20.963 28.259 19.973 29.6 19.803V22.689ZM29.6 10.8835C28.0555 10.688 26.857 9.39855 26.8095 7.80605C27.7865 7.91455 28.714 8.11755 29.6 8.43905V10.8835Z" fill="#F5C1BC"/>
-                  </g>
-                  <defs>
-                     <clipPath id="clip0_5329_4612">
-                        <rect width="32" height="32" fill="white" transform="translate(0 0.5)"/>
-                     </clipPath>
-                  </defs>
-               </svg>
-            </div>
-            
-            <div class="donations-title">Total Amount Donated</div>
-            
-            <div class="donations-total-amount" id="total-amount"></div>
-            
-            <div class="donations-details">
-               <div class="average-donation">
-                  <span>Average Donation</span>
-                  <span id="average-donation"></span>
-               </div>
-               
-               <div class="donation-count">
-                  <span>Donation Count</span>
-                  <span id="donation-count"></span>
-               </div>
-            </div>
-         </div>
-
-         <!--Supporters Panel-->
-         <div class="n3o-umbraco-panel-ui panel-2">
-            <div class = "supporters-icon">
-               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="33" viewBox="0 0 32 33" fill="none">
-                  <g clip-path="url(#clip0_5329_4626)">
-                     <path d="M6.39975 8.49995C7.72475 8.49995 8.79975 7.42495 8.79975 6.09995C8.79975 4.77495 7.72475 3.69995 6.39975 3.69995C5.07476 3.69995 3.99976 4.77495 3.99976 6.09995C3.99976 7.42495 5.07476 8.49995 6.39975 8.49995ZM25.5997 8.49995C26.9247 8.49995 27.9997 7.42495 27.9997 6.09995C27.9997 4.77495 26.9247 3.69995 25.5997 3.69995C24.2747 3.69995 23.1997 4.77495 23.1997 6.09995C23.1997 7.42495 24.2747 8.49995 25.5997 8.49995ZM31.8847 27.105L29.6847 21.605L27.6297 23.9249L27.5297 24.835L28.9147 28.2949C29.1647 28.9199 29.7647 29.2999 30.3997 29.2999C30.5997 29.2999 30.7997 29.265 30.9947 29.185C31.8147 28.855 32.2147 27.925 31.8847 27.105V27.105ZM30.1747 16.6149L29.2497 12.605C29.0197 11.605 28.3197 10.765 27.3747 10.36C26.4497 9.95995 25.4247 10.025 24.5697 10.525C23.4347 11.195 22.5847 12.25 22.1647 13.495L21.5997 15.19L20.7997 15.7V10.9C20.7997 10.46 20.4397 10.1 19.9997 10.1H11.9997C11.5597 10.1 11.1997 10.46 11.1997 10.9V15.7L10.3947 15.19L9.82974 13.495C9.41475 12.245 8.55975 11.195 7.42475 10.525C6.56475 10.025 5.54476 9.95995 4.61976 10.36C3.67476 10.765 2.97476 11.605 2.74476 12.605L1.82477 16.6149C1.59477 17.6149 1.85977 18.675 2.54476 19.45L5.90475 23.2449L6.40975 27.8749C6.49975 28.6899 7.18975 29.2999 7.99975 29.2999C8.05975 29.2999 8.11475 29.2949 8.17475 29.2899C9.05475 29.1949 9.68474 28.4049 9.58974 27.5249L9.08475 22.885C9.00975 22.235 8.73975 21.63 8.30475 21.135L6.13975 18.685L7.01975 15.17L7.35975 16.19C7.56475 16.815 7.95475 17.36 8.58475 17.82L11.1397 19.4449C11.3697 19.5899 11.7447 19.6749 11.9997 19.6949H19.9997C20.2547 19.6749 20.6297 19.5899 20.8597 19.4449L23.4147 17.82C24.0447 17.36 24.4347 16.82 24.6397 16.19L24.9797 15.17L25.8597 18.685L23.6947 21.135C23.2597 21.63 22.9897 22.235 22.9147 22.885L22.4097 27.5249C22.3147 28.4049 22.9497 29.1949 23.8247 29.2899C23.8847 29.2949 23.9397 29.2999 23.9997 29.2999C24.8047 29.2999 25.4997 28.6949 25.5897 27.8749L26.0947 23.2449L29.4547 19.45C30.1347 18.675 30.4047 17.6149 30.1747 16.6149ZM2.31477 21.605L0.114772 27.105C-0.215227 27.925 0.184772 28.855 1.00477 29.185C1.84477 29.515 2.75976 29.0999 3.08476 28.2949L4.46976 24.835L4.36976 23.9249L2.31477 21.605V21.605Z" fill="#F5C1BC"/>
-                  </g>
-                  <defs>
-                     <clipPath id="clip0_5329_4626">
-                        <rect width="32" height="32" fill="white" transform="translate(0 0.5)"/>
-                     </clipPath>
-                  </defs>
-               </svg>
-            </div>
-            <div class="supporters-title">Total Supporters</div>
-            <div class="supporters-total-amount" id="supporters-count"></div>
-            <div class="supporters-details">
-               <div class="One-off-supporters">
-                  <span>One-Off</span>
-                  <span id="single-donations-count"></span>
-               </div>
-               
-               <div class="Regular-supporters">
-                  <span>Regular</span>
-                  <span id="regular-donations-count"></span>
-               </div>
-            </div>
-         </div>
-
-         <!--Fundraiser Pages-->
-         <div class="n3o-umbraco-panel-ui panel-3">
-            <div class="n3o-umbraco-small-panel-ui">
-               <div class = "active-pages-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                     <path d="M10.9238 3.06763L8.47502 8.03263L2.99627 8.83138C2.01377 8.97388 1.62002 10.1851 2.33252 10.8789L6.29627 14.7414L5.35877 20.1976C5.19002 21.1839 6.22877 21.9226 7.09877 21.4614L12 18.8851L16.9013 21.4614C17.7713 21.9189 18.81 21.1839 18.6413 20.1976L17.7038 14.7414L21.6675 10.8789C22.38 10.1851 21.9863 8.97388 21.0038 8.83138L15.525 8.03263L13.0763 3.06763C12.6375 2.18263 11.3663 2.17138 10.9238 3.06763Z" fill="#F5C1BC"/>
-                  </svg>
-               </div>
-               
-               <div class = "active-pages-title" >Active Pages</div>
-               
-               <div class = "active-pages-amount" id = "active-pages-count"></div>
-            </div>
-            <div class="n3o-umbraco-small-panel-ui">
-               <div class="new-pages-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                     <path d="M15.5086 6.10425C13.4991 6.10425 11.8395 4.79989 9.313 4.79989C8.37719 4.79989 7.53891 4.96429 6.76131 5.25038C6.86908 4.96893 6.91495 4.66757 6.89579 4.3668C6.82934 3.30045 5.95518 2.44511 4.88763 2.40169C3.68789 2.35286 2.69995 3.31099 2.69995 4.49989C2.69995 5.21336 3.05609 5.84333 3.59995 6.22283V20.6999C3.59995 21.197 4.00289 21.5999 4.49995 21.5999H5.09995C5.59701 21.5999 5.99995 21.197 5.99995 20.6999V17.1599C7.06161 16.7075 8.38428 16.3303 10.2913 16.3303C12.3008 16.3303 13.9604 17.6347 16.4869 17.6347C18.2932 17.6347 19.7369 17.0237 21.0808 16.1025C21.4065 15.8793 21.6 15.5088 21.6 15.1141V5.99783C21.6 5.12059 20.6899 4.5402 19.8943 4.90973C18.6066 5.50778 17.0272 6.10425 15.5086 6.10425V6.10425Z" fill="#F5C1BC"/>
-                  </svg>
-               </div>
-               
-               <div class="new-pages-title">New Pages</div>
-               
-               <div class= "new-pages-amount" id="new-pages-count"></div>
-            </div>
-            <div class="n3o-umbraco-small-panel-ui">
-               <div class = "completed-pages-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                     <path d="M11.52 9.52122V12.075C12.4987 12.2962 13.3687 12.66 14.28 12.9112V10.3537C13.305 10.1362 12.4275 9.77247 11.52 9.52122V9.52122ZM19.8937 4.90872C18.6075 5.50497 17.025 6.10497 15.5062 6.10497C13.5 6.10497 11.8387 4.79997 9.3112 4.79997C8.3737 4.79997 7.53745 4.96497 6.7612 5.24997C6.8662 4.97622 6.91495 4.67997 6.8962 4.36497C6.8287 3.29997 5.95495 2.44497 4.8862 2.39997C3.6862 2.35122 2.69995 3.31122 2.69995 4.49997C2.69995 5.21247 3.0562 5.84247 3.59995 6.22122V20.7C3.59995 21.1987 4.0012 21.6 4.49995 21.6H5.09995C5.5987 21.6 5.99995 21.1987 5.99995 20.7V17.16C7.0612 16.7062 8.38495 16.3312 10.29 16.3312C12.3 16.3312 13.9575 17.6362 16.485 17.6362C18.2925 17.6362 19.7362 17.025 21.0787 16.1025C21.405 15.8775 21.5962 15.51 21.5962 15.1125V5.99622C21.6 5.12247 20.6887 4.54122 19.8937 4.90872V4.90872ZM8.75995 14.6062C7.79245 14.7075 6.88495 14.9137 5.99995 15.2287V12.585C6.98245 12.2362 7.7812 12.0225 8.75995 11.9325V14.6062ZM19.8 9.56247C18.915 9.92997 18.0637 10.2937 17.04 10.4587V13.125C17.97 12.9975 18.9675 12.6825 19.8 12.15V14.7937C18.8587 15.3975 17.9812 15.72 17.04 15.81V13.125C16.0275 13.2637 15.2437 13.1812 14.28 12.915V15.4425C13.3837 15.165 12.5062 14.8162 11.52 14.6437V12.075C10.7812 11.91 9.98995 11.82 8.75995 11.9325V9.30747C7.91995 9.42372 7.08745 9.68997 5.99995 10.0912V7.44747C7.24495 6.98997 7.8787 6.70497 8.75995 6.62247V9.30747C9.77245 9.16872 10.575 9.25872 11.52 9.52122V6.99372C12.4087 7.27122 13.29 7.61997 14.28 7.79247V10.3575C15.1687 10.5562 16.065 10.6162 17.04 10.4587V7.76247C18.0525 7.58247 19.0012 7.25247 19.8 6.91872V9.56247Z" fill="#F5C1BC"/>
-                  </svg>
-               </div>
-               
-               <div class = "completed-pages-title">Completed Pages</div>
-               
-               <div class = "completed-pages-amount" id="completed-pages-count" ></div>
-            </div>
-         </div>
-
-         <div class="n3o-umbraco-panel-ui panel-4">
-            <div class="income-by-date">
-               <div class = "income-by-date-title">Income By Date</div>
-               <div class = "income-by-date-graph"></div>
-            </div>
-         </div>
-
-         <div class="n3o-umbraco-panel-ui panel-5">
+    <main class="dashboard">
+        <div class="stats-source-container" style="display: flex; justify-content: flex-end; align-items: center; flex-wrap:wrap">
             <div>
-               <div class="tab active" ng-click="showContainer('campaigns')">Top Active Campaigns</div>
-               <div class="tab" ng-click="showContainer('fundraisers')">Top Fundraisers</div>
-            </div>
-            <div id="campaigns" class="container active">
-               <div class="campaigns-tab">
-                  <div class="header-row">
-                     <span>Campaign</span>
-                     <span>Funds Raised</span>
-                  </div>
-                  
-                  <div class="Campaign-totals">
-                     <div class="active-campaigns">
-                        <span >Active Campaigns</span>
-                        <span class="span-number" id="total-campaign-count"></span>
-                     </div>
-                     
-                     <div class = "vertical-rectangle"></div>
-                     
-                     <div class = "total-campaign-donations">
-                        <span>Total Donations</span>
-                        <span class="span-number" id="total-campaign-percentage"></span>
-                     </div>
-                  </div>
-               </div>
-            </div>
-            <div id="fundraisers" class="container">
-               <div class="fundraisers-tab">
-                  <div class="header-row">
-                     <span>Fundraiser</span>
-                     <span>Funds Raised</span>
-                  </div>
-                  
-                  <div class = "Fundraiser-totals">
-                     <div class = "active-fundraisers">
-                        <span>Active Fundraisers</span>
-                        <span class="span-number" id="total-fundraiser-count"></span>
-                     </div>
-                     
-                     <div class = "vertical-rectangle"></div>
-                     
-                     <div class = "total-fundraiser-donations">
-                        <span>Total Donations</span>
-                        <span class="span-number" id="total-fundraiser-percentage"></span>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
+                <label>Source</label>
 
-         <!--Top Allocations-->
-         <div class="n3o-umbraco-panel-ui panel-6">
-            <div class = "top-allocations-title">Top Allocations</div>
-            <div class = "top-allocations-headings">
-               <span>Allocations</span>
-               <span>Total Counts</span>
+                <select id="stats-source"></select>
             </div>
-            <div class = "top-allocations-graph"></div>
-         </div>
+        </div>
 
-         <div class="n3o-umbraco-panel-ui panel-7">
-            <div class = "fundraisers-by-campaign-title">Fundraisers by Campaign</div>
-            <div></div>
-            <div class = "fundraisers-by-campaign-graph"></div>
-         </div>
-      </div>
-</div>
+        <div class="n3o-crowdfunding-stats">
+            <div class="overview">
+                <h1>Overview</h1>
+                <div class="date-filter">
+                    <label>Date Range:</label>
+                    <input id="start-date" type="date">
+                    <input id="end-date" type="date">
+                </div>
+            </div>
 
-   
+            <div class="n3o-overview-container">
 
-   </main>
+                <div class="n3o-umbraco-panel-ui panel-1">
+                    <div class="donations-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="33" viewBox="0 0 32 33" fill="none">
+                            <g clip-path="url(#clip0_5329_4612)">
+                                <path d="M31.058 6.42305C29.1185 5.60955 27.1775 5.30005 25.2375 5.30005C19.079 5.29955 12.921 8.41705 6.7625 8.41705C5.218 8.41705 3.6745 8.22105 2.13 7.73105C1.9565 7.67605 1.7825 7.65005 1.6125 7.65005C0.752 7.65005 0 8.31605 0 9.24055V25.1035C0 25.735 0.3615 26.3335 0.942 26.5765C2.8815 27.3905 4.8225 27.7 6.7625 27.7C12.921 27.7 19.0795 24.5825 25.238 24.5825C26.7825 24.5825 28.326 24.7785 29.8705 25.2685C30.044 25.3235 30.218 25.3495 30.388 25.3495C31.2485 25.3495 32.0005 24.6835 32.0005 23.759V7.89655C32 7.26455 31.6385 6.66655 31.058 6.42305V6.42305ZM2.4 10.311C3.406 10.563 4.456 10.6895 5.536 10.7575C5.242 12.227 3.95 13.3345 2.4 13.3345V10.311ZM2.4 24.561V22.172C4.1185 22.172 5.509 23.5355 5.5855 25.242C4.459 25.1515 3.406 24.9265 2.4 24.561V24.561ZM16 21.3C13.7905 21.3 12 19.1505 12 16.5C12 13.849 13.791 11.7 16 11.7C18.209 11.7 20 13.849 20 16.5C20 19.1515 18.2085 21.3 16 21.3ZM29.6 22.689C28.724 22.4695 27.8145 22.3465 26.884 22.267C27.1775 20.963 28.259 19.973 29.6 19.803V22.689ZM29.6 10.8835C28.0555 10.688 26.857 9.39855 26.8095 7.80605C27.7865 7.91455 28.714 8.11755 29.6 8.43905V10.8835Z"
+                                      fill="#F5C1BC"/>
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_5329_4612">
+                                    <rect width="32" height="32" fill="white" transform="translate(0 0.5)"/>
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </div>
+
+                    <div class="donations-title">Total Amount Donated</div>
+
+                    <div class="donations-total-amount" id="total-amount"></div>
+
+                    <div class="donations-details">
+                        <div class="average-donation">
+                            <span>Average Donation</span>
+                            <span id="average-donation"></span>
+                        </div>
+
+                        <div class="donation-count">
+                            <span>Donation Count</span>
+                            <span id="donation-count"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Supporters Panel-->
+                <div class="n3o-umbraco-panel-ui panel-2">
+                    <div class="supporters-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="33" viewBox="0 0 32 33" fill="none">
+                            <g clip-path="url(#clip0_5329_4626)">
+                                <path d="M6.39975 8.49995C7.72475 8.49995 8.79975 7.42495 8.79975 6.09995C8.79975 4.77495 7.72475 3.69995 6.39975 3.69995C5.07476 3.69995 3.99976 4.77495 3.99976 6.09995C3.99976 7.42495 5.07476 8.49995 6.39975 8.49995ZM25.5997 8.49995C26.9247 8.49995 27.9997 7.42495 27.9997 6.09995C27.9997 4.77495 26.9247 3.69995 25.5997 3.69995C24.2747 3.69995 23.1997 4.77495 23.1997 6.09995C23.1997 7.42495 24.2747 8.49995 25.5997 8.49995ZM31.8847 27.105L29.6847 21.605L27.6297 23.9249L27.5297 24.835L28.9147 28.2949C29.1647 28.9199 29.7647 29.2999 30.3997 29.2999C30.5997 29.2999 30.7997 29.265 30.9947 29.185C31.8147 28.855 32.2147 27.925 31.8847 27.105V27.105ZM30.1747 16.6149L29.2497 12.605C29.0197 11.605 28.3197 10.765 27.3747 10.36C26.4497 9.95995 25.4247 10.025 24.5697 10.525C23.4347 11.195 22.5847 12.25 22.1647 13.495L21.5997 15.19L20.7997 15.7V10.9C20.7997 10.46 20.4397 10.1 19.9997 10.1H11.9997C11.5597 10.1 11.1997 10.46 11.1997 10.9V15.7L10.3947 15.19L9.82974 13.495C9.41475 12.245 8.55975 11.195 7.42475 10.525C6.56475 10.025 5.54476 9.95995 4.61976 10.36C3.67476 10.765 2.97476 11.605 2.74476 12.605L1.82477 16.6149C1.59477 17.6149 1.85977 18.675 2.54476 19.45L5.90475 23.2449L6.40975 27.8749C6.49975 28.6899 7.18975 29.2999 7.99975 29.2999C8.05975 29.2999 8.11475 29.2949 8.17475 29.2899C9.05475 29.1949 9.68474 28.4049 9.58974 27.5249L9.08475 22.885C9.00975 22.235 8.73975 21.63 8.30475 21.135L6.13975 18.685L7.01975 15.17L7.35975 16.19C7.56475 16.815 7.95475 17.36 8.58475 17.82L11.1397 19.4449C11.3697 19.5899 11.7447 19.6749 11.9997 19.6949H19.9997C20.2547 19.6749 20.6297 19.5899 20.8597 19.4449L23.4147 17.82C24.0447 17.36 24.4347 16.82 24.6397 16.19L24.9797 15.17L25.8597 18.685L23.6947 21.135C23.2597 21.63 22.9897 22.235 22.9147 22.885L22.4097 27.5249C22.3147 28.4049 22.9497 29.1949 23.8247 29.2899C23.8847 29.2949 23.9397 29.2999 23.9997 29.2999C24.8047 29.2999 25.4997 28.6949 25.5897 27.8749L26.0947 23.2449L29.4547 19.45C30.1347 18.675 30.4047 17.6149 30.1747 16.6149ZM2.31477 21.605L0.114772 27.105C-0.215227 27.925 0.184772 28.855 1.00477 29.185C1.84477 29.515 2.75976 29.0999 3.08476 28.2949L4.46976 24.835L4.36976 23.9249L2.31477 21.605V21.605Z"
+                                      fill="#F5C1BC"/>
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_5329_4626">
+                                    <rect width="32" height="32" fill="white" transform="translate(0 0.5)"/>
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="supporters-title">Total Supporters</div>
+                    <div class="supporters-total-amount" id="supporters-count"></div>
+                    <div class="supporters-details">
+                        <div class="One-off-supporters">
+                            <span>One-Off</span>
+                            <span id="single-donations-count"></span>
+                        </div>
+
+                        <div class="Regular-supporters">
+                            <span>Regular</span>
+                            <span id="regular-donations-count"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Fundraiser Pages-->
+                <div class="n3o-umbraco-panel-ui panel-3">
+                    <div class="n3o-umbraco-small-panel-ui">
+                        <div class="active-pages-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                 fill="none">
+                                <path d="M10.9238 3.06763L8.47502 8.03263L2.99627 8.83138C2.01377 8.97388 1.62002 10.1851 2.33252 10.8789L6.29627 14.7414L5.35877 20.1976C5.19002 21.1839 6.22877 21.9226 7.09877 21.4614L12 18.8851L16.9013 21.4614C17.7713 21.9189 18.81 21.1839 18.6413 20.1976L17.7038 14.7414L21.6675 10.8789C22.38 10.1851 21.9863 8.97388 21.0038 8.83138L15.525 8.03263L13.0763 3.06763C12.6375 2.18263 11.3663 2.17138 10.9238 3.06763Z"
+                                      fill="#F5C1BC"/>
+                            </svg>
+                        </div>
+
+                        <div class="active-pages-title">Active Pages</div>
+
+                        <div class="active-pages-amount" id="active-pages-count"></div>
+                    </div>
+                    <div class="n3o-umbraco-small-panel-ui">
+                        <div class="new-pages-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                 fill="none">
+                                <path d="M15.5086 6.10425C13.4991 6.10425 11.8395 4.79989 9.313 4.79989C8.37719 4.79989 7.53891 4.96429 6.76131 5.25038C6.86908 4.96893 6.91495 4.66757 6.89579 4.3668C6.82934 3.30045 5.95518 2.44511 4.88763 2.40169C3.68789 2.35286 2.69995 3.31099 2.69995 4.49989C2.69995 5.21336 3.05609 5.84333 3.59995 6.22283V20.6999C3.59995 21.197 4.00289 21.5999 4.49995 21.5999H5.09995C5.59701 21.5999 5.99995 21.197 5.99995 20.6999V17.1599C7.06161 16.7075 8.38428 16.3303 10.2913 16.3303C12.3008 16.3303 13.9604 17.6347 16.4869 17.6347C18.2932 17.6347 19.7369 17.0237 21.0808 16.1025C21.4065 15.8793 21.6 15.5088 21.6 15.1141V5.99783C21.6 5.12059 20.6899 4.5402 19.8943 4.90973C18.6066 5.50778 17.0272 6.10425 15.5086 6.10425V6.10425Z"
+                                      fill="#F5C1BC"/>
+                            </svg>
+                        </div>
+
+                        <div class="new-pages-title">New Pages</div>
+
+                        <div class="new-pages-amount" id="new-pages-count"></div>
+                    </div>
+                    <div class="n3o-umbraco-small-panel-ui">
+                        <div class="completed-pages-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                 fill="none">
+                                <path d="M11.52 9.52122V12.075C12.4987 12.2962 13.3687 12.66 14.28 12.9112V10.3537C13.305 10.1362 12.4275 9.77247 11.52 9.52122V9.52122ZM19.8937 4.90872C18.6075 5.50497 17.025 6.10497 15.5062 6.10497C13.5 6.10497 11.8387 4.79997 9.3112 4.79997C8.3737 4.79997 7.53745 4.96497 6.7612 5.24997C6.8662 4.97622 6.91495 4.67997 6.8962 4.36497C6.8287 3.29997 5.95495 2.44497 4.8862 2.39997C3.6862 2.35122 2.69995 3.31122 2.69995 4.49997C2.69995 5.21247 3.0562 5.84247 3.59995 6.22122V20.7C3.59995 21.1987 4.0012 21.6 4.49995 21.6H5.09995C5.5987 21.6 5.99995 21.1987 5.99995 20.7V17.16C7.0612 16.7062 8.38495 16.3312 10.29 16.3312C12.3 16.3312 13.9575 17.6362 16.485 17.6362C18.2925 17.6362 19.7362 17.025 21.0787 16.1025C21.405 15.8775 21.5962 15.51 21.5962 15.1125V5.99622C21.6 5.12247 20.6887 4.54122 19.8937 4.90872V4.90872ZM8.75995 14.6062C7.79245 14.7075 6.88495 14.9137 5.99995 15.2287V12.585C6.98245 12.2362 7.7812 12.0225 8.75995 11.9325V14.6062ZM19.8 9.56247C18.915 9.92997 18.0637 10.2937 17.04 10.4587V13.125C17.97 12.9975 18.9675 12.6825 19.8 12.15V14.7937C18.8587 15.3975 17.9812 15.72 17.04 15.81V13.125C16.0275 13.2637 15.2437 13.1812 14.28 12.915V15.4425C13.3837 15.165 12.5062 14.8162 11.52 14.6437V12.075C10.7812 11.91 9.98995 11.82 8.75995 11.9325V9.30747C7.91995 9.42372 7.08745 9.68997 5.99995 10.0912V7.44747C7.24495 6.98997 7.8787 6.70497 8.75995 6.62247V9.30747C9.77245 9.16872 10.575 9.25872 11.52 9.52122V6.99372C12.4087 7.27122 13.29 7.61997 14.28 7.79247V10.3575C15.1687 10.5562 16.065 10.6162 17.04 10.4587V7.76247C18.0525 7.58247 19.0012 7.25247 19.8 6.91872V9.56247Z"
+                                      fill="#F5C1BC"/>
+                            </svg>
+                        </div>
+
+                        <div class="completed-pages-title">Completed Pages</div>
+
+                        <div class="completed-pages-amount" id="completed-pages-count"></div>
+                    </div>
+                </div>
+
+                <div class="n3o-umbraco-panel-ui panel-4">
+                    <div class="income-by-date">
+                        <div class="income-by-date-title">Income By Date</div>
+                        <div class="income-by-date-graph"></div>
+                    </div>
+                </div>
+
+                <div class="n3o-umbraco-panel-ui panel-5">
+                    <div>
+                        <div class="tab active" ng-click="showContainer('campaigns')">Top Active Campaigns</div>
+                        <div class="tab" ng-click="showContainer('fundraisers')">Top Fundraisers</div>
+                    </div>
+                    <div id="campaigns" class="container active">
+                        <div class="campaigns-tab">
+                            <div class="header-row">
+                                <span>Campaign</span>
+                                <span>Funds Raised</span>
+                            </div>
+
+                            <div class="Campaign-totals">
+                                <div class="active-campaigns">
+                                    <span>Active Campaigns</span>
+                                    <span class="span-number" id="total-campaign-count"></span>
+                                </div>
+
+                                <div class="vertical-rectangle"></div>
+
+                                <div class="total-campaign-donations">
+                                    <span>Total Donations</span>
+                                    <span class="span-number" id="total-campaign-percentage"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="fundraisers" class="container">
+                        <div class="fundraisers-tab">
+                            <div class="header-row">
+                                <span>Fundraiser</span>
+                                <span>Funds Raised</span>
+                            </div>
+
+                            <div class="Fundraiser-totals">
+                                <div class="active-fundraisers">
+                                    <span>Active Fundraisers</span>
+                                    <span class="span-number" id="total-fundraiser-count"></span>
+                                </div>
+
+                                <div class="vertical-rectangle"></div>
+
+                                <div class="total-fundraiser-donations">
+                                    <span>Total Donations</span>
+                                    <span class="span-number" id="total-fundraiser-percentage"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Top Allocations-->
+                <div class="n3o-umbraco-panel-ui panel-6">
+                    <div class="top-allocations-title">Top Allocations</div>
+                    <div class="top-allocations-headings">
+                        <span>Allocations</span>
+                        <span>Total Counts</span>
+                    </div>
+                    <div class="top-allocations-graph"></div>
+                </div>
+
+                <div class="n3o-umbraco-panel-ui panel-7">
+                    <div class="fundraisers-by-campaign-title">Fundraisers by Campaign</div>
+                    <div></div>
+                    <div class="fundraisers-by-campaign-graph"></div>
+                </div>
+            </div>
+        </div>
+
+
+    </main>
 </div>
 
 

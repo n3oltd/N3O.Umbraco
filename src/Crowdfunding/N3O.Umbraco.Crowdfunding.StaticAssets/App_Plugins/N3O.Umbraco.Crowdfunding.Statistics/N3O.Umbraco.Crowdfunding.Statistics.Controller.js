@@ -6,6 +6,8 @@ angular.module("umbraco")
             d3Script.setAttribute('charset', 'utf-8');
             
             d3Script.onload = async function () {
+                await initializeEnvironments();
+                
                 initializeDates();
 
                 await initializeData();
@@ -13,6 +15,36 @@ angular.module("umbraco")
             
             document.head.appendChild(d3Script);
             
+            async function initializeEnvironments() {
+                let res = await fetch(`/umbraco/backoffice/api/CrowdfundingBackOffice/Environments`);
+
+                let environments = await res.json();
+
+                const dropdown = document.getElementById('stats-source');
+
+                environments.forEach(environment => {
+                    const newOption = document.createElement('option');
+                    newOption.value = environment.crowdfundingEnvironment;
+                    newOption.textContent = environment.name;
+                    newOption.dataset.domain = environment.domain;
+                    newOption.dataset.apiKey = environment.apiKey;
+                    
+                    dropdown.appendChild(newOption);
+
+                    if(environment.default) {
+                        dropdown.value = environment.crowdfundingEnvironment;
+                    }
+                });
+
+                if(environments.length === 1 && environments.some(item => item.default)) {
+                    document.querySelector('.stats-source-container').style.display = 'none';
+                }
+
+                dropdown.addEventListener('change', async function (event) {
+                    await initializeData();
+                });
+            }
+
             async function initializeData() {
                 let data = await fetchData();
 
@@ -53,15 +85,26 @@ angular.module("umbraco")
                 req.period = {};
                 req.period.from = document.getElementById('start-date').value;
                 req.period.to = document.getElementById('end-date').value;
-                
-                let res = await fetch(`/umbraco/api/Crowdfunding/statistics/dashboard`, {
+
+                let source = document.getElementById('stats-source');
+                let environment = source.options[source.selectedIndex];
+
+                let res = await fetch(`${environment.dataset.domain}/umbraco/api/CrowdfundingStatistics/dashboard`, {
                     method: "POST",
                     headers: {
                         "Accept": "application/json",
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "Crowdfunding-API-Key": environment.dataset.apiKey
                     },
                     body: JSON.stringify(req)
                 });
+
+                if(res.status !== 200) {
+                    document.querySelector('.n3o-crowdfunding-stats').innerHTML = `There was an error fetching data, please refresh the page and if the error persists, please contact support`;
+
+                    throw Error(`Error fetching data.`);
+                }
+
                 return res.json();
             }
 

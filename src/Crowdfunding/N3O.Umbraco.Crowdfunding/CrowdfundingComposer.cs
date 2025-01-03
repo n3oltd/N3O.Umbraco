@@ -10,6 +10,7 @@ namespace N3O.Umbraco.Crowdfunding;
 public class CrowdfundingComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddOpenApiDocument(CrowdfundingConstants.ApiName);
+        builder.Services.AddOpenApiDocument(CrowdfundingConstants.StatisticsApiName);
         
         builder.Components().Append<ContributionMigrationsComponent>();
         builder.Components().Append<CrowdfunderMigrationsComponent>();

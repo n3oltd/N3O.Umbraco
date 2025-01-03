@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Crowdfunding\N3O.Umbraco.Crowdfunding.StaticAssets\N3O.Umbraco.Crowdfunding.StaticAssets.csproj" />
         <ProjectReference Include="..\..\Data\N3O.Umbraco.Data.StaticAssets\N3O.Umbraco.Data.StaticAssets.csproj" />
         <ProjectReference Include="..\..\Forms\N3O.Umbraco.Forms.StaticAssets\N3O.Umbraco.Forms.StaticAssets.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Cms\N3O.Umbraco.Cms.csproj" />

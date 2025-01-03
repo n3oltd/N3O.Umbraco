@@ -2,6 +2,8 @@
 
 public static class CrowdfundingConstants {
     public const string ApiName = "Crowdfunding";
+    public const string StatisticsApiName = "CrowdfundingStatistics";
+    public const string BackOfficeApiName = "CrowdfundingBackOffice";
     
     public static class Allocations {
         public static class Extensions {
@@ -178,6 +180,10 @@ public static class CrowdfundingConstants {
     
         public static class SignInModal {
             public const string Alias = "crowdfundingSignInModalSettings";
+        }
+        
+        public static class Environment {
+            public const string Alias = "crowdfundingEnvironment";
         }
         
         public static class TemplateSettings {
