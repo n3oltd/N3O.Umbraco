@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Media;
 using Umbraco.Cms.Core.DependencyInjection;
 
 namespace N3O.Umbraco.Content;
@@ -15,6 +16,7 @@ public class ContentComposer : Composer {
         builder.Services.AddSingleton<IContentHelper, ContentHelper>();
         builder.Services.AddSingleton<IContentLocator, ContentLocator>();
         builder.Services.AddTransient<IContentVisibility, ContentVisibility>();
+        builder.Services.AddSingleton<IMediaLocator, MediaLocator>();
         builder.Services.AddScoped<IPageModeAccessor, PageModeAccessor>();
         
         RegisterAll(t => t.ImplementsInterface<IContentAccessControl>(),

@@ -4,7 +4,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Content;
 
-public interface IContentLocator {
+public interface ILocator {
     IReadOnlyList<IPublishedContent> All(Func<IPublishedContent, bool> predicate = null);
     IReadOnlyList<IPublishedContent> All(string contentTypeAlias, Func<IPublishedContent, bool> predicate = null);
     IReadOnlyList<T> All<T>(Func<T, bool> predicate = null);
