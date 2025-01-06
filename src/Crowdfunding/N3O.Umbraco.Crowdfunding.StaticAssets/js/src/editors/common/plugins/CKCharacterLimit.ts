@@ -1,4 +1,4 @@
-import {Plugin} from 'ckeditor5';
+import { Plugin, RootElement, Element, Writer } from 'ckeditor5';
 
 
 /*
@@ -77,7 +77,7 @@ export class CharacterLimit extends Plugin {
     }
 
     private addChangeListener(): void {
-        this.editor.model.document.on('change', () => {
+        this.editor.model.document.on('change:data', () => {
             if (this.isProcessing) return;
 
             const length = this.getContentLength();
@@ -94,8 +94,12 @@ export class CharacterLimit extends Plugin {
         return this.calculateNodeLength(root);
     }
 
-    private calculateNodeLength(node: any): number {
+    private calculateNodeLength(node: RootElement | Element | null): number {
         let length = 0;
+
+        if (!node) {
+            return length;
+        }
 
         for (const child of node.getChildren()) {
             if (child.is('$text')) {
@@ -112,37 +116,46 @@ export class CharacterLimit extends Plugin {
         const model = this.editor.model;
         const root = model.document.getRoot();
 
-        let currentLength = 0;
-
         if (!root) {
             return;
         }
 
-        model.change((writer: any) => {
-            for (const child of root.getChildren()) {
-                if (child.is('$text')) {
-                    const textLength = child.data.length;
-
-                    if (currentLength + textLength > this.limit) {
-                        const allowedLength = this.limit - currentLength;
-                        const trimmedText = child.data.substring(0, allowedLength);
-
-                        writer.remove(child);
-                        writer.insertText(trimmedText, root, child.startOffset);
-                        break;
-                    } else {
-                        currentLength += textLength;
-                    }
-                } else if (child.is('element')) {
-                    const elementLength = this.calculateNodeLength(child);
-
-                    if (currentLength + elementLength > this.limit) {
-                        break;
-                    } else {
-                        currentLength += elementLength;
-                    }
-                }
-            }
+        model.change((writer: Writer) => {
+            this.handleWriter(writer, root, 0);
         });
     }
+
+    private handleWriter(writer: Writer, root: RootElement | Element, currentLength: number) {
+        for (const child of root.getChildren()) {
+            if (currentLength >= this.limit) {
+                break;
+            }
+
+            if (child.is('$text')) {
+                const textLength = child.data.length;
+
+                if (currentLength + textLength > this.limit) {
+                    const allowedLength = this.limit - currentLength;
+                    const trimmedText = child.data.substring(0, allowedLength);
+
+                    const range = writer.createRangeOn(child);
+                    writer.remove(range);
+
+                    const position = writer.createPositionAt(root, range.start.offset);
+                    writer.insertText(trimmedText, child.getAttributes(), position);
+
+                    currentLength += allowedLength;
+                    break;
+                } else {
+                    currentLength += textLength;
+                }
+            } else if (child.is('element')) {
+                currentLength = this.handleWriter(writer, child, currentLength);
+            }
+        }
+
+        return currentLength;
+    }
+
+
 }
