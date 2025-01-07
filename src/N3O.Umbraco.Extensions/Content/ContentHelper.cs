@@ -73,7 +73,7 @@ public class ContentHelper : IContentHelper {
             if (property.Type.IsBlockList() || property.Type.IsBlockGrid()) {
                 var (blockListOrGrid, json) = GetJsonPropertyValue(property.Value);
                     
-                var elements = GetContentPropertiesForBlockListOrGrid(blockListOrGrid);
+                var elements = GetContentPropertiesForBlockListOrGrid((JObject) blockListOrGrid);
                 var elementsProperty = new ElementsProperty(contentType, property.Type, elements, json);
                 
                 elementsProperties.Add(elementsProperty);
@@ -192,17 +192,15 @@ public class ContentHelper : IContentHelper {
         return contentProperties;
     }
     
-    private IReadOnlyList<ContentProperties> GetContentPropertiesForBlockListOrGrid(JToken blockListOrGrid) {
+    private IReadOnlyList<ContentProperties> GetContentPropertiesForBlockListOrGrid(JObject blockListOrGrid) {
         var contentProperties = new List<ContentProperties>();
         
-        if (blockListOrGrid == null) {
-            return contentProperties;
-        }
-        
-        foreach (var block in blockListOrGrid["contentData"]) {
-            if (block is JArray jArray) {
-                foreach (JObject jObject in jArray) {
-                    contentProperties.Add(GetContentPropertiesForBlockListOrGridElement(jObject));
+        if (blockListOrGrid?.TryGetValue("contentData", StringComparison.InvariantCultureIgnoreCase, out var contentData) == true) {
+            foreach (var block in contentData.OrEmpty()) {
+                if (block is JArray jArray) {
+                    foreach (JObject jObject in jArray) {
+                        contentProperties.Add(GetContentPropertiesForBlockListOrGridElement(jObject));
+                    }
                 }
             }
         }
