@@ -25,7 +25,9 @@ public class ContentBuilder : IContentBuilder {
         var propertyValues = new Dictionary<string, object>();
         
         foreach (var (propertyAlias, builder) in _propertyBuilders) {
-            propertyValues[propertyAlias] = builder.Build(propertyAlias, ContentTypeAlias);
+            var (propertyValue, _) = builder.Build(propertyAlias, ContentTypeAlias);
+            
+            propertyValues[propertyAlias] = propertyValue;
         }
 
         RaiseBuilt();
