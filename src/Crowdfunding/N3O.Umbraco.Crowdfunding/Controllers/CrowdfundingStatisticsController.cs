@@ -42,6 +42,17 @@ public class CrowdfundingStatisticsController : ApiController {
         
         return Ok(res);
     }
+    
+    [HttpPost("pages")]
+    public async Task<ActionResult<DashboardStatisticsRes>> GetCrowdfunderPages(CrowdfunderPagesCriteria req) {
+        /*if (!IsAuthorized()) {
+            return Unauthorized();
+        }*/
+        
+        var res = await _mediator.Value.SendAsync<GetCrowdfunderPagesQuery, CrowdfunderPagesCriteria, CrowdfunderDashboardRes>(req);
+        
+        return Ok(res);
+    }
 
     private bool IsAuthorized() {
         var apiKey = Request.Headers[ApiHeaderKey];

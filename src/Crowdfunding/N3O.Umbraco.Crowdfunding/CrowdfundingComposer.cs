@@ -23,6 +23,7 @@ public class CrowdfundingComposer : Composer {
         builder.Services.AddScoped<ICrowdfundingRouter, CrowdfundingRouter>();
         builder.Services.AddTransient<ICrowdfundingUrlBuilder, CrowdfundingUrlBuilder>();
         builder.Services.AddScoped<ICrowdfundingViewModelFactory, CrowdfundingViewModelFactory>();
+        builder.Services.AddTransient<CurrentUser>();
         
         RegisterAll(t => t.ImplementsInterface<ICrowdfundingPage>(),
                     t => builder.Services.AddTransient(typeof(ICrowdfundingPage), t));

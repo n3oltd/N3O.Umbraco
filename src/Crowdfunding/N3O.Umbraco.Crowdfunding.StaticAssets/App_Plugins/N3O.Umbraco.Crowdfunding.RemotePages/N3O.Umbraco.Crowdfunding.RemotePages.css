@@ -1,0 +1,385 @@
+
+/* custom font - remove this when on real usage */
+@import url(https://fonts.bunny.net/css?family=lato:100,300,400,700,900);
+/* custom font to remove */
+
+.n3o-crowdfunding-stats{
+
+    .overview {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        background-color: #f5f5f5;
+        padding: 20px;
+        flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+        box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    }
+
+    .overview-date {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .date-filter label {
+        margin-right: 10px;
+    }
+
+    .n3o-overview-container {
+        display: grid;
+        width: 1200px;
+        max-width: 100%;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        padding: 20px;
+        font-family: 'lato', sans-serif;
+        margin: auto;
+    }
+
+    .n3o-umbraco-panel-ui {
+        border-radius: 3px;
+        background: #fff;
+        padding: 20px;
+        box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.16);
+    }
+    .n3o-umbraco-small-panel-ui {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        border-radius: 3px;
+        background: #fff;
+        padding: 20px;
+        box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.16);
+    }
+
+
+    /*DONATIONS PANEL*/
+    .panel-1{
+        grid-column: span 1;
+        grid-row: span 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 30px;
+        padding-bottom:0px;
+        width: 100%;
+        height: auto;
+        box-sizing: border-box;
+    }
+
+    .supporters-icon img,
+    .donations-icon img {
+        width: 50px;
+        height: auto;
+        margin-bottom: 3px;
+    }
+
+    .supporters-title,
+    .donations-title {
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+
+    .supporters-total-amount,
+    .donations-total-amount {
+        font-size: 2.25rem;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .supporters-details,
+    .donations-details {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        flex-direction: row;
+    }
+
+    .supporters-details div,
+    .donations-details div {
+        display: flex;
+        flex-direction: column;
+        flex:1;
+        align-items: center;
+        border-top: 1px solid #E9E9EB;
+        padding: 20px 0 0;
+        font-size: 1rem;
+    }
+    
+    .supporters-details span,
+    .donations-details span {
+        font-size: 1rem;
+    }
+
+    #One-off-supporters,
+    #Regular-supporters,
+    #average-donation,
+    #donation-count{
+        padding: 5px;
+        font-size: 1.5rem;
+        font-weight:bold;
+    }
+
+
+    .panel-2{
+        grid-column: span 1;
+        grid-row: span 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 30px;
+        width: 100%;
+        height: auto;
+        box-sizing: border-box;
+    }
+    
+
+
+    /*pages*/
+    .panel-3 {
+        grid-column: span 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 0;
+        background: none;
+        box-shadow: none;
+        width: 100%;
+    }
+    .active-pages,
+    .new-pages,
+    .completed-pages {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 0 20px;
+        align-items: center;
+        grid-column: 3/4;
+        grid-row: auto/auto;
+    }
+
+    .active-pages-icon img,
+    .new-pages-icon img,
+    .completed-pages-icon img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .active-pages-title,
+    .new-pages-title,
+    .completed-pages-title {
+        flex-grow: 1;
+        margin-left: 10px;
+    }
+
+    #num-new-pages,
+    .completed-pages-amount,
+    .active-pages-amount{
+        font-size: 1rem;
+        font-weight: bold;
+    }
+
+
+
+    /*Income by date*/
+    .panel-4 {
+        grid-column: span 2 / span 2;
+        grid-row-start: 2;
+        justify-content:center;
+        align-content: center;
+        /* adjust this */
+        height: auto;
+    }
+    .income-by-date-title{
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .income-by-date-graph{
+        align-content: center;
+        /*margin-left:150px;*/
+    }
+
+    .tooltip {
+        position: absolute;
+        text-align: center;
+        width: 120px;
+        height: auto;
+        padding: 5px;
+        font: 0.75rem sans-serif;
+        background: #b0c4de;
+        border: 0px;
+        border-radius: 8px;
+        pointer-events: none;
+    }
+
+
+
+    /*Toggle view - top campaigns/fundraisers*/
+    .panel-5 {
+        grid-row: span 2 / span 2;
+        grid-column-start: 3;
+        grid-row-start: 2;
+        grid-column: span 1;
+    }
+    .panel-5 > div {
+        display: flex;
+        width: 100%;
+    }
+    .tab {
+        cursor: pointer;
+        padding: 10px;
+        flex: 1;
+        justify-content: center;
+        padding: 15px 0;
+        text-align: center;
+        border-bottom: 2px solid transparent;
+        transition: border-bottom 0.3s ease;
+        font-size: 19px;
+        height: 60px;
+    }
+    .tab.active {
+        border-bottom: 5px solid pink;
+        font-weight: bold;
+        font-size: 19px;
+        height: 60px;
+        justify-content: center;
+        padding: 15px 0;
+    }
+    .container {
+        opacity:0;
+        pointer-events: none;
+        height: 0;
+        overflow: hidden;
+        transition: opacity 0.3s ease, height 0.3s ease;
+    }
+    .container.active {
+        opacity:1;
+        pointer-events: auto;
+        height:auto;
+    }
+    .header-row{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 0 30px 0 10px;
+        border-bottom: 1px solid #E9E9EB;
+        width: 100%;
+        height: 60px;
+        justify-content: space-around;
+        flex:1;
+    }
+    
+    .crowdfunder-row{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        border-bottom: 1px solid #E9E9EB;
+        width: 100%;
+        height: 55px;
+        padding: 10px 20px;
+        box-sizing: border-box;
+    }
+
+    .crowdfunder-row span{
+        flex-grow: 1;
+    }
+
+    .crowdfunder-row img{
+        height: 20px;
+        width: 20px;
+        margin-left:10px;
+    }
+
+    .progress-bars {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        margin-left: 20px;
+    }
+
+    .Fundraiser-totals,
+    .Campaign-totals{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+    .active-campaigns,
+    .total-campaign-donations,
+    .active-fundraisers,
+    .total-fundraiser-donations{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 20px;
+        font-size: 20px;
+        align-items: center;
+        align-content: center;
+    }
+    .vertical-rectangle{
+        width: 3px;
+        height: 80px;
+        background-color:#F5C1BC;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    .span-number{
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+
+
+
+    /*Top Allocations*/
+    /*Donut chart - fundraisers by campaign*/
+    .panel-6{
+        grid-row-start: 3;
+        grid-column-start: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+    }
+    .panel-7 {
+        grid-row-start: 3;
+        grid-column-start: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+    }
+    .fundraisers-by-campaign-title,
+    .top-allocations-title{
+        font-size: 19px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .top-allocations-headings{
+        display: flex;
+        flex-direction: row;
+        font-size: 16px;
+        justify-content: space-between;
+        width:100%;
+        padding: 20px 20px 0px 20px;
+    }
+
+    /* Media query for mobile screens */
+    @media (max-width: 500px) {
+        .n3o-overview-container {
+            grid-template-columns: 1fr; /* One column layout */
+            grid-template-rows: none; /* Let rows adjust automatically */
+        }
+        .panel-4,
+        .panel-5,
+        .panel-6,
+        .panel-7 {
+            grid-column: auto;
+            grid-row: auto;
+        }
+    }
+}

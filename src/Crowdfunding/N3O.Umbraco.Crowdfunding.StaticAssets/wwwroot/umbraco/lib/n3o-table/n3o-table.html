@@ -1,0 +1,141 @@
+﻿<umb-load-indicator ng-if="vm.isLoading"></umb-load-indicator>
+
+<umb-empty-state ng-if="vm.rows.length === 0 && !vm.isLoading" position="center">
+    <localize key="content_listViewNoItems">There are no items to show in the list.</localize>
+</umb-empty-state>
+
+<div ng-if="vm.rows.length > 0 && !vm.isLoading">
+    <div class="header-container" ng-show="vm.selection.length < 1">
+        <div style="font-size: 15px;" ng-show="!vm.instructAll">{{vm.rows.length}} Records </div>
+        <uui-button type="button" style="height: 35px; min-width: 120px" look="outline" ng-show="vm.instructAll" color="default" label="Instruct {{vm.rows.length == vm.items.length ? 'All' : vm.rows.length}}" ng-click="vm.handleOnInstruct(true)"></uui-button>
+
+        <div class="header-container header-actions">
+            <umb-button ng-show="vm.filters" action="vm.onShowFiltersChange()" type="button" icon="icon-filter" ng-if="vm.showFilters">
+            </umb-button>
+
+            <select ng-show="vm.showFilters" ng-style="{'height':'27px'}" name="{{filter.name}}" ng-model="filter.value"
+                    ng-change="vm.onFilterChange()" ng-repeat="filter in vm.filters track by $index">
+                <option ng-repeat="item in filter.options" value="{{item}}">{{item}}</option>
+            </select>
+
+            <umb-button action="vm.onShowSearchBarChange()" type="button" icon="icon-search">
+            </umb-button>
+
+            <input ng-show="vm.showSearchBar" style="height: 27px;" type="text" ng-change="vm.handleOnSearchChange()" placeholder="Type to search"
+                   ng-model="vm.searchTerm">
+        </div>
+    </div>
+    <span ng-show="vm.note" style="display: inline-block; margin-bottom: 10px; color: #F58722; font-family: Lato; font-size: 12px; font-weight: 400; ">{{vm.note}}</span>
+    <div class="n3o-table-bulk-actions" ng-show="vm.selection.length > 0">
+        <div>
+            <umb-button type="button" label="Clear selection" button-style="white"
+                        action="vm.clearSelected()"></umb-button>
+        </div>
+
+        <div style="margin-top: 5px; color: white">
+            {{vm.selection.length}} of {{vm.items.length}} selected
+        </div>
+    </div>
+
+        <div class="umb-table" ng-if="vm.rows">
+            <div class="umb-table-head">
+                <div class="umb-table-row">
+                    <div class="umb-table-cell">
+                        <button type="button" class="umb-table__action" ng-show="vm.allowSelectAll"
+                                ng-click="vm.selectAll()">
+                            <umb-checkmark checked="vm.isSelectedAll()" size="xs"></umb-checkmark>
+                        </button>
+                    </div>
+
+                    <div class="umb-table-cell" ng-repeat="column in vm.itemProperties track by column.alias"
+                         ng-class="{'number':column.columnType == 'number'}">
+                        <button type="button" class="umb-table-head__link" ng-click="vm.sort(column.alias)"
+                                style="cursor: pointer">
+                            <span ng-bind="column.header"></span>
+                            <i ng-show="column.alias === vm.isSortDirection.column" class="umb-table-head__icon icon"
+                               aria-hidden="true"
+                               ng-class="{'icon-navigation-up': vm.isSortDirection.descending === false, 'icon-navigation-down': vm.isSortDirection.descending === true}"></i>
+                        </button>
+                    </div>
+
+                    <div class="umb-table-cell" ng-if="vm.actions">
+                        <button type="button" class="umb-table-head__link">
+                            <span>Action</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="umb-table-body">
+                <div class="umb-table-row umb-outline"
+                     ng-repeat="item in vm.rows | filter : vm.onSeachTermChange ? '' : vm.searchTerm | orderBy:vm.isSortDirection.column:vm.isSortDirection.descending track by $index"
+                     ng-init="item.icon = vm.getIcon(item)"
+                     ng-class="{'-selected':item.selected, '-light':!item.published && item.updater != null, '-selectable': vm.allowSelect !== false }">
+
+                    <div class="umb-table-cell" ng-click="vm.selectItem(item, $index, $event)">
+                        <umb-icon icon="{{item.icon}}" class="umb-table-body__icon umb-table-body__fileicon"
+                                  ng-if="!item.selected"></umb-icon>
+                        <umb-icon icon="icon-check" class="umb-table-body__icon umb-table-body__checkicon"
+                                  ng-if="item.selected"></umb-icon>
+                    </div>
+
+                    <div ng-repeat="column in vm.itemProperties track by column.alias"
+                         ng-class="{'right-align':column.columnType == 'number','number':column.columnType == 'number'}"
+                         class="umb-table-cell">
+                        <span ng-if="column.columnType != 'link'" title="{{column.header}}: {{item[column.alias]}}">
+                            <div>
+                                {{item[column.alias]}}
+                            </div>
+                        </span>
+
+                        <div ng-if="column.columnType == 'link'" class=" umb-table__name">
+                            <a title="{{column.header}}" class="umb-table-body__link"
+                               ng-click="vm.clickItem(item,column, $event)" style="color: #1b264f">
+                                {{item[column.alias]}}
+                            </a>
+                        </div>
+
+                    </div>
+                    
+                    
+                    <div class="umb-table-cell-action" ng-if="vm.actions" ng-style="{'display':'block'}">
+                        <uui-icon-registry-essential>
+                            <uui-popover id="actions-popover-{{item.reference}}" style="margin: auto" placement="bottom-start">
+                                <uui-button id="actions-popover-btn-{{item.reference}}"
+                                            ng-click="vm.onActionsClick(item.reference)"
+                                            look="default"
+                                            color="default"
+                                            label="Actions"
+                                            slot="trigger"
+                                            class="n3o-table-actions-btn">
+                                    <span class="umb-button__caret caret ng-scope" aria-hidden="true"></span>
+                                </uui-button>
+
+                                <div id="popover-content-{{item.reference}}"
+                                     slot="popover"
+                                     class="umb-action ng-scope -opens-dialog n3o-table-actions-popover">
+                                    <uui-popover placement="right-start" id="#menu-1-{item.reference}">
+                                        <uui-button slot="trigger"
+                                                    ng-if="!item.hideActions.includes(action.name)"
+                                                    ng-repeat="action in vm.actions track by action.name"
+                                                    label="{{action.name}}"
+                                                    color="{{action.color}}"
+                                                    ng-click="action.onClick(item)">
+                                            <uui-icon name="{{action.icon}}" class="icon umb-icon ng-isolate-scope umb-icon__inner icon-add"></uui-icon>
+                                            <span class="ng-binding" aria-hidden="true">{{action.name}}</span>
+                                        </uui-button>
+                                    </uui-popover>
+                                </div>
+                            </uui-popover>
+                        </uui-icon-registry-essential>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <div class="n3o-table-load-more-action" ng-if="vm.allowLoadMore">
+        <umb-button label="Load More" action="vm.loadMore(vm.allowLoadMore)" ng-show="!vm.isLoadingMore"></umb-button>
+        <umb-button disabled="true" label="Loading" ng-show="vm.isLoadingMore"></umb-button>
+    </div>
+</div>

@@ -14,13 +14,16 @@ namespace N3O.Umbraco.Crowdfunding;
 
 public class FundraiserAccessControl : MembersAccessControl {
     private readonly ILookups _lookups;
-    
+    private readonly CurrentUser _currentUser;
+
     public FundraiserAccessControl(IContentHelper contentHelper,
                                    IDataTypeService dataTypeService,
                                    ILookups lookups,
-                                   IMemberManager memberManager)
+                                   IMemberManager memberManager,
+                                   CurrentUser currentUser)
         : base(contentHelper, dataTypeService, memberManager) {
         _lookups = lookups;
+        _currentUser = currentUser;
     }
 
     protected override async Task<bool> AllowEditAsync(ContentProperties contentProperties) {
@@ -35,8 +38,9 @@ public class FundraiserAccessControl : MembersAccessControl {
 
     protected override async Task<bool> AllowEditAsync(IPublishedContent content) {
         var canEdit = await base.AllowEditAsync(content);
+        var isBackofficeUser = _currentUser.IsLoggedIntoBackOffice();
         
-        if (canEdit) {
+        if (canEdit || isBackofficeUser) {
             canEdit = CanEdit(() => content.Value<string>(CrowdfundingConstants.Crowdfunder.Properties.Status));
         }
 

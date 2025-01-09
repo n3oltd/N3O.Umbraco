@@ -148,6 +148,18 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
 
         return crowdfunders;
     }
+    
+    public async Task<Page<Crowdfunder>> SearchPagedAsync(CrowdfunderType type, int currentPage, int itemsPerPage) {
+        using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
+            var query = db.QueryAsync<Crowdfunder>()
+                          .Where(x => x.Type == (int) type.Key)
+                          .OrderByDescending(x => x.CreatedAt);
+            
+            var res = await query.ToPage(currentPage, itemsPerPage);
+
+            return res;
+        }
+    }
 
     public async Task UpdateNonDonationsTotalAsync(Guid id, ForexMoney nonDonationsForex) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
@@ -160,6 +172,22 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
             crowdfunder.LeftToRaiseQuote = crowdfunder.GoalsTotalQuote - (crowdfunder.NonDonationsTotalQuote + crowdfunder.ContributionsTotalQuote);
 
             await db.UpdateAsync(crowdfunder);
+        }
+    }
+    
+    private async Task<IReadOnlyList<Crowdfunder>> FetchPagedCrowdfundersAsync(Action<Sql> select,
+                                                                               Action<Sql> where,
+                                                                               Action<Sql> orderBy = null) {
+        using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
+            var sql = Sql.Builder;
+            select(sql);
+            sql.From($"{CrowdfundingConstants.Tables.Crowdfunders.Name}");
+            where(sql);
+            orderBy?.Invoke(sql);
+            
+            var crowdfunders = await db.FetchAsync<Crowdfunder>(sql);
+            
+            return crowdfunders;
         }
     }
 

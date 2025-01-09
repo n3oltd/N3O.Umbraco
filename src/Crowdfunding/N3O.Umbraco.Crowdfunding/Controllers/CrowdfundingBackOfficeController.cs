@@ -6,7 +6,6 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding.Content.Settings;
 using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Crowdfunding.Models;
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
 using System;
 using System.Collections.Generic;
