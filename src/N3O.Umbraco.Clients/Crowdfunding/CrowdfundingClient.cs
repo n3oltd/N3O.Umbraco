@@ -1461,8 +1461,8 @@ namespace N3O.Umbraco.Clients.Crowdfunding
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "umbraco/api/Crowdfunding/statistics/dashboard"
-                    urlBuilder_.Append("umbraco/api/Crowdfunding/statistics/dashboard");
+                    // Operation Path: "umbraco/api/CrowdfundingStatistics/dashboard"
+                    urlBuilder_.Append("umbraco/api/CrowdfundingStatistics/dashboard");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 

@@ -40,7 +40,7 @@
         <PackageReference Include="Humanizer.Core" Version="2.14.1" />
         <PackageReference Include="MimeTypesMap" Version="1.0.9" />
         <PackageReference Include="NodaTime" Version="3.2.0" />
-        <PackageReference Include="NodaTime.Serialization.JsonNet" Version="3.1.0" />
+        <PackageReference Include="NodaTime.Serialization.JsonNet" Version="3.2.0" />
         <PackageReference Include="NSwag.AspNetCore" Version="14.2.0" />
         <PackageReference Include="Our.Umbraco.Community.Contentment.Core" Version="4.7.0" />
         <PackageReference Include="Refit" Version="8.0.0" />

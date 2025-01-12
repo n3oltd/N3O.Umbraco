@@ -48,5 +48,13 @@ namespace DemoSite.Content
 		}
 
 		// properties
+
+		///<summary>
+		/// API Key
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("apiKey")]
+		public virtual string ApiKey => this.Value<string>(_publishedValueFallback, "apiKey");
 	}
 }

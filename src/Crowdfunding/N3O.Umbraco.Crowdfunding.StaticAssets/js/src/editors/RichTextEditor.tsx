@@ -50,10 +50,7 @@ export const RichTextEditor: React.FC<EditorProps> = ({
     }
   }, [loadPropertyValue, pageId, open]);
 
-  const handleContentChange = React.useCallback(content => {
-    setEditorContent(content);
-  }, [setEditorContent]);
-
+  
   const saveContent = async () => {
 
     try {
@@ -61,7 +58,7 @@ export const RichTextEditor: React.FC<EditorProps> = ({
         alias: propAlias,
         type: PropertyType.Raw,
         raw: {
-          value: editorContent
+          value: editor.current?.editor?.getData() || ''
         } 
       }
 
@@ -89,7 +86,6 @@ export const RichTextEditor: React.FC<EditorProps> = ({
           <div className="n3o-richText" style={{paddingTop: '24px'}}>
               <CkEditor 
                 editor={editor}
-                onChange={handleContentChange}
                 initialContent={editorContent}
                 characterLimit={dataResponse?.raw?.configuration?.maximumLength}
               />

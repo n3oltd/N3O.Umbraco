@@ -44,9 +44,9 @@ public class MultiNodeTreePickerPropertyConverter : PropertyConverter<IPublished
         IEnumerable<IPublishedContent> values;
 
         if (GetMaxValues(propertyInfo) == 1) {
-            values = _contentHelper.GetPickerValue<IPublishedContent>(contentProperty).Yield();
+            values = _contentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(contentProperty).Yield();
         } else {
-            values = _contentHelper.GetPickerValues<IPublishedContent>(contentProperty);
+            values = _contentHelper.GetMultiNodeTreePickerValues<IPublishedContent>(contentProperty);
         }
 
         return values.ExceptNull().Select(x => OurDataTypes.PublishedContent.Cell(x, x.GetType()));

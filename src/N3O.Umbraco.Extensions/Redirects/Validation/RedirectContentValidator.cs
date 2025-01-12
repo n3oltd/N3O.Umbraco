@@ -17,8 +17,8 @@ public class RedirectContentValidator : ContentValidator  {
 
     public override void Validate(ContentProperties content) {
         var externalUrl = content.GetPropertyValueByAlias<string>(RedirectsConstants.Properties.LinkExternalUrl);
-        var linkContent = _contentHelper.GetPickerValue<IPublishedContent>(content,
-                                                                           RedirectsConstants.Properties.LinkContent);
+        var linkContent = _contentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(content,
+                                                                                        RedirectsConstants.Properties.LinkContent);
 
         if (externalUrl == null && linkContent == null) {
             ErrorResult("Either content or an external URL must be specified");

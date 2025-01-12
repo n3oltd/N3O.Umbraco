@@ -8,6 +8,10 @@ public static class UmbracoContextAccessorExtensions {
     public static IPublishedContentCache GetContentCache(this IUmbracoContextAccessor umbracoContextAccessor) {
         return GetUmbracoContext(umbracoContextAccessor).Content;
     }
+    
+    public static IPublishedMediaCache GetMediaCache(this IUmbracoContextAccessor umbracoContextAccessor) {
+        return GetUmbracoContext(umbracoContextAccessor).Media;
+    }
 
     public static IUmbracoContext GetUmbracoContext(this IUmbracoContextAccessor umbracoContextAccessor) {
         if (!umbracoContextAccessor.TryGetUmbracoContext(out var umbracoContext)) {

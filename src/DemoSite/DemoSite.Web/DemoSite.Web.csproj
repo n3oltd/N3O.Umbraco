@@ -12,7 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Crowdfunding\N3O.Umbraco.Crowdfunding.StaticAssets\N3O.Umbraco.Crowdfunding.StaticAssets.csproj" />
         <ProjectReference Include="..\..\Data\N3O.Umbraco.Data.StaticAssets\N3O.Umbraco.Data.StaticAssets.csproj" />
         <ProjectReference Include="..\..\Forms\N3O.Umbraco.Forms.StaticAssets\N3O.Umbraco.Forms.StaticAssets.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Cms\N3O.Umbraco.Cms.csproj" />
@@ -25,7 +24,7 @@
         <ProjectReference Include="..\..\Workflows\N3O.Umbraco.Workflows.StaticAssets\N3O.Umbraco.Workflows.StaticAssets.csproj" />
         <ProjectReference Include="..\DemoSite.Core\DemoSite.Core.csproj" />
     </ItemGroup>
-    
+
     <Import Project="..\..\N3O.Umbraco.Cms\build\N3O.Umbraco.Cms.targets" />
     <Import Project="..\..\Data\N3O.Umbraco.Data.StaticAssets\build\N3O.Umbraco.Data.StaticAssets.targets" />
     <Import Project="..\..\Plugins\Cropper\N3O.Umbraco.Cropper.StaticAssets\build\N3O.Umbraco.Cropper.StaticAssets.targets" />

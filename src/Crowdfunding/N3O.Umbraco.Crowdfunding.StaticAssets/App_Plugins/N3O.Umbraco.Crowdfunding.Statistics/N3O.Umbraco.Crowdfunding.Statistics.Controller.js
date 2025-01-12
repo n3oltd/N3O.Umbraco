@@ -16,7 +16,7 @@ angular.module("umbraco")
             document.head.appendChild(d3Script);
             
             async function initializeEnvironments() {
-                let res = await fetch(`/umbraco/backoffice/api/CrowdfundingBackOffice/Environments`);
+                let res = await fetch(`/umbraco/backoffice/api/crowdfundingBackOffice/environments`);
 
                 let environments = await res.json();
 
@@ -89,7 +89,7 @@ angular.module("umbraco")
                 let source = document.getElementById('stats-source');
                 let environment = source.options[source.selectedIndex];
 
-                let res = await fetch(`${environment.dataset.domain}/umbraco/api/CrowdfundingStatistics/dashboard`, {
+                let res = await fetch(`${environment.dataset.domain}/umbraco/api/crowdfundingStatistics/dashboard`, {
                     method: "POST",
                     headers: {
                         "Accept": "application/json",

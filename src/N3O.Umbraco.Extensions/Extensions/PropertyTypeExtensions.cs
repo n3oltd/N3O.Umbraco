@@ -27,6 +27,14 @@ public static class PropertyTypeExtensions {
     public static bool IsDropdown(this IPropertyType propertyType) {
         return propertyType.HasEditorAlias(Aliases.DropDownListFlexible);
     }
+    
+    public static bool IsMediaPicker(this IPropertyType propertyType) {
+        return propertyType.HasEditorAlias(Aliases.MediaPicker3);
+    }
+    
+    public static bool IsMultiNodeTreePicker(this IPropertyType propertyType) {
+        return propertyType.HasEditorAlias(Aliases.MultiNodeTreePicker);
+    }
 
     public static bool IsNestedContent(this IPropertyType propertyType) {
         return propertyType.HasEditorAlias(Aliases.NestedContent);
@@ -34,9 +42,5 @@ public static class PropertyTypeExtensions {
     
     public static bool IsPerplexBlocks(this IPropertyType propertyType) {
         return propertyType.HasEditorAlias("Perplex.ContentBlocks");
-    }
-    
-    public static bool IsPicker(this IPropertyType propertyType) {
-        return propertyType.HasEditorAlias(Aliases.MultiNodeTreePicker);
     }
 }

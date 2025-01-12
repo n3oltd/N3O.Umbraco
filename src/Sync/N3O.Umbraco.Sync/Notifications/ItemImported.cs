@@ -6,10 +6,10 @@ using uSync.BackOffice;
 
 namespace N3O.Umbraco.Sync;
 
-public class USyncItemImported : INotificationAsyncHandler<uSyncImportedItemNotification> {
+public class ItemImported : INotificationAsyncHandler<uSyncImportedItemNotification> {
     private readonly IContentCache _contentCache;
 
-    public USyncItemImported(IContentCache contentCache) {
+    public ItemImported(IContentCache contentCache) {
         _contentCache = contentCache;
     }
 

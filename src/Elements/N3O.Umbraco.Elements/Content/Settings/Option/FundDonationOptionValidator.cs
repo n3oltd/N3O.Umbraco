@@ -40,7 +40,7 @@ public class FundDonationOptionValidator : DonationOptionValidator<FundDonationO
 
     private DonationItem GetDonationItem(ContentProperties content) {
         var donationItem = content.GetPropertyByAlias(DonationItemAlias)
-                                  .IfNotNull(x => ContentHelper.GetPickerValue<IPublishedContent>(x)
+                                  .IfNotNull(x => ContentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(x)
                                                                .As<DonationItem>());
 
         return donationItem;

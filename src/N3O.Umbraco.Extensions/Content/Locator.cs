@@ -9,10 +9,10 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Content;
 
-public class ContentLocator : IContentLocator {
+public abstract class Locator : ILocator {
     private readonly IUmbracoContextAccessor _umbracoContextAccessor;
 
-    public ContentLocator(IUmbracoContextAccessor umbracoContextAccessor) {
+    protected Locator(IUmbracoContextAccessor umbracoContextAccessor) {
         _umbracoContextAccessor = umbracoContextAccessor;
     }
 
@@ -84,10 +84,12 @@ public class ContentLocator : IContentLocator {
         });
     }
 
-    private T Run<T>(Func<IPublishedContentCache, T> func) {
+    private T Run<T>(Func<IPublishedCache, T> func) {
         // TODO If the Umbraco context is actually created then this will dispose it once
         // the content is fetched and will fail in later code, e.g. when resolving property values
         // as won't be able to get published content snapshot.
-        return func(_umbracoContextAccessor.GetContentCache());
+        return func(GetCache(_umbracoContextAccessor));
     }
+
+    protected abstract IPublishedCache GetCache(IUmbracoContextAccessor umbracoContextAccessor);
 }
