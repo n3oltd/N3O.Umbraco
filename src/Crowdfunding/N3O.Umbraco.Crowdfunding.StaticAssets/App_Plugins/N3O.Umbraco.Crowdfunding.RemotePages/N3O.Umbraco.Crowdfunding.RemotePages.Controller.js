@@ -23,12 +23,11 @@ angular.module("umbraco")
             $scope.isLoading = true;
 
             let req = {
-                type: 'fundraiser',
                 pageSize: 5,
                 currentPage: currentPage
             };
 
-            await fetch(`${environment.domain}/umbraco/api/CrowdfundingStatistics/Pages`, {
+            await fetch(`${environment.domain}/umbraco/api/crowdfundingProxy/pages`, {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
@@ -99,11 +98,11 @@ angular.module("umbraco")
         }
 
         async function getProductionEnvironment() {
-            let res = await fetch(`/umbraco/backoffice/api/CrowdfundingBackOffice/Environments`);
+            let res = await fetch(`/umbraco/backoffice/api/crowdfundingBackOffice/environments`);
 
             let environments = await res.json();
 
-            let productionEnvironment = environments.filter((env) => env.crowdfundingEnvironment === 'production');
+            let productionEnvironment = environments.filter((env) => env.name === 'Production');
 
             if(!productionEnvironment || productionEnvironment.length > 1) {
                 throw new Error('Error');

@@ -6,12 +6,12 @@ using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
-public class CrowdfunderDashboardPageResMapping : IMapDefinition {
+public class FundraiserDashboardPageResMapping : IMapDefinition {
     public void DefineMaps(IUmbracoMapper mapper) { 
-        mapper.Define<Crowdfunder, CrowdfunderDashboardEntryRes>((_, _) => new CrowdfunderDashboardEntryRes(), Map);
+        mapper.Define<Crowdfunder, FundraiserDashboardPageRes>((_, _) => new FundraiserDashboardPageRes(), Map);
     }
 
-    private void Map(Crowdfunder src, CrowdfunderDashboardEntryRes dest, MapperContext ctx) {
+    private void Map(Crowdfunder src, FundraiserDashboardPageRes dest, MapperContext ctx) {
         dest.Name = src.Name;
         dest.OwnerName = src.OwnerName;
         dest.Url = src.Url;

@@ -89,7 +89,7 @@ angular.module("umbraco")
                 let source = document.getElementById('stats-source');
                 let environment = source.options[source.selectedIndex];
 
-                let res = await fetch(`${environment.dataset.domain}/umbraco/api/crowdfundingStatistics/dashboard`, {
+                let res = await fetch(`${environment.dataset.domain}/umbraco/api/crowdfundingProxy/dashboard`, {
                     method: "POST",
                     headers: {
                         "Accept": "application/json",

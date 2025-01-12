@@ -12,14 +12,14 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Crowdfunding.Controllers;
 
-[ApiDocument(CrowdfundingConstants.StatisticsApiName)]
-public class CrowdfundingStatisticsController : ApiController {
+[ApiDocument(CrowdfundingConstants.ProxyApiName)]
+public class CrowdfundingProxyController : ApiController {
     private const string ApiHeaderKey = "Crowdfunding-API-Key";
     
     private readonly Lazy<IContentLocator> _contentLocator;
     private readonly Lazy<IMediator> _mediator;
     
-    public CrowdfundingStatisticsController(Lazy<IContentLocator> contentLocator, Lazy<IMediator> mediator) {
+    public CrowdfundingProxyController(Lazy<IContentLocator> contentLocator, Lazy<IMediator> mediator) {
         _mediator = mediator;
         _contentLocator = contentLocator;
     }
@@ -36,12 +36,12 @@ public class CrowdfundingStatisticsController : ApiController {
     }
     
     [HttpPost("pages")]
-    public async Task<ActionResult<DashboardStatisticsRes>> GetCrowdfunderPages(CrowdfunderPagesCriteria req) {
-        /*if (!IsAuthorized()) {
+    public async Task<ActionResult<FundraiserDashboardRes>> GetFundraiserPages(FundraiserPagesCriteria req) {
+        if (!IsAuthorized()) {
             return Unauthorized();
-        }*/
+        }
         
-        var res = await _mediator.Value.SendAsync<GetCrowdfunderPagesQuery, CrowdfunderPagesCriteria, CrowdfunderDashboardRes>(req);
+        var res = await _mediator.Value.SendAsync<GetFundraiserPagesQuery, FundraiserPagesCriteria, FundraiserDashboardRes>(req);
         
         return Ok(res);
     }

@@ -3,10 +3,7 @@ using CrowdfunderType = N3O.Umbraco.Crm.Lookups.CrowdfunderType;
 
 namespace N3O.Umbraco.Crowdfunding.Criteria;
 
-public class CrowdfunderPagesCriteria {
-    [Name("Type")]
-    public CrowdfunderType Type { get; set; }
-    
+public class FundraiserPagesCriteria {
     [Name("Current Page")]
     public int? CurrentPage { get; set; }
     

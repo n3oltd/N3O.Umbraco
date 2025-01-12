@@ -11,7 +11,7 @@ public class CrowdfundingComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddOpenApiDocument(CrowdfundingConstants.ApiName);
         builder.Services.AddOpenApiDocument(CrowdfundingConstants.BackOfficeApiName);
-        builder.Services.AddOpenApiDocument(CrowdfundingConstants.StatisticsApiName);
+        builder.Services.AddOpenApiDocument(CrowdfundingConstants.ProxyApiName);
         
         builder.Components().Append<ContributionMigrationsComponent>();
         builder.Components().Append<CrowdfunderMigrationsComponent>();

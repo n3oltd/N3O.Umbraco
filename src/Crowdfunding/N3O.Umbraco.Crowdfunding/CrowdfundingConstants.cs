@@ -3,7 +3,7 @@
 public static class CrowdfundingConstants {
     public const string ApiName = "Crowdfunding";
     public const string BackOfficeApiName = "CrowdfundingBackOffice";
-    public const string StatisticsApiName = "CrowdfundingStatistics";
+    public const string ProxyApiName = "CrowdfundingProxy";
     
     public static class Allocations {
         public static class Extensions {
