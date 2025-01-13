@@ -16,8 +16,6 @@ public class GivingContent : UmbracoContent<GivingContent> {
 
     public IEnumerable<DonationCategoryContent> AllCategories {
         get {
-            var list = new List<DonationCategoryContent>();
-            
             foreach (var descendant in Content().Descendants()) {
                 if (descendant.IsDonationCategory()) {
                     var donationCategory = descendant.As<DonationCategoryContent>();
