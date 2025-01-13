@@ -43,17 +43,17 @@ public class CrowdfunderCreatedHandler : CrowdfunderEventHandler<CrowdfunderCrea
 
         await AddOrUpdateRevisionAsync(content.Key, content.VersionId, type);
 
-        UpdateAndPublishStatus(content, req.Model.Status.Name);
+        UpdateAndPublishStatus(content, type, req.Model.Status.Name);
 
         if (type == CrowdfunderTypes.Fundraiser) {
             SendFundraiserCreatedEmail(content);
         }
     }
 
-    private void UpdateAndPublishStatus(IContent content, string statusName) {
+    private void UpdateAndPublishStatus(IContent content, CrowdfunderType type, string statusName) {
         content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.Status, statusName);
 
-        if (_webHostEnvironment.IsProduction()) {
+        if (_webHostEnvironment.IsProduction() && type == CrowdfunderTypes.Fundraiser) {
             content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, true);
         } else {
             content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, false);
