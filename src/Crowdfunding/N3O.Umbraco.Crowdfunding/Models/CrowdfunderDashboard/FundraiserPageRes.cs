@@ -2,7 +2,7 @@
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
-public class FundraiserDashboardPageRes {
+public class FundraiserPageRes {
     public string Name { get; set; }
     public string OwnerName { get; set; }
     public string Url { get; set; }

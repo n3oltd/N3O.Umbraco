@@ -36,12 +36,12 @@ public class CrowdfundingProxyController : ApiController {
     }
     
     [HttpPost("pages")]
-    public async Task<ActionResult<FundraiserDashboardRes>> GetFundraiserPages(FundraiserPagesCriteria req) {
+    public async Task<ActionResult<FundraiserPageResultsPage>> GetFundraiserPages(FundraiserPagesCriteria req) {
         if (!IsAuthorized()) {
             return Unauthorized();
         }
         
-        var res = await _mediator.Value.SendAsync<GetFundraiserPagesQuery, FundraiserPagesCriteria, FundraiserDashboardRes>(req);
+        var res = await _mediator.Value.SendAsync<GetFundraiserPagesQuery, FundraiserPagesCriteria, FundraiserPageResultsPage>(req);
         
         return Ok(res);
     }

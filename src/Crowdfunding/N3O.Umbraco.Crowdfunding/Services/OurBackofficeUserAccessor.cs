@@ -7,12 +7,12 @@ using SecurityConstants = Umbraco.Cms.Core.Constants.Security;
 
 namespace N3O.Umbraco.Crowdfunding;
 
-public class BackofficeUserAccessor {
+public class OurBackofficeUserAccessor {
     private readonly IOptionsSnapshot<CookieAuthenticationOptions> _cookieOptionsSnapshot;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public BackofficeUserAccessor(IOptionsSnapshot<CookieAuthenticationOptions> cookieOptionsSnapshot,
-                       IHttpContextAccessor httpContextAccessor) {
+    public OurBackofficeUserAccessor(IOptionsSnapshot<CookieAuthenticationOptions> cookieOptionsSnapshot,
+                                     IHttpContextAccessor httpContextAccessor) {
         _cookieOptionsSnapshot = cookieOptionsSnapshot;
         _httpContextAccessor = httpContextAccessor;
     }
@@ -25,7 +25,7 @@ public class BackofficeUserAccessor {
         }
 
         var cookieOptions = _cookieOptionsSnapshot.Get(SecurityConstants.BackOfficeAuthenticationType);
-        var backOfficeCookie = httpContext.Request.Cookies[cookieOptions.Cookie.Name!];
+        var backOfficeCookie = httpContext.Request.Cookies[cookieOptions.Cookie.Name];
 
         if (string.IsNullOrEmpty(backOfficeCookie)) {
             return false;

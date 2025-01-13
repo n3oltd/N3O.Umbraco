@@ -22,7 +22,7 @@
         <ItemGroup>
             <N3OUmbracoCrowdfundingRemotePagesAppFiles Include="$(N3OUmbracoCrowdfundingRemotePagesAppFilesPath)"/>
         </ItemGroup>
-        <Message Text="Copying crowdfunding app remotePages files: $(N3OUmbracoCrowdfundingRemotePagesAppFilesPath) - #@(N3OUmbracoCrowdfundingRemotePagesAppFiles->Count()) files" Importance="high"/>
+        <Message Text="Copying crowdfunding app remote pages files: $(N3OUmbracoCrowdfundingRemotePagesAppFilesPath) - #@(N3OUmbracoCrowdfundingRemotePagesAppFiles->Count()) files" Importance="high"/>
         <Copy SourceFiles="@(N3OUmbracoCrowdfundingRemotePagesAppFiles)"
               DestinationFiles="@(N3OUmbracoCrowdfundingRemotePagesAppFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Crowdfunding.RemotePages\%(RecursiveDir)%(Filename)%(Extension)')"
               SkipUnchangedFiles="true"/>
@@ -32,7 +32,7 @@
         <ItemGroup>
             <N3OUmbracoN3OTableFiles Include="$(N3OUmbracoN3OTableFilesPath)"/>
         </ItemGroup>
-        <Message Text="Copying crowdfunding app remotePages files: $(N3OUmbracoN3OTableFilesPath) - #@(N3OUmbracoN3OTableFiles->Count()) files" Importance="high"/>
+        <Message Text="Copying crowdfunding app remote pages files: $(N3OUmbracoN3OTableFilesPath) - #@(N3OUmbracoN3OTableFiles->Count()) files" Importance="high"/>
         <Copy SourceFiles="@(N3OUmbracoN3OTableFiles)"
               DestinationFiles="@(N3OUmbracoN3OTableFiles->'$(MSBuildProjectDirectory)\wwwroot\umbraco\%(RecursiveDir)%(Filename)%(Extension)')"
               SkipUnchangedFiles="true"/>

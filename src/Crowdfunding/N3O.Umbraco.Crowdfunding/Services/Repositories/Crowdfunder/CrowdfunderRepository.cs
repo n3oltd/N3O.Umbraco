@@ -89,6 +89,20 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
                                             sql => sql.Where($"{nameof(Crowdfunder.Type)} = {CrowdfunderTypes.Fundraiser.Key} AND {nameof(Crowdfunder.StatusKey)} = {CrowdfunderStatuses.Active.Key}"),
                                             sql => sql.Append($"ORDER BY {nameof(Crowdfunder.LeftToRaiseQuote)}"));
     }
+    
+    public async Task<Page<Crowdfunder>> GetCrowdfundersPageAsync(CrowdfunderType type,
+                                                                  int currentPage,
+                                                                  int itemsPerPage) {
+        using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
+            var query = db.QueryAsync<Crowdfunder>()
+                          .Where(x => x.Type == (int) type.Key)
+                          .OrderByDescending(x => x.CreatedAt);
+            
+            var res = await query.ToPage(currentPage, itemsPerPage);
+
+            return res;
+        }
+    }
 
     public async Task<IReadOnlyList<Crowdfunder>> GetFeaturedCampaignsAsync(int? take = null) {
         return await FetchCrowdfundersAsync(sql => sql.SelectTop("*", take),
@@ -147,20 +161,6 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
         var crowdfunders = await FetchCrowdfundersAsync(sql => sql.Select("*"), where);
 
         return crowdfunders;
-    }
-    
-    public async Task<Page<Crowdfunder>> GetPagedCrowdfundersAsync(CrowdfunderType type,
-                                                                   int currentPage,
-                                                                   int itemsPerPage) {
-        using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-            var query = db.QueryAsync<Crowdfunder>()
-                          .Where(x => x.Type == (int) type.Key)
-                          .OrderByDescending(x => x.CreatedAt);
-            
-            var res = await query.ToPage(currentPage, itemsPerPage);
-
-            return res;
-        }
     }
 
     public async Task UpdateNonDonationsTotalAsync(Guid id, ForexMoney nonDonationsForex) {

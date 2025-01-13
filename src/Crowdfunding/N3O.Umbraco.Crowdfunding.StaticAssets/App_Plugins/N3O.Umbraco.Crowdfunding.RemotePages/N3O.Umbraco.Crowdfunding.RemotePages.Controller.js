@@ -23,7 +23,7 @@ angular.module("umbraco")
             $scope.isLoading = true;
 
             let req = {
-                pageSize: 5,
+                pageSize: 50,
                 currentPage: currentPage
             };
 
@@ -104,8 +104,8 @@ angular.module("umbraco")
 
             let productionEnvironment = environments.filter((env) => env.name === 'Production');
 
-            if(!productionEnvironment || productionEnvironment.length > 1) {
-                throw new Error('Error');
+            if (!productionEnvironment || productionEnvironment.length > 1) {
+                throw new Error('A single production environment could not be found');
             }
 
             return productionEnvironment[0];
@@ -117,6 +117,4 @@ angular.module("umbraco")
             
             return newUrl;
         }
-
-        assetsService.loadCss("~/App_Plugins/N3O.Umbraco.Crowdfunding.Statistics/N3O.Umbraco.Crowdfunding.Statistics.css");
     });

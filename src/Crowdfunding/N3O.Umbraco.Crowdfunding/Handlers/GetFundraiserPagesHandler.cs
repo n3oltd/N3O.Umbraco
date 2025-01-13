@@ -11,7 +11,8 @@ using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Crowdfunding.Handlers;
 
-public class GetFundraiserPagesHandler : IRequestHandler<GetFundraiserPagesQuery, FundraiserPagesCriteria, FundraiserDashboardRes> {
+public class GetFundraiserPagesHandler :
+    IRequestHandler<GetFundraiserPagesQuery, FundraiserPagesCriteria, FundraiserPageResultsPage> {
     private readonly ICrowdfunderRepository _crowdfunderRepository;
     private readonly IUmbracoMapper _umbracoMapper;
     
@@ -20,15 +21,15 @@ public class GetFundraiserPagesHandler : IRequestHandler<GetFundraiserPagesQuery
         _umbracoMapper = umbracoMapper;
     }
 
-    public async Task<FundraiserDashboardRes> Handle(GetFundraiserPagesQuery req, CancellationToken cancellationToken) {
+    public async Task<FundraiserPageResultsPage> Handle(GetFundraiserPagesQuery req, CancellationToken cancellationToken) {
         var nextPage = req.Model.CurrentPage.GetValueOrDefault() + 1;
         var pageSize = req.Model.PageSize.GetValueOrDefault();
         
-        var fundraisers = await _crowdfunderRepository.GetPagedCrowdfundersAsync(CrowdfunderTypes.Fundraiser,
-                                                                                 nextPage,
-                                                                                 pageSize);
+        var fundraisers = await _crowdfunderRepository.GetCrowdfundersPageAsync(CrowdfunderTypes.Fundraiser,
+                                                                                nextPage,
+                                                                                pageSize);
         
-        var res = _umbracoMapper.Map<Page<Crowdfunder>, FundraiserDashboardRes>(fundraisers);
+        var res = _umbracoMapper.Map<Page<Crowdfunder>, FundraiserPageResultsPage>(fundraisers);
 
         return res;
     }
