@@ -24,7 +24,9 @@ public class GetFundraiserPagesHandler : IRequestHandler<GetFundraiserPagesQuery
         var nextPage = req.Model.CurrentPage.GetValueOrDefault() + 1;
         var pageSize = req.Model.PageSize.GetValueOrDefault();
         
-        var fundraisers = await _crowdfunderRepository.SearchPagedAsync(CrowdfunderTypes.Fundraiser, nextPage, pageSize);
+        var fundraisers = await _crowdfunderRepository.GetPagedCrowdfundersAsync(CrowdfunderTypes.Fundraiser,
+                                                                                 nextPage,
+                                                                                 pageSize);
         
         var res = _umbracoMapper.Map<Page<Crowdfunder>, FundraiserDashboardRes>(fundraisers);
 

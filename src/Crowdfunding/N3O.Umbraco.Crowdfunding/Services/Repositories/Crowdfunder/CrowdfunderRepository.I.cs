@@ -20,6 +20,6 @@ public interface ICrowdfunderRepository {
     Task<IReadOnlyList<Crowdfunder>> GetNewFundraisersAsync(int? take = null);
     Task RecalculateContributionsTotalAsync(Guid id);
     Task<IReadOnlyList<Crowdfunder>> SearchAsync(CrowdfunderType type, string query);
-    Task<Page<Crowdfunder>> SearchPagedAsync(CrowdfunderType type, int currentPage, int itemsPerPage);
+    Task<Page<Crowdfunder>> GetPagedCrowdfundersAsync(CrowdfunderType type, int currentPage, int itemsPerPage);
     Task UpdateNonDonationsTotalAsync(Guid id, ForexMoney value);
 }

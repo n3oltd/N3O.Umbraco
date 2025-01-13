@@ -39,13 +39,13 @@ public class CampaignPublished : INotificationAsyncHandler<ContentPublishedNotif
             if (content.ContentType.Alias.EqualsInvariant(CrowdfundingConstants.Campaign.Alias)) {
                 var campaign = _contentLocator.ById<CampaignContent>(content.Key);
 
-                /*if (!campaign.Status.HasValue()) {
+                if (!campaign.Status.HasValue()) {
                     await _crowdfunderManager.CreateCampaignAsync(campaign);
                 } else {
                     await _crowdfunderManager.UpdateCrowdfunderAsync(campaign.Key.ToString(),
                                                                      campaign,
                                                                      campaign.ToggleStatus);
-                }*/
+                }
 
                 if (_webHostEnvironment.IsProduction() &&
                     campaign.Status.HasValue() &&
