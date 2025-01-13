@@ -176,22 +176,6 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
             await db.UpdateAsync(crowdfunder);
         }
     }
-    
-    private async Task<IReadOnlyList<Crowdfunder>> FetchPagedCrowdfundersAsync(Action<Sql> select,
-                                                                               Action<Sql> where,
-                                                                               Action<Sql> orderBy = null) {
-        using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-            var sql = Sql.Builder;
-            select(sql);
-            sql.From($"{CrowdfundingConstants.Tables.Crowdfunders.Name}");
-            where(sql);
-            orderBy?.Invoke(sql);
-            
-            var crowdfunders = await db.FetchAsync<Crowdfunder>(sql);
-            
-            return crowdfunders;
-        }
-    }
 
     private async Task<IReadOnlyList<Crowdfunder>> FetchCrowdfundersAsync(Action<Sql> select,
                                                                           Action<Sql> where,
