@@ -7,11 +7,11 @@ using SecurityConstants = Umbraco.Cms.Core.Constants.Security;
 
 namespace N3O.Umbraco.Crowdfunding;
 
-public class CurrentUser {
+public class BackofficeUserAccessor {
     private readonly IOptionsSnapshot<CookieAuthenticationOptions> _cookieOptionsSnapshot;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public CurrentUser(IOptionsSnapshot<CookieAuthenticationOptions> cookieOptionsSnapshot,
+    public BackofficeUserAccessor(IOptionsSnapshot<CookieAuthenticationOptions> cookieOptionsSnapshot,
                        IHttpContextAccessor httpContextAccessor) {
         _cookieOptionsSnapshot = cookieOptionsSnapshot;
         _httpContextAccessor = httpContextAccessor;
