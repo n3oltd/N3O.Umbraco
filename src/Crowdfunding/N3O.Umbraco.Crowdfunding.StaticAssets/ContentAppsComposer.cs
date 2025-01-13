@@ -3,8 +3,9 @@ using Umbraco.Cms.Core.DependencyInjection;
 
 namespace N3O.Umbraco.Crowdfunding;
 
-public class StatisticsAppComposer : Composer {
+public class ContentAppsComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.ContentApps().Append<StatisticsApp>();
+        builder.ContentApps().Append<RemotePagesApp>();
     }
 }

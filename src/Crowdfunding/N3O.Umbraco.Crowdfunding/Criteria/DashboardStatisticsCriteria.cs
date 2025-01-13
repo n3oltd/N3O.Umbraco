@@ -1,4 +1,4 @@
-﻿using CsvHelper.Configuration.Attributes;
+﻿using N3O.Umbraco.Attributes;
 using NodaTime;
 
 namespace N3O.Umbraco.Crowdfunding.Criteria;

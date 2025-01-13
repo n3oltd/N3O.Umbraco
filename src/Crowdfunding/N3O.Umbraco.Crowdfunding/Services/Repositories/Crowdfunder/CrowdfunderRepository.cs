@@ -148,6 +148,20 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
 
         return crowdfunders;
     }
+    
+    public async Task<Page<Crowdfunder>> GetPagedCrowdfundersAsync(CrowdfunderType type,
+                                                                   int currentPage,
+                                                                   int itemsPerPage) {
+        using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
+            var query = db.QueryAsync<Crowdfunder>()
+                          .Where(x => x.Type == (int) type.Key)
+                          .OrderByDescending(x => x.CreatedAt);
+            
+            var res = await query.ToPage(currentPage, itemsPerPage);
+
+            return res;
+        }
+    }
 
     public async Task UpdateNonDonationsTotalAsync(Guid id, ForexMoney nonDonationsForex) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {

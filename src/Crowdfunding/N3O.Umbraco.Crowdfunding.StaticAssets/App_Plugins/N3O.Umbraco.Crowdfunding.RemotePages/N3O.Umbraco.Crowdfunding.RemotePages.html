@@ -1,0 +1,15 @@
+<div ng-controller="N3O.Umbraco.Crowdfunding.RemotePages">
+
+<n3o-table items="items"
+           actions="actions"
+           item-properties="options.includeProperties"
+           allow-select-all="false"
+           allow-select="false"
+           allow-load-more="canLoadMore"
+           on-load-more="loadNextPage()"
+           is-loading-more=""
+           is-loading="isLoading"
+           style="position: relative;min-height: 80vh;">
+</n3o-table>
+    
+</div>

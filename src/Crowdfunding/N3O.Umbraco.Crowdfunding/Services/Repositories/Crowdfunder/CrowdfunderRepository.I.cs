@@ -2,6 +2,7 @@
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Crowdfunding.Entities;
 using N3O.Umbraco.Financial;
+using NPoco;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -19,5 +20,6 @@ public interface ICrowdfunderRepository {
     Task<IReadOnlyList<Crowdfunder>> GetNewFundraisersAsync(int? take = null);
     Task RecalculateContributionsTotalAsync(Guid id);
     Task<IReadOnlyList<Crowdfunder>> SearchAsync(CrowdfunderType type, string query);
+    Task<Page<Crowdfunder>> GetPagedCrowdfundersAsync(CrowdfunderType type, int currentPage, int itemsPerPage);
     Task UpdateNonDonationsTotalAsync(Guid id, ForexMoney value);
 }

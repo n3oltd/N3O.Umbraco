@@ -2,7 +2,9 @@
 
     <PropertyGroup>
         <N3OUmbracoCrowdfundingStatisticsAppFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.Crowdfunding.Statistics\**\*.*</N3OUmbracoCrowdfundingStatisticsAppFilesPath>
+        <N3OUmbracoCrowdfundingRemotePagesAppFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.Crowdfunding.RemotePages\**\*.*</N3OUmbracoCrowdfundingRemotePagesAppFilesPath>
         <N3OUmbracoCrowdfundingAssetsFilesPath>$(MSBuildThisFileDirectory)..\wwwroot\assets\**\*.*</N3OUmbracoCrowdfundingAssetsFilesPath>
+        <N3OUmbracoN3OTableFilesPath>$(MSBuildThisFileDirectory)..\wwwroot\umbraco\**\*.*</N3OUmbracoN3OTableFilesPath>
         <N3OUmbracoCrowdfundingViewFilesPath>$(MSBuildThisFileDirectory)..\views\**\*.*</N3OUmbracoCrowdfundingViewFilesPath>
     </PropertyGroup>
 
@@ -13,6 +15,26 @@
         <Message Text="Copying crowdfunding app statistics files: $(N3OUmbracoCrowdfundingStatisticsAppFilesPath) - #@(N3OUmbracoCrowdfundingStatisticsAppFiles->Count()) files" Importance="high"/>
         <Copy SourceFiles="@(N3OUmbracoCrowdfundingStatisticsAppFiles)"
               DestinationFiles="@(N3OUmbracoCrowdfundingStatisticsAppFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Crowdfunding.Statistics\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"/>
+    </Target>
+
+    <Target Name="CopyN3OUmbracoCrowdfundingRemotePagesApp" BeforeTargets="Build">
+        <ItemGroup>
+            <N3OUmbracoCrowdfundingRemotePagesAppFiles Include="$(N3OUmbracoCrowdfundingRemotePagesAppFilesPath)"/>
+        </ItemGroup>
+        <Message Text="Copying crowdfunding app remotePages files: $(N3OUmbracoCrowdfundingRemotePagesAppFilesPath) - #@(N3OUmbracoCrowdfundingRemotePagesAppFiles->Count()) files" Importance="high"/>
+        <Copy SourceFiles="@(N3OUmbracoCrowdfundingRemotePagesAppFiles)"
+              DestinationFiles="@(N3OUmbracoCrowdfundingRemotePagesAppFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Crowdfunding.RemotePages\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"/>
+    </Target>
+
+    <Target Name="CopyN3OUmbracoN3OTable" BeforeTargets="Build">
+        <ItemGroup>
+            <N3OUmbracoN3OTableFiles Include="$(N3OUmbracoN3OTableFilesPath)"/>
+        </ItemGroup>
+        <Message Text="Copying crowdfunding app remotePages files: $(N3OUmbracoN3OTableFilesPath) - #@(N3OUmbracoN3OTableFiles->Count()) files" Importance="high"/>
+        <Copy SourceFiles="@(N3OUmbracoN3OTableFiles)"
+              DestinationFiles="@(N3OUmbracoN3OTableFiles->'$(MSBuildProjectDirectory)\wwwroot\umbraco\%(RecursiveDir)%(Filename)%(Extension)')"
               SkipUnchangedFiles="true"/>
     </Target>
     
@@ -38,9 +60,18 @@
 
     <Target Name="ClearN3OUmbracoCrowdfundingStatisticsApp" BeforeTargets="Clean">
         <ItemGroup>
-            <N3OUmbracoCrowdfundingStatisticsAppAppDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Crowdfunding.Statistics\"/>
+            <N3OUmbracoCrowdfundingStatisticsDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Crowdfunding.Statistics\"/>
         </ItemGroup>
         <Message Text="Clear old crowdfunding statistics app files" Importance="high"/>
-        <RemoveDir Directories="@(N3OUmbracoCrowdfundingStatisticsAppAppDir)"/>
+        <RemoveDir Directories="@(N3OUmbracoCrowdfundingStatisticsDir)"/>
     </Target>
+
+    <Target Name="ClearN3OUmbracoCrowdfundingRemotePagesApp" BeforeTargets="Clean">
+        <ItemGroup>
+            <N3OUmbracoCrowdfundingRemotePagesAppAppDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Crowdfunding.RemotePages\"/>
+        </ItemGroup>
+        <Message Text="Clear old crowdfunding remotePages app files" Importance="high"/>
+        <RemoveDir Directories="@(N3OUmbracoCrowdfundingRemotePagesAppAppDir)"/>
+    </Target>
+    
 </Project>

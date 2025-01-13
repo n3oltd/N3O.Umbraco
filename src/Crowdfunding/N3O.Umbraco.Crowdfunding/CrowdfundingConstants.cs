@@ -3,7 +3,7 @@
 public static class CrowdfundingConstants {
     public const string ApiName = "Crowdfunding";
     public const string BackOfficeApiName = "CrowdfundingBackOffice";
-    public const string StatisticsApiName = "CrowdfundingStatistics";
+    public const string ProxyApiName = "CrowdfundingProxy";
     
     public static class Allocations {
         public static class Extensions {
@@ -17,6 +17,10 @@ public static class CrowdfundingConstants {
     
     public static class Campaign {
         public const string Alias = "crowdfundingCampaign";
+
+        public static class Properties {
+            public static readonly string ProductionUrl = "productionUrl";
+        }
     }
     
     public static class CampaignGoalOption {
@@ -227,6 +231,7 @@ public static class CrowdfundingConstants {
         }
 
         public static class HookIds {
+            public const string CampaignUrl = nameof(CampaignUrl);
             public const string Crowdfunder = nameof(Crowdfunder);
             public const string Pledges = nameof(Pledges);
         }

@@ -1,4 +1,4 @@
-﻿using CsvHelper.Configuration.Attributes;
+﻿using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Crm.Lookups;
 using System.Collections.Generic;
 

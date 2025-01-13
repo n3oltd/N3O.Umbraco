@@ -1,0 +1,110 @@
+﻿.header-container {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
+
+.umb-table-cell {
+    color: black;
+}
+
+.header-actions {
+    margin-left: auto;
+    margin-bottom: 20px;
+    flex-direction: row;
+}
+
+.number {
+    flex: 0.5 0.5 1%
+}
+
+.right-align {
+    justify-content: flex-end;
+}
+
+.n3o-table-bulk-actions {
+    display: flex;
+    flex-wrap: nowrap;
+    background-color: #3544b1;
+    border-color: #3544b1;
+    border-radius: 3px;
+    padding: 10px;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+.n3o-table-load-more-action {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.n3o-table-dropdown-button {
+    background-color: #3498DB;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.n3o-table-dropdown-button:hover, .n3o-table-dropdown-button:focus {
+    background-color: #2980B9;
+}
+
+.n3o-table-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.n3o-table-dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.n3o-table-dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.n3o-table-dropdown a:hover {
+    background-color: #ddd;
+}
+
+.umb-table-cell-action {
+    display: flex;
+    flex: 1 1 5%;
+    flex-flow: row nowrap;
+    margin: auto 0;
+    padding: 6px 16px;
+    position: relative;
+    text-align: left
+}
+
+.show {
+    display: block;
+}
+
+.n3o-table-actions-popover {
+    overflow: visible;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--uui-shadow-depth-3);
+    box-sizing: border-box;
+    background: white;
+    box-shadow: var(--uui-shadow-depth-3)
+}
+
+.n3o-table-actions-btn {
+    width: 50px;
+    user-select: none;
+    --uui-button-border-radius: 0
+}

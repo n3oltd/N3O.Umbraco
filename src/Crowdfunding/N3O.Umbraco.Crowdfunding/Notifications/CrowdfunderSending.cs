@@ -1,4 +1,6 @@
-﻿using N3O.Umbraco.Crm.Lookups;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
 using System;
@@ -15,10 +17,14 @@ namespace N3O.Umbraco.Crowdfunding.Notifications;
 public class CrowdfunderSending : INotificationAsyncHandler<SendingContentNotification> {
     private readonly Lazy<ILookups> _lookups;
     private readonly Lazy<ICrowdfundingUrlBuilder> _crowdfundingUrlBuilder;
+    private readonly Lazy<IWebHostEnvironment> _webHostEnvironment;
 
-    public CrowdfunderSending(Lazy<ILookups> lookups, Lazy<ICrowdfundingUrlBuilder> crowdfundingUrlBuilder) {
+    public CrowdfunderSending(Lazy<ILookups> lookups,
+                              Lazy<ICrowdfundingUrlBuilder> crowdfundingUrlBuilder,
+                              Lazy<IWebHostEnvironment> webHostEnvironment) {
         _lookups = lookups;
         _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
+        _webHostEnvironment = webHostEnvironment;
     }
     
     public Task HandleAsync(SendingContentNotification notification, CancellationToken cancellationToken) {
@@ -34,6 +40,7 @@ public class CrowdfunderSending : INotificationAsyncHandler<SendingContentNotifi
 
             foreach (var variant in notification.Content.Variants) {
                 ProcessStatus(variant);
+                ProcessCampaignUrlLabel(variant);
             }
         }
         
@@ -46,6 +53,15 @@ public class CrowdfunderSending : INotificationAsyncHandler<SendingContentNotifi
 
     private string GetCampaignUrl(ContentItemDisplay notificationContent) {
         return notificationContent.Key.IfNotNull(x => ViewCampaignPage.Url(_crowdfundingUrlBuilder.Value, x));
+    }
+    
+    private void ProcessCampaignUrlLabel(ContentVariantDisplay variant) {
+        if (_webHostEnvironment.Value.IsProduction()) {
+            var calculatedTab = variant.Tabs.Single(x => x.Alias.EqualsInvariant("crowdfunder/calculated"));
+            var campaignUrlProperty = GetProperty(calculatedTab, CrowdfundingConstants.Campaign.Properties.ProductionUrl);
+
+            calculatedTab.Properties = calculatedTab.Properties.Except(campaignUrlProperty);
+        }
     }
 
     private void ProcessStatus(ContentVariantDisplay variant) {
