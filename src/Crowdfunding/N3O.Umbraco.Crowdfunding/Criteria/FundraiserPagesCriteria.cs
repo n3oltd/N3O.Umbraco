@@ -1,5 +1,4 @@
 ﻿using N3O.Umbraco.Attributes;
-using CrowdfunderType = N3O.Umbraco.Crm.Lookups.CrowdfunderType;
 
 namespace N3O.Umbraco.Crowdfunding.Criteria;
 
