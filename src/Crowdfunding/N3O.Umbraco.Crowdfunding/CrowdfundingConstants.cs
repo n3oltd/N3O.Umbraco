@@ -137,6 +137,12 @@ public static class CrowdfundingConstants {
             public static readonly string Tags = "tags";
         }
     }
+
+    public static class Http {
+        public static class Headers {
+            public static readonly string ApiHeaderKey = "Crowdfunding-API-Key";
+        }
+    }
     
     public static class HeroImages {
         public static readonly string Alias = "crowdfundingHeroImage";

@@ -12,12 +12,11 @@ using System;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Services;
-using Umbraco.Cms.Web.Common.Filters;
 
 namespace N3O.Umbraco.Crowdfunding.Controllers;
 
 [ApiDocument(CrowdfundingConstants.ApiName)]
-[UmbracoMemberOrBackOfficeAuthorize]
+[UmbracoMemberOrApiKeyAuthorize]
 public partial class CrowdfundingController : ApiController {
     private readonly Lazy<IMediator> _mediator;
     private readonly Lazy<IContentService> _contentService;

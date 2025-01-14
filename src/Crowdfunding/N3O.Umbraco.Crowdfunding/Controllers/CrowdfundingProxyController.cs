@@ -14,8 +14,6 @@ namespace N3O.Umbraco.Crowdfunding.Controllers;
 
 [ApiDocument(CrowdfundingConstants.ProxyApiName)]
 public class CrowdfundingProxyController : ApiController {
-    private const string ApiHeaderKey = "Crowdfunding-API-Key";
-    
     private readonly Lazy<IContentLocator> _contentLocator;
     private readonly Lazy<IMediator> _mediator;
     
@@ -47,8 +45,9 @@ public class CrowdfundingProxyController : ApiController {
     }
 
     private bool IsAuthorized() {
-        var apiKeyHeader = Request.Headers[ApiHeaderKey];
+        var apiKeyHeader = Request.Headers[CrowdfundingConstants.Http.Headers.ApiHeaderKey];
         var apiKey = _contentLocator.Value.Single<SettingsContent>().ApiKey;
+        
         return apiKey == apiKeyHeader;
     }
 }
