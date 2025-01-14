@@ -1,5 +1,7 @@
-﻿using N3O.Umbraco.Content;
+﻿using Microsoft.AspNetCore.Http;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm.Lookups;
+using N3O.Umbraco.Crowdfunding.Attributes;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
 using System;
@@ -14,16 +16,19 @@ namespace N3O.Umbraco.Crowdfunding;
 
 public class FundraiserAccessControl : MembersAccessControl {
     private readonly ILookups _lookups;
-    private readonly OurBackofficeUserAccessor _backofficeUserAccessor;
+    private readonly IContentLocator _contentLocator;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public FundraiserAccessControl(IContentHelper contentHelper,
                                    IDataTypeService dataTypeService,
                                    ILookups lookups,
-                                   IMemberManager memberManager,
-                                   OurBackofficeUserAccessor backofficeUserAccessor)
+                                   IContentLocator contentLocator,
+                                   IHttpContextAccessor httpContextAccessor,
+                                   IMemberManager memberManager)
         : base(contentHelper, dataTypeService, memberManager) {
         _lookups = lookups;
-        _backofficeUserAccessor = backofficeUserAccessor;
+        _contentLocator = contentLocator;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     protected override async Task<bool> AllowEditAsync(ContentProperties contentProperties) {
@@ -37,7 +42,9 @@ public class FundraiserAccessControl : MembersAccessControl {
     }
 
     protected override async Task<bool> AllowEditAsync(IPublishedContent content) {
-        var canEdit = await base.AllowEditAsync(content) || _backofficeUserAccessor.IsLoggedIntoBackOffice();
+        var canEdit = await base.AllowEditAsync(content) ||
+                      UmbracoMemberOrApiKeyAuthorizeFilter.IsApiAuthorized(_contentLocator,
+                                                                           _httpContextAccessor.HttpContext?.Request);
         
         if (canEdit) {
             canEdit = CanEdit(() => content.Value<string>(CrowdfundingConstants.Crowdfunder.Properties.Status));

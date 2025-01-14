@@ -24,8 +24,11 @@ public class UmbracoMemberOrApiKeyAuthorizeFilter : IAsyncAuthorizationFilter {
         return Task.CompletedTask;
     }
     
-    private bool IsApiAuthorized(IContentLocator contentLocator, HttpRequest httpRequest) {
-        var apiKeyHeader = httpRequest.Headers[CrowdfundingConstants.Http.Headers.ApiHeaderKey];
+    public static bool IsApiAuthorized(IContentLocator contentLocator, HttpRequest httpRequest) {
+        var apiKeyHeader = httpRequest == null
+                               ? null
+                               : (string) httpRequest.Headers[CrowdfundingConstants.Http.Headers.ApiHeaderKey];
+        
         var apiKey = contentLocator.Single<SettingsContent>().ApiKey;
         
         return apiKey == apiKeyHeader;

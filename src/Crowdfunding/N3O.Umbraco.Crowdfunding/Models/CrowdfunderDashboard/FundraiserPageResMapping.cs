@@ -14,7 +14,7 @@ public class FundraiserPageResMapping : IMapDefinition {
     // Umbraco.Code.MapAll
     private void Map(Crowdfunder src, FundraiserPageRes dest, MapperContext ctx) {
         dest.Name = src.Name;
-        dest.OwnerName = src.OwnerName;
+        dest.Owner = src.OwnerName;
         dest.Url = src.Url;
         dest.Status = StaticLookups.GetAll<CrowdfunderStatus>().Single(x => x.Key == src.StatusKey);
     }

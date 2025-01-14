@@ -3,6 +3,8 @@ angular.module("umbraco")
         assetsService.loadCss("~/umbraco/lib/n3o-table/n3o-table.css");
 
         (async () => {
+            await initializePages();
+            
             $scope.actions = [
                 {
                     name: 'View Page',
@@ -12,13 +14,11 @@ angular.module("umbraco")
                     name: 'Edit Page',
                     onClick: async (item) => window.open(item.editUrl, '_blank').focus()
                 }
-            ]
-
-            await initializePages();
+            ];
         })();
 
         async function initializePages(currentPage) {
-            let environment = await getProductionEnvironment();
+            $scope.environment = await getProductionEnvironment();
 
             $scope.isLoading = true;
 
@@ -27,12 +27,12 @@ angular.module("umbraco")
                 currentPage: currentPage
             };
 
-            await fetch(`${environment.domain}/umbraco/api/crowdfundingProxy/pages`, {
+            await fetch(`${$scope.environment.domain}/umbraco/api/crowdfundingProxy/pages`, {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
                     "Content-Type": "application/json",
-                    "Crowdfunding-API-Key": environment.apiKey
+                    "Crowdfunding-API-Key": $scope.environment.apiKey
                 },
                 body: JSON.stringify(req)
             })
@@ -76,10 +76,10 @@ angular.module("umbraco")
                 let data = {
                     "id": pages[i].name,
                     "reference": pages[i].name,
-                    "ownerName": pages[i].ownerName,
+                    "owner": pages[i].owner,
                     "status": pages[i].status,
                     "url": getPreviewUrl(pages[i].url),
-                    "editUrl": pages[i].url
+                    "editUrl": getEditUrl(pages[i].url)
                 };
                 items.push(data);
             }
@@ -91,7 +91,7 @@ angular.module("umbraco")
             let options = {includeProperties: []};
 
             options.includeProperties.unshift({alias: "reference", header: "Name", canFilter: false});
-            options.includeProperties.push({alias: "ownerName", header: "Owner Name", canFilter: false});
+            options.includeProperties.push({alias: "owner", header: "Owner", canFilter: false});
             options.includeProperties.push({alias: "status", header: "Status", canFilter: false});
 
             return options;
@@ -111,6 +111,13 @@ angular.module("umbraco")
             return productionEnvironment[0];
         }
 
+        function getEditUrl(url) {
+            let newUrl = new URL(url);
+            newUrl.searchParams.append("Crowdfunding-API-Key", $scope.environment.apiKey);
+
+            return newUrl;
+        }
+        
         function getPreviewUrl(url) {
             let newUrl = new URL(url);
             newUrl.searchParams.append("preview", true);
