@@ -2,9 +2,10 @@
 using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Criteria;
 using N3O.Umbraco.Crowdfunding.Entities;
+using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Models;
+using N3O.Umbraco.Extensions;
 using NPoco;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,12 +18,9 @@ public partial class GetDashboardStatisticsHandler {
                                                 CrowdfunderType type,
                                                 DashboardStatisticsCriteria criteria,
                                                 CrowdfunderStatisticsRes res) {
-        var from = criteria.Period?.From?.ToDateTimeUnspecified();
-        var to = criteria.Period?.To?.ToDateTimeUnspecified();
-        
-        var topCrowdfunders = await GetTopCrowdfunderRowsAsync(db, type, from, to);
-        var activeCrowdfundersCount = await GetActiveCrowdfundersCountAsync(db, type, from, to);
-        var completedPercentage = await GetCompletedPercentageAsync(db, type, from, to);
+        var topCrowdfunders = await GetTopCrowdfunderRowsAsync(db, type, criteria);
+        var activeCrowdfundersCount = await GetActiveCrowdfundersCountAsync(db, type, criteria);
+        var completedPercentage = await GetCompletedPercentageAsync(db, type, criteria);
         
         res.Count = activeCrowdfundersCount;
         res.AveragePercentageComplete = completedPercentage;
@@ -36,14 +34,19 @@ public partial class GetDashboardStatisticsHandler {
 
     private async Task<int> GetActiveCrowdfundersCountAsync(IUmbracoDatabase db,
                                                             CrowdfunderType type,
-                                                            DateTime? from,
-                                                            DateTime? to) {
+                                                            DashboardStatisticsCriteria criteria) {
         var totalActiveCrowdfundersQuery = Sql.Builder
-                                           .Select($"COUNT(DISTINCT {nameof(CrowdfunderRevision.ContentKey)})")
-                                           .From($"{CrowdfundingConstants.Tables.CrowdfunderRevisions.Name}")
-                                           .Where($"{nameof(CrowdfunderRevision.Type)} = {(int) type.Key}")
-                                           .Append($"AND {nameof(CrowdfunderRevision.ActiveFrom)} <= '{to}'")
-                                           .Append($"AND ({nameof(CrowdfunderRevision.ActiveTo)} IS NULL OR {nameof(CrowdfunderRevision.ActiveTo)} >= '{from}')");
+                                              .Select($"COUNT(DISTINCT {nameof(CrowdfunderRevision.ContentKey)})")
+                                              .From($"{CrowdfundingConstants.Tables.CrowdfunderRevisions.Name}")
+                                              .Where($"{nameof(CrowdfunderRevision.Type)} = {(int) type.Key}")
+                                              .Append(criteria.Period.From.HasValue()
+                                                          ? $"AND {nameof(CrowdfunderRevision.ActiveFrom)} <= '{criteria.Period.To.GetValueOrThrow().ToYearMonthDayString()}'"
+                                                          : "")
+                                              .Append(criteria.Period.To.HasValue()
+                                                           ? $"AND ({nameof(CrowdfunderRevision.ActiveTo)} IS NULL OR {nameof(CrowdfunderRevision.ActiveTo)} >= '{criteria.Period.From.GetValueOrThrow().ToYearMonthDayString()}')"
+                                                           : "");
+        
+        LogQuery(totalActiveCrowdfundersQuery);
         
         var count = await db.ExecuteScalarAsync<int>(totalActiveCrowdfundersQuery);
         
@@ -52,8 +55,7 @@ public partial class GetDashboardStatisticsHandler {
 
     private async Task<IReadOnlyList<CrowdfunderRow>> GetTopCrowdfunderRowsAsync(IUmbracoDatabase db,
                                                                                  CrowdfunderType type,
-                                                                                 DateTime? from,
-                                                                                 DateTime? to) {
+                                                                                 DashboardStatisticsCriteria criteria) {
         var innerQuery = Sql.Builder
                             .Select($"{nameof(CrowdfunderRevision.ContentKey)} AS CrowdfunderRevision_ContentKey",
                                     $"{nameof(CrowdfunderRevision.Name)} AS CrowdfunderRevision_Name",
@@ -63,15 +65,17 @@ public partial class GetDashboardStatisticsHandler {
                                     $"ROW_NUMBER() OVER (PARTITION BY {nameof(CrowdfunderRevision.Id)} ORDER BY {nameof(CrowdfunderRevision.ContentRevision)} DESC) AS RowNum")
                             .From($"{CrowdfundingConstants.Tables.CrowdfunderRevisions.Name}")
                             .Where($"{nameof(CrowdfunderRevision.Type)} = {(int) type.Key}");
-        
+
         var sql = new Sql()
-                 .Select("TOP 10 CrowdfunderRevision_Name AS [Name], CrowdfunderRevision_GoalsTotalBase AS [GoalsTotal], SUM(BaseAmount + TaxReliefBaseAmount) AS [ContributionsTotal], CrowdfunderRevision_Url AS [Url]")
-                 .From($"{CrowdfundingConstants.Tables.Contributions.Name}")
-                 .InnerJoin($"({innerQuery.SQL}) AS FG")
-                 .On($"{nameof(Contribution.CrowdfunderId)} = CrowdfunderRevision_ContentKey")
-                 .Where($"RowNum = 1 AND CrowdfunderRevision_Type = {(int) type.Key} AND {nameof(Contribution.Date)} BETWEEN '{from}' AND '{to}'")
-                 .GroupBy("CrowdfunderRevision_Name", "CrowdfunderRevision_GoalsTotalBase", "CrowdfunderRevision_Url")
-                 .OrderBy("ContributionsTotal DESC");
+                  .Select("TOP 10 CrowdfunderRevision_Name AS [Name], CrowdfunderRevision_GoalsTotalBase AS [GoalsTotal], SUM(BaseAmount + TaxReliefBaseAmount) AS [ContributionsTotal], CrowdfunderRevision_Url AS [Url]")
+                  .From($"{CrowdfundingConstants.Tables.Contributions.Name}")
+                  .InnerJoin($"({innerQuery.SQL}) AS FG")
+                  .On($"{nameof(Contribution.CrowdfunderId)} = CrowdfunderRevision_ContentKey")
+                  .Where($"RowNum = 1 AND CrowdfunderRevision_Type = {(int) type.Key} AND {criteria.Period.FilterColumn(nameof(Contribution.Date))}")
+                  .GroupBy("CrowdfunderRevision_Name", "CrowdfunderRevision_GoalsTotalBase", "CrowdfunderRevision_Url")
+                  .OrderBy("ContributionsTotal DESC");
+
+        LogQuery(sql);
         
         var rows = await db.FetchAsync<CrowdfunderRow>(sql);
         
@@ -80,13 +84,17 @@ public partial class GetDashboardStatisticsHandler {
     
     private async Task<decimal> GetCompletedPercentageAsync(IUmbracoDatabase db,
                                                             CrowdfunderType type,
-                                                            DateTime? from,
-                                                            DateTime? to) {
+                                                            DashboardStatisticsCriteria criteria) {
         var latestRevisions = Sql.Builder
                                  .Select($"{nameof(CrowdfunderRevision.ContentKey)}, MAX({nameof(CrowdfunderRevision.ContentRevision)}) AS MaxRevision")
                                  .From($"{CrowdfundingConstants.Tables.CrowdfunderRevisions.Name}")
-                                 .Where($"{nameof(CrowdfunderRevision.Type)} = {(int) type.Key} AND {nameof(CrowdfunderRevision.ActiveFrom)} <= '{to}'")
-                                 .Append($"AND ({nameof(CrowdfunderRevision.ActiveTo)} IS NULL OR {nameof(CrowdfunderRevision.ActiveTo)} >= '{from}')")
+                                 .Where($"{nameof(CrowdfunderRevision.Type)} = {(int) type.Key}")
+                                 .Append(criteria.Period.From.HasValue()
+                                             ? $"AND {nameof(CrowdfunderRevision.ActiveFrom)} <= '{criteria.Period.To.GetValueOrThrow().ToYearMonthDayString()}'"
+                                             : "")
+                                 .Append(criteria.Period.To.HasValue()
+                                             ? $"AND ({nameof(CrowdfunderRevision.ActiveTo)} IS NULL OR {nameof(CrowdfunderRevision.ActiveTo)} >= '{criteria.Period.From.GetValueOrThrow().ToYearMonthDayString()}')"
+                                             : "")
                                  .GroupBy($"{nameof(CrowdfunderRevision.ContentKey)}");
         
         var crowdfunderGoalsSql = Sql.Builder
@@ -102,14 +110,16 @@ public partial class GetDashboardStatisticsHandler {
                                              .From($"{CrowdfundingConstants.Tables.Contributions.Name} C")
                                              .InnerJoin($"({latestRevisions.SQL}) AS LR")
                                              .On($"C.{nameof(Contribution.CrowdfunderId)} = LR.{nameof(CrowdfunderRevision.ContentKey)}")
-                                             .Where($"C.{nameof(Contribution.Date)} BETWEEN '{from}' AND '{to}'")
+                                             .Where(criteria.Period.FilterColumn($"C.{nameof(Contribution.Date)}"))
                                              .GroupBy($"C.{nameof(Contribution.CrowdfunderId)}");
-        
+
         var percentageCompletedSql = Sql.Builder
-                                      .Select("AVG(CASE WHEN CG.TotalGoals > 0 THEN (CC.TotalContributions / CG.TotalGoals) * 100 ELSE 0 END) AS AveragePercentageComplete")
-                                      .From($"({crowdfunderGoalsSql.SQL}) AS CG")
-                                      .InnerJoin($"({crowdfunderContributionsSql.SQL}) AS CC")
-                                      .On($"CG.{nameof(CrowdfunderRevision.ContentKey)} = CC.{nameof(Contribution.CrowdfunderId)}");
+                                        .Select("AVG(CASE WHEN CG.TotalGoals > 0 THEN (CC.TotalContributions / CG.TotalGoals) * 100 ELSE 0 END) AS AveragePercentageComplete")
+                                        .From($"({crowdfunderGoalsSql.SQL}) AS CG")
+                                        .InnerJoin($"({crowdfunderContributionsSql.SQL}) AS CC")
+                                        .On($"CG.{nameof(CrowdfunderRevision.ContentKey)} = CC.{nameof(Contribution.CrowdfunderId)}");
+        
+        LogQuery(percentageCompletedSql);
         
         var percentageComplete = await db.ExecuteScalarAsync<decimal>(percentageCompletedSql);
 

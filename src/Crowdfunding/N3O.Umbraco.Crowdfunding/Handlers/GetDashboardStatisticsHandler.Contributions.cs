@@ -1,6 +1,7 @@
 ﻿using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Crowdfunding.Criteria;
 using N3O.Umbraco.Crowdfunding.Entities;
+using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
@@ -17,10 +18,7 @@ public partial class GetDashboardStatisticsHandler {
     private async Task PopulateContributionsAsync(IUmbracoDatabase db,
                                                   DashboardStatisticsCriteria criteria,
                                                   DashboardStatisticsRes res) {
-        var from = criteria.Period?.From?.ToDateTimeUnspecified();
-        var to = criteria.Period?.To?.ToDateTimeUnspecified();
-        
-        var contributionRows = await GetContributionRowsAsync(db, from, to);
+        var contributionRows = await GetContributionRowsAsync(db, criteria);
         
         var dailyContributions = new List<DailyContributionStatisticsRes>();
         
@@ -37,7 +35,7 @@ public partial class GetDashboardStatisticsHandler {
         var totalCount = dailyContributions.Sum(x => x.Count);
         var averageAmount = totalCount > 0 ? totalAmount / totalCount : 0;
 
-        var donationStatistics = await GetDonationStatisticsAsync(db, from, to);
+        var donationStatistics = await GetDonationStatisticsAsync(db, criteria);
 
         res.Contributions = new ContributionStatisticsRes();
         res.Contributions.Count = totalCount;
@@ -50,14 +48,13 @@ public partial class GetDashboardStatisticsHandler {
     }
     
     private async Task<IReadOnlyList<ContributionStatisticsRow>> GetContributionRowsAsync(IUmbracoDatabase db,
-                                                                                          DateTime? from,
-                                                                                          DateTime? to) {
+                                                                                          DashboardStatisticsCriteria criteria) {
         var sqlQuery = Sql.Builder
                           .Select($"{nameof(Contribution.Date)} AS {nameof(ContributionStatisticsRow.Date)}")
                           .Append($", SUM({nameof(Contribution.BaseAmount)} + {nameof(Contribution.TaxReliefBaseAmount)}) AS {nameof(ContributionStatisticsRow.TotalAmount)}")
                           .Append($", COUNT(*) AS {nameof(ContributionStatisticsRow.Count)}")
                           .From($"{CrowdfundingConstants.Tables.Contributions.Name}")
-                          .Where($"{nameof(Contribution.Date)} BETWEEN '{from}' AND '{to}'")
+                          .Where(criteria.Period.FilterColumn(nameof(Contribution.Date)))
                           .GroupBy($"{nameof(Contribution.Date)}")
                           .OrderBy($"{nameof(Contribution.Date)}");
         
@@ -67,14 +64,15 @@ public partial class GetDashboardStatisticsHandler {
     }
     
     private async Task<DonationStatisticsRow> GetDonationStatisticsAsync(IUmbracoDatabase db,
-                                                                         DateTime? from,
-                                                                         DateTime? to) {
+                                                                         DashboardStatisticsCriteria criteria) {
         var sqlQuery = Sql.Builder
                           .Select($"COUNT(DISTINCT CASE WHEN {nameof(Contribution.GivingTypeId)} = '{GivingTypes.Donation.Id}' THEN {nameof(Contribution.Email)} END) AS {nameof(DonationStatisticsRow.SingleDonationsCount)}")
                           .Append($", COUNT(DISTINCT CASE WHEN {nameof(Contribution.GivingTypeId)} = '{GivingTypes.RegularGiving.Id}' THEN {nameof(Contribution.Email)} END) AS {nameof(DonationStatisticsRow.RegularDonationsCount)}")
                           .Append($", COUNT(DISTINCT {nameof(Contribution.Email)}) AS {nameof(DonationStatisticsRow.TotalDonationsCount)}")
                           .From($"{CrowdfundingConstants.Tables.Contributions.Name}")
-                          .Where($"{nameof(Contribution.Date)} BETWEEN '{from}' AND '{to}'");
+                          .Where(criteria.Period.FilterColumn(nameof(Contribution.Date)));
+        
+        LogQuery(sqlQuery);
         
         var donationsStatistics = await db.FetchAsync<DonationStatisticsRow>(sqlQuery);
 

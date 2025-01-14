@@ -1,6 +1,7 @@
 ﻿using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Crowdfunding.Criteria;
 using N3O.Umbraco.Crowdfunding.Entities;
+using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Models;
 using NPoco;
 using System.Collections.Generic;
@@ -31,16 +32,15 @@ public partial class GetDashboardStatisticsHandler {
 
     private async Task<IReadOnlyList<AllocationStatisticsRow>> GetAllocationRowsAsync(IUmbracoDatabase db,
                                                                                       DashboardStatisticsCriteria criteria) {
-        var from = criteria.Period?.From?.ToDateTimeUnspecified();
-        var to = criteria.Period?.To?.ToDateTimeUnspecified();
-        
         var sql = Sql.Builder
                      .Select($"TOP (5) {nameof(Contribution.AllocationSummary)} AS {nameof(AllocationStatisticsRow.AllocationSummary)}")
                      .Append($", SUM({nameof(Contribution.BaseAmount)} + {nameof(Contribution.TaxReliefBaseAmount)}) AS {nameof(AllocationStatisticsRow.TotalBaseIncome)}")
                      .From($"{CrowdfundingConstants.Tables.Contributions.Name}")
-                     .Where($"{nameof(Contribution.Date)} BETWEEN '{from}' AND '{to}'")
+                     .Where(criteria.Period.FilterColumn(nameof(Contribution.Date)))
                      .GroupBy($"{nameof(Contribution.AllocationSummary)}")
                      .OrderBy($"{nameof(AllocationStatisticsRow.TotalBaseIncome)} DESC");
+        
+        LogQuery(sql);
         
         var rows = await db.FetchAsync<AllocationStatisticsRow>(sql);
 
