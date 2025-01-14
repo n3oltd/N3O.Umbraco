@@ -20,7 +20,7 @@ public static class BackgroundJobExtensions {
     
     
     private static DispatchWebhookReq GetWebhookReq(Guid campaignId, string campaignUrl, string stagingBaseUrl) {
-        var webhookUrl = new Url(stagingBaseUrl);
+        var webhookUrl = new Url(stagingBaseUrl.TrimEnd('/'));
         webhookUrl.AppendPathSegment($"umbraco/api/{WebhooksConstants.ApiName}/{CrowdfundingConstants.Webhooks.HookIds.CampaignUrl}");
         webhookUrl.AppendPathSegment($"{campaignId}");
             

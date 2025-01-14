@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Crowdfunding.Attributes;
 using N3O.Umbraco.Crowdfunding.Queries;
 using N3O.Umbraco.Giving.Cart.Context;
 using N3O.Umbraco.Hosting;
@@ -16,7 +17,7 @@ using Umbraco.Cms.Web.Common.Filters;
 namespace N3O.Umbraco.Crowdfunding.Controllers;
 
 [ApiDocument(CrowdfundingConstants.ApiName)]
-[UmbracoMemberAuthorize]
+[UmbracoMemberOrBackOfficeAuthorize]
 public partial class CrowdfundingController : ApiController {
     private readonly Lazy<IMediator> _mediator;
     private readonly Lazy<IContentService> _contentService;
