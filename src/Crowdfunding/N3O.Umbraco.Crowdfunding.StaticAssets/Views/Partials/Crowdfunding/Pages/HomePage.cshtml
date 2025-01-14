@@ -10,11 +10,11 @@
     <div class="n3o-auto__container">
         <div class="n3o-spotlight__inner">
             <div class="n3o-spotlight__inner-title">
-                <h2 class="n3o-h2">@PartialText.Get("Featured Campaigns")</h2>
+                <h2 class="n3o-h2">@PartialText.Get("Campaigns")</h2>
             </div>
             
             <div class="n3o-spotlight__inner-row">
-                @foreach (var card in Model.FeaturedCampaigns) {
+                @foreach (var card in Model.ActiveCampaigns) {
                     @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Cards/CrowdfunderTallCard.cshtml", card)
                 }
             </div>

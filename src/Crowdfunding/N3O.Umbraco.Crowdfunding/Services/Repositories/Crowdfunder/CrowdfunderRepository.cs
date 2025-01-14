@@ -73,6 +73,12 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
 
         return crowdfunders;
     }
+    
+    public async Task<IReadOnlyList<Crowdfunder>> GetActiveCampaignsAsync(int? take = null) {
+        return await FetchCrowdfundersAsync(sql => sql.SelectTop("*", take),
+                                            sql => sql.Where($"{nameof(Crowdfunder.Type)} = {CrowdfunderTypes.Campaign.Key} AND {nameof(Crowdfunder.StatusKey)} = {CrowdfunderStatuses.Active.Key}"),
+                                            sql => sql.Append($"ORDER BY {nameof(Crowdfunder.CreatedAt)} DESC"));
+    }
 
     public async Task<IReadOnlyList<string>> GetActiveFundraiserTagsAsync() {
         var crowdfunders = await FetchCrowdfundersAsync(sql => sql.Select($"{nameof(Crowdfunder.Tags)}"),
@@ -102,12 +108,6 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
 
             return res;
         }
-    }
-
-    public async Task<IReadOnlyList<Crowdfunder>> GetFeaturedCampaignsAsync(int? take = null) {
-        return await FetchCrowdfundersAsync(sql => sql.SelectTop("*", take),
-                                            sql => sql.Where($"{nameof(Crowdfunder.Type)} = {CrowdfunderTypes.Campaign.Key} AND {nameof(Crowdfunder.StatusKey)} = {CrowdfunderStatuses.Active.Key}"),
-                                            sql => sql.Append($"ORDER BY {nameof(Crowdfunder.CreatedAt)} DESC"));
     }
 
     public async Task<IReadOnlyList<Crowdfunder>> GetNewFundraisersAsync(int? take = null) {

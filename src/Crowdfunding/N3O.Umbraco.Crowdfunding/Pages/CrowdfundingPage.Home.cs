@@ -42,7 +42,7 @@ public class HomePage : CrowdfundingPage {
 
     protected override async Task<ICrowdfundingViewModel> GetViewModelAsync(string crowdfundingPath,
                                                                             IReadOnlyDictionary<string, string> query) {
-        var featuredCampaigns = await _crowdfunderRepository.GetFeaturedCampaignsAsync();
+        var activeCampaigns = await _crowdfunderRepository.GetActiveCampaignsAsync();
         var almostCompleteFundraisers = await _crowdfunderRepository.GetAlmostCompleteFundraisersAsync(4);
         var newFundraisers = await _crowdfunderRepository.GetNewFundraisersAsync(4);
 
@@ -52,7 +52,7 @@ public class HomePage : CrowdfundingPage {
                                                      _lookups,
                                                      this,
                                                      query,
-                                                     featuredCampaigns,
+                                                     activeCampaigns,
                                                      almostCompleteFundraisers,
                                                      newFundraisers,
                                                      homepageTemplate);

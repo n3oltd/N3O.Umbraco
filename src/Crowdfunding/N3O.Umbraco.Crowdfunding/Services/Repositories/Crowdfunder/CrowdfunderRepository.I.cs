@@ -14,9 +14,9 @@ public interface ICrowdfunderRepository {
     Task<Crowdfunder> FindCrowdfunderByIdAsync(Guid id);
     Task<IReadOnlyList<Crowdfunder>> FindFundraisersAsync(string text);
     Task<IReadOnlyList<Crowdfunder>> FindFundraisersWithTagAsync(string tag);
+    Task<IReadOnlyList<Crowdfunder>> GetActiveCampaignsAsync(int? take = null);
     Task<IReadOnlyList<string>> GetActiveFundraiserTagsAsync();
     Task<IReadOnlyList<Crowdfunder>> GetAlmostCompleteFundraisersAsync(int? take = null);
-    Task<IReadOnlyList<Crowdfunder>> GetFeaturedCampaignsAsync(int? take = null);
     Task<IReadOnlyList<Crowdfunder>> GetNewFundraisersAsync(int? take = null);
     Task<Page<Crowdfunder>> GetCrowdfundersPageAsync(CrowdfunderType type, int currentPage, int itemsPerPage);
     Task RecalculateContributionsTotalAsync(Guid id);
