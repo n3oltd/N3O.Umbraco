@@ -33,7 +33,7 @@ public abstract class AccountManager : IAccountManager {
 
         var id = await CreateNewAccountAsync(account);
 
-        SelectAccount(id, null, null);
+        await SelectAccountAsync(id, null, null, null);
 
         return id;
     }
@@ -42,7 +42,7 @@ public abstract class AccountManager : IAccountManager {
         var res = await CheckCreatedAccountStatusAsync(accountId);
 
         if (res.HasValue()) {
-            SelectAccount(accountId, res.Reference, res.Token);
+            await SelectAccountAsync(accountId, res.Reference, res.Token, res.GetName(_formatter));
 
             AppendToCache(res);
 
@@ -72,7 +72,7 @@ public abstract class AccountManager : IAccountManager {
         
         await UpdateExistingAccountAsync(account);
         
-        SelectAccount(account.Id, account.Reference, account.GetToken(_formatter));
+        await SelectAccountAsync(account.Id, account.Reference, account.GetToken(_formatter), account.GetName(_formatter));
     }
 
     private void AppendToCache(AccountRes res) {
@@ -87,8 +87,15 @@ public abstract class AccountManager : IAccountManager {
         return email.ToLowerInvariant();
     }
 
-    private void SelectAccount(string accountId, string accountReference, string accountToken) {
+    private async Task SelectAccountAsync(string accountId,
+                                          string accountReference,
+                                          string accountToken,
+                                          string name) {
         _accountCookie.Set(accountId, accountReference, accountToken);
+
+        if (name.HasValue()) {
+            await SetMemberNameAsync(name);
+        }
     }
 
     private async Task VerifyAccountAccessAsync(string accountId) {
@@ -116,6 +123,16 @@ public abstract class AccountManager : IAccountManager {
         }
 
         return memberEmail;
+    }
+
+    private async Task SetMemberNameAsync(string accountName) {
+        var member = await _memberManager.GetCurrentMemberAsync();
+
+        if (member?.Name.EqualsInvariant(member.Email) == true) {
+            member.Name = accountName;
+
+            await _memberManager.UpdateAsync(member);
+        }
     }
 
     protected abstract Task<AccountRes> CheckCreatedAccountStatusAsync(string accountId);
