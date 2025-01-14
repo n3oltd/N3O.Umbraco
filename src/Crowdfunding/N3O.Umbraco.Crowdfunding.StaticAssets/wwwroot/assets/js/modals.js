@@ -4,9 +4,9 @@ function n3o_cdf_handleModalToggle() {
 
     document.querySelectorAll(".modallClose").forEach((e) => {
         e.addEventListener("click", function (x) {
-            console.log(x.target.dataset.modal);
             var ModalId = x.target.dataset.modal;
             document.querySelector("#" + ModalId).classList.remove("active");
+            body.classList.remove("active");
         });
     });
     
