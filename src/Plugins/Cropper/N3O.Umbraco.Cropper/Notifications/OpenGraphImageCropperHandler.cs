@@ -28,18 +28,34 @@ public abstract class OpenGraphImageCropperHandler : INotificationAsyncHandler<C
                 var cropperSource = croppedImage.GetUncroppedImage();
                 var crop = cropperSource.GetLargestCrop();
 
-                await _imageCropper.Value.CropAsync(CropDefinition,
+                var cropDefinition = GetCropDefinition(cropperSource);
+                
+                await _imageCropper.Value.CropAsync(cropDefinition,
                                                     crop,
                                                     cropperSource,
                                                     cancellationToken);
 
-                var imagePath = ImagePath.Get(cropperSource.MediaId, cropperSource.Filename, CropDefinition, crop);
+                var imagePath = ImagePath.Get(cropperSource.MediaId, cropperSource.Filename, cropDefinition, crop);
 
                 PopulateImagePath(content, imagePath);
             }
         }
     }
-    
+
+    private CropDefinition GetCropDefinition(CropperSource cropperSource) {
+        if (cropperSource.Width >= CropDefinition.Width &&
+            cropperSource.Height >= CropDefinition.Height) {
+            return CropDefinition;
+        } else {
+            return new CropDefinition {
+                Alias = CropDefinition.Alias,
+                Label = CropDefinition.Label,
+                Height = cropperSource.Height,
+                Width = cropperSource.Width
+            };
+        }
+    }
+
     protected abstract bool ShouldExecute(IContent content);
     protected abstract CroppedImage GetImage(ContentProperties contentProperties);
     protected abstract void PopulateImagePath(IContent content, string imagePath);
