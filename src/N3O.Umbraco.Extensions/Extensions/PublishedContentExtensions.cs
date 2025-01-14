@@ -1,15 +1,30 @@
+using Flurl;
+using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Extensions;
 
 public static class PublishedContentExtensions {
+    // TODO This is ugly, but is no different from what content.Url() call below is doing
+    private static IUrlBuilder UrlBuilder { get; } = StaticServiceProvider.Instance.GetRequiredService<IUrlBuilder>();
+    
+    // We need to do all of this as for background jobs Umbraco picks up the URL from the context and ends up
+    // resolving to localhost
     public static string AbsoluteUrl(this IPublishedContent content) {
-        return content.Url(mode: UrlMode.Absolute);
+        var rootUrl = UrlBuilder.Root();
+        var url = new Url(content.Url(mode: UrlMode.Absolute));
+
+        url.Host = rootUrl.Host;
+        url.Port = rootUrl.Port;
+
+        return url;
     }
     
     public static T As<T>(this IPublishedContent publishedContent) {
