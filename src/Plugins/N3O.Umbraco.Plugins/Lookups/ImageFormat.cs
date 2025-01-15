@@ -10,12 +10,14 @@ using System.Linq;
 namespace N3O.Umbraco.Plugins.Lookups;
 
 public class ImageFormat : Lookup {
-    public ImageFormat(string id, string extension, IImageEncoder encoder) : base(id) {
+    public ImageFormat(string id, string extension, string contentType, IImageEncoder encoder) : base(id) {
         Extension = extension;
+        ContentType = contentType;
         Encoder = encoder;
     }
     
     public string Extension { get; }
+    public string ContentType { get; }
     public IImageEncoder Encoder { get; }
     
     public static ImageFormat From(IImageFormat format) {
@@ -32,9 +34,9 @@ public class ImageFormat : Lookup {
 }
 
 public class ImageFormats : StaticLookupsCollection<ImageFormat> {
-    public static readonly ImageFormat Gif = new("gif", ".gif", new GifEncoder { SkipMetadata = true});
-    public static readonly ImageFormat Jpg = new("jpg", ".jpg", new JpegEncoder { SkipMetadata = true, Quality = 80 });
-    public static readonly ImageFormat Png = new("png", ".png", new PngEncoder { SkipMetadata = true, CompressionLevel = PngCompressionLevel.BestCompression });
+    public static readonly ImageFormat Gif = new("gif", ".gif", "image/gif", new GifEncoder { SkipMetadata = true});
+    public static readonly ImageFormat Jpg = new("jpg", ".jpg", "image/jpeg", new JpegEncoder { SkipMetadata = true, Quality = 80 });
+    public static readonly ImageFormat Png = new("png", ".png", "image/png", new PngEncoder { SkipMetadata = true, CompressionLevel = PngCompressionLevel.BestCompression });
     
     public static IEnumerable<ImageFormat> GetAllFormats() => StaticLookups.GetAll<ImageFormats, ImageFormat>().ToArray();
 }

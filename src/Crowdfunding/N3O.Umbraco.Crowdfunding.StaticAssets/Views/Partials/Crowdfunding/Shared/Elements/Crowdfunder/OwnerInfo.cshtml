@@ -8,16 +8,6 @@
 
 <div class="n3o-auto__container">
     <div class="n3o-hero__inner cov">
-        @if (Model.EditMode()) {
-            <div class="n3o-campaign__edit modallBtn" n3o-editor="@(Model, PropertyTypes.Cropper, nameof(Model.Content.BackgroundImage))">
-                <svg>
-                    <use xlink:href="#imagePlus"></use>
-                </svg>
-                
-                <b>@PartialText.Get("Edit Cover Image")</b>
-            </div>
-        }
-        
         <div class="n3o-account sm">
             <div class="n3o-account__main">
                 <div class="n3o-account__info">
