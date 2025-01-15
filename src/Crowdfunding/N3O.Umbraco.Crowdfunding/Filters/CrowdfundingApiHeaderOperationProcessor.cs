@@ -14,7 +14,6 @@ public class CrowdfundingApiHeaderOperationProcessor : IOperationProcessor {
                 Type = NJsonSchema.JsonObjectType.String,
                 IsRequired = false
             });
-
         }
         
         return true;
