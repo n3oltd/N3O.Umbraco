@@ -20,10 +20,12 @@ type ImageUploaderProps = {
   aspectRatio: number,
   uploadUrl: string,
   elementId: string,
+  onUploadsComplete?: () => void,
   hieght?: number,
   crop?: any,
-  openEditor?: boolean,
-  dataConfig?: Record<string, any>
+  dataConfig?: Record<string, any>,
+  hideUploadButton?: boolean
+
 }
 
 const handleCrop = event => {
@@ -48,11 +50,12 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   setUppyInstance,
   uploadUrl,
   minFiles = 1,
-  openEditor = true,
   elementId = 'uppy',
   hieght = 550,
   dataConfig,
-  onFileRemove
+  onFileRemove,
+  onUploadsComplete,
+  hideUploadButton=  false
 }) => {
 
   const filesCropInfo = React.useRef<Array<{file?: any, crop?: any, orignalCrop?: any}>>([]);
@@ -131,6 +134,12 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
       const body = response.body as unknown;
       const cropInfo = filesCropInfo.current.find(f => file?.id === f.file.id)
       onFileUpload(body as string, file?.id, cropInfo?.crop || file?.crop)
+    })
+
+    uppy.on('complete', (response) => {
+        if (onUploadsComplete && response.failed?.length === 0) {
+            onUploadsComplete()
+        }
     });
 
     uppy.on("file-added", e => {
@@ -193,11 +202,13 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   
   return <>
     <ReactDashboard 
-      autoOpen={openEditor ? 'imageEditor' :  null}
-      uppy={uppy}
-      height={hieght} 
-      id={elementId}
-      doneButtonHandler={null}
-      proudlyDisplayPoweredByUppy={false}/>
+        autoOpen={'imageEditor'}
+        uppy={uppy}
+        height={hieght}
+        id={elementId}
+        doneButtonHandler={null}
+        proudlyDisplayPoweredByUppy={false}
+        hideUploadButton={hideUploadButton}
+   />
   </>
 }

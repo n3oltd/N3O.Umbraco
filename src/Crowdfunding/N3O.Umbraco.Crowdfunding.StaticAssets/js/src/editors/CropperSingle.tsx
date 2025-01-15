@@ -14,6 +14,7 @@ import { loadingToast, updatingToast } from "../helpers/toaster";
 import { _client } from "../common/cfClient";
 import { HostURL, ImageUploadStoragePath } from "../common/constants";
 import { EditorProps } from "./types/EditorProps";
+import { getCrowdfundingCookie } from "../common/cookie";
 
 export const CropperSingle: React.FC<EditorProps> = ({
   open,
@@ -35,13 +36,13 @@ export const CropperSingle: React.FC<EditorProps> = ({
 
   const {pageId} = usePageData();
 
-  const {runAsync: loadPropertyValue, data: dataRepsonse, loading} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId as string, propAlias), {
+  const {runAsync: loadPropertyValue, data: dataRepsonse, loading} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId as string, propAlias, getCrowdfundingCookie()), {
     manual: true,
     ready: open && !!propAlias,
     onSuccess: data => onFileLoadSuccess(data?.cropper)
   });
 
-  const {runAsync: updateProperty, loading: updating} = useRequest((req: ContentPropertyReq, pageId: string) => _client.updateProperty(pageId, req), {
+  const {runAsync: updateProperty, loading: updating} = useRequest((req: ContentPropertyReq, pageId: string) => _client.updateProperty(pageId, getCrowdfundingCookie(), req), {
     manual: true,
     onError(e) {
       toast.error(e.message)

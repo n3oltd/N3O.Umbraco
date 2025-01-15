@@ -16,6 +16,7 @@ import { EditorProps } from './types/EditorProps';
 import { ImageUploadStoragePath, HostURL } from '../common/constants';
 
 import './Gallery.css';
+import { getCrowdfundingCookie } from '../common/cookie';
 
 export const Gallery: React.FC<EditorProps> = ({
   open,
@@ -24,9 +25,9 @@ export const Gallery: React.FC<EditorProps> = ({
 }) => {
   
   const [filesToUplaod, setFiles] = React.useState<Array<{
-    crop: any,
-    token: string,
-    id: string
+    crop?: any,
+    token?: string,
+    id?: string
   }>>([]);
 
   const state = useReactive<{
@@ -41,7 +42,7 @@ export const Gallery: React.FC<EditorProps> = ({
 
   const {pageId} = usePageData();
 
-  const {runAsync: loadPropertyValue, data: dataResponse, loading} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias), {
+  const {runAsync: loadPropertyValue, data: dataResponse, loading} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias, getCrowdfundingCookie()), {
     manual: true,
     ready: open && !!propAlias,
     onSuccess: data => {
@@ -52,7 +53,7 @@ export const Gallery: React.FC<EditorProps> = ({
     }
   });
 
-  const {runAsync: updateProperty,} = useRequest((req: ContentPropertyReq, pageId: string) => _client.updateProperty(pageId, req), {
+  const {runAsync: updateProperty,} = useRequest((req: ContentPropertyReq, pageId: string) => _client.updateProperty(pageId, getCrowdfundingCookie(),req), {
     manual: true,
     onSuccess: () => {
       onClose();
@@ -71,12 +72,12 @@ export const Gallery: React.FC<EditorProps> = ({
       return 
     }
 
-    const uploadedFiles = state.propertyRes?.nested?.items?.filter(i => i.contentTypeAlias?.includes('HeroImage'))?.flatMap(i => i.properties?.map(p => p.cropper?.image)) || [];
+      const uploadedFiles = state.propertyRes?.nested?.items?.filter(i => i.contentTypeAlias?.includes('HeroImage'))?.flatMap(i => i.properties?.map(p => ({ image: p.cropper?.image, storageToken: p.cropper?.storageToken }))) || [];
 
     try {
 
       await Promise.all(uploadedFiles.map(async f => {
-        const response = await fetch(`${HostURL}${f?.src}`);
+        const response = await fetch(`${HostURL}${f?.image?.src}`);
     
         if (!response.ok) {
           return
@@ -85,16 +86,25 @@ export const Gallery: React.FC<EditorProps> = ({
         const blob = await response.blob();
 
         const file = {
-            id: f?.mediaId,
-            name: f?.filename as string,
+            id: f?.image?.mediaId,
+            name: f?.image?.filename as string,
             type: blob.type,
             data: blob,
         }
 
         const fileId = state.uppy?.addFile(file);
+        setFiles(prev => [...prev, { crop: f?.image?.crops ? f?.image?.crops[0]: {}, token: f?.storageToken, id: fileId }])
         state.uppy?.setFileState(fileId as string, {
-          aspectRatioApplied: true,
-          crop: (f?.crops && f?.crops[0]) || {}} as any);
+            aspectRatioApplied: true,
+            storageToken: f?.storageToken,
+            progress: {
+                uploadComplete: true,
+                uploadStarted: true,
+                percentage: 100,
+            },
+            isUploaded: true,
+            crop: (f?.image?.crops && f?.image?.crops[0]) || {}
+        } as any);
       }))
         
     } catch (error) {
@@ -103,7 +113,7 @@ export const Gallery: React.FC<EditorProps> = ({
   }
 
   const saveContent = async () => {
-
+    
    const imagesSchema =  state.propertyRes?.nested?.schema?.items?.find(c => c.contentTypeAlias?.includes('HeroImage'));    
    const videoUrlSchema =  state.propertyRes?.nested?.schema?.items?.find(c => c.contentTypeAlias?.includes('Url'));
 
@@ -128,6 +138,25 @@ export const Gallery: React.FC<EditorProps> = ({
     
     return;
    }
+
+   const transformCrop = crop => {
+       if ('bottomLeft' in crop) {
+           return crop
+       }
+
+       const transformedCrop = {
+           bottomLeft: {
+               x: crop.x,
+               y: crop.y
+           },
+           topRight: {
+               x: crop.x + crop.width,
+               y: crop.y + crop.height
+           }
+       }
+
+       return transformedCrop;
+   }
    
    const nestedReq = filesToUplaod.map(file => {
     const req : NestedItemReq = {
@@ -141,7 +170,7 @@ export const Gallery: React.FC<EditorProps> = ({
             storageToken: file.token,
             shape: CropShape.Rectangle,
             rectangle: {
-              ...file.crop
+                ...transformCrop(file.crop)
             } 
           }
         }
@@ -186,7 +215,17 @@ export const Gallery: React.FC<EditorProps> = ({
     }
   }
 
+const uploadImages = async () => {
+    await state.uppy?.upload()
+}
+
+  const handleClose = () => {
+      onClose();
+      setFiles([]);
+  }
+
   const handleUplodedFile = React.useCallback((token: string, id, crop) => {
+      
     setFiles(prev => [...prev, {crop, token, id}])
   }, [setFiles]);
 
@@ -202,13 +241,15 @@ export const Gallery: React.FC<EditorProps> = ({
 
   return <>
     <Modal
-      id="cropper-nested-edit"
-      isOpen={open}
-      onOk={saveContent}
-      onClose={onClose}
-      oKButtonProps={{
+     id="cropper-nested-edit"
+     isOpen={open}
+     onOk={uploadImages}
+     onClose={handleClose}
+     oKButtonProps={{
         disabled: loading
-      }}
+     }}
+     okText={window.themeConfig.text.crowdfunding.upload }
+     closeText={window.themeConfig.text.crowdfunding.close}
     >
         {loading ? <p className="n3o-p">{window.themeConfig.text.crowdfunding.apiLoading}</p> : <>
         <h3 className="n3o-h3">{dataResponse?.nested?.configuration?.description}</h3>
@@ -220,7 +261,7 @@ export const Gallery: React.FC<EditorProps> = ({
           minFiles={1}
           elementId='campaign-cover'
           uploadUrl={`${HostURL}${ImageUploadStoragePath}`}
-          openEditor={!state.propertyRes?.nested?.items?.length}
+          hideUploadButton={true}
           dataConfig={{
             width: (dataResponse?.nested?.configuration as any)?.rectangle?.width,
             height: (dataResponse?.nested?.configuration as any)?.rectangle?.height
@@ -230,7 +271,7 @@ export const Gallery: React.FC<EditorProps> = ({
               return prevFiles.filter(f => f.id !== file?.id)
              })
           }}
-
+          onUploadsComplete={saveContent}
         />
         </>}
 

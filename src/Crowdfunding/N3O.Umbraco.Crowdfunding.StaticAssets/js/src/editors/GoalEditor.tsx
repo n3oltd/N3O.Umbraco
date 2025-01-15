@@ -13,6 +13,7 @@ import { applyPricingRule, getMinimunAmount, selectFunc } from "@/helpers/goal.h
 import { FormSchema, GoalPricingRef, GoalSchema } from "./types/goalForm";
 import { EditorProps } from "./types/EditorProps"
 import { loadingToast, updatingToast } from "@/helpers/toaster";
+import { getCrowdfundingCookie } from "../common/cookie";
 
 export const GoalEditor: React.FC<EditorProps> = ({
   open,
@@ -35,11 +36,11 @@ export const GoalEditor: React.FC<EditorProps> = ({
     name: "goals",
   });
 
-  const {loading, runAsync, data: goals} = useRequest((pageId) => _client.getFundraiserGoals(pageId), {
+  const {loading, runAsync, data: goals} = useRequest((pageId) => _client.getFundraiserGoals(pageId, getCrowdfundingCookie()), {
     manual: true
   })
   
-  const {loading: updating, runAsync: updateGoals, error} = useRequest((pageId, gaols) => _client.updateFundraiserGoals(pageId, gaols), {
+  const {loading: updating, runAsync: updateGoals, error} = useRequest((pageId, gaols) => _client.updateFundraiserGoals(pageId, getCrowdfundingCookie(), gaols), {
     manual: true,
     onSuccess:() => {
       onClose();

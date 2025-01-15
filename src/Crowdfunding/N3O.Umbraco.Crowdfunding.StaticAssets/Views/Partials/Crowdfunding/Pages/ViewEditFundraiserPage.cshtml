@@ -20,19 +20,19 @@
     </div>
 
     <script>
-        document.addEventListener("click", handler, true);
+         document.addEventListener("click", handler, true);
 
-        function handler(e) {
-            e.stopPropagation();
-            e.preventDefault();
-        }
+         function handler(e) {
+             e.stopPropagation();
+             e.preventDefault();
+         }
     </script>
 }
 
 @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Crowdfunder.cshtml", Model)
 
 <script type="text/javascript">
-        const n3o_cdf_pageApi = (() => {
+    const n3o_cdf_pageApi = (() => {
         const activatePage = async pageId => {
             
             try {
@@ -69,6 +69,27 @@
         };
     })();
 
+    (() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const crowdfundingApiKey = urlParams.get('Crowdfunding-API-Key');
+        const cookieName = 'Crowdfunding-API-Key';
+
+        if (!crowdfundingApiKey) {
+            return;
+        }
+
+        const existingCookie = document.cookie
+            .split('; ')
+            .find(row => row.startsWith(`${cookieName}=`))
+            ?.split('=')[1];
+
+        if (existingCookie === crowdfundingApiKey) {
+            return;
+        }
+
+        document.cookie = `${cookieName}=${crowdfundingApiKey}; path=/;`;
+        window.location.reload();
+    })();
 
     (() => {
         const pageIdElm = document.querySelector('[data-page-id]');
@@ -80,7 +101,7 @@
         const pageId = pageIdElm.dataset.pageId;
 
         const handlePageActivation = () => {
-            const activateButton = document.getElementById('n3o-btn-banner-activate');
+           const activateButton = document.getElementById('n3o-btn-banner-activate');
 
            if (activateButton) {
                activateButton.addEventListener('click', async () => {
@@ -115,7 +136,7 @@
             }
          }
 
-         const handleOverDonation = () => {
+        const handleOverDonation = () => {
             const resolveButton = document.getElementById('n3o-unallocated-resolve');
 
             if (resolveButton) {
@@ -143,4 +164,5 @@
         handlePreviewPage();
 
     })();
+
 </script>
