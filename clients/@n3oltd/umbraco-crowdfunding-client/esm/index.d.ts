@@ -5,32 +5,30 @@ export declare class CrowdfundingClient {
     constructor(baseUrl?: string, http?: {
         fetch(url: RequestInfo, init?: RequestInit): Promise<Response>;
     });
-    getCampaignGoalOptions(campaignId: string, goalOptionId: string): Promise<GoalOptionRes>;
+    getCampaignGoalOptions(campaignId: string, goalOptionId: string, crowdfunding_API_Key: string | undefined): Promise<GoalOptionRes>;
     protected processGetCampaignGoalOptions(response: Response): Promise<GoalOptionRes>;
-    addToCart(crowdfundingReq: CrowdfundingCartReq): Promise<void>;
+    addToCart(crowdfunding_API_Key: string | undefined, crowdfundingReq: CrowdfundingCartReq): Promise<void>;
     protected processAddToCart(response: Response): Promise<void>;
-    getContentPropertyValue(contentId: string, propertyAlias: string): Promise<ContentPropertyValueRes>;
+    getContentPropertyValue(contentId: string, propertyAlias: string, crowdfunding_API_Key: string | undefined): Promise<ContentPropertyValueRes>;
     protected processGetContentPropertyValue(response: Response): Promise<ContentPropertyValueRes>;
-    getNestedPropertySchema(contentId: string, propertyAlias: string): Promise<NestedSchemaRes>;
+    getNestedPropertySchema(contentId: string, propertyAlias: string, crowdfunding_API_Key: string | undefined): Promise<NestedSchemaRes>;
     protected processGetNestedPropertySchema(response: Response): Promise<NestedSchemaRes>;
-    updateProperty(contentId: string, req: ContentPropertyReq): Promise<void>;
+    updateProperty(contentId: string, crowdfunding_API_Key: string | undefined, req: ContentPropertyReq): Promise<void>;
     protected processUpdateProperty(response: Response): Promise<void>;
-    suggestSlug(name: string | null | undefined): Promise<string>;
+    suggestSlug(name: string | null | undefined, crowdfunding_API_Key: string | undefined): Promise<string>;
     protected processSuggestSlug(response: Response): Promise<string>;
-    activateFundraiser(fundraiserId: string): Promise<void>;
+    activateFundraiser(fundraiserId: string, crowdfunding_API_Key: string | undefined): Promise<void>;
     protected processActivateFundraiser(response: Response): Promise<void>;
-    createFundraiser(req: CreateFundraiserReq): Promise<string>;
+    createFundraiser(crowdfunding_API_Key: string | undefined, req: CreateFundraiserReq): Promise<string>;
     protected processCreateFundraiser(response: Response): Promise<string>;
-    deactivateFundraiser(fundraiserId: string): Promise<void>;
+    deactivateFundraiser(fundraiserId: string, crowdfunding_API_Key: string | undefined): Promise<void>;
     protected processDeactivateFundraiser(response: Response): Promise<void>;
-    getFundraiserGoals(fundraiserId: string): Promise<FundraiserGoalsRes>;
+    getFundraiserGoals(fundraiserId: string, crowdfunding_API_Key: string | undefined): Promise<FundraiserGoalsRes>;
     protected processGetFundraiserGoals(response: Response): Promise<FundraiserGoalsRes>;
-    updateFundraiserGoals(fundraiserId: string, req: FundraiserGoalsReq): Promise<void>;
+    updateFundraiserGoals(fundraiserId: string, crowdfunding_API_Key: string | undefined, req: FundraiserGoalsReq): Promise<void>;
     protected processUpdateFundraiserGoals(response: Response): Promise<void>;
-    getPropertyTypes(): Promise<LookupRes[]>;
+    getPropertyTypes(crowdfunding_API_Key: string | undefined): Promise<LookupRes[]>;
     protected processGetPropertyTypes(response: Response): Promise<LookupRes[]>;
-    getDashboardStatistics(req: DashboardStatisticsCriteria): Promise<DashboardStatisticsRes>;
-    protected processGetDashboardStatistics(response: Response): Promise<DashboardStatisticsRes>;
 }
 export interface GoalOptionRes {
     id?: string | undefined;
@@ -205,6 +203,7 @@ export interface BooleanConfigurationRes {
 }
 export interface CropperValueRes {
     image?: CropperSource | undefined;
+    storageToken?: string | undefined;
     configuration?: CropperConfigurationRes | undefined;
 }
 export interface CropperSource {
@@ -221,6 +220,17 @@ export interface Crop {
     y?: number;
     width?: number;
     height?: number;
+}
+export interface ByteSize {
+    bits?: number;
+    bytes?: number;
+    kilobytes?: number;
+    megabytes?: number;
+    gigabytes?: number;
+    terabytes?: number;
+    largestWholeNumberSymbol?: string | undefined;
+    largestWholeNumberFullWord?: string | undefined;
+    largestWholeNumberValue?: number;
 }
 export interface CropperConfigurationRes {
     description?: string | undefined;
@@ -320,17 +330,6 @@ export interface CropperValueReq {
     shape?: CropShape | undefined;
     circle?: CircleCropReq | undefined;
     rectangle?: RectangleCropReq | undefined;
-}
-export interface ByteSize {
-    bits?: number;
-    bytes?: number;
-    kilobytes?: number;
-    megabytes?: number;
-    gigabytes?: number;
-    terabytes?: number;
-    largestWholeNumberSymbol?: string | undefined;
-    largestWholeNumberFullWord?: string | undefined;
-    largestWholeNumberValue?: number;
 }
 /** One of 'circle', 'rectangle' */
 export declare enum CropShape {
@@ -437,65 +436,6 @@ export interface FeedbackCustomFieldRes {
 }
 export interface LookupRes {
     id?: string | undefined;
-}
-export interface DashboardStatisticsRes {
-    baseCurrency?: CurrencyRes | undefined;
-    contributions?: ContributionStatisticsRes | undefined;
-    allocations?: AllocationStatisticsRes | undefined;
-    campaigns?: CampaignStatisticsRes | undefined;
-    fundraisers?: FundraiserStatisticsRes | undefined;
-}
-export interface ContributionStatisticsRes {
-    total?: MoneyRes | undefined;
-    average?: MoneyRes | undefined;
-    count?: number;
-    supportersCount?: number;
-    singleDonationsCount?: number;
-    regularDonationsCount?: number;
-    daily?: DailyContributionStatisticsRes[] | undefined;
-}
-export interface DailyContributionStatisticsRes {
-    date?: string;
-    total?: MoneyRes | undefined;
-    count?: number;
-}
-export interface AllocationStatisticsRes {
-    topItems?: AllocationStatisticsItemRes[] | undefined;
-}
-export interface AllocationStatisticsItemRes {
-    summary?: string | undefined;
-    total?: MoneyRes | undefined;
-}
-export interface CampaignStatisticsRes {
-    count?: number;
-    averagePercentageComplete?: number;
-    topItems?: CrowdfunderStatisticsItemRes[] | undefined;
-}
-export interface CrowdfunderStatisticsItemRes {
-    name?: string | undefined;
-    goalsTotal?: MoneyRes | undefined;
-    contributionsTotal?: MoneyRes | undefined;
-    url?: string | undefined;
-}
-export interface FundraiserStatisticsRes {
-    count?: number;
-    averagePercentageComplete?: number;
-    topItems?: CrowdfunderStatisticsItemRes[] | undefined;
-    activeCount?: number;
-    newCount?: number;
-    completedCount?: number;
-    byCampaign?: FundraiserByCampaignStatisticsRes[] | undefined;
-}
-export interface FundraiserByCampaignStatisticsRes {
-    campaignName?: string | undefined;
-    count?: number;
-}
-export interface DashboardStatisticsCriteria {
-    period?: RangeOfNullableLocalDate | undefined;
-}
-export interface RangeOfNullableLocalDate {
-    from?: string | undefined;
-    to?: string | undefined;
 }
 export declare class ApiException extends Error {
     message: string;
