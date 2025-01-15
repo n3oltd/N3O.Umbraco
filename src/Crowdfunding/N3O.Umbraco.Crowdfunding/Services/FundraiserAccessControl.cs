@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm.Lookups;
-using N3O.Umbraco.Crowdfunding.Attributes;
+using N3O.Umbraco.Crowdfunding.Hosting;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
 using System;

@@ -7,7 +7,7 @@ using N3O.Umbraco.Crowdfunding.Content.Settings;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Security;
 
-namespace N3O.Umbraco.Crowdfunding.Attributes;
+namespace N3O.Umbraco.Crowdfunding.Hosting;
 
 public class UmbracoMemberOrApiKeyAuthorizeFilter : IAsyncAuthorizationFilter {
     public Task OnAuthorizationAsync(AuthorizationFilterContext context) {

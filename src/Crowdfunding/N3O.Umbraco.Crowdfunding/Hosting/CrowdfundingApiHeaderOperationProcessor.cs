@@ -3,7 +3,7 @@ using NSwag;
 using NSwag.Generation.Processors;
 using NSwag.Generation.Processors.Contexts;
 
-namespace N3O.Umbraco.Crowdfunding.Attributes;
+namespace N3O.Umbraco.Crowdfunding.Hosting;
 
 public class CrowdfundingApiHeaderOperationProcessor : IOperationProcessor {
     public bool Process(OperationProcessorContext context) {
