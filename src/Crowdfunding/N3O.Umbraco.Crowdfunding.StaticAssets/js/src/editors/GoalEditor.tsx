@@ -9,6 +9,7 @@ import { Modal } from "./common/Modal"
 
 import { usePageData } from "@/hooks/usePageData";
 import { _client } from "@/common/cfClient";
+import { getCrowdfundingCookie } from "@/common/cookie"; 
 import { applyPricingRule, getMinimunAmount, selectFunc } from "@/helpers/goal.helpers";
 import { FormSchema, GoalPricingRef, GoalSchema } from "./types/goalForm";
 import { EditorProps } from "./types/EditorProps"
@@ -35,11 +36,11 @@ export const GoalEditor: React.FC<EditorProps> = ({
     name: "goals",
   });
 
-  const {loading, runAsync, data: goals} = useRequest((pageId) => _client.getFundraiserGoals(pageId), {
+    const { loading, runAsync, data: goals } = useRequest((pageId) => _client.getFundraiserGoals(pageId, getCrowdfundingCookie()), {
     manual: true
   })
   
-  const {loading: updating, runAsync: updateGoals, error} = useRequest((pageId, gaols) => _client.updateFundraiserGoals(pageId, gaols), {
+    const { loading: updating, runAsync: updateGoals, error } = useRequest((pageId, gaols) => _client.updateFundraiserGoals(pageId, getCrowdfundingCookie(), gaols), {
     manual: true,
     onSuccess:() => {
       onClose();

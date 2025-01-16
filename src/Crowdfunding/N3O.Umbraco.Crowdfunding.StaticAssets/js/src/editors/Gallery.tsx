@@ -12,8 +12,9 @@ import { usePageData } from '../hooks/usePageData';
 
 import { _client } from '../common/cfClient';
 import { loadingToast, updatingToast } from '../helpers/toaster';
-import { EditorProps } from './types/EditorProps';
 import { ImageUploadStoragePath, HostURL } from '../common/constants';
+import { getCrowdfundingCookie } from '../common/cookie';
+import { EditorProps } from './types/EditorProps';
 
 import './Gallery.css';
 
@@ -41,7 +42,7 @@ export const Gallery: React.FC<EditorProps> = ({
 
   const {pageId} = usePageData();
 
-  const {runAsync: loadPropertyValue, data: dataResponse, loading} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias), {
+    const { runAsync: loadPropertyValue, data: dataResponse, loading } = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias, getCrowdfundingCookie()), {
     manual: true,
     ready: open && !!propAlias,
     onSuccess: data => {
@@ -52,7 +53,7 @@ export const Gallery: React.FC<EditorProps> = ({
     }
   });
 
-  const {runAsync: updateProperty,} = useRequest((req: ContentPropertyReq, pageId: string) => _client.updateProperty(pageId, req), {
+    const { runAsync: updateProperty, } = useRequest((req: ContentPropertyReq, pageId: string) => _client.updateProperty(pageId, getCrowdfundingCookie(), req), {
     manual: true,
     onSuccess: () => {
       onClose();

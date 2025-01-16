@@ -12,6 +12,7 @@ import { loadingToast, updatingToast } from "../helpers/toaster";
 import { usePageData } from "../hooks/usePageData";
 
 import { _client } from "../common/cfClient";
+import { getCrowdfundingCookie } from "../common/cookie";
 import { EditorProps } from "./types/EditorProps";
 
 import './RichTextEditor.css'
@@ -27,7 +28,7 @@ export const RichTextEditor: React.FC<EditorProps> = ({
   const {pageId} = usePageData();
   const [editorContent, setEditorContent] =  React.useState<string>('');
 
-  const {runAsync: loadPropertyValue, data: dataResponse, loading} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias), {
+    const { runAsync: loadPropertyValue, data: dataResponse, loading } = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias, getCrowdfundingCookie()), {
     manual: true,
     ready: open && !!propAlias,
     onSuccess: data => {
@@ -36,7 +37,7 @@ export const RichTextEditor: React.FC<EditorProps> = ({
     }
   });
 
-  const {runAsync: updateProperty, loading: updating} = useRequest((req: ContentPropertyReq, pageId) => _client.updateProperty(pageId, req), {
+    const { runAsync: updateProperty, loading: updating } = useRequest((req: ContentPropertyReq, pageId) => _client.updateProperty(pageId, getCrowdfundingCookie(), req), {
     manual: true,
     onSuccess: () => {
       onClose();

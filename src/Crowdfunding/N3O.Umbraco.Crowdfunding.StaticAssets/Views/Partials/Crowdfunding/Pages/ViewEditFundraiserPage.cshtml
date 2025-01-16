@@ -32,7 +32,7 @@
 @Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Elements/Crowdfunder.cshtml", Model)
 
 <script type="text/javascript">
-        const n3o_cdf_pageApi = (() => {
+    const n3o_cdf_pageApi = (() => {
         const activatePage = async pageId => {
             
             try {
@@ -67,6 +67,24 @@
             activatePage,
             deactivatePage
         };
+    })();
+
+    (() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const crowdfundingApiKey = urlParams.get('Crowdfunding-API-Key');
+        const cookieName = 'Crowdfunding-API-Key';
+        if (!crowdfundingApiKey) {
+            return;
+        }
+        const existingCookie = document.cookie
+            .split('; ')
+            .find(row => row.startsWith(`${cookieName}=`))
+            ?.split('=')[1];
+        if (existingCookie === crowdfundingApiKey) {
+            return;
+        }
+        document.cookie = `${cookieName}=${crowdfundingApiKey}; path=/;`;
+        window.location.reload();
     })();
 
 
