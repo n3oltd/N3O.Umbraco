@@ -18,14 +18,14 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Content
 {
-	/// <summary>Feedback Custom Field Definition</summary>
-	[PublishedModel("feedbackCustomFieldDefinition")]
-	public partial class FeedbackCustomFieldDefinition : PublishedElementModel
+	/// <summary>Payment Method Data Entry Settings</summary>
+	[PublishedModel("paymentMethodDataEntrySettings")]
+	public partial class PaymentMethodDataEntrySettings : PublishedContentModel
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		public new const string ModelTypeAlias = "feedbackCustomFieldDefinition";
+		public new const string ModelTypeAlias = "paymentMethodDataEntrySettings";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
@@ -34,14 +34,14 @@ namespace DemoSite.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<FeedbackCustomFieldDefinition, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<PaymentMethodDataEntrySettings, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public FeedbackCustomFieldDefinition(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
+		public PaymentMethodDataEntrySettings(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
@@ -50,33 +50,11 @@ namespace DemoSite.Content
 		// properties
 
 		///<summary>
-		/// Name
+		/// Payment Methods
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("fieldName")]
-		public virtual string FieldName => this.Value<string>(_publishedValueFallback, "fieldName");
-
-		///<summary>
-		/// Required
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[ImplementPropertyType("fieldRequired")]
-		public virtual bool FieldRequired => this.Value<bool>(_publishedValueFallback, "fieldRequired");
-
-		///<summary>
-		/// Max Length
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[ImplementPropertyType("fieldTextMaxLength")]
-		public virtual int FieldTextMaxLength => this.Value<int>(_publishedValueFallback, "fieldTextMaxLength");
-
-		///<summary>
-		/// Type
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("fieldType")]
-		public virtual string FieldType => this.Value<string>(_publishedValueFallback, "fieldType");
+		[ImplementPropertyType("paymentMethods")]
+		public virtual global::System.Collections.Generic.List<global::N3O.Umbraco.Elements.Models.FlowPaymentMethod> PaymentMethods => this.Value<global::System.Collections.Generic.List<global::N3O.Umbraco.Elements.Models.FlowPaymentMethod>>(_publishedValueFallback, "paymentMethods");
 	}
 }

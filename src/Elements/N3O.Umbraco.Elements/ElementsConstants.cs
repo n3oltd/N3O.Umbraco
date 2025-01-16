@@ -43,6 +43,10 @@ public static class ElementsConstants {
             public const string Alias = "sponsorshipDonationOption";
         }
     }
+    
+    public static class FlowPaymentMethods {
+        public static readonly string PaymentMethodsCdnUrl = "{0}/elements/{1}/payment-methods.json";
+    }
 
     public static class Giving {
         public const string Alias = "giving";
