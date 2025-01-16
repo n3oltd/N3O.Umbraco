@@ -7,6 +7,7 @@ import { usePageData } from "../hooks/usePageData";
 
 import { Modal } from "./common/Modal";
 import { _client } from "../common/cfClient";
+import { getCrowdfundingCookie } from "../common/cookie";
 import { loadingToast, updatingToast } from "../helpers/toaster";
 import { EditorProps } from "./types/EditorProps";
 
@@ -23,7 +24,7 @@ export const Textbox: React.FC<EditorProps> = ({
   const {pageId} = usePageData();
 
 
-  const {runAsync: loadPropertyValue, data: dataResponse, loading: isPropLoading} = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias), {
+    const { runAsync: loadPropertyValue, data: dataResponse, loading: isPropLoading } = useRequest((pageId: string) => _client.getContentPropertyValue(pageId, propAlias, getCrowdfundingCookie()), {
     manual: true,
     ready: !!propAlias && open,
     onSuccess: data => {
@@ -31,7 +32,7 @@ export const Textbox: React.FC<EditorProps> = ({
     }
   });
 
-  const {runAsync: updateProperty, loading} = useRequest((req: ContentPropertyReq, pageId: string) => _client.updateProperty(pageId, req), {
+    const { runAsync: updateProperty, loading } = useRequest((req: ContentPropertyReq, pageId: string) => _client.updateProperty(pageId, getCrowdfundingCookie(), req), {
     manual: true,
     onSuccess: () => {
       onClose();
