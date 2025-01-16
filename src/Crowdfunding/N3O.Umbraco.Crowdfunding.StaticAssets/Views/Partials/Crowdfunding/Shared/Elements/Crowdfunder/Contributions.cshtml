@@ -9,7 +9,9 @@
 <div class="n3o-donation__wrapper">
     <div class="n3o-donation">
         <div class="n3o-donation__head">
-            <div class="n3o-donation__head-tab n3o-tabBtn active" data-tab="#tab-1">
+            <div class="n3o-donation__head-tab n3o-tabBtn active" 
+                 data-tab="#tab-1"
+                 @(Model.CrowdfunderType == CrowdfunderTypes.Fundraiser ? "style='width: 100%;'" : "")>
                 <h4 class="n3o-h4">@PartialText.Get("Latest Donations")</h4>
             </div>
             
