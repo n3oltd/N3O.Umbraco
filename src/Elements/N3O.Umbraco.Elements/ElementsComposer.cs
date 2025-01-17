@@ -7,5 +7,6 @@ namespace N3O.Umbraco.Elements;
 public class ElementsComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddScoped<IElementsManager, ElementsManager>();
+        builder.Services.AddSingleton<CdnUrlAccessor>();
     }
 }
