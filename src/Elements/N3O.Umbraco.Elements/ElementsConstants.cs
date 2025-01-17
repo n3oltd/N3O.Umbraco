@@ -1,6 +1,12 @@
 ﻿namespace N3O.Umbraco.Elements;
 
 public static class ElementsConstants {
+    public static class Cdn {
+        public static class Paths {
+            public static readonly string FlowPaymentMethods = "payment-methods.json";
+        }
+    }
+    
     public static class DonationCategory {
         public const string CompositionAlias = "donationCategory";
         public const string CropAlias = "m";
@@ -42,10 +48,6 @@ public static class ElementsConstants {
         public static class Sponsorship {
             public const string Alias = "sponsorshipDonationOption";
         }
-    }
-    
-    public static class FlowPaymentMethods {
-        public static readonly string PaymentMethodsCdnUrl = "{0}/elements/{1}/payment-methods.json";
     }
 
     public static class Giving {
