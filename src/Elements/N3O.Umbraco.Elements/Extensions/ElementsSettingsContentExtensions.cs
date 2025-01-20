@@ -1,11 +1,10 @@
-﻿using N3O.Umbraco.Elements.Clients;
-using N3O.Umbraco.Elements.Content;
+﻿using N3O.Umbraco.Elements.Content;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Elements.Extensions;
 
 public static class ElementsSettingsContentExtensions {
-    public static Dictionary<string, object> ToReq(this ElementsSettingsContent elementsSettings) {
+    public static Dictionary<string, object> ToConfigurationElement(this ElementsSettingsContent elementsSettings) {
         var colors = new Dictionary<string, object>();
 
         colors.Add("background", elementsSettings.Background);
@@ -32,11 +31,10 @@ public static class ElementsSettingsContentExtensions {
         theme.Add("headingFontFamily", elementsSettings.HeadingFontFamily);
         theme.Add("colors", colors);
         
-        var elements = new Dictionary<string, object>();
-        elements.Add("theme", theme);
-        elements.Add("features", elementsSettings.Features);
+        var configuration = new Dictionary<string, object>();
+        configuration.Add("theme", theme);
+        configuration.Add("features", elementsSettings.Features);
 
-        return elements;
-
+        return configuration;
     }
 }

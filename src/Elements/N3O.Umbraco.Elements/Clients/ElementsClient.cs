@@ -1693,7 +1693,7 @@ namespace N3O.Umbraco.Elements.Clients
     }
 
     /// <summary>
-    /// One of 'checkoutProfile', 'donationForm', 'elements'
+    /// One of 'checkoutProfile', 'configuration', 'donationForm'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum ElementType
@@ -1705,8 +1705,8 @@ namespace N3O.Umbraco.Elements.Clients
         [System.Runtime.Serialization.EnumMember(Value = @"donationForm")]
         DonationForm = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"elements")]
-        Elements = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"configuration")]
+        Configuration = 2,
 
     }
 
