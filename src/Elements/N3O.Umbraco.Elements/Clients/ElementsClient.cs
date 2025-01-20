@@ -1693,14 +1693,20 @@ namespace N3O.Umbraco.Elements.Clients
     }
 
     /// <summary>
-    /// One of 'donationForm'
+    /// One of 'checkoutProfile', 'donationForm', 'elements'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum ElementType
     {
 
+        [System.Runtime.Serialization.EnumMember(Value = @"checkoutProfile")]
+        CheckoutProfile = 0,
+
         [System.Runtime.Serialization.EnumMember(Value = @"donationForm")]
-        DonationForm = 0,
+        DonationForm = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"elements")]
+        Elements = 2,
 
     }
 
@@ -1803,6 +1809,9 @@ namespace N3O.Umbraco.Elements.Clients
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ElementType? Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("customPath", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string CustomPath { get; set; }
 
     }
 

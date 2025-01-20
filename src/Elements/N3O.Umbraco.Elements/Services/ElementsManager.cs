@@ -3,6 +3,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm.Engage;
 using N3O.Umbraco.Elements.Clients;
 using N3O.Umbraco.Elements.Content;
+using N3O.Umbraco.Elements.Extensions;
 using N3O.Umbraco.Elements.Models;
 using N3O.Umbraco.Json;
 using Newtonsoft.Json.Linq;
@@ -38,6 +39,29 @@ public class ElementsManager : IElementsManager {
         var req = GetSaveAndPublishReq();
         
         await client.InvokeAsync(x => x.SaveAndPublishElementAsync, req);
+    }
+
+    public async Task SaveAndPublishElementsSettingsAsync() {
+        var subscription = _subscriptionAccessor.GetSubscription();
+        var client = await _clientFactory.CreateAsync(subscription, ClientTypes.BackOffice);
+        
+        var req = GetElemetsSaveAndPublishReq();
+        
+        await client.InvokeAsync(x => x.SaveAndPublishElementAsync, req);
+    }
+
+    private SaveAndPublishReq GetElemetsSaveAndPublishReq() {
+        var settings = _contentLocator.Single<ElementsSettingsContent>();
+        
+        var req = new SaveAndPublishReq();
+        req.Element = new SaveAndPublishElementReq();
+        req.Element.Id = settings.Content().Key.ToString();
+        req.Element.Type = ElementType.Elements;
+        req.Element.Content = JObject.Parse(_jsonProvider.SerializeObject(settings.Content()));
+        req.Element.PublishedContent = settings.ToReq();
+        req.Element.CustomPath = "elements.json";
+
+        return req;
     }
 
     private SaveAndPublishReq GetSaveAndPublishReq() {
