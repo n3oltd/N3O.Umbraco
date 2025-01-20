@@ -140,7 +140,7 @@ public static class CrowdfundingConstants {
 
     public static class Http {
         public static class Headers {
-            public static readonly string ApiHeaderKey = "Crowdfunding-API-Key";
+            public static readonly string RequestApiKey = "Crowdfunding-API-Key";
         }
     }
     

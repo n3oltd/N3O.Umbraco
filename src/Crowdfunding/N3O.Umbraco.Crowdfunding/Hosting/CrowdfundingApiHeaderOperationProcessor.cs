@@ -9,7 +9,7 @@ public class CrowdfundingApiHeaderOperationProcessor : IOperationProcessor {
     public bool Process(OperationProcessorContext context) {
         if (context.ControllerType == typeof(CrowdfundingController)) {
             context.OperationDescription.Operation.Parameters.Add(new OpenApiParameter {
-                Name = CrowdfundingConstants.Http.Headers.ApiHeaderKey,
+                Name = CrowdfundingConstants.Http.Headers.RequestApiKey,
                 Kind = OpenApiParameterKind.Header,
                 Type = NJsonSchema.JsonObjectType.String,
                 IsRequired = false
