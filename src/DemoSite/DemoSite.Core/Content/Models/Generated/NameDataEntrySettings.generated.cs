@@ -126,6 +126,14 @@ namespace DemoSite.Content
 		public virtual bool LastNameRequired => this.Value<bool>(_publishedValueFallback, "lastNameRequired");
 
 		///<summary>
+		/// Layout
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("layout")]
+		public virtual global::N3O.Umbraco.Accounts.Lookups.NameLayout Layout => this.Value<global::N3O.Umbraco.Accounts.Lookups.NameLayout>(_publishedValueFallback, "layout");
+
+		///<summary>
 		/// Help Text
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]

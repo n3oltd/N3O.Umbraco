@@ -5,7 +5,11 @@ using NodaTime;
 namespace N3O.Umbraco.TaxRelief.Lookups;
 
 public abstract class TaxReliefScheme : NamedLookup {
-    protected TaxReliefScheme(string id, string name) : base(id, name) { }
+    protected TaxReliefScheme(string id, string name, ProcessorType type) : base(id, name) {
+        Type = type;
+    }
+
+    public ProcessorType Type { get; set; }
 
     public abstract Money GetAllowanceValue(LocalDate date, Money value);
     public abstract bool IsEligible(Country residenceCountry, bool isOrganization);

@@ -1,7 +1,5 @@
 ﻿using N3O.Umbraco.Accounts.Models;
-using N3O.Umbraco.Content;
 using N3O.Umbraco.Elements.Clients;
-using N3O.Umbraco.Lookups;
 using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Elements.Models.CheckoutProfile;

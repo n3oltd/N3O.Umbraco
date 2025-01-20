@@ -1,3 +1,4 @@
+using N3O.Umbraco.Accounts.Lookups;
 using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Lookups;
@@ -25,6 +26,7 @@ public class NameDataEntrySettingsContent : UmbracoContent<NameDataEntrySettings
     public string LastNameHelpText => GetValue(x => x.LastNameHelpText);
     public int LastNameOrder => GetValue(x => x.LastNameOrder);
     public Capitalisation LastNameCapitalisation => GetValue(x => x.LastNameCapitalisation);
+    public NameLayout Layout => GetValue(x => x.Layout);
 
     public NameDataEntrySettings ToDataEntrySettings() {
         var title = new SelectFieldSettings(true,
@@ -51,6 +53,6 @@ public class NameDataEntrySettingsContent : UmbracoContent<NameDataEntrySettings
                                              false,
                                              LastNameCapitalisation);
 
-        return new NameDataEntrySettings(title, firstName, lastName);
+        return new NameDataEntrySettings(title, firstName, lastName, Layout);
     }
 }

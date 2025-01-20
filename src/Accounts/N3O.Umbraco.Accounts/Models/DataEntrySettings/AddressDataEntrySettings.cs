@@ -1,3 +1,4 @@
+using N3O.Umbraco.Accounts.Lookups;
 using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
 
@@ -12,7 +13,8 @@ public class AddressDataEntrySettings : Value, IFieldSettingsCollection {
                                     TextFieldSettings administrativeArea,
                                     TextFieldSettings postalCode,
                                     string lookupApiKey,
-                                    Country defaultCountry) {
+                                    Country defaultCountry,
+                                    AddressLayout layout) {
         Country = country;
         Line1 = line1;
         Line2 = line2;
@@ -22,6 +24,7 @@ public class AddressDataEntrySettings : Value, IFieldSettingsCollection {
         PostalCode = postalCode;
         LookupApiKey = lookupApiKey;
         DefaultCountry = defaultCountry;
+        Layout = layout;
     }
 
     public SelectFieldSettings Country { get; }
@@ -33,7 +36,8 @@ public class AddressDataEntrySettings : Value, IFieldSettingsCollection {
     public TextFieldSettings PostalCode { get; }
     public string LookupApiKey { get; }
     public Country DefaultCountry { get; }
-    
+    public AddressLayout Layout { get; }
+
     public IEnumerable<FieldSettings> GetFieldSettings() {
         yield return Country;
         yield return Line1;

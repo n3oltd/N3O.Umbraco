@@ -58,14 +58,6 @@ namespace DemoSite.Content
 		public virtual global::DemoSite.Content.AddressField AdministrativeArea => this.Value<global::DemoSite.Content.AddressField>(_publishedValueFallback, "administrativeArea");
 
 		///<summary>
-		/// Api Key
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("apiKey")]
-		public virtual string ApiKey => this.Value<string>(_publishedValueFallback, "apiKey");
-
-		///<summary>
 		/// Country
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
@@ -80,6 +72,14 @@ namespace DemoSite.Content
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("defaultCountry")]
 		public virtual global::DemoSite.Content.Country DefaultCountry => this.Value<global::DemoSite.Content.Country>(_publishedValueFallback, "defaultCountry");
+
+		///<summary>
+		/// Layout
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("layout")]
+		public virtual global::N3O.Umbraco.Accounts.Lookups.AddressLayout Layout => this.Value<global::N3O.Umbraco.Accounts.Lookups.AddressLayout>(_publishedValueFallback, "layout");
 
 		///<summary>
 		/// Line 1
@@ -112,6 +112,14 @@ namespace DemoSite.Content
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("locality")]
 		public virtual global::DemoSite.Content.AddressField Locality => this.Value<global::DemoSite.Content.AddressField>(_publishedValueFallback, "locality");
+
+		///<summary>
+		/// Api Key
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("lookupApiKey")]
+		public virtual string LookupApiKey => this.Value<string>(_publishedValueFallback, "lookupApiKey");
 
 		///<summary>
 		/// Postal Code

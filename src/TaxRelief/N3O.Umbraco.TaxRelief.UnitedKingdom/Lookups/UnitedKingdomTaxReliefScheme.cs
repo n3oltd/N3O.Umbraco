@@ -6,7 +6,7 @@ using NodaTime;
 namespace N3O.Umbraco.TaxRelief.UnitedKingdom.Lookups;
 
 public class UnitedKingdomTaxReliefScheme : TaxReliefScheme {
-    public UnitedKingdomTaxReliefScheme() : base("unitedKingdom", "Gift Aid") { }
+    public UnitedKingdomTaxReliefScheme() : base("unitedKingdom", "Gift Aid", ProcessorTypes.Type1) { }
 
     public override Money GetAllowanceValue(LocalDate date, Money value) {
         return new Money(value.Amount * 0.25m, value.Currency);

@@ -66,6 +66,13 @@ namespace DemoSite.Content
 		public virtual global::N3O.Umbraco.Accounts.Lookups.ConsentChannel Channel => this.Value<global::N3O.Umbraco.Accounts.Lookups.ConsentChannel>(_publishedValueFallback, "channel");
 
 		///<summary>
+		/// Opt In
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[ImplementPropertyType("optIn")]
+		public virtual bool OptIn => this.Value<bool>(_publishedValueFallback, "optIn");
+
+		///<summary>
 		/// Statement
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]

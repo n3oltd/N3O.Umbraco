@@ -66,14 +66,6 @@ namespace DemoSite.Content
 		public virtual string Label => this.Value<string>(_publishedValueFallback, "label");
 
 		///<summary>
-		/// Api Key
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("lookupApiKey")]
-		public virtual string LookupApiKey => this.Value<string>(_publishedValueFallback, "lookupApiKey");
-
-		///<summary>
 		/// Order
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]

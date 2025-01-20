@@ -56,12 +56,5 @@ namespace DemoSite.Content
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("declaration")]
 		public virtual string Declaration => this.Value<string>(_publishedValueFallback, "declaration");
-
-		///<summary>
-		/// Exclude Organizations
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[ImplementPropertyType("excludeOrganizations")]
-		public virtual bool ExcludeOrganizations => this.Value<bool>(_publishedValueFallback, "excludeOrganizations");
 	}
 }
