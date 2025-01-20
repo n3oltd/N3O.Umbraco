@@ -4,5 +4,5 @@ namespace N3O.Umbraco.Elements;
 
 public interface IElementsManager {
     Task SaveAndPublishDonationFormAsync();
-    Task SaveAndPublishElementsSettings();
+    Task SaveAndPublishElementsSettingsAsync();
 }

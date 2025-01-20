@@ -1,5 +1,4 @@
-﻿using N3O.Umbraco.Content;
-using N3O.Umbraco.Elements.Extensions;
+﻿using N3O.Umbraco.Elements.Extensions;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,13 +14,11 @@ public class ElementsSettingsPublished : INotificationAsyncHandler<ContentPublis
         _elementsManager = elementsManager;
     }
     
-    public Task HandleAsync(ContentPublishedNotification notification, CancellationToken cancellationToken) {
+    public async Task HandleAsync(ContentPublishedNotification notification, CancellationToken cancellationToken) {
         foreach (var content in notification.PublishedEntities) {
             if (content.IsElementsSettings()) {
-                _elementsManager.Value.SaveAndPublishElementsSettings().GetAwaiter().GetResult();
+                await _elementsManager.Value.SaveAndPublishElementsSettingsAsync();
             }
         }
-        
-        return Task.CompletedTask;
     }
 }

@@ -41,7 +41,7 @@ public class ElementsManager : IElementsManager {
         await client.InvokeAsync(x => x.SaveAndPublishElementAsync, req);
     }
 
-    public async Task SaveAndPublishElementsSettings() {
+    public async Task SaveAndPublishElementsSettingsAsync() {
         var subscription = _subscriptionAccessor.GetSubscription();
         var client = await _clientFactory.CreateAsync(subscription, ClientTypes.BackOffice);
         
