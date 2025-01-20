@@ -101,7 +101,7 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
                                                                   int itemsPerPage) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
             var query = db.QueryAsync<Crowdfunder>()
-                          .Where(x => x.Type == (int) type.Key)
+                          .Where(x => x.Type == (int) type.Key && x.StatusKey.HasValue)
                           .OrderByDescending(x => x.CreatedAt);
             
             var res = await query.ToPage(currentPage, itemsPerPage);
