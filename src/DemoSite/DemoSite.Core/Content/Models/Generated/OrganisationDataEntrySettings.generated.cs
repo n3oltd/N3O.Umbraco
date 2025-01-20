@@ -18,14 +18,14 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Content
 {
-	/// <summary>Address Field</summary>
-	[PublishedModel("addressField")]
-	public partial class AddressField : PublishedElementModel
+	/// <summary>Organisation Data Entry Settings</summary>
+	[PublishedModel("organisationDataEntrySettings")]
+	public partial class OrganisationDataEntrySettings : PublishedContentModel
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		public new const string ModelTypeAlias = "addressField";
+		public new const string ModelTypeAlias = "organisationDataEntrySettings";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
@@ -34,14 +34,14 @@ namespace DemoSite.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<AddressField, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<OrganisationDataEntrySettings, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public AddressField(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
+		public OrganisationDataEntrySettings(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
@@ -50,48 +50,43 @@ namespace DemoSite.Content
 		// properties
 
 		///<summary>
-		/// Help Text
+		/// Address Country
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("helpText")]
-		public virtual string HelpText => this.Value<string>(_publishedValueFallback, "helpText");
+		[ImplementPropertyType("addressCountry")]
+		public virtual global::DemoSite.Content.Country AddressCountry => this.Value<global::DemoSite.Content.Country>(_publishedValueFallback, "addressCountry");
 
 		///<summary>
-		/// Label
+		/// Address Postal Code
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("label")]
-		public virtual string Label => this.Value<string>(_publishedValueFallback, "label");
+		[ImplementPropertyType("addressPostalCode")]
+		public virtual string AddressPostalCode => this.Value<string>(_publishedValueFallback, "addressPostalCode");
 
 		///<summary>
-		/// Api Key
+		/// Address Single Line
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("lookupApiKey")]
-		public virtual string LookupApiKey => this.Value<string>(_publishedValueFallback, "lookupApiKey");
+		[ImplementPropertyType("addressSingleLine")]
+		public virtual string AddressSingleLine => this.Value<string>(_publishedValueFallback, "addressSingleLine");
 
 		///<summary>
-		/// Order
+		/// Charity Registration
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[ImplementPropertyType("order")]
-		public virtual int Order => this.Value<int>(_publishedValueFallback, "order");
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("charityRegistration")]
+		public virtual string CharityRegistration => this.Value<string>(_publishedValueFallback, "charityRegistration");
 
 		///<summary>
-		/// Required
+		/// Name
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[ImplementPropertyType("required")]
-		public virtual bool Required => this.Value<bool>(_publishedValueFallback, "required");
-
-		///<summary>
-		/// Visible
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[ImplementPropertyType("visible")]
-		public virtual bool Visible => this.Value<bool>(_publishedValueFallback, "visible");
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("organisationName")]
+		public virtual string OrganisationName => this.Value<string>(_publishedValueFallback, "organisationName");
 	}
 }

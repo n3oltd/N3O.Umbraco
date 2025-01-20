@@ -15,6 +15,7 @@ public class AddressDataEntrySettingsContent : UmbracoContent<AddressDataEntrySe
     public AddressFieldElement Locality => GetValue(x => x.Locality);
     public AddressFieldElement AdministrativeArea => GetValue(x => x.AdministrativeArea);
     public AddressFieldElement PostalCode => GetValue(x => x.PostalCode);
+    public string LookupApiKey => GetValue(x => x.LookupApiKey);
     public Country DefaultCountry => GetValue(x => x.DefaultCountry);
 
     public AddressDataEntrySettings ToDataEntrySettings(ILookups lookups) {
@@ -32,6 +33,7 @@ public class AddressDataEntrySettingsContent : UmbracoContent<AddressDataEntrySe
                                             Locality.ToTextFieldSettings(HtmlField.Name<AccountReq>(x => x.Address.Locality)),
                                             AdministrativeArea.ToTextFieldSettings(HtmlField.Name<AccountReq>(x => x.Address.AdministrativeArea)),
                                             PostalCode.ToTextFieldSettings(HtmlField.Name<AccountReq>(x => x.Address.PostalCode)),
+                                            LookupApiKey,
                                             DefaultCountry);
     }
 }

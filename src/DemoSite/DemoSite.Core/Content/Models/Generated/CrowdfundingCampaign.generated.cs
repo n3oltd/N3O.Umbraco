@@ -50,7 +50,15 @@ namespace DemoSite.Content
 		// properties
 
 		///<summary>
-		/// Goal Options
+		/// Allowed Fundraisers Description
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("allowedFundraisersDescription")]
+		public virtual object AllowedFundraisersDescription => this.Value(_publishedValueFallback, "allowedFundraisersDescription");
+
+		///<summary>
+		/// Available Goals
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
@@ -63,6 +71,14 @@ namespace DemoSite.Content
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[ImplementPropertyType("minimumAmount")]
 		public virtual decimal MinimumAmount => this.Value<decimal>(_publishedValueFallback, "minimumAmount");
+
+		///<summary>
+		/// Production URL
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("productionUrl")]
+		public virtual string ProductionUrl => this.Value<string>(_publishedValueFallback, "productionUrl");
 
 		///<summary>
 		/// Background Image
@@ -111,6 +127,14 @@ namespace DemoSite.Content
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("goals")]
 		public virtual global::System.Collections.Generic.IEnumerable<global::Umbraco.Cms.Core.Models.PublishedContent.IPublishedElement> Goals => global::DemoSite.Content.CrowdfundingCrowdfunder.GetGoals(this, _publishedValueFallback);
+
+		///<summary>
+		/// Goals Description
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("goalsDescription")]
+		public virtual object GoalsDescription => global::DemoSite.Content.CrowdfundingCrowdfunder.GetGoalsDescription(this, _publishedValueFallback);
 
 		///<summary>
 		/// Hero Images

@@ -130,6 +130,14 @@ namespace DemoSite.Content
 		public virtual global::System.Collections.Generic.IEnumerable<global::Umbraco.Cms.Core.Models.PublishedContent.IPublishedElement> Goals => global::DemoSite.Content.CrowdfundingCrowdfunder.GetGoals(this, _publishedValueFallback);
 
 		///<summary>
+		/// Goals Description
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("goalsDescription")]
+		public virtual object GoalsDescription => global::DemoSite.Content.CrowdfundingCrowdfunder.GetGoalsDescription(this, _publishedValueFallback);
+
+		///<summary>
 		/// Hero Images
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]

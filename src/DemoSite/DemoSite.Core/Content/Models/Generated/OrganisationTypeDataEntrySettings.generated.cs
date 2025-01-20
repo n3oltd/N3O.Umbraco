@@ -18,14 +18,14 @@ using Umbraco.Extensions;
 
 namespace DemoSite.Content
 {
-	/// <summary>Gift Aid Settings</summary>
-	[PublishedModel("giftAidSettings")]
-	public partial class GiftAidSettings : PublishedContentModel
+	/// <summary>Organisation Type</summary>
+	[PublishedModel("organisationTypeDataEntrySettings")]
+	public partial class OrganisationTypeDataEntrySettings : PublishedContentModel
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		public new const string ModelTypeAlias = "giftAidSettings";
+		public new const string ModelTypeAlias = "organisationTypeDataEntrySettings";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
@@ -34,34 +34,19 @@ namespace DemoSite.Content
 			=> PublishedModelUtility.GetModelContentType(publishedSnapshotAccessor, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<GiftAidSettings, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedSnapshotAccessor publishedSnapshotAccessor, Expression<Func<OrganisationTypeDataEntrySettings, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(publishedSnapshotAccessor), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public GiftAidSettings(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
+		public OrganisationTypeDataEntrySettings(IPublishedContent content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
 		}
 
 		// properties
-
-		///<summary>
-		/// Declaration
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("declaration")]
-		public virtual string Declaration => this.Value<string>(_publishedValueFallback, "declaration");
-
-		///<summary>
-		/// Exclude Organizations
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
-		[ImplementPropertyType("excludeOrganizations")]
-		public virtual bool ExcludeOrganizations => this.Value<bool>(_publishedValueFallback, "excludeOrganizations");
 	}
 }

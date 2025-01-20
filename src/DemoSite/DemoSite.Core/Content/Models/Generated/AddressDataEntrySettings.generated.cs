@@ -58,6 +58,14 @@ namespace DemoSite.Content
 		public virtual global::DemoSite.Content.AddressField AdministrativeArea => this.Value<global::DemoSite.Content.AddressField>(_publishedValueFallback, "administrativeArea");
 
 		///<summary>
+		/// Api Key
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("apiKey")]
+		public virtual string ApiKey => this.Value<string>(_publishedValueFallback, "apiKey");
+
+		///<summary>
 		/// Country
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]

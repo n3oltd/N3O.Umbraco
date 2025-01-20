@@ -1511,6 +1511,1881 @@ namespace N3O.Umbraco.Elements.Clients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class AccountEntrySettings
+    {
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public NameEntrySettings Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("address", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public AddressEntrySettings Address { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("email", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public EmailEntrySettings Email { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("telephone", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public TelephoneEntrySettings Telephone { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("consent", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ConsentSettings Consent { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("taxRelief", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public TaxReliefSettings TaxRelief { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class AddressEntrySettings
+    {
+        [Newtonsoft.Json.JsonProperty("layout", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AddressLayout? Layout { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("line1", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FieldSettings Line1 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("line2", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FieldSettings Line2 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("line3", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FieldSettings Line3 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("locality", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FieldSettings Locality { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("administrativeArea", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FieldSettings AdministrativeArea { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("postalCode", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FieldSettings PostalCode { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("country", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FieldSettings Country { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("domesticCountry", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Country? DomesticCountry { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("addressLookupApiKey", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string AddressLookupApiKey { get; set; }
+
+    }
+
+    /// <summary>
+    /// One of 'layout1', 'layout2'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AddressLayout
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"layout1")]
+        Layout1 = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"layout2")]
+        Layout2 = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class BrandingSettings
+    {
+        [Newtonsoft.Json.JsonProperty("organisationName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OrganisationName { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("charityRegistration", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string CharityRegistration { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("addressSingleLine", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string AddressSingleLine { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class CategoryChannel
+    {
+        [Newtonsoft.Json.JsonProperty("channel", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Channel? Channel { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("defaultPreference", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Preference? DefaultPreference { get; set; }
+
+    }
+
+    /// <summary>
+    /// One of 'email', 'post', 'sms', 'telephone'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Channel
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"email")]
+        Email = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"post")]
+        Post = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"sms")]
+        Sms = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"telephone")]
+        Telephone = 3,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class CheckoutProfile
+    {
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("branding", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public BrandingSettings Branding { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("accounts", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public AccountEntrySettings Accounts { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("payments", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PaymentsSettings Payments { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("termsOfService", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public TermsOfServiceSettings TermsOfService { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ConsentOptionSettings
+    {
+        [Newtonsoft.Json.JsonProperty("channel", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Channel? Channel { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("categories", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> Categories { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("default", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Default { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ConsentSettings
+    {
+        [Newtonsoft.Json.JsonProperty("text", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Text { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("options", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<ConsentOptionSettings> Options { get; set; }
+
+    }
+
+    /// <summary>
+    /// One of 'AD', 'AE', 'AF', 'AG', 'AI', 'AL', 'AM', 'AN', 'AO', 'AR', 'AS', 'AT', 'AU', 'AW', 'AX', 'AZ', 'BA', 'BB', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BL', 'BM', 'BN', 'BO', 'BQ', 'BR', 'BS', 'BT', 'BW', 'BY', 'BZ', 'CA', 'CC', 'CD', 'CF', 'CG', 'CH', 'CI', 'CK', 'CL', 'CM', 'CN', 'CO', 'CR', 'CU', 'CV', 'CW', 'CX', 'CY', 'CZ', 'DE', 'DJ', 'DK', 'DM', 'DO', 'DZ', 'EC', 'EE', 'EG', 'EH', 'ER', 'ES', 'ET', 'FI', 'FJ', 'FK', 'FM', 'FO', 'FR', 'GA', 'GB', 'GD', 'GE', 'GF', 'GG', 'GH', 'GI', 'GL', 'GM', 'GN', 'GP', 'GQ', 'GR', 'GS', 'GT', 'GU', 'GW', 'GY', 'HK', 'HN', 'HR', 'HT', 'HU', 'ID', 'IE', 'IL', 'IM', 'IN', 'IO', 'IQ', 'IR', 'IS', 'IT', 'JE', 'JM', 'JO', 'JP', 'KE', 'KG', 'KH', 'KI', 'KM', 'KN', 'KP', 'KR', 'KW', 'KY', 'KZ', 'LA', 'LB', 'LC', 'LI', 'LK', 'LR', 'LS', 'LT', 'LU', 'LV', 'LY', 'MA', 'MC', 'MD', 'ME', 'MF', 'MG', 'MH', 'MK', 'ML', 'MM', 'MN', 'MO', 'MP', 'MQ', 'MR', 'MS', 'MT', 'MU', 'MV', 'MW', 'MX', 'MY', 'MZ', 'NA', 'NC', 'NE', 'NF', 'NG', 'NI', 'NL', 'NO', 'NP', 'NR', 'NU', 'NZ', 'OM', 'PA', 'PE', 'PF', 'PG', 'PH', 'PK', 'PL', 'PM', 'PN', 'PR', 'PS', 'PT', 'PW', 'PY', 'QA', 'RE', 'RO', 'RS', 'RU', 'RW', 'SA', 'SB', 'SC', 'SD', 'SE', 'SG', 'SH', 'SI', 'SJ', 'SK', 'SL', 'SM', 'SN', 'SO', 'SR', 'SS', 'ST', 'SV', 'SX', 'SY', 'SZ', 'TC', 'TD', 'TG', 'TH', 'TJ', 'TK', 'TL', 'TM', 'TN', 'TO', 'TR', 'TT', 'TV', 'TW', 'TZ', 'UA', 'UG', 'UM', 'US', 'UY', 'UZ', 'VA', 'VC', 'VE', 'VG', 'VI', 'VN', 'VU', 'WF', 'WS', 'YE', 'YT', 'ZA', 'ZM', 'ZW'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Country
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AD")]
+        AD = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AE")]
+        AE = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AF")]
+        AF = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AG")]
+        AG = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AI")]
+        AI = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AL")]
+        AL = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AM")]
+        AM = 6,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AN")]
+        AN = 7,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AO")]
+        AO = 8,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AR")]
+        AR = 9,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AS")]
+        AS = 10,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AT")]
+        AT = 11,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AU")]
+        AU = 12,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AW")]
+        AW = 13,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AX")]
+        AX = 14,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AZ")]
+        AZ = 15,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BA")]
+        BA = 16,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BB")]
+        BB = 17,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BD")]
+        BD = 18,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BE")]
+        BE = 19,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BF")]
+        BF = 20,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BG")]
+        BG = 21,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BH")]
+        BH = 22,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BI")]
+        BI = 23,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BJ")]
+        BJ = 24,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BL")]
+        BL = 25,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BM")]
+        BM = 26,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BN")]
+        BN = 27,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BO")]
+        BO = 28,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BQ")]
+        BQ = 29,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BR")]
+        BR = 30,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BS")]
+        BS = 31,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BT")]
+        BT = 32,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BW")]
+        BW = 33,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BY")]
+        BY = 34,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BZ")]
+        BZ = 35,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CA")]
+        CA = 36,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CC")]
+        CC = 37,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CD")]
+        CD = 38,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CF")]
+        CF = 39,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CG")]
+        CG = 40,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CH")]
+        CH = 41,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CI")]
+        CI = 42,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CK")]
+        CK = 43,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CL")]
+        CL = 44,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CM")]
+        CM = 45,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CN")]
+        CN = 46,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CO")]
+        CO = 47,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CR")]
+        CR = 48,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CU")]
+        CU = 49,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CV")]
+        CV = 50,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CW")]
+        CW = 51,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CX")]
+        CX = 52,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CY")]
+        CY = 53,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CZ")]
+        CZ = 54,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"DE")]
+        DE = 55,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"DJ")]
+        DJ = 56,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"DK")]
+        DK = 57,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"DM")]
+        DM = 58,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"DO")]
+        DO = 59,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"DZ")]
+        DZ = 60,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"EC")]
+        EC = 61,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"EE")]
+        EE = 62,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"EG")]
+        EG = 63,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"EH")]
+        EH = 64,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ER")]
+        ER = 65,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ES")]
+        ES = 66,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ET")]
+        ET = 67,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"FI")]
+        FI = 68,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"FJ")]
+        FJ = 69,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"FK")]
+        FK = 70,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"FM")]
+        FM = 71,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"FO")]
+        FO = 72,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"FR")]
+        FR = 73,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GA")]
+        GA = 74,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GB")]
+        GB = 75,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GD")]
+        GD = 76,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GE")]
+        GE = 77,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GF")]
+        GF = 78,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GG")]
+        GG = 79,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GH")]
+        GH = 80,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GI")]
+        GI = 81,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GL")]
+        GL = 82,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GM")]
+        GM = 83,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GN")]
+        GN = 84,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GP")]
+        GP = 85,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GQ")]
+        GQ = 86,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GR")]
+        GR = 87,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GS")]
+        GS = 88,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GT")]
+        GT = 89,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GU")]
+        GU = 90,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GW")]
+        GW = 91,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GY")]
+        GY = 92,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"HK")]
+        HK = 93,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"HN")]
+        HN = 94,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"HR")]
+        HR = 95,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"HT")]
+        HT = 96,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"HU")]
+        HU = 97,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ID")]
+        ID = 98,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"IE")]
+        IE = 99,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"IL")]
+        IL = 100,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"IM")]
+        IM = 101,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"IN")]
+        IN = 102,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"IO")]
+        IO = 103,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"IQ")]
+        IQ = 104,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"IR")]
+        IR = 105,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"IS")]
+        IS = 106,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"IT")]
+        IT = 107,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"JE")]
+        JE = 108,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"JM")]
+        JM = 109,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"JO")]
+        JO = 110,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"JP")]
+        JP = 111,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"KE")]
+        KE = 112,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"KG")]
+        KG = 113,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"KH")]
+        KH = 114,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"KI")]
+        KI = 115,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"KM")]
+        KM = 116,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"KN")]
+        KN = 117,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"KP")]
+        KP = 118,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"KR")]
+        KR = 119,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"KW")]
+        KW = 120,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"KY")]
+        KY = 121,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"KZ")]
+        KZ = 122,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LA")]
+        LA = 123,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LB")]
+        LB = 124,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LC")]
+        LC = 125,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LI")]
+        LI = 126,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LK")]
+        LK = 127,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LR")]
+        LR = 128,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LS")]
+        LS = 129,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LT")]
+        LT = 130,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LU")]
+        LU = 131,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LV")]
+        LV = 132,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LY")]
+        LY = 133,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MA")]
+        MA = 134,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MC")]
+        MC = 135,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MD")]
+        MD = 136,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ME")]
+        ME = 137,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MF")]
+        MF = 138,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MG")]
+        MG = 139,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MH")]
+        MH = 140,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MK")]
+        MK = 141,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ML")]
+        ML = 142,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MM")]
+        MM = 143,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MN")]
+        MN = 144,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MO")]
+        MO = 145,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MP")]
+        MP = 146,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MQ")]
+        MQ = 147,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MR")]
+        MR = 148,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MS")]
+        MS = 149,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MT")]
+        MT = 150,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MU")]
+        MU = 151,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MV")]
+        MV = 152,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MW")]
+        MW = 153,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MX")]
+        MX = 154,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MY")]
+        MY = 155,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MZ")]
+        MZ = 156,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NA")]
+        NA = 157,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NC")]
+        NC = 158,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NE")]
+        NE = 159,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NF")]
+        NF = 160,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NG")]
+        NG = 161,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NI")]
+        NI = 162,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NL")]
+        NL = 163,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NO")]
+        NO = 164,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NP")]
+        NP = 165,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NR")]
+        NR = 166,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NU")]
+        NU = 167,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NZ")]
+        NZ = 168,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"OM")]
+        OM = 169,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PA")]
+        PA = 170,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PE")]
+        PE = 171,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PF")]
+        PF = 172,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PG")]
+        PG = 173,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PH")]
+        PH = 174,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PK")]
+        PK = 175,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PL")]
+        PL = 176,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PM")]
+        PM = 177,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PN")]
+        PN = 178,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PR")]
+        PR = 179,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PS")]
+        PS = 180,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PT")]
+        PT = 181,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PW")]
+        PW = 182,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PY")]
+        PY = 183,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"QA")]
+        QA = 184,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"RE")]
+        RE = 185,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"RO")]
+        RO = 186,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"RS")]
+        RS = 187,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"RU")]
+        RU = 188,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"RW")]
+        RW = 189,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SA")]
+        SA = 190,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SB")]
+        SB = 191,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SC")]
+        SC = 192,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SD")]
+        SD = 193,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SE")]
+        SE = 194,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SG")]
+        SG = 195,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SH")]
+        SH = 196,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SI")]
+        SI = 197,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SJ")]
+        SJ = 198,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SK")]
+        SK = 199,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SL")]
+        SL = 200,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SM")]
+        SM = 201,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SN")]
+        SN = 202,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SO")]
+        SO = 203,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SR")]
+        SR = 204,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SS")]
+        SS = 205,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ST")]
+        ST = 206,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SV")]
+        SV = 207,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SX")]
+        SX = 208,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SY")]
+        SY = 209,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SZ")]
+        SZ = 210,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TC")]
+        TC = 211,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TD")]
+        TD = 212,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TG")]
+        TG = 213,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TH")]
+        TH = 214,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TJ")]
+        TJ = 215,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TK")]
+        TK = 216,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TL")]
+        TL = 217,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TM")]
+        TM = 218,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TN")]
+        TN = 219,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TO")]
+        TO = 220,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TR")]
+        TR = 221,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TT")]
+        TT = 222,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TV")]
+        TV = 223,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TW")]
+        TW = 224,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TZ")]
+        TZ = 225,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"UA")]
+        UA = 226,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"UG")]
+        UG = 227,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"UM")]
+        UM = 228,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"US")]
+        US = 229,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"UY")]
+        UY = 230,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"UZ")]
+        UZ = 231,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"VA")]
+        VA = 232,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"VC")]
+        VC = 233,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"VE")]
+        VE = 234,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"VG")]
+        VG = 235,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"VI")]
+        VI = 236,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"VN")]
+        VN = 237,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"VU")]
+        VU = 238,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"WF")]
+        WF = 239,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"WS")]
+        WS = 240,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"YE")]
+        YE = 241,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"YT")]
+        YT = 242,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ZA")]
+        ZA = 243,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ZM")]
+        ZM = 244,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ZW")]
+        ZW = 245,
+
+    }
+
+    /// <summary>
+    /// One of 'ADF', 'ADP', 'AED', 'AFA', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'AOK', 'AON', 'AOR', 'ARA', 'ARL', 'ARP', 'ARS', 'ARY', 'ATS', 'AUD', 'AWG', 'AZM', 'AZN', 'BAD', 'BAM', 'BBD', 'BDT', 'BEF', 'BGJ', 'BGK', 'BGL', 'BGN', 'BHD', 'BIF', 'BMD', 'BND', 'BOB', 'BOP', 'BOV', 'BRB', 'BRC', 'BRE', 'BRL', 'BRN', 'BRR', 'BSD', 'BTN', 'BUK', 'BWP', 'BYB', 'BYN', 'BYR', 'BZD', 'CAD', 'CDF', 'CHE', 'CHF', 'CHW', 'CLE', 'CLF', 'CLP', 'CNY', 'COP', 'COU', 'CRC', 'CSD', 'CSJ', 'CSK', 'CUC', 'CUP', 'CVE', 'CYP', 'CZK', 'DDM', 'DEM', 'DJF', 'DKK', 'DOP', 'DZD', 'ECS', 'ECV', 'EEK', 'EGP', 'ERN', 'ESA', 'ESB', 'ESP', 'ETB', 'EUR', 'FIM', 'FJD', 'FKP', 'FRF', 'GBP', 'GEL', 'GHC', 'GHS', 'GIP', 'GMD', 'GNE', 'GNF', 'GNS', 'GQE', 'GRD', 'GTQ', 'GWE', 'GWP', 'GYD', 'HKD', 'HNL', 'HRD', 'HRK', 'HTG', 'HUF', 'IDR', 'IEP', 'ILP', 'ILR', 'ILS', 'INR', 'IQD', 'IRR', 'ISJ', 'ISK', 'ITL', 'JMD', 'JOD', 'JPY', 'KES', 'KGS', 'KHR', 'KMF', 'KPW', 'KRW', 'KWD', 'KYD', 'KZT', 'LAJ', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'LSM', 'LTL', 'LUF', 'LVL', 'LYD', 'MAD', 'MAF', 'MCF', 'MDL', 'MGA', 'MGF', 'MKD', 'MKN', 'MLF', 'MMK', 'MNT', 'MOP', 'MRO', 'MRU', 'MTL', 'MTP', 'MUR', 'MVQ', 'MVR', 'MWK', 'MXN', 'MXP', 'MXV', 'MYR', 'MZE', 'MZM', 'MZN', 'NAD', 'NFD', 'NGN', 'NIC', 'NIO', 'NLG', 'NOK', 'NPR', 'NZD', 'OMR', 'PAB', 'PEH', 'PEI', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PLZ', 'PTE', 'PTP', 'PYG', 'QAR', 'RHD', 'ROK', 'ROL', 'RON', 'RSD', 'RUB', 'RUR', 'RWF', 'SAR', 'SBD', 'SCR', 'SDD', 'SDG', 'SDP', 'SEK', 'SGD', 'SHP', 'SIT', 'SKK', 'SLL', 'SML', 'SOS', 'SRD', 'SRG', 'SSP', 'STD', 'STN', 'SUR', 'SVC', 'SYP', 'SZL', 'THB', 'TJR', 'TJS', 'TMM', 'TMT', 'TND', 'TNF', 'TOP', 'TPE', 'TRL', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UAK', 'UGS', 'UGW', 'UGX', 'USD', 'USN', 'USS', 'UYI', 'UYN', 'UYP', 'UYU', 'UYW', 'UZS', 'VAL', 'VEB', 'VEF', 'VES', 'VNC', 'VND', 'VUV', 'WST', 'XAF', 'XAG', 'XAU', 'XBA', 'XBB', 'XBC', 'XBD', 'XCD', 'XDR', 'XEU', 'XFO', 'XFU', 'XOF', 'XPD', 'XPF', 'XPT', 'XSU', 'XTS', 'XUA', 'XXX', 'YDD', 'YER', 'YUD', 'YUG', 'YUM', 'YUN', 'YUO', 'YUR', 'ZAL', 'ZAR', 'ZMK', 'ZMW', 'ZRN', 'ZRZ', 'ZWC', 'ZWD', 'ZWL', 'ZWN', 'ZWR'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Currency
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ADF")]
+        ADF = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ADP")]
+        ADP = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AED")]
+        AED = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AFA")]
+        AFA = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AFN")]
+        AFN = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ALL")]
+        ALL = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AMD")]
+        AMD = 6,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ANG")]
+        ANG = 7,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AOA")]
+        AOA = 8,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AOK")]
+        AOK = 9,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AON")]
+        AON = 10,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AOR")]
+        AOR = 11,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ARA")]
+        ARA = 12,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ARL")]
+        ARL = 13,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ARP")]
+        ARP = 14,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ARS")]
+        ARS = 15,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ARY")]
+        ARY = 16,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ATS")]
+        ATS = 17,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AUD")]
+        AUD = 18,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AWG")]
+        AWG = 19,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AZM")]
+        AZM = 20,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"AZN")]
+        AZN = 21,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BAD")]
+        BAD = 22,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BAM")]
+        BAM = 23,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BBD")]
+        BBD = 24,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BDT")]
+        BDT = 25,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BEF")]
+        BEF = 26,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BGJ")]
+        BGJ = 27,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BGK")]
+        BGK = 28,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BGL")]
+        BGL = 29,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BGN")]
+        BGN = 30,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BHD")]
+        BHD = 31,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BIF")]
+        BIF = 32,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BMD")]
+        BMD = 33,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BND")]
+        BND = 34,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BOB")]
+        BOB = 35,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BOP")]
+        BOP = 36,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BOV")]
+        BOV = 37,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BRB")]
+        BRB = 38,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BRC")]
+        BRC = 39,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BRE")]
+        BRE = 40,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BRL")]
+        BRL = 41,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BRN")]
+        BRN = 42,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BRR")]
+        BRR = 43,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BSD")]
+        BSD = 44,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BTN")]
+        BTN = 45,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BUK")]
+        BUK = 46,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BWP")]
+        BWP = 47,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BYB")]
+        BYB = 48,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BYN")]
+        BYN = 49,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BYR")]
+        BYR = 50,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"BZD")]
+        BZD = 51,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CAD")]
+        CAD = 52,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CDF")]
+        CDF = 53,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CHE")]
+        CHE = 54,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CHF")]
+        CHF = 55,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CHW")]
+        CHW = 56,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CLE")]
+        CLE = 57,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CLF")]
+        CLF = 58,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CLP")]
+        CLP = 59,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CNY")]
+        CNY = 60,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"COP")]
+        COP = 61,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"COU")]
+        COU = 62,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CRC")]
+        CRC = 63,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CSD")]
+        CSD = 64,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CSJ")]
+        CSJ = 65,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CSK")]
+        CSK = 66,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CUC")]
+        CUC = 67,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CUP")]
+        CUP = 68,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CVE")]
+        CVE = 69,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CYP")]
+        CYP = 70,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CZK")]
+        CZK = 71,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"DDM")]
+        DDM = 72,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"DEM")]
+        DEM = 73,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"DJF")]
+        DJF = 74,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"DKK")]
+        DKK = 75,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"DOP")]
+        DOP = 76,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"DZD")]
+        DZD = 77,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ECS")]
+        ECS = 78,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ECV")]
+        ECV = 79,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"EEK")]
+        EEK = 80,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"EGP")]
+        EGP = 81,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ERN")]
+        ERN = 82,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ESA")]
+        ESA = 83,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ESB")]
+        ESB = 84,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ESP")]
+        ESP = 85,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ETB")]
+        ETB = 86,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"EUR")]
+        EUR = 87,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"FIM")]
+        FIM = 88,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"FJD")]
+        FJD = 89,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"FKP")]
+        FKP = 90,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"FRF")]
+        FRF = 91,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GBP")]
+        GBP = 92,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GEL")]
+        GEL = 93,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GHC")]
+        GHC = 94,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GHS")]
+        GHS = 95,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GIP")]
+        GIP = 96,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GMD")]
+        GMD = 97,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GNE")]
+        GNE = 98,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GNF")]
+        GNF = 99,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GNS")]
+        GNS = 100,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GQE")]
+        GQE = 101,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GRD")]
+        GRD = 102,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GTQ")]
+        GTQ = 103,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GWE")]
+        GWE = 104,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GWP")]
+        GWP = 105,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"GYD")]
+        GYD = 106,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"HKD")]
+        HKD = 107,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"HNL")]
+        HNL = 108,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"HRD")]
+        HRD = 109,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"HRK")]
+        HRK = 110,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"HTG")]
+        HTG = 111,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"HUF")]
+        HUF = 112,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"IDR")]
+        IDR = 113,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"IEP")]
+        IEP = 114,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ILP")]
+        ILP = 115,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ILR")]
+        ILR = 116,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ILS")]
+        ILS = 117,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"INR")]
+        INR = 118,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"IQD")]
+        IQD = 119,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"IRR")]
+        IRR = 120,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ISJ")]
+        ISJ = 121,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ISK")]
+        ISK = 122,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ITL")]
+        ITL = 123,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"JMD")]
+        JMD = 124,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"JOD")]
+        JOD = 125,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"JPY")]
+        JPY = 126,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"KES")]
+        KES = 127,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"KGS")]
+        KGS = 128,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"KHR")]
+        KHR = 129,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"KMF")]
+        KMF = 130,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"KPW")]
+        KPW = 131,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"KRW")]
+        KRW = 132,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"KWD")]
+        KWD = 133,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"KYD")]
+        KYD = 134,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"KZT")]
+        KZT = 135,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LAJ")]
+        LAJ = 136,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LAK")]
+        LAK = 137,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LBP")]
+        LBP = 138,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LKR")]
+        LKR = 139,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LRD")]
+        LRD = 140,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LSL")]
+        LSL = 141,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LSM")]
+        LSM = 142,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LTL")]
+        LTL = 143,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LUF")]
+        LUF = 144,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LVL")]
+        LVL = 145,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"LYD")]
+        LYD = 146,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MAD")]
+        MAD = 147,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MAF")]
+        MAF = 148,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MCF")]
+        MCF = 149,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MDL")]
+        MDL = 150,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MGA")]
+        MGA = 151,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MGF")]
+        MGF = 152,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MKD")]
+        MKD = 153,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MKN")]
+        MKN = 154,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MLF")]
+        MLF = 155,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MMK")]
+        MMK = 156,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MNT")]
+        MNT = 157,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MOP")]
+        MOP = 158,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MRO")]
+        MRO = 159,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MRU")]
+        MRU = 160,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MTL")]
+        MTL = 161,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MTP")]
+        MTP = 162,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MUR")]
+        MUR = 163,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MVQ")]
+        MVQ = 164,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MVR")]
+        MVR = 165,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MWK")]
+        MWK = 166,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MXN")]
+        MXN = 167,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MXP")]
+        MXP = 168,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MXV")]
+        MXV = 169,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MYR")]
+        MYR = 170,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MZE")]
+        MZE = 171,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MZM")]
+        MZM = 172,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"MZN")]
+        MZN = 173,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NAD")]
+        NAD = 174,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NFD")]
+        NFD = 175,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NGN")]
+        NGN = 176,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NIC")]
+        NIC = 177,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NIO")]
+        NIO = 178,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NLG")]
+        NLG = 179,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NOK")]
+        NOK = 180,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NPR")]
+        NPR = 181,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"NZD")]
+        NZD = 182,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"OMR")]
+        OMR = 183,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PAB")]
+        PAB = 184,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PEH")]
+        PEH = 185,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PEI")]
+        PEI = 186,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PEN")]
+        PEN = 187,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PGK")]
+        PGK = 188,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PHP")]
+        PHP = 189,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PKR")]
+        PKR = 190,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PLN")]
+        PLN = 191,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PLZ")]
+        PLZ = 192,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PTE")]
+        PTE = 193,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PTP")]
+        PTP = 194,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PYG")]
+        PYG = 195,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"QAR")]
+        QAR = 196,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"RHD")]
+        RHD = 197,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ROK")]
+        ROK = 198,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ROL")]
+        ROL = 199,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"RON")]
+        RON = 200,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"RSD")]
+        RSD = 201,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"RUB")]
+        RUB = 202,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"RUR")]
+        RUR = 203,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"RWF")]
+        RWF = 204,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SAR")]
+        SAR = 205,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SBD")]
+        SBD = 206,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SCR")]
+        SCR = 207,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SDD")]
+        SDD = 208,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SDG")]
+        SDG = 209,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SDP")]
+        SDP = 210,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SEK")]
+        SEK = 211,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SGD")]
+        SGD = 212,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SHP")]
+        SHP = 213,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SIT")]
+        SIT = 214,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SKK")]
+        SKK = 215,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SLL")]
+        SLL = 216,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SML")]
+        SML = 217,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SOS")]
+        SOS = 218,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SRD")]
+        SRD = 219,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SRG")]
+        SRG = 220,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SSP")]
+        SSP = 221,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"STD")]
+        STD = 222,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"STN")]
+        STN = 223,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SUR")]
+        SUR = 224,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SVC")]
+        SVC = 225,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SYP")]
+        SYP = 226,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"SZL")]
+        SZL = 227,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"THB")]
+        THB = 228,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TJR")]
+        TJR = 229,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TJS")]
+        TJS = 230,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TMM")]
+        TMM = 231,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TMT")]
+        TMT = 232,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TND")]
+        TND = 233,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TNF")]
+        TNF = 234,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TOP")]
+        TOP = 235,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TPE")]
+        TPE = 236,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TRL")]
+        TRL = 237,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TRY")]
+        TRY = 238,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TTD")]
+        TTD = 239,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TWD")]
+        TWD = 240,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"TZS")]
+        TZS = 241,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"UAH")]
+        UAH = 242,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"UAK")]
+        UAK = 243,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"UGS")]
+        UGS = 244,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"UGW")]
+        UGW = 245,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"UGX")]
+        UGX = 246,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"USD")]
+        USD = 247,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"USN")]
+        USN = 248,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"USS")]
+        USS = 249,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"UYI")]
+        UYI = 250,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"UYN")]
+        UYN = 251,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"UYP")]
+        UYP = 252,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"UYU")]
+        UYU = 253,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"UYW")]
+        UYW = 254,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"UZS")]
+        UZS = 255,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"VAL")]
+        VAL = 256,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"VEB")]
+        VEB = 257,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"VEF")]
+        VEF = 258,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"VES")]
+        VES = 259,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"VNC")]
+        VNC = 260,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"VND")]
+        VND = 261,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"VUV")]
+        VUV = 262,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"WST")]
+        WST = 263,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"XAF")]
+        XAF = 264,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"XAG")]
+        XAG = 265,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"XAU")]
+        XAU = 266,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"XBA")]
+        XBA = 267,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"XBB")]
+        XBB = 268,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"XBC")]
+        XBC = 269,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"XBD")]
+        XBD = 270,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"XCD")]
+        XCD = 271,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"XDR")]
+        XDR = 272,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"XEU")]
+        XEU = 273,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"XFO")]
+        XFO = 274,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"XFU")]
+        XFU = 275,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"XOF")]
+        XOF = 276,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"XPD")]
+        XPD = 277,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"XPF")]
+        XPF = 278,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"XPT")]
+        XPT = 279,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"XSU")]
+        XSU = 280,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"XTS")]
+        XTS = 281,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"XUA")]
+        XUA = 282,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"XXX")]
+        XXX = 283,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"YDD")]
+        YDD = 284,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"YER")]
+        YER = 285,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"YUD")]
+        YUD = 286,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"YUG")]
+        YUG = 287,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"YUM")]
+        YUM = 288,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"YUN")]
+        YUN = 289,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"YUO")]
+        YUO = 290,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"YUR")]
+        YUR = 291,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ZAL")]
+        ZAL = 292,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ZAR")]
+        ZAR = 293,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ZMK")]
+        ZMK = 294,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ZMW")]
+        ZMW = 295,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ZRN")]
+        ZRN = 296,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ZRZ")]
+        ZRZ = 297,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ZWC")]
+        ZWC = 298,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ZWD")]
+        ZWD = 299,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ZWL")]
+        ZWL = 300,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ZWN")]
+        ZWN = 301,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ZWR")]
+        ZWR = 302,
+
+    }
+
+    /// <summary>
+    /// One of 'dmy_dashes', 'dmy_slashes', 'mdy_dashes', 'mdy_slashes', 'ymd_dashes', 'ymd_slashes'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum DateFormat
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"dmy_dashes")]
+        Dmy_dashes = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"dmy_slashes")]
+        Dmy_slashes = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"mdy_dashes")]
+        Mdy_dashes = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"mdy_slashes")]
+        Mdy_slashes = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ymd_dashes")]
+        Ymd_dashes = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"ymd_slashes")]
+        Ymd_slashes = 5,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class DateTimeZone
+    {
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("minOffset", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Offset MinOffset { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("maxOffset", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Offset MaxOffset { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class DonationFormCriteria
     {
 
@@ -1693,14 +3568,152 @@ namespace N3O.Umbraco.Elements.Clients
     }
 
     /// <summary>
-    /// One of 'donationForm'
+    /// One of 'checkoutProfile', 'donationForm'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum ElementType
     {
 
+        [System.Runtime.Serialization.EnumMember(Value = @"checkoutProfile")]
+        CheckoutProfile = 0,
+
         [System.Runtime.Serialization.EnumMember(Value = @"donationForm")]
-        DonationForm = 0,
+        DonationForm = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class EmailEntrySettings
+    {
+        [Newtonsoft.Json.JsonProperty("required", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Required { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("validate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Validate { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FieldSettings
+    {
+        [Newtonsoft.Json.JsonProperty("label", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Label { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("required", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Required { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ILocalizationSettings
+    {
+        [Newtonsoft.Json.JsonProperty("numberFormat", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public NumberFormat? NumberFormat { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dateFormat", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public DateFormat? DateFormat { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("timeFormat", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public TimeFormat? TimeFormat { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("language", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Language? Language { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("timezone", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Timezone { get; set; }
+
+    }
+
+    /// <summary>
+    /// One of 'en', 'es', 'fr', 'xx'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Language
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"en")]
+        En = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"es")]
+        Es = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"fr")]
+        Fr = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"xx")]
+        Xx = 3,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class NameEntrySettings
+    {
+        [Newtonsoft.Json.JsonProperty("layout", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public NameLayout? Layout { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FieldSettings Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("first", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public TextFieldSettings First { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("last", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public TextFieldSettings Last { get; set; }
+
+    }
+
+    /// <summary>
+    /// One of 'layout1', 'layout2'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum NameLayout
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"layout1")]
+        Layout1 = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"layout2")]
+        Layout2 = 1,
+
+    }
+
+    /// <summary>
+    /// One of 'eu1', 'eu2', 'international'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum NumberFormat
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"eu1")]
+        Eu1 = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"eu2")]
+        Eu2 = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"international")]
+        International = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Offset
+    {
+        [Newtonsoft.Json.JsonProperty("seconds", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? Seconds { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("milliseconds", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? Milliseconds { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("ticks", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long? Ticks { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("nanoseconds", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long? Nanoseconds { get; set; }
 
     }
 
@@ -1757,6 +3770,61 @@ namespace N3O.Umbraco.Elements.Clients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PaymentMethodSettings
+    {
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("processorId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ProcessorId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("allowedCurrencies", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore, ItemConverterType = typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public System.Collections.Generic.ICollection<Currency> AllowedCurrencies { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("supportsRealtimePayments", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? SupportsRealtimePayments { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("supportsApplePay", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? SupportsApplePay { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("supportsGooglePay", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? SupportsGooglePay { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("order", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? Order { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PaymentsSettings
+    {
+        [Newtonsoft.Json.JsonProperty("paymentMethods", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<PaymentMethodSettings> PaymentMethods { get; set; }
+
+    }
+
+    /// <summary>
+    /// One of 'noResponse', 'optIn', 'optOut'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Preference
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"noResponse")]
+        NoResponse = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"optIn")]
+        OptIn = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"optOut")]
+        OptOut = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class ProblemDetails
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -1782,6 +3850,21 @@ namespace N3O.Umbraco.Elements.Clients
             get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
             set { _additionalProperties = value; }
         }
+
+    }
+
+    /// <summary>
+    /// One of 'type1', 'type2'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ProcessorType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"type1")]
+        Type1 = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"type2")]
+        Type2 = 1,
 
     }
 
@@ -1909,6 +3992,100 @@ namespace N3O.Umbraco.Elements.Clients
 
         [System.Runtime.Serialization.EnumMember(Value = @"desc")]
         Desc = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class TaxReliefSettings
+    {
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ProcessorType? Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("excludeOrganisations", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? ExcludeOrganisations { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("identifier", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Identifier { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("text", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Text { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class TelephoneEntrySettings
+    {
+        [Newtonsoft.Json.JsonProperty("required", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Required { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("validate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Validate { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class TermsOfServiceSettings
+    {
+        [Newtonsoft.Json.JsonProperty("text", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Text { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("url", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Url { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class TextFieldSettings
+    {
+        [Newtonsoft.Json.JsonProperty("label", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Label { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("required", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Required { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("minimumLength", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? MinimumLength { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("transformation", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public TextTransformation? Transformation { get; set; }
+
+    }
+
+    /// <summary>
+    /// One of 'lowercase', 'titlecase', 'uppercase'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum TextTransformation
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"lowercase")]
+        Lowercase = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"titlecase")]
+        Titlecase = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"uppercase")]
+        Uppercase = 2,
+
+    }
+
+    /// <summary>
+    /// One of '12', '24'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum TimeFormat
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"12")]
+        _12 = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"24")]
+        _24 = 1,
 
     }
 

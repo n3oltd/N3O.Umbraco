@@ -11,6 +11,7 @@ public class AddressDataEntrySettings : Value, IFieldSettingsCollection {
                                     TextFieldSettings locality,
                                     TextFieldSettings administrativeArea,
                                     TextFieldSettings postalCode,
+                                    string lookupApiKey,
                                     Country defaultCountry) {
         Country = country;
         Line1 = line1;
@@ -19,6 +20,7 @@ public class AddressDataEntrySettings : Value, IFieldSettingsCollection {
         Locality = locality;
         AdministrativeArea = administrativeArea;
         PostalCode = postalCode;
+        LookupApiKey = lookupApiKey;
         DefaultCountry = defaultCountry;
     }
 
@@ -29,6 +31,7 @@ public class AddressDataEntrySettings : Value, IFieldSettingsCollection {
     public TextFieldSettings Locality { get; }
     public TextFieldSettings AdministrativeArea { get; }
     public TextFieldSettings PostalCode { get; }
+    public string LookupApiKey { get; }
     public Country DefaultCountry { get; }
     
     public IEnumerable<FieldSettings> GetFieldSettings() {

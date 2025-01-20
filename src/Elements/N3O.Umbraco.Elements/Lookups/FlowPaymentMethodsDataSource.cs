@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Elements.Models;
+﻿using N3O.Umbraco.Elements.Clients;
+using N3O.Umbraco.Elements.Models;
 using N3O.Umbraco.Extensions;
 using System;
 using System.Collections.Concurrent;
