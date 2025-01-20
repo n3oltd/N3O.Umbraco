@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Context;
 using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Hosting;
 using N3O.Umbraco.Extensions;
@@ -17,18 +18,18 @@ namespace N3O.Umbraco.Crowdfunding;
 public class FundraiserAccessControl : MembersAccessControl {
     private readonly ILookups _lookups;
     private readonly IContentLocator _contentLocator;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IQueryStringAccessor _queryStringAccessor;
 
     public FundraiserAccessControl(IContentHelper contentHelper,
                                    IDataTypeService dataTypeService,
                                    ILookups lookups,
                                    IContentLocator contentLocator,
-                                   IHttpContextAccessor httpContextAccessor,
+                                   IQueryStringAccessor queryStringAccessor,
                                    IMemberManager memberManager)
         : base(contentHelper, dataTypeService, memberManager) {
         _lookups = lookups;
         _contentLocator = contentLocator;
-        _httpContextAccessor = httpContextAccessor;
+        _queryStringAccessor = queryStringAccessor;
     }
 
     protected override async Task<bool> AllowEditAsync(ContentProperties contentProperties) {
@@ -42,9 +43,10 @@ public class FundraiserAccessControl : MembersAccessControl {
     }
 
     protected override async Task<bool> AllowEditAsync(IPublishedContent content) {
+        var requestApiKey = _queryStringAccessor.GetValue(CrowdfundingConstants.Http.Headers.RequestApiKey);
+        
         var canEdit = await base.AllowEditAsync(content) ||
-                      UmbracoMemberOrApiKeyAuthorizeFilter.IsApiAuthorized(_contentLocator,
-                                                                           _httpContextAccessor.HttpContext?.Request);
+                      UmbracoMemberOrApiKeyAuthorizeFilter.IsApiAuthorized(_contentLocator, requestApiKey);
         
         if (canEdit) {
             canEdit = CanEdit(() => content.Value<string>(CrowdfundingConstants.Crowdfunder.Properties.Status));

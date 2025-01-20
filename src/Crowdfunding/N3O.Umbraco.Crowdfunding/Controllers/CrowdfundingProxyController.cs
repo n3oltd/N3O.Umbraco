@@ -45,7 +45,7 @@ public class CrowdfundingProxyController : ApiController {
     }
 
     private bool IsAuthorized() {
-        var apiKeyHeader = Request.Headers[CrowdfundingConstants.Http.Headers.ApiHeaderKey];
+        var apiKeyHeader = Request.Headers[CrowdfundingConstants.Http.Headers.RequestApiKey];
         var apiKey = _contentLocator.Value.Single<SettingsContent>().ApiKey;
         
         return apiKey == apiKeyHeader;

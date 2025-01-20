@@ -53,7 +53,7 @@ public class CrowdfunderCreatedHandler : CrowdfunderEventHandler<CrowdfunderCrea
     private void UpdateAndPublishStatus(IContent content, CrowdfunderType type, string statusName) {
         content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.Status, statusName);
 
-        if (_webHostEnvironment.IsProduction() && type == CrowdfunderTypes.Fundraiser) {
+        if (_webHostEnvironment.IsProduction() && type == CrowdfunderTypes.Campaign) {
             content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, true);
         } else {
             content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, false);
