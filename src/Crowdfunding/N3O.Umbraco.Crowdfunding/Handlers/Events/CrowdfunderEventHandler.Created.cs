@@ -20,21 +20,18 @@ public class CrowdfunderCreatedHandler : CrowdfunderEventHandler<CrowdfunderCrea
     private readonly IContentLocator _contentLocator;
     private readonly ICrowdfundingNotifications _crowdfundingNotifications;
     private readonly ICrowdfundingUrlBuilder _crowdfundingUrlBuilder;
-    private readonly IWebHostEnvironment _webHostEnvironment;
 
     public CrowdfunderCreatedHandler(AsyncKeyedLocker<string> asyncKeyedLocker,
                                      IContentService contentService,
                                      IContentLocator contentLocator,
                                      ICrowdfunderRevisionRepository crowdfunderRevisionRepository,
                                      ICrowdfundingNotifications crowdfundingNotifications,
-                                     ICrowdfundingUrlBuilder crowdfundingUrlBuilder,
-                                     IWebHostEnvironment webHostEnvironment)
+                                     ICrowdfundingUrlBuilder crowdfundingUrlBuilder)
         : base(asyncKeyedLocker, contentService, contentLocator, crowdfunderRevisionRepository) {
         _contentService = contentService;
         _contentLocator = contentLocator;
         _crowdfundingNotifications = crowdfundingNotifications;
         _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
-        _webHostEnvironment = webHostEnvironment;
     }
 
     protected override async Task HandleEventAsync(CrowdfunderCreatedEvent req, CancellationToken cancellationToken) {
@@ -53,7 +50,7 @@ public class CrowdfunderCreatedHandler : CrowdfunderEventHandler<CrowdfunderCrea
     private void UpdateAndPublishStatus(IContent content, CrowdfunderType type, string statusName) {
         content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.Status, statusName);
 
-        if (_webHostEnvironment.IsProduction() && type == CrowdfunderTypes.Campaign) {
+        if (type == CrowdfunderTypes.Campaign) {
             content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, true);
         } else {
             content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, false);
