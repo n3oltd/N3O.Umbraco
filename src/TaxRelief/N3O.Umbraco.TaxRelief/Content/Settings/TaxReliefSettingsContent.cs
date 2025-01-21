@@ -5,4 +5,5 @@ namespace N3O.Umbraco.TaxRelief.Content;
 
 public class TaxReliefSettingsContent : UmbracoContent<TaxReliefSettingsContent> {
     public TaxReliefScheme Scheme => GetValue(x => x.Scheme);
+    public bool ExcludeOrganisations => GetValue(x => x.ExcludeOrganisations);
 }

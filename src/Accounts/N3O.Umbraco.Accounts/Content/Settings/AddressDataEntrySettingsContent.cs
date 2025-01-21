@@ -1,3 +1,4 @@
+using N3O.Umbraco.Accounts.Lookups;
 using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Lookups;
@@ -15,7 +16,9 @@ public class AddressDataEntrySettingsContent : UmbracoContent<AddressDataEntrySe
     public AddressFieldElement Locality => GetValue(x => x.Locality);
     public AddressFieldElement AdministrativeArea => GetValue(x => x.AdministrativeArea);
     public AddressFieldElement PostalCode => GetValue(x => x.PostalCode);
+    public string LookupApiKey => GetValue(x => x.LookupApiKey);
     public Country DefaultCountry => GetValue(x => x.DefaultCountry);
+    public AddressLayout Layout => GetValue(x => x.Layout);
 
     public AddressDataEntrySettings ToDataEntrySettings(ILookups lookups) {
         SelectOption ToSelectOption(Country country) => new(country.Id, country.Name);
@@ -32,6 +35,8 @@ public class AddressDataEntrySettingsContent : UmbracoContent<AddressDataEntrySe
                                             Locality.ToTextFieldSettings(HtmlField.Name<AccountReq>(x => x.Address.Locality)),
                                             AdministrativeArea.ToTextFieldSettings(HtmlField.Name<AccountReq>(x => x.Address.AdministrativeArea)),
                                             PostalCode.ToTextFieldSettings(HtmlField.Name<AccountReq>(x => x.Address.PostalCode)),
-                                            DefaultCountry);
+                                            LookupApiKey,
+                                            DefaultCountry,
+                                            Layout);
     }
 }

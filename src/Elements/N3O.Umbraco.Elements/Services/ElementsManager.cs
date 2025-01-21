@@ -1,3 +1,4 @@
+using N3O.Umbraco.Accounts.Content;
 using N3O.Umbraco.Authentication.Auth0.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm.Engage;
@@ -30,6 +31,22 @@ public class ElementsManager : IElementsManager {
         _contentLocator = contentLocator;
         _jsonProvider = jsonProvider;
         _mapper = mapper;
+    }
+    
+    public async Task SaveAndPublishCheckoutProfileAsync() {
+        var subscription = _subscriptionAccessor.GetSubscription();
+        var client = await _clientFactory.CreateAsync(subscription, ClientTypes.BackOffice);
+        
+        var checkoutProfile = GetCheckoutProfile();
+        
+        var req = new SaveAndPublishReq();
+        req.Element = new SaveAndPublishElementReq();
+        req.Element.Id = checkoutProfile.Id;
+        req.Element.Type = ElementType.CheckoutProfile;
+        req.Element.Content = checkoutProfile;
+        req.Element.PublishedContent = checkoutProfile;
+        
+        await client.InvokeAsync(x => x.SaveAndPublishElementAsync, req);
     }
 
     public async Task SaveAndPublishDonationFormAsync() {
@@ -77,5 +94,21 @@ public class ElementsManager : IElementsManager {
         req.PublishedContent = _mapper.Map<TContent, TData>(content);
 
         return req;
+    }
+    
+    private CheckoutProfile GetCheckoutProfile() {
+        var dataEntrySettingsContent = _contentLocator.Single<DataEntrySettingsContent>();
+        var organisationSettings = _contentLocator.Single<OrganisationDataEntrySettingsContent>();
+        var paymentSettings = _contentLocator.Single<PaymentMethodDataEntrySettingsContent>();
+        var termsOfServiceSettings = _contentLocator.Single<TermsDataEntrySettingsContent>();
+        
+        var checkoutProfile = new CheckoutProfile();
+        checkoutProfile.Id = dataEntrySettingsContent.Content().Key.ToString();
+        checkoutProfile.Accounts = _mapper.Map<DataEntrySettingsContent, AccountEntrySettings>(dataEntrySettingsContent);
+        checkoutProfile.Branding = _mapper.Map<OrganisationDataEntrySettingsContent, BrandingSettings>(organisationSettings);
+        checkoutProfile.Payments = _mapper.Map<PaymentMethodDataEntrySettingsContent, PaymentsSettings>(paymentSettings);
+        checkoutProfile.TermsOfService = _mapper.Map<TermsDataEntrySettingsContent, TermsOfServiceSettings>(termsOfServiceSettings);
+        
+        return checkoutProfile;
     }
 }
