@@ -24,6 +24,6 @@ public class TermsOfServiceSettingsMapping : IMapDefinition {
     }
     
     public class Strings : CodeStrings {
-        public string TermsOfServiceText => "Agree to";
+        public string TermsOfServiceText => "terms and conditions";
     }
 }

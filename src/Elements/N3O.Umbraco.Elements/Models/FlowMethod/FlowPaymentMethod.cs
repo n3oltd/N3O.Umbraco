@@ -8,7 +8,7 @@ public class FlowPaymentMethod {
     public string ProcessorId { get; set; }
     public string Name { get; set; }
     public IEnumerable<FlowPaymentMethodCurrency> AllowedCurrencies { get; set; }
-    public bool SupportsRealtimePayments { get; set; }
     public bool SupportsApplePay { get; set; }
     public bool SupportsGooglePay { get; set; }
+    public bool SupportsRealtimePayments { get; set; }
 }

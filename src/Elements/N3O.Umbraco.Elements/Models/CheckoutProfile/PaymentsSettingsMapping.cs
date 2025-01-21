@@ -24,10 +24,10 @@ public class PaymentsSettingsMapping : IMapDefinition {
             method.Id = paymentMethod.Id.ToString();
             method.ProcessorId = paymentMethod.ProcessorId;
             method.Order = index + 1;
-            method.AllowedCurrencies = paymentMethod.AllowedCurrencies.Select(x => ToCrmCurrency(x.Code)).ToList();
-            method.SupportsRealtimePayments = paymentMethod.SupportsGooglePay;
+            method.AllowedCurrencies = paymentMethod.AllowedCurrencies.Select(x => GetCurrency(x.Code)).ToList();
             method.SupportsApplePay = paymentMethod.SupportsGooglePay;
             method.SupportsGooglePay = paymentMethod.SupportsGooglePay;
+            method.SupportsRealtimePayments = paymentMethod.SupportsGooglePay;
             
             paymentsSettings.Add(method);
         }
@@ -35,7 +35,7 @@ public class PaymentsSettingsMapping : IMapDefinition {
         dest.PaymentMethods = paymentsSettings;
     }
 
-    private Currency ToCrmCurrency(string code) {
+    private Currency GetCurrency(string code) {
         return (Currency) Enum.Parse(typeof(Currency), code, true);
     }
 }

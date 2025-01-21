@@ -19,7 +19,7 @@ public class CheckoutProfileElementPublished : INotificationAsyncHandler<Content
     
     public async Task HandleAsync(ContentPublishedNotification notification, CancellationToken cancellationToken) {
         foreach (var content in notification.PublishedEntities) {
-            if (content.IsCheckoutProfileReliefElement(_contentService)) {
+            if (content.IsCheckoutProfileDependency(_contentService)) {
                 await _elementsManager.Value.SaveAndPublishCheckoutProfileAsync();
             }
         }

@@ -7,7 +7,7 @@ public class NameLayoutDataSource : LookupsDataSource<NameLayout> {
     
     public override string Name => "Name Layouts";
     public override string Description => "Data source for name layouts";
-    public override string Icon => "icon-sensor";
+    public override string Icon => "icon-layout";
 
-    protected override string GetIcon(NameLayout nameLayout) => nameLayout.Icon;
+    protected override string GetIcon(NameLayout nameLayout) => "icon-layout";
 }
