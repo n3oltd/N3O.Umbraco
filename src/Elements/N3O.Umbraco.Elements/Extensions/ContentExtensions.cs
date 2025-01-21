@@ -18,7 +18,7 @@ public static class ContentExtensions {
     public static bool IsCheckoutProfileDependency(this IContent content, IContentService contentService) {
         return content.IsDataEntrySettingsOrChild(contentService) ||
                content.IsConsentSettingsOrDescendant(contentService) ||
-               content.IsTaxReliefSettingsOrChild(contentService);
+               content.IsTaxReliefOrChildSettings(contentService);
     }
     
     public static bool IsElementsSettings(this IContent content) {
