@@ -6,18 +6,18 @@
     PartialText.SetPartialName("CrowdfundingCrowdfunderBodyContent");
 }
 
-<div class="n3o-campaign">
+<div class="n3o-campaign n3o-mobile-hidden">
     <div class="n3o-campaign__content">
         @if (Model.EditMode()) {
             <div class="n3o-campaign__edit modallBtn" n3o-editor="@(Model, PropertyTypes.Raw, nameof(Model.Content.Body))">
                 <svg class="n3o-sm">
                     <use xlink:href="#editIcon"></use>
                 </svg>
-                
+
                 <b>@PartialText.Get("Edit")</b>
             </div>
         }
-        
+
         <div class="n3o-campaign__title big">
             <div id="about-description">
                 @Html.Raw(Model.Content.Body)
