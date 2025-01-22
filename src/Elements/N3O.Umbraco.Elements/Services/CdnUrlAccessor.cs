@@ -26,10 +26,10 @@ public class CdnUrlAccessor {
     }
 
     private string GetBaseUrl() {
-        if (_webHostEnvironment.IsProduction()) {
-            return "https://static.n3o.cloud";
+        if (_webHostEnvironment.IsDevelopment()) {
+            return "https://cdn-beta.n3o.cloud";
         } else {
-            return "https://static-beta.n3o.cloud";
+            return "https://cdn.n3o.cloud";
         }
     }
 }
