@@ -9018,3 +9018,7 @@ input[type=search]::-webkit-search-results-decoration {
 .slick-arrow.slick-hidden {
   display: none;
 }
+
+a.brand-link {
+  color: var(--theme-crowdfunding-primary);
+}
