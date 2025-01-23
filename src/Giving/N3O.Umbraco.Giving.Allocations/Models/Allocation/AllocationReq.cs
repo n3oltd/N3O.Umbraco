@@ -27,6 +27,9 @@ public class AllocationReq : IAllocation {
     [Name("Sponsorship")]
     public SponsorshipAllocationReq Sponsorship { get; set; }
     
+    [Name("Pledge URL")]
+    public string PledgeUrl { get; set; }
+    
     [Name("Upsell Offer ID")]
     public Guid? UpsellOfferId { get; set; }
     

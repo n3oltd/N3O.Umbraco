@@ -13,7 +13,9 @@ public partial class CrowdfundingController {
     [AllowAnonymous]
     [HttpPost("addToCart")]
     public async Task<ActionResult> AddToCart(CrowdfundingCartReq crowdfundingReq) {
-        var req = crowdfundingReq.ToBulkAddToCartReq(_contentLocator.Value, _jsonProvider.Value);
+        var req = crowdfundingReq.ToBulkAddToCartReq(_contentLocator.Value,
+                                                     _jsonProvider.Value,
+                                                     _crowdfundingUrlBuilder.Value);
         
         var revisionId = await _mediator.Value.SendAsync<BulkAddToCartCommand, BulkAddToCartReq, RevisionId>(req);
 

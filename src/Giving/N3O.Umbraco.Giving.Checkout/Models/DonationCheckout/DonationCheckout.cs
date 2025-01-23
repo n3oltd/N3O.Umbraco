@@ -27,6 +27,11 @@ public class DonationCheckout : Value {
 
     public bool IsComplete => IsRequired && Payment?.IsPaid == true;
     public bool IsRequired => Allocations.HasAny();
+    
+    public IEnumerable<string> Pledges => Allocations.Select(x => x.PledgeUrl)
+                                                     .Where(x => x.HasValue())
+                                                     .Distinct()
+                                                     .ToList();
 
     public DonationCheckout UpdatePayment(Payment payment) {
         return new DonationCheckout(Allocations, payment, Total);

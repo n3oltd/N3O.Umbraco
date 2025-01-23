@@ -14,6 +14,7 @@ public class AllocationRes : IAllocation {
     public FeedbackAllocationRes Feedback { get; set; }
     public FundAllocationRes Fund { get; set; }
     public SponsorshipAllocationRes Sponsorship { get; set; }
+    public string PledgeUrl { get; set; }
     public Guid? UpsellOfferId { get; set; }
     public bool Upsell { get; set; }
     public IDictionary<string, JToken> Extensions { get; set; }

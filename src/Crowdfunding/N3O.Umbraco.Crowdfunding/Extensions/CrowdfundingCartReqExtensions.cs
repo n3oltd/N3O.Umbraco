@@ -16,11 +16,13 @@ namespace N3O.Umbraco.Crowdfunding.Extensions;
 public static class CrowdfundingCartReqExtensions {
     public static BulkAddToCartReq ToBulkAddToCartReq(this CrowdfundingCartReq crowdfundingReq,
                                                       IContentLocator contentLocator,
-                                                      IJsonProvider jsonProvider) {
+                                                      IJsonProvider jsonProvider,
+                                                      ICrowdfundingUrlBuilder crowdfundingUrlBuilder) {
         var bulkAddToCartReq = new BulkAddToCartReq();
         bulkAddToCartReq.Items = crowdfundingReq.Items
                                                 .Select(x => ToAddToCartReq(contentLocator,
                                                                             jsonProvider,
+                                                                            crowdfundingUrlBuilder,
                                                                             crowdfundingReq,
                                                                             x))
                                                 .ToList();
@@ -30,6 +32,7 @@ public static class CrowdfundingCartReqExtensions {
 
     private static AddToCartReq ToAddToCartReq(IContentLocator contentLocator,
                                                IJsonProvider jsonProvider,
+                                               ICrowdfundingUrlBuilder crowdfundingUrlBuilder,
                                                CrowdfundingCartReq crowdfundingReq,
                                                CrowdfundingCartItemReq itemReq) {
         var crowdfunderContent = contentLocator.GetCrowdfunderContent(crowdfundingReq.Crowdfunding.CrowdfunderId.GetValueOrThrow(),
@@ -71,6 +74,8 @@ public static class CrowdfundingCartReqExtensions {
         } else {
             throw UnrecognisedValueException.For(goal.Type);
         }
+
+        addToCartReq.Allocation.PledgeUrl = crowdfunderContent.Url(crowdfundingUrlBuilder);
 
         addToCartReq.Allocation.Extensions = new Dictionary<string, JToken>();
         addToCartReq.Allocation.Extensions.Set(jsonProvider,

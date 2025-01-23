@@ -24,6 +24,7 @@ public partial class CrowdfundingController : ApiController {
     private readonly Lazy<ILookups> _lookups;
     private readonly Lazy<IUmbracoMapper> _mapper;
     private readonly Lazy<IJsonProvider> _jsonProvider;
+    private readonly Lazy<ICrowdfundingUrlBuilder> _crowdfundingUrlBuilder;
     private readonly Lazy<CartCookie> _cartCookie;
     private readonly Lazy<IContentLocator> _contentLocator;
 
@@ -33,6 +34,7 @@ public partial class CrowdfundingController : ApiController {
                                   Lazy<ILookups> lookups,
                                   Lazy<IUmbracoMapper> mapper,
                                   Lazy<IJsonProvider> jsonProvider,
+                                  Lazy<ICrowdfundingUrlBuilder> crowdfundingUrlBuilder,
                                   Lazy<CartCookie> cartCookie,
                                   Lazy<IContentLocator> contentLocator) {
         _mediator = mediator;
@@ -41,6 +43,7 @@ public partial class CrowdfundingController : ApiController {
         _lookups = lookups;
         _mapper = mapper;
         _jsonProvider = jsonProvider;
+        _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
         _cartCookie = cartCookie;
         _contentLocator = contentLocator;
     }
