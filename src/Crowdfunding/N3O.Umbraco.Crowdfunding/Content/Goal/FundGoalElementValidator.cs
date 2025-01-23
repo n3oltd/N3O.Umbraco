@@ -20,7 +20,7 @@ public class FundGoalElementValidator : GoalElementValidator<FundGoalElement> {
                                                                 .As<DonationItem>());
         
         if (donationItem.Price.Locked) {
-            ErrorResult($"{donationItem.Name} Donation Item has locked price which is not permitted");
+            ErrorResult($"The donation item {donationItem.Name} has a locked price which is not permitted");
         }
     }
 

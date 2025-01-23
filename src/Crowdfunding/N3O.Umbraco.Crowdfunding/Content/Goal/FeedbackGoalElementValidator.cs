@@ -20,7 +20,7 @@ public class FeedbackGoalElementValidator : GoalElementValidator<FeedbackGoalEle
                                                                   .As<FeedbackScheme>());
         
         if (feedbackScheme.Price.Locked) {
-            ErrorResult($"{feedbackScheme.Name} Feedback has locked price which is not permitted");
+            ErrorResult($"{feedbackScheme.Name} feedbacks have locked prices which is not permitted");
         }
     }
     

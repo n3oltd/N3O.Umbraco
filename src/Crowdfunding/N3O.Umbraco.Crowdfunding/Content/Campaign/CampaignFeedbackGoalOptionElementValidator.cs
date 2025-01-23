@@ -6,7 +6,8 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
-public class CampaignFeedbackGoalOptionElementValidator : CampaignGoalOptionElementValidator<CampaignFeedbackGoalOptionElement> {
+public class CampaignFeedbackGoalOptionElementValidator :
+    CampaignGoalOptionElementValidator<CampaignFeedbackGoalOptionElement> {
     public CampaignFeedbackGoalOptionElementValidator(IContentHelper contentHelper) : base(contentHelper) { }
 
     protected override IFundDimensionsOptions GetFundDimensionOptions(ContentProperties content) {
@@ -20,7 +21,7 @@ public class CampaignFeedbackGoalOptionElementValidator : CampaignGoalOptionElem
                                                                   .As<FeedbackScheme>());
         
         if (feedbackScheme.Price.Locked) {
-            ErrorResult($"{feedbackScheme.Name} Feedback has locked price which is not permitted");
+            ErrorResult($"{feedbackScheme.Name} feedbacks have locked prices which is not permitted");
         }
     }
     
