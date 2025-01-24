@@ -42,10 +42,15 @@ namespace DemoSite.Content
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		string Description { get; }
 
-		/// <summary>Name</summary>
+		/// <summary>Title</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		string DisplayName { get; }
+
+		/// <summary>Error</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		string Error { get; }
 
 		/// <summary>Goals</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
@@ -166,17 +171,30 @@ namespace DemoSite.Content
 		public static string GetDescription(ICrowdfundingCrowdfunder that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "description");
 
 		///<summary>
-		/// Name
+		/// Title
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("displayName")]
 		public virtual string DisplayName => GetDisplayName(this, _publishedValueFallback);
 
-		/// <summary>Static getter for Name</summary>
+		/// <summary>Static getter for Title</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		public static string GetDisplayName(ICrowdfundingCrowdfunder that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "displayName");
+
+		///<summary>
+		/// Error
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("error")]
+		public virtual string Error => GetError(this, _publishedValueFallback);
+
+		/// <summary>Static getter for Error</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		public static string GetError(ICrowdfundingCrowdfunder that, IPublishedValueFallback publishedValueFallback) => that.Value<string>(publishedValueFallback, "error");
 
 		///<summary>
 		/// Goals
