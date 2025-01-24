@@ -113,12 +113,20 @@ namespace DemoSite.Content
 		public virtual string Description => global::DemoSite.Content.CrowdfundingCrowdfunder.GetDescription(this, _publishedValueFallback);
 
 		///<summary>
-		/// Name
+		/// Title
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("displayName")]
 		public virtual string DisplayName => global::DemoSite.Content.CrowdfundingCrowdfunder.GetDisplayName(this, _publishedValueFallback);
+
+		///<summary>
+		/// Error
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "13.4.1+d72fc5c")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("error")]
+		public virtual string Error => global::DemoSite.Content.CrowdfundingCrowdfunder.GetError(this, _publishedValueFallback);
 
 		///<summary>
 		/// Goals

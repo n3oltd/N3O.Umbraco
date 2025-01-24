@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Flurl;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm;
@@ -8,6 +9,7 @@ using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Scheduler;
 using N3O.Umbraco.Utilities;
+using N3O.Umbraco.Webhooks;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
@@ -38,26 +40,37 @@ public class CampaignPublished : INotificationAsyncHandler<ContentPublishedNotif
         foreach (var content in notification.PublishedEntities) {
             if (content.ContentType.Alias.EqualsInvariant(CrowdfundingConstants.Campaign.Alias)) {
                 var campaign = _contentLocator.ById<CampaignContent>(content.Key);
+                var urlSettingsContent = _contentLocator.Single<UrlSettingsContent>();
 
                 if (!campaign.Status.HasValue()) {
-                    await _crowdfunderManager.CreateCampaignAsync(campaign);
+                    await _crowdfunderManager.CreateCampaignAsync(campaign, GetWebhookUrl(urlSettingsContent));
                 } else {
                     await _crowdfunderManager.UpdateCrowdfunderAsync(campaign.Key.ToString(),
                                                                      campaign,
-                                                                     campaign.ToggleStatus);
+                                                                     campaign.ToggleStatus,
+                                                                     GetWebhookUrl(urlSettingsContent));
                 }
 
                 if (_webHostEnvironment.IsProduction() &&
                     campaign.Status.HasValue() &&
                     campaign.Status != CrowdfunderStatuses.Draft) {
-                    EnqueueCampaignWebhook(campaign);
+                    EnqueueCampaignWebhook(campaign, urlSettingsContent);
                 }
             }
         }
     }
 
-    private void EnqueueCampaignWebhook(CampaignContent campaign) {
-        var stagingBaseUrl = _contentLocator.Single<UrlSettingsContent>().StagingBaseUrl;
+    private string GetWebhookUrl(UrlSettingsContent urlSettingsContent) {
+        var baseUrl = _webHostEnvironment.IsStaging() ? urlSettingsContent.StagingBaseUrl : urlSettingsContent.ProductionBaseUrl;
+        
+        var webhookUrl = new Url(baseUrl.TrimEnd('/'));
+        webhookUrl.AppendPathSegment($"umbraco/api/{WebhooksConstants.ApiName}/{CrowdfundingConstants.Webhooks.HookIds.Crowdfunder}");
+        
+        return webhookUrl.ToString();
+    }
+
+    private void EnqueueCampaignWebhook(CampaignContent campaign, UrlSettingsContent urlSettingsContent) {
+        var stagingBaseUrl = urlSettingsContent.StagingBaseUrl;
         var campaignUrl = campaign.Url(_crowdfundingUrlBuilder);
 
         _backgroundJob.EnqueueCampaignUrlWebhook(campaign.Key, campaignUrl, stagingBaseUrl);
