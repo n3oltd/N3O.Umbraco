@@ -6,7 +6,9 @@ using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Handlers;
 using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Crowdfunding.Models;
+using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Scheduler;
+using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
@@ -43,9 +45,11 @@ public class CrowdfunderCreatedHandler : CrowdfunderJobNotificationHandler<Crowd
     }
 
     private void UpdateStatus(IContent content, CrowdfunderType type, string statusName) {
-        content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.Status, statusName);
+        var status = StaticLookups.GetAll<CrowdfunderStatus>().Single(x => x.Name == statusName);
+        
+        content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.Status, status.Name);
 
-        if (type == CrowdfunderTypes.Campaign) {
+        if (type == CrowdfunderTypes.Campaign && status == CrowdfunderStatuses.Draft) {
             content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, true);
         } else {
             content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, false);
