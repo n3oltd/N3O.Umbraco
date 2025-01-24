@@ -8,6 +8,7 @@ using N3O.Umbraco.Localization;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Security;
+using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Crm.Engage;
 
@@ -18,10 +19,11 @@ public class EngageAccountManager : AccountManager {
 
     public EngageAccountManager(AccountCookie accountCookie,
                                 IMemberManager memberManager,
+                                IMemberService memberService,
                                 ClientFactory<AccountsClient> clientFactory,
                                 ISubscriptionAccessor subscriptionAccessor,
                                 IFormatter formatter)
-        : base(memberManager, accountCookie, formatter) {
+        : base(memberManager, memberService, accountCookie, formatter) {
         _clientFactory = clientFactory;
         _subscriptionAccessor = subscriptionAccessor;
     }

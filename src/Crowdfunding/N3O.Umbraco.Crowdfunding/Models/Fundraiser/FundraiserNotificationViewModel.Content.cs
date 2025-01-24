@@ -10,6 +10,8 @@ namespace N3O.Umbraco.Crowdfunding.Models;
 public class FundraiserContentViewModel {
     [JsonConstructor]
     public FundraiserContentViewModel(string fundraiserEmail,
+                                      string fundraiserFirstName,
+                                      string fundraiserLastName,
                                       string fundraiserName,
                                       string fundraiserLink,
                                       string title,
@@ -19,6 +21,8 @@ public class FundraiserContentViewModel {
                                       CrowdfunderStatus status,
                                       Currency currency) {
         FundraiserEmail = fundraiserEmail;
+        FundraiserFirstName = fundraiserFirstName;
+        FundraiserLastName = fundraiserLastName;
         FundraiserName = fundraiserName;
         FundraiserLink = fundraiserLink;
         Title = title;
@@ -31,6 +35,8 @@ public class FundraiserContentViewModel {
 
     public FundraiserContentViewModel(ICrowdfundingUrlBuilder crowdfundingUrlBuilder, FundraiserContent fundraiser)
         : this(fundraiser.Owner.Email,
+               fundraiser.Owner.FirstName,
+               fundraiser.Owner.LastName,
                fundraiser.Owner.Name,
                fundraiser.Url(crowdfundingUrlBuilder),
                fundraiser.Name,
@@ -40,13 +46,15 @@ public class FundraiserContentViewModel {
                fundraiser.Status,
                fundraiser.Currency) { }
 
-    public string FundraiserEmail { get; set; }
-    public string FundraiserName { get; set; }
-    public string FundraiserLink { get; set; }
-    public string Title { get; set; }
-    public string CampaignName { get; set; }
-    public DateTime CreatedOn { get; set; }
-    public decimal GoalsTotal { get; set; }
-    public Currency Currency { get; set; }
-    public CrowdfunderStatus Status { get; set; }
+    public string FundraiserEmail { get; }
+    public string FundraiserFirstName { get; }
+    public string FundraiserLastName { get; }
+    public string FundraiserName { get; }
+    public string FundraiserLink { get; }
+    public string Title { get; }
+    public string CampaignName { get; }
+    public DateTime CreatedOn { get; }
+    public decimal GoalsTotal { get; }
+    public Currency Currency { get; }
+    public CrowdfunderStatus Status { get; }
 }
