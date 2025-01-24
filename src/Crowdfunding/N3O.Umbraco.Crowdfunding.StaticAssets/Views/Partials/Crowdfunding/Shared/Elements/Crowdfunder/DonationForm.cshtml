@@ -128,7 +128,7 @@
                     
                     hideDonationSummaryModal();
                     
-                    window.refreshCartCount();
+                    window.themeConfig.refreshCartCount();
                 } else {
                     const data = await response.json();
                     window.themeConfig.showError(data.errors?.map(x=>x.error))
