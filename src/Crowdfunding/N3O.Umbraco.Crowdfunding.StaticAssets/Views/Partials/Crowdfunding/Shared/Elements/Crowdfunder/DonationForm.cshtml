@@ -19,7 +19,7 @@
         @foreach (var goal in Model.Goals) {
             <input type="hidden" name="goal" value="@goal.Id"/>
             
-            <div class="n3o-ctaFund showMore @if(goal.PriceHandles.Count > 2){<text>big</text>}">
+            <div class="n3o-ctaFund showMore @if(goal.PriceHandles.Count > 2 && Model.Goals.Count > 1){<text>big</text>}">
                 <h4 class="n3o-h4" id="goal-name-@goal.Id">@goal.Name</h4>
 
                 @foreach (var priceHandle in goal.PriceHandles) {
@@ -74,10 +74,10 @@
                         </svg>
                     </div>
                 </div>
-                @if (goal.PriceHandles.Count > 2) {
-                    <div class="n3o-large showMoreBtn">@PartialText.Get("More Options")</div>
-                }
-    </div>
+                @if (goal.PriceHandles.Count > 2 && Model.Goals.Count > 1) {
+            <div class="n3o-large showMoreBtn">@PartialText.Get("More Options")</div>
+            }
+        </div>
         }
         <div class="n3o-cta__foot">
             <button type="button" id="submit-donation" class="n3o-button primary submit3" disabled>
@@ -86,12 +86,33 @@
             </button>
         </div>
     </div>
+
+    <!-- This content section is only visible on mobile -->
+    <div class="n3o-campaign n3o-mobile-visible">
+        <div class="n3o-campaign__content">
+            @if (Model.EditMode()) {
+                <div class="n3o-campaign__edit modallBtn" n3o-editor="@(Model, PropertyTypes.Raw, nameof(Model.Content.Body))">
+                    <svg class="n3o-sm">
+                        <use xlink:href="#editIcon"></use>
+                    </svg>
+
+                    <b>@PartialText.Get("Edit")</b>
+                </div>
+            }
+
+            <div class="n3o-campaign__title big">
+                <div id="about-description">
+                    @Html.Raw(Model.Content.Body)
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
     const n3o_cdf_donationCart = (() => {
         let n3oSelectedCurrency = '@Model.SiteCurrency.Code.ToLowerInvariant()';
-        
+
         const submitCrowdfundingCartReq = async req => {
             try {
                 const response = await fetch('/umbraco/api/crowdfunding/addToCart', {
@@ -106,30 +127,34 @@
                     window.themeConfig.showCart();
                     
                     hideDonationSummaryModal();
+                    
+                    window.refreshCartCount();
                 } else {
-                    window.themeConfig.showError(response.errors)
+                    const data = await response.json();
+                    window.themeConfig.showError(data.errors?.map(x=>x.error))
                 }
             }
             catch (e) {
-                window.themeConfig.showError(e.errors)
+                showError(e);
             }
         }
-        
+
         const changeCurrency = async req => {
             try {
                 const response = await fetch(`/umbraco/api/giving/currency/${req}`, {
-                    method: "POST"                    
+                    method: "POST"
                 });
 
-                if (response.ok) {                   
+                if (response.ok) {
                     return true;
                 } else {
-                    window.themeConfig.showError(response.errors);
+                    const data = await response.json();
+                    window.themeConfig.showError(data.errors?.map(x=>x.error))
                     
                     return false;
                 }
             } catch (e) {
-                window.themeConfig.showError(e.errors);
+                showError(e);
             }
         }
 
@@ -160,7 +185,7 @@
                 }
 
                 goalValue.currency = document.querySelector(`#currency-${goalId}`).value;
-                
+
                 crowdfundingCartItemReq.goalId = goalId;
                 crowdfundingCartItemReq.value = goalValue;
 
@@ -243,7 +268,7 @@
 
                 items.forEach(item => {
                     const fundBlock = createFundBlock(item);
-                    
+
                     insertAfterElement.insertAdjacentElement('afterend', fundBlock);
                 });
 
@@ -304,7 +329,7 @@
 
                     let submitDonationButtonSpan = document.getElementById('submit-donation').querySelector("span");
 
-                    submitDonationButtonSpan.innerHTML = currencySymbol + totalSubmitAmount;                    
+                    submitDonationButtonSpan.innerHTML = currencySymbol + totalSubmitAmount;
 
                     currencyPickers.forEach( otherPicker => {
                         otherPicker.value = n3oSelectedCurrency;
@@ -359,6 +384,13 @@
             if (!str) return str;
             
             return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+        }
+
+        function showError(e) {
+            window.themeConfig.showError([
+                'Something went wrong, please try again later or contact the support team.',
+                e.message || 'No specific error message.'
+            ])
         }
 
         return {

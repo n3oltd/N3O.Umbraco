@@ -41,6 +41,7 @@ public static class UpsellOfferContentExtensions {
                               new FundAllocation(upsellOfferContent.DonationItem),
                               null,
                               null,
+                              null,
                               upsellOfferContent.Content().Key);
     }
 

@@ -16,6 +16,7 @@ public class Allocation : Value, IAllocation {
                       FundAllocation fund,
                       SponsorshipAllocation sponsorship,
                       FeedbackAllocation feedback,
+                      string pledgeUrl,
                       Guid? upsellOfferId) {
         Type = type;
         Value = value;
@@ -23,6 +24,7 @@ public class Allocation : Value, IAllocation {
         Fund = fund;
         Sponsorship = sponsorship;
         Feedback = feedback;
+        PledgeUrl = pledgeUrl;
         UpsellOfferId = upsellOfferId;
     }
 
@@ -35,6 +37,7 @@ public class Allocation : Value, IAllocation {
                allocation.Fund.IfNotNull(x => new FundAllocation(x)),
                allocation.Sponsorship.IfNotNull(x => new SponsorshipAllocation(x)),
                allocation.Feedback.IfNotNull(x => new FeedbackAllocation(x)),
+               allocation.PledgeUrl,
                allocation.UpsellOfferId) {
         Extensions = extensions;
     }
@@ -45,6 +48,7 @@ public class Allocation : Value, IAllocation {
     public FundAllocation Fund { get; }
     public SponsorshipAllocation Sponsorship { get; }
     public FeedbackAllocation Feedback { get; }
+    public string PledgeUrl { get; }
     public Guid? UpsellOfferId { get; }
     
     [JsonExtensionData]

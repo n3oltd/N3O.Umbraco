@@ -51,7 +51,7 @@ public class ViewCampaignPage : CrowdfundingPage {
         
         var campaign = GetCampaign(crowdfundingPath);
 
-        if (campaign == null || campaign.Status == CrowdfunderStatuses.Draft) {
+        if (campaign == null) {
             return false;
         }
         

@@ -25,11 +25,11 @@ public static class CrowdfundingConstants {
     
     public static class CampaignGoalOption {
         public static class Feedback {
-            public static readonly string Alias = "crowdfundingCampaignFeedbackGoalOption";
+            public const string Alias = "crowdfundingCampaignFeedbackGoalOption";
         }
 
         public static class Fund {
-            public static readonly string Alias = "crowdfundingCampaignFundGoalOption";
+            public const string Alias = "crowdfundingCampaignFundGoalOption";
         }
     }
 
@@ -110,7 +110,7 @@ public static class CrowdfundingConstants {
 
     public static class Goal {
         public static class Feedback {
-            public static readonly string Alias = "crowdfundingFeedbackGoal";
+            public const string Alias = "crowdfundingFeedbackGoal";
             
             public static class Properties {
                 public static readonly string CustomFields = "customFields";
@@ -119,7 +119,7 @@ public static class CrowdfundingConstants {
         }
 
         public static class Fund {
-            public static readonly string Alias = "crowdfundingFundGoal";
+            public const string Alias = "crowdfundingFundGoal";
 
             public static class Properties {
                 public static readonly string DonationItem = "donationItem";
