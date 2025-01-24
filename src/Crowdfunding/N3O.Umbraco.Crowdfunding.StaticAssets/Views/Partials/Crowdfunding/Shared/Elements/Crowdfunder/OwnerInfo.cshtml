@@ -21,12 +21,22 @@
                         </div>
 
                         <p class="n3o-subtle">
-                            @Model.OwnerInfo.Strapline
+                            @if (Model.Page is ViewEditFundraiserPage) {
+                                <a class='brand-link' href='@Model.Link(x => ViewCampaignPage.Url(x, Model.Content.Key))' target='_blank'>@Model.OwnerInfo.Strapline</a>
+                            } else {
+                                <text>@Model.OwnerInfo.Strapline</text>
+                            }
                         </p>
                     </div>
                 </div>
                 
                 <div class="n3o-account__buttons">
+                    @if (Model.Page is ViewEditFundraiserPage) {
+                        <a href="@Model.Link(x => ViewCampaignPage.Url(x, Model.Content.Key))" class="n3o-button secondary">
+                            @PartialText.Get("Fundraise For Us")
+                        </a>
+                    }
+
                     <button type="button" class="n3o-button secondary modallBtn" data-mod="#share-modal">
                         <svg>
                             <use xlink:href="#shareIcon"></use>
