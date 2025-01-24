@@ -1,6 +1,5 @@
 ﻿using N3O.Umbraco.Crm.Lookups;
-using N3O.Umbraco.Crowdfunding.Commands;
-using N3O.Umbraco.Crowdfunding.NamedParameters;
+using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Scheduler;
 using System.Threading;
@@ -25,11 +24,7 @@ public class CrowdfunderPublished : INotificationAsyncHandler<ContentPublishedNo
             if (isCampaign || isFundraiser) {
                 var crowdfunderType = isCampaign ? CrowdfunderTypes.Campaign : CrowdfunderTypes.Fundraiser;
 
-                _backgroundJob.Enqueue<CrowdfunderUpdatedNotification>($"{typeof(CrowdfunderUpdatedNotification).Name} {content.Key}",
-                                                                       p => {
-                                                                           p.Add<ContentId>(content.Key.ToString());
-                                                                           p.Add<CrowdfunderTypeId>(crowdfunderType.Id);
-                                                                       });
+                _backgroundJob.EnqueueCrowdfunderUpdated(content.Key, crowdfunderType);
             }
         }
 

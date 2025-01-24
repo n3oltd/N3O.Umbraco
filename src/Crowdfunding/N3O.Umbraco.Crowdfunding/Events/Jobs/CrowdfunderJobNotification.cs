@@ -4,10 +4,10 @@ using N3O.Umbraco.Mediator;
 
 namespace N3O.Umbraco.Crowdfunding.Events;
 
-public abstract class CrowdfunderEvent : Request<JobResult, None> {
+public abstract class CrowdfunderJobNotification : Request<JobResult, None> {
     public ContentId ContentId { get; }
     
-    protected CrowdfunderEvent(ContentId contentId) {
+    protected CrowdfunderJobNotification(ContentId contentId) {
         ContentId = contentId;
     }
 }

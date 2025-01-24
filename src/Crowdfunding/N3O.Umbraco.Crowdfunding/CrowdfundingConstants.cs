@@ -41,13 +41,13 @@ public static class CrowdfundingConstants {
             public static readonly string Body = "body";
             public static readonly string Currency = "currency";
             public static readonly string Description = "description";
+            public static readonly string Error = "error";
             public static readonly string Goals = "goals";
             public static readonly string HeroImages = "heroImages";
             public const string Name = "displayName";
             public static readonly string OpenGraphImagePath = "openGraphImagePath";
             public static readonly string Status = "status";
             public static readonly string ToggleStatus = "toggleStatus";
-            public static readonly string Error = "error";
         }
     }
     
@@ -227,17 +227,11 @@ public static class CrowdfundingConstants {
     
     public static class Webhooks {
         public static class Headers {
-            public const string JobType = "N3O-Job-Type";
             public const string CrowdfunderId = "N3O-Crowdfunder-Id";
+            public const string JobType = "N3O-Job-Type";
         }
 
         public static class EventTypes {
-            public static class Crowdfunder {
-                public const string CampaignCreated = "createCampaign";
-                public const string FundraiserCreated = "createFundraiser";
-                public const string CrowdfunderSynced = "syncCrowdfunder";
-            }
-            
             public static class Pledges {
                 public const string PledgeUpdated = "pledge.updated";
             }
@@ -247,6 +241,14 @@ public static class CrowdfundingConstants {
             public const string CampaignUrl = nameof(CampaignUrl);
             public const string Crowdfunder = nameof(Crowdfunder);
             public const string Pledges = nameof(Pledges);
+        }
+
+        public static class JobTypes {
+            public static class Crowdfunder {
+                public const string CampaignCreated = "createCampaign";
+                public const string FundraiserCreated = "createFundraiser";
+                public const string CrowdfunderSynced = "syncCrowdfunder";
+            }
         }
     }
 }

@@ -6,15 +6,14 @@ using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Handlers;
 using N3O.Umbraco.Crowdfunding.Lookups;
 using N3O.Umbraco.Crowdfunding.Models;
-using System.Threading;
+using N3O.Umbraco.Scheduler;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Crowdfunding.Events;
 
-public class CrowdfunderCreatedHandler : CrowdfunderEventHandler<CrowdfunderCreatedEvent> {
-    private readonly IContentService _contentService;
+public class CrowdfunderCreatedHandler : CrowdfunderJobNotificationHandler<CrowdfunderCreatedJobNotification> {
     private readonly IContentLocator _contentLocator;
     private readonly ICrowdfundingNotifications _crowdfundingNotifications;
     private readonly ICrowdfundingUrlBuilder _crowdfundingUrlBuilder;
@@ -22,28 +21,25 @@ public class CrowdfunderCreatedHandler : CrowdfunderEventHandler<CrowdfunderCrea
     public CrowdfunderCreatedHandler(AsyncKeyedLocker<string> asyncKeyedLocker,
                                      IContentService contentService,
                                      IContentLocator contentLocator,
-                                     ICrowdfunderRevisionRepository crowdfunderRevisionRepository,
+                                     IBackgroundJob backgroundJob,
                                      ICrowdfundingNotifications crowdfundingNotifications,
                                      ICrowdfundingUrlBuilder crowdfundingUrlBuilder)
-        : base(asyncKeyedLocker, contentService, contentLocator, crowdfunderRevisionRepository) {
-        _contentService = contentService;
+        : base(asyncKeyedLocker, contentService, backgroundJob) {
         _contentLocator = contentLocator;
         _crowdfundingNotifications = crowdfundingNotifications;
         _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
     }
 
-    protected override async Task HandleEventAsync(CrowdfunderCreatedEvent req,
-                                                   IContent content,
-                                                   CancellationToken cancellationToken) {
+    protected override Task HandleNotificationAsync(CrowdfunderCreatedJobNotification req, IContent content) {
         var type = content.ContentType.Alias.ToCrowdfunderType();
-
-        await AddOrUpdateRevisionAsync(content.Key, content.VersionId, type);
 
         UpdateStatus(content, type, req.Model.CrowdfunderInfo.Status.Name);
 
         if (type == CrowdfunderTypes.Fundraiser) {
             SendFundraiserCreatedEmail(content);
         }
+        
+        return Task.CompletedTask;
     }
 
     private void UpdateStatus(IContent content, CrowdfunderType type, string statusName) {

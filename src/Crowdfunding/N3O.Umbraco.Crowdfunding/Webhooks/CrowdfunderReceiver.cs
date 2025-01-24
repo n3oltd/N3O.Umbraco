@@ -37,24 +37,24 @@ public class CrowdfunderReceiver : WebhookReceiver {
         }
         
         using (await _locker.LockAsync(contentId, cancellationToken)) {
-            var eventType = payload.GetHeader(CrowdfundingConstants.Webhooks.Headers.JobType);
+            var jobType = payload.GetHeader(CrowdfundingConstants.Webhooks.Headers.JobType);
 
-            switch (eventType) {
-                case CrowdfundingConstants.Webhooks.EventTypes.Crowdfunder.CampaignCreated:
-                case CrowdfundingConstants.Webhooks.EventTypes.Crowdfunder.FundraiserCreated:
-                    Enqueue<CrowdfunderCreatedEvent>(contentId, webhookCrowdfunder);
+            switch (jobType) {
+                case CrowdfundingConstants.Webhooks.JobTypes.Crowdfunder.CampaignCreated:
+                case CrowdfundingConstants.Webhooks.JobTypes.Crowdfunder.FundraiserCreated:
+                    Enqueue<CrowdfunderCreatedJobNotification>(contentId, webhookCrowdfunder);
                     break;
                 
-                case CrowdfundingConstants.Webhooks.EventTypes.Crowdfunder.CrowdfunderSynced:
-                    Enqueue<CrowdfunderUpdatedEvent>(contentId, webhookCrowdfunder);
+                case CrowdfundingConstants.Webhooks.JobTypes.Crowdfunder.CrowdfunderSynced:
+                    Enqueue<CrowdfunderUpdatedJobNotification>(contentId, webhookCrowdfunder);
                     break;
             }
         }
     }
 
-    private void Enqueue<TEvent>(string contentId, JobResult webhook) where TEvent : CrowdfunderEvent {
-        _backgroundJob.Enqueue<TEvent, JobResult>($"{typeof(TEvent).Name.Replace("Event", "")}",
-                                                             webhook,
-                                                             p => p.Add<ContentId>(contentId));
+    private void Enqueue<T>(string contentId, JobResult webhook) where T : CrowdfunderJobNotification {
+        _backgroundJob.Enqueue<T, JobResult>($"{typeof(T).Name.Replace("JobNotification", "")}",
+                                             webhook,
+                                             p => p.Add<ContentId>(contentId));
     }
 }

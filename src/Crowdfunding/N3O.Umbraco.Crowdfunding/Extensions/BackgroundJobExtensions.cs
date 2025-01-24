@@ -1,4 +1,7 @@
 ﻿using Flurl;
+using N3O.Umbraco.Crm.Lookups;
+using N3O.Umbraco.Crowdfunding.Commands;
+using N3O.Umbraco.Crowdfunding.NamedParameters;
 using N3O.Umbraco.Scheduler;
 using N3O.Umbraco.Webhooks;
 using N3O.Umbraco.Webhooks.Commands;
@@ -18,6 +21,15 @@ public static class BackgroundJobExtensions {
         backgroundJob.Enqueue<DispatchWebhookCommand, DispatchWebhookReq>(jobName, req);
     }
     
+    public static void EnqueueCrowdfunderUpdated(this IBackgroundJob backgroundJob,
+                                                 Guid contentId,
+                                                 CrowdfunderType crowdfunderType) {
+        backgroundJob.Enqueue<CrowdfunderUpdatedNotification>($"{typeof(CrowdfunderUpdatedNotification).Name} {contentId}",
+                                                              p => {
+                                                                  p.Add<ContentId>(contentId.ToString());
+                                                                  p.Add<CrowdfunderTypeId>(crowdfunderType.Id);
+                                                              });
+    }
     
     private static DispatchWebhookReq GetWebhookReq(Guid campaignId, string campaignUrl, string stagingBaseUrl) {
         var webhookUrl = new Url(stagingBaseUrl.TrimEnd('/'));

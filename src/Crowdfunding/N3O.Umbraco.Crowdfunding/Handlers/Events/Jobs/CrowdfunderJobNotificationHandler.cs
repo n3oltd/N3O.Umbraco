@@ -1,10 +1,9 @@
 ﻿using AsyncKeyedLock;
-using N3O.Umbraco.Content;
-using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Events;
 using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Mediator;
+using N3O.Umbraco.Scheduler;
 using Newtonsoft.Json;
 using System;
 using System.Threading;
@@ -14,29 +13,27 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Crowdfunding.Handlers;
 
-public abstract class CrowdfunderEventHandler<TEvent> : IRequestHandler<TEvent, JobResult, None>
-    where TEvent : CrowdfunderEvent {
+public abstract class CrowdfunderJobNotificationHandler<TJobNotification> :
+    IRequestHandler<TJobNotification, JobResult, None>
+    where TJobNotification : CrowdfunderJobNotification {
     private readonly AsyncKeyedLocker<string> _asyncKeyedLocker;
     private readonly IContentService _contentService;
-    private readonly IContentLocator _contentLocator;
-    private readonly ICrowdfunderRevisionRepository _crowdfunderRevisionRepository;
+    private readonly IBackgroundJob _backgroundJob;
 
-    protected CrowdfunderEventHandler(AsyncKeyedLocker<string> asyncKeyedLocker,
-                                      IContentService contentService,
-                                      IContentLocator contentLocator,
-                                      ICrowdfunderRevisionRepository crowdfunderRevisionRepository) {
+    protected CrowdfunderJobNotificationHandler(AsyncKeyedLocker<string> asyncKeyedLocker,
+                                                IContentService contentService,
+                                                IBackgroundJob backgroundJob) {
         _asyncKeyedLocker = asyncKeyedLocker;
         _contentService = contentService;
-        _contentLocator = contentLocator;
-        _crowdfunderRevisionRepository = crowdfunderRevisionRepository;
+        _backgroundJob = backgroundJob;
     }
 
-    public async Task<None> Handle(TEvent req, CancellationToken cancellationToken) {
+    public async Task<None> Handle(TJobNotification req, CancellationToken cancellationToken) {
         using (await _asyncKeyedLocker.LockAsync(req.ContentId.Value.ToString(), cancellationToken)) {
             var content = GetContent(req.ContentId.Value);
             
             if (req.Model.Success) {
-                await HandleEventAsync(req, content, cancellationToken);
+                await HandleNotificationAsync(req, content);
                 
                 ClearError(content);
             } else {
@@ -44,15 +41,11 @@ public abstract class CrowdfunderEventHandler<TEvent> : IRequestHandler<TEvent, 
             }
             
             _contentService.SaveAndPublish(content);
+            
+            _backgroundJob.EnqueueCrowdfunderUpdated(content.Key, content.ContentType.Alias.ToCrowdfunderType());
         }
 
         return None.Empty;
-    }
-
-    protected async Task AddOrUpdateRevisionAsync(Guid contentId, int contentVersionId, CrowdfunderType type) {
-        var content = _contentLocator.GetCrowdfunderContent(contentId, type);
-        
-        await _crowdfunderRevisionRepository.AddOrUpdateAsync(content, contentVersionId); 
     }
 
     private void ClearError(IContent content) {
@@ -67,5 +60,5 @@ public abstract class CrowdfunderEventHandler<TEvent> : IRequestHandler<TEvent, 
         content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.Error, JsonConvert.SerializeObject(result.Error));
     }
 
-    protected abstract Task HandleEventAsync(TEvent req, IContent content, CancellationToken cancellationToken);
+    protected abstract Task HandleNotificationAsync(TJobNotification req, IContent content);
 }

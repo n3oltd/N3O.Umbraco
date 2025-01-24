@@ -61,7 +61,9 @@ public class CampaignPublished : INotificationAsyncHandler<ContentPublishedNotif
     }
 
     private string GetWebhookUrl(UrlSettingsContent urlSettingsContent) {
-        var baseUrl = _webHostEnvironment.IsStaging() ? urlSettingsContent.StagingBaseUrl : urlSettingsContent.ProductionBaseUrl;
+        var baseUrl = _webHostEnvironment.IsStaging()
+                          ? urlSettingsContent.StagingBaseUrl
+                          : urlSettingsContent.ProductionBaseUrl;
         
         var webhookUrl = new Url(baseUrl.TrimEnd('/'));
         webhookUrl.AppendPathSegment($"umbraco/api/{WebhooksConstants.ApiName}/{CrowdfundingConstants.Webhooks.HookIds.Crowdfunder}");
