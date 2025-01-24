@@ -47,6 +47,7 @@ public static class CrowdfundingConstants {
             public static readonly string OpenGraphImagePath = "openGraphImagePath";
             public static readonly string Status = "status";
             public static readonly string ToggleStatus = "toggleStatus";
+            public static readonly string Error = "error";
         }
     }
     
@@ -225,10 +226,16 @@ public static class CrowdfundingConstants {
     }
     
     public static class Webhooks {
+        public static class Headers {
+            public const string JobType = "N3O-Job-Type";
+            public const string CrowdfunderId = "N3O-Crowdfunder-Id";
+        }
+
         public static class EventTypes {
             public static class Crowdfunder {
-                public const string CrowdfunderCreated = "crowdfunder.created";
-                public const string CrowdfunderUpdated = "crowdfunder.updated";
+                public const string CampaignCreated = "createCampaign";
+                public const string FundraiserCreated = "createFundraiser";
+                public const string CrowdfunderSynced = "syncCrowdfunder";
             }
             
             public static class Pledges {

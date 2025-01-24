@@ -29,32 +29,32 @@ public class CrowdfunderReceiver : WebhookReceiver {
     }
     
     protected override async Task ProcessAsync(WebhookPayload payload, CancellationToken cancellationToken) {
-        var webhookCrowdfunder = payload.GetBody<WebhookCrowdfunderInfo>(_jsonProvider);
+        var contentId = payload.GetHeader(CrowdfundingConstants.Webhooks.Headers.CrowdfunderId);
+        var webhookCrowdfunder = payload.GetBody<JobResult>(_jsonProvider);
 
-        if (!webhookCrowdfunder.HasValue()) {
+        if (!contentId.HasValue() && !webhookCrowdfunder.CrowdfunderInfo.HasValue()) {
             return;
         }
         
-        using (await _locker.LockAsync(webhookCrowdfunder.Id.ToString(), cancellationToken)) {
-            var eventType = payload.GetEventType();
+        using (await _locker.LockAsync(contentId, cancellationToken)) {
+            var eventType = payload.GetHeader(CrowdfundingConstants.Webhooks.Headers.JobType);
 
             switch (eventType) {
-                case CrowdfundingConstants.Webhooks.EventTypes.Crowdfunder.CrowdfunderCreated:
-                    Enqueue<CrowdfunderCreatedEvent>(webhookCrowdfunder);
+                case CrowdfundingConstants.Webhooks.EventTypes.Crowdfunder.CampaignCreated:
+                case CrowdfundingConstants.Webhooks.EventTypes.Crowdfunder.FundraiserCreated:
+                    Enqueue<CrowdfunderCreatedEvent>(contentId, webhookCrowdfunder);
                     break;
                 
-                case CrowdfundingConstants.Webhooks.EventTypes.Crowdfunder.CrowdfunderUpdated:
-                    Enqueue<CrowdfunderUpdatedEvent>(webhookCrowdfunder);
+                case CrowdfundingConstants.Webhooks.EventTypes.Crowdfunder.CrowdfunderSynced:
+                    Enqueue<CrowdfunderUpdatedEvent>(contentId, webhookCrowdfunder);
                     break;
             }
         }
     }
 
-    private void Enqueue<TEvent>(WebhookCrowdfunderInfo webhookCrowdfunder) where TEvent : CrowdfunderEvent {
-        var contentId = webhookCrowdfunder.Id;
-        
-        _backgroundJob.Enqueue<TEvent, WebhookCrowdfunderInfo>($"{typeof(TEvent).Name.Replace("Event", "")}",
-                                                               webhookCrowdfunder,
-                                                               p => p.Add<ContentId>(contentId.ToString()));
+    private void Enqueue<TEvent>(string contentId, JobResult webhook) where TEvent : CrowdfunderEvent {
+        _backgroundJob.Enqueue<TEvent, JobResult>($"{typeof(TEvent).Name.Replace("Event", "")}",
+                                                             webhook,
+                                                             p => p.Add<ContentId>(contentId));
     }
 }

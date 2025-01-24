@@ -1,6 +1,4 @@
 ﻿using AsyncKeyedLock;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Content;
@@ -34,20 +32,21 @@ public class CrowdfunderCreatedHandler : CrowdfunderEventHandler<CrowdfunderCrea
         _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
     }
 
-    protected override async Task HandleEventAsync(CrowdfunderCreatedEvent req, CancellationToken cancellationToken) {
-        var content = GetContent(req.Model.Id);
+    protected override async Task HandleEventAsync(CrowdfunderCreatedEvent req,
+                                                   IContent content,
+                                                   CancellationToken cancellationToken) {
         var type = content.ContentType.Alias.ToCrowdfunderType();
 
         await AddOrUpdateRevisionAsync(content.Key, content.VersionId, type);
 
-        UpdateAndPublishStatus(content, type, req.Model.Status.Name);
+        UpdateStatus(content, type, req.Model.CrowdfunderInfo.Status.Name);
 
         if (type == CrowdfunderTypes.Fundraiser) {
             SendFundraiserCreatedEmail(content);
         }
     }
 
-    private void UpdateAndPublishStatus(IContent content, CrowdfunderType type, string statusName) {
+    private void UpdateStatus(IContent content, CrowdfunderType type, string statusName) {
         content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.Status, statusName);
 
         if (type == CrowdfunderTypes.Campaign) {
@@ -55,8 +54,6 @@ public class CrowdfunderCreatedHandler : CrowdfunderEventHandler<CrowdfunderCrea
         } else {
             content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, false);
         }
-        
-        _contentService.SaveAndPublish(content);
     }
 
     private void SendFundraiserCreatedEmail(IContent content) {

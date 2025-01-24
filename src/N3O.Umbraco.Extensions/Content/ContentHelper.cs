@@ -253,12 +253,10 @@ public class ContentHelper : IContentHelper {
 
         var properties = new List<(IPropertyType, object)>();
             
-        foreach (var propertyGroup in contentType.PropertyGroups) {
-            foreach (var propertyType in propertyGroup.PropertyTypes) {
-                var propertyValue = element[propertyType.Alias];
+        foreach (var propertyType in contentType.CompositionPropertyTypes) {
+            var propertyValue = element[propertyType.Alias];
 
-                properties.Add((propertyType, propertyValue?.ConvertToObject()));
-            }
+            properties.Add((propertyType, propertyValue?.ConvertToObject()));
         }
             
         return GetContentProperties(id, null, -1, contentTypeAlias, properties);

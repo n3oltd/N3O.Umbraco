@@ -11,10 +11,10 @@ public class CloudUrlAccessor {
     }
 
     public string Get() {
-        if (_webHostEnvironment.IsProduction()) {
-            return "https://n3o.cloud";
-        } else {
+        if (_webHostEnvironment.IsDevelopment()) {
             return "https://beta.n3o.cloud";
+        } else {
+            return "https://n3o.cloud";
         }
     }
 }

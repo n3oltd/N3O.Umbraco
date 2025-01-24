@@ -5,6 +5,7 @@ using N3O.Umbraco.Crowdfunding.Events;
 using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Mediator;
+using Newtonsoft.Json;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Crowdfunding.Handlers;
 
-public abstract class CrowdfunderEventHandler<TEvent> : IRequestHandler<TEvent, WebhookCrowdfunderInfo, None>
+public abstract class CrowdfunderEventHandler<TEvent> : IRequestHandler<TEvent, JobResult, None>
     where TEvent : CrowdfunderEvent {
     private readonly AsyncKeyedLocker<string> _asyncKeyedLocker;
     private readonly IContentService _contentService;
@@ -31,8 +32,18 @@ public abstract class CrowdfunderEventHandler<TEvent> : IRequestHandler<TEvent, 
     }
 
     public async Task<None> Handle(TEvent req, CancellationToken cancellationToken) {
-        using (await _asyncKeyedLocker.LockAsync(req.Model.Id.ToString(), cancellationToken)) {
-            await HandleEventAsync(req, cancellationToken);
+        using (await _asyncKeyedLocker.LockAsync(req.ContentId.Value.ToString(), cancellationToken)) {
+            var content = GetContent(req.ContentId.Value);
+            
+            if (req.Model.Success) {
+                await HandleEventAsync(req, content, cancellationToken);
+                
+                ClearError(content);
+            } else {
+                SetError(content, req.Model);
+            }
+            
+            _contentService.SaveAndPublish(content);
         }
 
         return None.Empty;
@@ -44,9 +55,17 @@ public abstract class CrowdfunderEventHandler<TEvent> : IRequestHandler<TEvent, 
         await _crowdfunderRevisionRepository.AddOrUpdateAsync(content, contentVersionId); 
     }
 
-    protected IContent GetContent(Guid id) {
+    private void ClearError(IContent content) {
+        content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.Error, null);
+    }
+    
+    private IContent GetContent(Guid id) {
         return _contentService.GetById(id);
     }
 
-    protected abstract Task HandleEventAsync(TEvent req, CancellationToken cancellationToken);
+    private void SetError(IContent content, JobResult result) {
+        content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.Error, JsonConvert.SerializeObject(result.Error));
+    }
+
+    protected abstract Task HandleEventAsync(TEvent req, IContent content, CancellationToken cancellationToken);
 }

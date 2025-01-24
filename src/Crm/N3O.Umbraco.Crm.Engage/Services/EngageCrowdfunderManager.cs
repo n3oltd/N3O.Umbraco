@@ -34,23 +34,23 @@ public class EngageCrowdfunderManager : ICrowdfunderManager {
         _accountIdentityAccessor = accountIdentityAccessor;
     }
 
-    public async Task CreateCampaignAsync(ICampaign campaign) {
-        var req = GetCreateCampaignReq(campaign);
+    public async Task CreateCampaignAsync(ICampaign campaign, string webhookUrl) {
+        var req = GetCreateCampaignReq(campaign, webhookUrl);
 
         var client = await GetClientAsync(CrowdfunderTypes.Campaign);
 
-        await client.InvokeAsync(x => x.CreateCampaignAsync, req);
+        await client.InvokeAsync<CreateCampaignReqCreateJobReq, CreateJobRes>(x => x.CreateCampaignAsync, req);
     }
 
-    public async Task CreateFundraiserAsync(IFundraiser fundraiser) {
-        var req = GetCreateFundraiserReq(fundraiser);
+    public async Task CreateFundraiserAsync(IFundraiser fundraiser, string webhookUrl) {
+        var req = GetCreateFundraiserReq(fundraiser, webhookUrl);
 
         var client = await GetClientAsync(CrowdfunderTypes.Fundraiser);
 
         await client.InvokeAsync(x => x.CreateFundraiserAsync, req);
     }
 
-    public async Task UpdateCrowdfunderAsync(string id, ICrowdfunder crowdfunder, bool toggleStatus) {
+    public async Task UpdateCrowdfunderAsync(string id, ICrowdfunder crowdfunder, bool toggleStatus, string webhookUrl) {
         var client = await GetClientAsync(crowdfunder.Type);
         var crowdfunderRes = await client.InvokeAsync<CrowdfunderRes>(x => x.GetCrowdfunderByIdAsync, id);
 
@@ -74,8 +74,12 @@ public class EngageCrowdfunderManager : ICrowdfunderManager {
         
         syncCrowdfunderReq.Allocations = GetCrowdfunderAllocationsReq(crowdfunder.Goals,
                                                                       crowdfunder.Currency.ToEngageCurrency());
+        
+        var req = new SyncCrowdfunderReqCreateJobReq();
+        req.NotificationUrl = webhookUrl;
+        req.Data = syncCrowdfunderReq;
 
-        await client.InvokeAsync(x => x.SyncCrowdfunderAsync, crowdfunderRes.RevisionId, syncCrowdfunderReq);
+        await client.InvokeAsync(x => x.SyncCrowdfunderAsync, crowdfunderRes.RevisionId, req);
     }
     
     private async Task<ServiceClient<CrowdfundingClient>> GetClientAsync(CrowdfunderType crowdfunderType) {
@@ -98,18 +102,26 @@ public class EngageCrowdfunderManager : ICrowdfunderManager {
         return _client;
     }
 
-    private CreateCampaignReq GetCreateCampaignReq(ICampaign campaign) {
-        var req = new CreateCampaignReq();
-        req.Crowdfunder = GetCreateCrowdfunderReq(campaign);
+    private CreateCampaignReqCreateJobReq GetCreateCampaignReq(ICampaign campaign, string webhookUrl) {
+        var campaignReq = new CreateCampaignReq();
+        campaignReq.Crowdfunder = GetCreateCrowdfunderReq(campaign);
+
+        var req = new CreateCampaignReqCreateJobReq();
+        req.NotificationUrl = webhookUrl;
+        req.Data = campaignReq;
 
         return req;
     }
 
-    private CreateFundraiserReq GetCreateFundraiserReq(IFundraiser fundraiser) {
-        var req = new CreateFundraiserReq();
-        req.Account = _accountIdentityAccessor.Value.GetToken();
-        req.CampaignId = fundraiser.CampaignId.ToString();
-        req.Crowdfunder = GetCreateCrowdfunderReq(fundraiser);
+    private CreateFundraiserReqCreateJobReq GetCreateFundraiserReq(IFundraiser fundraiser, string webhookUrl) {
+        var fundraiserReq = new CreateFundraiserReq();
+        fundraiserReq.Account = _accountIdentityAccessor.Value.GetToken();
+        fundraiserReq.CampaignId = fundraiser.CampaignId.ToString();
+        fundraiserReq.Crowdfunder = GetCreateCrowdfunderReq(fundraiser);
+        
+        var req = new CreateFundraiserReqCreateJobReq();
+        req.NotificationUrl = webhookUrl;
+        req.Data = fundraiserReq;
 
         return req;
     }

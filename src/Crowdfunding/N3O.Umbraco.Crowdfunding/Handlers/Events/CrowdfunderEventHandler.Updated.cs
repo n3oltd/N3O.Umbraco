@@ -4,6 +4,7 @@ using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Handlers;
 using System.Threading;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Crowdfunding.Events;
@@ -19,15 +20,14 @@ public class CrowdfunderUpdatedUpdatedHandler : CrowdfunderEventHandler<Crowdfun
         _contentService = contentService;
     }
 
-    protected override async Task HandleEventAsync(CrowdfunderUpdatedEvent req, CancellationToken cancellationToken) {
-        var content = GetContent(req.Model.Id);
+    protected override async Task HandleEventAsync(CrowdfunderUpdatedEvent req,
+                                                   IContent content,
+                                                   CancellationToken cancellationToken) {
         var type = content.ContentType.Alias.ToCrowdfunderType();
 
         await AddOrUpdateRevisionAsync(content.Key, content.VersionId, type);
 
-        content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.Status, req.Model.Status.Name);
+        content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.Status, req.Model.CrowdfunderInfo.Status.Name);
         content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, false);
-
-        _contentService.SaveAndPublish(content);
     }
 }
