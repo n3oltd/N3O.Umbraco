@@ -63,12 +63,12 @@ namespace N3O.Umbraco.Crm.Engage.Clients
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<string> CreateFundraiserAsync(string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateFundraiserReqCreateJobReq body);
+        System.Threading.Tasks.Task<CreateJobRes> CreateFundraiserAsync(string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateFundraiserReqCreateJobReq body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<string> CreateFundraiserAsync(string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateFundraiserReqCreateJobReq body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<CreateJobRes> CreateFundraiserAsync(string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateFundraiserReqCreateJobReq body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -748,7 +748,7 @@ namespace N3O.Umbraco.Crm.Engage.Clients
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<string> CreateFundraiserAsync(string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateFundraiserReqCreateJobReq body)
+        public virtual System.Threading.Tasks.Task<CreateJobRes> CreateFundraiserAsync(string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateFundraiserReqCreateJobReq body)
         {
             return CreateFundraiserAsync(n3O_Account_Activity_Scope_ID, n3O_Ignore_Validation_Warnings, n3O_Service_Cache, n3O_Route_Key, n3O_Clock_Adjustment, n3O_Subscription_ID, body, System.Threading.CancellationToken.None);
         }
@@ -756,7 +756,7 @@ namespace N3O.Umbraco.Crm.Engage.Clients
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<string> CreateFundraiserAsync(string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateFundraiserReqCreateJobReq body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<CreateJobRes> CreateFundraiserAsync(string n3O_Account_Activity_Scope_ID, string n3O_Ignore_Validation_Warnings, string n3O_Service_Cache, string n3O_Route_Key, string n3O_Clock_Adjustment, string n3O_Subscription_ID, CreateFundraiserReqCreateJobReq body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -820,7 +820,7 @@ namespace N3O.Umbraco.Crm.Engage.Clients
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<string>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<CreateJobRes>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);

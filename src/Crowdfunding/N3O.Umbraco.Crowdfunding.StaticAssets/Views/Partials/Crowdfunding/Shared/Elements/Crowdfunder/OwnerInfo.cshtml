@@ -32,7 +32,7 @@
                 
                 <div class="n3o-account__buttons">
                     @if (Model.Page is ViewEditFundraiserPage) {
-                        <a href="@Model.Link(x => ViewEditFundraiserPage.Url(x, Model.Content.Key))" class="n3o-button secondary">
+                        <a href="@Model.Link(x => CreateFundraiserPage.Url(x, Model.Content.CampaignId))" class="n3o-button secondary">
                             @PartialText.Get("Fundraise For Us")
                         </a>
                     }

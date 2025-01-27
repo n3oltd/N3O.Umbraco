@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding.Content.Settings;
+using N3O.Umbraco.Extensions;
 using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Security;
@@ -40,6 +41,6 @@ public class UmbracoMemberOrApiKeyAuthorizeFilter : IAsyncAuthorizationFilter {
     public static bool IsApiAuthorized(IContentLocator contentLocator, string requestApiKey) {
         var apiKey = contentLocator.Single<SettingsContent>().ApiKey;
         
-        return apiKey == requestApiKey;
+        return apiKey.HasValue() && apiKey == requestApiKey;
     }
 }
