@@ -19,7 +19,10 @@
             <div class="n3o-header__inner-side">
                 @if (Model.SignIn.IsSignedIn) {
                     <div class="n3o-header__inner-buttons mobRem">
-                        @{ CreateFundraiserLink(); }
+                        @if (Model.Page is ViewCampaignPage) {
+                            CreateFundraiserLink();
+                        }
+
                     </div>
                     <div class="n3o-header__inner-avatar">
                         <img src="@Model.SignIn.Member.AvatarLink" alt=""/>
@@ -44,12 +47,14 @@
                     </div>
                 } else {
                     <div class="n3o-header__inner-buttons">
-                        @{ CreateFundraiserLink(); }
-
-                        @using (Html.BeginUmbracoForm<UmbExternalLoginController>(nameof(UmbExternalLoginController.ExternalLogin))) {
-                            <button class="n3o-button secondary" type="submit" name="provider" value="@Model.SignIn.LoginProvider.ExternalLoginProvider.AuthenticationType">
-                                @PartialText.Get("Sign In")
-                            </button>
+                        @if (Model.Page is ViewCampaignPage) {
+                            CreateFundraiserLink();
+                        } else if (Model.Page is ViewEditFundraiserPage) {
+                            @using (Html.BeginUmbracoForm<UmbExternalLoginController>(nameof(UmbExternalLoginController.ExternalLogin))) {
+                                <button class="n3o-button secondary" type="submit" name="provider" value="@Model.SignIn.LoginProvider.ExternalLoginProvider.AuthenticationType">
+                                    @PartialText.Get("Sign In")
+                                </button>
+                            }
                         }
                     </div>
                 }
