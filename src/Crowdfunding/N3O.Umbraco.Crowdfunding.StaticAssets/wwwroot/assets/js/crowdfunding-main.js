@@ -1,6 +1,6 @@
 ﻿// scroll start
 function n3o_cdf_scrollFunc() {
-  let header = document.getElementById("header");
+  let header = document.getElementById("n3o_cdf_header");
 
   if (window.scrollY >= 60) {
     header.classList.add("sticky");
@@ -250,7 +250,7 @@ $(document).ready(function () {
     n3o_cdf_selectFunc();
     n3o_cdf_sortFunc();
 
-    if (document.getElementById("header")) {
+    if (document.getElementById("n3o_cdf_header")) {
         window.onscroll = function () {
             n3o_cdf_scrollFunc();
         };

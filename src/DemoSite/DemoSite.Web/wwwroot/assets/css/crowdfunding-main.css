@@ -1910,6 +1910,18 @@ input[type=search]::-webkit-search-results-decoration {
   z-index: 3;
   border-radius: var(--corner-lg);
 }
+
+/* campaign carousel image adjustments for smaller screens */
+@media (max-width: 768px) {
+  .n3o-campaign__top {
+    position: relative;
+    min-height: 220px;
+  }
+  .n3o-campaignSlider__item-inner {
+    min-height: 220px;
+  }
+}
+
 .n3o-campaignSlider .slick-track {
   display: -webkit-box !important;
   display: -ms-flexbox !important;
@@ -7357,16 +7369,74 @@ input[type=search]::-webkit-search-results-decoration {
 }
 .n3o-hero__bg img {
   width: 100%;
+  width: 100%;
   height: 100%;
   object-fit: cover;
   -o-object-fit: cover;
-  -o-object-position: 80%;
-  object-position: 80%;
+  -o-object-position: top;
+  object-position: top;
 }
 .n3o-hero__inner {
   position: relative;
-  height: 416px;
+  height: 400px;
 }
+
+/* mobile image cover at bottom */
+@media only screen and (max-width: 600px) {
+  .n3o-hero__bg img {
+    object-fit: contain;
+    -o-object-fit: contain;
+  }
+  .n3o-hero__inner {
+    height: 260px;
+  }
+  .n3o-hero__inner .n3o-account {
+    -webkit-transform: translateY(0%) !important;
+    transform: translateY(0%) !important;
+  }
+  .n3o-hero__inner.cov{
+    padding-bottom: 140px !important;
+  }
+}
+
+/* tablet image cover*/
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+  .n3o-hero__bg img {
+    object-fit: contain;
+    -o-object-fit: contain;
+    object-position: center;
+    -o-object-position: center;
+  }
+  .n3o-hero__inner {
+    height: 340px;
+  }
+}
+
+.n3o-mobile-visible {
+  display: none;
+}
+
+.n3o-mobile-hidden {
+  display: block;
+}
+
+@media only screen and (max-width: 800px) {
+  .n3o-mobile-visible{
+    display: block;
+  }
+  .n3o-mobile-hidden{
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  /* cover is reversed on mobile */
+  .n3o-main{
+    display: flex;
+    flex-direction: column-reverse;
+  }
+}
+
 .n3o-hero__inner.cov {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -7794,7 +7864,7 @@ input[type=search]::-webkit-search-results-decoration {
     width: 14px;
     height: 14px;
   }
-  
+
   .n3o-info {
     margin: 0;
     padding-top: 80px;
@@ -7812,7 +7882,6 @@ input[type=search]::-webkit-search-results-decoration {
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-    margin-bottom: var(--space-3xl);
   }
   .n3o-info__inner-col:last-child {
     padding: 0;
@@ -8948,4 +9017,8 @@ input[type=search]::-webkit-search-results-decoration {
 
 .slick-arrow.slick-hidden {
   display: none;
+}
+
+a.brand-link {
+  color: var(--theme-crowdfunding-primary);
 }
