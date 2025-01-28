@@ -1400,8 +1400,8 @@ namespace N3O.Umbraco.Crm.Engage.Clients
         [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public CreateCampaignReq Data { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("notificationUrl", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string NotificationUrl { get; set; }
+        [Newtonsoft.Json.JsonProperty("notificationUrls", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> NotificationUrls { get; set; }
 
     }
 
@@ -1446,8 +1446,8 @@ namespace N3O.Umbraco.Crm.Engage.Clients
         [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public CreateFundraiserReq Data { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("notificationUrl", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string NotificationUrl { get; set; }
+        [Newtonsoft.Json.JsonProperty("notificationUrls", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> NotificationUrls { get; set; }
 
     }
 
@@ -3139,8 +3139,8 @@ namespace N3O.Umbraco.Crm.Engage.Clients
         [Newtonsoft.Json.JsonProperty("data", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public SyncCrowdfunderReq Data { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("notificationUrl", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string NotificationUrl { get; set; }
+        [Newtonsoft.Json.JsonProperty("notificationUrls", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> NotificationUrls { get; set; }
 
     }
 
