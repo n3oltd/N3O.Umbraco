@@ -13,7 +13,7 @@
                 <div class="n3o-auth__title">
                     <h2 class="n3o-h2">@PartialText.Get("Please Wait...")</h2>
 
-                    <p class="n3o-p">@PartialText.Get("Page setup in progress, you will be able to view or edit the page shortly.")</p>
+                    <p class="n3o-p" id="status-message">@PartialText.Get("Page setup in progress, you will be able to view or edit the page shortly.")</p>
                 </div>
             </div>
         </div>
@@ -26,6 +26,27 @@
             e.stopPropagation();
             e.preventDefault();
         }
+
+        function getQueryParameter(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        function setQueryParameter(param, value) {
+            const url = new URL(window.location.href);
+            url.searchParams.set(param, value);
+            window.location.href = url.toString();
+        }
+
+        const refreshCount = parseInt(getQueryParameter('rc')) || 0;
+
+        if (refreshCount >= 3) {
+            document.getElementById('status-message').textContent = "@PartialText.Get("Hang tight, almost there.")";
+        }
+
+        setInterval(() => {
+            setQueryParameter('rc', refreshCount + 1);
+        }, 10000);
     </script>
 }
 
@@ -34,14 +55,14 @@
 <script type="text/javascript">
     const n3o_cdf_pageApi = (() => {
         const activatePage = async pageId => {
-            
+
             try {
                 const response = await fetch(`/umbraco/api/Crowdfunding/fundraisers/${pageId}/activate`, {
                     method: "POST"
                 })
 
                 return response.ok
-                 
+
             } catch (e) {
                 console.error(e)
             }
@@ -50,7 +71,7 @@
         }
 
         const deactivatePage = async pageId => {
-           try {
+            try {
                 const response = await fetch(`/umbraco/api/Crowdfunding/fundraisers/${pageId}/deactivate`, {
                     method: "POST"
                 });
@@ -90,7 +111,7 @@
 
     (() => {
         const pageIdElm = document.querySelector('[data-page-id]');
-        
+
         if (!pageIdElm || !pageIdElm.dataset.pageId) {
             return;
         }
@@ -100,19 +121,19 @@
         const handlePageActivation = () => {
             const activateButton = document.getElementById('n3o-btn-banner-activate');
 
-           if (activateButton) {
-               activateButton.addEventListener('click', async () => {
-                   activateButton.pointerEvents = "none"
-               
-                   const success = await n3o_cdf_pageApi.activatePage(pageId);
-               
-                   if (success) {
-                       window.location.reload();
-                   }
-               
-                   activateButton.pointerEvents = "";
-               });
-           }
+            if (activateButton) {
+                activateButton.addEventListener('click', async () => {
+                    activateButton.pointerEvents = "none"
+
+                    const success = await n3o_cdf_pageApi.activatePage(pageId);
+
+                    if (success) {
+                        window.location.reload();
+                    }
+
+                    activateButton.pointerEvents = "";
+                });
+            }
         };
 
         const handlePageDeactivation = () => {
@@ -121,9 +142,9 @@
             if (deactivateButton) {
                 deactivateButton.addEventListener('click', async () => {
                     deactivateButton.pointerEvents = "none";
-                    
+
                     const success = await n3o_cdf_pageApi.deactivatePage(pageId);
-                    
+
                     if (success) {
                         window.location.reload();
                     }
@@ -131,9 +152,9 @@
                     deactivateButton.pointerEvents = "none";
                 })
             }
-         }
+        }
 
-         const handleOverDonation = () => {
+        const handleOverDonation = () => {
             const resolveButton = document.getElementById('n3o-unallocated-resolve');
 
             if (resolveButton) {
@@ -141,18 +162,18 @@
                     window.__openGoalEditor();
                 })
             }
-         }
+        }
 
         const handlePreviewPage = () => {
             const viewPageButton = document.querySelector('.n3o-banner-view-page');
-            
+
             if (viewPageButton) {
                 viewPageButton.addEventListener('click', async () => {
                     var url = new URL(window.location.href)
                     url.searchParams.append("preview", true);
                     window.open(url.href, "_blank")
                 })
-            }            
+            }
         }
 
         handlePageActivation();

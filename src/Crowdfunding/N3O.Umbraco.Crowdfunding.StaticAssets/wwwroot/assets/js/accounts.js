@@ -51,7 +51,29 @@ function n3o_cdf_convertToObject(dataObject) {
     return convertedObject;
 }
 
+function n3o_cdf_getQueryParameter(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}
+
+function n3o_cdf_setQueryParameter(param, value) {
+    const url = new URL(window.location.href);
+    url.searchParams.set(param, value);
+    window.history.replaceState({}, '', url.toString());
+}
+
+function n3o_cdf_updateTextIfRequired(refreshCount) {
+    const statusMessage = document.getElementById('account-status-message');
+    
+    if (refreshCount >= 3 && statusMessage) {
+        statusMessage.textContent = "@PartialText.Get('Hang tight, almost there.')";
+    }
+}
+
+
 function n3o_cdf_poolRequest(fetcher, successAction, ...args) {
+    let refreshCount = parseInt(n3o_cdf_getQueryParameter('rc')) || 0;
+    
     const intervalId = setInterval(async () => {
         const result = await fetcher(args);
         if (result.status === 200) {
@@ -62,6 +84,13 @@ function n3o_cdf_poolRequest(fetcher, successAction, ...args) {
                 successAction();
             }
         }
+        
+        refreshCount++;
+        
+        n3o_cdf_setQueryParameter('rc', refreshCount);
+        
+        n3o_cdf_updateTextIfRequired(refreshCount);
+        
     }, 5000)
 }
 
