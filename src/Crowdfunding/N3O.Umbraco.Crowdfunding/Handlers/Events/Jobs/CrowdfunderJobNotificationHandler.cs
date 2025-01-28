@@ -2,6 +2,7 @@
 using N3O.Umbraco.Crowdfunding.Events;
 using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Models;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Scheduler;
 using Newtonsoft.Json;
@@ -31,18 +32,20 @@ public abstract class CrowdfunderJobNotificationHandler<TJobNotification> :
     public async Task<None> Handle(TJobNotification req, CancellationToken cancellationToken) {
         using (await _asyncKeyedLocker.LockAsync(req.ContentId.Value.ToString(), cancellationToken)) {
             var content = GetContent(req.ContentId.Value);
-            
-            if (req.Model.Success) {
-                await HandleNotificationAsync(req, content);
+
+            if (content.HasValue()) {
+                if (req.Model.Success) {
+                    await HandleNotificationAsync(req, content);
                 
-                ClearError(content);
-            } else {
-                SetError(content, req.Model);
+                    ClearError(content);
+                } else {
+                    SetError(content, req.Model);
+                }
+            
+                _contentService.SaveAndPublish(content);
+            
+                _backgroundJob.EnqueueCrowdfunderUpdated(content.Key, content.ContentType.Alias.ToCrowdfunderType());
             }
-            
-            _contentService.SaveAndPublish(content);
-            
-            _backgroundJob.EnqueueCrowdfunderUpdated(content.Key, content.ContentType.Alias.ToCrowdfunderType());
         }
 
         return None.Empty;

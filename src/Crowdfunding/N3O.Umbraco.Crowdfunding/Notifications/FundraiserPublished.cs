@@ -7,6 +7,7 @@ using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using N3O.Umbraco.Webhooks;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
@@ -33,24 +34,29 @@ public class FundraiserPublished : INotificationAsyncHandler<ContentPublishedNot
                 var fundraiser = _contentLocator.ById<FundraiserContent>(content.Key);
                 
                 if (!fundraiser.Status.HasValue()) {
-                    await _crowdfunderManager.CreateFundraiserAsync(fundraiser, GetWebhookUrl());
+                    await _crowdfunderManager.CreateFundraiserAsync(fundraiser, GetWebhookUrls());
                 } else {
                     await _crowdfunderManager.UpdateCrowdfunderAsync(fundraiser.Key.ToString(),
                                                                      fundraiser,
                                                                      fundraiser.ToggleStatus,
-                                                                     GetWebhookUrl());
+                                                                     GetWebhookUrls());
                 }
             }
         }
     }
     
-    private string GetWebhookUrl() {
+    private IEnumerable<string> GetWebhookUrls() {
         var urlSettingsContent = _contentLocator.Single<UrlSettingsContent>();
         
-        var baseUrl = _webHostEnvironment.IsStaging()
-                          ? urlSettingsContent.StagingBaseUrl
-                          : urlSettingsContent.ProductionBaseUrl;
+        var webhookUrls = new List<string>();
+        
+        webhookUrls.Add(GetWebhookUrl(urlSettingsContent.StagingBaseUrl));
+        webhookUrls.Add(GetWebhookUrl(urlSettingsContent.ProductionBaseUrl));
+        
+        return webhookUrls;
+    }
 
+    private string GetWebhookUrl(string baseUrl) {
         var webhookUrl = new Url(baseUrl.TrimEnd('/'));
         webhookUrl.AppendPathSegment($"umbraco/api/{WebhooksConstants.ApiName}/{CrowdfundingConstants.Webhooks.HookIds.Crowdfunder}");
 
