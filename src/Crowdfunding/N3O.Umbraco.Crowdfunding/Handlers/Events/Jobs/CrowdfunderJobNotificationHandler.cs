@@ -10,6 +10,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Scoping;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Crowdfunding.Handlers;
@@ -20,13 +21,16 @@ public abstract class CrowdfunderJobNotificationHandler<TJobNotification> :
     private readonly AsyncKeyedLocker<string> _asyncKeyedLocker;
     private readonly IContentService _contentService;
     private readonly IBackgroundJob _backgroundJob;
+    private readonly ICoreScopeProvider _coreScopeProvider;
 
     protected CrowdfunderJobNotificationHandler(AsyncKeyedLocker<string> asyncKeyedLocker,
                                                 IContentService contentService,
-                                                IBackgroundJob backgroundJob) {
+                                                IBackgroundJob backgroundJob,
+                                                ICoreScopeProvider coreScopeProvider) {
         _asyncKeyedLocker = asyncKeyedLocker;
         _contentService = contentService;
         _backgroundJob = backgroundJob;
+        _coreScopeProvider = coreScopeProvider;
     }
 
     public async Task<None> Handle(TJobNotification req, CancellationToken cancellationToken) {
@@ -44,8 +48,14 @@ public abstract class CrowdfunderJobNotificationHandler<TJobNotification> :
                     content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, false);
                 }
             
-                _contentService.SaveAndPublish(content);
-            
+                using (var scope = _coreScopeProvider.CreateCoreScope(autoComplete:true)) {
+                    if (typeof(TJobNotification) == typeof(CrowdfunderUpdatedJobNotification)) {
+                        using (_ = scope.Notifications.Suppress()) {
+                            _contentService.SaveAndPublish(content);
+                        }
+                    }
+                } 
+                
                 _backgroundJob.EnqueueCrowdfunderUpdated(content.Key, content.ContentType.Alias.ToCrowdfunderType());
             }
         }

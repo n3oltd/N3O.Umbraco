@@ -11,6 +11,7 @@ using N3O.Umbraco.Scheduler;
 using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Scoping;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Crowdfunding.Events;
@@ -22,11 +23,12 @@ public class CrowdfunderCreatedHandler : CrowdfunderJobNotificationHandler<Crowd
 
     public CrowdfunderCreatedHandler(AsyncKeyedLocker<string> asyncKeyedLocker,
                                      IContentService contentService,
-                                     IContentLocator contentLocator,
                                      IBackgroundJob backgroundJob,
+                                     ICoreScopeProvider coreScopeProvider,
+                                     IContentLocator contentLocator,
                                      ICrowdfundingNotifications crowdfundingNotifications,
-                                     ICrowdfundingUrlBuilder crowdfundingUrlBuilder)
-        : base(asyncKeyedLocker, contentService, backgroundJob) {
+                                     ICrowdfundingUrlBuilder crowdfundingUrlBuilder) 
+        : base(asyncKeyedLocker, contentService, backgroundJob, coreScopeProvider) {
         _contentLocator = contentLocator;
         _crowdfundingNotifications = crowdfundingNotifications;
         _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
@@ -45,8 +47,9 @@ public class CrowdfunderCreatedHandler : CrowdfunderJobNotificationHandler<Crowd
     }
 
     private void UpdateStatus(IContent content, CrowdfunderType type, string statusName) {
-        var status = StaticLookups.GetAll<CrowdfunderStatus>().Single(x => x.Name == statusName);
-        
+        var status = StaticLookups.GetAll<CrowdfunderStatus>()
+                                  .Single(x => x.Name == statusName);
+
         content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.Status, status.Name);
 
         if (type == CrowdfunderTypes.Campaign && status == CrowdfunderStatuses.Draft) {
