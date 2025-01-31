@@ -40,6 +40,8 @@ public abstract class CrowdfunderJobNotificationHandler<TJobNotification> :
                     ClearError(content);
                 } else {
                     SetError(content, req.Model);
+                    
+                    content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, false);
                 }
             
                 _contentService.SaveAndPublish(content);
