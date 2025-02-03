@@ -51,6 +51,6 @@
         <PackageReference Include="AngleSharp" Version="1.2.0" />
         <PackageReference Include="CsvHelper" Version="33.0.1" />
         <PackageReference Include="EPPlus" Version="7.5.3" />
-        <PackageReference Include="HtmlSanitizer" Version="9.0.873" />
+        <PackageReference Include="HtmlSanitizer" Version="9.0.876" />
     </ItemGroup>
 </Project>

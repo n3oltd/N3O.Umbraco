@@ -1,5 +1,4 @@
 ﻿using AsyncKeyedLock;
-using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding.Handlers;
 using N3O.Umbraco.Scheduler;
 using System.Threading.Tasks;

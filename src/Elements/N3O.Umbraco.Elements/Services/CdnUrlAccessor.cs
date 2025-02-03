@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Crm.Engage;
-using N3O.Umbraco.Crm.Engage.Extensions;
 
 namespace N3O.Umbraco.Elements;
 
@@ -16,7 +15,7 @@ public class CdnUrlAccessor {
     }
 
     public string GetUrl(string path) {
-        var subscriptionNumber = _subscriptionAccessor.GetSubscription().Id.GetSubscriptionNumber();
+        var subscriptionNumber = _subscriptionAccessor.GetSubscription().Id.Number;
         
         var url = new Url(GetBaseUrl());
         url.AppendPathSegment("elements");
