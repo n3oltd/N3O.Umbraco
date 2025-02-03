@@ -47,14 +47,16 @@ public abstract class CrowdfunderJobNotificationHandler<TJobNotification> :
                     
                     content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, false);
                 }
-            
-                using (var scope = _coreScopeProvider.CreateCoreScope(autoComplete:true)) {
-                    if (typeof(TJobNotification) == typeof(CrowdfunderUpdatedJobNotification)) {
-                        using (_ = scope.Notifications.Suppress()) {
-                            _contentService.SaveAndPublish(content);
-                        }
+                
+                if (typeof(TJobNotification) == typeof(CrowdfunderUpdatedJobNotification)) {
+                    using var scope = _coreScopeProvider.CreateCoreScope(autoComplete:true);
+                    
+                    using (_ = scope.Notifications.Suppress()) {
+                        _contentService.SaveAndPublish(content);
                     }
-                } 
+                } else {
+                    _contentService.SaveAndPublish(content);
+                }
                 
                 _backgroundJob.EnqueueCrowdfunderUpdated(content.Key, content.ContentType.Alias.ToCrowdfunderType());
             }
