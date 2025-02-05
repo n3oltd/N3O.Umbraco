@@ -53,6 +53,8 @@ public abstract class CrowdfunderJobNotificationHandler<TJobNotification> :
                     
                     using (_ = scope.Notifications.Suppress()) {
                         _contentService.SaveAndPublish(content);
+
+                        scope.Complete();
                     }
                 } else {
                     _contentService.SaveAndPublish(content);
