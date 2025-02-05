@@ -31,7 +31,9 @@ public class CampaignReceiver : WebhookReceiver {
         var campaignId = payload.RouteSegments.ElementAt(0).TryParseAs<Guid>().GetValueOrThrow();
 
         using (await _locker.LockAsync(campaignId.ToString(), cancellationToken)) {
+            //Workaround as getting content by guid returns an old cached version of the content
             var campaign = _contentService.GetById(campaignId);
+            campaign = _contentService.GetById(campaign.Id);
 
             if (campaign.HasValue()) {
                 var productionCampaignUrl = payload.GetBody<string>(_jsonProvider);

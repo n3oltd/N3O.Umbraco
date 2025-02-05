@@ -72,7 +72,10 @@ public abstract class CrowdfunderJobNotificationHandler<TJobNotification> :
     }
     
     private IContent GetContent(Guid id) {
-        return _contentService.GetById(id);
+        //Workaround as getting content by guid returns an old cached version of the content
+        var content = _contentService.GetById(id);
+        
+        return _contentService.GetById(content.Id);
     }
 
     private void SetError(IContent content, JobResult result) {
