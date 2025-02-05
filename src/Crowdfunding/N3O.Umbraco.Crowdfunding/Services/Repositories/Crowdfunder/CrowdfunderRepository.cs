@@ -55,7 +55,7 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
     
     public async Task<Crowdfunder> FindCrowdfunderByIdAsync(Guid id) {
         var fundraisers = await FetchCrowdfundersAsync(sql => sql.Select("*"),
-                                                       sql => sql.Where($"{nameof(Crowdfunder.ContentKey)} = {id.ToString()}"));
+                                                       sql => sql.Where($"{nameof(Crowdfunder.ContentKey)} = '{id.ToString()}'"));
 
         return fundraisers.Single();
     }
@@ -139,7 +139,7 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
             
             var updateLastContributionOnSql = Sql.Builder
                                                  .Append($"UPDATE {CrowdfundingConstants.Tables.Crowdfunders.Name} SET {nameof(Crowdfunder.LastContributionOn)} =")
-                                                 .Append($"(SELECT MAX({nameof(Contribution.Date)}) FROM {CrowdfundingConstants.Tables.Contributions.Name} WHERE {nameof(Contribution.CrowdfunderId)} = '{id.ToString()})")
+                                                 .Append($"(SELECT MAX({nameof(Contribution.Date)}) FROM {CrowdfundingConstants.Tables.Contributions.Name} WHERE {nameof(Contribution.CrowdfunderId)} = '{id.ToString()}')")
                                                  .Where($"{nameof(Crowdfunder.ContentKey)} = '{id.ToString()}'");
 
             await db.ExecuteAsync(sql);
