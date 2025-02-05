@@ -165,15 +165,17 @@ public class CrowdfunderRepository : ICrowdfunderRepository {
 
     public async Task UpdateNonDonationsTotalAsync(Guid id, ForexMoney nonDonationsForex) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-            var crowdfunder = db.Single<Crowdfunder>($"WHERE {nameof(Crowdfunder.ContentKey)} = @0", id);
+            var crowdfunder = db.SingleOrDefault<Crowdfunder>($"WHERE {nameof(Crowdfunder.ContentKey)} = @0", id);
 
-            crowdfunder.NonDonationsTotalBase = nonDonationsForex.Base.Amount;
-            crowdfunder.NonDonationsTotalQuote = nonDonationsForex.Quote.Amount;
+            if (crowdfunder.HasValue()) {
+                crowdfunder.NonDonationsTotalBase = nonDonationsForex.Base.Amount;
+                crowdfunder.NonDonationsTotalQuote = nonDonationsForex.Quote.Amount;
             
-            crowdfunder.LeftToRaiseBase = crowdfunder.GoalsTotalBase - (crowdfunder.NonDonationsTotalBase + crowdfunder.ContributionsTotalBase);
-            crowdfunder.LeftToRaiseQuote = crowdfunder.GoalsTotalQuote - (crowdfunder.NonDonationsTotalQuote + crowdfunder.ContributionsTotalQuote);
+                crowdfunder.LeftToRaiseBase = crowdfunder.GoalsTotalBase - (crowdfunder.NonDonationsTotalBase + crowdfunder.ContributionsTotalBase);
+                crowdfunder.LeftToRaiseQuote = crowdfunder.GoalsTotalQuote - (crowdfunder.NonDonationsTotalQuote + crowdfunder.ContributionsTotalQuote);
 
-            await db.UpdateAsync(crowdfunder);
+                await db.UpdateAsync(crowdfunder);
+            }
         }
     }
 
