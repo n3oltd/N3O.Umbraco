@@ -30,7 +30,6 @@ public class DonationCheckout : Value {
     
     public IEnumerable<string> Pledges => Allocations.Select(x => x.PledgeUrl)
                                                      .Where(x => x.HasValue())
-                                                     .Distinct()
                                                      .ToList();
 
     public DonationCheckout UpdatePayment(Payment payment) {

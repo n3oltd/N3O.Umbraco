@@ -1,3 +1,4 @@
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using Newtonsoft.Json;
@@ -18,7 +19,9 @@ public class AllocationRes : IAllocation {
     public Guid? UpsellOfferId { get; set; }
     public bool Upsell { get; set; }
     public IDictionary<string, JToken> Extensions { get; set; }
-    
+
+    public bool LinkedToPledge => PledgeUrl.HasValue();
+
     [JsonIgnore]
     IFundDimensionValues IAllocation.FundDimensions => FundDimensions;
     

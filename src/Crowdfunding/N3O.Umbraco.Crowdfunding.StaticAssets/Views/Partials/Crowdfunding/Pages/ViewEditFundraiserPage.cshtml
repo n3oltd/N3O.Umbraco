@@ -40,8 +40,12 @@
 
         const refreshCount = parseInt(getQueryParameter('rc')) || 0;
 
-        if (refreshCount >= 2) {
+        if (refreshCount === 1) {
             document.getElementById('status-message').textContent = "@PartialText.Get("Hang tight, almost there.")";
+        } else if (refreshCount === 2) {
+            document.getElementById('status-message').textContent = "@PartialText.Get("We are putting the finishing touches.")";
+        } else if (refreshCount >= 3) {
+            document.getElementById('status-message').textContent = "@PartialText.Get("Any moment now...")";
         }
 
         setInterval(() => {

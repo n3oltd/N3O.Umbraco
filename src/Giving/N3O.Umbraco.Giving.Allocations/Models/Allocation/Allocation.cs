@@ -51,6 +51,8 @@ public class Allocation : Value, IAllocation {
     public string PledgeUrl { get; }
     public Guid? UpsellOfferId { get; }
     
+    public bool LinkedToPledge => PledgeUrl.HasValue();
+    
     [JsonExtensionData]
     public IDictionary<string, JToken> Extensions { get; set; }
 
