@@ -15,7 +15,7 @@
             <div class="n3o-sign__title">
                 <div class="n3o-signWarn">
                     <p class="n3o-p">
-                        @PartialText.Get("Your email {0} is associated with multiple accounts in our system.").FormatWith(Model.Email)
+                        @PartialText.Get("We have found one or more accounts matching your email {0}.").FormatWith(Model.Email)
                     </p>
                 </div>
 
@@ -42,9 +42,22 @@
                     </span>
                 </a>
             }
+
+            <a href="#" class="n3o-signAdd">
+                <div class="n3o-signAdd__icon">
+                    <img src="/assets/images/icons/plus-circle.svg" alt="" />
+                </div>
+                <p class="n3o-p">@PartialText.Get("If none of the above are correct, you can create a new account")</p>
+                <span>
+                <img src="/assets/images/icons/arrow-right.svg" alt="" />
+                </span>
+            </a>
+            
         </div>
     </div>
 </div>
+
+@Html.CrowdfundingPartial("~/Views/Partials/Crowdfunding/Shared/Modals/CreateAccountModal.cshtml", Model)
 
 <script>
     const accountSelectors = document.querySelectorAll('.account-select');
@@ -64,5 +77,23 @@
         currentUrl.search = params.toString();
 
         window.location = currentUrl;
+    }
+
+    const addAccountBtn = document.querySelector('.n3o-signAdd');
+
+    if (addAccountBtn) {
+        addAccountBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const pickAccountModal = document.getElementById("pickAccount-modal");
+            if (pickAccountModal) {
+                pickAccountModal.classList.remove("active");
+            }
+
+            const createAccountModal = document.getElementById("createAccount-modal");
+            if (createAccountModal) {
+                createAccountModal.classList.add("active");
+            }
+        });
     }
 </script>

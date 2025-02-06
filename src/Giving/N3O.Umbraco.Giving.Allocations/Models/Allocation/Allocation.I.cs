@@ -14,6 +14,7 @@ public interface IAllocation {
     ISponsorshipAllocation Sponsorship { get; }
     IFeedbackAllocation Feedback { get; }
     string PledgeUrl { get; }
+    bool LinkedToPledge { get; }
     Guid? UpsellOfferId { get; }
     IDictionary<string, JToken> Extensions { get; }
 }
