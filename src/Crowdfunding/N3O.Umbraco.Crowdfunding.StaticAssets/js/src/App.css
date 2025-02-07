@@ -1,0 +1,8 @@
+.ck-editor__editable {
+    min-height: 240px; /* Adjust the height as needed */
+}
+
+.ck-editor__editable_inline {
+    list-style-type: none !important;
+    padding: 0 30px !important;
+}
