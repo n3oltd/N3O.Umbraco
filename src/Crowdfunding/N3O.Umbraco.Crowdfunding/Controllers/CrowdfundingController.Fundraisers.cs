@@ -28,7 +28,7 @@ public partial class CrowdfundingController {
     public async Task<ActionResult> DeactivateFundraiser([FromRoute] Guid fundraiserId) {
         await EnforceFundraiserAccessControlsAsync(fundraiserId);
         
-        await _mediator.Value.SendAsync<ActivateFundraiserCommand, None>(None.Empty);
+        await _mediator.Value.SendAsync<DeactivateFundraiserCommand, None>(None.Empty);
         
         return Ok();
     }
