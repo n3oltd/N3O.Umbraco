@@ -5816,7 +5816,6 @@ input[type=search]::-webkit-search-results-decoration {
   box-shadow: 0px 5px 64px 10px rgba(0, 0, 0, 0.08);
   border-radius: var(--corner-2xl);
   overflow: hidden;
-  cursor: pointer;
 }
 .n3o-card a {
   text-decoration: none;
