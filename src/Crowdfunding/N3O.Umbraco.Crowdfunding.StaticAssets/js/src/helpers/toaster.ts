@@ -9,7 +9,7 @@ export const loadingToast = (func: Promise<any>) => {
 }
 
 export const updatingToast = (func: Promise<any> ) => {
-  toast.promise(func, {
+  return toast.promise(func, {
     error: e => {
       try{
         if (e.response && JSON.parse(e.response)?.errors.length) {
@@ -18,7 +18,7 @@ export const updatingToast = (func: Promise<any> ) => {
           }, '');
         }
       } catch(e) {
-      console.error(e)
+        console.error(e)
       }
       return window.themeConfig.text.crowdfunding.apiUpdatingError
     },
