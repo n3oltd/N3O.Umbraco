@@ -1,5 +1,6 @@
 ﻿using Flurl;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm;
 using N3O.Umbraco.Crowdfunding.Content;
@@ -48,9 +49,12 @@ public class FundraiserPublished : INotificationAsyncHandler<ContentPublishedNot
         var urlSettingsContent = _contentLocator.Single<UrlSettingsContent>();
         
         var webhookUrls = new List<string>();
-        
-        webhookUrls.Add(GetWebhookUrl(urlSettingsContent.StagingBaseUrl));
-        webhookUrls.Add(GetWebhookUrl(urlSettingsContent.ProductionBaseUrl));
+
+        if (_webHostEnvironment.IsProduction()) {
+            webhookUrls.Add(GetWebhookUrl(urlSettingsContent.ProductionBaseUrl));
+        } else {
+            webhookUrls.Add(GetWebhookUrl(urlSettingsContent.StagingBaseUrl));
+        }
         
         return webhookUrls;
     }
