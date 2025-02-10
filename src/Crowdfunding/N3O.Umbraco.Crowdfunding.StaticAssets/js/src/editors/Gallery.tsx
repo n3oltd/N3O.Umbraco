@@ -14,6 +14,7 @@ import { _client } from '../common/cfClient';
 import { loadingToast, updatingToast } from '../helpers/toaster';
 import { ImageUploadStoragePath, HostURL } from '../common/constants';
 import { getCrowdfundingCookie } from '../common/cookie';
+import { transformCrop } from '../helpers/cropper';
 import { EditorProps } from './types/EditorProps';
 
 import './Gallery.css';
@@ -95,7 +96,7 @@ export const Gallery: React.FC<EditorProps> = ({
         const fileId = state.uppy?.addFile(file);
         state.uppy?.setFileState(fileId as string, {
           aspectRatioApplied: true,
-          crop: (f?.crops && f?.crops[0]) || {}} as any);
+          crop: (f?.crops && transformCrop(f?.crops[0])) || {}} as any);
       }))
         
     } catch (error) {
@@ -142,7 +143,7 @@ export const Gallery: React.FC<EditorProps> = ({
             storageToken: file.token,
             shape: CropShape.Rectangle,
             rectangle: {
-              ...file.crop
+                ...file.crop 
             } 
           }
         }
@@ -181,7 +182,10 @@ export const Gallery: React.FC<EditorProps> = ({
         }
       }
 
-      updatingToast(updateProperty(req, pageId as string))
+        await updatingToast(updateProperty(req, pageId as string))
+        setFiles([]);
+        state.propertyRes = {};
+        state.videoUrl = "";
     } catch(e) {
       console.error(e)
     }
@@ -190,6 +194,13 @@ export const Gallery: React.FC<EditorProps> = ({
   const handleUplodedFile = React.useCallback((token: string, id, crop) => {
     setFiles(prev => [...prev, {crop, token, id}])
   }, [setFiles]);
+
+  const handleOnClose = () => {
+      setFiles([]);
+      state.propertyRes = {};
+      state.videoUrl = "";
+      onClose();
+  }
 
   const setUppyInstance = React.useCallback(uppyInstance => {
     state.uppy = uppyInstance;
@@ -206,7 +217,7 @@ export const Gallery: React.FC<EditorProps> = ({
       id="cropper-nested-edit"
       isOpen={open}
       onOk={saveContent}
-      onClose={onClose}
+      onClose={handleOnClose}
       oKButtonProps={{
         disabled: loading
       }}
