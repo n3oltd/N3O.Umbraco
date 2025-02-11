@@ -6,7 +6,7 @@
     PartialText.SetPartialName("CrowdfundingHomePage");
 }
 
-<div class="n3o-spotlight" style="margin-top: 100px">
+<div class="n3o-spotlight">
     <div class="n3o-auto__container">
         <div class="n3o-spotlight__inner">
             <div class="n3o-spotlight__inner-title">
@@ -97,3 +97,13 @@
         </div>
     </div>
 </div>
+
+<script>
+    //hide n3o header completely
+    document.addEventListener("DOMContentLoaded", function () {
+        const header = document.getElementById("n3o_cdf_header");
+        if (header) {
+            header.style.display = "none";
+        }
+    });
+</script>
