@@ -19,27 +19,32 @@ import { EditorProps } from './types/EditorProps';
 
 import './Gallery.css';
 
+type FileUpload = {
+  crop?: any,
+  token?: string,
+  id?: string
+}
+
 export const Gallery: React.FC<EditorProps> = ({
   open,
   propAlias,
   onClose
 }) => {
   
-  const [filesToUplaod, setFiles] = React.useState<Array<{
-    crop: any,
-    token: string,
-    id: string
-  }>>([]);
-
   const state = useReactive<{
     propertyRes: ContentPropertyValueRes | undefined,
     uppy: Uppy | undefined | null,
-    videoUrl: string
+    videoUrl: string,
+    cropperStatus: 'open' | 'close' | '',
+    filesToUpload: Array<FileUpload>
   }>({
     propertyRes: undefined,
     videoUrl: "",
-    uppy: null
+    uppy: null,
+    cropperStatus: '',
+    filesToUpload: []
   });
+ 
 
   const {pageId} = usePageData();
 
@@ -54,7 +59,7 @@ export const Gallery: React.FC<EditorProps> = ({
     }
   });
 
-    const { runAsync: updateProperty, } = useRequest((req: ContentPropertyReq, pageId: string) => _client.updateProperty(pageId, getCrowdfundingCookie(), req), {
+    const { runAsync: updateProperty, loading: updating } = useRequest((req: ContentPropertyReq, pageId: string) => _client.updateProperty(pageId, getCrowdfundingCookie(), req), {
     manual: true,
     onSuccess: () => {
       onClose();
@@ -66,37 +71,49 @@ export const Gallery: React.FC<EditorProps> = ({
     if (open && pageId) {
       loadingToast(loadPropertyValue(pageId as string))
     }
-  }, [loadPropertyValue,pageId, open]);
+  }, [loadPropertyValue, pageId, open]);
 
   const onLoad = async (contentPropertyValueRes: ContentPropertyValueRes) => {
     if (!contentPropertyValueRes) {
       return 
     }
-
-    const uploadedFiles = state.propertyRes?.nested?.items?.filter(i => i.contentTypeAlias?.includes('HeroImage'))?.flatMap(i => i.properties?.map(p => p.cropper?.image)) || [];
+    
+    const uploadedFiles = state.propertyRes?.nested?.items
+                                           ?.filter(i => i.contentTypeAlias?.includes('HeroImage'))
+                                           ?.flatMap(i => i.properties?.map(p => ({ image: p.cropper?.image, storageToken: p.cropper?.storageToken })))
+                                           || [];
 
     try {
 
       await Promise.all(uploadedFiles.map(async f => {
-        const response = await fetch(`${HostURL}${f?.src}`);
+        const response = await fetch(`${HostURL}${f?.image?.src}`);
     
         if (!response.ok) {
-          return
+            return
         }
       
         const blob = await response.blob();
 
         const file = {
-            id: f?.mediaId,
-            name: f?.filename as string,
+            id: f?.image?.mediaId,
+            name: f?.image?.filename as string,
             type: blob.type,
             data: blob,
         }
 
         const fileId = state.uppy?.addFile(file);
+        state.filesToUpload.push({ crop: f?.image?.crops ? transformCrop(f?.image?.crops[0]) : {}, token: f?.storageToken, id: fileId })
+        
         state.uppy?.setFileState(fileId as string, {
-          aspectRatioApplied: true,
-          crop: (f?.crops && transformCrop(f?.crops[0])) || {}} as any);
+            aspectRatioApplied: true,
+            storageToken: f?.storageToken,
+            progress: {
+                uploadComplete: true,
+                uploadStarted: true,
+                percentage: 100,
+            },
+            isUploaded: true,
+            crop: (f?.image?.crops && transformCrop(f?.image?.crops[0])) || {}} as any);
       }))
         
     } catch (error) {
@@ -105,6 +122,11 @@ export const Gallery: React.FC<EditorProps> = ({
   }
 
   const saveContent = async () => {
+    if (state.cropperStatus === 'open') {
+      toast.error(window.themeConfig.text.crowdfunding.cropperClose)
+      
+      return;
+    }
 
    const imagesSchema =  state.propertyRes?.nested?.schema?.items?.find(c => c.contentTypeAlias?.includes('HeroImage'));    
    const videoUrlSchema =  state.propertyRes?.nested?.schema?.items?.find(c => c.contentTypeAlias?.includes('Url'));
@@ -115,8 +137,8 @@ export const Gallery: React.FC<EditorProps> = ({
       totalItems += 1;
     }
 
-   if (filesToUplaod.length) {
-      totalItems += filesToUplaod.length;
+   if (state.filesToUpload.length) {
+      totalItems += state.filesToUpload.length;
    }
 
    if (totalItems < (dataResponse?.nested?.configuration?.minimumItems || 1)) {
@@ -131,7 +153,7 @@ export const Gallery: React.FC<EditorProps> = ({
     return;
    }
    
-   const nestedReq = filesToUplaod.map(file => {
+   const nestedReq = state.filesToUpload.map(file => {
     const req : NestedItemReq = {
       contentTypeAlias: imagesSchema?.contentTypeAlias,
       properties: imagesSchema?.properties?.map(p => {
@@ -182,29 +204,46 @@ export const Gallery: React.FC<EditorProps> = ({
         }
       }
 
-        await updatingToast(updateProperty(req, pageId as string))
-        setFiles([]);
-        state.propertyRes = {};
-        state.videoUrl = "";
+      await updatingToast(updateProperty(req, pageId as string))
+      state.propertyRes = {};
+      state.videoUrl = "";
+      state.filesToUpload = [];
+      state.cropperStatus = ''
     } catch(e) {
       console.error(e)
     }
   }
 
+  const uploadImages = async () => {
+    await state.uppy?.upload();
+  }
+  
   const handleUplodedFile = React.useCallback((token: string, id, crop) => {
-    setFiles(prev => [...prev, {crop, token, id}])
-  }, [setFiles]);
+    const index = state.filesToUpload.findIndex(f => f.id === id)
+    
+    if (index > -1) {
+      state.filesToUpload[index] = {crop, token, id};
+      return
+    }
+
+    state.filesToUpload.push({crop, token, id})
+  }, [state]);
 
   const handleOnClose = () => {
-      setFiles([]);
       state.propertyRes = {};
       state.videoUrl = "";
+      state.filesToUpload = [];
+      state.cropperStatus = '';
       onClose();
   }
 
   const setUppyInstance = React.useCallback(uppyInstance => {
     state.uppy = uppyInstance;
   }, [state]);
+
+  const toggleCropper = status => {
+    state.cropperStatus = status
+  }
 
   //TODO: this needs to be improved, but atm keep that way
   const hasVideoUrlContent = state.propertyRes?.nested?.schema?.items?.find(i => i.contentTypeAlias?.includes('Url'));
@@ -216,33 +255,35 @@ export const Gallery: React.FC<EditorProps> = ({
     <Modal
       id="cropper-nested-edit"
       isOpen={open}
-      onOk={saveContent}
+      onOk={uploadImages}
       onClose={handleOnClose}
       oKButtonProps={{
-        disabled: loading
+          disabled: loading || updating
       }}
+      okText={window.themeConfig.text.crowdfunding.upload }
+      closeText={window.themeConfig.text.crowdfunding.close}
     >
-        {loading ? <p className="n3o-p">{window.themeConfig.text.crowdfunding.apiLoading}</p> : <>
+        {loading ? <p className="n3o-p" style={{width: '580px'}}>{window.themeConfig.text.crowdfunding.apiLoading}</p> : <>
         <h3 className="n3o-h3">{dataResponse?.nested?.configuration?.description}</h3>
         <ImageUploader 
           onFileUpload={handleUplodedFile}
           setUppyInstance={setUppyInstance}
+          hideUploadButton={true}
           aspectRatio={4/3}
           maxFiles={Number.isInteger(maxFiles) ? Number(maxFiles) : NaN}
           minFiles={1}
           elementId='campaign-cover'
           uploadUrl={`${HostURL}${ImageUploadStoragePath}`}
           openEditor={!state.propertyRes?.nested?.items?.length}
+          onUploadsComplete={saveContent}
           dataConfig={{
             width: (dataResponse?.nested?.configuration as any)?.rectangle?.width,
             height: (dataResponse?.nested?.configuration as any)?.rectangle?.height
           }}
           onFileRemove={file => {
-             setFiles(prevFiles => {
-              return prevFiles.filter(f => f.id !== file?.id)
-             })
+            state.filesToUpload = state.filesToUpload.filter(f => f.id !== file?.id)
           }}
-
+          toggleCropper={toggleCropper}
         />
         </>}
 

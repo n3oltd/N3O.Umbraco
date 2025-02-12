@@ -15,6 +15,8 @@ type ImageUploaderProps = {
   onFileRemove?: (event: UppyFile<Meta, Record<string, never>>) => void,
   onCrop?: (event: CustomEvent<any>) => void;
   setUppyInstance?: (uppy: Uppy) => void;
+  onUploadsComplete?: () => void,
+  toggleCropper?: (status: string) => void,
   maxFiles: number,
   minFiles?: number,
   aspectRatio: number,
@@ -23,7 +25,8 @@ type ImageUploaderProps = {
   hieght?: number,
   crop?: any,
   openEditor?: boolean,
-  dataConfig?: Record<string, any>
+  dataConfig?: Record<string, any>,
+  hideUploadButton?: boolean
 }
 
 const handleCrop = event => {
@@ -48,11 +51,14 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   setUppyInstance,
   uploadUrl,
   minFiles = 1,
-  openEditor = true,
   elementId = 'uppy',
   hieght = 550,
   dataConfig,
-  onFileRemove
+  onFileRemove,
+  onUploadsComplete,
+  toggleCropper,
+  hideUploadButton = false
+
 }) => {
 
   const filesCropInfo = React.useRef<Array<{file?: any, crop?: any, orignalCrop?: any}>>([]);
@@ -133,6 +139,12 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
       onFileUpload(body as string, file?.id, cropInfo?.crop || file?.crop)
     });
 
+    uppy.on('complete', (response) => {
+        if (onUploadsComplete && response.failed?.length === 0) {
+            onUploadsComplete()
+        }
+    });
+
     uppy.on("file-added", e => {
       onFileAdded?.(e)
     });
@@ -144,7 +156,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
     });
 
     uppy.on('file-editor:start', (file: any) => {
- 
+      toggleCropper?.('open')
       const existingFile = filesCropInfo.current.find(f => f.file.id === file.id);
       const editorPlugin = uppy.getPlugin<any>('ImageEditor');
       
@@ -159,13 +171,12 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
 
       if (file.crop &&  editorPlugin?.cropper) {
         editorPlugin?.cropper?.setData(file.crop);
-        uppy.setFileState(file.id, {
-          
-        })
+        uppy.setFileState(file.id, {})
       }
     });
 
     uppy.on('file-editor:complete', (updatedFile: any) => {
+      toggleCropper?.('close')
       updatedFile.aspectRatioApplied = true;
       const originalFile = filesCropInfo.current.find(f => f.file.id === updatedFile.id);
       
@@ -179,6 +190,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
     });
 
     uppy.on('file-editor:cancel', (file) => {
+      toggleCropper?.('close')
       filesCropInfo.current = filesCropInfo.current.filter(f => f.file.id !== file.id)
     });
 
@@ -193,11 +205,13 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   
   return <>
     <ReactDashboard 
-      autoOpen={openEditor ? 'imageEditor' :  null}
+      autoOpen={'imageEditor'}
       uppy={uppy}
       height={hieght} 
       id={elementId}
       doneButtonHandler={null}
-      proudlyDisplayPoweredByUppy={false}/>
+      proudlyDisplayPoweredByUppy={false}
+      hideUploadButton={hideUploadButton}
+      />
   </>
 }
