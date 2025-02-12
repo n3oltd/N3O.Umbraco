@@ -7,10 +7,12 @@ type ModalProps = {
   onOk: () => void,
   oKButtonProps?: any,
   closeButtonProps?: any,
-  children: React.ReactNode
+  children: React.ReactNode,
+  okText?: string,
+  closeText?: string
 }
 
-export function Modal({isOpen, onClose, onOk, id, oKButtonProps, closeButtonProps, children}: ModalProps){
+export function Modal({isOpen, onClose, onOk, id, oKButtonProps, closeButtonProps, children, okText, closeText}: ModalProps){
   if (!isOpen) {
     return null
   }
@@ -22,9 +24,9 @@ export function Modal({isOpen, onClose, onOk, id, oKButtonProps, closeButtonProp
           {children}
           <div className="n3o-edit__foot">
             <button type="button" className="n3o-button secondary" id="modal-close" {...(closeButtonProps || {})} onClick={() => onClose?.()} data-modal-close="true">
-              {window.themeConfig.text.crowdfunding.cancel}
+              {closeText || window.themeConfig.text.crowdfunding.cancel}
             </button>
-            <button type="button" className="n3o-button primary" id="modal-ok" {...(oKButtonProps || {})}  onClick={onOk}>{window.themeConfig.text.crowdfunding.save}</button>
+            <button type="button" className="n3o-button primary" id="modal-ok" {...(oKButtonProps || {})}  onClick={onOk}>{okText || window.themeConfig.text.crowdfunding.save}</button>
           </div>
         </div>
       </div>
