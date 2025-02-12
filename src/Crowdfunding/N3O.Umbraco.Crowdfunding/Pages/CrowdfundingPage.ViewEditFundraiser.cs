@@ -11,6 +11,7 @@ using N3O.Umbraco.OpenGraph;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core.Security;
 
 namespace N3O.Umbraco.Crowdfunding;
 
@@ -22,6 +23,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
     private readonly ITextFormatter _textFormatter;
     private readonly FundraiserAccessControl _fundraiserAccessControl;
     private readonly IQueryStringAccessor _queryStringAccessor;
+    private readonly IMemberManager _memberManager;
 
     public ViewEditFundraiserPage(IContentLocator contentLocator,
                                   IFormatter formatter,
@@ -33,7 +35,8 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
                                   FundraiserAccessControl fundraiserAccessControl,
                                   IForexConverter forexConverter,
                                   ILookups lookups,
-                                  IQueryStringAccessor queryStringAccessor)
+                                  IQueryStringAccessor queryStringAccessor,
+                                  IMemberManager memberManager)
         : base(contentLocator, formatter, urlBuilder, viewModelFactory) {
         _contributionRepository = contributionRepository;
         _currencyAccessor = currencyAccessor;
@@ -42,6 +45,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
         _forexConverter = forexConverter;
         _lookups = lookups;
         _queryStringAccessor = queryStringAccessor;
+        _memberManager = memberManager;
     }
 
     protected override string GetPageTitle(string crowdfundingPath, IReadOnlyDictionary<string, string> query) {
@@ -63,7 +67,7 @@ public class ViewEditFundraiserPage : CrowdfundingPage {
         
         var canEdit = _fundraiserAccessControl.CanEditAsync(fundraiser.Content()).GetAwaiter().GetResult();
 
-        if (fundraiser.Status == CrowdfunderStatuses.Draft && !canEdit) {
+        if (fundraiser.Status == CrowdfunderStatuses.Draft && _memberManager.IsLoggedIn() && !canEdit) {
             return false;
         }
         

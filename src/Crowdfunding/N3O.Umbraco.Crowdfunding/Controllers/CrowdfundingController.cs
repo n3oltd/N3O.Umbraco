@@ -8,6 +8,7 @@ using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Mediator;
+using N3O.Umbraco.Validation;
 using System;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
@@ -27,6 +28,8 @@ public partial class CrowdfundingController : ApiController {
     private readonly Lazy<ICrowdfundingUrlBuilder> _crowdfundingUrlBuilder;
     private readonly Lazy<CartCookie> _cartCookie;
     private readonly Lazy<IContentLocator> _contentLocator;
+    private readonly Lazy<IValidation> _validation;
+    private readonly Lazy<IValidationHandler> _validationHandler;
 
     public CrowdfundingController(Lazy<IMediator> mediator,
                                   Lazy<IContentService> contentService,
@@ -36,7 +39,9 @@ public partial class CrowdfundingController : ApiController {
                                   Lazy<IJsonProvider> jsonProvider,
                                   Lazy<ICrowdfundingUrlBuilder> crowdfundingUrlBuilder,
                                   Lazy<CartCookie> cartCookie,
-                                  Lazy<IContentLocator> contentLocator) {
+                                  Lazy<IContentLocator> contentLocator,
+                                  Lazy<IValidation> validation,
+                                  Lazy<IValidationHandler> validationHandler) {
         _mediator = mediator;
         _contentService = contentService;
         _fundraiserAccessControl = fundraiserAccessControl;
@@ -46,6 +51,8 @@ public partial class CrowdfundingController : ApiController {
         _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
         _cartCookie = cartCookie;
         _contentLocator = contentLocator;
+        _validation = validation;
+        _validationHandler = validationHandler;
     }
     
     [HttpPost("suggestSlug")]

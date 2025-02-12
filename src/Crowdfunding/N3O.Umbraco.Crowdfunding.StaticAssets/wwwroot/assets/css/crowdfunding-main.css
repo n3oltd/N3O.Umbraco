@@ -9023,3 +9023,11 @@ input[type=search]::-webkit-search-results-decoration {
 a.brand-link {
   color: var(--theme-crowdfunding-primary);
 }
+
+.disabled-form {
+  pointer-events: none;
+  opacity: 0.5;
+  background-color: #f2f2f2;
+  color: #999;
+  cursor: not-allowed;
+}

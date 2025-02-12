@@ -77,6 +77,11 @@ public class CrowdfunderSending : INotificationAsyncHandler<SendingContentNotifi
         } else if (status.CanToggle) {
             toggleStatusProperty.Label = status.ToggleAction.Label;
         }
+        
+        // TODO right now campaigns are activated by default and fundraisers from front end. There is no way to change
+        // the Status on campaigns on production from staging. Hiding toggle so that users don't expect to change status
+        // from staging 
+        statusTab.Properties = statusTab.Properties.Except(toggleStatusProperty);
     }
 
     private ContentPropertyDisplay GetProperty(Tab<ContentPropertyDisplay> tab, string alias) {

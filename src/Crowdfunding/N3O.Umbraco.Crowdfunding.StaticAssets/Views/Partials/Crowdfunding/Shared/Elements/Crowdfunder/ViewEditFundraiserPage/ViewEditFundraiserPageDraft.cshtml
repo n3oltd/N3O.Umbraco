@@ -1,0 +1,46 @@
+@using Umbraco.Cms.Web.Common.Security
+@using Umbraco.Cms.Web.Website.Controllers
+@using Umbraco.Extensions
+
+@inject IPartialText PartialText
+@inject IMemberExternalLoginProviders LoginProviders
+
+@model ViewEditFundraiserViewModel
+
+@{
+    PartialText.SetPartialName("ViewEditFundraiserPageDraft");
+    
+    var loginProviders = await LoginProviders.GetMemberProvidersAsync();
+    var membersLoginProvider = loginProviders.Single();
+}
+
+<div class="n3o-modalsItem modall n3o-signInModal active" id="fundraiser-signIn-modal">
+    <div class="n3o-share">
+        <h2 class="n3o-h2">@PartialText.Get("Fundraiser Inactive")</h2>
+
+        <p class="n3o-p n3o-detail">
+            @PartialText.Get("This fundraiser is currently Inactive. If you are owner of this fundraiser, please sign in to activate this page")
+        </p>
+
+        <div style="display: flex; justify-content: center">
+            <div>
+                @using (Html.BeginUmbracoForm<UmbExternalLoginController>(nameof(UmbExternalLoginController.ExternalLogin))) {
+                    <button id="sign-in-button" type="submit" name="provider" class="n3o-button primary" value="@membersLoginProvider.ExternalLoginProvider.AuthenticationType">
+                        @PartialText.Get("Sign In")
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("click", handler, true);
+
+    function handler(e) {
+        if (e.target.id !== "sign-in-button"){
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    }
+</script>

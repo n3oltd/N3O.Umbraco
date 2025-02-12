@@ -6,7 +6,7 @@
     PartialText.SetPartialName("CrowdfundingCrowdfunderDonationForm");
 }
 
-<div class="n3o-cta__wrapper" data-crowdfunder-id="@Model.Content.Key" data-crowdfunder-type="@Model.CrowdfunderType.Id">
+<div class="n3o-cta__wrapper @(Model.Content.Status != CrowdfunderStatuses.Active ? "disabled-form" : "")" data-crowdfunder-id="@Model.Content.Key" data-crowdfunder-type="@Model.CrowdfunderType.Id" @(Model.Content.Status != CrowdfunderStatuses.Active ? "disabled" : "")>
     <div class="n3o-cta" id="showMoreWrapper">
         <div class="n3o-cta__title start">
             <h2 class="n3o-h2">@PartialText.Get("Contribute to this page")</h2>

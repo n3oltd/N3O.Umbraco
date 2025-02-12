@@ -38,24 +38,24 @@ public class CampaignPublished : INotificationAsyncHandler<ContentPublishedNotif
     }
 
     public async Task HandleAsync(ContentPublishedNotification notification, CancellationToken cancellationToken) {
-        foreach (var content in notification.PublishedEntities) {
-            if (content.ContentType.Alias.EqualsInvariant(CrowdfundingConstants.Campaign.Alias)) {
-                var campaign = _contentLocator.ById<CampaignContent>(content.Key);
-                var urlSettingsContent = _contentLocator.Single<UrlSettingsContent>();
+        if (_webHostEnvironment.IsProduction()) {
+            foreach (var content in notification.PublishedEntities) {
+                if (content.ContentType.Alias.EqualsInvariant(CrowdfundingConstants.Campaign.Alias)) {
+                    var campaign = _contentLocator.ById<CampaignContent>(content.Key);
+                    var urlSettingsContent = _contentLocator.Single<UrlSettingsContent>();
 
-                if (!campaign.Status.HasValue()) {
-                    await _crowdfunderManager.CreateCampaignAsync(campaign, GetWebhookUrls(urlSettingsContent));
-                } else {
-                    await _crowdfunderManager.UpdateCrowdfunderAsync(campaign.Key.ToString(),
-                                                                     campaign,
-                                                                     campaign.ToggleStatus,
-                                                                     GetWebhookUrls(urlSettingsContent));
-                }
+                    if (!campaign.Status.HasValue()) {
+                        await _crowdfunderManager.CreateCampaignAsync(campaign, GetWebhookUrls(urlSettingsContent));
+                    } else {
+                        await _crowdfunderManager.UpdateCrowdfunderAsync(campaign.Key.ToString(),
+                                                                         campaign,
+                                                                         campaign.ToggleStatus,
+                                                                         GetWebhookUrls(urlSettingsContent));
+                    }
 
-                if (_webHostEnvironment.IsProduction() &&
-                    campaign.Status.HasValue() &&
-                    campaign.Status != CrowdfunderStatuses.Draft) {
-                    EnqueueCampaignWebhook(campaign, urlSettingsContent);
+                    if (campaign.Status.HasValue() && campaign.Status != CrowdfunderStatuses.Draft) {
+                        EnqueueCampaignWebhook(campaign, urlSettingsContent);
+                    }
                 }
             }
         }
@@ -71,7 +71,6 @@ public class CampaignPublished : INotificationAsyncHandler<ContentPublishedNotif
     private IEnumerable<string> GetWebhookUrls(UrlSettingsContent urlSettingsContent) {
         var webhookUrls = new List<string>();
         
-        webhookUrls.Add(GetWebhookUrl(urlSettingsContent.StagingBaseUrl));
         webhookUrls.Add(GetWebhookUrl(urlSettingsContent.ProductionBaseUrl));
         
         return webhookUrls;
