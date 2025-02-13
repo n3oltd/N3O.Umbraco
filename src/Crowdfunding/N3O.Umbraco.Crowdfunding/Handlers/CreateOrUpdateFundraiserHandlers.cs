@@ -12,6 +12,7 @@ using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Validation;
+using Slugify;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,17 +28,20 @@ public partial class CreateOrUpdateFundraiserHandlers {
     private readonly IContentEditor _contentEditor;
     private readonly IMemberManager _memberManager;
     private readonly IAccountIdentityAccessor _accountIdentityAccessor;
+    private readonly ISlugHelper _slugHelper;
 
     public CreateOrUpdateFundraiserHandlers(IContentLocator contentLocator,
                                             ICrowdfundingUrlBuilder urlBuilder,
                                             IContentEditor contentEditor,
                                             IMemberManager memberManager,
-                                            IAccountIdentityAccessor accountIdentityAccessor) {
+                                            IAccountIdentityAccessor accountIdentityAccessor,
+                                            ISlugHelper slugHelper) {
         _contentLocator = contentLocator;
         _urlBuilder = urlBuilder;
         _contentEditor = contentEditor;
         _memberManager = memberManager;
         _accountIdentityAccessor = accountIdentityAccessor;
+        _slugHelper = slugHelper;
     }
     
     private async Task PopulateFundraiserAsync(IContentPublisher contentPublisher, CreateFundraiserReq req) {
@@ -52,8 +56,10 @@ public partial class CreateOrUpdateFundraiserHandlers {
 
         contentPublisher.Content.Label(CrowdfundingConstants.Crowdfunder.Properties.Name).Set(req.Name);
         contentPublisher.Content.DataList(CrowdfundingConstants.Crowdfunder.Properties.Currency).SetLookups(req.Currency);
+
+        var slug = _slugHelper.GenerateSlug(req.Slug);
         
-        contentPublisher.Content.Label(CrowdfundingConstants.Fundraiser.Properties.Slug).Set(req.Slug);
+        contentPublisher.Content.Label(CrowdfundingConstants.Fundraiser.Properties.Slug).Set(slug);
         contentPublisher.Content.Label(CrowdfundingConstants.Fundraiser.Properties.AccountReference).Set(accountReference);
         contentPublisher.Content.ContentPicker(CrowdfundingConstants.Fundraiser.Properties.Campaign).SetContent(campaign);
         contentPublisher.Content.ContentPicker(CrowdfundingConstants.Fundraiser.Properties.Owner).SetMember(member);

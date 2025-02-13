@@ -28,15 +28,16 @@ public class CrowdfundingCartReqValidator : ModelValidator<CrowdfundingCartReq> 
     }
 
     private bool IsCrowdfunderActive(IContentLocator contentLocator, CrowdfundingCartReq req) {
-        var crowdfudner = contentLocator.GetCrowdfunderContent(req.Crowdfunding.CrowdfunderId.GetValueOrThrow(), req.Type);
+        var crowdfunder = contentLocator.GetCrowdfunderContent(req.Crowdfunding.CrowdfunderId.GetValueOrThrow(),
+                                                               req.Type);
 
-        return crowdfudner?.Status == CrowdfunderStatuses.Active;
+        return crowdfunder?.Status == CrowdfunderStatuses.Active;
     }
     
     public class Strings : ValidationStrings {
+        public string CrowdfunderInactive => "Cannot donate towards an inactive crowdfunder";
         public string SpecifyCrowdfundingData => "Please specify the crowdfunding data";
         public string SpecifyCrowdfunderType => "Please specify the crowdfunder type";
         public string SpecifyItems => "Please specify the items";
-        public string CrowdfunderInactive => "Cannot donate towards an inactive page";
     }
 }
