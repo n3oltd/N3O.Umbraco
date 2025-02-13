@@ -179,8 +179,8 @@ public static class CrowdfundingConstants {
         }
 
         public static class Slugs {
-            public static readonly string AllowedCharacters = @"[a-zA-Z0-9\-]";
-            public static readonly string DeniedCharacters = @"[^a-zA-Z0-9\-]";
+            public static readonly string AllowedCharacters = @"[a-zA-Z0-9\- ']";
+            public static readonly string DeniedCharacters = @"[a-zA-Z0-9\- ']";
         }
     }
 

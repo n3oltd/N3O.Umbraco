@@ -28,13 +28,21 @@
                             @PartialText.Get("Resolve")
                         </button>
                     </div>
+                } else if (Model.Content.ToggleStatus) {
+                    <button type="button" class="n3o-button primary" style="padding: 4px 8px;" disabled="disabled">
+                        @if (Model.Content.Status.ToggleAction == CrowdfunderActivationActions.Activate) {
+                            @PartialText.Get("Activating")
+                        } else {
+                            @PartialText.Get("Deactivating")
+                        }
+                    </button>
                 } else if (Model.Content.Status.CanToggle && Model.Content.Status.ToggleAction == CrowdfunderActivationActions.Activate) {
                     <button id="n3o-btn-banner-activate" type="button" class="n3o-button primary" style="padding: 4px 8px;">
                         @PartialText.Get("Activate")
                     </button>
                 } else if (Model.Content.Status.CanToggle && Model.Content.Status.ToggleAction == CrowdfunderActivationActions.Deactivate) {
                     <button @if (!Model.HasPendingGoalsWithPricing) { <text>id="n3o-btn-banner-deactivate"</text> } else { <text>data-mod="#banner-modal"</text> }
-                            type="button" class="n3o-button primary" style="padding: 4px 8px;">
+                            type="button" class="n3o-button secondary" style="padding: 4px 8px;">
                         @PartialText.Get("Deactivate")
                     </button>
                 }
