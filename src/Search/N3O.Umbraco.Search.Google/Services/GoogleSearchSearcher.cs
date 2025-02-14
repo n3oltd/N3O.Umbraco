@@ -48,9 +48,12 @@ public class GoogleSearchSearcher : ISearcher {
                                                                                 int number) {
         try {
             var searchSettings = _contentCache.Single<GoogleSearchSettingsContent>();
+            var urlSettingsContent = _contentCache.Single<UrlSettingsContent>();
+            var siteUrl = urlSettingsContent.ProductionBaseUrl;
 
             var searcher = new CustomSearchAPIService(new BaseClientService.Initializer {
-                ApiKey = searchSettings.ApiKey
+                ApiKey = searchSettings.ApiKey,
+                HttpClientInitializer = new CustomHttpClientInitializer(searchSettings.ApiKey, siteUrl)
             });
 
             var listRequest = searcher.Cse.List();
