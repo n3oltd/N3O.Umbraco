@@ -3,9 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm;
-using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Content;
-using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Scheduler;
 using N3O.Umbraco.Utilities;
@@ -52,20 +50,9 @@ public class CampaignPublished : INotificationAsyncHandler<ContentPublishedNotif
                                                                          campaign.ToggleStatus,
                                                                          GetWebhookUrls(urlSettingsContent));
                     }
-
-                    if (campaign.Status.HasValue() && campaign.Status != CrowdfunderStatuses.Draft) {
-                        EnqueueCampaignWebhook(campaign, urlSettingsContent);
-                    }
                 }
             }
         }
-    }
-
-    private void EnqueueCampaignWebhook(CampaignContent campaign, UrlSettingsContent urlSettingsContent) {
-        var stagingBaseUrl = urlSettingsContent.StagingBaseUrl;
-        var campaignUrl = campaign.Url(_crowdfundingUrlBuilder);
-
-        _backgroundJob.EnqueueCampaignUrlWebhook(campaign.Key, campaignUrl, stagingBaseUrl);
     }
     
     private IEnumerable<string> GetWebhookUrls(UrlSettingsContent urlSettingsContent) {
