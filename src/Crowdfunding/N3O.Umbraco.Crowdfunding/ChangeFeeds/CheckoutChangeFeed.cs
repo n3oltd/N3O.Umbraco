@@ -124,7 +124,7 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
 
         if (crowdfunderData.Type == CrowdfunderTypes.Fundraiser) {
             var fundraiser = _contentLocator.ById<FundraiserContent>(crowdfunderData.Id);
-            var template = _contentLocator.ById<FundraiserContributionReceivedTemplateContent>(crowdfunderData.Id);
+            var template = _contentLocator.Single<FundraiserContributionReceivedTemplateContent>();
 
             var model = new FundraiserContributionReceivedViewModel(new FundraiserContentViewModel(_crowdfundingUrlBuilder, fundraiser),
                                                                     checkout.SessionEntity,

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using N3O.Umbraco.Crowdfunding.Content.Templates;
 using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Entities;

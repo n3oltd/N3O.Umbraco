@@ -148,7 +148,7 @@ public abstract class AccountManager : IAccountManager {
         var memberIdentityUser = await _memberManager.GetCurrentMemberAsync();
         var member = _memberService.GetByKey(memberIdentityUser.Key);
 
-        if (member?.Name.EqualsInvariant(member.Email) == true) {
+        if (!member?.Name.EqualsInvariant(accountName) == true) {
             member.Name = accountName;
             
             if (member.HasProperty(MemberConstants.Member.Properties.FirstName) && accountFirstName.HasValue()){

@@ -43,6 +43,10 @@ public abstract class CrowdfunderViewModel<TContent> :
                                                IEnumerable<Contribution> contributions,
                                                Func<CrowdfunderOwnerViewModel> getOwnerInfo)
         where T : CrowdfunderViewModel<TContent>, new() {
+        var tags = new List<TagContent>();
+        tags.AddRange(content.Tags);
+        tags.AddRange(content.Goals.SelectMany(x => x.Tags));
+        
         var viewModel = await viewModelFactory.CreateViewModelAsync<T>(page, query);
         viewModel.Content = content;
         viewModel.CrowdfunderType = crowdfunderType;
@@ -57,7 +61,7 @@ public abstract class CrowdfunderViewModel<TContent> :
                                                                                                          lookups,
                                                                                                          x));
         
-        viewModel.Tags = content.Goals.SelectMany(x => x.Tags.Select(x => CrowdfunderTagViewModel.For(urlBuilder, x))).ToList();
+        viewModel.Tags = tags.Select(x => CrowdfunderTagViewModel.For(urlBuilder, x)).ToList();
         viewModel.CrowdfunderProgress = CrowdfunderProgressViewModel.For(content.Currency,
                                                                          contributions,
                                                                          content.Goals);
