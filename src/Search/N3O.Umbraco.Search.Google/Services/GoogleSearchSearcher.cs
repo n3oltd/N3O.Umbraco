@@ -53,7 +53,7 @@ public class GoogleSearchSearcher : ISearcher {
 
             var searcher = new CustomSearchAPIService(new BaseClientService.Initializer {
                 ApiKey = searchSettings.ApiKey,
-                HttpClientInitializer = new CustomHttpClientInitializer(searchSettings.ApiKey, siteUrl)
+                HttpClientInitializer = new CustomHttpClientInitializer(siteUrl)
             });
 
             var listRequest = searcher.Cse.List();
@@ -66,10 +66,7 @@ public class GoogleSearchSearcher : ISearcher {
             var search = listRequest.Execute();
             var results = search.Items
                                 .OrEmpty()
-                                .Select(x => new SearchResult(x.HtmlTitle,
-                                                              x.HtmlSnippet,
-                                                              x.DisplayLink,
-                                                              x.Link))
+                                .Select(x => new SearchResult(x.HtmlTitle, x.HtmlSnippet, x.DisplayLink, x.Link))
                                 .ToList();
 
             return (Math.Max((search.SearchInformation.TotalResults.TryParseAs<int>() ?? 0) - 1, 0), results);
