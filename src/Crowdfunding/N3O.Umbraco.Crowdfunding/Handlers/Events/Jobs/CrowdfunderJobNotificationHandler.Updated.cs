@@ -43,15 +43,13 @@ public class CrowdfunderUpdatedHandler : CrowdfunderJobNotificationHandler<Crowd
         var type = content.ContentType.Alias.ToCrowdfunderType();
         
         if (type == CrowdfunderTypes.Campaign) {
-            EnqueueCampaignWebhook(content);
+            EnqueueCampaignWebhook(content, req.Model.CrowdfunderInfo.Status.Name);
         }
 
         return Task.CompletedTask;
     }
     
-    private void EnqueueCampaignWebhook(IContent content) {
-        var status = content.GetValue<string>(CrowdfundingConstants.Crowdfunder.Properties.Status);
-        
+    private void EnqueueCampaignWebhook(IContent content, string status) {
         if(status.HasValue() && !status.EqualsInvariant(CrowdfunderStatuses.Draft.Name) && _webHostEnvironment.IsProduction()) {
             var campaign = _contentLocator.ById<CampaignContent>(content.Key);
             var urlSettingsContent = _contentLocator.Single<UrlSettingsContent>();
