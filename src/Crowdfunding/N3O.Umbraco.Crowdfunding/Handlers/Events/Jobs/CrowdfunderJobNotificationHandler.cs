@@ -18,6 +18,7 @@ namespace N3O.Umbraco.Crowdfunding.Handlers;
 public abstract class CrowdfunderJobNotificationHandler<TJobNotification> :
     IRequestHandler<TJobNotification, JobResult, None>
     where TJobNotification : CrowdfunderJobNotification {
+    private readonly AsyncKeyedLocker<string> _asyncKeyedLocker;
     private readonly IContentService _contentService;
     private readonly IBackgroundJob _backgroundJob;
 
@@ -25,29 +26,32 @@ public abstract class CrowdfunderJobNotificationHandler<TJobNotification> :
                                                 IContentService contentService,
                                                 IBackgroundJob backgroundJob,
                                                 ICoreScopeProvider coreScopeProvider) {
+        _asyncKeyedLocker = asyncKeyedLocker;
         _contentService = contentService;
         _backgroundJob = backgroundJob;
     }
 
     public async Task<None> Handle(TJobNotification req, CancellationToken cancellationToken) {
-        var content = GetContent(req.ContentId.Value);
-             
-        if (content.HasValue()) {
-            if (req.Model.Success) {
-                await HandleNotificationAsync(req, content);
-                             
-                ClearError(content);
-                
-                _contentService.SaveAndPublish(content);
-            } else {
-                SetError(content, req.Model);
-                                 
-                content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, false);
-                
-                _contentService.Save(content);
+        using (await _asyncKeyedLocker.LockAsync(req.ContentId.Value.ToString(), cancellationToken)) {
+            var content = GetContent(req.ContentId.Value);
+
+            if (content.HasValue()) {
+                if (req.Model.Success) {
+                    await HandleNotificationAsync(req, content);
+
+                    ClearError(content);
+
+                    _contentService.SaveAndPublish(content);
+                } else {
+                    SetError(content, req.Model);
+
+                    content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, false);
+
+                    _contentService.Save(content);
+                }
+
+                _backgroundJob.EnqueueCrowdfunderUpdated(content.Key, content.ContentType.Alias.ToCrowdfunderType());
             }
-                             
-            _backgroundJob.EnqueueCrowdfunderUpdated(content.Key, content.ContentType.Alias.ToCrowdfunderType());
         }
 
         return None.Empty;
@@ -58,14 +62,7 @@ public abstract class CrowdfunderJobNotificationHandler<TJobNotification> :
     }
     
     private IContent GetContent(Guid id) {
-        //Workaround as getting content by guid returns an old cached version of the content
-        var content = _contentService.GetById(id);
-
-        if (content.HasValue()) {
-            return _contentService.GetById(content.Id);
-        } else {
-            return null;
-        }
+        return _contentService.GetById(id);
     }
 
     private void SetError(IContent content, JobResult result) {
