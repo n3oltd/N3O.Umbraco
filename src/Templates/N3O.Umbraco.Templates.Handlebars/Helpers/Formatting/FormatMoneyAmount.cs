@@ -36,5 +36,5 @@ public class FormatMoneyAmount : Helper {
         writer.Write(output);
     }
     
-    public override string Name => "formatMoney";
+    public override string Name => "formatMoneyAmount";
 }
