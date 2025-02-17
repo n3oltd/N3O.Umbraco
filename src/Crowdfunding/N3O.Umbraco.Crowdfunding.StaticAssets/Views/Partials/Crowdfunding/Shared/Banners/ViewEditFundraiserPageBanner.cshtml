@@ -36,6 +36,12 @@
                             @PartialText.Get("Deactivating")
                         }
                     </button>
+                        
+                    <script>
+                        setInterval(() => {
+                            window.location.reload();
+                        }, 5000);
+                    </script>
                 } else if (Model.Content.Status.CanToggle && Model.Content.Status.ToggleAction == CrowdfunderActivationActions.Activate) {
                     <button id="n3o-btn-banner-activate" type="button" class="n3o-button primary" style="padding: 4px 8px;">
                         @PartialText.Get("Activate")
