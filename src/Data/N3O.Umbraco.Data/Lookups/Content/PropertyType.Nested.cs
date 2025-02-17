@@ -13,7 +13,7 @@ public class NestedPropertyType : PropertyType<NestedValueReq> {
                (ctx, src) => ctx.Map<ContentPropertyConfiguration, NestedConfigurationRes>(src),
                UmbracoPropertyEditors.Aliases.NestedContent) { }
 
-    protected override Task UpdatePropertyAsync(IContentBuilder contentBuilder,
+    protected override async Task UpdatePropertyAsync(IContentBuilder contentBuilder,
                                                 string alias,
                                                 NestedValueReq data) {
         var nestedBuilder = contentBuilder.Nested(alias);
@@ -22,10 +22,8 @@ public class NestedPropertyType : PropertyType<NestedValueReq> {
             var builder = nestedBuilder.Add(nestedValue.ContentTypeAlias);
 
             foreach (var property in nestedValue.Properties) {
-                property.Type.UpdatePropertyAsync(builder, property.Alias, property.Value.Value);
+                await property.Type.UpdatePropertyAsync(builder, property.Alias, property.Value.Value);
             }
         }
-        
-        return Task.CompletedTask;
     }
 }
