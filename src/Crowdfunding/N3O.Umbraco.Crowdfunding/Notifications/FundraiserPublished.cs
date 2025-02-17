@@ -29,17 +29,19 @@ public class FundraiserPublished : INotificationAsyncHandler<ContentPublishedNot
     }
 
     public async Task HandleAsync(ContentPublishedNotification notification, CancellationToken cancellationToken) {
-        foreach (var content in notification.PublishedEntities) {
-            if (content.ContentType.Alias.EqualsInvariant(CrowdfundingConstants.Fundraiser.Alias)) {
-                var fundraiser = _contentLocator.ById<FundraiserContent>(content.Key);
+        if (_webHostEnvironment.IsProduction()) {
+            foreach (var content in notification.PublishedEntities) {
+                if (content.ContentType.Alias.EqualsInvariant(CrowdfundingConstants.Fundraiser.Alias)) {
+                    var fundraiser = _contentLocator.ById<FundraiserContent>(content.Key);
                 
-                if (!fundraiser.Status.HasValue()) {
-                    await _crowdfunderManager.CreateFundraiserAsync(fundraiser, GetWebhookUrls());
-                } else {
-                    await _crowdfunderManager.UpdateCrowdfunderAsync(fundraiser.Key.ToString(),
-                                                                     fundraiser,
-                                                                     fundraiser.ToggleStatus,
-                                                                     GetWebhookUrls());
+                    if (!fundraiser.Status.HasValue()) {
+                        await _crowdfunderManager.CreateFundraiserAsync(fundraiser, GetWebhookUrls());
+                    } else {
+                        await _crowdfunderManager.UpdateCrowdfunderAsync(fundraiser.Key.ToString(),
+                                                                         fundraiser,
+                                                                         fundraiser.ToggleStatus,
+                                                                         GetWebhookUrls());
+                    }
                 }
             }
         }
