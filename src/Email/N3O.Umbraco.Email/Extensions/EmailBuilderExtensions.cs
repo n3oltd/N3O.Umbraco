@@ -8,12 +8,17 @@ public static class EmailBuilderExtensions {
                                                         string to,
                                                         TModel model)
         where TTemplate : EmailTemplateContent<TTemplate> {
-        emailBuilder.Create<TModel>()
-                    .From(template.FromEmail, template.FromName)
-                    .To(to)
-                    .Subject(template.Subject)
-                    .Body(template.Body)
-                    .Model(model)
-                    .Queue();
+        var email = emailBuilder.Create<TModel>()
+                                .From(template.FromEmail, template.FromName)
+                                .To(to)
+                                .Subject(template.Subject)
+                                .Body(template.Body)
+                                .Model(model);
+
+        if (!string.IsNullOrEmpty(template.BccEmail)) {
+            email.Bcc(template.BccEmail);
+        }
+
+        email.Queue();
     }
 }
