@@ -1,4 +1,5 @@
 using N3O.Umbraco.Email.Content;
+using N3O.Umbraco.Extensions;
 
 namespace N3O.Umbraco.Email.Extensions;
 
@@ -15,7 +16,7 @@ public static class EmailBuilderExtensions {
                                 .Body(template.Body)
                                 .Model(model);
 
-        if (!string.IsNullOrEmpty(template.BccEmail)) {
+        if (template.BccEmail.HasValue()) {
             email.Bcc(template.BccEmail);
         }
 
