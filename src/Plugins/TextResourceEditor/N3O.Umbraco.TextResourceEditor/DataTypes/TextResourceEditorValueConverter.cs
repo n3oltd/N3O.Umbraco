@@ -2,6 +2,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.ValueConverters;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -19,8 +20,15 @@ public class TextResourceEditorValueConverter : PropertyValueConverter {
                                                        object source,
                                                        bool preview) {
         var textResources = new List<TextResource>();
+        string json = null;
+        
+        if (source is string str) {
+            json = str;
+        } else if (source is JObject jObject) {
+            json = jObject.ToString();
+        }
 
-        if (source is string json && json.HasValue()) {
+        if (json.HasValue()) {
             textResources.AddRange(JsonConvert.DeserializeObject<IEnumerable<TextResource>>(json));
         }
 
