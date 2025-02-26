@@ -12,4 +12,8 @@ public class ProfanityGuard : IProfanityGuard {
     public bool ContainsProfanity(string text) {
         return _profanityFilter.ContainsProfanity(text);
     }
+    
+    public bool HasAnyProfanity(string text) {
+        return _profanityFilter.DetectAllProfanities(text).Count > 0;
+    }
 }
