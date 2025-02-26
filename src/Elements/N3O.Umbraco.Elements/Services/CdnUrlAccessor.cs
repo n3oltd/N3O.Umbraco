@@ -15,11 +15,11 @@ public class CdnUrlAccessor {
     }
 
     public string GetUrl(string path) {
-        var subscriptionNumber = _subscriptionAccessor.GetSubscription().Id.Number;
+        var subscriptionCode = _subscriptionAccessor.GetSubscription().Id.Code;
         
         var url = new Url(GetBaseUrl());
         url.AppendPathSegment("elements");
-        url.AppendPathSegment(subscriptionNumber);
+        url.AppendPathSegment(subscriptionCode);
         url.AppendPathSegment(path);
 
         return url;
