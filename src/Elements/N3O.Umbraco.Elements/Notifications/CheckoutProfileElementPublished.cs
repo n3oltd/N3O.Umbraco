@@ -23,7 +23,7 @@ public class CheckoutProfileElementPublished : INotificationAsyncHandler<Content
                 try {
                     await _elementsManager.Value.SaveAndPublishCheckoutProfileAsync();
                 } catch (Exception ex) {
-                    notification.Messages.Add(new EventMessage("Warning",
+                    notification.Messages.Add(new EventMessage("Error",
                                                                $"There was an error publishing the checkout profile: {ex.Message}",
                                                                EventMessageType.Error));
                 }
