@@ -20,7 +20,13 @@ public class CheckoutProfileElementPublished : INotificationAsyncHandler<Content
     public async Task HandleAsync(ContentPublishedNotification notification, CancellationToken cancellationToken) {
         foreach (var content in notification.PublishedEntities) {
             if (content.IsCheckoutProfileDependency(_contentService)) {
-                await _elementsManager.Value.SaveAndPublishCheckoutProfileAsync();
+                try {
+                    await _elementsManager.Value.SaveAndPublishCheckoutProfileAsync();
+                } catch (Exception ex) {
+                    notification.Messages.Add(new EventMessage("Warning",
+                                                               $"There was an error publishing the checkout profile: {ex.Message}",
+                                                               EventMessageType.Error));
+                }
             }
         }
     }
