@@ -100,6 +100,19 @@ public class ServiceClient<TClient> {
             throw ToExceptionWithProblemDetails(ex);
         }
     }
+    
+    public async Task<TRes> InvokeAsync<TRes>(Func<TClient, Func<string, string, string, string, string, string, string, CancellationToken, Task<TRes>>> resolve,
+                                              CancellationToken cancellationToken = default) {
+        var funcAsync = resolve(_client);
+
+        try {
+            var res = await funcAsync(null, null, "false", "false", null, null, _subscriptionId, cancellationToken);
+
+            return res;
+        } catch (Exception ex) when (IsApiException(ex)) {
+            throw ToExceptionWithProblemDetails(ex);
+        }
+    }
 
     public async Task InvokeAsync<TReq>(Func<TClient, Func<string, string, string, string, string, string, string, TReq, CancellationToken, Task>> resolve,
                                         string routeParameter1,
