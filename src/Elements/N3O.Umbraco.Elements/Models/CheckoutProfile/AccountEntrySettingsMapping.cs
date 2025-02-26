@@ -39,19 +39,8 @@ public class AccountEntrySettingsMapping : IMapDefinition {
         dest.Email = ctx.Map<EmailDataEntrySettings, EmailEntrySettings>(settings.Email);
         dest.Telephone = ctx.Map<PhoneDataEntrySettings, TelephoneEntrySettings>(settings.Phone);
         dest.TaxRelief = ctx.Map<TaxReliefSettingsContent, TaxReliefSettings>(taxRelief);
-        dest.Consent = GetConsentSettings(ctx, consentOptionsContent);
-    }
-
-    private ConsentSettings GetConsentSettings(MapperContext ctx, IEnumerable<ConsentOptionContent> consentOptions) {
-        var consentSettings = new ConsentSettings();
-        consentSettings.Text = _formatter.Text.Format<Strings>(s => s.ConsentText);
-        consentSettings.Options = consentOptions.Select(x => ctx.Map<ConsentOptionContent, ConsentOptionSettings>(x)).ToList();
         
-        return consentSettings;
-    }
-    
-    public class Strings : CodeStrings {
-        public string ConsentText => "We may occasionally contact you by post or phone about our projects, "
-                                     + "fundraising, and appeals. I am happy to be contacted via:";
+        // TODO need to map all properties otherwise build errors
+        dest.Consent = default;
     }
 }

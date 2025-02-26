@@ -1,3 +1,4 @@
+using N3O.Headless.Communications.Clients;
 using N3O.Umbraco.Accounts.Content;
 using N3O.Umbraco.Authentication.Auth0.Lookups;
 using N3O.Umbraco.Content;
@@ -15,29 +16,32 @@ using Umbraco.Cms.Core.Mapping;
 namespace N3O.Umbraco.Elements;
 
 public class ElementsManager : IElementsManager {
-    private readonly ClientFactory<ElementsClient> _clientFactory;
+    private readonly ClientFactory<ElementsClient> _elementsClientFactory;
+    private readonly ClientFactory<CommunicationsClient> _communicationsClientFactory;
     private readonly ISubscriptionAccessor _subscriptionAccessor;
     private readonly IContentLocator _contentLocator;
     private readonly IJsonProvider _jsonProvider;
     private readonly IUmbracoMapper _mapper;
 
-    public ElementsManager(ClientFactory<ElementsClient> clientFactory,
+    public ElementsManager(ClientFactory<ElementsClient> elementsClientFactory,
                            ISubscriptionAccessor subscriptionAccessor,
                            IContentLocator contentLocator,
                            IJsonProvider jsonProvider,
-                           IUmbracoMapper mapper) {
-        _clientFactory = clientFactory;
+                           IUmbracoMapper mapper,
+                           ClientFactory<CommunicationsClient> communicationsClientFactory) {
+        _elementsClientFactory = elementsClientFactory;
         _subscriptionAccessor = subscriptionAccessor;
         _contentLocator = contentLocator;
         _jsonProvider = jsonProvider;
         _mapper = mapper;
+        _communicationsClientFactory = communicationsClientFactory;
     }
     
     public async Task SaveAndPublishCheckoutProfileAsync() {
         var subscription = _subscriptionAccessor.GetSubscription();
-        var client = await _clientFactory.CreateAsync(subscription, ClientTypes.BackOffice);
+        var client = await _elementsClientFactory.CreateAsync(subscription, ClientTypes.BackOffice);
         
-        var checkoutProfile = GetCheckoutProfile();
+        var checkoutProfile = await GetCheckoutProfileAsync();
         
         var req = new SaveAndPublishReq();
         req.Element = new SaveAndPublishElementReq();
@@ -51,7 +55,7 @@ public class ElementsManager : IElementsManager {
 
     public async Task SaveAndPublishDonationFormAsync() {
         var subscription = _subscriptionAccessor.GetSubscription();
-        var client = await _clientFactory.CreateAsync(subscription, ClientTypes.BackOffice);
+        var client = await _elementsClientFactory.CreateAsync(subscription, ClientTypes.BackOffice);
         
         var giving = _contentLocator.Single<GivingContent>();
 
@@ -72,7 +76,7 @@ public class ElementsManager : IElementsManager {
     public async Task SaveAndPublishElementsSettingsAsync() {
         var settings = _contentLocator.Single<ElementsSettingsContent>();
         var subscription = _subscriptionAccessor.GetSubscription();
-        var client = await _clientFactory.CreateAsync(subscription, ClientTypes.BackOffice);
+        var client = await _elementsClientFactory.CreateAsync(subscription, ClientTypes.BackOffice);
         
         var req = new SaveAndPublishReq();
         req.Element = new SaveAndPublishElementReq();
@@ -96,11 +100,12 @@ public class ElementsManager : IElementsManager {
         return req;
     }
     
-    private CheckoutProfile GetCheckoutProfile() {
+    private async Task<CheckoutProfile> GetCheckoutProfileAsync() {
         var dataEntrySettingsContent = _contentLocator.Single<DataEntrySettingsContent>();
         var organisationSettings = _contentLocator.Single<OrganisationDataEntrySettingsContent>();
         var paymentSettings = _contentLocator.Single<PaymentMethodDataEntrySettingsContent>();
         var termsOfServiceSettings = _contentLocator.Single<TermsDataEntrySettingsContent>();
+        var preferences = await GetPreferencesAsync();
         
         var checkoutProfile = new CheckoutProfile();
         checkoutProfile.Id = dataEntrySettingsContent.Content().Key.ToString();
@@ -109,6 +114,18 @@ public class ElementsManager : IElementsManager {
         checkoutProfile.Payments = _mapper.Map<PaymentMethodDataEntrySettingsContent, PaymentsSettings>(paymentSettings);
         checkoutProfile.TermsOfService = _mapper.Map<TermsDataEntrySettingsContent, TermsOfServiceSettings>(termsOfServiceSettings);
         
+        // TODO need to go after <DataEntrySettingsContent, AccountEntrySettings> as consent being set to default
+        checkoutProfile.Accounts.Consent = _mapper.Map<PreferencesStructureRes, ConsentSettings>(preferences);
+        
         return checkoutProfile;
+    }
+
+    private async Task<PreferencesStructureRes> GetPreferencesAsync() {
+        var subscription = _subscriptionAccessor.GetSubscription();
+        var client = await _communicationsClientFactory.CreateAsync(subscription, ClientTypes.BackOffice);
+
+        var preferences = await client.InvokeAsync<PreferencesStructureRes>(x => x.GetPreferencesStructureAsync);
+        
+        return preferences;
     }
 }
