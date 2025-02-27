@@ -14,15 +14,15 @@ public class ConsentSettingsMapping : IMapDefinition {
     }
 
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<PreferencesStructureRes, ConsentSettings>((_, _) => new ConsentSettings(), Map);
+        mapper.Define<PreferencesStructureRes, PreferencesSettings>((_, _) => new PreferencesSettings(), Map);
     }
 
     // Umbraco.Code.MapAll
-    private void Map(PreferencesStructureRes src, ConsentSettings dest, MapperContext ctx) {
+    private void Map(PreferencesStructureRes src, PreferencesSettings dest, MapperContext ctx) {
         var channels = src.Channels.Where(RequiresConsent);
         
         dest.Text = _formatter.Text.Format<Strings>(s => s.ConsentText);
-        dest.Options = channels.Select(x => ctx.Map<ChannelPreferencesStructureRes, ConsentOptionSettings>(x)).ToList();
+        dest.Options = channels.Select(x => ctx.Map<ChannelPreferencesStructureRes, PreferencesOptionSettings>(x)).ToList();
     }
     
     private bool RequiresConsent(ChannelPreferencesStructureRes channelPreferencesStructureRes) {

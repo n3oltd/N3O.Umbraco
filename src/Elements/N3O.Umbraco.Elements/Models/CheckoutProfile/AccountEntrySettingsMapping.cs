@@ -41,6 +41,6 @@ public class AccountEntrySettingsMapping : IMapDefinition {
         dest.TaxRelief = ctx.Map<TaxReliefSettingsContent, TaxReliefSettings>(taxRelief);
         
         // TODO need to map all properties otherwise build errors
-        dest.Consent = default;
+        dest.Preferences = default;
     }
 }

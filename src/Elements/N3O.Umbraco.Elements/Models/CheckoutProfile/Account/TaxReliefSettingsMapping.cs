@@ -15,6 +15,6 @@ public class TaxReliefSettingsMapping : IMapDefinition {
         dest.Name = src.Scheme.Name;
         dest.SchemeId = src.Scheme.Id;
         dest.Type = (ProcessorType) Enum.Parse(typeof(ProcessorType), src.Scheme.Type.Id, true);
-        dest.Identifier = "v1_4years";
+        dest.DeclarationTermsId = "v1_4years";
     }
 }

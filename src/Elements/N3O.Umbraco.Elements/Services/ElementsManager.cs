@@ -115,7 +115,7 @@ public class ElementsManager : IElementsManager {
         checkoutProfile.TermsOfService = _mapper.Map<TermsDataEntrySettingsContent, TermsOfServiceSettings>(termsOfServiceSettings);
         
         // TODO need to go after <DataEntrySettingsContent, AccountEntrySettings> as consent being set to default
-        checkoutProfile.Accounts.Consent = _mapper.Map<PreferencesStructureRes, ConsentSettings>(preferences);
+        checkoutProfile.Accounts.Preferences = _mapper.Map<PreferencesStructureRes, PreferencesSettings>(preferences);
         
         return checkoutProfile;
     }
