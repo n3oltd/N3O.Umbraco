@@ -30,7 +30,7 @@ public class CrowdfunderDataReqValidator : ModelValidator<CrowdfunderDataReq> {
            .WithMessage(Get<Strings>(s => s.CommentTooLong_1, MaximumCommentLength));
         
         RuleFor(x => x.Comment)
-           .Must(x => !_profanityGuard.ContainsProfanity(x))
+           .Must(x => !_profanityGuard.HasAnyProfanity(x))
            .When(x => x.Comment.HasValue())
            .WithMessage(Get<Strings>(s => s.UnacceptableComment));
 

@@ -25,7 +25,7 @@ public class CreateFundraiserReqValidator : ModelValidator<CreateFundraiserReq> 
            .WithMessage(Get<Strings>(s => s.SpecifyName, MaximumNameLength));
 
         RuleFor(x => x.Name)
-          .Must(x => !profanityGuard.ContainsProfanity(x))
+          .Must(x => !profanityGuard.HasAnyProfanity(x))
           .When(x => x.Name.HasValue())
           .WithMessage(Get<Strings>(s => s.UnacceptableName));
         
