@@ -9,9 +9,11 @@ using N3O.Umbraco.Elements.Extensions;
 using N3O.Umbraco.Elements.Models;
 using N3O.Umbraco.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
+using CurrecncyContent = N3O.Umbraco.Financial.Currency;
 
 namespace N3O.Umbraco.Elements;
 
@@ -105,6 +107,7 @@ public class ElementsManager : IElementsManager {
         var organisationSettings = _contentLocator.Single<OrganisationDataEntrySettingsContent>();
         var paymentSettings = _contentLocator.Single<PaymentMethodDataEntrySettingsContent>();
         var termsOfServiceSettings = _contentLocator.Single<TermsDataEntrySettingsContent>();
+        var currencies = _contentLocator.All<CurrecncyContent>();
         var preferences = await GetPreferencesAsync();
         
         var checkoutProfile = new CheckoutProfile();
@@ -113,11 +116,16 @@ public class ElementsManager : IElementsManager {
         checkoutProfile.Branding = _mapper.Map<OrganisationDataEntrySettingsContent, BrandingSettings>(organisationSettings);
         checkoutProfile.Payments = _mapper.Map<PaymentMethodDataEntrySettingsContent, PaymentsSettings>(paymentSettings);
         checkoutProfile.TermsOfService = _mapper.Map<TermsDataEntrySettingsContent, TermsOfServiceSettings>(termsOfServiceSettings);
+        checkoutProfile.AllowedCurrencies = currencies.Select(x => GetCurrencyByCode(x.Code)).ToList();
         
         // TODO need to go after <DataEntrySettingsContent, AccountEntrySettings> as consent being set to default
         checkoutProfile.Accounts.Preferences = _mapper.Map<PreferencesStructureRes, PreferencesSettings>(preferences);
         
         return checkoutProfile;
+    }
+
+    private Currency GetCurrencyByCode(string code) {
+        return (Currency) Enum.Parse(typeof(Currency), code, true);
     }
 
     private async Task<PreferencesStructureRes> GetPreferencesAsync() {

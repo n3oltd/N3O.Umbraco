@@ -1651,6 +1651,9 @@ namespace N3O.Umbraco.Elements.Clients
         [Newtonsoft.Json.JsonProperty("termsOfService", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public TermsOfServiceSettings TermsOfService { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("allowedCurrencies", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore, ItemConverterType = typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public System.Collections.Generic.ICollection<Currency> AllowedCurrencies { get; set; }
+
     }
 
     /// <summary>
@@ -3609,7 +3612,7 @@ namespace N3O.Umbraco.Elements.Clients
     }
 
     /// <summary>
-    /// One of 'en', 'es', 'fr', 'xx'
+    /// One of 'en', 'es', 'fr'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum Language
@@ -3623,9 +3626,6 @@ namespace N3O.Umbraco.Elements.Clients
 
         [System.Runtime.Serialization.EnumMember(Value = @"fr")]
         Fr = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"xx")]
-        Xx = 3,
 
     }
 
@@ -3775,9 +3775,6 @@ namespace N3O.Umbraco.Elements.Clients
 
         [Newtonsoft.Json.JsonProperty("order", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int? Order { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("additionalData", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object AdditionalData { get; set; }
 
     }
 
