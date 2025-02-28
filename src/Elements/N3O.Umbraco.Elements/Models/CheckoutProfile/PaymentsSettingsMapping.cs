@@ -17,7 +17,7 @@ public class PaymentsSettingsMapping : IMapDefinition {
     private void Map(PaymentMethodDataEntrySettingsContent src, PaymentsSettings dest, MapperContext ctx) {
         var paymentsSettings = new List<PaymentMethodSettings>();
 
-        foreach (var (paymentMethod, index) in src.PaymentMethods.SelectWithIndex()) {
+        foreach (var (paymentMethod, index) in src.PaymentMethods.OrEmpty().SelectWithIndex()) {
             var method = new PaymentMethodSettings();
 
             method.Name = paymentMethod.Name;
