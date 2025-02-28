@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Elements.Models;
 using N3O.Umbraco.Extensions;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -87,7 +88,9 @@ public class FlowPaymentMethodsDataSource : IDataPickerSource, IDataSourceValueC
         var url = _cdnUrlAccessor.GetUrl(ElementsConstants.Cdn.Paths.FlowPaymentMethods);
         
         using var httpClient = new HttpClient();
-        var res = await httpClient.GetFromJsonAsync<FlowPaymentMethodsResultList>(url);
+        var resStr = await httpClient.GetStringAsync(url);
+        
+        var res = JsonConvert.DeserializeObject<FlowPaymentMethodsResultList>(resStr);
         
         return res.Items.ToList();
     }

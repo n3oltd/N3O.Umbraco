@@ -28,6 +28,7 @@ public class PaymentsSettingsMapping : IMapDefinition {
             method.SupportsApplePay = paymentMethod.SupportsGooglePay;
             method.SupportsGooglePay = paymentMethod.SupportsGooglePay;
             method.SupportsRealtimePayments = paymentMethod.SupportsGooglePay;
+            method.AdditionalData = paymentMethod.AdditionalData;
             
             paymentsSettings.Add(method);
         }
