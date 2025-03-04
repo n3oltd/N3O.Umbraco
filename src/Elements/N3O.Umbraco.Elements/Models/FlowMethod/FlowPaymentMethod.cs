@@ -9,6 +9,8 @@ public class FlowPaymentMethod {
     public Guid Id { get; set; }
     public string ProcessorId { get; set; }
     public string Name { get; set; }
+    public string DisplayName { get; set; }
+    public string Description { get; set; }
     public IEnumerable<FlowPaymentMethodCurrency> AllowedCurrencies { get; set; }
     public bool SupportsApplePay { get; set; }
     public bool SupportsGooglePay { get; set; }
