@@ -118,9 +118,9 @@ public class ElementsManager : IElementsManager {
         checkoutProfile.Payments = _mapper.Map<PaymentMethodDataEntrySettingsContent, PaymentsSettings>(paymentSettings);
         checkoutProfile.TermsOfService = _mapper.Map<TermsDataEntrySettingsContent, TermsOfServiceSettings>(termsOfServiceSettings);
         checkoutProfile.AllowedCurrencies = currencies.Select(x => GetCurrencyByCode(x.Code)).ToList();
-        checkoutProfile.CheckoutAdverts = checkoutCompleteSettings.CheckoutAdverts
-                                                                  .Select(_mapper.Map<CheckoutAdvertContentElement, CheckoutAdvertsSettings>)
-                                                                  .ToList();
+        checkoutProfile.Adverts = checkoutCompleteSettings.Adverts
+                                                          .Select(_mapper.Map<AdvertContentElement, AdvertsSettings>)
+                                                          .ToList();
         
         // TODO need to go after <DataEntrySettingsContent, AccountEntrySettings> as consent being set to default
         checkoutProfile.Accounts.Preferences = _mapper.Map<PreferencesStructureRes, PreferencesSettings>(preferences);

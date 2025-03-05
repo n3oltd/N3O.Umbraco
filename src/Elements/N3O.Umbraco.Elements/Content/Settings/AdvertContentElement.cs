@@ -5,7 +5,7 @@ using Umbraco.Cms.Core.Models;
 
 namespace N3O.Umbraco.Elements.Content;
 
-public class CheckoutAdvertContentElement : UmbracoElement<CheckoutAdvertContentElement> {
+public class AdvertContentElement : UmbracoElement<AdvertContentElement> {
     public FileUpload Image => this.GetFileUploadAs(x => x.Image);
     public Link Link => GetValue(x => x.Link);
 }

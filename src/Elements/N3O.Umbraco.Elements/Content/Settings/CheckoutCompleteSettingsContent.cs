@@ -6,5 +6,5 @@ namespace N3O.Umbraco.Elements.Content;
 
 [UmbracoContent(ElementsConstants.ElementsCheckoutCompleteSettings.Alias)]
 public class CheckoutCompleteSettingsContent : UmbracoContent<CheckoutCompleteSettingsContent> {
-    public IEnumerable<CheckoutAdvertContentElement> CheckoutAdverts => GetNestedAs(x => x.CheckoutAdverts);
+    public IEnumerable<AdvertContentElement> Adverts => GetNestedAs(x => x.Adverts);
 }
