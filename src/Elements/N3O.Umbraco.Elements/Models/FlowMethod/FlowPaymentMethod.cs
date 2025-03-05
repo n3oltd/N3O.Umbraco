@@ -11,6 +11,7 @@ public class FlowPaymentMethod {
     public string Name { get; set; }
     public string DisplayName { get; set; }
     public string Description { get; set; }
+    public string IconId { get; set; }
     public IEnumerable<FlowPaymentMethodCurrency> AllowedCurrencies { get; set; }
     public bool SupportsApplePay { get; set; }
     public bool SupportsGooglePay { get; set; }
