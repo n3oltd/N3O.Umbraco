@@ -17,12 +17,17 @@ public static class ContentExtensions {
     
     public static bool IsCheckoutProfileDependency(this IContent content, IContentService contentService) {
         return content.IsDataEntrySettingsOrChild(contentService) ||
+               content.ElementsCheckoutCompleteSettings() ||
                content.IsConsentSettingsOrDescendant(contentService) ||
                content.IsTaxReliefOrChildSettings(contentService);
     }
     
     public static bool IsElementsSettings(this IContent content) {
         return content.ContentType.Alias.EqualsInvariant(ElementsConstants.ElementsSettings.Alias);
+    }
+    
+    private static bool ElementsCheckoutCompleteSettings(this IContent content) {
+        return content.ContentType.Alias.EqualsInvariant(ElementsConstants.ElementsCheckoutCompleteSettings.Alias);
     }
     
     private static bool HasComposition(this IContent content, IContentTypeService contentTypeService, string alias) {

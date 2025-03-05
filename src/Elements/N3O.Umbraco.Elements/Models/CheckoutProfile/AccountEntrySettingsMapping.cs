@@ -6,8 +6,6 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.TaxRelief.Content;
-using System.Collections.Generic;
-using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Elements.Models.CheckoutProfile;

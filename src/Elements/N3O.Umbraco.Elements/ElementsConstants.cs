@@ -53,6 +53,10 @@ public static class ElementsConstants {
     public static class ElementsSettings {
         public const string Alias = "elementsSettings";
     }
+    
+    public static class ElementsCheckoutCompleteSettings {
+        public const string Alias = "elementsCheckoutCompleteSettings";
+    }
 
     public static class Giving {
         public const string Alias = "giving";
