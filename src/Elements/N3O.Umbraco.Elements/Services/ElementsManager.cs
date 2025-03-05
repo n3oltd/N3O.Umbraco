@@ -108,6 +108,7 @@ public class ElementsManager : IElementsManager {
         var paymentSettings = _contentLocator.Single<PaymentMethodDataEntrySettingsContent>();
         var termsOfServiceSettings = _contentLocator.Single<TermsDataEntrySettingsContent>();
         var currencies = _contentLocator.All<CurrecncyContent>();
+        var checkoutCompleteSettings = _contentLocator.Single<CheckoutCompleteSettingsContent>();
         var preferences = await GetPreferencesAsync();
         
         var checkoutProfile = new CheckoutProfile();
@@ -117,6 +118,9 @@ public class ElementsManager : IElementsManager {
         checkoutProfile.Payments = _mapper.Map<PaymentMethodDataEntrySettingsContent, PaymentsSettings>(paymentSettings);
         checkoutProfile.TermsOfService = _mapper.Map<TermsDataEntrySettingsContent, TermsOfServiceSettings>(termsOfServiceSettings);
         checkoutProfile.AllowedCurrencies = currencies.Select(x => GetCurrencyByCode(x.Code)).ToList();
+        checkoutProfile.CheckoutAdverts = checkoutCompleteSettings.CheckoutAdverts
+                                                                  .Select(_mapper.Map<CheckoutAdvertContentElement, CheckoutAdvertsSettings>)
+                                                                  .ToList();
         
         // TODO need to go after <DataEntrySettingsContent, AccountEntrySettings> as consent being set to default
         checkoutProfile.Accounts.Preferences = _mapper.Map<PreferencesStructureRes, PreferencesSettings>(preferences);
