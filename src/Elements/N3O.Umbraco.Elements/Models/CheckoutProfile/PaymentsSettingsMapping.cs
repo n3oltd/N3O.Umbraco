@@ -22,6 +22,7 @@ public class PaymentsSettingsMapping : IMapDefinition {
 
             method.Name = paymentMethod.Name;
             method.DisplayName = paymentMethod.DisplayName;
+            method.Description = paymentMethod.Description;
             method.IconId = paymentMethod.IconId;
             method.Id = paymentMethod.Id.ToString();
             method.ProcessorId = paymentMethod.ProcessorId;
