@@ -11,13 +11,24 @@ public class PaymentCollectionDaysMapping : IMapDefinition {
     }
 
     // Umbraco.Code.MapAll
-    private void MapMonth(FlowPaymentMethodCollectionDayOfMonth src, PaymentMethodCollectionDayOfMonth dest, MapperContext ctx) {
-        dest.DayOfMonth = src.DayOfMonth.Name;
+    private void MapMonth(FlowPaymentMethodCollectionDayOfMonth src,
+                          PaymentMethodCollectionDayOfMonth dest,
+                          MapperContext ctx) {
+        dest.DayOfMonth = new NamedLookupRes();
+        dest.DayOfMonth.Id = src.DayOfMonth.Id;
+        dest.DayOfMonth.Name = src.DayOfMonth.Name;
+        dest.DayOfMonth.Token = src.DayOfMonth.Token;
+        
         dest.EarliestChargeDateForNewCredential = src.EarliestChargeDateForNewCredential.ToYearMonthDayString();
     }
     
-    private void MapWeek(FlowPaymentMethodCollectionDayOfWeek src, PaymentMethodCollectionDayOfWeek dest, MapperContext ctx) {
-        dest.DayOfWeek = src.DayOfWeek.Name;
+    private void MapWeek(FlowPaymentMethodCollectionDayOfWeek src,
+                         PaymentMethodCollectionDayOfWeek dest,
+                         MapperContext ctx) {
+        dest.DayOfWeek.Id = src.DayOfWeek.Id;
+        dest.DayOfWeek.Name = src.DayOfWeek.Name;
+        dest.DayOfWeek.Token = src.DayOfWeek.Token;
+        
         dest.EarliestChargeDateForNewCredential = src.EarliestChargeDateForNewCredential.ToString();
     }
 }

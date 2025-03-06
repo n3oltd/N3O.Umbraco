@@ -119,7 +119,7 @@ public class ElementsManager : IElementsManager {
         checkoutProfile.TermsOfService = _mapper.Map<TermsDataEntrySettingsContent, TermsOfServiceSettings>(termsOfServiceSettings);
         checkoutProfile.AllowedCurrencies = currencies.Select(x => GetCurrencyByCode(x.Code)).ToList();
         checkoutProfile.Adverts = checkoutCompleteSettings.Adverts
-                                                          .Select(_mapper.Map<AdvertContentElement, AdvertsSettings>)
+                                                          .Select(_mapper.Map<AdvertContentElement, AdvertSettings>)
                                                           .ToList();
         
         // TODO need to go after <DataEntrySettingsContent, AccountEntrySettings> as consent being set to default
