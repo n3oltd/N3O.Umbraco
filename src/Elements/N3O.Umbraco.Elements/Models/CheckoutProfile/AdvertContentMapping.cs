@@ -14,11 +14,11 @@ public class AdvertContentMapping : IMapDefinition {
     }
     
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<AdvertContentElement, AdvertsSettings>((_, _) => new AdvertsSettings(), Map);
+        mapper.Define<AdvertContentElement, AdvertSettings>((_, _) => new AdvertSettings(), Map);
     }
 
     // Umbraco.Code.MapAll
-    private void Map(AdvertContentElement src, AdvertsSettings dest, MapperContext ctx) {
+    private void Map(AdvertContentElement src, AdvertSettings dest, MapperContext ctx) {
         dest.ImageUrl = _urlBuilder.Root().AppendPathSegment(src.Image.Src);
         dest.Link = src.Link.Content?.AbsoluteUrl() ?? src.Link.Url;
     }

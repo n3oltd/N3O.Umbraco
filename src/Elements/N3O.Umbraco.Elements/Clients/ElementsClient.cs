@@ -114,7 +114,7 @@ namespace N3O.Umbraco.Elements.Clients
         public ElementsClient(System.Net.Http.HttpClient httpClient)
     #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
-            BaseUrl = "/eu1/api/elements/";
+            BaseUrl = "/";
             _httpClient = httpClient;
             Initialize();
         }
@@ -1586,6 +1586,17 @@ namespace N3O.Umbraco.Elements.Clients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class AdvertSettings
+    {
+        [Newtonsoft.Json.JsonProperty("imageUrl", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ImageUrl { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("link", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Link { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class BrandingSettings
     {
         [Newtonsoft.Json.JsonProperty("organisationName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -1596,6 +1607,26 @@ namespace N3O.Umbraco.Elements.Clients
 
         [Newtonsoft.Json.JsonProperty("addressSingleLine", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string AddressSingleLine { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class CalendarSystem
+    {
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("minYear", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? MinYear { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("maxYear", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? MaxYear { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("eras", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<Era> Eras { get; set; }
 
     }
 
@@ -1634,17 +1665,6 @@ namespace N3O.Umbraco.Elements.Clients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class AdvertsSettings
-    {
-        [Newtonsoft.Json.JsonProperty("imageUrl", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ImageUrl { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("link", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Link { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class CheckoutProfile
     {
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -1666,7 +1686,7 @@ namespace N3O.Umbraco.Elements.Clients
         public System.Collections.Generic.ICollection<Currency> AllowedCurrencies { get; set; }
 
         [Newtonsoft.Json.JsonProperty("adverts", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<AdvertsSettings> Adverts { get; set; }
+        public System.Collections.Generic.ICollection<AdvertSettings> Adverts { get; set; }
 
     }
 
@@ -3591,6 +3611,14 @@ namespace N3O.Umbraco.Elements.Clients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Era
+    {
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class FieldSettings
     {
         [Newtonsoft.Json.JsonProperty("label", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -3622,6 +3650,28 @@ namespace N3O.Umbraco.Elements.Clients
 
         [Newtonsoft.Json.JsonProperty("timezone", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Timezone { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum IsoDayOfWeek
+    {
+
+        _0 = 0,
+
+        _1 = 1,
+
+        _2 = 2,
+
+        _3 = 3,
+
+        _4 = 4,
+
+        _5 = 5,
+
+        _6 = 6,
+
+        _7 = 7,
 
     }
 
@@ -3767,6 +3817,28 @@ namespace N3O.Umbraco.Elements.Clients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PaymentMethodCollectionDayOfMonth
+    {
+        [Newtonsoft.Json.JsonProperty("dayOfMonth", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string DayOfMonth { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("earliestChargeDateForNewCredential", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string EarliestChargeDateForNewCredential { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PaymentMethodCollectionDayOfWeek
+    {
+        [Newtonsoft.Json.JsonProperty("dayOfWeek", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string DayOfWeek { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("earliestChargeDateForNewCredential", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string EarliestChargeDateForNewCredential { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class PaymentMethodSettings
     {
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -3801,6 +3873,12 @@ namespace N3O.Umbraco.Elements.Clients
 
         [Newtonsoft.Json.JsonProperty("order", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int? Order { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("collectionDaysOfMonth", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<PaymentMethodCollectionDayOfMonth> CollectionDaysOfMonth { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("collectionDaysOfWeek", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<PaymentMethodCollectionDayOfWeek> CollectionDaysOfWeek { get; set; }
 
         [Newtonsoft.Json.JsonProperty("additionalData", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public object AdditionalData { get; set; }
