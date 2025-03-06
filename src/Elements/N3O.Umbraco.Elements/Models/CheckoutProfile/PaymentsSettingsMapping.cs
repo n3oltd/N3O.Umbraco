@@ -1,7 +1,6 @@
 ﻿using N3O.Umbraco.Elements.Clients;
 using N3O.Umbraco.Elements.Content;
 using N3O.Umbraco.Extensions;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +31,7 @@ public class PaymentsSettingsMapping : IMapDefinition {
             method.SupportsApplePay = paymentMethod.SupportsGooglePay;
             method.SupportsGooglePay = paymentMethod.SupportsGooglePay;
             method.SupportsRealtimePayments = paymentMethod.SupportsGooglePay;
-            method.AdditionalData = JsonConvert.SerializeObject(paymentMethod.AdditionalData);
+            method.AdditionalData = paymentMethod.AdditionalData;
             
             paymentsSettings.Add(method);
         }
