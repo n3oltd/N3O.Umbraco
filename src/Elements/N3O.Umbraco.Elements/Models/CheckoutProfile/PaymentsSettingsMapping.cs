@@ -28,11 +28,9 @@ public class PaymentsSettingsMapping : IMapDefinition {
             method.ProcessorId = paymentMethod.ProcessorId;
             method.Order = index + 1;
             method.AllowedCurrencies = paymentMethod.AllowedCurrencies.Select(x => GetCurrency(x.Code)).ToList();
-            method.SupportsApplePay = paymentMethod.SupportsApplePay;
+            method.SupportsApplePay = paymentMethod.SupportsGooglePay;
             method.SupportsGooglePay = paymentMethod.SupportsGooglePay;
-            method.SupportsRealtimePayments = paymentMethod.SupportsRealtimePayments;
-            method.CollectionDaysOfMonth = paymentMethod.CollectionDaysOfMonth.Select(ctx.Map<FlowPaymentMethodCollectionDayOfMonth, PaymentMethodCollectionDayOfMonth>).ToList();
-            method.CollectionDaysOfWeek = paymentMethod.CollectionDaysOfWeek.Select(ctx.Map<FlowPaymentMethodCollectionDayOfWeek, PaymentMethodCollectionDayOfWeek>).ToList();
+            method.SupportsRealtimePayments = paymentMethod.SupportsGooglePay;
             method.AdditionalData = paymentMethod.AdditionalData;
             
             paymentsSettings.Add(method);
