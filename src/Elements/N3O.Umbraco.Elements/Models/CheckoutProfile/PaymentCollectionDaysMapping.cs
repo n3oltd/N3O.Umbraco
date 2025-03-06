@@ -25,6 +25,7 @@ public class PaymentCollectionDaysMapping : IMapDefinition {
     private void MapWeek(FlowPaymentMethodCollectionDayOfWeek src,
                          PaymentMethodCollectionDayOfWeek dest,
                          MapperContext ctx) {
+        dest.DayOfWeek = new NamedLookupRes();
         dest.DayOfWeek.Id = src.DayOfWeek.Id;
         dest.DayOfWeek.Name = src.DayOfWeek.Name;
         dest.DayOfWeek.Token = src.DayOfWeek.Token;
