@@ -16,6 +16,8 @@ public class FlowPaymentMethod {
     public bool SupportsApplePay { get; set; }
     public bool SupportsGooglePay { get; set; }
     public bool SupportsRealtimePayments { get; set; }
+    public IEnumerable<FlowPaymentMethodCollectionDayOfMonth> CollectionDaysOfMonth { get; set; }
+    public IEnumerable<FlowPaymentMethodCollectionDayOfWeek> CollectionDaysOfWeek { get; set; }
     
     [JsonExtensionData]
     public IDictionary<string, JToken> AdditionalData { get; set; }
