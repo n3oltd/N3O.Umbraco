@@ -33,6 +33,7 @@
         <ProjectReference Include="..\..\Captcha\N3O.Umbraco.Captcha\N3O.Umbraco.Captcha.csproj" />
         <ProjectReference Include="..\..\Mediator\N3O.Umbraco.Mediator\N3O.Umbraco.Mediator.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
+        <ProjectReference Include="..\..\Plugins\Uploader\N3O.Umbraco.Uploader\N3O.Umbraco.Uploader.csproj" />
         <ProjectReference Include="..\..\TaxRelief\N3O.Umbraco.TaxRelief\N3O.Umbraco.TaxRelief.csproj" />
         <ProjectReference Include="..\..\Validation\N3O.Umbraco.Validation\N3O.Umbraco.Validation.csproj" />
     </ItemGroup>
