@@ -22,7 +22,7 @@ public class Item {
     public decimal Discount { get; set; }
     
     [JsonProperty("index")]
-    public int Index  { get; set; }
+    public int Index { get; set; }
     
     [JsonProperty("item_brand")]
     public string Brand { get; set; }
