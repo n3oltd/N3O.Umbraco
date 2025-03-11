@@ -21,7 +21,8 @@ public class ConsentSettingsMapping : IMapDefinition {
     private void Map(PreferencesStructureRes src, PreferencesSettings dest, MapperContext ctx) {
         var channels = src.Channels.Where(RequiresConsent);
         
-        dest.Text = _formatter.Text.Format<Strings>(s => s.ConsentText);
+        dest.PreferenceText = _formatter.Text.Format<Strings>(s => s.ConsentPreferenceText);
+        dest.PrivacyText = _formatter.Text.Format<Strings>(s => s.ConsentPrivacyText);
         dest.Options = channels.Select(x => ctx.Map<ChannelPreferencesStructureRes, PreferencesOptionSettings>(x)).ToList();
     }
     
@@ -34,7 +35,9 @@ public class ConsentSettingsMapping : IMapDefinition {
     }
     
     public class Strings : CodeStrings {
-        public string ConsentText => "We may occasionally contact you by post or phone about our projects, "
-                                     + "fundraising, and appeals. I am happy to be contacted via:";
+        public string ConsentPreferenceText => "We may contact you occasionally by post or phone to tell you more about our projects, fundraising and appeals. \n"
+                                               + "Please let us know if you're also happy to hear from us via:";
+        
+        public string ConsentPrivacyText => "We promise to keep your details safe and will never sell or swap them with anyone. You can also opt out of communications at any time.";
     }
 }
