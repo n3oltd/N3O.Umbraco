@@ -40,7 +40,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Umbraco.Forms.StaticAssets" Version="13.4.0" />
+      <PackageReference Include="Umbraco.Forms.StaticAssets" Version="13.4.1" />
       <PackageReference Include="uSync.Forms" Version="13.4.4" />
     </ItemGroup>
 </Project>
