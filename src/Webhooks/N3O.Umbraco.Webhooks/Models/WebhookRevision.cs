@@ -1,4 +1,5 @@
-﻿using System;
+﻿using N3O.Umbraco.Entities;
+using System;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Webhooks.Models;
@@ -11,6 +12,10 @@ public class WebhookRevision : Value {
 
     public Guid Id { get; }
     public int Number { get; }
+
+    public RevisionId ToRevisionId() {
+        return new RevisionId(Id, Number);
+    }
 
     protected override IEnumerable<object> GetAtomicValues() {
         yield return Id;
