@@ -239,6 +239,21 @@ public class ServiceClient<TClient> {
         }
     }
 
+    public async Task<TRes> InvokeAsync<TReq, TRes>(Func<TClient, Func<string, string, string, string, string, string, string, string, TReq, CancellationToken, Task<TRes>>> resolve,
+                                                    string routeParameter1,
+                                                    TReq req,
+                                                    CancellationToken cancellationToken = default) {
+        var funcAsync = resolve(_client);
+
+        try {
+            var res = await funcAsync(routeParameter1, null, null, "false", "false", null, null, _subscriptionId, req, cancellationToken);
+
+            return res;
+        } catch (Exception ex) when (IsApiException(ex)) {
+            throw ToExceptionWithProblemDetails(ex);
+        }
+    }
+    
     private ExceptionWithProblemDetails ToExceptionWithProblemDetails(Exception exception) {
         try {
             var content = JsonConvert.SerializeObject(exception.GetType().GetProperty("Result").GetValue(exception));

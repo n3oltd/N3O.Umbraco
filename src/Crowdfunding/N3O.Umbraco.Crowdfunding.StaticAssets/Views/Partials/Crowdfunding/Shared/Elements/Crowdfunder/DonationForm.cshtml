@@ -205,7 +205,11 @@
             crowdfundingCartReq.items = items;
 
             if (items.length) {
-                submitCrowdfundingCartReq(crowdfundingCartReq)
+                if (window.themeConfig.addCrowdfunderToCart){
+                    window.themeConfig.addCrowdfunderToCart(crowdfundingCartReq);
+                } else {
+                    submitCrowdfundingCartReq(crowdfundingCartReq);
+                }
             }
         }
 
