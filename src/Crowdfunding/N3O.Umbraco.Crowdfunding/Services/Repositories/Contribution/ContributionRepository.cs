@@ -9,7 +9,6 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex;
 using N3O.Umbraco.Giving.Allocations.Lookups;
-using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.TaxRelief;
@@ -110,7 +109,7 @@ public partial class ContributionRepository : IContributionRepository {
                                                           GivingType givingType,
                                                           Money value,
                                                           string summary,
-                                                          Allocation allocation) {
+                                                          object allocation) {
         var crowdfunder = _contentLocator.GetCrowdfunderContent(crowdfunderId, crowdfunderType);
 
         var taxReliefScheme = _taxReliefSchemeAccessor.GetScheme();

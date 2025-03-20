@@ -101,7 +101,13 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
                                                                  checkout.Account?.Email?.Address,
                                                                  checkout.Account?.GetName(_formatter),
                                                                  checkout.Account?.TaxStatus == TaxStatuses.Payer,
+                                                                 allocation.FundDimensions.Dimension1?.Name,
+                                                                 allocation.FundDimensions.Dimension2?.Name,
+                                                                 allocation.FundDimensions.Dimension3?.Name,
+                                                                 allocation.FundDimensions.Dimension4?.Name,
+                                                                 allocation.Value,
                                                                  givingType,
+                                                                 allocation.Summary,
                                                                  allocation);
     }
 
