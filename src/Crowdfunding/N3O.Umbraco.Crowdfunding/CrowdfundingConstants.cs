@@ -225,12 +225,6 @@ public static class CrowdfundingConstants {
         public const string Alias = "crowdfundingTag";
     }
     
-    public static class WebhookCartItem {
-        public static class Extensions {
-            public static readonly string Key = "Crowdfunder";
-        }
-    }
-    
     public static class Webhooks {
         public static class Headers {
             public const string CrowdfunderId = "N3O-Crowdfunder-Id";
