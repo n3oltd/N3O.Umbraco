@@ -1,5 +1,4 @@
-﻿using N3O.Umbraco.Giving.Allocations.Models;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using NodaTime;
 using System.Collections.Generic;
 

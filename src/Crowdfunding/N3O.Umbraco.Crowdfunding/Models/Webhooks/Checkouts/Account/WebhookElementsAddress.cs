@@ -1,6 +1,4 @@
-﻿using N3O.Umbraco.Accounts.Models;
-using N3O.Umbraco.Lookups;
-using N3O.Umbraco.Webhooks.Models;
+﻿using N3O.Umbraco.Webhooks.Models;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
@@ -38,11 +36,5 @@ public class WebhookElementsAddress : Value {
         yield return AdministrativeArea;
         yield return PostalCode;
         yield return Country;
-    }
-
-    public Address ToAddress(ILookups lookups) {
-        var country = lookups.FindById<Country>(Country.Id);
-        
-        return new Address(Line1, Line2, Line3, Locality, AdministrativeArea, PostalCode, country);
     }
 }

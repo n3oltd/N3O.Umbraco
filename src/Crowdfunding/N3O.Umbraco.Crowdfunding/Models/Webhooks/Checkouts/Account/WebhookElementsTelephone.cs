@@ -1,6 +1,4 @@
-﻿using N3O.Umbraco.Accounts.Models;
-using N3O.Umbraco.Lookups;
-using N3O.Umbraco.Webhooks.Models;
+﻿using N3O.Umbraco.Webhooks.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
@@ -19,11 +17,5 @@ public class WebhookElementsTelephone : Value {
     protected override IEnumerable<object> GetAtomicValues() {
         yield return Country;
         yield return Number;
-    }
-
-    public Telephone ToTelephone(ILookups lookups) {
-        var country = lookups.FindById<Country>(Country.Id);
-        
-        return new Telephone(country, Number);
     }
 }

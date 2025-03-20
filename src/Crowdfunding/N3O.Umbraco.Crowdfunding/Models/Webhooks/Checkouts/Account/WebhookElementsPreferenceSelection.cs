@@ -1,7 +1,4 @@
-﻿using N3O.Umbraco.Accounts.Lookups;
-using N3O.Umbraco.Accounts.Models;
-using N3O.Umbraco.Lookups;
-using N3O.Umbraco.Webhooks.Models;
+﻿using N3O.Umbraco.Webhooks.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
@@ -18,14 +15,6 @@ public class WebhookElementsPreferenceSelection : Value {
     public WebhookLookup Channel { get; }
     public WebhookLookup Category { get; }
     public WebhookLookup Response { get; }
-
-    public ConsentChoice ToConsentChoice(ILookups lookups) {
-        var channel = lookups.FindById<ConsentChannel>(Channel.Id);
-        var category = lookups.FindById<ConsentCategory>(Category.Id);
-        var response = lookups.FindById<ConsentResponse>(Response.Id);
-            
-        return new ConsentChoice(channel, category, response);
-    }
 
     protected override IEnumerable<object> GetAtomicValues() {
         yield return Channel;

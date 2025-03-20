@@ -9,12 +9,6 @@ public class WebhookElementsEmail : Value {
 
     public string Address { get; }
     
-    public Accounts.Models.Email ToEmail() {
-        var email = new Accounts.Models.Email(Address);
-        
-        return email;
-    }
-    
     protected override IEnumerable<object> GetAtomicValues() {
         yield return Address;
     }

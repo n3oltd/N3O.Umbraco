@@ -1,5 +1,4 @@
-﻿using N3O.Umbraco.Accounts.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
@@ -13,12 +12,6 @@ public class WebhookElementsName : Value {
     public string Title { get; }
     public string FirstName { get; }
     public string LastName { get; }
-
-    public Name ToName() {
-        var name = new Name(Title, FirstName, LastName);
-        
-        return name;
-    }
 
     protected override IEnumerable<object> GetAtomicValues() {
         yield return Title;

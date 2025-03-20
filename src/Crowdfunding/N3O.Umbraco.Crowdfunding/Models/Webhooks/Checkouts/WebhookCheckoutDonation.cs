@@ -1,6 +1,4 @@
 ﻿using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving.Checkout.Models;
-using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Webhooks.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,30 +7,23 @@ namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class WebhookCheckoutDonation : Value {
     public WebhookCheckoutDonation(IEnumerable<WebhookCartItem> cartItems,
-                                   WebhookMoney total,
-                                   bool isComplete,
-                                   bool isRequired) {
+                                   WebhookFlowPayment payment,
+                                   WebhookMoney total) {
         CartItems = cartItems.OrEmpty().ToList();
+        Payment = payment;
         Total = total;
-        IsComplete = isComplete;
-        IsRequired = isRequired;
     }
 
     public IEnumerable<WebhookCartItem> CartItems { get; }
+    public WebhookFlowPayment Payment { get; }
     public WebhookMoney Total { get; }
-    public bool IsComplete { get; }
-    public bool IsRequired { get; }
+
+    public bool IsComplete => IsRequired && Payment?.IsPaid == true;
+    public bool IsRequired => CartItems.HasAny();
 
     protected override IEnumerable<object> GetAtomicValues() {
         yield return CartItems;
+        yield return Payment;
         yield return Total;
-        yield return IsComplete;
-        yield return IsRequired;
-    }
-
-    public DonationCheckout ToDonationCheckout(ILookups lookups) {
-        var allocations = CartItems.Select(x => x.ToAllocation(lookups));
-
-        return new DonationCheckout(allocations, null, Total.ToMoney(lookups));
     }
 }

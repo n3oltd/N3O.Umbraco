@@ -1,6 +1,4 @@
 ﻿using AsyncKeyedLock;
-using N3O.Umbraco.Accounts.Extensions;
-using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Commands;
@@ -12,10 +10,7 @@ using N3O.Umbraco.Crowdfunding.NamedParameters;
 using N3O.Umbraco.Email;
 using N3O.Umbraco.Email.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
-using N3O.Umbraco.Giving.Allocations.Models;
-using N3O.Umbraco.Giving.Checkout.Entities;
 using N3O.Umbraco.Json;
-using N3O.Umbraco.Localization;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Scheduler;
 using N3O.Umbraco.TaxRelief.Lookups;
@@ -31,7 +26,6 @@ namespace N3O.Umbraco.Crowdfunding.Events;
 public class CheckoutUpdatedHandler : CheckoutEventHandler<CheckoutUpdatedEvent> {
     private readonly IClock _clock;
     private readonly IBackgroundJob _backgroundJob;
-    private readonly IFormatter _formatter;
     private readonly IContributionRepository _contributionRepository;
     private readonly IJsonProvider _jsonProvider;
     private readonly IContentLocator _contentLocator;
@@ -41,7 +35,6 @@ public class CheckoutUpdatedHandler : CheckoutEventHandler<CheckoutUpdatedEvent>
 
     public CheckoutUpdatedHandler(IBackgroundJob backgroundJob,
                                   IClock clock,
-                                  IFormatter formatter,
                                   IContributionRepository contributionRepository,
                                   IJsonProvider jsonProvider,
                                   IContentLocator contentLocator,
@@ -54,7 +47,6 @@ public class CheckoutUpdatedHandler : CheckoutEventHandler<CheckoutUpdatedEvent>
         _backgroundJob = backgroundJob;
         _jsonProvider = jsonProvider;
         _clock = clock;
-        _formatter = formatter;
         _contentLocator = contentLocator;
         _emailBuilder = emailBuilder;
         _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
@@ -63,42 +55,46 @@ public class CheckoutUpdatedHandler : CheckoutEventHandler<CheckoutUpdatedEvent>
 
     protected override async Task HandleEventAsync(CheckoutUpdatedEvent req, CancellationToken cancellationToken) {
         var reference = req.Model.Reference.Text;
-        var checkout = req.Model.ToCheckout(_lookups);
-        var account = req.Model.Account.ToCheckoutAccount(_lookups);
         
-        await ProcessItemsAsync(reference, checkout, account, req.Model.Donation.CartItems, GivingTypes.Donation);
+        await ProcessItemsAsync(reference, req.Model, req.Model.Donation.CartItems, GivingTypes.Donation);
     }
 
     private async Task ProcessItemsAsync(string reference,
-                                         Checkout checkout,
-                                         Account account,
+                                         WebhookCheckout checkout,
                                          IEnumerable<WebhookCartItem> cartItems,
                                          GivingType givingType) {
         foreach (var cartItem in cartItems.Where(x => x.HasCrowdfunderData())) {
-            var allocation = cartItem.ToAllocation(_lookups);
-            var crowdfunderData = allocation.GetCrowdfunderData(_jsonProvider);
+            var crowdfunderData = cartItem.GetCrowdfunderData(_jsonProvider);
 
-            await RecordContributionAsync(reference, givingType, allocation, crowdfunderData, account);
+            await RecordContributionAsync(reference, givingType, cartItem, crowdfunderData, checkout.Account);
             
             RefreshCrowdfunderStatistics(crowdfunderData);
             
-            QueueEmail(checkout, crowdfunderData, allocation);
+            QueueEmail(checkout, crowdfunderData, cartItem);
         }
     }
 
     private async Task RecordContributionAsync(string reference,
                                                GivingType givingType,
-                                               Allocation allocation,
+                                               WebhookCartItem cartItem,
                                                ICrowdfunderData crowdfunderData,
-                                               Account account) {
+                                               WebhookCheckoutAccountInfo account) {
+        var name = account.GetName(_lookups);
+        
         await _contributionRepository.AddOnlineContributionAsync(reference,
                                                                  _clock.GetCurrentInstant(),
                                                                  crowdfunderData,
                                                                  account.Email?.Address,
-                                                                 account.GetName(_formatter),
+                                                                 name,
                                                                  account.TaxStatus == TaxStatuses.Payer,
+                                                                 cartItem.FundDimensions.Dimension1,
+                                                                 cartItem.FundDimensions.Dimension2,
+                                                                 cartItem.FundDimensions.Dimension3,
+                                                                 cartItem.FundDimensions.Dimension4,
+                                                                 cartItem.Value.ToMoney(_lookups),
                                                                  givingType,
-                                                                 allocation);
+                                                                 cartItem.GetSummary(),
+                                                                 cartItem);
     }
 
     private void RefreshCrowdfunderStatistics(ICrowdfunderData crowdfunderData) {
@@ -113,14 +109,14 @@ public class CheckoutUpdatedHandler : CheckoutEventHandler<CheckoutUpdatedEvent>
                                                                      });
     }
 
-    private void QueueEmail(Checkout checkout, CrowdfunderData crowdfunderData, Allocation allocation) {
+    private void QueueEmail(WebhookCheckout checkout, CrowdfunderData crowdfunderData, WebhookCartItem cartItem) {
         if (crowdfunderData.Type == CrowdfunderTypes.Fundraiser) {
             var fundraiser = _contentLocator.ById<FundraiserContent>(crowdfunderData.Id);
             var template = _contentLocator.Single<FundraiserContributionReceivedTemplateContent>();
 
             var model = new FundraiserContributionReceivedViewModel(new FundraiserContentViewModel(_crowdfundingUrlBuilder, fundraiser),
                                                                     checkout,
-                                                                    allocation,
+                                                                    cartItem,
                                                                     crowdfunderData);
 
             _emailBuilder.QueueTemplate(template, model.Fundraiser.FundraiserEmail, model);

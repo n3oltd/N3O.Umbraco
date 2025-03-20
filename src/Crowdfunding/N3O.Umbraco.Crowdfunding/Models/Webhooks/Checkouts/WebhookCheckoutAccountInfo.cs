@@ -1,5 +1,5 @@
 ﻿using N3O.Umbraco.Accounts.Lookups;
-using N3O.Umbraco.Giving.Checkout.Models;
+using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Webhooks.Models;
 using System;
@@ -41,24 +41,6 @@ public class WebhookCheckoutAccountInfo : Value {
     public WebhookElementsPreferences Preferences { get; }
     public WebhookElementsTaxStatus TaxStatus { get; }
 
-    public CheckoutAccount ToCheckoutAccount(ILookups lookups) {
-        var type = lookups.FindById<AccountType>(Type.Id);
-        
-        var account = new CheckoutAccount(Id,
-                                          Reference.Text,
-                                          type,
-                                          Individual.ToIndividual(),
-                                          Organization.ToOrganization(lookups),
-                                          Address.ToAddress(lookups),
-                                          Email.ToEmail(),
-                                          Telephone.ToTelephone(lookups),
-                                          Preferences.ToConsent(lookups),
-                                          TaxStatus.ToTaxStatus(),
-                                          true);
-        
-        return account;
-    }
-
     protected override IEnumerable<object> GetAtomicValues() {
         yield return Id;
         yield return Reference;
@@ -70,5 +52,21 @@ public class WebhookCheckoutAccountInfo : Value {
         yield return Telephone;
         yield return Preferences;
         yield return TaxStatus;
+    }
+    
+    public string GetName(ILookups lookups) {
+        if (Type == null) {
+            return null;
+        }
+
+        var accountType = lookups.FindById<AccountType>(Type.Id);
+        
+        if (accountType == AccountTypes.Individual) {
+            return $"{Individual?.Name?.FirstName} {Individual?.Name?.LastName}".Trim();
+        } else if (accountType == AccountTypes.Organization) {
+            return Organization?.Name;
+        } else {
+            throw UnrecognisedValueException.For(Type);
+        }
     }
 }

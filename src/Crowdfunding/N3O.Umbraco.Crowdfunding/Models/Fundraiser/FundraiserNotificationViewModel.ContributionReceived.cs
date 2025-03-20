@@ -1,12 +1,9 @@
-using N3O.Umbraco.Giving.Allocations.Models;
-using N3O.Umbraco.Giving.Checkout.Entities;
-
 namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class FundraiserContributionReceivedViewModel {
     public FundraiserContributionReceivedViewModel(FundraiserContentViewModel fundraiser,
-                                                   Checkout checkout,
-                                                   Allocation allocation,
+                                                   object checkout,
+                                                   object allocation,
                                                    CrowdfunderData contribution) {
         Fundraiser = fundraiser;
         Checkout = checkout;
@@ -14,8 +11,8 @@ public class FundraiserContributionReceivedViewModel {
         Contribution = contribution;
     }
 
-    public Checkout Checkout { get; }
-    public Allocation Allocation { get; }
+    public object Checkout { get; }
+    public object Allocation { get; }
     public CrowdfunderData Contribution { get; }
     public FundraiserContentViewModel Fundraiser { get; }
 }
