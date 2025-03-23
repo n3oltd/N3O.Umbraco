@@ -235,10 +235,15 @@ public static class CrowdfundingConstants {
             public static class Pledges {
                 public const string PledgeUpdated = "pledge.updated";
             }
+            
+            public static class Checkout {
+                public const string CheckoutUpdated = "checkout.updated";
+            }
         }
 
         public static class HookIds {
             public const string CampaignUrl = nameof(CampaignUrl);
+            public const string Checkout = nameof(Checkout);
             public const string Crowdfunder = nameof(Crowdfunder);
             public const string Pledges = nameof(Pledges);
         }
