@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace N3O.Umbraco.Crowdfunding.Extensions;
 
-public static partial  class CrowdfundingCartReqExtensions {
+public static partial class CrowdfundingCartReqExtensions {
     public static BulkAddToCartReq ToBulkAddToCartReq(this CrowdfundingCartReq crowdfundingReq,
                                                       IContentLocator contentLocator,
                                                       IJsonProvider jsonProvider,
