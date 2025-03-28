@@ -3959,6 +3959,9 @@ namespace N3O.Umbraco.Elements.Clients
         [Newtonsoft.Json.JsonProperty("privacyText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string PrivacyText { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("skipNoPreferences", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? SkipNoPreferences { get; set; }
+
         [Newtonsoft.Json.JsonProperty("options", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<PreferencesOptionSettings> Options { get; set; }
 

@@ -1,16 +1,18 @@
 ﻿using N3O.Headless.Communications.Clients;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Elements.Clients;
+using N3O.Umbraco.Elements.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Localization;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Elements.Models.CheckoutProfile;
 
-public class ConsentSettingsMapping : IMapDefinition {
-    private readonly IFormatter _formatter;
-    public ConsentSettingsMapping(IFormatter formatter) {
-        _formatter = formatter;
+public class PreferencesSettingsMapping : IMapDefinition {
+    private readonly IContentLocator _contentLocator;
+    
+    public PreferencesSettingsMapping(IContentLocator contentLocator) {
+        _contentLocator = contentLocator;
     }
 
     public void DefineMaps(IUmbracoMapper mapper) {
@@ -19,10 +21,13 @@ public class ConsentSettingsMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll
     private void Map(PreferencesStructureRes src, PreferencesSettings dest, MapperContext ctx) {
+        var preferencesDataEntrySettings = _contentLocator.Single<PreferencesDataEntrySettingsContent>();
+        
         var channels = src.Channels.Where(RequiresConsent);
         
-        dest.PreferenceText = _formatter.Text.Format<Strings>(s => s.ConsentPreferenceText);
-        dest.PrivacyText = _formatter.Text.Format<Strings>(s => s.ConsentPrivacyText);
+        dest.PreferenceText = preferencesDataEntrySettings.PreferenceText;
+        dest.PrivacyText = preferencesDataEntrySettings.PrivacyText;
+        dest.SkipNoPreferences = preferencesDataEntrySettings.SkipNoPreferences;
         dest.Options = channels.Select(x => ctx.Map<ChannelPreferencesStructureRes, PreferencesOptionSettings>(x)).ToList();
     }
     
@@ -32,12 +37,5 @@ public class ConsentSettingsMapping : IMapDefinition {
                                                      .HasAny(x => x.ConsentRequired == true);
 
         return channels;
-    }
-    
-    public class Strings : CodeStrings {
-        public string ConsentPreferenceText => "We may contact you occasionally by post or phone to tell you more about our projects, fundraising and appeals. \n"
-                                               + "Please let us know if you're also happy to hear from us via:";
-        
-        public string ConsentPrivacyText => "We promise to keep your details safe and will never sell or swap them with anyone. You can also opt out of communications at any time.";
     }
 }
