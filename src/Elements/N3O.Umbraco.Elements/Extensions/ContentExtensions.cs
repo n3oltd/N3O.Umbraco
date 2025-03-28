@@ -1,4 +1,6 @@
 ﻿using N3O.Umbraco.Accounts.Extensions;
+using N3O.Umbraco.Content;
+using N3O.Umbraco.Elements.Content;
 using N3O.Umbraco.TaxRelief.Extensions;
 using N3O.Umbraco.Extensions;
 using Umbraco.Cms.Core.Models;
@@ -19,7 +21,8 @@ public static class ContentExtensions {
         return content.IsDataEntrySettingsOrChild(contentService) ||
                content.ElementsCheckoutCompleteSettings() ||
                content.IsConsentSettingsOrDescendant(contentService) ||
-               content.IsTaxReliefOrChildSettings(contentService);
+               content.IsTaxReliefOrChildSettings(contentService) ||
+               content.IsPreferencesDataEntrySettings();
     }
     
     public static bool IsElementsSettings(this IContent content) {
@@ -28,6 +31,10 @@ public static class ContentExtensions {
     
     private static bool ElementsCheckoutCompleteSettings(this IContent content) {
         return content.ContentType.Alias.EqualsInvariant(ElementsConstants.ElementsCheckoutCompleteSettings.Alias);
+    }
+    
+    public static bool IsPreferencesDataEntrySettings(this IContent content) {
+        return content.ContentType.Alias.EqualsInvariant(AliasHelper<PreferencesDataEntrySettingsContent>.ContentTypeAlias());
     }
     
     private static bool HasComposition(this IContent content, IContentTypeService contentTypeService, string alias) {
