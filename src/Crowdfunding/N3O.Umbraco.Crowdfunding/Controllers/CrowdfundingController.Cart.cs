@@ -42,9 +42,12 @@ public partial class CrowdfundingController {
             _validationHandler.Value.Handle(validationFailures);
         }
         
-        var revisionId = await _mediator.Value.SendAsync<AddToCrmCartCommand, CrowdfundingCartReq, RevisionId>(crowdfundingReq);
+        var crmCartId = await _mediator.Value.SendAsync<AddToCrmCartCommand, CrowdfundingCartReq, EntityId>(crowdfundingReq);
         
-        _crmCartCookie.Value.SetValue(revisionId);
+        /*TODO Not working for some reason*/
+        //_crmCartCookie.Value.SetValue(crmCartId);
+        
+        _httpContextAccessor.Value.HttpContext?.Response.Cookies.Append("cartId", crmCartId);
             
         return Ok();
     }

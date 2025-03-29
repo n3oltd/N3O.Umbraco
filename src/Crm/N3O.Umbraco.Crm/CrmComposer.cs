@@ -10,5 +10,6 @@ public class CrmComposer : Composer {
         builder.Services.AddOpenApiDocument(CrmConstants.ApiName);
         
         builder.Services.AddTransient<IAccountIdentityAccessor, AccountIdentityAccessor>();
+        builder.Services.AddTransient<ICrmCartIdAccessor, CrmCartIdAccessor>();
     }
 }

@@ -29,6 +29,7 @@ public partial class CrowdfundingController : ApiController {
     private readonly Lazy<ICrowdfundingUrlBuilder> _crowdfundingUrlBuilder;
     private readonly Lazy<CartCookie> _cartCookie;
     private readonly Lazy<CrmCartCookie> _crmCartCookie;
+    private readonly Lazy<IHttpContextAccessor> _httpContextAccessor;
     private readonly Lazy<IContentLocator> _contentLocator;
     private readonly Lazy<IValidation> _validation;
     private readonly Lazy<IValidationHandler> _validationHandler;
@@ -44,7 +45,8 @@ public partial class CrowdfundingController : ApiController {
                                   Lazy<CrmCartCookie> crmCartCookie,
                                   Lazy<IContentLocator> contentLocator,
                                   Lazy<IValidation> validation,
-                                  Lazy<IValidationHandler> validationHandler) {
+                                  Lazy<IValidationHandler> validationHandler,
+                                  Lazy<IHttpContextAccessor> httpContextAccessor) {
         _mediator = mediator;
         _contentService = contentService;
         _fundraiserAccessControl = fundraiserAccessControl;
@@ -57,6 +59,7 @@ public partial class CrowdfundingController : ApiController {
         _contentLocator = contentLocator;
         _validation = validation;
         _validationHandler = validationHandler;
+        _httpContextAccessor = httpContextAccessor;
     }
     
     [HttpPost("suggestSlug")]
