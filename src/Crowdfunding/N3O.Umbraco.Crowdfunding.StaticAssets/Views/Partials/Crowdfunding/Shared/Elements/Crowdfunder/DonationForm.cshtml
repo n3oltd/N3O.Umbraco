@@ -206,7 +206,9 @@
 
             if (items.length) {
                 if (window.themeConfig.addCrowdfunderToCart) {
-                    window.themeConfig.addCrowdfunderToCart(crowdfundingCartReq);
+                    window.themeConfig.addCrowdfunderToCart(crowdfundingCartReq).then(() => {
+                        hideDonationSummaryModal();
+                    });
                 } else {
                     submitCrowdfundingCartReq(crowdfundingCartReq);
                 }
