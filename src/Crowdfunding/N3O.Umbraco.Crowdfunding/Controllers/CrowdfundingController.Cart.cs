@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.Extensions;
@@ -41,7 +42,12 @@ public partial class CrowdfundingController {
             _validationHandler.Value.Handle(validationFailures);
         }
         
-        await _mediator.Value.SendAsync<AddToCrmCartCommand, CrowdfundingCartReq, None>(crowdfundingReq);
+        var crmCartId = await _mediator.Value.SendAsync<AddToCrmCartCommand, CrowdfundingCartReq, EntityId>(crowdfundingReq);
+        
+        /*TODO Not working for some reason*/
+        //_crmCartCookie.Value.SetValue(crmCartId);
+        
+        _httpContextAccessor.Value.HttpContext?.Response.Cookies.Append("cartId", crmCartId);
             
         return Ok();
     }
