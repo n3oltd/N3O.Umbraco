@@ -5,7 +5,6 @@ using N3O.Umbraco.Crm.Engage.Clients;
 using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Models;
-using N3O.Umbraco.Entities;
 using N3O.Umbraco.Giving.Cart;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Mediator;
@@ -14,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Crowdfunding.Handlers;
 
-public class AddToCrmCartHandler : IRequestHandler<AddToCrmCartCommand, CrowdfundingCartReq, RevisionId> {
+public class AddToCrmCartHandler : IRequestHandler<AddToCrmCartCommand, CrowdfundingCartReq, None> {
     private readonly ClientFactory<CartClient> _clientFactory;
     private readonly ISubscriptionAccessor _subscriptionAccessor;
     private readonly IContentLocator _contentLocator;
@@ -33,7 +32,7 @@ public class AddToCrmCartHandler : IRequestHandler<AddToCrmCartCommand, Crowdfun
         _subscriptionAccessor = subscriptionAccessor;
     }
 
-    public async Task<RevisionId> Handle(AddToCrmCartCommand req, CancellationToken cancellationToken) {
+    public async Task<None> Handle(AddToCrmCartCommand req, CancellationToken cancellationToken) {
         var subscription = _subscriptionAccessor.GetSubscription();
         var client = await _clientFactory.CreateAsync(subscription, ClientTypes.BackOffice);
 
@@ -46,6 +45,6 @@ public class AddToCrmCartHandler : IRequestHandler<AddToCrmCartCommand, Crowdfun
                                                            bulkAddToCartReq,
                                                            cancellationToken);
 
-        return cart.RevisionId;
+        return None.Empty;
     }
 }
