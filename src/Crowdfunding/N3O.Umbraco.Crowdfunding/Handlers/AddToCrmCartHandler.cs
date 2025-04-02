@@ -7,7 +7,6 @@ using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Entities;
-using N3O.Umbraco.Giving.Cart;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Mediator;
 using System.Threading;
