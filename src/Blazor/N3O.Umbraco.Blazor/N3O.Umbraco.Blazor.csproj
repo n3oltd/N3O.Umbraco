@@ -40,6 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.Components.CustomElements" Version="8.0.10" />
+      <PackageReference Include="Microsoft.AspNetCore.Components.CustomElements" Version="9.0.2" />
     </ItemGroup>
 </Project>
