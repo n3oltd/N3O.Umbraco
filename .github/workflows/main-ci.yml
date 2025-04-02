@@ -11,11 +11,11 @@ jobs:
     name: Build
     uses: n3oltd/actions/.github/workflows/dotnet-build-pack-push.yml@main
     with:
-      dotnet-version: 8.x
+      dotnet-version: 9.x
 
   myget:
     name: MyGet
     uses: n3oltd/actions/.github/workflows/dotnet-build-pack-push-myget.yml@main
     with:
-      dotnet-version: 8.x
+      dotnet-version: 9.x
     secrets: inherit
