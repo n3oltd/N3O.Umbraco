@@ -24,7 +24,7 @@ namespace N3O.Umbraco.Data;
 
 public class DataComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        ExcelPackage.License.SetNonCommercialOrganization("N3O");
 
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         
