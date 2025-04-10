@@ -15,7 +15,6 @@ namespace N3O.Umbraco.Payments.Stripe.Handlers;
 
 public class CreatePaymentIntentHandler :
     PaymentsHandler<CreatePaymentIntentCommand, PaymentIntentReq, StripePayment> {
-    private readonly IPaymentsScope _paymentsScope;
     private readonly IContentCache _contentCache;
     private readonly StripeClient _stripeClient;
     private readonly ICustomers _customers;
@@ -25,7 +24,6 @@ public class CreatePaymentIntentHandler :
                                       StripeClient stripeClient,
                                       ICustomers customers)
         : base(paymentsScope) {
-        _paymentsScope = paymentsScope;
         _contentCache = contentCache;
         _stripeClient = stripeClient;
         _customers = customers;
