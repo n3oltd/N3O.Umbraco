@@ -10,7 +10,7 @@ jobs:
     name: Build, Pack, Push
     uses: n3oltd/actions/.github/workflows/dotnet-build-pack-push.yml@main
     with:
-      dotnet-version: 9.x
+      dotnet-version: 8.x
       run-tests: false
       run-pack: true
     secrets:

@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.WelcomeDashboard</RootNamespace>
-        <TargetFramework>net9.0</TargetFramework>
-        <LangVersion>13</LangVersion>
+        <TargetFramework>net8.0</TargetFramework>
+        <LangVersion>12</LangVersion>
         <Copyright>Copyright © 2024 N3O Ltd</Copyright>
     </PropertyGroup>
 
