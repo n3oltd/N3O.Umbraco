@@ -6,6 +6,7 @@ using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Extensions;
 using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
@@ -30,7 +31,13 @@ public class LabelPropertyConverter : PropertyConverter<string> {
                 return ExportValue<string>(contentProperty, x => OurDataTypes.String.Cell(x));
             
             case ValueTypes.Decimal:
-                return ExportValue<decimal?>(contentProperty, x => OurDataTypes.String.Cell(x?.ToString()));
+                if (contentProperty.Value is decimal || contentProperty.Value == null) {
+                    return ExportValue<decimal?>(contentProperty, x => OurDataTypes.String.Cell(x?.ToString()));
+                } else if (contentProperty.Value is double) {
+                    return ExportValue<double?>(contentProperty, x => OurDataTypes.String.Cell(x?.ToString()));
+                } else {
+                    throw UnrecognisedValueException.For(contentProperty.Value);
+                }
             
             case ValueTypes.Date:
                 return ExportValue<DateOnly?>(contentProperty, x => OurDataTypes.String.Cell(x?.ToString()));
