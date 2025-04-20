@@ -25,6 +25,7 @@ public class UserSaving : INotificationAsyncHandler<UserSavingNotification> {
                 await _userDirectory.Value.CreateUserIfNotExistsAsync(ClientTypes.BackOffice,
                                                                       _auth0BackOfficeOptions.Auth0.Login.ClientId,
                                                                       _auth0BackOfficeOptions.Auth0.Login.ConnectionName,
+                                                                      _auth0BackOfficeOptions.Auth0.Login.Passwordless,
                                                                       user.Email,
                                                                       user.Name,
                                                                       lastName: null);

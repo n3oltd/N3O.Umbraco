@@ -4,4 +4,5 @@ public class LoginOptions : Auth0Application {
     public string Authority { get; set; }
     public bool AutoCreateDirectoryUser { get; set; }
     public string ConnectionName { get; set; }
+    public bool Passwordless { get; set; }
 }

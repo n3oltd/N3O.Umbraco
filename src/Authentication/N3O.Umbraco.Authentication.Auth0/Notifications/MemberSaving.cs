@@ -25,13 +25,17 @@ public class MemberSaving : INotificationAsyncHandler<MemberSavingNotification> 
     public async Task HandleAsync(MemberSavingNotification notification, CancellationToken cancellationToken) {
         if (_auth0MemberOptions.Auth0.Login.AutoCreateDirectoryUser) {
             foreach (var member in notification.SavedEntities) {
+                var firstName = member.GetValue<string>(MemberConstants.Member.Properties.FirstName) ?? member.Name;
+                var lastName = member.GetValue<string>(MemberConstants.Member.Properties.LastName);
+                
                 var auth0User = await _userDirectory.Value
                                                     .CreateUserIfNotExistsAsync(ClientTypes.Members,
                                                                                 _auth0MemberOptions.Auth0.Login.ClientId,
                                                                                 _auth0MemberOptions.Auth0.Login.ConnectionName,
+                                                                                _auth0MemberOptions.Auth0.Login.Passwordless,
                                                                                 member.Email,
-                                                                                member.Name,
-                                                                                lastName: null);
+                                                                                firstName,
+                                                                                lastName);
 
                 if (auth0User.HasValue(x => x.Picture)) {
                     SetMemberAvatarLink(member, auth0User.Picture);
