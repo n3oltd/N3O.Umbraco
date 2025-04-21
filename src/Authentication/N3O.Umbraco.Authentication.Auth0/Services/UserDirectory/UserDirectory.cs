@@ -77,7 +77,7 @@ public class UserDirectory : IUserDirectory {
                                                                    string lastName) {
         var user = await GetDirectoryUserByEmailAsync(managementClient, email);
 
-        if (user.Identities.None(x => x.Connection == connectionName)) {
+        if (!user.HasValue() || user.Identities.None(x => x.Connection == connectionName)) {
             user = await CreateDirectoryUserAsync(managementClient, connectionName, email, firstName, lastName, password: null);
         }
 
@@ -110,7 +110,7 @@ public class UserDirectory : IUserDirectory {
 
             user = await CreateDirectoryUserAsync(managementClient, connectionName, email, firstName, lastName, password);
 
-            await SendPasswordResetEmailAsync(managementClient, authClient, clientId, connectionName, email);
+            //await SendPasswordResetEmailAsync(managementClient, authClient, clientId, connectionName, email);
         }
         
         return user;
