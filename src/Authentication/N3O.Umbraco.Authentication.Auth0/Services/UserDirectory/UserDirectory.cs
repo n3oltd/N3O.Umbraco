@@ -110,7 +110,7 @@ public class UserDirectory : IUserDirectory {
 
             user = await CreateDirectoryUserAsync(managementClient, connectionName, email, firstName, lastName, password);
 
-            //await SendPasswordResetEmailAsync(managementClient, authClient, clientId, connectionName, email);
+            await SendPasswordResetEmailAsync(managementClient, authClient, clientId, connectionName, email);
         }
         
         return user;
