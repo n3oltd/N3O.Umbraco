@@ -8,6 +8,7 @@ public interface IUserDirectory {
     Task<Auth0User> CreateUserIfNotExistsAsync(ClientType clientType,
                                                string clientId,
                                                string connectionName,
+                                               bool passwordless,
                                                string email,
                                                string firstName,
                                                string lastName,
