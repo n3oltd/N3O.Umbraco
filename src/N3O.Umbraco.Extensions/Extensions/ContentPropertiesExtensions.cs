@@ -13,8 +13,8 @@ public static class ContentPropertiesExtensions {
         return elementsProperty;
     }
     
-    public static ElementsProperty GetElementsPropertyByAlias<TContent, TProperty>(this ContentProperties contentProperties,
-                                                                                   Expression<Func<TContent, TProperty>> propertyExpression) {
+    public static ElementsProperty GetElementsPropertyByAlias<TContent>(this ContentProperties contentProperties,
+                                                                        Expression<Func<TContent, object>> propertyExpression) {
         var alias = AliasHelper<TContent>.PropertyAlias(propertyExpression);
 
         return GetElementsPropertyByAlias(contentProperties, alias);
@@ -32,8 +32,8 @@ public static class ContentPropertiesExtensions {
         return contentProperty;
     }
     
-    public static IContentProperty GetPropertyByAlias<TContent, TProperty>(this ContentProperties contentProperties,
-                                                                           Expression<Func<TContent, TProperty>> propertyExpression) {
+    public static IContentProperty GetPropertyByAlias<TContent>(this ContentProperties contentProperties,
+                                                                Expression<Func<TContent, object>> propertyExpression) {
         var alias = AliasHelper<TContent>.PropertyAlias(propertyExpression);
 
         return GetPropertyByAlias(contentProperties, alias);
@@ -43,8 +43,8 @@ public static class ContentPropertiesExtensions {
         return (T) GetPropertyByAlias(contentProperties, alias)?.Value;
     }
     
-    public static TValue GetPropertyValueByAlias<TContent, TProperty, TValue>(this ContentProperties contentProperties,
-                                                                              Expression<Func<TContent, TProperty>> propertyExpression) {
+    public static TValue GetPropertyValueByAlias<TContent, TValue>(this ContentProperties contentProperties,
+                                                                   Expression<Func<TContent, object>> propertyExpression) {
         var alias = AliasHelper<TContent>.PropertyAlias(propertyExpression);
         
         return GetPropertyValueByAlias<TValue>(contentProperties, alias);
