@@ -19,6 +19,7 @@ public abstract class CampaignGoalOptionElementValidator<TGoalOption> : ContentV
     public override bool IsValidator(ContentProperties content) {
         return Alias.EqualsInvariant(content.ContentTypeAlias);
     }
+    
     public override void Validate(ContentProperties content) {
         ValidateFundDimensions(content);
         ValidatePriceLocked(content);
