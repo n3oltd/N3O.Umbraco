@@ -2,6 +2,7 @@
 using N3O.Umbraco.Cropper.DataTypes;
 using N3O.Umbraco.Cropper.Extensions;
 using N3O.Umbraco.Cropper.Models;
+using N3O.Umbraco.Extensions;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,19 +26,22 @@ public abstract class OpenGraphImageCropperHandler : INotificationAsyncHandler<C
             if (ShouldExecute(content)) {
                 var contentProperties = _contentHelper.Value.GetContentProperties(content);
                 var croppedImage = GetImage(contentProperties);
-                var cropperSource = croppedImage.GetUncroppedImage();
-                var crop = cropperSource.GetLargestCrop();
-
-                var cropDefinition = GetCropDefinition(cropperSource);
                 
-                await _imageCropper.Value.CropAsync(cropDefinition,
-                                                    crop,
-                                                    cropperSource,
-                                                    cancellationToken);
+                if (croppedImage.HasValue()) {
+                    var cropperSource = croppedImage.GetUncroppedImage();
+                    var crop = cropperSource.GetLargestCrop();
 
-                var imagePath = ImagePath.Get(cropperSource.MediaId, cropperSource.Filename, cropDefinition, crop);
+                    var cropDefinition = GetCropDefinition(cropperSource);
+                
+                    await _imageCropper.Value.CropAsync(cropDefinition,
+                                                        crop,
+                                                        cropperSource,
+                                                        cancellationToken);
 
-                PopulateImagePath(content, imagePath);
+                    var imagePath = ImagePath.Get(cropperSource.MediaId, cropperSource.Filename, cropDefinition, crop);
+
+                    PopulateImagePath(content, imagePath);
+                }
             }
         }
     }
