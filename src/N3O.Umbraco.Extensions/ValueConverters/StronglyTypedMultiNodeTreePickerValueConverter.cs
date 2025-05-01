@@ -51,10 +51,10 @@ public class StronglyTypedMultiNodeTreePickerValueConverter : MultiNodeTreePicke
         if (value?.GetType().IsEnumerable() ?? false) {
             var elementType = GetElementType(propertyType);
 
-            var valueListType = typeof(List<>).MakeGenericType(elementType);
+            var valueListType = typeof(List<>).MakeGenericType(typeof(IPublishedContent));
             var valueList = (IList) Activator.CreateInstance(valueListType);
 
-            foreach (var item in (IEnumerable)value) {
+            foreach (var item in (IEnumerable) value) {
                 valueList.Add(item);
             }
 

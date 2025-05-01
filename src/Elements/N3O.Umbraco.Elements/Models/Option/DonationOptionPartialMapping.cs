@@ -25,6 +25,7 @@ public class DonationOptionPartialMapping : IMapDefinition {
         dest.Dimension4 = GetInitial(ctx, src.Dimension4, src.GetFundDimensionOptions().DefaultFundDimension4(), src.GetFundDimensionOptions().Dimension4Options);
         dest.HideDonation = src.HideDonation;
         dest.HideRegularGiving = src.HideRegularGiving;
+        dest.DefaultOptionInCategory = src.DefaultOptionInCategory;
         dest.HideQuantity = src.HideQuantity;
         dest.Synopsis = src.Synopsis;
         dest.Description = src.Description;
