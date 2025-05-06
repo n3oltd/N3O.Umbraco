@@ -15,6 +15,7 @@ public class DonationCategoryPartialMapping : IMapDefinition {
     private void Map(DonationCategoryContent src, DonationCategoryPartial dest, MapperContext ctx) {
         dest.Id = src.Id;
         dest.ParentId = src.ParentId;
+        dest.Name = src.Content().Name;
         dest.Type = src.Type.Id;
         dest.Image = src.ImageUrl;
         dest.Dimension = src.Dimension.IfNotNull(ctx.Map<DimensionDonationCategoryContent, DimensionCategoryData>);

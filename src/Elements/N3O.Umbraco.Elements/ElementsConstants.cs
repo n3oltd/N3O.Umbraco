@@ -15,7 +15,7 @@ public static class ElementsConstants {
             public const string Alias = "dimensionDonationCategory";
             
             public static class Properties {
-                public const string FundDimension = "fundDimension";
+                public const string FundDimension = "dimension";
             }
         }
         

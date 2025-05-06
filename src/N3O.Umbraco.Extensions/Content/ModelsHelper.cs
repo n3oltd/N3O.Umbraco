@@ -19,9 +19,9 @@ public class ModelsHelper {
         return TypeCache.GetOrAdd(cacheKey, () => {
             var typeName = contentType.Pascalize();
 
-            var type = OurAssemblies.GetTypes(t => t.Name == typeName &&
-                                                   (t.IsSubclassOfType(typeof(PublishedContentModel)) || t.IsSubclassOfType(typeof(PublishedElementModel))))
-                                    .SingleOrDefault();
+            var type = OurAssemblies.GetTypes(t => t.Name == typeName)
+                                    .FirstOrDefault(x => x.IsInterface ||
+                                                         (x.IsConcreteClass() && ((x.IsSubclassOfType(typeof(PublishedContentModel)) || x.IsSubclassOfType(typeof(PublishedElementModel))))));
 
             if (type == null) {
                 var fullTypeName = $"{modelsNamespace}.{typeName}";

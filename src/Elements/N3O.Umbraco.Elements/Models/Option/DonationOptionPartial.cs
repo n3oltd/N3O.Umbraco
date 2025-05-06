@@ -14,6 +14,7 @@ public class DonationOptionPartial {
     public bool HideQuantity { get; set; }
     public bool HideDonation { get; set; }
     public bool HideRegularGiving { get; set; }
+    public bool DefaultOptionInCategory { get; set; }
     public string Synopsis { get; set; }
     public string Description { get; set; }
     public FeedbackDonationOptionData Feedback { get; set; }
