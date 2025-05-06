@@ -2,27 +2,11 @@ using N3O.Umbraco.Localization;
 using NodaTime;
 using NodaTime.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 
 namespace N3O.Umbraco.Extensions;
 
 public static class DateTimeExtensions {
-    private static List<string> HijriMonthNames = new() {
-        "Muharram",
-        "Safar",
-        "Rabi' al-awwal",
-        "Rabi' al-thani",
-        "Jumada al-awwal",
-        "Jumada al-thani",
-        "Rajab",
-        "Sha'ban",
-        "Ramadan",
-        "Shawwal",
-        "Dhu al-Qi'dah",
-        "Dhu al-Hijjah"
-    };
-
     public static bool HasValue(this DateTime dt) {
         return HasValue((DateTime?) dt);
     }
@@ -45,8 +29,9 @@ public static class DateTimeExtensions {
         return zonedDateTime;
     }
     
-    public static DateTime ToHijriDateTime(this DateTime dateTime) {
+    public static DateTime ToHijriDateTime(this DateTime dateTime, int offset = 0) {
         var hijriCalendar = new HijriCalendar();
+        hijriCalendar.HijriAdjustment = offset;
 
         var day = hijriCalendar.GetDayOfMonth(dateTime);
         var month = hijriCalendar.GetMonth(dateTime);
@@ -58,10 +43,6 @@ public static class DateTimeExtensions {
         var milliseconds = (int) hijriCalendar.GetMilliseconds(dateTime);
 
         return new DateTime(year, month, day, hour, minute, second, milliseconds);
-    }
-
-    public static string ToHijriMonthName(this DateTime dateTime) {
-        return HijriMonthNames[dateTime.Month];
     }
 
     public static LocalDate ToLocalDate(this DateTime dateTime) {
