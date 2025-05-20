@@ -79,7 +79,7 @@ angular.module("umbraco").controller("N3O.Umbraco.Uploader",
                     $("#" + $scope.uniqueId + " .upload").upload({
                         action: "/umbraco/backoffice/api/uploader/upload",
                         label: 'Drop and drop a file, or click to select',
-                        maxSize: 5368709120,
+                        maxSize: 104857600,
                         maxQueue: 1,
                         postData: {
                             "allowedExtensions": $scope.model.config.allowedExtensions,
