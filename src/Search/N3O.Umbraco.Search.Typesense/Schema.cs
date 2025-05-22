@@ -2,7 +2,7 @@
 
 namespace N3O.Umbraco.Search.Typesense;
 
-public class Schema {
+//public class Schema {
     // Id -> Guid
     // Type -> string (contentTypeAlias)
     // Version -> int32 (umbraco content version)
@@ -23,4 +23,4 @@ public class Schema {
     // vs matches in here:
     
     // Content -> string (content, stripped of html tags -> render the blocks to HTML & then strip the tags from them (Noor/Talha))
-}
+//}
