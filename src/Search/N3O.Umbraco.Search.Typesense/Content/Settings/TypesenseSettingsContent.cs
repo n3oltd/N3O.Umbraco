@@ -1,8 +1,4 @@
-using System.Collections.Generic;
-using System.Net.Http;
-using Microsoft.Extensions.Options;
 using N3O.Umbraco.Content;
-using Typesense.Setup;
 
 namespace N3O.Umbraco.Search.Typesense.Content.Settings;
 

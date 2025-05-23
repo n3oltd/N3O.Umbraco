@@ -35,7 +35,7 @@ public class GoCardlessComposer : Composer {
         });
     }
     
-    public GoCardlessApiSettings GetApiSettings(IContentCache contentCache, IWebHostEnvironment webHostEnvironment) {
+    private GoCardlessApiSettings GetApiSettings(IContentCache contentCache, IWebHostEnvironment webHostEnvironment) {
         var settings = contentCache.Single<GoCardlessSettingsContent>();
         
         if (settings != null) {

@@ -1,6 +1,4 @@
-﻿using Typesense;
-
-namespace N3O.Umbraco.Search.Typesense;
+﻿namespace N3O.Umbraco.Search.Typesense;
 
 //public class Schema {
     // Id -> Guid

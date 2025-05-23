@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Search.Typesense.Models;
 using Typesense;
-using Typesense.Setup;
 
 namespace N3O.Umbraco.Search.Typesense.Services;
 
