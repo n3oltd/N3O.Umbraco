@@ -41,9 +41,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="N3O.Umbraco.Extensions" Version="13.0.150" />
-      <PackageReference Include="N3O.Umbraco.Scheduler" Version="13.0.150" />
-        <PackageReference Include="N3O.Umbraco.Mediator" Version="13.0.150" />
-      <PackageReference Include="Typesense" Version="7.32.0" />
+      <PackageReference Include="Typesense" Version="7.33.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Extensions\" />
     </ItemGroup>
 </Project>

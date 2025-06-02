@@ -1,9 +1,9 @@
-﻿using N3O.Umbraco.Scheduler;
+﻿using Microsoft.Extensions.Logging;
+using N3O.Umbraco.Scheduler;
 using N3O.Umbraco.Search.Typesense.Commands;
 using N3O.Umbraco.Search.Typesense.NamedParameters;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Notifications;
 
@@ -18,7 +18,7 @@ public class IndexContentNotification : INotificationAsyncHandler<ContentPublish
     
     public Task HandleAsync(ContentPublishedNotification notification, CancellationToken cancellationToken) {
         foreach (var content in notification.PublishedEntities) {
-            _backgroundJob.Enqueue<IndexDocumentCommand>($"IndexDocument({content.Id})",
+            _backgroundJob.Enqueue<IndexContentCommand>($"IndexContent({content.Id})",
                                                          m => m.Add<ContentId>(content.Key.ToString()));
         }
 

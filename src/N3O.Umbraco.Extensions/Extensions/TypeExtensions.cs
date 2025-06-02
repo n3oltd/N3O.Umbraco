@@ -367,7 +367,7 @@ public static class ReflectionExtensions {
     public static bool HasParameterlessConstructor(this Type type) {
         var cacheKey = nameof(HasParameterlessConstructor) + type.AssemblyQualifiedName;
 
-        return GetOrAdd(cacheKey, type.GetConstructor(new Type[0]) != null);
+        return GetOrAdd(cacheKey, type.GetConstructor([]) != null);
     }
     
     public static bool HasProperty(this object obj,
@@ -553,9 +553,9 @@ public static class ReflectionExtensions {
         private readonly Type _targetType;
         private readonly object _targetInstance;
         private readonly string _methodName;
-        private readonly List<Type> _genericTypes = new();
-        private readonly List<Type> _parameterTypes = new();
-        private readonly List<object> _parameters = new();
+        private readonly List<Type> _genericTypes = [];
+        private readonly List<Type> _parameterTypes = [];
+        private readonly List<object> _parameters = [];
 
         public MethodCallBuilder(Type targetType, object targetInstance, string methodName) {
             _targetType = targetType;

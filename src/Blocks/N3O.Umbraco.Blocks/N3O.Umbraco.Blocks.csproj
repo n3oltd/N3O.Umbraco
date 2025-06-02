@@ -38,4 +38,8 @@
             <Pack>True</Pack>
         </None>
     </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Razor.Templating.Core" Version="2.1.0" />
+    </ItemGroup>
 </Project>

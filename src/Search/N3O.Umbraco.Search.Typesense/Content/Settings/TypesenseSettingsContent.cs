@@ -1,6 +1,6 @@
 using N3O.Umbraco.Content;
 
-namespace N3O.Umbraco.Search.Typesense.Content.Settings;
+namespace N3O.Umbraco.Search.Typesense.Content;
 
 public class TypesenseSettingsContent : UmbracoContent<TypesenseSettingsContent> {
     public string ApiKey => GetValue(x => x.ApiKey);

@@ -2,9 +2,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Search.Typesense.Builders;
-using N3O.Umbraco.Search.Typesense.Indexing;
-using N3O.Umbraco.Search.Typesense.Services;
 using System.Net;
 using System.Net.Http;
 using Typesense;
@@ -15,9 +12,9 @@ namespace N3O.Umbraco.Search.Typesense;
 
 public class TypesenseSearchComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
-        builder.Services.AddTransient<ITypesenseService, TypesenseService>();
-        
-        builder.Services.AddTransient<ISearchDocumentBuilder, SearchDocumentBuilder>();
+        builder.Services.AddSingleton<IConfigureOptions<Config>, TypesenseOptions>();
+        builder.Services.AddTransient(typeof(ISearchDocumentBuilder<>), typeof(SearchDocumentBuilder<>));
+        builder.Services.AddTransient(typeof(ISearcher<>), typeof(Searcher<>));
         
         builder.Services
                .AddHttpClient(nameof(TypesenseClient), client => {
@@ -26,8 +23,6 @@ public class TypesenseSearchComposer : Composer {
                .ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler {
                    AutomaticDecompression = DecompressionMethods.All
                });
-        
-        builder.Services.AddSingleton<IConfigureOptions<Config>, TypesenseOptions>();
 
         builder.Services.AddScoped<ITypesenseClient>(serviceProvider => {
             var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();

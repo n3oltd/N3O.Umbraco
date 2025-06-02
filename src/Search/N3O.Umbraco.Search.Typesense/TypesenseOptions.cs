@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Search.Typesense.Content.Settings;
+using N3O.Umbraco.Search.Typesense.Content;
 using N3O.Umbraco.Search.Typesense.Models;
 using Typesense.Setup;
 
@@ -16,10 +16,12 @@ public class TypesenseOptions : IConfigureOptions<Config> {
     public void Configure(Config options) {
         var typesenseSettings = GetTypesenseSettings();
 
-        options.ApiKey = typesenseSettings.ApiKey;
-        options.Nodes = new[] {
-            new Node(typesenseSettings.Node, "8108", "https")
-        };
+        if (typesenseSettings != null) {
+            options.ApiKey = typesenseSettings.ApiKey;
+            options.Nodes = [
+                new Node(typesenseSettings.Node, "8108", "https")
+            ];
+        }
     }
     
     private TypesenseSettings GetTypesenseSettings() {
