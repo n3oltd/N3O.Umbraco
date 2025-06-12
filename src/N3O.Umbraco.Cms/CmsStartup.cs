@@ -52,6 +52,8 @@ public abstract class CmsStartup {
                     appBuilder => appBuilder.UseStaticFiles());
         
         app.UseOpenApiWithUI();
+        
+        app.UseMiddleware<WellKnownFolderMiddleware>();
 
         app.UseUmbraco()
            .WithMiddleware(u => {
