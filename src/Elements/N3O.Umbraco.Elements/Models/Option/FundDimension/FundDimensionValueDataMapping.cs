@@ -12,7 +12,7 @@ public abstract class FundDimensionValueDataMapping<T> : IMapDefinition where T 
     private void Map(T src, FundDimensionValueData dest, MapperContext ctx) {
         dest.Id = src.Id;
         dest.Name = src.Name;
-        dest.IsUndatatricted = src.IsUnrestricted;
+        dest.IsUnrestricted = src.IsUnrestricted;
     }
 }
 

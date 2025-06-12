@@ -84,11 +84,8 @@ public static class UmbracoBuilderExtensions {
 
     public static IUmbracoBuilder AddDefaultBlockViewModel(this IUmbracoBuilder builder, Type blockType, Type settingsType) {
         builder.Services.TryAddTransient(typeof(IBlockViewModelFactory<,>).MakeGenericType(blockType, typeof(None)),
-                                         s => {
-                                             var httpContextAccessor = s.GetRequiredService<IHttpContextAccessor>();
-                                             
-                                             return BlockViewModelFactory.Default(httpContextAccessor, blockType, settingsType);
-                                         });
+                                         s => BlockViewModelFactory.Default(s.GetRequiredService<IServiceProvider>,
+                                                                            blockType, settingsType));
 
         return builder;
     }
@@ -98,9 +95,8 @@ public static class UmbracoBuilderExtensions {
         where TViewModel : IBlockViewModel<TBlock, TSettings>
         where TBlock : class, IPublishedElement {
         builder.Services.AddTransient<IBlockViewModelFactory<TBlock, TSettings>>(s => {
-            var httpContextAccessor = s.GetRequiredService<IHttpContextAccessor>();
-            
-            return new BlockViewModelFactory<TBlock, TSettings, TViewModel>(httpContextAccessor, constructor);
+            return new BlockViewModelFactory<TBlock, TSettings, TViewModel>(s.GetRequiredService<IServiceProvider>(),
+                                                                            constructor);
         });
     }
 }

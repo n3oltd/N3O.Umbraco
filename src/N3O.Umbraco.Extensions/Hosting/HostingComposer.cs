@@ -23,6 +23,7 @@ public class HostingComposer : Composer {
         
         builder.Services.AddScoped<CookiesMiddleware>();
         builder.Services.AddScoped<StagingMiddleware>();
+        builder.Services.AddScoped<WellKnownFolderMiddleware>();
 
         builder.Services.AddOpenApiDocument("DevTools");
         
@@ -34,6 +35,8 @@ public class HostingComposer : Composer {
             }
 
             AddMiddleware<CookiesMiddleware>(opt);
+            AddMiddleware<WellKnownFolderMiddleware>(opt);
+            
             ConfigureCors(opt);
         });
         
