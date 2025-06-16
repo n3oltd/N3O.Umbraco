@@ -6,7 +6,6 @@ using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Extensions;
 using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
