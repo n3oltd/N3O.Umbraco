@@ -39,12 +39,9 @@ public class AddToCrmCartHandler : IRequestHandler<AddToCrmCartCommand, Crowdfun
 
         var cartId = _crmCartIdAccessor.GetId();
 
-        var bulkAddToCartReq = req.Model.ToBulkAddToCrmCartReq(_contentLocator, _jsonProvider);
+        var connectBulkAddToCartReq = req.Model.ToConnectBulkAddToCartReq(_contentLocator, _jsonProvider);
 
-        await client.InvokeAsync<BulkAddToCartReq, string>(x => x.BulkAddAsync,
-                                                           cartId.ToString(),
-                                                           bulkAddToCartReq,
-                                                           cancellationToken);
+        await client.InvokeAsync(x => x.BulkAddAsync(cartId.ToString(), connectBulkAddToCartReq));
 
         return cartId;
     }

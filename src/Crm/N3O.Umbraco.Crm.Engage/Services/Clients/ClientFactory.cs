@@ -22,17 +22,20 @@ public class ClientFactory<T> {
 
     private readonly BearerTokenAccessor _bearerTokenAccessor;
     private readonly CloudUrlAccessor _cloudUrlAccessor;
+    private readonly ISubscriptionAccessor _subscriptionAccessor;
     private readonly IUserDirectoryIdAccessor _userDirectoryIdAccessor;
     private readonly ILogger<ServiceClient<T>> _logger;
     private readonly IJsonProvider _jsonProvider;
 
     public ClientFactory(BearerTokenAccessor bearerTokenAccessor,
                          CloudUrlAccessor cloudUrlAccessor,
+                         ISubscriptionAccessor subscriptionAccessor,
                          IUserDirectoryIdAccessor userDirectoryIdAccessor,
                          ILogger<ServiceClient<T>> logger,
                          IJsonProvider jsonProvider) {
         _bearerTokenAccessor = bearerTokenAccessor;
         _cloudUrlAccessor = cloudUrlAccessor;
+        _subscriptionAccessor = subscriptionAccessor;
         _userDirectoryIdAccessor = userDirectoryIdAccessor;
         _logger = logger;
         _jsonProvider = jsonProvider;
@@ -54,15 +57,16 @@ public class ClientFactory<T> {
 
         _jsonProvider.ApplySettings((JsonSerializerSettings) client.GetPropertyInfo("JsonSerializerSettings").GetValue(client));
 
-        return new ServiceClient<T>(client, _jsonProvider, _logger, subscription.Id);
+        return new ServiceClient<T>(client, _jsonProvider, _logger);
     }
 
     private async Task<HttpClient> GetHttpClientAsync(string onBehalfOf) {
         var transientErrorPolicyHandler = GetTransientErrorPolicyHttpMessageHandler();
         transientErrorPolicyHandler.InnerHandler = new HttpClientHandler();
 
+        var subscription = _subscriptionAccessor.GetSubscription();
         var bearerToken = await _bearerTokenAccessor.GetAsync(ClientTypes.BackOffice);
-        var authHandler = new AuthorizationHandler(bearerToken, onBehalfOf, transientErrorPolicyHandler);
+        var authHandler = new ConnectApiHandler(subscription.Id, bearerToken, onBehalfOf, transientErrorPolicyHandler);
 
         var httpClient = new HttpClient(authHandler);
 

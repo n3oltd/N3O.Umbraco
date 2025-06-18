@@ -15,61 +15,61 @@ using AllocationType = N3O.Umbraco.Crm.Engage.Clients.AllocationType;
 namespace N3O.Umbraco.Crowdfunding.Extensions;
 
 public static partial class CrowdfundingCartReqExtensions {
-    public static BulkAddToCartReq ToBulkAddToCrmCartReq(this CrowdfundingCartReq crowdfundingReq,
-                                                         IContentLocator contentLocator,
-                                                         IJsonProvider jsonProvider) {
-        var bulkAddToCartReq = new BulkAddToCartReq();
-        bulkAddToCartReq.Items = crowdfundingReq.Items
-                                                .Select(x => ToAddToCrmCartReq(contentLocator,
-                                                                               jsonProvider,
-                                                                               crowdfundingReq,
-                                                                               x))
-                                                .ToList();
+    public static ConnectBulkAddToCartReq ToConnectBulkAddToCartReq(this CrowdfundingCartReq crowdfundingReq,
+                                                                    IContentLocator contentLocator,
+                                                                    IJsonProvider jsonProvider) {
+        var connectBulkAddToCartReq = new ConnectBulkAddToCartReq();
+        connectBulkAddToCartReq.Items = crowdfundingReq.Items
+                                                       .Select(x => ToConnectAddToCartReq(contentLocator,
+                                                                                          jsonProvider,
+                                                                                          crowdfundingReq,
+                                                                                          x))
+                                                       .ToList();
 
-        return bulkAddToCartReq;
+        return connectBulkAddToCartReq;
     }
 
-    private static AddToCartReq ToAddToCrmCartReq(IContentLocator contentLocator,
-                                                  IJsonProvider jsonProvider,
-                                                  CrowdfundingCartReq crowdfundingReq,
-                                                  CrowdfundingCartItemReq itemReq) {
+    private static ConnectAddToCartReq ToConnectAddToCartReq(IContentLocator contentLocator,
+                                                             IJsonProvider jsonProvider,
+                                                             CrowdfundingCartReq crowdfundingReq,
+                                                             CrowdfundingCartItemReq itemReq) {
         var crowdfunderContent = contentLocator.GetCrowdfunderContent(crowdfundingReq.Crowdfunding.CrowdfunderId.GetValueOrThrow(),
                                                                       crowdfundingReq.Type);
         
         // TODO This should be checked in validator
         var goal = crowdfunderContent.Goals.Single(x => x.Id == itemReq.GoalId);
 
-        var addToCartReq = new AddToCartReq();
-        addToCartReq.Type = TransactionType.Donation;
-        addToCartReq.Quantity = 1;
-        addToCartReq.Item = new CartItemReq();
+        var connectAddToCartReq = new ConnectAddToCartReq();
+        connectAddToCartReq.Type = TransactionType.Donation;
+        connectAddToCartReq.Quantity = 1;
+        connectAddToCartReq.Item = new ConnectCartItemReq();
         
-        addToCartReq.Item.Type = (AllocationType) Enum.Parse(typeof(AllocationType), goal.Type.Id, true);;
-        addToCartReq.Item.Value = new MoneyReq();
-        addToCartReq.Item.Value.Amount = (double?) itemReq.Value.Amount;
-        addToCartReq.Item.Value.Currency = (Currency) Enum.Parse(typeof(Currency), itemReq.Value.Currency.Id, true);
+        connectAddToCartReq.Item.Type = (AllocationType) Enum.Parse(typeof(AllocationType), goal.Type.Id, true);;
+        connectAddToCartReq.Item.Value = new MoneyReq();
+        connectAddToCartReq.Item.Value.Amount = (double?) itemReq.Value.Amount;
+        connectAddToCartReq.Item.Value.Currency = (Currency) Enum.Parse(typeof(Currency), itemReq.Value.Currency.Id, true);
 
-        addToCartReq.Item.FundDimensions = new FundDimensionValuesReq();
-        addToCartReq.Item.FundDimensions.Dimension1 = goal.FundDimensions.Dimension1?.Name;
-        addToCartReq.Item.FundDimensions.Dimension2 = goal.FundDimensions.Dimension2?.Name;
-        addToCartReq.Item.FundDimensions.Dimension3 = goal.FundDimensions.Dimension3?.Name;
-        addToCartReq.Item.FundDimensions.Dimension4 = goal.FundDimensions.Dimension4?.Name;
+        connectAddToCartReq.Item.FundDimensions = new FundDimensionValuesReq();
+        connectAddToCartReq.Item.FundDimensions.Dimension1 = goal.FundDimensions.Dimension1?.Name;
+        connectAddToCartReq.Item.FundDimensions.Dimension2 = goal.FundDimensions.Dimension2?.Name;
+        connectAddToCartReq.Item.FundDimensions.Dimension3 = goal.FundDimensions.Dimension3?.Name;
+        connectAddToCartReq.Item.FundDimensions.Dimension4 = goal.FundDimensions.Dimension4?.Name;
         
         if (goal.Type == AllocationTypes.Fund) {
-            addToCartReq.Item.Fund = new FundCartItemReq();
-            addToCartReq.Item.Fund.DonationItem = goal.Fund.DonationItem.Name;
+            connectAddToCartReq.Item.Fund = new ConnectFundCartItemReq();
+            connectAddToCartReq.Item.Fund.DonationItem = goal.Fund.DonationItem.Name;
         } else if (goal.Type == AllocationTypes.Feedback) {
-            addToCartReq.Item.Feedback = new FeedbackCartItemReq();
-            addToCartReq.Item.Feedback.Scheme = goal.Feedback.Scheme.Name;
+            connectAddToCartReq.Item.Feedback = new ConnectFeedbackCartItemReq();
+            connectAddToCartReq.Item.Feedback.Scheme = goal.Feedback.Scheme.Name;
             
             if (itemReq.HasValue(x => x.Feedback?.CustomFields)) {
-                addToCartReq.Item.Feedback.CustomFields = new NewCustomFieldsReq();
-                addToCartReq.Item.Feedback.CustomFields.Entries = itemReq.Feedback
-                                                                         .CustomFields
-                                                                         .Entries
-                                                                         .Select(x => x.ToFeedbackCustomField(goal.Feedback.Scheme))
-                                                                         .Select(x => new NewCustomFieldReq { Alias = x.Alias, Bool = x.Bool, Date = x.Date?.ToYearMonthDayString(), Text = x.Text})
-                                                                         .ToList();
+                connectAddToCartReq.Item.Feedback.CustomFields = new NewCustomFieldsReq();
+                connectAddToCartReq.Item.Feedback.CustomFields.Entries = itemReq.Feedback
+                                                                                .CustomFields
+                                                                                .Entries
+                                                                                .Select(x => x.ToFeedbackCustomField(goal.Feedback.Scheme))
+                                                                                .Select(x => new NewCustomFieldReq { Alias = x.Alias, Bool = x.Bool, Date = x.Date?.ToYearMonthDayString(), Text = x.Text})
+                                                                                .ToList();
             }
         } else {
             throw UnrecognisedValueException.For(goal.Type);
@@ -78,8 +78,8 @@ public static partial class CrowdfundingCartReqExtensions {
         var extensionsData = new Dictionary<string, JToken>();
         extensionsData.Set(jsonProvider, CrowdfundingConstants.Allocations.Extensions.Key, crowdfundingReq.Crowdfunding);
         
-        addToCartReq.Item.ExtensionsData = extensionsData;
+        connectAddToCartReq.Item.ExtensionsData = extensionsData;
 
-        return addToCartReq;
+        return connectAddToCartReq;
     }
 }

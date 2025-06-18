@@ -1,4 +1,5 @@
-﻿using StackExchange.Profiling.Internal;
+﻿using N3O.Umbraco.Crm.Engage.Models;
+using StackExchange.Profiling.Internal;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -6,11 +7,16 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Crm.Engage;
 
-public class AuthorizationHandler : DelegatingHandler {
+public class ConnectApiHandler : DelegatingHandler {
+    private readonly SubscriptionId _subscriptionId;
     private readonly string _bearerToken;
     private readonly string _onBehalfOf;
 
-    public AuthorizationHandler(string bearerToken, string onBehalfOf, HttpMessageHandler innerHandler) {
+    public ConnectApiHandler(SubscriptionId subscriptionId,
+                             string bearerToken,
+                             string onBehalfOf,
+                             HttpMessageHandler innerHandler) {
+        _subscriptionId = subscriptionId;
         _bearerToken = bearerToken;
         _onBehalfOf = onBehalfOf;
 
@@ -21,6 +27,8 @@ public class AuthorizationHandler : DelegatingHandler {
                                                                  CancellationToken cancellationToken) {
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _bearerToken);
 
+        request.Headers.Add("N3O-Subscription-Id", _subscriptionId.Value);
+        
         if (_onBehalfOf.HasValue()) {
             request.Headers.Add("N3O-OnBehalfOf", _onBehalfOf);
         }

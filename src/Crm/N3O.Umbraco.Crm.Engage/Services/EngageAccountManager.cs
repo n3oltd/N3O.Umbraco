@@ -6,7 +6,9 @@ using N3O.Umbraco.Crm.Engage.Clients;
 using N3O.Umbraco.Crm.Engage.Exceptions;
 using N3O.Umbraco.Localization;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Core.Services;
 
@@ -15,6 +17,7 @@ namespace N3O.Umbraco.Crm.Engage;
 public class EngageAccountManager : AccountManager {
     private readonly ClientFactory<AccountsClient> _clientFactory;
     private readonly ISubscriptionAccessor _subscriptionAccessor;
+    private readonly IUmbracoMapper _mapper;
     private ServiceClient<AccountsClient> _client;
 
     public EngageAccountManager(AccountCookie accountCookie,
@@ -22,19 +25,22 @@ public class EngageAccountManager : AccountManager {
                                 IMemberService memberService,
                                 ClientFactory<AccountsClient> clientFactory,
                                 ISubscriptionAccessor subscriptionAccessor,
-                                IFormatter formatter)
+                                IFormatter formatter,
+                                IUmbracoMapper mapper)
         : base(memberManager, memberService, accountCookie, formatter) {
         _clientFactory = clientFactory;
         _subscriptionAccessor = subscriptionAccessor;
+        _mapper = mapper;
     }
     
     protected override async Task<AccountRes> CheckCreatedAccountStatusAsync(string accountId) {
         var client = await GetClientAsync();
 
         try {
-            var res = await client.InvokeAsync<AccountRes>(x => x.GetAccountCreatedStatusAsync, accountId);
-
-            return res;
+            var connectAccountRes = await client.InvokeAsync(x => x.GetAccountCreatedStatusAsync(accountId));
+            var accountRes = _mapper.Map<ConnectAccountRes, AccountRes>(connectAccountRes);
+            
+            return accountRes;
         } catch (ServiceClientException ex) when (ex.InnerException is ApiException apiException) {
             if (apiException.StatusCode == StatusCodes.Status404NotFound) {
                 return null;
@@ -45,9 +51,10 @@ public class EngageAccountManager : AccountManager {
     }
 
     protected override async Task<string> CreateNewAccountAsync(AccountReq account) {
+        var req = _mapper.Map<IAccount, ConnectAccountReq>(account);
         var client = await GetClientAsync();
 
-        var res = await client.InvokeAsync<AccountReq, string>(x => x.CreateAccountAsync, account);
+        var res = await client.InvokeAsync(x => x.CreateAccountAsync(req));
 
         return res;
     }
@@ -55,15 +62,18 @@ public class EngageAccountManager : AccountManager {
     protected override async Task<IEnumerable<AccountRes>> FindAccountsWithEmailAsync(string email) {
         var client = await GetClientAsync();
 
-        var res = await client.InvokeAsync<ICollection<AccountRes>>(x => x.FindMatchesByEmailAsync, email);
+        var connectAccountResCollection = await client.InvokeAsync(x => x.FindMatchesByEmailAsync(email));
+        var accountResCollection = connectAccountResCollection.Select(_mapper.Map<ConnectAccountRes, AccountRes>)
+                                                              .ToList();
 
-        return res;
+        return accountResCollection;
     }
 
     protected override async Task UpdateExistingAccountAsync(AccountReq account) {
+        var req = _mapper.Map<IAccount, ConnectAccountReq>(account);
         var client = await GetClientAsync();
 
-        await client.InvokeAsync(x => x.UpdateAccountAsync, account.Id, account);
+        await client.InvokeAsync(x => x.UpdateAccountAsync(account.Id, req));
     }
 
     private async Task<ServiceClient<AccountsClient>> GetClientAsync() {
