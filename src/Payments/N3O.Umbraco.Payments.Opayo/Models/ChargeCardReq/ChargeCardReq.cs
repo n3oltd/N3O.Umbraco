@@ -11,6 +11,9 @@ public class ChargeCardReq {
     
     [Name("Card Identifier")]
     public string CardIdentifier { get; set; }
+    
+    [Name("GooglePay Token")]
+    public string GooglePayToken { get; set; }
 
     [Name("Value")]
     public MoneyReq Value { get; set; }
