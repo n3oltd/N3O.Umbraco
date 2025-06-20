@@ -6,70 +6,15 @@
 [![Tag CI](https://github.com/n3oltd/N3O.Umbraco/actions/workflows/tag-ci.yml/badge.svg)](https://github.com/n3oltd/N3O.Umbraco/actions/workflows/tag-ci.yml)
 [![License](https://img.shields.io/github/license/n3oltd/N3O.Umbraco)](LICENSE.md)
 
-This repo contains the N3O Umbraco extensions. These are a series of NuGet packages that extend the functionality of the [Umbraco CMS](https://umbraco.com). As well as providing generic functionality such as payment processing and site search, they provide ready made integration with the [Engage CRM](https://n3o.ltd/).
+This repo contains the N3O Umbraco extensions. These are a series of NuGet packages that extend the functionality of the [Umbraco CMS](https://umbraco.com). As well as providing generic functionality they provide ready made integration with [N3O Cloud](https://n3o.ltd/) services.
 
-Extensions work with both cloud and on-premises versions of Umbraco 13 or later.
+Extensions work with Umbraco 13 or later.
 
-Aside from the back office plugins and content apps, extensions do not provide any HTML, CSS or other UI. They are designed to integrate seamlessly with any standard Umbraco template and allow your site to retain a distinctive look and feel.
+Extensions do not provide any HTML, CSS or other UI. They are designed to integrate seamlessly with any standard Umbraco template and allow your site to retain a distinctive look and feel.
 
 ## Demo Site
 
-The solution includes a demo site that both illustrates much of the functionality and also provides a useful starting point for building new sites. The easiest way to get started is to run the `DemoSite.Web` project in the solution, follow the Umbraco install wizard and then navigate to _Settings / uSync_. From here import _Settings_ first, followed by _Content_. This will create all of the demo data types, content types and demo content.
-
-## Functionality
-
-#### Data
-
-Provides a generic and extendable data export/import framework as well as content apps for importing and exporting data from the Umbraco backoffice.
-
-#### Donations
-
-Provides a pluggable architecture for a shopping cart, checkout and receipts.
-
-#### Email
-
-Provides a pluggable architecture for email delivery such as via SMTP or SendGrid.
-
-#### Foreign Exchange
-
-Provides realtime currency conversion using market data.
-
-#### Newsletters
-
-Provides functionality for integrating with newsletter platforms such as Mailchimp and SendGrid.
-
-#### Payments
-
-Provides support for taking one-off and recurring payments using various gateways. Currently supported gateways include:
-
-- Authorize.net
-- Bambora
-- GoCardless
-- Opayo
-- PayPal
-- Stripe
-- Total Processing
-- Worldline
-
-#### Plugins
-
-Provides a number of back office extensions such as:
-
-- Data Grid
-- File Uploader
-- Image Cropper
-- SERP Entry Editor
-- Text Resource Editor
-
-These either provide richer functionality than Umbraco includes or work around limitations (e.g. the built in Umbraco cropper doesn't work with Nested Content or Blocks).
-
-#### Search
-
-Provides pluggable implementations for providing site indexing and search functionality using either Google Programmable Search Engine, Algolia or Examine.
-
-#### Tax Relief
-
-Provides pluggable implementations for managing charitable tax relief, such as the UK Gift Aid scheme.
+The solution includes a demo site that both illustrates much of the functionality and also provides a useful starting point for building new sites. The easiest way to get started is to run the `DemoSite.Web` project in the solution, follow the Umbraco install wizard and then navigate to _Settings / uSync_. From here import _Settings_ first, followed by _Content_. This will create all of the demo data types, content types and content.
 
 ## Thanks
 
