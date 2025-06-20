@@ -60,7 +60,7 @@ public class MarkdownHelperParser<T, TArgs> : InlineParser where TArgs : HelperA
         
         var inlineStart = processor.GetSourcePosition(slice.Start, out var line, out var column);
 
-        var inline = new TypedArgsWrapper<T, TArgs> {
+        var inline = new LeafInlineWithHelperArgs<T, TArgs> {
             Span = new SourceSpan {
                 Start = inlineStart,
                 End = inlineStart + chars.Count

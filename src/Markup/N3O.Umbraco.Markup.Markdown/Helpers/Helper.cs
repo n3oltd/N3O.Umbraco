@@ -12,7 +12,8 @@ public abstract class Helper<T> : Helper<T, EmptyHelperArgs> {
     protected override void Parse(IReadOnlyList<string> args, EmptyHelperArgs inline) { }
 }
 
-public abstract class Helper<T, TArgs> : HtmlObjectRenderer<TypedArgsWrapper<T, TArgs>>, IMarkdownExtension where TArgs : HelperArgs, new() {
+public abstract class Helper<T, TArgs> : HtmlObjectRenderer<LeafInlineWithHelperArgs<T, TArgs>>, IMarkdownExtension
+    where TArgs : HelperArgs, new() {
     private readonly int _minArgs;
     private readonly int _maxArgs;
     private readonly MarkdownHelperParser<T, TArgs> _parser;
@@ -47,7 +48,7 @@ public abstract class Helper<T, TArgs> : HtmlObjectRenderer<TypedArgsWrapper<T, 
         return args;
     }
 
-    protected override void Write(HtmlRenderer renderer, TypedArgsWrapper<T, TArgs> helperArgsWrapper) {
+    protected override void Write(HtmlRenderer renderer, LeafInlineWithHelperArgs<T, TArgs> helperArgsWrapper) {
         Render(renderer, helperArgsWrapper.HelperArgs);
     }
 
