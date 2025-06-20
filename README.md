@@ -24,7 +24,6 @@ A big [#h5yr](https://community.umbraco.com/learn-about-the-community/h5yr/) to:
 - Dan Diplo for [Umbraco.GodMode](https://github.com/DanDiplo/Umbraco.GodMode)
 - Kevin Jump for [uSync](https://jumoo.co.uk/usync/)
 - Lee Kelleher for [Contentment](https://github.com/leekelleher/umbraco-contentment)
-- Outfield Digital for [Konstrukt](https://getkonstrukt.net/)
 - Perplex Digital for [Perplex.ContentBlocks](https://github.com/PerplexDigital/Perplex.ContentBlocks)
 
 ## Questions & Support
