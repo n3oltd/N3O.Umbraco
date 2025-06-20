@@ -1,0 +1,18 @@
+
+using N3O.Umbraco.Cloud.Platforms.Content;
+using MuslimHands.Website.Connect.Clients;
+using Umbraco.Cms.Core.Mapping;
+
+namespace N3O.Umbraco.Cloud.Platforms.Models;
+
+public class PublishedSuggestedAmountMapping : IMapDefinition {
+    public void DefineMaps(IUmbracoMapper mapper) {
+        mapper.Define<SuggestedAmount, PublishedSuggestedAmount>((_, _) => new PublishedSuggestedAmount(), Map);
+    }
+
+    // Umbraco.Code.MapAll
+    private void Map(SuggestedAmount src, PublishedSuggestedAmount dest, MapperContext ctx) {
+        dest.Amount = (double) src.Amount;
+        dest.Description = src.Description;
+    }
+}

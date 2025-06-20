@@ -22,6 +22,6 @@ public class IndexContentNotification : INotificationAsyncHandler<ContentPublish
                                                          m => m.Add<ContentId>(content.Key.ToString()));
         }
 
-        return Task.CompletedTask;  
+        return Task.CompletedTask;
     }
 }

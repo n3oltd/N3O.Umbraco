@@ -43,8 +43,4 @@
     <ItemGroup>
       <PackageReference Include="Typesense" Version="7.33.0" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Extensions\" />
-    </ItemGroup>
 </Project>

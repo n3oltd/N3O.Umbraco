@@ -56,7 +56,7 @@ public class SearchFundraisersPage : CrowdfundingPage {
         IReadOnlyList<Crowdfunder> results;
 
         if (tag.HasValue()) {
-            results = await _crowdfunderRepository.FindFundraisersWithTagAsync(tag);   
+            results = await _crowdfunderRepository.FindFundraisersWithTagAsync(tag);
         } else if (text.HasValue()) {
             results = await _crowdfunderRepository.FindFundraisersAsync(text);
         } else {

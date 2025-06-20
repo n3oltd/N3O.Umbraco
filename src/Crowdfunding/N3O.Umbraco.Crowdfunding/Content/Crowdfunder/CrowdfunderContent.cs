@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Cloud.Engage.Lookups;
+using N3O.Umbraco.Cloud.Engage.Models;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Crm.Lookups;
-using N3O.Umbraco.Crm.Models;
 using N3O.Umbraco.Cropper.Models;
 using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Financial;

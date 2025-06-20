@@ -1,5 +1,5 @@
-﻿using N3O.Umbraco.Content;
-using N3O.Umbraco.Crm.Engage.Clients;
+﻿using N3O.Umbraco.Cloud.Engage.Clients;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
@@ -10,7 +10,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using AllocationType = N3O.Umbraco.Crm.Engage.Clients.AllocationType;
+using AllocationType = N3O.Umbraco.Cloud.Engage.Clients.AllocationType;
 
 namespace N3O.Umbraco.Crowdfunding.Extensions;
 

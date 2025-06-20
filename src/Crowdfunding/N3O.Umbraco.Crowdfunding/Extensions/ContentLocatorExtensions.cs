@@ -1,12 +1,12 @@
-﻿using N3O.Umbraco.Content;
-using N3O.Umbraco.Crm.Lookups;
+﻿using N3O.Umbraco.Cloud.Engage.Lookups;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Exceptions;
 using System;
 
 namespace N3O.Umbraco.Crowdfunding.Extensions;
 
-public static class GuidExtensions {
+public static class ContentLocatorExtensions {
     public static ICrowdfunderContent GetCrowdfunderContent(this IContentLocator contentLocator,
                                                             Guid id,
                                                             CrowdfunderType type) {

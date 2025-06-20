@@ -12,7 +12,6 @@
       <ProjectReference Include="..\..\Blog\N3O.Umbraco.Blog\N3O.Umbraco.Blog.csproj" />
       <ProjectReference Include="..\..\Captcha\N3O.Umbraco.Captcha\N3O.Umbraco.Captcha.csproj" />
       <ProjectReference Include="..\..\Cdn\N3O.Umbraco.Cdn.Cloudflare\N3O.Umbraco.Cdn.Cloudflare.csproj" />
-      <ProjectReference Include="..\..\Crm\N3O.Umbraco.Crm.Engage\N3O.Umbraco.Crm.Engage.csproj" />
       <ProjectReference Include="..\..\Crowdfunding\N3O.Umbraco.Crowdfunding\N3O.Umbraco.Crowdfunding.csproj" />
       <ProjectReference Include="..\..\Data\N3O.Umbraco.Data\N3O.Umbraco.Data.csproj" />
       <ProjectReference Include="..\..\Email\N3O.Umbraco.Email.SendGrid\N3O.Umbraco.Email.SendGrid.csproj" />
