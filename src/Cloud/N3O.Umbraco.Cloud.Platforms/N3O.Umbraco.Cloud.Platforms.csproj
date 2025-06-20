@@ -36,7 +36,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Accounts\N3O.Umbraco.Accounts\N3O.Umbraco.Accounts.csproj" />
       <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Allocations\N3O.Umbraco.Giving.Allocations.csproj" />
+      <ProjectReference Include="..\..\Scheduler\N3O.Umbraco.Scheduler\N3O.Umbraco.Scheduler.csproj" />
       <ProjectReference Include="..\N3O.Umbraco.Cloud\N3O.Umbraco.Cloud.csproj" />
     </ItemGroup>
 </Project>

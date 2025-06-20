@@ -1,30 +1,39 @@
-using MuslimHands.Website.Connect.Clients;
+using Humanizer;
+using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Cloud.Platforms.Content;
+using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Allocations.Extensions;
+using N3O.Umbraco.Giving.Allocations.Models;
+using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
-public class PublishedFundDesignationMapping : PublishedDesignationTypeMapping<PublishedFundDesignation> {
-    protected override void Map(IDesignation src, PublishedFundDesignation dest, MapperContext ctx) {
-        var fundDesignation = src as FundDesignation;
-
+public class PublishedFundDesignationMapping : IMapDefinition {
+    public void DefineMaps(IUmbracoMapper mapper) {
+        mapper.Define<FundDesignationContent, PublishedFundDesignation>((_, _) => new PublishedFundDesignation(), Map);
+    }
+    
+    
+    protected void Map(FundDesignationContent src, PublishedFundDesignation dest, MapperContext ctx) {
         dest.Item = new PublishedDonationItem();
-        dest.Item.Id = fundDesignation.DonationItem.Name.Camelize();
+        dest.Item.Id = src.DonationItem.Name.Camelize();
         
-        if (HasPricing(fundDesignation.DonationItem)) {
+        if (src.DonationItem.HasPricing()) {
             dest.Item.Pricing = new PublishedPricing();
-            dest.Item.Pricing.Price = ctx.Map<IPrice, PublishedPrice>(fundDesignation.DonationItem);
-            dest.Item.Pricing.Rules = fundDesignation.DonationItem.PriceRules.OrEmpty().Select(ctx.Map<PricingRule, PublishedPricingRule>).ToList();
+            dest.Item.Pricing.Price = ctx.Map<IPrice, PublishedPrice>(src.DonationItem);
+            dest.Item.Pricing.Rules = src.DonationItem.PriceRules.OrEmpty().Select(ctx.Map<IPricingRule, PublishedPricingRule>).ToList();
         }
 
         dest.SuggestedAmounts = new PublishedSuggestedAmounts();
-        dest.SuggestedAmounts.OneTime = fundDesignation.OneTimeSuggestedAmounts
-                                                       .OrEmpty()
-                                                       .Select(ctx.Map<SuggestedAmount, PublishedSuggestedAmount>)
-                                                       .ToList();
+        dest.SuggestedAmounts.OneTime = src.OneTimeSuggestedAmounts
+                                           .OrEmpty()
+                                           .Select(ctx.Map<SuggestedAmountContent, PublishedSuggestedAmount>)
+                                           .ToList();
 
-        dest.SuggestedAmounts.Recurring = fundDesignation.RecurringSuggestedAmounts
-                                                         .OrEmpty()
-                                                         .Select(ctx.Map<SuggestedAmount, PublishedSuggestedAmount>)
-                                                         .ToList();
+        dest.SuggestedAmounts.Recurring = src.RecurringSuggestedAmounts
+                                             .OrEmpty()
+                                             .Select(ctx.Map<SuggestedAmountContent, PublishedSuggestedAmount>)
+                                             .ToList();
     }
 }

@@ -2,6 +2,7 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
+using System;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -26,6 +27,8 @@ public class ElementContent : UmbracoContent<ElementContent> {
             throw UnrecognisedValueException.For(Type);
         }
     }
+    
+    public Guid Key => Content().Key;
     
     public IEnumerable<DataListItem> AnalyticsTags => GetValue(x => x.AnalyticsTags);
 

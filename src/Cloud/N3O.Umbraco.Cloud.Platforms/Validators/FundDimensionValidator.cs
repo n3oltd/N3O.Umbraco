@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Lookups;
+﻿using N3O.Umbraco.Cloud.Platforms.Content;
+using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 
@@ -7,12 +8,12 @@ namespace N3O.Umbraco.Cloud.Platforms.Validators;
 public class FundDimensionValidator : ContentValidator {
     private readonly IContentHelper _contentHelper;
     
-    private static readonly string FundDimension1 = AliasHelper<PlatformsFundDimension1>.ContentTypeAlias();
-    private static readonly string FundDimension2 = AliasHelper<PlatformsFundDimension2>.ContentTypeAlias();
-    private static readonly string FundDimension3 = AliasHelper<PlatformsFundDimension3>.ContentTypeAlias();
-    private static readonly string FundDimension4 = AliasHelper<PlatformsFundDimension4>.ContentTypeAlias();
+    private static readonly string FundDimension1 = AliasHelper<FundDimension1Content>.ContentTypeAlias();
+    private static readonly string FundDimension2 = AliasHelper<FundDimension2Content>.ContentTypeAlias();
+    private static readonly string FundDimension3 = AliasHelper<FundDimension3Content>.ContentTypeAlias();
+    private static readonly string FundDimension4 = AliasHelper<FundDimension4Content>.ContentTypeAlias();
     
-    private static readonly string FundDimensionSelector = AliasHelper<IPlatformsFundDimension>.PropertyAlias(x => x.Selector);
+    private static readonly string FundDimensionSelector = AliasHelper<FundDimensionContent<>>.PropertyAlias(x => x.Selector);
     private static readonly string ToggleValue = AliasHelper<IPlatformsFundDimension>.PropertyAlias(x => x.ToggleValue);
     
     public FundDimensionValidator(IContentHelper contentHelper) : base(contentHelper) {

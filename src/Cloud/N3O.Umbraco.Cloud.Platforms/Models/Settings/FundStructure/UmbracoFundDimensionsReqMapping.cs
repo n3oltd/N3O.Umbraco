@@ -1,34 +1,20 @@
-﻿using MuslimHands.Website.Connect.Clients;
+﻿using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Cloud.Platforms.Content;
 using Umbraco.Cms.Core.Mapping;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class UmbracoFundDimensionsReqMapping : IMapDefinition {
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<PlatformsFundStructure, UmbracoFundStructureReq>((_, _) => new UmbracoFundStructureReq(), Map);
+        mapper.Define<FundStructureContent, UmbracoFundStructureReq>((_, _) => new UmbracoFundStructureReq(), Map);
     }
 
     // Umbraco.Code.MapAll -Id -Name
-    private void Map(PlatformsFundStructure src, UmbracoFundStructureReq dest, MapperContext ctx) {
-        var dimension1 = src.Child<PlatformsFundDimension1>();
-        var dimension2 = src.Child<PlatformsFundDimension2>();
-        var dimension3 = src.Child<PlatformsFundDimension3>();
-        var dimension4 = src.Child<PlatformsFundDimension4>();
-
-        if (dimension1.HasValue()) {
-            dest.Dimension1 = ctx.Map<IPlatformsFundDimension, UmbracoFundDimensionReq>(dimension1);
-        }
-        
-        if (dimension2.HasValue()) {
-            dest.Dimension2 = ctx.Map<IPlatformsFundDimension, UmbracoFundDimensionReq>(dimension2);
-        }
-        
-        if (dimension3.HasValue()) {
-            dest.Dimension3 = ctx.Map<IPlatformsFundDimension, UmbracoFundDimensionReq>(dimension3);
-        }
-        
-        if (dimension4.HasValue()) {
-            dest.Dimension4 = ctx.Map<IPlatformsFundDimension, UmbracoFundDimensionReq>(dimension4);
-        }
+    private void Map(FundStructureContent src, UmbracoFundStructureReq dest, MapperContext ctx) {
+        dest.Dimension1 = src.FundDimension1.IfNotNull(ctx.Map<FundDimension1Content, UmbracoFundDimensionReq>);
+        dest.Dimension2 = src.FundDimension2.IfNotNull(ctx.Map<FundDimension2Content, UmbracoFundDimensionReq>);
+        dest.Dimension3 = src.FundDimension3.IfNotNull(ctx.Map<FundDimension3Content, UmbracoFundDimensionReq>);
+        dest.Dimension4 = src.FundDimension4.IfNotNull(ctx.Map<FundDimension4Content, UmbracoFundDimensionReq>);
     }
 }

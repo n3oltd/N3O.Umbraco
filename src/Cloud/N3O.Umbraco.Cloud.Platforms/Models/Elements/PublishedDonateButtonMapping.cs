@@ -1,4 +1,6 @@
 ﻿using MuslimHands.Website.Connect.Clients;
+using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Content;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Mapping;
@@ -14,10 +16,10 @@ public class PublishedDonateButtonMapping : IMapDefinition {
     }
     
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<DonateButtonElement, PublishedDonateButton>((_, _) => new PublishedDonateButton(), Map);
+        mapper.Define<DonateButtonElementContent, PublishedDonateButton>((_, _) => new PublishedDonateButton(), Map);
     }
     
-    private void Map(DonateButtonElement src, PublishedDonateButton dest, MapperContext ctx) {
+    private void Map(DonateButtonElementContent src, PublishedDonateButton dest, MapperContext ctx) {
         dest.Id = src.Key.ToString();
         dest.Type = ElementType.DonateButton;
         dest.Analytics = ctx.Map<IEnumerable<DataListItem>, PublishedAnalyticsParameters>(src.AnalyticsTags);

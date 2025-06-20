@@ -1,4 +1,6 @@
-﻿using N3O.Umbraco.Content;
+﻿using N3O.Umbraco.Cloud.Platforms.Content;
+using N3O.Umbraco.Cloud.Platforms.Extensions;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using System;
 using System.Collections.Generic;
@@ -50,9 +52,9 @@ public class DesignationUnpublishingOrDeletingNotification : INotificationAsyncH
         foreach (var designationGroup in designations.GroupBy(x => x.ParentId)) {
             var contentKeys = designationGroup.Select(x => x.Key);
             
-            var campaign = _contentLocator.ById(designationGroup.Key).As<ICampaign>();
+            var campaign = _contentLocator.ById(designationGroup.Key).As<CampaignContent>();
         
-            var otherDesignations = campaign.Children().As<IDesignation>().ExceptWhere(x => contentKeys.Contains(x.Key));
+            var otherDesignations = campaign.Designations.ExceptWhere(x => contentKeys.Contains(x.Key));
 
             if (!otherDesignations.Any()) {
                 action.Invoke();

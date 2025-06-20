@@ -1,34 +1,28 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Lookups;
-using MuslimHands.Website.Connect.Clients;
-using N3O.Umbraco.Content;
-using N3O.Umbraco.Exceptions;
+using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Cloud.Platforms.Content;
+using System;
+using System.Linq;
 using Umbraco.Cms.Core.Mapping;
-using FundDimensionSelector = N3O.Umbraco.Cloud.Platforms.Lookups.FundDimensionSelector;
+using FundDimensionSelector = N3O.Umbraco.Cloud.Platforms.Clients.FundDimensionSelector;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
-public class FundDimensionMapping : IMapDefinition {
-    private readonly IContentLocator _contentLocator;
-
-    public FundDimensionMapping(IContentLocator contentLocator) {
-        _contentLocator = contentLocator;
-    }
-    
-    
+public abstract class FundDimensionMapping<T> : IMapDefinition {
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<IPlatformsFundDimension, UmbracoFundDimensionReq>((_, _) => new UmbracoFundDimensionReq(), Map);
+        mapper.Define<FundDimensionContent<T>, UmbracoFundDimensionReq>((_, _) => new UmbracoFundDimensionReq(), Map);
     }
 
     // Umbraco.Code.MapAll -Id -Name
-    private void Map(IPlatformsFundDimension src, UmbracoFundDimensionReq dest, MapperContext ctx) {
+    private void Map(FundDimensionContent<T> src, UmbracoFundDimensionReq dest, MapperContext ctx) {
         dest.Browsable = src.Browsable;
         dest.Searchable = src.Searchable;
         
         dest.View = new PublishedFundDimensionView();
-        dest.View.Selector = GetFundDimensionSelector(src.Selector);
+        dest.View.Selector = (FundDimensionSelector) Enum.Parse(typeof(FundDimensionSelector), src.Selector.Id, true);
 
-        if (dest.View.Selector == Website.Connect.Clients.FundDimensionSelector.Toggle) {
-            var toggleValue = src.ToggleValue.As<PlatformsFundDimensionToggle>();
+        if (src.Selector == FundDimensionSelectors.Toggle) {
+            var toggleValue = src.ToggleValue.Single();
             
             dest.View.Toggle = new PublishedFundDimensionToggleOptions();
         
@@ -37,14 +31,9 @@ public class FundDimensionMapping : IMapDefinition {
             dest.View.Toggle.OnValue = toggleValue.OnValue;
         }
     }
-
-    private Website.Connect.Clients.FundDimensionSelector GetFundDimensionSelector(FundDimensionSelector selector) {
-        if (selector == FundDimensionSelectors.Dropdown) {
-            return Website.Connect.Clients.FundDimensionSelector.Dropdown;
-        } else if (selector == FundDimensionSelectors.Toggle) {
-            return Website.Connect.Clients.FundDimensionSelector.Toggle;
-        } else {
-            throw UnrecognisedValueException.For(selector);
-        }
-    }
 }
+
+public class FundDimension1Mapping : FundDimensionMapping<FundDimension1Content> { }
+public class FundDimension2Mapping : FundDimensionMapping<FundDimension2Content> { }
+public class FundDimension3Mapping : FundDimensionMapping<FundDimension3Content> { }
+public class FundDimension4Mapping : FundDimensionMapping<FundDimension4Content> { }

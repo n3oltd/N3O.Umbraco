@@ -1,16 +1,16 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Content;
-using MuslimHands.Website.Connect.Clients;
+using N3O.Umbraco.Cloud.Platforms.Clients;
 using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class PublishedThemeMapping : IMapDefinition {
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<PlatformsThemeSettings, PublishedTheme>((_, _) => new PublishedTheme(), Map);
+        mapper.Define<ThemeSettingsContent, PublishedTheme>((_, _) => new PublishedTheme(), Map);
     }
 
     // Umbraco.Code.MapAll
-    private void Map(PlatformsThemeSettings src, PublishedTheme dest, MapperContext ctx) {
+    private void Map(ThemeSettingsContent src, PublishedTheme dest, MapperContext ctx) {
         dest.BorderRadius = src.BorderRadius;
         dest.FontFamily = src.FontFamily;
         dest.HeadingFontFamily = src.HeadingFontFamily;

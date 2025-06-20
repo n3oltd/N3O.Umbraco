@@ -1,4 +1,6 @@
-﻿using N3O.Umbraco.Content;
+﻿using N3O.Umbraco.Cloud.Platforms.Content;
+using N3O.Umbraco.Cloud.Platforms.Extensions;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using System;
 using System.Collections.Generic;
@@ -9,12 +11,13 @@ using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class ElementUnpublishingOrDeletingNotification : INotificationAsyncHandler<ContentUnpublishingNotification>,
                                                          INotificationAsyncHandler<ContentMovingToRecycleBinNotification> {
-    private static readonly string ElementCampaignAlias = AliasHelper<IPlatformsElement>.PropertyAlias(x => x.Campaign);
+    private static readonly string ElementCampaignAlias = AliasHelper<ElementContent>.PropertyAlias(x => x.DonateButton);
     
     private readonly IContentLocator _contentLocator;
     private readonly IContentTypeService _contentTypeService;
@@ -49,13 +52,14 @@ public class ElementUnpublishingOrDeletingNotification : INotificationAsyncHandl
     }
 
     private void ValidateDefaultElementExists(IEnumerable<IContent> elements, Action action) {
-        var elementsRoot = _contentLocator.Single<PlatformsElements>();
+        var elementsRoot = _contentLocator.Single<ElementContent>();
         var elementsGroup = elements.GroupBy(x => x.GetValue(ElementCampaignAlias));
         
         foreach (var elementGroup in elementsGroup) {
             var keys = elementGroup.Select(x => x.Key).ToList();
             
-            var otherElements = elementsRoot.DescendantsOfType(elementGroup.First().ContentType.Alias)
+            var otherElements = elementsRoot.Content()
+                                            .DescendantsOfType(elementGroup.First().ContentType.Alias)
                                             .ExceptWhere(x => keys.Contains(x.Key));
             
             if (!otherElements.Any()) {

@@ -2,6 +2,7 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models;
@@ -32,6 +33,9 @@ public class CampaignContent : UmbracoContent<CampaignContent> {
             throw UnrecognisedValueException.For(Type);
         }
     }
+    
+    public string Name => Content().Name;
+    public Guid Key => Content().Key;
     
     public IEnumerable<DataListItem> AnalyticsTags => GetValue(x => x.AnalyticsTags);
     public MediaWithCrops Icon => GetValue(x => x.Icon);

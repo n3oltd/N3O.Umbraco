@@ -52,8 +52,8 @@ public class CampaignUnpublishingOrDeletingNotification : INotificationAsyncHand
     private void ValidateDefaultCampaignExists(IEnumerable<IContent> contents, Action action) {
         var contentKeys = contents.Select(x => x.Key);
         
-        var campaigns = _contentLocator.All(x => x.IsComposedOf(AliasHelper<Campaign>.ContentTypeAlias()))
-                                       .As<ICampaign>()
+        var campaigns = _contentLocator.All(x => x.IsComposedOf(AliasHelper<CampaignContent>.ContentTypeAlias()))
+                                       .As<CampaignContent>()
                                        .ExceptWhere(x => contentKeys.Contains(x.Key));
 
         if (!campaigns.Any()) {

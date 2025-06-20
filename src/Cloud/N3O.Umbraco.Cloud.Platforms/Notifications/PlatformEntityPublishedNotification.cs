@@ -21,7 +21,7 @@ public class PlatformEntityPublishedNotification : INotificationAsyncHandler<Con
     
     public Task HandleAsync(ContentPublishedNotification notification, CancellationToken cancellationToken) {
         if (notification.PublishedEntities.Any(x => x.IsPlatformEntity(_contentLocator))) {
-            _backgroundJob.Enqueue<PublishPlatformsUmbracoContentCommand>($"{nameof(PublishPlatformsUmbracoContentCommand).Replace("Command", "")}");
+            _backgroundJob.Enqueue<PublishPlatformsContentCommand>($"{nameof(PublishPlatformsContentCommand).Replace("Command", "")}");
         }
         
         return Task.CompletedTask;
