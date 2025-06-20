@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace N3O.Umbraco.Markup.Markdown.Helpers;
 
-public class MarkdownHelperParser<T> : InlineParser where T : HelperArgs, new() {
+public class MarkdownHelperParser<T, TArgs> : InlineParser where TArgs : HelperArgs, new() {
     private static readonly Dictionary<string, string> RegexReplacements = new() {
         { @"{\s*", "" },
         { @"\s*}", "" },
@@ -17,10 +17,10 @@ public class MarkdownHelperParser<T> : InlineParser where T : HelperArgs, new() 
     };
     
     private readonly IReadOnlyList<string> _keywords;
-    private readonly Action<IReadOnlyList<string>, T> _populateHelperArgs;
+    private readonly Action<IReadOnlyList<string>, TArgs> _populateHelperArgs;
 
     public MarkdownHelperParser(IEnumerable<string> keywords,
-                                Action<IReadOnlyList<string>, T> populateHelperArgs) {
+                                Action<IReadOnlyList<string>, TArgs> populateHelperArgs) {
         _keywords = keywords.ToList();
         _populateHelperArgs = populateHelperArgs;
 
@@ -60,18 +60,18 @@ public class MarkdownHelperParser<T> : InlineParser where T : HelperArgs, new() 
         
         var inlineStart = processor.GetSourcePosition(slice.Start, out var line, out var column);
 
-        var inline = new T {
+        var inline = new TypedArgsWrapper<T, TArgs> {
             Span = new SourceSpan {
                 Start = inlineStart,
                 End = inlineStart + chars.Count
             },
             Line = line,
             Column = column,
-            Keyword = args[0]
+            HelperArgs = new TArgs { Keyword = args[0] }
         };
         
         try {
-            _populateHelperArgs(args, inline);
+            _populateHelperArgs(args, inline.HelperArgs);
 
             processor.Inline = inline;
 

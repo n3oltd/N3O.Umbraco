@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Markup.Markdown.Helpers;
 
-public abstract class KeyValueHelper<T> : Helper<T> where T : HelperArgs, new() {
+public abstract class KeyValueHelper<T, TArgs> : Helper<T, TArgs> where TArgs : HelperArgs, new() {
     protected KeyValueHelper(IEnumerable<string> keywords, int args) : this(keywords, args, args) { }
 
     protected KeyValueHelper(IEnumerable<string> keywords, int minArgs, int maxArgs)
@@ -15,11 +15,11 @@ public abstract class KeyValueHelper<T> : Helper<T> where T : HelperArgs, new() 
         return base.PreprocessArgs(args);
     }
 
-    protected override void Parse(IReadOnlyList<string> args, T inline) {
+    protected override void Parse(IReadOnlyList<string> args, TArgs inline) {
         foreach (var (key, value) in KeyValueUtility.GetKeyValuePairs(args)) {
             Parse(key, value, inline);
         }
     }
 
-    protected abstract void Parse(string key, string value, T inline);
+    protected abstract void Parse(string key, string value, TArgs inline);
 }
