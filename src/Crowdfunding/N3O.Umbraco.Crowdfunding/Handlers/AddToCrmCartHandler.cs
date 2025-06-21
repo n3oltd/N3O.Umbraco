@@ -1,8 +1,8 @@
 ﻿using N3O.Umbraco.Authentication.Auth0.Lookups;
+using N3O.Umbraco.Cloud;
+using N3O.Umbraco.Cloud.Engage;
+using N3O.Umbraco.Cloud.Engage.Clients;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Crm;
-using N3O.Umbraco.Crm.Engage;
-using N3O.Umbraco.Crm.Engage.Clients;
 using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Models;
@@ -16,13 +16,11 @@ namespace N3O.Umbraco.Crowdfunding.Handlers;
 
 public class AddToCrmCartHandler : IRequestHandler<AddToCrmCartCommand, CrowdfundingCartReq, EntityId> {
     private readonly ClientFactory<CartClient> _clientFactory;
-    private readonly ISubscriptionAccessor _subscriptionAccessor;
     private readonly IContentLocator _contentLocator;
     private readonly IJsonProvider _jsonProvider;
     private readonly ICrmCartIdAccessor _crmCartIdAccessor;
 
     public AddToCrmCartHandler(ClientFactory<CartClient> clientFactory,
-                               ISubscriptionAccessor subscriptionAccessor,
                                IContentLocator contentLocator,
                                IJsonProvider jsonProvider,
                                ICrmCartIdAccessor crmCartIdAccessor) {
@@ -30,12 +28,10 @@ public class AddToCrmCartHandler : IRequestHandler<AddToCrmCartCommand, Crowdfun
         _contentLocator = contentLocator;
         _jsonProvider = jsonProvider;
         _crmCartIdAccessor = crmCartIdAccessor;
-        _subscriptionAccessor = subscriptionAccessor;
     }
 
     public async Task<EntityId> Handle(AddToCrmCartCommand req, CancellationToken cancellationToken) {
-        var subscription = _subscriptionAccessor.GetSubscription();
-        var client = await _clientFactory.CreateAsync(subscription, ClientTypes.BackOffice);
+        var client = await _clientFactory.CreateAsync(ClientTypes.BackOffice);
 
         var cartId = _crmCartIdAccessor.GetId();
 

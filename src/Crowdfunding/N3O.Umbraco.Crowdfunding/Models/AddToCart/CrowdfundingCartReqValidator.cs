@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
+using N3O.Umbraco.Cloud.Engage.Lookups;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Crm.Lookups;
 using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;

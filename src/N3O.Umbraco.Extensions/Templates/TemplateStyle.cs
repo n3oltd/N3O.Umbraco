@@ -1,3 +1,4 @@
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ public abstract class TemplateStyle : NamedLookup, ITemplateStyle {
         : base(id, name) {
         _name = name;
         Description = description;
-        _properties = new Dictionary<string, object>(properties, StringComparer.InvariantCultureIgnoreCase);
+        _properties = new Dictionary<string, object>(properties.OrEmpty(), StringComparer.InvariantCultureIgnoreCase);
     }
 
     public string Description { get; }

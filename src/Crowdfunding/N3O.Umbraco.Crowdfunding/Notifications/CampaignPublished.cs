@@ -1,11 +1,10 @@
 ﻿using Flurl;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using N3O.Umbraco.Cloud.Engage;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Crm;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Scheduler;
 using N3O.Umbraco.Utilities;
 using N3O.Umbraco.Webhooks;
 using System.Collections.Generic;
@@ -19,19 +18,13 @@ namespace N3O.Umbraco.Crowdfunding.Notifications;
 public class CampaignPublished : INotificationAsyncHandler<ContentPublishedNotification> {
     private readonly ICrowdfunderManager _crowdfunderManager;
     private readonly IContentLocator _contentLocator;
-    private readonly IBackgroundJob _backgroundJob;
     private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly ICrowdfundingUrlBuilder _crowdfundingUrlBuilder;
 
     public CampaignPublished(ICrowdfunderManager crowdfunderManager,
                              IContentLocator contentLocator,
-                             IBackgroundJob backgroundJob,
-                             IWebHostEnvironment webHostEnvironment,
-                             ICrowdfundingUrlBuilder crowdfundingUrlBuilder) {
+                             IWebHostEnvironment webHostEnvironment) {
         _crowdfunderManager = crowdfunderManager;
-        _backgroundJob = backgroundJob;
         _webHostEnvironment = webHostEnvironment;
-        _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
         _contentLocator = contentLocator;
     }
 

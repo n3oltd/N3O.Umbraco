@@ -1,5 +1,5 @@
 ﻿using N3O.Umbraco.Attributes;
-using N3O.Umbraco.Crm.Models;
+using N3O.Umbraco.Cloud.Engage.Models;
 using System;
 using System.Text;
 

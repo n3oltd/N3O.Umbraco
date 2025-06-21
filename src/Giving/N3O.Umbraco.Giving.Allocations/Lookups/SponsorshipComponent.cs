@@ -13,7 +13,7 @@ public class SponsorshipComponent : LookupContent<SponsorshipComponent>, IPricin
             var scheme = GetScheme();
             var baseId = base.Id;
 
-            return ToUniqueId($"{scheme.Id}_{baseId}", Content().Key);
+            return LookupContent.ToUniqueId($"{scheme.Id}_{baseId}", Content().Key);
         }
     }
     

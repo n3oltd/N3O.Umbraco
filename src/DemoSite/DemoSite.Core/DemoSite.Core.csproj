@@ -7,45 +7,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Accounts\N3O.Umbraco.Accounts\N3O.Umbraco.Accounts.csproj" />
       <ProjectReference Include="..\..\Analytics\N3O.Umbraco.Analytics\N3O.Umbraco.Analytics.csproj" />
+      <ProjectReference Include="..\..\Blocks\N3O.Umbraco.Blocks\N3O.Umbraco.Blocks.csproj" />
       <ProjectReference Include="..\..\Blog\N3O.Umbraco.Blog\N3O.Umbraco.Blog.csproj" />
-      <ProjectReference Include="..\..\Captcha\N3O.Umbraco.Captcha\N3O.Umbraco.Captcha.csproj" />
-      <ProjectReference Include="..\..\Cdn\N3O.Umbraco.Cdn.Cloudflare\N3O.Umbraco.Cdn.Cloudflare.csproj" />
-      <ProjectReference Include="..\..\Crm\N3O.Umbraco.Crm.Engage\N3O.Umbraco.Crm.Engage.csproj" />
-      <ProjectReference Include="..\..\Crowdfunding\N3O.Umbraco.Crowdfunding\N3O.Umbraco.Crowdfunding.csproj" />
       <ProjectReference Include="..\..\Data\N3O.Umbraco.Data\N3O.Umbraco.Data.csproj" />
-      <ProjectReference Include="..\..\Email\N3O.Umbraco.Email.SendGrid\N3O.Umbraco.Email.SendGrid.csproj" />
-      <ProjectReference Include="..\..\Events\N3O.Umbraco.Events\N3O.Umbraco.Events.csproj" />
-      <ProjectReference Include="..\..\Forex\N3O.Umbraco.Forex.Currencylayer\N3O.Umbraco.Forex.Currencylayer.csproj" />
       <ProjectReference Include="..\..\Forms\N3O.Umbraco.Forms\N3O.Umbraco.Forms.csproj" />
-      <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving\N3O.Umbraco.Giving.csproj" />
-      <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Cart\N3O.Umbraco.Giving.Cart.csproj" />
-      <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Checkout\N3O.Umbraco.Giving.Checkout.csproj" />
-      <ProjectReference Include="..\..\ImageProcessing\N3O.Umbraco.ImageProcessing\N3O.Umbraco.ImageProcessing.csproj" />
-      <ProjectReference Include="..\..\Newsletters\N3O.Umbraco.Newsletters.Mailchimp\N3O.Umbraco.Newsletters.Mailchimp.csproj" />
-      <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.AuthorizeNet\N3O.Umbraco.Payments.AuthorizeNet.csproj" />
-      <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.Bambora\N3O.Umbraco.Payments.Bambora.csproj" />
-      <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.DirectDebitUK\N3O.Umbraco.Payments.DirectDebitUK.csproj" />
-      <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.GoCardless\N3O.Umbraco.Payments.GoCardless.csproj" />
-      <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.Opayo\N3O.Umbraco.Payments.Opayo.csproj" />
-      <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.PayPal\N3O.Umbraco.Payments.PayPal.csproj" />
-      <ProjectReference Include="..\..\Payments\N3O.Umbraco.Payments.Stripe\N3O.Umbraco.Payments.Stripe.csproj" />
-      <ProjectReference Include="..\..\Plugins\Cropper\N3O.Umbraco.Cropper.Data\N3O.Umbraco.Cropper.Data.csproj" />
       <ProjectReference Include="..\..\Plugins\Cropper\N3O.Umbraco.Cropper\N3O.Umbraco.Cropper.csproj" />
-      <ProjectReference Include="..\..\Plugins\SerpEditor\N3O.Umbraco.SerpEditor.Data\N3O.Umbraco.SerpEditor.Data.csproj" />
+      <ProjectReference Include="..\..\Plugins\Cropper\N3O.Umbraco.Cropper.Data\N3O.Umbraco.Cropper.Data.csproj" />
       <ProjectReference Include="..\..\Plugins\SerpEditor\N3O.Umbraco.SerpEditor\N3O.Umbraco.SerpEditor.csproj" />
+      <ProjectReference Include="..\..\Plugins\SerpEditor\N3O.Umbraco.SerpEditor.Data\N3O.Umbraco.SerpEditor.Data.csproj" />
       <ProjectReference Include="..\..\Plugins\TextResourceEditor\N3O.Umbraco.TextResourceEditor\N3O.Umbraco.TextResourceEditor.csproj" />
-      <ProjectReference Include="..\..\Plugins\Uploader\N3O.Umbraco.Uploader.Data\N3O.Umbraco.Uploader.Data.csproj" />
       <ProjectReference Include="..\..\Plugins\Uploader\N3O.Umbraco.Uploader\N3O.Umbraco.Uploader.csproj" />
+      <ProjectReference Include="..\..\Plugins\Uploader\N3O.Umbraco.Uploader.Data\N3O.Umbraco.Uploader.Data.csproj" />
       <ProjectReference Include="..\..\Plugins\WelcomeDashboard\N3O.Umbraco.WelcomeDashboard\N3O.Umbraco.WelcomeDashboard.csproj" />
       <ProjectReference Include="..\..\Scheduler\N3O.Umbraco.Scheduler\N3O.Umbraco.Scheduler.csproj" />
-      <ProjectReference Include="..\..\Search\N3O.Umbraco.Search.Google\N3O.Umbraco.Search.Google.csproj" />
       <ProjectReference Include="..\..\Sync\N3O.Umbraco.Sync\N3O.Umbraco.Sync.csproj" />
-      <ProjectReference Include="..\..\TaxRelief\N3O.Umbraco.TaxRelief.UnitedKingdom\N3O.Umbraco.TaxRelief.UnitedKingdom.csproj" />
       <ProjectReference Include="..\..\Templates\N3O.Umbraco.Templates.Handlebars\N3O.Umbraco.Templates.Handlebars.csproj" />
-      <ProjectReference Include="..\..\Vacancies\N3O.Umbraco.Vacancies\N3O.Umbraco.Vacancies.csproj" />
-      <ProjectReference Include="..\..\Workflows\N3O.Umbraco.Workflows\N3O.Umbraco.Workflows.csproj" />
     </ItemGroup>
 
 </Project>

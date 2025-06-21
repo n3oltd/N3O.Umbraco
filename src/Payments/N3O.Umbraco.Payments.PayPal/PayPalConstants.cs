@@ -9,7 +9,7 @@ public static class PayPalConstants {
     public static readonly int PaymentFailureThreshold = 3;
     public static readonly string PlanStatus = "ACTIVE";
     public static readonly string ProductCategory = "SOFTWARE";
-    public static readonly string ProductId = "N3O-Website-Donations";    
+    public static readonly string ProductId = "N3O-Website-Donations";
     public static readonly string ProductType = "SERVICE";
     public static readonly string SetupFeeFailureAction = "CONTINUE";
     public static readonly string TenureType = "REGULAR";

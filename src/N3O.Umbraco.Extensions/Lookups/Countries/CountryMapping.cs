@@ -13,7 +13,7 @@ public class CountryMapping : IMapDefinition {
         
         dest.Iso2Code = src.Iso2Code;
         dest.Iso3Code = src.Iso3Code;
-        dest.DiallingCode = src.DiallingCode;
+        dest.DialingCode = src.DialingCode;
         dest.LocalityOptional = src.LocalityOptional;
         dest.PostalCodeOptional = src.PostalCodeOptional;
     }

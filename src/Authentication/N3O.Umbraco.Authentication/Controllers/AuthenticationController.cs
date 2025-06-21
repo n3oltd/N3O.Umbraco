@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
-using N3O.Umbraco.Authentication.Services;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Logging;

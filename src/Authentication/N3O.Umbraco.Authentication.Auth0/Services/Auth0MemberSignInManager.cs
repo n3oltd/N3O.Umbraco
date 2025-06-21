@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using N3O.Umbraco.Authentication.Auth0.Lookups;
-using N3O.Umbraco.Authentication.Services;
 using System;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Security;
