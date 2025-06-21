@@ -29,7 +29,6 @@ public class PublishedThemeMapping : IMapDefinition {
         dest.Colors.Muted = src.Muted;
         dest.Colors.MutedForeground = src.MutedForeground;
         dest.Colors.Primary = src.Primary;
-        dest.Colors.Primary = src.Primary;
         dest.Colors.PrimaryForeground = src.PrimaryForeground;
         dest.Colors.Ring = src.Ring;
         dest.Colors.Secondary = src.Secondary;

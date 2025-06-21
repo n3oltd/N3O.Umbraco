@@ -1,4 +1,6 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Lookups;
+﻿using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Cloud.Platforms.Extensions;
+using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
@@ -12,6 +14,7 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
+[UmbracoContent(PlatformsConstants.Campaigns.CompositionAlias)]
 public class CampaignContent : UmbracoContent<CampaignContent> {
     private static readonly string ScheduledGivingCampaignAlias = AliasHelper<ScheduledGivingCampaignContent>.ContentTypeAlias();
     private static readonly string StandardCampaignAlias = AliasHelper<StandardCampaignContent>.ContentTypeAlias();
@@ -37,14 +40,15 @@ public class CampaignContent : UmbracoContent<CampaignContent> {
     public string Name => Content().Name;
     public Guid Key => Content().Key;
     
-    public IEnumerable<DataListItem> AnalyticsTags => GetValue(x => x.AnalyticsTags);
+    public IReadOnlyDictionary<string, string> AnalyticsTags => GetConvertedValue<IEnumerable<DataListItem>, IReadOnlyDictionary<String, string>>(x => x.AnalyticsTags, x => x.ToTags());
     public MediaWithCrops Icon => GetValue(x => x.Icon);
     public MediaWithCrops Image => GetValue(x => x.Image);
 
-    public IEnumerable<DesignationContent> Designations => Content()
-                                                           .Descendants()
-                                                           .Where(x => x.IsComposedOf(AliasHelper<DesignationContent>.ContentTypeAlias()))
-                                                           .As<DesignationContent>();
+    public IEnumerable<DesignationContent> Designations => Content().Descendants()
+                                                                    .Where(x => x.IsComposedOf(AliasHelper<DesignationContent>.ContentTypeAlias()))
+                                                                    .As<DesignationContent>();
+
+    public DesignationContent DefaultDesignation => Designations.FirstOrDefault();
     
     public ScheduledGivingCampaignContent ScheduledGiving { get; private set; }
     public StandardCampaignContent Standard { get; private set; }

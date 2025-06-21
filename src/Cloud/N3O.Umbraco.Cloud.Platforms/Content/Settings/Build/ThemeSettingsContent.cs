@@ -3,7 +3,7 @@ using N3O.Umbraco.Content;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.Terminologies.Alias)]
+[UmbracoContent(PlatformsConstants.Settings.Build.Theme)]
 public class ThemeSettingsContent : UmbracoContent<ThemeSettingsContent> {
 	public string Accent  => GetValue(x => x.Accent);
 	public string AccentForeground  => GetValue(x => x.AccentForeground);

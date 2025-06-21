@@ -2,7 +2,6 @@
 using N3O.Umbraco.Cloud.Engage.Clients;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.TaxRelief.Lookups;
-using System;
 using Umbraco.Cms.Core.Mapping;
 using ConnectAccountType = N3O.Umbraco.Cloud.Engage.Clients.AccountType;
 
@@ -17,7 +16,7 @@ public class ConnectAccountReqMapping : IMapDefinition {
     private void Map(IAccount src, ConnectAccountReq dest, MapperContext ctx) {
         dest.Id = src.Id;
         dest.Reference = src.Reference;
-        dest.Type = src.Type.IfNotNull(x => x.Id, Enum.Parse<ConnectAccountType>);
+        dest.Type = src.Type.ToEnum<ConnectAccountType>();
         dest.Individual = src.Individual.IfNotNull(ctx.Map<IIndividual, ConnectIndividualReq>);
         dest.Organization = src.Organization.IfNotNull(ctx.Map<IOrganization, ConnectOrganizationReq>);
         dest.Address = src.Address.IfNotNull(ctx.Map<IAddress, ConnectAddressReq>);

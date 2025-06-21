@@ -7,7 +7,6 @@ using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Json;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using AllocationType = N3O.Umbraco.Cloud.Engage.Clients.AllocationType;
@@ -44,10 +43,10 @@ public static partial class CrowdfundingCartReqExtensions {
         connectAddToCartReq.Quantity = 1;
         connectAddToCartReq.Item = new ConnectCartItemReq();
         
-        connectAddToCartReq.Item.Type = (AllocationType) Enum.Parse(typeof(AllocationType), goal.Type.Id, true);;
+        connectAddToCartReq.Item.Type = goal.Type.ToEnum<AllocationType>();
         connectAddToCartReq.Item.Value = new MoneyReq();
         connectAddToCartReq.Item.Value.Amount = (double?) itemReq.Value.Amount;
-        connectAddToCartReq.Item.Value.Currency = (Currency) Enum.Parse(typeof(Currency), itemReq.Value.Currency.Id, true);
+        connectAddToCartReq.Item.Value.Currency = itemReq.Value.Currency.ToEnum<Currency>();
 
         connectAddToCartReq.Item.FundDimensions = new FundDimensionValuesReq();
         connectAddToCartReq.Item.FundDimensions.Dimension1 = goal.FundDimensions.Dimension1?.Name;

@@ -5,7 +5,6 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
-using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using ExcelColumn = N3O.Umbraco.Data.Models.ExcelColumn;
@@ -163,7 +162,10 @@ public class ExcelWorksheetWriter {
                 workTable.ShowTotal = true;
 
                 if (column.FooterFunction != null) {
-                    workTable.Columns[i].TotalsRowFunction = Enum.Parse<RowFunctions>(column.FooterFunction.Id, true);
+                    workTable.Columns[i].TotalsRowFunction = column.FooterFunction
+                                                                   .Id
+                                                                   .ToEnum<RowFunctions>()
+                                                                   .GetValueOrThrow();
 
                     FormatFooter(worksheet, column);
                 }

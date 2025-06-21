@@ -17,6 +17,7 @@ using N3O.Umbraco.Giving.Checkout.Entities;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Scheduler;
+using N3O.Umbraco.Scheduler.Extensions;
 using N3O.Umbraco.TaxRelief.Lookups;
 using NodaTime;
 using System;
@@ -118,11 +119,10 @@ public class CheckoutChangeFeed : ChangeFeed<Checkout> {
     }
     
     private void EnqueueRecalculateContributionsTotal(Guid id, CrowdfunderType type) {
-        _backgroundJob.Enqueue<RecalculateContributionTotalsCommand>($"{nameof(RecalculateContributionTotalsCommand).Replace("Command", "")} {id.ToString()}",
-                                                                     p => { 
-                                                                         p.Add<ContentId>(id.ToString());
-                                                                         p.Add<CrowdfunderTypeId>(type.Id);
-                                                                     });
+        _backgroundJob.EnqueueCommand<RecalculateContributionTotalsCommand>(p => {
+            p.Add<ContentId>(id.ToString());
+            p.Add<CrowdfunderTypeId>(type.Id);
+        });
     }
     
     private void QueueEmail(EntityChange<Checkout> checkout, Allocation allocation) {

@@ -1,10 +1,9 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
-using N3O.Umbraco.Extensions;
-using System;
+using N3O.Umbraco.Cloud.Platforms.Extensions;
 using Umbraco.Cms.Core.Mapping;
 
-namespace N3O.Umbraco.Cloud.Platforms.Models.Connect.PaymentTerms;
+namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class PublishedPaymentTermsMapping : IMapDefinition {
     public void DefineMaps(IUmbracoMapper mapper) {
@@ -13,9 +12,7 @@ public class PublishedPaymentTermsMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll
     private void Map(PaymentTermsContent src, PublishedPaymentTerms dest, MapperContext ctx) {
-        var termsUrl = src.Link.Content?.AbsoluteUrl() ?? src.Link.Url;
-        
         dest.Text = src.Text;
-        dest.Url = new Uri(termsUrl);
+        dest.Url = src.Link.GetPublishedUri();
     }
 }

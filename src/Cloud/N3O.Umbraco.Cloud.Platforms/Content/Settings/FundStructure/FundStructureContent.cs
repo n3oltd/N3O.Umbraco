@@ -6,7 +6,7 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.FundStructure.Alias)]
+[UmbracoContent(PlatformsConstants.Settings.FundStructure.Alias)]
 public class FundStructureContent : UmbracoContent<FundStructureContent> {
     public FundDimension1Content FundDimension1 => GetFundDimension<FundDimension1Content>();
     public FundDimension2Content FundDimension2 => GetFundDimension<FundDimension2Content>();
@@ -14,7 +14,10 @@ public class FundStructureContent : UmbracoContent<FundStructureContent> {
     public FundDimension4Content FundDimension4 => GetFundDimension<FundDimension4Content>();
 
     private T GetFundDimension<T>() {
-        var fundDimension = Content().ChildrenOfType(AliasHelper<T>.ContentTypeAlias()).OrEmpty().As<T>().SingleOrDefault();
+        var fundDimension = Content().ChildrenOfType(AliasHelper<T>.ContentTypeAlias())
+                                     .OrEmpty()
+                                     .As<T>()
+                                     .SingleOrDefault();
 
         return fundDimension;
     }

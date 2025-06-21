@@ -4,7 +4,7 @@ using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
-public class FundDimensionValuesPubMapping : IMapDefinition {
+public class PublishedFundDimensionValuesMapping : IMapDefinition {
     public void DefineMaps(IUmbracoMapper mapper) {
         mapper.Define<IFundDimensionValues, PublishedFundDimensionValues>((_, _) => new PublishedFundDimensionValues(), Map);
     }
@@ -14,6 +14,6 @@ public class FundDimensionValuesPubMapping : IMapDefinition {
         dest.Dimension1 = src.Dimension1?.Name;
         dest.Dimension2 = src.Dimension2?.Name;
         dest.Dimension3 = src.Dimension3?.Name;
-        dest.Dimension4 = null;
+        dest.Dimension4 = src.Dimension4?.Name;
     }
 }

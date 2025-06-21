@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Cloud;
 
 public class ClientFactory<T> {
-    private static readonly string BaseUrl = nameof(BaseUrl);
+    private const string BaseUrl = nameof(BaseUrl);
     private const int RetryAttempts = 4;
 
     private readonly BearerTokenAccessor _bearerTokenAccessor;

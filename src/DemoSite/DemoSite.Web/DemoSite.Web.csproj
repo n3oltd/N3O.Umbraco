@@ -21,12 +21,44 @@
         <ProjectReference Include="..\..\Plugins\Uploader\N3O.Umbraco.Uploader.StaticAssets\N3O.Umbraco.Uploader.StaticAssets.csproj" />
         <ProjectReference Include="..\..\Plugins\WelcomeDashboard\N3O.Umbraco.WelcomeDashboard.StaticAssets\N3O.Umbraco.WelcomeDashboard.StaticAssets.csproj" />
         <ProjectReference Include="..\..\Scheduler\N3O.Umbraco.Scheduler.StaticAssets\N3O.Umbraco.Scheduler.StaticAssets.csproj" />
-        <ProjectReference Include="..\..\Workflows\N3O.Umbraco.Workflows.StaticAssets\N3O.Umbraco.Workflows.StaticAssets.csproj" />
         <ProjectReference Include="..\DemoSite.Core\DemoSite.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <Content Remove="uSync\v9\DataTypes\NestedCrowdfundingGoal0N.config" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Block.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Pages\CreateFundraiserPage.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Pages\HomePage.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Pages\SearchFundraisersPage.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Pages\ViewCampaignPage.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Pages\ViewEditFundraiserPage.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Banners\ViewEditFundraiserPageBanner.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Cards\CrowdfunderCompactCard.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Cards\CrowdfunderJumboCard.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Cards\CrowdfunderTallCard.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Cards\CrowdfunderWideCard.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Crowdfunder.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Crowdfunder\BackgroundImage.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Crowdfunder\BodyContent.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Crowdfunder\Contributions.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Crowdfunder\DonationForm.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Crowdfunder\Overview.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Elements\Crowdfunder\OwnerInfo.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Fields\Phone.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Fields\Select.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Fields\Text.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Forms\Account.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Modals\AllContributionsModal.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Modals\CreateAccountModal.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Modals\DonationSummaryModal.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Modals\MessageModal.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Modals\PickAccountModal.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Modals\ShareModal.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Modals\SignInModal.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Modals\UpdateAccountModal.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\PageAccess.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\Svgs.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\Shared\TopBar.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Partials\Crowdfunding\_ViewImports.cshtml" />
     </ItemGroup>
 
     <Import Project="..\..\N3O.Umbraco.Cms\build\N3O.Umbraco.Cms.targets" />

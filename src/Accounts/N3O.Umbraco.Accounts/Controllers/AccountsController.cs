@@ -52,7 +52,7 @@ public class AccountsController : LookupsController<AccountsLookupsRes> {
     
     [HttpGet("lookups/" + AccountsLookupTypes.Countries)]
     public async Task<ActionResult<IEnumerable<CountryRes>>> GetLookupCountries() {
-        var res = await GetLookupsAsync<ContentCountry, CountryRes>();
+        var res = await GetLookupsAsync<Country, CountryRes>();
 
         return Ok(res);
     }

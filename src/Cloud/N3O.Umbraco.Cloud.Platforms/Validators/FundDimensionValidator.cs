@@ -2,38 +2,50 @@
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using System.Linq;
 
 namespace N3O.Umbraco.Cloud.Platforms.Validators;
 
 public class FundDimensionValidator : ContentValidator {
+    private static readonly string FundDimension1Alias = AliasHelper<FundDimension1Content>.ContentTypeAlias();
+    private static readonly string FundDimension2Alias = AliasHelper<FundDimension2Content>.ContentTypeAlias();
+    private static readonly string FundDimension3Alias = AliasHelper<FundDimension3Content>.ContentTypeAlias();
+    private static readonly string FundDimension4Alias = AliasHelper<FundDimension4Content>.ContentTypeAlias();
+    private static readonly string SelectorAlias = AliasHelper<FundDimension1Content>.PropertyAlias(x => x.Selector);
+    private static readonly string ToggleValueAlias = AliasHelper<FundDimension1Content>.PropertyAlias(x => x.ToggleValue);
+    
     private readonly IContentHelper _contentHelper;
-    
-    private static readonly string FundDimension1 = AliasHelper<FundDimension1Content>.ContentTypeAlias();
-    private static readonly string FundDimension2 = AliasHelper<FundDimension2Content>.ContentTypeAlias();
-    private static readonly string FundDimension3 = AliasHelper<FundDimension3Content>.ContentTypeAlias();
-    private static readonly string FundDimension4 = AliasHelper<FundDimension4Content>.ContentTypeAlias();
-    
-    private static readonly string FundDimensionSelector = AliasHelper<FundDimensionContent<>>.PropertyAlias(x => x.Selector);
-    private static readonly string ToggleValue = AliasHelper<IPlatformsFundDimension>.PropertyAlias(x => x.ToggleValue);
     
     public FundDimensionValidator(IContentHelper contentHelper) : base(contentHelper) {
         _contentHelper = contentHelper;
     }
     
     public override bool IsValidator(ContentProperties content) {
-        return content.ContentTypeAlias.IsAnyOf(FundDimension1, FundDimension2, FundDimension3, FundDimension4);
+        return content.ContentTypeAlias.IsAnyOf(FundDimension1Alias,
+                                                FundDimension2Alias,
+                                                FundDimension3Alias,
+                                                FundDimension4Alias);
     }
     
     public override void Validate(ContentProperties content) {
-        var fundDimensionSelector = _contentHelper.GetDataListValue<FundDimensionSelector>(content, FundDimensionSelector);
-        var toggleValue = _contentHelper.GetBlockList(content.GetElementsPropertyByAlias(ToggleValue));
+        var selector = _contentHelper.GetDataListValue<FundDimensionSelector>(content, SelectorAlias);
+        var toggleValueElement = _contentHelper.GetBlockList(content.GetElementsPropertyByAlias(ToggleValueAlias))
+                                               .SingleOrDefault()
+                                               ?.Content
+                                               .As<FundDimensionToggleValueElement>();
 
-        if (fundDimensionSelector == FundDimensionSelectors.Dropdown && toggleValue.HasValue()) {
-            ErrorResult("Toggle value cannot be specified for dropdown fund dimension selector");
+        if (selector == FundDimensionSelectors.Dropdown) {
+            if (toggleValueElement.HasValue()) {
+                ErrorResult("Toggle values cannot be specified for a dropdown dimension");
+            }
         }
         
-        if (fundDimensionSelector == FundDimensionSelectors.Toggle && !toggleValue.HasValue()) {
-            ErrorResult("Toggle value must be specified for toggle fund dimension selector");
+        if (selector == FundDimensionSelectors.Toggle) {
+            if (!toggleValueElement.HasValue(x => x.Label) ||
+                !toggleValueElement.HasValue(x => x.OnValue) ||
+                !toggleValueElement.HasValue(x => x.OffValue)) {
+                ErrorResult("A label, on and off values must all be specified for a toggle dimension");   
+            }
         }
     }
 }

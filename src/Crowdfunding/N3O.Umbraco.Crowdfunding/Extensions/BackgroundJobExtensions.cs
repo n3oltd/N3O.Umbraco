@@ -3,6 +3,7 @@ using N3O.Umbraco.Cloud.Engage.Lookups;
 using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.NamedParameters;
 using N3O.Umbraco.Scheduler;
+using N3O.Umbraco.Scheduler.Extensions;
 using N3O.Umbraco.Webhooks;
 using N3O.Umbraco.Webhooks.Commands;
 using N3O.Umbraco.Webhooks.Models;
@@ -24,11 +25,10 @@ public static class BackgroundJobExtensions {
     public static void EnqueueCrowdfunderUpdated(this IBackgroundJob backgroundJob,
                                                  Guid contentId,
                                                  CrowdfunderType crowdfunderType) {
-        backgroundJob.Enqueue<CrowdfunderUpdatedNotification>($"{typeof(CrowdfunderUpdatedNotification).Name} {contentId}",
-                                                              p => {
-                                                                  p.Add<ContentId>(contentId.ToString());
-                                                                  p.Add<CrowdfunderTypeId>(crowdfunderType.Id);
-                                                              });
+        backgroundJob.EnqueueCommand<CrowdfunderUpdatedNotification>(p => {
+            p.Add<ContentId>(contentId.ToString());
+            p.Add<CrowdfunderTypeId>(crowdfunderType.Id);
+        });
     }
     
     private static DispatchWebhookReq GetWebhookReq(Guid campaignId, string campaignUrl, string stagingBaseUrl) {

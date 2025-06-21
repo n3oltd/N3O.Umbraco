@@ -3,7 +3,7 @@ using N3O.Umbraco.Content;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.FundStructure.Alias)]
+[UmbracoContent(PlatformsConstants.Settings.FundStructure.FundDimensionToggle)]
 public class FundDimensionToggleValueElement : UmbracoElement<FundDimensionToggleValueElement> {
     public string Label => GetValue(x => x.Label);
     public string OffValue => GetValue(x => x.OffValue);

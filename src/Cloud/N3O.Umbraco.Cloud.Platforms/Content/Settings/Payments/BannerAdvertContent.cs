@@ -4,7 +4,7 @@ using Umbraco.Cms.Core.Models;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.BannerAdvert.Alias)]
+[UmbracoContent(PlatformsConstants.Settings.Payments.BannerAdverts.Alias)]
 public class BannerAdvertContent : UmbracoContent<BannerAdvertContent> {
     public MediaWithCrops Image => GetValue(x => x.Image);
     public Link Link => GetValue(x => x.Link);

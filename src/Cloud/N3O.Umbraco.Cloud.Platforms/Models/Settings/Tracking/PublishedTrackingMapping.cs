@@ -1,6 +1,5 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
-using N3O.Umbraco.Cloud.Platforms.Content.Settings;
-using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Cloud.Platforms.Content;
 using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
@@ -12,19 +11,8 @@ public class PublishedTrackingMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll
     private void Map(TrackingContent src, PublishedTracking dest, MapperContext ctx) {
-        if (src.Meta.HasValue(x => x.PixelId)) {
-            dest.Meta = new PublishedMetaTracking();
-            dest.Meta.PixelId = src.Meta.PixelId;
-        }
-        
-        if (src.Google.HasValue(x => x.MeasurementId)) {
-            dest.GoogleAnalytics = new PublishedGoogleAnalyticsTracking();
-            dest.GoogleAnalytics.MeasurementId = src.Google.MeasurementId;
-        }
-        
-        if (src.TikTok.HasValue(x => x.PixelId)) {
-            dest.TikTok = new PublishedTikTokTracking();
-            dest.TikTok.PixelId = src.TikTok.PixelId;
-        }
+        dest.GoogleAnalytics = ctx.Map<GoogleAnalyticsTrackingContent, PublishedGoogleAnalyticsTracking>(src.GoogleAnalytics);
+        dest.Meta = ctx.Map<MetaTrackingContent, PublishedMetaTracking>(src.Meta);
+        dest.TikTok = ctx.Map<TikTokTrackingContent, PublishedTikTokTracking>(src.TikTok);
     }
 }

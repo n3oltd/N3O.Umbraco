@@ -10,32 +10,29 @@ namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 
 public static class ContentExtensions {
     public static bool IsCampaign(this IContent content, IContentTypeService contentTypeService) {
-        var contentType = contentTypeService.Get(content.ContentTypeId);
-        
-        return HasComposition(contentType, AliasHelper<CampaignContent>.ContentTypeAlias());
+        return HasComposition(contentTypeService, content, AliasHelper<CampaignContent>.ContentTypeAlias());
     }
     
     public static bool IsDesignation(this IContent content, IContentTypeService contentTypeService) {
-        var contentType = contentTypeService.Get(content.ContentTypeId);
-        
-        return HasComposition(contentType, AliasHelper<DesignationContent>.ContentTypeAlias());
+        return HasComposition(contentTypeService, content, AliasHelper<DesignationContent>.ContentTypeAlias());
     }
     
     public static bool IsElement(this IContent content, IContentTypeService contentTypeService) {
-        var contentType = contentTypeService.Get(content.ContentTypeId);
-        
-        return HasComposition(contentType, AliasHelper<ElementContent>.ContentTypeAlias());
+        return HasComposition(contentTypeService, content, AliasHelper<ElementContent>.ContentTypeAlias());
     }
     
-    public static bool IsPlatformEntity(this IContent content, IContentLocator contentLocator) {
-        var platforms = contentLocator.Single<PlatformsContent>();
-        
+    public static bool IsPlatformsContent(this IContent content, IContentCache contentCache) {
+        var platformsId = contentCache.Single<PlatformsContent>().Content().Id;
         var ancestorIds = content.GetAncestorIds().OrEmpty().ToList();
 
-        return ancestorIds.Contains(platforms.Content().Id);
+        return ancestorIds.Contains(platformsId);
     }
 
-    private static bool HasComposition(IContentType contentType, string compositionAlias) {
+    private static bool HasComposition(IContentTypeService contentTypeService,
+                                       IContent content,
+                                       string compositionAlias) {
+        var contentType = contentTypeService.Get(content.ContentTypeId);
+        
         return contentType.CompositionAliases().Contains(compositionAlias, true);
     }
 }

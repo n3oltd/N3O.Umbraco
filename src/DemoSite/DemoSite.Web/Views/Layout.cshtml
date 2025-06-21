@@ -1,16 +1,7 @@
-﻿@using N3O.Umbraco.Context
-
-@inherits UmbracoViewPage<IPageViewModel>
-
-@inject ICurrencyAccessor CurrencyAccessor;
-@inject ITemplateText TemplateText;
+﻿@inherits UmbracoViewPage<IPageViewModel>
 
 @{
     Layout = null;
-
-    TemplateText.SetTemplateName("Layout");
-
-    var currency = CurrencyAccessor.GetCurrency();
 }
 
 @if (Model.Content is IPage content) {
@@ -43,33 +34,13 @@
         
         <n3o-structured-data model="@Model" />
         <n3o-open-graph model="@Model" />
-
-        <script>
-            window.themeConfig = window.themeConfig || { };
-            window.themeConfig.text = { };
-            window.themeConfig.formatter = {
-                dateTime: {
-                    format: function(date) {
-                        new Intl.DateTimeFormat('@Formatter.CultureCode').format(date);
-                    }
-                },
-                number: {
-                    format: function (number) {
-                        new Intl.NumberFormat('@Formatter.CultureCode').format(number);
-                    },
-                    formatMoney: function (amount, currency) {
-                        new Intl.NumberFormat('@Formatter.CultureCode', { style: 'currency', currency: currency ?? '@currency.Code' }).format(amount);
-                    }
-                }
-            };
-        </script>
     </head>
 
     <body>
         <n3o-data-layer model="@Model" />
 
         <main>
-            <h1>@TemplateText.Get("Hello World!")</h1>
+            <h1>Hello World!</h1>
  
             @RenderBody()
         </main>
@@ -77,6 +48,7 @@
         <n3o-google-tag-manager model="@Model" render="body"></n3o-google-tag-manager>
 
         <n3o-page-info model="@Model" />
+        
         <n3o-js-bundle />
     </body>
     </html>

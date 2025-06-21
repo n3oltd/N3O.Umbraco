@@ -1,10 +1,6 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
-using N3O.Umbraco.Cloud.Platforms.Content.Settings;
-using N3O.Umbraco.Cloud.Platforms.Content.Settings.Tracking;
-using N3O.Umbraco.Content;
-using N3O.Umbraco.Extensions;
-using System;
+using N3O.Umbraco.Cloud.Platforms.Lookups;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
@@ -12,44 +8,29 @@ using Umbraco.Cms.Core.Mapping;
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class UmbracoContentReqMapping : IMapDefinition {
-    //private readonly IContentLocator _contentLocator;
-
-    public UmbracoContentReqMapping(IContentLocator contentLocator) {
-        _contentLocator = contentLocator;
-    }
-    
     public void DefineMaps(IUmbracoMapper mapper) {
         mapper.Define<PlatformsContent, UmbracoContentReq>((_, _) => new UmbracoContentReq(), Map);
     }
 
+    // Umbraco.Code.MapAll
     private void Map(PlatformsContent src, UmbracoContentReq dest, MapperContext ctx) {
+        dest.AddressEntry = ctx.Map<AddressEntryContent, UmbracoAddressEntryReq>(src.Settings.DataEntry.Address);
+        dest.BannerAdverts = ctx.Map<BannerAdvertsContent, PublishedBannerAdverts>(src.Settings.PaymentsSettings.BannerAdverts);
+        dest.Campaigns = MapCampaigns(ctx, src);
+        dest.ConsentEntry = ctx.Map<ConsentEntryContent, UmbracoConsentEntryReq>(src.Settings.DataEntry.Consent);
+        dest.DonateButtons = MapDonateButtons(ctx, src);
+        dest.DonationForms = MapDonationForms(ctx, src);
         dest.DonateMenu = ctx.Map<PlatformsContent, PublishedDonateMenu>(src);
         dest.FundStructure = ctx.Map<FundStructureContent, UmbracoFundStructureReq>(src.Settings.FundStructure);
-        dest.OrganizationInfo = ctx.Map<OrganizationInfoContent, PublishedOrganizationInfo>(src.Settings.OrganizationInfo);
-        dest.PaymentTerms =  ctx.Map<PaymentTermsContent, PublishedPaymentTerms>(src.Settings.PaymentsSettings.PaymentTerms);
-        dest.Terminology = ctx.Map<TerminologiesContent, PublishedTerminology>(src.Settings.Terminologies);
-        dest.Tracking =  ctx.Map<TrackingContent, PublishedTracking>(src.Settings.Tracking);
-        dest.BannerAdverts = ctx.Map<BannerAdvertsContent, PublishedBannerAdverts>(src.Settings.PaymentsSettings.BannerAdverts);
-        dest.AddressEntry = ctx.Map<AddressEntryContent, UmbracoAddressEntryReq>(src.Settings.DataEntry.Address);
         dest.NameEntry = ctx.Map<NameEntryContent, UmbracoNameEntryReq>(src.Settings.DataEntry.Name);
-        dest.ConsentEntry = ctx.Map<ConsentEntryContent, UmbracoConsentEntryReq>(src.Settings.DataEntry.Consent);
-        dest.Theme = ctx.Map<ThemeSettingsContent, PublishedTheme>(src.Settings.BuildSettings.Theme);
-        
-        dest.Campaigns = GetCampaignsReq(ctx, src);
-        dest.DonateButtons = GetDonateButtons(ctx, src);
-        dest.DonationForms = GetDonationForms(ctx, src);
+        dest.OrganizationInfo = ctx.Map<OrganizationInfoContent, PublishedOrganizationInfo>(src.Settings.OrganizationInfo);
+        dest.PaymentTerms =  ctx.Map<PaymentTermsContent, PublishedPaymentTerms>(src.Settings.PaymentsSettings.Terms);
+        dest.Terminology = ctx.Map<TerminologiesContent, PublishedTerminology>(src.Settings.Terminologies);
+        dest.Theme = ctx.Map<ThemeSettingsContent, PublishedTheme>(src.Settings.Build.Theme);
+        dest.Tracking =  ctx.Map<TrackingContent, PublishedTracking>(src.Settings.Tracking);
     }
     
-    private PublishedBannerAdverts GetBannerAdverts(MapperContext ctx, PlatformsContent platformsContent) {
-        var adverts = platformsContent.Settings.PaymentsSettings.BannerAdverts.Adverts;
-
-        var req = new PublishedBannerAdverts();
-        req.Adverts = adverts.OrEmpty().Select(ctx.Map<BannerAdvertContent, PublishedBannerAdvert>).ToList();
-        
-        return req;
-    }
-    
-    private List<UmbracoContentRevisionReqPublishedCampaign> GetCampaignsReq(MapperContext ctx, PlatformsContent platformsContent) {
+    private List<UmbracoContentRevisionReqPublishedCampaign> MapCampaigns(MapperContext ctx, PlatformsContent platformsContent) {
         var campaignsReq = new List<UmbracoContentRevisionReqPublishedCampaign>();
         
         foreach (var campaign in platformsContent.Campaigns) {
@@ -63,37 +44,33 @@ public class UmbracoContentReqMapping : IMapDefinition {
         return campaignsReq;
     }
     
-    private List<UmbracoContentRevisionReqPublishedDonateButton> GetDonateButtons(MapperContext ctx,
+    private List<UmbracoContentRevisionReqPublishedDonateButton> MapDonateButtons(MapperContext ctx,
                                                                                   PlatformsContent platformsContent) {
-        var donateButtons = platforms.DescendantsOfType(AliasHelper<DonateButtonElement>.ContentTypeAlias())
-        var donateButtonsReq = new List<UmbracoContentRevisionReqPublishedDonateButton>();
+        var reqs = new List<UmbracoContentRevisionReqPublishedDonateButton>();
         
-        foreach (var donateButton in donateButtons) {
+        foreach (var element in platformsContent.Elements.Where(x => x.Type == ElementTypes.DonateButton)) {
             var req = new UmbracoContentRevisionReqPublishedDonateButton();
-            req.Content = ctx.Map<DonateButtonElement, PublishedDonateButton>(donateButton);
+            req.Content = ctx.Map<ElementContent, PublishedDonateButton>(element);
             req.Version = 1;
             
-            donateButtonsReq.Add(req);
+            reqs.Add(req);
         }
 
-        return donateButtonsReq;
+        return reqs;
     }
     
-    private List<PublishedDonationFormUmbracoContentRevisionReq> GetDonationForms(MapperContext ctx,
-                                                                                  Platforms platforms) {
-        var donationForms = platforms.DescendantsOfType(AliasHelper<DonationFormElement>.ContentTypeAlias())
-                                     .As<DonationFormElement>();
+    private List<UmbracoContentRevisionReqPublishedDonationForm> MapDonationForms(MapperContext ctx,
+                                                                                  PlatformsContent platformsContent) {
+        var reqs = new List<UmbracoContentRevisionReqPublishedDonationForm>();
         
-        var donationFormsReq = new List<PublishedDonationFormUmbracoContentRevisionReq>();
-        
-        foreach (var donateButton in donationForms) {
-            var req = new PublishedDonationFormUmbracoContentRevisionReq();
-            req.Content = ctx.Map<DonationFormElement, PublishedDonationForm>(donateButton);
+        foreach (var element in platformsContent.Elements.Where(x => x.Type == ElementTypes.DonationForm)) {
+            var req = new UmbracoContentRevisionReqPublishedDonationForm();
+            req.Content = ctx.Map<ElementContent, PublishedDonationForm>(element);
             req.Version = 1;
             
-            donationFormsReq.Add(req);
+            reqs.Add(req);
         }
 
-        return donationFormsReq;
+        return reqs;
     }
 }

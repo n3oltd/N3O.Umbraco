@@ -2,11 +2,11 @@
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Content;
 
-namespace N3O.Umbraco.Cloud.Platforms.Content.Settings;
+namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.Tracking.Alias)]
+[UmbracoContent(PlatformsConstants.Settings.Tracking.Alias)]
 public class TrackingContent : UmbracoContent<TrackingContent> {
-    public GoogleAnalyticsTrackingContent Google => Content().GetSingleChildOfTypeAs<GoogleAnalyticsTrackingContent>();
-    public MetaPixelTrackingContent Meta => Content().GetSingleChildOfTypeAs<MetaPixelTrackingContent>();
-    public TikTokPixelTrackingContent TikTok => Content().GetSingleChildOfTypeAs<TikTokPixelTrackingContent>();
+    public GoogleAnalyticsTrackingContent GoogleAnalytics => Content().GetSingleChildOfTypeAs<GoogleAnalyticsTrackingContent>();
+    public MetaTrackingContent Meta => Content().GetSingleChildOfTypeAs<MetaTrackingContent>();
+    public TikTokTrackingContent TikTok => Content().GetSingleChildOfTypeAs<TikTokTrackingContent>();
 }

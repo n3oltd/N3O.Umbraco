@@ -4,7 +4,7 @@ using N3O.Umbraco.Content;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.BuildSettings.Alias)]
+[UmbracoContent(PlatformsConstants.Settings.Build.Alias)]
 public class BuildSettingsContent : UmbracoContent<BuildSettingsContent> {
     public ThemeSettingsContent Theme => Content().GetSingleChildOfTypeAs<ThemeSettingsContent>();
 }

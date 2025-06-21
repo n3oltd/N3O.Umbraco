@@ -17,11 +17,11 @@ public class Nisab : INisab {
     }
     
     public async Task<Money> GetGoldNisabAsync(Currency currency, CancellationToken cancellationToken = default) {
-        return await GetNisabAsync(currency, Metals.Gold, cancellationToken);
+        return await GetNisabAsync(currency, NisabTypes.Gold, cancellationToken);
     }
     
     public async Task<Money> GetNisabAsync(Currency currency,
-                                           Metal metal,
+                                           NisabType nisabType,
                                            CancellationToken cancellationToken = default) {
         var nisab = await _cdnClient.DownloadSubscriptionContentAsync<PublishedNisab>(SubscriptionFiles.Nisab,
                                                                                       cancellationToken);
@@ -32,18 +32,18 @@ public class Nisab : INisab {
 
         decimal nisabAmount;
 
-        if (metal == Metals.Gold) {
+        if (nisabType == NisabTypes.Gold) {
             nisabAmount = nisab.Amounts[currency.Code].Gold;
-        } else if (metal == Metals.Gold) {
+        } else if (nisabType == NisabTypes.Gold) {
             nisabAmount = nisab.Amounts[currency.Code].Silver;
         } else {
-            throw UnrecognisedValueException.For(metal);
+            throw UnrecognisedValueException.For(nisabType);
         }
 
         return new Money(nisabAmount, currency);
     }
     
     public async Task<Money> GetSilverNisabAsync(Currency currency, CancellationToken cancellationToken = default) {
-        return await GetNisabAsync(currency, Metals.Silver, cancellationToken);
+        return await GetNisabAsync(currency, NisabTypes.Silver, cancellationToken);
     }
 }

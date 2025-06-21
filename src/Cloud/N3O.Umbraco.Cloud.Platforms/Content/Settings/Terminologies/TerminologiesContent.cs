@@ -3,7 +3,7 @@ using N3O.Umbraco.Content;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.Terminologies.Alias)]
+[UmbracoContent(PlatformsConstants.Settings.Terminologies)]
 public class TerminologiesContent : UmbracoContent<TerminologiesContent> {
     public string Campaigns => GetValue(x => x.Campaigns);
 }

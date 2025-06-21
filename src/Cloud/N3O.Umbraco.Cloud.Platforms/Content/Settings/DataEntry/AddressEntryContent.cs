@@ -4,7 +4,7 @@ using N3O.Umbraco.Content;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.AddressEntry.Alias)]
+[UmbracoContent(PlatformsConstants.Settings.DataEntry.Address)]
 public class AddressEntryContent : UmbracoContent<AddressEntryContent> {
     public AddressLayout Layout => GetValue(x => x.Layout);
     public virtual string LookupApiKey => GetValue(x => x.LookupApiKey);

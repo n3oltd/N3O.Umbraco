@@ -14,26 +14,26 @@ public class PublishedFundDesignationMapping : IMapDefinition {
         mapper.Define<FundDesignationContent, PublishedFundDesignation>((_, _) => new PublishedFundDesignation(), Map);
     }
     
-    
-    protected void Map(FundDesignationContent src, PublishedFundDesignation dest, MapperContext ctx) {
+    // Umbraco.Code.MapAll
+    private void Map(FundDesignationContent src, PublishedFundDesignation dest, MapperContext ctx) {
         dest.Item = new PublishedDonationItem();
         dest.Item.Id = src.DonationItem.Name.Camelize();
         
         if (src.DonationItem.HasPricing()) {
-            dest.Item.Pricing = new PublishedPricing();
-            dest.Item.Pricing.Price = ctx.Map<IPrice, PublishedPrice>(src.DonationItem);
-            dest.Item.Pricing.Rules = src.DonationItem.PriceRules.OrEmpty().Select(ctx.Map<IPricingRule, PublishedPricingRule>).ToList();
+            dest.Item.Pricing = ctx.Map<IPricing, PublishedPricing>(src.DonationItem);
         }
 
-        dest.SuggestedAmounts = new PublishedSuggestedAmounts();
-        dest.SuggestedAmounts.OneTime = src.OneTimeSuggestedAmounts
-                                           .OrEmpty()
-                                           .Select(ctx.Map<SuggestedAmountContent, PublishedSuggestedAmount>)
-                                           .ToList();
+        if (src.OneTimeSuggestedAmounts.HasAny() || src.RecurringSuggestedAmounts.HasAny()) {
+            dest.SuggestedAmounts = new PublishedSuggestedAmounts();
+            dest.SuggestedAmounts.OneTime = src.OneTimeSuggestedAmounts
+                                               .OrEmpty()
+                                               .Select(ctx.Map<SuggestedAmountContent, PublishedSuggestedAmount>)
+                                               .ToList();
 
-        dest.SuggestedAmounts.Recurring = src.RecurringSuggestedAmounts
-                                             .OrEmpty()
-                                             .Select(ctx.Map<SuggestedAmountContent, PublishedSuggestedAmount>)
-                                             .ToList();
+            dest.SuggestedAmounts.Recurring = src.RecurringSuggestedAmounts
+                                                 .OrEmpty()
+                                                 .Select(ctx.Map<SuggestedAmountContent, PublishedSuggestedAmount>)
+                                                 .ToList();
+        }
     }
 }

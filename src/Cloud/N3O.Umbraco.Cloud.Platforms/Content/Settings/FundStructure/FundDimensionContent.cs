@@ -10,20 +10,28 @@ public abstract class FundDimensionContent<T> : UmbracoContent<FundDimensionCont
     public bool Searchable => GetValue(x => x.Searchable);
     public FundDimensionSelector Selector => GetValue(x => x.Selector);
     public IEnumerable<FundDimensionToggleValueElement> ToggleValue => GetNestedAs(x => x.ToggleValue);
+    
+    public int Number => Index + 1;
+    
+    public abstract int Index { get; }
 }
 
-[UmbracoContent(PlatformsConstants.FundDimension1.Alias)]
+[UmbracoContent(PlatformsConstants.Settings.FundStructure.FundDimension1)]
 public class FundDimension1Content : FundDimensionContent<FundDimension1Content> {
+    public override int Index => 0;
 }
 
-[UmbracoContent(PlatformsConstants.FundDimension2.Alias)]
+[UmbracoContent(PlatformsConstants.Settings.FundStructure.FundDimension2)]
 public class FundDimension2Content : FundDimensionContent<FundDimension2Content> {
+    public override int Index => 1;
 }
 
-[UmbracoContent(PlatformsConstants.FundDimension3.Alias)]
+[UmbracoContent(PlatformsConstants.Settings.FundStructure.FundDimension3)]
 public class FundDimension3Content : FundDimensionContent<FundDimension3Content> {
+    public override int Index => 2;
 }
 
-[UmbracoContent(PlatformsConstants.FundDimension4.Alias)]
+[UmbracoContent(PlatformsConstants.Settings.FundStructure.FundDimension4)]
 public class FundDimension4Content : FundDimensionContent<FundDimension4Content> {
+    public override int Index => 3;
 }

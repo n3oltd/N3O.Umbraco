@@ -1,6 +1,5 @@
 ﻿using N3O.Umbraco.Authentication.Auth0.Lookups;
 using N3O.Umbraco.Cloud.Engage.Clients;
-using N3O.Umbraco.Cloud.Engage.Extensions;
 using N3O.Umbraco.Cloud.Engage.Lookups;
 using N3O.Umbraco.Cloud.Engage.Models;
 using N3O.Umbraco.Exceptions;
@@ -12,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CrowdfunderType = N3O.Umbraco.Cloud.Engage.Lookups.CrowdfunderType;
+using EngageAllocationType = N3O.Umbraco.Cloud.Engage.Clients.AllocationType;
 using EngageCurrency = N3O.Umbraco.Cloud.Engage.Clients.Currency;
 using FundDimensionValuesReq = N3O.Umbraco.Cloud.Engage.Clients.FundDimensionValuesReq;
 using MoneyReq = N3O.Umbraco.Cloud.Engage.Clients.MoneyReq;
@@ -74,7 +74,7 @@ public class CrowdfunderManager : ICrowdfunderManager {
         }
         
         syncCrowdfunderReq.Allocations = GetCrowdfunderAllocationsReq(crowdfunder.Goals,
-                                                                      crowdfunder.Currency.ToEngageCurrency());
+                                                                      crowdfunder.Currency.ToEnum<EngageCurrency>());
         
         var req = new CreateJobReqSyncCrowdfunderReq();
         req.NotificationUrls = webhookUrls.ToList();
@@ -130,21 +130,21 @@ public class CrowdfunderManager : ICrowdfunderManager {
         req.Id = crowdfunder.Id.ToString();
         req.Name = crowdfunder.Name;
         req.Url = crowdfunder.Url(_serviceProvider);
-        req.Currency = crowdfunder.Currency.ToEngageCurrency();
-        req.Allocations = GetCrowdfunderAllocationsReq(crowdfunder.Goals, crowdfunder.Currency.ToEngageCurrency());
+        req.Currency = crowdfunder.Currency.ToEnum<EngageCurrency>();
+        req.Allocations = GetCrowdfunderAllocationsReq(crowdfunder.Goals, crowdfunder.Currency.ToEnum<EngageCurrency>());
 
         return req;
     }
 
     private CrowdfunderAllocationsReq GetCrowdfunderAllocationsReq(IEnumerable<ICrowdfunderGoal> goals,
-                                                                   EngageCurrency currency) {
+                                                                   EngageCurrency? currency) {
         var req = new CrowdfunderAllocationsReq();
 
         var items = new List<CrowdfunderAllocationReq>();
 
         foreach (var goal in goals) {
             var item = new CrowdfunderAllocationReq();
-            item.Type = goal.Type.ToEngageAllocationType();
+            item.Type = goal.Type.ToEnum<EngageAllocationType>();
             item.FundDimensions = GetFundDimensionValuesReq(goal.FundDimensions);
             item.Value = GetMoneyReq(goal.Amount, currency);
 
@@ -211,7 +211,7 @@ public class CrowdfunderManager : ICrowdfunderManager {
         return req;
     }
 
-    private MoneyReq GetMoneyReq(decimal amount, EngageCurrency currency) {
+    private MoneyReq GetMoneyReq(decimal amount, EngageCurrency? currency) {
         var req = new MoneyReq();
         req.Amount = (double?) amount;
         req.Currency = currency;

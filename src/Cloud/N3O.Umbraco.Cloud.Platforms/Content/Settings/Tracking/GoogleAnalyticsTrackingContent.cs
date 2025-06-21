@@ -3,7 +3,7 @@ using N3O.Umbraco.Content;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.GoogleAnalyticsTracking.Alias)]
+[UmbracoContent(PlatformsConstants.Settings.Tracking.GoogleAnalytics)]
 public class GoogleAnalyticsTrackingContent : UmbracoContent<GoogleAnalyticsTrackingContent> {
     public string MeasurementId => GetValue(x => x.MeasurementId);
 }

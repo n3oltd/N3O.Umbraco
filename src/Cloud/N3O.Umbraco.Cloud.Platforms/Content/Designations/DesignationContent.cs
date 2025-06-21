@@ -1,18 +1,21 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Lookups;
+﻿using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Cloud.Platforms.Extensions;
+using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Extensions;
-using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Strings;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
+[UmbracoContent(PlatformsConstants.Designations.CompositionAlias)]
 public class DesignationContent : UmbracoContent<DesignationContent> {
     private static readonly string FeedbackDesignationAlias = AliasHelper<FeedbackDesignationContent>.ContentTypeAlias();
     private static readonly string FundDesignationAlias = AliasHelper<FundDesignationContent>.ContentTypeAlias();
@@ -39,9 +42,9 @@ public class DesignationContent : UmbracoContent<DesignationContent> {
     public Guid Key => Content().Key;
 
     public FundDimension1Value Dimension1 => GetValue(x => x.Dimension1);
-    public FundDimension1Value Dimension2 => GetValue(x => x.Dimension2);
-    public FundDimension1Value Dimension3 => GetValue(x => x.Dimension3);
-    public FundDimension1Value Dimension4 => GetValue(x => x.Dimension4);
+    public FundDimension2Value Dimension2 => GetValue(x => x.Dimension2);
+    public FundDimension3Value Dimension3 => GetValue(x => x.Dimension3);
+    public FundDimension4Value Dimension4 => GetValue(x => x.Dimension4);
     public MediaWithCrops Icon => GetValue(x => x.Icon);
     public MediaWithCrops Image => GetValue(x => x.Image);
     public IHtmlEncodedString LongDescription => GetValue(x => x.LongDescription);
@@ -54,16 +57,22 @@ public class DesignationContent : UmbracoContent<DesignationContent> {
     
     public bool HasPricing => ((IPricing) Fund?.DonationItem ?? Feedback?.Scheme).HasPricing();
     
-    public IEnumerable<GivingType> GetAllowedGivingTypes() {
-        return Fund?.DonationItem.AllowedGivingTypes ??
-               Sponsorship?.Scheme.AllowedGivingTypes ??
-               Feedback?.Scheme.AllowedGivingTypes;
+    public IReadOnlyList<GiftType> GetGiftTypes() {
+        var givingTypes = Fund?.DonationItem.AllowedGivingTypes ??
+                          Feedback?.Scheme.AllowedGivingTypes ??
+                          Sponsorship?.Scheme.AllowedGivingTypes;
+
+        if (givingTypes.HasAny()) {
+            return givingTypes.Select(x => x.ToGiftType()).ToList();
+        } else {
+            return null;
+        }
     }
     
     public IFundDimensionsOptions GetFundDimensionOptions() {
         return (IFundDimensionsOptions) Fund?.DonationItem ??
-               (IFundDimensionsOptions) Sponsorship?.Scheme ??
-               (IFundDimensionsOptions) Feedback?.Scheme;
+               (IFundDimensionsOptions) Feedback?.Scheme ??
+               (IFundDimensionsOptions) Sponsorship?.Scheme;
     }
     
     public DesignationType Type {

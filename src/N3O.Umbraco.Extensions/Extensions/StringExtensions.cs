@@ -239,6 +239,14 @@ public static class StringExtensions {
         
         return Regex.Replace(s, "/+$", string.Empty);
     }
+    
+    public static TEnum? ToEnum<TEnum>(this string str) where TEnum : struct {
+        if (str.HasValue() && Enum.TryParse<TEnum>(str, true, out var parseResult)) {
+            return parseResult;
+        } else {
+            return default;
+        }
+    }
 
     public static string ToHtmlId(this string str, int index) {
         return $"item-{str.Camelize()}-{index}";

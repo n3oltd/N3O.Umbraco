@@ -4,7 +4,7 @@ using Umbraco.Cms.Core.Models;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.PaymentTerms.Alias)]
+[UmbracoContent(PlatformsConstants.Settings.Payments.Terms)]
 public class PaymentTermsContent : UmbracoContent<PaymentTermsContent> {
     public Link Link => GetValue(x => x.Link);
     public string Text => GetValue(x => x.Text);

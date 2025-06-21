@@ -6,7 +6,7 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.BannerAdverts.Alias)]
+[UmbracoContent(PlatformsConstants.Settings.Payments.BannerAdverts.BannerAdvert)]
 public class BannerAdvertsContent : UmbracoContent<BannerAdvertsContent> {
     public IEnumerable<BannerAdvertContent> Adverts => Content().Children().OrEmpty().As<BannerAdvertContent>();
 }

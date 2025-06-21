@@ -10,7 +10,7 @@ public class UmbracoFundDimensionsReqMapping : IMapDefinition {
         mapper.Define<FundStructureContent, UmbracoFundStructureReq>((_, _) => new UmbracoFundStructureReq(), Map);
     }
 
-    // Umbraco.Code.MapAll -Id -Name
+    // Umbraco.Code.MapAll
     private void Map(FundStructureContent src, UmbracoFundStructureReq dest, MapperContext ctx) {
         dest.Dimension1 = src.FundDimension1.IfNotNull(ctx.Map<FundDimension1Content, UmbracoFundDimensionReq>);
         dest.Dimension2 = src.FundDimension2.IfNotNull(ctx.Map<FundDimension2Content, UmbracoFundDimensionReq>);

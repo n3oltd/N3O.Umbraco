@@ -5,7 +5,7 @@ using Umbraco.Cms.Core.Models;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.OrganizationInfo.Alias)]
+[UmbracoContent(PlatformsConstants.Settings.OrganizationInfo.Alias)]
 public class OrganizationInfoContent : UmbracoContent<OrganizationInfoContent> {
 		public Country AddressCountry => GetValue(x => x.AddressCountry);
 		public string AddressPostalCode => GetValue(x => x.AddressPostalCode);
