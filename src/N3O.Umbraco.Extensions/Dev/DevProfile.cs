@@ -1,9 +1,11 @@
-﻿using N3O.Umbraco.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using N3O.Umbraco.Hosting;
 
 namespace N3O.Umbraco.Dev;
 
 public abstract class DevProfile : IDevProfile {
-    public abstract void Apply();
+    public abstract void Apply(IWebHostEnvironment webHostEnvironment, IConfiguration configuration);
     public abstract bool ShouldApply();
     
     public void SetDevFlag(string flag) {

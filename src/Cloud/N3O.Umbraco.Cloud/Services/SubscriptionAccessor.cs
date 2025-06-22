@@ -1,5 +1,7 @@
+using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Models;
 using N3O.Umbraco.Hosting;
+using N3O.Umbraco.Lookups;
 
 namespace N3O.Umbraco.Cloud;
 
@@ -12,7 +14,8 @@ public class SubscriptionAccessor : ISubscriptionAccessor {
 
     public SubscriptionInfo GetSubscription() {
         if (_subscription == null) {
-            var dataRegion = Get(CloudConstants.Environment.Keys.DataRegion);
+            var dataRegionId = Get(CloudConstants.Environment.Keys.DataRegion);
+            var dataRegion = StaticLookups.FindById<DataRegion>(dataRegionId);
             var subscriptionCode = Get(CloudConstants.Environment.Keys.SubscriptionCode);
 
             _subscription = new SubscriptionInfo(dataRegion, SubscriptionId.FromCode(subscriptionCode));

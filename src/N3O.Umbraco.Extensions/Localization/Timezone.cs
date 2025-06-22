@@ -44,6 +44,20 @@ public class Timezone : NamedLookup {
 
         return $"({offsetText}) {Zone.Id}";
     }
+    
+    public static Timezone FromTzId(string tzId) {
+        var tz = TzdbDateTimeZoneSource.Default.ZoneLocations.SingleOrDefault(x => x.ZoneId.EqualsInvariant(tzId));
+
+        if (tz == null) {
+            throw new Exception($"Unable to find timezone with ID {tzId}");
+        }
+
+        return ToTimezone(tz);
+    }
+    
+    private static Timezone ToTimezone(TzdbZoneLocation zoneLocation) {
+        return new Timezone(zoneLocation.ZoneId.ToLowerInvariant(), zoneLocation.ZoneId, SystemClock.Instance);
+    }
 }
 
 public class Timezones : LookupsCollection<Timezone> {
@@ -52,7 +66,7 @@ public class Timezones : LookupsCollection<Timezone> {
     static Timezones() {
         All = TzdbDateTimeZoneSource.Default
                                     .ZoneLocations
-                                    .Select(t => new Timezone(t.ZoneId.ToLowerInvariant(), t.ZoneId, SystemClock.Instance))
+                                    .Select(x => Timezone.FromTzId(x.ZoneId))
                                     .Concat(Utc)
                                     .OrderBy(t => t.UtcOffset)
                                     .ThenBy(t => t == Utc ? 0 : 1)
@@ -60,9 +74,7 @@ public class Timezones : LookupsCollection<Timezone> {
                                     .ToList();
     }
 
-    public static Timezone Utc => new(DateTimeZone.Utc.Id.ToLowerInvariant(),
-                                      DateTimeZone.Utc.Id,
-                                      SystemClock.Instance);
+    public static Timezone Utc => Timezone.FromTzId("Etc/UTC");
 
     protected override Task<IReadOnlyList<Timezone>> LoadAllAsync() {
         return Task.FromResult(All);

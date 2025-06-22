@@ -1,6 +1,9 @@
-﻿namespace N3O.Umbraco.Dev;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+
+namespace N3O.Umbraco.Dev;
 
 public interface IDevProfile {
-    void Apply();
+    void Apply(IWebHostEnvironment webHostEnvironment, IConfiguration configuration);
     bool ShouldApply();
 }

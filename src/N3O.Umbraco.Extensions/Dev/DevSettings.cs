@@ -1,15 +1,28 @@
-﻿using N3O.Umbraco.Extensions;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace N3O.Umbraco.Dev;
 
 public static class DevSettings {
-    public static void Configure(Action<ConfiguredDevProfile> apply) {
-        var profile = new ConfiguredDevProfile(apply);
+    private static readonly List<IDevProfile> DevProfiles = new();
+    
+    public static void Apply(IWebHostEnvironment webHostEnvironment, IConfiguration configuration) {
+        foreach (var devProfile in DevProfiles) {
+            if (devProfile.ShouldApply()) {
+                devProfile.Apply(webHostEnvironment, configuration);
+            }   
+        }
+    }
+    
+    public static void Configure(Action<IWebHostEnvironment, IConfiguration, ConfiguredDevProfile> apply) {
+        var devProfile = new ConfiguredDevProfile(apply);
 
-        UseProfile(profile);
+        UseProfile(devProfile);
     }
 
     public static void UseProfiles() {
@@ -18,9 +31,9 @@ public static class DevSettings {
                                                 t.HasParameterlessConstructor())
                                  .ApplyAttributeOrdering();
 
-        var profiles = types.Select(x => (IDevProfile) Activator.CreateInstance(x)).ToList();
+        var devProfiles = types.Select(x => (IDevProfile) Activator.CreateInstance(x)).ToList();
         
-        profiles.Do(UseProfile);
+        devProfiles.Do(UseProfile);
     }
     
     public static void UseProfile<T>() where T : IDevProfile, new() {
@@ -29,9 +42,7 @@ public static class DevSettings {
         UseProfile(profile);
     }
     
-    public static void UseProfile<T>(T profile) where T : IDevProfile {
-        if (profile.ShouldApply()) {
-            profile.Apply();
-        }
+    public static void UseProfile<T>(T devProfile) where T : IDevProfile {
+        DevProfiles.Add(devProfile);
     }
 }

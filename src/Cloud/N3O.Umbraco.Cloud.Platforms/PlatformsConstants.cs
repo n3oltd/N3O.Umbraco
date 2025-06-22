@@ -46,7 +46,6 @@ public static class PlatformsConstants {
 
         public static class FundStructure {
             public const string Alias = "platformsFundStructure";
-            public const string FundDimension = "platformsFundDimension";
             public const string FundDimension1 = "platformsFundDimension1";
             public const string FundDimension2 = "platformsFundDimension2";
             public const string FundDimension3 = "platformsFundDimension3";

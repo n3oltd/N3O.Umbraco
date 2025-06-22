@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Composing;
+using N3O.Umbraco.Dev;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
 using Umbraco.Cms.Core.DependencyInjection;
@@ -22,6 +23,7 @@ public abstract class CmsStartup {
         _configuration = configuration;
 
         EnvironmentData.LoadFromConfiguration(configuration);
+        DevSettings.Apply(webHostEnvironment, configuration);
     }
 
     public void ConfigureServices(IServiceCollection services) {
