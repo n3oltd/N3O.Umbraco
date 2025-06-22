@@ -10,7 +10,7 @@ namespace N3O.Umbraco.Notifications;
 
 public class NotificationsComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
-        if (DevFlags.IsNotSet(OurFlags.NotificationRegistrations)) {
+        if (DevFlags.IsNotSet(OurFlags.DisableNotificationRegistrations)) {
             RegisterAll(t => t.ImplementsGenericInterface(typeof(INotificationAsyncHandler<>)),
                         t => RegisterNotificationHandler(builder, t));
         }
