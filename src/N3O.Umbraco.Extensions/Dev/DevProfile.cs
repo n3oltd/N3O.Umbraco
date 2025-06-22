@@ -6,7 +6,7 @@ namespace N3O.Umbraco.Dev;
 
 public abstract class DevProfile : IDevProfile {
     public abstract void Apply(IWebHostEnvironment webHostEnvironment, IConfiguration configuration);
-    public abstract bool ShouldApply();
+    public abstract bool ShouldApply(IWebHostEnvironment webHostEnvironment, IConfiguration configuration);
     
     public void SetDevFlag(string flag) {
         DevFlags.Set(flag);

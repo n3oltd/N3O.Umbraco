@@ -5,5 +5,5 @@ namespace N3O.Umbraco.Dev;
 
 public interface IDevProfile {
     void Apply(IWebHostEnvironment webHostEnvironment, IConfiguration configuration);
-    bool ShouldApply();
+    bool ShouldApply(IWebHostEnvironment webHostEnvironment, IConfiguration configuration);
 }

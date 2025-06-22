@@ -13,14 +13,15 @@ public static class DevSettings {
     
     public static void Apply(IWebHostEnvironment webHostEnvironment, IConfiguration configuration) {
         foreach (var devProfile in DevProfiles) {
-            if (devProfile.ShouldApply()) {
+            if (devProfile.ShouldApply(webHostEnvironment, configuration)) {
                 devProfile.Apply(webHostEnvironment, configuration);
             }   
         }
     }
     
-    public static void Configure(Action<IWebHostEnvironment, IConfiguration, ConfiguredDevProfile> apply) {
-        var devProfile = new ConfiguredDevProfile(apply);
+    public static void Custom(Action<IWebHostEnvironment, IConfiguration, RuntimeDevProfile> apply,
+                              Func<IWebHostEnvironment, IConfiguration, bool> shouldApply = null) {
+        var devProfile = new RuntimeDevProfile(apply, shouldApply);
 
         UseProfile(devProfile);
     }
