@@ -15,7 +15,7 @@ public static class DevSettings {
         foreach (var devProfile in DevProfiles) {
             if (devProfile.ShouldApply(webHostEnvironment, configuration)) {
                 devProfile.Apply(webHostEnvironment, configuration);
-            }   
+            }
         }
     }
     

@@ -10,31 +10,30 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Localization;
 
 public class Timezone : NamedLookup {
-    private readonly IClock _clock;
-
-    public Timezone(string id, string name, IClock clock) : base(id, name) {
-        _clock = clock;
-
-        var zoneId = DateTimeZoneProviders.Tzdb.Ids.Single(x => x.EqualsInvariant(id));
-        Zone = DateTimeZoneProviders.Tzdb[zoneId];
+    public Timezone(IClock clock, DateTimeZone zone) : base(zone.Id, GetName(clock, zone)) {
+        UtcOffset = GetUtcOffset(clock, zone);
+        Zone = zone;
     }
 
+    public Offset UtcOffset { get; }
     public DateTimeZone Zone { get; }
+    
+    public static Timezone FromTzId(string tzId) {
+        var dateTimeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(tzId);
 
-    public Offset UtcOffset => Zone.Id == DateTimeZone.Utc.Id ?
-                                   Offset.FromSeconds(0) :
-                                   Zone.GetUtcOffset(_clock.GetCurrentInstant());
-
-    public override string ToString() {
-        if (Zone == DateTimeZone.Utc) {
+        return ToTimezone(dateTimeZone);
+    }
+    
+    private static string GetName(IClock clock, DateTimeZone dateTimeZone) {
+        if (dateTimeZone == DateTimeZone.Utc) {
             return "(UTC) Coordinated Universal Time";
         }
 
-        var offsetTimespan = TimeSpan.FromMilliseconds(Math.Abs(UtcOffset.Milliseconds));
-
+        var utcOffset = GetUtcOffset(clock, dateTimeZone);
+        var offsetTimespan = TimeSpan.FromMilliseconds(Math.Abs(utcOffset.Milliseconds));
         var offsetText = "UTC";
 
-        if (UtcOffset.Milliseconds >= 0) {
+        if (utcOffset.Milliseconds >= 0) {
             offsetText += "+";
         } else {
             offsetText += "-";
@@ -42,21 +41,17 @@ public class Timezone : NamedLookup {
 
         offsetText += $"{offsetTimespan.Hours:00}:{offsetTimespan.Minutes:00}";
 
-        return $"({offsetText}) {Zone.Id}";
+        return $"({offsetText}) {dateTimeZone.Id}";
+    }
+
+    private static Offset GetUtcOffset(IClock clock, DateTimeZone dateTimeZone) {
+        return dateTimeZone == DateTimeZone.Utc
+                   ? Offset.FromSeconds(0)
+                   : dateTimeZone.GetUtcOffset(clock.GetCurrentInstant());
     }
     
-    public static Timezone FromTzId(string tzId) {
-        var tz = TzdbDateTimeZoneSource.Default.ZoneLocations.SingleOrDefault(x => x.ZoneId.EqualsInvariant(tzId));
-
-        if (tz == null) {
-            throw new Exception($"Unable to find timezone with ID {tzId}");
-        }
-
-        return ToTimezone(tz);
-    }
-    
-    private static Timezone ToTimezone(TzdbZoneLocation zoneLocation) {
-        return new Timezone(zoneLocation.ZoneId.ToLowerInvariant(), zoneLocation.ZoneId, SystemClock.Instance);
+    private static Timezone ToTimezone(DateTimeZone dateTimeZone) {
+        return new Timezone(SystemClock.Instance, dateTimeZone);
     }
 }
 
