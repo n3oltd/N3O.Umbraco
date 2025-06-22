@@ -7,7 +7,7 @@ namespace N3O.Umbraco.Data.Converters;
 
 public class MoneyTextConverter : ITextConverter<Money> {
     public string ToInvariantText(Money value) {
-        return value.IfNotNull(x => $"{value.Currency.Symbol}{value.Amount.ToString(CultureInfo.InvariantCulture)}");
+        return value.IfNotNull(x => $"{x.Currency.Symbol}{x.Amount.ToString(CultureInfo.InvariantCulture)}");
     }
 
     public string ToText(IFormatter formatter, Money value) {
