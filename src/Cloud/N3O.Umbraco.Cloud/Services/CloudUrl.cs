@@ -18,7 +18,7 @@ public class CloudUrl : ICloudUrl {
 
     public string ForApi(string servicePath) {
         var url = GetApiBaseUrl();
-        url.AppendPathSegment(servicePath.Replace("eu1/api", $"{_subscription.Region}/api"));
+        url.AppendPathSegment(servicePath.Replace("eu1/api", $"{_subscription.DataRegion}/api"));
 
         return url;
     }

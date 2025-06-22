@@ -1,5 +1,5 @@
-﻿namespace N3O.Umbraco.Hosting;
+﻿namespace N3O.Umbraco.Dev;
 
-public class DisableFlags {
+public class OurFlags {
     public static string NotificationRegistrations = nameof(NotificationRegistrations);
 }

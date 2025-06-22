@@ -1,9 +1,12 @@
-using N3O.Umbraco;
+using N3O.Umbraco.Cms;
+using N3O.Umbraco.Utilities;
 
 namespace DemoSite.Web;
 
 public class Program {
     public static void Main(string[] args) {
-        Cms.Run<Startup>(args, "DemoSite.");
+        OurAssemblies.Configure("DemoSite.");
+        
+        UmbracoCms.Run<Startup>(args);
     }
 }
