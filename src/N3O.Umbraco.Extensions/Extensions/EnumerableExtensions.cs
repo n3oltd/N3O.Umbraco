@@ -70,14 +70,6 @@ public static class EnumerableExtensions {
         return source.Contains(item);
     }
 
-    public static bool Contains<T>(this IEnumerable<T> items, T? item) where T : struct {
-        if (item == null) {
-            return false;
-        }
-
-        return Contains(items, item.Value);
-    }
-
     public static bool ContainsAll(this IEnumerable<string> source,
                                    IEnumerable<string> items,
                                    bool caseAndCultureInsensitive) {
@@ -407,10 +399,6 @@ public static class EnumerableExtensions {
 
     public static bool Lacks<T>(this IEnumerable<T> source, T item) {
         return !source.Contains(item);
-    }
-
-    public static bool Lacks<T>(this IEnumerable<T> items, T? item) where T : struct {
-        return !items.Contains(item);
     }
 
     public static bool LacksAll<T>(this IEnumerable<T> source, IEnumerable<T> items) {
