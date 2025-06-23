@@ -30,7 +30,7 @@ public class FundDimensionValidator : ContentValidator {
     public override void Validate(ContentProperties content) {
         var selector = _contentHelper.GetDataListValue<FundDimensionSelector>(content, SelectorAlias);
         var toggleValueElement = _contentHelper.GetBlockList(content.GetElementsPropertyByAlias(ToggleValueAlias))
-                                               .SingleOrDefault()
+                                               ?.SingleOrDefault()
                                                ?.Content
                                                .As<FundDimensionToggleValueElement>();
 
