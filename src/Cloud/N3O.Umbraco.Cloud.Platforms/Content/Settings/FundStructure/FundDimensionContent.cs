@@ -9,7 +9,7 @@ public abstract class FundDimensionContent<T> : UmbracoContent<FundDimensionCont
     public bool Browsable => GetValue(x => x.Browsable);
     public bool Searchable => GetValue(x => x.Searchable);
     public FundDimensionSelector Selector => GetValue(x => x.Selector);
-    public IEnumerable<FundDimensionToggleValueElement> ToggleValue => GetNestedAs(x => x.ToggleValue);
+    public IEnumerable<FundDimensionToggleValueElement> ToggleValue => GetDataListValueAs(x => x.ToggleValue);
     
     public int Number => Index + 1;
     
