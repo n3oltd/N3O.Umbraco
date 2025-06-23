@@ -29,7 +29,7 @@ public class MemberSaving : INotificationAsyncHandler<MemberSavingNotification> 
                 var lastName = member.GetValue<string>(MemberConstants.Member.Properties.LastName);
                 
                 var auth0User = await _userDirectory.Value
-                                                    .CreateUserIfNotExistsAsync(ClientTypes.Members,
+                                                    .CreateUserIfNotExistsAsync(UmbracoAuthTypes.Member,
                                                                                 _auth0MemberOptions.Auth0.Login.ClientId,
                                                                                 _auth0MemberOptions.Auth0.Login.ConnectionName,
                                                                                 _auth0MemberOptions.Auth0.Login.Passwordless,

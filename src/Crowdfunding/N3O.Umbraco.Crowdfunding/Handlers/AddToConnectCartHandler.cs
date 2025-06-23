@@ -1,6 +1,7 @@
 ﻿using N3O.Umbraco.Authentication.Auth0.Lookups;
 using N3O.Umbraco.Cloud;
 using N3O.Umbraco.Cloud.Engage.Clients;
+using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.Extensions;
@@ -30,7 +31,7 @@ public class AddToConnectCartHandler : IRequestHandler<AddToConnectCartCommand, 
     }
 
     public async Task<EntityId> Handle(AddToConnectCartCommand req, CancellationToken cancellationToken) {
-        var client = await _clientFactory.CreateAsync(ClientTypes.BackOffice);
+        var client = await _clientFactory.CreateAsync(UmbracoAuthTypes.User, CloudApiTypes.Connect);
 
         var cartId = _connectCartIdAccessor.GetId();
 

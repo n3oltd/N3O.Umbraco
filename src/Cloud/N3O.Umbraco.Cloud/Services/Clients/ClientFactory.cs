@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Authentication.Auth0;
 using N3O.Umbraco.Authentication.Auth0.Lookups;
+using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 using Newtonsoft.Json;
@@ -21,14 +22,14 @@ public class ClientFactory<T> {
     private readonly ICloudUrl _cloudUrl;
     private readonly ISubscriptionAccessor _subscriptionAccessor;
     private readonly IUserDirectoryIdAccessor _userDirectoryIdAccessor;
-    private readonly ILogger<ServiceClient<T>> _logger;
+    private readonly ILogger<CloudApiClient<T>> _logger;
     private readonly IJsonProvider _jsonProvider;
 
     public ClientFactory(BearerTokenAccessor bearerTokenAccessor,
                          ICloudUrl cloudUrl,
                          ISubscriptionAccessor subscriptionAccessor,
                          IUserDirectoryIdAccessor userDirectoryIdAccessor,
-                         ILogger<ServiceClient<T>> logger,
+                         ILogger<CloudApiClient<T>> logger,
                          IJsonProvider jsonProvider) {
         _bearerTokenAccessor = bearerTokenAccessor;
         _cloudUrl = cloudUrl;
@@ -38,18 +39,20 @@ public class ClientFactory<T> {
         _jsonProvider = jsonProvider;
     }
 
-    public async Task<ServiceClient<T>> CreateAsync(ClientType clientType, string onBehalfOf = null) {
-        onBehalfOf ??= await _userDirectoryIdAccessor.GetIdAsync(clientType);
+    public async Task<CloudApiClient<T>> CreateAsync(UmbracoAuthType umbracoAuthType,
+                                                     CloudApiType apiType,
+                                                     string onBehalfOf = null) {
+        onBehalfOf ??= await _userDirectoryIdAccessor.GetIdAsync(umbracoAuthType);
 
         var httpClient = await GetHttpClientAsync(onBehalfOf);
 
         var client = (T) Activator.CreateInstance(typeof(T), httpClient);
 
-        var baseUrl = _cloudUrl.ForApi((string) typeof(T).GetProperty(BaseUrl).GetValue(client));
+        var baseUrl = _cloudUrl.ForApi(apiType, (string) typeof(T).GetProperty(BaseUrl).GetValue(client));
 
         _jsonProvider.ApplySettings((JsonSerializerSettings) client.GetPropertyInfo("JsonSerializerSettings").GetValue(client));
 
-        return new ServiceClient<T>(client, _jsonProvider, _logger);
+        return new CloudApiClient<T>(client, _jsonProvider, _logger);
     }
 
     private async Task<HttpClient> GetHttpClientAsync(string onBehalfOf) {
@@ -57,7 +60,7 @@ public class ClientFactory<T> {
         transientErrorPolicyHandler.InnerHandler = new HttpClientHandler();
 
         var subscription = _subscriptionAccessor.GetSubscription();
-        var bearerToken = await _bearerTokenAccessor.GetAsync(ClientTypes.BackOffice);
+        var bearerToken = await _bearerTokenAccessor.GetAsync(UmbracoAuthTypes.User);
         var cloudApiHandler = new CloudApiHandler(subscription.Id,
                                                   bearerToken,
                                                   onBehalfOf,

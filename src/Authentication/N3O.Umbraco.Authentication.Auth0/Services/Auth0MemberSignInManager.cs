@@ -29,9 +29,9 @@ public class Auth0MemberSignInManager : ISignInManager {
             throw new UnauthorizedAccessException();
         }
         
-        var directoryId = await _userDirectoryIdAccessor.GetIdAsync(ClientTypes.Members);
+        var directoryId = await _userDirectoryIdAccessor.GetIdAsync(UmbracoAuthTypes.Member);
             
-        var passwordChangeUrl = await _userDirectory.GetPasswordResetUrlAsync(ClientTypes.Members, directoryId);
+        var passwordChangeUrl = await _userDirectory.GetPasswordResetUrlAsync(UmbracoAuthTypes.Member, directoryId);
 
         return passwordChangeUrl;
     }

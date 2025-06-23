@@ -8,6 +8,7 @@ using N3O.Umbraco.Cloud.Engage.Clients;
 using N3O.Umbraco.Cloud.Engage.Context;
 using N3O.Umbraco.Cloud.Engage.Models;
 using N3O.Umbraco.Cloud.Exceptions;
+using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Constants;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
@@ -31,7 +32,7 @@ public class AccountManager : IAccountManager {
     private readonly IFormatter _formatter;
     private readonly ClientFactory<AccountsClient> _clientFactory;
     private readonly IUmbracoMapper _mapper;
-    private ServiceClient<AccountsClient> _client;
+    private CloudApiClient<AccountsClient> _client;
 
     public AccountManager(IMemberManager memberManager,
                           IMemberService memberService,
@@ -218,9 +219,9 @@ public class AccountManager : IAccountManager {
         await client.InvokeAsync(x => x.UpdateAccountAsync(account.Id, req));
     }
 
-    private async Task<ServiceClient<AccountsClient>> GetClientAsync() {
+    private async Task<CloudApiClient<AccountsClient>> GetClientAsync() {
         if (_client == null) {
-            _client = await _clientFactory.CreateAsync(ClientTypes.Members);
+            _client = await _clientFactory.CreateAsync(UmbracoAuthTypes.Member, CloudApiTypes.Engage);
         }
 
         return _client;

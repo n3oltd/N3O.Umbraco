@@ -11,14 +11,12 @@ using ProblemDetails = N3O.Umbraco.Exceptions.ProblemDetails;
 
 namespace N3O.Umbraco.Cloud;
 
-public class ServiceClient<TClient> {
-    private readonly ILogger<ServiceClient<TClient>> _logger;
+public class CloudApiClient<TClient> {
+    private readonly ILogger<CloudApiClient<TClient>> _logger;
     private readonly TClient _client;
     private readonly IJsonProvider _jsonProvider;
 
-    public ServiceClient(TClient client,
-                         IJsonProvider jsonProvider,
-                         ILogger<ServiceClient<TClient>> logger) {
+    public CloudApiClient(TClient client, IJsonProvider jsonProvider, ILogger<CloudApiClient<TClient>> logger) {
         _client = client;
         _jsonProvider = jsonProvider;
         _logger = logger;

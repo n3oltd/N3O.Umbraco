@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Authentication.Auth0.Lookups;
+using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Commands;
 using N3O.Umbraco.Cloud.Platforms.Content;
@@ -24,7 +25,7 @@ public class PublishPlatformsContentHandler : IRequestHandler<PublishPlatformsCo
     }
 
     public async Task<None> Handle(PublishPlatformsContentCommand req, CancellationToken cancellationToken) {
-        var client = await _clientFactory.CreateAsync(ClientTypes.BackOffice);
+        var client = await _clientFactory.CreateAsync(UmbracoAuthTypes.User, CloudApiTypes.Engage);
 
         var platformsContent = _contentLocator.Single<PlatformsContent>();
         
