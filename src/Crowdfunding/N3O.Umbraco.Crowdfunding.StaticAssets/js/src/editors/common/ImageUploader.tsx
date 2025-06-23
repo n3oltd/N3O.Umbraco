@@ -30,7 +30,7 @@ type ImageUploaderProps = {
 }
 
 const handleCrop = event => {
-  return  {
+  return {
     bottomLeft: {
       x: Math.floor(event.detail.x),
       y: Math.floor(event.detail.y) 

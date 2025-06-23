@@ -10,7 +10,6 @@ public class EngageComposer : Composer {
         builder.Services.AddOpenApiDocument(EngageConstants.ApiName);
         
         builder.Services.AddTransient<IAccountIdentityAccessor, AccountIdentityAccessor>();
-        builder.Services.AddTransient<ICrmCartIdAccessor, CrmCartIdAccessor>();
         
         builder.Services.AddScoped<IAccountManager, AccountManager>();
         builder.Services.AddScoped<ICrowdfunderManager, CrowdfunderManager>();

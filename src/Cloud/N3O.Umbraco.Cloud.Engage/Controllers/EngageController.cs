@@ -1,20 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Attributes;
-using N3O.Umbraco.Cloud.Engage.Models;
 using N3O.Umbraco.Hosting;
-using N3O.Umbraco.Lookups;
 using System.Threading.Tasks;
-using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Cloud.Engage.Controllers;
 
 [ApiDocument(EngageConstants.ApiName)]
-public class CrmController : LookupsController<CrmLookupsRes> {
+public class EngageController : ApiController {
     private readonly IAccountManager _accountManager;
 
-    public CrmController(ILookups lookups, IUmbracoMapper mapper, IAccountManager accountManager)
-        : base(lookups, mapper) {
+    public EngageController(IAccountManager accountManager) {
         _accountManager = accountManager;
     }
     

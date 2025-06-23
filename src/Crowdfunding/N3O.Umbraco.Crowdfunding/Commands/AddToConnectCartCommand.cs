@@ -4,4 +4,4 @@ using N3O.Umbraco.Mediator;
 
 namespace N3O.Umbraco.Crowdfunding.Commands;
 
-public class AddToCrmCartCommand : Request<CrowdfundingCartReq, EntityId> { }
+public class AddToConnectCartCommand : Request<CrowdfundingCartReq, EntityId> { }

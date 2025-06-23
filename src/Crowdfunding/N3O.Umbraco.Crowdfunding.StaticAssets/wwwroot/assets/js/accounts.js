@@ -95,9 +95,9 @@ function n3o_cdf_poolRequest(fetcher, successAction, ...args) {
 }
 
 const n3o_cdf_checkAccountCreated = async accountId => {
-    const resp = await fetch(`/umbraco/api/Crm/accounts/${accountId}/checkCreatedStatus`);
+    const resp = await fetch(`/umbraco/api/engage/accounts/${accountId}/checkCreatedStatus`);
 
-    return  resp;
+    return resp;
 }
 
 const n3o_cdf_createAccount = () => {
@@ -124,7 +124,7 @@ const n3o_cdf_createAccount = () => {
     });
 
     async function n3o_cdf_sendCreateAccount(req) {
-        const response = await fetch('/umbraco/api/crm/accounts', {
+        const response = await fetch('/umbraco/api/engage/accounts', {
             method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(req)
         })
 
@@ -198,7 +198,7 @@ const n3o_cdf_updateAccount = (account) => {
     });
 
     async function n3o_cdf_sendUpdateAccount(req) {
-        const response = await fetch('/umbraco/api/crm/accounts', {
+        const response = await fetch('/umbraco/api/engage/accounts', {
             method: "PUT", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(req)
         })
 

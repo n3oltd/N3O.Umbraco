@@ -18,6 +18,7 @@ public class CrowdfundingComposer : Composer {
         builder.Components().Append<CrowdfunderMigrationsComponent>();
         builder.Components().Append<CrowdfunderRevisionMigrationsComponent>();
         
+        builder.Services.AddTransient<IConnectCartIdAccessor, ConnectCartIdAccessor>();
         builder.Services.AddTransient<IContributionRepository, ContributionRepository>();
         builder.Services.AddTransient<ICrowdfunderRepository, CrowdfunderRepository>();
         builder.Services.AddTransient<ICrowdfunderRevisionRepository, CrowdfunderRevisionRepository>();

@@ -5,8 +5,8 @@ using System;
 
 namespace N3O.Umbraco.Cloud.Engage.Context;
 
-public class CrmCartCookie : Cookie {
-    public CrmCartCookie(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor) { }
+public class ConnectCartCookie : Cookie {
+    public ConnectCartCookie(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor) { }
 
     protected override string GetDefaultValue() {
         return EntityId.New();

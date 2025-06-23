@@ -173,7 +173,7 @@ export const Gallery: React.FC<EditorProps> = ({
       })
     }
 
-    return  req;
+    return req;
    
   })
 
