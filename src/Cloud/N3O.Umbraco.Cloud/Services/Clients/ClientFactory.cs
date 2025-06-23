@@ -51,6 +51,8 @@ public class ClientFactory<T> {
         var baseUrl = _cloudUrl.ForApi(apiType, (string) typeof(T).GetProperty(BaseUrl).GetValue(client));
 
         _jsonProvider.ApplySettings((JsonSerializerSettings) client.GetPropertyInfo("JsonSerializerSettings").GetValue(client));
+        
+        client.SetPropertyValue(BaseUrl, baseUrl);
 
         return new CloudApiClient<T>(client, _jsonProvider, _logger);
     }
