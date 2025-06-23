@@ -22,7 +22,12 @@ public static class ContentExtensions {
     }
     
     public static bool IsPlatformsContent(this IContent content, IContentCache contentCache) {
-        var platformsId = contentCache.Single<PlatformsContent>().Content().Id;
+        var platformsId = contentCache.Single<PlatformsContent>()?.Content().Id;
+
+        if (!platformsId.HasValue) {
+            return false;
+        }
+        
         var ancestorIds = content.GetAncestorIds().OrEmpty().ToList();
 
         return ancestorIds.Contains(platformsId);
