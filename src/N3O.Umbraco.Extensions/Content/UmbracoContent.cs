@@ -34,7 +34,7 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
         return value.As<TProperty>();
     }
     
-    protected IEnumerable<TProperty> GetDataListValueAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
+    protected IEnumerable<TProperty> GetBlockListValueAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
         var values = (IEnumerable) Content().Value(alias) ?? Enumerable.Empty<BlockListItem>();
 
