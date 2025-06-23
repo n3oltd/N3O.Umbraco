@@ -37,7 +37,7 @@ public class CloudUrl : ICloudUrl {
         return url;
     }
 
-    private Url GetApiBaseUrl() {
+    public Url GetApiBaseUrl() {
         if (_webHostEnvironment.IsDevelopment()) {
             return new Url("https://beta.n3o.cloud");
         } else {
