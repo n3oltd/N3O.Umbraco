@@ -16,11 +16,11 @@ public class ApiCountries : ApiLookupsCollection<Country> {
     }
     
     protected override async Task<IReadOnlyList<Country>> FetchAsync() {
-        var publishedLookups = await _cdnClient.DownloadSubscriptionContentAsync<PublishedLookups>(SubscriptionFiles.Lookups);
+        var publishedLookups = await _cdnClient.DownloadSubscriptionContentAsync<PublishedLookupsRoot>(SubscriptionFiles.Lookups);
 
         var countries = new List<Country>();
 
-        foreach (var publishedCountry in publishedLookups.Countries) {
+        foreach (var publishedCountry in publishedLookups.Lookups.Countries) {
             var country = new Country(publishedCountry.Id,
                                       publishedCountry.Name,
                                       publishedCountry.Iso2Code,
