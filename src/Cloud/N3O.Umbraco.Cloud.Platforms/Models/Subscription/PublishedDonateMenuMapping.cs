@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using Microsoft.AspNetCore.Hosting;
+using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
@@ -15,9 +16,11 @@ namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class PublishedDonateMenuMapping : IMapDefinition {
     private readonly IContentLocator _contentLocator;
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
-    public PublishedDonateMenuMapping(IContentLocator contentLocator) {
+    public PublishedDonateMenuMapping(IContentLocator contentLocator, IWebHostEnvironment webHostEnvironment) {
         _contentLocator = contentLocator;
+        _webHostEnvironment = webHostEnvironment;
     }
     
     public void DefineMaps(IUmbracoMapper mapper) {
@@ -50,7 +53,7 @@ public class PublishedDonateMenuMapping : IMapDefinition {
             
             menuEntry.Type = DonateMenuEntryType.Campaign;
             menuEntry.Name = campaign.Name;
-            menuEntry.Icon = campaign.Icon.GetPublishedUri();
+            menuEntry.Icon = campaign.Icon.GetPublishedUri(_contentLocator, _webHostEnvironment);
             menuEntry.Campaign = ctx.Map<CampaignContent, PublishedCampaign>(campaign);
                 
             menuEntries.Add(menuEntry);
