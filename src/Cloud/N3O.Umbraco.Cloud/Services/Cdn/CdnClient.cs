@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using N3O.Umbraco.Cloud.Lookups;
-using N3O.Umbraco.Json;
 using System;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,12 +10,10 @@ namespace N3O.Umbraco.Cloud;
 
 public class CdnClient : ICdnClient {
     private static readonly MemoryCache ContentCache = new(new MemoryCacheOptions());
-
-    private readonly IJsonProvider _jsonProvider;
+    
     private readonly ICloudUrl _cloudUrl;
 
-    public CdnClient(IJsonProvider jsonProvider, ICloudUrl cloudUrl) {
-        _jsonProvider = jsonProvider;
+    public CdnClient(ICloudUrl cloudUrl) {
         _cloudUrl = cloudUrl;
     }
     
@@ -28,9 +26,7 @@ public class CdnClient : ICdnClient {
             c.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
             
             using (var httpClient = new HttpClient()) {
-                var json = await httpClient.GetStringAsync(url, cancellationToken);
-
-                var publishedContent = _jsonProvider.DeserializeObject<T>(json);
+                var publishedContent = await httpClient.GetFromJsonAsync<T>(url, cancellationToken);
 
                 return publishedContent;
             }
