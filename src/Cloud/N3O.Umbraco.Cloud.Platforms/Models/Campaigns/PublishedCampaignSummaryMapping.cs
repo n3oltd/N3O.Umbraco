@@ -1,21 +1,19 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
-using N3O.Umbraco.Cloud.Platforms.Extensions;
-using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Media;
+using System;
 using Umbraco.Cms.Core.Mapping;
+using Umbraco.Cms.Core.Models.PublishedContent;
 using CampaignType = N3O.Umbraco.Cloud.Platforms.Clients.CampaignType;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class PublishedCampaignSummaryMapping : IMapDefinition {
-    private readonly IContentLocator _contentLocator;
-    private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly IMediaUrl _mediaUrl;
 
-    public PublishedCampaignSummaryMapping(IContentLocator contentLocator, IWebHostEnvironment webHostEnvironment) {
-        _contentLocator = contentLocator;
-        _webHostEnvironment = webHostEnvironment;
+    public PublishedCampaignSummaryMapping(IMediaUrl mediaUrl) {
+        _mediaUrl = mediaUrl;
     }
     
     public void DefineMaps(IUmbracoMapper mapper) {
@@ -27,7 +25,7 @@ public class PublishedCampaignSummaryMapping : IMapDefinition {
         dest.Id = src.Key.ToString();
         dest.Type = src.Type.ToEnum<CampaignType>();
         dest.Name = src.Name;
-        dest.Image = src.Image.GetPublishedUri(_contentLocator, _webHostEnvironment);
-        dest.Icon = src.Icon.GetPublishedUri(_contentLocator, _webHostEnvironment);
+        dest.Image = _mediaUrl.GetMediaUrl(src.Image, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
+        dest.Icon = _mediaUrl.GetMediaUrl(src.Icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
     }
 }

@@ -1,20 +1,18 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
-using N3O.Umbraco.Cloud.Platforms.Extensions;
-using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Media;
+using System;
 using Umbraco.Cms.Core.Mapping;
+using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class PublishedOrganizationInfoMapping : IMapDefinition {
-    private readonly IContentLocator _contentLocator;
-    private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly IMediaUrl _mediaUrl;
 
-    public PublishedOrganizationInfoMapping(IContentLocator contentLocator, IWebHostEnvironment webHostEnvironment) {
-        _contentLocator = contentLocator;
-        _webHostEnvironment = webHostEnvironment;
+    public PublishedOrganizationInfoMapping(IMediaUrl mediaUrl) {
+        _mediaUrl = mediaUrl;
     }
     
     public void DefineMaps(IUmbracoMapper mapper) {
@@ -28,6 +26,6 @@ public class PublishedOrganizationInfoMapping : IMapDefinition {
         dest.AddressPostalCode = src.AddressPostalCode;
         dest.AddressCountry = src.AddressCountry.ToEnum<Country>();
         dest.CharityRegistration = src.CharityRegistration;
-        dest.Logo = src.Logo.GetPublishedUri(_contentLocator, _webHostEnvironment);
+        dest.Logo = _mediaUrl.GetMediaUrl(src.Logo, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
     }
 }

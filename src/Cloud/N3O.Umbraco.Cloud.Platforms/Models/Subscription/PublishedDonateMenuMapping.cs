@@ -1,26 +1,27 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
-using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Models;
+using N3O.Umbraco.Media;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
+using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class PublishedDonateMenuMapping : IMapDefinition {
+    private readonly IMediaUrl _mediaUrl;
     private readonly IContentLocator _contentLocator;
-    private readonly IWebHostEnvironment _webHostEnvironment;
 
-    public PublishedDonateMenuMapping(IContentLocator contentLocator, IWebHostEnvironment webHostEnvironment) {
+    public PublishedDonateMenuMapping(IMediaUrl mediaUrl, IContentLocator contentLocator) {
+        _mediaUrl = mediaUrl;
         _contentLocator = contentLocator;
-        _webHostEnvironment = webHostEnvironment;
     }
     
     public void DefineMaps(IUmbracoMapper mapper) {
@@ -53,9 +54,9 @@ public class PublishedDonateMenuMapping : IMapDefinition {
             
             menuEntry.Type = DonateMenuEntryType.Campaign;
             menuEntry.Name = campaign.Name;
-            menuEntry.Icon = campaign.Icon.GetPublishedUri(_contentLocator, _webHostEnvironment);
+            menuEntry.Icon = _mediaUrl.GetMediaUrl(campaign.Icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
             menuEntry.Campaign = ctx.Map<CampaignContent, PublishedCampaign>(campaign);
-                
+            
             menuEntries.Add(menuEntry);
         }
 

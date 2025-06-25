@@ -1,19 +1,19 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
-using N3O.Umbraco.Content;
+using N3O.Umbraco.Media;
+using System;
 using Umbraco.Cms.Core.Mapping;
+using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class BannerAdvertMapping : IMapDefinition {
-    private readonly IContentLocator _contentLocator;
-    private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly IMediaUrl _mediaUrl;
 
-    public BannerAdvertMapping(IContentLocator contentLocator, IWebHostEnvironment webHostEnvironment) {
-        _contentLocator = contentLocator;
-        _webHostEnvironment = webHostEnvironment;
+    public BannerAdvertMapping(IMediaUrl mediaUrl) {
+        _mediaUrl = mediaUrl;
     }
     
     public void DefineMaps(IUmbracoMapper mapper) {
@@ -22,7 +22,7 @@ public class BannerAdvertMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll
     private void Map(BannerAdvertContent src, PublishedBannerAdvert dest, MapperContext ctx) {
-        dest.Image = src.Image.GetPublishedUri(_contentLocator, _webHostEnvironment);
+        dest.Image = _mediaUrl.GetMediaUrl(src.Image, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
         dest.Link = src.Link.GetPublishedUri();
     }
 }

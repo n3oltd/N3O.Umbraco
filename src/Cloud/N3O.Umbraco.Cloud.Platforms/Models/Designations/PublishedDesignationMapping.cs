@@ -1,21 +1,21 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
-using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Media;
+using System;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
+using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class PublishedDesignationMapping : IMapDefinition {
-    private readonly IContentLocator _contentLocator;
-    private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly IMediaUrl _mediaUrl;
 
-    public PublishedDesignationMapping(IContentLocator contentLocator, IWebHostEnvironment webHostEnvironment) {
-        _contentLocator = contentLocator;
-        _webHostEnvironment = webHostEnvironment;
+    public PublishedDesignationMapping(IMediaUrl mediaUrl) {
+        _mediaUrl = mediaUrl;
+        _mediaUrl = mediaUrl;
     }
     
     public void DefineMaps(IUmbracoMapper mapper) {
@@ -27,8 +27,8 @@ public class PublishedDesignationMapping : IMapDefinition {
         dest.Id = src.Key.ToString();
         dest.Type = src.Type.ToEnum<DesignationType>();
         dest.Name = src.Name;
-        dest.Image = src.Image.GetPublishedUri(_contentLocator, _webHostEnvironment);
-        dest.Icon = src.Icon.GetPublishedUri(_contentLocator, _webHostEnvironment);
+        dest.Image = _mediaUrl.GetMediaUrl(src.Image, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
+        dest.Icon = _mediaUrl.GetMediaUrl(src.Icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
         dest.ShortDescription = src.ShortDescription.ToHtmlString();
         dest.LongDescription = src.LongDescription.ToHtmlString();
         dest.GiftTypes = src.GetGiftTypes().Select(x => x.ToEnum<GiftType>().GetValueOrThrow()).ToList();
