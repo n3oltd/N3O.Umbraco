@@ -84,6 +84,8 @@ public class MediaUrl : IMediaUrl {
                 url.Query = srcUrl.Query;
 
                 return url;
+            } else {
+                return srcUrl;
             }
         }
         
