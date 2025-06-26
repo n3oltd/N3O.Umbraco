@@ -1,7 +1,6 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Media;
 using System;
 using Umbraco.Cms.Core.Mapping;
@@ -25,7 +24,7 @@ public class PublishedOrganizationInfoMapping : IMapDefinition {
         dest.Name = src.OrganisationName;
         dest.AddressSingleLine = src.AddressSingleLine;
         dest.AddressPostalCode = src.AddressPostalCode;
-        dest.AddressCountry = ctx.Map<Country, PublishedCountry>(src.AddressCountry);
+        dest.AddressCountry = src.AddressCountry.ToEnum<Country>();
         dest.CharityRegistration = src.CharityRegistration;
         dest.Logo = _mediaUrl.GetMediaUrl(src.Logo, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
     }
