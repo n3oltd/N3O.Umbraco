@@ -16,7 +16,8 @@ public class ApiCountries : ApiLookupsCollection<Country> {
     }
     
     protected override async Task<IReadOnlyList<Country>> FetchAsync() {
-        var publishedLookupsRoot = await _cdnClient.DownloadSubscriptionContentAsync<PublishedLookupsRoot>(SubscriptionFiles.Lookups);
+        var publishedLookupsRoot = await _cdnClient.DownloadSubscriptionContentAsync<PublishedLookupsRoot>(SubscriptionFiles.Lookups,
+                                                                                                           JsonSerializers.Simple);
 
         var countries = new List<Country>();
 

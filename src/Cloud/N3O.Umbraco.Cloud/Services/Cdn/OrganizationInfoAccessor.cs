@@ -15,6 +15,7 @@ public class OrganizationInfoAccessor : IOrganizationInfoAccessor {
 
     public async Task<IOrganizationInfo> GetOrganizationInfoAsync(CancellationToken cancellationToken = default) {
         var publishedOrganizationInfo = await _cdnClient.DownloadSubscriptionContentAsync<PublishedOrganizationInfo>(SubscriptionFiles.OrganizationInfo,
+                                                                                                                     JsonSerializers.JsonProvider,
                                                                                                                      cancellationToken);
 
         return publishedOrganizationInfo;

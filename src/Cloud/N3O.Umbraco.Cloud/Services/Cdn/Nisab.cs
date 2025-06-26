@@ -24,6 +24,7 @@ public class Nisab : INisab {
                                            NisabType nisabType,
                                            CancellationToken cancellationToken = default) {
         var nisab = await _cdnClient.DownloadSubscriptionContentAsync<PublishedNisab>(SubscriptionFiles.Nisab,
+                                                                                      JsonSerializers.JsonProvider,
                                                                                       cancellationToken);
 
         if (!nisab.Amounts.ContainsKey(currency.Code)) {
