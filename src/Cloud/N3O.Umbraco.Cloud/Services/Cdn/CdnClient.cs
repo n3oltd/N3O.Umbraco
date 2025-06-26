@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using N3O.Umbraco.Cloud.Lookups;
+using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -26,9 +27,9 @@ public class CdnClient : ICdnClient {
             c.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
             
             using (var httpClient = new HttpClient()) {
-                var publishedContent = await httpClient.GetFromJsonAsync<T>(url, cancellationToken);
+                var publishedContent = await httpClient.GetStringAsync(url, cancellationToken);
 
-                return publishedContent;
+                return JsonConvert.DeserializeObject<T>(publishedContent);
             }
         });
 
