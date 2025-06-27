@@ -69,4 +69,11 @@ public class CheckoutController : LookupsController<CheckoutLookupsRes> {
          
         return Ok(res);
     }
+    
+    [HttpPost("devtools/{checkoutRevisionId:revisionId}/webhooks/resend")]
+    public async Task<ActionResult<CheckoutRes>> ResendCheckoutWebhook() {
+        var res = await _mediator.SendAsync<ResendCheckoutWebhookCommand, None, None>(None.Empty);
+         
+        return Ok(res);
+    }
 }
