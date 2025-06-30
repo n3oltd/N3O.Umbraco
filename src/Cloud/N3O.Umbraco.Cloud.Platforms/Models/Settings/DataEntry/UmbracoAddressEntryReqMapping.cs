@@ -1,6 +1,5 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
-using N3O.Umbraco.Extensions;
 using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
@@ -12,6 +11,6 @@ public class UmbracoAddressEntryReqMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll
     private void Map(AddressEntryContent src, UmbracoAddressEntryReq dest, MapperContext ctx) { ;
-        dest.GoogleMapsApiKey = src.LookupApiKey;
+        dest.GoogleMapsApiKey = src.GoogleMapsApiKey;
     }
 }
