@@ -34,20 +34,20 @@ public partial class CrowdfundingController {
     }
     
     [AllowAnonymous]
-    [HttpPost("addToCrmCart")]
-    public async Task<ActionResult> AddToCrmCart(CrowdfundingCartReq crowdfundingReq) {
+    [HttpPost("addToConnectCart")]
+    public async Task<ActionResult> AddToConnectCart(CrowdfundingCartReq crowdfundingReq) {
         var validationFailures = await _validation.Value.ValidateModelAsync(crowdfundingReq);
 
         if (validationFailures.HasAny()) {
             _validationHandler.Value.Handle(validationFailures);
         }
         
-        var crmCartId = await _mediator.Value.SendAsync<AddToCrmCartCommand, CrowdfundingCartReq, EntityId>(crowdfundingReq);
+        var connectCartId = await _mediator.Value.SendAsync<AddToConnectCartCommand, CrowdfundingCartReq, EntityId>(crowdfundingReq);
         
         /*TODO Not working for some reason*/
-        //_crmCartCookie.Value.SetValue(crmCartId);
+        //_connectCartCookie.Value.SetValue(connectCartId);
         
-        _httpContextAccessor.Value.HttpContext?.Response.Cookies.Append("cartId", crmCartId);
+        _httpContextAccessor.Value.HttpContext?.Response.Cookies.Append("cartId", connectCartId);
             
         return Ok();
     }

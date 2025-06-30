@@ -9,7 +9,7 @@ public class EnumDropdownValueMapper<T> : KonstruktValueMapper where T : struct,
     public override object ModelToEditor(object input) {
         var vals = Enum.GetValues<T>();
         var inputStr = input?.ToString();
-        var val = input.HasValue() ? (T) Enum.Parse(typeof(T), inputStr, true) : vals[0];
+        var val = input.HasValue() ? inputStr.ToEnum<T>().GetValueOrThrow() : vals[0];
 
         return JsonConvert.SerializeObject(new[] { val.ToString() });
     }
@@ -19,7 +19,7 @@ public class EnumDropdownValueMapper<T> : KonstruktValueMapper where T : struct,
         var rawVal = input.HasValue() ? JsonConvert.DeserializeObject<string[]>(inputStr) : Array.Empty<string>();
 
         var vals = Enum.GetValues<T>();
-        var val = rawVal.HasAny() ? (T) Enum.Parse(typeof(T), rawVal[0], true) : vals[0];
+        var val = rawVal.HasAny() ? rawVal[0].ToEnum<T>().GetValueOrThrow() : vals[0];
 
         return val.ToString();
     }

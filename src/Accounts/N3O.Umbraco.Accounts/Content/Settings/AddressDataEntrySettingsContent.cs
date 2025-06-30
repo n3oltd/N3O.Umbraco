@@ -1,10 +1,10 @@
 using N3O.Umbraco.Accounts.Lookups;
 using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Utilities;
 using System.Linq;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Accounts.Content;
 

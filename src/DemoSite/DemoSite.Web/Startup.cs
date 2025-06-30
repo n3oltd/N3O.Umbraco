@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using N3O.Umbraco;
+using N3O.Umbraco.Cms;
 
 namespace DemoSite.Web;
 

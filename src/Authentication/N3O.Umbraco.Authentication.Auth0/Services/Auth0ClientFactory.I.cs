@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Authentication.Auth0;
 
 public interface IAuth0ClientFactory {
-    AuthenticationApiClient GetAuthenticationApiClient(ClientType clientType);
-    Task<IManagementApiClient> GetManagementApiClientAsync(ClientType clientType);
+    AuthenticationApiClient GetAuthenticationApiClient(UmbracoAuthType umbracoAuthType);
+    Task<IManagementApiClient> GetManagementApiClientAsync(UmbracoAuthType umbracoAuthType);
 }

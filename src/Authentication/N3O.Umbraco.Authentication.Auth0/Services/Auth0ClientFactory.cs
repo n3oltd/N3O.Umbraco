@@ -22,8 +22,8 @@ public class Auth0ClientFactory : IAuth0ClientFactory {
         _httpClientFactory = httpClientFactory;
     }
     
-    public AuthenticationApiClient GetAuthenticationApiClient(ClientType clientType) {
-        var loginOptions = GetClientOptions(clientType).Login;
+    public AuthenticationApiClient GetAuthenticationApiClient(UmbracoAuthType umbracoAuthType) {
+        var loginOptions = GetClientOptions(umbracoAuthType).Login;
         var httpClient = _httpClientFactory.CreateClient();
         var connection = new HttpClientAuthenticationConnection(httpClient);
             
@@ -32,8 +32,8 @@ public class Auth0ClientFactory : IAuth0ClientFactory {
         return auth0Client;
     }
     
-    public async Task<IManagementApiClient> GetManagementApiClientAsync(ClientType clientType) {
-        var managementOptions = GetClientOptions(clientType).Management;
+    public async Task<IManagementApiClient> GetManagementApiClientAsync(UmbracoAuthType umbracoAuthType) {
+        var managementOptions = GetClientOptions(umbracoAuthType).Management;
         var token = await _tokenAccessor.GetTokenAsync(managementOptions, managementOptions.ApiIdentifier);
         var httpClient = _httpClientFactory.CreateClient();
 
@@ -44,13 +44,13 @@ public class Auth0ClientFactory : IAuth0ClientFactory {
         return auth0Client;
     }
     
-    private Auth0AuthenticationOptions GetClientOptions(ClientType clientType) {
-        if (clientType == ClientTypes.BackOffice) {
+    private Auth0AuthenticationOptions GetClientOptions(UmbracoAuthType umbracoAuthType) {
+        if (umbracoAuthType == UmbracoAuthTypes.User) {
             return _authenticationOptions.BackOffice.Auth0;
-        } else if (clientType == ClientTypes.Members) {
+        } else if (umbracoAuthType == UmbracoAuthTypes.Member) {
             return _authenticationOptions.Members.Auth0;
         } else {
-            throw UnrecognisedValueException.For(clientType);
+            throw UnrecognisedValueException.For(umbracoAuthType);
         }
     }
 }

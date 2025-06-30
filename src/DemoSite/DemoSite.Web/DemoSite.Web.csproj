@@ -21,12 +21,7 @@
         <ProjectReference Include="..\..\Plugins\Uploader\N3O.Umbraco.Uploader.StaticAssets\N3O.Umbraco.Uploader.StaticAssets.csproj" />
         <ProjectReference Include="..\..\Plugins\WelcomeDashboard\N3O.Umbraco.WelcomeDashboard.StaticAssets\N3O.Umbraco.WelcomeDashboard.StaticAssets.csproj" />
         <ProjectReference Include="..\..\Scheduler\N3O.Umbraco.Scheduler.StaticAssets\N3O.Umbraco.Scheduler.StaticAssets.csproj" />
-        <ProjectReference Include="..\..\Workflows\N3O.Umbraco.Workflows.StaticAssets\N3O.Umbraco.Workflows.StaticAssets.csproj" />
         <ProjectReference Include="..\DemoSite.Core\DemoSite.Core.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Remove="uSync\v9\DataTypes\NestedCrowdfundingGoal0N.config" />
     </ItemGroup>
 
     <Import Project="..\..\N3O.Umbraco.Cms\build\N3O.Umbraco.Cms.targets" />

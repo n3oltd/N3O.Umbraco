@@ -14,6 +14,9 @@ public class OrganizationReq : IOrganization {
     [Name("Contact")]
     public NameReq Contact { get; set; }
     
+    [Name("Number")]
+    public string Number { get; set; }
+    
     [JsonIgnore]
     IName IOrganization.Contact => Contact;
 }

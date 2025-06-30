@@ -1,7 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Authentication.Auth0.Options;
 using N3O.Umbraco.Authentication.Extensions;
-using N3O.Umbraco.Authentication.Services;
 using N3O.Umbraco.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 

@@ -7,10 +7,11 @@ namespace N3O.Umbraco.Extensions;
 public static class OpenApi {
     public static bool IsEnabled() {
         if (Composer.WebHostEnvironment.IsProduction() == false ||
-            EnvironmentSettings.GetValue("N3O_OpenApi").EqualsInvariant("enabled")) {
+            EnvironmentData.GetOurValue("OpenApi").EqualsInvariant("enabled")) {
+            
             return true;
+        } else {
+            return false;
         }
-
-        return false;
     }
 }

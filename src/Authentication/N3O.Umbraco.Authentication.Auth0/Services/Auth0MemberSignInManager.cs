@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using N3O.Umbraco.Authentication.Auth0.Lookups;
-using N3O.Umbraco.Authentication.Services;
 using System;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Security;
@@ -30,9 +29,9 @@ public class Auth0MemberSignInManager : ISignInManager {
             throw new UnauthorizedAccessException();
         }
         
-        var directoryId = await _userDirectoryIdAccessor.GetIdAsync(ClientTypes.Members);
+        var directoryId = await _userDirectoryIdAccessor.GetIdAsync(UmbracoAuthTypes.Member);
             
-        var passwordChangeUrl = await _userDirectory.GetPasswordResetUrlAsync(ClientTypes.Members, directoryId);
+        var passwordChangeUrl = await _userDirectory.GetPasswordResetUrlAsync(UmbracoAuthTypes.Member, directoryId);
 
         return passwordChangeUrl;
     }

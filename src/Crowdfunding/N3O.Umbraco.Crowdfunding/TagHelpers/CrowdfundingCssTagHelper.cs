@@ -22,7 +22,7 @@ public class CrowdfundingCssTagHelper : TagHelper {
         if (templateSettings != null) {
             output.TagName = null;
             
-            AddStyleTag(output, templateSettings.CssVariables);    
+            AddStyleTag(output, templateSettings.CssVariables);
         } else {
             output.SuppressOutput();
         }

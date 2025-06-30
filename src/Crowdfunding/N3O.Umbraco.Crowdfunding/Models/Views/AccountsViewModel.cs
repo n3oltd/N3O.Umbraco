@@ -1,8 +1,8 @@
 ﻿using N3O.Umbraco.Accounts.Content;
 using N3O.Umbraco.Accounts.Models;
+using N3O.Umbraco.Cloud.Engage;
+using N3O.Umbraco.Cloud.Engage.Models;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Crm;
-using N3O.Umbraco.Crm.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
 using System.Collections.Generic;

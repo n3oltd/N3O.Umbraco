@@ -36,17 +36,17 @@ public class UserDirectoryIdAccessor : IUserDirectoryIdAccessor {
         _userDirectoryId = userDirectoryId;
     }
 
-    public async Task<string> GetIdAsync(ClientType clientType) {
+    public async Task<string> GetIdAsync(UmbracoAuthType umbracoAuthType) {
         if (_value == null) {
             _value ??= _userDirectoryId?.Value;
 
             if (_value == null) {
                 using (_umbracoContextFactory.EnsureUmbracoContext()) {
-                    var email = await GetEmailAsync(clientType);
+                    var email = await GetEmailAsync(umbracoAuthType);
 
                     if (email.HasValue()) {
                         _value = await Cache.GetOrAddAtomicAsync(email, async () => {
-                            var directoryUser = await _userDirectory.GetUserByEmailAsync(clientType, email);
+                            var directoryUser = await _userDirectory.GetUserByEmailAsync(umbracoAuthType, email);
 
                             return directoryUser?.UserId;
                         });
@@ -58,13 +58,13 @@ public class UserDirectoryIdAccessor : IUserDirectoryIdAccessor {
         return _value;
     }
 
-    private async Task<string> GetEmailAsync(ClientType clientType) {
-        if (clientType == ClientTypes.BackOffice) {
+    private async Task<string> GetEmailAsync(UmbracoAuthType umbracoAuthType) {
+        if (umbracoAuthType == UmbracoAuthTypes.User) {
             return GetUserEmail();
-        } else if (clientType == ClientTypes.Members) {
+        } else if (umbracoAuthType == UmbracoAuthTypes.Member) {
             return await GetMemberEmailAsync();
         } else {
-            throw UnrecognisedValueException.For(clientType);
+            throw UnrecognisedValueException.For(umbracoAuthType);
         }
     }
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Authentication.Services;
+namespace N3O.Umbraco.Authentication;
 
 public interface ISignInManager {
     Task<string> GetPasswordResetUrlAsync();

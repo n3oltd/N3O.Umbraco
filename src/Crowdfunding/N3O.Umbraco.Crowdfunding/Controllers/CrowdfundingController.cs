@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Cloud.Engage.Context;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Crm.Context;
 using N3O.Umbraco.Crowdfunding.Hosting;
 using N3O.Umbraco.Crowdfunding.Queries;
 using N3O.Umbraco.Giving.Cart.Context;
@@ -29,7 +29,7 @@ public partial class CrowdfundingController : ApiController {
     private readonly Lazy<IJsonProvider> _jsonProvider;
     private readonly Lazy<ICrowdfundingUrlBuilder> _crowdfundingUrlBuilder;
     private readonly Lazy<CartCookie> _cartCookie;
-    private readonly Lazy<CrmCartCookie> _crmCartCookie;
+    private readonly Lazy<ConnectCartCookie> _connectCartCookie;
     private readonly Lazy<IHttpContextAccessor> _httpContextAccessor;
     private readonly Lazy<IContentLocator> _contentLocator;
     private readonly Lazy<IValidation> _validation;
@@ -43,7 +43,7 @@ public partial class CrowdfundingController : ApiController {
                                   Lazy<IJsonProvider> jsonProvider,
                                   Lazy<ICrowdfundingUrlBuilder> crowdfundingUrlBuilder,
                                   Lazy<CartCookie> cartCookie,
-                                  Lazy<CrmCartCookie> crmCartCookie,
+                                  Lazy<ConnectCartCookie> connectCartCookie,
                                   Lazy<IContentLocator> contentLocator,
                                   Lazy<IValidation> validation,
                                   Lazy<IValidationHandler> validationHandler,
@@ -56,7 +56,7 @@ public partial class CrowdfundingController : ApiController {
         _jsonProvider = jsonProvider;
         _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
         _cartCookie = cartCookie;
-        _crmCartCookie = crmCartCookie;
+        _connectCartCookie = connectCartCookie;
         _contentLocator = contentLocator;
         _validation = validation;
         _validationHandler = validationHandler;

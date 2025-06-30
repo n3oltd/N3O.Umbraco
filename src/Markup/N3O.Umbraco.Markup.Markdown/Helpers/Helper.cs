@@ -6,23 +6,24 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Markup.Markdown.Helpers;
 
-public abstract class Helper : Helper<EmptyHelperArgs> {
+public abstract class Helper<T> : Helper<T, EmptyHelperArgs> {
     protected Helper(IEnumerable<string> keywords) : base(keywords, 0, 0) { }
 
     protected override void Parse(IReadOnlyList<string> args, EmptyHelperArgs inline) { }
 }
 
-public abstract class Helper<T> : HtmlObjectRenderer<T>, IMarkdownExtension where T : HelperArgs, new() {
+public abstract class Helper<T, TArgs> : HtmlObjectRenderer<LeafInlineWithHelperArgs<T, TArgs>>, IMarkdownExtension
+    where TArgs : HelperArgs, new() {
     private readonly int _minArgs;
     private readonly int _maxArgs;
-    private readonly MarkdownHelperParser<T> _parser;
+    private readonly MarkdownHelperParser<T, TArgs> _parser;
 
     protected Helper(IEnumerable<string> keywords, int args) : this(keywords, args, args) { }
     
     protected Helper(IEnumerable<string> keywords, int minArgs, int maxArgs) {
         _minArgs = minArgs;
         _maxArgs = maxArgs;
-        _parser = new MarkdownHelperParser<T>(keywords, (args, x) => Parse(PreprocessArgs(args), x));
+        _parser = new MarkdownHelperParser<T, TArgs>(keywords, (args, x) => Parse(PreprocessArgs(args), x));
     }
     
     public void Setup(MarkdownPipelineBuilder pipeline) {
@@ -47,10 +48,10 @@ public abstract class Helper<T> : HtmlObjectRenderer<T>, IMarkdownExtension wher
         return args;
     }
 
-    protected override void Write(HtmlRenderer renderer, T helperArgs) {
-        Render(renderer, helperArgs);
+    protected override void Write(HtmlRenderer renderer, LeafInlineWithHelperArgs<T, TArgs> helperArgsWrapper) {
+        Render(renderer, helperArgsWrapper.HelperArgs);
     }
 
-    protected abstract void Parse(IReadOnlyList<string> args, T helperArgs);
-    protected abstract void Render(HtmlRenderer renderer, T helperArgs);
+    protected abstract void Parse(IReadOnlyList<string> args, TArgs helperArgs);
+    protected abstract void Render(HtmlRenderer renderer, TArgs helperArgs);
 }

@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Umbraco.Cms.Core.Models.Blocks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 
@@ -31,6 +32,13 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
         var value = (IPublishedContent) Content().Value(alias);
 
         return value.As<TProperty>();
+    }
+    
+    protected IEnumerable<TProperty> GetBlockListValueAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
+        var alias = AliasHelper<T>.PropertyAlias(memberExpression);
+        var values = (IEnumerable) Content().Value(alias) ?? Enumerable.Empty<BlockListItem>();
+
+        return values.Cast<BlockListItem>().Select(x => x.Content.As<TProperty>(_content));
     }
 
     protected IEnumerable<TProperty> GetNestedAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {

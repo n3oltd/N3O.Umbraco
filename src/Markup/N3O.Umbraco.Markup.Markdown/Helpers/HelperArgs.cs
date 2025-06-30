@@ -1,8 +1,6 @@
-using Markdig.Syntax.Inlines;
-
 namespace N3O.Umbraco.Markup.Markdown.Helpers;
 
-public abstract class HelperArgs : LeafInline {
+public abstract class HelperArgs {
     public string Keyword { get; set; }
 }
 

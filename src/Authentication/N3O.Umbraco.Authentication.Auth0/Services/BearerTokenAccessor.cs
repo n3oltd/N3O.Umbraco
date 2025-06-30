@@ -16,21 +16,21 @@ public class BearerTokenAccessor {
         _auth0Options = auth0Options.Value;
     }
 
-    public async Task<string> GetAsync(ClientType clientType) {
-        var m2MOptions = GetM2MOptions(clientType);
+    public async Task<string> GetAsync(UmbracoAuthType umbracoAuthType) {
+        var m2MOptions = GetM2MOptions(umbracoAuthType);
         
         var token = await _auth0M2MTokenAccessor.GetTokenAsync(m2MOptions, m2MOptions.ApiIdentifier);
         
         return token;
     }
 
-    private M2MOptions GetM2MOptions(ClientType clientType) {
-        if (clientType == ClientTypes.BackOffice) {
+    private M2MOptions GetM2MOptions(UmbracoAuthType umbracoAuthType) {
+        if (umbracoAuthType == UmbracoAuthTypes.User) {
             return _auth0Options.BackOffice.Auth0.M2M;
-        } else if (clientType == ClientTypes.Members) {
+        } else if (umbracoAuthType == UmbracoAuthTypes.Member) {
             return _auth0Options.Members.Auth0.M2M;
         } else {
-            throw UnrecognisedValueException.For(clientType);
+            throw UnrecognisedValueException.For(umbracoAuthType);
         }
     }
 }
