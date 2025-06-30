@@ -17,20 +17,22 @@ public static class ContentExtensions {
         return HasComposition(contentTypeService, content, AliasHelper<DesignationContent>.ContentTypeAlias());
     }
     
+    public static bool IsFundStructure(this IContent content, IContentCache contentCache) {
+        return IsSelfOrDescendantOfType<FundStructureContent>(contentCache, content);
+    }
+    
     public static bool IsElement(this IContent content, IContentTypeService contentTypeService) {
         return HasComposition(contentTypeService, content, AliasHelper<ElementContent>.ContentTypeAlias());
     }
     
-    public static bool IsPlatformsContent(this IContent content, IContentCache contentCache) {
-        var platformsId = contentCache.Single<PlatformsContent>()?.Content().Id;
-
-        if (!platformsId.HasValue()) {
-            return false;
-        }
-        
-        var ancestorIds = content.GetAncestorIds().OrEmpty().ToList();
-
-        return ancestorIds.Contains(platformsId.GetValueOrThrow());
+    public static bool IsPlatformsCampaignOrDesignationOrElement(this IContent content, IContentTypeService contentTypeService) {
+        return IsCampaign(content, contentTypeService) ||
+               IsDesignation(content, contentTypeService) ||
+               IsElement(content, contentTypeService);
+    }
+    
+    public static bool IsPlatformsSubscriptionSettingContent(this IContent content, IContentCache contentCache) {
+        return IsSelfOrDescendantOfType<SettingsContent>(contentCache, content);
     }
 
     private static bool HasComposition(IContentTypeService contentTypeService,
@@ -39,5 +41,18 @@ public static class ContentExtensions {
         var contentType = contentTypeService.Get(content.ContentTypeId);
         
         return contentType.CompositionAliases().Contains(compositionAlias, true);
+    }
+    
+    private static bool IsSelfOrDescendantOfType<T>(IContentCache contentCache, IContent content) 
+        where T : IUmbracoContent {
+        var ancestorId = contentCache.Single<T>()?.Content().Id;
+
+        if (!ancestorId.HasValue()) {
+            return false;
+        }
+        
+        var ancestorIdsOfContent = content.GetAncestorIds().OrEmpty().ToList();
+
+        return ancestorIdsOfContent.Contains(ancestorId.GetValueOrThrow());
     }
 }

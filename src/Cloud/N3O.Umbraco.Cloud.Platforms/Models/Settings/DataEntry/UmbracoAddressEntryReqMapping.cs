@@ -10,7 +10,7 @@ public class UmbracoAddressEntryReqMapping : IMapDefinition {
     }
 
     // Umbraco.Code.MapAll
-    private void Map(AddressEntryContent src, UmbracoAddressEntryReq dest, MapperContext ctx) { ;
+    private void Map(AddressEntryContent src, UmbracoAddressEntryReq dest, MapperContext ctx) {
         dest.GoogleMapsApiKey = src.GoogleMapsApiKey;
     }
 }

@@ -14,19 +14,10 @@ public class UmbracoContentReqMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll
     private void Map(PlatformsContent src, UmbracoContentReq dest, MapperContext ctx) {
-        dest.AddressEntry = ctx.Map<AddressEntryContent, UmbracoAddressEntryReq>(src.Settings.AccountEntry.Address);
-        dest.BannerAdverts = ctx.Map<BannerAdvertsContent, PublishedBannerAdverts>(src.Settings.PaymentsSettings.BannerAdverts);
         dest.Campaigns = MapCampaigns(ctx, src);
-        dest.ConsentEntry = ctx.Map<ConsentEntryContent, UmbracoConsentEntryReq>(src.Settings.AccountEntry.Consent);
         dest.DonateButtons = MapDonateButtons(ctx, src);
         dest.DonationForms = MapDonationForms(ctx, src);
         dest.DonateMenu = ctx.Map<PlatformsContent, PublishedDonateMenu>(src);
-        dest.FundStructure = ctx.Map<FundStructureContent, UmbracoFundStructureReq>(src.Settings.FundStructure);
-        dest.OrganizationInfo = ctx.Map<OrganizationInfoContent, PublishedOrganizationInfo>(src.Settings.OrganizationInfo);
-        dest.PaymentTerms =  ctx.Map<PaymentTermsContent, PublishedPaymentTerms>(src.Settings.PaymentsSettings.Terms);
-        dest.Terminology = ctx.Map<TerminologiesContent, PublishedTerminology>(src.Settings.Terminologies);
-        dest.Theme = ctx.Map<ThemeSettingsContent, PublishedTheme>(src.Settings.Build.Theme);
-        dest.Tracking =  ctx.Map<TrackingContent, PublishedTracking>(src.Settings.Tracking);
     }
     
     private List<UmbracoContentRevisionReqPublishedCampaign> MapCampaigns(MapperContext ctx, PlatformsContent platformsContent) {
