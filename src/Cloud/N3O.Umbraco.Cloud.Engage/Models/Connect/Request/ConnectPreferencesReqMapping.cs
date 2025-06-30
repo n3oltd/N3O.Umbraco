@@ -13,6 +13,7 @@ public class ConnectPreferencesReqMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll
     private void Map(IConsent src, ConnectPreferencesReq dest, MapperContext ctx) {
+        dest.PrivacyStatement = "web";
         dest.Selections = src.Choices
                              .OrEmpty()
                              .Select(ctx.Map<IConsentChoice, ConnectPreferenceSelectionReq>)

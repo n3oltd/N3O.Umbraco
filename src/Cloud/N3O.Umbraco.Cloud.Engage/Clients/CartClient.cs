@@ -2405,21 +2405,6 @@ namespace N3O.Umbraco.Cloud.Engage.Clients
     }
 
     /// <summary>
-    /// One of 'full', 'zero'
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum TaxReliefRate
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"full")]
-        Full = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"zero")]
-        Zero = 1,
-
-    }
-
-    /// <summary>
     /// One of 'donation', 'regularGiving', 'scheduledGiving'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]

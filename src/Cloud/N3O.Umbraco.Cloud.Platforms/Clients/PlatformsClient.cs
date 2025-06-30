@@ -326,21 +326,6 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     }
 
     /// <summary>
-    /// One of 'layout1', 'layout2'
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum AddressLayout
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"layout1")]
-        Layout1 = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"layout2")]
-        Layout2 = 1,
-
-    }
-
-    /// <summary>
     /// One of 'scheduledGiving', 'standard', 'telethon'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -1849,21 +1834,6 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     }
 
     /// <summary>
-    /// One of 'layout1', 'layout2'
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum NameLayout
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"layout1")]
-        Layout1 = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"layout2")]
-        Layout2 = 1,
-
-    }
-
-    /// <summary>
     /// One of 'eu1', 'eu2', 'international'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -2614,12 +2584,8 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class UmbracoAddressEntryReq
     {
-        [Newtonsoft.Json.JsonProperty("addressLookupApiKey", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string AddressLookupApiKey { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("layout", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public AddressLayout? Layout { get; set; }
+        [Newtonsoft.Json.JsonProperty("googleMapsApiKey", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string GoogleMapsApiKey { get; set; }
 
     }
 
@@ -2663,9 +2629,6 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
         [Newtonsoft.Json.JsonProperty("fundStructure", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public UmbracoFundStructureReq FundStructure { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("nameEntry", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public UmbracoNameEntryReq NameEntry { get; set; }
 
         [Newtonsoft.Json.JsonProperty("organizationInfo", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public PublishedOrganizationInfo OrganizationInfo { get; set; }
@@ -2745,15 +2708,6 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
         [Newtonsoft.Json.JsonProperty("dimension4", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public UmbracoFundDimensionReq Dimension4 { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class UmbracoNameEntryReq
-    {
-        [Newtonsoft.Json.JsonProperty("layout", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public NameLayout? Layout { get; set; }
 
     }
 

@@ -14,15 +14,14 @@ public class UmbracoContentReqMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll
     private void Map(PlatformsContent src, UmbracoContentReq dest, MapperContext ctx) {
-        dest.AddressEntry = ctx.Map<AddressEntryContent, UmbracoAddressEntryReq>(src.Settings.DataEntry.Address);
+        dest.AddressEntry = ctx.Map<AddressEntryContent, UmbracoAddressEntryReq>(src.Settings.AccountEntry.Address);
         dest.BannerAdverts = ctx.Map<BannerAdvertsContent, PublishedBannerAdverts>(src.Settings.PaymentsSettings.BannerAdverts);
         dest.Campaigns = MapCampaigns(ctx, src);
-        dest.ConsentEntry = ctx.Map<ConsentEntryContent, UmbracoConsentEntryReq>(src.Settings.DataEntry.Consent);
+        dest.ConsentEntry = ctx.Map<ConsentEntryContent, UmbracoConsentEntryReq>(src.Settings.AccountEntry.Consent);
         dest.DonateButtons = MapDonateButtons(ctx, src);
         dest.DonationForms = MapDonationForms(ctx, src);
         dest.DonateMenu = ctx.Map<PlatformsContent, PublishedDonateMenu>(src);
         dest.FundStructure = ctx.Map<FundStructureContent, UmbracoFundStructureReq>(src.Settings.FundStructure);
-        dest.NameEntry = ctx.Map<NameEntryContent, UmbracoNameEntryReq>(src.Settings.DataEntry.Name);
         dest.OrganizationInfo = ctx.Map<OrganizationInfoContent, PublishedOrganizationInfo>(src.Settings.OrganizationInfo);
         dest.PaymentTerms =  ctx.Map<PaymentTermsContent, PublishedPaymentTerms>(src.Settings.PaymentsSettings.Terms);
         dest.Terminology = ctx.Map<TerminologiesContent, PublishedTerminology>(src.Settings.Terminologies);

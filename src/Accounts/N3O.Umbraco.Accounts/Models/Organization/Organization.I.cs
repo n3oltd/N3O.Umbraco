@@ -6,4 +6,5 @@ public interface IOrganization {
     OrganizationType Type { get; }
     string Name { get; }
     IName Contact { get; }
+    string Number { get; }
 }

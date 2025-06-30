@@ -4,7 +4,7 @@ using Umbraco.Cms.Core.Models;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.Settings.DataEntry.Consent)]
+[UmbracoContent(PlatformsConstants.Settings.AccountEntry.Consent)]
 public class ConsentEntryContent : UmbracoContent<ConsentEntryContent> {
     public string ConsentText => GetValue(x => x.ConsentText);
     public string PrivacyText => GetValue(x => x.PrivacyText);

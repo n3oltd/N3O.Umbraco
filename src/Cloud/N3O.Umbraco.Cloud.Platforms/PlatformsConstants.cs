@@ -30,18 +30,15 @@ public static class PlatformsConstants {
         public const string Alias = "platformsSettings";
         public const string Terminologies = "platformsTerminologies";
 
+        public static class AccountEntry {
+            public const string Alias = "platformsAccountEntry";
+            public const string Address = "platformsAddressEntry";
+            public const string Consent = "platformsConsentEntry";
+        }
+        
         public static class Build {
             public const string Alias = "platformsBuildSettings";
             public const string Theme = "platformsThemeSettings";
-        }
-
-        public static class DataEntry {
-            public const string Alias = "platformsDataEntry";
-            public const string Address = "platformsAddressEntry";
-            public const string Consent = "platformsConsentEntry";
-            public const string Email = "platformsEmailEntry";
-            public const string Name = "platformsNameEntry";
-            public const string Telephone = "platformsPhoneEntry";
         }
 
         public static class FundStructure {

@@ -22,5 +22,6 @@ public class OrganizationResMapping : IMapDefinition {
         dest.Name = src.Name;
         dest.Type = _lookups.FindByIdOrName<OrganizationType>(src.Type);
         dest.Contact = ctx.Map<ConnectNameRes, NameRes>(src.Contact);
+        dest.Number = src.Number;
     }
 }

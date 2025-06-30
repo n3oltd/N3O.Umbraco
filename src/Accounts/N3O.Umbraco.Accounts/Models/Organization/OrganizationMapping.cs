@@ -12,5 +12,6 @@ public class OrganizationMapping : IMapDefinition {
         dest.Type = src.Type;
         dest.Name = src.Name;
         dest.Contact = ctx.Map<Name, NameRes>(src.Contact);
+        dest.Number = src.Number;
     }
 }

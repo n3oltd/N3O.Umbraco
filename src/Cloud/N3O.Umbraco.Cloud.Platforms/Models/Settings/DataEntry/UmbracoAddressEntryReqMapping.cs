@@ -11,8 +11,7 @@ public class UmbracoAddressEntryReqMapping : IMapDefinition {
     }
 
     // Umbraco.Code.MapAll
-    private void Map(AddressEntryContent src, UmbracoAddressEntryReq dest, MapperContext ctx) {
-        dest.Layout = src.Layout.ToEnum<AddressLayout>();
-        dest.AddressLookupApiKey = src.LookupApiKey;
+    private void Map(AddressEntryContent src, UmbracoAddressEntryReq dest, MapperContext ctx) { ;
+        dest.GoogleMapsApiKey = src.LookupApiKey;
     }
 }

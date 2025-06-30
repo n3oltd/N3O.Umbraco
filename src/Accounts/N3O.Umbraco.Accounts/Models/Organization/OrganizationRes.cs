@@ -7,6 +7,7 @@ public class OrganizationRes : IOrganization {
     public OrganizationType Type { get; set; }
     public string Name { get; set; }
     public NameRes Contact { get; set; }
+    public string Number { get; set; }
 
     [JsonIgnore]
     IName IOrganization.Contact => Contact;

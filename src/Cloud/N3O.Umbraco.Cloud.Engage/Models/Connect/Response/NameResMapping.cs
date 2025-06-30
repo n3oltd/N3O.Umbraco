@@ -11,7 +11,7 @@ public class NameResMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll
     private void Map(ConnectNameRes src, NameRes dest, MapperContext ctx) {
-        dest.Title = src.Title?.Name;
+        dest.Title = src.Title;
         dest.FirstName = src.FirstName;
         dest.LastName = src.LastName;
     }

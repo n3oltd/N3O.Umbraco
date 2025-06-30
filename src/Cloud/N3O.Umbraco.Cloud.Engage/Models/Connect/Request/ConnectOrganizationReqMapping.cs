@@ -14,5 +14,6 @@ public class ConnectOrganizationReqMapping : IMapDefinition {
         dest.Name = src.Name;
         dest.Type = src.Type.Name;
         dest.Contact = ctx.Map<IName, ConnectNameReq>(src.Contact);
+        dest.Number = src.Number;
     }
 }
