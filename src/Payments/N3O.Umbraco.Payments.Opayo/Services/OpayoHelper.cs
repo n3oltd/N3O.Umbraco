@@ -224,6 +224,8 @@ public class OpayoHelper : IOpayoHelper {
             apiCardGooglePay.ClientIpAddress = GetBrowserIpAddress();
             apiCardGooglePay.MerchantSessionKey = req.MerchantSessionKey;
             apiCardGooglePay.Payload = Base64.Encode(req.GooglePayToken);
+            
+            apiPaymentMethodReq.CardGooglePay = apiCardGooglePay;
         }
         
         return apiPaymentMethodReq;
