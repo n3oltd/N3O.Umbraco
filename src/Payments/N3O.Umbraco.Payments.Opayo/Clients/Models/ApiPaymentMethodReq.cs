@@ -7,5 +7,5 @@ public class ApiPaymentMethodReq {
     public ApiCard Card { get; set; }
     
     [JsonProperty("googlePay")]
-    public ApiCardGooglePay CardGooglePay { get; set; }
+    public ApiGooglePay GooglePay { get; set; }
 }

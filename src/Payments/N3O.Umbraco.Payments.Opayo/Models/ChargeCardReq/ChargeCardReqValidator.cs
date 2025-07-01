@@ -1,4 +1,5 @@
 using FluentValidation;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
 
@@ -7,17 +8,16 @@ namespace N3O.Umbraco.Payments.Opayo.Models;
 public class ChargeCardReqValidator : ModelValidator<ChargeCardReq> {
     public ChargeCardReqValidator(IFormatter formatter) : base(formatter) {
         RuleFor(x => x)
-            .Must(HaveExactlyOneSource)
-            .WithMessage(Get<Strings>(x => x.ProvideOneAuthMethod));
-        When(x => string.IsNullOrWhiteSpace(x.GooglePayToken), () => {
-            RuleFor(x => x.MerchantSessionKey)
-                .NotEmpty()
-                .WithMessage(Get<Strings>(x => x.SpecifyMerchantSessionKey));
-
-            RuleFor(x => x.CardIdentifier)
-                .NotEmpty()
-                .WithMessage(Get<Strings>(x => x.SpecifyCardIdentifier));
-        });
+            .Must(x => x.CardIdentifier.HasValue() || x.GooglePayToken.HasValue())
+            .WithMessage(Get<Strings>(x => x.SinglePaymentSourceRequired));
+        
+        RuleFor(x => x)
+            .Must(x => !x.CardIdentifier.HasValue() && !x.GooglePayToken.HasValue())
+            .WithMessage(Get<Strings>(x => x.SinglePaymentSourceRequired));
+        
+        RuleFor(x => x.MerchantSessionKey)
+            .NotEmpty()
+            .WithMessage(Get<Strings>(x => x.SpecifyMerchantSessionKey));
         
         RuleFor(x => x.Value)
             .NotEmpty()
@@ -36,21 +36,13 @@ public class ChargeCardReqValidator : ModelValidator<ChargeCardReq> {
             .WithMessage(Get<Strings>(x => x.SpecifyReturnUrl));
     }
 
-    private bool HaveExactlyOneSource(ChargeCardReq req) {
-        bool hasCard = !string.IsNullOrWhiteSpace(req.CardIdentifier) && !string.IsNullOrWhiteSpace(req.MerchantSessionKey);
-        bool hasToken = !string.IsNullOrWhiteSpace(req.GooglePayToken);
-
-        return (hasCard ^ hasToken);
-    }
-
     public class Strings : ValidationStrings {
+        public string SinglePaymentSourceRequired => "A card identifier or GooglePay token must be specified";
         public string SpecifyBrowserParameters => "Please specify the browser parameters";
         public string SpecifyChallengeWindowSize => "Please specify the challenge window size";
-        public string SpecifyCardIdentifier => "Please specify the card identifier";
         public string SpecifyMerchantSessionKey => "Please specify the merchant session key";
         public string SpecifyReturnUrl => "Please specify the return URL";
         public string SpecifyValue => "Please specify the value";
-        public string ProvideOneAuthMethod => "Please provide either a card identifier with merchant session key, or a Google Pay token — not both.";
     }
 }
 

@@ -220,12 +220,12 @@ public class OpayoHelper : IOpayoHelper {
         
             apiPaymentMethodReq.Card = apiCard;     
         } else if (req.GooglePayToken.HasValue()) {
-            var apiCardGooglePay = new ApiCardGooglePay();
-            apiCardGooglePay.ClientIpAddress = GetBrowserIpAddress();
-            apiCardGooglePay.MerchantSessionKey = req.MerchantSessionKey;
-            apiCardGooglePay.Payload = Base64.Encode(req.GooglePayToken);
+            var apiGooglePay = new ApiGooglePay();
+            apiGooglePay.ClientIpAddress = GetBrowserIpAddress();
+            apiGooglePay.MerchantSessionKey = req.MerchantSessionKey;
+            apiGooglePay.Token = Base64.Encode(req.GooglePayToken);
             
-            apiPaymentMethodReq.CardGooglePay = apiCardGooglePay;
+            apiPaymentMethodReq.GooglePay = apiGooglePay;
         }
         
         return apiPaymentMethodReq;
