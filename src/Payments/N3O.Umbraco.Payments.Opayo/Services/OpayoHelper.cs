@@ -13,6 +13,7 @@ using N3O.Umbraco.Payments.Opayo.Content;
 using N3O.Umbraco.Payments.Opayo.Controllers;
 using N3O.Umbraco.Payments.Opayo.Extensions;
 using N3O.Umbraco.Payments.Opayo.Models;
+using N3O.Umbraco.Utilities;
 using Newtonsoft.Json;
 using Refit;
 using System;
@@ -80,7 +81,7 @@ public class OpayoHelper : IOpayoHelper {
                                   bool saveCard) {
         try {
             var settings = _contentCache.Single<OpayoSettingsContent>();
-            var vendorTxCode = parameters.GetTransactionId(settings, req.CardIdentifier).Left(40);
+            var vendorTxCode = parameters.GetTransactionId(settings, req.CardIdentifier ?? Guid.NewGuid().ToString() ).Left(40);
             
             var apiRequest = GetApiPaymentTransactionReq(settings, vendorTxCode, req, parameters, saveCard);
 
@@ -208,15 +209,25 @@ public class OpayoHelper : IOpayoHelper {
     }
 
     private ApiPaymentMethodReq GetApiPaymentMethodReq(ChargeCardReq req, bool saveCard) {
-        var apiCard = new ApiCard();
-        apiCard.CardIdentifier = req.CardIdentifier;
-        apiCard.MerchantSessionKey = req.MerchantSessionKey;
-        apiCard.Reusable = false;
-        apiCard.Save = saveCard;
-
         var apiPaymentMethodReq = new ApiPaymentMethodReq();
-        apiPaymentMethodReq.Card = apiCard;
-
+        
+        if (req.CardIdentifier.HasValue()) {
+            var apiCard = new ApiCard();
+            apiCard.CardIdentifier = req.CardIdentifier;
+            apiCard.MerchantSessionKey = req.MerchantSessionKey;
+            apiCard.Reusable = false;
+            apiCard.Save = saveCard;
+        
+            apiPaymentMethodReq.Card = apiCard;     
+        } else if (req.GooglePayToken.HasValue()) {
+            var apiGooglePay = new ApiGooglePay();
+            apiGooglePay.ClientIpAddress = GetBrowserIpAddress();
+            apiGooglePay.MerchantSessionKey = req.MerchantSessionKey;
+            apiGooglePay.Token = Base64.Encode(req.GooglePayToken);
+            
+            apiPaymentMethodReq.GooglePay = apiGooglePay;
+        }
+        
         return apiPaymentMethodReq;
     }
 

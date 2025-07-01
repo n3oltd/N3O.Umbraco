@@ -89,6 +89,7 @@ export interface ProblemDetails {
 export interface ChargeCardReq {
     merchantSessionKey?: string | undefined;
     cardIdentifier?: string | undefined;
+    googlePayToken?: string | undefined;
     value?: MoneyReq | undefined;
     browserParameters?: BrowserParametersReq | undefined;
     challengeWindowSize?: ChallengeWindowSize | undefined;
