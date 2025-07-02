@@ -1,0 +1,69 @@
+﻿using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Content;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Umbraco.Cms.Core.Web;
+
+namespace N3O.Umbraco.Lookups;
+
+public class CountryContent : UmbracoContent<CountryContent>, IHoldCountryCode {
+    public string Iso2Code => GetValue(x => x.Iso2Code);
+    public string Iso3Code => GetValue(x => x.Iso3Code);
+    [UmbracoProperty("diallingCode")]
+    public int DialingCode => GetConvertedValue<string, int>(x => x.DialingCode, int.Parse);
+    public bool LocalityOptional => GetValue(x => x.LocalityOptional);
+    public bool PostalCodeOptional => GetValue(x => x.PostalCodeOptional);
+
+    string IHoldCountryCode.Iso2Or3Code => Iso3Code;
+}
+
+[Order(int.MinValue)]
+public class ContentCountries : LookupsCollection<Country> {
+    private readonly IContentCache _contentCache;
+    private readonly IUmbracoContextAccessor _umbracoContextAccessor;
+
+    public ContentCountries(IContentCache contentCache, IUmbracoContextAccessor umbracoContextAccessor) {
+        _contentCache = contentCache;
+        _umbracoContextAccessor = umbracoContextAccessor;
+
+        _contentCache.Flushed += ContentCacheOnFlushed;
+    }
+    
+    protected override Task<IReadOnlyList<Country>> LoadAllAsync() {
+        var all = GetFromCache();
+        
+        return Task.FromResult(all);
+    }
+
+    private IReadOnlyList<Country> GetFromCache() {
+        List<CountryContent> content;
+        
+        if (_umbracoContextAccessor.TryGetUmbracoContext(out _)) {
+            content = _contentCache.All<CountryContent>().OrderBy(x => x.Content().SortOrder).ToList();
+        } else {
+            content = new();
+        }
+        
+        var lookups = content.Select(ToCountry).ToList();
+
+        return lookups;
+    }
+
+    private Country ToCountry(CountryContent countryContent) {
+        return new Country(LookupContent.GetId(countryContent.Content()),
+                           LookupContent.GetName(countryContent.Content()),
+                           countryContent.Iso2Code,
+                           countryContent.Iso3Code,
+                           countryContent.DialingCode,
+                           countryContent.LocalityOptional,
+                           countryContent.PostalCodeOptional);
+    }
+
+    private void ContentCacheOnFlushed(object sender, EventArgs e) {
+        var all = GetFromCache();
+        
+        Reload(all);
+    }
+}
