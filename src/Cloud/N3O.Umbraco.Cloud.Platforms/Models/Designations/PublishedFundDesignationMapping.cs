@@ -27,12 +27,12 @@ public class PublishedFundDesignationMapping : IMapDefinition {
             dest.SuggestedAmounts = new PublishedSuggestedAmounts();
             dest.SuggestedAmounts.OneTime = src.OneTimeSuggestedAmounts
                                                .OrEmpty()
-                                               .Select(ctx.Map<SuggestedAmountContent, PublishedSuggestedAmount>)
+                                               .Select(ctx.Map<SuggestedAmountElement, PublishedSuggestedAmount>)
                                                .ToList();
 
             dest.SuggestedAmounts.Recurring = src.RecurringSuggestedAmounts
                                                  .OrEmpty()
-                                                 .Select(ctx.Map<SuggestedAmountContent, PublishedSuggestedAmount>)
+                                                 .Select(ctx.Map<SuggestedAmountElement, PublishedSuggestedAmount>)
                                                  .ToList();
         }
     }
