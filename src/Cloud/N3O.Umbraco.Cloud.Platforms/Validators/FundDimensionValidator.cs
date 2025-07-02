@@ -44,7 +44,7 @@ public class FundDimensionValidator : ContentValidator {
             if (!toggleValueElement.HasValue(x => x.Label) ||
                 !toggleValueElement.HasValue(x => x.OnValue) ||
                 !toggleValueElement.HasValue(x => x.OffValue)) {
-                ErrorResult("A label, on and off values must all be specified for a toggle dimension");   
+                ErrorResult("A label, on and off values must all be specified for a toggle dimension");
             }
         }
     }

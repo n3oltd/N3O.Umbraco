@@ -218,7 +218,7 @@ public class OpayoHelper : IOpayoHelper {
             apiCard.Reusable = false;
             apiCard.Save = saveCard;
         
-            apiPaymentMethodReq.Card = apiCard;     
+            apiPaymentMethodReq.Card = apiCard;
         } else if (req.GooglePayToken.HasValue()) {
             var apiGooglePay = new ApiGooglePay();
             apiGooglePay.ClientIpAddress = GetBrowserIpAddress();

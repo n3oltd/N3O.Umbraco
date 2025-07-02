@@ -40,7 +40,7 @@ public class PublishedCampaignMapping : IMapDefinition {
             dest.Telethon.BeginAt = src.Telethon.BeginAt.ToInstant().ToString();
             dest.Telethon.EndAt = src.Telethon.EndAt.ToInstant().ToString();
         } else if (src.Type == CampaignTypes.ScheduledGiving) {
-            dest.ScheduledGiving = new PublishedScheduledGivingCampaign();   
+            dest.ScheduledGiving = new PublishedScheduledGivingCampaign();
         }
     }
 }
