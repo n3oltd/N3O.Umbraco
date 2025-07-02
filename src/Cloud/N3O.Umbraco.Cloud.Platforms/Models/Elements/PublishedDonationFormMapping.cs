@@ -30,7 +30,6 @@ public class PublishedDonationFormMapping : IMapDefinition {
         } else {
             var defaultCampaign = _contentLocator.Single<PlatformsContent>().Campaigns.First();
             
-            dest.Campaign = ctx.Map<CampaignContent, PublishedCampaignSummary>(defaultCampaign);
             dest.Designation = ctx.Map<DesignationContent, PublishedDesignation>(defaultCampaign.DefaultDesignation);
         }
         
