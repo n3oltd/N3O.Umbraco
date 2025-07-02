@@ -16,19 +16,27 @@ public class ElementContent : UmbracoContent<ElementContent> {
     private static readonly string DonateButtonElementAlias = AliasHelper<DonateButtonElementContent>.ContentTypeAlias();
     private static readonly string DonationFormElementAlias = AliasHelper<DonationFormElementContent>.ContentTypeAlias();
     
-    public override void Content(IPublishedContent content) {
-        base.Content(content);
+    public override void SetContent(IPublishedContent content) {
+        base.SetContent(content);
         
         if (Type == ElementTypes.DonateButton) {
             DonateButton = new DonateButtonElementContent();
-            DonateButton.Content(content);
+            DonateButton.SetContent(content);
         } else if (Type == ElementTypes.DonationForm) {
             DonationForm = new DonationFormElementContent();
-            DonationForm.Content(content);
+            DonationForm.SetContent(content);
         } else {
             throw UnrecognisedValueException.For(Type);
         }
     }
+    
+    public override void SetVariationContext(VariationContext variationContext) {
+        base.SetVariationContext(variationContext);
+        
+        DonateButton?.SetVariationContext(variationContext);
+        DonationForm?.SetVariationContext(variationContext);
+    }
+
     
     public Guid Key => Content().Key;
     public string Label => GetValue(x => x.Label);

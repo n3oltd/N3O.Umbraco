@@ -19,10 +19,7 @@ public abstract class FundDimensionMapping<T, TValue> : IMapDefinition
 
         dest.Index = src.Index;
         dest.IsActive = src.IsActive;
-        dest.Options = src.Options
-                          .OrEmpty()
-                          .Select(ctx.Map<TValue, FundDimensionValueRes>)
-                          .ToList();
+        dest.Options = src.Options.OrEmpty().Select(ctx.Map<TValue, FundDimensionValueRes>).ToList();
     }
 }
 

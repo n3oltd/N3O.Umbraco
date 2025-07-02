@@ -4,5 +4,6 @@ namespace N3O.Umbraco.Content;
 
 public interface IUmbracoContent {
     IPublishedContent Content();
-    void Content(IPublishedContent content);
+    void SetContent(IPublishedContent content);
+    void SetVariationContext(VariationContext variationContext);
 }

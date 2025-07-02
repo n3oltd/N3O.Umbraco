@@ -30,18 +30,25 @@ public class CampaignGoalOptionElement : UmbracoElement<CampaignGoalOptionElemen
                (IFundDimensionsOptions) Feedback?.Scheme;
     }
     
-    public override void Content(IPublishedElement content, IPublishedContent parent) {
-        base.Content(content, parent);
+    public override void SetContent(IPublishedElement content, IPublishedContent parent) {
+        base.SetContent(content, parent);
         
         if (Type == AllocationTypes.Fund) {
             Fund = new CampaignFundGoalOptionElement();
-            Fund.Content(content, parent);
+            Fund.SetContent(content, parent);
         } else if (Type == AllocationTypes.Feedback) {
             Feedback = new CampaignFeedbackGoalOptionElement();
-            Feedback.Content(content, parent);
+            Feedback.SetContent(content, parent);
         } else {
             throw UnrecognisedValueException.For(Type);
         }
+    }
+    
+    public override void SetVariationContext(VariationContext variationContext) {
+        base.SetVariationContext(variationContext);
+        
+        Fund?.SetVariationContext(variationContext);
+        Feedback?.SetVariationContext(variationContext);
     }
     
     public AllocationType Type {

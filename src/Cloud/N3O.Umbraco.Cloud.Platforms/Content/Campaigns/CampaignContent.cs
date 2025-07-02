@@ -20,23 +20,31 @@ public class CampaignContent : UmbracoContent<CampaignContent> {
     private static readonly string StandardCampaignAlias = AliasHelper<StandardCampaignContent>.ContentTypeAlias();
     private static readonly string TelethonCampaignAlias = AliasHelper<TelethonCampaignContent>.ContentTypeAlias();
     
-    public override void Content(IPublishedContent content) {
-        base.Content(content);
+    public override void SetContent(IPublishedContent content) {
+        base.SetContent(content);
         
         if (Type == CampaignTypes.Standard) {
             Standard = new StandardCampaignContent();
-            Standard.Content(content);
+            Standard.SetContent(content);
         } else if (Type == CampaignTypes.Telethon) {
             Telethon = new TelethonCampaignContent();
-            Telethon.Content(content);
+            Telethon.SetContent(content);
         } else if (Type == CampaignTypes.ScheduledGiving) {
             ScheduledGiving = new ScheduledGivingCampaignContent();
-            ScheduledGiving.Content(content);
+            ScheduledGiving.SetContent(content);
         } else {
             throw UnrecognisedValueException.For(Type);
         }
     }
-    
+
+    public override void SetVariationContext(VariationContext variationContext) {
+        base.SetVariationContext(variationContext);
+        
+        Standard?.SetVariationContext(variationContext);
+        Telethon?.SetVariationContext(variationContext);
+        ScheduledGiving?.SetVariationContext(variationContext);
+    }
+
     public string Name => Content().Name;
     public Guid Key => Content().Key;
     

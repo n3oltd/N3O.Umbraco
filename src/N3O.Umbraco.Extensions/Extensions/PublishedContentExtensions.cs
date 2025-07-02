@@ -27,7 +27,7 @@ public static class PublishedContentExtensions {
         return url;
     }
     
-    public static T As<T>(this IPublishedContent publishedContent) {
+    public static T As<T>(this IPublishedContent publishedContent, VariationContext variationContext = null) {
         if (publishedContent is T typedContent) {
             return typedContent;
         }
@@ -40,11 +40,12 @@ public static class PublishedContentExtensions {
             throw new Exception($"{typeof(T).GetFriendlyName()} does not implement {nameof(IUmbracoContent)}");
         }
     
-        return ConvertTo<T>(publishedContent);
+        return ConvertTo<T>(publishedContent, variationContext);
     }
 
-    public static IReadOnlyList<T> As<T>(this IEnumerable<IPublishedContent> publishedContents) {
-        return publishedContents.Select(x => x.As<T>()).ToList();
+    public static IReadOnlyList<T> As<T>(this IEnumerable<IPublishedContent> publishedContents,
+                                         VariationContext variationContext = null) {
+        return publishedContents.Select(x => x.As<T>(variationContext)).ToList();
     }
 
     public static T Child<T>(this IPublishedContent content)
@@ -89,18 +90,26 @@ public static class PublishedContentExtensions {
         return content.Url(mode: UrlMode.Relative);
     }
     
-    public static T To<T>(this IPublishedContent publishedContent) where T : IUmbracoContent, new() {
-        return ConvertTo<T>(publishedContent);
+    public static T To<T>(this IPublishedContent publishedContent, VariationContext variationContext = null)
+        where T : IUmbracoContent, new() {
+        return ConvertTo<T>(publishedContent, variationContext);
     }
     
-    private static T ConvertTo<T>(this IPublishedContent publishedContent) {
+    private static T ConvertTo<T>(this IPublishedContent publishedContent, VariationContext variationContext = null) {
         if (publishedContent == null) {
             return default;
         }
         
         var model = Activator.CreateInstance<T>();
-        ((IUmbracoContent) model).Content(publishedContent);
 
+        if (model is IUmbracoContent umbracoContent) {
+            umbracoContent.SetContent(publishedContent);
+            
+            if (variationContext != null) {
+                umbracoContent.SetVariationContext(variationContext);
+            }
+        }
+        
         return model;
     }
 }

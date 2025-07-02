@@ -1,4 +1,5 @@
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Localization;
 using NodaTime;
 using System;
 using System.Collections;
@@ -18,35 +19,47 @@ public abstract class UmbracoElement<T> : Value, IUmbracoElement {
     public virtual IPublishedElement Content() => _content;
     public virtual IPublishedContent Parent() => _parent;
 
-    public virtual void Content(IPublishedElement content, IPublishedContent parent) {
+    public virtual void SetContent(IPublishedElement content, IPublishedContent parent) {
         _content = content;
         _parent = parent;
     }
+    
+    public virtual void SetVariationContext(VariationContext variationContext) => VariationContext = variationContext;
+
+    protected VariationContext VariationContext { get; private set; }
 
     protected TProperty GetAs<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-        var value = (IPublishedContent) Content().Value(alias);
+        var value = (IPublishedContent) Content().Value(alias, VariationContext?.Culture, VariationContext?.Segment);
 
         return value.As<TProperty>();
     }
 
     protected IEnumerable<TProperty> GetCollectionAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-        var values = (IEnumerable) Content().Value(alias);
+        var values = (IEnumerable) Content().Value(alias, VariationContext?.Culture, VariationContext?.Segment);
 
         return values.Cast<IPublishedContent>().Select(x => x.As<TProperty>());
     }
     
+    public string GetLocalizedString<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
+        var alias = AliasHelper<T>.PropertyAlias(memberExpression);
+        var text = (string) Content().GetProperty(alias).GetValue();
+        
+        return StringLocalizer.Instance.Get(GetType().GetFriendlyName(), alias, text);
+    }
+    
     protected IEnumerable<TProperty> GetNestedAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-        var values = (IEnumerable) Content().Value(alias) ?? Enumerable.Empty<IPublishedElement>();
+        var values = (IEnumerable) Content().Value(alias, VariationContext?.Culture, VariationContext?.Segment)
+                     ?? Enumerable.Empty<IPublishedElement>();
 
         return values.Cast<IPublishedElement>().Select(x => x.As<TProperty>(_parent));
     }
     
     protected TProperty GetPickedAs<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-        var value = Content().Value(alias);
+        var value = Content().Value(alias, VariationContext?.Culture, VariationContext?.Segment);
 
         if (value is TProperty typedValue) {
             return typedValue;
@@ -57,7 +70,8 @@ public abstract class UmbracoElement<T> : Value, IUmbracoElement {
     
     protected IEnumerable<TProperty> GetPickedAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-        var values = (IEnumerable) Content().Value(alias) ?? Enumerable.Empty<IPublishedContent>();
+        var values = (IEnumerable) Content().Value(alias, VariationContext?.Culture, VariationContext?.Segment)
+                     ?? Enumerable.Empty<IPublishedContent>();
 
         return values.Cast<IPublishedContent>().Select(x => x.As<TProperty>());
     }
@@ -79,7 +93,7 @@ public abstract class UmbracoElement<T> : Value, IUmbracoElement {
             return default;
         }
 
-        var propertyValue = property.GetValue();
+        var propertyValue = property.GetValue(VariationContext?.Culture, VariationContext?.Segment);
 
         if (propertyValue is TProperty typedProperty) {
             return typedProperty;
@@ -96,6 +110,6 @@ public abstract class UmbracoElement<T> : Value, IUmbracoElement {
                                                                   Func<TProperty, TConverted> convert) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
 
-        return convert(Content().Value<TProperty>(alias));
+        return convert(Content().Value<TProperty>(alias, VariationContext?.Culture, VariationContext?.Segment));
     }
 }

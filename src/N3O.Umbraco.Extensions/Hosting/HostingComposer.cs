@@ -19,6 +19,7 @@ public class HostingComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {        
         builder.Services.AddTransient<IConfigureOptions<MvcOptions>, OurMvcBinderOptions>();
         builder.Services.AddTransient<IConfigureOptions<MvcOptions>, OurCacheProfileOptions>();
+        builder.Services.AddTransient<IConfigureOptions<RequestLocalizationOptions>, OurRequestLocalizationOptions>();
         builder.Services.AddScoped<IActionLinkGenerator, ActionLinkGenerator>();
         
         builder.Services.AddScoped<CookiesMiddleware>();

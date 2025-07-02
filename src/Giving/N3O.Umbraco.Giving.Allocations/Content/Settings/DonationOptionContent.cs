@@ -12,21 +12,29 @@ public class DonationOptionContent : UmbracoContent<DonationOptionContent>, IFun
     private static readonly string SponsorshipDonationOptionAlias = AliasHelper<SponsorshipDonationOptionContent>.ContentTypeAlias();
     private static readonly string FeedbackDonationOptionAlias = AliasHelper<FeedbackDonationOptionContent>.ContentTypeAlias();
 
-    public override void Content(IPublishedContent content) {
-        base.Content(content);
+    public override void SetContent(IPublishedContent content) {
+        base.SetContent(content);
         
         if (Type == AllocationTypes.Fund) {
             Fund = new FundDonationOptionContent();
-            Fund.Content(content);
+            Fund.SetContent(content);
         } else if (Type == AllocationTypes.Sponsorship) {
             Sponsorship = new SponsorshipDonationOptionContent();
-            Sponsorship.Content(content);
+            Sponsorship.SetContent(content);
         } else if (Type == AllocationTypes.Feedback) {
             Feedback = new FeedbackDonationOptionContent();
-            Feedback.Content(content);
+            Feedback.SetContent(content);
         } else {
             throw UnrecognisedValueException.For(Type);
         }
+    }
+
+    public override void SetVariationContext(VariationContext variationContext) {
+        base.SetVariationContext(variationContext);
+        
+        Fund?.SetVariationContext(variationContext);
+        Sponsorship?.SetVariationContext(variationContext);
+        Feedback?.SetVariationContext(variationContext);
     }
 
     public int Id => Content().Id;

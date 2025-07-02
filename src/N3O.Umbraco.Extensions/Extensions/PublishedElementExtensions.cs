@@ -7,7 +7,9 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Extensions;
 
 public static class PublishedElementExtensions {
-    public static T As<T>(this IPublishedElement publishedElement, IPublishedContent parent = null) {
+    public static T As<T>(this IPublishedElement publishedElement,
+                          IPublishedContent parent = null,
+                          VariationContext variationContext = null) {
         if (publishedElement is T typedContent) {
             return typedContent;
         }
@@ -16,24 +18,35 @@ public static class PublishedElementExtensions {
             throw new Exception($"{typeof(T).GetFriendlyName()} does not implement {nameof(IUmbracoElement)}");
         }
     
-        return ConvertTo<T>(publishedElement, parent);
+        return ConvertTo<T>(publishedElement, parent, variationContext);
     }
 
     public static IReadOnlyList<T> As<T>(this IEnumerable<IPublishedElement> publishedElements,
-                                         IPublishedContent parent = null) {
-        return publishedElements.Select(x => x.As<T>(parent)).ToList();
+                                         IPublishedContent parent = null,
+                                         VariationContext variationContext = null) {
+        return publishedElements.Select(x => x.As<T>(parent, variationContext)).ToList();
     }
 
-    public static T To<T>(this IPublishedElement publishedElement, IPublishedContent parent = null)
+    public static T To<T>(this IPublishedElement publishedElement,
+                          IPublishedContent parent = null,
+                          VariationContext variationContext = null)
         where T : IUmbracoContent, new() {
-        return ConvertTo<T>(publishedElement, parent);
+        return ConvertTo<T>(publishedElement, parent, variationContext);
     }
     
-    private static T ConvertTo<T>(this IPublishedElement publishedElement, IPublishedContent parent) {
+    private static T ConvertTo<T>(this IPublishedElement publishedElement,
+                                  IPublishedContent parent,
+                                  VariationContext variationContext = null) {
         var model = Activator.CreateInstance<T>();
-        
-        ((IUmbracoElement) model).Content(publishedElement, parent);
 
+        if (model is IUmbracoElement umbracoElement) {
+            umbracoElement.SetContent(publishedElement, parent);
+
+            if (variationContext != null) {
+                umbracoElement.SetVariationContext(variationContext);
+            }
+        }
+        
         return model;
     }
 }

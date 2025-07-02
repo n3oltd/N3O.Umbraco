@@ -19,7 +19,7 @@ public class TextFormatter : ITextFormatter {
 
         var text = propertySelector(strings);
 
-        //text = _stringLocalizer.Get(strings.Folder, strings.Name, text);
+        text = _stringLocalizer.Get(strings.Folder, strings.Name, text);
     
         return string.Format(text, formatArgs);
     }

@@ -1,4 +1,5 @@
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Localization;
 using N3O.Umbraco.Lookups;
 using NodaTime;
 using System;
@@ -17,8 +18,12 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
 
     // Do not use get/set property as causes issues with model validation
     public virtual IPublishedContent Content() => _content;
-    public virtual void Content(IPublishedContent content) => _content = content;
+    
+    public virtual void SetContent(IPublishedContent content) => _content = content;
+    public virtual void SetVariationContext(VariationContext variationContext) => VariationContext = variationContext;
 
+    protected VariationContext VariationContext { get; private set; }
+    
     protected TProperty Child<TProperty>(Expression<Func<T, TProperty>> memberExpression)
         where TProperty : UmbracoContent<TProperty> {
         var alias = AliasHelper<TProperty>.ContentTypeAlias();
@@ -29,28 +34,37 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
 
     protected TProperty GetAs<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-        var value = (IPublishedContent) Content().Value(alias);
+        var value = (IPublishedContent) Content().Value(alias, VariationContext?.Culture, VariationContext?.Segment);
 
         return value.As<TProperty>();
     }
     
     protected IEnumerable<TProperty> GetBlockListValueAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-        var values = (IEnumerable) Content().Value(alias) ?? Enumerable.Empty<BlockListItem>();
+        var values = (IEnumerable) Content().Value(alias, VariationContext?.Culture, VariationContext?.Segment)
+                     ?? Enumerable.Empty<BlockListItem>();
 
         return values.Cast<BlockListItem>().Select(x => x.Content.As<TProperty>(_content));
+    }
+    
+    public string GetLocalizedString<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
+        var alias = AliasHelper<T>.PropertyAlias(memberExpression);
+        var text = (string) Content().GetProperty(alias).GetValue();
+        
+        return StringLocalizer.Instance.Get(GetType().GetFriendlyName(), alias, text);
     }
 
     protected IEnumerable<TProperty> GetNestedAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-        var values = (IEnumerable) Content().Value(alias) ?? Enumerable.Empty<IPublishedElement>();
+        var values = (IEnumerable) Content().Value(alias, VariationContext.Culture, VariationContext?.Segment)
+                     ?? Enumerable.Empty<IPublishedElement>();
 
         return values.Cast<IPublishedElement>().Select(x => x.As<TProperty>(_content));
     }
     
     protected TProperty GetPickedAs<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-        var value = Content().Value(alias);
+        var value = Content().Value(alias, VariationContext?.Culture, VariationContext?.Segment);
 
         if (value is TProperty typedValue) {
             return typedValue;
@@ -61,7 +75,8 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
     
     protected IEnumerable<TProperty> GetPickedAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-        var values = (IEnumerable) Content().Value(alias) ?? Enumerable.Empty<IPublishedContent>();
+        var values = (IEnumerable) Content().Value(alias, VariationContext?.Culture, VariationContext?.Segment)
+                     ?? Enumerable.Empty<IPublishedContent>();
 
         return values.Cast<IPublishedContent>().Select(x => x.As<TProperty>());
     }
@@ -69,7 +84,7 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
     protected TProperty GetStaticLookupByNameAs<TProperty>(Expression<Func<T, TProperty>> memberExpression)
     where TProperty : INamedLookup {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-        var value = Content().Value<string>(alias);
+        var value = Content().Value<string>(alias,  VariationContext?.Culture, VariationContext?.Segment);
 
         return StaticLookups.GetAll<TProperty>().SingleOrDefault(x => x.Name.EqualsInvariant(value));
     }
@@ -77,7 +92,7 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
     protected TProperty GetStaticLookupByIdAs<TProperty>(Expression<Func<T, TProperty>> memberExpression)
         where TProperty : INamedLookup {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-        var value = Content().Value<string>(alias);
+        var value = Content().Value<string>(alias,  VariationContext?.Culture, VariationContext?.Segment);
 
         return StaticLookups.GetAll<TProperty>().SingleOrDefault(x => x.Id.EqualsInvariant(value));
     }
@@ -99,7 +114,7 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
             return default;
         }
 
-        var propertyValue = property.GetValue();
+        var propertyValue = property.GetValue(VariationContext?.Culture, VariationContext?.Segment);
 
         if (propertyValue is TProperty typedProperty) {
             return typedProperty;
@@ -116,6 +131,6 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
                                                                   Func<TProperty, TConverted> convert) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
 
-        return convert(Content().Value<TProperty>(alias));
+        return convert(Content().Value<TProperty>(alias,  VariationContext?.Culture, VariationContext?.Segment));
     }
 }

@@ -21,21 +21,29 @@ public class DesignationContent : UmbracoContent<DesignationContent> {
     private static readonly string FundDesignationAlias = AliasHelper<FundDesignationContent>.ContentTypeAlias();
     private static readonly string SponsorshipDesignationAlias = AliasHelper<SponsorshipDesignationContent>.ContentTypeAlias();
     
-    public override void Content(IPublishedContent content) {
-        base.Content(content);
+    public override void SetContent(IPublishedContent content) {
+        base.SetContent(content);
         
         if (Type == DesignationTypes.Fund) {
             Fund = new FundDesignationContent();
-            Fund.Content(content);
+            Fund.SetContent(content);
         } else if (Type == DesignationTypes.Feedback) {
             Feedback = new FeedbackDesignationContent();
-            Feedback.Content(content);
+            Feedback.SetContent(content);
         } else if (Type == DesignationTypes.Sponsorship) {
             Sponsorship = new SponsorshipDesignationContent();
-            Sponsorship.Content(content);
+            Sponsorship.SetContent(content);
         } else {
             throw UnrecognisedValueException.For(Type);
         }
+    }
+    
+    public override void SetVariationContext(VariationContext variationContext) {
+        base.SetVariationContext(variationContext);
+        
+        Fund?.SetVariationContext(variationContext);
+        Feedback?.SetVariationContext(variationContext);
+        Sponsorship?.SetVariationContext(variationContext);
     }
     
     public string Name => Content().Name;
