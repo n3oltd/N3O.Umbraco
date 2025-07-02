@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Scheduler;
 using N3O.Umbraco.Scheduler.Extensions;
 using N3O.Umbraco.Search.Typesense.Commands;
@@ -10,6 +11,7 @@ using Umbraco.Cms.Core.Notifications;
 
 namespace N3O.Umbraco.Search.Typesense.Notifications;
 
+[SkipDuringSync]
 public class IndexContentNotification : INotificationAsyncHandler<ContentPublishedNotification> {
     private readonly IBackgroundJob _backgroundJob;
 

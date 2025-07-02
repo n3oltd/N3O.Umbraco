@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Cloud.Engage.Lookups;
+﻿using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Cloud.Engage.Lookups;
 using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Scheduler;
@@ -9,6 +10,7 @@ using Umbraco.Cms.Core.Notifications;
 
 namespace N3O.Umbraco.Crowdfunding.Notifications;
 
+[SkipDuringSync]
 public class CrowdfunderPublished : INotificationAsyncHandler<ContentPublishedNotification> {
     private readonly IBackgroundJob _backgroundJob;
 

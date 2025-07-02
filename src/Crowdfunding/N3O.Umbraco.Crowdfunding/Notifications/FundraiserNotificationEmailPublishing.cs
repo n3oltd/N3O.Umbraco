@@ -14,6 +14,7 @@ using Umbraco.Cms.Core.Notifications;
 namespace N3O.Umbraco.Crowdfunding.Notifications;
 
 [Order(1)]
+[SkipDuringSync]
 public class FundraiserPublishing : INotificationAsyncHandler<ContentPublishingNotification> {
     private readonly Lazy<IContentLocator> _contentLocator;
     private readonly Lazy<IEmailBuilder> _emailBuilder;

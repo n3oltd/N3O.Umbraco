@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using System;
@@ -11,6 +12,7 @@ using Umbraco.Cms.Core.Notifications;
 
 namespace N3O.Umbraco.Notifications;
 
+[SkipDuringSync]
 public class ContentValidationHandler : INotificationAsyncHandler<ContentSavingNotification> {
     private readonly ILogger _logger;
     private readonly IContentHelper _contentHelper;

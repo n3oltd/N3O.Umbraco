@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Authentication.Auth0.Lookups;
 using N3O.Umbraco.Authentication.Auth0.Options;
 using N3O.Umbraco.Constants;
@@ -12,6 +13,7 @@ using Umbraco.Cms.Core.Notifications;
 
 namespace N3O.Umbraco.Authentication.Auth0.Notifications;
 
+[SkipDuringSync]
 public class MemberSaving : INotificationAsyncHandler<MemberSavingNotification> {
     private readonly Lazy<IUserDirectory> _userDirectory;
     private readonly Auth0MemberAuthenticationOptions _auth0MemberOptions;

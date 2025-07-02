@@ -13,6 +13,7 @@ using Umbraco.Cms.Core.Notifications;
 namespace N3O.Umbraco.Crowdfunding.Notifications;
 
 [Order(1)]
+[SkipDuringSync]
 public class FundraiserSaving : INotificationAsyncHandler<ContentSavingNotification> {
     private readonly Lazy<ISlugHelper> _slugHelper;
     private readonly IWebHostEnvironment _webHostEnvironment;

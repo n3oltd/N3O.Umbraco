@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Content;
+﻿using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Cropper.DataTypes;
 using N3O.Umbraco.Cropper.Extensions;
 using N3O.Umbraco.Cropper.Models;
@@ -12,6 +13,7 @@ using Umbraco.Cms.Core.Notifications;
 
 namespace N3O.Umbraco.Cropper.Notifications;
 
+[SkipDuringSync]
 public abstract class OpenGraphImageCropperHandler : INotificationAsyncHandler<ContentSavingNotification> {
     private readonly Lazy<IContentHelper> _contentHelper;
     private readonly Lazy<IImageCropper> _imageCropper;

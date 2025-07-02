@@ -1,3 +1,4 @@
+using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Cropper.DataTypes;
 using N3O.Umbraco.Extensions;
@@ -15,6 +16,7 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cropper.Notifications;
 
+[SkipDuringSync]
 public class CropperContentSavingHandler : INotificationAsyncHandler<ContentSavingNotification> {
     private readonly IDataTypeService _dataTypeService;
     private readonly IContentHelper _contentHelper;

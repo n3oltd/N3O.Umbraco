@@ -1,6 +1,7 @@
 ﻿using Flurl;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cloud.Engage;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding.Content;
@@ -15,6 +16,7 @@ using Umbraco.Cms.Core.Notifications;
 
 namespace N3O.Umbraco.Crowdfunding.Notifications;
 
+[SkipDuringSync]
 public class CampaignPublished : INotificationAsyncHandler<ContentPublishedNotification> {
     private readonly ICrowdfunderManager _crowdfunderManager;
     private readonly IContentLocator _contentLocator;

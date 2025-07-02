@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cloud.Engage.Lookups;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
@@ -14,6 +15,7 @@ using Umbraco.Cms.Core.Routing;
 
 namespace N3O.Umbraco.Crowdfunding.Notifications;
 
+[SkipDuringSync]
 public class CrowdfunderSending : INotificationAsyncHandler<SendingContentNotification> {
     private readonly Lazy<ILookups> _lookups;
     private readonly Lazy<ICrowdfundingUrlBuilder> _crowdfundingUrlBuilder;
