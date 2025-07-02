@@ -11,6 +11,9 @@ public class OrganizationInfoContent : UmbracoContent<OrganizationInfoContent> {
 		public string AddressPostalCode => GetValue(x => x.AddressPostalCode);
 		public string AddressSingleLine => GetValue(x => x.AddressSingleLine);
 		public string CharityRegistration => GetValue(x => x.CharityRegistration);
+		public string Email => GetValue(x => x.Email);
 		public MediaWithCrops Logo => GetValue(x => x.Logo);
 		public string OrganisationName => GetValue(x => x.OrganisationName);
+		public Link SupportUrl => GetValue(x => x.SupportUrl);
+		public string Telephone => GetValue(x => x.Telephone);
 }
