@@ -14,7 +14,7 @@ using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 namespace N3O.Umbraco.Data.Parsing;
 
 public abstract class DateParser : DataTypeParser<LocalDate?>, IDateParser {
-    private readonly List<LocalDatePattern> _patterns = new();
+    private readonly List<LocalDatePattern> _patterns = [];
     private readonly Lazy<IDateTimeParser> _dateTimeParser;
     private readonly Timezone _timezone;
 

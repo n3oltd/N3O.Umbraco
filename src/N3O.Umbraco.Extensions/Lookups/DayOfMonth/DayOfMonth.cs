@@ -2,6 +2,7 @@ using N3O.Umbraco.Localization;
 using NodaTime;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Lookups;
@@ -97,7 +98,7 @@ public class DaysOfMonth : LookupsCollection<DayOfMonth> {
         All = list;
     }
 
-    protected override Task<IReadOnlyList<DayOfMonth>> LoadAllAsync() {
+    protected override Task<IReadOnlyList<DayOfMonth>> LoadAllAsync(CancellationToken cancellationToken) {
         return Task.FromResult(All);
     }
 }

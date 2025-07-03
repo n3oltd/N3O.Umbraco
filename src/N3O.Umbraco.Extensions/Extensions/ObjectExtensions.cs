@@ -117,7 +117,7 @@ public static class ObjectExtensions {
 
     public static IEnumerable<T2> OrEmpty<T1, T2>(this T1 obj, Func<T1, IEnumerable<T2>> selector) {
         if (obj == null) {
-            return Enumerable.Empty<T2>();
+            return [];
         }
 
         var collection = selector?.Invoke(obj) ?? Enumerable.Empty<T2>();

@@ -10,8 +10,8 @@ public class MultiDictionary<TKey, TValue> : IReadOnlyDictionary<TKey, List<TVal
         if (_dict.TryGetValue(key, out var valueList)) {
             valueList.Add(value);
         } else {
-            valueList = new List<TValue>();
-            valueList.Add(value);
+            valueList = [value];
+
             _dict.Add(key, valueList);
         }
     }

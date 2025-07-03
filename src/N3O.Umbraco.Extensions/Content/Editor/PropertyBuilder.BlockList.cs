@@ -67,7 +67,7 @@ public class BlockListPropertyBuilder : PropertyBuilder {
         blockValue.Layout["layout"]["Umbraco.BlockList"] = blocksList;
 
         blockValue.ContentData = blockItemDatas;
-        blockValue.SettingsData = new List<BlockItemData>();
+        blockValue.SettingsData = [];
 
         return (JsonConvert.SerializeObject(blockValue), GetPropertyType(propertyAlias, parentContentTypeAlias));
     }

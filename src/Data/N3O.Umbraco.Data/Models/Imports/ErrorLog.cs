@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Data.Models;
 
 public class ErrorLog {
     private readonly IFormatter _formatter;
-    private readonly List<string> _errorMessages = new();
+    private readonly List<string> _errorMessages = [];
 
     public ErrorLog(IFormatter formatter) {
         _formatter = formatter;

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Lookups;
@@ -50,7 +51,7 @@ public class LookupTypes : LookupsCollection<LookupInfo> {
         All = list;
     }
 
-    protected override Task<IReadOnlyList<LookupInfo>> LoadAllAsync() {
+    protected override Task<IReadOnlyList<LookupInfo>> LoadAllAsync(CancellationToken cancellationToken) {
         return Task.FromResult(All);
     }
 

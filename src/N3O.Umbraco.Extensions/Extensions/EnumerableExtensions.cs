@@ -51,7 +51,7 @@ public static class EnumerableExtensions {
             return null;
         }
 
-        IEnumerable<IEnumerable<T>> emptyProduct = new[] { Enumerable.Empty<T>() };
+        IEnumerable<IEnumerable<T>> emptyProduct = [[]];
 
         return sequences.Aggregate(emptyProduct,
                                    (acc, seq) => acc.SelectMany(_ => seq,
@@ -470,7 +470,7 @@ public static class EnumerableExtensions {
     }
 
     public static IEnumerable<T> OrEmpty<T>(this IEnumerable<T> collection) {
-        return collection ?? Enumerable.Empty<T>();
+        return collection ?? [];
     }
 
     public static T PickRandom<T>(this IEnumerable<T> source, Func<T, bool> predicate = null) {
@@ -541,7 +541,7 @@ public static class EnumerableExtensions {
 
     public static IEnumerable<T> Take<T>(this IEnumerable<T> source, int lowerBound, int upperBound) {
         if (upperBound == 0) {
-            return Enumerable.Empty<T>();
+            return [];
         }
 
         var result = new List<T>();
@@ -657,7 +657,7 @@ public static class EnumerableExtensions {
 
     public static IEnumerable<string> Trim(this IEnumerable<string> source) {
         if (source == null) {
-            return Enumerable.Empty<string>();
+            return [];
         }
 
         return source.Where(s => s.HasValue())

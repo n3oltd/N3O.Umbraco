@@ -13,7 +13,7 @@ public class ContentCache : IContentCache {
     private readonly IContentLocator _contentLocator;
     private readonly ConcurrentDictionary<string, object> _typedStore = new(StringComparer.InvariantCultureIgnoreCase);
     private readonly ConcurrentDictionary<string, IReadOnlyList<IPublishedContent>> _untypedStore = new(StringComparer.InvariantCultureIgnoreCase);
-    private readonly ConcurrentHashSet<string> _heldContentTypes = new();
+    private readonly ConcurrentHashSet<string> _heldContentTypes = [];
 
     public ContentCache(IContentLocator contentLocator) {
         _contentLocator = contentLocator;

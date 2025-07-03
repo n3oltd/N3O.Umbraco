@@ -20,7 +20,7 @@ public class CropperPropertyBuilder : PropertyBuilder {
     private readonly MediaFileManager _mediaFileManager;
     private readonly ILocalClock _clock;
     private readonly Lazy<IVolume> _volume;
-    private readonly List<ICropBuilder> _cropBuilders = new();
+    private readonly List<ICropBuilder> _cropBuilders = [];
     private string _src;
     private string _mediaId;
     private string _filename;

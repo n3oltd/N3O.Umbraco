@@ -40,11 +40,11 @@ public abstract class UrlProvider : IUrlProvider {
         } catch (Exception ex) {
             _logger.LogError(ex, "Error executing GetOtherUrls for URL provider");
             
-            return Enumerable.Empty<UrlInfo>();
+            return [];
         }
     }
 
-    protected virtual IEnumerable<UrlInfo> ResolveOtherUrls(int id, Uri current) => Enumerable.Empty<UrlInfo>();
+    protected virtual IEnumerable<UrlInfo> ResolveOtherUrls(int id, Uri current) => [];
     
     protected abstract UrlInfo ResolveUrl(IPublishedContent content, UrlMode mode, string culture, Uri current);
     

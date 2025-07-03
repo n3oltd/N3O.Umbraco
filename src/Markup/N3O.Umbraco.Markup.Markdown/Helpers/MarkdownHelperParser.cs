@@ -24,7 +24,7 @@ public class MarkdownHelperParser<T, TArgs> : InlineParser where TArgs : HelperA
         _keywords = keywords.ToList();
         _populateHelperArgs = populateHelperArgs;
 
-        OpeningCharacters = new[] { '{' };
+        OpeningCharacters = ['{'];
     }
 
     public override bool Match(InlineProcessor processor, ref StringSlice slice) {

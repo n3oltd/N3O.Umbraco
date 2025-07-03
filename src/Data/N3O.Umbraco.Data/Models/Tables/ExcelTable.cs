@@ -6,7 +6,7 @@ namespace N3O.Umbraco.Data.Models;
 public class ExcelTable : IExcelTable {
     private readonly ITable _table;
     private readonly Dictionary<CellAddress, ExcelCell> _cells = new();
-    private readonly List<ExcelColumn> _columns = new();
+    private readonly List<ExcelColumn> _columns = [];
 
     public ExcelTable(ITable table, IExcelTableFormatter tableFormatter) {
         _table = table;

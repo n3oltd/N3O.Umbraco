@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Lookups;
@@ -11,7 +12,7 @@ public abstract class StaticLookupsCollection<T> : LookupsCollection<T> where T 
         _all = StaticLookups.GetAll<T>(GetType());
     }
 
-    protected override Task<IReadOnlyList<T>> LoadAllAsync() {
+    protected override Task<IReadOnlyList<T>> LoadAllAsync(CancellationToken cancellationToken) {
         return Task.FromResult(_all);
     }
 }

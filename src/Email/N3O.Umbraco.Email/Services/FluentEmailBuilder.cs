@@ -10,12 +10,12 @@ namespace N3O.Umbraco.Email;
 public class FluentEmailBuilder<T> : IFluentEmailBuilder<T> {
     private readonly IBackgroundJob _backgroundJob;
     private readonly IJsonProvider _jsonProvider;
-    private readonly List<string> _recipientEmails = new();
+    private readonly List<string> _recipientEmails = [];
     
     private EmailIdentityReq _from;
-    private readonly List<EmailIdentityReq> _to = new();
-    private readonly List<EmailIdentityReq> _cc = new();
-    private readonly List<EmailIdentityReq> _bcc = new();
+    private readonly List<EmailIdentityReq> _to = [];
+    private readonly List<EmailIdentityReq> _cc = [];
+    private readonly List<EmailIdentityReq> _bcc = [];
     private string _subject;
     private string _body;
     private T _model;

@@ -24,7 +24,7 @@ using Umbraco.Cms.Infrastructure.Persistence;
 namespace N3O.Umbraco.Data;
 
 public class ImportQueue : IImportQueue {
-    private readonly List<Import> _imports = new();
+    private readonly List<Import> _imports = [];
     private readonly ICounters _counters;
     private readonly IJsonProvider _jsonProvider;
     private readonly IContentHelper _contentHelper;
@@ -185,7 +185,7 @@ public class ImportQueue : IImportQueue {
         }
 
         if (matches.None() && container.ParentId != -1) {
-            searched ??= new HashSet<Guid>();
+            searched ??= [];
             
             _descendants.OrEmpty().Select(x => x.Key).Do(x => searched.Add(x));
             

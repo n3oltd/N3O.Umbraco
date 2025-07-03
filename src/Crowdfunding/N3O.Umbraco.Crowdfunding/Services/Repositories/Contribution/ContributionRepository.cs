@@ -23,7 +23,7 @@ using Umbraco.Cms.Infrastructure.Persistence;
 namespace N3O.Umbraco.Crowdfunding;
 
 public partial class ContributionRepository : IContributionRepository {
-    private readonly List<Contribution> _toCommit = new();
+    private readonly List<Contribution> _toCommit = [];
     
     private readonly IForexConverter _forexConverter;
     private readonly ILocalClock _localClock;

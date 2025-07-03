@@ -16,8 +16,8 @@ namespace N3O.Umbraco.Data.Parsing;
 
 public class DateTimeParser : DataTypeParser<LocalDateTime?>, IDateTimeParser {
     private readonly Timezone _timezone;
-    private readonly List<LocalDateTimePattern> _localPatterns = new();
-    private readonly List<OffsetDateTimePattern> _offsetPatterns = new();
+    private readonly List<LocalDateTimePattern> _localPatterns = [];
+    private readonly List<OffsetDateTimePattern> _offsetPatterns = [];
 
     public DateTimeParser(IDateParser dateParser, Timezone timezone) {
         _timezone = timezone;

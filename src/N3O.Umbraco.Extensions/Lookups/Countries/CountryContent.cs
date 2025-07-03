@@ -3,20 +3,19 @@ using N3O.Umbraco.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Lookups;
 
-public class CountryContent : UmbracoContent<CountryContent>, IHoldCountryCode {
+public class CountryContent : UmbracoContent<CountryContent> {
     public string Iso2Code => GetValue(x => x.Iso2Code);
     public string Iso3Code => GetValue(x => x.Iso3Code);
     [UmbracoProperty("diallingCode")]
     public int DialingCode => GetConvertedValue<string, int>(x => x.DialingCode, int.Parse);
     public bool LocalityOptional => GetValue(x => x.LocalityOptional);
     public bool PostalCodeOptional => GetValue(x => x.PostalCodeOptional);
-
-    string IHoldCountryCode.Iso2Or3Code => Iso3Code;
 }
 
 [Order(int.MinValue)]
@@ -31,7 +30,7 @@ public class ContentCountries : LookupsCollection<Country> {
         _contentCache.Flushed += ContentCacheOnFlushed;
     }
     
-    protected override Task<IReadOnlyList<Country>> LoadAllAsync() {
+    protected override Task<IReadOnlyList<Country>> LoadAllAsync(CancellationToken cancellationToken) {
         var all = GetFromCache();
         
         return Task.FromResult(all);
@@ -43,7 +42,7 @@ public class ContentCountries : LookupsCollection<Country> {
         if (_umbracoContextAccessor.TryGetUmbracoContext(out _)) {
             content = _contentCache.All<CountryContent>().OrderBy(x => x.Content().SortOrder).ToList();
         } else {
-            content = new();
+            content = [];
         }
         
         var lookups = content.Select(ToCountry).ToList();

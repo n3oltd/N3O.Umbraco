@@ -68,7 +68,7 @@ public class StyleContextTagHelper : TagHelper {
 
             return styles;
         } else {
-            return Enumerable.Empty<ITemplateStyle>();
+            return [];
         }
     }
 }

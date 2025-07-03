@@ -19,7 +19,7 @@ public class ValidatorFactory : IValidatorFactory {
         var validatorTypes = GetValidatorTypesForModel(modelType);
 
         if (validatorTypes.None()) {
-            return Enumerable.Empty<IValidator>();
+            return [];
         }
 
         var validators = validatorTypes.Select(ConstructValidator).ToList();
@@ -55,7 +55,7 @@ public class ValidatorFactory : IValidatorFactory {
 
     private IEnumerable<Type> GetValidatorTypes(Type modelType) {
         if (modelType == null) {
-            return Enumerable.Empty<Type>();
+            return [];
         }
 
         var validatorTypes = AllValidatorTypes.Select(x => GetMatchingValidatorsForModel(x, modelType))

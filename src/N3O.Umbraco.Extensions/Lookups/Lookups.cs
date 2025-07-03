@@ -24,9 +24,8 @@ public class Lookups : ILookups {
                                              string id,
                                              CancellationToken cancellationToken = default) {
         var result = await ExecuteAsync(lookupType,
-                                        lookupsCollection => lookupsCollection.FindByIdAsync(id),
-                                        null,
-                                        cancellationToken);
+                                        lookupsCollection => lookupsCollection.FindByIdAsync(id, cancellationToken),
+                                        null);
 
         return result;
     }
@@ -42,9 +41,8 @@ public class Lookups : ILookups {
                                                             string name,
                                                             CancellationToken cancellationToken = default) {
         var result = await ExecuteAsync(lookupType,
-                                        lookupsCollection => lookupsCollection.FindByNameAsync(name),
-                                        null,
-                                        cancellationToken);
+                                        lookupsCollection => lookupsCollection.FindByNameAsync(name, cancellationToken),
+                                        null);
         
         return result;
     }
@@ -72,9 +70,8 @@ public class Lookups : ILookups {
     public async Task<IReadOnlyList<ILookup>> GetAllAsync(Type lookupType,
                                                           CancellationToken cancellationToken = default) {
         var result = await ExecuteAsync(lookupType,
-                                        lookupsCollection => lookupsCollection.GetAllAsync(),
-                                        new List<ILookup>(),
-                                        cancellationToken);
+                                        lookupsCollection => lookupsCollection.GetAllAsync(cancellationToken),
+                                        new List<ILookup>());
 
         return result;
     }
@@ -92,8 +89,7 @@ public class Lookups : ILookups {
 
     private async Task<TResult> ExecuteAsync<TResult>(Type lookupType,
                                                       Func<ILookupsCollection, Task<TResult>> getResultAsync,
-                                                      TResult defaultResult,
-                                                      CancellationToken cancellationToken) {
+                                                      TResult defaultResult) {
         var lookupsCollectionType = typeof(ILookupsCollection<>).MakeGenericType(lookupType);
         var lookupsCollection = (ILookupsCollection) _services.GetService(lookupsCollectionType);
 
