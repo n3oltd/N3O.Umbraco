@@ -12,7 +12,7 @@ namespace N3O.Umbraco.Data.Builders;
 public class TypedTableBuilder<TRow> : ITypedTableBuilder<TRow> {
     private readonly IColumnRangeBuilder _columnRangeBuilder;
     private readonly IUntypedTableBuilder _tableBuilder;
-    private readonly List<IRowProperty<TRow>> _rowProperties = new();
+    private readonly List<IRowProperty<TRow>> _rowProperties = [];
     private bool _schemaCreated;
     private int _rowCount;
 

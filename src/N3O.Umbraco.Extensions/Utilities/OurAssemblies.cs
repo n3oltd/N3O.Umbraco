@@ -55,7 +55,7 @@ public static class OurAssemblies {
 
     private static IReadOnlyList<Assembly> LoadAllOurReferencedAssemblies(Assembly assembly,
                                                                           List<Assembly> processedReferencedAssemblies = null) {
-        processedReferencedAssemblies ??= new List<Assembly>();
+        processedReferencedAssemblies ??= [];
 
         var referencedAssemblies = new List<Assembly>();
 

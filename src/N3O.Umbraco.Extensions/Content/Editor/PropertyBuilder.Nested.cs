@@ -8,7 +8,7 @@ using Umbraco.Cms.Core.Services;
 namespace N3O.Umbraco.Content;
 
 public class NestedPropertyBuilder : PropertyBuilder {
-    private readonly List<(string, (IContentBuilder ContentBuilder, Guid Key))> _contentBuilders = new();
+    private readonly List<(string, (IContentBuilder ContentBuilder, Guid Key))> _contentBuilders = [];
     private readonly IServiceProvider _serviceProvider;
 
     public NestedPropertyBuilder(IContentTypeService contentTypeService, IServiceProvider serviceProvider)

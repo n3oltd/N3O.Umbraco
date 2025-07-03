@@ -7,7 +7,7 @@ using System.Globalization;
 namespace N3O.Umbraco.Utilities;
 
 public class CacheKeyBuilder {
-    private readonly List<string> _values = new();
+    private readonly List<string> _values = [];
 
     private CacheKeyBuilder() { }
     

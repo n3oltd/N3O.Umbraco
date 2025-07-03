@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Data.Builders;
 
 public class UntypedTableBuilder : IUntypedTableBuilder {
     private readonly string _name;
-    private readonly HashSet<IColumnRange> _columnRanges = new();
+    private readonly HashSet<IColumnRange> _columnRanges = [];
     private readonly Dictionary<Column, IColumnRange> _columnToRangeMap = new();
     private int _rowNumber;
 

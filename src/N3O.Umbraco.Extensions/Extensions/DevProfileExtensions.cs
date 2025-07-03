@@ -11,12 +11,6 @@ public static class DevProfileExtensions {
         return devProfile;
     }
     
-    public static T SetLanguage<T>(this T devProfile, Language language) where T : DevProfile {
-        devProfile.SetOurEnvironmentData(LocalizationKeys.Language, language.Id);
-
-        return devProfile;
-    }
-    
     public static T SetNumberFormat<T>(this T devProfile, NumberFormat numberFormat) where T : DevProfile {
         devProfile.SetOurEnvironmentData(LocalizationKeys.NumberFormat, numberFormat.Id);
 

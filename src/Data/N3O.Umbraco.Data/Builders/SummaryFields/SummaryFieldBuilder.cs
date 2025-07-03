@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace N3O.Umbraco.Data.Builders; 
 
 public class SummaryFieldBuilder : ISummaryFieldBuilder {
-    private readonly List<Cell> _cells = new();
+    private readonly List<Cell> _cells = [];
     private Func<IFormatter, string> _getLabel;
 
     public ISummaryFieldBuilder AddCell(Cell cell) {

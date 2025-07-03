@@ -11,7 +11,7 @@ namespace N3O.Umbraco.Data;
 public class ExcelWorkbook : IExcelWorkbook {
     private readonly IExcelCellFormatter _excelCellFormatter;
     private readonly IFormatter _formatter;
-    private readonly List<ExcelWorksheetWriter> _worksheetsWriters = new();
+    private readonly List<ExcelWorksheetWriter> _worksheetsWriters = [];
     private string _password;
 
     public ExcelWorkbook(IExcelCellFormatter excelCellFormatter, IFormatter formatter) {

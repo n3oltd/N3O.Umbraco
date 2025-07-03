@@ -3,6 +3,7 @@ using N3O.Umbraco.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Web;
 
@@ -29,7 +30,7 @@ public class ContentCountries : LookupsCollection<Country> {
         _contentCache.Flushed += ContentCacheOnFlushed;
     }
     
-    protected override Task<IReadOnlyList<Country>> LoadAllAsync() {
+    protected override Task<IReadOnlyList<Country>> LoadAllAsync(CancellationToken cancellationToken) {
         var all = GetFromCache();
         
         return Task.FromResult(all);
@@ -41,7 +42,7 @@ public class ContentCountries : LookupsCollection<Country> {
         if (_umbracoContextAccessor.TryGetUmbracoContext(out _)) {
             content = _contentCache.All<CountryContent>().OrderBy(x => x.Content().SortOrder).ToList();
         } else {
-            content = new();
+            content = [];
         }
         
         var lookups = content.Select(ToCountry).ToList();

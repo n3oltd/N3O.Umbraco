@@ -4,10 +4,10 @@ public class DefaultLocalizationSettingsAccessor : ILocalizationSettingsAccessor
     private readonly LocalizationSettings _settings;
 
     private DefaultLocalizationSettingsAccessor() {
-        _settings = new LocalizationSettings(NumberFormats.International,
+        _settings = new LocalizationSettings("en-US",
+                                             NumberFormats.International,
                                              DateFormats.DayMonthYearSlashes,
                                              TimeFormats._24,
-                                             Languages.English,
                                              Timezones.Utc);
     }
 

@@ -9,7 +9,7 @@ using System.Linq;
 namespace N3O.Umbraco.Dev;
 
 public static class DevSettings {
-    private static readonly List<IDevProfile> DevProfiles = new();
+    private static readonly List<IDevProfile> DevProfiles = [];
     
     public static void Apply(IWebHostEnvironment webHostEnvironment, IConfiguration configuration) {
         foreach (var devProfile in DevProfiles) {

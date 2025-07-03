@@ -22,7 +22,7 @@ public class ExcelWorksheetWriter {
     private const int WorksheetNameMaxLength = 31;
     
     private readonly Dictionary<ExcelColumn, ExcelFormatting> _footerFormatting = new();
-    private readonly List<(RenderMode, object)> _toRender = new();
+    private readonly List<(RenderMode, object)> _toRender = [];
     private readonly IExcelCellFormatter _excelCellFormatter;
     private readonly IFormatter _formatter;
     private int _rowCursor = FirstRow;

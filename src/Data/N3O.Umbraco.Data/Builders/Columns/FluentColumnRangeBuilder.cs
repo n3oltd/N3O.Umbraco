@@ -17,7 +17,7 @@ public class FluentColumnRangeBuilder<TValue> : IFluentColumnRangeBuilder<TValue
     private readonly IStringLocalizer _stringLocalizer;
     private readonly ILocalClock _localClock;
     private readonly DataType _dataType;
-    private readonly List<Attribute> _attributes = new();
+    private readonly List<Attribute> _attributes = [];
     private readonly MultiDictionary<string, object> _columnMetadata = new();
     private ICellConverter<TValue> _cellConverter;
     private IColumnHeading _columnHeading;

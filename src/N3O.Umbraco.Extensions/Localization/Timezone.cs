@@ -5,6 +5,7 @@ using NodaTime.TimeZones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Localization;
@@ -71,7 +72,7 @@ public class Timezones : LookupsCollection<Timezone> {
 
     public static Timezone Utc => Timezone.FromTzId("Etc/UTC");
 
-    protected override Task<IReadOnlyList<Timezone>> LoadAllAsync() {
+    protected override Task<IReadOnlyList<Timezone>> LoadAllAsync(CancellationToken cancellationToken) {
         return Task.FromResult(All);
     }
 }

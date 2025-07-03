@@ -11,7 +11,7 @@ using OurDataTypes = N3O.Umbraco.Data.Lookups.DataTypes;
 namespace N3O.Umbraco.Data.Parsing;
 
 public abstract class YearMonthParser : DataTypeParser<YearMonth?>, IYearMonthParser {
-    private readonly List<YearMonthPattern> _patterns = new();
+    private readonly List<YearMonthPattern> _patterns = [];
 
     public override bool CanParse(DataType dataType) {
         return dataType == OurDataTypes.YearMonth;

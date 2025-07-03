@@ -8,7 +8,7 @@ using System.Linq;
 namespace N3O.Umbraco.Data.Builders;
 
 public class FluentSummaryFieldsBuilder : IFluentSummaryFieldsBuilder {
-    private readonly List<ISummaryFieldBuilder> _fieldBuilders = new();
+    private readonly List<ISummaryFieldBuilder> _fieldBuilders = [];
     private int _linesBefore;
     private int _linesAfter;
 

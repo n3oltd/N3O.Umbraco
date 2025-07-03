@@ -2,6 +2,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Lookups;
@@ -16,7 +17,7 @@ public abstract class DistributedLookupsCollection<T, TInterface> : LookupsColle
         All = classes.SelectMany(StaticLookups.GetAll<T>).ToList();
     }
 
-    protected override Task<IReadOnlyList<T>> LoadAllAsync() {
+    protected override Task<IReadOnlyList<T>> LoadAllAsync(CancellationToken cancellationToken) {
         return Task.FromResult(All);
     }
 }

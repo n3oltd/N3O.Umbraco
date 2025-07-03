@@ -12,7 +12,7 @@ namespace N3O.Umbraco.Data;
 public abstract class ContentPropertyValidator<TReq, TRes> : IContentPropertyValidator 
     where TReq : ValueReq
     where TRes : ContentPropertyConfigurationRes {
-    protected readonly List<ValidationFailure> Failures = new();
+    private readonly List<ValidationFailure> Failures = [];
     
     private readonly IFormatter _formatter;
     private readonly string _contentTypeAlias;

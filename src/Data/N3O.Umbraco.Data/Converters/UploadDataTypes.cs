@@ -6,7 +6,7 @@ using UmbracoPropertyEditors = Umbraco.Cms.Core.Constants.PropertyEditors;
 namespace N3O.Umbraco.Data.Converters;
 
 public static class UploadDataTypes {
-    private static readonly List<string> EditorAliases = new();
+    private static readonly List<string> EditorAliases = [];
 
     static UploadDataTypes() {
         Register(UmbracoPropertyEditors.Aliases.UploadField);
