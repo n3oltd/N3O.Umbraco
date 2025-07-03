@@ -4,8 +4,9 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Utilities;
-using System.Collections.Generic;
+using System;
 using System.Linq;
+using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Accounts.Content;
 
@@ -18,20 +19,27 @@ public class AddressDataEntrySettingsContent : UmbracoContent<AddressDataEntrySe
     public AddressFieldElement AdministrativeArea => GetValue(x => x.AdministrativeArea);
     public AddressFieldElement PostalCode => GetValue(x => x.PostalCode);
     public string LookupApiKey => GetValue(x => x.LookupApiKey);
-    public IHoldCountryCode DefaultCountry => GetValue(x => x.DefaultCountry);
     public AddressLayout Layout => GetValue(x => x.Layout);
 
     public Country GetDefaultCountry(ILookups lookups) {
-        var allCountries = lookups.GetAll<Country>();
+        var propertyValue = Content().GetProperty(AccountsConstants.DataEntrySettings.Properties.DefaultCountry)
+                                    ?.GetValue();
 
-        return GetDefaultCountry(allCountries);
-    }
-    
-    public Country GetDefaultCountry(IEnumerable<Country> allCountries) {
-        var defaultCountry = allCountries.SingleOrDefault(x => x.Iso2Code.EqualsInvariant(DefaultCountry.Iso2Or3Code) ||
-                                                               x.Iso3Code.EqualsInvariant(DefaultCountry.Iso2Or3Code));
+        Country country;
+        
+        if (propertyValue is IPublishedContent publishedContent) {
+            var allCountries = lookups.GetAll<Country>();
+            
+            var countryCode = publishedContent.As<CountryContent>().Iso2Code;
+            
+            country = allCountries.SingleOrDefault(x => x.Iso2Code == countryCode);
+        } else if (propertyValue is Country countryLookup) {
+            country =  countryLookup;
+        } else {
+            throw new Exception("Default country must either be a picker or a datalist");
+        }
 
-        return defaultCountry;
+        return country;
     }
 
     public AddressDataEntrySettings ToDataEntrySettings(ILookups lookups) {
@@ -40,7 +48,7 @@ public class AddressDataEntrySettingsContent : UmbracoContent<AddressDataEntrySe
         }
 
         var allCountries = lookups.GetAll<Country>();
-        var defaultCountry = GetDefaultCountry(allCountries);
+        var defaultCountry = GetDefaultCountry(lookups);
         var countryOptions = allCountries.Select(ToSelectOption).ToList();
         var countryField = Country.ToSelectFieldSettings(HtmlField.Name<AccountReq>(x => x.Address.Country),
                                                          countryOptions,

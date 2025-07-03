@@ -8,15 +8,13 @@ using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Lookups;
 
-public class CountryContent : UmbracoContent<CountryContent>, IHoldCountryCode {
+public class CountryContent : UmbracoContent<CountryContent> {
     public string Iso2Code => GetValue(x => x.Iso2Code);
     public string Iso3Code => GetValue(x => x.Iso3Code);
     [UmbracoProperty("diallingCode")]
     public int DialingCode => GetConvertedValue<string, int>(x => x.DialingCode, int.Parse);
     public bool LocalityOptional => GetValue(x => x.LocalityOptional);
     public bool PostalCodeOptional => GetValue(x => x.PostalCodeOptional);
-
-    string IHoldCountryCode.Iso2Or3Code => Iso3Code;
 }
 
 [Order(int.MinValue)]

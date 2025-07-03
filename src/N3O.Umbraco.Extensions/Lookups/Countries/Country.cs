@@ -1,6 +1,6 @@
 ﻿namespace N3O.Umbraco.Lookups;
 
-public class Country : NamedLookup, IHoldCountryCode {
+public class Country : NamedLookup {
     public Country(string id,
                    string name,
                    string iso2Code,
@@ -21,6 +21,4 @@ public class Country : NamedLookup, IHoldCountryCode {
     public int DialingCode { get; }
     public bool LocalityOptional { get; }
     public bool PostalCodeOptional { get; }
-    
-    string IHoldCountryCode.Iso2Or3Code => Iso3Code;
 }

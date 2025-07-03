@@ -9,5 +9,9 @@ public static class AccountsConstants {
     
     public static class DataEntrySettings {
         public const string Alias = "dataEntrySettings";
+
+        public static class Properties {
+            public const string DefaultCountry = "defaultCountry";
+        }
     }
 }

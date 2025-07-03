@@ -28,16 +28,13 @@ public class StringLocalizer : IStringLocalizer {
     private readonly IContentService _contentService;
     private readonly IUmbracoContextAccessor _umbracoContextAccessor;
     private readonly AsyncKeyedLocker<string> _locker;
-    private readonly IVariations _variations;
 
-    public StringLocalizer(IContentService contentService,
+    public StringLocalizer(IContentService contentService, 
                            IUmbracoContextAccessor umbracoContextAccessor,
-                           AsyncKeyedLocker<string> locker,
-                           IVariations variations) {
+                           AsyncKeyedLocker<string> locker) {
         _contentService = contentService;
         _umbracoContextAccessor = umbracoContextAccessor;
         _locker = locker;
-        _variations = variations;
     }
 
     public void Flush(IEnumerable<string> aliases) {
@@ -47,14 +44,14 @@ public class StringLocalizer : IStringLocalizer {
         }
     }
 
-    public string Get(string folder, string name, string text) {
+    public string Get(string folder, string name, string text, string culture) {
         return Lock(() => {
             try {
                 var cacheKey = GetCacheKey(nameof(Get), folder, name, text);
 
                 return StringCache.GetOrAdd(cacheKey, _ => {
                     var folderId = GetOrCreateFolderId(folder);
-                    var dictionaryId = GetOrCreateTextContainerId(folderId, name);
+                    var dictionaryId = GetOrCreateTextContainerId(folderId, name, culture);
                     var textResource = CreateOrUpdateResource(dictionaryId, text);
 
                     return textResource.Value;
@@ -94,7 +91,7 @@ public class StringLocalizer : IStringLocalizer {
         return content.Key;
     }
 
-    private Guid GetOrCreateTextContainerId(Guid folderId, string name) {
+    private Guid GetOrCreateTextContainerId(Guid folderId, string name, string currentCulture) {
         var cacheKey = GetCacheKey(nameof(GetOrCreateTextContainerId), folderId, name);
 
         return GuidCache.GetOrAdd(cacheKey, _ => {
@@ -113,7 +110,7 @@ public class StringLocalizer : IStringLocalizer {
             
             Guid containerId;
 
-            if (container.IsInvariantOrHasCulture(_variations.CurrentCulture)) {
+            if (container.IsInvariantOrHasCulture(currentCulture)) {
                 containerId = container.Key;
             } else {
                 containerId = AddCurrentCultureToContainer(container, name);
