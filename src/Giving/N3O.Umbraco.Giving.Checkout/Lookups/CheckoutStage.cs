@@ -4,6 +4,7 @@ using N3O.Umbraco.Giving.Checkout.Content;
 using N3O.Umbraco.Lookups;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Giving.Checkout.Lookups;
@@ -42,7 +43,7 @@ public class CheckoutStage : NamedLookup {
 }
 
 public class CheckoutStagesCollection : LookupsCollection<CheckoutStage> {
-    protected override Task<IReadOnlyList<CheckoutStage>> LoadAllAsync() {
+    protected override Task<IReadOnlyList<CheckoutStage>> LoadAllAsync(CancellationToken cancellationToken) {
         var checkoutStages = new List<CheckoutStage>();
         
         checkoutStages.Add(CheckoutStages.Account);
