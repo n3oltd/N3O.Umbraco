@@ -2,6 +2,8 @@ using N3O.Umbraco.Constants;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Lookups;
+using System.Collections.Generic;
+using System.Linq;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Localization;
@@ -15,6 +17,10 @@ public class EnvironmentLocalizationSettingsAccessor : ILocalizationSettingsAcce
         _lookups = lookups;
         _localizationService = localizationService;
     }
+    
+    public IEnumerable<string> GetAllAvailableCultures() {
+        return _localizationService.GetAllLanguages().Select(x => x.IsoCode);
+    }
 
     public LocalizationSettings GetSettings() {
         if (_settings == null) {
@@ -24,7 +30,11 @@ public class EnvironmentLocalizationSettingsAccessor : ILocalizationSettingsAcce
             var timeFormat = Get(LocalizationKeys.TimeFormat, TimeFormats._24);
             var timezone = Get(LocalizationKeys.Timezone, Timezones.Utc);
         
-            _settings = new LocalizationSettings(defaultCultureCode, numberFormat, dateFormat, timeFormat, timezone);
+            _settings = new LocalizationSettings(defaultCultureCode,
+                                                 numberFormat,
+                                                 dateFormat,
+                                                 timeFormat,
+                                                 timezone);
         }
 
         return _settings;

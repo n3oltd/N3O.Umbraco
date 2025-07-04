@@ -3,6 +3,8 @@ using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Models;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Lookups;
+using System.Collections.Generic;
+using System.Linq;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Cloud;
@@ -19,6 +21,10 @@ public class PublishedLocalizationSettingsAccessor : ILocalizationSettingsAccess
         _cdnClient = cdnClient;
         _lookups = lookups;
         _localizationService = localizationService;
+    }
+    
+    public IEnumerable<string> GetAllAvailableCultures() {
+        return _localizationService.GetAllLanguages().Select(x => x.IsoCode);
     }
 
     public LocalizationSettings GetSettings() {
