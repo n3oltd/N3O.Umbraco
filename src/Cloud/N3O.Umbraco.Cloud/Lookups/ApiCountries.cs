@@ -3,6 +3,7 @@ using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Models;
 using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Cloud.Lookups;
@@ -15,7 +16,7 @@ public class ApiCountries : ApiLookupsCollection<Country> {
         _cdnClient = cdnClient;
     }
     
-    protected override async Task<IReadOnlyList<Country>> FetchAsync() {
+    protected override async Task<IReadOnlyList<Country>> FetchAsync(CancellationToken cancellationToken) {
         var publishedLookupsRoot = await _cdnClient.DownloadSubscriptionContentAsync<PublishedLookupsRoot>(SubscriptionFiles.Lookups,
                                                                                                            JsonSerializers.Simple);
 
