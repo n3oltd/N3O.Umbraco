@@ -9,4 +9,5 @@ public class PublishedCurrency {
     public Uri Icon { get; set; }
     public int DecimalDigits { get; set; }
     public decimal Rate { get; set; }
+    public bool IsBaseCurrency { get; set; }
 }

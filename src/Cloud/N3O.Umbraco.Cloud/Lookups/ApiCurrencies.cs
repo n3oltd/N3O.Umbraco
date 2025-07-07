@@ -32,7 +32,7 @@ public class ApiCurrencies : ApiLookupsCollection<Currency> {
                                         publishedCurrency.Code,
                                         publishedCurrency.Symbol,
                                         publishedCurrency.DecimalDigits,
-                                        publishedCurrency.Code == basePublishedCurrency.Code);
+                                        publishedCurrency.IsBaseCurrency);
             
             currencies.Add(currency);
         }
