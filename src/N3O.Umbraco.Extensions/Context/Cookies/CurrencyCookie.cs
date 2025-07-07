@@ -1,22 +1,23 @@
 using Microsoft.AspNetCore.Http;
-using N3O.Umbraco.Content;
 using N3O.Umbraco.Financial;
+using N3O.Umbraco.Lookups;
 using System;
+using System.Linq;
 
 namespace N3O.Umbraco.Context;
 
 public class CurrencyCookie : Cookie {
-    private readonly IContentCache _contentCache;
+    private readonly ILookups _lookups;
 
-    public CurrencyCookie(IHttpContextAccessor httpContextAccessor, IContentCache contentCache)
+    public CurrencyCookie(IHttpContextAccessor httpContextAccessor, ILookups lookups)
         : base(httpContextAccessor) {
-        _contentCache = contentCache;
+        _lookups = lookups;
     }
 
     protected override string GetDefaultValue() {
-        var currency = _contentCache.Single<Currency>(x => x.IsBaseCurrency);
+        var currency = _lookups.GetAll<Currency>().Single(x => x.IsBaseCurrency);
 
-        return currency?.Name;
+        return currency.Name;
     }
 
     protected override void SetOptions(CookieOptions cookieOptions) {

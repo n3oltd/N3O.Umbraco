@@ -13,7 +13,7 @@ public class Currency : NamedLookup {
         : base(id, name) {
         Code = code;
         Symbol = symbol;
-        Icon = new Uri($"https://cdn.n3o.cloud/assets/icons/currencies/{symbol.ToLowerInvariant()}.png");
+        Icon = new Uri($"https://cdn.n3o.cloud/assets/icons/currencies/{code.ToLowerInvariant()}.png");
         DecimalDigits = decimalDigits;
         IsBaseCurrency = isBaseCurrency;
     }
