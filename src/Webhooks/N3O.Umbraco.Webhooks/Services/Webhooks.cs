@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Scheduler;
@@ -19,30 +20,37 @@ public class Webhooks : IWebhooks {
     private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly Lazy<IBackgroundJob> _backgroundJob;
     private readonly IReadOnlyList<IWebhookTransform> _transforms;
+    private readonly ILogger<Webhooks> _logger;
 
     public Webhooks(IContentCache contentCache,
                     IWebHostEnvironment webHostEnvironment,
                     Lazy<IBackgroundJob> backgroundJob,
-                    IEnumerable<IWebhookTransform> transforms) {
+                    IEnumerable<IWebhookTransform> transforms,
+                    ILogger<Webhooks> logger) {
         _contentCache = contentCache;
         _webHostEnvironment = webHostEnvironment;
         _backgroundJob = backgroundJob;
         _transforms = transforms.OrEmpty().ApplyAttributeOrdering();
+        _logger = logger;
     }
 
     public void Queue(WebhookEvent webhookEvent, object body) {
-        var webhooks = GetWebhooks(webhookEvent);
+        try {
+            var webhooks = GetWebhooks(webhookEvent);
 
-        body = ApplyTransforms(body);
+            body = ApplyTransforms(body);
 
-        foreach (var webhook in webhooks) {
-            var jobName = $"DWH {webhookEvent.Name} to {webhook.Url}";
+            foreach (var webhook in webhooks) {
+                var jobName = $"DWH {webhookEvent.Name} to {webhook.Url}";
 
-            var dispatchReq = new DispatchWebhookReq();
-            dispatchReq.Url = webhook.Url;
-            dispatchReq.Body = body;
+                var dispatchReq = new DispatchWebhookReq();
+                dispatchReq.Url = webhook.Url;
+                dispatchReq.Body = body;
 
-            _backgroundJob.Value.Enqueue<DispatchWebhookCommand, DispatchWebhookReq>(jobName, dispatchReq);
+                _backgroundJob.Value.Enqueue<DispatchWebhookCommand, DispatchWebhookReq>(jobName, dispatchReq);
+            }
+        } catch (Exception ex) {
+            _logger.LogError(ex, "Error dispatching webhook: {Body}", body);
         }
     }
 
