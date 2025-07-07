@@ -29,11 +29,10 @@ public class PublishedLocalizationSettingsAccessor : ILocalizationSettingsAccess
 
     public LocalizationSettings GetSettings() {
         if (_localizationSettings == null) {
-            var publishedLocalization = _cdnClient
-                                        .DownloadSubscriptionContentAsync<PublishedLocalization>(SubscriptionFiles.Localization,
-                                                                                                 JsonSerializers.JsonProvider)
-                                        .GetAwaiter()
-                                        .GetResult();
+            var publishedLocalization = _cdnClient.DownloadSubscriptionContentAsync<PublishedLocalization>(SubscriptionFiles.Localization,
+                                                                                                           JsonSerializers.JsonProvider)
+                                                  .GetAwaiter()
+                                                  .GetResult();
 
             var timezone = _lookups.FindById<Timezone>(publishedLocalization.Timezone.Id);
             var defaultCultureCode = _localizationService.GetDefaultLanguageIsoCode();

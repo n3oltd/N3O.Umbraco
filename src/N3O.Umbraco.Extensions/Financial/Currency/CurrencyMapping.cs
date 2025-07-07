@@ -13,7 +13,10 @@ public class CurrencyMapping : IMapDefinition {
         ctx.Map<INamedLookup, NamedLookupRes>(src, dest);
 
         dest.Code = src.Code;
-        dest.IsBaseCurrency = src.IsBaseCurrency;
         dest.Symbol = src.Symbol;
+        dest.Icon = src.Icon.AbsoluteUri;
+        dest.DecimalDigits = src.DecimalDigits;
+        dest.IsBaseCurrency = src.IsBaseCurrency;
+        
     }
 }
