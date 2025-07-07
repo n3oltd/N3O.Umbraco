@@ -65,7 +65,7 @@ public class PerplexBlockTypesService : IPerplexBlockTypesService {
         contentType.IsElement = true;
         contentType.Name = definition.Name;
         contentType.Icon = definition.Icon;
-        contentType.PropertyGroups = new PropertyGroupCollection();
+        contentType.PropertyGroups = [];
         contentType.ContentTypeComposition = [compositionType];
 
         _contentTypeService.Save(contentType);

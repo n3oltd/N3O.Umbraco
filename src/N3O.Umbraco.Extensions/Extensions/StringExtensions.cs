@@ -125,7 +125,7 @@ public static class StringExtensions {
     }
     
     public static bool IsValidUrl(this string url, params string[] uriSchemes) {
-        var allowedSchemes = uriSchemes.Or(new[] { Uri.UriSchemeHttp, Uri.UriSchemeHttps });
+        var allowedSchemes = uriSchemes.Or([Uri.UriSchemeHttp, Uri.UriSchemeHttps]);
 
         var isValid = Uri.TryCreate(url, UriKind.Absolute, out var uriResult) &&
                       allowedSchemes.Contains(uriResult.Scheme);

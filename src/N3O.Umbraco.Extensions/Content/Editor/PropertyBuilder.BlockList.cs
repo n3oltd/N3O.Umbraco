@@ -11,7 +11,7 @@ using Umbraco.Cms.Core.Services;
 namespace N3O.Umbraco.Content;
 
 public class BlockListPropertyBuilder : PropertyBuilder {
-    private readonly List<(string, (IContentBuilder ContentBuilder, Guid Key))> _contentBuilders = new();
+    private readonly List<(string, (IContentBuilder ContentBuilder, Guid Key))> _contentBuilders = [];
     private readonly IServiceProvider _serviceProvider;
     private readonly IContentTypeService _contentTypeService;
 

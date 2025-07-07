@@ -9,8 +9,6 @@ using Umbraco.Cms.Core.Services;
 namespace N3O.Umbraco.Extensions;
 
 public static class ContentServiceExtensions {
-    private static readonly string SettingsAlias = "settings";
-    
     public static IContent Create<T>(this IContentService contentService, string name, int parentId) {
         return contentService.Create(name, parentId, AliasHelper<T>.ContentTypeAlias());
     }
@@ -35,22 +33,37 @@ public static class ContentServiceExtensions {
     public static IEnumerable<IContent> GetDescendantsForContentOfType(this IContentService contentService,
                                                                        IContentTypeService contentTypeService,
                                                                        ICoreScopeProvider coreScopeProvider,
-                                                                       IContent content,
+                                                                       int contentId,
                                                                        string contentTypeAlias) {
         var contentType = contentTypeService.Get(contentTypeAlias);
  
         var query = coreScopeProvider.CreateQuery<IContent>().Where(x => x.ContentTypeId == contentType.Id);
         
-        var descendants = contentService.GetPagedDescendants(content.Id, 0, int.MaxValue, out _, query);
+        var descendants = contentService.GetPagedDescendants(contentId, 0, int.MaxValue, out _, query);
         
         return descendants;
     }
-    
-    public static IEnumerable<IContent> GetRootContents(this IContentService contentService) {
-        return contentService.GetRootContent();
+
+    public static IContent GetSettingContent(this IContentService contentService,
+                                             IContentTypeService contentTypeService,
+                                             ICoreScopeProvider coreScopeProvider,
+                                             string contentTypeAlias) {
+        var settingsRoot = GetSettingsRoot(contentService);
+
+        if (settingsRoot == null) {
+            return null;
+        }
+
+        var settingContents = GetDescendantsForContentOfType(contentService,
+                                                             contentTypeService,
+                                                             coreScopeProvider,
+                                                             settingsRoot.Id,
+                                                             contentTypeAlias);
+
+        return settingContents.SingleOrDefault();
     }
-    
-    public static IContent GetRootSettings(this IContentService contentService) {
-        return GetRootContents(contentService).Single(x => x.ContentType.Alias == SettingsAlias);
+
+    public static IContent GetSettingsRoot(this IContentService contentService) {
+        return contentService.GetRootContent().Single(x => x.ContentType.Alias.EqualsInvariant("settings"));
     }
 }
