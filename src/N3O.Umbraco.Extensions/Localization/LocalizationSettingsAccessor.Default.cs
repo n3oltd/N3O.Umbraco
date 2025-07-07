@@ -1,13 +1,14 @@
 using System.Collections.Generic;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Localization;
 
 public class DefaultLocalizationSettingsAccessor : ILocalizationSettingsAccessor {
+    private const string DefaultCultureCode = "en-US";
     private readonly LocalizationSettings _settings;
 
     private DefaultLocalizationSettingsAccessor() {
-        _settings = new LocalizationSettings("en-US",
+        _settings = new LocalizationSettings(DefaultCultureCode,
+                                             [DefaultCultureCode],
                                              NumberFormats.International,
                                              DateFormats.DayMonthYearSlashes,
                                              TimeFormats._24,
@@ -15,7 +16,7 @@ public class DefaultLocalizationSettingsAccessor : ILocalizationSettingsAccessor
     }
     
     public IEnumerable<string> GetAllAvailableCultures() {
-        return "en-US".Yield();
+        return [DefaultCultureCode];
     }
 
     public LocalizationSettings GetSettings() {

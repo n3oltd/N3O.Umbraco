@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
@@ -26,22 +27,22 @@ public class StringLocalizer : IStringLocalizer {
     private static readonly string TextSettingsContentAlias = AliasHelper<TextSettingsContent>.ContentTypeAlias();
     
     private readonly ILocalizationSettingsAccessor _localizationSettingsAccessor;
-    private readonly IContentService _contentService;
-    private readonly IUmbracoContextAccessor _umbracoContextAccessor;
+    private readonly Lazy<IContentService> _contentService;
+    private readonly Lazy<IPublishedContentCache> _publishedContentCache;
+    private readonly Lazy<IUmbracoContextAccessor> _umbracoContextAccessor;
     private readonly AsyncKeyedLocker<string> _locker;
-    private readonly AsyncKeyedLocker<string> _containerLocker;
     private string _defaultCultureCode;
 
     public StringLocalizer(ILocalizationSettingsAccessor localizationSettingsAccessor,
-                           IContentService contentService, 
-                           IUmbracoContextAccessor umbracoContextAccessor,
-                           AsyncKeyedLocker<string> locker,
-                           AsyncKeyedLocker<string> containerLocker) {
+                           Lazy<IContentService> contentService,
+                           Lazy<IPublishedContentCache> publishedContentCache,
+                           Lazy<IUmbracoContextAccessor> umbracoContextAccessor,
+                           AsyncKeyedLocker<string> locker) {
         _localizationSettingsAccessor = localizationSettingsAccessor;
         _contentService = contentService;
+        _publishedContentCache = publishedContentCache;
         _umbracoContextAccessor = umbracoContextAccessor;
         _locker = locker;
-        _containerLocker = containerLocker;
     }
 
     public void Flush(IEnumerable<string> aliases) {
@@ -94,9 +95,11 @@ public class StringLocalizer : IStringLocalizer {
             throw new Exception($"Could not find {nameof(TextSettingsContent)} content");
         }
 
-        var content = _contentService.Create<TextContainerFolderContent>(name, textSettings.Id);
+        var content = _contentService.Value.Create<TextContainerFolderContent>(name, textSettings.Id);
 
-        _contentService.SaveAndPublish(content);
+        _contentService.Value.SaveAndPublish(content);
+        
+        _publishedContentCache.Value.WaitForContentToAppearInCache(content);
 
         return content.Key;
     }
@@ -126,15 +129,19 @@ public class StringLocalizer : IStringLocalizer {
     }
 
     private IPublishedContent EnsureContainerExistsForEachCulture(string name, Guid folderId) {
-        var containerContent = _contentService.Create<TextContainerContent>(name, folderId);
+        var containerContent = _contentService.Value.Create<TextContainerContent>(name, folderId);
 
         if (containerContent.ContentType.VariesByCulture()) {
-            foreach (var culture in _localizationSettingsAccessor.GetAllAvailableCultures()) {
+            var localizationSettings = _localizationSettingsAccessor.GetSettings();
+            
+            foreach (var culture in localizationSettings.AllCultureCodes) {
                 containerContent.SetCultureName(name, culture);
             }
         }
         
-        _contentService.SaveAndPublish(containerContent);
+        _contentService.Value.SaveAndPublish(containerContent);
+        
+        _publishedContentCache.Value.WaitForContentToAppearInCache(containerContent);
 
         var publishedContainer = Run(u => u.GetContentCache().GetById(containerContent.Key));
         
@@ -154,7 +161,9 @@ public class StringLocalizer : IStringLocalizer {
 
     private void EnsureResourceExistsForEachCulture(IPublishedContent publishedContainer, string text) {
         if (publishedContainer.ContentType.VariesByCulture()) {
-            foreach (var culture in _localizationSettingsAccessor.GetAllAvailableCultures()) {
+            var localizationSettings = _localizationSettingsAccessor.GetSettings();
+            
+            foreach (var culture in localizationSettings.AllCultureCodes) {
                 var variationContext = new VariationContext(culture);
                 var publishedContentForCulture = publishedContainer.As<TextContainerContent>(variationContext);
                 
@@ -177,11 +186,13 @@ public class StringLocalizer : IStringLocalizer {
                 resources.Add(resource);
         
                 var json = JsonConvert.SerializeObject(resources);
-                var content = _contentService.GetById(containerContent.Content().Id);
+                var content = _contentService.Value.GetById(containerContent.Content().Id);
 
                 content.SetValue(ResourcesAlias, json, culture);
-
-                _contentService.SaveAndPublish(content, culture: culture);
+                
+                _contentService.Value.SaveAndPublish(content, culture: culture);
+                
+                _publishedContentCache.Value.WaitForContentToAppearInCache(content);
 
                 return content;
              }, containerContent.Content().Key, text);
@@ -205,7 +216,7 @@ public class StringLocalizer : IStringLocalizer {
     }
 
     private T Run<T>(Func<IUmbracoContextAccessor, T> func) {
-        return func(_umbracoContextAccessor);
+        return func(_umbracoContextAccessor.Value);
     }
 
     private string GetCacheKey(params object[] values) {
