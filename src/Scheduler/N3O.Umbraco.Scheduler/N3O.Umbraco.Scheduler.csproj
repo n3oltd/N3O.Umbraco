@@ -31,7 +31,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Mediator\N3O.Umbraco.Mediator\N3O.Umbraco.Mediator.csproj" />
-        <ProjectReference Include="..\..\Monitoring\N3O.Umbraco.Telemetry\N3O.Umbraco.Telemetry.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
     </ItemGroup>
 

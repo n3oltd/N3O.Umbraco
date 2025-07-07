@@ -9,6 +9,8 @@ namespace N3O.Umbraco.Monitoring.Sentry;
 
 public class SentryMonitoringComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
+        builder.Services.AddTransient<OurEventProcessor>();
+        
         if (WebHostEnvironment.IsProduction()) {
             builder.Services.Configure<UmbracoPipelineOptions>(opt => {
                 var filter = new UmbracoPipelineFilter("SentryMonitoring");
