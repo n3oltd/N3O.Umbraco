@@ -17,7 +17,11 @@ public class ListCustomLookups<TLookup, TRes> where TLookup : ILookup {
 
     public async Task<IReadOnlyList<TRes>> RunAsync(CancellationToken cancellationToken = default) {
         var lookups = await _lookups.GetAllAsync<TLookup>(cancellationToken);
-        var res = lookups.Select(_mapper.Map<TLookup, TRes>).ToList();
+        var res = new List<TRes>();
+               
+        foreach (var lookup in lookups) {
+           res.Add(_mapper.Map<TLookup, TRes>(lookup));
+        }
 
         return res;
     }
