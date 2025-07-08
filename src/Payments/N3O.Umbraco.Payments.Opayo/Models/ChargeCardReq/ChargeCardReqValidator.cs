@@ -12,7 +12,7 @@ public class ChargeCardReqValidator : ModelValidator<ChargeCardReq> {
             .WithMessage(Get<Strings>(x => x.SinglePaymentSourceRequired));
         
         RuleFor(x => x)
-            .Must(x => !x.CardIdentifier.HasValue() && !x.GooglePayToken.HasValue())
+            .Must(x => !x.CardIdentifier.HasValue() || !x.GooglePayToken.HasValue())
             .WithMessage(Get<Strings>(x => x.SinglePaymentSourceRequired));
         
         RuleFor(x => x.MerchantSessionKey)
