@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
+using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Dev;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using System;
@@ -23,11 +25,20 @@ public abstract class Composer : IComposer {
                                                   !t.IsGenericTypeDefinition &&
                                                   typePredicate(t))
                                    .ApplyAttributeOrdering()
+                                   .Where(FilterExperimental)
                                    .SelectWithIndex()
                                    .ToList();
 
         foreach (var (type, index) in matches) {
             registerAction(type, index);
+        }
+    }
+
+    private bool FilterExperimental(Type type) {
+        if (type.HasAttribute<ExperimentalAttribute>()) {
+            return DevFlags.IsSet(GlobalFlags.EnableExperimentalFeatures);
+        } else {
+            return true;
         }
     }
 }
