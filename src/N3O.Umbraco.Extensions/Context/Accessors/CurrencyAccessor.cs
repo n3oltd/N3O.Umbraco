@@ -20,7 +20,7 @@ public class CurrencyAccessor : ICurrencyAccessor {
             var currencyCode = _currencyCodeAccessor.GetCurrencyCode();
             var allCurrencies = _lookups.GetAll<Currency>();
 
-            _currency = allCurrencies.SingleOrDefault(x => x.Name.EqualsInvariant(currencyCode));
+            _currency = allCurrencies.SingleOrDefault(x => x.Code.EqualsInvariant(currencyCode));
         }
 
         return _currency;
