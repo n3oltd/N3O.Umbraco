@@ -2,6 +2,7 @@ using AsyncKeyedLock;
 using Humanizer;
 using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Dev;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using Newtonsoft.Json;
@@ -53,6 +54,10 @@ public class StringLocalizer : IStringLocalizer {
     }
 
     public string Get(string folder, string name, string text) {
+        if (DevFlags.IsSet(GlobalFlags.DisableTextLocalization)) {
+            return text;
+        }
+
         if (!_localizationSettingsAccessor.GetSettings().AllCultureCodes.Contains(LocalizationSettings.CultureCode)) {
             return text;
         }
