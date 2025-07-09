@@ -17,7 +17,7 @@ public class CurrencyCookie : Cookie {
     protected override string GetDefaultValue() {
         var currency = _lookups.GetAll<Currency>().Single(x => x.IsBaseCurrency);
 
-        return currency.Name;
+        return currency.Code;
     }
 
     protected override void SetOptions(CookieOptions cookieOptions) {

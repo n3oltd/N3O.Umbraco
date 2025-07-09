@@ -21,7 +21,7 @@ public class DirectDebitUKPaymentMethod : PaymentMethod {
             return false;
         }
 
-        if (!currency.Name.EqualsInvariant(DirectDebitUKConstants.Codes.Currencies.GBP)) {
+        if (!currency.Code.EqualsInvariant(DirectDebitUKConstants.Codes.Currencies.GBP)) {
             return false;
         }
 

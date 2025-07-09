@@ -68,7 +68,7 @@ public class TotalProcessingHelper : ITotalProcessingHelper {
         
         var req = new PaymentReq();
         req.Amount = value.Amount?.ToString(CultureInfo.InvariantCulture);
-        req.Currency = value.Currency.Name;
+        req.Currency = value.Currency.Code;
         req.PaymentType = "DB";
         req.EntityId = _totalProcessingApiSettings.EntityId;
         req.Billing = GetBillingAddress(billingInfo);
