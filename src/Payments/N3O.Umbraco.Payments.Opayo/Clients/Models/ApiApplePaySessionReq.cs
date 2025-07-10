@@ -6,6 +6,6 @@ public class ApiApplePaySessionReq {
     [JsonProperty("vendorName")]
     public string VendorName { get; set; }
     
-    [JsonProperty("domain")]
-    public string Domain { get; set; }
+    [JsonProperty("domainName")]
+    public string DomainName { get; set; }
 }

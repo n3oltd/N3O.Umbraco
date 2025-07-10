@@ -29,7 +29,7 @@ public class GetApplePaySessionHandler :
         apiReq.VendorName = _apiSettings.VendorName;
         
         var uri = new Uri(_apiSettings.BaseUrl);
-        apiReq.Domain = uri.Host;
+        apiReq.DomainName = uri.Host;
         
         var applePaySession = await _opayoClient.GetApplePaySessionAsync(apiReq);
         
