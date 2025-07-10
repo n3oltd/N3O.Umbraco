@@ -27,8 +27,9 @@ public class GetApplePaySessionHandler :
                                                     CancellationToken cancellationToken) {
         var apiReq = new ApiApplePaySessionReq();
         apiReq.VendorName = _apiSettings.VendorName;
+        
         var uri = new Uri(_apiSettings.BaseUrl);
-        apiReq.Domain = uri.GetLeftPart(UriPartial.Authority);
+        apiReq.Domain = uri.Host;
         
         var applePaySession = await _opayoClient.GetApplePaySessionAsync(apiReq);
         

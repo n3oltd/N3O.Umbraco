@@ -1002,6 +1002,9 @@ namespace N3O.Umbraco.Clients.Payments.Opayo
         [Newtonsoft.Json.JsonProperty("googlePayToken", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string GooglePayToken { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("applePayToken", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ApplePayTokenReq ApplePayToken { get; set; }
+
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public MoneyReq Value { get; set; }
 
@@ -1014,6 +1017,23 @@ namespace N3O.Umbraco.Clients.Payments.Opayo
 
         [Newtonsoft.Json.JsonProperty("returnUrl", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ReturnUrl { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ApplePayTokenReq
+    {
+        [Newtonsoft.Json.JsonProperty("applicationData", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ApplicationData { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("displayName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string DisplayName { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("paymentData", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string PaymentData { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("sessionValidationToken", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string SessionValidationToken { get; set; }
 
     }
 

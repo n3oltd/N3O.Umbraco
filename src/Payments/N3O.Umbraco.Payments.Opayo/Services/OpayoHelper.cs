@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using N3O.Umbraco.Json;
 
 namespace N3O.Umbraco.Payments.Opayo;
 
@@ -30,17 +31,20 @@ public class OpayoHelper : IOpayoHelper {
     private readonly IActionLinkGenerator _actionLinkGenerator;
     private readonly IRemoteIpAddressAccessor _remoteIpAddressAccessor;
     private readonly IBrowserInfoAccessor _browserInfoAccessor;
+    private readonly IJsonProvider _jsonProvider;
 
     public OpayoHelper(IOpayoClient opayoClient,
                        IContentCache contentCache,
                        IActionLinkGenerator actionLinkGenerator,
                        IRemoteIpAddressAccessor remoteIpAddressAccessor,
-                       IBrowserInfoAccessor browserInfoAccessor) {
+                       IBrowserInfoAccessor browserInfoAccessor,
+                       IJsonProvider jsonProvider) {
         _opayoClient = opayoClient;
         _contentCache = contentCache;
         _actionLinkGenerator = actionLinkGenerator;
         _remoteIpAddressAccessor = remoteIpAddressAccessor;
         _browserInfoAccessor = browserInfoAccessor;
+        _jsonProvider = jsonProvider;
     }
 
     public void ApplyAuthorisation(OpayoPayment payment, ApiTransactionRes transaction) {
@@ -226,7 +230,15 @@ public class OpayoHelper : IOpayoHelper {
             apiGooglePay.Token = Base64.Encode(req.GooglePayToken);
             
             apiPaymentMethodReq.GooglePay = apiGooglePay;
-        }
+        } else if (req.ApplePayToken.HasValue()) {
+            var apiApplePay = new ApiApplePay();
+            apiApplePay.MerchantSessionKey = req.MerchantSessionKey;
+            apiApplePay.ClientIpAddress = GetBrowserIpAddress();
+            apiApplePay.SessionValidationToken = req.ApplePayToken.SessionValidationToken;
+            apiApplePay.PaymentData = Base64.Encode(req.ApplePayToken.PaymentData);
+            apiApplePay.ApplicationData = req.ApplePayToken.ApplicationData;
+            apiApplePay.DisplayName = req.ApplePayToken.DisplayName;
+        } 
         
         return apiPaymentMethodReq;
     }

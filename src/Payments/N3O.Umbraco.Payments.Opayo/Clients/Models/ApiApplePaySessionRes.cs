@@ -4,13 +4,13 @@ using Newtonsoft.Json;
 namespace N3O.Umbraco.Payments.Opayo.Clients;
 
 public class ApiApplePaySessionRes : IApplePaySession {
-    [JsonProperty("status")]
+    [JsonIgnore]
     public string Status { get; set; }
     
     [JsonProperty("statusCode")]
     public string StatusCode { get; set; }
     
-    [JsonProperty("statusDetail")]
+    [JsonIgnore]
     public string StatusDetail { get; set; }
     
     [JsonProperty("epochTimeStamp")]

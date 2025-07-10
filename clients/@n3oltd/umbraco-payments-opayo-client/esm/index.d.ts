@@ -92,10 +92,17 @@ export interface ChargeCardReq {
     merchantSessionKey?: string | undefined;
     cardIdentifier?: string | undefined;
     googlePayToken?: string | undefined;
+    applePayToken?: ApplePayTokenReq | undefined;
     value?: MoneyReq | undefined;
     browserParameters?: BrowserParametersReq | undefined;
     challengeWindowSize?: ChallengeWindowSize | undefined;
     returnUrl?: string | undefined;
+}
+export interface ApplePayTokenReq {
+    applicationData?: string | undefined;
+    displayName?: string | undefined;
+    paymentData?: string | undefined;
+    sessionValidationToken?: string | undefined;
 }
 export interface MoneyReq {
     amount?: number | undefined;
