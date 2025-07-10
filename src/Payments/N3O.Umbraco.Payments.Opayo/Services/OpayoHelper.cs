@@ -37,14 +37,12 @@ public class OpayoHelper : IOpayoHelper {
                        IContentCache contentCache,
                        IActionLinkGenerator actionLinkGenerator,
                        IRemoteIpAddressAccessor remoteIpAddressAccessor,
-                       IBrowserInfoAccessor browserInfoAccessor,
-                       IJsonProvider jsonProvider) {
+                       IBrowserInfoAccessor browserInfoAccessor) {
         _opayoClient = opayoClient;
         _contentCache = contentCache;
         _actionLinkGenerator = actionLinkGenerator;
         _remoteIpAddressAccessor = remoteIpAddressAccessor;
         _browserInfoAccessor = browserInfoAccessor;
-        _jsonProvider = jsonProvider;
     }
 
     public void ApplyAuthorisation(OpayoPayment payment, ApiTransactionRes transaction) {
