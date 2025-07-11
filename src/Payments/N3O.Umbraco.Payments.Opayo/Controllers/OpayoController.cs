@@ -31,6 +31,13 @@ public class OpayoController : ApiController {
         return Redirect(res.Result.ReturnUrl);
     }
     
+    [HttpGet("applePaySession")]
+    public async Task<ActionResult<ApplePaySessionRes>> GetApplePaySession() {
+        var res = await _mediator.SendAsync<GetApplePaySessionCommand, None, ApplePaySessionRes>(None.Empty);
+
+        return Ok(res);
+    }
+    
     [HttpGet("merchantSessionKey")]
     public async Task<ActionResult<MerchantSessionKeyRes>> GetMerchantSessionKey() {
         var res = await _mediator.SendAsync<GetMerchantSessionKeyCommand, None, MerchantSessionKeyRes>(None.Empty);

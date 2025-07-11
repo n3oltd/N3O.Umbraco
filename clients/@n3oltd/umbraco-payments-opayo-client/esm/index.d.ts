@@ -9,6 +9,8 @@ export declare class OpayoClient {
     protected processChargeCard(response: Response): Promise<PaymentFlowResOfOpayoPayment>;
     completeThreeDSecureChallenge(flowId: string, cRes: string | null | undefined, paRes: string | null | undefined): Promise<void>;
     protected processCompleteThreeDSecureChallenge(response: Response): Promise<void>;
+    getApplePaySession(): Promise<ApplePaySessionRes>;
+    protected processGetApplePaySession(response: Response): Promise<ApplePaySessionRes>;
     getMerchantSessionKey(): Promise<MerchantSessionKeyRes>;
     protected processGetMerchantSessionKey(response: Response): Promise<MerchantSessionKeyRes>;
     storeCard(flowId: string, req: StoreCardReq): Promise<PaymentFlowResOfOpayoCredential>;
@@ -90,10 +92,17 @@ export interface ChargeCardReq {
     merchantSessionKey?: string | undefined;
     cardIdentifier?: string | undefined;
     googlePayToken?: string | undefined;
+    applePayToken?: ApplePayTokenReq | undefined;
     value?: MoneyReq | undefined;
     browserParameters?: BrowserParametersReq | undefined;
     challengeWindowSize?: ChallengeWindowSize | undefined;
     returnUrl?: string | undefined;
+}
+export interface ApplePayTokenReq {
+    applicationData?: string | undefined;
+    displayName?: string | undefined;
+    paymentData?: string | undefined;
+    sessionValidationToken?: string | undefined;
 }
 export interface MoneyReq {
     amount?: number | undefined;
@@ -114,6 +123,20 @@ export declare enum ChallengeWindowSize {
     Large = "large",
     ExtraLarge = "extraLarge",
     FullScreen = "fullScreen"
+}
+export interface ApplePaySessionRes {
+    status?: string | undefined;
+    statusCode?: string | undefined;
+    statusDetail?: string | undefined;
+    epochTimeStamp?: number;
+    expiresAt?: number;
+    merchantSessionIdentifier?: string | undefined;
+    nonce?: string | undefined;
+    merchantIdentifier?: string | undefined;
+    domainName?: string | undefined;
+    displayName?: string | undefined;
+    signature?: string | undefined;
+    sessionValidationToken?: string | undefined;
 }
 export interface MerchantSessionKeyRes {
     key?: string | undefined;
