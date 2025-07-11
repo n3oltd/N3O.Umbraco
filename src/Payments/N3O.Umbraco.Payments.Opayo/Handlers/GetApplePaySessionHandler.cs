@@ -16,23 +16,23 @@ public class GetApplePaySessionHandler :
     private readonly IUmbracoMapper _mapper;
 
     public GetApplePaySessionHandler(IOpayoClient opayoClient,
-                                        OpayoApiSettings apiSettings,
-                                        IUmbracoMapper mapper) {
+                                     OpayoApiSettings apiSettings,
+                                     IUmbracoMapper mapper) {
         _opayoClient = opayoClient;
         _apiSettings = apiSettings;
         _mapper = mapper;
     }
 
     public async Task<ApplePaySessionRes> Handle(GetApplePaySessionCommand req,
-                                                    CancellationToken cancellationToken) {
+                                                 CancellationToken cancellationToken) {
         var apiReq = new ApiApplePaySessionReq();
         apiReq.VendorName = _apiSettings.VendorName;
-        
+
         var uri = new Uri(_apiSettings.BaseUrl);
         apiReq.DomainName = uri.Host;
-        
+
         var applePaySession = await _opayoClient.GetApplePaySessionAsync(apiReq);
-        
+
         var res = _mapper.Map<IApplePaySession, ApplePaySessionRes>(applePaySession);
 
         return res;
