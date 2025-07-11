@@ -21,6 +21,7 @@ public class ContentMetadatas : StaticLookupsCollection<ContentMetadata> {
     public static readonly ContentMetadata EditLink = new("editLink", "Edit Link", DataTypes.String, 4, false);
     public static readonly ContentMetadata HasUnpublishedChanges = new("hasUnpublishedChanges", "Has Unpublished Changes", DataTypes.Bool, 3, false);
     public static readonly ContentMetadata IsPublished = new("isPublished", "Is Published", DataTypes.Bool, 2, true);
+    public static readonly ContentMetadata LatestState = new("latestState", "Latest State", DataTypes.String, 9, false);
     public static readonly ContentMetadata Name = new("name", "Name", DataTypes.String, 0, true);
     public static readonly ContentMetadata Path = new("path", "Path", DataTypes.String, 1, true);
     public static readonly ContentMetadata UpdatedAt = new("updatedAt", "Updated At", DataTypes.DateTime, 7, false);
