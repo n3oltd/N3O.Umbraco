@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace N3O.Umbraco.Cloud.Models;
 
-public class PublishedCurrencies {
+public class PublishedCurrencies : Value {
     [JsonProperty(PropertyName = "currencies")]
     public Dictionary<string, PublishedCurrency> Items { get; set; }
 
@@ -28,5 +28,10 @@ public class PublishedCurrencies {
     
     public PublishedCurrency FindByCurrency(Currency currency, bool throwIfNotFound = false) {
         return FindByCode(currency.Code, throwIfNotFound);
+    }
+
+    protected override IEnumerable<object> GetAtomicValues() {
+        yield return Items?.Keys;
+        yield return Items?.Values;
     }
 }
