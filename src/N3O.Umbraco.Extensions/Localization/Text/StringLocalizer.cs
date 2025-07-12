@@ -2,6 +2,7 @@ using AsyncKeyedLock;
 using Humanizer;
 using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Dev;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using Newtonsoft.Json;
@@ -23,7 +24,7 @@ public class StringLocalizer : IStringLocalizer {
     private static readonly string TextContainerFolderAlias = AliasHelper<TextContainerFolderContent>.ContentTypeAlias();
     private static readonly string TextSettingsContentAlias = AliasHelper<TextSettingsContent>.ContentTypeAlias();
     
-    private readonly ConcurrentDictionary<string, Guid> _guidCache = new();
+    private readonly ConcurrentDictionary<string, int> _intCache = new();
     private readonly ConcurrentDictionary<string, string> _stringCache = new();
     private readonly ILocalizationSettingsAccessor _localizationSettingsAccessor;
     private readonly IContentService _contentService;
@@ -47,12 +48,16 @@ public class StringLocalizer : IStringLocalizer {
 
     public void Flush(IEnumerable<string> aliases) {
         if (aliases.ContainsAny([TextContainerAlias, TextContainerFolderAlias, TextSettingsContentAlias], true)) {
-            _guidCache.Clear();
+            _intCache.Clear();
             _stringCache.Clear();
         }
     }
 
     public string Get(string folder, string name, string text) {
+        if (DevFlags.IsSet(GlobalFlags.DisableTextLocalization)) {
+            return text;
+        }
+
         if (!_localizationSettingsAccessor.GetSettings().AllCultureCodes.Contains(LocalizationSettings.CultureCode)) {
             return text;
         }
@@ -74,36 +79,32 @@ public class StringLocalizer : IStringLocalizer {
         });
     }
 
-    private Guid GetOrCreateFolderId(string folder) {
-        var cacheKey = GetGuidCacheKey(nameof(GetOrCreateFolderId), folder);
+    private int GetOrCreateFolderId(string folder) {
+        var cacheKey = GetIntCacheKey(nameof(GetOrCreateFolderId), folder);
 
-        return _guidCache.GetOrAddAtomic(cacheKey, () => {
+        return _intCache.GetOrAddAtomic(cacheKey, () => {
             var folderId = GetContentId(TextContainerFolderAlias, x => x.Name.EqualsInvariant(folder));
 
             if (folderId == null) {
-                folderId = Lock(() => {
-                    folderId = CreateFolder(folder);
-
-                    return folderId;
-                }, folder);
+                folderId = Lock(() => CreateFolder(folder), folder);
             }
 
             return folderId.GetValueOrThrow();
         });
     }
 
-    private Guid CreateFolder(string name) {
+    private int CreateFolder(string name) {
         var content = _contentService.Create<TextContainerFolderContent>(name, TextSettingsContentId);
 
         _contentService.SaveAndPublish(content);
 
-        return content.Key;
+        return content.Id;
     }
 
-    private Guid GetOrCreateTextContainerId(Guid folderId, string name) {
-        var cacheKey = GetGuidCacheKey(nameof(GetOrCreateTextContainerId), folderId, name);
+    private int GetOrCreateTextContainerId(int folderId, string name) {
+        var cacheKey = GetIntCacheKey(nameof(GetOrCreateTextContainerId), folderId, name);
 
-        return _guidCache.GetOrAddAtomic(cacheKey, () => {
+        return _intCache.GetOrAddAtomic(cacheKey, () => {
             if (name.Contains("\\")) {
                 name = name.Split('\\').Last();
             }
@@ -113,63 +114,81 @@ public class StringLocalizer : IStringLocalizer {
             var parent = _contentService.GetById(folderId);
             
             var containerId = GetContentId(TextContainerAlias,
-                                           x => x.Name.EqualsInvariant(name) && parent?.Key == folderId);
+                                           x => x.Name.EqualsInvariant(name) && parent?.Id == folderId);
 
-            if (containerId == null) {
-                containerId = Lock(() => {
-                    containerId = EnsureContainerExistsForAllCultures(name, folderId);
-
-                    return containerId;
-                }, folderId, name);
-            }
+            containerId = Lock(() => EnsureContainerExistsForAllCultures(name, folderId, containerId), folderId, name);
 
             return containerId.GetValueOrThrow();
         });
     }
 
-    private Guid EnsureContainerExistsForAllCultures(string name, Guid folderId) {
-        var containerContent = _contentService.Create<TextContainerContent>(name, folderId);
+    private int EnsureContainerExistsForAllCultures(string name, int folderId, int? containerId) {
+        var containerContent = containerId.HasValue()
+                                   ? _contentService.GetById(containerId.GetValueOrThrow())
+                                   : _contentService.Create<TextContainerContent>(name, folderId);
+
+        var shouldSave = !containerId.HasValue();
 
         if (containerContent.ContentType.VariesByCulture()) {
             var localizationSettings = _localizationSettingsAccessor.GetSettings();
-            
+
             foreach (var culture in localizationSettings.AllCultureCodes) {
-                containerContent.SetCultureName(name, culture);
+                if (!containerContent.IsCultureAvailable(culture)) {
+                    containerContent.SetCultureName(name, culture);
+
+                    shouldSave = true;
+                }
             }
         }
+
+        if (shouldSave) {
+            _contentService.SaveAndPublish(containerContent);
+        }
         
-        _contentService.SaveAndPublish(containerContent);
-        
-        return containerContent.Key;
+        return containerContent.Id;
     }
 
-    private TextResource GetOrCreateResource(Guid containerId, string text) {
-        var containerContent = _contentService.GetById(containerId);
+    private TextResource GetOrCreateResource(int containerId, string text) {
+        return Lock(() => {
+            var containerContent = _contentService.GetById(containerId);
+            var shouldSave = EnsureResourceExistsForEachCulture(containerContent, text);
         
-        EnsureResourceExistsForEachCulture(containerContent, text);
-        
-        var resources = GetTextResources(containerContent, LocalizationSettings.CultureCode);
-        
-        return resources.Single(x => x.Source.EqualsInvariant(text));
+            if (shouldSave) {
+                lock (this) {
+                    _contentService.SaveAndPublish(containerContent);
+                }
+            }
+
+            var culture = containerContent.ContentType.VariesByCulture() ? LocalizationSettings.CultureCode : null;
+
+            var resources = GetTextResources(containerContent, culture);
+
+            return resources.Single(x => x.Source.EqualsInvariant(text));
+            
+        }, containerId);
     }
 
-    private void EnsureResourceExistsForEachCulture(IContent containerContent, string text) {
+    private bool EnsureResourceExistsForEachCulture(IContent containerContent, string text) {
+        var shouldSave = false;
+
         if (containerContent.ContentType.VariesByCulture()) {
             var localizationSettings = _localizationSettingsAccessor.GetSettings();
             
             foreach (var culture in localizationSettings.AllCultureCodes) {
                 var resources = GetTextResources(containerContent, culture);
                 
-                CreateResourceIfNotExists(containerContent, resources, text, culture);
+                shouldSave |= CreateResourceIfNotExists(containerContent, resources, text, culture);
             }
         } else {
             var resources = GetTextResources(containerContent);
-                
-            CreateResourceIfNotExists(containerContent, resources, text, null);
+
+            shouldSave |= CreateResourceIfNotExists(containerContent, resources, text, null);
         }
+
+        return shouldSave;
     }
 
-    private void CreateResourceIfNotExists(IContent containerContent,
+    private bool CreateResourceIfNotExists(IContent containerContent,
                                            IEnumerable<TextResource> existingResources,
                                            string text,
                                            string culture) {
@@ -177,32 +196,37 @@ public class StringLocalizer : IStringLocalizer {
         var resource = resources.SingleOrDefault(x => x.Source.EqualsInvariant(text));
         
         if (!resource.HasValue()) {
-            Lock(() => {
-                resource = new TextResource();
-                resource.Source = text;
-            
-                resources.Add(resource);
+            resource = new TextResource();
+            resource.Source = text;
         
-                var json = JsonConvert.SerializeObject(resources);
-                var content = _contentService.GetById(containerContent.Id);
+            resources.Add(resource);
+            resources.Sort((x, y) => StringComparer.InvariantCultureIgnoreCase.Compare(x.Source, y.Source));
+    
+            var json = JsonConvert.SerializeObject(resources);
+            
+            containerContent.SetValue(ResourcesAlias, json, culture);
 
-                content.SetValue(ResourcesAlias, json, culture);
-                
-                _contentService.SaveAndPublish(content, culture: culture);
-
-                return content;
-            }, containerContent.Key, text);
+            return true;
+        } else {
+            return false;
         }
     }
 
-    private Guid? GetContentId(string contentTypeAlias, Func<IContent, bool> predicate) {
+    private int? GetContentId(string contentTypeAlias, Func<IContent, bool> predicate) {
         var contents = _contentService.GetDescendantsForContentOfType(_contentTypeService,
-                                                                      _coreScopeProvider,
-                                                                      TextSettingsContentId,
-                                                                      contentTypeAlias)
-                                      .ToList();
-        
-        return contents.SingleOrDefault(predicate)?.Key;
+                                                                     _coreScopeProvider,
+                                                                     TextSettingsContentId,
+                                                                     contentTypeAlias).ToList();
+
+        return contents.SingleOrDefault(predicate)?.Id;
+    }
+
+    private void Lock(Action action, params object[] values) {
+        Lock<None>(() => {
+            action();
+            
+            return None.Empty;
+        }, values);
     }
 
     private T Lock<T>(Func<T> action, params object[] values) {
@@ -219,7 +243,7 @@ public class StringLocalizer : IStringLocalizer {
         return CacheKey.Generate<StringLocalizer>(newValues);
     }
     
-    private string GetGuidCacheKey(params object[] values) {
+    private string GetIntCacheKey(params object[] values) {
         var newValues = values.OrEmpty().Concat(DefaultCultureCode).ToArray();
         
         return CacheKey.Generate<StringLocalizer>(newValues);

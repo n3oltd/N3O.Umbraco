@@ -22,7 +22,7 @@ public class WellKnownFolderMiddleware : IMiddleware {
         if (requestPath != null &&
             !requestPath.Contains("..") &&
             requestPath.StartsWith(Prefix, StringComparison.InvariantCultureIgnoreCase)) {
-            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, requestPath);
+            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, requestPath.TrimStart('/'));
 
             if (File.Exists(filePath)) {
                 context.Response.ContentType = MimeTypesMap.GetMimeType(filePath);

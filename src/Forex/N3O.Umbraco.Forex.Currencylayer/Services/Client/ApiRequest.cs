@@ -13,8 +13,8 @@ public abstract class ApiRequest {
     }
 
     [AliasAs("source")]
-    public string BaseCurrencyCode => _baseCurrency.Name;
+    public string BaseCurrencyCode => _baseCurrency.Code;
 
     [AliasAs("currencies")]
-    public string QuoteCurrencyCode => _quoteCurrency.Name;
+    public string QuoteCurrencyCode => _quoteCurrency.Code;
 }

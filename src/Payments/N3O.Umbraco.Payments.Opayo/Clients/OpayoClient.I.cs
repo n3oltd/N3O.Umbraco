@@ -18,4 +18,7 @@ public interface IOpayoClient {
 
     [Post("/api/v1/transactions")]
     Task<ApiTransactionRes> TransactionAsync(ApiPaymentTransactionReq req);
+    
+    [Post("/api/v1/applepay/sessions")]
+    Task<ApiApplePaySessionRes> GetApplePaySessionAsync(ApiApplePaySessionReq req);
 }

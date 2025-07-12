@@ -20,7 +20,7 @@ public class GoCardlessPaymentMethod : PaymentMethod {
             return false;
         }
 
-        if (!currency.Name.EqualsInvariant(GoCardlessConstants.Codes.Currencies.GBP)) {
+        if (!currency.Code.EqualsInvariant(GoCardlessConstants.Codes.Currencies.GBP)) {
             return false;
         }
 

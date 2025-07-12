@@ -2,38 +2,42 @@ using FluentValidation;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
+using System.Linq;
 
 namespace N3O.Umbraco.Payments.Opayo.Models;
 
 public class ChargeCardReqValidator : ModelValidator<ChargeCardReq> {
     public ChargeCardReqValidator(IFormatter formatter) : base(formatter) {
         RuleFor(x => x)
-            .Must(x => x.CardIdentifier.HasValue() || x.GooglePayToken.HasValue())
-            .WithMessage(Get<Strings>(x => x.SinglePaymentSourceRequired));
-        
-        RuleFor(x => x)
-            .Must(x => !x.CardIdentifier.HasValue() && !x.GooglePayToken.HasValue())
-            .WithMessage(Get<Strings>(x => x.SinglePaymentSourceRequired));
-        
+           .Must(OnlyOneValueSpecified)
+           .WithMessage(Get<Strings>(x => x.SinglePaymentSourceRequired));
+
         RuleFor(x => x.MerchantSessionKey)
-            .NotEmpty()
-            .WithMessage(Get<Strings>(x => x.SpecifyMerchantSessionKey));
-        
+           .NotEmpty()
+           .WithMessage(Get<Strings>(x => x.SpecifyMerchantSessionKey));
+
         RuleFor(x => x.Value)
-            .NotEmpty()
-            .WithMessage(Get<Strings>(x => x.SpecifyValue));
+           .NotEmpty()
+           .WithMessage(Get<Strings>(x => x.SpecifyValue));
 
         RuleFor(x => x.BrowserParameters)
-            .NotEmpty()
-            .WithMessage(Get<Strings>(x => x.SpecifyBrowserParameters));
-        
+           .NotEmpty()
+           .WithMessage(Get<Strings>(x => x.SpecifyBrowserParameters));
+
         RuleFor(x => x.ChallengeWindowSize)
-            .NotEmpty()
-            .WithMessage(Get<Strings>(x => x.SpecifyChallengeWindowSize));
-        
+           .NotEmpty()
+           .WithMessage(Get<Strings>(x => x.SpecifyChallengeWindowSize));
+
         RuleFor(x => x.ReturnUrl)
-            .NotEmpty()
-            .WithMessage(Get<Strings>(x => x.SpecifyReturnUrl));
+           .NotEmpty()
+           .WithMessage(Get<Strings>(x => x.SpecifyReturnUrl));
+    }
+
+    private bool OnlyOneValueSpecified(ChargeCardReq chargeCardReq) {
+        return new object[] { chargeCardReq.CardIdentifier,
+                              chargeCardReq.GooglePayToken,
+                              chargeCardReq.ApplePayToken
+        }.Count(x => x.HasValue()) == 1;
     }
 
     public class Strings : ValidationStrings {
@@ -45,4 +49,3 @@ public class ChargeCardReqValidator : ModelValidator<ChargeCardReq> {
         public string SpecifyValue => "Please specify the value";
     }
 }
-

@@ -56,7 +56,7 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
 
     protected IEnumerable<TProperty> GetNestedAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-        var values = (IEnumerable) Content().Value(alias, VariationContext.Culture, VariationContext?.Segment)
+        var values = (IEnumerable) Content().Value(alias, VariationContext?.Culture, VariationContext?.Segment)
                      ?? Enumerable.Empty<IPublishedElement>();
 
         return values.Cast<IPublishedElement>().Select(x => x.As<TProperty>(_content));
