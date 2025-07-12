@@ -9,7 +9,7 @@ using Umbraco.Cms.Core.DependencyInjection;
 
 namespace N3O.Umbraco.Forex.Currencylayer;
 
-public class CurrencylayerComposer : Composer {
+public class CurrencylayerForexComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddTransient<IExchangeRateProvider, CurrencylayerExchangeRateProvider>();
 

@@ -24,21 +24,6 @@ public class ExchangeRateCache : IExchangeRateCache {
         _clock = clock;
         _exchangeRateProvider = exchangeRateProvider;
     }
-    
-    public async Task<decimal> GetHistoricalRateAsync(LocalDate date,
-                                                      Currency baseCurrency,
-                                                      Currency quoteCurrency,
-                                                      CancellationToken cancellationToken = default) {
-        var rate = await GetOrCreateAsync(date,
-                                          baseCurrency,
-                                          quoteCurrency,
-                                          x => x.GetHistoricalRateAsync(date,
-                                                                        baseCurrency,
-                                                                        quoteCurrency,
-                                                                        cancellationToken));
-
-        return rate;
-    }
 
     public async Task<decimal> GetLiveRateAsync(Currency baseCurrency,
                                                 Currency quoteCurrency,

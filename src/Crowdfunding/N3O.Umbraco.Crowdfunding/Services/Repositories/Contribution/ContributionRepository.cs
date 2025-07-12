@@ -115,11 +115,9 @@ public partial class ContributionRepository : IContributionRepository {
         var taxReliefScheme = _taxReliefSchemeAccessor.GetScheme();
         var date = timestamp.InZone(_localClock.GetZone()).Date;
         var baseForex = (await _forexConverter.QuoteToBase()
-                                              .UsingRateOn(date)
                                               .FromCurrency(value.Currency)
                                               .ConvertAsync(value.Amount));
         var crowdfunderForex = (await _forexConverter.BaseToQuote()
-                                                     .UsingRateOn(date)
                                                      .ToCurrency(crowdfunder.Currency)
                                                      .ConvertAsync(baseForex.Base.Amount));
         

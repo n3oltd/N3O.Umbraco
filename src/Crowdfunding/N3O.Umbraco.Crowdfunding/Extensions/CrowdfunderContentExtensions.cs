@@ -1,5 +1,4 @@
 ﻿using N3O.Umbraco.Crowdfunding.Content;
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex;
 using System.Linq;
@@ -14,7 +13,6 @@ public static class CrowdfunderContentExtensions {
 
         return await forexConverter.QuoteToBase()
                                    .FromCurrency(crowdfunderContent.Currency)
-                                   .UsingRateOn(crowdfunderContent.CreatedDate.ToLocalDate())
                                    .ConvertAsync(total);
     }
 }

@@ -1,6 +1,5 @@
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Financial;
-using NodaTime;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +11,6 @@ public class BaseToQuoteForexConverter {
     private readonly IBaseCurrencyAccessor _baseCurrencyAccessor;
     private Currency _baseCurrency;
     private Currency _quoteCurrency;
-    private LocalDate? _date;
 
     public BaseToQuoteForexConverter(IExchangeRateCache exchangeRateCache,
                                      IBaseCurrencyAccessor baseCurrencyAccessor) {
@@ -25,13 +23,7 @@ public class BaseToQuoteForexConverter {
 
         return this;
     }
-
-    public BaseToQuoteForexConverter UsingRateOn(LocalDate date) {
-        _date = date;
-
-        return this;
-    }
-
+    
     public ForexMoney Convert(decimal baseAmount) {
         return ConvertAsync(baseAmount).GetAwaiter().GetResult();
     }
@@ -43,18 +35,7 @@ public class BaseToQuoteForexConverter {
         
         _baseCurrency ??= _baseCurrencyAccessor.GetBaseCurrency();
 
-        decimal exchangeRate;
-
-        if (_date == null) {
-            exchangeRate = await _exchangeRateCache.GetLiveRateAsync(_baseCurrency,
-                                                                     _quoteCurrency,
-                                                                     cancellationToken);
-        } else {
-            exchangeRate = await _exchangeRateCache.GetHistoricalRateAsync(_date.Value,
-                                                                           _baseCurrency,
-                                                                           _quoteCurrency,
-                                                                           cancellationToken);
-        }
+        var exchangeRate = await _exchangeRateCache.GetLiveRateAsync(_baseCurrency, _quoteCurrency, cancellationToken);
 
         var quoteAmount = baseAmount * exchangeRate;
 
