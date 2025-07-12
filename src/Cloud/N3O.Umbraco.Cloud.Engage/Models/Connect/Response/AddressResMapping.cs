@@ -2,7 +2,6 @@
 using N3O.Umbraco.Cloud.Engage.Clients;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
-using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 using Country = N3O.Umbraco.Lookups.Country;
 
@@ -27,6 +26,6 @@ public class AddressResMapping : IMapDefinition {
         dest.Locality = src.Locality;
         dest.AdministrativeArea = src.AdministrativeArea;
         dest.PostalCode = src.PostalCode;
-        dest.Country = _lookups.GetAll<Country>().Single(x => x.Iso2Code.EqualsInvariant(src.Country?.ToString()));
+        dest.Country = _lookups.GetAll<Country>().FindByCode(src.Country?.ToString());
     }
 }

@@ -2,7 +2,6 @@
 using N3O.Umbraco.Cloud.Engage.Clients;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
-using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 using Country = N3O.Umbraco.Lookups.Country;
 
@@ -21,8 +20,9 @@ public class TelephoneResMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll
     private void Map(ConnectTelephoneRes src, TelephoneRes dest, MapperContext ctx) {
+        var allCountries = _lookups.GetAll<Country>();
+        
         dest.Number = src.Number;
-        dest.Country = src.Country.IfNotNull(x => _lookups.GetAll<Country>()
-                                                          .SingleOrDefault(y => y.Iso2Code.EqualsInvariant(x.ToString())));
+        dest.Country = src.Country.IfNotNull(x => allCountries.FindByCode(x.ToString()));
     }
 }
