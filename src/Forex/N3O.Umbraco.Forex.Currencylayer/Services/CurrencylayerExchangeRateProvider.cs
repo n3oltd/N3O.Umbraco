@@ -1,7 +1,6 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex.Currencylayer.Content;
-using NodaTime;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,21 +24,6 @@ public class CurrencylayerExchangeRateProvider : IExchangeRateProvider {
     
         var req = new LiveRateRequest(baseCurrency, quoteCurrency);
         var res = await _apiClient.GetLiveRateAsync(req);
-
-        return AdjustRate(res.Rate);
-    }
-
-    public async Task<decimal> GetHistoricalRateAsync(LocalDate date,
-                                                      Currency baseCurrency,
-                                                      Currency quoteCurrency,
-                                                      CancellationToken cancellationToken = default) {
-        if (baseCurrency == quoteCurrency) {
-            return 1m;
-        }
-
-        var req = new HistoricalRateRequest(baseCurrency, quoteCurrency, date);
-    
-        var res = await _apiClient.GetHistoricalRateAsync(req);
 
         return AdjustRate(res.Rate);
     }
