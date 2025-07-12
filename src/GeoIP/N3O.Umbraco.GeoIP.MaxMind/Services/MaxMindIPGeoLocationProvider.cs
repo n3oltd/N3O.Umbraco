@@ -2,7 +2,6 @@ using MaxMind.GeoIP2;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.GeoIP.Models;
 using N3O.Umbraco.Lookups;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,8 +22,7 @@ public class MaxMindIPGeoLocationProvider : IIPGeoLocationProvider {
         try {
             var cityResponse = await _webServiceClient.CityAsync(ipAddress);
 
-            var country = _lookups.GetAll<Country>()
-                                  .Single(x => x.Iso2Code.EqualsInvariant(cityResponse.Country.IsoCode));
+            var country = _lookups.GetAll<Country>().FindByCode(cityResponse.Country.IsoCode);
                 
             return GeoLookupResult.ForSuccess(country, cityResponse.City?.Name);
         } catch { }

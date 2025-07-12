@@ -12,6 +12,7 @@ public class ContextComposer : Composer {
         builder.Services.AddSingleton<IBrowserInfoAccessor, BrowserInfoAccessor>();
         builder.Services.AddScoped<ICurrencyAccessor, CurrencyAccessor>();
         builder.Services.AddScoped<ICurrencyCodeAccessor, CurrencyCodeAccessor>();
+        builder.Services.AddScoped<IDefaultCurrencyProvider, LookupsDefaultCurrencyProvider>();
         builder.Services.AddSingleton<ICurrentUrlAccessor, CurrentUrlAccessor>();
         builder.Services.AddSingleton<IQueryStringAccessor, QueryStringAccessor>();
         builder.Services.TryAddSingleton<IRemoteIpAddressAccessor, RemoteIpAddressAccessor>();
