@@ -19,7 +19,7 @@ public class PerplexBlockViewModel<TBlock> : BlockViewModel<TBlock, None>, IPerp
     }
     
     public Guid DefinitionId { get; }
-    public Guid LayoutId  { get; }
+    public Guid LayoutId { get; }
     
     IPublishedElement IContentBlockViewModel.Content => Content;
 }

@@ -88,7 +88,7 @@ public class Crowdfunder {
     
     [Column(nameof(Tags))]
     [NullSetting(NullSetting = NullSettings.Null)]
-    public string Tags  { get; set; }
+    public string Tags { get; set; }
     
     [Column(nameof(FullText))]
     public string FullText { get; set; }
