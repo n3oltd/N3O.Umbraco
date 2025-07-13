@@ -11,6 +11,7 @@ using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Giving.Cart.Commands;
 using N3O.Umbraco.Giving.Cart.Extensions;
 using N3O.Umbraco.Giving.Cart.Models;
+using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Mediator;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ public class AddToCartHandlers :
     private readonly Lazy<ICurrencyAccessor> _currencyAccessor;
     private readonly IForexConverter _forexConverter;
     private readonly IPriceCalculator _priceCalculator;
+    private readonly ILookups _lookups;
     private readonly IEnumerable<IAllocationExtensionRequestBinder> _extensionBinders;
 
     public AddToCartHandlers(ICartAccessor cartAccessor,
@@ -37,6 +39,7 @@ public class AddToCartHandlers :
                              Lazy<ICurrencyAccessor> currencyAccessor,
                              IForexConverter forexConverter,
                              IPriceCalculator priceCalculator,
+                             ILookups lookups,
                              IEnumerable<IAllocationExtensionRequestBinder> extensionBinders) {
         _cartAccessor = cartAccessor;
         _repository = repository;
@@ -44,6 +47,7 @@ public class AddToCartHandlers :
         _currencyAccessor = currencyAccessor;
         _forexConverter = forexConverter;
         _priceCalculator = priceCalculator;
+        _lookups = lookups;
         _extensionBinders = extensionBinders;
     }
 
@@ -70,6 +74,7 @@ public class AddToCartHandlers :
         
         var allocation = await upsellOfferContent.ToAllocationAsync(_forexConverter,
                                                                     _priceCalculator,
+                                                                    _lookups,
                                                                     currency,
                                                                     req.Model.Amount,
                                                                     upsellOfferContent.GivingType,
@@ -101,7 +106,13 @@ public class AddToCartHandlers :
                                                   CancellationToken cancellationToken) {
         var cart = await _cartAccessor.GetAsync(cancellationToken);
 
-        await cart.AddAsync(_contentLocator, _forexConverter, _priceCalculator, givingType, allocation, quantity);
+        await cart.AddAsync(_contentLocator,
+                            _forexConverter,
+                            _priceCalculator,
+                            _lookups,
+                            givingType,
+                            allocation,
+                            quantity);
 
         await _repository.UpdateAsync(cart);
 

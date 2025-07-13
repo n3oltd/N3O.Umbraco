@@ -5,9 +5,9 @@ using N3O.Umbraco.Giving.Allocations.Models;
 namespace N3O.Umbraco.Giving.Allocations.Content;
 
 public class PriceContent : UmbracoContent<PriceContent>, IPrice {
-    [UmbracoProperty("priceAmount")]
+    [UmbracoProperty(AllocationsConstants.Aliases.Price.Properties.Amount)]
     public decimal Amount => GetValue(x => x.Amount);
 
-    [UmbracoProperty("priceLocked")]
+    [UmbracoProperty(AllocationsConstants.Aliases.Price.Properties.Locked)]
     public bool Locked => GetValue(x => x.Locked);
 }

@@ -97,6 +97,7 @@ public partial class CreateOrUpdateFundraiserHandlers {
         
         PopulateFundraiserGoal(contentBuilder, req, goalOption);
         
+        // TODO Check if property is a picker or a data list, and set accordingly
         contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Fund.Properties.DonationItem)
                       .SetContent(goalOption.Fund.DonationItem);
     }

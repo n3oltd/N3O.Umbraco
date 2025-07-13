@@ -14,6 +14,7 @@ using N3O.Umbraco.Giving.Cart.Content;
 using N3O.Umbraco.Giving.Cart.Extensions;
 using N3O.Umbraco.Giving.Cart.Models;
 using N3O.Umbraco.Localization;
+using N3O.Umbraco.Lookups;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,7 @@ public class CartBlockModule : IBlockModule {
     private readonly Lazy<IForexConverter> _forexConverter;
     private readonly Lazy<IPriceCalculator> _priceCalculator;
     private readonly Lazy<IQueryStringAccessor> _queryStringAccessor;
+    private readonly Lazy<ILookups> _lookups;
 
     public CartBlockModule(Lazy<ICartAccessor> cartAccessor,
                            Lazy<IFormatter> formatter,
@@ -40,7 +42,8 @@ public class CartBlockModule : IBlockModule {
                            Lazy<ICurrencyAccessor> currencyAccessor,
                            Lazy<IForexConverter> forexConverter,
                            Lazy<IPriceCalculator> priceCalculator,
-                           Lazy<IQueryStringAccessor> queryStringAccessor) {
+                           Lazy<IQueryStringAccessor> queryStringAccessor,
+                           Lazy<ILookups> lookups) {
         _cartAccessor = cartAccessor;
         _formatter = formatter;
         _contentCache = contentCache;
@@ -48,6 +51,7 @@ public class CartBlockModule : IBlockModule {
         _forexConverter = forexConverter;
         _priceCalculator = priceCalculator;
         _queryStringAccessor = queryStringAccessor;
+        _lookups = lookups;
     }
     
     public bool ShouldExecute(IPublishedElement block) {
@@ -82,6 +86,7 @@ public class CartBlockModule : IBlockModule {
         foreach (var upsellOffersContent in upsellOffersContents.OrEmpty()) {
             upsellOffers.Add(await upsellOffersContent.ToUpsellOfferAsync(_forexConverter.Value,
                                                                           _priceCalculator.Value,
+                                                                          _lookups.Value,
                                                                           currency,
                                                                           upsellOffersContent.GivingType,
                                                                           cart.GetTotalExcludingUpsells(upsellOffersContent.GivingType)));

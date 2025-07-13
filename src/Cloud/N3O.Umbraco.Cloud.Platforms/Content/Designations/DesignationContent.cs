@@ -63,7 +63,7 @@ public class DesignationContent : UmbracoContent<DesignationContent> {
     public FundDesignationContent Fund { get; private set; }
     public FeedbackDesignationContent Feedback { get; private set; }
     
-    public bool HasPricing => ((IPricing) Fund?.DonationItem ?? Feedback?.Scheme).HasPricing();
+    public bool HasPricing => ((IHoldPricing) Fund?.DonationItem ?? Feedback?.Scheme).HasPricing();
     
     public IReadOnlyList<GiftType> GetGiftTypes() {
         var givingTypes = Fund?.DonationItem.AllowedGivingTypes ??
@@ -77,10 +77,12 @@ public class DesignationContent : UmbracoContent<DesignationContent> {
         }
     }
     
-    public IFundDimensionsOptions GetFundDimensionOptions() {
-        return (IFundDimensionsOptions) Fund?.DonationItem ??
-               (IFundDimensionsOptions) Feedback?.Scheme ??
-               (IFundDimensionsOptions) Sponsorship?.Scheme;
+    public IFundDimensionOptions GetFundDimensionOptions() {
+        var holdFundDimensionOptions = (IHoldFundDimensionOptions) Fund?.DonationItem ??
+                                       (IHoldFundDimensionOptions) Feedback?.Scheme ??
+                                       (IHoldFundDimensionOptions) Sponsorship?.Scheme;
+
+        return holdFundDimensionOptions.FundDimensionOptions;
     }
     
     public DesignationType Type {

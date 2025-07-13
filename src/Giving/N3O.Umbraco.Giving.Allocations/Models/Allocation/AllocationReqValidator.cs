@@ -56,14 +56,14 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
             .WithMessage(Get<Strings>(s => s.FeedbackAllocationNotAllowed));
         
         RuleFor(x => x.Value)
-            .Must((req, x) => pricedAmountValidator.IsValid(x, req.Fund.DonationItem, req.FundDimensions))
+            .Must((req, x) => pricedAmountValidator.IsValid(x, req.Fund.DonationItem.Pricing, req.FundDimensions))
             .When(x => x.Value.HasValue() && x.Fund?.DonationItem?.HasPricing() == true)
             .WithMessage(Get<Strings>(s => s.InvalidValue));
 
         RuleForEach(x => x.Sponsorship.Components)
             .Must((req, x) => x.Component?.HasPricing() != true ||
                               pricedAmountValidator.IsValid(x.Value,
-                                                            x.Component,
+                                                            x.Component.Pricing,
                                                             req.FundDimensions,
                                                             req.Sponsorship.Duration?.Months ?? 1))
             .When(x => x.Sponsorship.HasValue())
@@ -155,11 +155,11 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
         return definition != null;
     }
 
-    private bool FundDimensionsAreValid(FundDimensionValuesReq req, IFundDimensionsOptions options) {
-        if (FundDimensionIsValid(req.Dimension1, options?.Dimension1Options) &&
-            FundDimensionIsValid(req.Dimension2, options?.Dimension2Options) &&
-            FundDimensionIsValid(req.Dimension3, options?.Dimension3Options) &&
-            FundDimensionIsValid(req.Dimension4, options?.Dimension4Options)) {
+    private bool FundDimensionsAreValid(FundDimensionValuesReq req, IFundDimensionOptions options) {
+        if (FundDimensionIsValid(req.Dimension1, options?.Dimension1) &&
+            FundDimensionIsValid(req.Dimension2, options?.Dimension2) &&
+            FundDimensionIsValid(req.Dimension3, options?.Dimension3) &&
+            FundDimensionIsValid(req.Dimension4, options?.Dimension4)) {
             return true;
         }
 

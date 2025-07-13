@@ -7,10 +7,12 @@ using System.Linq;
 namespace N3O.Umbraco.Giving.Allocations.Extensions; 
 
 public static class AllocationExtensions {
-    public static IFundDimensionsOptions GetFundDimensionsOptions(this IAllocation allocation) {
-        return (IFundDimensionsOptions) allocation.Fund?.DonationItem ??
-               (IFundDimensionsOptions) allocation.Sponsorship?.Scheme ??
-               (IFundDimensionsOptions) allocation.Feedback?.Scheme;
+    public static IFundDimensionOptions GetFundDimensionsOptions(this IAllocation allocation) {
+        var holdFundDimensions = (IHoldFundDimensionOptions) allocation.Fund?.DonationItem ??
+                                 (IHoldFundDimensionOptions) allocation.Sponsorship?.Scheme ??
+                                 (IHoldFundDimensionOptions) allocation.Feedback?.Scheme;
+
+        return holdFundDimensions.FundDimensionOptions;
     }
     
     public static Money GetTotalExcludingUpsells(this IEnumerable<Allocation> allocations, Currency currency) {

@@ -1,4 +1,5 @@
 using Umbraco.Cms.Core.Mapping;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Giving.Allocations.Models;
 
@@ -9,7 +10,7 @@ public class PricingRuleMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll -Locked -Amount -CurrencyValues
     private void Map(IPricingRule src, PricingRuleRes dest, MapperContext ctx) {
-         ctx.Map<IPrice, PriceRes>(src, dest);
+         dest.Price = src.Price.IfNotNull(ctx.Map<IPrice, PriceRes>);
          dest.FundDimensions = ctx.Map<IFundDimensionValues, FundDimensionValuesRes>(src.FundDimensions);
     }
 }

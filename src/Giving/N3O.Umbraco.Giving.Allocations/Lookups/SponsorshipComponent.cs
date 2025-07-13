@@ -1,3 +1,4 @@
+using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Content;
 using N3O.Umbraco.Giving.Allocations.Models;
@@ -7,7 +8,7 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Giving.Allocations.Lookups;
 
-public class SponsorshipComponent : LookupContent<SponsorshipComponent>, IPricing {
+public class SponsorshipComponent : LookupContent<SponsorshipComponent>, IHoldPricing {
     public override string Id {
         get {
             var scheme = GetScheme();
@@ -21,14 +22,24 @@ public class SponsorshipComponent : LookupContent<SponsorshipComponent>, IPricin
     public PriceContent Price => Content().As<PriceContent>();
     public IEnumerable<PricingRuleElement> PriceRules => GetNestedAs(x => x.PriceRules);
 
-    [JsonIgnore]
-    decimal IPrice.Amount => Price.Amount;
-
-    [JsonIgnore]
-    bool IPrice.Locked => Price.Locked;
+    [UmbracoProperty(AllocationsConstants.Aliases.SponsorshipScheme.Properties.PricingRules)]
+    public IEnumerable<PricingRuleElement> PricingRules => GetNestedAs(x => x.PricingRules);
     
     [JsonIgnore]
-    IEnumerable<IPricingRule> IPricing.Rules => PriceRules;
+    public Pricing Pricing {
+        get {
+            var price = Price?.Amount > 0 ? new Price(Price.Amount, Price.Locked) : null;
+            
+            if (price ==  null && PricingRules.None()) {
+                return null;
+            } else {
+                return new Pricing(price, PricingRules);
+            }
+        }
+    }
+    
+    [JsonIgnore]
+    IPricing IHoldPricing.Pricing => Pricing;
     
     public SponsorshipScheme GetScheme() => Content().Parent.As<SponsorshipScheme>();
 }

@@ -5,6 +5,7 @@ using N3O.Umbraco.Giving.Allocations;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Giving.Cart.Models;
+using N3O.Umbraco.Lookups;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,6 +15,7 @@ public partial class Cart {
     public async Task AddAsync(IContentLocator contentLocator,
                                IForexConverter forexConverter,
                                IPriceCalculator priceCalculator,
+                               ILookups lookups,
                                GivingType givingType,
                                IAllocation allocation,
                                int quantity = 1) {
@@ -21,6 +23,7 @@ public partial class Cart {
             await ReplaceContentsAsync(contentLocator,
                                        forexConverter,
                                        priceCalculator,
+                                       lookups,
                                        givingType,
                                        c => AddToContents(c, allocation));
 

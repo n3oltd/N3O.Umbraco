@@ -1,6 +1,7 @@
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Lookups;
 using Umbraco.Cms.Core.Mapping;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Giving.Allocations.Models;
 
@@ -13,6 +14,6 @@ public class SponsorshipComponentMapping : IMapDefinition {
     private void Map(SponsorshipComponent src, SponsorshipComponentRes dest, MapperContext ctx) {
         ctx.Map<INamedLookup, NamedLookupRes>(src, dest);
         dest.Mandatory = src.Mandatory;
-        dest.Pricing = ctx.Map<IPricing, PricingRes>(src);
+        dest.Pricing = src.Pricing.IfNotNull(ctx.Map<IPricing, PricingRes>);
     }
 }

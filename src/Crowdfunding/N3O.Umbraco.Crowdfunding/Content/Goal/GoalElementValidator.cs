@@ -29,14 +29,14 @@ public abstract class GoalElementValidator<TGoalElement> : ContentValidator {
         var fundDimensionOptions = GetFundDimensionOptions(content);
 
         if (fundDimensionOptions != null) {
-            DimensionAllowed(content, fundDimensionOptions.Dimension1Options, Dimension1Alias);
-            DimensionAllowed(content, fundDimensionOptions.Dimension2Options, Dimension2Alias);
-            DimensionAllowed(content, fundDimensionOptions.Dimension3Options, Dimension3Alias);
-            DimensionAllowed(content, fundDimensionOptions.Dimension4Options, Dimension4Alias);
+            DimensionAllowed(content, fundDimensionOptions.Dimension1, Dimension1Alias);
+            DimensionAllowed(content, fundDimensionOptions.Dimension2, Dimension2Alias);
+            DimensionAllowed(content, fundDimensionOptions.Dimension3, Dimension3Alias);
+            DimensionAllowed(content, fundDimensionOptions.Dimension4, Dimension4Alias);
         }
     }
     
-    protected abstract IFundDimensionsOptions GetFundDimensionOptions(ContentProperties content);
+    protected abstract IFundDimensionOptions GetFundDimensionOptions(ContentProperties content);
     protected abstract void ValidatePriceLocked(ContentProperties content);
 
     private void DimensionAllowed<T>(ContentProperties content, IEnumerable<T> allowedValues, string propertyAlias)

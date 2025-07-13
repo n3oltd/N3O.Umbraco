@@ -1,33 +1,36 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
-using Umbraco.Cms.Core.Models.PublishedContent;
+using N3O.Umbraco.Lookups;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
 public class FundGoalElementValidator : GoalElementValidator<FundGoalElement> {
-    public FundGoalElementValidator(IContentHelper contentHelper) : base(contentHelper) { }
+    private readonly ILookups _lookups;
+    
+    public FundGoalElementValidator(IContentHelper contentHelper, ILookups lookups) : base(contentHelper) {
+        _lookups = lookups;
+    }
 
-    protected override IFundDimensionsOptions GetFundDimensionOptions(ContentProperties content) {
-        return GetDonationItem(content);
+    protected override IFundDimensionOptions GetFundDimensionOptions(ContentProperties content) {
+        return GetDonationItem(content).FundDimensionOptions;
     }
     
     protected override void ValidatePriceLocked(ContentProperties content) {
         var property = content.GetPropertyByAlias(CrowdfundingConstants.Goal.Fund.Properties.DonationItem);
         
-        var donationItem = property.IfNotNull(x => ContentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(x)
-                                                                .As<DonationItem>());
+        var donationItem = property.IfNotNull(x => ContentHelper.GetLookupValue<DonationItem>(_lookups, x));
         
-        if (donationItem.Price.Locked) {
+        if (donationItem.HasLockedPrice()) {
             ErrorResult($"The donation item {donationItem.Name} has a locked price which is not permitted");
         }
     }
 
     private DonationItem GetDonationItem(ContentProperties content) {
         var donationItem = content.GetPropertyByAlias(CrowdfundingConstants.Goal.Fund.Properties.DonationItem)
-                                  .IfNotNull(x => ContentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(x)
-                                                               .As<DonationItem>());
+                                  .IfNotNull(x => ContentHelper.GetLookupValue<DonationItem>(_lookups, x));
 
         return donationItem;
     }

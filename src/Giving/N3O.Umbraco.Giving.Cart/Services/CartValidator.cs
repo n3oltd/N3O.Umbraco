@@ -87,10 +87,10 @@ public class CartValidator : ICartValidator {
         var fundDimensions = allocation.FundDimensions;
         var fundDimensionOptions = allocation.GetFundDimensionsOptions();
         
-        if (FundDimensionIsValid(fundDimensionOptions.Dimension1Options, fundDimensions.Dimension1) &&
-            FundDimensionIsValid(fundDimensionOptions.Dimension2Options, fundDimensions.Dimension2) &&
-            FundDimensionIsValid(fundDimensionOptions.Dimension3Options, fundDimensions.Dimension3) &&
-            FundDimensionIsValid(fundDimensionOptions.Dimension4Options, fundDimensions.Dimension4)) {
+        if (FundDimensionIsValid(fundDimensionOptions.Dimension1, fundDimensions.Dimension1) &&
+            FundDimensionIsValid(fundDimensionOptions.Dimension2, fundDimensions.Dimension2) &&
+            FundDimensionIsValid(fundDimensionOptions.Dimension3, fundDimensions.Dimension3) &&
+            FundDimensionIsValid(fundDimensionOptions.Dimension4, fundDimensions.Dimension4)) {
             return true;
         }
 

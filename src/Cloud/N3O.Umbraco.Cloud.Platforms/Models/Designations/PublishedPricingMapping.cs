@@ -13,7 +13,7 @@ public class PublishedPricingMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll
     private void Map(IPricing src, PublishedPricing dest, MapperContext ctx) {
-        dest.Price = ctx.Map<IPrice, PublishedPrice>(src);
-        dest.Rules = src.Rules.OrEmpty().Select(x => ctx.Map<IPricingRule, PublishedPricingRule>(x)).ToList();
+        dest.Price = src.Price.IfNotNull(ctx.Map<IPrice, PublishedPrice>);
+        dest.Rules = src.Rules.OrEmpty().Select(ctx.Map<IPricingRule, PublishedPricingRule>).ToList();
     }
 }

@@ -40,7 +40,7 @@ public class ContentCountries : LookupsCollection<Country> {
         List<CountryContent> content;
         
         if (_umbracoContextAccessor.TryGetUmbracoContext(out _)) {
-            content = _contentCache.All<CountryContent>().OrderBy(x => x.Content().SortOrder).ToList();
+            content = _contentCache.All<CountryContent>().OrderBy(x => x.Content().Name).ToList();
         } else {
             content = [];
         }

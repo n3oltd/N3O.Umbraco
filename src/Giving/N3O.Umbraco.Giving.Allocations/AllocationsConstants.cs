@@ -1,68 +1,93 @@
-﻿using N3O.Umbraco.Content;
-using N3O.Umbraco.Giving.Allocations.Content;
-
-namespace N3O.Umbraco.Giving.Allocations;
+﻿namespace N3O.Umbraco.Giving.Allocations;
 
 public class AllocationsConstants {
     public static class Aliases {
         public static class DonationItem {
-            public static readonly string ContentType = AliasHelper<Allocations.Lookups.DonationItem>.ContentTypeAlias();
+            public const string ContentType = "donationItem";
 
             public static class Properties {
-                public static readonly string AllowedGivingTypes = AliasHelper<Allocations.Lookups.DonationItem>.PropertyAlias(x => x.AllowedGivingTypes);
-                public static readonly string Dimension1Options = AliasHelper<Allocations.Lookups.DonationItem>.PropertyAlias(x => x.Dimension1Options);
-                public static readonly string Dimension2Options = AliasHelper<Allocations.Lookups.DonationItem>.PropertyAlias(x => x.Dimension2Options);
-                public static readonly string Dimension3Options = AliasHelper<Allocations.Lookups.DonationItem>.PropertyAlias(x => x.Dimension3Options);
-                public static readonly string Dimension4Options = AliasHelper<Allocations.Lookups.DonationItem>.PropertyAlias(x => x.Dimension4Options);
-                public static readonly string PriceRules = AliasHelper<Allocations.Lookups.DonationItem>.PropertyAlias(x => x.PriceRules);
+                public const string AllowedGivingTypes = "allowedGivingTypes";
+                public const string Dimension1 = "dimension1Options";
+                public const string Dimension2 = "dimension2Options";
+                public const string Dimension3 = "dimension3Options";
+                public const string Dimension4 = "dimension4Options";
+                public const string PricingRules = "priceRules";
             }
         }
 
         public static class DonationCampaign {
-            public static readonly string ContentType = "donationCampaign";
+            public const string ContentType = "donationCampaign";
         }
         
         public static class DonationOption {
-            public static readonly string ContentType = "donationOption";
+            public const string ContentType = "donationOption";
         }
         
         public static class FeedbackCustomField {
-            public static readonly string ContentType = "feedbackCustomField";
+            public const string ContentType = "feedbackCustomField";
 
             public static class Properties {
-                public static readonly string Alias = "alias";
-                public static readonly string Bool = "bool";
-                public static readonly string Date = "date";
-                public static readonly string Name = "displayName";
-                public static readonly string Text = "text";
-                public static readonly string Type = "type";
+                public const string Alias = "alias";
+                public const string Bool = "bool";
+                public const string Date = "date";
+                public const string Name = "displayName";
+                public const string Text = "text";
+                public const string Type = "type";
+            }
+        }
+        
+        public static class FeedbackScheme {
+            public static class Properties {
+                public const string Dimension1 = "dimension1Options";
+                public const string Dimension2 = "dimension2Options";
+                public const string Dimension3 = "dimension3Options";
+                public const string Dimension4 = "dimension4Options";
+                public const string PricingRules = "priceRules";
             }
         }
         
         public static class Price {
             public static class Properties {
-                public static readonly string Amount = AliasHelper<PriceContent>.PropertyAlias(x => x.Amount);
-                public static readonly string Locked = AliasHelper<PriceContent>.PropertyAlias(x => x.Locked);
+                public const string Amount = "priceAmount";
+                public const string Locked = "priceLocked";
             }
         }
         
         public static class PriceHandle {
-            public static readonly string ContentType = "priceHandle";
+            public const string ContentType = "priceHandle";
 
             public static class Properties {
-                public static readonly string Amount = "amount";
-                public static readonly string Description = "description";
+                public const string Amount = "amount";
+                public const string Description = "description";
             }
         }
         
         public static class PricingRule {
-            public static readonly string ContentType = AliasHelper<PricingRuleElement>.ContentTypeAlias();
+            public const string ContentType = "pricingRule";
 
             public static class Properties {
-                public static readonly string Dimension1 = AliasHelper<PricingRuleElement>.PropertyAlias(x => x.Dimension1);
-                public static readonly string Dimension2 = AliasHelper<PricingRuleElement>.PropertyAlias(x => x.Dimension2);
-                public static readonly string Dimension3 = AliasHelper<PricingRuleElement>.PropertyAlias(x => x.Dimension3);
-                public static readonly string Dimension4 = AliasHelper<PricingRuleElement>.PropertyAlias(x => x.Dimension4);
+                public const string Amount = "priceAmount";
+                public const string Dimension1 = "dimension1";
+                public const string Dimension2 = "dimension2";
+                public const string Dimension3 = "dimension3";
+                public const string Dimension4 = "dimension4";
+                public const string Locked = "priceLocked";
+            }
+        }
+        
+        public static class SponsorshipScheme {
+            public static class Properties {
+                public const string Dimension1 = "dimension1Options";
+                public const string Dimension2 = "dimension2Options";
+                public const string Dimension3 = "dimension3Options";
+                public const string Dimension4 = "dimension4Options";
+                public const string PricingRules = "priceRules";
+            }
+        }
+        
+        public static class UpsellOffer {
+            public static class Properties {
+                public const string DonationItem = "donationItem";
             }
         }
     }

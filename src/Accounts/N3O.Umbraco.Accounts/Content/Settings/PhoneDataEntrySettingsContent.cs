@@ -3,9 +3,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Utilities;
-using System;
 using System.Linq;
-using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Accounts.Content;
 
@@ -16,23 +14,7 @@ public class PhoneDataEntrySettingsContent : UmbracoContent<PhoneDataEntrySettin
     public bool Validate => GetValue(x => x.Validate);
     
     public Country GetDefaultCountry(ILookups lookups) {
-        var propertyValue = Content().GetProperty(AccountsConstants.DataEntrySettings.Properties.DefaultCountry)
-                                    ?.GetValue();
-        Country country;
-        
-        if (propertyValue is IPublishedContent publishedContent) {
-            var allCountries = lookups.GetAll<Country>();
-            
-            var countryCode = publishedContent.As<CountryContent>().Iso2Code;
-            
-            country = allCountries.SingleOrDefault(x => x.Iso2Code == countryCode);
-        } else if (propertyValue is Country countryLookup) {
-            country =  countryLookup;
-        } else {
-            throw new Exception("Default country must either be a picker or a datalist");
-        }
-
-        return country;
+        return GetLookup<Country>(lookups, AccountsConstants.DataEntrySettings.Properties.DefaultCountry);
     }
 
     public PhoneDataEntrySettings ToDataEntrySettings(ILookups lookups) {

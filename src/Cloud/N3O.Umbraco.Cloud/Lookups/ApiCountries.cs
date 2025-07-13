@@ -2,6 +2,7 @@
 using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Models;
 using N3O.Umbraco.Lookups;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,7 +19,8 @@ public class ApiCountries : ApiLookupsCollection<Country> {
     
     protected override async Task<IReadOnlyList<Country>> FetchAsync(CancellationToken cancellationToken) {
         var publishedLookupsRoot = await _cdnClient.DownloadSubscriptionContentAsync<PublishedLookupsRoot>(SubscriptionFiles.Lookups,
-                                                                                                           JsonSerializers.Simple);
+                                                                                                           JsonSerializers.Simple,
+                                                                                                           cancellationToken);
 
         var countries = new List<Country>();
 
@@ -36,4 +38,6 @@ public class ApiCountries : ApiLookupsCollection<Country> {
 
         return countries;
     }
+
+    protected override TimeSpan CacheDuration => TimeSpan.FromHours(12);
 }

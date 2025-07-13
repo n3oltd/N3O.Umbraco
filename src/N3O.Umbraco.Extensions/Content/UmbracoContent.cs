@@ -54,6 +54,23 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
         return StringLocalizer.Instance.Get(GetType().GetFriendlyName(), alias, text);
     }
 
+    protected TLookup GetLookup<TLookup>(ILookups lookups, string propertyAlias)
+        where TLookup : ILookup {
+        var propertyValue = Content().GetProperty(propertyAlias)?.GetValue();
+
+        TLookup lookup;
+        
+        if (propertyValue is TLookup lookupValue) {
+            lookup =  lookupValue;
+        } else if (propertyValue is IPublishedContent publishedContent) {
+            lookup = lookups.FindById<TLookup>(LookupContent.GetId(publishedContent));
+        } else {
+            throw new Exception("Lookup properties must either be a datalist or picker");
+        }
+
+        return lookup;
+    }
+
     protected IEnumerable<TProperty> GetNestedAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
         var values = (IEnumerable) Content().Value(alias, VariationContext?.Culture, VariationContext?.Segment)

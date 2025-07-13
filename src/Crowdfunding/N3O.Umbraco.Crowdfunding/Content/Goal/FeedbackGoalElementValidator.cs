@@ -9,8 +9,8 @@ namespace N3O.Umbraco.Crowdfunding.Content;
 public class FeedbackGoalElementValidator : GoalElementValidator<FeedbackGoalElement> {
     public FeedbackGoalElementValidator(IContentHelper contentHelper) : base(contentHelper) { }
 
-    protected override IFundDimensionsOptions GetFundDimensionOptions(ContentProperties content) {
-        return GetFeedbackScheme(content);
+    protected override IFundDimensionOptions GetFundDimensionOptions(ContentProperties content) {
+        return GetFeedbackScheme(content).FundDimensionOptions;
     }
     
     protected override void ValidatePriceLocked(ContentProperties content) {

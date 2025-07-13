@@ -11,7 +11,7 @@ public class PricingMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll -Locked -Amount -CurrencyValues
     private void Map(IPricing src, PricingRes dest, MapperContext ctx) {
-         ctx.Map<IPrice, PriceRes>(src, dest);
+         dest.Price = src.Price.IfNotNull(ctx.Map<IPrice, PriceRes>);
          dest.PriceRules = src.Rules.OrEmpty().Select(ctx.Map<IPricingRule, PricingRuleRes>).ToList();
     }
 }

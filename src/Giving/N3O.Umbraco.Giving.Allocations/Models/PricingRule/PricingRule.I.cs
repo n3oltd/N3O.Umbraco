@@ -1,5 +1,6 @@
 namespace N3O.Umbraco.Giving.Allocations.Models;
 
-public interface IPricingRule : IPrice {
+public interface IPricingRule {
     IFundDimensionValues FundDimensions { get; }
+    IPrice Price { get; }
 }

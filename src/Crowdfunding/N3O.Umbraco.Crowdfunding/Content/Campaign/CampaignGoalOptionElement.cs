@@ -5,12 +5,13 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Content;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
-public class CampaignGoalOptionElement : UmbracoElement<CampaignGoalOptionElement>, IFundDimensionsOptions {
+public class CampaignGoalOptionElement : UmbracoElement<CampaignGoalOptionElement>, IFundDimensionOptions {
     [UmbracoProperty(CrowdfundingConstants.Goal.Properties.Name)]
     public string Name => GetValue(x => x.Name);
     public IEnumerable<FundDimension1Value> FundDimension1 => GetPickedAs(x => x.FundDimension1);
@@ -25,9 +26,11 @@ public class CampaignGoalOptionElement : UmbracoElement<CampaignGoalOptionElemen
     public CampaignFundGoalOptionElement Fund { get; private set; }
     public CampaignFeedbackGoalOptionElement Feedback { get; private set; }
     
-    public IFundDimensionsOptions GetFundDimensionOptions() {
-        return (IFundDimensionsOptions) Fund?.DonationItem ??
-               (IFundDimensionsOptions) Feedback?.Scheme;
+    public IFundDimensionOptions GetFundDimensionOptions() {
+        var holdFundDimensionOptions = (IHoldFundDimensionOptions) Fund?.DonationItem ??
+                                       (IHoldFundDimensionOptions) Feedback?.Scheme;
+
+        return holdFundDimensionOptions.FundDimensionOptions;
     }
     
     public override void SetContent(IPublishedElement content, IPublishedContent parent) {
@@ -62,9 +65,16 @@ public class CampaignGoalOptionElement : UmbracoElement<CampaignGoalOptionElemen
             }
         }
     }
-
-    IEnumerable<FundDimension1Value> IFundDimensionsOptions.Dimension1Options => FundDimension1;
-    IEnumerable<FundDimension2Value> IFundDimensionsOptions.Dimension2Options => FundDimension2;
-    IEnumerable<FundDimension3Value> IFundDimensionsOptions.Dimension3Options => FundDimension3;
-    IEnumerable<FundDimension4Value> IFundDimensionsOptions.Dimension4Options => FundDimension4;
+    
+    [JsonIgnore]
+    IEnumerable<FundDimension1Value> IFundDimensionOptions.Dimension1 => FundDimension1;
+    
+    [JsonIgnore]
+    IEnumerable<FundDimension2Value> IFundDimensionOptions.Dimension2 => FundDimension2;
+    
+    [JsonIgnore]
+    IEnumerable<FundDimension3Value> IFundDimensionOptions.Dimension3 => FundDimension3;
+    
+    [JsonIgnore]
+    IEnumerable<FundDimension4Value> IFundDimensionOptions.Dimension4 => FundDimension4;
 }

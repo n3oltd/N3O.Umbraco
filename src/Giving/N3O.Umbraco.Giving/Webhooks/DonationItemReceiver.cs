@@ -84,21 +84,21 @@ public class DonationItemReceiver : WebhookReceiver {
 
         contentPublisher.SetName(webhookDonationItem.Name);
         contentPublisher.Content.DataList(AllocationsConstants.Aliases.DonationItem.Properties.AllowedGivingTypes).SetLookups(allowedGivingTypes);
-        contentPublisher.Content.ContentPicker(AllocationsConstants.Aliases.DonationItem.Properties.Dimension1Options).SetContent(dimension1Options);
-        contentPublisher.Content.ContentPicker(AllocationsConstants.Aliases.DonationItem.Properties.Dimension2Options).SetContent(dimension2Options);
-        contentPublisher.Content.ContentPicker(AllocationsConstants.Aliases.DonationItem.Properties.Dimension3Options).SetContent(dimension3Options);
-        contentPublisher.Content.ContentPicker(AllocationsConstants.Aliases.DonationItem.Properties.Dimension4Options).SetContent(dimension4Options);
+        contentPublisher.Content.ContentPicker(AllocationsConstants.Aliases.DonationItem.Properties.Dimension1).SetContent(dimension1Options);
+        contentPublisher.Content.ContentPicker(AllocationsConstants.Aliases.DonationItem.Properties.Dimension2).SetContent(dimension2Options);
+        contentPublisher.Content.ContentPicker(AllocationsConstants.Aliases.DonationItem.Properties.Dimension3).SetContent(dimension3Options);
+        contentPublisher.Content.ContentPicker(AllocationsConstants.Aliases.DonationItem.Properties.Dimension4).SetContent(dimension4Options);
         contentPublisher.Content.Numeric(AllocationsConstants.Aliases.Price.Properties.Amount).SetDecimal(webhookDonationItem.Price?.Amount);
         contentPublisher.Content.Toggle(AllocationsConstants.Aliases.Price.Properties.Locked).Set(webhookDonationItem.Price?.Locked);
 
-        if (webhookDonationItem.PriceRules.HasAny()) {
-            var nestedContent = contentPublisher.Content.Nested(AllocationsConstants.Aliases.DonationItem.Properties.PriceRules);
+        if (webhookDonationItem.PricingRules.HasAny()) {
+            var nestedContent = contentPublisher.Content.Nested(AllocationsConstants.Aliases.DonationItem.Properties.PricingRules);
             
-            foreach (var priceRule in webhookDonationItem.PriceRules) {
+            foreach (var priceRule in webhookDonationItem.PricingRules) {
                 AddPriceRule(nestedContent.Add(AllocationsConstants.Aliases.PricingRule.ContentType), priceRule);
             }
         } else {
-            contentPublisher.Content.Null(AllocationsConstants.Aliases.DonationItem.Properties.PriceRules);
+            contentPublisher.Content.Null(AllocationsConstants.Aliases.DonationItem.Properties.PricingRules);
         }
 
         contentPublisher.SaveAndPublish();
@@ -152,7 +152,7 @@ public class DonationItemReceiver : WebhookReceiver {
                                    IEnumerable<WebhookLookup> allowedGivingTypes,
                                    WebhookFundDimensionOptions fundDimensionOptions,
                                    WebhookPrice price,
-                                   IEnumerable<WebhookPricingRule> priceRules,
+                                   IEnumerable<WebhookPricingRule> pricingRules,
                                    string status,
                                    bool isActive)
             : base(revision, reference) {
@@ -160,7 +160,7 @@ public class DonationItemReceiver : WebhookReceiver {
             AllowedGivingTypes = allowedGivingTypes;
             FundDimensionOptions = fundDimensionOptions;
             Price = price;
-            PriceRules = priceRules;
+            PricingRules = pricingRules;
             Status = status;
             IsActive = isActive;
         }
@@ -169,7 +169,7 @@ public class DonationItemReceiver : WebhookReceiver {
         public IEnumerable<WebhookLookup> AllowedGivingTypes { get; }
         public WebhookFundDimensionOptions FundDimensionOptions { get; }
         public WebhookPrice Price { get; }
-        public IEnumerable<WebhookPricingRule> PriceRules { get; }
+        public IEnumerable<WebhookPricingRule> PricingRules { get; }
         public string Status { get; }
         public bool IsActive { get; }
 
@@ -178,7 +178,7 @@ public class DonationItemReceiver : WebhookReceiver {
             yield return AllowedGivingTypes;
             yield return FundDimensionOptions;
             yield return Price;
-            yield return PriceRules;
+            yield return PricingRules;
             yield return Status;
             yield return IsActive;
         }

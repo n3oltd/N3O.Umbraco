@@ -12,6 +12,7 @@ public class SubscriptionFiles : StaticLookupsCollection<SubscriptionFile> {
     public static readonly SubscriptionFile AccountEntry = new("accountEntry");
     public static readonly SubscriptionFile Currencies = new("currencies");
     public static readonly SubscriptionFile DonateMenu = new("donateMenu");
+    public static readonly SubscriptionFile DonationItems = new("donationItems");
     public static readonly SubscriptionFile Environment = new("environment");
     public static readonly SubscriptionFile FundStructure = new("fundStructure");
     public static readonly SubscriptionFile Localization = new("localization");

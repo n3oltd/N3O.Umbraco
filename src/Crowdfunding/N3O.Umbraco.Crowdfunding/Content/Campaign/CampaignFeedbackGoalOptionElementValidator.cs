@@ -10,8 +10,8 @@ public class CampaignFeedbackGoalOptionElementValidator :
     CampaignGoalOptionElementValidator<CampaignFeedbackGoalOptionElement> {
     public CampaignFeedbackGoalOptionElementValidator(IContentHelper contentHelper) : base(contentHelper) { }
 
-    protected override IFundDimensionsOptions GetFundDimensionOptions(ContentProperties content) {
-        return GetFeedbackScheme(content);
+    protected override IFundDimensionOptions GetFundDimensionOptions(ContentProperties content) {
+        return GetFeedbackScheme(content).FundDimensionOptions;
     }
     
     protected override void ValidatePriceLocked(ContentProperties content) {
