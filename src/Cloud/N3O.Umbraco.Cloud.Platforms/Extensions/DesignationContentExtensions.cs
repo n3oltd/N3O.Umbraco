@@ -21,7 +21,7 @@ public static class DesignationContentExtensions {
         fundDimensions.Dimension3 = ToPublishedDesignationFundDimension(designationContent.Dimension3,
                                                                         fundDimensionOptions.Dimension3Options);
         
-        fundDimensions.Dimension3 = ToPublishedDesignationFundDimension(designationContent.Dimension4,
+        fundDimensions.Dimension4 = ToPublishedDesignationFundDimension(designationContent.Dimension4,
                                                                         fundDimensionOptions.Dimension4Options);
 
         return fundDimensions;
