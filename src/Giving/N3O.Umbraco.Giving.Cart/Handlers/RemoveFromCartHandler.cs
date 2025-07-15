@@ -6,6 +6,7 @@ using N3O.Umbraco.Giving.Allocations;
 using N3O.Umbraco.Giving.Allocations.Content;
 using N3O.Umbraco.Giving.Cart.Commands;
 using N3O.Umbraco.Giving.Cart.Models;
+using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Mediator;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,17 +21,20 @@ public class RemoveFromCartHandler :
     private readonly IForexConverter _forexConverter;
     private readonly IPriceCalculator _priceCalculator;
     private readonly ICartAccessor _cartAccessor;
+    private readonly ILookups _lookups;
     private readonly IRepository<Entities.Cart> _repository;
 
     public RemoveFromCartHandler(IContentLocator contentLocator,
                                  IForexConverter forexConverter,
                                  IPriceCalculator priceCalculator,
                                  ICartAccessor cartAccessor,
+                                 ILookups lookups,
                                  IRepository<Entities.Cart> repository) {
         _contentLocator = contentLocator;
         _forexConverter = forexConverter;
         _priceCalculator = priceCalculator;
         _cartAccessor = cartAccessor;
+        _lookups = lookups;
         _repository = repository;
     }
     
@@ -40,6 +44,7 @@ public class RemoveFromCartHandler :
         await cart.BulkRemoveAsync(_contentLocator,
                                    _forexConverter,
                                    _priceCalculator,
+                                   _lookups,
                                    req.Model.GivingType,
                                    req.Model.Indexes);
 
@@ -54,6 +59,7 @@ public class RemoveFromCartHandler :
         await cart.RemoveAsync(_contentLocator,
                                _forexConverter,
                                _priceCalculator,
+                               _lookups,
                                req.Model.GivingType,
                                req.Model.Index.GetValueOrThrow());
 
@@ -69,6 +75,7 @@ public class RemoveFromCartHandler :
         await cart.RemoveUpsellAsync(_contentLocator,
                                      _forexConverter,
                                      _priceCalculator,
+                                     _lookups,
                                      upsellOfferContent.GivingType,
                                      req.UpsellOfferId.Value);
         

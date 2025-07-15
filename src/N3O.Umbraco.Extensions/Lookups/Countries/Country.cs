@@ -1,14 +1,17 @@
-﻿namespace N3O.Umbraco.Lookups;
+﻿using System;
 
-public class Country : NamedLookup {
+namespace N3O.Umbraco.Lookups;
+
+public class Country : ContentOrPublishedLookup {
     public Country(string id,
                    string name,
+                   Guid? contentId,
                    string iso2Code,
                    string iso3Code,
                    int dialingCode,
                    bool localityOptional,
                    bool postalCodeOptional)
-        : base(id, name) {
+        : base(id, name, contentId) {
         Iso2Code = iso2Code;
         Iso3Code = iso3Code;
         DialingCode = dialingCode;

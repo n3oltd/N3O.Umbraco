@@ -25,7 +25,7 @@ public class GoalElement : UmbracoElement<GoalElement>, IFundDimensionValues, IC
     public IEnumerable<PriceHandleElement> PriceHandles => GetNestedAs(x => x.PriceHandles);
     
     public string Id => Content().Key.ToString().ToLowerInvariant();
-    public bool HasPricing => ((IPricing) Fund?.DonationItem ?? Feedback?.Scheme).HasPricing();
+    public bool HasPricing => ((IHoldPricing) Fund?.DonationItem ?? Feedback?.Scheme).HasPricing();
     
     public FundGoalElement Fund { get; protected set; }
     public FeedbackGoalElement Feedback { get; protected set; }

@@ -84,21 +84,21 @@ public class DonationItemReceiver : WebhookReceiver {
 
         contentPublisher.SetName(webhookDonationItem.Name);
         contentPublisher.Content.DataList(AllocationsConstants.Aliases.DonationItem.Properties.AllowedGivingTypes).SetLookups(allowedGivingTypes);
-        contentPublisher.Content.ContentPicker(AllocationsConstants.Aliases.DonationItem.Properties.Dimension1Options).SetContent(dimension1Options);
-        contentPublisher.Content.ContentPicker(AllocationsConstants.Aliases.DonationItem.Properties.Dimension2Options).SetContent(dimension2Options);
-        contentPublisher.Content.ContentPicker(AllocationsConstants.Aliases.DonationItem.Properties.Dimension3Options).SetContent(dimension3Options);
-        contentPublisher.Content.ContentPicker(AllocationsConstants.Aliases.DonationItem.Properties.Dimension4Options).SetContent(dimension4Options);
+        contentPublisher.Content.SetContentOrPublishedLookupValues(AllocationsConstants.Aliases.DonationItem.Properties.Dimension1, dimension1Options);
+        contentPublisher.Content.SetContentOrPublishedLookupValues(AllocationsConstants.Aliases.DonationItem.Properties.Dimension2, dimension2Options);
+        contentPublisher.Content.SetContentOrPublishedLookupValues(AllocationsConstants.Aliases.DonationItem.Properties.Dimension3, dimension3Options);
+        contentPublisher.Content.SetContentOrPublishedLookupValues(AllocationsConstants.Aliases.DonationItem.Properties.Dimension4, dimension4Options);
         contentPublisher.Content.Numeric(AllocationsConstants.Aliases.Price.Properties.Amount).SetDecimal(webhookDonationItem.Price?.Amount);
         contentPublisher.Content.Toggle(AllocationsConstants.Aliases.Price.Properties.Locked).Set(webhookDonationItem.Price?.Locked);
 
-        if (webhookDonationItem.PriceRules.HasAny()) {
-            var nestedContent = contentPublisher.Content.Nested(AllocationsConstants.Aliases.DonationItem.Properties.PriceRules);
+        if (webhookDonationItem.PricingRules.HasAny()) {
+            var nestedContent = contentPublisher.Content.Nested(AllocationsConstants.Aliases.DonationItem.Properties.PricingRules);
             
-            foreach (var priceRule in webhookDonationItem.PriceRules) {
+            foreach (var priceRule in webhookDonationItem.PricingRules) {
                 AddPriceRule(nestedContent.Add(AllocationsConstants.Aliases.PricingRule.ContentType), priceRule);
             }
         } else {
-            contentPublisher.Content.Null(AllocationsConstants.Aliases.DonationItem.Properties.PriceRules);
+            contentPublisher.Content.Null(AllocationsConstants.Aliases.DonationItem.Properties.PricingRules);
         }
 
         contentPublisher.SaveAndPublish();
@@ -139,10 +139,10 @@ public class DonationItemReceiver : WebhookReceiver {
     private void AddPriceRule(IContentBuilder contentBuilder, WebhookPricingRule webhookPricingRule) {
         contentBuilder.Numeric(AllocationsConstants.Aliases.Price.Properties.Amount).SetDecimal(webhookPricingRule.Price?.Amount);
         contentBuilder.Toggle(AllocationsConstants.Aliases.Price.Properties.Locked).Set(webhookPricingRule.Price?.Locked);
-        contentBuilder.ContentPicker(AllocationsConstants.Aliases.PricingRule.Properties.Dimension1).SetContent(webhookPricingRule.FundDimensions.Dimension1.IfNotNull(_lookups.FindByName<FundDimension1Value>));
-        contentBuilder.ContentPicker(AllocationsConstants.Aliases.PricingRule.Properties.Dimension2).SetContent(webhookPricingRule.FundDimensions.Dimension2.IfNotNull(_lookups.FindByName<FundDimension2Value>));
-        contentBuilder.ContentPicker(AllocationsConstants.Aliases.PricingRule.Properties.Dimension3).SetContent(webhookPricingRule.FundDimensions.Dimension3.IfNotNull(_lookups.FindByName<FundDimension3Value>));
-        contentBuilder.ContentPicker(AllocationsConstants.Aliases.PricingRule.Properties.Dimension4).SetContent(webhookPricingRule.FundDimensions.Dimension4.IfNotNull(_lookups.FindByName<FundDimension4Value>));
+        contentBuilder.SetContentOrPublishedLookupValues(AllocationsConstants.Aliases.PricingRule.Properties.Dimension1, webhookPricingRule.FundDimensions.Dimension1.IfNotNull(_lookups.FindByName<FundDimension1Value>));
+        contentBuilder.SetContentOrPublishedLookupValues(AllocationsConstants.Aliases.PricingRule.Properties.Dimension2, webhookPricingRule.FundDimensions.Dimension2.IfNotNull(_lookups.FindByName<FundDimension2Value>));
+        contentBuilder.SetContentOrPublishedLookupValues(AllocationsConstants.Aliases.PricingRule.Properties.Dimension3, webhookPricingRule.FundDimensions.Dimension3.IfNotNull(_lookups.FindByName<FundDimension3Value>));
+        contentBuilder.SetContentOrPublishedLookupValues(AllocationsConstants.Aliases.PricingRule.Properties.Dimension4, webhookPricingRule.FundDimensions.Dimension4.IfNotNull(_lookups.FindByName<FundDimension4Value>));
     }
     
     public class WebhookDonationItem : WebhookEntity {
@@ -152,7 +152,7 @@ public class DonationItemReceiver : WebhookReceiver {
                                    IEnumerable<WebhookLookup> allowedGivingTypes,
                                    WebhookFundDimensionOptions fundDimensionOptions,
                                    WebhookPrice price,
-                                   IEnumerable<WebhookPricingRule> priceRules,
+                                   IEnumerable<WebhookPricingRule> pricingRules,
                                    string status,
                                    bool isActive)
             : base(revision, reference) {
@@ -160,7 +160,7 @@ public class DonationItemReceiver : WebhookReceiver {
             AllowedGivingTypes = allowedGivingTypes;
             FundDimensionOptions = fundDimensionOptions;
             Price = price;
-            PriceRules = priceRules;
+            PricingRules = pricingRules;
             Status = status;
             IsActive = isActive;
         }
@@ -169,7 +169,7 @@ public class DonationItemReceiver : WebhookReceiver {
         public IEnumerable<WebhookLookup> AllowedGivingTypes { get; }
         public WebhookFundDimensionOptions FundDimensionOptions { get; }
         public WebhookPrice Price { get; }
-        public IEnumerable<WebhookPricingRule> PriceRules { get; }
+        public IEnumerable<WebhookPricingRule> PricingRules { get; }
         public string Status { get; }
         public bool IsActive { get; }
 
@@ -178,7 +178,7 @@ public class DonationItemReceiver : WebhookReceiver {
             yield return AllowedGivingTypes;
             yield return FundDimensionOptions;
             yield return Price;
-            yield return PriceRules;
+            yield return PricingRules;
             yield return Status;
             yield return IsActive;
         }

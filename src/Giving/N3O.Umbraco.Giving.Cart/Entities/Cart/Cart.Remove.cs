@@ -3,6 +3,7 @@ using N3O.Umbraco.Forex;
 using N3O.Umbraco.Giving.Allocations;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Cart.Models;
+using N3O.Umbraco.Lookups;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,11 +14,13 @@ public partial class Cart {
     public async Task RemoveAsync(IContentLocator contentLocator,
                                   IForexConverter forexConverter,
                                   IPriceCalculator priceCalculator,
+                                  ILookups lookups,
                                   GivingType givingType,
                                   int allocationIndex) {
         await ReplaceContentsAsync(contentLocator,
                                    forexConverter,
                                    priceCalculator,
+                                   lookups,
                                    givingType,
                                    c => RemoveContents(c, allocationIndex));
     }

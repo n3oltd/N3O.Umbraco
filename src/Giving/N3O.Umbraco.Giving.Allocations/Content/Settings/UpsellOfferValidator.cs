@@ -3,6 +3,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
+using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -15,12 +16,14 @@ public class UpsellOfferValidator : ContentValidator {
     private static readonly string Dimension2Alias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.Dimension2);
     private static readonly string Dimension3Alias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.Dimension3);
     private static readonly string Dimension4Alias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.Dimension4);
-    private static readonly string DonationItemAlias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.DonationItem);
     private static readonly string FixedAmount = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.FixedAmount);
     private static readonly string GivingType = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.GivingType);
     private static readonly string PriceHandles = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.PriceHandles);
+    private readonly ILookups _lookups;
 
-    public UpsellOfferValidator(IContentHelper contentHelper) : base(contentHelper) { }
+    public UpsellOfferValidator(IContentHelper contentHelper, ILookups lookups) : base(contentHelper) {
+        _lookups = lookups;
+    }
 
     public override bool IsValidator(ContentProperties content) {
         return content.ContentTypeAlias.Equals(UpsellOfferContentContentTypeAlias);
@@ -39,10 +42,10 @@ public class UpsellOfferValidator : ContentValidator {
     }
 
     private void ValidateFundDimensions(ContentProperties content, DonationItem donationItem) {
-        DimensionAllowed(content, donationItem.Dimension1Options, Dimension1Alias);
-        DimensionAllowed(content, donationItem.Dimension2Options, Dimension2Alias);
-        DimensionAllowed(content, donationItem.Dimension3Options, Dimension3Alias);
-        DimensionAllowed(content, donationItem.Dimension4Options, Dimension4Alias);
+        DimensionAllowed(content, donationItem.FundDimensionOptions.Dimension1, Dimension1Alias);
+        DimensionAllowed(content, donationItem.FundDimensionOptions.Dimension2, Dimension2Alias);
+        DimensionAllowed(content, donationItem.FundDimensionOptions.Dimension3, Dimension3Alias);
+        DimensionAllowed(content, donationItem.FundDimensionOptions.Dimension4, Dimension4Alias);
     }
     
     private void ValidateGivingType(ContentProperties content, DonationItem donationItem) {
@@ -72,9 +75,8 @@ public class UpsellOfferValidator : ContentValidator {
     }
 
     private DonationItem GetDonationItem(ContentProperties content) {
-        var donationItem = content.GetPropertyByAlias(DonationItemAlias)
-                                  .IfNotNull(x => ContentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(x)
-                                                               .As<DonationItem>());
+        var donationItem = content.GetPropertyByAlias(AllocationsConstants.Aliases.UpsellOffer.Properties.DonationItem)
+                                  .IfNotNull(x => ContentHelper.GetLookupValue<DonationItem>(_lookups, x));
 
         return donationItem;
     }

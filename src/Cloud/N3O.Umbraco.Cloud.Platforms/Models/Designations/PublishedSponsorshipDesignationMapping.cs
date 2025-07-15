@@ -1,7 +1,6 @@
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using System.Linq;
@@ -27,10 +26,7 @@ public class PublishedSponsorshipDesignationMapping : IMapDefinition {
         
         component.Name = src.Name;
         component.Mandatory = src.Mandatory;
-        
-        if (src.HasPricing()) {
-            component.Pricing = ctx.Map<IPricing, PublishedPricing>(src);
-        }
+        component.Pricing = src.Pricing.IfNotNull(ctx.Map<IPricing, PublishedPricing>);
         
         return component;
     }

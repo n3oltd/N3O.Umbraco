@@ -51,6 +51,7 @@ public class ContentCurrencies : LookupsCollection<Currency> {
     private Currency ToCurrency(CurrencyContent currencyContent) {
         return new Currency(LookupContent.GetId(currencyContent.Content()),
                             LookupContent.GetName(currencyContent.Content()),
+                            currencyContent.Content().Key,
                             currencyContent.Code,
                             currencyContent.Symbol,
                             2,

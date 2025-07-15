@@ -1,5 +1,5 @@
 ﻿using N3O.Umbraco.Attributes;
-using N3O.Umbraco.Cloud.Platforms.Lookups;
+using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Content;
 using System.Collections.Generic;
 

@@ -1,5 +1,4 @@
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving.Allocations.Content;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Lookups;
 using System.Linq;
@@ -17,26 +16,12 @@ public class FeedbackSchemeMapping : IMapDefinition {
         ctx.Map<INamedLookup, NamedLookupRes>(src, dest);
 
         dest.AllowedGivingTypes = src.AllowedGivingTypes;
-        dest.CustomFields = src.CustomFields.OrEmpty()
-                               .Select(ctx.Map<FeedbackCustomFieldDefinitionElement, FeedbackCustomFieldDefinitionRes>);
+        dest.CustomFields = src.CustomFields
+                               .OrEmpty()
+                               .Select(ctx.Map<FeedbackCustomFieldDefinition, FeedbackCustomFieldDefinitionRes>)
+                               .ToList();
+        dest.FundDimensionOptions = ctx.Map<IFundDimensionOptions, FundDimensionOptionsRes>(src.FundDimensionOptions);
         
-        dest.Dimension1Options = src.Dimension1Options
-                                    .OrEmpty()
-                                    .Select(ctx.Map<FundDimension1Value, FundDimensionValueRes>)
-                                    .ToList();
-        dest.Dimension2Options = src.Dimension2Options
-                                    .OrEmpty()
-                                    .Select(ctx.Map<FundDimension2Value, FundDimensionValueRes>)
-                                    .ToList();
-        dest.Dimension3Options = src.Dimension3Options
-                                    .OrEmpty()
-                                    .Select(ctx.Map<FundDimension3Value, FundDimensionValueRes>)
-                                    .ToList();
-        dest.Dimension4Options = src.Dimension4Options
-                                    .OrEmpty()
-                                    .Select(ctx.Map<FundDimension4Value, FundDimensionValueRes>)
-                                    .ToList();
-        
-        dest.Pricing = ctx.Map<IPricing, PricingRes>(src);
+        dest.Pricing = src.Pricing.IfNotNull(ctx.Map<IPricing, PricingRes>);
     }
 }

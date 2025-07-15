@@ -1,17 +1,31 @@
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Lookups;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Giving.Allocations.Lookups;
 
-public class SponsorshipScheme :
-    LookupContent<SponsorshipScheme>, IFundDimensionsOptions, IHoldAllowedGivingTypes {
-    public IEnumerable<GivingType> AllowedGivingTypes => GetValue(x => x.AllowedGivingTypes);
-    public IEnumerable<SponsorshipDuration> AllowedDurations => GetValue(x => x.AllowedDurations);
-    public IEnumerable<FundDimension1Value> Dimension1Options => GetPickedAs(x => x.Dimension1Options);
-    public IEnumerable<FundDimension2Value> Dimension2Options => GetPickedAs(x => x.Dimension2Options);
-    public IEnumerable<FundDimension3Value> Dimension3Options => GetPickedAs(x => x.Dimension3Options);
-    public IEnumerable<FundDimension4Value> Dimension4Options => GetPickedAs(x => x.Dimension4Options);
-    public IEnumerable<SponsorshipComponent> Components => Content().Children.As<SponsorshipComponent>();
+public class SponsorshipScheme : ContentOrPublishedLookup, IHoldAllowedGivingTypes, IHoldFundDimensionOptions {
+    public SponsorshipScheme(string id,
+                             string name,
+                             Guid? contentId,
+                             IEnumerable<GivingType> allowedGivingTypes,
+                             IEnumerable<SponsorshipDuration> allowedDurations,
+                             FundDimensionOptions fundDimensionOptions,
+                             IEnumerable<SponsorshipComponent> components) 
+        : base(id, name, contentId) {
+        AllowedGivingTypes = allowedGivingTypes;
+        AllowedDurations = allowedDurations;
+        FundDimensionOptions = fundDimensionOptions;
+        Components = components;
+    }
+
+    public IEnumerable<GivingType> AllowedGivingTypes { get; }
+    public IEnumerable<SponsorshipDuration> AllowedDurations { get; }
+    public FundDimensionOptions FundDimensionOptions { get; }
+    public IEnumerable<SponsorshipComponent> Components { get; }
+
+    [JsonIgnore]
+    IFundDimensionOptions IHoldFundDimensionOptions.FundDimensionOptions => FundDimensionOptions;
 }

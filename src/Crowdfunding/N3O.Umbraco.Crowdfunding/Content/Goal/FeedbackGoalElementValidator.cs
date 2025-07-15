@@ -1,5 +1,6 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -9,8 +10,8 @@ namespace N3O.Umbraco.Crowdfunding.Content;
 public class FeedbackGoalElementValidator : GoalElementValidator<FeedbackGoalElement> {
     public FeedbackGoalElementValidator(IContentHelper contentHelper) : base(contentHelper) { }
 
-    protected override IFundDimensionsOptions GetFundDimensionOptions(ContentProperties content) {
-        return GetFeedbackScheme(content);
+    protected override IFundDimensionOptions GetFundDimensionOptions(ContentProperties content) {
+        return GetFeedbackScheme(content).FundDimensionOptions;
     }
     
     protected override void ValidatePriceLocked(ContentProperties content) {
@@ -19,7 +20,7 @@ public class FeedbackGoalElementValidator : GoalElementValidator<FeedbackGoalEle
         var feedbackScheme = property.IfNotNull(x => ContentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(x)
                                                                   .As<FeedbackScheme>());
         
-        if (feedbackScheme.Price.Locked) {
+        if (feedbackScheme.HasLockedPrice()) {
             ErrorResult($"{feedbackScheme.Name} feedbacks have locked prices which is not permitted");
         }
     }

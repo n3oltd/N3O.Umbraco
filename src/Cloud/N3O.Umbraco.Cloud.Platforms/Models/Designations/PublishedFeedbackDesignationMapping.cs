@@ -25,7 +25,7 @@ public class PublishedFeedbackDesignationMapping : IMapDefinition {
                                         .ToList();
 
        if (src.Scheme.HasPricing()) {
-           dest.Pricing = ctx.Map<IPricing, PublishedPricing>(src.Scheme);
+           dest.Pricing = src.Scheme.Pricing.IfNotNull(ctx.Map<IPricing, PublishedPricing>);
        }
     }
 }

@@ -40,7 +40,7 @@ public class ContentCountries : LookupsCollection<Country> {
         List<CountryContent> content;
         
         if (_umbracoContextAccessor.TryGetUmbracoContext(out _)) {
-            content = _contentCache.All<CountryContent>().OrderBy(x => x.Content().SortOrder).ToList();
+            content = _contentCache.All<CountryContent>().OrderBy(x => x.Content().Name).ToList();
         } else {
             content = [];
         }
@@ -53,6 +53,7 @@ public class ContentCountries : LookupsCollection<Country> {
     private Country ToCountry(CountryContent countryContent) {
         return new Country(LookupContent.GetId(countryContent.Content()),
                            LookupContent.GetName(countryContent.Content()),
+                           countryContent.Content().Key,
                            countryContent.Iso2Code,
                            countryContent.Iso3Code,
                            countryContent.DialingCode,

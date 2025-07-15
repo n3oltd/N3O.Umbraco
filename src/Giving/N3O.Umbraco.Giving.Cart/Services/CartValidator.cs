@@ -1,3 +1,4 @@
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
@@ -11,6 +12,12 @@ using System.Linq;
 namespace N3O.Umbraco.Giving.Cart;
 
 public class CartValidator : ICartValidator {
+    private readonly IContentLocator _contentLocator;
+
+    public CartValidator(IContentLocator contentLocator) {
+        _contentLocator = contentLocator;
+    }
+    
     public bool IsValid(Currency currentCurrency, Entities.Cart cart) {
         try {
             var isValid = currentCurrency == cart.Currency &&
@@ -60,7 +67,7 @@ public class CartValidator : ICartValidator {
                     return false;
                 }
                 
-                if (componentAllocation.Component.GetScheme() != allocation.Sponsorship.Scheme) {
+                if (componentAllocation.Component.GetSponsorshipScheme(_contentLocator) != allocation.Sponsorship.Scheme) {
                     return false;
                 }
             }
@@ -87,10 +94,10 @@ public class CartValidator : ICartValidator {
         var fundDimensions = allocation.FundDimensions;
         var fundDimensionOptions = allocation.GetFundDimensionsOptions();
         
-        if (FundDimensionIsValid(fundDimensionOptions.Dimension1Options, fundDimensions.Dimension1) &&
-            FundDimensionIsValid(fundDimensionOptions.Dimension2Options, fundDimensions.Dimension2) &&
-            FundDimensionIsValid(fundDimensionOptions.Dimension3Options, fundDimensions.Dimension3) &&
-            FundDimensionIsValid(fundDimensionOptions.Dimension4Options, fundDimensions.Dimension4)) {
+        if (FundDimensionIsValid(fundDimensionOptions.Dimension1, fundDimensions.Dimension1) &&
+            FundDimensionIsValid(fundDimensionOptions.Dimension2, fundDimensions.Dimension2) &&
+            FundDimensionIsValid(fundDimensionOptions.Dimension3, fundDimensions.Dimension3) &&
+            FundDimensionIsValid(fundDimensionOptions.Dimension4, fundDimensions.Dimension4)) {
             return true;
         }
 

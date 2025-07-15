@@ -10,8 +10,8 @@ public class CampaignFeedbackGoalOptionElementValidator :
     CampaignGoalOptionElementValidator<CampaignFeedbackGoalOptionElement> {
     public CampaignFeedbackGoalOptionElementValidator(IContentHelper contentHelper) : base(contentHelper) { }
 
-    protected override IFundDimensionsOptions GetFundDimensionOptions(ContentProperties content) {
-        return GetFeedbackScheme(content);
+    protected override IFundDimensionOptions GetFundDimensionOptions(ContentProperties content) {
+        return GetFeedbackScheme(content).FundDimensionOptions;
     }
     
     protected override void ValidatePriceLocked(ContentProperties content) {
@@ -20,7 +20,7 @@ public class CampaignFeedbackGoalOptionElementValidator :
         var feedbackScheme = property.IfNotNull(x => ContentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(x)
                                                                   .As<FeedbackScheme>());
         
-        if (feedbackScheme.Price.Locked) {
+        if (feedbackScheme.Pricing.Price.Locked) {
             ErrorResult($"{feedbackScheme.Name} feedbacks have locked prices which is not permitted");
         }
     }

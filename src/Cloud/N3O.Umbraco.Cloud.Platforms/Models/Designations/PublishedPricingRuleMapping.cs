@@ -1,6 +1,7 @@
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Giving.Allocations.Models;
 using Umbraco.Cms.Core.Mapping;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
@@ -11,7 +12,7 @@ public class PublishedPricingRuleMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll
     private void Map(IPricingRule src, PublishedPricingRule dest, MapperContext ctx) {
-        dest.Price = ctx.Map<IPrice, PublishedPrice>(src);
+        dest.Price = src.Price.IfNotNull(ctx.Map<IPrice, PublishedPrice>);
         dest.FundDimensions = ctx.Map<IFundDimensionValues, PublishedFundDimensionValues>(src.FundDimensions);
     }
 }

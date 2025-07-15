@@ -2,7 +2,7 @@ using N3O.Umbraco.Content;
 
 namespace N3O.Umbraco.Extensions;
 
-public static class ContentBuilderExtensions {
+public static partial class ContentBuilderExtensions {
     public static BlockListPropertyBuilder BlockList(this IContentBuilder builder, string propertyAlias) {
         return builder.Property<BlockListPropertyBuilder>(propertyAlias);
     }

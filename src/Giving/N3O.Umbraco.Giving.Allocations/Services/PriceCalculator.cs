@@ -2,7 +2,6 @@ using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Forex;
-using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,21 +33,25 @@ public class PriceCalculator : IPriceCalculator {
                                              IFundDimensionValues fundDimensionValues,
                                              Currency currency,
                                              CancellationToken cancellationToken = default) {
-        if (!pricing.HasPricing()) {
+        if (pricing == null) {
             return null;
         }
         
         var rules = OrderRules(pricing.Rules);
         var matchedRule = rules.FirstOrDefault(x => RuleMatches(x, fundDimensionValues));
 
-        var amountInBaseCurrency = matchedRule?.Amount ?? pricing.Amount;
+        if (matchedRule == null && pricing.Price == null) {
+            return null;
+        }
+        
+        var amountInBaseCurrency = matchedRule?.Price.Amount ?? pricing.Price.Amount;
 
         var forexMoney = await _forexConverter.BaseToQuote()
                                               .ToCurrency(currency)
                                               .ConvertAsync(amountInBaseCurrency, cancellationToken);
 
         var price = new Price(forexMoney.Quote.Amount.RoundMoney(),
-                              matchedRule?.Locked ?? pricing.Locked);
+                              matchedRule?.Price.Locked ?? pricing.Price.Locked);
 
         return price;
     }

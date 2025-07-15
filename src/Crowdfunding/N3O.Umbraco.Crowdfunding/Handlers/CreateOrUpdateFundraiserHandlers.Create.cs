@@ -12,7 +12,7 @@ public partial class CreateOrUpdateFundraiserHandlers :
     public async Task<string> Handle(CreateFundraiserCommand req, CancellationToken cancellationToken) {
         var fundraisersCollection = _contentLocator.Single(CrowdfundingConstants.Fundraisers.Alias);
 
-        var contentPublisher =_contentEditor.New(Guid.NewGuid().ToString(),
+        var contentPublisher = _contentEditor.New(Guid.NewGuid().ToString(),
                                                  fundraisersCollection.Key,
                                                  CrowdfundingConstants.Fundraiser.Alias);
          

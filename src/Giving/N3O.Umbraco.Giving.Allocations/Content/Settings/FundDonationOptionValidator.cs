@@ -3,8 +3,8 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
+using N3O.Umbraco.Lookups;
 using System.Linq;
-using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Giving.Allocations.Content;
 
@@ -12,8 +12,11 @@ public class FundDonationOptionValidator : DonationOptionValidator<FundDonationO
     private static readonly string DonationItemAlias = AliasHelper<FundDonationOptionContent>.PropertyAlias(x => x.DonationItem);
     private static readonly string DonationPriceHandlesAlias = AliasHelper<FundDonationOptionContent>.PropertyAlias(x => x.DonationPriceHandles);
     private static readonly string RegularGivingPriceHandlesAlias = AliasHelper<FundDonationOptionContent>.PropertyAlias(x => x.RegularGivingPriceHandles);
+    private readonly ILookups _lookups;
 
-    public FundDonationOptionValidator(IContentHelper contentHelper) : base(contentHelper) { }
+    public FundDonationOptionValidator(IContentHelper contentHelper, ILookups lookups) : base(contentHelper) {
+        _lookups = lookups;
+    }
 
     public override void Validate(ContentProperties content) {
         base.Validate(content);
@@ -26,14 +29,13 @@ public class FundDonationOptionValidator : DonationOptionValidator<FundDonationO
         }
     }
 
-    protected override IFundDimensionsOptions GetFundDimensionOptions(ContentProperties content) {
-        return GetDonationItem(content);
+    protected override IFundDimensionOptions GetFundDimensionOptions(ContentProperties content) {
+        return GetDonationItem(content).FundDimensionOptions;
     }
 
     private DonationItem GetDonationItem(ContentProperties content) {
         var donationItem = content.GetPropertyByAlias(DonationItemAlias)
-                                  .IfNotNull(x => ContentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(x)
-                                                               .As<DonationItem>());
+                                  .IfNotNull(x => ContentHelper.GetLookupValue<DonationItem>(_lookups, x));
 
         return donationItem;
     }

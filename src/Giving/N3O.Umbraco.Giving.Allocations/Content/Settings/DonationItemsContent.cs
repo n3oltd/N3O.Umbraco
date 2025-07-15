@@ -6,5 +6,5 @@ using System.Collections.Generic;
 namespace N3O.Umbraco.Giving.Allocations.Content;
 
 public class DonationItemsContent : UmbracoContent<DonationItemsContent> {
-    public IEnumerable<DonationItem> GetDonationItems() => Content().Children.As<DonationItem>();
+    public IEnumerable<DonationItemContent> GetDonationItems() => Content().Children.As<DonationItemContent>();
 }

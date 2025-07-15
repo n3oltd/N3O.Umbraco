@@ -3,6 +3,7 @@ using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Models;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Lookups;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,6 +28,7 @@ public class ApiCurrencies : ApiLookupsCollection<Currency> {
         foreach (var publishedCurrency in publishedCurrencies.Currencies) {
             var currency = new Currency(publishedCurrency.Code.ToLowerInvariant(),
                                         publishedCurrency.Name,
+                                        null,
                                         publishedCurrency.Code,
                                         publishedCurrency.Symbol,
                                         publishedCurrency.DecimalDigits,
@@ -47,4 +49,6 @@ public class ApiCurrencies : ApiLookupsCollection<Currency> {
 
         return currency;
     }
+
+    protected override TimeSpan CacheDuration => TimeSpan.FromHours(12);
 }

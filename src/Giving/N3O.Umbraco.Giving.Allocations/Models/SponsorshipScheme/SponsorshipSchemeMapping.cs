@@ -17,22 +17,7 @@ public class SponsorshipSchemeMapping : IMapDefinition {
 
         dest.AllowedGivingTypes = src.AllowedGivingTypes;
         dest.AllowedDurations = src.AllowedDurations;
-        dest.Dimension1Options = src.Dimension1Options
-                                    .OrEmpty()
-                                    .Select(ctx.Map<FundDimension1Value, FundDimensionValueRes>)
-                                    .ToList();
-        dest.Dimension2Options = src.Dimension2Options
-                                    .OrEmpty()
-                                    .Select(ctx.Map<FundDimension2Value, FundDimensionValueRes>)
-                                    .ToList();
-        dest.Dimension3Options = src.Dimension3Options
-                                    .OrEmpty()
-                                    .Select(ctx.Map<FundDimension3Value, FundDimensionValueRes>)
-                                    .ToList();
-        dest.Dimension4Options = src.Dimension4Options
-                                    .OrEmpty()
-                                    .Select(ctx.Map<FundDimension4Value, FundDimensionValueRes>)
-                                    .ToList();
+        dest.FundDimensionOptions = ctx.Map<IFundDimensionOptions, FundDimensionOptionsRes>(src.FundDimensionOptions);
         dest.Components = src.Components.OrEmpty().Select(ctx.Map<SponsorshipComponent, SponsorshipComponentRes>);
     }
 }

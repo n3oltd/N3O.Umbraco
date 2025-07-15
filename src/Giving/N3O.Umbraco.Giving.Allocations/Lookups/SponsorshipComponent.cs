@@ -1,34 +1,20 @@
-using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving.Allocations.Content;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Lookups;
 using Newtonsoft.Json;
-using System.Collections.Generic;
+using System;
 
 namespace N3O.Umbraco.Giving.Allocations.Lookups;
 
-public class SponsorshipComponent : LookupContent<SponsorshipComponent>, IPricing {
-    public override string Id {
-        get {
-            var scheme = GetScheme();
-            var baseId = base.Id;
-
-            return LookupContent.ToUniqueId($"{scheme.Id}_{baseId}", Content().Key);
-        }
+public class SponsorshipComponent : ContentOrPublishedLookup, IHoldPricing {
+    public SponsorshipComponent(string id, string name, Guid? contentId, bool mandatory, Pricing pricing)
+        : base(id, name, contentId) {
+        Mandatory = mandatory;
+        Pricing = pricing;
     }
-    
-    public bool Mandatory => GetValue(x => x.Mandatory);
-    public PriceContent Price => Content().As<PriceContent>();
-    public IEnumerable<PricingRuleElement> PriceRules => GetNestedAs(x => x.PriceRules);
+
+    public bool Mandatory { get; }
+    public Pricing Pricing { get; }
 
     [JsonIgnore]
-    decimal IPrice.Amount => Price.Amount;
-
-    [JsonIgnore]
-    bool IPrice.Locked => Price.Locked;
-    
-    [JsonIgnore]
-    IEnumerable<IPricingRule> IPricing.Rules => PriceRules;
-    
-    public SponsorshipScheme GetScheme() => Content().Parent.As<SponsorshipScheme>();
+    IPricing IHoldPricing.Pricing => Pricing;
 }

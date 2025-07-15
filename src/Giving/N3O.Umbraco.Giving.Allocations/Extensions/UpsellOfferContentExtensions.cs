@@ -4,6 +4,7 @@ using N3O.Umbraco.Forex;
 using N3O.Umbraco.Giving.Allocations.Content;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
+using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Utilities;
 using System;
 using System.Linq;
@@ -15,6 +16,7 @@ public static class UpsellOfferContentExtensions {
     public static async Task<Allocation> ToAllocationAsync(this UpsellOfferContent upsellOfferContent,
                                                            IForexConverter forexConverter,
                                                            IPriceCalculator priceCalculator,
+                                                           ILookups lookups,
                                                            Currency currency,
                                                            decimal? customAmount,
                                                            GivingType givingType,
@@ -25,6 +27,7 @@ public static class UpsellOfferContentExtensions {
 
         var amount = await CalculatePriceAsync(forexConverter,
                                                priceCalculator,
+                                               lookups,
                                                upsellOfferContent,
                                                currency,
                                                givingType,
@@ -38,7 +41,7 @@ public static class UpsellOfferContentExtensions {
         return new Allocation(AllocationTypes.Fund,
                               amount,
                               upsellOfferContent.FundDimensions,
-                              new FundAllocation(upsellOfferContent.DonationItem),
+                              new FundAllocation(upsellOfferContent.GetDonationItem(lookups)),
                               null,
                               null,
                               null,
@@ -48,6 +51,7 @@ public static class UpsellOfferContentExtensions {
     public static async Task<UpsellOffer> ToUpsellOfferAsync(this UpsellOfferContent upsellOfferContent,
                                                              IForexConverter forexConverter,
                                                              IPriceCalculator priceCalculator,
+                                                             ILookups lookups,
                                                              Currency currency,
                                                              GivingType givingType,
                                                              Money cartTotal) {
@@ -57,6 +61,7 @@ public static class UpsellOfferContentExtensions {
 
         var price = await CalculatePriceAsync(forexConverter,
                                               priceCalculator,
+                                              lookups,
                                               upsellOfferContent,
                                               currency,
                                               givingType,
@@ -74,14 +79,15 @@ public static class UpsellOfferContentExtensions {
 
     private static async Task<Money> CalculatePriceAsync(IForexConverter forexConverter,
                                                          IPriceCalculator priceCalculator,
+                                                         ILookups lookups,
                                                          UpsellOfferContent upsellOfferContent,
                                                          Currency currency,
                                                          GivingType givingType,
                                                          Money cartTotal) {
         Money price = null;
 
-        if (upsellOfferContent.DonationItem.HasPricing()) {
-            price = new Money((await priceCalculator.InCurrencyAsync(upsellOfferContent.DonationItem,
+        if (upsellOfferContent.GetDonationItem(lookups).HasPricing()) {
+            price = new Money((await priceCalculator.InCurrencyAsync(upsellOfferContent.GetDonationItem(lookups).Pricing,
                                                                      upsellOfferContent.FundDimensions,
                                                                      currency)).Amount,
                               currency);

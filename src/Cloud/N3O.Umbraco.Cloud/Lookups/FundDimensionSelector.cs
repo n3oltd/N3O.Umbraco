@@ -1,6 +1,6 @@
 ﻿using N3O.Umbraco.Lookups;
 
-namespace N3O.Umbraco.Cloud.Platforms.Lookups;
+namespace N3O.Umbraco.Cloud.Lookups;
 
 public class FundDimensionSelector : NamedLookup {
     public FundDimensionSelector(string id, string name) : base(id, name) { }

@@ -126,16 +126,16 @@ public class PublishedDonateMenuMapping : IMapDefinition {
         foreach (var designation in allDesignations) {
             if (fundDimension.Number == 1) {
                 values.AddRangeIfNotExists(GetAllowedOptions(designation.Dimension1,
-                                                             designation.GetFundDimensionOptions().Dimension1Options));
+                                                             designation.GetFundDimensionOptions().Dimension1));
             } else if (fundDimension.Number == 2) {
                 values.AddRangeIfNotExists(GetAllowedOptions(designation.Dimension2,
-                                                             designation.GetFundDimensionOptions().Dimension2Options));
+                                                             designation.GetFundDimensionOptions().Dimension2));
             } else if (fundDimension.Number == 3) {
                 values.AddRangeIfNotExists(GetAllowedOptions(designation.Dimension3,
-                                                             designation.GetFundDimensionOptions().Dimension3Options));
+                                                             designation.GetFundDimensionOptions().Dimension3));
             } else if (fundDimension.Number == 4) {
                 values.AddRangeIfNotExists(GetAllowedOptions(designation.Dimension4,
-                                                             designation.GetFundDimensionOptions().Dimension4Options));
+                                                             designation.GetFundDimensionOptions().Dimension4));
             } else {
                 throw UnrecognisedValueException.For(fundDimension.Number);
             }

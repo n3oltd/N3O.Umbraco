@@ -13,13 +13,13 @@ public static class DesignationContentExtensions {
         
         var fundDimensions = new PublishedDesignationFundDimensions();
         fundDimensions.Dimension1 = ToPublishedDesignationFundDimension(designationContent.Dimension1,
-                                                                        fundDimensionOptions.Dimension1Options);
+                                                                        fundDimensionOptions.Dimension1);
         
         fundDimensions.Dimension2 = ToPublishedDesignationFundDimension(designationContent.Dimension2,
-                                                                        fundDimensionOptions.Dimension2Options);
+                                                                        fundDimensionOptions.Dimension2);
         
         fundDimensions.Dimension3 = ToPublishedDesignationFundDimension(designationContent.Dimension3,
-                                                                        fundDimensionOptions.Dimension3Options);
+                                                                        fundDimensionOptions.Dimension3);
         
         fundDimensions.Dimension4 = ToPublishedDesignationFundDimension(designationContent.Dimension4,
                                                                         fundDimensionOptions.Dimension4Options);

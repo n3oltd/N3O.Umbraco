@@ -53,10 +53,12 @@ public class DonationOptionContent : UmbracoContent<DonationOptionContent>, IFun
     public SponsorshipDonationOptionContent Sponsorship { get; private set; }
     public FeedbackDonationOptionContent Feedback { get; private set; }
 
-    public IFundDimensionsOptions GetFundDimensionOptions() {
-        return (IFundDimensionsOptions) Fund?.DonationItem ??
-               (IFundDimensionsOptions) Sponsorship?.Scheme ??
-               (IFundDimensionsOptions) Feedback?.Scheme;
+    public IFundDimensionOptions GetFundDimensionOptions() {
+        var holdFundDimensionOptions = (IHoldFundDimensionOptions) Fund?.DonationItem ??
+                                       (IHoldFundDimensionOptions) Sponsorship?.Scheme ??
+                                       (IHoldFundDimensionOptions) Feedback?.Scheme;
+
+        return holdFundDimensionOptions.FundDimensionOptions;
     }
 
     public bool IsValid() {
