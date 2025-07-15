@@ -7,7 +7,8 @@ public interface IFundDimensionValue : IContentOrPublishedLookup {
     bool IsUnrestricted { get; }
 }
 
-public abstract class FundDimensionValue<T> : ContentOrPublishedLookup, IFundDimensionValue where T : FundDimensionValue<T> {
+public abstract class FundDimensionValue<T> : ContentOrPublishedLookup, IFundDimensionValue
+    where T : FundDimensionValue<T> {
     protected FundDimensionValue(string id, string name, Guid? contentId, bool isUnrestricted) 
         : base(id, name, contentId) {
         IsUnrestricted = isUnrestricted;

@@ -10,7 +10,8 @@ using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Giving.Allocations.Models;
 
-public abstract class FundDimensionValueContent<TModel> : LookupContent<TModel>, IFundDimensionValue where TModel : IFundDimensionValue {
+public abstract class FundDimensionValueContent<TModel> : LookupContent<TModel>, IFundDimensionValue
+    where TModel : IFundDimensionValue {
     public bool IsUnrestricted => GetValue(x => x.IsUnrestricted);
     public Guid? ContentId => Content().Key;
 }
@@ -21,7 +22,9 @@ public class FundDimension3ValueContent : FundDimensionValueContent<FundDimensio
 public class FundDimension4ValueContent : FundDimensionValueContent<FundDimension4ValueContent> { }
 
 [Order(int.MinValue)]
-public abstract class ContentFundDimensionValues<T, TContent> : LookupsCollection<T> where TContent : FundDimensionValueContent<TContent> where T : IFundDimensionValue  {
+public abstract class ContentFundDimensionValues<T, TContent> : LookupsCollection<T>
+    where TContent : FundDimensionValueContent<TContent>
+    where T : IFundDimensionValue  {
     private readonly IContentCache _contentCache;
     private readonly IUmbracoContextAccessor _umbracoContextAccessor;
 

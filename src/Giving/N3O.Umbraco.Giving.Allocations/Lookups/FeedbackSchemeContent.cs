@@ -98,7 +98,9 @@ public class ContentFeedbackSchemes : LookupsCollection<FeedbackScheme> {
                                   feedbackSchemeContent.AllowedGivingTypes,
                                   feedbackSchemeContent.FundDimensionOptions,
                                   feedbackSchemeContent.Pricing,
-                                  feedbackSchemeContent.CustomFields.OrEmpty().Select(x => new FeedbackCustomFieldDefinition(x)));
+                                  feedbackSchemeContent.CustomFields
+                                                       .OrEmpty()
+                                                       .Select(x => new FeedbackCustomFieldDefinition(x)));
     }
 
     private void ContentCacheOnFlushed(object sender, EventArgs e) {

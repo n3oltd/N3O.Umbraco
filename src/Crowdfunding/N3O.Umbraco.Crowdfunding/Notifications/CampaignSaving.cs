@@ -18,7 +18,7 @@ public class CampaignSaving : INotificationAsyncHandler<ContentSavingNotificatio
         _webHostEnvironment = webHostEnvironment;
     }
 
-    public async Task HandleAsync(ContentSavingNotification notification, CancellationToken cancellationToken) {
+    public Task HandleAsync(ContentSavingNotification notification, CancellationToken cancellationToken) {
         if (!_webHostEnvironment.IsProduction()) {
             foreach (var content in notification.SavedEntities) {
                 if (content.ContentType.Alias.EqualsInvariant(CrowdfundingConstants.Campaign.Alias)) {
@@ -26,5 +26,7 @@ public class CampaignSaving : INotificationAsyncHandler<ContentSavingNotificatio
                 }
             }
         }
+        
+        return Task.CompletedTask;
     }
 }

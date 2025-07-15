@@ -17,6 +17,6 @@ public abstract class FundDimensionValueMapping<T> : IMapDefinition where T : IF
 }
 
 public class FundDimension1ValueMapping : FundDimensionValueMapping<FundDimension1Value> { }
-public class FundDimension2ValueMapping : FundDimensionValueMapping<FundDimension1Value> { }
-public class FundDimension3ValueMapping : FundDimensionValueMapping<FundDimension1Value> { }
-public class FundDimension4ValueMapping : FundDimensionValueMapping<FundDimension1Value> { }
+public class FundDimension2ValueMapping : FundDimensionValueMapping<FundDimension2Value> { }
+public class FundDimension3ValueMapping : FundDimensionValueMapping<FundDimension3Value> { }
+public class FundDimension4ValueMapping : FundDimensionValueMapping<FundDimension4Value> { }

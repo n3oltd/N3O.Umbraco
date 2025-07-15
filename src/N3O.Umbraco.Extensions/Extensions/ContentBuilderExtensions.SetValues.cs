@@ -6,9 +6,7 @@ using System.Linq;
 namespace N3O.Umbraco.Extensions;
 
 public static partial class ContentBuilderExtensions {
-    public static void SetContentOrPublishedLookupValues<T>(this IContentBuilder builder,
-                                                           string propertyAlias,
-                                                           T value)
+    public static void SetContentOrPublishedLookupValue<T>(this IContentBuilder builder, string propertyAlias, T value)
         where T : IContentOrPublishedLookup {
         if (value.ContentId.HasValue()) {
             var contentBuilder = builder.Property<ContentPickerPropertyBuilder>(propertyAlias);

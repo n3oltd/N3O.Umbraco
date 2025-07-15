@@ -88,7 +88,8 @@ public abstract class ContentFundDimensionContent<T, TContent, TValue> : Lookups
     protected abstract T ToFundDimension(TContent fundDimensionContent);
 }
 
-public class ContentFundDimension1Content : ContentFundDimensionContent<FundDimension1, FundDimension1Content, FundDimension1ValueContent> {
+public class ContentFundDimension1Content :
+    ContentFundDimensionContent<FundDimension1, FundDimension1Content, FundDimension1ValueContent> {
     public ContentFundDimension1Content(IContentCache contentCache, IUmbracoContextAccessor umbracoContextAccessor) 
         : base(contentCache, umbracoContextAccessor) { }
     
@@ -101,7 +102,8 @@ public class ContentFundDimension1Content : ContentFundDimensionContent<FundDime
                                   fundDimensionContent.Index);
     }
 }
-public class ContentFundDimension2Content : ContentFundDimensionContent<FundDimension2, FundDimension2Content, FundDimension2ValueContent> {
+public class ContentFundDimension2Content :
+    ContentFundDimensionContent<FundDimension2, FundDimension2Content, FundDimension2ValueContent> {
     public ContentFundDimension2Content(IContentCache contentCache, IUmbracoContextAccessor umbracoContextAccessor) 
         : base(contentCache, umbracoContextAccessor) { }
     
@@ -114,7 +116,8 @@ public class ContentFundDimension2Content : ContentFundDimensionContent<FundDime
                                   fundDimensionContent.Index);
     }
 }
-public class ContentFundDimension3Content : ContentFundDimensionContent<FundDimension3, FundDimension3Content, FundDimension3ValueContent> {
+public class ContentFundDimension3Content :
+    ContentFundDimensionContent<FundDimension3, FundDimension3Content, FundDimension3ValueContent> {
     public ContentFundDimension3Content(IContentCache contentCache, IUmbracoContextAccessor umbracoContextAccessor) 
         : base(contentCache, umbracoContextAccessor) { }
     
@@ -127,7 +130,8 @@ public class ContentFundDimension3Content : ContentFundDimensionContent<FundDime
                                   fundDimensionContent.Index);
     }
 }
-public class ContentFundDimension4Content : ContentFundDimensionContent<FundDimension4, FundDimension4Content, FundDimension4ValueContent> {
+public class ContentFundDimension4Content :
+    ContentFundDimensionContent<FundDimension4, FundDimension4Content, FundDimension4ValueContent> {
     public ContentFundDimension4Content(IContentCache contentCache, IUmbracoContextAccessor umbracoContextAccessor) 
         : base(contentCache, umbracoContextAccessor) { }
     

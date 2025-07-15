@@ -5,7 +5,8 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Cloud.Models;
 
-public class PublishedFeedbackScheme : PublishedNamedLookup, IHoldAllowedGivingTypes, IHoldFundDimensionOptions, IHoldPricing {
+public class PublishedFeedbackScheme :
+    PublishedNamedLookup, IHoldAllowedGivingTypes, IHoldFundDimensionOptions, IHoldPricing {
     public PublishedFundDimensionOptions FundDimensionOptions { get; set; }
     public PublishedPricing Pricing { get; set; }
     public IEnumerable<PublishedFeedbackCustomFieldDefinition> CustomFieldDefinitions { get; set; }

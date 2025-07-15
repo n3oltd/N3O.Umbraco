@@ -6,14 +6,16 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Giving.Allocations.Lookups;
 
-public class FeedbackScheme : ContentOrPublishedLookup, IHoldAllowedGivingTypes, IHoldFundDimensionOptions, IHoldPricing {
+public class FeedbackScheme :
+    ContentOrPublishedLookup, IHoldAllowedGivingTypes, IHoldFundDimensionOptions, IHoldPricing {
     public FeedbackScheme(string id,
                           string name,
                           Guid? contentId,
                           IEnumerable<GivingType> allowedGivingTypes,
                           FundDimensionOptions fundDimensionOptions,
                           Pricing pricing,
-                          IEnumerable<FeedbackCustomFieldDefinition> customFields) : base(id, name, contentId) {
+                          IEnumerable<FeedbackCustomFieldDefinition> customFields)
+        : base(id, name, contentId) {
         AllowedGivingTypes = allowedGivingTypes;
         FundDimensionOptions = fundDimensionOptions;
         Pricing = pricing;
