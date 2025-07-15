@@ -1,5 +1,4 @@
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving.Allocations.Content;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Lookups;
 using System.Linq;
@@ -19,7 +18,7 @@ public class FeedbackSchemeMapping : IMapDefinition {
         dest.AllowedGivingTypes = src.AllowedGivingTypes;
         dest.CustomFields = src.CustomFields
                                .OrEmpty()
-                               .Select(ctx.Map<FeedbackCustomFieldDefinitionElement, FeedbackCustomFieldDefinitionRes>)
+                               .Select(ctx.Map<FeedbackCustomFieldDefinition, FeedbackCustomFieldDefinitionRes>)
                                .ToList();
         dest.FundDimensionOptions = ctx.Map<IFundDimensionOptions, FundDimensionOptionsRes>(src.FundDimensionOptions);
         

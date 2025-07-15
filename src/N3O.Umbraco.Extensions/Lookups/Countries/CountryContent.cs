@@ -53,6 +53,7 @@ public class ContentCountries : LookupsCollection<Country> {
     private Country ToCountry(CountryContent countryContent) {
         return new Country(LookupContent.GetId(countryContent.Content()),
                            LookupContent.GetName(countryContent.Content()),
+                           countryContent.Content().Key,
                            countryContent.Iso2Code,
                            countryContent.Iso3Code,
                            countryContent.DialingCode,

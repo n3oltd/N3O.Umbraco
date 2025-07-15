@@ -28,6 +28,7 @@ public class ApiCurrencies : ApiLookupsCollection<Currency> {
         foreach (var publishedCurrency in publishedCurrencies.Currencies) {
             var currency = new Currency(publishedCurrency.Code.ToLowerInvariant(),
                                         publishedCurrency.Name,
+                                        null,
                                         publishedCurrency.Code,
                                         publishedCurrency.Symbol,
                                         publishedCurrency.DecimalDigits,

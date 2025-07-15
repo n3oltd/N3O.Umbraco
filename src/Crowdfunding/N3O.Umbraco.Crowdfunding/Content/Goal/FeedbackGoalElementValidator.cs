@@ -1,5 +1,6 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -19,7 +20,7 @@ public class FeedbackGoalElementValidator : GoalElementValidator<FeedbackGoalEle
         var feedbackScheme = property.IfNotNull(x => ContentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(x)
                                                                   .As<FeedbackScheme>());
         
-        if (feedbackScheme.Price.Locked) {
+        if (feedbackScheme.HasLockedPrice()) {
             ErrorResult($"{feedbackScheme.Name} feedbacks have locked prices which is not permitted");
         }
     }

@@ -20,7 +20,7 @@ public class CampaignFeedbackGoalOptionElementValidator :
         var feedbackScheme = property.IfNotNull(x => ContentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(x)
                                                                   .As<FeedbackScheme>());
         
-        if (feedbackScheme.Price.Locked) {
+        if (feedbackScheme.Pricing.Price.Locked) {
             ErrorResult($"{feedbackScheme.Name} feedbacks have locked prices which is not permitted");
         }
     }

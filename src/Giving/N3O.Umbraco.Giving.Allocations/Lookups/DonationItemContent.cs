@@ -94,6 +94,7 @@ public class ContentDonationItems : LookupsCollection<DonationItem> {
     private DonationItem ToDonationItem(DonationItemContent donationItemContent) {
         return new DonationItem(LookupContent.GetId(donationItemContent.Content()),
                                 LookupContent.GetName(donationItemContent.Content()),
+                                donationItemContent.Content().Key,
                                 donationItemContent.AllowedGivingTypes,
                                 donationItemContent.FundDimensionOptions,
                                 donationItemContent.Pricing);

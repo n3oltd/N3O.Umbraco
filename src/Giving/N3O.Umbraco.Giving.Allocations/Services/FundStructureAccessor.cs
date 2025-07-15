@@ -1,21 +1,22 @@
-using N3O.Umbraco.Content;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
+using N3O.Umbraco.Lookups;
+using System.Linq;
 
 namespace N3O.Umbraco.Giving.Allocations;
 
 public class FundStructureAccessor : IFundStructureAccessor {
-    private readonly IContentCache _contentCache;
+    private readonly ILookups _lookups;
 
-    public FundStructureAccessor(IContentCache contentCache) {
-        _contentCache = contentCache;
+    public FundStructureAccessor(ILookups lookups) {
+        _lookups = lookups;
     }
 
     public FundStructure GetFundStructure() {
-        var dimension1 = _contentCache.Single<FundDimension1>();
-        var dimension2 = _contentCache.Single<FundDimension2>();
-        var dimension3 = _contentCache.Single<FundDimension3>();
-        var dimension4 = _contentCache.Single<FundDimension4>();
+        var dimension1 = _lookups.GetAll<FundDimension1>().SingleOrDefault();
+        var dimension2 = _lookups.GetAll<FundDimension2>().SingleOrDefault();
+        var dimension3 = _lookups.GetAll<FundDimension3>().SingleOrDefault();
+        var dimension4 = _lookups.GetAll<FundDimension4>().SingleOrDefault();
         
         return new FundStructure(dimension1, dimension2, dimension3, dimension4);
     }

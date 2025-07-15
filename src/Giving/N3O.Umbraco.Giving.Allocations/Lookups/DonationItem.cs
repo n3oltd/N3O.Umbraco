@@ -1,19 +1,21 @@
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Lookups;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Giving.Allocations.Lookups;
 
-public class DonationItem : NamedLookup, IHoldAllowedGivingTypes, IHoldFundDimensionOptions, IHoldPricing {
+public class DonationItem : ContentOrPublishedLookup, IHoldAllowedGivingTypes, IHoldFundDimensionOptions, IHoldPricing {
     public DonationItem(string id,
                         string name,
+                        Guid? contentId,
                         IEnumerable<GivingType> allowedGivingTypes,
                         FundDimensionOptions fundDimensionOptions,
                         Pricing pricing)
-        : base(id, name) {
+        : base(id, name, contentId) {
         AllowedGivingTypes = allowedGivingTypes;
-        FundDimensionOptions = FundDimensionOptions;
+        FundDimensionOptions = fundDimensionOptions;
         Pricing = pricing;
     }
 

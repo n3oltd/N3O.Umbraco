@@ -1,6 +1,6 @@
 ﻿using N3O.Umbraco.Lookups;
 
-namespace N3O.Umbraco.Cloud.Platforms.Lookups;
+namespace N3O.Umbraco.Cloud.Lookups;
 
 public class FundDimensionSelectorDataSource : LookupsDataSource<FundDimensionSelector> {
     public FundDimensionSelectorDataSource(ILookups lookups) : base(lookups) { }

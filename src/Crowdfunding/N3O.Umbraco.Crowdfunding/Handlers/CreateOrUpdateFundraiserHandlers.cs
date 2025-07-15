@@ -97,9 +97,8 @@ public partial class CreateOrUpdateFundraiserHandlers {
         
         PopulateFundraiserGoal(contentBuilder, req, goalOption);
         
-        // TODO Check if property is a picker or a data list, and set accordingly
-        contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Fund.Properties.DonationItem)
-                      .SetContent(goalOption.Fund.DonationItem);
+        contentBuilder.SetContentOrPublishedLookupValues(CrowdfundingConstants.Goal.Fund.Properties.DonationItem,
+                                                         goalOption.Fund.DonationItem);
     }
     
     private void AddFundraiserFeedbackGoal(NestedPropertyBuilder nestedPropertyBuilder,
@@ -109,7 +108,8 @@ public partial class CreateOrUpdateFundraiserHandlers {
         
         PopulateFundraiserGoal(contentBuilder, req, goalOption);
         
-        contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Feedback.Properties.Scheme).SetContent(goalOption.Feedback.Scheme);
+        contentBuilder.SetContentOrPublishedLookupValues(CrowdfundingConstants.Goal.Feedback.Properties.Scheme,
+                                                         goalOption.Feedback.Scheme);
 
         PopulateCustomFields(contentBuilder,
                              goalOption.Feedback.Scheme,
@@ -132,10 +132,10 @@ public partial class CreateOrUpdateFundraiserHandlers {
         contentBuilder.Label(CrowdfundingConstants.Goal.Properties.OptionId).Set(goalOption.Id);
         contentBuilder.Numeric(CrowdfundingConstants.Goal.Properties.Amount).SetDecimal(req.Amount);
         contentBuilder.TextBox(CrowdfundingConstants.Goal.Properties.Name).Set(goalOption.Name);
-        contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.FundDimension1).SetContent(req.FundDimensions.Dimension1);
-        contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.FundDimension2).SetContent(req.FundDimensions.Dimension2);
-        contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.FundDimension3).SetContent(req.FundDimensions.Dimension3);
-        contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.FundDimension4).SetContent(req.FundDimensions.Dimension4);
+        contentBuilder.SetContentOrPublishedLookupValues(CrowdfundingConstants.Goal.Properties.FundDimension1, req.FundDimensions.Dimension1);
+        contentBuilder.SetContentOrPublishedLookupValues(CrowdfundingConstants.Goal.Properties.FundDimension2, req.FundDimensions.Dimension2);
+        contentBuilder.SetContentOrPublishedLookupValues(CrowdfundingConstants.Goal.Properties.FundDimension3, req.FundDimensions.Dimension3);
+        contentBuilder.SetContentOrPublishedLookupValues(CrowdfundingConstants.Goal.Properties.FundDimension4, req.FundDimensions.Dimension4);
         contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.Tags).SetContent(goalOption.Tags);
         
         var priceHandlesBuilder = contentBuilder.Nested(CrowdfundingConstants.Goal.Properties.PriceHandles);

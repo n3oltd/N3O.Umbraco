@@ -1,3 +1,4 @@
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
@@ -11,6 +12,12 @@ using System.Linq;
 namespace N3O.Umbraco.Giving.Cart;
 
 public class CartValidator : ICartValidator {
+    private readonly IContentLocator _contentLocator;
+
+    public CartValidator(IContentLocator contentLocator) {
+        _contentLocator = contentLocator;
+    }
+    
     public bool IsValid(Currency currentCurrency, Entities.Cart cart) {
         try {
             var isValid = currentCurrency == cart.Currency &&
@@ -60,7 +67,7 @@ public class CartValidator : ICartValidator {
                     return false;
                 }
                 
-                if (componentAllocation.Component.GetScheme() != allocation.Sponsorship.Scheme) {
+                if (componentAllocation.Component.GetSponsorshipScheme(_contentLocator) != allocation.Sponsorship.Scheme) {
                     return false;
                 }
             }

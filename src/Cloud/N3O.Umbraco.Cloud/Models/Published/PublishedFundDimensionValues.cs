@@ -19,4 +19,8 @@ public class PublishedFundDimensionValues : IFundDimensionValues {
             yield return Dimension4;
         }
     }
+
+    public FundDimensionValues GetFundDimensionValues() {
+        return new FundDimensionValues(Dimension1, Dimension2, Dimension3, Dimension4);
+    }
 }

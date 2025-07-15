@@ -12,4 +12,8 @@ public class PublishedPricingRule : IPricingRule {
     
     [JsonIgnore]
     IPrice IPricingRule.Price => Price;
+
+    public PricingRule GetPricingRule() {
+        return new PricingRule(Price.GetPrice(), FundDimensions.GetFundDimensionValues());
+    }
 }

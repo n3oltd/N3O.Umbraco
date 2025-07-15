@@ -27,6 +27,7 @@ public class ApiCountries : ApiLookupsCollection<Country> {
         foreach (var publishedCountry in publishedLookupsRoot.Lookups.Countries) {
             var country = new Country(publishedCountry.Id,
                                       publishedCountry.Name,
+                                      null,
                                       publishedCountry.Iso2Code,
                                       publishedCountry.Iso3Code,
                                       publishedCountry.DialingCode,

@@ -1,5 +1,7 @@
 using FluentValidation;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Validation;
 using System.Linq;
@@ -7,14 +9,14 @@ using System.Linq;
 namespace N3O.Umbraco.Giving.Allocations.Models;
 
 public class SponsorshipAllocationReqValidator : ModelValidator<SponsorshipAllocationReq> {
-    public SponsorshipAllocationReqValidator(IFormatter formatter) : base(formatter) {
+    public SponsorshipAllocationReqValidator(IFormatter formatter, IContentLocator contentLocator) : base(formatter) {
         RuleFor(x => x.Scheme)
             .NotNull()
             .WithMessage(Get<Strings>(s => s.SpecifyScheme));
 
         RuleFor(x => x.Components)
-            .Must((req, x) => x.OrEmpty().All(c => c.Component.GetScheme() == req.Scheme))
-            .When(x => x.Components.All(y => y.Component.HasValue(c => c.GetScheme())))
+            .Must((req, x) => x.OrEmpty().All(c => c.Component.GetSponsorshipScheme(contentLocator) == req.Scheme))
+            .When(x => x.Components.All(y => y.Component.HasValue(c => c.GetSponsorshipScheme(contentLocator))))
             .WithMessage(Get<Strings>(s => s.InvalidComponents));
 
         RuleFor(x => x.Components)

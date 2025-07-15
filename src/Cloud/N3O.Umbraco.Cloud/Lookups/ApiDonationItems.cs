@@ -30,6 +30,7 @@ public class ApiDonationItems : ApiLookupsCollection<DonationItem> {
         foreach (var publishedDonationItem in publishedDonationItems.DonationItems) {
             var donationItem = new DonationItem(publishedDonationItem.Id,
                                                 publishedDonationItem.Name,
+                                                null,
                                                 publishedDonationItem.AllowedGivingTypes,
                                                 publishedDonationItem.FundDimensionOptions.IfNotNull(x => new FundDimensionOptions(x)),
                                                 publishedDonationItem.Pricing.IfNotNull(x => new Pricing(x)));
