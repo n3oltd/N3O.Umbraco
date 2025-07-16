@@ -1,5 +1,4 @@
-﻿using N3O.Umbraco.Financial;
-using N3O.Umbraco.Localization;
+﻿using N3O.Umbraco.Localization;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Cloud.Models;
