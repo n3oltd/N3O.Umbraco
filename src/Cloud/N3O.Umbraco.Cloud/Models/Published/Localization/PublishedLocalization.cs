@@ -9,7 +9,6 @@ public class PublishedLocalization : Value {
     public NumberFormat NumberFormat { get; set; }
     public TimeFormat TimeFormat { get; set; }
     public PublishedTimezone Timezone { get; set; }
-    public Currency BaseCurrency { get; set; }
     public PublishedTerminology Terminology { get; set; }
 
     protected override IEnumerable<object> GetAtomicValues() {
@@ -17,7 +16,6 @@ public class PublishedLocalization : Value {
         yield return NumberFormat;
         yield return TimeFormat;
         yield return Timezone;
-        yield return BaseCurrency;
         yield return Terminology;
     }
 }
