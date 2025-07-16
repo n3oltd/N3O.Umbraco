@@ -68,6 +68,7 @@ public class DonationItemReceiver : WebhookReceiver {
 
     private void CreateOrUpdate(WebhookPayload payload, WebhookDonationItem webhookDonationItem) {
         var collection = _contentCache.Single<DonationItemsContent>();
+        
         var existingContent = GetExistingContent(webhookDonationItem.Name, payload.GetHeader(Headers.PreviousName));
 
         var contentPublisher = existingContent != null

@@ -9,5 +9,5 @@ public class FeedbackSchemeDataSource : LookupsDataSource<FeedbackScheme> {
     public override string Description => "Data source for feedback schemes";
     public override string Icon => "icon-loupe";
 
-    protected override string GetIcon(FeedbackScheme currency) => "icon-loupe";
+    protected override string GetIcon(FeedbackScheme feedbackScheme) => "icon-loupe";
 }

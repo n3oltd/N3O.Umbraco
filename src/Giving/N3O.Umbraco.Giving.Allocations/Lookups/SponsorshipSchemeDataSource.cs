@@ -7,7 +7,7 @@ public class SponsorshipSchemeDataSource : LookupsDataSource<SponsorshipScheme> 
     
     public override string Name => "Sponsorship Schemes";
     public override string Description => "Data source for sponsorship schemes";
-    public override string Icon => "icon-user-female color-black";
+    public override string Icon => "icon-user-female";
 
-    protected override string GetIcon(SponsorshipScheme currency) => "icon-user-female color-black";
+    protected override string GetIcon(SponsorshipScheme sponsorshipScheme) => "icon-user-female";
 }
