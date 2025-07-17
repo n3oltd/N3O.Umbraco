@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Lookups;
 
@@ -39,7 +40,7 @@ public class ApiFundDimension1Values : ApiFundDimensionValues<FundDimension1Valu
 
     protected override IEnumerable<FundDimension1Value> GetFundDimensionValues(PublishedFundStructure fundStructure) {
         FundDimension1Value ToFundDimension1Value(string value, bool unrestricted) {
-            return new FundDimension1Value(value.Camelize(), value, null, unrestricted);
+            return new FundDimension1Value(value, value, null, unrestricted);
         }
         
         var fundDimensionValues = fundStructure.Dimension1
@@ -47,7 +48,7 @@ public class ApiFundDimension1Values : ApiFundDimensionValues<FundDimension1Valu
                                                .Select(x => ToFundDimension1Value(x, false))
                                                .ToList();
 
-        fundDimensionValues.Add(ToFundDimension1Value(fundStructure.Dimension1.UnrestrictedOption, true));
+        fundStructure.Dimension1.UnrestrictedOption.IfNotNull(x => fundDimensionValues.Add(ToFundDimension1Value(x, true)));
 
         return fundDimensionValues;
     }
@@ -58,7 +59,7 @@ public class ApiFundDimension2Values : ApiFundDimensionValues<FundDimension2Valu
 
     protected override IEnumerable<FundDimension2Value> GetFundDimensionValues(PublishedFundStructure fundStructure) {
         FundDimension2Value ToFundDimension2Value(string value, bool unrestricted) {
-            return new FundDimension2Value(value.Camelize(), value, null, unrestricted);
+            return new FundDimension2Value(value, value, null, unrestricted);
         }
         
         var fundDimensionValues = fundStructure.Dimension2
@@ -66,7 +67,7 @@ public class ApiFundDimension2Values : ApiFundDimensionValues<FundDimension2Valu
                                                .Select(x => ToFundDimension2Value(x, false))
                                                .ToList();
 
-        fundDimensionValues.Add(ToFundDimension2Value(fundStructure.Dimension2.UnrestrictedOption, true));
+        fundStructure.Dimension2.UnrestrictedOption.IfNotNull(x => fundDimensionValues.Add(ToFundDimension2Value(x, true)));
 
         return fundDimensionValues;
     }
@@ -77,7 +78,7 @@ public class ApiFundDimension3Values : ApiFundDimensionValues<FundDimension3Valu
 
     protected override IEnumerable<FundDimension3Value> GetFundDimensionValues(PublishedFundStructure fundStructure) {
         FundDimension3Value ToFundDimension3Value(string value, bool unrestricted) {
-            return new FundDimension3Value(value.Camelize(), value, null, unrestricted);
+            return new FundDimension3Value(value, value, null, unrestricted);
         }
         
         var fundDimensionValues = fundStructure.Dimension3
@@ -85,7 +86,7 @@ public class ApiFundDimension3Values : ApiFundDimensionValues<FundDimension3Valu
                                                .Select(x => ToFundDimension3Value(x, false))
                                                .ToList();
 
-        fundDimensionValues.Add(ToFundDimension3Value(fundStructure.Dimension3.UnrestrictedOption, true));
+        fundStructure.Dimension3.UnrestrictedOption.IfNotNull(x => fundDimensionValues.Add(ToFundDimension3Value(x, true)));
 
         return fundDimensionValues;
     }
@@ -96,7 +97,7 @@ public class ApiFundDimension4Values : ApiFundDimensionValues<FundDimension4Valu
 
     protected override IEnumerable<FundDimension4Value> GetFundDimensionValues(PublishedFundStructure fundStructure) {
         FundDimension4Value ToFundDimension4Value(string value, bool unrestricted) {
-            return new FundDimension4Value(value.Camelize(), value, null, unrestricted);
+            return new FundDimension4Value(value, value, null, unrestricted);
         }
         
         var fundDimensionValues = fundStructure.Dimension4
@@ -104,7 +105,7 @@ public class ApiFundDimension4Values : ApiFundDimensionValues<FundDimension4Valu
                                                .Select(x => ToFundDimension4Value(x, false))
                                                .ToList();
 
-        fundDimensionValues.Add(ToFundDimension4Value(fundStructure.Dimension4.UnrestrictedOption, true));
+        fundStructure.Dimension4.UnrestrictedOption.IfNotNull(x => fundDimensionValues.Add(ToFundDimension4Value(x, true)));
 
         return fundDimensionValues;
     }

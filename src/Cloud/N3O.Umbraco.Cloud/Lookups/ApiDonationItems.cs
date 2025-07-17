@@ -21,7 +21,7 @@ public class ApiDonationItems : ApiLookupsCollection<DonationItem> {
     }
     
     protected override async Task<IReadOnlyList<DonationItem>> FetchAsync(CancellationToken cancellationToken) {
-        var publishedDonationItems = await _cdnClient.DownloadSubscriptionContentAsync<PublishedDonationItems>(SubscriptionFiles.Lookups,
+        var publishedDonationItems = await _cdnClient.DownloadSubscriptionContentAsync<PublishedDonationItems>(SubscriptionFiles.DonationItems,
                                                                                                                JsonSerializers.JsonProvider,
                                                                                                                cancellationToken);
 

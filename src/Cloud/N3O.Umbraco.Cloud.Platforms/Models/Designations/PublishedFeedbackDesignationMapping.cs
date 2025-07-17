@@ -16,7 +16,7 @@ public class PublishedFeedbackDesignationMapping : IMapDefinition {
     // Umbraco.Code.MapAll
     private void Map(FeedbackDesignationContent src, PublishedFeedbackDesignation dest, MapperContext ctx) {
        dest.Scheme = new PublishedFeedbackScheme();
-       dest.Scheme.Id = src.Scheme.Name;
+       dest.Scheme.Id = src.Scheme.Id;
 
        dest.CustomFieldDefinitions = src.Scheme
                                         .CustomFields
