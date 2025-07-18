@@ -3,22 +3,31 @@ using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
+using N3O.Umbraco.Lookups;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class PublishedSponsorshipDesignationMapping : IMapDefinition {
+    private readonly ILookups _lookups;
+    
+    public PublishedSponsorshipDesignationMapping(ILookups lookups) {
+        _lookups = lookups;
+    }
+
     public void DefineMaps(IUmbracoMapper mapper) {
         mapper.Define<SponsorshipDesignationContent, PublishedSponsorshipDesignation>((_, _) => new PublishedSponsorshipDesignation(), Map);
     }
     
     // Umbraco.Code.MapAll
     private void Map(SponsorshipDesignationContent src, PublishedSponsorshipDesignation dest, MapperContext ctx) {
+        var sponsorshipScheme = src.GetScheme(_lookups);
+        
         dest.Scheme = new PublishedSponsorshipScheme();
-        dest.Scheme.Id = src.Scheme.Id;
-        dest.Components = src.Scheme.Components.OrEmpty().Select(x => ToPublishedSponsorshipComponent(ctx, x)).ToList();
-        dest.AllowedDurations = src.Scheme.AllowedDurations.OrEmpty().Select(ToPublishedCommitmentDuration).ToList();
+        dest.Scheme.Id = sponsorshipScheme.Id;
+        dest.Components = sponsorshipScheme.Components.OrEmpty().Select(x => ToPublishedSponsorshipComponent(ctx, x)).ToList();
+        dest.AllowedDurations = sponsorshipScheme.AllowedDurations.OrEmpty().Select(ToPublishedCommitmentDuration).ToList();
     }
     
     private PublishedSponsorshipComponent ToPublishedSponsorshipComponent(MapperContext ctx, SponsorshipComponent src) {

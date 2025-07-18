@@ -2,26 +2,28 @@
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Models;
+using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 
 public static class DesignationContentExtensions {
-    public static PublishedDesignationFundDimensions ToPublishedDesignationFundDimensions(this DesignationContent designationContent) {
-        var fundDimensionOptions = designationContent.GetFundDimensionOptions();
+    public static PublishedDesignationFundDimensions ToPublishedDesignationFundDimensions(this DesignationContent designationContent,
+                                                                                          ILookups lookups) {
+        var fundDimensionOptions = designationContent.GetFundDimensionOptions(lookups);
         
         var fundDimensions = new PublishedDesignationFundDimensions();
-        fundDimensions.Dimension1 = ToPublishedDesignationFundDimension(designationContent.Dimension1,
+        fundDimensions.Dimension1 = ToPublishedDesignationFundDimension(designationContent.GetDimension1(lookups),
                                                                         fundDimensionOptions.Dimension1);
         
-        fundDimensions.Dimension2 = ToPublishedDesignationFundDimension(designationContent.Dimension2,
+        fundDimensions.Dimension2 = ToPublishedDesignationFundDimension(designationContent.GetDimension2(lookups),
                                                                         fundDimensionOptions.Dimension2);
         
-        fundDimensions.Dimension3 = ToPublishedDesignationFundDimension(designationContent.Dimension3,
+        fundDimensions.Dimension3 = ToPublishedDesignationFundDimension(designationContent.GetDimension3(lookups),
                                                                         fundDimensionOptions.Dimension3);
         
-        fundDimensions.Dimension4 = ToPublishedDesignationFundDimension(designationContent.Dimension4,
+        fundDimensions.Dimension4 = ToPublishedDesignationFundDimension(designationContent.GetDimension4(lookups),
                                                                         fundDimensionOptions.Dimension4);
 
         return fundDimensions;
