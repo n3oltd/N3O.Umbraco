@@ -24,6 +24,7 @@ public partial class CrowdfundingController {
         
         var req = crowdfundingReq.ToBulkAddToCartReq(_contentLocator.Value,
                                                      _jsonProvider.Value,
+                                                     _lookups.Value,
                                                      _crowdfundingUrlBuilder.Value);
         
         var revisionId = await _mediator.Value.SendAsync<BulkAddToCartCommand, BulkAddToCartReq, RevisionId>(req);

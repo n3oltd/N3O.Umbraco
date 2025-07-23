@@ -7,6 +7,7 @@ using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
+using N3O.Umbraco.Lookups;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,14 +24,18 @@ public class CrowdfunderManager : ICrowdfunderManager {
     private readonly ClientFactory<CrowdfundingClient> _clientFactory;
     private readonly IServiceProvider _serviceProvider;
     private readonly Lazy<IAccountIdentityAccessor> _accountIdentityAccessor;
+    private readonly Lazy<ILookups> _lookups;
+    
     private CloudApiClient<CrowdfundingClient> _client;
 
     public CrowdfunderManager(ClientFactory<CrowdfundingClient> clientFactory,
                               IServiceProvider serviceProvider,
-                              Lazy<IAccountIdentityAccessor> accountIdentityAccessor) {
+                              Lazy<IAccountIdentityAccessor> accountIdentityAccessor,
+                              Lazy<ILookups> lookups) {
         _clientFactory = clientFactory;
         _serviceProvider = serviceProvider;
         _accountIdentityAccessor = accountIdentityAccessor;
+        _lookups = lookups;
     }
 
     public async Task CreateCampaignAsync(ICampaign campaign, IEnumerable<string> webhookUrls) {
@@ -146,7 +151,7 @@ public class CrowdfunderManager : ICrowdfunderManager {
         foreach (var goal in goals) {
             var item = new CrowdfunderAllocationReq();
             item.Type = goal.Type.ToEnum<EngageAllocationType>();
-            item.FundDimensions = GetFundDimensionValuesReq(goal.FundDimensions);
+            item.FundDimensions = GetFundDimensionValuesReq(goal.GetFundDimensionValues(_lookups.Value));
             item.Value = GetMoneyReq(goal.Amount, currency);
 
             if (goal.Type == AllocationTypes.Fund) {
@@ -166,14 +171,14 @@ public class CrowdfunderManager : ICrowdfunderManager {
 
     private NewFundAllocationReq GetNewFundAllocationReq(IFundCrowdfunderGoal fundGoal) {
         var req = new NewFundAllocationReq();
-        req.DonationItem = fundGoal.DonationItem.Name;
+        req.DonationItem = fundGoal.GetDonationItem(_lookups.Value).Name;
 
         return req;
     }
 
     private CrowdfunderFeedbackReq GetCrowdfunderFeedbackReq(IFeedbackCrowdfunderGoal feedbackGoal) {
         var req = new CrowdfunderFeedbackReq();
-        req.Scheme = feedbackGoal.Scheme.Name;
+        req.Scheme = feedbackGoal.GetScheme(_lookups.Value).Name;
         req.CustomFields = GetNewCustomFieldsReq(feedbackGoal);
 
         return req;

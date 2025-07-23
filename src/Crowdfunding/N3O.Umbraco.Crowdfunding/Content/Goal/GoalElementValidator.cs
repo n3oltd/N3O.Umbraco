@@ -9,10 +9,10 @@ namespace N3O.Umbraco.Crowdfunding.Content;
 
 public abstract class GoalElementValidator<TGoalElement> : ContentValidator {
     private static readonly string Alias = AliasHelper<TGoalElement>.ContentTypeAlias();
-    private static readonly string Dimension1Alias = AliasHelper<GoalElement>.PropertyAlias(x => x.FundDimension1);
-    private static readonly string Dimension2Alias = AliasHelper<GoalElement>.PropertyAlias(x => x.FundDimension2);
-    private static readonly string Dimension3Alias = AliasHelper<GoalElement>.PropertyAlias(x => x.FundDimension3);
-    private static readonly string Dimension4Alias = AliasHelper<GoalElement>.PropertyAlias(x => x.FundDimension4);
+    private const string Dimension1Alias = CrowdfundingConstants.Goal.Properties.FundDimension1;
+    private const string Dimension2Alias = CrowdfundingConstants.Goal.Properties.FundDimension2;
+    private const string Dimension3Alias = CrowdfundingConstants.Goal.Properties.FundDimension3;
+    private const string Dimension4Alias = CrowdfundingConstants.Goal.Properties.FundDimension4;
 
     protected GoalElementValidator(IContentHelper contentHelper) : base(contentHelper) { }
 

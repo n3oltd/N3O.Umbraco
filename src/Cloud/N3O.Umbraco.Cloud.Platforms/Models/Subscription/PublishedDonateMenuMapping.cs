@@ -127,18 +127,21 @@ public class PublishedDonateMenuMapping : IMapDefinition {
         var values = new List<string>();
         
         foreach (var designation in allDesignations) {
+            var fundDimensionValues = designation.GetFundDimensionValues(_lookups);
+            var fundDimensionOptions = designation.GetFundDimensionOptions(_lookups);
+            
             if (fundDimension.Number == 1) {
-                values.AddRangeIfNotExists(GetAllowedOptions(designation.GetDimension1(_lookups),
-                                                             designation.GetFundDimensionOptions(_lookups).Dimension1));
+                values.AddRangeIfNotExists(GetAllowedOptions(fundDimensionValues.Dimension1,
+                                                             fundDimensionOptions.Dimension1));
             } else if (fundDimension.Number == 2) {
-                values.AddRangeIfNotExists(GetAllowedOptions(designation.GetDimension2(_lookups),
-                                                             designation.GetFundDimensionOptions(_lookups).Dimension2));
+                values.AddRangeIfNotExists(GetAllowedOptions(fundDimensionValues.Dimension2,
+                                                             fundDimensionOptions.Dimension2));
             } else if (fundDimension.Number == 3) {
-                values.AddRangeIfNotExists(GetAllowedOptions(designation.GetDimension3(_lookups),
-                                                             designation.GetFundDimensionOptions(_lookups).Dimension3));
+                values.AddRangeIfNotExists(GetAllowedOptions(fundDimensionValues.Dimension3,
+                                                             fundDimensionOptions.Dimension3));
             } else if (fundDimension.Number == 4) {
-                values.AddRangeIfNotExists(GetAllowedOptions(designation.GetDimension4(_lookups),
-                                                             designation.GetFundDimensionOptions(_lookups).Dimension4));
+                values.AddRangeIfNotExists(GetAllowedOptions(fundDimensionValues.Dimension4,
+                                                             fundDimensionOptions.Dimension4));
             } else {
                 throw UnrecognisedValueException.For(fundDimension.Number);
             }

@@ -26,10 +26,25 @@ public static class CrowdfundingConstants {
     public static class CampaignGoalOption {
         public static class Feedback {
             public const string Alias = "crowdfundingCampaignFeedbackGoalOption";
+
+            public static class Properties {
+                public const string Scheme = nameof(Scheme);
+            }
         }
 
         public static class Fund {
             public const string Alias = "crowdfundingCampaignFundGoalOption";
+            
+            public static class Properties {
+                public const string DonationItem = nameof(DonationItem);
+            }
+        }
+        
+        public static class Properties {
+            public const string FundDimension1 = nameof(FundDimension1);
+            public const string FundDimension2 = nameof(FundDimension2);
+            public const string FundDimension3 = nameof(FundDimension3);
+            public const string FundDimension4 = nameof(FundDimension4);
         }
     }
 
@@ -128,10 +143,10 @@ public static class CrowdfundingConstants {
         
         public static class Properties {
             public static readonly string Amount = "amount";
-            public static readonly string FundDimension1 = "fundDimension1";
-            public static readonly string FundDimension2 = "fundDimension2";
-            public static readonly string FundDimension3 = "fundDimension3";
-            public static readonly string FundDimension4 = "fundDimension4";
+            public const string FundDimension1 = nameof(FundDimension1);
+            public const string FundDimension2 = nameof(FundDimension2);
+            public const string FundDimension3 = nameof(FundDimension3);
+            public const string FundDimension4 = nameof(FundDimension4);
             public const string Name = "displayName";
             public static readonly string OptionId = "optionId";
             public static readonly string PriceHandles = "priceHandles";

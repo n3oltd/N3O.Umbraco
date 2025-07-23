@@ -11,6 +11,7 @@ using N3O.Umbraco.Giving.Allocations.Content;
 using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
+using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Validation;
 using Slugify;
 using System;
@@ -29,19 +30,22 @@ public partial class CreateOrUpdateFundraiserHandlers {
     private readonly IMemberManager _memberManager;
     private readonly IAccountIdentityAccessor _accountIdentityAccessor;
     private readonly ISlugHelper _slugHelper;
+    private readonly ILookups _lookups;
 
     public CreateOrUpdateFundraiserHandlers(IContentLocator contentLocator,
                                             ICrowdfundingUrlBuilder urlBuilder,
                                             IContentEditor contentEditor,
                                             IMemberManager memberManager,
                                             IAccountIdentityAccessor accountIdentityAccessor,
-                                            ISlugHelper slugHelper) {
+                                            ISlugHelper slugHelper,
+                                            ILookups lookups) {
         _contentLocator = contentLocator;
         _urlBuilder = urlBuilder;
         _contentEditor = contentEditor;
         _memberManager = memberManager;
         _accountIdentityAccessor = accountIdentityAccessor;
         _slugHelper = slugHelper;
+        _lookups = lookups;
     }
     
     private async Task PopulateFundraiserAsync(IContentPublisher contentPublisher, CreateFundraiserReq req) {
@@ -98,21 +102,23 @@ public partial class CreateOrUpdateFundraiserHandlers {
         PopulateFundraiserGoal(contentBuilder, req, goalOption);
         
         contentBuilder.SetContentOrPublishedLookupValue(CrowdfundingConstants.Goal.Fund.Properties.DonationItem,
-                                                        goalOption.Fund.DonationItem);
+                                                        goalOption.Fund.GetDonationItem(_lookups));
     }
     
     private void AddFundraiserFeedbackGoal(NestedPropertyBuilder nestedPropertyBuilder,
                                            FundraiserGoalReq req,
                                            CampaignGoalOptionElement goalOption) {
+        var feedbackScheme = goalOption.Feedback.GetScheme(_lookups);
+        
         var contentBuilder = nestedPropertyBuilder.Add(CrowdfundingConstants.Goal.Feedback.Alias);
         
         PopulateFundraiserGoal(contentBuilder, req, goalOption);
         
         contentBuilder.SetContentOrPublishedLookupValue(CrowdfundingConstants.Goal.Feedback.Properties.Scheme,
-                                                        goalOption.Feedback.Scheme);
+                                                        feedbackScheme);
 
         PopulateCustomFields(contentBuilder,
-                             goalOption.Feedback.Scheme,
+                             feedbackScheme,
                              req.Feedback.OrEmpty(x => x?.CustomFields.Entries));
     }
     

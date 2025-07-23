@@ -68,10 +68,12 @@ public class DesignationContent : UmbracoContent<DesignationContent> {
         return ((IHoldPricing) Fund?.GetDonationItem(lookups) ?? Feedback?.GetScheme(lookups)).HasPricing();
     }
     
-    public FundDimension1Value GetDimension1(ILookups lookups) => GetLookup<FundDimension1Value>(lookups, Dimension1Alias);
-    public FundDimension2Value GetDimension2(ILookups lookups) => GetLookup<FundDimension2Value>(lookups, Dimension2Alias);
-    public FundDimension3Value GetDimension3(ILookups lookups) => GetLookup<FundDimension3Value>(lookups, Dimension3Alias);
-    public FundDimension4Value GetDimension4(ILookups lookups) => GetLookup<FundDimension4Value>(lookups, Dimension4Alias);
+    public IFundDimensionValues GetFundDimensionValues(ILookups lookups) {
+        return new FundDimensionValues(GetFundDimension1Value(lookups),
+                                       GetFundDimension2Value(lookups),
+                                       GetFundDimension3Value(lookups),
+                                       GetFundDimension4Value(lookups));
+    }
     
     public IReadOnlyList<GiftType> GetGiftTypes(ILookups lookups) {
         var givingTypes = Fund?.GetDonationItem(lookups).AllowedGivingTypes ??
@@ -105,5 +107,21 @@ public class DesignationContent : UmbracoContent<DesignationContent> {
                 throw UnrecognisedValueException.For(Content().ContentType.Alias);
             }
         }
+    }
+    
+    private FundDimension1Value GetFundDimension1Value(ILookups lookups) {
+        return GetLookup<FundDimension1Value>(lookups, Dimension1Alias);
+    }
+
+    private FundDimension2Value GetFundDimension2Value(ILookups lookups) {
+        return GetLookup<FundDimension2Value>(lookups, Dimension2Alias);
+    }
+
+    private FundDimension3Value GetFundDimension3Value(ILookups lookups) {
+        return GetLookup<FundDimension3Value>(lookups, Dimension3Alias);
+    }
+
+    private FundDimension4Value GetFundDimension4Value(ILookups lookups) {
+        return GetLookup<FundDimension4Value>(lookups, Dimension4Alias);
     }
 }
