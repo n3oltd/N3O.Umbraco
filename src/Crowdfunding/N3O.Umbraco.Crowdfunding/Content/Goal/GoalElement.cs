@@ -7,35 +7,33 @@ using N3O.Umbraco.Giving.Allocations.Content;
 using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
-using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
-public class GoalElement : UmbracoElement<GoalElement>, ICrowdfunderGoal {
+public class GoalElement : UmbracoElement<GoalElement>, IFundDimensionValues, ICrowdfunderGoal {
     [UmbracoProperty(CrowdfundingConstants.Goal.Properties.Name)]
     public string Name => GetValue(x => x.Name);
     public decimal Amount => GetValue(x => x.Amount);
     public string OptionId => GetValue(x => x.OptionId);
+    public FundDimension1Value FundDimension1 => GetAs(x => x.FundDimension1);
+    public FundDimension2Value FundDimension2 => GetAs(x => x.FundDimension2);
+    public FundDimension3Value FundDimension3 => GetAs(x => x.FundDimension3);
+    public FundDimension4Value FundDimension4 => GetAs(x => x.FundDimension4);
     public IEnumerable<TagContent> Tags => GetPickedAs(x => x.Tags);
     public IEnumerable<PriceHandleElement> PriceHandles => GetNestedAs(x => x.PriceHandles);
     
     public string Id => Content().Key.ToString().ToLowerInvariant();
+    public bool HasPricing => ((IHoldPricing) Fund?.DonationItem ?? Feedback?.Scheme).HasPricing();
     
     public FundGoalElement Fund { get; protected set; }
     public FeedbackGoalElement Feedback { get; protected set; }
-    
-    public bool HasPricing(ILookups lookups) {
-        return ((IHoldPricing) Fund?.GetDonationItem(lookups) ?? Feedback?.GetScheme(lookups)).HasPricing();
-    }
 
-    public IFundDimensionValues GetFundDimensionValues(ILookups lookups) {
-        return new FundDimensionValues(GetFundDimension1Value(lookups),
-                                       GetFundDimension2Value(lookups),
-                                       GetFundDimension3Value(lookups),
-                                       GetFundDimension4Value(lookups));
-    }
+    public IFundDimensionValues FundDimensions => new FundDimensionValues(FundDimension1,
+                                                                          FundDimension2,
+                                                                          FundDimension3,
+                                                                          FundDimension4);
 
     IFundCrowdfunderGoal ICrowdfunderGoal.Fund => Fund;
     IFeedbackCrowdfunderGoal ICrowdfunderGoal.Feedback => Feedback;
@@ -72,20 +70,9 @@ public class GoalElement : UmbracoElement<GoalElement>, ICrowdfunderGoal {
             }
         }
     }
-    
-    private FundDimension1Value GetFundDimension1Value(ILookups lookups) {
-        return GetLookup<FundDimension1Value>(lookups, CrowdfundingConstants.Goal.Properties.FundDimension1);
-    }
 
-    private FundDimension2Value GetFundDimension2Value(ILookups lookups) {
-        return GetLookup<FundDimension2Value>(lookups, CrowdfundingConstants.Goal.Properties.FundDimension1);
-    }
-
-    private FundDimension3Value GetFundDimension3Value(ILookups lookups) {
-        return GetLookup<FundDimension3Value>(lookups, CrowdfundingConstants.Goal.Properties.FundDimension1);
-    }
-
-    private FundDimension4Value GetFundDimension4Value(ILookups lookups) {
-        return GetLookup<FundDimension4Value>(lookups, CrowdfundingConstants.Goal.Properties.FundDimension1);
-    }
+    FundDimension1Value IFundDimensionValues.Dimension1 => FundDimension1;
+    FundDimension2Value IFundDimensionValues.Dimension2 => FundDimension2;
+    FundDimension3Value IFundDimensionValues.Dimension3 => FundDimension3;
+    FundDimension4Value IFundDimensionValues.Dimension4 => FundDimension4;
 }

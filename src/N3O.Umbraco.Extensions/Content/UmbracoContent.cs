@@ -49,14 +49,14 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
     
     public string GetLocalizedString<TProperty>(Expression<Func<T, TProperty>> memberExpression) {
         var alias = AliasHelper<T>.PropertyAlias(memberExpression);
-        var text = (string) Content().GetProperty(alias).GetValue(VariationContext?.Culture, VariationContext?.Segment);
+        var text = (string) Content().GetProperty(alias).GetValue();
         
         return StringLocalizer.Instance.Get(GetType().GetFriendlyName(), alias, text);
     }
 
     protected TLookup GetLookup<TLookup>(ILookups lookups, string propertyAlias)
         where TLookup : ILookup {
-        var propertyValue = Content().GetProperty(propertyAlias)?.GetValue(VariationContext?.Culture, VariationContext?.Segment);
+        var propertyValue = Content().GetProperty(propertyAlias)?.GetValue();
 
         TLookup lookup;
         
@@ -69,25 +69,6 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
         }
 
         return lookup;
-    }
-    
-    protected IEnumerable<TLookup> GetLookups<TLookup>(ILookups lookups, string propertyAlias)
-        where TLookup : ILookup {
-        var propertyValues = Content().GetProperty(propertyAlias)?.GetValue(VariationContext?.Culture, VariationContext?.Segment);
-
-        var tLookups = new List<TLookup>();
-        
-        if (propertyValues is IEnumerable<TLookup> lookupValues) {
-            tLookups.AddRange(lookupValues);
-        } else if (propertyValues is IEnumerable<IPublishedContent> publishedContents) {
-            var publishedLookupValues = publishedContents.Select(x => lookups.FindById<TLookup>(LookupContent.GetId(x)));
-            
-            tLookups.AddRange(publishedLookupValues);
-        } else {
-            throw new Exception("Lookup properties must either be a datalist or picker");
-        }
-
-        return tLookups;
     }
 
     protected IEnumerable<TProperty> GetNestedAs<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> memberExpression) {

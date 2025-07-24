@@ -7,7 +7,6 @@ using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Giving.Cart.Models;
 using N3O.Umbraco.Json;
-using N3O.Umbraco.Lookups;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +17,11 @@ public static partial class CrowdfundingCartReqExtensions {
     public static BulkAddToCartReq ToBulkAddToCartReq(this CrowdfundingCartReq crowdfundingReq,
                                                       IContentLocator contentLocator,
                                                       IJsonProvider jsonProvider,
-                                                      ILookups lookups,
                                                       ICrowdfundingUrlBuilder crowdfundingUrlBuilder) {
         var bulkAddToCartReq = new BulkAddToCartReq();
         bulkAddToCartReq.Items = crowdfundingReq.Items
                                                 .Select(x => ToAddToCartReq(contentLocator,
                                                                             jsonProvider,
-                                                                            lookups,
                                                                             crowdfundingUrlBuilder,
                                                                             crowdfundingReq,
                                                                             x))
@@ -35,7 +32,6 @@ public static partial class CrowdfundingCartReqExtensions {
 
     private static AddToCartReq ToAddToCartReq(IContentLocator contentLocator,
                                                IJsonProvider jsonProvider,
-                                               ILookups lookups,
                                                ICrowdfundingUrlBuilder crowdfundingUrlBuilder,
                                                CrowdfundingCartReq crowdfundingReq,
                                                CrowdfundingCartItemReq itemReq) {
@@ -53,29 +49,25 @@ public static partial class CrowdfundingCartReqExtensions {
         addToCartReq.Allocation.Type = goal.Type;
         addToCartReq.Allocation.Value = itemReq.Value;
 
-        var fundDimensions = goal.GetFundDimensionValues(lookups);
-
         addToCartReq.Allocation.FundDimensions = new FundDimensionValuesReq();
-        addToCartReq.Allocation.FundDimensions.Dimension1 = fundDimensions.Dimension1;
-        addToCartReq.Allocation.FundDimensions.Dimension2 = fundDimensions.Dimension2;
-        addToCartReq.Allocation.FundDimensions.Dimension3 = fundDimensions.Dimension3;
-        addToCartReq.Allocation.FundDimensions.Dimension4 = fundDimensions.Dimension4;
+        addToCartReq.Allocation.FundDimensions.Dimension1 = goal.FundDimensions.Dimension1;
+        addToCartReq.Allocation.FundDimensions.Dimension2 = goal.FundDimensions.Dimension2;
+        addToCartReq.Allocation.FundDimensions.Dimension3 = goal.FundDimensions.Dimension3;
+        addToCartReq.Allocation.FundDimensions.Dimension4 = goal.FundDimensions.Dimension4;
         
         if (goal.Type == AllocationTypes.Fund) {
             addToCartReq.Allocation.Fund = new FundAllocationReq();
-            addToCartReq.Allocation.Fund.DonationItem = goal.Fund.GetDonationItem(lookups);
+            addToCartReq.Allocation.Fund.DonationItem = goal.Fund.DonationItem;
         } else if (goal.Type == AllocationTypes.Feedback) {
             addToCartReq.Allocation.Feedback = new FeedbackAllocationReq();
-            var feedbackScheme = goal.Feedback.GetScheme(lookups);
-            
-            addToCartReq.Allocation.Feedback.Scheme = feedbackScheme;
+            addToCartReq.Allocation.Feedback.Scheme = goal.Feedback.Scheme;
             
             if (itemReq.HasValue(x => x.Feedback?.CustomFields)) {
                 addToCartReq.Allocation.Feedback.CustomFields = new FeedbackNewCustomFieldsReq();
                 addToCartReq.Allocation.Feedback.CustomFields.Entries = itemReq.Feedback
                                                                                .CustomFields
                                                                                .Entries
-                                                                               .Select(x => x.ToFeedbackCustomField(feedbackScheme))
+                                                                               .Select(x => x.ToFeedbackCustomField(goal.Feedback.Scheme))
                                                                                .Select(x => new FeedbackNewCustomFieldReq(x))
                                                                                .ToList();
             }

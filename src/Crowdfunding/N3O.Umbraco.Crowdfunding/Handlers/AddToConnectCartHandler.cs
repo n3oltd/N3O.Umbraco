@@ -8,7 +8,6 @@ using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Json;
-using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Mediator;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,19 +18,16 @@ public class AddToConnectCartHandler : IRequestHandler<AddToConnectCartCommand, 
     private readonly ClientFactory<CartClient> _clientFactory;
     private readonly IContentLocator _contentLocator;
     private readonly IJsonProvider _jsonProvider;
-    private readonly ILookups _lookups;
     private readonly IConnectCartIdAccessor _connectCartIdAccessor;
 
     public AddToConnectCartHandler(ClientFactory<CartClient> clientFactory,
                                    IContentLocator contentLocator,
                                    IJsonProvider jsonProvider,
-                                   IConnectCartIdAccessor connectCartIdAccessor,
-                                   ILookups lookups) {
+                                   IConnectCartIdAccessor connectCartIdAccessor) {
         _clientFactory = clientFactory;
         _contentLocator = contentLocator;
         _jsonProvider = jsonProvider;
         _connectCartIdAccessor = connectCartIdAccessor;
-        _lookups = lookups;
     }
 
     public async Task<EntityId> Handle(AddToConnectCartCommand req, CancellationToken cancellationToken) {
@@ -39,7 +35,7 @@ public class AddToConnectCartHandler : IRequestHandler<AddToConnectCartCommand, 
 
         var cartId = _connectCartIdAccessor.GetId();
 
-        var connectBulkAddToCartReq = req.Model.ToConnectBulkAddToCartReq(_contentLocator, _jsonProvider, _lookups);
+        var connectBulkAddToCartReq = req.Model.ToConnectBulkAddToCartReq(_contentLocator, _jsonProvider);
 
         await client.InvokeAsync(x => x.BulkAddAsync(cartId.ToString(), connectBulkAddToCartReq));
 

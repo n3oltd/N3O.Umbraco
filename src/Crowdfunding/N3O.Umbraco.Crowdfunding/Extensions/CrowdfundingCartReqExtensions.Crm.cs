@@ -6,7 +6,6 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Json;
-using N3O.Umbraco.Lookups;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +16,11 @@ namespace N3O.Umbraco.Crowdfunding.Extensions;
 public static partial class CrowdfundingCartReqExtensions {
     public static ConnectBulkAddToCartReq ToConnectBulkAddToCartReq(this CrowdfundingCartReq crowdfundingReq,
                                                                     IContentLocator contentLocator,
-                                                                    IJsonProvider jsonProvider,
-                                                                    ILookups lookups) {
+                                                                    IJsonProvider jsonProvider) {
         var connectBulkAddToCartReq = new ConnectBulkAddToCartReq();
         connectBulkAddToCartReq.Items = crowdfundingReq.Items
                                                        .Select(x => ToConnectAddToCartReq(contentLocator,
                                                                                           jsonProvider,
-                                                                                          lookups,
                                                                                           crowdfundingReq,
                                                                                           x))
                                                        .ToList();
@@ -33,7 +30,6 @@ public static partial class CrowdfundingCartReqExtensions {
 
     private static ConnectAddToCartReq ToConnectAddToCartReq(IContentLocator contentLocator,
                                                              IJsonProvider jsonProvider,
-                                                             ILookups lookups,
                                                              CrowdfundingCartReq crowdfundingReq,
                                                              CrowdfundingCartItemReq itemReq) {
         var crowdfunderContent = contentLocator.GetCrowdfunderContent(crowdfundingReq.Crowdfunding.CrowdfunderId.GetValueOrThrow(),
@@ -52,29 +48,25 @@ public static partial class CrowdfundingCartReqExtensions {
         connectAddToCartReq.Item.Value.Amount = (double?) itemReq.Value.Amount;
         connectAddToCartReq.Item.Value.Currency = itemReq.Value.Currency.ToEnum<Currency>();
 
-        var fundDimensions = goal.GetFundDimensionValues(lookups);
-
         connectAddToCartReq.Item.FundDimensions = new FundDimensionValuesReq();
-        connectAddToCartReq.Item.FundDimensions.Dimension1 = fundDimensions.Dimension1?.Name;
-        connectAddToCartReq.Item.FundDimensions.Dimension2 = fundDimensions.Dimension2?.Name;
-        connectAddToCartReq.Item.FundDimensions.Dimension3 = fundDimensions.Dimension3?.Name;
-        connectAddToCartReq.Item.FundDimensions.Dimension4 = fundDimensions.Dimension4?.Name;
+        connectAddToCartReq.Item.FundDimensions.Dimension1 = goal.FundDimensions.Dimension1?.Name;
+        connectAddToCartReq.Item.FundDimensions.Dimension2 = goal.FundDimensions.Dimension2?.Name;
+        connectAddToCartReq.Item.FundDimensions.Dimension3 = goal.FundDimensions.Dimension3?.Name;
+        connectAddToCartReq.Item.FundDimensions.Dimension4 = goal.FundDimensions.Dimension4?.Name;
         
         if (goal.Type == AllocationTypes.Fund) {
             connectAddToCartReq.Item.Fund = new ConnectFundCartItemReq();
-            connectAddToCartReq.Item.Fund.DonationItem = goal.Fund.GetDonationItem(lookups).Name;
+            connectAddToCartReq.Item.Fund.DonationItem = goal.Fund.DonationItem.Name;
         } else if (goal.Type == AllocationTypes.Feedback) {
-            var feedbackScheme = goal.Feedback.GetScheme(lookups);
-            
             connectAddToCartReq.Item.Feedback = new ConnectFeedbackCartItemReq();
-            connectAddToCartReq.Item.Feedback.Scheme = feedbackScheme.Name;
+            connectAddToCartReq.Item.Feedback.Scheme = goal.Feedback.Scheme.Name;
             
             if (itemReq.HasValue(x => x.Feedback?.CustomFields)) {
                 connectAddToCartReq.Item.Feedback.CustomFields = new NewCustomFieldsReq();
                 connectAddToCartReq.Item.Feedback.CustomFields.Entries = itemReq.Feedback
                                                                                 .CustomFields
                                                                                 .Entries
-                                                                                .Select(x => x.ToFeedbackCustomField(feedbackScheme))
+                                                                                .Select(x => x.ToFeedbackCustomField(goal.Feedback.Scheme))
                                                                                 .Select(x => new NewCustomFieldReq { Alias = x.Alias, Bool = x.Bool, Date = x.Date?.ToYearMonthDayString(), Text = x.Text})
                                                                                 .ToList();
             }

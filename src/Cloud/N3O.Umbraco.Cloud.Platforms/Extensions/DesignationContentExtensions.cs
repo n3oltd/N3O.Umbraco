@@ -11,20 +11,19 @@ namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 public static class DesignationContentExtensions {
     public static PublishedDesignationFundDimensions ToPublishedDesignationFundDimensions(this DesignationContent designationContent,
                                                                                           ILookups lookups) {
-        var fundDimensionValues = designationContent.GetFundDimensionValues(lookups);
         var fundDimensionOptions = designationContent.GetFundDimensionOptions(lookups);
         
         var fundDimensions = new PublishedDesignationFundDimensions();
-        fundDimensions.Dimension1 = ToPublishedDesignationFundDimension(fundDimensionValues.Dimension1,
+        fundDimensions.Dimension1 = ToPublishedDesignationFundDimension(designationContent.GetDimension1(lookups),
                                                                         fundDimensionOptions.Dimension1);
         
-        fundDimensions.Dimension2 = ToPublishedDesignationFundDimension(fundDimensionValues.Dimension2,
+        fundDimensions.Dimension2 = ToPublishedDesignationFundDimension(designationContent.GetDimension2(lookups),
                                                                         fundDimensionOptions.Dimension2);
         
-        fundDimensions.Dimension3 = ToPublishedDesignationFundDimension(fundDimensionValues.Dimension3,
+        fundDimensions.Dimension3 = ToPublishedDesignationFundDimension(designationContent.GetDimension3(lookups),
                                                                         fundDimensionOptions.Dimension3);
         
-        fundDimensions.Dimension4 = ToPublishedDesignationFundDimension(fundDimensionValues.Dimension4,
+        fundDimensions.Dimension4 = ToPublishedDesignationFundDimension(designationContent.GetDimension4(lookups),
                                                                         fundDimensionOptions.Dimension4);
 
         return fundDimensions;

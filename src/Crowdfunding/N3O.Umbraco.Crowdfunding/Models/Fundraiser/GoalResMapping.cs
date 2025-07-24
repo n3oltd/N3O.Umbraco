@@ -1,19 +1,12 @@
 ﻿using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Models;
-using N3O.Umbraco.Lookups;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Crowdfunding.Models;
 
 public class GoalResMapping : IMapDefinition {
-    private readonly ILookups _lookups;
-    
-    public GoalResMapping(ILookups lookups) {
-        _lookups = lookups;
-    }
-
     public void DefineMaps(IUmbracoMapper mapper) {
         mapper.Define<GoalElement, GoalRes>((_, _) => new GoalRes(), Map);
     }
@@ -21,7 +14,7 @@ public class GoalResMapping : IMapDefinition {
     private void Map(GoalElement src, GoalRes dest, MapperContext ctx) {
         dest.OptionId = src.OptionId;
         dest.Value = src.Amount;
-        dest.FundDimensions = ctx.Map<IFundDimensionValues, FundDimensionValuesRes>(src.GetFundDimensionValues(_lookups));
+        dest.FundDimensions = ctx.Map<IFundDimensionValues, FundDimensionValuesRes>(src.FundDimensions);
         dest.Feedback = src.Feedback.IfNotNull(ctx.Map<FeedbackGoalElement, FeedbackGoalRes>);
         dest.Tags = src.Tags.OrEmpty().Select(ctx.Map<TagContent, TagRes>);
     }

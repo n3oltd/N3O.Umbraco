@@ -27,20 +27,18 @@ public class CrowdfunderGoalViewModel {
                                                                 IForexConverter forexConverter,
                                                                 ILookups lookups,
                                                                 GoalElement goal) {
-        var fundDimensions = goal.GetFundDimensionValues(lookups);
-        
         var viewModel = new CrowdfunderGoalViewModel();
 
         viewModel.Id = goal.Id;
         viewModel.Name = goal.Name;
         viewModel.Amount = goal.Amount;
-        viewModel.FundDimension1Value = fundDimensions.Dimension1;
-        viewModel.FundDimension2Value = fundDimensions.Dimension2;
-        viewModel.FundDimension3Value = fundDimensions.Dimension3;
-        viewModel.FundDimension4Value = fundDimensions.Dimension4;
+        viewModel.FundDimension1Value = goal.FundDimension1;
+        viewModel.FundDimension2Value = goal.FundDimension2;
+        viewModel.FundDimension3Value = goal.FundDimension3;
+        viewModel.FundDimension4Value = goal.FundDimension4;
         viewModel.Type = goal.Type;
-        viewModel.DonationItem = goal.Fund?.GetDonationItem(lookups);
-        viewModel.FeedbackScheme = goal.Feedback?.GetScheme(lookups);
+        viewModel.DonationItem = goal.Fund?.DonationItem;
+        viewModel.FeedbackScheme = goal.Feedback?.Scheme;
         viewModel.PriceHandles = await goal.PriceHandles
                                            .ToReadOnlyListAsync(async x => await CrowdfunderPriceHandleViewModel.ForAsync(crowdfunderCurrency,
                                                                                                                           forexConverter,
