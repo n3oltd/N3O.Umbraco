@@ -22,7 +22,7 @@ public class PublishedSponsorshipDesignationMapping : IMapDefinition {
     
     // Umbraco.Code.MapAll
     private void Map(SponsorshipDesignationContent src, PublishedSponsorshipDesignation dest, MapperContext ctx) {
-        var sponsorshipScheme = src.GetScheme(_lookups);
+        var sponsorshipScheme = src.Scheme;
         
         dest.Scheme = new PublishedSponsorshipScheme();
         dest.Scheme.Id = sponsorshipScheme.Id;
