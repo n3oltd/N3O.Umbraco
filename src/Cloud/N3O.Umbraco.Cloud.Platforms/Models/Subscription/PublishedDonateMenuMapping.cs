@@ -5,7 +5,6 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Models;
-using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Media;
 using System;
 using System.Collections.Generic;
@@ -19,12 +18,10 @@ namespace N3O.Umbraco.Cloud.Platforms.Models;
 public class PublishedDonateMenuMapping : IMapDefinition {
     private readonly IMediaUrl _mediaUrl;
     private readonly IContentLocator _contentLocator;
-    private readonly ILookups _lookups;
 
-    public PublishedDonateMenuMapping(IMediaUrl mediaUrl, IContentLocator contentLocator, ILookups lookups) {
+    public PublishedDonateMenuMapping(IMediaUrl mediaUrl, IContentLocator contentLocator) {
         _mediaUrl = mediaUrl;
         _contentLocator = contentLocator;
-        _lookups = lookups;
     }
     
     public void DefineMaps(IUmbracoMapper mapper) {
@@ -128,17 +125,17 @@ public class PublishedDonateMenuMapping : IMapDefinition {
         
         foreach (var designation in allDesignations) {
             if (fundDimension.Number == 1) {
-                values.AddRangeIfNotExists(GetAllowedOptions(designation.GetDimension1(_lookups),
-                                                             designation.GetFundDimensionOptions(_lookups).Dimension1));
+                values.AddRangeIfNotExists(GetAllowedOptions(designation.Dimension1,
+                                                             designation.GetFundDimensionOptions().Dimension1));
             } else if (fundDimension.Number == 2) {
-                values.AddRangeIfNotExists(GetAllowedOptions(designation.GetDimension2(_lookups),
-                                                             designation.GetFundDimensionOptions(_lookups).Dimension2));
+                values.AddRangeIfNotExists(GetAllowedOptions(designation.Dimension2,
+                                                             designation.GetFundDimensionOptions().Dimension2));
             } else if (fundDimension.Number == 3) {
-                values.AddRangeIfNotExists(GetAllowedOptions(designation.GetDimension3(_lookups),
-                                                             designation.GetFundDimensionOptions(_lookups).Dimension3));
+                values.AddRangeIfNotExists(GetAllowedOptions(designation.Dimension3,
+                                                             designation.GetFundDimensionOptions().Dimension3));
             } else if (fundDimension.Number == 4) {
-                values.AddRangeIfNotExists(GetAllowedOptions(designation.GetDimension4(_lookups),
-                                                             designation.GetFundDimensionOptions(_lookups).Dimension4));
+                values.AddRangeIfNotExists(GetAllowedOptions(designation.Dimension4,
+                                                             designation.GetFundDimensionOptions().Dimension4));
             } else {
                 throw UnrecognisedValueException.For(fundDimension.Number);
             }
