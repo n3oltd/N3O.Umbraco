@@ -2,6 +2,7 @@
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Media;
 using System;
 using System.Linq;
@@ -12,9 +13,11 @@ namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class PublishedDesignationMapping : IMapDefinition {
     private readonly IMediaUrl _mediaUrl;
+    private readonly ILookups _lookups;
 
-    public PublishedDesignationMapping(IMediaUrl mediaUrl) {
+    public PublishedDesignationMapping(IMediaUrl mediaUrl, ILookups lookups) {
         _mediaUrl = mediaUrl;
+        _lookups = lookups;
         _mediaUrl = mediaUrl;
     }
     
@@ -31,9 +34,9 @@ public class PublishedDesignationMapping : IMapDefinition {
         dest.Icon = _mediaUrl.GetMediaUrl(src.Icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
         dest.ShortDescription = src.ShortDescription.ToHtmlString();
         dest.LongDescription = src.LongDescription.ToHtmlString();
-        dest.GiftTypes = src.GetGiftTypes().Select(x => x.ToEnum<GiftType>().GetValueOrThrow()).ToList();
+        dest.GiftTypes = src.GetGiftTypes(_lookups).Select(x => x.ToEnum<GiftType>().GetValueOrThrow()).ToList();
         dest.SuggestedGiftType = src.SuggestedGiftType.ToEnum<GiftType>();
-        dest.FundDimensions = src.ToPublishedDesignationFundDimensions();
+        dest.FundDimensions = src.ToPublishedDesignationFundDimensions(_lookups);
         dest.Fund = src.Fund.IfNotNull(ctx.Map<FundDesignationContent, PublishedFundDesignation>);
         dest.Feedback = src.Feedback.IfNotNull(ctx.Map<FeedbackDesignationContent, PublishedFeedbackDesignation>);
         dest.Sponsorship = src.Sponsorship.IfNotNull(ctx.Map<SponsorshipDesignationContent, PublishedSponsorshipDesignation>);

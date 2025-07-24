@@ -22,7 +22,7 @@ public class PublishedFundDesignationMapping : IMapDefinition {
     
     // Umbraco.Code.MapAll
     private void Map(FundDesignationContent src, PublishedFundDesignation dest, MapperContext ctx) {
-        var donationItem = src.DonationItem;
+        var donationItem = src.GetDonationItem(_lookups);
         
         dest.Item = new PublishedDonationItem();
         dest.Item.Id = donationItem.Id;

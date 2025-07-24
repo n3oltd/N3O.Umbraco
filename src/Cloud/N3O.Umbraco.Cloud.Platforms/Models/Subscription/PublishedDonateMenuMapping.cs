@@ -5,6 +5,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Models;
+using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Media;
 using System;
 using System.Collections.Generic;
@@ -18,10 +19,12 @@ namespace N3O.Umbraco.Cloud.Platforms.Models;
 public class PublishedDonateMenuMapping : IMapDefinition {
     private readonly IMediaUrl _mediaUrl;
     private readonly IContentLocator _contentLocator;
+    private readonly ILookups _lookups;
 
-    public PublishedDonateMenuMapping(IMediaUrl mediaUrl, IContentLocator contentLocator) {
+    public PublishedDonateMenuMapping(IMediaUrl mediaUrl, IContentLocator contentLocator, ILookups lookups) {
         _mediaUrl = mediaUrl;
         _contentLocator = contentLocator;
+        _lookups = lookups;
     }
     
     public void DefineMaps(IUmbracoMapper mapper) {
@@ -124,18 +127,21 @@ public class PublishedDonateMenuMapping : IMapDefinition {
         var values = new List<string>();
         
         foreach (var designation in allDesignations) {
+            var fundDimensionValues = designation.GetFundDimensionValues(_lookups);
+            var fundDimensionOptions = designation.GetFundDimensionOptions(_lookups);
+            
             if (fundDimension.Number == 1) {
-                values.AddRangeIfNotExists(GetAllowedOptions(designation.Dimension1,
-                                                             designation.GetFundDimensionOptions().Dimension1));
+                values.AddRangeIfNotExists(GetAllowedOptions(fundDimensionValues.Dimension1,
+                                                             fundDimensionOptions.Dimension1));
             } else if (fundDimension.Number == 2) {
-                values.AddRangeIfNotExists(GetAllowedOptions(designation.Dimension2,
-                                                             designation.GetFundDimensionOptions().Dimension2));
+                values.AddRangeIfNotExists(GetAllowedOptions(fundDimensionValues.Dimension2,
+                                                             fundDimensionOptions.Dimension2));
             } else if (fundDimension.Number == 3) {
-                values.AddRangeIfNotExists(GetAllowedOptions(designation.Dimension3,
-                                                             designation.GetFundDimensionOptions().Dimension3));
+                values.AddRangeIfNotExists(GetAllowedOptions(fundDimensionValues.Dimension3,
+                                                             fundDimensionOptions.Dimension3));
             } else if (fundDimension.Number == 4) {
-                values.AddRangeIfNotExists(GetAllowedOptions(designation.Dimension4,
-                                                             designation.GetFundDimensionOptions().Dimension4));
+                values.AddRangeIfNotExists(GetAllowedOptions(fundDimensionValues.Dimension4,
+                                                             fundDimensionOptions.Dimension4));
             } else {
                 throw UnrecognisedValueException.For(fundDimension.Number);
             }

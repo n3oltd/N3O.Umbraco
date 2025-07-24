@@ -10,10 +10,38 @@ public static class PlatformsConstants {
 
     public static class Designations {
         public const string CompositionAlias = "platformsDesignation";
-        public const string Feedback = "platformsFeedbackDesignation";
-        public const string Fund = "platformsFundDesignation";
-        public const string Sponsorship = "platformsSponsorshipDesignation";
         public const string SuggestedAmount = "platformsSuggestedAmount";
+
+        public static class Properties {
+            public const string Dimension1 = nameof(Dimension1);
+            public const string Dimension2 = nameof(Dimension2);
+            public const string Dimension3 = nameof(Dimension3);
+            public const string Dimension4 = nameof(Dimension4);
+        }
+    }
+    
+    public static class FeedbackDesignation {
+        public const string Alias = "platformsFeedbackDesignation";
+
+        public static class Properties {
+            public const string Scheme = nameof(Scheme);
+        }
+    }
+    
+    public static class FundDesignation {
+        public const string Alias = "platformsFundDesignation";
+
+        public static class Properties {
+            public const string DonationItem = nameof(DonationItem);
+        }
+    }
+    
+    public static class SponsorshipDesignation {
+        public const string Alias = "platformsSponsorshipDesignation";
+
+        public static class Properties {
+            public const string Scheme = nameof(Scheme);
+        }
     }
 
     public static class Elements {
