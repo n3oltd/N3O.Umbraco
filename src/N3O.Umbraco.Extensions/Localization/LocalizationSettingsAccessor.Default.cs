@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace N3O.Umbraco.Localization;
 
 public class DefaultLocalizationSettingsAccessor : ILocalizationSettingsAccessor {
-    private const string DefaultCultureCode = "en-US";
+    public const string DefaultCultureCode = "en-US";
     private readonly LocalizationSettings _settings;
 
     private DefaultLocalizationSettingsAccessor() {
