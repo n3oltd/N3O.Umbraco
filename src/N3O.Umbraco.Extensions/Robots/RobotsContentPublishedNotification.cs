@@ -1,30 +1,26 @@
-﻿using System.Threading;
+﻿using Microsoft.AspNetCore.Hosting;
+using N3O.Umbraco.Content;
+using N3O.Umbraco.Extensions;
+using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Notifications;
-using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Robots;
 
 public class RobotsContentPublishedNotification : INotificationAsyncHandler<ContentPublishedNotification> {
-    private readonly IRobotsFileService _robotsFileService;
-    private readonly IContentTypeService _contentTypeService;
-    
-    public RobotsContentPublishedNotification(
-        IRobotsFileService robotsFileService,
-        IContentTypeService contentTypeService) {
-        _robotsFileService = robotsFileService;
-        _contentTypeService = contentTypeService;
+    private readonly IRobotsTxt _robotsTxt;
+    private readonly IWebHostEnvironment _webHostEnvironment;
+
+    public RobotsContentPublishedNotification(IRobotsTxt robotsTxt, IWebHostEnvironment webHostEnvironment) {
+        _robotsTxt = robotsTxt;
+        _webHostEnvironment = webHostEnvironment;
     }
-    
+
     public async Task HandleAsync(ContentPublishedNotification notification, CancellationToken cancellationToken) {
-        foreach (var entity in notification.PublishedEntities) {
-            
-            var contentType = _contentTypeService.Get(entity.ContentTypeId);
-            
-            if (contentType?.Alias == "robots") {
-                await _robotsFileService.SaveRobotsFileToWwwroot();
-                break;
+        foreach (var content in notification.PublishedEntities) {
+            if (content.ContentType.Alias == AliasHelper<RobotsContent>.ContentTypeAlias()) {
+                await _webHostEnvironment.SaveFiletoWwwroot(RobotsTxt.File, _robotsTxt.GetContent());
             }
         }
     }

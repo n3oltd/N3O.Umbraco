@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Robots;
 
 public class RobotsTxt : IRobotsTxt {
     public static readonly string File = "robots.txt";
-    
+
     private readonly IContentCache _contentCache;
     private readonly IWebHostEnvironment _webHostEnvironment;
 
@@ -24,7 +24,7 @@ public class RobotsTxt : IRobotsTxt {
 
         sb.AppendLine("User-agent: *");
         sb.AppendLine("Crawl-delay: 10");
-        
+
         if (!_webHostEnvironment.IsProduction()) {
             sb.AppendLine("Disallow: /");
         }
