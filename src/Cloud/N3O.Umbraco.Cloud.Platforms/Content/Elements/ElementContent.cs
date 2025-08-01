@@ -40,6 +40,7 @@ public class ElementContent : UmbracoContent<ElementContent> {
     
     public Guid Key => Content().Key;
     public string Label => GetValue(x => x.Label);
+    public string EmbedCode => GetValue(x => x.EmbedCode);
     public CampaignContent Campaign => GetAs(x => x.Campaign);
     public IReadOnlyDictionary<string, string> AnalyticsTags => GetConvertedValue<IEnumerable<DataListItem>, IReadOnlyDictionary<String, string>>(x => x.AnalyticsTags, x => x.ToTags());
 
