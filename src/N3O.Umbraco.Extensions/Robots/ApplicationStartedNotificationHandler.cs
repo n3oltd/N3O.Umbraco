@@ -8,9 +8,7 @@ using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Robots;
 
-public class
-    ApplicationStartedNotificationHandler : INotificationAsyncHandler<
-    UmbracoApplicationStartedNotification> {
+public class ApplicationStartedNotificationHandler : INotificationAsyncHandler<UmbracoApplicationStartedNotification> {
     private readonly IUmbracoContextFactory _umbracoContextFactory;
     private readonly IRobotsTxt _robotsTxt;
     private readonly IWebHostEnvironment _webHostEnvironment;
