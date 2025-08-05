@@ -34,7 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="SixLabors.ImageSharp.Web.Providers.Azure" Version="3.1.5" />
+      <PackageReference Include="SixLabors.ImageSharp.Web.Providers.Azure" Version="3.2.0" />
       <PackageReference Include="Umbraco.StorageProviders.AzureBlob" Version="13.1.0" />
       <PackageReference Include="Umbraco.StorageProviders.AzureBlob.ImageSharp" Version="13.1.0" />
     </ItemGroup>

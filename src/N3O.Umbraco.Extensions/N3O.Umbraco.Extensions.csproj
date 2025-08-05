@@ -41,15 +41,15 @@
         <PackageReference Include="MimeTypesMap" Version="1.0.9" />
         <PackageReference Include="NodaTime" Version="3.2.2" />
         <PackageReference Include="NodaTime.Serialization.JsonNet" Version="3.2.0" />
-        <PackageReference Include="NSwag.AspNetCore" Version="14.4.0" />
+        <PackageReference Include="NSwag.AspNetCore" Version="14.5.0" />
         <PackageReference Include="Our.Umbraco.Community.Contentment.Core" Version="4.7.0" />
         <PackageReference Include="Refit" Version="8.0.0" />
         <PackageReference Include="Refit.Newtonsoft.Json" Version="8.0.0" />
-        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.10" />
-        <PackageReference Include="Umbraco.Cms.Core" Version="13.9.2" />
-        <PackageReference Include="Umbraco.Cms.Web.Common" Version="13.9.2" />
-        <PackageReference Include="Umbraco.Cms.Web.Website" Version="13.9.2" />
-        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="13.9.2" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
+        <PackageReference Include="Umbraco.Cms.Core" Version="13.9.3" />
+        <PackageReference Include="Umbraco.Cms.Web.Common" Version="13.9.3" />
+        <PackageReference Include="Umbraco.Cms.Web.Website" Version="13.9.3" />
+        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="13.9.3" />
         <PackageReference Include="Umbraco.Code" Version="2.3.0" />
     </ItemGroup>
 
