@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Search.Handlers;
 
-[RecurringJob("Generate Sitemap", "0 */3 * * *")]
+[RecurringJob("Regenerate Sitemap", "0 */3 * * *")]
 public class GenerateSitemapCommandHandler : IRequestHandler<GenerateSitemapCommand, None, None> {
     private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly ISitemap _sitemap;
@@ -20,6 +20,7 @@ public class GenerateSitemapCommandHandler : IRequestHandler<GenerateSitemapComm
 
     public async Task<None> Handle(GenerateSitemapCommand req, CancellationToken cancellationToken) {
         await _webHostEnvironment.SaveFiletoWwwroot(SearchConstants.SitemapXml, _sitemap.GetXml());
+        
         return None.Empty;
     }
 }

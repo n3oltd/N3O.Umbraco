@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -9,6 +9,7 @@ public static class WebHostEnvironmentExtension {
                                                string fileName,
                                                string fileContent) {
         var filePath = Path.Combine(webHostEnvironment.WebRootPath, fileName);
+        
         await File.WriteAllTextAsync(filePath, fileContent);
     }
 }
