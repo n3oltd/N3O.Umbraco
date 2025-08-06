@@ -205,7 +205,10 @@ public class AccountManager : IAccountManager {
     private async Task<IEnumerable<AccountRes>> FindAccountsWithEmailAsync(string email) {
         var client = await GetClientAsync();
 
-        var connectAccountResCollection = await client.InvokeAsync(x => x.FindMatchesByEmailAsync(email));
+        var criteria = new ConnectEmailCriteria();
+        criteria.Address = email;
+
+        var connectAccountResCollection = await client.InvokeAsync(x => x.FindMatchesByEmailAsync(criteria));
         var accountResCollection = connectAccountResCollection.Select(_mapper.Map<ConnectAccountRes, AccountRes>)
                                                               .ToList();
 

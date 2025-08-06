@@ -47,21 +47,21 @@ namespace N3O.Umbraco.Cloud.Engage.Clients
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ConnectAccountRes>> FindMatchesByEmailAsync(string emailAddress);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ConnectAccountRes>> FindMatchesByEmailAsync(ConnectEmailCriteria body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ConnectAccountRes>> FindMatchesByEmailAsync(string emailAddress, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ConnectAccountRes>> FindMatchesByEmailAsync(ConnectEmailCriteria body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ConnectAccountRes>> FindMatchesByTelephoneAsync(string telephoneNumber);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ConnectAccountRes>> FindMatchesByTelephoneAsync(ConnectTelephoneCriteria body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ConnectAccountRes>> FindMatchesByTelephoneAsync(string telephoneNumber, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ConnectAccountRes>> FindMatchesByTelephoneAsync(ConnectTelephoneCriteria body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -410,33 +410,33 @@ namespace N3O.Umbraco.Cloud.Engage.Clients
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ConnectAccountRes>> FindMatchesByEmailAsync(string emailAddress)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ConnectAccountRes>> FindMatchesByEmailAsync(ConnectEmailCriteria body)
         {
-            return FindMatchesByEmailAsync(emailAddress, System.Threading.CancellationToken.None);
+            return FindMatchesByEmailAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ConnectAccountRes>> FindMatchesByEmailAsync(string emailAddress, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ConnectAccountRes>> FindMatchesByEmailAsync(ConnectEmailCriteria body, System.Threading.CancellationToken cancellationToken)
         {
-            if (emailAddress == null)
-                throw new System.ArgumentNullException("emailAddress");
-
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(body, JsonSerializerSettings);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "connect/v1.0/accounts/find/email/{emailAddress}"
-                    urlBuilder_.Append("connect/v1.0/accounts/find/email/");
-                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(emailAddress, System.Globalization.CultureInfo.InvariantCulture)));
+                    // Operation Path: "connect/v1.0/accounts/find/email"
+                    urlBuilder_.Append("connect/v1.0/accounts/find/email");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -544,33 +544,33 @@ namespace N3O.Umbraco.Cloud.Engage.Clients
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ConnectAccountRes>> FindMatchesByTelephoneAsync(string telephoneNumber)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ConnectAccountRes>> FindMatchesByTelephoneAsync(ConnectTelephoneCriteria body)
         {
-            return FindMatchesByTelephoneAsync(telephoneNumber, System.Threading.CancellationToken.None);
+            return FindMatchesByTelephoneAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ConnectAccountRes>> FindMatchesByTelephoneAsync(string telephoneNumber, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ConnectAccountRes>> FindMatchesByTelephoneAsync(ConnectTelephoneCriteria body, System.Threading.CancellationToken cancellationToken)
         {
-            if (telephoneNumber == null)
-                throw new System.ArgumentNullException("telephoneNumber");
-
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(body, JsonSerializerSettings);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "connect/v1.0/accounts/find/telephone/{telephoneNumber}"
-                    urlBuilder_.Append("connect/v1.0/accounts/find/telephone/");
-                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(telephoneNumber, System.Globalization.CultureInfo.InvariantCulture)));
+                    // Operation Path: "connect/v1.0/accounts/find/telephone"
+                    urlBuilder_.Append("connect/v1.0/accounts/find/telephone");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1204,11 +1204,11 @@ namespace N3O.Umbraco.Cloud.Engage.Clients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class CategoryChannel
+    public partial class CommunicationCategoryChannel
     {
         [Newtonsoft.Json.JsonProperty("channel", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Channel? Channel { get; set; }
+        public CommunicationChannel? Channel { get; set; }
 
         [Newtonsoft.Json.JsonProperty("defaultPreference", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -1217,10 +1217,10 @@ namespace N3O.Umbraco.Cloud.Engage.Clients
     }
 
     /// <summary>
-    /// One of 'email', 'post', 'sms', 'telephone'
+    /// One of 'email', 'post', 'sms', 'telephone', 'whatsApp'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Channel
+    public enum CommunicationChannel
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"email")]
@@ -1235,16 +1235,19 @@ namespace N3O.Umbraco.Cloud.Engage.Clients
         [System.Runtime.Serialization.EnumMember(Value = @"telephone")]
         Telephone = 3,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"whatsApp")]
+        WhatsApp = 4,
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class ConnectAccountCriteria
     {
         [Newtonsoft.Json.JsonProperty("email", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Email { get; set; }
+        public ConnectEmailCriteria Email { get; set; }
 
         [Newtonsoft.Json.JsonProperty("telephone", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Telephone { get; set; }
+        public ConnectTelephoneCriteria Telephone { get; set; }
 
         [Newtonsoft.Json.JsonProperty("accountType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -1391,6 +1394,14 @@ namespace N3O.Umbraco.Cloud.Engage.Clients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ConnectEmailCriteria
+    {
+        [Newtonsoft.Json.JsonProperty("address", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Address { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class ConnectEmailReq
     {
         [Newtonsoft.Json.JsonProperty("address", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -1489,7 +1500,7 @@ namespace N3O.Umbraco.Cloud.Engage.Clients
     {
         [Newtonsoft.Json.JsonProperty("channel", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Channel? Channel { get; set; }
+        public CommunicationChannel? Channel { get; set; }
 
         [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Category { get; set; }
@@ -1504,7 +1515,7 @@ namespace N3O.Umbraco.Cloud.Engage.Clients
     {
         [Newtonsoft.Json.JsonProperty("channel", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Channel? Channel { get; set; }
+        public CommunicationChannel? Channel { get; set; }
 
         [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Category { get; set; }
@@ -1556,6 +1567,18 @@ namespace N3O.Umbraco.Cloud.Engage.Clients
 
         [Newtonsoft.Json.JsonProperty("termsIdentifier", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string TermsIdentifier { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ConnectTelephoneCriteria
+    {
+        [Newtonsoft.Json.JsonProperty("country", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Country? Country { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("number", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Number { get; set; }
 
     }
 
@@ -2334,7 +2357,7 @@ namespace N3O.Umbraco.Cloud.Engage.Clients
     }
 
     /// <summary>
-    /// One of 'AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN', 'BAM', 'BBD', 'BDT', 'BGN', 'BHD', 'BIF', 'BMD', 'BND', 'BOB', 'BOV', 'BRL', 'BSD', 'BTC', 'BTN', 'BWP', 'BYN', 'BZD', 'CAD', 'CDF', 'CHE', 'CHF', 'CHW', 'CLF', 'CLP', 'CNY', 'COP', 'COU', 'CRC', 'CUP', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 'ERN', 'ETB', 'ETH', 'EUR', 'FJD', 'FKP', 'GBP', 'GEL', 'GHS', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HTG', 'HUF', 'IDR', 'ILS', 'INR', 'IQD', 'IRR', 'ISK', 'JMD', 'JOD', 'JPY', 'KES', 'KGS', 'KHR', 'KMF', 'KPW', 'KRW', 'KWD', 'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'LYD', 'MAD', 'MDL', 'MGA', 'MKD', 'MMK', 'MNT', 'MOP', 'MRU', 'MUR', 'MVR', 'MWK', 'MXN', 'MXV', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR', 'NZD', 'OMR', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR', 'RON', 'RSD', 'RUB', 'RWF', 'SAR', 'SBD', 'SCR', 'SDG', 'SEK', 'SGD', 'SHP', 'SLE', 'SOS', 'SRD', 'SSP', 'STN', 'SVC', 'SYP', 'SZL', 'THB', 'TJS', 'TMT', 'TND', 'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX', 'USD', 'USN', 'UYI', 'UYU', 'UYW', 'UZS', 'VED', 'VES', 'VND', 'VUV', 'WST', 'XAD', 'XAF', 'XAG', 'XAU', 'XBA', 'XBB', 'XBC', 'XBD', 'XCD', 'XCG', 'XDR', 'XOF', 'XPD', 'XPF', 'XPT', 'XSU', 'XTS', 'XUA', 'XXX', 'YER', 'ZAR', 'ZMW', 'ZWG'
+    /// One of 'AED', 'AFN', 'ALL', 'AMD', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN', 'BAM', 'BBD', 'BDT', 'BGN', 'BHD', 'BIF', 'BMD', 'BND', 'BOB', 'BOV', 'BRL', 'BSD', 'BTC', 'BTN', 'BWP', 'BYN', 'BZD', 'CAD', 'CDF', 'CHE', 'CHF', 'CHW', 'CLF', 'CLP', 'CNY', 'COP', 'COU', 'CRC', 'CUP', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 'ERN', 'ETB', 'ETH', 'EUR', 'FJD', 'FKP', 'GBP', 'GEL', 'GHS', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HTG', 'HUF', 'IDR', 'ILS', 'INR', 'IQD', 'IRR', 'ISK', 'JMD', 'JOD', 'JPY', 'KES', 'KGS', 'KHR', 'KMF', 'KPW', 'KRW', 'KWD', 'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'LYD', 'MAD', 'MDL', 'MGA', 'MKD', 'MMK', 'MNT', 'MOP', 'MRU', 'MUR', 'MVR', 'MWK', 'MXN', 'MXV', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR', 'NZD', 'OMR', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR', 'RON', 'RSD', 'RUB', 'RWF', 'SAR', 'SBD', 'SCR', 'SDG', 'SEK', 'SGD', 'SHP', 'SLE', 'SOS', 'SRD', 'SSP', 'STN', 'SVC', 'SYP', 'SZL', 'THB', 'TJS', 'TMT', 'TND', 'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX', 'USD', 'USN', 'UYI', 'UYU', 'UYW', 'UZS', 'VED', 'VES', 'VND', 'VUV', 'WST', 'XAD', 'XAF', 'XAG', 'XAU', 'XBA', 'XBB', 'XBC', 'XBD', 'XCD', 'XCG', 'XDR', 'XOF', 'XPD', 'XPF', 'XPT', 'XSU', 'XTS', 'XUA', 'XXX', 'YER', 'ZAR', 'ZMW', 'ZWG'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum Currency
@@ -2352,539 +2375,536 @@ namespace N3O.Umbraco.Cloud.Engage.Clients
         [System.Runtime.Serialization.EnumMember(Value = @"AMD")]
         AMD = 3,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"ANG")]
-        ANG = 4,
-
         [System.Runtime.Serialization.EnumMember(Value = @"AOA")]
-        AOA = 5,
+        AOA = 4,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ARS")]
-        ARS = 6,
+        ARS = 5,
 
         [System.Runtime.Serialization.EnumMember(Value = @"AUD")]
-        AUD = 7,
+        AUD = 6,
 
         [System.Runtime.Serialization.EnumMember(Value = @"AWG")]
-        AWG = 8,
+        AWG = 7,
 
         [System.Runtime.Serialization.EnumMember(Value = @"AZN")]
-        AZN = 9,
+        AZN = 8,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BAM")]
-        BAM = 10,
+        BAM = 9,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BBD")]
-        BBD = 11,
+        BBD = 10,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BDT")]
-        BDT = 12,
+        BDT = 11,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BGN")]
-        BGN = 13,
+        BGN = 12,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BHD")]
-        BHD = 14,
+        BHD = 13,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BIF")]
-        BIF = 15,
+        BIF = 14,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BMD")]
-        BMD = 16,
+        BMD = 15,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BND")]
-        BND = 17,
+        BND = 16,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BOB")]
-        BOB = 18,
+        BOB = 17,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BOV")]
-        BOV = 19,
+        BOV = 18,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BRL")]
-        BRL = 20,
+        BRL = 19,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BSD")]
-        BSD = 21,
+        BSD = 20,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BTC")]
-        BTC = 22,
+        BTC = 21,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BTN")]
-        BTN = 23,
+        BTN = 22,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BWP")]
-        BWP = 24,
+        BWP = 23,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BYN")]
-        BYN = 25,
+        BYN = 24,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BZD")]
-        BZD = 26,
+        BZD = 25,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CAD")]
-        CAD = 27,
+        CAD = 26,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CDF")]
-        CDF = 28,
+        CDF = 27,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CHE")]
-        CHE = 29,
+        CHE = 28,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CHF")]
-        CHF = 30,
+        CHF = 29,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CHW")]
-        CHW = 31,
+        CHW = 30,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CLF")]
-        CLF = 32,
+        CLF = 31,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CLP")]
-        CLP = 33,
+        CLP = 32,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CNY")]
-        CNY = 34,
+        CNY = 33,
 
         [System.Runtime.Serialization.EnumMember(Value = @"COP")]
-        COP = 35,
+        COP = 34,
 
         [System.Runtime.Serialization.EnumMember(Value = @"COU")]
-        COU = 36,
+        COU = 35,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CRC")]
-        CRC = 37,
+        CRC = 36,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CUP")]
-        CUP = 38,
+        CUP = 37,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CVE")]
-        CVE = 39,
+        CVE = 38,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CZK")]
-        CZK = 40,
+        CZK = 39,
 
         [System.Runtime.Serialization.EnumMember(Value = @"DJF")]
-        DJF = 41,
+        DJF = 40,
 
         [System.Runtime.Serialization.EnumMember(Value = @"DKK")]
-        DKK = 42,
+        DKK = 41,
 
         [System.Runtime.Serialization.EnumMember(Value = @"DOP")]
-        DOP = 43,
+        DOP = 42,
 
         [System.Runtime.Serialization.EnumMember(Value = @"DZD")]
-        DZD = 44,
+        DZD = 43,
 
         [System.Runtime.Serialization.EnumMember(Value = @"EGP")]
-        EGP = 45,
+        EGP = 44,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ERN")]
-        ERN = 46,
+        ERN = 45,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ETB")]
-        ETB = 47,
+        ETB = 46,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ETH")]
-        ETH = 48,
+        ETH = 47,
 
         [System.Runtime.Serialization.EnumMember(Value = @"EUR")]
-        EUR = 49,
+        EUR = 48,
 
         [System.Runtime.Serialization.EnumMember(Value = @"FJD")]
-        FJD = 50,
+        FJD = 49,
 
         [System.Runtime.Serialization.EnumMember(Value = @"FKP")]
-        FKP = 51,
+        FKP = 50,
 
         [System.Runtime.Serialization.EnumMember(Value = @"GBP")]
-        GBP = 52,
+        GBP = 51,
 
         [System.Runtime.Serialization.EnumMember(Value = @"GEL")]
-        GEL = 53,
+        GEL = 52,
 
         [System.Runtime.Serialization.EnumMember(Value = @"GHS")]
-        GHS = 54,
+        GHS = 53,
 
         [System.Runtime.Serialization.EnumMember(Value = @"GIP")]
-        GIP = 55,
+        GIP = 54,
 
         [System.Runtime.Serialization.EnumMember(Value = @"GMD")]
-        GMD = 56,
+        GMD = 55,
 
         [System.Runtime.Serialization.EnumMember(Value = @"GNF")]
-        GNF = 57,
+        GNF = 56,
 
         [System.Runtime.Serialization.EnumMember(Value = @"GTQ")]
-        GTQ = 58,
+        GTQ = 57,
 
         [System.Runtime.Serialization.EnumMember(Value = @"GYD")]
-        GYD = 59,
+        GYD = 58,
 
         [System.Runtime.Serialization.EnumMember(Value = @"HKD")]
-        HKD = 60,
+        HKD = 59,
 
         [System.Runtime.Serialization.EnumMember(Value = @"HNL")]
-        HNL = 61,
+        HNL = 60,
 
         [System.Runtime.Serialization.EnumMember(Value = @"HTG")]
-        HTG = 62,
+        HTG = 61,
 
         [System.Runtime.Serialization.EnumMember(Value = @"HUF")]
-        HUF = 63,
+        HUF = 62,
 
         [System.Runtime.Serialization.EnumMember(Value = @"IDR")]
-        IDR = 64,
+        IDR = 63,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ILS")]
-        ILS = 65,
+        ILS = 64,
 
         [System.Runtime.Serialization.EnumMember(Value = @"INR")]
-        INR = 66,
+        INR = 65,
 
         [System.Runtime.Serialization.EnumMember(Value = @"IQD")]
-        IQD = 67,
+        IQD = 66,
 
         [System.Runtime.Serialization.EnumMember(Value = @"IRR")]
-        IRR = 68,
+        IRR = 67,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ISK")]
-        ISK = 69,
+        ISK = 68,
 
         [System.Runtime.Serialization.EnumMember(Value = @"JMD")]
-        JMD = 70,
+        JMD = 69,
 
         [System.Runtime.Serialization.EnumMember(Value = @"JOD")]
-        JOD = 71,
+        JOD = 70,
 
         [System.Runtime.Serialization.EnumMember(Value = @"JPY")]
-        JPY = 72,
+        JPY = 71,
 
         [System.Runtime.Serialization.EnumMember(Value = @"KES")]
-        KES = 73,
+        KES = 72,
 
         [System.Runtime.Serialization.EnumMember(Value = @"KGS")]
-        KGS = 74,
+        KGS = 73,
 
         [System.Runtime.Serialization.EnumMember(Value = @"KHR")]
-        KHR = 75,
+        KHR = 74,
 
         [System.Runtime.Serialization.EnumMember(Value = @"KMF")]
-        KMF = 76,
+        KMF = 75,
 
         [System.Runtime.Serialization.EnumMember(Value = @"KPW")]
-        KPW = 77,
+        KPW = 76,
 
         [System.Runtime.Serialization.EnumMember(Value = @"KRW")]
-        KRW = 78,
+        KRW = 77,
 
         [System.Runtime.Serialization.EnumMember(Value = @"KWD")]
-        KWD = 79,
+        KWD = 78,
 
         [System.Runtime.Serialization.EnumMember(Value = @"KYD")]
-        KYD = 80,
+        KYD = 79,
 
         [System.Runtime.Serialization.EnumMember(Value = @"KZT")]
-        KZT = 81,
+        KZT = 80,
 
         [System.Runtime.Serialization.EnumMember(Value = @"LAK")]
-        LAK = 82,
+        LAK = 81,
 
         [System.Runtime.Serialization.EnumMember(Value = @"LBP")]
-        LBP = 83,
+        LBP = 82,
 
         [System.Runtime.Serialization.EnumMember(Value = @"LKR")]
-        LKR = 84,
+        LKR = 83,
 
         [System.Runtime.Serialization.EnumMember(Value = @"LRD")]
-        LRD = 85,
+        LRD = 84,
 
         [System.Runtime.Serialization.EnumMember(Value = @"LSL")]
-        LSL = 86,
+        LSL = 85,
 
         [System.Runtime.Serialization.EnumMember(Value = @"LYD")]
-        LYD = 87,
+        LYD = 86,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MAD")]
-        MAD = 88,
+        MAD = 87,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MDL")]
-        MDL = 89,
+        MDL = 88,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MGA")]
-        MGA = 90,
+        MGA = 89,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MKD")]
-        MKD = 91,
+        MKD = 90,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MMK")]
-        MMK = 92,
+        MMK = 91,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MNT")]
-        MNT = 93,
+        MNT = 92,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MOP")]
-        MOP = 94,
+        MOP = 93,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MRU")]
-        MRU = 95,
+        MRU = 94,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MUR")]
-        MUR = 96,
+        MUR = 95,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MVR")]
-        MVR = 97,
+        MVR = 96,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MWK")]
-        MWK = 98,
+        MWK = 97,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MXN")]
-        MXN = 99,
+        MXN = 98,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MXV")]
-        MXV = 100,
+        MXV = 99,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MYR")]
-        MYR = 101,
+        MYR = 100,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MZN")]
-        MZN = 102,
+        MZN = 101,
 
         [System.Runtime.Serialization.EnumMember(Value = @"NAD")]
-        NAD = 103,
+        NAD = 102,
 
         [System.Runtime.Serialization.EnumMember(Value = @"NGN")]
-        NGN = 104,
+        NGN = 103,
 
         [System.Runtime.Serialization.EnumMember(Value = @"NIO")]
-        NIO = 105,
+        NIO = 104,
 
         [System.Runtime.Serialization.EnumMember(Value = @"NOK")]
-        NOK = 106,
+        NOK = 105,
 
         [System.Runtime.Serialization.EnumMember(Value = @"NPR")]
-        NPR = 107,
+        NPR = 106,
 
         [System.Runtime.Serialization.EnumMember(Value = @"NZD")]
-        NZD = 108,
+        NZD = 107,
 
         [System.Runtime.Serialization.EnumMember(Value = @"OMR")]
-        OMR = 109,
+        OMR = 108,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PAB")]
-        PAB = 110,
+        PAB = 109,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PEN")]
-        PEN = 111,
+        PEN = 110,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PGK")]
-        PGK = 112,
+        PGK = 111,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PHP")]
-        PHP = 113,
+        PHP = 112,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PKR")]
-        PKR = 114,
+        PKR = 113,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PLN")]
-        PLN = 115,
+        PLN = 114,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PYG")]
-        PYG = 116,
+        PYG = 115,
 
         [System.Runtime.Serialization.EnumMember(Value = @"QAR")]
-        QAR = 117,
+        QAR = 116,
 
         [System.Runtime.Serialization.EnumMember(Value = @"RON")]
-        RON = 118,
+        RON = 117,
 
         [System.Runtime.Serialization.EnumMember(Value = @"RSD")]
-        RSD = 119,
+        RSD = 118,
 
         [System.Runtime.Serialization.EnumMember(Value = @"RUB")]
-        RUB = 120,
+        RUB = 119,
 
         [System.Runtime.Serialization.EnumMember(Value = @"RWF")]
-        RWF = 121,
+        RWF = 120,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SAR")]
-        SAR = 122,
+        SAR = 121,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SBD")]
-        SBD = 123,
+        SBD = 122,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SCR")]
-        SCR = 124,
+        SCR = 123,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SDG")]
-        SDG = 125,
+        SDG = 124,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SEK")]
-        SEK = 126,
+        SEK = 125,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SGD")]
-        SGD = 127,
+        SGD = 126,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SHP")]
-        SHP = 128,
+        SHP = 127,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SLE")]
-        SLE = 129,
+        SLE = 128,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SOS")]
-        SOS = 130,
+        SOS = 129,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SRD")]
-        SRD = 131,
+        SRD = 130,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SSP")]
-        SSP = 132,
+        SSP = 131,
 
         [System.Runtime.Serialization.EnumMember(Value = @"STN")]
-        STN = 133,
+        STN = 132,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SVC")]
-        SVC = 134,
+        SVC = 133,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SYP")]
-        SYP = 135,
+        SYP = 134,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SZL")]
-        SZL = 136,
+        SZL = 135,
 
         [System.Runtime.Serialization.EnumMember(Value = @"THB")]
-        THB = 137,
+        THB = 136,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TJS")]
-        TJS = 138,
+        TJS = 137,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TMT")]
-        TMT = 139,
+        TMT = 138,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TND")]
-        TND = 140,
+        TND = 139,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TOP")]
-        TOP = 141,
+        TOP = 140,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TRY")]
-        TRY = 142,
+        TRY = 141,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TTD")]
-        TTD = 143,
+        TTD = 142,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TWD")]
-        TWD = 144,
+        TWD = 143,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TZS")]
-        TZS = 145,
+        TZS = 144,
 
         [System.Runtime.Serialization.EnumMember(Value = @"UAH")]
-        UAH = 146,
+        UAH = 145,
 
         [System.Runtime.Serialization.EnumMember(Value = @"UGX")]
-        UGX = 147,
+        UGX = 146,
 
         [System.Runtime.Serialization.EnumMember(Value = @"USD")]
-        USD = 148,
+        USD = 147,
 
         [System.Runtime.Serialization.EnumMember(Value = @"USN")]
-        USN = 149,
+        USN = 148,
 
         [System.Runtime.Serialization.EnumMember(Value = @"UYI")]
-        UYI = 150,
+        UYI = 149,
 
         [System.Runtime.Serialization.EnumMember(Value = @"UYU")]
-        UYU = 151,
+        UYU = 150,
 
         [System.Runtime.Serialization.EnumMember(Value = @"UYW")]
-        UYW = 152,
+        UYW = 151,
 
         [System.Runtime.Serialization.EnumMember(Value = @"UZS")]
-        UZS = 153,
+        UZS = 152,
 
         [System.Runtime.Serialization.EnumMember(Value = @"VED")]
-        VED = 154,
+        VED = 153,
 
         [System.Runtime.Serialization.EnumMember(Value = @"VES")]
-        VES = 155,
+        VES = 154,
 
         [System.Runtime.Serialization.EnumMember(Value = @"VND")]
-        VND = 156,
+        VND = 155,
 
         [System.Runtime.Serialization.EnumMember(Value = @"VUV")]
-        VUV = 157,
+        VUV = 156,
 
         [System.Runtime.Serialization.EnumMember(Value = @"WST")]
-        WST = 158,
+        WST = 157,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XAD")]
-        XAD = 159,
+        XAD = 158,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XAF")]
-        XAF = 160,
+        XAF = 159,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XAG")]
-        XAG = 161,
+        XAG = 160,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XAU")]
-        XAU = 162,
+        XAU = 161,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XBA")]
-        XBA = 163,
+        XBA = 162,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XBB")]
-        XBB = 164,
+        XBB = 163,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XBC")]
-        XBC = 165,
+        XBC = 164,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XBD")]
-        XBD = 166,
+        XBD = 165,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XCD")]
-        XCD = 167,
+        XCD = 166,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XCG")]
-        XCG = 168,
+        XCG = 167,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XDR")]
-        XDR = 169,
+        XDR = 168,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XOF")]
-        XOF = 170,
+        XOF = 169,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XPD")]
-        XPD = 171,
+        XPD = 170,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XPF")]
-        XPF = 172,
+        XPF = 171,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XPT")]
-        XPT = 173,
+        XPT = 172,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XSU")]
-        XSU = 174,
+        XSU = 173,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XTS")]
-        XTS = 175,
+        XTS = 174,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XUA")]
-        XUA = 176,
+        XUA = 175,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XXX")]
-        XXX = 177,
+        XXX = 176,
 
         [System.Runtime.Serialization.EnumMember(Value = @"YER")]
-        YER = 178,
+        YER = 177,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ZAR")]
-        ZAR = 179,
+        ZAR = 178,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ZMW")]
-        ZMW = 180,
+        ZMW = 179,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ZWG")]
-        ZWG = 181,
+        ZWG = 180,
 
     }
 
@@ -2946,31 +2966,10 @@ namespace N3O.Umbraco.Cloud.Engage.Clients
 
         [Newtonsoft.Json.JsonProperty("language", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Language? Language { get; set; }
+        public SystemLanguage? Language { get; set; }
 
         [Newtonsoft.Json.JsonProperty("timezone", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Timezone { get; set; }
-
-    }
-
-    /// <summary>
-    /// One of 'en', 'es', 'fr', 'xx'
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Language
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"en")]
-        En = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"es")]
-        Es = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"fr")]
-        Fr = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"xx")]
-        Xx = 3,
 
     }
 
@@ -3254,6 +3253,27 @@ namespace N3O.Umbraco.Cloud.Engage.Clients
 
         [System.Runtime.Serialization.EnumMember(Value = @"WH")]
         WH = 58,
+
+    }
+
+    /// <summary>
+    /// One of 'en', 'es', 'fr', 'xx'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SystemLanguage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"en")]
+        En = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"es")]
+        Es = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"fr")]
+        Fr = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"xx")]
+        Xx = 3,
 
     }
 

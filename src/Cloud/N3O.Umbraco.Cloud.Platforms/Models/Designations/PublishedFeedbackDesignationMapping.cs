@@ -15,13 +15,13 @@ public class PublishedFeedbackDesignationMapping : IMapDefinition {
     
     // Umbraco.Code.MapAll
     private void Map(FeedbackDesignationContent src, PublishedFeedbackDesignation dest, MapperContext ctx) {
-       dest.Scheme = new PublishedFeedbackScheme();
+       dest.Scheme = new PublishedDesignationFeedbackScheme();
        dest.Scheme.Id = src.Scheme.Id;
 
        dest.CustomFieldDefinitions = src.Scheme
                                         .CustomFields
                                         .OrEmpty()
-                                        .Select(ctx.Map<IFeedbackCustomFieldDefinition, PublishedCustomFieldDefinition>)
+                                        .Select(ctx.Map<IFeedbackCustomFieldDefinition, PublishedFeedbackCustomFieldDefinition>)
                                         .ToList();
 
        if (src.Scheme.HasPricing()) {

@@ -15,7 +15,7 @@ public class PublishedSponsorshipDesignationMapping : IMapDefinition {
     
     // Umbraco.Code.MapAll
     private void Map(SponsorshipDesignationContent src, PublishedSponsorshipDesignation dest, MapperContext ctx) {
-        dest.Scheme = new PublishedSponsorshipScheme();
+        dest.Scheme = new PublishedDesignationSponsorshipScheme();
         dest.Scheme.Id = src.Scheme.Id;
         dest.Components = src.Scheme.Components.OrEmpty().Select(x => ToPublishedSponsorshipComponent(ctx, x)).ToList();
         dest.AllowedDurations = src.Scheme.AllowedDurations.OrEmpty().Select(ToPublishedCommitmentDuration).ToList();
@@ -25,7 +25,7 @@ public class PublishedSponsorshipDesignationMapping : IMapDefinition {
         var component = new PublishedSponsorshipComponent();
         
         component.Name = src.Name;
-        component.Mandatory = src.Mandatory;
+        component.Required = src.Mandatory;
         component.Pricing = src.Pricing.IfNotNull(ctx.Map<IPricing, PublishedPricing>);
         
         return component;

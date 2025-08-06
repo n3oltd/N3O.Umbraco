@@ -12,7 +12,7 @@ public class ConnectPreferenceSelectionReqMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll
     private void Map(IConsentChoice src, ConnectPreferenceSelectionReq dest, MapperContext ctx) {
-        dest.Channel = src.Channel.ToEnum<Channel>();
+        dest.Channel = src.Channel.ToEnum<CommunicationChannel>();
         dest.Category = src.Category.Name;
         dest.Preference = src.Response.Value;
     }
