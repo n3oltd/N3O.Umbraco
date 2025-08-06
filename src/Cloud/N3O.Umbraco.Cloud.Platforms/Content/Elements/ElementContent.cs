@@ -42,7 +42,7 @@ public class ElementContent : UmbracoContent<ElementContent> {
     public string Label => GetValue(x => x.Label);
     public string EmbedCode => GetValue(x => x.EmbedCode);
     public CampaignContent Campaign => GetAs(x => x.Campaign);
-    public IReadOnlyDictionary<string, string> AnalyticsTags => GetConvertedValue<IEnumerable<DataListItem>, IReadOnlyDictionary<String, string>>(x => x.AnalyticsTags, x => x.ToTags());
+    public IReadOnlyDictionary<string, string> Tags => GetConvertedValue<IEnumerable<DataListItem>, IReadOnlyDictionary<string, string>>(x => x.Tags, x => x.ToTagsDictionary());
 
     public DonateButtonElementContent DonateButton { get; private set; }
     public DonationFormElementContent DonationForm { get; private set; }

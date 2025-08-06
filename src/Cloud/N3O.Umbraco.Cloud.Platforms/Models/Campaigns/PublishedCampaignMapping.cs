@@ -32,7 +32,7 @@ public class PublishedCampaignMapping : IMapDefinition {
         dest.Image = _mediaUrl.GetMediaUrl(src.Image, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
         dest.Icon = _mediaUrl.GetMediaUrl(src.Icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
         dest.Designations = src.Designations.OrEmpty().Select(ctx.Map<DesignationContent, PublishedDesignation>).ToList();
-        dest.Tags = src?.AnalyticsTags.ToPublishedAnalyticsParameters();
+        dest.Tags = src.Tags.ToPublishedTagCollection();
         
         if (src.Type == CampaignTypes.Telethon) {
             dest.Telethon = new PublishedTelethonCampaign();

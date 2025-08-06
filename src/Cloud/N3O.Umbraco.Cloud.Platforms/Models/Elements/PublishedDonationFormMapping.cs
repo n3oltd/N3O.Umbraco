@@ -33,6 +33,6 @@ public class PublishedDonationFormMapping : IMapDefinition {
             dest.Designation = ctx.Map<DesignationContent, PublishedDesignation>(defaultCampaign.DefaultDesignation);
         }
         
-        dest.Tags = src.AnalyticsTags.ToPublishedAnalyticsParameters();
+        dest.Tags = src.Tags.ToPublishedTagCollection();
     }
 }

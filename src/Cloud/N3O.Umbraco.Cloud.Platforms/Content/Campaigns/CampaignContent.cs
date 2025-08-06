@@ -48,7 +48,7 @@ public class CampaignContent : UmbracoContent<CampaignContent> {
     public string Name => Content().Name;
     public Guid Key => Content().Key;
     
-    public IReadOnlyDictionary<string, string> AnalyticsTags => GetConvertedValue<IEnumerable<DataListItem>, IReadOnlyDictionary<String, string>>(x => x.AnalyticsTags, x => x.ToTags());
+    public IReadOnlyDictionary<string, string> Tags => GetConvertedValue<IEnumerable<DataListItem>, IReadOnlyDictionary<string, string>>(x => x.Tags, x => x.ToTagsDictionary());
     public MediaWithCrops Icon => GetValue(x => x.Icon);
     public MediaWithCrops Image => GetValue(x => x.Image);
 
