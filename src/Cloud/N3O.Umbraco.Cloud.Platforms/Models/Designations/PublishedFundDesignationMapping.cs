@@ -15,7 +15,7 @@ public class PublishedFundDesignationMapping : IMapDefinition {
     
     // Umbraco.Code.MapAll
     private void Map(FundDesignationContent src, PublishedFundDesignation dest, MapperContext ctx) {
-        dest.Item = new PublishedDonationItem();
+        dest.Item = new PublishedDesignationDonationItem();
         dest.Item.Id = src.DonationItem.Id;
         dest.Item.Pricing = src.DonationItem.Pricing.IfNotNull(ctx.Map<IPricing, PublishedPricing>);
 
