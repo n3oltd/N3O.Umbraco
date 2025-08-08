@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
 using System.Net;
@@ -10,6 +11,7 @@ using Umbraco.Cms.Core.DependencyInjection;
 
 namespace N3O.Umbraco.Search.Typesense;
 
+[Order(-1)]
 public class TypesenseSearchComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddSingleton<IConfigureOptions<Config>, TypesenseOptions>();

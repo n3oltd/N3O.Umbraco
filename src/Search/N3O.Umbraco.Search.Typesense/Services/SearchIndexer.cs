@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Typesense;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
@@ -24,6 +25,19 @@ public abstract class SearchIndexer<TContent, TDocument> : ISearchIndexer
 
         var document = _searchDocumentBuilder.Build();
         var collection = TypesenseHelper.GetCollectionName<TDocument>();
+
+        var fields = new List<Field>();
+        fields.Add(new Field("timestamp", FieldType.Auto));
+        fields.Add(new Field("content", FieldType.Auto));
+        fields.Add(new Field("description", FieldType.Auto));
+        fields.Add(new Field("title", FieldType.Auto));
+        fields.Add(new Field("url", FieldType.Auto));
+        
+        var schema = new Schema(collection, fields);
+
+        await _typesenseClient.DeleteCollection(collection);
+
+        await _typesenseClient.CreateCollection(schema);
         
         await _typesenseClient.UpsertDocument(collection, document);
     }

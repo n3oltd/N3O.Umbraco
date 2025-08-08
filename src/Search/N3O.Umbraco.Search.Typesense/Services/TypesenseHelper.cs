@@ -15,4 +15,14 @@ public static class TypesenseHelper {
 
         return attribute.Name;
     }
+    
+    public static int GetCollectionVersion<TDocument>() {
+        var attribute = typeof(TDocument).GetCustomAttribute<CollectionAttribute>();
+
+        if (attribute == null) {
+            throw new Exception($"Type {typeof(TDocument).GetFriendlyName()} is missing a required {nameof(CollectionAttribute)}");
+        }
+
+        return attribute.Version;
+    }
 }
