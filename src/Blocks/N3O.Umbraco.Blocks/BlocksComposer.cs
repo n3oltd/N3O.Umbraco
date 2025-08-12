@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
 using Umbraco.Cms.Core.DependencyInjection;
@@ -11,5 +14,20 @@ public class BlocksComposer : Composer {
                     t => builder.Services.AddTransient(typeof(IBlockModule), t));
 
         builder.Services.AddTransient<IBlockPipeline, BlockPipeline>();
+        builder.Services.AddTransient<IBlocksRenderer, UmbracoBlocksRenderer>();
+        
+        ConfigureRazorTemplating(builder);
+    }
+
+    private void ConfigureRazorTemplating(IUmbracoBuilder builder) {
+        var webhostEnvironment = builder.Services.BuildServiceProvider().GetRequiredService<IWebHostEnvironment>();
+        
+        builder.Services.AddMvcCore().AddRazorRuntimeCompilation();
+        
+        builder.Services.Configure<MvcRazorRuntimeCompilationOptions>(options => {
+            options.FileProviders.Add(new PhysicalFileProvider(webhostEnvironment.ContentRootPath));
+        });
+        
+        builder.Services.AddRazorTemplating();
     }
 }

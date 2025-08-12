@@ -1,7 +1,12 @@
-﻿using N3O.Umbraco.Content;
+﻿using Microsoft.AspNetCore.Html;
+using Microsoft.Extensions.Options;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.Models.Blocks;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -12,12 +17,36 @@ public class UmbracoBlocksRenderer : BlocksRenderer<IEnumerable<IBlockReference<
     private readonly ModelsBuilderSettings _modelBuilderSettings;
     private readonly IServiceProvider _serviceProvider;
 
-    protected UmbracoBlocksRenderer(ModelsBuilderSettings modelBuilderSettings, IServiceProvider serviceProvider) {
-        _modelBuilderSettings = modelBuilderSettings;
+    public UmbracoBlocksRenderer(IOptions<ModelsBuilderSettings> modelBuilderSettings,
+                                 IServiceProvider serviceProvider) {
+        _modelBuilderSettings = modelBuilderSettings.Value;
         _serviceProvider = serviceProvider;
     }
+    
+    public override async Task<HtmlString> RenderBlocksAsync(IPublishedContent content, string propertyName) {
+        var property = GetPropertyAs(content, propertyName);
+        
+        var viewModels = GetViewModels(property).ToList();
+        var viewPaths = GetViewPaths(property);
 
-    protected override IEnumerable<IBlockViewModel> GetViewModels(IEnumerable<IBlockReference<IPublishedElement, IPublishedElement>> blockItems) {
+        if (viewModels.Count() != viewPaths.Count()) {
+            throw new Exception($"{nameof(GetViewModels)} and {nameof(GetViewPaths)} returned different numbers of items");
+        }
+
+        var html = new StringBuilder();
+
+        foreach (var (viewModel, index) in viewModels.SelectWithIndex()) {
+            var viewPath = viewPaths.ElementAt(index);
+            
+            var blockHtml = await RenderBlockAsync(viewPath, viewModel);
+            
+            html.Append(blockHtml);
+        } 
+
+        return new HtmlString(html.ToString());
+    }
+
+    private IEnumerable<IBlockViewModel> GetViewModels(IEnumerable<IBlockReference<IPublishedElement, IPublishedElement>> blockItems) {
         foreach (var blockItem in blockItems) {
             var blockModelsBuilderType = ModelsHelper.GetOrCreateModelsBuilderType(_modelBuilderSettings.ModelsNamespace,
                                                                                    blockItem.Content.ContentType.Alias);
@@ -46,7 +75,7 @@ public class UmbracoBlocksRenderer : BlocksRenderer<IEnumerable<IBlockReference<
         }
     }
 
-    protected override IEnumerable<string> GetViewPaths(IEnumerable<IBlockReference<IPublishedElement, IPublishedElement>> blockItems) {
+    private IEnumerable<string> GetViewPaths(IEnumerable<IBlockReference<IPublishedElement, IPublishedElement>> blockItems) {
         foreach (var blockItem in blockItems) {
             yield return $"/Views/Partials/Blocks/{blockItem.Content.ContentType.Alias}.cshtml";
         }
