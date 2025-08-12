@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -12,15 +13,20 @@ public class BlocksComposer : Composer {
         RegisterAll(t => t.ImplementsInterface<IBlockModule>(),
                     t => builder.Services.AddTransient(typeof(IBlockModule), t));
 
-        builder.Services.AddTransient<IBlocksRenderer, UmbracoBlocksRenderer>();
-
         builder.Services.AddTransient<IBlockPipeline, BlockPipeline>();
+        builder.Services.AddTransient<IBlocksRenderer, UmbracoBlocksRenderer>();
+        
+        ConfigureRazorPhysicalFileProvider(builder);
+    }
+
+    private void ConfigureRazorPhysicalFileProvider(IUmbracoBuilder builder) {
+        var webhostEnvironment = builder.Services.BuildServiceProvider().GetRequiredService<IWebHostEnvironment>();
         
         builder.Services.AddMvcCore().AddRazorRuntimeCompilation();
         
         builder.Services.Configure<MvcRazorRuntimeCompilationOptions>(options =>
         {
-            options.FileProviders.Add(new PhysicalFileProvider(@"D:\Development\MuslimHands.Website\src\MuslimHands.Web\"));
+            options.FileProviders.Add(new PhysicalFileProvider(webhostEnvironment.ContentRootPath));
         });
         
         builder.Services.AddRazorTemplating();
