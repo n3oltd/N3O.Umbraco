@@ -19,7 +19,7 @@ public class IndexContentsOfTypeHandler : IRequestHandler<IndexContentsOfTypeCom
     }
     
     public Task<None> Handle(IndexContentsOfTypeCommand req, CancellationToken cancellationToken) {
-        var publishedContents = req.ContentType.Run(alias => _contentLocator.All(alias), true);
+        var publishedContents = req.ContentType.Run(alias => _contentLocator.All(alias), false);
         
         foreach (var publishedContent in publishedContents) {
             _backgroundJob.EnqueueCommand<IndexContentCommand>(m => m.Add<ContentId>(publishedContent.Key.ToString()));

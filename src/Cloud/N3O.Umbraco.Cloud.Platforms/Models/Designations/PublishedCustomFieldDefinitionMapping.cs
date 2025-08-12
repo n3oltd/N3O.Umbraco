@@ -1,5 +1,4 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using Umbraco.Cms.Core.Mapping;
