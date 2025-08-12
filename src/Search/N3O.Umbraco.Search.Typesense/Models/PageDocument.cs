@@ -1,29 +1,23 @@
 ﻿using N3O.Umbraco.Search.Typesense.Attributes;
-using Newtonsoft.Json;
 using NodaTime;
 using Typesense;
 
 namespace N3O.Umbraco.Search.Typesense.Models;
 
-[Collection(Name = "Pages", Version = 1)]
+[Collection("pages")]
 public class PageDocument : SearchDocument {
-    [JsonProperty("timestamp")]
-    [SchemaField(Name = "timestamp", Type = FieldType.String)]
+    [FieldProperty("timestamp", FieldType.String)]
     public Instant Timestamp { get; set; }
     
-    [JsonProperty("content")]
-    [SchemaField(Name = "content", Type = FieldType.String)]
+    [FieldProperty("content", FieldType.String)]
     public string Content { get; set; }
     
-    [JsonProperty("description")]
-    [SchemaField(Name = "description", Type = FieldType.String)]
+    [FieldProperty("description", FieldType.String)]
     public string Description { get; set; }
     
-    [JsonProperty("title")]
-    [SchemaField(Name = "title", Type = FieldType.String)]
+    [FieldProperty("title", FieldType.String)]
     public string Title { get; set; }
     
-    [JsonProperty("url")]
-    [SchemaField(Name = "url", Type = FieldType.String)]
+    [FieldProperty("url", FieldType.String)]
     public string Url { get; set; }
 }

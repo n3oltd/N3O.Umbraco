@@ -1,5 +1,4 @@
 ﻿using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Json;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,18 +8,18 @@ namespace N3O.Umbraco.Search.Typesense;
 
 public class Searcher<TDocument> : ISearcher<TDocument> where TDocument : class {
     private readonly ITypesenseClient _typesenseClient;
-    private readonly IJsonProvider _jsonProvider;
+    private readonly ITypesenseJsonProvider _typesenseJsonProvider;
 
-    public Searcher(ITypesenseClient typesenseClient, IJsonProvider jsonProvider) {
+    public Searcher(ITypesenseClient typesenseClient, ITypesenseJsonProvider typesenseJsonProvider) {
         _typesenseClient = typesenseClient;
-        _jsonProvider = jsonProvider;
+        _typesenseJsonProvider = typesenseJsonProvider;
     }
 
     public async Task<SearchResult<TDocument>> SearchAsync(SearchParameters searchParameters,
                                                            CancellationToken cancellationToken = default) {
-        var collection = TypesenseHelper.GetCollectionName<TDocument>();
+        var collectionInfo = TypesenseHelper.GetCollection<TDocument>();
 
-        var results = await _typesenseClient.Search<object>(collection, searchParameters, cancellationToken);
+        var results = await _typesenseClient.Search<object>(collectionInfo.Name, searchParameters, cancellationToken);
 
         return ToTypedResults(results);
     }
@@ -38,7 +37,7 @@ public class Searcher<TDocument> : ISearcher<TDocument> where TDocument : class 
     }
 
     private Hit<TDocument> ToTypedHit(Hit<object> hit) {
-        var typedHit = hit.Document.IfNotNull(x => _jsonProvider.DeserializeObject<TDocument>(x.ToString()));
+        var typedHit = hit.Document.IfNotNull(x => _typesenseJsonProvider.DeserializeObject<TDocument>(x.ToString()));
         
         return new Hit<TDocument>(hit.Highlights, typedHit, hit.TextMatch, hit.VectorDistance, hit.GeoDistanceMeters);
     }

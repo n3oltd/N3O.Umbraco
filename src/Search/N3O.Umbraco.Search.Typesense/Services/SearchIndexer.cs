@@ -23,9 +23,9 @@ public abstract class SearchIndexer<TContent, TDocument> : ISearchIndexer
         await ProcessContentAsync(_searchDocumentBuilder, (TContent) content);
 
         var document = _searchDocumentBuilder.Build();
-        var collection = TypesenseHelper.GetCollectionName<TDocument>();
+        var collectionInfo = TypesenseHelper.GetCollection<TDocument>();
         
-        await _typesenseClient.UpsertDocument(collection, document);
+        await _typesenseClient.UpsertDocument(collectionInfo.Name, document);
     }
 
     protected abstract Task ProcessContentAsync(ISearchDocumentBuilder<TDocument> builder, TContent content);

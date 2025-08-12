@@ -4,6 +4,11 @@ namespace N3O.Umbraco.Search.Typesense.Attributes;
 
 [AttributeUsage(AttributeTargets.Class)]
 public class CollectionAttribute : Attribute {
-    public string Name { get; set; }
-    public int Version { get; set; } = 1;
+    public CollectionAttribute(string name, int version = 1) {
+        Name = name;
+        Version = version;
+    }
+
+    public string Name { get; }
+    public int Version { get; }
 }

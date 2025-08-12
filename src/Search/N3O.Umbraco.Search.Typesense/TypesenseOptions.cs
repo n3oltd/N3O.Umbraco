@@ -1,16 +1,16 @@
-﻿using Microsoft.Extensions.Options;
-using N3O.Umbraco.Content;
-using N3O.Umbraco.Search.Typesense.Content;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using N3O.Umbraco.Search.Typesense.Models;
+using System.Globalization;
 using Typesense.Setup;
 
 namespace N3O.Umbraco.Search.Typesense;
 
 public class TypesenseOptions : IConfigureOptions<Config> {
-    private readonly IContentCache _contentCache;
+    private readonly IConfiguration _configuration;
 
-    public TypesenseOptions(IContentCache contentCache) {
-        _contentCache = contentCache;
+    public TypesenseOptions(IConfiguration configuration) {
+        _configuration = configuration;
     }
     
     public void Configure(Config options) {
@@ -19,18 +19,16 @@ public class TypesenseOptions : IConfigureOptions<Config> {
         if (typesenseSettings != null) {
             options.ApiKey = typesenseSettings.ApiKey;
             options.Nodes = [
-                new Node(typesenseSettings.Node, "8108", "https")
+                new Node(typesenseSettings.Node, typesenseSettings.Port.ToString(CultureInfo.InvariantCulture), "https")
             ];
         }
     }
     
     private TypesenseSettings GetTypesenseSettings() {
-        var settingsContent = _contentCache.Single<TypesenseSettingsContent>();
-    
-        if (settingsContent != null) {
-            return new TypesenseSettings(settingsContent.ApiKey, settingsContent.Node);
-        }
+        var typesenseSettings = new TypesenseSettings();
+        
+        _configuration.GetSection(TypesenseConstants.Configuration.Section).Bind(typesenseSettings);
 
-        return null;
+        return typesenseSettings;
     }
 }

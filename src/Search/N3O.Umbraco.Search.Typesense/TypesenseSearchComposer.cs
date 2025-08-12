@@ -15,6 +15,7 @@ public class TypesenseSearchComposer : Composer {
         builder.Services.AddSingleton<IConfigureOptions<Config>, TypesenseOptions>();
         builder.Services.AddTransient(typeof(ISearchDocumentBuilder<>), typeof(SearchDocumentBuilder<>));
         builder.Services.AddTransient(typeof(ISearcher<>), typeof(Searcher<>));
+        builder.Services.AddSingleton<ITypesenseJsonProvider, TypesenseJsonProvider>();
         
         builder.Services
                .AddHttpClient(nameof(TypesenseClient), client => {

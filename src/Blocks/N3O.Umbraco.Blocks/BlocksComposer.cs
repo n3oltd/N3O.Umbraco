@@ -16,16 +16,15 @@ public class BlocksComposer : Composer {
         builder.Services.AddTransient<IBlockPipeline, BlockPipeline>();
         builder.Services.AddTransient<IBlocksRenderer, UmbracoBlocksRenderer>();
         
-        ConfigureRazorPhysicalFileProvider(builder);
+        ConfigureRazorTemplating(builder);
     }
 
-    private void ConfigureRazorPhysicalFileProvider(IUmbracoBuilder builder) {
+    private void ConfigureRazorTemplating(IUmbracoBuilder builder) {
         var webhostEnvironment = builder.Services.BuildServiceProvider().GetRequiredService<IWebHostEnvironment>();
         
         builder.Services.AddMvcCore().AddRazorRuntimeCompilation();
         
-        builder.Services.Configure<MvcRazorRuntimeCompilationOptions>(options =>
-        {
+        builder.Services.Configure<MvcRazorRuntimeCompilationOptions>(options => {
             options.FileProviders.Add(new PhysicalFileProvider(webhostEnvironment.ContentRootPath));
         });
         
