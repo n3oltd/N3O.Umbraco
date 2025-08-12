@@ -19,12 +19,18 @@ public class TypesenseOptions : IConfigureOptions<Config> {
         if (typesenseSettings != null) {
             options.ApiKey = typesenseSettings.ApiKey;
             options.Nodes = [
-                new Node(typesenseSettings.Node, "443", "https")
+                new Node(typesenseSettings.Node, "8108", "https")
             ];
         }
     }
     
     private TypesenseSettings GetTypesenseSettings() {
-        return new TypesenseSettings("pvFhlhqNF3JuCL2R2WTuNwIE31LB0kVu", "4v023sbqgelyak1zp-1.a1.typesense.net");
+        var settingsContent = _contentCache.Single<TypesenseSettingsContent>();
+    
+        if (settingsContent != null) {
+            return new TypesenseSettings(settingsContent.ApiKey, settingsContent.Node);
+        }
+
+        return null;
     }
 }
