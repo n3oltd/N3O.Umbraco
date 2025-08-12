@@ -15,7 +15,6 @@ using System.Threading.Tasks;
 using Typesense;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Search.Typesense.Extensions;
 
