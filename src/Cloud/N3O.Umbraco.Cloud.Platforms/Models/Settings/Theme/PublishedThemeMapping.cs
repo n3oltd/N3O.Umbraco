@@ -1,10 +1,20 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Media;
+using System;
 using Umbraco.Cms.Core.Mapping;
+using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class PublishedThemeMapping : IMapDefinition {
+    private readonly IMediaUrl _mediaUrl;
+
+    public PublishedThemeMapping(IMediaUrl mediaUrl) {
+        _mediaUrl = mediaUrl;
+    }
+    
     public void DefineMaps(IUmbracoMapper mapper) {
         mapper.Define<ThemeSettingsContent, PublishedTheme>((_, _) => new PublishedTheme(), Map);
     }
@@ -40,5 +50,11 @@ public class PublishedThemeMapping : IMapDefinition {
         dest.Colors.Chart5 = src.Chart5;
         dest.Colors.Popover = src.Popover;
         dest.Colors.PopoverForeground = src.PopoverForeground;
+        
+        dest.IconBackground  = _mediaUrl.GetMediaUrl(src.IconBackground, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
+        dest.IconForeground  = _mediaUrl.GetMediaUrl(src.IconForeground, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
+        dest.IconOnly  = _mediaUrl.GetMediaUrl(src.IconOnly, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
+        dest.IconSplash  = _mediaUrl.GetMediaUrl(src.IconSplash, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
+        dest.IconSplashDark  = _mediaUrl.GetMediaUrl(src.IconSplashDark, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
     }
 }
