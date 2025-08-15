@@ -53,7 +53,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
         public ConnectClient(System.Net.Http.HttpClient httpClient)
     #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
-            BaseUrl = "/";
+            BaseUrl = "/eu1/api/connect/";
             _httpClient = httpClient;
             Initialize();
         }
@@ -1896,23 +1896,11 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
         [Newtonsoft.Json.JsonProperty("headingFontFamily", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string HeadingFontFamily { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("iconBackground", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Uri IconBackground { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("iconForeground", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Uri IconForeground { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("iconOnly", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Uri IconOnly { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("iconSplash", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Uri IconSplash { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("iconSplashDark", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Uri IconSplashDark { get; set; }
-
         [Newtonsoft.Json.JsonProperty("colors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public PublishedThemeColors Colors { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("mobileApp", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedThemeMobileApp MobileApp { get; set; }
 
     }
 
@@ -1990,6 +1978,26 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
         [Newtonsoft.Json.JsonProperty("popoverForeground", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string PopoverForeground { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedThemeMobileApp
+    {
+        [Newtonsoft.Json.JsonProperty("iconBackground", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Uri IconBackground { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("iconForeground", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Uri IconForeground { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("iconOnly", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Uri IconOnly { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("iconSplash", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Uri IconSplash { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("iconSplashDark", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Uri IconSplashDark { get; set; }
 
     }
 

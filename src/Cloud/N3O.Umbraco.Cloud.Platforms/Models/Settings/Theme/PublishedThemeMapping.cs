@@ -51,10 +51,11 @@ public class PublishedThemeMapping : IMapDefinition {
         dest.Colors.Popover = src.Popover;
         dest.Colors.PopoverForeground = src.PopoverForeground;
         
-        dest.IconBackground  = _mediaUrl.GetMediaUrl(src.IconBackground, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
-        dest.IconForeground  = _mediaUrl.GetMediaUrl(src.IconForeground, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
-        dest.IconOnly  = _mediaUrl.GetMediaUrl(src.IconOnly, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
-        dest.IconSplash  = _mediaUrl.GetMediaUrl(src.IconSplash, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
-        dest.IconSplashDark  = _mediaUrl.GetMediaUrl(src.IconSplashDark, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
+        dest.MobileApp = new PublishedThemeMobileApp();
+        dest.MobileApp.IconBackground  = _mediaUrl.GetMediaUrl(src.IconBackground, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
+        dest.MobileApp.IconForeground  = _mediaUrl.GetMediaUrl(src.IconForeground, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
+        dest.MobileApp.IconOnly  = _mediaUrl.GetMediaUrl(src.IconOnly, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
+        dest.MobileApp.IconSplash  = _mediaUrl.GetMediaUrl(src.IconSplash, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
+        dest.MobileApp.IconSplashDark  = _mediaUrl.GetMediaUrl(src.IconSplashDark, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
     }
 }
