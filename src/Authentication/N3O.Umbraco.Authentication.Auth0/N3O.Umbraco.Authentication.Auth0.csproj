@@ -34,12 +34,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Auth0.AuthenticationApi" Version="7.39.0" />
-        <PackageReference Include="Auth0.ManagementApi" Version="7.39.0" />
+        <PackageReference Include="Auth0.AuthenticationApi" Version="7.40.0" />
+        <PackageReference Include="Auth0.ManagementApi" Version="7.40.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.17" />
-        <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.12.1" />
-        <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.12.1" />
-        <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.12.1" />
+        <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.14.0" />
+        <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.14.0" />
+        <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.14.0" />
     </ItemGroup>
 
     <ItemGroup>
