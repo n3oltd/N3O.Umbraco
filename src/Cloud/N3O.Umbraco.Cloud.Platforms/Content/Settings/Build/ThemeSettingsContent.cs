@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Content;
+using Umbraco.Cms.Core.Models;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
@@ -32,4 +33,10 @@ public class ThemeSettingsContent : UmbracoContent<ThemeSettingsContent> {
 	public string Ring  => GetValue(x => x.Ring);
 	public string Secondary  => GetValue(x => x.Secondary);
 	public string SecondaryForeground  => GetValue(x => x.SecondaryForeground);
+	
+	public MediaWithCrops IconBackground => GetValue(x => x.IconBackground);
+	public MediaWithCrops IconForeground => GetValue(x => x.IconForeground);
+	public MediaWithCrops IconOnly => GetValue(x => x.IconOnly);
+	public MediaWithCrops IconSplash => GetValue(x => x.IconSplash);
+	public MediaWithCrops IconSplashDark => GetValue(x => x.IconSplashDark);
 }

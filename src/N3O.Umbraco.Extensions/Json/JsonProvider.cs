@@ -11,7 +11,11 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Json;
 
-public class JsonProvider : IJsonProvider {
+public class JsonProvider : JsonProvider<JsonContractResolver> {
+    public JsonProvider(IEnumerable<JsonConverter> jsonConverters) : base(jsonConverters) { }
+}
+
+public class JsonProvider<TContractResolver> : IJsonProvider where TContractResolver : JsonContractResolver, new() {
     private readonly IReadOnlyList<JsonConverter> _jsonConverters;
 
     public JsonProvider(IEnumerable<JsonConverter> jsonConverters) {
@@ -19,7 +23,7 @@ public class JsonProvider : IJsonProvider {
     }
 
     public void ApplySettings(JsonSerializerSettings serializerOptions) {
-        serializerOptions.ContractResolver = new JsonContractResolver();
+        serializerOptions.ContractResolver = new TContractResolver();
         serializerOptions.Formatting = Formatting.Indented;
         serializerOptions.NullValueHandling = NullValueHandling.Include;
 

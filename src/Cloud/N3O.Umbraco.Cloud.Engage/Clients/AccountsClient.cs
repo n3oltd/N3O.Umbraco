@@ -3071,7 +3071,7 @@ namespace N3O.Umbraco.Cloud.Engage.Clients
     }
 
     /// <summary>
-    /// One of 'AC', 'AL', 'AS', 'AT', 'BD', 'BP', 'BX', 'CA', 'CC', 'CF', 'CL', 'CM', 'CO', 'CR', 'CS', 'DD', 'DE', 'DF', 'DI', 'DN', 'DQ', 'DR', 'DS', 'DT', 'EM', 'FB', 'FO', 'FS', 'HH', 'LG', 'LH', 'LS', 'OB', 'PC', 'PL', 'PM', 'PR', 'RC', 'RF', 'RG', 'RI', 'RP', 'SB', 'SC', 'SG', 'SH', 'SM', 'SP', 'SS', 'TC', 'TD', 'TG', 'TI', 'TK', 'TM', 'TR', 'WA', 'WC', 'WH'
+    /// One of 'AC', 'AL', 'AS', 'AT', 'BD', 'BP', 'BX', 'CA', 'CC', 'CF', 'CL', 'CM', 'CO', 'CR', 'CS', 'DD', 'DE', 'DF', 'DI', 'DN', 'DQ', 'DR', 'DS', 'DT', 'EM', 'FB', 'FO', 'FS', 'HH', 'LG', 'LH', 'LS', 'OB', 'PC', 'PL', 'PM', 'PR', 'RC', 'RF', 'RG', 'RI', 'RP', 'SB', 'SC', 'SG', 'SH', 'SM', 'SP', 'SS', 'TC', 'TD', 'TG', 'TI', 'TK', 'TM', 'TR', 'WC', 'WH', 'WM'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum ReferenceType
@@ -3245,14 +3245,14 @@ namespace N3O.Umbraco.Cloud.Engage.Clients
         [System.Runtime.Serialization.EnumMember(Value = @"TR")]
         TR = 55,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"WA")]
-        WA = 56,
-
         [System.Runtime.Serialization.EnumMember(Value = @"WC")]
-        WC = 57,
+        WC = 56,
 
         [System.Runtime.Serialization.EnumMember(Value = @"WH")]
-        WH = 58,
+        WH = 57,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"WM")]
+        WM = 58,
 
     }
 
