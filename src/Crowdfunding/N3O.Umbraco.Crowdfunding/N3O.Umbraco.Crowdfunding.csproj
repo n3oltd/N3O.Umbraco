@@ -49,6 +49,5 @@
 
     <ItemGroup>
       <PackageReference Include="Handlebars.Net" Version="2.1.6" />
-      <PackageReference Include="Slugify.Core" Version="5.1.1" />
     </ItemGroup>
 </Project>
