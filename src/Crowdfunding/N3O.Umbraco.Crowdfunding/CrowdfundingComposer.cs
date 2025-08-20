@@ -30,18 +30,5 @@ public class CrowdfundingComposer : Composer {
         
         RegisterAll(t => t.ImplementsInterface<ICrowdfundingPage>(),
                     t => builder.Services.AddTransient(typeof(ICrowdfundingPage), t));
-
-        RegisterSlugHelper(builder);
-    }
-
-    private void RegisterSlugHelper(IUmbracoBuilder builder) {
-        builder.Services.AddSingleton<ISlugHelper>(_ => {
-            var config = new SlugHelperConfiguration();
-            config.DeniedCharactersRegex = new Regex(CrowdfundingConstants.Routes.Slugs.DeniedCharacters);
-            config.CollapseDashes = true;
-            config.ForceLowerCase = true;
-
-            return new SlugHelper(config);
-        });
     }
 }
