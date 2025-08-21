@@ -21,6 +21,13 @@ public class AllocationsConstants {
         
         public static class DonationOption {
             public const string ContentType = "donationOption";
+            
+            public static class Properties {
+                public const string Dimension1 = "dimension1";
+                public const string Dimension2 = "dimension2";
+                public const string Dimension3 = "dimension3";
+                public const string Dimension4 = "dimension4";
+            }
         }
         
         public static class FeedbackCustomField {
@@ -37,6 +44,8 @@ public class AllocationsConstants {
         }
         
         public static class FeedbackScheme {
+            public const string ContentType = "scheme";
+            
             public static class Properties {
                 public const string Dimension1 = "dimension1Options";
                 public const string Dimension2 = "dimension2Options";
@@ -88,6 +97,10 @@ public class AllocationsConstants {
         public static class UpsellOffer {
             public static class Properties {
                 public const string DonationItem = "donationItem";
+                public const string Dimension1 = "dimension1";
+                public const string Dimension2 = "dimension2";
+                public const string Dimension3 = "dimension3";
+                public const string Dimension4 = "dimension4";
             }
         }
     }

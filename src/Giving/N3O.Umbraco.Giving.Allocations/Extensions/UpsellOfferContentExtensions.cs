@@ -40,7 +40,7 @@ public static class UpsellOfferContentExtensions {
 
         return new Allocation(AllocationTypes.Fund,
                               amount,
-                              upsellOfferContent.FundDimensions,
+                              upsellOfferContent.GetFundDimensions(lookups),
                               new FundAllocation(upsellOfferContent.GetDonationItem(lookups)),
                               null,
                               null,
@@ -88,7 +88,7 @@ public static class UpsellOfferContentExtensions {
 
         if (upsellOfferContent.GetDonationItem(lookups).HasPricing()) {
             price = new Money((await priceCalculator.InCurrencyAsync(upsellOfferContent.GetDonationItem(lookups).Pricing,
-                                                                     upsellOfferContent.FundDimensions,
+                                                                     upsellOfferContent.GetFundDimensions(lookups),
                                                                      currency)).Amount,
                               currency);
         } else if (upsellOfferContent.FixedAmount.GetValueOrDefault() != default) {

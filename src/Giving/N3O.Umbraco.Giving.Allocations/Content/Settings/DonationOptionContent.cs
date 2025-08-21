@@ -3,11 +3,12 @@ using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
+using N3O.Umbraco.Lookups;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Giving.Allocations.Content;
 
-public class DonationOptionContent : UmbracoContent<DonationOptionContent>, IFundDimensionValues {
+public class DonationOptionContent : UmbracoContent<DonationOptionContent> {
     private static readonly string FundDonationOptionAlias = AliasHelper<FundDonationOptionContent>.ContentTypeAlias();
     private static readonly string SponsorshipDonationOptionAlias = AliasHelper<SponsorshipDonationOptionContent>.ContentTypeAlias();
     private static readonly string FeedbackDonationOptionAlias = AliasHelper<FeedbackDonationOptionContent>.ContentTypeAlias();
@@ -41,10 +42,6 @@ public class DonationOptionContent : UmbracoContent<DonationOptionContent>, IFun
     public string Name => Content()?.Name;
     public string CampaignName => GetCampaignName();
     public GivingType DefaultGivingType => GetValue(x => x.DefaultGivingType);
-    public FundDimension1Value Dimension1 => GetAs(x => x.Dimension1);
-    public FundDimension2Value Dimension2 => GetAs(x => x.Dimension2);
-    public FundDimension3Value Dimension3 => GetAs(x => x.Dimension3);
-    public FundDimension4Value Dimension4 => GetAs(x => x.Dimension4);
     public bool HideQuantity => GetValue(x => x.HideQuantity);
     public bool HideDonation => GetValue(x => x.HideDonation);
     public bool HideRegularGiving => GetValue(x => x.HideRegularGiving);
@@ -52,22 +49,27 @@ public class DonationOptionContent : UmbracoContent<DonationOptionContent>, IFun
     public FundDonationOptionContent Fund { get; private set; }
     public SponsorshipDonationOptionContent Sponsorship { get; private set; }
     public FeedbackDonationOptionContent Feedback { get; private set; }
+    
+    public FundDimension1Value GetDimension1(ILookups lookups) => GetLookup<FundDimension1Value>(lookups, AllocationsConstants.Aliases.DonationOption.Properties.Dimension1);
+    public FundDimension2Value GetDimension2(ILookups lookups) => GetLookup<FundDimension2Value>(lookups, AllocationsConstants.Aliases.DonationOption.Properties.Dimension2);
+    public FundDimension3Value GetDimension3(ILookups lookups) => GetLookup<FundDimension3Value>(lookups, AllocationsConstants.Aliases.DonationOption.Properties.Dimension3);
+    public FundDimension4Value GetDimension4(ILookups lookups) => GetLookup<FundDimension4Value>(lookups, AllocationsConstants.Aliases.DonationOption.Properties.Dimension4);
 
-    public IFundDimensionOptions GetFundDimensionOptions() {
-        var holdFundDimensionOptions = (IHoldFundDimensionOptions) Fund?.DonationItem ??
-                                       (IHoldFundDimensionOptions) Sponsorship?.Scheme ??
-                                       (IHoldFundDimensionOptions) Feedback?.Scheme;
+    public IFundDimensionOptions GetFundDimensionOptions(ILookups lookups) {
+        var holdFundDimensionOptions = (IHoldFundDimensionOptions) Fund?.GetDonationItem(lookups) ??
+                                       (IHoldFundDimensionOptions) Sponsorship?.GetScheme(lookups) ??
+                                       (IHoldFundDimensionOptions) Feedback?.GetScheme(lookups);
 
         return holdFundDimensionOptions.FundDimensionOptions;
     }
 
-    public bool IsValid() {
+    public bool IsValid(ILookups lookups) {
         if (Type == AllocationTypes.Fund) {
-            return Fund.IsValid();
+            return Fund.IsValid(lookups);
         } else if (Type == AllocationTypes.Sponsorship) {
-            return Sponsorship.IsValid();
+            return Sponsorship.IsValid(lookups);
         } else if (Type == AllocationTypes.Feedback) {
-            return Feedback.IsValid();
+            return Feedback.IsValid(lookups);
         } else {
             throw UnrecognisedValueException.For(Type);
         }

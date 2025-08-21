@@ -54,8 +54,7 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
         return StringLocalizer.Instance.Get(GetType().GetFriendlyName(), alias, text);
     }
 
-    protected TLookup GetLookup<TLookup>(ILookups lookups, string propertyAlias)
-        where TLookup : ILookup {
+    protected TLookup GetLookup<TLookup>(ILookups lookups, string propertyAlias) where TLookup : ILookup {
         var propertyValue = Content().GetProperty(propertyAlias)?.GetValue();
 
         TLookup lookup;
