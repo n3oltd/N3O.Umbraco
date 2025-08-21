@@ -14,10 +14,10 @@ namespace N3O.Umbraco.Crowdfunding.Content;
 public class CampaignGoalOptionElement : UmbracoElement<CampaignGoalOptionElement>, IFundDimensionOptions {
     [UmbracoProperty(CrowdfundingConstants.Goal.Properties.Name)]
     public string Name => GetValue(x => x.Name);
-    public IEnumerable<FundDimension1Value> FundDimension1 => GetPickedAs(x => x.FundDimension1);
-    public IEnumerable<FundDimension2Value> FundDimension2 => GetPickedAs(x => x.FundDimension2);
-    public IEnumerable<FundDimension3Value> FundDimension3 => GetPickedAs(x => x.FundDimension3);
-    public IEnumerable<FundDimension4Value> FundDimension4 => GetPickedAs(x => x.FundDimension4);
+    public IEnumerable<FundDimension1Value> FundDimension1 => GetValue(x => x.FundDimension1);
+    public IEnumerable<FundDimension2Value> FundDimension2 => GetValue(x => x.FundDimension2);
+    public IEnumerable<FundDimension3Value> FundDimension3 => GetValue(x => x.FundDimension3);
+    public IEnumerable<FundDimension4Value> FundDimension4 => GetValue(x => x.FundDimension4);
     public IEnumerable<TagContent> Tags => GetPickedAs(x => x.Tags);
     public IEnumerable<PriceHandleElement> PriceHandles => GetNestedAs(x => x.PriceHandles);
     
