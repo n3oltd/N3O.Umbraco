@@ -12,10 +12,6 @@ namespace N3O.Umbraco.Giving.Allocations.Content;
 
 public class UpsellOfferValidator : ContentValidator {
     private static readonly string UpsellOfferContentContentTypeAlias = AliasHelper<UpsellOfferContent>.ContentTypeAlias();
-    private static readonly string Dimension1Alias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.Dimension1);
-    private static readonly string Dimension2Alias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.Dimension2);
-    private static readonly string Dimension3Alias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.Dimension3);
-    private static readonly string Dimension4Alias = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.Dimension4);
     private static readonly string FixedAmount = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.FixedAmount);
     private static readonly string GivingType = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.GivingType);
     private static readonly string PriceHandles = AliasHelper<UpsellOfferContent>.PropertyAlias(x => x.PriceHandles);
@@ -42,10 +38,10 @@ public class UpsellOfferValidator : ContentValidator {
     }
 
     private void ValidateFundDimensions(ContentProperties content, DonationItem donationItem) {
-        DimensionAllowed(content, donationItem.FundDimensionOptions.Dimension1, Dimension1Alias);
-        DimensionAllowed(content, donationItem.FundDimensionOptions.Dimension2, Dimension2Alias);
-        DimensionAllowed(content, donationItem.FundDimensionOptions.Dimension3, Dimension3Alias);
-        DimensionAllowed(content, donationItem.FundDimensionOptions.Dimension4, Dimension4Alias);
+        DimensionAllowed(content, donationItem.FundDimensionOptions.Dimension1, AllocationsConstants.Aliases.UpsellOffer.Properties.Dimension1);
+        DimensionAllowed(content, donationItem.FundDimensionOptions.Dimension2, AllocationsConstants.Aliases.UpsellOffer.Properties.Dimension2);
+        DimensionAllowed(content, donationItem.FundDimensionOptions.Dimension3, AllocationsConstants.Aliases.UpsellOffer.Properties.Dimension3);
+        DimensionAllowed(content, donationItem.FundDimensionOptions.Dimension4, AllocationsConstants.Aliases.UpsellOffer.Properties.Dimension4);
     }
     
     private void ValidateGivingType(ContentProperties content, DonationItem donationItem) {
@@ -84,7 +80,7 @@ public class UpsellOfferValidator : ContentValidator {
     private void DimensionAllowed<T>(ContentProperties content, IEnumerable<T> allowedValues, string propertyAlias)
         where T : FundDimensionValue<T> {
         var property = content.GetPropertyByAlias(propertyAlias);
-        var value = property.IfNotNull(x => ContentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(x).As<T>());
+        var value = property.IfNotNull(x => ContentHelper.GetLookupValue<T>(_lookups, x));
 
         if (value != null && allowedValues != null && !allowedValues.Contains(value)) {
             ErrorResult(property, $"{value.Name} is not a permitted fund dimension value");

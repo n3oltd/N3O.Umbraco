@@ -9,12 +9,11 @@ using System.Linq;
 namespace N3O.Umbraco.Giving.Allocations.Content;
 
 public class FundDonationOptionValidator : DonationOptionValidator<FundDonationOptionContent> {
-    private static readonly string DonationItemAlias = AliasHelper<FundDonationOptionContent>.PropertyAlias(x => x.DonationItem);
     private static readonly string DonationPriceHandlesAlias = AliasHelper<FundDonationOptionContent>.PropertyAlias(x => x.DonationPriceHandles);
     private static readonly string RegularGivingPriceHandlesAlias = AliasHelper<FundDonationOptionContent>.PropertyAlias(x => x.RegularGivingPriceHandles);
     private readonly ILookups _lookups;
 
-    public FundDonationOptionValidator(IContentHelper contentHelper, ILookups lookups) : base(contentHelper) {
+    public FundDonationOptionValidator(IContentHelper contentHelper, ILookups lookups) : base(contentHelper, lookups) {
         _lookups = lookups;
     }
 
@@ -34,7 +33,7 @@ public class FundDonationOptionValidator : DonationOptionValidator<FundDonationO
     }
 
     private DonationItem GetDonationItem(ContentProperties content) {
-        var donationItem = content.GetPropertyByAlias(DonationItemAlias)
+        var donationItem = content.GetPropertyByAlias(AllocationsConstants.Aliases.DonationItem.ContentType)
                                   .IfNotNull(x => ContentHelper.GetLookupValue<DonationItem>(_lookups, x));
 
         return donationItem;
