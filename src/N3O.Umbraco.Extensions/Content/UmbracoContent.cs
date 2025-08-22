@@ -62,7 +62,7 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
         if (propertyValue is TLookup lookupValue) {
             lookup =  lookupValue;
         } else if (propertyValue is IPublishedContent publishedContent) {
-            lookup = lookups.FindById<TLookup>(LookupContent.GetId(publishedContent));
+            lookup = lookups.FindByName<TLookup>(publishedContent.Name).Single();
         } else {
             throw new Exception("Lookup properties must either be a datalist or picker");
         }
