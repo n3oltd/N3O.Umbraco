@@ -57,6 +57,10 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
     protected TLookup GetLookup<TLookup>(ILookups lookups, string propertyAlias) where TLookup : ILookup {
         var propertyValue = Content().GetProperty(propertyAlias)?.GetValue();
 
+        if (propertyValue == null) {
+            return default;
+        }
+
         TLookup lookup;
         
         if (propertyValue is TLookup lookupValue) {
