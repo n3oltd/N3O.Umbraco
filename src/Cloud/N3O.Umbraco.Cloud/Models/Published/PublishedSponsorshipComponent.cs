@@ -11,7 +11,7 @@ public class PublishedSponsorshipComponent : IHoldPricing {
     public PublishedPricing Pricing { get; set; }
 
     public SponsorshipComponent GetSponsorshipComponent() {
-        return new SponsorshipComponent(Name.Camelize(), Name, null, Required, Pricing.GetPricing());
+        return new SponsorshipComponent(Name, Name, null, Required, Pricing.GetPricing());
     }
     
     [JsonIgnore]
