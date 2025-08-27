@@ -45,6 +45,7 @@ export interface AllocationReq {
     feedback?: FeedbackAllocationReq | undefined;
     fund?: FundAllocationReq | undefined;
     sponsorship?: SponsorshipAllocationReq | undefined;
+    pledgeUrl?: string | undefined;
     upsellOfferId?: string | undefined;
     [key: string]: any;
 }
@@ -68,30 +69,42 @@ export interface FeedbackAllocationReq {
     scheme?: string | undefined;
     customFields?: FeedbackNewCustomFieldsReq | undefined;
 }
-export interface FeedbackCustomFieldDefinitionElement {
+export interface FundDimensionOptions {
+    dimension1?: string[] | undefined;
+    dimension2?: string[] | undefined;
+    dimension3?: string[] | undefined;
+    dimension4?: string[] | undefined;
+}
+export interface Pricing {
+    price?: Price | undefined;
+    rules?: PricingRule[] | undefined;
+}
+export interface Price {
+    amount?: number;
+    locked?: boolean;
+}
+export interface PricingRule {
+    price?: Price | undefined;
+    fundDimensions?: FundDimensionValues | undefined;
+}
+export interface FundDimensionValues {
+    dimension1?: string | undefined;
+    dimension2?: string | undefined;
+    dimension3?: string | undefined;
+    dimension4?: string | undefined;
+}
+export interface FeedbackCustomFieldDefinition {
     type?: FeedbackCustomFieldType | undefined;
+    alias?: string | undefined;
     name?: string | undefined;
     required?: boolean;
     textMaxLength?: number | undefined;
-    alias?: string | undefined;
 }
 /** One of 'bool', 'date', 'text' */
 export declare enum FeedbackCustomFieldType {
     Bool = "bool",
     Date = "date",
     Text = "text"
-}
-export interface PriceContent {
-    amount?: number;
-    locked?: boolean;
-}
-export interface PricingRuleElement {
-    amount?: number;
-    locked?: boolean;
-    dimension1?: string | undefined;
-    dimension2?: string | undefined;
-    dimension3?: string | undefined;
-    dimension4?: string | undefined;
 }
 export interface FeedbackNewCustomFieldsReq {
     entries?: FeedbackNewCustomFieldReq[] | undefined;

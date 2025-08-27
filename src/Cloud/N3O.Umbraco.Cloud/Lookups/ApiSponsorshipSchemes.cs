@@ -36,7 +36,7 @@ public class ApiSponsorshipSchemes : ApiLookupsCollection<SponsorshipScheme> {
                                                           publishedSponsorshipScheme.AllowedGivingTypes,
                                                           publishedSponsorshipScheme.AllowedDurations.Select(x => StaticLookups.FindById<SponsorshipDuration>(x.Id)).ExceptNull(),
                                                           publishedSponsorshipScheme.FundDimensionOptions.IfNotNull(x => new FundDimensionOptions(x)),
-                                                          publishedSponsorshipScheme.Components.Select(x => x.GetSponsorshipComponent()));
+                                                          publishedSponsorshipScheme.Components.Select(x => x.GetSponsorshipComponent(publishedSponsorshipScheme.Id)));
             
             sponsorshipSchemes.Add(sponsorshipScheme);
         }
