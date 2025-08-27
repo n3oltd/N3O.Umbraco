@@ -1,22 +1,22 @@
 using FluentValidation;
-using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Localization;
+using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Validation;
 using System.Linq;
 
 namespace N3O.Umbraco.Giving.Allocations.Models;
 
 public class SponsorshipAllocationReqValidator : ModelValidator<SponsorshipAllocationReq> {
-    public SponsorshipAllocationReqValidator(IFormatter formatter, IContentLocator contentLocator) : base(formatter) {
+    public SponsorshipAllocationReqValidator(IFormatter formatter, ILookups lookups) : base(formatter) {
         RuleFor(x => x.Scheme)
             .NotNull()
             .WithMessage(Get<Strings>(s => s.SpecifyScheme));
 
         RuleFor(x => x.Components)
-            .Must((req, x) => x.OrEmpty().All(c => c.Component.GetSponsorshipScheme(contentLocator) == req.Scheme))
-            .When(x => x.Components.All(y => y.Component.HasValue(c => c.GetSponsorshipScheme(contentLocator))))
+            .Must((req, x) => x.OrEmpty().All(c => c.Component.GetSponsorshipScheme(lookups) == req.Scheme))
+            .When(x => x.Components.All(y => y.Component.HasValue(c => c.GetSponsorshipScheme(lookups))))
             .WithMessage(Get<Strings>(s => s.InvalidComponents));
 
         RuleFor(x => x.Components)
