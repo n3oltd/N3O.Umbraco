@@ -116,7 +116,7 @@ public class CheckoutWebhookTransform : WebhookTransform {
         var reference = (string) jObject["reference"]["text"];
         
         foreach (var allocation in allocations.OrEmpty().Where(x => x.Type == AllocationTypes.Feedback)) {
-            var schemeKey = $"{givingType.Id}{allocation.Feedback.Scheme.Id.Pascalize()}Feedbacks";
+            var schemeKey = $"{givingType.Id}{allocation.Feedback.Scheme.Name.Pascalize()}Feedbacks";
 
             if (!jObject.ContainsKey(globalKey)) {
                 jObject[globalKey] = new JArray();
@@ -149,7 +149,7 @@ public class CheckoutWebhookTransform : WebhookTransform {
         var reference = (string) jObject["reference"]["text"];
         
         foreach (var allocation in allocations.OrEmpty().Where(x => x.Type == AllocationTypes.Sponsorship)) {
-            var schemeKey = $"{givingType.Id}{allocation.Sponsorship.Scheme.Id.Pascalize()}Sponsorships";
+            var schemeKey = $"{givingType.Id}{allocation.Sponsorship.Scheme.Name.Pascalize()}Sponsorships";
 
             if (!jObject.ContainsKey(globalKey)) {
                 jObject[globalKey] = new JArray();
