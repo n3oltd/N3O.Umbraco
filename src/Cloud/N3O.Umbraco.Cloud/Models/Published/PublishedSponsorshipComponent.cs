@@ -10,8 +10,13 @@ public class PublishedSponsorshipComponent : IHoldPricing {
     public bool Required { get; set; }
     public PublishedPricing Pricing { get; set; }
 
-    public SponsorshipComponent GetSponsorshipComponent() {
-        return new SponsorshipComponent(Name.Camelize(), Name, null, Required, Pricing.GetPricing());
+    public SponsorshipComponent GetSponsorshipComponent(string sponsorshipSchemeId) {
+        return new SponsorshipComponent(Name.Camelize(),
+                                        Name,
+                                        null,
+                                        sponsorshipSchemeId,
+                                        Required,
+                                        Pricing.GetPricing());
     }
     
     [JsonIgnore]

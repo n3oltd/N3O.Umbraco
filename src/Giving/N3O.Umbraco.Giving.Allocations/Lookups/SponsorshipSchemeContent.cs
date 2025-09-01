@@ -14,7 +14,7 @@ using Umbraco.Cms.Core.Web;
 namespace N3O.Umbraco.Giving.Allocations.Lookups;
 
 public class SponsorshipSchemeContent :
-    LookupContent<SponsorshipSchemeContent>, IHoldAllowedGivingTypes, IHoldFundDimensionOptions {
+    UmbracoContent<SponsorshipSchemeContent>, IHoldAllowedGivingTypes, IHoldFundDimensionOptions {
     public IEnumerable<GivingType> AllowedGivingTypes => GetValue(x => x.AllowedGivingTypes);
     public IEnumerable<SponsorshipDuration> AllowedDurations => GetValue(x => x.AllowedDurations);
 

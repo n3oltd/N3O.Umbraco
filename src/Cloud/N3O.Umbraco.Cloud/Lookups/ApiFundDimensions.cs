@@ -42,7 +42,7 @@ public class ApiFundDimension1 : ApiFundDimensions<FundDimension1> {
     public ApiFundDimension1(ICdnClient cdnClient, ILookups lookups) : base(cdnClient, lookups) { }
 
     protected override FundDimension1 GetFundDimension(PublishedFundStructure fundStructure) {
-        var fundDimension1 = new FundDimension1(fundStructure.Dimension1.Name.Camelize(),
+        var fundDimension1 = new FundDimension1(fundStructure.Dimension1.Name,
                                                 fundStructure.Dimension1.Name,
                                                 null,
                                                 fundStructure.Dimension1.IsActive,
@@ -57,7 +57,7 @@ public class ApiFundDimension2 : ApiFundDimensions<FundDimension2> {
     public ApiFundDimension2(ICdnClient cdnClient, ILookups lookups) : base(cdnClient, lookups) { }
 
     protected override FundDimension2 GetFundDimension(PublishedFundStructure fundStructure) {
-        var fundDimension2 = new FundDimension2(fundStructure.Dimension2.Name.Camelize(),
+        var fundDimension2 = new FundDimension2(fundStructure.Dimension2.Name,
                                                 fundStructure.Dimension2.Name,
                                                 null,
                                                 fundStructure.Dimension2.IsActive,
@@ -72,7 +72,7 @@ public class ApiFundDimension3 : ApiFundDimensions<FundDimension3> {
     public ApiFundDimension3(ICdnClient cdnClient, ILookups lookups) : base(cdnClient, lookups) { }
 
     protected override FundDimension3 GetFundDimension(PublishedFundStructure fundStructure) {
-        var fundDimension3 = new FundDimension3(fundStructure.Dimension3.Name.Camelize(),
+        var fundDimension3 = new FundDimension3(fundStructure.Dimension3.Name,
                                                 fundStructure.Dimension3.Name,
                                                 null,
                                                 fundStructure.Dimension3.IsActive,
@@ -87,7 +87,7 @@ public class ApiFundDimension4 : ApiFundDimensions<FundDimension4> {
     public ApiFundDimension4(ICdnClient cdnClient, ILookups lookups) : base(cdnClient, lookups) { }
 
     protected override FundDimension4 GetFundDimension(PublishedFundStructure fundStructure) {
-        var fundDimension4 = new FundDimension4(fundStructure.Dimension4.Name.Camelize(),
+        var fundDimension4 = new FundDimension4(fundStructure.Dimension4.Name,
                                                 fundStructure.Dimension4.Name,
                                                 null,
                                                 fundStructure.Dimension4.IsActive,
