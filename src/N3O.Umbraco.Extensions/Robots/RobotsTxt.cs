@@ -41,7 +41,7 @@ public class RobotsTxt : IRobotsTxt {
                 sb.AppendLine("Disallow: /");
             }
 
-            robotsSettings.CustomDirectives.IfNotNull(sb.Append);
+            robotsSettings?.CustomDirectives.IfNotNull(sb.Append);
 
             return sb.ToString();
         }
