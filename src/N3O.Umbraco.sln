@@ -318,6 +318,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Cloud.Platforms
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Marketing.StaticAssets", "Marketing\N3O.Umbraco.Marketing.StaticAssets\N3O.Umbraco.Marketing.StaticAssets.csproj", "{E6655D7C-1BBC-4960-9A46-420382ED9ADC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Sync.Extensions", "Sync\N3O.Umbraco.Sync.Extensions\N3O.Umbraco.Sync.Extensions.csproj", "{1602B7CF-9B6A-429B-93F9-348868CA2C73}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -768,6 +770,10 @@ Global
 		{E6655D7C-1BBC-4960-9A46-420382ED9ADC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E6655D7C-1BBC-4960-9A46-420382ED9ADC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6655D7C-1BBC-4960-9A46-420382ED9ADC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1602B7CF-9B6A-429B-93F9-348868CA2C73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1602B7CF-9B6A-429B-93F9-348868CA2C73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1602B7CF-9B6A-429B-93F9-348868CA2C73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1602B7CF-9B6A-429B-93F9-348868CA2C73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CC9F6143-E1BB-490F-8936-A16A238E2138} = {E203E59D-7950-4F8F-8E28-79DEB112EA37}
@@ -884,5 +890,6 @@ Global
 		{BDA54CB6-00A6-4380-9D5A-82E2082F67FF} = {DE8A1B4D-E77F-49B0-B41F-711872355068}
 		{CBE39974-BF9B-4E46-A9D4-FBC9E00702C8} = {D421FBFA-B2C2-4BCE-91AA-E88E88FC6AAE}
 		{E6655D7C-1BBC-4960-9A46-420382ED9ADC} = {399658D1-572C-4753-A912-7202790A256B}
+		{1602B7CF-9B6A-429B-93F9-348868CA2C73} = {0EBFA047-2232-4CEC-B528-0051179D5FDB}
 	EndGlobalSection
 EndGlobal
