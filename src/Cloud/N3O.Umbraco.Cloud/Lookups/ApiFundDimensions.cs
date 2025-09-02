@@ -1,5 +1,4 @@
-﻿using Humanizer;
-using N3O.Umbraco.Attributes;
+﻿using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Models;
 using N3O.Umbraco.Giving.Allocations.Lookups;
