@@ -1,7 +1,6 @@
-using N3O.Umbraco.Parameters;
-using System;
+﻿using System;
 
-namespace N3O.Umbraco.Data.NamedParameters;
+namespace N3O.Umbraco.Parameters;
 
 public class ContentId : NamedParameter<Guid> {
     public override string Name => "contentId";

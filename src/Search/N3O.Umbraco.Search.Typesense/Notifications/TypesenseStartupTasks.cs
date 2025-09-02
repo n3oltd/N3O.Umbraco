@@ -1,9 +1,9 @@
 ﻿using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Parameters;
 using N3O.Umbraco.Scheduler;
 using N3O.Umbraco.Scheduler.Extensions;
 using N3O.Umbraco.Search.Typesense.Commands;
 using N3O.Umbraco.Search.Typesense.Models;
-using N3O.Umbraco.Search.Typesense.NamedParameters;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
