@@ -1,0 +1,5 @@
+﻿{
+  javascript: [
+    '/App_Plugins/N3O.Umbraco.Cloud.Platforms.Preview/N3O.Umbraco.Cloud.Platforms.Preview.Controller.js'
+  ]
+}
