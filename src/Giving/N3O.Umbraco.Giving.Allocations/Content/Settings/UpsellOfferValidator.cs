@@ -6,7 +6,6 @@ using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
 using System.Linq;
-using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Giving.Allocations.Content;
 

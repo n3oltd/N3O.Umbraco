@@ -2,8 +2,6 @@
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Crowdfunding.Migrations;
 using N3O.Umbraco.Extensions;
-using Slugify;
-using System.Text.RegularExpressions;
 using Umbraco.Cms.Core.DependencyInjection;
 
 namespace N3O.Umbraco.Crowdfunding;
