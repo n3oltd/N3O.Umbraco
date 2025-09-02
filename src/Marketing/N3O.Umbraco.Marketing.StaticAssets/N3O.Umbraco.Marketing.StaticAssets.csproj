@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <RootNamespace>N3O.Umbraco.Marketing</RootNamespace>
+        <RootNamespace>N3O.Umbraco.Marketing.StaticAssets</RootNamespace>
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Copyright>Copyright © 2024 N3O Ltd</Copyright>
     </PropertyGroup>
 
     <PropertyGroup>
-        <PackageId>N3O.Umbraco.Marketing</PackageId>
+        <PackageId>N3O.Umbraco.Marketing.StaticAssets</PackageId>
         <IsPackable>true</IsPackable>
         <ContentTargetFolders>.</ContentTargetFolders>
         <Authors>N3O Ltd</Authors>
@@ -30,7 +30,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Forms\N3O.Umbraco.Forms\N3O.Umbraco.Forms.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
+        <ProjectReference Include="..\N3O.Umbraco.Marketing\N3O.Umbraco.Marketing.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -40,6 +42,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Umbraco.Engage.Core" Version="13.6.0" />
+      <PackageReference Include="Umbraco.Engage.Forms.StaticAssets" Version="13.2.0" />
+      <PackageReference Include="Umbraco.Engage.StaticAssets" Version="13.6.0" />
     </ItemGroup>
 </Project>

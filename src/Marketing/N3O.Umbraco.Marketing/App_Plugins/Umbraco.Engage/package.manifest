@@ -1,7 +1,0 @@
-﻿{
-  "javascript": [
-    "~/App_Plugins/Umbraco.Engage/polyfills.js",
-    "~/App_Plugins/Umbraco.Engage/engage-init.js",
-    "~/App_Plugins/Umbraco.Engage/engage-variables.js"
-  ]
-}   
