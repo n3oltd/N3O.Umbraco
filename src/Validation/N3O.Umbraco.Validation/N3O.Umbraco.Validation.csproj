@@ -37,7 +37,7 @@
     <ItemGroup>
         <PackageReference Include="FluentValidation" Version="12.0.0" />
         <PackageReference Include="ISO3166" Version="1.0.4" />
-        <PackageReference Include="libphonenumber-csharp" Version="9.0.12" />
+        <PackageReference Include="libphonenumber-csharp" Version="9.0.13" />
         <PackageReference Include="Profanity.Detector" Version="0.1.8" />
     </ItemGroup>
 

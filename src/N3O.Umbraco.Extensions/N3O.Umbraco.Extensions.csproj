@@ -51,7 +51,7 @@
         <PackageReference Include="Umbraco.Cms.Web.Common" Version="13.10.0.0" />
         <PackageReference Include="Umbraco.Cms.Web.Website" Version="13.10.0.0" />
         <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="13.10.0.0" />
-        <PackageReference Include="Umbraco.Code" Version="2.3.0" />
+        <PackageReference Include="Umbraco.Code" Version="2.4.0" />
     </ItemGroup>
 
     <ItemGroup>
