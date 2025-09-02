@@ -30,7 +30,11 @@ public class TypesenseSearchComposer : Composer {
             var httpClient = httpClientFactory.CreateClient(nameof(TypesenseClient));
             var configOptions = serviceProvider.GetRequiredService<IOptions<Config>>();
 
-            return new TypesenseClient(configOptions, httpClient);
+            if (configOptions.Value.ApiKey.HasValue() && configOptions.Value.Nodes.HasAny()) {
+                return new TypesenseClient(configOptions, httpClient);
+            }
+
+            return null;
         });
         
         RegisterAll(t => t.ImplementsInterface<ISearchIndexer>(),
