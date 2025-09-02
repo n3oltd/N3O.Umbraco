@@ -27,6 +27,7 @@ public class PublishedDesignationMapping : IMapDefinition {
     // Umbraco.Code.MapAll
     private void Map(DesignationContent src, PublishedDesignation dest, MapperContext ctx) {
         dest.Id = src.Key.ToString();
+        dest.CampaignId = src.Content().Parent.Key.ToString();
         dest.Type = src.Type.ToEnum<DesignationType>();
         dest.Name = src.Name;
         dest.Slug = _slugHelper.GenerateSlug(src.Name);
