@@ -1,5 +1,4 @@
-﻿using Humanizer;
-using N3O.Umbraco.Extensions;
+﻿using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
@@ -19,10 +18,10 @@ public class PublishedFundDimension {
     public string UnrestrictedOption { get; set; }
 
     public IEnumerable<T> GetOptions<T>(ILookups lookups) where T : FundDimensionValue<T> {
-        var options = RestrictedOptions.Select(x => lookups.FindById<T>(x.Camelize())).ToList();
+        var options = RestrictedOptions.Select(x => lookups.FindByName<T>(x).Single()).ToList();
 
         if (UnrestrictedOption.HasValue()) {
-            options.Add(lookups.FindById<T>(UnrestrictedOption.Camelize()));
+            options.Add(lookups.FindByName<T>(UnrestrictedOption).Single());
         }
         
         return options;

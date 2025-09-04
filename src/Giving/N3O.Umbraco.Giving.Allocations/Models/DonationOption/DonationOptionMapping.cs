@@ -3,6 +3,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Content;
 using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
+using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
@@ -10,6 +11,12 @@ using Umbraco.Cms.Core.Mapping;
 namespace N3O.Umbraco.Giving.Allocations.Models;
 
 public class DonationOptionMapping : IMapDefinition {
+    private readonly ILookups _lookups;
+    
+    public DonationOptionMapping(ILookups lookups) {
+        _lookups = lookups;
+    }
+
     public void DefineMaps(IUmbracoMapper mapper) {
         mapper.Define<DonationOptionContent, DonationOptionRes>((_, _) => new DonationOptionRes(), Map);
     }
@@ -21,10 +28,10 @@ public class DonationOptionMapping : IMapDefinition {
         dest.CampaignName = src.CampaignName;
         dest.Type = src.Type;
         dest.DefaultGivingType = src.DefaultGivingType;
-        dest.Dimension1 = GetInitial(ctx, src.Dimension1, src.GetFundDimensionOptions().DefaultFundDimension1(), src.GetFundDimensionOptions().Dimension1);
-        dest.Dimension2 = GetInitial(ctx, src.Dimension2, src.GetFundDimensionOptions().DefaultFundDimension2(), src.GetFundDimensionOptions().Dimension2);
-        dest.Dimension3 = GetInitial(ctx, src.Dimension3, src.GetFundDimensionOptions().DefaultFundDimension3(), src.GetFundDimensionOptions().Dimension3);
-        dest.Dimension4 = GetInitial(ctx, src.Dimension4, src.GetFundDimensionOptions().DefaultFundDimension4(), src.GetFundDimensionOptions().Dimension4);
+        dest.Dimension1 = GetInitial(ctx, src.GetDimension1(_lookups), src.GetFundDimensionOptions(_lookups).DefaultFundDimension1(), src.GetFundDimensionOptions(_lookups).Dimension1);
+        dest.Dimension2 = GetInitial(ctx, src.GetDimension2(_lookups), src.GetFundDimensionOptions(_lookups).DefaultFundDimension2(), src.GetFundDimensionOptions(_lookups).Dimension2);
+        dest.Dimension3 = GetInitial(ctx, src.GetDimension3(_lookups), src.GetFundDimensionOptions(_lookups).DefaultFundDimension3(), src.GetFundDimensionOptions(_lookups).Dimension3);
+        dest.Dimension4 = GetInitial(ctx, src.GetDimension4(_lookups), src.GetFundDimensionOptions(_lookups).DefaultFundDimension4(), src.GetFundDimensionOptions(_lookups).Dimension4);
         dest.HideDonation = src.HideDonation;
         dest.HideRegularGiving = src.HideRegularGiving;
         dest.HideQuantity = src.HideQuantity;

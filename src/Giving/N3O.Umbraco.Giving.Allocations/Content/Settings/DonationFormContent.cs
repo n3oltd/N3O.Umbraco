@@ -1,5 +1,6 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
 using Umbraco.Extensions;
 
@@ -10,7 +11,7 @@ public class DonationFormContent : UmbracoContent<DonationFormContent> {
 
     public string Title => GetValue(x => x.Title);
 
-    public IReadOnlyList<DonationOptionContent> GetOptions() {
+    public IReadOnlyList<DonationOptionContent> GetOptions(ILookups lookups) {
         if (_options == null) {
             var list = new List<DonationOptionContent>();
         
@@ -18,7 +19,7 @@ public class DonationFormContent : UmbracoContent<DonationFormContent> {
                 if (descendant.ContentType.CompositionAliases.Contains(AllocationsConstants.Aliases.DonationOption.ContentType)) {
                     var donationOption = descendant.As<DonationOptionContent>();
 
-                    if (donationOption.IsValid()) {
+                    if (donationOption.IsValid(lookups)) {
                         list.Add(donationOption);
                     }
                 }

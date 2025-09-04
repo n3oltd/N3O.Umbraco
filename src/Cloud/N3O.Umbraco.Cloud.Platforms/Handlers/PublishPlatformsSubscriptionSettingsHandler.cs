@@ -15,11 +15,11 @@ public class PublishPlatformsSubscriptionSettingsHandler
     : IRequestHandler<PublishPlatformsSubscriptionSettingsCommand, None, None> {
     private readonly IContentLocator _contentLocator;
     private readonly IUmbracoMapper _mapper;
-    private readonly ClientFactory<PlatformsClient> _clientFactory;
+    private readonly ClientFactory<ConnectClient> _clientFactory;
 
     public PublishPlatformsSubscriptionSettingsHandler(IContentLocator contentLocator,
                                                        IUmbracoMapper mapper,
-                                                       ClientFactory<PlatformsClient> clientFactory) {
+                                                       ClientFactory<ConnectClient> clientFactory) {
         _contentLocator = contentLocator;
         _mapper = mapper;
         _clientFactory = clientFactory;

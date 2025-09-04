@@ -94,7 +94,7 @@ public class UserDirectory : IUserDirectory {
                                                                string password = null) {
         var user = await GetDirectoryUserByEmailAsync(managementClient, email);
 
-        if (user.Identities.None(x => x.Connection == connectionName)) {
+        if (!user.HasValue() ||user.Identities.None(x => x.Connection == connectionName)) {
             var isFederated = await IsFederatedByEmailAsync(managementClient, email);
 
             if (isFederated) {

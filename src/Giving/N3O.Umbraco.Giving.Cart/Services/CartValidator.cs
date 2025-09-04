@@ -1,4 +1,3 @@
-using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
@@ -6,16 +5,17 @@ using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Giving.Cart.Models;
+using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace N3O.Umbraco.Giving.Cart;
 
 public class CartValidator : ICartValidator {
-    private readonly IContentLocator _contentLocator;
+    private readonly ILookups _lookups;
 
-    public CartValidator(IContentLocator contentLocator) {
-        _contentLocator = contentLocator;
+    public CartValidator(ILookups lookups) {
+        _lookups = lookups;
     }
     
     public bool IsValid(Currency currentCurrency, Entities.Cart cart) {
@@ -67,7 +67,7 @@ public class CartValidator : ICartValidator {
                     return false;
                 }
                 
-                if (componentAllocation.Component.GetSponsorshipScheme(_contentLocator) != allocation.Sponsorship.Scheme) {
+                if (componentAllocation.Component.GetSponsorshipScheme(_lookups) != allocation.Sponsorship.Scheme) {
                     return false;
                 }
             }

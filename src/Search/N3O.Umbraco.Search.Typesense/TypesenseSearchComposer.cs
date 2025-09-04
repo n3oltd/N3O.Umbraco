@@ -15,6 +15,7 @@ public class TypesenseSearchComposer : Composer {
         builder.Services.AddSingleton<IConfigureOptions<Config>, TypesenseOptions>();
         builder.Services.AddTransient(typeof(ISearchDocumentBuilder<>), typeof(SearchDocumentBuilder<>));
         builder.Services.AddTransient(typeof(ISearcher<>), typeof(Searcher<>));
+        builder.Services.AddSingleton<ITypesenseJsonProvider, TypesenseJsonProvider>();
         
         builder.Services
                .AddHttpClient(nameof(TypesenseClient), client => {
@@ -29,7 +30,11 @@ public class TypesenseSearchComposer : Composer {
             var httpClient = httpClientFactory.CreateClient(nameof(TypesenseClient));
             var configOptions = serviceProvider.GetRequiredService<IOptions<Config>>();
 
-            return new TypesenseClient(configOptions, httpClient);
+            if (configOptions.Value.ApiKey.HasValue() && configOptions.Value.Nodes.HasAny()) {
+                return new TypesenseClient(configOptions, httpClient);
+            }
+
+            return null;
         });
         
         RegisterAll(t => t.ImplementsInterface<ISearchIndexer>(),

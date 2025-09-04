@@ -1,4 +1,3 @@
-using Humanizer;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Extensions;
@@ -15,7 +14,7 @@ public class PublishedFundDesignationMapping : IMapDefinition {
     
     // Umbraco.Code.MapAll
     private void Map(FundDesignationContent src, PublishedFundDesignation dest, MapperContext ctx) {
-        dest.Item = new PublishedDonationItem();
+        dest.Item = new PublishedDesignationDonationItem();
         dest.Item.Id = src.DonationItem.Id;
         dest.Item.Pricing = src.DonationItem.Pricing.IfNotNull(ctx.Map<IPricing, PublishedPricing>);
 

@@ -17,10 +17,10 @@ public class GoalElement : UmbracoElement<GoalElement>, IFundDimensionValues, IC
     public string Name => GetValue(x => x.Name);
     public decimal Amount => GetValue(x => x.Amount);
     public string OptionId => GetValue(x => x.OptionId);
-    public FundDimension1Value FundDimension1 => GetAs(x => x.FundDimension1);
-    public FundDimension2Value FundDimension2 => GetAs(x => x.FundDimension2);
-    public FundDimension3Value FundDimension3 => GetAs(x => x.FundDimension3);
-    public FundDimension4Value FundDimension4 => GetAs(x => x.FundDimension4);
+    public FundDimension1Value FundDimension1 => GetValue(x => x.FundDimension1);
+    public FundDimension2Value FundDimension2 => GetValue(x => x.FundDimension2);
+    public FundDimension3Value FundDimension3 => GetValue(x => x.FundDimension3);
+    public FundDimension4Value FundDimension4 => GetValue(x => x.FundDimension4);
     public IEnumerable<TagContent> Tags => GetPickedAs(x => x.Tags);
     public IEnumerable<PriceHandleElement> PriceHandles => GetNestedAs(x => x.PriceHandles);
     

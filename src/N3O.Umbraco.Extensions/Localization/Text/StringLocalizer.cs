@@ -95,8 +95,14 @@ public class StringLocalizer : IStringLocalizer {
 
     private int CreateFolder(string name) {
         var content = _contentService.Create<TextContainerFolderContent>(name, TextSettingsContentId);
+        
+        using var scope = _coreScopeProvider.CreateCoreScope(autoComplete: true);
+                    
+        using (_ = scope.Notifications.Suppress()) {
+            _contentService.SaveAndPublish(content);
 
-        _contentService.SaveAndPublish(content);
+            scope.Complete();
+        }
 
         return content.Id;
     }
@@ -142,7 +148,13 @@ public class StringLocalizer : IStringLocalizer {
         }
 
         if (shouldSave) {
-            _contentService.SaveAndPublish(containerContent);
+            using var scope = _coreScopeProvider.CreateCoreScope(autoComplete: true);
+                    
+            using (_ = scope.Notifications.Suppress()) {
+                _contentService.SaveAndPublish(containerContent);
+
+                scope.Complete();
+            }
         }
         
         return containerContent.Id;
@@ -155,7 +167,13 @@ public class StringLocalizer : IStringLocalizer {
         
             if (shouldSave) {
                 lock (this) {
-                    _contentService.SaveAndPublish(containerContent);
+                    using var scope = _coreScopeProvider.CreateCoreScope(autoComplete: true);
+                    
+                    using (_ = scope.Notifications.Suppress()) {
+                        _contentService.SaveAndPublish(containerContent);
+
+                        scope.Complete();
+                    }
                 }
             }
 

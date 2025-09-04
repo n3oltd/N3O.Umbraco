@@ -3,7 +3,7 @@
         <RootNamespace>N3O.Umbraco.Payments.Stripe</RootNamespace>
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
-        <Copyright>Copyright © 2024 N3O Ltd</Copyright>
+        <Copyright>Copyright © 2025 N3O Ltd</Copyright>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -40,6 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Stripe.net" Version="48.3.0" />
+        <PackageReference Include="Stripe.net" Version="48.5.0" />
     </ItemGroup>
 </Project>

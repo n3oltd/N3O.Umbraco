@@ -3,7 +3,7 @@
         <RootNamespace>N3O.Umbraco.ImageProcessing</RootNamespace>
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
-        <Copyright>Copyright © 2024 N3O Ltd</Copyright>
+        <Copyright>Copyright © 2025 N3O Ltd</Copyright>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -41,6 +41,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.6" />
+      <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.7" />
     </ItemGroup>
 </Project>

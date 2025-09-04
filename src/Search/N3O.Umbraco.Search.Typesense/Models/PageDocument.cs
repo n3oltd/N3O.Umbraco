@@ -1,23 +1,23 @@
 ﻿using N3O.Umbraco.Search.Typesense.Attributes;
-using System.Text.Json.Serialization;
 using NodaTime;
+using Typesense;
 
 namespace N3O.Umbraco.Search.Typesense.Models;
 
-[Collection("Pages")]
-public class PageDocument : Value {
-    [JsonPropertyName("timestamp")]
+[Collection("pages")]
+public class PageDocument : SearchDocument {
+    [FieldProperty("timestamp", FieldType.String)]
     public Instant Timestamp { get; set; }
     
-    [JsonPropertyName("content")]
+    [FieldProperty("content", FieldType.String)]
     public string Content { get; set; }
     
-    [JsonPropertyName("description")]
+    [FieldProperty("description", FieldType.String)]
     public string Description { get; set; }
     
-    [JsonPropertyName("title")]
+    [FieldProperty("title", FieldType.String)]
     public string Title { get; set; }
     
-    [JsonPropertyName("url")]
+    [FieldProperty("url", FieldType.String)]
     public string Url { get; set; }
 }

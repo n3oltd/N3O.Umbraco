@@ -6,5 +6,5 @@ namespace N3O.Umbraco.Crowdfunding.Content;
 
 [UmbracoContent(CrowdfundingConstants.CampaignGoalOption.Fund.Alias)]
 public class CampaignFundGoalOptionElement : UmbracoElement<CampaignFundGoalOptionElement> {
-    public DonationItem DonationItem => GetAs(x => x.DonationItem);
+    public DonationItem DonationItem => GetValue(x => x.DonationItem);
 }

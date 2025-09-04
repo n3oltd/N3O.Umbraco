@@ -3,12 +3,16 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
-using Umbraco.Cms.Core.Models.PublishedContent;
+using N3O.Umbraco.Lookups;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
 public class FeedbackGoalElementValidator : GoalElementValidator<FeedbackGoalElement> {
-    public FeedbackGoalElementValidator(IContentHelper contentHelper) : base(contentHelper) { }
+    private readonly ILookups _lookups;
+    
+    public FeedbackGoalElementValidator(IContentHelper contentHelper, ILookups lookups) : base(contentHelper) {
+        _lookups = lookups;
+    }
 
     protected override IFundDimensionOptions GetFundDimensionOptions(ContentProperties content) {
         return GetFeedbackScheme(content).FundDimensionOptions;
@@ -17,8 +21,7 @@ public class FeedbackGoalElementValidator : GoalElementValidator<FeedbackGoalEle
     protected override void ValidatePriceLocked(ContentProperties content) {
         var property = content.GetPropertyByAlias(CrowdfundingConstants.Goal.Feedback.Properties.Scheme);
         
-        var feedbackScheme = property.IfNotNull(x => ContentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(x)
-                                                                  .As<FeedbackScheme>());
+        var feedbackScheme = property.IfNotNull(x => ContentHelper.GetLookupValue<FeedbackScheme>(_lookups, x));
         
         if (feedbackScheme.HasLockedPrice()) {
             ErrorResult($"Scheme {feedbackScheme.Name.Quote()} has a locked price which is not permitted");
@@ -27,8 +30,7 @@ public class FeedbackGoalElementValidator : GoalElementValidator<FeedbackGoalEle
     
     private FeedbackScheme GetFeedbackScheme(ContentProperties content) {
         var feedbackScheme = content.GetPropertyByAlias(CrowdfundingConstants.Goal.Feedback.Properties.Scheme)
-                                    .IfNotNull(x => ContentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(x)
-                                                                 .As<FeedbackScheme>());
+                                    .IfNotNull(x => ContentHelper.GetLookupValue<FeedbackScheme>(_lookups, x));
 
         return feedbackScheme;
     }

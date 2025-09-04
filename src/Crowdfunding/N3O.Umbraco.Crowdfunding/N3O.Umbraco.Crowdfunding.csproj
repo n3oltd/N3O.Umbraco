@@ -3,7 +3,7 @@
         <RootNamespace>N3O.Umbraco.Crowdfunding</RootNamespace>
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
-        <Copyright>Copyright © 2024 N3O Ltd</Copyright>
+        <Copyright>Copyright © 2025 N3O Ltd</Copyright>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -49,6 +49,5 @@
 
     <ItemGroup>
       <PackageReference Include="Handlebars.Net" Version="2.1.6" />
-      <PackageReference Include="Slugify.Core" Version="5.1.1" />
     </ItemGroup>
 </Project>

@@ -2,8 +2,6 @@
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Crowdfunding.Migrations;
 using N3O.Umbraco.Extensions;
-using Slugify;
-using System.Text.RegularExpressions;
 using Umbraco.Cms.Core.DependencyInjection;
 
 namespace N3O.Umbraco.Crowdfunding;
@@ -30,18 +28,5 @@ public class CrowdfundingComposer : Composer {
         
         RegisterAll(t => t.ImplementsInterface<ICrowdfundingPage>(),
                     t => builder.Services.AddTransient(typeof(ICrowdfundingPage), t));
-
-        RegisterSlugHelper(builder);
-    }
-
-    private void RegisterSlugHelper(IUmbracoBuilder builder) {
-        builder.Services.AddSingleton<ISlugHelper>(_ => {
-            var config = new SlugHelperConfiguration();
-            config.DeniedCharactersRegex = new Regex(CrowdfundingConstants.Routes.Slugs.DeniedCharacters);
-            config.CollapseDashes = true;
-            config.ForceLowerCase = true;
-
-            return new SlugHelper(config);
-        });
     }
 }

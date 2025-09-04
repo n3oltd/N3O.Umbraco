@@ -1,8 +1,0 @@
-{
-  "dashboards": [{
-    "alias": "engage",
-    "sections": [ "engage" ],
-    "view": "~/App_Plugins/Umbraco.Engage/dashboard/engage-dashboard.html"
-  }],
-  "javascript": ["~/App_Plugins/Umbraco.Engage/dashboard/engage-dashboard.js"]
-}

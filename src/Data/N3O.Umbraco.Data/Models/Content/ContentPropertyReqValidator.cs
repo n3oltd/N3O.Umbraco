@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Data.NamedParameters;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
+using N3O.Umbraco.Parameters;
 using N3O.Umbraco.Validation;
 using System.Collections.Generic;
 using System.Linq;

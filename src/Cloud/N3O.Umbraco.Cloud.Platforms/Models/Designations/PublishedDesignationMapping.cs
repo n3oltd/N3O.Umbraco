@@ -3,6 +3,7 @@ using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Media;
+using Slugify;
 using System;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
@@ -12,10 +13,11 @@ namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class PublishedDesignationMapping : IMapDefinition {
     private readonly IMediaUrl _mediaUrl;
+    private readonly ISlugHelper _slugHelper;
 
-    public PublishedDesignationMapping(IMediaUrl mediaUrl) {
+    public PublishedDesignationMapping(IMediaUrl mediaUrl, ISlugHelper slugHelper) {
         _mediaUrl = mediaUrl;
-        _mediaUrl = mediaUrl;
+        _slugHelper = slugHelper;
     }
     
     public void DefineMaps(IUmbracoMapper mapper) {
@@ -25,8 +27,10 @@ public class PublishedDesignationMapping : IMapDefinition {
     // Umbraco.Code.MapAll
     private void Map(DesignationContent src, PublishedDesignation dest, MapperContext ctx) {
         dest.Id = src.Key.ToString();
+        dest.CampaignId = src.Content().Parent.Key.ToString();
         dest.Type = src.Type.ToEnum<DesignationType>();
         dest.Name = src.Name;
+        dest.Slug = _slugHelper.GenerateSlug(src.Name);
         dest.Image = _mediaUrl.GetMediaUrl(src.Image, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
         dest.Icon = _mediaUrl.GetMediaUrl(src.Icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
         dest.ShortDescription = src.ShortDescription.ToHtmlString();

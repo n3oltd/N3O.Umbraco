@@ -3,7 +3,7 @@
         <RootNamespace>N3O.Umbraco.Marketing</RootNamespace>
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
-        <Copyright>Copyright © 2024 N3O Ltd</Copyright>
+        <Copyright>Copyright © 2025 N3O Ltd</Copyright>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -30,7 +30,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Forms\N3O.Umbraco.Forms\N3O.Umbraco.Forms.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
     </ItemGroup>
 
@@ -41,7 +40,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Umbraco.Engage" Version="13.5.3" />
-      <PackageReference Include="Umbraco.Engage.Forms" Version="13.2.0" />
+      <PackageReference Include="Umbraco.Engage.Core" Version="13.6.0" />
     </ItemGroup>
 </Project>

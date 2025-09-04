@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Crowdfunding.NamedParameters;
 using N3O.Umbraco.Mediator;
+using N3O.Umbraco.Parameters;
 
 namespace N3O.Umbraco.Crowdfunding.Commands;
 

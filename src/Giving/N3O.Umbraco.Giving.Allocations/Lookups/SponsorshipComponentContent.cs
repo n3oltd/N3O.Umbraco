@@ -14,16 +14,7 @@ using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Giving.Allocations.Lookups;
 
-public class SponsorshipComponentContent : LookupContent<SponsorshipComponentContent>, IHoldPricing {
-    public override string Id {
-        get {
-            var scheme = GetScheme();
-            var baseId = base.Id;
-
-            return LookupContent.ToUniqueId($"{scheme.Id}_{baseId}", Content().Key);
-        }
-    }
-    
+public class SponsorshipComponentContent : UmbracoContent<SponsorshipComponentContent>, IHoldPricing {
     public bool Mandatory => GetValue(x => x.Mandatory);
     public PriceContent Price => Content().As<PriceContent>();
 
@@ -85,6 +76,7 @@ public class ContentSponsorshipComponents : LookupsCollection<SponsorshipCompone
         return new SponsorshipComponent(LookupContent.GetId(sponsorshipComponentContent.Content()),
                                         LookupContent.GetName(sponsorshipComponentContent.Content()),
                                         sponsorshipComponentContent.Content().Key,
+                                        LookupContent.GetId(sponsorshipComponentContent.Content().Parent),
                                         sponsorshipComponentContent.Mandatory,
                                         sponsorshipComponentContent.Pricing);
     }

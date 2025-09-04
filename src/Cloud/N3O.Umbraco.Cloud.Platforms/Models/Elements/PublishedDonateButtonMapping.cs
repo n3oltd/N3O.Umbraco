@@ -34,6 +34,6 @@ public class PublishedDonateButtonMapping : IMapDefinition {
             dest.Designation = ctx.Map<DesignationContent, PublishedDesignation>(defaultCampaign.DefaultDesignation);
         }
         
-        dest.Analytics = src.AnalyticsTags.ToPublishedAnalyticsParameters();
+        dest.Tags = src.Tags.ToPublishedTagCollection();
     }
 }

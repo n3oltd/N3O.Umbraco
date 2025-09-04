@@ -1,10 +1,21 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Media;
+using System;
 using Umbraco.Cms.Core.Mapping;
+using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class PublishedThemeMapping : IMapDefinition {
+    private readonly IMediaUrl _mediaUrl;
+
+    public PublishedThemeMapping(IMediaUrl mediaUrl) {
+        _mediaUrl = mediaUrl;
+    }
+    
     public void DefineMaps(IUmbracoMapper mapper) {
         mapper.Define<ThemeSettingsContent, PublishedTheme>((_, _) => new PublishedTheme(), Map);
     }
@@ -40,5 +51,21 @@ public class PublishedThemeMapping : IMapDefinition {
         dest.Colors.Chart5 = src.Chart5;
         dest.Colors.Popover = src.Popover;
         dest.Colors.PopoverForeground = src.PopoverForeground;
+        dest.Colors.IconBackgroundColor = src.IconBackgroundColor;
+        dest.Colors.IconBackgroundColorDark = src.IconBackgroundColorDark;
+        dest.Colors.SplashBackgroundColor = src.SplashBackgroundColor;
+        dest.Colors.SplashBackgroundColorDark = src.SplashBackgroundColorDark;
+        
+        dest.MobileApp = new PublishedThemeMobileApp();
+        dest.MobileApp.Logo = GetPublishedThemeMobileAppAsset(MobileAppAssetType.Logo, src.Logo);
+        dest.MobileApp.LogoDark  = GetPublishedThemeMobileAppAsset(MobileAppAssetType.LogoDark, src.LogoDark);
+    }
+
+    private PublishedThemeMobileAppAsset GetPublishedThemeMobileAppAsset(MobileAppAssetType assetType, MediaWithCrops image) {
+        var asset = new PublishedThemeMobileAppAsset();
+        asset.Type =  assetType;
+        asset.Url = _mediaUrl.GetMediaUrl(image, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
+        
+        return asset;
     }
 }
