@@ -33,7 +33,7 @@ public class PlatformsPreviewApp : IContentAppFactory {
             Name = "Preview",
             Icon = "icon-eye",
             View = "/App_Plugins/N3O.Umbraco.Cloud.Platforms.Preview/N3O.Umbraco.Cloud.Platforms.Preview.html",
-            Weight = -999
+            Weight = -100
         };
     }
 }

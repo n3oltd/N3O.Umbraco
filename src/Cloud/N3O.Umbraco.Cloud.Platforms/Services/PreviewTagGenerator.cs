@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using MimeKit.Text;
 using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms;
 
@@ -24,14 +25,9 @@ public abstract class PreviewTagGenerator : IPreviewTagGenerator {
     }
     
     public async Task<string> GeneratePreviewTagAsync(IReadOnlyDictionary<string, object> content) {
-        var tag = new TagBuilder(TagName);
-
         var json = await GeneratePreviewJsonAsync(content);
         
-        tag.Attributes.Add("preview", "true");
-        tag.Attributes.Add("json", json);
-
-        return tag.RenderSelfClosingTag().ToHtmlString();
+        return $"<n3o-donation-form-modal form-id='{Guid.NewGuid()}' preview='true' json='{HtmlUtils.HtmlEncode(json)}'></n3o-donation-form-modal>";
     }
     
     protected abstract string ContentTypeAlias { get; }
@@ -43,11 +39,11 @@ public abstract class PreviewTagGenerator : IPreviewTagGenerator {
     private async Task<string> GeneratePreviewJsonAsync(IReadOnlyDictionary<string, object> content) {
         var previewData = new Dictionary<string, object>();
 
-        previewData["FundStructure"] = _cdnClient.DownloadSubscriptionContentAsync<PublishedFundStructure>(SubscriptionFiles.FundStructure,
+        previewData["FundStructure"] = await _cdnClient.DownloadSubscriptionContentAsync<PublishedFundStructure>(SubscriptionFiles.FundStructure,
                                                                                                            JsonSerializers.JsonProvider);
         
-        previewData["Currencies"] = await _cdnClient.DownloadSubscriptionContentAsync<PublishedCurrencies>(SubscriptionFiles.Currencies,
-                                                                                                          JsonSerializers.Simple);
+        previewData["Currencies"] = await _cdnClient.DownloadSubscriptionContentAsync<PublishedCurrencies>(SubscriptionFiles.Currencies, 
+                                                                                                           JsonSerializers.Simple);
 
         PopulatePreviewData(content, previewData);
 
