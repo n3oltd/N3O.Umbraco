@@ -15,7 +15,7 @@ public class ElementType : NamedLookup {
     
     public string TagName { get; }
     public string ContentTypeAlias { get; }
-
+  
     public string GetEmbedCode(Guid id) {
         var tag = new TagBuilder(TagName);
         
@@ -35,7 +35,6 @@ public class ElementTypes : StaticLookupsCollection<ElementType> {
                                                           "Donation Form",
                                                           "n3o-donation-form",
                                                           PlatformsConstants.Elements.DonationForm);
-
     public static ElementType FindByContentTypeAlias(string contentTypeAlias) {
         return StaticLookups.GetAll<ElementType>()
                             .SingleOrDefault(x => x.ContentTypeAlias.EqualsInvariant(contentTypeAlias));

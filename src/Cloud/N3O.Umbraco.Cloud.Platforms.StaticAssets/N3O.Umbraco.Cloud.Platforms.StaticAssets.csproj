@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <RootNamespace>N3O.Umbraco.Cloud.Platforms</RootNamespace>
+        <RootNamespace>N3O.Umbraco.Cloud.Platforms.StaticAssets</RootNamespace>
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Copyright>Copyright © 2025 N3O Ltd</Copyright>
     </PropertyGroup>
 
     <PropertyGroup>
-        <PackageId>N3O.Umbraco.Cloud.Platforms</PackageId>
+        <PackageId>N3O.Umbraco.Cloud.Platforms.StaticAssets</PackageId>
         <IsPackable>true</IsPackable>
         <ContentTargetFolders>.</ContentTargetFolders>
         <Authors>N3O Ltd</Authors>
@@ -30,16 +30,24 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Content Include="App_Plugins\N3O.Umbraco.Cloud.Platforms.Preview\**\*.*">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
+        
+        <None Include="build\**\*.*">
+            <Pack>True</Pack>
+            <PackagePath>buildTransitive</PackagePath>
+        </None>
+    </ItemGroup>
+    
+    <ItemGroup>
         <None Update="README.md">
             <Pack>True</Pack>
         </None>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Accounts\N3O.Umbraco.Accounts\N3O.Umbraco.Accounts.csproj" />
-      <ProjectReference Include="..\..\Giving\N3O.Umbraco.Giving.Allocations\N3O.Umbraco.Giving.Allocations.csproj" />
-      <ProjectReference Include="..\..\Markup\N3O.Umbraco.Markup.Markdown\N3O.Umbraco.Markup.Markdown.csproj" />
-      <ProjectReference Include="..\..\Scheduler\N3O.Umbraco.Scheduler\N3O.Umbraco.Scheduler.csproj" />
-      <ProjectReference Include="..\N3O.Umbraco.Cloud\N3O.Umbraco.Cloud.csproj" />
+      <ProjectReference Include="..\N3O.Umbraco.Cloud.Platforms\N3O.Umbraco.Cloud.Platforms.csproj" />
     </ItemGroup>
 </Project>

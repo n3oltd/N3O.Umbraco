@@ -27,8 +27,8 @@ public static class DesignationContentExtensions {
         return fundDimensions;
     }
     
-    private static PublishedDesignationFundDimension ToPublishedDesignationFundDimension(IFundDimensionValue fundDimensionValue,
-                                                                                         IEnumerable<IFundDimensionValue> fundDimensionOptions) {
+    public static PublishedDesignationFundDimension ToPublishedDesignationFundDimension(this IFundDimensionValue fundDimensionValue,
+                                                                                        IEnumerable<IFundDimensionValue> fundDimensionOptions) {
         if (fundDimensionOptions.None()) {
             return null;
         }

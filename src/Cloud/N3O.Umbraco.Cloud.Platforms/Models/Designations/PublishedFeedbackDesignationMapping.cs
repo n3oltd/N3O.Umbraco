@@ -17,6 +17,7 @@ public class PublishedFeedbackDesignationMapping : IMapDefinition {
     private void Map(FeedbackDesignationContent src, PublishedFeedbackDesignation dest, MapperContext ctx) {
        dest.Scheme = new PublishedDesignationFeedbackScheme();
        dest.Scheme.Id = src.Scheme.Id;
+       dest.Scheme.Name = src.Scheme.Name;
 
        dest.CustomFieldDefinitions = src.Scheme
                                         .CustomFields

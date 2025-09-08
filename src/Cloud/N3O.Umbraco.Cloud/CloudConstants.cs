@@ -3,6 +3,8 @@
 namespace N3O.Umbraco.Cloud;
 
 public static class CloudConstants {
+    public const string BackOfficeApiName = "CloudBackOffice";
+    
     public static class Clients {
         public static class HttpRetry {
             public static readonly IReadOnlyDictionary<int, int> RetryIntervals = new Dictionary<int, int> {
