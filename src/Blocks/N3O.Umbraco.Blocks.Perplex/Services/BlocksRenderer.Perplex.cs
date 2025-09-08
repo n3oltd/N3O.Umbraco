@@ -15,7 +15,9 @@ namespace N3O.Umbraco.Blocks.Perplex;
 public class PerplexBlocksRenderer : BlocksRenderer<ContentBlocks> {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public PerplexBlocksRenderer(IHttpContextAccessor httpContextAccessor) {
+    public PerplexBlocksRenderer(IEnumerable<IBlocksRendererPostProcessor> postProcessors,
+                                 IHttpContextAccessor httpContextAccessor)
+        : base(postProcessors) {
         _httpContextAccessor = httpContextAccessor;
     }
     
@@ -34,7 +36,7 @@ public class PerplexBlocksRenderer : BlocksRenderer<ContentBlocks> {
         foreach (var (viewModel, index) in viewModels.SelectWithIndex()) {
             var viewPath = viewPaths.ElementAt(index);
             
-            var blockHtml = await RenderBlockAsync(viewPath, viewModel);
+            var blockHtml = await RenderBlockAsync(content, viewPath, viewModel);
             
             html.Append(blockHtml);
         } 

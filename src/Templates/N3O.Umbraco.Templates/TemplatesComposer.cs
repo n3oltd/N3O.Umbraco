@@ -7,7 +7,12 @@ namespace N3O.Umbraco.Templates;
 
 public class TemplatesComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
-        RegisterAll(t => t.ImplementsInterface<IMergeFormatter>(),
-                    t => builder.Services.AddTransient(typeof(IMergeFormatter), t));
+        builder.Services.AddScoped<IMerger, Merger>();
+        
+        RegisterAll(t => t.ImplementsInterface<IMergeModelProvider>(),
+                    t => builder.Services.AddTransient(typeof(IMergeModelProvider), t));
+        
+        RegisterAll(t => t.ImplementsInterface<ITemplateFormatter>(),
+                    t => builder.Services.AddTransient(typeof(ITemplateFormatter), t));
     }
 }
