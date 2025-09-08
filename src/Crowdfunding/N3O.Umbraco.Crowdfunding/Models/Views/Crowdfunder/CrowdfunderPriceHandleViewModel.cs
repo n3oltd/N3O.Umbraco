@@ -20,7 +20,7 @@ public class CrowdfunderPriceHandleViewModel {
         var viewModel = new CrowdfunderPriceHandleViewModel();
 
         viewModel.Amount = new Money(fundraiserPriceHandle.Amount, crowdfunderCurrency);
-        viewModel.CurrencyAmountValues =  await forexConverter.GetCurrencyValuesAsync(lookups.GetAll<Currency>(),
+        viewModel.CurrencyAmountValues = await forexConverter.GetCurrencyValuesAsync(lookups.GetAll<Currency>(),
                                                                                       new Money(fundraiserPriceHandle.Amount, crowdfunderCurrency));
         viewModel.Description = fundraiserPriceHandle.Description;
 
