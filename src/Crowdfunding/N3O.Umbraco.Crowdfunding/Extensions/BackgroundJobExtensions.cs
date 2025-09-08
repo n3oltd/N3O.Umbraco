@@ -2,6 +2,7 @@
 using N3O.Umbraco.Cloud.Engage.Lookups;
 using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.NamedParameters;
+using N3O.Umbraco.Parameters;
 using N3O.Umbraco.Scheduler;
 using N3O.Umbraco.Scheduler.Extensions;
 using N3O.Umbraco.Webhooks;

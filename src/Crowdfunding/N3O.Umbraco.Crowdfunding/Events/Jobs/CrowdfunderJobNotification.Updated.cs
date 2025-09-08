@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Crowdfunding.NamedParameters;
+﻿using N3O.Umbraco.Parameters;
 
 namespace N3O.Umbraco.Crowdfunding.Events;
 

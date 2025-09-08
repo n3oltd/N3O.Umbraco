@@ -1,8 +1,8 @@
 ﻿using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Parameters;
 using N3O.Umbraco.Scheduler;
 using N3O.Umbraco.Scheduler.Extensions;
 using N3O.Umbraco.Search.Typesense.Commands;
-using N3O.Umbraco.Search.Typesense.NamedParameters;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;

@@ -1,9 +1,9 @@
 ﻿using AsyncKeyedLock;
 using N3O.Umbraco.Crowdfunding.Events;
 using N3O.Umbraco.Crowdfunding.Models;
-using N3O.Umbraco.Crowdfunding.NamedParameters;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
+using N3O.Umbraco.Parameters;
 using N3O.Umbraco.Scheduler;
 using N3O.Umbraco.Webhooks.Attributes;
 using N3O.Umbraco.Webhooks.Extensions;

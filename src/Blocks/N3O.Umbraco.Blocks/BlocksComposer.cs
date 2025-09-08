@@ -12,6 +12,9 @@ public class BlocksComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         RegisterAll(t => t.ImplementsInterface<IBlockModule>(),
                     t => builder.Services.AddTransient(typeof(IBlockModule), t));
+        
+        RegisterAll(t => t.ImplementsInterface<IBlocksRendererPostProcessor>(),
+                    t => builder.Services.AddTransient(typeof(IBlocksRendererPostProcessor), t));
 
         builder.Services.AddTransient<IBlockPipeline, BlockPipeline>();
         builder.Services.AddTransient<IBlocksRenderer, UmbracoBlocksRenderer>();

@@ -25,6 +25,7 @@ public abstract class Composer : IComposer {
                                                   !t.IsGenericTypeDefinition &&
                                                   typePredicate(t))
                                    .ApplyAttributeOrdering()
+                                   .Where(t => !t.HasAttribute<NoRegisterAllAttribute>())
                                    .Where(FilterExperimental)
                                    .SelectWithIndex()
                                    .ToList();

@@ -30,11 +30,15 @@ public class CdnClient : ICdnClient {
 
         var res = await ContentCache.GetOrCreateAsync(url, async c => {
             c.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
-            
-            using (var httpClient = new HttpClient()) {
-                var json = await httpClient.GetStringAsync(url, cancellationToken);
 
-                return Deserialize<T>(json, jsonSerializer);
+            try {
+                using (var httpClient = new HttpClient()) {
+                    var json = await httpClient.GetStringAsync(url, cancellationToken);
+
+                    return Deserialize<T>(json, jsonSerializer);
+                }
+            } catch (HttpRequestException e) when (e.StatusCode == System.Net.HttpStatusCode.NotFound) {
+                return default;
             }
         });
 
