@@ -22,7 +22,7 @@ public class ValidationProblemDetails : ProblemDetails {
                formatter.Text.Format<Strings>(s => s.ValidationFailed),
                formatter.Text.Format<Strings>(s => s.SeeErrors)) {
         ValidationFailure GetFailureDetails(ValidationFailure f) {
-            var failureDetails =  new ValidationFailure(f.Property, f.Error);
+            var failureDetails = new ValidationFailure(f.Property, f.Error);
 
             return failureDetails;
         }

@@ -64,7 +64,7 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
         TLookup lookup;
         
         if (propertyValue is TLookup lookupValue) {
-            lookup =  lookupValue;
+            lookup = lookupValue;
         } else if (propertyValue is IPublishedContent publishedContent) {
             lookup = lookups.FindByName<TLookup>(publishedContent.Name).Single();
         } else {

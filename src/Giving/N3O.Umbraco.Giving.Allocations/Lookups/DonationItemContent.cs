@@ -43,7 +43,7 @@ public class DonationItemContent :
         get {
             var price = Price?.Amount > 0 ? new Price(Price.Amount, Price.Locked) : null;
             
-            if (price ==  null && PricingRules.None()) {
+            if (price == null && PricingRules.None()) {
                 return null;
             } else {
                 return new Pricing(price, PricingRules);

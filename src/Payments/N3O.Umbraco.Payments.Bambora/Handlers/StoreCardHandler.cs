@@ -61,7 +61,7 @@ public class StoreCardHandler : PaymentsHandler<StoreCardCommand, StoreCardReq, 
 
         var apiReq = new ApiProfileReq();
         apiReq.BillingAddress = billingInfo.GetApiBillingAddress();
-        apiReq.CustomerIp =  _remoteIpAddressAccessor.GetRemoteIpAddress().ToString();
+        apiReq.CustomerIp = _remoteIpAddressAccessor.GetRemoteIpAddress().ToString();
         apiReq.Token = new Token();
         apiReq.Token.Code = req.Token;
         apiReq.Token.Complete = true;

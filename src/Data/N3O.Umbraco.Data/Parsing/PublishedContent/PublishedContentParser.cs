@@ -16,7 +16,7 @@ public class PublishedContentParser : DataTypeParser<IPublishedContent>, IPublis
     private readonly IPublishedContentCache _publishedContentCache;
 
     public PublishedContentParser(IPublishedSnapshotAccessor publishedSnapshotAccessor) {
-        _publishedContentCache =  publishedSnapshotAccessor.GetRequiredPublishedSnapshot().Content;
+        _publishedContentCache = publishedSnapshotAccessor.GetRequiredPublishedSnapshot().Content;
     }
 
     public override bool CanParse(OurDataType dataType) {

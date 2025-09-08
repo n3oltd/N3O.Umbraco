@@ -103,7 +103,7 @@ public class ContentJsonConverter : JsonConverter {
             return null;
         }
         
-        var contentType =  _publsihedContentCache.Value.GetContentCache().GetContentType(contentTypeAlias);
+        var contentType = _publsihedContentCache.Value.GetContentCache().GetContentType(contentTypeAlias);
         var publishedPropertyType = new PublishedPropertyType(contentType,
                                                               property.PropertyType,
                                                               _propertyValueConverters.Value,
