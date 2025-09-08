@@ -15,11 +15,9 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 public class ElementRemoving :
     INotificationAsyncHandler<ContentUnpublishingNotification>,
     INotificationAsyncHandler<ContentMovingToRecycleBinNotification> {
-    private readonly IContentLocator _contentLocator;
     private readonly IContentTypeService _contentTypeService;
 
-    public ElementRemoving(IContentLocator contentLocator, IContentTypeService contentTypeService) {
-        _contentLocator = contentLocator;
+    public ElementRemoving(IContentTypeService contentTypeService) {
         _contentTypeService = contentTypeService;
     }
 
