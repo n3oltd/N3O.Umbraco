@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
@@ -30,9 +29,15 @@ public class FundDesignationPreviewTagGenerator : DesignationPreviewTagGenerator
                                               IUmbracoMapper mapper,
                                               IMarkupEngine markupEngine,
                                               IMediaLocator mediaLocator,
-                                              IPublishedValueFallback publishedValueFallback,
-                                              IHtmlHelper htmlHelper) 
-        : base(cdnClient, jsonProvider, mediaUrl, lookups, mapper, markupEngine, mediaLocator, publishedValueFallback, htmlHelper) {
+                                              IPublishedValueFallback publishedValueFallback)
+        : base(cdnClient,
+               jsonProvider,
+               mediaUrl,
+               lookups,
+               mapper,
+               markupEngine,
+               mediaLocator,
+               publishedValueFallback) {
         _jsonProvider = jsonProvider;
     }
     
@@ -40,7 +45,7 @@ public class FundDesignationPreviewTagGenerator : DesignationPreviewTagGenerator
     
     protected override void PopulatePublishedDesignation(IReadOnlyDictionary<string, object> content,
                                                          PublishedDesignation publishedDesignation) {
-        var donationItem =  GetDonationItem(content);
+        var donationItem = GetDonationItem(content);
         
         var oneTimeSuggestedAmounts = GetSuggestedAmounts(content, AliasHelper<FundDesignationContent>.PropertyAlias(x => x.OneTimeSuggestedAmounts));
         var recurringSuggestedAmounts = GetSuggestedAmounts(content, AliasHelper<FundDesignationContent>.PropertyAlias(x => x.RecurringSuggestedAmounts));

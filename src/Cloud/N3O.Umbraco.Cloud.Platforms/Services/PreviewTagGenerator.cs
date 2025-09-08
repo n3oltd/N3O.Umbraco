@@ -4,7 +4,6 @@ using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -31,7 +30,6 @@ public abstract class PreviewTagGenerator : IPreviewTagGenerator {
     }
     
     protected abstract string ContentTypeAlias { get; }
-    protected abstract string TagName { get; }
     
     protected abstract void PopulatePreviewData(IReadOnlyDictionary<string, object> content,
                                                 Dictionary<string, object> previewData);

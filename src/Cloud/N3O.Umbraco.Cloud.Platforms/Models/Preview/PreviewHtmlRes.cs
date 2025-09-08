@@ -1,5 +1,5 @@
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
-public class PreviewRes {
+public class PreviewHtmlRes {
     public string Html { get; set; }
 }

@@ -63,7 +63,7 @@ public class PublishedThemeMapping : IMapDefinition {
 
     private PublishedThemeMobileAppAsset GetPublishedThemeMobileAppAsset(MobileAppAssetType assetType, MediaWithCrops image) {
         var asset = new PublishedThemeMobileAppAsset();
-        asset.Type =  assetType;
+        asset.Type = assetType;
         asset.Url = _mediaUrl.GetMediaUrl(image, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
         
         return asset;

@@ -18,16 +18,21 @@ public class MediaWithCropsDto {
     public MediaWithCrops ToMediaWithCrops(IPublishedValueFallback publishedValueFallback, IMediaLocator mediaLocator) {
         var media = mediaLocator.ById(MediaKey);
 
-        var cropData = new ImageCropperValue {
-            FocalPoint = FocalPoint.IfNotNull(x => new ImageCropperValue.ImageCropperFocalPoint { Left = x.Left, Top = x.Top}),
-            Crops = Crops?.Select(c => new ImageCropperValue.ImageCropperCrop {
+        var imageCropperValue = new ImageCropperValue();
+
+        imageCropperValue.FocalPoint = FocalPoint.IfNotNull(x => new ImageCropperValue.ImageCropperFocalPoint {
+            Left = x.Left, Top = x.Top
+        });
+        
+        imageCropperValue.Crops = Crops?.Select(c => new ImageCropperValue.ImageCropperCrop {
                 Alias = c.Alias,
                 Width = c.Width,
                 Height = c.Height,
-                Coordinates = c.Coordinates.IfNotNull(x => new ImageCropperValue.ImageCropperCropCoordinates { X1 = x.X1, Y1 = x.Y1, X2 = x.X2, Y2 = x.Y2 })
-            })
-        };
+                Coordinates = c.Coordinates.IfNotNull(x => new ImageCropperValue.ImageCropperCropCoordinates {
+                    X1 = x.X1, Y1 = x.Y1, X2 = x.X2, Y2 = x.Y2
+                })
+            }).ToList();
         
-        return new MediaWithCrops(media, publishedValueFallback, cropData);
+        return new MediaWithCrops(media, publishedValueFallback, imageCropperValue);
     }
 }

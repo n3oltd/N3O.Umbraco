@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Cloud.Platforms.Queries;
 
-public class GetPreviewHtmlQuery : Request<Dictionary<string, object>, PreviewRes> {
+public class GetPreviewHtmlQuery : Request<Dictionary<string, object>, PreviewHtmlRes> {
     public GetPreviewHtmlQuery(ContentTypeAlias contentTypeAlias) {
         ContentTypeAlias = contentTypeAlias;
     }

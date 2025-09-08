@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
@@ -29,10 +28,16 @@ public class FeedbackDesignationPreviewTagGenerator : DesignationPreviewTagGener
                                                   IUmbracoMapper mapper,
                                                   IMarkupEngine markupEngine,
                                                   IMediaLocator mediaLocator,
-                                                  IPublishedValueFallback publishedValueFallback,
-                                                  IHtmlHelper htmlHelper) 
-        : base(cdnClient, jsonProvider, mediaUrl, lookups, mapper, markupEngine, mediaLocator, publishedValueFallback, htmlHelper) { }
-    
+                                                  IPublishedValueFallback publishedValueFallback)
+        : base(cdnClient,
+               jsonProvider,
+               mediaUrl,
+               lookups,
+               mapper,
+               markupEngine,
+               mediaLocator,
+               publishedValueFallback) { }
+
     protected override DesignationType DesignationType => DesignationTypes.Feedback;
     
     protected override void PopulatePublishedDesignation(IReadOnlyDictionary<string, object> content,

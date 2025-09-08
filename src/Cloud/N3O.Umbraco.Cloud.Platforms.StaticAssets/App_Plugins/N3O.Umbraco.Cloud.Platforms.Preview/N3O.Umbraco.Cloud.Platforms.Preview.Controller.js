@@ -1,20 +1,25 @@
 ﻿angular.module("umbraco").controller("N3O.Umbraco.Cloud.Platforms.Preview",
     async function ($scope, editorState, contentEditingHelper) {
-        let activeContainerId = "platformsPreviewContainer";
-        let inactiveContainerId = "platformsPreviewContainer2";
+        await loadPreviewAsync(editorState, contentEditingHelper)
 
-        await loadDonationFormPreviewAsync(editorState, contentEditingHelper)
-
+        $scope.refreshCount = 0;
+        
         window.setInterval(async function() {
-            await loadDonationFormPreviewAsync(editorState, contentEditingHelper)
+            $scope.refreshCount++;
+            
+            await loadPreviewAsync(editorState, contentEditingHelper)
         }, 10000);
 
-        async function loadDonationFormPreviewAsync(editorState, contentEditingHelper) {
+        async function loadPreviewAsync(editorState, contentEditingHelper) {
             let currentVariant = editorState.current.variants.find(v => v.active);
 
             let properties = contentEditingHelper.getAllProps(currentVariant);
             let apiReq = getApiReq(properties);
+            
             populateMetadata(apiReq, editorState.current)
+
+            let subscriptionCodeRes = await fetch(`/umbraco/backoffice/api/cloudBackOffice/subscription/code`);
+            let subscriptionCode = await subscriptionCodeRes.text();
 
             let apiRes = await fetch(`/umbraco/backoffice/api/platformsBackOffice/previewHtml/${editorState.current.contentTypeAlias}`, {
                 method: "POST",
@@ -26,35 +31,45 @@
             });
 
             let res = await apiRes.json();
+            
+            let containerToShow;
+            let containerToHide;
 
-            let inactiveContainer = document.getElementById(inactiveContainerId);
-            inactiveContainer.innerHTML = "";
+            if (($scope.refreshCount % 2) === 0) {
+                containerToShow = document.getElementById("platformsPreviewContainer1");
+                containerToHide = document.getElementById("platformsPreviewContainer2");
+            } else {
+                containerToShow = document.getElementById("platformsPreviewContainer2");
+                containerToHide = document.getElementById("platformsPreviewContainer1");
+            }
 
-            var iframe = document.createElement("iframe");
+            containerToShow.innerHTML = "";
+
+            let iframe = document.createElement("iframe");
             iframe.style.width = "100%";
             iframe.style.aspectRatio = "16 / 9";
             iframe.style.border = "0";
             iframe.style.transform = "scale(0.9)";
             iframe.style.transformOrigin = "0 0";
 
-            inactiveContainer.appendChild(iframe);
+            containerToShow.appendChild(iframe);
 
-            var doc = iframe.contentWindow.document;
+            let doc = iframe.contentWindow.document;
             doc.open();
             doc.write(res.html);
             doc.close();
 
-            const script = doc.createElement("script");
-            script.src = "https://cdn.n3o.cloud/connect-6e/platforms/js/platforms.js";
+            let script = doc.createElement("script");
+            script.src = `https://cdn.n3o.cloud/connect-${subscriptionCode}/platforms/js/platforms.js`;
             script.type = "module";
 
             doc.body.appendChild(script);
 
             setTimeout(() => {
-                document.getElementById(activeContainerId).style.display = "none";
-                document.getElementById(inactiveContainerId).style.display = "block";
-
-                [activeContainerId, inactiveContainerId] = [inactiveContainerId, activeContainerId];
+                containerToHide.style.display = "none";
+                containerToHide.innerHTML = "";
+                
+                containerToShow.style.display = "block";
             }, 1000);
         }
 
@@ -67,7 +82,7 @@
         }
 
         function getApiReq(poperties) {
-            var req = {};
+            let req = {};
 
             poperties.forEach(property => {
                 req[property.alias] = property.value

@@ -18,8 +18,8 @@ public class PlatformsBackOfficeController : BackofficeAuthorizedApiController {
     }
 
     [HttpPost("previewHtml/{contentTypeAlias}")]
-    public async Task<ActionResult<PreviewRes>> GetPreviewHtml(Dictionary<string, object> req) {
-        var res = await _mediator.SendAsync<GetPreviewHtmlQuery, Dictionary<string, object>, PreviewRes>(req);
+    public async Task<ActionResult<PreviewHtmlRes>> GetPreviewHtml(Dictionary<string, object> req) {
+        var res = await _mediator.SendAsync<GetPreviewHtmlQuery, Dictionary<string, object>, PreviewHtmlRes>(req);
         
         return Ok(res);
     }

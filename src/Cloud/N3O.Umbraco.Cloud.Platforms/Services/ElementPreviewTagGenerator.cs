@@ -10,5 +10,4 @@ public abstract class ElementPreviewTagGenerator : PreviewTagGenerator {
     protected abstract ElementType ElementType { get; }
 
     protected override string ContentTypeAlias => ElementType.ContentTypeAlias;
-    protected override string TagName => ElementType.TagName;
 }

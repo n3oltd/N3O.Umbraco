@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
-using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Cloud.Platforms.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
@@ -20,6 +18,7 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Strings;
 using DesignationType = N3O.Umbraco.Cloud.Platforms.Lookups.DesignationType;
+using ElementType = N3O.Umbraco.Cloud.Platforms.Clients.ElementType;
 using GiftType = N3O.Umbraco.Cloud.Platforms.Lookups.GiftType;
 using PublishedDesignationType = N3O.Umbraco.Cloud.Platforms.Clients.DesignationType;
 using PublishedGiftType = N3O.Umbraco.Cloud.Platforms.Clients.GiftType;
@@ -34,7 +33,6 @@ public abstract class DesignationPreviewTagGenerator : PreviewTagGenerator {
     private readonly IMarkupEngine _markupEngine;
     private readonly IMediaLocator _mediaLocator;
     private readonly IPublishedValueFallback _publishedValueFallback;
-    private readonly IHtmlHelper _htmlHelper;
 
     protected DesignationPreviewTagGenerator(ICdnClient cdnClient,
                                              IJsonProvider jsonProvider,
@@ -43,8 +41,7 @@ public abstract class DesignationPreviewTagGenerator : PreviewTagGenerator {
                                              IUmbracoMapper mapper,
                                              IMarkupEngine markupEngine,
                                              IMediaLocator mediaLocator,
-                                             IPublishedValueFallback publishedValueFallback,
-                                             IHtmlHelper htmlHelper)
+                                             IPublishedValueFallback publishedValueFallback)
         : base(cdnClient, jsonProvider) {
         _jsonProvider = jsonProvider;
         _mediaUrl = mediaUrl;
@@ -53,13 +50,11 @@ public abstract class DesignationPreviewTagGenerator : PreviewTagGenerator {
         _markupEngine = markupEngine;
         _mediaLocator = mediaLocator;
         _publishedValueFallback = publishedValueFallback;
-        _htmlHelper = htmlHelper;
     }
     
     protected abstract DesignationType DesignationType { get; }
 
     protected override string ContentTypeAlias => DesignationType.ContentTypeAlias;
-    protected override string TagName => ElementTypes.DonationForm.TagName;
 
     protected override void PopulatePreviewData(IReadOnlyDictionary<string, object> content,
                                                 Dictionary<string, object> previewData) {
@@ -86,7 +81,7 @@ public abstract class DesignationPreviewTagGenerator : PreviewTagGenerator {
         
         var publishedDonationForm = new PublishedDonationForm();
         publishedDonationForm.Id = content[AliasHelper<DesignationContent>.PropertyAlias(x => x.Key)].ToString();
-        publishedDonationForm.Type = Clients.ElementType.DonationForm;
+        publishedDonationForm.Type = ElementType.DonationForm;
         publishedDonationForm.Designation = publishedDesignation;
 
         previewData["publishedForm"] = publishedDonationForm;
@@ -120,7 +115,7 @@ public abstract class DesignationPreviewTagGenerator : PreviewTagGenerator {
     
     protected T GetDataListValue<T>(IReadOnlyDictionary<string, object> content, string alias) where T : ILookup {
         if (content.ContainsKey(alias)) {
-            var strValue =  content[alias].ToString();
+            var strValue = content[alias].ToString();
 
             if (strValue.HasValue() && strValue != "[]") {
                 var id = JArray.Parse(strValue)[0].ToString();

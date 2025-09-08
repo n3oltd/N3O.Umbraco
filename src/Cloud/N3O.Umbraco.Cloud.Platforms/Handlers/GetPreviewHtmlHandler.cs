@@ -9,22 +9,20 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Cloud.Platforms.Handlers;
 
-public class GetPreviewHtmlHandler : IRequestHandler<GetPreviewHtmlQuery, Dictionary<string, object>, PreviewRes> {
+public class GetPreviewHtmlHandler : IRequestHandler<GetPreviewHtmlQuery, Dictionary<string, object>, PreviewHtmlRes> {
     private readonly IReadOnlyList<IPreviewTagGenerator> _previewTagGenerators;
 
     public GetPreviewHtmlHandler(IEnumerable<IPreviewTagGenerator> previewTagGenerators) {
         _previewTagGenerators = previewTagGenerators.ApplyAttributeOrdering();
     }
     
-    public async Task<PreviewRes> Handle(GetPreviewHtmlQuery req, CancellationToken cancellationToken) {
+    public async Task<PreviewHtmlRes> Handle(GetPreviewHtmlQuery req, CancellationToken cancellationToken) {
         var previewTagGenerator = req.ContentTypeAlias.Run(x => _previewTagGenerators.FirstOrDefault(y => y.CanGeneratePreview(x)),
                                                            true);
-
-        var res = await previewTagGenerator.GeneratePreviewTagAsync(req.Model);
         
-        var previewRes = new PreviewRes();
-        previewRes.Html = res;
+        var res = new PreviewHtmlRes();
+        res.Html = await previewTagGenerator.GeneratePreviewTagAsync(req.Model);
 
-        return previewRes;
+        return res;
     }
 }

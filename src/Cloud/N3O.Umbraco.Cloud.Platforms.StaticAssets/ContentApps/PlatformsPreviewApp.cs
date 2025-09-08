@@ -8,6 +8,9 @@ using Umbraco.Cms.Core.Services;
 namespace N3O.Umbraco.Cloud.Platforms;
 
 public class PlatformsPreviewApp : IContentAppFactory {
+    private static readonly string[] CompositionAliases =
+        [PlatformsConstants.Designations.CompositionAlias, PlatformsConstants.Elements.CompositionAlias];
+    
     private readonly IContentTypeService _contentTypeService;
 
     public PlatformsPreviewApp(IContentTypeService contentTypeService) {
@@ -22,9 +25,8 @@ public class PlatformsPreviewApp : IContentAppFactory {
         }
 
         var contentType = _contentTypeService.Get(content.ContentTypeId);
-        var compositionAliases = contentType.CompositionAliases();
         
-        if (!compositionAliases.ContainsAny([PlatformsConstants.Designations.CompositionAlias, PlatformsConstants.Elements.CompositionAlias], true)) {
+        if (!contentType.CompositionAliases().ContainsAny(CompositionAliases, true)) {
             return null;
         }
 
