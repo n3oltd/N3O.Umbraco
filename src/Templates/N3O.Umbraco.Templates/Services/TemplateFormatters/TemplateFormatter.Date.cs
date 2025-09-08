@@ -3,8 +3,8 @@ using NodaTime;
 
 namespace N3O.Umbraco.Templates;
 
-public class DateMergeFormatter : MergeFormatter<LocalDate?> {
-    public DateMergeFormatter(IFormatter formatter) : base(formatter) { }
+public class DateTemplateFormatter : TemplateFormatter<LocalDate?> {
+    public DateTemplateFormatter(IFormatter formatter) : base(formatter) { }
 
     protected override string Format(LocalDate? value) {
         return Formatter.DateTime.FormatDate(value);

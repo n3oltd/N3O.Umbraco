@@ -3,8 +3,8 @@ using System;
 
 namespace N3O.Umbraco.Templates;
 
-public abstract class MergeFormatter<TValue> : IMergeFormatter {
-    protected MergeFormatter(IFormatter formatter) {
+public abstract class TemplateFormatter<TValue> : ITemplateFormatter {
+    protected TemplateFormatter(IFormatter formatter) {
         Formatter = formatter;
     }
 
