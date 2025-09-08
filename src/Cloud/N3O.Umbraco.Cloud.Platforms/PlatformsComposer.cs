@@ -8,6 +8,8 @@ namespace N3O.Umbraco.Cloud.Platforms;
 public class PlatformsComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddOpenApiDocument(PlatformsConstants.BackOfficeApiName);
+
+        builder.Services.AddScoped<IPlatformsPageAccessor, PlatformsPageAccessor>();
         
         RegisterAll(t => t.ImplementsInterface<IPreviewTagGenerator>(),
                     t => builder.Services.AddTransient(typeof(IPreviewTagGenerator), t));

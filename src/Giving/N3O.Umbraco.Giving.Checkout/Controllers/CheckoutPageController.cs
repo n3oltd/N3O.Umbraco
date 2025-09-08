@@ -5,8 +5,8 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Checkout.Content;
-using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Hosting;
+using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Pages;
 using System;
 using System.Threading;
@@ -52,7 +52,7 @@ public class CheckoutPageController : PageController {
             string url;
 
             if (checkout == null) {
-                url = _contentCache.Single<DonatePageContent>().Content().AbsoluteUrl();
+                url = _contentCache.Special(SpecialPages.Donate).AbsoluteUrl();
             } else if (checkout.IsComplete) {
                 url = _contentCache.Single<CheckoutCompletePageContent>().Content().AbsoluteUrl();
             } else {

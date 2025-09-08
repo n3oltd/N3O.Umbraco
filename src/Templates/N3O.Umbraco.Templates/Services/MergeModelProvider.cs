@@ -5,7 +5,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Templates;
 
 public abstract class MergeModelProvider<TModel> : IMergeModelProvider {
-    public virtual bool IsProviderFor(IPublishedContent content) => true;
+    public virtual Task<bool> IsProviderForAsync(IPublishedContent content) => Task.FromResult(true);
 
     public async Task<object> GetAsync(IPublishedContent content, CancellationToken cancellationToken = default) {
         return await GetModelAsync(content, cancellationToken);
@@ -17,8 +17,8 @@ public abstract class MergeModelProvider<TModel> : IMergeModelProvider {
 }
 
 public abstract class MergeModelProvider<TContent, TModel> : IMergeModelProvider where TContent : IPublishedContent {
-    public virtual bool IsProviderFor(IPublishedContent content) {
-        return content.GetType().IsAssignableTo(typeof(TContent));
+    public virtual Task<bool> IsProviderForAsync(IPublishedContent content) {
+        return Task.FromResult(content.GetType().IsAssignableTo(typeof(TContent)));
     }
 
     public async Task<object> GetAsync(IPublishedContent content, CancellationToken cancellationToken = default) {

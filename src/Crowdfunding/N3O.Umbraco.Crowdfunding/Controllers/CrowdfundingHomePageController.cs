@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Hosting;
+using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Pages;
 using System;
 using System.Threading;
@@ -36,7 +37,7 @@ public class CrowdfundingHomePageController : PageController {
 
     public override async Task<IActionResult> Index(CancellationToken cancellationToken) {
         if (_crowdfundingRouter.CurrentPage == null) {
-            return Redirect<NotFoundPageContent>();
+            return Redirect(SpecialPages.NotFound);
         } else if (_crowdfundingRouter.CurrentPage.NoCache) {
             Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
             Response.Headers["Expires"] = "-1";

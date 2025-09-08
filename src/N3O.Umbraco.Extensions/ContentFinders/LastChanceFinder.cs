@@ -1,5 +1,6 @@
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Pages;
+using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Redirects;
 using System.Net;
 using System.Threading.Tasks;
@@ -25,7 +26,7 @@ public class LastChanceFinder : IContentLastChanceFinder {
         if (request != null && request.ResponseStatusCode == 404) {
             var notFound = (int) HttpStatusCode.NotFound;
             request.SetResponseStatus(notFound);
-            request.SetPublishedContent(_contentCache.Single<NotFoundPageContent>()?.Content());
+            request.SetPublishedContent(_contentCache.Special(SpecialPages.NotFound));
 
             return Task.FromResult(true);
         }

@@ -3,8 +3,8 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
-using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Localization;
+using N3O.Umbraco.Lookups;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,6 @@ namespace N3O.Umbraco.Giving.Cart.Models;
 
 public class CartModel {
     private static readonly string CheckoutPageAlias = "checkoutPage";
-    private static readonly string DonatePageAlias = AliasHelper<DonatePageContent>.ContentTypeAlias();
     
     private readonly IFormatter _formatter;
 
@@ -34,7 +33,7 @@ public class CartModel {
         TotalText = GetTotalText(donation, regularGiving);
         TotalItems = donation.Allocations.Count() + regularGiving.Allocations.Count();
         CheckoutUrl = contentCache.Single(CheckoutPageAlias)?.Url();
-        DonateUrl = contentCache.Single(DonatePageAlias)?.Url();
+        DonateUrl = contentCache.Special(SpecialPages.Donate)?.Url();
     }
 
     public Currency Currency { get; }

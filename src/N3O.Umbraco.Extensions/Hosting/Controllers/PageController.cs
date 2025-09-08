@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Pages;
 using System;
 using System.Threading;
@@ -45,15 +46,19 @@ public class PageController : RenderController {
         return CurrentTemplate(viewModel);
     }
 
+    protected IActionResult Redirect(SpecialContent specialContent) {
+        var publishedContent = _contentCache.Special(specialContent);
+
+        return Redirect(publishedContent);
+    }
+    
     protected IActionResult Redirect<T>() {
         var content = _contentCache.Single<T>();
 
         if (content is IPublishedContent publishedContent) {
-            return new RedirectToUmbracoPageResult(publishedContent, _publishedUrlProvider, _umbracoContextAccessor);
+            return Redirect(publishedContent);
         } else if (content is UmbracoContent<T> umbracoContent) {
-            return new RedirectToUmbracoPageResult(umbracoContent.Content(),
-                                                   _publishedUrlProvider,
-                                                   _umbracoContextAccessor);
+            return Redirect(umbracoContent.Content());
         } else {
             throw new Exception($"{typeof(T)} must be {nameof(IPublishedContent)} or {nameof(UmbracoContent<T>)}");
         }
@@ -72,5 +77,9 @@ public class PageController : RenderController {
         var viewModel = factory.Create(CurrentPage, pageModuleData);
 
         return viewModel;
+    }
+    
+    private IActionResult Redirect(IPublishedContent publishedContent) {
+        return new RedirectToUmbracoPageResult(publishedContent, _publishedUrlProvider, _umbracoContextAccessor);
     }
 }
