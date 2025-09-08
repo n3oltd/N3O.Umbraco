@@ -12,13 +12,13 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
-public class ElementRemovingNotification :
+public class ElementRemoving :
     INotificationAsyncHandler<ContentUnpublishingNotification>,
     INotificationAsyncHandler<ContentMovingToRecycleBinNotification> {
     private readonly IContentLocator _contentLocator;
     private readonly IContentTypeService _contentTypeService;
 
-    public ElementRemovingNotification(IContentLocator contentLocator, IContentTypeService contentTypeService) {
+    public ElementRemoving(IContentLocator contentLocator, IContentTypeService contentTypeService) {
         _contentLocator = contentLocator;
         _contentTypeService = contentTypeService;
     }

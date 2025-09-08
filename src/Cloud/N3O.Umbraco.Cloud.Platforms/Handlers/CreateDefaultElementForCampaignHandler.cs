@@ -15,8 +15,8 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Handlers;
 
-public class
-    CreateDefaultElementForCampaignHandler : IRequestHandler<CreateDefaultElementForCampaignCommand, None, None> {
+public class CreateDefaultElementForCampaignHandler
+    : IRequestHandler<CreateDefaultElementForCampaignCommand, None, None> {
     private readonly IContentLocator _contentLocator;
     private readonly ICoreScopeProvider _coreScopeProvider;
     private readonly IContentEditor _contentEditor;
@@ -42,7 +42,7 @@ public class
         var buttonCreated = CreateDefaultElement(campaign, ElementTypes.DonationForm);
 
         if (formCreated || buttonCreated) {
-            // TODO have to do this as we are suppressing notifications. The cache is not rebuilt if we do this
+            // TODO Required for now as otherwise cache is not rebuilt
             _distributedCache.RefreshAllPublishedSnapshot();
             
             _backgroundJob.EnqueueCommand<PublishPlatformsContentCommand>();
@@ -72,10 +72,9 @@ public class
             }
             
 
-            // TODO have to do this bcz when notification handlers are raised, a separate umbraco scope is created if 
-            // any of the notification handlers have any service that access the database. Issue is resolved and
-            // scheduled for next release
-            // https://github.com/umbraco/Umbraco-CMS/issues/18977
+            // TODO have to do this because when notification handlers are raised, a separate umbraco scope is created
+            // if any of the notification handlers have any service that access the database. Issue is resolved and
+            // scheduled for next release https://github.com/umbraco/Umbraco-CMS/issues/18977
             using var scope = _coreScopeProvider.CreateCoreScope(autoComplete: true);
 
             using var _ = scope.Notifications.Suppress();

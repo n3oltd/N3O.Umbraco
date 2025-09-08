@@ -14,13 +14,13 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
-public class CampaignRemovingNotification :
+public class CampaignRemoving :
     INotificationAsyncHandler<ContentUnpublishingNotification>,
     INotificationAsyncHandler<ContentMovingToRecycleBinNotification> {
     private readonly IContentLocator _contentLocator;
     private readonly IContentTypeService _contentTypeService;
 
-    public CampaignRemovingNotification(IContentLocator contentLocator, IContentTypeService contentTypeService) {
+    public CampaignRemoving(IContentLocator contentLocator, IContentTypeService contentTypeService) {
         _contentLocator = contentLocator;
         _contentTypeService = contentTypeService;
     }

@@ -13,21 +13,21 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
-public class DesignationRemovingNotification :
+public class DesignationRemoving :
     INotificationAsyncHandler<ContentUnpublishingNotification>,
     INotificationAsyncHandler<ContentMovingToRecycleBinNotification> {
     private readonly IContentLocator _contentLocator;
     private readonly IContentTypeService _contentTypeService;
 
-    public DesignationRemovingNotification(IContentLocator contentLocator, IContentTypeService contentTypeService) {
+    public DesignationRemoving(IContentLocator contentLocator, IContentTypeService contentTypeService) {
         _contentLocator = contentLocator;
         _contentTypeService = contentTypeService;
     }
 
     public Task HandleAsync(ContentUnpublishingNotification notification, CancellationToken cancellationToken) {
         var designationsBeingUnpublished = notification.UnpublishedEntities
-                                                    .Where(x => x.IsDesignation(_contentTypeService))
-                                                    .ToList();
+                                                       .Where(x => x.IsDesignation(_contentTypeService))
+                                                       .ToList();
         
         if (designationsBeingUnpublished.Any() && !OtherDesignationsExist(designationsBeingUnpublished)) {
             notification.CancelWithError("Cannot unpublish the default designation");

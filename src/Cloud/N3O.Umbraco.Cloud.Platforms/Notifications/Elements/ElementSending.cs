@@ -13,9 +13,9 @@ using Umbraco.Cms.Core.Models.ContentEditing;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Extensions;
 
-namespace N3O.Umbraco.Cloud.Platforms.Notifications.Elements;
+namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
-public class ElementSendingNotification : INotificationAsyncHandler<SendingContentNotification> {
+public class ElementSending : INotificationAsyncHandler<SendingContentNotification> {
     public Task HandleAsync(SendingContentNotification notification, CancellationToken cancellationToken) {
         var isDonationForm = notification.Content.ContentTypeAlias.EqualsInvariant(AliasHelper<DonationFormElementContent>.ContentTypeAlias());
         var isDonateButton = notification.Content.ContentTypeAlias.EqualsInvariant(AliasHelper<DonateButtonElementContent>.ContentTypeAlias());
@@ -43,7 +43,7 @@ public class ElementSendingNotification : INotificationAsyncHandler<SendingConte
         }
     }
     
-    // TODO Moved here from published notification handler bcz had to suppress notifications while creating default elements
+    // TODO Moved here from published notification handler to suppress notifications while creating default elements
     private void SetEmbedCode(ContentVariantDisplay variant, string contentTypeAlias, Guid contentId) {
         var type = StaticLookups.GetAll<ElementType>().Single(x => x.ContentTypeAlias.EqualsInvariant(contentTypeAlias));
             

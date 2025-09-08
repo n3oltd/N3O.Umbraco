@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Notifications;
 
-namespace N3O.Umbraco.Cloud.Platforms.Notifications.Elements;
+namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class ElementPublishing : INotificationAsyncHandler<ContentPublishingNotification> {
     public Task HandleAsync(ContentPublishingNotification notification, CancellationToken cancellationToken) {
