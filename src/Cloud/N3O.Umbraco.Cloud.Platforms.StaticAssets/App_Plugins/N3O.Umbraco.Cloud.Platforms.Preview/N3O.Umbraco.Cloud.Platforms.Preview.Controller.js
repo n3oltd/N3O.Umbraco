@@ -60,7 +60,7 @@
             doc.close();
 
             let script = doc.createElement("script");
-            script.src = `https://cdn.n3o.cloud/connect-${subscriptionCode}/platforms/js/platforms.js`;
+            script.src = `https://cdn.n3o.cloud/connect-${subscriptionCode}/platforms-js/platforms.js`;
             script.type = "module";
 
             doc.body.appendChild(script);

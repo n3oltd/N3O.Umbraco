@@ -102,13 +102,13 @@ public abstract class DesignationPreviewTagGenerator : PreviewTagGenerator {
         var fundDimensionOptions = GetFundDimensionOptions(content);
         
         var publishedFundDimensions = new PublishedDesignationFundDimensions();
-        publishedFundDimensions.Dimension1 = dimension1?.ToPublishedDesignationFundDimension(fundDimensionOptions?.Dimension1);
+        publishedFundDimensions.Dimension1 = dimension1.ToPublishedDesignationFundDimension(fundDimensionOptions?.Dimension1);
         
-        publishedFundDimensions.Dimension2 = dimension2?.ToPublishedDesignationFundDimension(fundDimensionOptions?.Dimension2);
+        publishedFundDimensions.Dimension2 = dimension2.ToPublishedDesignationFundDimension(fundDimensionOptions?.Dimension2);
         
-        publishedFundDimensions.Dimension3 = dimension3?.ToPublishedDesignationFundDimension(fundDimensionOptions?.Dimension3);
+        publishedFundDimensions.Dimension3 = dimension3.ToPublishedDesignationFundDimension(fundDimensionOptions?.Dimension3);
         
-        publishedFundDimensions.Dimension4 = dimension4?.ToPublishedDesignationFundDimension(fundDimensionOptions?.Dimension4);
+        publishedFundDimensions.Dimension4 = dimension4.ToPublishedDesignationFundDimension(fundDimensionOptions?.Dimension4);
 
         return publishedFundDimensions;
     }
