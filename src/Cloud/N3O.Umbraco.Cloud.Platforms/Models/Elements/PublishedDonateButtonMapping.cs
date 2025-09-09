@@ -23,6 +23,7 @@ public class PublishedDonateButtonMapping : IMapDefinition {
     private void Map(ElementContent src, PublishedDonateButton dest, MapperContext ctx) {
         dest.Id = src.Key.ToString();
         dest.Type = ElementType.DonateButton;
+        dest.System = src.IsSystemGenerated;
         dest.Label = src.DonateButton.Label;
 
         if (src.Campaign.HasValue()) {

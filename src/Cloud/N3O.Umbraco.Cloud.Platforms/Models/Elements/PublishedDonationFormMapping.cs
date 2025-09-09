@@ -23,6 +23,7 @@ public class PublishedDonationFormMapping : IMapDefinition {
     private void Map(ElementContent src, PublishedDonationForm dest, MapperContext ctx) {
         dest.Id = src.Key.ToString();
         dest.Type = ElementType.DonationForm;
+        dest.System = src.IsSystemGenerated;
 
         if (src.Campaign.HasValue()) {
             dest.Campaign = ctx.Map<CampaignContent, PublishedCampaignSummary>(src.Campaign);
