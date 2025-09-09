@@ -8,9 +8,7 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Notifications;
-using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Core.Services;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
@@ -18,12 +16,9 @@ public class ElementRemoving :
     INotificationAsyncHandler<ContentUnpublishingNotification>,
     INotificationAsyncHandler<ContentMovingToRecycleBinNotification> {
     private readonly IContentTypeService _contentTypeService;
-    private readonly IBackOfficeSecurityAccessor _backOfficeSecurityAccessor;
 
-    public ElementRemoving(IContentTypeService contentTypeService,
-                           IBackOfficeSecurityAccessor backOfficeSecurityAccessor) {
+    public ElementRemoving(IContentTypeService contentTypeService) {
         _contentTypeService = contentTypeService;
-        _backOfficeSecurityAccessor = backOfficeSecurityAccessor;
     }
 
     public Task HandleAsync(ContentUnpublishingNotification notification, CancellationToken cancellationToken) {
@@ -32,9 +27,7 @@ public class ElementRemoving :
                                                     .ToList();
         
         if (elementsBeingUnpublished.Any(IsDefaultElement)) {
-            if (!IsAdmin()) {
-                notification.CancelWithError("Cannot unpublish the default element");
-            }
+            notification.CancelWithError("Cannot unpublish the default element");
         }
         
         return Task.CompletedTask;
@@ -47,18 +40,10 @@ public class ElementRemoving :
                                                .ToList();
         
         if (elementsBeingDeleted.Any(IsDefaultElement)) {
-            if (!IsAdmin()) {
-                notification.CancelWithError("Cannot delete the default element");
-            }
+            notification.CancelWithError("Cannot delete the default element");
         }
         
         return Task.CompletedTask;
-    }
-
-    private bool IsAdmin() {
-        var user = _backOfficeSecurityAccessor.BackOfficeSecurity?.CurrentUser;
-        
-        return user?.IsAdmin() == true;
     }
     
     private bool IsDefaultElement(IContent content) {
