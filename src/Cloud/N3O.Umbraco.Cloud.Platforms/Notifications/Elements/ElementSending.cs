@@ -11,18 +11,25 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Models.ContentEditing;
 using Umbraco.Cms.Core.Notifications;
+using Umbraco.Cms.Core.Security;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class ElementSending : INotificationAsyncHandler<SendingContentNotification> {
+    private readonly IBackOfficeSecurityAccessor _backOfficeSecurityAccessor;
+    
+    public ElementSending(IBackOfficeSecurityAccessor backOfficeSecurityAccessor) {
+        _backOfficeSecurityAccessor = backOfficeSecurityAccessor;
+    }
+
     public Task HandleAsync(SendingContentNotification notification, CancellationToken cancellationToken) {
         var isDonationForm = notification.Content.ContentTypeAlias.EqualsInvariant(AliasHelper<DonationFormElementContent>.ContentTypeAlias());
         var isDonateButton = notification.Content.ContentTypeAlias.EqualsInvariant(AliasHelper<DonateButtonElementContent>.ContentTypeAlias());
 
         if (isDonationForm || isDonateButton) {
             foreach (var variant in notification.Content.Variants) {
-                SetCampaignReadOnly(variant);
+                SetPropertiesReadOnly(variant);
                 SetEmbedCode(variant, notification.Content.ContentTypeAlias, notification.Content.Key.GetValueOrDefault());
                 HideCalculatedTab(variant);
             }
@@ -31,7 +38,7 @@ public class ElementSending : INotificationAsyncHandler<SendingContentNotificati
         return Task.CompletedTask;
     }
     
-    private void SetCampaignReadOnly(ContentVariantDisplay variant) {
+    private void SetPropertiesReadOnly(ContentVariantDisplay variant) {
         var calculatedTab = variant.Tabs.Single(x => x.Alias.EqualsInvariant("calculated"));
         var isSystemGenerated = IsSystemGenerated(calculatedTab);
                 
@@ -59,8 +66,12 @@ public class ElementSending : INotificationAsyncHandler<SendingContentNotificati
 
     private void HideCalculatedTab(ContentVariantDisplay variant) {
         var calculatedTab = variant.Tabs.Single(x => x.Alias.EqualsInvariant("calculated"));
+
+        calculatedTab.Properties.Do(x => x.Readonly = true);
         
-        variant.Tabs = variant.Tabs.Except(calculatedTab);
+        if (_backOfficeSecurityAccessor.BackOfficeSecurity?.CurrentUser?.IsAdmin() == false) {
+            variant.Tabs = variant.Tabs.Except(calculatedTab);
+        }
     }
 
     private bool IsSystemGenerated(Tab<ContentPropertyDisplay> calculatedTab) {
