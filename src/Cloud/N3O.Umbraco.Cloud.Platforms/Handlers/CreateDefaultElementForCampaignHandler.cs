@@ -39,7 +39,7 @@ public class CreateDefaultElementForCampaignHandler
         var campaign = req.ContentId.Run(x => _contentLocator.ById<CampaignContent>(x), true);
         
         var formCreated = CreateDefaultElement(campaign, ElementTypes.DonationForm);
-        var buttonCreated = CreateDefaultElement(campaign, ElementTypes.DonationForm);
+        var buttonCreated = CreateDefaultElement(campaign, ElementTypes.DonateButton);
 
         if (formCreated || buttonCreated) {
             // TODO Required for now as otherwise cache is not rebuilt
