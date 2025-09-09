@@ -19,7 +19,7 @@
             populateMetadata(apiReq, editorState.current)
 
             let subscriptionCodeRes = await fetch(`/umbraco/backoffice/api/cloudBackOffice/subscription/code`);
-            let subscriptionCode = await subscriptionCodeRes.text();
+            let subscriptionCode = await subscriptionCodeRes.json();
 
             let apiRes = await fetch(`/umbraco/backoffice/api/platformsBackOffice/previewHtml/${editorState.current.contentTypeAlias}`, {
                 method: "POST",
