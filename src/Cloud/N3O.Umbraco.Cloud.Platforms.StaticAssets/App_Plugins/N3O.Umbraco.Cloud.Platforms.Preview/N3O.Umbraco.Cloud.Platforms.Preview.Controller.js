@@ -1,8 +1,8 @@
 ﻿angular.module("umbraco").controller("N3O.Umbraco.Cloud.Platforms.Preview",
     async function ($scope, editorState, contentEditingHelper) {
-        await loadPreviewAsync(editorState, contentEditingHelper)
-
         $scope.refreshCount = 0;
+
+        await loadPreviewAsync(editorState, contentEditingHelper)
         
         window.setInterval(async function() {
             $scope.refreshCount++;
@@ -70,7 +70,7 @@
                 containerToHide.innerHTML = "";
                 
                 containerToShow.style.display = "block";
-            }, 1000);
+            }, 2000);
         }
 
         function populateMetadata(apiReq, content) {
