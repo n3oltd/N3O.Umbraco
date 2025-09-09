@@ -56,7 +56,7 @@ public class ElementSending : INotificationAsyncHandler<SendingContentNotificati
             
         var tag = new TagBuilder(type.TagName);
         
-        tag.Attributes.Add("id", contentId.ToString());
+        tag.Attributes.Add("form-id", contentId.ToString());
         
         var embedTab = variant.Tabs.Single(x => x.Alias.EqualsInvariant("embed"));
         var embedProperty = GetProperty(embedTab, AliasHelper<ElementContent>.PropertyAlias(x => x.EmbedCode));
