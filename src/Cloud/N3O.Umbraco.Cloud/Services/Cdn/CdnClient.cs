@@ -49,9 +49,15 @@ public class CdnClient : ICdnClient {
 
         return res;
     }
+    
+    public async Task<(Guid, PublishedFileKind, IReadOnlyDictionary<string, object>)> DownloadPublishedPageAsync(string path, 
+                                                                                                                 CancellationToken cancellationToken = default) {
+        var pagePath = $"pages/{path.Trim('/')}/index.json";
+        
+        return await DownloadPublishedContentAsync(pagePath, cancellationToken);
+    }
 
-    public async Task<(PublishedFileKind, IReadOnlyDictionary<string, object>)> DownloadPublishedContentAsync(string publishedPath,
-                                                                                                              CancellationToken cancellationToken = default) {
+    public async Task<(Guid, PublishedFileKind, IReadOnlyDictionary<string, object>)> DownloadPublishedContentAsync(string publishedPath, CancellationToken cancellationToken = default) {
         var publishedUrl = GetPublishedContentUrl(publishedPath);
 
         var res = await ContentCache.GetOrCreateAsync(GetCacheKey(publishedUrl, typeof(object).FullName), async c => {
@@ -64,15 +70,17 @@ public class CdnClient : ICdnClient {
                     var jObject = JObject.Parse(json);
                     var kindId = jObject["kind"]?.ToString();
                     var kind = StaticLookups.FindById<PublishedFileKind>(kindId);
+                    
+                    Guid.TryParse(jObject["id"]?.ToString(), out var id);
 
                     if (kind.HasValue()) {
-                        return (kind, jObject.ToObject<Dictionary<string, object>>());
+                        return (id, kind, jObject.ToObject<Dictionary<string, object>>());
                     } else {
-                        return (null, null);
+                        return (Guid.Empty, null, null);
                     }
                 }
             } catch (HttpRequestException e) when (e.StatusCode == System.Net.HttpStatusCode.NotFound) {
-                return (null, null);
+                return (Guid.Empty, null, null);
             }
         });
 

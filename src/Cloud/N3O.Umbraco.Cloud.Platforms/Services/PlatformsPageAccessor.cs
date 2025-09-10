@@ -10,7 +10,6 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IContentCache _contentCache;
     private readonly ICdnClient _cdnClient;
-    private PlatformsPage _platformsPage;
 
     public PlatformsPageAccessor(IHttpContextAccessor httpContextAccessor,
                                  IContentCache contentCache,
@@ -21,23 +20,27 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
     }
     
     public async Task<PlatformsPage> GetAsync() {
-        _platformsPage ??= await GetPlatformsPageAsync();
-
-        return _platformsPage;
-    }
-
-    private async Task<PlatformsPage> GetPlatformsPageAsync() {
         var requestUri = _httpContextAccessor.HttpContext?.Request.Uri();
         var platformsPath = PlatformsPathParser.ParseUri(_contentCache, requestUri);
 
-        if (platformsPath.HasValue()) {
-            var (kind, mergeModel) = await _cdnClient.DownloadPublishedContentAsync(platformsPath);
+        while (platformsPath.HasValue()) {
+            var (id, kind, mergeModel) = await _cdnClient.DownloadPublishedPageAsync(platformsPath);
 
             if (kind.HasValue()) {
-                return new PlatformsPage(kind, mergeModel);
+                var platformsPage = new PlatformsPage(id, kind, mergeModel);
+                
+                return platformsPage;
+            }
+
+            var lastPathSegment = platformsPath.StripTrailingSlash().LastIndexOf('/');
+            
+            if (lastPathSegment > 0) {
+                platformsPath = platformsPath.Substring(0, lastPathSegment);
+            } else {
+                break;
             }
         }
-        
+
         return null;
     }
 }
