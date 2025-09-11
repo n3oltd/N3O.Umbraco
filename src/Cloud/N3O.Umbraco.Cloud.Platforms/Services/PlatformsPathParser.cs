@@ -12,6 +12,18 @@ public static class PlatformsPathParser {
     private static IPublishedContent _donatePage;
     private static string _donatePath;
     
+    public static string GetDonatePath(IContentCache contentCache) {
+        if (_donatePath == null) {
+            var donatePage = GetDonatePage(contentCache);
+            
+            if (donatePage.HasValue()) {
+                _donatePath = donatePage.RelativeUrl().StripTrailingSlash();
+            }
+        }
+
+        return _donatePath;
+    }
+    
     public static bool IsPlatformsDonatePage(IContentCache contentCache, Uri requestUri) {
         var requestedPath = requestUri.GetAbsolutePathDecoded().ToLowerInvariant().StripTrailingSlash();
         var donatePath = GetDonatePath(contentCache);
@@ -28,18 +40,6 @@ public static class PlatformsPathParser {
         } else {
             return null;
         }
-    }
-    
-    private static string GetDonatePath(IContentCache contentCache) {
-        if (_donatePath == null) {
-            var donatePage = GetDonatePage(contentCache);
-            
-            if (donatePage.HasValue()) {
-                _donatePath = donatePage.RelativeUrl().StripTrailingSlash();
-            }
-        }
-
-        return _donatePath;
     }
     
     private static IPublishedContent GetDonatePage(IContentCache contentCache) {
