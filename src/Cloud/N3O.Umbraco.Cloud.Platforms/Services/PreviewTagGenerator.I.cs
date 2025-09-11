@@ -5,5 +5,5 @@ namespace N3O.Umbraco.Cloud.Platforms;
 
 public interface IPreviewTagGenerator {
     bool CanGeneratePreview(string contentTypeAlias);
-    Task<string> GeneratePreviewTagAsync(IReadOnlyDictionary<string, object> content);
+    Task<(string ETag, string Html)> GeneratePreviewTagAsync(IReadOnlyDictionary<string, object> content);
 }

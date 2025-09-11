@@ -1,6 +1,6 @@
 ﻿angular.module("umbraco").controller("N3O.Umbraco.Cloud.Platforms.Preview",
     async function ($scope, editorState, contentEditingHelper) {
-        $scope.previousJson = null;
+        $scope.previousETag = null;
 
         await loadPreviewAsync(editorState, contentEditingHelper)
         
@@ -30,7 +30,7 @@
 
             let res = await apiRes.json();
 
-            if (!shouldRefresh(res.html)) {
+            if (res.eTag !== previousETag) {
                 return;
             }
 
@@ -62,7 +62,7 @@
             window.setInterval(function () {
                 iframe.style.display = "block";
                 container.style.display = "block";
-            }, 2000)
+            }, 2000);
         }
 
         function populateMetadata(apiReq, content) {
@@ -81,31 +81,5 @@
             });
 
             return req;
-        }
-
-        function shouldRefresh(html) {
-            try {
-                let parser = new DOMParser();
-                let doc = parser.parseFromString(html, "text/html");
-                let element = doc.querySelector("[json]");
-
-                var newJson = JSON.parse(element.getAttribute("json"));
-
-                let shouldRefresh = false;
-
-                if ($scope.previousJson === undefined || $scope.previousJson === null) {
-                    shouldRefresh = true;
-                } else {
-                    const isEqual = _.isEqual(newJson, $scope.previousJson);
-
-                    shouldRefresh = !isEqual;
-                }
-
-                $scope.previousJson = newJson;
-
-                return shouldRefresh;
-            } catch {
-                return true;
-            }
         }
     });

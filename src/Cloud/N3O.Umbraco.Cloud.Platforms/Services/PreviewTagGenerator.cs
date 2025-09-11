@@ -23,10 +23,13 @@ public abstract class PreviewTagGenerator : IPreviewTagGenerator {
         return contentTypeAlias.EqualsInvariant(ContentTypeAlias);
     }
     
-    public async Task<string> GeneratePreviewTagAsync(IReadOnlyDictionary<string, object> content) {
+    public async Task<(string ETag, string Html)> GeneratePreviewTagAsync(IReadOnlyDictionary<string, object> content) {
         var json = await GeneratePreviewJsonAsync(content);
+
+        var etag = json.Sha1();
+        var html = $"<n3o-donation-form-modal form-id='{Guid.NewGuid()}' preview='true' json='{HtmlUtils.HtmlEncode(json)}'></n3o-donation-form-modal>";
         
-        return $"<n3o-donation-form-modal form-id='{Guid.NewGuid()}' preview='true' json='{HtmlUtils.HtmlEncode(json)}'></n3o-donation-form-modal>";
+        return (etag, html);
     }
     
     protected abstract string ContentTypeAlias { get; }

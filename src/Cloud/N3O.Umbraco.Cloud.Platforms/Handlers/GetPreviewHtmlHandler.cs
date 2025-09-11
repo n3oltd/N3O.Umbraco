@@ -21,7 +21,7 @@ public class GetPreviewHtmlHandler : IRequestHandler<GetPreviewHtmlQuery, Dictio
                                                            true);
         
         var res = new PreviewHtmlRes();
-        res.Html = await previewTagGenerator.GeneratePreviewTagAsync(req.Model);
+        (res.ETag, res.Html) = await previewTagGenerator.GeneratePreviewTagAsync(req.Model);
 
         return res;
     }
