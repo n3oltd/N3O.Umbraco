@@ -4,5 +4,5 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Cloud.Platforms;
 
 public interface IPlatformsPageAccessor {
-    Task<PlatformsPage> GetAsync();
+    Task<(PlatformsPage, bool)> GetAsync();
 }

@@ -35,6 +35,7 @@ public class ElementTypes : StaticLookupsCollection<ElementType> {
                                                           "Donation Form",
                                                           "n3o-donation-form",
                                                           PlatformsConstants.Elements.DonationForm);
+    
     public static ElementType FindByContentTypeAlias(string contentTypeAlias) {
         return StaticLookups.GetAll<ElementType>()
                             .SingleOrDefault(x => x.ContentTypeAlias.EqualsInvariant(contentTypeAlias));
