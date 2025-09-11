@@ -1,12 +1,10 @@
 ﻿angular.module("umbraco").controller("N3O.Umbraco.Cloud.Platforms.Preview",
     async function ($scope, editorState, contentEditingHelper) {
-        $scope.refreshCount = 0;
+        $scope.previousJson = null;
 
         await loadPreviewAsync(editorState, contentEditingHelper)
         
         window.setInterval(async function() {
-            $scope.refreshCount++;
-            
             await loadPreviewAsync(editorState, contentEditingHelper)
         }, 10000);
 
@@ -31,19 +29,14 @@
             });
 
             let res = await apiRes.json();
-            
-            let containerToShow;
-            let containerToHide;
 
-            if (($scope.refreshCount % 2) === 0) {
-                containerToShow = document.getElementById("platformsPreviewContainer1");
-                containerToHide = document.getElementById("platformsPreviewContainer2");
-            } else {
-                containerToShow = document.getElementById("platformsPreviewContainer2");
-                containerToHide = document.getElementById("platformsPreviewContainer1");
+            if (!shouldRefresh(res.html)) {
+                return;
             }
 
-            containerToShow.innerHTML = "";
+            let container = document.getElementById("platformsPreviewContainer");
+
+            container.innerHTML = "";
 
             let iframe = document.createElement("iframe");
             iframe.style.width = "100%";
@@ -51,8 +44,9 @@
             iframe.style.border = "0";
             iframe.style.transform = "scale(0.9)";
             iframe.style.transformOrigin = "0 0";
+            iframe.style.display = "none";
 
-            containerToShow.appendChild(iframe);
+            container.appendChild(iframe);
 
             let doc = iframe.contentWindow.document;
             doc.open();
@@ -65,12 +59,10 @@
 
             doc.body.appendChild(script);
 
-            setTimeout(() => {
-                containerToHide.style.display = "none";
-                containerToHide.innerHTML = "";
-                
-                containerToShow.style.display = "block";
-            }, 2000);
+            window.setInterval(function () {
+                iframe.style.display = "block";
+                container.style.display = "block";
+            }, 2000)
         }
 
         function populateMetadata(apiReq, content) {
@@ -89,5 +81,31 @@
             });
 
             return req;
+        }
+
+        function shouldRefresh(html) {
+            try {
+                let parser = new DOMParser();
+                let doc = parser.parseFromString(html, "text/html");
+                let element = doc.querySelector("[json]");
+
+                var newJson = JSON.parse(element.getAttribute("json"));
+
+                let shouldRefresh = false;
+
+                if ($scope.previousJson === undefined || $scope.previousJson === null) {
+                    shouldRefresh = true;
+                } else {
+                    const isEqual = _.isEqual(newJson, $scope.previousJson);
+
+                    shouldRefresh = !isEqual;
+                }
+
+                $scope.previousJson = newJson;
+
+                return shouldRefresh;
+            } catch {
+                return true;
+            }
         }
     });

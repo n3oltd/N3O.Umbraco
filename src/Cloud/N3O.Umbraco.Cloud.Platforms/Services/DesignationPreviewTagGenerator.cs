@@ -65,7 +65,7 @@ public abstract class DesignationPreviewTagGenerator : PreviewTagGenerator {
         var suggestedGiftType = GetDataListValue<GiftType>(content, AliasHelper<DesignationContent>.PropertyAlias(x => x.SuggestedGiftType));
         
         var publishedDesignation = new PublishedDesignation();
-        publishedDesignation.Id = Guid.NewGuid().ToString();
+        publishedDesignation.Id = content[AliasHelper<DesignationContent>.PropertyAlias(x => x.Key)].ToString();
         publishedDesignation.Name = content[AliasHelper<IPublishedContent>.PropertyAlias(x => x.Name)]?.ToString();
         publishedDesignation.Type = GetPublishedDesignationType();
         publishedDesignation.Image = _mediaUrl.GetMediaUrl(image, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));

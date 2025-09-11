@@ -38,10 +38,10 @@ public abstract class ElementPreviewTagGenerator : PreviewTagGenerator {
     protected override void PopulatePreviewData(IReadOnlyDictionary<string, object> content,
                                                 Dictionary<string, object> previewData) {
         var publishedDonationForm = new PublishedDonationForm();
-        publishedDonationForm.Id = Guid.NewGuid().ToString();
+        publishedDonationForm.Id = content[AliasHelper<ElementContent>.PropertyAlias(x => x.Key)].ToString();
         publishedDonationForm.Type = ElementType.ToEnum<PublishedElementType>();
 
-        var campaignUdi = content[AliasHelper<PublishedDonationForm>.PropertyAlias(x => x.Campaign)]?.ToString();
+        var campaignUdi = content[AliasHelper<ElementContent>.PropertyAlias(x => x.Campaign)]?.ToString();
         
         if (campaignUdi.HasValue()) {
             var campaign = _contentLocator.ById<CampaignContent>(UdiParser.Parse(campaignUdi).ToId().Value);
