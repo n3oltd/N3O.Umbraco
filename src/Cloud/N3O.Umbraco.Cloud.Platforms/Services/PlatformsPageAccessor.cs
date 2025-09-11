@@ -19,19 +19,23 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
         _cdnClient = cdnClient;
     }
     
-    public async Task<PlatformsPage> GetAsync() {
+    public async Task<(PlatformsPage, bool)> GetAsync() {
         var requestUri = _httpContextAccessor.HttpContext?.Request.Uri();
         var platformsPath = PlatformsPathParser.ParseUri(_contentCache, requestUri);
+
+        var isFallback = false;
 
         while (platformsPath.HasValue()) {
             var (id, kind, mergeModel) = await _cdnClient.DownloadPublishedPageAsync(platformsPath);
 
             if (kind.HasValue()) {
-                var platformsPage = new PlatformsPage(id, kind, mergeModel);
+                var platformsPage = new PlatformsPage(id, platformsPath, kind, mergeModel);
                 
-                return platformsPage;
+                return (platformsPage, isFallback);
             }
 
+            isFallback = true;
+            
             var lastPathSegment = platformsPath.StripTrailingSlash().LastIndexOf('/');
             
             if (lastPathSegment > 0) {
@@ -41,6 +45,6 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
             }
         }
 
-        return null;
+        return (null, false);
     }
 }

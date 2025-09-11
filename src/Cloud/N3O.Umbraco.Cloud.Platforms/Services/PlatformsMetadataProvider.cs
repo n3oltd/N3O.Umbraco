@@ -13,13 +13,13 @@ public abstract class PlatformsMetadataProvider : IPlatformsMetadataProvider {
     }
     
     public async Task<bool> IsProviderForAsync() {
-        var platformsPage = await _platformsPageAccessor.GetAsync();
+        var (platformsPage, _) = await _platformsPageAccessor.GetAsync();
 
         return platformsPage?.Kind == Kind;
     }
 
     public async Task<IReadOnlyDictionary<string, object>> GetAsync() {
-        var platformsPage = await _platformsPageAccessor.GetAsync();
+        var (platformsPage, _) = await _platformsPageAccessor.GetAsync();
         
         var metaData = new Dictionary<string, object>();
         metaData.Add(platformsPage.Kind.MetaTagName, platformsPage.Id);
