@@ -1,14 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using N3O.Umbraco.Cloud.Lookups;
-using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
-using System;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Routing;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.ContentFinders;
 
@@ -29,35 +26,33 @@ public class PlatformsContentFinder : IContentFinder {
         var found = false;
         
         var requestUri = _httpContextAccessor.HttpContext?.Request.Uri();
-        var platformsPage = await _platformsPageAccessor.GetAsync();
+        
+        var isPlatformsDonatePage = PlatformsPathParser.IsPlatformsDonatePage(_contentCache, requestUri);
 
-        if (platformsPage.HasValue()) {
-            if (platformsPage.Kind == PublishedFileKinds.Campaign) {
-                request.SetPublishedContent(_contentCache.Special(PlatformsSpecialPages.Campaign));
+        if (isPlatformsDonatePage) {
+            var platformsPage = await _platformsPageAccessor.GetAsync();
 
-                found = true;
-            } else if (platformsPage.Kind == PublishedFileKinds.Designation) {
-                request.SetPublishedContent(_contentCache.Special(PlatformsSpecialPages.Designation));
+            if (platformsPage.HasValue()) {
+                if (platformsPage.Kind == PublishedFileKinds.Campaign) {
+                    request.SetPublishedContent(_contentCache.Special(PlatformsSpecialPages.Campaign));
+
+                    found = true;
+                } else if (platformsPage.Kind == PublishedFileKinds.Designation) {
+                    request.SetPublishedContent(_contentCache.Special(PlatformsSpecialPages.Designation));
+
+                    found = true;
+                }
+            } else {
+                var donatePage = _contentCache.Special(SpecialPages.Donate);
+            
+                request.SetPublishedContent(_contentCache.Special(SpecialPages.Donate));
+            
+                _httpContextAccessor.HttpContext?.Response.Redirect(donatePage.RelativeUrl(), permanent: true);
 
                 found = true;
             }
-        } else if (ShouldRedirectToDonatePage(requestUri)) {
-            var donatePage = _contentCache.Special(SpecialPages.Donate);
-            
-            request.SetPublishedContent(_contentCache.Special(SpecialPages.Donate));
-            
-            _httpContextAccessor.HttpContext?.Response.Redirect(donatePage.RelativeUrl(), permanent: true);
-
-            found = true;
         }
         
         return found;
-    }
-
-    private bool ShouldRedirectToDonatePage(Uri requestUri) {
-        var requestedPath = requestUri.GetAbsolutePathDecoded().ToLowerInvariant().StripTrailingSlash();
-        var donatePath = _contentCache.GetDonatePath();
-
-        return requestedPath.StartsWith(donatePath) && !donatePath.EqualsInvariant(requestedPath);
     }
 }
