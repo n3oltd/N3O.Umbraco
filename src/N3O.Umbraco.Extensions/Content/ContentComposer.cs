@@ -8,6 +8,9 @@ namespace N3O.Umbraco.Content;
 
 public class ContentComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
+        RegisterAll(t => t.ImplementsInterface<IContentRenderabilityFilter>(),
+                    t => builder.Services.AddScoped(typeof(IContentRenderabilityFilter), t));
+        
         RegisterAll(t => t.ImplementsInterface<IContentVisibilityFilter>(),
                     t => builder.Services.AddScoped(typeof(IContentVisibilityFilter), t));
     

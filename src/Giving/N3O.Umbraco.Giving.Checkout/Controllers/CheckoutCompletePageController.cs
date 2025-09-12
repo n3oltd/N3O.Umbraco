@@ -6,6 +6,7 @@ using N3O.Umbraco.Giving.Cart.Context;
 using N3O.Umbraco.Giving.Checkout.Lookups;
 using N3O.Umbraco.Pages;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Routing;
@@ -24,6 +25,7 @@ public class CheckoutCompletePageController : CheckoutStagePageController {
                                           IContentCache contentCache,
                                           IServiceProvider serviceProvider,
                                           ICheckoutAccessor checkoutAccessor,
+                                          IEnumerable<IContentRenderabilityFilter> contentRenderabilityFilters,
                                           CartCookie cartCookie)
         : base(logger,
                compositeViewEngine,
@@ -32,7 +34,8 @@ public class CheckoutCompletePageController : CheckoutStagePageController {
                pagePipeline,
                contentCache,
                serviceProvider,
-               checkoutAccessor) {
+               checkoutAccessor,
+               contentRenderabilityFilters) {
         _cartCookie = cartCookie;
     }
 

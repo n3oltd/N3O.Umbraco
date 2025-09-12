@@ -9,6 +9,7 @@ using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Pages;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models;
@@ -30,14 +31,16 @@ public class CheckoutPageController : PageController {
                                   IContentCache contentCache,
                                   IServiceProvider serviceProvider,
                                   ICheckoutAccessor checkoutAccessor,
-                                  IQueryStringAccessor queryStringAccessor)
+                                  IQueryStringAccessor queryStringAccessor,
+                                  IEnumerable<IContentRenderabilityFilter> contentRenderabilityFilters)
         : base(logger,
                compositeViewEngine,
                umbracoContextAccessor,
                publishedUrlProvider,
                pagePipeline,
                contentCache,
-               serviceProvider) {
+               serviceProvider,
+               contentRenderabilityFilters) {
         _contentCache = contentCache;
         _checkoutAccessor = checkoutAccessor;
         _queryStringAccessor = queryStringAccessor;

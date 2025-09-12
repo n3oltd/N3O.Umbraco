@@ -6,6 +6,7 @@ using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Pages;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Routing;
@@ -24,6 +25,7 @@ public class CrowdfundingHomePageController : PageController {
                                           IPagePipeline pagePipeline,
                                           IContentCache contentCache,
                                           IServiceProvider serviceProvider,
+                                          IEnumerable<IContentRenderabilityFilter> contentRenderabilityFilters,
                                           ICrowdfundingRouter crowdfundingRouter) 
         : base(logger,
                compositeViewEngine,
@@ -31,7 +33,8 @@ public class CrowdfundingHomePageController : PageController {
                publishedUrlProvider,
                pagePipeline,
                contentCache,
-               serviceProvider) {
+               serviceProvider,
+               contentRenderabilityFilters) {
         _crowdfundingRouter = crowdfundingRouter;
     }
 

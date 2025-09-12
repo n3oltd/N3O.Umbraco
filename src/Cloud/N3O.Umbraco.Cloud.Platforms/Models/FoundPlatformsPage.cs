@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Cloud.Lookups;
+using N3O.Umbraco.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,10 @@ public class FoundPlatformsPage : PlatformsPage {
                platformsPage.MergeModel,
                redirectUrl) { }
     
-    public string RedirectUrl { get; set; }
+    public string RedirectUrl { get; }
+    
+    [JsonIgnore]
+    public bool IsRedirect => RedirectUrl.HasValue();
 
     protected override IEnumerable<object> GetAtomicValues() {
         foreach (var item in base.GetAtomicValues()) {
