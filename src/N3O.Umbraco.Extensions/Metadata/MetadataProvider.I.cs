@@ -6,5 +6,5 @@ namespace N3O.Umbraco.Metadata;
 
 public interface IMetadataProvider {
     Task<IEnumerable<MetadataEntry>> GetEntriesAsync(IPublishedContent page);
-    bool IsProviderFor(IPublishedContent page);
+    Task<bool> IsProviderForAsync(IPublishedContent page);
 }

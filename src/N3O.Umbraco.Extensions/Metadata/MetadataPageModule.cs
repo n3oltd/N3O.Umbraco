@@ -1,8 +1,6 @@
 using N3O.Umbraco.Constants;
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Pages;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -18,9 +16,16 @@ public class MetadataPageModule : IPageModule {
 
     public bool ShouldExecute(IPublishedContent page) => true;
 
-    public Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
-        var providers = _allProviders.OrEmpty().Where(x => x.IsProviderFor(page)).ToList();
-        var entries = providers.SelectListAsync(x => x.GetEntriesAsync(page));
+    public async Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
+        var entries = new List<MetadataEntry>();
+
+        foreach (var provider in _allProviders) {
+            if (await provider.IsProviderForAsync(page)) {
+                var newEntries = await provider.GetEntriesAsync(page);
+
+                entries.AddRange(newEntries);
+            }
+        }
 
         return Task.FromResult<object>(entries);
     }

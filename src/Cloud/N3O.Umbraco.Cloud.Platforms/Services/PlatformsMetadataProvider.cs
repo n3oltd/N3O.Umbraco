@@ -1,34 +1,38 @@
 using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Platforms.Models;
+using N3O.Umbraco.Metadata;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Cloud.Platforms;
 
-public abstract class PlatformsMetadataProvider : IPlatformsMetadataProvider {
+public abstract class PlatformsMetadataProvider : IMetadataProvider {
     private readonly IPlatformsPageAccessor _platformsPageAccessor;
     
-    public PlatformsMetadataProvider(IPlatformsPageAccessor platformsPageAccessor) {
+    protected PlatformsMetadataProvider(IPlatformsPageAccessor platformsPageAccessor) {
         _platformsPageAccessor = platformsPageAccessor;
     }
     
-    public async Task<bool> IsProviderForAsync() {
-        var (platformsPage, _) = await _platformsPageAccessor.GetAsync();
+    public async Task<bool> IsProviderForAsync(IPublishedContent _) {
+        var foundPlatformsPage = await _platformsPageAccessor.GetAsync();
 
-        return platformsPage?.Kind == Kind;
+        return foundPlatformsPage?.Kind == Kind;
+    }
+    
+    public async Task<IEnumerable<MetadataEntry>> GetEntriesAsync(IPublishedContent _) {
+        var foundPlatformsPage = await _platformsPageAccessor.GetAsync();
+        
+        var entries = new List<MetadataEntry>();
+        
+        entries.Add(new MetadataEntry(foundPlatformsPage.Kind.MetaTagName, foundPlatformsPage.Id.ToString("D")));
+        
+        entries.AddRange(await GetEntriesAsync(foundPlatformsPage));
+
+        return entries;
     }
 
-    public async Task<IReadOnlyDictionary<string, object>> GetAsync() {
-        var (platformsPage, _) = await _platformsPageAccessor.GetAsync();
-        
-        var metaData = new Dictionary<string, object>();
-        metaData.Add(platformsPage.Kind.MetaTagName, platformsPage.Id);
-        
-        await PopulateMetadataAsync(metaData, platformsPage);
-        
-        return metaData;
-    }
-
-    protected abstract Task PopulateMetadataAsync(Dictionary<string, object> metadata, PlatformsPage platformsPage);
     protected abstract PublishedFileKind Kind { get; }
+    
+    protected abstract Task<IEnumerable<MetadataEntry>> GetEntriesAsync(PlatformsPage platformsPage);
 }

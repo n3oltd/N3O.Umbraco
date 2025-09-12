@@ -1,5 +1,4 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Extensions;
-using N3O.Umbraco.Content;
+﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
 using System;
@@ -22,13 +21,6 @@ public static class PlatformsPathParser {
         }
 
         return _donatePath;
-    }
-    
-    public static bool IsPlatformsDonatePage(IContentCache contentCache, Uri requestUri) {
-        var requestedPath = requestUri.GetAbsolutePathDecoded().ToLowerInvariant().StripTrailingSlash();
-        var donatePath = GetDonatePath(contentCache);
-
-        return requestedPath.StartsWith(donatePath) && !donatePath.EqualsInvariant(requestedPath);
     }
     
     public static string ParseUri(IContentCache contentCache, Uri requestUri) {

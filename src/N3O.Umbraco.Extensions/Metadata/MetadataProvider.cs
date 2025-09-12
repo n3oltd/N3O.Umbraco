@@ -7,7 +7,7 @@ namespace N3O.Umbraco.Metadata;
 public abstract class MetadataProvider<T> : IMetadataProvider where T : IPublishedContent {
     public abstract Task<IEnumerable<MetadataEntry>> GetEntriesAsync(IPublishedContent page);
 
-    public virtual bool IsProviderFor(IPublishedContent page) {
-        return page.GetType().IsAssignableTo(typeof(T));
+    public virtual Task<bool> IsProviderForAsync(IPublishedContent page) {
+        return Task.FromResult(page.GetType().IsAssignableTo(typeof(T)));
     }
 }

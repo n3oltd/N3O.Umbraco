@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Flurl;
+using Microsoft.AspNetCore.Http;
 using N3O.Umbraco.Cloud.Platforms.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
@@ -19,32 +20,49 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
         _cdnClient = cdnClient;
     }
     
-    public async Task<(PlatformsPage, bool)> GetAsync() {
+    public async Task<FoundPlatformsPage> GetAsync() {
         var requestUri = _httpContextAccessor.HttpContext?.Request.Uri();
         var platformsPath = PlatformsPathParser.ParseUri(_contentCache, requestUri);
 
-        var isFallback = false;
+        if (platformsPath == null) {
+            return null;
+        }
+        
+        var currentPath = platformsPath;
 
-        while (platformsPath.HasValue()) {
-            var (id, kind, mergeModel) = await _cdnClient.DownloadPublishedPageAsync(platformsPath);
+        do {
+            var (id, kind, mergeModel) = await _cdnClient.DownloadPublishedPageAsync(currentPath);
 
             if (kind.HasValue()) {
-                var platformsPage = new PlatformsPage(id, platformsPath, kind, mergeModel);
+                var platformsPage = new PlatformsPage(id, currentPath, kind, mergeModel);
+                var platformsPageUrl = GetPlatformsPageUrl(platformsPage);
+                var redirectUrl = currentPath != platformsPath ? platformsPageUrl : null; 
                 
-                return (platformsPage, isFallback);
+                return new FoundPlatformsPage(platformsPage, redirectUrl);
             }
-
-            isFallback = true;
             
-            var lastPathSegment = platformsPath.StripTrailingSlash().LastIndexOf('/');
+            var lastPathSegment = currentPath.StripTrailingSlash().LastIndexOf('/');
             
             if (lastPathSegment > 0) {
-                platformsPath = platformsPath.Substring(0, lastPathSegment);
+                currentPath = currentPath.Substring(0, lastPathSegment);
             } else {
                 break;
             }
-        }
+        } while (currentPath.HasValue());
 
-        return (null, false);
+        var donatePath = PlatformsPathParser.GetDonatePath(_contentCache);
+
+        return new FoundPlatformsPage(null, donatePath);
+    }
+    
+    private string GetPlatformsPageUrl(PlatformsPage platformsPage) {
+        var donatePath = PlatformsPathParser.GetDonatePath(_contentCache).Trim('/');
+        var platformsPath = platformsPage.Path.Trim('/');
+
+        var url = new Url();
+        url.AppendPathSegment(donatePath);
+        url.AppendPathSegment(platformsPath);
+                    
+        return url.ToString();
     }
 }
