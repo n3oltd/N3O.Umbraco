@@ -5,12 +5,12 @@ using System.Text.Encodings.Web;
 
 namespace N3O.Umbraco.Templates;
 
-public class MergerHtmlContent : IHtmlContent {
+public class MergedHtmlContent : IHtmlContent {
     private readonly IHtmlContent _htmlContent;
     private readonly ITemplateEngine _templateEngine;
     private readonly IReadOnlyDictionary<string, object> _mergeModels;
 
-    public MergerHtmlContent(ITemplateEngine templateEngine,
+    public MergedHtmlContent(ITemplateEngine templateEngine,
                              IHtmlContent htmlContent,
                              IReadOnlyDictionary<string, object> mergeModels) {
         _htmlContent = htmlContent;
