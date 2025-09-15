@@ -40,7 +40,8 @@ public static class PlatformsConstants {
         
         public static class Build {
             public const string Alias = "platformsBuildSettings";
-            public const string Theme = "platformsThemeSettings";
+            public const string Theme = "platformsTheme";
+            public const string ThemeSettings = "platformsThemeSettings";
         }
 
         public static class FundStructure {

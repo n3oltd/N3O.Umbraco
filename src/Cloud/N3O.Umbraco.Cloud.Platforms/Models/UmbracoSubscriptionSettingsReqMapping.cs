@@ -18,7 +18,7 @@ public class UmbracoSubscriptionSettingsReqMapping : IMapDefinition {
         dest.OrganizationInfo = ctx.Map<OrganizationInfoContent, PublishedOrganizationInfo>(src.OrganizationInfo);
         dest.PaymentTerms = ctx.Map<PaymentTermsContent, PublishedPaymentTerms>(src.PaymentsSettings.Terms);
         dest.Terminology = ctx.Map<TerminologiesContent, PublishedTerminology>(src.Terminologies);
-        dest.Theme = ctx.Map<ThemeSettingsContent, PublishedTheme>(src.Build.Theme);
+        dest.Themes = ctx.Map<ThemeSettingsContent, PublishedThemes>(src.Build.Theme);
         dest.Tracking = ctx.Map<TrackingContent, PublishedTracking>(src.Tracking);
     }
 }
