@@ -24,7 +24,7 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
         var requestUri = _httpContextAccessor.HttpContext?.Request.Uri();
         var platformsPath = PlatformsPathParser.ParseUri(_contentCache, requestUri);
 
-        if (platformsPath == null) {
+        if (!platformsPath.HasValue()) {
             return null;
         }
         
