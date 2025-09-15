@@ -1,0 +1,15 @@
+@model N3O.Umbraco.EditorJs.Models.EditorJsBlock<N3O.Umbraco.EditorJs.ListBlockData>
+
+@if (Model.Data.Style == "ordered") {
+	<ol>
+		@foreach (var item in Model.Data.Items) {
+			<li>@Html.Raw(item)</li>
+		}
+	</ol>
+} else {
+	<ul>
+		@foreach (var item in Model.Data.Items) {
+			<li>@Html.Raw(item)</li>
+		}
+	</ul>
+}
