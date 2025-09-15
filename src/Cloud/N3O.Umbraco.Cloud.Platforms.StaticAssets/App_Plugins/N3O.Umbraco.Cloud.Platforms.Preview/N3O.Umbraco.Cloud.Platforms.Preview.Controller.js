@@ -30,7 +30,7 @@
 
             let res = await apiRes.json();
 
-            if (res.eTag !== $scope.previousETag) {
+            if (res.eTag === $scope.previousETag) {
                 return;
             }
 
