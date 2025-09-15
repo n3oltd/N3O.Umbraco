@@ -1,6 +1,6 @@
 {
   javascript: [
-    '/App_Plugins/N3O.Umbraco.EditorJs/editorjs-all.js'
+    '/App_Plugins/N3O.Umbraco.EditorJs/editorjs-all.js',
     '/App_Plugins/N3O.Umbraco.EditorJs/N3O.Umbraco.EditorJs.Controller.js'
   ]
 }

@@ -25,18 +25,18 @@ public static class StringExtensions {
 
         return blocks;
     }
-    
-    public static IEnumerable<EditorJsBlock> GetBlocks(string html) {
+
+    private static IEnumerable<EditorJsBlock> GetBlocks(string html) {
         var context = BrowsingContext.New();
         var document = context.OpenAsync(req => req.Content(html)).GetAwaiter().GetResult();
 
         foreach (var element in document.Body.Children) {
-            if (element.TagName == "p") {
+            if (element.LocalName == "p") {
                 var paragraphBlockData = new ParagraphBlockData();
                 paragraphBlockData.Text = element.InnerHtml;
                 
-                yield return new EditorJsBlock<ParagraphBlockData>("{id}", "paragraph", paragraphBlockData);
-            } else if (element.TagName == "ul") {
+                yield return new EditorJsBlock<ParagraphBlockData>(GetId("paragraph"), "paragraph", paragraphBlockData);
+            } else if (element.LocalName == "ul") {
                 var items = new List<string>();
                 
                 foreach (var liElement in element.Children) {
@@ -46,32 +46,36 @@ public static class StringExtensions {
                 var listBlockData = new ListBlockData();
                 listBlockData.Items = items;
                 
-                yield return new EditorJsBlock<ListBlockData>("{id}", "list", listBlockData);
-            } else if (element.TagName == "h1") {
+                yield return new EditorJsBlock<ListBlockData>(GetId("list"), "list", listBlockData);
+            } else if (element.LocalName == "h1") {
                 var headerBlockData = new HeaderBlockData();
                 headerBlockData.Level = 1;
                 headerBlockData.Text = element.Text();
                 
-                yield return new EditorJsBlock<HeaderBlockData>("{id}", "header", headerBlockData);
-            } else if (element.TagName == "h2") {
+                yield return new EditorJsBlock<HeaderBlockData>(GetId("header"), "header", headerBlockData);
+            } else if (element.LocalName == "h2") {
                 var headerBlockData = new HeaderBlockData();
                 headerBlockData.Level = 2;
                 headerBlockData.Text = element.Text();
                 
-                yield return new EditorJsBlock<HeaderBlockData>("{id}", "header", headerBlockData);
-            } else if (element.TagName == "h3") {
+                yield return new EditorJsBlock<HeaderBlockData>(GetId("header"), "header", headerBlockData);
+            } else if (element.LocalName == "h3") {
                 var headerBlockData = new HeaderBlockData();
                 headerBlockData.Level = 3;
                 headerBlockData.Text = element.Text();
                 
-                yield return new EditorJsBlock<HeaderBlockData>("{id}", "header", headerBlockData);
-            } else if (element.TagName == "h4") {
+                yield return new EditorJsBlock<HeaderBlockData>(GetId("header"), "header", headerBlockData);
+            } else if (element.LocalName == "h4") {
                 var headerBlockData = new HeaderBlockData();
                 headerBlockData.Level = 4;
                 headerBlockData.Text = element.Text();
                 
-                yield return new EditorJsBlock<HeaderBlockData>("{id}", "header", headerBlockData);
+                yield return new EditorJsBlock<HeaderBlockData>(GetId("header"), "header", headerBlockData);
             }
         }
+    }
+
+    private static string GetId(string prefix) {
+        return $"{prefix}_{Guid.NewGuid():N}";
     }
 }

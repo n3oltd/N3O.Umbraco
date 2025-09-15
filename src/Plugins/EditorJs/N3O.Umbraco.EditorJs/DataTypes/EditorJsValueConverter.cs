@@ -47,7 +47,7 @@ public class EditorJsValueConverter : PropertyValueConverterBase {
                                                        object inter,
                                                        bool preview) {
         if (inter is string strValue) {
-            if (strValue.DetectIsJson() && strValue.DetectIsEmptyJson()) {
+            if (strValue.DetectIsJson() && !strValue.DetectIsEmptyJson()) {
                 return _jsonProvider.DeserializeObject<EditorJsModel>(strValue);
             } else {
                 return strValue.MarkdownToEditorJsModel(_markupEngine);
