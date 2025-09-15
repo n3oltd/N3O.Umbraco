@@ -17,11 +17,11 @@ public class PublishedThemeMapping : IMapDefinition {
     }
     
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<ThemeSettingsContent, PublishedTheme>((_, _) => new PublishedTheme(), Map);
+        mapper.Define<ThemeContent, PublishedTheme>((_, _) => new PublishedTheme(), Map);
     }
 
     // Umbraco.Code.MapAll
-    private void Map(ThemeSettingsContent src, PublishedTheme dest, MapperContext ctx) {
+    private void Map(ThemeContent src, PublishedTheme dest, MapperContext ctx) {
         dest.BorderRadius = src.BorderRadius;
         dest.FontFamily = src.FontFamily;
         dest.HeadingFontFamily = src.HeadingFontFamily;
