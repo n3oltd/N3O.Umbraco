@@ -34,6 +34,8 @@
                 return;
             }
 
+            $scope.previousETag = res.eTag;
+
             let container = document.getElementById("platformsPreviewContainer");
 
             container.innerHTML = "";
