@@ -1,4 +1,5 @@
 using N3O.Umbraco.Json;
+using N3O.Umbraco.Localization;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Parameters;
 using NodaTime;
@@ -40,6 +41,8 @@ public class BackgroundJob : IBackgroundJob {
         var triggerKey = TriggerKey.Generate<TRequest, TModel>();
 
         addParameters?.Invoke(_fluentParametersBuilder);
+
+        _fluentParametersBuilder.Add(SchedulerConstants.Parameters.Culture, LocalizationSettings.CultureCode);
 
         var parameterData = _fluentParametersBuilder.Build();
         var modelJson = _jsonProvider.SerializeObject(model);
