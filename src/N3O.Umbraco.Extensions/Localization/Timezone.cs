@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Localization;
 
 public class Timezone : NamedLookup {
-    public Timezone(IClock clock, DateTimeZone zone) : base(zone.Id, GetName(clock, zone)) {
+    public Timezone(IClock clock, DateTimeZone zone) : base(zone.Id.ToLowerInvariant(), GetName(clock, zone)) {
         UtcOffset = GetUtcOffset(clock, zone);
         Zone = zone;
     }
@@ -62,15 +62,21 @@ public class Timezones : LookupsCollection<Timezone> {
     static Timezones() {
         All = TzdbDateTimeZoneSource.Default
                                     .ZoneLocations
-                                    .Select(x => Timezone.FromTzId(x.ZoneId))
+                                    .Select(x => GetTimezone(x.ZoneId))
                                     .Concat(Utc)
                                     .OrderBy(t => t.UtcOffset)
                                     .ThenBy(t => t == Utc ? 0 : 1)
                                     .ThenBy(t => t.ToString())
                                     .ToList();
     }
+    
+    public static Timezone GetTimezone(string zoneId) {
+        var zone = DateTimeZoneProviders.Tzdb[zoneId];
 
-    public static Timezone Utc => Timezone.FromTzId("Etc/UTC");
+        return new Timezone(SystemClock.Instance, zone);
+    }
+
+    public static Timezone Utc => GetTimezone(DateTimeZone.Utc.Id);
 
     protected override Task<IReadOnlyList<Timezone>> LoadAllAsync(CancellationToken cancellationToken) {
         return Task.FromResult(All);
