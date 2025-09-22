@@ -1,10 +1,15 @@
 ﻿using AsyncKeyedLock;
+using N3O.Umbraco.Cloud.Engage.Lookups;
+using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.Events;
 using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Models;
+using N3O.Umbraco.Crowdfunding.NamedParameters;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Mediator;
+using N3O.Umbraco.Parameters;
 using N3O.Umbraco.Scheduler;
+using N3O.Umbraco.Scheduler.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Threading;
@@ -21,6 +26,7 @@ public abstract class CrowdfunderJobNotificationHandler<TJobNotification> :
     private readonly AsyncKeyedLocker<string> _asyncKeyedLocker;
     private readonly IContentService _contentService;
     private readonly IBackgroundJob _backgroundJob;
+    private readonly ICoreScopeProvider _coreScopeProvider;
 
     protected CrowdfunderJobNotificationHandler(AsyncKeyedLocker<string> asyncKeyedLocker,
                                                 IContentService contentService,
@@ -29,6 +35,7 @@ public abstract class CrowdfunderJobNotificationHandler<TJobNotification> :
         _asyncKeyedLocker = asyncKeyedLocker;
         _contentService = contentService;
         _backgroundJob = backgroundJob;
+        _coreScopeProvider = coreScopeProvider;
     }
 
     public async Task<None> Handle(TJobNotification req, CancellationToken cancellationToken) {
@@ -41,13 +48,33 @@ public abstract class CrowdfunderJobNotificationHandler<TJobNotification> :
 
                     ClearError(content);
 
-                    _contentService.SaveAndPublish(content);
+                    using (var scope = _coreScopeProvider.CreateCoreScope(autoComplete: true)) {
+                        using (_ = scope.Notifications.Suppress()) {
+                            _contentService.SaveAndPublish(content);
+                        }
+                    }
+                    
+                    var type = content.ContentType.Alias.ToCrowdfunderType();
+
+                    if (type == CrowdfunderTypes.Campaign) {
+                        _backgroundJob.EnqueueCommand<CampaignPublishedNotification>(p => {
+                            p.Add<ContentId>(content.Key.ToString());
+                        });
+                    } else if (type == CrowdfunderTypes.Fundraiser) {
+                        _backgroundJob.EnqueueCommand<FundraiserPublishedNotification>(p => {
+                            p.Add<ContentId>(content.Key.ToString());
+                        });
+                    }
                 } else {
                     SetError(content, req.Model);
 
                     content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, false);
-
-                    _contentService.Save(content);
+                    
+                    using (var scope = _coreScopeProvider.CreateCoreScope(autoComplete: true)) {
+                        using (_ = scope.Notifications.Suppress()) {
+                            _contentService.Save(content);
+                        }
+                    }
                 }
 
                 _backgroundJob.EnqueueCrowdfunderUpdated(content.Key, content.ContentType.Alias.ToCrowdfunderType());
