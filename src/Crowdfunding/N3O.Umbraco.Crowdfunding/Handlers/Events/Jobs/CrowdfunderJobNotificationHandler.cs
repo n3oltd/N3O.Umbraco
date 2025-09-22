@@ -54,10 +54,17 @@ public abstract class CrowdfunderJobNotificationHandler<TJobNotification> :
                         }
                     }
                     
-                    _backgroundJob.EnqueueCommand<CrowdfunderPublishedNotification>(p => {
-                        p.Add<ContentId>(content.Key.ToString());
-                        p.Add<CrowdfunderTypeId>(CrowdfunderTypes.Campaign.Id);
-                    });
+                    var type = content.ContentType.Alias.ToCrowdfunderType();
+
+                    if (type == CrowdfunderTypes.Campaign) {
+                        _backgroundJob.EnqueueCommand<CampaignPublishedNotification>(p => {
+                            p.Add<ContentId>(content.Key.ToString());
+                        });
+                    } else if (type == CrowdfunderTypes.Fundraiser) {
+                        _backgroundJob.EnqueueCommand<FundraiserPublishedNotification>(p => {
+                            p.Add<ContentId>(content.Key.ToString());
+                        });
+                    }
                 } else {
                     SetError(content, req.Model);
 

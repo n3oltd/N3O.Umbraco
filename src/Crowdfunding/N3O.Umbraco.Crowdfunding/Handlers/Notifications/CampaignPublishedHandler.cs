@@ -1,10 +1,8 @@
 ﻿using Flurl;
 using N3O.Umbraco.Cloud.Engage;
-using N3O.Umbraco.Cloud.Engage.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.Content;
-using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Mediator;
@@ -23,31 +21,34 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Crowdfunding.Handlers;
 
-public class CrowdfunderPublishedHandler : IRequestHandler<CrowdfunderPublishedNotification, None, None> {
+public class CampaignPublishedHandler : IRequestHandler<CampaignPublishedNotification, None, None> {
     private readonly IContentLocator _contentLocator;
     private readonly IContentService _contentService;
     private readonly ICrowdfunderManager _crowdfunderManager;
     private readonly ICoreScopeProvider _coreScopeProvider;
     private readonly DistributedCache _distributedCache;
+    private readonly ILookups _lookups;
 
-    public CrowdfunderPublishedHandler(IContentLocator contentLocator,
+    public CampaignPublishedHandler(IContentLocator contentLocator,
                                      IContentService contentService,
                                      ICrowdfunderManager crowdfunderManager,
                                      ICoreScopeProvider coreScopeProvider,
-                                     DistributedCache distributedCache) {
+                                     DistributedCache distributedCache,
+                                     ILookups lookups) {
         _contentLocator = contentLocator;
         _contentService = contentService;
         _crowdfunderManager = crowdfunderManager;
         _coreScopeProvider = coreScopeProvider;
         _distributedCache = distributedCache;
+        _lookups = lookups;
     }
 
-    public async Task<None> Handle(CrowdfunderPublishedNotification req, CancellationToken cancellationToken) {
+    public async Task<None> Handle(CampaignPublishedNotification req, CancellationToken cancellationToken) {
         IContent content;
         
         using (var scope = _coreScopeProvider.CreateCoreScope(autoComplete: true)) {
             using (_ = scope.Notifications.Suppress()) {
-                content = _contentService.GetById(req.ContentId.Value);
+                content = req.ContentId.Run(id => _contentService.GetById(id), false);
             }
         }
 
@@ -66,9 +67,9 @@ public class CrowdfunderPublishedHandler : IRequestHandler<CrowdfunderPublishedN
 
         _distributedCache.RefreshByPayload(ContentCacheRefresher.UniqueId, payload.Yield());
         
-        var campaign = _contentLocator.ById<CampaignContent>(req.ContentId.Value);
+        var campaign = _contentLocator.ById<CampaignContent>(content.Key);
         var urlSettingsContent = _contentLocator.Single<UrlSettingsContent>();
-
+        
         if (!campaign.Status.HasValue()) {
             await _crowdfunderManager.CreateCampaignAsync(campaign, GetWebhookUrls(urlSettingsContent));
         } else {
