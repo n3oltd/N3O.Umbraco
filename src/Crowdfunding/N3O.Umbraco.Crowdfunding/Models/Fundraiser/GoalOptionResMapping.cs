@@ -25,10 +25,10 @@ public class GoalOptionResMapping : IMapDefinition {
     }
 
     private void PopulateFundDimensionOptions(MapperContext ctx, CampaignGoalOptionElement src, GoalOptionRes dest) {
-        var dimension1 = src.FundDimension1.HasAny() ? src.FundDimension1.ToList() : src.GetFundDimensionOptions().Dimension1.ToList();
-        var dimension2 = src.FundDimension2.HasAny() ? src.FundDimension2.ToList() : src.GetFundDimensionOptions().Dimension2.ToList();
-        var dimension3 = src.FundDimension3.HasAny() ? src.FundDimension3.ToList() : src.GetFundDimensionOptions().Dimension3.ToList();
-        var dimension4 = src.FundDimension4.HasAny() ? src.FundDimension4.ToList() : src.GetFundDimensionOptions().Dimension4.ToList();
+        var dimension1 = src.FundDimension1.HasAny() ? src.FundDimension1.ToList() : src.GetFundDimensionOptions()?.Dimension1.OrEmpty().ToList();
+        var dimension2 = src.FundDimension2.HasAny() ? src.FundDimension2.ToList() : src.GetFundDimensionOptions()?.Dimension2.OrEmpty().ToList();
+        var dimension3 = src.FundDimension3.HasAny() ? src.FundDimension3.ToList() : src.GetFundDimensionOptions()?.Dimension3.OrEmpty().ToList();
+        var dimension4 = src.FundDimension4.HasAny() ? src.FundDimension4.ToList() : src.GetFundDimensionOptions()?.Dimension4.OrEmpty().ToList();
         
         dest.Dimension1 = GetGoalOptionFundDimensionRes(ctx, dimension1);
         dest.Dimension2 = GetGoalOptionFundDimensionRes(ctx, dimension2);

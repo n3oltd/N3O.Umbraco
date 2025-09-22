@@ -30,7 +30,7 @@ public class CampaignGoalOptionElement : UmbracoElement<CampaignGoalOptionElemen
         var holdFundDimensionOptions = (IHoldFundDimensionOptions) Fund?.DonationItem ??
                                        (IHoldFundDimensionOptions) Feedback?.Scheme;
 
-        return holdFundDimensionOptions.FundDimensionOptions;
+        return holdFundDimensionOptions?.FundDimensionOptions;
     }
     
     public override void SetContent(IPublishedElement content, IPublishedContent parent) {
