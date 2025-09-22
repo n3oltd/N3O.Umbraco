@@ -11,6 +11,7 @@ using N3O.Umbraco.Giving.Allocations.Content;
 using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
+using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Validation;
 using Slugify;
 using System;
@@ -132,16 +133,24 @@ public partial class CreateOrUpdateFundraiserHandlers {
         contentBuilder.Label(CrowdfundingConstants.Goal.Properties.OptionId).Set(goalOption.Id);
         contentBuilder.Numeric(CrowdfundingConstants.Goal.Properties.Amount).SetDecimal(req.Amount);
         contentBuilder.TextBox(CrowdfundingConstants.Goal.Properties.Name).Set(goalOption.Name);
-        contentBuilder.SetContentOrPublishedLookupValue(CrowdfundingConstants.Goal.Properties.FundDimension1, req.FundDimensions.Dimension1);
-        contentBuilder.SetContentOrPublishedLookupValue(CrowdfundingConstants.Goal.Properties.FundDimension2, req.FundDimensions.Dimension2);
-        contentBuilder.SetContentOrPublishedLookupValue(CrowdfundingConstants.Goal.Properties.FundDimension3, req.FundDimensions.Dimension3);
-        contentBuilder.SetContentOrPublishedLookupValue(CrowdfundingConstants.Goal.Properties.FundDimension4, req.FundDimensions.Dimension4);
+        
+        SetFundDimensionValue(contentBuilder, CrowdfundingConstants.Goal.Properties.FundDimension1, req.FundDimensions.Dimension1);
+        SetFundDimensionValue(contentBuilder, CrowdfundingConstants.Goal.Properties.FundDimension2, req.FundDimensions.Dimension2);
+        SetFundDimensionValue(contentBuilder, CrowdfundingConstants.Goal.Properties.FundDimension3, req.FundDimensions.Dimension3);
+        SetFundDimensionValue(contentBuilder, CrowdfundingConstants.Goal.Properties.FundDimension4, req.FundDimensions.Dimension4);
         contentBuilder.ContentPicker(CrowdfundingConstants.Goal.Properties.Tags).SetContent(goalOption.Tags);
         
         var priceHandlesBuilder = contentBuilder.Nested(CrowdfundingConstants.Goal.Properties.PriceHandles);
 
         foreach (var priceHandle in goalOption.PriceHandles.OrEmpty()) {
             AddPriceHandle(priceHandlesBuilder, priceHandle);
+        }
+    }
+
+    private void SetFundDimensionValue<T>(IContentBuilder contentBuilder, string alias, T value) 
+        where T : IContentOrPublishedLookup {
+        if (value.HasValue()) {
+            contentBuilder.SetContentOrPublishedLookupValue(alias, value);
         }
     }
     
