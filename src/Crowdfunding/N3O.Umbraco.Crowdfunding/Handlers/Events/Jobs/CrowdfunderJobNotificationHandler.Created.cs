@@ -1,13 +1,13 @@
 ﻿using AsyncKeyedLock;
 using N3O.Umbraco.Cloud.Engage.Lookups;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Crowdfunding.Content;
+using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.Extensions;
 using N3O.Umbraco.Crowdfunding.Handlers;
-using N3O.Umbraco.Crowdfunding.Lookups;
-using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Lookups;
+using N3O.Umbraco.Parameters;
 using N3O.Umbraco.Scheduler;
+using N3O.Umbraco.Scheduler.Extensions;
 using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models;
@@ -17,9 +17,7 @@ using Umbraco.Cms.Core.Services;
 namespace N3O.Umbraco.Crowdfunding.Events;
 
 public class CrowdfunderCreatedHandler : CrowdfunderJobNotificationHandler<CrowdfunderCreatedJobNotification> {
-    private readonly IContentLocator _contentLocator;
-    private readonly ICrowdfundingNotifications _crowdfundingNotifications;
-    private readonly ICrowdfundingUrlBuilder _crowdfundingUrlBuilder;
+    private readonly IBackgroundJob _backgroundJob;
 
     public CrowdfunderCreatedHandler(AsyncKeyedLocker<string> asyncKeyedLocker,
                                      IContentService contentService,
@@ -29,9 +27,7 @@ public class CrowdfunderCreatedHandler : CrowdfunderJobNotificationHandler<Crowd
                                      ICrowdfundingNotifications crowdfundingNotifications,
                                      ICrowdfundingUrlBuilder crowdfundingUrlBuilder) 
         : base(asyncKeyedLocker, contentService, backgroundJob, coreScopeProvider) {
-        _contentLocator = contentLocator;
-        _crowdfundingNotifications = crowdfundingNotifications;
-        _crowdfundingUrlBuilder = crowdfundingUrlBuilder;
+        _backgroundJob = backgroundJob;
     }
 
     protected override Task HandleNotificationAsync(CrowdfunderCreatedJobNotification req, IContent content) {
@@ -40,7 +36,9 @@ public class CrowdfunderCreatedHandler : CrowdfunderJobNotificationHandler<Crowd
         UpdateStatus(content, type, req.Model.CrowdfunderInfo.Status.Name);
 
         if (type == CrowdfunderTypes.Fundraiser) {
-            SendFundraiserCreatedEmail(content);
+            _backgroundJob.EnqueueCommand<FundraiserCreatedNotification>(p => {
+                p.Add<ContentId>(content.Key.ToString());
+            });
         }
         
         return Task.CompletedTask;
@@ -57,13 +55,5 @@ public class CrowdfunderCreatedHandler : CrowdfunderJobNotificationHandler<Crowd
         } else {
             content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.ToggleStatus, false);
         }
-    }
-
-    private void SendFundraiserCreatedEmail(IContent content) {
-        var fundraiser = _contentLocator.ById<FundraiserContent>(content.Key);
-        var fundraiserContentViewModel = new FundraiserContentViewModel(_crowdfundingUrlBuilder, fundraiser);
-        var model = new FundraiserNotificationViewModel(fundraiserContentViewModel, null);
-
-        _crowdfundingNotifications.Enqueue(FundraiserNotificationTypes.FundraiserCreated, model, fundraiser.Key);
     }
 }
