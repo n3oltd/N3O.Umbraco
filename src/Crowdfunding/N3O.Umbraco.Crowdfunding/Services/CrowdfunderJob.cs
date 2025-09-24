@@ -93,7 +93,7 @@ public class CrowdfunderJob {
     }
     
     private void EnqueueCampaignWebhook(IContent content, string status) {
-        if(status.HasValue() && !status.EqualsInvariant(CrowdfunderStatuses.Draft.Name) && _webHostEnvironment.IsProduction()) {
+        if (status.HasValue() && !status.EqualsInvariant(CrowdfunderStatuses.Draft.Name) && _webHostEnvironment.IsProduction()) {
             var campaign = _contentLocator.ById<CampaignContent>(content.Key);
             var urlSettingsContent = _contentLocator.Single<UrlSettingsContent>();
         
