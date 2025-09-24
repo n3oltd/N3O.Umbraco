@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Scheduler;
@@ -20,24 +21,41 @@ public class QueueWebhookHandler : IRequestHandler<QueueWebhookCommand, None, No
     private readonly IClock _clock;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IRemoteIpAddressAccessor _remoteIpAddressAccessor;
+    private readonly IMediator _mediator;
+    private readonly ILogger<QueueWebhookHandler> _logger;
 
     public QueueWebhookHandler(IBackgroundJob backgroundJob,
                                IClock clock,
                                IHttpContextAccessor httpContextAccessor,
-                               IRemoteIpAddressAccessor remoteIpAddressAccessor) {
+                               IRemoteIpAddressAccessor remoteIpAddressAccessor,
+                               IMediator mediator,
+                               ILogger<QueueWebhookHandler> logger) {
         _backgroundJob = backgroundJob;
         _clock = clock;
         _httpContextAccessor = httpContextAccessor;
         _remoteIpAddressAccessor = remoteIpAddressAccessor;
+        _mediator = mediator;
+        _logger = logger;
     }
 
-    public Task<None> Handle(QueueWebhookCommand req, CancellationToken cancellationToken) {
+    public async Task<None> Handle(QueueWebhookCommand req, CancellationToken cancellationToken) {
         var payload = CreatePayload(req.HookId.Value, req.HookRoute.Value);
-        var jobName = $"PWH {payload.HookId} from {payload.RemoteIp}";
-        
-        _backgroundJob.Enqueue<ProcessWebhookCommand, WebhookPayload>(jobName, payload);
 
-        return Task.FromResult(None.Empty);
+        if (payload.HeaderData.ContainsKey("N3O-Foreground-Job")) {
+            try {
+                await _mediator.SendAsync<ProcessWebhookCommand, WebhookPayload>(payload);
+
+                return None.Empty;
+            } catch (Exception e) {
+                _logger.LogError(e, "There was an error processing webhook with hook {hookId} : {Error}. ", req.HookId.Value, e.Message);
+            }
+        } else {
+            var jobName = $"PWH {payload.HookId} from {payload.RemoteIp}";
+            
+            _backgroundJob.Enqueue<ProcessWebhookCommand, WebhookPayload>(jobName, payload);
+        }
+        
+        return None.Empty;
     }
 
     private WebhookPayload CreatePayload(string hookId, string route) {
