@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Context;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Scheduler;
 using N3O.Umbraco.Webhooks.Commands;
@@ -41,7 +42,7 @@ public class QueueWebhookHandler : IRequestHandler<QueueWebhookCommand, None, No
     public async Task<None> Handle(QueueWebhookCommand req, CancellationToken cancellationToken) {
         var payload = CreatePayload(req.HookId.Value, req.HookRoute.Value);
 
-        if (payload.HeaderData.ContainsKey("N3O-Foreground-Job")) {
+        if (payload.GetHeader("N3O-Foreground-Job").HasValue()) {
             try {
                 await _mediator.SendAsync<ProcessWebhookCommand, WebhookPayload>(payload);
 
