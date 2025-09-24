@@ -1,4 +1,6 @@
 ﻿using Flurl;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cloud.Engage;
 using N3O.Umbraco.Content;
@@ -16,27 +18,33 @@ namespace N3O.Umbraco.Crowdfunding.Notifications;
 
 [SkipDuringSync]
 public class CampaignPublished : INotificationAsyncHandler<ContentPublishedNotification> {
-    private readonly IContentLocator _contentLocator;
     private readonly ICrowdfunderManager _crowdfunderManager;
+    private readonly IContentLocator _contentLocator;
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
-    public CampaignPublished(IContentLocator contentLocator, ICrowdfunderManager crowdfunderManager) {
-        _contentLocator = contentLocator;
+    public CampaignPublished(ICrowdfunderManager crowdfunderManager,
+                             IContentLocator contentLocator,
+                             IWebHostEnvironment webHostEnvironment) {
         _crowdfunderManager = crowdfunderManager;
+        _webHostEnvironment = webHostEnvironment;
+        _contentLocator = contentLocator;
     }
 
     public async Task HandleAsync(ContentPublishedNotification notification, CancellationToken cancellationToken) {
-        foreach (var content in notification.PublishedEntities) {
-            if (content.ContentType.Alias.EqualsInvariant(CrowdfundingConstants.Campaign.Alias)) {
-                var campaign = _contentLocator.ById<CampaignContent>(content.Key);
-                var urlSettingsContent = _contentLocator.Single<UrlSettingsContent>();
-        
-                if (!campaign.Status.HasValue()) {
-                    await _crowdfunderManager.CreateCampaignAsync(campaign, GetWebhookUrls(urlSettingsContent));
-                } else {
-                    await _crowdfunderManager.UpdateCrowdfunderAsync(campaign.Key.ToString(),
-                                                                     campaign,
-                                                                     campaign.ToggleStatus,
-                                                                     GetWebhookUrls(urlSettingsContent));
+        if (_webHostEnvironment.IsProduction()) {
+            foreach (var content in notification.PublishedEntities) {
+                if (content.ContentType.Alias.EqualsInvariant(CrowdfundingConstants.Campaign.Alias)) {
+                    var campaign = _contentLocator.ById<CampaignContent>(content.Key);
+                    var urlSettingsContent = _contentLocator.Single<UrlSettingsContent>();
+
+                    if (!campaign.Status.HasValue()) {
+                        await _crowdfunderManager.CreateCampaignAsync(campaign, GetWebhookUrls(urlSettingsContent));
+                    } else {
+                        await _crowdfunderManager.UpdateCrowdfunderAsync(campaign.Key.ToString(),
+                                                                         campaign,
+                                                                         campaign.ToggleStatus,
+                                                                         GetWebhookUrls(urlSettingsContent));
+                    }
                 }
             }
         }
