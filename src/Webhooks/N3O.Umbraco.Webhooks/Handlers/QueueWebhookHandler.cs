@@ -47,7 +47,7 @@ public class QueueWebhookHandler : IRequestHandler<QueueWebhookCommand, None, No
 
                 return None.Empty;
             } catch (Exception e) {
-                _logger.LogError(e, "There was an error processing webhook with hook {hookId} : {Error}. ", req.HookId.Value, e.Message);
+                _logger.LogError(e, "There was an error processing webhook {HookId} : {Error}. ", req.HookId.Value, e.Message);
             }
         } else {
             var jobName = $"PWH {payload.HookId} from {payload.RemoteIp}";
