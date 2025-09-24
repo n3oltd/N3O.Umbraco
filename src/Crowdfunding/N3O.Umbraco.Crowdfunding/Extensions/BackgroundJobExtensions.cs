@@ -9,6 +9,7 @@ using N3O.Umbraco.Webhooks;
 using N3O.Umbraco.Webhooks.Commands;
 using N3O.Umbraco.Webhooks.Models;
 using System;
+using System.Collections.Generic;
 
 namespace N3O.Umbraco.Crowdfunding.Extensions;
 
@@ -36,10 +37,14 @@ public static class BackgroundJobExtensions {
         var webhookUrl = new Url(stagingBaseUrl.TrimEnd('/'));
         webhookUrl.AppendPathSegment($"umbraco/api/{WebhooksConstants.ApiName}/{CrowdfundingConstants.Webhooks.HookIds.CampaignUrl}");
         webhookUrl.AppendPathSegment($"{campaignId}");
+
+        var headers = new Dictionary<string, string>();
+        headers.Add("N3O-Foreground-Job", "true");
             
         var dispatchReq = new DispatchWebhookReq();
         dispatchReq.Url = webhookUrl;
         dispatchReq.Body = campaignUrl;
+        dispatchReq.Headers = headers;
 
         return dispatchReq;
     }
