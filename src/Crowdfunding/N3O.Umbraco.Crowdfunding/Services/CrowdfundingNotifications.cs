@@ -10,7 +10,6 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using System;
 using Umbraco.Cms.Core.Scoping;
-using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Crowdfunding;
 
@@ -100,13 +99,13 @@ public class CrowdfundingNotifications : ICrowdfundingNotifications {
         contentPublisher.Content
                         .TemplatedLabel(CrowdfundingConstants.FundraiserNotificationEmail.Properties.FromName)
                         .Set(template.FromName);
-
-        PublishResult result;
         
-        using (var scope = _coreScopeProvider.CreateCoreScope(autoComplete: true)) {
-            using (_ = scope.Notifications.Suppress()) {
-                result = contentPublisher.SaveAndPublish();
-            }
+        using (var scope = _coreScopeProvider.CreateCoreScope(autoComplete: true) {
+            scope.Notifications.Suppress();
+            
+            var result = contentPublisher.SaveAndPublish();
+        
+            scope.Complete();
         }
             
         if (!result.Success) {
