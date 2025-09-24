@@ -100,13 +100,13 @@ public class CrowdfundingNotifications : ICrowdfundingNotifications {
                         .TemplatedLabel(CrowdfundingConstants.FundraiserNotificationEmail.Properties.FromName)
                         .Set(template.FromName);
         
-        using var scope = _coreScopeProvider.CreateCoreScope(autoComplete: true);
-
-        scope.Notifications.Suppress();
+        using (var scope = _coreScopeProvider.CreateCoreScope(autoComplete: true) {
+            scope.Notifications.Suppress();
             
-        var result = contentPublisher.SaveAndPublish();
+            var result = contentPublisher.SaveAndPublish();
         
-        scope.Complete();
+            scope.Complete();
+        }
             
         if (!result.Success) {
             throw new Exception("Failed to publish email content");
