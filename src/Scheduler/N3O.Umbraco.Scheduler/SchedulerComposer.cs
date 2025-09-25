@@ -48,7 +48,7 @@ public class SchedulerComposer : IComposer {
                    .UseSimpleAssemblyNameTypeSerializer()
                    .UseRecommendedSerializerSettings()
                    .UseSqlServerStorage(connectionString, sqlStorageOptions)
-                   .WithJobExpirationTimeout(TimeSpan.FromDays(14))
+                   .WithJobExpirationTimeout(TimeSpan.FromDays(3))
                    .UseFilter(new JobLoggerFilter())
                    .UseMaxArgumentSizeToRender((int) ByteSize.FromKilobytes(256).Bytes)
                    .UseMaxLinesInExceptionDetails(200);
