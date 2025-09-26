@@ -57,8 +57,8 @@ public class FundDesignationPreviewTagGenerator : DesignationPreviewTagGenerator
         publishedFundDesignation.Item.Pricing = donationItem?.Pricing.IfNotNull(Mapper.Map<IPricing, PublishedPricing>);
         
         publishedFundDesignation.SuggestedAmounts = new PublishedSuggestedAmounts();
-        publishedFundDesignation.SuggestedAmounts.OneTime = oneTimeSuggestedAmounts.ToList();
-        publishedFundDesignation.SuggestedAmounts.Recurring = recurringSuggestedAmounts.ToList();
+        publishedFundDesignation.SuggestedAmounts.OneTime = oneTimeSuggestedAmounts.OrEmpty().ToList();
+        publishedFundDesignation.SuggestedAmounts.Recurring = recurringSuggestedAmounts.OrEmpty().ToList();
         
         publishedDesignation.Fund = publishedFundDesignation;
     }
@@ -78,8 +78,12 @@ public class FundDesignationPreviewTagGenerator : DesignationPreviewTagGenerator
     }
     
     private IReadOnlyList<PublishedSuggestedAmount> GetSuggestedAmounts(IReadOnlyDictionary<string, object> content, string alias) {
-        var suggestedAmounts = _jsonProvider.DeserializeObject<IEnumerable<PublishedSuggestedAmount>>(content[alias]?.ToString()).ToList();
-       
-        return suggestedAmounts.OrEmpty().ToList();
+        var suggestedAmountsStr = content[alias]?.ToString();
+
+        if (suggestedAmountsStr.HasValue()) {
+            return _jsonProvider.DeserializeObject<IEnumerable<PublishedSuggestedAmount>>(suggestedAmountsStr).ToList();
+        } else {
+            return null;
+        }
     }
 }
