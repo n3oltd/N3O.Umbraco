@@ -4,8 +4,8 @@ using Typesense;
 namespace N3O.Umbraco.Search.Typesense.Attributes;
 
 [AttributeUsage(AttributeTargets.Property)]
-public class FieldPropertyAttribute : Attribute {
-    public FieldPropertyAttribute(string name, FieldType type) {
+public class FieldAttribute : Attribute {
+    public FieldAttribute(string name, FieldType type) {
         Name = name;
         Type = type;
     }

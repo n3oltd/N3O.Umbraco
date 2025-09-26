@@ -33,7 +33,7 @@ public static class TypesenseHelper {
         var fields = new List<Field>();
         
         var attributes = typeof(TDocument).GetProperties()
-                                          .Select(x => x.GetCustomAttribute<FieldPropertyAttribute>())
+                                          .Select(x => x.GetCustomAttribute<FieldAttribute>())
                                           .ExceptNull()
                                           .ToList();
 

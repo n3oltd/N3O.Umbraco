@@ -19,6 +19,12 @@ public abstract class SearchIndexer<TContent, TDocument> : ISearchIndexer
         return content is TContent;
     }
 
+    public async Task DeleteAsync(string id) {
+        var collectionInfo = TypesenseHelper.GetCollection<TDocument>();
+        
+        await _typesenseClient.DeleteDocument<TDocument>(collectionInfo.Name, id);
+    }
+
     public async Task IndexAsync(IPublishedContent content) {
         await ProcessContentAsync(_searchDocumentBuilder, (TContent) content);
 
