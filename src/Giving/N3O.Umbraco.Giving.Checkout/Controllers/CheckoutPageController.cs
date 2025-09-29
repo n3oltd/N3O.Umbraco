@@ -5,10 +5,11 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Checkout.Content;
-using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Hosting;
+using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Pages;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models;
@@ -30,14 +31,16 @@ public class CheckoutPageController : PageController {
                                   IContentCache contentCache,
                                   IServiceProvider serviceProvider,
                                   ICheckoutAccessor checkoutAccessor,
-                                  IQueryStringAccessor queryStringAccessor)
+                                  IQueryStringAccessor queryStringAccessor,
+                                  IEnumerable<IContentRenderabilityFilter> contentRenderabilityFilters)
         : base(logger,
                compositeViewEngine,
                umbracoContextAccessor,
                publishedUrlProvider,
                pagePipeline,
                contentCache,
-               serviceProvider) {
+               serviceProvider,
+               contentRenderabilityFilters) {
         _contentCache = contentCache;
         _checkoutAccessor = checkoutAccessor;
         _queryStringAccessor = queryStringAccessor;
@@ -52,7 +55,7 @@ public class CheckoutPageController : PageController {
             string url;
 
             if (checkout == null) {
-                url = _contentCache.Single<DonatePageContent>().Content().AbsoluteUrl();
+                url = _contentCache.Special(SpecialPages.Donate).AbsoluteUrl();
             } else if (checkout.IsComplete) {
                 url = _contentCache.Single<CheckoutCompletePageContent>().Content().AbsoluteUrl();
             } else {

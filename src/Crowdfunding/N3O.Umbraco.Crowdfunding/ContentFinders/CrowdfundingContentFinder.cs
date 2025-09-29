@@ -4,7 +4,7 @@ using N3O.Umbraco.Extensions;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Routing;
 
-namespace N3O.Umbraco.Crowdfunding;
+namespace N3O.Umbraco.Crowdfunding.ContentFinders;
 
 public class CrowdfundingContentFinder : IContentFinder {
     private readonly IContentLocator _contentLocator;

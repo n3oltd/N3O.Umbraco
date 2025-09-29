@@ -64,7 +64,7 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
         TLookup lookup;
         
         if (propertyValue is TLookup lookupValue) {
-            lookup =  lookupValue;
+            lookup = lookupValue;
         } else if (propertyValue is IPublishedContent publishedContent) {
             lookup = lookups.FindByName<TLookup>(publishedContent.Name).Single();
         } else {
@@ -80,6 +80,16 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
                      ?? Enumerable.Empty<IPublishedElement>();
 
         return values.Cast<IPublishedElement>().Select(x => x.As<TProperty>(_content));
+    }
+
+    protected TProperty GetPickedAs<TProperty>(string alias) {
+        var value = Content().Value(alias, VariationContext?.Culture, VariationContext?.Segment);
+
+        if (value is TProperty typedValue) {
+            return typedValue;
+        } else {
+            return ((IPublishedContent) value).As<TProperty>();
+        }
     }
     
     protected TProperty GetPickedAs<TProperty>(Expression<Func<T, TProperty>> memberExpression) {

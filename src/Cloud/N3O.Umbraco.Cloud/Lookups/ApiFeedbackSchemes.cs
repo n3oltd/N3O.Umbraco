@@ -35,12 +35,20 @@ public class ApiFeedbackSchemes : ApiLookupsCollection<FeedbackScheme> {
                                                     publishedFeedbackScheme.AllowedGivingTypes,
                                                     publishedFeedbackScheme.FundDimensionOptions.IfNotNull(x => new FundDimensionOptions(x)),
                                                     publishedFeedbackScheme.Pricing.IfNotNull(x => new Pricing(x)),
-                                                    publishedFeedbackScheme.CustomFieldDefinitions.OrEmpty().Select(x => new FeedbackCustomFieldDefinition(x)));
+                                                    publishedFeedbackScheme.CustomFieldDefinitions.OrEmpty().Select(ToFeedbackCustomFieldDefinition));
             
             feedbackSchemes.Add(feedbackScheme);
         }
 
         return feedbackSchemes;
+    }
+
+    private FeedbackCustomFieldDefinition ToFeedbackCustomFieldDefinition(PublishedFeedbackCustomFieldDefinition publishedFeedbackCustomFieldDefinition) {
+        return new FeedbackCustomFieldDefinition(StaticLookups.FindById<FeedbackCustomFieldType>(publishedFeedbackCustomFieldDefinition.Type.Id),
+                                                 publishedFeedbackCustomFieldDefinition.Alias,
+                                                 publishedFeedbackCustomFieldDefinition.Name,
+                                                 publishedFeedbackCustomFieldDefinition.Required,
+                                                 publishedFeedbackCustomFieldDefinition.Text?.MaxLength.GetValueOrDefault() ?? 0);
     }
 
     protected override TimeSpan CacheDuration => TimeSpan.FromHours(12);

@@ -10,7 +10,7 @@ public class TypesenseJsonContractResolver : JsonContractResolver {
     protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization) {
         var jsonProperty = base.CreateProperty(member, memberSerialization);
         var propertyType = (member as PropertyInfo)?.PropertyType;
-        var attribute = propertyType?.GetCustomAttribute<FieldPropertyAttribute>();
+        var attribute = propertyType?.GetCustomAttribute<FieldAttribute>();
 
         if (attribute != null) {
             jsonProperty.PropertyName = attribute.Name;

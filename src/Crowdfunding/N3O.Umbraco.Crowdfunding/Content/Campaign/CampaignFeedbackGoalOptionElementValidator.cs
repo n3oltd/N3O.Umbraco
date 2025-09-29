@@ -12,7 +12,7 @@ public class CampaignFeedbackGoalOptionElementValidator :
     private readonly ILookups _lookups;
     
     public CampaignFeedbackGoalOptionElementValidator(IContentHelper contentHelper, ILookups lookups) 
-        : base(contentHelper) {
+        : base(contentHelper, lookups) {
         _lookups = lookups;
     }
 

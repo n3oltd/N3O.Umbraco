@@ -1,5 +1,4 @@
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Json;
 using N3O.Umbraco.SerpEditor.Models;
 using N3O.Umbraco.ValueConverters;
 using Newtonsoft.Json;
@@ -11,12 +10,6 @@ using Umbraco.Cms.Core.PropertyEditors;
 namespace N3O.Umbraco.SerpEditor.DataTypes;
 
 public class SerpEditorValueConverter : PropertyValueConverter {
-    private readonly IJsonProvider _jsonProvider;
-
-    public SerpEditorValueConverter(IJsonProvider jsonProvider) {
-        _jsonProvider = jsonProvider;
-    }
-
     public override bool IsConverter(IPublishedPropertyType propertyType) {
         return propertyType.EditorAlias.EqualsInvariant(SerpEditorConstants.PropertyEditorAlias);
     }

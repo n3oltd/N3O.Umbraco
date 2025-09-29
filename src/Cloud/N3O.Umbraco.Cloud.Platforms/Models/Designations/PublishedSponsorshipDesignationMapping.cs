@@ -17,6 +17,7 @@ public class PublishedSponsorshipDesignationMapping : IMapDefinition {
     private void Map(SponsorshipDesignationContent src, PublishedSponsorshipDesignation dest, MapperContext ctx) {
         dest.Scheme = new PublishedDesignationSponsorshipScheme();
         dest.Scheme.Id = src.Scheme.Id;
+        dest.Scheme.Name = src.Scheme.Name;
         dest.Components = src.Scheme.Components.OrEmpty().Select(x => ToPublishedSponsorshipComponent(ctx, x)).ToList();
         dest.AllowedDurations = src.Scheme.AllowedDurations.OrEmpty().Select(ToPublishedCommitmentDuration).ToList();
     }

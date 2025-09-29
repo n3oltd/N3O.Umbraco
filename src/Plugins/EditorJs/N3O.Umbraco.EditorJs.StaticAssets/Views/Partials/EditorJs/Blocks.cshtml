@@ -1,0 +1,5 @@
+@model N3O.Umbraco.EditorJs.Models.EditorJsModel;
+
+@foreach (var block in Model.Blocks){
+  @await Html.PartialAsync($"~/Views/Partials/EditorJs/{block.Type}.cshtml", block)
+}

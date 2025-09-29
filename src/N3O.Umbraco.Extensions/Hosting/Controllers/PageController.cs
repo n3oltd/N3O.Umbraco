@@ -2,8 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Pages;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -20,6 +23,7 @@ public class PageController : RenderController {
     private readonly IContentCache _contentCache;
     private readonly IServiceProvider _serviceProvider;
     private readonly IUmbracoContextAccessor _umbracoContextAccessor;
+    private readonly IEnumerable<IContentRenderabilityFilter> _contentRenderabilityFilters;
 
     public PageController(ILogger<RenderController> logger,
                           ICompositeViewEngine compositeViewEngine,
@@ -27,33 +31,43 @@ public class PageController : RenderController {
                           IPublishedUrlProvider publishedUrlProvider,
                           IPagePipeline pagePipeline,
                           IContentCache contentCache,
-                          IServiceProvider serviceProvider)
+                          IServiceProvider serviceProvider,
+                          IEnumerable<IContentRenderabilityFilter> contentRenderabilityFilters)
         : base(logger, compositeViewEngine, umbracoContextAccessor) {
         _umbracoContextAccessor = umbracoContextAccessor;
         _publishedUrlProvider = publishedUrlProvider;
         _pagePipeline = pagePipeline;
         _contentCache = contentCache;
         _serviceProvider = serviceProvider;
+        _contentRenderabilityFilters = contentRenderabilityFilters;
     }
 
     [NonAction]
     public sealed override IActionResult Index() => throw new NotImplementedException();
 
     public virtual async Task<IActionResult> Index(CancellationToken cancellationToken) {
+        if (await CanRenderAsync() == false) {
+            return Redirect(SpecialPages.NotFound);
+        }
+        
         var viewModel = await GetViewModelAsync(cancellationToken);
 
         return CurrentTemplate(viewModel);
     }
 
+    protected IActionResult Redirect(SpecialContent specialContent) {
+        var publishedContent = _contentCache.Special(specialContent);
+
+        return Redirect(publishedContent);
+    }
+    
     protected IActionResult Redirect<T>() {
         var content = _contentCache.Single<T>();
 
         if (content is IPublishedContent publishedContent) {
-            return new RedirectToUmbracoPageResult(publishedContent, _publishedUrlProvider, _umbracoContextAccessor);
+            return Redirect(publishedContent);
         } else if (content is UmbracoContent<T> umbracoContent) {
-            return new RedirectToUmbracoPageResult(umbracoContent.Content(),
-                                                   _publishedUrlProvider,
-                                                   _umbracoContextAccessor);
+            return Redirect(umbracoContent.Content());
         } else {
             throw new Exception($"{typeof(T)} must be {nameof(IPublishedContent)} or {nameof(UmbracoContent<T>)}");
         }
@@ -72,5 +86,21 @@ public class PageController : RenderController {
         var viewModel = factory.Create(CurrentPage, pageModuleData);
 
         return viewModel;
+    }
+    
+    private IActionResult Redirect(IPublishedContent publishedContent) {
+        return new RedirectToUmbracoPageResult(publishedContent, _publishedUrlProvider, _umbracoContextAccessor);
+    }
+    
+    private async Task<bool> CanRenderAsync() {
+        foreach (var filter in _contentRenderabilityFilters) {
+            if (filter.IsFilterFor(CurrentPage)) {
+                if (await filter.CanRenderAsync(CurrentPage) == false) {
+                    return false;   
+                }
+            }
+        }
+
+        return true;
     }
 }

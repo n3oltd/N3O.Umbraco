@@ -10,14 +10,14 @@ namespace N3O.Umbraco.Templates.Handlebars;
 public class HandlebarsFactory : IHandlebarsFactory {
     private readonly IReadOnlyList<IHelper> _helpers;
     private readonly IReadOnlyList<IBlockHelper> _blockHelpers;
-    private readonly IEnumerable<IMergeFormatter> _mergeFormatters;
+    private readonly IEnumerable<ITemplateFormatter> _templateFormatters;
 
     public HandlebarsFactory(IEnumerable<IHelper> helpers,
                              IEnumerable<IBlockHelper> blockHelpers,
-                             IEnumerable<IMergeFormatter> mergeFormatters) {
+                             IEnumerable<ITemplateFormatter> templateFormatters) {
         _helpers = helpers.ToList();
         _blockHelpers = blockHelpers.ToList();
-        _mergeFormatters = mergeFormatters;
+        _templateFormatters = templateFormatters;
     }
 
     public IHandlebars Create(IReadOnlyDictionary<string, string> partials = null) {
@@ -27,7 +27,7 @@ public class HandlebarsFactory : IHandlebarsFactory {
     
         _blockHelpers.Do(b => handlebars.RegisterHelper(b.Name, b.Execute));
     
-        _mergeFormatters.Do(f => handlebars.Configuration.FormatterProviders.Add(new HandlebarsFormatter(f)));
+        _templateFormatters.Do(f => handlebars.Configuration.FormatterProviders.Add(new HandlebarsFormatter(f)));
         
         foreach (var (partialAlias, partialMarkup) in partials.OrEmpty()) {
             handlebars.RegisterTemplate(partialAlias, partialMarkup);

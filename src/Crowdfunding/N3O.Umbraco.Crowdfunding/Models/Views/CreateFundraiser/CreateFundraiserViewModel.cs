@@ -22,7 +22,7 @@ public class CreateFundraiserViewModel : CrowdfundingViewModel {
         var viewModel = await viewModelFactory.CreateViewModelAsync<CreateFundraiserViewModel>(page, query);
         viewModel.Campaign = campaignContent;
         viewModel.Currencies = lookups.GetAll<Currency>();
-        viewModel.MinimumAmountValues =  await forexConverter.GetCurrencyValuesAsync(viewModel.Currencies,
+        viewModel.MinimumAmountValues = await forexConverter.GetCurrencyValuesAsync(viewModel.Currencies,
                                                                                      new Money(campaignContent.MinimumAmount, campaignContent.Currency));
 
         return viewModel;

@@ -1,6 +1,7 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
+using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
@@ -23,7 +24,7 @@ public class UmbracoContentReqMapping : IMapDefinition {
     private List<UmbracoContentRevisionReqPublishedCampaign> MapCampaigns(MapperContext ctx, PlatformsContent platformsContent) {
         var campaignsReq = new List<UmbracoContentRevisionReqPublishedCampaign>();
         
-        foreach (var campaign in platformsContent.Campaigns) {
+        foreach (var campaign in platformsContent.Campaigns.Where(x => x.Content().Children.HasAny())) {
             var req = new UmbracoContentRevisionReqPublishedCampaign();
             req.Content = ctx.Map<CampaignContent, PublishedCampaign>(campaign);
             req.Version = 1;

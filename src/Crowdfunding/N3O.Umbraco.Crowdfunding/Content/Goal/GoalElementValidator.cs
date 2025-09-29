@@ -1,20 +1,23 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Models;
+using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
 using System.Linq;
-using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Crowdfunding.Content;
 
 public abstract class GoalElementValidator<TGoalElement> : ContentValidator {
+    private readonly ILookups _lookups;
     private static readonly string Alias = AliasHelper<TGoalElement>.ContentTypeAlias();
     private static readonly string Dimension1Alias = AliasHelper<GoalElement>.PropertyAlias(x => x.FundDimension1);
     private static readonly string Dimension2Alias = AliasHelper<GoalElement>.PropertyAlias(x => x.FundDimension2);
     private static readonly string Dimension3Alias = AliasHelper<GoalElement>.PropertyAlias(x => x.FundDimension3);
     private static readonly string Dimension4Alias = AliasHelper<GoalElement>.PropertyAlias(x => x.FundDimension4);
 
-    protected GoalElementValidator(IContentHelper contentHelper) : base(contentHelper) { }
+    protected GoalElementValidator(IContentHelper contentHelper, ILookups lookups) : base(contentHelper) {
+        _lookups = lookups;
+    }
 
     public override bool IsValidator(ContentProperties content) {
         return Alias.EqualsInvariant(content.ContentTypeAlias);
@@ -42,7 +45,7 @@ public abstract class GoalElementValidator<TGoalElement> : ContentValidator {
     private void DimensionAllowed<T>(ContentProperties content, IEnumerable<T> allowedValues, string propertyAlias)
         where T : FundDimensionValue<T> {
         var property = content.GetPropertyByAlias(propertyAlias);
-        var value = property.IfNotNull(x => ContentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(x).As<T>());
+        var value = property.IfNotNull(x => ContentHelper.GetLookupValue<T>(_lookups, x));
 
         if (value != null && allowedValues != null && !allowedValues.Contains(value)) {
             ErrorResult(property, $"{value.Name} is not a permitted fund dimension value");

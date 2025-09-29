@@ -6,18 +6,18 @@ namespace N3O.Umbraco.Search.Typesense.Models;
 
 [Collection("pages")]
 public class PageDocument : SearchDocument {
-    [FieldProperty("timestamp", FieldType.String)]
+    [Field("timestamp", FieldType.String)]
     public Instant Timestamp { get; set; }
     
-    [FieldProperty("content", FieldType.String)]
+    [Field("content", FieldType.String)]
     public string Content { get; set; }
     
-    [FieldProperty("description", FieldType.String)]
+    [Field("description", FieldType.String)]
     public string Description { get; set; }
     
-    [FieldProperty("title", FieldType.String)]
+    [Field("title", FieldType.String)]
     public string Title { get; set; }
     
-    [FieldProperty("url", FieldType.String)]
+    [Field("url", FieldType.String)]
     public string Url { get; set; }
 }

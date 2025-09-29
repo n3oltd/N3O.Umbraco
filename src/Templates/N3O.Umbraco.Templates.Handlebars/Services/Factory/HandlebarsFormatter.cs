@@ -6,14 +6,14 @@ using IHandlebarsFormatter = HandlebarsDotNet.IO.IFormatter;
 namespace N3O.Umbraco.Templates.Handlebars;
 
 public class HandlebarsFormatter : IHandlebarsFormatter, IFormatterProvider {
-    private readonly IMergeFormatter _mergeFormatter;
+    private readonly ITemplateFormatter _templateFormatter;
 
-    public HandlebarsFormatter(IMergeFormatter mergeFormatter) {
-        _mergeFormatter = mergeFormatter;
+    public HandlebarsFormatter(ITemplateFormatter templateFormatter) {
+        _templateFormatter = templateFormatter;
     }
 
     public void Format<T>(T value, in EncodedTextWriter writer) {
-        var formattedValue = _mergeFormatter.Format(value);
+        var formattedValue = _templateFormatter.Format(value);
 
         if (formattedValue != null) {
             writer.Write(formattedValue);
@@ -21,7 +21,7 @@ public class HandlebarsFormatter : IHandlebarsFormatter, IFormatterProvider {
     }
 
     public virtual bool TryCreateFormatter(Type type, out IHandlebarsFormatter formatter) {
-        if (_mergeFormatter.CanFormat(type)) {
+        if (_templateFormatter.CanFormat(type)) {
             formatter = this;
         } else {
             formatter = null;

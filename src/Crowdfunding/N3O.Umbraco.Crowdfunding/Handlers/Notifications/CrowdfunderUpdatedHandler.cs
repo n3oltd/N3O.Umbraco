@@ -2,6 +2,7 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding.Commands;
 using N3O.Umbraco.Crowdfunding.Extensions;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Mediator;
 using System.Threading;
@@ -34,7 +35,12 @@ public class CrowdfunderUpdatedHandler : IRequestHandler<CrowdfunderUpdatedNotif
 
     public async Task<None> Handle(CrowdfunderUpdatedNotification req, CancellationToken cancellationToken) {
         var type = req.TypeId.Run(_lookups.FindById<CrowdfunderType>, true);
-        var content = req.ContentId.Run(id => _contentLocator.GetCrowdfunderContent(id, type), true);
+        var content = req.ContentId.Run(id => _contentLocator.GetCrowdfunderContent(id, type), false);
+
+        if (!content.HasValue()) {
+            return None.Empty;
+        }
+        
         var version = _contentService.GetById(content.Key).VersionId;
         
         await _crowdfunderRepository.AddOrUpdateAsync(content);

@@ -5,10 +5,11 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Checkout.Content;
 using N3O.Umbraco.Giving.Checkout.Lookups;
-using N3O.Umbraco.Giving.Content;
 using N3O.Umbraco.Hosting;
+using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Pages;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Routing;
@@ -29,14 +30,16 @@ public abstract class CheckoutStagePageController : PageController {
                                           IPagePipeline pagePipeline,
                                           IContentCache contentCache,
                                           IServiceProvider serviceProvider,
-                                          ICheckoutAccessor checkoutAccessor)
+                                          ICheckoutAccessor checkoutAccessor,
+                                          IEnumerable<IContentRenderabilityFilter> contentRenderabilityFilters)
         : base(logger,
                compositeViewEngine,
                umbracoContextAccessor,
                publishedUrlProvider,
                pagePipeline,
                contentCache,
-               serviceProvider) {
+               serviceProvider,
+               contentRenderabilityFilters) {
         _checkoutAccessor = checkoutAccessor;
         _contentCache = contentCache;
     }
@@ -47,7 +50,7 @@ public abstract class CheckoutStagePageController : PageController {
         string redirectUrl = null;
 
         if (checkout == null) {
-            redirectUrl = _contentCache.Single<DonatePageContent>().Content().AbsoluteUrl();
+            redirectUrl = _contentCache.Special(SpecialPages.Donate).AbsoluteUrl();
         } else if (checkout.IsComplete && !CurrentPage.ContentType.Alias.EqualsInvariant(CompletePageAlias)) {
             redirectUrl = _contentCache.Single<CheckoutCompletePageContent>().Content().AbsoluteUrl();
         } else if (checkout.Progress.CurrentStage != Stage && !Stage.CanRevisit) {

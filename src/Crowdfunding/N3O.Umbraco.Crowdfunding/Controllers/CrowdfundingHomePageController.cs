@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Hosting;
+using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Pages;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Routing;
@@ -23,6 +25,7 @@ public class CrowdfundingHomePageController : PageController {
                                           IPagePipeline pagePipeline,
                                           IContentCache contentCache,
                                           IServiceProvider serviceProvider,
+                                          IEnumerable<IContentRenderabilityFilter> contentRenderabilityFilters,
                                           ICrowdfundingRouter crowdfundingRouter) 
         : base(logger,
                compositeViewEngine,
@@ -30,13 +33,14 @@ public class CrowdfundingHomePageController : PageController {
                publishedUrlProvider,
                pagePipeline,
                contentCache,
-               serviceProvider) {
+               serviceProvider,
+               contentRenderabilityFilters) {
         _crowdfundingRouter = crowdfundingRouter;
     }
 
     public override async Task<IActionResult> Index(CancellationToken cancellationToken) {
         if (_crowdfundingRouter.CurrentPage == null) {
-            return Redirect<NotFoundPageContent>();
+            return Redirect(SpecialPages.NotFound);
         } else if (_crowdfundingRouter.CurrentPage.NoCache) {
             Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
             Response.Headers["Expires"] = "-1";

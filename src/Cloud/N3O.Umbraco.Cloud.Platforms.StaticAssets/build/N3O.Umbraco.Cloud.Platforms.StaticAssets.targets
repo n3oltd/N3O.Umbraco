@@ -1,0 +1,25 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <PropertyGroup>
+        <N3OUmbracoCloudPlatformsContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.Cloud.Platforms.Preview\**\*.*</N3OUmbracoCloudPlatformsContentFilesPath>
+    </PropertyGroup>
+
+    <Target Name="CopyN3OUmbracoCloudPlatformsAssets" BeforeTargets="Build">
+        <ItemGroup>
+            <N3OUmbracoCloudPlatformsContentFiles Include="$(N3OUmbracoCloudPlatformsContentFilesPath)"/>
+        </ItemGroup>
+        <Message Text="Copying N3O Cloud Platforms files: $(N3OUmbracoCloudPlatformsContentFilesPath) - #@(N3OUmbracoCloudPlatformsContentFiles->Count()) files" Importance="high"/>
+        <Copy SourceFiles="@(N3OUmbracoCloudPlatformsContentFiles)"
+              DestinationFiles="@(N3OUmbracoCloudPlatformsContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Cloud.Platforms.Preview\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"/>
+    </Target>
+
+    <Target Name="ClearN3OUmbracoCloudPlatformsAssets" BeforeTargets="Clean">
+        <ItemGroup>
+            <N3OUmbracoCloudPlatformsDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Cloud.Platforms.Preview\"/>
+        </ItemGroup>
+        <Message Text="Clear old N3O Cloud Platforms files" Importance="high"/>
+        <RemoveDir Directories="@(N3OUmbracoCloudPlatformsDir)"/>
+    </Target>
+
+</Project>

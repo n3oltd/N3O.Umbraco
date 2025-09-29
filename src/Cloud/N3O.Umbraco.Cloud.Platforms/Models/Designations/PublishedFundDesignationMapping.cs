@@ -16,6 +16,7 @@ public class PublishedFundDesignationMapping : IMapDefinition {
     private void Map(FundDesignationContent src, PublishedFundDesignation dest, MapperContext ctx) {
         dest.Item = new PublishedDesignationDonationItem();
         dest.Item.Id = src.DonationItem.Id;
+        dest.Item.Name = src.DonationItem.Name;
         dest.Item.Pricing = src.DonationItem.Pricing.IfNotNull(ctx.Map<IPricing, PublishedPricing>);
 
         if (src.OneTimeSuggestedAmounts.HasAny() || src.RecurringSuggestedAmounts.HasAny()) {

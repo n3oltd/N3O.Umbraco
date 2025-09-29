@@ -1,6 +1,8 @@
 ﻿namespace N3O.Umbraco.Cloud.Platforms;
 
 public static class PlatformsConstants {
+    public const string BackOfficeApiName = "PlatformsBackOffice";
+    
     public static class Campaigns {
         public const string CompositionAlias = "platformsCampaign";
         public const string ScheduledGiving = "platformsScheduledGivingCampaign";
@@ -38,7 +40,8 @@ public static class PlatformsConstants {
         
         public static class Build {
             public const string Alias = "platformsBuildSettings";
-            public const string Theme = "platformsThemeSettings";
+            public const string Theme = "platformsTheme";
+            public const string ThemeSettings = "platformsThemeSettings";
         }
 
         public static class FundStructure {

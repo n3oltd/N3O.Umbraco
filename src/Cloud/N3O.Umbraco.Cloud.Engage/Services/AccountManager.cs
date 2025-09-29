@@ -195,6 +195,8 @@ public class AccountManager : IAccountManager {
     
     private async Task<string> CreateNewAccountAsync(AccountReq account) {
         var req = _mapper.Map<IAccount, ConnectAccountReq>(account);
+        req.Id = Guid.NewGuid().ToString();
+        
         var client = await GetClientAsync();
 
         var res = await client.InvokeAsync(x => x.CreateAccountAsync(req));

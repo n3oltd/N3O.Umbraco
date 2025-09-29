@@ -4,6 +4,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Giving.Checkout.Lookups;
 using N3O.Umbraco.Pages;
 using System;
+using System.Collections.Generic;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Web;
 
@@ -17,7 +18,8 @@ public class CheckoutRegularGivingPageController : CheckoutStagePageController {
                                                IPagePipeline pagePipeline,
                                                IContentCache contentCache,
                                                IServiceProvider serviceProvider,
-                                               ICheckoutAccessor checkoutAccessor)
+                                               ICheckoutAccessor checkoutAccessor,
+                                               IEnumerable<IContentRenderabilityFilter> contentRenderabilityFilters)
         : base(logger,
                compositeViewEngine,
                umbracoContextAccessor,
@@ -25,7 +27,8 @@ public class CheckoutRegularGivingPageController : CheckoutStagePageController {
                pagePipeline,
                contentCache,
                serviceProvider,
-               checkoutAccessor) { }
+               checkoutAccessor,
+               contentRenderabilityFilters) { }
 
     protected override CheckoutStage Stage => CheckoutStages.RegularGiving;
 }

@@ -17,8 +17,10 @@ public class UmbracoBlocksRenderer : BlocksRenderer<IEnumerable<IBlockReference<
     private readonly ModelsBuilderSettings _modelBuilderSettings;
     private readonly IServiceProvider _serviceProvider;
 
-    public UmbracoBlocksRenderer(IOptions<ModelsBuilderSettings> modelBuilderSettings,
-                                 IServiceProvider serviceProvider) {
+    public UmbracoBlocksRenderer(IEnumerable<IBlocksRendererPostProcessor> postProcessors,
+                                 IOptions<ModelsBuilderSettings> modelBuilderSettings,
+                                 IServiceProvider serviceProvider)
+        : base(postProcessors) {
         _modelBuilderSettings = modelBuilderSettings.Value;
         _serviceProvider = serviceProvider;
     }
@@ -38,7 +40,7 @@ public class UmbracoBlocksRenderer : BlocksRenderer<IEnumerable<IBlockReference<
         foreach (var (viewModel, index) in viewModels.SelectWithIndex()) {
             var viewPath = viewPaths.ElementAt(index);
             
-            var blockHtml = await RenderBlockAsync(viewPath, viewModel);
+            var blockHtml = await RenderBlockAsync(content, viewPath, viewModel);
             
             html.Append(blockHtml);
         } 

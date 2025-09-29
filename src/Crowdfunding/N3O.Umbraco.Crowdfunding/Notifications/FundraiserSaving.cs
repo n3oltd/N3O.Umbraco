@@ -31,7 +31,7 @@ public class FundraiserSaving : INotificationAsyncHandler<ContentSavingNotificat
 
                 slug ??= _slugHelper.Value.GenerateSlug(name);
                 
-                content.Name =  $"{name} ({slug})";
+                content.Name = $"{name} ({slug})";
                 
                 if (!_webHostEnvironment.IsProduction()) {
                     content.SetValue(CrowdfundingConstants.Crowdfunder.Properties.Status, CrowdfunderStatuses.Active.Name);

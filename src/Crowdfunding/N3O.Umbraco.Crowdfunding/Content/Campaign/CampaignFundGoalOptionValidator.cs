@@ -10,7 +10,8 @@ namespace N3O.Umbraco.Crowdfunding.Content;
 public class CampaignFundGoalOptionValidator : CampaignGoalOptionElementValidator<CampaignFundGoalOptionElement> {
     private readonly ILookups _lookups;
     
-    public CampaignFundGoalOptionValidator(IContentHelper contentHelper, ILookups lookups) : base(contentHelper) {
+    public CampaignFundGoalOptionValidator(IContentHelper contentHelper, ILookups lookups) 
+        : base(contentHelper, lookups) {
         _lookups = lookups;
     }
 
