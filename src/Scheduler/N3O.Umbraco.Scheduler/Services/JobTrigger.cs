@@ -1,30 +1,24 @@
-using Humanizer;
-using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
-using N3O.Umbraco.Localization;
-using N3O.Umbraco.Mediator;
-using N3O.Umbraco.Parameters;
-using System;
+using N3O.Umbraco.Scheduler.Models;
+using N3O.Umbraco.Utilities;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net.Http;
 using System.Threading.Tasks;
-using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Scheduler;
 
 public class JobTrigger {
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly IVariationContextAccessor _variationContextAccessor;
-    private readonly ILocalizationSettingsAccessor _localizationSettingsAccessor;
+    private readonly IJsonProvider _jsonProvider;
+    private readonly IUrlBuilder _urlBuilder;
+    private readonly IUmbracoContextFactory _umbracoContextFactory;
 
-    public JobTrigger(IServiceScopeFactory serviceScopeFactory,
-                      IVariationContextAccessor variationContextAccessor,
-                      ILocalizationSettingsAccessor localizationSettingsAccessor) {
-        _serviceScopeFactory = serviceScopeFactory;
-        _variationContextAccessor = variationContextAccessor;
-        _localizationSettingsAccessor = localizationSettingsAccessor;
+    public JobTrigger(IJsonProvider jsonProvider, IUrlBuilder urlBuilder, IUmbracoContextFactory umbracoContextFactory) {
+        _jsonProvider = jsonProvider;
+        _urlBuilder = urlBuilder;
+        _umbracoContextFactory = umbracoContextFactory;
     }
 
     [DisplayName("{0}")]
@@ -32,46 +26,48 @@ public class JobTrigger {
                                    string triggerKey,
                                    string modelJson,
                                    IReadOnlyDictionary<string, string> parameterData) {
-        var requestType = TriggerKey.ParseRequestType(triggerKey);
+        var req = GetProxyReq(triggerKey, modelJson, parameterData);
+        
+        parameterData.TryGetValue(SchedulerConstants.Parameters.Culture, out var culture);
 
-        SetRequestCulture(parameterData);
+        var baseUrl = GetBasUrl();
+        
+        using (var httpClient = new HttpClient()) {
+            var reqStr = _jsonProvider.SerializeObject(req);
+            
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/umbraco/api/Test/executeProxied");
+            request.Content = new StringContent(reqStr, null, "application/json");
+            
+            request.Headers.Add("accept", "*/*");
 
-        using (var scope = _serviceScopeFactory.CreateScope()) {
-            var umbracoContextFactory = scope.ServiceProvider.GetRequiredService<IUmbracoContextFactory>();
-                
-            using (umbracoContextFactory.EnsureUmbracoContext()) {
-                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-                var fluentParameters = scope.ServiceProvider.GetRequiredService<IFluentParameters>();
-                var jsonProvider = scope.ServiceProvider.GetRequiredService<IJsonProvider>();
-                    
-                var modelType = TriggerKey.ParseModelType(triggerKey);
-                    
-                var model = jsonProvider.DeserializeObject(modelJson, modelType);
-
-                foreach (var (name, value) in parameterData.OrEmpty()) {
-                    fluentParameters.Add(name, value);
-                }
-                    
-                await mediator.SendAsync(requestType, typeof(None), model);
+            if (culture.HasValue()) {
+                request.Headers.Add("Accept-Language", culture);
             }
+
+            var response = await httpClient.SendAsync(request);
+            
+            response.EnsureSuccessStatusCode();
         }
     }
 
-    private void SetRequestCulture(IReadOnlyDictionary<string, string> parameterData) {
-        var culture = parameterData.ContainsKey(SchedulerConstants.Parameters.Culture) 
-                          ? parameterData[SchedulerConstants.Parameters.Culture] 
-                          : _localizationSettingsAccessor.GetSettings().DefaultCultureCode;
-        
-        _variationContextAccessor.VariationContext = new VariationContext(culture);
+    private string GetBasUrl() {
+        using (_umbracoContextFactory.EnsureUmbracoContext()) {
+            return _urlBuilder.Root().ToString().TrimEnd('/');
+        }
     }
 
-    private string GetActivityName(Type requestType) {
-        var typeName = requestType.Name.Camelize();
-
-        if (typeName.EndsWith("Command")) {
-            typeName = typeName.Substring(0, typeName.Length - "Command".Length);
-        }
+    private ProxyReq GetProxyReq(string triggerKey,
+                                 string modelJson,
+                                 IReadOnlyDictionary<string, string> parameterData) {
+        var requestType = TriggerKey.ParseRequestType(triggerKey);
+        var modelType = TriggerKey.ParseModelType(triggerKey);
         
-        return $"scheduler/{typeName}";
+        var req = new ProxyReq();
+        req.CommandType = requestType;
+        req.RequestType = modelType;
+        req.RequestBody = modelJson;
+        req.ParameterData = parameterData.ToDictionary();
+        
+        return req;
     }
 }
