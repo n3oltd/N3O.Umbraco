@@ -35,7 +35,7 @@ public class JobTrigger {
         using (var httpClient = new HttpClient()) {
             var reqStr = _jsonProvider.SerializeObject(req);
             
-            var request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/umbraco/api/Test/executeProxied");
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/umbraco/api/JobProxy/executeProxied");
             request.Content = new StringContent(reqStr, null, "application/json");
             
             request.Headers.Add("accept", "*/*");
