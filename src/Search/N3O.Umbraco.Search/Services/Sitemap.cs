@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Web;
 using X.Web.Sitemap;
 using X.Web.Sitemap.Extensions;
@@ -20,22 +22,25 @@ public class Sitemap : ISitemap {
     private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IContentLocator _contentLocator;
     private readonly IContentVisibility _contentVisibility;
+    private readonly IEnumerable<IUrlProvider> _urlProviders;
 
     public Sitemap(IUmbracoContextFactory umbracoContextFactory,
                    IWebHostEnvironment webHostEnvironment,
                    IContentLocator contentLocator,
-                   IContentVisibility contentVisibility) {
+                   IContentVisibility contentVisibility,
+                   IEnumerable<IUrlProvider> urlProviders) {
         _umbracoContextFactory = umbracoContextFactory;
         _webHostEnvironment = webHostEnvironment;
         _contentLocator = contentLocator;
         _contentVisibility = contentVisibility;
+        _urlProviders = urlProviders;
     }
 
     public IReadOnlyList<SitemapEntry> GetEntries() {
         using (_umbracoContextFactory.EnsureUmbracoContext()) {
             var publicContent = _contentLocator.All()
                                                .Where(x => _contentVisibility.IsVisible(x))
-                                               .Select(x => new SitemapEntry(x.AbsoluteUrl(),
+                                               .Select(x => new SitemapEntry(ResolveUrl(x),
                                                                              "daily",
                                                                              0.5f,
                                                                              x.UpdateDate.ToLocalDateTime().Date))
@@ -43,6 +48,13 @@ public class Sitemap : ISitemap {
 
             return publicContent;
         }
+    }
+
+    private string ResolveUrl(IPublishedContent publishedContent)
+    {
+        var urls = _urlProviders.Select(x => x.GetUrl(publishedContent, UrlMode.Absolute, null, null));
+
+        return urls.ExceptNull().FirstOrDefault()?.Text;
     }
 
     public async Task PublishAsync() {
