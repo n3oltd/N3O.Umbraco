@@ -13,22 +13,24 @@ namespace N3O.Umbraco.Scheduler.Controllers;
 [ApiDocument("JobProxy")]
 public class JobProxyController : ApiController {
     private readonly IJsonProvider _jsonProvider;
-    
-    public JobProxyController(IJsonProvider jsonProvider) {
+    private readonly IMediator _mediator;
+    private readonly IFluentParameters _fluentParameters;
+
+    public JobProxyController(IJsonProvider jsonProvider, IMediator mediator, IFluentParameters fluentParameters) {
         _jsonProvider = jsonProvider;
+        _mediator = mediator;
+        _fluentParameters = fluentParameters;
     }
 
     [HttpPost("executeProxied")]
-    public async Task<ActionResult> ExecuteProxiedAsync([FromServices] IMediator mediator,
-                                                        [FromServices] IFluentParameters fluentParameters,
-                                                        ProxyReq req) {
+    public async Task<ActionResult> ExecuteProxiedAsync(ProxyReq req) {
         var model = _jsonProvider.DeserializeObject(req.RequestBody, req.RequestType);
 
         foreach (var (name, value) in req.ParameterData.OrEmpty()) {
-            fluentParameters.Add(name, value);
+            _fluentParameters.Add(name, value);
         }
                     
-        await mediator.SendAsync(req.CommandType, typeof(None), model);
+        await _mediator.SendAsync(req.CommandType, typeof(None), model);
         
         return Ok();
     }
