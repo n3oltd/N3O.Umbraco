@@ -19,8 +19,7 @@ public static class DataSync {
         Register<T, TProducer, TConsumer>(null, sharedSecret);
     }
     
-    public static void Schedule<T, TProducer, TConsumer>(Duration interval, string sharedSecret)
-        where T : new()
+    public static void Schedule<T, TProducer, TConsumer>(Duration interval, string sharedSecret) 
         where TProducer : IDataSyncProducer<T>
         where TConsumer : IDataSyncConsumer<T> {
         Register<T, TProducer, TConsumer>(interval, sharedSecret);
@@ -35,7 +34,6 @@ public static class DataSync {
     }
     
     private static void Register<T, TProducer, TConsumer>(Duration? interval, string sharedSecret)
-        where T : new()
         where TProducer : IDataSyncProducer<T>
         where TConsumer : IDataSyncConsumer<T> {
         var providerId = GetProviderId<TProducer>();

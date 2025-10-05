@@ -16,7 +16,7 @@ public class SyncExtensionsController : ApiController {
         _mediator = mediator;
     }
 
-    [HttpGet("{providerId}/syncData")]
+    [HttpPost("{providerId}/syncData")]
     public async Task<ActionResult> SyncData(SyncDataReq req) {
         var res = await _mediator.SendAsync<SyncDataCommand, SyncDataReq>(req);
 
