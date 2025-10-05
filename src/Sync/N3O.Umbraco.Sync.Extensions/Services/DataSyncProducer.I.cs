@@ -1,5 +1,12 @@
-﻿namespace N3O.Umbraco.Sync.Extensions;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
-public interface IDataSyncProducer<T> : IDataSyncProducer { }
+namespace N3O.Umbraco.Sync.Extensions;
 
-public interface IDataSyncProducer { }
+public interface IDataSyncProducer<T> : IDataSyncProducer {
+    Task<IEnumerable<T>> ProvideTypedAsync();
+}
+
+public interface IDataSyncProducer {
+    Task<IEnumerable<object>> ProvideAsync();
+}

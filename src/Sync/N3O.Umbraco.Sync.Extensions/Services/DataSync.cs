@@ -4,6 +4,7 @@ using N3O.Umbraco.Sync.Extensions.Models;
 using NodaTime;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace N3O.Umbraco.Sync.Extensions;
@@ -23,6 +24,14 @@ public static class DataSync {
         where TProducer : IDataSyncProducer<T>
         where TConsumer : IDataSyncConsumer<T> {
         Register<T, TProducer, TConsumer>(interval, sharedSecret);
+    }
+
+    public static SyncRegistration GetRegistrationByProviderId(string providerId) {
+        return Registrations.TryGetValue(providerId, out var registration) ? registration : null;
+    }
+    
+    public static IEnumerable<SyncRegistration> GetAllRegistrations() {
+        return Registrations.Select(x => x.Value);
     }
     
     private static void Register<T, TProducer, TConsumer>(Duration? interval, string sharedSecret)
@@ -44,7 +53,8 @@ public static class DataSync {
                                                  interval,
                                                  typeof(TProducer),
                                                  typeof(TConsumer),
-                                                 typeof(T));
+                                                 typeof(T),
+                                                 null);
         
         Registrations[providerId] = registrations;
     }

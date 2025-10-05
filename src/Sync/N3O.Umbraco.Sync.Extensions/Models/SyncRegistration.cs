@@ -10,13 +10,15 @@ public class SyncRegistration : Value {
                             Duration? autoSyncInterval,
                             Type producerType,
                             Type consumerType,
-                            Type dataType) {
+                            Type dataType,
+                            DateTime? lastRunUtc) {
         ProviderId = providerId;
         SharedSecret = sharedSecret;
         AutoSyncInterval = autoSyncInterval;
         ProducerType = producerType;
         ConsumerType = consumerType;
         DataType = dataType;
+        LastRunUtc = lastRunUtc;
     }
 
     public string ProviderId { get; }
@@ -25,6 +27,25 @@ public class SyncRegistration : Value {
     public Type ProducerType { get; }
     public Type ConsumerType { get; }
     public Type DataType { get; }
+    public DateTime? LastRunUtc { get; private set; }
+    
+    public bool IsDue() {
+        if (AutoSyncInterval == null) {
+            return false;
+        }
+
+        if (LastRunUtc == null) {
+            return true;
+        }
+
+        var nextRun = LastRunUtc.Value.Add(AutoSyncInterval.Value.ToTimeSpan());
+        
+        return DateTime.UtcNow >= nextRun;
+    }
+
+    public void MarkSynchronized() {
+        LastRunUtc = DateTime.UtcNow;
+    }
 
     protected override IEnumerable<object> GetAtomicValues() {
         yield return ProviderId;
@@ -33,5 +54,6 @@ public class SyncRegistration : Value {
         yield return ProducerType;
         yield return ConsumerType;
         yield return DataType;
+        yield return LastRunUtc;
     }
 }

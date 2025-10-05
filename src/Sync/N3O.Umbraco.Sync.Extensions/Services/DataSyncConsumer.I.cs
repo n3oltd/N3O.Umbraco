@@ -1,5 +1,11 @@
-﻿namespace N3O.Umbraco.Sync.Extensions;
+﻿using System.Threading.Tasks;
 
-public interface IDataSyncConsumer<T> : IDataSyncConsumer { }
+namespace N3O.Umbraco.Sync.Extensions;
 
-public interface IDataSyncConsumer { }
+public interface IDataSyncConsumer<T> : IDataSyncConsumer {
+    Task ConsumeAsync(T content);
+}
+
+public interface IDataSyncConsumer {
+    Task ConsumeAsync(object content);
+}
