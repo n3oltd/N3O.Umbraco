@@ -234,8 +234,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.MessageBus.Azur
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.SerpEditor.Data", "Plugins\SerpEditor\N3O.Umbraco.SerpEditor.Data\N3O.Umbraco.SerpEditor.Data.csproj", "{BA220142-F465-4B0F-AE64-16EE4FE70896}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Payments.Worldline", "Payments\N3O.Umbraco.Payments.Worldline\N3O.Umbraco.Payments.Worldline.csproj", "{81A188CE-AF5D-48A6-AB0D-A57360389FB2}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{BD909269-0F04-4754-8FDE-4F9E1A1FBB7B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Workflows", "Workflows\N3O.Umbraco.Workflows\N3O.Umbraco.Workflows.csproj", "{1DA2DC71-F27A-4F0D-83A3-FB1543481060}"
@@ -654,10 +652,6 @@ Global
 		{BA220142-F465-4B0F-AE64-16EE4FE70896}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA220142-F465-4B0F-AE64-16EE4FE70896}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA220142-F465-4B0F-AE64-16EE4FE70896}.Release|Any CPU.Build.0 = Release|Any CPU
-		{81A188CE-AF5D-48A6-AB0D-A57360389FB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{81A188CE-AF5D-48A6-AB0D-A57360389FB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{81A188CE-AF5D-48A6-AB0D-A57360389FB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{81A188CE-AF5D-48A6-AB0D-A57360389FB2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1DA2DC71-F27A-4F0D-83A3-FB1543481060}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1DA2DC71-F27A-4F0D-83A3-FB1543481060}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DA2DC71-F27A-4F0D-83A3-FB1543481060}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -779,9 +773,9 @@ Global
 		{E6655D7C-1BBC-4960-9A46-420382ED9ADC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6655D7C-1BBC-4960-9A46-420382ED9ADC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1602B7CF-9B6A-429B-93F9-348868CA2C73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-        {1602B7CF-9B6A-429B-93F9-348868CA2C73}.Debug|Any CPU.Build.0 = Debug|Any CPU
-        {1602B7CF-9B6A-429B-93F9-348868CA2C73}.Release|Any CPU.ActiveCfg = Release|Any CPU
-        {1602B7CF-9B6A-429B-93F9-348868CA2C73}.Release|Any CPU.Build.0 = Release|Any CPU
+								{1602B7CF-9B6A-429B-93F9-348868CA2C73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+								{1602B7CF-9B6A-429B-93F9-348868CA2C73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+								{1602B7CF-9B6A-429B-93F9-348868CA2C73}.Release|Any CPU.Build.0 = Release|Any CPU
 		{967BB924-27F0-49A6-AD21-274D5A1EE9D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{967BB924-27F0-49A6-AD21-274D5A1EE9D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{967BB924-27F0-49A6-AD21-274D5A1EE9D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
