@@ -28,8 +28,6 @@ public class JobTrigger {
                                    IReadOnlyDictionary<string, string> parameterData) {
         var req = GetProxyReq(triggerKey, modelJson, parameterData);
         
-        parameterData.TryGetValue(SchedulerConstants.Parameters.Culture, out var culture);
-
         var baseUrl = GetBasUrl();
         
         using (var httpClient = new HttpClient()) {
@@ -40,8 +38,8 @@ public class JobTrigger {
             
             request.Headers.Add("accept", "*/*");
 
-            if (culture.HasValue()) {
-                request.Headers.Add("Accept-Language", culture);
+            if (parameterData?.ContainsKey(SchedulerConstants.Parameters.Culture) == true) {
+                request.Headers.Add("Accept-Language", parameterData[SchedulerConstants.Parameters.Culture]);
             }
 
             var response = await httpClient.SendAsync(request);
@@ -66,7 +64,7 @@ public class JobTrigger {
         req.CommandType = requestType;
         req.RequestType = modelType;
         req.RequestBody = modelJson;
-        req.ParameterData = parameterData.ToDictionary();
+        req.ParameterData = parameterData?.ToDictionary();
         
         return req;
     }
