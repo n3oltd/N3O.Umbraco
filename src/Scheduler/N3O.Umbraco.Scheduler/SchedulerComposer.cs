@@ -32,8 +32,6 @@ public class SchedulerComposer : IComposer {
 
     public void Compose(IUmbracoBuilder builder) {
         builder.Services.AddTransient<IBackgroundJob, BackgroundJob>();
-
-        builder.Services.AddOpenApiDocument("JobProxy");
         
         var connectionString = builder.Config.GetConnectionString(UmbracoConstants.System.UmbracoConnectionName);
 
