@@ -22,6 +22,10 @@ public class GeoIPDefaultCurrencyProvider : LookupsDefaultCurrencyProvider {
     public override async Task<Currency> GetDefaultCurrencyAsync(CancellationToken cancellationToken = default) {
         var remoteIp = _remoteIpAddressAccessor.GetRemoteIpAddress();
 
+        if (remoteIp == null) {
+            return await base.GetDefaultCurrencyAsync(cancellationToken);
+        }
+        
         var geoLookupResult = await _ipGeoLookupCache.GeoLocateIpAsync(remoteIp, cancellationToken);
 
         var currency = default(Currency);
