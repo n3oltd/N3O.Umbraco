@@ -26,10 +26,6 @@ public class JobProxyController : ApiController {
 
     [HttpPost("executeProxied")]
     public async Task<ActionResult> ExecuteProxiedAsync(ProxyReq req) {
-        if (!IPAddress.IsLoopback(HttpContext.Connection.RemoteIpAddress)) {
-            return Unauthorized();
-        }
-        
         var model = _jsonProvider.DeserializeObject(req.RequestBody, req.RequestType);
 
         foreach (var (name, value) in req.ParameterData.OrEmpty()) {
