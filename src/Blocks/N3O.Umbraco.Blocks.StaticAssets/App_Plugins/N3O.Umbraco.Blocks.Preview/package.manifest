@@ -1,0 +1,9 @@
+﻿{
+    "javascript": [
+        "~/App_Plugins/N3O.Umbraco.Blocks.Preview/js/controllers/block-preview.controller.js",
+        "~/App_Plugins/N3O.Umbraco.Blocks.Preview/js/directives/bind-compile.directive.js"
+    ],
+    "css": [
+        "~/App_Plugins/N3O.Umbraco.Blocks.Preview/css/block-preview.css"
+    ]
+}

@@ -1,0 +1,25 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <PropertyGroup>
+        <N3OUmbracoBlocksContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\N3O.Umbraco.Blocks.Preview\**\*.*</N3OUmbracoBlocksContentFilesPath>
+    </PropertyGroup>
+
+    <Target Name="CopyN3OUmbracoBlocksAssets" BeforeTargets="Build">
+        <ItemGroup>
+            <N3OUmbracoBlocksContentFiles Include="$(N3OUmbracoBlocksContentFilesPath)"/>
+        </ItemGroup>
+        <Message Text="Copying N3O Blocks Preview files: $(N3OUmbracoBlocksContentFilesPath) - #@(N3OUmbracoBlocksContentFiles->Count()) files" Importance="high"/>
+        <Copy SourceFiles="@(N3OUmbracoBlocksContentFiles)"
+              DestinationFiles="@(N3OUmbracoBlocksContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Blocks.Preview\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"/>
+    </Target>
+
+    <Target Name="ClearN3OUmbracoBlocksAssets" BeforeTargets="Clean">
+        <ItemGroup>
+            <N3OUmbracoBlocksDir Include="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.Blocks.Preview\"/>
+        </ItemGroup>
+        <Message Text="Clear old N3O Blocks Preview files" Importance="high"/>
+        <RemoveDir Directories="@(N3OUmbracoBlocksDir)"/>
+    </Target>
+
+</Project>

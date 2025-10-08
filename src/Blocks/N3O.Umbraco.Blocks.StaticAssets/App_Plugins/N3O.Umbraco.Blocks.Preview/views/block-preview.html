@@ -1,0 +1,10 @@
+<div ng-click="editBlock($event, block)" ng-focus="block.focus" class="blockelement__draggable-element" ng-class="{ '--active': block.active, '--error': parentForm.$invalid && valFormManager.isShowingValidation() }" ng-controller="N3O.Umbraco.Blocks.Preview">
+    <style src="~/App_Plugins/N3O.Umbraco.Blocks.Preview/css/block-preview.css"></style>
+
+    <div class="preview-alert preview-alert-info">
+        <uui-loader style="color: #fff"></uui-loader>
+        Loading preview...
+    </div>
+    
+    <iframe class="block-preview-frame" style="display: none"></iframe>
+</div>
