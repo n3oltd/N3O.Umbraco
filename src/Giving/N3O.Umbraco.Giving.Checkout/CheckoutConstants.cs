@@ -13,8 +13,8 @@ public static class CheckoutConstants {
 
     public static class Environment {
         public static class Keys {
-            public static string CheckoutLanguage = "CheckoutLanguage";
-            public static string TagsOurSite = "TagsOurSite";
+            public static string SiteLanguageTag = "SiteLanguageTag";
+            public static string SiteNameTag = "SiteNameTag";
         }
     }
 }

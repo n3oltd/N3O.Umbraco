@@ -43,7 +43,7 @@ public class CheckoutWebhookTransform : WebhookTransform {
         TransformFeedbacks(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject);
         TransformSponsorships(serializer, GivingTypes.Donation, checkout.Donation?.Allocations, jObject, checkout.Timestamp);
         TransformSponsorships(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject, checkout.Timestamp);
-        TransformEnvironmentData(serializer, jObject);
+        TransformTags(jObject);
         
         return jObject;
     }
@@ -56,15 +56,13 @@ public class CheckoutWebhookTransform : WebhookTransform {
                               x => new {x.Id, x.Name, x.Iso2Code, x.Iso3Code});
     }
         
-    private void AddTagsProperty(JObject jObject, string key, string environmentKey) {
-        var value = EnvironmentData.GetOurValue(environmentKey);
-
+    private void AddTag(JObject jObject, string key, string value) {
         if (!string.IsNullOrEmpty(value)) {
             if (jObject["tags"] == null || jObject["tags"].Type != JTokenType.Object) {
                 jObject["tags"] = new JObject();
             }
 
-            ((JObject)jObject["tags"])[key] = value;
+            ((JObject) jObject["tags"])[key] = value.HasValue() ? JValue.CreateString(value) : JValue.CreateNull();
         }
     }
 
@@ -105,14 +103,17 @@ public class CheckoutWebhookTransform : WebhookTransform {
         }
     }
     
-    private void TransformEnvironmentData(JsonSerializer serializer, JObject jObject) {
-        var envLanguage = EnvironmentData.GetOurValue(CheckoutConstants.Environment.Keys.CheckoutLanguage);
+    private void TransformTags(JObject jObject) {
+        var siteLanguageTag = EnvironmentData.GetOurValue(CheckoutConstants.Environment.Keys.SiteLanguageTag);
+        var siteNameTag = EnvironmentData.GetOurValue(CheckoutConstants.Environment.Keys.SiteNameTag);
 
-        if (!string.IsNullOrEmpty(envLanguage)) {
-            jObject["language"] = envLanguage;
+        if (siteLanguageTag.HasValue()) {
+            AddTag(jObject, nameof(siteLanguageTag), siteLanguageTag);
         }
-
-        AddTagsProperty(jObject, "ourSite", CheckoutConstants.Environment.Keys.TagsOurSite);
+        
+        if (siteNameTag.HasValue()) {
+            AddTag(jObject, nameof(siteNameTag), siteNameTag);
+        }
     }
 
     private IReadOnlyList<DayOfMonth> GetAllowedCollectionDays(PaymentMethod paymentMethod) {
