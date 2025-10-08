@@ -40,7 +40,7 @@ public class UmbracoBlocksRenderer : BlocksRenderer<IEnumerable<IBlockReference<
         foreach (var (viewModel, index) in viewModels.SelectWithIndex()) {
             var viewPath = viewPaths.ElementAt(index);
             
-            var blockHtml = await RenderBlockAsync(content, viewPath, viewModel);
+            var blockHtml = await RenderViewAsync(content, viewPath, viewModel);
             
             html.Append(blockHtml);
         } 

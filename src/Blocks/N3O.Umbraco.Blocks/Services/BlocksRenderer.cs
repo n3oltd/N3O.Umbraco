@@ -33,7 +33,7 @@ public abstract class BlocksRenderer<T> : IBlocksRenderer where T : class {
         return blocks;
     }
     
-    protected async Task<string> RenderBlockAsync(IPublishedContent content, string viewPath, object viewModel) {
+    protected async Task<string> RenderViewAsync(IPublishedContent content, string viewPath, object viewModel) {
         var html = await RazorTemplateEngine.RenderPartialAsync(viewPath, viewModel);
 
         foreach (var postProcessor in _postProcessors) {

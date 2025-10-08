@@ -36,7 +36,7 @@ public class PerplexBlocksRenderer : BlocksRenderer<ContentBlocks> {
         foreach (var (viewModel, index) in viewModels.SelectWithIndex()) {
             var viewPath = viewPaths.ElementAt(index);
             
-            var blockHtml = await RenderBlockAsync(content, viewPath, viewModel);
+            var blockHtml = await RenderViewAsync(content, viewPath, viewModel);
             
             html.Append(blockHtml);
         } 
