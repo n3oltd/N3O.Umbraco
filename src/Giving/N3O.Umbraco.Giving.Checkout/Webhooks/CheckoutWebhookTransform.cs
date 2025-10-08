@@ -4,6 +4,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
+using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Payments.Content;
@@ -42,7 +43,8 @@ public class CheckoutWebhookTransform : WebhookTransform {
         TransformFeedbacks(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject);
         TransformSponsorships(serializer, GivingTypes.Donation, checkout.Donation?.Allocations, jObject, checkout.Timestamp);
         TransformSponsorships(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject, checkout.Timestamp);
-
+        TransformTags(jObject);
+        
         return jObject;
     }
 
@@ -52,6 +54,16 @@ public class CheckoutWebhookTransform : WebhookTransform {
 
         AddConverter<Country>(t => t == typeof(Country),
                               x => new {x.Id, x.Name, x.Iso2Code, x.Iso3Code});
+    }
+        
+    private void AddTag(JObject jObject, string key, string value) {
+        if (!string.IsNullOrEmpty(value)) {
+            if (jObject["tags"] == null || jObject["tags"].Type != JTokenType.Object) {
+                jObject["tags"] = new JObject();
+            }
+
+            ((JObject) jObject["tags"])[key] = value.HasValue() ? JValue.CreateString(value) : JValue.CreateNull();
+        }
     }
 
     private void TransformAccount(JsonSerializer serializer, Entities.Checkout checkout, JObject jObject) {
@@ -88,6 +100,19 @@ public class CheckoutWebhookTransform : WebhookTransform {
             }
 
             jObject["regularGiving"]["options"]["collectionDay"] = collectionDay.Day;
+        }
+    }
+    
+    private void TransformTags(JObject jObject) {
+        var siteLanguageTag = EnvironmentData.GetOurValue(CheckoutConstants.Environment.Keys.SiteLanguageTag);
+        var siteNameTag = EnvironmentData.GetOurValue(CheckoutConstants.Environment.Keys.SiteNameTag);
+
+        if (siteLanguageTag.HasValue()) {
+            AddTag(jObject, nameof(siteLanguageTag), siteLanguageTag);
+        }
+        
+        if (siteNameTag.HasValue()) {
+            AddTag(jObject, nameof(siteNameTag), siteNameTag);
         }
     }
 

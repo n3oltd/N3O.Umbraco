@@ -10,4 +10,11 @@ public static class CheckoutConstants {
         public static readonly string CheckoutError = nameof(CheckoutError);
         public static readonly string CheckoutRegularGiving = nameof(CheckoutRegularGiving);
     }
+
+    public static class Environment {
+        public static class Keys {
+            public static string SiteLanguageTag = "SiteLanguageTag";
+            public static string SiteNameTag = "SiteNameTag";
+        }
+    }
 }
