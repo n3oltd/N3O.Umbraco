@@ -10,9 +10,13 @@ namespace N3O.Umbraco.References;
 public class Counters : ICounters {
     private readonly AsyncKeyedLocker<string> _locker;
     private readonly IRepository<Counter> _repository;
+    private readonly IReferenceStartProvider _referenceStartProvider;
 
-    public Counters(AsyncKeyedLocker<string> locker, IRepository<Counter> repository) {
+    public Counters(AsyncKeyedLocker<string> locker,
+                    IReferenceStartProvider referenceStartProvider,
+                    IRepository<Counter> repository) {
         _locker = locker;
+        _referenceStartProvider = referenceStartProvider;
         _repository = repository;
     }
     
@@ -38,7 +42,7 @@ public class Counters : ICounters {
 
     public async Task<Reference> NextAsync(ReferenceType referenceType,
                                            CancellationToken cancellationToken = default) {
-        var number = await NextAsync(referenceType.Id, referenceType.StartFrom, cancellationToken);
+        var number = await NextAsync(referenceType.Id, _referenceStartProvider.GetStartNumber(referenceType), cancellationToken);
 
         return new Reference(referenceType, number);
     }
