@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using System.Linq;
 
 namespace N3O.Umbraco.Blocks.Extensions;
 
@@ -15,7 +16,9 @@ public static class StringExtensions {
 
         if (links != null) {
             foreach (var link in links) {
-                link.SetAttributeValue("href", "javascript:;");
+                if (!link.Attributes.Any(x => x.Name == "href" && x.Value.StartsWith("/media"))) {
+                    link.SetAttributeValue("href", "javascript:;");
+                }
             }
         }
 
