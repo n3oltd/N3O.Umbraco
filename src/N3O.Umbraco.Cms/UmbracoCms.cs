@@ -15,12 +15,9 @@ public static class UmbracoCms {
                               .ConfigureLogging(x => x.ClearProviders())
                               .ConfigureUmbracoDefaults()
                               .ConfigureWebHostDefaults(webBuilder => {
+                                  webBuilder.RunExtensions();
                                   webBuilder.UseStaticWebAssets();
                                   webBuilder.UseStartup<TStartup>();
-                                  
-                                  webBuilder.ConfigureAppConfiguration((context, _) => {
-                                      webBuilder.RunExtensions(context);
-                                  });
 
                                   if (useIISIntegration) {
                                       webBuilder.UseIISIntegration();
