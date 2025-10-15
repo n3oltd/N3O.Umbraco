@@ -67,6 +67,8 @@ public class ClientFactory<T> {
                                                   bearerToken,
                                                   onBehalfOf,
                                                   transientErrorPolicyHandler);
+        
+        _logger.LogInformation("Using cloud api handler for subscription: {@subscription}", subscription.Id.Code);
 
         var httpClient = new HttpClient(cloudApiHandler);
 
