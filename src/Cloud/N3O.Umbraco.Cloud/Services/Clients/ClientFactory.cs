@@ -53,8 +53,6 @@ public class ClientFactory<T> {
         _jsonProvider.ApplySettings((JsonSerializerSettings) client.GetPropertyInfo("JsonSerializerSettings").GetValue(client));
         
         client.SetPropertyValue(BaseUrl, baseUrl);
-        
-        _logger.LogError("{BaseUrl}, {Headers}", baseUrl, _jsonProvider.SerializeObject(httpClient.DefaultRequestHeaders));
 
         return new CloudApiClient<T>(client, _jsonProvider, _logger);
     }
