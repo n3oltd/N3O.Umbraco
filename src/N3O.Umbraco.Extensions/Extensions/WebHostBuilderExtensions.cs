@@ -7,7 +7,7 @@ using System.Linq;
 namespace N3O.Umbraco.Extensions;
 
 public static class WebHostBuilderExtensions {
-    public static void RunExtensions(this IWebHostBuilder webBuilder) {
+    public static void RunExtensions(this IWebHostBuilder webBuilder, WebHostBuilderContext context) {
         var extensions = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
                                                      t.HasParameterlessConstructor() &&
                                                      t.ImplementsInterface<IWebHostBuilderExtension>())
@@ -15,7 +15,7 @@ public static class WebHostBuilderExtensions {
                                       .ToList();
 
         foreach (var extension in extensions) {
-            extension.Run(webBuilder);
+            extension.Run(webBuilder, context);
         }
     }
 }
