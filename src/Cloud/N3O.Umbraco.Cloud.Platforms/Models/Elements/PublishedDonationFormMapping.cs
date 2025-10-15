@@ -28,11 +28,21 @@ public class PublishedDonationFormMapping : IMapDefinition {
         if (src.Campaign.HasValue()) {
             dest.Campaign = ctx.Map<CampaignContent, PublishedCampaignSummary>(src.Campaign);
             dest.Designation = ctx.Map<DesignationContent, PublishedDesignation>(src.Campaign.DefaultDesignation);
+        } else if (src.Designation.HasValue()) {
+            var campaign = src.Designation.Content().Parent.As<CampaignContent>();
+            
+            dest.Campaign = ctx.Map<CampaignContent, PublishedCampaignSummary>(campaign);
+            dest.Designation = ctx.Map<DesignationContent, PublishedDesignation>(src.Designation);
         } else {
             var defaultCampaign = _contentLocator.Single<PlatformsContent>().Campaigns.First();
             
             dest.Designation = ctx.Map<DesignationContent, PublishedDesignation>(defaultCampaign.DefaultDesignation);
         }
+        
+        dest.Dimension1 = src.Dimension1?.Name;
+        dest.Dimension2 = src.Dimension3?.Name;
+        dest.Dimension3 = src.Dimension3?.Name;
+        dest.Dimension4 = src.Dimension4?.Name;
         
         dest.Tags = src.Tags.ToPublishedTagCollection();
     }

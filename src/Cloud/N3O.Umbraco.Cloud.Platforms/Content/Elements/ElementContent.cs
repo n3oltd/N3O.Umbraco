@@ -4,6 +4,7 @@ using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Allocations.Models;
 using System;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -42,6 +43,11 @@ public class ElementContent : UmbracoContent<ElementContent> {
     public string EmbedCode => GetValue(x => x.EmbedCode);
     public bool IsSystemGenerated => GetValue(x => x.IsSystemGenerated);
     public CampaignContent Campaign => GetAs(x => x.Campaign);
+    public DesignationContent Designation => GetAs(x => x.Designation);
+    public FundDimension1Value Dimension1 => GetValue(x => x.Dimension1);
+    public FundDimension2Value Dimension2 => GetValue(x => x.Dimension2);
+    public FundDimension3Value Dimension3 => GetValue(x => x.Dimension3);
+    public FundDimension4Value Dimension4 => GetValue(x => x.Dimension4);
     public IReadOnlyDictionary<string, string> Tags => GetConvertedValue<IEnumerable<DataListItem>, IReadOnlyDictionary<string, string>>(x => x.Tags, x => x.ToTagsDictionary());
 
     public DonateButtonElementContent DonateButton { get; private set; }

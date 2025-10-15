@@ -68,7 +68,7 @@ public class CreateDefaultElementForCampaignHandler
             contentPublisher.Content.Boolean(AliasHelper<ElementContent>.PropertyAlias(x => x.IsSystemGenerated)).Set(true);
 
             if (elementType == ElementTypes.DonateButton) {
-                contentPublisher.Content.Label(AliasHelper<DonateButtonElementContent>.PropertyAlias(x => x.Label)).Set("Donate");
+                contentPublisher.Content.Label(AliasHelper<DonateButtonElementContent>.PropertyAlias(x => x.Text)).Set("Donate");
             }
             
 
