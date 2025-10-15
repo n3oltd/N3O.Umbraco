@@ -9,6 +9,7 @@ public class PublishedSponsorshipScheme : PublishedNamedLookup, IHoldAllowedGivi
     public PublishedFundDimensionOptions FundDimensionOptions { get; set; }
     public IEnumerable<PublishedSponsorshipComponent> Components { get; set; }
     public IEnumerable<PublishedCommitmentDuration> AllowedDurations { get; set; }
+    public IEnumerable<string> AvailableLocations { get; set; }
     
     [JsonIgnore]
     public IEnumerable<GivingType> AllowedGivingTypes {
