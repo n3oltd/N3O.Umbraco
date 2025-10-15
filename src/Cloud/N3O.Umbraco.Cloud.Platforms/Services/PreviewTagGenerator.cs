@@ -4,6 +4,8 @@ using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
+using N3O.Umbraco.Lookups;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,10 +15,12 @@ namespace N3O.Umbraco.Cloud.Platforms;
 public abstract class PreviewTagGenerator : IPreviewTagGenerator {
     private readonly ICdnClient _cdnClient;
     private readonly IJsonProvider _jsonProvider;
+    private readonly ILookups _lookups;
 
-    protected PreviewTagGenerator(ICdnClient cdnClient, IJsonProvider jsonProvider) {
+    protected PreviewTagGenerator(ICdnClient cdnClient, IJsonProvider jsonProvider, ILookups lookups) {
         _cdnClient = cdnClient;
         _jsonProvider = jsonProvider;
+        _lookups = lookups;
     }
     
     public bool CanGeneratePreview(string contentTypeAlias) {
@@ -30,6 +34,20 @@ public abstract class PreviewTagGenerator : IPreviewTagGenerator {
         var html = $"<n3o-donation-form-modal form-id='{Guid.NewGuid()}' preview='true' json='{HtmlUtils.HtmlEncode(json)}'></n3o-donation-form-modal>";
         
         return (etag, html);
+    }
+    
+    protected T GetDataListValue<T>(IReadOnlyDictionary<string, object> content, string alias) where T : ILookup {
+        if (content.ContainsKey(alias)) {
+            var strValue = content[alias].ToString();
+
+            if (strValue.HasValue() && strValue != "[]") {
+                var id = JArray.Parse(strValue)[0].ToString();
+                
+                return _lookups.FindById<T>(id);
+            }
+        }
+
+        return default;
     }
     
     protected abstract string ContentTypeAlias { get; }

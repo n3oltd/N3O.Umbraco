@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Content;
+using System.Collections.Generic;
 using Umbraco.Cms.Core.Models;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
@@ -38,6 +39,10 @@ public class ThemeContent : UmbracoContent<ThemeContent> {
 	public string IconBackgroundColorDark => GetValue(x => x.IconBackgroundColorDark);
 	public string SplashBackgroundColor => GetValue(x => x.SplashBackgroundColor);
 	public string SplashBackgroundColorDark => GetValue(x => x.SplashBackgroundColorDark);
+	
+	public string Css => GetValue(x => x.Css);
+	public IEnumerable<string> FontImports => GetValue(x => x.FontImports);
+	public IEnumerable<string> CssImports => GetValue(x => x.CssImports);
 	
 	public MediaWithCrops Logo => GetValue(x => x.Logo);
 	public MediaWithCrops LogoDark => GetValue(x => x.LogoDark);

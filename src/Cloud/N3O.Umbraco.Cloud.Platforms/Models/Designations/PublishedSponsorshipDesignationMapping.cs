@@ -22,8 +22,8 @@ public class PublishedSponsorshipDesignationMapping : IMapDefinition {
         dest.AllowedDurations = src.Scheme.AllowedDurations.OrEmpty().Select(ToPublishedCommitmentDuration).ToList();
     }
     
-    private PublishedSponsorshipComponent ToPublishedSponsorshipComponent(MapperContext ctx, SponsorshipComponent src) {
-        var component = new PublishedSponsorshipComponent();
+    private PublishedSponsorshipSchemeComponent ToPublishedSponsorshipComponent(MapperContext ctx, SponsorshipComponent src) {
+        var component = new PublishedSponsorshipSchemeComponent();
         
         component.Name = src.Name;
         component.Required = src.Mandatory;
