@@ -6,9 +6,7 @@ using N3O.Umbraco.Json;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Parameters;
 using N3O.Umbraco.Scheduler.Models;
-using System.Net;
 using System.Threading.Tasks;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Scheduler.Controllers;
 

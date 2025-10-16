@@ -15,7 +15,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Extensions;
 using DesignationType = N3O.Umbraco.Cloud.Platforms.Lookups.DesignationType;
 using PublishedGiftType = N3O.Umbraco.Cloud.Platforms.Clients.GiftType;
 

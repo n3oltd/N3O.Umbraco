@@ -8,7 +8,7 @@ public class DonateButtonActionDataSource : LookupsDataSource<DonateButtonAction
     
     public override string Name => "Donate Button Actions";
     public override string Description => "Data source for donate button actions";
-    public override string Icon => "icon-donate";
+    public override string Icon => "icon-shopping-basket";
 
-    protected override string GetIcon(DonateButtonAction donateButtonAction) => donateButtonAction.Icon;
+    protected override string GetIcon(DonateButtonAction _) => "icon-shopping-basket";
 }

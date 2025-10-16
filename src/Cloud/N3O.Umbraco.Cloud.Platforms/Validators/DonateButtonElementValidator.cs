@@ -41,7 +41,7 @@ public class DonateButtonElementValidator : ContentValidator {
         var designation = GetDesignationContent(content);
         var fundDimensionOptions = designation.GetFundDimensionOptions();
         
-        var action = _contentHelper.GetDataListValue<DonateButtonAction>(content, ActionAlias);
+        var action = _contentHelper.GetDataListValue<OnAddToCartAction>(content, ActionAlias);
 
         if (fundDimensionOptions != null) {
             DimensionAllowed(content, fundDimensionOptions.Dimension1, Dimension1Alias);
@@ -50,7 +50,7 @@ public class DonateButtonElementValidator : ContentValidator {
             DimensionAllowed(content, fundDimensionOptions.Dimension4, Dimension4Alias);
         }
 
-        if (action.IsAnyOf(DonateButtonActions.AddToCart, DonateButtonActions.BeginCheckout)) {
+        if (action.IsAnyOf(OnAddToCartActions.AddToCart, OnAddToCartActions.BeginCheckout)) {
             ValidateHasPricing(content, designation);
             ValidateHasFixedDimensions(content, designation);
         }
