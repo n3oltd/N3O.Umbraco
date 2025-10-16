@@ -38,6 +38,7 @@ public class ElementContent : UmbracoContent<ElementContent> {
     }
     
     public Guid Key => Content().Key;
+    public CampaignContent Campaign => GetAs(x => x.Campaign);
     public string EmbedCode => GetValue(x => x.EmbedCode);
     public bool IsSystemGenerated => GetValue(x => x.IsSystemGenerated);
     public IReadOnlyDictionary<string, string> Tags => GetConvertedValue<IEnumerable<DataListItem>, IReadOnlyDictionary<string, string>>(x => x.Tags, x => x.ToTagsDictionary());
