@@ -7,10 +7,10 @@ using N3O.Umbraco.Lookups;
 
 namespace N3O.Umbraco.Cloud.Platforms.Validators;
 
-public class SponsorshipDesignationValidatorDesignationValidator : DesignationValidator<SponsorshipDesignationContent> {
+public class SponsorshipDesignationValidator : DesignationValidator<SponsorshipDesignationContent> {
     private readonly ILookups _lookups;
 
-    public SponsorshipDesignationValidatorDesignationValidator(IContentHelper contentHelper, ILookups lookups) 
+    public SponsorshipDesignationValidator(IContentHelper contentHelper, ILookups lookups) 
         : base(contentHelper, lookups) {
         _lookups = lookups;
     }
