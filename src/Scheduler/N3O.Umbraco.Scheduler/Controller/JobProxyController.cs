@@ -5,6 +5,7 @@ using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Parameters;
+using N3O.Umbraco.Scheduler.Extensions;
 using N3O.Umbraco.Scheduler.Models;
 using System.Net;
 using System.Threading.Tasks;
@@ -24,8 +25,8 @@ public class JobProxyController : ApiController {
     }
 
     [HttpPost("executeProxied")]
-    public async Task<ActionResult> ExecuteProxiedAsync(ProxyReq req) {
-        if (!IPAddress.IsLoopback(HttpContext.Connection.RemoteIpAddress)) {
+    public async Task<ActionResult> ExecuteProxiedAsync(ProxyReq req) { 
+        if (!IsAuthorized()) {
             return Unauthorized();
         }
         
@@ -38,5 +39,15 @@ public class JobProxyController : ApiController {
         await _mediator.SendAsync(req.CommandType, typeof(None), model);
         
         return Ok();
+    }
+
+    private bool IsAuthorized() {
+        Request.Headers.TryGetValue("X-Api-Key", out var apiKey);
+
+        if (apiKey.HasValue() && apiKey.ToString() == TriggerKey.ApiSecurityKey) {
+            return true;
+        }
+
+        return false;
     }
 }

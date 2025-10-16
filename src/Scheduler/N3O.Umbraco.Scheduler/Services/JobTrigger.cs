@@ -37,6 +37,7 @@ public class JobTrigger {
             request.Content = new StringContent(reqStr, null, "application/json");
             
             request.Headers.Add("accept", "*/*");
+            request.Headers.Add("X-Api-Key", TriggerKey.ApiSecurityKey);
 
             if (parameterData?.ContainsKey(SchedulerConstants.Parameters.Culture) == true) {
                 request.Headers.Add("Accept-Language", parameterData[SchedulerConstants.Parameters.Culture]);

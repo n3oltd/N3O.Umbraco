@@ -5,6 +5,8 @@ namespace N3O.Umbraco.Scheduler;
 
 public static class TriggerKey {
     private static readonly string Separator = "|";
+    
+    public static readonly string ApiSecurityKey = Guid.NewGuid().ToString();
 
     public static string Generate<TRequest, TModel>() where TRequest : Request<TModel, None> {
         return Generate(typeof(TRequest), typeof(TModel));
