@@ -45,7 +45,7 @@ public class ElementSending : INotificationAsyncHandler<SendingContentNotificati
         if (isSystemGenerated) {
             var generalTab = variant.Tabs.Single(x => x.Alias.EqualsInvariant("general"));
             var campaignProperty = GetProperty(generalTab, AliasHelper<ElementContent>.PropertyAlias(x => x.Campaign));
-            var designationProperty = GetProperty(generalTab, AliasHelper<ElementContent>.PropertyAlias(x => x.DonationForm.Designation));
+            var designationProperty = GetProperty(generalTab, AliasHelper<DesignatableElementContent<DonationFormElementContent>>.PropertyAlias(x => x.Designation));
 
             campaignProperty.Readonly = true;
             designationProperty.Readonly = true;
