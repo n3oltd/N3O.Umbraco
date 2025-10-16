@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 
@@ -22,6 +23,9 @@ public static class UmbracoCms {
                                   if (useIISIntegration) {
                                       webBuilder.UseIISIntegration();
                                   }
+                                  webBuilder.ConfigureAppConfiguration((context, _) => {
+                                      Composer.WebHostEnvironment = context.HostingEnvironment;
+                                  });
                               });
 
         hostBuilder.RunExtensions();
