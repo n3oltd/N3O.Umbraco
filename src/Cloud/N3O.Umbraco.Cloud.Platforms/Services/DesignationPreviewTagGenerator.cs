@@ -9,7 +9,6 @@ using N3O.Umbraco.Json;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Markup;
 using N3O.Umbraco.Media;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +41,7 @@ public abstract class DesignationPreviewTagGenerator : PreviewTagGenerator {
                                              IMarkupEngine markupEngine,
                                              IMediaLocator mediaLocator,
                                              IPublishedValueFallback publishedValueFallback)
-        : base(cdnClient, jsonProvider) {
+        : base(cdnClient, jsonProvider, lookups) {
         _jsonProvider = jsonProvider;
         _mediaUrl = mediaUrl;
         _lookups = lookups;
@@ -85,6 +84,8 @@ public abstract class DesignationPreviewTagGenerator : PreviewTagGenerator {
         publishedDonationForm.Designation = publishedDesignation;
 
         previewData["publishedForm"] = publishedDonationForm;
+        
+        PopulateAdditionalData(previewData, publishedDonationForm);
     }
 
     private PublishedDesignationType? GetPublishedDesignationType() {
@@ -112,20 +113,6 @@ public abstract class DesignationPreviewTagGenerator : PreviewTagGenerator {
 
         return publishedFundDimensions;
     }
-    
-    protected T GetDataListValue<T>(IReadOnlyDictionary<string, object> content, string alias) where T : ILookup {
-        if (content.ContainsKey(alias)) {
-            var strValue = content[alias].ToString();
-
-            if (strValue.HasValue() && strValue != "[]") {
-                var id = JArray.Parse(strValue)[0].ToString();
-                
-                return _lookups.FindById<T>(id);
-            }
-        }
-
-        return default;
-    }
 
     private MediaWithCrops GetMediaWithCrops(IReadOnlyDictionary<string, object> content, string alias) {
         var mediaDto = _jsonProvider.DeserializeObject<IEnumerable<MediaWithCropsDto>>(content[alias]?.ToString()).FirstOrDefault();
@@ -142,4 +129,7 @@ public abstract class DesignationPreviewTagGenerator : PreviewTagGenerator {
     
     protected abstract IFundDimensionOptions GetFundDimensionOptions(IReadOnlyDictionary<string, object> content);
     protected abstract IEnumerable<PublishedGiftType> GetPublishedSuggestedGiftTypes(IReadOnlyDictionary<string, object> content);
+
+    protected virtual void PopulateAdditionalData(Dictionary<string, object> previewData,
+                                                  PublishedDonationForm publishedDonationForm) { }
 }

@@ -36,12 +36,11 @@ public class ElementContent : UmbracoContent<ElementContent> {
         DonateButton?.SetVariationContext(variationContext);
         DonationForm?.SetVariationContext(variationContext);
     }
-
     
     public Guid Key => Content().Key;
+    public CampaignContent Campaign => GetAs(x => x.Campaign);
     public string EmbedCode => GetValue(x => x.EmbedCode);
     public bool IsSystemGenerated => GetValue(x => x.IsSystemGenerated);
-    public CampaignContent Campaign => GetAs(x => x.Campaign);
     public IReadOnlyDictionary<string, string> Tags => GetConvertedValue<IEnumerable<DataListItem>, IReadOnlyDictionary<string, string>>(x => x.Tags, x => x.ToTagsDictionary());
 
     public DonateButtonElementContent DonateButton { get; private set; }

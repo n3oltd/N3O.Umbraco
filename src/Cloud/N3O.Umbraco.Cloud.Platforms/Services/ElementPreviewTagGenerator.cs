@@ -2,7 +2,9 @@
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Json;
+using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Markup;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +25,9 @@ public abstract class ElementPreviewTagGenerator : PreviewTagGenerator {
                                          IJsonProvider jsonProvider,
                                          IContentLocator contentLocator,
                                          IUmbracoMapper mapper,
-                                         IMarkupEngine markupEngine)
-        : base(cdnClient, jsonProvider) {
+                                         IMarkupEngine markupEngine,
+                                         ILookups lookups)
+        : base(cdnClient, jsonProvider, lookups) {
         _contentLocator = contentLocator;
         _mapper = mapper;
         _markupEngine = markupEngine;
@@ -41,6 +44,7 @@ public abstract class ElementPreviewTagGenerator : PreviewTagGenerator {
         publishedDonationForm.Type = ElementType.ToEnum<PublishedElementType>();
 
         var campaignUdi = content[AliasHelper<ElementContent>.PropertyAlias(x => x.Campaign)]?.ToString();
+        var designationUdi = content[AliasHelper<ElementContent>.PropertyAlias(x => x.DonationForm.Designation)]?.ToString();
         
         if (campaignUdi.HasValue()) {
             var campaign = _contentLocator.ById<CampaignContent>(UdiParser.Parse(campaignUdi).ToId().Value);
@@ -50,11 +54,25 @@ public abstract class ElementPreviewTagGenerator : PreviewTagGenerator {
             
             publishedDonationForm.Designation.ShortDescription = _markupEngine.RenderHtml(publishedDonationForm.Designation.ShortDescription).IfNotNull(x => new HtmlEncodedString(x.ToString())).ToHtmlString();
             publishedDonationForm.Designation.LongDescription = _markupEngine.RenderHtml(publishedDonationForm.Designation.LongDescription).IfNotNull(x => new HtmlEncodedString(x.ToString())).ToHtmlString();
-        } else {
+        } else if (designationUdi.HasValue()) {
+            var designation = _contentLocator.ById<DesignationContent>(UdiParser.Parse(designationUdi).ToId().Value);
+            var campaign = designation.Content().Parent.As<CampaignContent>();
+            
+            publishedDonationForm.Campaign = _mapper.Map<CampaignContent, PublishedCampaignSummary>(campaign);
+            publishedDonationForm.Designation = _mapper.Map<DesignationContent, PublishedDesignation>(designation);
+            
+            publishedDonationForm.Designation.ShortDescription = _markupEngine.RenderHtml(publishedDonationForm.Designation.ShortDescription).IfNotNull(x => new HtmlEncodedString(x.ToString())).ToHtmlString();
+            publishedDonationForm.Designation.LongDescription = _markupEngine.RenderHtml(publishedDonationForm.Designation.LongDescription).IfNotNull(x => new HtmlEncodedString(x.ToString())).ToHtmlString();
+        }  else {
             var defaultCampaign = _contentLocator.Single<PlatformsContent>().Campaigns.First();
             
             publishedDonationForm.Designation = _mapper.Map<DesignationContent, PublishedDesignation>(defaultCampaign.DefaultDesignation);
         }
+            
+        publishedDonationForm.Dimension1 = GetDataListValue<FundDimension1Value>(content, AliasHelper<ElementContent>.PropertyAlias(x => x.DonationForm.Dimension1))?.Name;
+        publishedDonationForm.Dimension2 = GetDataListValue<FundDimension2Value>(content, AliasHelper<ElementContent>.PropertyAlias(x => x.DonationForm.Dimension2))?.Name;
+        publishedDonationForm.Dimension3 = GetDataListValue<FundDimension3Value>(content, AliasHelper<ElementContent>.PropertyAlias(x => x.DonationForm.Dimension3))?.Name;
+        publishedDonationForm.Dimension4 = GetDataListValue<FundDimension4Value>(content, AliasHelper<ElementContent>.PropertyAlias(x => x.DonationForm.Dimension4))?.Name;
 
         previewData["publishedForm"] = publishedDonationForm;
     }

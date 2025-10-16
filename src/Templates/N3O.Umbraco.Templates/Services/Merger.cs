@@ -1,8 +1,6 @@
-﻿using Humanizer;
-using Microsoft.AspNetCore.Html;
+﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Templates.Extensions;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

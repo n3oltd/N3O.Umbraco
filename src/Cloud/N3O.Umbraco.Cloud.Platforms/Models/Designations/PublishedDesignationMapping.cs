@@ -40,6 +40,8 @@ public class PublishedDesignationMapping : IMapDefinition {
         dest.FundDimensions = src.ToPublishedDesignationFundDimensions();
         dest.Fund = src.Fund.IfNotNull(ctx.Map<FundDesignationContent, PublishedFundDesignation>);
         dest.Feedback = src.Feedback.IfNotNull(ctx.Map<FeedbackDesignationContent, PublishedFeedbackDesignation>);
+        // TODO populate once crowdfunding work is done
+        dest.Crowdfunding = null;
         dest.Sponsorship = src.Sponsorship.IfNotNull(ctx.Map<SponsorshipDesignationContent, PublishedSponsorshipDesignation>);
     }
 }

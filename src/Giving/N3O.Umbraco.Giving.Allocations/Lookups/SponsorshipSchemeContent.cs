@@ -78,7 +78,8 @@ public class ContentSponsorshipSchemes : LookupsCollection<SponsorshipScheme> {
                                      sponsorshipSchemeContent.AllowedGivingTypes,
                                      sponsorshipSchemeContent.AllowedDurations,
                                      sponsorshipSchemeContent.FundDimensionOptions,
-                                     sponsorshipSchemeContent.Components);
+                                     sponsorshipSchemeContent.Components,
+                                     null);
     }
 
     private void ContentCacheOnFlushed(object sender, EventArgs e) {
