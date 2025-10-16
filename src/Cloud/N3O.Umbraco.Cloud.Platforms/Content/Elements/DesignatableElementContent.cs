@@ -1,8 +1,10 @@
-﻿using N3O.Umbraco.Content;
+﻿using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Giving.Allocations.Models;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
+[UmbracoContent(PlatformsConstants.Elements.DesignatableElement)]
 public class DesignatableElementContent<T> : UmbracoContent<T>
     where T : DesignatableElementContent<T> {
     public DesignationContent Designation => GetAs(x => x.Designation);

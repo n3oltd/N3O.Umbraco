@@ -44,7 +44,7 @@ public abstract class ElementPreviewTagGenerator : PreviewTagGenerator {
         publishedDonationForm.Type = ElementType.ToEnum<PublishedElementType>();
 
         var campaignUdi = content[AliasHelper<ElementContent>.PropertyAlias(x => x.Campaign)]?.ToString();
-        var designationUdi = content[AliasHelper<ElementContent>.PropertyAlias(x => x.DonationForm.Designation)]?.ToString();
+        var designationUdi = content[AliasHelper<DesignatableElementContent<DonationFormElementContent>>.PropertyAlias(x => x.Designation)]?.ToString();
         
         if (campaignUdi.HasValue()) {
             var campaign = _contentLocator.ById<CampaignContent>(UdiParser.Parse(campaignUdi).ToId().Value);
@@ -69,10 +69,10 @@ public abstract class ElementPreviewTagGenerator : PreviewTagGenerator {
             publishedDonationForm.Designation = _mapper.Map<DesignationContent, PublishedDesignation>(defaultCampaign.DefaultDesignation);
         }
             
-        publishedDonationForm.Dimension1 = GetDataListValue<FundDimension1Value>(content, AliasHelper<ElementContent>.PropertyAlias(x => x.DonationForm.Dimension1))?.Name;
-        publishedDonationForm.Dimension2 = GetDataListValue<FundDimension2Value>(content, AliasHelper<ElementContent>.PropertyAlias(x => x.DonationForm.Dimension2))?.Name;
-        publishedDonationForm.Dimension3 = GetDataListValue<FundDimension3Value>(content, AliasHelper<ElementContent>.PropertyAlias(x => x.DonationForm.Dimension3))?.Name;
-        publishedDonationForm.Dimension4 = GetDataListValue<FundDimension4Value>(content, AliasHelper<ElementContent>.PropertyAlias(x => x.DonationForm.Dimension4))?.Name;
+        publishedDonationForm.Dimension1 = GetDataListValue<FundDimension1Value>(content, AliasHelper<DesignatableElementContent<DonationFormElementContent>>.PropertyAlias(x => x.Dimension1))?.Name;
+        publishedDonationForm.Dimension2 = GetDataListValue<FundDimension2Value>(content, AliasHelper<DesignatableElementContent<DonationFormElementContent>>.PropertyAlias(x => x.Dimension2))?.Name;
+        publishedDonationForm.Dimension3 = GetDataListValue<FundDimension3Value>(content, AliasHelper<DesignatableElementContent<DonationFormElementContent>>.PropertyAlias(x => x.Dimension3))?.Name;
+        publishedDonationForm.Dimension4 = GetDataListValue<FundDimension4Value>(content, AliasHelper<DesignatableElementContent<DonationFormElementContent>>.PropertyAlias(x => x.Dimension4))?.Name;
 
         previewData["publishedForm"] = publishedDonationForm;
     }
