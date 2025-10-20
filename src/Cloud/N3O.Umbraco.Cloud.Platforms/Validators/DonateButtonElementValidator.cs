@@ -7,6 +7,7 @@ using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
 using System.Linq;
+using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Cloud.Platforms.Validators;
 
@@ -57,13 +58,17 @@ public class DonateButtonElementValidator : ContentValidator {
     }
     
     private DesignationContent GetDesignationContent(ContentProperties content) {
-        var campaign = _contentHelper.GetMultiNodeTreePickerValue<CampaignContent>(content, CampaignAlias);
-        var designation = _contentHelper.GetMultiNodeTreePickerValue<DesignationContent>(content, DesignationAlias);
+        var campaign = _contentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(content, CampaignAlias);
+        var designation = _contentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(content, DesignationAlias);
 
         if (campaign.HasValue()) {
-            return campaign.DefaultDesignation;
+            var publishedCampaign = _contentLocator.ById<CampaignContent>(campaign.Key);
+            
+            return publishedCampaign.DefaultDesignation;
         } else if (designation.HasValue()) {
-            return designation;
+            var publishedDesignation = _contentLocator.ById<DesignationContent>(designation.Key);
+            
+            return publishedDesignation;
         } else {
             var defaultCampaign = _contentLocator.Single<PlatformsContent>().Campaigns.First();
 

@@ -7,6 +7,7 @@ using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Parameters;
 using N3O.Umbraco.Scheduler.Extensions;
 using N3O.Umbraco.Scheduler.Models;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -30,15 +31,19 @@ public class JobProxyController : ApiController {
             return Unauthorized();
         }
         
-        var model = _jsonProvider.DeserializeObject(req.RequestBody, req.RequestType);
+        try {
+            var model = _jsonProvider.DeserializeObject(req.RequestBody, req.RequestType);
 
-        foreach (var (name, value) in req.ParameterData.OrEmpty()) {
-            _fluentParameters.Add(name, value);
+            foreach (var (name, value) in req.ParameterData.OrEmpty()) {
+                _fluentParameters.Add(name, value);
+            }
+
+            await _mediator.SendAsync(req.CommandType, typeof(None), model);
+
+            return Ok();
+        } catch (Exception ex) {
+            return BadRequest(new { error = ex.Message, stackTrace = ex.StackTrace });
         }
-                    
-        await _mediator.SendAsync(req.CommandType, typeof(None), model);
-        
-        return Ok();
     }
 
     private bool IsAuthorized() {
