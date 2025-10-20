@@ -2,6 +2,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Scheduler.Models;
 using N3O.Umbraco.Utilities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net.Http;
@@ -44,8 +45,12 @@ public class JobTrigger {
             }
 
             var response = await httpClient.SendAsync(request);
-            
-            response.EnsureSuccessStatusCode();
+
+            if (!response.IsSuccessStatusCode) {
+                var content = await response.Content.ReadAsStringAsync();
+
+                throw new Exception(content);
+            }
         }
     }
 
