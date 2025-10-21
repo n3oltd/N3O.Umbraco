@@ -44,7 +44,7 @@ public class PublishedDonateButtonMapping : IMapDefinition {
         }
 
         dest.Dimension1 = src.DonateButton.Dimension1?.Name;
-        dest.Dimension2 = src.DonateButton.Dimension3?.Name;
+        dest.Dimension2 = src.DonateButton.Dimension2?.Name;
         dest.Dimension3 = src.DonateButton.Dimension3?.Name;
         dest.Dimension4 = src.DonateButton.Dimension4?.Name;
         
