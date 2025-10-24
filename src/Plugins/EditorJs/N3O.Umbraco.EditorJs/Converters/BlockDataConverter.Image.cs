@@ -4,7 +4,7 @@ using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.EditorJs;
 
-public class ImageBlockDataConverter : BlockDataConverter<ImageBlockData> {
+public class ImageBlockDataConverter : BlockDataConverter<ImageBlockData, None> {
     protected override string TypeId => "image";
     
     public ImageBlockDataConverter(IUmbracoContextAccessor umbracoContextAccessor,

@@ -3,7 +3,7 @@ using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.EditorJs;
 
-public class ParagraphBlockDataConverter : BlockDataConverter<ParagraphBlockData> {
+public class ParagraphBlockDataConverter : BlockDataConverter<ParagraphBlockData, ParagraphTunesData> {
     public ParagraphBlockDataConverter(IUmbracoContextAccessor umbracoContextAccessor,
                                        IPublishedUrlProvider publishedUrlProvider)
         : base(umbracoContextAccessor, publishedUrlProvider) { }
@@ -13,4 +13,12 @@ public class ParagraphBlockDataConverter : BlockDataConverter<ParagraphBlockData
 
 public class ParagraphBlockData {
     public string Text { get; set; }
+}
+
+public class ParagraphTunesData {
+    public ParagraphAlignmentTune AlignmentTune { get; set; }
+}
+
+public class ParagraphAlignmentTune {
+    public string Alignment { get; set; }
 }

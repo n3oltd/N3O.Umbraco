@@ -6,5 +6,5 @@ namespace N3O.Umbraco.EditorJs;
 
 public interface IBlockDataConverter {
     bool CanConvert(string typeId);
-    EditorJsBlock Convert(string id, string typeId, JsonSerializer serializer, JObject data);
+    EditorJsBlock Convert(string id, string typeId, JsonSerializer serializer, JObject data, JObject tunes);
 }

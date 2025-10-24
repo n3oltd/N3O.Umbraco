@@ -1,4 +1,5 @@
 ﻿using AngleSharp;
+using AngleSharp.Css.Parser;
 using AngleSharp.Dom;
 using N3O.Umbraco.EditorJs.Models;
 using N3O.Umbraco.Markup;
@@ -35,7 +36,10 @@ public static class StringExtensions {
                 var paragraphBlockData = new ParagraphBlockData();
                 paragraphBlockData.Text = element.InnerHtml;
                 
-                yield return new EditorJsBlock<ParagraphBlockData>(GetId("paragraph"), "paragraph", paragraphBlockData);
+                yield return new EditorJsBlock<ParagraphBlockData, ParagraphTunesData>(GetId("paragraph"),
+                                                                                       "paragraph",
+                                                                                       paragraphBlockData,
+                                                                                       GetParagraphTunesData(element));
             } else if (element.LocalName == "ul") {
                 var items = new List<string>();
                 
@@ -46,33 +50,56 @@ public static class StringExtensions {
                 var listBlockData = new ListBlockData();
                 listBlockData.Items = items;
                 
-                yield return new EditorJsBlock<ListBlockData>(GetId("list"), "list", listBlockData);
+                yield return new EditorJsBlock<ListBlockData, HeaderTunesData>(GetId("list"), "list", listBlockData, GetHeaderTunesData(element));
             } else if (element.LocalName == "h1") {
                 var headerBlockData = new HeaderBlockData();
                 headerBlockData.Level = 1;
                 headerBlockData.Text = element.Text();
                 
-                yield return new EditorJsBlock<HeaderBlockData>(GetId("header"), "header", headerBlockData);
+                yield return new EditorJsBlock<HeaderBlockData, HeaderTunesData>(GetId("header"), "header", headerBlockData, GetHeaderTunesData(element));
             } else if (element.LocalName == "h2") {
                 var headerBlockData = new HeaderBlockData();
                 headerBlockData.Level = 2;
                 headerBlockData.Text = element.Text();
                 
-                yield return new EditorJsBlock<HeaderBlockData>(GetId("header"), "header", headerBlockData);
+                yield return new EditorJsBlock<HeaderBlockData, HeaderTunesData>(GetId("header"), "header", headerBlockData, GetHeaderTunesData(element));
             } else if (element.LocalName == "h3") {
                 var headerBlockData = new HeaderBlockData();
                 headerBlockData.Level = 3;
                 headerBlockData.Text = element.Text();
                 
-                yield return new EditorJsBlock<HeaderBlockData>(GetId("header"), "header", headerBlockData);
+                yield return new EditorJsBlock<HeaderBlockData, HeaderTunesData>(GetId("header"), "header", headerBlockData, GetHeaderTunesData(element));
             } else if (element.LocalName == "h4") {
                 var headerBlockData = new HeaderBlockData();
                 headerBlockData.Level = 4;
                 headerBlockData.Text = element.Text();
                 
-                yield return new EditorJsBlock<HeaderBlockData>(GetId("header"), "header", headerBlockData);
+                yield return new EditorJsBlock<HeaderBlockData, HeaderTunesData>(GetId("header"), "header", headerBlockData, GetHeaderTunesData(element));
             }
         }
+    }
+
+    private static ParagraphTunesData GetParagraphTunesData(IElement element) {
+        var data = new ParagraphTunesData();
+        data.AlignmentTune = new ParagraphAlignmentTune();
+        data.AlignmentTune.Alignment = GetTextAlignment(element);
+
+        return data;
+    }
+    
+    private static HeaderTunesData GetHeaderTunesData(IElement element) {
+        var data = new HeaderTunesData();
+        data.AlignmentTune = new HeaderAlignmentTune();
+        data.AlignmentTune.Alignment = GetTextAlignment(element);
+
+        return data;
+    }
+
+    private static string GetTextAlignment(IElement element) {
+        var parser = new CssParser();
+        var declaration = parser.ParseDeclaration(element.GetAttribute("style"));
+
+        return declaration.GetPropertyValue("text-align");
     }
 
     private static string GetId(string prefix) {

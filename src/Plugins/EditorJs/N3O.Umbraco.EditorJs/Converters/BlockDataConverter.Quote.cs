@@ -3,7 +3,7 @@ using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.EditorJs;
 
-public class QuoteBlockDataConverter : BlockDataConverter<QuoteBlockData> {
+public class QuoteBlockDataConverter : BlockDataConverter<QuoteBlockData, None> {
     public QuoteBlockDataConverter(IUmbracoContextAccessor umbracoContextAccessor,
                                    IPublishedUrlProvider publishedUrlProvider)
         : base(umbracoContextAccessor, publishedUrlProvider) { }

@@ -6,7 +6,7 @@ using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.EditorJs;
 
-public class ListBlockDataConverter : BlockDataConverter<ListBlockData> {
+public class ListBlockDataConverter : BlockDataConverter<ListBlockData, None> {
     public ListBlockDataConverter(IUmbracoContextAccessor umbracoContextAccessor,
                                   IPublishedUrlProvider publishedUrlProvider)
         : base(umbracoContextAccessor, publishedUrlProvider) { }

@@ -1,3 +1,3 @@
-@model N3O.Umbraco.EditorJs.Models.EditorJsBlock<N3O.Umbraco.EditorJs.ParagraphBlockData>
+@model N3O.Umbraco.EditorJs.Models.EditorJsBlock<N3O.Umbraco.EditorJs.ParagraphBlockData, N3O.Umbraco.EditorJs.ParagraphTunesData>
 
-<p>@Html.Raw(Model.Data.Text)</p>
+<p style="text-align: @Model.Tunes?.AlignmentTune?.Alignment">@Html.Raw(Model.Data.Text)</p>
