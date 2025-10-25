@@ -40,6 +40,6 @@
     </ItemGroup>
     
     <ItemGroup>
-      <PackageReference Include="Perplex.ContentBlocks" Version="3.0.0" />
+      <PackageReference Include="Perplex.ContentBlocks" Version="3.0.1" />
     </ItemGroup>
 </Project>
