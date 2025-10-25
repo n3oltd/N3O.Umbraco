@@ -10,7 +10,7 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.EditorJs;
 
-public abstract class BlockDataConverter<T> : IBlockDataConverter where T : class {
+public abstract class BlockDataConverter<TData> : IBlockDataConverter where TData : class {
     private readonly IUmbracoContextAccessor _umbracoContextAccessor;
     private readonly IPublishedUrlProvider _publishedUrlProvider;
 
@@ -24,17 +24,17 @@ public abstract class BlockDataConverter<T> : IBlockDataConverter where T : clas
         return TypeId.EqualsInvariant(typeId);
     }
     
-    public EditorJsBlock Convert(string id, string typeId, JsonSerializer serializer, JObject data) {
-        var typedData = data.ToObject<T>(serializer);
+    public EditorJsBlock Convert(string id, string typeId, JsonSerializer serializer, JObject data, JObject tunesData) {
+        var typedData = data.ToObject<TData>(serializer);
 
         Process(typedData);
 
-        return new EditorJsBlock<T>(id, typeId, typedData);
+        return new EditorJsBlock<TData>(id, typeId, typedData, tunesData);
     }
     
     protected abstract string TypeId { get; }
 
-    protected virtual void Process(T data) { }
+    protected virtual void Process(TData data) { }
 
     protected string ConvertUmbracoLinks(string text) {
         return Regex.Replace(text, "(<a\\s+(?:[^>]*?\\s+)?href=\")(umb:\\/\\/[^\"]*)\"", ConvertUdiUrl);

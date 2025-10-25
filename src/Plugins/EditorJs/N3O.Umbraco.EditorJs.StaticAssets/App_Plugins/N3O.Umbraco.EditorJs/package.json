@@ -16,8 +16,10 @@
     "@editorjs/embed": "^2.7.6",
     "@editorjs/header": "^2.8.8",
     "@editorjs/list": "^1.10.0",
+    "@editorjs/paragraph": "^2.11.7",
     "@editorjs/quote": "^2.7.2",
     "@editorjs/raw": "^2.5.0",
+    "editor-js-alignment-tune": "^1.0.1",
     "editorjs-drag-drop": "^1.1.16",
     "esbuild": "^0.24.0"
   }

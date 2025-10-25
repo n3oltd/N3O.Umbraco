@@ -1,5 +1,5 @@
 angular.module("umbraco").controller("N3O.Umbraco.EditorJs", function ($scope, assetsService, editorService) {
-	assetsService.loadCss("~/App_Plugins/N3O.Umbraco.EditorJs/N3O.Umbraco.EditorJs.css");
+    assetsService.loadCss("~/App_Plugins/N3O.Umbraco.EditorJs/N3O.Umbraco.EditorJs.css");
 
     class RenderHelper {
 
@@ -326,7 +326,14 @@ angular.module("umbraco").controller("N3O.Umbraco.EditorJs", function ($scope, a
         },
 
         tools: {
-            header: Header,
+            paragraph: {
+                class: Paragraph,
+                tunes: ['alignmentTune']
+            },
+            header: {
+                class: Header,
+                tunes: ['alignmentTune']
+            },
             image: UmbracoImageTool,
             quote: Quote,
             embed: {
@@ -345,7 +352,13 @@ angular.module("umbraco").controller("N3O.Umbraco.EditorJs", function ($scope, a
                 inlineToolbar: true
             },
             checklist: Checklist,
-            link: UmbracoLinkTool // override link with Umbraco link picker
+            link: UmbracoLinkTool, // override link with Umbraco link picker,
+            alignmentTune: {
+                class: AlignmentTool,
+                config: {
+                    default: 'left'
+                }
+            }
         },
 
         onChange: (api, event) => {

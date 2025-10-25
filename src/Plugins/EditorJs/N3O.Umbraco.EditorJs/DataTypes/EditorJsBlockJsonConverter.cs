@@ -35,7 +35,7 @@ public class EditorJsBlockJsonConverter : JsonConverter {
             throw new JsonException($"No converter found for type {typeId}");
         }
         
-        var editorJsBlock = converter.Convert(id, typeId, serializer, (JObject) jObject["data"]);
+        var editorJsBlock = converter.Convert(id, typeId, serializer, (JObject) jObject["data"], (JObject) jObject["tunes"]);
 
         return editorJsBlock;
     }
