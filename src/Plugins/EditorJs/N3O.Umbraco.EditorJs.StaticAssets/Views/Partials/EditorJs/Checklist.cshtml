@@ -1,4 +1,7 @@
-@model N3O.Umbraco.EditorJs.Models.EditorJsBlock<N3O.Umbraco.EditorJs.CheckListBlockData, None>
+@using N3O.Umbraco.EditorJs;
+@using N3O.Umbraco.EditorJs.Models
+
+@model EditorJsBlock<CheckListBlockData>
 
 <ul>
 	@foreach (var item in Model.Data.Items)	{

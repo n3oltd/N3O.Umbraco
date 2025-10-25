@@ -1,4 +1,7 @@
-@model N3O.Umbraco.EditorJs.Models.EditorJsBlock<N3O.Umbraco.EditorJs.ListBlockData, None>
+@using N3O.Umbraco.EditorJs;
+@using N3O.Umbraco.EditorJs.Models
+
+@model EditorJsBlock<ListBlockData>
 
 @if (Model.Data.Style == "ordered") {
 	<ol>

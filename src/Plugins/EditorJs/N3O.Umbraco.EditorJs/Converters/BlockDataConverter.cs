@@ -10,7 +10,7 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.EditorJs;
 
-public abstract class BlockDataConverter<TData, TTunes> : IBlockDataConverter where TData : class where TTunes : class {
+public abstract class BlockDataConverter<TData> : IBlockDataConverter where TData : class {
     private readonly IUmbracoContextAccessor _umbracoContextAccessor;
     private readonly IPublishedUrlProvider _publishedUrlProvider;
 
@@ -24,13 +24,12 @@ public abstract class BlockDataConverter<TData, TTunes> : IBlockDataConverter wh
         return TypeId.EqualsInvariant(typeId);
     }
     
-    public EditorJsBlock Convert(string id, string typeId, JsonSerializer serializer, JObject data, JObject tunes) {
+    public EditorJsBlock Convert(string id, string typeId, JsonSerializer serializer, JObject data, JObject tunesData) {
         var typedData = data.ToObject<TData>(serializer);
-        var typedTunes = tunes?.ToObject<TTunes>(serializer);
 
         Process(typedData);
 
-        return new EditorJsBlock<TData, TTunes>(id, typeId, typedData, typedTunes);
+        return new EditorJsBlock<TData>(id, typeId, typedData, tunesData);
     }
     
     protected abstract string TypeId { get; }

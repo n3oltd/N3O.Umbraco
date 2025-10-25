@@ -4,7 +4,7 @@ using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.EditorJs;
 
-public class CheckListBlockDataConverter : BlockDataConverter<CheckListBlockData, None> {
+public class CheckListBlockDataConverter : BlockDataConverter<CheckListBlockData> {
     public CheckListBlockDataConverter(IUmbracoContextAccessor umbracoContextAccessor,
                                        IPublishedUrlProvider publishedUrlProvider)
         : base(umbracoContextAccessor, publishedUrlProvider) { }

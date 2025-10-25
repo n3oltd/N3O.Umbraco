@@ -3,7 +3,7 @@ using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.EditorJs;
 
-public class EmbedBlockDataConverter : BlockDataConverter<EmbedBlockData, None> {
+public class EmbedBlockDataConverter : BlockDataConverter<EmbedBlockData> {
     public EmbedBlockDataConverter(IUmbracoContextAccessor umbracoContextAccessor,
                                    IPublishedUrlProvider publishedUrlProvider)
         : base(umbracoContextAccessor, publishedUrlProvider) { }

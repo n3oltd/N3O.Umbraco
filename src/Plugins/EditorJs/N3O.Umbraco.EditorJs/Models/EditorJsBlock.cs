@@ -1,27 +1,36 @@
+using N3O.Umbraco.EditorJs.Extensions;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace N3O.Umbraco.EditorJs.Models;
 
-public class EditorJsBlock<TData, TTunes> : EditorJsBlock {
-    public EditorJsBlock(string id, string type, TData data, TTunes tunes) : base(id, type, data, tunes) { }
+public class EditorJsBlock<TData> : EditorJsBlock {
+    public EditorJsBlock(string id, string type, TData data, JObject tunesData) : base(id, type, data, tunesData) { }
 
     [JsonIgnore]
     public new TData Data => (TData) base.Data;
-    
-    [JsonIgnore]
-    public new TTunes Tunes => (TTunes) base.Tunes;
 }
 
 public abstract class EditorJsBlock {
-    protected EditorJsBlock(string id, string type, object data, object tunes) {
+    protected EditorJsBlock(string id, string type, object data, JObject tunesData) {
         Id = id;
         Type = type;
         Data = data;
-        Tunes = tunes;
+        TunesData = tunesData;
     }
 
     public string Id { get; }
     public string Type { get; }
     public object Data { get; }
-    public object Tunes { get; }
+    public JObject TunesData { get; }
+
+    public TTune GetTune<TTune>() where TTune : class {
+        var tuneId = typeof(TTune).GetTuneId();
+
+        if (TunesData?.TryGetValue(tuneId, out var tune) == true) {
+            return tune.ToObject<TTune>();   
+        } else {
+            return null;
+        }
+    }
 }

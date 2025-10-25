@@ -1,3 +1,6 @@
-@model N3O.Umbraco.EditorJs.Models.EditorJsBlock<N3O.Umbraco.EditorJs.RawHtmlBlockData, None>
+@using N3O.Umbraco.EditorJs;
+@using N3O.Umbraco.EditorJs.Models
+
+@model EditorJsBlock<RawHtmlBlockData>
 
 @Html.Raw(Model.Data.Html)
