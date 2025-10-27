@@ -9,7 +9,7 @@ public class AlignmentTune {
 
     public string ToStyle() {
         if (Alignment.HasValue()) {
-            return $"""style="text-align: '{Alignment}';""";
+            return $"""style='text-align: {Alignment};'""";
         } else {
             return null;
         }
