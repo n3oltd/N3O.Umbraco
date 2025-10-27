@@ -1,7 +1,6 @@
 @using N3O.Umbraco.EditorJs;
-@using N3O.Umbraco.EditorJs.Model.Tunes
 @using N3O.Umbraco.EditorJs.Models
 
 @model EditorJsBlock<ParagraphBlockData>
 
-<p @(Html.Raw(Model.GetTune<AlignmentTune>()?.ToStyle()))>@Html.Raw(Model.Data.Text)</p>
+<p @(Model.GetTune<AlignmentTune>()?.ToStyle())>@Model.Data.Text</p>
