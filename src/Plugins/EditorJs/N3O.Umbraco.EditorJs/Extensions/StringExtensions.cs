@@ -1,7 +1,6 @@
 ﻿using AngleSharp;
 using AngleSharp.Css.Parser;
 using AngleSharp.Dom;
-using N3O.Umbraco.EditorJs.Model.Tunes;
 using N3O.Umbraco.EditorJs.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Markup;

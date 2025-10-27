@@ -35,7 +35,7 @@ public class Nisab : INisab {
 
         if (nisabType == NisabTypes.Gold) {
             nisabAmount = nisab.Amounts[currency.Code].Gold;
-        } else if (nisabType == NisabTypes.Gold) {
+        } else if (nisabType == NisabTypes.Silver) {
             nisabAmount = nisab.Amounts[currency.Code].Silver;
         } else {
             throw UnrecognisedValueException.For(nisabType);
