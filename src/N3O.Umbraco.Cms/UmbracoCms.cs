@@ -22,6 +22,7 @@ public static class UmbracoCms {
                                   if (useIISIntegration) {
                                       webBuilder.UseIISIntegration();
                                   }
+                                  
                                   webBuilder.ConfigureAppConfiguration((context, _) => {
                                       Composer.WebHostEnvironment = context.HostingEnvironment;
                                       
