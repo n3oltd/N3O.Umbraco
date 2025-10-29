@@ -3,4 +3,4 @@
 
 @model EditorJsBlock<ParagraphBlockData>
 
-<p @(Model.GetTune<AlignmentTune>()?.ToStyle())>@Model.Data.Text</p>
+<p @(Model.GetTune<AlignmentTune>()?.ToStyle())>@(Html.Raw(Model.Data.Text))</p>

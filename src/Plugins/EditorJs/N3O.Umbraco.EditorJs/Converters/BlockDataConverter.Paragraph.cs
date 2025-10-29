@@ -9,6 +9,10 @@ public class ParagraphBlockDataConverter : BlockDataConverter<ParagraphBlockData
         : base(umbracoContextAccessor, publishedUrlProvider) { }
 
     protected override string TypeId => "paragraph";
+    
+    protected override void Process(ParagraphBlockData data) {
+        data.Text = ConvertUmbracoLinks(data.Text);
+    }
 }
 
 public class ParagraphBlockData {
