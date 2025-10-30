@@ -5,6 +5,7 @@ using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Lookups;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Giving.Allocations.Content;
 
@@ -39,7 +40,7 @@ public class DonationOptionContent : UmbracoContent<DonationOptionContent> {
     }
 
     public int Id => Content().Id;
-    public string Name => Content()?.Name;
+    public string Name => Content()?.Name(VariationContext.Culture);
     public string CampaignName => GetCampaignName();
     public GivingType DefaultGivingType => GetValue(x => x.DefaultGivingType);
     public bool HideQuantity => GetValue(x => x.HideQuantity);
