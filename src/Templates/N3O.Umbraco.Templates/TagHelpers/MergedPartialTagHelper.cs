@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using System.Threading.Tasks;
 
@@ -11,14 +12,14 @@ public class MergedPartialTagHelper : TagHelper {
         _merger = merger;
     }
     
-    [HtmlAttributeName("view")]
-    public string View { get; set; }
+    [HtmlAttributeName("view-context")]
+    public ViewContext ViewContext { get; set; }
     
     [HtmlAttributeName("model")]
     public object Model { get; set; }
 
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output) {
-        var htmlContent = await _merger.MergePartialForCurrentContentAsync(View, Model);
+        var htmlContent = await _merger.MergePartialForCurrentContentAsync(ViewContext, ViewContext.View.Path, Model);
 
         output.TagName = null;
         output.Content.AppendHtml(htmlContent);
