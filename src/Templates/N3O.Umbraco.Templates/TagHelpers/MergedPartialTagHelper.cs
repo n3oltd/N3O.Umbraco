@@ -12,6 +12,9 @@ public class MergedPartialTagHelper : TagHelper {
         _merger = merger;
     }
     
+    [HtmlAttributeName("view")]
+    public string View { get; set; }
+    
     [HtmlAttributeName("view-context")]
     public ViewContext ViewContext { get; set; }
     
@@ -19,7 +22,7 @@ public class MergedPartialTagHelper : TagHelper {
     public object Model { get; set; }
 
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output) {
-        var htmlContent = await _merger.MergePartialForCurrentContentAsync(ViewContext, ViewContext.View.Path, Model);
+        var htmlContent = await _merger.MergePartialForCurrentContentAsync(ViewContext, View, Model);
 
         output.TagName = null;
         output.Content.AppendHtml(htmlContent);

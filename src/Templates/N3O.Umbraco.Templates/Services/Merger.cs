@@ -57,7 +57,7 @@ public class Merger : IMerger {
         return new MergedHtmlContent(_templateEngine, htmlContent, mergeModels);
     }
 
-    public async Task<IHtmlContent> MergePartialForCurrentContentAsync(ViewContext  viewContext,
+    public async Task<IHtmlContent> MergePartialForCurrentContentAsync(ViewContext viewContext,
                                                                        string partialViewName,
                                                                        object model,
                                                                        CancellationToken cancellationToken = default) {
