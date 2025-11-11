@@ -41,7 +41,7 @@
         <PackageReference Include="MimeTypesMap" Version="1.0.9" />
         <PackageReference Include="NodaTime" Version="3.2.2" />
         <PackageReference Include="NodaTime.Serialization.JsonNet" Version="3.2.0" />
-        <PackageReference Include="NSwag.AspNetCore" Version="14.6.1" />
+        <PackageReference Include="NSwag.AspNetCore" Version="14.6.2" />
         <PackageReference Include="Our.Umbraco.Community.Contentment.Core" Version="4.7.0" />
         <PackageReference Include="Refit" Version="8.0.0" />
         <PackageReference Include="Refit.Newtonsoft.Json" Version="8.0.0" />
