@@ -8530,7 +8530,7 @@ input[type=search]::-webkit-search-results-decoration {
     display: none;
   }
   .n3o-ctaAmount .n3o-cta__input {
-    width: 100%;
+    width: calc(100% - 10px);
     border: unset;
     padding: 0;
   }
