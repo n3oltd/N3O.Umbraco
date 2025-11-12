@@ -3806,7 +3806,7 @@ input[type=search]::-webkit-search-results-decoration {
   text-align: center;
 }
 .n3o-ctaFund__item .n3o-h3 {
-  width: 96px;
+  width: auto;
 }
 .n3o-ctaFund__item hr {
   width: 1px;
@@ -8504,7 +8504,7 @@ input[type=search]::-webkit-search-results-decoration {
     padding: var(--space-md);
   }
   .n3o-ctaFund__item .n3o-h3 {
-    width: 70px;
+    width: auto;
   }
   .n3o-ctaFund__item hr {
     margin: 0 var(--space-md);

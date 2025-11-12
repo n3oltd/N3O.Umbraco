@@ -289,6 +289,11 @@
                     let currencyId = selectedOption.value;
                     let currencySymbol = selectedOption.getAttribute('data-symbol');
 
+                    let parentDiv = picker.parentNode;
+                    let prevSibling = parentDiv.previousElementSibling;
+
+                    let checkbox = parentDiv.parentNode.parentNode.previousElementSibling;
+
                     let success = changeCurrency(currencyId);
 
                     if (!success) {
@@ -338,6 +343,10 @@
                     currencyPickers.forEach( otherPicker => {
                         otherPicker.value = n3oSelectedCurrency;
                     });
+
+                    if(checkbox.checked) {
+                        prevSibling.focus();
+                    }
                 });
             });
         }

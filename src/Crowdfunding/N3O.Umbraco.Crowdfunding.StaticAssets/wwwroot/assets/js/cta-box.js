@@ -66,6 +66,7 @@
       if (e.target.checked) {
         ctaAmount.classList.add("active");
         ctaInput.readOnly = false;
+        ctaInput.focus();
 
         ctaItems.forEach((ctaItem) => {
           if (ctaItem.classList.contains("active")) {
