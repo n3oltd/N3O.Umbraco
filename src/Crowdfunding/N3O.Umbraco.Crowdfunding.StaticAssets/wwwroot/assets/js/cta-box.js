@@ -66,7 +66,11 @@
       if (e.target.checked) {
         ctaAmount.classList.add("active");
         ctaInput.readOnly = false;
-        ctaInput.focus();
+        
+        //for safari browser
+        setTimeout(() => {
+          ctaInput.focus();
+        }, 0);
 
         ctaItems.forEach((ctaItem) => {
           if (ctaItem.classList.contains("active")) {
