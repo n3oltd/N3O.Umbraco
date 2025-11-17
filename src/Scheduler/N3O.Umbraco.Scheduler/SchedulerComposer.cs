@@ -63,8 +63,8 @@ public class SchedulerComposer : IComposer {
 
             builder.Services.AddHangfireServer(options =>
             {
-                options.ServerName = SchedulerConstants.Workers.ExportsWorker;
-                options.Queues = [SchedulerConstants.Queues.Exports];
+                options.ServerName = SchedulerConstants.Workers.LongJobsWorker;
+                options.Queues = [SchedulerConstants.Queues.LongJobs];
                 options.WorkerCount = 1;
             });
 

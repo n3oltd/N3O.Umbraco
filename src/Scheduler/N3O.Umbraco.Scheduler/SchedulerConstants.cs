@@ -7,11 +7,11 @@ public static class SchedulerConstants {
     
     public static class Queues {
         public const string Default = "default";
-        public const string Exports = "exports";
+        public const string LongJobs = "long_jobs";
     }
     
     public static class Workers {
         public const string DefaultWorker = "DefaultWorker";
-        public const string ExportsWorker = "ExportsWorker";
+        public const string LongJobsWorker = "LongJobsWorker";
     }
 }

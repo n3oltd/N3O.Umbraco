@@ -48,7 +48,7 @@ public class CreateExportHandler : IRequestHandler<CreateExportCommand, ExportRe
         _backgroundJob.Enqueue<ProcessExportCommand, ExportReq>($"ProcessExport({exportId})",
                                                                 req.Model,
                                                                 p => p.Add<ExportId>(exportId.ToString()), 
-                                                                SchedulerConstants.Queues.Exports);
+                                                                SchedulerConstants.Queues.LongJobs);
 
         var res = _mapper.Map<Export, ExportProgressRes>(export);
 
