@@ -27,7 +27,7 @@ public class MetadataPageModule : IPageModule {
             }
         }
 
-        return Task.FromResult<object>(entries);
+        return entries;
     }
 
     public string Key => PageModules.Keys.MetadataEntries;

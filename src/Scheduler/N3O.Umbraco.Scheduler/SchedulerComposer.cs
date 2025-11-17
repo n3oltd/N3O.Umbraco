@@ -53,10 +53,24 @@ public class SchedulerComposer : IComposer {
                    .UseMaxArgumentSizeToRender((int) ByteSize.FromKilobytes(256).Bytes)
                    .UseMaxLinesInExceptionDetails(200);
             });
-
-            builder.Services.AddHangfireServer(opt => {
-                opt.WorkerCount = 1;
+            
+            builder.Services.AddHangfireServer(options =>
+            {
+                options.ServerName = SchedulerConstants.Workers.DefaultWorker;
+                options.Queues = [SchedulerConstants.Queues.Default];
+                options.WorkerCount = 1;
             });
+
+            builder.Services.AddHangfireServer(options =>
+            {
+                options.ServerName = SchedulerConstants.Workers.ExportsWorker;
+                options.Queues = [SchedulerConstants.Queues.Exports];
+                options.WorkerCount = 1;
+            });
+
+            /*builder.Services.AddHangfireServer(opt => {
+                opt.WorkerCount = 1;
+            });*/
 
             AddAuthorizedUmbracoDashboard(builder);
 
