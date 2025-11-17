@@ -53,8 +53,16 @@ public class SchedulerComposer : IComposer {
                    .UseMaxArgumentSizeToRender((int) ByteSize.FromKilobytes(256).Bytes)
                    .UseMaxLinesInExceptionDetails(200);
             });
+            
+            builder.Services.AddHangfireServer(opt => {
+                opt.ServerName = SchedulerConstants.Workers.DefaultWorker;
+                opt.Queues = [SchedulerConstants.Queues.Default];
+                opt.WorkerCount = 1;
+            });
 
             builder.Services.AddHangfireServer(opt => {
+                opt.ServerName = SchedulerConstants.Workers.LongJobsWorker;
+                opt.Queues = [SchedulerConstants.Queues.LongJobs];
                 opt.WorkerCount = 1;
             });
 
