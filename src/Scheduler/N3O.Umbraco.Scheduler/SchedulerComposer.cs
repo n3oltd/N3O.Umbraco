@@ -68,10 +68,6 @@ public class SchedulerComposer : IComposer {
                 options.WorkerCount = 1;
             });
 
-            /*builder.Services.AddHangfireServer(opt => {
-                opt.WorkerCount = 1;
-            });*/
-
             AddAuthorizedUmbracoDashboard(builder);
 
             // https://discuss.hangfire.io/t/jobstorage-current-property-value-has-not-been-initialized/884
