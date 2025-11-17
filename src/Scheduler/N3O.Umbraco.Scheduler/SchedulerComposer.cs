@@ -54,15 +54,13 @@ public class SchedulerComposer : IComposer {
                    .UseMaxLinesInExceptionDetails(200);
             });
             
-            builder.Services.AddHangfireServer(options =>
-            {
+            builder.Services.AddHangfireServer(options => {
                 options.ServerName = SchedulerConstants.Workers.DefaultWorker;
                 options.Queues = [SchedulerConstants.Queues.Default];
                 options.WorkerCount = 1;
             });
 
-            builder.Services.AddHangfireServer(options =>
-            {
+            builder.Services.AddHangfireServer(options => {
                 options.ServerName = SchedulerConstants.Workers.LongJobsWorker;
                 options.Queues = [SchedulerConstants.Queues.LongJobs];
                 options.WorkerCount = 1;
