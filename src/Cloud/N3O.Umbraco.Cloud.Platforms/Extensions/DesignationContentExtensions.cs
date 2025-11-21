@@ -34,7 +34,7 @@ public static class DesignationContentExtensions {
         }
         
         var designationFundDimension = new PublishedDesignationFundDimension();
-        designationFundDimension.Options = fundDimensionOptions.Select(x => x.Name).ToList();
+        designationFundDimension.Options = fundDimensionOptions.Select(x => x.Name).OrEmpty().ToList();
 
         if (fundDimensionValue != null) {
             designationFundDimension.Fixed = fundDimensionValue.Name;
