@@ -43,6 +43,6 @@
 
     <ItemGroup>
       <PackageReference Include="Umbraco.Engage.Forms.StaticAssets" Version="13.2.0" />
-      <PackageReference Include="Umbraco.Engage.StaticAssets" Version="13.6.1" />
+      <PackageReference Include="Umbraco.Engage.StaticAssets" Version="13.7.1" />
     </ItemGroup>
 </Project>
