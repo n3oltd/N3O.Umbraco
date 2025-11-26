@@ -98,7 +98,7 @@ namespace N3O.Umbraco.Cloud.Engage.Clients
         public CrowdfundingClient(System.Net.Http.HttpClient httpClient)
     #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
-            BaseUrl = "/eu1/api/crowdfunding/";
+            BaseUrl = "/eu1/api/crowdfunding-legacy/";
             _httpClient = httpClient;
             Initialize();
         }

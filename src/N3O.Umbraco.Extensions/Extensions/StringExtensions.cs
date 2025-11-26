@@ -1,4 +1,3 @@
-using Humanizer;
 using Microsoft.AspNetCore.Html;
 using System;
 using System.Globalization;

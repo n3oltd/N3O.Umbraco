@@ -2,7 +2,6 @@ using N3O.Umbraco.Extensions;
 using System;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Blocks;
 
