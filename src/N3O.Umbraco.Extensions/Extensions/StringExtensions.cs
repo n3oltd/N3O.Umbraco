@@ -244,12 +244,8 @@ public static class StringExtensions {
         if (str.HasValue() && Enum.TryParse<TEnum>(str, true, out var parseResult)) {
             return parseResult;
         } else {
-            return default;
+            return null;
         }
-    }
-
-    public static string ToHtmlId(this string str, int index) {
-        return $"item-{str.Camelize()}-{index}";
     }
     
     public static HtmlString ToHtmlString(this string s) {
@@ -268,7 +264,7 @@ public static class StringExtensions {
 
     public static T? TryParseAs<T>(this string s) where T : struct {
         if (!s.HasValue()) {
-            return default;
+            return null;
         }
 
         object value = null;
