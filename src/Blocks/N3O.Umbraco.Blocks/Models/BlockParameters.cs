@@ -4,14 +4,12 @@ using System;
 namespace N3O.Umbraco.Blocks;
 
 public class BlockParameters<TBlock, TSettings> {
-    private readonly HtmlIds _htmlIds = new();
-    
     public BlockParameters(Func<string, string> getText,
                            TBlock content,
                            TSettings settings,
                            BlockModulesData modulesData,
                            Guid id) {
-        GenerateId = x => _htmlIds.GenerateId(x);
+        GenerateId = x => HtmlIds.GenerateId(x);
         GetText = getText;
         Content = content;
         Settings = settings;

@@ -5,12 +5,10 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Pages;
 
 public class PageParameters<TPage> where TPage : IPublishedContent {
-    private readonly HtmlIds _htmlIds = new();
-    
     public PageParameters(Func<string, string> getText,
                           TPage content,
                           PageModulesData modulesData) {
-        GenerateId = x => _htmlIds.GenerateId(x);
+        GenerateId = x => HtmlIds.GenerateId(x);
         GetText = getText;
         Content = content;
         ModulesData = modulesData;
