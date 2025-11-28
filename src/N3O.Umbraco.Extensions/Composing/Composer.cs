@@ -37,7 +37,7 @@ public abstract class Composer : IComposer {
 
     private bool FilterExperimental(Type type) {
         if (type.HasAttribute<ExperimentalAttribute>()) {
-            return DevFlags.IsSet(GlobalFlags.EnableExperimentalFeatures);
+            return DevFlags.IsSet(DevFlags.EnableExperimentalFeatures);
         } else {
             return true;
         }
