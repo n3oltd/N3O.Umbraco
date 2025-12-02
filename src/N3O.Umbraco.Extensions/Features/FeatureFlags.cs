@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace N3O.Umbraco.Dev;
+namespace N3O.Umbraco.Features;
 
-public static partial class DevFlags {
+public static partial class FeatureFlags {
     private static readonly HashSet<string> Flags = new(StringComparer.InvariantCultureIgnoreCase);
 
     public static void Clear(string flag) {

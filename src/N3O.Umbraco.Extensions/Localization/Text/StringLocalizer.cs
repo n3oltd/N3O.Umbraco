@@ -54,7 +54,7 @@ public class StringLocalizer : IStringLocalizer {
     }
 
     public string Get(string folder, string name, string text) {
-        if (DevFlags.IsSet(GlobalFlags.DisableTextLocalization)) {
+        if (DevFlags.IsSet(DevFlags.DisableTextLocalization)) {
             return text;
         }
 

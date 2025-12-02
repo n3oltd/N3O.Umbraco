@@ -15,7 +15,7 @@ public class NotificationsComposer : Composer {
         RegisterAll(t => t.ImplementsInterface<INotificationHandlerSkipper>(),
                     t => builder.Services.AddTransient(typeof(INotificationHandlerSkipper), t));
         
-        if (DevFlags.IsNotSet(GlobalFlags.DisableNotificationRegistrations)) {
+        if (DevFlags.IsNotSet(DevFlags.DisableNotificationRegistrations)) {
             RegisterAll(t => t.ImplementsGenericInterface(typeof(INotificationAsyncHandler<>)),
                         t => RegisterNotificationHandler(builder, t));
         }
