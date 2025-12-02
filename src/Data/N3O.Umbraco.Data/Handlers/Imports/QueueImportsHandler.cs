@@ -74,10 +74,6 @@ public class QueueImportsHandler : IRequestHandler<QueueImportsCommand, QueueImp
         
         using (csvBlob.Stream) {
             var contentType = _contentTypeService.Get(req.ContentType);
-            var propertyInfos = contentType.GetUmbracoProperties(_dataTypeService, _contentTypeService).ToList();
-            var propertyInfoColumns = propertyInfos.Where(x => x.HasPropertyConverter(_propertyConverters) &&
-                                                               x.CanInclude(_propertyFilters))
-                                                   .ToDictionary(x => x, x => x.GetColumns(_propertyConverters));
 
             var csvReader = _workspace.GetCsvReader(req.Model.DatePattern,
                                                     DecimalSeparators.Point,
@@ -87,8 +83,6 @@ public class QueueImportsHandler : IRequestHandler<QueueImportsCommand, QueueImp
                                                     true);
 
             var columnHeadings = csvReader.GetColumnHeadings();
-
-            ValidateColumns(columnHeadings, propertyInfoColumns.SelectMany(x => x.Value));
 
             if (req.Model.ZipFile != null) {
                 await ExtractToStorageFolderAsync(req.Model.ZipFile, storageFolderName);
@@ -119,6 +113,11 @@ public class QueueImportsHandler : IRequestHandler<QueueImportsCommand, QueueImp
                 var name = hasNameColumn ? csvReader.Row.GetRawField(_nameColumnTitle) : null;
                 var replacesCriteria = hasReplaceColumn ? csvReader.Row.GetRawField(_replacesColumnTitle) : null;
                 var sourceValues = columnHeadings.ToDictionary(x => x, x => csvReader.Row.GetRawField(x));
+                
+                if (!replacesCriteria.HasValue() && !name.HasValue()) {
+                    _errorLog.AddError<Strings>(s => s.MissingName);
+                    _errorLog.ThrowIfHasErrors();
+                }
 
                 await _importQueue.AppendAsync(req.ContainerId.Value,
                                                contentType.Alias,
@@ -145,20 +144,6 @@ public class QueueImportsHandler : IRequestHandler<QueueImportsCommand, QueueImp
            };
         }
     }
-
-    private void ValidateColumns(IReadOnlyList<string> csvHeadings, IEnumerable<Column> expectedColumns) {
-        var expectedHeadings = expectedColumns.Select(x => x.Title).ToList();
-        var missingHeadings = expectedHeadings.Except(csvHeadings, StringComparer.InvariantCultureIgnoreCase)
-                                              .ToList();
-
-        if (missingHeadings.Any()) {
-            foreach (var missingHeading in missingHeadings) {
-                _errorLog.AddError<Strings>(s => s.MissingColumn_1, missingHeading);
-            }
-        }
-        
-        _errorLog.ThrowIfHasErrors();
-    }
     
     private async Task ExtractToStorageFolderAsync(StorageToken zipStorageToken, string storageFolderName) {
         var tempStorage = await _volume.Value.GetStorageFolderAsync(zipStorageToken.StorageFolderName);
@@ -179,5 +164,6 @@ public class QueueImportsHandler : IRequestHandler<QueueImportsCommand, QueueImp
     public class Strings : CodeStrings {
         public string MaxRowsExceeded_1 => $"The CSV file contains more than the maximum allowed {0} rows";
         public string MissingColumn_1 => $"CSV file is missing column {"{0}".Quote()}";
+        public string MissingName => "Name is required to import new content";
     }
 }

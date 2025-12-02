@@ -101,8 +101,11 @@ public class ImportQueue : IImportQueue {
         var propertyInfoColumns = propertyInfos.Where(x => x.HasPropertyConverter(_propertyConverters) &&
                                                            x.CanInclude(_propertyFilters))
                                                .ToDictionary(x => x, x => x.GetColumns(_propertyConverters));
+        
+        var reference = await _counters.NextAsync<ImportReferenceType>(cancellationToken);
 
         var import = new Import();
+        import.Reference = reference.ToString();
         import.Name = name ?? import.Reference;
         import.QueuedAt = queuedAt.ToDateTimeUtc();
         import.QueuedBy = queuedBy;
@@ -128,10 +131,7 @@ public class ImportQueue : IImportQueue {
         }
         
         _errorLog.ThrowIfHasErrors();
-
-        var reference = await _counters.NextAsync<ImportReferenceType>(cancellationToken);
         
-        import.Reference = reference.ToString();
         import.Data = GetImportData(reference, contentId, sourceValues, propertyInfoColumns);
         import.Status = ImportStatuses.Queued;
 
