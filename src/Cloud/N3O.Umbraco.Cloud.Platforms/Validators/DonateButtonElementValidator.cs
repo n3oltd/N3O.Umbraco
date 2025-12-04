@@ -13,7 +13,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Validators;
 
 public class DonateButtonElementValidator : ContentValidator {
     private static readonly string CampaignAlias = AliasHelper<ElementContent>.PropertyAlias(x => x.Campaign);
-    private static readonly string DesignationAlias = AliasHelper<DesignatableElementContent<DonateButtonElementContent>>.PropertyAlias(x => x.Designation);
+    private static readonly string OfferingAlias = AliasHelper<DesignatableElementContent<DonateButtonElementContent>>.PropertyAlias(x => x.Offering);
     private static readonly string Dimension1Alias = AliasHelper<DesignatableElementContent<DonateButtonElementContent>>.PropertyAlias(x => x.Dimension1);
     private static readonly string Dimension2Alias = AliasHelper<DesignatableElementContent<DonateButtonElementContent>>.PropertyAlias(x => x.Dimension2);
     private static readonly string Dimension3Alias = AliasHelper<DesignatableElementContent<DonateButtonElementContent>>.PropertyAlias(x => x.Dimension3);
@@ -39,8 +39,8 @@ public class DonateButtonElementValidator : ContentValidator {
     }
 
     public override void Validate(ContentProperties content) {
-        var designation = GetDesignationContent(content);
-        var fundDimensionOptions = designation.GetFundDimensionOptions();
+        var offering = GetOfferingContent(content);
+        var fundDimensionOptions = offering.GetFundDimensionOptions();
         
         var action = _contentHelper.GetDataListValue<DonateButtonAction>(content, ActionAlias);
 
@@ -52,27 +52,27 @@ public class DonateButtonElementValidator : ContentValidator {
         }
 
         if (action.IsAnyOf(DonateButtonActions.AddToCart, DonateButtonActions.BeginCheckout)) {
-            ValidateHasPricing(content, designation);
-            ValidateHasFixedDimensions(content, designation);
+            ValidateHasPricing(content, offering);
+            ValidateHasFixedDimensions(content, offering);
         }
     }
     
-    private DesignationContent GetDesignationContent(ContentProperties content) {
+    private OfferingContent GetOfferingContent(ContentProperties content) {
         var campaign = _contentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(content, CampaignAlias);
-        var designation = _contentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(content, DesignationAlias);
+        var offering = _contentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(content, OfferingAlias);
 
         if (campaign.HasValue()) {
             var publishedCampaign = _contentLocator.ById<CampaignContent>(campaign.Key);
             
-            return publishedCampaign.DefaultDesignation;
-        } else if (designation.HasValue()) {
-            var publishedDesignation = _contentLocator.ById<DesignationContent>(designation.Key);
+            return publishedCampaign.DefaultOffering;
+        } else if (offering.HasValue()) {
+            var publishedOffering = _contentLocator.ById<OfferingContent>(offering.Key);
             
-            return publishedDesignation;
+            return publishedOffering;
         } else {
             var defaultCampaign = _contentLocator.Single<PlatformsContent>().Campaigns.First();
 
-            return defaultCampaign.DefaultDesignation;
+            return defaultCampaign.DefaultOffering;
         }
     }
     
@@ -88,20 +88,20 @@ public class DonateButtonElementValidator : ContentValidator {
         }
     }
 
-    private void ValidateHasPricing(ContentProperties content, DesignationContent designation) {
+    private void ValidateHasPricing(ContentProperties content, OfferingContent offering) {
         var amount = content.GetPropertyValueByAlias<decimal?>(AmountAlias);
 
-        if (!designation.HasPricing && !amount.HasValue()) {
+        if (!offering.HasPricing && !amount.HasValue()) {
             ErrorResult("Amount must be specified");
         }
         
-        if (designation.HasPricing && amount.HasValue()) {
-            ErrorResult("Designation has a pricing, amount cannot be specified");
+        if (offering.HasPricing && amount.HasValue()) {
+            ErrorResult("Offering has a pricing, amount cannot be specified");
         }
     }
     
-    private void ValidateHasFixedDimensions(ContentProperties content, DesignationContent designation) {
-        var publishedFundDimensionOptions = designation.ToPublishedDesignationFundDimensions();
+    private void ValidateHasFixedDimensions(ContentProperties content, OfferingContent offering) {
+        var publishedFundDimensionOptions = offering.ToOfferingFundDimensionReq();
         
         ValidateHasFixedDimension<FundDimension1Value>(content, publishedFundDimensionOptions.Dimension1?.Fixed, Dimension1Alias);
         ValidateHasFixedDimension<FundDimension2Value>(content, publishedFundDimensionOptions.Dimension2?.Fixed, Dimension2Alias);

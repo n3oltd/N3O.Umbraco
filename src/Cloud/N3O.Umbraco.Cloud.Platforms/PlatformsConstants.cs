@@ -10,11 +10,11 @@ public static class PlatformsConstants {
         public const string Telethon = "platformsTelethonCampaign";
     }
 
-    public static class Designations {
-        public const string CompositionAlias = "platformsDesignation";
-        public const string Feedback = "platformsFeedbackDesignation";
-        public const string Fund = "platformsFundDesignation";
-        public const string Sponsorship = "platformsSponsorshipDesignation";
+    public static class Offerings {
+        public const string CompositionAlias = "platformsOffering";
+        public const string Feedback = "platformsFeedbackOffering";
+        public const string Fund = "platformsFundOffering";
+        public const string Sponsorship = "platformsSponsorshipOffering";
         public const string SuggestedAmount = "platformsSuggestedAmount";
     }
 
@@ -73,6 +73,13 @@ public static class PlatformsConstants {
             public const string GoogleAnalytics = "platformsGoogleAnalyticsTracking";
             public const string Meta = "platformsMetaTracking";
             public const string TikTok = "platformsTikTokTracking";
+        }
+        
+        public static class WebhookIds {
+            public const string Campaigns = "campaigns";
+            public const string Elements = "elements";
+            public const string Offerings = "offerings";
+            public const string Views = "views";
         }
     }
 }

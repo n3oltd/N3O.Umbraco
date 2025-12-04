@@ -1,0 +1,17 @@
+using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Cloud.Platforms.Content;
+using Umbraco.Cms.Core.Mapping;
+
+namespace N3O.Umbraco.Cloud.Platforms.Models;
+
+public class SuggestedAmountReqMapping : IMapDefinition {
+    public void DefineMaps(IUmbracoMapper mapper) {
+        mapper.Define<SuggestedAmountElement, SuggestedAmountReq>((_, _) => new SuggestedAmountReq(), Map);
+    }
+
+    // Umbraco.Code.MapAll
+    private void Map(SuggestedAmountElement src, SuggestedAmountReq dest, MapperContext ctx) {
+        dest.Amount = (double) src.Amount;
+        dest.Description = src.Description;
+    }
+}

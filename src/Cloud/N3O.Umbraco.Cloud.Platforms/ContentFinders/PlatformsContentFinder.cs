@@ -33,8 +33,8 @@ public class PlatformsContentFinder : IContentFinder {
                 request.SetPublishedContent(_contentCache.Special(PlatformsSpecialPages.Campaign));
 
                 found = true;
-            } else if (foundPlatformsPage.Kind == PublishedFileKinds.Designation) {
-                request.SetPublishedContent(_contentCache.Special(PlatformsSpecialPages.Designation));
+            } else if (foundPlatformsPage.Kind == PublishedFileKinds.Offering) {
+                request.SetPublishedContent(_contentCache.Special(PlatformsSpecialPages.Offering));
 
                 found = true;
             } else {

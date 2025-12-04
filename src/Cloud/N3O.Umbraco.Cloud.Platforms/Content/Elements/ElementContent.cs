@@ -38,6 +38,7 @@ public class ElementContent : UmbracoContent<ElementContent> {
     }
     
     public Guid Key => Content().Key;
+    public string Name => Content().Name;
     public CampaignContent Campaign => GetAs(x => x.Campaign);
     public string EmbedCode => GetValue(x => x.EmbedCode);
     public bool IsSystemGenerated => GetValue(x => x.IsSystemGenerated);
