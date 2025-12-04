@@ -9,5 +9,4 @@ namespace N3O.Umbraco.Cloud.Platforms.Content;
 public class PlatformsContent : UmbracoContent<PlatformsContent> {
     public IEnumerable<CampaignContent> Campaigns => Content().GetDescendantsOfCompositionTypeAs<CampaignContent>();
     public IEnumerable<ElementContent> Elements => Content().GetDescendantsOfCompositionTypeAs<ElementContent>();
-    public SettingsContent Settings => Content().GetSingleChildOfTypeAs<SettingsContent>();
 }

@@ -25,10 +25,6 @@ public static class ContentExtensions {
         return content.ContentType.Alias.EqualsInvariant(AliasHelper<DonationFormElementContent>.ContentTypeAlias());
     }
     
-    public static bool IsFundStructure(this IContent content, IContentCache contentCache) {
-        return IsSelfOrDescendantOfType<FundStructureContent>(contentCache, content);
-    }
-    
     public static bool IsElement(this IContent content, IContentTypeService contentTypeService) {
         return HasComposition(contentTypeService, content, AliasHelper<ElementContent>.ContentTypeAlias());
     }
@@ -37,10 +33,6 @@ public static class ContentExtensions {
         return IsCampaign(content, contentTypeService) ||
                IsOffering(content, contentTypeService) ||
                IsElement(content, contentTypeService);
-    }
-    
-    public static bool IsPlatformsSubscriptionSettingContent(this IContent content, IContentCache contentCache) {
-        return IsSelfOrDescendantOfType<SettingsContent>(contentCache, content);
     }
 
     private static bool HasComposition(IContentTypeService contentTypeService,
