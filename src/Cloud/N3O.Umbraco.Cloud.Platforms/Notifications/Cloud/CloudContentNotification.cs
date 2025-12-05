@@ -2,8 +2,6 @@
 using N3O.Umbraco.Scheduler.Extensions;
 using N3O.Umbraco.Webhooks.Commands;
 using N3O.Umbraco.Webhooks.Models;
-using System.Threading.Tasks;
-using Umbraco.Cms.Core.Models;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
@@ -21,7 +19,7 @@ public abstract class CloudContentNotification {
                 
         var req = new DispatchWebhookReq();
         req.Body = body;
-        req.Url = $"https://n3o.cloud/eu1/hooks/{HookId}/{subscription.Id.Number}";
+        req.Url = $"http://localhost:13112/{HookId}/{subscription.Id.Number}";
                 
         _backgroundJob.EnqueueCommand<DispatchWebhookCommand, DispatchWebhookReq>(req);
     }

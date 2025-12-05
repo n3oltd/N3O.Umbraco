@@ -43,7 +43,7 @@ public class CampaignWebhookBodyReqMapping : IMapDefinition {
         dest.AddOrUpdate.Image = src.Image.ToImageSimpleContentReq(_mediaUrl);
         dest.AddOrUpdate.Icon = new SvgContentReq();
         dest.AddOrUpdate.Icon.SourceFile = _mediaUrl.GetMediaUrl(src.Icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x)).ToString();
-        dest.AddOrUpdate.Tags = src.Tags.ToPublishedTagCollection();
+        dest.AddOrUpdate.Tags = src.Tags.ToTagCollectionReq();
         
         /*TODO populate page*/
         //dest.AddOrUpdate.Page = 

@@ -25,7 +25,7 @@ public abstract class CloudContentDeleted : CloudContentNotification, INotificat
         return Task.CompletedTask;
     }
 
-    protected abstract Task<object> GetBody(IContent content);
+    protected abstract object GetBody(IContent content);
     protected abstract bool CanProcess(IContent content);
     protected abstract override string HookId { get; }
 }

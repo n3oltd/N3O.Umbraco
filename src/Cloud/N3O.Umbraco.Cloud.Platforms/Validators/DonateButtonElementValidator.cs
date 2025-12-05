@@ -1,5 +1,4 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Content;
-using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
@@ -101,12 +100,12 @@ public class DonateButtonElementValidator : ContentValidator {
     }
     
     private void ValidateHasFixedDimensions(ContentProperties content, OfferingContent offering) {
-        var publishedFundDimensionOptions = offering.ToOfferingFundDimensionReq();
+        var offeringFixedFundDimensionValue = offering.GetFixedFundDimensionValues();
         
-        ValidateHasFixedDimension<FundDimension1Value>(content, publishedFundDimensionOptions.Dimension1?.Fixed, Dimension1Alias);
-        ValidateHasFixedDimension<FundDimension2Value>(content, publishedFundDimensionOptions.Dimension2?.Fixed, Dimension2Alias);
-        ValidateHasFixedDimension<FundDimension3Value>(content, publishedFundDimensionOptions.Dimension3?.Fixed, Dimension3Alias);
-        ValidateHasFixedDimension<FundDimension4Value>(content, publishedFundDimensionOptions.Dimension4?.Fixed, Dimension4Alias);
+        ValidateHasFixedDimension<FundDimension1Value>(content, offeringFixedFundDimensionValue.Dimension1?.Name, Dimension1Alias);
+        ValidateHasFixedDimension<FundDimension2Value>(content, offeringFixedFundDimensionValue.Dimension2.Name, Dimension2Alias);
+        ValidateHasFixedDimension<FundDimension3Value>(content, offeringFixedFundDimensionValue.Dimension3.Name, Dimension3Alias);
+        ValidateHasFixedDimension<FundDimension4Value>(content, offeringFixedFundDimensionValue.Dimension4.Name, Dimension4Alias);
     }
     
     private void ValidateHasFixedDimension<T>(ContentProperties content, string fixedDimensionValue, string propertyAlias)

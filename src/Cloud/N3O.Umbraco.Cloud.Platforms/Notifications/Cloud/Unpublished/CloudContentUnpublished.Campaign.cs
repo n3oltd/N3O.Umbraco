@@ -1,7 +1,6 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Scheduler;
-using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 
@@ -16,12 +15,12 @@ public class CampaignUnpublished : CloudContentUnpublished {
         _contentTypeService = contentTypeService;
     }
 
-    protected override Task<object> GetBody(IContent content) {
+    protected override object GetBody(IContent content) {
         var campaignReq = new CampaignWebhookBodyReq();
         campaignReq.Id = content.Key.ToString();
         campaignReq.Action = WebhookSyncAction.Deactivate;
 
-        return Task.FromResult<object>(campaignReq);
+        return campaignReq;
     }
 
     protected override bool CanProcess(IContent content) {

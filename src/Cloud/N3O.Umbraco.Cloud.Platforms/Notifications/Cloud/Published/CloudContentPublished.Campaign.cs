@@ -4,7 +4,6 @@ using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Scheduler;
 using System;
-using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
@@ -26,12 +25,12 @@ public class CampaignPublished : CloudContentPublished {
         _mapper = mapper;
     }
 
-    protected override Task<object> GetBody(IContent content) {
+    protected override object GetBody(IContent content) {
         var campaign = _contentLocator.Value.ById<CampaignContent>(content.Key);
 
         var campaignReq = _mapper.Map<CampaignContent, CampaignWebhookBodyReq>(campaign);
 
-        return Task.FromResult<object>(campaignReq);
+        return campaignReq;
     }
 
     protected override bool CanProcess(IContent content) {

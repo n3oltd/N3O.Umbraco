@@ -98,4 +98,15 @@ public class OfferingContent : UmbracoContent<OfferingContent> {
             }
         }
     }
+
+    public IFundDimensionValues GetFixedFundDimensionValues() {
+        var fundDimensionOptions = GetFundDimensionOptions();
+        
+        var dimension1 = Dimension1 ?? (fundDimensionOptions.Dimension1.IsSingle() ? fundDimensionOptions.Dimension1.Single() : null);
+        var dimension2 = Dimension2 ?? (fundDimensionOptions.Dimension2.IsSingle() ? fundDimensionOptions.Dimension2.Single() : null);
+        var dimension3 = Dimension3 ?? (fundDimensionOptions.Dimension3.IsSingle() ? fundDimensionOptions.Dimension3.Single() : null);
+        var dimension4 = Dimension4 ?? (fundDimensionOptions.Dimension4.IsSingle() ? fundDimensionOptions.Dimension4.Single() : null);
+        
+        return new FundDimensionValues(dimension1, dimension2, dimension3, dimension4);
+    }
 }

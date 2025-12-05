@@ -1,7 +1,6 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Scheduler;
-using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 
@@ -16,12 +15,12 @@ public class ElementDeleted : CloudContentDeleted {
         _contentTypeService = contentTypeService;
     }
 
-    protected override Task<object> GetBody(IContent content) {
+    protected override object GetBody(IContent content) {
         var elementReq = new ElementWebhookBodyReq();
         elementReq.Id = content.Key.ToString();
         elementReq.Action = WebhookSyncAction.Delete;
 
-        return Task.FromResult<object>(elementReq);
+        return elementReq;
     }
 
     protected override bool CanProcess(IContent content) {
