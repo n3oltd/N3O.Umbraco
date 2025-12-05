@@ -4,6 +4,7 @@ using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Allocations.Models;
 using System;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -38,6 +39,7 @@ public class ElementContent : UmbracoContent<ElementContent> {
     }
     
     public Guid Key => Content().Key;
+    public string Name => Content().Name;
     public CampaignContent Campaign => GetAs(x => x.Campaign);
     public string EmbedCode => GetValue(x => x.EmbedCode);
     public bool IsSystemGenerated => GetValue(x => x.IsSystemGenerated);
@@ -56,5 +58,13 @@ public class ElementContent : UmbracoContent<ElementContent> {
                 throw UnrecognisedValueException.For(Content().ContentType.Alias);
             }
         }
+    }
+    
+    public IFundDimensionValues GetFixedFundDimensionValues(OfferingContent offering) {
+        var fundDimensionValues = Type == ElementTypes.DonationForm
+                                      ? DonationForm.GetFixedFundDimensionValues(offering)
+                                      : DonateButton.GetFixedFundDimensionValues(offering);
+
+        return fundDimensionValues;
     }
 }

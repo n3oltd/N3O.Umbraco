@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Lookups;
+﻿/*using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Lookups;
@@ -18,4 +18,4 @@ public class DonateButtonElementPreviewTagGenerator : ElementPreviewTagGenerator
         : base(cdnClient, jsonProvider, contentLocator, mapper, markupEngine, lookups) { }
 
     protected override ElementType ElementType => ElementTypes.DonateButton;
-}
+}*/
