@@ -3,4 +3,4 @@
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
 [UmbracoContent(PlatformsConstants.Elements.DonationForm)]
-public class DonationFormElementContent : DesignatableElementContent<DonationFormElementContent> { }
+public class DonationFormElementContent : DonationElementContent<DonationFormElementContent> { }

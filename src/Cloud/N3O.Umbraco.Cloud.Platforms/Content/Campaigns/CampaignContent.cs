@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.Strings;
 using Umbraco.Community.Contentment.DataEditors;
 using Umbraco.Extensions;
 
@@ -48,15 +49,18 @@ public class CampaignContent : UmbracoContent<CampaignContent> {
     public string Name => Content().Name;
     public Guid Key => Content().Key;
     
+    public IHtmlEncodedString Description => GetValue(x => x.Description);
+    public string Notes => GetValue(x => x.Notes);
     public IReadOnlyDictionary<string, string> Tags => GetConvertedValue<IEnumerable<DataListItem>, IReadOnlyDictionary<string, string>>(x => x.Tags, x => x.ToTagsDictionary());
     public MediaWithCrops Icon => GetValue(x => x.Icon);
     public MediaWithCrops Image => GetValue(x => x.Image);
+    public decimal Target => GetValue(x => x.Target);
 
-    public IEnumerable<DesignationContent> Designations => Content().Descendants()
-                                                                    .Where(x => x.IsComposedOf(AliasHelper<DesignationContent>.ContentTypeAlias()))
-                                                                    .As<DesignationContent>();
+    public IEnumerable<OfferingContent> Offerings => Content().Descendants()
+                                                              .Where(x => x.IsComposedOf(AliasHelper<OfferingContent>.ContentTypeAlias()))
+                                                              .As<OfferingContent>();
 
-    public DesignationContent DefaultDesignation => Designations.FirstOrDefault();
+    public OfferingContent DefaultOffering => Offerings.FirstOrDefault();
     
     public ScheduledGivingCampaignContent ScheduledGiving { get; private set; }
     public StandardCampaignContent Standard { get; private set; }

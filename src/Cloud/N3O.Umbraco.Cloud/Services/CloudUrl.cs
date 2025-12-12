@@ -55,6 +55,14 @@ public class CloudUrl : ICloudUrl {
         return url;
     }
 
+    public string ForWebhook(string webhookId) {
+        var url = GetEngageApiBaseUrl();
+        url.AppendPathSegment($"{_subscription.DataRegion.Slug}/hooks");
+        url.AppendPathSegment($"{webhookId}/{_subscription.Id.Number}");
+
+        return url;
+    }
+
     public string ConnectApiBaseUrl => GetConnectApiBaseUrl();
 
     private string GetConnectApiBaseUrl() {

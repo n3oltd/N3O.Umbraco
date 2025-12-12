@@ -39,7 +39,7 @@ public class CreateDefaultElementForCampaignHandler
         var campaign = req.ContentId.Run(x => _contentLocator.ById<CampaignContent>(x), true);
         
         var formCreated = CreateDefaultElement(campaign, ElementTypes.DonationForm);
-        var buttonCreated = CreateDefaultElement(campaign, ElementTypes.DonateButton);
+        var buttonCreated = CreateDefaultElement(campaign, ElementTypes.DonationButton);
 
         if (formCreated || buttonCreated) {
             // TODO Required for now as otherwise cache is not rebuilt
@@ -67,8 +67,8 @@ public class CreateDefaultElementForCampaignHandler
             contentPublisher.Content.ContentPicker(AliasHelper<ElementContent>.PropertyAlias(x => x.Campaign)).SetContent(content);
             contentPublisher.Content.Boolean(AliasHelper<ElementContent>.PropertyAlias(x => x.IsSystemGenerated)).Set(true);
 
-            if (elementType == ElementTypes.DonateButton) {
-                contentPublisher.Content.Label(AliasHelper<DonateButtonElementContent>.PropertyAlias(x => x.Text)).Set("Donate");
+            if (elementType == ElementTypes.DonationButton) {
+                contentPublisher.Content.Label(AliasHelper<DonationButtonElementContent>.PropertyAlias(x => x.Text)).Set("Donate");
             }
             
 

@@ -18,7 +18,7 @@ public class PlatformsRenderabilityFilter : IContentRenderabilityFilter {
     public bool IsFilterFor(IPublishedContent content) {
         if (content == _contentCache.Special(PlatformsSpecialPages.Campaign)) {
             return true;
-        } else if (content == _contentCache.Special(PlatformsSpecialPages.Designation)) {
+        } else if (content == _contentCache.Special(PlatformsSpecialPages.Offering)) {
             return true;
         } else {
             return false;
