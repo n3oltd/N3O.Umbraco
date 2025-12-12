@@ -10,8 +10,10 @@ public class CampaignUnpublished : CloudContentUnpublished {
     private readonly IContentTypeService _contentTypeService;
 
     public CampaignUnpublished(ISubscriptionAccessor subscriptionAccessor,
+                               ICloudUrl cloudUrl,
                                IBackgroundJob backgroundJob,
-                               IContentTypeService contentTypeService) : base(subscriptionAccessor, backgroundJob) {
+                               IContentTypeService contentTypeService)
+        : base(subscriptionAccessor, cloudUrl, backgroundJob) {
         _contentTypeService = contentTypeService;
     }
 
@@ -27,5 +29,5 @@ public class CampaignUnpublished : CloudContentUnpublished {
         return content.IsCampaign(_contentTypeService);
     }
 
-    protected override string HookId => PlatformsConstants.Settings.WebhookIds.Campaigns;
+    protected override string HookId => PlatformsConstants.WebhookIds.Campaigns;
 }

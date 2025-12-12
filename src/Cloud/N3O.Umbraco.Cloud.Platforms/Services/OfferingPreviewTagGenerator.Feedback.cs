@@ -41,7 +41,7 @@ public class FeedbackOfferingPreviewTagGenerator : OfferingPreviewTagGenerator {
     protected override OfferingType OfferingType => OfferingTypes.Feedback;
     
     protected override void PopulatePublishedOffering(IReadOnlyDictionary<string, object> content,
-                                                         PublishedOffering publishedOffering) {
+                                                      PublishedOffering publishedOffering) {
         var feedbackScheme = GetFeedbackScheme(content); 
         
         var publishedFeedbackOffering = new PublishedFeedbackOffering();

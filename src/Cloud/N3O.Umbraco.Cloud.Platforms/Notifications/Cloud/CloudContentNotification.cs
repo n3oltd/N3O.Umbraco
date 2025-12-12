@@ -7,10 +7,14 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public abstract class CloudContentNotification {
     private readonly ISubscriptionAccessor _subscriptionAccessor;
+    private readonly ICloudUrl _cloudUrl;
     private readonly IBackgroundJob _backgroundJob;
 
-    protected CloudContentNotification(ISubscriptionAccessor subscriptionAccessor, IBackgroundJob backgroundJob) {
+    protected CloudContentNotification(ISubscriptionAccessor subscriptionAccessor,
+                                       ICloudUrl cloudUrl,
+                                       IBackgroundJob backgroundJob) {
         _subscriptionAccessor = subscriptionAccessor;
+        _cloudUrl = cloudUrl;
         _backgroundJob = backgroundJob;
     }
     
@@ -19,7 +23,7 @@ public abstract class CloudContentNotification {
                 
         var req = new DispatchWebhookReq();
         req.Body = body;
-        req.Url = $"http://localhost:13112/{HookId}/{subscription.Id.Number}";
+        req.Url = _cloudUrl.ForWebhook(HookId);
                 
         _backgroundJob.EnqueueCommand<DispatchWebhookCommand, DispatchWebhookReq>(req);
     }

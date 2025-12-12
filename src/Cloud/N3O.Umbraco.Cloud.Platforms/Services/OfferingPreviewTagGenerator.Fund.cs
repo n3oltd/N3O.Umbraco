@@ -44,7 +44,7 @@ public class FundOfferingPreviewTagGenerator : OfferingPreviewTagGenerator {
     protected override OfferingType OfferingType => OfferingTypes.Fund;
     
     protected override void PopulatePublishedOffering(IReadOnlyDictionary<string, object> content,
-                                                         PublishedOffering publishedOffering) {
+                                                      PublishedOffering publishedOffering) {
         var donationItem = GetDonationItem(content);
         
         var oneTimeSuggestedAmounts = GetSuggestedAmounts(content, AliasHelper<FundOfferingContent>.PropertyAlias(x => x.OneTimeSuggestedAmounts));

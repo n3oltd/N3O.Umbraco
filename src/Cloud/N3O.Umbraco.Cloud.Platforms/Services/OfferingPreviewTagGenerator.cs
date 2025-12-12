@@ -125,7 +125,7 @@ public abstract class OfferingPreviewTagGenerator : PreviewTagGenerator {
     }
     
     protected abstract void PopulatePublishedOffering(IReadOnlyDictionary<string, object> content,
-                                                         PublishedOffering publishedOffering);
+                                                      PublishedOffering publishedOffering);
     
     protected abstract IFundDimensionOptions GetFundDimensionOptions(IReadOnlyDictionary<string, object> content);
     protected abstract IEnumerable<PublishedGiftType> GetPublishedSuggestedGiftTypes(IReadOnlyDictionary<string, object> content);

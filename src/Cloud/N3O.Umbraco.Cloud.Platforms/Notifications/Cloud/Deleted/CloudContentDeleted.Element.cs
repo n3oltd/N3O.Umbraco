@@ -10,8 +10,10 @@ public class ElementDeleted : CloudContentDeleted {
     private readonly IContentTypeService _contentTypeService;
 
     public ElementDeleted(ISubscriptionAccessor subscriptionAccessor,
+                          ICloudUrl cloudUrl,
                           IBackgroundJob backgroundJob,
-                          IContentTypeService contentTypeService) : base(subscriptionAccessor, backgroundJob) {
+                          IContentTypeService contentTypeService) 
+        : base(subscriptionAccessor, cloudUrl, backgroundJob) {
         _contentTypeService = contentTypeService;
     }
 
@@ -27,5 +29,5 @@ public class ElementDeleted : CloudContentDeleted {
         return content.IsElement(_contentTypeService);
     }
 
-    protected override string HookId => PlatformsConstants.Settings.WebhookIds.Elements;
+    protected override string HookId => PlatformsConstants.WebhookIds.Elements;
 }

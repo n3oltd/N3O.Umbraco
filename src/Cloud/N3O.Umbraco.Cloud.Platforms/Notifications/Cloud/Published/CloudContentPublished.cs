@@ -9,8 +9,9 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public abstract class CloudContentPublished : CloudContentNotification, INotificationAsyncHandler<ContentPublishedNotification> {
     protected CloudContentPublished(ISubscriptionAccessor subscriptionAccessor,
+                                    ICloudUrl cloudUrl,
                                     IBackgroundJob backgroundJob) 
-        : base(subscriptionAccessor, backgroundJob) { }
+        : base(subscriptionAccessor, cloudUrl, backgroundJob) { }
 
     public Task HandleAsync(ContentPublishedNotification notification, CancellationToken cancellationToken) {
         foreach (var content in notification.PublishedEntities) {

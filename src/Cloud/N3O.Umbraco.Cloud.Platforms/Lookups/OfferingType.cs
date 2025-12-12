@@ -11,13 +11,13 @@ public class OfferingType : NamedLookup {
 }
 
 public class OfferingTypes : StaticLookupsCollection<OfferingType> {
-    public static readonly OfferingType Fund = new("fund",
-                                                   "Fund",
-                                                   PlatformsConstants.Offerings.Fund);
-
     public static readonly OfferingType Feedback = new("feedback",
                                                        "Feedback",
                                                        PlatformsConstants.Offerings.Feedback);
+    
+    public static readonly OfferingType Fund = new("fund",
+                                                   "Fund",
+                                                   PlatformsConstants.Offerings.Fund);
 
     public static readonly OfferingType Sponsorship = new("sponsorship",
                                                           "Sponsorship",

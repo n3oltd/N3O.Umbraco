@@ -10,8 +10,9 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public abstract class CloudContentDeleted : CloudContentNotification, INotificationAsyncHandler<ContentMovedToRecycleBinNotification> {
     protected CloudContentDeleted(ISubscriptionAccessor subscriptionAccessor,
+                                  ICloudUrl cloudUrl,
                                   IBackgroundJob backgroundJob) 
-        : base(subscriptionAccessor, backgroundJob) { }
+        : base(subscriptionAccessor, cloudUrl, backgroundJob) { }
 
     public Task HandleAsync(ContentMovedToRecycleBinNotification notification, CancellationToken cancellationToken) {
         foreach (var content in notification.MoveInfoCollection.Select(x => x.Entity)) {

@@ -16,10 +16,12 @@ public class CampaignPublished : CloudContentPublished {
     private readonly IUmbracoMapper _mapper;
 
     public CampaignPublished(ISubscriptionAccessor subscriptionAccessor,
+                             ICloudUrl cloudUrl,
                              IBackgroundJob backgroundJob,
                              IContentTypeService contentTypeService,
                              Lazy<IContentLocator> contentLocator,
-                             IUmbracoMapper mapper) : base(subscriptionAccessor, backgroundJob) {
+                             IUmbracoMapper mapper)
+        : base(subscriptionAccessor, cloudUrl, backgroundJob) {
         _contentTypeService = contentTypeService;
         _contentLocator = contentLocator;
         _mapper = mapper;
@@ -37,5 +39,5 @@ public class CampaignPublished : CloudContentPublished {
         return content.IsCampaign(_contentTypeService);
     }
 
-    protected override string HookId => PlatformsConstants.Settings.WebhookIds.Campaigns;
+    protected override string HookId => PlatformsConstants.WebhookIds.Campaigns;
 }

@@ -13,10 +13,6 @@ public static class ContentExtensions {
         return HasComposition(contentTypeService, content, AliasHelper<CampaignContent>.ContentTypeAlias());
     }
     
-    public static bool IsOffering(this IContent content, IContentTypeService contentTypeService) {
-        return HasComposition(contentTypeService, content, AliasHelper<OfferingContent>.ContentTypeAlias());
-    }
-    
     public static bool IsDonationButtonElement(this IContent content) {
         return content.ContentType.Alias.EqualsInvariant(AliasHelper<DonationButtonElementContent>.ContentTypeAlias());
     }
@@ -27,6 +23,10 @@ public static class ContentExtensions {
     
     public static bool IsElement(this IContent content, IContentTypeService contentTypeService) {
         return HasComposition(contentTypeService, content, AliasHelper<ElementContent>.ContentTypeAlias());
+    }
+    
+    public static bool IsOffering(this IContent content, IContentTypeService contentTypeService) {
+        return HasComposition(contentTypeService, content, AliasHelper<OfferingContent>.ContentTypeAlias());
     }
     
     public static bool IsPlatformsCampaignOrOfferingOrElement(this IContent content, IContentTypeService contentTypeService) {

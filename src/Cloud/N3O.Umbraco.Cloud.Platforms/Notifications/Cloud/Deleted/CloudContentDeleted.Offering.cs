@@ -10,8 +10,10 @@ public class OfferingDeleted : CloudContentDeleted {
     private readonly IContentTypeService _contentTypeService;
 
     public OfferingDeleted(ISubscriptionAccessor subscriptionAccessor,
+                           ICloudUrl cloudUrl,
                            IBackgroundJob backgroundJob,
-                           IContentTypeService contentTypeService) : base(subscriptionAccessor, backgroundJob) {
+                           IContentTypeService contentTypeService) 
+        : base(subscriptionAccessor, cloudUrl, backgroundJob) {
         _contentTypeService = contentTypeService;
     }
 
@@ -27,5 +29,5 @@ public class OfferingDeleted : CloudContentDeleted {
         return content.IsOffering(_contentTypeService);
     }
 
-    protected override string HookId => PlatformsConstants.Settings.WebhookIds.Offerings;
+    protected override string HookId => PlatformsConstants.WebhookIds.Offerings;
 }

@@ -16,10 +16,12 @@ public class ElementPublished : CloudContentPublished {
     private readonly IUmbracoMapper _mapper;
 
     public ElementPublished(ISubscriptionAccessor subscriptionAccessor,
+                            ICloudUrl cloudUrl,
                             IBackgroundJob backgroundJob,
                             IContentTypeService contentTypeService,
                             Lazy<IContentLocator> contentLocator,
-                            IUmbracoMapper mapper) : base(subscriptionAccessor, backgroundJob) {
+                            IUmbracoMapper mapper)
+        : base(subscriptionAccessor, cloudUrl, backgroundJob) {
         _contentTypeService = contentTypeService;
         _contentLocator = contentLocator;
         _mapper = mapper;
@@ -37,5 +39,5 @@ public class ElementPublished : CloudContentPublished {
         return content.IsElement(_contentTypeService);
     }
 
-    protected override string HookId => PlatformsConstants.Settings.WebhookIds.Elements;
+    protected override string HookId => PlatformsConstants.WebhookIds.Elements;
 }
