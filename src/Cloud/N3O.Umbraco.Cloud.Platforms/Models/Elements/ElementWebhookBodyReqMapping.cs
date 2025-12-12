@@ -6,7 +6,7 @@ using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using Umbraco.Cms.Core.Mapping;
 using ElementType = N3O.Umbraco.Cloud.Platforms.Clients.ElementType;
-using DonateButtonAction = N3O.Umbraco.Cloud.Platforms.Clients.DonateButtonAction;
+using DonationButtonAction = N3O.Umbraco.Cloud.Platforms.Clients.DonationButtonAction;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
@@ -30,11 +30,11 @@ public class ElementWebhookBodyReqMapping : IMapDefinition {
         dest.AddOrUpdate.Name = src.Content().Name;
         dest.AddOrUpdate.Type = src.Type.ToEnum<ElementType>();
             
-        if (src.Type == ElementTypes.DonateButton) {
-            dest.AddOrUpdate.DonateButton = new DonateButtonElementReq();
-            dest.AddOrUpdate.DonateButton.Text = src.DonateButton.Text;
-            dest.AddOrUpdate.DonateButton.Action = src.DonateButton.Action.ToEnum<DonateButtonAction>();
-            dest.AddOrUpdate.DonateButton.FormState = ctx.Map<ElementContent, DonationFormStateReq>(src);
+        if (src.Type == ElementTypes.DonationButton) {
+            dest.AddOrUpdate.DonationButton = new DonationButtonElementReq();
+            dest.AddOrUpdate.DonationButton.Text = src.DonationButton.Text;
+            dest.AddOrUpdate.DonationButton.Action = src.DonationButton.Action.ToEnum<DonationButtonAction>();
+            dest.AddOrUpdate.DonationButton.FormState = ctx.Map<ElementContent, DonationFormStateReq>(src);
         } else if (src.Type == ElementTypes.DonationForm) {
             dest.AddOrUpdate.DonationForm = new DonationFormElementReq();
             dest.AddOrUpdate.DonationForm.FormState = ctx.Map<ElementContent, DonationFormStateReq>(src);

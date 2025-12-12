@@ -4,8 +4,8 @@ using N3O.Umbraco.Giving.Allocations.Models;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.Elements.DesignatableElement)]
-public class DesignatableElementContent<T> : UmbracoContent<T> where T : DesignatableElementContent<T> {
+[UmbracoContent(PlatformsConstants.Elements.DonationElement)]
+public class DonationElementContent<T> : UmbracoContent<T> where T : DonationElementContent<T> {
     public OfferingContent Offering => GetAs(x => x.Offering);
     public FundDimension1Value Dimension1 => GetValue(x => x.Dimension1);
     public FundDimension2Value Dimension2 => GetValue(x => x.Dimension2);

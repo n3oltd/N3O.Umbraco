@@ -20,9 +20,9 @@ public static class PlatformsConstants {
 
     public static class Elements {
         public const string CompositionAlias = "platformsElement";
-        public const string DesignatableElement = "platformsDesignatableElement";
-        public const string DonateButton = "platformsDonateButtonElement";
+        public const string DonationButton = "platformsDonationButtonElement";
         public const string DonationForm = "platformsDonationFormElement";
+        public const string DonationElement = "platformsDonationElement";
     }
 
     public static class Platforms {

@@ -363,8 +363,8 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Name { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("donateButton", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public DonateButtonElementReq DonateButton { get; set; }
+        [Newtonsoft.Json.JsonProperty("donationButton", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public DonationButtonElementReq DonationButton { get; set; }
 
         [Newtonsoft.Json.JsonProperty("donationForm", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public DonationFormElementReq DonationForm { get; set; }
@@ -1033,7 +1033,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     /// One of 'addToCart', 'beginCheckout', 'openDonationForm'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum DonateButtonAction
+    public enum DonationButtonAction
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"addToCart")]
@@ -1048,7 +1048,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class DonateButtonElementReq
+    public partial class DonationButtonElementReq
     {
 
         [Newtonsoft.Json.JsonProperty("text", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -1056,7 +1056,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
         [Newtonsoft.Json.JsonProperty("action", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public DonateButtonAction? Action { get; set; }
+        public DonationButtonAction? Action { get; set; }
 
         [Newtonsoft.Json.JsonProperty("formState", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public DonationFormStateReq FormState { get; set; }
@@ -1203,14 +1203,14 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     }
 
     /// <summary>
-    /// One of 'donateButton', 'donationForm'
+    /// One of 'donationButton', 'donationForm'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum ElementType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"donateButton")]
-        DonateButton = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"donationButton")]
+        DonationButton = 0,
 
         [System.Runtime.Serialization.EnumMember(Value = @"donationForm")]
         DonationForm = 1,
@@ -1925,7 +1925,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class PublishedDesignatableElement
+    public partial class PublishedDonationElement
     {
 
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -1959,7 +1959,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class PublishedDonateButton
+    public partial class PublishedDonationButton
     {
 
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -1998,7 +1998,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
         [Newtonsoft.Json.JsonProperty("action", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public DonateButtonAction? Action { get; set; }
+        public DonationButtonAction? Action { get; set; }
 
         [Newtonsoft.Json.JsonProperty("tags", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public PublishedTagCollection Tags { get; set; }

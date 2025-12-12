@@ -8,8 +8,8 @@ using ElementType = N3O.Umbraco.Cloud.Platforms.Lookups.ElementType;
 
 namespace N3O.Umbraco.Cloud.Platforms;
 
-public class DonateButtonElementPreviewTagGenerator : ElementPreviewTagGenerator {
-    public DonateButtonElementPreviewTagGenerator(ICdnClient cdnClient,
+public class DonationButtonElementPreviewTagGenerator : ElementPreviewTagGenerator {
+    public DonationButtonElementPreviewTagGenerator(ICdnClient cdnClient,
                                                   IJsonProvider jsonProvider,
                                                   IContentLocator contentLocator,
                                                   IUmbracoMapper mapper,
@@ -17,5 +17,5 @@ public class DonateButtonElementPreviewTagGenerator : ElementPreviewTagGenerator
                                                   ILookups lookups) 
         : base(cdnClient, jsonProvider, contentLocator, mapper, markupEngine, lookups) { }
 
-    protected override ElementType ElementType => ElementTypes.DonateButton;
+    protected override ElementType ElementType => ElementTypes.DonationButton;
 }*/

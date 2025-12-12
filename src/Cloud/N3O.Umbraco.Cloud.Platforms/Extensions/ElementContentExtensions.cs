@@ -9,8 +9,8 @@ public static class ElementContentExtensions {
     public static OfferingContent GetOffering(this ElementContent element, IContentLocator contentLocator) {
         if (element.Campaign.HasValue()) {
             return element.Campaign.DefaultOffering;
-        } else if (element.DonateButton.HasValue(x => x.Offering) || element.DonationForm.HasValue(x => x.Offering)) {
-            return element.DonateButton?.Offering ?? element.DonationForm.Offering;
+        } else if (element.DonationButton.HasValue(x => x.Offering) || element.DonationForm.HasValue(x => x.Offering)) {
+            return element.DonationButton?.Offering ?? element.DonationForm.Offering;
         } else {
             return contentLocator.Single<PlatformsContent>().Campaigns.First().DefaultOffering;
         }

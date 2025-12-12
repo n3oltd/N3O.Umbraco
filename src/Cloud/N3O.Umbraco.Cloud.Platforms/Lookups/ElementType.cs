@@ -26,10 +26,10 @@ public class ElementType : NamedLookup {
 }
 
 public class ElementTypes : StaticLookupsCollection<ElementType> {
-    public static readonly ElementType DonateButton = new("donateButton",
-                                                          "Donate Button",
-                                                          "n3o-donate-button",
-                                                          PlatformsConstants.Elements.DonateButton);
+    public static readonly ElementType DonationButton = new("donationButton",
+                                                            "Donation Button",
+                                                            "n3o-donation-button",
+                                                            PlatformsConstants.Elements.DonationButton);
 
     public static readonly ElementType DonationForm = new("donationForm",
                                                           "Donation Form",

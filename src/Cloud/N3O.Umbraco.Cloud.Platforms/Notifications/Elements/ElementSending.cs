@@ -25,9 +25,9 @@ public class ElementSending : INotificationAsyncHandler<SendingContentNotificati
 
     public Task HandleAsync(SendingContentNotification notification, CancellationToken cancellationToken) {
         var isDonationForm = notification.Content.ContentTypeAlias.EqualsInvariant(AliasHelper<DonationFormElementContent>.ContentTypeAlias());
-        var isDonateButton = notification.Content.ContentTypeAlias.EqualsInvariant(AliasHelper<DonateButtonElementContent>.ContentTypeAlias());
+        var isDonationButton = notification.Content.ContentTypeAlias.EqualsInvariant(AliasHelper<DonationButtonElementContent>.ContentTypeAlias());
 
-        if (isDonationForm || isDonateButton) {
+        if (isDonationForm || isDonationButton) {
             foreach (var variant in notification.Content.Variants) {
                 SetPropertiesReadOnly(variant);
                 SetEmbedCode(variant, notification.Content.ContentTypeAlias, notification.Content.Key.GetValueOrDefault());
@@ -45,7 +45,7 @@ public class ElementSending : INotificationAsyncHandler<SendingContentNotificati
         if (isSystemGenerated) {
             var generalTab = variant.Tabs.Single(x => x.Alias.EqualsInvariant("general"));
             var campaignProperty = GetProperty(generalTab, AliasHelper<ElementContent>.PropertyAlias(x => x.Campaign));
-            var offeringProperty = GetProperty(generalTab, AliasHelper<DesignatableElementContent<DonationFormElementContent>>.PropertyAlias(x => x.Offering));
+            var offeringProperty = GetProperty(generalTab, AliasHelper<DonationElementContent<DonationFormElementContent>>.PropertyAlias(x => x.Offering));
 
             campaignProperty.Readonly = true;
             offeringProperty.Readonly = true;

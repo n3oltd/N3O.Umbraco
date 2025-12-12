@@ -14,15 +14,15 @@ namespace N3O.Umbraco.Cloud.Platforms.Content;
 
 [UmbracoContent(PlatformsConstants.Elements.CompositionAlias)]
 public class ElementContent : UmbracoContent<ElementContent> {
-    private static readonly string DonateButtonElementAlias = AliasHelper<DonateButtonElementContent>.ContentTypeAlias();
+    private static readonly string DonationButtonElementAlias = AliasHelper<DonationButtonElementContent>.ContentTypeAlias();
     private static readonly string DonationFormElementAlias = AliasHelper<DonationFormElementContent>.ContentTypeAlias();
     
     public override void SetContent(IPublishedContent content) {
         base.SetContent(content);
         
-        if (Type == ElementTypes.DonateButton) {
-            DonateButton = new DonateButtonElementContent();
-            DonateButton.SetContent(content);
+        if (Type == ElementTypes.DonationButton) {
+            DonationButton = new DonationButtonElementContent();
+            DonationButton.SetContent(content);
         } else if (Type == ElementTypes.DonationForm) {
             DonationForm = new DonationFormElementContent();
             DonationForm.SetContent(content);
@@ -34,7 +34,7 @@ public class ElementContent : UmbracoContent<ElementContent> {
     public override void SetVariationContext(VariationContext variationContext) {
         base.SetVariationContext(variationContext);
         
-        DonateButton?.SetVariationContext(variationContext);
+        DonationButton?.SetVariationContext(variationContext);
         DonationForm?.SetVariationContext(variationContext);
     }
     
@@ -45,13 +45,13 @@ public class ElementContent : UmbracoContent<ElementContent> {
     public bool IsSystemGenerated => GetValue(x => x.IsSystemGenerated);
     public IReadOnlyDictionary<string, string> Tags => GetConvertedValue<IEnumerable<DataListItem>, IReadOnlyDictionary<string, string>>(x => x.Tags, x => x.ToTagsDictionary());
 
-    public DonateButtonElementContent DonateButton { get; private set; }
+    public DonationButtonElementContent DonationButton { get; private set; }
     public DonationFormElementContent DonationForm { get; private set; }
     
     public ElementType Type {
         get {
-            if (Content().ContentType.Alias.EqualsInvariant(DonateButtonElementAlias)) {
-                return ElementTypes.DonateButton;
+            if (Content().ContentType.Alias.EqualsInvariant(DonationButtonElementAlias)) {
+                return ElementTypes.DonationButton;
             } else if (Content().ContentType.Alias.EqualsInvariant(DonationFormElementAlias)) {
                 return ElementTypes.DonationForm;
             } else {
@@ -63,7 +63,7 @@ public class ElementContent : UmbracoContent<ElementContent> {
     public IFundDimensionValues GetFixedFundDimensionValues(OfferingContent offering) {
         var fundDimensionValues = Type == ElementTypes.DonationForm
                                       ? DonationForm.GetFixedFundDimensionValues(offering)
-                                      : DonateButton.GetFixedFundDimensionValues(offering);
+                                      : DonationButton.GetFixedFundDimensionValues(offering);
 
         return fundDimensionValues;
     }

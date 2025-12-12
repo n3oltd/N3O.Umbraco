@@ -21,7 +21,7 @@ public class ElementSaving : INotificationAsyncHandler<ContentSavingNotification
         foreach (var content in notification.SavedEntities) {
             if (content.IsElement(_contentTypeService)) {
                 if (content.GetValue(AliasHelper<ElementContent>.PropertyAlias(x => x.Campaign)).HasValue() &&
-                    content.GetValue(AliasHelper<DesignatableElementContent<DonationFormElementContent>>.PropertyAlias(x => x.Offering)).HasValue()) {
+                    content.GetValue(AliasHelper<DonationElementContent<DonationFormElementContent>>.PropertyAlias(x => x.Offering)).HasValue()) {
                     notification.CancelWithError("Campaign and Offering both cannot be specified");
                     
                     return Task.CompletedTask;

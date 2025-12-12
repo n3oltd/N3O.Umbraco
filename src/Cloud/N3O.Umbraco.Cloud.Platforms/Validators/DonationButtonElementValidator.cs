@@ -10,22 +10,22 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Cloud.Platforms.Validators;
 
-public class DonateButtonElementValidator : ContentValidator {
+public class DonationButtonElementValidator : ContentValidator {
     private static readonly string CampaignAlias = AliasHelper<ElementContent>.PropertyAlias(x => x.Campaign);
-    private static readonly string OfferingAlias = AliasHelper<DesignatableElementContent<DonateButtonElementContent>>.PropertyAlias(x => x.Offering);
-    private static readonly string Dimension1Alias = AliasHelper<DesignatableElementContent<DonateButtonElementContent>>.PropertyAlias(x => x.Dimension1);
-    private static readonly string Dimension2Alias = AliasHelper<DesignatableElementContent<DonateButtonElementContent>>.PropertyAlias(x => x.Dimension2);
-    private static readonly string Dimension3Alias = AliasHelper<DesignatableElementContent<DonateButtonElementContent>>.PropertyAlias(x => x.Dimension3);
-    private static readonly string Dimension4Alias = AliasHelper<DesignatableElementContent<DonateButtonElementContent>>.PropertyAlias(x => x.Dimension4);
-    private static readonly string AmountAlias = AliasHelper<DonateButtonElementContent>.PropertyAlias(x => x.Amount);
-    private static readonly string ActionAlias = AliasHelper<DonateButtonElementContent>.PropertyAlias(x => x.Action);
+    private static readonly string OfferingAlias = AliasHelper<DonationElementContent<DonationButtonElementContent>>.PropertyAlias(x => x.Offering);
+    private static readonly string Dimension1Alias = AliasHelper<DonationElementContent<DonationButtonElementContent>>.PropertyAlias(x => x.Dimension1);
+    private static readonly string Dimension2Alias = AliasHelper<DonationElementContent<DonationButtonElementContent>>.PropertyAlias(x => x.Dimension2);
+    private static readonly string Dimension3Alias = AliasHelper<DonationElementContent<DonationButtonElementContent>>.PropertyAlias(x => x.Dimension3);
+    private static readonly string Dimension4Alias = AliasHelper<DonationElementContent<DonationButtonElementContent>>.PropertyAlias(x => x.Dimension4);
+    private static readonly string AmountAlias = AliasHelper<DonationButtonElementContent>.PropertyAlias(x => x.Amount);
+    private static readonly string ActionAlias = AliasHelper<DonationButtonElementContent>.PropertyAlias(x => x.Action);
     
     
     private readonly IContentHelper _contentHelper;
     private readonly IContentLocator _contentLocator;
     private readonly ILookups _lookups;
 
-    public DonateButtonElementValidator(IContentHelper contentHelper,
+    public DonationButtonElementValidator(IContentHelper contentHelper,
                                         IContentLocator contentLocator,
                                         ILookups lookups) : base(contentHelper) {
         _contentHelper = contentHelper;
@@ -34,14 +34,14 @@ public class DonateButtonElementValidator : ContentValidator {
     }
     
     public override bool IsValidator(ContentProperties content) {
-        return content.ContentTypeAlias == AliasHelper<DonateButtonElementContent>.ContentTypeAlias();
+        return content.ContentTypeAlias == AliasHelper<DonationButtonElementContent>.ContentTypeAlias();
     }
 
     public override void Validate(ContentProperties content) {
         var offering = GetOfferingContent(content);
         var fundDimensionOptions = offering.GetFundDimensionOptions();
         
-        var action = _contentHelper.GetDataListValue<DonateButtonAction>(content, ActionAlias);
+        var action = _contentHelper.GetDataListValue<DonationButtonAction>(content, ActionAlias);
 
         if (fundDimensionOptions != null) {
             DimensionAllowed(content, fundDimensionOptions.Dimension1, Dimension1Alias);
@@ -50,7 +50,7 @@ public class DonateButtonElementValidator : ContentValidator {
             DimensionAllowed(content, fundDimensionOptions.Dimension4, Dimension4Alias);
         }
 
-        if (action.IsAnyOf(DonateButtonActions.AddToCart, DonateButtonActions.BeginCheckout)) {
+        if (action.IsAnyOf(DonationButtonActions.AddToCart, DonationButtonActions.BeginCheckout)) {
             ValidateHasPricing(content, offering);
             ValidateHasFixedDimensions(content, offering);
         }

@@ -17,8 +17,8 @@ public static class ContentExtensions {
         return HasComposition(contentTypeService, content, AliasHelper<OfferingContent>.ContentTypeAlias());
     }
     
-    public static bool IsDonateButtonElement(this IContent content) {
-        return content.ContentType.Alias.EqualsInvariant(AliasHelper<DonateButtonElementContent>.ContentTypeAlias());
+    public static bool IsDonationButtonElement(this IContent content) {
+        return content.ContentType.Alias.EqualsInvariant(AliasHelper<DonationButtonElementContent>.ContentTypeAlias());
     }
     
     public static bool IsDonationFormElement(this IContent content) {
