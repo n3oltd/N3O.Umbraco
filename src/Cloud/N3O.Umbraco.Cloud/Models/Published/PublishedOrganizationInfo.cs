@@ -6,7 +6,7 @@ namespace N3O.Umbraco.Cloud.Models;
 
 public class PublishedOrganizationInfo : Value, IOrganizationInfo {
     public string Name { get; set; }
-    public string CharityRegistration { get; set; }
+    public string RegistrationDetails { get; set; }
     public string AddressSingleLine { get; set; }
     public string AddressPostalCode { get; set; }
     public Country AddressCountry { get; set; }
@@ -14,7 +14,7 @@ public class PublishedOrganizationInfo : Value, IOrganizationInfo {
 
     protected override IEnumerable<object> GetAtomicValues() {
         yield return Name;
-        yield return CharityRegistration;
+        yield return RegistrationDetails;
         yield return AddressSingleLine;
         yield return AddressPostalCode;
         yield return AddressCountry;

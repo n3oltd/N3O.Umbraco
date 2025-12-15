@@ -14,10 +14,10 @@ public class OrganizationInfoAccessor : IOrganizationInfoAccessor {
     }
 
     public async Task<IOrganizationInfo> GetOrganizationInfoAsync(CancellationToken cancellationToken = default) {
-        var publishedOrganizationInfo = await _cdnClient.DownloadSubscriptionContentAsync<PublishedOrganizationInfo>(SubscriptionFiles.OrganizationInfo,
-                                                                                                                     JsonSerializers.JsonProvider,
-                                                                                                                     cancellationToken);
+        var publishedSubscriptionOrganization = await _cdnClient.DownloadSubscriptionContentAsync<PublishedSubscriptionOrganization>(SubscriptionFiles.OrganizationInfo,
+                                                                                                                                     JsonSerializers.JsonProvider,
+                                                                                                                                     cancellationToken);
 
-        return publishedOrganizationInfo;
+        return publishedSubscriptionOrganization.OrganizationInfo;
     }
 }
