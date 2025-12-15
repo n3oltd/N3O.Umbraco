@@ -2,5 +2,5 @@
 
 public class PublishedSubscriptionOrganization {
     public string Name { get; set; }
-    public PublishedOrganizationInfo OrganizationInfo { get; set; }
+    public PublishedSubscriptionOrganizationPlatformSettings OrganizationInfo { get; set; }
 }
