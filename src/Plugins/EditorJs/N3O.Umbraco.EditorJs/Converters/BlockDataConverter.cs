@@ -1,9 +1,11 @@
 ﻿using N3O.Umbraco.EditorJs.Models;
+using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
 using Umbraco.Cms.Core;
+using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
@@ -11,6 +13,9 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.EditorJs;
 
 public abstract class BlockDataConverter<TData> : IBlockDataConverter where TData : class {
+    private const string DocumentEntityType = global::Umbraco.Cms.Core.Constants.UdiEntityType.Document;
+    private const string MediaEntityType = global::Umbraco.Cms.Core.Constants.UdiEntityType.Media;
+    
     private readonly IUmbracoContextAccessor _umbracoContextAccessor;
     private readonly IPublishedUrlProvider _publishedUrlProvider;
 
@@ -45,7 +50,15 @@ public abstract class BlockDataConverter<TData> : IBlockDataConverter where TDat
         var udi = UdiParser.Parse(udiText);
 
         if (_umbracoContextAccessor.TryGetUmbracoContext(out var context)) {
-            var content = context.Content?.GetById(udi);
+            IPublishedContent content;
+            
+            if (udi.EntityType == DocumentEntityType) {
+                content = context.Content?.GetById(udi);
+            } else if (udi.EntityType == MediaEntityType) {
+                content = context.Media?.GetById(udi);
+            } else {
+                throw UnrecognisedValueException.For(udi.EntityType);
+            }
             
             if (content != null) {
                 return $"{match.Groups[1].Value}{content.Url(_publishedUrlProvider)}\"";
