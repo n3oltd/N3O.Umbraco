@@ -5,7 +5,7 @@ namespace N3O.Umbraco.Cloud.Models;
 
 public interface IOrganizationInfo {
     string Name { get; }
-    string CharityRegistration { get; }
+    string RegistrationDetails { get; }
     string AddressSingleLine { get; }
     string AddressPostalCode { get; }
     Country AddressCountry { get; }
