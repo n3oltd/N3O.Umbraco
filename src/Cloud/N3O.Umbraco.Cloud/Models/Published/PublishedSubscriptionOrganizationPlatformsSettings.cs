@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Cloud.Models;
 
-public class PublishedOrganizationInfo : Value, IOrganizationInfo {
+public class PublishedSubscriptionOrganizationPlatformsSettings : Value, IOrganizationInfo {
     public string Name { get; set; }
     public string RegistrationDetails { get; set; }
     public string AddressSingleLine { get; set; }
