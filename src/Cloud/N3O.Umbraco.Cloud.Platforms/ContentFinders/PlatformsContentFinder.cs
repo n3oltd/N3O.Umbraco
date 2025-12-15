@@ -33,7 +33,12 @@ public class PlatformsContentFinder : IContentFinder {
                 request.SetPublishedContent(_contentCache.Special(PlatformsSpecialPages.Campaign));
 
                 found = true;
-            } else if (foundPlatformsPage.Kind == PublishedFileKinds.Offering) {
+            } else if (foundPlatformsPage.Kind == PublishedFileKinds.Crowdfunder) {
+                request.SetPublishedContent(_contentCache.Special(PlatformsSpecialPages.Crowdfunder));
+
+                found = true;
+            }
+            else if (foundPlatformsPage.Kind == PublishedFileKinds.Offering) {
                 request.SetPublishedContent(_contentCache.Special(PlatformsSpecialPages.Offering));
 
                 found = true;
