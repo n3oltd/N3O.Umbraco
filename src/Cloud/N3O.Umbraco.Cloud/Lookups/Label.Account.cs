@@ -10,7 +10,7 @@ public class AccountLabel : Label {
 
 [Order(int.MaxValue)]
 public class AccountLabels : Labels<AccountLabel> {
-    protected AccountLabels(ICdnClient cdnClient) : base(cdnClient) { }
+    public AccountLabels(ICdnClient cdnClient) : base(cdnClient) { }
 
     protected override AccountLabel CreateLabel(PublishedTagDefinition publishedTagDefinition) {
         return new AccountLabel(publishedTagDefinition.Id, publishedTagDefinition.Name);
