@@ -48,7 +48,7 @@ public class GeneratePublishedCompositionsHandler : IRequestHandler<GeneratePubl
             publishedComposition.Revision = 1;
             publishedComposition.Alias = directory.Name;
             publishedComposition.Markup = await File.ReadAllTextAsync(compositionFile.FullName);
-            publishedComposition.Assets = GetAssetsA(directory, relativeUrlPath);
+            publishedComposition.Assets = GetAssets(directory, relativeUrlPath);
             publishedComposition.Layout = await GetLayoutAsync(directory);
             publishedComposition.Partials = await GetPartialsAsync(directory);
 
@@ -57,7 +57,7 @@ public class GeneratePublishedCompositionsHandler : IRequestHandler<GeneratePubl
             return null;
         }
     }
-    private Dictionary<long, PublishedAsset> GetAssetsA(DirectoryInfo directory, string relativeUrlPath) {
+    private Dictionary<long, PublishedAsset> GetAssets(DirectoryInfo directory, string relativeUrlPath) {
         var publishedAssets = new Dictionary<long, PublishedAsset>();
         
         var assetsDirectory = new DirectoryInfo(Path.Combine(directory.FullName, "assets"));
@@ -99,7 +99,7 @@ public class GeneratePublishedCompositionsHandler : IRequestHandler<GeneratePubl
         var partialsDirectory = new DirectoryInfo(Path.Combine(directory.FullName, "partials"));
 
         if (partialsDirectory.Exists) {
-            foreach (var partialFile in partialsDirectory.EnumerateDirectories("*.handlebars", SearchOption.TopDirectoryOnly)) {
+            foreach (var partialFile in partialsDirectory.GetFiles("*.handlebars", SearchOption.TopDirectoryOnly)) {
                 var alias = Path.GetFileNameWithoutExtension(partialFile.FullName);
                 
                 var publishedPartial = new PublishedPartial();
