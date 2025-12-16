@@ -6,17 +6,27 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Hosting;
 
 public static class WebRoot {
-    public static async Task SaveFileAsync(IWebHostEnvironment webHostEnvironment, string filename, Stream content) {
-        var path = Path.Combine(webHostEnvironment.WebRootPath, filename);
+    public static DirectoryInfo GetDirectory(IWebHostEnvironment webHostEnvironment, string path) {
+        var directory = new DirectoryInfo(Path.Combine(webHostEnvironment.WebRootPath, path));
+
+        if (directory.Exists) {
+            return directory;
+        } else {
+            return null;
+        }
+    }
+
+    public static async Task SaveFileAsync(IWebHostEnvironment webHostEnvironment, string path, Stream content) {
+        var filePath = Path.Combine(webHostEnvironment.WebRootPath, path);
         
-        using (var fileStream = File.Create(path)) {
+        using (var fileStream = File.Create(filePath)) {
             await content.CopyToAsync(fileStream);
         }
     }
     
-    public static async Task SaveTextAsync(IWebHostEnvironment webHostEnvironment, string filename, string text) {
+    public static async Task SaveTextAsync(IWebHostEnvironment webHostEnvironment, string path, string text) {
         using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text))) {
-            await SaveFileAsync(webHostEnvironment, filename, stream);
+            await SaveFileAsync(webHostEnvironment, path, stream);
         }
     }
 }
