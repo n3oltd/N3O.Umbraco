@@ -23,16 +23,16 @@ public class DispatchWebhookHandler : IRequestHandler<DispatchWebhookCommand, Di
         var httpClient = _httpClientFactory.CreateClient();
         var json = req.Model.Body.IfNotNull(x => _jsonProvider.SerializeObject(x)) ?? "";
         
-        var request = new HttpRequestMessage(HttpMethod.Post, req.Model.Url);
-        request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+        var httpRequest = new HttpRequestMessage(HttpMethod.Post, req.Model.Url);
+        httpRequest.Content = new StringContent(json, Encoding.UTF8, "application/json");
         
         foreach (var header in req.Model.Headers.OrEmpty()) {
-            request.Headers.Add(header.Key, header.Value);
+            httpRequest.Headers.Add(header.Key, header.Value);
         }
         
-        var response = await httpClient.SendAsync(request, cancellationToken);
+        var httpResponse = await httpClient.SendAsync(httpRequest, cancellationToken);
 
-        response.EnsureSuccessStatusCode();
+        httpResponse.EnsureSuccessStatusCode();
         
         return None.Empty;
     }

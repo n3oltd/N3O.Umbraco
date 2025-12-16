@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Notifications;
 
-namespace N3O.Umbraco.Search.Notification;
+namespace N3O.Umbraco.Search.Notifications;
 
 public class SitemapApplicationStarted : INotificationAsyncHandler<UmbracoApplicationStartedNotification> {
     private readonly IBackgroundJob _backgroundJob;
