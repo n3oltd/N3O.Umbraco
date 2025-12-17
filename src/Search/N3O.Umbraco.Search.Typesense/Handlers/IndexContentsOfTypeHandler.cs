@@ -35,7 +35,7 @@ public class IndexContentsOfTypeHandler : IRequestHandler<IndexContentsOfTypeCom
         
                 foreach (var publishedContent in publishedContents) {
                     _backgroundJob.EnqueueCommand<IndexContentCommand>(m => m.Add<ContentId>(publishedContent.Key.ToString()));
-                }       
+                }
             }
         }
         

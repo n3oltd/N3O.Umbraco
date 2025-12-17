@@ -6,5 +6,5 @@ public class CrowdfunderPlatformsMergeModelProvider : PlatformsMergeModelProvide
     public CrowdfunderPlatformsMergeModelProvider(IPlatformsPageAccessor platformsPageAccessor)
         : base(platformsPageAccessor) { }
     
-    protected override PublishedFileKind Kind => PublishedFileKinds.Crowdfunder;
+    protected override PublishedFileKind Kind => PublishedFileKinds.CrowdfunderPage;
 }

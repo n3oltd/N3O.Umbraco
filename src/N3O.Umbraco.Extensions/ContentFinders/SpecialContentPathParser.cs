@@ -19,7 +19,7 @@ public static class SpecialContentPathParser {
                 return specialPage.RelativeUrl().StripTrailingSlash();
             } else {
                 return null;
-            }  
+            }
         });
 
         return specialPath;

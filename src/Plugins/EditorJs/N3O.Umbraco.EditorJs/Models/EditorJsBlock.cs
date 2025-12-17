@@ -28,7 +28,7 @@ public abstract class EditorJsBlock {
         var tuneId = typeof(TTune).GetTuneId();
 
         if (TunesData?.TryGetValue(tuneId, out var tune) == true) {
-            return tune.ToObject<TTune>();   
+            return tune.ToObject<TTune>();
         } else {
             return null;
         }

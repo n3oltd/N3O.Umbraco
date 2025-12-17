@@ -29,16 +29,16 @@ public class PlatformsContentFinder : IContentFinder {
         if (foundPlatformsPage.HasValue(x => x.RedirectUrl)) {
             _httpContextAccessor.HttpContext?.Response.Redirect(foundPlatformsPage.RedirectUrl, permanent: true);
         } else if (foundPlatformsPage.HasValue(x => x.Kind)) {
-            if (foundPlatformsPage.Kind == PublishedFileKinds.Campaign) {
+            if (foundPlatformsPage.Kind == PublishedFileKinds.CampaignPage) {
                 request.SetPublishedContent(_contentCache.Special(PlatformsSpecialPages.Campaign));
 
                 found = true;
-            } else if (foundPlatformsPage.Kind == PublishedFileKinds.Crowdfunder) {
+            } else if (foundPlatformsPage.Kind == PublishedFileKinds.CrowdfunderPage) {
                 request.SetPublishedContent(_contentCache.Special(PlatformsSpecialPages.Crowdfunder));
 
                 found = true;
             }
-            else if (foundPlatformsPage.Kind == PublishedFileKinds.Offering) {
+            else if (foundPlatformsPage.Kind == PublishedFileKinds.OfferingPage) {
                 request.SetPublishedContent(_contentCache.Special(PlatformsSpecialPages.Offering));
 
                 found = true;

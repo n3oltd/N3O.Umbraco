@@ -12,7 +12,7 @@ public static class ContentPathHelper {
             
             return ids.ContainsAny(pathIds.Select(int.Parse));
         } else {
-            return false;   
+            return false;
         }
     }
 }

@@ -87,8 +87,7 @@ public class CdnClient : ICdnClient {
 
         return res;
     }
-
-
+    
     public string GetPublishedContentUrl(PublishedFileKind kind, string path) {
         return GetPublishedContentUrl(GetPublishedPath(kind, path));
     }

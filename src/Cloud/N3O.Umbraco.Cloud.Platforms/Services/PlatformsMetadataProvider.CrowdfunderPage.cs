@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Cloud.Platforms;
 
-public class PlatformsCampaignMetadataProvider : PlatformsMetadataProvider {
-    public PlatformsCampaignMetadataProvider(IPlatformsPageAccessor platformsPageAccessor) 
+public class PlatformsCrowdfunderPageMetadataProvider : PlatformsMetadataProvider {
+    public PlatformsCrowdfunderPageMetadataProvider(IPlatformsPageAccessor platformsPageAccessor) 
         : base(platformsPageAccessor) { }
     
-    protected override PublishedFileKind Kind => PublishedFileKinds.Campaign;
+    protected override PublishedFileKind Kind => PublishedFileKinds.CrowdfunderPage;
     
     protected override Task<IEnumerable<MetadataEntry>> GetEntriesAsync(PlatformsPage platformsPage) {
         return Task.FromResult<IEnumerable<MetadataEntry>>([]);

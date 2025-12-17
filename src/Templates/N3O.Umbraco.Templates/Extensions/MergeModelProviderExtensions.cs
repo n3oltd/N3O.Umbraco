@@ -16,7 +16,7 @@ public static class MergeModelProviderExtensions {
 
             foreach (var provider in mergeModelProviders.ApplyAttributeOrdering()) {
                 if (await provider.IsProviderForAsync(content)) {
-                    mergeModels[provider.Key.Camelize()] = await provider.GetAsync(content);   
+                    mergeModels[provider.Key.Camelize()] = await provider.GetAsync(content);
                 }
             }
 

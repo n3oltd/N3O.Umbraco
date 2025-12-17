@@ -1,6 +1,7 @@
 using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Platforms.Models;
 using N3O.Umbraco.Metadata;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -25,7 +26,7 @@ public abstract class PlatformsMetadataProvider : IMetadataProvider {
         
         var entries = new List<MetadataEntry>();
         
-        entries.Add(new MetadataEntry(foundPlatformsPage.Kind.MetaTagName, foundPlatformsPage.Id.ToString("D")));
+        entries.Add(GetMetadataEntry(foundPlatformsPage.Kind, foundPlatformsPage.Id));
         
         entries.AddRange(await GetEntriesAsync(foundPlatformsPage));
 
@@ -35,4 +36,8 @@ public abstract class PlatformsMetadataProvider : IMetadataProvider {
     protected abstract PublishedFileKind Kind { get; }
     
     protected abstract Task<IEnumerable<MetadataEntry>> GetEntriesAsync(PlatformsPage platformsPage);
+
+    protected MetadataEntry GetMetadataEntry(PublishedFileKind kind, Guid id) {
+        return new MetadataEntry(kind.MetaTagName, id.ToString("D"));
+    }
 }

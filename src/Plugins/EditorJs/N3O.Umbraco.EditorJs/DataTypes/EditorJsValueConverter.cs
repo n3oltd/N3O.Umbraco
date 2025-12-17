@@ -37,7 +37,7 @@ public class EditorJsValueConverter : PropertyValueConverterBase {
         if (source is string strValue) {
             return strValue;
         } else {
-            return null;   
+            return null;
         }
     }
 

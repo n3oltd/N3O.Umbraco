@@ -55,7 +55,7 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
             } while (currentPath.HasValue());
 
             return new FoundPlatformsPage(null,
-                                          SpecialContentPathParser.GetPath(_contentCache, platformsPageRoute.Parent));   
+                                          SpecialContentPathParser.GetPath(_contentCache, platformsPageRoute.Parent));
         }
         
         return null;

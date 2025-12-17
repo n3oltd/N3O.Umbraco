@@ -22,7 +22,7 @@ public class OurEventProcessor : ISentryEventProcessor {
             
             foreach (var (key, value) in logEnricher.GetTags()) {
                 sentryEvent.Contexts.Add(key, value);
-            }   
+            }
         }
         
         return sentryEvent;

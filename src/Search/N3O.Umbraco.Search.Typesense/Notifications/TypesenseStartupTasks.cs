@@ -77,7 +77,7 @@ public class TypesenseStartupTasks : INotificationAsyncHandler<UmbracoApplicatio
 
     private void EnqueueIndexing(CollectionInfo collection) {
         foreach (var contentType in collection.ContentTypeAliases.OrEmpty()) {
-            _backgroundJob.EnqueueCommand<IndexContentsOfTypeCommand>(m => m.Add<ContentType>(contentType));   
+            _backgroundJob.EnqueueCommand<IndexContentsOfTypeCommand>(m => m.Add<ContentType>(contentType));
         }
     }
     

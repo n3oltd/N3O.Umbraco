@@ -87,7 +87,7 @@ public class BlockPreviewBackofficeController : BackofficeAuthorizedApiControlle
             }
             
             markup = markup.CleanUpMarkupForPreview();
-        }  catch (BlockPreviewException ex) {
+        } catch (BlockPreviewException ex) {
             markup = ex.Markup;
         } catch (Exception ex) {
             var blockPreviewException = new BlockPreviewErrorException(ex.Message);

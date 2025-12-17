@@ -63,7 +63,7 @@ public abstract class ElementPreviewTagGenerator : PreviewTagGenerator {
             
             publishedDonationForm.Offering.ShortDescription = _markupEngine.RenderHtml(publishedDonationForm.Offering.ShortDescription).IfNotNull(x => new HtmlEncodedString(x.ToString())).ToHtmlString();
             publishedDonationForm.Offering.LongDescription = _markupEngine.RenderHtml(publishedDonationForm.Offering.LongDescription).IfNotNull(x => new HtmlEncodedString(x.ToString())).ToHtmlString();
-        }  else {
+        } else {
             var defaultCampaign = _contentLocator.Single<PlatformsContent>().Campaigns.First();
             
             publishedDonationForm.Offering = _mapper.Map<OfferingContent, PublishedOffering>(defaultCampaign.DefaultOffering);

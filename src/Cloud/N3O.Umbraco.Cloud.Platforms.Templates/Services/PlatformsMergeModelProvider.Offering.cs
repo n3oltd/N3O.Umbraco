@@ -6,5 +6,5 @@ public class OfferingPlatformsMergeModelProvider : PlatformsMergeModelProvider {
     public OfferingPlatformsMergeModelProvider(IPlatformsPageAccessor platformsPageAccessor)
         : base(platformsPageAccessor) { }
     
-    protected override PublishedFileKind Kind => PublishedFileKinds.Offering;
+    protected override PublishedFileKind Kind => PublishedFileKinds.OfferingPage;
 }

@@ -96,7 +96,7 @@ public class PageController : RenderController {
         foreach (var filter in _contentRenderabilityFilters) {
             if (filter.IsFilterFor(CurrentPage)) {
                 if (await filter.CanRenderAsync(CurrentPage) == false) {
-                    return false;   
+                    return false;
                 }
             }
         }

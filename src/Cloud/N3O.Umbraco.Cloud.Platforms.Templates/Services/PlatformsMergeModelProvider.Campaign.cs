@@ -6,5 +6,5 @@ public class CampaignPlatformsMergeModelProvider : PlatformsMergeModelProvider {
     public CampaignPlatformsMergeModelProvider(IPlatformsPageAccessor platformsPageAccessor)
         : base(platformsPageAccessor) { }
     
-    protected override PublishedFileKind Kind => PublishedFileKinds.Campaign;
+    protected override PublishedFileKind Kind => PublishedFileKinds.CampaignPage;
 }
