@@ -15,7 +15,8 @@ public interface ICdnClient {
     Task<(Guid, PublishedFileKind, IReadOnlyDictionary<string, object>)> DownloadPublishedContentAsync(string publishedPath,
                                                                                                        CancellationToken cancellationToken = default);
     
-    Task<(Guid, PublishedFileKind, IReadOnlyDictionary<string, object>)> DownloadPublishedPageAsync(string path, 
+    Task<(Guid, PublishedFileKind, IReadOnlyDictionary<string, object>)> DownloadPublishedPageAsync(PublishedFileKind kind,
+                                                                                                    string path, 
                                                                                                     CancellationToken cancellationToken = default);
     
     string GetPublishedContentUrl(PublishedFileKind kind, string path);
