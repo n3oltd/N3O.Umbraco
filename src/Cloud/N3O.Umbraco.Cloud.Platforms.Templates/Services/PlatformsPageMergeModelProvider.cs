@@ -7,10 +7,10 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Cloud.Platforms.Templates;
 
-public abstract class PlatformsMergeModelProvider : MergeModelProvider<IReadOnlyDictionary<string, object>> {
+public abstract class PlatformsPageMergeModelProvider : MergeModelProvider<IReadOnlyDictionary<string, object>> {
     private readonly IPlatformsPageAccessor _platformsPageAccessor;
 
-    protected PlatformsMergeModelProvider(IPlatformsPageAccessor platformsPageAccessor) {
+    protected PlatformsPageMergeModelProvider(IPlatformsPageAccessor platformsPageAccessor) {
         _platformsPageAccessor = platformsPageAccessor;
     }
 
