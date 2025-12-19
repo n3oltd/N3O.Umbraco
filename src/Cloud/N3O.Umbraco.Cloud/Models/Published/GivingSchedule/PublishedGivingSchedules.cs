@@ -3,5 +3,5 @@
 namespace N3O.Umbraco.Cloud.Models;
 
 public class PublishedGivingSchedules {
-    public IEnumerable<PublishedGivingSchedule> GivingSchedules { get; set; }
+    public IEnumerable<PublishedGivingSchedule> Schedules { get; set; }
 }

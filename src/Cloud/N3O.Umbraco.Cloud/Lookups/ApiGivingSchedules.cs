@@ -25,7 +25,7 @@ public class ApiGivingSchedules : ApiLookupsCollection<GivingSchedule> {
 
         var givingSchedules = new List<GivingSchedule>();
 
-        foreach (var publishedGivingSchedule in publishedGivingSchedules.GivingSchedules) {
+        foreach (var publishedGivingSchedule in publishedGivingSchedules.Schedules) {
             var givingSchedule = new GivingSchedule(publishedGivingSchedule.Id, publishedGivingSchedule.Name, null);
             
             givingSchedules.Add(givingSchedule);
