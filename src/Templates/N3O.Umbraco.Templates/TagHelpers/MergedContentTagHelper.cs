@@ -19,9 +19,8 @@ public class MergedContentTagHelper : TagHelper {
 
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output) {
         var tagHelperContent = output.IsContentModified ? output.Content : await output.GetChildContentAsync();
-        var htmlContent = new StringHtmlContent(tagHelperContent.GetContent());
         var mergeModels = Model.MergeModels();
-        var mergedHtmlContent = new MergedHtmlContent(_templateEngine, htmlContent, mergeModels);
+        var mergedHtmlContent = new MergedHtmlContent(_templateEngine, tagHelperContent, mergeModels);
 
         output.TagName = null;
         output.Content.SetHtmlContent(mergedHtmlContent);

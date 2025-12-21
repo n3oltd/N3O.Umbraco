@@ -22,7 +22,7 @@ public class MergeModelsPageModule : IPageModule {
     public async Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
         var mergeModels = await _mergeModelProviders.GetMergeModelsAsync(page, _mergeModelsCache);
         
-        return Task.FromResult<object>(mergeModels);
+        return mergeModels;
     }
 
     public string Key => TemplateConstants.PageModuleKeys.MergeModels;

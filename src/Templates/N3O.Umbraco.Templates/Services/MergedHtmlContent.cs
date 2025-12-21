@@ -25,7 +25,7 @@ public class MergedHtmlContent : IHtmlContent {
             var markup = stringWriter.ToString();
             var html = _templateEngine.Render(markup, _mergeModels);
             
-            writer.WriteAsync(html);
+            writer.Write(html);
         }
     }
 }
