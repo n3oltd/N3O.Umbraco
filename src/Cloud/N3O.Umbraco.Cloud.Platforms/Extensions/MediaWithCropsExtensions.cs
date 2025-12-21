@@ -2,8 +2,10 @@
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Media;
 using System;
+using System.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using MediaConstants = Umbraco.Cms.Core.Constants.Conventions.Media;
 
 namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 
@@ -17,12 +19,12 @@ public static class MediaWithCropsExtensions {
         req.Main.Crop = new ImageCropReq();
         
         req.Main.Crop.BottomLeft = new PointReq();
-        req.Main.Crop.BottomLeft.X = (int?) media.LocalCrops.GetCrop(null)?.Coordinates?.X1;
-        req.Main.Crop.BottomLeft.X = (int?) media.LocalCrops.GetCrop(null)?.Coordinates?.X2;
+        req.Main.Crop.BottomLeft.X = 0;
+        req.Main.Crop.BottomLeft.Y = ((int) media.Properties.Single(x => x.Alias == MediaConstants.Height).GetValue()) - 1;
         
         req.Main.Crop.TopRight = new PointReq();
-        req.Main.Crop.TopRight.X = (int?) media.LocalCrops.GetCrop(null)?.Coordinates?.Y1;
-        req.Main.Crop.TopRight.X = (int?) media.LocalCrops.GetCrop(null)?.Coordinates?.Y2;
+        req.Main.Crop.TopRight.X = ((int) media.Properties.Single(x => x.Alias == MediaConstants.Width).GetValue()) - 1;
+        req.Main.Crop.TopRight.Y = 0;
 
         return req;
     }
