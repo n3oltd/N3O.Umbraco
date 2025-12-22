@@ -21,29 +21,15 @@ public partial class ElementDonationFormsStateReqMapping {
                                        IFundDimensionValues fundDimensionValues,
                                        IReadOnlyDictionary<string, string> tags) {
         var currency = _lookups.GetAll<Currency>().Single(x => x.IsBaseCurrency).Code.ToEnum<PlatformsCurrency>();
-
-        var publishedCampaign = _cdnClient.DownloadPublishedContentAsync<PublishedCampaign>(PublishedFileKinds.Campaign,
-                                                                                            $"{campaign.Key}.json",
-                                                                                            JsonSerializers.Simple)
-                                          .GetAwaiter().GetResult();
         
         var cartItem = new CartItemReq();
         cartItem.Id = Guid.NewGuid().ToString();
         cartItem.Type = CartItemType.NewDonation;
         cartItem.Currency = currency;
         
-        cartItem.PlatformsContribution = new PlatformsContributionInfoReq();
-        cartItem.Id = Guid.NewGuid().ToString();
-        cartItem.PlatformsContribution.Campaign = new CampaignInfoReq();
-        cartItem.PlatformsContribution.Campaign.Id = campaign.Key.ToString();
-        cartItem.PlatformsContribution.Campaign.Reference = publishedCampaign.Reference;
-        
-        cartItem.PlatformsContribution.Offering = new OfferingInfoReq();
-        cartItem.PlatformsContribution.Offering.Id = offering.Key.ToString();
-        
         cartItem.NewDonation = new NewDonationReq();
 
-        var allocation = GetAllocationIntent(offering, fundDimensionValues, currency, cartItem);
+        var allocation = GetAllocationIntent(campaign, offering, fundDimensionValues, currency);
 
         if (offering.SuggestedGiftType == GiftTypes.OneTime) {
             cartItem.NewDonation = new NewDonationReq();
@@ -62,13 +48,13 @@ public partial class ElementDonationFormsStateReqMapping {
         return cartItem;
     }
 
-    private AllocationIntentReq GetAllocationIntent(OfferingContent offering,
-                                       IFundDimensionValues fundDimensionValues,
-                                       PlatformsCurrency? currency,
-                                       CartItemReq cartItem) {
+    private AllocationIntentReq GetAllocationIntent(CampaignContent campaign,
+                                                    OfferingContent offering,
+                                                    IFundDimensionValues fundDimensionValues,
+                                                    PlatformsCurrency? currency) {
         var allocationIntent = new AllocationIntentReq();
         allocationIntent.Type = offering.Type.ToEnum<AllocationType>();
-        allocationIntent.PlatformsContribution = cartItem.PlatformsContribution;
+        allocationIntent.PlatformsContribution = GetPlatformsContributionInfoReq(campaign, offering);
         
         allocationIntent.FundDimensions = new FundDimensionValuesReq();
         allocationIntent.FundDimensions.Dimension1 = fundDimensionValues.Dimension1?.Name;
@@ -92,5 +78,24 @@ public partial class ElementDonationFormsStateReqMapping {
         }
 
         return allocationIntent;
+    }
+
+    private PlatformsContributionInfoReq GetPlatformsContributionInfoReq(CampaignContent campaign,
+                                                                         OfferingContent offering) {
+        var publishedCampaign = _cdnClient.DownloadPublishedContentAsync<PublishedCampaign>(PublishedFileKinds.Campaign,
+                                                                                            $"{campaign.Key}.json",
+                                                                                            JsonSerializers.Simple)
+                                          .GetAwaiter().GetResult();
+        
+       var platformsContribution = new PlatformsContributionInfoReq();
+       platformsContribution.ContributionId = Guid.NewGuid().ToString();
+       platformsContribution.Campaign = new CampaignInfoReq();
+       platformsContribution.Campaign.Id = campaign.Key.ToString();
+       platformsContribution.Campaign.Reference = publishedCampaign.Reference;
+        
+       platformsContribution.Offering = new OfferingInfoReq();
+       platformsContribution.Offering.Id = offering.Key.ToString();
+
+       return platformsContribution;
     }
 }
