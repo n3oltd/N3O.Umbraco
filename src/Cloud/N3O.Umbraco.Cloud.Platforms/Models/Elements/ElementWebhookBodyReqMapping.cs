@@ -4,6 +4,7 @@ using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
+using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 using ElementType = N3O.Umbraco.Cloud.Platforms.Clients.ElementType;
 using DonationButtonAction = N3O.Umbraco.Cloud.Platforms.Clients.DonationButtonAction;
@@ -23,8 +24,8 @@ public class ElementWebhookBodyReqMapping : IMapDefinition {
     
     // Umbraco.Code.MapAll
     private void Map(ElementContent src, ElementWebhookBodyReq dest, MapperContext ctx) {
-        dest.Id = src.Key.ToString();
         dest.Action = WebhookSyncAction.AddOrUpdate;
+        dest.Id = src.Key.ToString();
 
         dest.AddOrUpdate = new CreateElementReq();
         dest.AddOrUpdate.Name = src.Content().Name;
@@ -40,6 +41,10 @@ public class ElementWebhookBodyReqMapping : IMapDefinition {
             dest.AddOrUpdate.DonationForm.FormState = ctx.Map<ElementContent, DonationFormStateReq>(src);
         } else {
             throw UnrecognisedValueException.For(src.Type);
+        }
+        
+        if (src.Content().IsPublished()) {
+            dest.AddOrUpdate.Activate = true;
         }
     }
 }

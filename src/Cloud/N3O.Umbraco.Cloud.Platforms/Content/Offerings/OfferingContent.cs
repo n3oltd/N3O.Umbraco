@@ -49,6 +49,7 @@ public class OfferingContent : UmbracoContent<OfferingContent> {
     public string Name => Content().Name;
     public Guid Key => Content().Key;
 
+    public string Notes => GetValue(x => x.Notes);
     public FundDimension1Value Dimension1 => GetValue(x => x.Dimension1);
     public FundDimension2Value Dimension2 => GetValue(x => x.Dimension2);
     public FundDimension3Value Dimension3 => GetValue(x => x.Dimension3);
