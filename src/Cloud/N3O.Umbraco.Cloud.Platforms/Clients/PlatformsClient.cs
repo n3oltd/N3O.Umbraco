@@ -143,7 +143,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
         public string Id { get; set; }
 
         [Newtonsoft.Json.JsonProperty("reference", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public ReferenceReq Reference { get; set; }
+        public string Reference { get; set; }
 
     }
 
@@ -389,7 +389,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
         public string Id { get; set; }
 
         [Newtonsoft.Json.JsonProperty("reference", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public ReferenceReq Reference { get; set; }
+        public string Reference { get; set; }
 
     }
 
@@ -401,7 +401,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
         public string Id { get; set; }
 
         [Newtonsoft.Json.JsonProperty("reference", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public ReferenceReq Reference { get; set; }
+        public string Reference { get; set; }
 
     }
 
@@ -1132,11 +1132,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class DonationFormOptionsReq
     {
-
-        [Newtonsoft.Json.JsonProperty("suggestedGiftType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public GiftType? SuggestedGiftType { get; set; }
-
+        
         [Newtonsoft.Json.JsonProperty("suggestedAmounts", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<DonationFormSuggestedAmountsReq> SuggestedAmounts { get; set; }
 

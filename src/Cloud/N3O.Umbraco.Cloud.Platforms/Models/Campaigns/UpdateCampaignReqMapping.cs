@@ -40,8 +40,6 @@ public class UpdateCampaignReqMapping : IMapDefinition {
 
         dest.Page = new ContentReq();
         dest.Page.SchemaAlias = nameof(PlatformsSystemSchema.Sys__campaignPage).ToLower();
-        
-        //dest.Tags = src.Tags.ToTagCollectionReq(); TODO Noor
 
         if (src.Content().IsPublished()) {
             dest.Activate = true;

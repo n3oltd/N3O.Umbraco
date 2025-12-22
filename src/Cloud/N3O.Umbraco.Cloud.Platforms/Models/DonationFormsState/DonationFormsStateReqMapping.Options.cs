@@ -17,8 +17,6 @@ public partial class ElementDonationFormsStateReqMapping {
         var recurringSuggestedAmounts = offering.Fund?.RecurringSuggestedAmounts.OrEmpty().ToList();
         
         var options = new DonationFormOptionsReq();
-        
-        options.SuggestedGiftType = offering.SuggestedGiftType.ToEnum<GiftType>();
 
         if (oneTimeSuggestedAmounts.HasAny() || recurringSuggestedAmounts.HasAny()) {
             options.SuggestedAmounts = GetDonationFormSuggestedAmountsReq(ctx,

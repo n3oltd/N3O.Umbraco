@@ -3,6 +3,7 @@ using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
+using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Models;
 using System;
@@ -25,9 +26,6 @@ public partial class ElementDonationFormsStateReqMapping {
                                                                                             $"{campaign.Key}.json",
                                                                                             JsonSerializers.Simple)
                                           .GetAwaiter().GetResult();
-
-        var referenceType = new References.ReferenceType(nameof(ReferenceType.FC), 0);
-        var campaignReference = referenceType.ToReference(publishedCampaign.Reference);
         
         var cartItem = new CartItemReq();
         cartItem.Id = Guid.NewGuid().ToString();
@@ -38,39 +36,23 @@ public partial class ElementDonationFormsStateReqMapping {
         cartItem.Id = Guid.NewGuid().ToString();
         cartItem.PlatformsContribution.Campaign = new CampaignInfoReq();
         cartItem.PlatformsContribution.Campaign.Id = campaign.Key.ToString();
-        cartItem.PlatformsContribution.Campaign.Reference = new ReferenceReq();
-        cartItem.PlatformsContribution.Campaign.Reference.Type = ReferenceType.FC;
-        cartItem.PlatformsContribution.Campaign.Reference.Number = campaignReference.Number;
+        cartItem.PlatformsContribution.Campaign.Reference = publishedCampaign.Reference;
         
         cartItem.PlatformsContribution.Offering = new OfferingInfoReq();
         cartItem.PlatformsContribution.Offering.Id = offering.Key.ToString();
         
         cartItem.NewDonation = new NewDonationReq();
-        
-        cartItem.NewDonation.Allocation = new AllocationIntentReq();
-        cartItem.NewDonation.Allocation.Type = offering.Type.ToEnum<AllocationType>();
-        cartItem.NewDonation.Allocation.PlatformsContribution = cartItem.PlatformsContribution;
-        
-        cartItem.NewDonation.Allocation.FundDimensions = new FundDimensionValuesReq();
-        cartItem.NewDonation.Allocation.FundDimensions.Dimension1 = fundDimensionValues.Dimension1?.Name;
-        cartItem.NewDonation.Allocation.FundDimensions.Dimension2 = fundDimensionValues.Dimension2?.Name;
-        cartItem.NewDonation.Allocation.FundDimensions.Dimension3 = fundDimensionValues.Dimension3?.Name;
-        cartItem.NewDonation.Allocation.FundDimensions.Dimension4 = fundDimensionValues.Dimension4?.Name;
-        
-        
-        cartItem.NewDonation.Allocation.Value = new MoneyReq(); // TODO remove
-        cartItem.NewDonation.Allocation.Value.Amount = 0d;
-        cartItem.NewDonation.Allocation.Value.Currency = currency;
 
-        if (offering.Type == OfferingTypes.Fund) {
-            cartItem.NewDonation.Allocation.Fund = new FundIntentReq();
-            cartItem.NewDonation.Allocation.Fund.DonationItem = offering.Fund.DonationItem.Name;
-        } else if (offering.Type == OfferingTypes.Feedback) {
-            cartItem.NewDonation.Allocation.Feedback = new FeedbackIntentReq();
-            cartItem.NewDonation.Allocation.Feedback.Scheme = offering.Feedback.Scheme.Name;
-        } else if (offering.Type == OfferingTypes.Sponsorship) {
-            cartItem.NewDonation.Allocation.Sponsorship = new SponsorshipIntentReq();
-            cartItem.NewDonation.Allocation.Sponsorship.Scheme = offering.Sponsorship.Scheme.Name;
+        var allocation = GetAllocationIntent(offering, fundDimensionValues, currency, cartItem);
+
+        if (offering.SuggestedGiftType == GiftTypes.OneTime) {
+            cartItem.NewDonation = new NewDonationReq();
+            cartItem.NewDonation.Allocation = allocation;
+        } else if (offering.SuggestedGiftType == GiftTypes.Recurring) {
+            cartItem.NewRegularGiving = new NewRegularGivingWithOptionsReq();
+            cartItem.NewRegularGiving.Allocation = allocation;
+        } else {
+            throw UnrecognisedValueException.For(offering.SuggestedGiftType);
         }
 
         if (tags.HasAny()) {
@@ -78,5 +60,37 @@ public partial class ElementDonationFormsStateReqMapping {
         }
 
         return cartItem;
+    }
+
+    private AllocationIntentReq GetAllocationIntent(OfferingContent offering,
+                                       IFundDimensionValues fundDimensionValues,
+                                       PlatformsCurrency? currency,
+                                       CartItemReq cartItem) {
+        var allocationIntent = new AllocationIntentReq();
+        allocationIntent.Type = offering.Type.ToEnum<AllocationType>();
+        allocationIntent.PlatformsContribution = cartItem.PlatformsContribution;
+        
+        allocationIntent.FundDimensions = new FundDimensionValuesReq();
+        allocationIntent.FundDimensions.Dimension1 = fundDimensionValues.Dimension1?.Name;
+        allocationIntent.FundDimensions.Dimension2 = fundDimensionValues.Dimension2?.Name;
+        allocationIntent.FundDimensions.Dimension3 = fundDimensionValues.Dimension3?.Name;
+        allocationIntent.FundDimensions.Dimension4 = fundDimensionValues.Dimension4?.Name;
+        
+        allocationIntent.Value = new MoneyReq();
+        allocationIntent.Value.Amount = 0d;
+        allocationIntent.Value.Currency = currency;
+
+        if (offering.Type == OfferingTypes.Fund) {
+            allocationIntent.Fund = new FundIntentReq();
+            allocationIntent.Fund.DonationItem = offering.Fund.DonationItem.Name;
+        } else if (offering.Type == OfferingTypes.Feedback) {
+            allocationIntent.Feedback = new FeedbackIntentReq();
+            allocationIntent.Feedback.Scheme = offering.Feedback.Scheme.Name;
+        } else if (offering.Type == OfferingTypes.Sponsorship) {
+            allocationIntent.Sponsorship = new SponsorshipIntentReq();
+            allocationIntent.Sponsorship.Scheme = offering.Sponsorship.Scheme.Name;
+        }
+
+        return allocationIntent;
     }
 }
