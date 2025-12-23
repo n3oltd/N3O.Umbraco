@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Models;
+﻿/*using N3O.Umbraco.Cloud.Platforms.Models;
 using N3O.Umbraco.Cloud.Platforms.Queries;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Mediator;
@@ -25,4 +25,4 @@ public class GetPreviewHtmlHandler : IRequestHandler<GetPreviewHtmlQuery, Dictio
 
         return res;
     }
-}
+}*/
