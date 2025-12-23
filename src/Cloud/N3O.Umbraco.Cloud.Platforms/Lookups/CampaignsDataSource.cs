@@ -1,0 +1,124 @@
+﻿using N3O.Umbraco.Cloud.Lookups;
+using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Cloud.Platforms.Content;
+using N3O.Umbraco.Content;
+using N3O.Umbraco.Extensions;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.PropertyEditors;
+using Umbraco.Community.Contentment.DataEditors;
+using Umbraco.Extensions;
+
+namespace N3O.Umbraco.Cloud.Platforms.Lookups;
+
+public class CampaignsDataSource : IDataPickerSource, IDataSourceValueConverter {
+    private readonly ICdnClient _cdnClient;
+    private readonly IContentLocator _contentLocator;
+    
+    public CampaignsDataSource(ICdnClient cdnClient,
+                               IContentLocator contentLocator) {
+        _cdnClient = cdnClient;
+        _contentLocator = contentLocator;
+    }
+
+    public string Name => "Platform Campaigns";
+    public string Icon => "icon-item-arrangement";
+    public string Group => "N3O";
+    public string Description => "A list of Platform campaigns";
+    public Dictionary<string, object> DefaultValues => default;
+    public IEnumerable<ConfigurationField> Fields => default;
+    public OverlaySize OverlaySize => OverlaySize.Small;
+    
+    public Task<IEnumerable<DataListItem>> GetItemsAsync(Dictionary<string, object> config,
+                                                         IEnumerable<string> values) {
+        if (values.Any()) {
+            var allCampaigns = _contentLocator.All(x => x.ContentType.CompositionAliases.Contains(AliasHelper<CampaignContent>.ContentTypeAlias()));
+            
+            var items = new List<DataListItem>();
+            
+            foreach (var value in values) {
+                var publishedCampaign = JsonConvert.DeserializeObject<PublishedCampaign>(value);
+                var campaignContent = allCampaigns.Single(x => x.Key == Guid.Parse(publishedCampaign.Id));
+
+                var dataListItem = ToDataListItem(publishedCampaign, campaignContent);
+                
+                items.Add(dataListItem);
+            }
+            
+            return Task.FromResult<IEnumerable<DataListItem>>(items);
+        }
+
+        return Task.FromResult(Enumerable.Empty<DataListItem>());
+    }
+
+    public async Task<PagedResult<DataListItem>> SearchAsync(Dictionary<string, object> config,
+                                                             int pageNumber = 1,
+                                                             int pageSize = 12,
+                                                             string query = "") {
+        var allCampaigns = _contentLocator.All(x => x.ContentType.CompositionAliases.Contains(AliasHelper<CampaignContent>.ContentTypeAlias()));
+        
+        var publishedCampaignsTasks = new List<Task<PublishedCampaign>>();
+        
+        allCampaigns.Do(x => {
+            var task = _cdnClient.DownloadPublishedContentAsync<PublishedCampaign>(PublishedFileKinds.Campaign,
+                                                                                   $"{x.Key}.json",
+                                                                                   JsonSerializers.Simple);
+            
+            publishedCampaignsTasks.Add(task);
+        });
+        
+        var publishedCampaigns = await Task.WhenAll(publishedCampaignsTasks);
+        
+        var totalRecords = -1L;
+        var pageIndex = pageNumber - 1;
+        var items = publishedCampaigns.ExceptNull().ToList();
+
+        if (query.HasValue()) {
+            items = items.Where(x => x.Name.InvariantContains(query)).ToList();
+        }
+
+        if (items.Any()) {
+            var offset = pageIndex * pageSize;
+            
+            var results = new PagedResult<DataListItem>(totalRecords, pageNumber, pageSize);
+            
+            var resultItems = new List<DataListItem>();
+            
+            foreach (var item in items.Skip(offset).Take(pageSize)) {
+                var campaignContent = allCampaigns.Single(x => x.Key == Guid.Parse(item.Id));
+
+                var dataListItem = ToDataListItem(item, campaignContent);
+                
+                resultItems.Add(dataListItem);
+            }
+            
+            results.Items = resultItems;
+
+            return results;
+        }
+
+        return new PagedResult<DataListItem>(totalRecords, pageNumber, pageSize);
+    }
+    
+    public Type GetValueType(Dictionary<string, object> config) => typeof(PublishedCampaign);
+
+    public object ConvertValue(Type type, string value) {
+        return JsonConvert.DeserializeObject<PublishedCampaign>(value);
+    }
+    
+    private DataListItem ToDataListItem(PublishedCampaign publishedCampaign, IPublishedContent campaignContent) {
+        var dataListItem = new DataListItem();
+        dataListItem.Name = campaignContent.Name;
+        dataListItem.Description = campaignContent.Name;
+        dataListItem.Icon = publishedCampaign.Icon.Markup;
+        dataListItem.Value = JsonConvert.SerializeObject(publishedCampaign);
+        dataListItem.Group = "N3O";
+
+        return dataListItem;
+    }
+}
