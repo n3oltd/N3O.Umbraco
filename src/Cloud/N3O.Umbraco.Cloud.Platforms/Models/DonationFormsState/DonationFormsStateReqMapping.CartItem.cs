@@ -26,19 +26,15 @@ public partial class ElementDonationFormsStateReqMapping {
         cartItem.Id = Guid.NewGuid().ToString();
         cartItem.Type = CartItemType.NewDonation;
         cartItem.Currency = currency;
-        
-        cartItem.NewDonation = new NewDonationReq();
 
         var allocation = GetAllocationIntent(campaign, offering, fundDimensionValues, currency);
 
-        if (offering.SuggestedGiftType == GiftTypes.OneTime) {
-            cartItem.NewDonation = new NewDonationReq();
-            cartItem.NewDonation.Allocation = allocation;
-        } else if (offering.SuggestedGiftType == GiftTypes.Recurring) {
+        if (offering.SuggestedGiftType == GiftTypes.Recurring) {
             cartItem.NewRegularGiving = new NewRegularGivingWithOptionsReq();
             cartItem.NewRegularGiving.Allocation = allocation;
         } else {
-            throw UnrecognisedValueException.For(offering.SuggestedGiftType);
+            cartItem.NewDonation = new NewDonationReq();
+            cartItem.NewDonation.Allocation = allocation;
         }
 
         if (tags.HasAny()) {
