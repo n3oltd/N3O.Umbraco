@@ -57,8 +57,12 @@ public class ElementSending : INotificationAsyncHandler<SendingContentNotificati
         var type = StaticLookups.GetAll<ElementType>().Single(x => x.ContentTypeAlias.EqualsInvariant(contentTypeAlias));
             
         var tag = new TagBuilder(type.TagName);
-        
-        tag.Attributes.Add("form-id", contentId.ToString());
+
+        if (type == ElementTypes.DonationButton) {
+            tag.Attributes.Add("element-id", contentId.ToString());
+        } else if (type == ElementTypes.DonationForm) {
+            tag.Attributes.Add("form-id", contentId.ToString());
+        }
         
         var embedTab = variant.Tabs.Single(x => x.Alias.EqualsInvariant("embed"));
         var embedProperty = GetProperty(embedTab, AliasHelper<ElementContent>.PropertyAlias(x => x.EmbedCode));
