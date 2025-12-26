@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Localization;
@@ -12,7 +13,7 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.TagHelpers;
 
-[HtmlTargetElement("n3o-theme-text")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}theme-text")]
 public class ThemeTextTagHelper : TagHelper {
     private readonly IJsonProvider _jsonProvider;
     private readonly IStringLocalizer _stringLocalizer;

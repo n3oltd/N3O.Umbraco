@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using N3O.Umbraco.Analytics.Extensions;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Pages;
 using System;
 
 namespace N3O.Umbraco.Analytics.TagHelpers;
 
-[HtmlTargetElement("n3o-google-tag-manager")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}google-tag-manager")]
 public class GoogleTagManagerTagHelper : TagHelper {
     [HtmlAttributeName("model")]
     public IPageViewModel Model { get; set; }

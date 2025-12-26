@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Crowdfunding.Content;
 using N3O.Umbraco.Extensions;
@@ -8,7 +9,7 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Crowdfunding.TagHelpers;
 
-[HtmlTargetElement("n3o-crowdfunding-css")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}crowdfunding-css")]
 public class CrowdfundingCssTagHelper : TagHelper {
     private readonly IContentCache _contentCache;
 

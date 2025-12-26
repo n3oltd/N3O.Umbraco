@@ -1,5 +1,6 @@
 ﻿using Humanizer;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Crowdfunding.Models;
 using N3O.Umbraco.Data.Lookups;
 
@@ -7,7 +8,7 @@ namespace N3O.Umbraco.Crowdfunding.TagHelpers;
 
 [HtmlTargetElement(Attributes = EditorAttributeName)]
 public class EditorTagHelper : TagHelper {
-    private const string EditorAttributeName = "n3o-editor";
+    private const string EditorAttributeName = $"{Prefixes.TagHelpers}editor";
     
     [HtmlAttributeName(EditorAttributeName)]
     public (ICrowdfunderViewModel Model, PropertyType Type, string Alias) Parameters { get; set; }

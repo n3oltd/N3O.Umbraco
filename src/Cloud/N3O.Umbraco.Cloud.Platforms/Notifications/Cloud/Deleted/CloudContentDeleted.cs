@@ -1,5 +1,4 @@
 ﻿using N3O.Umbraco.Scheduler;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;

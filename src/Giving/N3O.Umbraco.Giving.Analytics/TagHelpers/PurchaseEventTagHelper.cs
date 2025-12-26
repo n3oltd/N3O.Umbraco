@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using N3O.Umbraco.Analytics.TagHelpers;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Giving.Analytics.Extensions;
 using N3O.Umbraco.Giving.Checkout;
 using N3O.Umbraco.Json;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Giving.Analytics.TagHelpers;
 
-[HtmlTargetElement("n3o-purchase-event")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}purchase-event")]
 public class PurchaseEventTagHelper : EventTagHelper {
     private readonly ICheckoutAccessor _checkoutAccessor;
 

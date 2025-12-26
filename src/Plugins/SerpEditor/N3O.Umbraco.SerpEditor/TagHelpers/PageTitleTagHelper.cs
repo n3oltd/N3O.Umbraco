@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Pages;
 using N3O.Umbraco.SerpEditor.Extensions;
 using System.Web;
 
 namespace N3O.Umbraco.SerpEditor.TagHelpers;
 
-[HtmlTargetElement("n3o-page-title")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}page-title")]
 public class PageTitleTagHelper : TagHelper {
     [HtmlAttributeName("model")]
     public IPageViewModel Model { get; set; }

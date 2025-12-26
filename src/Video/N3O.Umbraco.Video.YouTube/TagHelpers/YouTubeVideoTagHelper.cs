@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Video.YouTube.Extensions;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Video.YouTube.TagHelpers;
 
-[HtmlTargetElement("n3o-youtube-video")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}youtube-video")]
 public class YouTubeVideoTagHelper : TagHelper {
     [HtmlAttributeName("video-url")]
     public string VideoUrl { get; set; }

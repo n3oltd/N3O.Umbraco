@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Extensions;
 using System;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Markup.TagHelpers;
 
-[HtmlTargetElement("n3o-markup")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}markup")]
 public class MarkupTagHelper : TagHelper {
     private readonly IMarkupEngine _markupEngine;
 

@@ -1,6 +1,4 @@
 ﻿using N3O.Umbraco.Scheduler;
-using N3O.Umbraco.Scheduler.Extensions;
-using N3O.Umbraco.Webhooks.Commands;
 using N3O.Umbraco.Webhooks.Models;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;

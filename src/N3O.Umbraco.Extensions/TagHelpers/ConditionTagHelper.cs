@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using N3O.Umbraco.Constants;
 
 namespace N3O.Umbraco.TagHelpers;
 
 [HtmlTargetElement(Attributes = ConditionAttributeName)]
 public class ConditionTagHelper : TagHelper {
-    private const string ConditionAttributeName = "n3o-condition";
+    private const string ConditionAttributeName = $"{Prefixes.TagHelpers}condition";
     
     [HtmlAttributeName(ConditionAttributeName)]
     public bool Condition { get; set; }

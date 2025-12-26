@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Pages;
 using System;
 
 namespace N3O.Umbraco.TagHelpers;
 
-[HtmlTargetElement("n3o-structured-data")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}structured-data")]
 public class StructuredDataTagHelper : TagHelper {
     [HtmlAttributeName("model")]
     public IPageViewModel Model { get; set; }

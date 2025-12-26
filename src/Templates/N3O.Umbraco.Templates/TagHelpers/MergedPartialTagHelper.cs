@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using N3O.Umbraco.Constants;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Templates.TagHelpers;
 
-[HtmlTargetElement("n3o-merged-partial")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}merged-partial")]
 public class MergedPartialTagHelper : TagHelper {
     private readonly IMerger _merger;
 

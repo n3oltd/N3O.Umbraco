@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Pages;
 using NodaTime;
 using NodaTime.Text;
@@ -7,7 +8,7 @@ using System;
 
 namespace N3O.Umbraco.TagHelpers;
 
-[HtmlTargetElement("n3o-page-info")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}page-info")]
 public class PageInfoTagHelper : TagHelper {
     private readonly IClock _clock;
     private readonly IWebHostEnvironment _webHostEnvironment;

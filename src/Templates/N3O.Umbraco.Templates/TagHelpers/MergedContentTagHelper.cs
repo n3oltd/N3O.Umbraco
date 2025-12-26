@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Pages;
 using N3O.Umbraco.Templates.Extensions;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Templates.TagHelpers;
 
-[HtmlTargetElement("n3o-merged-content")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}merged-content")]
 public class MergedContentTagHelper : TagHelper {
     private readonly ITemplateEngine _templateEngine;
 

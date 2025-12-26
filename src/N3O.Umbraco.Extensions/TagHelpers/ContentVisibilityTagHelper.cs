@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Pages;
 
 namespace N3O.Umbraco.TagHelpers;
 
-[HtmlTargetElement("n3o-content-visibility")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}content-visibility")]
 public class ContentVisibilityTagHelper : TagHelper {
     private readonly IContentVisibility _contentVisibility;
 

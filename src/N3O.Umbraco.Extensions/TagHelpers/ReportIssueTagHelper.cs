@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Hosting;
+using N3O.Umbraco.Constants;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.TagHelpers;
 
-[HtmlTargetElement("n3o-report-issue")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}report-issue")]
 public class ReportIssueTagHelper : TagHelper {
     private readonly IWebHostEnvironment _webHostEnvironment;
 

@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Extensions;
 
 namespace N3O.Umbraco.TagHelpers;
 
-[HtmlTargetElement("n3o-link-wrapper")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}link-wrapper")]
 public class LinkWrapperTagHelper : TagHelper {
     [HtmlAttributeName("href")]
     public string Href { get; set; }

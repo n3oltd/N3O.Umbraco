@@ -2,11 +2,12 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using N3O.Umbraco.Cloud.Lookups;
+using N3O.Umbraco.Constants;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.TagHelpers;
 
-[HtmlTargetElement("n3o-platforms-js")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}platforms-js")]
 public class PlatformsJsTagHelper : TagHelper {
     private readonly ICloudUrl _cloudUrl;
 

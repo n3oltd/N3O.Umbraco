@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Extensions;
 using System.Threading.Tasks;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Bundling.TagHelpers;
 
-[HtmlTargetElement("n3o-css-bundle")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}css-bundle")]
 public class CssBundleTagHelper : TagHelper {
     private readonly IBundler _bundler;
 

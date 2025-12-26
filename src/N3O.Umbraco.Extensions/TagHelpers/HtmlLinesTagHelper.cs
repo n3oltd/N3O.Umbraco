@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.TagHelpers;
 
-[HtmlTargetElement("n3o-html-lines")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}html-lines")]
 public class HtmlLinesTagHelper : TagHelper {
     [HtmlAttributeName("single")]
     public string Single { get; set; }

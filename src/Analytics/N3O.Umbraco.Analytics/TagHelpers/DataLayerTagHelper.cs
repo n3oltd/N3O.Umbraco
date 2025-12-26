@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using N3O.Umbraco.Analytics.Extensions;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Pages;
 using System;
@@ -9,7 +10,7 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Analytics.TagHelpers;
 
-[HtmlTargetElement("n3o-data-layer")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}data-layer")]
 public class DataLayerTagHelper : TagHelper {
     [HtmlAttributeName("model")]
     public IPageViewModel Model { get; set; }

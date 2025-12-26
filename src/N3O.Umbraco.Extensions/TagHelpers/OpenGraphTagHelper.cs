@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Pages;
 using System;
@@ -7,7 +8,7 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.TagHelpers;
 
-[HtmlTargetElement("n3o-open-graph")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}open-graph")]
 public class OpenGraphTagHelper : TagHelper {
     [HtmlAttributeName("model")]
     public IPageViewModel Model { get; set; }

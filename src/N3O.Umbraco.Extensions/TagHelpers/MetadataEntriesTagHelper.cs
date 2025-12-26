@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Pages;
 using System.Linq;
 
 namespace N3O.Umbraco.TagHelpers;
 
-[HtmlTargetElement("n3o-metadata-entries")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}metadata-entries")]
 public class MetadataEntriesTagHelper : TagHelper {
     [HtmlAttributeName("model")]
     public IPageViewModel Model { get; set; }

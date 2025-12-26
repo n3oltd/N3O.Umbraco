@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using N3O.Umbraco.Analytics.Extensions;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Pages;
 using System;
 
 namespace N3O.Umbraco.Analytics.TagHelpers;
 
-[HtmlTargetElement("n3o-google-analytics-4")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}google-analytics-4")]
 public class GoogleAnalytics4TagHelper : TagHelper {
     [HtmlAttributeName("model")]
     public IPageViewModel Model { get; set; }

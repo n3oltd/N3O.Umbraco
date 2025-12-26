@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using N3O.Umbraco.Constants;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Templates;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.TagHelpers;
 
-[HtmlTargetElement("n3o-style-context")]
+[HtmlTargetElement($"{Prefixes.TagHelpers}style-context")]
 public class StyleContextTagHelper : TagHelper {
     private readonly IStyleContext _styleContext;
 
