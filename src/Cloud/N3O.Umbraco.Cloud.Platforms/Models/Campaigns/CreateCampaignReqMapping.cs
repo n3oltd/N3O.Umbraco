@@ -1,10 +1,10 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using N3O.Umbraco.Cloud.Clients.Platforms;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Extensions;
 using NodaTime.Extensions;
 using Umbraco.Cms.Core.Mapping;
-using CampaignType = N3O.Umbraco.Cloud.Platforms.Clients.CampaignType;
+using CampaignType = N3O.Umbraco.Cloud.Clients.Platforms.CampaignType;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 

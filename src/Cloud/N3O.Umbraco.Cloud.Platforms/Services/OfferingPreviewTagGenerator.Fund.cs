@@ -1,4 +1,4 @@
-﻿/*using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿/*using N3O.Umbraco.Cloud.Clients.Platforms;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
@@ -15,7 +15,7 @@ using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using OfferingType = N3O.Umbraco.Cloud.Platforms.Lookups.OfferingType;
-using PublishedGiftType = N3O.Umbraco.Cloud.Platforms.Clients.GiftType;
+using PublishedGiftType = N3O.Umbraco.Cloud.Clients.Platforms.GiftType;
 
 namespace N3O.Umbraco.Cloud.Platforms;
 

@@ -7,17 +7,18 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Cloud;
 
 public interface ICdnClient {
-    Task<T> DownloadPublishedContentAsync<T>(PublishedFileKind kind,
+    // TODO Swap out string kind for enum
+    Task<T> DownloadPublishedContentAsync<T>(string kind,
                                              string path,
                                              JsonSerializer jsonSerializer,
                                              CancellationToken cancellationToken = default);
     
-    Task<(Guid, PublishedFileKind, IReadOnlyDictionary<string, object>)> DownloadPublishedContentAsync(string publishedPath,
-                                                                                                       CancellationToken cancellationToken = default);
+    Task<(Guid, string, IReadOnlyDictionary<string, object>)> DownloadPublishedContentAsync(string publishedPath,
+                                                                                            CancellationToken cancellationToken = default);
     
-    Task<(Guid, PublishedFileKind, IReadOnlyDictionary<string, object>)> DownloadPublishedPageAsync(PublishedFileKind kind,
-                                                                                                    string path, 
-                                                                                                    CancellationToken cancellationToken = default);
+    Task<(Guid, string, IReadOnlyDictionary<string, object>)> DownloadPublishedPageAsync(string kind,
+                                                                                         string path, 
+                                                                                         CancellationToken cancellationToken = default);
     
-    string GetPublishedContentUrl(PublishedFileKind kind, string path);
+    string GetPublishedContentUrl(string kind, string path);
 }

@@ -1,4 +1,4 @@
-using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Cloud.Clients.Platforms;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using Umbraco.Cms.Core.Mapping;
 

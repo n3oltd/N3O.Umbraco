@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using N3O.Umbraco.Pages;
 using N3O.Umbraco.Templates.Extensions;
 using System.Threading.Tasks;
