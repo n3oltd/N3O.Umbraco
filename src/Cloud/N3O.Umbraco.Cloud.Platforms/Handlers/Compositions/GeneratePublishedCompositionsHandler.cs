@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Cloud.Clients.Templates;
 using N3O.Umbraco.Cloud.Platforms.Commands;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;

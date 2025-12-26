@@ -1,11 +1,11 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using N3O.Umbraco.Cloud.Clients.Platforms;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
-using GiftType = N3O.Umbraco.Cloud.Platforms.Clients.GiftType;
+using GiftType = N3O.Umbraco.Cloud.Clients.Platforms.GiftType;
 using OurGiftType = N3O.Umbraco.Cloud.Platforms.Lookups.GiftType;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;

@@ -1,12 +1,12 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using N3O.Umbraco.Cloud.Clients.Platforms;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using Umbraco.Cms.Core.Mapping;
-using ElementType = N3O.Umbraco.Cloud.Platforms.Clients.ElementType;
-using DonationButtonAction = N3O.Umbraco.Cloud.Platforms.Clients.DonationButtonAction;
+using ElementType = N3O.Umbraco.Cloud.Clients.Platforms.ElementType;
+using DonationButtonAction = N3O.Umbraco.Cloud.Clients.Platforms.DonationButtonAction;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 

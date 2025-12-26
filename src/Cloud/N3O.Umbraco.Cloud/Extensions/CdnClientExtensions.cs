@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Cloud.Lookups;
+﻿using N3O.Umbraco.Cloud.Clients.Connect;
+using N3O.Umbraco.Cloud.Lookups;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,7 +10,7 @@ public static class CdnClientExtensions {
                                                                     SubscriptionFile file,
                                                                     JsonSerializer jsonSerializer,
                                                                     CancellationToken cancellationToken = default) {
-        var content = await cdnClient.DownloadPublishedContentAsync<T>(PublishedFileKinds.Subscription,
+        var content = await cdnClient.DownloadPublishedContentAsync<T>(ConnectPublishedFileKind.Subscription.ToEnumString(),
                                                                        file.Filename,
                                                                        jsonSerializer,
                                                                        cancellationToken);

@@ -3,11 +3,11 @@ using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
-using N3O.Umbraco.Lookups;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,7 +27,7 @@ public class CdnClient : ICdnClient {
         _jsonProvider = jsonProvider;
     }
 
-    public async Task<T> DownloadPublishedContentAsync<T>(PublishedFileKind kind,
+    public async Task<T> DownloadPublishedContentAsync<T>(string kind,
                                                           string path,
                                                           JsonSerializer jsonSerializer,
                                                           CancellationToken cancellationToken = default) {
@@ -42,7 +42,7 @@ public class CdnClient : ICdnClient {
 
                     return Deserialize<T>(json, jsonSerializer);
                 }
-            } catch (HttpRequestException e) when (e.StatusCode == System.Net.HttpStatusCode.NotFound) {
+            } catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.NotFound) {
                 return default;
             }
         });
@@ -50,15 +50,15 @@ public class CdnClient : ICdnClient {
         return res;
     }
     
-    public async Task<(Guid, PublishedFileKind, IReadOnlyDictionary<string, object>)> DownloadPublishedPageAsync(PublishedFileKind kind,
-                                                                                                                 string path,
-                                                                                                                 CancellationToken cancellationToken = default) {
-        var pagePath = $"{kind.Id}/pages/{path.Trim('/')}/index.json";
+    public async Task<(Guid, string, IReadOnlyDictionary<string, object>)> DownloadPublishedPageAsync(string kind,
+                                                                                                      string path,
+                                                                                                      CancellationToken cancellationToken = default) {
+        var pagePath = $"{kind}/pages/{path.Trim('/')}/index.json";
         
         return await DownloadPublishedContentAsync(pagePath, cancellationToken);
     }
 
-    public async Task<(Guid, PublishedFileKind, IReadOnlyDictionary<string, object>)> DownloadPublishedContentAsync(string publishedPath, CancellationToken cancellationToken = default) {
+    public async Task<(Guid, string, IReadOnlyDictionary<string, object>)> DownloadPublishedContentAsync(string publishedPath, CancellationToken cancellationToken = default) {
         var publishedUrl = GetPublishedContentUrl(publishedPath);
 
         var res = await ContentCache.GetOrCreateAsync(GetCacheKey(publishedUrl, typeof(object).FullName), async c => {
@@ -69,8 +69,7 @@ public class CdnClient : ICdnClient {
                     var json = await httpClient.GetStringAsync(publishedUrl, cancellationToken);
 
                     var jObject = JObject.Parse(json);
-                    var kindId = jObject["kind"]?.ToString();
-                    var kind = StaticLookups.FindById<PublishedFileKind>(kindId);
+                    var kind = jObject["kind"]?.ToString();
                     
                     Guid.TryParse(jObject["id"]?.ToString(), out var id);
 
@@ -80,7 +79,7 @@ public class CdnClient : ICdnClient {
                         return (Guid.Empty, null, null);
                     }
                 }
-            } catch (HttpRequestException e) when (e.StatusCode == System.Net.HttpStatusCode.NotFound) {
+            } catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.NotFound) {
                 return (Guid.Empty, null, null);
             }
         });
@@ -88,7 +87,7 @@ public class CdnClient : ICdnClient {
         return res;
     }
     
-    public string GetPublishedContentUrl(PublishedFileKind kind, string path) {
+    public string GetPublishedContentUrl(string kind, string path) {
         return GetPublishedContentUrl(GetPublishedPath(kind, path));
     }
 
@@ -106,8 +105,8 @@ public class CdnClient : ICdnClient {
         return $"{nameof(CdnClient)}_{publishedUrl}_{type}";
     }
     
-    private string GetPublishedPath(PublishedFileKind kind, string path) {
-        return $"{kind.PathSegment}/{path}";
+    private string GetPublishedPath(string kind, string path) {
+        return $"{kind}/{path}";
     }
     
     private string GetPublishedContentUrl(string publishedPath) {

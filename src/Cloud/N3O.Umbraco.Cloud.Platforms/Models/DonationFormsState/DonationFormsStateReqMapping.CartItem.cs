@@ -1,5 +1,5 @@
 ﻿using N3O.Umbraco.Cloud.Lookups;
-using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Cloud.Clients.Platforms;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
@@ -10,8 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Currency = N3O.Umbraco.Financial.Currency;
-using FundDimensionValuesReq = N3O.Umbraco.Cloud.Platforms.Clients.FundDimensionValuesReq;
-using PlatformsCurrency = N3O.Umbraco.Cloud.Platforms.Clients.Currency;
+using FundDimensionValuesReq = N3O.Umbraco.Cloud.Clients.Platforms.FundDimensionValuesReq;
+using PlatformsCurrency = N3O.Umbraco.Cloud.Clients.Platforms.Currency;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 

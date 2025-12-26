@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using N3O.Umbraco.Cloud.Clients.Platforms;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Cloud.Platforms.Extensions;

@@ -1,4 +1,4 @@
-﻿/*using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿/*using N3O.Umbraco.Cloud.Clients.Platforms;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
@@ -12,7 +12,7 @@ using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Strings;
 using ElementType = N3O.Umbraco.Cloud.Platforms.Lookups.ElementType;
-using PublishedElementType = N3O.Umbraco.Cloud.Platforms.Clients.ElementType;
+using PublishedElementType = N3O.Umbraco.Cloud.Clients.Platforms.ElementType;
 
 namespace N3O.Umbraco.Cloud.Platforms;
 

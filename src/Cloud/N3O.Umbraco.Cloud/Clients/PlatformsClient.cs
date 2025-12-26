@@ -20,7 +20,7 @@
 #pragma warning disable 8625 // Disable "CS8625 Cannot convert null literal to non-nullable reference type"
 #pragma warning disable 8765 // Disable "CS8765 Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes)."
 
-namespace N3O.Umbraco.Cloud.Platforms.Clients
+namespace N3O.Umbraco.Cloud.Clients.Platforms
 {
     using System = global::System;
 
@@ -1281,6 +1281,27 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
     }
 
+    /// <summary>
+    /// One of 'element_checkoutComplete', 'element_crowdfunderContributions', 'element_crowdfunderOwner', 'element_crowdfunderProgress'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ElementPlatformsComposition
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"element_checkoutComplete")]
+        Element_checkoutComplete = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"element_crowdfunderContributions")]
+        Element_crowdfunderContributions = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"element_crowdfunderOwner")]
+        Element_crowdfunderOwner = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"element_crowdfunderProgress")]
+        Element_crowdfunderProgress = 3,
+
+    }
+
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Era
     {
@@ -1849,6 +1870,24 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
     }
 
+    /// <summary>
+    /// One of 'page_campaign', 'page_crowdfunder', 'page_offering'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum PagePlatformsComposition
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"page_campaign")]
+        Page_campaign = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"page_crowdfunder")]
+        Page_crowdfunder = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"page_offering")]
+        Page_offering = 2,
+
+    }
+
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class PayForDonationReq
     {
@@ -1858,6 +1897,48 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public MoneyReq Value { get; set; }
+
+    }
+
+    /// <summary>
+    /// One of 'app', 'themes'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum PlatformsBuildFile
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"app")]
+        App = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"themes")]
+        Themes = 1,
+
+    }
+
+    /// <summary>
+    /// One of 'contentFeed', 'donationFormBeneficiaryCaption', 'donationFormBeneficiaryProfile', 'element', 'page', 'view'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum PlatformsCompositionType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"contentFeed")]
+        ContentFeed = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"donationFormBeneficiaryCaption")]
+        DonationFormBeneficiaryCaption = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"donationFormBeneficiaryProfile")]
+        DonationFormBeneficiaryProfile = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"element")]
+        Element = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"page")]
+        Page = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"view")]
+        View = 5,
 
     }
 
@@ -1891,6 +1972,27 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
         [Newtonsoft.Json.JsonProperty("crowdfunder", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public CrowdfunderInfoReq Crowdfunder { get; set; }
+
+    }
+
+    /// <summary>
+    /// One of 'campaign', 'campaignPage', 'offering', 'offeringPage'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum PlatformsPublishedFileKind
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"campaign")]
+        Campaign = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"campaignPage")]
+        CampaignPage = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"offering")]
+        Offering = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"offeringPage")]
+        OfferingPage = 3,
 
     }
 
