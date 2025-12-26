@@ -14,13 +14,13 @@ public abstract class CloudContentUnpublished : CloudContentNotification, INotif
         : base(subscriptionAccessor, cloudUrl, backgroundJob) { }
 
     public Task HandleAsync(ContentUnpublishedNotification notification, CancellationToken cancellationToken) {
-        /*foreach (var content in notification.UnpublishedEntities) {
+        foreach (var content in notification.UnpublishedEntities) {
             if (CanProcess(content)) {
                 var body = GetBody(content);
 
                 Enqueue(body);
             }
-        }*/
+        }
         
         return Task.CompletedTask;
     }

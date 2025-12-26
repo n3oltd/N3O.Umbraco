@@ -25,7 +25,7 @@ public abstract class CloudContentNotification {
         req.Body = body;
         req.Url = _cloudUrl.ForWebhook(HookId);
                 
-        //_backgroundJob.EnqueueCommand<DispatchWebhookCommand, DispatchWebhookReq>(req); TODO revert once the platforms work is done
+        _backgroundJob.EnqueueCommand<DispatchWebhookCommand, DispatchWebhookReq>(req);
     }
 
     protected abstract string HookId { get; }
