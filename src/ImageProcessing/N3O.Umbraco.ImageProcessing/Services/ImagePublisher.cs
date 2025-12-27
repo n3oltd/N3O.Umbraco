@@ -1,7 +1,8 @@
-﻿using Flurl;
-using N3O.Umbraco.Extensions;
+﻿using N3O.Umbraco.Extensions;
+using N3O.Umbraco.ImageProcessing.Models;
 using N3O.Umbraco.Plugins.Lookups;
 using N3O.Umbraco.Utilities;
+using SixLabors.ImageSharp;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
@@ -10,7 +11,7 @@ using Umbraco.Cms.Core.IO;
 namespace N3O.Umbraco.ImageProcessing;
 
 public class ImagePublisher : IImagePublisher {
-    private static readonly ConcurrentDictionary<string, Url> CachedUrls = new();
+    private static readonly ConcurrentDictionary<string, PublishedImage> Cache = new();
     
     private readonly MediaFileManager _mediaFileManager;
     private readonly IImageBuilder _imageBuilder;
@@ -22,10 +23,10 @@ public class ImagePublisher : IImagePublisher {
         _urlBuilder = urlBuilder;
     }
 
-    public Url Publish(Action<CacheKeyBuilder> cacheKeyBuilderAction,
-                       Func<IImageBuilder, IFluentImageBuilder> imageBuilderAction,
-                       ImageFormat format,
-                       bool forcePublish = false) {
+    public PublishedImage Publish(Action<CacheKeyBuilder> cacheKeyBuilderAction,
+                                  Func<IImageBuilder, IFluentImageBuilder> imageBuilderAction,
+                                  ImageFormat format,
+                                  bool forcePublish = false) {
         var cacheKeyBuilder = CacheKeyBuilder.Create();
 
         cacheKeyBuilderAction(cacheKeyBuilder);
@@ -35,14 +36,14 @@ public class ImagePublisher : IImagePublisher {
         return Publish(cacheKey, imageBuilderAction, format, forcePublish);
     }
     
-    public Url Publish(string cacheKey,
-                       Func<IImageBuilder, IFluentImageBuilder> imageBuilderAction,
-                       ImageFormat format,
-                       bool forcePublish = false) {
+    public PublishedImage Publish(string cacheKey,
+                                  Func<IImageBuilder, IFluentImageBuilder> imageBuilderAction,
+                                  ImageFormat format,
+                                  bool forcePublish = false) {
         if (forcePublish) {
             return SaveAndPublish(cacheKey, imageBuilderAction, format);
         } else {
-            return CachedUrls.GetOrAddAtomic(cacheKey, () => {
+            return Cache.GetOrAddAtomic(cacheKey, () => {
                 var url = TryFind(cacheKey, format) ?? SaveAndPublish(cacheKey, imageBuilderAction, format);
 
                 return url;
@@ -50,19 +51,19 @@ public class ImagePublisher : IImagePublisher {
         }
     }
     
-    private Url TryFind(string cacheKey, ImageFormat format) {
+    private PublishedImage TryFind(string cacheKey, ImageFormat format) {
         var mediaPath = GetMediaPath(cacheKey, format);
 
         if (_mediaFileManager.FileSystem.FileExists(mediaPath)) {
-            return GetUrl(mediaPath);
+            return GetPublishedImage(mediaPath);
         } else {
             return null;
         }
     }
     
-    private Url SaveAndPublish(string cacheKey,
-                               Func<IImageBuilder, IFluentImageBuilder> imageBuilderAction,
-                               ImageFormat format) {
+    private PublishedImage SaveAndPublish(string cacheKey,
+                                          Func<IImageBuilder, IFluentImageBuilder> imageBuilderAction,
+                                          ImageFormat format) {
         var imageBuilder = imageBuilderAction(_imageBuilder);
 
         using (var stream = new MemoryStream()) {
@@ -74,21 +75,27 @@ public class ImagePublisher : IImagePublisher {
         };
     }
     
-    private Url Publish(Stream stream, string cacheKey, ImageFormat format) {
+    private PublishedImage Publish(Stream stream, string cacheKey, ImageFormat format) {
         var mediaPath = GetMediaPath(cacheKey, format);
 
         _mediaFileManager.FileSystem.AddFile(mediaPath, stream);
 
-        return GetUrl(mediaPath);
+        var publishedImage = GetPublishedImage(mediaPath);
+
+        return publishedImage;
     }
 
     private string GetMediaPath(string cacheKey, ImageFormat format) {
         return $"/media/cdn/{cacheKey}{format.Extension}";
     }
     
-    private Url GetUrl(string mediaPath) {
-        var url = _urlBuilder.Root().AppendPathSegments(mediaPath);
+    PublishedImage GetPublishedImage(string mediaPath) {
+        using (var stream = _mediaFileManager.FileSystem.OpenFile(mediaPath)) {
+            var url = _urlBuilder.Root().AppendPathSegments(mediaPath);
+            
+            var image = Image.Load(stream);
 
-        return url;
+            return new PublishedImage(url, image.Size);
+        }
     }
 }
