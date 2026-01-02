@@ -32,6 +32,8 @@ public class JobTrigger {
         var baseUrl = GetBasUrl();
         
         using (var httpClient = new HttpClient()) {
+            httpClient.Timeout = TimeSpan.FromMinutes(30);
+            
             var reqStr = _jsonProvider.SerializeObject(req);
             
             var request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/umbraco/api/JobProxy/executeProxied");

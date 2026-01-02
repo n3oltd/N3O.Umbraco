@@ -9,8 +9,8 @@ namespace N3O.Umbraco.Search.Typesense;
 public class TypesenseJsonContractResolver : JsonContractResolver {
     protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization) {
         var jsonProperty = base.CreateProperty(member, memberSerialization);
-        var propertyType = (member as PropertyInfo)?.PropertyType;
-        var attribute = propertyType?.GetCustomAttribute<FieldAttribute>();
+        
+        var attribute = (member as PropertyInfo)?.GetCustomAttribute<FieldAttribute>();
 
         if (attribute != null) {
             jsonProperty.PropertyName = attribute.Name;

@@ -25,8 +25,10 @@ public class TypesenseStartupTasks : INotificationAsyncHandler<UmbracoApplicatio
 
     public async Task HandleAsync(UmbracoApplicationStartedNotification notification,
                                   CancellationToken cancellationToken) {
-        foreach (var collection in TypesenseHelper.GetAllCollections()) {
-            await MigrateCollectionAsync(collection);
+        if (_typesenseClient.HasValue()) {
+            foreach (var collection in TypesenseHelper.GetAllCollections()) {
+                await MigrateCollectionAsync(collection);
+            }
         }
     }
 

@@ -14,7 +14,7 @@ public class FieldAttribute : Attribute {
     public FieldType Type { get; }
     public bool? Facet { get; set; }
     public bool Optional { get; set; }
-    public bool Index { get; set; }
+    public bool Index { get; set; } = true;
     public bool Sort { get; set; }
     public bool Infix { get; set; }
     public string Locale { get; set; }

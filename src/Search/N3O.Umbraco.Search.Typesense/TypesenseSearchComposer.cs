@@ -28,7 +28,7 @@ public class TypesenseSearchComposer : Composer {
         builder.Services.AddScoped<ITypesenseClient>(serviceProvider => {
             var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
             var httpClient = httpClientFactory.CreateClient(nameof(TypesenseClient));
-            var configOptions = serviceProvider.GetRequiredService<IOptions<Config>>();
+            var configOptions = serviceProvider.GetRequiredService<IOptionsSnapshot<Config>>();
 
             if (configOptions.Value.ApiKey.HasValue() && configOptions.Value.Nodes.HasAny()) {
                 return new TypesenseClient(configOptions, httpClient);

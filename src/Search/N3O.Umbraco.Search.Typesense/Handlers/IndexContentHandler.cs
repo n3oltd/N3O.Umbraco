@@ -20,10 +20,12 @@ public class IndexContentHandler : IRequestHandler<IndexContentCommand, None, No
     
     public async Task<None> Handle(IndexContentCommand req, CancellationToken cancellationToken) {
         var publishedContent = req.ContentId.Run(id => _contentLocator.ById(id), true);
-        var searchIndexer = _searchIndexers.FirstOrDefault(x => x.CanIndex(publishedContent));
+        var searchIndexers = _searchIndexers.Where(x => x.CanIndex(publishedContent)).OrEmpty().ToList();
         
-        if (searchIndexer != null) {
-            await searchIndexer.IndexAsync(publishedContent);
+        if (searchIndexers.HasAny()) {
+            foreach (var searchIndexer in searchIndexers) {
+                await searchIndexer.IndexAsync(publishedContent);
+            }
         }
         
         return None.Empty;
