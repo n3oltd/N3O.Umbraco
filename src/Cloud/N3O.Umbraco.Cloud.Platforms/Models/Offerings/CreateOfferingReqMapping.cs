@@ -12,6 +12,5 @@ public class CreateOfferingReqMapping : IMapDefinition {
     // Umbraco.Code.MapAll
     private void Map(OfferingContent src, CreateOfferingReq dest, MapperContext ctx) {
         dest.Name = src.Name;
-        dest.Notes = src.Notes;
     }
 }

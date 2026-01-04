@@ -1,5 +1,4 @@
 ﻿using N3O.Umbraco.Scheduler;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
@@ -15,13 +14,13 @@ public abstract class CloudContentDeleted : CloudContentNotification, INotificat
         : base(subscriptionAccessor, cloudUrl, backgroundJob) { }
 
     public Task HandleAsync(ContentMovedToRecycleBinNotification notification, CancellationToken cancellationToken) {
-        foreach (var content in notification.MoveInfoCollection.Select(x => x.Entity)) {
+        /*foreach (var content in notification.MoveInfoCollection.Select(x => x.Entity)) {
             if (CanProcess(content)) {
                 var body = GetBody(content);
 
                 Enqueue(body);
             }
-        }
+        }*/
         
         return Task.CompletedTask;
     }

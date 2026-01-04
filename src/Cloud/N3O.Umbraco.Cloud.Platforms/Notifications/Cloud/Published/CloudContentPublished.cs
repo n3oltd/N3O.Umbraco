@@ -14,13 +14,13 @@ public abstract class CloudContentPublished : CloudContentNotification, INotific
         : base(subscriptionAccessor, cloudUrl, backgroundJob) { }
 
     public Task HandleAsync(ContentPublishedNotification notification, CancellationToken cancellationToken) {
-        foreach (var content in notification.PublishedEntities) {
+        /*foreach (var content in notification.PublishedEntities) {
             if (CanProcess(content)) {
                 var body = GetBody(content);
 
                 Enqueue(body);
             }
-        }
+        }*/
         
         return Task.CompletedTask;
     }

@@ -31,8 +31,7 @@ public static class PlatformsConstants {
 
     public static class WebhookIds {
         public const string Campaigns = "campaigns";
-        public const string DonationButtons = "donationButtons";
-        public const string DonationForms = "donationForms";
+        public const string Elements = "elements";
         public const string Offerings = "offerings";
         public const string Views = "views";
     }
