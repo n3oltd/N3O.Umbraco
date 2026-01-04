@@ -9,6 +9,7 @@ using Slugify;
 using System;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
@@ -37,6 +38,9 @@ public class UpdateCampaignReqMapping : IMapDefinition {
         dest.Image = src.Image.ToImageSimpleContentReq(_mediaUrl);
         dest.Icon = new SvgContentReq();
         dest.Icon.SourceFile = _mediaUrl.GetMediaUrl(src.Icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x)).ToString();
+
+        dest.Order = new CampaignOrderReq();
+        dest.Order.Order = src.Content().Parent.Children.FindIndex(x => x.Id == src.Content().Id);
 
         dest.Page = new ContentReq();
         dest.Page.SchemaAlias = nameof(PlatformsSystemSchema.Sys__campaignPage).ToLower();

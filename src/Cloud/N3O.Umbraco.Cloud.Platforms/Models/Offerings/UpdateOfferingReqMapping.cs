@@ -7,6 +7,7 @@ using Slugify;
 using System;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
@@ -34,6 +35,9 @@ public class UpdateOfferingReqMapping : IMapDefinition {
         dest.Image = src.Image.ToImageSimpleContentReq(_mediaUrl);
         dest.Icon = new SvgContentReq();
         dest.Icon.SourceFile = _mediaUrl.GetMediaUrl(src.Icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x)).ToString();
+        
+        dest.Order = new OfferingOrderReq();
+        dest.Order.Order = src.Content().Parent.Children.FindIndex(x => x.Id == src.Content().Id);
 
         dest.Page = new ContentReq(); // TODO Populate rest of the properties
         dest.Page.SchemaAlias = nameof(PlatformsSystemSchema.Sys__offeringPage).ToLower();
