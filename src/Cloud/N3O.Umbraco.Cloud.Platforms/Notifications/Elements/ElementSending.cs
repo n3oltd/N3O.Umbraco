@@ -58,11 +58,7 @@ public class ElementSending : INotificationAsyncHandler<SendingContentNotificati
             
         var tag = new TagBuilder(type.TagName);
 
-        if (type == ElementTypes.DonationButton) {
-            tag.Attributes.Add("element-id", contentId.ToString());
-        } else if (type == ElementTypes.DonationForm) {
-            tag.Attributes.Add("form-id", contentId.ToString());
-        }
+        tag.Attributes.Add("element-id", contentId.ToString());
         
         var embedTab = variant.Tabs.Single(x => x.Alias.EqualsInvariant("embed"));
         var embedProperty = GetProperty(embedTab, AliasHelper<ElementContent>.PropertyAlias(x => x.EmbedCode));

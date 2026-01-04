@@ -1,4 +1,6 @@
 ﻿using N3O.Umbraco.Scheduler;
+using N3O.Umbraco.Scheduler.Extensions;
+using N3O.Umbraco.Webhooks.Commands;
 using N3O.Umbraco.Webhooks.Models;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
@@ -23,7 +25,7 @@ public abstract class CloudContentNotification {
         req.Body = body;
         req.Url = _cloudUrl.ForWebhook(HookId);
                 
-        //_backgroundJob.EnqueueCommand<DispatchWebhookCommand, DispatchWebhookReq>(req); TODO revert once the platforms work is done
+        _backgroundJob.EnqueueCommand<DispatchWebhookCommand, DispatchWebhookReq>(req, HookId);
     }
 
     protected abstract string HookId { get; }
