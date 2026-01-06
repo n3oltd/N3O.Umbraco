@@ -12,11 +12,9 @@ using N3O.Umbraco.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Strings;
-using GiftType = N3O.Umbraco.Cloud.Platforms.Lookups.GiftType;
 using OfferingType = N3O.Umbraco.Cloud.Platforms.Lookups.OfferingType;
 using MediaConstants = Umbraco.Cms.Core.Constants.Conventions.Media;
 
@@ -50,7 +48,7 @@ public abstract class OfferingPreviewTagGenerator : PreviewTagGenerator {
 
     protected override string ContentTypeAlias => OfferingType.ContentTypeAlias;
 
-    public override void PopulatePreviewData(IReadOnlyDictionary<string, object> content,
+    protected override void PopulatePreviewData(IReadOnlyDictionary<string, object> content,
                                                 Dictionary<string, object> previewData) {
         var image = GetMediaWithCrops(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Image));
         var icon = GetMediaWithCrops(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Icon));

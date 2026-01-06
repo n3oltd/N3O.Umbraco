@@ -9,10 +9,14 @@
         }, 10000);
 
         async function loadPreviewAsync(editorState, contentEditingHelper) {
+            if (!editorState.current.apps.find(x => x.alias === 'platformsPreview')) {
+                return;
+            }
+            
             let currentVariant = editorState.current.variants.find(v => v.active);
 
             let properties = contentEditingHelper.getAllProps(currentVariant);
-            let apiReq = getApiReq(properties);
+            let apiReq = getApiReq(properties, editorState.current.contentTypeAlias);
             
             populateMetadata(apiReq, editorState.current)
 
@@ -75,12 +79,14 @@
             apiReq["parentId"] = content.parentId;
         }
 
-        function getApiReq(poperties) {
+        function getApiReq(poperties, contentTypeAlias) {
             let req = {};
 
             poperties.forEach(property => {
                 req[property.alias] = property.value
             });
+            
+            req['contentTypeAlias'] = contentTypeAlias;
 
             return req;
         }

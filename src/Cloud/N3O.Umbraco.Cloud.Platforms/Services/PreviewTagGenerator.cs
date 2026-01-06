@@ -61,7 +61,7 @@ public abstract class PreviewTagGenerator : IPreviewTagGenerator {
 
     protected abstract string ContentTypeAlias { get; }
 
-    public abstract void PopulatePreviewData(IReadOnlyDictionary<string, object> content,
+    protected abstract void PopulatePreviewData(IReadOnlyDictionary<string, object> content,
                                                 Dictionary<string, object> previewData);
 
     private async Task<string> GeneratePreviewJsonAsync(IReadOnlyDictionary<string, object> content) {
