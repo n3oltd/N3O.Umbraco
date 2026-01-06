@@ -44,7 +44,7 @@ public static class TypesenseHelper {
             var field = new Field(attribute.Name,
                                   attribute.Type,
                                   attribute.Facet,
-                                  attribute.Required,
+                                  !attribute.Required,
                                   attribute.Index,
                                   attribute.Sort,
                                   attribute.Infix,
