@@ -33,7 +33,7 @@ public class TypesenseStartupTasks : INotificationAsyncHandler<UmbracoApplicatio
     }
 
     private async Task MigrateCollectionAsync(CollectionInfo collectionInfo) {
-        var collection = await TryGetCollectionAsync(collectionInfo.Name);
+        var collection = await TryGetCollectionAsync(collectionInfo.Name.Resolve());
 
         collection = await TryDropCollectionIfOldVersionAsync(collection, collectionInfo);
         
@@ -58,7 +58,7 @@ public class TypesenseStartupTasks : INotificationAsyncHandler<UmbracoApplicatio
             var metadataVersion = GetVersionFromMetadata(collection);
 
             if (metadataVersion != collectionInfo.Version) {
-                await _typesenseClient.DeleteCollection(collectionInfo.Name);
+                await _typesenseClient.DeleteCollection(collectionInfo.Name.Resolve());
 
                 return null;
             }
@@ -68,7 +68,9 @@ public class TypesenseStartupTasks : INotificationAsyncHandler<UmbracoApplicatio
     }
 
     private async Task CreateCollectionAsync(CollectionInfo collectionInfo) {
-        var schema = new Schema(collectionInfo.Name, collectionInfo.Fields) {
+        var collectionName = collectionInfo.Name.Resolve();
+        
+        var schema = new Schema(collectionName, collectionInfo.Fields) {
             Metadata = new Dictionary<string, object> {
                 { TypesenseConstants.MetadataKeys.Version, collectionInfo.Version }
             }
@@ -79,7 +81,7 @@ public class TypesenseStartupTasks : INotificationAsyncHandler<UmbracoApplicatio
 
     private void EnqueueIndexing(CollectionInfo collection) {
         foreach (var contentType in collection.ContentTypeAliases.OrEmpty()) {
-            _backgroundJob.EnqueueCommand<IndexContentsOfTypeCommand>(m => m.Add<ContentType>(contentType));
+            _backgroundJob.EnqueueCommand<IndexContentsOfTypeCommand>(m => m.Add<ContentType>(contentType), contentType);
         }
     }
     

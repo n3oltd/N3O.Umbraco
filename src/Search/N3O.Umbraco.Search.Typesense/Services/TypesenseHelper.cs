@@ -24,7 +24,10 @@ public static class TypesenseHelper {
         }
 
         var fields = GetFields<TDocument>();
-        var collectionInfo = new CollectionInfo(attribute.Name, attribute.Version, contentTypeAliases, fields);
+        var collectionInfo = new CollectionInfo(new CollectionName(attribute.Name),
+                                                attribute.Version,
+                                                contentTypeAliases,
+                                                fields);
 
         CollectionsMap[typeof(TDocument)] = collectionInfo;
     }
@@ -41,13 +44,12 @@ public static class TypesenseHelper {
             var field = new Field(attribute.Name,
                                   attribute.Type,
                                   attribute.Facet,
-                                  attribute.Optional,
+                                  attribute.Required,
                                   attribute.Index,
                                   attribute.Sort,
                                   attribute.Infix,
                                   attribute.Locale,
-                                  attribute.NumberOfDimensions,
-                                  attribute.Embed);
+                                  attribute.NumberOfDimensions);
 
             fields.Add(field);
         }
