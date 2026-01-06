@@ -11,9 +11,7 @@ public class PublishedFundDimension {
     public int Number { get; set; }
     public string Name { get; set; }
     public bool IsActive { get; set; }
-    public bool Browsable { get; set; }
-    public bool Searchable { get; set; }
-    public PublishedFundDimensionView View { get; set; }
+    public FundStructurePlatformSettings PlatformsSettings { get; set; }
     public IEnumerable<string> RestrictedOptions { get; set; }
     public string UnrestrictedOption { get; set; }
 

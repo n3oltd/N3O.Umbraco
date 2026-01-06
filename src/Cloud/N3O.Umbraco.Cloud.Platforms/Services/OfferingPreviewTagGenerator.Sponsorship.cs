@@ -1,10 +1,9 @@
-﻿/*using Humanizer;
+﻿using Humanizer;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
-using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Context;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Json;
@@ -18,8 +17,10 @@ using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
+using AllocationType = N3O.Umbraco.Cloud.Platforms.Clients.AllocationType;
 using OfferingType = N3O.Umbraco.Cloud.Platforms.Lookups.OfferingType;
-using PublishedGiftType = N3O.Umbraco.Cloud.Platforms.Clients.GiftType;
+using PlatformsPublishedSponsorshipScheme = N3O.Umbraco.Cloud.Platforms.Clients.PublishedSponsorshipScheme;
+using PlatformsPublishedPrice = N3O.Umbraco.Cloud.Platforms.Clients.PublishedPrice;
 
 namespace N3O.Umbraco.Cloud.Platforms;
 
@@ -27,37 +28,32 @@ public class SponsorshipOfferingPreviewTagGenerator : OfferingPreviewTagGenerato
     private readonly ILookups _lookups;
 
     public SponsorshipOfferingPreviewTagGenerator(ICdnClient cdnClient,
-                                                     IJsonProvider jsonProvider,
-                                                     IMediaUrl mediaUrl,
-                                                     ILookups lookups,
-                                                     IUmbracoMapper mapper,
-                                                     IMarkupEngine markupEngine,
-                                                     IMediaLocator mediaLocator,
-                                                     IPublishedValueFallback publishedValueFallback)
+                                                  IJsonProvider jsonProvider,
+                                                  IMediaUrl mediaUrl,
+                                                  ILookups lookups,
+                                                  IMarkupEngine markupEngine,
+                                                  IMediaLocator mediaLocator,
+                                                  IPublishedValueFallback publishedValueFallback,
+                                                  IBaseCurrencyAccessor baseCurrencyAccessor)
         : base(cdnClient,
                jsonProvider,
                mediaUrl,
                lookups,
-               mapper,
                markupEngine,
                mediaLocator,
-               publishedValueFallback) {
+               publishedValueFallback,
+               baseCurrencyAccessor) {
         _lookups = lookups;
     }
     
     protected override OfferingType OfferingType => OfferingTypes.Sponsorship;
-    
-    protected override void PopulatePublishedOffering(IReadOnlyDictionary<string, object> content,
-                                                         PublishedOffering publishedOffering) {
+
+    protected override void PopulateAllocationIntent(IReadOnlyDictionary<string, object> content, PublishedAllocationIntent allocationIntent) {
         var scheme = GetSponsorshipScheme(content);
         
-        var publishedSponsorshipOffering = new PublishedSponsorshipOffering();
-        publishedSponsorshipOffering.Scheme = new PublishedOfferingSponsorshipScheme();
-        publishedSponsorshipOffering.Scheme.Id = scheme.Id;
-        publishedSponsorshipOffering.Components = scheme.Components.OrEmpty().Select(ToPublishedSponsorshipComponent).ToList();
-        publishedSponsorshipOffering.AllowedDurations = scheme.AllowedDurations.OrEmpty().Select(ToPublishedCommitmentDuration).ToList();
-        
-        publishedOffering.Sponsorship = publishedSponsorshipOffering;
+        allocationIntent.Type = AllocationType.Sponsorship;
+        allocationIntent.Sponsorship = new PublishedSponsorshipIntent();
+        allocationIntent.Sponsorship.Scheme = scheme.Id;
     }
     
     protected override IFundDimensionOptions GetFundDimensionOptions(IReadOnlyDictionary<string, object> content) {
@@ -65,54 +61,33 @@ public class SponsorshipOfferingPreviewTagGenerator : OfferingPreviewTagGenerato
         
         return scheme?.FundDimensionOptions;
     }
-
-    protected override IEnumerable<PublishedGiftType> GetPublishedSuggestedGiftTypes(IReadOnlyDictionary<string, object> content) {
-        return GetSponsorshipScheme(content)?.AllowedGivingTypes.Select(x => x.ToGiftType().ToEnum<PublishedGiftType>().GetValueOrThrow());
-    }
     
     private SponsorshipScheme GetSponsorshipScheme(IReadOnlyDictionary<string, object> content) {
         return GetDataListValue<SponsorshipScheme>(content, AliasHelper<SponsorshipOfferingContent>.PropertyAlias(x => x.Scheme));
     }
-    
-    private PublishedCommitmentDuration ToPublishedCommitmentDuration(SponsorshipDuration sponsorshipDuration) {
-        var commitmentDuration = new PublishedCommitmentDuration();
-        commitmentDuration.Id = sponsorshipDuration.Id;
-        commitmentDuration.Name = sponsorshipDuration.Name;
-        commitmentDuration.Months = sponsorshipDuration.Months;
-        
-        return commitmentDuration;
-    }
-
-    private PublishedSponsorshipSchemeComponent ToPublishedSponsorshipComponent(SponsorshipComponent sponsorshipComponent) {
-        var publishedSponsorshipComponent = new PublishedSponsorshipSchemeComponent();
-        
-        publishedSponsorshipComponent.Name = sponsorshipComponent.Name;
-        publishedSponsorshipComponent.Required = sponsorshipComponent.Mandatory;
-        publishedSponsorshipComponent.Pricing = sponsorshipComponent.Pricing.IfNotNull(Mapper.Map<IPricing, PublishedPricing>);
-        
-        return publishedSponsorshipComponent;
-    }
 
     protected override void PopulateAdditionalData(Dictionary<string, object> previewData,
                                                    PublishedDonationForm publishedDonationForm) {
-        var sponsorshipScheme = _lookups.FindById<SponsorshipScheme>(publishedDonationForm.Offering.Sponsorship.Scheme.Id);
+        var sponsorshipScheme = _lookups.FindById<SponsorshipScheme>(publishedDonationForm.FormState.CartItem.NewDonation.Allocation.Sponsorship.Scheme);
         
         previewData["beneficiaries"] = GetBeneficiaries(sponsorshipScheme);
         previewData["scheme"] = GetSponsorshipSchemes(sponsorshipScheme);
     }
 
     private object GetSponsorshipSchemes(SponsorshipScheme sponsorshipScheme) {
-        var publishedSponsorshipScheme = new PublishedSponsorshipScheme();
+        var fundDimensionOptions = new PublishedSponsorshipSchemeFundDimensionOptions();
+        fundDimensionOptions.Dimension1 = sponsorshipScheme.FundDimensionOptions.Dimension1?.Select(x => x.Name).ToList();
+        fundDimensionOptions.Dimension2 = sponsorshipScheme.FundDimensionOptions.Dimension2?.Select(x => x.Name).ToList();
+        fundDimensionOptions.Dimension3 = sponsorshipScheme.FundDimensionOptions.Dimension3?.Select(x => x.Name).ToList();
+        fundDimensionOptions.Dimension4 = sponsorshipScheme.FundDimensionOptions.Dimension4?.Select(x => x.Name).ToList();
+        
+        var publishedSponsorshipScheme = new PlatformsPublishedSponsorshipScheme();
         publishedSponsorshipScheme.Id = sponsorshipScheme.Id;
         publishedSponsorshipScheme.Name = sponsorshipScheme.Name;
         publishedSponsorshipScheme.AvailableLocations = sponsorshipScheme.AvailableLocations.ToList();
+        publishedSponsorshipScheme.FundDimensionOptions = fundDimensionOptions;
         
-        publishedSponsorshipScheme.FundDimensionOptions = new PublishedSponsorshipSchemeFundDimensionOptions();
-        publishedSponsorshipScheme.FundDimensionOptions.Dimension1 = sponsorshipScheme.FundDimensionOptions.Dimension1?.Select(x => x.Name).ToList();
-        publishedSponsorshipScheme.FundDimensionOptions.Dimension2 = sponsorshipScheme.FundDimensionOptions.Dimension2?.Select(x => x.Name).ToList();
-        publishedSponsorshipScheme.FundDimensionOptions.Dimension3 = sponsorshipScheme.FundDimensionOptions.Dimension3?.Select(x => x.Name).ToList();
-        publishedSponsorshipScheme.FundDimensionOptions.Dimension4 = sponsorshipScheme.FundDimensionOptions.Dimension4?.Select(x => x.Name).ToList();
-
+        
         return publishedSponsorshipScheme;
     }
 
@@ -132,8 +107,9 @@ public class SponsorshipOfferingPreviewTagGenerator : OfferingPreviewTagGenerato
         publishedBeneficiary.Individual.LastName = "Doe";
         publishedBeneficiary.Individual.Gender = Gender.Male;
         
-        publishedBeneficiary.EmbedViews = new PublishedEmbedViews();
-        publishedBeneficiary.EmbedViews.Caption = $"<p>{name} enjoys reading and hopes to become a doctor one day.</p>";
+        publishedBeneficiary.PlatformsViews = new PublishedBeneficiaryPlatformsViews();
+        publishedBeneficiary.PlatformsViews.DonationFormCaption = $"<p>{name} enjoys reading and hopes to become a doctor one day.</p>";
+        publishedBeneficiary.PlatformsViews.DonationFormProfile = $"<p>{name} enjoys reading and hopes to become a doctor one day.</p>";
 
         var publishedBeneficiaryJObject = JObject.Parse(JsonConvert.SerializeObject(publishedBeneficiary));
 
@@ -148,10 +124,10 @@ public class SponsorshipOfferingPreviewTagGenerator : OfferingPreviewTagGenerato
         var component = new PublishedBeneficiaryComponent();
         component.Name = sponsorshipScheme.Components.First().Name;
         component.Quantity = 1;
-        component.Price = new PublishedPrice();
+        component.Price = new PlatformsPublishedPrice();
         component.Price.Amount = (double) sponsorshipScheme.Components.First().Pricing.Price.Amount;
         component.Price.Locked = sponsorshipScheme.Components.First().Pricing.Price.Locked;
         
         return component.Yield();
     }
-}*/
+}

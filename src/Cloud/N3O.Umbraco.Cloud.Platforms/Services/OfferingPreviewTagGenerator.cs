@@ -1,8 +1,8 @@
-﻿/*using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
-using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Models;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Json;
@@ -16,19 +16,15 @@ using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Strings;
-using ElementType = N3O.Umbraco.Cloud.Platforms.Clients.ElementType;
 using GiftType = N3O.Umbraco.Cloud.Platforms.Lookups.GiftType;
 using OfferingType = N3O.Umbraco.Cloud.Platforms.Lookups.OfferingType;
-using PublishedOfferingType = N3O.Umbraco.Cloud.Platforms.Clients.OfferingType;
-using PublishedGiftType = N3O.Umbraco.Cloud.Platforms.Clients.GiftType;
+using MediaConstants = Umbraco.Cms.Core.Constants.Conventions.Media;
 
 namespace N3O.Umbraco.Cloud.Platforms;
 
 public abstract class OfferingPreviewTagGenerator : PreviewTagGenerator {
     private readonly IJsonProvider _jsonProvider;
     private readonly IMediaUrl _mediaUrl;
-    private readonly ILookups _lookups;
-    protected readonly IUmbracoMapper Mapper;
     private readonly IMarkupEngine _markupEngine;
     private readonly IMediaLocator _mediaLocator;
     private readonly IPublishedValueFallback _publishedValueFallback;
@@ -37,17 +33,16 @@ public abstract class OfferingPreviewTagGenerator : PreviewTagGenerator {
                                              IJsonProvider jsonProvider,
                                              IMediaUrl mediaUrl,
                                              ILookups lookups,
-                                             IUmbracoMapper mapper,
                                              IMarkupEngine markupEngine,
                                              IMediaLocator mediaLocator,
-                                             IPublishedValueFallback publishedValueFallback)
+                                             IPublishedValueFallback publishedValueFallback,
+                                             IBaseCurrencyAccessor baseCurrencyAccessor)
         : base(cdnClient, jsonProvider, lookups) {
         _jsonProvider = jsonProvider;
         _mediaUrl = mediaUrl;
-        _lookups = lookups;
-        Mapper = mapper;
         _markupEngine = markupEngine;
         _mediaLocator = mediaLocator;
+        BaseCurrencyAccessor = baseCurrencyAccessor;
         _publishedValueFallback = publishedValueFallback;
     }
     
@@ -55,46 +50,66 @@ public abstract class OfferingPreviewTagGenerator : PreviewTagGenerator {
 
     protected override string ContentTypeAlias => OfferingType.ContentTypeAlias;
 
-    protected override void PopulatePreviewData(IReadOnlyDictionary<string, object> content,
+    public override void PopulatePreviewData(IReadOnlyDictionary<string, object> content,
                                                 Dictionary<string, object> previewData) {
         var image = GetMediaWithCrops(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Image));
         var icon = GetMediaWithCrops(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Icon));
         var shortDescription = content[AliasHelper<OfferingContent>.PropertyAlias(x => x.Description)]?.ToString();
-        var longDescription = content[AliasHelper<OfferingContent>.PropertyAlias(x => x.LongDescription)]?.ToString();
-        var suggestedGiftType = GetDataListValue<GiftType>(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.SuggestedGiftType));
         
-        var publishedOffering = new CreateOfferingReq();
+        var currency = BaseCurrencyAccessor.GetBaseCurrency().Code.ToEnum<Currency>();
+        
+        var publishedOffering = new PublishedOffering();
         publishedOffering.Id = content[AliasHelper<OfferingContent>.PropertyAlias(x => x.Key)].ToString();
         publishedOffering.Name = content[AliasHelper<IPublishedContent>.PropertyAlias(x => x.Name)]?.ToString();
-        publishedOffering.Type = GetPublishedOfferingType();
-        publishedOffering.Image = _mediaUrl.GetMediaUrl(image, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
-        publishedOffering.Icon = _mediaUrl.GetMediaUrl(icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
-        publishedOffering.ShortDescription = _markupEngine.RenderHtml(shortDescription).IfNotNull(x => new HtmlEncodedString(x.ToString())).ToHtmlString();
-        publishedOffering.LongDescription = _markupEngine.RenderHtml(longDescription).IfNotNull(x => new HtmlEncodedString(x.ToString())).ToHtmlString();
-        publishedOffering.SuggestedGiftType = suggestedGiftType.ToEnum<PublishedGiftType>();
+        publishedOffering.Image = new PublishedImageContent();
+        publishedOffering.Image.Format = PropertyFormat.Image;
+        publishedOffering.Image.Main = new PublishedProcessedImage();
+        publishedOffering.Image.Main.Url = new Uri(_mediaUrl.GetMediaUrl(image, urlMode: UrlMode.Absolute));
+        publishedOffering.Image.Main.Size = new PublishedSize();
+        publishedOffering.Image.Main.Size.Width = (int) image.Properties.Single(x => x.Alias == MediaConstants.Width).GetValue();
+        publishedOffering.Image.Main.Size.Height = (int) image.Properties.Single(x => x.Alias == MediaConstants.Height).GetValue();
         
-        publishedOffering.FundDimensions = GetPublishedOfferingFundDimensions(content);
-        publishedOffering.GiftTypes = GetPublishedSuggestedGiftTypes(content).ToList();
+        publishedOffering.Icon = new PublishedSvgContent();
+        publishedOffering.Icon.Url = _mediaUrl.GetMediaUrl(icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
+        publishedOffering.Icon.Format = PropertyFormat.Svg;
+        
+        publishedOffering.Description = new PublishedHtmlContent();
+        publishedOffering.Description.Markup = _markupEngine.RenderHtml(shortDescription).IfNotNull(x => new HtmlEncodedString(x.ToString())).ToHtmlString();
+        publishedOffering.Description.Format = PropertyFormat.Html;
+        
+        publishedOffering.FormState = new PublishedDonationFormState();
+        publishedOffering.FormState.CartItem = new PublishedCartItem();
+        publishedOffering.FormState.CartItem.Type = CartItemType.NewDonation;
+        publishedOffering.FormState.CartItem.Currency = currency;
+        publishedOffering.FormState.CartItem.Value = new MoneyRes();
+        publishedOffering.FormState.CartItem.Value.Currency = currency;
+        publishedOffering.FormState.CartItem.Value.Amount = 0d;
+        
+        publishedOffering.FormState.CartItem.Type = CartItemType.NewDonation;
 
-        PopulatePublishedOffering(content, publishedOffering);
+        publishedOffering.FormState.CartItem.NewDonation = new PublishedNewDonation();
+        publishedOffering.FormState.CartItem.NewDonation.Allocation = new PublishedAllocationIntent();
+        publishedOffering.FormState.CartItem.NewDonation.Allocation.FundDimensions = GetPublishedOfferingFundDimensions(content);
+        publishedOffering.FormState.CartItem.NewDonation.Allocation.Value = new Money();
+        publishedOffering.FormState.CartItem.NewDonation.Allocation.Value.Currency = currency;
+        publishedOffering.FormState.CartItem.NewDonation.Allocation.Value.Amount = 0d;
+        
+        PopulateAllocationIntent(content, publishedOffering.FormState.CartItem.NewDonation.Allocation);
+        
+        publishedOffering.FormState.Options = new PublishedDonationFormOptions();
+        PopulateFormStateOptions(content, publishedOffering.FormState.Options);
         
         var publishedDonationForm = new PublishedDonationForm();
         publishedDonationForm.Id = content[AliasHelper<OfferingContent>.PropertyAlias(x => x.Key)].ToString();
-        publishedDonationForm.Type = ElementType.DonationForm;
-        publishedDonationForm.Offering = publishedOffering;
+        publishedDonationForm.FormState = publishedOffering.FormState;
 
-        previewData["publishedForm"] = publishedDonationForm;
+        previewData["element"] = publishedDonationForm;
+        previewData["offering"] = publishedOffering;
         
         PopulateAdditionalData(previewData, publishedDonationForm);
     }
 
-    private PublishedOfferingType? GetPublishedOfferingType() {
-        var offeringType = StaticLookups.GetAll<OfferingType>().Single(x => x.ContentTypeAlias.EqualsInvariant(ContentTypeAlias));
-        
-        return offeringType.ToEnum<PublishedOfferingType>();
-    }
-
-    private PublishedOfferingFundDimensions GetPublishedOfferingFundDimensions(IReadOnlyDictionary<string, object> content) {
+    private PublishedFundDimensionValues GetPublishedOfferingFundDimensions(IReadOnlyDictionary<string, object> content) {
         var dimension1 = GetDataListValue<FundDimension1Value>(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Dimension1));
         var dimension2 = GetDataListValue<FundDimension2Value>(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Dimension2));
         var dimension3 = GetDataListValue<FundDimension3Value>(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Dimension3));
@@ -102,14 +117,11 @@ public abstract class OfferingPreviewTagGenerator : PreviewTagGenerator {
         
         var fundDimensionOptions = GetFundDimensionOptions(content);
         
-        var publishedFundDimensions = new PublishedOfferingFundDimensions();
-        publishedFundDimensions.Dimension1 = dimension1.ToPublishedOfferingFundDimension(fundDimensionOptions?.Dimension1);
-        
-        publishedFundDimensions.Dimension2 = dimension2.ToPublishedOfferingFundDimension(fundDimensionOptions?.Dimension2);
-        
-        publishedFundDimensions.Dimension3 = dimension3.ToPublishedOfferingFundDimension(fundDimensionOptions?.Dimension3);
-        
-        publishedFundDimensions.Dimension4 = dimension4.ToPublishedOfferingFundDimension(fundDimensionOptions?.Dimension4);
+        var publishedFundDimensions = new PublishedFundDimensionValues();
+        publishedFundDimensions.Dimension1 = dimension1?.Name ?? (fundDimensionOptions.Dimension1.IsSingle() ? fundDimensionOptions.Dimension1.Single()?.Name : null);
+        publishedFundDimensions.Dimension2 = dimension2?.Name ?? (fundDimensionOptions.Dimension2.IsSingle() ? fundDimensionOptions.Dimension2.Single()?.Name : null);
+        publishedFundDimensions.Dimension3 = dimension3?.Name ?? (fundDimensionOptions.Dimension3.IsSingle() ? fundDimensionOptions.Dimension3.Single()?.Name : null);
+        publishedFundDimensions.Dimension4 = dimension4?.Name ?? (fundDimensionOptions.Dimension4.IsSingle() ? fundDimensionOptions.Dimension4.Single()?.Name : null);
 
         return publishedFundDimensions;
     }
@@ -124,12 +136,17 @@ public abstract class OfferingPreviewTagGenerator : PreviewTagGenerator {
         return mediaDto?.ToMediaWithCrops(_publishedValueFallback, _mediaLocator);
     }
     
-    protected abstract void PopulatePublishedOffering(IReadOnlyDictionary<string, object> content,
-                                                      PublishedOffering publishedOffering);
+    protected IBaseCurrencyAccessor BaseCurrencyAccessor { get; set; }
+    
+    protected abstract void PopulateAllocationIntent(IReadOnlyDictionary<string, object> content,
+                                                     PublishedAllocationIntent publishedOffering);
+    
+    protected virtual void PopulateFormStateOptions(IReadOnlyDictionary<string, object> content,
+                                                    PublishedDonationFormOptions publishedOffering) { }
+    
     
     protected abstract IFundDimensionOptions GetFundDimensionOptions(IReadOnlyDictionary<string, object> content);
-    protected abstract IEnumerable<PublishedGiftType> GetPublishedSuggestedGiftTypes(IReadOnlyDictionary<string, object> content);
 
     protected virtual void PopulateAdditionalData(Dictionary<string, object> previewData,
                                                   PublishedDonationForm publishedDonationForm) { }
-}*/
+}

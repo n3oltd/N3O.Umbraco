@@ -114,6 +114,21 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
     }
 
+    /// <summary>
+    /// One of 'child', 'other'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum BeneficiaryType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"child")]
+        Child = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"other")]
+        Other = 1,
+
+    }
+
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class CalendarSystem
     {
@@ -283,6 +298,15 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class CollectionNames
+    {
+
+        [Newtonsoft.Json.JsonProperty("campaignDocument", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string CampaignDocument { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class ConnectRegularGivingOptionsReq
     {
 
@@ -393,7 +417,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     }
 
     /// <summary>
-    /// One of 'AED', 'AFN', 'ALL', 'AMD', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN', 'BAM', 'BBD', 'BDT', 'BGN', 'BHD', 'BIF', 'BMD', 'BND', 'BOB', 'BOV', 'BRL', 'BSD', 'BTC', 'BTN', 'BWP', 'BYN', 'BZD', 'CAD', 'CDF', 'CHE', 'CHF', 'CHW', 'CLF', 'CLP', 'CNY', 'COP', 'COU', 'CRC', 'CUP', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 'ERN', 'ETB', 'ETH', 'EUR', 'FJD', 'FKP', 'GBP', 'GEL', 'GHS', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HTG', 'HUF', 'IDR', 'ILS', 'INR', 'IQD', 'IRR', 'ISK', 'JMD', 'JOD', 'JPY', 'KES', 'KGS', 'KHR', 'KMF', 'KPW', 'KRW', 'KWD', 'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'LYD', 'MAD', 'MDL', 'MGA', 'MKD', 'MMK', 'MNT', 'MOP', 'MRU', 'MUR', 'MVR', 'MWK', 'MXN', 'MXV', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR', 'NZD', 'OMR', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR', 'RON', 'RSD', 'RUB', 'RWF', 'SAR', 'SBD', 'SCR', 'SDG', 'SEK', 'SGD', 'SHP', 'SLE', 'SOS', 'SRD', 'SSP', 'STN', 'SVC', 'SYP', 'SZL', 'THB', 'TJS', 'TMT', 'TND', 'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX', 'USD', 'USN', 'UYI', 'UYU', 'UYW', 'UZS', 'VED', 'VES', 'VND', 'VUV', 'WST', 'XAD', 'XAF', 'XAG', 'XAU', 'XBA', 'XBB', 'XBC', 'XBD', 'XCD', 'XCG', 'XDR', 'XOF', 'XPD', 'XPF', 'XPT', 'XSU', 'XTS', 'XUA', 'XXX', 'YER', 'ZAR', 'ZMW', 'ZWG'
+    /// One of 'AED', 'AFN', 'ALL', 'AMD', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN', 'BAM', 'BBD', 'BDT', 'BHD', 'BIF', 'BMD', 'BND', 'BOB', 'BOV', 'BRL', 'BSD', 'BTC', 'BTN', 'BWP', 'BYN', 'BZD', 'CAD', 'CDF', 'CHE', 'CHF', 'CHW', 'CLF', 'CLP', 'CNY', 'COP', 'COU', 'CRC', 'CUP', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 'ERN', 'ETB', 'ETH', 'EUR', 'FJD', 'FKP', 'GBP', 'GEL', 'GHS', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HTG', 'HUF', 'IDR', 'ILS', 'INR', 'IQD', 'IRR', 'ISK', 'JMD', 'JOD', 'JPY', 'KES', 'KGS', 'KHR', 'KMF', 'KPW', 'KRW', 'KWD', 'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'LYD', 'MAD', 'MDL', 'MGA', 'MKD', 'MMK', 'MNT', 'MOP', 'MRU', 'MUR', 'MVR', 'MWK', 'MXN', 'MXV', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR', 'NZD', 'OMR', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR', 'RON', 'RSD', 'RUB', 'RWF', 'SAR', 'SBD', 'SCR', 'SDG', 'SEK', 'SGD', 'SHP', 'SLE', 'SOS', 'SRD', 'SSP', 'STN', 'SVC', 'SYP', 'SZL', 'THB', 'TJS', 'TMT', 'TND', 'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX', 'USD', 'USN', 'UYI', 'UYU', 'UYW', 'UZS', 'VED', 'VES', 'VND', 'VUV', 'WST', 'XAD', 'XAF', 'XAG', 'XAU', 'XBA', 'XBB', 'XBC', 'XBD', 'XCD', 'XCG', 'XDR', 'XOF', 'XPD', 'XPF', 'XPT', 'XSU', 'XTS', 'XUA', 'XXX', 'YER', 'ZAR', 'ZMW', 'ZWG'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum Currency
@@ -435,512 +459,509 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
         [System.Runtime.Serialization.EnumMember(Value = @"BDT")]
         BDT = 11,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"BGN")]
-        BGN = 12,
-
         [System.Runtime.Serialization.EnumMember(Value = @"BHD")]
-        BHD = 13,
+        BHD = 12,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BIF")]
-        BIF = 14,
+        BIF = 13,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BMD")]
-        BMD = 15,
+        BMD = 14,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BND")]
-        BND = 16,
+        BND = 15,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BOB")]
-        BOB = 17,
+        BOB = 16,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BOV")]
-        BOV = 18,
+        BOV = 17,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BRL")]
-        BRL = 19,
+        BRL = 18,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BSD")]
-        BSD = 20,
+        BSD = 19,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BTC")]
-        BTC = 21,
+        BTC = 20,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BTN")]
-        BTN = 22,
+        BTN = 21,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BWP")]
-        BWP = 23,
+        BWP = 22,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BYN")]
-        BYN = 24,
+        BYN = 23,
 
         [System.Runtime.Serialization.EnumMember(Value = @"BZD")]
-        BZD = 25,
+        BZD = 24,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CAD")]
-        CAD = 26,
+        CAD = 25,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CDF")]
-        CDF = 27,
+        CDF = 26,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CHE")]
-        CHE = 28,
+        CHE = 27,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CHF")]
-        CHF = 29,
+        CHF = 28,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CHW")]
-        CHW = 30,
+        CHW = 29,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CLF")]
-        CLF = 31,
+        CLF = 30,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CLP")]
-        CLP = 32,
+        CLP = 31,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CNY")]
-        CNY = 33,
+        CNY = 32,
 
         [System.Runtime.Serialization.EnumMember(Value = @"COP")]
-        COP = 34,
+        COP = 33,
 
         [System.Runtime.Serialization.EnumMember(Value = @"COU")]
-        COU = 35,
+        COU = 34,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CRC")]
-        CRC = 36,
+        CRC = 35,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CUP")]
-        CUP = 37,
+        CUP = 36,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CVE")]
-        CVE = 38,
+        CVE = 37,
 
         [System.Runtime.Serialization.EnumMember(Value = @"CZK")]
-        CZK = 39,
+        CZK = 38,
 
         [System.Runtime.Serialization.EnumMember(Value = @"DJF")]
-        DJF = 40,
+        DJF = 39,
 
         [System.Runtime.Serialization.EnumMember(Value = @"DKK")]
-        DKK = 41,
+        DKK = 40,
 
         [System.Runtime.Serialization.EnumMember(Value = @"DOP")]
-        DOP = 42,
+        DOP = 41,
 
         [System.Runtime.Serialization.EnumMember(Value = @"DZD")]
-        DZD = 43,
+        DZD = 42,
 
         [System.Runtime.Serialization.EnumMember(Value = @"EGP")]
-        EGP = 44,
+        EGP = 43,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ERN")]
-        ERN = 45,
+        ERN = 44,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ETB")]
-        ETB = 46,
+        ETB = 45,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ETH")]
-        ETH = 47,
+        ETH = 46,
 
         [System.Runtime.Serialization.EnumMember(Value = @"EUR")]
-        EUR = 48,
+        EUR = 47,
 
         [System.Runtime.Serialization.EnumMember(Value = @"FJD")]
-        FJD = 49,
+        FJD = 48,
 
         [System.Runtime.Serialization.EnumMember(Value = @"FKP")]
-        FKP = 50,
+        FKP = 49,
 
         [System.Runtime.Serialization.EnumMember(Value = @"GBP")]
-        GBP = 51,
+        GBP = 50,
 
         [System.Runtime.Serialization.EnumMember(Value = @"GEL")]
-        GEL = 52,
+        GEL = 51,
 
         [System.Runtime.Serialization.EnumMember(Value = @"GHS")]
-        GHS = 53,
+        GHS = 52,
 
         [System.Runtime.Serialization.EnumMember(Value = @"GIP")]
-        GIP = 54,
+        GIP = 53,
 
         [System.Runtime.Serialization.EnumMember(Value = @"GMD")]
-        GMD = 55,
+        GMD = 54,
 
         [System.Runtime.Serialization.EnumMember(Value = @"GNF")]
-        GNF = 56,
+        GNF = 55,
 
         [System.Runtime.Serialization.EnumMember(Value = @"GTQ")]
-        GTQ = 57,
+        GTQ = 56,
 
         [System.Runtime.Serialization.EnumMember(Value = @"GYD")]
-        GYD = 58,
+        GYD = 57,
 
         [System.Runtime.Serialization.EnumMember(Value = @"HKD")]
-        HKD = 59,
+        HKD = 58,
 
         [System.Runtime.Serialization.EnumMember(Value = @"HNL")]
-        HNL = 60,
+        HNL = 59,
 
         [System.Runtime.Serialization.EnumMember(Value = @"HTG")]
-        HTG = 61,
+        HTG = 60,
 
         [System.Runtime.Serialization.EnumMember(Value = @"HUF")]
-        HUF = 62,
+        HUF = 61,
 
         [System.Runtime.Serialization.EnumMember(Value = @"IDR")]
-        IDR = 63,
+        IDR = 62,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ILS")]
-        ILS = 64,
+        ILS = 63,
 
         [System.Runtime.Serialization.EnumMember(Value = @"INR")]
-        INR = 65,
+        INR = 64,
 
         [System.Runtime.Serialization.EnumMember(Value = @"IQD")]
-        IQD = 66,
+        IQD = 65,
 
         [System.Runtime.Serialization.EnumMember(Value = @"IRR")]
-        IRR = 67,
+        IRR = 66,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ISK")]
-        ISK = 68,
+        ISK = 67,
 
         [System.Runtime.Serialization.EnumMember(Value = @"JMD")]
-        JMD = 69,
+        JMD = 68,
 
         [System.Runtime.Serialization.EnumMember(Value = @"JOD")]
-        JOD = 70,
+        JOD = 69,
 
         [System.Runtime.Serialization.EnumMember(Value = @"JPY")]
-        JPY = 71,
+        JPY = 70,
 
         [System.Runtime.Serialization.EnumMember(Value = @"KES")]
-        KES = 72,
+        KES = 71,
 
         [System.Runtime.Serialization.EnumMember(Value = @"KGS")]
-        KGS = 73,
+        KGS = 72,
 
         [System.Runtime.Serialization.EnumMember(Value = @"KHR")]
-        KHR = 74,
+        KHR = 73,
 
         [System.Runtime.Serialization.EnumMember(Value = @"KMF")]
-        KMF = 75,
+        KMF = 74,
 
         [System.Runtime.Serialization.EnumMember(Value = @"KPW")]
-        KPW = 76,
+        KPW = 75,
 
         [System.Runtime.Serialization.EnumMember(Value = @"KRW")]
-        KRW = 77,
+        KRW = 76,
 
         [System.Runtime.Serialization.EnumMember(Value = @"KWD")]
-        KWD = 78,
+        KWD = 77,
 
         [System.Runtime.Serialization.EnumMember(Value = @"KYD")]
-        KYD = 79,
+        KYD = 78,
 
         [System.Runtime.Serialization.EnumMember(Value = @"KZT")]
-        KZT = 80,
+        KZT = 79,
 
         [System.Runtime.Serialization.EnumMember(Value = @"LAK")]
-        LAK = 81,
+        LAK = 80,
 
         [System.Runtime.Serialization.EnumMember(Value = @"LBP")]
-        LBP = 82,
+        LBP = 81,
 
         [System.Runtime.Serialization.EnumMember(Value = @"LKR")]
-        LKR = 83,
+        LKR = 82,
 
         [System.Runtime.Serialization.EnumMember(Value = @"LRD")]
-        LRD = 84,
+        LRD = 83,
 
         [System.Runtime.Serialization.EnumMember(Value = @"LSL")]
-        LSL = 85,
+        LSL = 84,
 
         [System.Runtime.Serialization.EnumMember(Value = @"LYD")]
-        LYD = 86,
+        LYD = 85,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MAD")]
-        MAD = 87,
+        MAD = 86,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MDL")]
-        MDL = 88,
+        MDL = 87,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MGA")]
-        MGA = 89,
+        MGA = 88,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MKD")]
-        MKD = 90,
+        MKD = 89,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MMK")]
-        MMK = 91,
+        MMK = 90,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MNT")]
-        MNT = 92,
+        MNT = 91,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MOP")]
-        MOP = 93,
+        MOP = 92,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MRU")]
-        MRU = 94,
+        MRU = 93,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MUR")]
-        MUR = 95,
+        MUR = 94,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MVR")]
-        MVR = 96,
+        MVR = 95,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MWK")]
-        MWK = 97,
+        MWK = 96,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MXN")]
-        MXN = 98,
+        MXN = 97,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MXV")]
-        MXV = 99,
+        MXV = 98,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MYR")]
-        MYR = 100,
+        MYR = 99,
 
         [System.Runtime.Serialization.EnumMember(Value = @"MZN")]
-        MZN = 101,
+        MZN = 100,
 
         [System.Runtime.Serialization.EnumMember(Value = @"NAD")]
-        NAD = 102,
+        NAD = 101,
 
         [System.Runtime.Serialization.EnumMember(Value = @"NGN")]
-        NGN = 103,
+        NGN = 102,
 
         [System.Runtime.Serialization.EnumMember(Value = @"NIO")]
-        NIO = 104,
+        NIO = 103,
 
         [System.Runtime.Serialization.EnumMember(Value = @"NOK")]
-        NOK = 105,
+        NOK = 104,
 
         [System.Runtime.Serialization.EnumMember(Value = @"NPR")]
-        NPR = 106,
+        NPR = 105,
 
         [System.Runtime.Serialization.EnumMember(Value = @"NZD")]
-        NZD = 107,
+        NZD = 106,
 
         [System.Runtime.Serialization.EnumMember(Value = @"OMR")]
-        OMR = 108,
+        OMR = 107,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PAB")]
-        PAB = 109,
+        PAB = 108,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PEN")]
-        PEN = 110,
+        PEN = 109,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PGK")]
-        PGK = 111,
+        PGK = 110,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PHP")]
-        PHP = 112,
+        PHP = 111,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PKR")]
-        PKR = 113,
+        PKR = 112,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PLN")]
-        PLN = 114,
+        PLN = 113,
 
         [System.Runtime.Serialization.EnumMember(Value = @"PYG")]
-        PYG = 115,
+        PYG = 114,
 
         [System.Runtime.Serialization.EnumMember(Value = @"QAR")]
-        QAR = 116,
+        QAR = 115,
 
         [System.Runtime.Serialization.EnumMember(Value = @"RON")]
-        RON = 117,
+        RON = 116,
 
         [System.Runtime.Serialization.EnumMember(Value = @"RSD")]
-        RSD = 118,
+        RSD = 117,
 
         [System.Runtime.Serialization.EnumMember(Value = @"RUB")]
-        RUB = 119,
+        RUB = 118,
 
         [System.Runtime.Serialization.EnumMember(Value = @"RWF")]
-        RWF = 120,
+        RWF = 119,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SAR")]
-        SAR = 121,
+        SAR = 120,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SBD")]
-        SBD = 122,
+        SBD = 121,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SCR")]
-        SCR = 123,
+        SCR = 122,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SDG")]
-        SDG = 124,
+        SDG = 123,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SEK")]
-        SEK = 125,
+        SEK = 124,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SGD")]
-        SGD = 126,
+        SGD = 125,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SHP")]
-        SHP = 127,
+        SHP = 126,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SLE")]
-        SLE = 128,
+        SLE = 127,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SOS")]
-        SOS = 129,
+        SOS = 128,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SRD")]
-        SRD = 130,
+        SRD = 129,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SSP")]
-        SSP = 131,
+        SSP = 130,
 
         [System.Runtime.Serialization.EnumMember(Value = @"STN")]
-        STN = 132,
+        STN = 131,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SVC")]
-        SVC = 133,
+        SVC = 132,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SYP")]
-        SYP = 134,
+        SYP = 133,
 
         [System.Runtime.Serialization.EnumMember(Value = @"SZL")]
-        SZL = 135,
+        SZL = 134,
 
         [System.Runtime.Serialization.EnumMember(Value = @"THB")]
-        THB = 136,
+        THB = 135,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TJS")]
-        TJS = 137,
+        TJS = 136,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TMT")]
-        TMT = 138,
+        TMT = 137,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TND")]
-        TND = 139,
+        TND = 138,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TOP")]
-        TOP = 140,
+        TOP = 139,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TRY")]
-        TRY = 141,
+        TRY = 140,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TTD")]
-        TTD = 142,
+        TTD = 141,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TWD")]
-        TWD = 143,
+        TWD = 142,
 
         [System.Runtime.Serialization.EnumMember(Value = @"TZS")]
-        TZS = 144,
+        TZS = 143,
 
         [System.Runtime.Serialization.EnumMember(Value = @"UAH")]
-        UAH = 145,
+        UAH = 144,
 
         [System.Runtime.Serialization.EnumMember(Value = @"UGX")]
-        UGX = 146,
+        UGX = 145,
 
         [System.Runtime.Serialization.EnumMember(Value = @"USD")]
-        USD = 147,
+        USD = 146,
 
         [System.Runtime.Serialization.EnumMember(Value = @"USN")]
-        USN = 148,
+        USN = 147,
 
         [System.Runtime.Serialization.EnumMember(Value = @"UYI")]
-        UYI = 149,
+        UYI = 148,
 
         [System.Runtime.Serialization.EnumMember(Value = @"UYU")]
-        UYU = 150,
+        UYU = 149,
 
         [System.Runtime.Serialization.EnumMember(Value = @"UYW")]
-        UYW = 151,
+        UYW = 150,
 
         [System.Runtime.Serialization.EnumMember(Value = @"UZS")]
-        UZS = 152,
+        UZS = 151,
 
         [System.Runtime.Serialization.EnumMember(Value = @"VED")]
-        VED = 153,
+        VED = 152,
 
         [System.Runtime.Serialization.EnumMember(Value = @"VES")]
-        VES = 154,
+        VES = 153,
 
         [System.Runtime.Serialization.EnumMember(Value = @"VND")]
-        VND = 155,
+        VND = 154,
 
         [System.Runtime.Serialization.EnumMember(Value = @"VUV")]
-        VUV = 156,
+        VUV = 155,
 
         [System.Runtime.Serialization.EnumMember(Value = @"WST")]
-        WST = 157,
+        WST = 156,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XAD")]
-        XAD = 158,
+        XAD = 157,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XAF")]
-        XAF = 159,
+        XAF = 158,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XAG")]
-        XAG = 160,
+        XAG = 159,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XAU")]
-        XAU = 161,
+        XAU = 160,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XBA")]
-        XBA = 162,
+        XBA = 161,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XBB")]
-        XBB = 163,
+        XBB = 162,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XBC")]
-        XBC = 164,
+        XBC = 163,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XBD")]
-        XBD = 165,
+        XBD = 164,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XCD")]
-        XCD = 166,
+        XCD = 165,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XCG")]
-        XCG = 167,
+        XCG = 166,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XDR")]
-        XDR = 168,
+        XDR = 167,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XOF")]
-        XOF = 169,
+        XOF = 168,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XPD")]
-        XPD = 170,
+        XPD = 169,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XPF")]
-        XPF = 171,
+        XPF = 170,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XPT")]
-        XPT = 172,
+        XPT = 171,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XSU")]
-        XSU = 173,
+        XSU = 172,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XTS")]
-        XTS = 174,
+        XTS = 173,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XUA")]
-        XUA = 175,
+        XUA = 174,
 
         [System.Runtime.Serialization.EnumMember(Value = @"XXX")]
-        XXX = 176,
+        XXX = 175,
 
         [System.Runtime.Serialization.EnumMember(Value = @"YER")]
-        YER = 177,
+        YER = 176,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ZAR")]
-        ZAR = 178,
+        ZAR = 177,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ZMW")]
-        ZMW = 179,
+        ZMW = 178,
 
         [System.Runtime.Serialization.EnumMember(Value = @"ZWG")]
-        ZWG = 180,
+        ZWG = 179,
 
     }
 
@@ -1281,6 +1302,87 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
     }
 
+    /// <summary>
+    /// One of 'contentFeed', 'donationButton', 'donationForm'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ElementCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"contentFeed")]
+        ContentFeed = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"donationButton")]
+        DonationButton = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"donationForm")]
+        DonationForm = 2,
+
+    }
+
+    /// <summary>
+    /// One of 'contentFeedCollection', 'contentFeedCustom', 'contentFeedLibrary', 'donationButtonCampaign', 'donationButtonCustom', 'donationButtonMenu', 'donationButtonOffering', 'donationFormCampaign', 'donationFormCustom', 'donationFormMenu', 'donationFormOffering'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ElementKind
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"contentFeedCollection")]
+        ContentFeedCollection = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"contentFeedCustom")]
+        ContentFeedCustom = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"contentFeedLibrary")]
+        ContentFeedLibrary = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"donationButtonCampaign")]
+        DonationButtonCampaign = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"donationButtonCustom")]
+        DonationButtonCustom = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"donationButtonMenu")]
+        DonationButtonMenu = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"donationButtonOffering")]
+        DonationButtonOffering = 6,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"donationFormCampaign")]
+        DonationFormCampaign = 7,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"donationFormCustom")]
+        DonationFormCustom = 8,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"donationFormMenu")]
+        DonationFormMenu = 9,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"donationFormOffering")]
+        DonationFormOffering = 10,
+
+    }
+
+    /// <summary>
+    /// One of 'element_checkoutComplete', 'element_crowdfunderContributions', 'element_crowdfunderOwner', 'element_crowdfunderProgress'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ElementPlatformsComposition
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"element_checkoutComplete")]
+        Element_checkoutComplete = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"element_crowdfunderContributions")]
+        Element_crowdfunderContributions = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"element_crowdfunderOwner")]
+        Element_crowdfunderOwner = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"element_crowdfunderProgress")]
+        Element_crowdfunderProgress = 3,
+
+    }
+
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Era
     {
@@ -1440,6 +1542,21 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
         [Newtonsoft.Json.JsonProperty("donationItem", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string DonationItem { get; set; }
+
+    }
+
+    /// <summary>
+    /// One of 'female', 'male'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Gender
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"female")]
+        Female = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"male")]
+        Male = 1,
 
     }
 
@@ -1641,6 +1758,18 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
         _254 = 254,
 
         _255 = 255,
+
+    }
+
+    /// <summary>
+    /// One of 'mobileAppView_sidebar'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum MobileAppViewPlatformsComposition
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"mobileAppView_sidebar")]
+        MobileAppView_sidebar = 0,
 
     }
 
@@ -1849,6 +1978,24 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
     }
 
+    /// <summary>
+    /// One of 'page_campaign', 'page_crowdfunder', 'page_offering'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum PagePlatformsComposition
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"page_campaign")]
+        Page_campaign = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"page_crowdfunder")]
+        Page_crowdfunder = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"page_offering")]
+        Page_offering = 2,
+
+    }
+
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class PayForDonationReq
     {
@@ -1858,6 +2005,51 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public MoneyReq Value { get; set; }
+
+    }
+
+    /// <summary>
+    /// One of 'app', 'themes'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum PlatformsBuildFile
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"app")]
+        App = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"themes")]
+        Themes = 1,
+
+    }
+
+    /// <summary>
+    /// One of 'contentFeed', 'donationFormBeneficiaryCaption', 'donationFormBeneficiaryProfile', 'element', 'mobileAppView', 'page', 'view'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum PlatformsCompositionType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"contentFeed")]
+        ContentFeed = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"donationFormBeneficiaryCaption")]
+        DonationFormBeneficiaryCaption = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"donationFormBeneficiaryProfile")]
+        DonationFormBeneficiaryProfile = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"element")]
+        Element = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"mobileAppView")]
+        MobileAppView = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"page")]
+        Page = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"view")]
+        View = 6,
 
     }
 
@@ -1891,6 +2083,27 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
         [Newtonsoft.Json.JsonProperty("crowdfunder", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public CrowdfunderInfoReq Crowdfunder { get; set; }
+
+    }
+
+    /// <summary>
+    /// One of 'campaign', 'campaignPage', 'offering', 'offeringPage'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum PlatformsPublishedFileKind
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"campaign")]
+        Campaign = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"campaignPage")]
+        CampaignPage = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"offering")]
+        Offering = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"offeringPage")]
+        OfferingPage = 3,
 
     }
 
@@ -2141,6 +2354,79 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedBeneficiary
+    {
+
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public BeneficiaryType? Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("scheme", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedNamedLookup Scheme { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("revision", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Revision { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("reference", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Reference { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("location", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Location { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("priority", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? Priority { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("minimumCost", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double? MinimumCost { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("fundDimensions", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedFundDimensionValues FundDimensions { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("availableComponents", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<PublishedBeneficiaryComponent> AvailableComponents { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("individual", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedIndividualBeneficiary Individual { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("platformsViews", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedBeneficiaryPlatformsViews PlatformsViews { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedBeneficiaryComponent
+    {
+
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("quantity", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? Quantity { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("price", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedPrice Price { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedBeneficiaryPlatformsViews
+    {
+
+        [Newtonsoft.Json.JsonProperty("donationFormCaption", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string DonationFormCaption { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("donationFormProfile", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string DonationFormProfile { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class PublishedCampaign
     {
 
@@ -2304,6 +2590,21 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedCommitmentDuration
+    {
+
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("months", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? Months { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class PublishedContent
     {
 
@@ -2452,6 +2753,30 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedDonationItem
+    {
+
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("allowOneTime", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? AllowOneTime { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("allowRecurring", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? AllowRecurring { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("fundDimensionOptions", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedFundDimensionOptions FundDimensionOptions { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("pricing", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedPricing Pricing { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class PublishedDonationMenu
     {
 
@@ -2550,6 +2875,48 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedFeedbackCustomFieldDefinition
+    {
+
+        [Newtonsoft.Json.JsonProperty("alias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Alias { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedFeedbackCustomFieldType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("required", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Required { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("text", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedFeedbackCustomFieldTextFieldOptions Text { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedFeedbackCustomFieldTextFieldOptions
+    {
+
+        [Newtonsoft.Json.JsonProperty("maxLength", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? MaxLength { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedFeedbackCustomFieldType
+    {
+
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class PublishedFeedbackIntent
     {
 
@@ -2585,6 +2952,57 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
         [Newtonsoft.Json.JsonProperty("entries", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<PublishedFeedbackIntentCustomField> Entries { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedFeedbackScheme
+    {
+
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("fundDimensionOptions", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedFundDimensionOptions FundDimensionOptions { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("pricing", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedPricing Pricing { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("customFieldDefinitions", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<PublishedFeedbackCustomFieldDefinition> CustomFieldDefinitions { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedFundDimensionMapping
+    {
+
+        [Newtonsoft.Json.JsonProperty("enabled", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Enabled { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("beneficiaryField", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string BeneficiaryField { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedFundDimensionOptions
+    {
+
+        [Newtonsoft.Json.JsonProperty("dimension1", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> Dimension1 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dimension2", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> Dimension2 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dimension3", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> Dimension3 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dimension4", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> Dimension4 { get; set; }
 
     }
 
@@ -2650,6 +3068,37 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
         [Newtonsoft.Json.JsonProperty("format", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public PropertyFormat? Format { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedIndividualBeneficiary
+    {
+
+        [Newtonsoft.Json.JsonProperty("firstName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string FirstName { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("lastName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string LastName { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("age", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? Age { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("gender", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Gender? Gender { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedNamedLookup
+    {
+
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
 
     }
 
@@ -2807,6 +3256,42 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedPrice
+    {
+
+        [Newtonsoft.Json.JsonProperty("amount", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double? Amount { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("locked", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Locked { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedPricing
+    {
+
+        [Newtonsoft.Json.JsonProperty("price", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedPrice Price { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("rules", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<PublishedPricingRule> Rules { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedPricingRule
+    {
+
+        [Newtonsoft.Json.JsonProperty("price", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedPrice Price { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("fundDimensions", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedFundDimensionValues FundDimensions { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class PublishedProcessedImage
     {
 
@@ -2949,6 +3434,75 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
         [Newtonsoft.Json.JsonProperty("tentative", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool? Tentative { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedSponsorshipScheme
+    {
+
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("fundDimensionOptions", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedSponsorshipSchemeFundDimensionOptions FundDimensionOptions { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("components", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<PublishedSponsorshipSchemeComponent> Components { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("allowedDurations", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<PublishedCommitmentDuration> AllowedDurations { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("availableLocations", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> AvailableLocations { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedSponsorshipSchemeComponent
+    {
+
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("required", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Required { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("pricing", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedPricing Pricing { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedSponsorshipSchemeFundDimensionOptions
+    {
+
+        [Newtonsoft.Json.JsonProperty("dimension1", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> Dimension1 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dimension2", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> Dimension2 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dimension3", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> Dimension3 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dimension4", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> Dimension4 { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dimension1Mapping", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedFundDimensionMapping Dimension1Mapping { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dimension2Mapping", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedFundDimensionMapping Dimension2Mapping { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dimension3Mapping", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedFundDimensionMapping Dimension3Mapping { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dimension4Mapping", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedFundDimensionMapping Dimension4Mapping { get; set; }
 
     }
 
