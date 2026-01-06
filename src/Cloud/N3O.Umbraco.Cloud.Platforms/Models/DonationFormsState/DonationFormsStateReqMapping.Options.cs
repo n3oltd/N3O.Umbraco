@@ -33,11 +33,13 @@ public partial class ElementDonationFormsStateReqMapping {
         var items = new List<DonationFormSuggestedAmountsReq>();
 
         foreach (var suggestedAmountsElement in suggestedAmountsElements) {
-            var req = new DonationFormSuggestedAmountsReq();
-            req.GiftType = suggestedAmountsElement.GiftType.ToEnum<GiftType>();
-            req.Amounts = suggestedAmountsElement.SuggestedAmounts.Select(ctx.Map<SuggestedAmountElement, DonationFormSuggestedAmountReq>).ToList();
+            if (suggestedAmountsElement.SuggestedAmounts.HasAny()) {
+                var req = new DonationFormSuggestedAmountsReq();
+                req.GiftType = suggestedAmountsElement.GiftType.ToEnum<GiftType>();
+                req.Amounts = suggestedAmountsElement.SuggestedAmounts.Select(ctx.Map<SuggestedAmountElement, DonationFormSuggestedAmountReq>).ToList();
             
-            items.Add(req);
+                items.Add(req);
+            }
         }
 
         return items;
