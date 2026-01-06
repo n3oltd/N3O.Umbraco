@@ -5,6 +5,6 @@ using Typesense;
 namespace N3O.Umbraco.Search.Typesense.Models;
 
 public abstract class SearchDocument : Value {
-    [Field("id", FieldType.String)]
+    [Field("id", FieldType.String, true, true)]
     public Guid Id { get; set; }
 }
