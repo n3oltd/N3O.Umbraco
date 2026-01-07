@@ -11,7 +11,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Lookups.Elements;
 public class DonationFormElementsDataSource : IContentmentDataSource {
     private readonly ILookups _lookups;
 
-    protected DonationFormElementsDataSource(ILookups lookups) {
+    public DonationFormElementsDataSource(ILookups lookups) {
         _lookups = lookups;
     }
     
