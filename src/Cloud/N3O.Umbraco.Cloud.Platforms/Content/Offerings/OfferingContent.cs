@@ -60,6 +60,9 @@ public class OfferingContent : UmbracoContent<OfferingContent> {
     public GiftType SuggestedGiftType => GetValue(x => x.SuggestedGiftType);
     public bool AllowCrowdfunding => GetValue(x => x.AllowCrowdfunding);
     
+    public string DonationFormEmbedCode => GetValue(x => x.DonationFormEmbedCode);
+    public string DonationButton => GetValue(x => x.DonationButton);
+    
     public SponsorshipOfferingContent Sponsorship { get; private set; }
     public FundOfferingContent Fund { get; private set; }
     public FeedbackOfferingContent Feedback { get; private set; }

@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using N3O.Umbraco.Cloud.Extensions;
+using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
@@ -57,8 +59,16 @@ public class ElementSending : INotificationAsyncHandler<SendingContentNotificati
         var type = StaticLookups.GetAll<ElementType>().Single(x => x.ContentTypeAlias.EqualsInvariant(contentTypeAlias));
             
         var tag = new TagBuilder(type.TagName);
-
-        tag.Attributes.Add("element-id", contentId.ToString());
+        
+        if (type == ElementTypes.DonationButton) {
+            tag.Attributes.Add("element-id", $"{ElementKind.DonationButtonCustom.ToEnumString()}_{contentId.ToString()}");
+            
+            tag.Attributes.Add("element-type", ElementKind.DonationButtonCustom.ToEnumString());
+        } else if (type == ElementTypes.DonationForm) {
+            tag.Attributes.Add("element-id", $"{ElementKind.DonationFormCustom.ToEnumString()}_{contentId.ToString()}");
+            
+            tag.Attributes.Add("element-type", ElementKind.DonationFormCustom.ToEnumString());
+        }
         
         var embedTab = variant.Tabs.Single(x => x.Alias.EqualsInvariant("embed"));
         var embedProperty = GetProperty(embedTab, AliasHelper<ElementContent>.PropertyAlias(x => x.EmbedCode));
