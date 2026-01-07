@@ -23,7 +23,9 @@ public class Campaign : ContentOrPublishedLookup {
         var tag = new TagBuilder(ElementTypes.DonationButton.TagName);
         
         tag.Attributes.Add("element-id", $"{ElementKind.DonationButtonCampaign.ToEnumString()}_{Id}");
-        tag.Attributes.Add("element-kind", $"{ElementKind.DonationButtonCampaign.ToEnumString()}");
+        
+        // TODO change to element-kind once fixed on widget
+        tag.Attributes.Add("element-type", $"{ElementKind.DonationButtonCampaign.ToEnumString()}");
 
         return tag.ToHtmlString();
     }
