@@ -17,10 +17,12 @@ using Umbraco.Extensions;
 public class ContentOfferings : LookupsCollection<Offering> {
     private readonly IContentCache _contentCache;
     private readonly IUmbracoContextAccessor _umbracoContextAccessor;
+    private readonly ILookups _lookups;
 
-    public ContentOfferings(IContentCache contentCache, IUmbracoContextAccessor umbracoContextAccessor) {
+    public ContentOfferings(IContentCache contentCache, IUmbracoContextAccessor umbracoContextAccessor, ILookups lookups) {
         _contentCache = contentCache;
         _umbracoContextAccessor = umbracoContextAccessor;
+        _lookups = lookups;
 
         _contentCache.Flushed += ContentCacheOnFlushed;
     }
@@ -51,7 +53,8 @@ public class ContentOfferings : LookupsCollection<Offering> {
     private Offering ToOffering(OfferingContent offeringContent) {
         return new Offering(LookupContent.GetId(offeringContent.Content()),
                             LookupContent.GetName(offeringContent.Content()),
-                            offeringContent.Content().Key);
+                            offeringContent.Content().Key,
+                            offeringContent.Content().Parent.Key.ToString());
     }
 
     private void ContentCacheOnFlushed(object sender, EventArgs e) {

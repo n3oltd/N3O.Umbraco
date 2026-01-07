@@ -23,15 +23,14 @@ public class ApiOfferings : ApiLookupsCollection<Offering> {
         var publishedCampaigns = await _cdnClient.DownloadSubscriptionContentAsync<PublishedCampaigns>(SubscriptionFiles.Campaigns,
                                                                                                        JsonSerializers.JsonProvider,
                                                                                                        cancellationToken);
-
-        var publishedOfferings = publishedCampaigns.Campaigns.SelectMany(x => x.Offerings).ToList();
         
         var offerings = new List<Offering>();
 
-        foreach (var publishedOffering in publishedOfferings) {
-            var offering = new Offering(publishedOffering.Id, publishedOffering.Name, null);
+        foreach (var publishedCampaign in publishedCampaigns.Campaigns) {
+            var offeringLookups = publishedCampaign.Offerings
+                                                   .Select(x => new Offering(x.Id, x.Name, null, publishedCampaign.Id));
             
-            offerings.Add(offering);
+            offerings.AddRange(offeringLookups);
         }
 
         return offerings;
