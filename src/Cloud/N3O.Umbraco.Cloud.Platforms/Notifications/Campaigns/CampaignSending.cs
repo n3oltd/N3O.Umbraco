@@ -43,7 +43,7 @@ public class CampaignSending : INotificationAsyncHandler<SendingContentNotificat
         donationFormTag.Attributes.Add("element-type", ElementKind.DonationFormCampaign.ToEnumString());
         donationButtonTag.Attributes.Add("element-type", ElementKind.DonationButtonCampaign.ToEnumString());
         
-        var embedTab = variant.Tabs.Single(x => x.Alias.EqualsInvariant("embed"));
+        var embedTab = variant.Tabs.SingleOrDefault(x => x.Alias.EqualsInvariant("embed"));
         
         var donationFormTagEmbedProperty = GetProperty(embedTab, AliasHelper<CampaignContent>.PropertyAlias(x => x.DonationFormEmbedCode));
         var donationButtonEmbedProperty = GetProperty(embedTab, AliasHelper<CampaignContent>.PropertyAlias(x => x.DonationButtonEmbedCode));
@@ -53,6 +53,6 @@ public class CampaignSending : INotificationAsyncHandler<SendingContentNotificat
     }
     
     private ContentPropertyDisplay GetProperty(Tab<ContentPropertyDisplay> tab, string alias) {
-        return tab.Properties?.SingleOrDefault(x => x.Alias.EqualsInvariant(alias));
+        return tab?.Properties?.SingleOrDefault(x => x.Alias.EqualsInvariant(alias));
     }
 }
