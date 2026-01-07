@@ -18,7 +18,11 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class OfferingSending : INotificationAsyncHandler<SendingContentNotification> {
     public Task HandleAsync(SendingContentNotification notification, CancellationToken cancellationToken) {
-        var isOffering = notification.Content.ContentTypeAlias.EqualsInvariant(AliasHelper<OfferingContent>.ContentTypeAlias());
+        var isOffering = notification.Content
+                                     .ContentTypeAlias
+                                     .IsAnyOf(AliasHelper<FundOfferingContent>.ContentTypeAlias(),
+                                              AliasHelper<SponsorshipOfferingContent>.ContentTypeAlias(),
+                                              AliasHelper<FeedbackOfferingContent>.ContentTypeAlias());
 
         if (isOffering) {
             foreach (var variant in notification.Content.Variants) {
@@ -42,7 +46,7 @@ public class OfferingSending : INotificationAsyncHandler<SendingContentNotificat
         var embedTab = variant.Tabs.Single(x => x.Alias.EqualsInvariant("embed"));
         
         var donationFormTagEmbedProperty = GetProperty(embedTab, AliasHelper<OfferingContent>.PropertyAlias(x => x.DonationFormEmbedCode));
-        var donationButtonEmbedProperty = GetProperty(embedTab, AliasHelper<OfferingContent>.PropertyAlias(x => x.DonationButton));
+        var donationButtonEmbedProperty = GetProperty(embedTab, AliasHelper<OfferingContent>.PropertyAlias(x => x.DonationButtonEmbedCode));
         
         donationFormTagEmbedProperty.Value = donationFormTag.ToHtmlString();
         donationButtonEmbedProperty.Value = donationButtonTag.ToHtmlString();

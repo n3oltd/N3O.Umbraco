@@ -298,15 +298,6 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class CollectionNames
-    {
-
-        [Newtonsoft.Json.JsonProperty("campaignDocument", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string CampaignDocument { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class ConnectRegularGivingOptionsReq
     {
 
@@ -1303,7 +1294,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     }
 
     /// <summary>
-    /// One of 'contentFeed', 'donationButton', 'donationForm'
+    /// One of 'contentFeed', 'crowdfunders', 'donationButton', 'donationForm'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum ElementCategory
@@ -1312,53 +1303,65 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
         [System.Runtime.Serialization.EnumMember(Value = @"contentFeed")]
         ContentFeed = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"crowdfunders")]
+        Crowdfunders = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"donationButton")]
-        DonationButton = 1,
+        DonationButton = 2,
 
         [System.Runtime.Serialization.EnumMember(Value = @"donationForm")]
-        DonationForm = 2,
+        DonationForm = 3,
 
     }
 
     /// <summary>
-    /// One of 'contentFeedCollection', 'contentFeedCustom', 'contentFeedLibrary', 'donationButtonCampaign', 'donationButtonCustom', 'donationButtonMenu', 'donationButtonOffering', 'donationFormCampaign', 'donationFormCustom', 'donationFormMenu', 'donationFormOffering'
+    /// One of 'almostCompleteCrowdfunders', 'contentFeedCollection', 'contentFeedCustom', 'contentFeedLibrary', 'donationButtonCampaign', 'donationButtonCustom', 'donationButtonMenu', 'donationButtonOffering', 'donationFormCampaign', 'donationFormCustom', 'donationFormMenu', 'donationFormOffering', 'endingSoonCrowdfunders', 'FeaturedCrowdfunders'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.0.0 (NJsonSchema v11.5.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum ElementKind
     {
 
+        [System.Runtime.Serialization.EnumMember(Value = @"almostCompleteCrowdfunders")]
+        AlmostCompleteCrowdfunders = 0,
+
         [System.Runtime.Serialization.EnumMember(Value = @"contentFeedCollection")]
-        ContentFeedCollection = 0,
+        ContentFeedCollection = 1,
 
         [System.Runtime.Serialization.EnumMember(Value = @"contentFeedCustom")]
-        ContentFeedCustom = 1,
+        ContentFeedCustom = 2,
 
         [System.Runtime.Serialization.EnumMember(Value = @"contentFeedLibrary")]
-        ContentFeedLibrary = 2,
+        ContentFeedLibrary = 3,
 
         [System.Runtime.Serialization.EnumMember(Value = @"donationButtonCampaign")]
-        DonationButtonCampaign = 3,
+        DonationButtonCampaign = 4,
 
         [System.Runtime.Serialization.EnumMember(Value = @"donationButtonCustom")]
-        DonationButtonCustom = 4,
+        DonationButtonCustom = 5,
 
         [System.Runtime.Serialization.EnumMember(Value = @"donationButtonMenu")]
-        DonationButtonMenu = 5,
+        DonationButtonMenu = 6,
 
         [System.Runtime.Serialization.EnumMember(Value = @"donationButtonOffering")]
-        DonationButtonOffering = 6,
+        DonationButtonOffering = 7,
 
         [System.Runtime.Serialization.EnumMember(Value = @"donationFormCampaign")]
-        DonationFormCampaign = 7,
+        DonationFormCampaign = 8,
 
         [System.Runtime.Serialization.EnumMember(Value = @"donationFormCustom")]
-        DonationFormCustom = 8,
+        DonationFormCustom = 9,
 
         [System.Runtime.Serialization.EnumMember(Value = @"donationFormMenu")]
-        DonationFormMenu = 9,
+        DonationFormMenu = 10,
 
         [System.Runtime.Serialization.EnumMember(Value = @"donationFormOffering")]
-        DonationFormOffering = 10,
+        DonationFormOffering = 11,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"endingSoonCrowdfunders")]
+        EndingSoonCrowdfunders = 12,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"FeaturedCrowdfunders")]
+        FeaturedCrowdfunders = 13,
 
     }
 
@@ -2686,6 +2689,10 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Name { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("elementKind", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ElementKind? ElementKind { get; set; }
+
         [Newtonsoft.Json.JsonProperty("embedCode", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string EmbedCode { get; set; }
 
@@ -2710,6 +2717,10 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("elementKind", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ElementKind? ElementKind { get; set; }
 
         [Newtonsoft.Json.JsonProperty("embedCode", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string EmbedCode { get; set; }
@@ -2859,6 +2870,10 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("elementKind", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ElementKind? ElementKind { get; set; }
 
         [Newtonsoft.Json.JsonProperty("embedCode", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string EmbedCode { get; set; }

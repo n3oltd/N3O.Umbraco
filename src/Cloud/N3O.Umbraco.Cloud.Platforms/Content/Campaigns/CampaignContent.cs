@@ -57,7 +57,7 @@ public class CampaignContent : UmbracoContent<CampaignContent> {
     public decimal Target => GetValue(x => x.Target);
     
     public string DonationFormEmbedCode => GetValue(x => x.DonationFormEmbedCode);
-    public string DonationButton => GetValue(x => x.DonationButton);
+    public string DonationButtonEmbedCode => GetValue(x => x.DonationButtonEmbedCode);
 
     public IEnumerable<OfferingContent> Offerings => Content().Descendants()
                                                               .Where(x => x.IsComposedOf(AliasHelper<OfferingContent>.ContentTypeAlias()))

@@ -18,7 +18,11 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class CampaignSending : INotificationAsyncHandler<SendingContentNotification> {
     public Task HandleAsync(SendingContentNotification notification, CancellationToken cancellationToken) {
-        var isCampaign = notification.Content.ContentTypeAlias.EqualsInvariant(AliasHelper<CampaignContent>.ContentTypeAlias());
+        var isCampaign = notification.Content
+                                     .ContentTypeAlias
+                                     .IsAnyOf(AliasHelper<StandardCampaignContent>.ContentTypeAlias(),
+                                              AliasHelper<ScheduledGivingCampaignContent>.ContentTypeAlias(),
+                                              AliasHelper<TelethonCampaignContent>.ContentTypeAlias());
 
         if (isCampaign) {
             foreach (var variant in notification.Content.Variants) {
@@ -42,7 +46,7 @@ public class CampaignSending : INotificationAsyncHandler<SendingContentNotificat
         var embedTab = variant.Tabs.Single(x => x.Alias.EqualsInvariant("embed"));
         
         var donationFormTagEmbedProperty = GetProperty(embedTab, AliasHelper<CampaignContent>.PropertyAlias(x => x.DonationFormEmbedCode));
-        var donationButtonEmbedProperty = GetProperty(embedTab, AliasHelper<CampaignContent>.PropertyAlias(x => x.DonationButton));
+        var donationButtonEmbedProperty = GetProperty(embedTab, AliasHelper<CampaignContent>.PropertyAlias(x => x.DonationButtonEmbedCode));
         
         donationFormTagEmbedProperty.Value = donationFormTag.ToHtmlString();
         donationButtonEmbedProperty.Value = donationButtonTag.ToHtmlString();
