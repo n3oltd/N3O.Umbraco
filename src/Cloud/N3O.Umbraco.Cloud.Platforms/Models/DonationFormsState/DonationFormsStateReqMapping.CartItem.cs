@@ -87,7 +87,7 @@ public partial class ElementDonationFormsStateReqMapping {
        platformsContribution.ContributionId = Guid.NewGuid().ToString();
        platformsContribution.Campaign = new CampaignInfoReq();
        platformsContribution.Campaign.Id = campaign.Key.ToString();
-       platformsContribution.Campaign.Reference = publishedCampaign.Reference;
+       platformsContribution.Campaign.Reference = publishedCampaign?.Reference;
         
        platformsContribution.Offering = new OfferingInfoReq();
        platformsContribution.Offering.Id = offering.Key.ToString();
