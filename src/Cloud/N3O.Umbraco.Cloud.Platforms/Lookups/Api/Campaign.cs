@@ -14,7 +14,7 @@ public class Campaign : ContentOrPublishedLookup {
         var tag = new TagBuilder(ElementTypes.DonationForm.TagName);
         
         tag.Attributes.Add("element-id", $"{ElementKind.DonationFormCampaign.ToEnumString()}_{Id}");
-        tag.Attributes.Add("element-type", $"{ElementKind.DonationFormCampaign.ToEnumString()}");
+        tag.Attributes.Add("element-kind", $"{ElementKind.DonationFormCampaign.ToEnumString()}");
 
         return tag.ToHtmlString();
     }
@@ -23,7 +23,7 @@ public class Campaign : ContentOrPublishedLookup {
         var tag = new TagBuilder(ElementTypes.DonationButton.TagName);
         
         tag.Attributes.Add("element-id", $"{ElementKind.DonationButtonCampaign.ToEnumString()}_{Id}");
-        tag.Attributes.Add("element-type", $"{ElementKind.DonationButtonCampaign.ToEnumString()}");
+        tag.Attributes.Add("element-kind", $"{ElementKind.DonationButtonCampaign.ToEnumString()}");
 
         return tag.ToHtmlString();
     }

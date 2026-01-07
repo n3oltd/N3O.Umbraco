@@ -63,11 +63,11 @@ public class ElementSending : INotificationAsyncHandler<SendingContentNotificati
         if (type == ElementTypes.DonationButton) {
             tag.Attributes.Add("element-id", $"{ElementKind.DonationButtonCustom.ToEnumString()}_{contentId.ToString()}");
             
-            tag.Attributes.Add("element-type", ElementKind.DonationButtonCustom.ToEnumString());
+            tag.Attributes.Add("element-kind", ElementKind.DonationButtonCustom.ToEnumString());
         } else if (type == ElementTypes.DonationForm) {
             tag.Attributes.Add("element-id", $"{ElementKind.DonationFormCustom.ToEnumString()}_{contentId.ToString()}");
             
-            tag.Attributes.Add("element-type", ElementKind.DonationFormCustom.ToEnumString());
+            tag.Attributes.Add("element-kind", ElementKind.DonationFormCustom.ToEnumString());
         }
         
         var embedTab = variant.Tabs.Single(x => x.Alias.EqualsInvariant("embed"));

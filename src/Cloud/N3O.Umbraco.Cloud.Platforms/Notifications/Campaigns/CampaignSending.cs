@@ -40,8 +40,8 @@ public class CampaignSending : INotificationAsyncHandler<SendingContentNotificat
         donationFormTag.Attributes.Add("element-id", $"{ElementKind.DonationFormCampaign.ToEnumString()}_{contentId.ToString()}");
         donationButtonTag.Attributes.Add("element-id", $"{ElementKind.DonationButtonCampaign.ToEnumString()}_{contentId.ToString()}");
 
-        donationFormTag.Attributes.Add("element-type", ElementKind.DonationFormCampaign.ToEnumString());
-        donationButtonTag.Attributes.Add("element-type", ElementKind.DonationButtonCampaign.ToEnumString());
+        donationFormTag.Attributes.Add("element-kind", ElementKind.DonationFormCampaign.ToEnumString());
+        donationButtonTag.Attributes.Add("element-kind", ElementKind.DonationButtonCampaign.ToEnumString());
         
         var embedTab = variant.Tabs.SingleOrDefault(x => x.Alias.EqualsInvariant("embed"));
         
