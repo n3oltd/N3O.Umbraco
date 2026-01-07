@@ -14,24 +14,27 @@ namespace N3O.Umbraco.Cloud.Platforms.Lookups;
 [Order(int.MaxValue)]
 public class ApiOfferings : ApiLookupsCollection<Offering> {
     private readonly ICdnClient _cdnClient;
+    private readonly ILookups _lookups;
 
-    public ApiOfferings(ICdnClient cdnClient) {
+    public ApiOfferings(ICdnClient cdnClient, ILookups lookups) {
         _cdnClient = cdnClient;
+        _lookups = lookups;
     }
     
     protected override async Task<IReadOnlyList<Offering>> FetchAsync(CancellationToken cancellationToken) {
         var publishedCampaigns = await _cdnClient.DownloadSubscriptionContentAsync<PublishedCampaigns>(SubscriptionFiles.Campaigns,
                                                                                                        JsonSerializers.JsonProvider,
                                                                                                        cancellationToken);
-
-        var publishedOfferings = publishedCampaigns.Campaigns.SelectMany(x => x.Offerings).ToList();
         
         var offerings = new List<Offering>();
 
-        foreach (var publishedOffering in publishedOfferings) {
-            var offering = new Offering(publishedOffering.Id, publishedOffering.Name, null);
+        foreach (var publishedCampaign in publishedCampaigns.Campaigns) {
+            var campaign = _lookups.FindById<Campaign>(publishedCampaign.Id);
             
-            offerings.Add(offering);
+            var offeringLookups = publishedCampaign.Offerings
+                                                   .Select(x => new Offering(x.Id, x.Name, null, campaign));
+            
+            offerings.AddRange(offeringLookups);
         }
 
         return offerings;

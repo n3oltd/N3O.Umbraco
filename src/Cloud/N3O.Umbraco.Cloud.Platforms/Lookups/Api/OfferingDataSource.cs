@@ -10,4 +10,8 @@ public class OfferingDataSource : LookupsDataSource<Offering> {
     public override string Icon => "icon-categories";
 
     protected override string GetIcon(Offering offering) => "icon-categories";
+
+    protected override string GetDescription(Offering offering) {
+        return $"{offering.Campaign.Name}: {offering.Name}";
+    }
 }
