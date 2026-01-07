@@ -61,7 +61,8 @@ public class ContentElements : LookupsCollection<Element> {
         return new Element(LookupContent.GetId(elementContent.Content()),
                            LookupContent.GetName(elementContent.Content()),
                            elementContent.Content().Key,
-                           elementKind);
+                           elementKind,
+                           elementContent.EmbedCode);
     }
 
     private void ContentCacheOnFlushed(object sender, EventArgs e) {

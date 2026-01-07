@@ -30,7 +30,8 @@ public class ApiElements : ApiLookupsCollection<Element> {
             var element = new Element(publishedElement.Id,
                                       publishedElement.Name,
                                       null,
-                                      publishedElement.ElementKind.GetValueOrThrow());
+                                      publishedElement.ElementKind.GetValueOrThrow(),
+                                      publishedElement.EmbedCode);
             
             elements.Add(element);
         }
