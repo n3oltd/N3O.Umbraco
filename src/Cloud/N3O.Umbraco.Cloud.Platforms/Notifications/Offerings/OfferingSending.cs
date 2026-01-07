@@ -42,7 +42,7 @@ public class OfferingSending : INotificationAsyncHandler<SendingContentNotificat
         var embedTab = variant.Tabs.Single(x => x.Alias.EqualsInvariant("embed"));
         
         var donationFormTagEmbedProperty = GetProperty(embedTab, AliasHelper<OfferingContent>.PropertyAlias(x => x.DonationFormEmbedCode));
-        var donationButtonEmbedProperty = GetProperty(embedTab, AliasHelper<OfferingContent>.PropertyAlias(x => x.DonationButton));
+        var donationButtonEmbedProperty = GetProperty(embedTab, AliasHelper<OfferingContent>.PropertyAlias(x => x.DonationButtonEmbedCode));
         
         donationFormTagEmbedProperty.Value = donationFormTag.ToHtmlString();
         donationButtonEmbedProperty.Value = donationButtonTag.ToHtmlString();
