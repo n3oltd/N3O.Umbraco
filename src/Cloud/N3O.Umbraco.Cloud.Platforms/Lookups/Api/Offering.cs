@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Lookups;
 using System;
@@ -12,8 +13,8 @@ public class Offering : ContentOrPublishedLookup {
     public string GetDonationFormEmbedCode() {
         var tag = new TagBuilder(ElementTypes.DonationForm.TagName);
         
-        tag.Attributes.Add("element-id", $"{ElementKind.DonationFormOffering}_{Id}");
-        tag.Attributes.Add("element-type", $"{ElementKind.DonationFormOffering}");
+        tag.Attributes.Add("element-id", $"{ElementKind.DonationFormOffering.ToEnumString()}_{Id}");
+        tag.Attributes.Add("element-type", $"{ElementKind.DonationFormOffering.ToEnumString()}");
 
         return tag.ToHtmlString();
     }
@@ -21,8 +22,8 @@ public class Offering : ContentOrPublishedLookup {
     public string GetDonationButtonEmbedCode() {
         var tag = new TagBuilder(ElementTypes.DonationButton.TagName);
         
-        tag.Attributes.Add("element-id", $"{ElementKind.DonationButtonOffering}_{Id}");
-        tag.Attributes.Add("element-type", $"{ElementKind.DonationButtonOffering}");
+        tag.Attributes.Add("element-id", $"{ElementKind.DonationButtonOffering.ToEnumString()}_{Id}");
+        tag.Attributes.Add("element-type", $"{ElementKind.DonationButtonOffering.ToEnumString()}");
 
         return tag.ToHtmlString();
     }
