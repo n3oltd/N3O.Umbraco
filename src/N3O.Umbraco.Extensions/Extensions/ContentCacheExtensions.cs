@@ -6,7 +6,7 @@ namespace N3O.Umbraco.Extensions;
 
 public static class ContentCacheExtensions {
     public static IPublishedContent Special(this IContentCache contentCache, SpecialContent specialContent) {
-        return contentCache.Single<UrlSettingsContent>().GetSpecialContent(specialContent.UrlSettingsPropertyAlias)
+        return contentCache.Single<UrlSettingsContent>()?.GetSpecialContent(specialContent.UrlSettingsPropertyAlias)
                // TODO Remove me once all sites migrated
                ?? contentCache.Single(specialContent.Id);
     }
