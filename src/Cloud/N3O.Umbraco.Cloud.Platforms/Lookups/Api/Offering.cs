@@ -8,11 +8,11 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Cloud.Platforms.Lookups;
 
 public class Offering : ContentOrPublishedLookup {
-    public Offering(string id, string name, Guid? contentId, Campaign campaign) : base(id, name, contentId) {
-        Campaign = campaign;
+    public Offering(string id, string name, Guid? contentId, string campaignId) : base(id, name, contentId) {
+        CampaignId = campaignId;
     }
     
-    public Campaign Campaign { get; }
+    public string CampaignId { get; }
     
     public string GetDonationFormEmbedCode() {
         var tag = new TagBuilder(ElementTypes.DonationForm.TagName);

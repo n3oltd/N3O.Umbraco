@@ -3,7 +3,11 @@
 namespace N3O.Umbraco.Cloud.Platforms.Lookups;
 
 public class OfferingDataSource : LookupsDataSource<Offering> {
-    public OfferingDataSource(ILookups lookups) : base(lookups) { }
+    private readonly ILookups _lookups;
+    
+    public OfferingDataSource(ILookups lookups) : base(lookups) {
+        _lookups = lookups;
+    }
     
     public override string Name => "Offerings";
     public override string Description => "Data source for offerings";
@@ -12,6 +16,8 @@ public class OfferingDataSource : LookupsDataSource<Offering> {
     protected override string GetIcon(Offering offering) => "icon-categories";
 
     protected override string GetDescription(Offering offering) {
-        return $"{offering.Campaign.Name}: {offering.Name}";
+        var campaign = _lookups.FindById<Campaign>(offering.CampaignId);
+        
+        return $"{campaign.Name}: {offering.Name}";
     }
 }

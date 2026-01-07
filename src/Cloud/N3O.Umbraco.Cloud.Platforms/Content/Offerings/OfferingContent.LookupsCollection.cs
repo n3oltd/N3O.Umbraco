@@ -51,12 +51,10 @@ public class ContentOfferings : LookupsCollection<Offering> {
     }
 
     private Offering ToOffering(OfferingContent offeringContent) {
-        var campaign = _lookups.FindById<Campaign>(offeringContent.Content().Parent.Key.ToString());
-        
         return new Offering(LookupContent.GetId(offeringContent.Content()),
                             LookupContent.GetName(offeringContent.Content()),
                             offeringContent.Content().Key,
-                            campaign);
+                            offeringContent.Content().Parent.Key.ToString());
     }
 
     private void ContentCacheOnFlushed(object sender, EventArgs e) {
