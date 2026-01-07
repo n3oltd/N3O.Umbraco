@@ -79,7 +79,7 @@ public partial class ElementDonationFormsStateReqMapping {
     private PlatformsContributionInfoReq GetPlatformsContributionInfoReq(CampaignContent campaign,
                                                                          OfferingContent offering) {
         var publishedCampaign = _cdnClient.DownloadPublishedContentAsync<PublishedCampaign>(PublishedFileKinds.Campaign,
-                                                                                            $"{campaign.Key}.json",
+                                                                                            $"000410cf-a456-4fdc-bb03-5bbb3d0f7f1b.json",
                                                                                             JsonSerializers.Simple)
                                           .GetAwaiter().GetResult();
         
