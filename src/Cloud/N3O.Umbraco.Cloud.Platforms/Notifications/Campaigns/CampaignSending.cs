@@ -18,7 +18,11 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class CampaignSending : INotificationAsyncHandler<SendingContentNotification> {
     public Task HandleAsync(SendingContentNotification notification, CancellationToken cancellationToken) {
-        var isCampaign = notification.Content.ContentTypeAlias.EqualsInvariant(AliasHelper<CampaignContent>.ContentTypeAlias());
+        var isCampaign = notification.Content
+                                     .ContentTypeAlias
+                                     .IsAnyOf(AliasHelper<StandardCampaignContent>.ContentTypeAlias(),
+                                              AliasHelper<ScheduledGivingCampaignContent>.ContentTypeAlias(),
+                                              AliasHelper<TelethonCampaignContent>.ContentTypeAlias());
 
         if (isCampaign) {
             foreach (var variant in notification.Content.Variants) {

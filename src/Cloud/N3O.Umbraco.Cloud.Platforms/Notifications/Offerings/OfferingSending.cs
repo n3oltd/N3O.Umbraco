@@ -18,7 +18,11 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class OfferingSending : INotificationAsyncHandler<SendingContentNotification> {
     public Task HandleAsync(SendingContentNotification notification, CancellationToken cancellationToken) {
-        var isOffering = notification.Content.ContentTypeAlias.EqualsInvariant(AliasHelper<OfferingContent>.ContentTypeAlias());
+        var isOffering = notification.Content
+                                     .ContentTypeAlias
+                                     .IsAnyOf(AliasHelper<FundOfferingContent>.ContentTypeAlias(),
+                                              AliasHelper<SponsorshipOfferingContent>.ContentTypeAlias(),
+                                              AliasHelper<FeedbackOfferingContent>.ContentTypeAlias());
 
         if (isOffering) {
             foreach (var variant in notification.Content.Variants) {
