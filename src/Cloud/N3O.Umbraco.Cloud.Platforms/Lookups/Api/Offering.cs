@@ -17,7 +17,7 @@ public class Offering : ContentOrPublishedLookup {
     public string GetDonationFormEmbedCode() {
         var tag = new TagBuilder(ElementTypes.DonationForm.TagName);
         
-        tag.Attributes.Add("element-id", $"{ElementKind.DonationFormOffering.ToEnumString()}_{Id}");
+        tag.Attributes.Add("element-id", $"{Id}");
         tag.Attributes.Add("element-kind", $"{ElementKind.DonationFormOffering.ToEnumString()}");
 
         return tag.ToHtmlString();
@@ -26,7 +26,7 @@ public class Offering : ContentOrPublishedLookup {
     public string GetDonationButtonEmbedCode() {
         var tag = new TagBuilder(ElementTypes.DonationButton.TagName);
         
-        tag.Attributes.Add("element-id", $"{ElementKind.DonationButtonOffering.ToEnumString()}_{Id}");
+        tag.Attributes.Add("element-id", $"{Id}");
         tag.Attributes.Add("element-kind", $"{ElementKind.DonationButtonOffering.ToEnumString()}");
 
         return tag.ToHtmlString();
