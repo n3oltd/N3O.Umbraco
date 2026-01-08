@@ -27,9 +27,7 @@ public class Offering : ContentOrPublishedLookup {
         var tag = new TagBuilder(ElementTypes.DonationButton.TagName);
         
         tag.Attributes.Add("element-id", $"{ElementKind.DonationButtonOffering.ToEnumString()}_{Id}");
-        
-        // TODO change to element-kind once fixed on widget
-        tag.Attributes.Add("element-type", $"{ElementKind.DonationButtonOffering.ToEnumString()}");
+        tag.Attributes.Add("element-kind", $"{ElementKind.DonationButtonOffering.ToEnumString()}");
 
         return tag.ToHtmlString();
     }
