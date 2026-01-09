@@ -41,5 +41,5 @@ public class ApiCountries : ApiLookupsCollection<Country> {
         return countries;
     }
 
-    protected override TimeSpan CacheDuration => TimeSpan.FromHours(12);
+    protected override TimeSpan CacheDuration => TimeSpan.FromMinutes(5);
 }
