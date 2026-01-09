@@ -37,5 +37,5 @@ public class ApiSponsorshipComponents : ApiLookupsCollection<SponsorshipComponen
         return sponsorshipComponents;
     }
 
-    protected override TimeSpan CacheDuration => TimeSpan.FromHours(12);
+    protected override TimeSpan CacheDuration => TimeSpan.FromMinutes(5);
 }
