@@ -30,7 +30,7 @@ public abstract class ApiFundDimensions<T> : ApiLookupsCollection<T> where T : I
         return GetFundDimension(fundStructure).Yield().ToList();
     }
 
-    protected override TimeSpan CacheDuration => TimeSpan.FromHours(12);
+    protected override TimeSpan CacheDuration => TimeSpan.FromMinutes(5);
     protected ILookups Lookups { get; }
 
     protected abstract T GetFundDimension(PublishedFundStructure fundDimensions);
