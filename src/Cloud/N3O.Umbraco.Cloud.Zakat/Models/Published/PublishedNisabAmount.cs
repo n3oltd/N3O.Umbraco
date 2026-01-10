@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace N3O.Umbraco.Cloud.Models;
+namespace N3O.Umbraco.Cloud.Zakat.Models;
 
 public class PublishedNisabAmount : Value {
     public decimal Gold { get; set; }

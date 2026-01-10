@@ -1,6 +1,6 @@
 ﻿using N3O.Umbraco.Lookups;
 
-namespace N3O.Umbraco.Cloud.Lookups;
+namespace N3O.Umbraco.Cloud.Zakat;
 
 public class NisabType : NamedLookup {
     public NisabType(string id, string name) : base(id, name) { }

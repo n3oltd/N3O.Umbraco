@@ -1,13 +1,13 @@
 ﻿using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Lookups;
-using N3O.Umbraco.Cloud.Models;
+using N3O.Umbraco.Cloud.Zakat.Models;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Financial;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Cloud;
+namespace N3O.Umbraco.Cloud.Zakat;
 
 public class Nisab : INisab {
     private readonly ICdnClient _cdnClient;

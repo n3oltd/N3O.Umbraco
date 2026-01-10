@@ -3,7 +3,7 @@ using N3O.Umbraco.Financial;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Cloud;
+namespace N3O.Umbraco.Cloud.Zakat;
 
 public interface INisab {
     Task<Money> GetGoldNisabAsync(Currency currency, CancellationToken cancellationToken = default);

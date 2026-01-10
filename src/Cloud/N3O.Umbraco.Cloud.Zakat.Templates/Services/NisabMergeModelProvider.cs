@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Cloud.Templates.Models;
+﻿using N3O.Umbraco.Cloud.Zakat.Templates.Models;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Templates;
@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
-namespace N3O.Umbraco.Cloud.Templates;
+namespace N3O.Umbraco.Cloud.Zakat.Templates;
 
 public class NisabMergeModelProvider : MergeModelProvider<NisabMergeModel> {
     private readonly ICurrencyAccessor _currencyAccessor;

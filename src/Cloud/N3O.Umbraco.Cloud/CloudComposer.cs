@@ -16,7 +16,6 @@ public class CloudComposer : Composer {
         builder.Services.AddSingleton<ICdnClient, CdnClient>();
         builder.Services.AddSingleton<ICloudUrl, CloudUrl>();
         builder.Services.AddSingleton<ILocalizationSettingsAccessor, PublishedLocalizationSettingsAccessor>();
-        builder.Services.AddSingleton<INisab, Nisab>();
         builder.Services.AddSingleton<IOrganizationInfoAccessor, OrganizationInfoAccessor>();
         builder.Services.AddSingleton<ISubscriptionAccessor, SubscriptionAccessor>();
     }
