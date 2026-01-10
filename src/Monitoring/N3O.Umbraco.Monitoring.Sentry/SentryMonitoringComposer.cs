@@ -26,6 +26,7 @@ public class SentryMonitoringComposer : Composer {
                 opt.SendDefaultPii = true;
                 opt.Environment = WebHostEnvironment.EnvironmentName;
                 opt.DiagnosticLevel = SentryLevel.Error;
+                opt.TracesSampleRate = 1.0f; // TODO confirm what value to use or want to use tracesampler
             });
             
             builder.Services.Configure<UmbracoPipelineOptions>(opt => {
