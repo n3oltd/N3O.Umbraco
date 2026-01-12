@@ -14,7 +14,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
-using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 using AllocationType = N3O.Umbraco.Cloud.Platforms.Clients.AllocationType;

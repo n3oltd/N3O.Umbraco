@@ -4,7 +4,6 @@ using N3O.Umbraco.Context;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Markup;
-using System.Collections.Generic;
 using Umbraco.Cms.Core.Mapping;
 using ElementType = N3O.Umbraco.Cloud.Platforms.Lookups.ElementType;
 

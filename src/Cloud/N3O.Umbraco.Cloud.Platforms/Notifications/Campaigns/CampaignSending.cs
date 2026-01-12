@@ -37,8 +37,8 @@ public class CampaignSending : INotificationAsyncHandler<SendingContentNotificat
         var donationFormTag = new TagBuilder(ElementTypes.DonationForm.TagName);
         var donationButtonTag = new TagBuilder(ElementTypes.DonationButton.TagName);
 
-        donationFormTag.Attributes.Add("element-id", $"{ElementKind.DonationFormCampaign.ToEnumString()}_{contentId.ToString()}");
-        donationButtonTag.Attributes.Add("element-id", $"{ElementKind.DonationButtonCampaign.ToEnumString()}_{contentId.ToString()}");
+        donationFormTag.Attributes.Add("element-id", $"{contentId.ToString()}");
+        donationButtonTag.Attributes.Add("element-id", $"{contentId.ToString()}");
 
         donationFormTag.Attributes.Add("element-kind", ElementKind.DonationFormCampaign.ToEnumString());
         donationButtonTag.Attributes.Add("element-kind", ElementKind.DonationButtonCampaign.ToEnumString());
