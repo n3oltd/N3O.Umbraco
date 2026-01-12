@@ -61,11 +61,11 @@ public class ElementSending : INotificationAsyncHandler<SendingContentNotificati
         var tag = new TagBuilder(type.TagName);
         
         if (type == ElementTypes.DonationButton) {
-            tag.Attributes.Add("element-id", $"{ElementKind.DonationButtonCustom.ToEnumString()}_{contentId.ToString()}");
+            tag.Attributes.Add("element-id", $"{contentId.ToString()}");
             
             tag.Attributes.Add("element-kind", ElementKind.DonationButtonCustom.ToEnumString());
         } else if (type == ElementTypes.DonationForm) {
-            tag.Attributes.Add("element-id", $"{ElementKind.DonationFormCustom.ToEnumString()}_{contentId.ToString()}");
+            tag.Attributes.Add("element-id", $"{contentId.ToString()}");
             
             tag.Attributes.Add("element-kind", ElementKind.DonationFormCustom.ToEnumString());
         }

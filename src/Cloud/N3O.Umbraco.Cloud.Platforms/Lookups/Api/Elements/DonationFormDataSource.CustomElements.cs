@@ -8,15 +8,15 @@ using Umbraco.Community.Contentment.DataEditors;
 
 namespace N3O.Umbraco.Cloud.Platforms.Lookups.Elements;
 
-public class DonationFormElementsDataSource : IContentmentDataSource {
+public class DonationFormCustomElementsDataSource : IContentmentDataSource {
     private readonly ILookups _lookups;
 
-    public DonationFormElementsDataSource(ILookups lookups) {
+    public DonationFormCustomElementsDataSource(ILookups lookups) {
         _lookups = lookups;
     }
     
-    public string Name => "Donation Form Elements";
-    public string Description => "Data source for donation form elements";
+    public string Name => "Donation Form (Custom) Elements";
+    public string Description => "Data source for custom donation form elements";
     public string Icon => "icon-categories";
     public Dictionary<string, object> DefaultValues => default;
     public IEnumerable<ConfigurationField> Fields => default;
@@ -24,7 +24,11 @@ public class DonationFormElementsDataSource : IContentmentDataSource {
     public OverlaySize OverlaySize => OverlaySize.Small;
     
     public IEnumerable<DataListItem> GetItems(Dictionary<string, object> config) {
-        return _lookups.GetAll<Element>().Where(x => x.ElementKind == ElementKind.DonationFormCustom).Select(ToDataListItem).OrderBy(x => x.Name).ToList();
+        return _lookups.GetAll<Element>()
+                       .Where(x => x.ElementKind == ElementKind.DonationFormCustom)
+                       .Select(ToDataListItem)
+                       .OrderBy(x => x.Name)
+                       .ToList();
     }
 
     public Type GetValueType(Dictionary<string, object> config) {
@@ -38,7 +42,7 @@ public class DonationFormElementsDataSource : IContentmentDataSource {
     private DataListItem ToDataListItem(Element lookup) {
         var dataListItem = new DataListItem();
         dataListItem.Name = lookup.Name;
-        dataListItem.Description = "Data source for donation form elements";
+        dataListItem.Description = "Custom element";
         dataListItem.Icon = "icon-categories";
         dataListItem.Value = lookup.Id;
         dataListItem.Group = "N3O";
