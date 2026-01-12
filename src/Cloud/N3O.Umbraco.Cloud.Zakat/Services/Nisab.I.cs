@@ -1,5 +1,4 @@
-﻿using N3O.Umbraco.Cloud.Lookups;
-using N3O.Umbraco.Financial;
+﻿using N3O.Umbraco.Financial;
 using System.Threading;
 using System.Threading.Tasks;
 

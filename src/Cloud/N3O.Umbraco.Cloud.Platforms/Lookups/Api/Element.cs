@@ -5,11 +5,8 @@ using System;
 namespace N3O.Umbraco.Cloud.Platforms.Lookups;
 
 public class Element : ContentOrPublishedLookup {
-    public Element(string id,
-                   string name,
-                   Guid? contentId,
-                   ElementKind elementKind,
-                   string embedCode) : base(id, name, contentId) {
+    public Element(string id, string name, Guid? contentId, ElementKind elementKind, string embedCode)
+        : base(id, name, contentId) {
         ElementKind = elementKind;
         EmbedCode = embedCode;
     }
