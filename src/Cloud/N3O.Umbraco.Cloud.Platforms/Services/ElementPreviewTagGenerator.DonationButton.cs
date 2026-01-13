@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Lookups;
+﻿/*using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Json;
@@ -26,4 +26,4 @@ public class DonationButtonElementPreviewTagGenerator : ElementPreviewTagGenerat
                baseCurrencyAccessor) { }
 
     protected override ElementType ElementType => ElementTypes.DonationButton;
-}
+}*/

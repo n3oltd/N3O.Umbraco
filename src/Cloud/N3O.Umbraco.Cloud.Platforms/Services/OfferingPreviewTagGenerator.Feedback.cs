@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿/*using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
@@ -142,4 +142,4 @@ public class FeedbackOfferingPreviewTagGenerator : OfferingPreviewTagGenerator {
     private FeedbackScheme GetFeedbackScheme(IReadOnlyDictionary<string, object> content) {
         return GetDataListValue<FeedbackScheme>(content, AliasHelper<FeedbackOfferingContent>.PropertyAlias(x => x.Scheme));
     }
-}
+}*/
