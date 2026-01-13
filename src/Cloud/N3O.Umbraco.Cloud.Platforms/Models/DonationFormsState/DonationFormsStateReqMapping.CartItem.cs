@@ -91,6 +91,7 @@ public partial class ElementDonationFormsStateReqMapping {
         
        platformsContribution.Offering = new OfferingInfoReq();
        platformsContribution.Offering.Id = offering.Key.ToString();
+       platformsContribution.Offering.Id = offering.Name;
 
        return platformsContribution;
     }

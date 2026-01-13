@@ -30,6 +30,7 @@ public class UpdateOfferingReqMapping : IMapDefinition {
         dest.Notes = src.Notes;
         dest.Slug = _slugHelper.GenerateSlug(src.Name);
         
+        dest.Summary = src.Summary;
         dest.Description = new RichTextContentReq();
         dest.Description.Html = src.Description.ToHtmlString(); 
         dest.Image = src.Image.ToImageSimpleContentReq(_mediaUrl);
