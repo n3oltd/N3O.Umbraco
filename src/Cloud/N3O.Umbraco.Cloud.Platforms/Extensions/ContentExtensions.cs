@@ -25,6 +25,18 @@ public static class ContentExtensions {
         return HasComposition(contentTypeService, content, AliasHelper<ElementContent>.ContentTypeAlias());
     }
     
+    public static bool IsFeed(this IContent content, IContentTypeService contentTypeService) {
+        return HasComposition(contentTypeService, content, PlatformsConstants.Feed.Alias);
+    }
+    
+    public static bool IsFeeds(this IContent content, IContentTypeService contentTypeService) {
+        return HasComposition(contentTypeService, content, PlatformsConstants.Feeds.Alias);
+    }
+    
+    public static bool IsFeedItem(this IContent content, IContentTypeService contentTypeService) {
+        return HasComposition(contentTypeService, content, PlatformsConstants.FeedsItem.Alias);
+    }
+    
     public static bool IsOffering(this IContent content, IContentTypeService contentTypeService) {
         return HasComposition(contentTypeService, content, AliasHelper<OfferingContent>.ContentTypeAlias());
     }
