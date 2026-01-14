@@ -30,7 +30,7 @@ public class FeedsPublished : CloudContentPublished {
     }
 
     protected override bool CanProcess(IContent content) {
-        return content.IsFeeds(_contentTypeService);
+        return content.IsFeeds();
     }
 
     protected override string HookId => PlatformsConstants.WebhookIds.ContentLibrary;
