@@ -17,6 +17,23 @@ public static class PlatformsConstants {
         public const string DonationForm = "platformsDonationFormElement";
         public const string DonationElement = "platformsDonationElement";
     }
+    
+    public static class Feeds {
+        public const string Alias = "feeds";
+    }
+    
+    public static class Feed {
+        public const string Alias = "feed";
+    }
+    
+    public static class FeedsItem {
+        public const string Alias = "feedsItem";
+    }
+    
+    public static class FeedsItemFolders {
+        public const string ApprovedFolder = "feedsApprovedFolder";
+        public const string RejectedFolder = "feedsRejectedFolder";
+    }
 
     public static class Offerings {
         public const string CompositionAlias = "platformsOffering";
@@ -32,8 +49,11 @@ public static class PlatformsConstants {
 
     public static class WebhookIds {
         public const string Campaigns = "campaigns";
+        public const string ContentCollection = "contentCollection";
+        public const string ContentLibrary = "contentLibrary";
         public const string DonationButtons = "donationButtons";
         public const string DonationForms = "donationForms";
+        public const string ManagedContent = "managedContent";
         public const string Offerings = "offerings";
         public const string Views = "views";
     }
