@@ -53,7 +53,7 @@ public class CdnClient : ICdnClient {
     public async Task<(Guid, PublishedFileKind, IReadOnlyDictionary<string, object>)> DownloadPublishedPageAsync(PublishedFileKind kind,
                                                                                                                  string path,
                                                                                                                  CancellationToken cancellationToken = default) {
-        var pagePath = $"{kind.Id}/pages/{path.Trim('/')}/index.json";
+        var pagePath = $"{kind.Id}/{path.Trim('/')}/index.json";
         
         return await DownloadPublishedContentAsync(pagePath, cancellationToken);
     }
