@@ -20,14 +20,14 @@ public class DonationButtonElementValidator : ContentValidator {
     private static readonly string AmountAlias = AliasHelper<DonationButtonElementContent>.PropertyAlias(x => x.Amount);
     private static readonly string ActionAlias = AliasHelper<DonationButtonElementContent>.PropertyAlias(x => x.Action);
     
-    
     private readonly IContentHelper _contentHelper;
     private readonly IContentLocator _contentLocator;
     private readonly ILookups _lookups;
 
     public DonationButtonElementValidator(IContentHelper contentHelper,
-                                        IContentLocator contentLocator,
-                                        ILookups lookups) : base(contentHelper) {
+                                          IContentLocator contentLocator,
+                                          ILookups lookups)
+        : base(contentHelper) {
         _contentHelper = contentHelper;
         _contentLocator = contentLocator;
         _lookups = lookups;
