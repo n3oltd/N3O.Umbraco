@@ -28,13 +28,13 @@ public abstract class OfferingPreviewTagGenerator : PreviewTagGenerator {
     private readonly IPublishedValueFallback _publishedValueFallback;
 
     protected OfferingPreviewTagGenerator(ICdnClient cdnClient,
-                                             IJsonProvider jsonProvider,
-                                             IMediaUrl mediaUrl,
-                                             ILookups lookups,
-                                             IMarkupEngine markupEngine,
-                                             IMediaLocator mediaLocator,
-                                             IPublishedValueFallback publishedValueFallback,
-                                             IBaseCurrencyAccessor baseCurrencyAccessor)
+                                          IJsonProvider jsonProvider,
+                                          IMediaUrl mediaUrl,
+                                          ILookups lookups,
+                                          IMarkupEngine markupEngine,
+                                          IMediaLocator mediaLocator,
+                                          IPublishedValueFallback publishedValueFallback,
+                                          IBaseCurrencyAccessor baseCurrencyAccessor)
         : base(cdnClient, jsonProvider, lookups) {
         _jsonProvider = jsonProvider;
         _mediaUrl = mediaUrl;

@@ -17,9 +17,7 @@ public abstract class PreviewTagGenerator : IPreviewTagGenerator {
     private readonly IJsonProvider _jsonProvider;
     private readonly ILookups _lookups;
 
-    protected PreviewTagGenerator(ICdnClient cdnClient,
-                                  IJsonProvider jsonProvider,
-                                  ILookups lookups) {
+    protected PreviewTagGenerator(ICdnClient cdnClient, IJsonProvider jsonProvider, ILookups lookups) {
         _cdnClient = cdnClient;
         _jsonProvider = jsonProvider;
         _lookups = lookups;
@@ -33,16 +31,14 @@ public abstract class PreviewTagGenerator : IPreviewTagGenerator {
         var json = await GeneratePreviewJsonAsync(content);
 
         var etag = json.Sha1();
-        var html =
-            $"<n3o-donation-form-modal form-id='{Guid.NewGuid()}' preview='true' json='{HtmlUtils.HtmlEncode(json)}'></n3o-donation-form-modal>";
+        var html = $"<n3o-donation-form-modal form-id='{Guid.NewGuid()}' preview='true' json='{HtmlUtils.HtmlEncode(json)}'></n3o-donation-form-modal>";
 
         return (etag, html);
     }
 
     protected T GetDataListValue<T>(IReadOnlyDictionary<string, object> content, string alias) where T : ILookup {
         if (content.ContainsKey(alias)) {
-            var strValue = content[alias]
-               .ToString();
+            var strValue = content[alias] .ToString();
 
             if (strValue.HasValue() && strValue != "[]") {
                 var id = JArray.Parse(strValue)[0].ToString();
@@ -62,13 +58,11 @@ public abstract class PreviewTagGenerator : IPreviewTagGenerator {
     private async Task<string> GeneratePreviewJsonAsync(IReadOnlyDictionary<string, object> content) {
         var previewData = new Dictionary<string, object>();
 
-        previewData["FundStructure"] =
-            await _cdnClient.DownloadSubscriptionContentAsync<PublishedFundStructure>(SubscriptionFiles.FundStructure,
-                                                                                      JsonSerializers.JsonProvider);
+        previewData["FundStructure"] =  await _cdnClient.DownloadSubscriptionContentAsync<PublishedFundStructure>(SubscriptionFiles.FundStructure,
+                                                                                                                  JsonSerializers.JsonProvider);
 
-        previewData["Currencies"] =
-            await _cdnClient.DownloadSubscriptionContentAsync<PublishedCurrencies>(SubscriptionFiles.Currencies,
-                                                                                   JsonSerializers.Simple);
+        previewData["Currencies"] = await _cdnClient.DownloadSubscriptionContentAsync<PublishedCurrencies>(SubscriptionFiles.Currencies,
+                                                                                                           JsonSerializers.Simple);
 
         PopulatePreviewData(content, previewData);
 
