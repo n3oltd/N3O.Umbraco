@@ -1,9 +1,11 @@
 ﻿using Flurl;
 using Microsoft.AspNetCore.Http;
+using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.ContentFinders;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Json;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Cloud.Platforms;
@@ -12,16 +14,19 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IContentCache _contentCache;
     private readonly ICdnClient _cdnClient;
+    private readonly IJsonProvider _jsonProvider;
 
     public PlatformsPageAccessor(IHttpContextAccessor httpContextAccessor,
                                  IContentCache contentCache,
-                                 ICdnClient cdnClient) {
+                                 ICdnClient cdnClient,
+                                 IJsonProvider jsonProvider) {
         _httpContextAccessor = httpContextAccessor;
         _contentCache = contentCache;
         _cdnClient = cdnClient;
+        _jsonProvider = jsonProvider;
     }
     
-    public async Task<FoundPlatformsPage> GetAsync() {
+    public async Task<GetPageResult> GetAsync() {
         var requestUri = _httpContextAccessor.HttpContext?.Request.Uri();
 
         foreach (var platformsPageRoute in PlatformsPageRoute.All) {
@@ -34,15 +39,15 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
             var currentPath = platformsPath;
 
             do {
-                var (id, kind, mergeModel) = await _cdnClient.DownloadPublishedPageAsync(platformsPageRoute.ContentKind,
-                                                                                         currentPath);
+                var platformsPage = await _cdnClient.DownloadPlatformsPageAsync(_jsonProvider,
+                                                                                platformsPageRoute.ContentKind,
+                                                                                currentPath);
 
-                if (kind.HasValue()) {
-                    var platformsPage = new PlatformsPage(id, currentPath, kind, mergeModel);
+                if (platformsPage.HasValue()) {
                     var platformsPageUrl = GetPlatformsPageUrl(platformsPage, platformsPageRoute.Parent);
                     var redirectUrl = currentPath != platformsPath ? platformsPageUrl : null; 
                 
-                    return new FoundPlatformsPage(platformsPage, redirectUrl);
+                    return GetPageResult.ForPage(platformsPage, redirectUrl);
                 }
             
                 var lastPathSegment = currentPath.StripTrailingSlash().LastIndexOf('/');
@@ -54,8 +59,7 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
                 }
             } while (currentPath.HasValue());
 
-            return new FoundPlatformsPage(null,
-                                          SpecialContentPathParser.GetPath(_contentCache, platformsPageRoute.Parent));
+            return GetPageResult.ForRedirect(SpecialContentPathParser.GetPath(_contentCache, platformsPageRoute.Parent));
         }
         
         return null;

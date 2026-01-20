@@ -1,4 +1,3 @@
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Pages;
 using N3O.Umbraco.Templates.Extensions;
 using System.Collections.Concurrent;
@@ -11,16 +10,16 @@ namespace N3O.Umbraco.Templates.Modules;
 
 public class MergeModelsPageModule : IPageModule {
     private readonly ConcurrentDictionary<IPublishedContent, IReadOnlyDictionary<string, object>> _mergeModelsCache = new();
-    private readonly IReadOnlyList<IMergeModelProvider> _mergeModelProviders;
+    private readonly IEnumerable<IMergeModelsProvider> _mergeModelsProviders;
 
-    public MergeModelsPageModule(IEnumerable<IMergeModelProvider> mergeModelProviders) {
-        _mergeModelProviders = mergeModelProviders.ApplyAttributeOrdering();
+    public MergeModelsPageModule(IEnumerable<IMergeModelsProvider> mergeModelProviders) {
+        _mergeModelsProviders = mergeModelProviders;
     }
 
     public bool ShouldExecute(IPublishedContent page) => true;
 
     public async Task<object> ExecuteAsync(IPublishedContent page, CancellationToken cancellationToken) {
-        var mergeModels = await _mergeModelProviders.GetMergeModelsAsync(page, _mergeModelsCache);
+        var mergeModels = await _mergeModelsProviders.GetMergeModelsAsync(page, _mergeModelsCache, cancellationToken);
         
         return mergeModels;
     }

@@ -1,24 +1,21 @@
-﻿using N3O.Umbraco.Cloud.Models;
-using N3O.Umbraco.Templates;
+﻿using N3O.Umbraco.Templates;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Cloud.Templates;
 
-public class OrganizationInfoMergeModelProvider : MergeModelProvider<IOrganizationInfo> {
+public class OrganizationInfoMergeModelProvider : MergeModelsProvider {
     private readonly IOrganizationInfoAccessor _organizationInfoAccessor;
 
     public OrganizationInfoMergeModelProvider(IOrganizationInfoAccessor organizationInfoAccessor) {
         _organizationInfoAccessor = organizationInfoAccessor;
     }
-    
-    protected override async Task<IOrganizationInfo> GetModelAsync(IPublishedContent content,
-                                                                   CancellationToken cancellationToken) {
-        var organizationInfo = await _organizationInfoAccessor.GetOrganizationInfoAsync(cancellationToken);
-        
-        return organizationInfo;
+
+    protected override async Task PopulateModelsAsync(IPublishedContent content,
+                                                      Dictionary<string, object> mergeModels,
+                                                      CancellationToken cancellationToken = default) {
+        mergeModels["our_organization"] = await _organizationInfoAccessor.GetOrganizationInfoAsync(cancellationToken);
     }
-    
-    public override string Key => "our_organization";
 }

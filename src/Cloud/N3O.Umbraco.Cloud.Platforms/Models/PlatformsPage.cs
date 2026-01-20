@@ -1,27 +1,26 @@
 ﻿using N3O.Umbraco.Cloud.Lookups;
+using N3O.Umbraco.Cloud.Models;
 using System;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
-public class PlatformsPage : Value {
+public class PlatformsPage {
     public PlatformsPage(Guid id,
-                         string path,
                          PublishedFileKind kind,
-                         IReadOnlyDictionary<string, object> mergeModel) {
+                         string path,
+                         IReadOnlyDictionary<string, string> metaTags,
+                         IEnumerable<PublishedContentResult> mergeModels) {
         Id = id;
-        Path = path;
         Kind = kind;
-        MergeModel = mergeModel;
+        Path = path;
+        MetaTags = metaTags;
+        MergeModels = mergeModels;
     }
 
     public Guid Id { get; }
-    public string Path { get; }
     public PublishedFileKind Kind { get; }
-    public IReadOnlyDictionary<string, object> MergeModel { get; }
-    
-    protected override IEnumerable<object> GetAtomicValues() {
-        yield return Kind;
-        yield return MergeModel;
-    }
+    public string Path { get; }
+    public IReadOnlyDictionary<string, string> MetaTags { get; }
+    public IEnumerable<PublishedContentResult> MergeModels { get; }
 }

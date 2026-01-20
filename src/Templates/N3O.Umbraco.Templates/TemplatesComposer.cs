@@ -9,8 +9,8 @@ public class TemplatesComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddScoped<IMerger, Merger>();
         
-        RegisterAll(t => t.ImplementsInterface<IMergeModelProvider>(),
-                    t => builder.Services.AddTransient(typeof(IMergeModelProvider), t));
+        RegisterAll(t => t.ImplementsInterface<IMergeModelsProvider>(),
+                    t => builder.Services.AddTransient(typeof(IMergeModelsProvider), t));
         
         RegisterAll(t => t.ImplementsInterface<ITemplateFormatter>(),
                     t => builder.Services.AddTransient(typeof(ITemplateFormatter), t));

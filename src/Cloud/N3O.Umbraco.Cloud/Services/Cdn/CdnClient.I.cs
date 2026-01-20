@@ -1,6 +1,5 @@
 ﻿using N3O.Umbraco.Cloud.Lookups;
-using System;
-using System.Collections.Generic;
+using N3O.Umbraco.Cloud.Models;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,12 +11,6 @@ public interface ICdnClient {
                                              JsonSerializer jsonSerializer,
                                              CancellationToken cancellationToken = default);
     
-    Task<(Guid, PublishedFileKind, IReadOnlyDictionary<string, object>)> DownloadPublishedContentAsync(string publishedPath,
-                                                                                                       CancellationToken cancellationToken = default);
-    
-    Task<(Guid, PublishedFileKind, IReadOnlyDictionary<string, object>)> DownloadPublishedPageAsync(PublishedFileKind kind,
-                                                                                                    string path, 
-                                                                                                    CancellationToken cancellationToken = default);
-    
-    string GetPublishedContentUrl(PublishedFileKind kind, string path);
+    Task<PublishedContentResult> DownloadPublishedContentAsync(string path,
+                                                               CancellationToken cancellationToken = default);
 }

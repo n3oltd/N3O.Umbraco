@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using N3O.Umbraco.Cloud.Lookups;
+using N3O.Umbraco.Cloud.Models;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
@@ -7,7 +8,6 @@ using N3O.Umbraco.Lookups;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,17 +49,10 @@ public class CdnClient : ICdnClient {
 
         return res;
     }
-    
-    public async Task<(Guid, PublishedFileKind, IReadOnlyDictionary<string, object>)> DownloadPublishedPageAsync(PublishedFileKind kind,
-                                                                                                                 string path,
-                                                                                                                 CancellationToken cancellationToken = default) {
-        var pagePath = $"{kind.Id}/{path.Trim('/')}/index.json";
-        
-        return await DownloadPublishedContentAsync(pagePath, cancellationToken);
-    }
 
-    public async Task<(Guid, PublishedFileKind, IReadOnlyDictionary<string, object>)> DownloadPublishedContentAsync(string publishedPath, CancellationToken cancellationToken = default) {
-        var publishedUrl = GetPublishedContentUrl(publishedPath);
+    public async Task<PublishedContentResult> DownloadPublishedContentAsync(string path,
+                                                                            CancellationToken cancellationToken = default) {
+        var publishedUrl = GetPublishedContentUrl(path);
 
         var res = await ContentCache.GetOrCreateAsync(GetCacheKey(publishedUrl, typeof(object).FullName), async c => {
             c.AbsoluteExpirationRelativeToNow = CacheDuration;
@@ -75,20 +68,20 @@ public class CdnClient : ICdnClient {
                     Guid.TryParse(jObject["id"]?.ToString(), out var id);
 
                     if (kind.HasValue()) {
-                        return (id, kind, jObject.ToObject<Dictionary<string, object>>());
+                        return PublishedContentResult.ForFound(id, kind, path, jObject);
                     } else {
-                        return (Guid.Empty, null, null);
+                        return PublishedContentResult.ForNotFound(path);
                     }
                 }
             } catch (HttpRequestException e) when (e.StatusCode == System.Net.HttpStatusCode.NotFound) {
-                return (Guid.Empty, null, null);
+                return PublishedContentResult.ForNotFound(path);
             }
         });
 
         return res;
     }
     
-    public string GetPublishedContentUrl(PublishedFileKind kind, string path) {
+    private string GetPublishedContentUrl(PublishedFileKind kind, string path) {
         return GetPublishedContentUrl(GetPublishedPath(kind, path));
     }
 
@@ -110,7 +103,7 @@ public class CdnClient : ICdnClient {
         return $"{kind.PathSegment}/{path}";
     }
     
-    private string GetPublishedContentUrl(string publishedPath) {
-        return _cloudUrl.ForCdn(CdnRoots.Connect, publishedPath);
+    private string GetPublishedContentUrl(string path) {
+        return _cloudUrl.ForCdn(CdnRoots.Connect, path);
     }
 }
