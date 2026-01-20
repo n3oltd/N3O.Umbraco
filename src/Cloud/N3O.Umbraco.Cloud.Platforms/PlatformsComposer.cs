@@ -15,11 +15,12 @@ public class PlatformsComposer : Composer {
         builder.Services.AddOpenApiDocument(PlatformsConstants.BackOfficeApiName);
         builder.Services.AddOpenApiDocument(PlatformsConstants.DevToolsApiName);
 
+        builder.Services.AddSingleton<INisab, Nisab>();
         builder.Services.AddSingleton<IPlatformsPageAccessor, PlatformsPageAccessor>();
         builder.Services.AddScoped<PlatformsTemplatesMiddleware>();
         
-        RegisterAll(t => t.ImplementsInterface<IPreviewTagGenerator>(),
-                    t => builder.Services.AddTransient(typeof(IPreviewTagGenerator), t));
+        RegisterAll(t => t.ImplementsInterface<IPreviewHtmlGenerator>(),
+                    t => builder.Services.AddTransient(typeof(IPreviewHtmlGenerator), t));
         
         builder.Services.Configure<UmbracoPipelineOptions>(opt => {
             var filter = new UmbracoPipelineFilter(nameof(PlatformsTemplatesMiddleware));

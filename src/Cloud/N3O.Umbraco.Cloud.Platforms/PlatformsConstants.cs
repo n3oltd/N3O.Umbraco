@@ -17,22 +17,22 @@ public static class PlatformsConstants {
         public const string DonationForm = "platformsDonationFormElement";
         public const string DonationElement = "platformsDonationElement";
     }
-    
+
     public static class Feeds {
         public const string Alias = "feeds";
-    }
-    
-    public static class Feed {
-        public const string Alias = "feed";
-    }
-    
-    public static class FeedsItem {
-        public const string Alias = "feedsItem";
-    }
-    
-    public static class FeedsItemFolders {
-        public const string ApprovedFolder = "feedsApprovedFolder";
-        public const string RejectedFolder = "feedsRejectedFolder";
+
+        public static class Feed {
+            public const string Alias = "feed";
+        }
+
+        public static class Item {
+            public const string Alias = "feedsItem";
+        }
+        
+        public static class Folders {
+            public const string ApprovedFolder = "feedsApprovedFolder";
+            public const string RejectedFolder = "feedsRejectedFolder";
+        }
     }
 
     public static class Offerings {
@@ -55,6 +55,22 @@ public static class PlatformsConstants {
         public const string DonationForms = "donationForms";
         public const string ManagedContent = "managedContent";
         public const string Offerings = "offerings";
-        public const string Views = "views";
+        public const string ZakatSettings = "zakatSettings";
+    }
+    
+    public static class Zakat {
+        public static class Settings {
+            public static class Calculator {
+                public const string Alias = "zakatCalculatorSettings";
+
+                public static class Field {
+                    public const string Alias = "zakatCalculatorFieldSettings";
+                }
+
+                public static class Section {
+                    public const string Alias = "zakatCalculatorSectionSettings";
+                }
+            }
+        }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using N3O.Umbraco.Attributes;
-using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
@@ -7,7 +6,6 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -69,18 +67,6 @@ public class OfferingContent : UmbracoContent<OfferingContent> {
     public FeedbackOfferingContent Feedback { get; private set; }
     
     public bool HasPricing => ((IHoldPricing) Fund?.DonationItem ?? Feedback?.Scheme).HasPricing();
-    
-    public IReadOnlyList<GiftType> GetGiftTypes() {
-        var givingTypes = Fund?.DonationItem.AllowedGivingTypes ??
-                          Feedback?.Scheme.AllowedGivingTypes ??
-                          Sponsorship?.Scheme.AllowedGivingTypes;
-
-        if (givingTypes.HasAny()) {
-            return givingTypes.Select(x => x.ToGiftType()).ToList();
-        } else {
-            return null;
-        }
-    }
     
     public IFundDimensionOptions GetFundDimensionOptions() {
         var holdFundDimensionOptions = (IHoldFundDimensionOptions) Fund?.DonationItem ??

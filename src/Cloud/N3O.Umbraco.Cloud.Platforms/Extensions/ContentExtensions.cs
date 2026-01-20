@@ -1,10 +1,8 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
-using System.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
-using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 
@@ -26,7 +24,7 @@ public static class ContentExtensions {
     }
     
     public static bool IsFeed(this IContent content) {
-        return content.ContentType.Alias == PlatformsConstants.Feed.Alias;
+        return content.ContentType.Alias == PlatformsConstants.Feeds.Feed.Alias;
     }
     
     public static bool IsFeeds(this IContent content) {
@@ -34,17 +32,15 @@ public static class ContentExtensions {
     }
     
     public static bool IsFeedItem(this IContent content, IContentTypeService contentTypeService) {
-        return HasComposition(contentTypeService, content, PlatformsConstants.FeedsItem.Alias);
+        return HasComposition(contentTypeService, content, PlatformsConstants.Feeds.Item.Alias);
     }
     
     public static bool IsOffering(this IContent content, IContentTypeService contentTypeService) {
         return HasComposition(contentTypeService, content, AliasHelper<OfferingContent>.ContentTypeAlias());
     }
     
-    public static bool IsPlatformsCampaignOrOfferingOrElement(this IContent content, IContentTypeService contentTypeService) {
-        return IsCampaign(content, contentTypeService) ||
-               IsOffering(content, contentTypeService) ||
-               IsElement(content, contentTypeService);
+    public static bool IsZakatCalculatorSettings(this IContent content) {
+        return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Zakat.Settings.Calculator.Alias);
     }
 
     private static bool HasComposition(IContentTypeService contentTypeService,
@@ -53,18 +49,5 @@ public static class ContentExtensions {
         var contentType = contentTypeService.Get(content.ContentTypeId);
         
         return contentType.CompositionAliases().Contains(compositionAlias, true);
-    }
-    
-    private static bool IsSelfOrDescendantOfType<T>(IContentCache contentCache, IContent content) 
-        where T : IUmbracoContent {
-        var ancestorId = contentCache.Single<T>()?.Content().Id;
-
-        if (!ancestorId.HasValue()) {
-            return false;
-        }
-        
-        var ancestorIdsOfContent = content.GetAncestorIds().OrEmpty().ToList();
-
-        return ancestorIdsOfContent.Contains(ancestorId.GetValueOrThrow());
     }
 }
