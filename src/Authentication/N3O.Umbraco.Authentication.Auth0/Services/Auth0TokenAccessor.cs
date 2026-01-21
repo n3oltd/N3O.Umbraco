@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Authentication.Auth0;
 
-public class Auth0TokenAccessor : IBearerTokenAccessor {
+public class Auth0TokenAccessor {
     private readonly Auth0M2MTokenAccessor _auth0M2MTokenAccessor;
     private readonly AuthenticationOptions _auth0Options;
 
