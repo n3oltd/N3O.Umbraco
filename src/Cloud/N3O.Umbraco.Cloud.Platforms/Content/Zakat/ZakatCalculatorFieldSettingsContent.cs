@@ -8,9 +8,9 @@ namespace N3O.Umbraco.Cloud.Platforms.Content;
 public class ZakatCalculatorFieldSettingsContent : UmbracoContent<ZakatCalculatorFieldSettingsContent> {
     public ZakatCalculatorFieldClassification Classification => GetValue(x => x.Classification);
     public ZakatCalculatorFieldType Type => GetValue(x => x.Type);
-    public string Alias => GetAs(x => x.Alias);
+    public string Alias => GetValue(x => x.Alias);
     public string Name => Content().Name;
     public new IHtmlEncodedString Content => GetValue(x => x.Content);
-    public string Tooltip => GetAs(x => x.Tooltip);
+    public string Tooltip => GetValue(x => x.Tooltip);
     public Metal Metal => GetValue(x => x.Metal);
 }

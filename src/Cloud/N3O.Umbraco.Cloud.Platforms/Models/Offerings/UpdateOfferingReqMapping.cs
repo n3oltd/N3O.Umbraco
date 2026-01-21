@@ -34,8 +34,11 @@ public class UpdateOfferingReqMapping : IMapDefinition {
         dest.Description = new RichTextContentReq();
         dest.Description.Html = src.Description.ToHtmlString(); 
         dest.Image = src.Image.ToImageSimpleContentReq(_mediaUrl);
-        dest.Icon = new SvgContentReq();
-        dest.Icon.SourceFile = _mediaUrl.GetMediaUrl(src.Icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x)).ToString();
+
+        if (src.Icon.HasValue()) {
+            dest.Icon = new SvgContentReq();
+            dest.Icon.SourceFile = _mediaUrl.GetMediaUrl(src.Icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x)).ToString();
+        }
         
         dest.Order = new OfferingOrderReq();
         dest.Order.Order = src.Content().Parent.Children.FindIndex(x => x.Id == src.Content().Id);
