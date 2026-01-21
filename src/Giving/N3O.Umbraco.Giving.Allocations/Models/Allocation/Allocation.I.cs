@@ -16,5 +16,6 @@ public interface IAllocation {
     string PledgeUrl { get; }
     bool LinkedToPledge { get; }
     Guid? UpsellOfferId { get; }
+    string Notes { get; }
     IDictionary<string, JToken> Extensions { get; }
 }

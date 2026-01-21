@@ -14,6 +14,7 @@ namespace N3O.Umbraco.Giving.Allocations.Models;
 
 public class AllocationReqValidator : ModelValidator<AllocationReq> {
     private const int PledgeUrlMaxLength = 200;
+    private const int NotesMaxLength = 200;
     
     public AllocationReqValidator(IFormatter formatter,
                                   ICurrencyAccessor currencyAccessor,
@@ -94,6 +95,11 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
             .When(x => x.FundDimensions.HasValue())
             .WithMessage(Get<Strings>(s => s.InvalidFundDimensions));
 
+        RuleFor(x => x.Notes)
+            .MaximumLength(NotesMaxLength)
+            .When(x => x.Notes.HasAny())
+            .WithMessage(Get<Strings>(s => s.NotesTooLong));
+        
         RuleFor(x => x.PledgeUrl)
             .MaximumLength(PledgeUrlMaxLength)
             .When(x => x.PledgeUrl.HasAny())
@@ -191,6 +197,7 @@ public class AllocationReqValidator : ModelValidator<AllocationReq> {
         public string FundAllocationNotAllowed => "Fund cannot be specified for this type of allocation";
         public string InvalidFundDimensions => "One or more fund dimension values are invalid";
         public string InvalidValue => "Invalid value specified";
+        public string NotesTooLong => $"Notes cannot exceed {NotesMaxLength} characters";
         public string PledgeUrlTooLong => $"Pledge URL cannot exceed {PledgeUrlMaxLength} characters";
         public string SpecifyFundAllocation => "Please specify the fund allocation";
         public string SpecifyFundDimensions => "Please specify the fund dimensions";

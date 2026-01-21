@@ -47,6 +47,7 @@ export interface AllocationReq {
     sponsorship?: SponsorshipAllocationReq | undefined;
     pledgeUrl?: string | undefined;
     upsellOfferId?: string | undefined;
+    notes?: string | undefined;
     [key: string]: any;
 }
 /** One of 'feedback', 'fund', 'sponsorship' */
@@ -154,6 +155,7 @@ export interface RemoveFromCartReq {
     index?: number | undefined;
 }
 export declare class ApiException extends Error {
+    override: any;
     message: string;
     status: number;
     response: string;

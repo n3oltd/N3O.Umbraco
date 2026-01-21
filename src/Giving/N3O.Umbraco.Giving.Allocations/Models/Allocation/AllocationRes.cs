@@ -18,6 +18,7 @@ public class AllocationRes : IAllocation {
     public string PledgeUrl { get; set; }
     public Guid? UpsellOfferId { get; set; }
     public bool Upsell { get; set; }
+    public string Notes { get; set; }
     public IDictionary<string, JToken> Extensions { get; set; }
 
     public bool LinkedToPledge => PledgeUrl.HasValue();

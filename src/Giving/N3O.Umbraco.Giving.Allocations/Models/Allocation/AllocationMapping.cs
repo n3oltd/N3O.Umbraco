@@ -20,6 +20,7 @@ public class AllocationMapping : IMapDefinition {
         dest.PledgeUrl = src.PledgeUrl;
         dest.UpsellOfferId = src.UpsellOfferId;
         dest.Upsell = src.UpsellOfferId.HasValue();
+        dest.Notes = src.Notes;
         // TODO We may need to extend this so we resolve in the constructor of this mapper
         // IEnumerable<IAllocationExtensionMapping> and for each (key, value) in the dictionary
         // we find the corresponding mapping (if any) and invoke it to convert the JToken value
