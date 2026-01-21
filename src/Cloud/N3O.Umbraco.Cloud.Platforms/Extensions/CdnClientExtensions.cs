@@ -35,7 +35,7 @@ public static class CdnClientExtensions {
     }
     
     private static Task<PublishedContentResult> FetchMergeModelAsync(ICdnClient cdnClient,
-                                                                     PublishedPlatformsPageMergeModel publishedModel) {
+                                                                     PublishedFileInfo publishedModel) {
         return cdnClient.DownloadPublishedContentAsync(publishedModel.Path);
     }
 }

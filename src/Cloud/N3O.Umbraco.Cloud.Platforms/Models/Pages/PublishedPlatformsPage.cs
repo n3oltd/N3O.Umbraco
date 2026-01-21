@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using N3O.Umbraco.Cloud.Models;
+using System.Collections.Generic;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class PublishedPlatformsPage {
-    public IEnumerable<PublishedPlatformsPageMergeModel> MergeModels { get; set; }
+    public IEnumerable<PublishedFileInfo> MergeModels { get; set; }
     public Dictionary<string, string> MetaTags { get; set; }
 }
