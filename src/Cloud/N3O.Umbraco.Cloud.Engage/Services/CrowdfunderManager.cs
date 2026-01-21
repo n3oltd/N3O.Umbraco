@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Authentication.Auth0.Lookups;
+﻿using N3O.Umbraco.Authentication.Auth0;
+using N3O.Umbraco.Authentication.Auth0.Lookups;
 using N3O.Umbraco.Cloud.Engage.Clients;
 using N3O.Umbraco.Cloud.Engage.Lookups;
 using N3O.Umbraco.Cloud.Engage.Models;
@@ -21,14 +22,20 @@ namespace N3O.Umbraco.Cloud.Engage;
 
 public class CrowdfunderManager : ICrowdfunderManager {
     private readonly ClientFactory<CrowdfundingClient> _clientFactory;
+    private readonly Auth0TokenAccessor _auth0TokenAccessor;
+    private readonly IUserDirectoryIdAccessor _userDirectoryIdAccessor;
     private readonly IServiceProvider _serviceProvider;
     private readonly Lazy<IAccountIdentityAccessor> _accountIdentityAccessor;
     private CloudApiClient<CrowdfundingClient> _client;
 
     public CrowdfunderManager(ClientFactory<CrowdfundingClient> clientFactory,
+                              Auth0TokenAccessor auth0TokenAccessor,
+                              IUserDirectoryIdAccessor userDirectoryIdAccessor,
                               IServiceProvider serviceProvider,
                               Lazy<IAccountIdentityAccessor> accountIdentityAccessor) {
         _clientFactory = clientFactory;
+        _auth0TokenAccessor = auth0TokenAccessor;
+        _userDirectoryIdAccessor = userDirectoryIdAccessor;
         _serviceProvider = serviceProvider;
         _accountIdentityAccessor = accountIdentityAccessor;
     }
@@ -85,18 +92,21 @@ public class CrowdfunderManager : ICrowdfunderManager {
     }
     
     private async Task<CloudApiClient<CrowdfundingClient>> GetClientAsync(CrowdfunderType crowdfunderType) {
-        UmbracoAuthType umbracoAuthType;
+        UserDirectoryType userDirectoryType;
         
         if (crowdfunderType == CrowdfunderTypes.Campaign) {
-            umbracoAuthType = UmbracoAuthTypes.User;
+            userDirectoryType = UserDirectoryTypes.BackOffice;
         } else if (crowdfunderType == CrowdfunderTypes.Fundraiser) {
-            umbracoAuthType = UmbracoAuthTypes.Member;
+            userDirectoryType = UserDirectoryTypes.Members;
         } else {
             throw UnrecognisedValueException.For(crowdfunderType);
         }
         
         if (_client == null) {
-            _client = await _clientFactory.CreateAsync(umbracoAuthType, CloudApiTypes.Engage);
+            var bearerToken = await _auth0TokenAccessor.GetAsync(userDirectoryType);
+            var onBehalfOf = await _userDirectoryIdAccessor.GetIdAsync(userDirectoryType);
+            
+            _client = await _clientFactory.CreateAsync(CloudApiTypes.Engage, bearerToken, onBehalfOf);
         }
 
         return _client;

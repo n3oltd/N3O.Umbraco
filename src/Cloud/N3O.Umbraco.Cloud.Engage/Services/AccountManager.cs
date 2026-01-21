@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using N3O.Umbraco.Accounts.Exceptions;
 using N3O.Umbraco.Accounts.Extensions;
 using N3O.Umbraco.Accounts.Models;
+using N3O.Umbraco.Authentication.Auth0;
 using N3O.Umbraco.Authentication.Auth0.Lookups;
 using N3O.Umbraco.Cloud.Engage.Clients;
 using N3O.Umbraco.Cloud.Engage.Context;
@@ -30,6 +31,8 @@ public class AccountManager : IAccountManager {
     private readonly IMemberService _memberService;
     private readonly AccountCookie _accountCookie;
     private readonly IFormatter _formatter;
+    private readonly Auth0TokenAccessor _auth0TokenAccessor;
+    private readonly IUserDirectoryIdAccessor _userDirectoryIdAccessor;
     private readonly ClientFactory<AccountsClient> _clientFactory;
     private readonly IUmbracoMapper _mapper;
     private CloudApiClient<AccountsClient> _client;
@@ -38,12 +41,16 @@ public class AccountManager : IAccountManager {
                           IMemberService memberService,
                           AccountCookie accountCookie,
                           IFormatter formatter,
+                          Auth0TokenAccessor auth0TokenAccessor,
+                          IUserDirectoryIdAccessor userDirectoryIdAccessor,
                           ClientFactory<AccountsClient> clientFactory,
                           IUmbracoMapper mapper) {
         _memberManager = memberManager;
         _memberService = memberService;
         _accountCookie = accountCookie;
         _formatter = formatter;
+        _auth0TokenAccessor = auth0TokenAccessor;
+        _userDirectoryIdAccessor = userDirectoryIdAccessor;
         _clientFactory = clientFactory;
         _mapper = mapper;
     }
@@ -226,7 +233,10 @@ public class AccountManager : IAccountManager {
 
     private async Task<CloudApiClient<AccountsClient>> GetClientAsync() {
         if (_client == null) {
-            _client = await _clientFactory.CreateAsync(UmbracoAuthTypes.Member, CloudApiTypes.Engage);
+            var bearerToken = await _auth0TokenAccessor.GetAsync(UserDirectoryTypes.Members);
+            var onBehalfOf = await _userDirectoryIdAccessor.GetIdAsync(UserDirectoryTypes.Members);
+            
+            _client = await _clientFactory.CreateAsync(CloudApiTypes.Engage, bearerToken, onBehalfOf);
         }
 
         return _client;

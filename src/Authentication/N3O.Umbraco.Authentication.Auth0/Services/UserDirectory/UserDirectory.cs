@@ -23,7 +23,7 @@ public class UserDirectory : IUserDirectory {
         _clientFactory = clientFactory;
     }
 
-    public async Task<Auth0User> CreateUserIfNotExistsAsync(UmbracoAuthType umbracoAuthType,
+    public async Task<Auth0User> CreateUserIfNotExistsAsync(UserDirectoryType userDirectoryType,
                                                             string clientId,
                                                             string connectionName,
                                                             bool passwordless,
@@ -31,17 +31,17 @@ public class UserDirectory : IUserDirectory {
                                                             string firstName,
                                                             string lastName,
                                                             string password = null) {
-        var managementClient = await GetManagementClientAsync(umbracoAuthType);
+        var managementClient = await GetManagementClientAsync(userDirectoryType);
 
         if (passwordless) {
             return await GetOrCreatePasswordlessUserAsync(managementClient, connectionName, email, firstName, lastName);
         } else {
-            return await GetOrCreatePasswordUserAsync(managementClient, umbracoAuthType, clientId, connectionName, email, firstName, lastName);
+            return await GetOrCreatePasswordUserAsync(managementClient, userDirectoryType, clientId, connectionName, email, firstName, lastName);
         }
     }
     
-    public async Task<string> GetPasswordResetUrlAsync(UmbracoAuthType umbracoAuthType, string directoryId) {
-        var managementClient = await GetManagementClientAsync(umbracoAuthType);
+    public async Task<string> GetPasswordResetUrlAsync(UserDirectoryType userDirectoryType, string directoryId) {
+        var managementClient = await GetManagementClientAsync(userDirectoryType);
         
         var isFederated = await IsFederatedByIdAsync(managementClient, directoryId);
 
@@ -58,8 +58,8 @@ public class UserDirectory : IUserDirectory {
         return ticket.Value;
     }
     
-    public async Task<Auth0User> GetUserByEmailAsync(UmbracoAuthType umbracoAuthType, string email) {
-        var managementClient = await GetManagementClientAsync(umbracoAuthType);
+    public async Task<Auth0User> GetUserByEmailAsync(UserDirectoryType userDirectoryType, string email) {
+        var managementClient = await GetManagementClientAsync(userDirectoryType);
         
         var auth0Users = await managementClient.Users.GetUsersByEmailAsync(email.ToLowerInvariant());
 
@@ -85,7 +85,7 @@ public class UserDirectory : IUserDirectory {
     }
     
     private async Task<Auth0User> GetOrCreatePasswordUserAsync(IManagementApiClient managementClient,
-                                                               UmbracoAuthType umbracoAuthType,
+                                                               UserDirectoryType userDirectoryType,
                                                                string clientId,
                                                                string connectionName,
                                                                string email,
@@ -101,7 +101,7 @@ public class UserDirectory : IUserDirectory {
                 return null;
             }
             
-            var authClient = GetAuthenticationClient(umbracoAuthType);
+            var authClient = GetAuthenticationClient(userDirectoryType);
             
             password ??= PasswordGenerator.Generate(10,
                                                     PasswordCharacters.UppercaseLetters |
@@ -206,17 +206,17 @@ public class UserDirectory : IUserDirectory {
         await authClient.ChangePasswordAsync(changePasswordRequest);
     }
 
-    private async Task<IManagementApiClient> GetManagementClientAsync(UmbracoAuthType umbracoAuthType) {
+    private async Task<IManagementApiClient> GetManagementClientAsync(UserDirectoryType userDirectoryType) {
         if (!_managementClient.HasValue()) {
-            _managementClient = await _clientFactory.GetManagementApiClientAsync(umbracoAuthType);
+            _managementClient = await _clientFactory.GetManagementApiClientAsync(userDirectoryType);
         }
 
         return _managementClient;
     }
 
-    private AuthenticationApiClient GetAuthenticationClient(UmbracoAuthType umbracoAuthType) {
+    private AuthenticationApiClient GetAuthenticationClient(UserDirectoryType userDirectoryType) {
         if (!_authClient.HasValue()) {
-            _authClient = _clientFactory.GetAuthenticationApiClient(umbracoAuthType);
+            _authClient = _clientFactory.GetAuthenticationApiClient(userDirectoryType);
         }
 
         return _authClient;

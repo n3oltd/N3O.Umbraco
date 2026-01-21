@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using N3O.Umbraco.Extensions;
 using System;
-using System.Linq;
 
 namespace N3O.Umbraco.Context;
 
