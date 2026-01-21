@@ -5,44 +5,25 @@ using System.Linq;
 
 namespace N3O.Umbraco.Context;
 
-public abstract class Cookie : ICookie {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private string _value;
+public abstract class Cookie : ReadOnlyCookie, ICookie {
     private bool _deferredReset;
 
-    protected Cookie(IHttpContextAccessor httpContextAccessor) {
-        _httpContextAccessor = httpContextAccessor;
-    }
+    protected Cookie(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor) { }
 
     public void DeferredReset() {
         _deferredReset = true;
     }
     
-    public string GetValue() {
-        if (_value == null) {
-            var cookies = _httpContextAccessor.HttpContext?.Request.Cookies;
-            var key = cookies?.Keys.SingleOrDefault(x => x.EqualsInvariant(Name));
-
-            if (key != null) {
-                _value = cookies[key];
-            } else {
-                _value = GetDefaultValue();
-            }
-        }
-
-        return _value;
-    }
-    
     public void Reset() {
-        _value = GetDefaultValue();
+        Value = GetDefaultValue();
     }
 
     public void SetValue(string value) {
-        _value = value;
+        Value = value;
     }
     
     public void Write(IResponseCookies responseCookies) {
-        var value = _deferredReset ? GetDefaultValue() : _value;
+        var value = _deferredReset ? GetDefaultValue() : Value;
         
         if (value.HasValue()) {
             var cookieOptions = new CookieOptions();
@@ -52,12 +33,9 @@ public abstract class Cookie : ICookie {
             responseCookies.Append(Name, value, cookieOptions);
         }
     }
-    
-    protected abstract string Name { get; }
 
     protected virtual TimeSpan Lifetime => TimeSpan.Zero;
     protected virtual bool Session => false;
-    protected virtual string GetDefaultValue() => null;
 
     protected virtual void SetOptions(CookieOptions cookieOptions) {
         cookieOptions.Path = "/";

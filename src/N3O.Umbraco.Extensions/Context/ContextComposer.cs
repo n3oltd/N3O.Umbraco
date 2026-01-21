@@ -16,12 +16,17 @@ public class ContextComposer : Composer {
         builder.Services.AddSingleton<ICurrentUrlAccessor, CurrentUrlAccessor>();
         builder.Services.AddSingleton<IQueryStringAccessor, QueryStringAccessor>();
         builder.Services.TryAddSingleton<IRemoteIpAddressAccessor, RemoteIpAddressAccessor>();
-        
-        RegisterAll(t => t.ImplementsInterface<ICookie>(), t => {
+
+        RegisterCookies<ICookie>(builder);
+        RegisterCookies<IReadOnlyCookie>(builder);
+    }
+
+    private void RegisterCookies<T>(IUmbracoBuilder builder) where T : IReadOnlyCookie {
+        RegisterAll(t => t.ImplementsInterface<T>(), t => {
             builder.Services.AddScoped(t, t);
             
-            builder.Services.AddScoped(typeof(ICookie), serviceProvider => {
-                var cookie = (ICookie) serviceProvider.GetRequiredService(t);
+            builder.Services.AddScoped(typeof(T), serviceProvider => {
+                var cookie = (T) serviceProvider.GetRequiredService(t);
 
                 return cookie;
             });
