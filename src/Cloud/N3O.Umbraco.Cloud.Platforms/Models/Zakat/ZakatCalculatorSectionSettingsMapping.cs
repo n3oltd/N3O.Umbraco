@@ -17,6 +17,6 @@ public class ZakatCalculatorSectionSettingsMapping : IMapDefinition {
         dest.Fields = src.Fields.Select(ctx.Map<ZakatCalculatorFieldSettingsContent, ZakatCalculatorFieldReq>).ToList();
         
         dest.Content = new RichTextContentReq();
-        dest.Content.Html = src.Content.ToHtmlString();
+        dest.Content.Html = src.Content?.ToHtmlString();
     }
 }
