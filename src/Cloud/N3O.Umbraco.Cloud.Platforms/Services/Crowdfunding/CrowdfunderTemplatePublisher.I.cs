@@ -1,6 +1,5 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Cloud.Platforms;

@@ -1,18 +1,13 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Content;
-using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Umbraco.Cms.Core.Events;
-using Umbraco.Cms.Core.Models;
-using Umbraco.Cms.Core.Notifications;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class ZakatCalculatorFieldValidator : ContentValidator {
     private static readonly string MetalPropertyAlias = AliasHelper<ZakatCalculatorFieldSettingsContent>.PropertyAlias(x => x.Metal);
+    private static readonly string TypePropertyAlias = AliasHelper<ZakatCalculatorFieldSettingsContent>.PropertyAlias(x => x.Type);
     
     public ZakatCalculatorFieldValidator(IContentHelper contentHelper) : base(contentHelper) { }
     
@@ -21,30 +16,15 @@ public class ZakatCalculatorFieldValidator : ContentValidator {
     }
 
     public override void Validate(ContentProperties content) {
-        var metal = content.Properties.Single(x => x.Alias.EqualsInvariant(MetalPropertyAlias)).Value;
+        var typeProperty = content.Properties.Single(x => x.Alias.EqualsInvariant(TypePropertyAlias));
+        var type = ContentHelper.GetDataListValue<ZakatCalculatorFieldType>(typeProperty);
+        var metalProperty = content.Properties.Single(x => x.Alias.EqualsInvariant(MetalPropertyAlias));
+        var metal = ContentHelper.GetDataListValue<Metal>(metalProperty);
 
-        if (fieldType == ZakatCalculatorFieldTypes.Metal && !metal.HasValue()) {
-            notification.CancelWithError("Metal must be specified");
-        } else if (fieldType == ZakatCalculatorFieldTypes.Money && metal.HasValue()) {
-            notification.CancelWithError("Metal cannot specified");
+        if (type == ZakatCalculatorFieldTypes.Metal && !metal.HasValue()) {
+            ErrorResult(metalProperty, "Metal must be specified");
+        } else if (type == ZakatCalculatorFieldTypes.Money && metal.HasValue()) {
+            ErrorResult(metalProperty, "Metal cannot specified");
         }
-    }
-
-    public Task HandleAsync(ContentSavingNotification notification, CancellationToken cancellationToken) {
-        foreach (var content in notification.SavedEntities) {
-            if () {
-                var fieldType = GetZakatCalculatorFieldType(content);
-                
-            }
-        }
-        
-        return Task.CompletedTask;
-    }
-
-    private ZakatCalculatorFieldType GetZakatCalculatorFieldType(ContentProperties content) {
-        var fieldType = ContentHelper.GetDataListValue<ZakatCalculatorFieldType>(content,
-                                                                                 AliasHelper<ZakatCalculatorFieldSettingsContent>.PropertyAlias(x => x.Type));
-        
-        return fieldType;
     }
 }
