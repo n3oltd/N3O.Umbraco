@@ -51,6 +51,7 @@ public static class PlatformsConstants {
         public const string Campaigns = "campaigns";
         public const string ContentCollection = "contentCollection";
         public const string ContentLibrary = "contentLibrary";
+        public const string CrowdfundingCampaigns = "CrowdfundingCampaigns";
         public const string DonationButtons = "donationButtons";
         public const string DonationForms = "donationForms";
         public const string ManagedContent = "managedContent";
