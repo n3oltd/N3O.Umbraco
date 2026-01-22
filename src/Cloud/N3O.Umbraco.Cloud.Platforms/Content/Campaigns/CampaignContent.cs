@@ -2,6 +2,7 @@
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.EditorJs.Models;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using System;
@@ -55,6 +56,8 @@ public class CampaignContent : UmbracoContent<CampaignContent> {
     public MediaWithCrops Icon => GetValue(x => x.Icon);
     public MediaWithCrops Image => GetValue(x => x.Image);
     public decimal Target => GetValue(x => x.Target);
+    
+    public bool CrowdfundingEnabled => GetValue(x => x.CrowdfundingEnabled);
     
     public string DonationFormEmbedCode => GetValue(x => x.DonationFormEmbedCode);
     public string DonationButtonEmbedCode => GetValue(x => x.DonationButtonEmbedCode);

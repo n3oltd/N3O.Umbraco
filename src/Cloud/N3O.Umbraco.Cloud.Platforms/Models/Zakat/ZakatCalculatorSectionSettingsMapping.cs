@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
+using N3O.Umbraco.Extensions;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 
@@ -15,8 +16,10 @@ public class ZakatCalculatorSectionSettingsMapping : IMapDefinition {
         dest.Alias = src.Alias;
         dest.Name = src.Name;
         dest.Fields = src.Fields.Select(ctx.Map<ZakatCalculatorFieldSettingsContent, ZakatCalculatorFieldReq>).ToList();
-        
-        dest.Content = new RichTextContentReq();
-        dest.Content.Html = src.Content?.ToHtmlString();
+
+        if (src.Content.HasValue()) {
+            dest.Content = new RichTextContentReq();
+            dest.Content.Html = src.Content.ToHtmlString();
+        }
     }
 }

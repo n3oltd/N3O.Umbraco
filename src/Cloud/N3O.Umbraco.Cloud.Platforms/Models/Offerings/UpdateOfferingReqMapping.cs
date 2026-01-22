@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using N3O.Umbraco.Cloud.Extensions;
+using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Extensions;
@@ -44,7 +45,7 @@ public class UpdateOfferingReqMapping : IMapDefinition {
         dest.Order.Order = src.Content().Parent.Children.FindIndex(x => x.Id == src.Content().Id);
 
         dest.Page = new ContentReq(); // TODO Populate rest of the properties
-        dest.Page.SchemaAlias = nameof(PlatformsSystemSchema.Sys__offeringPage).ToLower();
+        dest.Page.SchemaAlias = PlatformsSystemSchema.Sys__offeringPage.ToEnumString();
         
         dest.FormState = ctx.Map<OfferingContent, DonationFormStateReq>(src);
         

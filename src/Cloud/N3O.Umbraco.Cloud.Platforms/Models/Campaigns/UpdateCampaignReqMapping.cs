@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using N3O.Umbraco.Cloud.Extensions;
+using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
@@ -46,7 +47,7 @@ public class UpdateCampaignReqMapping : IMapDefinition {
         dest.Badges = [];
 
         dest.Page = new ContentReq();
-        dest.Page.SchemaAlias = nameof(PlatformsSystemSchema.Sys__campaignPage).ToLower();
+        dest.Page.SchemaAlias = PlatformsSystemSchema.Sys__campaignPage.ToEnumString();
 
         if (src.Content().IsPublished()) {
             dest.Activate = true;

@@ -18,8 +18,10 @@ public class ZakatCalculatorFieldSettingsMapping : IMapDefinition {
         dest.Name = src.Name;
         dest.Tooltip = src.Tooltip;
         
-        dest.Content = new RichTextContentReq();
-        dest.Content.Html = src.Content?.ToHtmlString();
+        if (src.Content.HasValue()) {
+            dest.Content = new RichTextContentReq();
+            dest.Content.Html = src.Content.ToHtmlString();
+        }
 
         if (src.Metal.HasValue()) {
             dest.Metal = new ZakatCalculatorMetalFieldReq();
