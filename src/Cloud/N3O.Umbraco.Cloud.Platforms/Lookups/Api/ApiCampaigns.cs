@@ -34,5 +34,5 @@ public class ApiCampaigns : ApiLookupsCollection<Campaign> {
         return campaigns;
     }
 
-    protected override TimeSpan CacheDuration => TimeSpan.FromMinutes(5);
+    protected override TimeSpan CacheDuration => TimeSpan.FromMinutes(1);
 }
