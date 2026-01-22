@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
+using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Scheduler;
 using System;
+using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
@@ -14,19 +16,19 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 public class CrowdfundingCampaignPublished : CloudContentPublished {
     private readonly IContentTypeService _contentTypeService;
     private readonly Lazy<IContentLocator> _contentLocator;
-    private readonly IUmbracoMapper _mapper;
+    private readonly ICrowdfunderTemplatePublisher _crowdfunderTemplatePublisher;
 
     public CrowdfundingCampaignPublished(ISubscriptionAccessor subscriptionAccessor,
                                          ICloudUrl cloudUrl,
                                          IBackgroundJob backgroundJob,
                                          IContentTypeService contentTypeService,
                                          Lazy<IContentLocator> contentLocator,
-                                         IUmbracoMapper mapper,
-                                         ILogger<CrowdfundingCampaignPublished> logger)
+                                         ILogger<CrowdfundingCampaignPublished> logger,
+                                         ICrowdfunderTemplatePublisher crowdfunderTemplatePublisher)
         : base(subscriptionAccessor, cloudUrl, backgroundJob, logger) {
         _contentTypeService = contentTypeService;
         _contentLocator = contentLocator;
-        _mapper = mapper;
+        _crowdfunderTemplatePublisher = crowdfunderTemplatePublisher;
     }
     
     protected override bool CanProcess(IContent content) {
@@ -36,9 +38,25 @@ public class CrowdfundingCampaignPublished : CloudContentPublished {
     protected override object GetBody(IContent content) {
         var campaign = _contentLocator.Value.ById<CampaignContent>(content.Key);
 
-        var crowdfundingReq = _mapper.Map<CampaignContent, CrowdfundingCampaignWebhookBodyReq>(campaign);
+        var req = new CrowdfundingCampaignWebhookBodyReq();
+        
+        req.CampaignId = campaign.Key.ToString();
+        req.Action = WebhookSyncAction.AddOrUpdate;
 
-        return crowdfundingReq;
+        req.AddOrUpdate = GetCrowdfundingCampaignReq(campaign);
+        
+        return req;
+    }
+
+    private CrowdfundingCampaignReq GetCrowdfundingCampaignReq(CampaignContent campaign) {
+        var req = new CrowdfundingCampaignReq();
+        req.Activate = true;
+
+        req.Template = new ContentReq();
+        req.Template.SchemaAlias = CrowdfundingSystemSchema.Sys__crowdfunderPage.ToEnumString();
+        req.Template.Properties = _crowdfunderTemplatePublisher.GetContentProperties(campaign.Content()).ToList();
+        
+        return req;
     }
     
     private bool CrowdfundingEnabled(IContent content) {
