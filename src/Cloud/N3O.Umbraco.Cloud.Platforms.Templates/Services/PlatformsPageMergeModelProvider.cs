@@ -19,7 +19,11 @@ public class PlatformsPageMergeModelProvider : MergeModelsProvider {
                                                       CancellationToken cancellationToken = default) {
         var getPageResult = await _platformsPageAccessor.GetAsync();
 
-        foreach (var x in getPageResult.OrEmpty(x => x.Page?.MergeModels)) {
+        if (getPageResult.HasValue(x => x.Page)) {
+            mergeModels[getPageResult.Page.Kind.Id] = getPageResult.Page.Content;
+        }
+
+        foreach (var x in getPageResult.OrEmpty(x => x.Page?.AdditionalModels)) {
             mergeModels[x.Kind.Id] = x.Content;
         }
     }

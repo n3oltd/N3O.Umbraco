@@ -23,17 +23,18 @@ public static class CdnClientExtensions {
         } else {
             var publishedPlatformsPage = jsonProvider.DeserializeDynamicTo<PublishedPlatformsPage>(publishedContentResult.Content);
 
-            var mergeModels = await publishedPlatformsPage.OrEmpty(x => x.MergeModels)
+            var additionalModels = await publishedPlatformsPage.OrEmpty(x => x.MergeModels)
                                                           .SelectListAsync(x => FetchMergeModelAsync(cdnClient, x));
             
             return new PlatformsPage(publishedContentResult.Id.GetValueOrThrow(),
                                      publishedContentResult.Kind,
                                      publishedContentResult.Path,
+                                     publishedContentResult.Content,
                                      publishedPlatformsPage.MetaTags,
-                                     mergeModels);
+                                     additionalModels);
         }
     }
-    
+     
     private static Task<PublishedContentResult> FetchMergeModelAsync(ICdnClient cdnClient,
                                                                      PublishedFileInfo publishedModel) {
         return cdnClient.DownloadPublishedContentAsync(publishedModel.Path);
