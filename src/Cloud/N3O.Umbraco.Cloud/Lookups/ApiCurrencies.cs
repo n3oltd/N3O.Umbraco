@@ -50,5 +50,5 @@ public class ApiCurrencies : ApiLookupsCollection<Currency> {
         return currency;
     }
 
-    protected override TimeSpan CacheDuration => TimeSpan.FromMinutes(5);
+    protected override TimeSpan CacheDuration => TimeSpan.FromMinutes(1);
 }

@@ -60,5 +60,5 @@ public class ApiElements : ApiLookupsCollection<Element> {
         return await base.FindByIdAsync(id, cancellationToken);
     }
 
-    protected override TimeSpan CacheDuration => TimeSpan.FromMinutes(5);
+    protected override TimeSpan CacheDuration => TimeSpan.FromMinutes(1);
 }

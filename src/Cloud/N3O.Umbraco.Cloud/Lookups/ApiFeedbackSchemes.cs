@@ -51,5 +51,5 @@ public class ApiFeedbackSchemes : ApiLookupsCollection<FeedbackScheme> {
                                                  publishedFeedbackCustomFieldDefinition.Text?.MaxLength.GetValueOrDefault() ?? 0);
     }
 
-    protected override TimeSpan CacheDuration => TimeSpan.FromMinutes(5);
+    protected override TimeSpan CacheDuration => TimeSpan.FromMinutes(1);
 }

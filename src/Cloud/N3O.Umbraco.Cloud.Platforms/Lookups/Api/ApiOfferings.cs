@@ -36,5 +36,5 @@ public class ApiOfferings : ApiLookupsCollection<Offering> {
         return offerings;
     }
 
-    protected override TimeSpan CacheDuration => TimeSpan.FromMinutes(5);
+    protected override TimeSpan CacheDuration => TimeSpan.FromMinutes(1);
 }

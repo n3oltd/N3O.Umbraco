@@ -43,7 +43,7 @@ public class CampaignSending : INotificationAsyncHandler<SendingContentNotificat
         donationFormTag.Attributes.Add("element-kind", ElementKind.DonationFormCampaign.ToEnumString());
         donationButtonTag.Attributes.Add("element-kind", ElementKind.DonationButtonCampaign.ToEnumString());
         
-        var embedTab = variant.Tabs.SingleOrDefault(x => x.Alias.EqualsInvariant("embed"));
+        var embedTab = variant.Tabs.SingleOrDefault(x => x.Alias.EqualsInvariant("general/embed"));
         
         var donationFormTagEmbedProperty = GetProperty(embedTab, AliasHelper<CampaignContent>.PropertyAlias(x => x.DonationFormEmbedCode));
         var donationButtonEmbedProperty = GetProperty(embedTab, AliasHelper<CampaignContent>.PropertyAlias(x => x.DonationButtonEmbedCode));
