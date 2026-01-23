@@ -1,6 +1,5 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
-using N3O.Umbraco.Extensions;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 
@@ -14,10 +13,7 @@ public class ZakatCalculatorSettingsMapping : IMapDefinition {
     // Umbraco.Code.MapAll
     private void Map(ZakatCalculatorSettingsContent src, ZakatCalculatorSettingsReq dest, MapperContext ctx) {
         dest.DonationFormState = ctx.Map<OfferingContent, DonationFormStateReq>(src.Offering);
-        dest.Sections = src.Sections
-                           .Where(x => x.Fields.HasAny())
-                           .Select(ctx.Map<ZakatCalculatorSectionSettingsContent, ZakatCalculatorSectionReq>)
-                           .ToList();
+        dest.Sections = src.Sections.Select(ctx.Map<ZakatCalculatorSectionSettingsContent, ZakatCalculatorSectionReq>).ToList();
 
         dest.DonationFormState.Options = new DonationFormOptionsReq();
         dest.DonationFormState.Options.SuggestedFilters = new DonationFormSuggestedFiltersReq();
