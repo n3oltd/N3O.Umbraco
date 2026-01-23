@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Lookups;
 
 public abstract class LookupsCollection<T> : ILookupsCollection<T> where T : ILookup {
-    private bool _loaded;
+    private DateTime _nextReloadAt = DateTime.MinValue;
     private Dictionary<string, T> _idDictionary;
     private Dictionary<string, IReadOnlyList<T>> _nameDictionary;
     private IReadOnlyList<T> _all;
@@ -60,12 +60,12 @@ public abstract class LookupsCollection<T> : ILookupsCollection<T> where T : ILo
     }
     
     private async Task EnsureLoadedAsync(CancellationToken cancellationToken) {
-        if (!_loaded) {
+        if (DateTime.UtcNow > _nextReloadAt) {
             var all = await LoadAllAsync(cancellationToken);
 
             Reload(all);
 
-            _loaded = true;
+            _nextReloadAt = DateTime.UtcNow.Add(ReloadInterval);
         }
     }
     
@@ -84,4 +84,6 @@ public abstract class LookupsCollection<T> : ILookupsCollection<T> where T : ILo
                                                 StringComparer.InvariantCultureIgnoreCase);
         }
     }
+    
+    protected virtual TimeSpan ReloadInterval => TimeSpan.FromMinutes(5);
 }

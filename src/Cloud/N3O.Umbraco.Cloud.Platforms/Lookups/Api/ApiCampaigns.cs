@@ -31,8 +31,9 @@ public class ApiCampaigns : ApiLookupsCollection<Campaign> {
             campaigns.Add(campaign);
         }
 
-        return campaigns;
+      return campaigns;
     }
 
     protected override TimeSpan CacheDuration => TimeSpan.FromMinutes(1);
-}
+    protected override TimeSpan ReloadInterval => TimeSpan.FromMinutes(1);
+}  

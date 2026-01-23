@@ -42,4 +42,5 @@ public class ApiDonationItems : ApiLookupsCollection<DonationItem> {
     }
 
     protected override TimeSpan CacheDuration => TimeSpan.FromMinutes(1);
+    protected override TimeSpan ReloadInterval => TimeSpan.FromMinutes(1);
 }

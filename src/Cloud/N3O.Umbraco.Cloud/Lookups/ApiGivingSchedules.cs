@@ -35,4 +35,5 @@ public class ApiGivingSchedules : ApiLookupsCollection<GivingSchedule> {
     }
 
     protected override TimeSpan CacheDuration => TimeSpan.FromMinutes(1);
+    protected override TimeSpan ReloadInterval => TimeSpan.FromMinutes(1);
 }
