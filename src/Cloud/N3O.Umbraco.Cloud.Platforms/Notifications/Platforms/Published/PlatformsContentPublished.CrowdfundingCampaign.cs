@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
-using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
+using N3O.Umbraco.Cloud.Platforms.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Scheduler;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models;
@@ -16,7 +17,8 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 public class CrowdfundingCampaignPublished : CloudContentPublished {
     private readonly IContentTypeService _contentTypeService;
     private readonly Lazy<IContentLocator> _contentLocator;
-    private readonly ICrowdfunderTemplatePublisher _crowdfunderTemplatePublisher;
+    private readonly IReadOnlyList<ITemplatePublisher> _templatePublishers;
+    private readonly IUmbracoMapper _mapper;
 
     public CrowdfundingCampaignPublished(ISubscriptionAccessor subscriptionAccessor,
                                          ICloudUrl cloudUrl,
@@ -24,43 +26,33 @@ public class CrowdfundingCampaignPublished : CloudContentPublished {
                                          IContentTypeService contentTypeService,
                                          Lazy<IContentLocator> contentLocator,
                                          ILogger<CrowdfundingCampaignPublished> logger,
-                                         ICrowdfunderTemplatePublisher crowdfunderTemplatePublisher)
+                                         IEnumerable<ITemplatePublisher> templatePublishers,
+                                         IUmbracoMapper mapper)
         : base(subscriptionAccessor, cloudUrl, backgroundJob, logger) {
         _contentTypeService = contentTypeService;
         _contentLocator = contentLocator;
-        _crowdfunderTemplatePublisher = crowdfunderTemplatePublisher;
+        _mapper = mapper;
+        _templatePublishers = templatePublishers.ToList();
     }
     
     protected override bool CanProcess(IContent content) {
-        return content.IsCampaign(_contentTypeService) && CrowdfundingEnabled(content);
+        return content.IsCrowdfundingCampaign(_contentTypeService) && CrowdfundingEnabled(content);
     }
     
     protected override object GetBody(IContent content) {
-        var campaign = _contentLocator.Value.ById<CampaignContent>(content.Key);
+        var campaign = _contentLocator.Value.ById<CrowdfundingCampaignContent>(content.Key);
 
-        var req = new CrowdfundingCampaignWebhookBodyReq();
-        
-        req.CampaignId = campaign.Key.ToString();
-        req.Action = WebhookSyncAction.AddOrUpdate;
+        var templatePublisher = _templatePublishers.Single(x => x.IsPublisherFor(AliasHelper<CampaignContent>.ContentTypeAlias()));
 
-        req.AddOrUpdate = GetCrowdfundingCampaignReq(campaign);
-        
-        return req;
-    }
-
-    private CrowdfundingCampaignReq GetCrowdfundingCampaignReq(CampaignContent campaign) {
-        var req = new CrowdfundingCampaignReq();
-        req.Activate = true;
-
-        req.Template = new ContentReq();
-        req.Template.SchemaAlias = CrowdfundingSystemSchema.Sys__crowdfunderPage.ToEnumString();
-        req.Template.Properties = _crowdfunderTemplatePublisher.GetContentProperties(campaign.Content()).ToList();
+        var req = _mapper.Map<CrowdfundingCampaignContent, CrowdfundingCampaignWebhookBodyReq>(campaign, ctx => {
+            ctx.Items[CrowdfundingCampaignWebhookBodyReqMapping.PageContentContext] = templatePublisher.GetContentProperties(campaign.Content());                                                           
+        });
         
         return req;
     }
     
     private bool CrowdfundingEnabled(IContent content) {
-        return content.GetValue<bool>(AliasHelper<CampaignContent>.PropertyAlias(x => x.CrowdfundingEnabled));
+        return content.GetValue<bool>(AliasHelper<CrowdfundingCampaignContent>.PropertyAlias(x => x.CrowdfundingEnabled));
     }
 
     protected override string HookId => PlatformsConstants.WebhookIds.CrowdfundingCampaigns;

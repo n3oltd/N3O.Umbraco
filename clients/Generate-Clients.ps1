@@ -73,3 +73,5 @@ n3o-tool clients --url "https://beta.n3o.cloud/eu1/api/platforms/docs/swagger/co
 n3o-tool clients --url "https://beta.n3o.cloud/eu1/api/templates/docs/swagger/connect-v1.0/swagger.json" --language "CSharp" --output-path "../src/Cloud/N3O.Umbraco.Cloud.Platforms/Clients" --name "TemplatesClient" --namespace "N3O.Umbraco.Cloud.Platforms.Clients" --connect-api
 
 n3o-tool clients --url "https://beta.n3o.cloud/eu1/api/zakat/docs/swagger/umbraco-v1.0/swagger.json" --language "CSharp" --output-path "../src/Cloud/N3O.Umbraco.Cloud.Zakat/Clients" --name "ZakatClient" --namespace "N3O.Umbraco.Cloud.Zakat.Clients" --connect-api
+
+n3o-tool clients --url "https://beta.n3o.cloud/eu1/api/crowdfunding/docs/swagger/umbraco-v1.0/swagger.json" --language "CSharp" --output-path "../src/Cloud/N3O.Umbraco.Cloud.Zakat/Clients" --name "CrowdfundingClient" --namespace "N3O.Umbraco.Cloud.Platforms.Clients" --connect-api --exclude-models-from "https://n3o.cloud/eu1/api/platforms/docs/swagger/umbraco-v1.0/swagger.json"

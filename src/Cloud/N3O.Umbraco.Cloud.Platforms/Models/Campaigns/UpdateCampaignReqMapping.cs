@@ -8,6 +8,8 @@ using N3O.Umbraco.Media;
 using NodaTime.Extensions;
 using Slugify;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
@@ -15,6 +17,8 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class UpdateCampaignReqMapping : IMapDefinition {
+    public const string PageContentContext = nameof(PageContentContext);
+    
     private readonly IMediaUrl _mediaUrl;
     private readonly ISlugHelper _slugHelper;
 
@@ -48,6 +52,10 @@ public class UpdateCampaignReqMapping : IMapDefinition {
 
         dest.Page = new ContentReq();
         dest.Page.SchemaAlias = PlatformsSystemSchema.Sys__campaignPage.ToEnumString();
+        
+        if (ctx.Items.TryGetValue(PageContentContext, out var value)) {
+            dest.Page.Properties = ((IEnumerable<PropertyContentReq>) value).ToList();
+        }
 
         if (src.Content().IsPublished()) {
             dest.Activate = true;

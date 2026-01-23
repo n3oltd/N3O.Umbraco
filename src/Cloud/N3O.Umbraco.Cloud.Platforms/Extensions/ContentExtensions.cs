@@ -11,6 +11,10 @@ public static class ContentExtensions {
         return HasComposition(contentTypeService, content, AliasHelper<CampaignContent>.ContentTypeAlias());
     }
     
+    public static bool IsCrowdfundingCampaign(this IContent content, IContentTypeService contentTypeService) {
+        return HasComposition(contentTypeService, content, AliasHelper<CrowdfundingCampaignContent>.ContentTypeAlias());
+    }
+    
     public static bool IsDonationButtonElement(this IContent content) {
         return content.ContentType.Alias.EqualsInvariant(AliasHelper<DonationButtonElementContent>.ContentTypeAlias());
     }

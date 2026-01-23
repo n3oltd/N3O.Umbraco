@@ -22,6 +22,9 @@ public class PlatformsComposer : Composer {
         RegisterAll(t => t.ImplementsInterface<IPreviewHtmlGenerator>(),
                     t => builder.Services.AddTransient(typeof(IPreviewHtmlGenerator), t));
         
+        RegisterAll(t => t.ImplementsInterface<ITemplatePublisher>(),
+                    t => builder.Services.AddTransient(typeof(ITemplatePublisher), t));
+        
         builder.Services.Configure<UmbracoPipelineOptions>(opt => {
             var filter = new UmbracoPipelineFilter(nameof(PlatformsTemplatesMiddleware));
             
