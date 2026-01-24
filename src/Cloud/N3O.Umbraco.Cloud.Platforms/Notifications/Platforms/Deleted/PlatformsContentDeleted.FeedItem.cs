@@ -24,7 +24,7 @@ public class FeedItemDeleted : PlatformsContentDeleted {
     protected override object GetBody(IContent content) {
         var req = new ManagedContentWebhookBodyReq();
         req.Id = content.Key.ToString();
-        req.Action = WebhookSyncAction.Delete;
+        req.Action = WebhookSyncAction.Deactivate;
 
         return req;
     }
