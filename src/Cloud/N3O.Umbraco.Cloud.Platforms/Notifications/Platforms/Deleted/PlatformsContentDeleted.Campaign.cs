@@ -24,7 +24,7 @@ public class CampaignDeleted : PlatformsContentDeleted {
     protected override object GetBody(IContent content) {
         var campaignReq = new CampaignWebhookBodyReq();
         campaignReq.Id = content.Key.ToString();
-        campaignReq.Action = WebhookSyncAction.Delete;
+        campaignReq.Action = WebhookSyncAction.Deactivate;
 
         return campaignReq;
     }
