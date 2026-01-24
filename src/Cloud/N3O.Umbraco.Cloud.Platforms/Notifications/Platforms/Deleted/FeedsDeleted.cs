@@ -12,7 +12,7 @@ public class FeedsDeleted : INotificationAsyncHandler<ContentMovingToRecycleBinN
     public Task HandleAsync(ContentMovingToRecycleBinNotification notification, CancellationToken cancellationToken) {
         foreach (var content in notification.MoveInfoCollection.Select(x => x.Entity)) {
             if (content.IsFeeds()) {
-                notification.CancelWithError("Feeds can not be deleted");
+                notification.CancelWithError("Feeds cannot be deleted");
             }
         }
         return Task.CompletedTask;   
