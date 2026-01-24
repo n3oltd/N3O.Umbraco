@@ -11,6 +11,10 @@ public static class PlatformsConstants {
         public const string Telethon = "platformsTelethonCampaign";
     }
     
+    public static class CrowdfundingCampaign {
+        public const string CompositionAlias = "platformsCrowdfundingCampaign";
+    }
+    
     public static class Elements {
         public const string CompositionAlias = "platformsElement";
         public const string DonationButton = "platformsDonationButtonElement";

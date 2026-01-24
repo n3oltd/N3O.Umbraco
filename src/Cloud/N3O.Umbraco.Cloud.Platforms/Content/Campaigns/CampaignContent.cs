@@ -57,8 +57,6 @@ public class CampaignContent : UmbracoContent<CampaignContent> {
     public MediaWithCrops Image => GetValue(x => x.Image);
     public decimal Target => GetValue(x => x.Target);
     
-    public bool CrowdfundingEnabled => GetValue(x => x.CrowdfundingEnabled);
-    
     public string DonationFormEmbedCode => GetValue(x => x.DonationFormEmbedCode);
     public string DonationButtonEmbedCode => GetValue(x => x.DonationButtonEmbedCode);
 

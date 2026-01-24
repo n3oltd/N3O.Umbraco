@@ -4,6 +4,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Cloud.Platforms;
 
-public interface ICrowdfunderTemplatePublisher {
+public interface ITemplatePublisher {
+    bool IsPublisherFor(string alias);
     IEnumerable<PropertyContentReq> GetContentProperties(IPublishedContent publishedContent);
 }
