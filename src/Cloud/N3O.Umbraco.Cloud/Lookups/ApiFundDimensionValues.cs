@@ -28,7 +28,6 @@ public abstract class ApiFundDimensionValues<T> : ApiLookupsCollection<T> where 
         return GetFundDimensionValues(fundStructure).ToList();
     }
 
-    protected override TimeSpan CacheDuration => TimeSpan.FromMinutes(1);
     protected override TimeSpan ReloadInterval => TimeSpan.FromMinutes(1);
     
     protected abstract IEnumerable<T> GetFundDimensionValues(PublishedFundStructure fundDimensionValues);

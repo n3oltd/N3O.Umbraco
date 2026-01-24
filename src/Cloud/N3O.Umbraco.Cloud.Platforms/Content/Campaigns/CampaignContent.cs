@@ -2,7 +2,6 @@
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.EditorJs.Models;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using System;

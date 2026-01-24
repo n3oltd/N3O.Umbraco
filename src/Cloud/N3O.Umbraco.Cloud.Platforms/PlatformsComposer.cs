@@ -19,11 +19,11 @@ public class PlatformsComposer : Composer {
         builder.Services.AddSingleton<IPlatformsPageAccessor, PlatformsPageAccessor>();
         builder.Services.AddScoped<PlatformsTemplatesMiddleware>();
         
+        RegisterAll(t => t.ImplementsInterface<IPlatformsPageContentPublisher>(),
+                    t => builder.Services.AddTransient(typeof(IPlatformsPageContentPublisher), t));
+        
         RegisterAll(t => t.ImplementsInterface<IPreviewHtmlGenerator>(),
                     t => builder.Services.AddTransient(typeof(IPreviewHtmlGenerator), t));
-        
-        RegisterAll(t => t.ImplementsInterface<ITemplatePublisher>(),
-                    t => builder.Services.AddTransient(typeof(ITemplatePublisher), t));
         
         builder.Services.Configure<UmbracoPipelineOptions>(opt => {
             var filter = new UmbracoPipelineFilter(nameof(PlatformsTemplatesMiddleware));

@@ -6,6 +6,8 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Media;
 using Slugify;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
@@ -13,6 +15,8 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class UpdateOfferingReqMapping : IMapDefinition {
+    public const string PageContentContext = nameof(PageContentContext);
+    
     private readonly IMediaUrl _mediaUrl;
     private readonly ISlugHelper _slugHelper;
 
@@ -44,8 +48,12 @@ public class UpdateOfferingReqMapping : IMapDefinition {
         dest.Order = new OfferingOrderReq();
         dest.Order.Order = src.Content().Parent.Children.FindIndex(x => x.Id == src.Content().Id);
 
-        dest.Page = new ContentReq(); // TODO Populate rest of the properties
+        dest.Page = new ContentReq();
         dest.Page.SchemaAlias = PlatformsSystemSchema.Sys__offeringPage.ToEnumString();
+        
+        if (ctx.Items.TryGetValue(PageContentContext, out var value)) {
+            dest.Page.Properties = ((IEnumerable<PropertyContentReq>) value).ToList();
+        }
         
         dest.FormState = ctx.Map<OfferingContent, DonationFormStateReq>(src);
         

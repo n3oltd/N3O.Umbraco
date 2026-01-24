@@ -45,6 +45,5 @@ public class ApiSponsorshipSchemes : ApiLookupsCollection<SponsorshipScheme> {
         return sponsorshipSchemes;
     }
 
-    protected override TimeSpan CacheDuration => TimeSpan.FromMinutes(1);
     protected override TimeSpan ReloadInterval => TimeSpan.FromMinutes(1);
 }

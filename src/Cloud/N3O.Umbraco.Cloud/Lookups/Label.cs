@@ -3,7 +3,6 @@ using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -42,6 +41,4 @@ public abstract class Labels<T> : ApiLookupsCollection<T> where T : Label {
     protected abstract T CreateLabel(PublishedTagDefinition publishedTagDefinition);
 
     protected abstract TagScope Scope { get; }
-
-    protected override TimeSpan CacheDuration => TimeSpan.FromHours(1);
 }
