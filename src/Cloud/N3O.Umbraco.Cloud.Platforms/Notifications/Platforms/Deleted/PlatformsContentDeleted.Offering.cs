@@ -24,7 +24,7 @@ public class OfferingDeleted : PlatformsContentDeleted {
     protected override object GetBody(IContent content) {
         var offeringReq = new OfferingWebhookBodyReq();
         offeringReq.Id = content.Key.ToString();
-        offeringReq.Action = WebhookSyncAction.Delete;
+        offeringReq.Action = WebhookSyncAction.Deactivate;
 
         return offeringReq;
     }
