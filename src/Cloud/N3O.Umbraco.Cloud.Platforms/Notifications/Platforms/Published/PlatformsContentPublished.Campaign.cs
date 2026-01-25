@@ -46,7 +46,7 @@ public class CampaignPublished : CloudContentPublished {
         var platformsPageContentPublisher = _platformsPageContentPublishers.GetPublisher(PlatformsSchemas.CampaignPage);
 
         var campaignReq = _mapper.Map<CampaignContent, CampaignWebhookBodyReq>(campaign, ctx => {
-            ctx.Items[UpdateCampaignReqMapping.PageContentContext] = platformsPageContentPublisher.GetContentProperties(campaign.Content());                                                           
+            ctx.Items[UpdateCampaignReqMapping.PageContentContext] = platformsPageContentPublisher.GetContentProperties(campaign.Content());
         });
 
         return campaignReq;

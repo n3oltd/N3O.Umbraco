@@ -45,7 +45,7 @@ public class OfferingPublished : CloudContentPublished {
         var platformsPageContentPublisher = _platformsPageContentPublishers.GetPublisher(PlatformsSchemas.OfferingPage);
 
         var offeringReq = _mapper.Map<OfferingContent, OfferingWebhookBodyReq>(offering, ctx => {
-            ctx.Items[UpdateOfferingReqMapping.PageContentContext] = platformsPageContentPublisher.GetContentProperties(offering.Content());                                                           
+            ctx.Items[UpdateOfferingReqMapping.PageContentContext] = platformsPageContentPublisher.GetContentProperties(offering.Content());
         });
 
         return offeringReq;
