@@ -40,16 +40,27 @@ public class LastChanceFinder : IContentLastChanceFinder {
         var redirect = _redirectManagement.FindRedirect(requestedPath);
 
         if (redirect != null) {
-            var redirectUrl = redirect.Url;
-
             _redirectManagement.LogHit(redirect.Id);
 
-            var httpCode = redirect.Temporary ? HttpStatusCode.TemporaryRedirect : HttpStatusCode.Redirect;
-            request.SetRedirect(redirectUrl, (int) httpCode);
+            Redirect(request, redirect.Temporary, redirect.Url);
+
+            return true;
+        }
+        
+        var lastChanceUrl = LastChanceUrls.Find(requestedPath);
+
+        if (lastChanceUrl != null) {
+            Redirect(request, lastChanceUrl.Temporary, lastChanceUrl.Path);
 
             return true;
         }
 
         return false;
+    }
+
+    private void Redirect(IPublishedRequestBuilder request, bool temporary, string urlOrPath) {
+        var httpCode = temporary ? HttpStatusCode.TemporaryRedirect : HttpStatusCode.Redirect;
+        
+        request.SetRedirect(urlOrPath, (int) httpCode);
     }
 }
