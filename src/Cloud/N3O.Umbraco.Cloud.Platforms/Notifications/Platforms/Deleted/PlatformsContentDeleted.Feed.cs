@@ -30,7 +30,7 @@ public class FeedDeleted : PlatformsContentDeleted {
         var req = new ContentCollectionWebhookBodyReq();
         req.Id = content.Key.ToString();
         req.ContentLibraryId = feed.Ancestors().Single(x => x.ContentType.Alias == PlatformsConstants.Feeds.Alias).Key.ToString();
-        req.Action = WebhookSyncAction.Delete;
+        req.Action = WebhookSyncAction.Deactivate;
 
         return req;
     }

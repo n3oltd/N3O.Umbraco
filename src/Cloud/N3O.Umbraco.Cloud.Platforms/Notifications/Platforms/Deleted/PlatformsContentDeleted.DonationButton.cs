@@ -18,7 +18,7 @@ public class DonationButtonDeleted : PlatformsContentDeleted {
     protected override object GetBody(IContent content) {
         var donationButtonReq = new CustomElementWebhookBodyReqDonationButtonReq();
         donationButtonReq.Id = content.Key.ToString();
-        donationButtonReq.Action = WebhookSyncAction.Delete;
+        donationButtonReq.Action = WebhookSyncAction.Deactivate;
 
         return donationButtonReq;
     }
