@@ -28,7 +28,7 @@ public class CustomElementWebhookBodyReqDonationButtonReqMapping : IMapDefinitio
             
         dest.AddOrUpdate.Data = new DonationButtonReq();
         dest.AddOrUpdate.Data.Text = src.DonationButton.Text;
-        dest.AddOrUpdate.Data.Action = src.DonationButton.Action.ToEnum<DonationButtonAction>() ?? DonationButtonAction.AddToCart;
+        dest.AddOrUpdate.Data.Action = src.DonationButton.Action.ToEnum<DonationButtonAction>() ?? DonationButtonAction.OpenDonationForm;
         dest.AddOrUpdate.Data.FormState = ctx.Map<ElementContent, DonationFormStateReq>(src);
         
         if (src.Content().IsPublished()) {
