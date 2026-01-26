@@ -23,6 +23,8 @@ public class MetadataEntriesTagHelper : TagHelper {
                 
                 metaTag.Attributes.Add("name", entry.Name);
                 metaTag.Attributes.Add("content", entry.Content);
+                
+                metaTag.TagRenderMode = TagRenderMode.SelfClosing;
 
                 output.Content.AppendHtml(metaTag);
             }

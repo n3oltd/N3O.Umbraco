@@ -30,6 +30,6 @@ public class NisabMergeModelProvider : MergeModelsProvider {
         var silverNisabAmount = await _nisab.GetSilverNisabAsync(currency, cancellationToken);
         var silverNisab = _formatter.Number.FormatMoney(silverNisabAmount);
 
-        mergeModels["nisab"] = new NisabMergeModel(goldNisab, silverNisab);
+        mergeModels[PlatformsTemplateConstants.ModelKeys.Nisab] = new NisabMergeModel(goldNisab, silverNisab);
     }
 }

@@ -30,13 +30,15 @@ public class UserMergeModelProvider : MergeModelsProvider {
                                                       CancellationToken cancellationToken = default) {
         try {
             var bearerToken = _userCookie.GetValue();
-            
-            var client = await _clientFactory.Value.CreateAsync(CloudApiTypes.Connect, bearerToken);
 
-            var platformsUser = await client.InvokeAsync(x => x.GetPlatformsUserAsync(cancellationToken));
+            if (bearerToken.HasValue()) {
+                var client = await _clientFactory.Value.CreateAsync(CloudApiTypes.Connect, bearerToken);
 
-            if (platformsUser.HasValue()) {
-                mergeModels["user"] = platformsUser;
+                var platformsUser = await client.InvokeAsync(x => x.GetPlatformsUserAsync(cancellationToken));
+
+                if (platformsUser.HasValue()) {
+                    mergeModels["user"] = platformsUser;
+                }
             }
         } catch (Exception ex) {
             _logger.LogError(ex, "Error fetching platforms user: {Error}", ex.Message);;
