@@ -71,6 +71,7 @@ public class TypesenseStartupTasks : INotificationAsyncHandler<UmbracoApplicatio
         var collectionName = collectionInfo.Name.Resolve();
         
         var schema = new Schema(collectionName, collectionInfo.Fields) {
+            EnableNestedFields =  true,
             Metadata = new Dictionary<string, object> {
                 { TypesenseConstants.MetadataKeys.Version, collectionInfo.Version }
             }

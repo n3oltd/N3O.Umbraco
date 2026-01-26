@@ -16,6 +16,6 @@ public class OrganizationInfoMergeModelProvider : MergeModelsProvider {
     protected override async Task PopulateModelsAsync(IPublishedContent content,
                                                       Dictionary<string, object> mergeModels,
                                                       CancellationToken cancellationToken = default) {
-        mergeModels[""] = await _organizationInfoAccessor.GetOrganizationInfoAsync(cancellationToken);
+        mergeModels[CloudTemplatesConstants.ModelKeys.OrganizationInfo] = await _organizationInfoAccessor.GetOrganizationInfoAsync(cancellationToken);
     }
 }

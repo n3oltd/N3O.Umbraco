@@ -17,8 +17,8 @@ public static class PageViewModelExtensions {
                                                                             PlatformsPublishedFileKind.Campaign);
     }
 
-    public static PublishedCampaign CampaignPage(this IPageViewModel pageViewModel) {
-        return PublishedFile<PublishedCampaign, PlatformsPublishedFileKind>(pageViewModel,
+    public static PublishedCampaignPage CampaignPage(this IPageViewModel pageViewModel) {
+        return PublishedFile<PublishedCampaignPage, PlatformsPublishedFileKind>(pageViewModel,
                                                                             PlatformsPublishedFileKind.CampaignPage);
     }
     
@@ -26,9 +26,9 @@ public static class PageViewModelExtensions {
         return pageViewModel.MergeModel<PublishedCampaigns>(PlatformsTemplateConstants.ModelKeys.Campaigns);
     }
     
-    public static PublishedCrowdfunder CrowdfunderPage(this IPageViewModel pageViewModel) {
-        return PublishedFile<PublishedCrowdfunder, CrowdfundingPublishedFileKind>(pageViewModel,
-                                                                                  CrowdfundingPublishedFileKind.CrowdfunderPage);
+    public static PublishedCrowdfunderPage CrowdfunderPage(this IPageViewModel pageViewModel) {
+        return PublishedFile<PublishedCrowdfunderPage, CrowdfundingPublishedFileKind>(pageViewModel,
+                                                                                      CrowdfundingPublishedFileKind.CrowdfunderPage);
     }
     
     public static PublishedOffering Offering(this IPageViewModel pageViewModel) {
@@ -36,9 +36,9 @@ public static class PageViewModelExtensions {
                                                                             PlatformsPublishedFileKind.Offering);
     }
     
-    public static PublishedOffering OfferingPage(this IPageViewModel pageViewModel) {
-        return PublishedFile<PublishedOffering, PlatformsPublishedFileKind>(pageViewModel,
-                                                                            PlatformsPublishedFileKind.OfferingPage);
+    public static PublishedOfferingPage OfferingPage(this IPageViewModel pageViewModel) {
+        return PublishedFile<PublishedOfferingPage, PlatformsPublishedFileKind>(pageViewModel,
+                                                                                PlatformsPublishedFileKind.OfferingPage);
     }
     
     public static T PublishedFile<T, U>(this IPageViewModel pageViewModel, U kind) where U : struct, Enum {

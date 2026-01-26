@@ -21,8 +21,8 @@ public class PlatformsPageRoute : Value {
     
     public static readonly PlatformsPageRoute[] All = [
         // Order is important here as offerings fallback to campaign
-        new(SpecialPages.Donate, PublishedFileKinds.CampaignPage),
         new(SpecialPages.Donate, PublishedFileKinds.OfferingPage),
+        new(SpecialPages.Donate, PublishedFileKinds.CampaignPage),
         new(SpecialPages.Crowdfunding, PublishedFileKinds.CrowdfunderPage)
     ];
 }
