@@ -11,7 +11,7 @@ namespace N3O.Umbraco.Templates;
 public class TemplatesComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddScoped<IMerger, Merger>();
-        builder.Services.AddSingleton<IMediaUrl, TemplatedMediaUrl>();
+        builder.Services.AddSingleton<IMediaUrl, TemplatesMediaUrl>();
         
         RegisterAll(t => t.ImplementsInterface<IMergeModelsProvider>(),
                     t => builder.Services.AddTransient(typeof(IMergeModelsProvider), t));

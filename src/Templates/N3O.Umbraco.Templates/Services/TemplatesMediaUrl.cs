@@ -9,8 +9,8 @@ using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Templates;
 
-public class TemplatedMediaUrl : MediaUrl {
-    public TemplatedMediaUrl(MediaFileManager mediaFileManager, IUrlBuilder urlBuilder) 
+public class TemplatesMediaUrl : MediaUrl {
+    public TemplatesMediaUrl(MediaFileManager mediaFileManager, IUrlBuilder urlBuilder) 
         : base(mediaFileManager, urlBuilder) {
     }
 
@@ -43,8 +43,8 @@ public class TemplatedMediaUrl : MediaUrl {
     }
 
     private string GetUrl(MediaWithCrops mediaWithCrops, Func<string> fallbackAction) {
-        if (mediaWithCrops.Content.Value(TemplateConstants.Media.MergeExpression).HasValue()) {
-            return mediaWithCrops.Content.Value<string>(TemplateConstants.Media.MergeExpression);
+        if (mediaWithCrops.Content.Value(TemplateConstants.Media.MergeField).HasValue()) {
+            return mediaWithCrops.Content.Value<string>(TemplateConstants.Media.MergeField);
         } else {
             return fallbackAction();
         }

@@ -8,10 +8,6 @@ using System;
 namespace N3O.Umbraco.Cloud.Platforms.Templates.Extensions;
 
 public static class PageViewModelExtensions {
-    public static NisabMergeModel Nisab(this IPageViewModel pageViewModel) {
-        return pageViewModel.MergeModel<NisabMergeModel>(PlatformsTemplateConstants.ModelKeys.Nisab);
-    }
-    
     public static PublishedCampaign Campaign(this IPageViewModel pageViewModel) {
         return PublishedFile<PublishedCampaign, PlatformsPublishedFileKind>(pageViewModel,
                                                                             PlatformsPublishedFileKind.Campaign);
@@ -29,6 +25,10 @@ public static class PageViewModelExtensions {
     public static PublishedCrowdfunderPage CrowdfunderPage(this IPageViewModel pageViewModel) {
         return PublishedFile<PublishedCrowdfunderPage, CrowdfundingPublishedFileKind>(pageViewModel,
                                                                                       CrowdfundingPublishedFileKind.CrowdfunderPage);
+    }
+    
+    public static NisabMergeModel Nisab(this IPageViewModel pageViewModel) {
+        return pageViewModel.MergeModel<NisabMergeModel>(PlatformsTemplateConstants.ModelKeys.Nisab);
     }
     
     public static PublishedOffering Offering(this IPageViewModel pageViewModel) {
