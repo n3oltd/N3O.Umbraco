@@ -15,6 +15,7 @@ public class PlatformsComposer : Composer {
         builder.Services.AddOpenApiDocument(PlatformsConstants.BackOfficeApiName);
         builder.Services.AddOpenApiDocument(PlatformsConstants.DevToolsApiName);
 
+        builder.Services.AddSingleton<ICampaignIdAccessor, CampaignIdAccessor>();
         builder.Services.AddSingleton<INisab, Nisab>();
         builder.Services.AddSingleton<IPlatformsPageAccessor, PlatformsPageAccessor>();
         builder.Services.AddScoped<PlatformsTemplatesMiddleware>();

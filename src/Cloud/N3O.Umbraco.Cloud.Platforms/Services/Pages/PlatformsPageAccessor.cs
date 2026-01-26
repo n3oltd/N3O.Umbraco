@@ -7,6 +7,7 @@ using N3O.Umbraco.ContentFinders;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Cloud.Platforms;
@@ -27,7 +28,7 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
         _jsonProvider = jsonProvider;
     }
     
-    public async Task<GetPageResult> GetAsync() {
+    public async Task<GetPageResult> GetAsync(CancellationToken cancellationToken = default) {
         if (_httpContextAccessor.HttpContext == null) {
             return null;
         }
@@ -37,13 +38,13 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
         if (!_httpContextAccessor.HttpContext.Items.ContainsKey(key)) {
             var requestUri = _httpContextAccessor.HttpContext.Request.Uri();
 
-            _httpContextAccessor.HttpContext.Items[key] = await GetAsync(requestUri);
+            _httpContextAccessor.HttpContext.Items[key] = await GetAsync(requestUri, cancellationToken);
         }
         
         return (GetPageResult) _httpContextAccessor.HttpContext.Items[key];
     }
     
-    private async Task<GetPageResult> GetAsync(Uri requestUri) {
+    private async Task<GetPageResult> GetAsync(Uri requestUri, CancellationToken cancellationToken) {
         foreach (var platformsPageRoute in PlatformsPageRoute.All) {
             var platformsPath = SpecialContentPathParser.ParseUri(_contentCache, platformsPageRoute.Parent, requestUri);
 
@@ -56,7 +57,8 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
             do {
                 var platformsPage = await _cdnClient.DownloadPlatformsPageAsync(_jsonProvider,
                                                                                 platformsPageRoute.ContentKind,
-                                                                                currentPath);
+                                                                                currentPath,
+                                                                                cancellationToken);
 
                 if (platformsPage.HasValue()) {
                     var platformsPageUrl = GetPlatformsPageUrl(platformsPage, platformsPageRoute.Parent);
