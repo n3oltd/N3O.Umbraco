@@ -19,5 +19,4 @@ public class RedirectContent : UmbracoContent<RedirectContent> {
         
         return LinkExternalUrl;
     }
-
 }
