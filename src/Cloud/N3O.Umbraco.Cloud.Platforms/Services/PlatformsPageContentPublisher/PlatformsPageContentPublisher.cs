@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Cloud.Platforms;
 public abstract class PlatformsPageContentPublisher<T> : IPlatformsPageContentPublisher where T : IPublishedContent {
     public abstract bool IsPublisherFor(PlatformsSchema page);
 
-    public virtual IEnumerable<PropertyContentReq> GetContentProperties(IPublishedContent publishedContent) {
+    public IEnumerable<PropertyContentReq> GetContentProperties(IPublishedContent publishedContent) {
         return GetContentProperties((T) publishedContent);
     }
     
