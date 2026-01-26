@@ -31,7 +31,7 @@ public class FeedItemPublished : CloudContentPublished {
     }
     
     protected override bool CanProcess(IContent content) {
-        return content.IsFeedItem(_contentTypeService) && IsApprovedOrRejectedFolder(content);
+        return content.IsFeedItem(_contentTypeService) && IsApprovedOrRejectedOrArchivedFolder(content);
     }
 
     protected override object GetBody(IContent content) {
@@ -44,10 +44,11 @@ public class FeedItemPublished : CloudContentPublished {
     
     protected override string HookId => PlatformsConstants.WebhookIds.ManagedContent;
 
-    private bool IsApprovedOrRejectedFolder(IContent content) {
+    private bool IsApprovedOrRejectedOrArchivedFolder(IContent content) {
         var parent = _contentLocator.Value.ById<IPublishedContent>(content.ParentId);
 
         if (parent.ContentType.Alias.IsAnyOf(PlatformsConstants.Feeds.Folders.ApprovedFolder,
+                                             PlatformsConstants.Feeds.Folders.ArchivedFolder,
                                              PlatformsConstants.Feeds.Folders.RejectedFolder)) {
             return true;
         } else {
