@@ -4,6 +4,7 @@ using N3O.Umbraco.Cloud.Platforms.Templates.Models;
 using N3O.Umbraco.Pages;
 using N3O.Umbraco.Templates.Extensions;
 using System;
+using System.Collections.Generic;
 
 namespace N3O.Umbraco.Cloud.Platforms.Templates.Extensions;
 
@@ -20,6 +21,10 @@ public static class PageViewModelExtensions {
     
     public static PublishedCampaigns Campaigns(this IPageViewModel pageViewModel) {
         return pageViewModel.MergeModel<PublishedCampaigns>(PlatformsTemplateConstants.ModelKeys.Campaigns);
+    }
+    
+    public static IEnumerable<PublishedOffering> CampaignOfferings(this IPageViewModel pageViewModel) {
+        return pageViewModel.MergeModel<IEnumerable<PublishedOffering>>(PlatformsTemplateConstants.ModelKeys.CampaignOfferings);
     }
     
     public static PublishedCrowdfunderPage CrowdfunderPage(this IPageViewModel pageViewModel) {
