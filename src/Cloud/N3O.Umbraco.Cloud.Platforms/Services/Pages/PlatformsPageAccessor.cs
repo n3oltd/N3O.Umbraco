@@ -6,6 +6,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.ContentFinders;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
+using System;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Cloud.Platforms;
@@ -27,8 +28,22 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
     }
     
     public async Task<GetPageResult> GetAsync() {
-        var requestUri = _httpContextAccessor.HttpContext?.Request.Uri();
+        if (_httpContextAccessor.HttpContext == null) {
+            return null;
+        }
 
+        var key = nameof(PlatformsPageAccessor);
+
+        if (!_httpContextAccessor.HttpContext.Items.ContainsKey(key)) {
+            var requestUri = _httpContextAccessor.HttpContext.Request.Uri();
+
+            _httpContextAccessor.HttpContext.Items[key] = await GetAsync(requestUri);
+        }
+        
+        return (GetPageResult) _httpContextAccessor.HttpContext.Items[key];
+    }
+    
+    private async Task<GetPageResult> GetAsync(Uri requestUri) {
         foreach (var platformsPageRoute in PlatformsPageRoute.All) {
             var platformsPath = SpecialContentPathParser.ParseUri(_contentCache, platformsPageRoute.Parent, requestUri);
 
@@ -61,7 +76,7 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
 
             return GetPageResult.ForRedirect(SpecialContentPathParser.GetPath(_contentCache, platformsPageRoute.Parent));
         }
-        
+
         return null;
     }
     

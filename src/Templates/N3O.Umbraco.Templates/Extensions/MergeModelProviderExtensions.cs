@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Extensions;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
@@ -13,7 +14,7 @@ public static class MergeModelProviderExtensions {
                                                                                       ConcurrentDictionary<IPublishedContent, IReadOnlyDictionary<string, object>> cache,
                                                                                       CancellationToken cancellationToken = default) {
         return await cache.GetOrAddAtomicAsync<IPublishedContent, IReadOnlyDictionary<string, object>>(content, async () => {
-            var mergeModels = new Dictionary<string, object>();
+            var mergeModels = new Dictionary<string, object>(StringComparer.InvariantCultureIgnoreCase);
 
             foreach (var provider in mergeModelsProviders.ApplyAttributeOrdering()) {
                 if (await provider.IsProviderForAsync(content)) {
