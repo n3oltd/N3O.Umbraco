@@ -36,6 +36,7 @@ public static class PlatformsConstants {
         public static class Folders {
             public const string ApprovedFolder = "feedsApprovedFolder";
             public const string RejectedFolder = "feedsRejectedFolder";
+            public const string ArchivedFolder = "feedsArchivedFolder";
         }
     }
 
