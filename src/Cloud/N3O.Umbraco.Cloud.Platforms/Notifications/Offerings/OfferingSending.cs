@@ -43,13 +43,15 @@ public class OfferingSending : INotificationAsyncHandler<SendingContentNotificat
         donationFormTag.Attributes.Add("element-kind", ElementKind.DonationFormOffering.ToEnumString());
         donationButtonTag.Attributes.Add("element-kind", ElementKind.DonationButtonOffering.ToEnumString());
         
-        var embedTab = variant.Tabs.SingleOrDefault(x => x.Alias.EqualsInvariant("embed"));
+        var embedTab = variant.Tabs
+                              .SingleOrDefault(x => x.Properties.OrEmpty().Any(y => y.Alias.IsAnyOf(AliasHelper<OfferingContent>.PropertyAlias(z => z.DonationFormEmbedCode),
+                                                                                                    AliasHelper<OfferingContent>.PropertyAlias(z => z.DonationButtonEmbedCode))));
         
         var donationFormTagEmbedProperty = GetProperty(embedTab, AliasHelper<OfferingContent>.PropertyAlias(x => x.DonationFormEmbedCode));
         var donationButtonEmbedProperty = GetProperty(embedTab, AliasHelper<OfferingContent>.PropertyAlias(x => x.DonationButtonEmbedCode));
         
-        donationFormTagEmbedProperty.Value = donationFormTag.ToHtmlString();
-        donationButtonEmbedProperty.Value = donationButtonTag.ToHtmlString();
+        donationFormTagEmbedProperty.IfNotNull(x => x.Value = donationFormTag.ToHtmlString());
+        donationButtonEmbedProperty.IfNotNull(x => x.Value = donationButtonTag.ToHtmlString());
     }
     
     private ContentPropertyDisplay GetProperty(Tab<ContentPropertyDisplay> tab, string alias) {
