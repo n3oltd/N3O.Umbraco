@@ -19,11 +19,13 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Blocks.Perplex;
 
+[ComposeAfter(typeof(BlocksComposer))]
 public class PerplexBlocksComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         BlocksComponent.LoadDefinitions(builder, WebHostEnvironment);
 
         builder.Services.AddTransient<IPerplexBlockTypesService, PerplexBlockTypesService>();
+        builder.Services.AddTransient<IBlocksRenderer, PerplexBlocksRenderer>();
 
         foreach (var blockDefinition in BlocksComponent.BlockDefinitions) {
             RegisterDefaultViewModel(builder, blockDefinition.Alias);

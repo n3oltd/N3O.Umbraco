@@ -1,6 +1,8 @@
 ﻿using Humanizer;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using Perplex.ContentBlocks.Rendering;
 using System;
@@ -8,17 +10,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Blocks.Perplex;
 
 public class PerplexBlocksRenderer : BlocksRenderer<ContentBlocks> {
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ModelsBuilderSettings _modelBuilderSettings;
+    private readonly IServiceProvider _serviceProvider;
 
     public PerplexBlocksRenderer(IEnumerable<IBlocksRendererPostProcessor> postProcessors,
-                                 IHttpContextAccessor httpContextAccessor)
+                                 IHttpContextAccessor httpContextAccessor,
+                                 IOptions<ModelsBuilderSettings> modelBuilderSettings,
+                                 IServiceProvider serviceProvider)
         : base(postProcessors) {
         _httpContextAccessor = httpContextAccessor;
+        _modelBuilderSettings = modelBuilderSettings.Value;
+        _serviceProvider = serviceProvider;
     }
     
     public override async Task<HtmlString> RenderBlocksAsync(IPublishedContent content, string propertyName) {
@@ -46,8 +55,12 @@ public class PerplexBlocksRenderer : BlocksRenderer<ContentBlocks> {
 
     private IEnumerable<IBlockViewModel> GetViewModels(ContentBlocks contentBlocks) {
         foreach (var contentBlockModel in contentBlocks.Blocks) {
-            var factory = new PerplexBlockViewModelFactory<IPublishedElement, PerplexBlockViewModel<IPublishedElement>>(_httpContextAccessor,
-                                                                                                                        (_, p) => new PerplexBlockViewModel<IPublishedElement>(p));
+            var blockModelsBuilderType = ModelsHelper.GetOrCreateModelsBuilderType(_modelBuilderSettings.ModelsNamespace,
+                                                                                   contentBlockModel.Content.ContentType.Alias);
+
+            var factoryType = typeof(IContentBlockViewModelFactory<>).MakeGenericType(blockModelsBuilderType);
+            
+            var factory = (IContentBlockViewModelFactory) _serviceProvider.GetService(factoryType);
         
             var blockModel = (IPerplexBlockViewModel) factory.Create(contentBlockModel.Content,
                                                                      contentBlockModel.Id,
