@@ -18,7 +18,7 @@ public class CampaignIdAccessor : ICampaignIdAccessor {
     public async Task<EntityId> GetIdAsync(CancellationToken cancellationToken = default) {
         var getPageResult = await _platformsPageAccessor.GetAsync(cancellationToken);
 
-        if (getPageResult.Page.HasValue()) {
+        if (getPageResult.HasValue(x => x.Page)) {
             if (getPageResult.Page.Kind == PublishedFileKinds.CampaignPage) {
                 return getPageResult.Page.Content[nameof(PublishedCampaignPage.Campaign).Camelize()][nameof(PublishedCampaignPage.Campaign.Id).Camelize()].ToString();
             } else if (getPageResult.Page.Kind == PublishedFileKinds.OfferingPage) {
