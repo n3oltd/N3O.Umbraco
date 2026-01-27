@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using PublishedFileInfo = N3O.Umbraco.Cloud.Models.PublishedFileInfo;
 
 namespace N3O.Umbraco.Cloud.Platforms.Templates;
 
@@ -25,10 +24,8 @@ public class CampaignOfferingsMergeModelProvider : MergeModelsProvider {
         var campaignId = await _campaignIdAccessor.GetIdAsync(cancellationToken);
 
         if (campaignId.HasValue()) {
-            var publishedFile = PublishedFileInfo.ForRootFile(PublishedFileKinds.Campaign, campaignId);
-
-            var campaign = await _cdnClient.DownloadPublishedContentAsync<PublishedCampaign>(publishedFile.Kind,
-                                                                                             publishedFile.Path,
+            var campaign = await _cdnClient.DownloadPublishedContentAsync<PublishedCampaign>(PublishedFileKinds.Campaign,
+                                                                                             $"{campaignId}.json",
                                                                                              JsonSerializers.JsonProvider,
                                                                                              cancellationToken);
 
