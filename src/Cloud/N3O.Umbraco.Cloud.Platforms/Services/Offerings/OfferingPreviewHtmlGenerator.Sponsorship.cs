@@ -106,9 +106,13 @@ public class SponsorshipOfferingPreviewHtmlGenerator : OfferingPreviewHtmlGenera
         publishedBeneficiary.Individual.LastName = "Doe";
         publishedBeneficiary.Individual.Gender = Gender.Male;
         
+        var view = new PublishedBeneficiaryPlatformsThemeViews();
+        view.ThemeAlias = "default";
+        view.DonationFormCaption = $"<p>{name} enjoys reading and hopes to become a doctor one day.</p>";
+        view.DonationFormProfile = $"<p>{name} enjoys reading and hopes to become a doctor one day.</p>";
+        
         publishedBeneficiary.PlatformsViews = new PublishedBeneficiaryPlatformsViews();
-        publishedBeneficiary.PlatformsViews.DonationFormCaption = $"<p>{name} enjoys reading and hopes to become a doctor one day.</p>";
-        publishedBeneficiary.PlatformsViews.DonationFormProfile = $"<p>{name} enjoys reading and hopes to become a doctor one day.</p>";
+        publishedBeneficiary.PlatformsViews.Themes = view.Yield().ToList();
 
         var publishedBeneficiaryJObject = JObject.Parse(JsonConvert.SerializeObject(publishedBeneficiary));
 

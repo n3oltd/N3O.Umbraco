@@ -21,7 +21,7 @@ public class ZakatCalculatorSettingsMapping : IMapDefinition {
 
         dest.DonationFormState.Options = new DonationFormOptionsReq();
         dest.DonationFormState.Options.SuggestedFilters = new DonationFormSuggestedFiltersReq();
-        dest.DonationFormState.Options.SuggestedFilters.FundDimensions = new FundDimensionValuesReq();
+        dest.DonationFormState.Options.SuggestedFilters.FundDimensions = new FundDimensionsFilterReq();
         dest.DonationFormState.Options.SuggestedFilters.FundDimensions.Dimension1 = src.FundDimension1?.Name;
         dest.DonationFormState.Options.SuggestedFilters.FundDimensions.Dimension2 = src.FundDimension2?.Name;
         dest.DonationFormState.Options.SuggestedFilters.FundDimensions.Dimension3 = src.FundDimension3?.Name;

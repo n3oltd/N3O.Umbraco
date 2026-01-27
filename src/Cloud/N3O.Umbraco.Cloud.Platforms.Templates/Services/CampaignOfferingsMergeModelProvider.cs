@@ -1,5 +1,4 @@
 ﻿using N3O.Umbraco.Cloud.Lookups;
-using N3O.Umbraco.Cloud.Models;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Templates;
@@ -7,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using PublishedFileInfo = N3O.Umbraco.Cloud.Models.PublishedFileInfo;
 
 namespace N3O.Umbraco.Cloud.Platforms.Templates;
 
