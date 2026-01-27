@@ -6,7 +6,9 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.ContentFinders;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
+using N3O.Umbraco.Lookups;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -76,7 +78,9 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
                 }
             } while (currentPath.HasValue());
 
-            return GetPageResult.ForRedirect(SpecialContentPathParser.GetPath(_contentCache, platformsPageRoute.Parent));
+            if (platformsPageRoute == PlatformsPageRoute.All.Last()) {
+                return GetPageResult.ForRedirect(SpecialContentPathParser.GetPath(_contentCache, platformsPageRoute.Parent));
+            }
         }
 
         return null;
