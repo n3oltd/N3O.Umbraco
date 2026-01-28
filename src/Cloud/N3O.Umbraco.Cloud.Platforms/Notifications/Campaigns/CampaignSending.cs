@@ -27,6 +27,12 @@ public class CampaignSending : INotificationAsyncHandler<SendingContentNotificat
         if (isCampaign) {
             foreach (var variant in notification.Content.Variants) {
                 SetEmbedCode(variant, notification.Content.Key.GetValueOrDefault());
+
+                if (variant.State == ContentSavedState.NotCreated) {
+                    var tab = variant.Tabs.SingleOrDefault(x => x.Alias.EqualsInvariant("crowdfunding"));
+
+                    variant.Tabs = variant.Tabs.Except(tab).ToList();
+                }
             }
         }
         
