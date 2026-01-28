@@ -1,10 +1,15 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 
 public static class PropertyContentReqExtensions {
-    public static bool HasPropertyValue(this PropertyContentReq propertyContent) {
+    public static bool EditorHasValue(this PropertyContentReq propertyContent) {
+        if (propertyContent == null) {
+            return false;
+        }
+        
         if (propertyContent.Editor == PropertyEditor.Boolean) {
             return propertyContent.Boolean.HasValue(x => x.Value);
         } else if (propertyContent.Editor == PropertyEditor.DateTime) {
@@ -27,6 +32,8 @@ public static class PropertyContentReqExtensions {
             return propertyContent.Textbox.HasValue(x => x.Text);
         } else if (propertyContent.Editor == PropertyEditor.VideoSimple) {
             return propertyContent.VideoSimple.HasValue(x => x.SourceFile);
+        } else {
+            throw UnrecognisedValueException.For(propertyContent.Editor);
         }
         
         return false;

@@ -52,7 +52,7 @@ public class UpdateOfferingReqMapping : IMapDefinition {
         dest.Page.SchemaAlias = PlatformsSystemSchema.Sys__offeringPage.ToEnumString();
         
         if (ctx.Items.TryGetValue(PageContentContext, out var value)) {
-            var properties = ((IEnumerable<PropertyContentReq>) value).OrEmpty().Where(x => x.HasPropertyValue());
+            var properties = ((IEnumerable<PropertyContentReq>) value).OrEmpty().Where(x => x.EditorHasValue());
             
             dest.Page.Properties = properties.ToList();
         }

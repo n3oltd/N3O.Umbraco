@@ -54,7 +54,7 @@ public class UpdateCampaignReqMapping : IMapDefinition {
         dest.Page.SchemaAlias = PlatformsSystemSchema.Sys__campaignPage.ToEnumString();
         
         if (ctx.Items.TryGetValue(PageContentContext, out var value)) {
-            var properties = ((IEnumerable<PropertyContentReq>) value).OrEmpty().Where(x => x.HasPropertyValue());
+            var properties = ((IEnumerable<PropertyContentReq>) value).OrEmpty().Where(x => x.EditorHasValue());
             
             dest.Page.Properties = properties.ToList();
         }

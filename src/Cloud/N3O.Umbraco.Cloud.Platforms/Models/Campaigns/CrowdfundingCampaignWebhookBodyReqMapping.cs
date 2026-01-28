@@ -32,7 +32,7 @@ public class CrowdfundingCampaignWebhookBodyReqMapping : IMapDefinition {
         req.Template.SchemaAlias = CrowdfundingSystemSchema.Sys__crowdfunderPage.ToEnumString();
         
         if (ctx.Items.TryGetValue(PageContentContext, out var value)) {
-            var properties = ((IEnumerable<PropertyContentReq>) value).OrEmpty().Where(x => x.HasPropertyValue());
+            var properties = ((IEnumerable<PropertyContentReq>) value).OrEmpty().Where(x => x.EditorHasValue());
             
             req.Template.Properties = properties.ToList();
         }
