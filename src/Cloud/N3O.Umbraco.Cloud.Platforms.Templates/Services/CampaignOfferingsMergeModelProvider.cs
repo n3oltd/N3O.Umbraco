@@ -29,7 +29,7 @@ public class CampaignOfferingsMergeModelProvider : MergeModelsProvider {
                                                                                              JsonSerializers.JsonProvider,
                                                                                              cancellationToken);
 
-            mergeModels[PlatformsTemplateConstants.ModelKeys.CampaignOfferings] = campaign?.Offerings;
+            mergeModels[PlatformsTemplateConstants.ModelKeys.CampaignOfferings] = campaign.OrEmpty(x => x.Offerings);
         }
     }
 }
