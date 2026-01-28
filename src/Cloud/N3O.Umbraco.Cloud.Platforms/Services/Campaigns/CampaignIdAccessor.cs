@@ -18,8 +18,8 @@ public class CampaignIdAccessor : ICampaignIdAccessor {
 
         if (getPageResult.HasValue(x => x.Page)) {
             return getPageResult.Page.GetCampaignId();
+        } else {
+            return null;   
         }
-
-        return null;
     }
 }
