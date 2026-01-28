@@ -61,6 +61,7 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
             do {
                 var platformsPage = await _cdnClient.DownloadPlatformsPageAsync(_jsonProvider,
                                                                                 platformsPageRoute.ContentKind,
+                                                                                platformsPageRoute.Parent,
                                                                                 currentPath,
                                                                                 cancellationToken);
 

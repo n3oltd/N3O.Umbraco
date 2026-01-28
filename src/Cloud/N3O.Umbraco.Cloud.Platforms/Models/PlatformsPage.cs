@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Models;
+using N3O.Umbraco.Content;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Models;
 public class PlatformsPage : Value {
     public PlatformsPage(Guid id,
                          PublishedFileKind kind,
+                         SpecialContent parent,
                          string path,
                          Uri url,
                          JObject content,
@@ -16,6 +18,7 @@ public class PlatformsPage : Value {
                          IEnumerable<PublishedContentResult> additionalModels) {
         Id = id;
         Kind = kind;
+        Parent = parent;
         Path = path;
         Content = content;
         Url = url;
@@ -25,6 +28,7 @@ public class PlatformsPage : Value {
 
     public Guid Id { get; }
     public PublishedFileKind Kind { get; }
+    public SpecialContent Parent { get; }
     public string Path { get; }
     public Uri Url { get; }
     public JObject Content { get; }
@@ -34,6 +38,7 @@ public class PlatformsPage : Value {
     protected override IEnumerable<object> GetAtomicValues() {
         yield return Id;
         yield return Kind;
+        yield return Parent;
         yield return Path;
         yield return Url;
         yield return Content;
