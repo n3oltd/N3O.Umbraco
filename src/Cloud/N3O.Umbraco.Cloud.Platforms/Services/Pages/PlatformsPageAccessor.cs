@@ -8,6 +8,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Lookups;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,6 +48,8 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
     }
     
     private async Task<GetPageResult> GetAsync(Uri requestUri, CancellationToken cancellationToken) {
+        var fallbacks = new List<SpecialContent>();
+        
         foreach (var platformsPageRoute in PlatformsPageRoute.All) {
             var platformsPath = SpecialContentPathParser.ParseUri(_contentCache, platformsPageRoute.Parent, requestUri);
 
@@ -77,13 +80,15 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
                     break;
                 }
             } while (currentPath.HasValue());
-
-            if (platformsPageRoute == PlatformsPageRoute.All.Last()) {
-                return GetPageResult.ForRedirect(SpecialContentPathParser.GetPath(_contentCache, platformsPageRoute.Parent));
-            }
+            
+            fallbacks.Add(platformsPageRoute.Parent);
         }
-
-        return null;
+        
+        if (fallbacks.Any()) {
+            return GetPageResult.ForRedirect(SpecialContentPathParser.GetPath(_contentCache, fallbacks.First()));
+        } else {
+            return null;   
+        }
     }
     
     private string GetPlatformsPageUrl(PlatformsPage platformsPage, SpecialContent parent) {
