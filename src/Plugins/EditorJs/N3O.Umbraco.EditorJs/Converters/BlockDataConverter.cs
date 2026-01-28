@@ -4,6 +4,7 @@ using N3O.Umbraco.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
+using System.Web;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Routing;
@@ -43,6 +44,15 @@ public abstract class BlockDataConverter<TData> : IBlockDataConverter where TDat
 
     protected string ConvertUmbracoLinks(string text) {
         return Regex.Replace(text, "(<a\\s+(?:[^>]*?\\s+)?href=\")(umb:\\/\\/[^\"]*)\"", ConvertUdiUrl);
+    }
+
+    protected string DecodePlatformsElements(string text) {
+        var encodedStart = HttpUtility.HtmlEncode(EditorJsConstants.Delimiters.PlatformsElements.Start);
+        var encodedEnd = HttpUtility.HtmlEncode(EditorJsConstants.Delimiters.PlatformsElements.End);
+
+        return Regex.Replace(text,
+                             encodedStart + "([.+])" + encodedEnd,
+                             m => HttpUtility.HtmlDecode(m.Groups[1].Value));
     }
 
     private string ConvertUdiUrl(Match match) {
