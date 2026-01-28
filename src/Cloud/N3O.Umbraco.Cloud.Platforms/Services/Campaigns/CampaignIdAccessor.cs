@@ -1,6 +1,3 @@
-using Humanizer;
-using N3O.Umbraco.Cloud.Lookups;
-using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Extensions;

@@ -17,12 +17,10 @@ using Umbraco.Extensions;
 public class ContentOfferings : LookupsCollection<Offering> {
     private readonly IContentCache _contentCache;
     private readonly IUmbracoContextAccessor _umbracoContextAccessor;
-    private readonly ILookups _lookups;
 
-    public ContentOfferings(IContentCache contentCache, IUmbracoContextAccessor umbracoContextAccessor, ILookups lookups) {
+    public ContentOfferings(IContentCache contentCache, IUmbracoContextAccessor umbracoContextAccessor) {
         _contentCache = contentCache;
         _umbracoContextAccessor = umbracoContextAccessor;
-        _lookups = lookups;
 
         _contentCache.Flushed += ContentCacheOnFlushed;
     }

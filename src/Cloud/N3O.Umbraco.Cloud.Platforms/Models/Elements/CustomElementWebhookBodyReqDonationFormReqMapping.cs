@@ -1,17 +1,10 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
-using N3O.Umbraco.Content;
 using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class CustomElementWebhookBodyReqDonationFormReqMapping : IMapDefinition {
-    private readonly IContentLocator _contentLocator;
-
-    public CustomElementWebhookBodyReqDonationFormReqMapping(IContentLocator contentLocator) {
-        _contentLocator = contentLocator;
-    }
-    
     public void DefineMaps(IUmbracoMapper mapper) {
         mapper.Define<ElementContent, CustomElementWebhookBodyReqDonationFormReq>((_, _) => new CustomElementWebhookBodyReqDonationFormReq(), Map);
     }

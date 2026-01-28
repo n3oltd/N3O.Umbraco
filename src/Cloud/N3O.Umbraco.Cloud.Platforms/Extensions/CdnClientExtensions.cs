@@ -24,11 +24,12 @@ public static class CdnClientExtensions {
             var publishedPlatformsPage = jsonProvider.DeserializeDynamicTo<PublishedPlatformsPage>(publishedContentResult.Content);
 
             var additionalModels = await publishedPlatformsPage.OrEmpty(x => x.MergeModels)
-                                                          .SelectListAsync(x => FetchMergeModelAsync(cdnClient, x));
+                                                               .SelectListAsync(x => FetchMergeModelAsync(cdnClient, x));
             
             return new PlatformsPage(publishedContentResult.Id.GetValueOrThrow(),
                                      publishedContentResult.Kind,
                                      publishedContentResult.Path,
+                                     publishedPlatformsPage.Url,
                                      publishedContentResult.Content,
                                      publishedPlatformsPage.MetaTags,
                                      additionalModels);

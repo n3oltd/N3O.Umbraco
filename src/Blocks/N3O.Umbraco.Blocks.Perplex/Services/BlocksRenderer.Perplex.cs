@@ -1,6 +1,5 @@
 ﻿using Humanizer;
 using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
@@ -16,16 +15,13 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Blocks.Perplex;
 
 public class PerplexBlocksRenderer : BlocksRenderer<ContentBlocks> {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ModelsBuilderSettings _modelBuilderSettings;
     private readonly IServiceProvider _serviceProvider;
 
     public PerplexBlocksRenderer(IEnumerable<IBlocksRendererPostProcessor> postProcessors,
-                                 IHttpContextAccessor httpContextAccessor,
                                  IOptions<ModelsBuilderSettings> modelBuilderSettings,
                                  IServiceProvider serviceProvider)
         : base(postProcessors) {
-        _httpContextAccessor = httpContextAccessor;
         _modelBuilderSettings = modelBuilderSettings.Value;
         _serviceProvider = serviceProvider;
     }
