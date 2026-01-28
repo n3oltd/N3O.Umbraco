@@ -33,10 +33,12 @@ public class UpdateCampaignReqMapping : IMapDefinition {
     
     // Umbraco.Code.MapAll
     private void Map(CampaignContent src, UpdateCampaignReq dest, MapperContext ctx) {
+        var target = (double) src.Target;
+        
         dest.Name = src.Name;
         dest.Notes = src.Notes;
         dest.Slug = _slugHelper.GenerateSlug(src.Name);
-        dest.Target = (double) src.Target;
+        dest.Target = target == 0 ? null : target;
         
         dest.Description = new RichTextContentReq();
         dest.Description.Html = src.Description.ToHtmlString(); 
