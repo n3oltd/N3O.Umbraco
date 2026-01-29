@@ -2,6 +2,7 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
+using Umbraco.Cms.Core.Models.Blocks;
 using Umbraco.Cms.Core.Strings;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
@@ -10,6 +11,6 @@ namespace N3O.Umbraco.Cloud.Platforms.Content;
 public class ZakatCalculatorSectionSettingsContent : UmbracoContent<ZakatCalculatorSectionSettingsContent> {
     public string Alias => GetValue(x => x.Alias);
     public string Name => Content().Name;
-    public new IHtmlEncodedString Content => GetValue(x => x.Content);
+    public new BlockGridModel Content => GetValue(x => x.Content);
     public IEnumerable<ZakatCalculatorFieldSettingsContent> Fields => Content().Children.As<ZakatCalculatorFieldSettingsContent>();
 }

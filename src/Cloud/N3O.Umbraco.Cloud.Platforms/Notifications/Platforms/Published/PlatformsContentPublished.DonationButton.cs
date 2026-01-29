@@ -5,6 +5,7 @@ using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Scheduler;
 using System;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models;
 
@@ -29,12 +30,12 @@ public class DonationButtonPublished : CloudContentPublished {
         return content.IsDonationButtonElement();
     }
 
-    protected override object GetBody(IContent content) {
+    protected override Task<object> GetBodyAsync(IContent content) {
         var donationButton = _contentLocator.Value.ById<ElementContent>(content.Key);
 
         var donationButtonReq = _mapper.Map<ElementContent, CustomElementWebhookBodyReqDonationButtonReq>(donationButton);
 
-        return donationButtonReq;
+        return Task.FromResult<object>(donationButtonReq);
     }
 
     protected override string HookId => PlatformsConstants.WebhookIds.DonationButtons;

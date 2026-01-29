@@ -26,16 +26,4 @@ public static class PlatformsPageExtensions {
             throw UnrecognisedValueException.For(page.Kind);
         }
     }
-    
-    public static string GetTitle(this PlatformsPage page) {
-        if (page.Kind == PublishedFileKinds.CampaignPage) {
-            return page.Content[nameof(PublishedCampaignPage.Campaign).Camelize()][nameof(PublishedCampaignPage.Campaign.Name).Camelize()].ToString();
-        } else if (page.Kind == PublishedFileKinds.OfferingPage) {
-            return page.Content[nameof(PublishedOfferingPage.Offering).Camelize()][nameof(PublishedOfferingPage.Offering.Name).Camelize()].ToString();
-        } else if (page.Kind == PublishedFileKinds.CrowdfunderPage) {
-            return page.Content[nameof(PublishedCrowdfunderPage.Crowdfunder).Camelize()][nameof(PublishedCrowdfunderPage.Crowdfunder.Name).Camelize()].ToString();
-        } else {
-            throw UnrecognisedValueException.For(page.Kind);
-        }
-    }
 }

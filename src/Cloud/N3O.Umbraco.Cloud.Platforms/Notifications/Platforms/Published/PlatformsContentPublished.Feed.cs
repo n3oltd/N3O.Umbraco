@@ -5,6 +5,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Scheduler;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Extensions;
 
@@ -26,7 +27,7 @@ public class FeedPublished : CloudContentPublished {
         return content.IsFeed();
     }
 
-    protected override object GetBody(IContent content) {
+    protected override Task<object> GetBodyAsync(IContent content) {
         var feed = _contentLocator.Value.ById(content.Id);
         
         var req = new ContentCollectionWebhookBodyReq();
@@ -36,7 +37,7 @@ public class FeedPublished : CloudContentPublished {
         req.AddOrUpdate = new ContentCollectionReq();
         req.AddOrUpdate.Name = content.Name;
 
-        return req;
+        return Task.FromResult<object>(req);
     }
 
     protected override string HookId => PlatformsConstants.WebhookIds.ContentCollection;
