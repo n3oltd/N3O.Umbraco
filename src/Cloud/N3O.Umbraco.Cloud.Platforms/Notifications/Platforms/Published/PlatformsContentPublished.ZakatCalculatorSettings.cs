@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Html;
+using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Blocks;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
@@ -7,11 +8,11 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Scheduler;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
@@ -61,10 +62,12 @@ public class ZakatCalculatorSettingsPublished : CloudContentPublished {
         req.Fields = (await section.Fields.SelectListAsync(GetFieldsAsync)).ToList();
 
         if (section.Content.HasValue()) {
-            req.Content = new RichTextContentReq();
-            req.Content.Html = (await _blocksRenderer.RenderBlocksAsync(section.Content(),
-                                                                        AliasHelper<ZakatCalculatorSectionSettingsContent>.PropertyAlias(x => x.Content)))
-               .ToHtmlString();
+            var html = await GetRenderedHtml(section.Content(), AliasHelper<ZakatCalculatorSectionSettingsContent>.PropertyAlias(x => x.Content));
+
+            if (html.HasValue()) {
+                req.Content = new RichTextContentReq();
+                req.Content.Html = html.ToHtmlString();
+            }
         }
         
         return req;
@@ -80,10 +83,13 @@ public class ZakatCalculatorSettingsPublished : CloudContentPublished {
         req.Tooltip = field.Tooltip;
         
         if (field.Content.HasValue()) {
-            req.Content = new RichTextContentReq();
-            req.Content.Html = (await _blocksRenderer.RenderBlocksAsync(field.Content(),
-                                                                        AliasHelper<ZakatCalculatorFieldSettingsContent>.PropertyAlias(x => x.Content)))
-               .ToHtmlString();
+            var html = await GetRenderedHtml(field.Content(),
+                                             AliasHelper<ZakatCalculatorFieldSettingsContent>.PropertyAlias(x => x.Content));
+
+            if (html.HasValue()) {
+                req.Content = new RichTextContentReq();
+                req.Content.Html = html.ToHtmlString();
+            }
         }
 
         if (field.Metal.HasValue()) {
@@ -94,6 +100,11 @@ public class ZakatCalculatorSettingsPublished : CloudContentPublished {
         return req;
     }
 
+    private async Task<HtmlString> GetRenderedHtml(IPublishedContent content, string alias) {
+        var html = await _blocksRenderer.RenderBlocksAsync(content, alias);
+
+        return html;
+    }
 
     protected override bool CanProcess(IContent content) {
         return content.IsZakatCalculatorSettings() ||
