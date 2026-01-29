@@ -1,6 +1,5 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
-using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using Umbraco.Cms.Core.Mapping;
 using DonationButtonAction = N3O.Umbraco.Cloud.Platforms.Clients.DonationButtonAction;
@@ -8,12 +7,6 @@ using DonationButtonAction = N3O.Umbraco.Cloud.Platforms.Clients.DonationButtonA
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class CustomElementWebhookBodyReqDonationButtonReqMapping : IMapDefinition {
-    private readonly IContentLocator _contentLocator;
-
-    public CustomElementWebhookBodyReqDonationButtonReqMapping(IContentLocator contentLocator) {
-        _contentLocator = contentLocator;
-    }
-    
     public void DefineMaps(IUmbracoMapper mapper) {
         mapper.Define<ElementContent, CustomElementWebhookBodyReqDonationButtonReq>((_, _) => new CustomElementWebhookBodyReqDonationButtonReq(), Map);
     }

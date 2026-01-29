@@ -6,7 +6,6 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.ContentFinders;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
-using N3O.Umbraco.Lookups;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,6 +61,7 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
             do {
                 var platformsPage = await _cdnClient.DownloadPlatformsPageAsync(_jsonProvider,
                                                                                 platformsPageRoute.ContentKind,
+                                                                                platformsPageRoute.Parent,
                                                                                 currentPath,
                                                                                 cancellationToken);
 

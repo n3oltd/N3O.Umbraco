@@ -14,8 +14,7 @@ public class PublishedOfferingMapping : IMapDefinition {
     private readonly IMarkupEngine _markupEngine;
     private readonly IBaseCurrencyAccessor _baseCurrencyAccessor;
 
-    public PublishedOfferingMapping(IMarkupEngine markupEngine,
-                                    IBaseCurrencyAccessor baseCurrencyAccessor) {
+    public PublishedOfferingMapping(IMarkupEngine markupEngine, IBaseCurrencyAccessor baseCurrencyAccessor) {
         _markupEngine = markupEngine;
         _baseCurrencyAccessor = baseCurrencyAccessor;
     }

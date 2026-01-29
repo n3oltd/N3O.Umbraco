@@ -18,7 +18,16 @@ public class DonationFormOfferingElementKindDataSource : ElementKindDataSource {
 
     protected override string GetDescription(Element lookup) {
         var offering = _lookups.FindById<Offering>(GetOfferingId(lookup.Id));
+
+        if (offering == null) {
+            return "[deleted]";
+        }
+        
         var campaign = _lookups.FindById<Campaign>(offering.CampaignId);
+        
+        if (campaign == null) {
+            return "[deleted]";
+        }
         
         return $"Campaign: {campaign.Name}";
     }

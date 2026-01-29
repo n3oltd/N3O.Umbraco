@@ -8,6 +8,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Scheduler;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
@@ -39,7 +40,7 @@ public class OfferingPublished : CloudContentPublished {
         return content.IsOffering(_contentTypeService);
     }
     
-    protected override object GetBody(IContent content) {
+    protected override Task<object> GetBodyAsync(IContent content) {
         var offering = _contentLocator.Value.ById<OfferingContent>(content.Key);
 
         var platformsPageContentPublisher = _platformsPageContentPublishers.GetPublisher(PlatformsSchemas.OfferingPage);
@@ -48,7 +49,7 @@ public class OfferingPublished : CloudContentPublished {
             ctx.Items[UpdateOfferingReqMapping.PageContentContext] = platformsPageContentPublisher.GetContentProperties(offering.Content());
         });
 
-        return offeringReq;
+        return Task.FromResult<object>(offeringReq);
     }
 
     protected override string HookId => PlatformsConstants.WebhookIds.Offerings;

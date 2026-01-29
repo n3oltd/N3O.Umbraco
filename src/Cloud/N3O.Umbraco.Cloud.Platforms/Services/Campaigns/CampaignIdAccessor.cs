@@ -1,6 +1,4 @@
-using Humanizer;
-using N3O.Umbraco.Cloud.Lookups;
-using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Entities;
 using N3O.Umbraco.Extensions;
 using System.Threading;
@@ -19,15 +17,9 @@ public class CampaignIdAccessor : ICampaignIdAccessor {
         var getPageResult = await _platformsPageAccessor.GetAsync(cancellationToken);
 
         if (getPageResult.HasValue(x => x.Page)) {
-            if (getPageResult.Page.Kind == PublishedFileKinds.CampaignPage) {
-                return getPageResult.Page.Content[nameof(PublishedCampaignPage.Campaign).Camelize()][nameof(PublishedCampaignPage.Campaign.Id).Camelize()].ToString();
-            } else if (getPageResult.Page.Kind == PublishedFileKinds.OfferingPage) {
-                return getPageResult.Page.Content[nameof(PublishedOfferingPage.Offering).Camelize()][nameof(PublishedOfferingPage.Offering.CampaignId).Camelize()].ToString();
-            } else if (getPageResult.Page.Kind == PublishedFileKinds.CrowdfunderPage) {
-                return getPageResult.Page.Content[nameof(PublishedCrowdfunderPage.Crowdfunder).Camelize()][nameof(PublishedCrowdfunderPage.Crowdfunder.CampaignId).Camelize()].ToString();
-            }
+            return getPageResult.Page.GetCampaignId();
+        } else {
+            return null;   
         }
-
-        return null;
     }
 }

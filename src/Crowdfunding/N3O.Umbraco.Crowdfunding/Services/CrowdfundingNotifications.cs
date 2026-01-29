@@ -9,13 +9,11 @@ using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using System;
-using Umbraco.Cms.Core.Scoping;
 
 namespace N3O.Umbraco.Crowdfunding;
 
 public class CrowdfundingNotifications : ICrowdfundingNotifications {
     private readonly IContentCache _contentCache;
-    private readonly ICoreScopeProvider _coreScopeProvider;
     private readonly IContentEditor _contentEditor;
     private readonly IEmailBuilder _emailBuilder;
     private readonly ILocalClock _localClock;
@@ -23,13 +21,11 @@ public class CrowdfundingNotifications : ICrowdfundingNotifications {
     public CrowdfundingNotifications(IContentCache contentCache,
                                      IContentEditor contentEditor,
                                      IEmailBuilder emailBuilder,
-                                     ILocalClock localClock,
-                                     ICoreScopeProvider coreScopeProvider) {
+                                     ILocalClock localClock) {
         _contentCache = contentCache;
         _contentEditor = contentEditor;
         _emailBuilder = emailBuilder;
         _localClock = localClock;
-        _coreScopeProvider = coreScopeProvider;
     }
 
     public void Enqueue(FundraiserNotificationType notificationType,

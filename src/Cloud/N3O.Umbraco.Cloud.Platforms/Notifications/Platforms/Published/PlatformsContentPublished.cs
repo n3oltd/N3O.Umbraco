@@ -21,12 +21,11 @@ public abstract class CloudContentPublished :
         _logger = logger;
     }
 
-    public Task HandleAsync(ContentPublishedNotification notification,
-                            CancellationToken cancellationToken) {
+    public async Task HandleAsync(ContentPublishedNotification notification, CancellationToken cancellationToken) {
         foreach (var content in notification.PublishedEntities) {
             if (CanProcess(content)) {
                 try {
-                    var body = GetBody(content);
+                    var body = await GetBodyAsync(content);
 
                     Enqueue(body);
                 } catch (Exception e) {
@@ -36,10 +35,8 @@ public abstract class CloudContentPublished :
                 }
             }
         }
-        
-        return Task.CompletedTask;
     }
 
-    protected abstract object GetBody(IContent content);
+    protected abstract Task<object> GetBodyAsync(IContent content);
     protected abstract bool CanProcess(IContent content);
 }
