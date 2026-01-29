@@ -46,6 +46,14 @@ public static class ContentExtensions {
     public static bool IsZakatCalculatorSettings(this IContent content) {
         return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Zakat.Settings.Calculator.Alias);
     }
+    
+    public static bool IsZakatCalculatorSection(this IContent content) {
+        return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Zakat.Settings.Calculator.Section.Alias);
+    }
+    public static bool IsZakatCalculatorField(this IContent content) {
+        return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Zakat.Settings.Calculator.Field.Alias);
+    }
+    
 
     private static bool HasComposition(IContentTypeService contentTypeService,
                                        IContent content,

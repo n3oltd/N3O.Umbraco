@@ -12,6 +12,7 @@ public class PlatformsPage : Value {
                          PublishedFileKind kind,
                          SpecialContent parent,
                          string path,
+                         string title,
                          Uri url,
                          JObject content,
                          IReadOnlyDictionary<string, string> metaTags,
@@ -20,6 +21,7 @@ public class PlatformsPage : Value {
         Kind = kind;
         Parent = parent;
         Path = path;
+        Title = title;
         Content = content;
         Url = url;
         MetaTags = metaTags;
@@ -30,6 +32,7 @@ public class PlatformsPage : Value {
     public PublishedFileKind Kind { get; }
     public SpecialContent Parent { get; }
     public string Path { get; }
+    public string Title { get; }
     public Uri Url { get; }
     public JObject Content { get; }
     public IReadOnlyDictionary<string, string> MetaTags { get; }
@@ -40,6 +43,7 @@ public class PlatformsPage : Value {
         yield return Kind;
         yield return Parent;
         yield return Path;
+        yield return Title;
         yield return Url;
         yield return Content;
         yield return MetaTags;

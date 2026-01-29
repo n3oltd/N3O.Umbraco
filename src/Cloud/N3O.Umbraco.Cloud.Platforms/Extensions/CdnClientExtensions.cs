@@ -32,6 +32,7 @@ public static class CdnClientExtensions {
                                      publishedContentResult.Kind,
                                      parent,
                                      publishedContentResult.Path,
+                                     publishedPlatformsPage.Title,
                                      publishedPlatformsPage.Url,
                                      publishedContentResult.Content,
                                      publishedPlatformsPage.MetaTags,
