@@ -9,6 +9,7 @@ using N3O.Umbraco.Scheduler;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
@@ -40,7 +41,7 @@ public class CampaignPublished : CloudContentPublished {
         return content.IsCampaign(_contentTypeService);
     }
 
-    protected override object GetBody(IContent content) {
+    protected override Task<object> GetBodyAsync(IContent content) {
         var campaign = _contentLocator.Value.ById<CampaignContent>(content.Key);
 
         var platformsPageContentPublisher = _platformsPageContentPublishers.GetPublisher(PlatformsSchemas.CampaignPage);
@@ -49,7 +50,7 @@ public class CampaignPublished : CloudContentPublished {
             ctx.Items[UpdateCampaignReqMapping.PageContentContext] = platformsPageContentPublisher.GetContentProperties(campaign.Content());
         });
 
-        return campaignReq;
+        return Task.FromResult<object>(campaignReq);
     }
 
     protected override string HookId => PlatformsConstants.WebhookIds.Campaigns;

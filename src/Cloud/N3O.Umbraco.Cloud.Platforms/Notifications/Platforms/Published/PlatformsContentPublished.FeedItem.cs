@@ -5,6 +5,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Scheduler;
 using System;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -34,12 +35,12 @@ public class FeedItemPublished : CloudContentPublished {
         return content.IsFeedItem(_contentTypeService) && IsApprovedOrRejectedOrArchivedFolder(content);
     }
 
-    protected override object GetBody(IContent content) {
+    protected override Task<object> GetBodyAsync(IContent content) {
         var feedItem = _contentLocator.Value.ById<IPublishedContent>(content.Key);
 
         var req = _mapper.Map<IPublishedContent, ManagedContentWebhookBodyReq>(feedItem);
 
-        return req;
+        return Task.FromResult<object>(req);
     }
     
     protected override string HookId => PlatformsConstants.WebhookIds.ManagedContent;

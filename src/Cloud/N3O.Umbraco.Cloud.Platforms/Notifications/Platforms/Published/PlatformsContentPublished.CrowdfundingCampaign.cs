@@ -9,6 +9,7 @@ using N3O.Umbraco.Scheduler;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
@@ -40,7 +41,7 @@ public class CrowdfundingCampaignPublished : CloudContentPublished {
         return content.IsCrowdfundingCampaign(_contentTypeService) && CrowdfundingEnabled(content);
     }
     
-    protected override object GetBody(IContent content) {
+    protected override Task<object> GetBodyAsync(IContent content) {
         var campaign = _contentLocator.Value.ById<CrowdfundingCampaignContent>(content.Key);
 
         var platformsPageContentPublisher = _platformsPageContentPublishers.GetPublisher(PlatformsSchemas.CrowdfunderPage);
@@ -49,7 +50,7 @@ public class CrowdfundingCampaignPublished : CloudContentPublished {
             ctx.Items[CrowdfundingCampaignWebhookBodyReqMapping.PageContentContext] = platformsPageContentPublisher.GetContentProperties(campaign.Content());
         });
         
-        return req;
+        return Task.FromResult<object>(req);
     }
     
     private bool CrowdfundingEnabled(IContent content) {
