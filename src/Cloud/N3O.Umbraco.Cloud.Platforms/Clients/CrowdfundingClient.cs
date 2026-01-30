@@ -139,6 +139,9 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
         [Newtonsoft.Json.JsonProperty("publishedPath", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string PublishedPath { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("pagePublishedPath", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string PagePublishedPath { get; set; }
+
         [Newtonsoft.Json.JsonProperty("pageUrl", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Uri PageUrl { get; set; }
 
