@@ -51,7 +51,7 @@ public abstract class BlockDataConverter<TData> : IBlockDataConverter where TDat
         var encodedEnd = HttpUtility.HtmlEncode(EditorJsConstants.Delimiters.PlatformsElements.End);
 
         return Regex.Replace(text,
-                             encodedStart + "([.+])" + encodedEnd,
+                             encodedStart + "(.*?)" + encodedEnd,
                              m => HttpUtility.HtmlDecode(m.Groups[1].Value));
     }
 
