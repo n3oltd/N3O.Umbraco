@@ -24,8 +24,9 @@ public class FundraiserAccessControl : MembersAccessControl {
                                    ILookups lookups,
                                    IContentLocator contentLocator,
                                    IQueryStringAccessor queryStringAccessor,
-                                   IMemberManager memberManager)
-        : base(contentHelper, dataTypeService, memberManager) {
+                                   IMemberManager memberManager,
+                                   IVariationContextAccessor variationContextAccessor)
+        : base(contentHelper, dataTypeService, memberManager, variationContextAccessor) {
         _lookups = lookups;
         _contentLocator = contentLocator;
         _queryStringAccessor = queryStringAccessor;
