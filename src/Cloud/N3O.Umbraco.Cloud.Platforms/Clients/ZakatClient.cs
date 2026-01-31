@@ -71,12 +71,33 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
     }
 
+    /// <summary>
+    /// One of 'gold', 'silver'
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.3.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum NisabType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"gold")]
+        Gold = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"silver")]
+        Silver = 1,
+
+    }
+
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.3.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class PublishedZakatCalculator
     {
 
+        [Newtonsoft.Json.JsonProperty("emailCompositionId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string EmailCompositionId { get; set; }
+
         [Newtonsoft.Json.JsonProperty("donationFormState", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public PublishedDonationFormState DonationFormState { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("defaultContent", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PublishedHtmlContent DefaultContent { get; set; }
 
         [Newtonsoft.Json.JsonProperty("sections", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<PublishedZakatCalculatorSection> Sections { get; set; }
@@ -116,9 +137,9 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     public partial class PublishedZakatCalculatorMetalField
     {
 
-        [Newtonsoft.Json.JsonProperty("metal", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Metal? Metal { get; set; }
+        public Metal? Type { get; set; }
 
     }
 
@@ -173,9 +194,9 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     public partial class ZakatCalculatorMetalFieldReq
     {
 
-        [Newtonsoft.Json.JsonProperty("metal", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Metal? Metal { get; set; }
+        public Metal? Type { get; set; }
 
     }
 
@@ -201,8 +222,18 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     public partial class ZakatCalculatorSettingsReq
     {
 
+        [Newtonsoft.Json.JsonProperty("emailCompositionId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string EmailCompositionId { get; set; }
+
         [Newtonsoft.Json.JsonProperty("donationFormState", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public DonationFormStateReq DonationFormState { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("defaultContent", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public RichTextContentReq DefaultContent { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("defaultNisabType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public NisabType? DefaultNisabType { get; set; }
 
         [Newtonsoft.Json.JsonProperty("sections", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<ZakatCalculatorSectionReq> Sections { get; set; }
@@ -219,14 +250,17 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     }
 
     /// <summary>
-    /// One of 'zakatCalculator'
+    /// One of 'nisab', 'zakatCalculator'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.3.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum ZakatSubscriptionFile
     {
 
+        [System.Runtime.Serialization.EnumMember(Value = @"nisab")]
+        Nisab = 0,
+
         [System.Runtime.Serialization.EnumMember(Value = @"zakatCalculator")]
-        ZakatCalculator = 0,
+        ZakatCalculator = 1,
 
     }
 

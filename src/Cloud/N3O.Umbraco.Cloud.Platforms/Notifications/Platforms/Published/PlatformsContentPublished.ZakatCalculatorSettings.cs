@@ -40,6 +40,9 @@ public class ZakatCalculatorSettingsPublished : CloudContentPublished {
 
         var settingsReq = new ZakatPlatformsSettingsReq();
         settingsReq.Calculator = new ZakatCalculatorSettingsReq();
+        settingsReq.Calculator.DefaultNisabType = settingsContent.DefaultNisabType.ToEnum<Clients.NisabType>();
+        settingsReq.Calculator.DefaultContent = await GetDefaultContentAsync(settingsContent);
+        settingsReq.Calculator.EmailCompositionId = settingsContent.EmailCompositionId;
         settingsReq.Calculator.DonationFormState = _mapper.Map<OfferingContent, DonationFormStateReq>(settingsContent.Offering);
         settingsReq.Calculator.DonationFormState.Options = new DonationFormOptionsReq();
         settingsReq.Calculator.DonationFormState.Options.SuggestedFilters = new DonationFormSuggestedFiltersReq();
@@ -52,6 +55,16 @@ public class ZakatCalculatorSettingsPublished : CloudContentPublished {
         settingsReq.Calculator.Sections = (await settingsContent.Sections.Where(x => x.Fields.HasAny()).SelectListAsync(GetSectionsAsync)).ToList();
         
         return settingsReq;
+    }
+
+    private async Task<RichTextContentReq> GetDefaultContentAsync(ZakatCalculatorSettingsContent settingsContent) {
+        var html = await GetRenderedHtml(settingsContent.Content(),
+                                         AliasHelper<ZakatCalculatorSettingsContent>.PropertyAlias(x => x.DefaultContent));
+        
+        var req = new RichTextContentReq();
+        req.Html = html.ToHtmlString();
+
+        return req;
     }
 
     private async Task<ZakatCalculatorSectionReq> GetSectionsAsync(ZakatCalculatorSectionSettingsContent section) {
@@ -94,7 +107,7 @@ public class ZakatCalculatorSettingsPublished : CloudContentPublished {
 
         if (field.Metal.HasValue()) {
             req.Metal = new ZakatCalculatorMetalFieldReq();
-            req.Metal.Metal = field.Metal.ToEnum<Clients.Metal>();
+            req.Metal.Type = field.Metal.ToEnum<Clients.Metal>();
         }
         
         return req;
