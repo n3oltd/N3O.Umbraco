@@ -12,26 +12,24 @@ public class BackofficeUser : IBackofficeUser {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public BackofficeUser(IOptionsSnapshot<CookieAuthenticationOptions> cookieOptionsSnapshot,
-                       IHttpContextAccessor httpContextAccessor) {
+                          IHttpContextAccessor httpContextAccessor) {
         _cookieOptionsSnapshot = cookieOptionsSnapshot;
         _httpContextAccessor = httpContextAccessor;
     }
 
     public bool IsLoggedIn() {
-        var httpContext = _httpContextAccessor.HttpContext;
-
-        if (httpContext == null) {
+        if (_httpContextAccessor.HttpContext == null) {
             return false;
         }
 
         var cookieOptions = _cookieOptionsSnapshot.Get(SecurityConstants.BackOfficeAuthenticationType);
-        var backOfficeCookie = httpContext.Request.Cookies[cookieOptions.Cookie.Name!];
+        var backOfficeCookie = _httpContextAccessor.HttpContext.Request.Cookies[cookieOptions.Cookie.Name];
 
-        if (string.IsNullOrEmpty(backOfficeCookie)) {
+        if (backOfficeCookie.HasValue()) {
             return false;
         }
 
-        var authenticationTicket = cookieOptions.TicketDataFormat.Unprotect(backOfficeCookie!);
+        var authenticationTicket = cookieOptions.TicketDataFormat.Unprotect(backOfficeCookie);
         var backOfficeIdentity = authenticationTicket?.Principal.GetUmbracoIdentity();
 
         var result = backOfficeIdentity.HasValue(x => x.AuthenticationType) &&
