@@ -5,7 +5,6 @@ using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Lookups;
 using System;
 using System.Linq;
 using System.Threading;
@@ -13,20 +12,11 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Models.ContentEditing;
 using Umbraco.Cms.Core.Notifications;
-using Umbraco.Cms.Core.Routing;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class CampaignSending : INotificationAsyncHandler<SendingContentNotification> {
-    private readonly IContentLocator _contentLocator;
-    private readonly IPublishedUrlProvider _publishedUrlProvider;
-    
-    public CampaignSending(IContentLocator contentLocator, IPublishedUrlProvider publishedUrlProvider) {
-        _contentLocator = contentLocator;
-        _publishedUrlProvider = publishedUrlProvider;
-    }
-
     public Task HandleAsync(SendingContentNotification notification, CancellationToken cancellationToken) {
         var isCampaign = notification.Content
                                      .ContentTypeAlias
@@ -37,7 +27,6 @@ public class CampaignSending : INotificationAsyncHandler<SendingContentNotificat
         if (isCampaign) {
             foreach (var variant in notification.Content.Variants) {
                 SetEmbedCode(variant, notification.Content.Key.GetValueOrDefault());
-                SetUrl(notification, variant);
 
                 if (variant.State == ContentSavedState.NotCreated) {
                     var tab = variant.Tabs.SingleOrDefault(x => x.Alias.EqualsInvariant("crowdfunding"));
@@ -49,21 +38,7 @@ public class CampaignSending : INotificationAsyncHandler<SendingContentNotificat
         
         return Task.CompletedTask;
     }
-
-    private void SetUrl(SendingContentNotification notification, ContentVariantDisplay variant) {
-        if (variant.State == ContentSavedState.Published) {
-            var campaignSlug = _publishedUrlProvider.GetUrl(notification.Content.Key.GetValueOrThrow())
-                                                    .Trim('/')
-                                                    .Split('/', StringSplitOptions.RemoveEmptyEntries)
-                                                    .Last();
-            var donatePage = _contentLocator.Special(SpecialPages.Donate).Url().Trim('/');
-        
-            var campaignUrl = $"/{donatePage}/{campaignSlug}";
-        
-            notification.Content.Urls = [new UrlInfo(campaignUrl, true, null)];
-        }
-    }
-
+    
     private void SetEmbedCode(ContentVariantDisplay variant, Guid contentId) {
         var donationFormTag = new TagBuilder(ElementTypes.DonationForm.TagName);
         var donationButtonTag = new TagBuilder(ElementTypes.DonationButton.TagName);
