@@ -52,15 +52,18 @@ public class CampaignSending : INotificationAsyncHandler<SendingContentNotificat
 
     private void SetUrl(SendingContentNotification notification, ContentVariantDisplay variant) {
         if (variant.State == ContentSavedState.Published) {
-            var campaignSlug = _publishedUrlProvider.GetUrl(notification.Content.Key.GetValueOrThrow())
-                                                    .Trim('/')
-                                                    .Split('/', StringSplitOptions.RemoveEmptyEntries)
-                                                    .Last();
-            var donatePage = _contentLocator.Special(SpecialPages.Donate).Url().Trim('/');
-        
-            var campaignUrl = $"/{donatePage}/{campaignSlug}";
-        
-            notification.Content.Urls = [new UrlInfo(campaignUrl, true, null)];
+            var donatePage = _contentLocator.Special(SpecialPages.Donate);
+
+            if (donatePage.HasValue()) {
+                var campaignSlug = _publishedUrlProvider.GetUrl(notification.Content.Key.GetValueOrThrow())
+                                                        .Trim('/')
+                                                        .Split('/', StringSplitOptions.RemoveEmptyEntries)
+                                                        .Last();
+
+                var campaignUrl = $"/{donatePage.Url().Trim('/')}/{campaignSlug}";
+
+                notification.Content.Urls = [new UrlInfo(campaignUrl, true, null)];
+            }
         }
     }
 

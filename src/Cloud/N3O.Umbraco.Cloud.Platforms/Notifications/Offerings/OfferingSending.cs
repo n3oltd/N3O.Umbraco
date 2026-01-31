@@ -47,16 +47,19 @@ public class OfferingSending : INotificationAsyncHandler<SendingContentNotificat
     
     private void SetUrl(SendingContentNotification notification, ContentVariantDisplay variant) {
         if (variant.State == ContentSavedState.Published) {
-            var donateSlug = _contentLocator.Special(SpecialPages.Donate).Url();
-            var segments = _publishedUrlProvider.GetUrl(notification.Content.Key.GetValueOrThrow())
-                                                .Trim('/')
-                                                .Split('/', StringSplitOptions.RemoveEmptyEntries);
-            
-            var offeringSlug = string.Join("/", segments.Skip(segments.Length - 2));
-        
-            var  offeringUrl = Url.Combine(donateSlug, offeringSlug);
-        
-            notification.Content.Urls = [new UrlInfo(offeringUrl, true, null)];
+            var donatePage = _contentLocator.Special(SpecialPages.Donate);
+
+            if (donatePage.HasValue()) {
+                var segments = _publishedUrlProvider.GetUrl(notification.Content.Key.GetValueOrThrow())
+                                                    .Trim('/')
+                                                    .Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+                var offeringSlug = string.Join("/", segments.Skip(segments.Length - 2));
+
+                var offeringUrl = Url.Combine(donatePage.Url(), offeringSlug);
+
+                notification.Content.Urls = [new UrlInfo(offeringUrl, true, null)];
+            }
         }
     }
     
