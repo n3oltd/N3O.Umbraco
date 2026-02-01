@@ -8,8 +8,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
-using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Notifications;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Notifications;
 
@@ -17,24 +17,29 @@ namespace N3O.Umbraco.Notifications;
 public class ContentValidationHandler : INotificationAsyncHandler<ContentSavingNotification> {
     private readonly ILogger _logger;
     private readonly IContentHelper _contentHelper;
-    private readonly IVariationContextAccessor _variationContextAccessor;
     private readonly IReadOnlyList<IContentValidator> _contentValidators;
 
     public ContentValidationHandler(ILogger<ContentValidationHandler> logger,
                                     IContentHelper contentHelper,
-                                    IEnumerable<IContentValidator> contentValidators,
-                                    IVariationContextAccessor variationContextAccessor) {
+                                    IEnumerable<IContentValidator> contentValidators) {
         _logger = logger;
         _contentHelper = contentHelper;
-        _variationContextAccessor = variationContextAccessor;
         _contentValidators = contentValidators.OrEmpty().ToList();
     }
 
     public Task HandleAsync(ContentSavingNotification notification, CancellationToken cancellationToken) {
         foreach (var content in notification.SavedEntities) {
-            var contentProperties = _contentHelper.GetContentProperties(content, _variationContextAccessor?.VariationContext?.Culture);
+            if (content.ContentType.VariesByCulture()) {
+                foreach (var editedCulture in content.EditedCultures.OrEmpty()) {
+                    var contentProperties = _contentHelper.GetContentProperties(content, editedCulture);
 
-            Validate(contentProperties, notification);
+                    Validate(contentProperties, notification);
+                }
+            } else {
+                var contentProperties = _contentHelper.GetContentProperties(content);
+
+                Validate(contentProperties, notification);
+            }
         }
 
         return Task.CompletedTask;
