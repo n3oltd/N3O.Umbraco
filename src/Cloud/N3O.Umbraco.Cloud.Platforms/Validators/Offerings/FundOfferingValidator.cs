@@ -52,7 +52,7 @@ public class FundOfferingValidator : OfferingValidator<FundOfferingContent> {
                                    .ToList();
 
         if (suggestedAmount.HasAny()) {
-            if (donationItem.HasPricing()) {
+            if (donationItem.Pricing?.Price?.Locked == true) {
                 ErrorResult(property, $"{donationItem.Name} has pricing so does not allow price handles");
             }
 
