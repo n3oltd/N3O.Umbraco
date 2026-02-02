@@ -36,7 +36,7 @@ public class ZakatCalculatorSettingsPublished : CloudContentPublished {
     }
 
     protected override async Task<object> GetBodyAsync(IContent content) {
-        var settingsContent = _contentLocator.Value.ById<ZakatCalculatorSettingsContent>(content.Key);
+        var settingsContent = _contentLocator.Value.Single<ZakatCalculatorSettingsContent>();
 
         var settingsReq = new ZakatPlatformsSettingsReq();
         settingsReq.Calculator = new ZakatCalculatorSettingsReq();
