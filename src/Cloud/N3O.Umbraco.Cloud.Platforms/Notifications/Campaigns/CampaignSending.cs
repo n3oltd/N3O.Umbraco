@@ -2,10 +2,11 @@
 using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
+using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Lookups;
+using Slugify;
 using System;
 using System.Linq;
 using System.Threading;
@@ -19,12 +20,12 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class CampaignSending : INotificationAsyncHandler<SendingContentNotification> {
-    private readonly IContentLocator _contentLocator;
-    private readonly IPublishedUrlProvider _publishedUrlProvider;
+    private readonly Lazy<IContentCache> _contentCache;
+    private readonly Lazy<ISlugHelper> _slugHelper;
     
-    public CampaignSending(IContentLocator contentLocator, IPublishedUrlProvider publishedUrlProvider) {
-        _contentLocator = contentLocator;
-        _publishedUrlProvider = publishedUrlProvider;
+    public CampaignSending(Lazy<IContentCache> contentCache, Lazy<ISlugHelper> slugHelper) {
+        _contentCache = contentCache;
+        _slugHelper = slugHelper;
     }
 
     public Task HandleAsync(SendingContentNotification notification, CancellationToken cancellationToken) {
@@ -52,16 +53,9 @@ public class CampaignSending : INotificationAsyncHandler<SendingContentNotificat
 
     private void SetUrl(SendingContentNotification notification, ContentVariantDisplay variant) {
         if (variant.State == ContentSavedState.Published) {
-            var donatePage = _contentLocator.Special(SpecialPages.Donate);
+            var campaignUrl = _contentCache.Value.GetCampaignUrl(_slugHelper.Value, variant.Name);
 
-            if (donatePage.HasValue()) {
-                var campaignSlug = _publishedUrlProvider.GetUrl(notification.Content.Key.GetValueOrThrow())
-                                                        .Trim('/')
-                                                        .Split('/', StringSplitOptions.RemoveEmptyEntries)
-                                                        .Last();
-
-                var campaignUrl = $"/{donatePage.Url().Trim('/')}/{campaignSlug}";
-
+            if (campaignUrl.HasValue()) {
                 notification.Content.Urls = [new UrlInfo(campaignUrl, true, null)];
             }
         }

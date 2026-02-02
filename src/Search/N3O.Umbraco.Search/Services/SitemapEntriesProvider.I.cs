@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Search;
 
-public interface ISitemap {
-    Task<IReadOnlyList<SitemapEntry>> GetEntriesAsync(CancellationToken cancellationToken = default);
-    Task PublishAsync();
+public interface ISitemapEntriesProvider {
+    Task<IEnumerable<SitemapEntry>> GetEntriesAsync(CancellationToken cancellationToken = default);
 }

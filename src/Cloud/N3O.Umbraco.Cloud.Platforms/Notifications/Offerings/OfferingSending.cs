@@ -1,12 +1,12 @@
-﻿using Flurl;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
+using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Lookups;
+using Slugify;
 using System;
 using System.Linq;
 using System.Threading;
@@ -20,12 +20,16 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class OfferingSending : INotificationAsyncHandler<SendingContentNotification> {
-    private readonly IContentLocator _contentLocator;
-    private readonly IPublishedUrlProvider _publishedUrlProvider;
+    private readonly Lazy<IContentCache> _contentCache;
+    private readonly Lazy<IContentLocator> _contentLocator;
+    private readonly Lazy<ISlugHelper> _slugHelper;
     
-    public OfferingSending(IContentLocator contentLocator, IPublishedUrlProvider publishedUrlProvider) {
+    public OfferingSending(Lazy<IContentCache> contentCache,
+                           Lazy<IContentLocator> contentLocator,
+                           Lazy<ISlugHelper> slugHelper) {
+        _contentCache = contentCache;
         _contentLocator = contentLocator;
-        _publishedUrlProvider = publishedUrlProvider;
+        _slugHelper = slugHelper;
     }
 
     public Task HandleAsync(SendingContentNotification notification, CancellationToken cancellationToken) {
@@ -47,17 +51,11 @@ public class OfferingSending : INotificationAsyncHandler<SendingContentNotificat
     
     private void SetUrl(SendingContentNotification notification, ContentVariantDisplay variant) {
         if (variant.State == ContentSavedState.Published) {
-            var donatePage = _contentLocator.Special(SpecialPages.Donate);
+            var campaignName = _contentLocator.Value.ById(notification.Content.ParentId.GetValueOrThrow()).Name;
 
-            if (donatePage.HasValue()) {
-                var segments = _publishedUrlProvider.GetUrl(notification.Content.Key.GetValueOrThrow())
-                                                    .Trim('/')
-                                                    .Split('/', StringSplitOptions.RemoveEmptyEntries);
+            var offeringUrl = _contentCache.Value.GetOfferingUrl(_slugHelper.Value, campaignName, variant.Name);
 
-                var offeringSlug = string.Join("/", segments.Skip(segments.Length - 2));
-
-                var offeringUrl = Url.Combine(donatePage.Url(), offeringSlug);
-
+            if (offeringUrl.HasValue()) {
                 notification.Content.Urls = [new UrlInfo(offeringUrl, true, null)];
             }
         }
