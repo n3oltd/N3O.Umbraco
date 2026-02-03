@@ -7,7 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace N3O.Umbraco.Cloud;
+namespace N3O.Umbraco.Cloud.Hosting;
 
 public class ConnectMiddleware : IMiddleware {
     private readonly ISubscriptionAccessor _subscriptionAccessor;
@@ -39,6 +39,7 @@ public class ConnectMiddleware : IMiddleware {
                     httpResponse.EnsureSuccessStatusCode();
 
                     context.Response.ContentType = MimeTypesMap.GetMimeType(cdnPath);
+                    context.Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
                     
                     await context.Response.BodyWriter.WriteAsync(await httpResponse.Content.ReadAsByteArrayAsync());
                 }

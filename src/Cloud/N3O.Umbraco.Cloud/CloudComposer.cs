@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using N3O.Umbraco.Cloud.Hosting;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
