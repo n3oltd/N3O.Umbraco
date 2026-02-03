@@ -114,7 +114,7 @@ public class OpayoHelper : IOpayoHelper {
         var apiReq = new ApiPaymentTransactionReq();
 
         apiReq.Amount = ((Money) req.Value).GetAmountInLowestDenomination();
-        apiReq.Currency = req.Value.Currency.Id;
+        apiReq.Currency = req.Value.Currency.Code.ToUpperInvariant();
         apiReq.Description = parameters.GetTransactionDescription(settings);
         apiReq.VendorTxCode = vendorTxCode;
 
