@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Context;
+using System.IO;
+using System.Linq;
 
 namespace N3O.Umbraco.Hosting;
 
@@ -10,18 +13,37 @@ namespace N3O.Umbraco.Hosting;
 public class DevToolsController : ApiController {
     private readonly IConfiguration _configuration;
     private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly IRemoteIpAddressAccessor _remoteIpAddressAccessor;
 
-    public DevToolsController(IConfiguration configuration, IWebHostEnvironment webHostEnvironment) {
+    public DevToolsController(IConfiguration configuration,
+                              IWebHostEnvironment webHostEnvironment,
+                              IRemoteIpAddressAccessor remoteIpAddressAccessor) {
         _configuration = configuration;
         _webHostEnvironment = webHostEnvironment;
+        _remoteIpAddressAccessor = remoteIpAddressAccessor;
     }
-
+    
     [HttpGet("core/configuration")]
     public ActionResult<string> GetConfiguration() {
         var root = (IConfigurationRoot) _configuration;
         var debugView = root.GetDebugView();
 
         return Result(debugView);
+    }
+
+    [HttpGet("core/echo")]
+    public ActionResult Echo() {
+        var res = new {
+            PathBase = Request.PathBase.Value,
+            Path = Request.Path.Value,
+            QueryString = Request.QueryString.HasValue ? Request.QueryString.Value : null,
+            Body = new StreamReader(Request.Body).ReadToEndAsync().GetAwaiter().GetResult(),
+            Headers = Request.Headers.ToDictionary(x => x.Key, x => x.Value.ToString()),
+            Verb = Request.Method,
+            RemoteIp = _remoteIpAddressAccessor.GetRemoteIpAddress()
+        };
+
+        return Ok(res);
     }
 
     private ActionResult<T> Result<T>(T result) {
