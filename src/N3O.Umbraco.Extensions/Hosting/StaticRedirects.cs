@@ -7,7 +7,7 @@ public static class StaticRedirects {
     private static readonly Dictionary<string, StaticRedirect> Redirects = new(StringComparer.InvariantCultureIgnoreCase);
 
     public static void Add(string oldPath, string newPath, bool temporary = false) {
-        Redirects.Add(Normalize(oldPath), new StaticRedirect(Normalize(newPath), temporary));
+        Redirects.Add(Normalize(oldPath), new StaticRedirect($"/{Normalize(newPath)}", temporary));
     }
 
     public static StaticRedirect Find(string path) {
