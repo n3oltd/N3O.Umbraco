@@ -1,6 +1,6 @@
+using Konstrukt.Extensions;
 using N3O.Umbraco.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
-using Konstrukt.Extensions;
 
 namespace N3O.Umbraco.UIBuilder;
 

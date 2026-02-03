@@ -1,6 +1,6 @@
+using N3O.Umbraco.Payments.Bambora.Models;
 using N3O.Umbraco.Payments.Commands;
 using N3O.Umbraco.Payments.NamedParameters;
-using N3O.Umbraco.Payments.Bambora.Models;
 
 namespace N3O.Umbraco.Payments.Bambora.Commands;
 

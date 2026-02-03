@@ -18,8 +18,8 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 using AllocationType = N3O.Umbraco.Cloud.Platforms.Clients.AllocationType;
 using OfferingType = N3O.Umbraco.Cloud.Platforms.Lookups.OfferingType;
-using PlatformsPublishedSponsorshipScheme = N3O.Umbraco.Cloud.Platforms.Clients.PublishedSponsorshipScheme;
 using PlatformsPublishedPrice = N3O.Umbraco.Cloud.Platforms.Clients.PublishedPrice;
+using PlatformsPublishedSponsorshipScheme = N3O.Umbraco.Cloud.Platforms.Clients.PublishedSponsorshipScheme;
 
 namespace N3O.Umbraco.Cloud.Platforms;
 

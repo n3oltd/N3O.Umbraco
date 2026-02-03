@@ -1,8 +1,8 @@
-using N3O.Umbraco.Newsletters.SendGrid.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Newsletters.SendGrid.Extensions;
 using N3O.Umbraco.Newsletters.SendGrid.Lookups;
+using N3O.Umbraco.Newsletters.SendGrid.Models;
 using SendGrid;
 using System;
 using System.Collections.Generic;
