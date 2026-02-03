@@ -19,7 +19,7 @@ public class LastChanceFinder : IContentLastChanceFinder {
     }
 
     public Task<bool> TryFindContent(IPublishedRequestBuilder request) {
-        if (TryFindRedirectContent(request)) {
+        if (!TryFindRedirectContent(request)) {
             return Task.FromResult(false);
         }
 
