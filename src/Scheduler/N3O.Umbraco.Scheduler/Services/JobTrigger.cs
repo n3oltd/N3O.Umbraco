@@ -1,4 +1,5 @@
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Scheduler.Models;
 using N3O.Umbraco.Utilities;
@@ -13,13 +14,9 @@ namespace N3O.Umbraco.Scheduler;
 
 public class JobTrigger {
     private readonly IJsonProvider _jsonProvider;
-    private readonly IUrlBuilder _urlBuilder;
-    private readonly IUmbracoContextFactory _umbracoContextFactory;
 
-    public JobTrigger(IJsonProvider jsonProvider, IUrlBuilder urlBuilder, IUmbracoContextFactory umbracoContextFactory) {
+    public JobTrigger(IJsonProvider jsonProvider) {
         _jsonProvider = jsonProvider;
-        _urlBuilder = urlBuilder;
-        _umbracoContextFactory = umbracoContextFactory;
     }
 
     [DisplayName("{0}")]
@@ -29,7 +26,7 @@ public class JobTrigger {
                                    IReadOnlyDictionary<string, string> parameterData) {
         var req = GetProxyReq(triggerKey, modelJson, parameterData);
         
-        var baseUrl = GetBasUrl();
+        var baseUrl = $"https://{EnvironmentData.GetOurValue("Canonical_Domain")}";
         
         using (var httpClient = new HttpClient()) {
             httpClient.Timeout = TimeSpan.FromMinutes(30);
@@ -53,12 +50,6 @@ public class JobTrigger {
 
                 throw new Exception(content);
             }
-        }
-    }
-
-    private string GetBasUrl() {
-        using (_umbracoContextFactory.EnsureUmbracoContext()) {
-            return _urlBuilder.Root().ToString().TrimEnd('/');
         }
     }
 
