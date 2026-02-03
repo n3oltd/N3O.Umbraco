@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,6 +45,10 @@ public abstract class CmsStartup {
         } else {
             app.UseDeveloperExceptionPage();
         }
+
+        app.UseForwardedHeaders(new ForwardedHeadersOptions {
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedHost | ForwardedHeaders.XForwardedProto
+        });
 
         app.UseRewriter(GetRewriteOptions());
         
