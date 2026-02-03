@@ -1,6 +1,4 @@
 using Flurl;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Hosting.Server.Features;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Scheduler.Models;
 using System;
@@ -14,11 +12,11 @@ namespace N3O.Umbraco.Scheduler;
 
 public class JobTrigger {
     private readonly IJsonProvider _jsonProvider;
-    private readonly IServer _server;
+    private readonly IJobUrlProvider _jobUrlProvider;
 
-    public JobTrigger(IJsonProvider jsonProvider, IServer server) {
+    public JobTrigger(IJsonProvider jsonProvider, IJobUrlProvider jobUrlProvider) {
         _jsonProvider = jsonProvider;
-        _server = server;
+        _jobUrlProvider = jobUrlProvider;
     }
 
     [DisplayName("{0}")]
@@ -26,13 +24,11 @@ public class JobTrigger {
                                    string triggerKey,
                                    string modelJson,
                                    IReadOnlyDictionary<string, string> parameterData) {
-        var req = GetProxyReq(triggerKey, modelJson, parameterData);
-        
-        var addressFeature = _server.Features.Get<IServerAddressesFeature>();
-        
-        var url = new Url(addressFeature.Addresses.First()).AppendPathSegment("/umbraco/api/JobProxy/executeProxied");
-        
         using (var httpClient = new HttpClient()) {
+            var req = GetProxyReq(triggerKey, modelJson, parameterData);
+        
+            var url = GetUrl();
+            
             httpClient.Timeout = TimeSpan.FromMinutes(30);
             
             var reqStr = _jsonProvider.SerializeObject(req);
@@ -70,5 +66,12 @@ public class JobTrigger {
         req.ParameterData = parameterData?.ToDictionary();
         
         return req;
+    }
+    
+    private string GetUrl() {
+        var baseUrl = _jobUrlProvider.GetBaseUrl();
+        var url = new Url(baseUrl).AppendPathSegment("/umbraco/api/JobProxy/executeProxied");
+
+        return url;
     }
 }
