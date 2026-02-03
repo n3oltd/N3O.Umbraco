@@ -19,7 +19,7 @@ public class LastChanceFinder : IContentLastChanceFinder {
     }
 
     public Task<bool> TryFindContent(IPublishedRequestBuilder request) {
-        if (!TryFindRedirectContent(request)) {
+        if (TryFindRedirectContent(request)) {
             return Task.FromResult(false);
         }
 
@@ -43,14 +43,6 @@ public class LastChanceFinder : IContentLastChanceFinder {
             _redirectManagement.LogHit(redirect.Id);
 
             Redirect(request, redirect.Temporary, redirect.Url);
-
-            return true;
-        }
-        
-        var lastChanceUrl = LastChanceUrls.Find(requestedPath);
-
-        if (lastChanceUrl != null) {
-            Redirect(request, lastChanceUrl.Temporary, lastChanceUrl.Path);
 
             return true;
         }

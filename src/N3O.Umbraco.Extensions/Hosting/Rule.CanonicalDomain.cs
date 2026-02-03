@@ -4,6 +4,7 @@ using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Hosting;
 
@@ -19,7 +20,9 @@ public class CanonicalDomainRedirectRule : IRule {
     public void ApplyRule(RewriteContext context) {
         var host = context.HttpContext.Request.Host.Host;
 
-        if (!host.EqualsInvariant(_canonicalDomain) && !_aliasDomains.Contains(host, true)) {
+        if (!context.HttpContext.Request.IsLocal() &&
+            !host.EqualsInvariant(_canonicalDomain) &&
+            !_aliasDomains.Contains(host, true)) {
             var req = context.HttpContext.Request;
             var newUrl = $"{req.Scheme}://{_canonicalDomain}{req.PathBase}{req.Path}{req.QueryString}";
             
