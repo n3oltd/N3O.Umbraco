@@ -46,10 +46,6 @@ public abstract class CmsStartup {
             app.UseDeveloperExceptionPage();
         }
 
-        app.UseForwardedHeaders(new ForwardedHeadersOptions {
-            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedHost | ForwardedHeaders.XForwardedProto
-        });
-
         app.UseRewriter(GetRewriteOptions());
         
         var staticFileOptions = new StaticFileOptions();
