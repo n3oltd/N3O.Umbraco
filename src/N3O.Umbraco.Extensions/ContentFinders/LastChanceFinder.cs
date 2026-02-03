@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
@@ -12,10 +13,14 @@ namespace N3O.Umbraco.ContentFinders;
 public class LastChanceFinder : IContentLastChanceFinder {
     private readonly IContentCache _contentCache;
     private readonly IRedirectManagement _redirectManagement;
+    private readonly ILogger<LastChanceFinder> _logger;
 
-    public LastChanceFinder(IContentCache contentCache, IRedirectManagement redirectManagement) {
+    public LastChanceFinder(IContentCache contentCache,
+                            IRedirectManagement redirectManagement,
+                            ILogger<LastChanceFinder> logger) {
         _contentCache = contentCache;
         _redirectManagement = redirectManagement;
+        _logger = logger;
     }
 
     public Task<bool> TryFindContent(IPublishedRequestBuilder request) {
@@ -47,7 +52,7 @@ public class LastChanceFinder : IContentLastChanceFinder {
             return true;
         }
         
-        var lastChanceUrl = LastChanceUrls.Find(requestedPath);
+        var lastChanceUrl = LastChanceUrls.Find(_logger, requestedPath);
 
         if (lastChanceUrl != null) {
             Redirect(request, lastChanceUrl.Temporary, lastChanceUrl.Path);
