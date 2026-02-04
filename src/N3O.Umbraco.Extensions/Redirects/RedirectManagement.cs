@@ -1,23 +1,13 @@
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
-using NodaTime;
-using System;
 using System.Linq;
-using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Redirects;
 
 public class RedirectManagement : IRedirectManagement {
-    private static readonly string HitCountAlias = AliasHelper<RedirectContent>.PropertyAlias(x => x.HitCount);
-    private static readonly string LastHitDateAlias = AliasHelper<RedirectContent>.PropertyAlias(x => x.LastHitDate);
-    
-    private readonly IContentService _contentService;
-    private readonly IClock _clock;
     private readonly IContentCache _contentCache;
 
-    public RedirectManagement(IContentService contentService, IClock clock, IContentCache contentCache) {
-        _contentService = contentService;
-        _clock = clock;
+    public RedirectManagement(IContentCache contentCache) {
         _contentCache = contentCache;
     }
 
@@ -38,23 +28,7 @@ public class RedirectManagement : IRedirectManagement {
         var redirects = _contentCache.All<RedirectContent>();
         var redirect = redirects.FirstOrDefault(x => searchPaths.Contains(x.Content().Name, true));
 
-        return redirect.IfNotNull(x => new Redirect(x.Content().Key,
-                                                    x.HitCount,
-                                                    x.LastHitDate,
-                                                    x.Temporary,
-                                                    x.GetLinkUrl()));
-    }
-
-    public void LogHit(Guid redirectId) {
-        var content = _contentService.GetById(redirectId);
-        var now = _clock.GetCurrentInstant().ToDateTimeUtc();
-
-        var currentHitCount = content.GetValue<int>(HitCountAlias);
-
-        content.SetValue(HitCountAlias, currentHitCount + 1);
-        content.SetValue(LastHitDateAlias, now);
-
-        _contentService.SaveAndPublish(content);
+        return redirect.IfNotNull(x => new Redirect(x.Temporary, x.GetLinkUrl()));
     }
 
     private string Normalise(string requestPath) {
