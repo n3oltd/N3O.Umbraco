@@ -10,12 +10,12 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Cloud.Platforms.Templates;
 
 public class NisabMergeModelProvider : MergeModelsProvider {
-    private readonly ICurrencyAccessor _currencyAccessor;
+    private readonly IBaseCurrencyAccessor _baseCurrencyAccessor;
     private readonly IFormatter _formatter;
     private readonly INisab _nisab;
 
-    public NisabMergeModelProvider(INisab nisab, ICurrencyAccessor currencyAccessor, IFormatter formatter) {
-        _currencyAccessor = currencyAccessor;
+    public NisabMergeModelProvider(INisab nisab, IBaseCurrencyAccessor baseCurrencyAccessor, IFormatter formatter) {
+        _baseCurrencyAccessor = baseCurrencyAccessor;
         _formatter = formatter;
         _nisab = nisab;
     }
@@ -23,11 +23,11 @@ public class NisabMergeModelProvider : MergeModelsProvider {
     protected override async Task PopulateModelsAsync(IPublishedContent content,
                                                       Dictionary<string, object> mergeModels,
                                                       CancellationToken cancellationToken = default) {
-        var currency = _currencyAccessor.GetCurrency();
+        var baseCurrency = _baseCurrencyAccessor.GetBaseCurrency();
         
-        var goldNisabAmount = await _nisab.GetGoldNisabAsync(currency, cancellationToken);
+        var goldNisabAmount = await _nisab.GetGoldNisabAsync(baseCurrency, cancellationToken);
         var goldNisab = _formatter.Number.FormatMoney(goldNisabAmount);
-        var silverNisabAmount = await _nisab.GetSilverNisabAsync(currency, cancellationToken);
+        var silverNisabAmount = await _nisab.GetSilverNisabAsync(baseCurrency, cancellationToken);
         var silverNisab = _formatter.Number.FormatMoney(silverNisabAmount);
 
         mergeModels[PlatformsTemplateConstants.ModelKeys.Nisab] = new NisabMergeModel(goldNisab, silverNisab);
