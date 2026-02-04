@@ -23,7 +23,7 @@ public abstract class PlatformsPageContentVisibilityFilter : IContentVisibilityF
     }
 
     public bool IsVisible(IPublishedContent content) {
-        return _platformsPageAccessor.Value.GetAsync().GetAwaiter().GetResult().Page?.Kind == PublishedFileKind;
+        return _platformsPageAccessor.Value.GetAsync().GetAwaiter().GetResult()?.Page?.Kind == PublishedFileKind;
     }
     
     protected abstract SpecialContent Page { get; }

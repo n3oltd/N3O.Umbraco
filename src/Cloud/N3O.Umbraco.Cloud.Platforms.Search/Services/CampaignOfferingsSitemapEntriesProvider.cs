@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Cloud.Extensions;
+﻿using Microsoft.AspNetCore.Hosting;
+using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
@@ -18,15 +19,18 @@ public class CampaignOfferingsSitemapEntriesProvider : ISitemapEntriesProvider {
     private readonly IContentCache _contentCache;
     private readonly ISlugHelper _slugHelper;
     private readonly IClock _clock;
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
     public CampaignOfferingsSitemapEntriesProvider(ICdnClient cdnClient,
                                                    IContentCache contentCache,
                                                    ISlugHelper slugHelper,
-                                                   IClock clock) {
+                                                   IClock clock,
+                                                   IWebHostEnvironment webHostEnvironment) {
         _cdnClient = cdnClient;
         _contentCache = contentCache;
         _slugHelper = slugHelper;
         _clock = clock;
+        _webHostEnvironment = webHostEnvironment;
     }
     
     public async Task<IEnumerable<SitemapEntry>> GetEntriesAsync(CancellationToken cancellationToken = default) {
@@ -50,7 +54,7 @@ public class CampaignOfferingsSitemapEntriesProvider : ISitemapEntriesProvider {
     }
 
     private SitemapEntry GetSitemapEntryForCampaign(PublishedCampaign publishedCampaign, LocalDate today) {
-        var url = _contentCache.GetCampaignUrl(_slugHelper, publishedCampaign.Name);
+        var url = _contentCache.GetCampaignUrl(_slugHelper, _webHostEnvironment, publishedCampaign.Name);
 
         return new SitemapEntry(url, "daily", 0.5f, today);
     }
@@ -58,7 +62,7 @@ public class CampaignOfferingsSitemapEntriesProvider : ISitemapEntriesProvider {
     private SitemapEntry GetSitemapEntryForOffering(PublishedOffering publishedOffering,
                                                     PublishedCampaign publishedCampaign,
                                                     LocalDate today) {
-        var url = _contentCache.GetOfferingUrl(_slugHelper, publishedCampaign.Name, publishedOffering.Name);
+        var url = _contentCache.GetOfferingUrl(_slugHelper, _webHostEnvironment, publishedCampaign.Name, publishedOffering.Name);
 
         return new SitemapEntry(url, "daily", 0.5f, today);
     }

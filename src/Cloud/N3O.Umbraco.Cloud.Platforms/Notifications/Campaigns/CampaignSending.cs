@@ -53,7 +53,7 @@ public class CampaignSending : INotificationAsyncHandler<SendingContentNotificat
 
     private void SetUrl(SendingContentNotification notification, ContentVariantDisplay variant) {
         if (variant.State == ContentSavedState.Published) {
-            var campaignUrl = _contentCache.Value.GetCampaignUrl(_slugHelper.Value, variant.Name);
+            var campaignUrl = _contentCache.Value.GetCampaignPath(_slugHelper.Value, variant.Name);
 
             if (campaignUrl.HasValue()) {
                 notification.Content.Urls = [new UrlInfo(campaignUrl, true, null)];

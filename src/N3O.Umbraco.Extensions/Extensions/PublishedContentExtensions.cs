@@ -83,7 +83,7 @@ public static class PublishedContentExtensions {
     }
 
     public static bool HasTemplate(this IPublishedContent content) {
-        return content.TemplateId != 0;
+        return content != null && content.TemplateId > 0;
     }
 
     public static string RelativeUrl(this IPublishedContent content) {
