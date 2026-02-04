@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Hosting;
-using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Search.Models;
-using NodaTime.Extensions;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Web;
 using X.Web.Sitemap;
@@ -18,42 +16,32 @@ namespace N3O.Umbraco.Search;
 public class Sitemap : ISitemap {
     private readonly IUmbracoContextFactory _umbracoContextFactory;
     private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly IContentLocator _contentLocator;
-    private readonly IContentVisibility _contentVisibility;
+    private readonly IReadOnlyList<ISitemapEntriesProvider> _entriesProviders;
 
-    public Sitemap(IUmbracoContextFactory umbracoContextFactory,
-                   IWebHostEnvironment webHostEnvironment,
-                   IContentLocator contentLocator,
-                   IContentVisibility contentVisibility) {
-        _umbracoContextFactory = umbracoContextFactory;
+    public Sitemap(IWebHostEnvironment webHostEnvironment, IEnumerable<ISitemapEntriesProvider> entriesProviders) {
         _webHostEnvironment = webHostEnvironment;
-        _contentLocator = contentLocator;
-        _contentVisibility = contentVisibility;
+        _entriesProviders = entriesProviders.ApplyAttributeOrdering();
     }
 
-    public IReadOnlyList<SitemapEntry> GetEntries() {
-        using (_umbracoContextFactory.EnsureUmbracoContext()) {
-            var publicContent = _contentLocator.All()
-                                               .Where(x => _contentVisibility.IsVisible(x))
-                                               .Select(x => new SitemapEntry(x.AbsoluteUrl(),
-                                                                             "daily",
-                                                                             0.5f,
-                                                                             x.UpdateDate.ToLocalDateTime().Date))
-                                               .ToList();
+    public async Task<IReadOnlyList<SitemapEntry>> GetEntriesAsync(CancellationToken cancellationToken = default) {
+        var entries = new List<SitemapEntry>();
 
-            return publicContent;
+        foreach (var provider in _entriesProviders) {
+            entries.AddRange(await provider.GetEntriesAsync(cancellationToken));
         }
+
+        return entries;
     }
 
     public async Task PublishAsync() {
-        var sitemapXml = GetXml();
+        var sitemapXml = await GetXmlAsync();
 
         await WebRoot.SaveTextAsync(_webHostEnvironment, "sitemap.xml", sitemapXml);
     }
 
-    private string GetXml() {
+    private async Task<string> GetXmlAsync() {
         var sitemap = new XSitemap();
-        var entries = GetEntries();
+        var entries = await GetEntriesAsync();
 
         foreach (var entry in entries) {
             sitemap.Add(new Url {
