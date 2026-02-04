@@ -55,7 +55,7 @@ public class OfferingSending : INotificationAsyncHandler<SendingContentNotificat
 
             var offeringPath = _contentCache.Value.GetOfferingPath(_slugHelper.Value, campaignName, variant.Name);
 
-            if (offeringUrl.HasValue()) {
+            if (offeringPath.HasValue()) {
                 notification.Content.Urls = [new UrlInfo(offeringPath, true, null)];
             }
         }
