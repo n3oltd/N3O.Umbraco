@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Hosting;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -30,14 +31,7 @@ public class RedirectMiddleware : IMiddleware {
                     var path = context.Request.Path.Value;
 
                     if (path.HasValue()) {
-                        var redirect = _redirectManagement.FindRedirect(path);
-
-                        if (redirect != null) {
-                            _redirectManagement.LogHit(redirect.Id);
-
-                            context.Response.Clear();
-                            context.Response.Redirect(redirect.Url, permanent: !redirect.Temporary);
-                            
+                        if (TryRedirect(context, path)) {
                             return;
                         }
                     }
@@ -51,5 +45,32 @@ public class RedirectMiddleware : IMiddleware {
         } finally {
             context.Response.Body = originalBodyStream;
         } 
+    }
+    
+    private bool TryRedirect(HttpContext context, string path) {
+        var redirect = _redirectManagement.FindRedirect(path);
+
+        if (redirect != null) {
+            _redirectManagement.LogHit(redirect.Id);
+
+            Redirect(context, redirect.Temporary, redirect.Url);
+
+            return true;
+        }
+        
+        var staticRedirect = StaticRedirects.Find(path);
+
+        if (staticRedirect != null) {
+            Redirect(context, staticRedirect.Temporary, staticRedirect.Path);
+
+            return true;
+        }
+
+        return false;
+    }
+    
+    private void Redirect(HttpContext context, bool temporary, string urlOrPath) {
+        context.Response.Clear();
+        context.Response.Redirect(urlOrPath, permanent: !temporary);
     }
 }
