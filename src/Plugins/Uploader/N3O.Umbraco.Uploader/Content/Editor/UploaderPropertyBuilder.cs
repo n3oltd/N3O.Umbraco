@@ -1,9 +1,9 @@
 using Humanizer.Bytes;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Uploader.DataTypes;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Plugins.Extensions;
+using N3O.Umbraco.Uploader.DataTypes;
 using Newtonsoft.Json;
 using System;
 using System.IO;

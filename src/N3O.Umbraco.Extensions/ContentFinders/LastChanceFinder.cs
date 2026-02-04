@@ -46,14 +46,6 @@ public class LastChanceFinder : IContentLastChanceFinder {
 
             return true;
         }
-        
-        var lastChanceUrl = LastChanceUrls.Find(requestedPath);
-
-        if (lastChanceUrl != null) {
-            Redirect(request, lastChanceUrl.Temporary, lastChanceUrl.Path);
-
-            return true;
-        }
 
         return false;
     }

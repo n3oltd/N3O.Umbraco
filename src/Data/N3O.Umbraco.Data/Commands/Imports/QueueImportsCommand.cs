@@ -1,5 +1,5 @@
-using N3O.Umbraco.Data.NamedParameters;
 using N3O.Umbraco.Data.Models;
+using N3O.Umbraco.Data.NamedParameters;
 using N3O.Umbraco.Mediator;
 using N3O.Umbraco.Parameters;
 

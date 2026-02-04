@@ -1,7 +1,7 @@
-namespace N3O.Umbraco.ContentFinders;
+namespace N3O.Umbraco.Hosting;
 
-public class LastChanceUrl : Value {
-    public LastChanceUrl(string path, bool temporary) {
+public class StaticRedirect : Value {
+    public StaticRedirect(string path, bool temporary) {
         Path = path;
         Temporary = temporary;
     }

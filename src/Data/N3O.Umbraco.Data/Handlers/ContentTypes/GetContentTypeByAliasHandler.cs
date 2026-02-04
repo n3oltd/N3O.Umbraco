@@ -1,5 +1,5 @@
-﻿using N3O.Umbraco.Data.Queries;
-using N3O.Umbraco.Data.Models;
+﻿using N3O.Umbraco.Data.Models;
+using N3O.Umbraco.Data.Queries;
 using N3O.Umbraco.Mediator;
 using System.Threading;
 using System.Threading.Tasks;

@@ -1,6 +1,6 @@
 ﻿using N3O.Umbraco.Accounts.Lookups;
-using Newtonsoft.Json;
 using N3O.Umbraco.Extensions;
+using Newtonsoft.Json;
 
 namespace N3O.Umbraco.Accounts.Models;
 

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Storage.Models;
 using N3O.Umbraco.Validation;
-using N3O.Umbraco.Validation.Hosting.Controllers;
+using N3O.Umbraco.Validation.Controllers;
 using NodaTime;
 using System;
 using System.IO;

@@ -15,8 +15,8 @@ using System.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Strings;
-using OfferingType = N3O.Umbraco.Cloud.Platforms.Lookups.OfferingType;
 using MediaConstants = Umbraco.Cms.Core.Constants.Conventions.Media;
+using OfferingType = N3O.Umbraco.Cloud.Platforms.Lookups.OfferingType;
 
 namespace N3O.Umbraco.Cloud.Platforms;
 

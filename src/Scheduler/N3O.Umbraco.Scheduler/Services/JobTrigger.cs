@@ -1,25 +1,22 @@
-using N3O.Umbraco.Extensions;
+using Flurl;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Scheduler.Models;
-using N3O.Umbraco.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Scheduler;
 
 public class JobTrigger {
     private readonly IJsonProvider _jsonProvider;
-    private readonly IUrlBuilder _urlBuilder;
-    private readonly IUmbracoContextFactory _umbracoContextFactory;
+    private readonly IJobUrlProvider _jobUrlProvider;
 
-    public JobTrigger(IJsonProvider jsonProvider, IUrlBuilder urlBuilder, IUmbracoContextFactory umbracoContextFactory) {
+    public JobTrigger(IJsonProvider jsonProvider, IJobUrlProvider jobUrlProvider) {
         _jsonProvider = jsonProvider;
-        _urlBuilder = urlBuilder;
-        _umbracoContextFactory = umbracoContextFactory;
+        _jobUrlProvider = jobUrlProvider;
     }
 
     [DisplayName("{0}")]
@@ -27,16 +24,16 @@ public class JobTrigger {
                                    string triggerKey,
                                    string modelJson,
                                    IReadOnlyDictionary<string, string> parameterData) {
-        var req = GetProxyReq(triggerKey, modelJson, parameterData);
-        
-        var baseUrl = GetBasUrl();
-        
         using (var httpClient = new HttpClient()) {
+            var req = GetProxyReq(triggerKey, modelJson, parameterData);
+        
+            var url = GetUrl();
+            
             httpClient.Timeout = TimeSpan.FromMinutes(30);
             
             var reqStr = _jsonProvider.SerializeObject(req);
             
-            var request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/umbraco/api/JobProxy/executeProxied");
+            var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Content = new StringContent(reqStr, null, "application/json");
             
             request.Headers.Add("accept", "*/*");
@@ -56,12 +53,6 @@ public class JobTrigger {
         }
     }
 
-    private string GetBasUrl() {
-        using (_umbracoContextFactory.EnsureUmbracoContext()) {
-            return _urlBuilder.Root().ToString().TrimEnd('/');
-        }
-    }
-
     private ProxyReq GetProxyReq(string triggerKey,
                                  string modelJson,
                                  IReadOnlyDictionary<string, string> parameterData) {
@@ -75,5 +66,12 @@ public class JobTrigger {
         req.ParameterData = parameterData?.ToDictionary();
         
         return req;
+    }
+    
+    private string GetUrl() {
+        var baseUrl = _jobUrlProvider.GetBaseUrl();
+        var url = new Url(baseUrl).AppendPathSegment("/umbraco/api/JobProxy/executeProxied");
+
+        return url;
     }
 }

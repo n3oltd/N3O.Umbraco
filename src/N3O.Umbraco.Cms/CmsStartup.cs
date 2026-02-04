@@ -85,6 +85,8 @@ public abstract class CmsStartup {
         if (canonicalDomain.HasValue()) {
             options.Rules.Add(new CanonicalDomainRedirectRule(canonicalDomain, aliasDomains.Or("").Split('|')));
         }
+        
+        options.Rules.Add(new StaticRedirectsRule());
 
         return options;
     }

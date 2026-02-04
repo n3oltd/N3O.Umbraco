@@ -6,6 +6,7 @@ using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Hosting;
+using N3O.Umbraco.Json;
 using N3O.Umbraco.Payments.Content;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.Opayo.Clients;
@@ -21,7 +22,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using N3O.Umbraco.Json;
 
 namespace N3O.Umbraco.Payments.Opayo;
 
@@ -114,7 +114,7 @@ public class OpayoHelper : IOpayoHelper {
         var apiReq = new ApiPaymentTransactionReq();
 
         apiReq.Amount = ((Money) req.Value).GetAmountInLowestDenomination();
-        apiReq.Currency = req.Value.Currency.Id;
+        apiReq.Currency = req.Value.Currency.Code.ToUpperInvariant();
         apiReq.Description = parameters.GetTransactionDescription(settings);
         apiReq.VendorTxCode = vendorTxCode;
 

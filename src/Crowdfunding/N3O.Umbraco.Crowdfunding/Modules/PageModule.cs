@@ -1,5 +1,5 @@
-using N3O.Umbraco.Pages;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Pages;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
