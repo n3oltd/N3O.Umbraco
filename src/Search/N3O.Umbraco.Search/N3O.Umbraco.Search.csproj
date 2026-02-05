@@ -31,7 +31,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Blocks\N3O.Umbraco.Blocks\N3O.Umbraco.Blocks.csproj" />
-        <ProjectReference Include="..\..\Mediator\N3O.Umbraco.Mediator\N3O.Umbraco.Mediator.csproj" />
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
         <ProjectReference Include="..\..\Scheduler\N3O.Umbraco.Scheduler\N3O.Umbraco.Scheduler.csproj" />
     </ItemGroup>
