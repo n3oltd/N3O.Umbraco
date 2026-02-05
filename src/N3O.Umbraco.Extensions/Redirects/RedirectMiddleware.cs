@@ -52,7 +52,7 @@ public class RedirectMiddleware : IMiddleware {
     private bool TryRedirect(HttpResponse response, string path) {
         var redirect = _redirectManagement.Value.FindRedirect(path);
         
-        if (redirect != null) {
+        if (redirect == null) {
             redirect = StaticRedirects.Find(path);
         }
 
