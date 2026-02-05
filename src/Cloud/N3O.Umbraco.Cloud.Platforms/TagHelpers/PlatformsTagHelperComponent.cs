@@ -14,7 +14,7 @@ public class PlatformsTagHelperComponent : TagHelperComponent {
 
             metaTag.TagRenderMode = TagRenderMode.SelfClosing;
             
-            output.PostContent.Append(metaTag.ToHtmlString());
+            output.PostContent.AppendHtml(metaTag);
         }
     }
 }
