@@ -16,7 +16,7 @@ public class RedirectsComposer : Composer {
     }
     
     private void RegisterMiddleware(IUmbracoBuilder builder) {
-        /*builder.Services.AddScoped<RedirectMiddleware>();
+        builder.Services.AddScoped<RedirectMiddleware>();
         
         builder.Services.Configure<UmbracoPipelineOptions>(opt => {
             var filter = new UmbracoPipelineFilter(nameof(RedirectMiddleware));
@@ -30,6 +30,6 @@ public class RedirectsComposer : Composer {
             };
 
             opt.PipelineFilters.Insert(0, filter);
-        });*/
+        });
     }
 }

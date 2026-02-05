@@ -1,4 +1,4 @@
-/*using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using N3O.Umbraco.Extensions;
 using System;
 using System.IO;
@@ -65,4 +65,4 @@ public class RedirectMiddleware : IMiddleware {
             return false;
         }
     }
-}*/
+}
