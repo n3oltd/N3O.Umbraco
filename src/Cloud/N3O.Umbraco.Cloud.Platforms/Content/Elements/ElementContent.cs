@@ -16,6 +16,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Content;
 public class ElementContent : UmbracoContent<ElementContent> {
     private static readonly string DonationButtonElementAlias = AliasHelper<DonationButtonElementContent>.ContentTypeAlias();
     private static readonly string DonationFormElementAlias = AliasHelper<DonationFormElementContent>.ContentTypeAlias();
+    private static readonly string DonationPopupElementAlias = AliasHelper<DonationPopupElementContent>.ContentTypeAlias();
     
     public override void SetContent(IPublishedContent content) {
         base.SetContent(content);
@@ -26,6 +27,9 @@ public class ElementContent : UmbracoContent<ElementContent> {
         } else if (Type == ElementTypes.DonationForm) {
             DonationForm = new DonationFormElementContent();
             DonationForm.SetContent(content);
+        } else if (Type == ElementTypes.DonationPopup) {
+            DonationPopup = new DonationPopupElementContent();
+            DonationPopup.SetContent(content);
         } else {
             throw UnrecognisedValueException.For(Type);
         }
@@ -36,6 +40,7 @@ public class ElementContent : UmbracoContent<ElementContent> {
         
         DonationButton?.SetVariationContext(variationContext);
         DonationForm?.SetVariationContext(variationContext);
+        DonationPopup?.SetVariationContext(variationContext);
     }
     
     public Guid Key => Content().Key;
@@ -47,6 +52,7 @@ public class ElementContent : UmbracoContent<ElementContent> {
 
     public DonationButtonElementContent DonationButton { get; private set; }
     public DonationFormElementContent DonationForm { get; private set; }
+    public DonationPopupElementContent DonationPopup { get; private set; }
     
     public ElementType Type {
         get {
@@ -54,6 +60,8 @@ public class ElementContent : UmbracoContent<ElementContent> {
                 return ElementTypes.DonationButton;
             } else if (Content().ContentType.Alias.EqualsInvariant(DonationFormElementAlias)) {
                 return ElementTypes.DonationForm;
+            } else if (Content().ContentType.Alias.EqualsInvariant(DonationPopupElementAlias)) {
+                return ElementTypes.DonationPopup;
             } else {
                 throw UnrecognisedValueException.For(Content().ContentType.Alias);
             }
@@ -61,9 +69,17 @@ public class ElementContent : UmbracoContent<ElementContent> {
     }
     
     public IFundDimensionValues GetFixedFundDimensionValues(OfferingContent offering) {
-        var fundDimensionValues = Type == ElementTypes.DonationForm
-                                      ? DonationForm.GetFixedFundDimensionValues(offering)
-                                      : DonationButton.GetFixedFundDimensionValues(offering);
+        IFundDimensionValues fundDimensionValues;
+
+        if (Type == ElementTypes.DonationButton) {
+            fundDimensionValues = DonationButton.GetFixedFundDimensionValues(offering);
+        } else if (Type == ElementTypes.DonationForm) {
+            fundDimensionValues = DonationForm.GetFixedFundDimensionValues(offering);
+        } else if (Type == ElementTypes.DonationPopup) {
+            fundDimensionValues = DonationPopup.GetFixedFundDimensionValues(offering);
+        } else {
+            throw UnrecognisedValueException.For(Type);
+        }
 
         return fundDimensionValues;
     }

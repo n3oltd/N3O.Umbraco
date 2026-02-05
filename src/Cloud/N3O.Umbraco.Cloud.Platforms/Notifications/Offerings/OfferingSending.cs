@@ -62,24 +62,29 @@ public class OfferingSending : INotificationAsyncHandler<SendingContentNotificat
     }
     
     private void SetEmbedCode(ContentVariantDisplay variant, Guid contentId) {
-        var donationFormTag = new TagBuilder(ElementTypes.DonationForm.TagName);
         var donationButtonTag = new TagBuilder(ElementTypes.DonationButton.TagName);
+        var donationFormTag = new TagBuilder(ElementTypes.DonationForm.TagName);
+        var donationPopupTag = new TagBuilder(ElementTypes.DonationPopup.TagName);
 
-        donationFormTag.Attributes.Add("element-id", $"{contentId.ToString()}");
         donationButtonTag.Attributes.Add("element-id", $"{contentId.ToString()}");
+        donationFormTag.Attributes.Add("element-id", $"{contentId.ToString()}");
+        donationPopupTag.Attributes.Add("element-id", $"{contentId.ToString()}");
 
-        donationFormTag.Attributes.Add("element-kind", ElementKind.DonationFormOffering.ToEnumString());
         donationButtonTag.Attributes.Add("element-kind", ElementKind.DonationButtonOffering.ToEnumString());
+        donationFormTag.Attributes.Add("element-kind", ElementKind.DonationFormOffering.ToEnumString());
+        donationPopupTag.Attributes.Add("element-kind", ElementKind.DonationPopupOffering.ToEnumString());
         
         var embedTab = variant.Tabs
                               .SingleOrDefault(x => x.Properties.OrEmpty().Any(y => y.Alias.IsAnyOf(AliasHelper<OfferingContent>.PropertyAlias(z => z.DonationFormEmbedCode),
                                                                                                     AliasHelper<OfferingContent>.PropertyAlias(z => z.DonationButtonEmbedCode))));
         
-        var donationFormTagEmbedProperty = GetProperty(embedTab, AliasHelper<OfferingContent>.PropertyAlias(x => x.DonationFormEmbedCode));
         var donationButtonEmbedProperty = GetProperty(embedTab, AliasHelper<OfferingContent>.PropertyAlias(x => x.DonationButtonEmbedCode));
+        var donationFormTagEmbedProperty = GetProperty(embedTab, AliasHelper<OfferingContent>.PropertyAlias(x => x.DonationFormEmbedCode));
+        var donationPopupEmbedProperty = GetProperty(embedTab, AliasHelper<OfferingContent>.PropertyAlias(x => x.DonationPopupEmbedCode));
         
-        donationFormTagEmbedProperty.IfNotNull(x => x.Value = donationFormTag.ToHtmlString());
         donationButtonEmbedProperty.IfNotNull(x => x.Value = donationButtonTag.ToHtmlString());
+        donationFormTagEmbedProperty.IfNotNull(x => x.Value = donationFormTag.ToHtmlString());
+        donationPopupEmbedProperty.IfNotNull(x => x.Value = donationPopupTag.ToHtmlString());
     }
     
     private ContentPropertyDisplay GetProperty(Tab<ContentPropertyDisplay> tab, string alias) {

@@ -18,8 +18,9 @@ public static class PlatformsConstants {
     public static class Elements {
         public const string CompositionAlias = "platformsElement";
         public const string DonationButton = "platformsDonationButtonElement";
-        public const string DonationForm = "platformsDonationFormElement";
         public const string DonationElement = "platformsDonationElement";
+        public const string DonationForm = "platformsDonationFormElement";
+        public const string DonationPopup = "platformsDonationPopupElement";
     }
 
     public static class Feeds {
@@ -59,6 +60,7 @@ public static class PlatformsConstants {
         public const string CrowdfundingCampaigns = "crowdfundingCampaigns";
         public const string DonationButtons = "donationButtons";
         public const string DonationForms = "donationForms";
+        public const string DonationPopups = "donationPopups";
         public const string ManagedContent = "managedContent";
         public const string Offerings = "offerings";
         public const string ZakatSettings = "zakatSettings";

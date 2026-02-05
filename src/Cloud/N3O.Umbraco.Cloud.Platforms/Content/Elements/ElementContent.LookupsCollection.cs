@@ -1,8 +1,8 @@
 ﻿using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cloud.Platforms.Clients;
-using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
 using System;
@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
+
+namespace N3O.Umbraco.Cloud.Platforms.Content;
 
 [Order(int.MinValue)]
 public class ContentElements : LookupsCollection<Element> {
@@ -53,9 +55,13 @@ public class ContentElements : LookupsCollection<Element> {
         ElementKind elementKind;
         
         if (elementContent.Type == ElementTypes.DonationButton) {
-            elementKind = ElementKind.DonationFormCustom;
-        } else {
             elementKind = ElementKind.DonationButtonCustom;
+        } else if (elementContent.Type == ElementTypes.DonationForm) {
+            elementKind = ElementKind.DonationFormCustom;
+        } else if (elementContent.Type == ElementTypes.DonationPopup) {
+            elementKind = ElementKind.DonationPopupCustom;
+        } else {
+            throw UnrecognisedValueException.For(elementContent.Type);
         }
         
         return new Element(LookupContent.GetId(elementContent.Content()),

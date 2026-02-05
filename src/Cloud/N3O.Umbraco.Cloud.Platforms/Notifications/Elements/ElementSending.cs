@@ -26,10 +26,11 @@ public class ElementSending : INotificationAsyncHandler<SendingContentNotificati
     }
 
     public Task HandleAsync(SendingContentNotification notification, CancellationToken cancellationToken) {
-        var isDonationForm = notification.Content.ContentTypeAlias.EqualsInvariant(AliasHelper<DonationFormElementContent>.ContentTypeAlias());
         var isDonationButton = notification.Content.ContentTypeAlias.EqualsInvariant(AliasHelper<DonationButtonElementContent>.ContentTypeAlias());
+        var isDonationForm = notification.Content.ContentTypeAlias.EqualsInvariant(AliasHelper<DonationFormElementContent>.ContentTypeAlias());
+        var isDonationPopup = notification.Content.ContentTypeAlias.EqualsInvariant(AliasHelper<DonationPopupElementContent>.ContentTypeAlias());
 
-        if (isDonationForm || isDonationButton) {
+        if (isDonationButton || isDonationForm || isDonationPopup) {
             foreach (var variant in notification.Content.Variants) {
                 SetPropertiesReadOnly(variant);
                 SetEmbedCode(variant, notification.Content.ContentTypeAlias, notification.Content.Key.GetValueOrDefault());
@@ -68,6 +69,10 @@ public class ElementSending : INotificationAsyncHandler<SendingContentNotificati
             tag.Attributes.Add("element-id", $"{contentId.ToString()}");
             
             tag.Attributes.Add("element-kind", ElementKind.DonationFormCustom.ToEnumString());
+        } else if (type == ElementTypes.DonationPopup) {
+            tag.Attributes.Add("element-id", $"{contentId.ToString()}");
+            
+            tag.Attributes.Add("element-kind", ElementKind.DonationPopupCustom.ToEnumString());
         }
         
         var embedTab = variant.Tabs.Single(x => x.Alias.EqualsInvariant("embed"));

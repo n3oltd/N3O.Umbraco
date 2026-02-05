@@ -49,6 +49,21 @@ public static class HtmlHelperExtensions {
                 }
             
                 embedCode = $"""<n3o-donation-form element-id="{idAttribute}" element-kind="{elementKind.ToEnumString()}"></n3o-donation-form>""";
+            } else if (element.ElementKind == ElementKind.DonationPopup) {
+                string idAttribute;
+                ElementKind elementKind;
+            
+                if (page.Kind == PublishedFileKinds.CampaignPage) {
+                    idAttribute = page.GetCampaignId();
+                    elementKind = ElementKind.DonationPopupCampaign;
+                } else if (page.Kind == PublishedFileKinds.OfferingPage) {
+                    idAttribute = page.GetOfferingId();
+                    elementKind = ElementKind.DonationPopupOffering;
+                } else {
+                    throw UnrecognisedValueException.For(page.Kind);
+                }
+            
+                embedCode = $"""<n3o-donation-popup element-id="{idAttribute}" element-kind="{elementKind.ToEnumString()}"></n3o-donation-popup>""";
             }
         }
         

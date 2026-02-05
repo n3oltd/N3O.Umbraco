@@ -23,6 +23,7 @@ public class PlatformsDevToolsController : BackofficeAuthorizedApiController {
     private const string OfferingsWebhookId = PlatformsConstants.WebhookIds.Offerings;
     private const string DonationButtonsWebhookId = PlatformsConstants.WebhookIds.DonationButtons;
     private const string DonationFormsWebhookId = PlatformsConstants.WebhookIds.DonationForms;
+    private const string DonationPopupsWebhookId = PlatformsConstants.WebhookIds.DonationPopups;
     
     private readonly IContentLocator _contentLocator;
     private readonly IUmbracoMapper _mapper;
@@ -74,6 +75,16 @@ public class PlatformsDevToolsController : BackofficeAuthorizedApiController {
     public Task<ActionResult> ResendElementsWebhooks() {
         var elements =  _contentLocator.All(x => x.IsComposedOf(AliasHelper<ElementContent>.ContentTypeAlias())).As<ElementContent>();
         
+        foreach (var element in elements.Where(x => x.Type == ElementTypes.DonationButton)) {
+            var body = _mapper.Map<ElementContent, CustomElementWebhookBodyReqDonationButtonReq>(element);
+            
+            var req = new DispatchWebhookReq();
+            req.Body = body;
+            req.Url = _cloudUrl.ForWebhook(DonationButtonsWebhookId);
+                
+            _backgroundJob.EnqueueCommand<DispatchWebhookCommand, DispatchWebhookReq>(req, DonationButtonsWebhookId);
+        }
+        
         foreach (var element in elements.Where(x => x.Type == ElementTypes.DonationForm)) {
             var body = _mapper.Map<ElementContent, CustomElementWebhookBodyReqDonationFormReq>(element);
             
@@ -84,14 +95,14 @@ public class PlatformsDevToolsController : BackofficeAuthorizedApiController {
             _backgroundJob.EnqueueCommand<DispatchWebhookCommand, DispatchWebhookReq>(req, DonationFormsWebhookId);
         }
         
-        foreach (var element in elements.Where(x => x.Type == ElementTypes.DonationButton)) {
-            var body = _mapper.Map<ElementContent, CustomElementWebhookBodyReqDonationButtonReq>(element);
+        foreach (var element in elements.Where(x => x.Type == ElementTypes.DonationPopup)) {
+            var body = _mapper.Map<ElementContent, CustomElementWebhookBodyReqDonationPopupReq>(element);
             
             var req = new DispatchWebhookReq();
             req.Body = body;
-            req.Url = _cloudUrl.ForWebhook(DonationButtonsWebhookId);
+            req.Url = _cloudUrl.ForWebhook(DonationPopupsWebhookId);
                 
-            _backgroundJob.EnqueueCommand<DispatchWebhookCommand, DispatchWebhookReq>(req, DonationButtonsWebhookId);
+            _backgroundJob.EnqueueCommand<DispatchWebhookCommand, DispatchWebhookReq>(req, DonationPopupsWebhookId);
         }
         
         return Task.FromResult<ActionResult>(Ok());

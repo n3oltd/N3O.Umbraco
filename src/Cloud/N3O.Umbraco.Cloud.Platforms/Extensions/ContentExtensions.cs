@@ -23,6 +23,10 @@ public static class ContentExtensions {
         return content.ContentType.Alias.EqualsInvariant(AliasHelper<DonationFormElementContent>.ContentTypeAlias());
     }
     
+    public static bool IsDonationPopupElement(this IContent content) {
+        return content.ContentType.Alias.EqualsInvariant(AliasHelper<DonationPopupElementContent>.ContentTypeAlias());
+    }
+    
     public static bool IsElement(this IContent content, IContentTypeService contentTypeService) {
         return HasComposition(contentTypeService, content, AliasHelper<ElementContent>.ContentTypeAlias());
     }
