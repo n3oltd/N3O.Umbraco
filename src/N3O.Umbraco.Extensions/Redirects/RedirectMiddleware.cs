@@ -45,6 +45,7 @@ public class RedirectMiddleware : IMiddleware {
                 }
             } finally {
                 context.Response.Body = originalBodyStream;
+                context.Request.Headers.Add("N3O-Redirect", "true");
             }
         }
     }
