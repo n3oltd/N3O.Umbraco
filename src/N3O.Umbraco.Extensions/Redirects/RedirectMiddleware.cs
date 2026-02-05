@@ -45,7 +45,7 @@ public class RedirectMiddleware : IMiddleware {
                 }
             } finally {
                 context.Response.Body = originalBodyStream;
-                context.Request.Headers.Add("N3O-Redirect", "true");
+                context.Response.Headers.Add("N3O-Redirect", "true");
             }
         }
     }
@@ -60,6 +60,7 @@ public class RedirectMiddleware : IMiddleware {
         if (redirect != null) {
             response.Clear();
             response.Redirect(redirect.UrlOrPath, permanent: !redirect.Temporary);
+            response.Headers.Add("N3O-Redirect-UrlOrPath", redirect.UrlOrPath);
 
             return true;
         } else {
