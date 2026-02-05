@@ -8,6 +8,9 @@ using N3O.Umbraco.Composing;
 using N3O.Umbraco.Dev;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
+using N3O.Umbraco.Utilities;
+using System;
+using System.Linq;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
 using Umbraco.Extensions;
@@ -78,13 +81,16 @@ public abstract class CmsStartup {
     protected virtual void ConfigureStaticFiles(StaticFileOptions staticFileOptions) { }
 
     private RewriteOptions GetRewriteOptions() {
-        var canonicalDomain = EnvironmentData.GetOurValue(CmsConstants.Environment.Keys.CanonicalDomain);
-        var aliasDomains = EnvironmentData.GetOurValue(CmsConstants.Environment.Keys.AliasDomains);
         var options = new RewriteOptions();
         
-        if (canonicalDomain.HasValue()) {
-            options.Rules.Add(new CanonicalDomainRedirectRule(canonicalDomain, aliasDomains.Or("").Split('|')));
-        }
+        var rules = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
+                                                t.HasParameterlessConstructor() &&
+                                                t.ImplementsInterface<IRule>())
+                                 .ApplyAttributeOrdering()
+                                 .Select(t => (IRule) Activator.CreateInstance(t))
+                                 .ToList();
+
+        rules.Do(x => options.Rules.Add(x));
 
         return options;
     }

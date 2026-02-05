@@ -1,4 +1,4 @@
-namespace N3O.Umbraco.Redirects;
+namespace N3O.Umbraco.Redirects.Models;
 
 public class Redirect : Value {
     public Redirect(bool temporary, string urlOrPath) {

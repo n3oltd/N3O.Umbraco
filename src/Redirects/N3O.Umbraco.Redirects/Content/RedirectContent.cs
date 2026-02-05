@@ -2,7 +2,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
-namespace N3O.Umbraco.Redirects;
+namespace N3O.Umbraco.Redirects.Content;
 
 public class RedirectContent : UmbracoContent<RedirectContent> {
     public IPublishedContent LinkContent => GetAs(x => x.LinkContent);
