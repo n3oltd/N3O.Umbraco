@@ -57,7 +57,7 @@ public class RedirectMiddleware : IMiddleware {
         }
 
         if (redirect != null) {
-            response.ContentLength = 0;
+            response.Clear();
             response.Redirect(redirect.UrlOrPath, permanent: !redirect.Temporary);
 
             return true;
