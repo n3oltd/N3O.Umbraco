@@ -31,15 +31,17 @@ public class RedirectMiddleware : IMiddleware {
                         var path = context.Request.Path.Value;
 
                         if (path.HasValue()) {
-                            if (!TryRedirect(context.Response, path)) {
-                                if (responseBody.Length > 0) {
-                                    responseBody.Seek(0, SeekOrigin.Begin);
-                                    
-                                    await responseBody.CopyToAsync(originalBodyStream);
-                                }
+                            if (TryRedirect(context.Response, path)) {
+                                return;
                             }
                         }
                     }
+                }
+                
+                if (responseBody.Length > 0) {
+                    responseBody.Seek(0, SeekOrigin.Begin);
+                                    
+                    await responseBody.CopyToAsync(originalBodyStream);
                 }
             } finally {
                 context.Response.Body = originalBodyStream;
