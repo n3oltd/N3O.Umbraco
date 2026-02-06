@@ -25,8 +25,10 @@ public class PopulateUmbracoRedirectsHandler : IRequestHandler<PopulateUmbracoRe
             UmbracoRedirects.Clear();
 
             foreach (var redirect in redirects.OrEmpty()) {
-                UmbracoRedirects.Add(redirect.Name, );
+                UmbracoRedirects.Add(redirect.Content().Name, redirect.GetLinkUrl(), redirect.Temporary);
             }
         }
+
+        return None.Empty;
     }
 }
