@@ -1,3 +1,4 @@
+using N3O.Umbraco.Redirects.Models;
 using System;
 using System.Collections.Generic;
 
@@ -10,6 +11,10 @@ public static class StaticRedirects {
         Redirects.Add(Normalize(oldPath), new Redirect(temporary, $"/{Normalize(newPath)}"));
     }
 
+    public static void Clear() {
+        Redirects.Clear();
+    }
+    
     public static Redirect Find(string path) {
         return Redirects.GetValueOrDefault(Normalize(path));
     }
