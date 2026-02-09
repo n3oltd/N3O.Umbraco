@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Hosting;
-using N3O.Umbraco.Composing;
 using N3O.Umbraco.Hosting;
 using Serilog;
 
