@@ -16,6 +16,7 @@ public class ContextComposer : Composer {
         builder.Services.AddSingleton<ICurrentUrlAccessor, CurrentUrlAccessor>();
         builder.Services.AddSingleton<IQueryStringAccessor, QueryStringAccessor>();
         builder.Services.TryAddSingleton<IRemoteIpAddressAccessor, RemoteIpAddressAccessor>();
+        builder.Services.TryAddSingleton<IRequestHostAccessor, RequestHostAccessor>();
 
         RegisterCookies<ICookie>(builder);
         RegisterCookies<IReadOnlyCookie>(builder);
