@@ -11,8 +11,7 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Hosting;
 
 public class WellKnownFolderMiddleware : IMiddleware {
-    private const string Name = ".well-known";
-    private const string Prefix = $"/{Name}/";
+    private const string Prefix = "/.well-known/";
     private const string Root = "wellKnownRoot";
     
     private readonly IWebHostEnvironment _webHostEnvironment;
