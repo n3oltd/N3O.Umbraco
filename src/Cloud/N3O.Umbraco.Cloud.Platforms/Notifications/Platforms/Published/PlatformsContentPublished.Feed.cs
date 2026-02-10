@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using N3O.Umbraco.Cloud.Content.Clients;
+﻿using N3O.Umbraco.Cloud.Content.Clients;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Scheduler;
@@ -17,9 +16,8 @@ public class FeedPublished : CloudContentPublished {
     public FeedPublished(ISubscriptionAccessor subscriptionAccessor,
                          ICloudUrl cloudUrl,
                          IBackgroundJob backgroundJob,
-                         Lazy<IContentLocator> contentLocator,
-                         ILogger<FeedPublished> logger)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob, logger) {
+                         Lazy<IContentLocator> contentLocator)
+        : base(subscriptionAccessor, cloudUrl, backgroundJob) {
         _contentLocator = contentLocator;
     }
     

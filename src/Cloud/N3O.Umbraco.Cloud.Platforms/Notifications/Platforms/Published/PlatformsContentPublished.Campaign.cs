@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
@@ -28,9 +27,8 @@ public class CampaignPublished : CloudContentPublished {
                              IContentTypeService contentTypeService,
                              Lazy<IContentLocator> contentLocator,
                              IUmbracoMapper mapper,
-                             ILogger<CampaignPublished> logger,
                              IEnumerable<IPlatformsPageContentPublisher> platformsPageContentPublishers)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob, logger) {
+        : base(subscriptionAccessor, cloudUrl, backgroundJob) {
         _contentTypeService = contentTypeService;
         _contentLocator = contentLocator;
         _mapper = mapper;

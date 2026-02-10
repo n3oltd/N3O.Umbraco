@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using N3O.Umbraco.Cloud.Content.Clients;
+﻿using N3O.Umbraco.Cloud.Content.Clients;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Scheduler;
 using System.Threading.Tasks;
@@ -10,9 +9,8 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 public class FeedsPublished : CloudContentPublished {
     public FeedsPublished(ISubscriptionAccessor subscriptionAccessor,
                           ICloudUrl cloudUrl,
-                          IBackgroundJob backgroundJob,
-                          ILogger<FeedsPublished> logger)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob, logger) { }
+                          IBackgroundJob backgroundJob)
+        : base(subscriptionAccessor, cloudUrl, backgroundJob) { }
 
     protected override bool CanProcess(IContent content) {
         return content.IsFeeds();
