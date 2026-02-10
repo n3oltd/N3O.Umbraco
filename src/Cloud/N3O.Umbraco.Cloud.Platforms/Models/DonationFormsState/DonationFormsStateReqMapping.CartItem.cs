@@ -24,15 +24,18 @@ public partial class ElementDonationFormsStateReqMapping {
         
         var cartItem = new CartItemReq();
         cartItem.Id = Guid.NewGuid().ToString();
-        cartItem.Type = CartItemType.NewDonation;
         cartItem.Currency = currency;
 
         var allocation = GetAllocationIntent(campaign, offering, fundDimensionValues, currency);
 
         if (offering.SuggestedGiftType == GiftTypes.Recurring) {
+            cartItem.Type = CartItemType.NewRegularGiving;
+            
             cartItem.NewRegularGiving = new NewRegularGivingWithOptionsReq();
             cartItem.NewRegularGiving.Allocation = allocation;
         } else {
+            cartItem.Type = CartItemType.NewDonation;
+            
             cartItem.NewDonation = new NewDonationReq();
             cartItem.NewDonation.Allocation = allocation;
         }
