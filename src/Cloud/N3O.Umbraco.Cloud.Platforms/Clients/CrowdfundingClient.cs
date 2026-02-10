@@ -94,7 +94,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     }
 
     /// <summary>
-    /// One of 'crowdfunding_crowdfunder_pages'
+    /// One of 'crowdfunding_crowdfunder_pages', 'crowdfunding_enabled_campaigns'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.3.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum CrowdfundingSearchCollection
@@ -102,6 +102,9 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
         [System.Runtime.Serialization.EnumMember(Value = @"crowdfunding_crowdfunder_pages")]
         Crowdfunding_crowdfunder_pages = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"crowdfunding_enabled_campaigns")]
+        Crowdfunding_enabled_campaigns = 1,
 
     }
 
