@@ -55,13 +55,16 @@ public class ElementSending : INotificationAsyncHandler<SendingContentNotificati
         }
     }
     
-    // TODO Moved here from published notification handler to suppress notifications while creating default elements
     private void SetEmbedCode(ContentVariantDisplay variant, string contentTypeAlias, Guid contentId) {
         var type = StaticLookups.GetAll<ElementType>().Single(x => x.ContentTypeAlias.EqualsInvariant(contentTypeAlias));
             
         var tag = new TagBuilder(type.TagName);
         
-        if (type == ElementTypes.DonationButton) {
+        if (type == ElementTypes.CreateCrowdfunderButton) {
+            tag.Attributes.Add("element-id", $"{contentId.ToString()}");
+            
+            tag.Attributes.Add("element-kind", ElementKind.CreateCrowdfunderButtonCustom.ToEnumString());
+        } else if (type == ElementTypes.DonationButton) {
             tag.Attributes.Add("element-id", $"{contentId.ToString()}");
             
             tag.Attributes.Add("element-kind", ElementKind.DonationButtonCustom.ToEnumString());

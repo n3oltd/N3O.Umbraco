@@ -17,6 +17,7 @@ public static class PlatformsConstants {
     
     public static class Elements {
         public const string CompositionAlias = "platformsElement";
+        public const string CreateCrowdfunderButton = "platformsCreateCrowdfunderButton";
         public const string DonationButton = "platformsDonationButtonElement";
         public const string DonationElement = "platformsDonationElement";
         public const string DonationForm = "platformsDonationFormElement";

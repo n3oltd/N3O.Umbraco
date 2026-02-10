@@ -54,7 +54,9 @@ public class ContentElements : LookupsCollection<Element> {
     private Element ToElement(ElementContent elementContent) {
         ElementKind elementKind;
         
-        if (elementContent.Type == ElementTypes.DonationButton) {
+        if (elementContent.Type == ElementTypes.CreateCrowdfunderButton) {
+            elementKind = ElementKind.CreateCrowdfunderButton;
+        } else if (elementContent.Type == ElementTypes.DonationButton) {
             elementKind = ElementKind.DonationButtonCustom;
         } else if (elementContent.Type == ElementTypes.DonationForm) {
             elementKind = ElementKind.DonationFormCustom;
