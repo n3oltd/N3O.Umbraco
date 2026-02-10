@@ -21,10 +21,10 @@ public class CrowdfundingCampaignWebhookBodyReqMapping : IMapDefinition {
         dest.CampaignId = src.Key.ToString();
         dest.Action = WebhookSyncAction.AddOrUpdate;
 
-        dest.AddOrUpdate = GetCrowdfundingCampaignReq(src, ctx);
+        dest.AddOrUpdate = GetCrowdfundingCampaignReq(ctx);
     }
 
-    private CrowdfundingCampaignReq GetCrowdfundingCampaignReq(CrowdfundingCampaignContent crowdfundingCampaign, MapperContext ctx) {
+    private CrowdfundingCampaignReq GetCrowdfundingCampaignReq(MapperContext ctx) {
         var req = new CrowdfundingCampaignReq();
         req.Activate = true;
         

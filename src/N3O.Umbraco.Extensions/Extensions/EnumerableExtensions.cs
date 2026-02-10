@@ -676,10 +676,6 @@ public static class EnumerableExtensions {
         return result;
     }
 
-    public static IEnumerable<T> Union<T>(this IEnumerable<T> source, params T[] otherItems) {
-        return source.Union(otherItems);
-    }
-
     public static T WithMax<T, TKey>(this IEnumerable<T> source, Func<T, TKey> keySelector) {
         if (None(source)) {
             return default;

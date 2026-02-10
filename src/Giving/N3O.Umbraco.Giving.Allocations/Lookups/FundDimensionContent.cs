@@ -98,8 +98,7 @@ public class ContentFundDimension1Content :
                                   LookupContent.GetName(fundDimensionContent.Content()),
                                   fundDimensionContent.Content().Key,
                                   fundDimensionContent.IsActive,
-                                  fundDimensionContent.Options.ToList(),
-                                  fundDimensionContent.Index);
+                                  fundDimensionContent.Options.ToList());
     }
 }
 public class ContentFundDimension2Content :
@@ -112,8 +111,7 @@ public class ContentFundDimension2Content :
                                   LookupContent.GetName(fundDimensionContent.Content()),
                                   fundDimensionContent.Content().Key,
                                   fundDimensionContent.IsActive,
-                                  fundDimensionContent.Options.ToList(),
-                                  fundDimensionContent.Index);
+                                  fundDimensionContent.Options.ToList());
     }
 }
 public class ContentFundDimension3Content :
@@ -126,8 +124,7 @@ public class ContentFundDimension3Content :
                                   LookupContent.GetName(fundDimensionContent.Content()),
                                   fundDimensionContent.Content().Key,
                                   fundDimensionContent.IsActive,
-                                  fundDimensionContent.Options.ToList(),
-                                  fundDimensionContent.Index);
+                                  fundDimensionContent.Options.ToList());
     }
 }
 public class ContentFundDimension4Content :
@@ -140,7 +137,6 @@ public class ContentFundDimension4Content :
                                   LookupContent.GetName(fundDimensionContent.Content()),
                                   fundDimensionContent.Content().Key,
                                   fundDimensionContent.IsActive,
-                                  fundDimensionContent.Options.ToList(),
-                                  fundDimensionContent.Index);
+                                  fundDimensionContent.Options.ToList());
     }
 }

@@ -24,7 +24,6 @@ public class ClientFactory<T> {
 
     public ClientFactory(ICloudUrl cloudUrl,
                          ISubscriptionAccessor subscriptionAccessor,
-                         IUserDirectoryIdAccessor userDirectoryIdAccessor,
                          ILogger<CloudApiClient<T>> logger,
                          IJsonProvider jsonProvider) {
         _cloudUrl = cloudUrl;

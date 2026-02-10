@@ -45,8 +45,7 @@ public class ApiFundDimension1 : ApiFundDimensions<FundDimension1> {
                                                 fundStructure.Dimension1.Name,
                                                 null,
                                                 fundStructure.Dimension1.IsActive,
-                                                fundStructure.Dimension1.GetOptions<FundDimension1Value>(Lookups).ToList(),
-                                                fundStructure.Dimension1.Index);
+                                                fundStructure.Dimension1.GetOptions<FundDimension1Value>(Lookups).ToList());
 
         return fundDimension1;
     }
@@ -60,8 +59,7 @@ public class ApiFundDimension2 : ApiFundDimensions<FundDimension2> {
                                                 fundStructure.Dimension2.Name,
                                                 null,
                                                 fundStructure.Dimension2.IsActive,
-                                                fundStructure.Dimension2.GetOptions<FundDimension2Value>(Lookups).ToList(),
-                                                fundStructure.Dimension2.Index);
+                                                fundStructure.Dimension2.GetOptions<FundDimension2Value>(Lookups).ToList());
 
         return fundDimension2;
     }
@@ -75,8 +73,7 @@ public class ApiFundDimension3 : ApiFundDimensions<FundDimension3> {
                                                 fundStructure.Dimension3.Name,
                                                 null,
                                                 fundStructure.Dimension3.IsActive,
-                                                fundStructure.Dimension3.GetOptions<FundDimension3Value>(Lookups).ToList(),
-                                                fundStructure.Dimension3.Index);
+                                                fundStructure.Dimension3.GetOptions<FundDimension3Value>(Lookups).ToList());
 
         return fundDimension3;
     }
@@ -90,8 +87,7 @@ public class ApiFundDimension4 : ApiFundDimensions<FundDimension4> {
                                                 fundStructure.Dimension4.Name,
                                                 null,
                                                 fundStructure.Dimension4.IsActive,
-                                                fundStructure.Dimension4.GetOptions<FundDimension4Value>(Lookups).ToList(),
-                                                fundStructure.Dimension4.Index);
+                                                fundStructure.Dimension4.GetOptions<FundDimension4Value>(Lookups).ToList());
 
         return fundDimension4;
     }

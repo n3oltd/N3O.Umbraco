@@ -73,12 +73,10 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
         previewData["element"] = publishedDonationForm;
         previewData["offering"] = publishedOffering;
 
-        PopulateAdditionalData(previewData, content, offeringContent);
+        PopulateAdditionalData(previewData, offeringContent);
     }
 
-    private void PopulateAdditionalData(Dictionary<string, object> previewData,
-                                        IReadOnlyDictionary<string, object> content,
-                                        OfferingContent offeringContent) {
+    private void PopulateAdditionalData(Dictionary<string, object> previewData, OfferingContent offeringContent) {
         if (offeringContent.Type == OfferingTypes.Fund) {
             var donationItem = offeringContent.Fund.DonationItem;
             
