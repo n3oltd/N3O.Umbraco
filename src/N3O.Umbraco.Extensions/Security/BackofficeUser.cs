@@ -25,7 +25,7 @@ public class BackofficeUser : IBackofficeUser {
         var cookieOptions = _cookieOptionsSnapshot.Get(SecurityConstants.BackOfficeAuthenticationType);
         var backOfficeCookie = _httpContextAccessor.HttpContext.Request.Cookies[cookieOptions.Cookie.Name];
 
-        if (backOfficeCookie.HasValue()) {
+        if (!backOfficeCookie.HasValue()) {
             return false;
         }
 

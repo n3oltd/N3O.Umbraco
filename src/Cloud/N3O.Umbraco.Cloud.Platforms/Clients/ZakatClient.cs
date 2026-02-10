@@ -99,6 +99,10 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
         [Newtonsoft.Json.JsonProperty("defaultContent", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public PublishedHtmlContent DefaultContent { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("defaultNisabType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public NisabType? DefaultNisabType { get; set; }
+
         [Newtonsoft.Json.JsonProperty("sections", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<PublishedZakatCalculatorSection> Sections { get; set; }
 

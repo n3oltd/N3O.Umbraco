@@ -1,19 +1,26 @@
 ﻿using HeyRed.Mime;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using N3O.Umbraco.Context;
+using N3O.Umbraco.Extensions;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Hosting;
 
 public class WellKnownFolderMiddleware : IMiddleware {
-    private const string Prefix = "/.well-known/";
+    private const string Name = ".well-known";
+    private const string Prefix = $"/{Name}/";
+    private const string Root = "wellKnownRoot";
     
     private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly IRequestHostAccessor _requestHostAccessor;
 
-    public WellKnownFolderMiddleware(IWebHostEnvironment webHostEnvironment) {
+    public WellKnownFolderMiddleware(IWebHostEnvironment webHostEnvironment, IRequestHostAccessor requestHostAccessor) {
         _webHostEnvironment = webHostEnvironment;
+        _requestHostAccessor = requestHostAccessor;
     }
     
     public async Task InvokeAsync(HttpContext context, RequestDelegate next) {
@@ -22,9 +29,16 @@ public class WellKnownFolderMiddleware : IMiddleware {
         if (requestPath != null &&
             !requestPath.Contains("..") &&
             requestPath.StartsWith(Prefix, StringComparison.InvariantCultureIgnoreCase)) {
-            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, requestPath.TrimStart('/'));
+            var path = requestPath.Substring(Prefix.Length);
+            
+            var filePaths = new[] {
+                Path.Combine(_webHostEnvironment.WebRootPath, Root, _requestHostAccessor.GetHost(), path),
+                Path.Combine(_webHostEnvironment.WebRootPath, Root, path)
+            };
 
-            if (File.Exists(filePath)) {
+            var filePath = filePaths.FirstOrDefault(File.Exists);
+
+            if (filePath.HasValue()) {
                 context.Response.ContentType = MimeTypesMap.GetMimeType(filePath);
 
                 await context.Response.SendFileAsync(filePath);
