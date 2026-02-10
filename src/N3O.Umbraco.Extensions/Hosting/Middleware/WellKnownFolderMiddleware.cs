@@ -11,7 +11,9 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Hosting;
 
 public class WellKnownFolderMiddleware : IMiddleware {
-    private const string Prefix = "/.well-known/";
+    private const string Name = ".well-known";
+    private const string Prefix = $"/{Name}/";
+    private const string Root = "wellKnownRoot";
     
     private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IRequestHostAccessor _requestHostAccessor;
@@ -27,9 +29,11 @@ public class WellKnownFolderMiddleware : IMiddleware {
         if (requestPath != null &&
             !requestPath.Contains("..") &&
             requestPath.StartsWith(Prefix, StringComparison.InvariantCultureIgnoreCase)) {
+            var path = requestPath.Substring(Prefix.Length);
+            
             var filePaths = new[] {
-                Path.Combine(_webHostEnvironment.WebRootPath, _requestHostAccessor.GetHost(), requestPath.TrimStart('/')),
-                Path.Combine(_webHostEnvironment.WebRootPath, requestPath.TrimStart('/'))
+                Path.Combine(_webHostEnvironment.WebRootPath, Root, _requestHostAccessor.GetHost(), path),
+                Path.Combine(_webHostEnvironment.WebRootPath, Root, path)
             };
 
             var filePath = filePaths.FirstOrDefault(File.Exists);
