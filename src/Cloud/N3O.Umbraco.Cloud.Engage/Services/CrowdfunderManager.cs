@@ -106,7 +106,7 @@ public class CrowdfunderManager : ICrowdfunderManager {
             var bearerToken = await _auth0TokenAccessor.GetAsync(userDirectoryType);
             var onBehalfOf = await _userDirectoryIdAccessor.GetIdAsync(userDirectoryType);
             
-            _client = await _clientFactory.CreateAsync(CloudApiTypes.Engage, bearerToken, onBehalfOf);
+            _client = _clientFactory.Create(CloudApiTypes.Engage, bearerToken, onBehalfOf);
         }
 
         return _client;

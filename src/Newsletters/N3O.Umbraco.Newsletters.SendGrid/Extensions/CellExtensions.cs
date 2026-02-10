@@ -1,6 +1,5 @@
 ﻿using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
-using N3O.Umbraco.Newsletters.SendGrid.Models;
 using NodaTime;
 using Umbraco.Extensions;
 

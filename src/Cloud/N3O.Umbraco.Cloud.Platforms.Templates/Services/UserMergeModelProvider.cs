@@ -32,7 +32,7 @@ public class UserMergeModelProvider : MergeModelsProvider {
             var bearerToken = _userCookie.GetValue();
 
             if (bearerToken.HasValue()) {
-                var client = await _clientFactory.Value.CreateAsync(CloudApiTypes.Connect, bearerToken);
+                var client = _clientFactory.Value.Create(CloudApiTypes.Connect, bearerToken);
 
                 var platformsUser = await client.InvokeAsync(x => x.GetPlatformsUserAsync(cancellationToken));
 

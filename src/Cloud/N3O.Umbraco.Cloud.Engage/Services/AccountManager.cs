@@ -236,7 +236,7 @@ public class AccountManager : IAccountManager {
             var bearerToken = await _auth0TokenAccessor.GetAsync(UserDirectoryTypes.Members);
             var onBehalfOf = await _userDirectoryIdAccessor.GetIdAsync(UserDirectoryTypes.Members);
             
-            _client = await _clientFactory.CreateAsync(CloudApiTypes.Engage, bearerToken, onBehalfOf);
+            _client = _clientFactory.Create(CloudApiTypes.Engage, bearerToken, onBehalfOf);
         }
 
         return _client;

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Logging;
-using N3O.Umbraco.Authentication.Auth0;
 using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
@@ -9,7 +8,6 @@ using Polly;
 using Polly.Extensions.Http;
 using System;
 using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Cloud;
 
@@ -32,10 +30,10 @@ public class ClientFactory<T> {
         _jsonProvider = jsonProvider;
     }
 
-    public async Task<CloudApiClient<T>> CreateAsync(CloudApiType apiType,
-                                                     string bearerToken,
-                                                     string onBehalfOf = null) {
-        var httpClient = await GetHttpClientAsync(bearerToken, onBehalfOf);
+    public CloudApiClient<T> Create(CloudApiType apiType,
+                                    string bearerToken,
+                                    string onBehalfOf = null) {
+        var httpClient = GetHttpClient(bearerToken, onBehalfOf);
 
         var client = (T) Activator.CreateInstance(typeof(T), httpClient);
 
@@ -48,7 +46,7 @@ public class ClientFactory<T> {
         return new CloudApiClient<T>(client, _jsonProvider, _logger);
     }
 
-    private async Task<HttpClient> GetHttpClientAsync(string bearerToken, string onBehalfOf) {
+    private HttpClient GetHttpClient(string bearerToken, string onBehalfOf) {
         var transientErrorPolicyHandler = GetTransientErrorPolicyHttpMessageHandler();
         transientErrorPolicyHandler.InnerHandler = new HttpClientHandler();
 
