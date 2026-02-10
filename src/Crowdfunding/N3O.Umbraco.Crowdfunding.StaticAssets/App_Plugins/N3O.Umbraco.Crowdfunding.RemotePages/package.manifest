@@ -1,6 +1,0 @@
-{
-    javascript: [
-        '/App_Plugins/N3O.Umbraco.Crowdfunding.RemotePages/N3O.Umbraco.Crowdfunding.RemotePages.Controller.js',
-        '~/umbraco/lib/n3o-table/n3o-table.js'
-    ]
-}

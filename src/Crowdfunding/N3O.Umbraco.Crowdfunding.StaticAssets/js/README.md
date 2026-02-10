@@ -1,3 +1,0 @@
-# Crowdfunding
-
-## fundraise page editors
