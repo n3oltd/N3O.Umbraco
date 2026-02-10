@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
@@ -18,27 +15,16 @@ public class OurBackofficeAntiforgery : IBackOfficeAntiforgery {
     private readonly IAntiforgery _internalAntiForgery;
     private readonly CookieBuilder _angularCookieBuilder;
 
-    public OurBackofficeAntiforgery(IOptionsMonitor<GlobalSettings> globalSettings,
-                                    ILoggerFactory loggerFactory,
-                                    IServiceProvider serviceProvider) {
-        CookieSecurePolicy cookieSecurePolicy = globalSettings.CurrentValue.UseHttps ? CookieSecurePolicy.Always : CookieSecurePolicy.SameAsRequest;
-
-        var dpProvider = serviceProvider.GetRequiredService<IDataProtectionProvider>();
-
-        _internalAntiForgery = new ServiceCollection()
-                              .AddSingleton(loggerFactory)
-                              .AddSingleton<IDataProtectionProvider>((f) => dpProvider)
-                              .AddAntiforgery(x => {
-                                   x.HeaderName = WebConstants.Web.AngularHeadername;
-                                   x.Cookie.Name = WebConstants.Web.CsrfValidationCookieName;
-                                   x.Cookie.SecurePolicy = cookieSecurePolicy;
-                               })
-                              .BuildServiceProvider()
-                              .GetRequiredService<IAntiforgery>();
+    public OurBackofficeAntiforgery(IAntiforgery antiforgery, 
+                                    IOptionsMonitor<GlobalSettings> globalSettings) {
+        
+        _internalAntiForgery = antiforgery;
 
         _angularCookieBuilder = new AntiforgeryOptions().Cookie;
-        _angularCookieBuilder.HttpOnly = false; // Needs to be accessed from JavaScript
-        _angularCookieBuilder.SecurePolicy = cookieSecurePolicy;
+        _angularCookieBuilder.HttpOnly = false; 
+        _angularCookieBuilder.SecurePolicy = globalSettings.CurrentValue.UseHttps 
+                                                 ? CookieSecurePolicy.Always 
+                                                 : CookieSecurePolicy.SameAsRequest;
     }
 
     public async Task<Attempt<string>> ValidateRequestAsync(HttpContext httpContext) {

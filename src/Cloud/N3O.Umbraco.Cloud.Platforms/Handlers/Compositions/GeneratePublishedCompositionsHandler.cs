@@ -16,12 +16,12 @@ namespace N3O.Umbraco.Cloud.Platforms.Handlers;
 
 public class GeneratePublishedCompositionsHandler : IRequestHandler<GeneratePublishedCompositionsCommand, None, None> {
     private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly ILogger<GeneratePublishedCompositionsHandler> _logger;
+    //private readonly ILogger<GeneratePublishedCompositionsHandler> _logger;
 
-    public GeneratePublishedCompositionsHandler(IWebHostEnvironment webHostEnvironment,
-                                                ILogger<GeneratePublishedCompositionsHandler> logger) {
+    public GeneratePublishedCompositionsHandler(IWebHostEnvironment webHostEnvironment/*,
+                                                ILogger<GeneratePublishedCompositionsHandler> logger*/) {
         _webHostEnvironment = webHostEnvironment;
-        _logger = logger;
+        //_logger = logger;
     }
     
     public async Task<None> Handle(GeneratePublishedCompositionsCommand req, CancellationToken cancellationToken) {
@@ -38,7 +38,7 @@ public class GeneratePublishedCompositionsHandler : IRequestHandler<GeneratePubl
 
                 await WebRoot.SaveTextAsync(_webHostEnvironment, path, json);
                 
-                _logger.LogInformation("Wrote generated composition to {FilePath}", path);
+                //_logger.LogInformation("Wrote generated composition to {FilePath}", path);
             }
         }
 
@@ -61,7 +61,7 @@ public class GeneratePublishedCompositionsHandler : IRequestHandler<GeneratePubl
 
             return publishedComposition;
         } else {
-            _logger.LogWarning("Could not find composition file {FilePath}", compositionFile.FullName);
+            //_logger.LogWarning("Could not find composition file {FilePath}", compositionFile.FullName);
             
             return null;
         }
