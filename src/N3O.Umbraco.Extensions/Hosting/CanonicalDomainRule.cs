@@ -19,7 +19,8 @@ public class CanonicalDomainRule : IRule {
     public void ApplyRule(RewriteContext context) {
         var host = context.HttpContext.Request.Host.Host;
 
-        if (!context.HttpContext.Request.IsLocal() &&
+        if (_canonicalDomain.HasValue() &&
+            !context.HttpContext.Request.IsLocal() &&
             !host.EqualsInvariant(_canonicalDomain) &&
             !_aliasDomains.Contains(host, true)) {
             var req = context.HttpContext.Request;
