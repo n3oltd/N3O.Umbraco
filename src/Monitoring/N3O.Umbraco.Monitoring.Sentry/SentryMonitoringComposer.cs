@@ -15,26 +15,24 @@ public class SentryMonitoringComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddTransient<ISentryEventProcessor, OurEventProcessor>();
 
-        if (WebHostEnvironment.IsProduction()) {
-            var config = new SentryConfiguration();
+        var config = new SentryConfiguration();
 
-            builder.Config.GetSection("Sentry").Bind(config);
+        builder.Config.GetSection("Sentry").Bind(config);
             
-            SentrySdk.Init(opt => {
-                opt.Dsn = config.Dsn;
-                opt.ReportAssembliesMode = ReportAssembliesMode.InformationalVersion;
-                opt.SendDefaultPii = true;
-                opt.Environment = WebHostEnvironment.EnvironmentName;
-                opt.DiagnosticLevel = SentryLevel.Error;
-                opt.TracesSampleRate = 1.0f;
-            });
+        SentrySdk.Init(opt => {
+            opt.Dsn = config.Dsn;
+            opt.ReportAssembliesMode = ReportAssembliesMode.InformationalVersion;
+            opt.SendDefaultPii = true;
+            opt.Environment = WebHostEnvironment.EnvironmentName;
+            opt.DiagnosticLevel = SentryLevel.Error;
+            opt.TracesSampleRate = 1.0f;
+        });
             
-            builder.Services.Configure<UmbracoPipelineOptions>(opt => {
-                var filter = new UmbracoPipelineFilter("SentryMonitoring");
-                filter.Endpoints = app => app.UseSentryTracing();
+        builder.Services.Configure<UmbracoPipelineOptions>(opt => {
+            var filter = new UmbracoPipelineFilter("SentryMonitoring");
+            filter.Endpoints = app => app.UseSentryTracing();
 
-                opt.AddFilter(filter);
-            });
-        }
+            opt.AddFilter(filter);
+        });
     }
 }
