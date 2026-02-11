@@ -8,12 +8,5 @@ namespace N3O.Umbraco.Cloud.Engage;
 public class EngageComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddOpenApiDocument(EngageConstants.ApiName);
-        
-        builder.Services.AddTransient<IAccountIdentityAccessor, AccountIdentityAccessor>();
-        
-        builder.Services.AddScoped<IAccountManager, AccountManager>();
-        builder.Services.AddScoped<ICrowdfunderManager, CrowdfunderManager>();
-        
-
     }
 }
