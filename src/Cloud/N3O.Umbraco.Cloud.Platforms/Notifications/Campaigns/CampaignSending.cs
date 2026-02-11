@@ -41,9 +41,9 @@ public class CampaignSending : INotificationAsyncHandler<SendingContentNotificat
                 SetUrl(notification, variant);
 
                 if (variant.State == ContentSavedState.NotCreated) {
-                    var tab = variant.Tabs.SingleOrDefault(x => x.Alias.EqualsInvariant("crowdfunding"));
+                    var tabs = variant.Tabs.Where(x => x.Alias.InvariantContains("crowdfunding"));
 
-                    variant.Tabs = variant.Tabs.Except(tab).ToList();
+                    variant.Tabs = variant.Tabs.Except(tabs).ToList();
                 }
             }
         }
