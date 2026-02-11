@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Html;
+using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Blocks;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
@@ -26,8 +27,9 @@ public class ZakatCalculatorSettingsPublished : CloudContentPublished {
                                             IBackgroundJob backgroundJob,
                                             Lazy<IContentLocator> contentLocator,
                                             IUmbracoMapper mapper,
+                                            ILogger<CloudContentPublished> logger,
                                             IBlocksRenderer blocksRenderer)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob) {
+        : base(subscriptionAccessor, cloudUrl, backgroundJob, logger) {
         _contentLocator = contentLocator;
         _mapper = mapper;
         _blocksRenderer = blocksRenderer;

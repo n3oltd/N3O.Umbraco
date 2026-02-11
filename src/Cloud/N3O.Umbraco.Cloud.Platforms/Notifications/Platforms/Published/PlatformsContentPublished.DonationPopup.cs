@@ -1,4 +1,5 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using Microsoft.Extensions.Logging;
+using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Content;
@@ -18,8 +19,9 @@ public class DonationPopupPublished : CloudContentPublished {
                                   ICloudUrl cloudUrl,
                                   IBackgroundJob backgroundJob,
                                   Lazy<IContentLocator> contentLocator,
-                                  IUmbracoMapper mapper)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob) {
+                                  IUmbracoMapper mapper,
+                                  ILogger<CloudContentPublished> logger)
+        : base(subscriptionAccessor, cloudUrl, backgroundJob, logger) {
         _contentLocator = contentLocator;
         _mapper = mapper;
     }
