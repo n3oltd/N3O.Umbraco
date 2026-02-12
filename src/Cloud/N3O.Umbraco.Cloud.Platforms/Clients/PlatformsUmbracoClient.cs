@@ -2292,7 +2292,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     }
 
     /// <summary>
-    /// One of 'campaign', 'campaignPage', 'offering', 'offeringPage'
+    /// One of 'campaign', 'campaignPage', 'offering', 'offeringPage', 'pageRedirect'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.3.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum PlatformsPublishedFileKind
@@ -2309,6 +2309,9 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
         [System.Runtime.Serialization.EnumMember(Value = @"offeringPage")]
         OfferingPage = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"pageRedirect")]
+        PageRedirect = 4,
 
     }
 
@@ -3731,6 +3734,18 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
         [Newtonsoft.Json.JsonProperty("url", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Url { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.3.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class PublishedPageRedirect
+    {
+
+        [Newtonsoft.Json.JsonProperty("url", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Uri Url { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("temporary", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Temporary { get; set; }
 
     }
 

@@ -1139,8 +1139,8 @@ namespace N3O.Umbraco.Cloud.Content.Clients
         [Newtonsoft.Json.JsonProperty("enable_overrides", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool? Enable_overrides { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("override_tags", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Override_tags { get; set; }
+        [Newtonsoft.Json.JsonProperty("curation_tags", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Curation_tags { get; set; }
 
         [Newtonsoft.Json.JsonProperty("enable_synonyms", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool? Enable_synonyms { get; set; }
