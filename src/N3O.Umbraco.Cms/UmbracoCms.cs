@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Composing;
@@ -22,6 +23,11 @@ public static class UmbracoCms {
                                   if (useIISIntegration) {
                                       webBuilder.UseIISIntegration();
                                   }
+                                  
+                                  webBuilder.ConfigureKestrel(opt => {
+                                      opt.Limits.MaxRequestHeadersTotalSize = 128_000;
+                                      opt.Limits.MaxRequestBodySize = 1_073_741_824;
+                                  });
                                   
                                   webBuilder.ConfigureAppConfiguration((context, _) => {
                                       Composer.WebHostEnvironment = context.HostingEnvironment;
