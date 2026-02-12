@@ -19,7 +19,7 @@ public class OfferingMoving : INotificationAsyncHandler<ContentMovingNotificatio
     public Task HandleAsync(ContentMovingNotification notification, CancellationToken cancellationToken) {
         foreach (var content in notification.MoveInfoCollection.Select(x => x.Entity)) {
             if (content.IsOffering(_contentTypeService)) {
-                notification.CancelWithError("An offering cannot be moved");
+                notification.CancelWithError("An offering cannot be moved, please deactivate and copy instead");
             }
         }
         
