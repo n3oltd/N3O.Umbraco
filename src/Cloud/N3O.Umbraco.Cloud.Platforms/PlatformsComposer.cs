@@ -24,6 +24,9 @@ public class PlatformsComposer : Composer {
         
         builder.Services.AddScoped<PlatformsTemplatesMiddleware>();
         
+        RegisterAll(t => t.ImplementsInterface<ICampaignIdProvider>(),
+                    t => builder.Services.AddTransient(typeof(ICampaignIdProvider), t));
+        
         RegisterAll(t => t.ImplementsInterface<IPlatformsPageContentPublisher>(),
                     t => builder.Services.AddTransient(typeof(IPlatformsPageContentPublisher), t));
         

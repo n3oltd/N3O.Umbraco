@@ -3,6 +3,7 @@ using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Extensions;
 using System.Threading;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Cloud.Platforms;
 
@@ -15,8 +16,8 @@ public class CampaignAccessor : ICampaignAccessor {
         _cdnClient = cdnClient;
     }
     
-    public async Task<PublishedCampaign> GetAsync(CancellationToken cancellationToken = default) {
-        var campaignId = await _campaignIdAccessor.GetIdAsync(cancellationToken);
+    public async Task<PublishedCampaign> GetAsync(IPublishedContent content, CancellationToken cancellationToken = default) {
+        var campaignId = await _campaignIdAccessor.GetIdAsync(content, cancellationToken: cancellationToken);
 
         if (campaignId.HasValue()) {
             return await _cdnClient.DownloadPublishedContentAsync<PublishedCampaign>(PublishedFileKinds.Campaign,

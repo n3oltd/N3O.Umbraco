@@ -21,7 +21,7 @@ public class CampaignOfferingsMergeModelProvider : MergeModelsProvider {
     protected override async Task PopulateModelsAsync(IPublishedContent content,
                                                       Dictionary<string, object> mergeModels,
                                                       CancellationToken cancellationToken = default) {
-        var campaignId = await _campaignIdAccessor.GetIdAsync(cancellationToken);
+        var campaignId = await _campaignIdAccessor.GetIdAsync(content, cancellationToken);
 
         if (campaignId.HasValue()) {
             var campaign = await _cdnClient.DownloadPublishedContentAsync<PublishedCampaign>(PublishedFileKinds.Campaign,
