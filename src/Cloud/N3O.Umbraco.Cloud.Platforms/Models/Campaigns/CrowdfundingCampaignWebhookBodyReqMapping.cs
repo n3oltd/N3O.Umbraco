@@ -26,7 +26,7 @@ public class CrowdfundingCampaignWebhookBodyReqMapping : IMapDefinition {
 
     private CrowdfundingCampaignReq GetCrowdfundingCampaignReq(MapperContext ctx) {
         var req = new CrowdfundingCampaignReq();
-        req.Activate = true;
+        req.Enable = true;
         
         req.Template = new ContentReq();
         req.Template.SchemaAlias = CrowdfundingSystemSchema.Sys__crowdfunderPage.ToEnumString();
