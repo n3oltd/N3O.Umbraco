@@ -72,7 +72,7 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
                         if (currentPath != platformsPath) {
                             var platformsPageUrl = GetPlatformsPageUrl(getPageResult.Page, platformsPageRoute.Parent);
 
-                            return GetPageResult.ForRedirect(platformsPageUrl);
+                            return GetPageResult.ForRedirect(platformsPageUrl, false);
                         } else {
                             return getPageResult;
                         }
@@ -92,7 +92,8 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
         }
         
         if (fallbacks.Any()) {
-            return GetPageResult.ForRedirect(SpecialContentPathParser.GetPath(_contentCache, fallbacks.First()));
+            return GetPageResult.ForRedirect(SpecialContentPathParser.GetPath(_contentCache, fallbacks.First()),
+                                             false);
         } else {
             return null;   
         }

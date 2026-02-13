@@ -1,7 +1,6 @@
 ﻿using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using RedirectsConstants = N3O.Umbraco.Constants.Redirects;
 
 namespace N3O.Umbraco.Redirects.Validation;
 

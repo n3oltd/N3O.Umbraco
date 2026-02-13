@@ -1,4 +1,3 @@
-using N3O.Umbraco.Redirects.Models;
 using System;
 using System.Collections.Generic;
 
@@ -8,7 +7,7 @@ public static class UmbracoRedirects {
     private static readonly Dictionary<string, Redirect> Redirects = new(StringComparer.InvariantCultureIgnoreCase);
 
     public static void Add(string oldPath, string newUrlOrPath, bool temporary = false) {
-        Redirects.Add(Normalize(oldPath), new Redirect(temporary, GetUrlOrPath(newUrlOrPath)));
+        Redirects.Add(Normalize(oldPath), new Redirect(GetUrlOrPath(newUrlOrPath), temporary));
     }
     
     public static void Clear() {

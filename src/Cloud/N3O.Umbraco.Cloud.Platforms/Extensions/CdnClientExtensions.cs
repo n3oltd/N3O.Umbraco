@@ -28,7 +28,8 @@ public static class CdnClientExtensions {
             if (publishedContentResult.Kind == PublishedFileKinds.PageRedirect) {
                 var publishedPageRedirect = jsonProvider.DeserializeDynamicTo<PublishedPageRedirect>(publishedContentResult.Content);
 
-                return GetPageResult.ForRedirect(publishedPageRedirect.Url.AbsoluteUri);
+                return GetPageResult.ForRedirect(publishedPageRedirect.Url.AbsoluteUri,
+                                                 publishedPageRedirect.Temporary.GetValueOrDefault());
             }
             
             var publishedPlatformsPage = jsonProvider.DeserializeDynamicTo<PublishedPlatformsPage>(publishedContentResult.Content);
