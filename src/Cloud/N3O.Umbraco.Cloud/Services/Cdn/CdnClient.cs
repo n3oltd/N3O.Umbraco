@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Models;
+using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
-using N3O.Umbraco.Lookups;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -62,8 +62,7 @@ public class CdnClient : ICdnClient {
                     var json = await httpClient.GetStringAsync(publishedUrl, cancellationToken);
 
                     var jObject = JObject.Parse(json);
-                    var kindId = jObject["kind"]?.ToString();
-                    var kind = StaticLookups.FindById<PublishedFileKind>(kindId);
+                    var kind = jObject.GetPublishedFileKind();
                     
                     Guid.TryParse(jObject["id"]?.ToString(), out var id);
 

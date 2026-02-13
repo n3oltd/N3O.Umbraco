@@ -59,17 +59,24 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
             var currentPath = platformsPath;
 
             do {
-                var platformsPage = await _cdnClient.DownloadPlatformsPageAsync(_jsonProvider,
+                var getPageResult = await _cdnClient.DownloadPlatformsPageAsync(_jsonProvider,
                                                                                 platformsPageRoute.ContentKind,
                                                                                 platformsPageRoute.Parent,
                                                                                 currentPath,
                                                                                 cancellationToken);
 
-                if (platformsPage.HasValue()) {
-                    var platformsPageUrl = GetPlatformsPageUrl(platformsPage, platformsPageRoute.Parent);
-                    var redirectUrl = currentPath != platformsPath ? platformsPageUrl : null; 
-                
-                    return GetPageResult.ForPage(platformsPage, redirectUrl);
+                if (getPageResult.HasValue()) {
+                    if (getPageResult.IsRedirect) {
+                        return getPageResult;
+                    } else {
+                        if (currentPath != platformsPath) {
+                            var platformsPageUrl = GetPlatformsPageUrl(getPageResult.Page, platformsPageRoute.Parent);
+
+                            return GetPageResult.ForRedirect(platformsPageUrl);
+                        } else {
+                            return getPageResult;
+                        }
+                    }
                 }
             
                 var lastPathSegment = currentPath.StripTrailingSlash().LastIndexOf('/');

@@ -15,8 +15,8 @@ public class GetPageResult {
     [JsonIgnore]
     public bool IsRedirect => RedirectUrl.HasValue();
 
-    public static GetPageResult ForPage(PlatformsPage page, string redirectUrl) {
-        return new GetPageResult(page, redirectUrl);
+    public static GetPageResult ForPage(PlatformsPage page) {
+        return new GetPageResult(page, null);
     }
     
     public static GetPageResult ForRedirect(string redirectUrl) {
