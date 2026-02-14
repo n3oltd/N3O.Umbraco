@@ -14,7 +14,7 @@ using Umbraco.Cms.Core.Strings;
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
 [UmbracoContent(PlatformsConstants.Offerings.CompositionAlias)]
-public class OfferingContent : UmbracoContent<OfferingContent> {
+public class OfferingContent : UmbracoContent<OfferingContent>, IHoldCustomFormState {
     private static readonly string FeedbackOfferingAlias = AliasHelper<FeedbackOfferingContent>.ContentTypeAlias();
     private static readonly string FundOfferingAlias = AliasHelper<FundOfferingContent>.ContentTypeAlias();
     private static readonly string SponsorshipOfferingAlias = AliasHelper<SponsorshipOfferingContent>.ContentTypeAlias();
@@ -58,6 +58,7 @@ public class OfferingContent : UmbracoContent<OfferingContent> {
     public IHtmlEncodedString Description => GetValue(x => x.Description);
     public GiftType SuggestedGiftType => GetValue(x => x.SuggestedGiftType);
     public bool AllowCrowdfunding => GetValue(x => x.AllowCrowdfunding);
+    public string CustomFormState => GetValue(x => x.CustomFormState);
     
     public string DonationButtonEmbedCode => GetValue(x => x.DonationButtonEmbedCode);
     public string DonationFormEmbedCode => GetValue(x => x.DonationFormEmbedCode);

@@ -13,7 +13,7 @@ using Umbraco.Community.Contentment.DataEditors;
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
 [UmbracoContent(PlatformsConstants.Elements.CompositionAlias)]
-public class ElementContent : UmbracoContent<ElementContent> {
+public class ElementContent : UmbracoContent<ElementContent>, IHoldCustomFormState {
     private static readonly string DonationButtonElementAlias = AliasHelper<DonationButtonElementContent>.ContentTypeAlias();
     private static readonly string DonationFormElementAlias = AliasHelper<DonationFormElementContent>.ContentTypeAlias();
     private static readonly string DonationPopupElementAlias = AliasHelper<DonationPopupElementContent>.ContentTypeAlias();
@@ -48,6 +48,7 @@ public class ElementContent : UmbracoContent<ElementContent> {
     public CampaignContent Campaign => GetAs(x => x.Campaign);
     public string EmbedCode => GetValue(x => x.EmbedCode);
     public bool IsSystemGenerated => GetValue(x => x.IsSystemGenerated);
+    public string CustomFormState => GetValue(x => x.CustomFormState);
     public IReadOnlyDictionary<string, string> Tags => GetConvertedValue<IEnumerable<DataListItem>, IReadOnlyDictionary<string, string>>(x => x.Tags, x => x.ToTagsDictionary());
 
     public DonationButtonElementContent DonationButton { get; private set; }
