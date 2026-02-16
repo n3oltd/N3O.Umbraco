@@ -27,8 +27,11 @@ public class PlatformsContentFinder : IContentFinder {
         var getPageResult = await _platformsPageAccessor.GetAsync();
 
         if (getPageResult.HasValue(x => x.Redirect)) {
-            _httpContextAccessor.HttpContext?.Response.Redirect(getPageResult.Redirect.UrlOrPath,
-                                                                permanent: !getPageResult.Redirect.Temporary);
+            if (getPageResult.Redirect.Temporary) {
+                request.SetRedirect(getPageResult.Redirect.UrlOrPath);
+            } else {
+                request.SetRedirectPermanent(getPageResult.Redirect.UrlOrPath);
+            }
         } else if (getPageResult.HasValue(x => x.Page)) {
             if (getPageResult.Page.Kind == PublishedFileKinds.CampaignPage) {
                 request.SetPublishedContent(_contentCache.Special(PlatformsSpecialPages.Campaign));
