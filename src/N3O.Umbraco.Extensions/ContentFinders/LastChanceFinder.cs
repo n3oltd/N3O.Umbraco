@@ -1,8 +1,6 @@
-using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
-using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Routing;
 
@@ -10,28 +8,15 @@ namespace N3O.Umbraco.ContentFinders;
 
 public class LastChanceFinder : IContentLastChanceFinder {
     private readonly IContentCache _contentCache;
-    private readonly ILogger<LastChanceFinder> _logger;
 
-    public LastChanceFinder(IContentCache contentCache, ILogger<LastChanceFinder> logger) {
+    public LastChanceFinder(IContentCache contentCache) {
         _contentCache = contentCache;
-        _logger = logger;
     }
 
     public Task<bool> TryFindContent(IPublishedRequestBuilder request) {
-        _logger.LogError("Executing our LastChanceFinder for request {RequestPath} with Status {Status}",
-                         request.AbsolutePathDecoded,
-                         request.ResponseStatusCode);
-        
         if (request != null && request.ResponseStatusCode == 404) {
-            _logger.LogError("No page found for path {Path}", request.AbsolutePathDecoded);
-            
             request.SetIs404();
-
-            var notFoundPage = _contentCache.Special(SpecialPages.NotFound);
-            
-            _logger.LogError("Not found page with id {ID} found", notFoundPage.Key);
-            
-            request.SetPublishedContent(notFoundPage);
+            request.SetPublishedContent(_contentCache.Special(SpecialPages.NotFound));
             
             return Task.FromResult(true);
         }
