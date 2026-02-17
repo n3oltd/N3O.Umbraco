@@ -17,6 +17,8 @@ public class LastChanceFinder : IContentLastChanceFinder {
     }
 
     public Task<bool> TryFindContent(IPublishedRequestBuilder request) {
+        _logger.LogError("Executing our LastChanceFinder");
+        
         if (request != null && request.ResponseStatusCode == 404) {
             _logger.LogError("No page found for path {Path}", request.AbsolutePathDecoded);
             
