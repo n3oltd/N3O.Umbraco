@@ -61,7 +61,7 @@ public class GeneratePublishedCompositionsHandler : IRequestHandler<GeneratePubl
 
             return publishedComposition;
         } else {
-            //_logger.LogWarning("Could not find composition file {FilePath}", compositionFile.FullName);
+            _logger.LogWarning("Could not find composition file {FilePath}", compositionFile.FullName);
             
             return null;
         }
