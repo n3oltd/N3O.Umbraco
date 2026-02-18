@@ -49,6 +49,7 @@ public class OfferingContent : UmbracoContent<OfferingContent>, IHoldCustomFormS
 
     public string Summary => GetValue(x => x.Summary);
     public string Notes => GetValue(x => x.Notes);
+    public string NotesLabel => GetValue(x => x.NotesLabel);
     public FundDimension1Value Dimension1 => GetValue(x => x.Dimension1);
     public FundDimension2Value Dimension2 => GetValue(x => x.Dimension2);
     public FundDimension3Value Dimension3 => GetValue(x => x.Dimension3);

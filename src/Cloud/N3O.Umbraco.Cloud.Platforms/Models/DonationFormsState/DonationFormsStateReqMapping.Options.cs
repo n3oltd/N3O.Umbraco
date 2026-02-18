@@ -25,6 +25,15 @@ public partial class ElementDonationFormsStateReqMapping {
             
         }
         
+        options.NotesField = new DonationFormNotesFieldReq();
+
+        if (offering.NotesLabel.HasValue()) {
+            options.NotesField.Visible = true;
+            options.NotesField.Label = offering.NotesLabel;
+        } else {
+            options.NotesField.Visible = false;
+        }
+        
         return options;
     }
 
