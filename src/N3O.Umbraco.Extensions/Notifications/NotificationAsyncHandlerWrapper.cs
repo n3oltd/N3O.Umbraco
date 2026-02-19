@@ -20,7 +20,7 @@ public class NotificationAsyncHandlerWrapper<TNotification> : INotificationAsync
     
     public async Task HandleAsync(TNotification notification, CancellationToken cancellationToken) {
         foreach (var notificationHandlerSkipper in _notificationHandlerSkippers) {
-            if (notificationHandlerSkipper.ShouldSkip(this, notification)) {
+            if (notificationHandlerSkipper.ShouldSkip(_wrappedNotificationHandler, notification)) {
                 return;
             }
         }
