@@ -2,6 +2,7 @@
 using N3O.Umbraco.Cloud.Platforms.Queries;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Mediator;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -17,12 +18,20 @@ public class GetPreviewHtmlHandler : IRequestHandler<GetPreviewHtmlQuery, Dictio
     }
     
     public async Task<PreviewHtmlRes> Handle(GetPreviewHtmlQuery req, CancellationToken cancellationToken) {
-        var previewHtmlGenerator = req.ContentTypeAlias.Run(x => _previewHtmlGenerators.FirstOrDefault(y => y.CanGeneratePreview(x)),
-                                                            true);
-        
-        var res = new PreviewHtmlRes();
-        (res.ETag, res.Html) = await previewHtmlGenerator.GeneratePreviewHtmlAsync(req.Model);
+        try {
+            var previewHtmlGenerator =
+                req.ContentTypeAlias.Run(x => _previewHtmlGenerators.FirstOrDefault(y => y.CanGeneratePreview(x)),
+                                         true);
 
-        return res;
+            var res = new PreviewHtmlRes();
+            (res.ETag, res.Html) = await previewHtmlGenerator.GeneratePreviewHtmlAsync(req.Model);
+
+            return res;
+        } catch (Exception e) {
+            var res = new PreviewHtmlRes();
+            res.Html = e.Message;
+            
+            return res;
+        }
     }
 }
