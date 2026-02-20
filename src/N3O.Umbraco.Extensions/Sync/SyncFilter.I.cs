@@ -1,6 +1,6 @@
 ﻿namespace N3O.Umbraco.Sync;
 
-public interface IContentSyncFilter {
+public interface ISyncFilter {
     bool IsFilter(string contentTypeAlias);
     bool ShouldImport(string propertyAlias);
 }
