@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Localization;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Web;
 
@@ -15,15 +18,18 @@ public class ExceptionMiddleware : IMiddleware {
     private readonly IJsonProvider _jsonProvider;
     private readonly Lazy<ILogger<ExceptionMiddleware>> _logger;
     private readonly Lazy<IUmbracoContextFactory> _umbracoContextFactory;
+    private readonly Lazy<IWebHostEnvironment> _webHostEnvironment;
     
     public ExceptionMiddleware(IFormatter formatter,
                                IJsonProvider jsonProvider,
                                Lazy<ILogger<ExceptionMiddleware>> logger,
-                               Lazy<IUmbracoContextFactory> umbracoContextFactory) {
+                               Lazy<IUmbracoContextFactory> umbracoContextFactory,
+                               Lazy<IWebHostEnvironment> webHostEnvironment) {
         _formatter = formatter;
         _jsonProvider = jsonProvider;
         _logger = logger;
         _umbracoContextFactory = umbracoContextFactory;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     public async Task InvokeAsync(HttpContext context, RequestDelegate next) {
@@ -58,6 +64,12 @@ public class ExceptionMiddleware : IMiddleware {
 
         var problemDetails = exception.GetProblemDetails(_formatter);
         
+        if (_webHostEnvironment.Value.IsProduction()) {
+            problemDetails = new ProblemDetails((HttpStatusCode) problemDetails.Status,
+                                                problemDetails.Title,
+                                                _formatter.Text.Format<Strings>(s => s.GeneralMessage));
+        }
+        
         var json = _jsonProvider.SerializeObject(problemDetails);
 
         response.StatusCode = problemDetails.Status;
@@ -65,4 +77,9 @@ public class ExceptionMiddleware : IMiddleware {
 
         await response.WriteAsync(json);
     }
+    
+    public class Strings : CodeStrings {
+        public string GeneralMessage => "Internal server error. Please contact support if the problem persists.";
+    }
+    
 }
