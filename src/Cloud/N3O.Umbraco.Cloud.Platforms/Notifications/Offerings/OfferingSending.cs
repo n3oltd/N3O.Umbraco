@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Flurl;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
@@ -6,8 +7,10 @@ using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Utilities;
 using Slugify;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -54,9 +57,18 @@ public class OfferingSending : INotificationAsyncHandler<SendingContentNotificat
             var campaignName = _contentLocator.Value.ById(notification.Content.ParentId.GetValueOrThrow()).Name;
 
             var offeringPath = _contentCache.Value.GetOfferingPath(_slugHelper.Value, campaignName, variant.Name);
+            
+            var urlSettings = _contentCache.Value.Single<UrlSettingsContent>();
 
             if (offeringPath.HasValue()) {
-                notification.Content.Urls = [new UrlInfo(offeringPath, true, null)];
+                var stagingUrl = new Url(urlSettings.StagingBaseUrl).AppendPathSegment(offeringPath);
+                var production = new Url(urlSettings.ProductionBaseUrl).AppendPathSegment(offeringPath);
+
+                var urls = new List<UrlInfo>();
+                urls.Add(new UrlInfo(stagingUrl, true, null));
+                urls.Add(new UrlInfo(production, true, null));
+                
+                notification.Content.Urls = urls.ToArray();
             }
         }
     }
