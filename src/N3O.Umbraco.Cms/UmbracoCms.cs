@@ -27,8 +27,6 @@ public static class UmbracoCms {
                                   webBuilder.ConfigureKestrel(opt => {
                                       opt.Limits.MaxRequestHeadersTotalSize = 128_000;
                                       opt.Limits.MaxRequestBodySize = 1_073_741_824;
-                                      opt.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(5);
-                                      opt.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(5);
                                   });
                                   
                                   webBuilder.ConfigureAppConfiguration((context, _) => {
