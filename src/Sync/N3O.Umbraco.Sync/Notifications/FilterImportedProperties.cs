@@ -12,7 +12,7 @@ namespace N3O.Umbraco.Sync;
 public class FilterImportedProperties : INotificationAsyncHandler<uSyncImportingItemNotification> {
     private readonly IEnumerable<ISyncFilter> _syncFilters;
 
-    public FilterImportedContentProperties(IEnumerable<ISyncFilter> syncFilters) {
+    public FilterImportedProperties(IEnumerable<ISyncFilter> syncFilters) {
         _syncFilters = syncFilters.OrEmpty().ToList();
     }
     
