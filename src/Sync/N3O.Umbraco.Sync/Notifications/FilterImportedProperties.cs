@@ -9,7 +9,7 @@ using uSync.BackOffice.SyncHandlers.Handlers;
 
 namespace N3O.Umbraco.Sync;
 
-public class FilterImportedContentProperties : INotificationAsyncHandler<uSyncImportingItemNotification> {
+public class FilterImportedProperties : INotificationAsyncHandler<uSyncImportingItemNotification> {
     private readonly IEnumerable<ISyncFilter> _syncFilters;
 
     public FilterImportedContentProperties(IEnumerable<ISyncFilter> syncFilters) {
