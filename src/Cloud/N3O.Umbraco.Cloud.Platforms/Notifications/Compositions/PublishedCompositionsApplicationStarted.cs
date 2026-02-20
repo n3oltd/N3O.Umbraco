@@ -1,6 +1,7 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Commands;
 using N3O.Umbraco.Scheduler;
 using N3O.Umbraco.Scheduler.Extensions;
+using NodaTime;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
@@ -17,7 +18,8 @@ public class PublishedCompositionsApplicationStarted
     }
 
     public Task HandleAsync(UmbracoApplicationStartedNotification notification, CancellationToken cancellationToken) {
-        _backgroundJob.EnqueueCommand<GeneratePublishedCompositionsCommand>();
+        _backgroundJob.Schedule<GeneratePublishedCompositionsCommand>($"{nameof(GeneratePublishedCompositionsCommand)}".Replace("Command", ""),
+                                                                      Duration.FromSeconds(30));
 
         return Task.CompletedTask;
     }

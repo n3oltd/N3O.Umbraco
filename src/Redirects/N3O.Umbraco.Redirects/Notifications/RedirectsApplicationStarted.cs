@@ -1,6 +1,6 @@
 ﻿using N3O.Umbraco.Redirects.Commands;
 using N3O.Umbraco.Scheduler;
-using N3O.Umbraco.Scheduler.Extensions;
+using NodaTime;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
@@ -16,7 +16,8 @@ public class RedirectsApplicationStarted : INotificationAsyncHandler<UmbracoAppl
     }
 
     public Task HandleAsync(UmbracoApplicationStartedNotification notification, CancellationToken cancellationToken) {
-        _backgroundJob.EnqueueCommand<PopulateUmbracoRedirectsCommand>();
+        _backgroundJob.Schedule<PopulateUmbracoRedirectsCommand>($"{nameof(PopulateUmbracoRedirectsCommand)}".Replace("Command", ""),
+                                                                 Duration.FromSeconds(30));
 
         return Task.CompletedTask;
     }
