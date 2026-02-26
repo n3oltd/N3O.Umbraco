@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
-using System;
 
 namespace N3O.Umbraco.Cms;
 

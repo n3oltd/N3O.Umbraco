@@ -1,6 +1,5 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Commands;
 using N3O.Umbraco.Scheduler;
-using N3O.Umbraco.Scheduler.Extensions;
 using NodaTime;
 using System.Threading;
 using System.Threading.Tasks;
