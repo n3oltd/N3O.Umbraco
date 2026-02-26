@@ -330,6 +330,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Redirects", "Redirects", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Redirects", "Redirects\N3O.Umbraco.Redirects\N3O.Umbraco.Redirects.csproj", "{E3F6E8A3-A545-416A-B34C-C3F8AA4901ED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Cloud.Platforms.Marketing", "Cloud\N3O.Umbraco.Cloud.Platforms.Marketing\N3O.Umbraco.Cloud.Platforms.Marketing.csproj", "{ED557677-6327-4680-8ABB-9A7ED4AF8F4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3O.Umbraco.Cloud.Platforms.Marketing.StaticAssets", "Cloud\N3O.Umbraco.Cloud.Platforms.Marketing.StaticAssets\N3O.Umbraco.Cloud.Platforms.Marketing.StaticAssets.csproj", "{BFE2B681-06CA-4CC4-82DD-748AADDDAC08}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -800,6 +804,14 @@ Global
 		{E3F6E8A3-A545-416A-B34C-C3F8AA4901ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3F6E8A3-A545-416A-B34C-C3F8AA4901ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3F6E8A3-A545-416A-B34C-C3F8AA4901ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED557677-6327-4680-8ABB-9A7ED4AF8F4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED557677-6327-4680-8ABB-9A7ED4AF8F4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED557677-6327-4680-8ABB-9A7ED4AF8F4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED557677-6327-4680-8ABB-9A7ED4AF8F4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFE2B681-06CA-4CC4-82DD-748AADDDAC08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFE2B681-06CA-4CC4-82DD-748AADDDAC08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFE2B681-06CA-4CC4-82DD-748AADDDAC08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFE2B681-06CA-4CC4-82DD-748AADDDAC08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CC9F6143-E1BB-490F-8936-A16A238E2138} = {E203E59D-7950-4F8F-8E28-79DEB112EA37}
@@ -922,5 +934,7 @@ Global
 		{78020AB6-9A61-47B8-8514-A92485192930} = {EA46ED11-E727-4218-AD00-548275F7257E}
 		{5A39D280-089E-4F8F-9ADC-7538E590D431} = {D421FBFA-B2C2-4BCE-91AA-E88E88FC6AAE}
 		{E3F6E8A3-A545-416A-B34C-C3F8AA4901ED} = {4306D4EC-9D51-4721-BE38-AAE03ACCB466}
+		{ED557677-6327-4680-8ABB-9A7ED4AF8F4D} = {D421FBFA-B2C2-4BCE-91AA-E88E88FC6AAE}
+		{BFE2B681-06CA-4CC4-82DD-748AADDDAC08} = {D421FBFA-B2C2-4BCE-91AA-E88E88FC6AAE}
 	EndGlobalSection
 EndGlobal
