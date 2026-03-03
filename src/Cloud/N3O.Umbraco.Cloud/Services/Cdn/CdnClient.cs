@@ -10,6 +10,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Threading;
@@ -36,10 +38,14 @@ public class CdnClient : ICdnClient {
         
          var handler = new SocketsHttpHandler {
             ConnectCallback = async (context, cancellationToken) => {
+                var addresses = await Dns.GetHostAddressesAsync(context.DnsEndPoint.Host, cancellationToken);
+
+                var ipv4 = addresses.First(a => a.AddressFamily == AddressFamily.InterNetwork);
+
                 var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-                await socket.ConnectAsync(context.DnsEndPoint, cancellationToken);
-                
+                await socket.ConnectAsync(ipv4, context.DnsEndPoint.Port, cancellationToken);
+
                 return new NetworkStream(socket, ownsSocket: true);
             }
         };
