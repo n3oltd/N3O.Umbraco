@@ -106,7 +106,7 @@ public class CdnClient : ICdnClient {
 
             return CdnDownloadResult.ForSuccess(_clock, download);
         } catch (Exception ex) {
-            _logger.LogError(ex, "Could not download {PublishedUrl}", publishedUrl);
+            _logger.LogWarning(ex, "Could not download {PublishedUrl}", publishedUrl);
 
             return CdnDownloadResult.ForFailure(_clock);
         }

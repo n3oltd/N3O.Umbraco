@@ -9,9 +9,7 @@ using Slugify;
 namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 
 public static class ContentLocatorExtensions {
-    public static string GetCampaignPath(this IContentCache contentCache,
-                                         ISlugHelper slugHelper,
-                                         string name) {
+    public static string GetCampaignPath(this IContentCache contentCache, ISlugHelper slugHelper, string name) {
         var campaignPage = contentCache.Special(PlatformsSpecialPages.Campaign);
 
         if (campaignPage.HasValue()) {

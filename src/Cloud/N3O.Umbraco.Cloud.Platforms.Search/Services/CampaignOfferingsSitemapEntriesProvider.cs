@@ -63,7 +63,10 @@ public class CampaignOfferingsSitemapEntriesProvider : ISitemapEntriesProvider {
     private SitemapEntry GetSitemapEntryForOffering(PublishedOffering publishedOffering,
                                                     PublishedCampaign publishedCampaign,
                                                     LocalDate today) {
-        var url = _contentCache.GetOfferingUrl(_slugHelper, _webHostEnvironment, publishedCampaign.Name, publishedOffering.Name);
+        var url = _contentCache.GetOfferingUrl(_slugHelper,
+                                               _webHostEnvironment,
+                                               publishedCampaign.Name,
+                                               publishedOffering.Name);
 
         return new SitemapEntry(url, "daily", 0.5f, today);
     }
