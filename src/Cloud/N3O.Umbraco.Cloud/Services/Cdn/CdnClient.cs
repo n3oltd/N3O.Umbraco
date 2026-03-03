@@ -11,6 +11,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Net.Http;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using JsonSerializer = N3O.Umbraco.Cloud.Lookups.JsonSerializer;
@@ -33,7 +34,17 @@ public class CdnClient : ICdnClient {
         _jsonProvider = jsonProvider;
         _logger = logger;
         
-        _httpClient = new HttpClient();
+         var handler = new SocketsHttpHandler {
+            ConnectCallback = async (context, cancellationToken) => {
+                var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+                await socket.ConnectAsync(context.DnsEndPoint, cancellationToken);
+                
+                return new NetworkStream(socket, ownsSocket: true);
+            }
+        };
+        
+        _httpClient = new HttpClient(handler);
         _httpClient.Timeout = TimeSpan.FromSeconds(10);
     }
 
