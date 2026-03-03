@@ -26,7 +26,7 @@ public class ApplicationStarted : INotificationAsyncHandler<UmbracoApplicationSt
     }
 
     public Task HandleAsync(UmbracoApplicationStartedNotification notification, CancellationToken cancellationToken) {
-        var dynamicListViewContent = GetDynamicListViewContent().ToList();
+        var dynamicListViewContent = GetDynamicListViewContent().OrEmpty().ToList();
 
         var contentWithDynamicListViewsEnabled = dynamicListViewContent.Where(x => x.GetValue<bool>(Properties.EnableDynamicListView))
                                                                        .Select(x => x.Id);
@@ -44,10 +44,14 @@ public class ApplicationStarted : INotificationAsyncHandler<UmbracoApplicationSt
                                               .Select(x => x.Id)
                                               .ToList();
 
-        var query = _provider.CreateQuery<IContent>().Where(x => contentTypes.Contains(x.ContentTypeId));
+        if (contentTypes.HasAny()) {
+            var query = _provider.CreateQuery<IContent>().Where(x => contentTypes.Contains(x.ContentTypeId));
 
-        var content = _contentService.GetPagedDescendants(-1, 0, int.MaxValue, out _, query).ToList();
+            var content = _contentService.GetPagedDescendants(-1, 0, int.MaxValue, out _, query).ToList();
 
-        return content;
+            return content;
+        }
+        
+        return null;
     }
 }
