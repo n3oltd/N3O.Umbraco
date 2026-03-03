@@ -25,11 +25,16 @@ public class CdnClient : ICdnClient {
     private readonly ICloudUrl _cloudUrl;
     private readonly IJsonProvider _jsonProvider;
     private readonly ILogger<CdnClient> _logger;
+    
+    private readonly HttpClient _httpClient;
 
     public CdnClient(ICloudUrl cloudUrl, IJsonProvider jsonProvider, ILogger<CdnClient> logger) {
         _cloudUrl = cloudUrl;
         _jsonProvider = jsonProvider;
         _logger = logger;
+        
+        _httpClient = new HttpClient();
+        _httpClient.Timeout = TimeSpan.FromSeconds(10);
     }
 
     public async Task<T> DownloadPublishedContentAsync<T>(PublishedFileKind kind,
@@ -77,13 +82,9 @@ public class CdnClient : ICdnClient {
         string download;
             
         try {
-            using (var httpClient = new HttpClient()) {
-                httpClient.Timeout = TimeSpan.FromSeconds(10);
-                    
-                download = await httpClient.GetStringAsync(publishedUrl, cancellationToken);
+            download = await _httpClient.GetStringAsync(publishedUrl, cancellationToken);
 
-                MostRecentDownloads[publishedUrl] = download; 
-            }
+            MostRecentDownloads[publishedUrl] = download; 
         } catch(Exception ex) {
             _logger.LogError(ex, "Could not download {PublishedUrl}", publishedUrl);
             
