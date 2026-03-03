@@ -18,7 +18,7 @@ using JsonSerializer = N3O.Umbraco.Cloud.Lookups.JsonSerializer;
 namespace N3O.Umbraco.Cloud;
 
 public class CdnClient : ICdnClient {
-    private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(1);
+    private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(5);
     private static readonly MemoryCache ContentCache = new(new MemoryCacheOptions());
     private static readonly ConcurrentDictionary<string, string> MostRecentDownloads = new();
     
