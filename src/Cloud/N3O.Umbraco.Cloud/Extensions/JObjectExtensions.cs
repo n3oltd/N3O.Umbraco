@@ -6,6 +6,10 @@ namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 
 public static class JObjectExtensions {
     public static PublishedFileKind GetPublishedFileKind(this JObject jObject) {
+        if (jObject == null) {
+            return null;
+        }
+        
         var kindId = jObject["kind"]?.ToString();
         var kind = StaticLookups.FindById<PublishedFileKind>(kindId);
 
