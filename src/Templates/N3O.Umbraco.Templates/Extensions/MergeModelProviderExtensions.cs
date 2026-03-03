@@ -28,7 +28,9 @@ public static class MergeModelProviderExtensions {
                         }
                     }
                 } catch (Exception ex) {
-                    logger.LogError(ex, "Failed to get model for {Provider}", provider.GetType().Name);
+                    logger.LogError(ex, "Failed to get model for {Provider}. Content ID: {ID}",
+                                    provider.GetType().Name,
+                                    content.Key);
                 }
             }
 
