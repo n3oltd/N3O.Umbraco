@@ -1,6 +1,7 @@
 ﻿using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Models;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Lookups;
@@ -27,7 +28,7 @@ public abstract class ApiFundDimensions<T> : ApiLookupsCollection<T> where T : I
                                                                                                       JsonSerializers.JsonProvider,
                                                                                                       cancellationToken);
 
-        return GetFundDimension(fundStructure).Yield().ToList();
+        return GetFundDimension(fundStructure).Yield().ExceptNull().ToList();
     }
 
     protected override TimeSpan ReloadInterval => TimeSpan.FromMinutes(1);
@@ -41,6 +42,10 @@ public class ApiFundDimension1 : ApiFundDimensions<FundDimension1> {
     public ApiFundDimension1(ICdnClient cdnClient, ILookups lookups) : base(cdnClient, lookups) { }
 
     protected override FundDimension1 GetFundDimension(PublishedFundStructure fundStructure) {
+        if (fundStructure == null) {
+            return null;
+        }
+        
         var fundDimension1 = new FundDimension1(fundStructure.Dimension1.Name,
                                                 fundStructure.Dimension1.Name,
                                                 null,
@@ -55,6 +60,10 @@ public class ApiFundDimension2 : ApiFundDimensions<FundDimension2> {
     public ApiFundDimension2(ICdnClient cdnClient, ILookups lookups) : base(cdnClient, lookups) { }
 
     protected override FundDimension2 GetFundDimension(PublishedFundStructure fundStructure) {
+        if (fundStructure == null) {
+            return null;
+        }
+        
         var fundDimension2 = new FundDimension2(fundStructure.Dimension2.Name,
                                                 fundStructure.Dimension2.Name,
                                                 null,
@@ -69,6 +78,10 @@ public class ApiFundDimension3 : ApiFundDimensions<FundDimension3> {
     public ApiFundDimension3(ICdnClient cdnClient, ILookups lookups) : base(cdnClient, lookups) { }
 
     protected override FundDimension3 GetFundDimension(PublishedFundStructure fundStructure) {
+        if (fundStructure == null) {
+            return null;
+        }
+        
         var fundDimension3 = new FundDimension3(fundStructure.Dimension3.Name,
                                                 fundStructure.Dimension3.Name,
                                                 null,
@@ -83,6 +96,10 @@ public class ApiFundDimension4 : ApiFundDimensions<FundDimension4> {
     public ApiFundDimension4(ICdnClient cdnClient, ILookups lookups) : base(cdnClient, lookups) { }
 
     protected override FundDimension4 GetFundDimension(PublishedFundStructure fundStructure) {
+        if (fundStructure == null) {
+            return null;
+        }
+        
         var fundDimension4 = new FundDimension4(fundStructure.Dimension4.Name,
                                                 fundStructure.Dimension4.Name,
                                                 null,

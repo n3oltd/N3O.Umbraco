@@ -1,5 +1,4 @@
 ﻿using N3O.Umbraco.Scheduler;
-using N3O.Umbraco.Scheduler.Extensions;
 using N3O.Umbraco.Search.Commands;
 using NodaTime;
 using System.Threading;

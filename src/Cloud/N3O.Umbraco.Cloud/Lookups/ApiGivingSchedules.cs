@@ -1,6 +1,7 @@
 ﻿using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Models;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Lookups;
 using System;
@@ -25,7 +26,7 @@ public class ApiGivingSchedules : ApiLookupsCollection<GivingSchedule> {
 
         var givingSchedules = new List<GivingSchedule>();
 
-        foreach (var publishedGivingSchedule in publishedGivingSchedules.Schedules) {
+        foreach (var publishedGivingSchedule in publishedGivingSchedules.OrEmpty(x => x.Schedules)) {
             var givingSchedule = new GivingSchedule(publishedGivingSchedule.Id, publishedGivingSchedule.Name, null);
             
             givingSchedules.Add(givingSchedule);

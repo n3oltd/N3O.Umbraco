@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using AsyncKeyedLock;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Models;
@@ -8,6 +8,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NodaTime;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
@@ -21,37 +22,40 @@ using JsonSerializer = N3O.Umbraco.Cloud.Lookups.JsonSerializer;
 namespace N3O.Umbraco.Cloud;
 
 public class CdnClient : ICdnClient {
-    private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(5);
-    private static readonly MemoryCache ContentCache = new(new MemoryCacheOptions());
-    private static readonly ConcurrentDictionary<string, string> MostRecentDownloads = new();
+    private static readonly ConcurrentDictionary<string, CdnDownloadResult> Downloads = new(StringComparer.InvariantCultureIgnoreCase);
     
     private readonly ICloudUrl _cloudUrl;
+    private readonly IClock _clock;
     private readonly IJsonProvider _jsonProvider;
+    private readonly AsyncKeyedLocker<string> _locker;
     private readonly ILogger<CdnClient> _logger;
-    
     private readonly HttpClient _httpClient;
 
-    public CdnClient(ICloudUrl cloudUrl, IJsonProvider jsonProvider, ILogger<CdnClient> logger) {
+    public CdnClient(ICloudUrl cloudUrl,
+                     IClock clock,
+                     IJsonProvider jsonProvider,
+                     AsyncKeyedLocker<string> locker,
+                     ILogger<CdnClient> logger) {
         _cloudUrl = cloudUrl;
+        _clock = clock;
         _jsonProvider = jsonProvider;
+        _locker = locker;
         _logger = logger;
         
          var handler = new SocketsHttpHandler {
             ConnectCallback = async (context, cancellationToken) => {
                 var addresses = await Dns.GetHostAddressesAsync(context.DnsEndPoint.Host, cancellationToken);
-
-                var ipv4 = addresses.First(a => a.AddressFamily == AddressFamily.InterNetwork);
-
+                var ipv4Address = addresses.First(a => a.AddressFamily == AddressFamily.InterNetwork);
                 var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-                await socket.ConnectAsync(ipv4, context.DnsEndPoint.Port, cancellationToken);
+                await socket.ConnectAsync(ipv4Address, context.DnsEndPoint.Port, cancellationToken);
 
                 return new NetworkStream(socket, ownsSocket: true);
             }
         };
         
         _httpClient = new HttpClient(handler);
-        _httpClient.Timeout = TimeSpan.FromSeconds(10);
+        _httpClient.Timeout = TimeSpan.FromSeconds(5);
     }
 
     public async Task<T> DownloadPublishedContentAsync<T>(PublishedFileKind kind,
@@ -60,55 +64,52 @@ public class CdnClient : ICdnClient {
                                                           CancellationToken cancellationToken = default) {
         var publishedUrl = GetPublishedContentUrl(kind, path);
 
-        var res = await ContentCache.GetOrCreateAsync(GetCacheKey(publishedUrl, typeof(T).FullName), async c => {
-            c.AbsoluteExpirationRelativeToNow = CacheDuration;
-
-            var json = await DownloadStringAsync(publishedUrl, cancellationToken);
+        var json = await FetchStringAsync(publishedUrl, cancellationToken);
             
-            return json.IfNotNull(x => Deserialize<T>(x, jsonSerializer));
-        });
-
-        return res;
+        return json.IfNotNull(x => Deserialize<T>(x, jsonSerializer));
     }
 
     public async Task<PublishedContentResult> DownloadPublishedContentAsync(string path,
                                                                             CancellationToken cancellationToken = default) {
         var publishedUrl = GetPublishedContentUrl(path);
 
-        var res = await ContentCache.GetOrCreateAsync(GetCacheKey(publishedUrl, typeof(object).FullName), async c => {
-            c.AbsoluteExpirationRelativeToNow = CacheDuration;
-            
-            var json = await DownloadStringAsync(publishedUrl, cancellationToken);
+        var json = await FetchStringAsync(publishedUrl, cancellationToken);
 
-            var jObject = json.IfNotNull(JObject.Parse);
-            var kind = jObject.GetPublishedFileKind();
+        var jObject = json.IfNotNull(JObject.Parse);
+        var kind = jObject.GetPublishedFileKind();
             
-            if (kind.HasValue()) {
-                Guid.TryParse(jObject["id"]?.ToString(), out var id);
+        if (kind.HasValue()) {
+            Guid.TryParse(jObject["id"]?.ToString(), out var id);
                 
-                return PublishedContentResult.ForFound(id, kind, path, jObject);
-            } else {
-                return PublishedContentResult.ForNotFound(path);
-            }
-        });
-
-        return res;
+            return PublishedContentResult.ForFound(id, kind, path, jObject);
+        } else {
+            return PublishedContentResult.ForNotFound(path);
+        }
     }
 
-    private async Task<string> DownloadStringAsync(string publishedUrl, CancellationToken cancellationToken) {
-        string download;
+    private async Task<string> FetchStringAsync(string publishedUrl, CancellationToken cancellationToken) {
+        using (await _locker.LockAsync(publishedUrl, cancellationToken)) {
+            var download = Downloads.GetOrDefault(publishedUrl);
             
-        try {
-            download = await _httpClient.GetStringAsync(publishedUrl, cancellationToken);
+            if (download == null || download.IsExpired(_clock) || download.CanRetry(_clock)) {
+                Downloads[publishedUrl] = await DownloadStringAsync(publishedUrl, cancellationToken);
+            }
 
-            MostRecentDownloads[publishedUrl] = download; 
-        } catch(Exception ex) {
-            _logger.LogError(ex, "Could not download {PublishedUrl}", publishedUrl);
-            
-            download = MostRecentDownloads.GetOrDefault(publishedUrl);
+            return Downloads[publishedUrl].Content;
         }
-            
-        return download;
+    }
+    
+    private async Task<CdnDownloadResult> DownloadStringAsync(string publishedUrl,
+                                                              CancellationToken cancellationToken) {
+        try {
+            var download = await _httpClient.GetStringAsync(publishedUrl, cancellationToken);
+
+            return CdnDownloadResult.ForSuccess(_clock, download);
+        } catch (Exception ex) {
+            _logger.LogError(ex, "Could not download {PublishedUrl}", publishedUrl);
+
+            return CdnDownloadResult.ForFailure(_clock);
+        }
     }
     
     private string GetPublishedContentUrl(PublishedFileKind kind, string path) {

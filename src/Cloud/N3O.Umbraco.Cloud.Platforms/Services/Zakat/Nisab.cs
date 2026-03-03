@@ -2,6 +2,7 @@
 using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Platforms.Models;
 using N3O.Umbraco.Exceptions;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using System;
 using System.Threading;
@@ -27,6 +28,10 @@ public class Nisab : INisab {
                                                                                       JsonSerializers.JsonProvider,
                                                                                       cancellationToken);
 
+        if (nisab == null) {
+            return currency.Zero();
+        }
+        
         if (!nisab.Amounts.ContainsKey(currency.Code)) {
             throw new Exception($"No nisab value found for currency {currency.Code}");
         }

@@ -29,7 +29,7 @@ public abstract class Labels<T> : ApiLookupsCollection<T> where T : Label {
 
         var labels = new List<T>();
 
-        foreach (var publishedTagDefinition in publishedTagDefinitions.Definitions.OrEmpty().Where(x => x.Scope == Scope)) {
+        foreach (var publishedTagDefinition in publishedTagDefinitions.OrEmpty(x => x.Definitions).Where(x => x.Scope == Scope)) {
             var label = CreateLabel(publishedTagDefinition);
             
             labels.Add(label);

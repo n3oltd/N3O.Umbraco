@@ -28,7 +28,7 @@ public class ApiFeedbackSchemes : ApiLookupsCollection<FeedbackScheme> {
 
         var feedbackSchemes = new List<FeedbackScheme>();
 
-        foreach (var publishedFeedbackScheme in publishedFeedbackSchemes.FeedbackSchemes) {
+        foreach (var publishedFeedbackScheme in publishedFeedbackSchemes.OrEmpty(x => x.FeedbackSchemes)) {
             var feedbackScheme = new FeedbackScheme(publishedFeedbackScheme.Id,
                                                     publishedFeedbackScheme.Name,
                                                     null,

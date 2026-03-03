@@ -10,6 +10,5 @@ public class PlatformsMarketingComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddTransient<ICockpitSegmentRuleFactory, TelethonOnAirCockpitSegmentRuleFactory>();
         builder.Services.AddTransient<ISegmentRuleFactory, TelethonOnAirSegmentRuleFactory>();
-        
     }
 }

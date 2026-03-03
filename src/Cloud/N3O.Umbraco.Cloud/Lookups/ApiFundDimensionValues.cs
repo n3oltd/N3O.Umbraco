@@ -41,6 +41,10 @@ public class ApiFundDimension1Values : ApiFundDimensionValues<FundDimension1Valu
         FundDimension1Value ToFundDimension1Value(string value, bool unrestricted) {
             return new FundDimension1Value(value, value, null, unrestricted);
         }
+
+        if (fundStructure == null) {
+            return [];
+        }
         
         var fundDimensionValues = fundStructure.Dimension1
                                                .RestrictedOptions
@@ -59,6 +63,10 @@ public class ApiFundDimension2Values : ApiFundDimensionValues<FundDimension2Valu
     protected override IEnumerable<FundDimension2Value> GetFundDimensionValues(PublishedFundStructure fundStructure) {
         FundDimension2Value ToFundDimension2Value(string value, bool unrestricted) {
             return new FundDimension2Value(value, value, null, unrestricted);
+        }
+        
+        if (fundStructure == null) {
+            return [];
         }
         
         var fundDimensionValues = fundStructure.Dimension2
@@ -80,6 +88,10 @@ public class ApiFundDimension3Values : ApiFundDimensionValues<FundDimension3Valu
             return new FundDimension3Value(value, value, null, unrestricted);
         }
         
+        if (fundStructure == null) {
+            return [];
+        }
+        
         var fundDimensionValues = fundStructure.Dimension3
                                                .RestrictedOptions
                                                .Select(x => ToFundDimension3Value(x, false))
@@ -97,6 +109,10 @@ public class ApiFundDimension4Values : ApiFundDimensionValues<FundDimension4Valu
     protected override IEnumerable<FundDimension4Value> GetFundDimensionValues(PublishedFundStructure fundStructure) {
         FundDimension4Value ToFundDimension4Value(string value, bool unrestricted) {
             return new FundDimension4Value(value, value, null, unrestricted);
+        }
+        
+        if (fundStructure == null) {
+            return [];
         }
         
         var fundDimensionValues = fundStructure.Dimension4

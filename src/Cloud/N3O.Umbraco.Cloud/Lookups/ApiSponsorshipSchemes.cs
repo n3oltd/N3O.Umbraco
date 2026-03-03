@@ -29,7 +29,7 @@ public class ApiSponsorshipSchemes : ApiLookupsCollection<SponsorshipScheme> {
 
         var sponsorshipSchemes = new List<SponsorshipScheme>();
 
-        foreach (var publishedSponsorshipScheme in publishedSponsorshipSchemes.SponsorshipSchemes) {
+        foreach (var publishedSponsorshipScheme in publishedSponsorshipSchemes.OrEmpty(x => x.SponsorshipSchemes)) {
             var sponsorshipScheme = new SponsorshipScheme(publishedSponsorshipScheme.Id,
                                                           publishedSponsorshipScheme.Name,
                                                           null,

@@ -18,6 +18,6 @@ public class OrganizationInfoAccessor : IOrganizationInfoAccessor {
                                                                                                                                      JsonSerializers.JsonProvider,
                                                                                                                                      cancellationToken);
 
-        return publishedSubscriptionOrganization.PlatformsSettings;
+        return publishedSubscriptionOrganization?.PlatformsSettings;
     }
 }

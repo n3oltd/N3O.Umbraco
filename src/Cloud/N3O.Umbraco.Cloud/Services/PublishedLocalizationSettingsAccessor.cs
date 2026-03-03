@@ -32,6 +32,10 @@ public class PublishedLocalizationSettingsAccessor : ILocalizationSettingsAccess
                                                   .GetAwaiter()
                                                   .GetResult();
 
+            if (publishedLocalization == null) {
+                return null;
+            }
+
             var timezone = _lookups.FindById<Timezone>(publishedLocalization.Timezone.Id);
 
             _localizationSettings = new LocalizationSettings(_localizationService.GetDefaultCultureCode(),

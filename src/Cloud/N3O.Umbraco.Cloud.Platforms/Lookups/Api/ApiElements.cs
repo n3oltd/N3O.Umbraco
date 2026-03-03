@@ -27,7 +27,7 @@ public class ApiElements : ApiLookupsCollection<Element> {
 
         var elements = new List<Element>();
 
-        foreach (var publishedElement in publishedElements.Elements) {
+        foreach (var publishedElement in publishedElements.OrEmpty(x => x.Elements)) {
             var element = new Element(publishedElement.Id,
                                       publishedElement.Name,
                                       null,

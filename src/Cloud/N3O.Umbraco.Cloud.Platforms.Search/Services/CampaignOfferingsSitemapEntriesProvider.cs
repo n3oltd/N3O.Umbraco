@@ -4,6 +4,7 @@ using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Content;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Search;
 using N3O.Umbraco.Search.Models;
 using NodaTime;
@@ -42,7 +43,7 @@ public class CampaignOfferingsSitemapEntriesProvider : ISitemapEntriesProvider {
                                                                                                        JsonSerializers.JsonProvider,
                                                                                                        cancellationToken);
 
-        foreach (var publishedCampaign in publishedCampaigns.Campaigns) {
+        foreach (var publishedCampaign in publishedCampaigns.OrEmpty(x => x.Campaigns)) {
             entries.Add(GetSitemapEntryForCampaign(publishedCampaign, today));
 
             foreach (var publishedOffering in publishedCampaign.Offerings) {

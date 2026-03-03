@@ -2,6 +2,7 @@
 using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ public class ApiOfferings : ApiLookupsCollection<Offering> {
         
         var offerings = new List<Offering>();
 
-        foreach (var publishedCampaign in publishedCampaigns.Campaigns) {
+        foreach (var publishedCampaign in publishedCampaigns.OrEmpty(x => x.Campaigns)) {
             var offeringLookups = publishedCampaign.Offerings
                                                    .Select(x => new Offering(x.Id, x.Name, null, publishedCampaign.Id));
             

@@ -1,6 +1,7 @@
 ﻿using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Templates;
 using System.Collections.Generic;
 using System.Threading;
@@ -23,6 +24,6 @@ public class CampaignsMergeModelProvider : MergeModelsProvider {
                                                                                               JsonSerializers.JsonProvider,
                                                                                               cancellationToken);
 
-        mergeModels[PlatformsTemplateConstants.ModelKeys.Campaigns] = campaigns;
+        mergeModels[PlatformsTemplateConstants.ModelKeys.Campaigns] = campaigns.OrEmpty(x => x.Campaigns);
     }
 }
