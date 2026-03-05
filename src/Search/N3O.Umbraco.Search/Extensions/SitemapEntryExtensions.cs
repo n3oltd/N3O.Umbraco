@@ -24,7 +24,7 @@ public static class SitemapEntryExtensions {
                 foreach (var entry in entries) {
                     writer.WriteStartElement("url");
                     writer.WriteElementString("loc", entry.Url);
-                    writer.WriteElementString("lastmod", entry.LastModified.ToString("yyyy-MM-ddTHH:mm:sszzz", CultureInfo.InvariantCulture));
+                    writer.WriteElementString("lastmod", entry.LastModified.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
                     writer.WriteElementString("changefreq", entry.ChangeFrequency);
                     writer.WriteElementString("priority", entry.Priority.ToString(CultureInfo.InvariantCulture));
 
