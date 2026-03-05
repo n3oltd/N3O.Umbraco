@@ -44,7 +44,7 @@ public class ContentSitemapEntriesProvider : ISitemapEntriesProvider {
     private SitemapEntry GetSitemapEntry(IPublishedContent publishedContent, string defaultCultureCode) {
         var cultureVariantUrls = new Dictionary<string, string>();
 
-        foreach (var cultureCode in publishedContent.OrEmpty(x => x.Cultures).Select(x => x.Key).Except(defaultCultureCode)) {
+        foreach (var cultureCode in publishedContent.OrEmpty(x => x.Cultures).Where(x => x.Key.HasValue()).Select(x => x.Key).Except(defaultCultureCode)) {
             cultureVariantUrls[cultureCode] = publishedContent.AbsoluteUrl(cultureCode);
         }
         
