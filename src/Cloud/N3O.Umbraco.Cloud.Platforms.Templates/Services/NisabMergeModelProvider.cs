@@ -19,6 +19,8 @@ public class NisabMergeModelProvider : MergeModelsProvider {
         _formatter = formatter;
         _nisab = nisab;
     }
+    
+    public override Task<bool> IsProviderForAsync(IPublishedContent content) => Task.FromResult(true);
 
     protected override async Task PopulateModelsAsync(IPublishedContent content,
                                                       Dictionary<string, object> mergeModels,

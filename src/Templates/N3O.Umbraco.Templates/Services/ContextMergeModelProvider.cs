@@ -14,6 +14,8 @@ public class ContextMergeModelProvider : MergeModelsProvider {
         _localClock = localClock;
     }
 
+    public override Task<bool> IsProviderForAsync(IPublishedContent content) => Task.FromResult(true);
+
     protected override Task PopulateModelsAsync(IPublishedContent content,
                                                 Dictionary<string, object> mergeModels,
                                                 CancellationToken cancellationToken = default) {

@@ -13,6 +13,8 @@ public class OrganizationInfoMergeModelProvider : MergeModelsProvider {
         _organizationInfoAccessor = organizationInfoAccessor;
     }
 
+    public override Task<bool> IsProviderForAsync(IPublishedContent content) => Task.FromResult(true);
+
     protected override async Task PopulateModelsAsync(IPublishedContent content,
                                                       Dictionary<string, object> mergeModels,
                                                       CancellationToken cancellationToken = default) {

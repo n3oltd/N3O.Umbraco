@@ -3,6 +3,8 @@ using N3O.Umbraco.Extensions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -27,6 +29,8 @@ public static class MergeModelProviderExtensions {
                             mergeModels[key] = data;
                         }
                     }
+                } catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.NotFound) {
+                    // Do not log not founds
                 } catch (Exception ex) {
                     logger.LogError(ex, "Failed to get model for {Provider}. Content ID: {ID}",
                                     provider.GetType().Name,
