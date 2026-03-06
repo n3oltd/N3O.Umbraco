@@ -20,7 +20,7 @@ using JsonSerializer = N3O.Umbraco.Cloud.Lookups.JsonSerializer;
 namespace N3O.Umbraco.Cloud;
 
 public class CdnClient : ICdnClient {
-    private static readonly AsyncRateLimitPolicy RateLimitPolicy = Policy.RateLimitAsync(3, TimeSpan.FromSeconds(1), 10);
+    private static readonly AsyncRateLimitPolicy RateLimitPolicy = Policy.RateLimitAsync(3, TimeSpan.FromSeconds(1), 5);
     private static readonly ConcurrentDictionary<string, CdnDownloadResult> Downloads = new(StringComparer.InvariantCultureIgnoreCase);
     
     private readonly ICloudUrl _cloudUrl;
@@ -115,13 +115,9 @@ public class CdnClient : ICdnClient {
     private string GetPublishedContentUrl(string path) {
         return _cloudUrl.ForCdn(CdnRoots.Connect, path);
     }
-
-    private static int Count = 0;
     
     private async Task<string> GetStringRateLimitedAsync(string publishedUrl, CancellationToken cancellationToken) {
         var policyResult = await RateLimitPolicy.ExecuteAndCaptureAsync(() => {
-            Console.WriteLine($"[{++Count}] Fetching {publishedUrl}");
-            
             return _httpClient.GetStringAsync(publishedUrl, cancellationToken);
         });
 
