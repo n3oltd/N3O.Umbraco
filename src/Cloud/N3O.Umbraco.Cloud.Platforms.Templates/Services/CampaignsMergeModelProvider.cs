@@ -16,6 +16,8 @@ public class CampaignsMergeModelProvider : MergeModelsProvider {
     public CampaignsMergeModelProvider(ICdnClient cdnClient) {
         _cdnClient = cdnClient;
     }
+    
+    public override Task<bool> IsProviderForAsync(IPublishedContent content) => Task.FromResult(true);
 
     protected override async Task PopulateModelsAsync(IPublishedContent content,
                                                       Dictionary<string, object> mergeModels,

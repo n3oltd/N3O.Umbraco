@@ -24,6 +24,8 @@ public class UserMergeModelProvider : MergeModelsProvider {
         _userCookie = userCookie;
         _clientFactory = clientFactory;
     }
+    
+    public override Task<bool> IsProviderForAsync(IPublishedContent content) => Task.FromResult(true);
 
     protected override async Task PopulateModelsAsync(IPublishedContent content,
                                                       Dictionary<string, object> mergeModels,

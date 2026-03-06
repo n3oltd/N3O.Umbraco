@@ -6,7 +6,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 namespace N3O.Umbraco.Templates;
 
 public abstract class MergeModelsProvider : IMergeModelsProvider {
-    public virtual Task<bool> IsProviderForAsync(IPublishedContent content) => Task.FromResult(true);
+    public abstract Task<bool> IsProviderForAsync(IPublishedContent content);
 
     public async Task<IReadOnlyDictionary<string, object>> GetModelsAsync(IPublishedContent content,
                                                                           CancellationToken cancellationToken = default) {

@@ -6,7 +6,6 @@ using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Hosting;
-using N3O.Umbraco.Json;
 using N3O.Umbraco.Payments.Content;
 using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.Opayo.Clients;
@@ -31,7 +30,6 @@ public class OpayoHelper : IOpayoHelper {
     private readonly IActionLinkGenerator _actionLinkGenerator;
     private readonly IRemoteIpAddressAccessor _remoteIpAddressAccessor;
     private readonly IBrowserInfoAccessor _browserInfoAccessor;
-    private readonly IJsonProvider _jsonProvider;
 
     public OpayoHelper(IOpayoClient opayoClient,
                        IContentCache contentCache,

@@ -6,10 +6,11 @@ using Umbraco.Engage.Infrastructure.Personalization.Segments.Rules;
 namespace N3O.Umbraco.Cloud.Platforms.Marketing;
 
 public class TelethonOnAirSegmentRuleFactory : ISegmentRuleFactory {
-    private readonly ILocalClock _localClock;
-    private readonly ICdnClient _cdnClient;
+    // Lazy is required to avoid cicular dependency in DI
+    private readonly Lazy<ILocalClock> _localClock;
+    private readonly Lazy<ICdnClient> _cdnClient;
 
-    public TelethonOnAirSegmentRuleFactory(ILocalClock localClock, ICdnClient cdnClient) {
+    public TelethonOnAirSegmentRuleFactory(Lazy<ILocalClock> localClock, Lazy<ICdnClient> cdnClient) {
         _localClock = localClock;
         _cdnClient = cdnClient;
     }
@@ -30,8 +31,8 @@ public class TelethonOnAirSegmentRuleFactory : ISegmentRuleFactory {
                                    long segmentId,
                                    DateTime created,
                                    DateTime? updated) {
-        return new TelethonOnAirSegmentRule(_localClock,
-                                            _cdnClient,
+        return new TelethonOnAirSegmentRule(_localClock.Value,
+                                            _cdnClient.Value,
                                             id,
                                             key,
                                             segmentId,

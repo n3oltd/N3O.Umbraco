@@ -126,10 +126,6 @@ public class CdnClient : ICdnClient {
         }
     }
     
-    private string GetCacheKey(string publishedUrl, string type) {
-        return $"{nameof(CdnClient)}_{publishedUrl}_{type}";
-    }
-    
     private string GetPublishedPath(PublishedFileKind kind, string path) {
         return $"{kind.PathSegment}/{path}";
     }

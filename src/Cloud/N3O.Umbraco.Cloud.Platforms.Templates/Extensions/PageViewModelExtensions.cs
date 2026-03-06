@@ -19,8 +19,8 @@ public static class PageViewModelExtensions {
                                                                             PlatformsPublishedFileKind.CampaignPage);
     }
     
-    public static PublishedCampaigns Campaigns(this IPageViewModel pageViewModel) {
-        return pageViewModel.MergeModel<PublishedCampaigns>(PlatformsTemplateConstants.ModelKeys.Campaigns);
+    public static IEnumerable<PublishedCampaign> Campaigns(this IPageViewModel pageViewModel) {
+        return pageViewModel.MergeModel<IEnumerable<PublishedCampaign>>(PlatformsTemplateConstants.ModelKeys.Campaigns);
     }
     
     public static IEnumerable<PublishedOffering> CampaignOfferings(this IPageViewModel pageViewModel) {

@@ -13,11 +13,13 @@ public class PlatformsPageMergeModelProvider : MergeModelsProvider {
     public PlatformsPageMergeModelProvider(IPlatformsPageAccessor platformsPageAccessor) {
         _platformsPageAccessor = platformsPageAccessor;
     }
+    
+    public override Task<bool> IsProviderForAsync(IPublishedContent content) => Task.FromResult(true);
 
     protected override async Task PopulateModelsAsync(IPublishedContent content,
                                                       Dictionary<string, object> mergeModels,
                                                       CancellationToken cancellationToken = default) {
-        var getPageResult = await _platformsPageAccessor.GetAsync();
+        var getPageResult = await _platformsPageAccessor.GetAsync(cancellationToken);
 
         if (getPageResult.HasValue(x => x.Page)) {
             mergeModels[getPageResult.Page.Kind.Id] = getPageResult.Page.Content;
