@@ -1,5 +1,4 @@
-﻿using AsyncKeyedLock;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Models;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
@@ -9,12 +8,11 @@ using N3O.Umbraco.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NodaTime;
+using Polly;
+using Polly.RateLimit;
 using System;
 using System.Collections.Concurrent;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using JsonSerializer = N3O.Umbraco.Cloud.Lookups.JsonSerializer;
@@ -22,39 +20,25 @@ using JsonSerializer = N3O.Umbraco.Cloud.Lookups.JsonSerializer;
 namespace N3O.Umbraco.Cloud;
 
 public class CdnClient : ICdnClient {
+    private static readonly AsyncRateLimitPolicy RateLimitPolicy = Policy.RateLimitAsync(3, TimeSpan.FromSeconds(1), 10);
     private static readonly ConcurrentDictionary<string, CdnDownloadResult> Downloads = new(StringComparer.InvariantCultureIgnoreCase);
     
     private readonly ICloudUrl _cloudUrl;
     private readonly IClock _clock;
     private readonly IJsonProvider _jsonProvider;
-    private readonly AsyncKeyedLocker<string> _locker;
     private readonly ILogger<CdnClient> _logger;
     private readonly HttpClient _httpClient;
 
     public CdnClient(ICloudUrl cloudUrl,
                      IClock clock,
                      IJsonProvider jsonProvider,
-                     AsyncKeyedLocker<string> locker,
                      ILogger<CdnClient> logger) {
         _cloudUrl = cloudUrl;
         _clock = clock;
         _jsonProvider = jsonProvider;
-        _locker = locker;
         _logger = logger;
         
-         var handler = new SocketsHttpHandler {
-            ConnectCallback = async (context, cancellationToken) => {
-                var addresses = await Dns.GetHostAddressesAsync(context.DnsEndPoint.Host, cancellationToken);
-                var ipv4Address = addresses.First(a => a.AddressFamily == AddressFamily.InterNetwork);
-                var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
-                await socket.ConnectAsync(ipv4Address, context.DnsEndPoint.Port, cancellationToken);
-
-                return new NetworkStream(socket, ownsSocket: true);
-            }
-        };
-        
-        _httpClient = new HttpClient(handler);
+        _httpClient = new HttpClient();
         _httpClient.Timeout = TimeSpan.FromSeconds(5);
     }
 
@@ -88,21 +72,19 @@ public class CdnClient : ICdnClient {
     }
 
     private async Task<string> FetchStringAsync(string publishedUrl, CancellationToken cancellationToken) {
-        using (await _locker.LockAsync(publishedUrl, cancellationToken)) {
-            var download = Downloads.GetOrDefault(publishedUrl);
+        var download = Downloads.GetOrDefault(publishedUrl);
             
-            if (download == null || download.IsExpired(_clock) || download.CanRetry(_clock)) {
-                Downloads[publishedUrl] = await DownloadStringAsync(publishedUrl, cancellationToken);
-            }
-
-            return Downloads[publishedUrl].Content;
+        if (download == null || download.IsExpired(_clock) || download.CanRetry(_clock)) {
+            Downloads[publishedUrl] = await DownloadStringAsync(publishedUrl, cancellationToken);
         }
+
+        return Downloads[publishedUrl].Content;
     }
     
     private async Task<CdnDownloadResult> DownloadStringAsync(string publishedUrl,
                                                               CancellationToken cancellationToken) {
         try {
-            var download = await _httpClient.GetStringAsync(publishedUrl, cancellationToken);
+            var download = await GetStringRateLimitedAsync(publishedUrl, cancellationToken);
 
             return CdnDownloadResult.ForSuccess(_clock, download);
         } catch (Exception ex) {
@@ -132,5 +114,19 @@ public class CdnClient : ICdnClient {
     
     private string GetPublishedContentUrl(string path) {
         return _cloudUrl.ForCdn(CdnRoots.Connect, path);
+    }
+    
+    private async Task<string> GetStringRateLimitedAsync(string publishedUrl, CancellationToken cancellationToken) {
+        var policyResult = await RateLimitPolicy.ExecuteAndCaptureAsync(() => {
+            Console.WriteLine($"Fetching {publishedUrl}");
+            
+            return _httpClient.GetStringAsync(publishedUrl, cancellationToken);
+        });
+
+        if (policyResult.Outcome == OutcomeType.Successful) {
+            return policyResult.Result;
+        } else {
+            throw policyResult.FinalException;
+        }
     }
 }
