@@ -1,8 +1,5 @@
-﻿using N3O.Umbraco.Content;
-using N3O.Umbraco.ImageProcessing.Operations;
-using SixLabors.ImageSharp;
+﻿using SixLabors.ImageSharp;
 using System;
-using System.Collections.Generic;
 using Umbraco.Cms.Core.IO;
 
 namespace N3O.Umbraco.ImageProcessing;
@@ -11,14 +8,11 @@ public class FluentImageBuilder : IFluentImageBuilder {
     private readonly MediaFileManager _mediaFileManager;
     private readonly Image _image;
 
-    public FluentImageBuilder(IEnumerable<IImageOperation> allOperations,
-                              MediaFileManager mediaFileManager,
-                              IContentLocator contentLocator,
-                              Image image) {
+    public FluentImageBuilder(MediaFileManager mediaFileManager, Image image) {
         _mediaFileManager = mediaFileManager;
         _image = image;
 
-        Processor = new ImageProcessor(allOperations, contentLocator, mediaFileManager, _image);
+        Processor = new ImageProcessor(_image);
     }
     
     public T Do<T>(Func<Image, T> action) {
