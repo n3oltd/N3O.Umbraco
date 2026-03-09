@@ -8,13 +8,20 @@ using N3O.Umbraco.Utilities;
 namespace N3O.Umbraco.ImageProcessing.TagHelpers;
 
 [HtmlTargetElement(Attributes = $"{SrcAttributeName},{AspectRatioAttributeName}", TagStructure = TagStructure.WithoutEndTag)]
+[HtmlTargetElement(Attributes = $"{SrcAttributeName},{AspectRatioAttributeName},{FormatAttributeName}", TagStructure = TagStructure.WithoutEndTag)]
 [HtmlTargetElement(Attributes = $"{SrcAttributeName},{TargetHeightAttributeName}", TagStructure = TagStructure.WithoutEndTag)]
+[HtmlTargetElement(Attributes = $"{SrcAttributeName},{TargetHeightAttributeName},{FormatAttributeName}", TagStructure = TagStructure.WithoutEndTag)]
 [HtmlTargetElement(Attributes = $"{SrcAttributeName},{TargetWidthAttributeName}", TagStructure = TagStructure.WithoutEndTag)]
+[HtmlTargetElement(Attributes = $"{SrcAttributeName},{TargetWidthAttributeName},{FormatAttributeName}", TagStructure = TagStructure.WithoutEndTag)]
 [HtmlTargetElement(Attributes = $"{SrcAttributeName},{AspectRatioAttributeName},{TargetHeightAttributeName}", TagStructure = TagStructure.WithoutEndTag)]
+[HtmlTargetElement(Attributes = $"{SrcAttributeName},{AspectRatioAttributeName},{TargetHeightAttributeName},{FormatAttributeName}", TagStructure = TagStructure.WithoutEndTag)]
 [HtmlTargetElement(Attributes = $"{SrcAttributeName},{AspectRatioAttributeName},{TargetWidthAttributeName}", TagStructure = TagStructure.WithoutEndTag)]
+[HtmlTargetElement(Attributes = $"{SrcAttributeName},{AspectRatioAttributeName},{TargetWidthAttributeName},{FormatAttributeName}", TagStructure = TagStructure.WithoutEndTag)]
 [HtmlTargetElement(Attributes = $"{SrcAttributeName},{AspectRatioAttributeName},{TargetHeightAttributeName},{TargetWidthAttributeName}", TagStructure = TagStructure.WithoutEndTag)]
+[HtmlTargetElement(Attributes = $"{SrcAttributeName},{AspectRatioAttributeName},{TargetHeightAttributeName},{TargetWidthAttributeName},{FormatAttributeName}", TagStructure = TagStructure.WithoutEndTag)]
 public class ImageProcessingTagHelper : TagHelper {
     private const string AspectRatioAttributeName = $"{Prefixes.TagHelpers}aspect-ratio";
+    private const string FormatAttributeName = $"{Prefixes.TagHelpers}format";
     private const string TargetHeightAttributeName = $"{Prefixes.TagHelpers}target-height";
     private const string SrcAttributeName = "src";
     private const string TargetWidthAttributeName = $"{Prefixes.TagHelpers}target-width";
@@ -27,6 +34,9 @@ public class ImageProcessingTagHelper : TagHelper {
     
     [HtmlAttributeName(AspectRatioAttributeName)]
     public decimal? AspectRatio { get; set; }
+
+    [HtmlAttributeName(FormatAttributeName)]
+    public ImageFormat Format { get; set; } = ImageFormats.Webp;
     
     [HtmlAttributeName(SrcAttributeName)]
     public string Src { get; set; }
@@ -38,7 +48,7 @@ public class ImageProcessingTagHelper : TagHelper {
     public int? TargetWidth { get; set; }
 
     public override void Process(TagHelperContext context, TagHelperOutput output) {
-        var img = _imagePublisher.Publish(GenerateCacheKey, BuildImage, ImageFormats.Gif);
+        var img = _imagePublisher.Publish(GenerateCacheKey, BuildImage, Format);
         
         output.Attributes.SetAttribute(SrcAttributeName, img.Url.Path);
         output.Attributes.SetAttribute("width", img.Size.Width);
