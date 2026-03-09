@@ -15,13 +15,13 @@ public class HttpStatusCodesConvention : IActionModelConvention {
     }
     
     private void ApplyNotFoundFilter(ActionModel action) {
-        if(action.Attributes.OfType<HttpGetAttribute>().Any()) {
+        if (action.Attributes.OfType<HttpGetAttribute>().Any()) {
             action.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status404NotFound));
         }
     }
     
     private void ApplyValidationErrorFilter(ActionModel action) {
-        if(action.Attributes.OfType<HttpPostAttribute>().Any()) {
+        if (action.Attributes.OfType<HttpPostAttribute>().Any()) {
             action.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status412PreconditionFailed));
         } 
     }

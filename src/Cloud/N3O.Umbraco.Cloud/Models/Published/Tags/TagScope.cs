@@ -7,6 +7,7 @@ public class TagScope : NamedLookup {
 }
 
 public class TagScopes : StaticLookupsCollection<TagScope> {
+    public static readonly TagScope AnalyticsField = new("analyticsField", "Analytics Field");
     public static readonly TagScope AccountLabel = new("accountLabel", "Account Label");
     public static readonly TagScope BeneficiaryLabel = new("beneficiaryLabel", "Beneficiary Label");
     public static readonly TagScope DonationLabel = new("donationLabel", "Donation Label");

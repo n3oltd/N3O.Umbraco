@@ -12,6 +12,7 @@ public class ParagraphBlockDataConverter : BlockDataConverter<ParagraphBlockData
     
     protected override void Process(ParagraphBlockData data) {
         data.Text = ConvertUmbracoLinks(data.Text);
+        data.Text = DecodePlatformsElements(data.Text);
     }
 }
 

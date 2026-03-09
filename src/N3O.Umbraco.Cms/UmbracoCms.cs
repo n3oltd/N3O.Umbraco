@@ -23,6 +23,11 @@ public static class UmbracoCms {
                                       webBuilder.UseIISIntegration();
                                   }
                                   
+                                  webBuilder.ConfigureKestrel(opt => {
+                                      opt.Limits.MaxRequestHeadersTotalSize = 128_000;
+                                      opt.Limits.MaxRequestBodySize = 1_073_741_824;
+                                  });
+                                  
                                   webBuilder.ConfigureAppConfiguration((context, _) => {
                                       Composer.WebHostEnvironment = context.HostingEnvironment;
                                       

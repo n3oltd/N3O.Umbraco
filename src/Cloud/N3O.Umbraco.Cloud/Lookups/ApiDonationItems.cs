@@ -27,7 +27,7 @@ public class ApiDonationItems : ApiLookupsCollection<DonationItem> {
 
         var donationItems = new List<DonationItem>();
 
-        foreach (var publishedDonationItem in publishedDonationItems.DonationItems) {
+        foreach (var publishedDonationItem in publishedDonationItems.OrEmpty(x => x.DonationItems)) {
             var donationItem = new DonationItem(publishedDonationItem.Id,
                                                 publishedDonationItem.Name,
                                                 null,
@@ -41,5 +41,5 @@ public class ApiDonationItems : ApiLookupsCollection<DonationItem> {
         return donationItems;
     }
 
-    protected override TimeSpan CacheDuration => TimeSpan.FromHours(12);
+    protected override TimeSpan ReloadInterval => TimeSpan.FromMinutes(1);
 }

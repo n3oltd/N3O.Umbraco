@@ -20,7 +20,7 @@ public class MediaUrl : IMediaUrl {
         _urlBuilder = urlBuilder;
     }
 
-    public string GetCropUrl(MediaWithCrops mediaWithCrops,
+    public virtual string GetCropUrl(MediaWithCrops mediaWithCrops,
                              string cropAlias,
                              string furtherOptions = null,
                              UrlMode urlMode = UrlMode.Default) {
@@ -29,10 +29,10 @@ public class MediaUrl : IMediaUrl {
                                                        urlMode: urlMode));
     }
 
-    public string GetCropUrl(MediaWithCrops mediaWithCrops,
-                             int width,
-                             string furtherOptions = null,
-                             UrlMode urlMode = UrlMode.Default) {
+    public virtual string GetCropUrl(MediaWithCrops mediaWithCrops,
+                                    int width,
+                                    string furtherOptions = null,
+                                    UrlMode urlMode = UrlMode.Default) {
         return GetUrl(() => mediaWithCrops?.GetCropUrl(width: width,
                                                        preferFocalPoint: true,
                                                        imageCropMode: ImageCropMode.Crop,
@@ -40,11 +40,11 @@ public class MediaUrl : IMediaUrl {
                                                        urlMode: urlMode));
     }
 
-    public string GetCropUrl(MediaWithCrops mediaWithCrops,
-                             int width,
-                             int height,
-                             string furtherOptions = null,
-                             UrlMode urlMode = UrlMode.Default) {
+    public virtual string GetCropUrl(MediaWithCrops mediaWithCrops,
+                                     int width,
+                                     int height,
+                                     string furtherOptions = null,
+                                     UrlMode urlMode = UrlMode.Default) {
         return GetUrl(() => mediaWithCrops?.GetCropUrl(width: width,
                                                        height: height,
                                                        preferFocalPoint: true,
@@ -53,9 +53,9 @@ public class MediaUrl : IMediaUrl {
                                                        urlMode: urlMode));
     }
 
-    public string GetMediaUrl(MediaWithCrops mediaWithCrops,
-                              string furtherOptions = null,
-                              UrlMode urlMode = UrlMode.Default) {
+    public virtual string GetMediaUrl(MediaWithCrops mediaWithCrops,
+                                      string furtherOptions = null,
+                                      UrlMode urlMode = UrlMode.Default) {
         return GetUrl(() => mediaWithCrops?.GetCropUrl(furtherOptions: furtherOptions, urlMode: urlMode));
     }
 

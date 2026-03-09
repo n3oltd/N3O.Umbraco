@@ -1,6 +1,5 @@
 ﻿using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Platforms.Clients;
-using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Extensions;
@@ -8,8 +7,10 @@ using N3O.Umbraco.Giving.Allocations.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CampaignContent = N3O.Umbraco.Cloud.Platforms.Content.CampaignContent;
 using Currency = N3O.Umbraco.Financial.Currency;
 using FundDimensionValuesReq = N3O.Umbraco.Cloud.Platforms.Clients.FundDimensionValuesReq;
+using OfferingContent = N3O.Umbraco.Cloud.Platforms.Content.OfferingContent;
 using PlatformsCurrency = N3O.Umbraco.Cloud.Platforms.Clients.Currency;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
@@ -23,15 +24,18 @@ public partial class ElementDonationFormsStateReqMapping {
         
         var cartItem = new CartItemReq();
         cartItem.Id = Guid.NewGuid().ToString();
-        cartItem.Type = CartItemType.NewDonation;
         cartItem.Currency = currency;
 
         var allocation = GetAllocationIntent(campaign, offering, fundDimensionValues, currency);
 
         if (offering.SuggestedGiftType == GiftTypes.Recurring) {
+            cartItem.Type = CartItemType.NewRegularGiving;
+            
             cartItem.NewRegularGiving = new NewRegularGivingWithOptionsReq();
             cartItem.NewRegularGiving.Allocation = allocation;
         } else {
+            cartItem.Type = CartItemType.NewDonation;
+            
             cartItem.NewDonation = new NewDonationReq();
             cartItem.NewDonation.Allocation = allocation;
         }
@@ -86,10 +90,11 @@ public partial class ElementDonationFormsStateReqMapping {
        platformsContribution.ContributionId = Guid.NewGuid().ToString();
        platformsContribution.Campaign = new CampaignInfoReq();
        platformsContribution.Campaign.Id = campaign.Key.ToString();
-       platformsContribution.Campaign.Reference = publishedCampaign.Reference;
+       platformsContribution.Campaign.Reference = publishedCampaign?.Reference;
         
        platformsContribution.Offering = new OfferingInfoReq();
        platformsContribution.Offering.Id = offering.Key.ToString();
+       platformsContribution.Offering.Name = offering.Name.ToString();
 
        return platformsContribution;
     }

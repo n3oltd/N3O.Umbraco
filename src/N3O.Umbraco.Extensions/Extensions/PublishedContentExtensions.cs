@@ -17,9 +17,9 @@ public static class PublishedContentExtensions {
     
     // We need to do all of this as for background jobs Umbraco picks up the URL from the context and ends up
     // resolving to localhost
-    public static string AbsoluteUrl(this IPublishedContent content) {
+    public static string AbsoluteUrl(this IPublishedContent content, string culture = null) {
         var rootUrl = UrlBuilder.Root();
-        var url = new Url(content.Url(mode: UrlMode.Absolute));
+        var url = new Url(content.Url(mode: UrlMode.Absolute, culture: culture));
 
         url.Host = rootUrl.Host;
         url.Port = rootUrl.Port;
@@ -83,7 +83,7 @@ public static class PublishedContentExtensions {
     }
 
     public static bool HasTemplate(this IPublishedContent content) {
-        return content.TemplateId != 0;
+        return content.TemplateId != null && content.TemplateId > 0;
     }
 
     public static string RelativeUrl(this IPublishedContent content) {

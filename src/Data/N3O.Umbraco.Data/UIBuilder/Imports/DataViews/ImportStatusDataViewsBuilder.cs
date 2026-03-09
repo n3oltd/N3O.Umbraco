@@ -1,8 +1,8 @@
+using Konstrukt.Configuration.Builders.DataViews;
+using Konstrukt.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Konstrukt.Configuration.Builders.DataViews;
-using Konstrukt.Models;
 
 namespace N3O.Umbraco.Data.UIBuilder;
 

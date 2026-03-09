@@ -1,5 +1,4 @@
 ﻿using N3O.Umbraco.Attributes;
-using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
@@ -7,7 +6,6 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -16,7 +14,7 @@ using Umbraco.Cms.Core.Strings;
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
 [UmbracoContent(PlatformsConstants.Offerings.CompositionAlias)]
-public class OfferingContent : UmbracoContent<OfferingContent> {
+public class OfferingContent : UmbracoContent<OfferingContent>, IHoldCustomFormState {
     private static readonly string FeedbackOfferingAlias = AliasHelper<FeedbackOfferingContent>.ContentTypeAlias();
     private static readonly string FundOfferingAlias = AliasHelper<FundOfferingContent>.ContentTypeAlias();
     private static readonly string SponsorshipOfferingAlias = AliasHelper<SponsorshipOfferingContent>.ContentTypeAlias();
@@ -49,7 +47,9 @@ public class OfferingContent : UmbracoContent<OfferingContent> {
     public string Name => Content().Name;
     public Guid Key => Content().Key;
 
+    public string Summary => GetValue(x => x.Summary);
     public string Notes => GetValue(x => x.Notes);
+    public string NotesLabel => GetValue(x => x.NotesLabel);
     public FundDimension1Value Dimension1 => GetValue(x => x.Dimension1);
     public FundDimension2Value Dimension2 => GetValue(x => x.Dimension2);
     public FundDimension3Value Dimension3 => GetValue(x => x.Dimension3);
@@ -59,24 +59,17 @@ public class OfferingContent : UmbracoContent<OfferingContent> {
     public IHtmlEncodedString Description => GetValue(x => x.Description);
     public GiftType SuggestedGiftType => GetValue(x => x.SuggestedGiftType);
     public bool AllowCrowdfunding => GetValue(x => x.AllowCrowdfunding);
+    public string CustomFormState => GetValue(x => x.CustomFormState);
+    
+    public string DonationButtonEmbedCode => GetValue(x => x.DonationButtonEmbedCode);
+    public string DonationFormEmbedCode => GetValue(x => x.DonationFormEmbedCode);
+    public string DonationPopupEmbedCode => GetValue(x => x.DonationPopupEmbedCode);
     
     public SponsorshipOfferingContent Sponsorship { get; private set; }
     public FundOfferingContent Fund { get; private set; }
     public FeedbackOfferingContent Feedback { get; private set; }
     
     public bool HasPricing => ((IHoldPricing) Fund?.DonationItem ?? Feedback?.Scheme).HasPricing();
-    
-    public IReadOnlyList<GiftType> GetGiftTypes() {
-        var givingTypes = Fund?.DonationItem.AllowedGivingTypes ??
-                          Feedback?.Scheme.AllowedGivingTypes ??
-                          Sponsorship?.Scheme.AllowedGivingTypes;
-
-        if (givingTypes.HasAny()) {
-            return givingTypes.Select(x => x.ToGiftType()).ToList();
-        } else {
-            return null;
-        }
-    }
     
     public IFundDimensionOptions GetFundDimensionOptions() {
         var holdFundDimensionOptions = (IHoldFundDimensionOptions) Fund?.DonationItem ??

@@ -33,6 +33,9 @@ public class AllocationReq : IAllocation {
     
     [Name("Upsell Offer ID")]
     public Guid? UpsellOfferId { get; set; }
+    
+    [Name("Notes")]
+    public string Notes { get; set; }
 
     [JsonIgnore]
     public bool LinkedToPledge => PledgeUrl.HasValue();

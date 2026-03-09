@@ -17,7 +17,8 @@ public class Allocation : Value, IAllocation {
                       SponsorshipAllocation sponsorship,
                       FeedbackAllocation feedback,
                       string pledgeUrl,
-                      Guid? upsellOfferId) {
+                      Guid? upsellOfferId,
+                      string notes) {
         Type = type;
         Value = value;
         FundDimensions = fundDimensions;
@@ -26,6 +27,7 @@ public class Allocation : Value, IAllocation {
         Feedback = feedback;
         PledgeUrl = pledgeUrl;
         UpsellOfferId = upsellOfferId;
+        Notes = notes;
     }
 
     public Allocation(IAllocation allocation) : this(allocation, allocation.Extensions) { }
@@ -38,7 +40,8 @@ public class Allocation : Value, IAllocation {
                allocation.Sponsorship.IfNotNull(x => new SponsorshipAllocation(x)),
                allocation.Feedback.IfNotNull(x => new FeedbackAllocation(x)),
                allocation.PledgeUrl,
-               allocation.UpsellOfferId) {
+               allocation.UpsellOfferId,
+               allocation.Notes) {
         Extensions = extensions;
     }
 
@@ -50,6 +53,7 @@ public class Allocation : Value, IAllocation {
     public FeedbackAllocation Feedback { get; }
     public string PledgeUrl { get; }
     public Guid? UpsellOfferId { get; }
+    public string Notes { get; }
     
     public bool LinkedToPledge => PledgeUrl.HasValue();
     

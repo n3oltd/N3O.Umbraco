@@ -20,7 +20,8 @@ public class IndexContentOnPublish : INotificationAsyncHandler<ContentPublishedN
     
     public Task HandleAsync(ContentPublishedNotification notification, CancellationToken cancellationToken) {
         foreach (var content in notification.PublishedEntities) {
-            _backgroundJob.EnqueueCommand<IndexContentCommand>(m => m.Add<ContentId>(content.Key.ToString()));
+            _backgroundJob.EnqueueCommand<IndexContentCommand>(m => m.Add<ContentId>(content.Key.ToString()),
+                                                               content.Key);
         }
 
         return Task.CompletedTask;

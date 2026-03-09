@@ -10,11 +10,9 @@ namespace N3O.Umbraco.Giving.Allocations.Models;
 
 public class DonationFormMapping : IMapDefinition {
     private readonly ILookups _lookups;
-    private readonly IVariationContextAccessor _variationContextAccessor;
-
-    public DonationFormMapping(ILookups lookups, IVariationContextAccessor variationContextAccessor) {
+    
+    public DonationFormMapping(ILookups lookups) {
         _lookups = lookups;
-        _variationContextAccessor = variationContextAccessor;
     }
     
     public void DefineMaps(IUmbracoMapper mapper) {

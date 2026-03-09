@@ -1,13 +1,17 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Cloud.Lookups;
+using N3O.Umbraco.Cloud.Models;
+using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
-using N3O.Umbraco.Lookups;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NodaTime;
+using Polly;
+using Polly.RateLimit;
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,15 +20,26 @@ using JsonSerializer = N3O.Umbraco.Cloud.Lookups.JsonSerializer;
 namespace N3O.Umbraco.Cloud;
 
 public class CdnClient : ICdnClient {
-    private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(5);
-    private static readonly MemoryCache ContentCache = new(new MemoryCacheOptions());
+    private static readonly AsyncRateLimitPolicy RateLimitPolicy = Policy.RateLimitAsync(3, TimeSpan.FromSeconds(1), 5);
+    private static readonly ConcurrentDictionary<string, CdnDownloadResult> Downloads = new(StringComparer.InvariantCultureIgnoreCase);
     
     private readonly ICloudUrl _cloudUrl;
+    private readonly IClock _clock;
     private readonly IJsonProvider _jsonProvider;
+    private readonly ILogger<CdnClient> _logger;
+    private readonly HttpClient _httpClient;
 
-    public CdnClient(ICloudUrl cloudUrl, IJsonProvider jsonProvider) {
+    public CdnClient(ICloudUrl cloudUrl,
+                     IClock clock,
+                     IJsonProvider jsonProvider,
+                     ILogger<CdnClient> logger) {
         _cloudUrl = cloudUrl;
+        _clock = clock;
         _jsonProvider = jsonProvider;
+        _logger = logger;
+        
+        _httpClient = new HttpClient();
+        _httpClient.Timeout = TimeSpan.FromSeconds(5);
     }
 
     public async Task<T> DownloadPublishedContentAsync<T>(PublishedFileKind kind,
@@ -33,62 +48,53 @@ public class CdnClient : ICdnClient {
                                                           CancellationToken cancellationToken = default) {
         var publishedUrl = GetPublishedContentUrl(kind, path);
 
-        var res = await ContentCache.GetOrCreateAsync(GetCacheKey(publishedUrl, typeof(T).FullName), async c => {
-            c.AbsoluteExpirationRelativeToNow = CacheDuration;
+        var json = await FetchStringAsync(publishedUrl, cancellationToken);
+            
+        return json.IfNotNull(x => Deserialize<T>(x, jsonSerializer));
+    }
 
-            try {
-                using (var httpClient = new HttpClient()) {
-                    var json = await httpClient.GetStringAsync(publishedUrl, cancellationToken);
+    public async Task<PublishedContentResult> DownloadPublishedContentAsync(string path,
+                                                                            CancellationToken cancellationToken = default) {
+        var publishedUrl = GetPublishedContentUrl(path);
 
-                    return Deserialize<T>(json, jsonSerializer);
-                }
-            } catch (HttpRequestException e) when (e.StatusCode == System.Net.HttpStatusCode.NotFound) {
-                return default;
-            }
-        });
+        var json = await FetchStringAsync(publishedUrl, cancellationToken);
 
-        return res;
+        var jObject = json.IfNotNull(JObject.Parse);
+        var kind = jObject.GetPublishedFileKind();
+            
+        if (kind.HasValue()) {
+            Guid.TryParse(jObject["id"]?.ToString(), out var id);
+                
+            return PublishedContentResult.ForFound(id, kind, path, jObject);
+        } else {
+            return PublishedContentResult.ForNotFound(path);
+        }
+    }
+
+    private async Task<string> FetchStringAsync(string publishedUrl, CancellationToken cancellationToken) {
+        var download = Downloads.GetOrDefault(publishedUrl);
+            
+        if (download == null || download.IsExpired(_clock) || download.CanRetry(_clock)) {
+            Downloads[publishedUrl] = await DownloadStringAsync(publishedUrl, cancellationToken);
+        }
+
+        return Downloads[publishedUrl].Content;
     }
     
-    public async Task<(Guid, PublishedFileKind, IReadOnlyDictionary<string, object>)> DownloadPublishedPageAsync(PublishedFileKind kind,
-                                                                                                                 string path,
-                                                                                                                 CancellationToken cancellationToken = default) {
-        var pagePath = $"{kind.Id}/pages/{path.Trim('/')}/index.json";
-        
-        return await DownloadPublishedContentAsync(pagePath, cancellationToken);
-    }
+    private async Task<CdnDownloadResult> DownloadStringAsync(string publishedUrl,
+                                                              CancellationToken cancellationToken) {
+        try {
+            var download = await GetStringRateLimitedAsync(publishedUrl, cancellationToken);
 
-    public async Task<(Guid, PublishedFileKind, IReadOnlyDictionary<string, object>)> DownloadPublishedContentAsync(string publishedPath, CancellationToken cancellationToken = default) {
-        var publishedUrl = GetPublishedContentUrl(publishedPath);
+            return CdnDownloadResult.ForSuccess(_clock, download);
+        } catch (Exception ex) {
+            _logger.LogWarning(ex, "Could not download {PublishedUrl}", publishedUrl);
 
-        var res = await ContentCache.GetOrCreateAsync(GetCacheKey(publishedUrl, typeof(object).FullName), async c => {
-            c.AbsoluteExpirationRelativeToNow = CacheDuration;
-
-            try {
-                using (var httpClient = new HttpClient()) {
-                    var json = await httpClient.GetStringAsync(publishedUrl, cancellationToken);
-
-                    var jObject = JObject.Parse(json);
-                    var kindId = jObject["kind"]?.ToString();
-                    var kind = StaticLookups.FindById<PublishedFileKind>(kindId);
-                    
-                    Guid.TryParse(jObject["id"]?.ToString(), out var id);
-
-                    if (kind.HasValue()) {
-                        return (id, kind, jObject.ToObject<Dictionary<string, object>>());
-                    } else {
-                        return (Guid.Empty, null, null);
-                    }
-                }
-            } catch (HttpRequestException e) when (e.StatusCode == System.Net.HttpStatusCode.NotFound) {
-                return (Guid.Empty, null, null);
-            }
-        });
-
-        return res;
+            return CdnDownloadResult.ForFailure(_clock);
+        }
     }
     
-    public string GetPublishedContentUrl(PublishedFileKind kind, string path) {
+    private string GetPublishedContentUrl(PublishedFileKind kind, string path) {
         return GetPublishedContentUrl(GetPublishedPath(kind, path));
     }
 
@@ -102,15 +108,23 @@ public class CdnClient : ICdnClient {
         }
     }
     
-    private string GetCacheKey(string publishedUrl, string type) {
-        return $"{nameof(CdnClient)}_{publishedUrl}_{type}";
-    }
-    
     private string GetPublishedPath(PublishedFileKind kind, string path) {
         return $"{kind.PathSegment}/{path}";
     }
     
-    private string GetPublishedContentUrl(string publishedPath) {
-        return _cloudUrl.ForCdn(CdnRoots.Connect, publishedPath);
+    private string GetPublishedContentUrl(string path) {
+        return _cloudUrl.ForCdn(CdnRoots.Connect, path);
+    }
+    
+    private async Task<string> GetStringRateLimitedAsync(string publishedUrl, CancellationToken cancellationToken) {
+        var policyResult = await RateLimitPolicy.ExecuteAndCaptureAsync(() => {
+            return _httpClient.GetStringAsync(publishedUrl, cancellationToken);
+        });
+
+        if (policyResult.Outcome == OutcomeType.Successful) {
+            return policyResult.Result;
+        } else {
+            throw policyResult.FinalException;
+        }
     }
 }

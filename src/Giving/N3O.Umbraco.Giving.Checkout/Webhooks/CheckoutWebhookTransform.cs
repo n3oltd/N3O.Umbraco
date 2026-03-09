@@ -4,11 +4,11 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
-using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Payments.Content;
 using N3O.Umbraco.Payments.Lookups;
+using N3O.Umbraco.Utilities;
 using N3O.Umbraco.Webhooks.Transforms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -104,15 +104,12 @@ public class CheckoutWebhookTransform : WebhookTransform {
     }
     
     private void TransformTags(JObject jObject) {
-        var siteLanguageTag = EnvironmentData.GetOurValue(CheckoutConstants.Environment.Keys.SiteLanguageTag);
-        var siteNameTag = EnvironmentData.GetOurValue(CheckoutConstants.Environment.Keys.SiteNameTag);
-
-        if (siteLanguageTag.HasValue()) {
-            AddTag(jObject, nameof(siteLanguageTag), siteLanguageTag);
+        if (Site.Language.HasValue()) {
+            AddTag(jObject, "SiteLanguageTag", Site.Language);
         }
         
-        if (siteNameTag.HasValue()) {
-            AddTag(jObject, nameof(siteNameTag), siteNameTag);
+        if (Site.Name.HasValue()) {
+            AddTag(jObject, "SiteNameTag", Site.Name);
         }
     }
 

@@ -1,22 +1,40 @@
-﻿using Humanizer;
+﻿using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Extensions;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Templates.Extensions;
 
 public static class MergeModelProviderExtensions {
-    public static async Task<IReadOnlyDictionary<string, object>> GetMergeModelsAsync(this IEnumerable<IMergeModelProvider> mergeModelProviders,
+    public static async Task<IReadOnlyDictionary<string, object>> GetMergeModelsAsync(this IEnumerable<IMergeModelsProvider> mergeModelsProviders,
+                                                                                      ILogger logger,
                                                                                       IPublishedContent content,
-                                                                                      ConcurrentDictionary<IPublishedContent, IReadOnlyDictionary<string, object>> cache) {
+                                                                                      ConcurrentDictionary<IPublishedContent, IReadOnlyDictionary<string, object>> cache,
+                                                                                      CancellationToken cancellationToken = default) {
         return await cache.GetOrAddAtomicAsync<IPublishedContent, IReadOnlyDictionary<string, object>>(content, async () => {
-            var mergeModels = new Dictionary<string, object>();
+            var mergeModels = new Dictionary<string, object>(StringComparer.InvariantCultureIgnoreCase);
 
-            foreach (var provider in mergeModelProviders.ApplyAttributeOrdering()) {
-                if (await provider.IsProviderForAsync(content)) {
-                    mergeModels[provider.Key.Camelize()] = await provider.GetAsync(content);
+            foreach (var provider in mergeModelsProviders.ApplyAttributeOrdering()) {
+                try {
+                    if (await provider.IsProviderForAsync(content)) {
+                        var models = await provider.GetModelsAsync(content, cancellationToken);
+
+                        foreach (var (key, data) in models) {
+                            mergeModels[key] = data;
+                        }
+                    }
+                } catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.NotFound) {
+                    // Do not log not founds
+                } catch (Exception ex) {
+                    logger.LogError(ex, "Failed to get model for {Provider}. Content ID: {ID}",
+                                    provider.GetType().Name,
+                                    content.Key);
                 }
             }
 

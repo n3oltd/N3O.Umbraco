@@ -34,7 +34,8 @@ public class IndexContentsOfTypeHandler : IRequestHandler<IndexContentsOfTypeCom
                 var publishedContents = _contentLocator.All(contentType.Alias);
         
                 foreach (var publishedContent in publishedContents) {
-                    _backgroundJob.EnqueueCommand<IndexContentCommand>(m => m.Add<ContentId>(publishedContent.Key.ToString()));
+                    _backgroundJob.EnqueueCommand<IndexContentCommand>(m => m.Add<ContentId>(publishedContent.Key.ToString()),
+                                                                       publishedContent.Key.ToString());
                 }
             }
         }

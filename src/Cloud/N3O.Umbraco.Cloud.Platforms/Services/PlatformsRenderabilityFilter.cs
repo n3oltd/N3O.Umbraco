@@ -26,8 +26,8 @@ public class PlatformsRenderabilityFilter : IContentRenderabilityFilter {
     }
     
     public async Task<bool> CanRenderAsync(IPublishedContent content) {
-        var foundPlatformsPage = await _platformsPageAccessor.GetAsync();
+        var getPageResult = await _platformsPageAccessor.GetAsync();
 
-        return foundPlatformsPage?.IsRedirect == false;
+        return getPageResult?.IsRedirect == false;
     }
 }

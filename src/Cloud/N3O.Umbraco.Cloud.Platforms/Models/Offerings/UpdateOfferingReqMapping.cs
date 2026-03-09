@@ -1,16 +1,22 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Clients;
+﻿using N3O.Umbraco.Cloud.Extensions;
+using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Media;
 using Slugify;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class UpdateOfferingReqMapping : IMapDefinition {
+    public const string PageContentContext = nameof(PageContentContext);
+    
     private readonly IMediaUrl _mediaUrl;
     private readonly ISlugHelper _slugHelper;
 
@@ -29,14 +35,30 @@ public class UpdateOfferingReqMapping : IMapDefinition {
         dest.Notes = src.Notes;
         dest.Slug = _slugHelper.GenerateSlug(src.Name);
         
+        dest.Summary = src.Summary;
         dest.Description = new RichTextContentReq();
         dest.Description.Html = src.Description.ToHtmlString(); 
         dest.Image = src.Image.ToImageSimpleContentReq(_mediaUrl);
-        dest.Icon = new SvgContentReq();
-        dest.Icon.SourceFile = _mediaUrl.GetMediaUrl(src.Icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x)).ToString();
 
-        dest.Page = new ContentReq(); // TODO Populate rest of the properties
-        dest.Page.SchemaAlias = nameof(PlatformsSystemSchema.Sys__offeringPage).ToLower();
+        if (src.Icon.HasValue()) {
+            dest.Icon = new SvgContentReq();
+            dest.Icon.SourceFile = _mediaUrl.GetMediaUrl(src.Icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x)).ToString();
+        }
+        
+        dest.Order = new OfferingOrderReq();
+        dest.Order.Order = src.Content().Parent.Children.FindIndex(x => x.Id == src.Content().Id);
+        
+        // TODO
+        dest.Badges = [];
+
+        dest.Page = new ContentReq();
+        dest.Page.SchemaAlias = PlatformsSystemSchema.Sys__offeringPage.ToEnumString();
+        
+        if (ctx.Items.TryGetValue(PageContentContext, out var value)) {
+            var properties = ((IEnumerable<PropertyContentReq>) value).OrEmpty().Where(x => x.EditorHasValue());
+            
+            dest.Page.Properties = properties.ToList();
+        }
         
         dest.FormState = ctx.Map<OfferingContent, DonationFormStateReq>(src);
         

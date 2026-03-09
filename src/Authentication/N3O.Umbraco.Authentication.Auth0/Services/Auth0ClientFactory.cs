@@ -22,8 +22,8 @@ public class Auth0ClientFactory : IAuth0ClientFactory {
         _httpClientFactory = httpClientFactory;
     }
     
-    public AuthenticationApiClient GetAuthenticationApiClient(UmbracoAuthType umbracoAuthType) {
-        var loginOptions = GetClientOptions(umbracoAuthType).Login;
+    public AuthenticationApiClient GetAuthenticationApiClient(UserDirectoryType userDirectoryType) {
+        var loginOptions = GetClientOptions(userDirectoryType).Login;
         var httpClient = _httpClientFactory.CreateClient();
         var connection = new HttpClientAuthenticationConnection(httpClient);
             
@@ -32,8 +32,8 @@ public class Auth0ClientFactory : IAuth0ClientFactory {
         return auth0Client;
     }
     
-    public async Task<IManagementApiClient> GetManagementApiClientAsync(UmbracoAuthType umbracoAuthType) {
-        var managementOptions = GetClientOptions(umbracoAuthType).Management;
+    public async Task<IManagementApiClient> GetManagementApiClientAsync(UserDirectoryType userDirectoryType) {
+        var managementOptions = GetClientOptions(userDirectoryType).Management;
         var token = await _tokenAccessor.GetTokenAsync(managementOptions, managementOptions.ApiIdentifier);
         var httpClient = _httpClientFactory.CreateClient();
 
@@ -44,13 +44,13 @@ public class Auth0ClientFactory : IAuth0ClientFactory {
         return auth0Client;
     }
     
-    private Auth0AuthenticationOptions GetClientOptions(UmbracoAuthType umbracoAuthType) {
-        if (umbracoAuthType == UmbracoAuthTypes.User) {
+    private Auth0AuthenticationOptions GetClientOptions(UserDirectoryType userDirectoryType) {
+        if (userDirectoryType == UserDirectoryTypes.BackOffice) {
             return _authenticationOptions.BackOffice.Auth0;
-        } else if (umbracoAuthType == UmbracoAuthTypes.Member) {
+        } else if (userDirectoryType == UserDirectoryTypes.Members) {
             return _authenticationOptions.Members.Auth0;
         } else {
-            throw UnrecognisedValueException.For(umbracoAuthType);
+            throw UnrecognisedValueException.For(userDirectoryType);
         }
     }
 }

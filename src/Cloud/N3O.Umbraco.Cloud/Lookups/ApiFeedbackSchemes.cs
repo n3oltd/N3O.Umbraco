@@ -28,7 +28,7 @@ public class ApiFeedbackSchemes : ApiLookupsCollection<FeedbackScheme> {
 
         var feedbackSchemes = new List<FeedbackScheme>();
 
-        foreach (var publishedFeedbackScheme in publishedFeedbackSchemes.FeedbackSchemes) {
+        foreach (var publishedFeedbackScheme in publishedFeedbackSchemes.OrEmpty(x => x.FeedbackSchemes)) {
             var feedbackScheme = new FeedbackScheme(publishedFeedbackScheme.Id,
                                                     publishedFeedbackScheme.Name,
                                                     null,
@@ -51,5 +51,5 @@ public class ApiFeedbackSchemes : ApiLookupsCollection<FeedbackScheme> {
                                                  publishedFeedbackCustomFieldDefinition.Text?.MaxLength.GetValueOrDefault() ?? 0);
     }
 
-    protected override TimeSpan CacheDuration => TimeSpan.FromHours(12);
+    protected override TimeSpan ReloadInterval => TimeSpan.FromMinutes(1);
 }

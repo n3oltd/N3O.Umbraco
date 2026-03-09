@@ -1,11 +1,11 @@
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Payments.Handlers;
-using N3O.Umbraco.Payments.Models;
 using N3O.Umbraco.Payments.Bambora.Clients;
 using N3O.Umbraco.Payments.Bambora.Commands;
 using N3O.Umbraco.Payments.Bambora.Extensions;
 using N3O.Umbraco.Payments.Bambora.Models;
+using N3O.Umbraco.Payments.Handlers;
+using N3O.Umbraco.Payments.Models;
 using Newtonsoft.Json;
 using Refit;
 using System.Threading;

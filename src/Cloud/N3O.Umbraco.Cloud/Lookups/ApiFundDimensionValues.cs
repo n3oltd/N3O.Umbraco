@@ -28,7 +28,7 @@ public abstract class ApiFundDimensionValues<T> : ApiLookupsCollection<T> where 
         return GetFundDimensionValues(fundStructure).ToList();
     }
 
-    protected override TimeSpan CacheDuration => TimeSpan.FromHours(12);
+    protected override TimeSpan ReloadInterval => TimeSpan.FromMinutes(1);
     
     protected abstract IEnumerable<T> GetFundDimensionValues(PublishedFundStructure fundDimensionValues);
 }
@@ -40,6 +40,10 @@ public class ApiFundDimension1Values : ApiFundDimensionValues<FundDimension1Valu
     protected override IEnumerable<FundDimension1Value> GetFundDimensionValues(PublishedFundStructure fundStructure) {
         FundDimension1Value ToFundDimension1Value(string value, bool unrestricted) {
             return new FundDimension1Value(value, value, null, unrestricted);
+        }
+
+        if (fundStructure == null) {
+            return [];
         }
         
         var fundDimensionValues = fundStructure.Dimension1
@@ -61,6 +65,10 @@ public class ApiFundDimension2Values : ApiFundDimensionValues<FundDimension2Valu
             return new FundDimension2Value(value, value, null, unrestricted);
         }
         
+        if (fundStructure == null) {
+            return [];
+        }
+        
         var fundDimensionValues = fundStructure.Dimension2
                                                .RestrictedOptions
                                                .Select(x => ToFundDimension2Value(x, false))
@@ -80,6 +88,10 @@ public class ApiFundDimension3Values : ApiFundDimensionValues<FundDimension3Valu
             return new FundDimension3Value(value, value, null, unrestricted);
         }
         
+        if (fundStructure == null) {
+            return [];
+        }
+        
         var fundDimensionValues = fundStructure.Dimension3
                                                .RestrictedOptions
                                                .Select(x => ToFundDimension3Value(x, false))
@@ -97,6 +109,10 @@ public class ApiFundDimension4Values : ApiFundDimensionValues<FundDimension4Valu
     protected override IEnumerable<FundDimension4Value> GetFundDimensionValues(PublishedFundStructure fundStructure) {
         FundDimension4Value ToFundDimension4Value(string value, bool unrestricted) {
             return new FundDimension4Value(value, value, null, unrestricted);
+        }
+        
+        if (fundStructure == null) {
+            return [];
         }
         
         var fundDimensionValues = fundStructure.Dimension4

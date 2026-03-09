@@ -19,7 +19,8 @@ public abstract class FundDimension<T, TValue> : ContentOrPublishedLookup, IFund
                             Guid? contentId,
                             bool isActive,
                             IEnumerable<IFundDimensionValue> options,
-                            int index) : base(id, name, contentId) {
+                            int index)
+        : base(id, name, contentId) {
         IsActive = isActive;
         Options = options;
         Index = index;
@@ -35,8 +36,7 @@ public class FundDimension1 : FundDimension<FundDimension1, FundDimension1Value>
                           string name,
                           Guid? contentId,
                           bool isActive,
-                          IReadOnlyList<IFundDimensionValue> options,
-                          int index) 
+                          IReadOnlyList<IFundDimensionValue> options) 
         : base(id, name, contentId, isActive, options, 1) { }
 }
 
@@ -45,8 +45,7 @@ public class FundDimension2 : FundDimension<FundDimension2, FundDimension2Value>
                           string name,
                           Guid? contentId,
                           bool isActive,
-                          IReadOnlyList<IFundDimensionValue> options,
-                          int index) 
+                          IReadOnlyList<IFundDimensionValue> options) 
         : base(id, name, contentId, isActive, options, 2) { }
 }
 
@@ -55,8 +54,7 @@ public class FundDimension3 : FundDimension<FundDimension3, FundDimension3Value>
                           string name,
                           Guid? contentId,
                           bool isActive,
-                          IReadOnlyList<IFundDimensionValue> options,
-                          int index) 
+                          IReadOnlyList<IFundDimensionValue> options) 
         : base(id, name, contentId, isActive, options, 3) { }
 }
 
@@ -65,7 +63,6 @@ public class FundDimension4 : FundDimension<FundDimension4, FundDimension4Value>
                           string name,
                           Guid? contentId,
                           bool isActive,
-                          IReadOnlyList<IFundDimensionValue> options,
-                          int index) 
+                          IReadOnlyList<IFundDimensionValue> options) 
         : base(id, name, contentId, isActive, options, 4) { }
 }

@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Notifications;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Notifications;
 
@@ -28,9 +29,17 @@ public class ContentValidationHandler : INotificationAsyncHandler<ContentSavingN
 
     public Task HandleAsync(ContentSavingNotification notification, CancellationToken cancellationToken) {
         foreach (var content in notification.SavedEntities) {
-            var contentProperties = _contentHelper.GetContentProperties(content);
+            if (content.ContentType.VariesByCulture()) {
+                foreach (var editedCulture in content.EditedCultures.OrEmpty()) {
+                    var contentProperties = _contentHelper.GetContentProperties(content, editedCulture);
 
-            Validate(contentProperties, notification);
+                    Validate(contentProperties, notification);
+                }
+            } else {
+                var contentProperties = _contentHelper.GetContentProperties(content);
+
+                Validate(contentProperties, notification);
+            }
         }
 
         return Task.CompletedTask;

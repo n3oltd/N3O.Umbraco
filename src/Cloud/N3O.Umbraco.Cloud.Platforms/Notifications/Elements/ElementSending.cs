@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using N3O.Umbraco.Cloud.Extensions;
+using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
@@ -24,10 +26,11 @@ public class ElementSending : INotificationAsyncHandler<SendingContentNotificati
     }
 
     public Task HandleAsync(SendingContentNotification notification, CancellationToken cancellationToken) {
-        var isDonationForm = notification.Content.ContentTypeAlias.EqualsInvariant(AliasHelper<DonationFormElementContent>.ContentTypeAlias());
         var isDonationButton = notification.Content.ContentTypeAlias.EqualsInvariant(AliasHelper<DonationButtonElementContent>.ContentTypeAlias());
+        var isDonationForm = notification.Content.ContentTypeAlias.EqualsInvariant(AliasHelper<DonationFormElementContent>.ContentTypeAlias());
+        var isDonationPopup = notification.Content.ContentTypeAlias.EqualsInvariant(AliasHelper<DonationPopupElementContent>.ContentTypeAlias());
 
-        if (isDonationForm || isDonationButton) {
+        if (isDonationButton || isDonationForm || isDonationPopup) {
             foreach (var variant in notification.Content.Variants) {
                 SetPropertiesReadOnly(variant);
                 SetEmbedCode(variant, notification.Content.ContentTypeAlias, notification.Content.Key.GetValueOrDefault());
@@ -52,16 +55,27 @@ public class ElementSending : INotificationAsyncHandler<SendingContentNotificati
         }
     }
     
-    // TODO Moved here from published notification handler to suppress notifications while creating default elements
     private void SetEmbedCode(ContentVariantDisplay variant, string contentTypeAlias, Guid contentId) {
         var type = StaticLookups.GetAll<ElementType>().Single(x => x.ContentTypeAlias.EqualsInvariant(contentTypeAlias));
             
         var tag = new TagBuilder(type.TagName);
-
-        if (type == ElementTypes.DonationButton) {
-            tag.Attributes.Add("element-id", contentId.ToString());
+        
+        if (type == ElementTypes.CreateCrowdfunderButton) {
+            tag.Attributes.Add("element-id", $"{contentId.ToString()}");
+            
+            tag.Attributes.Add("element-kind", ElementKind.CreateCrowdfunderButtonCustom.ToEnumString());
+        } else if (type == ElementTypes.DonationButton) {
+            tag.Attributes.Add("element-id", $"{contentId.ToString()}");
+            
+            tag.Attributes.Add("element-kind", ElementKind.DonationButtonCustom.ToEnumString());
         } else if (type == ElementTypes.DonationForm) {
-            tag.Attributes.Add("form-id", contentId.ToString());
+            tag.Attributes.Add("element-id", $"{contentId.ToString()}");
+            
+            tag.Attributes.Add("element-kind", ElementKind.DonationFormCustom.ToEnumString());
+        } else if (type == ElementTypes.DonationPopup) {
+            tag.Attributes.Add("element-id", $"{contentId.ToString()}");
+            
+            tag.Attributes.Add("element-kind", ElementKind.DonationPopupCustom.ToEnumString());
         }
         
         var embedTab = variant.Tabs.Single(x => x.Alias.EqualsInvariant("embed"));

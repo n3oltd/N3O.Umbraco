@@ -45,7 +45,8 @@ public static class UpsellOfferContentExtensions {
                               null,
                               null,
                               null,
-                              upsellOfferContent.Content().Key);
+                              upsellOfferContent.Content().Key,
+                              null);
     }
 
     public static async Task<UpsellOffer> ToUpsellOfferAsync(this UpsellOfferContent upsellOfferContent,

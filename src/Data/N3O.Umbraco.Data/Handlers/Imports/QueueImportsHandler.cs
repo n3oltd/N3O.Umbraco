@@ -1,6 +1,4 @@
 using N3O.Umbraco.Data.Commands;
-using N3O.Umbraco.Data.Converters;
-using N3O.Umbraco.Data.Filters;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Parsing;
@@ -11,7 +9,6 @@ using N3O.Umbraco.Storage;
 using N3O.Umbraco.Storage.Extensions;
 using NodaTime;
 using System;
-using System.Collections.Generic;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading;
@@ -28,12 +25,9 @@ public class QueueImportsHandler : IRequestHandler<QueueImportsCommand, QueueImp
     private readonly IWorkspace _workspace;
     private readonly IClock _clock;
     private readonly IContentTypeService _contentTypeService;
-    private readonly IDataTypeService _dataTypeService;
     private readonly IImportQueue _importQueue;
     private readonly Lazy<IVolume> _volume;
-    private readonly IEnumerable<IPropertyConverter> _propertyConverters;
     private readonly ErrorLog _errorLog;
-    private readonly IReadOnlyList<IImportPropertyFilter> _propertyFilters;
     private readonly string _nameColumnTitle;
     private readonly string _replacesColumnTitle;
     private readonly string _contentIdColumnTitle;
@@ -45,19 +39,14 @@ public class QueueImportsHandler : IRequestHandler<QueueImportsCommand, QueueImp
                                IDataTypeService dataTypeService,
                                IImportQueue importQueue,
                                Lazy<IVolume> volume,
-                               IFormatter formatter,
-                               IEnumerable<IImportPropertyFilter> propertyFilters,
-                               IEnumerable<IPropertyConverter> propertyConverters) {
+                               IFormatter formatter) {
         _backOfficeSecurityAccessor = backOfficeSecurityAccessor;
         _workspace = workspace;
         _clock = clock;
         _contentTypeService = contentTypeService;
-        _dataTypeService = dataTypeService;
         _importQueue = importQueue;
         _volume = volume;
         _errorLog = new ErrorLog(formatter);
-        _propertyConverters = propertyConverters.ToList();
-        _propertyFilters = propertyFilters.ToList();
 
         _nameColumnTitle = formatter.Text.Format<DataStrings>(s => s.NameColumnTitle);
         _replacesColumnTitle = formatter.Text.Format<DataStrings>(s => s.ReplacesColumnTitle);
@@ -162,7 +151,6 @@ public class QueueImportsHandler : IRequestHandler<QueueImportsCommand, QueueImp
     
     public class Strings : CodeStrings {
         public string MaxRowsExceeded_1 => $"The CSV file contains more than the maximum allowed {0} rows";
-        public string MissingColumn_1 => $"CSV file is missing column {"{0}".Quote()}";
         public string MissingName => "Name is required to import new content";
     }
 }

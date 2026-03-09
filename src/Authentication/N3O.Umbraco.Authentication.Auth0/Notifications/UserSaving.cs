@@ -24,7 +24,7 @@ public class UserSaving : INotificationAsyncHandler<UserSavingNotification> {
     public async Task HandleAsync(UserSavingNotification notification, CancellationToken cancellationToken) {
         if (_auth0BackOfficeOptions.Auth0.Login.AutoCreateDirectoryUser) {
             foreach (var user in notification.SavedEntities) {
-                await _userDirectory.Value.CreateUserIfNotExistsAsync(UmbracoAuthTypes.User,
+                await _userDirectory.Value.CreateUserIfNotExistsAsync(UserDirectoryTypes.BackOffice,
                                                                       _auth0BackOfficeOptions.Auth0.Login.ClientId,
                                                                       _auth0BackOfficeOptions.Auth0.Login.ConnectionName,
                                                                       _auth0BackOfficeOptions.Auth0.Login.Passwordless,

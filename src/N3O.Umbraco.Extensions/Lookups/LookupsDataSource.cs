@@ -16,12 +16,12 @@ public abstract class LookupsDataSource<T> : IContentmentDataSource where T : IN
     public abstract string Name { get; }
     public abstract string Description { get; }
     public abstract string Icon { get; }
-    public Dictionary<string, object> DefaultValues => default;
-    public IEnumerable<ConfigurationField> Fields => default;
+    public Dictionary<string, object> DefaultValues => null;
+    public IEnumerable<ConfigurationField> Fields => null;
     public string Group => "N3O";
     public OverlaySize OverlaySize => OverlaySize.Small;
     
-    public IEnumerable<DataListItem> GetItems(Dictionary<string, object> config) {
+    public virtual IEnumerable<DataListItem> GetItems(Dictionary<string, object> config) {
         return _lookups.GetAll<T>().Select(ToDataListItem).OrderBy(x => x.Name).ToList();
     }
 
@@ -36,7 +36,7 @@ public abstract class LookupsDataSource<T> : IContentmentDataSource where T : IN
     protected virtual string GetDescription(T lookup) => null;
     protected abstract string GetIcon(T lookup);
     
-    private DataListItem ToDataListItem(T lookup) {
+    protected DataListItem ToDataListItem(T lookup) {
         var dataListItem = new DataListItem();
         dataListItem.Name = lookup.Name;
         dataListItem.Description = GetDescription(lookup);

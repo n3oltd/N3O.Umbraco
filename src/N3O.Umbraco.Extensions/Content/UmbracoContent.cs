@@ -24,7 +24,7 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
 
     protected VariationContext VariationContext { get; private set; }
     
-    protected TProperty Child<TProperty>(Expression<Func<T, TProperty>> memberExpression)
+    protected TProperty Child<TProperty>(Expression<Func<T, TProperty>> _)
         where TProperty : UmbracoContent<TProperty> {
         var alias = AliasHelper<TProperty>.ContentTypeAlias();
         var child = Content().Children.SingleOrDefault(x => x.ContentType.Alias.EqualsInvariant(alias));

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Commands;
 using N3O.Umbraco.Extensions;
@@ -15,24 +16,38 @@ namespace N3O.Umbraco.Cloud.Platforms.Handlers;
 
 public class GeneratePublishedCompositionsHandler : IRequestHandler<GeneratePublishedCompositionsCommand, None, None> {
     private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly ILogger<GeneratePublishedCompositionsHandler> _logger;
 
-    public GeneratePublishedCompositionsHandler(IWebHostEnvironment webHostEnvironment) {
+    public GeneratePublishedCompositionsHandler(IWebHostEnvironment webHostEnvironment,
+                                                ILogger<GeneratePublishedCompositionsHandler> logger) {
         _webHostEnvironment = webHostEnvironment;
+        _logger = logger;
     }
     
     public async Task<None> Handle(GeneratePublishedCompositionsCommand req, CancellationToken cancellationToken) {
+        _logger.LogWarning("Generating compositions for path {Path}", "platforms/compositions");
+        
         var relativeUrlPath = "platforms/compositions";
         var compositionsDirectory = WebRoot.GetDirectory(_webHostEnvironment,
                                                          Path.Combine("platforms", "compositions"));
+
+        if (compositionsDirectory.Exists) {
+            _logger.LogWarning("Found Composition Directory {Directory}", compositionsDirectory.Name);
+        } else {
+            _logger.LogWarning("Could not fund the composition directory for path: {Path}", Path.Combine("platforms", "compositions"));
+        }
         
         foreach (var directory in compositionsDirectory.GetDirectories("*", SearchOption.TopDirectoryOnly)) {
             var publishedComposition = await GeneratePublishedCompositionAsync(directory, relativeUrlPath);
-            
-            var json = JsonConvert.SerializeObject(publishedComposition);
 
-            await WebRoot.SaveTextAsync(_webHostEnvironment,
-                                        Path.Combine(compositionsDirectory.FullName, $"{directory.Name}.json"),
-                                        json);
+            if (publishedComposition.HasValue()) {
+                var json = JsonConvert.SerializeObject(publishedComposition);
+                var path = Path.Combine(compositionsDirectory.FullName, $"{directory.Name}.json");
+
+                await WebRoot.SaveTextAsync(_webHostEnvironment, path, json);
+                
+                _logger.LogInformation("Wrote generated composition to {FilePath}", path);
+            }
         }
 
         return None.Empty;
@@ -54,6 +69,8 @@ public class GeneratePublishedCompositionsHandler : IRequestHandler<GeneratePubl
 
             return publishedComposition;
         } else {
+            _logger.LogWarning("Could not find composition file {FilePath}", compositionFile.FullName);
+            
             return null;
         }
     }

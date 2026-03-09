@@ -22,7 +22,7 @@ public abstract class SearchIndexer<TContent, TDocument> : ISearchIndexer
     public async Task DeleteAsync(string id) {
         var collectionInfo = TypesenseHelper.GetCollection<TDocument>();
         
-        await _typesenseClient.DeleteDocument<TDocument>(collectionInfo.Name, id);
+        await _typesenseClient.DeleteDocument<TDocument>(collectionInfo.Name.Resolve(), id);
     }
 
     public async Task IndexAsync(IPublishedContent content) {
@@ -31,7 +31,7 @@ public abstract class SearchIndexer<TContent, TDocument> : ISearchIndexer
         var document = _searchDocumentBuilder.Build();
         var collectionInfo = TypesenseHelper.GetCollection<TDocument>();
         
-        await _typesenseClient.UpsertDocument(collectionInfo.Name, document);
+        await _typesenseClient.UpsertDocument(collectionInfo.Name.Resolve(), document);
     }
 
     protected abstract Task ProcessContentAsync(ISearchDocumentBuilder<TDocument> builder, TContent content);

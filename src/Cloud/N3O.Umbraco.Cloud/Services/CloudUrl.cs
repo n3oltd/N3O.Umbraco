@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Models;
+using N3O.Umbraco.Dev;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 
@@ -66,7 +67,7 @@ public class CloudUrl : ICloudUrl {
     public string ConnectApiBaseUrl => GetConnectApiBaseUrl();
 
     private string GetConnectApiBaseUrl() {
-        if (_webHostEnvironment.IsDevelopment()) {
+        if (_webHostEnvironment.IsDevelopment() && !DevFlags.IsSet(DevFlags.EnableLiveTesting)) {
             return "https://api-beta.n3o.cloud";
         } else {
             return "https://api.n3o.cloud";
@@ -74,7 +75,7 @@ public class CloudUrl : ICloudUrl {
     }
     
     private Url GetEngageApiBaseUrl() {
-        if (_webHostEnvironment.IsDevelopment()) {
+        if (_webHostEnvironment.IsDevelopment() && !DevFlags.IsSet(DevFlags.EnableLiveTesting)) {
             return new Url("https://beta.n3o.cloud");
         } else {
             return new Url("https://n3o.cloud");
@@ -82,7 +83,7 @@ public class CloudUrl : ICloudUrl {
     }
 
     private Url GetCdnBaseUrl() {
-        if (_webHostEnvironment.IsDevelopment()) {
+        if (_webHostEnvironment.IsDevelopment() && !DevFlags.IsSet(DevFlags.EnableLiveTesting)) {
             return new Url("https://cdn-beta.n3o.cloud");
         } else {
             return new Url("https://cdn.n3o.cloud");

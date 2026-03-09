@@ -3,7 +3,7 @@
         <RootNamespace>N3O.Umbraco.Monitoring.Sentry</RootNamespace>
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
-        <Copyright>Copyright © 2025 N3O Ltd</Copyright>
+        <Copyright>Copyright © 2026 N3O Ltd</Copyright>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -35,6 +35,7 @@
 
     <ItemGroup>
       <PackageReference Include="Sentry.AspNetCore" Version="5.16.2" />
+      <PackageReference Include="Sentry.Serilog" Version="5.16.2" />
     </ItemGroup>
 
     <ItemGroup>

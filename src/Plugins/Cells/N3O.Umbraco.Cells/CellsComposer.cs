@@ -1,5 +1,5 @@
-using N3O.Umbraco.Composing;
 using N3O.Umbraco.Cells.DataTypes;
+using N3O.Umbraco.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 
 namespace N3O.Umbraco.Cells;

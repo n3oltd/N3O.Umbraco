@@ -12,7 +12,9 @@ public class JsonLd : Dictionary<string, object> {
     }
 
     public JsonLd Custom(string key, object value) {
-        this[key] = value;
+        if (value != null) {
+            this[key] = value;
+        }
 
         return this;
     }

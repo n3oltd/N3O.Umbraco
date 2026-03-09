@@ -3,7 +3,7 @@
         <RootNamespace>N3O.Umbraco.Validation</RootNamespace>
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
-        <Copyright>Copyright © 2025 N3O Ltd</Copyright>
+        <Copyright>Copyright © 2026 N3O Ltd</Copyright>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -37,7 +37,7 @@
     <ItemGroup>
         <PackageReference Include="FluentValidation" Version="12.1.1" />
         <PackageReference Include="ISO3166" Version="1.0.4" />
-        <PackageReference Include="libphonenumber-csharp" Version="9.0.21" />
+        <PackageReference Include="libphonenumber-csharp" Version="9.0.25" />
         <PackageReference Include="Profanity.Detector" Version="0.1.8" />
     </ItemGroup>
 

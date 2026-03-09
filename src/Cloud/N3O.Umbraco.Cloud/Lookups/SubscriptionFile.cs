@@ -10,9 +10,11 @@ public class SubscriptionFile : Lookup {
 
 public class SubscriptionFiles : StaticLookupsCollection<SubscriptionFile> {
     /*TODO Need to update these*/
+    public static readonly SubscriptionFile Campaigns = new("campaigns");
     public static readonly SubscriptionFile Countries = new("countries");
     public static readonly SubscriptionFile Currencies = new("currencies");
     public static readonly SubscriptionFile DonationItems = new("donationItems");
+    public static readonly SubscriptionFile Elements = new("elements");
     public static readonly SubscriptionFile FeedbackSchemes = new("feedbackSchemes");
     public static readonly SubscriptionFile FundStructure = new("fundStructure");
     public static readonly SubscriptionFile GivingSchedules = new("givingSchedules");

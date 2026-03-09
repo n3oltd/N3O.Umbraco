@@ -6,9 +6,11 @@ namespace N3O.Umbraco.Content;
 
 public abstract class ContentAccessControl : IContentAccessControl {
     private readonly IContentHelper _contentHelper;
+    private readonly IVariationContextAccessor _variationContextAccessor;
 
-    protected ContentAccessControl(IContentHelper contentHelper) {
+    protected ContentAccessControl(IContentHelper contentHelper, IVariationContextAccessor variationContextAccessor) {
         _contentHelper = contentHelper;
+        _variationContextAccessor = variationContextAccessor;
     }
     
     public async Task<bool> CanEditAsync(IContent content) {
@@ -16,7 +18,7 @@ public abstract class ContentAccessControl : IContentAccessControl {
             return true;
         }
 
-        var contentProperties = _contentHelper.GetContentProperties(content);
+        var contentProperties = _contentHelper.GetContentProperties(content, _variationContextAccessor?.VariationContext?.Culture);
 
         return await AllowEditAsync(contentProperties);
     }

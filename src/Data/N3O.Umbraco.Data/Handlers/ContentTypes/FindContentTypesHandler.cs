@@ -1,6 +1,6 @@
 using N3O.Umbraco.Data.Criteria;
-using N3O.Umbraco.Data.Queries;
 using N3O.Umbraco.Data.Models;
+using N3O.Umbraco.Data.Queries;
 using N3O.Umbraco.Data.QueryFilters;
 using N3O.Umbraco.Mediator;
 using System.Collections.Generic;

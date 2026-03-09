@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using N3O.Umbraco.Json;
 
 namespace N3O.Umbraco.Payments.Opayo;
 
@@ -31,7 +30,6 @@ public class OpayoHelper : IOpayoHelper {
     private readonly IActionLinkGenerator _actionLinkGenerator;
     private readonly IRemoteIpAddressAccessor _remoteIpAddressAccessor;
     private readonly IBrowserInfoAccessor _browserInfoAccessor;
-    private readonly IJsonProvider _jsonProvider;
 
     public OpayoHelper(IOpayoClient opayoClient,
                        IContentCache contentCache,
@@ -114,7 +112,7 @@ public class OpayoHelper : IOpayoHelper {
         var apiReq = new ApiPaymentTransactionReq();
 
         apiReq.Amount = ((Money) req.Value).GetAmountInLowestDenomination();
-        apiReq.Currency = req.Value.Currency.Id;
+        apiReq.Currency = req.Value.Currency.Code.ToUpperInvariant();
         apiReq.Description = parameters.GetTransactionDescription(settings);
         apiReq.VendorTxCode = vendorTxCode;
 

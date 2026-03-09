@@ -1,0 +1,18 @@
+using Microsoft.AspNetCore.Rewrite;
+using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Redirects;
+
+namespace N3O.Umbraco.Hosting;
+
+[Order(1)]
+public class UmbracoRedirectsRule : IRule {
+    public void ApplyRule(RewriteContext context) {
+        var redirect = UmbracoRedirects.Find(context.HttpContext.Request.Path);
+
+        if (redirect != null) {
+            context.HttpContext.Response.Redirect(redirect.UrlOrPath, !redirect.Temporary);
+            
+            context.Result = RuleResult.EndResponse;
+        }
+    }
+}

@@ -1,9 +1,9 @@
 using Humanizer;
 using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Constants;
-using System;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
+using System;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Pages;

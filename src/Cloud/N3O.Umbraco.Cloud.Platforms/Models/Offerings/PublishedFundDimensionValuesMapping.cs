@@ -6,7 +6,8 @@ namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public class PublishedFundDimensionValuesMapping : IMapDefinition {
     public void DefineMaps(IUmbracoMapper mapper) {
-        mapper.Define<IFundDimensionValues, PublishedFundDimensionValues>((_, _) => new PublishedFundDimensionValues(), Map);
+        mapper.Define<IFundDimensionValues, PublishedFundDimensionValues>((_, _) => new PublishedFundDimensionValues(),
+                                                                          Map);
     }
 
     // Umbraco.Code.MapAll

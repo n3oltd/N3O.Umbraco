@@ -20,11 +20,11 @@ public static class MediaWithCropsExtensions {
         
         req.Main.Crop.BottomLeft = new PointReq();
         req.Main.Crop.BottomLeft.X = 0;
-        req.Main.Crop.BottomLeft.Y = ((int) media.Properties.Single(x => x.Alias == MediaConstants.Height).GetValue()) - 1;
+        req.Main.Crop.BottomLeft.Y = 0;
         
         req.Main.Crop.TopRight = new PointReq();
-        req.Main.Crop.TopRight.X = ((int) media.Properties.Single(x => x.Alias == MediaConstants.Width).GetValue()) - 1;
-        req.Main.Crop.TopRight.Y = 0;
+        req.Main.Crop.TopRight.X = (int) media.Properties.Single(x => x.Alias == MediaConstants.Width).GetValue();
+        req.Main.Crop.TopRight.Y = (int) media.Properties.Single(x => x.Alias == MediaConstants.Height).GetValue();
 
         return req;
     }

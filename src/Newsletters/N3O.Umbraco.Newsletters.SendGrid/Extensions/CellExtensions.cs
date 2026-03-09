@@ -1,13 +1,12 @@
 ﻿using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
-using N3O.Umbraco.Newsletters.SendGrid.Models;
 using NodaTime;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Newsletters.SendGrid.Extensions; 
 
 public static class CellExtensions {
-    public static object GetValue(this IFieldDefinition fieldDefinition, Cell cell) {
+    public static object GetValue(this Cell cell) {
         if (cell.Type == DataTypes.Date) {
             var localDate = (LocalDate?) cell.Value;
 

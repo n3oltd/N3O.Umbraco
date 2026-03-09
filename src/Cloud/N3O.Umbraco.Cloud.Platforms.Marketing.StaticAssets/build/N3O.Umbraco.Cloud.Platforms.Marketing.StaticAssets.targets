@@ -1,0 +1,25 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <PropertyGroup>
+        <N3OUmbracoCloudPlatformsMarketingContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\telethon-on-air-rule\**\*.*</N3OUmbracoCloudPlatformsMarketingContentFilesPath>
+    </PropertyGroup>
+
+    <Target Name="CopyN3OUmbracoCloudPlatformsMarketingAssets" BeforeTargets="Build">
+        <ItemGroup>
+            <N3OUmbracoCloudPlatformsMarketingContentFiles Include="$(N3OUmbracoCloudPlatformsMarketingContentFilesPath)"/>
+        </ItemGroup>
+        <Message Text="Copying N3O Cloud Platforms Marketing files: $(N3OUmbracoCloudPlatformsMarketingContentFilesPath) - #@(N3OUmbracoCloudPlatformsMarketingContentFiles->Count()) files" Importance="high"/>
+        <Copy SourceFiles="@(N3OUmbracoCloudPlatformsMarketingContentFiles)"
+              DestinationFiles="@(N3OUmbracoCloudPlatformsMarketingContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\telethon-on-air-rule\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"/>
+    </Target>
+
+    <Target Name="ClearN3OUmbracoCloudPlatformsMarketingAssets" BeforeTargets="Clean">
+        <ItemGroup>
+            <N3OUmbracoCloudPlatformsMarketingDir Include="$(MSBuildProjectDirectory)\App_Plugins\telethon-on-air-rule\"/>
+        </ItemGroup>
+        <Message Text="Clear old N3O Cloud Platforms Marketing files" Importance="high"/>
+        <RemoveDir Directories="@(N3OUmbracoCloudPlatformsMarketingDir)"/>
+    </Target>
+
+</Project>

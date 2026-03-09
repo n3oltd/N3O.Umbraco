@@ -21,8 +21,8 @@ public class CartValidator : ICartValidator {
     public bool IsValid(Currency currentCurrency, Entities.Cart cart) {
         try {
             var isValid = currentCurrency == cart.Currency &&
-                          ContentsAreValid(currentCurrency, cart.Donation) &&
-                          ContentsAreValid(currentCurrency, cart.RegularGiving);
+                          ContentsAreValid(cart.Donation) &&
+                          ContentsAreValid(cart.RegularGiving);
 
             return isValid;
         } catch {
@@ -30,9 +30,9 @@ public class CartValidator : ICartValidator {
         }
     }
 
-    private bool ContentsAreValid(Currency currency, CartContents cartContents) {
+    private bool ContentsAreValid(CartContents cartContents) {
         foreach (var allocation in cartContents.OrEmpty(x => x.Allocations)) {
-            if (!AllocationIsValid(currency, allocation)) {
+            if (!AllocationIsValid(allocation)) {
                 return false;
             }
         }
@@ -40,7 +40,7 @@ public class CartValidator : ICartValidator {
         return true;
     }
 
-    private bool AllocationIsValid(Currency currency, Allocation allocation) {
+    private bool AllocationIsValid(Allocation allocation) {
         if (!FundDimensionsAreValid(allocation)) {
             return false;
         }

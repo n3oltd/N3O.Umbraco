@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Templates.Extensions;
 using System.Collections.Concurrent;
@@ -17,23 +18,29 @@ public class Merger : IMerger {
     private readonly ConcurrentDictionary<IPublishedContent, IReadOnlyDictionary<string, object>> _mergeModelsCache = new();
     private readonly IHtmlHelper _htmlHelper;
     private readonly ITemplateEngine _templateEngine;
-    private readonly IEnumerable<IMergeModelProvider> _mergeModelProviders;
+    private readonly IEnumerable<IMergeModelsProvider> _mergeModelsProviders;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ILogger<Merger> _logger;
 
     public Merger(IHtmlHelper htmlHelper,
                   ITemplateEngine templateEngine,
-                  IEnumerable<IMergeModelProvider> mergeModelProviders,
-                  IHttpContextAccessor httpContextAccessor) {
+                  IEnumerable<IMergeModelsProvider> mergeModelsProviders,
+                  IHttpContextAccessor httpContextAccessor,
+                  ILogger<Merger> logger) {
         _htmlHelper = htmlHelper;
         _templateEngine = templateEngine;
-        _mergeModelProviders = mergeModelProviders;
+        _mergeModelsProviders = mergeModelsProviders;
         _httpContextAccessor = httpContextAccessor;
+        _logger = logger;
     }
     
     public async Task<string> MergeForAsync(IPublishedContent content,
                                             string markup,
                                             CancellationToken cancellationToken = default) {
-        var mergeModels = await _mergeModelProviders.GetMergeModelsAsync(content, _mergeModelsCache);
+        var mergeModels = await _mergeModelsProviders.GetMergeModelsAsync(_logger, 
+                                                                          content,
+                                                                          _mergeModelsCache,
+                                                                          cancellationToken);
         var html = _templateEngine.Render(markup, mergeModels);
 
         return html;
@@ -44,10 +51,13 @@ public class Merger : IMerger {
                                                          string partialViewName,
                                                          object model,
                                                          CancellationToken cancellationToken = default) {
-        var mergeModels = new Dictionary<string, object>();
+        var mergeModels = default(IReadOnlyDictionary<string, object>);
 
         if (content.HasValue()) {
-            mergeModels = (await _mergeModelProviders.GetMergeModelsAsync(content, _mergeModelsCache)).ToDictionary();
+            mergeModels = await _mergeModelsProviders.GetMergeModelsAsync(_logger,
+                                                                          content,
+                                                                          _mergeModelsCache,
+                                                                          cancellationToken);
         }
         
         (_htmlHelper as IViewContextAware)?.Contextualize(viewContext);

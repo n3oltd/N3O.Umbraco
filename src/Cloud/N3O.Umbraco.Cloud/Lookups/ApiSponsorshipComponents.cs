@@ -1,6 +1,7 @@
 ﻿using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Models;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Lookups;
 using System;
@@ -27,7 +28,7 @@ public class ApiSponsorshipComponents : ApiLookupsCollection<SponsorshipComponen
 
         var sponsorshipComponents = new List<SponsorshipComponent>();
 
-        foreach (var publishedSponsorshipScheme in publishedSponsorshipSchemes.SponsorshipSchemes) {
+        foreach (var publishedSponsorshipScheme in publishedSponsorshipSchemes.OrEmpty(x => x.SponsorshipSchemes)) {
             var schemeSponsorshipComponents =
                 publishedSponsorshipScheme.Components.Select(x => x.GetSponsorshipComponent(publishedSponsorshipScheme.Id)).ToList();
             
@@ -37,5 +38,5 @@ public class ApiSponsorshipComponents : ApiLookupsCollection<SponsorshipComponen
         return sponsorshipComponents;
     }
 
-    protected override TimeSpan CacheDuration => TimeSpan.FromHours(12);
+    protected override TimeSpan ReloadInterval => TimeSpan.FromMinutes(1);
 }

@@ -8,10 +8,6 @@ namespace N3O.Umbraco.Cloud;
 public class SubscriptionAccessor : ISubscriptionAccessor {
     private SubscriptionInfo _subscription;
 
-    public string GetId() {
-        return GetSubscription().Id;
-    }
-
     public SubscriptionInfo GetSubscription() {
         if (_subscription == null) {
             var dataRegionId = Get(CloudConstants.Environment.Keys.DataRegion);

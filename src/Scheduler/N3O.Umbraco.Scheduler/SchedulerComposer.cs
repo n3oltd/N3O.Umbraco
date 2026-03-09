@@ -31,6 +31,7 @@ public class SchedulerComposer : IComposer {
     private static readonly string HangfireDashboard = nameof(HangfireDashboard);
 
     public void Compose(IUmbracoBuilder builder) {
+        builder.Services.AddSingleton<IJobUrlProvider, JobUrlProvider>();
         builder.Services.AddTransient<IBackgroundJob, BackgroundJob>();
         
         var connectionString = builder.Config.GetConnectionString(UmbracoConstants.System.UmbracoConnectionName);

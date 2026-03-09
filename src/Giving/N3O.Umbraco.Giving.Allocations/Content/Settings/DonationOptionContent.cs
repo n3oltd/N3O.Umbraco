@@ -40,7 +40,7 @@ public class DonationOptionContent : UmbracoContent<DonationOptionContent> {
     }
 
     public int Id => Content().Id;
-    public string Name => Content()?.Name(VariationContext.Culture);
+    public string Name => Content()?.Name(VariationContext?.Culture);
     public string CampaignName => GetCampaignName();
     public GivingType DefaultGivingType => GetValue(x => x.DefaultGivingType);
     public bool HideQuantity => GetValue(x => x.HideQuantity);

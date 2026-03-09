@@ -24,21 +24,25 @@ public class PlatformsContentFinder : IContentFinder {
     public async Task<bool> TryFindContent(IPublishedRequestBuilder request) {
         var found = false;
         
-        var foundPlatformsPage = await _platformsPageAccessor.GetAsync();
+        var getPageResult = await _platformsPageAccessor.GetAsync();
 
-        if (foundPlatformsPage.HasValue(x => x.RedirectUrl)) {
-            _httpContextAccessor.HttpContext?.Response.Redirect(foundPlatformsPage.RedirectUrl, permanent: true);
-        } else if (foundPlatformsPage.HasValue(x => x.Kind)) {
-            if (foundPlatformsPage.Kind == PublishedFileKinds.CampaignPage) {
+        if (getPageResult.HasValue(x => x.Redirect)) {
+            if (getPageResult.Redirect.Temporary) {
+                request.SetRedirect(getPageResult.Redirect.UrlOrPath);
+            } else {
+                request.SetRedirectPermanent(getPageResult.Redirect.UrlOrPath);
+            }
+        } else if (getPageResult.HasValue(x => x.Page)) {
+            if (getPageResult.Page.Kind == PublishedFileKinds.CampaignPage) {
                 request.SetPublishedContent(_contentCache.Special(PlatformsSpecialPages.Campaign));
 
                 found = true;
-            } else if (foundPlatformsPage.Kind == PublishedFileKinds.CrowdfunderPage) {
+            } else if (getPageResult.Page.Kind == PublishedFileKinds.CrowdfunderPage) {
                 request.SetPublishedContent(_contentCache.Special(PlatformsSpecialPages.Crowdfunder));
 
                 found = true;
             }
-            else if (foundPlatformsPage.Kind == PublishedFileKinds.OfferingPage) {
+            else if (getPageResult.Page.Kind == PublishedFileKinds.OfferingPage) {
                 request.SetPublishedContent(_contentCache.Special(PlatformsSpecialPages.Offering));
 
                 found = true;

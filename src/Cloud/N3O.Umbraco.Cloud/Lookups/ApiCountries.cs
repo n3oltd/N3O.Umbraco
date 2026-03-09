@@ -1,6 +1,7 @@
 ﻿using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Models;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ public class ApiCountries : ApiLookupsCollection<Country> {
 
         var countries = new List<Country>();
 
-        foreach (var publishedCountry in publishedCountries.Countries.Select(x => x.Value)) {
+        foreach (var publishedCountry in publishedCountries.OrEmpty(x => x.Countries).Select(x => x.Value)) {
             var country = new Country(publishedCountry.Id,
                                       publishedCountry.Name,
                                       null,
@@ -41,5 +42,5 @@ public class ApiCountries : ApiLookupsCollection<Country> {
         return countries;
     }
 
-    protected override TimeSpan CacheDuration => TimeSpan.FromHours(12);
+    protected override TimeSpan ReloadInterval => TimeSpan.FromMinutes(1);
 }

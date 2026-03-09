@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
+using N3O.Umbraco.Blog.Content;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.ContentFinders;
-using N3O.Umbraco.Blog.Content;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Routing;
 

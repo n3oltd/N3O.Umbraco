@@ -29,7 +29,7 @@ public class ApiSponsorshipSchemes : ApiLookupsCollection<SponsorshipScheme> {
 
         var sponsorshipSchemes = new List<SponsorshipScheme>();
 
-        foreach (var publishedSponsorshipScheme in publishedSponsorshipSchemes.SponsorshipSchemes) {
+        foreach (var publishedSponsorshipScheme in publishedSponsorshipSchemes.OrEmpty(x => x.SponsorshipSchemes)) {
             var sponsorshipScheme = new SponsorshipScheme(publishedSponsorshipScheme.Id,
                                                           publishedSponsorshipScheme.Name,
                                                           null,
@@ -45,5 +45,5 @@ public class ApiSponsorshipSchemes : ApiLookupsCollection<SponsorshipScheme> {
         return sponsorshipSchemes;
     }
 
-    protected override TimeSpan CacheDuration => TimeSpan.FromHours(12);
+    protected override TimeSpan ReloadInterval => TimeSpan.FromMinutes(1);
 }

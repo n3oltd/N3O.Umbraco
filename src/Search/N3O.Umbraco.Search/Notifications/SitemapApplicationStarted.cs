@@ -1,6 +1,6 @@
 ﻿using N3O.Umbraco.Scheduler;
-using N3O.Umbraco.Scheduler.Extensions;
 using N3O.Umbraco.Search.Commands;
+using NodaTime;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
@@ -16,7 +16,8 @@ public class SitemapApplicationStarted : INotificationAsyncHandler<UmbracoApplic
     }
 
     public Task HandleAsync(UmbracoApplicationStartedNotification notification, CancellationToken cancellationToken) {
-        _backgroundJob.EnqueueCommand<GenerateSitemapCommand>();
+        _backgroundJob.Schedule<GenerateSitemapCommand>($"{nameof(GenerateSitemapCommand)}".Replace("Command", ""),
+                                                        Duration.FromSeconds(20));
 
         return Task.CompletedTask;
     }

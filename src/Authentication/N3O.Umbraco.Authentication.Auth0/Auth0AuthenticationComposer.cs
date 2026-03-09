@@ -13,7 +13,7 @@ public class Auth0AuthenticationComposer : Composer {
         builder.Services.Configure<Auth0MemberAuthenticationOptions>(builder.Config.GetMembersAuthenticationSection());
         
         builder.Services.AddScoped<Auth0M2MTokenAccessor>();
-        builder.Services.AddScoped<BearerTokenAccessor>();
+        builder.Services.AddScoped<Auth0TokenAccessor>();
         builder.Services.AddScoped<IAuth0ClientFactory, Auth0ClientFactory>();
         builder.Services.AddScoped<ISignInManager, Auth0MemberSignInManager>();
         builder.Services.AddTransient<IUserDirectory, UserDirectory>();

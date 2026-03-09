@@ -1,6 +1,7 @@
 ﻿using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Models;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Lookups;
@@ -27,10 +28,10 @@ public abstract class ApiFundDimensions<T> : ApiLookupsCollection<T> where T : I
                                                                                                       JsonSerializers.JsonProvider,
                                                                                                       cancellationToken);
 
-        return GetFundDimension(fundStructure).Yield().ToList();
+        return GetFundDimension(fundStructure).Yield().ExceptNull().ToList();
     }
 
-    protected override TimeSpan CacheDuration => TimeSpan.FromHours(12);
+    protected override TimeSpan ReloadInterval => TimeSpan.FromMinutes(1);
     protected ILookups Lookups { get; }
 
     protected abstract T GetFundDimension(PublishedFundStructure fundDimensions);
@@ -41,12 +42,15 @@ public class ApiFundDimension1 : ApiFundDimensions<FundDimension1> {
     public ApiFundDimension1(ICdnClient cdnClient, ILookups lookups) : base(cdnClient, lookups) { }
 
     protected override FundDimension1 GetFundDimension(PublishedFundStructure fundStructure) {
+        if (fundStructure == null) {
+            return null;
+        }
+        
         var fundDimension1 = new FundDimension1(fundStructure.Dimension1.Name,
                                                 fundStructure.Dimension1.Name,
                                                 null,
                                                 fundStructure.Dimension1.IsActive,
-                                                fundStructure.Dimension1.GetOptions<FundDimension1Value>(Lookups).ToList(),
-                                                fundStructure.Dimension1.Index);
+                                                fundStructure.Dimension1.GetOptions<FundDimension1Value>(Lookups).ToList());
 
         return fundDimension1;
     }
@@ -56,12 +60,15 @@ public class ApiFundDimension2 : ApiFundDimensions<FundDimension2> {
     public ApiFundDimension2(ICdnClient cdnClient, ILookups lookups) : base(cdnClient, lookups) { }
 
     protected override FundDimension2 GetFundDimension(PublishedFundStructure fundStructure) {
+        if (fundStructure == null) {
+            return null;
+        }
+        
         var fundDimension2 = new FundDimension2(fundStructure.Dimension2.Name,
                                                 fundStructure.Dimension2.Name,
                                                 null,
                                                 fundStructure.Dimension2.IsActive,
-                                                fundStructure.Dimension2.GetOptions<FundDimension2Value>(Lookups).ToList(),
-                                                fundStructure.Dimension2.Index);
+                                                fundStructure.Dimension2.GetOptions<FundDimension2Value>(Lookups).ToList());
 
         return fundDimension2;
     }
@@ -71,12 +78,15 @@ public class ApiFundDimension3 : ApiFundDimensions<FundDimension3> {
     public ApiFundDimension3(ICdnClient cdnClient, ILookups lookups) : base(cdnClient, lookups) { }
 
     protected override FundDimension3 GetFundDimension(PublishedFundStructure fundStructure) {
+        if (fundStructure == null) {
+            return null;
+        }
+        
         var fundDimension3 = new FundDimension3(fundStructure.Dimension3.Name,
                                                 fundStructure.Dimension3.Name,
                                                 null,
                                                 fundStructure.Dimension3.IsActive,
-                                                fundStructure.Dimension3.GetOptions<FundDimension3Value>(Lookups).ToList(),
-                                                fundStructure.Dimension3.Index);
+                                                fundStructure.Dimension3.GetOptions<FundDimension3Value>(Lookups).ToList());
 
         return fundDimension3;
     }
@@ -86,12 +96,15 @@ public class ApiFundDimension4 : ApiFundDimensions<FundDimension4> {
     public ApiFundDimension4(ICdnClient cdnClient, ILookups lookups) : base(cdnClient, lookups) { }
 
     protected override FundDimension4 GetFundDimension(PublishedFundStructure fundStructure) {
+        if (fundStructure == null) {
+            return null;
+        }
+        
         var fundDimension4 = new FundDimension4(fundStructure.Dimension4.Name,
                                                 fundStructure.Dimension4.Name,
                                                 null,
                                                 fundStructure.Dimension4.IsActive,
-                                                fundStructure.Dimension4.GetOptions<FundDimension4Value>(Lookups).ToList(),
-                                                fundStructure.Dimension4.Index);
+                                                fundStructure.Dimension4.GetOptions<FundDimension4Value>(Lookups).ToList());
 
         return fundDimension4;
     }

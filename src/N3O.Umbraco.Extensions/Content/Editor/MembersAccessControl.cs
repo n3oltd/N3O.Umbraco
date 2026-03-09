@@ -19,8 +19,9 @@ public abstract class MembersAccessControl : ContentAccessControl {
 
     protected MembersAccessControl(IContentHelper contentHelper,
                                    IDataTypeService dataTypeService,
-                                   IMemberManager memberManager)
-        : base(contentHelper) {
+                                   IMemberManager memberManager,
+                                   IVariationContextAccessor variationContextAccessor)
+        : base(contentHelper, variationContextAccessor) {
         _contentHelper = contentHelper;
         _dataTypeService = dataTypeService;
         _memberManager = memberManager;

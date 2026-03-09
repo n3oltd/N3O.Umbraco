@@ -1,0 +1,7 @@
+﻿{
+  "javascript": [
+    "~/App_Plugins/telethon-on-air-rule/segment-rule-telethon-on-air.js",
+    "~/App_Plugins/telethon-on-air-rule/segment-rule-telethon-on-air-editor.js",
+    "~/App_Plugins/telethon-on-air-rule/segment-rule-telethon-on-air-display.js"
+  ]
+}

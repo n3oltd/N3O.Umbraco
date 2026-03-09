@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Accounts.Lookups;
-using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Accounts.Queries;
+using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Mediator;

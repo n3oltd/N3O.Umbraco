@@ -1,6 +1,6 @@
+using N3O.Umbraco.Cells.DataTypes;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Cells.DataTypes;
 using System;
 using Umbraco.Cms.Core.Models;
 

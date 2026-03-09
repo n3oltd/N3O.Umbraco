@@ -55,6 +55,10 @@ public class CampaignContent : UmbracoContent<CampaignContent> {
     public MediaWithCrops Icon => GetValue(x => x.Icon);
     public MediaWithCrops Image => GetValue(x => x.Image);
     public decimal Target => GetValue(x => x.Target);
+    
+    public string DonationFormEmbedCode => GetValue(x => x.DonationFormEmbedCode);
+    public string DonationButtonEmbedCode => GetValue(x => x.DonationButtonEmbedCode);
+    public string DonationPopupEmbedCode => GetValue(x => x.DonationPopupEmbedCode);
 
     public IEnumerable<OfferingContent> Offerings => Content().Descendants()
                                                               .Where(x => x.IsComposedOf(AliasHelper<OfferingContent>.ContentTypeAlias()))

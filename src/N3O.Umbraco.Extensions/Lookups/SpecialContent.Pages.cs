@@ -7,4 +7,5 @@ public class SpecialPages : ISpecialContents {
     public static readonly SpecialContent Donate = new("donatePage", "Donate Page", "donatePage");
     public static readonly SpecialContent Home = new("homePage", "Home Page", "homePage");
     public static readonly SpecialContent NotFound = new("notFoundPage", "Not Found Page", "notFoundPage");
+    public static readonly SpecialContent SearchPage = new("searchPage", "Search Page", "searchPage");
 }

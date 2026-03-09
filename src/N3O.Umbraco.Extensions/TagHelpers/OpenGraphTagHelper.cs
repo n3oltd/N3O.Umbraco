@@ -33,6 +33,8 @@ public class OpenGraphTagHelper : TagHelper {
             var metaTag = new TagBuilder("meta");
             metaTag.Attributes.Add("property", $"og:{property}");
             metaTag.Attributes.Add("content", content);
+            
+            metaTag.TagRenderMode = TagRenderMode.SelfClosing;
         
             output.Content.AppendHtml(metaTag.ToHtmlString());
         }

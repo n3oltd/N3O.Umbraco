@@ -19,7 +19,7 @@ public class Searcher<TDocument> : ISearcher<TDocument> where TDocument : class 
                                                            CancellationToken cancellationToken = default) {
         var collectionInfo = TypesenseHelper.GetCollection<TDocument>();
 
-        var results = await _typesenseClient.Search<object>(collectionInfo.Name, searchParameters, cancellationToken);
+        var results = await _typesenseClient.Search<object>(collectionInfo.Name.Resolve(), searchParameters, cancellationToken);
 
         return ToTypedResults(results);
     }

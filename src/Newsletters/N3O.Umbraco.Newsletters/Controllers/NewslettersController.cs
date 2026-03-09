@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Newsletters.Models;
 using N3O.Umbraco.Validation;
-using N3O.Umbraco.Validation.Hosting.Controllers;
+using N3O.Umbraco.Validation.Controllers;
 using System;
 using System.Threading.Tasks;
 

@@ -1,6 +1,5 @@
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cloud.Models;
-using System;
 
 namespace N3O.Umbraco.Cloud.Lookups;
 
@@ -17,6 +16,4 @@ public class AccountLabels : Labels<AccountLabel> {
     }
 
     protected override TagScope Scope => TagScopes.AccountLabel;
-
-    protected override TimeSpan CacheDuration => TimeSpan.FromHours(1);
 }

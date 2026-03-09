@@ -7,7 +7,7 @@ namespace N3O.Umbraco.Sync;
 
 public class SyncComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
-        RegisterAll(t => t.ImplementsInterface<IContentSyncFilter>(),
-                    t => builder.Services.AddTransient(typeof(IContentSyncFilter), t));
+        RegisterAll(t => t.ImplementsInterface<ISyncFilter>(),
+                    t => builder.Services.AddTransient(typeof(ISyncFilter), t));
     }
 }

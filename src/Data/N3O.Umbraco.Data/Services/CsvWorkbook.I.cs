@@ -11,7 +11,7 @@ public interface ICsvWorkbook {
     void AddTable(ITable table);
     void Encoding(TextEncoding encoding);
     void Headers(bool enabled);
-    Task SaveAsync(Stream stream, CancellationToken cancellation = default);
+    Task SaveAsync(Stream stream, CancellationToken cancellationToken = default);
     Task WriteTemplateAsync(IEnumerable<Column> columns,
                             Stream stream,
                             CancellationToken cancellationToken = default);
