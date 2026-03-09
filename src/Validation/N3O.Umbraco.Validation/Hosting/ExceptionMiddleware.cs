@@ -63,8 +63,8 @@ public class ExceptionMiddleware : IMiddleware {
         response.Clear();
 
         var problemDetails = exception.GetProblemDetails(_formatter);
-        
-        if (_webHostEnvironment.Value.IsProduction()) {
+
+        if (exception is not ValidationException &&_webHostEnvironment.Value.IsProduction()) {
             problemDetails = new ProblemDetails((HttpStatusCode) problemDetails.Status,
                                                 problemDetails.Title,
                                                 _formatter.Text.Format<Strings>(s => s.GeneralMessage));
@@ -79,7 +79,7 @@ public class ExceptionMiddleware : IMiddleware {
     }
     
     public class Strings : CodeStrings {
-        public string GeneralMessage => "Internal server error. Please contact support if the problem persists.";
+        public string GeneralMessage => "An error has occurred. Please contact support if the problem persists.";
     }
     
 }
