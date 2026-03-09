@@ -2,7 +2,6 @@ using Humanizer;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Financial;
-using N3O.Umbraco.Giving.Allocations;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Json;
@@ -25,14 +24,9 @@ public class CheckoutWebhookTransform : WebhookTransform {
         AliasHelper<PaymentMethodSettingsContent<IPaymentMethodSettings>>.PropertyAlias(x => x.RestrictCollectionDaysTo);
 
     private readonly IContentCache _contentCache;
-    private readonly IPriceCalculator _priceCalculator;
 
-    public CheckoutWebhookTransform(IJsonProvider jsonProvider,
-                                    IContentCache contentCache,
-                                    IPriceCalculator priceCalculator) 
-        : base(jsonProvider) {
+    public CheckoutWebhookTransform(IJsonProvider jsonProvider, IContentCache contentCache) : base(jsonProvider) {
         _contentCache = contentCache;
-        _priceCalculator = priceCalculator;
     }
 
     public override bool IsTransform(object body) => body is Entities.Checkout;
@@ -162,11 +156,6 @@ public class CheckoutWebhookTransform : WebhookTransform {
             foreach (var customField in allocation.Feedback.OrEmpty(x => x.CustomFields)) {
                 allocationJObject[$"cf_{customField.Alias}"] = customField.GetJValue();
             }
-
-            var pricing = ((IHoldPricing) allocation.Feedback.Scheme).Pricing;
-            var price = _priceCalculator.InCurrency(pricing, allocation.FundDimensions, allocation.Value.Currency);
-
-            allocationJObject["value"]["amount"] = price.Amount;
 
             ((JArray) jObject[globalKey]).Add(allocationJObject);
             ((JArray) jObject[schemeKey]).Add(allocationJObject);
