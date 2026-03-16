@@ -20,7 +20,8 @@ public static class SitemapEntryExtensions {
             using (var writer = XmlWriter.Create(stream, settings)) {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
-
+                writer.WriteAttributeString("xmlns", "xhtml", null, "http://www.w3.org/1999/xhtml");
+                
                 foreach (var entry in entries) {
                     writer.WriteStartElement("url");
                     writer.WriteElementString("loc", entry.Url);
@@ -29,7 +30,7 @@ public static class SitemapEntryExtensions {
                     writer.WriteElementString("priority", entry.Priority.ToString(CultureInfo.InvariantCulture));
 
                     foreach (var (cultureCode, url) in entry.CultureVariantUrls.OrEmpty()) {
-                        writer.WriteStartElement("xhtml", "link", "http://www.w3.org/1999/xhtml");
+                        writer.WriteStartElement("xhtml", "link");
                         writer.WriteAttributeString("rel", "alternate");
                         writer.WriteAttributeString("hreflang", cultureCode);
                         writer.WriteAttributeString("href", url);
