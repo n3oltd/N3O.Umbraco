@@ -1,5 +1,6 @@
 using HeyRed.Mime;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Extensions;
 using System;
@@ -10,12 +11,17 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Cloud.Hosting;
 
 public class ConnectMiddleware : IMiddleware {
+    private readonly IMemoryCache _cache;
+    
     private readonly ISubscriptionAccessor _subscriptionAccessor;
     private readonly ICloudUrl _cloudUrl;
 
-    public ConnectMiddleware(ISubscriptionAccessor subscriptionAccessor, ICloudUrl cloudUrl) {
+    public ConnectMiddleware(ISubscriptionAccessor subscriptionAccessor,
+                             ICloudUrl cloudUrl,
+                             IMemoryCache cache) {
         _subscriptionAccessor = subscriptionAccessor;
         _cloudUrl = cloudUrl;
+        _cache = cache;
     }
     
     public async Task InvokeAsync(HttpContext context, RequestDelegate next) {
@@ -29,20 +35,25 @@ public class ConnectMiddleware : IMiddleware {
             !requestPath.Contains("..") &&
             requestPath.StartsWith(connectPath, StringComparison.InvariantCultureIgnoreCase)) {
             try {
-                
                 var cdnPath = requestPath.Substring(connectPath.Length);
                 var cdnUrl = _cloudUrl.ForCdn(CdnRoots.Connect, cdnPath);
                 
-                using (var httpClient = new HttpClient()) {
-                    var httpResponse = await httpClient.GetAsync(cdnUrl);
+                var data = await _cache.GetOrCreateAsync(cdnUrl, async entry => {
+                    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
 
-                    httpResponse.EnsureSuccessStatusCode();
+                    using (var httpClient = new HttpClient()) {
+                        var httpResponse = await httpClient.GetAsync(cdnUrl);
 
-                    context.Response.ContentType = MimeTypesMap.GetMimeType(cdnPath);
-                    context.Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
+                        httpResponse.EnsureSuccessStatusCode();
+                        
+                        return await httpResponse.Content.ReadAsByteArrayAsync();
+                    }
+                });
+                
+                context.Response.ContentType = MimeTypesMap.GetMimeType(cdnPath);
+                context.Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
                     
-                    await context.Response.BodyWriter.WriteAsync(await httpResponse.Content.ReadAsByteArrayAsync());
-                }
+                await context.Response.BodyWriter.WriteAsync(data);
             } catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.NotFound) {
                 context.Response.StatusCode = 404;
             }
