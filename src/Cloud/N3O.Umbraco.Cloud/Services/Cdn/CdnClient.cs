@@ -42,6 +42,12 @@ public class CdnClient : ICdnClient {
         _httpClient.Timeout = TimeSpan.FromSeconds(5);
     }
 
+    public async Task<string> DownloadAsync(string path, CancellationToken cancellationToken = default) {
+        var publishedUrl = GetPublishedContentUrl(path);
+
+        return await FetchStringAsync(publishedUrl, cancellationToken);
+    }
+
     public async Task<T> DownloadPublishedContentAsync<T>(PublishedFileKind kind,
                                                           string path,
                                                           JsonSerializer jsonSerializer,

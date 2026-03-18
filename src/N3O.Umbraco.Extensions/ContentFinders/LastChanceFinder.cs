@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
@@ -14,7 +15,7 @@ public class LastChanceFinder : IContentLastChanceFinder {
     }
 
     public Task<bool> TryFindContent(IPublishedRequestBuilder request) {
-        if (request != null && request.ResponseStatusCode == 404) {
+        if (request != null && request.ResponseStatusCode == StatusCodes.Status404NotFound) {
             request.SetIs404();
             request.SetPublishedContent(_contentCache.Special(SpecialPages.NotFound));
             

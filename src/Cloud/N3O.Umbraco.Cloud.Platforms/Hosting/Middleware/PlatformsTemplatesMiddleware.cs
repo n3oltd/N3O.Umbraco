@@ -29,7 +29,7 @@ public class PlatformsTemplatesMiddleware : IMiddleware {
 
                 await context.Response.SendFileAsync(filePath);
             } else {
-                context.Response.StatusCode = 404;
+                context.Response.StatusCode = StatusCodes.Status404NotFound;
             }
         } else {
             await next(context);

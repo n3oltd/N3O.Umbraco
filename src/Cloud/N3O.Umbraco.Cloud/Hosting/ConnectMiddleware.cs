@@ -1,21 +1,18 @@
 using HeyRed.Mime;
 using Microsoft.AspNetCore.Http;
-using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Extensions;
 using System;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Cloud.Hosting;
 
 public class ConnectMiddleware : IMiddleware {
     private readonly ISubscriptionAccessor _subscriptionAccessor;
-    private readonly ICloudUrl _cloudUrl;
+    private readonly ICdnClient _cdnClient;
 
-    public ConnectMiddleware(ISubscriptionAccessor subscriptionAccessor, ICloudUrl cloudUrl) {
+    public ConnectMiddleware(ISubscriptionAccessor subscriptionAccessor, ICdnClient cdnClient) {
         _subscriptionAccessor = subscriptionAccessor;
-        _cloudUrl = cloudUrl;
+        _cdnClient = cdnClient;
     }
     
     public async Task InvokeAsync(HttpContext context, RequestDelegate next) {
@@ -28,23 +25,17 @@ public class ConnectMiddleware : IMiddleware {
             connectPath != null &&
             !requestPath.Contains("..") &&
             requestPath.StartsWith(connectPath, StringComparison.InvariantCultureIgnoreCase)) {
-            try {
-                
-                var cdnPath = requestPath.Substring(connectPath.Length);
-                var cdnUrl = _cloudUrl.ForCdn(CdnRoots.Connect, cdnPath);
-                
-                using (var httpClient = new HttpClient()) {
-                    var httpResponse = await httpClient.GetAsync(cdnUrl);
+            var cdnPath = requestPath.Substring(connectPath.Length);
+            
+            var content = await _cdnClient.DownloadAsync(cdnPath);
 
-                    httpResponse.EnsureSuccessStatusCode();
+            if (content.HasValue()) {
+                context.Response.ContentType = MimeTypesMap.GetMimeType(cdnPath);
+                context.Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
 
-                    context.Response.ContentType = MimeTypesMap.GetMimeType(cdnPath);
-                    context.Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
-                    
-                    await context.Response.BodyWriter.WriteAsync(await httpResponse.Content.ReadAsByteArrayAsync());
-                }
-            } catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.NotFound) {
-                context.Response.StatusCode = 404;
+                await context.Response.WriteAsync(content);
+            } else {
+                context.Response.StatusCode = StatusCodes.Status404NotFound;
             }
         } else {
             await next(context);

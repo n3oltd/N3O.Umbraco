@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 namespace N3O.Umbraco.Cloud;
 
 public interface ICdnClient {
+    Task<string> DownloadAsync(string path, CancellationToken cancellationToken = default);
+    
     Task<T> DownloadPublishedContentAsync<T>(PublishedFileKind kind,
                                              string path,
                                              JsonSerializer jsonSerializer,
