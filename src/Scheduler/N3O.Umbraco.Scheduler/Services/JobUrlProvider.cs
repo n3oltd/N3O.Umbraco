@@ -13,10 +13,10 @@ public class JobUrlProvider : IJobUrlProvider {
     
     public string GetBaseUrl() {
         var addressFeature = _server.Features.Get<IServerAddressesFeature>();
-        var address = addressFeature.Addresses.
-                                     First()
-                                     .Replace("[::]", "localhost")
-                                     .Replace("*", "localhost");
+        var address = addressFeature.Addresses
+                                    .First()
+                                    .Replace("[::]", "localhost")
+                                    .Replace("*", "localhost");
 
         return address;
     }
