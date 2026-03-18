@@ -30,10 +30,16 @@ public class ConnectMiddleware : IMiddleware {
             var content = await _cdnClient.DownloadAsync(cdnPath);
 
             if (content.HasValue()) {
-                context.Response.ContentType = MimeTypesMap.GetMimeType(cdnPath);
-                context.Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
+                var method = context.Request.Method;
 
-                await context.Response.WriteAsync(content);
+                if (HttpMethods.IsGet(method) || HttpMethods.IsHead(method)) {
+                    context.Response.ContentType = MimeTypesMap.GetMimeType(cdnPath);
+                    context.Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
+
+                    if (HttpMethods.IsGet(method)) {
+                        await context.Response.WriteAsync(content);
+                    }
+                }
             } else {
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
             }
