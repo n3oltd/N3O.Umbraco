@@ -28,9 +28,10 @@ public static class UmbracoCms {
                                       opt.Limits.MaxRequestBodySize = 1_073_741_824;
                                   });
                                   
-                                  webBuilder.ConfigureAppConfiguration((context, _) => {
+                                  webBuilder.ConfigureAppConfiguration((context, config) => {
                                       Composer.WebHostEnvironment = context.HostingEnvironment;
                                       
+                                      config.RunExtensions(context);
                                       webBuilder.RunExtensions();
                                   });
                               });
