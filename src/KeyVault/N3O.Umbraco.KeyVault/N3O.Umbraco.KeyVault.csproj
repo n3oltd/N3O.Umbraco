@@ -37,9 +37,6 @@
         <None Update="README.md">
             <Pack>True</Pack>
         </None>
-        <None Update="README.md">
-          <Pack>True</Pack>
-        </None>
     </ItemGroup>
 
     <ItemGroup>
