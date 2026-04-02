@@ -53,7 +53,7 @@ public class ContentHelper : IContentHelper {
 
     public ContentProperties GetContentProperties(IContent content, string culture = null) {
         var properties = content.Properties.Select(x => (x.PropertyType, x.GetValue(x.PropertyType.VariesByCulture() ? culture : null)));
-        
+       
         return GetContentProperties(content.Key,
                                     content.ParentId,
                                     content.Level,
