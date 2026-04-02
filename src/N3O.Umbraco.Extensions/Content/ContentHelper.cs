@@ -12,6 +12,7 @@ using Umbraco.Cms.Core.Persistence.Querying;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Content;
 
@@ -51,7 +52,7 @@ public class ContentHelper : IContentHelper {
     }
 
     public ContentProperties GetContentProperties(IContent content, string culture = null) {
-        var properties = content.Properties.Select(x => (x.PropertyType, x.GetValue(culture)));
+        var properties = content.Properties.Select(x => (x.PropertyType, x.GetValue(x.PropertyType.VariesByCulture() ? culture : null)));
         
         return GetContentProperties(content.Key,
                                     content.ParentId,
