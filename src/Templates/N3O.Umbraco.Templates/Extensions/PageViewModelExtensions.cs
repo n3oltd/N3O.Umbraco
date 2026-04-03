@@ -1,4 +1,6 @@
+using N3O.Umbraco.Json;
 using N3O.Umbraco.Pages;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Templates.Extensions;
@@ -10,8 +12,16 @@ public static class PageViewModelExtensions {
         return mergeModel.GetValueOrDefault(key);
     }
     
-    public static T MergeModel<T>(this IPageViewModel pageViewModel, string key) {
-        return (T) MergeModel(pageViewModel, key);
+    public static T MergeModel<T>(this IPageViewModel pageViewModel,
+                                  IJsonProvider jsonProvider,
+                                  string key) {
+        var model = MergeModel(pageViewModel, key);
+
+        if (model is T typedModel) {
+            return  typedModel;
+        }
+        
+        return jsonProvider.DeserializeDynamicTo<T>(model);
     }
     
     public static IReadOnlyDictionary<string, object> MergeModels(this IPageViewModel pageViewModel) {
