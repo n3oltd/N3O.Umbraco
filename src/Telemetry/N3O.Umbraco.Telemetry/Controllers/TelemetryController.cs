@@ -18,4 +18,11 @@ public class TelemetryController : ApiController {
 
         return Ok(res);
     }
+    
+    [HttpGet("siteDeploymentVersion")]
+    public ActionResult<string> GetSiteDeploymentVersion() {
+        var res = _telemetryData.GetSiteDeploymentVersion();
+
+        return Ok(res);
+    }
 }

@@ -2,4 +2,6 @@
 
 public interface ITelemetryData {
     string GetExtensionsVersion();
+
+    string GetSiteDeploymentVersion();
 }
