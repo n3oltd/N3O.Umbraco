@@ -49,9 +49,12 @@ public class UpdateCampaignReqMapping : IMapDefinition {
         dest.Order = new CampaignOrderReq();
         dest.Order.Order = src.Content().Parent.Children.FindIndex(x => x.Id == src.Content().Id);
 
-        // TODO
-        dest.Badges = [];
-
+        try {
+            ctx.Map<CampaignContent, IEnumerable<string>>(src);
+        } catch {
+            dest.Badges = [];
+        }
+        
         dest.Page = new ContentReq();
         dest.Page.SchemaAlias = PlatformsSystemSchema.Sys__campaignPage.ToEnumString();
         

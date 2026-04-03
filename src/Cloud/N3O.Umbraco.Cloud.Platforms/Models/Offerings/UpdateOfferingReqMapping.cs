@@ -48,8 +48,11 @@ public class UpdateOfferingReqMapping : IMapDefinition {
         dest.Order = new OfferingOrderReq();
         dest.Order.Order = src.Content().Parent.Children.FindIndex(x => x.Id == src.Content().Id);
         
-        // TODO
-        dest.Badges = [];
+        try {
+            ctx.Map<OfferingContent, IEnumerable<string>>(src);
+        } catch {
+            dest.Badges = [];
+        }
 
         dest.Page = new ContentReq();
         dest.Page.SchemaAlias = PlatformsSystemSchema.Sys__offeringPage.ToEnumString();
