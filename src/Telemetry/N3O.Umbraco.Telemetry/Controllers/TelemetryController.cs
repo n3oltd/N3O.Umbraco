@@ -11,6 +11,13 @@ public class TelemetryController : ApiController {
     public TelemetryController(ITelemetryData telemetryData) {
         _telemetryData = telemetryData;
     }
+
+    [HttpGet("deploymentVersion")]
+    public ActionResult<string> GetDeploymentVersion() {
+        var res = _telemetryData.GetDeploymentVersion();
+
+        return Ok(res);
+    }
     
     [HttpGet("extensions/version")]
     public ActionResult<string> GetExtensionsVersion() {
