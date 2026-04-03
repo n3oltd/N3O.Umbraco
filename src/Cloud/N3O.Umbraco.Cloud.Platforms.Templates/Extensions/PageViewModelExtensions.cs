@@ -10,51 +10,47 @@ using System.Collections.Generic;
 namespace N3O.Umbraco.Cloud.Platforms.Templates.Extensions;
 
 public static class PageViewModelExtensions {
-    public static PublishedCampaign Campaign(this IPageViewModel pageViewModel,
-                                             IJsonProvider jsonProvider) {
+    public static PublishedCampaign Campaign(this IPageViewModel pageViewModel, IJsonProvider jsonProvider) {
         return PublishedFile<PublishedCampaign, PlatformsPublishedFileKind>(pageViewModel,
                                                                             jsonProvider, 
                                                                             PlatformsPublishedFileKind.Campaign);
     }
 
-    public static PublishedCampaignPage CampaignPage(this IPageViewModel pageViewModel,
-                                                     IJsonProvider jsonProvider) {
+    public static PublishedCampaignPage CampaignPage(this IPageViewModel pageViewModel, IJsonProvider jsonProvider) {
         return PublishedFile<PublishedCampaignPage, PlatformsPublishedFileKind>(pageViewModel,
                                                                                 jsonProvider,
-                                                                            PlatformsPublishedFileKind.CampaignPage);
+                                                                                PlatformsPublishedFileKind.CampaignPage);
     }
     
     public static IEnumerable<PublishedCampaign> Campaigns(this IPageViewModel pageViewModel,
                                                            IJsonProvider jsonProvider) {
-        return pageViewModel.MergeModel<IEnumerable<PublishedCampaign>>(jsonProvider, PlatformsTemplateConstants.ModelKeys.Campaigns);
+        return pageViewModel.MergeModel<IEnumerable<PublishedCampaign>>(jsonProvider,
+                                                                        PlatformsTemplateConstants.ModelKeys.Campaigns);
     }
     
     public static IEnumerable<PublishedOffering> CampaignOfferings(this IPageViewModel pageViewModel,
                                                                    IJsonProvider jsonProvider) {
-        return pageViewModel.MergeModel<IEnumerable<PublishedOffering>>(jsonProvider, PlatformsTemplateConstants.ModelKeys.CampaignOfferings);
+        return pageViewModel.MergeModel<IEnumerable<PublishedOffering>>(jsonProvider,
+                                                                        PlatformsTemplateConstants.ModelKeys.CampaignOfferings);
     }
     
-    public static PublishedCrowdfunderPage CrowdfunderPage(this IPageViewModel pageViewModel,
-                                                           IJsonProvider jsonProvider) {
+    public static PublishedCrowdfunderPage CrowdfunderPage(this IPageViewModel pageViewModel, IJsonProvider jsonProvider) {
         return PublishedFile<PublishedCrowdfunderPage, CrowdfundingPublishedFileKind>(pageViewModel,
                                                                                       jsonProvider,
                                                                                       CrowdfundingPublishedFileKind.CrowdfunderPage);
     }
     
-    public static NisabMergeModel Nisab(this IPageViewModel pageViewModel,
-                                        IJsonProvider jsonProvider) {
+    public static NisabMergeModel Nisab(this IPageViewModel pageViewModel, IJsonProvider jsonProvider) {
         return pageViewModel.MergeModel<NisabMergeModel>(jsonProvider, PlatformsTemplateConstants.ModelKeys.Nisab);
     }
     
-    public static PublishedOffering Offering(this IPageViewModel pageViewModel,
-                                             IJsonProvider jsonProvider) {
+    public static PublishedOffering Offering(this IPageViewModel pageViewModel, IJsonProvider jsonProvider) {
         return PublishedFile<PublishedOffering, PlatformsPublishedFileKind>(pageViewModel,
                                                                             jsonProvider, 
                                                                             PlatformsPublishedFileKind.Offering);
     }
     
-    public static PublishedOfferingPage OfferingPage(this IPageViewModel pageViewModel,
-                                                     IJsonProvider jsonProvider) {
+    public static PublishedOfferingPage OfferingPage(this IPageViewModel pageViewModel, IJsonProvider jsonProvider) {
         return PublishedFile<PublishedOfferingPage, PlatformsPublishedFileKind>(pageViewModel,
                                                                                 jsonProvider, 
                                                                                 PlatformsPublishedFileKind.OfferingPage);

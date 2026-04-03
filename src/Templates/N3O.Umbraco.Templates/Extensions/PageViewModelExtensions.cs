@@ -12,16 +12,14 @@ public static class PageViewModelExtensions {
         return mergeModel.GetValueOrDefault(key);
     }
     
-    public static T MergeModel<T>(this IPageViewModel pageViewModel,
-                                  IJsonProvider jsonProvider,
-                                  string key) {
+    public static T MergeModel<T>(this IPageViewModel pageViewModel, IJsonProvider jsonProvider, string key) {
         var model = MergeModel(pageViewModel, key);
 
         if (model is T typedModel) {
             return  typedModel;
+        } else {
+            return jsonProvider.DeserializeDynamicTo<T>(model);   
         }
-        
-        return jsonProvider.DeserializeDynamicTo<T>(model);
     }
     
     public static IReadOnlyDictionary<string, object> MergeModels(this IPageViewModel pageViewModel) {
