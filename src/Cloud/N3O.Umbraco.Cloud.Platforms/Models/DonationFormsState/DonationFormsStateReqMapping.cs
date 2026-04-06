@@ -41,6 +41,7 @@ public partial class ElementDonationFormsStateReqMapping : IMapDefinition {
 
             dest.CartItem = GetCartItemReq(campaign, src, fixedFundDimensionValues, null);
             dest.Options = GetDonationFormOptionsReq(ctx, src);
+            dest.Extensions = null;
         }
     }
     
@@ -53,6 +54,7 @@ public partial class ElementDonationFormsStateReqMapping : IMapDefinition {
 
             dest.CartItem = GetCartItemReq(campaign, offering, fixedFundDimensionValues, src.Tags);
             dest.Options = ctx.Map<OfferingContent, DonationFormStateReq>(offering).Options;
+            dest.Extensions = null;
         }
     }
 }

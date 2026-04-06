@@ -68,14 +68,17 @@ public class UpdateCampaignReqMapping : IMapDefinition {
             dest.Activate = true;
         }
         
-        if (src.Type == CampaignTypes.Telethon) {
+        if (src.Type == CampaignTypes.Qurbani) {
+            dest.Qurbani = new QurbaniCampaignOptionsReq();
+            dest.Qurbani.SeasonId = src.Qurbani.Season.Id;
+        } else if (src.Type == CampaignTypes.ScheduledGiving) {
+            dest.ScheduledGiving = new ScheduledGivingCampaignOptionsReq();
+            dest.ScheduledGiving.ScheduleId = src.ScheduledGiving.Schedule.Id;
+        } else if (src.Type == CampaignTypes.Telethon) {
             dest.Telethon = new TelethonCampaignOptionsReq();
             
             dest.Telethon.Begin = src.Telethon.BeginAt.ToLocalDateTime().ToString("o", null);
             dest.Telethon.End = src.Telethon.EndAt.ToLocalDateTime().ToString("o", null);
-        } else if (src.Type == CampaignTypes.ScheduledGiving) {
-            dest.ScheduledGiving = new ScheduledGivingCampaignOptionsReq();
-            dest.ScheduledGiving.ScheduleId = src.ScheduledGiving.Schedule.Id;
         }
     }
 }

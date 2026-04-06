@@ -19,14 +19,18 @@ public class CreateCampaignReqMapping : IMapDefinition {
         dest.Name = src.Name;
         dest.Notes = src.Notes;
         
-        if (src.Type == CampaignTypes.Telethon) {
-            dest.Telethon = new TelethonCampaignOptionsReq();
-            
-            dest.Telethon.Begin = src.Telethon.BeginAt.ToLocalDateTime().ToString("o", null);
-            dest.Telethon.End = src.Telethon.EndAt.ToLocalDateTime().ToString("o", null);
+        if (src.Type == CampaignTypes.Qurbani) {
+            dest.Qurbani = new QurbaniCampaignOptionsReq();
+            dest.Qurbani.SeasonId = src.Qurbani.Season.Id;
+            dest.Qurbani.Begin = src.Qurbani.BeginAt.ToLocalDateTime().ToString("o", null);
+            dest.Qurbani.End = src.Qurbani.EndAt.ToLocalDateTime().ToString("o", null);
         } else if (src.Type == CampaignTypes.ScheduledGiving) {
             dest.ScheduledGiving = new ScheduledGivingCampaignOptionsReq();
             dest.ScheduledGiving.ScheduleId = src.ScheduledGiving.Schedule.Id;
+        } else if (src.Type == CampaignTypes.Telethon) {
+            dest.Telethon = new TelethonCampaignOptionsReq();
+            dest.Telethon.Begin = src.Telethon.BeginAt.ToLocalDateTime().ToString("o", null);
+            dest.Telethon.End = src.Telethon.EndAt.ToLocalDateTime().ToString("o", null);
         }
     }
 }

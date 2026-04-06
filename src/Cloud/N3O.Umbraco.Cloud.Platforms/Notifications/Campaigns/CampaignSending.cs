@@ -35,6 +35,7 @@ public class CampaignSending : INotificationAsyncHandler<SendingContentNotificat
         var isCampaign = notification.Content
                                      .ContentTypeAlias
                                      .IsAnyOf(AliasHelper<StandardCampaignContent>.ContentTypeAlias(),
+                                              AliasHelper<QurbaniCampaignContent>.ContentTypeAlias(),
                                               AliasHelper<ScheduledGivingCampaignContent>.ContentTypeAlias(),
                                               AliasHelper<TelethonCampaignContent>.ContentTypeAlias());
 
