@@ -17,6 +17,5 @@ public class OfferingWebhookBodyReqMapping : IMapDefinition {
 
         dest.Add = ctx.Map<OfferingContent, CreateOfferingReq>(src);
         dest.Update = ctx.Map<OfferingContent, UpdateOfferingReq>(src);
-
     }
 }
