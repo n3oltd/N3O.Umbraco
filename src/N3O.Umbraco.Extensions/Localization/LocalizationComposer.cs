@@ -15,6 +15,7 @@ public class LocalizationComposer : Composer {
         builder.Services.AddSingleton<ILocalizationSettingsAccessor, EnvironmentLocalizationSettingsAccessor>();
         builder.Services.AddSingleton<INumberFormatter, NumberFormatter>();
         builder.Services.AddSingleton<IStringLocalizer, StringLocalizer>();
+        builder.Services.AddSingleton<IStringLocalizerContent, DefaultStringLocalizerContent>();
         builder.Services.AddSingleton<ITextFormatter, TextFormatter>();
     }
 }

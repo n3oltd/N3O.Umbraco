@@ -30,6 +30,7 @@ public class StringLocalizer : IStringLocalizer {
     private readonly IContentService _contentService;
     private readonly IContentTypeService _contentTypeService;
     private readonly ICoreScopeProvider _coreScopeProvider;
+    private readonly IStringLocalizerContent _stringLocalizerContent;
     private readonly AsyncKeyedLocker<string> _locker;
     private string _defaultCultureCode;
     private int? _textSettingsContentId;
@@ -38,11 +39,13 @@ public class StringLocalizer : IStringLocalizer {
                            IContentService contentService,
                            IContentTypeService contentTypeService,
                            ICoreScopeProvider coreScopeProvider,
+                           IStringLocalizerContent stringLocalizerContent,
                            AsyncKeyedLocker<string> locker) {
         _localizationSettingsAccessor = localizationSettingsAccessor;
         _contentService = contentService;
         _contentTypeService = contentTypeService;
         _coreScopeProvider = coreScopeProvider;
+        _stringLocalizerContent = stringLocalizerContent;
         _locker = locker;
     }
 
@@ -86,25 +89,11 @@ public class StringLocalizer : IStringLocalizer {
             var folderId = GetContentId(TextContainerFolderAlias, x => x.Name.EqualsInvariant(folder));
 
             if (folderId == null) {
-                folderId = Lock(() => CreateFolder(folder), folder);
+                folderId = Lock(() => _stringLocalizerContent.CreateFolder(folder, TextSettingsContentId), folder);
             }
 
             return folderId.GetValueOrThrow();
         });
-    }
-
-    private int CreateFolder(string name) {
-        var content = _contentService.Create<TextContainerFolderContent>(name, TextSettingsContentId);
-        
-        using var scope = _coreScopeProvider.CreateCoreScope(autoComplete: true);
-                    
-        using (_ = scope.Notifications.Suppress()) {
-            _contentService.SaveAndPublish(content);
-
-            scope.Complete();
-        }
-
-        return content.Id;
     }
 
     private int GetOrCreateTextContainerId(int folderId, string name) {
@@ -122,44 +111,12 @@ public class StringLocalizer : IStringLocalizer {
             var containerId = GetContentId(TextContainerAlias,
                                            x => x.Name.EqualsInvariant(name) && parent?.Id == folderId);
 
-            containerId = Lock(() => EnsureContainerExistsForAllCultures(name, folderId, containerId), folderId, name);
+            containerId = Lock(() => _stringLocalizerContent.CreateTextContainer(name, folderId, containerId), folderId, name);
 
             return containerId.GetValueOrThrow();
         });
     }
-
-    private int EnsureContainerExistsForAllCultures(string name, int folderId, int? containerId) {
-        var containerContent = containerId.HasValue()
-                                   ? _contentService.GetById(containerId.GetValueOrThrow())
-                                   : _contentService.Create<TextContainerContent>(name, folderId);
-
-        var shouldSave = !containerId.HasValue();
-
-        if (containerContent.ContentType.VariesByCulture()) {
-            var localizationSettings = _localizationSettingsAccessor.GetSettings();
-
-            foreach (var culture in localizationSettings.AllCultureCodes) {
-                if (!containerContent.IsCultureAvailable(culture)) {
-                    containerContent.SetCultureName(name, culture);
-
-                    shouldSave = true;
-                }
-            }
-        }
-
-        if (shouldSave) {
-            using var scope = _coreScopeProvider.CreateCoreScope(autoComplete: true);
-                    
-            using (_ = scope.Notifications.Suppress()) {
-                _contentService.SaveAndPublish(containerContent);
-
-                scope.Complete();
-            }
-        }
-        
-        return containerContent.Id;
-    }
-
+    
     private TextResource GetOrCreateResource(int containerId, string text) {
         return Lock(() => {
             var containerContent = _contentService.GetById(containerId);
