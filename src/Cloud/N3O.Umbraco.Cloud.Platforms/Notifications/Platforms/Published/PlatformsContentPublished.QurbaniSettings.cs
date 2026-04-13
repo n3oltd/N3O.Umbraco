@@ -6,7 +6,6 @@ using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Scheduler;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models;
@@ -32,16 +31,11 @@ public class QurbaniSettingsPublished : CloudContentPublished {
     }
 
     protected override async Task<object> GetBodyAsync(IContent content) {
-        var settingsContent = _contentLocator.Value.Single<QurbaniSettingsContent>();
         var seasonContent = _contentLocator.Value.Single<QurbaniSeasonContent>();
 
-        var categories = new List<QurbaniSeasonCategoryReq>();
-        var category = new QurbaniSeasonCategoryReq();
+        var settingsReq = _mapper.Map<QurbaniSeasonContent, QurbaniSeasonReq>(seasonContent);
 
-        var settingsReq = new QurbaniSeasonReq();
-        settingsReq.Name = seasonContent.Name;
-        settingsReq.Options = new QurbaniSeasonOptionsReq();
-        settingsReq.Options.ShowOnBehalfOf = seasonContent.ShowOnBehalfOf;
+        return settingsReq;
     }
 
     protected override bool CanProcess(IContent content) {

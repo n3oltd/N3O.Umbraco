@@ -104,12 +104,20 @@ public static class PlatformsConstants {
                     public const string Alias = "platformsQurbaniSeasonOffer";
                 }
 
-                public static class Group {
-                    public const string Alias = "platformsQurbaniSeasonGroup";
+                public static class Groups {
+                    public const string Alias = "platformsQurbaniSeasonGroups";
+
+                    public static class Group {
+                        public const string Alias = "platformsQurbaniSeasonGroup";
+                    }
                 }
 
-                public static class Location {
-                    public const string Alias = "platformsQurbaniSeasonLocation";
+                public static class Locations {
+                    public const string Alias = "platformsQurbaniSeasonLocations";
+                    
+                    public static class Location {
+                        public const string Alias = "platformsQurbaniSeasonLocation";
+                    }
                 }
 
                 public static class Upsells {

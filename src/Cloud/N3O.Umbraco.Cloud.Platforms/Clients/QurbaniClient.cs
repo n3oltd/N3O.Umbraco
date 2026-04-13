@@ -293,6 +293,22 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
 
     }
 
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.3.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class QurbaniSeasonWebhookBodyReq
+    {
+
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("action", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public WebhookSyncAction? Action { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("addOrUpdate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public QurbaniSeasonReq AddOrUpdate { get; set; }
+
+    }
+
     /// <summary>
     /// One of 'qurbaniSeasons'
     /// </summary>

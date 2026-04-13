@@ -56,11 +56,11 @@ public static class ContentExtensions {
     }
     
     public static bool IsQurbaniSeasonGroupSettings(this IContent content) {
-        return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Group.Alias);
+        return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Groups.Group.Alias);
     }
     
     public static bool IsQurbaniSeasonLocationSettings(this IContent content) {
-        return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Location.Alias);
+        return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Locations.Location.Alias);
     }
 
     public static bool IsZakatCalculatorSettings(this IContent content) {
