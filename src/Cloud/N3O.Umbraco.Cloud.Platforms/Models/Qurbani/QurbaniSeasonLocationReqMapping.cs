@@ -2,11 +2,8 @@
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Media;
-using System;
 using System.Linq;
-using N3O.Umbraco.Extensions;
 using Umbraco.Cms.Core.Mapping;
-using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
@@ -28,10 +25,9 @@ public class QurbaniSeasonLocationReqMapping : IMapDefinition {
         dest.SoldOut = src.SoldOut;
         dest.Categories = src.Categories.Select(x => x.Name).ToList();
         dest.Icon = new SvgContentReq();
-        dest.Icon.SourceFile = _mediaUrl.GetMediaUrl(src.Icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x)).ToString();
+        dest.Icon = src.Icon.ToSvgContentReq(_mediaUrl);
         dest.Image = src.Image.ToImageSimpleContentReq(_mediaUrl);
-        dest.Description = new RichTextContentReq();
-        dest.Description.Html = src.Description.ToHtmlString(); 
+        dest.Description = src.Description.ToHtmlString().ToRichTextContentReq(); 
         dest.FormState = src.ToDonationFormStateReq();
     }
 }

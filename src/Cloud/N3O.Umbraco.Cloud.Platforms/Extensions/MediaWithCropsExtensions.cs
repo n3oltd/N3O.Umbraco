@@ -10,8 +10,11 @@ using MediaConstants = Umbraco.Cms.Core.Constants.Conventions.Media;
 namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 
 public static class MediaWithCropsExtensions {
-    public static ImageSimpleContentReq ToImageSimpleContentReq(this MediaWithCrops media,
-                                                                IMediaUrl mediaUrl) {
+    public static ImageSimpleContentReq ToImageSimpleContentReq(this MediaWithCrops media, IMediaUrl mediaUrl) {
+        if (media == null) {
+            return null;
+        }
+        
         var req = new ImageSimpleContentReq();
         req.SourceFile = mediaUrl.GetMediaUrl(media, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x)).ToString();
         
@@ -25,6 +28,17 @@ public static class MediaWithCropsExtensions {
         req.Main.Crop.TopRight = new PointReq();
         req.Main.Crop.TopRight.X = (int) media.Properties.Single(x => x.Alias == MediaConstants.Width).GetValue();
         req.Main.Crop.TopRight.Y = (int) media.Properties.Single(x => x.Alias == MediaConstants.Height).GetValue();
+
+        return req;
+    }
+
+    public static SvgContentReq ToSvgContentReq(this MediaWithCrops media, IMediaUrl mediaUrl) {
+        if (media == null) {
+            return null;
+        }
+        
+        var req = new SvgContentReq();
+        req.SourceFile = mediaUrl.GetMediaUrl(media, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x)).ToString();
 
         return req;
     }

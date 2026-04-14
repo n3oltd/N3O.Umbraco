@@ -14,20 +14,28 @@ public class QurbaniSeasonContent : UmbracoContent<QurbaniSeasonContent> {
     public Guid Key => Content().Key;
 
     public bool ShowOnBehalfOf => GetValue(x => x.ShowOnBehalfOf);
+    
     public IEnumerable<QurbaniSeasonCategoryContent> Categories => Content()
                                                                   .Descendants()
-                                                                  .Where(x => x.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Categories.Category.Alias))
-                                                                  .As<QurbaniSeasonCategoryContent>();
+                                                                  .Where(x => x.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Category.Alias))
+                                                                  .As<QurbaniSeasonCategoryContent>()
+                                                                  .ToList();
+    
     public IEnumerable<QurbaniSeasonGroupContent> Groups => Content()
                                                            .Descendants()
-                                                           .Where(x => x.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Groups.Group.Alias))
-                                                           .As<QurbaniSeasonGroupContent>();
+                                                           .Where(x => x.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Group.Alias))
+                                                           .As<QurbaniSeasonGroupContent>()
+                                                           .ToList();
+    
     public IEnumerable<QurbaniSeasonLocationContent> Locations => Content()
                                                                  .Descendants()
-                                                                 .Where(x => x.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Locations.Location.Alias))
-                                                                 .As<QurbaniSeasonLocationContent>();
+                                                                 .Where(x => x.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Location.Alias))
+                                                                 .As<QurbaniSeasonLocationContent>()
+                                                                 .ToList();
+    
     public IEnumerable<QurbaniSeasonUpsellContent> Upsells => Content()
                                                              .Descendants()
-                                                             .Where(x => x.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Upsells.Upsell.Alias))
-                                                             .As<QurbaniSeasonUpsellContent>();
+                                                             .Where(x => x.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Upsell.Alias))
+                                                             .As<QurbaniSeasonUpsellContent>()
+                                                             .ToList();
 }

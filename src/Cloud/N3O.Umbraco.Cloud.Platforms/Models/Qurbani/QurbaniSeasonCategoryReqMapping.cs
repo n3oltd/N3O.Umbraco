@@ -1,10 +1,8 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
+using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Media;
-using System;
 using Umbraco.Cms.Core.Mapping;
-using N3O.Umbraco.Extensions;
-using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
@@ -23,7 +21,6 @@ public class QurbaniSeasonCategoryReqMapping : IMapDefinition {
     private void Map(QurbaniSeasonCategoryContent src, QurbaniSeasonCategoryReq dest, MapperContext ctx) {
         dest.Name = src.Name;
         dest.Summary = src.Summary;
-        dest.Icon = new SvgContentReq();
-        dest.Icon.SourceFile = _mediaUrl.GetMediaUrl(src.Icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x)).ToString();
+        dest.Icon = src.Icon.ToSvgContentReq(_mediaUrl);
     }
 }

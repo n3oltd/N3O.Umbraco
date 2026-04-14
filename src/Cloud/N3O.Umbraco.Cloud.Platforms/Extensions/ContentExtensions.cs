@@ -47,20 +47,27 @@ public static class ContentExtensions {
         return HasComposition(contentTypeService, content, AliasHelper<OfferingContent>.ContentTypeAlias());
     }
 
+    public static bool IsQurbaniSeasonGroup(this IContent content) {
+        return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Group.Alias);
+    }
+    
+    public static bool IsQurbaniSeasonLocation(this IContent content) {
+        return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Location.Alias);
+    }
+
+    public static bool IsQurbaniSeasonContent(this IContent content) {
+        return IsQurbaniSeasonSettings(content) ||
+               IsQurbaniSeasonGroup(content) ||
+               IsQurbaniSeasonLocation(content) ||
+               IsQurbaniSeasonUpsell(content);
+    }
+    
     public static bool IsQurbaniSeasonSettings(this IContent content) {
         return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Alias);
     }
-
-    public static bool IsQurbaniSeasonOfferSettings(this IContent content) {
-        return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Offer.Alias);
-    }
     
-    public static bool IsQurbaniSeasonGroupSettings(this IContent content) {
-        return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Groups.Group.Alias);
-    }
-    
-    public static bool IsQurbaniSeasonLocationSettings(this IContent content) {
-        return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Locations.Location.Alias);
+    public static bool IsQurbaniSeasonUpsell(this IContent content) {
+        return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Upsell.Alias);
     }
 
     public static bool IsZakatCalculatorSettings(this IContent content) {

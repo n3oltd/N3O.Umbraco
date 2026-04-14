@@ -3,16 +3,13 @@ using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
-using System;
 using Umbraco.Cms.Core.Models;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.Qurbani.Settings.Season.Upsells.Upsell.Alias)]
+[UmbracoContent(PlatformsConstants.Qurbani.Settings.Season.Upsell.Alias)]
 public class QurbaniSeasonUpsellContent : UmbracoContent<QurbaniSeasonUpsellContent>, IHoldDonationFormState {
     public string Name => Content().Name;
-    public Guid Key => Content().Key;
-
     public MediaWithCrops Icon => GetValue(x => x.Icon);
     public string Summary => GetValue(x => x.Summary);
     public GiftType GiftType => GetValue(x => x.GiftType);

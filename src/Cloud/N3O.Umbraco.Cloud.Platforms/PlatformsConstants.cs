@@ -54,6 +54,32 @@ public static class PlatformsConstants {
     public static class Platforms {
         public const string Alias = "platforms";
     }
+    
+    public static class Qurbani {
+        public static class Settings {
+            public const string Alias = "platformsQurbaniSettings";
+
+            public static class Season {
+                public const string Alias = "platformsQurbaniSeason";
+
+                public static class Category {
+                    public const string Alias = "platformsQurbaniSeasonCategory";
+                }
+
+                public static class Group {
+                    public const string Alias = "platformsQurbaniSeasonGroup";
+                }
+                
+                public static class Location {
+                    public const string Alias = "platformsQurbaniSeasonLocation";
+                }
+
+                public static class Upsell {
+                    public const string Alias = "platformsQurbaniSeasonUpsell";
+                }
+            }
+        }
+    }
 
     public static class WebhookIds {
         public const string Campaigns = "campaigns";
@@ -65,7 +91,7 @@ public static class PlatformsConstants {
         public const string DonationPopups = "donationPopups";
         public const string ManagedContent = "managedContent";
         public const string Offerings = "offerings";
-        public const string QurbaniSettings = "qurbaniSettings";
+        public const string QurbaniSeason = "qurbaniSeason";
         public const string ZakatSettings = "zakatSettings";
     }
 
@@ -80,52 +106,6 @@ public static class PlatformsConstants {
 
                 public static class Section {
                     public const string Alias = "zakatCalculatorSectionSettings";
-                }
-            }
-        }
-    }
-
-    public static class Qurbani {
-        public static class Settings {
-            public const string Alias = "platformsQurbaniSettings";
-
-            public static class Season {
-                public const string Alias = "platformsQurbaniSeason";
-
-                public static class Categories {
-                    public const string Alias = "platformsQurbaniSeasonCategories";
-
-                    public static class Category {
-                        public const string Alias = "platformsQurbaniSeasonCategory";
-                    }
-                }
-
-                public static class Offer {
-                    public const string Alias = "platformsQurbaniSeasonOffer";
-                }
-
-                public static class Groups {
-                    public const string Alias = "platformsQurbaniSeasonGroups";
-
-                    public static class Group {
-                        public const string Alias = "platformsQurbaniSeasonGroup";
-                    }
-                }
-
-                public static class Locations {
-                    public const string Alias = "platformsQurbaniSeasonLocations";
-                    
-                    public static class Location {
-                        public const string Alias = "platformsQurbaniSeasonLocation";
-                    }
-                }
-
-                public static class Upsells {
-                    public const string Alias = "platformsQurbaniSeasonUpsells";
-
-                    public static class Upsell {
-                        public const string Alias = "platformsQurbaniSeasonUpsell";
-                    }
                 }
             }
         }

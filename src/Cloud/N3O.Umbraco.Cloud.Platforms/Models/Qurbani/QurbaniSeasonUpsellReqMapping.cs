@@ -2,10 +2,7 @@
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Media;
-using N3O.Umbraco.Extensions;
-using System;
 using Umbraco.Cms.Core.Mapping;
-using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
@@ -25,7 +22,7 @@ public class QurbaniSeasonUpsellReqMapping : IMapDefinition {
         dest.Name = src.Name;
         dest.Summary = src.Summary;
         dest.Icon = new SvgContentReq();
-        dest.Icon.SourceFile = _mediaUrl.GetMediaUrl(src.Icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x)).ToString();
+        dest.Icon = src.Icon.ToSvgContentReq(_mediaUrl);
         dest.FormState = src.ToDonationFormStateReq();
     }
 }
