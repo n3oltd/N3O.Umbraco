@@ -3,6 +3,7 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
 using System.Linq;
+using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Localization;
@@ -36,7 +37,7 @@ public class ReadOnlyStringLocalizer : ContentStringLocalizer {
                                         .FirstOrDefault(x => x.ContentType.Alias == TextContainerFolderAlias &&
                                                              x.Name.EqualsInvariant(folderName));
 
-        return folder?.As<TextContainerFolderContent>();
+        return folder?.As<TextContainerFolderContent>(VariationContext);
     }
 
     private TextContainerContent GetTextContainer(TextContainerFolderContent textContainerFolderContent, string name) {
@@ -47,7 +48,7 @@ public class ReadOnlyStringLocalizer : ContentStringLocalizer {
                                                       .SingleOrDefault(x => x.ContentType.Alias == TextContainerAlias &&
                                                                             x.Name.EqualsInvariant(name));
         
-        return textContainer?.As<TextContainerContent>();
+        return textContainer?.As<TextContainerContent>(VariationContext);
     }
 
     private TextResource GetResource(TextContainerContent textContainerContent, string text) {
@@ -56,8 +57,9 @@ public class ReadOnlyStringLocalizer : ContentStringLocalizer {
         return resources.Single(x => x.Source.EqualsInvariant(text));
     }
     
-    
     private IEnumerable<TextResource> GetTextResources(TextContainerContent textContainerContent) {
         return textContainerContent.OrEmpty(x => x.Resources);
     }
+    
+    private VariationContext VariationContext => new (LocalizationSettings.CultureCode);
 }
