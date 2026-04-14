@@ -21,15 +21,14 @@ public class OfferingPublished : CloudContentPublished {
     private readonly IUmbracoMapper _mapper;
     private readonly IEnumerable<IPlatformsPageContentPublisher> _platformsPageContentPublishers;
 
-    public OfferingPublished(ISubscriptionAccessor subscriptionAccessor,
-                             ICloudUrl cloudUrl,
+    public OfferingPublished(                             ICloudUrl cloudUrl,
                              IBackgroundJob backgroundJob,
                              IContentTypeService contentTypeService,
                              Lazy<IContentLocator> contentLocator,
                              IUmbracoMapper mapper,
                              ILogger<CloudContentPublished> logger,
                              IEnumerable<IPlatformsPageContentPublisher> platformsPageContentPublishers)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob, logger) {
+        : base(cloudUrl, backgroundJob, logger) {
         _contentTypeService = contentTypeService;
         _contentLocator = contentLocator;
         _mapper = mapper;

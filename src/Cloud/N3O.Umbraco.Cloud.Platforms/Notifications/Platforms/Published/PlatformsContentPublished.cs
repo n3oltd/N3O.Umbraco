@@ -13,11 +13,10 @@ public abstract class CloudContentPublished :
     PlatformsContentNotification, INotificationAsyncHandler<ContentPublishedNotification> {
     private readonly ILogger<CloudContentPublished> _logger;
 
-    protected CloudContentPublished(ISubscriptionAccessor subscriptionAccessor,
-                                    ICloudUrl cloudUrl,
+    protected CloudContentPublished(ICloudUrl cloudUrl,
                                     IBackgroundJob backgroundJob,
                                     ILogger<CloudContentPublished> logger) 
-        : base(subscriptionAccessor, cloudUrl, backgroundJob) {
+        : base(cloudUrl, backgroundJob) {
         _logger = logger;
     }
 

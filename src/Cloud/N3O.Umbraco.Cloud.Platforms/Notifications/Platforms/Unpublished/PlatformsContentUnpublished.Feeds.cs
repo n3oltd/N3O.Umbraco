@@ -6,10 +6,8 @@ using Umbraco.Cms.Core.Models;
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class FeedsUnpublished : CloudContentUnpublished {
-    public FeedsUnpublished(ISubscriptionAccessor subscriptionAccessor,
-                            ICloudUrl cloudUrl,
-                            IBackgroundJob backgroundJob)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob) {
+    public FeedsUnpublished(ICloudUrl cloudUrl, IBackgroundJob backgroundJob)
+        : base(cloudUrl, backgroundJob) {
     }
     
     protected override bool CanProcess(IContent content) {

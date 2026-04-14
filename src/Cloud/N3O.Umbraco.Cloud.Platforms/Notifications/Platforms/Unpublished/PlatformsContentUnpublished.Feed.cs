@@ -12,11 +12,8 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 public class FeedUnpublished : CloudContentUnpublished {
     private readonly Lazy<IContentLocator> _contentLocator;
 
-    public FeedUnpublished(ISubscriptionAccessor subscriptionAccessor,
-                           ICloudUrl cloudUrl,
-                           IBackgroundJob backgroundJob,
-                           Lazy<IContentLocator> contentLocator)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob) {
+    public FeedUnpublished(ICloudUrl cloudUrl, IBackgroundJob backgroundJob, Lazy<IContentLocator> contentLocator)
+        : base(cloudUrl, backgroundJob) {
         _contentLocator = contentLocator;
     }
     

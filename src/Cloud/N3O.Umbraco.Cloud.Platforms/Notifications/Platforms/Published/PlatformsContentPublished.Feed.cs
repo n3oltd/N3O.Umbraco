@@ -14,12 +14,11 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 public class FeedPublished : CloudContentPublished {
     private readonly Lazy<IContentLocator> _contentLocator;
 
-    public FeedPublished(ISubscriptionAccessor subscriptionAccessor,
-                         ICloudUrl cloudUrl,
+    public FeedPublished(ICloudUrl cloudUrl,
                          IBackgroundJob backgroundJob,
                          Lazy<IContentLocator> contentLocator,
                          ILogger<FeedPublished> logger)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob, logger) {
+        : base(cloudUrl, backgroundJob, logger) {
         _contentLocator = contentLocator;
     }
     

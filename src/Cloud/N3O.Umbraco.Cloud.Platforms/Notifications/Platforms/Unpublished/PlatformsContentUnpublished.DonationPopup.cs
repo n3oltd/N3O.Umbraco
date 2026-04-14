@@ -6,10 +6,8 @@ using Umbraco.Cms.Core.Models;
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class DonationPopupUnpublished : CloudContentUnpublished {
-    public DonationPopupUnpublished(ISubscriptionAccessor subscriptionAccessor,
-                                    ICloudUrl cloudUrl,
-                                    IBackgroundJob backgroundJob)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob) {
+    public DonationPopupUnpublished(ICloudUrl cloudUrl, IBackgroundJob backgroundJob)
+        : base(cloudUrl, backgroundJob) {
     }
     
     protected override bool CanProcess(IContent content) {

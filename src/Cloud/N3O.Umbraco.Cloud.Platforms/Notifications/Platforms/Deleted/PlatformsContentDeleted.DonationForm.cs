@@ -6,10 +6,8 @@ using Umbraco.Cms.Core.Models;
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class DonationFormDeleted : PlatformsContentDeleted {
-    public DonationFormDeleted(ISubscriptionAccessor subscriptionAccessor,
-                               ICloudUrl cloudUrl,
-                               IBackgroundJob backgroundJob) 
-        : base(subscriptionAccessor, cloudUrl, backgroundJob) { }
+    public DonationFormDeleted(ICloudUrl cloudUrl, IBackgroundJob backgroundJob) 
+        : base(cloudUrl, backgroundJob) { }
 
     protected override bool CanProcess(IContent content) {
         return content.IsDonationFormElement();

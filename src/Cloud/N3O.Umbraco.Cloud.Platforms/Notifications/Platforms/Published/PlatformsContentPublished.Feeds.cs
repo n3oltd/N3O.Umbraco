@@ -8,11 +8,10 @@ using Umbraco.Cms.Core.Models;
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class FeedsPublished : CloudContentPublished {
-    public FeedsPublished(ISubscriptionAccessor subscriptionAccessor,
-                          ICloudUrl cloudUrl,
+    public FeedsPublished(                          ICloudUrl cloudUrl,
                           IBackgroundJob backgroundJob,
                           ILogger<FeedsPublished> logger)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob, logger) { }
+        : base(cloudUrl, backgroundJob, logger) { }
 
     protected override bool CanProcess(IContent content) {
         return content.IsFeeds();

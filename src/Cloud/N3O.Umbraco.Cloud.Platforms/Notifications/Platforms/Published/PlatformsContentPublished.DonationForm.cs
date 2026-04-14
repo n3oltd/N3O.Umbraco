@@ -15,13 +15,12 @@ public class DonationFormPublished : CloudContentPublished {
     private readonly Lazy<IContentLocator> _contentLocator;
     private readonly IUmbracoMapper _mapper;
 
-    public DonationFormPublished(ISubscriptionAccessor subscriptionAccessor,
-                                 ICloudUrl cloudUrl,
+    public DonationFormPublished(ICloudUrl cloudUrl,
                                  IBackgroundJob backgroundJob,
                                  Lazy<IContentLocator> contentLocator,
                                  IUmbracoMapper mapper,
                                  ILogger<CloudContentPublished> logger)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob, logger) {
+        : base(cloudUrl, backgroundJob, logger) {
         _contentLocator = contentLocator;
         _mapper = mapper;
     }
