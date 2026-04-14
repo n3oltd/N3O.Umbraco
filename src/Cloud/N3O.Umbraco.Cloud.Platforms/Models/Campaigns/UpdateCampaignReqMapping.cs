@@ -7,11 +7,9 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Media;
 using NodaTime.Extensions;
 using Slugify;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
-using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
@@ -40,11 +38,9 @@ public class UpdateCampaignReqMapping : IMapDefinition {
         dest.Slug = _slugHelper.GenerateSlug(src.Name);
         dest.Target = target == 0 ? null : target;
         
-        dest.Description = new RichTextContentReq();
-        dest.Description.Html = src.Description.ToHtmlString(); 
+        dest.Description = src.Description.ToHtmlString().ToRichTextContentReq();
         dest.Image = src.Image.ToImageSimpleContentReq(_mediaUrl);
-        dest.Icon = new SvgContentReq();
-        dest.Icon.SourceFile = _mediaUrl.GetMediaUrl(src.Icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x)).ToString();
+        dest.Icon = src.Icon.ToSvgContentReq(_mediaUrl);
 
         dest.Order = new CampaignOrderReq();
         dest.Order.Order = src.Content().Parent.Children.FindIndex(x => x.Id == src.Content().Id);

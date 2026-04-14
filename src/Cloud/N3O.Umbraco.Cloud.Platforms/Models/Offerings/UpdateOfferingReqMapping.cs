@@ -5,11 +5,9 @@ using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Media;
 using Slugify;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
-using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
@@ -36,14 +34,9 @@ public class UpdateOfferingReqMapping : IMapDefinition {
         dest.Slug = _slugHelper.GenerateSlug(src.Name);
         
         dest.Summary = src.Summary;
-        dest.Description = new RichTextContentReq();
-        dest.Description.Html = src.Description.ToHtmlString(); 
+        dest.Description = src.Description.ToHtmlString().ToRichTextContentReq(); 
         dest.Image = src.Image.ToImageSimpleContentReq(_mediaUrl);
-
-        if (src.Icon.HasValue()) {
-            dest.Icon = new SvgContentReq();
-            dest.Icon.SourceFile = _mediaUrl.GetMediaUrl(src.Icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x)).ToString();
-        }
+        dest.Icon = src.Icon.ToSvgContentReq(_mediaUrl);
         
         dest.Order = new OfferingOrderReq();
         dest.Order.Order = src.Content().Parent.Children.FindIndex(x => x.Id == src.Content().Id);

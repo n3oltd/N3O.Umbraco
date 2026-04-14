@@ -35,6 +35,12 @@ public class ZakatCalculatorSettingsPublished : CloudContentPublished {
         _blocksRenderer = blocksRenderer;
     }
 
+    protected override bool CanProcess(IContent content) {
+        return content.IsZakatCalculatorSettings() ||
+               content.IsZakatCalculatorSection() ||
+               content.IsZakatCalculatorField();
+    }
+    
     protected override async Task<object> GetBodyAsync(IContent content) {
         var settingsContent = _contentLocator.Value.Single<ZakatCalculatorSettingsContent>();
 
@@ -60,11 +66,8 @@ public class ZakatCalculatorSettingsPublished : CloudContentPublished {
     private async Task<RichTextContentReq> GetDefaultContentAsync(ZakatCalculatorSettingsContent settingsContent) {
         var html = await GetRenderedHtml(settingsContent.Content(),
                                          AliasHelper<ZakatCalculatorSettingsContent>.PropertyAlias(x => x.DefaultContent));
-        
-        var req = new RichTextContentReq();
-        req.Html = html.ToHtmlString();
 
-        return req;
+        return html.ToHtmlString().ToRichTextContentReq();
     }
 
     private async Task<ZakatCalculatorSectionReq> GetSectionsAsync(ZakatCalculatorSectionSettingsContent section) {
@@ -99,10 +102,7 @@ public class ZakatCalculatorSettingsPublished : CloudContentPublished {
             var html = await GetRenderedHtml(field.Content(),
                                              AliasHelper<ZakatCalculatorFieldSettingsContent>.PropertyAlias(x => x.Content));
 
-            if (html.HasValue()) {
-                req.Content = new RichTextContentReq();
-                req.Content.Html = html.ToHtmlString();
-            }
+            req.Content = html.ToHtmlString().ToRichTextContentReq();
         }
 
         if (field.Metal.HasValue()) {
@@ -117,12 +117,6 @@ public class ZakatCalculatorSettingsPublished : CloudContentPublished {
         var html = await _blocksRenderer.RenderBlocksAsync(content, alias);
 
         return html;
-    }
-
-    protected override bool CanProcess(IContent content) {
-        return content.IsZakatCalculatorSettings() ||
-               content.IsZakatCalculatorSection() ||
-               content.IsZakatCalculatorField();
     }
 
     protected override string HookId => PlatformsConstants.WebhookIds.ZakatSettings;
