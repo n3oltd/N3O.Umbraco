@@ -12,11 +12,8 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 public class FeedDeleted : PlatformsContentDeleted {
     private readonly Lazy<IContentLocator> _contentLocator;
 
-    public FeedDeleted(ISubscriptionAccessor subscriptionAccessor,
-                       ICloudUrl cloudUrl,
-                       IBackgroundJob backgroundJob,
-                       Lazy<IContentLocator> contentLocator)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob) {
+    public FeedDeleted(ICloudUrl cloudUrl, IBackgroundJob backgroundJob, Lazy<IContentLocator> contentLocator)
+        : base(cloudUrl, backgroundJob) {
         _contentLocator = contentLocator;
     }
     

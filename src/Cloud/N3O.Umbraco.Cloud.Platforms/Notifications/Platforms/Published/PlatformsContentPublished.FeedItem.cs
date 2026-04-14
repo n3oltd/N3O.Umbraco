@@ -18,14 +18,13 @@ public class FeedItemPublished : CloudContentPublished {
     private readonly Lazy<IContentLocator> _contentLocator;
     private readonly IUmbracoMapper _mapper;
 
-    public FeedItemPublished(ISubscriptionAccessor subscriptionAccessor,
-                             ICloudUrl cloudUrl,
+    public FeedItemPublished(ICloudUrl cloudUrl,
                              IBackgroundJob backgroundJob,
                              IContentTypeService contentTypeService,
                              Lazy<IContentLocator> contentLocator,
                              IUmbracoMapper mapper,
                              ILogger<FeedItemPublished> logger)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob, logger) {
+        : base(cloudUrl, backgroundJob, logger) {
         _contentTypeService = contentTypeService;
         _contentLocator = contentLocator;
         _mapper = mapper;

@@ -22,15 +22,14 @@ public class CampaignPublished : CloudContentPublished {
     private readonly IUmbracoMapper _mapper;
     private readonly IReadOnlyList<IPlatformsPageContentPublisher> _platformsPageContentPublishers;
 
-    public CampaignPublished(ISubscriptionAccessor subscriptionAccessor,
-                             ICloudUrl cloudUrl,
+    public CampaignPublished(ICloudUrl cloudUrl,
                              IBackgroundJob backgroundJob,
                              IContentTypeService contentTypeService,
                              Lazy<IContentLocator> contentLocator,
                              IUmbracoMapper mapper,
                              ILogger<CampaignPublished> logger,
                              IEnumerable<IPlatformsPageContentPublisher> platformsPageContentPublishers)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob, logger) {
+        : base(cloudUrl, backgroundJob, logger) {
         _contentTypeService = contentTypeService;
         _contentLocator = contentLocator;
         _mapper = mapper;

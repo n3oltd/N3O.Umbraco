@@ -9,11 +9,8 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 public class FeedItemUnpublished : CloudContentUnpublished {
     private readonly IContentTypeService _contentTypeService;
 
-    public FeedItemUnpublished(ISubscriptionAccessor subscriptionAccessor,
-                               ICloudUrl cloudUrl,
-                               IBackgroundJob backgroundJob,
-                               IContentTypeService contentTypeService)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob) {
+    public FeedItemUnpublished(ICloudUrl cloudUrl, IBackgroundJob backgroundJob, IContentTypeService contentTypeService)
+        : base(cloudUrl, backgroundJob) {
         _contentTypeService = contentTypeService;
     }
     

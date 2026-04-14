@@ -9,11 +9,8 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 public class CampaignUnpublished : CloudContentUnpublished {
     private readonly IContentTypeService _contentTypeService;
 
-    public CampaignUnpublished(ISubscriptionAccessor subscriptionAccessor,
-                               ICloudUrl cloudUrl,
-                               IBackgroundJob backgroundJob,
-                               IContentTypeService contentTypeService)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob) {
+    public CampaignUnpublished(ICloudUrl cloudUrl, IBackgroundJob backgroundJob, IContentTypeService contentTypeService)
+        : base(cloudUrl, backgroundJob) {
         _contentTypeService = contentTypeService;
     }
     

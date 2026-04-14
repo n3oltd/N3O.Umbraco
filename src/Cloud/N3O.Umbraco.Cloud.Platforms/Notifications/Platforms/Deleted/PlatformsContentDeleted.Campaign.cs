@@ -9,11 +9,8 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 public class CampaignDeleted : PlatformsContentDeleted {
     private readonly IContentTypeService _contentTypeService;
 
-    public CampaignDeleted(ISubscriptionAccessor subscriptionAccessor,
-                           ICloudUrl cloudUrl,
-                           IBackgroundJob backgroundJob,
-                           IContentTypeService contentTypeService) 
-        : base(subscriptionAccessor, cloudUrl, backgroundJob) {
+    public CampaignDeleted(ICloudUrl cloudUrl, IBackgroundJob backgroundJob, IContentTypeService contentTypeService) 
+        : base(cloudUrl, backgroundJob) {
         _contentTypeService = contentTypeService;
     }
     

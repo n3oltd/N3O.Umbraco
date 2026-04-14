@@ -6,10 +6,8 @@ using Umbraco.Cms.Core.Models;
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class QurbaniSeasonUnpublished : CloudContentUnpublished {
-    public QurbaniSeasonUnpublished(ISubscriptionAccessor subscriptionAccessor,
-                                    ICloudUrl cloudUrl,
-                                    IBackgroundJob backgroundJob)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob) {
+    public QurbaniSeasonUnpublished(ICloudUrl cloudUrl, IBackgroundJob backgroundJob)
+        : base(cloudUrl, backgroundJob) {
     }
     
     protected override bool CanProcess(IContent content) {

@@ -22,15 +22,14 @@ public class CrowdfundingCampaignPublished : CloudContentPublished {
     private readonly IReadOnlyList<IPlatformsPageContentPublisher> _platformsPageContentPublishers;
     private readonly IUmbracoMapper _mapper;
 
-    public CrowdfundingCampaignPublished(ISubscriptionAccessor subscriptionAccessor,
-                                         ICloudUrl cloudUrl,
+    public CrowdfundingCampaignPublished(ICloudUrl cloudUrl,
                                          IBackgroundJob backgroundJob,
                                          IContentTypeService contentTypeService,
                                          Lazy<IContentLocator> contentLocator,
                                          ILogger<CrowdfundingCampaignPublished> logger,
                                          IEnumerable<IPlatformsPageContentPublisher> platformsPageContentPublishers,
                                          IUmbracoMapper mapper)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob, logger) {
+        : base(cloudUrl, backgroundJob, logger) {
         _contentTypeService = contentTypeService;
         _contentLocator = contentLocator;
         _mapper = mapper;

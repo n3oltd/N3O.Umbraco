@@ -1,4 +1,6 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Lookups;
+﻿using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Cloud.Platforms.Extensions;
+using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
@@ -6,10 +8,12 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Strings;
+using GiftType = N3O.Umbraco.Cloud.Platforms.Lookups.GiftType;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-public abstract class QurbaniSeasonOfferContent<T> : UmbracoContent<T>, IHoldDonationFormState
+public abstract class QurbaniSeasonOfferContent<T> :
+    UmbracoContent<T>, IHoldDonationFormState, IQurbaniCartExtensionContent
     where T : QurbaniSeasonOfferContent<T>{
     public string Name => Content().Name;
     public string Summary => GetValue(x => x.Summary);
@@ -26,4 +30,8 @@ public abstract class QurbaniSeasonOfferContent<T> : UmbracoContent<T>, IHoldDon
 
     [JsonIgnore]
     public GiftType GiftType => GiftTypes.OneTime;
+    
+    public IReadOnlyDictionary<string, object> Extensions => this.GetExtensionData(PopulateCartExtensions);
+
+    protected abstract void PopulateCartExtensions(QurbaniCartExtensionsReq extension);
 }

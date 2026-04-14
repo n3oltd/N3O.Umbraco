@@ -15,13 +15,12 @@ public class DonationPopupPublished : CloudContentPublished {
     private readonly Lazy<IContentLocator> _contentLocator;
     private readonly IUmbracoMapper _mapper;
 
-    public DonationPopupPublished(ISubscriptionAccessor subscriptionAccessor,
-                                  ICloudUrl cloudUrl,
+    public DonationPopupPublished(ICloudUrl cloudUrl,
                                   IBackgroundJob backgroundJob,
                                   Lazy<IContentLocator> contentLocator,
                                   IUmbracoMapper mapper,
                                   ILogger<CloudContentPublished> logger)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob, logger) {
+        : base(cloudUrl, backgroundJob, logger) {
         _contentLocator = contentLocator;
         _mapper = mapper;
     }

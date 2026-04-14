@@ -22,14 +22,13 @@ public class ZakatCalculatorSettingsPublished : CloudContentPublished {
     private readonly IUmbracoMapper _mapper;
     private readonly IBlocksRenderer _blocksRenderer;
 
-    public ZakatCalculatorSettingsPublished(ISubscriptionAccessor subscriptionAccessor,
-                                            ICloudUrl cloudUrl,
+    public ZakatCalculatorSettingsPublished(ICloudUrl cloudUrl,
                                             IBackgroundJob backgroundJob,
                                             Lazy<IContentLocator> contentLocator,
                                             IUmbracoMapper mapper,
                                             ILogger<CloudContentPublished> logger,
                                             IBlocksRenderer blocksRenderer)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob, logger) {
+        : base(cloudUrl, backgroundJob, logger) {
         _contentLocator = contentLocator;
         _mapper = mapper;
         _blocksRenderer = blocksRenderer;

@@ -9,11 +9,8 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 public class FeedItemDeleted : PlatformsContentDeleted {
     private readonly IContentTypeService _contentTypeService;
 
-    public FeedItemDeleted(ISubscriptionAccessor subscriptionAccessor,
-                           ICloudUrl cloudUrl,
-                           IBackgroundJob backgroundJob,
-                           IContentTypeService contentTypeService)
-        : base(subscriptionAccessor, cloudUrl, backgroundJob) {
+    public FeedItemDeleted(ICloudUrl cloudUrl, IBackgroundJob backgroundJob, IContentTypeService contentTypeService)
+        : base(cloudUrl, backgroundJob) {
         _contentTypeService = contentTypeService;
     }
     

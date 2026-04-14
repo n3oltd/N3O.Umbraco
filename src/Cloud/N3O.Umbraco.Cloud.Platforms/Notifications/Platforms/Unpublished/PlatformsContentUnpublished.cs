@@ -9,10 +9,8 @@ namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public abstract class CloudContentUnpublished :
     PlatformsContentNotification, INotificationAsyncHandler<ContentUnpublishedNotification> {
-    protected CloudContentUnpublished(ISubscriptionAccessor subscriptionAccessor,
-                                      ICloudUrl cloudUrl,
-                                      IBackgroundJob backgroundJob) 
-        : base(subscriptionAccessor, cloudUrl, backgroundJob) { }
+    protected CloudContentUnpublished(ICloudUrl cloudUrl, IBackgroundJob backgroundJob) 
+        : base(cloudUrl, backgroundJob) { }
 
     public Task HandleAsync(ContentUnpublishedNotification notification,
                             CancellationToken cancellationToken) {
