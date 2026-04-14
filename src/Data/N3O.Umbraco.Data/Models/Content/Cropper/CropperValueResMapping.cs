@@ -1,4 +1,4 @@
-using Humanizer.Bytes;
+using Humanizer;
 using N3O.Umbraco.Cropper.Models;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Extensions;

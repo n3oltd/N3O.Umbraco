@@ -1,4 +1,4 @@
-﻿using Humanizer.Bytes;
+﻿using Humanizer;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 

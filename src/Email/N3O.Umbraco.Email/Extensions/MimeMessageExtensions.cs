@@ -1,4 +1,4 @@
-using Humanizer.Bytes;
+using Humanizer;
 using MimeKit;
 using MimeKit.IO;
 using System.IO;
