@@ -36,4 +36,4 @@ public class ApiCampaigns : ApiLookupsCollection<Campaign> {
     }
 
     protected override TimeSpan ReloadInterval => TimeSpan.FromMinutes(1);
-}  
+}

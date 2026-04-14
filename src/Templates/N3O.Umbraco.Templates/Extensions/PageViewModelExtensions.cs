@@ -1,6 +1,5 @@
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Pages;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Templates.Extensions;
