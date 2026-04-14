@@ -231,6 +231,20 @@ public static class StringExtensions {
         }
     }
     
+    public static string Sha256(this string s) {
+        using (var sha256 = SHA256.Create()) {
+            var bytes = Encoding.UTF8.GetBytes(s);
+            var hash = sha256.ComputeHash(bytes);
+            var sb = new StringBuilder(hash.Length * 2);
+
+            foreach (var b in hash) {
+                sb.Append(b.ToString("x2"));
+            }
+
+            return sb.ToString();
+        }
+    }
+    
     public static string StripTrailingSlash(this string s) {
         if (string.IsNullOrEmpty(s)) {
             return string.Empty;
