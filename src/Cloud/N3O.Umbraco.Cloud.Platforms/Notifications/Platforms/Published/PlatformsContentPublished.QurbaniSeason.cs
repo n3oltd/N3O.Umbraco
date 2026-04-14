@@ -15,7 +15,7 @@ public class QurbaniSeasonPublished : CloudContentPublished {
     private readonly Lazy<IContentLocator> _contentLocator;
     private readonly IUmbracoMapper _mapper;
 
-    public QurbaniSeasonPublished(  ICloudUrl cloudUrl,
+    public QurbaniSeasonPublished(ICloudUrl cloudUrl,
                                   IBackgroundJob backgroundJob,
                                   Lazy<IContentLocator> contentLocator,
                                   IUmbracoMapper mapper,

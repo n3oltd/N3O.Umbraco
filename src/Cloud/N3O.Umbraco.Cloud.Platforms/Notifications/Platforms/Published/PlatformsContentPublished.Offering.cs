@@ -21,7 +21,7 @@ public class OfferingPublished : CloudContentPublished {
     private readonly IUmbracoMapper _mapper;
     private readonly IEnumerable<IPlatformsPageContentPublisher> _platformsPageContentPublishers;
 
-    public OfferingPublished(                             ICloudUrl cloudUrl,
+    public OfferingPublished(ICloudUrl cloudUrl,
                              IBackgroundJob backgroundJob,
                              IContentTypeService contentTypeService,
                              Lazy<IContentLocator> contentLocator,

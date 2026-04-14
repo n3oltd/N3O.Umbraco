@@ -16,9 +16,9 @@ public class QurbaniSeasonReqMapping : IMapDefinition {
         dest.Activate = true;
         dest.Options = ctx.Map<QurbaniSeasonContent, QurbaniSeasonOptionsReq>(src);
 
-        dest.Categories = src.Categories.Select(x => ctx.Map<QurbaniSeasonCategoryContent, QurbaniSeasonCategoryReq>(x)).ToList();
-        dest.Groups = src.Groups.Select(x => ctx.Map<QurbaniSeasonGroupContent, QurbaniSeasonGroupReq>(x)).ToList();
-        dest.Locations = src.Locations.Select(x => ctx.Map<QurbaniSeasonLocationContent, QurbaniSeasonLocationReq>(x)).ToList();
-        dest.Upsells = src.Upsells.Select(x => ctx.Map<QurbaniSeasonUpsellContent, QurbaniSeasonUpsellReq>(x)).ToList();
+        dest.Categories = src.Categories.Select(ctx.Map<QurbaniSeasonCategoryContent, QurbaniSeasonCategoryReq>).ToList();
+        dest.Groups = src.Groups.Select(ctx.Map<QurbaniSeasonGroupContent, QurbaniSeasonGroupReq>).ToList();
+        dest.Locations = src.Locations.Select(ctx.Map<QurbaniSeasonLocationContent, QurbaniSeasonLocationReq>).ToList();
+        dest.Upsells = src.Upsells.Select(ctx.Map<QurbaniSeasonUpsellContent, QurbaniSeasonUpsellReq>).ToList();
     }
 }

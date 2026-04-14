@@ -22,7 +22,7 @@ public class ZakatCalculatorSettingsPublished : CloudContentPublished {
     private readonly IUmbracoMapper _mapper;
     private readonly IBlocksRenderer _blocksRenderer;
 
-    public ZakatCalculatorSettingsPublished(            ICloudUrl cloudUrl,
+    public ZakatCalculatorSettingsPublished(ICloudUrl cloudUrl,
                                             IBackgroundJob backgroundJob,
                                             Lazy<IContentLocator> contentLocator,
                                             IUmbracoMapper mapper,

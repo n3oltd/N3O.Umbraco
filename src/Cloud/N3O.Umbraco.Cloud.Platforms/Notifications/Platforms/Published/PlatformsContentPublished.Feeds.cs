@@ -8,9 +8,7 @@ using Umbraco.Cms.Core.Models;
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;
 
 public class FeedsPublished : CloudContentPublished {
-    public FeedsPublished(                          ICloudUrl cloudUrl,
-                          IBackgroundJob backgroundJob,
-                          ILogger<FeedsPublished> logger)
+    public FeedsPublished(ICloudUrl cloudUrl, IBackgroundJob backgroundJob, ILogger<FeedsPublished> logger)
         : base(cloudUrl, backgroundJob, logger) { }
 
     protected override bool CanProcess(IContent content) {
