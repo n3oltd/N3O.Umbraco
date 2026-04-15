@@ -13,7 +13,7 @@ public class KeyVaultConfigurationBuilderExtension : IConfigurationBuilderExtens
         var keyVaultUrl = config["AzureKeyVaultUrl"];
 
         if (keyVaultUrl.HasValue() && keyVaultUrl.IsValidUrl()) {
-            configurationBuilder.AddAzureKeyVault(new Uri(keyVaultUrl), new DefaultAzureCredential());
+            configurationBuilder.AddAzureKeyVault(new Uri(keyVaultUrl), new DefaultAzureCredential(), new CustomKeyVaultSecretManager());
         }
     }
 }
