@@ -1,0 +1,21 @@
+name: v16 CI
+
+on:
+  push:
+    branches: v16
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    uses: n3oltd/actions/.github/workflows/dotnet-build-pack-push.yml@main
+    with:
+      dotnet-version: 9.x
+
+  myget:
+    name: MyGet
+    uses: n3oltd/actions/.github/workflows/dotnet-build-pack-push-myget.yml@main
+    with:
+      dotnet-version: 9.x
+    secrets: inherit
