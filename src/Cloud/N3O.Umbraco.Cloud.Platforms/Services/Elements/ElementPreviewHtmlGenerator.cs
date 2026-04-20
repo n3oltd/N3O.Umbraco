@@ -179,10 +179,12 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
             formState.CartItem.NewDonation.Allocation.Fund.DonationItem = publishedOfferingAllocation.Fund.DonationItem;
         } else if (publishedOfferingAllocation.Type == AllocationType.Feedback) {
             formState.CartItem.NewDonation.Allocation.Feedback = new PublishedFeedbackIntent();
-            formState.CartItem.NewDonation.Allocation.Feedback.Scheme = publishedOfferingAllocation.Feedback.Scheme;
+            formState.CartItem.NewDonation.Allocation.Feedback.New = new PublishedNewFeedbackIntent();
+            formState.CartItem.NewDonation.Allocation.Feedback.New.Scheme = publishedOfferingAllocation.Feedback.New.Scheme;
         } else if (publishedOfferingAllocation.Type == AllocationType.Sponsorship) {
             formState.CartItem.NewDonation.Allocation.Sponsorship = new PublishedSponsorshipIntent();
-            formState.CartItem.NewDonation.Allocation.Sponsorship.Scheme = publishedOfferingAllocation.Sponsorship.Scheme;
+            formState.CartItem.NewDonation.Allocation.Sponsorship.New = new PublishedNewSponsorshipIntent();
+            formState.CartItem.NewDonation.Allocation.Sponsorship.New.Scheme = publishedOfferingAllocation.Sponsorship.New.Scheme;
         }
         
         if (publishedOfferingAllocation.Type == AllocationType.Fund) {

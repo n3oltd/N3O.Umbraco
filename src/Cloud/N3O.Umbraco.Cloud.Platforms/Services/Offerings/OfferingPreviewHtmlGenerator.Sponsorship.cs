@@ -52,7 +52,8 @@ public class SponsorshipOfferingPreviewHtmlGenerator : OfferingPreviewHtmlGenera
         
         allocationIntent.Type = AllocationType.Sponsorship;
         allocationIntent.Sponsorship = new PublishedSponsorshipIntent();
-        allocationIntent.Sponsorship.Scheme = scheme.Id;
+        allocationIntent.Sponsorship.New = new PublishedNewSponsorshipIntent();
+        allocationIntent.Sponsorship.New.Scheme = scheme.Id;
     }
     
     protected override IFundDimensionOptions GetFundDimensionOptions(IReadOnlyDictionary<string, object> content) {
@@ -67,7 +68,7 @@ public class SponsorshipOfferingPreviewHtmlGenerator : OfferingPreviewHtmlGenera
 
     protected override void PopulateAdditionalData(Dictionary<string, object> previewData,
                                                    PublishedDonationForm publishedDonationForm) {
-        var sponsorshipScheme = _lookups.FindById<SponsorshipScheme>(publishedDonationForm.FormState.CartItem.NewDonation.Allocation.Sponsorship.Scheme);
+        var sponsorshipScheme = _lookups.FindById<SponsorshipScheme>(publishedDonationForm.FormState.CartItem.NewDonation.Allocation.Sponsorship.New.Scheme);
         
         previewData["beneficiaries"] = GetBeneficiaries(sponsorshipScheme);
         previewData["scheme"] = GetSponsorshipSchemes(sponsorshipScheme);

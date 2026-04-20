@@ -58,11 +58,12 @@ public class FeedbackOfferingPreviewHtmlGenerator : OfferingPreviewHtmlGenerator
         
         allocationIntent.Type = AllocationType.Feedback;
         allocationIntent.Feedback = new PublishedFeedbackIntent();
-        allocationIntent.Feedback.Scheme = feedbackScheme.Id;
+        allocationIntent.Feedback.New = new PublishedNewFeedbackIntent();
+        allocationIntent.Feedback.New.Scheme = feedbackScheme.Id;
     }
 
     protected override void PopulateAdditionalData(Dictionary<string, object> previewData, PublishedDonationForm publishedDonationForm) {
-        var feedbackScheme = _lookups.FindById<FeedbackScheme>(publishedDonationForm.FormState.CartItem.NewDonation.Allocation.Feedback.Scheme);
+        var feedbackScheme = _lookups.FindById<FeedbackScheme>(publishedDonationForm.FormState.CartItem.NewDonation.Allocation.Feedback.New.Scheme);
         
         var fundDimensionOptions = new PublishedFundDimensionOptions();
         fundDimensionOptions.Dimension1 = feedbackScheme.FundDimensionOptions.Dimension1?.Select(x => x.Name).ToList();
