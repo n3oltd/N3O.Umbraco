@@ -14,6 +14,7 @@ jobs:
       dotnet-version: 9.x
       run-pack: true
       version-strategy: date
+      version-suffix: beta
       nuget-source: https://www.myget.org/F/n3o-umbraco/api/v2/package
     secrets:
       nuget-api-key: ${{ secrets.MYGET_API_KEY }}
