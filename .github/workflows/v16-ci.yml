@@ -2,7 +2,7 @@ name: v16 CI
 
 on:
   push:
-    branches: v16
+    branches: v-16
 
   workflow_dispatch:
 
