@@ -4,8 +4,8 @@
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Copyright>Copyright © 2026 N3O Ltd</Copyright>
+        <NoWarn>NU1605;1591</NoWarn>
     </PropertyGroup>
-
     <PropertyGroup>
         <PackageId>N3O.Umbraco.Newsletters.Mailchimp</PackageId>
         <IsPackable>true</IsPackable>
@@ -20,23 +20,18 @@
         <AssemblyVersion>13.0.0</AssemblyVersion>
         <FileVersion>13.0.0</FileVersion>
     </PropertyGroup>
-
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DebugType>full</DebugType>
     </PropertyGroup>
-
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
-
     <ItemGroup>
         <ProjectReference Include="..\N3O.Umbraco.Newsletters\N3O.Umbraco.Newsletters.csproj" />
     </ItemGroup>
-
     <ItemGroup>
         <PackageReference Include="MailChimp.Net.V3" Version="5.5.0" />
     </ItemGroup>
-
     <ItemGroup>
         <None Update="README.md">
             <Pack>True</Pack>

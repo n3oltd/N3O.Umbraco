@@ -4,8 +4,8 @@
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Copyright>Copyright © 2026 N3O Ltd</Copyright>
+        <NoWarn>NU1605;1591</NoWarn>
     </PropertyGroup>
-
     <PropertyGroup>
         <PackageId>N3O.Umbraco.Workflows.StaticAssets</PackageId>
         <IsPackable>true</IsPackable>
@@ -20,26 +20,21 @@
         <AssemblyVersion>13.0.0</AssemblyVersion>
         <FileVersion>13.0.0</FileVersion>
     </PropertyGroup>
-
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DebugType>full</DebugType>
     </PropertyGroup>
-
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
-
     <ItemGroup>
         <ProjectReference Include="..\N3O.Umbraco.Workflows\N3O.Umbraco.Workflows.csproj" />
     </ItemGroup>
-
     <ItemGroup>
         <None Update="README.md">
             <Pack>True</Pack>
         </None>
     </ItemGroup>
-
     <ItemGroup>
-      <PackageReference Include="Umbraco.Workflow" Version="13.5.3" />
+        <PackageReference Include="Umbraco.Workflow" Version="13.5.3" />
     </ItemGroup>
 </Project>

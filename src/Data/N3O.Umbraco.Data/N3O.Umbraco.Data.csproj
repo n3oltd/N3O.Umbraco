@@ -4,8 +4,8 @@
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Copyright>Copyright © 2026 N3O Ltd</Copyright>
+        <NoWarn>NU1605;1591</NoWarn>
     </PropertyGroup>
-
     <PropertyGroup>
         <PackageId>N3O.Umbraco.Data</PackageId>
         <IsPackable>true</IsPackable>
@@ -20,15 +20,12 @@
         <AssemblyVersion>13.0.0</AssemblyVersion>
         <FileVersion>13.0.0</FileVersion>
     </PropertyGroup>
-
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DebugType>full</DebugType>
     </PropertyGroup>
-
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
-
     <ItemGroup>
         <ProjectReference Include="..\..\Plugins\Cropper\N3O.Umbraco.Cropper\N3O.Umbraco.Cropper.csproj" />
         <ProjectReference Include="..\..\UIBuilder\N3O.Umbraco.UIBuilder\N3O.Umbraco.UIBuilder.csproj" />
@@ -40,13 +37,11 @@
         <ProjectReference Include="..\..\Validation\N3O.Umbraco.Validation\N3O.Umbraco.Validation.csproj" />
         <ProjectReference Include="..\..\Webhooks\N3O.Umbraco.Webhooks\N3O.Umbraco.Webhooks.csproj" />
     </ItemGroup>
-
     <ItemGroup>
         <None Update="README.md">
             <Pack>True</Pack>
         </None>
     </ItemGroup>
-
     <ItemGroup>
         <PackageReference Include="AngleSharp" Version="1.4.0" />
         <PackageReference Include="CsvHelper" Version="33.1.0" />
