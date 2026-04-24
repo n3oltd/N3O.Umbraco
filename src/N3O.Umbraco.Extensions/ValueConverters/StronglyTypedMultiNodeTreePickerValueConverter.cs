@@ -21,13 +21,21 @@ namespace N3O.Umbraco.ValueConverters;
 public class StronglyTypedMultiNodeTreePickerValueConverter : MultiNodeTreePickerValueConverter {
     private readonly ModelsBuilderSettings _modelBuilderSettings;
 
-    public StronglyTypedMultiNodeTreePickerValueConverter(IPublishedSnapshotAccessor publishedSnapshotAccessor,
-                                                          IUmbracoContextAccessor umbracoContextAccessor,
+    public StronglyTypedMultiNodeTreePickerValueConverter(IUmbracoContextAccessor umbracoContextAccessor,
                                                           IMemberService memberService,
                                                           IApiContentBuilder apiContentBuilder,
                                                           IApiMediaBuilder apiMediaBuilder,
-                                                          IOptions<ModelsBuilderSettings> modelBuilderSettings) :
-        base(publishedSnapshotAccessor, umbracoContextAccessor, memberService, apiContentBuilder, apiMediaBuilder) {
+                                                          IPublishedContentCache contentCache,
+                                                          IPublishedMediaCache mediaCache,
+                                                          IPublishedMemberCache memberCache,
+                                                          IOptions<ModelsBuilderSettings> modelBuilderSettings)
+        : base(umbracoContextAccessor,
+               memberService,
+               apiContentBuilder,
+               apiMediaBuilder,
+               contentCache,
+               mediaCache,
+               memberCache) {
         _modelBuilderSettings = modelBuilderSettings.Value;
     }
 

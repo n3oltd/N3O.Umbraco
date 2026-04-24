@@ -5,6 +5,8 @@ using N3O.Umbraco.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Extensions;
@@ -43,6 +45,12 @@ public abstract class UrlProvider : IUrlProvider {
             return [];
         }
     }
+
+    public virtual Task<UrlInfo> GetPreviewUrlAsync(IContent content, string culture, string segment) {
+        return Task.FromResult<UrlInfo>(null);
+    }
+
+    public abstract string Alias { get; }
 
     protected virtual IEnumerable<UrlInfo> ResolveOtherUrls(int id, Uri current) => [];
     

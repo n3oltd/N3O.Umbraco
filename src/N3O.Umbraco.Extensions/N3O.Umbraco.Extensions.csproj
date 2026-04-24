@@ -38,6 +38,7 @@
         <PackageReference Include="Flurl" Version="4.0.0" />
         <PackageReference Include="Flurl.Http.Newtonsoft" Version="0.9.1" />
         <PackageReference Include="Humanizer.Core" Version="3.0.10" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.7" />
         <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.14.0" />
         <PackageReference Include="MimeTypesMap" Version="1.0.9" />
         <PackageReference Include="NodaTime" Version="3.3.1" />

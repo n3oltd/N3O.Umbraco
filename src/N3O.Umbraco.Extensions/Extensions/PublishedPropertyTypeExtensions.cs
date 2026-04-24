@@ -3,7 +3,6 @@ using N3O.Umbraco.Content;
 using System;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.PropertyEditors;
 
 namespace N3O.Umbraco.Extensions;
 

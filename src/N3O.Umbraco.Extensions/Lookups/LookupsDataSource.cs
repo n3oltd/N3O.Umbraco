@@ -17,7 +17,7 @@ public abstract class LookupsDataSource<T> : IContentmentDataSource where T : IN
     public abstract string Description { get; }
     public abstract string Icon { get; }
     public Dictionary<string, object> DefaultValues => null;
-    public IEnumerable<ConfigurationField> Fields => null;
+    public IEnumerable<ContentmentConfigurationField> Fields => [];
     public string Group => "N3O";
     public OverlaySize OverlaySize => OverlaySize.Small;
     

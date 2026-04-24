@@ -4,12 +4,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Umbraco.Cms.Api.Common.ViewModels.Pagination;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
-using Umbraco.Cms.Core.Web;
 using Umbraco.Community.Contentment.DataEditors;
 using Umbraco.Extensions;
 
@@ -19,22 +19,23 @@ public class ContentTypesDataSource : IDataPickerSource, IDataSourceValueConvert
     private static readonly ConcurrentDictionary<Guid, string> ContentTypeAliases = new();
     
     private readonly IContentTypeService _contentTypeService;
-    private readonly IUmbracoContextAccessor _umbracoContextAccessor;
     
-    public ContentTypesDataSource(IContentTypeService contentTypeService,
-                                  IUmbracoContextAccessor umbracoContextAccessor) {
+    public ContentTypesDataSource(IContentTypeService contentTypeService) {
         _contentTypeService = contentTypeService;
-        _umbracoContextAccessor = umbracoContextAccessor;
     }
 
     public string Name => "Umbraco Content Types";
     public string Icon => "icon-item-arrangement";
     public string Group => "N3O";
     public string Description => "A list of Umbraco content types";
-    public Dictionary<string, object> DefaultValues => default;
-    public IEnumerable<ConfigurationField> Fields => default;
+    public Dictionary<string, object> DefaultValues => [];
+    public IEnumerable<ContentmentConfigurationField> Fields => [];
     public OverlaySize OverlaySize => OverlaySize.Small;
-    
+
+    public IEnumerable<DataListItem> GetItems(Dictionary<string, object> config) {
+        throw new NotImplementedException();
+    }
+
     public Task<IEnumerable<DataListItem>> GetItemsAsync(Dictionary<string, object> config,
                                                          IEnumerable<string> values) {
         if (values.Any()) {
@@ -50,10 +51,10 @@ public class ContentTypesDataSource : IDataPickerSource, IDataSourceValueConvert
         return Task.FromResult(Enumerable.Empty<DataListItem>());
     }
 
-    public Task<PagedResult<DataListItem>> SearchAsync(Dictionary<string, object> config,
-                                                       int pageNumber = 1,
-                                                       int pageSize = 12,
-                                                       string query = "") {
+    public Task<PagedViewModel<DataListItem>> SearchAsync(Dictionary<string, object> config,
+                                                          int pageNumber = 1,
+                                                          int pageSize = 12,
+                                                          string query = "") {
         var totalRecords = -1L;
         var pageIndex = pageNumber - 1;
         var items = _contentTypeService.GetAll();
@@ -65,21 +66,22 @@ public class ContentTypesDataSource : IDataPickerSource, IDataSourceValueConvert
         if (items.Any()) {
             var offset = pageIndex * pageSize;
             
-            var results = new PagedResult<DataListItem>(totalRecords, pageNumber, pageSize);
+            var results = new PagedViewModel<DataListItem>();
+            results.Total = totalRecords;
             
             results.Items = items.Skip(offset).Take(pageSize).Select(ToDataListItem);
 
             return Task.FromResult(results);
         }
 
-        return Task.FromResult(new PagedResult<DataListItem>(totalRecords, pageNumber, pageSize));
+        return Task.FromResult(new PagedViewModel<DataListItem>());
     }
     
     public Type GetValueType(Dictionary<string, object> config) => typeof(IPublishedContent);
 
     public object ConvertValue(Type type, string value) {
         if (!UdiParser.TryParse(value, out GuidUdi udi)) {
-            return default;
+            return null;
         }
 
         var key = udi.Guid;
@@ -90,7 +92,7 @@ public class ContentTypesDataSource : IDataPickerSource, IDataSourceValueConvert
             return contentType.Alias;
         });
 
-        return _umbracoContextAccessor.GetContentCache().GetContentType(alias);
+        return _contentTypeService.Get(alias);
     }
     
     private DataListItem ToDataListItem(IContentType contentType) {

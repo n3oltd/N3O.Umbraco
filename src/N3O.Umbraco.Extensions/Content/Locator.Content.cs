@@ -1,4 +1,3 @@
-using N3O.Umbraco.Extensions;
 using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Web;
 

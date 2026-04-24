@@ -1,10 +1,6 @@
-﻿using N3O.Umbraco.Extensions;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Events;
-using Umbraco.Cms.Core.Notifications;
-using Umbraco.Cms.Core.Trees;
 
 namespace N3O.Umbraco.Features.DynamicListViews;
 

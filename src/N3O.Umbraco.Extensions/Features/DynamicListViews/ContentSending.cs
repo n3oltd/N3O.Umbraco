@@ -1,16 +1,15 @@
 ﻿using N3O.Umbraco.Extensions;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Umbraco.Cms.Core.ContentApps;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Models;
-using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Features.DynamicListViews;
 
+// https://docs.umbraco.com/umbraco-cms/reference/notifications
+// https://docs.umbraco.com/umbraco-cms/customizing/extending-overview/extension-types/condition
 public class ContentSending : INotificationAsyncHandler<SendingContentNotification> {
     private readonly IDataTypeService _dataTypeService;
     private readonly PropertyEditorCollection _propertyEditors;

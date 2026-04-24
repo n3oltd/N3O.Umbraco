@@ -5,10 +5,6 @@ using Umbraco.Cms.Core.Web;
 namespace N3O.Umbraco.Extensions; 
 
 public static class UmbracoContextAccessorExtensions {
-    public static IPublishedContentCache GetContentCache(this IUmbracoContextAccessor umbracoContextAccessor) {
-        return GetUmbracoContext(umbracoContextAccessor).Content;
-    }
-    
     public static IPublishedMediaCache GetMediaCache(this IUmbracoContextAccessor umbracoContextAccessor) {
         return GetUmbracoContext(umbracoContextAccessor).Media;
     }
