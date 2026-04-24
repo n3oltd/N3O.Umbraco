@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Maps.Google.StaticAssets</RootNamespace>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Copyright>Copyright © 2026 N3O Ltd</Copyright>
     </PropertyGroup>
@@ -34,7 +34,7 @@
     </ItemGroup>
     
     <ItemGroup>
-        <PackageReference Include="Our.Umbraco.GMaps" Version="3.0.5" />
+        <PackageReference Include="Our.Umbraco.GMaps" Version="17.0.0" />
     </ItemGroup>
 
     <ItemGroup>

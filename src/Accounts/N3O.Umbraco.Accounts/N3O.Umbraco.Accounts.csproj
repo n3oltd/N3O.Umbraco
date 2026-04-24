@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Accounts</RootNamespace>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Copyright>Copyright © 2026 N3O Ltd</Copyright>
     </PropertyGroup>

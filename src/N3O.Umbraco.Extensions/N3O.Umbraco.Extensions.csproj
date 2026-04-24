@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco</RootNamespace>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Copyright>Copyright © 2026 N3O Ltd</Copyright>
     </PropertyGroup>
@@ -43,16 +43,15 @@
         <PackageReference Include="NodaTime" Version="3.3.1" />
         <PackageReference Include="NodaTime.Serialization.JsonNet" Version="3.2.1" />
         <PackageReference Include="NSwag.AspNetCore" Version="14.7.0" />
-        <PackageReference Include="Our.Umbraco.Community.Contentment.Core" Version="4.7.0" />
         <PackageReference Include="Refit" Version="10.1.6" />
         <PackageReference Include="Refit.Newtonsoft.Json" Version="10.1.6" />
         <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
         <PackageReference Include="Slugify.Core" Version="5.1.1" />
-        <PackageReference Include="Umbraco.Cms.Core" Version="13.13.1.0" />
-        <PackageReference Include="Umbraco.Cms.Web.Common" Version="13.13.1.0" />
-        <PackageReference Include="Umbraco.Cms.Web.Website" Version="13.13.1.0" />
-        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="13.13.1.0" />
+        <PackageReference Include="Umbraco.Cms.Core" Version="17.3.4.0" />
+        <PackageReference Include="Umbraco.Cms.Web.Common" Version="17.3.4.0" />
+        <PackageReference Include="Umbraco.Cms.Web.Website" Version="17.3.4.0" />
         <PackageReference Include="Umbraco.Code" Version="2.4.0" />
+        <PackageReference Include="Umbraco.Community.Contentment" Version="6.1.2" />
     </ItemGroup>
 
     <ItemGroup>
