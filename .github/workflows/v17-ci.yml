@@ -1,8 +1,8 @@
-name: v16 CI
+name: v17 CI
 
 on:
   push:
-    branches: v16
+    branches: v17
 
   workflow_dispatch:
 
@@ -11,7 +11,7 @@ jobs:
     name: MyGet
     uses: n3oltd/actions/.github/workflows/dotnet-build-pack-push.yml@main
     with:
-      dotnet-version: 9.x
+      dotnet-version: 10.x
       run-pack: true
       version-strategy: date
       version-suffix: beta
