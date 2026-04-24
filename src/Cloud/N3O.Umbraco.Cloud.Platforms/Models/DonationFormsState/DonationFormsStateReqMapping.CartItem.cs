@@ -70,10 +70,12 @@ public partial class ElementDonationFormsStateReqMapping {
             allocationIntent.Fund.DonationItem = offering.Fund.DonationItem.Name;
         } else if (offering.Type == OfferingTypes.Feedback) {
             allocationIntent.Feedback = new FeedbackIntentReq();
-            allocationIntent.Feedback.Scheme = offering.Feedback.Scheme.Name;
+            allocationIntent.Feedback.New = new NewFeedbackIntentReq();
+            allocationIntent.Feedback.New.Scheme = offering.Feedback.Scheme.Name;
         } else if (offering.Type == OfferingTypes.Sponsorship) {
             allocationIntent.Sponsorship = new SponsorshipIntentReq();
-            allocationIntent.Sponsorship.Scheme = offering.Sponsorship.Scheme.Name;
+            allocationIntent.Sponsorship.New = new NewSponsorshipIntentReq();
+            allocationIntent.Sponsorship.New.Scheme = offering.Sponsorship.Scheme.Name;
         }
 
         return allocationIntent;

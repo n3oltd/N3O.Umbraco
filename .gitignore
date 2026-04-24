@@ -376,3 +376,4 @@ Our.Umbraco.GMaps
 
 appsettings.Authentication.json
 appsettings.Environment.json
+.DS_Store

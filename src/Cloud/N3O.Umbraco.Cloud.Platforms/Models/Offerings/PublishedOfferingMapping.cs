@@ -72,10 +72,12 @@ public class PublishedOfferingMapping : IMapDefinition {
             dest.FormState.CartItem.NewDonation.Allocation.Fund.DonationItem = allocation.Fund.DonationItem;
         } else if (allocation.Type == AllocationType.Feedback) {
             dest.FormState.CartItem.NewDonation.Allocation.Feedback = new PublishedFeedbackIntent();
-            dest.FormState.CartItem.NewDonation.Allocation.Feedback.Scheme = allocation.Feedback.Scheme;
+            dest.FormState.CartItem.NewDonation.Allocation.Feedback.New = new PublishedNewFeedbackIntent();
+            dest.FormState.CartItem.NewDonation.Allocation.Feedback.New.Scheme = allocation.Feedback.New.Scheme;
         } else if (allocation.Type == AllocationType.Sponsorship) {
             dest.FormState.CartItem.NewDonation.Allocation.Sponsorship = new PublishedSponsorshipIntent();
-            dest.FormState.CartItem.NewDonation.Allocation.Sponsorship.Scheme = allocation.Sponsorship.Scheme;
+            dest.FormState.CartItem.NewDonation.Allocation.Sponsorship.New = new PublishedNewSponsorshipIntent();
+            dest.FormState.CartItem.NewDonation.Allocation.Sponsorship.New.Scheme = allocation.Sponsorship.New.Scheme;
         }
 
         if (allocation.Type == AllocationType.Fund) {
