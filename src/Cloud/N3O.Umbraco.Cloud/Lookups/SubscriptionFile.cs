@@ -22,7 +22,7 @@ public class SubscriptionFiles : StaticLookupsCollection<SubscriptionFile> {
     public static readonly SubscriptionFile Lookups = new("lookups");
     public static readonly SubscriptionFile Nisab = new("nisab");
     public static readonly SubscriptionFile OrganizationInfo = new("organizationInfo");
-    public static readonly SubscriptionFile QurbaniSeasons = new("qurbaniSeasons");
+    public static readonly SubscriptionFile QurbaniItems = new("qurbaniItems");
     public static readonly SubscriptionFile SponsorshipSchemes = new("sponsorshipSchemes");
     public static readonly SubscriptionFile TagDefinitions = new("tagDefinitions");
 }
