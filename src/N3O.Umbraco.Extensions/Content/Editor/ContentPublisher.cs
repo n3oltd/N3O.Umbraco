@@ -1,3 +1,4 @@
+using N3O.Umbraco.Extensions;
 using System;
 using System.Linq;
 using Umbraco.Cms.Core.Models;
@@ -8,6 +9,8 @@ namespace N3O.Umbraco.Content;
 public class ContentPublisher : IContentPublisher {
     private readonly IContentService _contentService;
     private readonly IContent _content;
+    
+    private int _newParentId;
 
     public ContentPublisher(IServiceProvider serviceProvider, IContentService contentService, IContent content) {
         Content = new ContentBuilder(serviceProvider, content.ContentType.Alias);
@@ -29,7 +32,7 @@ public class ContentPublisher : IContentPublisher {
             throw new Exception($"Move failed as no content found with ID {parentId}");
         }
 
-        _content.ParentId = newParent.Id;
+        _newParentId = newParent.Id;
     }
 
     public PublishResult SaveAndPublish() {
@@ -58,7 +61,13 @@ public class ContentPublisher : IContentPublisher {
                 _content.SetValue(propertyTypeAlias, value);
             }
         }
+        
+        var result = save();
 
-        return save();
+        if (_newParentId.HasValue() && _newParentId != _content.ParentId) {
+            _contentService.Move(_content, _newParentId);
+        }
+
+        return result;
     }
 }
