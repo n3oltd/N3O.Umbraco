@@ -18,11 +18,6 @@ public class DonationFormStateContent : UmbracoContent<DonationFormStateContent>
     private static readonly string FundDonationFormStateAlias = AliasHelper<FundDonationFormStateContent>.ContentTypeAlias();
     private static readonly string QurbaniDonationFormStateAlias = AliasHelper<QurbaniDonationFormStateContent>.ContentTypeAlias();
     private static readonly string SponsorshipDonationFormStateAlias = AliasHelper<SponsorshipDonationFormStateContent>.ContentTypeAlias();
-    private static readonly string FeedbackOfferingAlias = AliasHelper<FeedbackOfferingContent>.ContentTypeAlias();
-    private static readonly string FundOfferingAlias = AliasHelper<FundOfferingContent>.ContentTypeAlias();
-    private static readonly string QurbaniOfferingAlias = AliasHelper<QurbaniOfferingContent>.ContentTypeAlias();
-    private static readonly string SponsorshipOfferingAlias = AliasHelper<SponsorshipOfferingContent>.ContentTypeAlias();
-    private static readonly string CrossSellAlias = PlatformsConstants.CrossSells.CompositionAlias;
     
     public override void SetContent(IPublishedContent content) {
         base.SetContent(content);
@@ -88,21 +83,18 @@ public class DonationFormStateContent : UmbracoContent<DonationFormStateContent>
     
     public AllocationType Type {
         get {
-            var alias = Content().ContentType.Alias;
+            var contentType = Content().ContentType;
 
-            if (alias.EqualsInvariant(FundDonationFormStateAlias) || alias.EqualsInvariant(FundOfferingAlias)) {
+            if (contentType.CompositionAliases.Contains(FundDonationFormStateAlias)) {
                 return AllocationTypes.Fund;
-            } else if (alias.EqualsInvariant(FeedbackDonationFormStateAlias) || alias.EqualsInvariant(FeedbackOfferingAlias)) {
+            } else if (contentType.CompositionAliases.Contains(FeedbackDonationFormStateAlias)) {
                 return AllocationTypes.Feedback;
-            } else if (alias.EqualsInvariant(QurbaniDonationFormStateAlias) || alias.EqualsInvariant(QurbaniOfferingAlias)) {
+            } else if (contentType.CompositionAliases.Contains(QurbaniDonationFormStateAlias)) {
                 return AllocationTypes.Qurbani;
-            } else if (alias.EqualsInvariant(SponsorshipDonationFormStateAlias) || alias.EqualsInvariant(SponsorshipOfferingAlias)) {
+            } else if (contentType.CompositionAliases.Contains(SponsorshipDonationFormStateAlias)) {
                 return AllocationTypes.Sponsorship;
-            } else if (alias.EqualsInvariant(CrossSellAlias)) {
-                var typeValue = Content().GetProperty("type")?.GetValue(VariationContext?.Culture, VariationContext?.Segment);
-                return typeValue as AllocationType ?? throw UnrecognisedValueException.For("type");
             } else {
-                throw UnrecognisedValueException.For(alias);
+                throw UnrecognisedValueException.For(contentType.Alias);
             }
         }
     }

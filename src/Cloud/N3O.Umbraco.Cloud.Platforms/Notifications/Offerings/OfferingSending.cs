@@ -38,9 +38,10 @@ public class OfferingSending : INotificationAsyncHandler<SendingContentNotificat
     public Task HandleAsync(SendingContentNotification notification, CancellationToken cancellationToken) {
         var isOffering = notification.Content
                                      .ContentTypeAlias
-                                     .IsAnyOf(AliasHelper<FundOfferingContent>.ContentTypeAlias(),
-                                              AliasHelper<SponsorshipOfferingContent>.ContentTypeAlias(),
-                                              AliasHelper<FeedbackOfferingContent>.ContentTypeAlias());
+                                     .IsAnyOf(PlatformsConstants.Offerings.Fund,
+                                              PlatformsConstants.Offerings.Feedback,
+                                              PlatformsConstants.Offerings.Qurbani,
+                                              PlatformsConstants.Offerings.Sponsorship);
 
         if (isOffering) {
             foreach (var variant in notification.Content.Variants) {
