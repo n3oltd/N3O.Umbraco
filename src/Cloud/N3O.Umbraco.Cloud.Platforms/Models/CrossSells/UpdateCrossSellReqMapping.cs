@@ -1,5 +1,6 @@
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
+using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Media;
 using System.Collections.Generic;

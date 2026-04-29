@@ -76,7 +76,7 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
 
     private void PopulateAdditionalData(Dictionary<string, object> previewData, OfferingContent offeringContent) {
         if (offeringContent.Type == AllocationTypes.Fund) {
-            var donationItem = offeringContent.Fund.DonationItem;
+            var donationItem = offeringContent.FormState.Fund.DonationItem;
 
             var fundDimensionOptions = new PublishedFundDimensionOptions();
             fundDimensionOptions.Dimension1 = donationItem.FundDimensionOptions.Dimension1?.Select(x => x.Name).ToList();
@@ -97,7 +97,7 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
 
             previewData["donationItem"] = publishedDonationItem;
         } else if (offeringContent.Type == AllocationTypes.Feedback) {
-            var feedbackScheme = offeringContent.Feedback.Scheme;
+            var feedbackScheme = offeringContent.FormState.Feedback.Scheme;
 
             var fundDimensionOptions = new PublishedFundDimensionOptions();
             fundDimensionOptions.Dimension1 = feedbackScheme.FundDimensionOptions.Dimension1?.Select(x => x.Name).ToList();
@@ -117,7 +117,7 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
 
             previewData["feedbackScheme"] = publishedFeedbackScheme;
         } else if (offeringContent.Type == AllocationTypes.Qurbani) {
-            var qurbaniItem = offeringContent.Qurbani.QurbaniItem;
+            var qurbaniItem = offeringContent.FormState.Qurbani.QurbaniItem;
 
             var publishedQurbaniItem = new PublishedQurbaniItem();
             publishedQurbaniItem.Id = qurbaniItem.Id;
@@ -125,7 +125,7 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
 
             previewData["qurbaniItem"] = publishedQurbaniItem;
         } else if (offeringContent.Type == AllocationTypes.Sponsorship) {
-            var sponsorshipScheme = offeringContent.Sponsorship.Scheme;
+            var sponsorshipScheme = offeringContent.FormState.Sponsorship.Scheme;
 
             previewData["beneficiaries"] = GetBeneficiaries(sponsorshipScheme);
             previewData["scheme"] = GetSponsorshipSchemes(sponsorshipScheme);

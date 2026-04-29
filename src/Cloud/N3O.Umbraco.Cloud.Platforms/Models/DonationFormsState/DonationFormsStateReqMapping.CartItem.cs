@@ -3,16 +3,13 @@ using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using AllocationType = N3O.Umbraco.Cloud.Platforms.Clients.AllocationType;
 using CampaignContent = N3O.Umbraco.Cloud.Platforms.Content.CampaignContent;
 using CrossSellContent = N3O.Umbraco.Cloud.Platforms.Content.CrossSellContent;
 using Currency = N3O.Umbraco.Financial.Currency;
-using FundDimensionValuesReq = N3O.Umbraco.Cloud.Platforms.Clients.FundDimensionValuesReq;
 using OfferingContent = N3O.Umbraco.Cloud.Platforms.Content.OfferingContent;
 using OurGiftType = N3O.Umbraco.Cloud.Platforms.Lookups.GiftType;
 using PlatformsCurrency = N3O.Umbraco.Cloud.Platforms.Clients.Currency;
@@ -30,55 +27,16 @@ public partial class DonationFormsStateReqMapping {
         cartItem.Id = Guid.NewGuid().ToString();
         cartItem.Currency = currency;
 
-        var allocation = GetAllocationIntent(campaign, offering, fundDimensionValues, currency);
-        SetCartItemAllocation(cartItem, allocation, offering.SuggestedGiftType);
+        var allocationIntent = offering.FormState.ToAllocationIntentReq(fundDimensionValues, currency);
+        allocationIntent.PlatformsContribution = GetPlatformsContributionInfoReq(campaign, offering);
+
+        SetCartItemAllocation(cartItem, allocationIntent, offering.SuggestedGiftType);
 
         if (tags.HasAny()) {
             cartItem.Tags = tags.ToTagCollectionReq();
         }
 
         return cartItem;
-    }
-
-    private AllocationIntentReq GetAllocationIntent(CampaignContent campaign,
-                                                    OfferingContent offering,
-                                                    IFundDimensionValues fundDimensionValues,
-                                                    PlatformsCurrency? currency) {
-        var allocationIntent = new AllocationIntentReq();
-        allocationIntent.Type = offering.Type.ToEnum<AllocationType>();
-        allocationIntent.PlatformsContribution = GetPlatformsContributionInfoReq(campaign, offering);
-
-        SetFundDimensionsAndValue(allocationIntent, fundDimensionValues, currency);
-
-        if (offering.Type == AllocationTypes.Fund) {
-            allocationIntent.Fund = new FundIntentReq();
-            allocationIntent.Fund.DonationItem = offering.Fund.DonationItem.Name;
-        } else if (offering.Type == AllocationTypes.Feedback) {
-            allocationIntent.Feedback = new FeedbackIntentReq();
-            allocationIntent.Feedback.New = new NewFeedbackIntentReq();
-            allocationIntent.Feedback.New.Scheme = offering.Feedback.Scheme.Name;
-        } else if (offering.Type == AllocationTypes.Qurbani) {
-            allocationIntent.Qurbani = new QurbaniIntentReq();
-            allocationIntent.Qurbani.New = new NewQurbaniIntentReq();
-            allocationIntent.Qurbani.New.QurbaniItem = offering.Qurbani.QurbaniItem.Name;
-        } else if (offering.Type == AllocationTypes.Sponsorship) {
-            allocationIntent.Sponsorship = new SponsorshipIntentReq();
-            allocationIntent.Sponsorship.New = new NewSponsorshipIntentReq();
-            allocationIntent.Sponsorship.New.Scheme = offering.Sponsorship.Scheme.Name;
-        }
-
-        return allocationIntent;
-    }
-
-    private PlatformsContributionInfoReq GetPlatformsContributionInfoReq(CampaignContent campaign,
-                                                                         OfferingContent offering) {
-        var platformsContribution = GetBasePlatformsContributionInfoReq(campaign);
-
-        platformsContribution.Offering = new OfferingInfoReq();
-        platformsContribution.Offering.Id = offering.Key.ToString();
-        platformsContribution.Offering.Name = offering.Name.ToString();
-
-        return platformsContribution;
     }
 
     private CartItemReq GetCartItemReq(CampaignContent campaign,
@@ -91,47 +49,19 @@ public partial class DonationFormsStateReqMapping {
         cartItem.Id = Guid.NewGuid().ToString();
         cartItem.Currency = currency;
 
-        var allocation = GetAllocationIntent(campaign, crossSell, fundDimensionValues, currency);
-        SetCartItemAllocation(cartItem, allocation, crossSell.SuggestedGiftType);
+        var allocationIntent = crossSell.FormState.ToAllocationIntentReq(fundDimensionValues, currency);
+
+        if (campaign.HasValue()) {
+            allocationIntent.PlatformsContribution = GetBasePlatformsContributionInfoReq(campaign);
+        }
+
+        SetCartItemAllocation(cartItem, allocationIntent, crossSell.SuggestedGiftType);
 
         if (tags.HasAny()) {
             cartItem.Tags = tags.ToTagCollectionReq();
         }
 
         return cartItem;
-    }
-
-    private AllocationIntentReq GetAllocationIntent(CampaignContent campaign,
-                                                    CrossSellContent crossSell,
-                                                    IFundDimensionValues fundDimensionValues,
-                                                    PlatformsCurrency? currency) {
-        var allocationIntent = new AllocationIntentReq();
-        allocationIntent.Type = crossSell.Type.ToEnum<AllocationType>();
-
-        if (campaign.HasValue()) {
-            allocationIntent.PlatformsContribution = GetBasePlatformsContributionInfoReq(campaign);
-        }
-
-        SetFundDimensionsAndValue(allocationIntent, fundDimensionValues, currency);
-
-        if (crossSell.Type == AllocationTypes.Fund) {
-            allocationIntent.Fund = new FundIntentReq();
-            allocationIntent.Fund.DonationItem = crossSell.DonationItem.Name;
-        } else if (crossSell.Type == AllocationTypes.Feedback) {
-            allocationIntent.Feedback = new FeedbackIntentReq();
-            allocationIntent.Feedback.New = new NewFeedbackIntentReq();
-            allocationIntent.Feedback.New.Scheme = crossSell.FeedbackScheme.Name;
-        } else if (crossSell.Type == AllocationTypes.Qurbani) {
-            allocationIntent.Qurbani = new QurbaniIntentReq();
-            allocationIntent.Qurbani.New = new NewQurbaniIntentReq();
-            allocationIntent.Qurbani.New.QurbaniItem = crossSell.QurbaniItem.Name;
-        } else if (crossSell.Type == AllocationTypes.Sponsorship) {
-            allocationIntent.Sponsorship = new SponsorshipIntentReq();
-            allocationIntent.Sponsorship.New = new NewSponsorshipIntentReq();
-            allocationIntent.Sponsorship.New.Scheme = crossSell.SponsorshipScheme?.Name;
-        }
-
-        return allocationIntent;
     }
 
     private void SetCartItemAllocation(CartItemReq cartItem,
@@ -148,18 +78,15 @@ public partial class DonationFormsStateReqMapping {
         }
     }
 
-    private void SetFundDimensionsAndValue(AllocationIntentReq allocationIntent,
-                                           IFundDimensionValues fundDimensionValues,
-                                           PlatformsCurrency? currency) {
-        allocationIntent.FundDimensions = new FundDimensionValuesReq();
-        allocationIntent.FundDimensions.Dimension1 = fundDimensionValues.Dimension1?.Name;
-        allocationIntent.FundDimensions.Dimension2 = fundDimensionValues.Dimension2?.Name;
-        allocationIntent.FundDimensions.Dimension3 = fundDimensionValues.Dimension3?.Name;
-        allocationIntent.FundDimensions.Dimension4 = fundDimensionValues.Dimension4?.Name;
+    private PlatformsContributionInfoReq GetPlatformsContributionInfoReq(CampaignContent campaign,
+                                                                         OfferingContent offering) {
+        var platformsContribution = GetBasePlatformsContributionInfoReq(campaign);
 
-        allocationIntent.Value = new MoneyReq();
-        allocationIntent.Value.Amount = 0d;
-        allocationIntent.Value.Currency = currency;
+        platformsContribution.Offering = new OfferingInfoReq();
+        platformsContribution.Offering.Id = offering.Key.ToString();
+        platformsContribution.Offering.Name = offering.Name.ToString();
+
+        return platformsContribution;
     }
 
     private PlatformsContributionInfoReq GetBasePlatformsContributionInfoReq(CampaignContent campaign) {

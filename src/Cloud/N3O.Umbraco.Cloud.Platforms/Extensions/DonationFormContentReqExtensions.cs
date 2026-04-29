@@ -1,9 +1,8 @@
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
-using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Media;
 
-namespace N3O.Umbraco.Cloud.Platforms.Models;
+namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 
 public static class DonationFormContentReqExtensions {
     public static DonationFormContentReq ToDonationFormContentReq(this IHoldDonationFormContent src,

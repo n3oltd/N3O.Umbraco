@@ -39,7 +39,7 @@ public partial class DonationFormsStateReqMapping : IMapDefinition {
             var fixedFundDimensionValues = src.GetFixedFundDimensionValues();
 
             dest.CartItem = GetCartItemReq(src.Targeting, src, fixedFundDimensionValues, null);
-            dest.Options = GetDonationFormOptionsReq(ctx, src);
+            dest.Options = GetDonationFormOptionsReq(ctx, src.FormState, src.NotesLabel, src.Targeting);
             dest.Extensions = null;
         }
     }
@@ -51,7 +51,7 @@ public partial class DonationFormsStateReqMapping : IMapDefinition {
             var campaign = src.Content().Parent.As<CampaignContent>();
 
             dest.CartItem = GetCartItemReq(campaign, src, fixedFundDimensionValues, null);
-            dest.Options = GetDonationFormOptionsReq(ctx, src);
+            dest.Options = GetDonationFormOptionsReq(ctx, src.FormState, src.NotesLabel, campaign);
             dest.Extensions = null;
         }
     }

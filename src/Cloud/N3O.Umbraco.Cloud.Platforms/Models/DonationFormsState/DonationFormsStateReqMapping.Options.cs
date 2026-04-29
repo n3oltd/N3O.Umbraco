@@ -5,16 +5,18 @@ using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
-using CrossSellContent = N3O.Umbraco.Cloud.Platforms.Content.CrossSellContent;
 using GiftType = N3O.Umbraco.Cloud.Platforms.Clients.GiftType;
 using OurGiftType = N3O.Umbraco.Cloud.Platforms.Lookups.GiftType;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public partial class DonationFormsStateReqMapping {
-    private DonationFormOptionsReq GetDonationFormOptionsReq(MapperContext ctx, OfferingContent offering) {
-        var oneTimeSuggestedAmounts = offering.Fund?.OneTimeSuggestedAmounts.OrEmpty().ToList();
-        var recurringSuggestedAmounts = offering.Fund?.RecurringSuggestedAmounts.OrEmpty().ToList();
+    private DonationFormOptionsReq GetDonationFormOptionsReq(MapperContext ctx,
+                                                             DonationFormStateContent formState,
+                                                             string notesLabel,
+                                                             CampaignContent campaign) {
+        var oneTimeSuggestedAmounts = formState.Fund?.OneTimeSuggestedAmounts.OrEmpty().ToList();
+        var recurringSuggestedAmounts = formState.Fund?.RecurringSuggestedAmounts.OrEmpty().ToList();
 
         var options = new DonationFormOptionsReq();
 
@@ -24,26 +26,8 @@ public partial class DonationFormsStateReqMapping {
                                                                           (GiftTypes.Recurring, recurringSuggestedAmounts));
         }
 
-        SetNotesField(options, offering.NotesLabel);
-        SetQurbaniOptions(options, offering.Content().Parent.As<CampaignContent>());
-
-        return options;
-    }
-
-    private DonationFormOptionsReq GetDonationFormOptionsReq(MapperContext ctx, CrossSellContent crossSell) {
-        var oneTimeSuggestedAmounts = crossSell.OneTimeSuggestedAmounts.OrEmpty().ToList();
-        var recurringSuggestedAmounts = crossSell.RecurringSuggestedAmounts.OrEmpty().ToList();
-
-        var options = new DonationFormOptionsReq();
-
-        if (oneTimeSuggestedAmounts.HasAny() || recurringSuggestedAmounts.HasAny()) {
-            options.SuggestedAmounts = GetDonationFormSuggestedAmountsReq(ctx,
-                                                                          (GiftTypes.OneTime, oneTimeSuggestedAmounts),
-                                                                          (GiftTypes.Recurring, recurringSuggestedAmounts));
-        }
-
-        SetNotesField(options, crossSell.NotesLabel);
-        SetQurbaniOptions(options, crossSell.Targeting);
+        SetNotesField(options, notesLabel);
+        SetQurbaniOptions(options, campaign);
 
         return options;
     }
@@ -82,7 +66,7 @@ public partial class DonationFormsStateReqMapping {
                 var req = new DonationFormSuggestedAmountsReq();
                 req.GiftType = suggestedAmountsElement.GiftType.ToEnum<GiftType>();
                 req.Amounts = suggestedAmountsElement.SuggestedAmounts.Select(ctx.Map<SuggestedAmountElement, DonationFormSuggestedAmountReq>).ToList();
-            
+
                 items.Add(req);
             }
         }

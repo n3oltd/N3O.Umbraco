@@ -4,58 +4,41 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using System;
-using System.Collections.Generic;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
-
-/*
- * CrossSell, Campaign, Offering
- *      DonationFormContent (Summary, Description, Icon, Image)
- *
- * CrossSell, Offering
- *      DonationFormState -> allocation intent (via cart item) + form options
- *
- *
- * PlatformsDonationFormContent
- *      Summary, Description, Icon, Image
- *
- * PlatformsDonationFormState
- *      
- */
 
 [UmbracoContent(PlatformsConstants.CrossSells.CompositionAlias)]
 public class CrossSellContent : UmbracoContent<CrossSellContent>, IHoldCustomFormState {
     public string Name => Content().Name;
     public Guid Key => Content().Key;
-    
+
     public override void SetContent(IPublishedContent content) {
         base.SetContent(content);
-        
+
         DonationFormContent = new DonationFormContent();
         DonationFormContent.SetContent(content);
+
+        FormState = new DonationFormStateContent();
+        FormState.SetContent(content);
+    }
+
+    public override void SetVariationContext(VariationContext variationContext) {
+        base.SetVariationContext(variationContext);
+
+        DonationFormContent?.SetVariationContext(variationContext);
+        FormState?.SetVariationContext(variationContext);
     }
 
     public DonationFormContent DonationFormContent { get; private set; }
+    public DonationFormStateContent FormState { get; private set; }
+
     public ECommerceStage Stage => GetValue(x => x.Stage);
     public CampaignContent Targeting => GetAs(x => x.Targeting);
-    public string CustomFormState => GetValue(x => x.CustomFormState);
-
-    public AllocationType Type => GetValue(x => x.Type);
-    public FundDimension1Value Dimension1 => GetValue(x => x.Dimension1);
-    public FundDimension2Value Dimension2 => GetValue(x => x.Dimension2);
-    public FundDimension3Value Dimension3 => GetValue(x => x.Dimension3);
-    public FundDimension4Value Dimension4 => GetValue(x => x.Dimension4);
-    public GiftType SuggestedGiftType => GetValue(x => x.SuggestedGiftType);
     public string NotesLabel => GetValue(x => x.NotesLabel);
-    public DonationItem DonationItem => GetValue(x => x.DonationItem);
-    public QurbaniItem QurbaniItem => GetValue(x => x.QurbaniItem);
-    public FeedbackScheme FeedbackScheme => GetValue(x => x.FeedbackScheme);
-    public SponsorshipScheme SponsorshipScheme => GetValue(x => x.SponsorshipScheme);
-    public IEnumerable<SuggestedAmountElement> OneTimeSuggestedAmounts => GetNestedAs(x => x.OneTimeSuggestedAmounts);
-    public IEnumerable<SuggestedAmountElement> RecurringSuggestedAmounts => GetNestedAs(x => x.RecurringSuggestedAmounts);
+    public string CustomFormState => FormState.CustomFormState;
+    public AllocationType Type => FormState.Type;
+    public GiftType SuggestedGiftType => FormState.SuggestedGiftType;
 
-    public IFundDimensionValues GetFixedFundDimensionValues() {
-        return new FundDimensionValues(Dimension1, Dimension2, Dimension3, Dimension4);
-    }
+    public IFundDimensionValues GetFixedFundDimensionValues() => FormState.GetFixedFundDimensionValues();
 }
