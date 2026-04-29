@@ -33,11 +33,7 @@ public class UpdateOfferingReqMapping : IMapDefinition {
         dest.Notes = src.Notes;
         dest.Slug = _slugHelper.GenerateSlug(src.Name);
 
-        dest.DonationFormContent = new DonationFormContentReq();
-        dest.DonationFormContent.Summary = src.Summary;
-        dest.DonationFormContent.Description = src.Description.ToHtmlString().ToRichTextContentReq(); 
-        dest.DonationFormContent.Image = src.Image.ToImageSimpleContentReq(_mediaUrl);
-        dest.DonationFormContent.Icon = src.Icon.ToSvgContentReq(_mediaUrl);
+        dest.DonationFormContent = src.DonationFormContent.ToDonationFormContentReq(_mediaUrl);
         
         dest.Order = new OfferingOrderReq();
         dest.Order.Order = src.Content().Parent.Children.FindIndex(x => x.Id == src.Content().Id);

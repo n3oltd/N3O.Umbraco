@@ -4,7 +4,7 @@ using N3O.Umbraco.Giving.Allocations.Lookups;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.DonationFormStates.Qurbani)]
-public class QurbaniDonationFormStateContent : UmbracoContent<QurbaniDonationFormStateContent> {
+[UmbracoContent(PlatformsConstants.Offerings.Qurbani)]
+public class QurbaniOfferingContent : UmbracoContent<QurbaniOfferingContent> {
     public QurbaniItem QurbaniItem => GetValue(x => x.QurbaniItem);
 }

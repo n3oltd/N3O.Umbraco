@@ -3,10 +3,12 @@ using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AllocationType = N3O.Umbraco.Cloud.Platforms.Clients.AllocationType;
 using CampaignContent = N3O.Umbraco.Cloud.Platforms.Content.CampaignContent;
 using CrossSellContent = N3O.Umbraco.Cloud.Platforms.Content.CrossSellContent;
 using Currency = N3O.Umbraco.Financial.Currency;
@@ -48,14 +50,18 @@ public partial class DonationFormsStateReqMapping {
 
         SetFundDimensionsAndValue(allocationIntent, fundDimensionValues, currency);
 
-        if (offering.Type == OfferingTypes.Fund) {
+        if (offering.Type == AllocationTypes.Fund) {
             allocationIntent.Fund = new FundIntentReq();
             allocationIntent.Fund.DonationItem = offering.Fund.DonationItem.Name;
-        } else if (offering.Type == OfferingTypes.Feedback) {
+        } else if (offering.Type == AllocationTypes.Feedback) {
             allocationIntent.Feedback = new FeedbackIntentReq();
             allocationIntent.Feedback.New = new NewFeedbackIntentReq();
             allocationIntent.Feedback.New.Scheme = offering.Feedback.Scheme.Name;
-        } else if (offering.Type == OfferingTypes.Sponsorship) {
+        } else if (offering.Type == AllocationTypes.Qurbani) {
+            allocationIntent.Qurbani = new QurbaniIntentReq();
+            allocationIntent.Qurbani.New = new NewQurbaniIntentReq();
+            allocationIntent.Qurbani.New.QurbaniItem = offering.Qurbani.QurbaniItem.Name;
+        } else if (offering.Type == AllocationTypes.Sponsorship) {
             allocationIntent.Sponsorship = new SponsorshipIntentReq();
             allocationIntent.Sponsorship.New = new NewSponsorshipIntentReq();
             allocationIntent.Sponsorship.New.Scheme = offering.Sponsorship.Scheme.Name;
@@ -108,14 +114,18 @@ public partial class DonationFormsStateReqMapping {
 
         SetFundDimensionsAndValue(allocationIntent, fundDimensionValues, currency);
 
-        if (crossSell.Type == OfferingTypes.Fund) {
+        if (crossSell.Type == AllocationTypes.Fund) {
             allocationIntent.Fund = new FundIntentReq();
-            allocationIntent.Fund.DonationItem = crossSell.DonationItem?.Name;
-        } else if (crossSell.Type == OfferingTypes.Feedback) {
+            allocationIntent.Fund.DonationItem = crossSell.DonationItem.Name;
+        } else if (crossSell.Type == AllocationTypes.Feedback) {
             allocationIntent.Feedback = new FeedbackIntentReq();
             allocationIntent.Feedback.New = new NewFeedbackIntentReq();
-            allocationIntent.Feedback.New.Scheme = crossSell.FeedbackScheme?.Name;
-        } else if (crossSell.Type == OfferingTypes.Sponsorship) {
+            allocationIntent.Feedback.New.Scheme = crossSell.FeedbackScheme.Name;
+        } else if (crossSell.Type == AllocationTypes.Qurbani) {
+            allocationIntent.Qurbani = new QurbaniIntentReq();
+            allocationIntent.Qurbani.New = new NewQurbaniIntentReq();
+            allocationIntent.Qurbani.New.QurbaniItem = crossSell.QurbaniItem.Name;
+        } else if (crossSell.Type == AllocationTypes.Sponsorship) {
             allocationIntent.Sponsorship = new SponsorshipIntentReq();
             allocationIntent.Sponsorship.New = new NewSponsorshipIntentReq();
             allocationIntent.Sponsorship.New.Scheme = crossSell.SponsorshipScheme?.Name;

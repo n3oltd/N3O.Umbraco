@@ -1,7 +1,5 @@
-using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
-using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Media;
 using System.Collections.Generic;
@@ -33,10 +31,7 @@ public class UpdateCrossSellReqMapping : IMapDefinition {
             dest.Targeting.Campaigns = new List<string> { src.Targeting.Key.ToString() };
         }
 
-        dest.DonationFormContent = new DonationFormContentReq();
-        dest.DonationFormContent.Image = src.Image.ToImageSimpleContentReq(_mediaUrl);
-        dest.DonationFormContent.Icon = src.Icon.ToSvgContentReq(_mediaUrl);
-        dest.DonationFormContent.Description = src.Description.ToHtmlString().ToRichTextContentReq();
+        dest.DonationFormContent = src.DonationFormContent.ToDonationFormContentReq(_mediaUrl);
 
         dest.FormState = ctx.Map<CrossSellContent, DonationFormStateReq>(src);
 

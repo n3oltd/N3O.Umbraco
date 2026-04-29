@@ -1,14 +1,11 @@
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using System;
 using System.Collections.Generic;
-using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.Strings;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
@@ -26,14 +23,6 @@ namespace N3O.Umbraco.Cloud.Platforms.Content;
  * PlatformsDonationFormState
  *      
  */
-
-[UmbracoContent(PlatformsConstants.CrossSells.CompositionAlias)]
-public class DonationFormContent : UmbracoContent<CrossSellContent>, IHoldDonationFormContent {
-    public MediaWithCrops Image => GetValue(x => x.Image);
-    public MediaWithCrops Icon => GetValue(x => x.Icon);
-    public IHtmlEncodedString Description => GetValue(x => x.Description);
-    public string Summary => GetValue(x => x.Summary);
-}
 
 [UmbracoContent(PlatformsConstants.CrossSells.CompositionAlias)]
 public class CrossSellContent : UmbracoContent<CrossSellContent>, IHoldCustomFormState {
@@ -60,6 +49,7 @@ public class CrossSellContent : UmbracoContent<CrossSellContent>, IHoldCustomFor
     public GiftType SuggestedGiftType => GetValue(x => x.SuggestedGiftType);
     public string NotesLabel => GetValue(x => x.NotesLabel);
     public DonationItem DonationItem => GetValue(x => x.DonationItem);
+    public QurbaniItem QurbaniItem => GetValue(x => x.QurbaniItem);
     public FeedbackScheme FeedbackScheme => GetValue(x => x.FeedbackScheme);
     public SponsorshipScheme SponsorshipScheme => GetValue(x => x.SponsorshipScheme);
     public IEnumerable<SuggestedAmountElement> OneTimeSuggestedAmounts => GetNestedAs(x => x.OneTimeSuggestedAmounts);

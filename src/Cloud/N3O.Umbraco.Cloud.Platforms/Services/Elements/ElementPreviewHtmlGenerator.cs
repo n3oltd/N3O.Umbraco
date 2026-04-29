@@ -1,7 +1,6 @@
 ﻿using Humanizer;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
-using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
@@ -28,19 +27,19 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
     private readonly IContentLocator _contentLocator;
     private readonly IUmbracoMapper _mapper;
     private readonly IBaseCurrencyAccessor _baseCurrencyAccessor;
-    
+
     protected ElementPreviewHtmlGenerator(ICdnClient cdnClient,
-                                         IJsonProvider jsonProvider,
-                                         IContentLocator contentLocator,
-                                         IUmbracoMapper mapper,
-                                         ILookups lookups,
-                                         IBaseCurrencyAccessor baseCurrencyAccessor)
+                                          IJsonProvider jsonProvider,
+                                          IContentLocator contentLocator,
+                                          IUmbracoMapper mapper,
+                                          ILookups lookups,
+                                          IBaseCurrencyAccessor baseCurrencyAccessor)
         : base(cdnClient, jsonProvider, lookups) {
         _contentLocator = contentLocator;
         _mapper = mapper;
         _baseCurrencyAccessor = baseCurrencyAccessor;
     }
-    
+
     protected abstract ElementType ElementType { get; }
 
     protected override string ContentTypeAlias => ElementType.ContentTypeAlias;
@@ -51,25 +50,24 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
         var offeringUdi = content[AliasHelper<DonationElementContent<DonationFormElementContent>>.PropertyAlias(x => x.Offering)]?.ToString();
 
         OfferingContent offeringContent;
-        
+
         if (campaignUdi.HasValue()) {
             var campaign = _contentLocator.ById<CampaignContent>(UdiParser.Parse(campaignUdi).ToId().Value);
-            offeringContent = campaign.DefaultOffering;}
-        else if (offeringUdi.HasValue()) {
+            offeringContent = campaign.DefaultOffering;
+        } else if (offeringUdi.HasValue()) {
             offeringContent = _contentLocator.ById<OfferingContent>(UdiParser.Parse(offeringUdi).ToId().Value);
-        }
-        else {
+        } else {
             var defaultCampaign = _contentLocator.Single<PlatformsContent>().Campaigns.First();
 
             offeringContent = defaultCampaign.DefaultOffering;
         }
-        
+
         var publishedOffering = _mapper.Map<OfferingContent, PublishedOffering>(offeringContent);
-        
+
         var publishedDonationForm = new PublishedDonationForm();
         publishedDonationForm.Id = content[AliasHelper<OfferingContent>.PropertyAlias(x => x.Key)].ToString();
         publishedDonationForm.FormState = GetPublishedDonationFormState(content, publishedOffering);
-        
+
         previewData["element"] = publishedDonationForm;
         previewData["offering"] = publishedOffering;
 
@@ -77,36 +75,36 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
     }
 
     private void PopulateAdditionalData(Dictionary<string, object> previewData, OfferingContent offeringContent) {
-        if (offeringContent.Type == OfferingTypes.Fund) {
+        if (offeringContent.Type == AllocationTypes.Fund) {
             var donationItem = offeringContent.Fund.DonationItem;
-            
+
             var fundDimensionOptions = new PublishedFundDimensionOptions();
             fundDimensionOptions.Dimension1 = donationItem.FundDimensionOptions.Dimension1?.Select(x => x.Name).ToList();
             fundDimensionOptions.Dimension2 = donationItem.FundDimensionOptions.Dimension2?.Select(x => x.Name).ToList();
             fundDimensionOptions.Dimension3 = donationItem.FundDimensionOptions.Dimension3?.Select(x => x.Name).ToList();
             fundDimensionOptions.Dimension4 = donationItem.FundDimensionOptions.Dimension4?.Select(x => x.Name).ToList();
-        
+
             var publishedDonationItem = new PublishedDonationItem();
             publishedDonationItem.Id = donationItem.Id;
             publishedDonationItem.Name = donationItem.Name;
             publishedDonationItem.AllowOneTime = donationItem.AllowedGivingTypes.HasAny(x => x == GivingTypes.Donation);
             publishedDonationItem.AllowOneTime = donationItem.AllowedGivingTypes.HasAny(x => x == GivingTypes.RegularGiving);
             publishedDonationItem.FundDimensionOptions = fundDimensionOptions;
-        
+
             if (donationItem.HasPricing()) {
                 publishedDonationItem.Pricing = GetPricing(donationItem);
             }
-        
+
             previewData["donationItem"] = publishedDonationItem;
-        } else if (offeringContent.Type == OfferingTypes.Feedback) {
+        } else if (offeringContent.Type == AllocationTypes.Feedback) {
             var feedbackScheme = offeringContent.Feedback.Scheme;
-        
+
             var fundDimensionOptions = new PublishedFundDimensionOptions();
             fundDimensionOptions.Dimension1 = feedbackScheme.FundDimensionOptions.Dimension1?.Select(x => x.Name).ToList();
             fundDimensionOptions.Dimension2 = feedbackScheme.FundDimensionOptions.Dimension2?.Select(x => x.Name).ToList();
             fundDimensionOptions.Dimension3 = feedbackScheme.FundDimensionOptions.Dimension3?.Select(x => x.Name).ToList();
             fundDimensionOptions.Dimension4 = feedbackScheme.FundDimensionOptions.Dimension4?.Select(x => x.Name).ToList();
-        
+
             var publishedFeedbackScheme = new PublishedFeedbackScheme();
             publishedFeedbackScheme.Id = feedbackScheme.Id;
             publishedFeedbackScheme.Name = feedbackScheme.Name;
@@ -116,19 +114,27 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
             if (feedbackScheme.HasPricing()) {
                 publishedFeedbackScheme.Pricing = GetPricing(feedbackScheme);
             }
-        
+
             previewData["feedbackScheme"] = publishedFeedbackScheme;
-        } else if (offeringContent.Type == OfferingTypes.Sponsorship) {
-            var sponsorshipScheme =offeringContent.Sponsorship.Scheme;
-        
+        } else if (offeringContent.Type == AllocationTypes.Qurbani) {
+            var qurbaniItem = offeringContent.Qurbani.QurbaniItem;
+
+            var publishedQurbaniItem = new PublishedQurbaniItem();
+            publishedQurbaniItem.Id = qurbaniItem.Id;
+            publishedQurbaniItem.Name = qurbaniItem.Name;
+
+            previewData["qurbaniItem"] = publishedQurbaniItem;
+        } else if (offeringContent.Type == AllocationTypes.Sponsorship) {
+            var sponsorshipScheme = offeringContent.Sponsorship.Scheme;
+
             previewData["beneficiaries"] = GetBeneficiaries(sponsorshipScheme);
             previewData["scheme"] = GetSponsorshipSchemes(sponsorshipScheme);
         }
     }
-    
+
     private IEnumerable<PublishedFeedbackCustomFieldDefinition> GetCustomFieldDefinitions(FeedbackScheme feedbackScheme) {
         var items = new List<PublishedFeedbackCustomFieldDefinition>();
-        
+
         foreach (var customFieldDefinition in feedbackScheme.CustomFields.OrEmpty()) {
             var publishedCustomField = new PublishedFeedbackCustomFieldDefinition();
             publishedCustomField.Alias = customFieldDefinition.Alias;
@@ -143,7 +149,7 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
                 publishedCustomField.Text = new PublishedFeedbackCustomFieldTextFieldOptions();
                 publishedCustomField.Text.MaxLength = customFieldDefinition.TextMaxLength;
             }
-            
+
             items.Add(publishedCustomField);
         }
 
@@ -152,9 +158,10 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
 
     private PublishedDonationFormState GetPublishedDonationFormState(IReadOnlyDictionary<string, object> content,
                                                                      PublishedOffering publishedOffering) {
-        var publishedOfferingAllocation = publishedOffering.FormState.CartItem.NewRegularGiving?.Allocation ?? publishedOffering.FormState.CartItem.NewDonation.Allocation;
+        var publishedOfferingAllocation = publishedOffering.FormState.CartItem.NewRegularGiving?.Allocation ??
+                                          publishedOffering.FormState.CartItem.NewDonation.Allocation;
         var currency = _baseCurrencyAccessor.GetBaseCurrency().ToEnum<Currency>();
-        
+
         var formState = new PublishedDonationFormState();
         formState.CartItem = new PublishedCartItem();
         formState.CartItem.Type = CartItemType.NewDonation;
@@ -162,9 +169,9 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
         formState.CartItem.Value = new MoneyRes();
         formState.CartItem.Value.Currency = currency;
         formState.CartItem.Value.Amount = 0d;
-        
+
         formState.CartItem.Type = CartItemType.NewDonation;
-        
+
         formState.CartItem.NewDonation = new PublishedNewDonation();
         formState.CartItem.NewDonation.Allocation = new PublishedAllocationIntent();
         formState.CartItem.NewDonation.Allocation.FundDimensions = GetPublishedOfferingFundDimensions(content, publishedOfferingAllocation);
@@ -181,12 +188,16 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
             formState.CartItem.NewDonation.Allocation.Feedback = new PublishedFeedbackIntent();
             formState.CartItem.NewDonation.Allocation.Feedback.New = new PublishedNewFeedbackIntent();
             formState.CartItem.NewDonation.Allocation.Feedback.New.Scheme = publishedOfferingAllocation.Feedback.New.Scheme;
+        } else if (publishedOfferingAllocation.Type == AllocationType.Qurbani) {
+            formState.CartItem.NewDonation.Allocation.Qurbani = new PublishedQurbaniIntent();
+            formState.CartItem.NewDonation.Allocation.Qurbani.New = new PublishedNewQurbaniIntent();
+            formState.CartItem.NewDonation.Allocation.Qurbani.New.QurbaniItem = publishedOfferingAllocation.Qurbani.New.QurbaniItem;
         } else if (publishedOfferingAllocation.Type == AllocationType.Sponsorship) {
             formState.CartItem.NewDonation.Allocation.Sponsorship = new PublishedSponsorshipIntent();
             formState.CartItem.NewDonation.Allocation.Sponsorship.New = new PublishedNewSponsorshipIntent();
             formState.CartItem.NewDonation.Allocation.Sponsorship.New.Scheme = publishedOfferingAllocation.Sponsorship.New.Scheme;
         }
-        
+
         if (publishedOfferingAllocation.Type == AllocationType.Fund) {
             publishedOffering.FormState.Options = new PublishedDonationFormOptions();
             publishedOffering.FormState.Options.SuggestedAmounts = publishedOffering.FormState.Options.SuggestedAmounts;
@@ -194,13 +205,13 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
 
         return formState;
     }
-    
+
     private PublishedPricing GetPricing(IHoldPricing pricing) {
         var publishedPriceRules = new List<PublishedPricingRule>();
-        
+
         foreach (var pricingRule in pricing.Pricing.Rules.OrEmpty()) {
             var publishedRule = new PublishedPricingRule();
-            
+
             publishedRule.Price = new PublishedPrice();
             publishedRule.Price.Amount = (double) pricingRule.Price.Amount;
             publishedRule.Price.Locked = pricingRule.Price.Locked;
@@ -211,22 +222,23 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
             publishedRule.FundDimensions.Dimension3 = pricingRule.FundDimensions.Dimension3?.Name;
             publishedRule.FundDimensions.Dimension4 = pricingRule.FundDimensions.Dimension4?.Name;
         }
-        
+
         var publishedPricing = new PublishedPricing();
         publishedPricing.Price = new PublishedPrice();
         publishedPricing.Price.Amount = (double) pricing.Pricing.Price.Amount;
         publishedPricing.Price.Locked = pricing.Pricing.Price.Locked;
         publishedPricing.Rules = publishedPriceRules;
-        
+
         return publishedPricing;
     }
-    
-    private PublishedFundDimensionValues GetPublishedOfferingFundDimensions(IReadOnlyDictionary<string, object> content, PublishedAllocationIntent publishedOfferingAllocation) {
+
+    private PublishedFundDimensionValues GetPublishedOfferingFundDimensions(IReadOnlyDictionary<string, object> content,
+                                                                            PublishedAllocationIntent publishedOfferingAllocation) {
         var dimension1 = GetDataListValue<FundDimension1Value>(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Dimension1));
         var dimension2 = GetDataListValue<FundDimension2Value>(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Dimension2));
         var dimension3 = GetDataListValue<FundDimension3Value>(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Dimension3));
         var dimension4 = GetDataListValue<FundDimension4Value>(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Dimension4));
-        
+
         var publishedFundDimensions = new PublishedFundDimensionValues();
         publishedFundDimensions.Dimension1 = dimension1?.Name ?? publishedOfferingAllocation.FundDimensions.Dimension1;
         publishedFundDimensions.Dimension2 = dimension2?.Name ?? publishedOfferingAllocation.FundDimensions.Dimension2;
@@ -235,34 +247,33 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
 
         return publishedFundDimensions;
     }
-    
+
     private object GetSponsorshipSchemes(SponsorshipScheme sponsorshipScheme) {
         var fundDimensionOptions = new PublishedSponsorshipSchemeFundDimensionOptions();
         fundDimensionOptions.Dimension1 = sponsorshipScheme.FundDimensionOptions.Dimension1?.Select(x => x.Name).ToList();
         fundDimensionOptions.Dimension2 = sponsorshipScheme.FundDimensionOptions.Dimension2?.Select(x => x.Name).ToList();
         fundDimensionOptions.Dimension3 = sponsorshipScheme.FundDimensionOptions.Dimension3?.Select(x => x.Name).ToList();
         fundDimensionOptions.Dimension4 = sponsorshipScheme.FundDimensionOptions.Dimension4?.Select(x => x.Name).ToList();
-        
+
         var publishedSponsorshipScheme = new PlatformsPublishedSponsorshipScheme();
         publishedSponsorshipScheme.Id = sponsorshipScheme.Id;
         publishedSponsorshipScheme.Name = sponsorshipScheme.Name;
         publishedSponsorshipScheme.AvailableLocations = sponsorshipScheme.AvailableLocations.ToList();
         publishedSponsorshipScheme.FundDimensionOptions = fundDimensionOptions;
-        
-        
+
         return publishedSponsorshipScheme;
     }
-    
+
     private IEnumerable<JObject> GetBeneficiaries(SponsorshipScheme sponsorshipScheme) {
         var name = "John Doe";
-        
+
         var publishedBeneficiary = new PublishedBeneficiary();
         publishedBeneficiary.Id = name.Camelize();
         publishedBeneficiary.Type = BeneficiaryType.Child;
         publishedBeneficiary.Name = name;
         publishedBeneficiary.Location = "Pakistan";
         publishedBeneficiary.AvailableComponents = GetComponents(sponsorshipScheme).ToList();
-        
+
         publishedBeneficiary.Individual = new PublishedIndividualBeneficiary();
         publishedBeneficiary.Individual.Age = 10;
         publishedBeneficiary.Individual.FirstName = "John";
@@ -273,7 +284,7 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
         view.ThemeAlias = "default";
         view.DonationFormCaption = $"<p>{name} enjoys reading and hopes to become a doctor one day.</p>";
         view.DonationFormProfile = $"<p>{name} enjoys reading and hopes to become a doctor one day.</p>";
-        
+
         publishedBeneficiary.PlatformsViews = new PublishedBeneficiaryPlatformsViews();
         publishedBeneficiary.PlatformsViews.Themes = view.Yield().ToList();
 
@@ -282,7 +293,7 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
         publishedBeneficiaryJObject["fundDimensions"] = new JObject();
         publishedBeneficiaryJObject["fundDimensions"]["dimension1"] = "Pakistan";
         publishedBeneficiaryJObject["fundDimensions"]["dimension2"] = "General";
-        
+
         return publishedBeneficiaryJObject.Yield();
     }
 
@@ -293,7 +304,7 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
         component.Price = new PlatformsPublishedPrice();
         component.Price.Amount = (double) sponsorshipScheme.Components.First().Pricing.Price.Amount;
         component.Price.Locked = sponsorshipScheme.Components.First().Pricing.Price.Locked;
-        
+
         return component.Yield();
     }
 }

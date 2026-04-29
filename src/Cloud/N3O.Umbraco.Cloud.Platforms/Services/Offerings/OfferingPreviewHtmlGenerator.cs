@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
+using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
@@ -16,7 +17,7 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Strings;
 using MediaConstants = Umbraco.Cms.Core.Constants.Conventions.Media;
-using OfferingType = N3O.Umbraco.Cloud.Platforms.Lookups.OfferingType;
+using OurAllocationType = N3O.Umbraco.Giving.Allocations.Lookups.AllocationType;
 
 namespace N3O.Umbraco.Cloud.Platforms;
 
@@ -44,15 +45,15 @@ public abstract class OfferingPreviewHtmlGenerator : PreviewHtmlGenerator {
         _publishedValueFallback = publishedValueFallback;
     }
     
-    protected abstract OfferingType OfferingType { get; }
+    protected abstract OurAllocationType OfferingAllocationType { get; }
 
-    protected override string ContentTypeAlias => OfferingType.ContentTypeAlias;
+    protected override string ContentTypeAlias => OfferingAllocationType.ToContentTypeAlias();
 
     protected override void PopulatePreviewData(IReadOnlyDictionary<string, object> content,
                                                 Dictionary<string, object> previewData) {
-        var image = GetMediaWithCrops(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Image));
-        var icon = GetMediaWithCrops(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Icon));
-        var shortDescription = content[AliasHelper<OfferingContent>.PropertyAlias(x => x.Description)]?.ToString();
+        var image = GetMediaWithCrops(content, AliasHelper<DonationFormContent>.PropertyAlias(x => x.Image));
+        var icon = GetMediaWithCrops(content, AliasHelper<DonationFormContent>.PropertyAlias(x => x.Icon));
+        var shortDescription = content[AliasHelper<DonationFormContent>.PropertyAlias(x => x.Description)]?.ToString();
         
         var currency = BaseCurrencyAccessor.GetBaseCurrency().Code.ToEnum<Currency>();
         

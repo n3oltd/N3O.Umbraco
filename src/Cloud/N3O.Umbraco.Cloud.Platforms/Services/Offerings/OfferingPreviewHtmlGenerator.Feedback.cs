@@ -1,6 +1,5 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
-using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Extensions;
@@ -15,7 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using AllocationType = N3O.Umbraco.Cloud.Platforms.Clients.AllocationType;
-using OfferingType = N3O.Umbraco.Cloud.Platforms.Lookups.OfferingType;
+using OurAllocationType = N3O.Umbraco.Giving.Allocations.Lookups.AllocationType;
 using PublishedFeedbackCustomFieldDefinition = N3O.Umbraco.Cloud.Platforms.Clients.PublishedFeedbackCustomFieldDefinition;
 using PublishedFeedbackCustomFieldTextFieldOptions = N3O.Umbraco.Cloud.Platforms.Clients.PublishedFeedbackCustomFieldTextFieldOptions;
 using PublishedFeedbackCustomFieldType = N3O.Umbraco.Cloud.Platforms.Clients.PublishedFeedbackCustomFieldType;
@@ -50,7 +49,7 @@ public class FeedbackOfferingPreviewHtmlGenerator : OfferingPreviewHtmlGenerator
         _lookups = lookups;
     }
 
-    protected override OfferingType OfferingType => OfferingTypes.Feedback;
+    protected override OurAllocationType OfferingAllocationType => AllocationTypes.Feedback;
 
     protected override void PopulateAllocationIntent(IReadOnlyDictionary<string, object> content,
                                                      PublishedAllocationIntent allocationIntent) {

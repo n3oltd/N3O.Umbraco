@@ -4,12 +4,11 @@ using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Extensions;
+using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using System;
 using System.Linq;
-using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.Strings;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
@@ -17,18 +16,25 @@ namespace N3O.Umbraco.Cloud.Platforms.Content;
 public class OfferingContent : UmbracoContent<OfferingContent>, IHoldCustomFormState {
     private static readonly string FeedbackOfferingAlias = AliasHelper<FeedbackOfferingContent>.ContentTypeAlias();
     private static readonly string FundOfferingAlias = AliasHelper<FundOfferingContent>.ContentTypeAlias();
+    private static readonly string QurbaniOfferingAlias = AliasHelper<QurbaniOfferingContent>.ContentTypeAlias();
     private static readonly string SponsorshipOfferingAlias = AliasHelper<SponsorshipOfferingContent>.ContentTypeAlias();
     
     public override void SetContent(IPublishedContent content) {
         base.SetContent(content);
-        
-        if (Type == OfferingTypes.Fund) {
+
+        DonationFormContent = new DonationFormContent();
+        DonationFormContent.SetContent(content);
+
+        if (Type == AllocationTypes.Fund) {
             Fund = new FundOfferingContent();
             Fund.SetContent(content);
-        } else if (Type == OfferingTypes.Feedback) {
+        } else if (Type == AllocationTypes.Feedback) {
             Feedback = new FeedbackOfferingContent();
             Feedback.SetContent(content);
-        } else if (Type == OfferingTypes.Sponsorship) {
+        } else if (Type == AllocationTypes.Qurbani) {
+            Qurbani = new QurbaniOfferingContent();
+            Qurbani.SetContent(content);
+        } else if (Type == AllocationTypes.Sponsorship) {
             Sponsorship = new SponsorshipOfferingContent();
             Sponsorship.SetContent(content);
         } else {
@@ -38,25 +44,23 @@ public class OfferingContent : UmbracoContent<OfferingContent>, IHoldCustomFormS
     
     public override void SetVariationContext(VariationContext variationContext) {
         base.SetVariationContext(variationContext);
-        
+
+        DonationFormContent?.SetVariationContext(variationContext);
         Fund?.SetVariationContext(variationContext);
         Feedback?.SetVariationContext(variationContext);
+        Qurbani?.SetVariationContext(variationContext);
         Sponsorship?.SetVariationContext(variationContext);
     }
     
     public string Name => Content().Name;
     public Guid Key => Content().Key;
 
-    public string Summary => GetValue(x => x.Summary);
     public string Notes => GetValue(x => x.Notes);
     public string NotesLabel => GetValue(x => x.NotesLabel);
     public FundDimension1Value Dimension1 => GetValue(x => x.Dimension1);
     public FundDimension2Value Dimension2 => GetValue(x => x.Dimension2);
     public FundDimension3Value Dimension3 => GetValue(x => x.Dimension3);
     public FundDimension4Value Dimension4 => GetValue(x => x.Dimension4);
-    public MediaWithCrops Icon => GetValue(x => x.Icon);
-    public MediaWithCrops Image => GetValue(x => x.Image);
-    public IHtmlEncodedString Description => GetValue(x => x.Description);
     public GiftType SuggestedGiftType => GetValue(x => x.SuggestedGiftType);
     public bool AllowCrowdfunding => GetValue(x => x.AllowCrowdfunding);
     public string CustomFormState => GetValue(x => x.CustomFormState);
@@ -65,11 +69,20 @@ public class OfferingContent : UmbracoContent<OfferingContent>, IHoldCustomFormS
     public string DonationFormEmbedCode => GetValue(x => x.DonationFormEmbedCode);
     public string DonationPopupEmbedCode => GetValue(x => x.DonationPopupEmbedCode);
     
-    public SponsorshipOfferingContent Sponsorship { get; private set; }
+    public DonationFormContent DonationFormContent { get; private set; }
     public FundOfferingContent Fund { get; private set; }
     public FeedbackOfferingContent Feedback { get; private set; }
-    
-    public bool HasPricing => ((IHoldPricing) Fund?.DonationItem ?? Feedback?.Scheme).HasPricing();
+    public QurbaniOfferingContent Qurbani { get; private set; }
+    public SponsorshipOfferingContent Sponsorship { get; private set; }
+
+    public bool HasPricing {
+        get {
+            if (Type == AllocationTypes.Qurbani) {
+                return Qurbani?.QurbaniItem?.Price != null;
+            }
+            return ((IHoldPricing) Fund?.DonationItem ?? Feedback?.Scheme).HasPricing();
+        }
+    }
     
     public IFundDimensionOptions GetFundDimensionOptions() {
         var holdFundDimensionOptions = (IHoldFundDimensionOptions) Fund?.DonationItem ??
@@ -79,14 +92,16 @@ public class OfferingContent : UmbracoContent<OfferingContent>, IHoldCustomFormS
         return holdFundDimensionOptions.FundDimensionOptions;
     }
     
-    public OfferingType Type {
+    public AllocationType Type {
         get {
             if (Content().ContentType.Alias.EqualsInvariant(FundOfferingAlias)) {
-                return OfferingTypes.Fund;
+                return AllocationTypes.Fund;
             } else if (Content().ContentType.Alias.EqualsInvariant(FeedbackOfferingAlias)) {
-                return OfferingTypes.Feedback;
+                return AllocationTypes.Feedback;
+            } else if (Content().ContentType.Alias.EqualsInvariant(QurbaniOfferingAlias)) {
+                return AllocationTypes.Qurbani;
             } else if (Content().ContentType.Alias.EqualsInvariant(SponsorshipOfferingAlias)) {
-                return OfferingTypes.Sponsorship;
+                return AllocationTypes.Sponsorship;
             } else {
                 throw UnrecognisedValueException.For(Content().ContentType.Alias);
             }
@@ -94,13 +109,17 @@ public class OfferingContent : UmbracoContent<OfferingContent>, IHoldCustomFormS
     }
 
     public IFundDimensionValues GetFixedFundDimensionValues() {
+        if (Type == AllocationTypes.Qurbani) {
+            return Qurbani?.QurbaniItem.FundDimensionValues;
+        }
+
         var fundDimensionOptions = GetFundDimensionOptions();
-        
+
         var dimension1 = Dimension1 ?? (fundDimensionOptions.Dimension1.IsSingle() ? fundDimensionOptions.Dimension1.Single() : null);
         var dimension2 = Dimension2 ?? (fundDimensionOptions.Dimension2.IsSingle() ? fundDimensionOptions.Dimension2.Single() : null);
         var dimension3 = Dimension3 ?? (fundDimensionOptions.Dimension3.IsSingle() ? fundDimensionOptions.Dimension3.Single() : null);
         var dimension4 = Dimension4 ?? (fundDimensionOptions.Dimension4.IsSingle() ? fundDimensionOptions.Dimension4.Single() : null);
-        
+
         return new FundDimensionValues(dimension1, dimension2, dimension3, dimension4);
     }
 }
