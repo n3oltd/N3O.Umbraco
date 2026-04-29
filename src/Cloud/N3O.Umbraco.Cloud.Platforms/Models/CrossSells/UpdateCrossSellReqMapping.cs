@@ -1,0 +1,47 @@
+using N3O.Umbraco.Cloud.Extensions;
+using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Cloud.Platforms.Content;
+using N3O.Umbraco.Cloud.Platforms.Extensions;
+using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Media;
+using System.Collections.Generic;
+using Umbraco.Cms.Core.Mapping;
+using Umbraco.Extensions;
+using ECommerceStage = N3O.Umbraco.Cloud.Platforms.Clients.ECommerceStage;
+
+namespace N3O.Umbraco.Cloud.Platforms.Models;
+
+public class UpdateCrossSellReqMapping : IMapDefinition {
+    private readonly IMediaUrl _mediaUrl;
+
+    public UpdateCrossSellReqMapping(IMediaUrl mediaUrl) {
+        _mediaUrl = mediaUrl;
+    }
+
+    public void DefineMaps(IUmbracoMapper mapper) {
+        mapper.Define<CrossSellContent, UpdateCrossSellReq>((_, _) => new UpdateCrossSellReq(), Map);
+    }
+
+    // Umbraco.Code.MapAll
+    private void Map(CrossSellContent src, UpdateCrossSellReq dest, MapperContext ctx) {
+        dest.Name = src.Name;
+        dest.Order = src.Content().Parent.Children.FindIndex(x => x.Id == src.Content().Id);
+        dest.Stage = src.Stage.ToEnum<ECommerceStage>();
+
+        dest.Targeting = new CrossSellTargetingReq();
+        if (src.Targeting.HasValue()) {
+            dest.Targeting.Campaigns = new List<string> { src.Targeting.Key.ToString() };
+        }
+
+        dest.DonationFormContent = new DonationFormContentReq();
+        dest.DonationFormContent.Image = src.Image.ToImageSimpleContentReq(_mediaUrl);
+        dest.DonationFormContent.Icon = src.Icon.ToSvgContentReq(_mediaUrl);
+        dest.DonationFormContent.Description = src.Description.ToHtmlString().ToRichTextContentReq();
+
+        dest.FormState = ctx.Map<CrossSellContent, DonationFormStateReq>(src);
+
+        if (src.Content().IsPublished()) {
+            dest.Activate = true;
+        }
+    }
+}

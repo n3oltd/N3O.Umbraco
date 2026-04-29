@@ -12,6 +12,10 @@ public static class PlatformsConstants {
         public const string Telethon = "platformsTelethonCampaign";
     }
 
+    public static class CrossSells {
+        public const string CompositionAlias = "platformsCrossSell";
+    }
+
     public static class CrowdfundingCampaign {
         public const string CompositionAlias = "platformsCrowdfundingCampaign";
     }
@@ -65,24 +69,13 @@ public static class PlatformsConstants {
                 public static class Category {
                     public const string Alias = "platformsQurbaniSeasonCategory";
                 }
-
-                public static class Group {
-                    public const string Alias = "platformsQurbaniSeasonGroup";
-                }
-                
-                public static class Location {
-                    public const string Alias = "platformsQurbaniSeasonLocation";
-                }
-
-                public static class Upsell {
-                    public const string Alias = "platformsQurbaniSeasonUpsell";
-                }
             }
         }
     }
 
     public static class WebhookIds {
         public const string Campaigns = "campaigns";
+        public const string CrossSells = "crossSells";
         public const string ContentCollection = "contentCollection";
         public const string ContentLibrary = "contentLibrary";
         public const string CrowdfundingCampaigns = "crowdfundingCampaigns";

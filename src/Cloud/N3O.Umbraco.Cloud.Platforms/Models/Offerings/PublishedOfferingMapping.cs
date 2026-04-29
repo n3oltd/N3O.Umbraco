@@ -30,21 +30,24 @@ public class PublishedOfferingMapping : IMapDefinition {
         
         dest.Id = src.Content().Key.ToString();
         dest.Name = updateOfferingReq.Name;
-        dest.Image = new PublishedImageContent();
-        dest.Image.Format = PropertyFormat.Image;
-        dest.Image.Main = new PublishedProcessedImage();
-        dest.Image.Main.Url = new Uri(updateOfferingReq.Image.SourceFile);
-        dest.Image.Main.Size = new PublishedSize();
-        dest.Image.Main.Size.Width = updateOfferingReq.Image.Main.Crop.TopRight.X;
-        dest.Image.Main.Size.Height = updateOfferingReq.Image.Main.Crop.BottomLeft.Y;
+        dest.DonationFormContent = new PublishedDonationFormContent();
+        dest.DonationFormContent.Image = new PublishedImageContent();
+        dest.DonationFormContent.Image.Format = PropertyFormat.Image;
+        dest.DonationFormContent.Image.Main = new PublishedProcessedImage();
+        dest.DonationFormContent.Image.Main.Url = new Uri(updateOfferingReq.DonationFormContent.Image.SourceFile);
+        dest.DonationFormContent.Image.Main.Size = new PublishedSize();
+        dest.DonationFormContent.Image.Main.Size.Width = updateOfferingReq.DonationFormContent.Image.Main.Crop.TopRight.X;
+        dest.DonationFormContent.Image.Main.Size.Height = updateOfferingReq.DonationFormContent.Image.Main.Crop.BottomLeft.Y;
         
-        dest.Icon = new PublishedSvgContent();
-        dest.Icon.Url = new Uri(updateOfferingReq.Icon.SourceFile);
-        dest.Icon.Format = PropertyFormat.Svg;
+        dest.DonationFormContent.Icon = new PublishedSvgContent();
+        dest.DonationFormContent.Icon.Url = new Uri(updateOfferingReq.DonationFormContent.Icon.SourceFile);
+        dest.DonationFormContent.Icon.Format = PropertyFormat.Svg;
         
-        dest.Description = new PublishedHtmlContent();
-        dest.Description.Markup = _markupEngine.RenderHtml(updateOfferingReq.Description.Html).IfNotNull(x => new HtmlEncodedString(x.ToString())).ToHtmlString();
-        dest.Description.Format = PropertyFormat.Html;
+        dest.DonationFormContent.Description = new PublishedHtmlContent();
+        dest.DonationFormContent.Description.Markup = _markupEngine.RenderHtml(updateOfferingReq.DonationFormContent.Description.Html).IfNotNull(x => new HtmlEncodedString(x.ToString())).ToHtmlString();
+        dest.DonationFormContent.Description.Format = PropertyFormat.Html;
+        
+        dest.DonationFormContent.Summary = updateOfferingReq.DonationFormContent.Summary;
         
         dest.FormState = new PublishedDonationFormState();
         dest.FormState.CartItem = new PublishedCartItem();
@@ -53,10 +56,8 @@ public class PublishedOfferingMapping : IMapDefinition {
         dest.FormState.CartItem.Value = new MoneyRes();
         dest.FormState.CartItem.Value.Currency = currency;
         dest.FormState.CartItem.Value.Amount = 0d;
-        
-        dest.FormState.CartItem.Type = CartItemType.NewDonation;
 
-        var allocation = updateOfferingReq.FormState.CartItem.NewRegularGiving?.Allocation ?? updateOfferingReq.FormState.CartItem.NewDonation.Allocation;
+        var allocation = updateOfferingReq.FormState.CartItem.NewRegularGiving?.Allocation ?? updateOfferingReq.FormState.CartItem.NewDonation?.Allocation;
         
         dest.FormState.CartItem.NewDonation = new PublishedNewDonation();
         dest.FormState.CartItem.NewDonation.Allocation = new PublishedAllocationIntent();
@@ -84,6 +85,9 @@ public class PublishedOfferingMapping : IMapDefinition {
             dest.FormState.Options = new PublishedDonationFormOptions();
             dest.FormState.Options.SuggestedAmounts = updateOfferingReq.FormState.Options.SuggestedAmounts;
         }
+
+        dest.Options = new PublishedOfferingOptions();
+        dest.Options.AllowCrowdfunding = updateOfferingReq.Options.AllowCrowdfunding;
     }
     
     private PublishedFundDimensionValues GetPublishedFundDimensionValues(AllocationIntentReq allocation) {

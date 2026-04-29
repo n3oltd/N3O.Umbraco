@@ -11,6 +11,10 @@ public static class ContentExtensions {
         return HasComposition(contentTypeService, content, AliasHelper<CampaignContent>.ContentTypeAlias());
     }
 
+    public static bool IsCrossSell(this IContent content, IContentTypeService contentTypeService) {
+        return HasComposition(contentTypeService, content, AliasHelper<CrossSellContent>.ContentTypeAlias());
+    }
+
     public static bool IsCrowdfundingCampaign(this IContent content, IContentTypeService contentTypeService) {
         return HasComposition(contentTypeService, content, AliasHelper<CrowdfundingCampaignContent>.ContentTypeAlias());
     }
@@ -47,27 +51,12 @@ public static class ContentExtensions {
         return HasComposition(contentTypeService, content, AliasHelper<OfferingContent>.ContentTypeAlias());
     }
 
-    public static bool IsQurbaniSeasonGroup(this IContent content) {
-        return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Group.Alias);
-    }
-    
-    public static bool IsQurbaniSeasonLocation(this IContent content) {
-        return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Location.Alias);
+    public static bool IsQurbaniSeasonContent(this IContent content) {
+        return IsQurbaniSeasonSettings(content);
     }
 
-    public static bool IsQurbaniSeasonContent(this IContent content) {
-        return IsQurbaniSeasonSettings(content) ||
-               IsQurbaniSeasonGroup(content) ||
-               IsQurbaniSeasonLocation(content) ||
-               IsQurbaniSeasonUpsell(content);
-    }
-    
     public static bool IsQurbaniSeasonSettings(this IContent content) {
         return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Alias);
-    }
-    
-    public static bool IsQurbaniSeasonUpsell(this IContent content) {
-        return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Upsell.Alias);
     }
 
     public static bool IsZakatCalculatorSettings(this IContent content) {
@@ -81,7 +70,6 @@ public static class ContentExtensions {
     public static bool IsZakatCalculatorField(this IContent content) {
         return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Zakat.Settings.Calculator.Field.Alias);
     }
-
 
     private static bool HasComposition(IContentTypeService contentTypeService,
                                        IContent content,

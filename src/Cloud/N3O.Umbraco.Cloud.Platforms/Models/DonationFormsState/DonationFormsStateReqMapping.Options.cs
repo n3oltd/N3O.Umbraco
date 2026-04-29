@@ -1,40 +1,76 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Mapping;
+using CrossSellContent = N3O.Umbraco.Cloud.Platforms.Content.CrossSellContent;
 using GiftType = N3O.Umbraco.Cloud.Platforms.Clients.GiftType;
 using OurGiftType = N3O.Umbraco.Cloud.Platforms.Lookups.GiftType;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
-public partial class ElementDonationFormsStateReqMapping {
-    private DonationFormOptionsReq GetDonationFormOptionsReq(MapperContext ctx,
-                                                             OfferingContent offering) {
+public partial class DonationFormsStateReqMapping {
+    private DonationFormOptionsReq GetDonationFormOptionsReq(MapperContext ctx, OfferingContent offering) {
         var oneTimeSuggestedAmounts = offering.Fund?.OneTimeSuggestedAmounts.OrEmpty().ToList();
         var recurringSuggestedAmounts = offering.Fund?.RecurringSuggestedAmounts.OrEmpty().ToList();
-        
+
         var options = new DonationFormOptionsReq();
 
         if (oneTimeSuggestedAmounts.HasAny() || recurringSuggestedAmounts.HasAny()) {
             options.SuggestedAmounts = GetDonationFormSuggestedAmountsReq(ctx,
                                                                           (GiftTypes.OneTime, oneTimeSuggestedAmounts),
                                                                           (GiftTypes.Recurring, recurringSuggestedAmounts));
-            
         }
-        
+
+        SetNotesField(options, offering.NotesLabel);
+        SetQurbaniOptions(options, offering.Content().Parent.As<CampaignContent>());
+
+        return options;
+    }
+
+    private DonationFormOptionsReq GetDonationFormOptionsReq(MapperContext ctx, CrossSellContent crossSell) {
+        var oneTimeSuggestedAmounts = crossSell.OneTimeSuggestedAmounts.OrEmpty().ToList();
+        var recurringSuggestedAmounts = crossSell.RecurringSuggestedAmounts.OrEmpty().ToList();
+
+        var options = new DonationFormOptionsReq();
+
+        if (oneTimeSuggestedAmounts.HasAny() || recurringSuggestedAmounts.HasAny()) {
+            options.SuggestedAmounts = GetDonationFormSuggestedAmountsReq(ctx,
+                                                                          (GiftTypes.OneTime, oneTimeSuggestedAmounts),
+                                                                          (GiftTypes.Recurring, recurringSuggestedAmounts));
+        }
+
+        SetNotesField(options, crossSell.NotesLabel);
+        SetQurbaniOptions(options, crossSell.Targeting);
+
+        return options;
+    }
+
+    private void SetNotesField(DonationFormOptionsReq options, string notesLabel) {
         options.NotesField = new DonationFormNotesFieldReq();
 
-        if (offering.NotesLabel.HasValue()) {
+        if (notesLabel.HasValue()) {
             options.NotesField.Visible = true;
-            options.NotesField.Label = offering.NotesLabel;
+            options.NotesField.Label = notesLabel;
         } else {
             options.NotesField.Visible = false;
         }
-        
-        return options;
+    }
+
+    private void SetQurbaniOptions(DonationFormOptionsReq options, CampaignContent campaign) {
+        if (campaign.HasValue() && campaign.Qurbani?.Season?.ContentId.HasValue == true) {
+            var seasonContent = _contentLocator.ById<QurbaniSeasonContent>(campaign.Qurbani.Season.ContentId.Value);
+
+            if (seasonContent.HasValue()) {
+                options.Qurbani = new DonationFormQurbaniOptionsReq();
+                options.Qurbani.Categories = seasonContent.Categories
+                                                          .OrEmpty()
+                                                          .Select(c => c.Content().Key.ToString())
+                                                          .ToList();
+            }
+        }
     }
 
     private List<DonationFormSuggestedAmountsReq> GetDonationFormSuggestedAmountsReq(MapperContext ctx,

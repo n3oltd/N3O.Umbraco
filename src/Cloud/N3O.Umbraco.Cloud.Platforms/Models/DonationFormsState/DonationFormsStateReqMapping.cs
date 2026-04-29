@@ -9,18 +9,19 @@ using Umbraco.Cms.Core.Mapping;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
-public partial class ElementDonationFormsStateReqMapping : IMapDefinition {
+public partial class DonationFormsStateReqMapping : IMapDefinition {
     private readonly IContentLocator _contentLocator;
     private readonly ILookups _lookups;
     private readonly ICdnClient _cdnClient;
 
-    public ElementDonationFormsStateReqMapping(IContentLocator contentLocator, ILookups lookups, ICdnClient cdnClient) {
+    public DonationFormsStateReqMapping(IContentLocator contentLocator, ILookups lookups, ICdnClient cdnClient) {
         _contentLocator = contentLocator;
         _lookups = lookups;
         _cdnClient = cdnClient;
     }
 
     public void DefineMaps(IUmbracoMapper mapper) {
+        mapper.Define<CrossSellContent, DonationFormStateReq>((src, _) => GetOrCreateDonationFormStateReq(src), Map);
         mapper.Define<ElementContent, DonationFormStateReq>((src, _) => GetOrCreateDonationFormStateReq(src), Map);
         mapper.Define<OfferingContent, DonationFormStateReq>((src, _) => GetOrCreateDonationFormStateReq(src), Map);
     }
@@ -30,6 +31,16 @@ public partial class ElementDonationFormsStateReqMapping : IMapDefinition {
             return JsonConvert.DeserializeObject<DonationFormStateReq>(src.CustomFormState);
         } else {
             return new DonationFormStateReq();
+        }
+    }
+
+    private void Map(CrossSellContent src, DonationFormStateReq dest, MapperContext ctx) {
+        if (!src.CustomFormState.HasValue()) {
+            var fixedFundDimensionValues = src.GetFixedFundDimensionValues();
+
+            dest.CartItem = GetCartItemReq(src.Targeting, src, fixedFundDimensionValues, null);
+            dest.Options = GetDonationFormOptionsReq(ctx, src);
+            dest.Extensions = null;
         }
     }
 

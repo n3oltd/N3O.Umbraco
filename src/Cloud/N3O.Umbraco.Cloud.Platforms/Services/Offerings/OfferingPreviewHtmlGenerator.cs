@@ -59,21 +59,22 @@ public abstract class OfferingPreviewHtmlGenerator : PreviewHtmlGenerator {
         var publishedOffering = new PublishedOffering();
         publishedOffering.Id = content[AliasHelper<OfferingContent>.PropertyAlias(x => x.Key)].ToString();
         publishedOffering.Name = content[AliasHelper<IPublishedContent>.PropertyAlias(x => x.Name)]?.ToString();
-        publishedOffering.Image = new PublishedImageContent();
-        publishedOffering.Image.Format = PropertyFormat.Image;
-        publishedOffering.Image.Main = new PublishedProcessedImage();
-        publishedOffering.Image.Main.Url = new Uri(_mediaUrl.GetMediaUrl(image, urlMode: UrlMode.Absolute));
-        publishedOffering.Image.Main.Size = new PublishedSize();
-        publishedOffering.Image.Main.Size.Width = (int) image.Properties.Single(x => x.Alias == MediaConstants.Width).GetValue();
-        publishedOffering.Image.Main.Size.Height = (int) image.Properties.Single(x => x.Alias == MediaConstants.Height).GetValue();
+        publishedOffering.DonationFormContent = new PublishedDonationFormContent();
+        publishedOffering.DonationFormContent.Image = new PublishedImageContent();
+        publishedOffering.DonationFormContent.Image.Format = PropertyFormat.Image;
+        publishedOffering.DonationFormContent.Image.Main = new PublishedProcessedImage();
+        publishedOffering.DonationFormContent.Image.Main.Url = new Uri(_mediaUrl.GetMediaUrl(image, urlMode: UrlMode.Absolute));
+        publishedOffering.DonationFormContent.Image.Main.Size = new PublishedSize();
+        publishedOffering.DonationFormContent.Image.Main.Size.Width = (int) image.Properties.Single(x => x.Alias == MediaConstants.Width).GetValue();
+        publishedOffering.DonationFormContent.Image.Main.Size.Height = (int) image.Properties.Single(x => x.Alias == MediaConstants.Height).GetValue();
         
-        publishedOffering.Icon = new PublishedSvgContent();
-        publishedOffering.Icon.Url = _mediaUrl.GetMediaUrl(icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
-        publishedOffering.Icon.Format = PropertyFormat.Svg;
+        publishedOffering.DonationFormContent.Icon = new PublishedSvgContent();
+        publishedOffering.DonationFormContent.Icon.Url = _mediaUrl.GetMediaUrl(icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
+        publishedOffering.DonationFormContent.Icon.Format = PropertyFormat.Svg;
         
-        publishedOffering.Description = new PublishedHtmlContent();
-        publishedOffering.Description.Markup = _markupEngine.RenderHtml(shortDescription).IfNotNull(x => new HtmlEncodedString(x.ToString())).ToHtmlString();
-        publishedOffering.Description.Format = PropertyFormat.Html;
+        publishedOffering.DonationFormContent.Description = new PublishedHtmlContent();
+        publishedOffering.DonationFormContent.Description.Markup = _markupEngine.RenderHtml(shortDescription).IfNotNull(x => new HtmlEncodedString(x.ToString())).ToHtmlString();
+        publishedOffering.DonationFormContent.Description.Format = PropertyFormat.Html;
         
         publishedOffering.FormState = new PublishedDonationFormState();
         publishedOffering.FormState.CartItem = new PublishedCartItem();
