@@ -2,6 +2,7 @@
 
 namespace N3O.Umbraco.Cloud.Platforms.Lookups;
 
+// TODO Delete me and replace with an extension method to convert the allocation type to the content type in Umbraco
 public class OfferingType : NamedLookup {
     public OfferingType(string id, string name, string contentTypeAlias) : base(id, name) {
         ContentTypeAlias = contentTypeAlias;
