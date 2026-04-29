@@ -30,7 +30,7 @@ public partial class DonationFormsStateReqMapping {
         var allocationIntent = offering.FormState.ToAllocationIntentReq(fundDimensionValues, currency);
         allocationIntent.PlatformsContribution = GetPlatformsContributionInfoReq(campaign, offering);
 
-        SetCartItemAllocation(cartItem, allocationIntent, offering.SuggestedGiftType);
+        SetCartItemAllocation(cartItem, allocationIntent, offering.FormState.SuggestedGiftType);
 
         if (tags.HasAny()) {
             cartItem.Tags = tags.ToTagCollectionReq();

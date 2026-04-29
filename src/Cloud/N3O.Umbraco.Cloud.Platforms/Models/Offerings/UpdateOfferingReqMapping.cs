@@ -56,7 +56,7 @@ public class UpdateOfferingReqMapping : IMapDefinition {
         dest.FormState = ctx.Map<OfferingContent, DonationFormStateReq>(src);
         
         dest.Options = new OfferingOptionsReq();
-        dest.Options.AllowCrowdfunding = src.AllowCrowdfunding;
+        dest.Options.AllowCrowdfunding = src.FormState.AllowCrowdfunding;
 
         if (src.Content().IsPublished()) {
             dest.Activate = true;

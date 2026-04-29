@@ -69,6 +69,7 @@ public class ContentHelper : IContentHelper {
         var contentProperties = new List<ContentProperty>();
         var elementsProperties = new List<ElementsProperty>();
         var contentType = _contentTypeService.Value.Get(contentTypeAlias);
+        var compositionAliases = contentType?.CompositionAliases() ?? [];
 
         foreach (var property in properties) {
             if (property.Type.IsBlockList() || property.Type.IsBlockGrid()) {
@@ -101,6 +102,7 @@ public class ContentHelper : IContentHelper {
                                      parentId,
                                      level,
                                      contentTypeAlias,
+                                     compositionAliases,
                                      contentProperties,
                                      elementsProperties);
     }

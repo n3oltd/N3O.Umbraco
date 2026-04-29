@@ -62,7 +62,7 @@ public class SponsorshipOfferingPreviewHtmlGenerator : OfferingPreviewHtmlGenera
     }
     
     private SponsorshipScheme GetSponsorshipScheme(IReadOnlyDictionary<string, object> content) {
-        return GetDataListValue<SponsorshipScheme>(content, AliasHelper<SponsorshipOfferingContent>.PropertyAlias(x => x.Scheme));
+        return GetDataListValue<SponsorshipScheme>(content, AliasHelper<SponsorshipDonationFormStateContent>.PropertyAlias(x => x.Scheme));
     }
 
     protected override void PopulateAdditionalData(Dictionary<string, object> previewData,

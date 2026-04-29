@@ -7,7 +7,7 @@ using AllocationType = N3O.Umbraco.Cloud.Platforms.Clients.AllocationType;
 using FundDimensionValuesReq = N3O.Umbraco.Cloud.Platforms.Clients.FundDimensionValuesReq;
 using PlatformsCurrency = N3O.Umbraco.Cloud.Platforms.Clients.Currency;
 
-namespace N3O.Umbraco.Cloud.Platforms.Models;
+namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 
 public static class AllocationIntentReqExtensions {
     public static AllocationIntentReq ToAllocationIntentReq(this DonationFormStateContent formState,

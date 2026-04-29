@@ -140,6 +140,6 @@ public class FeedbackOfferingPreviewHtmlGenerator : OfferingPreviewHtmlGenerator
     }
 
     private FeedbackScheme GetFeedbackScheme(IReadOnlyDictionary<string, object> content) {
-        return GetDataListValue<FeedbackScheme>(content, AliasHelper<FeedbackOfferingContent>.PropertyAlias(x => x.Scheme));
+        return GetDataListValue<FeedbackScheme>(content, AliasHelper<FeedbackDonationFormStateContent>.PropertyAlias(x => x.Scheme));
     }
 }

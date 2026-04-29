@@ -62,8 +62,8 @@ public class FundOfferingPreviewHtmlGenerator : OfferingPreviewHtmlGenerator {
 
     protected override void PopulateFormStateOptions(IReadOnlyDictionary<string, object> content,
                                                      PublishedDonationFormOptions options) {
-        var oneTimeSuggestedAmounts = GetDonationFormSuggestedAmountsReq(content, AliasHelper<FundOfferingContent>.PropertyAlias(x => x.OneTimeSuggestedAmounts), PublishedGiftType.OneTime);
-        var recurringSuggestedAmounts = GetDonationFormSuggestedAmountsReq(content, AliasHelper<FundOfferingContent>.PropertyAlias(x => x.RecurringSuggestedAmounts), PublishedGiftType.Recurring);
+        var oneTimeSuggestedAmounts = GetDonationFormSuggestedAmountsReq(content, AliasHelper<FundDonationFormStateContent>.PropertyAlias(x => x.OneTimeSuggestedAmounts), PublishedGiftType.OneTime);
+        var recurringSuggestedAmounts = GetDonationFormSuggestedAmountsReq(content, AliasHelper<FundDonationFormStateContent>.PropertyAlias(x => x.RecurringSuggestedAmounts), PublishedGiftType.Recurring);
         
         var suggestedAmounts = new List<DonationFormSuggestedAmountsReq>();
         suggestedAmounts.Add(oneTimeSuggestedAmounts);
@@ -102,7 +102,7 @@ public class FundOfferingPreviewHtmlGenerator : OfferingPreviewHtmlGenerator {
     }
     
     private DonationItem GetDonationItem(IReadOnlyDictionary<string, object> content) {
-        return GetDataListValue<DonationItem>(content, AliasHelper<FundOfferingContent>.PropertyAlias(x => x.DonationItem));
+        return GetDataListValue<DonationItem>(content, AliasHelper<FundDonationFormStateContent>.PropertyAlias(x => x.DonationItem));
     }
     
     private DonationFormSuggestedAmountsReq GetDonationFormSuggestedAmountsReq(IReadOnlyDictionary<string, object> content,

@@ -6,11 +6,5 @@ namespace N3O.Umbraco.Cloud.Platforms.Content;
 
 [UmbracoContent(PlatformsConstants.DonationFormStates.Sponsorship)]
 public class SponsorshipDonationFormStateContent : UmbracoContent<SponsorshipDonationFormStateContent> {
-    public SponsorshipScheme Scheme {
-        get {
-            var value = Content().GetProperty("scheme")?.GetValue(VariationContext?.Culture, VariationContext?.Segment)
-                     ?? Content().GetProperty("sponsorshipScheme")?.GetValue(VariationContext?.Culture, VariationContext?.Segment);
-            return value as SponsorshipScheme;
-        }
-    }
+    public SponsorshipScheme Scheme => GetValue(x => x.Scheme);
 }

@@ -66,7 +66,6 @@ public static class PlatformsConstants {
         public const string Fund = "platformsFundOffering";
         public const string Qurbani = "platformsQurbaniOffering";
         public const string Sponsorship = "platformsSponsorshipOffering";
-        public const string SuggestedAmount = "platformsSuggestedAmount";
     }
 
     public static class Platforms {

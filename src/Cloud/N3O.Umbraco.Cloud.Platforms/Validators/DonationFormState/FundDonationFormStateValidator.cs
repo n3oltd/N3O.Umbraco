@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Content;
+using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations;
@@ -9,24 +9,24 @@ using System.Linq;
 
 namespace N3O.Umbraco.Cloud.Platforms.Validators;
 
-public class FundOfferingValidator : OfferingValidator<FundOfferingContent> {
-    private static readonly string OneTimeSuggestedAmountsAlias = AliasHelper<FundOfferingContent>.PropertyAlias(x => x.OneTimeSuggestedAmounts);
-    private static readonly string RecurringSuggestedAmountsAlias = AliasHelper<FundOfferingContent>.PropertyAlias(x => x.RecurringSuggestedAmounts);
-    
+public class FundDonationFormStateValidator : DonationFormStateValidator<FundDonationFormStateContent> {
+    private static readonly string OneTimeSuggestedAmountsAlias = AliasHelper<FundDonationFormStateContent>.PropertyAlias(x => x.OneTimeSuggestedAmounts);
+    private static readonly string RecurringSuggestedAmountsAlias = AliasHelper<FundDonationFormStateContent>.PropertyAlias(x => x.RecurringSuggestedAmounts);
+
     private readonly ILookups _lookups;
-    
-    public FundOfferingValidator(IContentHelper contentHelper,
-                                 ILookups lookups,
-                                 IFundStructureAccessor fundStructureAccessor) 
+
+    public FundDonationFormStateValidator(IContentHelper contentHelper,
+                                          ILookups lookups,
+                                          IFundStructureAccessor fundStructureAccessor)
         : base(contentHelper, lookups, fundStructureAccessor) {
         _lookups = lookups;
     }
-    
+
     public override void Validate(ContentProperties content) {
         base.Validate(content);
 
         var donationItem = GetDonationItem(content);
-        
+
         if (donationItem != null) {
             ValidateSuggestedAmount(content, donationItem, GivingTypes.Donation, OneTimeSuggestedAmountsAlias);
             ValidateSuggestedAmount(content, donationItem, GivingTypes.RegularGiving, RecurringSuggestedAmountsAlias);
@@ -34,14 +34,12 @@ public class FundOfferingValidator : OfferingValidator<FundOfferingContent> {
     }
 
     protected override IFundDimensionOptions GetFundDimensionOptions(ContentProperties content) {
-        return GetDonationItem(content).FundDimensionOptions;
+        return GetDonationItem(content)?.FundDimensionOptions;
     }
 
     private DonationItem GetDonationItem(ContentProperties content) {
-        var donationItem = content.GetPropertyByAlias(AliasHelper<FundOfferingContent>.PropertyAlias(x => x.DonationItem))
-                                  .IfNotNull(x => ContentHelper.GetLookupValue<DonationItem>(_lookups, x));
-
-        return donationItem;
+        return content.GetPropertyByAlias(AliasHelper<FundDonationFormStateContent>.PropertyAlias(x => x.DonationItem))
+                      .IfNotNull(x => ContentHelper.GetLookupValue<DonationItem>(_lookups, x));
     }
 
     private void ValidateSuggestedAmount(ContentProperties content,
@@ -49,12 +47,12 @@ public class FundOfferingValidator : OfferingValidator<FundOfferingContent> {
                                          GivingType givingType,
                                          string propertyAlias) {
         var property = content.ElementsProperties.SingleOrDefault(x => x.Alias.EqualsInvariant(propertyAlias));
-        var suggestedAmount = property.IfNotNull(x => ContentHelper.GetNestedContents(x))
-                                   .OrEmpty()
-                                   .As<SuggestedAmountElement>()
-                                   .ToList();
+        var suggestedAmounts = property.IfNotNull(x => ContentHelper.GetNestedContents(x))
+                                       .OrEmpty()
+                                       .As<DonationFormStateSuggestedAmountElement>()
+                                       .ToList();
 
-        if (suggestedAmount.HasAny()) {
+        if (suggestedAmounts.HasAny()) {
             if (donationItem.Pricing?.Price?.Locked == true) {
                 ErrorResult(property, $"{donationItem.Name} has pricing so does not allow price handles");
             }

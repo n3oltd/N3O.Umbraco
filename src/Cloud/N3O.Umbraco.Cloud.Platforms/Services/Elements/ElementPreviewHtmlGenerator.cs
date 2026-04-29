@@ -234,10 +234,10 @@ public abstract class ElementPreviewHtmlGenerator : PreviewHtmlGenerator {
 
     private PublishedFundDimensionValues GetPublishedOfferingFundDimensions(IReadOnlyDictionary<string, object> content,
                                                                             PublishedAllocationIntent publishedOfferingAllocation) {
-        var dimension1 = GetDataListValue<FundDimension1Value>(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Dimension1));
-        var dimension2 = GetDataListValue<FundDimension2Value>(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Dimension2));
-        var dimension3 = GetDataListValue<FundDimension3Value>(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Dimension3));
-        var dimension4 = GetDataListValue<FundDimension4Value>(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Dimension4));
+        var dimension1 = GetDataListValue<FundDimension1Value>(content, AliasHelper<DonationFormStateContent>.PropertyAlias(x => x.Dimension1));
+        var dimension2 = GetDataListValue<FundDimension2Value>(content, AliasHelper<DonationFormStateContent>.PropertyAlias(x => x.Dimension2));
+        var dimension3 = GetDataListValue<FundDimension3Value>(content, AliasHelper<DonationFormStateContent>.PropertyAlias(x => x.Dimension3));
+        var dimension4 = GetDataListValue<FundDimension4Value>(content, AliasHelper<DonationFormStateContent>.PropertyAlias(x => x.Dimension4));
 
         var publishedFundDimensions = new PublishedFundDimensionValues();
         publishedFundDimensions.Dimension1 = dimension1?.Name ?? publishedOfferingAllocation.FundDimensions.Dimension1;

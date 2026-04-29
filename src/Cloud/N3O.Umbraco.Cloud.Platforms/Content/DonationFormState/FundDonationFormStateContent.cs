@@ -8,6 +8,6 @@ namespace N3O.Umbraco.Cloud.Platforms.Content;
 [UmbracoContent(PlatformsConstants.DonationFormStates.Fund)]
 public class FundDonationFormStateContent : UmbracoContent<FundDonationFormStateContent> {
     public DonationItem DonationItem => GetValue(x => x.DonationItem);
-    public IEnumerable<SuggestedAmountElement> OneTimeSuggestedAmounts => GetNestedAs(x => x.OneTimeSuggestedAmounts);
-    public IEnumerable<SuggestedAmountElement> RecurringSuggestedAmounts => GetNestedAs(x => x.RecurringSuggestedAmounts);
+    public IEnumerable<DonationFormStateSuggestedAmountElement> OneTimeSuggestedAmounts => GetNestedAs(x => x.OneTimeSuggestedAmounts);
+    public IEnumerable<DonationFormStateSuggestedAmountElement> RecurringSuggestedAmounts => GetNestedAs(x => x.RecurringSuggestedAmounts);
 }

@@ -58,14 +58,14 @@ public partial class DonationFormsStateReqMapping {
     }
 
     private List<DonationFormSuggestedAmountsReq> GetDonationFormSuggestedAmountsReq(MapperContext ctx,
-                                                                                     params (OurGiftType GiftType, IEnumerable<SuggestedAmountElement> SuggestedAmounts)[] suggestedAmountsElements) {
+                                                                                     params (OurGiftType GiftType, IEnumerable<DonationFormStateSuggestedAmountElement> SuggestedAmounts)[] suggestedAmountsElements) {
         var items = new List<DonationFormSuggestedAmountsReq>();
 
         foreach (var suggestedAmountsElement in suggestedAmountsElements) {
             if (suggestedAmountsElement.SuggestedAmounts.HasAny()) {
                 var req = new DonationFormSuggestedAmountsReq();
                 req.GiftType = suggestedAmountsElement.GiftType.ToEnum<GiftType>();
-                req.Amounts = suggestedAmountsElement.SuggestedAmounts.Select(ctx.Map<SuggestedAmountElement, DonationFormSuggestedAmountReq>).ToList();
+                req.Amounts = suggestedAmountsElement.SuggestedAmounts.Select(ctx.Map<DonationFormStateSuggestedAmountElement, DonationFormSuggestedAmountReq>).ToList();
 
                 items.Add(req);
             }
