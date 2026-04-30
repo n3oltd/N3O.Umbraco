@@ -49,12 +49,12 @@ public class QurbaniOfferingPreviewHtmlGenerator : OfferingPreviewHtmlGenerator 
         allocationIntent.Type = AllocationType.Qurbani;
         allocationIntent.Qurbani = new PublishedQurbaniIntent();
         allocationIntent.Qurbani.New = new PublishedNewQurbaniIntent();
-        allocationIntent.Qurbani.New.QurbaniItem = qurbaniItem.Id;
+        allocationIntent.Qurbani.New.Item = qurbaniItem.Id;
     }
 
     protected override void PopulateAdditionalData(Dictionary<string, object> previewData,
                                                    PublishedDonationForm publishedDonationForm) {
-        var qurbaniItem = _lookups.FindById<QurbaniItem>(publishedDonationForm.FormState.CartItem.NewDonation.Allocation.Qurbani.New.QurbaniItem);
+        var qurbaniItem = _lookups.FindById<QurbaniItem>(publishedDonationForm.FormState.CartItem.NewDonation.Allocation.Qurbani.New.Item);
 
         var publishedFundDimensionValues = new PublishedFundDimensionValues();
         publishedFundDimensionValues.Dimension1 = qurbaniItem.FundDimensionValues?.Dimension1?.Name;

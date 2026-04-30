@@ -11,7 +11,7 @@ public static class PlatformsPageExtensions {
         if (page.Kind == PublishedFileKinds.CampaignPage) {
             return page.Content[nameof(PublishedCampaignPage.Campaign).Camelize()][nameof(PublishedCampaignPage.Campaign.Id).Camelize()].ToString();
         } else if (page.Kind == PublishedFileKinds.OfferingPage) {
-            return page.Content[nameof(PublishedOfferingPage.Offering).Camelize()][nameof(PublishedOfferingPage.Offering.CampaignId).Camelize()].ToString();
+            return page.Content[nameof(PublishedOfferingPage.Offering).Camelize()][nameof(PublishedOfferingPage.Offering.Campaign.Id).Camelize()].ToString();
         } else if (page.Kind == PublishedFileKinds.CrowdfunderPage) {
             return page.Content[nameof(PublishedCrowdfunderPage.Crowdfunder).Camelize()][nameof(PublishedCrowdfunderPage.Crowdfunder.CampaignId).Camelize()].ToString();
         } else {

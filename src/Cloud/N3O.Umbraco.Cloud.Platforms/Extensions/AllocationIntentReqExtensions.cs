@@ -36,7 +36,7 @@ public static class AllocationIntentReqExtensions {
         } else if (formState.Type == AllocationTypes.Qurbani) {
             allocationIntent.Qurbani = new QurbaniIntentReq();
             allocationIntent.Qurbani.New = new NewQurbaniIntentReq();
-            allocationIntent.Qurbani.New.QurbaniItem = formState.Qurbani.QurbaniItem.Name;
+            allocationIntent.Qurbani.New.Item = formState.Qurbani.QurbaniItem.Name;
         } else if (formState.Type == AllocationTypes.Sponsorship) {
             allocationIntent.Sponsorship = new SponsorshipIntentReq();
             allocationIntent.Sponsorship.New = new NewSponsorshipIntentReq();
