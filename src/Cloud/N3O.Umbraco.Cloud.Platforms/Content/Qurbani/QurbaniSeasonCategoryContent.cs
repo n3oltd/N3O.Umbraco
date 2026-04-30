@@ -4,7 +4,7 @@ using Umbraco.Cms.Core.Models;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.Qurbani.Settings.Season.Category.Alias)]
+[UmbracoContent(PlatformsConstants.Qurbani.Season.Category.Alias)]
 public class QurbaniSeasonCategoryContent : UmbracoContent<QurbaniSeasonCategoryContent> {
     public string Name => Content().Name;
     public MediaWithCrops Icon => GetValue(x => x.Icon);

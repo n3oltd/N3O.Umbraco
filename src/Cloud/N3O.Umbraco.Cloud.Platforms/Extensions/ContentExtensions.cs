@@ -19,22 +19,6 @@ public static class ContentExtensions {
         return HasComposition(contentTypeService, content, AliasHelper<CrowdfundingCampaignContent>.ContentTypeAlias());
     }
 
-    public static bool IsDonationButtonElement(this IContent content) {
-        return content.ContentType.Alias.EqualsInvariant(AliasHelper<DonationButtonElementContent>.ContentTypeAlias());
-    }
-
-    public static bool IsDonationFormElement(this IContent content) {
-        return content.ContentType.Alias.EqualsInvariant(AliasHelper<DonationFormElementContent>.ContentTypeAlias());
-    }
-
-    public static bool IsDonationPopupElement(this IContent content) {
-        return content.ContentType.Alias.EqualsInvariant(AliasHelper<DonationPopupElementContent>.ContentTypeAlias());
-    }
-
-    public static bool IsElement(this IContent content, IContentTypeService contentTypeService) {
-        return HasComposition(contentTypeService, content, AliasHelper<ElementContent>.ContentTypeAlias());
-    }
-
     public static bool IsFeed(this IContent content) {
         return content.ContentType.Alias == PlatformsConstants.Feeds.Feed.Alias;
     }
@@ -52,11 +36,7 @@ public static class ContentExtensions {
     }
 
     public static bool IsQurbaniSeasonContent(this IContent content) {
-        return IsQurbaniSeasonSettings(content);
-    }
-
-    public static bool IsQurbaniSeasonSettings(this IContent content) {
-        return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Settings.Season.Alias);
+        return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Season.Alias);
     }
 
     public static bool IsZakatCalculatorSettings(this IContent content) {

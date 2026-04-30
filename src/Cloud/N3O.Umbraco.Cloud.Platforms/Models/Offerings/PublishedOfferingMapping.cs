@@ -30,24 +30,24 @@ public class PublishedOfferingMapping : IMapDefinition {
         
         dest.Id = src.Content().Key.ToString();
         dest.Name = updateOfferingReq.Name;
-        dest.DonationFormContent = new PublishedDonationFormContent();
-        dest.DonationFormContent.Image = new PublishedImageContent();
-        dest.DonationFormContent.Image.Format = PropertyFormat.Image;
-        dest.DonationFormContent.Image.Main = new PublishedProcessedImage();
-        dest.DonationFormContent.Image.Main.Url = new Uri(updateOfferingReq.DonationFormContent.Image.SourceFile);
-        dest.DonationFormContent.Image.Main.Size = new PublishedSize();
-        dest.DonationFormContent.Image.Main.Size.Width = updateOfferingReq.DonationFormContent.Image.Main.Crop.TopRight.X;
-        dest.DonationFormContent.Image.Main.Size.Height = updateOfferingReq.DonationFormContent.Image.Main.Crop.BottomLeft.Y;
+        dest.FormContent = new PublishedDonationFormContent();
+        dest.FormContent.Image = new PublishedImageContent();
+        dest.FormContent.Image.Format = PropertyFormat.Image;
+        dest.FormContent.Image.Main = new PublishedProcessedImage();
+        dest.FormContent.Image.Main.Url = new Uri(updateOfferingReq.FormContent.Image.SourceFile);
+        dest.FormContent.Image.Main.Size = new PublishedSize();
+        dest.FormContent.Image.Main.Size.Width = updateOfferingReq.FormContent.Image.Main.Crop.TopRight.X;
+        dest.FormContent.Image.Main.Size.Height = updateOfferingReq.FormContent.Image.Main.Crop.BottomLeft.Y;
         
-        dest.DonationFormContent.Icon = new PublishedSvgContent();
-        dest.DonationFormContent.Icon.Url = new Uri(updateOfferingReq.DonationFormContent.Icon.SourceFile);
-        dest.DonationFormContent.Icon.Format = PropertyFormat.Svg;
+        dest.FormContent.Icon = new PublishedSvgContent();
+        dest.FormContent.Icon.Url = new Uri(updateOfferingReq.FormContent.Icon.SourceFile);
+        dest.FormContent.Icon.Format = PropertyFormat.Svg;
         
-        dest.DonationFormContent.Description = new PublishedHtmlContent();
-        dest.DonationFormContent.Description.Markup = _markupEngine.RenderHtml(updateOfferingReq.DonationFormContent.Description.Html).IfNotNull(x => new HtmlEncodedString(x.ToString())).ToHtmlString();
-        dest.DonationFormContent.Description.Format = PropertyFormat.Html;
+        dest.FormContent.Description = new PublishedHtmlContent();
+        dest.FormContent.Description.Markup = _markupEngine.RenderHtml(updateOfferingReq.FormContent.Description.Html).IfNotNull(x => new HtmlEncodedString(x.ToString())).ToHtmlString();
+        dest.FormContent.Description.Format = PropertyFormat.Html;
         
-        dest.DonationFormContent.Summary = updateOfferingReq.DonationFormContent.Summary;
+        dest.FormContent.Summary = updateOfferingReq.FormContent.Summary;
         
         dest.FormState = new PublishedDonationFormState();
         dest.FormState.CartItem = new PublishedCartItem();

@@ -51,31 +51,31 @@ public abstract class OfferingPreviewHtmlGenerator : PreviewHtmlGenerator {
 
     protected override void PopulatePreviewData(IReadOnlyDictionary<string, object> content,
                                                 Dictionary<string, object> previewData) {
-        var image = GetMediaWithCrops(content, AliasHelper<DonationFormContent>.PropertyAlias(x => x.Image));
-        var icon = GetMediaWithCrops(content, AliasHelper<DonationFormContent>.PropertyAlias(x => x.Icon));
-        var shortDescription = content[AliasHelper<DonationFormContent>.PropertyAlias(x => x.Description)]?.ToString();
+        var image = GetMediaWithCrops(content, AliasHelper<DonationFormContentContent>.PropertyAlias(x => x.Image));
+        var icon = GetMediaWithCrops(content, AliasHelper<DonationFormContentContent>.PropertyAlias(x => x.Icon));
+        var shortDescription = content[AliasHelper<DonationFormContentContent>.PropertyAlias(x => x.Description)]?.ToString();
         
         var currency = BaseCurrencyAccessor.GetBaseCurrency().Code.ToEnum<Currency>();
         
         var publishedOffering = new PublishedOffering();
         publishedOffering.Id = content[AliasHelper<OfferingContent>.PropertyAlias(x => x.Key)].ToString();
         publishedOffering.Name = content[AliasHelper<IPublishedContent>.PropertyAlias(x => x.Name)]?.ToString();
-        publishedOffering.DonationFormContent = new PublishedDonationFormContent();
-        publishedOffering.DonationFormContent.Image = new PublishedImageContent();
-        publishedOffering.DonationFormContent.Image.Format = PropertyFormat.Image;
-        publishedOffering.DonationFormContent.Image.Main = new PublishedProcessedImage();
-        publishedOffering.DonationFormContent.Image.Main.Url = new Uri(_mediaUrl.GetMediaUrl(image, urlMode: UrlMode.Absolute));
-        publishedOffering.DonationFormContent.Image.Main.Size = new PublishedSize();
-        publishedOffering.DonationFormContent.Image.Main.Size.Width = (int) image.Properties.Single(x => x.Alias == MediaConstants.Width).GetValue();
-        publishedOffering.DonationFormContent.Image.Main.Size.Height = (int) image.Properties.Single(x => x.Alias == MediaConstants.Height).GetValue();
+        publishedOffering.FormContent = new PublishedDonationFormContent();
+        publishedOffering.FormContent.Image = new PublishedImageContent();
+        publishedOffering.FormContent.Image.Format = PropertyFormat.Image;
+        publishedOffering.FormContent.Image.Main = new PublishedProcessedImage();
+        publishedOffering.FormContent.Image.Main.Url = new Uri(_mediaUrl.GetMediaUrl(image, urlMode: UrlMode.Absolute));
+        publishedOffering.FormContent.Image.Main.Size = new PublishedSize();
+        publishedOffering.FormContent.Image.Main.Size.Width = (int) image.Properties.Single(x => x.Alias == MediaConstants.Width).GetValue();
+        publishedOffering.FormContent.Image.Main.Size.Height = (int) image.Properties.Single(x => x.Alias == MediaConstants.Height).GetValue();
         
-        publishedOffering.DonationFormContent.Icon = new PublishedSvgContent();
-        publishedOffering.DonationFormContent.Icon.Url = _mediaUrl.GetMediaUrl(icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
-        publishedOffering.DonationFormContent.Icon.Format = PropertyFormat.Svg;
+        publishedOffering.FormContent.Icon = new PublishedSvgContent();
+        publishedOffering.FormContent.Icon.Url = _mediaUrl.GetMediaUrl(icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
+        publishedOffering.FormContent.Icon.Format = PropertyFormat.Svg;
         
-        publishedOffering.DonationFormContent.Description = new PublishedHtmlContent();
-        publishedOffering.DonationFormContent.Description.Markup = _markupEngine.RenderHtml(shortDescription).IfNotNull(x => new HtmlEncodedString(x.ToString())).ToHtmlString();
-        publishedOffering.DonationFormContent.Description.Format = PropertyFormat.Html;
+        publishedOffering.FormContent.Description = new PublishedHtmlContent();
+        publishedOffering.FormContent.Description.Markup = _markupEngine.RenderHtml(shortDescription).IfNotNull(x => new HtmlEncodedString(x.ToString())).ToHtmlString();
+        publishedOffering.FormContent.Description.Format = PropertyFormat.Html;
         
         publishedOffering.FormState = new PublishedDonationFormState();
         publishedOffering.FormState.CartItem = new PublishedCartItem();

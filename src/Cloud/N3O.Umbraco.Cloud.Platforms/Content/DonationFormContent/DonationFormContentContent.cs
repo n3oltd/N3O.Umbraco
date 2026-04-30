@@ -6,7 +6,7 @@ using Umbraco.Cms.Core.Strings;
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
 [UmbracoContent(PlatformsConstants.DonationFormContent.CompositionAlias)]
-public class DonationFormContent : UmbracoContent<DonationFormContent>, IHoldDonationFormContent {
+public class DonationFormContentContent : UmbracoContent<DonationFormContentContent> {
     public MediaWithCrops Image => GetValue(x => x.Image);
     public MediaWithCrops Icon => GetValue(x => x.Icon);
     public IHtmlEncodedString Description => GetValue(x => x.Description);

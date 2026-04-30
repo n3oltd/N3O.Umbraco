@@ -24,22 +24,13 @@ public static class PlatformsConstants {
         public const string CompositionAlias = "platformsDonationFormContent";
     }
 
-    public static class DonationFormStates {
+    public static class DonationFormState {
         public const string CompositionAlias = "platformsDonationFormState";
         public const string Feedback = "platformsFeedbackDonationFormState";
         public const string Fund = "platformsFundDonationFormState";
         public const string Qurbani = "platformsQurbaniDonationFormState";
         public const string Sponsorship = "platformsSponsorshipDonationFormState";
         public const string SuggestedAmount = "platformsDonationFormStateSuggestedAmount";
-    }
-
-    public static class Elements {
-        public const string CompositionAlias = "platformsElement";
-        public const string CreateCrowdfunderButton = "platformsCreateCrowdfunderButton";
-        public const string DonationButton = "platformsDonationButtonElement";
-        public const string DonationElement = "platformsDonationElement";
-        public const string DonationForm = "platformsDonationFormElement";
-        public const string DonationPopup = "platformsDonationPopupElement";
     }
 
     public static class Feeds {
@@ -73,15 +64,11 @@ public static class PlatformsConstants {
     }
 
     public static class Qurbani {
-        public static class Settings {
-            public const string Alias = "platformsQurbaniSettings";
+        public static class Season {
+            public const string Alias = "platformsQurbaniSeason";
 
-            public static class Season {
-                public const string Alias = "platformsQurbaniSeason";
-
-                public static class Category {
-                    public const string Alias = "platformsQurbaniSeasonCategory";
-                }
+            public static class Category {
+                public const string Alias = "platformsQurbaniSeasonCategory";
             }
         }
     }
@@ -92,9 +79,6 @@ public static class PlatformsConstants {
         public const string ContentCollection = "contentCollection";
         public const string ContentLibrary = "contentLibrary";
         public const string CrowdfundingCampaigns = "crowdfundingCampaigns";
-        public const string DonationButtons = "donationButtons";
-        public const string DonationForms = "donationForms";
-        public const string DonationPopups = "donationPopups";
         public const string ManagedContent = "managedContent";
         public const string Offerings = "offerings";
         public const string QurbaniSeason = "qurbaniSeason";

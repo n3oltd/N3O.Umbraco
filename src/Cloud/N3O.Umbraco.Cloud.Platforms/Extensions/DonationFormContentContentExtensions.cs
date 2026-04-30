@@ -4,8 +4,8 @@ using N3O.Umbraco.Media;
 
 namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 
-public static class DonationFormContentReqExtensions {
-    public static DonationFormContentReq ToDonationFormContentReq(this IHoldDonationFormContent src,
+public static class DonationFormContentContentExtensions {
+    public static DonationFormContentReq ToDonationFormContentReq(this DonationFormContentContent src,
                                                                   IMediaUrl mediaUrl) {
         var donationFormContentReq = new DonationFormContentReq();
         donationFormContentReq.Summary = src.Summary;

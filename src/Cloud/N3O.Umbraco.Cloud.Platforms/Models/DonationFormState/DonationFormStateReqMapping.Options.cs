@@ -10,13 +10,11 @@ using OurGiftType = N3O.Umbraco.Cloud.Platforms.Lookups.GiftType;
 
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
-public partial class DonationFormsStateReqMapping {
+public partial class DonationFormStateReqMapping {
     private DonationFormOptionsReq GetDonationFormOptionsReq(MapperContext ctx,
-                                                             DonationFormStateContent formState,
-                                                             string notesLabel,
-                                                             CampaignContent campaign) {
-        var oneTimeSuggestedAmounts = formState.Fund?.OneTimeSuggestedAmounts.OrEmpty().ToList();
-        var recurringSuggestedAmounts = formState.Fund?.RecurringSuggestedAmounts.OrEmpty().ToList();
+                                                             IHoldDonationFormStateContent src) {
+        var oneTimeSuggestedAmounts = src.FormState.Fund?.OneTimeSuggestedAmounts.OrEmpty().ToList();
+        var recurringSuggestedAmounts = src.FormState.Fund?.RecurringSuggestedAmounts.OrEmpty().ToList();
 
         var options = new DonationFormOptionsReq();
 
@@ -26,8 +24,9 @@ public partial class DonationFormsStateReqMapping {
                                                                           (GiftTypes.Recurring, recurringSuggestedAmounts));
         }
 
-        SetNotesField(options, notesLabel);
-        SetQurbaniOptions(options, campaign);
+        SetNotesField(options, src.FormState.NotesLabel);
+        
+        src.PopulateOptions(options);
 
         return options;
     }
@@ -40,20 +39,6 @@ public partial class DonationFormsStateReqMapping {
             options.NotesField.Label = notesLabel;
         } else {
             options.NotesField.Visible = false;
-        }
-    }
-
-    private void SetQurbaniOptions(DonationFormOptionsReq options, CampaignContent campaign) {
-        if (campaign.HasValue() && campaign.Qurbani?.Season?.ContentId.HasValue == true) {
-            var seasonContent = _contentLocator.ById<QurbaniSeasonContent>(campaign.Qurbani.Season.ContentId.Value);
-
-            if (seasonContent.HasValue()) {
-                options.Qurbani = new DonationFormQurbaniOptionsReq();
-                options.Qurbani.Categories = seasonContent.Categories
-                                                          .OrEmpty()
-                                                          .Select(c => c.Content().Key.ToString())
-                                                          .ToList();
-            }
         }
     }
 

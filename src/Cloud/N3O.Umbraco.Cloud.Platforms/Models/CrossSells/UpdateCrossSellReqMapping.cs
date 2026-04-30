@@ -3,7 +3,7 @@ using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Media;
-using System.Collections.Generic;
+using System.Linq;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Extensions;
 using ECommerceStage = N3O.Umbraco.Cloud.Platforms.Clients.ECommerceStage;
@@ -28,13 +28,10 @@ public class UpdateCrossSellReqMapping : IMapDefinition {
         dest.Stage = src.Stage.ToEnum<ECommerceStage>();
 
         dest.Targeting = new CrossSellTargetingReq();
-        if (src.Targeting.HasValue()) {
-            dest.Targeting.Campaigns = new List<string> { src.Targeting.Key.ToString() };
-        }
+        dest.Targeting.Campaigns = src.TargetCampaigns.OrEmpty().Select(x => x.Key.ToString()).ToList();
 
-        dest.DonationFormContent = src.DonationFormContent.ToDonationFormContentReq(_mediaUrl);
-
-        dest.FormState = ctx.Map<CrossSellContent, DonationFormStateReq>(src);
+        dest.FormContent = src.FormContent.ToDonationFormContentReq(_mediaUrl);
+        dest.FormState = ctx.Map<DonationFormStateContent, DonationFormStateReq>(src.FormState);
 
         if (src.Content().IsPublished()) {
             dest.Activate = true;

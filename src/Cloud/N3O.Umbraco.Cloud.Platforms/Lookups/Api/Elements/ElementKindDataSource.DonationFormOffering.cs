@@ -17,7 +17,7 @@ public class DonationFormOfferingElementKindDataSource : ElementKindDataSource {
     protected override ElementKind Kind => ElementKind.DonationFormOffering;
 
     protected override string GetDescription(Element lookup) {
-        var offering = _lookups.FindById<Offering>(GetOfferingId(lookup.Id));
+        var offering = _lookups.FindById<Offering>(GetOfferingId(lookup));
 
         if (offering == null) {
             return "[deleted]";
@@ -30,11 +30,5 @@ public class DonationFormOfferingElementKindDataSource : ElementKindDataSource {
         }
         
         return $"Campaign: {campaign.Name}";
-    }
-    
-    private string GetOfferingId(string id) {
-        var (_, offeringId) = ElementId.Parse(id);
-
-        return offeringId;
     }
 }

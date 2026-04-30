@@ -38,7 +38,7 @@ public class UpdateCampaignReqMapping : IMapDefinition {
         dest.Slug = _slugHelper.GenerateSlug(src.Name);
         dest.Target = target == 0 ? null : target;
 
-        dest.DonationFormContent = src.DonationFormContent.ToDonationFormContentReq(_mediaUrl);
+        dest.FormContent = src.FormContent.ToDonationFormContentReq(_mediaUrl);
 
         dest.Order = new CampaignOrderReq();
         dest.Order.Order = src.Content().Parent.Children.FindIndex(x => x.Id == src.Content().Id);

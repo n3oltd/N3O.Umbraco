@@ -2,7 +2,6 @@ using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
-using N3O.Umbraco.Giving.Allocations.Models;
 using AllocationType = N3O.Umbraco.Cloud.Platforms.Clients.AllocationType;
 using FundDimensionValuesReq = N3O.Umbraco.Cloud.Platforms.Clients.FundDimensionValuesReq;
 using PlatformsCurrency = N3O.Umbraco.Cloud.Platforms.Clients.Currency;
@@ -11,8 +10,9 @@ namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 
 public static class AllocationIntentReqExtensions {
     public static AllocationIntentReq ToAllocationIntentReq(this DonationFormStateContent formState,
-                                                            IFundDimensionValues fundDimensionValues,
                                                             PlatformsCurrency? currency) {
+        var fundDimensionValues = formState.GetFixedFundDimensionValues();
+        
         var allocationIntent = new AllocationIntentReq();
         allocationIntent.Type = formState.Type.ToEnum<AllocationType>();
 

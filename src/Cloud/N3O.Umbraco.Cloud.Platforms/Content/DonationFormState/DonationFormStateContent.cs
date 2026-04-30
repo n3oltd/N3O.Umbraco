@@ -6,14 +6,13 @@ using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Models;
-using System;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.DonationFormStates.CompositionAlias)]
-public class DonationFormStateContent : UmbracoContent<DonationFormStateContent>, IHoldCustomFormState {
+[UmbracoContent(PlatformsConstants.DonationFormState.CompositionAlias)]
+public class DonationFormStateContent : UmbracoContent<DonationFormStateContent> {
     private static readonly string FeedbackDonationFormStateAlias = AliasHelper<FeedbackDonationFormStateContent>.ContentTypeAlias();
     private static readonly string FundDonationFormStateAlias = AliasHelper<FundDonationFormStateContent>.ContentTypeAlias();
     private static readonly string QurbaniDonationFormStateAlias = AliasHelper<QurbaniDonationFormStateContent>.ContentTypeAlias();
@@ -47,9 +46,6 @@ public class DonationFormStateContent : UmbracoContent<DonationFormStateContent>
         Qurbani?.SetVariationContext(variationContext);
         Sponsorship?.SetVariationContext(variationContext);
     }
-    
-    public string Name => Content().Name;
-    public Guid Key => Content().Key;
 
     public FundDimension1Value Dimension1 => GetValue(x => x.Dimension1);
     public FundDimension2Value Dimension2 => GetValue(x => x.Dimension2);
@@ -58,6 +54,7 @@ public class DonationFormStateContent : UmbracoContent<DonationFormStateContent>
     public GiftType SuggestedGiftType => GetValue(x => x.SuggestedGiftType);
     public bool AllowCrowdfunding => GetValue(x => x.AllowCrowdfunding);
     public string CustomFormState => GetValue(x => x.CustomFormState);
+    public string NotesLabel => GetValue(x => x.NotesLabel);
     
     public FundDonationFormStateContent Fund { get; private set; }
     public FeedbackDonationFormStateContent Feedback { get; private set; }
@@ -76,6 +73,7 @@ public class DonationFormStateContent : UmbracoContent<DonationFormStateContent>
     public IFundDimensionOptions GetFundDimensionOptions() {
         var holdFundDimensionOptions = (IHoldFundDimensionOptions) Fund?.DonationItem ??
                                        (IHoldFundDimensionOptions) Feedback?.Scheme ??
+                                       (IHoldFundDimensionOptions) Qurbani?.QurbaniItem ??
                                        (IHoldFundDimensionOptions) Sponsorship?.Scheme;
 
         return holdFundDimensionOptions.FundDimensionOptions;

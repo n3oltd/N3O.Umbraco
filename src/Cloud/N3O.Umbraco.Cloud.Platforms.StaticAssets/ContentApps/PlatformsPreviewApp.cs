@@ -8,8 +8,7 @@ using Umbraco.Cms.Core.Services;
 namespace N3O.Umbraco.Cloud.Platforms;
 
 public class PlatformsPreviewApp : IContentAppFactory {
-    private static readonly string[] CompositionAliases =
-        [PlatformsConstants.Offerings.CompositionAlias, PlatformsConstants.Elements.CompositionAlias];
+    private static readonly string[] CompositionAliases = [PlatformsConstants.Offerings.CompositionAlias];
     
     private readonly IContentTypeService _contentTypeService;
 

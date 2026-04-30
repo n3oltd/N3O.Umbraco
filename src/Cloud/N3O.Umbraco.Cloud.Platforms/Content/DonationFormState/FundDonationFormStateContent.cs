@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.DonationFormStates.Fund)]
+[UmbracoContent(PlatformsConstants.DonationFormState.Fund)]
 public class FundDonationFormStateContent : UmbracoContent<FundDonationFormStateContent> {
     public DonationItem DonationItem => GetValue(x => x.DonationItem);
     public IEnumerable<DonationFormStateSuggestedAmountElement> OneTimeSuggestedAmounts => GetNestedAs(x => x.OneTimeSuggestedAmounts);

@@ -4,7 +4,7 @@ using N3O.Umbraco.Giving.Allocations.Lookups;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
-[UmbracoContent(PlatformsConstants.DonationFormStates.Sponsorship)]
+[UmbracoContent(PlatformsConstants.DonationFormState.Sponsorship)]
 public class SponsorshipDonationFormStateContent : UmbracoContent<SponsorshipDonationFormStateContent> {
     public SponsorshipScheme Scheme => GetValue(x => x.Scheme);
 }

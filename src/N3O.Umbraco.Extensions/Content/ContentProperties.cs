@@ -23,7 +23,7 @@ public class ContentProperties {
     }
 
     public bool IsComposedOf(string alias) {
-        return CompositionAliases.Contains(alias, StringComparer.OrdinalIgnoreCase);
+        return CompositionAliases.Contains(alias, true);
     }
 
     public Guid Id { get; }

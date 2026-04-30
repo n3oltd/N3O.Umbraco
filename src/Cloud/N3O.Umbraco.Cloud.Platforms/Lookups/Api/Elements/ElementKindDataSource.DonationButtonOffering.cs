@@ -15,7 +15,7 @@ public class DonationButtonOfferingElementKindDataSource : ElementKindDataSource
     public override  string Icon => "icon-categories";
     
     protected override string GetDescription(Element lookup) {
-        var offering = _lookups.FindById<Offering>(GetOfferingId(lookup.Id));
+        var offering = _lookups.FindById<Offering>(GetOfferingId(lookup));
 
         if (offering == null) {
             return "[deleted]";
@@ -28,12 +28,6 @@ public class DonationButtonOfferingElementKindDataSource : ElementKindDataSource
         }
         
         return $"Campaign: {campaign.Name}";
-    }
-    
-    private string GetOfferingId(string id) {
-        var (_, offeringId) = ElementId.Parse(id);
-
-        return offeringId;
     }
 
     protected override ElementKind Kind => ElementKind.DonationButtonOffering;

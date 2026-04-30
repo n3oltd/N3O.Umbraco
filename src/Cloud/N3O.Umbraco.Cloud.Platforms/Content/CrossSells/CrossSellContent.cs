@@ -1,23 +1,24 @@
 using N3O.Umbraco.Attributes;
-using N3O.Umbraco.Cloud.Platforms.Lookups;
+using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Giving.Allocations.Lookups;
-using N3O.Umbraco.Giving.Allocations.Models;
 using System;
+using System.Collections.Generic;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using ECommerceStage = N3O.Umbraco.Cloud.Platforms.Lookups.ECommerceStage;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
 [UmbracoContent(PlatformsConstants.CrossSells.CompositionAlias)]
-public class CrossSellContent : UmbracoContent<CrossSellContent>, IHoldCustomFormState {
+public class CrossSellContent :
+    UmbracoContent<CrossSellContent>, IHoldDonationFormStateContent, IHoldDonationFormContentContent {
     public string Name => Content().Name;
     public Guid Key => Content().Key;
 
     public override void SetContent(IPublishedContent content) {
         base.SetContent(content);
 
-        DonationFormContent = new DonationFormContent();
-        DonationFormContent.SetContent(content);
+        FormContent = new DonationFormContentContent();
+        FormContent.SetContent(content);
 
         FormState = new DonationFormStateContent();
         FormState.SetContent(content);
@@ -26,19 +27,21 @@ public class CrossSellContent : UmbracoContent<CrossSellContent>, IHoldCustomFor
     public override void SetVariationContext(VariationContext variationContext) {
         base.SetVariationContext(variationContext);
 
-        DonationFormContent?.SetVariationContext(variationContext);
+        FormContent?.SetVariationContext(variationContext);
         FormState?.SetVariationContext(variationContext);
     }
 
-    public DonationFormContent DonationFormContent { get; private set; }
+    public DonationFormContentContent FormContent { get; private set; }
     public DonationFormStateContent FormState { get; private set; }
 
-    public ECommerceStage Stage => GetValue(x => x.Stage);
-    public CampaignContent Targeting => GetAs(x => x.Targeting);
-    public string NotesLabel => GetValue(x => x.NotesLabel);
-    public string CustomFormState => FormState.CustomFormState;
-    public AllocationType Type => FormState.Type;
-    public GiftType SuggestedGiftType => FormState.SuggestedGiftType;
+    public void PopulateContributionInfo(ICdnClient _, PlatformsContributionInfoReq platformsContribution) {
+        platformsContribution.CrossSell = new CrossSellInfoReq();
+        platformsContribution.CrossSell.Id = Key.ToString();
+        platformsContribution.CrossSell.Name = Name;
+    }
 
-    public IFundDimensionValues GetFixedFundDimensionValues() => FormState.GetFixedFundDimensionValues();
+    public void PopulateOptions(DonationFormOptionsReq options) { }
+
+    public ECommerceStage Stage => GetValue(x => x.Stage);
+    public IEnumerable<CampaignContent> TargetCampaigns => GetPickedAs(x => x.TargetCampaigns);
 }
