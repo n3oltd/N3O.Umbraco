@@ -4,6 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <NoWarn>NU1605;1591</NoWarn>
+        <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
     </PropertyGroup>
     <ItemGroup>
         <None Remove="Smidge\**" />

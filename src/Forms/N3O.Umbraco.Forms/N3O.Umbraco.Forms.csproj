@@ -5,6 +5,11 @@
         <LangVersion>12</LangVersion>
         <Copyright>Copyright © 2026 N3O Ltd</Copyright>
         <NoWarn>NU1605;1591</NoWarn>
+        <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     </PropertyGroup>
     <PropertyGroup>
         <PackageId>N3O.Umbraco.Forms</PackageId>
@@ -19,6 +24,7 @@
         <Version>13.0.0</Version>
         <AssemblyVersion>13.0.0</AssemblyVersion>
         <FileVersion>13.0.0</FileVersion>
+        <RepositoryType>git</RepositoryType>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DebugType>full</DebugType>
@@ -35,6 +41,7 @@
         </None>
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
         <PackageReference Include="Umbraco.Forms.Core" Version="13.9.5" />
     </ItemGroup>
 </Project>
