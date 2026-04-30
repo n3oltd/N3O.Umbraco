@@ -43,6 +43,5 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="BitArmory.ReCaptcha" Version="5.0.1" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     </ItemGroup>
 </Project>

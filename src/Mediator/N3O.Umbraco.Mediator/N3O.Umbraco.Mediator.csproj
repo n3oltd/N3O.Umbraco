@@ -37,7 +37,6 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="MediatR" Version="12.5.0" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     </ItemGroup>
     <ItemGroup>
         <None Update="README.md">

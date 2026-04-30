@@ -36,7 +36,6 @@
         <ProjectReference Include="..\N3O.Umbraco.Maps.Google\N3O.Umbraco.Maps.Google.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
         <PackageReference Include="Our.Umbraco.GMaps" Version="3.0.5" />
     </ItemGroup>
     <ItemGroup>

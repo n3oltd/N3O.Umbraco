@@ -44,6 +44,5 @@
     <ItemGroup>
         <PackageReference Include="AngleSharp" Version="1.4.0" />
         <PackageReference Include="AngleSharp.Css" Version="0.17.0" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     </ItemGroup>
 </Project>

@@ -42,7 +42,6 @@
         </None>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
         <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.7" />
     </ItemGroup>
 </Project>

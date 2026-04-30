@@ -42,6 +42,5 @@
         <ProjectReference Include="..\N3O.Umbraco.Cropper\N3O.Umbraco.Cropper.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     </ItemGroup>
 </Project>

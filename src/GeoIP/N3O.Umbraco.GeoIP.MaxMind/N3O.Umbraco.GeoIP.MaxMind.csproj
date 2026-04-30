@@ -42,6 +42,5 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="MaxMind.GeoIP2" Version="5.4.1" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     </ItemGroup>
 </Project>

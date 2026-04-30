@@ -36,7 +36,6 @@
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
         <PackageReference Include="uSync.Complete" Version="13.2.3" />
     </ItemGroup>
     <ItemGroup>

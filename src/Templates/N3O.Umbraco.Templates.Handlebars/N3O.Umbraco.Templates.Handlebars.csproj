@@ -37,7 +37,6 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Handlebars.Net" Version="2.1.6" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     </ItemGroup>
     <ItemGroup>
         <None Update="README.md">

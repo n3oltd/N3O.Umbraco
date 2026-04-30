@@ -42,7 +42,6 @@
         </None>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
         <PackageReference Include="Umbraco.Forms" Version="13.9.5" />
     </ItemGroup>
 </Project>

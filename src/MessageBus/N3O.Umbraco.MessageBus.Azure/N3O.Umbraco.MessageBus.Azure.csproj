@@ -42,6 +42,5 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.20.1" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     </ItemGroup>
 </Project>

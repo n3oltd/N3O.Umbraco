@@ -53,6 +53,5 @@
         <PackageReference Include="CsvHelper" Version="33.1.0" />
         <PackageReference Include="EPPlus" Version="8.5.3" />
         <PackageReference Include="HtmlSanitizer" Version="9.0.892" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     </ItemGroup>
 </Project>

@@ -37,7 +37,6 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="FluentEmail.SendGrid" Version="3.0.2" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     </ItemGroup>
     <ItemGroup>
         <None Update="README.md">

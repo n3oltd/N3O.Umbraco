@@ -36,7 +36,6 @@
         <ProjectReference Include="..\N3O.Umbraco.Monitoring\N3O.Umbraco.Monitoring.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
         <PackageReference Include="Sentry.AspNetCore" Version="6.4.1" />
         <PackageReference Include="Sentry.Serilog" Version="6.4.1" />
     </ItemGroup>

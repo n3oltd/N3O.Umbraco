@@ -42,6 +42,5 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="AWSSDK.SimpleEmail" Version="4.0.2.26" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     </ItemGroup>
 </Project>

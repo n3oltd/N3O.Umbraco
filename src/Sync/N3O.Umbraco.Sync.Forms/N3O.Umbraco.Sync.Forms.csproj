@@ -41,7 +41,6 @@
         </None>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
         <PackageReference Include="Umbraco.Forms.StaticAssets" Version="13.9.5" />
         <PackageReference Include="uSync.Forms" Version="13.4.6" />
     </ItemGroup>

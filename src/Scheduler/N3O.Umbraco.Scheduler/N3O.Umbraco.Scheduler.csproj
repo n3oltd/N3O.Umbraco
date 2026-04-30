@@ -43,7 +43,6 @@
          the hangfire package still references the old version that causes the jobs to fail. Remove the below package
          reference once the hangfire is updated to use the latest SqlClient package.-->
         <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     </ItemGroup>
     <ItemGroup>
         <None Update="README.md">

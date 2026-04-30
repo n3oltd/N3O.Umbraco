@@ -42,7 +42,6 @@
         <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.17.0" />
         <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.17.0" />
         <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.17.0" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     </ItemGroup>
     <ItemGroup>
         <None Update="README.md">
