@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Attributes;
-using N3O.Umbraco.Cloud.Platforms.Extensions;
+using N3O.Umbraco.Cloud.Lookups;
+using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Exceptions;
@@ -7,11 +8,9 @@ using N3O.Umbraco.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.Strings;
-using Umbraco.Community.Contentment.DataEditors;
 using Umbraco.Extensions;
+using CampaignType = N3O.Umbraco.Cloud.Platforms.Lookups.CampaignType;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
 
@@ -24,7 +23,10 @@ public class CampaignContent : UmbracoContent<CampaignContent> {
     
     public override void SetContent(IPublishedContent content) {
         base.SetContent(content);
-        
+
+        FormContent = new DonationFormContentContent();
+        FormContent.SetContent(content);
+
         if (Type == CampaignTypes.Standard) {
             Standard = new StandardCampaignContent();
             Standard.SetContent(content);
@@ -41,10 +43,23 @@ public class CampaignContent : UmbracoContent<CampaignContent> {
             throw UnrecognisedValueException.For(Type);
         }
     }
+    
+    public void PopulateContributionInfo(ICdnClient cdnClient, PlatformsContributionInfoReq platformsContribution) {
+        var publishedCampaign = cdnClient.DownloadPublishedContentAsync<PublishedCampaign>(PublishedFileKinds.Campaign,
+                                                                                           $"{Key}.json",
+                                                                                           JsonSerializers.Simple)
+                                         .GetAwaiter().GetResult();
+        
+        platformsContribution.Campaign = new CampaignInfoReq();
+        platformsContribution.Campaign.Id = publishedCampaign.Id;
+        platformsContribution.Campaign.Reference = publishedCampaign.Reference;
+    }
 
     public override void SetVariationContext(VariationContext variationContext) {
         base.SetVariationContext(variationContext);
-        
+
+        FormContent?.SetVariationContext(variationContext);
+        Qurbani?.SetVariationContext(variationContext);
         Standard?.SetVariationContext(variationContext);
         Telethon?.SetVariationContext(variationContext);
         ScheduledGiving?.SetVariationContext(variationContext);
@@ -53,11 +68,7 @@ public class CampaignContent : UmbracoContent<CampaignContent> {
     public string Name => Content().Name;
     public Guid Key => Content().Key;
     
-    public IHtmlEncodedString Description => GetValue(x => x.Description);
     public string Notes => GetValue(x => x.Notes);
-    public IReadOnlyDictionary<string, string> Tags => GetConvertedValue<IEnumerable<DataListItem>, IReadOnlyDictionary<string, string>>(x => x.Tags, x => x.ToTagsDictionary());
-    public MediaWithCrops Icon => GetValue(x => x.Icon);
-    public MediaWithCrops Image => GetValue(x => x.Image);
     public decimal Target => GetValue(x => x.Target);
     
     public string DonationFormEmbedCode => GetValue(x => x.DonationFormEmbedCode);
@@ -70,10 +81,13 @@ public class CampaignContent : UmbracoContent<CampaignContent> {
 
     public OfferingContent DefaultOffering => Offerings.FirstOrDefault();
     
+    public DonationFormContentContent FormContent { get; private set; }
     public QurbaniCampaignContent Qurbani { get; private set; }
     public ScheduledGivingCampaignContent ScheduledGiving { get; private set; }
     public StandardCampaignContent Standard { get; private set; }
     public TelethonCampaignContent Telethon { get; private set; }
+    
+    
     
     public CampaignType Type {
         get {

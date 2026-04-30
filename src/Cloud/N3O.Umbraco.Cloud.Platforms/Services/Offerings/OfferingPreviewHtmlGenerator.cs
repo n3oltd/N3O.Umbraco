@@ -1,5 +1,6 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
+using N3O.Umbraco.Cloud.Platforms.Extensions;
 using N3O.Umbraco.Cloud.Platforms.Models;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
@@ -16,7 +17,7 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Strings;
 using MediaConstants = Umbraco.Cms.Core.Constants.Conventions.Media;
-using OfferingType = N3O.Umbraco.Cloud.Platforms.Lookups.OfferingType;
+using OurAllocationType = N3O.Umbraco.Giving.Allocations.Lookups.AllocationType;
 
 namespace N3O.Umbraco.Cloud.Platforms;
 
@@ -44,36 +45,37 @@ public abstract class OfferingPreviewHtmlGenerator : PreviewHtmlGenerator {
         _publishedValueFallback = publishedValueFallback;
     }
     
-    protected abstract OfferingType OfferingType { get; }
+    protected abstract OurAllocationType OfferingAllocationType { get; }
 
-    protected override string ContentTypeAlias => OfferingType.ContentTypeAlias;
+    protected override string ContentTypeAlias => OfferingAllocationType.ToContentTypeAlias();
 
     protected override void PopulatePreviewData(IReadOnlyDictionary<string, object> content,
                                                 Dictionary<string, object> previewData) {
-        var image = GetMediaWithCrops(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Image));
-        var icon = GetMediaWithCrops(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Icon));
-        var shortDescription = content[AliasHelper<OfferingContent>.PropertyAlias(x => x.Description)]?.ToString();
+        var image = GetMediaWithCrops(content, AliasHelper<DonationFormContentContent>.PropertyAlias(x => x.Image));
+        var icon = GetMediaWithCrops(content, AliasHelper<DonationFormContentContent>.PropertyAlias(x => x.Icon));
+        var shortDescription = content[AliasHelper<DonationFormContentContent>.PropertyAlias(x => x.Description)]?.ToString();
         
         var currency = BaseCurrencyAccessor.GetBaseCurrency().Code.ToEnum<Currency>();
         
         var publishedOffering = new PublishedOffering();
         publishedOffering.Id = content[AliasHelper<OfferingContent>.PropertyAlias(x => x.Key)].ToString();
         publishedOffering.Name = content[AliasHelper<IPublishedContent>.PropertyAlias(x => x.Name)]?.ToString();
-        publishedOffering.Image = new PublishedImageContent();
-        publishedOffering.Image.Format = PropertyFormat.Image;
-        publishedOffering.Image.Main = new PublishedProcessedImage();
-        publishedOffering.Image.Main.Url = new Uri(_mediaUrl.GetMediaUrl(image, urlMode: UrlMode.Absolute));
-        publishedOffering.Image.Main.Size = new PublishedSize();
-        publishedOffering.Image.Main.Size.Width = (int) image.Properties.Single(x => x.Alias == MediaConstants.Width).GetValue();
-        publishedOffering.Image.Main.Size.Height = (int) image.Properties.Single(x => x.Alias == MediaConstants.Height).GetValue();
+        publishedOffering.FormContent = new PublishedDonationFormContent();
+        publishedOffering.FormContent.Image = new PublishedImageContent();
+        publishedOffering.FormContent.Image.Format = PropertyFormat.Image;
+        publishedOffering.FormContent.Image.Main = new PublishedProcessedImage();
+        publishedOffering.FormContent.Image.Main.Url = new Uri(_mediaUrl.GetMediaUrl(image, urlMode: UrlMode.Absolute));
+        publishedOffering.FormContent.Image.Main.Size = new PublishedSize();
+        publishedOffering.FormContent.Image.Main.Size.Width = (int) image.Properties.Single(x => x.Alias == MediaConstants.Width).GetValue();
+        publishedOffering.FormContent.Image.Main.Size.Height = (int) image.Properties.Single(x => x.Alias == MediaConstants.Height).GetValue();
         
-        publishedOffering.Icon = new PublishedSvgContent();
-        publishedOffering.Icon.Url = _mediaUrl.GetMediaUrl(icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
-        publishedOffering.Icon.Format = PropertyFormat.Svg;
+        publishedOffering.FormContent.Icon = new PublishedSvgContent();
+        publishedOffering.FormContent.Icon.Url = _mediaUrl.GetMediaUrl(icon, urlMode: UrlMode.Absolute).IfNotNull(x => new Uri(x));
+        publishedOffering.FormContent.Icon.Format = PropertyFormat.Svg;
         
-        publishedOffering.Description = new PublishedHtmlContent();
-        publishedOffering.Description.Markup = _markupEngine.RenderHtml(shortDescription).IfNotNull(x => new HtmlEncodedString(x.ToString())).ToHtmlString();
-        publishedOffering.Description.Format = PropertyFormat.Html;
+        publishedOffering.FormContent.Description = new PublishedHtmlContent();
+        publishedOffering.FormContent.Description.Markup = _markupEngine.RenderHtml(shortDescription).IfNotNull(x => new HtmlEncodedString(x.ToString())).ToHtmlString();
+        publishedOffering.FormContent.Description.Format = PropertyFormat.Html;
         
         publishedOffering.FormState = new PublishedDonationFormState();
         publishedOffering.FormState.CartItem = new PublishedCartItem();
@@ -108,10 +110,10 @@ public abstract class OfferingPreviewHtmlGenerator : PreviewHtmlGenerator {
     }
 
     private PublishedFundDimensionValues GetPublishedOfferingFundDimensions(IReadOnlyDictionary<string, object> content) {
-        var dimension1 = GetDataListValue<FundDimension1Value>(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Dimension1));
-        var dimension2 = GetDataListValue<FundDimension2Value>(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Dimension2));
-        var dimension3 = GetDataListValue<FundDimension3Value>(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Dimension3));
-        var dimension4 = GetDataListValue<FundDimension4Value>(content, AliasHelper<OfferingContent>.PropertyAlias(x => x.Dimension4));
+        var dimension1 = GetDataListValue<FundDimension1Value>(content, AliasHelper<DonationFormStateContent>.PropertyAlias(x => x.Dimension1));
+        var dimension2 = GetDataListValue<FundDimension2Value>(content, AliasHelper<DonationFormStateContent>.PropertyAlias(x => x.Dimension2));
+        var dimension3 = GetDataListValue<FundDimension3Value>(content, AliasHelper<DonationFormStateContent>.PropertyAlias(x => x.Dimension3));
+        var dimension4 = GetDataListValue<FundDimension4Value>(content, AliasHelper<DonationFormStateContent>.PropertyAlias(x => x.Dimension4));
         
         var fundDimensionOptions = GetFundDimensionOptions(content);
         

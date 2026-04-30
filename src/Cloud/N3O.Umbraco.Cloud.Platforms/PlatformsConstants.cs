@@ -12,17 +12,25 @@ public static class PlatformsConstants {
         public const string Telethon = "platformsTelethonCampaign";
     }
 
+    public static class CrossSells {
+        public const string CompositionAlias = "platformsCrossSell";
+    }
+
     public static class CrowdfundingCampaign {
         public const string CompositionAlias = "platformsCrowdfundingCampaign";
     }
 
-    public static class Elements {
-        public const string CompositionAlias = "platformsElement";
-        public const string CreateCrowdfunderButton = "platformsCreateCrowdfunderButton";
-        public const string DonationButton = "platformsDonationButtonElement";
-        public const string DonationElement = "platformsDonationElement";
-        public const string DonationForm = "platformsDonationFormElement";
-        public const string DonationPopup = "platformsDonationPopupElement";
+    public static class DonationFormContent {
+        public const string CompositionAlias = "platformsDonationFormContent";
+    }
+
+    public static class DonationFormState {
+        public const string CompositionAlias = "platformsDonationFormState";
+        public const string Feedback = "platformsFeedbackDonationFormState";
+        public const string Fund = "platformsFundDonationFormState";
+        public const string Qurbani = "platformsQurbaniDonationFormState";
+        public const string Sponsorship = "platformsSponsorshipDonationFormState";
+        public const string SuggestedAmount = "platformsDonationFormStateSuggestedAmount";
     }
 
     public static class Feeds {
@@ -47,48 +55,30 @@ public static class PlatformsConstants {
         public const string CompositionAlias = "platformsOffering";
         public const string Feedback = "platformsFeedbackOffering";
         public const string Fund = "platformsFundOffering";
+        public const string Qurbani = "platformsQurbaniOffering";
         public const string Sponsorship = "platformsSponsorshipOffering";
-        public const string SuggestedAmount = "platformsSuggestedAmount";
     }
 
     public static class Platforms {
         public const string Alias = "platforms";
     }
-    
+
     public static class Qurbani {
-        public static class Settings {
-            public const string Alias = "platformsQurbaniSettings";
+        public static class Season {
+            public const string Alias = "platformsQurbaniSeason";
 
-            public static class Season {
-                public const string Alias = "platformsQurbaniSeason";
-
-                public static class Category {
-                    public const string Alias = "platformsQurbaniSeasonCategory";
-                }
-
-                public static class Group {
-                    public const string Alias = "platformsQurbaniSeasonGroup";
-                }
-                
-                public static class Location {
-                    public const string Alias = "platformsQurbaniSeasonLocation";
-                }
-
-                public static class Upsell {
-                    public const string Alias = "platformsQurbaniSeasonUpsell";
-                }
+            public static class Category {
+                public const string Alias = "platformsQurbaniSeasonCategory";
             }
         }
     }
 
     public static class WebhookIds {
         public const string Campaigns = "campaigns";
+        public const string CrossSells = "crossSells";
         public const string ContentCollection = "contentCollection";
         public const string ContentLibrary = "contentLibrary";
         public const string CrowdfundingCampaigns = "crowdfundingCampaigns";
-        public const string DonationButtons = "donationButtons";
-        public const string DonationForms = "donationForms";
-        public const string DonationPopups = "donationPopups";
         public const string ManagedContent = "managedContent";
         public const string Offerings = "offerings";
         public const string QurbaniSeason = "qurbaniSeason";

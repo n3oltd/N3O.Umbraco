@@ -32,11 +32,8 @@ public class UpdateOfferingReqMapping : IMapDefinition {
         dest.Name = src.Name;
         dest.Notes = src.Notes;
         dest.Slug = _slugHelper.GenerateSlug(src.Name);
-        
-        dest.Summary = src.Summary;
-        dest.Description = src.Description.ToHtmlString().ToRichTextContentReq(); 
-        dest.Image = src.Image.ToImageSimpleContentReq(_mediaUrl);
-        dest.Icon = src.Icon.ToSvgContentReq(_mediaUrl);
+
+        dest.FormContent = src.FormContent.ToDonationFormContentReq(_mediaUrl);
         
         dest.Order = new OfferingOrderReq();
         dest.Order.Order = src.Content().Parent.Children.FindIndex(x => x.Id == src.Content().Id);
@@ -59,7 +56,7 @@ public class UpdateOfferingReqMapping : IMapDefinition {
         dest.FormState = ctx.Map<OfferingContent, DonationFormStateReq>(src);
         
         dest.Options = new OfferingOptionsReq();
-        dest.Options.AllowCrowdfunding = src.AllowCrowdfunding;
+        dest.Options.AllowCrowdfunding = src.FormState.AllowCrowdfunding;
 
         if (src.Content().IsPublished()) {
             dest.Activate = true;

@@ -31,7 +31,7 @@ public class OurBackofficeAntiforgery : IBackOfficeAntiforgery {
         try {
             await _internalAntiForgery.ValidateRequestAsync(httpContext);
             
-            return Attempt<string?>.Succeed();
+            return Attempt<string>.Succeed();
         } catch (Exception ex) {
             return Attempt.Fail(ex.Message);
         }

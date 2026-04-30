@@ -14,6 +14,6 @@ public class QurbaniSeasonWebhookBodyReqMapping : IMapDefinition {
         dest.Id = src.Key.ToString();
         dest.Action = WebhookSyncAction.AddOrUpdate;
 
-        dest.AddOrUpdate = ctx.Map<QurbaniSeasonContent, QurbaniSeasonReq>(src);
+        dest.Update = ctx.Map<QurbaniSeasonContent, QurbaniSeasonPlatformsSettingsReq>(src);
     }
 }

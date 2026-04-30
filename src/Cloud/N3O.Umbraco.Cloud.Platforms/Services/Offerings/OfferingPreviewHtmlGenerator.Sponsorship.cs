@@ -1,7 +1,6 @@
 ﻿using Humanizer;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
-using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
 using N3O.Umbraco.Giving.Allocations.Lookups;
@@ -17,7 +16,7 @@ using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
 using AllocationType = N3O.Umbraco.Cloud.Platforms.Clients.AllocationType;
-using OfferingType = N3O.Umbraco.Cloud.Platforms.Lookups.OfferingType;
+using OurAllocationType = N3O.Umbraco.Giving.Allocations.Lookups.AllocationType;
 using PlatformsPublishedPrice = N3O.Umbraco.Cloud.Platforms.Clients.PublishedPrice;
 using PlatformsPublishedSponsorshipScheme = N3O.Umbraco.Cloud.Platforms.Clients.PublishedSponsorshipScheme;
 
@@ -45,7 +44,7 @@ public class SponsorshipOfferingPreviewHtmlGenerator : OfferingPreviewHtmlGenera
         _lookups = lookups;
     }
     
-    protected override OfferingType OfferingType => OfferingTypes.Sponsorship;
+    protected override OurAllocationType OfferingAllocationType => AllocationTypes.Sponsorship;
 
     protected override void PopulateAllocationIntent(IReadOnlyDictionary<string, object> content, PublishedAllocationIntent allocationIntent) {
         var scheme = GetSponsorshipScheme(content);
@@ -63,7 +62,7 @@ public class SponsorshipOfferingPreviewHtmlGenerator : OfferingPreviewHtmlGenera
     }
     
     private SponsorshipScheme GetSponsorshipScheme(IReadOnlyDictionary<string, object> content) {
-        return GetDataListValue<SponsorshipScheme>(content, AliasHelper<SponsorshipOfferingContent>.PropertyAlias(x => x.Scheme));
+        return GetDataListValue<SponsorshipScheme>(content, AliasHelper<SponsorshipDonationFormStateContent>.PropertyAlias(x => x.Scheme));
     }
 
     protected override void PopulateAdditionalData(Dictionary<string, object> previewData,
