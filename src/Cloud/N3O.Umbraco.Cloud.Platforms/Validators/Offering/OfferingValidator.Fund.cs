@@ -1,0 +1,31 @@
+using N3O.Umbraco.Cloud.Platforms.Content;
+using N3O.Umbraco.Content;
+using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Allocations;
+using N3O.Umbraco.Giving.Allocations.Lookups;
+using N3O.Umbraco.Giving.Allocations.Models;
+using N3O.Umbraco.Lookups;
+
+namespace N3O.Umbraco.Cloud.Platforms.Validators;
+
+public class FundOfferingValidator : OfferingValidator {
+    private readonly ILookups _lookups;
+
+    public FundOfferingValidator(IContentHelper contentHelper,
+                                 ILookups lookups,
+                                 IFundStructureAccessor fundStructureAccessor) 
+        : base(contentHelper, lookups, fundStructureAccessor) {
+        _lookups = lookups;
+    }
+
+    protected override IFundDimensionOptions GetFundDimensionOptions(ContentProperties content) {
+        return GetDonationItem(content)?.FundDimensionOptions;
+    }
+
+    private DonationItem GetDonationItem(ContentProperties content) {
+        return content.GetPropertyByAlias(AliasHelper<FundDonationFormStateContent>.PropertyAlias(x => x.DonationItem))
+                      .IfNotNull(x => ContentHelper.GetLookupValue<DonationItem>(_lookups, x));
+    }
+    
+    protected override string ContentTypeAlias => PlatformsConstants.Offerings.Fund;
+}

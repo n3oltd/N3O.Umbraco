@@ -1,7 +1,6 @@
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving.Allocations;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
@@ -11,17 +10,12 @@ namespace N3O.Umbraco.Cloud.Platforms.Validators;
 
 public abstract class DonationFormStateValidator<TDonationFormStateContent> : ContentValidator {
     private static readonly string CompositionAlias = AliasHelper<TDonationFormStateContent>.ContentTypeAlias();
-    private static readonly string AllowCrowdfundingAlias = AliasHelper<DonationFormStateContent>.PropertyAlias(x => x.AllowCrowdfunding);
 
     private readonly ILookups _lookups;
-    private readonly IFundStructureAccessor _fundStructureAccessor;
 
-    protected DonationFormStateValidator(IContentHelper contentHelper,
-                                         ILookups lookups,
-                                         IFundStructureAccessor fundStructureAccessor)
+    protected DonationFormStateValidator(IContentHelper contentHelper, ILookups lookups)
         : base(contentHelper) {
         _lookups = lookups;
-        _fundStructureAccessor = fundStructureAccessor;
     }
 
     public override bool IsValidator(ContentProperties content) {
@@ -33,7 +27,6 @@ public abstract class DonationFormStateValidator<TDonationFormStateContent> : Co
 
         if (fundDimensionOptions != null) {
             ValidateDimensionAllowed(content, fundDimensionOptions);
-            ValidateFixedDimension(content, fundDimensionOptions);
         }
     }
 
@@ -44,17 +37,6 @@ public abstract class DonationFormStateValidator<TDonationFormStateContent> : Co
         DimensionAllowed(content, fundDimensionOptions.Dimension2, AliasHelper<DonationFormStateContent>.PropertyAlias(x => x.Dimension2));
         DimensionAllowed(content, fundDimensionOptions.Dimension3, AliasHelper<DonationFormStateContent>.PropertyAlias(x => x.Dimension3));
         DimensionAllowed(content, fundDimensionOptions.Dimension4, AliasHelper<DonationFormStateContent>.PropertyAlias(x => x.Dimension4));
-    }
-
-    private void ValidateFixedDimension(ContentProperties content, IFundDimensionOptions fundDimensionOptions) {
-        var fundStructure = _fundStructureAccessor.GetFundStructure();
-
-        if (content.GetPropertyValueByAlias<int?>(AllowCrowdfundingAlias) == 1) {
-            HasFixedDimension(content, fundDimensionOptions.Dimension1, AliasHelper<DonationFormStateContent>.PropertyAlias(x => x.Dimension1), fundStructure.Dimension1.IsActive);
-            HasFixedDimension(content, fundDimensionOptions.Dimension2, AliasHelper<DonationFormStateContent>.PropertyAlias(x => x.Dimension2), fundStructure.Dimension2.IsActive);
-            HasFixedDimension(content, fundDimensionOptions.Dimension3, AliasHelper<DonationFormStateContent>.PropertyAlias(x => x.Dimension3), fundStructure.Dimension3.IsActive);
-            HasFixedDimension(content, fundDimensionOptions.Dimension4, AliasHelper<DonationFormStateContent>.PropertyAlias(x => x.Dimension4), fundStructure.Dimension4.IsActive);
-        }
     }
 
     private void DimensionAllowed<T>(ContentProperties content,

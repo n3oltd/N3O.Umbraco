@@ -28,10 +28,10 @@ public class UpdateCrossSellReqMapping : IMapDefinition {
         dest.Stage = src.Stage.ToEnum<ECommerceStage>();
 
         dest.Targeting = new CrossSellTargetingReq();
-        dest.Targeting.Campaigns = src.TargetCampaigns.OrEmpty().Select(x => x.Key.ToString()).ToList();
+        dest.Targeting.Campaigns = src.TargetCampaigns.OrEmpty().Select(x => x.Id).ToList();
 
         dest.FormContent = src.FormContent.ToDonationFormContentReq(_mediaUrl);
-        dest.FormState = ctx.Map<DonationFormStateContent, DonationFormStateReq>(src.FormState);
+        dest.FormState = ctx.Map<CrossSellContent, DonationFormStateReq>(src);
 
         if (src.Content().IsPublished()) {
             dest.Activate = true;

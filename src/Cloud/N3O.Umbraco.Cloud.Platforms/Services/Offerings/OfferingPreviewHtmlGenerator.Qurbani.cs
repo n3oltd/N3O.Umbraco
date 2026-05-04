@@ -2,6 +2,7 @@ using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
+using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Json;
@@ -67,9 +68,9 @@ public class QurbaniOfferingPreviewHtmlGenerator : OfferingPreviewHtmlGenerator 
         publishedQurbaniItem.Name = qurbaniItem.Name;
         publishedQurbaniItem.FundDimensionValues = publishedFundDimensionValues;
 
-        if (qurbaniItem.Price.HasValue) {
+        if (qurbaniItem.Price.HasValue()) {
             publishedQurbaniItem.Price = new PublishedPrice();
-            publishedQurbaniItem.Price.Amount = (double) qurbaniItem.Price.Value;
+            publishedQurbaniItem.Price.Amount = (double) qurbaniItem.Price.Amount;
             publishedQurbaniItem.Price.Locked = true;
         }
 

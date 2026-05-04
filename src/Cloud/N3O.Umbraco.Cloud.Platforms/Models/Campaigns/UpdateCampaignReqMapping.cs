@@ -1,4 +1,5 @@
 ﻿using N3O.Umbraco.Cloud.Extensions;
+using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Extensions;
@@ -6,6 +7,7 @@ using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Media;
 using NodaTime.Extensions;
+using NodaTime.Text;
 using Slugify;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +19,12 @@ namespace N3O.Umbraco.Cloud.Platforms.Models;
 public class UpdateCampaignReqMapping : IMapDefinition {
     public const string PageContentContext = nameof(PageContentContext);
     
+    private readonly ICdnClient _cdnClient;
     private readonly IMediaUrl _mediaUrl;
     private readonly ISlugHelper _slugHelper;
 
-    public UpdateCampaignReqMapping(IMediaUrl mediaUrl, ISlugHelper slugHelper) {
+    public UpdateCampaignReqMapping(ICdnClient cdnClient, IMediaUrl mediaUrl, ISlugHelper slugHelper) {
+        _cdnClient = cdnClient;
         _mediaUrl = mediaUrl;
         _slugHelper = slugHelper;
     }
@@ -63,8 +67,14 @@ public class UpdateCampaignReqMapping : IMapDefinition {
         }
         
         if (src.Type == CampaignTypes.Qurbani) {
+            var activeSeason = _cdnClient.DownloadSubscriptionContentAsync<PublishedQurbaniSeason>(SubscriptionFiles.ActiveQurbaniSeason,
+                                                                                                   JsonSerializers.JsonProvider)
+                                         .GetAwaiter().GetResult();
+            
             dest.Qurbani = new QurbaniCampaignOptionsReq();
-            dest.Qurbani.SeasonId = src.Qurbani.Season.Id;
+            dest.Qurbani.SeasonId = activeSeason.Id;
+            dest.Qurbani.Begin = LocalDatePattern.Iso.Format(src.Qurbani.BeginAt.ToLocalDate());
+            dest.Qurbani.End = LocalDatePattern.Iso.Format(src.Qurbani.EndAt.ToLocalDate());
         } else if (src.Type == CampaignTypes.ScheduledGiving) {
             dest.ScheduledGiving = new ScheduledGivingCampaignOptionsReq();
             dest.ScheduledGiving.ScheduleId = src.ScheduledGiving.Schedule.Id;

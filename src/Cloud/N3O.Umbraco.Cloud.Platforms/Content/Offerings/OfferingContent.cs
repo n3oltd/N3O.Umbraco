@@ -39,6 +39,7 @@ public class OfferingContent :
 
     public DonationFormContentContent FormContent { get; private set; }
     public DonationFormStateContent FormState { get; private set; }
+    public bool AllowCrowdfunding => GetValue(x => x.AllowCrowdfunding);
 
     public void PopulateContributionInfo(ICdnClient cdnClient, PlatformsContributionInfoReq platformsContribution) {
         Campaign.PopulateContributionInfo(cdnClient, platformsContribution);

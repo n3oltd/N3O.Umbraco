@@ -52,7 +52,6 @@ public class DonationFormStateContent : UmbracoContent<DonationFormStateContent>
     public FundDimension3Value Dimension3 => GetValue(x => x.Dimension3);
     public FundDimension4Value Dimension4 => GetValue(x => x.Dimension4);
     public GiftType SuggestedGiftType => GetValue(x => x.SuggestedGiftType);
-    public bool AllowCrowdfunding => GetValue(x => x.AllowCrowdfunding);
     public string CustomFormState => GetValue(x => x.CustomFormState);
     public string NotesLabel => GetValue(x => x.NotesLabel);
     

@@ -1,17 +1,20 @@
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Giving.Allocations;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Lookups;
 
 namespace N3O.Umbraco.Cloud.Platforms.Validators;
 
-public class SponsorshipDonationFormStateValidator : DonationFormStateValidator<SponsorshipDonationFormStateContent> {
+public class SponsorshipOfferingValidator : OfferingValidator {
     private readonly ILookups _lookups;
 
-    public SponsorshipDonationFormStateValidator(IContentHelper contentHelper, ILookups lookups)
-        : base(contentHelper, lookups) {
+    public SponsorshipOfferingValidator(IContentHelper contentHelper,
+                                        ILookups lookups,
+                                        IFundStructureAccessor fundStructureAccessor) 
+        : base(contentHelper, lookups, fundStructureAccessor) {
         _lookups = lookups;
     }
 
@@ -23,4 +26,6 @@ public class SponsorshipDonationFormStateValidator : DonationFormStateValidator<
         return content.GetPropertyByAlias(AliasHelper<SponsorshipDonationFormStateContent>.PropertyAlias(x => x.Scheme))
                       .IfNotNull(x => ContentHelper.GetLookupValue<SponsorshipScheme>(_lookups, x));
     }
+    
+    protected override string ContentTypeAlias => PlatformsConstants.Offerings.Sponsorship;
 }
