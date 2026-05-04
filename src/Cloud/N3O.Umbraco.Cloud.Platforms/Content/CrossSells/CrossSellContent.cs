@@ -1,5 +1,6 @@
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,9 @@ public class CrossSellContent :
     UmbracoContent<CrossSellContent>, IHoldDonationFormStateContent, IHoldDonationFormContentContent {
     public string Name => Content().Name;
     public Guid Key => Content().Key;
+    
+    public ECommerceStage Stage => GetValue(x => x.Stage);
+    public IEnumerable<Campaign> TargetCampaigns => GetValue(x => x.TargetCampaigns);
 
     public override void SetContent(IPublishedContent content) {
         base.SetContent(content);
@@ -41,7 +45,4 @@ public class CrossSellContent :
     }
 
     public void PopulateOptions(DonationFormOptionsReq options) { }
-
-    public ECommerceStage Stage => GetValue(x => x.Stage);
-    public IEnumerable<CampaignContent> TargetCampaigns => GetPickedAs(x => x.TargetCampaigns);
 }

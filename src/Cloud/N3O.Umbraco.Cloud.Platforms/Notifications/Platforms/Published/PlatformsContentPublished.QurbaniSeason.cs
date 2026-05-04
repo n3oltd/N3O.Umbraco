@@ -32,7 +32,7 @@ public class QurbaniSeasonPublished : CloudContentPublished {
     protected override Task<object> GetBodyAsync(IContent content) {
         var seasonContent = _contentLocator.Value.Single<QurbaniSeasonContent>();
 
-        var settingsReq = _mapper.Map<QurbaniSeasonContent, QurbaniSeasonReq>(seasonContent);
+        var settingsReq = _mapper.Map<QurbaniSeasonContent, QurbaniSeasonWebhookBodyReq>(seasonContent);
 
         return Task.FromResult<object>(settingsReq);
     }

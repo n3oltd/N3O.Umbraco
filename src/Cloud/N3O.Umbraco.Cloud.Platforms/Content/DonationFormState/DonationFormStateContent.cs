@@ -1,10 +1,10 @@
 ﻿using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Extensions;
+using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -52,7 +52,6 @@ public class DonationFormStateContent : UmbracoContent<DonationFormStateContent>
     public FundDimension3Value Dimension3 => GetValue(x => x.Dimension3);
     public FundDimension4Value Dimension4 => GetValue(x => x.Dimension4);
     public GiftType SuggestedGiftType => GetValue(x => x.SuggestedGiftType);
-    public bool AllowCrowdfunding => GetValue(x => x.AllowCrowdfunding);
     public string CustomFormState => GetValue(x => x.CustomFormState);
     public string NotesLabel => GetValue(x => x.NotesLabel);
     

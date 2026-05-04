@@ -72,6 +72,9 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     public partial class QurbaniSeasonCategoryReq
     {
 
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Id { get; set; }
+
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Name { get; set; }
 
@@ -118,17 +121,16 @@ namespace N3O.Umbraco.Cloud.Platforms.Clients
     }
 
     /// <summary>
-    /// One of 'activeQurbaniSeason', 'qurbaniItems'
+    /// One of 'qurbaniItems', 'qurbaniSeason'
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.6.3.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum QurbaniSubscriptionFile
     {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"activeQurbaniSeason")]
-        ActiveQurbaniSeason = 0,
-
         [System.Runtime.Serialization.EnumMember(Value = @"qurbaniItems")]
-        QurbaniItems = 1,
+        QurbaniItems = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"qurbaniSeason")]
+        QurbaniSeason = 1
 
     }
 

@@ -1,7 +1,5 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Community.Contentment.DataEditors;
@@ -28,9 +26,8 @@ public abstract class ElementKindDataSource : LookupsDataSource<Element> {
     protected abstract ElementKind Kind { get; }
     
     protected static string GetOfferingId(Element element) {
-        var bits = element.Id.Split('/', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        var elementKind = bits[0].ToEnum<ElementKind>().GetValueOrThrow();
+        var (_, offeringId) = ElementId.Parse(element.Id);
 
-        return bits[1];
+        return offeringId;
     }
 }

@@ -1,7 +1,6 @@
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Giving.Allocations;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Lookups;
@@ -15,10 +14,8 @@ public class FundDonationFormStateValidator : DonationFormStateValidator<FundDon
 
     private readonly ILookups _lookups;
 
-    public FundDonationFormStateValidator(IContentHelper contentHelper,
-                                          ILookups lookups,
-                                          IFundStructureAccessor fundStructureAccessor)
-        : base(contentHelper, lookups, fundStructureAccessor) {
+    public FundDonationFormStateValidator(IContentHelper contentHelper, ILookups lookups)
+        : base(contentHelper, lookups) {
         _lookups = lookups;
     }
 

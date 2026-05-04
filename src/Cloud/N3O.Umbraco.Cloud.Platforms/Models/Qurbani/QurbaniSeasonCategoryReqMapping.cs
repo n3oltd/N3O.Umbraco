@@ -19,6 +19,7 @@ public class QurbaniSeasonCategoryReqMapping : IMapDefinition {
 
     // Umbraco.Code.MapAll
     private void Map(QurbaniSeasonCategoryContent src, QurbaniSeasonCategoryReq dest, MapperContext ctx) {
+        dest.Id = src.Content().Key.ToString();
         dest.Name = src.Name;
         dest.Summary = src.Summary;
         dest.Icon = src.Icon.ToSvgContentReq(_mediaUrl);
