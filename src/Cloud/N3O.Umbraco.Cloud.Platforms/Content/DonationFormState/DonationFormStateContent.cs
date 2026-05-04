@@ -1,10 +1,10 @@
 ﻿using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
 using N3O.Umbraco.Content;
-using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Extensions;
+using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;

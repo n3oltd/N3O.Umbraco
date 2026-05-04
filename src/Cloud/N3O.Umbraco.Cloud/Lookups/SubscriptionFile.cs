@@ -10,7 +10,6 @@ public class SubscriptionFile : Lookup {
 
 public class SubscriptionFiles : StaticLookupsCollection<SubscriptionFile> {
     /*TODO Need to update these*/
-    public static readonly SubscriptionFile ActiveQurbaniSeason = new("activeQurbaniSeason");
     public static readonly SubscriptionFile Campaigns = new("campaigns");
     public static readonly SubscriptionFile Countries = new("countries");
     public static readonly SubscriptionFile Currencies = new("currencies");
@@ -24,6 +23,7 @@ public class SubscriptionFiles : StaticLookupsCollection<SubscriptionFile> {
     public static readonly SubscriptionFile Nisab = new("nisab");
     public static readonly SubscriptionFile OrganizationInfo = new("organizationInfo");
     public static readonly SubscriptionFile QurbaniItems = new("qurbaniItems");
+    public static readonly SubscriptionFile QurbaniSeason = new("qurbaniSeason");
     public static readonly SubscriptionFile SponsorshipSchemes = new("sponsorshipSchemes");
     public static readonly SubscriptionFile TagDefinitions = new("tagDefinitions");
 }

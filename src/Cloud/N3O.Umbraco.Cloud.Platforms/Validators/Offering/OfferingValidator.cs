@@ -15,8 +15,8 @@ public abstract class OfferingValidator : ContentValidator {
     private readonly IFundStructureAccessor _fundStructureAccessor;
 
     protected OfferingValidator(IContentHelper contentHelper,
-                                         ILookups lookups,
-                                         IFundStructureAccessor fundStructureAccessor)
+                                ILookups lookups,
+                                IFundStructureAccessor fundStructureAccessor)
         : base(contentHelper) {
         _lookups = lookups;
         _fundStructureAccessor = fundStructureAccessor;

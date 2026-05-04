@@ -29,10 +29,10 @@ public class ApiQurbaniItems : ApiLookupsCollection<QurbaniItem> {
 
         foreach (var publishedQurbaniItem in publishedQurbaniItems.OrEmpty(x => x.QurbaniItems)) {
             var qurbaniItem = new QurbaniItem(publishedQurbaniItem.Id,
-                                                publishedQurbaniItem.Name,
-                                                null,
-                                                publishedQurbaniItem.FundDimensionValues.IfNotNull(x => new FundDimensionValues(x)),
-                                                publishedQurbaniItem.Price.IfNotNull(x => new Price(x)));
+                                              publishedQurbaniItem.Name,
+                                              null,
+                                              publishedQurbaniItem.FundDimensionValues.IfNotNull(x => new FundDimensionValues(x)),
+                                              publishedQurbaniItem.Price.IfNotNull(x => new Price(x)));
             
             qurbaniItems.Add(qurbaniItem);
         }

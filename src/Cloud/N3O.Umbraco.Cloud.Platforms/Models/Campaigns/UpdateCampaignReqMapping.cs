@@ -67,7 +67,7 @@ public class UpdateCampaignReqMapping : IMapDefinition {
         }
         
         if (src.Type == CampaignTypes.Qurbani) {
-            var activeSeason = _cdnClient.DownloadSubscriptionContentAsync<PublishedQurbaniSeason>(SubscriptionFiles.ActiveQurbaniSeason,
+            var activeSeason = _cdnClient.DownloadSubscriptionContentAsync<PublishedQurbaniSeason>(SubscriptionFiles.QurbaniSeason,
                                                                                                    JsonSerializers.JsonProvider)
                                          .GetAwaiter().GetResult();
             

@@ -1,6 +1,6 @@
-﻿using System.Text.RegularExpressions;
-using N3O.Umbraco.Accounts.Models;
+﻿using N3O.Umbraco.Accounts.Models;
 using N3O.Umbraco.Extensions;
+using System.Text.RegularExpressions;
 
 namespace N3O.Umbraco.Giving.Analytics.Extensions;
 

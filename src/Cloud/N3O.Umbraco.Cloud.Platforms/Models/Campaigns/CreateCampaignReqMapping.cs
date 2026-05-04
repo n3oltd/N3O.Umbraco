@@ -1,9 +1,9 @@
-﻿using N3O.Umbraco.Cloud.Platforms.Clients;
-using N3O.Umbraco.Cloud.Platforms.Content;
-using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Cloud.Extensions;
+﻿using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Lookups;
+using N3O.Umbraco.Cloud.Platforms.Clients;
+using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Cloud.Platforms.Lookups;
+using N3O.Umbraco.Extensions;
 using NodaTime.Extensions;
 using NodaTime.Text;
 using Umbraco.Cms.Core.Mapping;
@@ -29,7 +29,7 @@ public class CreateCampaignReqMapping : IMapDefinition {
         dest.Notes = src.Notes;
         
         if (src.Type == CampaignTypes.Qurbani) {
-            var activeSeason = _cdnClient.DownloadSubscriptionContentAsync<PublishedQurbaniSeason>(SubscriptionFiles.ActiveQurbaniSeason,
+            var activeSeason = _cdnClient.DownloadSubscriptionContentAsync<PublishedQurbaniSeason>(SubscriptionFiles.QurbaniSeason,
                                                                                                    JsonSerializers.JsonProvider)
                                          .GetAwaiter().GetResult();
             

@@ -30,7 +30,7 @@
         <ProjectReference Include="..\..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="uSync.Complete" Version="13.2.3" />
+        <PackageReference Include="uSync.Complete" Version="13.2.4" />
     </ItemGroup>
     <ItemGroup>
         <None Update="README.md">

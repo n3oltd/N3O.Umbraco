@@ -1,7 +1,5 @@
 ﻿using N3O.Umbraco.Cloud.Platforms.Clients;
-using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Lookups;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Community.Contentment.DataEditors;
