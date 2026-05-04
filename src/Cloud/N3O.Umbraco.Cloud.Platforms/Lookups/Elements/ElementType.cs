@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Lookups;
-using System;
-using System.Linq;
-using Umbraco.Extensions;
+﻿using N3O.Umbraco.Lookups;
 
 namespace N3O.Umbraco.Cloud.Platforms.Lookups;
 
