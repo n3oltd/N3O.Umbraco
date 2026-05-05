@@ -1,7 +1,10 @@
+using N3O.Umbraco.Cloud.Extensions;
+using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Platforms.Clients;
 using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
+using System.Threading.Tasks;
 using AllocationType = N3O.Umbraco.Cloud.Platforms.Clients.AllocationType;
 using FundDimensionValuesReq = N3O.Umbraco.Cloud.Platforms.Clients.FundDimensionValuesReq;
 using PlatformsCurrency = N3O.Umbraco.Cloud.Platforms.Clients.Currency;
@@ -9,8 +12,9 @@ using PlatformsCurrency = N3O.Umbraco.Cloud.Platforms.Clients.Currency;
 namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 
 public static class AllocationIntentReqExtensions {
-    public static AllocationIntentReq ToAllocationIntentReq(this DonationFormStateContent formState,
-                                                            PlatformsCurrency? currency) {
+    public static async Task<AllocationIntentReq> ToAllocationIntentReqAsync(this DonationFormStateContent formState,
+                                                                             ICdnClient cdnClient,
+                                                                             PlatformsCurrency? currency) {
         var fundDimensionValues = formState.GetFixedFundDimensionValues();
         
         var allocationIntent = new AllocationIntentReq();
@@ -34,9 +38,12 @@ public static class AllocationIntentReqExtensions {
             allocationIntent.Feedback.New = new NewFeedbackIntentReq();
             allocationIntent.Feedback.New.Scheme = formState.Feedback.Scheme.Name;
         } else if (formState.Type == AllocationTypes.Qurbani) {
+            var season = await cdnClient.DownloadSubscriptionContentAsync<PublishedQurbaniSeason>(SubscriptionFiles.QurbaniSeason, JsonSerializers.JsonProvider);
+            
             allocationIntent.Qurbani = new QurbaniIntentReq();
             allocationIntent.Qurbani.New = new NewQurbaniIntentReq();
             allocationIntent.Qurbani.New.Item = formState.Qurbani.QurbaniItem.Name;
+            allocationIntent.Qurbani.New.Season = season.Name;
         } else if (formState.Type == AllocationTypes.Sponsorship) {
             allocationIntent.Sponsorship = new SponsorshipIntentReq();
             allocationIntent.Sponsorship.New = new NewSponsorshipIntentReq();
