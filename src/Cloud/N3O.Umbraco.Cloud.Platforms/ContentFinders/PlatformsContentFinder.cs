@@ -11,14 +11,10 @@ namespace N3O.Umbraco.Cloud.Platforms.ContentFinders;
 public class PlatformsContentFinder : IContentFinder {
     private readonly IPlatformsPageAccessor _platformsPageAccessor;
     private readonly IContentCache _contentCache;
-    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public PlatformsContentFinder(IPlatformsPageAccessor platformsPageAccessor,
-                                  IContentCache contentCache,
-                                  IHttpContextAccessor httpContextAccessor) {
+    public PlatformsContentFinder(IPlatformsPageAccessor platformsPageAccessor, IContentCache contentCache) {
         _platformsPageAccessor = platformsPageAccessor;
         _contentCache = contentCache;
-        _httpContextAccessor = httpContextAccessor;
     }
     
     public async Task<bool> TryFindContent(IPublishedRequestBuilder request) {

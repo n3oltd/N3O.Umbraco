@@ -6,6 +6,7 @@ using N3O.Umbraco.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Currency = N3O.Umbraco.Financial.Currency;
 using OurGiftType = N3O.Umbraco.Cloud.Platforms.Lookups.GiftType;
 using PlatformsCurrency = N3O.Umbraco.Cloud.Platforms.Clients.Currency;
@@ -13,14 +14,15 @@ using PlatformsCurrency = N3O.Umbraco.Cloud.Platforms.Clients.Currency;
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public partial class DonationFormStateReqMapping {
-    private CartItemReq GetCartItemReq(IHoldDonationFormStateContent src, IReadOnlyDictionary<string, string> tags) {
+    private async Task<CartItemReq> GetCartItemReqAsync(IHoldDonationFormStateContent src,
+                                                        IReadOnlyDictionary<string, string> tags) {
         var currency = _lookups.GetAll<Currency>().Single(x => x.IsBaseCurrency).Code.ToEnum<PlatformsCurrency>();
 
         var cartItem = new CartItemReq();
         cartItem.Id = Guid.NewGuid().ToString();
         cartItem.Currency = currency;
 
-        var allocationIntent = src.FormState.ToAllocationIntentReq(_cdnClient, currency);
+        var allocationIntent = await src.FormState.ToAllocationIntentReqAsync(_cdnClient, currency);
         allocationIntent.PlatformsContribution = GetPlatformsContributionInfoReq(src);
 
         SetCartItemAllocation(cartItem, allocationIntent, src.FormState.SuggestedGiftType);

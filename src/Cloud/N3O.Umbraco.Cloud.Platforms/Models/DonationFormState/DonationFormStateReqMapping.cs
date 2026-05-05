@@ -9,12 +9,10 @@ using Umbraco.Cms.Core.Mapping;
 namespace N3O.Umbraco.Cloud.Platforms.Models;
 
 public partial class DonationFormStateReqMapping : IMapDefinition {
-    private readonly IContentLocator _contentLocator;
     private readonly ILookups _lookups;
     private readonly ICdnClient _cdnClient;
 
-    public DonationFormStateReqMapping(IContentLocator contentLocator, ILookups lookups, ICdnClient cdnClient) {
-        _contentLocator = contentLocator;
+    public DonationFormStateReqMapping(ILookups lookups, ICdnClient cdnClient) {
         _lookups = lookups;
         _cdnClient = cdnClient;
     }
@@ -33,7 +31,7 @@ public partial class DonationFormStateReqMapping : IMapDefinition {
 
     private void Map(IHoldDonationFormStateContent src, DonationFormStateReq dest, MapperContext ctx) {
         if (!src.FormState.CustomFormState.HasValue()) {
-            dest.CartItem = GetCartItemReq(src, null);
+            dest.CartItem = GetCartItemReqAsync(src, null).GetAwaiter().GetResult();
             dest.Options = GetDonationFormOptionsReq(ctx, src);
             dest.Extensions = null;
         }
