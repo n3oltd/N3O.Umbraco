@@ -20,7 +20,7 @@ public partial class DonationFormStateReqMapping {
         cartItem.Id = Guid.NewGuid().ToString();
         cartItem.Currency = currency;
 
-        var allocationIntent = src.FormState.ToAllocationIntentReq(currency);
+        var allocationIntent = src.FormState.ToAllocationIntentReq(_cdnClient, currency);
         allocationIntent.PlatformsContribution = GetPlatformsContributionInfoReq(src);
 
         SetCartItemAllocation(cartItem, allocationIntent, src.FormState.SuggestedGiftType);
