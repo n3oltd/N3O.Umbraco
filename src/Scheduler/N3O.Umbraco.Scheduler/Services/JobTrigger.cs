@@ -71,7 +71,6 @@ public class JobTrigger {
     private string GetUrl() {
         var baseUrl = _jobUrlProvider.GetBaseUrl();
         var url = new Url(baseUrl).AppendPathSegment("/umbraco/api/JobProxy/executeProxied");
-        url.Scheme =  "https";
 
         return url;
     }
