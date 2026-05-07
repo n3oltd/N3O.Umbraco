@@ -90,4 +90,44 @@ public class PlatformsDevToolsController : BackofficeAuthorizedApiController {
 
         return Task.FromResult<ActionResult>(Ok());
     }
+    
+    [HttpPost("republish/campaigns")]
+    public Task<ActionResult> RepublishAllCampaigns() {
+        var campaigns = _contentLocator.All(x => x.IsComposedOf(AliasHelper<CampaignContent>.ContentTypeAlias()))
+                                       .As<CampaignContent>();
+
+        foreach (var campaign in campaigns) {
+            try {
+                var content = _contentService.GetById(campaign.Key);
+
+                _contentService.SaveAndPublish(content);
+            } catch (Exception ex) {
+                _logger.LogError(ex,
+                                 "There was an error publishing campaign with id {campaignId}",
+                                 campaign.Content().Key.ToString());
+            }
+        }
+
+        return Task.FromResult<ActionResult>(Ok());
+    }
+    
+    [HttpPost("republish/offerings")]
+    public Task<ActionResult> RepublishAllOfferings() {
+        var offerings = _contentLocator.All(x => x.IsComposedOf(AliasHelper<OfferingContent>.ContentTypeAlias()))
+                                       .As<OfferingContent>();
+
+        foreach (var offering in offerings) {
+            try {
+                var content = _contentService.GetById(offering.Key);
+
+                _contentService.SaveAndPublish(content);
+            } catch (Exception ex) {
+                _logger.LogError(ex,
+                                 "There was an error publishing offering with id {offeringId}",
+                                 offering.Content().Key.ToString());
+            }
+        }
+
+        return Task.FromResult<ActionResult>(Ok());
+    }
 }
