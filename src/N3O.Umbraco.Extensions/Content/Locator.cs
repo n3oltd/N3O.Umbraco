@@ -65,23 +65,28 @@ public abstract class Locator : ILocator {
     }
 
     private IReadOnlyList<IPublishedContent> GetAllContent(string contentTypeAlias) {
-        return Run(c => {
-            var allContent = new List<IPublishedContent>();
+        var allContent = new List<IPublishedContent>();
 
-            foreach (var rootContent in c.GetAtRoot()) {
-                if (contentTypeAlias == null) {
-                    allContent.AddRange(rootContent.Descendants());
-                } else {
-                    if (rootContent.ContentType.Alias.EqualsInvariant(contentTypeAlias)) {
-                        allContent.Add(rootContent);
-                    }
-                
-                    allContent.AddRange(rootContent.DescendantsOfType(contentTypeAlias));
-                }
+        foreach (var rootKey in GetRootKeys()) {
+            var rootContent = Run(c => c.GetById(rootKey));
+
+            if (rootContent == null) {
+                continue;
             }
 
-            return allContent;
-        });
+            if (contentTypeAlias == null) {
+                allContent.Add(rootContent);
+                allContent.AddRange(rootContent.Descendants());
+            } else {
+                if (rootContent.ContentType.Alias.EqualsInvariant(contentTypeAlias)) {
+                    allContent.Add(rootContent);
+                }
+
+                allContent.AddRange(rootContent.DescendantsOfType(contentTypeAlias));
+            }
+        }
+
+        return allContent;
     }
 
     private T Run<T>(Func<IPublishedCache, T> func) {
@@ -90,6 +95,8 @@ public abstract class Locator : ILocator {
         // as won't be able to get published content snapshot.
         return func(GetCache(_umbracoContextAccessor));
     }
+
+    protected abstract IEnumerable<Guid> GetRootKeys();
 
     protected abstract IPublishedCache GetCache(IUmbracoContextAccessor umbracoContextAccessor);
 }

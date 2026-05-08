@@ -37,7 +37,7 @@ public abstract class CmsStartup {
                 .AddWebsite()
                 .AddDeliveryApi()
                 .AddComposers()
-                .AddContentment(opt => opt.DisableTelemetry = true)
+                // TODO: Re-add .AddContentment() when Our.Umbraco.Community.Contentment publishes a v17-compatible release
                 .Build();
     }
 
@@ -66,7 +66,6 @@ public abstract class CmsStartup {
                ConfigureMiddleware(u);
            })
            .WithEndpoints(u => {
-               u.UseInstallerEndpoints();
                u.UseBackOfficeEndpoints();
                u.UseWebsiteEndpoints();
 

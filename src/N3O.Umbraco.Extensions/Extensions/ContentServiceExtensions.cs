@@ -66,4 +66,22 @@ public static class ContentServiceExtensions {
     public static IContent GetSettingsRoot(this IContentService contentService) {
         return contentService.GetRootContent().Single(x => x.ContentType.Alias.EqualsInvariant("settings"));
     }
+    
+    public static PublishResult SaveAndPublish(this IContentService contentService, IContent content) {
+        var savedNode = contentService.Save(content);
+        
+        /*TODO*/
+        if (!savedNode.Success) {
+            throw new Exception("Error when saving node");
+        }
+        
+        var publishedNode = contentService.Publish(content, ["*"]);
+        
+        /*TODO*/
+        if (!publishedNode.Success) {
+            throw new Exception("Error when publishing the content");
+        }
+        
+        return publishedNode;
+    }
 }

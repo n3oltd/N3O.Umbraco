@@ -9,9 +9,7 @@ public class NotificationHandlerSkipper : INotificationHandlerSkipper {
                                           TNotification notification)
         where TNotification : INotification {
         if (handler.GetType() == typeof(ApplicationStarted) ||
-            handler.GetType() == typeof(ContentSending) ||
-            handler.GetType() == typeof(ContentSaving) ||
-            handler.GetType() == typeof(NodesRendering)) {
+            handler.GetType() == typeof(ContentSaving)) {
             return FeatureFlags.IsNotSet(FeatureFlags.DynamicListViews);
         }
 

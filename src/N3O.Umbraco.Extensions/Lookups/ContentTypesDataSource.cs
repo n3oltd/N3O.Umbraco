@@ -9,7 +9,7 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
-using Umbraco.Cms.Core.Web;
+using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Community.Contentment.DataEditors;
 using Umbraco.Extensions;
 
@@ -19,12 +19,12 @@ public class ContentTypesDataSource : IDataPickerSource, IDataSourceValueConvert
     private static readonly ConcurrentDictionary<Guid, string> ContentTypeAliases = new();
     
     private readonly IContentTypeService _contentTypeService;
-    private readonly IUmbracoContextAccessor _umbracoContextAccessor;
-    
+    private readonly IPublishedContentTypeFactory _publishedContentTypeFactory;
+
     public ContentTypesDataSource(IContentTypeService contentTypeService,
-                                  IUmbracoContextAccessor umbracoContextAccessor) {
+                                  IPublishedContentTypeFactory publishedContentTypeFactory) {
         _contentTypeService = contentTypeService;
-        _umbracoContextAccessor = umbracoContextAccessor;
+        _publishedContentTypeFactory = publishedContentTypeFactory;
     }
 
     public string Name => "Umbraco Content Types";
@@ -90,7 +90,8 @@ public class ContentTypesDataSource : IDataPickerSource, IDataSourceValueConvert
             return contentType.Alias;
         });
 
-        return _umbracoContextAccessor.GetContentCache().GetContentType(alias);
+        var contentType = _contentTypeService.Get(alias);
+        return contentType != null ? _publishedContentTypeFactory.CreateContentType(contentType) : default;
     }
     
     private DataListItem ToDataListItem(IContentType contentType) {

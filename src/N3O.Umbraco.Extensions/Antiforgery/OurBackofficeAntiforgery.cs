@@ -44,7 +44,7 @@ public class OurBackofficeAntiforgery : IBackOfficeAntiforgery {
             throw new InvalidOperationException("Could not resolve a request token.");
         }
 
-        httpContext.Response.Cookies.Append(WebConstants.Web.AngularCookieName,
+        httpContext.Response.Cookies.Append(WebConstants.Web.CsrfValidationCookieName,
                                             set.RequestToken,
                                             _angularCookieBuilder.Build(httpContext));
     }

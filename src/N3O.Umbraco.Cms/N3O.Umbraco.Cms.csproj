@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Cms</RootNamespace>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Copyright>Copyright © 2026 N3O Ltd</Copyright>
         <NoWarn>NU1605;1591</NoWarn>
@@ -33,6 +33,9 @@
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
     <ItemGroup>
+        <Content Include="App_Plugins\N3O.Umbraco.DynamicListViews\dynamic-list-view-condition.js" />
+        <Content Include="App_Plugins\N3O.Umbraco.DynamicListViews\dynamic-list-view.js" />
+        <Content Include="App_Plugins\N3O.Umbraco.DynamicListViews\umbraco-package.json" />
         <Content Include="App_Static\**\*.*">
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
@@ -46,13 +49,26 @@
         <ProjectReference Include="..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Diplo.GodMode" Version="13.1.0" />
-        <PackageReference Include="Our.Umbraco.Community.Contentment" Version="4.7.0" />
-        <PackageReference Include="Umbraco.Cms" Version="13.14.0.0" />
+        <PackageReference Include="Diplo.GodMode" Version="17.0.0" />
+        <!-- TODO: Our.Umbraco.Community.Contentment has no Umbraco 17 release yet — blocker.
+             The full package pulls in Umbraco.Cms.Web.BackOffice 13.x which conflicts with v17.
+             Using Core package only until a v17-compatible release is available. -->
+        <PackageReference Include="Our.Umbraco.Community.Contentment.Core" Version="4.7.0" />
+        <PackageReference Include="Umbraco.Cms" Version="17.3.5" />
     </ItemGroup>
     <ItemGroup>
         <None Update="README.md">
             <Pack>True</Pack>
         </None>
     </ItemGroup>
+    <!-- Strip the Umbraco.Cms.Web.BackOffice 13.x assembly that Contentment.Core transitively pulls in.
+         It conflicts with Umbraco.Cms.Api.Management 17.x which defines the same extension methods. -->
+    <Target Name="ExcludeLegacyUmbracoBackOffice" AfterTargets="ResolveAssemblyReferences">
+        <ItemGroup>
+            <ReferencePath Remove="@(ReferencePath)"
+                           Condition="$([System.String]::Copy('%(Identity)').ToLower().Contains('umbraco.cms.web.backoffice'))" />
+            <ReferencePathWithRefAssemblies Remove="@(ReferencePathWithRefAssemblies)"
+                                            Condition="$([System.String]::Copy('%(Identity)').ToLower().Contains('umbraco.cms.web.backoffice'))" />
+        </ItemGroup>
+    </Target>
 </Project>

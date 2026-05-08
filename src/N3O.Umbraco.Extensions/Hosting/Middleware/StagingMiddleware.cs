@@ -24,25 +24,24 @@ public class StagingMiddleware : IMiddleware {
     private readonly IUmbracoContextFactory _umbracoContextFactory;
     private readonly Lazy<IRemoteIpAddressAccessor> _remoteIpAddressAccessor;
     private readonly Lazy<IOptionsSnapshot<CookieAuthenticationOptions>> _cookieAuthenticationOptions;
+    private readonly Lazy<IContentLocator> _contentLocator;
 
     public StagingMiddleware(IUmbracoContextFactory umbracoContextFactory,
                              Lazy<IRemoteIpAddressAccessor> remoteIpAddressAccessor,
-                             Lazy<IOptionsSnapshot<CookieAuthenticationOptions>> cookieAuthenticationOptions) {
+                             Lazy<IOptionsSnapshot<CookieAuthenticationOptions>> cookieAuthenticationOptions,
+                             Lazy<IContentLocator> contentLocator) {
         _umbracoContextFactory = umbracoContextFactory;
         _remoteIpAddressAccessor = remoteIpAddressAccessor;
         _cookieAuthenticationOptions = cookieAuthenticationOptions;
+        _contentLocator = contentLocator;
     }
 
     public async Task InvokeAsync(HttpContext context, RequestDelegate next) {
         if (!context.Request.GetDisplayUrl().Contains("/umbraco", StringComparison.InvariantCultureIgnoreCase) &&
             !context.Request.GetDisplayUrl().Contains("/App_Plugins", StringComparison.InvariantCultureIgnoreCase) &&
             !context.Request.GetDisplayUrl().Contains("/sb", StringComparison.InvariantCultureIgnoreCase)) {
-            var umbracoContextReference = _umbracoContextFactory.EnsureUmbracoContext();
-            var umbracoContext = umbracoContextReference.UmbracoContext;
-            var contentType = umbracoContext.Content.GetContentType(StagingSettingsAlias);
-            var stagingSettings = contentType.IfNotNull(x => umbracoContext.Content.GetByContentType(x))
-                                            ?.SingleOrDefault()
-                                            ?.As<StagingSettingsContent>();
+            using var umbracoContextReference = _umbracoContextFactory.EnsureUmbracoContext();
+            var stagingSettings = _contentLocator.Value.Single<StagingSettingsContent>();
 
             if (stagingSettings != null) {
                 var remoteIp = _remoteIpAddressAccessor.Value.GetRemoteIpAddress().ToString();

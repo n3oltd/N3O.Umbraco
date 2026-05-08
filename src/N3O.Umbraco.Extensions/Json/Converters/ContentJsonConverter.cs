@@ -19,17 +19,20 @@ public class ContentJsonConverter : JsonConverter {
     private readonly Lazy<IPublishedModelFactory> _publishedModelFactory;
     private readonly Lazy<IPublishedContentTypeFactory> _contentTypeFactory;
     private readonly Lazy<IUserService> _userService;
+    private readonly Lazy<IContentTypeService> _contentTypeService;
 
     public ContentJsonConverter(Lazy<PropertyValueConverterCollection> propertyValueConverters,
                                 Lazy<IUmbracoContextAccessor> publsihedContentCache,
                                 Lazy<IPublishedModelFactory> publishedModelFactory,
                                 Lazy<IPublishedContentTypeFactory> contentTypeFactory,
-                                Lazy<IUserService> userService) {
+                                Lazy<IUserService> userService,
+                                Lazy<IContentTypeService> contentTypeService) {
         _propertyValueConverters = propertyValueConverters;
         _publsihedContentCache = publsihedContentCache;
         _publishedModelFactory = publishedModelFactory;
         _contentTypeFactory = contentTypeFactory;
         _userService = userService;
+        _contentTypeService = contentTypeService;
     }
 
     public override bool CanRead => false;
@@ -103,7 +106,8 @@ public class ContentJsonConverter : JsonConverter {
             return null;
         }
         
-        var contentType = _publsihedContentCache.Value.GetContentCache().GetContentType(contentTypeAlias);
+        var rawContentType = _contentTypeService.Value.Get(contentTypeAlias);
+        var contentType = rawContentType != null ? _contentTypeFactory.Value.CreateContentType(rawContentType) : null;
         var publishedPropertyType = new PublishedPropertyType(contentType,
                                                               property.PropertyType,
                                                               _propertyValueConverters.Value,

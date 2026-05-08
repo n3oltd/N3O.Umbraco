@@ -10,7 +10,7 @@ namespace N3O.Umbraco.Antiforgery;
 public class AntiforgeryComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.Configure<AntiforgeryOptions>(options => {
-            options.HeaderName = WebConstants.Web.AngularHeadername;
+            options.HeaderName = "X-UMB-XSRF-TOKEN";
             options.Cookie.Name = WebConstants.Web.CsrfValidationCookieName;
         });
 
