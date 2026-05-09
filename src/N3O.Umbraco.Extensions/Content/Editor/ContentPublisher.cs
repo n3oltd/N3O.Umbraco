@@ -10,7 +10,7 @@ public class ContentPublisher : IContentPublisher {
     private readonly IContentService _contentService;
     private readonly IContent _content;
     
-    private int _newParentId;
+    private int? _newParentId;
 
     public ContentPublisher(IServiceProvider serviceProvider, IContentService contentService, IContent content) {
         Content = new ContentBuilder(serviceProvider, content.ContentType.Alias);
@@ -65,7 +65,7 @@ public class ContentPublisher : IContentPublisher {
         var result = save();
 
         if (_newParentId.HasValue() && _newParentId != _content.ParentId) {
-            _contentService.Move(_content, _newParentId);
+            _contentService.Move(_content, _newParentId.GetValueOrThrow());
         }
 
         return result;
