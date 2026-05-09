@@ -16,13 +16,16 @@ namespace N3O.Umbraco.Sync.Extensions.Handlers;
 
 [RecurringJob("Trigger Data Sync", "*/5 * * * *")]
 public class TriggerDataSyncHandler : IRequestHandler<TriggerDataSyncCommand, None, None> {
+    private readonly IHttpClientFactory _httpClientFactory;
     private readonly IJsonProvider _jsonProvider;
     private readonly IUrlBuilder _urlBuilder;
     private readonly IReadOnlyList<IDataSyncProducer> _producers;
 
     public TriggerDataSyncHandler(IEnumerable<IDataSyncProducer> producers,
+                                  IHttpClientFactory httpClientFactory,
                                   IJsonProvider jsonProvider,
                                   IUrlBuilder urlBuilder) {
+        _httpClientFactory = httpClientFactory;
         _producers = producers.ToList();
         _jsonProvider = jsonProvider;
         _urlBuilder = urlBuilder;
@@ -64,17 +67,15 @@ public class TriggerDataSyncHandler : IRequestHandler<TriggerDataSyncCommand, No
     
     private async Task SyncDataAsync(SyncDataReq syncDataReq, string providerId) {
         var baseUrl = _urlBuilder.Root().ToString().TrimEnd('/');
-        
-        using (var httpClient = new HttpClient()) {
-            var reqStr = _jsonProvider.SerializeObject(syncDataReq);
-            
-            var request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/umbraco/api/SyncExtensions/{providerId}/syncData");
-            request.Content = new StringContent(reqStr, null, "application/json");
-            request.Headers.Add("accept", "*/*");
+        var httpClient = _httpClientFactory.CreateClient();
+        var reqStr = _jsonProvider.SerializeObject(syncDataReq);
 
-            var response = await httpClient.SendAsync(request);
-            
-            response.EnsureSuccessStatusCode();
-        }
+        var request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/umbraco/api/SyncExtensions/{providerId}/syncData");
+        request.Content = new StringContent(reqStr, null, "application/json");
+        request.Headers.Add("accept", "*/*");
+
+        var response = await httpClient.SendAsync(request);
+
+        response.EnsureSuccessStatusCode();
     }
 }
