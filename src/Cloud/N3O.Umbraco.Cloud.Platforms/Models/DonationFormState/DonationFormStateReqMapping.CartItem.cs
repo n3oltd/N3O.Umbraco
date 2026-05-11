@@ -22,7 +22,13 @@ public partial class DonationFormStateReqMapping {
         cartItem.Id = Guid.NewGuid().ToString();
         cartItem.Currency = currency;
 
-        var allocationIntent = await src.FormState.ToAllocationIntentReqAsync(_cdnClient, currency);
+        var amount = 0d;
+        
+        if (src is CrossSellContent crossSellContent && crossSellContent.Amount.HasValue()) {
+            amount = (double) crossSellContent.Amount;
+        }
+
+        var allocationIntent = await src.FormState.ToAllocationIntentReqAsync(_cdnClient, currency, amount);
         allocationIntent.PlatformsContribution = GetPlatformsContributionInfoReq(src);
 
         SetCartItemAllocation(cartItem, allocationIntent, src.FormState.SuggestedGiftType);

@@ -2,6 +2,7 @@ using N3O.Umbraco.Cloud.Platforms.Content;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Giving.Allocations;
+using N3O.Umbraco.Giving.Allocations.Extensions;
 using N3O.Umbraco.Giving.Allocations.Lookups;
 using N3O.Umbraco.Giving.Allocations.Models;
 using N3O.Umbraco.Lookups;
@@ -20,6 +21,10 @@ public class FeedbackCrossSellValidator : CrossSellValidator {
 
     protected override IFundDimensionOptions GetFundDimensionOptions(ContentProperties content) {
         return GetFeedbackScheme(content)?.FundDimensionOptions;
+    }
+
+    protected override bool HasLockedPrice(ContentProperties content) {
+        return GetFeedbackScheme(content).HasLockedPrice();
     }
 
     private FeedbackScheme GetFeedbackScheme(ContentProperties content) {

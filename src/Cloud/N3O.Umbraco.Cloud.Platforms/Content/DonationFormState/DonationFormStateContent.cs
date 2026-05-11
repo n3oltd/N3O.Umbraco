@@ -65,6 +65,7 @@ public class DonationFormStateContent : UmbracoContent<DonationFormStateContent>
             if (Type == AllocationTypes.Qurbani) {
                 return Qurbani?.QurbaniItem?.Price != null;
             }
+            
             return ((IHoldPricing) Fund?.DonationItem ?? Feedback?.Scheme).HasPricing();
         }
     }

@@ -9,6 +9,8 @@ using System.Collections.Generic;
 namespace N3O.Umbraco.Cloud.Platforms.Validators;
 
 public abstract class CrossSellValidator : ContentValidator {
+    private static readonly string AmountAlias = AliasHelper<CrossSellContent>.PropertyAlias(x => x.Amount);
+    
     private readonly ILookups _lookups;
     private readonly IFundStructureAccessor _fundStructureAccessor;
 
@@ -25,16 +27,22 @@ public abstract class CrossSellValidator : ContentValidator {
     }
 
     public override void Validate(ContentProperties content) {
+       ValidateFundDimensions(content);
+       ValidateAmount(content);
+    }
+
+    protected abstract IFundDimensionOptions GetFundDimensionOptions(ContentProperties content);
+    protected abstract bool HasLockedPrice(ContentProperties content);
+    protected abstract string ContentTypeAlias { get; }
+
+    private void ValidateFundDimensions(ContentProperties content) {
         var fundDimensionOptions = GetFundDimensionOptions(content);
 
         if (fundDimensionOptions != null) {
             ValidateFixedDimension(content, fundDimensionOptions);
         }
     }
-
-    protected abstract IFundDimensionOptions GetFundDimensionOptions(ContentProperties content);
-    protected abstract string ContentTypeAlias { get; }
-
+    
     private void ValidateFixedDimension(ContentProperties content, IFundDimensionOptions fundDimensionOptions) {
         var fundStructure = _fundStructureAccessor.GetFundStructure();
             
@@ -42,6 +50,18 @@ public abstract class CrossSellValidator : ContentValidator {
         HasFixedDimension(content, fundDimensionOptions.Dimension2, AliasHelper<DonationFormStateContent>.PropertyAlias(x => x.Dimension2), fundStructure.Dimension2.IsActive);
         HasFixedDimension(content, fundDimensionOptions.Dimension3, AliasHelper<DonationFormStateContent>.PropertyAlias(x => x.Dimension3), fundStructure.Dimension3.IsActive);
         HasFixedDimension(content, fundDimensionOptions.Dimension4, AliasHelper<DonationFormStateContent>.PropertyAlias(x => x.Dimension4), fundStructure.Dimension4.IsActive);
+    }
+    
+    private void ValidateAmount(ContentProperties content) {
+        var amount = content.GetPropertyValueByAlias<decimal?>(AmountAlias);
+        
+        if (ContentTypeAlias == PlatformsConstants.CrossSells.Sponsorship) {
+            ErrorResult("Sponsorship item cannot have an amount");
+        }
+
+        if (HasLockedPrice(content) && amount.HasValue()) {
+            ErrorResult("Amount cannot be specified");
+        }
     }
 
     private void HasFixedDimension<T>(ContentProperties content,
