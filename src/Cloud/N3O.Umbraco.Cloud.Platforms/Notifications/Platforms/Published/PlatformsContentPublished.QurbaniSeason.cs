@@ -26,7 +26,7 @@ public class QurbaniSeasonPublished : CloudContentPublished {
     }
     
     protected override bool CanProcess(IContent content) {
-        return content.IsQurbaniSeasonContent();
+        return content.IsQurbaniSeasonContent() || content.IsQurbaniSeasonCategoryContent();
     }
 
     protected override Task<object> GetBodyAsync(IContent content) {
