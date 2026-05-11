@@ -25,8 +25,6 @@ public class GeneratePublishedCompositionsHandler : IRequestHandler<GeneratePubl
     }
     
     public async Task<None> Handle(GeneratePublishedCompositionsCommand req, CancellationToken cancellationToken) {
-        _logger.LogWarning("Generating compositions for path {Path}", "platforms/compositions");
-        
         var relativeUrlPath = "platforms/compositions";
         var compositionsDirectory = WebRoot.GetDirectory(_webHostEnvironment,
                                                          Path.Combine("platforms", "compositions"));
@@ -87,7 +85,7 @@ public class GeneratePublishedCompositionsHandler : IRequestHandler<GeneratePubl
                     var publishedAsset = new PublishedAsset();
                     publishedAsset.Reference = $"FSA_{assetNumber}";
                     publishedAsset.Number = assetNumber;
-                    publishedAsset.Url = $"{relativeUrlPath}/{assetNumber}/{assetsDirectory.GetFiles().Single().Name}";
+                    publishedAsset.Url = $"{relativeUrlPath}/{assetNumber}/{assetDirectory.GetFiles().Single().Name}";
 
                     publishedAssets[assetNumber.GetValueOrThrow()] = publishedAsset;
                 }
