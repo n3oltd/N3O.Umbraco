@@ -15,8 +15,8 @@ public abstract class CrossSellValidator : ContentValidator {
     private readonly IFundStructureAccessor _fundStructureAccessor;
 
     protected CrossSellValidator(IContentHelper contentHelper,
-                                ILookups lookups,
-                                IFundStructureAccessor fundStructureAccessor)
+                                 ILookups lookups,
+                                 IFundStructureAccessor fundStructureAccessor)
         : base(contentHelper) {
         _lookups = lookups;
         _fundStructureAccessor = fundStructureAccessor;
