@@ -81,7 +81,11 @@ public class CdnClient : ICdnClient {
         var download = Downloads.GetOrDefault(publishedUrl);
             
         if (download == null || download.IsExpired(_clock) || download.CanRetry(_clock)) {
-            Downloads[publishedUrl] = await DownloadStringAsync(publishedUrl, cancellationToken);
+            var cdnDownloadResult = await DownloadStringAsync(publishedUrl, cancellationToken);
+
+            if (download == null || cdnDownloadResult.Success) {
+                Downloads[publishedUrl] = cdnDownloadResult;
+            }
         }
 
         return Downloads[publishedUrl].Content;
