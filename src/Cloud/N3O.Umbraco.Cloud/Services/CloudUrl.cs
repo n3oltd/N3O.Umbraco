@@ -56,6 +56,14 @@ public class CloudUrl : ICloudUrl {
         return url;
     }
 
+    public string ForLinkBuilder(string path) {
+        var url = new Url("https://linkbuilder.n3o.cloud");
+        url.AppendPathSegment(_subscription.DataRegion.Slug);
+        url.AppendPathSegment(path);
+
+        return url;
+    }
+
     public string ForWebhook(string webhookId) {
         var url = GetEngageApiBaseUrl();
         url.AppendPathSegment($"{_subscription.DataRegion.Slug}/hooks");
