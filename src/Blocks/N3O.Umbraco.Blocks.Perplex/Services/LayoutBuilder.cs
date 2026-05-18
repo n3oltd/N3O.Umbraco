@@ -1,6 +1,7 @@
 using Humanizer;
 using N3O.Umbraco.Utilities;
 using System;
+using System.Text.RegularExpressions;
 
 namespace N3O.Umbraco.Blocks.Perplex;
 
@@ -18,16 +19,20 @@ public class LayoutBuilder : ILayoutBuilder {
 
     public LayoutDefinition Build(string blockAlias) {
         Validate();
-    
+
         var id = UmbracoId.Generate(IdScope.BlockLayout, blockAlias, _name);
 
         var definition = new LayoutDefinition(id,
                                               _name,
                                               _description,
-                                              $"/assets/blocks/{blockAlias.Camelize()}/{_name.Camelize()}.png",
-                                              $"/Views/Blocks/{blockAlias.Pascalize()}/{_name.Pascalize()}.cshtml");
+                                              $"/assets/blocks/{blockAlias.Camelize()}/{ToViewFileName(_name).Camelize()}.png",
+                                              $"/Views/Blocks/{blockAlias.Pascalize()}/{ToViewFileName(_name)}.cshtml");
 
         return definition;
+    }
+
+    private static string ToViewFileName(string name) {
+        return Regex.Replace(name, @"(?:^|[_\s-]+)(.)", m => m.Groups[1].Value.ToUpper());
     }
 
     private void Validate() {
