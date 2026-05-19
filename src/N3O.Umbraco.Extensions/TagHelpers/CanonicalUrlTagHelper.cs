@@ -11,9 +11,17 @@ public class CanonicalUrlTagHelper : TagHelper {
     public IPageViewModel Model { get; set; }
 
     public override void Process(TagHelperContext context, TagHelperOutput output) {
+        var url = Model?.Content.AbsoluteUrl();
+
+        if (string.IsNullOrWhiteSpace(url)) {
+            output.SuppressOutput();
+            return;
+        }
+        
         output.TagName = "link";
         output.TagMode = TagMode.SelfClosing;
         
-        output.Attributes.SetAttribute("href", Model.Content.AbsoluteUrl());
+        output.Attributes.SetAttribute("rel", "canonical");
+        output.Attributes.SetAttribute("href", url);
     }
 }
