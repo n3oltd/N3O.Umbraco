@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +12,7 @@ using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Utilities;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
 using Umbraco.Extensions;
@@ -57,6 +59,10 @@ public abstract class CmsStartup {
                     appBuilder => appBuilder.UseStaticFiles());
         
         app.UseOpenApiWithUI();
+
+        app.UseHealthChecks("/healthz", new HealthCheckOptions {
+            ResponseWriter = (_, _) => Task.CompletedTask
+        });
 
         app.UseUmbraco()
            .WithMiddleware(u => {
