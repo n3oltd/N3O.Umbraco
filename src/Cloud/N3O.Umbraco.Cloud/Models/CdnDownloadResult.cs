@@ -4,7 +4,8 @@ namespace N3O.Umbraco.Cloud.Models;
 
 public class CdnDownloadResult {
     private static readonly Duration MaxAge = Duration.FromMinutes(5);
-    private static readonly Duration RetryInterval = Duration.FromMinutes(1);
+    // Long interval so chronic 404 paths don't keep re-fetching and saturating CdnClient's concurrency budget
+    private static readonly Duration RetryInterval = Duration.FromMinutes(15);
     
     private CdnDownloadResult(bool success, string content, Instant timestamp) {
         Success = success;

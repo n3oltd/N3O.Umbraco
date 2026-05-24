@@ -8,8 +8,6 @@ using N3O.Umbraco.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NodaTime;
-using Polly;
-using Polly.RateLimit;
 using System;
 using System.Collections.Concurrent;
 using System.Net.Http;
@@ -20,9 +18,9 @@ using JsonSerializer = N3O.Umbraco.Cloud.Lookups.JsonSerializer;
 namespace N3O.Umbraco.Cloud;
 
 public class CdnClient : ICdnClient {
-    private static readonly AsyncRateLimitPolicy RateLimitPolicy = Policy.RateLimitAsync(3, TimeSpan.FromSeconds(1), 5);
+    private static readonly SemaphoreSlim ConcurrencyLimit = new(10, 10);
     private static readonly ConcurrentDictionary<string, CdnDownloadResult> Downloads = new(StringComparer.InvariantCultureIgnoreCase);
-    
+
     private readonly ICloudUrl _cloudUrl;
     private readonly IClock _clock;
     private readonly IJsonProvider _jsonProvider;
@@ -37,9 +35,9 @@ public class CdnClient : ICdnClient {
         _clock = clock;
         _jsonProvider = jsonProvider;
         _logger = logger;
-        
+
         _httpClient = new HttpClient();
-        _httpClient.Timeout = TimeSpan.FromSeconds(5);
+        _httpClient.Timeout = TimeSpan.FromSeconds(15);
     }
 
     public async Task<string> DownloadAsync(string path, CancellationToken cancellationToken = default) {
@@ -127,14 +125,12 @@ public class CdnClient : ICdnClient {
     }
     
     private async Task<string> GetStringRateLimitedAsync(string publishedUrl, CancellationToken cancellationToken) {
-        var policyResult = await RateLimitPolicy.ExecuteAndCaptureAsync(() => {
-            return _httpClient.GetStringAsync(publishedUrl, cancellationToken);
-        });
+        await ConcurrencyLimit.WaitAsync(cancellationToken);
 
-        if (policyResult.Outcome == OutcomeType.Successful) {
-            return policyResult.Result;
-        } else {
-            throw policyResult.FinalException;
+        try {
+            return await _httpClient.GetStringAsync(publishedUrl, cancellationToken);
+        } finally {
+            ConcurrencyLimit.Release();
         }
     }
 }

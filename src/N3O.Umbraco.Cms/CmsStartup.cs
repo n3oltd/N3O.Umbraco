@@ -12,6 +12,7 @@ using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Utilities;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
@@ -26,6 +27,10 @@ public abstract class CmsStartup {
     protected CmsStartup(IWebHostEnvironment webHostEnvironment, IConfiguration configuration) {
         _webHostEnvironment = webHostEnvironment;
         _configuration = configuration;
+
+        // Default min is ProcessorCount which is too low when sites burst many concurrent async HTTP calls
+        // (e.g. at startup); thread pool grows lazily and starves
+        ThreadPool.SetMinThreads(100, 100);
 
         EnvironmentData.LoadFromConfiguration(configuration);
         DevSettings.Apply(webHostEnvironment, configuration);
