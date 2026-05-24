@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using NodaTime;
 using System;
 using System.Collections.Concurrent;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -95,6 +96,10 @@ public class CdnClient : ICdnClient {
             var download = await GetStringRateLimitedAsync(publishedUrl, cancellationToken);
 
             return CdnDownloadResult.ForSuccess(_clock, download);
+        } catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound) {
+            _logger.LogDebug("CDN 404 for {PublishedUrl}", publishedUrl);
+
+            return CdnDownloadResult.ForFailure(_clock);
         } catch (Exception ex) {
             _logger.LogWarning(ex, "Could not download {PublishedUrl}", publishedUrl);
 

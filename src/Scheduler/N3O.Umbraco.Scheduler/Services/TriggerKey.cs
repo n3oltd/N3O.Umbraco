@@ -26,9 +26,22 @@ public static class TriggerKey {
 
     public static (Type RequestType, Type ModelType) Parse(string triggerKey) {
         var bits = triggerKey.Split(Separator, StringSplitOptions.RemoveEmptyEntries);
-        var requestType = Type.GetType(bits[0]);
-        var modelType = Type.GetType(bits[1]);
+        var requestType = ResolveType(bits[0]);
+        var modelType = ResolveType(bits[1]);
 
         return (requestType, modelType);
+    }
+
+    private static Type ResolveType(string assemblyQualifiedName) {
+        var type = Type.GetType(assemblyQualifiedName);
+
+        if (type == null) {
+            throw new InvalidOperationException(
+                $"Could not resolve type '{assemblyQualifiedName}' referenced by a scheduled trigger. " +
+                $"This usually means a stale recurring job — the assembly is no longer deployed. " +
+                $"Remove the orphaned job from Hangfire (dashboard or [HangFire].[Set]/[Hash] tables).");
+        }
+
+        return type;
     }
 }
