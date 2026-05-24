@@ -1,6 +1,5 @@
 using FluentValidation;
 using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Types;
 using N3O.Umbraco.Utilities;
 using System;
 using System.Collections.Concurrent;
@@ -35,15 +34,13 @@ public class ValidatorFactory : IValidatorFactory {
     }
 
     private List<Type> GetValidatorTypesForModel(Type modelType) {
-        var key = nameof(ValidatorFactory) + nameof(GetValidatorTypesForModel) + TypeResolver.PersistedName(modelType);
-
-        return TypesCache.GetOrAdd(key, _ => {
+        return TypesCache.GetOrAdd(modelType, mt => {
             var list = new List<Type>();
-            var type = modelType;
-            
+            var type = mt;
+
             while (type != null && type != typeof(object)) {
                list.AddRangeIfNotExists(GetValidatorTypes(type));
-               
+
                type = type.BaseType;
             }
 
@@ -94,5 +91,5 @@ public class ValidatorFactory : IValidatorFactory {
     private static readonly List<Type> AllValidatorTypes =
         OurAssemblies.GetTypes(t => t.IsConcreteClass() && t.InheritsGenericClass(typeof(ModelValidator<>))).ToList();
 
-    private static readonly ConcurrentDictionary<string, List<Type>> TypesCache = new();
+    private static readonly ConcurrentDictionary<Type, List<Type>> TypesCache = new();
 }

@@ -1,15 +1,14 @@
 using Humanizer;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Internal;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Lookups;
-using N3O.Umbraco.Types;
 using N3O.Umbraco.Utilities;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core;
 
@@ -23,7 +22,7 @@ public static class ReflectionExtensions {
 
         return orderedList;
     }
-    
+
     public static IReadOnlyList<T> ApplyAttributeOrdering<T>(this IEnumerable<T> source) {
         var orderedList = source.OrderBy(x => x.GetType().HasAttribute<OrderAttribute>() ? 0 : 1)
                                 .ThenBy(x => x.GetType().GetCustomAttribute<OrderAttribute>()?.Order)
@@ -31,7 +30,7 @@ public static class ReflectionExtensions {
 
         return orderedList;
     }
-    
+
     public static MethodCallBuilder CallMethod(this object target, string name) {
         return new MethodCallBuilder(target.GetType(), target, name);
     }
@@ -39,7 +38,7 @@ public static class ReflectionExtensions {
     public static MethodCallBuilder CallStaticMethod(this Type staticType, string name) {
         return new MethodCallBuilder(staticType, null, name);
     }
-    
+
     public static TType CreateInstance<TType, TParameter1>(this Type type,
                                                            TParameter1 parameter1) {
         return CreateInstance<TType>(type, parameter1);
@@ -103,38 +102,38 @@ public static class ReflectionExtensions {
     public static TType CreateGenericInstance<TType>(this Type type, Type genericType, params object[] args) {
         return (TType)Activator.CreateInstance(type.MakeGenericType(genericType), args);
     }
-    
+
     public static void EnsurePathIsNotNull<T>(this T obj, Expression<Func<T, object>> expression) {
         var memberExpression = ExpressionUtility.ToMemberExpression(expression);
-        
+
         EnsureExists(memberExpression, obj, 1);
     }
 
     public static IEnumerable<Type> GetAllConcreteTypesInAssemblyImplementingInterface(this Assembly assembly,
                                                                                        Type interfaceType) {
-        var cacheKey = nameof(GetAllConcreteTypesInAssemblyImplementingInterface) + assembly.FullName + TypeResolver.PersistedName(interfaceType);
+        return _typesInAssemblyByInterface.GetOrAdd((assembly, interfaceType), static key => {
+            var (asm, itf) = key;
 
-        return GetOrAdd(cacheKey, () => {
             var allMatchingTypes = new List<Type>();
 
-            var nonGenericMatchingTypes = assembly.GetTypes()
-                                                  .Where(t => t.ImplementsInterface(interfaceType) &&
-                                                              t.IsConcreteClass())
-                                                  .ToList();
+            var nonGenericMatchingTypes = asm.GetTypes()
+                                             .Where(t => t.ImplementsInterface(itf) &&
+                                                         t.IsConcreteClass())
+                                             .ToList();
 
             allMatchingTypes.AddRange(nonGenericMatchingTypes);
 
-            if (interfaceType.IsGenericType) {
-                var genericInterfaceType = interfaceType.GetGenericTypeDefinition();
+            if (itf.IsGenericType) {
+                var genericInterfaceType = itf.GetGenericTypeDefinition();
 
-                var genericTypes = assembly.GetTypes()
-                                           .Where(t => t.IsConcreteClass() &&
-                                                       t.IsGenericType &&
-                                                       t.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == genericInterfaceType))
-                                           .ToList();
+                var genericTypes = asm.GetTypes()
+                                      .Where(t => t.IsConcreteClass() &&
+                                                  t.IsGenericType &&
+                                                  t.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == genericInterfaceType))
+                                      .ToList();
 
                 if (genericTypes.Any()) {
-                    var typeArguments = interfaceType.GetGenericArguments();
+                    var typeArguments = itf.GetGenericArguments();
                     var genericTypesWithParameters = genericTypes.Select(x => {
                                                                      try {
                                                                          return x.MakeGenericType(typeArguments);
@@ -149,7 +148,7 @@ public static class ReflectionExtensions {
                 }
             }
 
-            return allMatchingTypes.ToArray();
+            return (IEnumerable<Type>) allMatchingTypes.ToArray();
         });
     }
 
@@ -162,7 +161,7 @@ public static class ReflectionExtensions {
     public static PropertyInfo[] GetAllProperties(this Type type) {
         return type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
     }
-    
+
     public static Type GetCollectionType(this Type type) {
         if (type.IsArray) {
             return type.GetElementType();
@@ -176,7 +175,7 @@ public static class ReflectionExtensions {
 
         return genericParameters.SingleOrDefault() ?? type;
     }
-    
+
     public static IEnumerable<FieldInfo> GetConstantOrStaticFields(this Type type) {
         var fields = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy).ToList();
 
@@ -199,65 +198,65 @@ public static class ReflectionExtensions {
 
     public static IEnumerable<Type> GetParameterTypesForGenericInterface(this Type type,
                                                                          Type genericInterfaceType) {
-        var cacheKey = nameof(GetParameterTypesForGenericInterface) + TypeResolver.PersistedName(type) + TypeResolver.PersistedName(genericInterfaceType);
+        return _parameterTypesForGenericInterface.GetOrAdd((type, genericInterfaceType), static key => {
+            var (t, genericItf) = key;
 
-        return GetOrAdd(cacheKey, () => {
-            while (type != null && type != typeof(object)) {
+            while (t != null && t != typeof(object)) {
                 Type matchingInterfaceType;
 
-                if (type.IsInterface &&
-                    type.IsGenericType &&
-                    type.GetGenericTypeDefinition() == genericInterfaceType) {
-                    matchingInterfaceType = type;
+                if (t.IsInterface &&
+                    t.IsGenericType &&
+                    t.GetGenericTypeDefinition() == genericItf) {
+                    matchingInterfaceType = t;
                 } else {
-                    matchingInterfaceType = type.GetInterfaces()
-                                                .FirstOrDefault(x => x.IsGenericType &&
-                                                                     x.GetGenericTypeDefinition() == genericInterfaceType);
+                    matchingInterfaceType = t.GetInterfaces()
+                                             .FirstOrDefault(x => x.IsGenericType &&
+                                                                  x.GetGenericTypeDefinition() == genericItf);
                 }
 
                 if (matchingInterfaceType != null) {
-                    return matchingInterfaceType.GetGenericArguments();
+                    return (IEnumerable<Type>) matchingInterfaceType.GetGenericArguments();
                 }
 
-                type = type.BaseType;
+                t = t.BaseType;
             }
 
-            return Enumerable.Empty<Type>().ToArray();
+            return (IEnumerable<Type>) Array.Empty<Type>();
         });
     }
-    
-    public static IReadOnlyList<Type> GetGenericParameterTypesForInheritedGenericClass(this Type type, Type genericClassType) {
-        var cacheKey = nameof(GetGenericParameterTypesForInheritedGenericClass) + TypeResolver.PersistedName(type) + TypeResolver.PersistedName(genericClassType);
 
-        return GetOrAdd(cacheKey, () => {
-            while (type != null && type != typeof(object)) {
-                if (type.IsGenericType && type.GetGenericTypeDefinition() == genericClassType) {
-                    return type.GetGenericArguments();
+    public static IReadOnlyList<Type> GetGenericParameterTypesForInheritedGenericClass(this Type type, Type genericClassType) {
+        return _genericParameterTypesForInheritedGenericClass.GetOrAdd((type, genericClassType), static key => {
+            var (t, genericCls) = key;
+
+            while (t != null && t != typeof(object)) {
+                if (t.IsGenericType && t.GetGenericTypeDefinition() == genericCls) {
+                    return (IReadOnlyList<Type>) t.GetGenericArguments();
                 }
 
-                type = type.BaseType;
+                t = t.BaseType;
             }
 
-            return Enumerable.Empty<Type>().ToArray();
+            return (IReadOnlyList<Type>) Array.Empty<Type>();
         });
     }
 
     public static IEnumerable<Type> GetParameterTypesForGenericClass(this Type type, Type genericClassType) {
-        var cacheKey = nameof(GetParameterTypesForGenericClass) + TypeResolver.PersistedName(type) + TypeResolver.PersistedName(genericClassType);
+        return _parameterTypesForGenericClass.GetOrAdd((type, genericClassType), static key => {
+            var (t, genericCls) = key;
 
-        return GetOrAdd(cacheKey, () => {
-            while (type != null && type != typeof(object)) {
-                if (type.IsGenericType && type.GetGenericTypeDefinition() == genericClassType) {
-                    return type.GetGenericArguments();
+            while (t != null && t != typeof(object)) {
+                if (t.IsGenericType && t.GetGenericTypeDefinition() == genericCls) {
+                    return (IEnumerable<Type>) t.GetGenericArguments();
                 }
 
-                type = type.BaseType;
+                t = t.BaseType;
             }
 
-            return Enumerable.Empty<Type>().ToArray();
+            return (IEnumerable<Type>) Array.Empty<Type>();
         });
     }
-    
+
     public static string GetFriendlyName(this Type type) {
         if (type == typeof(int)) {
             return "int";
@@ -291,7 +290,7 @@ public static class ReflectionExtensions {
 
         return property;
     }
-    
+
     public static PropertyInfo GetPropertyInfo<T1>(this Expression<Func<T1, object>> expr) {
         var memberExpression = ExpressionUtility.ToMemberExpression(expr);
         var propertyInfo = (PropertyInfo) memberExpression.Member;
@@ -336,11 +335,9 @@ public static class ReflectionExtensions {
     }
 
     public static Type GetValueTypeForNullableType(this Type type) {
-        var cacheKey = nameof(GetValueTypeForNullableType) + TypeResolver.PersistedName(type);
-
-        return GetOrAdd(cacheKey, () => type.GetParameterTypesForGenericClass(typeof(Nullable<>)).Single());
+        return _valueTypeForNullableType.GetOrAdd(type, static t => t.GetParameterTypesForGenericClass(typeof(Nullable<>)).Single());
     }
-    
+
     public static bool HasAttribute<TAttribute>(this Type type) where TAttribute : Attribute {
         return type.GetCustomAttributes<TAttribute>().HasAny();
     }
@@ -366,11 +363,9 @@ public static class ReflectionExtensions {
     }
 
     public static bool HasParameterlessConstructor(this Type type) {
-        var cacheKey = nameof(HasParameterlessConstructor) + TypeResolver.PersistedName(type);
-
-        return GetOrAdd(cacheKey, type.GetConstructor([]) != null);
+        return _hasParameterlessConstructor.GetOrAdd(type, static t => t.GetConstructor([]) != null);
     }
-    
+
     public static bool HasProperty(this object obj,
                                    string name,
                                    StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase) {
@@ -378,9 +373,7 @@ public static class ReflectionExtensions {
     }
 
     public static bool IsConcreteClass(this Type type) {
-        var cacheKey = nameof(IsConcreteClass) + TypeResolver.PersistedName(type);
-
-        return GetOrAdd(cacheKey, type.IsClass && !type.IsAbstract);
+        return type.IsClass && !type.IsAbstract;
     }
 
     public static bool ImplementsInterface<TInterface>(this Type type) {
@@ -392,9 +385,7 @@ public static class ReflectionExtensions {
             throw new Exception($"{interfaceType.FullName.Quote()} is either not an interface or is not a constructed generic type");
         }
 
-        var cacheKey = nameof(ImplementsInterface) + TypeResolver.PersistedName(type) + TypeResolver.PersistedName(interfaceType);
-
-        return GetOrAdd(cacheKey, interfaceType.IsAssignableFrom(type));
+        return _implementsInterface.GetOrAdd((type, interfaceType), static key => key.Item2.IsAssignableFrom(key.Item1));
     }
 
     public static bool ImplementsGenericInterface(this Type type, Type genericInterfaceType) {
@@ -406,19 +397,19 @@ public static class ReflectionExtensions {
             throw new Exception($"{genericInterfaceType.FullName.Quote()} is not an open generic interface type");
         }
 
-        var cacheKey = nameof(ImplementsGenericInterface) + TypeResolver.PersistedName(type) + TypeResolver.PersistedName(genericInterfaceType);
+        return _implementsGenericInterface.GetOrAdd((type, genericInterfaceType), static key => {
+            var (t, genericItf) = key;
 
-        return GetOrAdd(cacheKey, () => {
-            while (type != null && type != typeof(object)) {
-                if (type.IsInterface) {
-                    if (type.IsGenericType && type.GetGenericTypeDefinition() == genericInterfaceType) {
+            while (t != null && t != typeof(object)) {
+                if (t.IsInterface) {
+                    if (t.IsGenericType && t.GetGenericTypeDefinition() == genericItf) {
                         return true;
                     }
-                } else if (type.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == genericInterfaceType)) {
+                } else if (t.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == genericItf)) {
                     return true;
                 }
 
-                type = type.BaseType;
+                t = t.BaseType;
             }
 
             return false;
@@ -426,47 +417,35 @@ public static class ReflectionExtensions {
     }
 
     public static bool InheritsGenericClass(this Type type, Type genericClassType) {
-        var cacheKey = nameof(InheritsGenericClass) + TypeResolver.PersistedName(type) + TypeResolver.PersistedName(genericClassType);
+        return _inheritsGenericClass.GetOrAdd((type, genericClassType), static key => {
+            var (t, genericCls) = key;
 
-        return GetOrAdd(cacheKey, () => {
-            while (type != null && type != typeof(object)) {
-                if (type.IsGenericType && type.GetGenericTypeDefinition() == genericClassType) {
+            while (t != null && t != typeof(object)) {
+                if (t.IsGenericType && t.GetGenericTypeDefinition() == genericCls) {
                     return true;
                 }
 
-                type = type.BaseType;
+                t = t.BaseType;
             }
 
             return false;
         });
     }
-    
+
     public static bool IsCollectionType(this Type type) {
         return (type.IsArray || type.ImplementsGenericInterface(typeof(IEnumerable<>))) && type != typeof(string);
     }
 
     public static bool IsLookup(this Type type) {
-        var cacheKey = nameof(IsLookup) + TypeResolver.PersistedName(type);
-
-        return GetOrAdd(cacheKey, type.ImplementsInterface<ILookup>());
+        return type.ImplementsInterface<ILookup>();
     }
-    
+
     public static bool IsNullableType(this Type type) {
-        var cacheKey = nameof(IsNullableType) + TypeResolver.PersistedName(type);
-
-        return GetOrAdd(cacheKey, () => {
-            if (type.IsGenericType) {
-                return type.GetGenericTypeDefinition() == typeof(Nullable<>);
-            }
-
-            return false;
-        });
+        return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
     }
 
     public static bool IsOfTypeOrNullableType<T>(this Type type) where T : struct {
-        var cacheKey = nameof(IsOfTypeOrNullableType) + TypeResolver.PersistedName(type) + TypeResolver.PersistedName(typeof(T));
-
-        return GetOrAdd(cacheKey, type == typeof(T) || type == typeof(T?));
+        return type == typeof(T) || type == typeof(T?);
     }
 
     public static bool IsSystemType(this Type type) {
@@ -474,37 +453,35 @@ public static class ReflectionExtensions {
     }
 
     public static bool IsSubclassOfType(this Type type, Type otherType) {
-        var cacheKey = nameof(IsSubclassOfType) + TypeResolver.PersistedName(type) + TypeResolver.PersistedName(otherType);
-
-        return GetOrAdd(cacheKey, type.IsSubclassOf(otherType));
+        return _isSubclassOfType.GetOrAdd((type, otherType), static key => key.Item1.IsSubclassOf(key.Item2));
     }
 
     public static bool IsSubclassOrSubInterfaceOfGenericType(this Type type, Type genericType) {
-        var cacheKey = nameof(IsSubclassOrSubInterfaceOfGenericType) + TypeResolver.PersistedName(type) + TypeResolver.PersistedName(genericType);
+        return _isSubclassOrSubInterfaceOfGenericType.GetOrAdd((type, genericType), static key => {
+            var (t, generic) = key;
 
-        return GetOrAdd(cacheKey, () => {
-            if (!genericType.IsGenericType) {
-                throw new Exception($"{genericType.FullName.Quote()} is not a generic type");
+            if (!generic.IsGenericType) {
+                throw new Exception($"{generic.FullName.Quote()} is not a generic type");
             }
 
-            while (type != null && type != typeof(object)) {
-                var currentType = type.IsGenericType ? type.GetGenericTypeDefinition() : type;
+            while (t != null && t != typeof(object)) {
+                var currentType = t.IsGenericType ? t.GetGenericTypeDefinition() : t;
 
-                if (genericType == currentType) {
+                if (generic == currentType) {
                     return true;
                 }
 
-                type = type.BaseType;
+                t = t.BaseType;
             }
 
             return false;
         });
     }
-    
+
     public static void SetPropertyValue(this object obj, string name, object value, StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase) {
         obj.GetPropertyInfo(name, stringComparison).SetValue(obj, value);
     }
-    
+
     private static object EnsureExists(MemberExpression node, object target, int depth) {
         if (node.Expression is MemberExpression innerExpression) {
             target = EnsureExists(innerExpression, target, depth + 1);
@@ -514,7 +491,7 @@ public static class ReflectionExtensions {
             var propertyInfo = (PropertyInfo) node.Member;
             var propertyType = propertyInfo.PropertyType;
             var propertyValue = propertyInfo.GetValue(target) ?? Activator.CreateInstance(propertyType);
-            
+
             propertyInfo.SetValue(target, propertyValue);
 
             return propertyValue;
@@ -527,28 +504,80 @@ public static class ReflectionExtensions {
         return new MissingMethodException(type.FullName, methodName);
     }
 
-    private static T GetOrAdd<T>(string key, Func<T> getValue) {
-        return GetOrAdd(key, getValue());
+    // ──────────────────────────────────────────────────────────────────────────
+    // Caching strategy — read before adding/changing entries below
+    // ──────────────────────────────────────────────────────────────────────────
+    // Reflection results are immutable for the process lifetime, so caching is
+    // purely a performance optimisation — no invalidation logic, no expiry.
+    //
+    // Design:
+    //   * One typed ConcurrentDictionary per cached method. Keys are Type or
+    //     (Type, Type) — no string allocation on the hot path.
+    //   * Single-Type-keyed caches are unbounded ConcurrentDictionary. The
+    //     keyspace ceiling is the set of "Our" exported types, so memory is
+    //     bounded by construction.
+    //   * Composite-keyed caches use BoundedCache with a defensive ~50k cap.
+    //     Cap exists to protect against a buggy caller exposing a huge
+    //     cross-product, not as an expected hit point.
+    //   * Behaviour on cap overflow: the cache stops accepting new entries
+    //     and the call falls through to uncached evaluation. Correct result,
+    //     just slower for the unlucky later-frequented key.
+    //   * Methods whose underlying check is sub-100ns are not cached at all
+    //     — a ConcurrentDictionary.TryGetValue costs more than the check itself.
+    //     Examples: IsConcreteClass, IsOfTypeOrNullableType, IsLookup,
+    //     IsNullableType.
+    //
+    // Adding a new cached helper:
+    //   * Declare a typed cache field below.
+    //   * Pick BoundedCache iff the keyspace could exceed the single-Type
+    //     ceiling — i.e. composite keys built from caller-supplied Types.
+    //   * Don't introduce string keys; route through Type refs.
+    // ──────────────────────────────────────────────────────────────────────────
+
+    private class BoundedCache<TKey, TValue> {
+        private const int DefaultCapacity = 50_000;
+
+        private readonly ConcurrentDictionary<TKey, TValue> _map = new();
+        private readonly int _capacity;
+        private int _count;
+
+        public BoundedCache(int capacity = DefaultCapacity) {
+            _capacity = capacity;
+        }
+
+        public TValue GetOrAdd(TKey key, Func<TKey, TValue> factory) {
+            if (_map.TryGetValue(key, out var existing)) {
+                return existing;
+            }
+
+            var value = factory(key);
+
+            if (Volatile.Read(ref _count) < _capacity) {
+                if (_map.TryAdd(key, value)) {
+                    Interlocked.Increment(ref _count);
+                }
+            }
+
+            return value;
+        }
     }
 
-    private static T GetOrAdd<T>(string key, T value) {
-        return value;
+    // Single-Type-keyed caches — unbounded (ceiling ≈ Our exported types).
+    private static readonly ConcurrentDictionary<Type, bool> _hasParameterlessConstructor = new();
+    private static readonly ConcurrentDictionary<Type, Type> _valueTypeForNullableType = new();
 
-        // TODO Resolve memory usage before enabling again
-        // var cacheKey = typeof(T).Name + key;
-        //
-        // return Cache.GetOrCreate(cacheKey, c => {
-        //     c.SlidingExpiration = TimeSpan.FromSeconds(30);
-        //
-        //     return value;
-        // });
-    }
+    // Two-Type-keyed caches — bounded (defensive 50k cap).
+    private static readonly BoundedCache<(Type, Type), bool> _implementsInterface = new();
+    private static readonly BoundedCache<(Type, Type), bool> _implementsGenericInterface = new();
+    private static readonly BoundedCache<(Type, Type), bool> _inheritsGenericClass = new();
+    private static readonly BoundedCache<(Type, Type), bool> _isSubclassOfType = new();
+    private static readonly BoundedCache<(Type, Type), bool> _isSubclassOrSubInterfaceOfGenericType = new();
+    private static readonly BoundedCache<(Type, Type), IEnumerable<Type>> _parameterTypesForGenericInterface = new();
+    private static readonly BoundedCache<(Type, Type), IEnumerable<Type>> _parameterTypesForGenericClass = new();
+    private static readonly BoundedCache<(Type, Type), IReadOnlyList<Type>> _genericParameterTypesForInheritedGenericClass = new();
 
-    private static readonly IMemoryCache Cache = new MemoryCache(new MemoryCacheOptions {
-        Clock = new SystemClock(),
-        CompactionPercentage = 0.1,
-        ExpirationScanFrequency = TimeSpan.FromMinutes(1)
-    });
+    // (Assembly, Type)-keyed cache — bounded with a tighter cap (assemblies are few).
+    private static readonly BoundedCache<(Assembly, Type), IEnumerable<Type>> _typesInAssemblyByInterface = new(capacity: 5_000);
 
     public class MethodCallBuilder {
         private readonly Type _targetType;
@@ -603,39 +632,37 @@ public static class ReflectionExtensions {
             return method.Invoke(_targetInstance, _parameters.ToArray());
         }
 
+        // Not cached: composite key of (Type, string, IReadOnlyList<Type>,
+        // IReadOnlyList<Type>) doesn't have a cheap value-equal representation,
+        // and this builder is called infrequently (one-off reflective dispatch).
         private static MethodInfo FindMethod(Type classType, string methodName, IReadOnlyList<Type> parameterTypes, IReadOnlyList<Type> genericTypes) {
-            var methodSignature = string.Concat(TypeResolver.PersistedName(classType), methodName, string.Join('.', parameterTypes.Select(x => TypeResolver.PersistedName(x))), string.Join('.', genericTypes.Select(x => TypeResolver.PersistedName(x))));
-            var cacheKey = nameof(FindMethod) + methodSignature;
+            var genericParameterTypes = parameterTypes.Select(p => p.IsGenericType ? p.GetGenericTypeDefinition() : p).ToList();
+            var numberOfGenerics = genericTypes.Count;
+            var candidateMethods = new List<MethodInfo>();
 
-            return GetOrAdd(cacheKey, () => {
-                var genericParameterTypes = parameterTypes.Select(p => p.IsGenericType ? p.GetGenericTypeDefinition() : p).ToList();
-                var numberOfGenerics = genericTypes.Count;
-                var candidateMethods = new List<MethodInfo>();
-            
-                var type = classType;
-                while (type != null && type != typeof(object)) {
-                    var allMethods = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy).ToList();
-                    var methodsMatchingNameAndParameterCount = allMethods.Where(m => m.Name.EqualsInvariant(methodName) &&
-                                                                                     m.GetParameters().Length == parameterTypes.Count)
-                                                                         .ToList();
-                    
-                    candidateMethods.AddRange(methodsMatchingNameAndParameterCount.Where(m => numberOfGenerics == 0 ||m.IsGenericMethod && m.GetGenericArguments().Length == numberOfGenerics).AsEnumerable());
-                    
-                    type = type.BaseType;
+            var type = classType;
+            while (type != null && type != typeof(object)) {
+                var allMethods = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy).ToList();
+                var methodsMatchingNameAndParameterCount = allMethods.Where(m => m.Name.EqualsInvariant(methodName) &&
+                                                                                 m.GetParameters().Length == parameterTypes.Count)
+                                                                     .ToList();
+
+                candidateMethods.AddRange(methodsMatchingNameAndParameterCount.Where(m => numberOfGenerics == 0 || m.IsGenericMethod && m.GetGenericArguments().Length == numberOfGenerics).AsEnumerable());
+
+                type = type.BaseType;
+            }
+
+            foreach (var method in candidateMethods) {
+                var concreteMethod = genericTypes.Any() ? method.MakeGenericMethod(genericTypes.ToArray()) : method;
+
+                var methodParameterTypes = concreteMethod.GetParameters().Select(p => p.ParameterType.IsGenericType ? p.ParameterType.GetGenericTypeDefinition() : p.ParameterType).ToList();
+
+                if (methodParameterTypes.SequenceEqual(genericParameterTypes)) {
+                    return concreteMethod;
                 }
+            }
 
-                foreach (var method in candidateMethods) {
-                    var concreteMethod = genericTypes.Any() ? method.MakeGenericMethod(genericTypes.ToArray()) : method;
-
-                    var methodParameterTypes = concreteMethod.GetParameters().Select(p => p.ParameterType.IsGenericType ? p.ParameterType.GetGenericTypeDefinition() : p.ParameterType).ToList();
-
-                    if (methodParameterTypes.SequenceEqual(genericParameterTypes)) {
-                        return concreteMethod;
-                    }
-                }
-
-                return null;
-            });
+            return null;
         }
     }
 }

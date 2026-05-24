@@ -11,7 +11,7 @@ namespace N3O.Umbraco.Utilities;
 public static class OurAssemblies {
     private static readonly string[] DefaultPrefixes = ["N3O."];
 
-    private static readonly ConcurrentDictionary<string, Type[]> TypeArrayCache = new();
+    private static readonly ConcurrentDictionary<Type, Type[]> TypeArrayCache = new();
 
     private static IReadOnlyList<string> _ourPrefixes;
     private static IReadOnlyList<Assembly> _assemblies;
@@ -45,13 +45,11 @@ public static class OurAssemblies {
     }
 
     public static IReadOnlyList<Type> GetAllConcreteTypesImplementingInterface(Type interfaceType) {
-        var cacheKey = nameof(GetAllConcreteTypesImplementingInterface) + interfaceType.FullName;
-
-        return TypeArrayCache.GetOrAdd(cacheKey, _ => {
+        return TypeArrayCache.GetOrAdd(interfaceType, static itf => {
             var allMatchingTypes = new List<Type>();
 
             foreach (var assembly in _assemblies) {
-                allMatchingTypes.AddRange(assembly.GetAllConcreteTypesInAssemblyImplementingInterface(interfaceType));
+                allMatchingTypes.AddRange(assembly.GetAllConcreteTypesInAssemblyImplementingInterface(itf));
             }
 
             return allMatchingTypes.ToArray();
