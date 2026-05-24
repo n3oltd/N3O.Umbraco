@@ -2,6 +2,7 @@ using N3O.Umbraco.Constants;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
+using N3O.Umbraco.Types;
 using NodaTime;
 using System;
 using System.Collections.Concurrent;
@@ -39,12 +40,12 @@ public class Repository<T> : IRepository<T> where T : class, IEntity {
 
     public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default) {
         using (var db = _umbracoDatabaseFactory.CreateDatabase()) {
-            var rows = await db.FetchAsync<EntityRow>($"SELECT * FROM {Tables.Entities.Name} WHERE Type = '{typeof(T).AssemblyQualifiedName}'");
+            var rows = await db.FetchAsync<EntityRow>($"SELECT * FROM {Tables.Entities.Name} WHERE Type = '{TypeResolver.PersistedName(typeof(T))}'");
 
             var entities = new List<T>();
 
             foreach (var row in rows) {
-                var type = Type.GetType(row.Type);
+                var type = TypeResolver.Resolve(row.Type);
 
                 _entityStore[row.Id] = (T) _jsonProvider.DeserializeObject(row.Json, type);
 
@@ -60,7 +61,7 @@ public class Repository<T> : IRepository<T> where T : class, IEntity {
             var row = await db.SingleOrDefaultAsync<EntityRow>($"SELECT * FROM {Tables.Entities.Name} WHERE Id = '{id.Value}'");
 
             var entity = row.IfNotNull(x => {
-                var type = Type.GetType(x.Type);
+                var type = TypeResolver.Resolve(x.Type);
                 
                 _entityStore[id] = (T) _jsonProvider.DeserializeObject(x.Json, type);
                 
@@ -108,7 +109,7 @@ public class Repository<T> : IRepository<T> where T : class, IEntity {
             row.Id = entity.Id;
             row.Revision = entity.Revision;
             row.Timestamp = entity.Timestamp.ToDateTimeUtc();
-            row.Type = entity.GetType().AssemblyQualifiedName;
+            row.Type = TypeResolver.PersistedName(entity.GetType());
             row.Json = _jsonProvider.SerializeObject(entity);
 
             await saveAsync(db, row);

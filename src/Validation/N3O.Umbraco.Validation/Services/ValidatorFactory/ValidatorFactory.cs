@@ -1,5 +1,6 @@
 using FluentValidation;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Types;
 using N3O.Umbraco.Utilities;
 using System;
 using System.Collections.Concurrent;
@@ -34,7 +35,7 @@ public class ValidatorFactory : IValidatorFactory {
     }
 
     private List<Type> GetValidatorTypesForModel(Type modelType) {
-        var key = nameof(ValidatorFactory) + nameof(GetValidatorTypesForModel) + modelType.AssemblyQualifiedName;
+        var key = nameof(ValidatorFactory) + nameof(GetValidatorTypesForModel) + TypeResolver.PersistedName(modelType);
 
         return TypesCache.GetOrAdd(key, _ => {
             var list = new List<Type>();

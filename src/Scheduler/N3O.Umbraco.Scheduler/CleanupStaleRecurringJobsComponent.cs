@@ -2,6 +2,7 @@ using Hangfire;
 using Hangfire.Storage;
 using Microsoft.Extensions.Logging;
 using System;
+using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.Services;
 

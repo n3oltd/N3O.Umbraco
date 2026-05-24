@@ -5,6 +5,7 @@ using N3O.Umbraco.Email.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Mediator;
+using N3O.Umbraco.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ public class SendEmailHandler : IRequestHandler<SendEmailCommand, SendEmailReq, 
     }
 
     public async Task<None> Handle(SendEmailCommand req, CancellationToken cancellationToken) {
-        var templateModel = _jsonProvider.DeserializeObject(req.Model.ModelJson, Type.GetType(req.Model.ModelType));
+        var templateModel = _jsonProvider.DeserializeObject(req.Model.ModelJson, TypeResolver.Resolve(req.Model.ModelType));
         var email = NewEmail.From(req.Model.From.Email, req.Model.From.Name);
 
         email.Renderer = _renderer;

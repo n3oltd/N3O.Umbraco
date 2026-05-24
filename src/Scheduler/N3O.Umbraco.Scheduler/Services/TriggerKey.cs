@@ -1,4 +1,5 @@
 using N3O.Umbraco.Mediator;
+using N3O.Umbraco.Types;
 using System;
 
 namespace N3O.Umbraco.Scheduler;
@@ -13,7 +14,7 @@ public static class TriggerKey {
     }
 
     public static string Generate(Type requestType, Type modelType) {
-        return $"{requestType.AssemblyQualifiedName}{Separator}{modelType.AssemblyQualifiedName}";
+        return $"{TypeResolver.PersistedName(requestType)}{Separator}{TypeResolver.PersistedName(modelType)}";
     }
 
     public static Type ParseRequestType(string triggerId) {
@@ -33,7 +34,7 @@ public static class TriggerKey {
     }
 
     private static Type ResolveType(string assemblyQualifiedName) {
-        var type = Type.GetType(assemblyQualifiedName);
+        var type = TypeResolver.Resolve(assemblyQualifiedName);
 
         if (type == null) {
             throw new InvalidOperationException(

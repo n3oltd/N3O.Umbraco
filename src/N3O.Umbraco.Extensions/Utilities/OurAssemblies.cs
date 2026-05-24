@@ -1,5 +1,6 @@
 using N3O.Umbraco.Extensions;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,13 +9,17 @@ using System.Reflection;
 namespace N3O.Umbraco.Utilities;
 
 public static class OurAssemblies {
+    private static readonly string[] DefaultPrefixes = ["N3O."];
+
+    private static readonly ConcurrentDictionary<string, Type[]> TypeArrayCache = new();
+
     private static IReadOnlyList<string> _ourPrefixes;
     private static IReadOnlyList<Assembly> _assemblies;
     private static IReadOnlyList<Type> _exportedTypes;
 
     public static void Configure(params string[] prefixes) {
         _ourPrefixes = prefixes.OrEmpty().Concat("N3O.").ToList();
-    
+
         EnsureOurAssembliesAreLoaded();
 
         _assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(IsOurAssembly).ToList();
@@ -27,6 +32,30 @@ public static class OurAssemblies {
         var types = _exportedTypes.Where(t => predicate?.Invoke(t) ?? true).ToList();
 
         return types;
+    }
+
+    public static bool IsOurAssemblyName(string assemblyName) {
+        if (!assemblyName.HasValue()) {
+            return false;
+        }
+
+        var prefixes = _ourPrefixes ?? DefaultPrefixes;
+
+        return prefixes.Any(p => assemblyName.StartsWith(p, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    public static IReadOnlyList<Type> GetAllConcreteTypesImplementingInterface(Type interfaceType) {
+        var cacheKey = nameof(GetAllConcreteTypesImplementingInterface) + interfaceType.FullName;
+
+        return TypeArrayCache.GetOrAdd(cacheKey, _ => {
+            var allMatchingTypes = new List<Type>();
+
+            foreach (var assembly in _assemblies) {
+                allMatchingTypes.AddRange(assembly.GetAllConcreteTypesInAssemblyImplementingInterface(interfaceType));
+            }
+
+            return allMatchingTypes.ToArray();
+        });
     }
 
     private static bool IsOurAssembly(string file) {

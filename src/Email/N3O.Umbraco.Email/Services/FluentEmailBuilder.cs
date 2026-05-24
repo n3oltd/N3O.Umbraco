@@ -3,6 +3,7 @@ using N3O.Umbraco.Email.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Json;
 using N3O.Umbraco.Scheduler;
+using N3O.Umbraco.Types;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Email;
@@ -81,7 +82,7 @@ public class FluentEmailBuilder<T> : IFluentEmailBuilder<T> {
         req.Body = _body;
 
         if (_model.HasValue()) {
-            req.ModelType = typeof(T).AssemblyQualifiedName;
+            req.ModelType = TypeResolver.PersistedName(typeof(T));
             req.ModelJson = _jsonProvider.SerializeObject(_model);
         }
 

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Internal;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Lookups;
+using N3O.Umbraco.Types;
 using N3O.Umbraco.Utilities;
 using System;
 using System.Collections.Generic;
@@ -111,7 +112,7 @@ public static class ReflectionExtensions {
 
     public static IEnumerable<Type> GetAllConcreteTypesInAssemblyImplementingInterface(this Assembly assembly,
                                                                                        Type interfaceType) {
-        var cacheKey = nameof(GetAllConcreteTypesInAssemblyImplementingInterface) + assembly.FullName + interfaceType.AssemblyQualifiedName;
+        var cacheKey = nameof(GetAllConcreteTypesInAssemblyImplementingInterface) + assembly.FullName + TypeResolver.PersistedName(interfaceType);
 
         return GetOrAdd(cacheKey, () => {
             var allMatchingTypes = new List<Type>();
@@ -198,7 +199,7 @@ public static class ReflectionExtensions {
 
     public static IEnumerable<Type> GetParameterTypesForGenericInterface(this Type type,
                                                                          Type genericInterfaceType) {
-        var cacheKey = nameof(GetParameterTypesForGenericInterface) + type.AssemblyQualifiedName + genericInterfaceType.AssemblyQualifiedName;
+        var cacheKey = nameof(GetParameterTypesForGenericInterface) + TypeResolver.PersistedName(type) + TypeResolver.PersistedName(genericInterfaceType);
 
         return GetOrAdd(cacheKey, () => {
             while (type != null && type != typeof(object)) {
@@ -226,7 +227,7 @@ public static class ReflectionExtensions {
     }
     
     public static IReadOnlyList<Type> GetGenericParameterTypesForInheritedGenericClass(this Type type, Type genericClassType) {
-        var cacheKey = nameof(GetGenericParameterTypesForInheritedGenericClass) + type.AssemblyQualifiedName + genericClassType.AssemblyQualifiedName;
+        var cacheKey = nameof(GetGenericParameterTypesForInheritedGenericClass) + TypeResolver.PersistedName(type) + TypeResolver.PersistedName(genericClassType);
 
         return GetOrAdd(cacheKey, () => {
             while (type != null && type != typeof(object)) {
@@ -242,7 +243,7 @@ public static class ReflectionExtensions {
     }
 
     public static IEnumerable<Type> GetParameterTypesForGenericClass(this Type type, Type genericClassType) {
-        var cacheKey = nameof(GetParameterTypesForGenericClass) + type.AssemblyQualifiedName + genericClassType.AssemblyQualifiedName;
+        var cacheKey = nameof(GetParameterTypesForGenericClass) + TypeResolver.PersistedName(type) + TypeResolver.PersistedName(genericClassType);
 
         return GetOrAdd(cacheKey, () => {
             while (type != null && type != typeof(object)) {
@@ -335,7 +336,7 @@ public static class ReflectionExtensions {
     }
 
     public static Type GetValueTypeForNullableType(this Type type) {
-        var cacheKey = nameof(GetValueTypeForNullableType) + type.AssemblyQualifiedName;
+        var cacheKey = nameof(GetValueTypeForNullableType) + TypeResolver.PersistedName(type);
 
         return GetOrAdd(cacheKey, () => type.GetParameterTypesForGenericClass(typeof(Nullable<>)).Single());
     }
@@ -365,7 +366,7 @@ public static class ReflectionExtensions {
     }
 
     public static bool HasParameterlessConstructor(this Type type) {
-        var cacheKey = nameof(HasParameterlessConstructor) + type.AssemblyQualifiedName;
+        var cacheKey = nameof(HasParameterlessConstructor) + TypeResolver.PersistedName(type);
 
         return GetOrAdd(cacheKey, type.GetConstructor([]) != null);
     }
@@ -377,7 +378,7 @@ public static class ReflectionExtensions {
     }
 
     public static bool IsConcreteClass(this Type type) {
-        var cacheKey = nameof(IsConcreteClass) + type.AssemblyQualifiedName;
+        var cacheKey = nameof(IsConcreteClass) + TypeResolver.PersistedName(type);
 
         return GetOrAdd(cacheKey, type.IsClass && !type.IsAbstract);
     }
@@ -391,7 +392,7 @@ public static class ReflectionExtensions {
             throw new Exception($"{interfaceType.FullName.Quote()} is either not an interface or is not a constructed generic type");
         }
 
-        var cacheKey = nameof(ImplementsInterface) + type.AssemblyQualifiedName + interfaceType.AssemblyQualifiedName;
+        var cacheKey = nameof(ImplementsInterface) + TypeResolver.PersistedName(type) + TypeResolver.PersistedName(interfaceType);
 
         return GetOrAdd(cacheKey, interfaceType.IsAssignableFrom(type));
     }
@@ -405,7 +406,7 @@ public static class ReflectionExtensions {
             throw new Exception($"{genericInterfaceType.FullName.Quote()} is not an open generic interface type");
         }
 
-        var cacheKey = nameof(ImplementsGenericInterface) + type.AssemblyQualifiedName + genericInterfaceType.AssemblyQualifiedName;
+        var cacheKey = nameof(ImplementsGenericInterface) + TypeResolver.PersistedName(type) + TypeResolver.PersistedName(genericInterfaceType);
 
         return GetOrAdd(cacheKey, () => {
             while (type != null && type != typeof(object)) {
@@ -425,7 +426,7 @@ public static class ReflectionExtensions {
     }
 
     public static bool InheritsGenericClass(this Type type, Type genericClassType) {
-        var cacheKey = nameof(InheritsGenericClass) + type.AssemblyQualifiedName + genericClassType.AssemblyQualifiedName;
+        var cacheKey = nameof(InheritsGenericClass) + TypeResolver.PersistedName(type) + TypeResolver.PersistedName(genericClassType);
 
         return GetOrAdd(cacheKey, () => {
             while (type != null && type != typeof(object)) {
@@ -445,13 +446,13 @@ public static class ReflectionExtensions {
     }
 
     public static bool IsLookup(this Type type) {
-        var cacheKey = nameof(IsLookup) + type.AssemblyQualifiedName;
+        var cacheKey = nameof(IsLookup) + TypeResolver.PersistedName(type);
 
         return GetOrAdd(cacheKey, type.ImplementsInterface<ILookup>());
     }
     
     public static bool IsNullableType(this Type type) {
-        var cacheKey = nameof(IsNullableType) + type.AssemblyQualifiedName;
+        var cacheKey = nameof(IsNullableType) + TypeResolver.PersistedName(type);
 
         return GetOrAdd(cacheKey, () => {
             if (type.IsGenericType) {
@@ -463,7 +464,7 @@ public static class ReflectionExtensions {
     }
 
     public static bool IsOfTypeOrNullableType<T>(this Type type) where T : struct {
-        var cacheKey = nameof(IsOfTypeOrNullableType) + type.AssemblyQualifiedName + typeof(T).AssemblyQualifiedName;
+        var cacheKey = nameof(IsOfTypeOrNullableType) + TypeResolver.PersistedName(type) + TypeResolver.PersistedName(typeof(T));
 
         return GetOrAdd(cacheKey, type == typeof(T) || type == typeof(T?));
     }
@@ -473,13 +474,13 @@ public static class ReflectionExtensions {
     }
 
     public static bool IsSubclassOfType(this Type type, Type otherType) {
-        var cacheKey = nameof(IsSubclassOfType) + type.AssemblyQualifiedName + otherType.AssemblyQualifiedName;
+        var cacheKey = nameof(IsSubclassOfType) + TypeResolver.PersistedName(type) + TypeResolver.PersistedName(otherType);
 
         return GetOrAdd(cacheKey, type.IsSubclassOf(otherType));
     }
 
     public static bool IsSubclassOrSubInterfaceOfGenericType(this Type type, Type genericType) {
-        var cacheKey = nameof(IsSubclassOrSubInterfaceOfGenericType) + type.AssemblyQualifiedName + genericType.AssemblyQualifiedName;
+        var cacheKey = nameof(IsSubclassOrSubInterfaceOfGenericType) + TypeResolver.PersistedName(type) + TypeResolver.PersistedName(genericType);
 
         return GetOrAdd(cacheKey, () => {
             if (!genericType.IsGenericType) {
@@ -603,7 +604,7 @@ public static class ReflectionExtensions {
         }
 
         private static MethodInfo FindMethod(Type classType, string methodName, IReadOnlyList<Type> parameterTypes, IReadOnlyList<Type> genericTypes) {
-            var methodSignature = string.Concat(classType.AssemblyQualifiedName, methodName, string.Join('.', parameterTypes.Select(x => x.AssemblyQualifiedName)), string.Join('.', genericTypes.Select(x => x.AssemblyQualifiedName)));
+            var methodSignature = string.Concat(TypeResolver.PersistedName(classType), methodName, string.Join('.', parameterTypes.Select(x => TypeResolver.PersistedName(x))), string.Join('.', genericTypes.Select(x => TypeResolver.PersistedName(x))));
             var cacheKey = nameof(FindMethod) + methodSignature;
 
             return GetOrAdd(cacheKey, () => {
