@@ -51,18 +51,18 @@ public static class TypeResolver {
         return type == null ? null : PersistedName(type.AssemblyQualifiedName);
     }
 
-    public static string PersistedName(string assemblyQualifiedName) {
-        if (!assemblyQualifiedName.HasValue()) {
-            return assemblyQualifiedName;
+    public static string PersistedName(string typeName) {
+        if (!typeName.HasValue()) {
+            return typeName;
         }
 
-        return VersionToken.Replace(assemblyQualifiedName, match => {
-            var name = match.Groups["name"].Value;
-            var pinned = PinnedVersionFor(name);
+        return VersionToken.Replace(typeName, match => {
+            var assemblyName = match.Groups["name"].Value;
+            var pinned = PinnedVersionFor(assemblyName);
 
             return pinned == null
                 ? match.Value
-                : $"{name}, Version={pinned}";
+                : $"{assemblyName}, Version={pinned}";
         });
     }
 
