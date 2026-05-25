@@ -95,7 +95,8 @@ public static class OurAssemblies {
 
         var ourReferencedAssemblies = assembly.GetReferencedAssemblies()
                                               .Where(IsOurAssembly)
-                                              .Select(Assembly.Load)
+                                              .Select(LoadOurReferencedAssembly)
+                                              .Where(a => a != null)
                                               .ToList();
 
         referencedAssemblies.AddRange(ourReferencedAssemblies);
@@ -106,6 +107,29 @@ public static class OurAssemblies {
         }
 
         return referencedAssemblies.Distinct().ToList();
+    }
+
+    // Sibling DLLs in the bin folder are loaded by file path in EnsureOurAssembliesAreLoaded().
+    // After that step `Assembly.Load(AssemblyName)` with an exact version can still fail when a
+    // NuGet-published consumer in the graph was compiled against a different timestamped version
+    // than the local v1.0.0.0 build of the sibling abstractions. Fall back to the already-loaded
+    // assembly by simple name so version skew across the package graph doesn't crash startup.
+    private static Assembly LoadOurReferencedAssembly(AssemblyName name) {
+        var existing = AppDomain.CurrentDomain
+                                .GetAssemblies()
+                                .FirstOrDefault(a => string.Equals(a.GetName().Name,
+                                                                   name.Name,
+                                                                   StringComparison.OrdinalIgnoreCase));
+
+        if (existing != null) {
+            return existing;
+        }
+
+        try {
+            return Assembly.Load(name);
+        } catch (FileNotFoundException) {
+            return null;
+        }
     }
 
     private static void EnsureOurAssembliesAreLoaded() {
