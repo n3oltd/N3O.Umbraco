@@ -114,19 +114,17 @@ public static class OurAssemblies {
     // NuGet-published consumer in the graph was compiled against a different timestamped version
     // than the local v1.0.0.0 build of the sibling abstractions. Fall back to the already-loaded
     // assembly by simple name so version skew across the package graph doesn't crash startup.
-    private static Assembly LoadOurReferencedAssembly(AssemblyName name) {
+    private static Assembly LoadOurReferencedAssembly(AssemblyName reference) {
         var existing = AppDomain.CurrentDomain
                                 .GetAssemblies()
-                                .FirstOrDefault(a => string.Equals(a.GetName().Name,
-                                                                   name.Name,
-                                                                   StringComparison.OrdinalIgnoreCase));
+                                .FirstOrDefault(a => a.GetName().Name.EqualsInvariant(reference.Name));
 
         if (existing != null) {
             return existing;
         }
 
         try {
-            return Assembly.Load(name);
+            return Assembly.Load(reference);
         } catch (FileNotFoundException) {
             return null;
         }
