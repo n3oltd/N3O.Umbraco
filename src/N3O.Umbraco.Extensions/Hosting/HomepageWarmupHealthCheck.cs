@@ -15,7 +15,7 @@ public class HomepageWarmupHealthCheck : IHealthCheck {
 
     public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
                                                     CancellationToken cancellationToken = default) {
-        if (_homepageWarmup.Ready) {
+        if (_homepageWarmup.IsReady) {
             return Task.FromResult(HealthCheckResult.Healthy());
         }
 

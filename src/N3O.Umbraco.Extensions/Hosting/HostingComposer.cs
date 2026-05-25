@@ -34,6 +34,8 @@ public class HostingComposer : Composer {
         RegisterHealthChecks(builder);
         RegisterHostedServices(builder);
 
+        builder.Services.AddSingleton<IApplicationReadiness>(sp => sp.GetRequiredService<HomepageWarmup>());
+
         builder.Services.AddOpenApiDocument("DevTools");
         
         builder.Services.Configure<ApiBehaviorOptions>(c => c.SuppressModelStateInvalidFilter = true);
