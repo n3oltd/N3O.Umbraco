@@ -24,6 +24,10 @@ public class TelemetryData : ITelemetryData {
                               ?.InformationalVersion;
         }
 
+        if (version.HasValue() && version.Contains('+')) {
+            version = version.Substring(0, version.IndexOf('+'));
+        }
+
         return version;
     }
 }
