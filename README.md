@@ -1,7 +1,7 @@
 # N3O Umbraco Extensions
 
 [![NuGet](https://img.shields.io/nuget/v/N3O.Umbraco.Extensions)](https://www.nuget.org/packages/N3O.Umbraco.Extensions/)
-[![MyGet](https://img.shields.io/myget/n3o-umbraco/vpre/N3O.Umbraco.Extensions)](https://www.myget.org/feed/n3o-umbraco/package/nuget/N3O.Umbraco.Extensions)
+[![myget](https://img.shields.io/myget/n3o-umbraco/vpre/N3O.Umbraco.Extensions?label=myget)](https://www.myget.org/feed/n3o-umbraco/package/nuget/N3O.Umbraco.Extensions)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/N3O.Umbraco.Extensions)](https://www.nuget.org/packages/N3O.Umbraco.Extensions/)
 [![Main CI](https://github.com/n3oltd/N3O.Umbraco/actions/workflows/main-ci.yml/badge.svg)](https://github.com/n3oltd/N3O.Umbraco/actions/workflows/main-ci.yml)
 [![License](https://img.shields.io/github/license/n3oltd/N3O.Umbraco)](LICENSE.md)
