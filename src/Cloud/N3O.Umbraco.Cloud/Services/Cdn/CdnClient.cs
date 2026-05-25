@@ -41,28 +41,32 @@ public class CdnClient : ICdnClient {
         _httpClient.Timeout = TimeSpan.FromSeconds(15);
     }
 
-    public async Task<string> DownloadAsync(string path, CancellationToken cancellationToken = default) {
+    public async Task<string> DownloadAsync(string path,
+                                            bool logNotFound = true,
+                                            CancellationToken cancellationToken = default) {
         var publishedUrl = GetPublishedContentUrl(path);
 
-        return await FetchStringAsync(publishedUrl, cancellationToken);
+        return await FetchStringAsync(publishedUrl, logNotFound, cancellationToken);
     }
 
     public async Task<T> DownloadPublishedContentAsync<T>(PublishedFileKind kind,
                                                           string path,
                                                           JsonSerializer jsonSerializer,
+                                                          bool logNotFound = true,
                                                           CancellationToken cancellationToken = default) {
         var publishedUrl = GetPublishedContentUrl(kind, path);
 
-        var json = await FetchStringAsync(publishedUrl, cancellationToken);
-            
+        var json = await FetchStringAsync(publishedUrl, logNotFound, cancellationToken);
+
         return json.IfNotNull(x => Deserialize<T>(x, jsonSerializer));
     }
 
     public async Task<PublishedContentResult> DownloadPublishedContentAsync(string path,
+                                                                            bool logNotFound = true,
                                                                             CancellationToken cancellationToken = default) {
         var publishedUrl = GetPublishedContentUrl(path);
 
-        var json = await FetchStringAsync(publishedUrl, cancellationToken);
+        var json = await FetchStringAsync(publishedUrl, logNotFound, cancellationToken);
 
         var jObject = json.IfNotNull(JObject.Parse);
         var kind = jObject.GetPublishedFileKind();
@@ -76,11 +80,11 @@ public class CdnClient : ICdnClient {
         }
     }
 
-    private async Task<string> FetchStringAsync(string publishedUrl, CancellationToken cancellationToken) {
+    private async Task<string> FetchStringAsync(string publishedUrl, bool logNotFound, CancellationToken cancellationToken) {
         var download = Downloads.GetOrDefault(publishedUrl);
             
         if (download == null || download.IsExpired(_clock) || download.CanRetry(_clock)) {
-            var cdnDownloadResult = await DownloadStringAsync(publishedUrl, cancellationToken);
+            var cdnDownloadResult = await DownloadStringAsync(publishedUrl, logNotFound, cancellationToken);
 
             if (download == null || cdnDownloadResult.Success) {
                 Downloads[publishedUrl] = cdnDownloadResult;
@@ -91,13 +95,16 @@ public class CdnClient : ICdnClient {
     }
     
     private async Task<CdnDownloadResult> DownloadStringAsync(string publishedUrl,
+                                                              bool logNotFound,
                                                               CancellationToken cancellationToken) {
         try {
             var download = await GetStringRateLimitedAsync(publishedUrl, cancellationToken);
 
             return CdnDownloadResult.ForSuccess(_clock, download);
         } catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound) {
-            _logger.LogDebug("CDN 404 for {PublishedUrl}", publishedUrl);
+            if (logNotFound) {
+                _logger.LogDebug("CDN 404 for {PublishedUrl}", publishedUrl);
+            }
 
             return CdnDownloadResult.ForFailure(_clock);
         } catch (Exception ex) {

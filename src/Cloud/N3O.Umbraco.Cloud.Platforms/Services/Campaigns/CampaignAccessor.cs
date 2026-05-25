@@ -23,7 +23,7 @@ public class CampaignAccessor : ICampaignAccessor {
             return await _cdnClient.DownloadPublishedContentAsync<PublishedCampaign>(PublishedFileKinds.Campaign,
                                                                                      $"{campaignId}.json",
                                                                                      JsonSerializers.JsonProvider,
-                                                                                     cancellationToken);
+                                                                                     cancellationToken: cancellationToken);
         } else {
             return null;   
         }

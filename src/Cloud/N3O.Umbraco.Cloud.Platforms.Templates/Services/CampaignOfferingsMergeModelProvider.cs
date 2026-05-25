@@ -29,7 +29,7 @@ public class CampaignOfferingsMergeModelProvider : MergeModelsProvider {
             var campaign = await _cdnClient.DownloadPublishedContentAsync<PublishedCampaign>(PublishedFileKinds.Campaign,
                                                                                              $"{campaignId}.json",
                                                                                              JsonSerializers.JsonProvider,
-                                                                                             cancellationToken);
+                                                                                             cancellationToken:cancellationToken);
 
             mergeModels[PlatformsTemplateConstants.ModelKeys.CampaignOfferings] = campaign.OrEmpty(x => x.Offerings);
         }

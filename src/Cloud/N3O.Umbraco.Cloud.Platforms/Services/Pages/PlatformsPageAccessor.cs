@@ -62,6 +62,7 @@ public class PlatformsPageAccessor : IPlatformsPageAccessor {
                                                                                 platformsPageRoute.ContentKind,
                                                                                 platformsPageRoute.Parent,
                                                                                 currentPath,
+                                                                                PlatformsPageRoute.All.Last() == platformsPageRoute,
                                                                                 cancellationToken);
 
                 if (getPageResult.HasValue()) {

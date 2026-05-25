@@ -12,7 +12,7 @@ public static class CdnClientExtensions {
         var content = await cdnClient.DownloadPublishedContentAsync<T>(PublishedFileKinds.Subscription,
                                                                        file.Filename,
                                                                        jsonSerializer,
-                                                                       cancellationToken);
+                                                                       cancellationToken: cancellationToken);
 
         return content;
     }

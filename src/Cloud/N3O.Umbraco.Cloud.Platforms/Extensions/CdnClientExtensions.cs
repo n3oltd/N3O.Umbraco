@@ -17,10 +17,13 @@ public static class CdnClientExtensions {
                                                                        PublishedFileKind kind,
                                                                        SpecialContent parent,
                                                                        string path,
+                                                                       bool logNotFound = true,
                                                                        CancellationToken cancellationToken = default) {
         var pagePath = $"{kind.Id}/{path.Trim('/')}/index.json";
         
-        var publishedContentResult = await cdnClient.DownloadPublishedContentAsync(pagePath, cancellationToken);
+        var publishedContentResult = await cdnClient.DownloadPublishedContentAsync(pagePath,
+                                                                                   logNotFound,
+                                                                                   cancellationToken: cancellationToken);
 
         if (publishedContentResult.NotFound) {
             return null;
@@ -35,7 +38,9 @@ public static class CdnClientExtensions {
             var publishedPlatformsPage = jsonProvider.DeserializeDynamicTo<PublishedPlatformsPage>(publishedContentResult.Content);
 
             var additionalModels = await publishedPlatformsPage.OrEmpty(x => x.MergeModels)
-                                                               .SelectListAsync(x => FetchMergeModelAsync(cdnClient, x));
+                                                               .SelectListAsync(x => FetchMergeModelAsync(cdnClient,
+                                                                                                          x,
+                                                                                                          logNotFound));
 
             var platformsPage = new PlatformsPage(publishedContentResult.Id.GetValueOrThrow(),
                                                   publishedContentResult.Kind,
@@ -52,7 +57,8 @@ public static class CdnClientExtensions {
     }
      
     private static Task<PublishedContentResult> FetchMergeModelAsync(ICdnClient cdnClient,
-                                                                     PublishedFileInfo publishedModel) {
-        return cdnClient.DownloadPublishedContentAsync(publishedModel.Path);
+                                                                     PublishedFileInfo publishedModel,
+                                                                     bool logNotFound = true) {
+        return cdnClient.DownloadPublishedContentAsync(publishedModel.Path, logNotFound);
     }
 }
