@@ -32,6 +32,7 @@ public class HostingComposer : Composer {
         builder.Services.AddScoped<WellKnownFolderMiddleware>();
 
         RegisterHealthChecks(builder);
+        RegisterHostedServices(builder);
 
         builder.Services.AddOpenApiDocument("DevTools");
         
@@ -75,6 +76,17 @@ public class HostingComposer : Composer {
                                                                 sp => (IHealthCheck) sp.GetRequiredService(type),
                                                                 failureStatus: null,
                                                                 tags: null));
+        }
+    }
+
+    private void RegisterHostedServices(IUmbracoBuilder builder) {
+        var hostedServiceTypes = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
+                                                             t.ImplementsInterface<IHostedService>())
+                                              .ToList();
+
+        foreach (var type in hostedServiceTypes) {
+            builder.Services.AddSingleton(type);
+            builder.Services.AddSingleton(typeof(IHostedService), sp => sp.GetRequiredService(type));
         }
     }
 
