@@ -3,7 +3,7 @@
         <RootNamespace>DemoSite</RootNamespace>
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
-        <NoWarn>NU1605;1591</NoWarn>
+        <NoWarn>1591;NU1605;NU1504</NoWarn>
         <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
     </PropertyGroup>
     <ItemGroup>
