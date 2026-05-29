@@ -19,7 +19,7 @@ public static class CloudConstants {
     public static class Environment {
         public static class Keys {
             public static string DataRegion = "DataRegion";
-            public static string SubscriptionCode = "SubscriptionCode";
+            public static string SubscriptionId = "SubscriptionId";
         }
     }
 }
