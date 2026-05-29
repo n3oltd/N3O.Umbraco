@@ -1,6 +1,5 @@
-﻿using N3O.Umbraco.Logging;
-using System;
-using System.Linq;
+﻿using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Logging;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Telemetry.Logging;
