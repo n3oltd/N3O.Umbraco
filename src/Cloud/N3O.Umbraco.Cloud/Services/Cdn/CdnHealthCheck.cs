@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Cloud;
 
-[HealthCheck("cdn")]
+[HealthCheck("cdn", HealthCheckTags.Readiness)]
 public class CdnHealthCheck : IHealthCheck {
     private readonly ICdnClient _cdnClient;
 

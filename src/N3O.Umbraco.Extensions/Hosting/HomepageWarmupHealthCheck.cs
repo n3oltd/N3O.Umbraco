@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace N3O.Umbraco.Hosting;
 
-[HealthCheck("homepage")]
+[HealthCheck("homepage", HealthCheckTags.Readiness)]
 public class HomepageWarmupHealthCheck : IHealthCheck {
     private readonly HomepageWarmup _homepageWarmup;
 

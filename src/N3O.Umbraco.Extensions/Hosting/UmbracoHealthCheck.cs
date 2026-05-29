@@ -8,7 +8,7 @@ using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Hosting;
 
-[HealthCheck("umbraco")]
+[HealthCheck("umbraco", HealthCheckTags.Readiness)]
 public class UmbracoHealthCheck : IHealthCheck {
     private readonly IUmbracoContextFactory _umbracoContextFactory;
 

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Dev;
 using N3O.Umbraco.Extensions;
@@ -66,6 +67,12 @@ public abstract class CmsStartup {
         app.UseOpenApiWithUI();
 
         app.UseHealthChecks("/healthz", new HealthCheckOptions {
+            Predicate = c => c.Tags.Contains(HealthCheckTags.Readiness),
+            ResponseWriter = (_, _) => Task.CompletedTask
+        });
+
+        app.UseHealthChecks("/livez", new HealthCheckOptions {
+            Predicate = c => c.Tags.Contains(HealthCheckTags.Liveness),
             ResponseWriter = (_, _) => Task.CompletedTask
         });
 

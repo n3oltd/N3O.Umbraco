@@ -77,7 +77,7 @@ public class HostingComposer : Composer {
             healthChecksBuilder.Add(new HealthCheckRegistration(attribute.Name,
                                                                 sp => (IHealthCheck) sp.GetRequiredService(type),
                                                                 failureStatus: null,
-                                                                tags: null));
+                                                                tags: attribute.Tags));
         }
     }
 
