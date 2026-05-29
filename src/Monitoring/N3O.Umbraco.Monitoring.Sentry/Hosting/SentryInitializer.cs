@@ -45,7 +45,19 @@ public class SentryInitializer : IHostedService {
             opt.Environment = Composer.WebHostEnvironment.EnvironmentName;
             opt.Release = EnvironmentData.GetOurValue(EnvironmentVariables.Version);
             opt.DiagnosticLevel = SentryLevel.Error;
-            opt.TracesSampleRate = 1.0f;
+            opt.TracesSampleRate = config.TracesSampleRate;
+            opt.TracesSampler = ctx => {
+                var name = ctx.TransactionContext?.Name ?? "";
+                var ignorePaths = config.TracesIgnorePaths ?? Array.Empty<string>();
+
+                foreach (var ignore in ignorePaths) {
+                    if (name.Contains(ignore, StringComparison.OrdinalIgnoreCase)) {
+                        return 0.0;
+                    }
+                }
+
+                return null;
+            };
             opt.SetBeforeSend(SentryEventRateLimiter.BeforeSend);
 
             opt.AddEventProcessorProvider(() => ResolveEventProcessors(httpContextAccessor, rootProvider));
