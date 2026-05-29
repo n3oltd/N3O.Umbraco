@@ -41,7 +41,7 @@ public class SentryInitializer : IHostedService {
             opt.Dsn = config.Dsn;
             opt.AttachStacktrace = true;
             opt.ReportAssembliesMode = ReportAssembliesMode.InformationalVersion;
-            opt.SendDefaultPii = true;
+            opt.SendDefaultPii = false;
             opt.Environment = Composer.WebHostEnvironment.EnvironmentName;
             opt.Release = EnvironmentData.GetOurValue(EnvironmentVariables.Version);
             opt.DiagnosticLevel = SentryLevel.Error;
