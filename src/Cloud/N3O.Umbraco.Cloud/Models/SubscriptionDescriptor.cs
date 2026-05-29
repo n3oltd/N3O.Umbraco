@@ -8,24 +8,21 @@ namespace N3O.Umbraco.Cloud.Models;
 
 public class SubscriptionDescriptor : Value, IComparable<SubscriptionDescriptor>, IEquatable<SubscriptionDescriptor> {
     [JsonConstructor]
-    public SubscriptionDescriptor(EntityId id, string name, string alias, string code, int number) {
+    public SubscriptionDescriptor(EntityId id, string name, string code, int number) {
         Id = id;
         Name = name;
-        Alias = alias;
         Code = code;
         Number = number;
     }
 
-    public SubscriptionDescriptor(EntityId id, string name = null, string alias = null)
+    public SubscriptionDescriptor(EntityId id, string name = null)
         : this(id,
                name,
-               alias,
                id.Value == Guid.Empty ? "0" : id.ToString().Substring(0, 8).TrimStart('0'),
                id.Value == Guid.Empty ? 0 : (int) Convert.ToInt64(id.ToString().Substring(0, 8).TrimStart('0'), 16)) { }
 
     public EntityId Id { get; }
     public string Name { get; }
-    public string Alias { get; }
     public string Code { get; }
     public long Number { get; }
 

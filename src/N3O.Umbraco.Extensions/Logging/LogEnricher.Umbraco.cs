@@ -13,41 +13,19 @@ public class UmbracoLogEnricher : LogEnricher {
     }
 
     public override IReadOnlyDictionary<string, string> GetContextData() {
-        var contextData = new Dictionary<string, string>();
+        var data = new Dictionary<string, string>();
 
         var publishedRequest = GetPublishedRequest();
 
         if (publishedRequest != null) {
-            contextData["publishedRequestPath"] = publishedRequest.AbsolutePathDecoded;
+            data["publishedRequestPath"] = publishedRequest.AbsolutePathDecoded;
 
             if (publishedRequest.PublishedContent != null) {
-                contextData["publishedRequestContentId"] = publishedRequest.PublishedContent.Key.ToString();
-            }
-
-            if (publishedRequest.Domain != null) {
-                contextData["publishedRequestDomain"] = publishedRequest.Domain.Name;
+                data["publishedContentId"] = publishedRequest.PublishedContent.Key.ToString();
             }
         }
 
-        return contextData;
-    }
-
-    public override IReadOnlyDictionary<string, string> GetTags() {
-        var tags = new Dictionary<string, string>();
-
-        var publishedRequest = GetPublishedRequest();
-
-        if (publishedRequest != null) {
-            if (publishedRequest.PublishedContent != null) {
-                tags["publishedContentId"] = publishedRequest.PublishedContent.Key.ToString();
-            }
-
-            if (publishedRequest.Domain != null) {
-                tags["publishedDomain"] = publishedRequest.Domain.Name;
-            }
-        }
-
-        return tags;
+        return data;
     }
 
     private IPublishedRequest GetPublishedRequest() {

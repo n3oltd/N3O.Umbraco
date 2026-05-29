@@ -31,7 +31,7 @@ public class CloudUrl : ICloudUrl {
     public string ForCdn(CdnRoot root, string path) {
         var url = GetCdnBaseUrl();
         
-        url.AppendPathSegment($"{root.Container.Prefix}-{_subscription.Id.Code}");
+        url.AppendPathSegment($"{root.Container.Prefix}-{_subscription.Descriptor.Code}");
 
         if (root.PathSegment.HasValue()) {
             url.AppendPathSegment(root.PathSegment);
@@ -67,7 +67,7 @@ public class CloudUrl : ICloudUrl {
     public string ForWebhook(string webhookId) {
         var url = GetEngageApiBaseUrl();
         url.AppendPathSegment($"{_subscription.DataRegion.Slug}/hooks");
-        url.AppendPathSegment($"{webhookId}/{_subscription.Id.Number}");
+        url.AppendPathSegment($"{webhookId}/{_subscription.Descriptor.Number}");
 
         return url;
     }

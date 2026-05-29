@@ -1,4 +1,6 @@
 ﻿using N3O.Umbraco.Logging;
+using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Telemetry.Logging;
@@ -10,11 +12,15 @@ public class TelemetryLogEnricher : LogEnricher {
         _telemetryData = telemetryData;
     }
 
-    public override IReadOnlyDictionary<string, string> GetContextData() {
-        var contextData = new Dictionary<string, string>();
+    public override IReadOnlyDictionary<string, string> GetTags() {
+        var data = new Dictionary<string, string>();
 
-        contextData["ExtensionsVersion"] = _telemetryData.GetExtensionsVersion();
-        
-        return contextData;
+        var extensionsVersion = _telemetryData.GetExtensionsVersion();
+
+        if (extensionsVersion.HasValue()) {
+            data["extensionsVersion"] = extensionsVersion;
+        }
+
+        return data;
     }
 }
