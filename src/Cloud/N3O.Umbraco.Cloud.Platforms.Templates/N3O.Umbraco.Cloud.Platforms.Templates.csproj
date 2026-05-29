@@ -19,7 +19,7 @@
         <Description>TODO</Description>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageProjectUrl>https://n3o.ltd</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/n3oltd/N3O.Umbraco</RepositoryUrl>
+        <RepositoryUrl>https://github.com/n3oltd/umbraco-extensions</RepositoryUrl>
         <Version>13.0.0</Version>
         <AssemblyVersion>$(Version)</AssemblyVersion>
         <FileVersion>$(Version)</FileVersion>
