@@ -1,10 +1,10 @@
-﻿using N3O.Umbraco.Extensions;
-using N3O.Umbraco.Utilities;
+using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Hosting;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Logging;
 
-public class SiteLogEnricher : LogEnricher {
+public class HostingLogEnricher : LogEnricher {
     public override IReadOnlyDictionary<string, string> GetContextData() => Build();
 
     public override IReadOnlyDictionary<string, string> GetTags() => Build();
@@ -12,12 +12,10 @@ public class SiteLogEnricher : LogEnricher {
     private static Dictionary<string, string> Build() {
         var data = new Dictionary<string, string>();
 
-        if (Site.Language.HasValue()) {
-            data["siteLanguage"] = Site.Language;
-        }
+        var canonicalDomain = EnvironmentData.GetOurValue(HostingConstants.Environment.Keys.CanonicalDomain);
 
-        if (Site.Name.HasValue()) {
-            data["siteName"] = Site.Name;
+        if (canonicalDomain.HasValue()) {
+            data["canonicalDomain"] = canonicalDomain;
         }
 
         return data;

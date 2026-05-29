@@ -17,6 +17,9 @@ public class HomepageWarmup : BackgroundService, IApplicationReadiness {
     private readonly ILogger<HomepageWarmup> _logger;
     private readonly string _url;
 
+    private volatile bool _isReady;
+    private volatile string _lastError;
+
     public HomepageWarmup(ILogger<HomepageWarmup> logger) {
         _logger = logger;
 
@@ -25,14 +28,14 @@ public class HomepageWarmup : BackgroundService, IApplicationReadiness {
         if (canonicalDomain.HasValue()) {
             _url = $"https://{canonicalDomain}/";
         } else {
-            IsReady = true;
+            _isReady = true;
 
             logger.LogInformation("Homepage warmup skipped: no canonical domain configured");
         }
     }
 
-    public bool IsReady { get; private set; }
-    public string LastError { get; private set; }
+    public bool IsReady => _isReady;
+    public string LastError => _lastError;
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken) {
         if (_url == null) {
@@ -49,7 +52,7 @@ public class HomepageWarmup : BackgroundService, IApplicationReadiness {
                     var response = await httpClient.GetAsync(_url, cancellationToken);
 
                     if (response.IsSuccessStatusCode) {
-                        IsReady = true;
+                        _isReady = true;
 
                         return;
                     }
@@ -59,20 +62,22 @@ public class HomepageWarmup : BackgroundService, IApplicationReadiness {
                     if (response.StatusCode == HttpStatusCode.NotFound) {
                         _logger.LogWarning("Homepage warmup: pipeline returned 404 (no homepage published); marking ready");
 
-                        IsReady = true;
+                        _isReady = true;
 
                         return;
                     }
 
-                    LastError = $"HTTP {(int) response.StatusCode}";
-                } catch (Exception ex) when (ex is not OperationCanceledException) {
-                    LastError = ex.Message;
+                    _lastError = $"HTTP {(int) response.StatusCode}";
+                } catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+                    throw;
+                } catch (Exception ex) {
+                    _lastError = ex.Message;
                 }
 
                 if (DateTimeOffset.UtcNow >= deadline) {
-                    _logger.LogError("Homepage warmup gave up after {MaxWait}; last error: {LastError}. Marking ready to avoid an indefinite restart loop", MaxWaitTime, LastError);
+                    _logger.LogError("Homepage warmup gave up after {MaxWait}; last error: {LastError}. Marking ready to avoid an indefinite restart loop", MaxWaitTime, _lastError);
 
-                    IsReady = true;
+                    _isReady = true;
 
                     return;
                 }

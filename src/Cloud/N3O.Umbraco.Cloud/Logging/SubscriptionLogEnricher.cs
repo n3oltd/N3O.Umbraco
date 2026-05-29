@@ -10,13 +10,25 @@ public class SubscriptionLogEnricher : LogEnricher {
         _subscriptionAccessor = subscriptionAccessor;
     }
 
-    public override IReadOnlyDictionary<string, string> GetContextData() {
-        var contextData = new Dictionary<string, string>();
+    public override IReadOnlyDictionary<string, string> GetContextData() => Build();
+
+    public override IReadOnlyDictionary<string, string> GetTags() => Build();
+
+    private Dictionary<string, string> Build() {
+        var data = new Dictionary<string, string>();
 
         var subscription = _subscriptionAccessor.GetSubscription();
 
-        contextData["SubscriptionId"] = subscription.Id.ToString();
-        
-        return contextData;
+        if (subscription?.Id != null) {
+            data["subscriptionId"] = subscription.Id.ToString();
+            data["subscriptionCode"] = subscription.Id.Code;
+            data["subscriptionNumber"] = subscription.Id.Number.ToString();
+        }
+
+        if (subscription?.DataRegion != null) {
+            data["dataRegion"] = subscription.DataRegion.Id;
+        }
+
+        return data;
     }
 }
