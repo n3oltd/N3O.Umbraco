@@ -1,12 +1,13 @@
-﻿using N3O.Umbraco.Logging;
+using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Logging;
 using System.Collections.Generic;
 
 namespace N3O.Umbraco.Cloud;
 
-public class SubscriptionLogEnricher : LogEnricher {
+public class DataRegionLogEnricher : LogEnricher {
     private readonly ISubscriptionAccessor _subscriptionAccessor;
 
-    public SubscriptionLogEnricher(ISubscriptionAccessor subscriptionAccessor) {
+    public DataRegionLogEnricher(ISubscriptionAccessor subscriptionAccessor) {
         _subscriptionAccessor = subscriptionAccessor;
     }
 
@@ -15,11 +16,7 @@ public class SubscriptionLogEnricher : LogEnricher {
 
         var subscription = _subscriptionAccessor.GetSubscription();
 
-        if (subscription?.Descriptor != null) {
-            data["subscriptionId"] = subscription.Descriptor.ToString();
-        }
-
-        if (subscription?.DataRegion != null) {
+        if (subscription?.DataRegion?.Id.HasValue() == true) {
             data["dataRegion"] = subscription.DataRegion.Id;
         }
 
