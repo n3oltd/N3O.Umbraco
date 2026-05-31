@@ -26,7 +26,9 @@ public class SentryInitializer : IHostedService {
     }
 
     public Task StartAsync(CancellationToken cancellationToken) {
-        if (!Composer.WebHostEnvironment.IsProduction()) {
+        var env = Composer.WebHostEnvironment;
+
+        if (!env.IsProduction() && !env.IsStaging()) {
             return Task.CompletedTask;
         }
 

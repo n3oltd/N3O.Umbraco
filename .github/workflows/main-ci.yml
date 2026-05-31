@@ -17,5 +17,6 @@ jobs:
       run-pack: true
       version-strategy: date
       nuget-source: https://www.myget.org/F/n3o/api/v2/package
+      sentry-project: sites
     secrets:
       nuget-api-key: ${{ secrets.MYGET_API_KEY }}
