@@ -4,194 +4,305 @@ on:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+*'
+  schedule:
+    # 09:00 UTC on the 1st of each month.
+    - cron: '0 9 1 * *'
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for unscheduled release'
+        required: false
+
+permissions:
+  contents: write
 
 jobs:
+  prepare:
+    name: Prepare release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.compute.outputs.version }}
+      should_run: ${{ steps.compute.outputs.should_run }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - id: compute
+        name: Compute version and decide whether to release
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+
+          if [[ "$EVENT" == "push" ]]; then
+            VERSION="${GITHUB_REF#refs/tags/v}"
+            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          LATEST=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n1)
+          if [[ -z "$LATEST" ]]; then
+            echo "No prior v*.*.* tag found; aborting" >&2
+            exit 1
+          fi
+
+          IFS='.' read -r MAJOR MINOR PATCH <<< "${LATEST#v}"
+          NEXT_TAG="v${MAJOR}.${MINOR}.$((PATCH + 1))"
+          VERSION="${NEXT_TAG#v}"
+
+          if [[ "$EVENT" == "schedule" ]]; then
+            if [[ -z "$(git log "${LATEST}..HEAD" -- 'src/**')" ]]; then
+              echo "No src/** changes since ${LATEST}; skipping release" >&2
+              echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+              echo "should_run=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+
+          # Create + push tag with the default GITHUB_TOKEN. This push will not
+          # retrigger the `push: tags:` branch of this workflow (GitHub blocks
+          # GITHUB_TOKEN-authored events from triggering workflows), which is
+          # fine — downstream jobs in this same run consume the version via
+          # needs.prepare.outputs.version.
+          git config user.name  'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git tag "$NEXT_TAG"
+          git push origin "$NEXT_TAG"
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "should_run=true" >> "$GITHUB_OUTPUT"
+
   build-pack-push:
     name: Build, Pack, Push
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/dotnet-build-pack-push.yml@main
     with:
       dotnet-version: 8.x
       run-tests: false
       run-pack: true
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       nuget-api-key: ${{ secrets.NUGET_API_KEY }}
 
   umbraco-accounts-client:
     name: 'npm Publish @n3oltd/umbraco-accounts-client'
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-accounts-client'
-      version: ${GITHUB_REF#refs/tags/}
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
   umbraco-cropper-client:
     name: 'npm Publish @n3oltd/umbraco-cropper-client'
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-cropper-client'
-      version: ${GITHUB_REF#refs/tags/}
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
   umbraco-crowdfunding-client:
     name: 'npm Publish @n3oltd/umbraco-crowdfunding-client'
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-crowdfunding-client'
-      version: ${GITHUB_REF#refs/tags/}
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
   umbraco-data-content-client:
     name: 'npm Publish @n3oltd/umbraco-data-content-client'
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-data-content-client'
-      version: ${GITHUB_REF#refs/tags/}
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
   umbraco-data-content-types-client:
     name: 'npm Publish @n3oltd/umbraco-data-content-types-client'
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-data-content-types-client'
-      version: ${GITHUB_REF#refs/tags/}
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
   umbraco-data-data-types-client:
     name: 'npm Publish @n3oltd/umbraco-data-data-types-client'
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-data-data-types-client'
-      version: ${GITHUB_REF#refs/tags/}
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
   umbraco-data-exports-client:
     name: 'npm Publish @n3oltd/umbraco-data-exports-client'
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-data-exports-client'
-      version: ${GITHUB_REF#refs/tags/}
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
   umbraco-data-imports-client:
     name: 'npm Publish @n3oltd/umbraco-data-imports-client'
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-data-imports-client'
-      version: ${GITHUB_REF#refs/tags/}
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
   umbraco-giving-client:
     name: 'npm Publish @n3oltd/umbraco-giving-client'
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-giving-client'
-      version: ${GITHUB_REF#refs/tags/}
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
   umbraco-giving-cart-client:
     name: 'npm Publish @n3oltd/umbraco-giving-cart-client'
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-giving-cart-client'
-      version: ${GITHUB_REF#refs/tags/}
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
   umbraco-giving-checkout-client:
     name: 'npm Publish @n3oltd/umbraco-giving-checkout-client'
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-giving-checkout-client'
-      version: ${GITHUB_REF#refs/tags/}
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
   umbraco-newsletters-client:
     name: 'npm Publish @n3oltd/umbraco-newsletters-client'
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-newsletters-client'
-      version: ${GITHUB_REF#refs/tags/}
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
   umbraco-payments-client:
     name: 'npm Publish @n3oltd/umbraco-payments-client'
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-payments-client'
-      version: ${GITHUB_REF#refs/tags/}
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
   umbraco-payments-bambora-client:
     name: 'npm Publish @n3oltd/umbraco-payments-bambora-client'
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-payments-bambora-client'
-      version: ${GITHUB_REF#refs/tags/}
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
   umbraco-payments-directdebituk-client:
     name: 'npm Publish @n3oltd/umbraco-payments-directdebituk-client'
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-payments-directdebituk-client'
-      version: ${GITHUB_REF#refs/tags/}
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
   umbraco-payments-gocardless-client:
     name: 'npm Publish @n3oltd/umbraco-payments-gocardless-client'
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-payments-gocardless-client'
-      version: ${GITHUB_REF#refs/tags/}
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
   umbraco-payments-opayo-client:
     name: 'npm Publish @n3oltd/umbraco-payments-opayo-client'
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-payments-opayo-client'
-      version: ${GITHUB_REF#refs/tags/}
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
   umbraco-payments-paypal-client:
     name: 'npm Publish @n3oltd/umbraco-payments-paypal-client'
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-payments-paypal-client'
-      version: ${GITHUB_REF#refs/tags/}
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
   umbraco-payments-stripe-client:
     name: 'npm Publish @n3oltd/umbraco-payments-stripe-client'
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-payments-stripe-client'
-      version: ${GITHUB_REF#refs/tags/}
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
 
   umbraco-uploader-client:
     name: 'npm Publish @n3oltd/umbraco-uploader-client'
+    needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     uses: n3oltd/actions/.github/workflows/npm-publish.yml@main
     with:
       working-directory: 'clients/@n3oltd/umbraco-uploader-client'
-      version: ${GITHUB_REF#refs/tags/}
+      version: ${{ needs.prepare.outputs.version }}
     secrets:
       npm-token: ${{ secrets.NPM_TOKEN }}
