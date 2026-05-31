@@ -20,3 +20,4 @@ jobs:
       sentry-project: sites
     secrets:
       nuget-api-key: ${{ secrets.MYGET_API_KEY }}
+      sentry-auth-token: ${{ secrets.SENTRY_AUTH_TOKEN }}
