@@ -1,11 +1,11 @@
 using Microsoft.Extensions.Options;
 using System;
-using Umbraco.Cms.Web.BackOffice.Security;
+using Umbraco.Cms.Api.Management.Security;
 
 namespace N3O.Umbraco.Authentication.Auth0;
 
 public class Auth0BackOfficeLoginProviderOptions : IConfigureNamedOptions<BackOfficeExternalLoginProviderOptions> {
-    private static readonly string EditorGroupAlias = global::Umbraco.Cms.Core.Constants.Security.EditorGroupAlias;
+    private static readonly string EditorGroupAlias = "editor"; // Constants.Security.EditorGroupAlias removed in v17
     private static readonly string SchemePrefix = global::Umbraco.Cms.Core.Constants.Security.BackOfficeExternalAuthenticationTypePrefix;
     public static readonly string SchemeName = "Auth0";
     public static readonly string SchemaNameWithPrefix = SchemePrefix + SchemeName;
@@ -25,18 +25,15 @@ public class Auth0BackOfficeLoginProviderOptions : IConfigureNamedOptions<BackOf
     }
 
     public void Configure(BackOfficeExternalLoginProviderOptions options) {
-        options.Icon = "fa fa-cloud";
-
         options.AutoLinkOptions = new ExternalSignInAutoLinkOptions(autoLinkExternalAccount: false,
                                                                     defaultUserGroups: new[] { EditorGroupAlias },
                                                                     defaultCulture: null,
                                                                     allowManualLinking: false);
         options.AutoLinkOptions.OnAutoLinking = (_, _) => { };
         options.AutoLinkOptions.OnExternalLogin = (_, _) => true;
-        
+
         options.DenyLocalLogin = false;
-        options.AutoRedirectLoginToExternalProvider = true;
-        
+
         _configure?.Invoke(options);
     }
 }

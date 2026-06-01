@@ -1,40 +1,10 @@
-﻿using N3O.Umbraco.Extensions;
-using System.Collections.Generic;
-using Umbraco.Cms.Core.Models;
-using Umbraco.Cms.Core.Models.ContentEditing;
-using Umbraco.Cms.Core.Models.Membership;
-using Umbraco.Cms.Core.Services;
-
+// IContentAppFactory and ContentApp were removed in Umbraco 14.
+// Content Apps are now registered via umbraco-package.json Bellissima extensions.
+//
+// This class previously registered a "Preview" content app tab for all content types
+// that compose PlatformsConstants.Offerings.CompositionAlias.
+//
+// TODO (v17 replacement): Create an App_Plugins/N3O.Umbraco.Cloud.Platforms.Preview/
+// umbraco-package.json that registers a "contentApp" extension entry with an
+// "entityType" condition matching the relevant document types.
 namespace N3O.Umbraco.Cloud.Platforms;
-
-public class PlatformsPreviewApp : IContentAppFactory {
-    private static readonly string[] CompositionAliases = [PlatformsConstants.Offerings.CompositionAlias];
-    
-    private readonly IContentTypeService _contentTypeService;
-
-    public PlatformsPreviewApp(IContentTypeService contentTypeService) {
-        _contentTypeService = contentTypeService;
-    }
-    
-    public ContentApp GetContentAppFor(object source, IEnumerable<IReadOnlyUserGroup> userGroups) {
-        var content = source as IContent;
-
-        if (content == null) {
-            return null;
-        }
-
-        var contentType = _contentTypeService.Get(content.ContentTypeId);
-        
-        if (!contentType.CompositionAliases().ContainsAny(CompositionAliases, true)) {
-            return null;
-        }
-
-        return new ContentApp {
-            Alias = "platformsPreview",
-            Name = "Preview",
-            Icon = "icon-eye",
-            View = "/App_Plugins/N3O.Umbraco.Cloud.Platforms.Preview/N3O.Umbraco.Cloud.Platforms.Preview.html",
-            Weight = -100
-        };
-    }
-}

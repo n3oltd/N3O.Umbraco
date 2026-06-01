@@ -24,12 +24,16 @@ public class NestedSchemaResMapping : IMapDefinition {
     }
 
     private void Map(PublishedContentProperty src, NestedSchemaRes dest, MapperContext ctx) {
-        var nestedConfiguration = src.Property.PropertyType.DataType.ConfigurationAs<NestedContentConfiguration>();
-        
+        var blockListConfiguration = src.Property.PropertyType.DataType.ConfigurationAs<BlockListConfiguration>();
+
         var items = new List<NestedSchemaItemRes>();
 
-        foreach (var nestedContentType in nestedConfiguration?.ContentTypes.OrEmpty()) {
-            items.Add(PopulateContentTypes(ctx, nestedContentType.Alias));
+        foreach (var block in blockListConfiguration?.Blocks.OrEmpty()) {
+            var contentType = _contentTypeService.Get(block.ContentElementTypeKey);
+
+            if (contentType != null) {
+                items.Add(PopulateContentTypes(ctx, contentType.Alias));
+            }
         }
         
         dest.Items = items;

@@ -1,11 +1,11 @@
-using Konstrukt.Configuration.Builders;
+using Umbraco.UIBuilder.Configuration.Builders;
 using N3O.Umbraco.Data.DataTypes;
 using N3O.Umbraco.UIBuilder;
 
 namespace N3O.Umbraco.Data.UIBuilder;
 
 public class ImportsConfigurator : KonstruktConfigurator {
-    public override void Configure(KonstruktConfigBuilder builder) {
+    public override void Configure(UIBuilderConfigBuilder builder) {
         var section = GetContentSection(builder);
         var dashboard = section.AddDashboard("Imports");
         dashboard.SetVisibility(cfg => cfg.ShowForUserGroup(DataConstants.SecurityGroups.ImportUsers.Alias));
@@ -13,7 +13,7 @@ public class ImportsConfigurator : KonstruktConfigurator {
         ConfigureCollection(dashboard);
     }
 
-    private void ConfigureCollection(KonstruktDashboardConfigBuilder dashboard) {
+    private void ConfigureCollection(DashboardConfigBuilder dashboard) {
         var collection = dashboard.SetCollection<Import>(x => x.Id,
                                                          "Import",
                                                          "Imports",
@@ -38,7 +38,7 @@ public class ImportsConfigurator : KonstruktConfigurator {
         ConfigureEditor(collection);
     }
 
-    private void ConfigureListView(KonstruktDashboardCollectionConfigBuilder<Import> collection) {
+    private void ConfigureListView(DashboardCollectionConfigBuilder<Import> collection) {
         var listView = collection.ListView();
         listView.AddField(c => c.QueuedAt);
         listView.AddField(c => c.QueuedBy);
@@ -50,10 +50,10 @@ public class ImportsConfigurator : KonstruktConfigurator {
         listView.AddField(c => c.Status);
     }
 
-    private void ConfigureEditor(KonstruktDashboardCollectionConfigBuilder<Import> collection) {
+    private void ConfigureEditor(DashboardCollectionConfigBuilder<Import> collection) {
         var editor = collection.Editor();
         var recordTab = editor.AddTab("Record");
-        
+
         var recordFieldset = recordTab.AddFieldset("Record");
         recordFieldset.AddField(c => c.QueuedAt).MakeReadOnly();
         recordFieldset.AddField(c => c.QueuedBy).MakeReadOnly();

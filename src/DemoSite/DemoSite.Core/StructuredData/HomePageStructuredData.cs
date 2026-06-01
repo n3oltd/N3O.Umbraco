@@ -1,3 +1,5 @@
+/*TODO*/
+/*
 using DemoSite.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.StructuredData;
@@ -20,3 +22,4 @@ public class HomePageStructuredData : StructuredDataProvider<HomePage> {
               .Country("GBR");
     }
 }
+*/

@@ -28,7 +28,7 @@ public class NestedContentPropertyConverter : IPropertyConverter {
     }
     
     public bool IsConverter(UmbracoPropertyInfo propertyInfo) {
-        return propertyInfo.Type.PropertyEditorAlias.EqualsInvariant(UmbracoPropertyEditors.Aliases.NestedContent);
+        return propertyInfo.Type.PropertyEditorAlias.EqualsInvariant(UmbracoPropertyEditors.Aliases.BlockList);
     }
 
     public void Export(IUntypedTableBuilder tableBuilder,
@@ -37,7 +37,7 @@ public class NestedContentPropertyConverter : IPropertyConverter {
                        string columnTitlePrefix,
                        IContentProperty contentProperty,
                        UmbracoPropertyInfo propertyInfo) {
-        var nestedContentConfiguration = propertyInfo.DataType.ConfigurationAs<NestedContentConfiguration>();
+        var blockListConfiguration = propertyInfo.DataType.ConfigurationAs<BlockListConfiguration>();
 
         foreach (var (elementsProperties, index) in ((ElementsProperty) contentProperty).OrEmpty(x => x.Value).SelectWithIndex()) {
             var elementInfo = propertyInfo.Elements
@@ -49,7 +49,7 @@ public class NestedContentPropertyConverter : IPropertyConverter {
                                                                 elementInfo,
                                                                 index + 1,
                                                                 columnTitlePrefix);
-            
+
             foreach (var elementPropertyInfo in elementInfo.Properties) {
                 var converter = elementPropertyInfo.GetPropertyConverter(converters);
                 var elementsProperty = elementsProperties.GetPropertyByAlias(elementPropertyInfo.Type.Alias);
@@ -60,14 +60,14 @@ public class NestedContentPropertyConverter : IPropertyConverter {
                                  elementColumnTitlePrefix,
                                  elementsProperty,
                                  elementPropertyInfo);
-                
+
                 columnOrder += 100;
             }
 
-            if (!nestedContentConfiguration.ContentTypes.IsSingle()) {
+            if (!blockListConfiguration.Blocks.IsSingle()) {
                 var orderColumnRange = GetOrAddColumnRange<int?>(OurDataTypes.Integer,
                                                                  GetOrderColumnTitle(elementColumnTitlePrefix));
-                
+
                 tableBuilder.AddValue(orderColumnRange, index + 1);
             }
         }
@@ -78,7 +78,7 @@ public class NestedContentPropertyConverter : IPropertyConverter {
                                             string columnTitlePrefix) {
         var columns = new List<Column>();
         var maxValues = GetMaxValues(propertyInfo);
-        var nestedContentConfiguration = propertyInfo.DataType.ConfigurationAs<NestedContentConfiguration>();
+        var blockListConfiguration = propertyInfo.DataType.ConfigurationAs<BlockListConfiguration>();
 
         foreach (var element in propertyInfo.Elements) {
             for (var i = 1; i <= maxValues; i++) {
@@ -90,13 +90,13 @@ public class NestedContentPropertyConverter : IPropertyConverter {
                 foreach (var elementPropertyInfo in element.Properties) {
                     columns.AddRange(elementPropertyInfo.GetColumns(converters, nestedColumnTitlePrefix));
                 }
-                
-                if (!nestedContentConfiguration.ContentTypes.IsSingle()) {
+
+                if (!blockListConfiguration.Blocks.IsSingle()) {
                     var orderColumnRange = GetOrAddColumnRange<int?>(OurDataTypes.Integer,
                                                                      GetOrderColumnTitle(nestedColumnTitlePrefix));
 
                     orderColumnRange.AddValues(0, null);
-                    
+
                     columns.AddRange(orderColumnRange.GetColumns());
                 }
             }
@@ -113,8 +113,8 @@ public class NestedContentPropertyConverter : IPropertyConverter {
                        UmbracoPropertyInfo propertyInfo,
                        IEnumerable<ImportField> fields) {
         var maxValues = GetMaxValues(propertyInfo);
-        var nestedPropertyBuilder = contentBuilder.Nested(propertyInfo.Type.Alias);
-        var nestedContentConfiguration = propertyInfo.DataType.ConfigurationAs<NestedContentConfiguration>();
+        var nestedPropertyBuilder = contentBuilder.BlockList(propertyInfo.Type.Alias);
+        var blockListConfiguration = propertyInfo.DataType.ConfigurationAs<BlockListConfiguration>();
 
         foreach (var element in propertyInfo.Elements) {
             for (var i = 1; i <= maxValues; i++) {
@@ -128,8 +128,8 @@ public class NestedContentPropertyConverter : IPropertyConverter {
                 }
 
                 int? order = null;
-                
-                if (!nestedContentConfiguration.ContentTypes.IsSingle()) {
+
+                if (!blockListConfiguration.Blocks.IsSingle()) {
                     var orderColumnTitle = GetOrderColumnTitle(nestedColumnTitlePrefix);
                     
                     var orderField = fields.Single(x => x.Name.EqualsInvariant(orderColumnTitle));
@@ -160,12 +160,13 @@ public class NestedContentPropertyConverter : IPropertyConverter {
     }
 
     private int GetMaxValues(UmbracoPropertyInfo propertyInfo) {
-        var configuration = propertyInfo.DataType.ConfigurationAs<NestedContentConfiguration>();
+        var configuration = propertyInfo.DataType.ConfigurationAs<BlockListConfiguration>();
+        var maxItems = configuration.ValidationLimit?.Max;
 
-        if (configuration.MaxItems == null || configuration.MaxItems == 0) {
+        if (maxItems == null || maxItems == 0) {
             return DataConstants.Limits.Columns.MaxValues;
         } else {
-            return configuration.MaxItems.GetValueOrThrow();
+            return maxItems.GetValueOrThrow();
         }
     }
     

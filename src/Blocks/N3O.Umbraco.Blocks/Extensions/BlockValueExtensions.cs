@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -15,27 +15,27 @@ namespace N3O.Umbraco.Blocks.Extensions;
 public static class BlockValueExtensions {
     private static readonly ConcurrentHashSet<IContentType> ContentTypes = [];
 
-    public static BlockEditorData DeserializeAndClean(this BlockValue blockValue,
+    public static BlockEditorData<BlockGridValue, BlockGridLayoutItem> DeserializeAndClean(this BlockGridValue blockValue,
                                                       IJsonSerializer jsonSerializer,
                                                       IContentTypeService contentTypeService) {
         var dataConverter = new BlockGridEditorDataConverter(jsonSerializer);
-        
+
         var blockValueAsString = blockValue.ToString();
 
         if (!blockValueAsString.HasValue()) {
             return null;
         }
-        
+
         if (!blockValueAsString.DetectIsJson()) {
             blockValueAsString = JsonConvert.SerializeObject(blockValue);
         }
 
         var blockEditorData = dataConverter.Deserialize(blockValueAsString);
-        
+
         return Clean(contentTypeService, blockEditorData);
     }
 
-    private static BlockEditorData Clean(IContentTypeService contentTypeService, BlockEditorData blockEditorData) {
+    private static BlockEditorData<BlockGridValue, BlockGridLayoutItem> Clean(IContentTypeService contentTypeService, BlockEditorData<BlockGridValue, BlockGridLayoutItem> blockEditorData) {
         if (blockEditorData.BlockValue.ContentData.Count == 0) {
             blockEditorData.BlockValue.SettingsData.Clear();
 
@@ -69,7 +69,7 @@ public static class BlockValueExtensions {
     }
 
     private static void ResolveBlockItemData(BlockItemData block,
-                                             Dictionary<string, Dictionary<string, IPropertyType>> contentTypePropertyTypes, 
+                                             Dictionary<string, Dictionary<string, IPropertyType>> contentTypePropertyTypes,
                                              IDictionary<Guid, IContentType> contentTypesDictionary) {
         if (!contentTypesDictionary.TryGetValue(block.ContentTypeKey, out var contentType)) {
             return;
@@ -79,18 +79,17 @@ public static class BlockValueExtensions {
             propertyTypes = contentTypePropertyTypes[contentType.Alias] = contentType.CompositionPropertyTypes.ToDictionary(x => x.Alias, x => x);
         }
 
-        var propValues = new Dictionary<string, BlockItemData.BlockPropertyValue>();
+        block.Values.Clear();
 
         foreach (var prop in block.RawPropertyValues.ToList()) {
             if (!propertyTypes.TryGetValue(prop.Key, out var propType)) {
                 block.RawPropertyValues.Remove(prop.Key);
             } else {
-                propValues[prop.Key] = new BlockItemData.BlockPropertyValue(prop.Value, propType);
+                block.Values.Add(new BlockPropertyValue { Alias = prop.Key, Value = prop.Value, PropertyType = propType });
             }
         }
 
         block.ContentTypeAlias = contentType.Alias;
-        block.PropertyValues = propValues;
     }
 
     private static IEnumerable<IContentType> GetAllContentTypes(IContentTypeService contentTypeService,

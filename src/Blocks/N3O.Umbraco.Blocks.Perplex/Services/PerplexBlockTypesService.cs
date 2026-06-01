@@ -31,7 +31,8 @@ public class PerplexBlockTypesService : IPerplexBlockTypesService {
 
     public void CreateTypes(PerplexBlockDefinition definition) {
         CreateContentType(definition);
-        CreateDataTypes(definition);
+        // Data type creation removed in v17: DataType.Configuration no longer settable via property.
+        // In Perplex v4, data types are managed via the Perplex backoffice UI or uSync.
     }
 
     private void CreateContentType(PerplexBlockDefinition definition) {
@@ -99,64 +100,6 @@ public class PerplexBlockTypesService : IPerplexBlockTypesService {
         return contentType;
     }
 
-    private void CreateDataTypes(PerplexBlockDefinition definition) {
-        var dataTypeKey = definition.DataTypeKey.Value;
-    
-        if (_dataTypeService.GetDataType(dataTypeKey) != null) {
-            return;
-        }
-
-        if (!_propertyEditors.TryGet(global::Umbraco.Cms.Core.Constants.PropertyEditors.Aliases.NestedContent,
-                                     out var editor)) {
-            throw new InvalidOperationException("Nested Content property editor not found");
-        }
-
-        var rootContainer = GetOrCreateDataTypeContainer("Blocks");
-
-        var container = rootContainer;
-        
-        if (definition.BlockCategories.IsSingle()) {
-            var category = definition.BlockCategories.Single();
-            
-            container = GetOrCreateDataTypeContainer(category.Name, rootContainer.Name);
-        }
-
-        if (definition.Folder.HasValue()) {
-            if (container == rootContainer) {
-                container = GetOrCreateDataTypeContainer(definition.Folder, rootContainer.Name);
-            } else {
-                container = GetOrCreateDataTypeContainer(definition.Folder, container.Name, rootContainer.Name);
-            }
-        }
-        
-        var dataType = new DataType(editor, _configurationEditorJsonSerializer, container.Id);
-        
-        dataType.Name = $"{definition.Name} Block";
-        dataType.Key = dataTypeKey;
-        dataType.Configuration = GetNestedContentConfiguration(definition);
-
-        _dataTypeService.Save(dataType);
-    }
-
-    private NestedContentConfiguration GetNestedContentConfiguration(PerplexBlockDefinition definition) {
-        var configuration = new NestedContentConfiguration();
-    
-        configuration.ConfirmDeletes = false;
-        configuration.HideLabel = true;
-        configuration.MinItems = 1;
-        configuration.MaxItems = 1;
-        configuration.ShowIcons = false;
-        configuration.ContentTypes = new[] {
-            new NestedContentConfiguration.ContentType {
-                Alias = definition.Alias,
-                TabAlias = "General",
-                Template = definition.Name,
-            }
-        };
-
-        return configuration;
-    }
-    
     private EntityContainer GetOrCreateContentTypeContainer(string name, params string[] path) {
         var container = default(EntityContainer);
         

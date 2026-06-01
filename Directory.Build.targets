@@ -1,0 +1,36 @@
+<Project>
+    <!--
+        Umbraco 13 → 17 migration: Our.Umbraco.Community.Contentment.Core 4.7.0 transitively
+        depends on the Umbraco.Cms.Web.BackOffice 13.x NuGet package, which ships
+        "Umbraco.Web.BackOffice.dll" (v13 assembly name, no "Cms" prefix). At runtime Umbraco's
+        TypeFinder scans every DLL in the probing directory; finding the v13 assembly causes a
+        fatal TypeLoadException because types like ITree, ContentVariantDisplay, etc. were removed
+        in Umbraco 14. The v17 backoffice DLL is named "Umbraco.Cms.Web.BackOffice.dll" and is
+        unaffected by these removals. We strip only the v13 file by exact filename.
+    -->
+
+    <!-- Remove from NuGet runtime assets before they are copied to the output directory -->
+    <Target Name="ExcludeLegacyUmbracoBackOfficeRuntime" AfterTargets="ResolvePackageAssets">
+        <ItemGroup>
+            <RuntimeCopyLocalItems Remove="@(RuntimeCopyLocalItems)"
+                                   Condition="'%(Filename)%(Extension)' == 'Umbraco.Web.BackOffice.dll'" />
+        </ItemGroup>
+    </Target>
+
+    <!-- Remove from project/assembly copy-local list as well -->
+    <Target Name="ExcludeLegacyUmbracoBackOfficeReferences" AfterTargets="ResolveAssemblyReferences">
+        <ItemGroup>
+            <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)"
+                                     Condition="'%(Filename)%(Extension)' == 'Umbraco.Web.BackOffice.dll'" />
+        </ItemGroup>
+    </Target>
+
+    <!-- Delete fallback: remove from output if a prior incremental build copied it before these
+         targets ran (e.g. bin folder already had it from a previous build). -->
+    <Target Name="DeleteLegacyUmbracoBackOfficeFromBin" AfterTargets="Build">
+        <Delete Files="$(OutputPath)Umbraco.Web.BackOffice.dll"
+                Condition="Exists('$(OutputPath)Umbraco.Web.BackOffice.dll')" />
+        <Delete Files="$(OutputPath)Umbraco.Web.BackOffice.pdb"
+                Condition="Exists('$(OutputPath)Umbraco.Web.BackOffice.pdb')" />
+    </Target>
+</Project>

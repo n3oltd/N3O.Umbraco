@@ -46,7 +46,7 @@
         <PackageReference Include="NodaTime" Version="3.3.2" />
         <PackageReference Include="NodaTime.Serialization.JsonNet" Version="3.2.1" />
         <PackageReference Include="NSwag.AspNetCore" Version="14.7.1" />
-        <PackageReference Include="Our.Umbraco.Community.Contentment.Core" Version="4.7.0" /><!-- TODO: No Umbraco 17 release exists yet — blocker -->
+        <PackageReference Include="Umbraco.Community.Contentment" Version="6.1.4" />
         <PackageReference Include="Refit" Version="10.1.6" />
         <PackageReference Include="Refit.Newtonsoft.Json" Version="10.1.6" />
         <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />

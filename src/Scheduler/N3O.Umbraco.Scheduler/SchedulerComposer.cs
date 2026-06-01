@@ -21,7 +21,6 @@ using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
-using Umbraco.Cms.Web.BackOffice.Authorization;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
 using UmbracoConstants = Umbraco.Cms.Core.Constants;
 
@@ -77,10 +76,11 @@ public class SchedulerComposer : IComposer {
     }
 
     private void AddAuthorizedUmbracoDashboard(IUmbracoBuilder builder) {
+        // SectionRequirement removed in v17; require authenticated backoffice user instead.
         builder.Services.AddAuthorization(opt => {
             opt.AddPolicy(HangfireDashboard, policy => {
                 policy.AuthenticationSchemes.Add(UmbracoConstants.Security.BackOfficeAuthenticationType);
-                policy.Requirements.Add(new SectionRequirement(UmbracoConstants.Applications.Settings));
+                policy.RequireAuthenticatedUser();
             });
         });
 

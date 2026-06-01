@@ -31,7 +31,7 @@ public class GetRelationContentTypesHandler :
         switch (req.Model.ToLowerInvariant()) {
             case "child":
                 relationContentsTypes.AddRange(contentType.AllowedContentTypes
-                                                          .Select(x => _contentTypeService.Get(x.Id.Value)));
+                                                          .Select(x => _contentTypeService.Get(x.Key)));
                 break;
             
             case "descendant":
@@ -55,10 +55,10 @@ public class GetRelationContentTypesHandler :
     }
 
     private void PopulateDescendantsContentTypes(List<IContentType> list, IContentType contentType) {
-        var toProcess = contentType.AllowedContentTypes.Where(x => list.None(c => c.Id == x.Id.Value));
-        
+        var toProcess = contentType.AllowedContentTypes.Where(x => list.None(c => c.Key == x.Key));
+
         foreach (var allowedContentType in toProcess) {
-            var childContentType = _contentTypeService.Get(allowedContentType.Id.Value);
+            var childContentType = _contentTypeService.Get(allowedContentType.Key);
             
             list.AddIfNotExists(childContentType);
 

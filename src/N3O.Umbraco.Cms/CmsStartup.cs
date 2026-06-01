@@ -37,7 +37,7 @@ public abstract class CmsStartup {
                 .AddWebsite()
                 .AddDeliveryApi()
                 .AddComposers()
-                // TODO: Re-add .AddContentment() when Our.Umbraco.Community.Contentment publishes a v17-compatible release
+                .AddContentment()
                 .Build();
     }
 

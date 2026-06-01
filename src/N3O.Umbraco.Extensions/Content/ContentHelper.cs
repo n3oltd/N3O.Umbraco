@@ -83,13 +83,6 @@ public class ContentHelper : IContentHelper {
                 var elementsProperty = new ElementsProperty(contentType, property.Type, elements, json);
                 
                 elementsProperties.Add(elementsProperty);
-            } else if (property.Type.IsNestedContent()) {
-                var (nestedContents, json) = GetJsonPropertyValue(property.Value);
-                    
-                var elements = GetContentPropertiesForNestedContent(nestedContents);
-                var elementsProperty = new ElementsProperty(contentType, property.Type, elements, json);
-                
-                elementsProperties.Add(elementsProperty);
             } else if (property.Type.IsPerplexBlocks()) {
                 var (blockContent, json) = GetJsonPropertyValue(property.Value);
 

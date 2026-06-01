@@ -8,7 +8,7 @@ using N3O.Umbraco.Authentication.Extensions;
 using System;
 using System.Security.Claims;
 using Umbraco.Cms.Core.DependencyInjection;
-using Umbraco.Cms.Web.BackOffice.Security;
+using Umbraco.Cms.Api.Management.Security;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Authentication.Auth0.Extensions;
@@ -31,7 +31,7 @@ public static partial class UmbracoBuilderExtensions {
                                                .Get<Auth0BackOfficeAuthenticationOptions>();
                     
                     backOfficeAuthenticationBuilder.AddOpenIdConnect(
-                        backOfficeAuthenticationBuilder.SchemeForBackOffice(Auth0BackOfficeLoginProviderOptions.SchemeName), opt => {
+                        BackOfficeAuthenticationBuilder.SchemeForBackOffice(Auth0BackOfficeLoginProviderOptions.SchemeName), opt => {
                             opt.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                             opt.Authority = auth0Settings.Auth0.Login.Authority;
                             opt.ClientId = auth0Settings.Auth0.Login.ClientId;

@@ -69,19 +69,17 @@ public static class ContentServiceExtensions {
     
     public static PublishResult SaveAndPublish(this IContentService contentService, IContent content) {
         var savedNode = contentService.Save(content);
-        
-        /*TODO*/
+
         if (!savedNode.Success) {
-            throw new Exception("Error when saving node");
+            throw new InvalidOperationException($"Failed to save '{content.Name}': {savedNode.EventMessages}");
         }
-        
+
         var publishedNode = contentService.Publish(content, ["*"]);
-        
-        /*TODO*/
+
         if (!publishedNode.Success) {
-            throw new Exception("Error when publishing the content");
+            throw new InvalidOperationException($"Failed to publish '{content.Name}' (status: {publishedNode.Result}): {publishedNode.EventMessages}");
         }
-        
+
         return publishedNode;
     }
 }

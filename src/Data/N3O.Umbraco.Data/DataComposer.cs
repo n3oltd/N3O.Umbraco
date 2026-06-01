@@ -75,7 +75,6 @@ public class DataComposer : Composer {
         RegisterAll(t => t.ImplementsInterface<IExportPropertyFilter>(),
                     t => builder.Services.AddTransient(typeof(IExportPropertyFilter), t));
 
-        builder.ContentApps().Append<ExportApp>();
     }
 
     private void RegisterImports(IUmbracoBuilder builder) {
@@ -90,7 +89,6 @@ public class DataComposer : Composer {
         RegisterAll(t => t.ImplementsInterface<IImportPropertyFilter>(),
                     t => builder.Services.AddTransient(typeof(IImportPropertyFilter), t));
 
-        builder.ContentApps().Append<ImportApp>();
     }
     
     private void RegisterMatchers(IUmbracoBuilder builder) {
@@ -121,42 +119,37 @@ public class DataComponent : IComponent {
     private readonly IDataTypeService _dataTypeService;
     private readonly IConfigurationEditorJsonSerializer _configurationEditorJsonSerializer;
     private readonly IDataValueEditorFactory _dataValueEditorFactory;
-    private readonly IEditorConfigurationParser _editorConfigurationParser;
     private readonly IIOHelper _iioHelper;
 
     public DataComponent(IRuntimeState runtimeState,
                          IDataTypeService dataTypeService,
                          IConfigurationEditorJsonSerializer configurationEditorJsonSerializer,
                          IDataValueEditorFactory dataValueEditorFactory,
-                         IEditorConfigurationParser editorConfigurationParser,
                          IIOHelper iioHelper) {
         _runtimeState = runtimeState;
         _dataTypeService = dataTypeService;
         _configurationEditorJsonSerializer = configurationEditorJsonSerializer;
         _dataValueEditorFactory = dataValueEditorFactory;
-        _editorConfigurationParser = editorConfigurationParser;
         _iioHelper = iioHelper;
     }
     
     public void Initialize() {
         if (_runtimeState.Level == RuntimeLevel.Run) {
             EnsureDataTypeExists(new ImportNoticesViewerDataEditor(_dataValueEditorFactory,
-                                                                   _iioHelper,
-                                                                   _editorConfigurationParser));
+                                                                   _iioHelper));
             
             EnsureDataTypeExists(new ImportDataEditorDataEditor(_dataValueEditorFactory,
-                                                                _iioHelper,
-                                                                _editorConfigurationParser));
+                                                                _iioHelper));
         }
     }
 
     private void EnsureDataTypeExists(DataEditor dataEditor) {
-        if (_dataTypeService.GetDataType(dataEditor.Name) != null) {
+        if (_dataTypeService.GetDataType(dataEditor.Alias) != null) {
             return;
         }
-        
+
         var dataType = new DataType(dataEditor, _configurationEditorJsonSerializer);
-        dataType.Name = dataEditor.Name;
+        dataType.Name = dataEditor.Alias;
         dataType.Key = UmbracoId.Generate(IdScope.DataType, dataEditor.Alias);
 
         _dataTypeService.Save(dataType);

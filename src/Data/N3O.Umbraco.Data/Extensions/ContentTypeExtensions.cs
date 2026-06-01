@@ -36,17 +36,18 @@ public static class ContentTypeExtensions {
         var dataType = dataTypeService.GetDataType(propertyType.DataTypeId);
         var elements = new List<ElementInfo>();
         
-        if (propertyType.IsNestedContent()) {
-            var nestedContentConfiguration = dataType.ConfigurationAs<NestedContentConfiguration>();
-            var nestedContentTypes = nestedContentConfiguration.ContentTypes
-                                                               .Select(x => contentTypeService.Get(x.Alias))
-                                                               .ToList();
+        if (propertyType.IsBlockList()) {
+            var blockListConfiguration = dataType.ConfigurationAs<BlockListConfiguration>();
 
-            foreach (var nestedContentType in nestedContentTypes) {
-                elements.Add(new ElementInfo(nestedContentType,
-                                             GetUmbracoProperties(nestedContentType,
-                                                                  dataTypeService,
-                                                                  contentTypeService)));
+            foreach (var block in blockListConfiguration?.Blocks.OrEmpty()) {
+                var blockContentType = contentTypeService.Get(block.ContentElementTypeKey);
+
+                if (blockContentType != null) {
+                    elements.Add(new ElementInfo(blockContentType,
+                                                 GetUmbracoProperties(blockContentType,
+                                                                      dataTypeService,
+                                                                      contentTypeService)));
+                }
             }
         }
 

@@ -1,11 +1,11 @@
-using Konstrukt.Mapping;
 using N3O.Umbraco.Extensions;
 using Newtonsoft.Json;
 using System;
+using Umbraco.UIBuilder.Mapping;
 
 namespace N3O.Umbraco.UIBuilder.ValueMappers;
 
-public class EnumDropdownValueMapper<T> : KonstruktValueMapper where T : struct, Enum {
+public class EnumDropdownValueMapper<T> : ValueMapper where T : struct, Enum {
     public override object ModelToEditor(object input) {
         var vals = Enum.GetValues<T>();
         var inputStr = input?.ToString();

@@ -1,3 +1,5 @@
+/*TODO*/
+/* 
 using N3O.Umbraco.Content;
 using Umbraco.Cms.Core.Models.PublishedContent;
 
@@ -12,3 +14,4 @@ public class PageVisibilityFilter : IContentVisibilityFilter {
         return !((IPage) content).HidePage;
     }
 }
+*/

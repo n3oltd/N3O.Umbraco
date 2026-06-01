@@ -59,13 +59,13 @@ public abstract class BlockDataConverter<TData> : IBlockDataConverter where TDat
         var udiText = match.Groups[2].Value;
         var udi = UdiParser.Parse(udiText);
 
-        if (_umbracoContextAccessor.TryGetUmbracoContext(out var context)) {
+        if (_umbracoContextAccessor.TryGetUmbracoContext(out var context) && udi is GuidUdi guidUdi) {
             IPublishedContent content;
-            
+
             if (udi.EntityType == DocumentEntityType) {
-                content = context.Content?.GetById(udi);
+                content = context.Content?.GetById(guidUdi.Guid);
             } else if (udi.EntityType == MediaEntityType) {
-                content = context.Media?.GetById(udi);
+                content = context.Media?.GetById(guidUdi.Guid);
             } else {
                 throw UnrecognisedValueException.For(udi.EntityType);
             }

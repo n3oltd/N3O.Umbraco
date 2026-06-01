@@ -9,11 +9,13 @@ using UrlProvider = N3O.Umbraco.UrlProviders.UrlProvider;
 namespace N3O.Umbraco.Blog.UrlProviders;
 
 public class BlogPostUrlProvider : UrlProvider {
+    public override string Alias => "blogPostUrlProvider";
+
     private static readonly string BlogPageAlias = AliasHelper<BlogPageContent>.ContentTypeAlias();
     private static readonly string BlogPostAlias = AliasHelper<BlogPostContent>.ContentTypeAlias();
 
     public BlogPostUrlProvider(ILogger<BlogPostUrlProvider> logger,
-                               DefaultUrlProvider defaultUrlProvider,
+                               NewDefaultUrlProvider defaultUrlProvider,
                                IContentCache contentCache)
         : base(logger, defaultUrlProvider, contentCache) { }
 

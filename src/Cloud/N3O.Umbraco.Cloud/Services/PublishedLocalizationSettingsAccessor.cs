@@ -1,10 +1,11 @@
-﻿using N3O.Umbraco.Cloud.Extensions;
+using N3O.Umbraco.Cloud.Extensions;
 using N3O.Umbraco.Cloud.Lookups;
 using N3O.Umbraco.Cloud.Models;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
 using N3O.Umbraco.Lookups;
 using System.Collections.Generic;
+using System.Linq;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Cloud;
@@ -12,18 +13,20 @@ namespace N3O.Umbraco.Cloud;
 public class PublishedLocalizationSettingsAccessor : ILocalizationSettingsAccessor {
     private readonly ICdnClient _cdnClient;
     private readonly ILookups _lookups;
-    private readonly ILocalizationService _localizationService;
+    private readonly ILanguageService _languageService;
     private LocalizationSettings _localizationSettings;
 
     public PublishedLocalizationSettingsAccessor(ICdnClient cdnClient,
                                                  ILookups lookups,
-                                                 ILocalizationService localizationService) {
+                                                 ILanguageService languageService) {
         _cdnClient = cdnClient;
         _lookups = lookups;
-        _localizationService = localizationService;
+        _languageService = languageService;
     }
 
-    public IEnumerable<string> GetAllAvailableCultures() => _localizationService.GetAllCultureCodes();
+    public IEnumerable<string> GetAllAvailableCultures() {
+        return _languageService.GetAllAsync().GetAwaiter().GetResult().Select(x => x.IsoCode);
+    }
 
     public LocalizationSettings GetSettings() {
         if (_localizationSettings == null) {
@@ -37,9 +40,11 @@ public class PublishedLocalizationSettingsAccessor : ILocalizationSettingsAccess
             }
 
             var timezone = _lookups.FindById<Timezone>(publishedLocalization.Timezone.Id);
+            var defaultLanguage = _languageService.GetDefaultLanguageAsync().GetAwaiter().GetResult();
+            var allLanguages = _languageService.GetAllAsync().GetAwaiter().GetResult();
 
-            _localizationSettings = new LocalizationSettings(_localizationService.GetDefaultCultureCode(),
-                                                             _localizationService.GetAllCultureCodes(),
+            _localizationSettings = new LocalizationSettings(defaultLanguage?.IsoCode,
+                                                             allLanguages.Select(x => x.IsoCode).ToList(),
                                                              publishedLocalization.NumberFormat,
                                                              publishedLocalization.DateFormat,
                                                              publishedLocalization.TimeFormat,
