@@ -53,9 +53,10 @@ RC releases should not be used in production. A stable v4.x release is needed.
 
 ---
 
-### BLOCKER-04: Engage Cockpit Segment Rule Factory (Partially resolved)
+### BLOCKER-04: Engage Cockpit Segment Rule Factory (RESOLVED 2026-06-02 — C# side)
 
-**Status:** Engage package upgraded; namespaces confirmed valid; Cockpit factory implementation missing  
+**Status:** ✅ C# RESOLVED. `TelethonOnAirCockpitSegmentRuleFactory` implemented and BOTH DI registrations re-enabled in `PlatformsMarketingComposer`. v17.2.2 API verified by MetadataLoadContext reflection: `ICockpitSegmentRuleFactory`/`CockpitSegmentRule` in `Umbraco.Engage.Web.Cockpit.Segments`; `ISegmentRule`/`ISegmentRuleFactory`/`BaseSegmentRule` moved into `Umbraco.Engage.Infrastructure.Personalization.Segments.Rules` (the `.Rules` sub-namespace — the old `...Segments` using would NOT compile). Signature: `bool TryCreate(ISegmentRule, bool, out CockpitSegmentRule?)`. Build verified 0 errors. **The 3 AngularJS `segment-rule-telethon-on-air*.js` editor files remain blocked** (need Engage v17 client-side segment-rule UI API). *(Original notes below for reference.)*  
+**Status (original):** Engage package upgraded; namespaces confirmed valid; Cockpit factory implementation missing  
 **Package:** `Umbraco.Engage 17.2.2` (installed)  
 **Projects:** `N3O.Umbraco.Cloud.Platforms.Marketing`
 
@@ -92,7 +93,13 @@ The three JS files in `App_Plugins/telethon-on-air-rule/` are AngularJS and will
 
 ### BLOCKER-05: uSync Publisher — `SyncContentHandler`
 
-**Status:** Blocked on Jumoo — v17 API not publicly documented  
+**Status:** ✅ RESOLVED (2026-06-02) — reimplemented against the real uSync.Publisher v17 API discovered by reflection (no public docs exist; the installed assemblies were the authoritative source).
+
+`IPublisherStateService` (uSync.Publisher.Client) is gone — that client assembly now exports only `PublisherManifest`. The push pipeline was rebuilt on `Jumoo.Processing` (the real defining assembly is `jumoo.processing.core.dll`; the `Jumoo.Processing.dll` the old TODO named is an empty placeholder). The new handler injects **`uSync.Publisher.Strategies.Processor.PublisherProcessor`** (which internally wraps `Jumoo.Processing.Core.Pipelines.IPipelineService` + `IUserService`) and calls `Process(PublisherActionRequest, PublisherProcessingOptions)` → `SyncPublishResponse`. It builds the same Document-UDI `SyncItem` (`ChangeType.Create` + `DependencyFlags.PublishedDependencies`), pushes in `PublishMode.Push` to `ServerAlias`, and throws on `!result.Success` — preserving the original contract. The old `HasProcess` idempotency guard was dropped (the dispatcher `SyncOnPublish` mints a fresh `RequestId` per publish and enqueues fire-and-forget, so it guarded nothing). `PublisherProcessor` registered via `AddTransient` in `SyncExtensionsComposer`. Build 0 errors (solution + DemoSite.Web); app boots clean; all API verified by `MetadataLoadContext` reflection against the installed 17.3.x DLLs.
+
+⚠️ **Runtime caveat (not statically verifiable):** whether `PublisherProcessor.Process` drives the multi-step push pipeline to completion in a single call could not be byte-confirmed without decompiling the method body. It returns `SyncPublishResponse` directly (strongly implying it runs to completion), and it executes only inside the N3O background-job scheduler, so a partial completion would surface as a job failure, not a publish/editing outage. **Needs a true end-to-end test with a configured remote uSync server + a `[SyncOnPublish]` content type** (not present on the demo site). Documented fallback if needed: drive `IPipelineService` directly (CreatePipeline → UpdateOptions → loop Process until `PipelineStatus.Completed/Failed`).
+
+**Status (original):** Blocked on Jumoo — v17 API not publicly documented  
 **Package:** uSync.Publisher (separate from `uSync.Complete 17.3.6`)  
 **File:** `src/Sync/N3O.Umbraco.Sync.Extensions/Handlers/SyncContentHandler.cs`
 
@@ -114,7 +121,16 @@ public void Handle(ContentSavedNotification notification) {
 
 ### BLOCKER-06: Nested Content Database Migration
 
-**Status:** Migration code written; not registered; not run on any site  
+**Status:** ✅ REGISTERED + SQL FIXED (2026-06-02) — `N3ONestedContentMigrationPlan` created in `src/N3O.Umbraco.Extensions/Migrations/N3ONestedContentMigrationPlan.cs` (PackageMigrationPlan, id `N3O.Umbraco.NestedToBlockList`, state `2026-NestedContent-v1`). Auto-discovered via `IDiscoverable` — NO composer added (would double-register). ⚠️ Now runs on application startup for every consuming site.
+
+**Smoke-test finding (2026-06-02):** registering it surfaced that `NestedContentToBlockListMigration.cs` was NOT written for the v17 DB schema and crashed every startup (`SqlException: Invalid column name 'id'`). Fixed against the live v17 schema:
+- `umbracoDataType` has `nodeId` (PK) + `propertyEditorUiAlias` — NOT `id`/`pk`. Query/UPDATE now use `nodeId`, and the UPDATE also sets `propertyEditorUiAlias = 'Umb.PropertyEditorUi.BlockList'` (verified value in 17.3.5 static assets) so the migrated Block List data type resolves its editor.
+- There is no `umbracoContentType` table in v17 — content types are `cmsContentType`, and the GUID key is `umbracoNode.uniqueId`. The alias→key lookup now joins `cmsContentType ct INNER JOIN umbracoNode n ON n.id = ct.nodeId`.
+- `cmsPropertyType` (id, dataTypeId) and `umbracoPropertyData` (id, propertyTypeId, textValue) were already correct — unchanged.
+- Verified: app boots clean, plan completes and advances state (`database contains 2026-NestedContent-v1`).
+
+⚠️ STILL UNVALIDATED: the NC-JSON → Block List **value transform shape** (`TransformNestedContentToBlockList`) is unverified against the v17 Block List value format — the demo DB has 0 Nested Content data types so the transform path never executed. Must dry-run on a real legacy DB copy with NC content before any live run. The per-site checklist below (backup, dry-run on copy, verify rendered output) STILL applies.  
+**Status (original):** Migration code written; not registered; not run on any site  
 **File:** `src/N3O.Umbraco.Extensions/Migrations/NestedContentToBlockListMigration.cs`
 
 #### What is needed
@@ -204,7 +220,7 @@ From Umbraco v17, the perpetual license model for Umbraco Forms is no longer val
 
 ### BLOCKER-09: Assembly Version Tags (`13.0.0`)
 
-**Status:** Must fix before any NuGet publish  
+**Status:** ✅ DONE as placeholder (2026-06-02) — bulk find/replace set `<Version>`/`<AssemblyVersion>`/`<FileVersion>` from `13.0.0` to `17.0.0` across 114 csproj (6 had no tag). Still must re-stamp the real CalVer (`YYYY.M.D.Build`) before any NuGet publish.  
 **Scope:** All 120 `.csproj` files
 
 Every project has `<Version>13.0.0</Version>`, `<AssemblyVersion>13.0.0</AssemblyVersion>`, `<FileVersion>13.0.0</FileVersion>`. These are CalVer-style and need updating to `17.x.x.x` before publishing any packages.
@@ -232,9 +248,9 @@ Use CalVer format `YYYY.M.D.Build` for the actual release version.
 | ~~01~~ | ~~Contentment~~ | **RESOLVED** (6.1.4) | — |
 | 02 | Perplex.ContentBlocks RC | Functional RC; waiting for stable | Medium |
 | ~~03~~ | ~~Konstrukt → UIBuilder~~ | **RESOLVED** (port complete) | — |
-| 04 | Engage Cockpit factory missing | Implementation needed | High |
-| 05 | uSync Publisher v17 | Blocked on Jumoo docs | High |
-| 06 | Nested Content DB migration | Code written; needs registration + per-site run | Critical |
+| ~~04~~ | ~~Engage Cockpit factory missing~~ | **RESOLVED** (2026-06-02) — `TelethonOnAirCockpitSegmentRuleFactory` implemented + registrations re-enabled; API verified by reflection. AngularJS telethon UI still blocked. | — |
+| ~~05~~ | ~~uSync Publisher v17~~ | **RESOLVED** (2026-06-02) — reimplemented on uSync.Publisher v17 `PublisherProcessor`/`Jumoo.Processing` (API found by reflection; no public docs). E2E test w/ remote server still advised. | — |
+| 06 | Nested Content DB migration | **Registered** (2026-06-02) `N3ONestedContentMigrationPlan`, auto-discovered. Per-site run + checklist still pending. | Critical |
 | 07 | Bellissima frontend (all AngularJS) | **Largely done** (15/16 migrated; telethon blocked on 04; live-render fixtures pending) | High |
 | 08 | Forms subscription license | Procurement | High |
-| 09 | Assembly version `13.0.0` | Must fix before publish | Medium |
+| ~~09~~ | ~~Assembly version `13.0.0`~~ | **DONE (placeholder)** (2026-06-02) — bulk-set to `17.0.0` across 114 csproj; re-stamp CalVer at publish | Low |

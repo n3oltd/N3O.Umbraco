@@ -50,7 +50,7 @@ N3O.Umbraco is a **shared Umbraco package framework** (120 projects) consumed by
 | Umbraco.Workflow → 17.0.2 | **Done** | |
 | Azure Blob Storage → 17.0.0 | **Done** | |
 | GMaps → 17.0.0 | **Done** | |
-| Umbraco.Forms → 17.0.x | **Done** | Minor version skew (17.0.0 vs 17.0.1) to align |
+| Umbraco.Forms → 17.0.x | **Done** | Aligned to 17.0.1 (Forms + StaticAssets bumped to match Forms.Core; verified on nuget.org) (2026-06-02) |
 | Umbraco.Engage → 17.2.2 | **Done** | Package upgraded; namespaces confirmed valid |
 | `Directory.Build.targets` runtime stripping | **Done** | Strips `Umbraco.Web.BackOffice.dll` (v13) from output |
 | `SaveAndPublish` → `Save` + `Publish` | **Done** | |
@@ -62,17 +62,17 @@ N3O.Umbraco is a **shared Umbraco package framework** (120 projects) consumed by
 | `UIBuilderComposer` double-registration crash | **Done** | Removed manual configurator loop; UIBuilder auto-discovers `IConfigurator` |
 | `KonstruktConfigurator.GetContentSection` | **Done** | `ConditionalWeakTable` ensures `WithSection("content")` called once per builder |
 | `launchSettings.json` `dotnetRunMessages` type | **Done** | Fixed `"true"` string → `true` boolean |
-| **Assembly `<Version>` tags** | **Not done** | All still say `13.0.0` — must update to `17.x` before publishing |
+| **Assembly `<Version>` tags** | **Done (placeholder, 2026-06-02)** | Bulk-set `13.0.0`→`17.0.0` across 114 csproj; re-stamp CalVer before NuGet publish |
 | **All App_Plugins AngularJS → Bellissima** | **Largely done (2026-06-02)** | 15/16 areas migrated to `umbraco-package.json` + Lit (telethon blocked on RR-02). Dashboards + Data property editors verified live. Property-editor UI alias must = backend `[DataEditor]` alias. Detail: `BELLISSIMA_MIGRATION_LOG.md` |
 | Content app registration (Import/Export/Preview) | **Done (migrated)** | Now `workspaceView` extensions (Data.Import, Data.Export, Cloud.Platforms.Preview); not yet live-rendered (need a content node) |
 | Dashboard registration (Scheduler, Welcome) | **Done + verified live** | `dashboard` extensions; both render in the backoffice (Welcome=Content, Scheduler=Settings/Hangfire iframe) |
 | Property editor UI alias = backend `[DataEditor]` alias | **Done** | Critical fix: data types store `editorUiAlias`; all 8 custom editors re-aliased to backend alias (TextResourceEditor → `N3O.Umbraco.TemplateTextEditor`) |
 | Cropper / Uploader native-picker migration | **PENDING DECISION** | Ported 1:1 (cropperjs/Formstone need global jQuery); may switch to Umbraco native media/image picker — awaiting Talha. Header comment added in `cropper.js`/`uploader.js` |
 | Campaign/Offering backoffice notifications | **Not started** | `SendingContentNotification` stubs; Bellissima workspace views needed |
-| TelethonOnAir Cockpit factory | **Not started** | Empty file; `ICockpitSegmentRuleFactory.TryCreate` changed signature |
-| `GetNestedPropertySchemaHandler` | **Not started** | Throws `NotImplementedException` |
-| Content data migration (Nested Content → Block List) | **Not started** | Migration class written; needs registration + per-site run |
-| Nested Content DB migration registration | **Not started** | `NestedContentToBlockListMigration.cs` written but not in `IMigrationPlan` |
+| TelethonOnAir Cockpit factory | **Done (2026-06-02)** | `TelethonOnAirCockpitSegmentRuleFactory` implemented + registrations re-enabled; v17.2.2 API verified by reflection. AngularJS telethon UI still blocked. |
+| `GetNestedPropertySchemaHandler` | **Done — removed (2026-06-02)** | Was dead (zero callers); handler + query deleted. `NestedSchemaRes`/mapping kept (still live). |
+| Content data migration (Nested Content → Block List) | **Not started (per-site run)** | Migration class written + now registered; still needs per-site backup/dry-run/run |
+| Nested Content DB migration registration | **Done (2026-06-02)** | `N3ONestedContentMigrationPlan` added; auto-discovered via `IDiscoverable`. Runs on startup; no-ops without NC data types. |
 | uSync Publisher v17 (`SyncContentHandler`) | **Blocked** | `IPublisherStateService` removed; Jumoo API not yet documented |
 | Perplex stable release | **Blocked** | On v4.0.0-rc.3; waiting for stable v4 |
 
@@ -121,19 +121,19 @@ All `package.manifest` files and AngularJS controllers must be replaced. In Umbr
 
 ## Remaining Runtime Issues
 
-### RR-01 — `SyncContentHandler` (BLOCKED — uSync Publisher)
-- `src/Sync/N3O.Umbraco.Sync.Extensions/Handlers/SyncContentHandler.cs`
-- `IPublisherStateService` was removed in uSync.Publisher v17; the `Handle()` method throws `NotSupportedException`. Content sync via uSync Publisher is completely broken at runtime.
-- **Blocked:** Jumoo's v17 Publisher API (`Jumoo.Processing`) is not yet publicly documented.
-- **Action:** Monitor https://jumoo.co.uk for Publisher v17 docs; implement against new API when available.
+### RR-01 — ✅ DONE (2026-06-02) — `SyncContentHandler` (uSync Publisher v17)
+- `src/Sync/N3O.Umbraco.Sync.Extensions/Handlers/SyncContentHandler.cs` + `SyncExtensionsComposer.cs`
+- Reimplemented against the real uSync.Publisher v17 API (discovered by reflection — Jumoo publishes no docs for it). Injects `PublisherProcessor` (wraps `Jumoo.Processing.Core.Pipelines.IPipelineService`), calls `Process(PublisherActionRequest, PublisherProcessingOptions)` → `SyncPublishResponse`, same Document-UDI push w/ published deps, throws on `!Success`. Build 0 errors; boots clean. See BLOCKER-05 for the API map + the one runtime caveat (multi-step pipeline completion needs an end-to-end test with a remote uSync server).
 
-### RR-02 — `PlatformsMarketingComposer` + `TelethonOnAirCockpitSegmentRuleFactory` (Engage)
+### RR-02 — ✅ DONE (2026-06-02) — `PlatformsMarketingComposer` + `TelethonOnAirCockpitSegmentRuleFactory` (Engage)
+*Implemented: factory written against verified v17.2.2 API (`.Rules` sub-namespace; `out CockpitSegmentRule?`), both DI registrations re-enabled, build 0 errors. AngularJS telethon UI still blocked (BLOCKER-04 client side).*
 - `src/Cloud/N3O.Umbraco.Cloud.Platforms.Marketing/PlatformsMarketingComposer.cs` — both `ICockpitSegmentRuleFactory` and `ISegmentRuleFactory` registrations are commented out.
 - `src/Cloud/N3O.Umbraco.Cloud.Platforms.Marketing/Services/Campaigns/TelethonOnAirCockpitSegmentRuleFactory.cs` — empty file.
 - **Fix:** Implement `TelethonOnAirCockpitSegmentRuleFactory` against `ICockpitSegmentRuleFactory` (namespace: `Umbraco.Engage.Web.Cockpit.Segments`); update `TryCreate` to the v17 signature (nullable out param); re-enable both DI registrations in the Composer.
 - **Note:** `ISegmentRuleFactory`, `ISegmentRule`, `BaseSegmentRule`, `ISegmentRepository`, `IPersonalizationProfile` namespaces are all **unchanged** in Engage 17.2.2.
 
-### RR-03 — `GetNestedPropertySchemaHandler` throws `NotImplementedException`
+### RR-03 — ✅ DONE (2026-06-02, removed) — `GetNestedPropertySchemaHandler` throws `NotImplementedException`
+*Verified dead (zero callers solution-wide); handler + `GetNestedPropertySchemaQuery` deleted. `NestedSchemaRes`/`NestedSchemaResMapping` kept (still live via `NestedValueResMapping`).*
 - `src/Data/N3O.Umbraco.Data/Handlers/Content/GetNestedPropertySchemaHandler.cs` line 13.
 - **Fix:** Either implement for Block List schema export, or remove the handler and its associated query/response types if no longer needed.
 
@@ -149,19 +149,23 @@ All `package.manifest` files and AngularJS controllers must be replaced. In Umbr
 - Both `SchedulerDashboard.cs` and `WelcomeDashboard.cs` are namespace-only stubs.
 - **Fix:** Create `umbraco-package.json` `dashboard` extension + Lit component for each.
 
-### RR-07 — `GetPreviewUrlAsync` returns null
+### RR-07 — ✅ DONE (2026-06-02) — `GetPreviewUrlAsync` returns null
+*Base `UrlProvider.GetPreviewUrlAsync` now mirrors core `NewDefaultUrlProvider` using `this.Alias` (key-based preview); covers Blog/Events/Vacancies, no per-subclass overrides needed.*
 - `src/N3O.Umbraco.Extensions/UrlProviders/UrlProvider.cs` base implementation returns `null`.
 - **Fix:** Implement per subclass or provide a base implementation deriving from `GetUrl`.
 
-### RR-08 — Data controllers unauthenticated (pre-existing, security risk)
+### RR-08 — ✅ DONE (2026-06-02) — Data controllers unauthenticated (pre-existing, security risk)
+*Added `[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]` to ContentController/ContentTypesController/DataTypesController (base `ApiController` kept; route stays `/umbraco/api/...`). Unauthenticated callers now get 401.*
 - `ContentController.cs`, `ContentTypesController.cs`, `DataTypesController.cs` — all have `// TODO Add authentication`.
 - **Fix:** Add `[Authorize]` attribute or equivalent. Pre-existing, but must resolve before any internet-facing deployment.
 
-### RR-09 — `SaveAndPublish` bare exception (pre-existing)
+### RR-09 — ✅ ALREADY DONE — `SaveAndPublish` bare exception (pre-existing)
+*Current code throws `InvalidOperationException` surfacing `EventMessages` + `StatusType` (`Result`) for both save and publish failures. No action needed.*
 - `src/N3O.Umbraco.Extensions/Extensions/ContentServiceExtensions.cs` — throws bare `Exception` discarding `PublishResult` detail.
 - **Fix:** Surface `EventMessages`/`StatusType` in the exception.
 
-### RR-10 — `Bundling` service is entirely non-functional
+### RR-10 — ⚠️ DECISION NEEDED (2026-06-02 analysis) — `Bundling` service is entirely non-functional
+*Investigated: `N3O.Umbraco.Bundling` is fully orphaned — zero consumers anywhere (no ProjectReference/PackageReference, no `IAssetBundle` impls, no `@addTagHelper`). Only artifact: two inert `<n3o-css-bundle/>`/`<n3o-js-bundle/>` literals in DemoSite `Layout.cshtml` (lines 30, 52) that don't bind (tag helpers unregistered). Recommend **delete the project** (+ its 2 sln entries/GUIDs `{C52E624B-...}`,`{9D94C90F-...}` + the 2 cshtml lines), OR build a Vite/ESM replacement. Not actioned — awaiting decision.*
 - `src/Bundling/N3O.Umbraco.Bundling/Services/Bundler.cs` — all methods throw `NotSupportedException("Smidge bundling was removed in Umbraco 14")`.
 - `src/Bundling/N3O.Umbraco.Bundling/AssetBundle.I.cs` — stub interface.
 - **Fix:** If bundling is still needed by any consumer, implement via Vite/esbuild/native ES modules. If no consumers remain, delete both files.

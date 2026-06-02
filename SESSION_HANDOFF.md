@@ -1,13 +1,40 @@
 # Session Handoff — N3O.Umbraco v17 Migration
 
-*Updated: 2026-06-02 — use this to orient the next session*
+*Updated: 2026-06-02 (session 4) — use this to orient the next session*
 
 ---
 
 ## Current State
 
-**Solution builds with 0 errors. App starts and serves HTTP 200.** Umbraco 17.3.5 on .NET 10, all 120 projects.
-This session completed the bulk of **BLOCKER-07 (Bellissima frontend)** — see below.
+**Solution builds with 0 errors (re-verified this session). App starts and serves HTTP 200.** Umbraco 17.3.5 on .NET 10, all 120 projects.
+
+### Session 4 — Phase-2 runtime correctness batch (multi-agent workflow)
+
+Ran a 7-task investigate→implement→review workflow; all edits verified by a full `dotnet build` (0 errors). Each API was confirmed against the installed v17 assemblies (MetadataLoadContext reflection), not from memory.
+
+| Task | Outcome |
+|---|---|
+| RR-02 / BLOCKER-04 Engage Cockpit factory | ✅ `TelethonOnAirCockpitSegmentRuleFactory` implemented + both DI registrations re-enabled. v17.2.2: `ICockpitSegmentRuleFactory`/`CockpitSegmentRule` in `Umbraco.Engage.Web.Cockpit.Segments`; `ISegmentRule`/`ISegmentRuleFactory` moved to `...Infrastructure.Personalization.Segments.Rules`. AngularJS telethon UI still blocked. |
+| RR-03 GetNestedPropertySchemaHandler | ✅ Removed — dead (zero callers); handler + query deleted; `NestedSchemaRes`/mapping kept (still live). |
+| RR-07 GetPreviewUrlAsync | ✅ Base impl added (mirrors core `NewDefaultUrlProvider`, key-based, uses `this.Alias`). |
+| RR-08 Data controllers auth | ✅ `[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]` on Content/ContentTypes/DataTypes controllers. |
+| RR-09 SaveAndPublish | ✅ Already fixed (surfaces EventMessages + StatusType). |
+| BLOCKER-06 NC migration registration | ✅ `N3ONestedContentMigrationPlan` added, auto-discovered (no composer). ⚠️ Runs on startup per site; no-ops without NC data types; destructive on legacy DBs — per-site backup/dry-run checklist still applies before live run. |
+| BLOCKER-09 version tags | ✅ `13.0.0`→`17.0.0` across 114 csproj (placeholder; re-stamp CalVer at publish). |
+| Forms version skew | ✅ Aligned to 17.0.1 (Forms + StaticAssets). |
+| Perplex dead code | ✅ Deleted unreachable `GetOrCreateDataTypeContainer`. |
+| **RR-10 Bundling** | ⚠️ **DECISION NEEDED** — project fully orphaned (zero consumers). Recommend delete (project + 2 sln GUID entries + 2 inert `Layout.cshtml` lines) OR build Vite/ESM replacement. Not actioned. |
+
+**Smoke-tested live (app run + DB probes):**
+- RR-08 auth ✓ — `POST /umbraco/api/datatypes/find` and `/contenttypes/find` return **401** unauthenticated; `/umbraco` backoffice → 200.
+- RR-02 Engage ✓ — clean boot with the new DI registrations; no Engage/segment/resolve errors (container builds = registrations valid).
+- BLOCKER-06 ⚠️→✓ — testing caught the registered migration crashing on startup (`Invalid column name 'id'` — the pre-written SQL wasn't v17-schema-correct). **Fixed** `NestedContentToBlockListMigration.cs` against the live v17 schema (`umbracoDataType.nodeId`/`propertyEditorUiAlias`; `cmsContentType`+`umbracoNode.uniqueId` for the content-type key). Re-run: plan now completes + advances state. The JSON value-transform shape is still unvalidated (demo DB has 0 NC data types) — dry-run on a real legacy DB before any live run.
+
+Still **not done** (external/blocked/decision): RR-01 uSync Publisher (Jumoo docs), BLOCKER-02 Perplex stable v4, BLOCKER-08 Forms license, RR-10 Bundling (delete-vs-implement decision), Cropper/Uploader native-picker decision, live-render fixtures, per-site content data migration runs, AngularJS telethon UI.
+
+---
+
+### Session 3 — Bellissima frontend (BLOCKER-07) — see below
 
 Run command:
 ```
