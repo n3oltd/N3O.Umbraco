@@ -3,6 +3,7 @@ using N3O.Umbraco.Entities;
 using N3O.Umbraco.Financial;
 using N3O.Umbraco.Giving.Checkout.Lookups;
 using N3O.Umbraco.Giving.Checkout.Models;
+using N3O.Umbraco.Localization;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.References;
 using System.Net;
@@ -20,6 +21,7 @@ public partial class Checkout {
 
         checkout.CartRevisionId = cart.RevisionId;
         checkout.Reference = await counters.NextAsync<CheckoutReferenceType>();
+        checkout.Culture = LocalizationSettings.CultureCode;
         checkout.Currency = cart.Currency;
         checkout.Donation = new DonationCheckout(cart.Donation.Allocations, cart.Currency);
         checkout.RegularGiving = new RegularGivingCheckout(cart.RegularGiving.Allocations, cart.Currency);
@@ -37,11 +39,13 @@ public partial class Checkout {
                                   DonationCheckout donationCheckout,
                                   RegularGivingCheckout regularGivingCheckout,
                                   CheckoutProgress checkoutProgress,
-                                  IPAddress ipAddress) {
+                                  IPAddress ipAddress,
+                                  string culture = null) {
         var checkout = Create<Checkout>(revisionId.Id);
 
         checkout.CartRevisionId = cartRevisionId;
         checkout.Reference = reference;
+        checkout.Culture = culture;
         checkout.Currency = currency;
         checkout.Account = account;
         checkout.Donation = donationCheckout;

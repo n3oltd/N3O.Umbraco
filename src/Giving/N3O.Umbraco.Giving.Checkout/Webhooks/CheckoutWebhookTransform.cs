@@ -16,6 +16,7 @@ using Newtonsoft.Json.Linq;
 using NodaTime;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace N3O.Umbraco.Giving.Checkout.Webhooks;
@@ -49,8 +50,8 @@ public class CheckoutWebhookTransform : WebhookTransform {
         TransformFeedbacks(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject);
         TransformSponsorships(serializer, GivingTypes.Donation, checkout.Donation?.Allocations, jObject, checkout.Timestamp);
         TransformSponsorships(serializer, GivingTypes.RegularGiving, checkout.RegularGiving?.Allocations, jObject, checkout.Timestamp);
-        TransformTags(jObject);
-        
+        TransformTags(jObject, checkout);
+
         return jObject;
     }
 
@@ -109,13 +110,26 @@ public class CheckoutWebhookTransform : WebhookTransform {
         }
     }
     
-    private void TransformTags(JObject jObject) {
-        if (Site.Language.HasValue()) {
-            AddTag(jObject, "SiteLanguageTag", Site.Language);
+    private void TransformTags(JObject jObject, Entities.Checkout checkout) {
+        var language = (checkout.Culture.HasValue() ? GetLanguageName(checkout.Culture) : null) ?? Site.Language;
+
+        if (language.HasValue()) {
+            AddTag(jObject, "SiteLanguageTag", language);
         }
 
         if (Site.Id.HasValue()) {
             AddTag(jObject, "SiteNameTag", Site.Id);
+        }
+    }
+
+    private static string GetLanguageName(string cultureCode) {
+        try {
+            var culture = CultureInfo.GetCultureInfo(cultureCode);
+            var neutralCulture = CultureInfo.GetCultureInfo(culture.TwoLetterISOLanguageName);
+
+            return neutralCulture.EnglishName;
+        } catch (CultureNotFoundException) {
+            return null;
         }
     }
 
