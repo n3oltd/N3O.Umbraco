@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Data.Criteria;
@@ -8,10 +9,11 @@ using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Mediator;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Umbraco.Cms.Web.Common.Authorization;
 
 namespace N3O.Umbraco.Data.Controllers;
 
-// TODO Add authentication to this controller
+[Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
 [ApiDocument(DataConstants.ApiNames.ContentTypes)]
 public class ContentTypesController : ApiController {
     private readonly IMediator _mediator;

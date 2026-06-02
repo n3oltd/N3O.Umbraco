@@ -5,7 +5,7 @@ using Umbraco.Cms.Core.Services;
 namespace N3O.Umbraco.Content;
 
 // Nested Content removed in Umbraco 14. Callers must migrate to BlockListPropertyBuilder.
-[Obsolete("Nested Content was removed in Umbraco 14. Use BlockListPropertyBuilder instead.")]
+[Obsolete("Nested Content was removed in Umbraco 14. Use BlockListPropertyBuilder instead.", error: true)]
 public class NestedPropertyBuilder : PropertyBuilder {
     public NestedPropertyBuilder(IContentTypeService contentTypeService) : base(contentTypeService) { }
 

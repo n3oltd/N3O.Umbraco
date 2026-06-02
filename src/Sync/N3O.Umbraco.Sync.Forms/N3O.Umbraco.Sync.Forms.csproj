@@ -21,9 +21,9 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageProjectUrl>https://n3o.ltd</PackageProjectUrl>
         <RepositoryUrl>https://github.com/n3oltd/N3O.Umbraco</RepositoryUrl>
-        <Version>13.0.0</Version>
-        <AssemblyVersion>13.0.0</AssemblyVersion>
-        <FileVersion>13.0.0</FileVersion>
+        <Version>17.0.0</Version>
+        <AssemblyVersion>17.0.0</AssemblyVersion>
+        <FileVersion>17.0.0</FileVersion>
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -41,7 +41,7 @@
         </None>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Umbraco.Forms.StaticAssets" Version="17.0.0" />
+        <PackageReference Include="Umbraco.Forms.StaticAssets" Version="17.0.1" />
         <PackageReference Include="uSync.Forms" Version="17.0.0" />
     </ItemGroup>
 </Project>

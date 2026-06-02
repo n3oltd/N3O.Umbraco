@@ -28,7 +28,7 @@ public class NestedContentToBlockListMigration : MigrationBase {
 
         // Step 1: Find all data types using the NestedContent editor
         var nestedDataTypes = db.Fetch<DataTypeRow>(
-            "SELECT id, pk, config FROM umbracoDataType WHERE propertyEditorAlias = 'Umbraco.NestedContent'");
+            "SELECT nodeId AS Id, config FROM umbracoDataType WHERE propertyEditorAlias = 'Umbraco.NestedContent'");
 
         if (!nestedDataTypes.Any()) {
             Logger.LogInformation("No Nested Content data types found — migration not required");
@@ -57,13 +57,19 @@ public class NestedContentToBlockListMigration : MigrationBase {
         if (allContentTypeAliases.Any()) {
             var placeholders = string.Join(",", allContentTypeAliases.Select((_, i) => $"@{i}"));
             var rows = db.Fetch<ContentTypeKeyRow>(
-                $"SELECT alias, [key] FROM umbracoContentType WHERE alias IN ({placeholders})",
+                $"SELECT ct.alias AS Alias, n.uniqueId AS [Key] " +
+                $"FROM cmsContentType ct INNER JOIN umbracoNode n ON n.id = ct.nodeId " +
+                $"WHERE ct.alias IN ({placeholders})",
                 allContentTypeAliases.Cast<object>().ToArray());
 
             foreach (var row in rows) {
                 contentTypeKeys[row.Alias] = row.Key;
             }
         }
+
+        // Steps 3 & 4 run in a single transaction so a structural failure cannot leave data types
+        // flipped to Block List while their stored values are still Nested Content JSON.
+        using var transaction = db.GetTransaction();
 
         // Step 3: Migrate each Nested Content data type → Block List
         foreach (var dt in nestedDataTypes) {
@@ -93,7 +99,7 @@ public class NestedContentToBlockListMigration : MigrationBase {
                 };
 
                 db.Execute(
-                    "UPDATE umbracoDataType SET propertyEditorAlias = 'Umbraco.BlockList', config = @0 WHERE id = @1",
+                    "UPDATE umbracoDataType SET propertyEditorAlias = 'Umbraco.BlockList', propertyEditorUiAlias = 'Umb.PropertyEditorUi.BlockList', config = @0 WHERE nodeId = @1",
                     JsonConvert.SerializeObject(blockListConfig),
                     dt.Id);
 
@@ -115,6 +121,9 @@ public class NestedContentToBlockListMigration : MigrationBase {
 
         if (!propertyTypes.Any()) {
             Logger.LogInformation("No property values to migrate");
+
+            transaction.Complete();
+
             return;
         }
 
@@ -153,6 +162,8 @@ public class NestedContentToBlockListMigration : MigrationBase {
 
         Logger.LogInformation("Property value migration complete: {Migrated} migrated, {Failed} failed",
             migrated, failed);
+
+        transaction.Complete();
     }
 
     // Converts Nested Content JSON array to Block List JSON object.
@@ -170,10 +181,12 @@ public class NestedContentToBlockListMigration : MigrationBase {
         }
 
         if (parsed is not JArray items || !items.Any()) {
-            return JsonConvert.SerializeObject(new {
-                layout = new { @Umbraco_BlockList = Array.Empty<object>() },
-                contentData = Array.Empty<object>(),
-                settingsData = Array.Empty<object>()
+            return JsonConvert.SerializeObject(new JObject {
+                ["layout"] = new JObject {
+                    ["Umbraco.BlockList"] = new JArray()
+                },
+                ["contentData"] = new JArray(),
+                ["settingsData"] = new JArray()
             });
         }
 
@@ -224,7 +237,6 @@ public class NestedContentToBlockListMigration : MigrationBase {
     // DTO classes for NPoco queries
     private class DataTypeRow {
         public int Id { get; set; }
-        public int Pk { get; set; }
         public string Config { get; set; }
     }
 

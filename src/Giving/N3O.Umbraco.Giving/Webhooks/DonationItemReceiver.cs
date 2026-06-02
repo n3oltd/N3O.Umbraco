@@ -93,10 +93,10 @@ public class DonationItemReceiver : WebhookReceiver {
         contentPublisher.Content.Toggle(AllocationsConstants.Aliases.Price.Properties.Locked).Set(webhookDonationItem.Price?.Locked);
 
         if (webhookDonationItem.PricingRules.HasAny()) {
-            var nestedContent = contentPublisher.Content.Nested(AllocationsConstants.Aliases.DonationItem.Properties.PricingRules);
-            
+            var pricingRules = contentPublisher.Content.BlockList(AllocationsConstants.Aliases.DonationItem.Properties.PricingRules);
+
             foreach (var priceRule in webhookDonationItem.PricingRules) {
-                AddPriceRule(nestedContent.Add(AllocationsConstants.Aliases.PricingRule.ContentType), priceRule);
+                AddPriceRule(pricingRules.Add(AllocationsConstants.Aliases.PricingRule.ContentType), priceRule);
             }
         } else {
             contentPublisher.Content.Null(AllocationsConstants.Aliases.DonationItem.Properties.PricingRules);

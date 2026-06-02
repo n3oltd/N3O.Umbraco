@@ -29,7 +29,10 @@ public abstract class UrlProvider : IUrlProvider {
     public abstract string Alias { get; }
 
     public virtual Task<UrlInfo> GetPreviewUrlAsync(IContent content, string culture, string segment)
-        => Task.FromResult<UrlInfo>(null);
+        => Task.FromResult(UrlInfo.AsUrl($"preview?id={content.Key}&culture={culture}&segment={segment}",
+                                         Alias,
+                                         culture,
+                                         isExternal: false));
 
     public UrlInfo GetUrl(IPublishedContent content, UrlMode mode, string culture, Uri current) {
         try {
@@ -77,7 +80,7 @@ public abstract class UrlProvider : IUrlProvider {
 
             url.AppendPathSegment(content.UrlSegment);
 
-            return UrlInfo.AsUrl(url.ToString(), culture, null, false);
+            return UrlInfo.AsUrl(url.ToString(), Alias, culture, false);
         }
 
         return null;
@@ -100,7 +103,7 @@ public abstract class UrlProvider : IUrlProvider {
 
             var contentDefaultUrl = _defaultUrlProvider.GetUrl(content, mode, culture, current);
 
-            return UrlInfo.AsUrl(contentDefaultUrl.Url?.ToString().Replace(collection.Url(), page.Url()), culture, null, false);
+            return UrlInfo.AsUrl(contentDefaultUrl.Url?.ToString().Replace(collection.Url(), page.Url()), Alias, culture, false);
         }
 
         return null;

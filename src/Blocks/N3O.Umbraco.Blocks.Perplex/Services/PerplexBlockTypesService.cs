@@ -130,35 +130,4 @@ public class PerplexBlockTypesService : IPerplexBlockTypesService {
 
         return container;
     }
-    
-    private EntityContainer GetOrCreateDataTypeContainer(string name, params string[] path) {
-        var container = default(EntityContainer);
-        
-        foreach (var element in path.Concat(name)) {
-            EntityContainer elementContainer;
-            
-            if (container == null) {
-                elementContainer = _dataTypeService.GetContainers(element, 1).SingleOrDefault();
-            } else {
-                elementContainer = _dataTypeService.GetContainers(element, container.Level + 1)
-                                                   .SingleOrDefault(x => x.ParentId == container.Id);
-            }
-            
-            if (elementContainer == null) {
-                var attempt = _dataTypeService.CreateContainer(container?.Id ?? -1,
-                                                               UmbracoId.Generate(IdScope.DataTypeContainer, name),
-                                                               name);
-
-                if (!attempt.Success) {
-                    throw new Exception($"Failed to create blocks container {name.Quote()}");
-                }
-
-                container = attempt.Result.Entity;
-            } else {
-                container = elementContainer;
-            }
-        }
-
-        return container;
-    }
 }
