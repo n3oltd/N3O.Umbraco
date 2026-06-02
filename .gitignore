@@ -378,3 +378,7 @@ appsettings.Authentication.json
 appsettings.Environment.json
 .DS_Store
 .claude
+
+# Agent skills tooling (npx skills add) — not part of the project
+.agents/
+skills-lock.json

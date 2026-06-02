@@ -77,6 +77,26 @@
         </ItemGroup>
     </Target>
 
+    <!-- Build the shared React runtime (react/react-dom as self-hosted ESM for the backoffice import map). -->
+    <PropertyGroup>
+        <ReactRuntimeDir>$(MSBuildProjectDirectory)\ReactRuntime</ReactRuntimeDir>
+    </PropertyGroup>
+    <Target Name="BuildReactRuntime" BeforeTargets="AssignTargetPaths" Condition="Exists('$(ReactRuntimeDir)\package.json')">
+        <Message Text="Building shared React runtime (Vite)" Importance="high" />
+        <Exec Command="npm ci" WorkingDirectory="$(ReactRuntimeDir)" Condition="!Exists('$(ReactRuntimeDir)\node_modules')" />
+        <Exec Command="npm run build" WorkingDirectory="$(ReactRuntimeDir)" />
+        <!-- The import-map manifest is tracked source in ReactRuntime/; App_Plugins is a build-output
+             dir (gitignored), so copy the manifest in next to the freshly-built react*.js. -->
+        <Copy SourceFiles="$(ReactRuntimeDir)\umbraco-package.json"
+              DestinationFolder="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.React" />
+        <ItemGroup>
+            <Content Include="App_Plugins\N3O.Umbraco.React\**\*.*">
+                <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+                <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+            </Content>
+        </ItemGroup>
+    </Target>
+
     <!-- Strip the Umbraco.Cms.Web.BackOffice 13.x assembly that Contentment.Core transitively pulls in.
          It conflicts with Umbraco.Cms.Api.Management 17.x which defines the same extension methods. -->
     <Target Name="ExcludeLegacyUmbracoBackOffice" AfterTargets="ResolveAssemblyReferences">
