@@ -1,6 +1,6 @@
 # N3O.Umbraco: Umbraco 13 → 17 Migration Plan
 
-*Last updated: 2026-06-02 (session 3) — Bellissima frontend (BLOCKER-07) largely migrated & smoke-tested in the running backoffice*
+*Last updated: 2026-06-02 (session 5) — uSync Publisher reimplemented, 14-agent branch review (`REVIEW_FINDINGS.md`), review-found defects fixed, NestedContent→BlockList code replacement done*
 
 ---
 
@@ -8,7 +8,9 @@
 
 N3O.Umbraco is a **shared Umbraco package framework** (120 projects) consumed by multiple client sites. The migration target is **Umbraco 17.3.5 on .NET 10**.
 
-**Current state:** The solution **builds with 0 errors** and **the app starts successfully (HTTP 200 confirmed)**. All compile-time API breakages and the blocking runtime startup crashes have been resolved. **The AngularJS → Bellissima frontend migration (BLOCKER-07) is now largely done** — all 16 plugin areas migrated to `umbraco-package.json` + Lit (15 done, telethon blocked); dashboards + Data property editors verified live in the running backoffice; a critical property-editor alias bug was found and fixed. Remaining: **live-render testing of the other editors (needs content fixtures), a handful of runtime functional gaps, and data migration**. See `BELLISSIMA_MIGRATION_LOG.md` for the full session log.
+**Current state:** The solution **builds with 0 errors** and **the app starts successfully (HTTP 200 confirmed)**. All compile-time API breakages and the blocking runtime startup crashes have been resolved. **The AngularJS → Bellissima frontend migration (BLOCKER-07) is now largely done** — all 16 plugin areas migrated to `umbraco-package.json` + Lit (15 done, telethon blocked); dashboards + Data property editors verified live in the running backoffice; a critical property-editor alias bug was found and fixed.
+
+**Session 5 update:** uSync Publisher `SyncContentHandler` reimplemented on the v17 `PublisherProcessor`/`Jumoo.Processing` API (RR-01/BLOCKER-05 — *resolved in code, needs remote-server E2E*). A **14-agent branch deliberation review** (verdict: make-sense-with-fixes) ran over the whole `v17-Talha` diff — full tracker `REVIEW_FINDINGS.md`. Four review-found defects were fixed (CRITICAL duplicate `Umbraco.BlockList` converter → deleted; NC migration empty-path JSON + non-transactional steps; `UrlInfo.AsUrl` arg order), and the **NestedContent→BlockList code replacement** was completed (lookup re-key, `[Obsolete(error:true)]` redirects, a live `DonationItemReceiver` caller fixed). New production blockers surfaced: **BLOCKER-10 access-control regressions** and **BLOCKER-11 `EnsureDataTypeExists` dup-data-types** (see `MIGRATION_BLOCKERS.md`). Remaining: **live-render testing (needs content fixtures), the deferred review blockers, public-API obsolete/guide work, and per-site data migration (+ real-data dry-run of the NC→BlockList value transform)**. See `BELLISSIMA_MIGRATION_LOG.md` and `REVIEW_FINDINGS.md`.
 
 ---
 

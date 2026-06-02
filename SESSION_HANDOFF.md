@@ -1,12 +1,36 @@
 # Session Handoff — N3O.Umbraco v17 Migration
 
-*Updated: 2026-06-02 (session 4) — use this to orient the next session*
+*Updated: 2026-06-02 (session 5) — use this to orient the next session*
 
 ---
 
 ## Current State
 
 **Solution builds with 0 errors (re-verified this session). App starts and serves HTTP 200.** Umbraco 17.3.5 on .NET 10, all 120 projects.
+
+### Session 5 — uSync Publisher, branch deliberation review, blocker fixes, NestedContent→BlockList
+
+**1. RR-01 / BLOCKER-05 — uSync Publisher `SyncContentHandler` reimplemented** (research workflow: DLL reflection + web + usage). `IPublisherStateService` is gone; pipeline rebuilt on `Jumoo.Processing` (real assembly `jumoo.processing.core.dll`; the TODO-named `Jumoo.Processing.dll` is an empty placeholder). Handler now injects `uSync.Publisher.Strategies.Processor.PublisherProcessor` → `Process(PublisherActionRequest, PublisherProcessingOptions)` → `SyncPublishResponse`; same Document-UDI push w/ published deps, throws on `!Success`. Registered `AddTransient<PublisherProcessor>` in `SyncExtensionsComposer`. Build 0 errors, boots clean. ⚠️ Needs E2E test vs a real remote uSync server (single-call pipeline completion unverified; `RequestId` left unset; `SyncItem.Name` empty).
+
+**2. Branch deliberation review** (14 agents: 13 Sonnet area/concern reviewers → Opus synthesis of the whole `v17-Talha` diff). Verdict **MAKE-SENSE-WITH-FIXES**. Full tracker: **`REVIEW_FINDINGS.md`** (repo root).
+
+**3. Blocker fixes applied + verified (build 0 errors, boot clean):**
+| Fix | Detail |
+|---|---|
+| CRITICAL duplicate converter | `PropertyConverter.NestedContent.cs` had identical `IsConverter()`→`Umbraco.BlockList` as the BlockList one → crash on every Data import/export. **Deleted** (folded its better `GetMaxValues` into `PropertyConverter.BlockList.cs`). |
+| NC migration empty-path JSON | `@Umbraco_BlockList` (underscore) → dotted `"Umbraco.BlockList"` `JObject`. |
+| NC migration transaction | wrapped Steps 3+4 in `using var transaction = db.GetTransaction()` + `Complete()`. |
+| `UrlInfo.AsUrl` arg order | both `TryGetRelocatedUrl` overloads → `AsUrl(url, Alias, culture, false)`. |
+
+**4. NestedContent → BlockList replacement** (per Talha — everywhere applicable): `PropertyType.Nested.cs` re-keyed to `Aliases.BlockList` + `.BlockList()` builder; `GetNestedContent(s)` ×6, `ContentBuilderExtensions.Nested()`, `NestedPropertyBuilder` → `[Obsolete(error:true)]` redirecting to BlockList; **live caller `DonationItemReceiver.cs` `.Nested(PricingRules)`→`.BlockList(...)` (was throwing at runtime)**. Excluded: generated `Cloud.Platforms/Clients/*` (external API contract); `ContentHelper.GetContentPropertiesForNestedContent[Element]` = false positive (parses **Perplex** block elements, not Umbraco NC — left, validate vs Perplex v4).
+
+**New open blockers from the review (deferred — decisions/security):** BLOCKER-10 access-control regressions (Hangfire dashboard → any auth user; Export/Import/Preview workspaceViews shown to all users/docs); BLOCKER-11 `DataComposer.EnsureDataTypeExists` looks up by alias→dup data types on upgrade; BLOCKER-07/RR-10 Bundling throws at render. Plus: `IsBlockList()` on `UmbracoPropertyInfo`, obsolete the Bundling tag-helpers, consumer breaking-changes guide.
+
+**Residuals to validate with real data/env:** NC→BlockList migration value-transform shape + per-item partial commit (legacy DB w/ NC content); `PropertyType.Nested` BlockList schema behaviour; uSync Publisher push E2E.
+
+**Git:** changelog committed (`2860bb6e8`). Session-5 code fixes + `REVIEW_FINDINGS.md` + `N3ONestedContentMigrationPlan.cs` are **uncommitted** in the working tree.
+
+---
 
 ### Session 4 — Phase-2 runtime correctness batch (multi-agent workflow)
 

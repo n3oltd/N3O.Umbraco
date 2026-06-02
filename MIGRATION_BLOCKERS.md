@@ -1,8 +1,10 @@
 # Migration Blockers
 
-*Last updated: 2026-06-01*
+*Last updated: 2026-06-02 (session 5)*
 
 Items that require external action, design decisions, or significant implementation effort before full production readiness.
+
+> **Session 5 branch review (14-agent deliberation, verdict MAKE-SENSE-WITH-FIXES) — full findings tracker: `REVIEW_FINDINGS.md`.** Four review-found defects were fixed this session (CRITICAL duplicate `Umbraco.BlockList` property converter → deleted; NC migration empty-path JSON key + non-transactional steps; `UrlInfo.AsUrl` arg order in `TryGetRelocatedUrl`), and the NestedContent→BlockList code replacement was completed. The review also surfaced new production blockers — see BLOCKER-10 and BLOCKER-11 below.
 
 ---
 
@@ -241,6 +243,29 @@ Use CalVer format `YYYY.M.D.Build` for the actual release version.
 
 ---
 
+### BLOCKER-10: Access-control regressions (Bellissima migration) — HIGH
+
+**Status:** Open — security; found by the session-5 review.
+
+Three server-side gating losses from the AngularJS→Bellissima move:
+1. `SchedulerComposer` changed the Hangfire dashboard authorization from `SectionRequirement(Settings)` / admin-only to `RequireAuthenticatedUser()` → **any backoffice user can trigger/cancel background jobs.**
+2. `ExportApp`/`ImportApp` were reduced to stubs; their `workspaceView` replacements use only `Umb.Condition.WorkspaceAlias = Umb.Workspace.Document`, so Export/Import tabs show on **all documents to all users**; the `IExportContentFilter`/`IImportContentFilter` user-group checks are now dead (still-registered) abstractions.
+3. The Platforms-Preview `workspaceView` likewise shows on all document types instead of only `platformsOffering` compositions.
+
+**Action:** restore admin-only authorization for Hangfire (custom `IAuthorizationRequirement`); add Bellissima conditions (user-group/content-type) or server-side checks (`UMB_CURRENT_USER_CONTEXT` + an API backed by `IExport/ImportContentFilter`) to the Export/Import/Preview manifests before any production deployment.
+
+---
+
+### BLOCKER-11: `DataComposer.EnsureDataTypeExists` lookup by alias — HIGH
+
+**Status:** Open — found by the session-5 review.
+
+`EnsureDataTypeExists` calls `IDataTypeService.GetDataType(dataEditor.Alias)` and sets `dataType.Name = Alias`. `GetDataType(string)` matches by **Name**, so on a v13→v17 upgrade the existing data type row is never found → a **duplicate is created on every startup** (named with the raw alias), and `ImportsConfigurator.SetDataType(DataEditorName)` then fails to find it, misconfiguring UIBuilder import fields.
+
+**Action:** look up by deterministic key (`GetDataType(UmbracoId.Generate(IdScope.DataType, alias))`) or `GetByEditorAlias()`, and keep `dataType.Name = DataEditorName` (friendly). Consider a rename migration for existing installs.
+
+---
+
 ## Summary Table
 
 | # | Blocker | Status | Urgency |
@@ -250,7 +275,12 @@ Use CalVer format `YYYY.M.D.Build` for the actual release version.
 | ~~03~~ | ~~Konstrukt → UIBuilder~~ | **RESOLVED** (port complete) | — |
 | ~~04~~ | ~~Engage Cockpit factory missing~~ | **RESOLVED** (2026-06-02) — `TelethonOnAirCockpitSegmentRuleFactory` implemented + registrations re-enabled; API verified by reflection. AngularJS telethon UI still blocked. | — |
 | ~~05~~ | ~~uSync Publisher v17~~ | **RESOLVED** (2026-06-02) — reimplemented on uSync.Publisher v17 `PublisherProcessor`/`Jumoo.Processing` (API found by reflection; no public docs). E2E test w/ remote server still advised. | — |
-| 06 | Nested Content DB migration | **Registered** (2026-06-02) `N3ONestedContentMigrationPlan`, auto-discovered. Per-site run + checklist still pending. | Critical |
+| 06 | Nested Content DB migration | **Registered + v17 SQL fixed** (2026-06-02); empty-path JSON + transaction fixed (session 5). ⚠️ Value-transform shape + per-site run still need a real legacy-DB dry-run. | Critical |
 | 07 | Bellissima frontend (all AngularJS) | **Largely done** (15/16 migrated; telethon blocked on 04; live-render fixtures pending) | High |
 | 08 | Forms subscription license | Procurement | High |
 | ~~09~~ | ~~Assembly version `13.0.0`~~ | **DONE (placeholder)** (2026-06-02) — bulk-set to `17.0.0` across 114 csproj; re-stamp CalVer at publish | Low |
+| 10 | Access-control regressions (Hangfire / Export / Import / Preview) | **Open** — security; restore admin/user-group/content-type gating (session-5 review) | High |
+| 11 | `DataComposer.EnsureDataTypeExists` lookup-by-alias | **Open** — dup data types on upgrade; look up by key/editor-alias (session-5 review) | High |
+| — | Bundling throws at render (RR-10) | **Decision** — delete orphaned project or no-op the tag-helpers; see `REVIEW_FINDINGS.md` | Medium |
+
+*Session-5 fixed defects (build 0 errors, boot clean) and the full review finding list live in `REVIEW_FINDINGS.md`.*
