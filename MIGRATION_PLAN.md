@@ -2,6 +2,11 @@
 
 > 🔎 **Migration follow-ups:** run **`git grep "TODO Migration Review"`** to find every migration follow-up in the code — deferred work, deprecated-API flags, stubs, and decisions a reviewer should verify (31 markers as of session 7).
 
+> 📋 **Evaluation findings (session 10, read-only audit — nothing changed):** a 12-agent codebase sweep produced three companion documents for later evaluation:
+> - **`NOT_REQUIRED_TO_RUN.md`** — optional / removable / dead items (orphaned projects, stubs, committed build outputs, dev-only tools like Diplo.GodMode) classified by whether they're needed to run.
+> - **`TECH_DEBT_AND_MODERNIZATION.md`** — legacy patterns & better-approach opportunities: confirmed bugs (incl. a verified ContentPicker crash + v17 Block List export crash), security gaps (CORS wildcard, committed HMAC key, unauth'd upload), ~15 sync-over-async hot paths, deprecated APIs, dependency hygiene, the zero-tests/.NET-8-CI gaps, and U17/.NET10 modernization.
+> - **`PACKAGING_RCL_RESEARCH.md`** — conclusion of the per-plugin `build/*.targets` vs. RCL (`Microsoft.NET.Sdk.Razor` + `StaticWebAssetBasePath`) question: the copy-targets pattern is legacy; RCL is the v17 standard (deferred, opt-in).
+
 *Last updated: 2026-06-02 (session 9) — backoffice plugins migrated Lit → React 19 (shared via import map); BLOCKER-10 access-control gating restored (session 8)*
 
 > **Session 9 summary:** Migrated all backoffice plugins from **Lit → React 19 + TypeScript + Vite** (except Cropper/Uploader — skipped pending the jQuery/native-picker decision — and the blocked telethon UI). Each plugin is a web-component shell mounting a React root; **React is shared via a self-hosted ESM runtime + import map** in `N3O.Umbraco.Cms/App_Plugins/N3O.Umbraco.React` (built by the `BuildReactRuntime` MSBuild target), kept external per plugin. Hybrid UI (UUI chrome + custom React for bespoke surfaces). 7 parallel subagents; full build 0 errors. Reference + recipe: `REACT_MIGRATION_GUIDE.md`. ⚠️ Runtime (in-browser import-map resolution + render) not yet verified — needs content fixtures; Blocks.Preview iframe→`dangerouslySetInnerHTML` divergence to eyeball; Scheduler/WelcomeDashboard React is overhead (kept for uniformity), Blazor.BackOffice left a vanilla loader. Detail: `SESSION_HANDOFF.md`.
