@@ -1,14 +1,24 @@
 # Session Handoff — N3O.Umbraco v17 Migration
 
-*Updated: 2026-06-02 (session 6) — use this to orient the next session*
+*Updated: 2026-06-02 (session 7) — use this to orient the next session*
 
 ---
 
 ## Current State
 
-**Solution builds with 0 errors. App boots clean and the backoffice runs (smoke-tested live this session).** Umbraco 17.3.5 on .NET 10, all 120 projects.
+**Solution builds with 0 errors** (full `dotnet build N3O.Umbraco.sln`, all 120 projects, Umbraco 17.3.5 / .NET 10). Two new commits on `v17-Talha`, **pushed to `origin/v17-Talha`**.
 
-**Latest (session 6):** All 16 Bellissima plugin areas (13 build units) converted from plain-JS Lit to **TypeScript + Vite** (per-project `ClientApp/` + an MSBuild `BuildClientApp` target that runs `npm ci`/`npm run build` on `dotnet build`). **BLOCKER-11 fixed** (was a hard boot-crash on restart). Live backoffice smoke-test passed: dashboards render, 6 referenced property-editor UIs register, zero N3O console errors. Recipe guide: `TYPESCRIPT_MIGRATION_GUIDE.md`. Full detail in the session-6 entry below.
+**Latest (session 7) — merged `origin/main` + codebase-wide deprecated-API modernization:**
+- **Merged `origin/main` into `v17-Talha`** (commit `d13c2d78a`). Key finding: `origin/v17` is just `origin/main` + **6 unfinished WIP commits** (a half-done Offering/Elements refactor that caused massive domain conflicts) — so `main` (the canonical latest stable, and **DonationFormState-aligned** with our branch) was the correct merge target, NOT `v17`. The earlier `v17` merge attempt was aborted. Brought in from main: **Sentry monitoring + rate limiting, health checks & readiness (`UmbracoHealthCheck`/`CdnHealthCheck`/`ApplicationReadiness`), `HomepageWarmup`, telemetry enrichers, concurrency/thread-pool tuning, CI workflows, bug fixes.** Conflicts: 114 csproj → kept our v17 packages; `StagingMiddleware.cs` unioned (our `IContentLocator` + main's `IApplicationReadiness`). Migrated main's incoming v13 APIs: Humanizer 3.0 namespace (`Humanizer.Bytes`→`Humanizer`, 13 files), `IPublishedCache.GetAtRoot()`→`IDocumentNavigationQueryService.TryGetRootKeys`.
+- **Codebase-wide CS0618 deprecated-API sweep** (commit `203a1199b`) — 11 subagents over 2 rounds, partitioned by project (disjoint file ownership). Reduced **76 → 5** "removal in Umbraco 18/19" warnings. Modernized: `.Parent`/`.Children` props → extensions; `IComponent`→`IAsyncComponent`; `MigrationBase`→`AsyncMigrationBase`; `Upgrader.Execute`→`ExecuteAsync`; `IDataTypeService`/`IContentTypeBaseService` sync→async; `ILocalizationService`→`ILanguageService`; Block API `Udi`→`Key`/`RawPropertyValues`→`Values`; `IDataListSource`→`IContentmentDataSource`; Markdown converter new ctor; `TookMs`→`SearchTimeMs`. Removed leftover AngularJS `package.manifest.bak`.
+- **`TODO Migration Review` convention (NEW):** every pending/deferred migration item now carries a searchable `TODO Migration Review` comment. **`git grep "TODO Migration Review"`** lists all 11 markers — the 5 flagged CS0618 sites, the 3 `(v17 replacement)` stubs (Campaign/Offering/Preview workspace views), the `(RR-10)` Bundling stub, and the `(BLOCKER-10)` Hangfire auth regression.
+
+**Pending after session 7** (all marked `TODO Migration Review` in code):
+- 5 CS0618 flags with no safe v17 replacement (would change public/abstract signatures or value semantics): `IDataTypeService.GetDataType(int)` in a non-async `yield` iterator (`ContentTypeExtensions`) and where only an int id exists (`MembersAccessControl`); `IContentService.GetPagedChildren(int)` (new overload changes which properties load); `IAuditService.GetLogs(int)` (sync abstract override); `BlockItemData.RawPropertyValues` write (shape change, no callers). All only "removal in v18/19" — harmless on v17.
+- BLOCKER-10 (Hangfire dashboard auth regression), RR-10 (Bundling delete-vs-implement), Campaign/Offering/Preview Bellissima workspace views (RR-05), plus all prior open blockers.
+- **NOT merged:** the 6 unfinished `origin/v17` WIP commits (Offering/Elements/Qurbani-season refactor). They are incomplete and not in `main`; finishing that feature work (incl. regenerating the NSwag Platforms client) is a separate effort, not a merge.
+
+**Earlier (session 6):** All 16 Bellissima plugin areas (13 build units) converted from plain-JS Lit to **TypeScript + Vite** (per-project `ClientApp/` + an MSBuild `BuildClientApp` target that runs `npm ci`/`npm run build` on `dotnet build`). **BLOCKER-11 fixed** (was a hard boot-crash on restart). Live backoffice smoke-test passed: dashboards render, 6 referenced property-editor UIs register, zero N3O console errors. Recipe guide: `TYPESCRIPT_MIGRATION_GUIDE.md`. Full detail in the session-6 entry below.
 
 **Build prerequisite now:** every build/CI machine needs **Node** (each `ClientApp` does its own `npm ci`, ~240 pkgs; global npm cache makes repeats fast). `node_modules` is ignored by the single **root `.gitignore`** (the per-ClientApp `.gitignore` files were consolidated away). The `App_Plugins/*.js`/`.js.map` are build outputs — decide whether to commit them or gitignore + `git rm --cached`.
 

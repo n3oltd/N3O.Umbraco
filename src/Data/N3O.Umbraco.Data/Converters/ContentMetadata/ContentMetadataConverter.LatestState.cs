@@ -15,7 +15,7 @@ public class LatestStateContentMetadataConverter : ContentMetadataConverter<stri
     }
 
     public override object GetValue(IContent content) {
-        // FLAGGED (CS0618): IAuditService.GetLogs(int) is obsolete (removed in Umbraco 19). The replacement
+        // TODO Migration Review (CS0618): IAuditService.GetLogs(int) is obsolete (removed in Umbraco 19). The replacement
         // GetItemsByEntityAsync(...) is async, but this overrides the synchronous abstract
         // IContentMetadataConverter.GetValue(IContent) -> object, a public interface implemented by 11
         // converters and consumed by sync callers. Making it async would change that public interface and

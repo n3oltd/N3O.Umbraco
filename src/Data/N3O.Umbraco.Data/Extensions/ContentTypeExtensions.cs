@@ -33,7 +33,7 @@ public static class ContentTypeExtensions {
                                                        IContentType contentType,
                                                        IPropertyType propertyType,
                                                        PropertyGroup group = null) {
-        // FLAGGED (CS0618): IDataTypeService.GetDataType(int) is obsolete (removed in Umbraco 18). The
+        // TODO Migration Review (CS0618): IDataTypeService.GetDataType(int) is obsolete (removed in Umbraco 18). The
         // async replacement is GetAsync(Guid), but propertyType only exposes an int DataTypeId (no key here),
         // and this method is a public static iterator (yield return) that cannot be made async. Converting
         // would change the public IEnumerable<UmbracoPropertyInfo> signature and ripple to callers outside

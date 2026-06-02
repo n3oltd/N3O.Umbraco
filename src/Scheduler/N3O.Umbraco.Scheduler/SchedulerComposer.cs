@@ -79,7 +79,9 @@ public class SchedulerComposer : IComposer {
     }
 
     private void AddAuthorizedUmbracoDashboard(IUmbracoBuilder builder) {
-        // SectionRequirement removed in v17; require authenticated backoffice user instead.
+        // TODO Migration Review (BLOCKER-10): SectionRequirement removed in v17 — this currently
+        // only requires an authenticated backoffice user, which lets ANY backoffice user reach the
+        // Hangfire dashboard (was admin/Settings-only). Restore admin-only gating before production.
         builder.Services.AddAuthorization(opt => {
             opt.AddPolicy(HangfireDashboard, policy => {
                 policy.AuthenticationSchemes.Add(UmbracoConstants.Security.BackOfficeAuthenticationType);

@@ -6,7 +6,7 @@
 //   2. Set staging/production URL info on the content display model
 //   3. Hid "crowdfunding" tabs for unpublished campaigns
 //
-// TODO (v17 replacement): Implement equivalent functionality using:
+// TODO Migration Review (v17 replacement): Implement equivalent functionality using:
 //   - A Bellissima workspace view extension (Lit web component) to show embed codes
 //   - IContentUrlProvider or equivalent for custom URL display in the backoffice
 //   - Workspace conditions to hide sections based on content state

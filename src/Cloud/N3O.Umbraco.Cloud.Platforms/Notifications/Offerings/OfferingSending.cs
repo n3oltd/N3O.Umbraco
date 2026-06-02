@@ -4,6 +4,6 @@
 // This handler previously set staging/production URL info on the offering content display model
 // when the editor was opened in the backoffice.
 //
-// TODO (v17 replacement): Implement a Bellissima workspace view extension that fetches
+// TODO Migration Review (v17 replacement): Implement a Bellissima workspace view extension that fetches
 // and displays offering URLs, or configure URL providers via IContentUrlProvider.
 namespace N3O.Umbraco.Cloud.Platforms.Notifications;

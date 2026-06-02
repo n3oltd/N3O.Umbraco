@@ -33,7 +33,7 @@ public abstract class MembersAccessControl : ContentAccessControl {
 
     protected override async Task<bool> AllowEditAsync(ContentProperties contentProperties) {
         var property = contentProperties.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(PropertyAlias));
-        // FLAGGED (CS0618): IDataTypeService.GetDataType(int) is obsolete (removal in Umbraco 18). The async
+        // TODO Migration Review (CS0618): IDataTypeService.GetDataType(int) is obsolete (removal in Umbraco 18). The async
         // replacement GetAsync only accepts a Guid key or string name; only an int DataTypeId is available
         // here, so no contained equivalent conversion exists without a separate id->key lookup.
         var maxValues = GetMaxValues(_dataTypeService.GetDataType(property.Type.DataTypeId));
@@ -49,7 +49,7 @@ public abstract class MembersAccessControl : ContentAccessControl {
 
     protected override async Task<bool> AllowEditAsync(IPublishedContent content) {
         var property = content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(PropertyAlias));
-        // FLAGGED (CS0618): IDataTypeService.GetDataType(int) is obsolete (removal in Umbraco 18). The async
+        // TODO Migration Review (CS0618): IDataTypeService.GetDataType(int) is obsolete (removal in Umbraco 18). The async
         // replacement GetAsync only accepts a Guid key or string name; only an int DataType.Id is available
         // here, so no contained equivalent conversion exists without a separate id->key lookup.
         var maxValues = GetMaxValues(_dataTypeService.GetDataType(property.PropertyType.DataType.Id));

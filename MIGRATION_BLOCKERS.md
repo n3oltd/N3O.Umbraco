@@ -1,6 +1,8 @@
 # Migration Blockers
 
-*Last updated: 2026-06-02 (session 6)*
+*Last updated: 2026-06-02 (session 7)*
+
+> **Session 7:** Merged **`origin/main`** (latest stable, DonationFormState-aligned) into `v17-Talha` — bringing Sentry/health-checks/telemetry/CI — and ran a codebase-wide CS0618 deprecated-API sweep (76→5 warnings). `origin/v17` was NOT merged (it is `main` + 6 unfinished WIP commits). All pending items now carry a searchable **`TODO Migration Review`** code comment (`git grep "TODO Migration Review"`). Build 0 errors; pushed to `origin/v17-Talha`. Details: `SESSION_HANDOFF.md`. **Newly relevant to blockers below:** BLOCKER-10 (Hangfire auth) is marked in `SchedulerComposer.cs`; RR-10 Bundling marked in `Bundler.cs`; 5 CS0618 flags remain (no safe v17 replacement — all "removal in v18/19", harmless on v17).
 
 > **Session 6:** all 16 Bellissima plugin areas converted to **TypeScript + Vite** (see `TYPESCRIPT_MIGRATION_GUIDE.md` + `SESSION_HANDOFF.md`); **BLOCKER-11 resolved** (boot-crash fix, verified live); live backoffice smoke-test passed.
 
