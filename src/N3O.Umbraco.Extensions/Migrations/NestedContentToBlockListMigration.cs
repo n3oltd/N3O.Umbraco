@@ -1,3 +1,24 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// MOVED TO STANDALONE CLI — this migration no longer runs on application startup.
+//
+// The Nested Content → Block List data conversion has been extracted to an
+// independent console tool so it can be run OFFLINE against the database (and
+// tested against an Umbraco 13 site without upgrading):
+//
+//     N3O.Umbraco.NestedContentMigration.Cli   (a standalone project, a sibling
+//     folder of this repository — see its README.md)
+//
+// The CLI is a faithful port of the implementation below, plus: a --format
+// v13|v17 switch (v13 = udi-based values + no propertyEditorUiAlias column),
+// schema detection, an atomic transaction with a --dry-run rollback, and
+// explicit reporting of skipped/unmatched element types.
+//
+// This class is commented out (its PackageMigrationPlan in
+// N3ONestedContentMigrationPlan.cs is too) so it no longer runs. Original
+// preserved for reference only.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/*
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -258,3 +279,4 @@ public class NestedContentToBlockListMigration : AsyncMigrationBase {
         public string TextValue { get; set; }
     }
 }
+*/
