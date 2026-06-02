@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json.schemastore.org/umbraco-package.json",
+    "name": "N3O Uploader",
+    "version": "1.0.0",
+    "extensions": [
+        {
+            "type": "propertyEditorUi",
+            "alias": "N3O.Umbraco.Uploader",
+            "name": "N3O Uploader",
+            "element": "/App_Plugins/N3O.Umbraco.Uploader/uploader.js",
+            "meta": {
+                "label": "N3O Uploader",
+                "icon": "icon-upload",
+                "group": "media",
+                "propertyEditorSchemaAlias": "N3O.Umbraco.Uploader"
+            }
+        }
+    ]
+}

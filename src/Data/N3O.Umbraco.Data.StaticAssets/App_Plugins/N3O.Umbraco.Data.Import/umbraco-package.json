@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json.schemastore.org/umbraco-package.json",
+    "name": "N3O Data Import",
+    "version": "1.0.0",
+    "extensions": [
+        {
+            "type": "workspaceView",
+            "alias": "N3O.WorkspaceView.DataImport",
+            "name": "N3O Data Import",
+            "element": "/App_Plugins/N3O.Umbraco.Data.Import/data-import.js",
+            "meta": {
+                "label": "Import",
+                "pathname": "import",
+                "icon": "icon-page-up"
+            },
+            "conditions": [
+                {
+                    "alias": "Umb.Condition.WorkspaceAlias",
+                    "match": "Umb.Workspace.Document"
+                }
+            ]
+        }
+    ]
+}

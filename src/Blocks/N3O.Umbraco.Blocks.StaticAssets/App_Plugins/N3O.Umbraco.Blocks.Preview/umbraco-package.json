@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json.schemastore.org/umbraco-package.json",
+    "name": "N3O Block Preview",
+    "version": "1.0.0",
+    "extensions": [
+        {
+            "type": "blockEditorCustomView",
+            "alias": "N3O.BlockCustomView.Preview",
+            "name": "N3O Block Preview",
+            "element": "/App_Plugins/N3O.Umbraco.Blocks.Preview/block-preview.js"
+        }
+    ]
+}

@@ -1,0 +1,30 @@
+{
+    "$schema": "http://json.schemastore.org/umbraco-package.json",
+    "name": "N3O Cropper",
+    "version": "1.0.0",
+    "extensions": [
+        {
+            "type": "propertyEditorUi",
+            "alias": "N3O.Umbraco.Cropper",
+            "name": "N3O Cropper",
+            "element": "/App_Plugins/N3O.Umbraco.Cropper/cropper.js",
+            "meta": {
+                "label": "N3O Cropper",
+                "icon": "icon-crop",
+                "group": "media",
+                "propertyEditorSchemaAlias": "N3O.Umbraco.Cropper"
+            }
+        },
+        {
+            "type": "propertyEditorUi",
+            "alias": "N3O.PropertyEditorUi.CropperCropDefinitions",
+            "name": "N3O Cropper Crop Definitions",
+            "element": "/App_Plugins/N3O.Umbraco.Cropper/crop-definitions.js",
+            "meta": {
+                "label": "N3O Cropper Crop Definitions",
+                "icon": "icon-crop",
+                "group": "media"
+            }
+        }
+    ]
+}

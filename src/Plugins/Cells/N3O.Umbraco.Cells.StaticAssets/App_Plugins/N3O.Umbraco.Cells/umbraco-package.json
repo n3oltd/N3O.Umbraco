@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json.schemastore.org/umbraco-package.json",
+    "name": "N3O Cells",
+    "version": "1.0.0",
+    "extensions": [
+        {
+            "type": "propertyEditorUi",
+            "alias": "N3O.Umbraco.Cells",
+            "name": "N3O Cells",
+            "element": "/App_Plugins/N3O.Umbraco.Cells/n3o-cells.js",
+            "meta": {
+                "label": "N3O Cells",
+                "icon": "icon-grid",
+                "group": "common",
+                "propertyEditorSchemaAlias": "N3O.Umbraco.Cells"
+            }
+        }
+    ]
+}

@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json.schemastore.org/umbraco-package.json",
+    "name": "N3O Serp Editor",
+    "version": "1.0.0",
+    "extensions": [
+        {
+            "type": "propertyEditorUi",
+            "alias": "N3O.Umbraco.SerpEditor",
+            "name": "N3O Serp Editor",
+            "element": "/App_Plugins/N3O.Umbraco.SerpEditor/serp-editor.js",
+            "meta": {
+                "label": "N3O Serp Editor",
+                "icon": "icon-search",
+                "group": "common",
+                "propertyEditorSchemaAlias": "N3O.Umbraco.SerpEditor"
+            }
+        }
+    ]
+}

@@ -1,0 +1,19 @@
+{
+    "$schema": "../../umbraco-package-schema.json",
+    "name": "N3O EditorJs",
+    "version": "1.0.0",
+    "extensions": [
+        {
+            "type": "propertyEditorUi",
+            "alias": "N3O.Umbraco.EditorJs",
+            "name": "N3O EditorJs",
+            "element": "/App_Plugins/N3O.Umbraco.EditorJs/editor-js.js",
+            "meta": {
+                "label": "N3O EditorJs",
+                "icon": "icon-document",
+                "group": "richContent",
+                "propertyEditorSchemaAlias": "N3O.Umbraco.EditorJs"
+            }
+        }
+    ]
+}

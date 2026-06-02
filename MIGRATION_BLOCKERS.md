@@ -1,247 +1,240 @@
-# Migration Blockers — Items Without a v17 Alternative
+# Migration Blockers
 
-These items cannot be fully resolved until external dependencies release v17-compatible versions, or until a replacement strategy is decided. Each section documents the situation, what currently works, and what action is needed.
+*Last updated: 2026-06-01*
 
----
-
-## BLOCKER-01: Our.Umbraco.Community.Contentment
-
-**Status:** Blocked on upstream release  
-**Current version:** 4.7.0 (Umbraco 13 era)  
-**Package:** `Our.Umbraco.Community.Contentment.Core`  
-**Projects affected:** `N3O.Umbraco.Cms`, `N3O.Umbraco.Extensions`
-
-### What is broken
-No Umbraco 17-compatible release of Contentment exists. The v4.7.0 Core package transitively pulls in `Umbraco.Cms.Web.BackOffice 13.0.0`, which conflicts with the v17 management API and causes CS0121 ambiguity errors on `AddBackOffice`, `UseBackOffice`, `UseBackOfficeEndpoints`.
-
-### Current workaround
-An MSBuild target in `N3O.Umbraco.Cms.csproj` strips the conflicting v13 BackOffice assembly from the compiler reference path at build time:
-```xml
-<Target Name="ExcludeLegacyUmbracoBackOffice" AfterTargets="ResolveAssemblyReferences">
-    <ItemGroup>
-        <ReferencePath Remove="@(ReferencePath)"
-                       Condition="$([System.String]::Copy('%(Identity)').ToLower().Contains('umbraco.cms.web.backoffice'))" />
-        ...
-    </ItemGroup>
-</Target>
-```
-This allows the solution to **compile**, but Contentment-backed editors (`DataList`, `DataPicker`, etc.) will **not function at runtime** until a v17-compatible release is used.
-
-### What is still used (audit before v17 release)
-Search the codebase for all content types and property types using these editor aliases:
-- `Umbraco.Community.Contentment.DataList`
-- `Umbraco.Community.Contentment.DataPicker`
-- `Umbraco.Community.Contentment.ContentBlocks` (if used)
-
-Files currently referencing Contentment:
-- `src/N3O.Umbraco.Extensions/Types/ContentmentDataSource.I.cs`
-- `src/N3O.Umbraco.Extensions/Lookups/LookupsDataSource.cs`
-- `src/N3O.Umbraco.Extensions/Extensions/ContentHelperExtensions.DataList.cs`
-- `src/N3O.Umbraco.Extensions/Extensions/ContentHelperExtensions.DataPicker.cs`
-- `src/N3O.Umbraco.Extensions/Extensions/PropertyTypeExtensions.cs` (IsDataList, IsDataPicker)
-
-### Action required
-1. Monitor https://github.com/leekelleher/umbraco-contentment for a v17 release
-2. When available: remove the `ExcludeLegacyUmbracoBackOffice` MSBuild target, restore `.AddContentment()` in `CmsStartup.cs`, test all Contentment-backed editors
-3. If no release appears: evaluate native replacements (Umbraco's built-in dropdown, Radio Button List, etc.) for each Contentment editor in use
+Items that require external action, design decisions, or significant implementation effort before full production readiness.
 
 ---
 
-## BLOCKER-02: Perplex.ContentBlocks
+## RESOLVED
 
-**Status:** RC available (v4.0.0-rc.2), stable not released  
-**Current version:** 3.0.1 (Umbraco 13 era)  
-**Package:** `Perplex.ContentBlocks`  
-**Projects affected:** `N3O.Umbraco.Blocks.Perplex`, `N3O.Umbraco.Data.PerplexBlocks`
+### ~~BLOCKER-01: Contentment~~ — RESOLVED
+- **Old state:** No Umbraco 17 release; `Our.Umbraco.Community.Contentment.Core 4.7.0` crashed TypeFinder via `Umbraco.Web.BackOffice v13` IL reference.
+- **Resolution:** Package renamed to `Umbraco.Community.Contentment`. Upgraded to **6.1.4** (targets Umbraco 17, net10.0). `.AddContentment()` restored. Contentment API updated: `ContentmentConfigurationField` (in `Umbraco.Cms.Core.PropertyEditors`), `PagedViewModel<T>` (in `Umbraco.Cms.Api.Common.ViewModels.Pagination`), `GetItems()` sync method added.
+- **MSBuild strip target** in `Directory.Build.targets` confirmed no longer needed for Contentment; kept as safety net only.
 
-### What is broken
-Perplex.ContentBlocks v3 targets Umbraco 13 and uses Nested Content APIs internally. These are removed in v17. Additionally, `NestedContentConfiguration` usages in `PerplexBlockTypesService.cs` (lines 141–157) reference removed types.
-
-v4.0.0-rc.2 reportedly supports Umbraco 17, but as a release candidate it is not production-ready.
-
-### Decision required
-Choose one of:
-1. **Wait for stable v4**: use `Perplex.ContentBlocks` 4.x stable when released. Update `PerplexBlockTypesService.cs` to use `BlockListConfiguration` and the v4 API.
-2. **Replace with native Block Grid**: rebuild the Perplex module using Umbraco's Block Grid editor. This is significant work but removes the third-party dependency.
-3. **Exclude from build**: comment out `N3O.Umbraco.Blocks.Perplex` and `N3O.Umbraco.Data.PerplexBlocks` from the solution temporarily until resolved.
-
-### Current state in code
-- `src/Blocks/N3O.Umbraco.Blocks.Perplex/Services/PerplexBlockTypesService.cs:141–157` — uses `NestedContentConfiguration.ContentTypes` (removed); also `CreateDataTypes` builds Nested Content data types programmatically
-- `src/Data/N3O.Umbraco.Data.PerplexBlocks/` — data export/import for Perplex blocks
-
-### Action required
-1. Evaluate v4.0.0-rc.2 on a test environment
-2. Decide strategy above by sprint planning before Phase 4
-3. Track: https://github.com/PerplexDigital/Perplex.ContentBlocks
+### ~~BLOCKER-03: Konstrukt → Umbraco.UIBuilder~~ — RESOLVED
+- **Old state:** `Konstrukt.Startup 1.6.7` renamed to `Umbraco.UIBuilder` in v14+; full API port needed.
+- **Resolution:** All Konstrukt → UIBuilder API ports complete:
+  - `KonstruktConfigurator` → uses `UIBuilderConfigBuilder`, `WithSectionConfigBuilder`
+  - `UIBuilderComposer` → `builder.AddUIBuilder(cfg => { ... })` with auto-discovery of `IConfigurator`
+  - `KonstruktValueMapper` → `ValueMapper` (`Umbraco.UIBuilder.Mapping`)
+  - `KonstruktDataViewsBuilder<T>` → `DataViewsBuilder<T>`; `KonstruktDataViewSummary` → `DataViewSummary`
+  - `KonstruktEntitySaved/SavingNotification` → `EntitySaved/SavingNotification`
+  - Data UIBuilder `ImportsConfigurator` fully ported.
 
 ---
 
-## BLOCKER-03: Konstrukt → Umbraco.UIBuilder
+## ACTIVE BLOCKERS
 
-**Status:** Replacement available but requires code port  
-**Current version:** `Konstrukt.Startup` / `Konstrukt.Web.UI` 1.6.7  
-**Replacement:** `Umbraco.UIBuilder` 17.2.0  
-**Projects affected:** `N3O.Umbraco.UIBuilder`, `N3O.Umbraco.UIBuilder.StaticAssets`
+### BLOCKER-02: Perplex.ContentBlocks — Pre-release RC
 
-### What is broken
-Konstrukt was rebranded as Umbraco UI Builder from v14 onwards. The package IDs have changed and the API surface has changed significantly (it is now a Bellissima/Lit-based backoffice integration, not Angular). Simply swapping the package reference is not sufficient.
+**Status:** Pre-release — v4.0.0-rc.3 in use  
+**Package:** `Perplex.ContentBlocks 4.0.0-rc.3`  
+**Projects:** `N3O.Umbraco.Blocks.Perplex`, `N3O.Umbraco.Data.PerplexBlocks`
 
-### csproj changes needed (already updated)
-- `Konstrukt.Startup` 1.6.7 → `Umbraco.UIBuilder` 17.2.0
-- `Konstrukt.Web.UI` 1.6.7 → `Umbraco.UIBuilder` 17.2.0
+#### Current state
+The v4.0.0-rc.3 package has been integrated and the solution compiles. API changes adopted:
+- `PerplexBlockDefinition` implements `ElementTypeKey` (returns `Id`) and `BlockNameTemplate` (returns `null`)
+- `ContentBlocksModelValue` → `ContentBlocksValue`; namespace `Perplex.ContentBlocks.PropertyEditor.Value`
+- `DataType.Configuration` property removed; `CreateDataTypes` method removed from `PerplexBlockTypesService`
+- Dead code: `GetOrCreateDataTypeContainer` private method in `PerplexBlockTypesService` is now unreachable — **safe to delete**.
 
-### Code changes needed (not yet done)
-Audit all files in `src/UIBuilder/N3O.Umbraco.UIBuilder/` for Konstrukt namespaces and API calls:
-- `using Konstrukt.*` → `using Umbraco.UIBuilder.*`
-- `IKonstruktConfigBuilder` → `IUiBuilderConfigurationBuilder` (or equivalent)
-- Dashboard/section registration API differs
-- Tree/collection/action registration API differs
+#### Issue
+RC releases should not be used in production. A stable v4.x release is needed.
 
-### Action required
-1. Read the Umbraco UI Builder v17 documentation: https://docs.umbraco.com/umbraco-ui-builder
-2. Map each Konstrukt API call to its UIBuilder equivalent
-3. Rewrite `N3O.Umbraco.UIBuilder` registration and configuration code
-4. Test the backoffice UI sections that depend on this
+**Note:** Data types that were previously created by code (via `CreateDataTypes`) must now be managed via the Umbraco backoffice or uSync. Communicate this to all site teams.
 
----
-
-## BLOCKER-04: Umbraco.Engage (formerly uMarketingSuite)
-
-**Status:** Available (v17.2.2) but namespace/API changes required  
-**Current version:** `Umbraco.Engage.Core` 13.8.0  
-**Projects affected:** `N3O.Umbraco.Marketing`, `N3O.Umbraco.Marketing.StaticAssets`, `N3O.Umbraco.Cloud.Engage`
-
-### What is broken
-Namespaces changed significantly between v13 and v17. Current code imports:
-- `Umbraco.Engage.Infrastructure.Personalization.Segments.*`
-- `Umbraco.Engage.Infrastructure.Personalization.PersonalizationProfile.*`
-- `Umbraco.Engage.Web.Cockpit.Segments.*`
-
-These need to be mapped to the v17 equivalents.
-
-### csproj changes needed (already updated)
-- `Umbraco.Engage.Core` 13.8.0 → `Umbraco.Engage` 17.2.2
-- `Umbraco.Engage.StaticAssets` / `Umbraco.Engage.Forms.StaticAssets` — verify if these are now bundled into `Umbraco.Engage`; remove if so
-
-### Code changes needed (not yet done)
-Files to update:
-- `src/Marketing/N3O.Umbraco.Marketing/UmbracoEngageSegmentsDataSource.cs`
-- `src/Cloud/N3O.Umbraco.Cloud.Platforms.Marketing/Services/Campaigns/TelethonOnAirSegmentRule.cs`
-- `src/Cloud/N3O.Umbraco.Cloud.Platforms.Marketing/Services/Campaigns/TelethonOnAirSegmentRuleFactory.cs`
-- `src/Cloud/N3O.Umbraco.Cloud.Platforms.Marketing/Services/Campaigns/TelethonOnAirCockpitSegmentRuleFactory.cs`
-- `src/Cloud/N3O.Umbraco.Cloud.Platforms.Marketing/PlatformsMarketingComposer.cs`
-
-### Action required
-1. Follow the official Engage upgrade guide: https://docs.umbraco.com/umbraco-engage
-2. Run Engage's database migrations in order (v13 → v14 → ... → v17)
-3. Map old namespaces to new ones using the Engage v17 API reference
-4. Test personalisation rules and segments in backoffice
+#### Action required
+1. Monitor https://github.com/PerplexDigital/Perplex.ContentBlocks for stable v4 release
+2. When available: upgrade from rc.3 to stable; verify API compatibility
+3. Delete dead `GetOrCreateDataTypeContainer` method from `PerplexBlockTypesService.cs`
+4. Document for site teams: Perplex data types are no longer auto-created; manage via backoffice/uSync
 
 ---
 
-## BLOCKER-05: Umbraco.Code 2.4.0
+### BLOCKER-04: Engage Cockpit Segment Rule Factory (Partially resolved)
 
-**Status:** Unconfirmed — no known v17 release  
-**Projects affected:** `N3O.Umbraco.Extensions`
+**Status:** Engage package upgraded; namespaces confirmed valid; Cockpit factory implementation missing  
+**Package:** `Umbraco.Engage 17.2.2` (installed)  
+**Projects:** `N3O.Umbraco.Cloud.Platforms.Marketing`
 
-### What is broken
-`Umbraco.Code` is used for generating strongly-typed model code from content types. v2.4.0 was built for Umbraco 13. No v17-compatible release has been identified.
+#### Current state (what IS working)
+The Engage package upgrade to v17.2.2 is complete. DLL inspection confirms all three namespaces used by the codebase are **unchanged** in v17.2.2:
+- `Umbraco.Engage.Infrastructure.Personalization.Segments` → `ISegmentRepository`, `Segment` ✅
+- `Umbraco.Engage.Infrastructure.Personalization.Segments.Rules` → `ISegmentRuleFactory`, `ISegmentRule`, `BaseSegmentRule`, `SegmentRuleValidationMode` ✅
+- `Umbraco.Engage.Infrastructure.Personalization.PersonalizationProfile` → `IPersonalizationProfile` ✅
 
-### Action required
-1. Verify what `Umbraco.Code` is used for in this project (check usages in `N3O.Umbraco.Extensions`)
-2. If only used at design time for code generation: check if generated code is already committed to the repo; if so, remove the dependency
-3. If used at runtime: identify the alternative (Umbraco's built-in ModelsBuilder, or a newer generator)
-4. If no v17 release: remove the package reference and commit the generated code statically
+`UmbracoEngageSegmentsDataSource.cs` (Marketing project) builds and runs correctly.
 
----
-
-## BLOCKER-06: Nested Content → Block List (Content Data Migration)
-
-**Status:** Migration code written; database action required per site  
-**File:** `src/N3O.Umbraco.Extensions/Migrations/NestedContentToBlockListMigration.cs`
-
-### What needs to happen
-For every existing client site database, Nested Content property values must be converted to Block List JSON format before the site can run on v17. The migration class handles this but must be:
-
-1. **Registered** as part of an `IMigrationPlan` in the relevant package composer
-2. **Run** on each site database during the upgrade process
-
-### Example registration
+#### What is broken
+`PlatformsMarketingComposer.cs` has both factory registrations commented out:
 ```csharp
-public class MyMigrationPlan : PackageMigrationPlan {
-    public MyMigrationPlan() : base("N3O.Umbraco.NestedToBlockList") { }
+// TODO (BLOCKER-04): Umbraco.Engage namespaces changed in v17
+// builder.WithCollectionBuilder<SegmentRuleCollectionBuilder>().Add<TelethonOnAirSegmentRuleFactory>();
+// builder.WithCollectionBuilder<CockpitSegmentRuleCollectionBuilder>().Add<TelethonOnAirCockpitSegmentRuleFactory>();
+```
 
-    protected override void DefinePlan() {
-        To<NestedContentToBlockListMigration>("2026-NestedToBlockList-v1");
-    }
+`TelethonOnAirCockpitSegmentRuleFactory.cs` is **an empty file** — the class body needs implementing.
+
+The Cockpit factory interface in v17.2.2 is at: `Umbraco.Engage.Web.Cockpit.Segments.ICockpitSegmentRuleFactory`
+
+#### Action required
+1. Read `ICockpitSegmentRuleFactory` interface definition (in `Umbraco.Engage.Web.Cockpit.Segments` namespace)
+2. Implement `TelethonOnAirCockpitSegmentRuleFactory` — specifically update `TryCreate` to the v17 signature (nullable out parameter)
+3. Re-enable both `Add<>()` registrations in `PlatformsMarketingComposer.cs`
+4. Rewrite the 3 AngularJS segment rule editor JS files (`segment-rule-telethon-on-air*.js`) as Bellissima web components
+
+#### AngularJS UI still blocked
+The three JS files in `App_Plugins/telethon-on-air-rule/` are AngularJS and will not run in Umbraco 17 backoffice. These depend on `umsSegmentRuleRepository` (an Engage Angular service). Check what the Engage v17.2.2 client-side API provides for custom segment rule UIs.
+
+---
+
+### BLOCKER-05: uSync Publisher — `SyncContentHandler`
+
+**Status:** Blocked on Jumoo — v17 API not publicly documented  
+**Package:** uSync.Publisher (separate from `uSync.Complete 17.3.6`)  
+**File:** `src/Sync/N3O.Umbraco.Sync.Extensions/Handlers/SyncContentHandler.cs`
+
+#### What is broken
+`IPublisherStateService` was removed in uSync.Publisher v17. The `SyncContentHandler.Handle()` method currently throws `NotSupportedException` at runtime. Any attempt to sync content via uSync Publisher will crash.
+
+```csharp
+public void Handle(ContentSavedNotification notification) {
+    throw new NotSupportedException("IPublisherStateService removed in uSync.Publisher v17. Needs reimplementation against Jumoo.Processing v17 API.");
 }
 ```
 
-### Pre-migration checklist per site
+#### Action required
+1. Monitor https://jumoo.co.uk and https://github.com/PerplexDigital for uSync Publisher v17 documentation
+2. When available: reimplement `SyncContentHandler` against the `Jumoo.Processing` v17 API
+3. Until then: consider feature-flagging the handler so it is only registered in environments where Publisher is not needed
+
+---
+
+### BLOCKER-06: Nested Content Database Migration
+
+**Status:** Migration code written; not registered; not run on any site  
+**File:** `src/N3O.Umbraco.Extensions/Migrations/NestedContentToBlockListMigration.cs`
+
+#### What is needed
+For every existing client site, Nested Content property values must be converted to Block List JSON before the site can render content correctly on v17.
+
+#### Registration (not yet done)
+```csharp
+public class N3ONestedContentMigrationPlan : PackageMigrationPlan {
+    public N3ONestedContentMigrationPlan() : base("N3O.Umbraco.NestedToBlockList") { }
+    protected override void DefinePlan() {
+        To<NestedContentToBlockListMigration>("2026-NestedContent-v1");
+    }
+}
+```
+This plan needs to be registered in a Composer via `builder.PackageMigrationPlans().Add<N3ONestedContentMigrationPlan>()`.
+
+#### Pre-migration checklist per site
 - [ ] Back up the database
 - [ ] Verify all Nested Content data types have a corresponding Block List data type configured with the same element types
-- [ ] Run on a database copy first
-- [ ] Verify rendered output before and after in a staging environment
-- [ ] Update uSync XML files alongside (see BLOCKER-07)
+- [ ] Run migration on a database copy first
+- [ ] Verify rendered output before and after in staging
+- [ ] Regenerate uSync XML after migration (run `uSync export`, commit the result)
 
 ---
 
-## BLOCKER-07: uSync XML for Nested Content Data Types
+### BLOCKER-07: Bellissima Frontend — All AngularJS Plugins
 
-**Status:** Must be done manually per site alongside CM-01  
-**Packages affected:** `uSync.Complete` (now at 17.3.6)
+**Status:** Largely DONE (2026-06-02) — 15 of 16 plugin areas migrated to `umbraco-package.json` + Lit web components; only `telethon-on-air-rule` remains blocked (depends on BLOCKER-04). Build 0 errors; app boots clean; all assets served HTTP 200; WelcomeDashboard + Scheduler dashboards render live; both Data property-editor data types resolve. See `BELLISSIMA_MIGRATION_LOG.md` for the per-plugin table, the systematic alias fix, and the remaining live-render checklist (property editors / workspace views / Blocks.Preview need content fixtures to render — demo DB has no content). Migration guide: `BELLISSIMA_MIGRATION_GUIDE.md`.
 
-### What is broken
-uSync stores content type and data type definitions as XML files on disk. Any XML referencing `Umbraco.NestedContent` as editor alias or its config format must be updated to `Umbraco.BlockList` with Block List config after the database migration.
+**Critical fix discovered during testing:** each custom `propertyEditorUi.alias` (and `propertyEditorSchemaAlias`) must equal the backend `[DataEditor]` alias (NOT a new `N3O.PropertyEditorUi.*`), else existing data types show "Property Editor UI not found". Applied to all custom editors (TextResourceEditor's backend alias is `N3O.Umbraco.TemplateTextEditor`).
 
-### Action required
-After running `NestedContentToBlockListMigration` on a database:
-1. Run `uSync export` to regenerate all XML files from the migrated database
-2. Commit the regenerated XML to source control
-3. Verify re-import on a clean database works
+**Original impact:** All custom property editors, content apps, and dashboards were invisible or non-functional in the Umbraco 17 backoffice.
+
+#### Summary
+Umbraco 14+ (Bellissima) replaced the entire AngularJS backoffice with Lit-based web components. None of the N3O custom property editors, content apps, or dashboards currently work.
+
+#### Plugin areas and effort
+
+| Plugin | Extension type | Complexity | AngularJS APIs used |
+|---|---|---|---|
+| Block Preview | `blockEditorCustomView` | High | `$scope`, `$sce`, `$timeout`, `editorState`, `umbRequestHelper` |
+| Data Export | `contentApp` | Medium | `$scope`, `editorState`, `assetsService` |
+| Data Import | `contentApp` | Medium | `$scope`, `editorState`, `assetsService` |
+| Data ImportDataEditor | `propertyEditorUi` | Medium | `$scope`, `assetsService` |
+| Data ImportNoticesViewer | `propertyEditorUi` | Low | Simple display |
+| Platforms Preview | `contentApp` | Medium | `$scope`, `editorState` |
+| Cells (Handsontable) | `propertyEditorUi` | High | `$scope`, `assetsService`, Handsontable lib |
+| Cropper | `propertyEditorUi` | High | `$scope`, `assetsService`, `$timeout`, Formstone |
+| EditorJs | `propertyEditorUi` | High | `$scope`, `assetsService`, EditorJs bundle |
+| SerpEditor | `propertyEditorUi` | Medium | `$scope`, `assetsService`, `editorState` |
+| TextResourceEditor | `propertyEditorUi` | Low | Simple text editor |
+| Uploader | `propertyEditorUi`/`dashboard` | Medium | `$scope`, `assetsService`, Formstone |
+| WelcomeDashboard | `dashboard` | Low | Empty controller — almost no logic |
+| Scheduler Dashboard | `dashboard` | Low | HTML iframe wrapping Hangfire UI |
+| Blazor BackOffice | `script` | Low | Non-AngularJS; just needs manifest format update |
+| TelethonOnAir segment rule | Engage extension | High | Engage-specific Angular services — also blocked by BLOCKER-04 |
+
+#### Approach
+For each plugin:
+1. Create a Lit `customElement` class (TypeScript recommended)
+2. Replace `$scope` state with Lit reactive properties (`@property()`, `@state()`)
+3. Replace `assetsService.loadJs/Css` with ES module `import` or bundled dependencies
+4. Replace `editorState` access with Umbraco's `UmbDocumentWorkspaceContext`
+5. Register in `umbraco-package.json` with the correct extension type alias
+6. Delete the old `.js` controller, `.html` view, and `package.manifest`
+
+#### Resources
+- Umbraco backoffice package docs: https://docs.umbraco.com/umbraco-cms/extending/backoffice-setup
+- Umbraco UI Library (Lit components): https://uui.umbraco.com
+- Extension type reference: https://docs.umbraco.com/umbraco-cms/extending/backoffice-setup/extension-types
 
 ---
 
-## BLOCKER-08: Umbraco Forms Subscription License
+### BLOCKER-08: Umbraco Forms Subscription License
 
 **Status:** Procurement action required  
-**Current version:** 13.9.6 → upgrading to 17.0.1  
-**Projects affected:** `N3O.Umbraco.Forms`, `N3O.Umbraco.Forms.StaticAssets`
+**Package:** `Umbraco.Forms 17.0.x`
 
-From Umbraco v17, the perpetual license model for Umbraco Forms is no longer valid. A subscription license is required. This affects every client site using Forms.
+From Umbraco v17, the perpetual license model for Umbraco Forms is no longer valid. A subscription license is required per site.
 
-### Action required
-1. Contact Umbraco sales to obtain subscription licenses
-2. Configure license keys per site before deploying v17
-3. See: https://umbraco.com/products/umbraco-forms/
+#### Action required
+1. Contact Umbraco sales: https://umbraco.com/products/umbraco-forms/
+2. Obtain a subscription license per client site using Forms
+3. Configure the license key in `appsettings.json` before deploying v17
 
 ---
 
-## BLOCKER-09: Our.Umbraco.GMaps — API changes in v17
+### BLOCKER-09: Assembly Version Tags (`13.0.0`)
 
-**Status:** v17 package available (17.0.0) but API changes unverified  
-**Current version:** `Our.Umbraco.GMaps.Core` 3.0.5  
-**Replacement:** `Our.Umbraco.GMaps` 17.0.0  
-**Projects affected:** `N3O.Umbraco.Maps.Google`, `N3O.Umbraco.Maps.Google.StaticAssets`
+**Status:** Must fix before any NuGet publish  
+**Scope:** All 120 `.csproj` files
 
-### Action required
-1. Install `Our.Umbraco.GMaps` 17.0.0
-2. Review breaking changes between v3 and v17
-3. Update any namespace or API calls in `src/Maps/N3O.Umbraco.Maps.Google/`
-4. Test map property editors in backoffice
+Every project has `<Version>13.0.0</Version>`, `<AssemblyVersion>13.0.0</AssemblyVersion>`, `<FileVersion>13.0.0</FileVersion>`. These are CalVer-style and need updating to `17.x.x.x` before publishing any packages.
+
+#### Action required
+```powershell
+# Bulk update all csproj version tags
+Get-ChildItem "D:\AI Migration Test\N3O.Umbraco\src" -Recurse -Filter "*.csproj" |
+    ForEach-Object {
+        $content = Get-Content $_.FullName -Raw
+        $updated = $content -replace '<Version>13\.0\.0</Version>', '<Version>17.0.0</Version>'
+        $updated = $updated -replace '<AssemblyVersion>13\.0\.0</AssemblyVersion>', '<AssemblyVersion>17.0.0</AssemblyVersion>'
+        $updated = $updated -replace '<FileVersion>13\.0\.0</FileVersion>', '<FileVersion>17.0.0</FileVersion>'
+        if ($updated -ne $content) { Set-Content $_.FullName $updated }
+    }
+```
+Use CalVer format `YYYY.M.D.Build` for the actual release version.
 
 ---
 
 ## Summary Table
 
-| # | Blocker | External Dependency | Action | Urgency |
-|---|---------|-------------------|--------|---------|
-| 01 | Contentment | No v17 release | Monitor upstream | Medium |
-| 02 | Perplex.ContentBlocks | RC only (v4.0.0-rc.2) | Decide strategy | High |
-| 03 | Konstrukt → UIBuilder | Available (v17.2.0) | Code port required | High |
-| 04 | Umbraco.Engage | Available (v17.2.2) | Namespace updates required | High |
-| 05 | Umbraco.Code | Unconfirmed | Investigate/remove | Medium |
-| 06 | Nested Content DB migration | N/A (code written) | Register + run per site | Critical |
-| 07 | uSync XML for NestedContent | N/A | Regenerate post-migration | Critical |
-| 08 | Forms subscription license | Procurement | Contact Umbraco sales | High |
-| 09 | GMaps v17 API changes | Available (v17.0.0) | API audit required | Low |
+| # | Blocker | Status | Urgency |
+|---|---|---|---|
+| ~~01~~ | ~~Contentment~~ | **RESOLVED** (6.1.4) | — |
+| 02 | Perplex.ContentBlocks RC | Functional RC; waiting for stable | Medium |
+| ~~03~~ | ~~Konstrukt → UIBuilder~~ | **RESOLVED** (port complete) | — |
+| 04 | Engage Cockpit factory missing | Implementation needed | High |
+| 05 | uSync Publisher v17 | Blocked on Jumoo docs | High |
+| 06 | Nested Content DB migration | Code written; needs registration + per-site run | Critical |
+| 07 | Bellissima frontend (all AngularJS) | **Largely done** (15/16 migrated; telethon blocked on 04; live-render fixtures pending) | High |
+| 08 | Forms subscription license | Procurement | High |
+| 09 | Assembly version `13.0.0` | Must fix before publish | Medium |
