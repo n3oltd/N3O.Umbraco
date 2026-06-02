@@ -2,7 +2,9 @@
 
 > 🔎 **Migration follow-ups:** run **`git grep "TODO Migration Review"`** to find every migration follow-up in the code — deferred work, deprecated-API flags, stubs, and decisions a reviewer should verify (31 markers as of session 7).
 
-*Last updated: 2026-06-02 (session 7) — merged `origin/main` (latest stable) into `v17-Talha`; codebase-wide deprecated-API (CS0618) modernization; `TODO Migration Review` markers added; pushed to remote*
+*Last updated: 2026-06-02 (session 8) — BLOCKER-10 access-control gating restored (Hangfire + Export/Import, server-side); pushed to remote*
+
+> **Session 8 summary:** Restored the BLOCKER-10 access-control regressions (the "A-2" remaining-work item) — commit `c93028178`. **Hangfire dashboard** re-gated to Settings-section/admin via Umbraco's built-in `AuthorizationPolicies.SectionAccessSettings` (the v17 replacement for the removed `SectionRequirement`). **Export/Import** APIs gated server-side with a new reusable `[RequireUserGroup(...)]` filter on `ExportsController`/`ImportsController` (admin or the `exportUsers`/`importUsers` group; 403 otherwise) — enforced at the API boundary, stronger than v13's UI-only gate. The third item (Platforms-Preview → offering-composition content types only) is **deferred** — display-only and needs a custom Bellissima condition (no built-in "composes composition X" condition exists); marked `TODO Migration Review (BLOCKER-10 #3)`. BLOCKER-10 downgraded **High → Low**. Build 0 errors.
 
 > **Session 7 summary:** Merged **`origin/main`** into `v17-Talha` (commit `d13c2d78a`) — NOT `origin/v17`, which is merely `main` + 6 unfinished WIP commits (a half-done Offering/Elements refactor). `main` is the canonical latest stable and is **DonationFormState-aligned** with our branch, so it merged cleanly (114 csproj → our v17 packages; one code union in `StagingMiddleware`). This brought in main's production hardening: **Sentry, health checks & readiness, HomepageWarmup, telemetry, concurrency tuning, CI**. Incoming v13 APIs migrated to v17 (Humanizer 3.0 namespace; `GetAtRoot`→`TryGetRootKeys`). Then a **codebase-wide CS0618 deprecated-API sweep** (commit `203a1199b`, 11 subagents) cut "removal in Umbraco 18/19" warnings **76 → 5**. All pending/deferred items (and migration-decision notes a reviewer should verify) now carry a searchable **`TODO Migration Review`** comment (`git grep "TODO Migration Review"` → 31 markers). Full solution builds **0 errors**. The 6 unfinished `origin/v17` WIP commits were deliberately **not** merged.
 
@@ -299,7 +301,8 @@ Migration is complete when:
 - [ ] `TelethonOnAirCockpitSegmentRuleFactory` implemented and registered
 - [ ] `GetNestedPropertySchemaHandler` implemented or removed
 - [ ] `GetPreviewUrlAsync` implemented for all URL provider subclasses
-- [ ] Data controllers authenticated
+- [x] Data controllers authenticated (RR-08)
+- [~] Access-control gating restored (BLOCKER-10) — Hangfire (`SectionAccessSettings`) + Export/Import (`[RequireUserGroup]`, server-side) **done**; Platforms-Preview content-type condition **deferred** (display-only, needs custom Bellissima condition)
 - [ ] Bundling service implemented or removed
 - [ ] `SaveAndPublish` has production-grade error handling
 - [ ] All `<Version>` tags updated from `13.0.0` to `17.x`

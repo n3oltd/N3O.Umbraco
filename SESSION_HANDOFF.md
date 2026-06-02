@@ -1,12 +1,14 @@
 # Session Handoff — N3O.Umbraco v17 Migration
 
-*Updated: 2026-06-02 (session 7) — use this to orient the next session*
+*Updated: 2026-06-02 (session 8) — use this to orient the next session*
 
 ---
 
 ## Current State
 
-**Solution builds with 0 errors** (full `dotnet build N3O.Umbraco.sln`, all 120 projects, Umbraco 17.3.5 / .NET 10). Two new commits on `v17-Talha`, **pushed to `origin/v17-Talha`**.
+**Solution builds with 0 errors** (full `dotnet build N3O.Umbraco.sln`, all 120 projects, Umbraco 17.3.5 / .NET 10). All work **pushed to `origin/v17-Talha`** (latest commit `c93028178`).
+
+**Latest (session 8) — BLOCKER-10 access-control gating (the "A-2" item):** Restored the two server-side privilege/data boundaries lost in the Bellissima migration. (1) **Hangfire dashboard** → `SchedulerComposer` now requires Umbraco's built-in `AuthorizationPolicies.SectionAccessSettings` alongside the back-office-scheme policy (v17 equivalent of the removed `SectionRequirement(Settings)`) — Settings-section/admin only again. (2) **Export/Import** → new reusable `[RequireUserGroup(...)]` authorization filter (`src/Data/N3O.Umbraco.Data/Security/RequireUserGroupAttribute.cs`) on `ExportsController` (`exportUsers`) / `ImportsController` (`importUsers`), admin always allowed; enforced at the **API boundary** via `IBackOfficeSecurityAccessor.CurrentUser.Groups` (403 otherwise) — stronger than v13's UI-only gate. `DataConstants.SecurityGroups.*` Alias/Name → `const`. (3) **Platforms-Preview** content-type gating still shows on all doc types — **deferred** (display-only; needs a custom Bellissima condition; no built-in "composes composition X" condition exists), marked `TODO Migration Review (BLOCKER-10 #3)` in `platforms-preview.ts`. Build 0 errors; BLOCKER-10 downgraded **High → Low**. Commit `c93028178`.
 
 **Latest (session 7) — merged `origin/main` + codebase-wide deprecated-API modernization:**
 - **Merged `origin/main` into `v17-Talha`** (commit `d13c2d78a`). Key finding: `origin/v17` is just `origin/main` + **6 unfinished WIP commits** (a half-done Offering/Elements refactor that caused massive domain conflicts) — so `main` (the canonical latest stable, and **DonationFormState-aligned** with our branch) was the correct merge target, NOT `v17`. The earlier `v17` merge attempt was aborted. Brought in from main: **Sentry monitoring + rate limiting, health checks & readiness (`UmbracoHealthCheck`/`CdnHealthCheck`/`ApplicationReadiness`), `HomepageWarmup`, telemetry enrichers, concurrency/thread-pool tuning, CI workflows, bug fixes.** Conflicts: 114 csproj → kept our v17 packages; `StagingMiddleware.cs` unioned (our `IContentLocator` + main's `IApplicationReadiness`). Migrated main's incoming v13 APIs: Humanizer 3.0 namespace (`Humanizer.Bytes`→`Humanizer`, 13 files), `IPublishedCache.GetAtRoot()`→`IDocumentNavigationQueryService.TryGetRootKeys`.
