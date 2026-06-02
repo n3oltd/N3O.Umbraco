@@ -18,10 +18,10 @@ namespace N3O.Umbraco.Migrations;
 //      data type configured with the same element types.
 //   2. Back up the database before running.
 //   3. Test on a database copy first.
-public class NestedContentToBlockListMigration : MigrationBase {
+public class NestedContentToBlockListMigration : AsyncMigrationBase {
     public NestedContentToBlockListMigration(IMigrationContext context) : base(context) { }
 
-    protected override void Migrate() {
+    protected override Task MigrateAsync() {
         Logger.LogInformation("Starting Nested Content → Block List data migration");
 
         var db = Context.Database;
@@ -32,7 +32,7 @@ public class NestedContentToBlockListMigration : MigrationBase {
 
         if (!nestedDataTypes.Any()) {
             Logger.LogInformation("No Nested Content data types found — migration not required");
-            return;
+            return Task.CompletedTask;
         }
 
         Logger.LogInformation("Found {Count} Nested Content data types to migrate", nestedDataTypes.Count);
@@ -124,7 +124,7 @@ public class NestedContentToBlockListMigration : MigrationBase {
 
             transaction.Complete();
 
-            return;
+            return Task.CompletedTask;
         }
 
         var propTypePlaceholders2 = string.Join(",", propertyTypes.Select((_, i) => $"@{i}"));
@@ -164,6 +164,8 @@ public class NestedContentToBlockListMigration : MigrationBase {
             migrated, failed);
 
         transaction.Complete();
+
+        return Task.CompletedTask;
     }
 
     // Converts Nested Content JSON array to Block List JSON object.

@@ -10,7 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Web;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Giving.Allocations.Lookups;
 
@@ -37,7 +39,7 @@ public class SponsorshipComponentContent : UmbracoContent<SponsorshipComponentCo
     [JsonIgnore]
     IPricing IHoldPricing.Pricing => Pricing;
     
-    public SponsorshipScheme GetScheme() => Content().Parent.As<SponsorshipScheme>();
+    public SponsorshipScheme GetScheme() => Content().Parent<IPublishedContent>().As<SponsorshipScheme>();
 }
 
 [Order(int.MinValue)]
@@ -76,7 +78,7 @@ public class ContentSponsorshipComponents : LookupsCollection<SponsorshipCompone
         return new SponsorshipComponent(LookupContent.GetId(sponsorshipComponentContent.Content()),
                                         LookupContent.GetName(sponsorshipComponentContent.Content()),
                                         sponsorshipComponentContent.Content().Key,
-                                        LookupContent.GetId(sponsorshipComponentContent.Content().Parent),
+                                        LookupContent.GetId(sponsorshipComponentContent.Content().Parent<IPublishedContent>()),
                                         sponsorshipComponentContent.Mandatory,
                                         sponsorshipComponentContent.Pricing);
     }

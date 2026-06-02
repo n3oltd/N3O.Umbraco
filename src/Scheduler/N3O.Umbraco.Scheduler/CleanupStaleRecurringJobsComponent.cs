@@ -2,13 +2,15 @@ using Hangfire;
 using Hangfire.Storage;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Scheduler;
 
-public class CleanupStaleRecurringJobsComponent : IComponent {
+public class CleanupStaleRecurringJobsComponent : IAsyncComponent {
     private readonly IRuntimeState _runtimeState;
     private readonly ILogger<CleanupStaleRecurringJobsComponent> _logger;
 
@@ -18,9 +20,9 @@ public class CleanupStaleRecurringJobsComponent : IComponent {
         _logger = logger;
     }
 
-    public void Initialize() {
+    public Task InitializeAsync(bool isRestarting, CancellationToken cancellationToken) {
         if (_runtimeState.Level != RuntimeLevel.Run) {
-            return;
+            return Task.CompletedTask;
         }
 
         try {
@@ -45,9 +47,11 @@ public class CleanupStaleRecurringJobsComponent : IComponent {
         } catch (Exception ex) {
             _logger.LogError(ex, "Failed to clean up stale recurring jobs");
         }
+
+        return Task.CompletedTask;
     }
 
-    public void Terminate() { }
+    public Task TerminateAsync(bool isRestarting, CancellationToken cancellationToken) => Task.CompletedTask;
 
     private static bool IsStale(RecurringJobDto job, out string reason) {
         reason = null;

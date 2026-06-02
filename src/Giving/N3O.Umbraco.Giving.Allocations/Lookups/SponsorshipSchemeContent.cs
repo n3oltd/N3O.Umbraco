@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Web;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Giving.Allocations.Lookups;
 
@@ -30,7 +31,7 @@ public class SponsorshipSchemeContent :
     [UmbracoProperty(AllocationsConstants.Aliases.SponsorshipScheme.Properties.Dimension4)]
     public IEnumerable<FundDimension4Value> Dimension4 => GetPickedAs(x => x.Dimension4);
     
-    public IEnumerable<SponsorshipComponent> Components => Content().Children.As<SponsorshipComponent>();
+    public IEnumerable<SponsorshipComponent> Components => Content().Children().As<SponsorshipComponent>();
 
     [JsonIgnore]
     public FundDimensionOptions FundDimensionOptions => new(Dimension1, Dimension2, Dimension3, Dimension4);

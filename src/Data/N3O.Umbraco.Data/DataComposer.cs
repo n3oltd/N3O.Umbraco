@@ -11,6 +11,8 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using OfficeOpenXml;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
@@ -114,7 +116,7 @@ public class DataComposer : Composer {
     }
 }
 
-public class DataComponent : IComponent {
+public class DataComponent : IAsyncComponent {
     private readonly IRuntimeState _runtimeState;
     private readonly IDataTypeService _dataTypeService;
     private readonly IConfigurationEditorJsonSerializer _configurationEditorJsonSerializer;
@@ -133,23 +135,22 @@ public class DataComponent : IComponent {
         _iioHelper = iioHelper;
     }
     
-    public void Initialize() {
+    public async Task InitializeAsync(bool isRestarting, CancellationToken cancellationToken) {
         if (_runtimeState.Level == RuntimeLevel.Run) {
-            EnsureDataTypeExists(new ImportNoticesViewerDataEditor(_dataValueEditorFactory,
-                                                                   _iioHelper));
-            
-            EnsureDataTypeExists(new ImportDataEditorDataEditor(_dataValueEditorFactory,
-                                                                _iioHelper));
+            await EnsureDataTypeExistsAsync(new ImportNoticesViewerDataEditor(_dataValueEditorFactory,
+                                                                             _iioHelper));
+
+            await EnsureDataTypeExistsAsync(new ImportDataEditorDataEditor(_dataValueEditorFactory,
+                                                                          _iioHelper));
         }
     }
 
-    private void EnsureDataTypeExists(DataEditor dataEditor) {
+    private async Task EnsureDataTypeExistsAsync(DataEditor dataEditor) {
         var key = UmbracoId.Generate(IdScope.DataType, dataEditor.Alias);
 
         // Look up by the deterministic Key (not GetDataType(alias), which matches by Name and
         // misses the existing row on restart/upgrade -> duplicate-key crash). See BLOCKER-11.
-        // Safe to block here: runs once at startup (no sync context), like the Save() below.
-        if (_dataTypeService.GetAsync(key).GetAwaiter().GetResult() != null) {
+        if (await _dataTypeService.GetAsync(key) != null) {
             return;
         }
 
@@ -157,8 +158,10 @@ public class DataComponent : IComponent {
         dataType.Name = dataEditor.Alias;
         dataType.Key = key;
 
-        _dataTypeService.Save(dataType);
+        await _dataTypeService.CreateAsync(dataType, global::Umbraco.Cms.Core.Constants.Security.SuperUserKey);
     }
 
-    public void Terminate() { }
+    public Task TerminateAsync(bool isRestarting, CancellationToken cancellationToken) {
+        return Task.CompletedTask;
+    }
 }

@@ -11,6 +11,8 @@ using Perplex.ContentBlocks.Definitions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
@@ -45,7 +47,7 @@ public class PerplexBlocksComposer : Composer {
     }
 }
 
-public class BlocksComponent : IComponent {
+public class BlocksComponent : IAsyncComponent {
     public static IReadOnlyList<PerplexBlockDefinition> BlockDefinitions { get; private set; }
 
     private readonly IRuntimeState _runtimeState;
@@ -66,23 +68,23 @@ public class BlocksComponent : IComponent {
         _blockCategoriesRepository = blockCategoriesRepository;
     }
 
-    public void Initialize() {
+    public async Task InitializeAsync(bool isRestarting, CancellationToken cancellationToken) {
         if (_runtimeState.Level == RuntimeLevel.Run) {
             var blockCategories = _lookups.Value.GetAll<PerplexBlockCategory>().OrderBy(x => x.Order).ToList();
 
             _blockCategoriesRepository.Value.Remove(global::Perplex.ContentBlocks.Constants.Categories.Content);
             _blockCategoriesRepository.Value.Remove(global::Perplex.ContentBlocks.Constants.Categories.Headers);
-            
+
             blockCategories.Do(x => _blockCategoriesRepository.Value.Add(x));
 
-            BlockDefinitions.Do(x => {
-                _blockTypesService.Value.CreateTypes(x);
+            foreach (var x in BlockDefinitions) {
+                await _blockTypesService.Value.CreateTypesAsync(x);
                 _blockDefinitionsRepository.Value.Add(x);
-            });
+            }
         }
     }
 
-    public void Terminate() { }
+    public Task TerminateAsync(bool isRestarting, CancellationToken cancellationToken) => Task.CompletedTask;
     
     public static void LoadDefinitions(IUmbracoBuilder builder, IWebHostEnvironment webHostEnvironment) {
         BlockDefinitions = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&

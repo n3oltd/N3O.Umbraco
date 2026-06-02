@@ -16,6 +16,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
@@ -101,7 +103,7 @@ public class SchedulerComposer : IComposer {
         });
     }
 
-    public class RegisterRecurringJobsComponent : IComponent {
+    public class RegisterRecurringJobsComponent : IAsyncComponent {
         private readonly IRuntimeState _runtimeState;
         private readonly Lazy<IMediator> _mediator;
         private readonly Lazy<IUmbracoContextFactory> _umbracoContextFactory;
@@ -112,7 +114,7 @@ public class SchedulerComposer : IComposer {
             _umbracoContextFactory = umbracoContextFactory;
         }
     
-        public void Initialize() {
+        public Task InitializeAsync(bool isRestarting, CancellationToken cancellationToken) {
             if (_runtimeState.Level == RuntimeLevel.Run) {
                 var recurringJobTypes = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
                                                                     t.HasAttribute<RecurringJobAttribute>())
@@ -153,9 +155,11 @@ public class SchedulerComposer : IComposer {
                     }
                 }
             }
+
+            return Task.CompletedTask;
         }
-        
-        public void Terminate() { }
+
+        public Task TerminateAsync(bool isRestarting, CancellationToken cancellationToken) => Task.CompletedTask;
     }
     
     // https://github.com/nul800sebastiaan/Cultiv.Hangfire/issues/5

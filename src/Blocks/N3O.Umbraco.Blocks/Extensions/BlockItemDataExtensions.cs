@@ -43,6 +43,7 @@ public static class BlockItemDataExtensions {
                 }
             }
 
+            // FLAGGED (CS0618): RawPropertyValues->Values shape change needs review
             contentData.RawPropertyValues = newPropertyValues;
         }
     }

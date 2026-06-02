@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Web;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Giving.Allocations.Lookups;
 
@@ -21,7 +22,7 @@ public abstract class FundDimensionContent<T, TValue> : LookupContent<T>, IFundD
     }
     
     public bool IsActive => GetValue(x => x.IsActive);
-    public IReadOnlyList<TValue> Options => Content().Children.As<TValue>();
+    public IReadOnlyList<TValue> Options => Content().Children().As<TValue>();
     public int Index { get; }
 
     [JsonIgnore]

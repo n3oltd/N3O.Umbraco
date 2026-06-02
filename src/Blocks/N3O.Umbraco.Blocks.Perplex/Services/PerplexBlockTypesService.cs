@@ -2,6 +2,7 @@ using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
@@ -29,13 +30,13 @@ public class PerplexBlockTypesService : IPerplexBlockTypesService {
         _dataTypeService = dataTypeService;
     }
 
-    public void CreateTypes(PerplexBlockDefinition definition) {
-        CreateContentType(definition);
+    public async Task CreateTypesAsync(PerplexBlockDefinition definition) {
+        await CreateContentTypeAsync(definition);
         // Data type creation removed in v17: DataType.Configuration no longer settable via property.
         // In Perplex v4, data types are managed via the Perplex backoffice UI or uSync.
     }
 
-    private void CreateContentType(PerplexBlockDefinition definition) {
+    private async Task CreateContentTypeAsync(PerplexBlockDefinition definition) {
         if (_contentTypeService.Get(definition.Alias) != null) {
             return;
         }
@@ -58,7 +59,7 @@ public class PerplexBlockTypesService : IPerplexBlockTypesService {
             }
         }
 
-        var compositionType = GetOrCreateContentTypeComposition(rootContainer);
+        var compositionType = await GetOrCreateContentTypeCompositionAsync(rootContainer);
 
         var contentType = new ContentType(_shortStringHelper, container.Id);
         contentType.Key = definition.Id;
@@ -69,17 +70,17 @@ public class PerplexBlockTypesService : IPerplexBlockTypesService {
         contentType.PropertyGroups = [];
         contentType.ContentTypeComposition = [compositionType];
 
-        _contentTypeService.Save(contentType);
+        await _contentTypeService.CreateAsync(contentType, global::Umbraco.Cms.Core.Constants.Security.SuperUserKey);
     }
 
-    private IContentType GetOrCreateContentTypeComposition(EntityContainer container) {
+    private async Task<IContentType> GetOrCreateContentTypeCompositionAsync(EntityContainer container) {
         var alias = "block";
         var name = "Block";
         var contentType = _contentTypeService.Get(alias);
 
         if (contentType == null) {
-            var dataType = _dataTypeService.GetDataType("Textarea");
-            
+            var dataType = await _dataTypeService.GetAsync("Textarea");
+
             var propertyType = new PropertyType(_shortStringHelper, dataType);
             propertyType.Alias = "notes";
             propertyType.Name = "Notes";
@@ -93,8 +94,8 @@ public class PerplexBlockTypesService : IPerplexBlockTypesService {
             contentType.Name = name;
             contentType.Icon = "icon-brick";
             contentType.AddPropertyType(propertyType, "general", "General");
-            
-            _contentTypeService.Save(contentType);
+
+            await _contentTypeService.CreateAsync(contentType, global::Umbraco.Cms.Core.Constants.Security.SuperUserKey);
         }
 
         return contentType;

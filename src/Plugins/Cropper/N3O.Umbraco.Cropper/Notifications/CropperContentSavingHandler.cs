@@ -59,7 +59,7 @@ public class CropperContentSavingHandler : INotificationAsyncHandler<ContentSavi
     }
 
     private async Task GenerateCropsAsync(IContentProperty property, CancellationToken cancellationToken) {
-        var dataType = _dataTypeService.GetDataType(property.Type.DataTypeId);
+        var dataType = await _dataTypeService.GetAsync(property.Type.DataTypeKey);
         var configuration = dataType.ConfigurationAs<CropperConfiguration>();
         var json = property.Value as string ?? property.Value.IfNotNull(JsonConvert.SerializeObject);
     

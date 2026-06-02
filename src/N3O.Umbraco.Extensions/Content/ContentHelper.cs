@@ -52,6 +52,11 @@ public class ContentHelper : IContentHelper {
     }
 
     public IReadOnlyList<IContent> GetChildren(IContent content) {
+        // FLAGGED (CS0618): IContentService.GetPagedChildren(int, ...) is obsolete (removal in Umbraco 19).
+        // The replacement overload adds a required string[] propertyAliases (and bool loadTemplates) and makes
+        // filter/ordering required. It is passed here as a method group matching the shared GetPagedContent
+        // delegate that GetPagedDescendants also uses (that one keeps the old shape), so swapping would change
+        // value semantics (which properties are loaded) and cannot be confirmed behavior-preserving.
         return GetAllPagedContent(content, _contentService.Value.GetPagedChildren);
     }
 

@@ -6,6 +6,7 @@ using N3O.Umbraco.Extensions;
 using System;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Extensions;
 using AllocationType = N3O.Umbraco.Giving.Allocations.Lookups.AllocationType;
 
 namespace N3O.Umbraco.Cloud.Platforms.Content;
@@ -13,7 +14,7 @@ namespace N3O.Umbraco.Cloud.Platforms.Content;
 [UmbracoContent(PlatformsConstants.Offerings.CompositionAlias)]
 public class OfferingContent :
     UmbracoContent<OfferingContent>, IHoldDonationFormStateContent, IHoldDonationFormContentContent {
-    public CampaignContent Campaign => Content().Parent.As<CampaignContent>();
+    public CampaignContent Campaign => Content().Parent<IPublishedContent>().As<CampaignContent>();
     
     public override void SetContent(IPublishedContent content) {
         base.SetContent(content);

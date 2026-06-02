@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Features.DynamicListViews;
@@ -14,7 +15,7 @@ public class DynamicListViewApiController : N3O.Umbraco.Hosting.BackofficeAuthor
     }
 
     [HttpGet("{id:guid}")]
-    public IActionResult Get(Guid id) {
+    public async Task<IActionResult> Get(Guid id) {
         var content = _contentService.GetById(id);
 
         if (content == null || !ContentPathHelper.DynamicListViewsEnabled(content.Path)) {
@@ -22,7 +23,7 @@ public class DynamicListViewApiController : N3O.Umbraco.Hosting.BackofficeAuthor
         }
 
         var dataTypeName = $"List View - {content.ContentType.Alias}";
-        var dataType = _dataTypeService.GetDataType(dataTypeName);
+        var dataType = await _dataTypeService.GetAsync(dataTypeName);
 
         return Ok(new { enabled = dataType != null });
     }

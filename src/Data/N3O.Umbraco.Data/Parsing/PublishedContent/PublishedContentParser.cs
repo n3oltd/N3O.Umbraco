@@ -101,7 +101,7 @@ public class PublishedContentParser : DataTypeParser<IPublishedContent>, IPublis
         while (true) {
             path.Add(content.Name);
 
-            content = content.Parent;
+            content = content.Parent<IPublishedContent>();
 
             if (content == root) {
                 break;

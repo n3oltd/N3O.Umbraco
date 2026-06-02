@@ -6,17 +6,22 @@ using Umbraco.Cms.Core.Services;
 namespace N3O.Umbraco.Extensions;
 
 public static class LocalizationServiceExtensions {
-    public static IReadOnlyList<string> GetAllCultureCodes(this ILocalizationService localizationService) {
+    public static IReadOnlyList<string> GetAllCultureCodes(this ILanguageService languageService) {
         try {
-            return localizationService.GetAllLanguages().Select(x => x.IsoCode).OrderBy(x => x).ToList();
+            return languageService.GetAllAsync()
+                                   .GetAwaiter()
+                                   .GetResult()
+                                   .Select(x => x.IsoCode)
+                                   .OrderBy(x => x)
+                                   .ToList();
         } catch {
             return [ DefaultLocalizationSettingsAccessor.DefaultCultureCode ];
         }
     }
-    
-    public static string GetDefaultCultureCode(this ILocalizationService localizationService) {
+
+    public static string GetDefaultCultureCode(this ILanguageService languageService) {
         try {
-            return localizationService.GetDefaultLanguageIsoCode();
+            return languageService.GetDefaultIsoCodeAsync().GetAwaiter().GetResult();
         } catch {
             return DefaultLocalizationSettingsAccessor.DefaultCultureCode;
         }

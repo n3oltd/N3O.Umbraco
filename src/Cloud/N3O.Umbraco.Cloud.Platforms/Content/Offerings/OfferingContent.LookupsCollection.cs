@@ -52,7 +52,7 @@ public class ContentOfferings : LookupsCollection<Offering> {
         return new Offering(LookupContent.GetId(offeringContent.Content()),
                             LookupContent.GetName(offeringContent.Content()),
                             offeringContent.Content().Key,
-                            offeringContent.Content().Parent.Key.ToString());
+                            offeringContent.Content().Parent<IPublishedContent>().Key.ToString());
     }
 
     private void ContentCacheOnFlushed(object sender, EventArgs e) {

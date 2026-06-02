@@ -51,14 +51,14 @@ public static class BlockValueExtensions {
 
         var contentTypesDictionary = GetAllContentTypes(contentTypeService, contentTypeKeys).ToDictionary(x => x.Key);
 
-        foreach (var block in blockEditorData.BlockValue.ContentData.Where(x => blockEditorData.References.Any(r => x.Udi.HasValue() &&
-                                                                                                                    r.ContentUdi == x.Udi))) {
+        foreach (var block in blockEditorData.BlockValue.ContentData.Where(x => blockEditorData.References.Any(r => x.Key != Guid.Empty &&
+                                                                                                                    r.ContentKey == x.Key))) {
             ResolveBlockItemData(block, contentTypePropertyTypes, contentTypesDictionary);
         }
 
-        foreach (var block in blockEditorData.BlockValue.SettingsData.Where(x => blockEditorData.References.Any(r => r.SettingsUdi.HasValue() &&
-                                                                                                                     x.Udi.HasValue() &&
-                                                                                                                     r.SettingsUdi == x.Udi))) {
+        foreach (var block in blockEditorData.BlockValue.SettingsData.Where(x => blockEditorData.References.Any(r => r.SettingsKey.HasValue &&
+                                                                                                                     x.Key != Guid.Empty &&
+                                                                                                                     r.SettingsKey == x.Key))) {
             ResolveBlockItemData(block, contentTypePropertyTypes, contentTypesDictionary);
         }
 
@@ -79,13 +79,13 @@ public static class BlockValueExtensions {
             propertyTypes = contentTypePropertyTypes[contentType.Alias] = contentType.CompositionPropertyTypes.ToDictionary(x => x.Alias, x => x);
         }
 
+        var sourceValues = block.Values.ToList();
+
         block.Values.Clear();
 
-        foreach (var prop in block.RawPropertyValues.ToList()) {
-            if (!propertyTypes.TryGetValue(prop.Key, out var propType)) {
-                block.RawPropertyValues.Remove(prop.Key);
-            } else {
-                block.Values.Add(new BlockPropertyValue { Alias = prop.Key, Value = prop.Value, PropertyType = propType });
+        foreach (var prop in sourceValues) {
+            if (propertyTypes.TryGetValue(prop.Alias, out var propType)) {
+                block.Values.Add(new BlockPropertyValue { Alias = prop.Alias, Value = prop.Value, PropertyType = propType });
             }
         }
 

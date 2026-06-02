@@ -13,8 +13,9 @@ public class OurMarkdownValueConverter : MarkdownEditorValueConverter {
 
     public OurMarkdownValueConverter(HtmlLocalLinkParser localLinkParser,
                                      HtmlUrlParser urlParser,
+                                     IMarkdownToHtmlConverter markdownToHtmlConverter,
                                      IMarkupEngine markupEngine)
-        : base(localLinkParser, urlParser) {
+        : base(localLinkParser, urlParser, markdownToHtmlConverter) {
         _markupEngine = markupEngine;
     }
 
