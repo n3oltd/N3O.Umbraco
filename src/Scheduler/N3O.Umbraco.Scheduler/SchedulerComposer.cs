@@ -24,6 +24,7 @@ using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
+using Umbraco.Cms.Web.Common.Authorization;
 using UmbracoConstants = Umbraco.Cms.Core.Constants;
 
 namespace N3O.Umbraco.Scheduler;
@@ -79,9 +80,13 @@ public class SchedulerComposer : IComposer {
     }
 
     private void AddAuthorizedUmbracoDashboard(IUmbracoBuilder builder) {
-        // TODO Migration Review (BLOCKER-10): SectionRequirement removed in v17 — this currently
-        // only requires an authenticated backoffice user, which lets ANY backoffice user reach the
-        // Hangfire dashboard (was admin/Settings-only). Restore admin-only gating before production.
+        // BLOCKER-10 fix: restore Settings-section gating for the Hangfire dashboard.
+        // v17 removed SectionRequirement; the equivalent is Umbraco's built-in
+        // AuthorizationPolicies.SectionAccessSettings policy. The custom HangfireDashboard policy
+        // pins the back-office auth scheme + requires an authenticated user (so the back-office
+        // identity is resolved on this non-management-API endpoint); SectionAccessSettings then
+        // requires the user to have access to the Settings section (admin-equivalent), matching
+        // the pre-v13 behaviour. Both policies must pass.
         builder.Services.AddAuthorization(opt => {
             opt.AddPolicy(HangfireDashboard, policy => {
                 policy.AuthenticationSchemes.Add(UmbracoConstants.Security.BackOfficeAuthenticationType);
@@ -97,7 +102,7 @@ public class SchedulerComposer : IComposer {
                                                    AppPath = null,
                                                    Authorization = new[] { new UmbracoAuthorizationFilter() }
                                                })
-                         .RequireAuthorization(HangfireDashboard);
+                         .RequireAuthorization(HangfireDashboard, AuthorizationPolicies.SectionAccessSettings);
             })
             .UseHangfireDashboard();
         

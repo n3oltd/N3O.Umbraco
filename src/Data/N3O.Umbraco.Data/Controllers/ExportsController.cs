@@ -5,6 +5,7 @@ using N3O.Umbraco.Data.Commands;
 using N3O.Umbraco.Data.Lookups;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Data.Queries;
+using N3O.Umbraco.Data.Security;
 using N3O.Umbraco.Exceptions;
 using N3O.Umbraco.Lookups;
 using N3O.Umbraco.Mediator;
@@ -17,6 +18,7 @@ using Umbraco.Cms.Core.Mapping;
 namespace N3O.Umbraco.Data.Controllers;
 
 [ApiDocument(DataConstants.ApiNames.Exports)]
+[RequireUserGroup(DataConstants.SecurityGroups.ExportUsers.Alias)]
 public class ExportsController : PluginController {
     private readonly IMediator _mediator;
     private readonly Lazy<ILookups> _lookups;

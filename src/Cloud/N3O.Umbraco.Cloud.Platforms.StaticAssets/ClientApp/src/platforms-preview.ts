@@ -1,3 +1,10 @@
+// TODO Migration Review (BLOCKER-10 #3): this Preview workspaceView is registered in
+// umbraco-package.json with only an `Umb.Condition.WorkspaceAlias = Umb.Workspace.Document`
+// condition, so the tab shows on ALL document types. The pre-Bellissima ContentApp only showed
+// it for content composing the `platformsOffering` composition. There is no built-in Bellissima
+// condition with OR/"composes composition X" semantics, so restoring that gating needs a custom
+// `condition` extension (cf. DynamicListViews). Display-only (offering preview URLs), so UX not a
+// privilege boundary — deferred.
 import { LitElement, css, customElement, html } from '@umbraco-cms/backoffice/external/lit';
 import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
 import { UMB_DOCUMENT_WORKSPACE_CONTEXT } from '@umbraco-cms/backoffice/document';

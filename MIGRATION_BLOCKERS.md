@@ -247,16 +247,16 @@ Use CalVer format `YYYY.M.D.Build` for the actual release version.
 
 ---
 
-### BLOCKER-10: Access-control regressions (Bellissima migration) — HIGH
+### BLOCKER-10: Access-control regressions (Bellissima migration) — PARTIALLY RESOLVED (2026-06-02, session 8)
 
-**Status:** Open — security; found by the session-5 review.
+**Status:** 🟡 Two of three (the privilege/data boundaries) resolved server-side; one display-only item remains.
 
 Three server-side gating losses from the AngularJS→Bellissima move:
-1. `SchedulerComposer` changed the Hangfire dashboard authorization from `SectionRequirement(Settings)` / admin-only to `RequireAuthenticatedUser()` → **any backoffice user can trigger/cancel background jobs.**
-2. `ExportApp`/`ImportApp` were reduced to stubs; their `workspaceView` replacements use only `Umb.Condition.WorkspaceAlias = Umb.Workspace.Document`, so Export/Import tabs show on **all documents to all users**; the `IExportContentFilter`/`IImportContentFilter` user-group checks are now dead (still-registered) abstractions.
-3. The Platforms-Preview `workspaceView` likewise shows on all document types instead of only `platformsOffering` compositions.
+1. ✅ **RESOLVED** — Hangfire dashboard. `SchedulerComposer.AddAuthorizedUmbracoDashboard` now requires Umbraco's built-in **`AuthorizationPolicies.SectionAccessSettings`** alongside the back-office-scheme `HangfireDashboard` policy (`.RequireAuthorization(HangfireDashboard, AuthorizationPolicies.SectionAccessSettings)`). `SectionRequirement` was removed in v17; `SectionAccessSettings` is its maintained equivalent (Settings-section ⇒ admin-equivalent). Only Settings-section users can reach the dashboard again. Build 0 errors.
+2. ✅ **RESOLVED (server-side, stronger than v13)** — Export/Import. New reusable `[RequireUserGroup(...)]` authorization filter (`src/Data/N3O.Umbraco.Data/Security/RequireUserGroupAttribute.cs`) applied to `ExportsController` (`exportUsers`) and `ImportsController` (`importUsers`); admin group always allowed. Enforced at the **API boundary** (resolves `IBackOfficeSecurityAccessor.CurrentUser.Groups`), so it holds even though the back-office tab still renders. `DataConstants.SecurityGroups.*.Alias/.Name` changed `static readonly`→`const` (needed for the attribute arg). In v13 this gating was UI-only; it is now enforced server-side.
+3. 🔻 **REMAINING (display-only, low risk)** — the Platforms-Preview `workspaceView` still shows on all document types instead of only `platformsOffering` compositions. There is no built-in Bellissima condition with OR-over-content-types / "composes composition X" semantics (`Umb.Condition.WorkspaceContentTypeAlias` matches a single alias and the conditions array is AND), so this needs a **custom condition extension** (like the DynamicListViews `condition`). It is display-only (shows offering staging/production URLs), so it is UX, not a privilege boundary.
 
-**Action:** restore admin-only authorization for Hangfire (custom `IAuthorizationRequirement`); add Bellissima conditions (user-group/content-type) or server-side checks (`UMB_CURRENT_USER_CONTEXT` + an API backed by `IExport/ImportContentFilter`) to the Export/Import/Preview manifests before any production deployment.
+**Remaining follow-ups (lower priority):** (a) the custom content-type condition for Preview (#3); (b) optionally hide the Export/Import tabs for non-authorized users client-side via a custom user-group condition (the *action* is already server-side gated); (c) optionally re-check `IExport/ImportContentFilter.AllowExports/AllowImports` server-side in the export/import commands (per-content refinement — in v13 it only hid the tab).
 
 ---
 
@@ -285,7 +285,7 @@ Three server-side gating losses from the AngularJS→Bellissima move:
 | 07 | Bellissima frontend (all AngularJS) | **Done + TypeScript** (15/16 migrated then converted to TS+Vite; telethon blocked on 04; in-content live-render fixtures pending) | Low |
 | 08 | Forms subscription license | Procurement | High |
 | ~~09~~ | ~~Assembly version `13.0.0`~~ | **DONE (placeholder)** (2026-06-02) — bulk-set to `17.0.0` across 114 csproj; re-stamp CalVer at publish | Low |
-| 10 | Access-control regressions (Hangfire / Export / Import / Preview) | **Open** — security; restore admin/user-group/content-type gating (session-5 review) | High |
+| 10 | Access-control regressions (Hangfire / Export / Import / Preview) | **Partially resolved** (session 8) — Hangfire→`SectionAccessSettings` ✅; Export/Import→server-side `[RequireUserGroup]` ✅; Preview content-type condition (display-only) remains | Low (was High) |
 | ~~11~~ | ~~`DataComposer.EnsureDataTypeExists` lookup-by-alias~~ | **RESOLVED** (2026-06-02, session 6) — lookup by deterministic Key via `GetAsync`; verified live (no dup data types, app boots). Minor follow-up: also set `EditorUiAlias`. | — |
 | — | Bundling throws at render (RR-10) | **Decision** — delete orphaned project or no-op the tag-helpers; see `REVIEW_FINDINGS.md` | Medium |
 
