@@ -1,10 +1,7 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Composing;
-using N3O.Umbraco.Monitoring.Sentry.Configuration;
-using Sentry;
 using Sentry.Extensibility;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
@@ -16,19 +13,6 @@ public class SentryMonitoringComposer : Composer {
         builder.Services.AddTransient<ISentryEventProcessor, OurEventProcessor>();
 
         if (WebHostEnvironment.IsProduction()) {
-            var config = new SentryConfiguration();
-
-            builder.Config.GetSection("Sentry").Bind(config);
-            
-            SentrySdk.Init(opt => {
-                opt.Dsn = config.Dsn;
-                opt.ReportAssembliesMode = ReportAssembliesMode.InformationalVersion;
-                opt.SendDefaultPii = true;
-                opt.Environment = WebHostEnvironment.EnvironmentName;
-                opt.DiagnosticLevel = SentryLevel.Error;
-                opt.TracesSampleRate = 1.0f;
-            });
-            
             builder.Services.Configure<UmbracoPipelineOptions>(opt => {
                 var filter = new UmbracoPipelineFilter("SentryMonitoring");
                 filter.Endpoints = app => app.UseSentryTracing();

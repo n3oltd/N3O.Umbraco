@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Dev;
 using N3O.Umbraco.Extensions;
@@ -11,6 +13,8 @@ using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Utilities;
 using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Web.Common.ApplicationBuilder;
 using Umbraco.Extensions;
@@ -24,6 +28,10 @@ public abstract class CmsStartup {
     protected CmsStartup(IWebHostEnvironment webHostEnvironment, IConfiguration configuration) {
         _webHostEnvironment = webHostEnvironment;
         _configuration = configuration;
+
+        // Default min is ProcessorCount which is too low when sites burst many concurrent async HTTP calls
+        // (e.g. at startup); thread pool grows lazily and starves
+        ThreadPool.SetMinThreads(100, 100);
 
         EnvironmentData.LoadFromConfiguration(configuration);
         DevSettings.Apply(webHostEnvironment, configuration);
@@ -57,6 +65,16 @@ public abstract class CmsStartup {
                     appBuilder => appBuilder.UseStaticFiles());
         
         app.UseOpenApiWithUI();
+
+        app.UseHealthChecks("/healthz", new HealthCheckOptions {
+            Predicate = c => c.Tags.Contains(HealthCheckTags.Readiness),
+            ResponseWriter = (_, _) => Task.CompletedTask
+        });
+
+        app.UseHealthChecks("/livez", new HealthCheckOptions {
+            Predicate = c => c.Tags.Contains(HealthCheckTags.Liveness),
+            ResponseWriter = (_, _) => Task.CompletedTask
+        });
 
         app.UseUmbraco()
            .WithMiddleware(u => {

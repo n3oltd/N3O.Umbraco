@@ -21,6 +21,7 @@ public static class PublishedContentExtensions {
         var rootUrl = UrlBuilder.Root();
         var url = new Url(content.Url(mode: UrlMode.Absolute, culture: culture));
 
+        url.Scheme = rootUrl.Scheme;
         url.Host = rootUrl.Host;
         url.Port = rootUrl.Port;
 

@@ -12,9 +12,9 @@ public class SubscriptionAccessor : ISubscriptionAccessor {
         if (_subscription == null) {
             var dataRegionId = Get(CloudConstants.Environment.Keys.DataRegion);
             var dataRegion = StaticLookups.FindById<DataRegion>(dataRegionId);
-            var subscriptionCode = Get(CloudConstants.Environment.Keys.SubscriptionCode);
+            var subscriptionId = Get(CloudConstants.Environment.Keys.SubscriptionId);
 
-            _subscription = new SubscriptionInfo(dataRegion, SubscriptionId.FromCode(subscriptionCode));
+            _subscription = new SubscriptionInfo(dataRegion, SubscriptionDescriptor.Parse(subscriptionId));
         }
 
         return _subscription;

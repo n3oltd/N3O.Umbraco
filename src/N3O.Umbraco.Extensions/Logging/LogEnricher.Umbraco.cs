@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
+using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Web.Common.Routing;
 
 namespace N3O.Umbraco.Logging;
@@ -12,29 +13,25 @@ public class UmbracoLogEnricher : LogEnricher {
     }
 
     public override IReadOnlyDictionary<string, string> GetContextData() {
-        var contextData = new Dictionary<string, string>();
+        var data = new Dictionary<string, string>();
 
-        PopulatePublishedRequest(contextData);
-        
-        return contextData;
-    }
-
-    private void PopulatePublishedRequest(Dictionary<string, string> contextData) {
-        var publishedRequest = _httpContextAccessor.HttpContext
-                                                   ?.Features
-                                                   .Get<UmbracoRouteValues>()
-                                                   ?.PublishedRequest;
+        var publishedRequest = GetPublishedRequest();
 
         if (publishedRequest != null) {
-            contextData["PublishedRequestPath"] = publishedRequest.AbsolutePathDecoded;
+            data["publishedRequestPath"] = publishedRequest.AbsolutePathDecoded;
 
             if (publishedRequest.PublishedContent != null) {
-                contextData["PublishedRequestContentId"] = publishedRequest.PublishedContent.Key.ToString();
-            }
-
-            if (publishedRequest.Domain != null) {
-                contextData["PublishedRequestDomain"] = publishedRequest.Domain.Name;
+                data["publishedContentId"] = publishedRequest.PublishedContent.Key.ToString();
             }
         }
+
+        return data;
+    }
+
+    private IPublishedRequest GetPublishedRequest() {
+        return _httpContextAccessor.HttpContext
+                                   ?.Features
+                                   .Get<UmbracoRouteValues>()
+                                   ?.PublishedRequest;
     }
 }

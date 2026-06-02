@@ -71,6 +71,7 @@ public class SchedulerComposer : IComposer {
             // https://discuss.hangfire.io/t/jobstorage-current-property-value-has-not-been-initialized/884
             JobStorage.Current = new SqlServerStorage(connectionString);
 
+            builder.Components().Append<CleanupStaleRecurringJobsComponent>();
             builder.Components().Append<RegisterRecurringJobsComponent>();
         }
     }

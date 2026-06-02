@@ -14,7 +14,8 @@ namespace N3O.Umbraco.Cloud.Platforms.Extensions;
 public static class AllocationIntentReqExtensions {
     public static async Task<AllocationIntentReq> ToAllocationIntentReqAsync(this DonationFormStateContent formState,
                                                                              ICdnClient cdnClient,
-                                                                             PlatformsCurrency? currency) {
+                                                                             PlatformsCurrency? currency,
+                                                                             double amount) {
         var fundDimensionValues = formState.GetFixedFundDimensionValues();
         
         var allocationIntent = new AllocationIntentReq();
@@ -27,7 +28,7 @@ public static class AllocationIntentReqExtensions {
         allocationIntent.FundDimensions.Dimension4 = fundDimensionValues.Dimension4?.Name;
 
         allocationIntent.Value = new MoneyReq();
-        allocationIntent.Value.Amount = 0d;
+        allocationIntent.Value.Amount = amount;
         allocationIntent.Value.Currency = currency;
 
         if (formState.Type == AllocationTypes.Fund) {

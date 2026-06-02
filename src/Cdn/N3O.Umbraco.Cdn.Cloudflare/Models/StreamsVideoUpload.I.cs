@@ -1,4 +1,5 @@
 ﻿using Humanizer;
+using Humanizer;
 
 namespace N3O.Umbraco.Cdn.Cloudflare.Models;
 

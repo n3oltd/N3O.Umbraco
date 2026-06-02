@@ -25,18 +25,27 @@ public class StagingMiddleware : IMiddleware {
     private readonly Lazy<IRemoteIpAddressAccessor> _remoteIpAddressAccessor;
     private readonly Lazy<IOptionsSnapshot<CookieAuthenticationOptions>> _cookieAuthenticationOptions;
     private readonly Lazy<IContentLocator> _contentLocator;
+    private readonly IApplicationReadiness _applicationReadiness;
 
     public StagingMiddleware(IUmbracoContextFactory umbracoContextFactory,
                              Lazy<IRemoteIpAddressAccessor> remoteIpAddressAccessor,
                              Lazy<IOptionsSnapshot<CookieAuthenticationOptions>> cookieAuthenticationOptions,
-                             Lazy<IContentLocator> contentLocator) {
+                             Lazy<IContentLocator> contentLocator,
+                             IApplicationReadiness applicationReadiness) {
         _umbracoContextFactory = umbracoContextFactory;
         _remoteIpAddressAccessor = remoteIpAddressAccessor;
         _cookieAuthenticationOptions = cookieAuthenticationOptions;
         _contentLocator = contentLocator;
+        _applicationReadiness = applicationReadiness;
     }
 
     public async Task InvokeAsync(HttpContext context, RequestDelegate next) {
+        if (!_applicationReadiness.IsReady) {
+            await next(context);
+
+            return;
+        }
+
         if (!context.Request.GetDisplayUrl().Contains("/umbraco", StringComparison.InvariantCultureIgnoreCase) &&
             !context.Request.GetDisplayUrl().Contains("/App_Plugins", StringComparison.InvariantCultureIgnoreCase) &&
             !context.Request.GetDisplayUrl().Contains("/sb", StringComparison.InvariantCultureIgnoreCase)) {

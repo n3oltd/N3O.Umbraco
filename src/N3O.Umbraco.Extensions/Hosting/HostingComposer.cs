@@ -2,11 +2,16 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Utilities;
 using System;
+using System.Linq;
+using System.Reflection;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Services;
@@ -25,6 +30,11 @@ public class HostingComposer : Composer {
         builder.Services.AddScoped<CookiesMiddleware>();
         builder.Services.AddScoped<StagingMiddleware>();
         builder.Services.AddScoped<WellKnownFolderMiddleware>();
+
+        RegisterHealthChecks(builder);
+        RegisterHostedServices(builder);
+
+        builder.Services.AddSingleton<IApplicationReadiness>(sp => sp.GetRequiredService<HomepageWarmup>());
 
         builder.Services.AddOpenApiDocument("DevTools");
         
@@ -48,6 +58,40 @@ public class HostingComposer : Composer {
         RegisterRouteConstraints(builder);
     }
     
+    private void RegisterHealthChecks(IUmbracoBuilder builder) {
+        var healthChecksBuilder = builder.Services.AddHealthChecks();
+
+        var healthCheckTypes = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
+                                                           t.ImplementsInterface<IHealthCheck>())
+                                            .ToList();
+
+        foreach (var type in healthCheckTypes) {
+            var attribute = type.GetCustomAttribute<HealthCheckAttribute>();
+
+            if (attribute == null) {
+                throw new Exception($"Health check {type.FullName} must have a {nameof(HealthCheckAttribute)} attribute");
+            }
+
+            builder.Services.AddTransient(type);
+
+            healthChecksBuilder.Add(new HealthCheckRegistration(attribute.Name,
+                                                                sp => (IHealthCheck) sp.GetRequiredService(type),
+                                                                failureStatus: null,
+                                                                tags: attribute.Tags));
+        }
+    }
+
+    private void RegisterHostedServices(IUmbracoBuilder builder) {
+        var hostedServiceTypes = OurAssemblies.GetTypes(t => t.IsConcreteClass() &&
+                                                             t.ImplementsInterface<IHostedService>())
+                                              .ToList();
+
+        foreach (var type in hostedServiceTypes) {
+            builder.Services.AddSingleton(type);
+            builder.Services.AddSingleton(typeof(IHostedService), sp => sp.GetRequiredService(type));
+        }
+    }
+
     private void AddMiddleware<T>(UmbracoPipelineOptions opt) where T : class {
         var filter = new UmbracoPipelineFilter(typeof(T).Name);
         filter.PostPipeline = app => {

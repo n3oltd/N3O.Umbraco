@@ -14,6 +14,10 @@ public static class PlatformsConstants {
 
     public static class CrossSells {
         public const string CompositionAlias = "platformsCrossSell";
+        public const string Feedback = "platformsFeedbackCrossSell";
+        public const string Fund = "platformsFundCrossSell";
+        public const string Qurbani = "platformsQurbaniCrossSell";
+        public const string Sponsorship = "platformsSponsorshipCrossSell";
     }
 
     public static class CrowdfundingCampaign {

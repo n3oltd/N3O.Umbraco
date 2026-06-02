@@ -113,9 +113,9 @@ public class CheckoutWebhookTransform : WebhookTransform {
         if (Site.Language.HasValue()) {
             AddTag(jObject, "SiteLanguageTag", Site.Language);
         }
-        
-        if (Site.Name.HasValue()) {
-            AddTag(jObject, "SiteNameTag", Site.Name);
+
+        if (Site.Id.HasValue()) {
+            AddTag(jObject, "SiteNameTag", Site.Id);
         }
     }
 

@@ -1,0 +1,89 @@
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using N3O.Umbraco.Extensions;
+using System;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace N3O.Umbraco.Hosting;
+
+public class HomepageWarmup : BackgroundService, IApplicationReadiness {
+    private static readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(90);
+    private static readonly TimeSpan RetryInterval = TimeSpan.FromSeconds(2);
+    private static readonly TimeSpan MaxWaitTime = TimeSpan.FromMinutes(5);
+
+    private readonly ILogger<HomepageWarmup> _logger;
+    private readonly string _url;
+
+    private volatile bool _isReady;
+    private volatile string _lastError;
+
+    public HomepageWarmup(ILogger<HomepageWarmup> logger) {
+        _logger = logger;
+
+        var canonicalDomain = EnvironmentData.GetOurValue(HostingConstants.Environment.Keys.CanonicalDomain);
+
+        if (canonicalDomain.HasValue()) {
+            _url = $"https://{canonicalDomain}/";
+        } else {
+            _isReady = true;
+
+            logger.LogInformation("Homepage warmup skipped: no canonical domain configured");
+        }
+    }
+
+    public bool IsReady => _isReady;
+    public string LastError => _lastError;
+
+    protected override async Task ExecuteAsync(CancellationToken cancellationToken) {
+        if (_url == null) {
+            return;
+        }
+
+        var deadline = DateTimeOffset.UtcNow + MaxWaitTime;
+
+        using (var httpClient = new HttpClient()) {
+            httpClient.Timeout = RequestTimeout;
+
+            while (!cancellationToken.IsCancellationRequested) {
+                try {
+                    var response = await httpClient.GetAsync(_url, cancellationToken);
+
+                    if (response.IsSuccessStatusCode) {
+                        _isReady = true;
+
+                        return;
+                    }
+
+                    // 404 means the pipeline answered but no homepage is published — editorial
+                    // state, not infra. Mark ready so the pod can start serving.
+                    if (response.StatusCode == HttpStatusCode.NotFound) {
+                        _logger.LogWarning("Homepage warmup: pipeline returned 404 (no homepage published); marking ready");
+
+                        _isReady = true;
+
+                        return;
+                    }
+
+                    _lastError = $"HTTP {(int) response.StatusCode}";
+                } catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+                    throw;
+                } catch (Exception ex) {
+                    _lastError = ex.Message;
+                }
+
+                if (DateTimeOffset.UtcNow >= deadline) {
+                    _logger.LogError("Homepage warmup gave up after {MaxWait}; last error: {LastError}. Marking ready to avoid an indefinite restart loop", MaxWaitTime, _lastError);
+
+                    _isReady = true;
+
+                    return;
+                }
+
+                await Task.Delay(RetryInterval, cancellationToken);
+            }
+        }
+    }
+}

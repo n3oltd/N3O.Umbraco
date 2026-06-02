@@ -1,6 +1,7 @@
 using N3O.Umbraco.Data.Attributes;
 using N3O.Umbraco.Data.Models;
 using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Types;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -105,7 +106,7 @@ public class RowProperty<TRow, TProperty, TValue> : IRowProperty<TRow> {
         if (attribute.DoNotLocalize) {
             builder.Title(attribute.Text);
         } else {
-            var keyPrefix = $"{typeof(TRow).FullName}_{_property.Name}";
+            var keyPrefix = $"{TypeResolver.PersistedName(typeof(TRow).FullName)}_{_property.Name}";
 
             builder.Title(keyPrefix, attribute.Text);
         }

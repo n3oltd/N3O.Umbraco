@@ -5,17 +5,17 @@ using System.Collections.Generic;
 namespace N3O.Umbraco.Logging;
 
 public class SiteLogEnricher : LogEnricher {
-    public override IReadOnlyDictionary<string, string> GetContextData() {
-        var contextData = new Dictionary<string, string>();
+    public override IReadOnlyDictionary<string, string> GetTags() {
+        var data = new Dictionary<string, string>();
+
+        if (Site.Id.HasValue()) {
+            data["siteId"] = Site.Id;
+        }
 
         if (Site.Language.HasValue()) {
-            contextData["SiteLanguage"] = Site.Language;
+            data["siteLanguage"] = Site.Language;
         }
-        
-        if (Site.Name.HasValue()) {
-            contextData["SiteName"] = Site.Name;
-        }
-        
-        return contextData;
+
+        return data;
     }
 }

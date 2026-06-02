@@ -6,6 +6,6 @@ namespace N3O.Umbraco.KeyVault;
 // Certain third party configuration settings use underscores but these are not supported in key vault secret names
 public class CustomKeyVaultSecretManager : KeyVaultSecretManager {
     public override string GetKey(KeyVaultSecret secret) {
-        return secret.Name.Replace("-", "_");
+        return secret.Name.Replace("--", ":").Replace("-", "_");
     }
 }

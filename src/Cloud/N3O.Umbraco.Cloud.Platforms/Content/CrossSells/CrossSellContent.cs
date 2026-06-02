@@ -15,6 +15,7 @@ public class CrossSellContent :
     public string Name => Content().Name;
     public Guid Key => Content().Key;
     
+    public decimal Amount => GetValue(x => x.Amount);
     public ECommerceStage Stage => GetValue(x => x.Stage);
     public IEnumerable<Campaign> TargetCampaigns => GetValue(x => x.TargetCampaigns);
 

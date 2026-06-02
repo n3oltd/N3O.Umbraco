@@ -38,6 +38,10 @@ public static class ContentExtensions {
     public static bool IsQurbaniSeasonContent(this IContent content) {
         return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Season.Alias);
     }
+    
+    public static bool IsQurbaniSeasonCategoryContent(this IContent content) {
+        return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Qurbani.Season.Category.Alias);
+    }
 
     public static bool IsZakatCalculatorSettings(this IContent content) {
         return content.ContentType.Alias.EqualsInvariant(PlatformsConstants.Zakat.Settings.Calculator.Alias);

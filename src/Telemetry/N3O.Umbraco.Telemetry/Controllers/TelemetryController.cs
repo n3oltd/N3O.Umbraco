@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Attributes;
 using N3O.Umbraco.Hosting;
 
@@ -12,16 +12,16 @@ public class TelemetryController : ApiController {
         _telemetryData = telemetryData;
     }
 
-    [HttpGet("deploymentVersion")]
-    public ActionResult<string> GetDeploymentVersion() {
-        var res = _telemetryData.GetDeploymentVersion();
+    [HttpGet("extensionsVersion")]
+    public ActionResult<string> GetExtensionsVersion() {
+        var res = _telemetryData.GetExtensionsVersion();
 
         return Ok(res);
     }
-    
-    [HttpGet("extensions/version")]
-    public ActionResult<string> GetExtensionsVersion() {
-        var res = _telemetryData.GetExtensionsVersion();
+
+    [HttpGet("version")]
+    public ActionResult<string> GetVersion() {
+        var res = _telemetryData.GetVersion();
 
         return Ok(res);
     }

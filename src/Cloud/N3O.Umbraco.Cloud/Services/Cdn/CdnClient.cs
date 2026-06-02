@@ -8,10 +8,9 @@ using N3O.Umbraco.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NodaTime;
-using Polly;
-using Polly.RateLimit;
 using System;
 using System.Collections.Concurrent;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,9 +19,9 @@ using JsonSerializer = N3O.Umbraco.Cloud.Lookups.JsonSerializer;
 namespace N3O.Umbraco.Cloud;
 
 public class CdnClient : ICdnClient {
-    private static readonly AsyncRateLimitPolicy RateLimitPolicy = Policy.RateLimitAsync(3, TimeSpan.FromSeconds(1), 5);
+    private static readonly SemaphoreSlim ConcurrencyLimit = new(10, 10);
     private static readonly ConcurrentDictionary<string, CdnDownloadResult> Downloads = new(StringComparer.InvariantCultureIgnoreCase);
-    
+
     private readonly ICloudUrl _cloudUrl;
     private readonly IClock _clock;
     private readonly IJsonProvider _jsonProvider;
@@ -37,9 +36,9 @@ public class CdnClient : ICdnClient {
         _clock = clock;
         _jsonProvider = jsonProvider;
         _logger = logger;
-        
+
         _httpClient = new HttpClient();
-        _httpClient.Timeout = TimeSpan.FromSeconds(5);
+        _httpClient.Timeout = TimeSpan.FromSeconds(15);
     }
 
     public async Task<string> DownloadAsync(string path, CancellationToken cancellationToken = default) {
@@ -81,7 +80,11 @@ public class CdnClient : ICdnClient {
         var download = Downloads.GetOrDefault(publishedUrl);
             
         if (download == null || download.IsExpired(_clock) || download.CanRetry(_clock)) {
-            Downloads[publishedUrl] = await DownloadStringAsync(publishedUrl, cancellationToken);
+            var cdnDownloadResult = await DownloadStringAsync(publishedUrl, cancellationToken);
+
+            if (download == null || cdnDownloadResult.Success) {
+                Downloads[publishedUrl] = cdnDownloadResult;
+            }
         }
 
         return Downloads[publishedUrl].Content;
@@ -93,6 +96,10 @@ public class CdnClient : ICdnClient {
             var download = await GetStringRateLimitedAsync(publishedUrl, cancellationToken);
 
             return CdnDownloadResult.ForSuccess(_clock, download);
+        } catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound) {
+            _logger.LogDebug("CDN 404 for {PublishedUrl}", publishedUrl);
+
+            return CdnDownloadResult.ForFailure(_clock);
         } catch (Exception ex) {
             _logger.LogWarning(ex, "Could not download {PublishedUrl}", publishedUrl);
 
@@ -123,14 +130,12 @@ public class CdnClient : ICdnClient {
     }
     
     private async Task<string> GetStringRateLimitedAsync(string publishedUrl, CancellationToken cancellationToken) {
-        var policyResult = await RateLimitPolicy.ExecuteAndCaptureAsync(() => {
-            return _httpClient.GetStringAsync(publishedUrl, cancellationToken);
-        });
+        await ConcurrencyLimit.WaitAsync(cancellationToken);
 
-        if (policyResult.Outcome == OutcomeType.Successful) {
-            return policyResult.Result;
-        } else {
-            throw policyResult.FinalException;
+        try {
+            return await _httpClient.GetStringAsync(publishedUrl, cancellationToken);
+        } finally {
+            ConcurrencyLimit.Release();
         }
     }
 }
