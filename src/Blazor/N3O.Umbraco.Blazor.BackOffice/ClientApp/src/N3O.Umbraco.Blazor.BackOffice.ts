@@ -1,4 +1,11 @@
 /*
+ * NOTE: React shell is overhead here (this is a non-UI JS boot loader, not a custom element) —
+ * kept as the existing loader per migration decision. This bundle registers no element and renders
+ * no UI; it only runs side effects at import time (injects the blazor.server.js <script> tag and
+ * starts the SignalR circuit). There is nothing for React to render, so it is intentionally NOT
+ * wrapped in a React root — doing so would add a runtime dependency with zero UI to mount. Left as
+ * a minimal, faithful TypeScript port of the original loader.
+ *
  * DEPENDENCY FLAG — Global jQuery ($)
  * ------------------------------------
  * This loader uses the global `$` (jQuery) to check whether the Blazor script tag has

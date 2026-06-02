@@ -1,103 +1,80 @@
-import { LitElement, css, customElement, html, unsafeCSS } from '@umbraco-cms/backoffice/external/lit';
-import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
+import { customElement } from '@umbraco-cms/backoffice/external/lit';
 import {
     UmbPropertyValueChangeEvent,
     type UmbPropertyEditorConfigCollection,
     type UmbPropertyEditorUiElement,
 } from '@umbraco-cms/backoffice/property-editor';
-import Handsontable from 'handsontable';
-// Import Handsontable CSS as an inlined string so Vite bundles it into the JS output
-// rather than emitting a separate .css file. This mirrors the original shadow-root <link> approach:
-// the styles are scoped to the component and loaded without a separate network request.
-import handsontableStyles from 'handsontable/dist/handsontable.full.min.css?inline';
+import { createElement } from 'react';
+import { createRoot, type Root } from 'react-dom/client';
+import { N3oCellsApp, type CellsValue } from './n3o-cells-app';
 
 const elementName = 'n3o-cells';
 
-// Property editor that wraps Handsontable. The stored value is a 2D array (JSON). The data type
-// configuration carries a `gridConfiguration` JSON string describing the grid (columns, default data, etc.).
+// Web-component SHELL for the Cells (Handsontable) property editor. Umbraco's backoffice only loads
+// custom elements, so this thin element owns the Umbraco contract (value/config +
+// UmbPropertyValueChangeEvent) and mounts the React UI (N3oCellsApp) into its shadow root.
+// React itself is NOT bundled here — it is external and resolved at runtime from the shared
+// N3O.Umbraco.React import map. Handsontable IS bundled (it is not React).
+//
+// The stored value is a 2D array (JSON). The data type configuration carries a `gridConfiguration`
+// JSON string describing the grid (columns, default data, etc.).
 @customElement(elementName)
-export class N3oCellsElement extends UmbElementMixin(LitElement) implements UmbPropertyEditorUiElement {
-    #value: unknown[][] | undefined;
-    #config: UmbPropertyEditorConfigCollection | undefined;
-    #hot: Handsontable | undefined;
+export class N3oCellsElement extends HTMLElement implements UmbPropertyEditorUiElement {
+    #root?: Root;
+    #mount: HTMLDivElement;
+    #value: CellsValue;
+    #gridConfiguration: Record<string, unknown> = {};
 
-    get value(): unknown[][] | undefined {
+    constructor() {
+        super();
+        const shadow = this.attachShadow({ mode: 'open' });
+        const style = document.createElement('style');
+        style.textContent = ':host { display: block; width: 100%; }';
+        shadow.appendChild(style);
+        this.#mount = document.createElement('div');
+        shadow.appendChild(this.#mount);
+    }
+
+    get value(): CellsValue {
         return this.#value;
     }
 
-    set value(value: unknown[][] | undefined) {
-        const oldValue = this.#value;
+    set value(value: CellsValue) {
         this.#value = value;
-        this.requestUpdate('value', oldValue);
+        this.#render();
     }
 
-    // Set by Umbraco as a UmbPropertyEditorConfigCollection.
+    // Config (prevalues) arrives as UmbPropertyEditorConfigCollection. `gridConfiguration` is a JSON
+    // string stored as a prevalue on the data type.
     public set config(config: UmbPropertyEditorConfigCollection | undefined) {
-        this.#config = config;
+        this.#gridConfiguration = JSON.parse(
+            config?.getValueByAlias('gridConfiguration') ?? '{}',
+        ) as Record<string, unknown>;
+        this.#render();
     }
 
-    public get config(): UmbPropertyEditorConfigCollection | undefined {
-        return this.#config;
+    connectedCallback(): void {
+        this.#root ??= createRoot(this.#mount);
+        this.#render();
     }
 
-    override firstUpdated(): void {
-        const container = this.shadowRoot?.querySelector('#grid') as HTMLElement | null;
+    disconnectedCallback(): void {
+        this.#root?.unmount();
+        this.#root = undefined;
+    }
 
-        if (!container) {
-            return;
-        }
-
-        // gridConfiguration is a JSON string stored as a prevalue on the data type.
-        const localConfig = JSON.parse(this.#config?.getValueByAlias('gridConfiguration') ?? '{}') as Record<string, unknown>;
-
-        let data = this.#value;
-
-        if (!data) {
-            data = localConfig.data as unknown[][] | undefined;
-        }
-
-        const globalConfig: Handsontable.GridSettings = {
-            licenseKey: 'non-commercial-and-evaluation',
-            height: 'auto',
-            width: 'auto',
-            data: data,
-            afterChange: (_change: Handsontable.CellChange[] | null, source: Handsontable.ChangeSource) => {
-                if (source !== 'loadData') {
-                    this.#value = this.#hot?.getData() as unknown[][];
+    #render(): void {
+        this.#root?.render(
+            createElement(N3oCellsApp, {
+                value: this.#value,
+                gridConfiguration: this.#gridConfiguration,
+                onChange: (value: unknown[][]) => {
+                    this.#value = value;
                     this.dispatchEvent(new UmbPropertyValueChangeEvent());
-                }
-            },
-        };
-
-        this.#hot = new Handsontable(container, { ...localConfig, ...globalConfig });
+                },
+            }),
+        );
     }
-
-    override disconnectedCallback(): void {
-        super.disconnectedCallback();
-
-        if (this.#hot) {
-            this.#hot.destroy();
-            this.#hot = undefined;
-        }
-    }
-
-    override render() {
-        return html`
-            <div id="grid"></div>
-        `;
-    }
-
-    static override styles = [
-        // Handsontable CSS is inlined into the bundle and injected into the shadow root,
-        // matching the original behaviour of the <link> tag in the render() template.
-        unsafeCSS(handsontableStyles),
-        css`
-            :host {
-                display: block;
-                width: 100%;
-            }
-        `,
-    ];
 }
 
 export default N3oCellsElement;

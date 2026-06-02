@@ -1,9 +1,11 @@
 import { defineConfig } from 'vite';
 
-// Builds all four Data plugin Lit/TypeScript components into their respective App_Plugins folders.
-// @umbraco-cms/* imports are kept external (resolved at runtime by Umbraco's import map);
-// each component's own code is bundled into one output file per entry.
+// Builds all four Data plugin web-component shells (each mounts a React app) into their respective
+// App_Plugins folders. @umbraco-cms/* AND react/react-dom are kept external — resolved at runtime by
+// Umbraco's import map (react/react-dom are the self-hosted shared runtime from
+// N3O.Umbraco.Cms App_Plugins/N3O.Umbraco.React). Only each plugin's own code is bundled.
 export default defineConfig({
+    esbuild: { jsx: 'automatic' },
     build: {
         lib: {
             entry: {
@@ -18,7 +20,7 @@ export default defineConfig({
         emptyOutDir: false,
         sourcemap: true,
         rollupOptions: {
-            external: [/^@umbraco/],
+            external: [/^@umbraco/, 'react', 'react-dom', 'react-dom/client', 'react/jsx-runtime'],
             output: { entryFileNames: '[name].js' },
         },
     },

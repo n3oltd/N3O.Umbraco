@@ -1,97 +1,89 @@
-import { LitElement as _, nothing as p, html as o, css as f, customElement as E } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as x } from "@umbraco-cms/backoffice/element-api";
-var N = Object.getOwnPropertyDescriptor, m = (r) => {
+import { customElement as x } from "@umbraco-cms/backoffice/external/lit";
+import { createElement as k } from "react";
+import { createRoot as C } from "react-dom/client";
+import { jsxs as v, Fragment as f, jsx as n } from "react/jsx-runtime";
+function W({ value: r }) {
+  const e = (r == null ? void 0 : r.errors) ?? null, t = (r == null ? void 0 : r.warnings) ?? null, c = !!e && e.length > 0, o = !!t && t.length > 0;
+  return /* @__PURE__ */ v("div", { className: "n3o-import-errors-viewer", children: [
+    c ? /* @__PURE__ */ v(f, { children: [
+      /* @__PURE__ */ n("p", { children: /* @__PURE__ */ n("em", { className: "text-error", children: "Errors" }) }),
+      e.map((s, l) => /* @__PURE__ */ n("div", { className: "row-wrapper", children: /* @__PURE__ */ n("div", { className: "row", children: s }) }, `error-${l}`))
+    ] }) : null,
+    o ? /* @__PURE__ */ v(f, { children: [
+      /* @__PURE__ */ n("p", { children: /* @__PURE__ */ n("em", { className: "text-warning", children: "Warnings" }) }),
+      t.map((s, l) => /* @__PURE__ */ n("div", { className: "row-wrapper", children: /* @__PURE__ */ n("div", { className: "row", children: s }) }, `warning-${l}`))
+    ] }) : null,
+    !c && !o ? /* @__PURE__ */ n("div", { className: "row-wrapper", children: /* @__PURE__ */ n("div", { className: "row", children: "No warnings or errors" }) }) : null,
+    /* @__PURE__ */ n("style", { children: y })
+  ] });
+}
+const y = `
+    .n3o-import-errors-viewer .row-wrapper {
+        margin-bottom: 40px;
+        width: 100%;
+    }
+    .n3o-import-errors-viewer .row {
+        display: block;
+        width: 90%;
+    }
+    .text-error {
+        color: var(--uui-color-danger);
+    }
+    .text-warning {
+        color: var(--uui-color-warning);
+    }
+`;
+var M = Object.getOwnPropertyDescriptor, E = (r) => {
   throw TypeError(r);
-}, $ = (r, e, t, c) => {
-  for (var n = c > 1 ? void 0 : c ? N(e, t) : e, v = r.length - 1, w; v >= 0; v--)
-    (w = r[v]) && (n = w(n) || n);
-  return n;
-}, u = (r, e, t) => e.has(r) || m("Cannot " + t), i = (r, e, t) => (u(r, e, "read from private field"), t ? t.call(r) : e.get(r)), d = (r, e, t) => e.has(r) ? m("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(r) : e.set(r, t), y = (r, e, t, c) => (u(r, e, "write to private field"), e.set(r, t), t), s, a, g, h;
-const k = "n3o-import-notices-viewer";
-let l = class extends x(_) {
+}, I = (r, e, t, c) => {
+  for (var o = c > 1 ? void 0 : c ? M(e, t) : e, s = r.length - 1, l; s >= 0; s--)
+    (l = r[s]) && (o = l(o) || o);
+  return o;
+}, u = (r, e, t) => e.has(r) || E("Cannot " + t), i = (r, e, t) => (u(r, e, "read from private field"), t ? t.call(r) : e.get(r)), p = (r, e, t) => e.has(r) ? E("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(r) : e.set(r, t), m = (r, e, t, c) => (u(r, e, "write to private field"), e.set(r, t), t), N = (r, e, t) => (u(r, e, "access private method"), t), a, h, d, w, _;
+const S = "n3o-import-notices-viewer";
+let g = class extends HTMLElement {
   constructor() {
-    super(...arguments), d(this, a), d(this, s);
+    super(), p(this, w), p(this, a), p(this, h), p(this, d);
+    const r = this.attachShadow({ mode: "open" });
+    m(this, h, document.createElement("div")), r.appendChild(i(this, h));
   }
   get value() {
-    return i(this, s);
+    return i(this, d);
   }
   set value(r) {
-    const e = i(this, s);
-    y(this, s, r), this.requestUpdate("value", e);
+    m(this, d, r), N(this, w, _).call(this);
   }
   // Config is set by Umbraco for property editors; unused here but accepted to avoid warnings.
   set config(r) {
   }
   get config() {
   }
-  render() {
-    const r = i(this, a, g), e = i(this, a, h);
-    return o`
-            <div class="n3o-import-errors-viewer">
-                ${r && r.length ? o`
-                          <p><em class="text-error">Errors</em></p>
-                          ${r.map(
-      (t) => o`
-                                  <div class="row-wrapper">
-                                      <div class="row">${t}</div>
-                                  </div>
-                              `
-    )}
-                      ` : p}
-                ${e && e.length ? o`
-                          <p><em class="text-warning">Warnings</em></p>
-                          ${e.map(
-      (t) => o`
-                                  <div class="row-wrapper">
-                                      <div class="row">${t}</div>
-                                  </div>
-                              `
-    )}
-                      ` : p}
-                ${(!r || !r.length) && (!e || !e.length) ? o`
-                          <div class="row-wrapper">
-                              <div class="row">No warnings or errors</div>
-                          </div>
-                      ` : p}
-            </div>
-        `;
+  connectedCallback() {
+    i(this, a) ?? m(this, a, C(i(this, h))), N(this, w, _).call(this);
+  }
+  disconnectedCallback() {
+    var r;
+    (r = i(this, a)) == null || r.unmount(), m(this, a, void 0);
   }
 };
-s = /* @__PURE__ */ new WeakMap();
-a = /* @__PURE__ */ new WeakSet();
-g = function() {
+a = /* @__PURE__ */ new WeakMap();
+h = /* @__PURE__ */ new WeakMap();
+d = /* @__PURE__ */ new WeakMap();
+w = /* @__PURE__ */ new WeakSet();
+_ = function() {
   var r;
-  return ((r = i(this, s)) == null ? void 0 : r.errors) ?? null;
+  (r = i(this, a)) == null || r.render(
+    k(W, {
+      value: i(this, d)
+    })
+  );
 };
-h = function() {
-  var r;
-  return ((r = i(this, s)) == null ? void 0 : r.warnings) ?? null;
-};
-l.styles = f`
-        .n3o-import-errors-viewer .row-wrapper {
-            margin-bottom: 40px;
-            width: 100%;
-        }
-
-        .n3o-import-errors-viewer .row {
-            display: block;
-            width: 90%;
-        }
-
-        .text-error {
-            color: var(--uui-color-danger);
-        }
-
-        .text-warning {
-            color: var(--uui-color-warning);
-        }
-    `;
-l = $([
-  E(k)
-], l);
-const W = l;
+g = I([
+  x(S)
+], g);
+const P = g;
 export {
-  l as N3oImportNoticesViewerElement,
-  W as default
+  g as N3oImportNoticesViewerElement,
+  P as default
 };
 //# sourceMappingURL=import-notices-viewer.js.map

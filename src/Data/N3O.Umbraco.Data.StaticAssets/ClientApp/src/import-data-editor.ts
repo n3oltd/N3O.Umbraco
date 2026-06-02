@@ -1,43 +1,43 @@
-import { LitElement, css, customElement, html, nothing } from '@umbraco-cms/backoffice/external/lit';
-import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
+import { customElement } from '@umbraco-cms/backoffice/external/lit';
 import {
     UmbPropertyValueChangeEvent,
     type UmbPropertyEditorConfigCollection,
     type UmbPropertyEditorUiElement,
 } from '@umbraco-cms/backoffice/property-editor';
+import { createElement } from 'react';
+import { createRoot, type Root } from 'react-dom/client';
+import { ImportDataEditorApp, type ImportDataValue } from './import-data-editor-app';
 
 const elementName = 'n3o-import-data-editor';
 
-interface ImportField {
-    name: string;
-    value: string | null;
-    sourceValue: string | null;
-    isFile: boolean;
-}
-
-interface ImportDataValue {
-    reference: string;
-    fields: ImportField[];
-}
-
-// Property editor for import data. Renders the list of fields stored in the value; each field has a
-// text input (placeholder = sourceValue) and, when isFile is set, a file input that uploads the chosen
-// file via the temp-upload endpoint and then attaches it to the queued import.
+// Web-component SHELL for the import data property editor. Umbraco's backoffice only loads custom
+// elements, so this thin element owns the Umbraco contract (value/config + UmbPropertyValueChangeEvent)
+// and the file-upload side effects, and mounts the React UI (ImportDataEditorApp) into its shadow root.
+// React is NOT bundled here — it is external and resolved at runtime from the shared N3O.Umbraco.React
+// import map. The host holds the single source of truth for `value`.
 @customElement(elementName)
-export class N3oImportDataEditorElement extends UmbElementMixin(LitElement) implements UmbPropertyEditorUiElement {
+export class N3oImportDataEditorElement extends HTMLElement implements UmbPropertyEditorUiElement {
+    #root?: Root;
+    #mount: HTMLDivElement;
     #value: ImportDataValue | undefined = undefined;
     // Config is set by Umbraco (UmbPropertyEditorConfigCollection); unused by this editor but accepted
     // so the platform can assign it without warnings.
     #config: UmbPropertyEditorConfigCollection | undefined = undefined;
+
+    constructor() {
+        super();
+        const shadow = this.attachShadow({ mode: 'open' });
+        this.#mount = document.createElement('div');
+        shadow.appendChild(this.#mount);
+    }
 
     get value(): ImportDataValue | undefined {
         return this.#value;
     }
 
     set value(value: ImportDataValue | undefined) {
-        const oldValue = this.#value;
         this.#value = value;
-        this.requestUpdate('value', oldValue);
+        this.#render();
     }
 
     public set config(config: UmbPropertyEditorConfigCollection | undefined) {
@@ -48,22 +48,31 @@ export class N3oImportDataEditorElement extends UmbElementMixin(LitElement) impl
         return this.#config;
     }
 
-    #onTextInput(index: number, event: Event): void {
+    connectedCallback(): void {
+        this.#root ??= createRoot(this.#mount);
+        this.#render();
+    }
+
+    disconnectedCallback(): void {
+        this.#root?.unmount();
+        this.#root = undefined;
+    }
+
+    #onTextChange(index: number, value: string): void {
         if (!this.#value) {
             return;
         }
-        this.#value.fields[index].value = (event.target as HTMLInputElement).value;
+        this.#value.fields[index].value = value;
         this.#dispatchChange();
     }
 
-    async #uploadResource(reference: string, index: number): Promise<void> {
-        const uploadInput = this.shadowRoot?.getElementById(`fileInput_${index}`) as HTMLInputElement | null;
-
-        if (!uploadInput || !uploadInput.files || uploadInput.files.length === 0) {
+    async #uploadResource(index: number, file: File): Promise<void> {
+        if (!this.#value) {
             return;
         }
 
-        const storageToken = await this.#getStorageToken(uploadInput);
+        const reference = this.#value.reference;
+        const storageToken = await this.#getStorageToken(file);
 
         const req = { file: storageToken };
 
@@ -77,17 +86,17 @@ export class N3oImportDataEditorElement extends UmbElementMixin(LitElement) impl
         });
 
         if (res.status === 200) {
-            this.#value!.fields[index].value = uploadInput.files[0].name;
-            this.requestUpdate('value');
+            this.#value.fields[index].value = file.name;
+            this.#render();
             this.#dispatchChange();
         } else {
             alert('Failed to upload specified file, please contact support for assistance');
         }
     }
 
-    async #getStorageToken(uploadInput: HTMLInputElement): Promise<unknown> {
+    async #getStorageToken(file: File): Promise<unknown> {
         const data = new FormData();
-        data.append('file', uploadInput.files![0]);
+        data.append('file', file);
 
         const res = await fetch('/umbraco/api/Storage/tempUpload', {
             method: 'POST',
@@ -101,65 +110,15 @@ export class N3oImportDataEditorElement extends UmbElementMixin(LitElement) impl
         this.dispatchEvent(new UmbPropertyValueChangeEvent());
     }
 
-    override render() {
-        const fields = this.#value?.fields ?? [];
-
-        return html`
-            <div class="n3o-import-fields-editor">
-                ${fields.map(
-                    (field, index) => html`
-                        <div class="row-wrapper">
-                            <div class="row-1">
-                                <span class="text">${field.name}</span>
-                            </div>
-
-                            <div class="row-2">
-                                <input
-                                    type="text"
-                                    class="custom"
-                                    .value=${field.value ?? ''}
-                                    placeholder=${field.sourceValue ?? ''}
-                                    @input=${(event: Event) => this.#onTextInput(index, event)} />
-
-                                ${field.isFile
-                                    ? html`<input
-                                          type="file"
-                                          id=${`fileInput_${index}`}
-                                          @change=${() => void this.#uploadResource(this.#value!.reference, index)} />`
-                                    : nothing}
-                            </div>
-                        </div>
-                    `
-                )}
-            </div>
-        `;
+    #render(): void {
+        this.#root?.render(
+            createElement(ImportDataEditorApp, {
+                value: this.#value,
+                onTextChange: (index: number, value: string) => this.#onTextChange(index, value),
+                onFileSelected: (index: number, file: File) => void this.#uploadResource(index, file),
+            }),
+        );
     }
-
-    static override styles = css`
-        .n3o-import-fields-editor .row-wrapper {
-            margin-bottom: 40px;
-            width: 100%;
-        }
-
-        .n3o-import-fields-editor .row-1 {
-            display: block;
-            width: 90%;
-        }
-
-        .n3o-import-fields-editor .row-2 {
-            display: block;
-            width: 90%;
-        }
-
-        .n3o-import-fields-editor .text {
-            font-weight: bold;
-        }
-
-        .n3o-import-fields-editor .custom {
-            width: 100%;
-            margin-top: 10px;
-        }
-    `;
 }
 
 export default N3oImportDataEditorElement;

@@ -1,31 +1,38 @@
-import { LitElement, css, customElement, html, nothing } from '@umbraco-cms/backoffice/external/lit';
-import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
+import { customElement } from '@umbraco-cms/backoffice/external/lit';
 import {
     type UmbPropertyEditorConfigCollection,
     type UmbPropertyEditorUiElement,
 } from '@umbraco-cms/backoffice/property-editor';
+import { createElement } from 'react';
+import { createRoot, type Root } from 'react-dom/client';
+import { ImportNoticesViewerApp, type ImportNoticesValue } from './import-notices-viewer-app';
 
 const elementName = 'n3o-import-notices-viewer';
 
-interface ImportNoticesValue {
-    errors: string[];
-    warnings: string[];
-}
-
-// Read-only property editor that displays the import notices (errors and warnings) stored on the value.
-// The value is JSON of the shape { errors: string[], warnings: string[] }. Display only - no change event.
+// Web-component SHELL for the read-only import notices viewer property editor. Umbraco's backoffice
+// only loads custom elements, so this thin element owns the Umbraco contract (value/config) and mounts
+// the React UI (ImportNoticesViewerApp) into its shadow root. React is NOT bundled here — it is external
+// and resolved at runtime from the shared N3O.Umbraco.React import map. Display only - no change event.
 @customElement(elementName)
-export class N3oImportNoticesViewerElement extends UmbElementMixin(LitElement) implements UmbPropertyEditorUiElement {
+export class N3oImportNoticesViewerElement extends HTMLElement implements UmbPropertyEditorUiElement {
+    #root?: Root;
+    #mount: HTMLDivElement;
     #value: ImportNoticesValue | undefined = undefined;
+
+    constructor() {
+        super();
+        const shadow = this.attachShadow({ mode: 'open' });
+        this.#mount = document.createElement('div');
+        shadow.appendChild(this.#mount);
+    }
 
     get value(): ImportNoticesValue | undefined {
         return this.#value;
     }
 
     set value(v: ImportNoticesValue | undefined) {
-        const oldValue = this.#value;
         this.#value = v;
-        this.requestUpdate('value', oldValue);
+        this.#render();
     }
 
     // Config is set by Umbraco for property editors; unused here but accepted to avoid warnings.
@@ -35,74 +42,23 @@ export class N3oImportNoticesViewerElement extends UmbElementMixin(LitElement) i
         return undefined;
     }
 
-    get #errors(): string[] | null {
-        return this.#value?.errors ?? null;
+    connectedCallback(): void {
+        this.#root ??= createRoot(this.#mount);
+        this.#render();
     }
 
-    get #warnings(): string[] | null {
-        return this.#value?.warnings ?? null;
+    disconnectedCallback(): void {
+        this.#root?.unmount();
+        this.#root = undefined;
     }
 
-    override render() {
-        const errors = this.#errors;
-        const warnings = this.#warnings;
-
-        return html`
-            <div class="n3o-import-errors-viewer">
-                ${errors && errors.length
-                    ? html`
-                          <p><em class="text-error">Errors</em></p>
-                          ${errors.map(
-                              (error) => html`
-                                  <div class="row-wrapper">
-                                      <div class="row">${error}</div>
-                                  </div>
-                              `
-                          )}
-                      `
-                    : nothing}
-                ${warnings && warnings.length
-                    ? html`
-                          <p><em class="text-warning">Warnings</em></p>
-                          ${warnings.map(
-                              (warning) => html`
-                                  <div class="row-wrapper">
-                                      <div class="row">${warning}</div>
-                                  </div>
-                              `
-                          )}
-                      `
-                    : nothing}
-                ${(!errors || !errors.length) && (!warnings || !warnings.length)
-                    ? html`
-                          <div class="row-wrapper">
-                              <div class="row">No warnings or errors</div>
-                          </div>
-                      `
-                    : nothing}
-            </div>
-        `;
+    #render(): void {
+        this.#root?.render(
+            createElement(ImportNoticesViewerApp, {
+                value: this.#value,
+            }),
+        );
     }
-
-    static override styles = css`
-        .n3o-import-errors-viewer .row-wrapper {
-            margin-bottom: 40px;
-            width: 100%;
-        }
-
-        .n3o-import-errors-viewer .row {
-            display: block;
-            width: 90%;
-        }
-
-        .text-error {
-            color: var(--uui-color-danger);
-        }
-
-        .text-warning {
-            color: var(--uui-color-warning);
-        }
-    `;
 }
 
 export default N3oImportNoticesViewerElement;

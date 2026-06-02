@@ -1,164 +1,134 @@
-import { LitElement as C, nothing as m, html as p, css as N, property as S, state as k, customElement as A } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as D } from "@umbraco-cms/backoffice/element-api";
-import { UmbPropertyValueChangeEvent as M } from "@umbraco-cms/backoffice/property-editor";
-var O = Object.defineProperty, P = Object.getOwnPropertyDescriptor, E = (t) => {
-  throw TypeError(t);
-}, x = (t, e, i, a) => {
-  for (var o = a > 1 ? void 0 : a ? P(e, i) : e, u = t.length - 1, _; u >= 0; u--)
-    (_ = t[u]) && (o = (a ? _(e, i, o) : _(o)) || o);
-  return a && o && O(e, i, o), o;
-}, g = (t, e, i) => e.has(t) || E("Cannot " + i), r = (t, e, i) => (g(t, e, "read from private field"), i ? i.call(t) : e.get(t)), f = (t, e, i) => e.has(t) ? E("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, i), v = (t, e, i, a) => (g(t, e, "write to private field"), e.set(t, i), i), d = (t, e, i) => (g(t, e, "access private method"), i), s, h, c, n, $, y, w, b;
-const T = "n3o-serp-editor";
-let l = class extends D(C) {
+import { customElement as y } from "@umbraco-cms/backoffice/external/lit";
+import { UmbPropertyValueChangeEvent as A } from "@umbraco-cms/backoffice/property-editor";
+import { useState as M, useEffect as W, createElement as T } from "react";
+import { createRoot as D } from "react-dom/client";
+import { jsxs as i, jsx as f } from "react/jsx-runtime";
+function O({ value: e, maxCharsTitle: t, maxCharsDescription: r, onChange: l }) {
+  const [h, m] = M("");
+  W(() => {
+    let c = !0;
+    return fetch("/umbraco/backoffice/api/serpEditor/templateOptions").then((u) => u.ok ? u.json() : null).then((u) => {
+      c && u && m(u.titleSuffix ?? "");
+    }).catch(() => {
+    }), () => {
+      c = !1;
+    };
+  }, []);
+  const a = e.title ?? "", v = e.description ?? "", k = `${location.protocol}//${window.location.hostname}`;
+  return /* @__PURE__ */ i("uui-box", { headline: "SEO preview", children: [
+    /* @__PURE__ */ i("div", { className: "sv", children: [
+      /* @__PURE__ */ i("div", { className: "sv-form", children: [
+        /* @__PURE__ */ f(
+          "input",
+          {
+            type: "text",
+            value: a,
+            placeholder: "Enter a short but descriptive title",
+            onChange: (c) => l({ title: c.target.value, description: v })
+          }
+        ),
+        a.length > t ? /* @__PURE__ */ i("p", { className: "sv-error", children: [
+          "A title should not be more than ",
+          t,
+          " characters."
+        ] }) : null,
+        /* @__PURE__ */ f(
+          "textarea",
+          {
+            value: v,
+            placeholder: "Enter a meta description",
+            onChange: (c) => l({ title: a, description: c.target.value })
+          }
+        ),
+        v.length > r ? /* @__PURE__ */ i("p", { className: "sv-error", children: [
+          "A meta description should not be more than ",
+          r,
+          " characters."
+        ] }) : null
+      ] }),
+      /* @__PURE__ */ i("div", { className: "sv-demo", children: [
+        a.length > 0 ? /* @__PURE__ */ i("h6", { children: [
+          a,
+          " ",
+          h
+        ] }) : null,
+        a.length > 0 || v.length > 0 ? /* @__PURE__ */ f("p", { className: "sv-url", children: k }) : null,
+        /* @__PURE__ */ f("p", { children: v })
+      ] })
+    ] }),
+    /* @__PURE__ */ f("style", { children: z })
+  ] });
+}
+const z = `
+    .sv { display: flex; gap: 40px; }
+    .sv-form { flex: 0 0 30%; }
+    .sv-demo { flex: 1 1 600px; max-width: 600px; }
+    .sv-form input, .sv-form textarea { width: 100%; box-sizing: border-box; }
+    .sv-form textarea { height: 100px; margin-top: 12px; }
+    .sv-form p.sv-error { color: var(--uui-color-danger, red); margin-top: 3px; }
+    .sv-demo h6, .sv-demo p { font-family: Arial, Helvetica, sans-serif; padding: 0; margin: 0; }
+    .sv-demo h6 { font-size: 20px; line-height: 1.3; margin-bottom: 3px; color: #1a0dab; text-decoration: underline; }
+    .sv-demo p { font-size: 14px; margin-bottom: 3px; line-height: 1.57; word-wrap: break-word; }
+    .sv-demo p.sv-url { color: #006621; }
+`;
+var P = Object.getOwnPropertyDescriptor, b = (e) => {
+  throw TypeError(e);
+}, V = (e, t, r, l) => {
+  for (var h = l > 1 ? void 0 : l ? P(t, r) : t, m = e.length - 1, a; m >= 0; m--)
+    (a = e[m]) && (h = a(h) || h);
+  return h;
+}, S = (e, t, r) => t.has(e) || b("Cannot " + r), s = (e, t, r) => (S(e, t, "read from private field"), r ? r.call(e) : t.get(e)), p = (e, t, r) => t.has(e) ? b("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), o = (e, t, r, l) => (S(e, t, "write to private field"), t.set(e, r), r), N = (e, t, r) => (S(e, t, "access private method"), r), n, x, d, E, g, _, w;
+const B = "n3o-serp-editor";
+let C = class extends HTMLElement {
   constructor() {
-    super(...arguments), f(this, n), f(this, s, { title: "", description: "" }), f(this, h, 60), f(this, c, 160), this._titleSuffix = "";
+    super(), p(this, _), p(this, n), p(this, x), p(this, d, { title: "", description: "" }), p(this, E, 60), p(this, g, 160);
+    const e = this.attachShadow({ mode: "open" });
+    o(this, x, document.createElement("div")), e.appendChild(s(this, x));
   }
   get value() {
-    return r(this, s);
+    return s(this, d);
   }
-  set value(t) {
-    const e = r(this, s);
-    v(this, s, t ?? { title: "", description: "" }), this.requestUpdate("value", e);
+  set value(e) {
+    o(this, d, e ?? { title: "", description: "" }), N(this, _, w).call(this);
   }
   // Config (prevalues) arrives as UmbPropertyEditorConfigCollection.
-  set config(t) {
-    if (!t)
-      return;
-    const e = Number.parseInt(t.getValueByAlias("maxCharsTitle") ?? "", 10), i = Number.parseInt(t.getValueByAlias("maxCharsDescription") ?? "", 10);
-    !Number.isNaN(e) && e > 0 && v(this, h, e), !Number.isNaN(i) && i > 0 && v(this, c, i);
+  set config(e) {
+    const t = Number.parseInt((e == null ? void 0 : e.getValueByAlias("maxCharsTitle")) ?? "", 10), r = Number.parseInt((e == null ? void 0 : e.getValueByAlias("maxCharsDescription")) ?? "", 10);
+    !Number.isNaN(t) && t > 0 && o(this, E, t), !Number.isNaN(r) && r > 0 && o(this, g, r), N(this, _, w).call(this);
   }
-  async connectedCallback() {
-    super.connectedCallback();
-    try {
-      const t = await fetch("/umbraco/backoffice/api/serpEditor/templateOptions");
-      if (t.ok) {
-        const e = await t.json();
-        this._titleSuffix = e.titleSuffix ?? "";
+  connectedCallback() {
+    s(this, n) ?? o(this, n, D(s(this, x))), N(this, _, w).call(this);
+  }
+  disconnectedCallback() {
+    var e;
+    (e = s(this, n)) == null || e.unmount(), o(this, n, void 0);
+  }
+};
+n = /* @__PURE__ */ new WeakMap();
+x = /* @__PURE__ */ new WeakMap();
+d = /* @__PURE__ */ new WeakMap();
+E = /* @__PURE__ */ new WeakMap();
+g = /* @__PURE__ */ new WeakMap();
+_ = /* @__PURE__ */ new WeakSet();
+w = function() {
+  var e;
+  (e = s(this, n)) == null || e.render(
+    T(O, {
+      value: s(this, d),
+      maxCharsTitle: s(this, E),
+      maxCharsDescription: s(this, g),
+      onChange: (t) => {
+        o(this, d, t), this.dispatchEvent(new A());
       }
-    } catch {
-    }
-  }
-  render() {
-    var i, a;
-    const t = ((i = r(this, s)) == null ? void 0 : i.title) ?? "", e = ((a = r(this, s)) == null ? void 0 : a.description) ?? "";
-    return p`
-            <div class="sv-form">
-                <input
-                    type="text"
-                    .value=${t}
-                    placeholder="Enter a short but descriptive title"
-                    @input=${d(this, n, $)} />
-                ${t.length > r(this, h) ? p`<p class="sv-error">A title should not be more than ${r(this, h)} characters.</p>` : m}
-                <br /><br />
-                <textarea
-                    .value=${e}
-                    placeholder="Enter a meta description"
-                    @input=${d(this, n, y)}></textarea>
-                ${e.length > r(this, c) ? p`<p class="sv-error">
-                          A meta description should not be more than ${r(this, c)} chars.
-                      </p>` : m}
-            </div>
-
-            <div class="sv-demo">
-                ${t.length > 0 ? p`<h6>${t} ${this._titleSuffix}</h6>` : m}
-                ${t.length > 0 || e.length > 0 ? p`<p class="sv-url">${d(this, n, b).call(this)}</p>` : m}
-                <p>${e}</p>
-            </div>
-
-            <div style="clear: both"></div>
-        `;
-  }
+    })
+  );
 };
-s = /* @__PURE__ */ new WeakMap();
-h = /* @__PURE__ */ new WeakMap();
-c = /* @__PURE__ */ new WeakMap();
-n = /* @__PURE__ */ new WeakSet();
-$ = function(t) {
-  d(this, n, w).call(this, { title: t.target.value });
-};
-y = function(t) {
-  d(this, n, w).call(this, { description: t.target.value });
-};
-w = function(t) {
-  var e, i;
-  v(this, s, {
-    title: ((e = r(this, s)) == null ? void 0 : e.title) ?? "",
-    description: ((i = r(this, s)) == null ? void 0 : i.description) ?? "",
-    ...t
-  }), this.requestUpdate(), this.dispatchEvent(new M());
-};
-b = function() {
-  return `${location.protocol}//${window.location.hostname}`;
-};
-l.styles = N`
-        /* containers */
-        .sv-form {
-            width: 30%;
-            float: left;
-            margin-right: 40px;
-        }
-
-        .sv-demo {
-            width: 600px; /* The width of the desktop-SERP as of 2019-11-14 */
-            float: left;
-        }
-
-        /* form elements */
-        .sv-form input,
-        .sv-form textarea {
-            width: 100%;
-        }
-
-        .sv-form textarea {
-            height: 100px;
-        }
-
-        /* general text formating */
-        .sv-demo h6,
-        .sv-demo p {
-            font-family: Arial, Helvectiva, san-serif;
-            padding: 0;
-            margin: 0;
-        }
-
-        /* form text formating */
-        .sv-form p.sv-error {
-            color: red;
-            margin-top: 3px;
-        }
-
-        /* demo-mode text formating */
-        .sv-demo h6 {
-            font-size: 20px;
-            line-height: 1.3;
-            margin-bottom: 3px;
-            color: blue;
-            text-decoration: underline;
-        }
-
-        .sv-demo p {
-            font-size: 14px;
-            margin-bottom: 3px;
-            line-height: 1.57;
-            word-wrap: break-word;
-        }
-
-        .sv-demo p.sv-url {
-            color: #00802a;
-        }
-    `;
-x([
-  S({ type: Object })
-], l.prototype, "value", 1);
-x([
-  k()
-], l.prototype, "_titleSuffix", 2);
-l = x([
-  A(T)
-], l);
-const V = l;
+C = V([
+  y(B)
+], C);
+const R = C;
 export {
-  l as N3oSerpEditorElement,
-  V as default
+  C as N3oSerpEditorElement,
+  R as default
 };
 //# sourceMappingURL=serp-editor.js.map

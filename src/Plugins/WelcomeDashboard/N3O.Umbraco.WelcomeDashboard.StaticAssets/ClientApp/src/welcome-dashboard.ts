@@ -1,70 +1,39 @@
-import { LitElement, css, customElement, html } from '@umbraco-cms/backoffice/external/lit';
-import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
+// NOTE: React shell is overhead here (a near-static help panel) — kept for uniformity per
+// migration decision. A web-component-only Lit view would be lighter, but every backoffice
+// plugin now follows the same React-shell pattern.
+//
+// Web-component SHELL for the Welcome dashboard. Umbraco's backoffice only loads custom
+// elements, so this thin element mounts the React UI (WelcomeDashboardApp) into its shadow
+// root. React itself is NOT bundled here — it is external and resolved at runtime from the
+// shared N3O.Umbraco.React import map.
+import { customElement } from '@umbraco-cms/backoffice/external/lit';
+import { createElement } from 'react';
+import { createRoot, type Root } from 'react-dom/client';
+import { WelcomeDashboardApp } from './welcome-dashboard-app';
 
 const elementName = 'n3o-welcome-dashboard';
 
-// Static welcome dashboard. Ports the original AngularJS dashboard view, which had an empty
-// controller and simply rendered a help/support panel. No backend endpoints are involved.
 @customElement(elementName)
-export class N3oWelcomeDashboardElement extends UmbElementMixin(LitElement) {
-    override render() {
-        return html`
-            <div class="panel">
-                <div class="panel__header">
-                    <h3>Help &amp; Support</h3>
-                </div>
+export class N3oWelcomeDashboardElement extends HTMLElement {
+    #root?: Root;
+    #mount: HTMLDivElement;
 
-                <div class="panel__content">
-                    <p>
-                        Please visit the N3O Support Centre to view the latest help articles, documentation and to
-                        contact our support team with any queries.
-                    </p>
-
-                    <p>
-                        <a href="https://support.n3o.ltd" target="_blank" rel="noopener">Visit Support Centre &rarr;</a>
-                    </p>
-                </div>
-            </div>
-        `;
+    constructor() {
+        super();
+        const shadow = this.attachShadow({ mode: 'open' });
+        this.#mount = document.createElement('div');
+        shadow.appendChild(this.#mount);
     }
 
-    static override styles = css`
-        :host {
-            display: block;
-            padding: var(--uui-size-layout-1);
-        }
+    connectedCallback(): void {
+        this.#root ??= createRoot(this.#mount);
+        this.#root.render(createElement(WelcomeDashboardApp));
+    }
 
-        .panel {
-            background: var(--uui-color-surface);
-            border: 1px solid var(--uui-color-divider-standalone);
-            border-radius: var(--uui-border-radius);
-        }
-
-        .panel__header {
-            padding: var(--uui-size-space-4) var(--uui-size-space-5);
-            border-bottom: 1px solid var(--uui-color-divider-standalone);
-        }
-
-        .panel__header h3 {
-            margin: 0;
-        }
-
-        .panel__content {
-            padding: var(--uui-size-space-4) var(--uui-size-space-5);
-        }
-
-        .panel__content p {
-            margin: 0 0 var(--uui-size-space-4);
-        }
-
-        .panel__content p:last-child {
-            margin-bottom: 0;
-        }
-
-        a {
-            color: var(--uui-color-interactive);
-        }
-    `;
+    disconnectedCallback(): void {
+        this.#root?.unmount();
+        this.#root = undefined;
+    }
 }
 
 export default N3oWelcomeDashboardElement;

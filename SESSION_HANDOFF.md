@@ -1,12 +1,20 @@
 # Session Handoff — N3O.Umbraco v17 Migration
 
-*Updated: 2026-06-02 (session 8) — use this to orient the next session*
+*Updated: 2026-06-02 (session 9) — use this to orient the next session*
 
 ---
 
 ## Current State
 
-**Solution builds with 0 errors** (full `dotnet build N3O.Umbraco.sln`, all 120 projects, Umbraco 17.3.5 / .NET 10). All work **pushed to `origin/v17-Talha`** (latest commit `c93028178`).
+**Solution builds with 0 errors** (full `dotnet build N3O.Umbraco.sln`, all 120 projects, Umbraco 17.3.5 / .NET 10).
+
+**Latest (session 9) — backoffice plugins migrated Lit → React (per Talha):** All migrated plugins converted from Lit to **React 19 + TypeScript + Vite**, EXCEPT Cropper/Uploader (skipped — pending the jQuery/native-picker decision) and telethon (BLOCKER-04). Architecture: each plugin stays a **web-component shell** that mounts a React root and bridges the Umbraco contract (property-editor `value`/`config` + `UmbPropertyValueChangeEvent`; workspace views consume `UMB_DOCUMENT_WORKSPACE_CONTEXT`; block view consumes the block contexts). **React is shared, not bundled** — a self-hosted React 19 ESM runtime + import map lives in `src/N3O.Umbraco.Cms/App_Plugins/N3O.Umbraco.React/` (built by the `BuildReactRuntime` MSBuild target from `src/N3O.Umbraco.Cms/ReactRuntime/`); every plugin keeps `react`/`react-dom`/`react-dom/client`/`react/jsx-runtime` **external**. **Hybrid UI:** `uui-*` web components for backoffice-standard chrome/controls + custom React for bespoke surfaces (SERP preview, EditorJS/Handsontable canvases). Reference + recipe: `REACT_MIGRATION_GUIDE.md` (repo root) and `Plugins/SerpEditor/.../ClientApp` (the verified reference). Done via 7 parallel subagents (disjoint per-project ownership). **Full solution build 0 errors.**
+- **Converted:** SerpEditor (reference), TextResourceEditor, Cells (Handsontable), EditorJs, Data ×4 (Import/Export workspace views + ImportDataEditor/ImportNoticesViewer editors), Cloud.Platforms.Preview, Blocks.Preview, WelcomeDashboard, Scheduler.
+- **Overhead (converted for uniformity only, React adds no value):** Scheduler (Hangfire `<iframe>` wrapper), WelcomeDashboard (static panel). **Blazor.BackOffice left as the existing vanilla JS loader** (it's a non-UI boot loader — nothing for React to render).
+- ⚠️ **Flagged for review:** (a) Blocks.Preview switched the preview from an isolating `<iframe>` to `dangerouslySetInnerHTML` in the shadow root — needs a visual check (if the server HTML is a full document, iframe isolation may be needed). (b) **Runtime not yet verified in-browser** — the import-map React resolution + React render inside a content node need doctype/content fixtures (same gap as the Lit/TS sessions); only build + external-imports verified. (c) EditorJs modal/media/link-picker shapes carried over as flagged-unverified.
+- New build prereq unchanged (Node). The skill tooling (`.agents/`, `skills-lock.json`) is gitignored.
+
+**Earlier — pushed to `origin/v17-Talha`** (commit `c93028178` = session 8 BLOCKER-10).
 
 **Latest (session 8) — BLOCKER-10 access-control gating (the "A-2" item):** Restored the two server-side privilege/data boundaries lost in the Bellissima migration. (1) **Hangfire dashboard** → `SchedulerComposer` now requires Umbraco's built-in `AuthorizationPolicies.SectionAccessSettings` alongside the back-office-scheme policy (v17 equivalent of the removed `SectionRequirement(Settings)`) — Settings-section/admin only again. (2) **Export/Import** → new reusable `[RequireUserGroup(...)]` authorization filter (`src/Data/N3O.Umbraco.Data/Security/RequireUserGroupAttribute.cs`) on `ExportsController` (`exportUsers`) / `ImportsController` (`importUsers`), admin always allowed; enforced at the **API boundary** via `IBackOfficeSecurityAccessor.CurrentUser.Groups` (403 otherwise) — stronger than v13's UI-only gate. `DataConstants.SecurityGroups.*` Alias/Name → `const`. (3) **Platforms-Preview** content-type gating still shows on all doc types — **deferred** (display-only; needs a custom Bellissima condition; no built-in "composes composition X" condition exists), marked `TODO Migration Review (BLOCKER-10 #3)` in `platforms-preview.ts`. Build 0 errors; BLOCKER-10 downgraded **High → Low**. Commit `c93028178`.
 

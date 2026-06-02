@@ -1,76 +1,50 @@
-import { LitElement as l, html as p, css as d, customElement as u } from "@umbraco-cms/backoffice/external/lit";
-import { UmbElementMixin as c } from "@umbraco-cms/backoffice/element-api";
-var v = Object.getOwnPropertyDescriptor, m = (t, o, s, n) => {
-  for (var e = n > 1 ? void 0 : n ? v(o, s) : o, r = t.length - 1, i; r >= 0; r--)
-    (i = t[r]) && (e = i(e) || e);
-  return e;
-};
-const _ = "n3o-welcome-dashboard";
-let a = class extends c(l) {
-  render() {
-    return p`
-            <div class="panel">
-                <div class="panel__header">
-                    <h3>Help &amp; Support</h3>
-                </div>
-
-                <div class="panel__content">
-                    <p>
-                        Please visit the N3O Support Centre to view the latest help articles, documentation and to
-                        contact our support team with any queries.
-                    </p>
-
-                    <p>
-                        <a href="https://support.n3o.ltd" target="_blank" rel="noopener">Visit Support Centre &rarr;</a>
-                    </p>
-                </div>
-            </div>
-        `;
+import { customElement as _ } from "@umbraco-cms/backoffice/external/lit";
+import { createElement as f } from "react";
+import { createRoot as w } from "react-dom/client";
+import { jsxs as C, jsx as i } from "react/jsx-runtime";
+function y() {
+  return /* @__PURE__ */ C("uui-box", { headline: "Help & Support", children: [
+    /* @__PURE__ */ i("p", { children: "Please visit the N3O Support Centre to view the latest help articles, documentation and to contact our support team with any queries." }),
+    /* @__PURE__ */ i("p", { children: /* @__PURE__ */ i("a", { href: "https://support.n3o.ltd", target: "_blank", rel: "noopener", children: "Visit Support Centre →" }) }),
+    /* @__PURE__ */ i("style", { children: E })
+  ] });
+}
+const E = `
+    :host { display: block; }
+    p { margin: 0 0 var(--uui-size-space-4); }
+    p:last-of-type { margin-bottom: 0; }
+    a { color: var(--uui-color-interactive); }
+`;
+var k = Object.getOwnPropertyDescriptor, m = (e) => {
+  throw TypeError(e);
+}, S = (e, t, r, l) => {
+  for (var s = l > 1 ? void 0 : l ? k(t, r) : t, c = e.length - 1, d; c >= 0; c--)
+    (d = e[c]) && (s = d(s) || s);
+  return s;
+}, v = (e, t, r) => t.has(e) || m("Cannot " + r), o = (e, t, r) => (v(e, t, "read from private field"), r ? r.call(e) : t.get(e)), u = (e, t, r) => t.has(e) ? m("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), p = (e, t, r, l) => (v(e, t, "write to private field"), t.set(e, r), r), a, n;
+const W = "n3o-welcome-dashboard";
+let h = class extends HTMLElement {
+  constructor() {
+    super(), u(this, a), u(this, n);
+    const e = this.attachShadow({ mode: "open" });
+    p(this, n, document.createElement("div")), e.appendChild(o(this, n));
+  }
+  connectedCallback() {
+    o(this, a) ?? p(this, a, w(o(this, n))), o(this, a).render(f(y));
+  }
+  disconnectedCallback() {
+    var e;
+    (e = o(this, a)) == null || e.unmount(), p(this, a, void 0);
   }
 };
-a.styles = d`
-        :host {
-            display: block;
-            padding: var(--uui-size-layout-1);
-        }
-
-        .panel {
-            background: var(--uui-color-surface);
-            border: 1px solid var(--uui-color-divider-standalone);
-            border-radius: var(--uui-border-radius);
-        }
-
-        .panel__header {
-            padding: var(--uui-size-space-4) var(--uui-size-space-5);
-            border-bottom: 1px solid var(--uui-color-divider-standalone);
-        }
-
-        .panel__header h3 {
-            margin: 0;
-        }
-
-        .panel__content {
-            padding: var(--uui-size-space-4) var(--uui-size-space-5);
-        }
-
-        .panel__content p {
-            margin: 0 0 var(--uui-size-space-4);
-        }
-
-        .panel__content p:last-child {
-            margin-bottom: 0;
-        }
-
-        a {
-            color: var(--uui-color-interactive);
-        }
-    `;
-a = m([
-  u(_)
-], a);
-const g = a;
+a = /* @__PURE__ */ new WeakMap();
+n = /* @__PURE__ */ new WeakMap();
+h = S([
+  _(W)
+], h);
+const O = h;
 export {
-  a as N3oWelcomeDashboardElement,
-  g as default
+  h as N3oWelcomeDashboardElement,
+  O as default
 };
 //# sourceMappingURL=welcome-dashboard.js.map

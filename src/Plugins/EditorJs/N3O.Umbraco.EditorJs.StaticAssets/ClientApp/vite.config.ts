@@ -1,9 +1,12 @@
 import { defineConfig } from 'vite';
 
-// Builds the EditorJS Lit component into the shipped App_Plugins folder.
-// @umbraco-cms/* imports are kept external (resolved at runtime by Umbraco's import map);
-// the component's own code and all @editorjs/* / editorjs-* third-party libs are bundled.
+// Builds the EditorJS editor as a web-component shell that mounts a React app, into the shipped
+// App_Plugins folder. @umbraco-cms/* AND react/react-dom are kept external — resolved at runtime
+// by Umbraco's import map (react/react-dom are the self-hosted shared runtime from
+// N3O.Umbraco.Cms App_Plugins/N3O.Umbraco.React). The component's own code and all
+// @editorjs/* / editorjs-* third-party libs are bundled (they are NOT React).
 export default defineConfig({
+    esbuild: { jsx: 'automatic' },
     build: {
         lib: {
             entry: 'src/editor-js.ts',
@@ -14,7 +17,7 @@ export default defineConfig({
         emptyOutDir: false,
         sourcemap: true,
         rollupOptions: {
-            external: [/^@umbraco/],
+            external: [/^@umbraco/, 'react', 'react-dom', 'react-dom/client', 'react/jsx-runtime'],
         },
     },
 });
