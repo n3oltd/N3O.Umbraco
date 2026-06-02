@@ -29,7 +29,7 @@ public class UmbracoHealthCheck : IHealthCheck {
             // underlying database is reachable. A brand-new site with no published content
             // will return an empty list which is still Healthy; only an exception (cache
             // not built, DB unreachable, Umbraco still starting) flips us to Unhealthy.
-            // v17: IPublishedCache.GetAtRoot() was removed — enumerate roots via the
+            // TODO Migration Review: v17: IPublishedCache.GetAtRoot() was removed — enumerate roots via the
             // document navigation service and resolve them through the published content cache.
             _navigationQueryService.TryGetRootKeys(out var rootKeys);
             _ = rootKeys.Select(reference.UmbracoContext.Content.GetById).ToList();

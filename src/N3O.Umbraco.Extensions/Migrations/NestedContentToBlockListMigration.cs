@@ -11,7 +11,7 @@ using Umbraco.Cms.Infrastructure.Persistence;
 
 namespace N3O.Umbraco.Migrations;
 
-// Migrates all Nested Content property data and data types to Block List.
+// TODO Migration Review: Migrates all Nested Content property data and data types to Block List.
 // Run this once when upgrading from Umbraco 13 to 17 on existing databases.
 // PREREQUISITES:
 //   1. All content types using Nested Content must already have a corresponding Block List

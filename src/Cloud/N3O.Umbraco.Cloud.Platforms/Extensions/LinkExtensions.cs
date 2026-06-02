@@ -1,4 +1,4 @@
-﻿using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Extensions;
 using System;
 using Umbraco.Cms.Core.Models;
 
@@ -10,7 +10,7 @@ public static class LinkExtensions {
             return null;
         }
 
-        var url = link?.Url; // Link.Content removed in v17; Url is populated for both internal and external links
+        var url = link?.Url; // TODO Migration Review: Link.Content removed in v17; Url is populated for both internal and external links
 
         if (url.HasValue()) {
             return new Uri(url);

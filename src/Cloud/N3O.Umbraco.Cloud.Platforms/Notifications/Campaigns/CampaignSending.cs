@@ -1,5 +1,5 @@
 // SendingContentNotification, ContentVariantDisplay, ContentPropertyDisplay and Tab<T> were
-// all removed in Umbraco 14 when the Angular backoffice was replaced with Bellissima.
+// TODO Migration Review: all removed in Umbraco 14 when the Angular backoffice was replaced with Bellissima.
 //
 // This handler previously:
 //   1. Injected embed-code HTML into read-only properties when the campaign editor opened

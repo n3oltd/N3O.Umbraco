@@ -32,7 +32,7 @@ public class PerplexBlockTypesService : IPerplexBlockTypesService {
 
     public async Task CreateTypesAsync(PerplexBlockDefinition definition) {
         await CreateContentTypeAsync(definition);
-        // Data type creation removed in v17: DataType.Configuration no longer settable via property.
+        // TODO Migration Review: Data type creation removed in v17: DataType.Configuration no longer settable via property.
         // In Perplex v4, data types are managed via the Perplex backoffice UI or uSync.
     }
 

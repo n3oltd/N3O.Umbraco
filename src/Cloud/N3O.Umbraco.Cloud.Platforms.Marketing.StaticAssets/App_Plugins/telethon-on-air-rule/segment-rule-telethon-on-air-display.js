@@ -4,7 +4,7 @@ import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
 // ----------------------------------------------------------------------------
 // PLACEHOLDER (BLOCKER-04) — Telethon On Air segment rule DISPLAY component.
 //
-// The original AngularJS display component was a near-empty wrapper:
+// TODO Migration Review: The original AngularJS display component was a near-empty wrapper:
 //   <span class="ums-segmentrule__wrapper ums-segmentrule__wrapper--thin"></span>
 // rendered by Engage's segment-rule cockpit UI. The "Telethon On Air" rule has
 // an empty defaultConfig ({}) so there is nothing rule-specific to display.

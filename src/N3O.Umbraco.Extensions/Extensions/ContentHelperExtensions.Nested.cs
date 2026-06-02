@@ -6,7 +6,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 
 namespace N3O.Umbraco.Extensions;
 
-// Nested Content was removed in Umbraco 14. These helpers are retained only so external consumers
+// TODO Migration Review: Nested Content was removed in Umbraco 14. These helpers are retained only so external consumers
 // fail at COMPILE time (error) with a message directing them to the Block List equivalents
 // (GetBlockList) in ContentHelperExtensions.BlockList.cs, rather than failing at runtime.
 public static partial class ContentHelperExtensions {

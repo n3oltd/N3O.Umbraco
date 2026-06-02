@@ -1,4 +1,4 @@
-// SendingContentNotification and ContentVariantDisplay were removed in Umbraco 14
+// TODO Migration Review: SendingContentNotification and ContentVariantDisplay were removed in Umbraco 14
 // when the Angular backoffice was replaced with Bellissima.
 //
 // This handler previously set staging/production URL info on the offering content display model

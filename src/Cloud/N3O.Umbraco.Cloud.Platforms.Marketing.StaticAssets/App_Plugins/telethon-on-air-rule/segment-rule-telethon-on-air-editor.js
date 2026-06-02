@@ -4,7 +4,7 @@ import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
 // ----------------------------------------------------------------------------
 // PLACEHOLDER (BLOCKER-04) — Telethon On Air segment rule EDITOR component.
 //
-// The original AngularJS editor component delegated entirely to Engage's own
+// TODO Migration Review: The original AngularJS editor component delegated entirely to Engage's own
 // <ums-segment-rule-editor> directive:
 //   <ums-segment-rule-editor name="$ctrl.rule.name" type="$ctrl.rule.type"
 //                            save="$ctrl.save()"></ums-segment-rule-editor>
