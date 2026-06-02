@@ -1,270 +1,155 @@
-// ┌──────────────────────────────────────────────────────────────────────────────────────────┐
-// │ PENDING DECISION (Umbraco 17 migration): this editor was ported 1:1 from AngularJS and      │
-// │ still relies on the Formstone upload widget (which needs a global jQuery the v17 backoffice   │
-// │ no longer ships — currently loaded on demand from a CDN). It MAY OR MAY NOT be re-migrated    │
-// │ to use Umbraco's native media/image picker instead of the bundled jQuery+Formstone uploader.  │
-// │ Not decided yet — do NOT rewrite this until Talha confirms the direction. Leaving the         │
-// │ faithful port in place for now. See BELLISSIMA_MIGRATION_LOG.md / MIGRATION_PLAN.md.          │
-// └──────────────────────────────────────────────────────────────────────────────────────────┘
-import { LitElement, html, css, nothing } from '@umbraco-cms/backoffice/external/lit';
-import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
-import { UmbPropertyValueChangeEvent } from '@umbraco-cms/backoffice/property-editor';
-
-const elementName = 'n3o-uploader';
-
-const PLUGIN_PATH = '/App_Plugins/N3O.Umbraco.Uploader';
-
-// jQuery is a hard dependency of Formstone (core.js / upload.js are UMD modules that fall back to the
-// global jQuery). The Bellissima backoffice no longer ships jQuery globally, so we load it (and then the
-// Formstone scripts) once, on demand, as classic scripts attached to the document.
-let scriptsPromise;
-
-function loadScript(src) {
-    return new Promise((resolve, reject) => {
-        const existing = document.querySelector(`script[data-n3o-uploader="${src}"]`);
-
-        if (existing) {
-            resolve();
-
-            return;
+import { LitElement as D, nothing as p, html as d, css as N, state as y, customElement as q } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as F } from "@umbraco-cms/backoffice/element-api";
+import { UmbPropertyValueChangeEvent as V } from "@umbraco-cms/backoffice/property-editor";
+var H = Object.defineProperty, j = Object.getOwnPropertyDescriptor, A = (e) => {
+  throw TypeError(e);
+}, g = (e, t, s, h) => {
+  for (var r = h > 1 ? void 0 : h ? j(t, s) : t, I = e.length - 1, $; I >= 0; I--)
+    ($ = e[I]) && (r = (h ? $(t, s, r) : $(r)) || r);
+  return h && r && H(t, s, r), r;
+}, U = (e, t, s) => t.has(e) || A("Cannot " + s), l = (e, t, s) => (U(e, t, "read from private field"), s ? s.call(e) : t.get(e)), f = (e, t, s) => t.has(e) ? A("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, s), b = (e, t, s, h) => (U(e, t, "write to private field"), t.set(e, s), s), a = (e, t, s) => (U(e, t, "access private method"), s), n, u, k, v, i, o, _, w, z, m, E, S, O, W, C, T, B;
+const L = "n3o-uploader", x = "/App_Plugins/N3O.Umbraco.Uploader";
+let M = null;
+function P(e) {
+  return new Promise((t, s) => {
+    if (document.querySelector(`script[data-n3o-uploader="${e}"]`)) {
+      t();
+      return;
+    }
+    const r = document.createElement("script");
+    r.src = e, r.async = !1, r.dataset.n3oUploader = e, r.onload = () => t(), r.onerror = () => s(new Error(`Failed to load ${e}`)), document.head.appendChild(r);
+  });
+}
+async function Q() {
+  return M || (M = (async () => {
+    window.jQuery || await P("https://code.jquery.com/jquery-3.7.1.min.js"), await P(`${x}/formstone/core.js`), await P(`${x}/formstone/upload.js`);
+  })()), M;
+}
+function R() {
+  let e = "";
+  const t = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  for (let s = 0; s < 10; s++)
+    e += t.charAt(Math.floor(Math.random() * t.length));
+  return e;
+}
+let c = class extends F(D) {
+  constructor() {
+    super(...arguments), f(this, i), f(this, n), f(this, u), f(this, k, R()), f(this, v, !1), this._uploadInProgress = !1, this._errorMessage = null, this._progress = 0, this._mediaId = "";
+  }
+  get value() {
+    return l(this, n);
+  }
+  set value(e) {
+    const t = l(this, n);
+    b(this, n, e), this.requestUpdate("value", t);
+  }
+  set config(e) {
+    b(this, u, e);
+  }
+  updated() {
+    if (l(this, v) || l(this, n))
+      return;
+    const e = this.renderRoot.querySelector(".upload");
+    e && (b(this, v, !0), Q().then(() => {
+      const t = window.jQuery;
+      t(e).upload({
+        action: "/umbraco/backoffice/api/uploader/upload",
+        label: "Drop and drop a file, or click to select",
+        maxSize: 5368709120,
+        maxQueue: 1,
+        postData: {
+          allowedExtensions: a(this, i, o).call(this, "allowedExtensions"),
+          maxFileSizeMb: a(this, i, o).call(this, "maxFileSizeMb"),
+          imagesOnly: l(this, i, _),
+          minImageWidth: a(this, i, o).call(this, "minImageWidth"),
+          maxImageWidth: a(this, i, o).call(this, "maxImageWidth"),
+          minImageHeight: a(this, i, o).call(this, "minImageHeight"),
+          maxImageHeight: a(this, i, o).call(this, "maxImageHeight")
         }
-
-        const script = document.createElement('script');
-        script.src = src;
-        script.async = false;
-        script.dataset.n3oUploader = src;
-        script.onload = () => resolve();
-        script.onerror = () => reject(new Error(`Failed to load ${src}`));
-
-        document.head.appendChild(script);
+      }).on("filestart.upload", () => {
+        this._progress = 0, this._uploadInProgress = !0;
+      }).on("fileprogress.upload", (s, h, r) => {
+        this._progress = r;
+      }).on("filecomplete.upload", (s, h, r) => {
+        a(this, i, m).call(this, null, r);
+      }).on("fileerror.upload", () => {
+        a(this, i, m).call(this, "The specified file either has an invalid extensions, exceeds the maximum allowed size, or does not meet dimension constraints");
+      });
+    }).catch(() => {
+      this._errorMessage = "Failed to load the uploader";
+    }));
+  }
+  render() {
+    return d`
+            <link rel="stylesheet" href="${x}/radial-progress.css" />
+            <link rel="stylesheet" href="${x}/formstone/upload.css" />
+            <div class="n3o-uploader">
+                <div id=${l(this, k)}>
+                    ${l(this, n) ? p : a(this, i, T).call(this)}
+                    ${l(this, n) && !this._uploadInProgress ? a(this, i, B).call(this) : p}
+                </div>
+            </div>
+        `;
+  }
+};
+n = /* @__PURE__ */ new WeakMap();
+u = /* @__PURE__ */ new WeakMap();
+k = /* @__PURE__ */ new WeakMap();
+v = /* @__PURE__ */ new WeakMap();
+i = /* @__PURE__ */ new WeakSet();
+o = function(e) {
+  if (l(this, u) && typeof l(this, u).getValueByAlias == "function")
+    return l(this, u).getValueByAlias(e);
+};
+_ = function() {
+  const e = a(this, i, o).call(this, "imagesOnly");
+  return !(e === "0" || e === 0 || e === !1);
+};
+w = function(e) {
+  this.value = e, this.dispatchEvent(new V());
+};
+z = function(e) {
+  e && !confirm("Are you sure?") || (this._errorMessage = null, a(this, i, w).call(this, null));
+};
+m = function(e, t) {
+  if (e === null) {
+    let s;
+    typeof t == "string" ? s = JSON.parse(t) : s = t, a(this, i, w).call(this, {
+      urlPath: s.urlPath,
+      mediaId: s.mediaId,
+      extension: s.extension,
+      sizeMb: s.sizeMb,
+      filename: s.filename
     });
-}
-
-async function loadFormstone() {
-    if (!scriptsPromise) {
-        scriptsPromise = (async () => {
-            if (!window.jQuery) {
-                await loadScript('https://code.jquery.com/jquery-3.7.1.min.js');
-            }
-
-            await loadScript(`${PLUGIN_PATH}/formstone/core.js`);
-            await loadScript(`${PLUGIN_PATH}/formstone/upload.js`);
-        })();
-    }
-
-    return scriptsPromise;
-}
-
-function makeId() {
-    let text = '';
-    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-
-    for (let i = 0; i < 10; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-
-    return text;
-}
-
-// Property editor UI for the N3O Uploader. Ports the AngularJS controller/view to Lit: drives the
-// Formstone upload widget, shows radial upload progress, supports loading existing media by id, and
-// persists { urlPath, mediaId, extension, sizeMb, filename, altText } as the property value.
-class N3oUploaderElement extends UmbElementMixin(LitElement) {
-    static properties = {
-        value: { type: Object },
-        config: { attribute: false },
-        _uploadInProgress: { state: true },
-        _errorMessage: { state: true },
-        _progress: { state: true },
-        _mediaId: { state: true },
-    };
-
-    #value;
-    #config = {};
-    #uniqueId = makeId();
-    #initialised = false;
-
-    constructor() {
-        super();
-
-        this._uploadInProgress = false;
-        this._errorMessage = null;
-        this._progress = 0;
-        this._mediaId = '';
-    }
-
-    get value() {
-        return this.#value;
-    }
-
-    set value(v) {
-        const old = this.#value;
-        this.#value = v;
-        this.requestUpdate('value', old);
-    }
-
-    set config(c) {
-        this.#config = c;
-    }
-
-    get config() {
-        return this.#config;
-    }
-
-    #cfg(alias) {
-        if (this.#config && typeof this.#config.getValueByAlias === 'function') {
-            return this.#config.getValueByAlias(alias);
-        }
-
-        return this.#config ? this.#config[alias] : undefined;
-    }
-
-    get #imageMode() {
-        // Mirrors AngularJS: imagesOnly defaults to true unless explicitly "0"/false.
-        const imagesOnly = this.#cfg('imagesOnly');
-
-        return !(imagesOnly === '0' || imagesOnly === 0 || imagesOnly === false);
-    }
-
-    #setValue(v) {
-        this.value = v;
-        this.dispatchEvent(new UmbPropertyValueChangeEvent());
-    }
-
-    #startOver(showConfirmPrompt) {
-        if (showConfirmPrompt && !confirm('Are you sure?')) {
-            return;
-        }
-
-        this._errorMessage = null;
-        this.#setValue(null);
-    }
-
-    #processResponse(errorMessage, json) {
-        if (errorMessage === null) {
-            let response = json;
-
-            if (typeof response === 'string' || response instanceof String) {
-                response = JSON.parse(response);
-            }
-
-            this.#setValue({
-                urlPath: response.urlPath,
-                mediaId: response.mediaId,
-                extension: response.extension,
-                sizeMb: response.sizeMb,
-                filename: response.filename,
-            });
-        } else {
-            this._errorMessage = errorMessage;
-        }
-
-        this._uploadInProgress = false;
-    }
-
-    #onMediaIdInput(event) {
-        this._mediaId = event.target.value;
-        this.#loadMediaById();
-    }
-
-    #loadMediaById() {
-        if (!this._mediaId || this._mediaId.length !== 17) {
-            return;
-        }
-
-        fetch(`/umbraco/backoffice/api/uploader/media/${this._mediaId}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('not found');
-                }
-
-                return response.json();
-            })
-            .then((json) => this.#processResponse(null, json))
-            .catch(() => this.#processResponse('No media found with the specified ID'));
-    }
-
-    #onAltTextInput(event) {
-        this.#setValue({ ...this.#value, altText: event.target.value });
-    }
-
-    #copyToClipboard(text) {
-        const temp = document.createElement('input');
-        document.body.appendChild(temp);
-        temp.value = text;
-        temp.select();
-        document.execCommand('copy');
-        temp.remove();
-    }
-
-    updated() {
-        // Initialise the Formstone upload widget once, after the upload target has rendered.
-        if (this.#initialised || this.#value) {
-            return;
-        }
-
-        const uploadEl = this.renderRoot.querySelector('.upload');
-
-        if (!uploadEl) {
-            return;
-        }
-
-        this.#initialised = true;
-
-        loadFormstone()
-            .then(() => {
-                const $ = window.jQuery;
-
-                $(uploadEl)
-                    .upload({
-                        action: '/umbraco/backoffice/api/uploader/upload',
-                        label: 'Drop and drop a file, or click to select',
-                        maxSize: 5368709120,
-                        maxQueue: 1,
-                        postData: {
-                            allowedExtensions: this.#cfg('allowedExtensions'),
-                            maxFileSizeMb: this.#cfg('maxFileSizeMb'),
-                            imagesOnly: this.#imageMode,
-                            minImageWidth: this.#cfg('minImageWidth'),
-                            maxImageWidth: this.#cfg('maxImageWidth'),
-                            minImageHeight: this.#cfg('minImageHeight'),
-                            maxImageHeight: this.#cfg('maxImageHeight'),
-                        },
-                    })
-                    .on('filestart.upload', () => {
-                        this._progress = 0;
-                        this._uploadInProgress = true;
-                    })
-                    .on('fileprogress.upload', (e, file, percent) => {
-                        this._progress = percent;
-                    })
-                    .on('filecomplete.upload', (e, file, response) => {
-                        this.#processResponse(null, response);
-                    })
-                    .on('fileerror.upload', () => {
-                        this.#processResponse(
-                            'The specified file either has an invalid extensions, exceeds the maximum allowed size, or does not meet dimension constraints'
-                        );
-                    });
-            })
-            .catch(() => {
-                this._errorMessage = 'Failed to load the uploader';
-            });
-    }
-
-    #renderProgress() {
-        if (!this._uploadInProgress) {
-            return nothing;
-        }
-
-        const numbers = [];
-        numbers.push(html`<span>-</span>`);
-
-        for (let i = 0; i <= 100; i++) {
-            numbers.push(html`<span>${i}%</span>`);
-        }
-
-        return html`
+  } else
+    this._errorMessage = e;
+  this._uploadInProgress = !1;
+};
+E = function(e) {
+  this._mediaId = e.target.value, a(this, i, S).call(this);
+};
+S = function() {
+  !this._mediaId || this._mediaId.length !== 17 || fetch(`/umbraco/backoffice/api/uploader/media/${this._mediaId}`).then((e) => {
+    if (!e.ok)
+      throw new Error("not found");
+    return e.json();
+  }).then((e) => a(this, i, m).call(this, null, e)).catch(() => a(this, i, m).call(this, "No media found with the specified ID"));
+};
+O = function(e) {
+  a(this, i, w).call(this, { ...l(this, n), altText: e.target.value });
+};
+W = function(e) {
+  const t = document.createElement("input");
+  document.body.appendChild(t), t.value = e, t.select(), document.execCommand("copy"), t.remove();
+};
+C = function() {
+  if (!this._uploadInProgress)
+    return p;
+  const e = [];
+  e.push(d`<span>-</span>`);
+  for (let t = 0; t <= 100; t++)
+    e.push(d`<span>${t}%</span>`);
+  return d`
             <div class="radial-progress" data-progress=${this._progress}>
                 <div class="circle">
                     <div class="mask full"><div class="fill"></div></div>
@@ -276,24 +161,22 @@ class N3oUploaderElement extends UmbElementMixin(LitElement) {
                 </div>
                 <div class="inset">
                     <div class="percentage">
-                        <div class="numbers">${numbers}</div>
+                        <div class="numbers">${e}</div>
                     </div>
                 </div>
             </div>
         `;
-    }
-
-    #renderUpload() {
-        return html`
-            ${this.#renderProgress()}
-            ${!this._errorMessage && !this._uploadInProgress
-                ? html`
+};
+T = function() {
+  return d`
+            ${a(this, i, C).call(this)}
+            ${!this._errorMessage && !this._uploadInProgress ? d`
                       <div class="upload"></div>
 
                       <p>
                           <br />
-                          Allowed file types : ${this.#cfg('allowedExtensions')} <br />
-                          Maximum file size : ${this.#cfg('maxFileSizeMb')}MB
+                          Allowed file types : ${a(this, i, o).call(this, "allowedExtensions")} <br />
+                          Maximum file size : ${a(this, i, o).call(this, "maxFileSizeMb")}MB
                       </p>
 
                       <input
@@ -301,79 +184,56 @@ class N3oUploaderElement extends UmbElementMixin(LitElement) {
                           type="text"
                           placeholder="Load media by ID"
                           .value=${this._mediaId}
-                          @input=${this.#onMediaIdInput}
-                          @paste=${this.#onMediaIdInput} />
-                  `
-                : nothing}
-            ${this._errorMessage
-                ? html`
+                          @input=${a(this, i, E)}
+                          @paste=${a(this, i, E)} />
+                  ` : p}
+            ${this._errorMessage ? d`
                       <p class="error">
                           Uploading of the file failed with the error:<br /><br />
                           ${this._errorMessage}
                       </p>
 
                       <p class="start-over">
-                          <a @click=${() => this.#startOver(false)} class="cursor reset">Try Again</a>
+                          <a @click=${() => a(this, i, z).call(this, !1)} class="cursor reset">Try Again</a>
                       </p>
-                  `
-                : nothing}
+                  ` : p}
         `;
-    }
+};
+B = function() {
+  const e = l(this, n);
+  return d`
+            <a href=${e.urlPath} target="_blank">${e.filename} (${e.sizeMb}MB)</a>
 
-    #renderValue() {
-        const value = this.#value;
-
-        return html`
-            <a href=${value.urlPath} target="_blank">${value.filename} (${value.sizeMb}MB)</a>
-
-            ${this.#imageMode
-                ? html`
+            ${l(this, i, _) ? d`
                       <br />
-                      <img src=${value.urlPath} style="max-width: 280px; margin: 10px; background-color: #eeeeee;" />
+                      <img src=${e.urlPath} style="max-width: 280px; margin: 10px; background-color: #eeeeee;" />
                       <br /><br />
-                  `
-                : nothing}
-            ${this.#imageMode && this.#cfg('altTextRequired')
-                ? html`
+                  ` : p}
+            ${l(this, i, _) && a(this, i, o).call(this, "altTextRequired") ? d`
                       <p>
                           <input
                               class="textBox"
                               type="text"
                               placeholder="Alt text"
-                              .value=${value.altText ?? ''}
-                              @input=${this.#onAltTextInput} />
+                              .value=${e.altText ?? ""}
+                              @input=${a(this, i, O)} />
                       </p>
-                  `
-                : nothing}
+                  ` : p}
 
             <div class="start-over">
                 <div style="float: left;">
-                    <a class="cursor" @click=${() => this.#copyToClipboard(value.mediaId)}>${value.mediaId}</a>
+                    <a class="cursor" @click=${() => a(this, i, W).call(this, e.mediaId)}>${e.mediaId}</a>
                     |
-                    <a href=${value.urlPath} target="_blank">Download</a>
+                    <a href=${e.urlPath} target="_blank">Download</a>
                 </div>
 
                 <div style="float: right;">
-                    <a @click=${() => this.#startOver(true)} class="reset cursor">Delete file</a>
+                    <a @click=${() => a(this, i, z).call(this, !0)} class="reset cursor">Delete file</a>
                 </div>
             </div>
         `;
-    }
-
-    render() {
-        return html`
-            <link rel="stylesheet" href="${PLUGIN_PATH}/radial-progress.css" />
-            <link rel="stylesheet" href="${PLUGIN_PATH}/formstone/upload.css" />
-            <div class="n3o-uploader">
-                <div id=${this.#uniqueId}>
-                    ${!this.#value ? this.#renderUpload() : nothing}
-                    ${this.#value && !this._uploadInProgress ? this.#renderValue() : nothing}
-                </div>
-            </div>
-        `;
-    }
-
-    static styles = css`
+};
+c.styles = N`
         .n3o-uploader {
             max-width: 500px;
         }
@@ -420,9 +280,24 @@ class N3oUploaderElement extends UmbElementMixin(LitElement) {
             text-align: right;
         }
     `;
-}
-
-customElements.define(elementName, N3oUploaderElement);
-
-export default N3oUploaderElement;
-export { N3oUploaderElement };
+g([
+  y()
+], c.prototype, "_uploadInProgress", 2);
+g([
+  y()
+], c.prototype, "_errorMessage", 2);
+g([
+  y()
+], c.prototype, "_progress", 2);
+g([
+  y()
+], c.prototype, "_mediaId", 2);
+c = g([
+  q(L)
+], c);
+const X = c;
+export {
+  c as N3oUploaderElement,
+  X as default
+};
+//# sourceMappingURL=uploader.js.map

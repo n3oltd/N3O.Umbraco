@@ -1,210 +1,120 @@
-import { LitElement, html, css } from '@umbraco-cms/backoffice/external/lit';
-import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
-import { UMB_DOCUMENT_WORKSPACE_CONTEXT } from '@umbraco-cms/backoffice/document';
-import { UMB_BLOCK_ENTRY_CONTEXT, UMB_BLOCK_MANAGER_CONTEXT } from '@umbraco-cms/backoffice/block';
-
-const elementName = 'n3o-block-preview';
-
-// Block grid custom view that renders a server-rendered preview of the block. It posts the whole
-// block grid editor value to the backoffice preview endpoint and writes the returned HTML markup into
-// an iframe, then scales/sizes the iframe to fit its content. Ported from the AngularJS
-// "N3O.Umbraco.Blocks.Preview" controller (previewGridBlock endpoint, bind-compile/iframe rendering).
-class N3oBlockPreviewElement extends UmbElementMixin(LitElement) {
-    static properties = {
-        // Provided by the block editor custom view contract.
-        content: { attribute: false },
-        settings: { attribute: false },
-        config: { attribute: false },
-        index: { type: Number },
-        // Internal UI state.
-        _loaded: { state: true },
-    };
-
-    #nodeKey;
-    #documentTypeKey;
-    #culture = '';
-    #contentKey;
-    #reloadHandle;
-
-    constructor() {
-        super();
-
-        this._loaded = false;
-
-        this.consumeContext(UMB_DOCUMENT_WORKSPACE_CONTEXT, (context) => {
-            if (!context) {
-                return;
-            }
-
-            this.observe(context.unique, (unique) => { this.#nodeKey = unique; }, '_observeUnique');
-
-            this.observe(
-                context.splitView.activeVariantsInfo,
-                (infos) => {
-                    const culture = infos?.[0]?.culture;
-                    this.#culture = culture ?? '';
-                },
-                '_observeCulture'
-            );
-        });
-
-        this.consumeContext(UMB_BLOCK_ENTRY_CONTEXT, (context) => {
-            if (!context) {
-                return;
-            }
-
-            this.observe(context.contentKey, (key) => { this.#contentKey = key; }, '_observeContentKey');
-            // The block element's content type key (matches the AngularJS ElementEditorContentComponentController.model.contentTypeKey).
-            this.observe(context.contentElementTypeKey, (key) => { this.#documentTypeKey = key; }, '_observeContentElementTypeKey');
-        });
-
-        this.consumeContext(UMB_BLOCK_MANAGER_CONTEXT, (context) => {
-            this.#blockManager = context;
-        });
-    }
-
-    #blockManager;
-
-    connectedCallback() {
-        super.connectedCallback();
-
-        // Defer until contexts have resolved on the next frame, mirroring the original loadPreview() call.
-        this.#scheduleReload(0);
-    }
-
-    disconnectedCallback() {
-        super.disconnectedCallback();
-
-        if (this.#reloadHandle) {
-            clearTimeout(this.#reloadHandle);
-            this.#reloadHandle = undefined;
-        }
-    }
-
-    // Re-render the preview when the block's data or settings change (matches the $watch debouncing).
-    updated(changedProperties) {
-        if (changedProperties.has('content') || changedProperties.has('settings')) {
-            if (this._loaded) {
-                this.#scheduleReload(500);
-            }
-        }
-    }
-
-    #scheduleReload(delay) {
-        if (this.#reloadHandle) {
-            clearTimeout(this.#reloadHandle);
-        }
-
-        this.#reloadHandle = setTimeout(() => this.#loadPreview(), delay);
-    }
-
-    #buildBlockData() {
-        if (!this.#blockManager) {
-            return null;
-        }
-
-        const layouts = this.#blockManager.getLayouts?.() ?? [];
-        const contentData = this.#blockManager.getContents?.() ?? [];
-        const settingsData = this.#blockManager.getSettings?.() ?? [];
-        const expose = this.#blockManager.getExposes?.() ?? [];
-
-        return {
-            layout: {
-                'Umbraco.BlockGrid': layouts,
-            },
-            contentData,
-            settingsData,
-            expose,
-        };
-    }
-
-    #toElementUdi(key) {
-        if (!key) {
-            return '';
-        }
-
-        return `umb://element/${key.replace(/-/g, '')}`;
-    }
-
-    async #loadPreview() {
-        const blockData = this.#buildBlockData();
-
-        if (!blockData || !this.#documentTypeKey) {
-            return;
-        }
-
-        const nodeKey = this.#nodeKey ?? '';
-        const contentUdi = this.#toElementUdi(this.#contentKey);
-        const culture = this.#culture ?? '';
-
-        const url = `/umbraco/backoffice/api/blockPreviewBackoffice/previewGridBlock/?nodeKey=${nodeKey}&documentTypeKey=${this.#documentTypeKey}&contentUdi=${contentUdi}&culture=${culture}`;
-
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(blockData),
-        });
-
-        if (!response.ok) {
-            return;
-        }
-
-        // Endpoint returns the markup as a JSON-encoded string.
-        const markup = await response.json();
-
-        this._loaded = true;
-
-        await this.updateComplete;
-
-        this.#renderIntoFrame(markup);
-    }
-
-    #renderIntoFrame(markup) {
-        const iframe = this.renderRoot.querySelector('.block-preview-frame');
-
-        if (!iframe) {
-            return;
-        }
-
-        const doc = iframe.contentDocument || iframe.contentWindow.document;
-
-        doc.open();
-        doc.write(markup);
-        doc.close();
-
-        const resizeIframe = () => {
-            const body = doc.body.querySelector('.preview-content');
-            const height = body ? body.scrollHeight : doc.body.scrollHeight;
-
-            iframe.style.height = height + 'px';
-            iframe.style.width = '100%';
-            iframe.style.border = 'none';
-            iframe.style.display = 'block';
-            iframe.style.transform = 'scale(0.9)';
-        };
-
-        let checks = 0;
-        const interval = setInterval(() => {
-            resizeIframe();
-            if (++checks > 2) {
-                clearInterval(interval);
-            }
-        }, 100);
-    }
-
-    render() {
-        return html`
-            ${!this._loaded
-                ? html`<div class="preview-alert preview-alert-info">
+import { LitElement as B, html as C, css as N, state as k, customElement as P } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as U } from "@umbraco-cms/backoffice/element-api";
+import { UMB_BLOCK_ENTRY_CONTEXT as W, UMB_BLOCK_MANAGER_CONTEXT as S } from "@umbraco-cms/backoffice/block";
+import { UMB_DOCUMENT_WORKSPACE_CONTEXT as D } from "@umbraco-cms/backoffice/document";
+var $ = Object.defineProperty, I = Object.getOwnPropertyDescriptor, E = (e) => {
+  throw TypeError(e);
+}, y = (e, t, r, n) => {
+  for (var o = n > 1 ? void 0 : n ? I(t, r) : t, s = e.length - 1, a; s >= 0; s--)
+    (a = e[s]) && (o = (n ? a(t, r, o) : a(o)) || o);
+  return n && o && $(t, r, o), o;
+}, g = (e, t, r) => t.has(e) || E("Cannot " + r), i = (e, t, r) => (g(e, t, "read from private field"), t.get(e)), d = (e, t, r) => t.has(e) ? E("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, r), h = (e, t, r, n) => (g(e, t, "write to private field"), t.set(e, r), r), f = (e, t, r) => (g(e, t, "access private method"), r), _, v, m, w, c, l, p, b, T, x, M, K;
+const L = "n3o-block-preview";
+let u = class extends U(B) {
+  constructor() {
+    super(), d(this, p), this._loaded = !1, d(this, _), d(this, v), d(this, m, ""), d(this, w), d(this, c), d(this, l), this.consumeContext(D, (e) => {
+      if (!e)
+        return;
+      const t = e;
+      this.observe(t.unique, (r) => {
+        h(this, _, r);
+      }, "_observeUnique"), this.observe(
+        t.splitView.activeVariantsInfo,
+        (r) => {
+          var o;
+          const n = (o = r == null ? void 0 : r[0]) == null ? void 0 : o.culture;
+          h(this, m, n ?? "");
+        },
+        "_observeCulture"
+      );
+    }), this.consumeContext(W, (e) => {
+      e && (this.observe(e.contentKey, (t) => {
+        h(this, w, t);
+      }, "_observeContentKey"), this.observe(e.contentElementTypeKey, (t) => {
+        h(this, v, t);
+      }, "_observeContentElementTypeKey"));
+    }), this.consumeContext(S, (e) => {
+      h(this, l, e);
+    });
+  }
+  connectedCallback() {
+    super.connectedCallback(), f(this, p, b).call(this, 0);
+  }
+  disconnectedCallback() {
+    super.disconnectedCallback(), i(this, c) !== void 0 && (clearTimeout(i(this, c)), h(this, c, void 0));
+  }
+  // Re-render the preview when the block's data or settings change (matches the $watch debouncing).
+  updated(e) {
+    (e.has("content") || e.has("settings")) && this._loaded && f(this, p, b).call(this, 500);
+  }
+  render() {
+    return C`
+            ${this._loaded ? "" : C`<div class="preview-alert preview-alert-info">
                       <uui-loader style="color: #fff"></uui-loader>
                       Loading preview...
-                  </div>`
-                : ''}
+                  </div>`}
             <iframe class="block-preview-frame" style="display: none"></iframe>
         `;
-    }
-
-    static styles = css`
+  }
+};
+_ = /* @__PURE__ */ new WeakMap();
+v = /* @__PURE__ */ new WeakMap();
+m = /* @__PURE__ */ new WeakMap();
+w = /* @__PURE__ */ new WeakMap();
+c = /* @__PURE__ */ new WeakMap();
+l = /* @__PURE__ */ new WeakMap();
+p = /* @__PURE__ */ new WeakSet();
+b = function(e) {
+  i(this, c) !== void 0 && clearTimeout(i(this, c)), h(this, c, setTimeout(() => {
+    f(this, p, M).call(this);
+  }, e));
+};
+T = function() {
+  if (!i(this, l))
+    return null;
+  const e = i(this, l).getLayouts(), t = i(this, l).getContents(), r = i(this, l).getSettings(), n = i(this, l).getExposes();
+  return {
+    layout: {
+      "Umbraco.BlockGrid": e
+    },
+    contentData: t,
+    settingsData: r,
+    expose: n
+  };
+};
+x = function(e) {
+  return e ? `umb://element/${e.replace(/-/g, "")}` : "";
+};
+M = async function() {
+  const e = f(this, p, T).call(this);
+  if (!e || !i(this, v))
+    return;
+  const t = i(this, _) ?? "", r = f(this, p, x).call(this, i(this, w)), n = i(this, m) ?? "", o = `/umbraco/backoffice/api/blockPreviewBackoffice/previewGridBlock/?nodeKey=${t}&documentTypeKey=${i(this, v)}&contentUdi=${r}&culture=${n}`, s = await fetch(o, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(e)
+  });
+  if (!s.ok)
+    return;
+  const a = await s.json();
+  this._loaded = !0, await this.updateComplete, f(this, p, K).call(this, a);
+};
+K = function(e) {
+  const t = this.renderRoot.querySelector(".block-preview-frame");
+  if (!t)
+    return;
+  const r = t.contentDocument ?? t.contentWindow.document;
+  r.open(), r.write(e), r.close();
+  const n = () => {
+    const a = r.body.querySelector(".preview-content"), O = a ? a.scrollHeight : r.body.scrollHeight;
+    t.style.height = `${O}px`, t.style.width = "100%", t.style.border = "none", t.style.display = "block", t.style.transform = "scale(0.9)";
+  };
+  let o = 0;
+  const s = setInterval(() => {
+    n(), ++o > 2 && clearInterval(s);
+  }, 100);
+};
+u.styles = N`
         :host {
             display: block;
         }
@@ -251,9 +161,21 @@ class N3oBlockPreviewElement extends UmbElementMixin(LitElement) {
             color: #fff;
         }
     `;
-}
-
-customElements.define(elementName, N3oBlockPreviewElement);
-
-export default N3oBlockPreviewElement;
-export { N3oBlockPreviewElement };
+y([
+  k()
+], u.prototype, "content", 2);
+y([
+  k()
+], u.prototype, "settings", 2);
+y([
+  k()
+], u.prototype, "_loaded", 2);
+u = y([
+  P(L)
+], u);
+const H = u;
+export {
+  u as N3oBlockPreviewElement,
+  H as default
+};
+//# sourceMappingURL=block-preview.js.map

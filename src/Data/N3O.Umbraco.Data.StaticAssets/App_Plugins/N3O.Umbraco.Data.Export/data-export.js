@@ -1,246 +1,38 @@
-import { LitElement, html, css, nothing } from '@umbraco-cms/backoffice/external/lit';
-import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
-import { UMB_DOCUMENT_WORKSPACE_CONTEXT } from '@umbraco-cms/backoffice/document';
-
-const elementName = 'n3o-data-export';
-
-// Content app (workspace view) that exports a document's descendants of a chosen content type to
-// Excel/CSV. Ported from the AngularJS "N3O.Umbraco.Data.Export" controller. Reuses the same backend
-// endpoints verbatim. The current document key is taken from the document workspace context.
-class N3oDataExportElement extends UmbElementMixin(LitElement) {
-    static properties = {
-        _contentKey: { state: true },
-        _contentTypes: { state: true },
-        _contentType: { state: true },
-        _format: { state: true },
-        _includeUnpublished: { state: true },
-        _metadatas: { state: true },
-        _exportableProperties: { state: true },
-        _processing: { state: true },
-        _progress: { state: true },
-        _errorMessage: { state: true },
-    };
-
-    constructor() {
-        super();
-
-        this._contentKey = null;
-        this._contentTypes = [];
-        this._contentType = null;
-        this._format = 'excel';
-        this._includeUnpublished = false;
-        this._metadatas = [];
-        this._exportableProperties = [];
-        this._processing = false;
-        this._progress = '';
-        this._errorMessage = null;
-
-        this.consumeContext(UMB_DOCUMENT_WORKSPACE_CONTEXT, (context) => {
-            if (!context) {
-                return;
-            }
-
-            this.observe(
-                context.unique,
-                (unique) => {
-                    if (unique && unique !== this._contentKey) {
-                        this._contentKey = unique;
-                        this.#init(unique);
-                    }
-                },
-                '_observeUnique'
-            );
-        });
-    }
-
-    async #init(contentKey) {
-        this._contentTypes = await this.#getContentTypes(contentKey);
-
-        const res = await fetch('/umbraco/backoffice/api/Exports/lookups/contentMetadata', {
-            headers: { Accept: 'application/json' },
-        }).then((r) => r.json());
-
-        for (const metadata of res) {
-            metadata.selected = metadata.autoSelected;
-        }
-
-        res.sort((a, b) => a.displayOrder - b.displayOrder);
-
-        this._metadatas = res;
-    }
-
-    async #getContentTypes(contentId) {
-        const response = await fetch(`/umbraco/api/ContentTypes/${contentId}/relations?type=descendant`, {
-            headers: { Accept: 'application/json' },
-        });
-
-        return await response.json();
-    }
-
-    async #refreshProperties() {
-        if (!this._contentType) {
-            this._exportableProperties = [];
-            return;
-        }
-
-        const res = await fetch(
-            `/umbraco/backoffice/api/Exports/exportableProperties/${this._contentType.alias}`,
-            { headers: { Accept: 'application/json' } }
-        ).then((r) => r.json());
-
-        for (const property of res) {
-            property.selected = false;
-        }
-
-        this._exportableProperties = res;
-    }
-
-    #onContentTypeChange(event) {
-        const alias = event.target.value;
-        this._contentType = this._contentTypes.find((x) => x.alias === alias) ?? null;
-        this.#refreshProperties();
-    }
-
-    #poll(exportId) {
-        const executePoll = async (resolve, reject) => {
-            const getProgress = await fetch(`/umbraco/backoffice/api/Exports/export/${exportId}/progress`, {
-                headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-                method: 'GET',
-            });
-
-            const progressRes = await getProgress.json();
-
-            if (getProgress.status !== 200) {
-                this.#processingError(progressRes);
-                return;
-            }
-
-            if (progressRes.isComplete === true) {
-                return resolve(progressRes);
-            } else {
-                this._progress = progressRes.text;
-                setTimeout(executePoll, 2500, resolve, reject);
-            }
-        };
-
-        return new Promise(executePoll);
-    }
-
-    async #export() {
-        this._processing = true;
-        this._progress = '';
-        this._errorMessage = null;
-
-        if (!this._contentType) {
-            this.#processingError('Please select a content type');
-            return;
-        }
-
-        const selectedMetadataIds = this._metadatas.filter((x) => x.selected).map((x) => x.id);
-        const selectedPropertyAliases = this._exportableProperties.filter((x) => x.selected).map((x) => x.alias);
-
-        if (!selectedPropertyAliases.length && !selectedMetadataIds.length) {
-            this.#processingError('At least one property or metadata field must be selected');
-            return;
-        }
-
-        const req = {
-            format: this._format,
-            includeUnpublished: this._includeUnpublished,
-            metadata: selectedMetadataIds,
-            properties: selectedPropertyAliases,
-        };
-
-        const createExport = await fetch(
-            `/umbraco/backoffice/api/Exports/export/${this._contentKey}/${this._contentType.alias}`,
-            {
-                headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-                method: 'POST',
-                body: JSON.stringify(req),
-            }
-        );
-
-        const createRes = await createExport.json();
-
-        if (createExport.status !== 200) {
-            this.#processingError(createRes);
-            return;
-        }
-
-        this.#poll(createRes.id).then(async (res) => {
-            const exportFile = await fetch(`/umbraco/backoffice/api/Exports/export/${res.id}/file`, {
-                headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-                method: 'GET',
-            });
-
-            if (exportFile.status !== 200) {
-                this.#processingError(await exportFile.json());
-                return;
-            }
-
-            const blob = await exportFile.blob();
-            const header = exportFile.headers.get('Content-Disposition');
-            const parts = header.split(';');
-            const filename = parts[1].split('=')[1].replaceAll('"', '');
-            const newBlob = new Blob([blob]);
-            const blobUrl = window.URL.createObjectURL(newBlob);
-            const link = document.createElement('a');
-            link.href = blobUrl;
-            link.setAttribute('download', filename);
-            document.body.appendChild(link);
-            link.click();
-            link.parentNode.removeChild(link);
-            window.URL.revokeObjectURL(blobUrl);
-
-            this._processing = false;
-            this._progress = '';
-        });
-    }
-
-    #processingError(message) {
-        this._processing = false;
-        this._progress = '';
-        this._errorMessage = message;
-    }
-
-    #selectAllMetadatas() {
-        this._metadatas = this._metadatas.map((m) => ({ ...m, selected: true }));
-    }
-
-    #clearSelectedMetadatas() {
-        this._metadatas = this._metadatas.map((m) => ({ ...m, selected: false }));
-    }
-
-    #selectAllProperties() {
-        this._exportableProperties = this._exportableProperties.map((p) => ({ ...p, selected: true }));
-    }
-
-    #clearSelectedProperties() {
-        this._exportableProperties = this._exportableProperties.map((p) => ({ ...p, selected: false }));
-    }
-
-    #toggleMetadata(metadata, checked) {
-        this._metadatas = this._metadatas.map((m) => (m === metadata ? { ...m, selected: checked } : m));
-    }
-
-    #toggleProperty(property, checked) {
-        this._exportableProperties = this._exportableProperties.map((p) =>
-            p === property ? { ...p, selected: checked } : p
-        );
-    }
-
-    render() {
-        return html`
+import { LitElement as O, nothing as N, html as _, css as D, state as p, customElement as R } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as B } from "@umbraco-cms/backoffice/element-api";
+import { UMB_DOCUMENT_WORKSPACE_CONTEXT as K } from "@umbraco-cms/backoffice/document";
+var L = Object.defineProperty, z = Object.getOwnPropertyDescriptor, y = (e) => {
+  throw TypeError(e);
+}, c = (e, t, s, l) => {
+  for (var n = l > 1 ? void 0 : l ? z(t, s) : t, o = e.length - 1, h; o >= 0; o--)
+    (h = e[o]) && (n = (l ? h(t, s, n) : h(n)) || n);
+  return l && n && L(t, s, n), n;
+}, W = (e, t, s) => t.has(e) || y("Cannot " + s), F = (e, t, s) => t.has(e) ? y("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, s), i = (e, t, s) => (W(e, t, "access private method"), s), a, g, x, v, $, T, k, u, P, E, C, w, j, A;
+const G = "n3o-data-export";
+let r = class extends B(O) {
+  constructor() {
+    super(), F(this, a), this._contentKey = null, this._contentTypes = [], this._contentType = null, this._format = "excel", this._includeUnpublished = !1, this._metadatas = [], this._exportableProperties = [], this._processing = !1, this._progress = "", this._errorMessage = null, this.consumeContext(K, (e) => {
+      e && this.observe(
+        e.unique,
+        (t) => {
+          t && t !== this._contentKey && (this._contentKey = t, i(this, a, g).call(this, t));
+        },
+        "_observeUnique"
+      );
+    });
+  }
+  render() {
+    return _`
             <uui-box headline="Options">
                 <umb-property-layout label="Content Type" mandatory>
                     <div slot="editor">
                         <select
                             ?disabled=${this._processing}
-                            @change=${this.#onContentTypeChange}>
+                            @change=${i(this, a, $)}>
                             <option value="" ?selected=${!this._contentType}></option>
                             ${this._contentTypes.map(
-                                (item) => html`<option value=${item.alias}>${item.name}</option>`
-                            )}
+      (e) => _`<option value=${e.alias}>${e.name}</option>`
+    )}
                         </select>
                     </div>
                 </umb-property-layout>
@@ -252,9 +44,9 @@ class N3oDataExportElement extends UmbElementMixin(LitElement) {
                                 type="radio"
                                 name="format"
                                 value="excel"
-                                .checked=${this._format === 'excel'}
+                                .checked=${this._format === "excel"}
                                 ?disabled=${this._processing}
-                                @change=${() => (this._format = 'excel')} />
+                                @change=${() => this._format = "excel"} />
                             Excel
                         </label>
                         <br />
@@ -263,9 +55,9 @@ class N3oDataExportElement extends UmbElementMixin(LitElement) {
                                 type="radio"
                                 name="format"
                                 value="csv"
-                                .checked=${this._format === 'csv'}
+                                .checked=${this._format === "csv"}
                                 ?disabled=${this._processing}
-                                @change=${() => (this._format = 'csv')} />
+                                @change=${() => this._format = "csv"} />
                             CSV
                         </label>
                     </div>
@@ -277,77 +69,186 @@ class N3oDataExportElement extends UmbElementMixin(LitElement) {
                             type="checkbox"
                             .checked=${this._includeUnpublished}
                             ?disabled=${this._processing}
-                            @change=${(e) => (this._includeUnpublished = e.target.checked)} />
+                            @change=${(e) => this._includeUnpublished = e.target.checked} />
                     </div>
                 </umb-property-layout>
             </uui-box>
 
             <uui-box headline="Metadata">
                 <div class="listTable">
-                    <a class="umb-outline" @click=${this.#selectAllMetadatas}>Select All</a> |
-                    <a class="umb-outline" @click=${this.#clearSelectedMetadatas}>Clear Selection</a>
+                    <a class="umb-outline" @click=${i(this, a, P)}>Select All</a> |
+                    <a class="umb-outline" @click=${i(this, a, E)}>Clear Selection</a>
 
                     <br /><br />
 
                     <ul class="selectionCheckBoxes">
                         ${this._metadatas.map(
-                            (metadata) => html`
+      (e) => _`
                                 <li>
                                     <label>
                                         <input
                                             type="checkbox"
-                                            .checked=${!!metadata.selected}
-                                            @change=${(e) => this.#toggleMetadata(metadata, e.target.checked)} />
-                                        &nbsp;${metadata.name}
+                                            .checked=${!!e.selected}
+                                            @change=${(t) => i(this, a, j).call(this, e, t.target.checked)} />
+                                        &nbsp;${e.name}
                                     </label>
                                 </li>
                             `
-                        )}
+    )}
                     </ul>
                 </div>
             </uui-box>
 
             <uui-box headline="Properties">
                 <div class="listTable">
-                    <a class="umb-outline" @click=${this.#selectAllProperties}>Select All</a> |
-                    <a class="umb-outline" @click=${this.#clearSelectedProperties}>Clear Selection</a>
+                    <a class="umb-outline" @click=${i(this, a, C)}>Select All</a> |
+                    <a class="umb-outline" @click=${i(this, a, w)}>Clear Selection</a>
 
                     <br /><br />
 
                     <ul class="selectionCheckBoxes">
                         ${this._exportableProperties.map(
-                            (property) => html`
+      (e) => _`
                                 <li>
                                     <label>
                                         <input
                                             type="checkbox"
-                                            .checked=${!!property.selected}
-                                            @change=${(e) => this.#toggleProperty(property, e.target.checked)} />
-                                        &nbsp;${property.columnTitle}
+                                            .checked=${!!e.selected}
+                                            @change=${(t) => i(this, a, A).call(this, e, t.target.checked)} />
+                                        &nbsp;${e.columnTitle}
                                     </label>
                                 </li>
                             `
-                        )}
+    )}
                     </ul>
                 </div>
 
-                ${this._errorMessage
-                    ? html`<em class="text-error">${this._errorMessage}</em>`
-                    : nothing}
+                ${this._errorMessage ? _`<em class="text-error">${this._errorMessage}</em>` : N}
             </uui-box>
 
             <div class="actions">
                 <uui-button
                     look="primary"
                     ?disabled=${this._processing}
-                    @click=${this.#export}
-                    label=${this._processing ? this._progress || 'Export' : 'Export'}>
+                    @click=${i(this, a, k)}
+                    label=${this._processing && this._progress || "Export"}>
                 </uui-button>
             </div>
         `;
+  }
+};
+a = /* @__PURE__ */ new WeakSet();
+g = async function(e) {
+  this._contentTypes = await i(this, a, x).call(this, e);
+  const t = await fetch("/umbraco/backoffice/api/Exports/lookups/contentMetadata", {
+    headers: { Accept: "application/json" }
+  }).then((s) => s.json());
+  for (const s of t)
+    s.selected = s.autoSelected;
+  t.sort((s, l) => s.displayOrder - l.displayOrder), this._metadatas = t;
+};
+x = async function(e) {
+  return await (await fetch(`/umbraco/api/ContentTypes/${e}/relations?type=descendant`, {
+    headers: { Accept: "application/json" }
+  })).json();
+};
+v = async function() {
+  if (!this._contentType) {
+    this._exportableProperties = [];
+    return;
+  }
+  const e = await fetch(
+    `/umbraco/backoffice/api/Exports/exportableProperties/${this._contentType.alias}`,
+    { headers: { Accept: "application/json" } }
+  ).then((t) => t.json());
+  for (const t of e)
+    t.selected = !1;
+  this._exportableProperties = e;
+};
+$ = function(e) {
+  const t = e.target.value;
+  this._contentType = this._contentTypes.find((s) => s.alias === t) ?? null, i(this, a, v).call(this);
+};
+T = function(e) {
+  const t = async (s, l) => {
+    const n = await fetch(`/umbraco/backoffice/api/Exports/export/${e}/progress`, {
+      headers: { Accept: "application/json", "Content-Type": "application/json" },
+      method: "GET"
+    }), o = await n.json();
+    if (n.status !== 200) {
+      i(this, a, u).call(this, String(o)), l(o);
+      return;
     }
-
-    static styles = css`
+    o.isComplete === !0 ? s(o) : (this._progress = o.text, setTimeout(() => void t(s, l), 2500));
+  };
+  return new Promise(t);
+};
+k = async function() {
+  if (this._processing = !0, this._progress = "", this._errorMessage = null, !this._contentType) {
+    i(this, a, u).call(this, "Please select a content type");
+    return;
+  }
+  const e = this._metadatas.filter((o) => o.selected).map((o) => o.id), t = this._exportableProperties.filter((o) => o.selected).map((o) => o.alias);
+  if (!t.length && !e.length) {
+    i(this, a, u).call(this, "At least one property or metadata field must be selected");
+    return;
+  }
+  const s = {
+    format: this._format,
+    includeUnpublished: this._includeUnpublished,
+    metadata: e,
+    properties: t
+  }, l = await fetch(
+    `/umbraco/backoffice/api/Exports/export/${this._contentKey}/${this._contentType.alias}`,
+    {
+      headers: { Accept: "application/json", "Content-Type": "application/json" },
+      method: "POST",
+      body: JSON.stringify(s)
+    }
+  ), n = await l.json();
+  if (l.status !== 200) {
+    i(this, a, u).call(this, String(n));
+    return;
+  }
+  i(this, a, T).call(this, n.id).then(async (o) => {
+    var m, f;
+    const h = await fetch(`/umbraco/backoffice/api/Exports/export/${o.id}/file`, {
+      headers: { Accept: "application/json", "Content-Type": "application/json" },
+      method: "GET"
+    });
+    if (h.status !== 200) {
+      i(this, a, u).call(this, String(await h.json()));
+      return;
+    }
+    const M = await h.blob(), S = ((m = ((h.headers.get("Content-Disposition") ?? "").split(";")[1] ?? "").split("=")[1]) == null ? void 0 : m.replaceAll('"', "")) ?? "export", U = new Blob([M]), b = window.URL.createObjectURL(U), d = document.createElement("a");
+    d.href = b, d.setAttribute("download", S), document.body.appendChild(d), d.click(), (f = d.parentNode) == null || f.removeChild(d), window.URL.revokeObjectURL(b), this._processing = !1, this._progress = "";
+  }).catch(() => {
+  });
+};
+u = function(e) {
+  this._processing = !1, this._progress = "", this._errorMessage = e;
+};
+P = function() {
+  this._metadatas = this._metadatas.map((e) => ({ ...e, selected: !0 }));
+};
+E = function() {
+  this._metadatas = this._metadatas.map((e) => ({ ...e, selected: !1 }));
+};
+C = function() {
+  this._exportableProperties = this._exportableProperties.map((e) => ({ ...e, selected: !0 }));
+};
+w = function() {
+  this._exportableProperties = this._exportableProperties.map((e) => ({ ...e, selected: !1 }));
+};
+j = function(e, t) {
+  this._metadatas = this._metadatas.map((s) => s === e ? { ...s, selected: t } : s);
+};
+A = function(e, t) {
+  this._exportableProperties = this._exportableProperties.map(
+    (s) => s === e ? { ...s, selected: t } : s
+  );
+};
+r.styles = D`
         :host {
             display: block;
             padding: var(--uui-size-layout-1);
@@ -385,9 +286,42 @@ class N3oDataExportElement extends UmbElementMixin(LitElement) {
             margin-top: var(--uui-size-layout-1);
         }
     `;
-}
-
-customElements.define(elementName, N3oDataExportElement);
-
-export default N3oDataExportElement;
-export { N3oDataExportElement };
+c([
+  p()
+], r.prototype, "_contentKey", 2);
+c([
+  p()
+], r.prototype, "_contentTypes", 2);
+c([
+  p()
+], r.prototype, "_contentType", 2);
+c([
+  p()
+], r.prototype, "_format", 2);
+c([
+  p()
+], r.prototype, "_includeUnpublished", 2);
+c([
+  p()
+], r.prototype, "_metadatas", 2);
+c([
+  p()
+], r.prototype, "_exportableProperties", 2);
+c([
+  p()
+], r.prototype, "_processing", 2);
+c([
+  p()
+], r.prototype, "_progress", 2);
+c([
+  p()
+], r.prototype, "_errorMessage", 2);
+r = c([
+  R(G)
+], r);
+const H = r;
+export {
+  r as N3oDataExportElement,
+  H as default
+};
+//# sourceMappingURL=data-export.js.map

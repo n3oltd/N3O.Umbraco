@@ -1,31 +1,20 @@
-var blazorJsFile = '/_framework/blazor.server.js';
-
-function blazorIsLoaded(){
-    let scripts = $('script').filter(function () {
-        return ($(this).attr('src') === blazorJsFile);
-    });
-
-    return scripts.length !== 1;
+const e = "/_framework/blazor.server.js";
+function r() {
+  return $("script").filter(function() {
+    return $(this).attr("src") === e;
+  }).length !== 1;
 }
-
-if (blazorIsLoaded()) {
-    let scriptElement = document.createElement('script');
-    scriptElement.src = blazorJsFile;
-    scriptElement.onload = startBlazor;
-
-    scriptElement.setAttribute("autostart", "false");
-
-    document.body.appendChild(scriptElement);
+if (r()) {
+  const t = document.createElement("script");
+  t.src = e, t.onload = o, t.setAttribute("autostart", "false"), document.body.appendChild(t);
 }
-
-async function startBlazor() {
-    Blazor.start({
-        configureSignalR: function (builder) {
-            builder.withUrl("/_blazor");
-            builder.withAutomaticReconnect([0, 2000, 10000, 15000, 20000, 30000, 60000]);
-
-            const connection = builder.build();
-            connection.serverTimeoutInMilliseconds = 30_000;
-        }
-    });
+async function o() {
+  Blazor.start({
+    configureSignalR: function(t) {
+      t.withUrl("/_blazor"), t.withAutomaticReconnect([0, 2e3, 1e4, 15e3, 2e4, 3e4, 6e4]);
+      const n = t.build();
+      n.serverTimeoutInMilliseconds = 3e4;
+    }
+  });
 }
+//# sourceMappingURL=N3O.Umbraco.Blazor.BackOffice.js.map

@@ -1,6 +1,8 @@
 # Migration Blockers
 
-*Last updated: 2026-06-02 (session 5)*
+*Last updated: 2026-06-02 (session 6)*
+
+> **Session 6:** all 16 Bellissima plugin areas converted to **TypeScript + Vite** (see `TYPESCRIPT_MIGRATION_GUIDE.md` + `SESSION_HANDOFF.md`); **BLOCKER-11 resolved** (boot-crash fix, verified live); live backoffice smoke-test passed.
 
 Items that require external action, design decisions, or significant implementation effort before full production readiness.
 
@@ -160,7 +162,7 @@ This plan needs to be registered in a Composer via `builder.PackageMigrationPlan
 
 ### BLOCKER-07: Bellissima Frontend — All AngularJS Plugins
 
-**Status:** Largely DONE (2026-06-02) — 15 of 16 plugin areas migrated to `umbraco-package.json` + Lit web components; only `telethon-on-air-rule` remains blocked (depends on BLOCKER-04). Build 0 errors; app boots clean; all assets served HTTP 200; WelcomeDashboard + Scheduler dashboards render live; both Data property-editor data types resolve. See `BELLISSIMA_MIGRATION_LOG.md` for the per-plugin table, the systematic alias fix, and the remaining live-render checklist (property editors / workspace views / Blocks.Preview need content fixtures to render — demo DB has no content). Migration guide: `BELLISSIMA_MIGRATION_GUIDE.md`.
+**Status:** DONE + modernized to TypeScript (2026-06-02). 15 of 16 plugin areas migrated to `umbraco-package.json` + Lit (only `telethon-on-air-rule` blocked, depends on BLOCKER-04). **Session 6:** all 16 areas (13 build units) further converted from plain-JS to **TypeScript + Vite** — per-project `ClientApp/` (`package.json`/`tsconfig.json`/`vite.config.ts`/`src/*.ts`) with an MSBuild `BuildClientApp` target running `npm ci`/`npm run build`; `@umbraco/*` kept external, code + npm libs bundled (Handsontable, cropperjs, @editorjs/* now npm deps; formstone/jQuery kept vendored + flagged). Full solution build 0 errors. **Live smoke-test passed:** app boots, WelcomeDashboard + Scheduler render, 6 referenced property-editor UIs register & are selectable, zero N3O console errors. Recipe: `TYPESCRIPT_MIGRATION_GUIDE.md`; AngularJS→Lit history: `BELLISSIMA_MIGRATION_LOG.md`/`BELLISSIMA_MIGRATION_GUIDE.md`. **Still pending:** live property-editor render *inside a content node* (needs doctype/content fixtures), and the 5 plugins not referenced by DemoSite.Web (EditorJs, Cells, Blocks.Preview, Cloud.Platforms.Preview, Blazor.BackOffice).
 
 **Critical fix discovered during testing:** each custom `propertyEditorUi.alias` (and `propertyEditorSchemaAlias`) must equal the backend `[DataEditor]` alias (NOT a new `N3O.PropertyEditorUi.*`), else existing data types show "Property Editor UI not found". Applied to all custom editors (TextResourceEditor's backend alias is `N3O.Umbraco.TemplateTextEditor`).
 
@@ -256,13 +258,15 @@ Three server-side gating losses from the AngularJS→Bellissima move:
 
 ---
 
-### BLOCKER-11: `DataComposer.EnsureDataTypeExists` lookup by alias — HIGH
+### BLOCKER-11: `DataComposer.EnsureDataTypeExists` lookup by alias — RESOLVED (2026-06-02, session 6)
 
-**Status:** Open — found by the session-5 review.
+**Status:** ✅ RESOLVED. The existence check now looks up by the deterministic Key (the same key it sets on create) via the async API: `_dataTypeService.GetAsync(UmbracoId.Generate(IdScope.DataType, dataEditor.Alias)).GetAwaiter().GetResult()` (blocking is safe — runs once at startup, no sync context, like the existing sync `Save()`). `GetDataType(Guid)` does NOT exist as a sync overload in v17 (only `GetDataType(string)`, which matches by Name); `GetAsync(Guid)` is the v17 key-based lookup. Verified live: app boots clean, both N3O data types (`N3O Import Data Editor`, `N3O Import Notices Viewer`) exist **once each — no duplicates** — across restarts.
 
-`EnsureDataTypeExists` calls `IDataTypeService.GetDataType(dataEditor.Alias)` and sets `dataType.Name = Alias`. `GetDataType(string)` matches by **Name**, so on a v13→v17 upgrade the existing data type row is never found → a **duplicate is created on every startup** (named with the raw alias), and `ImportsConfigurator.SetDataType(DataEditorName)` then fails to find it, misconfiguring UIBuilder import fields.
+**How it surfaced:** restarting the app against a DB already containing the data types (created on a prior boot) crashed every startup at `DataComposer.cs:155` — `Cannot insert duplicate key row in 'umbracoNode' (IX_umbracoNode_UniqueId)` for the deterministic key `9cba68d8-…` (ImportNoticesViewer). The first-ever boot succeeded (empty DB → insert), every subsequent boot crashed (lookup-by-Name missed the row → re-insert → unique-index violation).
 
-**Action:** look up by deterministic key (`GetDataType(UmbracoId.Generate(IdScope.DataType, alias))`) or `GetByEditorAlias()`, and keep `dataType.Name = DataEditorName` (friendly). Consider a rename migration for existing installs.
+**Original (now fixed):** `EnsureDataTypeExists` called `IDataTypeService.GetDataType(dataEditor.Alias)` and set `dataType.Name = Alias`. `GetDataType(string)` matches by **Name**, so the existing data type row was never found → duplicate created on every startup.
+
+⚠️ **Follow-up (separate, minor):** the in-code data types persist `EditorAlias` but **not** `EditorUiAlias`, so the v17 data-type editor screen shows an empty "Select a property editor" picker (the editors themselves ARE registered & selectable — confirmed live). Consider setting `dataType.EditorUiAlias = dataEditor.Alias` in `EnsureDataTypeExists`. Not a TS-migration regression.
 
 ---
 
@@ -276,11 +280,11 @@ Three server-side gating losses from the AngularJS→Bellissima move:
 | ~~04~~ | ~~Engage Cockpit factory missing~~ | **RESOLVED** (2026-06-02) — `TelethonOnAirCockpitSegmentRuleFactory` implemented + registrations re-enabled; API verified by reflection. AngularJS telethon UI still blocked. | — |
 | ~~05~~ | ~~uSync Publisher v17~~ | **RESOLVED** (2026-06-02) — reimplemented on uSync.Publisher v17 `PublisherProcessor`/`Jumoo.Processing` (API found by reflection; no public docs). E2E test w/ remote server still advised. | — |
 | 06 | Nested Content DB migration | **Registered + v17 SQL fixed** (2026-06-02); empty-path JSON + transaction fixed (session 5). ⚠️ Value-transform shape + per-site run still need a real legacy-DB dry-run. | Critical |
-| 07 | Bellissima frontend (all AngularJS) | **Largely done** (15/16 migrated; telethon blocked on 04; live-render fixtures pending) | High |
+| 07 | Bellissima frontend (all AngularJS) | **Done + TypeScript** (15/16 migrated then converted to TS+Vite; telethon blocked on 04; in-content live-render fixtures pending) | Low |
 | 08 | Forms subscription license | Procurement | High |
 | ~~09~~ | ~~Assembly version `13.0.0`~~ | **DONE (placeholder)** (2026-06-02) — bulk-set to `17.0.0` across 114 csproj; re-stamp CalVer at publish | Low |
 | 10 | Access-control regressions (Hangfire / Export / Import / Preview) | **Open** — security; restore admin/user-group/content-type gating (session-5 review) | High |
-| 11 | `DataComposer.EnsureDataTypeExists` lookup-by-alias | **Open** — dup data types on upgrade; look up by key/editor-alias (session-5 review) | High |
+| ~~11~~ | ~~`DataComposer.EnsureDataTypeExists` lookup-by-alias~~ | **RESOLVED** (2026-06-02, session 6) — lookup by deterministic Key via `GetAsync`; verified live (no dup data types, app boots). Minor follow-up: also set `EditorUiAlias`. | — |
 | — | Bundling throws at render (RR-10) | **Decision** — delete orphaned project or no-op the tag-helpers; see `REVIEW_FINDINGS.md` | Medium |
 
 *Session-5 fixed defects (build 0 errors, boot clean) and the full review finding list live in `REVIEW_FINDINGS.md`.*

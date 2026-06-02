@@ -1,6 +1,6 @@
 # N3O.Umbraco: Umbraco 13 → 17 Migration Plan
 
-*Last updated: 2026-06-02 (session 5) — uSync Publisher reimplemented, 14-agent branch review (`REVIEW_FINDINGS.md`), review-found defects fixed, NestedContent→BlockList code replacement done*
+*Last updated: 2026-06-02 (session 6) — all Bellissima plugins converted to TypeScript + Vite, BLOCKER-11 fixed, live backoffice smoke-test passed*
 
 ---
 
@@ -9,6 +9,8 @@
 N3O.Umbraco is a **shared Umbraco package framework** (120 projects) consumed by multiple client sites. The migration target is **Umbraco 17.3.5 on .NET 10**.
 
 **Current state:** The solution **builds with 0 errors** and **the app starts successfully (HTTP 200 confirmed)**. All compile-time API breakages and the blocking runtime startup crashes have been resolved. **The AngularJS → Bellissima frontend migration (BLOCKER-07) is now largely done** — all 16 plugin areas migrated to `umbraco-package.json` + Lit (15 done, telethon blocked); dashboards + Data property editors verified live in the running backoffice; a critical property-editor alias bug was found and fixed.
+
+**Session 6 update:** All 16 Bellissima plugin areas (13 build-unit projects) were converted from plain-JS Lit to **TypeScript + Vite** (the Umbraco-official package build) — each project gains a `ClientApp/` (`package.json`/`tsconfig.json`/`vite.config.ts`/`src/*.ts`) and an MSBuild `BuildClientApp` target that runs `npm ci`/`npm run build` on every `dotnet build`; `@umbraco-cms/backoffice/*` stays external (runtime import-mapped), own code + npm libs are bundled (Handsontable/cropperjs/@editorjs npm-bundled; formstone+jQuery kept vendored + flagged). Done via 12 parallel Sonnet subagents off a verified reference (SerpEditor). **Full solution build 0 errors.** Restarting the app surfaced **BLOCKER-11** (a hard boot-crash: `DataComposer.EnsureDataTypeExists` re-inserting an existing data type) — **fixed** (lookup by deterministic Key via `GetAsync`). **Live backoffice smoke-test passed** (logged in): WelcomeDashboard + Scheduler render, 6 referenced property-editor UIs register & are selectable, no duplicate data types, zero N3O console errors. New build prerequisite: **Node on every build/CI machine**. Recipe guide: `TYPESCRIPT_MIGRATION_GUIDE.md`. Remaining frontend gap: in-content live-render (needs fixtures) + the 5 plugins not referenced by DemoSite.Web.
 
 **Session 5 update:** uSync Publisher `SyncContentHandler` reimplemented on the v17 `PublisherProcessor`/`Jumoo.Processing` API (RR-01/BLOCKER-05 — *resolved in code, needs remote-server E2E*). A **14-agent branch deliberation review** (verdict: make-sense-with-fixes) ran over the whole `v17-Talha` diff — full tracker `REVIEW_FINDINGS.md`. Four review-found defects were fixed (CRITICAL duplicate `Umbraco.BlockList` converter → deleted; NC migration empty-path JSON + non-transactional steps; `UrlInfo.AsUrl` arg order), and the **NestedContent→BlockList code replacement** was completed (lookup re-key, `[Obsolete(error:true)]` redirects, a live `DonationItemReceiver` caller fixed). New production blockers surfaced: **BLOCKER-10 access-control regressions** and **BLOCKER-11 `EnsureDataTypeExists` dup-data-types** (see `MIGRATION_BLOCKERS.md`). Remaining: **live-render testing (needs content fixtures), the deferred review blockers, public-API obsolete/guide work, and per-site data migration (+ real-data dry-run of the NC→BlockList value transform)**. See `BELLISSIMA_MIGRATION_LOG.md` and `REVIEW_FINDINGS.md`.
 
@@ -65,7 +67,9 @@ N3O.Umbraco is a **shared Umbraco package framework** (120 projects) consumed by
 | `KonstruktConfigurator.GetContentSection` | **Done** | `ConditionalWeakTable` ensures `WithSection("content")` called once per builder |
 | `launchSettings.json` `dotnetRunMessages` type | **Done** | Fixed `"true"` string → `true` boolean |
 | **Assembly `<Version>` tags** | **Done (placeholder, 2026-06-02)** | Bulk-set `13.0.0`→`17.0.0` across 114 csproj; re-stamp CalVer before NuGet publish |
-| **All App_Plugins AngularJS → Bellissima** | **Largely done (2026-06-02)** | 15/16 areas migrated to `umbraco-package.json` + Lit (telethon blocked on RR-02). Dashboards + Data property editors verified live. Property-editor UI alias must = backend `[DataEditor]` alias. Detail: `BELLISSIMA_MIGRATION_LOG.md` |
+| **All App_Plugins AngularJS → Bellissima** | **Done (2026-06-02)** | 15/16 areas migrated to `umbraco-package.json` + Lit (telethon blocked on RR-02). Property-editor UI alias must = backend `[DataEditor]` alias. Detail: `BELLISSIMA_MIGRATION_LOG.md` |
+| **All Bellissima plugins → TypeScript + Vite** | **Done (2026-06-02, session 6)** | 16 areas / 13 build units. Per-project `ClientApp/` + MSBuild `BuildClientApp` (npm ci/build); `@umbraco/*` external, libs bundled. Build 0 errors; smoke-tested live. Needs Node on build machines. Guide: `TYPESCRIPT_MIGRATION_GUIDE.md` |
+| `DataComposer.EnsureDataTypeExists` dup data types (BLOCKER-11) | **Done (2026-06-02, session 6)** | Lookup by deterministic Key via `GetAsync` (was `GetDataType(alias)` by Name → boot-crash on restart). Verified live: no dup data types |
 | Content app registration (Import/Export/Preview) | **Done (migrated)** | Now `workspaceView` extensions (Data.Import, Data.Export, Cloud.Platforms.Preview); not yet live-rendered (need a content node) |
 | Dashboard registration (Scheduler, Welcome) | **Done + verified live** | `dashboard` extensions; both render in the backoffice (Welcome=Content, Scheduler=Settings/Hangfire iframe) |
 | Property editor UI alias = backend `[DataEditor]` alias | **Done** | Critical fix: data types store `editorUiAlias`; all 8 custom editors re-aliased to backend alias (TextResourceEditor → `N3O.Umbraco.TemplateTextEditor`) |
@@ -282,9 +286,10 @@ Migration is complete when:
 - [x] No removed C# APIs used (UmbracoApiController, IPublishedCache, IPublishedSnapshotAccessor, NestedContentConfiguration, abstract BlockValue, BlockItemData.PropertyValues, etc.)
 - [x] All third-party packages on v17-compatible versions (Contentment 6.1.4, UIBuilder 17.2.0, Engage 17.2.2, Forms 17.x, uSync 17.3.6, Workflow 17.0.2, AzureBlob 17.0.0, GMaps 17.0.0, Perplex 4.x)
 - [x] All AngularJS `package.manifest` + controllers replaced with `umbraco-package.json` + Lit web components *(15/16; telethon blocked on BLOCKER-04)*
+- [x] All Bellissima plugins converted to **TypeScript + Vite** (session 6) — build 0 errors; `BuildClientApp` MSBuild target wires npm into `dotnet build`
 - [~] Content apps (Import, Export, Platforms Preview) registered as `workspaceView` — **migrated; live-render test pending (needs content node)**
 - [x] Dashboards (Scheduler, WelcomeDashboard) registered and **verified rendering** in backoffice
-- [~] Property editors render live in a content workspace — **pending content/data-type fixtures** (Cells, Cropper, EditorJs, SerpEditor, TextResourceEditor, Uploader; Data editors' data types resolve)
+- [~] Property editors — **registered & selectable in the live backoffice (6 referenced UIs verified session 6)**; render *inside a content workspace* still pending content/data-type fixtures (Cells, Cropper, EditorJs, SerpEditor, TextResourceEditor, Uploader)
 - [ ] **Decision:** Cropper/Uploader — keep bundled cropperjs/Formstone (needs jQuery) or switch to Umbraco native media/image picker
 - [ ] Campaign/Offering workspace views implemented
 - [ ] `TelethonOnAirCockpitSegmentRuleFactory` implemented and registered
@@ -305,4 +310,4 @@ Migration is complete when:
 
 ---
 
-*Effort note: The Bellissima frontend rewrite (Phase 1) is the largest remaining effort — 15 plugin areas, each requiring a new Lit web component. Treat it as a dedicated frontend sprint.*
+*Effort note: The Bellissima frontend (Phase 1) is **done** — all plugin areas are Lit web components, now on TypeScript + Vite (session 6), build-verified and smoke-tested live. The largest remaining efforts are now **Phase 4 per-site content data migration** (NC→BlockList value-transform dry-run on a real legacy DB) and the **deferred security/decision blockers** (BLOCKER-10 access-control, RR-10 Bundling), plus in-content live-render testing once content fixtures exist.*

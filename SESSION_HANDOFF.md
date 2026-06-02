@@ -1,12 +1,36 @@
 # Session Handoff — N3O.Umbraco v17 Migration
 
-*Updated: 2026-06-02 (session 5) — use this to orient the next session*
+*Updated: 2026-06-02 (session 6) — use this to orient the next session*
 
 ---
 
 ## Current State
 
-**Solution builds with 0 errors (re-verified this session). App starts and serves HTTP 200.** Umbraco 17.3.5 on .NET 10, all 120 projects.
+**Solution builds with 0 errors. App boots clean and the backoffice runs (smoke-tested live this session).** Umbraco 17.3.5 on .NET 10, all 120 projects.
+
+**Latest (session 6):** All 16 Bellissima plugin areas (13 build units) converted from plain-JS Lit to **TypeScript + Vite** (per-project `ClientApp/` + an MSBuild `BuildClientApp` target that runs `npm ci`/`npm run build` on `dotnet build`). **BLOCKER-11 fixed** (was a hard boot-crash on restart). Live backoffice smoke-test passed: dashboards render, 6 referenced property-editor UIs register, zero N3O console errors. Recipe guide: `TYPESCRIPT_MIGRATION_GUIDE.md`. Full detail in the session-6 entry below.
+
+**Build prerequisite now:** every build/CI machine needs **Node** (each `ClientApp` does its own `npm ci`, ~240 pkgs; global npm cache makes repeats fast). `node_modules` is ignored by the single **root `.gitignore`** (the per-ClientApp `.gitignore` files were consolidated away). The `App_Plugins/*.js`/`.js.map` are build outputs — decide whether to commit them or gitignore + `git rm --cached`.
+
+### Session 6 — Bellissima plugins → TypeScript + Vite (modern build)
+
+Converted **all 16 migrated Bellissima plugin areas (13 csproj build units)** from plain-JS Lit to **TypeScript + Vite**, the Umbraco-official package build. Per `*.StaticAssets` (and the core `N3O.Umbraco.Cms`) project: a `ClientApp/` folder (outside `App_Plugins`) holds `package.json` + `tsconfig.json` + `vite.config.ts` + `src/*.ts`; Vite **lib mode** keeps `@umbraco-cms/backoffice/*` external (runtime import-mapped) and bundles own code + npm libs into `App_Plugins/<name>/<file>.js`. An MSBuild `BuildClientApp` target (`BeforeTargets=AssignTargetPaths`) runs `npm ci`/`npm run build` on every `dotnet build` (chosen model — build produces JS; `<Content>` glob excludes `*.js`/`*.js.map`, the target re-adds them). `umbraco-package.json` registration + aliases UNCHANGED.
+
+Reference (built + verified first, then templated): `Plugins/SerpEditor/.../ClientApp`. Recipe guide: repo-root **`TYPESCRIPT_MIGRATION_GUIDE.md`**. Deps pinned `@umbraco-cms/backoffice@17.3.5`, `vite@^6`, `typescript@~5.7`. Migrated via **12 parallel Sonnet subagents** (one per build unit). Components use Lit decorators (`@customElement`/`@property`/`@state`) + Umbraco types (`UmbPropertyEditorUiElement`, etc.).
+
+**Verified:** every project `npm run build` OK; **full `dotnet build N3O.Umbraco.sln` → 0 errors**; outputs keep bare `@umbraco/*` imports + register their custom element; `.targets` copy propagates fresh JS to DemoSite.
+
+Third-party libs: **Cells** → `handsontable@12.3.0` npm-bundled (CSS inlined via `?inline`), vendored copy deleted. **Cropper** → `cropperjs@1.4.0` npm-bundled; **formstone+jQuery kept vendored + flagged** (pending native-picker decision). **EditorJs** → all `@editorjs/*` moved to npm deps, Vite-bundled, old esbuild `editorjs-bundle/all.js`+`package.json` deleted. **Uploader** → formstone+CDN-jQuery kept as-is + flagged. **Blazor.BackOffice** → minimal TS port, global-jQuery loader kept + flagged.
+
+**Flagged runtime risks (faithful ports, unverified live — mostly pre-existing):** Cloud.Platforms.Preview reads `getData()` fields (`contentType.alias`/`parent.unique`) absent from the v17 typed model (cast); Blocks.Preview block-context casts; EditorJs modal result shapes (`UMB_MEDIA_PICKER_MODAL`/`UMB_LINK_PICKER_MODAL`); Data.Import legacy `#/content?dashboard=imports` hash route; jQuery deps (Cropper/Uploader/Blazor). **Live backoffice re-test still pending** (needs content fixtures — same as session 5).
+
+**Build-model cost:** every build/CI machine now needs Node; each ClientApp has its own `node_modules` (~240 pkgs). `node_modules/` gitignored per ClientApp. The App_Plugins built `.js`/`.js.map` are now build outputs (previously-committed hand-written `.js` are overwritten) — decide whether to gitignore + `git rm --cached` them or keep committed. `node_modules` ignoring is handled by the single root `.gitignore` (`node_modules/`, line 276) — the 13 per-ClientApp `.gitignore` files were removed.
+
+**Live backoffice smoke-test (2026-06-02, authenticated):** Restarting the app first surfaced **BLOCKER-11** (boot crash, `DataComposer.EnsureDataTypeExists` duplicate-key on `umbracoNode`) — **fixed** (lookup by deterministic Key via `GetAsync(...).GetAwaiter().GetResult()`; `GetDataType(Guid)` has no sync overload in v17). After the fix: app boots clean (listening :6001). Verified live in Chrome (logged in): **zero N3O console errors** anywhere; no `umbraco-package.json` parse errors; TS bundles serve 200 + sourcemaps. **WelcomeDashboard** (Content) and **Scheduler** (Settings → Hangfire iframe) render. The property-editor-UI picker lists all 6 referenced migrated editors registered (**Serp, TextResource, ImportDataEditor, ImportNoticesViewer, Cropper, Uploader**); EditorJs/Cells absent only because their projects aren't referenced by DemoSite.Web. Both N3O data types exist once (no dups → BLOCKER-11 fix holds). ⚠️ Minor follow-up: in-code data types don't persist `EditorUiAlias`, so the data-type screen shows an empty "Select a property editor" picker (editors themselves ARE registered). Not re-tested: live property-editor render inside a content node (still no doctype/content fixtures), and the not-referenced plugins (EditorJs, Cells, Blocks.Preview, Cloud.Platforms.Preview, Blazor.BackOffice).
+
+**Git:** all session-6 changes (13 ClientApp folders, 13 csproj edits, `TYPESCRIPT_MIGRATION_GUIDE.md`, the BLOCKER-11 fix in `DataComposer.cs`) are **uncommitted** in the working tree.
+
+---
 
 ### Session 5 — uSync Publisher, branch deliberation review, blocker fixes, NestedContent→BlockList
 

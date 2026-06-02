@@ -1,0 +1,15 @@
+{
+    "name": "n3o-umbraco-blocks-preview",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "tsc --noEmit && vite build",
+        "watch": "vite build --watch"
+    },
+    "devDependencies": {
+        "@umbraco-cms/backoffice": "17.3.5",
+        "typescript": "~5.7.0",
+        "vite": "^6.0.0"
+    }
+}

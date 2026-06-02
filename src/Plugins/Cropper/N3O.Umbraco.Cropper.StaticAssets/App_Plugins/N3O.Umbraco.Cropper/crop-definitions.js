@@ -1,71 +1,32 @@
-import { LitElement, html, css } from '@umbraco-cms/backoffice/external/lit';
-import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
-import { UmbPropertyValueChangeEvent } from '@umbraco-cms/backoffice/property-editor';
-
-// Configuration UI for the Cropper property editor's `cropDefinitions` prevalue. Edits an array of
-// crop definitions ({ label, alias, width, height, filters }) with add/delete, mirroring the original
-// AngularJS prevalue editor.
-class N3oCropperCropDefinitionsElement extends UmbElementMixin(LitElement) {
-    static properties = {
-        value: { type: Array },
-    };
-
-    #value;
-
-    get value() {
-        return this.#value;
-    }
-
-    set value(v) {
-        const oldValue = this.#value;
-        this.#value = v;
-        this.requestUpdate('value', oldValue);
-    }
-
-    connectedCallback() {
-        super.connectedCallback();
-
-        if (!this.#value) {
-            this.#value = [];
-            this.#addCropDefinition();
-        }
-    }
-
-    #notify() {
-        this.dispatchEvent(new UmbPropertyValueChangeEvent());
-    }
-
-    #addCropDefinition() {
-        this.#value = [
-            ...(this.#value ?? []),
-            {
-                label: '',
-                alias: '',
-                width: null,
-                height: null,
-                filters: null,
-            },
-        ];
-
-        this.requestUpdate();
-        this.#notify();
-    }
-
-    #deleteCropDefinition(index) {
-        this.#value = this.#value.filter((_, i) => i !== index);
-        this.requestUpdate();
-        this.#notify();
-    }
-
-    #updateField(index, field, value) {
-        this.#value[index][field] = value;
-        this.#notify();
-    }
-
-    render() {
-        return html`
-            ${(this.#value ?? []).map(
-                (cropDefinition, index) => html`
+import { LitElement as $, html as m, css as w, property as E, customElement as q } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as N } from "@umbraco-cms/backoffice/element-api";
+import { UmbPropertyValueChangeEvent as P } from "@umbraco-cms/backoffice/property-editor";
+var U = Object.defineProperty, k = Object.getOwnPropertyDescriptor, b = (t) => {
+  throw TypeError(t);
+}, g = (t, e, r, s) => {
+  for (var n = s > 1 ? void 0 : s ? k(e, r) : e, c = t.length - 1, v; c >= 0; c--)
+    (v = t[c]) && (n = (s ? v(e, r, n) : v(n)) || n);
+  return s && n && U(e, r, n), n;
+}, _ = (t, e, r) => e.has(t) || b("Cannot " + r), p = (t, e, r) => (_(t, e, "read from private field"), r ? r.call(t) : e.get(t)), C = (t, e, r) => e.has(t) ? b("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, r), h = (t, e, r, s) => (_(t, e, "write to private field"), e.set(t, r), r), i = (t, e, r) => (_(t, e, "access private method"), r), l, a, u, f, y, o;
+const A = "n3o-cropper-crop-definitions";
+let d = class extends N($) {
+  constructor() {
+    super(...arguments), C(this, a), C(this, l, null);
+  }
+  get value() {
+    return p(this, l);
+  }
+  set value(t) {
+    const e = p(this, l);
+    h(this, l, t ?? null), this.requestUpdate("value", e);
+  }
+  connectedCallback() {
+    super.connectedCallback(), p(this, l) || (h(this, l, []), i(this, a, f).call(this));
+  }
+  render() {
+    return m`
+            ${(p(this, l) ?? []).map(
+      (t, e) => m`
                     <table>
                         <tr>
                             <td>Label</td>
@@ -73,8 +34,8 @@ class N3oCropperCropDefinitionsElement extends UmbElementMixin(LitElement) {
                                 <input
                                     type="text"
                                     required
-                                    .value=${cropDefinition.label ?? ''}
-                                    @input=${(e) => this.#updateField(index, 'label', e.target.value)} />
+                                    .value=${t.label ?? ""}
+                                    @input=${(r) => i(this, a, o).call(this, e, "label", r.target.value)} />
                             </td>
                         </tr>
                         <tr>
@@ -83,8 +44,8 @@ class N3oCropperCropDefinitionsElement extends UmbElementMixin(LitElement) {
                                 <input
                                     type="text"
                                     required
-                                    .value=${cropDefinition.alias ?? ''}
-                                    @input=${(e) => this.#updateField(index, 'alias', e.target.value)} />
+                                    .value=${t.alias ?? ""}
+                                    @input=${(r) => i(this, a, o).call(this, e, "alias", r.target.value)} />
                             </td>
                         </tr>
                         <tr>
@@ -93,9 +54,11 @@ class N3oCropperCropDefinitionsElement extends UmbElementMixin(LitElement) {
                                 <input
                                     type="number"
                                     required
-                                    .value=${cropDefinition.width ?? ''}
-                                    @input=${(e) =>
-                                        this.#updateField(index, 'width', e.target.value === '' ? null : Number(e.target.value))} />
+                                    .value=${t.width ?? ""}
+                                    @input=${(r) => {
+        const s = r.target.value;
+        i(this, a, o).call(this, e, "width", s === "" ? null : Number(s));
+      }} />
                             </td>
                         </tr>
                         <tr>
@@ -104,9 +67,11 @@ class N3oCropperCropDefinitionsElement extends UmbElementMixin(LitElement) {
                                 <input
                                     type="number"
                                     required
-                                    .value=${cropDefinition.height ?? ''}
-                                    @input=${(e) =>
-                                        this.#updateField(index, 'height', e.target.value === '' ? null : Number(e.target.value))} />
+                                    .value=${t.height ?? ""}
+                                    @input=${(r) => {
+        const s = r.target.value;
+        i(this, a, o).call(this, e, "height", s === "" ? null : Number(s));
+      }} />
                             </td>
                         </tr>
                         <tr>
@@ -115,8 +80,8 @@ class N3oCropperCropDefinitionsElement extends UmbElementMixin(LitElement) {
                                 <textarea
                                     cols="20"
                                     rows="6"
-                                    .value=${cropDefinition.filters ?? ''}
-                                    @input=${(e) => this.#updateField(index, 'filters', e.target.value)}></textarea>
+                                    .value=${t.filters ?? ""}
+                                    @input=${(r) => i(this, a, o).call(this, e, "filters", r.target.value)}></textarea>
                             </td>
                         </tr>
                         <tr>
@@ -126,23 +91,48 @@ class N3oCropperCropDefinitionsElement extends UmbElementMixin(LitElement) {
                             <td></td>
                             <td>
                                 <p>
-                                    <a @click=${() => this.#deleteCropDefinition(index)} class="cursor delete">Delete</a>
+                                    <a @click=${() => i(this, a, y).call(this, e)} class="cursor delete"
+                                        >Delete</a
+                                    >
                                 </p>
                             </td>
                         </tr>
                     </table>
                     <hr />
                 `
-            )}
+    )}
 
             <p>
                 <br />
-                <a @click=${() => this.#addCropDefinition()} class="cursor add">Add</a>
+                <a @click=${() => i(this, a, f).call(this)} class="cursor add">Add</a>
             </p>
         `;
+  }
+};
+l = /* @__PURE__ */ new WeakMap();
+a = /* @__PURE__ */ new WeakSet();
+u = function() {
+  this.dispatchEvent(new P());
+};
+f = function() {
+  h(this, l, [
+    ...p(this, l) ?? [],
+    {
+      label: "",
+      alias: "",
+      width: null,
+      height: null,
+      filters: null
     }
-
-    static styles = css`
+  ]), this.requestUpdate(), i(this, a, u).call(this);
+};
+y = function(t) {
+  h(this, l, (p(this, l) ?? []).filter((e, r) => r !== t)), this.requestUpdate(), i(this, a, u).call(this);
+};
+o = function(t, e, r) {
+  (p(this, l) ?? [])[t][e] = r, i(this, a, u).call(this);
+};
+d.styles = w`
         :host {
             display: block;
         }
@@ -164,9 +154,15 @@ class N3oCropperCropDefinitionsElement extends UmbElementMixin(LitElement) {
             color: #666;
         }
     `;
-}
-
-customElements.define('n3o-cropper-crop-definitions', N3oCropperCropDefinitionsElement);
-
-export default N3oCropperCropDefinitionsElement;
-export { N3oCropperCropDefinitionsElement };
+g([
+  E({ type: Array })
+], d.prototype, "value", 1);
+d = g([
+  q(A)
+], d);
+const x = d;
+export {
+  d as N3oCropperCropDefinitionsElement,
+  x as default
+};
+//# sourceMappingURL=crop-definitions.js.map

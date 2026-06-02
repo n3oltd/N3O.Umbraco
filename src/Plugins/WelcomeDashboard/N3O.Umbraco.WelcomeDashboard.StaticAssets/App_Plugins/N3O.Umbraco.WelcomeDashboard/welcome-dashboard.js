@@ -1,13 +1,14 @@
-import { LitElement, html, css } from '@umbraco-cms/backoffice/external/lit';
-import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
-
-const elementName = 'n3o-welcome-dashboard';
-
-// Static welcome dashboard. Ports the original AngularJS dashboard view, which had an empty
-// controller and simply rendered a help/support panel. No backend endpoints are involved.
-class N3oWelcomeDashboardElement extends UmbElementMixin(LitElement) {
-    render() {
-        return html`
+import { LitElement as l, html as p, css as d, customElement as u } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as c } from "@umbraco-cms/backoffice/element-api";
+var v = Object.getOwnPropertyDescriptor, m = (t, o, s, n) => {
+  for (var e = n > 1 ? void 0 : n ? v(o, s) : o, r = t.length - 1, i; r >= 0; r--)
+    (i = t[r]) && (e = i(e) || e);
+  return e;
+};
+const _ = "n3o-welcome-dashboard";
+let a = class extends c(l) {
+  render() {
+    return p`
             <div class="panel">
                 <div class="panel__header">
                     <h3>Help &amp; Support</h3>
@@ -25,9 +26,9 @@ class N3oWelcomeDashboardElement extends UmbElementMixin(LitElement) {
                 </div>
             </div>
         `;
-    }
-
-    static styles = css`
+  }
+};
+a.styles = d`
         :host {
             display: block;
             padding: var(--uui-size-layout-1);
@@ -64,9 +65,12 @@ class N3oWelcomeDashboardElement extends UmbElementMixin(LitElement) {
             color: var(--uui-color-interactive);
         }
     `;
-}
-
-customElements.define(elementName, N3oWelcomeDashboardElement);
-
-export default N3oWelcomeDashboardElement;
-export { N3oWelcomeDashboardElement };
+a = m([
+  u(_)
+], a);
+const g = a;
+export {
+  a as N3oWelcomeDashboardElement,
+  g as default
+};
+//# sourceMappingURL=welcome-dashboard.js.map

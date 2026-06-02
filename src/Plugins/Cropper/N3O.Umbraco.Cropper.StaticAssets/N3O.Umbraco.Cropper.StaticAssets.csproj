@@ -33,7 +33,11 @@
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
     <ItemGroup>
-        <Content Include="App_Plugins\N3O.Umbraco.Cropper\**\*.*">
+        <!-- Static (committed) assets. Built JS/maps are excluded here and added by the BuildClientApp target.
+             Vendored libs (cropperjs/*.js, formstone/*.js) are also under App_Plugins — the Exclude strips
+             ALL .js/.js.map but the target's Content re-add brings them all back together. -->
+        <Content Include="App_Plugins\N3O.Umbraco.Cropper\**\*.*"
+                 Exclude="App_Plugins\N3O.Umbraco.Cropper\**\*.js;App_Plugins\N3O.Umbraco.Cropper\**\*.js.map">
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
         </Content>
@@ -42,6 +46,23 @@
             <PackagePath>buildTransitive</PackagePath>
         </None>
     </ItemGroup>
+
+    <!-- Build the Lit/TypeScript client app (Vite) and register its output before assets are gathered. -->
+    <PropertyGroup>
+        <ClientAppDir>$(MSBuildProjectDirectory)\ClientApp</ClientAppDir>
+    </PropertyGroup>
+    <Target Name="BuildClientApp" BeforeTargets="AssignTargetPaths" Condition="Exists('$(ClientAppDir)\package.json')">
+        <Message Text="Building Cropper client app (Vite)" Importance="high" />
+        <Exec Command="npm ci" WorkingDirectory="$(ClientAppDir)" Condition="!Exists('$(ClientAppDir)\node_modules')" />
+        <Exec Command="npm run build" WorkingDirectory="$(ClientAppDir)" />
+        <ItemGroup>
+            <!-- Re-add ALL .js/.js.map under App_Plugins — this covers both Vite output and kept vendored libs. -->
+            <Content Include="App_Plugins\N3O.Umbraco.Cropper\**\*.js;App_Plugins\N3O.Umbraco.Cropper\**\*.js.map">
+                <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+                <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+            </Content>
+        </ItemGroup>
+    </Target>
     <ItemGroup>
         <ProjectReference Include="..\N3O.Umbraco.Cropper\N3O.Umbraco.Cropper.csproj" />
     </ItemGroup>

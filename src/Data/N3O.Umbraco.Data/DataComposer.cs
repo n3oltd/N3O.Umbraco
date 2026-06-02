@@ -144,13 +144,18 @@ public class DataComponent : IComponent {
     }
 
     private void EnsureDataTypeExists(DataEditor dataEditor) {
-        if (_dataTypeService.GetDataType(dataEditor.Alias) != null) {
+        var key = UmbracoId.Generate(IdScope.DataType, dataEditor.Alias);
+
+        // Look up by the deterministic Key (not GetDataType(alias), which matches by Name and
+        // misses the existing row on restart/upgrade -> duplicate-key crash). See BLOCKER-11.
+        // Safe to block here: runs once at startup (no sync context), like the Save() below.
+        if (_dataTypeService.GetAsync(key).GetAwaiter().GetResult() != null) {
             return;
         }
 
         var dataType = new DataType(dataEditor, _configurationEditorJsonSerializer);
         dataType.Name = dataEditor.Alias;
-        dataType.Key = UmbracoId.Generate(IdScope.DataType, dataEditor.Alias);
+        dataType.Key = key;
 
         _dataTypeService.Save(dataType);
     }

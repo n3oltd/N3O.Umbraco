@@ -1,129 +1,96 @@
-import { LitElement, html, css, nothing } from '@umbraco-cms/backoffice/external/lit';
-import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
-import { UmbPropertyValueChangeEvent } from '@umbraco-cms/backoffice/property-editor';
-
-const elementName = 'n3o-serp-editor';
-
-// Google SERP preview property editor. Edits a { title, description } JSON value and renders a
-// live preview of how the page would appear in Google search results. Ported from the AngularJS
-// "N3O.Umbraco.SerpEditor" controller/view.
-class N3oSerpEditorElement extends UmbElementMixin(LitElement) {
-    static properties = {
-        value: { type: Object },
-        _titleSuffix: { state: true },
-    };
-
-    #value = { title: '', description: '' };
-    #maxCharsTitle = 60;
-    #maxCharsDescription = 160;
-
-    get value() {
-        return this.#value;
+import { LitElement as C, nothing as m, html as p, css as N, property as S, state as k, customElement as A } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as D } from "@umbraco-cms/backoffice/element-api";
+import { UmbPropertyValueChangeEvent as M } from "@umbraco-cms/backoffice/property-editor";
+var O = Object.defineProperty, P = Object.getOwnPropertyDescriptor, E = (t) => {
+  throw TypeError(t);
+}, x = (t, e, i, a) => {
+  for (var o = a > 1 ? void 0 : a ? P(e, i) : e, u = t.length - 1, _; u >= 0; u--)
+    (_ = t[u]) && (o = (a ? _(e, i, o) : _(o)) || o);
+  return a && o && O(e, i, o), o;
+}, g = (t, e, i) => e.has(t) || E("Cannot " + i), r = (t, e, i) => (g(t, e, "read from private field"), i ? i.call(t) : e.get(t)), f = (t, e, i) => e.has(t) ? E("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, i), v = (t, e, i, a) => (g(t, e, "write to private field"), e.set(t, i), i), d = (t, e, i) => (g(t, e, "access private method"), i), s, h, c, n, $, y, w, b;
+const T = "n3o-serp-editor";
+let l = class extends D(C) {
+  constructor() {
+    super(...arguments), f(this, n), f(this, s, { title: "", description: "" }), f(this, h, 60), f(this, c, 160), this._titleSuffix = "";
+  }
+  get value() {
+    return r(this, s);
+  }
+  set value(t) {
+    const e = r(this, s);
+    v(this, s, t ?? { title: "", description: "" }), this.requestUpdate("value", e);
+  }
+  // Config (prevalues) arrives as UmbPropertyEditorConfigCollection.
+  set config(t) {
+    if (!t)
+      return;
+    const e = Number.parseInt(t.getValueByAlias("maxCharsTitle") ?? "", 10), i = Number.parseInt(t.getValueByAlias("maxCharsDescription") ?? "", 10);
+    !Number.isNaN(e) && e > 0 && v(this, h, e), !Number.isNaN(i) && i > 0 && v(this, c, i);
+  }
+  async connectedCallback() {
+    super.connectedCallback();
+    try {
+      const t = await fetch("/umbraco/backoffice/api/serpEditor/templateOptions");
+      if (t.ok) {
+        const e = await t.json();
+        this._titleSuffix = e.titleSuffix ?? "";
+      }
+    } catch {
     }
-
-    set value(v) {
-        const oldValue = this.#value;
-        this.#value = v ?? { title: '', description: '' };
-        this.requestUpdate('value', oldValue);
-    }
-
-    // Config (prevalues) arrives as UmbPropertyEditorConfigCollection.
-    set config(config) {
-        if (!config) {
-            return;
-        }
-
-        const maxCharsTitle = parseInt(config.getValueByAlias('maxCharsTitle'));
-        const maxCharsDescription = parseInt(config.getValueByAlias('maxCharsDescription'));
-
-        if (!isNaN(maxCharsTitle) && maxCharsTitle > 0) {
-            this.#maxCharsTitle = maxCharsTitle;
-        }
-
-        if (!isNaN(maxCharsDescription) && maxCharsDescription > 0) {
-            this.#maxCharsDescription = maxCharsDescription;
-        }
-    }
-
-    constructor() {
-        super();
-
-        this._titleSuffix = '';
-    }
-
-    async connectedCallback() {
-        super.connectedCallback();
-
-        try {
-            const response = await fetch('/umbraco/backoffice/api/serpEditor/templateOptions');
-
-            if (response.ok) {
-                const data = await response.json();
-                this._titleSuffix = data.titleSuffix ?? '';
-            }
-        } catch {
-            // ignore - preview suffix is non-essential
-        }
-    }
-
-    #onTitleInput(event) {
-        this.#updateModel({ title: event.target.value });
-    }
-
-    #onDescriptionInput(event) {
-        this.#updateModel({ description: event.target.value });
-    }
-
-    #updateModel(partial) {
-        this.#value = { title: this.#value?.title ?? '', description: this.#value?.description ?? '', ...partial };
-        this.requestUpdate();
-        this.dispatchEvent(new UmbPropertyValueChangeEvent());
-    }
-
-    #getUrl() {
-        const http = location.protocol;
-        return http.concat('//').concat(window.location.hostname);
-    }
-
-    render() {
-        const title = this.#value?.title ?? '';
-        const description = this.#value?.description ?? '';
-
-        return html`
+  }
+  render() {
+    var i, a;
+    const t = ((i = r(this, s)) == null ? void 0 : i.title) ?? "", e = ((a = r(this, s)) == null ? void 0 : a.description) ?? "";
+    return p`
             <div class="sv-form">
                 <input
                     type="text"
-                    .value=${title}
+                    .value=${t}
                     placeholder="Enter a short but descriptive title"
-                    @input=${this.#onTitleInput} />
-                ${title.length > this.#maxCharsTitle
-                    ? html`<p class="sv-error">A title should not be more than ${this.#maxCharsTitle} characters.</p>`
-                    : nothing}
+                    @input=${d(this, n, $)} />
+                ${t.length > r(this, h) ? p`<p class="sv-error">A title should not be more than ${r(this, h)} characters.</p>` : m}
                 <br /><br />
                 <textarea
-                    .value=${description}
+                    .value=${e}
                     placeholder="Enter a meta description"
-                    @input=${this.#onDescriptionInput}></textarea>
-                ${description.length > this.#maxCharsDescription
-                    ? html`<p class="sv-error">
-                          A meta description should not be more than ${this.#maxCharsDescription} chars.
-                      </p>`
-                    : nothing}
+                    @input=${d(this, n, y)}></textarea>
+                ${e.length > r(this, c) ? p`<p class="sv-error">
+                          A meta description should not be more than ${r(this, c)} chars.
+                      </p>` : m}
             </div>
 
             <div class="sv-demo">
-                ${title.length > 0 ? html`<h6>${title} ${this._titleSuffix}</h6>` : nothing}
-                ${title.length > 0 || description.length > 0
-                    ? html`<p class="sv-url">${this.#getUrl()}</p>`
-                    : nothing}
-                <p>${description}</p>
+                ${t.length > 0 ? p`<h6>${t} ${this._titleSuffix}</h6>` : m}
+                ${t.length > 0 || e.length > 0 ? p`<p class="sv-url">${d(this, n, b).call(this)}</p>` : m}
+                <p>${e}</p>
             </div>
 
             <div style="clear: both"></div>
         `;
-    }
-
-    static styles = css`
+  }
+};
+s = /* @__PURE__ */ new WeakMap();
+h = /* @__PURE__ */ new WeakMap();
+c = /* @__PURE__ */ new WeakMap();
+n = /* @__PURE__ */ new WeakSet();
+$ = function(t) {
+  d(this, n, w).call(this, { title: t.target.value });
+};
+y = function(t) {
+  d(this, n, w).call(this, { description: t.target.value });
+};
+w = function(t) {
+  var e, i;
+  v(this, s, {
+    title: ((e = r(this, s)) == null ? void 0 : e.title) ?? "",
+    description: ((i = r(this, s)) == null ? void 0 : i.description) ?? "",
+    ...t
+  }), this.requestUpdate(), this.dispatchEvent(new M());
+};
+b = function() {
+  return `${location.protocol}//${window.location.hostname}`;
+};
+l.styles = N`
         /* containers */
         .sv-form {
             width: 30%;
@@ -180,9 +147,18 @@ class N3oSerpEditorElement extends UmbElementMixin(LitElement) {
             color: #00802a;
         }
     `;
-}
-
-customElements.define(elementName, N3oSerpEditorElement);
-
-export default N3oSerpEditorElement;
-export { N3oSerpEditorElement };
+x([
+  S({ type: Object })
+], l.prototype, "value", 1);
+x([
+  k()
+], l.prototype, "_titleSuffix", 2);
+l = x([
+  A(T)
+], l);
+const V = l;
+export {
+  l as N3oSerpEditorElement,
+  V as default
+};
+//# sourceMappingURL=serp-editor.js.map

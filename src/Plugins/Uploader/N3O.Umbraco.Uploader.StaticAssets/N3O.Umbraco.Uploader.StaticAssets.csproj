@@ -33,7 +33,10 @@
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
     <ItemGroup>
-        <Content Include="App_Plugins\N3O.Umbraco.Uploader\**\*.*">
+        <!-- Static (committed) assets. Built JS/maps are excluded here and added by the BuildClientApp target.
+             The vendored formstone *.js files are re-included by the BuildClientApp target's inner ItemGroup. -->
+        <Content Include="App_Plugins\N3O.Umbraco.Uploader\**\*.*"
+                 Exclude="App_Plugins\N3O.Umbraco.Uploader\**\*.js;App_Plugins\N3O.Umbraco.Uploader\**\*.js.map">
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
         </Content>
@@ -42,6 +45,24 @@
             <PackagePath>buildTransitive</PackagePath>
         </None>
     </ItemGroup>
+
+    <!-- Build the Lit/TypeScript client app (Vite) and register its output before assets are gathered. -->
+    <PropertyGroup>
+        <ClientAppDir>$(MSBuildProjectDirectory)\ClientApp</ClientAppDir>
+    </PropertyGroup>
+    <Target Name="BuildClientApp" BeforeTargets="AssignTargetPaths" Condition="Exists('$(ClientAppDir)\package.json')">
+        <Message Text="Building Uploader client app (Vite)" Importance="high" />
+        <Exec Command="npm ci" WorkingDirectory="$(ClientAppDir)" Condition="!Exists('$(ClientAppDir)\node_modules')" />
+        <Exec Command="npm run build" WorkingDirectory="$(ClientAppDir)" />
+        <ItemGroup>
+            <!-- Re-add all *.js and *.js.map from the plugin folder — this picks up both the Vite-built
+                 uploader.js and the vendored Formstone files (core.js, upload.js). -->
+            <Content Include="App_Plugins\N3O.Umbraco.Uploader\**\*.js;App_Plugins\N3O.Umbraco.Uploader\**\*.js.map">
+                <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+                <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+            </Content>
+        </ItemGroup>
+    </Target>
     <ItemGroup>
         <ProjectReference Include="..\N3O.Umbraco.Uploader\N3O.Umbraco.Uploader.csproj" />
     </ItemGroup>
