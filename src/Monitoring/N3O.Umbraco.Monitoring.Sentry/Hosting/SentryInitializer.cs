@@ -7,6 +7,7 @@ using N3O.Umbraco.Constants;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Monitoring.Sentry.Configuration;
+using N3O.Umbraco.Monitoring.Sentry.Extensions;
 using Sentry;
 using Sentry.Extensibility;
 using System;
@@ -28,7 +29,7 @@ public class SentryInitializer : IHostedService {
     public Task StartAsync(CancellationToken cancellationToken) {
         var env = Composer.WebHostEnvironment;
 
-        if (!env.IsProduction() && !env.IsStaging()) {
+        if (!env.IsSentryEnabled()) {
             return Task.CompletedTask;
         }
 
