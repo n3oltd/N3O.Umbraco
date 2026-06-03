@@ -1,0 +1,17 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <PropertyGroup>
+        <N3OUmbracoDynamicListViewsAppPluginsPath>$(MSBuildThisFileDirectory)..\App_Plugins\**\*.*</N3OUmbracoDynamicListViewsAppPluginsPath>
+    </PropertyGroup>
+
+    <Target Name="CopyN3OUmbracoDynamicListViewsAssets" BeforeTargets="Build">
+        <ItemGroup>
+            <N3OUmbracoDynamicListViewsAppPluginFiles Include="$(N3OUmbracoDynamicListViewsAppPluginsPath)"/>
+        </ItemGroup>
+        <Message Text="Copying N3O Dynamic List Views files: $(N3OUmbracoDynamicListViewsAppPluginsPath) - #@(N3OUmbracoDynamicListViewsAppPluginFiles->Count()) files" Importance="high"/>
+        <Copy SourceFiles="@(N3OUmbracoDynamicListViewsAppPluginFiles)"
+              DestinationFiles="@(N3OUmbracoDynamicListViewsAppPluginFiles->'$(MSBuildProjectDirectory)\wwwroot\App_Plugins\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"/>
+    </Target>
+
+</Project>

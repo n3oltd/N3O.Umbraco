@@ -33,12 +33,6 @@
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
     <ItemGroup>
-        <!-- Static (committed) assets for DynamicListViews. Built JS/maps are excluded here and added by the BuildClientApp target. -->
-        <Content Include="App_Plugins\N3O.Umbraco.DynamicListViews\**\*.*"
-                 Exclude="App_Plugins\N3O.Umbraco.DynamicListViews\**\*.js;App_Plugins\N3O.Umbraco.DynamicListViews\**\*.js.map">
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-        </Content>
         <Content Include="App_Static\**\*.*">
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
@@ -61,22 +55,6 @@
             <Pack>True</Pack>
         </None>
     </ItemGroup>
-    <!-- Build the Lit/TypeScript client app (Vite) and register its output before assets are gathered. -->
-    <PropertyGroup>
-        <ClientAppDir>$(MSBuildProjectDirectory)\ClientApp</ClientAppDir>
-    </PropertyGroup>
-    <Target Name="BuildClientApp" BeforeTargets="AssignTargetPaths" Condition="Exists('$(ClientAppDir)\package.json')">
-        <Message Text="Building DynamicListViews client app (Vite)" Importance="high" />
-        <Exec Command="npm ci" WorkingDirectory="$(ClientAppDir)" Condition="!Exists('$(ClientAppDir)\node_modules')" />
-        <Exec Command="npm run build" WorkingDirectory="$(ClientAppDir)" />
-        <ItemGroup>
-            <Content Include="App_Plugins\N3O.Umbraco.DynamicListViews\**\*.js;App_Plugins\N3O.Umbraco.DynamicListViews\**\*.js.map">
-                <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-                <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-            </Content>
-        </ItemGroup>
-    </Target>
-
     <!-- Build the shared React runtime (react/react-dom as self-hosted ESM for the backoffice import map). -->
     <PropertyGroup>
         <ReactRuntimeDir>$(MSBuildProjectDirectory)\ReactRuntime</ReactRuntimeDir>
