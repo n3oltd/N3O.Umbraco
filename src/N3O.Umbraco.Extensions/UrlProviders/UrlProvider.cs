@@ -5,6 +5,8 @@ using N3O.Umbraco.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Extensions;
@@ -13,16 +15,24 @@ namespace N3O.Umbraco.UrlProviders;
 
 public abstract class UrlProvider : IUrlProvider {
     private readonly ILogger<UrlProvider> _logger;
-    private readonly DefaultUrlProvider _defaultUrlProvider;
+    private readonly NewDefaultUrlProvider _defaultUrlProvider;
     private readonly IContentCache _contentCache;
 
     protected UrlProvider(ILogger<UrlProvider> logger,
-                          DefaultUrlProvider defaultUrlProvider,
+                          NewDefaultUrlProvider defaultUrlProvider,
                           IContentCache contentCache) {
         _logger = logger;
         _defaultUrlProvider = defaultUrlProvider;
         _contentCache = contentCache;
     }
+
+    public abstract string Alias { get; }
+
+    public virtual Task<UrlInfo> GetPreviewUrlAsync(IContent content, string culture, string segment)
+        => Task.FromResult(UrlInfo.AsUrl($"preview?id={content.Key}&culture={culture}&segment={segment}",
+                                         Alias,
+                                         culture,
+                                         isExternal: false));
 
     public UrlInfo GetUrl(IPublishedContent content, UrlMode mode, string culture, Uri current) {
         try {
@@ -66,11 +76,11 @@ public abstract class UrlProvider : IUrlProvider {
             }
 
             var defaultUrl = _defaultUrlProvider.GetUrl(pages.Single(), mode, culture, current);
-            var url = new Url(defaultUrl.Text);
+            var url = new Url(defaultUrl.Url?.ToString());
 
             url.AppendPathSegment(content.UrlSegment);
 
-            return UrlInfo.Url(url, culture);
+            return UrlInfo.AsUrl(url.ToString(), Alias, culture, false);
         }
 
         return null;
@@ -93,7 +103,7 @@ public abstract class UrlProvider : IUrlProvider {
 
             var contentDefaultUrl = _defaultUrlProvider.GetUrl(content, mode, culture, current);
 
-            return UrlInfo.Url(contentDefaultUrl.Text.Replace(collection.Url(), page.Url()), culture);
+            return UrlInfo.AsUrl(contentDefaultUrl.Url?.ToString().Replace(collection.Url(), page.Url()), Alias, culture, false);
         }
 
         return null;

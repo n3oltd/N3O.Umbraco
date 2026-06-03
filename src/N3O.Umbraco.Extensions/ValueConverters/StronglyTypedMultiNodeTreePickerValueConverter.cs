@@ -14,6 +14,7 @@ using Umbraco.Cms.Core.PropertyEditors.ValueConverters;
 using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
+
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.ValueConverters;
@@ -21,13 +22,15 @@ namespace N3O.Umbraco.ValueConverters;
 public class StronglyTypedMultiNodeTreePickerValueConverter : MultiNodeTreePickerValueConverter {
     private readonly ModelsBuilderSettings _modelBuilderSettings;
 
-    public StronglyTypedMultiNodeTreePickerValueConverter(IPublishedSnapshotAccessor publishedSnapshotAccessor,
-                                                          IUmbracoContextAccessor umbracoContextAccessor,
+    public StronglyTypedMultiNodeTreePickerValueConverter(IUmbracoContextAccessor umbracoContextAccessor,
                                                           IMemberService memberService,
                                                           IApiContentBuilder apiContentBuilder,
                                                           IApiMediaBuilder apiMediaBuilder,
+                                                          IPublishedContentCache contentCache,
+                                                          IPublishedMediaCache mediaCache,
+                                                          IPublishedMemberCache memberCache,
                                                           IOptions<ModelsBuilderSettings> modelBuilderSettings) :
-        base(publishedSnapshotAccessor, umbracoContextAccessor, memberService, apiContentBuilder, apiMediaBuilder) {
+        base(umbracoContextAccessor, memberService, apiContentBuilder, apiMediaBuilder, contentCache, mediaCache, memberCache) {
         _modelBuilderSettings = modelBuilderSettings.Value;
     }
 

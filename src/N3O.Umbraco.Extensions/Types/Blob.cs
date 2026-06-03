@@ -1,4 +1,4 @@
-using Humanizer.Bytes;
+using Humanizer;
 using System.Collections.Generic;
 using System.IO;
 

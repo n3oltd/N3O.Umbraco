@@ -39,6 +39,7 @@ public static partial class ContentBuilderExtensions {
         return builder.Property<MultipleTextPropertyBuilder>(propertyAlias);
     }
 
+    [System.Obsolete("Nested Content was removed in Umbraco 14. Use BlockList() instead.", error: true)]
     public static NestedPropertyBuilder Nested(this IContentBuilder builder, string propertyAlias) {
         return builder.Property<NestedPropertyBuilder>(propertyAlias);
     }

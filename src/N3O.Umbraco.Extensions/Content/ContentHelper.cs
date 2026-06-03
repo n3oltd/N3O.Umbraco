@@ -13,6 +13,7 @@ using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
+using Umbraco.Cms.Core.PublishedCache;
 
 namespace N3O.Umbraco.Content;
 
@@ -22,17 +23,20 @@ public class ContentHelper : IContentHelper {
     private readonly Lazy<IContentTypeService> _contentTypeService;
     private readonly Lazy<IContentLocator> _contentLocator;
     private readonly Lazy<IUmbracoContextAccessor> _umbracoContextAccessor;
+    private readonly Lazy<IPublishedContentTypeFactory> _publishedContentTypeFactory;
 
     public ContentHelper(Lazy<IServiceProvider> serviceProvider,
                          Lazy<IContentService> contentService,
                          Lazy<IContentTypeService> contentTypeService,
                          Lazy<IContentLocator> contentLocator,
-                         Lazy<IUmbracoContextAccessor> umbracoContextAccessor) {
+                         Lazy<IUmbracoContextAccessor> umbracoContextAccessor,
+                         Lazy<IPublishedContentTypeFactory> publishedContentTypeFactory) {
         _serviceProvider = serviceProvider;
         _contentService = contentService;
         _contentTypeService = contentTypeService;
         _contentLocator = contentLocator;
         _umbracoContextAccessor = umbracoContextAccessor;
+        _publishedContentTypeFactory = publishedContentTypeFactory;
     }
 
     public IReadOnlyList<IContent> GetAncestors(IContent content) {
@@ -48,6 +52,11 @@ public class ContentHelper : IContentHelper {
     }
 
     public IReadOnlyList<IContent> GetChildren(IContent content) {
+        // TODO Migration Review (CS0618): IContentService.GetPagedChildren(int, ...) is obsolete (removal in Umbraco 19).
+        // The replacement overload adds a required string[] propertyAliases (and bool loadTemplates) and makes
+        // filter/ordering required. It is passed here as a method group matching the shared GetPagedContent
+        // delegate that GetPagedDescendants also uses (that one keeps the old shape), so swapping would change
+        // value semantics (which properties are loaded) and cannot be confirmed behavior-preserving.
         return GetAllPagedContent(content, _contentService.Value.GetPagedChildren);
     }
 
@@ -76,13 +85,6 @@ public class ContentHelper : IContentHelper {
                 var (blockListOrGrid, json) = GetJsonPropertyValue(property.Value);
                     
                 var elements = GetContentPropertiesForBlockListOrGrid((JObject) blockListOrGrid);
-                var elementsProperty = new ElementsProperty(contentType, property.Type, elements, json);
-                
-                elementsProperties.Add(elementsProperty);
-            } else if (property.Type.IsNestedContent()) {
-                var (nestedContents, json) = GetJsonPropertyValue(property.Value);
-                    
-                var elements = GetContentPropertiesForNestedContent(nestedContents);
                 var elementsProperty = new ElementsProperty(contentType, property.Type, elements, json);
                 
                 elementsProperties.Add(elementsProperty);
@@ -119,7 +121,8 @@ public class ContentHelper : IContentHelper {
                                                   string propertyTypeAlias,
                                                   object propertyValue) {
         var converter = (IPropertyValueConverter) _serviceProvider.Value.GetRequiredService(converterType);
-        var publishedContentType = _umbracoContextAccessor.Value.GetContentCache().GetContentType(contentTypeAlias);
+        var rawContentType = _contentTypeService.Value.Get(contentTypeAlias);
+        var publishedContentType = rawContentType != null ? _publishedContentTypeFactory.Value.CreateContentType(rawContentType) : null;
         var publishedPropertyType = publishedContentType?.GetPropertyType(propertyTypeAlias);
         
         var source = propertyValue;

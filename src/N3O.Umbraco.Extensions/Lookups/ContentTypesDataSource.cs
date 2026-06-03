@@ -1,15 +1,15 @@
-﻿using N3O.Umbraco.Extensions;
+using N3O.Umbraco.Extensions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Umbraco.Cms.Api.Common.ViewModels.Pagination;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
-using Umbraco.Cms.Core.Web;
 using Umbraco.Community.Contentment.DataEditors;
 using Umbraco.Extensions;
 
@@ -17,14 +17,14 @@ namespace N3O.Umbraco.Lookups;
 
 public class ContentTypesDataSource : IDataPickerSource, IDataSourceValueConverter {
     private static readonly ConcurrentDictionary<Guid, string> ContentTypeAliases = new();
-    
+
     private readonly IContentTypeService _contentTypeService;
-    private readonly IUmbracoContextAccessor _umbracoContextAccessor;
-    
+    private readonly IPublishedContentTypeFactory _publishedContentTypeFactory;
+
     public ContentTypesDataSource(IContentTypeService contentTypeService,
-                                  IUmbracoContextAccessor umbracoContextAccessor) {
+                                  IPublishedContentTypeFactory publishedContentTypeFactory) {
         _contentTypeService = contentTypeService;
-        _umbracoContextAccessor = umbracoContextAccessor;
+        _publishedContentTypeFactory = publishedContentTypeFactory;
     }
 
     public string Name => "Umbraco Content Types";
@@ -32,9 +32,13 @@ public class ContentTypesDataSource : IDataPickerSource, IDataSourceValueConvert
     public string Group => "N3O";
     public string Description => "A list of Umbraco content types";
     public Dictionary<string, object> DefaultValues => default;
-    public IEnumerable<ConfigurationField> Fields => default;
+    public IEnumerable<ContentmentConfigurationField> Fields => default;
     public OverlaySize OverlaySize => OverlaySize.Small;
-    
+
+    public IEnumerable<DataListItem> GetItems(Dictionary<string, object> config) {
+        return _contentTypeService.GetAll().Select(ToDataListItem).ToList();
+    }
+
     public Task<IEnumerable<DataListItem>> GetItemsAsync(Dictionary<string, object> config,
                                                          IEnumerable<string> values) {
         if (values.Any()) {
@@ -43,38 +47,34 @@ public class ContentTypesDataSource : IDataPickerSource, IDataSourceValueConvert
                               .Select(x => _contentTypeService.Get(x.Guid))
                               .WhereNotNull()
                               .Select(ToDataListItem);
-            
+
             return Task.FromResult(items);
         }
 
         return Task.FromResult(Enumerable.Empty<DataListItem>());
     }
 
-    public Task<PagedResult<DataListItem>> SearchAsync(Dictionary<string, object> config,
-                                                       int pageNumber = 1,
-                                                       int pageSize = 12,
-                                                       string query = "") {
-        var totalRecords = -1L;
-        var pageIndex = pageNumber - 1;
+    public Task<PagedViewModel<DataListItem>> SearchAsync(Dictionary<string, object> config,
+                                                          int pageNumber = 1,
+                                                          int pageSize = 12,
+                                                          string query = "") {
         var items = _contentTypeService.GetAll();
 
         if (query.HasValue()) {
             items = items.Where(x => x.Name.InvariantContains(query) || x.Alias.InvariantContains(query));
         }
 
-        if (items.Any()) {
-            var offset = pageIndex * pageSize;
-            
-            var results = new PagedResult<DataListItem>(totalRecords, pageNumber, pageSize);
-            
-            results.Items = items.Skip(offset).Take(pageSize).Select(ToDataListItem);
+        var allItems = items.ToList();
+        var offset = (pageNumber - 1) * pageSize;
 
-            return Task.FromResult(results);
-        }
+        var result = new PagedViewModel<DataListItem> {
+            Total = allItems.Count,
+            Items = allItems.Skip(offset).Take(pageSize).Select(ToDataListItem)
+        };
 
-        return Task.FromResult(new PagedResult<DataListItem>(totalRecords, pageNumber, pageSize));
+        return Task.FromResult(result);
     }
-    
+
     public Type GetValueType(Dictionary<string, object> config) => typeof(IPublishedContent);
 
     public object ConvertValue(Type type, string value) {
@@ -83,19 +83,20 @@ public class ContentTypesDataSource : IDataPickerSource, IDataSourceValueConvert
         }
 
         var key = udi.Guid;
-        
+
         var alias = ContentTypeAliases.GetOrAdd(udi.Guid, () => {
             var contentType = _contentTypeService.Get(key);
-            
+
             return contentType.Alias;
         });
 
-        return _umbracoContextAccessor.GetContentCache().GetContentType(alias);
+        var contentType = _contentTypeService.Get(alias);
+        return contentType != null ? _publishedContentTypeFactory.CreateContentType(contentType) : default;
     }
-    
+
     private DataListItem ToDataListItem(IContentType contentType) {
         var guidUdi = contentType.GetUdi().ToString();
-        
+
         var dataListItem = new DataListItem();
         dataListItem.Name = contentType.Name;
         dataListItem.Description = guidUdi;

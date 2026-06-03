@@ -2,15 +2,21 @@
 
     <PropertyGroup>
         <N3OUmbracoCmsContentFilesPath>$(MSBuildThisFileDirectory)..\App_Static\**\*.*</N3OUmbracoCmsContentFilesPath>
+        <N3OUmbracoCmsAppPluginsPath>$(MSBuildThisFileDirectory)..\App_Plugins\**\*.*</N3OUmbracoCmsAppPluginsPath>
     </PropertyGroup>
 
     <Target Name="CopyN3OUmbracoCmsAssets" BeforeTargets="Build">
         <ItemGroup>
             <N3OUmbracoCmsContentFiles Include="$(N3OUmbracoCmsContentFilesPath)"/>
+            <N3OUmbracoCmsAppPluginFiles Include="$(N3OUmbracoCmsAppPluginsPath)"/>
         </ItemGroup>
         <Message Text="Copying N3O CMS files: $(N3OUmbracoCmsContentFilesPath) - #@(N3OUmbracoCmsContentFiles->Count()) files" Importance="high"/>
         <Copy SourceFiles="@(N3OUmbracoCmsContentFiles)"
               DestinationFiles="@(N3OUmbracoCmsContentFiles->'$(MSBuildProjectDirectory)\wwwroot\umbraco\%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true"/>
+        <Message Text="Copying Contentment package files: $(N3OUmbracoCmsAppPluginsPath) - #@(N3OUmbracoCmsAppPluginFiles->Count()) files" Importance="high"/>
+        <Copy SourceFiles="@(N3OUmbracoCmsAppPluginFiles)"
+              DestinationFiles="@(N3OUmbracoCmsAppPluginFiles->'$(MSBuildProjectDirectory)\wwwroot\App_Plugins\%(RecursiveDir)%(Filename)%(Extension)')"
               SkipUnchangedFiles="true"/>
     </Target>
 

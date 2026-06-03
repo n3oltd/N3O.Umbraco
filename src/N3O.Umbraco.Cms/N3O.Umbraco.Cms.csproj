@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Cms</RootNamespace>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Copyright>Copyright © 2026 N3O Ltd</Copyright>
-        <NoWarn>1591;NU1605;NU1504</NoWarn>
+        <NoWarn>NU1605;1591</NoWarn>
         <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -20,10 +20,10 @@
         <Description>TODO</Description>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageProjectUrl>https://n3o.ltd</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/n3oltd/umbraco-extensions</RepositoryUrl>
-        <Version>13.0.0</Version>
-        <AssemblyVersion>$(Version)</AssemblyVersion>
-        <FileVersion>$(Version)</FileVersion>
+        <RepositoryUrl>https://github.com/n3oltd/N3O.Umbraco</RepositoryUrl>
+        <Version>17.0.0</Version>
+        <AssemblyVersion>17.0.0</AssemblyVersion>
+        <FileVersion>17.0.0</FileVersion>
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -33,6 +33,12 @@
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
     <ItemGroup>
+        <!-- Static (committed) assets for DynamicListViews. Built JS/maps are excluded here and added by the BuildClientApp target. -->
+        <Content Include="App_Plugins\N3O.Umbraco.DynamicListViews\**\*.*"
+                 Exclude="App_Plugins\N3O.Umbraco.DynamicListViews\**\*.js;App_Plugins\N3O.Umbraco.DynamicListViews\**\*.js.map">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
         <Content Include="App_Static\**\*.*">
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
@@ -46,13 +52,59 @@
         <ProjectReference Include="..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Diplo.GodMode" Version="13.1.0" />
-        <PackageReference Include="Our.Umbraco.Community.Contentment" Version="4.7.0" />
-        <PackageReference Include="Umbraco.Cms" Version="13.14.0.0" />
+        <PackageReference Include="Diplo.GodMode" Version="17.0.0" />
+        <PackageReference Include="Umbraco.Community.Contentment" Version="6.1.4" />
+        <PackageReference Include="Umbraco.Cms" Version="17.3.5" />
     </ItemGroup>
     <ItemGroup>
         <None Update="README.md">
             <Pack>True</Pack>
         </None>
     </ItemGroup>
+    <!-- Build the Lit/TypeScript client app (Vite) and register its output before assets are gathered. -->
+    <PropertyGroup>
+        <ClientAppDir>$(MSBuildProjectDirectory)\ClientApp</ClientAppDir>
+    </PropertyGroup>
+    <Target Name="BuildClientApp" BeforeTargets="AssignTargetPaths" Condition="Exists('$(ClientAppDir)\package.json')">
+        <Message Text="Building DynamicListViews client app (Vite)" Importance="high" />
+        <Exec Command="npm ci" WorkingDirectory="$(ClientAppDir)" Condition="!Exists('$(ClientAppDir)\node_modules')" />
+        <Exec Command="npm run build" WorkingDirectory="$(ClientAppDir)" />
+        <ItemGroup>
+            <Content Include="App_Plugins\N3O.Umbraco.DynamicListViews\**\*.js;App_Plugins\N3O.Umbraco.DynamicListViews\**\*.js.map">
+                <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+                <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+            </Content>
+        </ItemGroup>
+    </Target>
+
+    <!-- Build the shared React runtime (react/react-dom as self-hosted ESM for the backoffice import map). -->
+    <PropertyGroup>
+        <ReactRuntimeDir>$(MSBuildProjectDirectory)\ReactRuntime</ReactRuntimeDir>
+    </PropertyGroup>
+    <Target Name="BuildReactRuntime" BeforeTargets="AssignTargetPaths" Condition="Exists('$(ReactRuntimeDir)\package.json')">
+        <Message Text="Building shared React runtime (Vite)" Importance="high" />
+        <Exec Command="npm ci" WorkingDirectory="$(ReactRuntimeDir)" Condition="!Exists('$(ReactRuntimeDir)\node_modules')" />
+        <Exec Command="npm run build" WorkingDirectory="$(ReactRuntimeDir)" />
+        <!-- The import-map manifest is tracked source in ReactRuntime/; App_Plugins is a build-output
+             dir (gitignored), so copy the manifest in next to the freshly-built react*.js. -->
+        <Copy SourceFiles="$(ReactRuntimeDir)\umbraco-package.json"
+              DestinationFolder="$(MSBuildProjectDirectory)\App_Plugins\N3O.Umbraco.React" />
+        <ItemGroup>
+            <Content Include="App_Plugins\N3O.Umbraco.React\**\*.*">
+                <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+                <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+            </Content>
+        </ItemGroup>
+    </Target>
+
+    <!-- Strip the Umbraco.Cms.Web.BackOffice 13.x assembly that Contentment.Core transitively pulls in.
+         It conflicts with Umbraco.Cms.Api.Management 17.x which defines the same extension methods. -->
+    <Target Name="ExcludeLegacyUmbracoBackOffice" AfterTargets="ResolveAssemblyReferences">
+        <ItemGroup>
+            <ReferencePath Remove="@(ReferencePath)"
+                           Condition="$([System.String]::Copy('%(Identity)').ToLower().Contains('umbraco.cms.web.backoffice'))" />
+            <ReferencePathWithRefAssemblies Remove="@(ReferencePathWithRefAssemblies)"
+                                            Condition="$([System.String]::Copy('%(Identity)').ToLower().Contains('umbraco.cms.web.backoffice'))" />
+        </ItemGroup>
+    </Target>
 </Project>

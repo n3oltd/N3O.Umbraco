@@ -45,7 +45,7 @@ public abstract class CmsStartup {
                 .AddWebsite()
                 .AddDeliveryApi()
                 .AddComposers()
-                .AddContentment(opt => opt.DisableTelemetry = true)
+                .AddContentment()
                 .Build();
     }
 
@@ -84,7 +84,6 @@ public abstract class CmsStartup {
                ConfigureMiddleware(u);
            })
            .WithEndpoints(u => {
-               u.UseInstallerEndpoints();
                u.UseBackOfficeEndpoints();
                u.UseWebsiteEndpoints();
 

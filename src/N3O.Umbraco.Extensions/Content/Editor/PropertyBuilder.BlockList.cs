@@ -1,9 +1,8 @@
 using N3O.Umbraco.Extensions;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using Umbraco.Cms.Core;
+using System.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.Blocks;
 using Umbraco.Cms.Core.Services;
@@ -24,7 +23,7 @@ public class BlockListPropertyBuilder : PropertyBuilder {
     public IContentBuilder Add(string contentTypeAlias, Guid? customKey = null, int? order = null) {
         var contentBuilder = new ContentBuilder(_serviceProvider, contentTypeAlias);
         var key = customKey ?? Guid.NewGuid();
-        
+
         if (order.HasValue()) {
             _contentBuilders.Insert(order.GetValueOrThrow() - 1, (contentTypeAlias, (contentBuilder, key)));
         } else {
@@ -35,37 +34,30 @@ public class BlockListPropertyBuilder : PropertyBuilder {
     }
 
     public override (object, IPropertyType) Build(string propertyAlias, string parentContentTypeAlias) {
-        var blocksList = new JArray();
-        
-        foreach (var (_, (_, key)) in _contentBuilders) {
-            var jObject = new JObject();
-            jObject["contentUdi"] = $"umb://element/{key}";
-
-            blocksList.Add(jObject);
-        }
-        
+        var layouts = new List<BlockListLayoutItem>();
         var blockItemDatas = new List<BlockItemData>();
-        
+
         foreach (var (contentTypeAlias, (contentBuilder, key)) in _contentBuilders) {
+            layouts.Add(new BlockListLayoutItem(key));
+
             var contentType = _contentTypeService.Get(contentTypeAlias);
+            var blockItemData = new BlockItemData(key, contentType.Key, contentType.Alias);
 
-            var blockItemData = new BlockItemData();
-
-            blockItemData.Udi = new GuidUdi("element", key);
-            blockItemData.ContentTypeKey = contentType.Key;
-
-            foreach (var entry in JObject.FromObject(contentBuilder.Build())) {
-                blockItemData.PropertyValues[entry.Key] = new BlockItemData.BlockPropertyValue(entry.Value,
-                                                                                               GetPropertyType(entry.Key, contentTypeAlias));
+            foreach (var (alias, value) in contentBuilder.Build()) {
+                blockItemData.Values.Add(new BlockPropertyValue {
+                    Alias = alias,
+                    Value = value,
+                    PropertyType = GetPropertyType(alias, contentTypeAlias)
+                });
             }
 
             blockItemDatas.Add(blockItemData);
         }
 
-        var blockValue = new BlockValue();
-        blockValue.Layout = new Dictionary<string, JToken>();
-        blockValue.Layout["layout"]["Umbraco.BlockList"] = blocksList;
-
+        var blockValue = new BlockListValue();
+        blockValue.Layout = new Dictionary<string, IEnumerable<IBlockLayoutItem>> {
+            ["Umbraco.BlockList"] = layouts
+        };
         blockValue.ContentData = blockItemDatas;
         blockValue.SettingsData = [];
 

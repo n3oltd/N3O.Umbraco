@@ -1,74 +1,56 @@
 using N3O.Umbraco.Content;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.PropertyEditors.ValueConverters;
 
 namespace N3O.Umbraco.Extensions;
 
+// TODO Migration Review: Nested Content was removed in Umbraco 14. These helpers are retained only so external consumers
+// fail at COMPILE time (error) with a message directing them to the Block List equivalents
+// (GetBlockList) in ContentHelperExtensions.BlockList.cs, rather than failing at runtime.
 public static partial class ContentHelperExtensions {
+    private const string NestedObsolete =
+        "Nested Content was removed in Umbraco 14. Use GetBlockList(...) instead.";
+
+    [Obsolete(NestedObsolete, error: true)]
     public static IPublishedElement GetNestedContent(this IContentHelper contentHelper, ElementsProperty property) {
-        if (!property.Type.IsNestedContent()) {
-            throw new Exception("Property is not nested content");
-        }
-        
-        return GetNestedContent(contentHelper, property.ContentType.Alias, property.Type.Alias, property.Json);
+        throw new NotSupportedException(NestedObsolete);
     }
-    
+
+    [Obsolete(NestedObsolete, error: true)]
     public static IPublishedElement GetNestedContent(this IContentHelper contentHelper,
                                                      string contentTypeAlias,
                                                      IProperty property) {
-        if (!property.PropertyType.IsNestedContent()) {
-            throw new Exception("Property is not nested content");
-        }
-        
-        return GetNestedContent(contentHelper, contentTypeAlias, property.PropertyType.Alias, property.GetValue());
+        throw new NotSupportedException(NestedObsolete);
     }
-    
+
+    [Obsolete(NestedObsolete, error: true)]
     public static IPublishedElement GetNestedContent(this IContentHelper contentHelper,
                                                      string contentTypeAlias,
                                                      string propertyTypeAlias,
                                                      object propertyValue) {
-        var publishedElement = contentHelper.GetConvertedValue<NestedContentSingleValueConverter, IPublishedElement>(contentTypeAlias,
-                                                                                                                    propertyTypeAlias,
-                                                                                                                    propertyValue);
-
-        return publishedElement;
+        throw new NotSupportedException(NestedObsolete);
     }
-    
+
+    [Obsolete(NestedObsolete, error: true)]
     public static IReadOnlyList<IPublishedElement> GetNestedContents(this IContentHelper contentHelper,
                                                                      ElementsProperty property) {
-        if (!property.Type.IsNestedContent()) {
-            throw new Exception("Property is not nested content");
-        }
-        
-        return GetNestedContents(contentHelper, property.ContentType.Alias, property.Type.Alias, property.Json);
+        throw new NotSupportedException(NestedObsolete);
     }
-    
+
+    [Obsolete(NestedObsolete, error: true)]
     public static IReadOnlyList<IPublishedElement> GetNestedContents(this IContentHelper contentHelper,
                                                                      string contentTypeAlias,
                                                                      IProperty property) {
-        if (!property.PropertyType.IsNestedContent()) {
-            throw new Exception("Property is not nested content");
-        }
-        
-        return GetNestedContents(contentHelper, contentTypeAlias, property.PropertyType.Alias, property.GetValue());
+        throw new NotSupportedException(NestedObsolete);
     }
-    
+
+    [Obsolete(NestedObsolete, error: true)]
     public static IReadOnlyList<IPublishedElement> GetNestedContents(this IContentHelper contentHelper,
                                                                      string contentTypeAlias,
                                                                      string propertyTypeAlias,
                                                                      object propertyValue) {
-        if (propertyValue == null) {
-            return new List<IPublishedElement>();
-        }
-        
-        var publishedElements = contentHelper.GetConvertedValue<NestedContentManyValueConverter, IEnumerable<IPublishedElement>>(contentTypeAlias,
-                                                                                                                                 propertyTypeAlias,
-                                                                                                                                 propertyValue);
-
-        return publishedElements.ToList();
+        throw new NotSupportedException(NestedObsolete);
     }
 }

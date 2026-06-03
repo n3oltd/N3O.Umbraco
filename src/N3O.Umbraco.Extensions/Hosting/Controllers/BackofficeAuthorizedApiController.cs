@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using N3O.Umbraco.Constants;
 using System.Net.Mime;
 using Umbraco.Cms.Web.Common.Authorization;
-using Umbraco.Cms.Web.Common.Controllers;
-
 namespace N3O.Umbraco.Hosting;
 
 [ApiController]
@@ -19,4 +17,4 @@ namespace N3O.Umbraco.Hosting;
 [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 [ResponseCache(CacheProfileName = CacheProfiles.NoCache)]
 [Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
-public class BackofficeAuthorizedApiController : UmbracoApiController { }
+public class BackofficeAuthorizedApiController : ControllerBase { }

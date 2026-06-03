@@ -3,18 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Content;
 
 public abstract class Locator : ILocator {
-    private readonly IUmbracoContextAccessor _umbracoContextAccessor;
-
-    protected Locator(IUmbracoContextAccessor umbracoContextAccessor) {
-        _umbracoContextAccessor = umbracoContextAccessor;
-    }
+    protected Locator(IUmbracoContextAccessor umbracoContextAccessor) { }
 
     public IReadOnlyList<IPublishedContent> All(Func<IPublishedContent, bool> predicate = null) {
         return All(null, predicate);
@@ -23,9 +18,7 @@ public abstract class Locator : ILocator {
     public IReadOnlyList<IPublishedContent> All(string contentTypeAlias,
                                                 Func<IPublishedContent, bool> predicate = null) {
         var allContent = GetAllContent(contentTypeAlias);
-        var filteredContent = allContent.Where(x => predicate?.Invoke(x) ?? true).ToList();
-
-        return filteredContent;
+        return allContent.Where(x => predicate?.Invoke(x) ?? true).ToList();
     }
 
     public IReadOnlyList<T> All<T>(Func<T, bool> predicate = null) {
@@ -36,21 +29,13 @@ public abstract class Locator : ILocator {
         }
     }
 
-    public IPublishedContent ById(int id) {
-        return Run(c => c.GetById(id));
-    }
+    public IPublishedContent ById(int id) => GetById(id);
 
-    public T ById<T>(int id) {
-        return ById(id).As<T>();
-    }
+    public T ById<T>(int id) => ById(id).As<T>();
 
-    public IPublishedContent ById(Guid id) {
-        return Run(c => c.GetById(id));
-    }
+    public IPublishedContent ById(Guid id) => GetById(id);
 
-    public T ById<T>(Guid id) {
-        return ById(id).As<T>();
-    }
+    public T ById<T>(Guid id) => ById(id).As<T>();
 
     public IPublishedContent Single(string contentTypeAlias, Func<IPublishedContent, bool> predicate = null) {
         return All(contentTypeAlias, predicate).SingleOrDefault();
@@ -65,31 +50,31 @@ public abstract class Locator : ILocator {
     }
 
     private IReadOnlyList<IPublishedContent> GetAllContent(string contentTypeAlias) {
-        return Run(c => {
-            var allContent = new List<IPublishedContent>();
+        var allContent = new List<IPublishedContent>();
 
-            foreach (var rootContent in c.GetAtRoot()) {
-                if (contentTypeAlias == null) {
-                    allContent.AddRange(rootContent.Descendants());
-                } else {
-                    if (rootContent.ContentType.Alias.EqualsInvariant(contentTypeAlias)) {
-                        allContent.Add(rootContent);
-                    }
-                
-                    allContent.AddRange(rootContent.DescendantsOfType(contentTypeAlias));
-                }
+        foreach (var rootKey in GetRootKeys()) {
+            var rootContent = GetById(rootKey);
+
+            if (rootContent == null) {
+                continue;
             }
 
-            return allContent;
-        });
+            if (contentTypeAlias == null) {
+                allContent.Add(rootContent);
+                allContent.AddRange(rootContent.Descendants());
+            } else {
+                if (rootContent.ContentType.Alias.EqualsInvariant(contentTypeAlias)) {
+                    allContent.Add(rootContent);
+                }
+
+                allContent.AddRange(rootContent.DescendantsOfType(contentTypeAlias));
+            }
+        }
+
+        return allContent;
     }
 
-    private T Run<T>(Func<IPublishedCache, T> func) {
-        // TODO If the Umbraco context is actually created then this will dispose it once
-        // the content is fetched and will fail in later code, e.g. when resolving property values
-        // as won't be able to get published content snapshot.
-        return func(GetCache(_umbracoContextAccessor));
-    }
-
-    protected abstract IPublishedCache GetCache(IUmbracoContextAccessor umbracoContextAccessor);
+    protected abstract IEnumerable<Guid> GetRootKeys();
+    protected abstract IPublishedContent GetById(int id);
+    protected abstract IPublishedContent GetById(Guid id);
 }
