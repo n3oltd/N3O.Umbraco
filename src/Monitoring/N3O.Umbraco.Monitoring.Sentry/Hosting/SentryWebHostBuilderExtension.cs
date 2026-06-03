@@ -8,7 +8,7 @@ namespace N3O.Umbraco.Monitoring.Sentry;
 
 public class SentryWebHostBuilderExtension : IWebHostBuilderExtension {
     public void Run(IWebHostBuilder webBuilder) {
-        if (Composer.WebHostEnvironment.IsProduction()) {
+        if (Composer.WebHostEnvironment.IsProduction() || Composer.WebHostEnvironment.IsStaging()) {
             webBuilder.UseSentry(opt => {
                 opt.InitializeSdk = false;
                 opt.MinimumEventLevel = LogLevel.Error;

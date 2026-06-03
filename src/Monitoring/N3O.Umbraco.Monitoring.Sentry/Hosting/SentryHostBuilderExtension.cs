@@ -9,7 +9,7 @@ namespace N3O.Umbraco.Monitoring.Sentry;
 public class SentryHostBuilderExtension : IHostBuilderExtension {
     public void Run(IHostBuilder webBuilder) {
         webBuilder.UseSerilog((context, _, configuration) => {
-            if (context.HostingEnvironment.IsProduction()) {
+            if (context.HostingEnvironment.IsProduction() || context.HostingEnvironment.IsStaging()) {
                 var config = new SentryConfiguration();
 
                 context.Configuration.GetSection("Sentry").Bind(config);
@@ -23,6 +23,6 @@ public class SentryHostBuilderExtension : IHostBuilderExtension {
                                  opt.Environment = context.HostingEnvironment.EnvironmentName;
                              });
             }
-        });
+        }, preserveStaticLogger: true);
     }
 }
