@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using Umbraco.Cms.Core.Routing;
-using Umbraco.Cms.Core.Web;
+using Umbraco.Cms.Core.PublishedCache;
 
 namespace N3O.Umbraco.EditorJs;
 
 public class CheckListBlockDataConverter : BlockDataConverter<CheckListBlockData> {
-    public CheckListBlockDataConverter(IUmbracoContextAccessor umbracoContextAccessor,
+    public CheckListBlockDataConverter(IPublishedContentCache contentCache, IPublishedMediaCache mediaCache,
                                        IPublishedUrlProvider publishedUrlProvider)
-        : base(umbracoContextAccessor, publishedUrlProvider) { }
+        : base(contentCache, mediaCache, publishedUrlProvider) { }
 
     protected override string TypeId => "checklist";
 }

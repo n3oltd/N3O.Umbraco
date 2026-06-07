@@ -1,12 +1,12 @@
 using Umbraco.Cms.Core.Routing;
-using Umbraco.Cms.Core.Web;
+using Umbraco.Cms.Core.PublishedCache;
 
 namespace N3O.Umbraco.EditorJs;
 
 public class CodeBlockDataConverter : BlockDataConverter<CodeBlockData> {
-    public CodeBlockDataConverter(IUmbracoContextAccessor umbracoContextAccessor,
+    public CodeBlockDataConverter(IPublishedContentCache contentCache, IPublishedMediaCache mediaCache,
                                   IPublishedUrlProvider publishedUrlProvider)
-        : base(umbracoContextAccessor, publishedUrlProvider) { }
+        : base(contentCache, mediaCache, publishedUrlProvider) { }
     
     protected override string TypeId => "code";
 }

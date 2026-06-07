@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Giving.Allocations.Lookups;
 
@@ -62,30 +61,22 @@ public class FeedbackSchemeContent :
 [Order(int.MinValue)]
 public class ContentFeedbackSchemes : LookupsCollection<FeedbackScheme> {
     private readonly IContentCache _contentCache;
-    private readonly IUmbracoContextAccessor _umbracoContextAccessor;
 
-    public ContentFeedbackSchemes(IContentCache contentCache, IUmbracoContextAccessor umbracoContextAccessor) {
+    public ContentFeedbackSchemes(IContentCache contentCache) {
         _contentCache = contentCache;
-        _umbracoContextAccessor = umbracoContextAccessor;
 
         _contentCache.Flushed += ContentCacheOnFlushed;
     }
-    
+
     protected override Task<IReadOnlyList<FeedbackScheme>> LoadAllAsync(CancellationToken cancellationToken) {
         var all = GetFromCache();
-        
+
         return Task.FromResult(all);
     }
 
     private IReadOnlyList<FeedbackScheme> GetFromCache() {
-        List<FeedbackSchemeContent> content;
-        
-        if (_umbracoContextAccessor.TryGetUmbracoContext(out _)) {
-            content = _contentCache.All<FeedbackSchemeContent>().OrderBy(x => x.Content().Name).ToList();
-        } else {
-            content = [];
-        }
-        
+        var content = _contentCache.All<FeedbackSchemeContent>().OrderBy(x => x.Content().Name).ToList();
+
         var lookups = content.Select(ToFeedbackScheme).ToList();
 
         return lookups;

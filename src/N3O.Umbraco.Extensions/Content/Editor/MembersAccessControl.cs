@@ -33,12 +33,11 @@ public abstract class MembersAccessControl : ContentAccessControl {
 
     protected override async Task<bool> AllowEditAsync(ContentProperties contentProperties) {
         var property = contentProperties.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(PropertyAlias));
-        // TODO Migration Review (CS0618): IDataTypeService.GetDataType(int) is obsolete (removal in Umbraco 18). The async
-        // replacement GetAsync only accepts a Guid key or string name; only an int DataTypeId is available
-        // here, so no contained equivalent conversion exists without a separate id->key lookup.
-        var maxValues = GetMaxValues(_dataTypeService.GetDataType(property.Type.DataTypeId));
+        var dataType = await _dataTypeService.GetAsync(property.Type.DataTypeKey);
         
-        if (maxValues == 1) {
+        var configuration = dataType.ConfigurationAs<MultiNodePickerConfiguration>();
+        
+        if (configuration.MaxNumber == 1) {
             return await AllowEditAsync(() => _contentHelper.GetMultiNodeTreePickerValue<IPublishedContent>(contentProperties,
                                                                                                             PropertyAlias).Yield());
         } else {
@@ -49,12 +48,9 @@ public abstract class MembersAccessControl : ContentAccessControl {
 
     protected override async Task<bool> AllowEditAsync(IPublishedContent content) {
         var property = content.Properties.SingleOrDefault(x => x.Alias.EqualsInvariant(PropertyAlias));
-        // TODO Migration Review (CS0618): IDataTypeService.GetDataType(int) is obsolete (removal in Umbraco 18). The async
-        // replacement GetAsync only accepts a Guid key or string name; only an int DataType.Id is available
-        // here, so no contained equivalent conversion exists without a separate id->key lookup.
-        var maxValues = GetMaxValues(_dataTypeService.GetDataType(property.PropertyType.DataType.Id));
+        var configuration = property.PropertyType.DataType.ConfigurationAs<MultiNodePickerConfiguration>();
         
-        if (maxValues == 1) {
+        if (configuration.MaxNumber == 1) {
             return await AllowEditAsync(() => ((IPublishedContent) property.GetValue(PropertyAlias)).Yield());
             
         } else {
@@ -72,12 +68,6 @@ public abstract class MembersAccessControl : ContentAccessControl {
         var allowedMembers = getAllowedMembers().OrEmpty();
 
         return allowedMembers.Any(x => x.Key == member.Key);
-    }
-    
-    private int GetMaxValues(IDataType dataType) {
-        var configuration = dataType.ConfigurationAs<MultiNodePickerConfiguration>();
-        
-        return configuration.MaxNumber;
     }
     
     protected abstract string ContentTypeAlias { get; }

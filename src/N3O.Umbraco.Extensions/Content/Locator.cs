@@ -9,8 +9,6 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Content;
 
 public abstract class Locator : ILocator {
-    protected Locator(IUmbracoContextAccessor umbracoContextAccessor) { }
-
     public IReadOnlyList<IPublishedContent> All(Func<IPublishedContent, bool> predicate = null) {
         return All(null, predicate);
     }
@@ -18,7 +16,10 @@ public abstract class Locator : ILocator {
     public IReadOnlyList<IPublishedContent> All(string contentTypeAlias,
                                                 Func<IPublishedContent, bool> predicate = null) {
         var allContent = GetAllContent(contentTypeAlias);
-        return allContent.Where(x => predicate?.Invoke(x) ?? true).ToList();
+        
+        var filteredContent = allContent.Where(x => predicate?.Invoke(x) ?? true).ToList();
+
+        return filteredContent;
     }
 
     public IReadOnlyList<T> All<T>(Func<T, bool> predicate = null) {

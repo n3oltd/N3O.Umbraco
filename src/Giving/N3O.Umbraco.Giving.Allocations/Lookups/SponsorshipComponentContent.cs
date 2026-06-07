@@ -11,7 +11,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.Models.PublishedContent;
-using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Giving.Allocations.Lookups;
@@ -45,30 +44,22 @@ public class SponsorshipComponentContent : UmbracoContent<SponsorshipComponentCo
 [Order(int.MinValue)]
 public class ContentSponsorshipComponents : LookupsCollection<SponsorshipComponent> {
     private readonly IContentCache _contentCache;
-    private readonly IUmbracoContextAccessor _umbracoContextAccessor;
 
-    public ContentSponsorshipComponents(IContentCache contentCache, IUmbracoContextAccessor umbracoContextAccessor) {
+    public ContentSponsorshipComponents(IContentCache contentCache) {
         _contentCache = contentCache;
-        _umbracoContextAccessor = umbracoContextAccessor;
 
         _contentCache.Flushed += ContentCacheOnFlushed;
     }
-    
+
     protected override Task<IReadOnlyList<SponsorshipComponent>> LoadAllAsync(CancellationToken cancellationToken) {
         var all = GetFromCache();
-        
+
         return Task.FromResult(all);
     }
 
     private IReadOnlyList<SponsorshipComponent> GetFromCache() {
-        List<SponsorshipComponentContent> content;
-        
-        if (_umbracoContextAccessor.TryGetUmbracoContext(out _)) {
-            content = _contentCache.All<SponsorshipComponentContent>().OrderBy(x => x.Content().Name).ToList();
-        } else {
-            content = [];
-        }
-        
+        var content = _contentCache.All<SponsorshipComponentContent>().OrderBy(x => x.Content().Name).ToList();
+
         var lookups = content.Select(ToSponsorshipComponent).ToList();
 
         return lookups;
