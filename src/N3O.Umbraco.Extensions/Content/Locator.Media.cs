@@ -13,9 +13,8 @@ public class MediaLocator : Locator, IMediaLocator {
     private readonly IMediaNavigationQueryService _navigationQueryService;
     private readonly IPublishedMediaCache _mediaCache;
 
-    public MediaLocator(IUmbracoContextAccessor umbracoContextAccessor,
-                        IMediaNavigationQueryService navigationQueryService,
-                        IPublishedMediaCache mediaCache) : base(umbracoContextAccessor) {
+    public MediaLocator(IMediaNavigationQueryService navigationQueryService,
+                        IPublishedMediaCache mediaCache) {
         _navigationQueryService = navigationQueryService;
         _mediaCache = mediaCache;
     }

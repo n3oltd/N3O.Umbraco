@@ -11,9 +11,7 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Persistence.Querying;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
-using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
-using Umbraco.Cms.Core.PublishedCache;
 
 namespace N3O.Umbraco.Content;
 
@@ -22,20 +20,17 @@ public class ContentHelper : IContentHelper {
     private readonly Lazy<IContentService> _contentService;
     private readonly Lazy<IContentTypeService> _contentTypeService;
     private readonly Lazy<IContentLocator> _contentLocator;
-    private readonly Lazy<IUmbracoContextAccessor> _umbracoContextAccessor;
     private readonly Lazy<IPublishedContentTypeFactory> _publishedContentTypeFactory;
 
     public ContentHelper(Lazy<IServiceProvider> serviceProvider,
                          Lazy<IContentService> contentService,
                          Lazy<IContentTypeService> contentTypeService,
                          Lazy<IContentLocator> contentLocator,
-                         Lazy<IUmbracoContextAccessor> umbracoContextAccessor,
                          Lazy<IPublishedContentTypeFactory> publishedContentTypeFactory) {
         _serviceProvider = serviceProvider;
         _contentService = contentService;
         _contentTypeService = contentTypeService;
         _contentLocator = contentLocator;
-        _umbracoContextAccessor = umbracoContextAccessor;
         _publishedContentTypeFactory = publishedContentTypeFactory;
     }
 
@@ -122,6 +117,8 @@ public class ContentHelper : IContentHelper {
                                                   object propertyValue) {
         var converter = (IPropertyValueConverter) _serviceProvider.Value.GetRequiredService(converterType);
         var rawContentType = _contentTypeService.Value.Get(contentTypeAlias);
+        
+        /*TODO Check*/
         var publishedContentType = rawContentType != null ? _publishedContentTypeFactory.Value.CreateContentType(rawContentType) : null;
         var publishedPropertyType = publishedContentType?.GetPropertyType(propertyTypeAlias);
         

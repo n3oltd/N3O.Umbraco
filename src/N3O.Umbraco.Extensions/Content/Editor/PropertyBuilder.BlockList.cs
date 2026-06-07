@@ -44,20 +44,21 @@ public class BlockListPropertyBuilder : PropertyBuilder {
             var blockItemData = new BlockItemData(key, contentType.Key, contentType.Alias);
 
             foreach (var (alias, value) in contentBuilder.Build()) {
-                blockItemData.Values.Add(new BlockPropertyValue {
-                    Alias = alias,
-                    Value = value,
-                    PropertyType = GetPropertyType(alias, contentTypeAlias)
-                });
+                var blockPropertyValue = new BlockPropertyValue();
+                blockPropertyValue.Alias = alias;
+                blockPropertyValue.Value = value;
+                blockPropertyValue.PropertyType = GetPropertyType(alias, contentTypeAlias);
+                
+                blockItemData.Values.Add(blockPropertyValue);
             }
 
             blockItemDatas.Add(blockItemData);
         }
 
         var blockValue = new BlockListValue();
-        blockValue.Layout = new Dictionary<string, IEnumerable<IBlockLayoutItem>> {
-            ["Umbraco.BlockList"] = layouts
-        };
+        blockValue.Layout = new Dictionary<string, IEnumerable<IBlockLayoutItem>>();
+        blockValue.Layout["Umbraco.BlockList"] = layouts;
+        
         blockValue.ContentData = blockItemDatas;
         blockValue.SettingsData = [];
 

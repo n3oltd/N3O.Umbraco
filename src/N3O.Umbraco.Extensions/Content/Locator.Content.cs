@@ -12,9 +12,8 @@ public class ContentLocator : Locator, IContentLocator {
     private readonly IDocumentNavigationQueryService _navigationQueryService;
     private readonly IPublishedContentCache _contentCache;
 
-    public ContentLocator(IUmbracoContextAccessor umbracoContextAccessor,
-                          IDocumentNavigationQueryService navigationQueryService,
-                          IPublishedContentCache contentCache) : base(umbracoContextAccessor) {
+    public ContentLocator(IDocumentNavigationQueryService navigationQueryService,
+                          IPublishedContentCache contentCache) {
         _navigationQueryService = navigationQueryService;
         _contentCache = contentCache;
     }

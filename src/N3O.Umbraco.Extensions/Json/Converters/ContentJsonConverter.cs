@@ -15,20 +15,17 @@ namespace N3O.Umbraco.Json;
 
 public class ContentJsonConverter : JsonConverter {
     private readonly Lazy<PropertyValueConverterCollection> _propertyValueConverters;
-    private readonly Lazy<IUmbracoContextAccessor> _publsihedContentCache;
     private readonly Lazy<IPublishedModelFactory> _publishedModelFactory;
     private readonly Lazy<IPublishedContentTypeFactory> _contentTypeFactory;
     private readonly Lazy<IUserService> _userService;
     private readonly Lazy<IContentTypeService> _contentTypeService;
 
     public ContentJsonConverter(Lazy<PropertyValueConverterCollection> propertyValueConverters,
-                                Lazy<IUmbracoContextAccessor> publsihedContentCache,
                                 Lazy<IPublishedModelFactory> publishedModelFactory,
                                 Lazy<IPublishedContentTypeFactory> contentTypeFactory,
                                 Lazy<IUserService> userService,
                                 Lazy<IContentTypeService> contentTypeService) {
         _propertyValueConverters = propertyValueConverters;
-        _publsihedContentCache = publsihedContentCache;
         _publishedModelFactory = publishedModelFactory;
         _contentTypeFactory = contentTypeFactory;
         _userService = userService;
