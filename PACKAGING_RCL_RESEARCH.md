@@ -10,6 +10,25 @@
 
 ---
 
+## STATUS — PILOTED (2026-06-07, session 11)
+
+The RCL approach below is **no longer just research — it has been piloted and verified** on a new project, **`N3O.Umbraco.Extensions.StaticAssets`** (`Microsoft.NET.Sdk.Razor`, `StaticWebAssetBasePath=/`), which now hosts the DynamicListViews frontend (`Apps/N3O.Umbraco.DynamicListViews` → `wwwroot/App_Plugins/N3O.Umbraco.DynamicListViews`) **and** the shared React runtime (`N3O.Umbraco.React` → `wwwroot/App_Plugins/N3O.Umbraco.React`, moved out of `N3O.Umbraco.Cms`). It uses a batched `BuildClientApps` Vite target over `Apps/*` + `N3O.Umbraco.React`, **no `build/*.targets`, no consumer `<Import>`** — `DemoSite.Web` just `<ProjectReference>`s it and the assets flow via static web assets. `dotnet build` of the RCL and of `DemoSite.Web` are **0 errors**, and the static-web-assets manifest serves both plugins at the expected `/App_Plugins/<Name>/...` URLs. Findings confirmed against the installed 17.3.5 binaries + the official `dotnet new umbraco-extension` template.
+
+**One thing the pilot proved empirically:** the OLD copy-`.targets` plugins **dual-deliver** `App_Plugins` (as published `<Content>` *and* a copy target), which breaks `dotnet publish` with `NETSDK1152` ("multiple publish output files with the same relative path"). The RCL plugin is conflict-free. So the rollout below is not just modernization — it **unblocks `dotnet publish`**.
+
+### Rollout checklist (NEXT) — convert each remaining `*.StaticAssets` to RCL
+Use `N3O.Umbraco.Extensions.StaticAssets` as the template. Per project: switch SDK to `Microsoft.NET.Sdk.Razor`, add `StaticWebAssetBasePath=/`, move `App_Plugins/<Name>` → `wwwroot/App_Plugins/<Name>`, point Vite `outDir` at `wwwroot/App_Plugins/...`, delete `build/*.targets` + the `<None Include="build/**">` pack, and remove the project's `<Import>` line from `DemoSite.Web.csproj` (keep the `<ProjectReference>`). Then delete the stale copy from `DemoSite.Web/(wwwroot/)App_Plugins/<Name>` so it doesn't collide with the RCL asset.
+
+- [ ] `Plugins/SerpEditor` (simplest standalone — do first; validate dev + `dotnet publish`)
+- [ ] `Plugins/Cells`, `Plugins/Cropper`, `Plugins/EditorJs`, `Plugins/TextResourceEditor`, `Plugins/Uploader`, `Plugins/WelcomeDashboard`
+- [ ] `Data/N3O.Umbraco.Data.StaticAssets` (multi-app), `Scheduler/N3O.Umbraco.Scheduler.StaticAssets`
+- [ ] `Cloud/N3O.Umbraco.Cloud.Platforms.StaticAssets` (+ `.Marketing.StaticAssets`)
+- [ ] `Blocks/N3O.Umbraco.Blocks.StaticAssets`, `Blazor/N3O.Umbraco.Blazor.BackOffice`
+- [ ] `N3O.Umbraco.Cms` — Contentment App_Plugins delivery (verify it still ships once the others move; Cms keeps `App_Static`)
+- [ ] After all converted: confirm a full `dotnet publish` of `DemoSite.Web` succeeds (no `NETSDK1152`), and drop the now-empty `build/` import block from `DemoSite.Web.csproj`.
+
+---
+
 ## Conclusion (short)
 
 **No — a per-plugin copy-`.targets` file is not required and is not the modern standard.** It is the

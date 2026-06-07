@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+    <PropertyGroup>
+        <RootNamespace>N3O.Umbraco.Extensions.StaticAssets</RootNamespace>
+        <TargetFramework>net10.0</TargetFramework>
+        <LangVersion>12</LangVersion>
+        <Copyright>Copyright © 2026 N3O Ltd</Copyright>
+        <NoWarn>NU1605;1591</NoWarn>
+        <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+        <!-- RCL: serve wwwroot at the web root so wwwroot/App_Plugins/<Name> is exposed at /App_Plugins/<Name> (no copy targets needed). -->
+        <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
+        <!-- Exclude npm install output anywhere under the project; the TypeScript/JS source stays visible/editable in the IDE. -->
+        <DefaultItemExcludes>$(DefaultItemExcludes);**\node_modules\**</DefaultItemExcludes>
+    </PropertyGroup>
+    <PropertyGroup>
+        <PackageId>N3O.Umbraco.Extensions.StaticAssets</PackageId>
+        <IsPackable>true</IsPackable>
+        <Authors>N3O Ltd</Authors>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Description>TODO</Description>
+        <PackageProjectUrl>https://n3o.ltd</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/n3oltd/N3O.Umbraco</RepositoryUrl>
+        <Version>17.0.0</Version>
+        <AssemblyVersion>17.0.0</AssemblyVersion>
+        <FileVersion>17.0.0</FileVersion>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DebugType>full</DebugType>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DebugType>pdbonly</DebugType>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\N3O.Umbraco.Extensions\N3O.Umbraco.Extensions.csproj" />
+    </ItemGroup>
+    <!-- Each frontend build unit (every Apps/<app> + the shared N3O.Umbraco.React runtime) is built by Vite
+         into wwwroot/App_Plugins/<Name>; the Razor SDK then exposes those as static web assets. To add a new
+         app, drop a folder under Apps/ with its own package.json + vite config — it is picked up here automatically. -->
+    <ItemGroup>
+        <N3OClientApp Include="$(MSBuildProjectDirectory)\Apps\*\package.json" />
+        <N3OClientApp Include="$(MSBuildProjectDirectory)\N3O.Umbraco.React\package.json" />
+    </ItemGroup>
+    <Target Name="BuildClientApps" BeforeTargets="BeforeBuild">
+        <Message Text="Building frontend build unit: %(N3OClientApp.Directory)" Importance="high" />
+        <Exec Command="npm ci" WorkingDirectory="%(N3OClientApp.RootDir)%(N3OClientApp.Directory)" Condition="!Exists('%(N3OClientApp.RootDir)%(N3OClientApp.Directory)node_modules')" />
+        <Exec Command="npm run build" WorkingDirectory="%(N3OClientApp.RootDir)%(N3OClientApp.Directory)" />
+    </Target>
+</Project>

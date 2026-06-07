@@ -11,7 +11,7 @@ export default defineConfig({
             },
             formats: ['es'],
         },
-        outDir: '../App_Plugins',
+        outDir: '../../wwwroot/App_Plugins',
         emptyOutDir: false,
         sourcemap: true,
         rollupOptions: {
