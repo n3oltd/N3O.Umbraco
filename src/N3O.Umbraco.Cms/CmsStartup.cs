@@ -47,6 +47,11 @@ public abstract class CmsStartup {
                 .AddComposers()
                 .AddContentment()
                 .Build();
+
+        // Enable runtime Razor compilation so backoffice-created/edited templates render on the front end.
+        // Consuming sites set RazorCompileOnBuild=false and Umbraco 17 no longer auto-enables runtime
+        // compilation, so without this front-end templates fail with "No physical template file was found".
+        services.AddControllersWithViews().AddRazorRuntimeCompilation();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {

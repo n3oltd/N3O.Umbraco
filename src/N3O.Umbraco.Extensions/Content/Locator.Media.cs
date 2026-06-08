@@ -19,8 +19,10 @@ public class MediaLocator : Locator, IMediaLocator {
         _mediaCache = mediaCache;
     }
 
-    protected override IPublishedContent GetById(int id) => _mediaCache.GetById(id);
-    protected override IPublishedContent GetById(Guid id) => _mediaCache.GetById(id);
+    /*protected override IPublishedContent GetById(int id) => _mediaCache.GetById(id);
+    protected override IPublishedContent GetById(Guid id) => _mediaCache.GetById(id);*/
+    
+    protected override IPublishedCache PublishedCache => _mediaCache;
 
     protected override IEnumerable<Guid> GetRootKeys() {
         _navigationQueryService.TryGetRootKeys(out var rootKeys);

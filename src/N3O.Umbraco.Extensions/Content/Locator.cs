@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
 
@@ -30,11 +31,17 @@ public abstract class Locator : ILocator {
         }
     }
 
-    public IPublishedContent ById(int id) => GetById(id);
+    public IPublishedContent ById(int id) {
+        return PublishedCache.GetById(id);
+    }
 
-    public T ById<T>(int id) => ById(id).As<T>();
+    public T ById<T>(int id) {
+        return ById(id).As<T>();
+    }
 
-    public IPublishedContent ById(Guid id) => GetById(id);
+    public IPublishedContent ById(Guid id) {
+        return PublishedCache.GetById(id);
+    }
 
     public T ById<T>(Guid id) => ById(id).As<T>();
 
@@ -54,7 +61,7 @@ public abstract class Locator : ILocator {
         var allContent = new List<IPublishedContent>();
 
         foreach (var rootKey in GetRootKeys()) {
-            var rootContent = GetById(rootKey);
+            var rootContent = PublishedCache.GetById(rootKey);
 
             if (rootContent == null) {
                 continue;
@@ -75,7 +82,9 @@ public abstract class Locator : ILocator {
         return allContent;
     }
 
+    protected abstract IPublishedCache PublishedCache { get; }
+    
     protected abstract IEnumerable<Guid> GetRootKeys();
-    protected abstract IPublishedContent GetById(int id);
-    protected abstract IPublishedContent GetById(Guid id);
+    /*protected abstract IPublishedContent GetById(int id);
+    protected abstract IPublishedContent GetById(Guid id);*/
 }
