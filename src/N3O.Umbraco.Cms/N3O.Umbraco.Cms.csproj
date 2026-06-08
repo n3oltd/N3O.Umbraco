@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Cms</RootNamespace>
         <TargetFramework>net10.0</TargetFramework>
@@ -10,6 +10,10 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <!-- RCL: serve wwwroot at the web root so wwwroot/App_Plugins/<Name> is exposed at /App_Plugins/<Name> (no copy targets needed). -->
+        <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
+        <!-- Exclude npm install output anywhere under the project; the TypeScript/JS source stays visible/editable in the IDE. -->
+        <DefaultItemExcludes>$(DefaultItemExcludes);**\node_modules\**</DefaultItemExcludes>
     </PropertyGroup>
     <PropertyGroup>
         <PackageId>N3O.Umbraco.Cms</PackageId>
@@ -49,6 +53,10 @@
         <PackageReference Include="Diplo.GodMode" Version="17.0.0" />
         <PackageReference Include="Umbraco.Community.Contentment" Version="6.1.4" />
         <PackageReference Include="Umbraco.Cms" Version="17.3.5" />
+        <!-- Enables runtime Razor compilation so backoffice-created/edited templates render on the front end.
+             Required because consuming sites set RazorCompileOnBuild=false and Umbraco 17 no longer auto-enables it.
+             Wired up in CmsStartup.ConfigureServices. -->
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="10.0.8" />
     </ItemGroup>
     <ItemGroup>
         <None Update="README.md">
@@ -57,12 +65,24 @@
     </ItemGroup>
     <!-- Strip the Umbraco.Cms.Web.BackOffice 13.x assembly that Contentment.Core transitively pulls in.
          It conflicts with Umbraco.Cms.Api.Management 17.x which defines the same extension methods. -->
-    <Target Name="ExcludeLegacyUmbracoBackOffice" AfterTargets="ResolveAssemblyReferences">
+    <!--<Target Name="ExcludeLegacyUmbracoBackOffice" AfterTargets="ResolveAssemblyReferences">
         <ItemGroup>
             <ReferencePath Remove="@(ReferencePath)"
                            Condition="$([System.String]::Copy('%(Identity)').ToLower().Contains('umbraco.cms.web.backoffice'))" />
             <ReferencePathWithRefAssemblies Remove="@(ReferencePathWithRefAssemblies)"
                                             Condition="$([System.String]::Copy('%(Identity)').ToLower().Contains('umbraco.cms.web.backoffice'))" />
         </ItemGroup>
+    </Target>-->
+    <!-- Each frontend build unit (every Apps/<app> + the shared N3O.Umbraco.React runtime) is built by Vite
+         into wwwroot/App_Plugins/<Name>; the Razor SDK then exposes those as static web assets. To add a new
+         app, drop a folder under Apps/ with its own package.json + vite config — it is picked up here automatically. -->
+    <ItemGroup>
+        <N3OClientApp Include="$(MSBuildProjectDirectory)\Apps\*\package.json" />
+        <N3OClientApp Include="$(MSBuildProjectDirectory)\N3O.Umbraco.React\package.json" />
+    </ItemGroup>
+    <Target Name="BuildClientApps" BeforeTargets="BeforeBuild">
+        <Message Text="Building frontend build unit: %(N3OClientApp.Directory)" Importance="high" />
+        <Exec Command="npm ci" WorkingDirectory="%(N3OClientApp.RootDir)%(N3OClientApp.Directory)" Condition="!Exists('%(N3OClientApp.RootDir)%(N3OClientApp.Directory)node_modules')" />
+        <Exec Command="npm run build" WorkingDirectory="%(N3OClientApp.RootDir)%(N3OClientApp.Directory)" />
     </Target>
 </Project>

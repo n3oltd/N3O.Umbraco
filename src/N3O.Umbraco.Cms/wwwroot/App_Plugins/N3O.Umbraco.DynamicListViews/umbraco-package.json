@@ -14,7 +14,7 @@
             "alias": "N3O.WorkspaceView.DynamicListView",
             "name": "N3O Dynamic List View",
             "element": "/App_Plugins/N3O.Umbraco.DynamicListViews/dynamic-list-view.js",
-            "weight": -666,
+            "weight": 200,
             "meta": {
                 "label": "Children",
                 "pathname": "dynamic-children",

@@ -54,7 +54,6 @@
         <PackageReference Include="Umbraco.Cms.Core" Version="17.3.5" />
         <PackageReference Include="Umbraco.Cms.Web.Common" Version="17.3.5" />
         <PackageReference Include="Umbraco.Cms.Web.Website" Version="17.3.5" />
-        <!-- Umbraco.Cms.Web.BackOffice removed in v14 — backoffice is now part of Umbraco.Cms -->
         <PackageReference Include="Umbraco.Code" Version="2.4.0" />
     </ItemGroup>
     <ItemGroup>
