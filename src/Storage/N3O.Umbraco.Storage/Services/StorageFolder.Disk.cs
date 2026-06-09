@@ -1,4 +1,5 @@
 using Humanizer;
+using Humanizer.Bytes;
 using Microsoft.AspNetCore.Hosting;
 using N3O.Umbraco.Utilities;
 using System.IO;

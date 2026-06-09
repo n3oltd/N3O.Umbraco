@@ -8,8 +8,10 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.PropertyEditors.ValueConverters;
+using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
+using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Json;
 
@@ -19,17 +21,20 @@ public class ContentJsonConverter : JsonConverter {
     private readonly Lazy<IPublishedContentTypeFactory> _contentTypeFactory;
     private readonly Lazy<IUserService> _userService;
     private readonly Lazy<IContentTypeService> _contentTypeService;
+    private readonly Lazy<IPublishedContentTypeCache> _publishedContentTypeCache;
 
     public ContentJsonConverter(Lazy<PropertyValueConverterCollection> propertyValueConverters,
                                 Lazy<IPublishedModelFactory> publishedModelFactory,
                                 Lazy<IPublishedContentTypeFactory> contentTypeFactory,
                                 Lazy<IUserService> userService,
-                                Lazy<IContentTypeService> contentTypeService) {
+                                Lazy<IContentTypeService> contentTypeService,
+                                Lazy<IPublishedContentTypeCache> publishedContentTypeCache) {
         _propertyValueConverters = propertyValueConverters;
         _publishedModelFactory = publishedModelFactory;
         _contentTypeFactory = contentTypeFactory;
         _userService = userService;
         _contentTypeService = contentTypeService;
+        _publishedContentTypeCache = publishedContentTypeCache;
     }
 
     public override bool CanRead => false;
@@ -103,8 +108,8 @@ public class ContentJsonConverter : JsonConverter {
             return null;
         }
         
-        var rawContentType = _contentTypeService.Value.Get(contentTypeAlias);
-        var contentType = rawContentType != null ? _contentTypeFactory.Value.CreateContentType(rawContentType) : null;
+        var contentType = _publishedContentTypeCache.Value.Get(_contentTypeService.Value, contentTypeAlias);
+        
         var publishedPropertyType = new PublishedPropertyType(contentType,
                                                               property.PropertyType,
                                                               _propertyValueConverters.Value,

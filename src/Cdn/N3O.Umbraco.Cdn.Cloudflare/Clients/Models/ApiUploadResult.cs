@@ -1,4 +1,5 @@
 using Humanizer;
+using Humanizer.Bytes;
 using N3O.Umbraco.Cdn.Cloudflare.Models;
 using Newtonsoft.Json;
 

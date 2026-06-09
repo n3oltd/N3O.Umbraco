@@ -1,5 +1,6 @@
 using Azure.Storage.Blobs;
 using Humanizer;
+using Humanizer.Bytes;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Utilities;
 using System.IO;

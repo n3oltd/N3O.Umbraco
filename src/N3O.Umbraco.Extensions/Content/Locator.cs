@@ -17,7 +17,6 @@ public abstract class Locator : ILocator {
     public IReadOnlyList<IPublishedContent> All(string contentTypeAlias,
                                                 Func<IPublishedContent, bool> predicate = null) {
         var allContent = GetAllContent(contentTypeAlias);
-        
         var filteredContent = allContent.Where(x => predicate?.Invoke(x) ?? true).ToList();
 
         return filteredContent;
@@ -43,7 +42,9 @@ public abstract class Locator : ILocator {
         return PublishedCache.GetById(id);
     }
 
-    public T ById<T>(Guid id) => ById(id).As<T>();
+    public T ById<T>(Guid id) {
+        return ById(id).As<T>();
+    }
 
     public IPublishedContent Single(string contentTypeAlias, Func<IPublishedContent, bool> predicate = null) {
         return All(contentTypeAlias, predicate).SingleOrDefault();
@@ -68,8 +69,7 @@ public abstract class Locator : ILocator {
             }
 
             if (contentTypeAlias == null) {
-                allContent.Add(rootContent);
-                allContent.AddRange(rootContent.Descendants());
+                allContent.AddRange(rootContent.DescendantsOrSelf());
             } else {
                 if (rootContent.ContentType.Alias.EqualsInvariant(contentTypeAlias)) {
                     allContent.Add(rootContent);
@@ -83,8 +83,5 @@ public abstract class Locator : ILocator {
     }
 
     protected abstract IPublishedCache PublishedCache { get; }
-    
     protected abstract IEnumerable<Guid> GetRootKeys();
-    /*protected abstract IPublishedContent GetById(int id);
-    protected abstract IPublishedContent GetById(Guid id);*/
 }

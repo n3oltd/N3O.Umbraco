@@ -18,13 +18,11 @@ public class ContentLocator : Locator, IContentLocator {
         _contentCache = contentCache;
     }
 
-    /*protected override IPublishedContent GetById(int id) => _contentCache.GetById(id);
-    protected override IPublishedContent GetById(Guid id) => _contentCache.GetById(id);*/
-
     protected override IPublishedCache PublishedCache => _contentCache;
 
     protected override IEnumerable<Guid> GetRootKeys() {
         _navigationQueryService.TryGetRootKeys(out var rootKeys);
-        return rootKeys ?? Enumerable.Empty<Guid>();
+        
+        return rootKeys;
     }
 }

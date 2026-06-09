@@ -24,10 +24,10 @@
         <Description>TODO</Description>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageProjectUrl>https://n3o.ltd</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/n3oltd/N3O.Umbraco</RepositoryUrl>
+        <RepositoryUrl>https://github.com/n3oltd/umbraco-extensions</RepositoryUrl>
         <Version>17.0.0</Version>
-        <AssemblyVersion>17.0.0</AssemblyVersion>
-        <FileVersion>17.0.0</FileVersion>
+        <AssemblyVersion>$(Version)</AssemblyVersion>
+        <FileVersion>$(Version)</FileVersion>
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

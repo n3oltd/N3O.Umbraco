@@ -9,6 +9,7 @@ using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
+using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Community.Contentment.DataEditors;
 using Umbraco.Extensions;
@@ -19,12 +20,12 @@ public class ContentTypesDataSource : IDataPickerSource, IDataSourceValueConvert
     private static readonly ConcurrentDictionary<Guid, string> ContentTypeAliases = new();
 
     private readonly IContentTypeService _contentTypeService;
-    private readonly IPublishedContentTypeFactory _publishedContentTypeFactory;
+    private readonly IPublishedContentTypeCache _publishedContentTypeCache;
 
     public ContentTypesDataSource(IContentTypeService contentTypeService,
-                                  IPublishedContentTypeFactory publishedContentTypeFactory) {
+                                  IPublishedContentTypeCache publishedContentTypeCache) {
         _contentTypeService = contentTypeService;
-        _publishedContentTypeFactory = publishedContentTypeFactory;
+        _publishedContentTypeCache = publishedContentTypeCache;
     }
 
     public string Name => "Umbraco Content Types";
@@ -67,10 +68,9 @@ public class ContentTypesDataSource : IDataPickerSource, IDataSourceValueConvert
         var allItems = items.ToList();
         var offset = (pageNumber - 1) * pageSize;
 
-        var result = new PagedViewModel<DataListItem> {
-            Total = allItems.Count,
-            Items = allItems.Skip(offset).Take(pageSize).Select(ToDataListItem)
-        };
+        var result = new PagedViewModel<DataListItem>();
+        result.Total = allItems.Count;
+        result.Items = allItems.Skip(offset).Take(pageSize).Select(ToDataListItem);
 
         return Task.FromResult(result);
     }
@@ -90,8 +90,7 @@ public class ContentTypesDataSource : IDataPickerSource, IDataSourceValueConvert
             return contentType.Alias;
         });
 
-        var contentType = _contentTypeService.Get(alias);
-        return contentType != null ? _publishedContentTypeFactory.CreateContentType(contentType) : default;
+        return _publishedContentTypeCache.Get(_contentTypeService, alias);
     }
 
     private DataListItem ToDataListItem(IContentType contentType) {

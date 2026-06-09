@@ -27,13 +27,7 @@ public abstract class UrlProvider : IUrlProvider {
     }
 
     public abstract string Alias { get; }
-
-    public virtual Task<UrlInfo> GetPreviewUrlAsync(IContent content, string culture, string segment)
-        => Task.FromResult(UrlInfo.AsUrl($"preview?id={content.Key}&culture={culture}&segment={segment}",
-                                         Alias,
-                                         culture,
-                                         isExternal: false));
-
+    
     public UrlInfo GetUrl(IPublishedContent content, UrlMode mode, string culture, Uri current) {
         try {
             return ResolveUrl(content, mode, culture, current);
@@ -52,6 +46,10 @@ public abstract class UrlProvider : IUrlProvider {
             
             return [];
         }
+    }
+    
+    public virtual Task<UrlInfo> GetPreviewUrlAsync(IContent content, string culture, string segment) {
+        return _defaultUrlProvider.GetPreviewUrlAsync(content, culture, segment);
     }
 
     protected virtual IEnumerable<UrlInfo> ResolveOtherUrls(int id, Uri current) => [];
@@ -76,11 +74,11 @@ public abstract class UrlProvider : IUrlProvider {
             }
 
             var defaultUrl = _defaultUrlProvider.GetUrl(pages.Single(), mode, culture, current);
-            var url = new Url(defaultUrl.Url?.ToString());
+            var url = new Url(defaultUrl.Url);
 
             url.AppendPathSegment(content.UrlSegment);
 
-            return UrlInfo.AsUrl(url.ToString(), Alias, culture, false);
+            return UrlInfo.AsUrl(url.ToString(), Alias, culture);
         }
 
         return null;
@@ -103,7 +101,7 @@ public abstract class UrlProvider : IUrlProvider {
 
             var contentDefaultUrl = _defaultUrlProvider.GetUrl(content, mode, culture, current);
 
-            return UrlInfo.AsUrl(contentDefaultUrl.Url?.ToString().Replace(collection.Url(), page.Url()), Alias, culture, false);
+            return UrlInfo.AsUrl(contentDefaultUrl.Url?.ToString().Replace(collection.Url(), page.Url()), Alias, culture);
         }
 
         return null;

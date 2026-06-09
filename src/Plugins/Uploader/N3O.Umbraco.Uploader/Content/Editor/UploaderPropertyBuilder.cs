@@ -1,4 +1,5 @@
 using Humanizer;
+using Humanizer.Bytes;
 using N3O.Umbraco.Content;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Localization;
