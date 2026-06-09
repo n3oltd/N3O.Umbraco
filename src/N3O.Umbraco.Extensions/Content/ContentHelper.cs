@@ -48,12 +48,7 @@ public class ContentHelper : IContentHelper {
     }
 
     public IReadOnlyList<IContent> GetChildren(IContent content) {
-        // TODO Migration Review (CS0618): IContentService.GetPagedChildren(int, ...) is obsolete (removal in Umbraco 19).
-        // The replacement overload adds a required string[] propertyAliases (and bool loadTemplates) and makes
-        // filter/ordering required. It is passed here as a method group matching the shared GetPagedContent
-        // delegate that GetPagedDescendants also uses (that one keeps the old shape), so swapping would change
-        // value semantics (which properties are loaded) and cannot be confirmed behavior-preserving.
-        return GetAllPagedContent(content, _contentService.Value.GetPagedChildren);
+        return GetAllPagedContent(content, GetPagedChildren);
     }
 
     public ContentProperties GetContentProperties(IContent content, string culture = null) {
@@ -151,7 +146,7 @@ public class ContentHelper : IContentHelper {
     public IReadOnlyList<T> GetPublishedDescendants<T>(IContent content) where T : IPublishedContent {
         return GetDescendants(content).Select(x => _contentLocator.Value.ById<T>(x.Key)).ToList();
     }
-    
+
     private IReadOnlyList<IContent> GetAllPagedContent(IContent content,
                                                        GetPagedContent getPagedContent,
                                                        IQuery<IContent> query = null) {
@@ -279,6 +274,22 @@ public class ContentHelper : IContentHelper {
         }
 
         return (obj, JsonConvert.SerializeObject(obj));
+    }
+    
+    private IEnumerable<IContent> GetPagedChildren(int id,
+                                                   long pageIndex,
+                                                   int pageSize,
+                                                   out long totalRecords,
+                                                   IQuery<IContent> filter = null,
+                                                   Ordering ordering = null) {
+        return _contentService.Value.GetPagedChildren(id,
+                                                      pageIndex,
+                                                      pageSize,
+                                                      out totalRecords,
+                                                      propertyAliases: null,
+                                                      filter: filter,
+                                                      ordering: ordering,
+                                                      loadTemplates: true);
     }
 
     private delegate IEnumerable<IContent> GetPagedContent(int id,

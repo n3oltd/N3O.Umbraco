@@ -6,6 +6,7 @@ namespace N3O.Umbraco.Localization;
 
 public class NumberFormatter : INumberFormatter {
     private readonly ILocalizationSettingsAccessor _settingsAccessor;
+    
     private NumberFormat _numberFormat;
 
     public NumberFormatter(ILocalizationSettingsAccessor settingsAccessor) {
