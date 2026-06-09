@@ -10,6 +10,7 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Persistence.Querying;
 using Umbraco.Cms.Core.PropertyEditors;
+using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Extensions;
 
@@ -20,18 +21,18 @@ public class ContentHelper : IContentHelper {
     private readonly Lazy<IContentService> _contentService;
     private readonly Lazy<IContentTypeService> _contentTypeService;
     private readonly Lazy<IContentLocator> _contentLocator;
-    private readonly Lazy<IPublishedContentTypeFactory> _publishedContentTypeFactory;
+    private readonly Lazy<IPublishedContentTypeCache> _publishedContentTypeCache;
 
     public ContentHelper(Lazy<IServiceProvider> serviceProvider,
                          Lazy<IContentService> contentService,
                          Lazy<IContentTypeService> contentTypeService,
                          Lazy<IContentLocator> contentLocator,
-                         Lazy<IPublishedContentTypeFactory> publishedContentTypeFactory) {
+                         Lazy<IPublishedContentTypeCache> publishedContentTypeCache) {
         _serviceProvider = serviceProvider;
         _contentService = contentService;
         _contentTypeService = contentTypeService;
         _contentLocator = contentLocator;
-        _publishedContentTypeFactory = publishedContentTypeFactory;
+        _publishedContentTypeCache = publishedContentTypeCache;
     }
 
     public IReadOnlyList<IContent> GetAncestors(IContent content) {
@@ -116,10 +117,7 @@ public class ContentHelper : IContentHelper {
                                                   string propertyTypeAlias,
                                                   object propertyValue) {
         var converter = (IPropertyValueConverter) _serviceProvider.Value.GetRequiredService(converterType);
-        var rawContentType = _contentTypeService.Value.Get(contentTypeAlias);
-        
-        /*TODO Check*/
-        var publishedContentType = rawContentType != null ? _publishedContentTypeFactory.Value.CreateContentType(rawContentType) : null;
+        var publishedContentType = _publishedContentTypeCache.Value.Get(_contentTypeService.Value, contentTypeAlias);
         var publishedPropertyType = publishedContentType?.GetPropertyType(propertyTypeAlias);
         
         var source = propertyValue;

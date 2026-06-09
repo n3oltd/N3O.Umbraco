@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using N3O.Umbraco.Attributes;
+using N3O.Umbraco.Content;
 using N3O.Umbraco.Context;
 using System.IO;
 using System.Linq;
@@ -29,6 +30,14 @@ public class DevToolsController : ApiController {
         var debugView = root.GetDebugView();
 
         return Result(debugView);
+    }
+    
+    [HttpPost("test/cache")]
+    public ActionResult<string> TestCache([FromServices] IContentLocator contentLocator, [FromServices] IMediaLocator mediaLocator) {
+        var contents = contentLocator.All();
+        var medias = mediaLocator.All();
+
+        return null;
     }
 
     [HttpGet("core/echo")]

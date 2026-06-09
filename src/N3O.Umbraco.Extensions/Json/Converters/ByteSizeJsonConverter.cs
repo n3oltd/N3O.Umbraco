@@ -1,4 +1,4 @@
-using Humanizer;
+using Humanizer.Bytes;
 using N3O.Umbraco.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
