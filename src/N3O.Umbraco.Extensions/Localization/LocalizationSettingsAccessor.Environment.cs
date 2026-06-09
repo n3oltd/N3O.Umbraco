@@ -24,11 +24,11 @@ public class EnvironmentLocalizationSettingsAccessor : ILocalizationSettingsAcce
             var timeFormat = Get(LocalizationKeys.TimeFormat, TimeFormats._24);
             var timezone = Get(LocalizationKeys.Timezone, Timezones.Utc);
 
-            var defaultLanguage = _languageService.GetDefaultLanguageAsync().GetAwaiter().GetResult();
-            var allLanguages = _languageService.GetAllAsync().GetAwaiter().GetResult();
+            var defaultCultureCode = _languageService.GetDefaultCultureCode();
+            var allCultureCodes = _languageService.GetAllCultureCodes();
 
-            _settings = new LocalizationSettings(defaultLanguage?.IsoCode,
-                                                 allLanguages.Select(x => x.IsoCode).ToList(),
+            _settings = new LocalizationSettings(defaultCultureCode,
+                                                 allCultureCodes,
                                                  numberFormat,
                                                  dateFormat,
                                                  timeFormat,

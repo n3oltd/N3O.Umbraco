@@ -2,6 +2,7 @@ namespace N3O.Umbraco.Localization;
 
 public partial class DateTimeFormatter : IDateTimeFormatter {
     private readonly ILocalizationSettingsAccessor _settingsAccessor;
+    
     private DateFormat _dateFormat;
     private TimeFormat _timeFormat;
     private Timezone _timezone;
