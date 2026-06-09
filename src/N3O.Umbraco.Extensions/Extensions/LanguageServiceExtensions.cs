@@ -6,7 +6,7 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Extensions;
 
-public static class LocalizationServiceExtensions {
+public static class LanguageServiceExtensions {
     public static IReadOnlyList<string> GetAllCultureCodes(this ILanguageService languageService) {
         try {
             return languageService.GetAllIsoCodesAsync().GetAwaiter().GetResult().OrderBy(x => x).ToList();
