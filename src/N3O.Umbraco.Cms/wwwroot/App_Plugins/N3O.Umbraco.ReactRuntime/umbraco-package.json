@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json.schemastore.org/umbraco-package.json",
+    "name": "N3O React Runtime",
+    "version": "1.0.0",
+    "extensions": [],
+    "importmap": {
+        "imports": {
+            "react": "/App_Plugins/N3O.Umbraco.ReactRuntime/react.js",
+            "react/jsx-runtime": "/App_Plugins/N3O.Umbraco.ReactRuntime/react-jsx-runtime.js",
+            "react-dom": "/App_Plugins/N3O.Umbraco.ReactRuntime/react-dom.js",
+            "react-dom/client": "/App_Plugins/N3O.Umbraco.ReactRuntime/react-dom.js"
+        }
+    }
+}

@@ -1,43 +1,35 @@
-var p = (t) => {
+var m = (t) => {
   throw TypeError(t);
 };
-var c = (t, i, e) => i.has(t) || p("Cannot " + e);
-var h = (t, i, e) => (c(t, i, "read from private field"), e ? e.call(t) : i.get(t)), m = (t, i, e) => i.has(t) ? p("Cannot add the same private member more than once") : i instanceof WeakSet ? i.add(t) : i.set(t, e), d = (t, i, e, s) => (c(t, i, "write to private field"), s ? s.call(t, e) : i.set(t, e), e), f = (t, i, e) => (c(t, i, "access private method"), e);
-import { UmbConditionBase as l } from "@umbraco-cms/backoffice/extension-registry";
+var o = (t, e, i) => e.has(t) || m("Cannot " + i);
+var u = (t, e, i) => (o(t, e, "read from private field"), i ? i.call(t) : e.get(t)), c = (t, e, i) => e.has(t) ? m("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, i), f = (t, e, i, s) => (o(t, e, "write to private field"), s ? s.call(t, i) : e.set(t, i), i), d = (t, e, i) => (o(t, e, "access private method"), i);
+import { UmbConditionBase as C } from "@umbraco-cms/backoffice/extension-registry";
 import { UMB_DOCUMENT_WORKSPACE_CONTEXT as b } from "@umbraco-cms/backoffice/document";
-import { UMB_AUTH_CONTEXT as g } from "@umbraco-cms/backoffice/auth";
-var a, r, C;
-class U extends l {
-  constructor(e, s) {
-    super(e, s);
-    m(this, r);
-    m(this, a);
-    d(this, a, s), this.consumeContext(b, (o) => {
-      o && this.observe(o.unique, (n) => {
-        n && f(this, r, C).call(this, n);
+var n, a, p, l;
+class v extends C {
+  constructor(i, s) {
+    super(i, s);
+    c(this, a);
+    c(this, n);
+    f(this, n, s), this.consumeContext(b, (r) => {
+      r && this.observe(r.unique, (h) => {
+        h && d(this, a, p).call(this, h);
       });
     });
   }
 }
-a = new WeakMap(), r = new WeakSet(), C = async function(e) {
+n = new WeakMap(), a = new WeakSet(), p = async function(i) {
+  this.permitted = await d(this, a, l).call(this, i), u(this, n).onChange(this.permitted);
+}, l = async function(i) {
   try {
-    const s = await this.getContext(g);
-    if (!s) {
-      this.permitted = !1, h(this, a).onChange(this.permitted);
-      return;
-    }
-    const o = s.getOpenApiConfiguration(), n = await fetch(`${o.base}/umbraco/backoffice/api/DynamicListViewApi/${e}`, {
-      credentials: o.credentials,
-      headers: { Authorization: `Bearer ${await o.token()}` }
-    }), u = await n.json();
-    this.permitted = n.ok && u.enabled === !0;
+    const s = await fetch(`/umbraco/api/DynamicListViewApi/${i}`);
+    return s.ok ? (await s.json()).enabled === !0 : !1;
   } catch {
-    this.permitted = !1;
+    return !1;
   }
-  h(this, a).onChange(this.permitted);
 };
 export {
-  U as DynamicListViewCondition,
-  U as default
+  v as DynamicListViewCondition,
+  v as default
 };
 //# sourceMappingURL=dynamic-list-view-condition.js.map
