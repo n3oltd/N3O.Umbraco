@@ -21,8 +21,16 @@ directly. So every plugin keeps a thin **web-component shell** that:
 
 **React is shared, not bundled.** `react`, `react-dom`, `react-dom/client`, `react/jsx-runtime` are kept
 **external** in every plugin's Vite build and resolved at runtime by the import map declared in
-`src/N3O.Umbraco.Cms/App_Plugins/N3O.Umbraco.React/umbraco-package.json` (a self-hosted React 19 ESM
-runtime). **Never bundle React into a plugin** — that would load multiple React instances.
+`src/N3O.Umbraco.Cms/wwwroot/App_Plugins/N3O.Umbraco.ReactRuntime/umbraco-package.json` (a self-hosted
+React 19 ESM runtime; renamed from `N3O.Umbraco.React` 2026-06-10). **Never bundle React into a plugin** —
+that would load multiple React instances.
+
+> **Shim gotcha (fixed 2026-06-10):** the runtime's shim files (`N3O.Umbraco.ReactRuntime/src/react.js`,
+> `react-dom.js`, `react-jsx-runtime.js`) must re-export the named API **explicitly**
+> (`import React from 'react'; export default React; export const { useState, ... } = React;`). A bare
+> `export * from 'react'` drops React's CommonJS named exports through the Vite lib build — only `default`
+> survives — so `import { useState } from 'react'` and JSX break at runtime. Keep the export list in sync
+> with the installed React major.
 
 ---
 

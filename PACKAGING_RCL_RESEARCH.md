@@ -10,7 +10,9 @@
 
 ---
 
-## STATUS — PILOTED (session 11), then FOLDED INTO `N3O.Umbraco.Cms` (2026-06-08, session 12)
+## STATUS — PILOTED (s11), FOLDED INTO `N3O.Umbraco.Cms` (s12), CLEANED UP (s13)
+
+**UPDATE (session 13, 2026-06-10):** `N3O.Umbraco.Cms` packaging finalised. **Deleted** the legacy `build/N3O.Umbraco.Cms.targets` copy mechanism (and `DemoSite.Web`'s `<Import>` of it), the dead v13 `App_Static/ace-builds` files (Ace is gone from the v17 backoffice), and the stale v13 `App_Plugins/Contentment` source (Contentment 6.1.4 self-ships its v17 assets transitively). Dropped `<Content App_Static>` / `<None build>` from the csproj. **NETSDK1152 root cause found + fixed:** the conflict was NOT (only) the copy-targets — the Umbraco SDK regenerates `appsettings-schema.json` / `appsettings-schema.Umbraco.Cms.json` / `umbraco-package-schema.json` into the RCL root, which then dual-publish into consumers at the same relative path; excluded them via `<Content Remove>`. `dotnet publish` of the test site now succeeds with **0 errors**. Also renamed the shared React runtime `N3O.Umbraco.React` → **`N3O.Umbraco.ReactRuntime`** (so paths below now read `wwwroot/App_Plugins/N3O.Umbraco.ReactRuntime/`). The rollout checklist (other `*.StaticAssets` plugins) is unchanged.
 
 **UPDATE (session 12):** the separate `N3O.Umbraco.Extensions.StaticAssets` project was **removed** and its contents folded **into `N3O.Umbraco.Cms`** (which is itself `Microsoft.NET.Sdk.Razor`). Cms now carries `Apps/`, `N3O.Umbraco.React/`, `wwwroot/App_Plugins/{N3O.Umbraco.React,N3O.Umbraco.DynamicListViews}/`, plus `<StaticWebAssetBasePath>/</StaticWebAssetBasePath>`, the `node_modules` exclude, and the `BuildClientApps` Vite target. Verified: `dotnet build` 0 errors and the test site serves `/App_Plugins/**` (200) from Cms with the DLV condition + workspace view registered. **Consequence: building `N3O.Umbraco.Cms` now requires Node/npm.** The RCL mechanics below are unchanged — just hosted by Cms rather than a dedicated project. The rollout checklist (other `*.StaticAssets` plugins) still stands; use the Cms setup as the reference instead of the now-deleted Extensions.StaticAssets.
 

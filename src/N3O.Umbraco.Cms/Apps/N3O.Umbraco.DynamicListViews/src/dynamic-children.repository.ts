@@ -5,8 +5,6 @@ import {
 import type { UmbDocumentTreeItemModel } from '@umbraco-cms/backoffice/document';
 import type { UmbControllerHost } from '@umbraco-cms/backoffice/controller-api';
 
-// View models for the Dynamic List View, decoupled from Umbraco's raw tree-item shape so the
-// presentation layer never reaches into `variants[0]`, `documentType`, etc.
 export interface DynamicListViewItem {
     unique: string;
     name: string;
@@ -21,13 +19,8 @@ export interface DynamicListViewChildren {
     total: number;
 }
 
-const PAGE_SIZE = 100;
+const PAGE_SIZE = 50;
 
-// Data access for the Dynamic List View. The doc types using this feature are deliberately NOT
-// Umbraco collections (so the content tree keeps its inline expand-arrow navigation), which means
-// the native document collection endpoint 400s for them; the document tree-children repository
-// works on any node. Raw tree items are mapped to the view's own model here so the presentation
-// layer stays decoupled from Umbraco's shapes.
 export class DynamicChildrenRepository {
     readonly #treeRepository: UmbDocumentTreeRepository;
 

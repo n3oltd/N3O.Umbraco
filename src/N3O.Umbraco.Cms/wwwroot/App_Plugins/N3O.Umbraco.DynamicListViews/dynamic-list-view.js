@@ -6,7 +6,7 @@ var v = (t, e, i) => (m(t, e, "read from private field"), i ? i.call(t) : e.get(
 import { LitElement as P, html as l, nothing as $, css as x, state as _, customElement as O } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin as N } from "@umbraco-cms/backoffice/element-api";
 import { UmbDocumentTreeRepository as S, UMB_EDIT_DOCUMENT_WORKSPACE_PATH_PATTERN as A, UMB_DOCUMENT_WORKSPACE_CONTEXT as M } from "@umbraco-cms/backoffice/document";
-const R = 100;
+const R = 50;
 var u;
 class U {
   constructor(e) {
