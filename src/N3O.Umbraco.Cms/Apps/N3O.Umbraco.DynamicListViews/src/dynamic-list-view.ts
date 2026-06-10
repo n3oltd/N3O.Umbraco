@@ -6,9 +6,6 @@ import type { DynamicListViewItem } from './dynamic-children.repository';
 
 const elementName = 'n3o-dynamic-list-view';
 
-// Workspace view that lists a document's children, gated per-node by the
-// N3O.Condition.DynamicListView condition. This element is presentation only: it observes the
-// current document and delegates loading + mapping to DynamicChildrenRepository.
 @customElement(elementName)
 export class N3oDynamicListViewElement extends UmbElementMixin(LitElement) {
     @state()
@@ -51,8 +48,13 @@ export class N3oDynamicListViewElement extends UmbElementMixin(LitElement) {
     }
 
     override render() {
-        if (this._loading) { return html`<div class="center"><uui-loader></uui-loader></div>`; }
-        if (!this._items.length) { return html`<uui-box><div class="center">There are no child items.</div></uui-box>`; }
+        if (this._loading) { 
+            return html`<div class="center"><uui-loader></uui-loader></div>`;
+        }
+        
+        if (!this._items.length) { 
+            return html`<uui-box><div class="center">There are no child items.</div></uui-box>`;
+        }
 
         return html`
             <uui-box>

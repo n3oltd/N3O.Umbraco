@@ -8,8 +8,6 @@ interface DynamicListViewConditionArgs {
     onChange: (permitted: boolean) => void;
 }
 
-// Visibility policy for the Dynamic List View workspace view: it is shown only for documents the
-// backend reports as enabled.
 export class DynamicListViewCondition extends UmbConditionBase<UmbConditionConfigBase> {
     readonly #args: DynamicListViewConditionArgs;
 
@@ -32,8 +30,6 @@ export class DynamicListViewCondition extends UmbConditionBase<UmbConditionConfi
         this.#args.onChange(this.permitted);
     }
 
-    // Asks the backend whether the Dynamic List View is enabled for this document. The endpoint
-    // (DynamicListViewApiController) is anonymous, so a plain same-origin fetch is all that's needed.
     async #isEnabled(contentKey: string): Promise<boolean> {
         try {
             const response = await fetch(`/umbraco/api/DynamicListViewApi/${contentKey}`);
