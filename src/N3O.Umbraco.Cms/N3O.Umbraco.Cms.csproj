@@ -10,9 +10,7 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-        <!-- RCL: serve wwwroot at the web root so wwwroot/App_Plugins/<Name> is exposed at /App_Plugins/<Name> (no copy targets needed). -->
         <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
-        <!-- Exclude npm install output anywhere under the project; the TypeScript/JS source stays visible/editable in the IDE. -->
         <DefaultItemExcludes>$(DefaultItemExcludes);**\node_modules\**</DefaultItemExcludes>
     </PropertyGroup>
     <PropertyGroup>
