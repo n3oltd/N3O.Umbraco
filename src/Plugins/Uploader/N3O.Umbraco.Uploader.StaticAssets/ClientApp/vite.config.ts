@@ -12,7 +12,7 @@ export default defineConfig({
             formats: ['es'],
             fileName: () => 'uploader.js',
         },
-        outDir: '../App_Plugins/N3O.Umbraco.Uploader',
+        outDir: '../wwwroot/App_Plugins/N3O.Umbraco.Uploader',
         emptyOutDir: false,
         sourcemap: true,
         rollupOptions: {

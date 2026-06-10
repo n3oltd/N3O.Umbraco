@@ -14,7 +14,7 @@ const elementName = 'n3o-cells';
 // custom elements, so this thin element owns the Umbraco contract (value/config +
 // UmbPropertyValueChangeEvent) and mounts the React UI (N3oCellsApp) into its shadow root.
 // React itself is NOT bundled here — it is external and resolved at runtime from the shared
-// N3O.Umbraco.React import map. Handsontable IS bundled (it is not React).
+// N3O.Umbraco.ReactRuntime import map. Handsontable IS bundled (it is not React).
 //
 // The stored value is a 2D array (JSON). The data type configuration carries a `gridConfiguration`
 // JSON string describing the grid (columns, default data, etc.).

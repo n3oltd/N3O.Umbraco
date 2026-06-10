@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.WelcomeDashboard.StaticAssets</RootNamespace>
         <TargetFramework>net10.0</TargetFramework>
@@ -10,6 +10,8 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
+        <DefaultItemExcludes>$(DefaultItemExcludes);**\node_modules\**</DefaultItemExcludes>
     </PropertyGroup>
     <PropertyGroup>
         <PackageId>N3O.Umbraco.WelcomeDashboard.StaticAssets</PackageId>
@@ -32,34 +34,16 @@
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
-    <ItemGroup>
-        <!-- Static (committed) assets. Built JS/maps are excluded here and added by the BuildClientApp target. -->
-        <Content Include="App_Plugins\N3O.Umbraco.WelcomeDashboard\**\*.*"
-                 Exclude="App_Plugins\N3O.Umbraco.WelcomeDashboard\**\*.js;App_Plugins\N3O.Umbraco.WelcomeDashboard\**\*.js.map">
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-        </Content>
-        <None Include="build\**\*.*">
-            <Pack>True</Pack>
-            <PackagePath>buildTransitive</PackagePath>
-        </None>
-    </ItemGroup>
 
-    <!-- Build the Lit/TypeScript client app (Vite) and register its output before assets are gathered. -->
+    <!-- Build the React/TypeScript client app (Vite) before the SDK gathers wwwroot into the static web assets manifest. -->
     <PropertyGroup>
         <ClientAppDir>$(MSBuildProjectDirectory)\ClientApp</ClientAppDir>
     </PropertyGroup>
-    <Target Name="BuildClientApp" BeforeTargets="AssignTargetPaths" Condition="Exists('$(ClientAppDir)\package.json')">
-        <Message Text="Building WelcomeDashboard client app (Vite)" Importance="high" />
+    <Target Name="BuildClientApp" BeforeTargets="BeforeBuild">
         <Exec Command="npm ci" WorkingDirectory="$(ClientAppDir)" Condition="!Exists('$(ClientAppDir)\node_modules')" />
         <Exec Command="npm run build" WorkingDirectory="$(ClientAppDir)" />
-        <ItemGroup>
-            <Content Include="App_Plugins\N3O.Umbraco.WelcomeDashboard\**\*.js;App_Plugins\N3O.Umbraco.WelcomeDashboard\**\*.js.map">
-                <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-                <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-            </Content>
-        </ItemGroup>
     </Target>
+
     <ItemGroup>
         <None Update="README.md">
             <Pack>True</Pack>
@@ -67,7 +51,5 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\N3O.Umbraco.WelcomeDashboard\N3O.Umbraco.WelcomeDashboard.csproj" />
-    </ItemGroup>
-    <ItemGroup>
     </ItemGroup>
 </Project>

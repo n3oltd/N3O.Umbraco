@@ -15,7 +15,7 @@ const elementName = 'n3o-editor-js';
 // elements, so this thin element owns the Umbraco contract (value + UmbPropertyValueChangeEvent),
 // consumes UMB_MODAL_MANAGER_CONTEXT (needed by the EditorJS image/link tools' media & link pickers),
 // and mounts the React UI (EditorJsApp) into its shadow root. React itself is NOT bundled here — it
-// is external and resolved at runtime from the shared N3O.Umbraco.React import map. The @editorjs/*
+// is external and resolved at runtime from the shared N3O.Umbraco.ReactRuntime import map. The @editorjs/*
 // libraries ARE bundled (they are not React).
 //
 // UmbElementMixin(HTMLElement) is used (not LitElement) purely for context plumbing; React renders

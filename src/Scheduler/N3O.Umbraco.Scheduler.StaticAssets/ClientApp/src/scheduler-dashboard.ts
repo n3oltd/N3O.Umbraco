@@ -5,7 +5,7 @@
 // Web-component SHELL for the Scheduler dashboard. Umbraco's backoffice only loads custom
 // elements, so this thin element mounts the React UI (SchedulerDashboardApp) into its shadow
 // root. React itself is NOT bundled here — it is external and resolved at runtime from the
-// shared N3O.Umbraco.React import map.
+// shared N3O.Umbraco.ReactRuntime import map.
 import { customElement } from '@umbraco-cms/backoffice/external/lit';
 import { createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';

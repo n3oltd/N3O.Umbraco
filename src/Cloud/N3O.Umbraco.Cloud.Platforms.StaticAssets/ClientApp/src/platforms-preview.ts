@@ -20,7 +20,7 @@ const elementName = 'n3o-platforms-preview';
 // and observes the document `unique` — then mounts the React UI (PlatformsPreviewApp) into its shadow
 // root, passing the document `unique` plus a getter for the current in-memory content. The Lit base is
 // only for context plumbing; React renders the UI. React itself is NOT bundled here — it is external and
-// resolved at runtime from the shared N3O.Umbraco.React import map.
+// resolved at runtime from the shared N3O.Umbraco.ReactRuntime import map.
 @customElement(elementName)
 export class N3oPlatformsPreviewElement extends UmbElementMixin(LitElement) {
     #workspaceContext: UmbDocumentWorkspaceContext | undefined;

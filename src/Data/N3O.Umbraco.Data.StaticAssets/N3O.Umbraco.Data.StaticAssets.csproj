@@ -1,8 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Data.StaticAssets</RootNamespace>
         <TargetFramework>net10.0</TargetFramework>
         <LangVersion>12</LangVersion>
+        <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
+        <DefaultItemExcludes>$(DefaultItemExcludes);**\node_modules\**</DefaultItemExcludes>
         <Copyright>Copyright © 2026 N3O Ltd</Copyright>
         <NoWarn>NU1605;1591</NoWarn>
         <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
@@ -32,48 +34,13 @@
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
-    <ItemGroup>
-        <!-- Static (committed) assets. Built JS/maps are excluded here and added by the BuildClientApp target. -->
-        <Content Include="App_Plugins\N3O.Umbraco.Data.Export\**\*.*"
-                 Exclude="App_Plugins\N3O.Umbraco.Data.Export\**\*.js;App_Plugins\N3O.Umbraco.Data.Export\**\*.js.map">
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-        </Content>
-        <Content Include="App_Plugins\N3O.Umbraco.Data.Import\**\*.*"
-                 Exclude="App_Plugins\N3O.Umbraco.Data.Import\**\*.js;App_Plugins\N3O.Umbraco.Data.Import\**\*.js.map">
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-        </Content>
-        <Content Include="App_Plugins\N3O.Umbraco.Data.ImportNoticesViewer\**\*.*"
-                 Exclude="App_Plugins\N3O.Umbraco.Data.ImportNoticesViewer\**\*.js;App_Plugins\N3O.Umbraco.Data.ImportNoticesViewer\**\*.js.map">
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-        </Content>
-        <Content Include="App_Plugins\N3O.Umbraco.Data.ImportDataEditor\**\*.*"
-                 Exclude="App_Plugins\N3O.Umbraco.Data.ImportDataEditor\**\*.js;App_Plugins\N3O.Umbraco.Data.ImportDataEditor\**\*.js.map">
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-        </Content>
-        <None Include="build\**\*.*">
-            <Pack>True</Pack>
-            <PackagePath>buildTransitive</PackagePath>
-        </None>
-    </ItemGroup>
-
-    <!-- Build the Lit/TypeScript client app (Vite) and register its output before assets are gathered. -->
+    <!-- Build the React/TypeScript client app (Vite) and emit into wwwroot before assets are gathered. -->
     <PropertyGroup>
         <ClientAppDir>$(MSBuildProjectDirectory)\ClientApp</ClientAppDir>
     </PropertyGroup>
-    <Target Name="BuildClientApp" BeforeTargets="AssignTargetPaths" Condition="Exists('$(ClientAppDir)\package.json')">
-        <Message Text="Building Data client app (Vite)" Importance="high" />
+    <Target Name="BuildClientApp" BeforeTargets="BeforeBuild">
         <Exec Command="npm ci" WorkingDirectory="$(ClientAppDir)" Condition="!Exists('$(ClientAppDir)\node_modules')" />
         <Exec Command="npm run build" WorkingDirectory="$(ClientAppDir)" />
-        <ItemGroup>
-            <Content Include="App_Plugins\**\*.js;App_Plugins\**\*.js.map">
-                <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-                <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-            </Content>
-        </ItemGroup>
     </Target>
     <ItemGroup>
         <ProjectReference Include="..\..\UIBuilder\N3O.Umbraco.UIBuilder.StaticAssets\N3O.Umbraco.UIBuilder.StaticAssets.csproj" />

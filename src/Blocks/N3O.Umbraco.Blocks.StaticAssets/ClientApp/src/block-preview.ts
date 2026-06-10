@@ -25,7 +25,7 @@ interface BlockGridValue {
 // context plumbing — it consumes the document workspace + block entry/manager contexts, POSTs the whole
 // block grid editor value to the backoffice preview endpoint, and pushes the returned server-rendered
 // HTML markup into the React app (BlockPreviewApp), which renders it. React itself is NOT bundled here —
-// it is external and resolved at runtime from the shared N3O.Umbraco.React import map.
+// it is external and resolved at runtime from the shared N3O.Umbraco.ReactRuntime import map.
 //
 // Ported from the AngularJS "N3O.Umbraco.Blocks.Preview" controller (previewGridBlock endpoint).
 @customElement(elementName)

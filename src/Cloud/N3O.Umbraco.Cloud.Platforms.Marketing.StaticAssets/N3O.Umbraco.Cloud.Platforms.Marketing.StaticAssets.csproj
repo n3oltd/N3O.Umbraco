@@ -1,8 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco.Cloud.Platforms.Marketing.StaticAssets</RootNamespace>
         <TargetFramework>net10.0</TargetFramework>
         <LangVersion>12</LangVersion>
+        <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
         <Copyright>Copyright © 2026 N3O Ltd</Copyright>
         <NoWarn>NU1605;1591</NoWarn>
         <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
@@ -32,16 +33,6 @@
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
-    <ItemGroup>
-        <Content Include="App_Plugins\telethon-on-air-rule\**\*.*">
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-        </Content>
-        <None Include="build\**\*.*">
-            <Pack>True</Pack>
-            <PackagePath>buildTransitive</PackagePath>
-        </None>
-    </ItemGroup>
     <ItemGroup>
         <None Update="README.md">
             <Pack>True</Pack>
