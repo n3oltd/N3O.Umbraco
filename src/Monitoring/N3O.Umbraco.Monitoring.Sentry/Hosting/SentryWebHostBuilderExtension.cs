@@ -3,12 +3,13 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Hosting;
+using N3O.Umbraco.Monitoring.Sentry.Extensions;
 
 namespace N3O.Umbraco.Monitoring.Sentry;
 
 public class SentryWebHostBuilderExtension : IWebHostBuilderExtension {
     public void Run(IWebHostBuilder webBuilder) {
-        if (Composer.WebHostEnvironment.IsProduction()) {
+        if (Composer.WebHostEnvironment.IsSentryEnabled()) {
             webBuilder.UseSentry(opt => {
                 opt.InitializeSdk = false;
                 opt.MinimumEventLevel = LogLevel.Error;
