@@ -6,10 +6,6 @@ using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Features.DynamicListViews;
 
-// Anonymous on purpose: returns only a boolean "is the dynamic list view enabled for this node",
-// which is low-sensitivity, and it is called from the (already authenticated) backoffice. Using the
-// non-authorized ApiController base keeps the JSON/validation filters but drops backoffice auth, so
-// the backoffice condition can call it with a plain fetch (no token handling).
 public class DynamicListViewApiController : ApiController {
     private readonly IContentService _contentService;
     private readonly IDataTypeService _dataTypeService;
@@ -27,6 +23,7 @@ public class DynamicListViewApiController : ApiController {
             return Ok(new { enabled = false });
         }
 
+        /*TODO*/
         var dataTypeName = $"List View - {content.ContentType.Alias}";
         var dataType = await _dataTypeService.GetAsync(dataTypeName);
 
