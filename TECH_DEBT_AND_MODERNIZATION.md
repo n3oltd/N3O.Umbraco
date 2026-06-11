@@ -25,7 +25,7 @@ marks correctness/security risk, not compile status).
 | 2 | **Hardcoded HMAC image secret committed to git** | 🔴 | §2 S-02 |
 | 3 | **Unauthenticated file upload/download** (`StorageController`) + path not validated | 🔴 | §2 S-03 |
 | 4 | **`BlockItemDataExtensions.FormatBlockData` duplicate-key crash** on any ContentPicker block — *verified* | 🔴 | §1 B-01 |
-| 5 | **Data export reads `element["udi"]`** (null in v17 key-based Block List) → crash on export | 🔴 | §1 B-02 |
+| 5 | ~~**Data export reads `element["udi"]`** (null in v17 key-based Block List) → crash on export~~ **FIXED + runtime-verified 2026-06-11** | ✅ | §1 B-02 |
 | 6 | **Open redirect** in logout `returnUrl` | 🟠 | §2 S-12 |
 | 7 | **Unauthenticated sync endpoint** + timing-unsafe secret compare | 🟠 | §2 S-05 |
 | 8 | **NC→BlockList migration**: value-shape unverified, per-item catch hides partial commits, runs on every startup | 🔴 | §5 + §7 |
@@ -47,7 +47,7 @@ marks correctness/security risk, not compile status).
 | ID | Finding | Sev | Req. to run? | Location |
 |---|---|---|---|---|
 | **B-01** | **ContentPicker duplicate-key crash — *verified*.** When the picker value parses as a GUID, line 23 adds `propertyData.Alias` then line 26 unconditionally adds the same alias again → `ArgumentException: An item with the same key has already been added`. Crashes the block-preview/format path for any block with a ContentPicker property holding a valid GUID. Missing `else`/`continue` after line 23. **[tracked in REVIEW_FINDINGS, but not in main trackers]** | 🔴 | Yes | `Blocks/N3O.Umbraco.Blocks/Extensions/BlockItemDataExtensions.cs:20-26` |
-| **B-02** | **Data export reads v13 `element["udi"]`.** v17 Block List stores `"key"` (GUID), not `"udi"`. `UdiParser.Parse((string)element["udi"])` throws on every v17 Block List element. The dead `if (block is JArray)` branch never matches flat v17 `contentData`. The NC-element sibling method correctly reads `element["key"]` — mirror it. | 🔴 | Yes (Data export of Block List) | `N3O.Umbraco.Extensions/Content/ContentHelper.cs:201-218` |
+| **B-02** | ✅ **FIXED + runtime-verified (2026-06-11).** `GetContentPropertiesForBlockListOrGrid` now iterates the v17 flat `contentData` array directly; new `GetBlockElementKey` reads element `"key"` (legacy `udi` fallback) + `GetBlockElementValuesByAlias` reads the v17 `"values"` array. Verified end-to-end on the test site via the Management API AND the backoffice UI (CSV contained the block's inner value; export completed, no crash). *(Was: read v13 `element["udi"]`, dead `if (block is JArray)` branch never matched flat v17 `contentData`.)* | ✅ | — | `N3O.Umbraco.Extensions/Content/ContentHelper.cs` |
 | **B-03** | **Perplex block parse uses v13 shape.** `GetContentPropertiesForBlockContent` parses Perplex `blocks[i]["content"]` as old NC JSON; Perplex v4 (`Perplex.ContentBlocks 4.0.0-rc.3`) uses `ContentBlocksValue`. Likely NRE / empty results on any Perplex+Data-export site. | 🟠 | Yes (Perplex + export) | `ContentHelper.cs:181-199` |
 | **B-04** | **`BlockValueExtensions` static content-type cache never invalidated.** `static readonly ConcurrentHashSet<IContentType>` is populated once and never cleared on `ContentTypeSaved/Deleted` → stale type definitions in block rendering after backoffice edits (especially risky mid-migration). Also a non-atomic check-then-populate (redundant `GetAllElementTypes()` under concurrency). | 🟡 | Yes | `Blocks/N3O.Umbraco.Blocks/Extensions/BlockValueExtensions.cs:16,95-103` |
 | **B-05** | **`DateTime.Now` in telethon campaign gate.** Local-time compare against a stored (UTC-migrated) `Telethon.BeginAt` → off-by-timezone on UTC servers. Use `DateTime.UtcNow`. | 🟡 | Yes | `Cloud/N3O.Umbraco.Cloud.Platforms/Notifications/Offerings/OfferingSaving.cs:32` |
@@ -62,7 +62,10 @@ marks correctness/security risk, not compile status).
 ## 2. Security & configuration (new unless noted)
 
 > Hangfire dashboard auth and Export/Import gating are **[tracked + resolved]** (BLOCKER-10 #1/#2). The
-> Platforms-Preview content-type condition (#3) is **[tracked, deferred]**.
+> Platforms-Preview content-type condition (#3) is now **[resolved 2026-06-11]** (shared
+> `N3O.Condition.WorkspaceVisibility` condition + `PlatformsPreviewController`; compile-verified, runtime
+> pending). The per-node/per-user content-app gating for Export/Import (REVIEW_FINDINGS BLOCKER-5) was
+> also restored via the same condition (verified end-to-end).
 
 | ID | Finding | Sev | Location |
 |---|---|---|---|

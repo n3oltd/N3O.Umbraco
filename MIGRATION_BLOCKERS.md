@@ -5,10 +5,10 @@
 > source of truth). Many items below are now DONE (Content Apps→workspaceViews, dashboards, Hangfire auth
 > (BLOCKER-10a), uSync ctor (BLOCKER-05), NC-migration removed + DataComposer (BLOCKER-06/11)). Still open:
 > BLOCKER-02 (Perplex rc.3), BLOCKER-04 (Engage TelethonOnAir client registration), BLOCKER-07 (orphaned
-> Bundling), BLOCKER-08 (Forms/Engage license), BLOCKER-10 #1/#2/#3 (CampaignSending handlers + Platforms-
-> Preview gating). **NEW blocker the audit found:** Block List/Grid **Data Export crashes** —
-> `ContentHelper.cs:208` reads obsolete `element["udi"]` and `:194-201` has a JArray guard that never
-> matches v17's flat `contentData`. Defer to the audit doc for current status.
+> Bundling), BLOCKER-08 (Forms/Engage license), BLOCKER-10 #1/#2 (CampaignSending handlers). **The NEW
+> Block List/Grid Data Export crash is FIXED + runtime-verified (2026-06-11); BLOCKER-10 #3 (Platforms-
+> Preview gating) + Export/Import content-app gating RESTORED (2026-06-11) via `N3O.Condition.WorkspaceVisibility`.**
+> Defer to the audit doc for current status.
 
 *Last updated: 2026-06-02 (session 7)*
 
@@ -259,16 +259,16 @@ Use CalVer format `YYYY.M.D.Build` for the actual release version.
 
 ---
 
-### BLOCKER-10: Access-control regressions (Bellissima migration) — PARTIALLY RESOLVED (2026-06-02, session 8)
+### BLOCKER-10: Access-control regressions (Bellissima migration) — RESOLVED (#1/#2 session 8; #3 + content-app gating 2026-06-11)
 
-**Status:** 🟡 Two of three (the privilege/data boundaries) resolved server-side; one display-only item remains.
+**Status:** ✅ All three resolved. #1 (Hangfire) + #2 (Export/Import API gating) server-side in session 8; #3 (Platforms-Preview content-type gating) restored 2026-06-11 via the shared `N3O.Condition.WorkspaceVisibility` condition (Preview compile-verified only). The same condition also restored client-side per-node/per-user content-app gating for Export/Import (REVIEW_FINDINGS BLOCKER-5, verified end-to-end).
 
 Three server-side gating losses from the AngularJS→Bellissima move:
 1. ✅ **RESOLVED** — Hangfire dashboard. `SchedulerComposer.AddAuthorizedUmbracoDashboard` now requires Umbraco's built-in **`AuthorizationPolicies.SectionAccessSettings`** alongside the back-office-scheme `HangfireDashboard` policy (`.RequireAuthorization(HangfireDashboard, AuthorizationPolicies.SectionAccessSettings)`). `SectionRequirement` was removed in v17; `SectionAccessSettings` is its maintained equivalent (Settings-section ⇒ admin-equivalent). Only Settings-section users can reach the dashboard again. Build 0 errors.
 2. ✅ **RESOLVED (server-side, stronger than v13)** — Export/Import. New reusable `[RequireUserGroup(...)]` authorization filter (`src/Data/N3O.Umbraco.Data/Security/RequireUserGroupAttribute.cs`) applied to `ExportsController` (`exportUsers`) and `ImportsController` (`importUsers`); admin group always allowed. Enforced at the **API boundary** (resolves `IBackOfficeSecurityAccessor.CurrentUser.Groups`), so it holds even though the back-office tab still renders. `DataConstants.SecurityGroups.*.Alias/.Name` changed `static readonly`→`const` (needed for the attribute arg). In v13 this gating was UI-only; it is now enforced server-side.
-3. 🔻 **REMAINING (display-only, low risk)** — the Platforms-Preview `workspaceView` still shows on all document types instead of only `platformsOffering` compositions. There is no built-in Bellissima condition with OR-over-content-types / "composes composition X" semantics (`Umb.Condition.WorkspaceContentTypeAlias` matches a single alias and the conditions array is AND), so this needs a **custom condition extension** (like the DynamicListViews `condition`). It is display-only (shows offering staging/production URLs), so it is UX, not a privilege boundary.
+3. ✅ **RESOLVED (2026-06-11)** — the Platforms-Preview `workspaceView` is now gated by a **custom shared condition `N3O.Condition.WorkspaceVisibility`** (in `N3O.Umbraco.ReactRuntime`, registered once) that reads the document key and calls an authed `GET {endpoint}/{key}` → `{permitted}`; Preview's endpoint is `PlatformsPreviewController` (N3O.Umbraco.Cloud.Platforms), which permits only content types composing `PlatformsConstants.Offerings.CompositionAlias`. The same condition also restored the Export/Import content-app gating (BLOCKER-5 in `REVIEW_FINDINGS.md`). Builds 0 errors; **Preview is compile-verified only** (the test site doesn't reference Cloud.Platforms — runtime verification pending). See `MIGRATION_AUDIT_2026-06-10.md` "Resolved 2026-06-11".
 
-**Remaining follow-ups (lower priority):** (a) the custom content-type condition for Preview (#3); (b) optionally hide the Export/Import tabs for non-authorized users client-side via a custom user-group condition (the *action* is already server-side gated); (c) optionally re-check `IExport/ImportContentFilter.AllowExports/AllowImports` server-side in the export/import commands (per-content refinement — in v13 it only hid the tab).
+**Remaining follow-ups (lower priority):** ~~(a) the custom content-type condition for Preview (#3);~~ **DONE 2026-06-11.** ~~(b) optionally hide the Export/Import tabs for non-authorized users client-side via a custom user-group condition;~~ **DONE 2026-06-11** — the shared `N3O.Condition.WorkspaceVisibility` condition now gates the Export/Import tabs client-side (endpoints `ExportVisibilityController`/`ImportVisibilityController` check Admin OR Export/ImportUsers + the `IExport/ImportContentFilter`), in addition to the existing server-side `[RequireUserGroup]` API gate. Still optional: (c) re-check `IExport/ImportContentFilter.AllowExports/AllowImports` server-side inside the export/import commands themselves (per-content refinement — in v13 it only hid the tab). **Pending:** runtime verification of the Preview gating (compile-verified only; test site doesn't reference Cloud.Platforms).
 
 ---
 
@@ -297,7 +297,7 @@ Three server-side gating losses from the AngularJS→Bellissima move:
 | 07 | Bellissima frontend (all AngularJS) | **Done + TypeScript** (15/16 migrated then converted to TS+Vite; telethon blocked on 04; in-content live-render fixtures pending) | Low |
 | 08 | Forms subscription license | Procurement | High |
 | ~~09~~ | ~~Assembly version `13.0.0`~~ | **DONE (placeholder)** (2026-06-02) — bulk-set to `17.0.0` across 114 csproj; re-stamp CalVer at publish | Low |
-| 10 | Access-control regressions (Hangfire / Export / Import / Preview) | **Partially resolved** (session 8) — Hangfire→`SectionAccessSettings` ✅; Export/Import→server-side `[RequireUserGroup]` ✅; Preview content-type condition (display-only) remains | Low (was High) |
+| ~~10~~ | Access-control regressions (Hangfire / Export / Import / Preview) | **RESOLVED** — Hangfire→`SectionAccessSettings` ✅ (s8); Export/Import→server-side `[RequireUserGroup]` ✅ (s8) + client-side content-app gating ✅ (2026-06-11, verified); Preview content-type condition ✅ (2026-06-11, compile-verified) — all via shared `N3O.Condition.WorkspaceVisibility` | — |
 | ~~11~~ | ~~`DataComposer.EnsureDataTypeExists` lookup-by-alias~~ | **RESOLVED** (2026-06-02, session 6) — lookup by deterministic Key via `GetAsync`; verified live (no dup data types, app boots). Minor follow-up: also set `EditorUiAlias`. | — |
 | — | Bundling throws at render (RR-10) | **Decision** — delete orphaned project or no-op the tag-helpers; see `REVIEW_FINDINGS.md` | Medium |
 
