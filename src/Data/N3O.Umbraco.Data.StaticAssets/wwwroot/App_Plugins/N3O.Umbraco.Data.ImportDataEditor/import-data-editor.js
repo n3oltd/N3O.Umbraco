@@ -1,32 +1,34 @@
-import { customElement as D } from "@umbraco-cms/backoffice/external/lit";
-import { UmbPropertyValueChangeEvent as I } from "@umbraco-cms/backoffice/property-editor";
-import { createElement as M } from "react";
+import { customElement as b } from "@umbraco-cms/backoffice/external/lit";
+import { UmbElementMixin as M } from "@umbraco-cms/backoffice/element-api";
+import { UmbAuthFetchMixin as D } from "@n3o/auth-fetch";
+import { UmbPropertyValueChangeEvent as F } from "@umbraco-cms/backoffice/property-editor";
+import { createElement as I } from "react";
 import { createRoot as O } from "react-dom/client";
 import { jsxs as _, jsx as p } from "react/jsx-runtime";
 function W({ value: t, onTextChange: e, onFileSelected: a }) {
-  const d = (t == null ? void 0 : t.fields) ?? [];
+  const h = (t == null ? void 0 : t.fields) ?? [];
   return /* @__PURE__ */ _("div", { className: "n3o-import-fields-editor", children: [
-    d.map((s, n) => /* @__PURE__ */ _("div", { className: "row-wrapper", children: [
-      /* @__PURE__ */ p("div", { className: "row-1", children: /* @__PURE__ */ p("span", { className: "text", children: s.name }) }),
+    h.map((o, n) => /* @__PURE__ */ _("div", { className: "row-wrapper", children: [
+      /* @__PURE__ */ p("div", { className: "row-1", children: /* @__PURE__ */ p("span", { className: "text", children: o.name }) }),
       /* @__PURE__ */ _("div", { className: "row-2", children: [
         /* @__PURE__ */ p(
           "input",
           {
             type: "text",
             className: "custom",
-            value: s.value ?? "",
-            placeholder: s.sourceValue ?? "",
-            onInput: (h) => e(n, h.target.value)
+            value: o.value ?? "",
+            placeholder: o.sourceValue ?? "",
+            onInput: (d) => e(n, d.target.value)
           }
         ),
-        s.isFile ? /* @__PURE__ */ p(
+        o.isFile ? /* @__PURE__ */ p(
           "input",
           {
             type: "file",
-            onChange: (h) => {
+            onChange: (d) => {
               var C;
-              const k = (C = h.target.files) == null ? void 0 : C[0];
-              k && a(n, k);
+              const E = (C = d.target.files) == null ? void 0 : C[0];
+              E && a(n, E);
             }
           }
         ) : null
@@ -56,87 +58,88 @@ const P = `
         margin-top: 10px;
     }
 `;
-var b = Object.getOwnPropertyDescriptor, N = (t) => {
+var A = Object.getOwnPropertyDescriptor, x = (t) => {
   throw TypeError(t);
-}, F = (t, e, a, d) => {
-  for (var s = d > 1 ? void 0 : d ? b(e, a) : e, n = t.length - 1, h; n >= 0; n--)
-    (h = t[n]) && (s = h(s) || s);
-  return s;
-}, y = (t, e, a) => e.has(t) || N("Cannot " + a), i = (t, e, a) => (y(t, e, "read from private field"), a ? a.call(t) : e.get(t)), f = (t, e, a) => e.has(t) ? N("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, a), m = (t, e, a, d) => (y(t, e, "write to private field"), e.set(t, a), a), c = (t, e, a) => (y(t, e, "access private method"), a), l, u, o, v, r, S, T, x, E, w;
-const A = "n3o-import-data-editor";
-let g = class extends HTMLElement {
+}, U = (t, e, a, h) => {
+  for (var o = h > 1 ? void 0 : h ? A(e, a) : e, n = t.length - 1, d; n >= 0; n--)
+    (d = t[n]) && (o = d(o) || o);
+  return o;
+}, k = (t, e, a) => e.has(t) || x("Cannot " + a), i = (t, e, a) => (k(t, e, "read from private field"), a ? a.call(t) : e.get(t)), m = (t, e, a) => e.has(t) ? x("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, a), f = (t, e, a, h) => (k(t, e, "write to private field"), e.set(t, a), a), c = (t, e, a) => (k(t, e, "access private method"), a), l, u, s, v, r, N, S, T, y, w;
+const q = "n3o-import-data-editor";
+let g = class extends D(M(HTMLElement)) {
   constructor() {
-    super(), f(this, r), f(this, l), f(this, u), f(this, o), f(this, v);
+    super(), m(this, r), m(this, l), m(this, u), m(this, s), m(this, v);
     const t = this.attachShadow({ mode: "open" });
-    m(this, u, document.createElement("div")), t.appendChild(i(this, u));
+    f(this, u, document.createElement("div")), t.appendChild(i(this, u));
   }
   get value() {
-    return i(this, o);
+    return i(this, s);
   }
   set value(t) {
-    m(this, o, t), c(this, r, w).call(this);
+    f(this, s, t), c(this, r, w).call(this);
   }
   set config(t) {
-    m(this, v, t);
+    f(this, v, t);
   }
   get config() {
     return i(this, v);
   }
   connectedCallback() {
-    i(this, l) ?? m(this, l, O(i(this, u))), c(this, r, w).call(this);
+    var t;
+    (t = super.connectedCallback) == null || t.call(this), i(this, l) ?? f(this, l, O(i(this, u))), c(this, r, w).call(this);
   }
   disconnectedCallback() {
-    var t;
-    (t = i(this, l)) == null || t.unmount(), m(this, l, void 0);
+    var t, e;
+    (t = super.disconnectedCallback) == null || t.call(this), (e = i(this, l)) == null || e.unmount(), f(this, l, void 0);
   }
 };
 l = /* @__PURE__ */ new WeakMap();
 u = /* @__PURE__ */ new WeakMap();
-o = /* @__PURE__ */ new WeakMap();
+s = /* @__PURE__ */ new WeakMap();
 v = /* @__PURE__ */ new WeakMap();
 r = /* @__PURE__ */ new WeakSet();
-S = function(t, e) {
-  i(this, o) && (i(this, o).fields[t].value = e, c(this, r, E).call(this));
+N = function(t, e) {
+  i(this, s) && (i(this, s).fields[t].value = e, c(this, r, y).call(this));
 };
-T = async function(t, e) {
-  if (!i(this, o))
+S = async function(t, e) {
+  if (!i(this, s))
     return;
-  const a = i(this, o).reference, s = { file: await c(this, r, x).call(this, e) };
-  (await fetch(`/umbraco/backoffice/api/Imports/queued/${a}/files`, {
+  const a = i(this, s).reference, o = { file: await c(this, r, T).call(this, e) };
+  (await (this.authFetch ?? fetch)(`/umbraco/backoffice/api/Imports/queued/${a}/files`, {
     method: "POST",
     headers: {
       Accept: "*/*",
       "Content-Type": "application/json"
     },
-    body: JSON.stringify(s)
-  })).status === 200 ? (i(this, o).fields[t].value = e.name, c(this, r, w).call(this), c(this, r, E).call(this)) : alert("Failed to upload specified file, please contact support for assistance");
+    body: JSON.stringify(o)
+  })).status === 200 ? (i(this, s).fields[t].value = e.name, c(this, r, w).call(this), c(this, r, y).call(this)) : alert("Failed to upload specified file, please contact support for assistance");
 };
-x = async function(t) {
+T = async function(t) {
   const e = new FormData();
-  return e.append("file", t), await (await fetch("/umbraco/api/Storage/tempUpload", {
+  return e.append("file", t), await (await (this.authFetch ?? fetch)("/umbraco/api/Storage/tempUpload", {
     method: "POST",
     body: e
   })).json();
 };
-E = function() {
-  this.dispatchEvent(new I());
+y = function() {
+  this.dispatchEvent(new F());
 };
 w = function() {
   var t;
   (t = i(this, l)) == null || t.render(
-    M(W, {
-      value: i(this, o),
-      onTextChange: (e, a) => c(this, r, S).call(this, e, a),
-      onFileSelected: (e, a) => void c(this, r, T).call(this, e, a)
+    I(W, {
+      value: i(this, s),
+      onTextChange: (e, a) => c(this, r, N).call(this, e, a),
+      onFileSelected: (e, a) => void c(this, r, S).call(this, e, a)
     })
   );
 };
-g = F([
-  D(A)
+g = U([
+  b(q)
 ], g);
-const H = g;
+const j = g;
 export {
   g as N3oImportDataEditorElement,
-  H as default
+  j as default
 };
 //# sourceMappingURL=import-data-editor.js.map

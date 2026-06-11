@@ -1,4 +1,6 @@
 import { customElement } from '@umbraco-cms/backoffice/external/lit';
+import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
+import { UmbAuthFetchMixin } from '@n3o/auth-fetch';
 import {
     UmbPropertyValueChangeEvent,
     type UmbPropertyEditorConfigCollection,
@@ -14,9 +16,12 @@ const elementName = 'n3o-import-data-editor';
 // elements, so this thin element owns the Umbraco contract (value/config + UmbPropertyValueChangeEvent)
 // and the file-upload side effects, and mounts the React UI (ImportDataEditorApp) into its shadow root.
 // React is NOT bundled here — it is external and resolved at runtime from the shared N3O.Umbraco.React
-// import map. The host holds the single source of truth for `value`.
+// import map. The host holds the single source of truth for `value`. UmbAuthFetchMixin gives `this.authFetch`
+// (bearer token from UMB_AUTH_CONTEXT) so the [Authorize] Imports/Storage endpoints don't 401 in v17.
 @customElement(elementName)
-export class N3oImportDataEditorElement extends HTMLElement implements UmbPropertyEditorUiElement {
+export class N3oImportDataEditorElement
+    extends UmbAuthFetchMixin(UmbElementMixin(HTMLElement))
+    implements UmbPropertyEditorUiElement {
     #root?: Root;
     #mount: HTMLDivElement;
     #value: ImportDataValue | undefined = undefined;
@@ -49,11 +54,13 @@ export class N3oImportDataEditorElement extends HTMLElement implements UmbProper
     }
 
     connectedCallback(): void {
+        super.connectedCallback?.();
         this.#root ??= createRoot(this.#mount);
         this.#render();
     }
 
     disconnectedCallback(): void {
+        super.disconnectedCallback?.();
         this.#root?.unmount();
         this.#root = undefined;
     }
@@ -76,7 +83,7 @@ export class N3oImportDataEditorElement extends HTMLElement implements UmbProper
 
         const req = { file: storageToken };
 
-        const res = await fetch(`/umbraco/backoffice/api/Imports/queued/${reference}/files`, {
+        const res = await (this.authFetch ?? fetch)(`/umbraco/backoffice/api/Imports/queued/${reference}/files`, {
             method: 'POST',
             headers: {
                 'Accept': '*/*',
@@ -98,7 +105,7 @@ export class N3oImportDataEditorElement extends HTMLElement implements UmbProper
         const data = new FormData();
         data.append('file', file);
 
-        const res = await fetch('/umbraco/api/Storage/tempUpload', {
+        const res = await (this.authFetch ?? fetch)('/umbraco/api/Storage/tempUpload', {
             method: 'POST',
             body: data,
         });
