@@ -1,5 +1,7 @@
 # v17-Talha Branch Review — Findings & Action Tracker
 
+> ⚠️ **Re-verified 2026-06-10 (session 14):** see **[`MIGRATION_AUDIT_2026-06-10.md`](MIGRATION_AUDIT_2026-06-10.md)** for current status. Corrections to this file: the "**5 CS0618**" count is actually **3** (`BlockItemDataExtensions.cs:47`, `ContentMetadataConverter.LatestState.cs:23`, `ContentTypeExtensions.cs:41`); the `BlockItemDataExtensions.FormatBlockData` ContentPicker dup-key item is best closed by **deleting** the method (zero callers); `Locator.All()` root-node change confirmed present.
+
 *Created 2026-06-02 (session 4). Source: 14-agent deliberation review (13 Sonnet area/concern reviewers → Opus synthesis) of the full `v17-Talha` migration branch vs `main`.*
 
 **Overall verdict: MAKE SENSE, WITH FIXES.** The Umbraco 13/.NET8 → 17.3.5/.NET10 migration is, in the large, a competent and correct adaptation — the bulk of changes are forced, well-reasoned responses to removed/renamed v17 APIs. It is **not mergeable as-is**: a small number of genuine defects crash at runtime or corrupt data, plus public-API removals that break external consuming sites.

@@ -1,5 +1,15 @@
 # Migration Blockers
 
+> ⚠️ **SUPERSEDED (2026-06-10, session 14):** a full read-only audit re-verified every item here against
+> the current code — see **[`MIGRATION_AUDIT_2026-06-10.md`](MIGRATION_AUDIT_2026-06-10.md)** (the current
+> source of truth). Many items below are now DONE (Content Apps→workspaceViews, dashboards, Hangfire auth
+> (BLOCKER-10a), uSync ctor (BLOCKER-05), NC-migration removed + DataComposer (BLOCKER-06/11)). Still open:
+> BLOCKER-02 (Perplex rc.3), BLOCKER-04 (Engage TelethonOnAir client registration), BLOCKER-07 (orphaned
+> Bundling), BLOCKER-08 (Forms/Engage license), BLOCKER-10 #1/#2/#3 (CampaignSending handlers + Platforms-
+> Preview gating). **NEW blocker the audit found:** Block List/Grid **Data Export crashes** —
+> `ContentHelper.cs:208` reads obsolete `element["udi"]` and `:194-201` has a JArray guard that never
+> matches v17's flat `contentData`. Defer to the audit doc for current status.
+
 *Last updated: 2026-06-02 (session 7)*
 
 > **Session 7:** Merged **`origin/main`** (latest stable, DonationFormState-aligned) into `v17-Talha` — bringing Sentry/health-checks/telemetry/CI — and ran a codebase-wide CS0618 deprecated-API sweep (76→5 warnings). `origin/v17` was NOT merged (it is `main` + 6 unfinished WIP commits). All pending items now carry a searchable **`TODO Migration Review`** code comment (`git grep "TODO Migration Review"`). Build 0 errors; pushed to `origin/v17-Talha`. Details: `SESSION_HANDOFF.md`. **Newly relevant to blockers below:** BLOCKER-10 (Hangfire auth) is marked in `SchedulerComposer.cs`; RR-10 Bundling marked in `Bundler.cs`; 5 CS0618 flags remain (no safe v17 replacement — all "removal in v18/19", harmless on v17).

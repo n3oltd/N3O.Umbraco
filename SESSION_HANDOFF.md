@@ -1,10 +1,15 @@
 # Session Handoff — N3O.Umbraco v17 Migration
 
-*Updated: 2026-06-10 (session 13) — use this to orient the next session*
+*Updated: 2026-06-10 (session 14) — use this to orient the next session*
 
 ---
 
 ## Current State
+
+**Latest (session 14, 2026-06-10) — RCL rollout to all StaticAssets + per-project PR workflow into `v17` + full migration AUDIT:**
+- **RCL rollout (multi-agent workflow):** the remaining **12 `*.StaticAssets` projects** were converted to RCLs (SDK→`Microsoft.NET.Sdk.Razor` + `StaticWebAssetBasePath=/`, `App_Plugins`→`wwwroot`, Vite repointed, `build/*.targets` + content packs removed, React kept external). `DemoSite.Web` dropped its 7 `<Import>` lines. Verified: DemoSite builds 0 errors + the 5 RCLs it doesn't reference build standalone 0 errors. Committed to `v17-Talha` (`ca9a30e35`). The 4 wrapper StaticAssets (`Forms`/`Maps.Google`/`Marketing`/`UIBuilder`) and `Workflows` are intentional pass-throughs — not converted.
+- **PR workflow now targets `v17`:** `v17` was an outdated WIP — backed up to **`v17-backup-2026-06-10`** and **force-reset to `origin/main`** as a clean base. **All migration PRs now merge into `v17`** (base = `origin/v17`). Open PRs: `v17-N3O.Umbraco.Extensions` (Cms+Extensions) and `v17-csproj-normalization` (70 csproj-only projects). See [[per-project-pr-workflow]] memory.
+- **Full migration audit → [`MIGRATION_AUDIT_2026-06-10.md`](MIGRATION_AUDIT_2026-06-10.md)** is now the source of truth for remaining work. It verified many old blockers DONE (Content Apps→workspaceViews, dashboards, Hangfire auth, uSync ctor, NC-migration removed, DataComposer, packages) and found **new** issues. **Top remaining: (1) NEW BLOCKER — Block List/Grid Data Export crashes** (`ContentHelper.cs:208` reads obsolete `element["udi"]`; `:194-201` JArray guard never matches v17 flat `contentData`); **(2) BLOCKER-04 Engage TelethonOnAir** client-side registration placeholder; plus High items (PlatformsPreview `undefined` alias NRE, EditorJs blank-image media-picker shape, missing `propertyEditorSchema` for Uploader/Cropper/Cells, CampaignSending handlers, `Blazor.BackOffice` RCL conversion, NC→BlockList transform validation). `MIGRATION_BLOCKERS.md`/`REVIEW_FINDINGS.md`/`TECH_DEBT*` predate the audit — defer to the audit doc.
 
 **Solution builds with 0 errors** (Umbraco 17.3.5 / .NET 10). NOTE: `N3O.Umbraco.Extensions.StaticAssets` was **removed** this session and folded into `N3O.Umbraco.Cms` (see session 12) — the solution now has one fewer project, and **building `N3O.Umbraco.Cms` now requires Node/npm** (its `BuildClientApps` MSBuild target runs Vite).
 

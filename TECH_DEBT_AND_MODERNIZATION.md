@@ -1,5 +1,7 @@
 # Tech Debt & Modernization Findings
 
+> ⚠️ **Re-verified 2026-06-10 (session 14):** see **[`MIGRATION_AUDIT_2026-06-10.md`](MIGRATION_AUDIT_2026-06-10.md)**. Stale entries to drop: the `MembersAccessControl.cs:39,55` `GetDataType(int)` row (code now uses `GetAsync(DataTypeKey)`) and the `GetPagedChildren(int)` row (now the v17 8-param overload) — both already fixed. `FormatBlockData`/`RawPropertyValues` (CS0618) is dead code → delete the method.
+
 > **Status:** Findings only — no code was changed. Read-only 12-agent sweep of the whole `src/` tree
 > (session 10), each agent owning one lens (build, deprecated APIs, dead code, dependencies, frontend,
 > async/perf, security, data layer, conventions, tests/CI, "not-required-to-run", U17/.NET10
