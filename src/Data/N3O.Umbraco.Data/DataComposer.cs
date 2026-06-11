@@ -1,7 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using N3O.Umbraco.Composing;
 using N3O.Umbraco.Data.Builders;
-using N3O.Umbraco.Data.ContentApps;
 using N3O.Umbraco.Data.Converters;
 using N3O.Umbraco.Data.DataTypes;
 using N3O.Umbraco.Data.Filters;
