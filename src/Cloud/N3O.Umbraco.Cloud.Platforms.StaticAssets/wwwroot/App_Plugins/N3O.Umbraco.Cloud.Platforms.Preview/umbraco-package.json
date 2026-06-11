@@ -17,6 +17,10 @@
                 {
                     "alias": "Umb.Condition.WorkspaceAlias",
                     "match": "Umb.Workspace.Document"
+                },
+                {
+                    "alias": "N3O.Condition.WorkspaceVisibility",
+                    "endpoint": "/umbraco/backoffice/api/PlatformsPreview/visibility"
                 }
             ]
         }

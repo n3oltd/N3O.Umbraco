@@ -16,6 +16,7 @@ public class PlatformsComposer : Composer {
     public override void Compose(IUmbracoBuilder builder) {
         builder.Services.AddOpenApiDocument(PlatformsConstants.BackOfficeApiName);
         builder.Services.AddOpenApiDocument(PlatformsConstants.DevToolsApiName);
+        builder.Services.AddOpenApiDocument(PlatformsConstants.PreviewApiName);
         builder.Services.AddSingleton<ICampaignAccessor, CampaignAccessor>();
         builder.Services.AddSingleton<ICampaignIdAccessor, CampaignIdAccessor>();
         builder.Services.AddSingleton<INisab, Nisab>();
