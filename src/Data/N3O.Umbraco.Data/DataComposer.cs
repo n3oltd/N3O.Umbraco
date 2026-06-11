@@ -156,6 +156,9 @@ public class DataComponent : IAsyncComponent {
         var dataType = new DataType(dataEditor, _configurationEditorJsonSerializer);
         dataType.Name = dataEditor.Alias;
         dataType.Key = key;
+        // The UI editor alias (propertyEditorUi) equals the [DataEditor] alias for these editors; setting
+        // it stops the v17 data-type screen showing an empty property-editor picker. See DL-09 / BLOCKER-11.
+        dataType.EditorUiAlias = dataEditor.Alias;
 
         await _dataTypeService.CreateAsync(dataType, global::Umbraco.Cms.Core.Constants.Security.SuperUserKey);
     }
