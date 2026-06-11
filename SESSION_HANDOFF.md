@@ -6,6 +6,15 @@
 
 ## Current State
 
+> **⚠️ DEFERRED — to be implemented across ALL per-project branches in a later iteration.** The shared backoffice **`@n3o/auth-fetch`** runtime and the **`N3O.Condition.WorkspaceVisibility`** content-app visibility gating (+ the ReactRuntime README) are fully implemented on **`v17-Talha`** (source of truth) but were **removed from the per-project PR slices** so each PR is self-consistent without the shared runtime. Removed per branch:
+> - `v17-N3O.Umbraco.Extensions` (+Cms): the ReactRuntime `auth-fetch` + `workspace-visibility-condition` + README (importmap/vite reverted to react-only).
+> - `v17-N3O.Umbraco.Data.StaticAssets`: Export/Import shells build `createAuthFetch` **inline** from `UMB_AUTH_CONTEXT` (no `@n3o/auth-fetch` import); manifests drop the `N3O.Condition.WorkspaceVisibility` reference.
+> - `v17-N3O.Umbraco.Cloud.Platforms.StaticAssets`: Preview manifest drops the condition reference.
+> - `v17-N3O.Umbraco.Data`: `ExportVisibilityController` + `ImportVisibilityController` removed.
+> - `v17-N3O.Umbraco.Cloud.Platforms`: `PlatformsPreviewController` + its `PreviewApiName` const + OpenApi registration removed.
+>
+> **To complete later (land together):** ship the shared runtime in the Cms/Extensions slice; switch Data.StaticAssets back to the shared `@n3o/auth-fetch` (`UmbAuthFetchMixin`); restore the visibility controllers (Data + Cloud.Platforms) and the `N3O.Condition.WorkspaceVisibility` references in the Export/Import/Preview manifests. Export/Import auth still works on its branch (inline) — only the per-node/user visibility gating is deferred. The full implementation is preserved on `v17-Talha` to copy from.
+
 **Latest (2026-06-11, post-audit session) — fixed the NEW Data Export blocker + Data Export/Import backoffice auth/UI + restored content-app gating:**
 - **Block List/Grid Data Export crash (the NEW BLOCKER #1 from the 2026-06-10 audit) — FIXED + runtime-verified.** `N3O.Umbraco.Extensions/Content/ContentHelper.cs`: `GetContentPropertiesForBlockListOrGrid` now iterates the v17 flat `contentData` array; new `GetBlockElementKey` (reads element `"key"`, legacy `udi` fallback) + `GetBlockElementValuesByAlias` (reads the v17 `"values"` array). Verified end-to-end on the test site via the Management API AND the backoffice UI (CSV contained the block's inner value; export completed, no crash).
 - **Data Export/Import backoffice UI returned 401 / empty lists — FIXED + verified.** In v17 the backoffice uses an OAuth bearer token (not cookies), so the custom `[Authorize]` API controllers 401'd a token-less fetch. Added a shared authenticated-fetch runtime **`@n3o/auth-fetch`** (built in `N3O.Umbraco.Cms/N3O.Umbraco.ReactRuntime`, exposed via its import map): `createAuthFetch(config)` + a Lit `UmbAuthFetchMixin`. Export/Import shells consume it; all endpoints now 200 and dropdowns/lists populate (full export verified in-browser). Adoption documented in the ReactRuntime README.
