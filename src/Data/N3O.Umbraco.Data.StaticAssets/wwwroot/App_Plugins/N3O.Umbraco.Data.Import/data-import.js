@@ -107,7 +107,7 @@ function ge({ contentKey: o, authFetch: a }) {
         /* @__PURE__ */ t("span", { children: "Your CSV file has been queued and will be processed shortly." })
       ] }),
       /* @__PURE__ */ n("div", { className: "actions", children: [
-        /* @__PURE__ */ t("a", { className: "btn btn--primary", href: "/umbraco#/content?dashboard=imports", children: "View import queue" }),
+        /* @__PURE__ */ t("a", { className: "btn btn--primary", href: "/umbraco/section/content/dashboard/imports", children: "View import queue" }),
         /* @__PURE__ */ t("button", { type: "button", className: "btn btn--secondary", onClick: W, children: "Import another file" })
       ] })
     ] }) : r === "error" ? /* @__PURE__ */ n("uui-box", { headline: "Import failed", children: [

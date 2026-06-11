@@ -391,9 +391,9 @@ export function DataImportApp({ contentKey, authFetch }: DataImportAppProps) {
         </>
     );
 
-    // FLAG: The href below uses a legacy AngularJS hash route (/umbraco#/content?dashboard=imports).
-    // This route does not exist in Umbraco 17 Bellissima; the link will not navigate correctly.
-    // A new Bellissima route path for the imports dashboard will be needed when it is available.
+    // The imports queue is a Umbraco UI Builder dashboard (alias "imports") on the Content section.
+    // In the v17 Bellissima backoffice that resolves to the path-based route below
+    // (section pathname "content" + dashboard pathname "imports"); there is no hash route.
     const renderSuccess = () => (
         <uui-box headline="Import queued">
             <div className="statusBox statusBox--positive">
@@ -401,7 +401,7 @@ export function DataImportApp({ contentKey, authFetch }: DataImportAppProps) {
                 <span>Your CSV file has been queued and will be processed shortly.</span>
             </div>
             <div className="actions">
-                <a className="btn btn--primary" href="/umbraco#/content?dashboard=imports">
+                <a className="btn btn--primary" href="/umbraco/section/content/dashboard/imports">
                     View import queue
                 </a>
                 <button type="button" className="btn btn--secondary" onClick={startOver}>
