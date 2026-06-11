@@ -15,9 +15,9 @@ public class DynamicListViewApiController : ApiController {
         _dataTypeService = dataTypeService;
     }
 
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> Get(Guid id) {
-        var content = _contentService.GetById(id);
+    [HttpGet("{contentId:guid}")]
+    public async Task<IActionResult> Get([FromRoute] Guid contentId) {
+        var content = _contentService.GetById(contentId);
 
         if (content == null || !ContentPathHelper.DynamicListViewsEnabled(content.Path)) {
             return Ok(new { enabled = false });

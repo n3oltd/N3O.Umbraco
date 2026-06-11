@@ -191,12 +191,11 @@ public class ContentHelper : IContentHelper {
     private IReadOnlyList<ContentProperties> GetContentPropertiesForBlockListOrGrid(JObject blockListOrGrid) {
         var contentProperties = new List<ContentProperties>();
         
+        // In v17 contentData is a flat JArray of block item JObjects (no nested arrays).
         if (blockListOrGrid?.TryGetValue("contentData", StringComparison.InvariantCultureIgnoreCase, out var contentData) == true) {
             foreach (var block in contentData.OrEmpty()) {
-                if (block is JArray jArray) {
-                    foreach (JObject jObject in jArray) {
-                        contentProperties.Add(GetContentPropertiesForBlockListOrGridElement(jObject));
-                    }
+                if (block is JObject jObject) {
+                    contentProperties.Add(GetContentPropertiesForBlockListOrGridElement(jObject));
                 }
             }
         }
@@ -205,21 +204,58 @@ public class ContentHelper : IContentHelper {
     }
     
     private ContentProperties GetContentPropertiesForBlockListOrGridElement(JObject element) {
-        var id = UdiParser.Parse((string) element["udi"]).ToId().GetValueOrThrow();
+        var id = GetBlockElementKey(element);
         var contentTypeKey = Guid.Parse((string) element["contentTypeKey"]);
         var contentType = _contentTypeService.Value.Get(contentTypeKey);
 
+        // In v17 block item property values live in a flat "values" array of { alias, value } objects
+        // (the v9 shape stored each property as a top-level field keyed by its alias).
+        var valuesByAlias = GetBlockElementValuesByAlias(element);
+
         var properties = new List<(IPropertyType, object)>();
-            
+
         foreach (var propertyGroup in contentType.PropertyGroups) {
             foreach (var propertyType in propertyGroup.PropertyTypes) {
-                var propertyValue = element[propertyType.Alias];
+                valuesByAlias.TryGetValue(propertyType.Alias, out var propertyValue);
 
                 properties.Add((propertyType, propertyValue?.ConvertToObject()));
             }
         }
-            
+
         return GetContentProperties(id, null, -1, contentType.Alias, properties);
+    }
+
+    private static Guid GetBlockElementKey(JObject element) {
+        // v17 stores the block item identity as "key"; legacy/migrated content may still carry a "udi".
+        var key = (string) element["key"];
+
+        if (key.HasValue()) {
+            return Guid.Parse(key);
+        }
+
+        var udi = (string) element["udi"];
+
+        if (udi.HasValue() && UdiParser.TryParse(udi, out var parsedUdi) && parsedUdi is GuidUdi guidUdi) {
+            return guidUdi.Guid;
+        }
+
+        throw new InvalidOperationException("Block item is missing both 'key' and a parseable legacy 'udi'");
+    }
+
+    private static IReadOnlyDictionary<string, JToken> GetBlockElementValuesByAlias(JObject element) {
+        var valuesByAlias = new Dictionary<string, JToken>(StringComparer.InvariantCultureIgnoreCase);
+
+        if (element["values"] is JArray values) {
+            foreach (var value in values.OfType<JObject>()) {
+                var alias = (string) value["alias"];
+
+                if (alias.HasValue()) {
+                    valuesByAlias[alias] = value["value"];
+                }
+            }
+        }
+
+        return valuesByAlias;
     }
 
     private IReadOnlyList<ContentProperties> GetContentPropertiesForNestedContent(JToken nestedContent) {
