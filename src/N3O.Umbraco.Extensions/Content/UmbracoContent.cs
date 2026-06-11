@@ -27,7 +27,7 @@ public abstract class UmbracoContent<T> : Value, IUmbracoContent {
     protected TProperty Child<TProperty>(Expression<Func<T, TProperty>> _)
         where TProperty : UmbracoContent<TProperty> {
         var alias = AliasHelper<TProperty>.ContentTypeAlias();
-        var child = Content().Children.SingleOrDefault(x => x.ContentType.Alias.EqualsInvariant(alias));
+        var child = Content().Children().SingleOrDefault(x => x.ContentType.Alias.EqualsInvariant(alias));
 
         return child.As<TProperty>();
     }

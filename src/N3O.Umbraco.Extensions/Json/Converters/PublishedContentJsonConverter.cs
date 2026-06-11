@@ -66,7 +66,7 @@ public class PublishedContentJsonConverter : JsonConverter {
             writer.WriteValue(publishedContent.Name);
             
             writer.WritePropertyName(nameof(ContentRes.ParentId).Camelize());
-            writer.WriteValue(publishedContent.Parent?.Id);
+            writer.WriteValue(publishedContent.Parent()?.Id);
 
             writer.WritePropertyName(nameof(ContentRes.SortOrder).Camelize());
             writer.WriteValue(publishedContent.SortOrder);

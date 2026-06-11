@@ -30,7 +30,7 @@ public class DevToolsController : ApiController {
 
         return Result(debugView);
     }
-
+    
     [HttpGet("core/echo")]
     public ActionResult Echo() {
         var res = new {

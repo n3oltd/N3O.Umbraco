@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>N3O.Umbraco</RootNamespace>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Copyright>Copyright © 2026 N3O Ltd</Copyright>
-        <NoWarn>1591;NU1605;NU1504</NoWarn>
+        <NoWarn>NU1605;1591</NoWarn>
         <CopyDebugSymbolFilesFromPackages>true</CopyDebugSymbolFilesFromPackages>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -21,7 +21,7 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageProjectUrl>https://n3o.ltd</PackageProjectUrl>
         <RepositoryUrl>https://github.com/n3oltd/umbraco-extensions</RepositoryUrl>
-        <Version>13.0.0</Version>
+        <Version>17.0.0</Version>
         <AssemblyVersion>$(Version)</AssemblyVersion>
         <FileVersion>$(Version)</FileVersion>
         <RepositoryType>git</RepositoryType>
@@ -37,23 +37,24 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="AsyncKeyedLock" Version="8.0.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.7" />
         <PackageReference Include="Flurl" Version="4.0.0" />
         <PackageReference Include="Flurl.Http.Newtonsoft" Version="0.9.1" />
+        <!--There is a bug in Humanizer.Core v3.0.10, wait for next release to upgrade the package-->
         <PackageReference Include="Humanizer.Core" Version="2.14.1" />
         <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.14.0" />
         <PackageReference Include="MimeTypesMap" Version="1.0.9" />
         <PackageReference Include="NodaTime" Version="3.3.2" />
         <PackageReference Include="NodaTime.Serialization.JsonNet" Version="3.2.1" />
         <PackageReference Include="NSwag.AspNetCore" Version="14.7.1" />
-        <PackageReference Include="Our.Umbraco.Community.Contentment.Core" Version="4.7.0" />
-        <PackageReference Include="Refit" Version="11.0.1" />
-        <PackageReference Include="Refit.Newtonsoft.Json" Version="11.0.1" />
+        <PackageReference Include="Umbraco.Community.Contentment" Version="6.1.4" />
+        <PackageReference Include="Refit" Version="10.1.6" />
+        <PackageReference Include="Refit.Newtonsoft.Json" Version="10.1.6" />
         <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
         <PackageReference Include="Slugify.Core" Version="5.1.1" />
-        <PackageReference Include="Umbraco.Cms.Core" Version="13.14.0.0" />
-        <PackageReference Include="Umbraco.Cms.Web.Common" Version="13.14.0.0" />
-        <PackageReference Include="Umbraco.Cms.Web.Website" Version="13.14.0.0" />
-        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="13.14.0.0" />
+        <PackageReference Include="Umbraco.Cms.Core" Version="17.3.5" />
+        <PackageReference Include="Umbraco.Cms.Web.Common" Version="17.3.5" />
+        <PackageReference Include="Umbraco.Cms.Web.Website" Version="17.3.5" />
         <PackageReference Include="Umbraco.Code" Version="2.4.0" />
     </ItemGroup>
     <ItemGroup>

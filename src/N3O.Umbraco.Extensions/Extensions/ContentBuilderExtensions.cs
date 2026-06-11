@@ -38,10 +38,6 @@ public static partial class ContentBuilderExtensions {
     public static MultipleTextPropertyBuilder MultipleText(this IContentBuilder builder, string propertyAlias) {
         return builder.Property<MultipleTextPropertyBuilder>(propertyAlias);
     }
-
-    public static NestedPropertyBuilder Nested(this IContentBuilder builder, string propertyAlias) {
-        return builder.Property<NestedPropertyBuilder>(propertyAlias);
-    }
     
     public static NullPropertyBuilder Null(this IContentBuilder builder, string propertyAlias) {
         return builder.Property<NullPropertyBuilder>(propertyAlias);

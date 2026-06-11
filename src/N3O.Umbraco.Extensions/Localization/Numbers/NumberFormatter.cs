@@ -5,10 +5,16 @@ using System.Globalization;
 namespace N3O.Umbraco.Localization;
 
 public class NumberFormatter : INumberFormatter {
-    public NumberFormatter(ILocalizationSettingsAccessor settingsAccessor) : this(settingsAccessor.GetSettings()) { }
+    private readonly ILocalizationSettingsAccessor _settingsAccessor;
+    
+    private NumberFormat _numberFormat;
+
+    public NumberFormatter(ILocalizationSettingsAccessor settingsAccessor) {
+        _settingsAccessor = settingsAccessor;
+    }
 
     private NumberFormatter(LocalizationSettings settings) {
-        NumberFormat = settings.NumberFormat;
+        _numberFormat = settings.NumberFormat;
     }
 
     public string FormatOrdinal(int number, NumberFormat numberFormat = null) {
@@ -53,7 +59,7 @@ public class NumberFormatter : INumberFormatter {
         return string.Format(localFormat, number % 1m == 0m ? "{0:P0}" : $"{{0:P{decimalPlaces}}}", number);
     }
 
-    public NumberFormat NumberFormat { get; }
+    public NumberFormat NumberFormat => _numberFormat ??= _settingsAccessor.GetSettings().NumberFormat;
 
     public string FormatMoneyAbbreviated(Money money, NumberFormat numberFormat = null) {
         if (money == null) {

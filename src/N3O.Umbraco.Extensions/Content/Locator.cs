@@ -10,12 +10,6 @@ using Umbraco.Extensions;
 namespace N3O.Umbraco.Content;
 
 public abstract class Locator : ILocator {
-    private readonly IUmbracoContextAccessor _umbracoContextAccessor;
-
-    protected Locator(IUmbracoContextAccessor umbracoContextAccessor) {
-        _umbracoContextAccessor = umbracoContextAccessor;
-    }
-
     public IReadOnlyList<IPublishedContent> All(Func<IPublishedContent, bool> predicate = null) {
         return All(null, predicate);
     }
@@ -37,7 +31,7 @@ public abstract class Locator : ILocator {
     }
 
     public IPublishedContent ById(int id) {
-        return Run(c => c.GetById(id));
+        return PublishedCache.GetById(id);
     }
 
     public T ById<T>(int id) {
@@ -45,7 +39,7 @@ public abstract class Locator : ILocator {
     }
 
     public IPublishedContent ById(Guid id) {
-        return Run(c => c.GetById(id));
+        return PublishedCache.GetById(id);
     }
 
     public T ById<T>(Guid id) {
@@ -65,31 +59,29 @@ public abstract class Locator : ILocator {
     }
 
     private IReadOnlyList<IPublishedContent> GetAllContent(string contentTypeAlias) {
-        return Run(c => {
-            var allContent = new List<IPublishedContent>();
+        var allContent = new List<IPublishedContent>();
 
-            foreach (var rootContent in c.GetAtRoot()) {
-                if (contentTypeAlias == null) {
-                    allContent.AddRange(rootContent.Descendants());
-                } else {
-                    if (rootContent.ContentType.Alias.EqualsInvariant(contentTypeAlias)) {
-                        allContent.Add(rootContent);
-                    }
-                
-                    allContent.AddRange(rootContent.DescendantsOfType(contentTypeAlias));
-                }
+        foreach (var rootKey in GetRootKeys()) {
+            var rootContent = PublishedCache.GetById(rootKey);
+
+            if (rootContent == null) {
+                continue;
             }
 
-            return allContent;
-        });
+            if (contentTypeAlias == null) {
+                allContent.AddRange(rootContent.DescendantsOrSelf());
+            } else {
+                if (rootContent.ContentType.Alias.EqualsInvariant(contentTypeAlias)) {
+                    allContent.Add(rootContent);
+                }
+
+                allContent.AddRange(rootContent.DescendantsOfType(contentTypeAlias));
+            }
+        }
+
+        return allContent;
     }
 
-    private T Run<T>(Func<IPublishedCache, T> func) {
-        // TODO If the Umbraco context is actually created then this will dispose it once
-        // the content is fetched and will fail in later code, e.g. when resolving property values
-        // as won't be able to get published content snapshot.
-        return func(GetCache(_umbracoContextAccessor));
-    }
-
-    protected abstract IPublishedCache GetCache(IUmbracoContextAccessor umbracoContextAccessor);
+    protected abstract IPublishedCache PublishedCache { get; }
+    protected abstract IEnumerable<Guid> GetRootKeys();
 }

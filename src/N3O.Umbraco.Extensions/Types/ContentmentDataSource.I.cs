@@ -2,4 +2,4 @@
 
 namespace N3O.Umbraco;
 
-public interface IContentmentDataSource : IDataListSource, IDataSourceValueConverter { }
+public interface IContentmentDataSource : IDataSourceValueConverter { }

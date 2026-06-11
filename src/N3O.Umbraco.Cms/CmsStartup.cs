@@ -47,6 +47,8 @@ public abstract class CmsStartup {
                 .AddComposers()
                 .AddContentment(opt => opt.DisableTelemetry = true)
                 .Build();
+        
+        services.AddControllersWithViews().AddRazorRuntimeCompilation();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
@@ -84,7 +86,6 @@ public abstract class CmsStartup {
                ConfigureMiddleware(u);
            })
            .WithEndpoints(u => {
-               u.UseInstallerEndpoints();
                u.UseBackOfficeEndpoints();
                u.UseWebsiteEndpoints();
 

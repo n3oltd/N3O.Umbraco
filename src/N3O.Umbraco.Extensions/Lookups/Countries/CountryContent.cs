@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Lookups;
 
@@ -21,30 +20,22 @@ public class CountryContent : UmbracoContent<CountryContent> {
 [Order(int.MinValue)]
 public class ContentCountries : LookupsCollection<Country> {
     private readonly IContentCache _contentCache;
-    private readonly IUmbracoContextAccessor _umbracoContextAccessor;
 
-    public ContentCountries(IContentCache contentCache, IUmbracoContextAccessor umbracoContextAccessor) {
+    public ContentCountries(IContentCache contentCache) {
         _contentCache = contentCache;
-        _umbracoContextAccessor = umbracoContextAccessor;
 
         _contentCache.Flushed += ContentCacheOnFlushed;
     }
-    
+
     protected override Task<IReadOnlyList<Country>> LoadAllAsync(CancellationToken cancellationToken) {
         var all = GetFromCache();
-        
+
         return Task.FromResult(all);
     }
 
     private IReadOnlyList<Country> GetFromCache() {
-        List<CountryContent> content;
-        
-        if (_umbracoContextAccessor.TryGetUmbracoContext(out _)) {
-            content = _contentCache.All<CountryContent>().OrderBy(x => x.Content().Name).ToList();
-        } else {
-            content = [];
-        }
-        
+        var content = _contentCache.All<CountryContent>().OrderBy(x => x.Content().Name).ToList();
+
         var lookups = content.Select(ToCountry).ToList();
 
         return lookups;

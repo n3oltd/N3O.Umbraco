@@ -10,8 +10,8 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Persistence.Querying;
 using Umbraco.Cms.Core.PropertyEditors;
+using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Services;
-using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
 
 namespace N3O.Umbraco.Content;
@@ -21,18 +21,18 @@ public class ContentHelper : IContentHelper {
     private readonly Lazy<IContentService> _contentService;
     private readonly Lazy<IContentTypeService> _contentTypeService;
     private readonly Lazy<IContentLocator> _contentLocator;
-    private readonly Lazy<IUmbracoContextAccessor> _umbracoContextAccessor;
+    private readonly Lazy<IPublishedContentTypeCache> _publishedContentTypeCache;
 
     public ContentHelper(Lazy<IServiceProvider> serviceProvider,
                          Lazy<IContentService> contentService,
                          Lazy<IContentTypeService> contentTypeService,
                          Lazy<IContentLocator> contentLocator,
-                         Lazy<IUmbracoContextAccessor> umbracoContextAccessor) {
+                         Lazy<IPublishedContentTypeCache> publishedContentTypeCache) {
         _serviceProvider = serviceProvider;
         _contentService = contentService;
         _contentTypeService = contentTypeService;
         _contentLocator = contentLocator;
-        _umbracoContextAccessor = umbracoContextAccessor;
+        _publishedContentTypeCache = publishedContentTypeCache;
     }
 
     public IReadOnlyList<IContent> GetAncestors(IContent content) {
@@ -48,7 +48,7 @@ public class ContentHelper : IContentHelper {
     }
 
     public IReadOnlyList<IContent> GetChildren(IContent content) {
-        return GetAllPagedContent(content, _contentService.Value.GetPagedChildren);
+        return GetAllPagedContent(content, GetPagedChildren);
     }
 
     public ContentProperties GetContentProperties(IContent content, string culture = null) {
@@ -76,13 +76,6 @@ public class ContentHelper : IContentHelper {
                 var (blockListOrGrid, json) = GetJsonPropertyValue(property.Value);
                     
                 var elements = GetContentPropertiesForBlockListOrGrid((JObject) blockListOrGrid);
-                var elementsProperty = new ElementsProperty(contentType, property.Type, elements, json);
-                
-                elementsProperties.Add(elementsProperty);
-            } else if (property.Type.IsNestedContent()) {
-                var (nestedContents, json) = GetJsonPropertyValue(property.Value);
-                    
-                var elements = GetContentPropertiesForNestedContent(nestedContents);
                 var elementsProperty = new ElementsProperty(contentType, property.Type, elements, json);
                 
                 elementsProperties.Add(elementsProperty);
@@ -119,7 +112,7 @@ public class ContentHelper : IContentHelper {
                                                   string propertyTypeAlias,
                                                   object propertyValue) {
         var converter = (IPropertyValueConverter) _serviceProvider.Value.GetRequiredService(converterType);
-        var publishedContentType = _umbracoContextAccessor.Value.GetContentCache().GetContentType(contentTypeAlias);
+        var publishedContentType = _publishedContentTypeCache.Value.Get(_contentTypeService.Value, contentTypeAlias);
         var publishedPropertyType = publishedContentType?.GetPropertyType(propertyTypeAlias);
         
         var source = propertyValue;
@@ -153,7 +146,7 @@ public class ContentHelper : IContentHelper {
     public IReadOnlyList<T> GetPublishedDescendants<T>(IContent content) where T : IPublishedContent {
         return GetDescendants(content).Select(x => _contentLocator.Value.ById<T>(x.Key)).ToList();
     }
-    
+
     private IReadOnlyList<IContent> GetAllPagedContent(IContent content,
                                                        GetPagedContent getPagedContent,
                                                        IQuery<IContent> query = null) {
@@ -197,13 +190,11 @@ public class ContentHelper : IContentHelper {
     
     private IReadOnlyList<ContentProperties> GetContentPropertiesForBlockListOrGrid(JObject blockListOrGrid) {
         var contentProperties = new List<ContentProperties>();
-        
+
         if (blockListOrGrid?.TryGetValue("contentData", StringComparison.InvariantCultureIgnoreCase, out var contentData) == true) {
             foreach (var block in contentData.OrEmpty()) {
-                if (block is JArray jArray) {
-                    foreach (JObject jObject in jArray) {
-                        contentProperties.Add(GetContentPropertiesForBlockListOrGridElement(jObject));
-                    }
+                if (block is JObject jObject) {
+                    contentProperties.Add(GetContentPropertiesForBlockListOrGridElement(jObject));
                 }
             }
         }
@@ -212,21 +203,55 @@ public class ContentHelper : IContentHelper {
     }
     
     private ContentProperties GetContentPropertiesForBlockListOrGridElement(JObject element) {
-        var id = UdiParser.Parse((string) element["udi"]).ToId().GetValueOrThrow();
+        var id = GetBlockElementKey(element);
         var contentTypeKey = Guid.Parse((string) element["contentTypeKey"]);
         var contentType = _contentTypeService.Value.Get(contentTypeKey);
 
+        var valuesByAlias = GetBlockElementValuesByAlias(element);
+
         var properties = new List<(IPropertyType, object)>();
-            
+
         foreach (var propertyGroup in contentType.PropertyGroups) {
             foreach (var propertyType in propertyGroup.PropertyTypes) {
-                var propertyValue = element[propertyType.Alias];
+                valuesByAlias.TryGetValue(propertyType.Alias, out var propertyValue);
 
                 properties.Add((propertyType, propertyValue?.ConvertToObject()));
             }
         }
-            
+
         return GetContentProperties(id, null, -1, contentType.Alias, properties);
+    }
+
+    private static Guid GetBlockElementKey(JObject element) {
+        var key = (string) element["key"];
+
+        if (key.HasValue()) {
+            return Guid.Parse(key);
+        }
+
+        var udi = (string) element["udi"];
+
+        if (udi.HasValue() && UdiParser.TryParse(udi, out var parsedUdi) && parsedUdi is GuidUdi guidUdi) {
+            return guidUdi.Guid;
+        }
+
+        throw new InvalidOperationException("Block item is missing both 'key' and a parseable legacy 'udi'");
+    }
+
+    private static IReadOnlyDictionary<string, JToken> GetBlockElementValuesByAlias(JObject element) {
+        var valuesByAlias = new Dictionary<string, JToken>(StringComparer.InvariantCultureIgnoreCase);
+
+        if (element["values"] is JArray values) {
+            foreach (var value in values.OfType<JObject>()) {
+                var alias = (string) value["alias"];
+
+                if (alias.HasValue()) {
+                    valuesByAlias[alias] = value["value"];
+                }
+            }
+        }
+
+        return valuesByAlias;
     }
 
     private IReadOnlyList<ContentProperties> GetContentPropertiesForNestedContent(JToken nestedContent) {
@@ -281,6 +306,22 @@ public class ContentHelper : IContentHelper {
         }
 
         return (obj, JsonConvert.SerializeObject(obj));
+    }
+    
+    private IEnumerable<IContent> GetPagedChildren(int id,
+                                                   long pageIndex,
+                                                   int pageSize,
+                                                   out long totalRecords,
+                                                   IQuery<IContent> filter = null,
+                                                   Ordering ordering = null) {
+        return _contentService.Value.GetPagedChildren(id,
+                                                      pageIndex,
+                                                      pageSize,
+                                                      out totalRecords,
+                                                      propertyAliases: null,
+                                                      filter: filter,
+                                                      ordering: ordering,
+                                                      loadTemplates: true);
     }
 
     private delegate IEnumerable<IContent> GetPagedContent(int id,

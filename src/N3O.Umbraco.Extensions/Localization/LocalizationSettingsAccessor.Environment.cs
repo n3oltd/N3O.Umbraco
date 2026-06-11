@@ -2,18 +2,19 @@ using N3O.Umbraco.Constants;
 using N3O.Umbraco.Extensions;
 using N3O.Umbraco.Hosting;
 using N3O.Umbraco.Lookups;
+using System.Linq;
 using Umbraco.Cms.Core.Services;
 
 namespace N3O.Umbraco.Localization;
 
 public class EnvironmentLocalizationSettingsAccessor : ILocalizationSettingsAccessor {
     private readonly ILookups _lookups;
-    private readonly ILocalizationService _localizationService;
+    private readonly ILanguageService _languageService;
     private LocalizationSettings _settings;
 
-    public EnvironmentLocalizationSettingsAccessor(ILookups lookups, ILocalizationService localizationService) {
+    public EnvironmentLocalizationSettingsAccessor(ILookups lookups, ILanguageService languageService) {
         _lookups = lookups;
-        _localizationService = localizationService;
+        _languageService = languageService;
     }
 
     public LocalizationSettings GetSettings() {
@@ -22,9 +23,12 @@ public class EnvironmentLocalizationSettingsAccessor : ILocalizationSettingsAcce
             var dateFormat = Get(LocalizationKeys.DateFormat, DateFormats.DayMonthYearSlashes);
             var timeFormat = Get(LocalizationKeys.TimeFormat, TimeFormats._24);
             var timezone = Get(LocalizationKeys.Timezone, Timezones.Utc);
-        
-            _settings = new LocalizationSettings(_localizationService.GetDefaultCultureCode(),
-                                                 _localizationService.GetAllCultureCodes(),
+
+            var defaultCultureCode = _languageService.GetDefaultCultureCode();
+            var allCultureCodes = _languageService.GetAllCultureCodes();
+
+            _settings = new LocalizationSettings(defaultCultureCode,
+                                                 allCultureCodes,
                                                  numberFormat,
                                                  dateFormat,
                                                  timeFormat,

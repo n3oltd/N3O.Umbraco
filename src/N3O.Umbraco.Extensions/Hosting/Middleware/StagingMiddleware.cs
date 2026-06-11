@@ -21,18 +21,18 @@ public class StagingMiddleware : IMiddleware {
     private static readonly TimeSpan LockOutPeriod = TimeSpan.FromMinutes(5);
     private static readonly MemoryCache FailedLogins = new(new MemoryCacheOptions());
 
-    private readonly IUmbracoContextFactory _umbracoContextFactory;
     private readonly Lazy<IRemoteIpAddressAccessor> _remoteIpAddressAccessor;
     private readonly Lazy<IOptionsSnapshot<CookieAuthenticationOptions>> _cookieAuthenticationOptions;
+    private readonly Lazy<IContentLocator> _contentLocator;
     private readonly IApplicationReadiness _applicationReadiness;
 
-    public StagingMiddleware(IUmbracoContextFactory umbracoContextFactory,
-                             Lazy<IRemoteIpAddressAccessor> remoteIpAddressAccessor,
+    public StagingMiddleware(Lazy<IRemoteIpAddressAccessor> remoteIpAddressAccessor,
                              Lazy<IOptionsSnapshot<CookieAuthenticationOptions>> cookieAuthenticationOptions,
+                             Lazy<IContentLocator> contentLocator,
                              IApplicationReadiness applicationReadiness) {
-        _umbracoContextFactory = umbracoContextFactory;
         _remoteIpAddressAccessor = remoteIpAddressAccessor;
         _cookieAuthenticationOptions = cookieAuthenticationOptions;
+        _contentLocator = contentLocator;
         _applicationReadiness = applicationReadiness;
     }
 
@@ -46,12 +46,7 @@ public class StagingMiddleware : IMiddleware {
         if (!context.Request.GetDisplayUrl().Contains("/umbraco", StringComparison.InvariantCultureIgnoreCase) &&
             !context.Request.GetDisplayUrl().Contains("/App_Plugins", StringComparison.InvariantCultureIgnoreCase) &&
             !context.Request.GetDisplayUrl().Contains("/sb", StringComparison.InvariantCultureIgnoreCase)) {
-            var umbracoContextReference = _umbracoContextFactory.EnsureUmbracoContext();
-            var umbracoContext = umbracoContextReference.UmbracoContext;
-            var contentType = umbracoContext.Content.GetContentType(StagingSettingsAlias);
-            var stagingSettings = contentType.IfNotNull(x => umbracoContext.Content.GetByContentType(x))
-                                            ?.SingleOrDefault()
-                                            ?.As<StagingSettingsContent>();
+            var stagingSettings = _contentLocator.Value.Single<StagingSettingsContent>();
 
             if (stagingSettings != null) {
                 var remoteIp = _remoteIpAddressAccessor.Value.GetRemoteIpAddress().ToString();

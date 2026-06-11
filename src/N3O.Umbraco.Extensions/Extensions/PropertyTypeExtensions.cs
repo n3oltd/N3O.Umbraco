@@ -36,10 +36,6 @@ public static class PropertyTypeExtensions {
         return propertyType.HasEditorAlias(Aliases.MultiNodeTreePicker);
     }
 
-    public static bool IsNestedContent(this IPropertyType propertyType) {
-        return propertyType.HasEditorAlias(Aliases.NestedContent);
-    }
-    
     public static bool IsPerplexBlocks(this IPropertyType propertyType) {
         return propertyType.HasEditorAlias("Perplex.ContentBlocks");
     }

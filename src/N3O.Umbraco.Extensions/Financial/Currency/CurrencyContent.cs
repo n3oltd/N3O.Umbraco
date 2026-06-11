@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Umbraco.Cms.Core.Web;
 
 namespace N3O.Umbraco.Financial;
 
@@ -19,30 +18,22 @@ public class CurrencyContent : UmbracoContent<CurrencyContent> {
 [Order(int.MinValue)]
 public class ContentCurrencies : LookupsCollection<Currency> {
     private readonly IContentCache _contentCache;
-    private readonly IUmbracoContextAccessor _umbracoContextAccessor;
 
-    public ContentCurrencies(IContentCache contentCache, IUmbracoContextAccessor umbracoContextAccessor) {
+    public ContentCurrencies(IContentCache contentCache) {
         _contentCache = contentCache;
-        _umbracoContextAccessor = umbracoContextAccessor;
 
         _contentCache.Flushed += ContentCacheOnFlushed;
     }
-    
+
     protected override Task<IReadOnlyList<Currency>> LoadAllAsync(CancellationToken cancellationToken) {
         var all = GetFromCache();
-        
+
         return Task.FromResult(all);
     }
 
     private IReadOnlyList<Currency> GetFromCache() {
-        List<CurrencyContent> content;
-        
-        if (_umbracoContextAccessor.TryGetUmbracoContext(out _)) {
-            content = _contentCache.All<CurrencyContent>().OrderBy(x => x.Content().SortOrder).ToList();
-        } else {
-            content = [];
-        }
-        
+        var content = _contentCache.All<CurrencyContent>().OrderBy(x => x.Content().SortOrder).ToList();
+
         var lookups = content.Select(ToCurrency).ToList();
 
         return lookups;
